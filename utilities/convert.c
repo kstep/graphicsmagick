@@ -690,7 +690,7 @@ int main(int argc,char **argv)
   ping=False;
   option=(char *) NULL;
   memset(&option_info,0,sizeof(OptionInfo));
-	status=False;
+	status=True;
   /*
     Parse command-line arguments.
   */
@@ -715,10 +715,10 @@ int main(int argc,char **argv)
         if (exception.severity != UndefinedException)
           MagickWarning(exception.severity,exception.reason,
             exception.description);
-        status|=next_image == (Image *) NULL;
+        status&=next_image != (Image *) NULL;
         if (next_image == (Image *) NULL)
           continue;
-        status|=!MogrifyImages(image_info,i,argv,&next_image);
+        status&=MogrifyImages(image_info,i,argv,&next_image);
         (void) CatchImageException(next_image);
         if (image == (Image *) NULL)
           image=next_image;
@@ -1036,7 +1036,7 @@ int main(int argc,char **argv)
                   if (clone_image == (Image *) NULL)
                     MagickError(OptionError,"Missing an image file name",
                       (char *) NULL);
-                  status|=!ConvertImages(clone_info,&clone_image,&option_info,
+                  status&=ConvertImages(clone_info,&clone_image,&option_info,
                     i-j+2,argv+j-1,&exception);
                   DestroyImageList(clone_image);
                   DestroyImageInfo(clone_info);
@@ -1855,7 +1855,7 @@ int main(int argc,char **argv)
                   if (image == (Image *) NULL)
                     MagickError(OptionError,"Missing source image",
                       (char *) NULL);
-                  status|=!ConvertImages(image_info,&image,&option_info,i-j+2,
+                  status&=ConvertImages(image_info,&image,&option_info,i-j+2,
                     argv+j-1,&exception);
                   j=i+1;
                 }
@@ -2200,14 +2200,14 @@ int main(int argc,char **argv)
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  status|=
-    !ConvertImages(image_info,&image,&option_info,argc-j+1,argv+j-1,&exception);
+  status&=
+    ConvertImages(image_info,&image,&option_info,argc-j+1,argv+j-1,&exception);
   DestroyImageList(image);
   DestroyImageInfo(image_info);
   if (LocaleCompare("-convert",argv[0]) == 0)
     return(True);
   DestroyMagick();
   LiberateMemory((void **) &argv);
-  Exit(status);
+  Exit(!status);
   return(False);
 }
