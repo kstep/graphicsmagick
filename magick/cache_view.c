@@ -174,8 +174,8 @@ MagickExport PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetCacheViewIndexes returns the colormap indexes associated with the
-%  specified view.
+%  Method GetCacheViewIndexes returns the indexes associated with the specified
+%  view.
 %
 %  The format of the GetCacheViewIndexes method is:
 %
@@ -183,8 +183,8 @@ MagickExport PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
 %
 %  A description of each parameter follows:
 %
-%    o indexes: Method GetCacheViewIndexes returns the colormap indexes
-%      associated with the specified view.
+%    o indexes: Method GetCacheViewIndexes returns the indexes associated with
+%      the specified view.
 %
 %    o view: The address of a structure of type ViewInfo.
 %
