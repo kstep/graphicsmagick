@@ -691,38 +691,38 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
   while (strlen(p) != 0)
   {
     if (isspace((int) (*p)))
-      (void) strncpy(p,p+1,MaxTextExtent-1);
+      (void) strcpy(p,p+1);
     else
       switch (*p)
       {
         case '%':
         {
           flags|=PercentValue;
-          (void) strncpy(p,p+1,MaxTextExtent-1);
+          (void) strcpy(p,p+1);
           break;
         }
         case '!':
         {
           flags|=AspectValue;
-          (void) strncpy(p,p+1,MaxTextExtent-1);
+          (void) strcpy(p,p+1);
           break;
         }
         case '<':
         {
           flags|=LessValue;
-          (void) strncpy(p,p+1,MaxTextExtent-1);
+          (void) strcpy(p,p+1);
           break;
         }
         case '>':
         {
           flags|=GreaterValue;
-          (void) strncpy(p,p+1,MaxTextExtent-1);
+          (void) strcpy(p,p+1);
           break;
         }
         case '@':
         {
           flags|=AreaValue;
-          (void) strncpy(p,p+1,MaxTextExtent-1);
+          (void) strcpy(p,p+1);
           break;
         }
         default:
