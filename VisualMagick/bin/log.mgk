@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
 <magicklog>
-  <log events="None" />
-  <log output="stdout" />
+  <log events="Warning" />
+  <log events="Error" />
+  <log events="FatalError" />
+  <log output="win32eventlog" />
   <log filename="Magick-%d.log" />
   <log generations="3" />
   <log limit="2000" />
-  <log format="%t %r %u %p %m/%f/%l/%d:\n  %e"  />
+  <log format="%t %r %u %p %m/%f/%l/%d/%s:\n  %e"  />
 </magicklog>
