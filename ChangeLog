@@ -1,3 +1,7 @@
+2004-02-03  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/bmp.c: initialize padding bytes.
+
 2004-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/constitute.c (ConstituteImage): Added map support for 'P',
@@ -22,8 +26,8 @@
 
 2004-02-02  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
-	* coders/bmp.c: fix potential use of unitialized data.
-	* coders/png.c: fix potential use of unitialized data.
+	* coders/bmp.c: fix potential use of uninitialized data.
+	* coders/png.c: fix potential use of uninitialized data.
 
 2004-01-31  Mike Chiarappa  <mikechiarappa@libero.it>
 

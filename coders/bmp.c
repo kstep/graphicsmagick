@@ -1652,6 +1652,9 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           q=pixels+(image->rows-y-1)*bytes_per_line;
           for (x=0; x < (long) image->columns; x++)
             *q++=indexes[x];
+          /* initialize padding bytes */
+          for (; x < (long) bytes_per_line; x++)
+            *q++=0x00;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
@@ -1699,14 +1702,15 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           */
           length=2*(bytes_per_line+2)*(image->rows+2)+2;
           bmp_data=MagickAllocateMemory(unsigned char *,length);
-          if (pixels == (unsigned char *) NULL)
+          if (bmp_data == (unsigned char *) NULL)
             {
               MagickFreeMemory(pixels);
               ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
                 image)
             }
           bmp_info.file_size-=bmp_info.image_size;
-          bmp_info.image_size=EncodeImage(image,bytes_per_line,pixels,bmp_data);
+          bmp_info.image_size=EncodeImage(image,bytes_per_line,pixels,
+              bmp_data);
           bmp_info.file_size+=bmp_info.image_size;
           MagickFreeMemory(pixels);
           pixels=bmp_data;
