@@ -380,7 +380,7 @@ MagickExport void CloseBlob(Image *image)
             status;
 
           (void) BZ2_bzerror(image->blob->file,&status);
-          image->blob->status=status;
+          image->blob->status=status < 0;
           break;
         }
 #endif
@@ -391,7 +391,7 @@ MagickExport void CloseBlob(Image *image)
             status;
 
           (void) gzerror(image->blob->file,&status);
-          image->blob->status=!status;
+          image->blob->status=status < 0;
           break;
         }
 #endif
@@ -2264,12 +2264,25 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
           }
       return(TellBlob(image));
     }
-  if ((image->blob->file == (FILE *) NULL) ||
-      (image->blob->type != StandardStream))
+  if (image->blob->file == (FILE *) NULL)
     return(-1);
-  if (fseek(image->blob->file,(off_t) offset,whence) < 0)
-    return(-1);
-  return(TellBlob(image));
+  switch (image->blob->type)
+  {
+#if defined(HasBZLIB)
+    case BZipStream:
+      return(-1);
+#endif
+#if defined(HasZLIB)
+    case ZipStream:
+      return(-1);
+#endif
+    default:
+    {
+      if (fseek(image->blob->file,(off_t) offset,whence) < 0)
+        return(-1);
+      return(TellBlob(image));
+    }
+  }
 }
 
 /*
