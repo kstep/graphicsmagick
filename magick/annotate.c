@@ -200,11 +200,6 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       &geometry.width,&geometry.height);
   annotate=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  (void) CloneString(&annotate->text," ");
-  status=GetTypeMetrics(image,annotate,&metrics);
-  if (status == False)
-    return(status);
-  height=metrics.ascent-metrics.descent;
   matte=image->matte;
   status=True;
   for (i=0; textlist[i] != (char *) NULL; i++)
@@ -215,6 +210,9 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       Position text relative to image.
     */
     (void) CloneString(&annotate->text,textlist[i]);
+    if ((i == 0) || (annotate->gravity != NorthWestGravity))
+      (void) GetTypeMetrics(image,annotate,&metrics);
+    height=metrics.ascent-metrics.descent;
     switch (annotate->gravity)
     {
       case ForgetGravity:
