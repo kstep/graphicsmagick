@@ -1288,7 +1288,7 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
   for (y=radius; y < (int) (image->rows-radius); y++)
   {
     p=GetPixelCache(image,0,y-radius,image->columns,2*radius+1);
-    q=SetPixelCache(median_image,0,y,median_image->columns,1);
+    q=GetPixelCache(median_image,0,y,median_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     p+=radius*image->columns+radius;
