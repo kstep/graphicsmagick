@@ -7277,8 +7277,8 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
       if (jpeg_image == (Image *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
             image);
-      jpeg_image->blob=(BlobInfo *) AcquireMemory(sizeof(BlobInfo));
-      GetBlobInfo(jpeg_image->blob);
+      DestroyBlobInfo(jpeg_image->blob);
+      jpeg_image->blob=CloneBlobInfo((BlobInfo *) NULL);
       status=ChannelImage(jpeg_image,OpacityChannel);
       status=NegateImage(jpeg_image,False);
       jpeg_image->matte=False;
@@ -7617,8 +7617,8 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
   if (jpeg_image == (Image *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
         image);
-  jpeg_image->blob=(BlobInfo *) AcquireMemory(sizeof(BlobInfo));
-  GetBlobInfo(jpeg_image->blob);
+  DestroyBlobInfo(jpeg_image->blob);
+  jpeg_image->blob=CloneBlobInfo((BlobInfo *) NULL);
 
   AcquireUniqueFilename(jpeg_image->filename);
   FormatString(jpeg_image_info->filename,"%.1024s",jpeg_image->filename);
