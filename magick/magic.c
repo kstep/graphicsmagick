@@ -60,8 +60,8 @@
   Global declarations.
 */
 
-static MagicList
-  *magick_list = (MagicList*) NULL;
+static MagicTest
+  **magic_test_list = (MagicTest**) NULL;
 
 
 
@@ -70,14 +70,87 @@ static MagicList
   based on image header data provided in magick,
   with length magick_length.
 */
-Export unsigned int GetImageMagic(unsigned char** magic,
+Export unsigned int GetImageMagic(unsigned char* magic,
                                   const unsigned char *magick,
                                   const unsigned int magick_length)
 {
-}
+  int
+    i;
 
+  /* Traverse magic tests */
+  for (i=0;magic_test_list[i]!=(MagicTest*)NULL;++i)
+    {
+      switch(magic_test_list[i]->member->method)
+        {
+        case StringMagicMethod:
+          {
+            MagicTestMember
+              *member;
+
+            /* Traverse test members */
+            for(member=magic_test_list[i]->member;member!=(MagicTestMember*)NULL;)
+              {
+                StringMethodArgument
+                  *arg;
+
+                arg=(StringMethodArgument*)member->argument;
+                if(arg->value_offset+arg->value_length > magick_length)
+                  break;
+
+                if(memcmp((void*)magick+arg->value_offset,(void*)arg->value,
+                          arg->value_length)==0)
+                  {
+                    if(member->truth_value == True)
+                      {
+                        if (member->next==(MagicTestMember*)NULL)
+                          {
+                            strcpy(magic, magic_test_list[i]->tag);
+                            return True;
+                          }
+                      }
+                    else
+                      {
+                        /* Short-circuit search */
+                        break;
+                      }
+                  }
+                member=member->next;
+              }
+
+            break;
+          }
+        default:
+          {
+          }
+        }
+    }
+
+  return False;
+}
 
 /* Free any memory allocated by this source module */
 Export void ExitMagic(void)
 {
+  int
+    i;
+
+  /* Traverse magic tests */
+  for (i=0;magic_test_list[i]!=(MagicTest*)NULL;++i)
+    {
+      MagicTestMember
+        *member;
+
+      /* Traverse test members */
+      for(member=magic_test_list[i]->member;member!=(MagicTestMember*)NULL;)
+        {
+          MagicTestMember*
+            entry;
+
+          entry=member;
+          member=member->next;
+          FreeMemory((void**)&member->argument);
+          FreeMemory((void**)&member);
+        }
+    }
+  FreeMemory((void**)&magic_test_list[i]);
 }

@@ -29,7 +29,7 @@ typedef struct _StringMethodArgument
 } StringMethodArgument;
 
 /* List member to support one or more tests for a format */
-typedef struct _MagicListMember
+typedef struct _MagicTestMember
 {
   MagicMethod
     method;      /* Method to apply */
@@ -40,21 +40,32 @@ typedef struct _MagicListMember
   int
     truth_value; /* Truth value of operation (True or False) */
 
-  struct _MagicListMember
+  struct _MagicTestMember
     *next;
 
-} MagicListMember;
+} MagicTestMember;
 
 /* List of formats to test */
-typedef struct _MagicList
+typedef struct _MagicTest
 {
   char
   *tag;
 
-  struct _MagicListMember
+  struct _MagicTestMember
   *member;
 
-} MagicList;
+} MagicTest;
+
+/*
+  Modules declarations.
+*/
+
+extern Export void
+  ExitMagic(void);
+
+extern Export unsigned int
+  GetImageMagic(unsigned char* magic,const unsigned char *magick,
+                const unsigned int magick_length);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
