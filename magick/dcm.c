@@ -3145,7 +3145,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
       c=ReadByte(image);
       while (c != EOF)
       {
-        (void) putc(c,file);
+        (void) fputc(c,file);
         c=ReadByte(image);
       }
       (void) fclose(file);

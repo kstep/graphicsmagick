@@ -1573,7 +1573,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       if (file == (FILE *) NULL)
         WriterExit(FileOpenWarning,"Unable to open file",image);
       for (c=fgetc(file); c != EOF; c=fgetc(file))
-        (void) putc(c,encode_image.file);
+        (void) fputc(c,encode_image.file);
       (void) fclose(file);
       (void) remove(image->filename);
       image->temporary=False;

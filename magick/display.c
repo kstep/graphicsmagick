@@ -6667,8 +6667,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
               break;
             }
           for (p=(*image)->comments; *p != '\0'; p++)
-            (void) putc((int) *p,file);
-          (void) putc('\n',file);
+            (void) fputc((int) *p,file);
+          (void) fputc('\n',file);
           (void) fclose(file);
         }
       XSetCursorState(display,windows,True);

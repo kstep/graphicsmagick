@@ -178,7 +178,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
       c=ReadByte(image);
       while (c != EOF)
       {
-        (void) putc(c,file);
+        (void) fputc(c,file);
         c=ReadByte(image);
       }
       (void) fclose(file);
@@ -1038,7 +1038,7 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       if (file == (FILE *) NULL)
         WriterExit(FileOpenWarning,"Unable to open file",image);
       for (c=fgetc(file); c != EOF; c=fgetc(file))
-        (void) putc(c,fpx_image.file);
+        (void) fputc(c,fpx_image.file);
       (void) fclose(file);
       (void) remove(image->filename);
       image->temporary=False;
