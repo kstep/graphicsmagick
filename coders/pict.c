@@ -797,12 +797,12 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     if (code > 0xa1)
       {
         if (image_info->debug)
-          (void) fprintf(stdout,"%04x:\n",code);
+          (void) fprintf(stderr,"%04x:\n",code);
       }
     else
       {
         if (image_info->debug)
-          (void) fprintf(stdout,"  %04x %.1024s: %.1024s\n",code,
+          (void) fprintf(stderr,"  %04x %.1024s: %.1024s\n",code,
             codes[code].name,codes[code].description);
         switch (code)
         {
@@ -1210,6 +1210,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         for (i=0; i < 6; i++)
           (void) ReadBlobMSBLong(image);
         ReadRectangle(frame);
+        if (image_info->debug)
+          (void) fprintf(stderr,"frame: %d,%d  %d,%d\n",frame.top,frame.left,frame.bottom,frame.right);
         for (i=0; i < 122; i++)
           (void) ReadBlobByte(image);
         for (i=0; i < (length-154); i++)
