@@ -4832,20 +4832,25 @@ Mogrify(ref,...)
             switch (argument_list[5].int_reference)
             {
               case NorthWestGravity:
+              {
+                y-=composite_image->rows;
                 break;
+              }
               case NorthGravity:
               {
-                x+=(int) (0.5*width-composite_image->columns/2);
+                x+=(long) (0.5*width-composite_image->columns/2);
+                y-=composite_image->rows;
                 break;
               }
               case NorthEastGravity:
               {
                 x+=width-composite_image->columns;
+                y-=composite_image->rows;
                 break;
               }
               case WestGravity:
               {
-                y+=(int) (0.5*height-composite_image->rows/2);
+                y+=(long) (0.5*height-composite_image->rows/2);
                 break;
               }
               case ForgetGravity:
@@ -4853,31 +4858,31 @@ Mogrify(ref,...)
               case CenterGravity:
               default:
               {
-                x+=(int) (0.5*width-composite_image->columns/2);
-                y+=(int) (0.5*height-composite_image->rows/2);
+                x+=(long) (0.5*width-composite_image->columns/2);
+                y+=(long) (0.5*height-composite_image->rows/2);
                 break;
               }
               case EastGravity:
               {
                 x+=width-composite_image->columns;
-                y+=(int) (0.5*height-composite_image->rows/2);
+                y+=(long) (0.5*height-composite_image->rows/2);
                 break;
               }
               case SouthWestGravity:
               {
-                y+=height-composite_image->rows;
+                y+=height;
                 break;
               }
               case SouthGravity:
               {
-                x+=(int) (0.5*width-composite_image->columns/2);
-                y+=height-composite_image->rows;
+                x+=(long) (0.5*width-composite_image->columns/2);
+                y+=height;
                 break;
               }
               case SouthEastGravity:
               {
                 x+=width-composite_image->columns;
-                y+=height-composite_image->rows;
+                y+=height;
                 break;
               }
             }
