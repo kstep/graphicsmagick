@@ -284,7 +284,7 @@ static char *GenerateClippingPath(char *s,unsigned int len,int columns,int rows)
     ConcatenateString(&outs,temp);
     FormatString(temp,"<g>\n");
     ConcatenateString(&outs,temp);
-    FormatString(temp,"<path style=\"fill:#000000;stroke:none\" d=\"\n");
+    FormatString(temp,"<path style=\"fill:#ffffff;stroke:none\" d=\"\n");
     ConcatenateString(&outs,temp);
     while (len > 0)
     {
