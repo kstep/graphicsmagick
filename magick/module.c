@@ -130,6 +130,40 @@ static unsigned int
 %      void DestroyModuleInfo(void)
 %
 */
+
+#if !defined(HasMODULES)
+#if !defined(WIN32)
+static int lt_dlexit(void)
+{
+  return(0);
+}
+
+static int lt_dlinit(void)
+{
+  return(0);
+}
+
+static void *lt_dlopen(char *filename)
+{
+  return((void *) NULL);
+}
+
+static void lt_dlclose(void *handle)
+{
+}
+
+static const char *lt_dlerror(void)
+{
+  return((const char *) NULL);
+}
+
+static void *lt_dlsym(void *handle,char *symbol)
+{
+  return((void *) NULL);
+}
+#endif
+#endif
+
 MagickExport void DestroyModuleInfo(void)
 {
   CoderInfo
@@ -173,6 +207,7 @@ MagickExport void DestroyModuleInfo(void)
     LiberateMemory((void **) &module_info);
   }
   module_list=(ModuleInfo *) NULL;
+  (void) lt_dlexit();
   DestroySemaphoreInfo(&module_semaphore);
 }
 
@@ -212,31 +247,6 @@ MagickExport void DestroyModuleInfo(void)
 %      arguments.
 %
 */
-
-#if !defined(HasMODULES)
-#if !defined(WIN32)
-static int lt_dlinit(void)
-{
-  return(0);
-}
-static void *lt_dlopen(char *filename)
-{
-  return((void *) NULL);
-}
-static void lt_dlclose(void *handle)
-{
-}
-static const char *lt_dlerror(void)
-{
-  return((const char *) NULL);
-}
-static void *lt_dlsym(void *handle,char *symbol)
-{
-  return((void *) NULL);
-}
-#endif
-#endif
-
 MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
   const int argc,char **argv)
 {
