@@ -976,18 +976,17 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Dump image as bitmap.
             */
-            if (preview_image->storage_class != DirectClass)
-              if (!IsMonochromeImage(preview_image))
-                {
-                  QuantizeInfo
-                    quantize_info;
+            if (!IsMonochromeImage(preview_image))
+              {
+                QuantizeInfo
+                  quantize_info;
   
-                  GetQuantizeInfo(&quantize_info);
-                  quantize_info.number_colors=2;
-                  quantize_info.dither=image_info->dither;
-                  quantize_info.colorspace=GRAYColorspace;
-                  (void) QuantizeImage(&quantize_info,preview_image);
-                }
+                GetQuantizeInfo(&quantize_info);
+                quantize_info.number_colors=2;
+                quantize_info.dither=image_info->dither;
+                quantize_info.colorspace=GRAYColorspace;
+                (void) QuantizeImage(&quantize_info,preview_image);
+              }
             polarity=Intensity(preview_image->colormap[0]) < (0.5*MaxRGB);
             if (preview_image->colors == 2)
               polarity=Intensity(preview_image->colormap[0]) >

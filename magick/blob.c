@@ -56,10 +56,44 @@
 #include "magick.h"
 #include "define.h"
 #include <signal.h>
-
-#if !defined(BlobQuantum)
-#define BlobQuantum  65535
-#endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A t t a c h B l o b                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AttachBlob attaches a blob to the BlobInfo structure.
+%
+%  The format of the AttachBlob method is:
+%
+%      void AttachBlob(BlobInfo *blob_info,const void *blob,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o blob_info: Specifies a pointer to a BlobInfo structure.
+%
+%    o blob: The address of a character stream in one of the image formats
+%      understood by ImageMagick.
+%
+%    o length: This size_t integer reflects the length in bytes of the blob.
+%
+%
+*/
+MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
+  const size_t length)
+{
+  assert(blob_info != (BlobInfo *) NULL);
+  blob_info->data=(unsigned char *) blob;
+  blob_info->length=length;
+  blob_info->extent=length;
+  blob_info->offset=0;
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -117,56 +151,51 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  GetExceptionInfo(exception);
   clone_info=CloneImageInfo(image_info);
-  clone_info->blob->data=(unsigned char *) blob;
-  clone_info->blob->offset=0;
-  clone_info->blob->length=length;
-  clone_info->blob->extent=length;
+  AttachBlob(clone_info->blob,blob,length);
+  GetExceptionInfo(exception);
   (void) SetImageInfo(clone_info,False,exception);
   magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick,exception);
   if (magick_info == (MagickInfo *) NULL)
     {
-      DestroyImageInfo(clone_info);
       ThrowException(exception,BlobWarning,"Unrecognized image format",
         clone_info->magick);
+      DestroyImageInfo(clone_info);
       return((Image *) NULL);
     }
-  DetachBlob(clone_info->blob);
   if (magick_info->blob_support)
     {
       /*
         Native blob support for this image format.
       */
+      AttachBlob(clone_info->blob,blob,length);
       *clone_info->filename='\0';
-      clone_info->blob->data=(unsigned char *) blob;
-      clone_info->blob->length=length;
-      clone_info->blob->extent=length;
       image=ReadImage(clone_info,exception);
-      DestroyImageInfo(clone_info);
       if (image != (Image *) NULL)
         DetachBlob(image->blob);
+      DestroyImageInfo(clone_info);
       return(image);
     }
   /*
     Write blob to a temporary file on disk.
   */
+  DetachBlob(clone_info->blob);
   TemporaryFilename(clone_info->filename);
   file=open(clone_info->filename,O_WRONLY | O_CREAT | O_EXCL | O_BINARY,0777);
   if (file == -1)
     {
-      DestroyImageInfo(clone_info);
       ThrowException(exception,BlobWarning,"Unable to convert blob to an image",
         clone_info->filename);
+      DestroyImageInfo(clone_info);
       return((Image *) NULL);
     }
   count=write(file,blob,length);
   (void) close(file);
   if ((size_t) count != length)
     {
-      DestroyImageInfo(clone_info);
       ThrowException(exception,BlobWarning,"Unable to convert blob to an image",
         clone_info->filename);
+      DestroyImageInfo(clone_info);
       return((Image *) NULL);
     }
   image=ReadImage(clone_info,exception);
@@ -342,26 +371,26 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DetachBlob rewinds the BlobInfo structure.
+%  Method DetachBlob detaches a blob from the BlobInfo structure.
 %
 %  The format of the DetachBlob method is:
 %
-%      void DetachBlob(BlobInfo *blob)
+%      void DetachBlob(BlobInfo *blob_info)
 %
 %  A description of each parameter follows:
 %
-%    o blob: Specifies a pointer to a BlobInfo structure.
+%    o blob_info: Specifies a pointer to a BlobInfo structure.
 %
 %
 */
-MagickExport void DetachBlob(BlobInfo *blob)
+MagickExport void DetachBlob(BlobInfo *blob_info)
 {
-  assert(blob != (BlobInfo *) NULL);
-  blob->eof=False;
-  blob->mapped=False;
-  blob->length=0;
-  blob->offset=0;
-  blob->data=(unsigned char *) NULL;
+  assert(blob_info != (BlobInfo *) NULL);
+  blob_info->eof=False;
+  blob_info->mapped=False;
+  blob_info->length=0;
+  blob_info->offset=0;
+  blob_info->data=(unsigned char *) NULL;
 }
 
 /*
@@ -395,9 +424,11 @@ MagickExport int EOFBlob(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->blob->data == (unsigned char *) NULL)
-    return(feof(image->file));
-  return(image->blob->eof);
+  if (image->blob->data != (unsigned char *) NULL)
+    return(image->blob->eof);
+  if (image->file == (FILE *) NULL)
+    return(-1);
+  return(feof(image->file));
 }
 
 /*
@@ -476,6 +507,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
   if ((size_t) count != *length)
     {
       ThrowException(exception,BlobWarning,"Unable to read file",filename);
+      LiberateMemory((void **) &blob);
       return((void *) NULL);
     }
   return(blob);
@@ -496,20 +528,20 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
 %
 %  The format of the GetBlobInfo method is:
 %
-%      void GetBlobInfo(BlobInfo *blob)
+%      void GetBlobInfo(BlobInfo *blob_info)
 %
 %  A description of each parameter follows:
 %
-%    o blob: Specifies a pointer to a BlobInfo structure.
+%    o blob_info: Specifies a pointer to a BlobInfo structure.
 %
 %
 */
-MagickExport void GetBlobInfo(BlobInfo *blob)
+MagickExport void GetBlobInfo(BlobInfo *blob_info)
 {
-  assert(blob != (BlobInfo *) NULL);
-  (void) memset(blob,0,sizeof(BlobInfo));
-  blob->quantum=BlobQuantum;
-  blob->signature=MagickSignature;
+  assert(blob_info != (BlobInfo *) NULL);
+  (void) memset(blob_info,0,sizeof(BlobInfo));
+  blob_info->quantum=65536;
+  blob_info->signature=MagickSignature;
 }
 
 /*
@@ -582,9 +614,9 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  GetExceptionInfo(exception);
   clone_info=CloneImageInfo(image_info);
   (void) strcpy(clone_info->magick,image->magick);
+  GetExceptionInfo(exception);
   magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick,exception);
   if (magick_info == (MagickInfo *) NULL)
      {
@@ -598,8 +630,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       /*
         Native blob support for this image format.
       */
-      image->exempt=True;
-      *image->filename='\0';
+      DetachBlob(clone_info->blob);
       clone_info->blob->extent=Max(*length,image->blob->quantum);
       clone_info->blob->data=(unsigned char *)
         AcquireMemory(clone_info->blob->extent+1);
@@ -610,8 +641,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
           DestroyImageInfo(clone_info);
           return((void *) NULL);
         }
-      clone_info->blob->offset=0;
-      clone_info->blob->length=0;
+      image->exempt=True;
+      *image->filename='\0';
       status=WriteImage(clone_info,image);
       if (status == False)
         {
@@ -620,18 +651,16 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
           DestroyImageInfo(clone_info);
           return((void *) NULL);
         }
-      DestroyImageInfo(clone_info);
       blob=image->blob->data;
       *length=image->blob->length;
       DetachBlob(image->blob);
+      DestroyImageInfo(clone_info);
       return(blob);
     }
-  DestroyImageInfo(clone_info);
   /*
     Write file to disk in blob image format.
   */
-  *length=0;
-  clone_info=CloneImageInfo(image_info);
+  DetachBlob(clone_info->blob);
   (void) strcpy(filename,image->filename);
   TemporaryFilename(unique);
   FormatString(image->filename,"%.1024s:%.1024s",image->magick,unique);
@@ -672,6 +701,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   if ((size_t) count != *length)
     {
       ThrowException(exception,BlobWarning,"Unable to read file",filename);
+      LiberateMemory((void **) &blob);
       return((void *) NULL);
     }
   return(blob);
@@ -1050,18 +1080,22 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
               {
                 if (magick_info->blob_support)
                   {
+                    size_t
+                      length;
+
+                    void
+                      *blob;
+
                     /*
                       Format supports blobs-- try memory-mapped I/O.
                     */
-                    image->blob->length=0;
-                    image->blob->data=(unsigned char *) MapBlob(
-                      fileno(image->file),ReadMode,&image->blob->length);
-                    image->blob->mapped=
-                      image->blob->data != (unsigned char *) NULL;
-                    if (image->blob->mapped)
+                    blob=MapBlob(fileno(image->file),ReadMode,&length);
+                    if (blob != (void *) NULL)
                       {
                         (void) fclose(image->file);
                         image->file=(FILE *) NULL;
+                        AttachBlob(image->blob,blob,length);
+                        image->blob->mapped=True;
                       }
                   }
               }
@@ -1127,6 +1161,8 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
         image->blob->eof=True;
       return(count);
     }
+  if (image->file == (FILE *) NULL)
+    return(0);
   return(fread(data,1,length,image->file));
 }
 
@@ -1544,39 +1580,6 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
     return(-1);
   (void) fseek(image->file,offset,whence);
   return(TellBlob(image));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  S e t B l o b Q u a n t u m                                                %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method SetBlobQuantum set the current value of the blob quantum.  This
-%  is the size in bytes to add to a blob when writing to a blob exceeds its
-%  current length.
-%
-%  The format of the SetBlobQuantum method is:
-%
-%      void SetBlobQuantum(BlobInfo *blob,const size_t quantum)
-%
-%  A description of each parameter follows:
-%
-%    o blob:  A pointer to a BlobInfo structure.
-%
-%    o quantum: A size_t that reflects the number of bytes to increase a blob.
-%
-%
-*/
-MagickExport void SetBlobQuantum(BlobInfo *blob,const size_t quantum)
-{
-  assert(blob != (BlobInfo *) NULL);
-  blob->quantum=quantum;
 }
 
 /*
