@@ -814,6 +814,8 @@ MagickExport Image *MontageImages(const Image *image,
   }
   if (texture != (Image *) NULL)
     LiberateMemory((void **) &texture);
+  for (tile=0; tile < number_images; tile++)
+    DestroyImage(master_list[tile]);
   LiberateMemory((void **) &master_list);
   DestroyDrawInfo(draw_info);
   DestroyImageInfo(image_info);
