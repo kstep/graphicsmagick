@@ -1833,7 +1833,7 @@ MagickExport Image *MorphImages(const Image *image,
     Morph image sequence.
   */
   scene=0;
-  for (next=image; next->next != (Image *) NULL; next=next->next)
+  for (next=image; next->next != (Image *) NULL; next=GetNextImage(next))
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
     for (i=0; i < (long) number_frames; i++)

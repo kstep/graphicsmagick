@@ -557,7 +557,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
         image)
     }
   count=0;
-  for (p=coalesce_image; p != (Image *) NULL; p=p->next)
+  for (p=coalesce_image; p != (Image *) NULL; p=GetNextImage(p))
   {
     scene=p->scene;
     for (i=0; i < Max((p->delay+1)/3,1); i++)
@@ -583,7 +583,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     Free resources.
   */
   count=0;
-  for (p=coalesce_image; p != (Image *) NULL; p=p->next)
+  for (p=coalesce_image; p != (Image *) NULL; p=GetNextImage(p))
   {
     for (i=0; i < Max((p->delay+1)/3,1); i++)
     {

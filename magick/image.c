@@ -461,13 +461,13 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   if (image->next == (Image *) NULL)
     ThrowImageException(OptionWarning,"Unable to append image sequence",
       "image sequence required");
-  for (next=image->next; next != (Image *) NULL; next=next->next)
+  for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
     if ((next->columns != image->columns) && (next->rows != image->rows))
       ThrowImageException(OptionWarning,"Unable to append image sequence",
         "image widths or heights differ");
   width=image->columns;
   height=image->rows;
-  for (next=image->next; next != (Image *) NULL; next=next->next)
+  for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
   {
     width+=next->columns;
     height+=next->rows;
@@ -491,7 +491,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
         Stack left-to-right.
       */
       x=0;
-      for (next=image; next != (Image *) NULL; next=next->next)
+      for (next=image; next != (Image *) NULL; next=GetNextImage(next))
       {
         if (next->storage_class == DirectClass)
           SetImageType(append_image,TrueColorType);
@@ -509,7 +509,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
         Stack top-to-bottom.
       */
       y=0;
-      for (next=image; next != (Image *) NULL; next=next->next)
+      for (next=image; next != (Image *) NULL; next=GetNextImage(next))
       {
         if (next->storage_class == DirectClass)
           SetImageType(append_image,TrueColorType);
@@ -528,7 +528,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
         Determine if the sequence of image has the identical colormap.
       */
       global_colormap=True;
-      for (next=image; next != (Image *) NULL; next=next->next)
+      for (next=image; next != (Image *) NULL; next=GetNextImage(next))
       {
         if ((next->storage_class == DirectClass) ||
             (next->colors != image->colors))
@@ -628,7 +628,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   if (image->next == (Image *) NULL)
     ThrowImageException(OptionWarning,"Unable to average image sequence",
       "image sequence required");
-  for (next=image; next != (Image *) NULL; next=next->next)
+  for (next=image; next != (Image *) NULL; next=GetNextImage(next))
   {
     if ((next->columns != image->columns) || (next->rows != image->rows))
       ThrowImageException(OptionWarning,"Unable to average image sequence",
@@ -657,7 +657,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
     Compute sum over each pixel color component.
   */
   number_scenes=0;
-  for (next=image; next != (Image *) NULL; next=next->next)
+  for (next=image; next != (Image *) NULL; next=GetNextImage(next))
   {
     i=0;
     for (y=0; y < (long) next->rows; y++)
@@ -2463,7 +2463,7 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,Image *image
   XGetResourceInfo(resource_database,client_name,&resource);
   *resource.image_info=(*image_info);
   resource.immutable=True;
-  for (next=image; next; next=next->next)
+  for (next=image; next; next=GetNextImage(next))
   {
     state=DefaultState;
     (void) XDisplayImage(display,&resource,&client_name,1,&next,&state);
@@ -2841,7 +2841,7 @@ MagickExport unsigned int GetNumberScenes(const Image *image)
     image=image->previous;
   next=image;
   for (number_scenes=0; next != (Image *) NULL; number_scenes++)
-    next=next->next;
+    next=GetNextImage(next);
   return(number_scenes);
 }
 
@@ -3168,7 +3168,7 @@ MagickExport Image **ListToGroupImage(const Image *image,
   assert(number_images != (unsigned long *) NULL);
   next=(Image *) image;
   for (i=0; next != (Image *) NULL; i++)
-    next=next->next;
+    next=GetNextImage(next);
   images=(Image **) AcquireMemory(i*sizeof(Image *));
   if (images == (Image **) NULL)
     MagickError(ResourceLimitWarning,"Unable to convert image list",
@@ -3181,7 +3181,7 @@ MagickExport Image **ListToGroupImage(const Image *image,
   for (i=0; next != (Image *) NULL; i++)
   {
     images[i]=next;
-    next=next->next;
+    next=GetNextImage(next);
   }
   return(images);
 }
