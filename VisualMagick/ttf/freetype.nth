@@ -805,7 +805,7 @@
                                        TT_F26Dot6   charHeight );
 
 #define TT_Set_Instance_PointSize( ins, ptsize )   \
-            TT_Set_Instance_CharSize( ins, ptsize*64 )
+            TT_Set_Instance_CharSize( ins, ptsize*64L )
 
   EXPORT_DEF
   TT_Error  TT_Set_Instance_PixelSizes( TT_Instance  instance,
@@ -869,6 +869,7 @@
 #define TTLOAD_SCALE_GLYPH  1
 #define TTLOAD_HINT_GLYPH   2
 #define TTLOAD_PEDANTIC     128
+#define TTLOAD_IGNORE_GLOBAL_ADVANCE_WIDTH  256
 
 #define TTLOAD_DEFAULT  (TTLOAD_SCALE_GLYPH | TTLOAD_HINT_GLYPH)
 
