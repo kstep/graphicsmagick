@@ -732,6 +732,18 @@ static void SVGStartElement(void *context,const xmlChar *name,
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"  SAX.startElement(%.1024s",(char *) name);
+  id=AllocateString("*");
+  if (attributes != (const xmlChar **) NULL)
+    for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
+    {
+      keyword=(const char *) attributes[i];
+      value=(const char *) attributes[i+1];
+      if (LocaleCompare(keyword,"id") == 0)
+        {
+          CloneString(&id,value);
+          break;
+        }
+    }
   switch (*name)
   {
     case 'C':
@@ -744,7 +756,17 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare((char *) name,"clipPath") == 0)
         {
-          (void) fprintf(svg_info->file,"push clip-path\n");
+          (void) fprintf(svg_info->file,"push clip-path %s\n",id);
+          break;
+        }
+      break;
+    }
+    case 'D':
+    case 'd':
+    {
+      if (LocaleCompare((char *) name,"defs") == 0)
+        {
+          (void) fprintf(svg_info->file,"push defs\n");
           break;
         }
       break;
@@ -849,7 +871,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
       "Memory allocation failed");
   svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
   color=AllocateString("none");
-  id=AllocateString("*");
   font_family=(char *) NULL;
   font_style=(char *) NULL;
   font_weight=(char *) NULL;
@@ -988,16 +1009,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"href") == 0)
             {
               CloneString(&svg_info->url,value);
-              break;
-            }
-          break;
-        }
-        case 'I':
-        case 'i':
-        {
-          if (LocaleCompare(keyword,"id") == 0)
-            {
-              CloneString(&id,value);
               break;
             }
           break;
@@ -1710,6 +1721,11 @@ static void SVGEndElement(void *context,const xmlChar *name)
     case 'D':
     case 'd':
     {
+      if (LocaleCompare((char *) name,"defs") == 0)
+        {
+          (void) fprintf(svg_info->file,"pop defs\n");
+          break;
+        }
       if (LocaleCompare((char *) name,"desc") == 0)
         {
           register char
@@ -2180,9 +2196,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     };
 
   char
-    buffer[MaxTextExtent],
     filename[MaxTextExtent],
-    geometry[MaxTextExtent];
+    geometry[MaxTextExtent],
+    message[MaxTextExtent];
 
   FILE
     *file;
@@ -2248,12 +2264,12 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   SAXHandler=(&SAXModules);
   svg_info.parser=xmlCreatePushParserCtxt(SAXHandler,&svg_info,(char *) NULL,0,
     image->filename);
-  while (ReadBlobString(image,buffer) != (char *) NULL)
+  while (ReadBlobString(image,message) != (char *) NULL)
   {
-    n=Extent(buffer);
+    n=Extent(message);
     if (n == 0)
       continue;
-    status=xmlParseChunk(svg_info.parser,buffer,n,False);
+    status=xmlParseChunk(svg_info.parser,message,n,False);
     if (status != 0)
       break;
     (void) xmlParseChunk(svg_info.parser," ",1,False);
@@ -2568,8 +2584,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     affine;
 
   char
-    buffer[MaxTextExtent],
     keyword[MaxTextExtent],
+    message[MaxTextExtent],
     *q,
     value[MaxTextExtent];
 
@@ -2613,9 +2629,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20000802//EN\"\n");
   (void) WriteBlobString(image,
     "  \"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd\">\n");
-  (void) FormatString(buffer,"<svg width=\"%u\" height=\"%u\">\n",
+  (void) FormatString(message,"<svg width=\"%u\" height=\"%u\">\n",
     image->columns,image->rows);
-  (void) WriteBlobString(image,buffer);
+  (void) WriteBlobString(image,message);
   attribute=GetImageAttribute(image,"[MVG]");
   if ((attribute == (ImageAttribute *) NULL) ||
       (attribute->value == (char *) NULL))
@@ -2697,8 +2713,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("angle",keyword) == 0)
           {
-            FormatString(buffer,"rotate(%g) ",strtod(q,&q));
-            WriteBlobString(image,buffer);
+            FormatString(message,"rotate(%g) ",strtod(q,&q));
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("arc",keyword) == 0)
@@ -2732,8 +2748,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
                 value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"clip-path:%.1024s;",value);
-            WriteBlobString(image,buffer);
+            FormatString(message,"clip-path:%.1024s;",value);
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("circle",keyword) == 0)
@@ -2757,8 +2773,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"text-decoration:%.1024s;",value);
-            WriteBlobString(image,buffer);
+            FormatString(message,"text-decoration:%.1024s;",value);
+            WriteBlobString(image,message);
             break;
           }
         status=False;
@@ -2787,8 +2803,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
                 value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"fill:%.1024s;",value);
-            WriteBlobString(image,buffer);
+            FormatString(message,"fill:%.1024s;",value);
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
@@ -2796,14 +2812,14 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"fill-rule:%.1024s;",value);
-            WriteBlobString(image,buffer);
+            FormatString(message,"fill-rule:%.1024s;",value);
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("fill-opacity",keyword) == 0)
           {
-            FormatString(buffer,"fill-opacity:%g;",strtod(q,&q)/100.0);
-            WriteBlobString(image,buffer);
+            FormatString(message,"fill-opacity:%g;",strtod(q,&q)/100.0);
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
@@ -2811,14 +2827,14 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"font-family:%.1024s;",value);
-            WriteBlobString(image,buffer);
+            FormatString(message,"font-family:%.1024s;",value);
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("font-size",keyword) == 0)
           {
-            FormatString(buffer,"font-size:%g;",strtod(q,&q));
-            WriteBlobString(image,buffer);
+            FormatString(message,"font-size:%g;",strtod(q,&q));
+            WriteBlobString(image,message);
             break;
           }
         status=False;
@@ -2884,8 +2900,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("opacity",keyword) == 0)
           {
-            FormatString(buffer,"opacity(%g) ",strtod(q,&q));
-            WriteBlobString(image,buffer);
+            FormatString(message,"opacity(%g) ",strtod(q,&q));
+            WriteBlobString(image,message);
             break;
           }
         status=False;
@@ -2920,7 +2936,15 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               value[x]=(*q++);
             value[x]='\0';
             if (LocaleCompare("clip-path",value) == 0)
-              break;
+              {
+                (void) WriteBlobString(image,"</clipPath>\n");
+                break;
+              }
+            if (LocaleCompare("defs",value) == 0)
+              {
+                (void) WriteBlobString(image,"</defs>\n");
+                break;
+              }
             if (LocaleCompare("graphic-context",value) == 0)
               {
                 n--;
@@ -2936,13 +2960,20 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            if (LocaleNCompare("clip-path-",value,10) == 0)
+            if (LocaleCompare("clip-path",value) == 0)
               {
                 while (isspace((int) (*q)) && (*q != '\0'))
                   q++;
                 for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
                   value[x]=(*q++);
                 value[x]='\0';
+                FormatString(message,"<clipPath id=\"%s\">\n",value);
+                (void) WriteBlobString(image,message);
+                break;
+              }
+            if (LocaleCompare("defs",value) == 0)
+              {
+                (void) WriteBlobString(image,"<defs>\n");
                 break;
               }
             if (LocaleCompare("graphic-context",value) == 0)
@@ -2973,8 +3004,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("rotate",keyword) == 0)
           {
-            FormatString(buffer,"rotate(%g) ",strtod(q,&q));
-            WriteBlobString(image,buffer);
+            FormatString(message,"rotate(%g) ",strtod(q,&q));
+            WriteBlobString(image,message);
             break;
           }
         status=False;
@@ -2989,20 +3020,20 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             if (*q == ',')
               q++;
             affine.sy=strtod(q,&q);
-            FormatString(buffer,"scale(%g,%g) ",affine.sx,affine.sy);
-            WriteBlobString(image,buffer);
+            FormatString(message,"scale(%g,%g) ",affine.sx,affine.sy);
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("skewX",keyword) == 0)
           {
-            FormatString(buffer,"skewX(%g) ",strtod(q,&q));
-            WriteBlobString(image,buffer);
+            FormatString(message,"skewX(%g) ",strtod(q,&q));
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("skewY",keyword) == 0)
           {
-            FormatString(buffer,"skewY(%g) ",strtod(q,&q));
-            WriteBlobString(image,buffer);
+            FormatString(message,"skewY(%g) ",strtod(q,&q));
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke",keyword) == 0)
@@ -3014,14 +3045,14 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
                 value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"stroke:%.1024s;",value);
-            WriteBlobString(image,buffer);
+            FormatString(message,"stroke:%.1024s;",value);
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-antialias",keyword) == 0)
           {
-            FormatString(buffer,"stroke-antialias:%g;",strtod(q,&q));
-            WriteBlobString(image,buffer);
+            FormatString(message,"stroke-antialias:%g;",strtod(q,&q));
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-dasharray",keyword) == 0)
@@ -3031,8 +3062,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 WriteBlobString(image,"stroke-dasharray:");
                 for (x=0; IsGeometry(q); x++)
                 {
-                  FormatString(buffer,"%g ",strtod(q,&q));
-                  WriteBlobString(image,buffer);
+                  FormatString(message,"%g ",strtod(q,&q));
+                  WriteBlobString(image,message);
                 }
                 WriteBlobString(image,";");
                 break;
@@ -3040,14 +3071,14 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"stroke-dasharray:%.1024s;",value);
-            WriteBlobString(image,buffer);
+            FormatString(message,"stroke-dasharray:%.1024s;",value);
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-dashoffset",keyword) == 0)
           {
-            FormatString(buffer,"stroke-dashoffset:%g;",strtod(q,&q));
-            WriteBlobString(image,buffer);
+            FormatString(message,"stroke-dashoffset:%g;",strtod(q,&q));
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-linecap",keyword) == 0)
@@ -3055,8 +3086,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"stroke-linecap:%.1024s;",value);
-            WriteBlobString(image,buffer);
+            FormatString(message,"stroke-linecap:%.1024s;",value);
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-linejoin",keyword) == 0)
@@ -3064,26 +3095,26 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"stroke-linejoin:%.1024s;",value);
-            WriteBlobString(image,buffer);
+            FormatString(message,"stroke-linejoin:%.1024s;",value);
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-miterlimit",keyword) == 0)
           {
-            FormatString(buffer,"stroke-miterlimit:%g;",strtod(q,&q));
-            WriteBlobString(image,buffer);
+            FormatString(message,"stroke-miterlimit:%g;",strtod(q,&q));
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-opacity",keyword) == 0)
           {
-            FormatString(buffer,"stroke-opacity:%g;",strtod(q,&q)/100.0);
-            WriteBlobString(image,buffer);
+            FormatString(message,"stroke-opacity:%g;",strtod(q,&q)/100.0);
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
           {
-            FormatString(buffer,"stroke-width:%g;",strtod(q,&q));
-            WriteBlobString(image,buffer);
+            FormatString(message,"stroke-width:%g;",strtod(q,&q));
+            WriteBlobString(image,message);
             continue;
           }
         status=False;
@@ -3099,8 +3130,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("text-antialias",keyword) == 0)
           {
-            FormatString(buffer,"text-antialias:%g;",strtod(q,&q));
-            WriteBlobString(image,buffer);
+            FormatString(message,"text-antialias:%g;",strtod(q,&q));
+            WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("translate",keyword) == 0)
@@ -3109,8 +3140,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             if (*q == ',')
               q++;
             affine.ty=strtod(q,&q);
-            FormatString(buffer,"translate(%g,%g) ",affine.tx,affine.ty);
-            WriteBlobString(image,buffer);
+            FormatString(message,"translate(%g,%g) ",affine.tx,affine.ty);
+            WriteBlobString(image,message);
             break;
           }
         status=False;
@@ -3213,11 +3244,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             status=False;
             break;
           }
-        (void) FormatString(buffer,
+        (void) FormatString(message,
           "  <line x1=\"%g\" y1=\"%g\" x2=\"%g\" y2=\"%g\"/>\n",
           primitive_info[j].point.x,primitive_info[j].point.y,
           primitive_info[j+1].point.x,primitive_info[j+1].point.y);
-        (void) WriteBlobString(image,buffer);
+        (void) WriteBlobString(image,message);
         break;
       }
       case RectanglePrimitive:
@@ -3227,12 +3258,12 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             status=False;
             break;
           }
-        (void) FormatString(buffer,
+        (void) FormatString(message,
           "  <rect x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\"/>\n",
           primitive_info[j].point.x,primitive_info[j].point.y,
           primitive_info[j+1].point.x-primitive_info[j].point.x,
           primitive_info[j+1].point.y-primitive_info[j].point.y);
-        (void) WriteBlobString(image,buffer);
+        (void) WriteBlobString(image,message);
         break;
       }
       case RoundRectanglePrimitive:
@@ -3242,13 +3273,13 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             status=False;
             break;
           }
-        (void) FormatString(buffer,"  <rect x=\"%g\" y=\"%g\" "
+        (void) FormatString(message,"  <rect x=\"%g\" y=\"%g\" "
           "width=\"%g\" height=\"%g\" rx=\"%g\" ry=\"%g\"/>\n",
           primitive_info[j].point.x,primitive_info[j].point.y,
           primitive_info[j+1].point.x-primitive_info[j].point.x,
           primitive_info[j+1].point.y-primitive_info[j].point.y,
           primitive_info[j+2].point.x,primitive_info[j+2].point.y);
-        (void) WriteBlobString(image,buffer);
+        (void) WriteBlobString(image,message);
         break;
       }
       case ArcPrimitive:
@@ -3267,11 +3298,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             status=False;
             break;
           }
-        (void) FormatString(buffer,
+        (void) FormatString(message,
           "  <ellipse cx=\"%g\" cy=\"%g\" rx=\"%g\" ry=\"%g\"/>\n",
           primitive_info[j].point.x,primitive_info[j].point.y,
           primitive_info[j+1].point.x,primitive_info[j+1].point.y);
-        (void) WriteBlobString(image,buffer);
+        (void) WriteBlobString(image,message);
         break;
       }
       case CirclePrimitive:
@@ -3287,10 +3318,10 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         alpha=primitive_info[j+1].point.x-primitive_info[j].point.x;
         beta=primitive_info[j+1].point.y-primitive_info[j].point.y;
-        (void) FormatString(buffer,"  <circle cx=\"%g\" cy=\"%g\" r=\"%g\"/>\n",
+        (void) FormatString(message,"  <circle cx=\"%g\" cy=\"%g\" r=\"%g\"/>\n",
           primitive_info[j].point.x,primitive_info[j].point.y,
           sqrt(alpha*alpha+beta*beta));
-        (void) WriteBlobString(image,buffer);
+        (void) WriteBlobString(image,message);
         break;
       }
       case PolylinePrimitive:
@@ -3300,20 +3331,20 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             status=False;
             break;
           }
-        (void) strcpy(buffer,"  <polyline points=\"");
-        (void) WriteBlobString(image,buffer);
-        length=Extent(buffer);
+        (void) strcpy(message,"  <polyline points=\"");
+        (void) WriteBlobString(image,message);
+        length=Extent(message);
         for ( ; j < i; j++)
         {
-          FormatString(buffer,"%g,%g ",primitive_info[j].point.x,
+          FormatString(message,"%g,%g ",primitive_info[j].point.x,
             primitive_info[j].point.y);
-          length+=Extent(buffer);
+          length+=Extent(message);
           if (length >= 80)
             {
               (void) WriteBlobString(image,"\n    ");
-              length=Extent(buffer)+5;
+              length=Extent(message)+5;
             }
-          (void) WriteBlobString(image,buffer);
+          (void) WriteBlobString(image,message);
         }
         (void) WriteBlobString(image,"\"/>\n");
         break;
@@ -3329,20 +3360,20 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         primitive_info[i].coordinates=0;
         primitive_info[j].coordinates++;
         i++;
-        (void) strcpy(buffer,"  <polygon points=\"");
-        (void) WriteBlobString(image,buffer);
-        length=Extent(buffer);
+        (void) strcpy(message,"  <polygon points=\"");
+        (void) WriteBlobString(image,message);
+        length=Extent(message);
         for ( ; j < i; j++)
         {
-          FormatString(buffer,"%g,%g ",primitive_info[j].point.x,
+          FormatString(message,"%g,%g ",primitive_info[j].point.x,
             primitive_info[j].point.y);
-          length+=Extent(buffer);
+          length+=Extent(message);
           if (length >= 80)
             {
               (void) WriteBlobString(image,"\n    ");
-              length=Extent(buffer)+5;
+              length=Extent(message)+5;
             }
-          (void) WriteBlobString(image,buffer);
+          (void) WriteBlobString(image,message);
         }
         (void) WriteBlobString(image,"\"/>\n");
         break;
@@ -3493,9 +3524,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             (void) strncpy(primitive_info[j].text,p,q-p+1);
             primitive_info[j].text[q-p]='\0';
           }
-        (void) FormatString(buffer,"  <text x=\"%g\" y=\"%g\">",
+        (void) FormatString(message,"  <text x=\"%g\" y=\"%g\">",
           primitive_info[j].point.x,primitive_info[j].point.y);
-        (void) WriteBlobString(image,buffer);
+        (void) WriteBlobString(image,message);
         for (p=primitive_info[j].text; *p != '\0'; p++)
           switch (*p)
           {
@@ -3545,12 +3576,12 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             (void) strncpy(primitive_info[j].text,p,q-p);
             primitive_info[j].text[q-p]='\0';
           }
-        (void) FormatString(buffer,"  <image x=\"%g\" y=\"%g\" "
+        (void) FormatString(message,"  <image x=\"%g\" y=\"%g\" "
           "width=\"%g\" height=\"%g\" xlink:href=\"%.1024s\"/>\n",
           primitive_info[j].point.x,primitive_info[j].point.y,
           primitive_info[j+1].point.x,primitive_info[j+1].point.y,
           primitive_info[j].text);
-        (void) WriteBlobString(image,buffer);
+        (void) WriteBlobString(image,message);
         break;
       }
     }
