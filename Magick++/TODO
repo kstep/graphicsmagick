@@ -2,6 +2,9 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+* Add Image constructor that takes only a Geometry argument in order
+  to support constructing an image with size, but without content.
+
 * Fix floodFillTexture() so that it preserves the current texture.
 
 * Fix documentation for drawing rounded rectangle.  Parameters

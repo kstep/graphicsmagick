@@ -1471,6 +1471,8 @@ AC_SUBST(LIBSTDC_LDFLAGS)
 want_magick_plus_plus="$with_magick_plus_plus"
 if test "$with_magick_plus_plus" = 'yes'
 then
+ OLIBS="$LIBS"
+ LIBS=''
  with_magick_plus_plus='no'
  AC_LANG_CPLUSPLUS
  AC_PROG_CXX
@@ -1506,6 +1508,7 @@ then
   with_magick_plus_plus='yes'
  fi
  AC_MSG_RESULT($with_magick_plus_plus)
+ LIBS="$OLIBS"
 fi
 AM_CONDITIONAL(WITH_MAGICK_PLUS_PLUS, test "$with_magick_plus_plus" != 'no')
 
