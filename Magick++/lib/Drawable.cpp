@@ -1162,7 +1162,7 @@ Magick::DrawableText::DrawableText ( const double x_, const double y_,
   : _x(x_),
     _y(y_),
     _text(text_),
-    _encoding()
+    _encoding(encoding_)
 {
 }
 Magick::DrawableText::DrawableText( const Magick::DrawableText& original_ )
