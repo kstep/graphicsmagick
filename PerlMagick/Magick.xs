@@ -6287,7 +6287,7 @@ Ping(ref,...)
           PUSHs(sv_2mortal(newSVpv(message,0)));
           FormatString(message,"%u",image->rows);
           PUSHs(sv_2mortal(newSVpv(message,0)));
-          FormatString(message,"%lu",image->filesize);
+          FormatString(message,"%lu",(unsigned long) image->filesize);
           PUSHs(sv_2mortal(newSVpv(message,0)));
           PUSHs(sv_2mortal(newSVpv(image->magick,0)));
           DestroyImage(image);
