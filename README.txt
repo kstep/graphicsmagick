@@ -383,17 +383,17 @@ UNIX/Cygwin/MinGW COMPILATION
   Building under MinGW & MSYS
 
     ImageMagick may be built using the free MinGW ("Minimalistic GNU for
-    Windows") package (available from http://www.mingw.org) which
-    consists of a GNU-based (e.g. gcc) toolset plus headers and
+    Windows") package version 1.1 (available from http://www.mingw.org)
+    which consists of a GNU-based (e.g. gcc) toolset plus headers and
     libraries required to build programs which are entirely based on
     Microsoft Windows DLLs. MSYS provides a Unix-like console shell
     window with sufficient functionality to run the ImageMagick
     configure script and execute make.
 
-    Unlike the Cygwin build which
-    creates programs based on a Unix-emulation DLL, and which uses
-    Unix-style paths to access Windows files, the MinGW build creates
-    native Windows applications similar to the Visual C++ build.
+    Unlike the Cygwin build which creates programs based on a
+    Unix-emulation DLL, and which uses Unix-style paths to access
+    Windows files, the MinGW build creates native Windows applications
+    similar to the Visual C++ build.
 
     Please note that since the MinGW build is very new, there may be
     some issues with Unix vs Windows paths in configure, and that only a

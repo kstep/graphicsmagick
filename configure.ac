@@ -286,11 +286,19 @@ AC_ARG_WITH(threads,
 	      [with_threads=$withval],
 	      [with_threads='yes'])
 
-# Disable support for full delegate paths
-AC_ARG_WITH(frozenpaths,
+# Disable/Enable support for full delegate paths
+if test "$native_win32_build" = 'yes'
+then
+  AC_ARG_WITH(frozenpaths,
+	      [  --with-frozenpaths      enable frozen delegate paths],
+	      [with_frozenpaths=$withval],
+	      [with_frozenpaths='no'])
+else
+  AC_ARG_WITH(frozenpaths,
 	      [  --without-frozenpaths   disable frozen delegate paths],
 	      [with_frozenpaths=$withval],
 	      [with_frozenpaths='yes'])
+fi
 
 # Enable build/install of Magick++
 AC_ARG_WITH(magick-plus-plus,

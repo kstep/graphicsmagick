@@ -15,6 +15,17 @@
 
 # serial 47 AC_PROG_LIBTOOL
 
+
+# AC_PROVIDE_IFELSE(MACRO-NAME, IF-PROVIDED, IF-NOT-PROVIDED)
+# -----------------------------------------------------------
+# If this macro is not defined by Autoconf, define it here.
+m4_ifdef([AC_PROVIDE_IFELSE],
+         [],
+         [m4_define([AC_PROVIDE_IFELSE],
+	         [m4_ifdef([AC_PROVIDE_$1],
+		           [$2], [$3])])])
+
+
 # AC_PROG_LIBTOOL
 # ---------------
 AC_DEFUN([AC_PROG_LIBTOOL],
@@ -239,15 +250,23 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 ])# _LT_AC_SYS_LIBPATH_AIX
 
 
+# _LT_AC_SHELL_INIT(ARG)
+# ----------------------
+AC_DEFUN([_LT_AC_SHELL_INIT],
+[ifdef([AC_DIVERSION_NOTICE],
+	     [AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)],
+	 [AC_DIVERT_PUSH(NOTICE)])
+$1
+AC_DIVERT_POP
+])# _LT_AC_SHELL_INIT
+
+
 # _LT_AC_PROG_ECHO_BACKSLASH
 # --------------------------
 # Add some code to the start of the generated configure script which
 # will find an echo command which doesn't interpret backslashes.
 AC_DEFUN([_LT_AC_PROG_ECHO_BACKSLASH],
-[ifdef([AC_DIVERSION_NOTICE],
-	     [AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)],
-	 [AC_DIVERT_PUSH(NOTICE)])
-
+[_LT_AC_SHELL_INIT([
 # Check that we are running under the correct shell.
 SHELL=${CONFIG_SHELL-/bin/sh}
 
@@ -395,8 +414,7 @@ if test "X$ECHO" = "X$CONFIG_SHELL [$]0 --fallback-echo"; then
 fi
 
 AC_SUBST(ECHO)
-AC_DIVERT_POP
-])# _LT_AC_PROG_ECHO_BACKSLASH
+])])# _LT_AC_PROG_ECHO_BACKSLASH
 
 
 # _LT_AC_LOCK
@@ -1432,13 +1450,9 @@ test "$dynamic_linker" = no && can_build_shared=no
 # ----------------
 AC_DEFUN([_LT_AC_TAGCONFIG],
 [AC_ARG_WITH([tags],
-    [AC_HELP_STRING([--with-tags=TAGS],
-	[include additional configurations @<:@CXX,GCJ@:>@])],
-    [tagnames="$withval"],
-    [tagnames="CXX,GCJ"
-    case $host_os in
-      mingw*|cygwin*) tagnames="$tagnames,RC" ;;
-    esac])
+    [AC_HELP_STRING([--with-tags@<:@=TAGS@:>@],
+        [include additional configurations @<:@automatic@:>@])],
+    [tagnames="$withval"])
 
 if test -f "$ltmain" && test -n "$tagnames"; then
   if test ! -f "${ofile}"; then
@@ -1965,9 +1979,9 @@ linux*)
 
 netbsd*)
   if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then
-    lt_cv_deplibs_check_method='match_pattern /lib[[^/\.]]+\.so\.[[0-9]]+\.[[0-9]]+$'
+    lt_cv_deplibs_check_method='match_pattern /lib[[^/]]+(\.so\.[[0-9]]+\.[[0-9]]+|_pic\.a)$'
   else
-    lt_cv_deplibs_check_method='match_pattern /lib[[^/\.]]+\.so$'
+    lt_cv_deplibs_check_method='match_pattern /lib[[^/]]+(\.so|_pic\.a)$'
   fi
   ;;
 
@@ -2162,14 +2176,6 @@ AC_DEFUN([AC_LIBLTDL_INSTALLABLE],
 ])# AC_LIBLTDL_INSTALLABLE
 
 
-# If this macro is not defined by Autoconf, define it here.
-ifdef([AC_PROVIDE_IFELSE],
-      [],
-      [define([AC_PROVIDE_IFELSE],
-	      [ifdef([AC_PROVIDE_$1],
-		     [$2], [$3])])])
-
-
 # AC_LIBTOOL_CXX
 # --------------
 # enable support for C++ libraries
@@ -2183,6 +2189,7 @@ AC_DEFUN([AC_LIBTOOL_CXX],
 AC_DEFUN([_LT_AC_LANG_CXX],
 [AC_REQUIRE([AC_PROG_CXX])
 AC_REQUIRE([AC_PROG_CXXCPP])
+_LT_AC_SHELL_INIT([tagnames=`echo "$tagnames,CXX" | sed 's/^,//'`])
 ])# _LT_AC_LANG_CXX
 
 
@@ -2203,6 +2210,7 @@ AC_DEFUN([_LT_AC_LANG_GCJ],
       [ifdef([AC_PROG_GCJ],[AC_REQUIRE([AC_PROG_GCJ])],
 	 [ifdef([A][M_PROG_GCJ],[AC_REQUIRE([A][M_PROG_GCJ])],
 	   [AC_REQUIRE([A][C_PROG_GCJ_OR_A][M_PROG_GCJ])])])])])])
+_LT_AC_SHELL_INIT([tagnames=`echo "$tagnames,GCJ" | sed 's/^,//'`])
 ])# _LT_AC_LANG_GCJ
 
 
@@ -2211,6 +2219,7 @@ AC_DEFUN([_LT_AC_LANG_GCJ],
 # enable support for Windows resource files
 AC_DEFUN([AC_LIBTOOL_RC],
 [AC_REQUIRE([AC_PROG_RC])
+_LT_AC_SHELL_INIT([tagnames=`echo "$tagnames,RC" | sed 's/^,//'`])
 ])# AC_LIBTOOL_RC
 
 
@@ -2562,8 +2571,7 @@ case $host_os in
     # _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1) is actually meaningless,
     # as there is no search path for DLLs.
     _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
-    _LT_AC_TAGVAR(allow_undefined_flag, $1)=unsupported
-    _LT_AC_TAGVAR(always_export_symbols, $1)=yes
+    _LT_AC_TAGVAR(always_export_symbols, $1)=no
 
     if $LD --help 2>&1 | egrep 'auto-import' > /dev/null; then
       _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
@@ -2776,7 +2784,15 @@ case $host_os in
     esac
     ;;
   netbsd*)
-    # NetBSD uses g++ - do we need to do anything?
+    if echo __ELF__ | $CC -E - | grep __ELF__ >/dev/null; then
+      _LT_AC_TAGVAR(archive_cmds, $1)='$LD -Bshareable  -o $lib $predep_objects $libobjs $deplibs $postdep_objects $linker_flags'
+      wlarc=
+      _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-R$libdir'
+      _LT_AC_TAGVAR(hardcode_direct, $1)=yes
+      _LT_AC_TAGVAR(hardcode_shlibpath_var, $1)=no
+    fi
+    # Workaround some broken pre-1.5 toolchains
+    output_verbose_link_cmd='$CC -shared $CFLAGS -v conftest.$objext 2>&1 | egrep conftest.$objext | sed -e "s:-lgcc -lc -lgcc::"'
     ;;
   osf3*)
     case $cc_basename in
@@ -3134,7 +3150,7 @@ if AC_TRY_EVAL(ac_compile); then
   done
 
   # Clean up.
-  rm -f a.out
+  rm -f a.out a.exe
 else
   echo "libtool.m4: error: problem compiling C++ test program"
 fi
@@ -4458,8 +4474,7 @@ EOF
       # _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1) is actually meaningless,
       # as there is no search path for DLLs.
       _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
-      _LT_AC_TAGVAR(allow_undefined_flag, $1)=unsupported
-      _LT_AC_TAGVAR(always_export_symbols, $1)=yes
+      _LT_AC_TAGVAR(always_export_symbols, $1)=no
 
       if $LD --help 2>&1 | egrep 'auto-import' > /dev/null; then
         _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
@@ -4518,7 +4533,7 @@ EOF
       # If the export-symbols file already is a .def file (1st line
       # is EXPORTS), use it as is.
       # If DATA tags from a recent dlltool are present, honour them!
-      _LT_AC_TAGVAR(archive_expsym_cmds, $1)='if test "x`head -1 $export_symbols`" = xEXPORTS; then
+      _LT_AC_TAGVAR(archive_expsym_cmds, $1)='if test "x`sed 1q $export_symbols`" = xEXPORTS; then
 	  cp $export_symbols $output_objdir/$soname-def;
 	else
 	  echo EXPORTS > $output_objdir/$soname-def;
@@ -4759,7 +4774,6 @@ EOF
       # hardcode_libdir_flag_spec is actually meaningless, as there is
       # no search path for DLLs.
       _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)=' '
-      _LT_AC_TAGVAR(allow_undefined_flag, $1)=unsupported
       # Tell ltmain to make .lib files, not .a files.
       libext=lib
       # FIXME: Setting linknames here is a bad hack.
@@ -5670,7 +5684,7 @@ AC_DEFUN([AC_LTDL_DLPREOPEN],
 [AC_REQUIRE([AC_LIBTOOL_SYS_GLOBAL_SYMBOL_PIPE])
 AC_CACHE_CHECK([whether libtool supports -dlopen/-dlpreopen],
   [libltdl_cv_preloaded_symbols],
-  [if test -n "$global_symbol_pipe"; then
+  [if test -n "$lt_cv_sys_global_symbol_pipe"; then
     libltdl_cv_preloaded_symbols=yes
   else
     libltdl_cv_preloaded_symbols=no
@@ -5700,18 +5714,18 @@ AC_CHECK_FUNC([shl_load],
     [AC_CHECK_LIB([dl], [dlopen],
 	  [AC_DEFINE([HAVE_LIBDL], [1],
 		     [Define if you have the libdl library or equivalent.])
-	  LIBADD_DL="-ldl"],
+	        LIBADD_DL="-ldl" libltdl_cv_lib_dl_dlopen="yes"],
       [AC_TRY_LINK([#if HAVE_DLFCN_H
 #  include <dlfcn.h>
 #endif
       ],
 	[dlopen(0, 0);],
 	    [AC_DEFINE([HAVE_LIBDL], [1],
-		       [Define if you have the libdl library or equivalent.])],
+		             [Define if you have the libdl library or equivalent.]) libltdl_cv_func_dlopen="yes"],
 	[AC_CHECK_LIB([svld], [dlopen],
 	      [AC_DEFINE([HAVE_LIBDL], [1],
 			 [Define if you have the libdl library or equivalent.])
-	      LIBADD_DL="-lsvld"],
+	            LIBADD_DL="-lsvld" libltdl_cv_func_dlopen="yes"],
 	  [AC_CHECK_LIB([dld], [dld_link],
 	        [AC_DEFINE([HAVE_DLD], [1],
 			   [Define if you have the GNU dld library.])
@@ -5723,7 +5737,7 @@ AC_CHECK_FUNC([shl_load],
   ])
 ])
 
-if test x"$ac_cv_func_dlopen" = xyes || test x"$ac_cv_lib_dl_dlopen" = xyes
+if test x"$libltdl_cv_func_dlopen" = xyes || test x"$libltdl_cv_lib_dl_dlopen" = xyes
 then
   lt_save_LIBS="$LIBS"
   LIBS="$LIBS $LIBADD_DL"
@@ -5749,7 +5763,7 @@ EOF
   if AC_TRY_EVAL(ac_compile); then
     # Now try to grab the symbols.
     ac_nlist=conftest.nm
-    if AC_TRY_EVAL(NM conftest.$ac_objext \| $global_symbol_pipe \> $ac_nlist) && test -s "$ac_nlist"; then
+    if AC_TRY_EVAL(NM conftest.$ac_objext \| $lt_cv_sys_global_symbol_pipe \> $ac_nlist) && test -s "$ac_nlist"; then
       # See whether the symbols have a leading underscore.
       if egrep '^. _nm_test_func' "$ac_nlist" >/dev/null; then
         ac_cv_sys_symbol_underscore=yes
@@ -5761,7 +5775,7 @@ EOF
         fi
       fi
     else
-      echo "configure: cannot run $global_symbol_pipe" >&AC_FD_CC
+      echo "configure: cannot run $lt_cv_sys_global_symbol_pipe" >&AC_FD_CC
     fi
   else
     echo "configure: failed program was:" >&AC_FD_CC
@@ -5777,8 +5791,8 @@ EOF
 AC_DEFUN([AC_LTDL_DLSYM_USCORE],
 [AC_REQUIRE([AC_LTDL_SYMBOL_USCORE])
 if test x"$ac_cv_sys_symbol_underscore" = xyes; then
-  if test x"$ac_cv_func_dlopen" = xyes ||
-     test x"$ac_cv_lib_dl_dlopen" = xyes ; then
+  if test x"$libltdl_cv_func_dlopen" = xyes ||
+     test x"$libltdl_cv_lib_dl_dlopen" = xyes ; then
 	AC_CACHE_CHECK([whether we have to add an underscore for dlsym],
 	  [libltdl_cv_need_uscore],
 	  [libltdl_cv_need_uscore=unknown

@@ -158,6 +158,9 @@ fi
 
 
 
+
+tagnames=`echo "$tagnames,CXX" | sed 's/^,//'`
+
 if expr a : '\(a\)' >/dev/null 2>&1; then
   as_expr=expr
 else
@@ -1014,7 +1017,8 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
-  --with-tags=TAGS        include additional configurations [CXX,GCJ]
+  --with-tags[=TAGS]
+                          include additional configurations [automatic]
 
 Some influential environment variables:
   CC          C compiler command
@@ -3454,9 +3458,9 @@ linux*)
 
 netbsd*)
   if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then
-    lt_cv_deplibs_check_method='match_pattern /lib[^/\.]+\.so\.[0-9]+\.[0-9]+$'
+    lt_cv_deplibs_check_method='match_pattern /lib[^/]+(\.so\.[0-9]+\.[0-9]+|_pic\.a)$'
   else
-    lt_cv_deplibs_check_method='match_pattern /lib[^/\.]+\.so$'
+    lt_cv_deplibs_check_method='match_pattern /lib[^/]+(\.so|_pic\.a)$'
   fi
   ;;
 
@@ -3573,7 +3577,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3576 "configure"' > conftest.$ac_ext
+  echo '#line 3580 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -5951,8 +5955,7 @@ EOF
       # _LT_AC_TAGVAR(hardcode_libdir_flag_spec, ) is actually meaningless,
       # as there is no search path for DLLs.
       hardcode_libdir_flag_spec='-L$libdir'
-      allow_undefined_flag=unsupported
-      always_export_symbols=yes
+      always_export_symbols=no
 
       if $LD --help 2>&1 | egrep 'auto-import' > /dev/null; then
         archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
@@ -6011,7 +6014,7 @@ EOF
       # If the export-symbols file already is a .def file (1st line
       # is EXPORTS), use it as is.
       # If DATA tags from a recent dlltool are present, honour them!
-      archive_expsym_cmds='if test "x`head -1 $export_symbols`" = xEXPORTS; then
+      archive_expsym_cmds='if test "x`sed 1q $export_symbols`" = xEXPORTS; then
 	  cp $export_symbols $output_objdir/$soname-def;
 	else
 	  echo EXPORTS > $output_objdir/$soname-def;
@@ -6336,7 +6339,6 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       # hardcode_libdir_flag_spec is actually meaningless, as there is
       # no search path for DLLs.
       hardcode_libdir_flag_spec=' '
-      allow_undefined_flag=unsupported
       # Tell ltmain to make .lib files, not .a files.
       libext=lib
       # FIXME: Setting linknames here is a bad hack.
@@ -7679,7 +7681,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7682 "configure"
+#line 7684 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7777,7 +7779,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7780 "configure"
+#line 7782 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -8546,11 +8548,6 @@ CC="$lt_save_CC"
 if test "${with_tags+set}" = set; then
   withval="$with_tags"
   tagnames="$withval"
-else
-  tagnames="CXX,GCJ"
-    case $host_os in
-      mingw*|cygwin*) tagnames="$tagnames,RC" ;;
-    esac
 fi;
 
 if test -f "$ltmain" && test -n "$tagnames"; then
@@ -8933,8 +8930,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
     # _LT_AC_TAGVAR(hardcode_libdir_flag_spec, CXX) is actually meaningless,
     # as there is no search path for DLLs.
     hardcode_libdir_flag_spec_CXX='-L$libdir'
-    allow_undefined_flag_CXX=unsupported
-    always_export_symbols_CXX=yes
+    always_export_symbols_CXX=no
 
     if $LD --help 2>&1 | egrep 'auto-import' > /dev/null; then
       archive_cmds_CXX='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
@@ -9147,7 +9143,15 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
     esac
     ;;
   netbsd*)
-    # NetBSD uses g++ - do we need to do anything?
+    if echo __ELF__ | $CC -E - | grep __ELF__ >/dev/null; then
+      archive_cmds_CXX='$LD -Bshareable  -o $lib $predep_objects $libobjs $deplibs $postdep_objects $linker_flags'
+      wlarc=
+      hardcode_libdir_flag_spec_CXX='-R$libdir'
+      hardcode_direct_CXX=yes
+      hardcode_shlibpath_var_CXX=no
+    fi
+    # Workaround some broken pre-1.5 toolchains
+    output_verbose_link_cmd='$CC -shared $CFLAGS -v conftest.$objext 2>&1 | egrep conftest.$objext | sed -e "s:-lgcc -lc -lgcc::"'
     ;;
   osf3*)
     case $cc_basename in
@@ -9510,7 +9514,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   done
 
   # Clean up.
-  rm -f a.out
+  rm -f a.out a.exe
 else
   echo "libtool.m4: error: problem compiling C++ test program"
 fi
@@ -10924,7 +10928,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10927 "configure"
+#line 10931 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11022,7 +11026,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 11025 "configure"
+#line 11029 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11956,8 +11960,7 @@ EOF
       # _LT_AC_TAGVAR(hardcode_libdir_flag_spec, GCJ) is actually meaningless,
       # as there is no search path for DLLs.
       hardcode_libdir_flag_spec_GCJ='-L$libdir'
-      allow_undefined_flag_GCJ=unsupported
-      always_export_symbols_GCJ=yes
+      always_export_symbols_GCJ=no
 
       if $LD --help 2>&1 | egrep 'auto-import' > /dev/null; then
         archive_cmds_GCJ='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
@@ -12016,7 +12019,7 @@ EOF
       # If the export-symbols file already is a .def file (1st line
       # is EXPORTS), use it as is.
       # If DATA tags from a recent dlltool are present, honour them!
-      archive_expsym_cmds_GCJ='if test "x`head -1 $export_symbols`" = xEXPORTS; then
+      archive_expsym_cmds_GCJ='if test "x`sed 1q $export_symbols`" = xEXPORTS; then
 	  cp $export_symbols $output_objdir/$soname-def;
 	else
 	  echo EXPORTS > $output_objdir/$soname-def;
@@ -12341,7 +12344,6 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       # hardcode_libdir_flag_spec is actually meaningless, as there is
       # no search path for DLLs.
       hardcode_libdir_flag_spec_GCJ=' '
-      allow_undefined_flag_GCJ=unsupported
       # Tell ltmain to make .lib files, not .a files.
       libext=lib
       # FIXME: Setting linknames here is a bad hack.
@@ -13684,7 +13686,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13687 "configure"
+#line 13689 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13782,7 +13784,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13785 "configure"
+#line 13787 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14722,6 +14724,8 @@ LIBTOOL='$(SHELL) $(top_builddir)/libtool'
 
 
 
+
+
 ac_header_dirent=no
 for ac_hdr in dirent.h sys/ndir.h sys/dir.h ndir.h; do
   as_ac_Header=`echo "ac_cv_header_dirent_$ac_hdr" | $as_tr_sh`
@@ -15134,7 +15138,7 @@ echo $ECHO_N "checking whether libtool supports -dlopen/-dlpreopen... $ECHO_C" >
 if test "${libltdl_cv_preloaded_symbols+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
-  if test -n "$global_symbol_pipe"; then
+  if test -n "$lt_cv_sys_global_symbol_pipe"; then
     libltdl_cv_preloaded_symbols=yes
   else
     libltdl_cv_preloaded_symbols=no
@@ -15355,7 +15359,7 @@ cat >>confdefs.h <<\_ACEOF
 #define HAVE_LIBDL 1
 _ACEOF
 
-	  LIBADD_DL="-ldl"
+	        LIBADD_DL="-ldl" libltdl_cv_lib_dl_dlopen="yes"
 else
   cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
@@ -15394,7 +15398,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
 cat >>confdefs.h <<\_ACEOF
 #define HAVE_LIBDL 1
 _ACEOF
-
+ libltdl_cv_func_dlopen="yes"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
@@ -15459,7 +15463,7 @@ cat >>confdefs.h <<\_ACEOF
 #define HAVE_LIBDL 1
 _ACEOF
 
-	      LIBADD_DL="-lsvld"
+	            LIBADD_DL="-lsvld" libltdl_cv_func_dlopen="yes"
 else
   echo "$as_me:$LINENO: checking for dld_link in -ldld" >&5
 echo $ECHO_N "checking for dld_link in -ldld... $ECHO_C" >&6
@@ -15542,7 +15546,7 @@ fi
 fi
 
 
-if test x"$ac_cv_func_dlopen" = xyes || test x"$ac_cv_lib_dl_dlopen" = xyes
+if test x"$libltdl_cv_func_dlopen" = xyes || test x"$libltdl_cv_lib_dl_dlopen" = xyes
 then
   lt_save_LIBS="$LIBS"
   LIBS="$LIBS $LIBADD_DL"
@@ -15649,8 +15653,8 @@ EOF
   (exit $ac_status); }; then
     # Now try to grab the symbols.
     ac_nlist=conftest.nm
-    if { (eval echo "$as_me:$LINENO: \"$NM conftest.$ac_objext \| $global_symbol_pipe \> $ac_nlist\"") >&5
-  (eval $NM conftest.$ac_objext \| $global_symbol_pipe \> $ac_nlist) 2>&5
+    if { (eval echo "$as_me:$LINENO: \"$NM conftest.$ac_objext \| $lt_cv_sys_global_symbol_pipe \> $ac_nlist\"") >&5
+  (eval $NM conftest.$ac_objext \| $lt_cv_sys_global_symbol_pipe \> $ac_nlist) 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } && test -s "$ac_nlist"; then
@@ -15665,7 +15669,7 @@ EOF
         fi
       fi
     else
-      echo "configure: cannot run $global_symbol_pipe" >&5
+      echo "configure: cannot run $lt_cv_sys_global_symbol_pipe" >&5
     fi
   else
     echo "configure: failed program was:" >&5
@@ -15679,8 +15683,8 @@ echo "${ECHO_T}$ac_cv_sys_symbol_underscore" >&6
 
 
 if test x"$ac_cv_sys_symbol_underscore" = xyes; then
-  if test x"$ac_cv_func_dlopen" = xyes ||
-     test x"$ac_cv_lib_dl_dlopen" = xyes ; then
+  if test x"$libltdl_cv_func_dlopen" = xyes ||
+     test x"$libltdl_cv_lib_dl_dlopen" = xyes ; then
 	echo "$as_me:$LINENO: checking whether we have to add an underscore for dlsym" >&5
 echo $ECHO_N "checking whether we have to add an underscore for dlsym... $ECHO_C" >&6
 if test "${libltdl_cv_need_uscore+set}" = set; then
@@ -15695,7 +15699,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 15698 "configure"
+#line 15702 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H

@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4e
-TIMESTAMP=" (1.1104 2002/05/02 20:38:11)"
+TIMESTAMP=" (1.1115 2002/06/01 14:54:51)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -2174,6 +2174,9 @@ EOF
 	    case $hardcode_action in
 	    immediate | unsupported)
 	      if test "$hardcode_direct" = no; then
+		case $host in
+		  *-*-sco3.2v5* ) add_dir="-L$dir" ;;
+		esac
 		add="$dir/$linklib"
 	      elif test "$hardcode_minus_L" = no; then
 		case $host in
@@ -3812,7 +3815,13 @@ extern \"C\" {
 	    fi
 
 	    # Try sorting and uniquifying the output.
-	    if grep -v "^: " < "$nlist" | sort +2 | uniq > "$nlist"S; then
+	    if grep -v "^: " < "$nlist" |
+		if sort -k 3 </dev/null >/dev/null 2>&1; then
+		  sort -k 3
+		else
+		  sort +2
+		fi |
+		uniq > "$nlist"S; then
 	      :
 	    else
 	      grep -v "^: " < "$nlist" > "$nlist"S
@@ -4326,6 +4335,20 @@ fi\
 	  objlist=
 	  concat_cmds=
 	  save_oldobjs=$oldobjs
+	  # GNU ar 2.10+ was changed to match POSIX; thus no paths are
+	  # encoded into archives.  This makes 'ar r' malfunction in
+	  # this piecewise linking case whenever conflicting object
+	  # names appear in distinct ar calls; check, warn and compensate.
+	    if (for obj in $save_oldobjs
+	    do
+	      $echo "X$obj" | $Xsed -e 's%^.*/%%'
+	    done | sort | sort -uc >/dev/null 2>&1); then
+	    :
+	  else
+	    $echo "$modename: warning: object name conflicts; overriding AR_FLAGS to 'cq'" 1>&2
+	    $echo "$modename: warning: to ensure that POSIX-compatible ar will work" 1>&2
+	    AR_FLAGS=cq
+	  fi
 	  for obj in $save_oldobjs
 	  do
 	    oldobjs="$objlist $obj"

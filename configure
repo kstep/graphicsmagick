@@ -156,6 +156,9 @@ fi
 
 
 
+
+tagnames=`echo "$tagnames,CXX" | sed 's/^,//'`
+
 if expr a : '\(a\)' >/dev/null 2>&1; then
   as_expr=expr
 else
@@ -1026,10 +1029,12 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
-  --with-tags=TAGS        include additional configurations [CXX,GCJ]
+  --with-tags[=TAGS]
+                          include additional configurations [automatic]
   --with-modules          enable support for dynamically loadable modules
   --with-cache            set pixel cache threshhold (default available memory)
   --without-threads       disable threads support
+  --with-frozenpaths      enable frozen delegate paths
   --without-frozenpaths   disable frozen delegate paths
   --without-magick-plus-plus disable build/install of Magick++
   --without-perl          disable build/install of PerlMagick
@@ -3641,9 +3646,9 @@ linux*)
 
 netbsd*)
   if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then
-    lt_cv_deplibs_check_method='match_pattern /lib[^/\.]+\.so\.[0-9]+\.[0-9]+$'
+    lt_cv_deplibs_check_method='match_pattern /lib[^/]+(\.so\.[0-9]+\.[0-9]+|_pic\.a)$'
   else
-    lt_cv_deplibs_check_method='match_pattern /lib[^/\.]+\.so$'
+    lt_cv_deplibs_check_method='match_pattern /lib[^/]+(\.so|_pic\.a)$'
   fi
   ;;
 
@@ -3759,7 +3764,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3762 "configure"' > conftest.$ac_ext
+  echo '#line 3767 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -5937,8 +5942,7 @@ EOF
       # _LT_AC_TAGVAR(hardcode_libdir_flag_spec, ) is actually meaningless,
       # as there is no search path for DLLs.
       hardcode_libdir_flag_spec='-L$libdir'
-      allow_undefined_flag=unsupported
-      always_export_symbols=yes
+      always_export_symbols=no
 
       if $LD --help 2>&1 | egrep 'auto-import' > /dev/null; then
         archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
@@ -6322,7 +6326,6 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       # hardcode_libdir_flag_spec is actually meaningless, as there is
       # no search path for DLLs.
       hardcode_libdir_flag_spec=' '
-      allow_undefined_flag=unsupported
       # Tell ltmain to make .lib files, not .a files.
       libext=lib
       # FIXME: Setting linknames here is a bad hack.
@@ -7665,7 +7668,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7668 "configure"
+#line 7671 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7763,7 +7766,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7766 "configure"
+#line 7769 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -8532,11 +8535,6 @@ CC="$lt_save_CC"
 if test "${with_tags+set}" = set; then
   withval="$with_tags"
   tagnames="$withval"
-else
-  tagnames="CXX,GCJ"
-    case $host_os in
-      mingw*|cygwin*) tagnames="$tagnames,RC" ;;
-    esac
 fi;
 
 if test -f "$ltmain" && test -n "$tagnames"; then
@@ -8919,8 +8917,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
     # _LT_AC_TAGVAR(hardcode_libdir_flag_spec, CXX) is actually meaningless,
     # as there is no search path for DLLs.
     hardcode_libdir_flag_spec_CXX='-L$libdir'
-    allow_undefined_flag_CXX=unsupported
-    always_export_symbols_CXX=yes
+    always_export_symbols_CXX=no
 
     if $LD --help 2>&1 | egrep 'auto-import' > /dev/null; then
       archive_cmds_CXX='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
@@ -9133,7 +9130,15 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
     esac
     ;;
   netbsd*)
-    # NetBSD uses g++ - do we need to do anything?
+    if echo __ELF__ | $CC -E - | grep __ELF__ >/dev/null; then
+      archive_cmds_CXX='$LD -Bshareable  -o $lib $predep_objects $libobjs $deplibs $postdep_objects $linker_flags'
+      wlarc=
+      hardcode_libdir_flag_spec_CXX='-R$libdir'
+      hardcode_direct_CXX=yes
+      hardcode_shlibpath_var_CXX=no
+    fi
+    # Workaround some broken pre-1.5 toolchains
+    output_verbose_link_cmd='$CC -shared $CFLAGS -v conftest.$objext 2>&1 | egrep conftest.$objext | sed -e "s:-lgcc -lc -lgcc::"'
     ;;
   osf3*)
     case $cc_basename in
@@ -9496,7 +9501,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   done
 
   # Clean up.
-  rm -f a.out
+  rm -f a.out a.exe
 else
   echo "libtool.m4: error: problem compiling C++ test program"
 fi
@@ -10910,7 +10915,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10913 "configure"
+#line 10918 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11008,7 +11013,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 11011 "configure"
+#line 11016 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11942,8 +11947,7 @@ EOF
       # _LT_AC_TAGVAR(hardcode_libdir_flag_spec, GCJ) is actually meaningless,
       # as there is no search path for DLLs.
       hardcode_libdir_flag_spec_GCJ='-L$libdir'
-      allow_undefined_flag_GCJ=unsupported
-      always_export_symbols_GCJ=yes
+      always_export_symbols_GCJ=no
 
       if $LD --help 2>&1 | egrep 'auto-import' > /dev/null; then
         archive_cmds_GCJ='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
@@ -12327,7 +12331,6 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       # hardcode_libdir_flag_spec is actually meaningless, as there is
       # no search path for DLLs.
       hardcode_libdir_flag_spec_GCJ=' '
-      allow_undefined_flag_GCJ=unsupported
       # Tell ltmain to make .lib files, not .a files.
       libext=lib
       # FIXME: Setting linknames here is a bad hack.
@@ -13670,7 +13673,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13673 "configure"
+#line 13676 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13768,7 +13771,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13771 "configure"
+#line 13774 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14703,6 +14706,8 @@ LIBTOOL='$(SHELL) $(top_builddir)/libtool'
 
 
 
+
+
 # Check to see if building shared libraries
 libtool_build_shared_libs='no'
 if ./libtool --config | grep 'build_libtool_libs=yes' > /dev/null
@@ -14951,7 +14956,18 @@ else
   with_threads='yes'
 fi;
 
-# Disable support for full delegate paths
+# Disable/Enable support for full delegate paths
+if test "$native_win32_build" = 'yes'
+then
+
+# Check whether --with-frozenpaths or --without-frozenpaths was given.
+if test "${with_frozenpaths+set}" = set; then
+  withval="$with_frozenpaths"
+  with_frozenpaths=$withval
+else
+  with_frozenpaths='no'
+fi;
+else
 
 # Check whether --with-frozenpaths or --without-frozenpaths was given.
 if test "${with_frozenpaths+set}" = set; then
@@ -14960,6 +14976,7 @@ if test "${with_frozenpaths+set}" = set; then
 else
   with_frozenpaths='yes'
 fi;
+fi
 
 # Enable build/install of Magick++
 
