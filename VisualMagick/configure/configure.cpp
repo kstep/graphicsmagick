@@ -942,6 +942,11 @@ void CConfigureApp::process_module(ofstream &dsw,
   {
 		includes_list.push_back("..\\..\\zlib");
   }
+  if ((name.compare("pdf") == 0) || (name.compare("ps2") == 0) ||
+      (name.compare("ps3") == 0))
+  {
+		includes_list.push_back("..\\..\\tiff\\libtiff");
+  }
   if (name.compare("miff") == 0)
   {
 		includes_list.push_back("..\\..\\zlib");
@@ -1104,6 +1109,14 @@ void CConfigureApp::process_module(ofstream &dsw,
         {
           if (useX11Stubs)
 		        add_project_dependency(dsw, "CORE_xlib");
+        }
+        if ((name.compare("pdf") == 0) || (name.compare("ps2") == 0) ||
+            (name.compare("ps3") == 0))
+        {
+	        add_project_dependency(dsw, "CORE_tiff");
+	        add_project_dependency(dsw, "CORE_jpeg");
+	        add_project_dependency(dsw, "CORE_png");
+	        add_project_dependency(dsw, "CORE_zlib");
         }
         if (name.compare("miff") == 0)
         {
