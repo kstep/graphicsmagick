@@ -282,8 +282,8 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         bounds.x1=x;
         bounds.y1=y;
-        bounds.x2=x+width-1;
-        bounds.y2=y+(height+text_size)-1;
+        bounds.x2=x+width;
+        bounds.y2=y+(height+text_size);
         if (image_info->adjoin && (image->next != (Image *) NULL))
           (void) strcpy(buffer,"%%BoundingBox: (atend)\n");
         else
@@ -306,7 +306,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"%%%%Page:  1 %u\n",page++);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"%%%%PageBoundingBox: %d %d %d %d\n",x,y,
-      x+(int) width-1,y+(int) (height+text_size)-1);
+      x+(int) width,y+(int) (height+text_size));
     (void) WriteBlobString(image,buffer);
     if (x < bounds.x1)
       bounds.x1=x;
