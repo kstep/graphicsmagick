@@ -35,11 +35,11 @@ extern "C" {
 #if !defined(vms) && !defined(macintosh)
 #  include <sys/types.h>
 #  include <sys/stat.h>
-#  include "magick/config.h"
+#  include "magick/api.h"
 #else
 #  include <types.h>
 #  include <stat.h>
-#  include "config.h"
+#  include "api.h"
 #endif
 
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
@@ -70,12 +70,6 @@ extern "C" {
 #endif
 #undef index
 #undef pipe
-
-#if !defined(macintosh)
-#  include "magick/api.h"
-#else
-#  include "api.h"
-#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
