@@ -1020,7 +1020,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   affine.xy=(FT_Fixed) (-65536.0*draw_info->affine.ry);
   affine.yy=(FT_Fixed) (65536.0*draw_info->affine.sy);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  QueryColorDatabase("none",&clone_info->fill);
+  QueryColorDatabase("#000000ff",&clone_info->fill);
   CloneString(&clone_info->primitive,"");
   for (i=0; i < length; i++)
   {
@@ -1265,8 +1265,8 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       resource_info.close_server=False;
       resource_info.colormap=PrivateColormap;
       resource_info.font=AllocateString(draw_info->font);
-      resource_info.background_color=AllocateString("white");
-      resource_info.foreground_color=AllocateString("black");
+      resource_info.background_color=AllocateString("#ffffff");
+      resource_info.foreground_color=AllocateString("#000000");
       map_info=XAllocStandardColormap();
       if (map_info == (XStandardColormap *) NULL)
         ThrowBinaryException(ResourceLimitWarning,"Unable to allocate colormap",

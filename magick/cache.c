@@ -1935,12 +1935,15 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
   if ((image->page.width != 0) && (image->page.height != 0))
     (void) fprintf(file,"page=%ux%u%+d%+d\n",image->page.width,
       image->page.height,image->page.x,image->page.y);
-  (void) QueryColorname(image,&image->background_color,AllCompliance,color);
-  (void) fprintf(file,"background-color=%.1024s  ",color);
-  (void) QueryColorname(image,&image->border_color,AllCompliance,color);
-  (void) fprintf(file,"border-color=%.1024s  ",color);
-  (void) QueryColorname(image,&image->matte_color,AllCompliance,color);
-  (void) fprintf(file,"matte-color=%.1024s\n",color);
+  (void) fprintf(file,"background-color=rgba(%u,%u,%u,%u)  ",
+    image->background_color.red,image->background_color.green,
+    image->background_color.blue,image->background_color.opacity);
+  (void) fprintf(file,"border-color=rgba(%u,%u,%u,%u)  ",
+    image->border_color.red,image->border_color.green,
+    image->border_color.blue,image->border_color.opacity);
+  (void) fprintf(file,"matte-color=rgba(%u,%u,%u,%u)  ",
+    image->matte_color.red,image->matte_color.green,
+    image->matte_color.blue,image->matte_color.opacity);
   if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
     (void) fprintf(file,"scene=%u  iterations=%u  delay=%u  Dispose=%u\n",
       image->scene,image->iterations,image->delay,image->dispose);

@@ -225,7 +225,7 @@ print("X Windows system pixmap file (color) ...\n");
 testReadWrite( 'XPM:input.xpm',
                'XPM:output.xpm',
                q//,
-               '45e5c63ac641eda9bedd4f42a7f6b4cd');
+               'e7361fbfc179805b8f240b88c5e9c4c8');
 
 
 print("X Windows system window dump file (color) ...\n");
@@ -244,7 +244,7 @@ testReadWriteSized( 'CMYK:input_70x46.cmyk',
 		    8,
 		    q//,
 		    'eb059e77f4e55a08861e2ae8a13226c4',
-                    'ff1c14a9fa2866c8dfe19d2c13427507' );
+                    '5a3260bf305600b1a693906fec1cac63' );
 
 
 print("GRAY format ...\n");
