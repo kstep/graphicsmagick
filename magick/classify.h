@@ -329,7 +329,7 @@ typedef enum
   CoderEvent = 0x0008,
   X11Event = 0x0010,
   BlobEvent = 0x0020,
-  AllEvents = 0xFFFF,
+  AllEvents = 0xFFFF
 } LogEventType;
 
 typedef enum
