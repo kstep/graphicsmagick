@@ -2427,16 +2427,7 @@ MagickExport void TemporaryFilename(char *filename)
 {
   assert(filename != (char *) NULL);
   (void) strcpy(filename,"magickXXXXXX");
-#if defined(HAVE_MKSTEMP)
-  {
-    int
-      file;
-
-    file=mkstemp(filename);
-    if (file != -1)
-      close(file);
-  }
-#elif !defined(vms) && !defined(macintosh)
+#if !defined(vms) && !defined(macintosh)
   {
     char
       *name;
