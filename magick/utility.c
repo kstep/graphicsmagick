@@ -307,7 +307,7 @@ MagickExport void ExpandFilename(char *filename)
       /*
         Substitute ~ with home directory from password file.
       */
-      (void) strncpy(username,filename+1,MaxTextExtent-1);
+      (void) strncpy(username,filename+1,MaxTextExtent-2);
       p=strchr(username,'/');
       if (p != (char *) NULL)
         *p='\0';

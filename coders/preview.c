@@ -518,15 +518,12 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         status=WriteImage(clone_info,preview_image);
         if (status != False)
           {
-            ExceptionInfo
-              error;
-
             Image
               *quality_image;
 
             (void) strncpy(clone_info->filename,preview_image->filename,
               MaxTextExtent-1);
-            quality_image=ReadImage(clone_info,&error);
+            quality_image=ReadImage(clone_info,&image->exception);
             (void) remove(preview_image->filename);
             if (quality_image != (Image *) NULL)
               {
