@@ -251,9 +251,9 @@ int main(int argc,char **argv)
     if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
       continue;
     if (LocaleCompare("help",option+1) == 0)
-      ConvertUsage();
+      MogrifyUsage();
     if (LocaleCompare("?",option+1) == 0)
-      ConvertUsage();
+      MogrifyUsage();
   }
   InitializeMagick(*argv);
   status=ExpandFilenames(&argc,&argv);
