@@ -1,7 +1,7 @@
 2002-06-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
   * magick/nt.c (readdir): Make readdir re-entrant for each instance
-  of DIR.  This should improve thread safety.
+    of DIR.  This should improve thread safety.
   * ltdl/ltdl.c : Support building as DLL under Win32.
 
 2002-06-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
