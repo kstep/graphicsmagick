@@ -678,17 +678,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     if ((i != 2) && (i != 13) && (i != 14))
       jpeg_set_marker_processor(&jpeg_info,JPEG_APP0+i,ReadGenericProfile);
   i=jpeg_read_header(&jpeg_info,True);
-  if (logging)
-    {
-      if (jpeg_info.out_color_space == JCS_CMYK)
-        LogMagickEvent(CoderEvent,"   Colorspace is CMYK");
-      if (jpeg_info.out_color_space == JCS_GRAYSCALE)
-        LogMagickEvent(CoderEvent,"   Colorspace is GRAYSCALE");
-      if (jpeg_info.out_color_space == JCS_RGB)
-        LogMagickEvent(CoderEvent,"   Colorspace is RGB");
-    }
   if (jpeg_info.out_color_space == JCS_CMYK)
-    image->colorspace=CMYKColorspace;
+      image->colorspace=CMYKColorspace;
   if (jpeg_info.saw_JFIF_marker)
     {
       if ((jpeg_info.X_density != 1) && (jpeg_info.Y_density != 1))
@@ -750,7 +741,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image->rows=jpeg_info.output_height;
   if (logging)
     {
-      LogMagickEvent(CoderEvent,"   Interlace=%d",(int) image->interlace);
+      if (image->interlace == jpeg_info.progressive_mode)
+        LogMagickEvent(CoderEvent,"   Reading progressive JPEG");
+      else
+        LogMagickEvent(CoderEvent,"   Reading nonprogressive JPEG");
       LogMagickEvent(CoderEvent,"   Data precision=%d",
         (int) jpeg_info.data_precision);
       LogMagickEvent(CoderEvent,"   Output_width=%d",
@@ -874,6 +868,62 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
                  }
              }
            }
+      }
+      switch (jpeg_info.out_color_space)
+      {
+        case JCS_CMYK:
+        {
+          LogMagickEvent(CoderEvent,"   Colorspace is CMYK");
+          LogMagickEvent(CoderEvent,
+            "   Sampling factors=(%d,%d),(%d,%d),(%d,%d),(%d,%d)",
+            jpeg_info.comp_info[0].h_samp_factor,
+            jpeg_info.comp_info[0].v_samp_factor,
+            jpeg_info.comp_info[1].h_samp_factor,
+            jpeg_info.comp_info[1].v_samp_factor,
+            jpeg_info.comp_info[2].h_samp_factor,
+            jpeg_info.comp_info[2].v_samp_factor,
+            jpeg_info.comp_info[3].h_samp_factor,
+            jpeg_info.comp_info[3].v_samp_factor);
+            break;
+        }
+        case JCS_GRAYSCALE:
+        {
+          LogMagickEvent(CoderEvent,"   Colorspace is GRAYSCALE");
+          LogMagickEvent(CoderEvent,
+            "   Sampling factors=(%d,%d)",
+            jpeg_info.comp_info[0].h_samp_factor,
+            jpeg_info.comp_info[0].v_samp_factor);
+            break;
+        }
+        case JCS_RGB:
+        {
+          LogMagickEvent(CoderEvent,"   Colorspace is RGB");
+          LogMagickEvent(CoderEvent,
+            "   Sampling factors=(%d,%d),(%d,%d),(%d,%d)",
+            jpeg_info.comp_info[0].h_samp_factor,
+            jpeg_info.comp_info[0].v_samp_factor,
+            jpeg_info.comp_info[1].h_samp_factor,
+            jpeg_info.comp_info[1].v_samp_factor,
+            jpeg_info.comp_info[2].h_samp_factor,
+            jpeg_info.comp_info[2].v_samp_factor);
+            break;
+        }
+        default:
+        {
+          LogMagickEvent(CoderEvent,"   Colorspace is %d",
+            jpeg_info.out_color_space);
+          LogMagickEvent(CoderEvent,
+            "   Sampling factors=(%d,%d),(%d,%d),(%d,%d),(%d,%d)",
+            jpeg_info.comp_info[0].h_samp_factor,
+            jpeg_info.comp_info[0].v_samp_factor,
+            jpeg_info.comp_info[1].h_samp_factor,
+            jpeg_info.comp_info[1].v_samp_factor,
+            jpeg_info.comp_info[2].h_samp_factor,
+            jpeg_info.comp_info[2].v_samp_factor,
+            jpeg_info.comp_info[3].h_samp_factor,
+            jpeg_info.comp_info[3].v_samp_factor);
+            break;
+        }
       }
     }
   image->depth=jpeg_info.data_precision <= 8 ? 8 : 16;
@@ -1333,45 +1383,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_info.image_height=(unsigned int) image->rows;
   jpeg_info.input_components=3;
   jpeg_info.data_precision=(int) Min(image->depth,BITS_IN_JSAMPLE);
-  if (logging)
-    {
-      LogMagickEvent(CoderEvent,"   JPEG data_Precision=%d",
-        (int) jpeg_info.data_precision);
-      switch (image_info->colorspace)
-      {
-        case CMYKColorspace:
-        {
-          LogMagickEvent(CoderEvent,"   image_info->colorspace=CMYK");
-          break;
-        }
-        case YCbCrColorspace:
-        {
-          LogMagickEvent(CoderEvent,"   image_info->colorspace=YCbCr");
-          break;
-        }
-        default:
-          break;
-      }
-      switch (image->colorspace)
-      {
-        case CMYKColorspace:
-        {
-          LogMagickEvent(CoderEvent,"   image->colorspace=CMYK");
-          break;
-        }
-        case YCbCrColorspace:
-        {
-          LogMagickEvent(CoderEvent,"   image->colorspace=YCbCr");
-          break;
-        }
-        default:
-        {
-          LogMagickEvent(CoderEvent,
-            "   Transforming image->colorspace=%d to RGB",image->colorspace);
-          break;
-        }
-      }
-    }
+
   jpeg_info.in_color_space=JCS_RGB;
   switch (image_info->colorspace)
   {
@@ -1447,11 +1459,16 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   if (image_info->interlace != NoInterlace)
     jpeg_simple_progression(&jpeg_info);
   if (logging)
-    if (image_info->interlace != NoInterlace)
-       LogMagickEvent(CoderEvent,"   Writing progressive JPEG");
+    {
+      if (image_info->interlace != NoInterlace)
+        LogMagickEvent(CoderEvent,"   Writing progressive JPEG");
+      else
+        LogMagickEvent(CoderEvent,"   Writing nonprogressive JPEG");
+    }
+#else
+  if (logging)
+    LogMagickEvent(CoderEvent,"   Writing nonprogressive JPEG");
 #endif
-    if (image_info->interlace == NoInterlace)
-       LogMagickEvent(CoderEvent,"   Writing nonprogressive JPEG");
   if ((image->compression == LosslessJPEGCompression) ||
       (image_info->quality > 100))
     {
@@ -1511,14 +1528,96 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         jpeg_info.comp_info[i].h_samp_factor=(int) horizontal_factor;
         jpeg_info.comp_info[i].v_samp_factor=(int) vertical_factor;
       }
-      if (logging)
-        {
-          LogMagickEvent(CoderEvent,"   quality=%d",(int) image_info->quality);
-          LogMagickEvent(CoderEvent,"   sampling_factors=%dx%d",
-            (int) horizontal_factor,(int) vertical_factor);
-        }
     }
   jpeg_start_compress(&jpeg_info,True);
+  if (logging)
+    {
+      LogMagickEvent(CoderEvent,"   JPEG data_Precision=%d",
+        (int) jpeg_info.data_precision);
+      switch (image_info->colorspace)
+      {
+        case CMYKColorspace:
+        {
+          LogMagickEvent(CoderEvent,"   image_info->colorspace=CMYK");
+          break;
+        }
+        case YCbCrColorspace:
+        {
+          LogMagickEvent(CoderEvent,"   image_info->colorspace=YCbCr");
+          break;
+        }
+          default:
+          break;
+      }
+      switch (image->colorspace)
+      {
+        case CMYKColorspace:
+        {
+          LogMagickEvent(CoderEvent,"   Image colorspace is CMYK");
+          LogMagickEvent(CoderEvent,
+            "   Sampling factors=(%d,%d),(%d,%d),(%d,%d),(%d,%d)",
+            jpeg_info.comp_info[0].h_samp_factor,
+            jpeg_info.comp_info[0].v_samp_factor,
+            jpeg_info.comp_info[1].h_samp_factor,
+            jpeg_info.comp_info[1].v_samp_factor,
+            jpeg_info.comp_info[2].h_samp_factor,
+            jpeg_info.comp_info[2].v_samp_factor,
+            jpeg_info.comp_info[3].h_samp_factor,
+            jpeg_info.comp_info[3].v_samp_factor);
+          break;
+        }
+        case GRAYColorspace:
+        {
+          LogMagickEvent(CoderEvent,"   Image colorspace is GRAY");
+          LogMagickEvent(CoderEvent,
+            "   Sampling factors=(%d,%d)",
+            jpeg_info.comp_info[0].h_samp_factor,
+            jpeg_info.comp_info[0].v_samp_factor);
+          break;
+        }
+        case  RGBColorspace:
+        {
+          LogMagickEvent(CoderEvent,"   Image colorspace is RGB");
+          LogMagickEvent(CoderEvent,
+            "   Sampling factors=(%d,%d),(%d,%d),(%d,%d),(%d,%d)",
+            jpeg_info.comp_info[0].h_samp_factor,
+            jpeg_info.comp_info[0].v_samp_factor,
+            jpeg_info.comp_info[1].h_samp_factor,
+            jpeg_info.comp_info[1].v_samp_factor,
+            jpeg_info.comp_info[2].h_samp_factor,
+            jpeg_info.comp_info[2].v_samp_factor);
+          break;
+        }
+        case YCbCrColorspace:
+        {
+          LogMagickEvent(CoderEvent,"   Image colorspace is YCbCr");
+          LogMagickEvent(CoderEvent,
+            "   Sampling factors=(%d,%d),(%d,%d),(%d,%d)",
+            jpeg_info.comp_info[0].h_samp_factor,
+            jpeg_info.comp_info[0].v_samp_factor,
+            jpeg_info.comp_info[1].h_samp_factor,
+            jpeg_info.comp_info[1].v_samp_factor,
+            jpeg_info.comp_info[2].h_samp_factor,
+            jpeg_info.comp_info[2].v_samp_factor);
+          break;
+        }
+        default:
+        {
+          LogMagickEvent(CoderEvent,"   image->colorspace=%d",image->colorspace);
+          LogMagickEvent(CoderEvent,
+            "   Sampling factors=(%d,%d),(%d,%d),(%d,%d),(%d,%d)",
+            jpeg_info.comp_info[0].h_samp_factor,
+            jpeg_info.comp_info[0].v_samp_factor,
+            jpeg_info.comp_info[1].h_samp_factor,
+            jpeg_info.comp_info[1].v_samp_factor,
+            jpeg_info.comp_info[2].h_samp_factor,
+            jpeg_info.comp_info[2].v_samp_factor,
+            jpeg_info.comp_info[3].h_samp_factor,
+            jpeg_info.comp_info[3].v_samp_factor);
+          break;
+        }
+      }
+    }
   /*
     Write JPEG profiles.
   */
