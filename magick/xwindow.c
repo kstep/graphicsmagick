@@ -1760,9 +1760,15 @@ MagickExport void XDestroyResourceInfo(XResourceInfo *resource_info)
 {
   MagickFreeMemory(resource_info->image_geometry);
   if (resource_info->image_info != (ImageInfo *) NULL)
-    DestroyImageInfo(resource_info->image_info);
+    {
+      DestroyImageInfo(resource_info->image_info);
+      resource_info->image_info=(ImageInfo *) NULL;
+    }
   if (resource_info->quantize_info != (QuantizeInfo *) NULL)
-    DestroyQuantizeInfo(resource_info->quantize_info);
+    {
+      DestroyQuantizeInfo(resource_info->quantize_info);
+      resource_info->quantize_info=(QuantizeInfo *) NULL;
+    }
   MagickFreeMemory(resource_info->client_name);
   MagickFreeMemory(resource_info->name);
   memset((void *) resource_info,0,sizeof(XResourceInfo));

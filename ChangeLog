@@ -1,3 +1,10 @@
+2004-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (DisplayImageCommand): Eliminate double-free
+	of resource_info->image_geometry.
+	(DisplayImageCommand): 'display' was improperly requiring at least
+	one argument (bug was added yesterday).
+
 2004-04-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* utilities/gm.c (main): Default usage message wasn't right for
