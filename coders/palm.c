@@ -736,7 +736,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   if(!IsGrayImage(image, &exception))  /* is color */
     bpp = 8;
 
-  (void) SortColormapByScaleIntensityToQuantum(image);
+  (void) SortColormapByIntensity(image);
 
   /* Write Tbmp header. */
   (void) WriteBlobMSBShort(image, image->columns);  /* width */

@@ -6966,12 +6966,12 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SortColormapByScaleIntensityToQuantum() sorts the colormap of a PseudoClass image by
+%  SortColormapByIntensity() sorts the colormap of a PseudoClass image by
 %  decreasing color intensity.
 %
 %  The format of the SortColormapByIntensity method is:
 %
-%      unsigned int SortColormapByScaleIntensityToQuantum(Image *image)
+%      unsigned int SortColormapByIntensity(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -6999,7 +6999,7 @@ static int IntensityCompare(const void *x,const void *y)
 }
 #endif
 
-MagickExport unsigned int SortColormapByScaleIntensityToQuantum(Image *image)
+MagickExport unsigned int SortColormapByIntensity(Image *image)
 {
   IndexPacket
     index;
