@@ -446,6 +446,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     window_info;
 
   Image
+    *coalesce_image,
     *display_image,
     **images;
 
@@ -545,16 +546,35 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   */
   if (window_info.id == root_window)
     XDestroyWindowColors(display,root_window);
+  coalesce_image=image;
   if (image->next != (Image *)NULL)
     {
       Image
-        *coalesce_image;
+        *next_image;
 
-      coalesce_image=CoalesceImages(image,&image->exception);
-      if (coalesce_image == (Image *) NULL)
-        MagickError(image->exception.severity,image->exception.message,
-          image->exception.qualifier);
-      image=coalesce_image;
+      /*
+        Determine if the sequence of images have identical page info.
+      */
+      for (next_image=image; next_image != (Image *) NULL; )
+      {
+        if ((image->columns != next_image->columns) ||
+            (image->rows != next_image->rows))
+          break;
+        if ((image->page.x != next_image->page.x) ||
+            (image->page.y != next_image->page.y))
+          break;
+        next_image=next_image->next;
+      }
+      if (next_image != (Image *) NULL)
+        {
+          coalesce_image=CoalesceImages(image,&image->exception);
+          if (coalesce_image == (Image *) NULL)
+            MagickError(image->exception.severity,image->exception.message,
+              image->exception.qualifier);
+          if (!resource_info->immutable)
+            DestroyImages(image);
+          image=coalesce_image;
+        }
     }
   if (resources.map_type == (char *) NULL)
     if ((visual_info->storage_class != TrueColor) &&
@@ -563,32 +583,24 @@ MagickExport void XAnimateBackgroundImage(Display *display,
         Image
           *next_image;
 
-        unsigned int
-          global_colormap;
-
         /*
           Determine if the sequence of images has the identical colormap.
         */
-        global_colormap=True;
-        next_image=image;
-        for ( ; next_image != (Image *) NULL; next_image=next_image->next)
+        for (next_image=image; next_image != (Image *) NULL; )
         {
           next_image->matte=False;
           if ((next_image->storage_class == DirectClass) ||
               (next_image->colors != image->colors) ||
               ((int) next_image->colors > visual_info->colormap_size))
-            {
-              global_colormap=False;
-              break;
-            }
+            break;
           for (i=0; i < (int) image->colors; i++)
             if (!ColorMatch(next_image->colormap[i],image->colormap[i],0))
-              {
-                global_colormap=False;
-                break;
-              }
+              break;
+          if (i < (int) image->colors)
+            break;
+          next_image=next_image->next;
         }
-        if (!global_colormap)
+        if (next_image != (Image *) NULL)
           (void) MapImages(image,(Image *) NULL,
             resources.quantize_info->dither);
       }
@@ -829,6 +841,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     }
   } while (event.type != DestroyNotify);
   XSync(display,False);
+  if (coalesce_image != image)
+    DestroyImages(image);
 }
 
 /*
@@ -974,6 +988,7 @@ MagickExport Image *XAnimateImages(Display *display,
     command_type;
 
   Image
+    *coalesce_image,
     *display_image,
     **images,
     *nexus;
@@ -1127,16 +1142,35 @@ MagickExport Image *XAnimateImages(Display *display,
   class_hints=windows->class_hints;
   manager_hints=windows->manager_hints;
   root_window=XRootWindow(display,visual_info->screen);
+  coalesce_image=image;
   if (image->next != (Image *)NULL)
     {
       Image
-        *coalesce_image;
+        *next_image;
 
-      coalesce_image=CoalesceImages(image,&image->exception);
-      if (coalesce_image == (Image *) NULL)
-        MagickError(image->exception.severity,image->exception.message,
-          image->exception.qualifier);
-      image=coalesce_image;
+      /*
+        Determine if the sequence of images have identical page info.
+      */
+      for (next_image=image; next_image != (Image *) NULL; )
+      {
+        if ((image->columns != next_image->columns) ||
+            (image->rows != next_image->rows))
+          break;
+        if ((image->page.x != next_image->page.x) ||
+            (image->page.y != next_image->page.y))
+          break;
+        next_image=next_image->next;
+      }
+      if (next_image != (Image *) NULL)
+        {
+          coalesce_image=CoalesceImages(image,&image->exception);
+          if (coalesce_image == (Image *) NULL)
+            MagickError(image->exception.severity,image->exception.message,
+              image->exception.qualifier);
+          if (!resource_info->immutable)
+            DestroyImages(image);
+          image=coalesce_image;
+        }
     }
   if (resource_info->map_type == (char *) NULL)
     if ((visual_info->storage_class != TrueColor) &&
@@ -1145,33 +1179,24 @@ MagickExport Image *XAnimateImages(Display *display,
         Image
           *next_image;
 
-        unsigned int
-          global_colormap;
-
         /*
           Determine if the sequence of images has the identical colormap.
         */
-        global_colormap=True;
-        next_image=image;
-        for ( ; next_image != (Image *) NULL; next_image=next_image->next)
+        for (next_image=image; next_image != (Image *) NULL; )
         {
-          TransformRGBImage(next_image,RGBColorspace);
           next_image->matte=False;
           if ((next_image->storage_class == DirectClass) ||
               (next_image->colors != image->colors) ||
               ((int) next_image->colors > visual_info->colormap_size))
-            {
-              global_colormap=False;
-              break;
-            }
+            break;
           for (i=0; i < (int) image->colors; i++)
             if (!ColorMatch(next_image->colormap[i],image->colormap[i],0))
-              {
-                global_colormap=False;
-                break;
-              }
+              break;
+          if (i < (int) image->colors)
+            break;
+          next_image=next_image->next;
         }
-        if (!global_colormap)
+        if (next_image != (Image *) NULL)
           (void) MapImages(image,(Image *) NULL,
             resource_info->quantize_info->dither);
       }
@@ -2443,6 +2468,8 @@ MagickExport Image *XAnimateImages(Display *display,
       (void) XSetWindows((XWindows *) NULL);
     }
   XSync(display,False);
+  if (coalesce_image != image)
+    DestroyImages(image);
   /*
     Restore our progress monitor and warning handlers.
   */
