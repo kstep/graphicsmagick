@@ -304,6 +304,13 @@ int main(int argc,char **argv)
       }
     if (LocaleCompare("help",option+1) == 0)
       AnimateUsage();
+    if (LocaleCompare("version",option+1) == 0)
+      {
+        (void) fprintf(stdout,"Version: %.1024s\n",
+          GetMagickVersion((unsigned long *) NULL));
+        (void) fprintf(stdout,"Copyright: %.1024s\n\n",
+          GetMagickCopyright());
+      }
   }
   /*
     Get user defaults from X resource database.
@@ -972,13 +979,7 @@ int main(int argc,char **argv)
             break;
           }
         if (LocaleCompare("version",option+1) == 0)
-          {
-            (void) fprintf(stdout,"Version: %.1024s\n",
-              GetMagickVersion((unsigned long *) NULL));
-            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
-              GetMagickCopyright());
-            break;
-          }
+          break;
         if (LocaleCompare("visual",option+1) == 0)
           {
             resource_info.visual_type=(char *) NULL;

@@ -1197,14 +1197,8 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             image_info->verbose=(*option == '-');
             break;
           }
-        if (LocaleCompare("version",option+1) == 0)
-          {
-            (void) fprintf(stdout,"Version: %.1024s\n",
-              GetMagickVersion((unsigned long *) NULL));
-            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
-              GetMagickCopyright());
-            break;
-          }
+        if (LocaleCompare("verbose",option+1) == 0)
+          break;
         if (LocaleCompare("virtual_pixel",option+1) == 0)
           {
             if (*option == '-')
@@ -2954,14 +2948,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             image_info->verbose=(*option == '-');
             break;
           }
-        if (LocaleCompare("version",option+1) == 0)
-          {
-            (void) fprintf(stdout,"Version: %.1024s\n",
-              GetMagickVersion((unsigned long *) NULL));
-            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
-              GetMagickCopyright());
-            break;
-          }
+        if (LocaleCompare("verbose",option+1) == 0)
+          break;
         if (LocaleCompare("view",option+1) == 0)
           {
             (void) CloneString(&image_info->view,(char *) NULL);
@@ -3369,14 +3357,8 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
             image_info->verbose=(*option == '-');
             break;
           }
-        if (LocaleCompare("version",option+1) == 0)
-          {
-            (void) fprintf(stdout,"Version: %.1024s\n",
-              GetMagickVersion((unsigned long *) NULL));
-            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
-              GetMagickCopyright());
-            break;
-          }
+        if (LocaleCompare("verbose",option+1) == 0)
+          break;
         if (LocaleCompare("virtual_pixel",option+1) == 0)
           {
             if (*option == '-')
@@ -4945,14 +4927,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             image_info->verbose=(*option == '-');
             break;
           }
-        if (LocaleCompare("version",option+1) == 0)
-          {
-            (void) fprintf(stdout,"Version: %.1024s\n",
-              GetMagickVersion((unsigned long *) NULL));
-            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
-              GetMagickCopyright());
-            break;
-          }
+        if (LocaleCompare("verbose",option+1) == 0)
+          break;
         if (LocaleCompare("view",option+1) == 0)
           {
             (void) CloneString(&image_info->view,(char *) NULL);
@@ -6138,14 +6114,8 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             image_info->verbose=(*option == '-');
             break;
           }
-        if (LocaleCompare("version",option+1) == 0)
-          {
-            (void) fprintf(stdout,"Version: %.1024s\n",
-              GetMagickVersion((unsigned long *) NULL));
-            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
-              GetMagickCopyright());
-            break;
-          }
+        if (LocaleCompare("verbose",option+1) == 0)
+          break;
         if (LocaleCompare("virtual_pixel",option+1) == 0)
           {
             if (*option == '-')

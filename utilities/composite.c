@@ -191,6 +191,13 @@ int main(int argc,char **argv)
       continue;
     if (LocaleCompare("help",option+1) == 0)
       CompositeUsage();
+    if (LocaleCompare("version",option+1) == 0)
+      {
+        (void) fprintf(stdout,"Version: %.1024s\n",
+          GetMagickVersion((unsigned long *) NULL));
+        (void) fprintf(stdout,"Copyright: %.1024s\n\n",
+          GetMagickCopyright());
+      }
     if (LocaleCompare("?",option+1) == 0)
       CompositeUsage();
   }
