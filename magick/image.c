@@ -249,15 +249,14 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(colors != 0);
-  image->storage_class=DirectClass;
   if (image->colormap != (PixelPacket *) NULL)
     LiberateMemory((void **) &image->colormap);
+  image->storage_class=PseudoClass;
+  image->colors=colors;
   image->colormap=(PixelPacket *)
     AcquireMemory(Max(colors,256)*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
     return(False);
-  image->storage_class=PseudoClass;
-  image->colors=colors;
   for (i=0; i < (int) colors; i++)
   {
     image->colormap[i].red=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
@@ -2810,8 +2809,11 @@ MagickExport Image *GetNextImage(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   CloseImagePixels(image);
-  image->next->blob=image->blob;
-  image->next->file=image->file;
+  if (image->next != (Image *) NULL)
+    {
+      image->next->blob=image->blob;
+      image->next->file=image->file;
+    }
   return(image->next);
 }
 
@@ -4808,7 +4810,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     LiberateMemory((void **) &geometry);
   DestroyDrawInfo(draw_info);
   DestroyImageInfo(clone_info);
-  CloseImagePixels(*image);
   return((*image)->exception.severity == UndefinedException);
 }
 
@@ -4827,12 +4828,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 %
 %  The format of the MogrifyImage method is:
 %
-%      unsigned int MogrifyImages(const ImageInfo *next_info,const int argc,
-%        char **argv,Image **image)
+%      unsigned int MogrifyImages(const ImageInfo *image_info,const int argc,
+%        char **argv,Image **images)
 %
 %  A description of each parameter follows:
 %
-%    o next_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %    o argc: Specifies a pointer to an integer describing the number of
 %      elements in the argument vector.
@@ -4840,63 +4841,61 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 %    o argv: Specifies a pointer to a text array containing the command line
 %      arguments.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o images: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
 %
 */
-MagickExport unsigned int MogrifyImages(const ImageInfo *next_info,
-  const int argc,char **argv,Image **image)
+MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
+  const int argc,char **argv,Image **images)
 {
 #define MogrifyImageText  "  Transform image...  "
 
   Image
-    *mogrify_image;
+    *image,
+    *mogrify_images;
 
-  register int
-    i;
+  int
+    scene; 
 
   MonitorHandler
     handler;
-
-  register Image
-    *next;
 
   unsigned int
     number_images,
     status;
 
-  assert(next_info != (ImageInfo *) NULL);
-  assert(next_info->signature == MagickSignature);
-  assert(image != (Image **) NULL);
-  assert((*image)->signature == MagickSignature);
-  next=(*image);
-  for (number_images=1; next->next != (Image *) NULL; number_images++)
-    next=next->next;
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(images != (Image **) NULL);
+  assert((*images)->signature == MagickSignature);
+  mogrify_images=(*images);
+  if (mogrify_images->next == (Image *) NULL)
+    return(MogrifyImage(image_info,argc,argv,&mogrify_images));
+  number_images=GetNumberScenes(*images);
   MagickMonitor(MogrifyImageText,0,number_images);
   handler=SetMonitorHandler((MonitorHandler) NULL);
-  status=MogrifyImage(next_info,argc,argv,image);
+  status=MogrifyImage(image_info,argc,argv,&mogrify_images);
   (void) SetMonitorHandler(handler);
   if (status == False)
     return(False);
-  next=(*image);
-  mogrify_image=(*image)->next;
-  if (next_info->verbose)
-    DescribeImage(next,stdout,False);
-  for (i=1; mogrify_image != (Image *) NULL; i++)
+  image=(*images)->next;
+  if (image_info->verbose)
+    DescribeImage(mogrify_images,stdout,False);
+  for (scene=1; scene < number_images; scene++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    status=MogrifyImage(next_info,argc,argv,&mogrify_image);
+    status=MogrifyImage(image_info,argc,argv,&image);
+    (void) SetMonitorHandler(handler);
     if (status == False)
       break;
-    next->next=mogrify_image;
-    next->next->previous=next;
-    next=next->next;
-    if (next_info->verbose)
-      DescribeImage(mogrify_image,stdout,False);
-    mogrify_image=mogrify_image->next;
-    (void) SetMonitorHandler(handler);
-    MagickMonitor(MogrifyImageText,i,number_images);
+    mogrify_images->next=image;
+    mogrify_images->next->previous=mogrify_images;
+    mogrify_images=mogrify_images->next;
+    if (image_info->verbose)
+      DescribeImage(image,stdout,False);
+    image=GetNextImage(image);
+    MagickMonitor(MogrifyImageText,scene,number_images);
   }
   return(status);
 }
@@ -5942,32 +5941,35 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   if (*(p+1) == ':')
     p+=2;  /* skip DECnet node spec */
 #endif
-  if ((*p == ':') && ((p-image_info->filename) < (int) sizeof(magic)))
+  if ((*p == ':') && (*(p+1) != '\\') &&
+      ((p-image_info->filename) < (int) sizeof(magic)))
     {
       /*
         User specified image format.
       */
       (void) strncpy(magic,image_info->filename,p-image_info->filename);
       magic[p-image_info->filename]='\0';
+      if (LocaleCompare(magic,"GRADATION") == 0)
+        (void) strcpy(magic,"GRADIENT");
       LocaleUpper(magic);
 #if defined(macintosh) || defined(WIN32) || defined(vms)
-    if (!ImageFormatConflict(magic))
+      if (!ImageFormatConflict(magic))
 #endif
-      {
-        /*
-          Strip off image format prefix.
-        */
-        p++;
-        (void) strcpy(image_info->filename,p);
-        if (LocaleCompare(magic,"IMPLICIT") != 0)
-          {
-            (void) strcpy(image_info->magick,magic);
-            if (LocaleCompare(magic,"TMP") != 0)
-              affirm=True;
-            else
-              image_info->temporary=True;
-          }
-      }
+        {
+          /*
+            Strip off image format prefix.
+          */
+          p++;
+          (void) strcpy(image_info->filename,p);
+          if (LocaleCompare(magic,"IMPLICIT") != 0)
+            {
+              (void) strcpy(image_info->magick,magic);
+              if (LocaleCompare(magic,"TMP") != 0)
+                affirm=True;
+              else
+                image_info->temporary=True;
+            }
+        }
     }
   if (rectify)
     {
