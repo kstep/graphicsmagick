@@ -54,8 +54,12 @@
   Include declarations.
 */
 #include "magick.h"
-#if defined(HasLTDL)
+#if defined(HasLTDL) || defined(_MAGICKMOD_)
+#if !defined(_VISUALC_)
 #include "magick/modules.h"
+#else
+#include "modules.h"
+#endif
 #include "defines.h"
 
 /*
@@ -72,6 +76,35 @@ static char
   **module_path = (char**) NULL;
 static int
     modules_initialized = False;
+
+#if defined(_VISUALC_)
+#define CoderModuleDirectory ".\\"
+#define R_OK 4
+#define W_OK 2
+#define RW_OK 6
+void lt_dlsetsearchpath(char *s)
+{
+}
+int lt_dlinit(void)
+{
+  return 0;
+}
+char *lt_dlerror(void)
+{
+  return (char *)NULL;
+}
+void *lt_dlopen(char *s)
+{
+  return (void *)NULL;
+}
+void lt_dlclose(void *h)
+{
+}
+void *lt_dlsym(void *h, char *s)
+{
+  return (void *)NULL;
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -105,8 +138,8 @@ Export void DestroyModuleInfo()
     entry=p;
     p=p->next;
     if (entry->tag != (char *) NULL)
-      FreeMemory((void ***) &entry->tag);
-    FreeMemory((void ***) &entry);
+      FreeMemory((void **) &entry->tag);
+    FreeMemory((void **) &entry);
   }
   module_info_list=(ModuleInfo *) NULL;
 }
@@ -307,6 +340,7 @@ static void InitializeModuleAliases(void)
 	}
     }
 }
+
 static void InitializeModuleSearchPath(void)
 {
   int
@@ -381,6 +415,7 @@ static void InitializeModuleSearchPath(void)
       lt_dlsetsearchpath(scratch);
     }
 }
+
 Export void InitializeModules(void)
 {
   if (modules_initialized != True)
@@ -445,7 +480,7 @@ Export int LoadAllModules(void)
   /* Free list memory */
   for( i=0; module_list[i]; ++i)
     FreeMemory((void**)&module_list[i]);
-  FreeMemory((void ***) &module_list);
+  FreeMemory((void **) &module_list);
 
   return True;
 }
@@ -876,7 +911,7 @@ Export int UnregisterModuleInfo(const char *tag)
   {
     if (Latin1Compare(p->tag,tag) == 0)
       {
-	FreeMemory((void ***) &p->tag);
+	FreeMemory((void **) &p->tag);
         if (p->previous != (ModuleInfo *) NULL)
 	  /* Not first in list */
           p->previous->next=p->next;
@@ -890,7 +925,7 @@ Export int UnregisterModuleInfo(const char *tag)
         if (p->next != (ModuleInfo *) NULL)
           p->next->previous=p->previous;
         module_info=p;
-        FreeMemory((void ***) &module_info);
+        FreeMemory((void **) &module_info);
         return(True);
     }
   }
