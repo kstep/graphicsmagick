@@ -481,50 +481,50 @@ MagickExport unsigned int SignatureImage(Image *image)
     for (x=0; x < (long) image->columns; x++)
     {
       quantum=ScaleQuantumToInt(p->red);
-      *q++=(unsigned char) (quantum >> 24);
-      *q++=(unsigned char) (quantum >> 16);
-      *q++=(unsigned char) (quantum >> 8);
-      *q++=(unsigned char) quantum;
+      *q++=(quantum >> 24);
+      *q++=(quantum >> 16);
+      *q++=(quantum >> 8);
+      *q++=quantum;
       quantum=ScaleQuantumToInt(p->green);
-      *q++=(unsigned char) (quantum >> 24);
-      *q++=(unsigned char) (quantum >> 16);
-      *q++=(unsigned char) (quantum >> 8);
-      *q++=(unsigned char) quantum;
+      *q++=(quantum >> 24);
+      *q++=(quantum >> 16);
+      *q++=(quantum >> 8);
+      *q++=quantum;
       quantum=ScaleQuantumToInt(p->blue);
-      *q++=(unsigned char) (quantum >> 24);
-      *q++=(unsigned char) (quantum >> 16);
-      *q++=(unsigned char) (quantum >> 8);
-      *q++=(unsigned char) quantum;
+      *q++=(quantum >> 24);
+      *q++=(quantum >> 16);
+      *q++=(quantum >> 8);
+      *q++=quantum;
       if (!image->matte)
         {
           if (image->colorspace == CMYKColorspace)
             {
               quantum=ScaleQuantumToInt(p->opacity);
-              *q++=(unsigned char) (quantum >> 24);
-              *q++=(unsigned char) (quantum >> 16);
-              *q++=(unsigned char) (quantum >> 8);
-              *q++=(unsigned char) quantum;
+              *q++=(quantum >> 24);
+              *q++=(quantum >> 16);
+              *q++=(quantum >> 8);
+              *q++=quantum;
             }
           quantum=ScaleQuantumToInt(OpaqueOpacity);
-          *q++=(unsigned char) (quantum >> 24);
-          *q++=(unsigned char) (quantum >> 16);
-          *q++=(unsigned char) (quantum >> 8);
-          *q++=(unsigned char) quantum;
+          *q++=(quantum >> 24);
+          *q++=(quantum >> 16);
+          *q++=(quantum >> 8);
+          *q++=quantum;
         }
       else
         {
           quantum=ScaleQuantumToInt(p->opacity);
-          *q++=(unsigned char) (quantum >> 24);
-          *q++=(unsigned char) (quantum >> 16);
-          *q++=(unsigned char) (quantum >> 8);
-          *q++=(unsigned char) quantum;
+          *q++=(quantum >> 24);
+          *q++=(quantum >> 16);
+          *q++=(quantum >> 8);
+          *q++=quantum;
           if (image->colorspace == CMYKColorspace)
             {
               quantum=ScaleQuantumToInt(indexes[x]);
-              *q++=(unsigned char) (quantum >> 24);
-              *q++=(unsigned char) (quantum >> 16);
-              *q++=(unsigned char) (quantum >> 8);
-              *q++=(unsigned char) quantum;
+              *q++=(quantum >> 24);
+              *q++=(quantum >> 16);
+              *q++=(quantum >> 8);
+              *q++=quantum;
             }
         }
       p++;
