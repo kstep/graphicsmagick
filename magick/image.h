@@ -18,7 +18,7 @@ extern "C" {
 #define ScaleCharToQuantum(value) ((Quantum) (value))
 #define ScaleIntToQuantum(value) ((Quantum) ((value)/16843009))
 #define ScaleQuantumToChar(quantum) ((unsigned char) (quantum))
-#define ScaleQuantumToInt(quantum) ((unsigned long) (16843009*(quantum)))
+#define ScaleQuantumToInt(quantum) ((unsigned long) (16843009UL*(quantum)))
 #define ScaleQuantumToShort(quantum) ((unsigned short) (257*(quantum)))
 #define ScaleShortToQuantum(value) ((Quantum) ((value)/257))
 
@@ -28,14 +28,14 @@ typedef unsigned char Quantum;
 #define ScaleCharToQuantum(value) ((Quantum) (257*(value)))
 #define ScaleIntToQuantum(value) ((Quantum) ((value)/65537))
 #define ScaleQuantumToChar(quantum) ((unsigned char) ((quantum)/257))
-#define ScaleQuantumToInt(quantum) ((unsigned long) (65537*(quantum)))
+#define ScaleQuantumToInt(quantum) ((unsigned long) (65537UL*(quantum)))
 #define ScaleQuantumToShort(quantum) ((unsigned short) (quantum))
 #define ScaleShortToQuantum(value) ((Quantum) (value))
 
 typedef unsigned short Quantum;
 #elif (QuantumDepth == 32)
 #define MaxRGB  4294967295UL
-#define ScaleCharToQuantum(value) ((Quantum) (16843009*(value)))
+#define ScaleCharToQuantum(value) ((Quantum) (16843009UL*(value)))
 #define ScaleIntToQuantum(value) ((Quantum) ((value)))
 #define ScaleQuantumToChar(quantum) ((unsigned char) ((quantum)/16843009))
 #define ScaleQuantumToInt(quantum) ((unsigned long) (quantum))
