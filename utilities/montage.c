@@ -1259,7 +1259,8 @@ static unsigned int MontageUtility(int argc,char **argv)
               }
           }
         option=argv[i+1];
-        if ((strlen(option) != 1) && ((*option == '-') || (*option == '+')))
+        if (((strlen(option) != 1) && ((*option == '-') || (*option == '+')))
+						||((i+2) == argc))
           j=i+1;
       }
   }

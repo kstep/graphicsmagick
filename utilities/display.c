@@ -1364,8 +1364,8 @@ int main(int argc,char **argv)
           (void) CatchImageException(image);
           if (i < (argc-1))
             option=argv[i+1];
-          if ((strlen(option) != 1) && ((*option == '-') || (*option == '+')))
-            j=i+1;
+        if (((strlen(option) != 1) && ((*option == '-') || (*option == '+')))
+						||((i+1) == argc))
           do
           {
             /*

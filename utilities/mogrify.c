@@ -1748,7 +1748,8 @@ static unsigned int MogrifyUtility(int argc,char **argv)
             }
         DestroyImage(image);
         option=argv[i+1];
-        if ((strlen(option) >= 2) && ((*option == '-') || (*option == '+')))
+        if (((strlen(option) != 1) && ((*option == '-') || (*option == '+')))
+						||((i+2) == argc))
           j=i+1;
       }
   }
