@@ -1615,6 +1615,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           q->coordinates=4;
           GenerateBezier(q);
           q+=q->coordinates;
+          q->primitive=primitive_info->primitive;
         } while (IsGeometry(p));
         break;
       }
@@ -1642,6 +1643,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           point.y=attribute == 'L' ? y : point.y+y;
           GeneratePoint(q,point);
           q+=q->coordinates;
+          q->primitive=primitive_info->primitive;
         } while (IsGeometry(p));
         break;
       }
@@ -1684,6 +1686,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           q->coordinates=3;
           GenerateBezier(q);
           q+=q->coordinates;
+          q->primitive=primitive_info->primitive;
         } while (IsGeometry(p));
         break;
       }
@@ -1735,6 +1738,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           q->coordinates=4;
           GenerateBezier(q);
           q+=q->coordinates;
+          q->primitive=primitive_info->primitive;
         } while (IsGeometry(p));
         break;
       }
@@ -1786,6 +1790,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           q->coordinates=3;
           GenerateBezier(q);
           q+=q->coordinates;
+          q->primitive=primitive_info->primitive;
         } while (IsGeometry(p));
         break;
       }
