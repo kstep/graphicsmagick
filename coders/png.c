@@ -1764,9 +1764,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             have_global_bkgd=False;
             if (length > 5)
               {
-                mng_global_bkgd.red = XDownscale(((p[0]<<8) | p[1]));
-                mng_global_bkgd.green = XDownscale(((p[2]<<8) | p[3]));
-                mng_global_bkgd.blue = XDownscale(((p[4]<<8) | p[5]));
+                mng_global_bkgd.red = (Quantum) XDownscale(((p[0]<<8) | p[1]));
+                mng_global_bkgd.green = (Quantum) XDownscale(((p[2]<<8)
+                   | p[3]));
+                mng_global_bkgd.blue = (Quantum) XDownscale(((p[4]<<8) | p[5]));
                 have_global_bkgd=True;
               }
             LiberateMemory((void **) &chunk);
@@ -1780,9 +1781,12 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               mandatory_back=0;
             if (mandatory_back && length>5)
               {
-                mng_background_color.red= XDownscale(((p[0]<<8) | p[1]));
-                mng_background_color.green= XDownscale(((p[2]<<8) | p[3]));
-                mng_background_color.blue= XDownscale(((p[4]<<8) | p[5]));
+                mng_background_color.red= (Quantum) XDownscale(((p[0]<<8)
+                   | p[1]));
+                mng_background_color.green= (Quantum) XDownscale(((p[2]<<8)
+                   | p[3]));
+                mng_background_color.blue= (Quantum) XDownscale(((p[4]<<8)
+                   | p[5]));
                 mng_background_color.opacity=OpaqueOpacity;
               }
 #ifdef MNG_OBJECT_BUFFERS
@@ -4354,7 +4358,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   register IndexPacket
     *indexes;
 
-  volatile register long
+  register volatile long
     x=0;
 
   register long
