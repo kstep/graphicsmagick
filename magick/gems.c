@@ -98,7 +98,7 @@ Export void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
   assert(blue != (Quantum *) NULL);
   TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
   theta=(brightness-0.5)*M_PI;
-  brightness+=(((((sin(theta)+1.0))*0.5)-brightness)*sign)*0.5;
+  brightness+=0.5*(((0.5*((sin(theta)+1.0)))-brightness)*sign);
   if (brightness > 1.0)
     brightness=1.0;
   else
