@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<fontmap>
+  <font format="type1" metrics="/usr/local/share/fonts/font.afm" glyphs="/usr/local/share/fonts/magick.pfb" name="Image-Magick" fullname="Sample Font Specification" familyname="ImageMagick weight="DemiBold version="0.1" alias="Image-Magick"/>
+</fontmap>
