@@ -1000,7 +1000,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
 
   if(bits_per_pixel < 8 && flags & PALM_IS_COMPRESSED_FLAG)
     {
-    count = (unsigned long) SizeBlob(image);  /* compressed size */
+    count = (unsigned long) GetBlobSize(image);  /* compressed size */
     }
 
   if(flags & PALM_HAS_TRANSPARENCY_FLAG)
