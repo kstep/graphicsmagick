@@ -594,8 +594,9 @@ MagickExport Image *SpliceImageList(Image *images,const long offset,
   Image
     *clone_images;
 
-  clone_images=CloneImageList(image,exception);
-  return(SpliceImageIntoList(&images,offset,length,clone_images,exception));
+  clone_images=CloneImageList(splices,exception);
+  (void) SpliceImageIntoList(&images,offset,length,clone_images);
+  return(images);
 }
 
 /*

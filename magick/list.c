@@ -73,7 +73,7 @@
 %
 %  The format of the AppendImageToList method is:
 %
-%      unsigned int AppendImageToList(Image *images,const Image *image)
+%      unsigned int AppendImageToList(Image *images,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -81,11 +81,9 @@
 %
 %    o image: The image.
 %
-%    o exception: Return any errors or warnings in this structure.
-%
 %
 */
-MagickExport unsigned int AppendImageToList(Image **images,const Image *image)
+MagickExport unsigned int AppendImageToList(Image **images,Image *image)
 {
   Image
     *next;
@@ -622,7 +620,7 @@ MagickExport Image *NewImageList(void)
 %
 %  The format of the PrependImageToList method is:
 %
-%      unsigned int PrependImageToList(Image *images,const Image *image)
+%      unsigned int PrependImageToList(Image *images,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -632,7 +630,7 @@ MagickExport Image *NewImageList(void)
 %
 %
 */
-MagickExport unsigned int PrependImageToList(Image **images,const Image *image)
+MagickExport unsigned int PrependImageToList(Image **images,Image *image)
 {
   Image
     *next;
@@ -820,7 +818,7 @@ MagickExport Image *ReverseImageList(const Image *images,
 %  The format of the SpliceImageIntoList method is:
 %
 %      unsigned int SpliceImageIntoList(Image **images,const long offset,
-%        const unsigned long length,Image *splices,ExceptionInfo *exception)
+%        const unsigned long length,Image *splices)
 %
 %  A description of each parameter follows:
 %
@@ -837,7 +835,7 @@ MagickExport Image *ReverseImageList(const Image *images,
 %
 */
 MagickExport unsigned int SpliceImageIntoList(Image **images,const long offset,
-  const unsigned long length,Image *splices,ExceptionInfo *exception)
+  const unsigned long length,Image *splices)
 {
   Image
     *image,

@@ -23,12 +23,12 @@ extern MagickExport long
   GetImageIndexInList(const Image *);
 
 extern MagickExport unsigned int
-  AppendImageToList(Image **,const Image *),
+  AppendImageToList(Image **,Image *),
   DeleteImageFromList(Image **,const long),
   InsertImageInList(Image **,const Image *,const long,ExceptionInfo *),
-  PrependImageToList(Image **,const Image *),
+  PrependImageToList(Image **,Image *),
   SpliceImageIntoList(Image **,const long,const unsigned long,
-    Image *,ExceptionInfo *);
+    Image *);
 
 extern MagickExport unsigned long
   GetImageListLength(const Image *);
