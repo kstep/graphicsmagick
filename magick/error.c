@@ -499,6 +499,8 @@ MagickExport const char *GetLocaleExceptionMessage(const ExceptionType severity,
         return tag;
       FormatString(message,"%.1024s%.1024s",ExceptionSeverityToTag(severity),tag);
       locale_message=GetLocaleMessage(message);
+      if (locale_message == message)
+        return(tag);
       return(locale_message);
    }
   return(tag);

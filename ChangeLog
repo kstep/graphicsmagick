@@ -1,5 +1,7 @@
 2003-08-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/error.c (GetLocaleExceptionMessage): Add check to avoid
+	duplicating severity prefix.
 	* magick/log.c (LogMagickEvent): Incorporated fix from Bill
 	Radcliffe to enable logging control flags to work properly again.
 	* NEWS: Updated news.
