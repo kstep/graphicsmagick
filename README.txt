@@ -1,4 +1,4 @@
-Welcome to GraphicsMagick. 
+Welcome to GraphicsMagick.
 
 GraphicsMagick provides a comprehensive collection of utilities,
 programming interfaces, and GUIs, to support image processing and 2D vector
