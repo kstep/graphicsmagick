@@ -183,7 +183,7 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
       {
         TypeInfo
           *type_info;
-        
+
         type_info=NTGetTypeList();
         if (type_info != (TypeInfo *) NULL)
           {
@@ -200,7 +200,7 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
               }
           }
       }
-#endif /* WIN32 */
+#endif
     }
   LiberateSemaphoreInfo(&type_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
@@ -507,9 +507,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
 {
   char
     filename[MaxTextExtent],
-#if defined(WIN32)
-    gsfonts[MaxTextExtent],
-#endif /* WIN32 */
     keyword[MaxTextExtent],
     *path,
     *q,
@@ -522,10 +519,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
   /*
     Read the type configuration file.
   */
-#if defined(WIN32)
-  NTGhostscriptFonts(gsfonts,sizeof(gsfonts));
-  (void) strcat(gsfonts,DirectorySeparator);
-#endif /* WIN32 */
   FormatString(filename,"%.1024s",basename);
   path=GetMagickConfigurePath(filename,True,exception);
   if (path != (char *) NULL)
@@ -656,8 +649,16 @@ static unsigned int ReadConfigurationFile(const char *basename,
             glyphs=(char *) NULL;
             CloneString(&glyphs,token);
 #if defined(WIN32)
-            SubstituteString(&glyphs,"@ghostscript_font_dir@",gsfonts);
-#endif /* WIN32 */
+            if (strchr(glyphs,'@') != (char *) NULL)
+              {
+                char
+                  path[MaxTextExtent];
+
+                NTGhostscriptFonts(path,MaxTextExtent-2);
+                (void) strcat(path,DirectorySeparator);
+                SubstituteString(&glyphs,"@ghostscript_font_dir@",path);
+              }
+#endif
             type_list->glyphs=glyphs;
             break;
           }
@@ -674,8 +675,16 @@ static unsigned int ReadConfigurationFile(const char *basename,
             metrics=(char *) NULL;
             CloneString(&metrics,token);
 #if defined(WIN32)
-            SubstituteString(&metrics,"@ghostscript_font_dir@",gsfonts);
-#endif /* WIN32 */
+            if (strchr(metrics,'@') != (char *) NULL)
+              {
+                char
+                  path[MaxTextExtent];
+
+                NTGhostscriptFonts(path,MaxTextExtent-2);
+                (void) strcat(path,DirectorySeparator);
+                SubstituteString(&metrics,"@ghostscript_font_dir@",path);
+              }
+#endif
             type_list->metrics=metrics;
             break;
           }
@@ -753,7 +762,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
   }
   LiberateMemory((void **) &token);
   LiberateMemory((void **) &xml);
-
   if (type_list == (TypeInfo *) NULL)
     return(False);
   while (type_list->previous != (TypeInfo *) NULL)

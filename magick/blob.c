@@ -1046,7 +1046,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         *command;
 
       /*
-        Handled compressed images.
+        Handle compressed images.
       */
       command=(char *) NULL;
       if ((strlen(filename) > 4) &&

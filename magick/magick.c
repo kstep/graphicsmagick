@@ -558,9 +558,6 @@ MagickExport void InitializeMagick(const char *path)
     filename[MaxTextExtent];
 
   InitializeSemaphore();
-#if defined(WIN32)
-  InitializeTracingCriticalSection();
-#endif
   (void) getcwd(directory,MaxTextExtent);
   (void) SetClientPath(directory);
   if (path != (const char *) NULL)
@@ -575,6 +572,13 @@ MagickExport void InitializeMagick(const char *path)
     char
       *execution_path;
 
+    execution_path=NTGetExecutionPath();
+    GetPathComponent(execution_path,HeadPath,filename);
+    (void) SetClientPath(filename);
+    GetPathComponent(execution_path,TailPath,filename);
+    (void) SetClientName(filename);
+    LiberateMemory((void **) &execution_path);
+    InitializeTracingCriticalSection();
 #if defined(_DEBUG)
     int
       debug;
@@ -586,12 +590,6 @@ MagickExport void InitializeMagick(const char *path)
     // debug=_CrtSetDbgFlag(debug);
     // _ASSERTE(_CrtCheckMemory());  // use this to check condition of memory
 #endif
-    execution_path=NTGetExecutionPath();
-    GetPathComponent(execution_path,HeadPath,filename);
-    (void) SetClientPath(filename);
-    GetPathComponent(execution_path,TailPath,filename);
-    (void) SetClientName(filename);
-    LiberateMemory((void **) &execution_path);
   }
 #endif
 }

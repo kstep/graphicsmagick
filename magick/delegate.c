@@ -574,9 +574,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
 {
   char
     filename[MaxTextExtent],
-#if defined(WIN32)
-    gsexe[MaxTextExtent],
-#endif
     keyword[MaxTextExtent],
     *path,
     *q,
@@ -589,9 +586,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
   /*
     Read the delegates configuration file.
   */
-#if defined(WIN32)
-  NTGhostscriptEXE(gsexe,sizeof(gsexe));
-#endif
   FormatString(filename,"%.1024s",basename);
   path=GetMagickConfigurePath(basename,False,exception);
   if (path != (char *) NULL)
@@ -683,7 +677,14 @@ static unsigned int ReadConfigurationFile(const char *basename,
           {
             delegate_list->commands=AcquireString(token);
 #if defined(WIN32)
-            SubstituteString(&delegate_list->commands,"@PSDelegate@",gsexe);
+            if (strchr(delegate_list->commands,'@') != (char *) NULL)
+              {
+                char
+                  path[MaxTextExtent];
+
+                NTGhostscriptEXE(path,MaxTextExtent-1);
+                SubstituteString(&delegate_list->commands,"@PSDelegate@",path);
+              }
 #endif
             break;
           }
