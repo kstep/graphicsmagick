@@ -578,7 +578,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (image->storage_class == DirectClass)
       {
         method=2;
-        if ((samples_per_pixel > 2) && (photometric == PHOTOMETRIC_RGB) &&
+        if ((samples_per_pixel >= 2) && (photometric == PHOTOMETRIC_RGB) &&
             (interlace == PLANARCONFIG_CONTIG))
           method=1;
         if (image->colorspace == CMYKColorspace)
