@@ -1231,7 +1231,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,long *width,
   CloseHandle(hFile);
   if (((PAPMHEADER) pBits)->dwKey != 0x9ac6cdd7l)
     {
-      LiberateMemory((void **) *pBits);
+      LiberateMemory((void **) &pBits);
       return((HENHMETAFILE) NULL);
     }
   /*
