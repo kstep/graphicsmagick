@@ -1,5 +1,5 @@
 /* 
-% Copyright (C) 2003 GraphicsMagick Group 
+% Copyright (C) 2003, 2004 GraphicsMagick Group 
 % 
 % This program is covered by multiple licenses, which are described in 
 % Copyright.txt. You should have received a copy of Copyright.txt with this 
@@ -32,20 +32,22 @@
 /* 
   Include declarations. 
 */ 
-#include "studio.h" 
+#include "studio.h"
 #include "utility.h" 
 #define _INCLUDE_CATEGORYMAP_TABLE_
 #define _INCLUDE_SEVERITYMAP_TABLE_
 #define _INCLUDE_TAGMAP_TABLE_
-#if !defined(WIN32) || defined(__MINGW32__)
-#define _INCLUDE_MESSAGE_TABLE_
+#if defined(MAGICK_WINDOWS_MESSAGE_TABLES)
+#  include "spinlock.h"
+#else
+#  define _INCLUDE_MESSAGE_TABLE_
 #endif
 #include "locale_c.h"
-#include "spinlock.h"
  
 /*
   Static declaractions.
 */
+#if defined(MAGICK_WINDOWS_MESSAGE_TABLES)
 #define MAX_CACHE_SIZE 32
 
 static char
@@ -70,7 +72,6 @@ AllocateManagedString(const char *s)
   return cs;
 }
 
-#if defined(WIN32) && !defined(__MINGW32__)
 static const char *
 NTFormatMessage(DWORD id, ...)
 {
@@ -96,29 +97,35 @@ NTFormatMessage(DWORD id, ...)
 
   buffer = (LPVOID) NULL; /* stop compiler from complaining */
   FormatString(temp,"%.1024s%.1024s%.1024s",SetClientPath((char *) NULL),
-    DirectorySeparator,SetClientFilename((char *) NULL));
+               DirectorySeparator,SetClientFilename((char *) NULL));
   if (IsAccessibleNoLogging(temp))
     handle=GetModuleHandle(temp);
   else
     handle=GetModuleHandle(0);
   if (handle)
     {
-      /* Sample of how to change threads locale explicitly to English.
-         you can use this same API call to switch locales on a thread
-         by thread basis and extract the correct localized message */
-      /* SetThreadLocale( MAKELCID( MAKELANGID( 0x0409, SUBLANG_NEUTRAL ), SORT_DEFAULT ) ); */
-	    status=FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
-                  FORMAT_MESSAGE_FROM_HMODULE,
-		    handle,
-		    id,
-		    MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),
-		    (LPTSTR) &buffer,
-		    0,
-		    &args
-	    );
+      /*
+        Sample of how to change threads locale explicitly to English.
+        you can use this same API call to switch locales on a thread
+        by thread basis and extract the correct localized message
+      */
+      /*
+        SetThreadLocale( MAKELCID( MAKELANGID( 0x0409, SUBLANG_NEUTRAL
+        ), SORT_DEFAULT ) );
+      */
+      status=FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                           FORMAT_MESSAGE_FROM_HMODULE,
+                           handle,
+                           id,
+                           MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),
+                           (LPTSTR) &buffer,
+                           0,
+                           &args
+                           );
       if (!status)
         {
-          FormatString(temp,"Undefined message %ld (0x%08lx)",(long) id, (long) id);
+          FormatString(temp,"Undefined message %ld (0x%08lx)",(long) id,
+                       (long) id);
           result=AllocateManagedString(temp);
         }
       else
@@ -132,9 +139,12 @@ NTFormatMessage(DWORD id, ...)
           s = buffer;
           len = strlen(s);
           if (len > 1)
-            { /* the string that is stored in the resource has a CR LF on the end, so we need
-                 to zap this off before returning it
-               */
+            {
+              /*
+                The string that is stored in the resource has a CR LF
+                on the end, so we need to zap this off before
+                returning it
+              */
               s[len-1]='\0';
               s[len-2]='\0';
             }
@@ -149,7 +159,7 @@ NTFormatMessage(DWORD id, ...)
     }
   return(result);
 }
-#endif
+#endif /* defined(MAGICK_WINDOWS_MESSAGE_TABLES) */
 
 static void
 ChopLocaleComponents(char *path,const unsigned long components)
@@ -189,41 +199,41 @@ GetLocaleMessageFromTag(const char *tag)
   (void) strncpy(category,tag,MaxTextExtent-1);
   ChopLocaleComponents(category,2);
   for (k=0; category_map[k].name != 0; k++)
-  {
-    if (LocaleCompare(category,category_map[k].name) == 0)
-      {
-        (void) strncpy(severity,tag,MaxTextExtent-1);
-        ChopLocaleComponents(severity,1);
-        for (j=category_map[k].offset; j < category_map[k+1].offset; j++)
+    {
+      if (LocaleCompare(category,category_map[k].name) == 0)
         {
-          if (LocaleCompare(severity,severity_map[j].name) == 0)
+          (void) strncpy(severity,tag,MaxTextExtent-1);
+          ChopLocaleComponents(severity,1);
+          for (j=category_map[k].offset; j < category_map[k+1].offset; j++)
             {
-              for (i=severity_map[j].offset; i < severity_map[j+1].offset != 0; i++)
-              {
-                int
-                  prefix,
-                  taglen;
+              if (LocaleCompare(severity,severity_map[j].name) == 0)
+                {
+                  for (i=severity_map[j].offset; i < severity_map[j+1].offset != 0; i++)
+                    {
+                      int
+                        prefix,
+                        taglen;
 
-                prefix=strlen(severity);
-                taglen=strlen(tag);
-                if ((prefix > 0) && (prefix < taglen) &&
-                      LocaleCompare(&tag[prefix+1],message_map[i].name) == 0)
-                  {
+                      prefix=strlen(severity);
+                      taglen=strlen(tag);
+                      if ((prefix > 0) && (prefix < taglen) &&
+                          LocaleCompare(&tag[prefix+1],message_map[i].name) == 0)
+                        {
 #if defined(_INCLUDE_MESSAGE_TABLE_)
-                    return message_dat[message_map[i].messageid];
+                          return message_dat[message_map[i].messageid];
 #else
-#if defined(WIN32) && !defined(__MINGW32__)
-                    return NTFormatMessage(message_map[i].messageid);
-#else
-                    return tag;
-#endif
-#endif
-                  }
-              }
+#  if defined(MAGICK_WINDOWS_MESSAGE_TABLES)
+                          return NTFormatMessage(message_map[i].messageid);
+#  else
+                          return tag;
+#  endif /* defined(MAGICK_WINDOWS_MESSAGE_TABLES) */
+#endif /* defined(_INCLUDE_MESSAGE_TABLE_) */
+                        }
+                    }
+                }
             }
         }
-      }
-  }
+    }
 #endif
   return tag;
 }
@@ -258,10 +268,12 @@ GetLocaleMessage(const char *tag)
   return GetLocaleMessageFromTag(tag);
 }
 
-/* This routine translates a severity code to it's string value. It is slow
-   but the idea is to eventually move away from using strings to lookup any
-   messages and use binary codes instead.
+/*
+  This routine translates a severity code to it's string value. It is
+  slow but the idea is to eventually move away from using strings to
+  lookup any messages and use binary codes instead.
  */
+#if 0 /* not currently used */
 static const char *
 SeverityToTag(const ExceptionType severity)
 {
@@ -276,13 +288,15 @@ SeverityToTag(const ExceptionType severity)
   return("");
 }
 
-/* This routine is intended to be a replacement for GetLocaleExceptionMessage
-   in the code, but using the data from the locale MGK files to do it's job
-   rather then some hard coded case statement.
+/*
+  This routine is intended to be a replacement for
+  GetLocaleExceptionMessage in the code, but using the data from the
+  locale MGK files to do it's job rather then some hard coded case
+  statement.
  */
 static const char *
 GetLocaleMessageFromSeverityAndTag(const ExceptionType severity,
-  const char *tag)
+                                   const char *tag)
 {
   char
     message[MaxTextExtent];
@@ -290,12 +304,14 @@ GetLocaleMessageFromSeverityAndTag(const ExceptionType severity,
   const char
     *locale_message;
 
-  /* This is a hack that depends on the fact that tag can never have spaces in
-     them. If a space is found then it means we are being asked to translate a
-     message that has already been translated. A big waste of time. The reason
-     this happens is that messages are translated at the point of an exception
-     and then again when the exception is caught and processed via the default
-     error and warning handlers
+  /*
+    This is a hack that depends on the fact that tag can never have
+    spaces in them. If a space is found then it means we are being
+    asked to translate a message that has already been translated. A
+    big waste of time. The reason this happens is that messages are
+    translated at the point of an exception and then again when the
+    exception is caught and processed via the default error and
+    warning handlers
   */
   if (strrchr(tag, ' '))
     return(tag);
@@ -305,16 +321,19 @@ GetLocaleMessageFromSeverityAndTag(const ExceptionType severity,
     return(tag);
   return(locale_message);
 }
+#endif /* not currently used */
 
-/* This routine is used to lookup a message directly form an id pulled from the
-   header file generated by the coders\local.c header file coder.
+/*
+  This routine is used to lookup a message directly form an id pulled
+  from the header file generated by the coders\local.c header file
+  coder.
  */
 MagickExport const char *
 GetLocaleMessageFromID(const int id)
 {
   if ((id > 0) && (id <= MAX_LOCALE_MSGS))
     {
-#if defined(WIN32) && !defined(__MINGW32__)
+#if defined(MAGICK_WINDOWS_MESSAGE_TABLES)
       return NTFormatMessage(id);
 #else
       return message_dat[id];

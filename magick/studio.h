@@ -121,9 +121,21 @@ extern "C" {
 # define storage_class  class
 #endif
 
+/*
+  Enable use of numeric message IDs and a translation table in order
+  to support multiple locales.
+ */
 #define MAGICK_IDBASED_MESSAGES 1
 #if defined(MAGICK_IDBASED_MESSAGES)
 #include "magick/locale_c.h"
+#endif
+
+/*
+  For the Windows Visual C++ DLL build, use a Windows resource based
+  message lookup table (i.e. use FormatMessage()).
+ */
+#if ((defined(WIN32) && defined(_DLL)) && !defined(__MINGW32__))
+#  define MAGICK_WINDOWS_MESSAGE_TABLES 1
 #endif
 
 #define MagickSignature  0xabacadabUL
