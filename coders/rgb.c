@@ -693,7 +693,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,SizeImageList(image));
   } while (image_info->adjoin);
   LiberateMemory((void **) &pixels);
   if (image_info->adjoin)

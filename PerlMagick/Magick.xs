@@ -3745,7 +3745,7 @@ ImageToBlob(ref,...)
     }
     SetImageInfo(package_info->image_info,True,&image->exception);
     GetExceptionInfo(&exception);
-    EXTEND(sp,(int) GetNumberScenes(image));
+    EXTEND(sp,(int) SizeImageList(image));
     for (next=image; next; next=next->next)
     {
       length=0;
@@ -6294,7 +6294,7 @@ Ping(ref,...)
           PUSHs(&sv_undef);
           continue;
         }
-      count+=GetNumberScenes(image);
+      count+=SizeImageList(image);
       EXTEND(sp,4*count);
       for (p=image ; p != (Image *) NULL; p=p->next)
       {

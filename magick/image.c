@@ -476,14 +476,14 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   /*
     Initialize append next attributes.
   */
-  if (((image->columns*GetNumberScenes(image)) == width) && stack)
+  if (((image->columns*SizeImageList(image)) == width) && stack)
     append_image=CloneImage(image,image->columns,height,True,exception);
   else
     append_image=CloneImage(image,width,image->rows,True,exception);
   if (append_image == (Image *) NULL)
     return((Image *) NULL);
   scene=0;
-  if (((image->columns*GetNumberScenes(image)) == width) && stack)
+  if (((image->columns*SizeImageList(image)) == width) && stack)
     {
       register long
         y;
@@ -498,7 +498,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
           SetImageType(append_image,TrueColorType);
         (void) CompositeImage(append_image,CopyCompositeOp,next,0,y);
         y+=next->rows;
-        MagickMonitor(AppendImageText,scene,GetNumberScenes(image));
+        MagickMonitor(AppendImageText,scene,SizeImageList(image));
         scene++;
       }
     }
@@ -517,7 +517,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
           SetImageType(append_image,TrueColorType);
         (void) CompositeImage(append_image,CopyCompositeOp,next,x,0);
         x+=next->columns;
-        MagickMonitor(AppendImageText,scene++,GetNumberScenes(image));
+        MagickMonitor(AppendImageText,scene++,SizeImageList(image));
       }
     }
   if (append_image->storage_class == PseudoClass)
@@ -5180,7 +5180,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(images != (Image **) NULL);
   assert((*images)->signature == MagickSignature);
-  number_images=GetNumberScenes(*images);
+  number_images=SizeImageList(*images);
   if (number_images == 1)
     return(MogrifyImage(image_info,argc,argv,images));
   MagickMonitor(MogrifyImageText,0,number_images);

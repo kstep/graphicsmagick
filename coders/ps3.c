@@ -503,7 +503,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             if (!image_info->adjoin)
               (void) strcpy(buffer,"%%Pages: 0\n");
             else
-              FormatString(buffer,"%%%%Pages: %lu\n",GetNumberScenes(image));
+              FormatString(buffer,"%%%%Pages: %lu\n",SizeImageList(image));
             (void) WriteBlobString(image,buffer);
           }
         (void) WriteBlobString(image,"%%EndComments\n");
@@ -733,7 +733,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,SizeImageList(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

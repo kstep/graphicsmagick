@@ -2994,7 +2994,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
       }
       case 'n':
       {
-        FormatString(q,"%lu",GetNumberScenes(image));
+        FormatString(q,"%lu",SizeImageList(image));
         q=translated_text+strlen(translated_text);
         break;
       }

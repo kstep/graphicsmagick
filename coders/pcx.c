@@ -1011,7 +1011,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,SizeImageList(image));
     if (scene >= 1023)
       break;
   } while (image_info->adjoin);

@@ -1222,7 +1222,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
         }
       if (LocaleNCompare("scenes",key,6) == 0)
         {
-          FormatString(attribute,"%u",GetNumberScenes(image));
+          FormatString(attribute,"%u",SizeImageList(image));
           break;
         }
        break;

@@ -5760,7 +5760,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,SizeImageList(image));
   } while (adjoin);
   if (adjoin)
     while (image->previous != (Image *) NULL)
