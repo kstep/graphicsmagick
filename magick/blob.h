@@ -138,7 +138,7 @@ extern MagickExport void
   *GetTypeBlob(const char *,char *,size_t *,ExceptionInfo *),
   *GetModuleBlob(const char *,char *,size_t *,ExceptionInfo *),
   *ImageToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
-  *MapBlob(int,const MapMode,ExtendedSignedIntegralType,size_t),
+  *MapBlob(int,const MapMode,off_t,size_t),
   MSBOrderLong(unsigned char *,const size_t),
   MSBOrderShort(unsigned char *,const size_t);
 

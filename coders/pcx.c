@@ -209,6 +209,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
+  ExtendedSignedIntegralType
+    *page_table;
+
   int
     bits,
     id,
@@ -248,9 +251,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int
     status;
 
-  ExtendedSignedIntegralType
-    *page_table;
-
   unsigned long
     pcx_packets;
 
@@ -280,7 +280,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       magic=ReadBlobLSBLong(image);
       if (magic != 987654321)
         ThrowReaderException(CorruptImageError,"Not a DCX image file",image);
-      page_table=(ExtendedSignedIntegralType *) AcquireMemory(1024*sizeof(ExtendedSignedIntegralType));
+      page_table=(ExtendedSignedIntegralType *)
+         AcquireMemory(1024*sizeof(ExtendedSignedIntegralType));
       if (page_table == (ExtendedSignedIntegralType *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       for (id=0; id < 1024; id++)

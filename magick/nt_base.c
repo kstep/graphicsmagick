@@ -647,12 +647,12 @@ void *lt_dlsym(void *h,char *s)
 %  The format of the mmap method is:
 %
 %    MagickExport void *mmap(char *address,size_t length,int protection,
-%      int access,int file,ExtendedSignedIntegralType offset)
+%      int access,int file,off_t offset)
 %
 %
 */
 MagickExport void *mmap(char *address,size_t length,int protection,int access,
-  int file,ExtendedSignedIntegralType offset)
+  int file,off_t offset)
 {
   void
     *map;

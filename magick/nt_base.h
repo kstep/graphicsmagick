@@ -130,7 +130,7 @@ extern MagickExport void
   DebugLevel(const int),
   DestroyTracingCriticalSection(void),
   InitializeTracingCriticalSection(void),
-  *mmap(char *,size_t,int,int,int,ExtendedSignedIntegralType),
+  *mmap(char *,size_t,int,int,int,off_t),
   NTErrorHandler(const ExceptionType,const char *,const char *),
   NTWarningHandler(const ExceptionType,const char *,const char *),
   seekdir(DIR *,long)
