@@ -528,20 +528,21 @@ MAGICK DELEGATES
 
          http://www.freetype.org/
 
-      to annotate with TrueType fonts.
+      to annotate with TrueType and Postscript Type 1 fonts.
 
     o ImageMagick requires Ghostscript software available from
 
          http://www.cs.wisc.edu/~ghost/
 
-      to read the Postscript or the Portable Document format.  It is used
-      to annotate an image when an X server is not available.  See the
-      FreeType library above for another means to annotate an image.
-      Note, Ghostscript must support the ppmraw device (type gs -h to
-      verify).  If Ghostscript is unavailable, the Display Postscript
-      extension is used to rasterize a Postscript document (assuming you
-      define HasDPS).  The DPS extension is less robust than Ghostscript
-      in that it will only rasterize one page of a multi-page document.
+      to read the Postscript or the Portable Document format. It is used
+      to annotate an image when the FreeType library is not used, or an
+      X server is not available. See the FreeType library above for
+      another means to annotate an image. Note, Ghostscript must support
+      the ppmraw device (type gs -h to verify). If Ghostscript is
+      unavailable, the Display Postscript extension is used to rasterize
+      a Postscript document (assuming you define HasDPS). The DPS
+      extension is less robust than Ghostscript in that it will only
+      rasterize one page of a multi-page document.
 
       Ghostscript (released 7.0 and later) may optionally install a
       library (libgs). If this library is installed, ImageMagick will
@@ -564,11 +565,13 @@ MAGICK DELEGATES
 
           http://www.gnu.org/software/hp2xx/hp2xx.html
 
-      to read the HP-GL image format.
+      to read the HP-GL image format. Note that HPGL is a plotter file
+      format. HP printers usually accept PCL format rather than HPGL
+      format.
 
     o ImageMagick requires the LCMS library available from
 
-          http://www.littlecms.com
+          http://www.littlecms.com/
 
       to perform color management.
 
@@ -606,13 +609,6 @@ MAGICK DELEGATES
       Use of lossless JPEG is not encouraged. Unless you have a requirement
       to read lossless jpeg-encoded DICOM images, please disregard the patch.
 
-      Concerning iterative JPEG compression:  see Kinoshita and Yamamuro,
-      Journal of Imaging Science and Technology, "Image Quality with
-      Reiterative JPEG Compression", Volume 39, Number 4, July 1995,
-      306-312 who claim that (1) the iterative factor of the repetitive
-      JPEG operation had no influence on image quality, and (2) the
-      first compression determined base image quality.
-
     o ImageMagick requires the MPEG utilities from the MPEG Software
       Simulation Group, which are available via anonymous FTP as
 
@@ -627,11 +623,11 @@ MAGICK DELEGATES
       to read the PNG image format.
 
     o ImageMagick requires ra_ppm from Greg Ward's Radiance software
-      available via anonymous FTP as
+      available from
 
           http://radsite.lbl.gov/radiance/HOME.html
 
-      to read the Radiance image format (may not compile under linux).
+      to read the Radiance image format.
 
     o ImageMagick requires rawtorle from the Utah Raster Toolkit
       available via anonymous FTP as
@@ -644,7 +640,7 @@ MAGICK DELEGATES
 
           http://www.mostang.com/sane/
 								 
-      to import image from a scanner device.
+      to import an image from a scanner device.
 
     o ImageMagick requires Sam Leffler's TIFF software available via
       anonymous FTP at
@@ -676,9 +672,9 @@ MAGICK DELEGATES
       libwmf package which does not depend on any special libraries, the
       libwmf package as a whole depends on FreeType 2 and either the
       xmlsoft libxml, or expat libraries. Since ImageMagick already uses
-      libxml (for reading SVG), it is recommended that the options
-      '--without-expat --with-xml' be supplied to libwmf's configure
-      script.
+      libxml (for reading SVG and to retrieve files via HTTP or FTP), it
+      is recommended that the options '--without-expat --with-xml' be
+      supplied to libwmf's configure script.
 
       ImageMagick's WMF renderer provides some of the finest WMF
       rendering available due its use of antialiased drawing algorithms.
@@ -693,7 +689,7 @@ MAGICK DELEGATES
 
         http://www.microsoft.com/typography/fontpack/default.htm
 
-      WMF renderer is not capable of using Windows fonts with libwmf
+      The WMF renderer is not capable of using Windows fonts with libwmf
       0.2.2. Windows fonts are fully supported when using libwmf 0.2.5
       or later.
 
@@ -706,8 +702,19 @@ MAGICK DELEGATES
         ftp://ftp.imagemagick.org/pub/ImageMagick/delegates/.
 
     o ImageMagick requires an X server for display and animate to work
-      properly.  There is a nearly free X server available for Windows
-      and Macintosh at
+      properly. Unix systems usually provide an X server as part of
+      their standard installation.
+
+      A free X server for Microsoft Windows is available from
+
+          http://sources.redhat.com/win32-x11/
+
+      The Cygwin port of XFree86 may also be used. It is available from
+
+          http://www.cygwin.com/xfree/
+
+      There is a nearly free X server available for Windows and
+      Macintosh at
 
           http://www.microimages.com/freestuf/mix/
 
@@ -715,7 +722,8 @@ MAGICK DELEGATES
 
           http://xmlsoft.org/
 
-      to read the SVG image format.
+      to read the SVG image format and to retrieve files from over a
+      network via FTP and HTTP.
 
     o ImageMagick requires the ZLIB library from
 
@@ -908,10 +916,9 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
 
   NOTE #2:
 
-  The 5.2.x distribution is much more modular then any previous release
-  of ImageMagick. The default configuration is there to get you rolling,
-  but you need to make some serious choices when you wish to change
-  things around.
+  The ImageMagick distribution is very modular. The default
+  configuration is there to get you rolling, but you need to make some
+  serious choices when you wish to change things around.
 
   The binary distribution and default options are all targeted at
   having all the components in one place - the "bin" directory of the
@@ -966,8 +973,7 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
 
    If all you do is modify the PATH variable, the first problem you
    will run into is that ImageMagick may not be able to find any of
-   its "modules. We did not have modules until 5.2 so this is a NEW
-   problems. Modules are all the IM_MOD*.DLL files you see in the
+   its "modules. Modules are all the IM_MOD*.DLL files you see in the
    distribution. There is one of these for each and every file format
    that ImageMagick supports. This environment variable tells the system
    were to look for these DLL's. The compiled in "default" is "execution
@@ -980,13 +986,14 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
 
       D:\\ImageMagick\coders
 
-   This is also the place were ImageMagick expects to find the all
-   important "modules.mgk" file.
+   This is also the place were ImageMagick expects to find the
+   "colors.mgk", "delegates.mgk", "magic.mgk", "modules.mgk", and
+   "type.mgk" files.
 
-   One cool thing about 5.2 is that you can now leave out file formats
-   and lighten you load. If all you ever need is GIF and JPEG, then
-   simply drop all the other DLL's into the local trash can and get on
-   with your life.
+   One cool thing about the modules build of ImageMagick is that you can
+   now leave out file formats and lighten you load. If all you ever need
+   is GIF and JPEG, then simply drop all the other DLL's into the local
+   trash can and get on with your life.
 
    WARNING: Always keep the "xc" format, since IM seems to need and
    "assume" that this one exists and gets real "unhappy" if it does
@@ -1048,6 +1055,7 @@ Magick++
     gcc 2.95.2 (or later)
     Visual C++ 6.0 (Windows)
     IRIX C++ 7.3.1.1m
+    HP-UX HP-UX aCC A.03.30
     Sun Workshop 5.0 C++ (tests/demos require work-around to build)
     Sun Forte 6.0 C++
     CodeWarrior Professional Release 5 (Macintosh)
