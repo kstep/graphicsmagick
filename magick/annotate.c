@@ -943,9 +943,9 @@ static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  FormatString(path,"C%g,%g %g,%g %g,%g",affine.tx+(p->x/64.0),
-    affine.ty+(-p->y/64.0),affine.tx+(q->x/64.0),affine.ty+(-q->y/64.0),
-    affine.tx+(to->x/64.0),affine.ty+(-to->y/64.0));
+  FormatString(path,"C%g,%g %g,%g %g,%g",affine.tx+p->x/64.0,
+    affine.ty-p->y/64.0,affine.tx+q->x/64.0,affine.ty-q->y/64.0,
+    affine.tx+to->x/64.0,affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -959,7 +959,7 @@ static int TraceLineTo(FT_Vector *to,DrawInfo *draw_info)
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  FormatString(path,"L%g,%g",affine.tx+(to->x/64.0),affine.ty+(-to->y/64.0));
+  FormatString(path,"L%g,%g",affine.tx+to->x/64.0,affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -973,7 +973,7 @@ static int TraceMoveTo(FT_Vector *to,DrawInfo *draw_info)
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  FormatString(path,"M%g,%g",affine.tx+(to->x/64.0),affine.ty+(-to->y/64.0));
+  FormatString(path,"M%g,%g",affine.tx+to->x/64.0,affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -988,9 +988,8 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  FormatString(path,"Q%g,%g %g,%g",affine.tx+(control->x/64.0),
-    affine.ty+(-control->y/64.0),affine.tx+(to->x/64.0),
-    affine.ty+(-to->y/64.0));
+  FormatString(path,"Q%g,%g %g,%g",affine.tx+control->x/64.0,
+    affine.ty-control->y/64.0,affine.tx+to->x/64.0,affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -1147,10 +1146,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   metrics->width=0;
   metrics->height=(double) face->size->metrics.height/64.0;
   metrics->max_advance=(double) face->size->metrics.max_advance/64.0;
-  metrics->bounds.x1=0.0;
-  metrics->bounds.y1=0.0;
-  metrics->bounds.x2=0.0;
-  metrics->bounds.y2=0.0;
   metrics->underline_position=face->underline_position/64.0;
   metrics->underline_thickness=face->underline_thickness/64.0;
   /*
