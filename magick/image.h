@@ -16,8 +16,14 @@ extern "C" {
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
 #define Downscale(quantum)  ScaleQuantumToChar(quantum)
+#if (QuantumDepth == 32)
+#define Intensity(color)  \
+  ((9798UL*((color)->red/32768UL)+19235UL*((color)->green/32768UL) \
+  +3735UL*((color)->blue)/32768UL))
+#else
 #define Intensity(color)  \
   ((9798UL*(color)->red+19235UL*(color)->green+3735UL*(color)->blue)/32768UL)
+#endif
 #define MaxColormapSize  65536UL
 #define MaxRGB  ((1UL << QuantumDepth)-1UL)
 #define OpaqueOpacity  0
