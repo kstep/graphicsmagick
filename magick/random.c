@@ -118,8 +118,7 @@ MagickExport void DestroyRandomReservoir(void)
 %
 %  The format of the DistillRandomEvent method is:
 %
-%      DistillRandomEvent(const unsigned char *event,const size_t length,
-%        ExceptionInfo *exception)
+%      DistillRandomEvent(const unsigned char *event,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -127,12 +126,9 @@ MagickExport void DestroyRandomReservoir(void)
 %
 %    o length: The length of the event.
 %
-%    o exception: Return any errors or warnings in this structure.
-%
-%
 */
 MagickExport void DistillRandomEvent(const unsigned char *event,
-  const size_t length,ExceptionInfo *exception)
+  const size_t length)
 {
   SignatureInfo
     digest_info;
@@ -174,8 +170,7 @@ MagickExport void DistillRandomEvent(const unsigned char *event,
 %
 %  The format of the GetRandomKey method is:
 %
-%      unsigned int GetRandomKey(unsigned char *key,const size_t length,
-%        ExceptionInfo *exception)
+%      GetRandomKey(unsigned char *key,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -183,11 +178,9 @@ MagickExport void DistillRandomEvent(const unsigned char *event,
 %
 %    o length: The key length.
 %
-%    o exception: Return any errors or warnings in this structure.
 %
 */
-MagickExport unsigned int GetRandomKey(unsigned char *key,const size_t length,
-  ExceptionInfo *exception)
+MagickExport void GetRandomKey(unsigned char *key,const size_t length)
 {
   SignatureInfo
     digest_info;
@@ -216,19 +209,16 @@ MagickExport unsigned int GetRandomKey(unsigned char *key,const size_t length,
       */
       (void) strcpy(filename,"magic");
       (void) tmpnam(filename);
-      DistillRandomEvent((const unsigned char *) filename,MaxTextExtent,
-        exception);
+      DistillRandomEvent((const unsigned char *) filename,MaxTextExtent);
       seconds=time(0);
-      DistillRandomEvent((const unsigned char *) &seconds,sizeof(time_t),
-        exception);
+      DistillRandomEvent((const unsigned char *) &seconds,sizeof(time_t));
 #ifdef HAVE_GETTIMEOFDAY
       {
         struct timeval
           timer;
 
         (void) gettimeofday(&timer,NULL);
-        DistillRandomEvent((const unsigned char *) &timer.tv_usec,sizeof(long),
-          exception);
+        DistillRandomEvent((const unsigned char *) &timer.tv_usec,sizeof(long));
       }
 #endif
 #if HAVE_FTIME
@@ -238,13 +228,13 @@ MagickExport unsigned int GetRandomKey(unsigned char *key,const size_t length,
 
         (void) ftime(&timer);
         DistillRandomEvent((const unsigned char *) &timer.millitm,
-          sizeof(unsigned short),exception);
+          sizeof(unsigned short));
       }
 #endif
       pid=getpid();
-      DistillRandomEvent((const unsigned char *) &pid,sizeof(pid_t),exception);
+      DistillRandomEvent((const unsigned char *) &pid,sizeof(pid_t));
       DistillRandomEvent((const unsigned char *) *roulette,
-        sizeof(unsigned long *),exception);
+        sizeof(unsigned long *));
       file=open("/dev/random",O_RDONLY | O_BINARY,0777);
       if (file != -1)
         {
@@ -253,7 +243,7 @@ MagickExport unsigned int GetRandomKey(unsigned char *key,const size_t length,
 
           (void) read(file,random,MaxTextExtent);
           (void) close(file);
-          DistillRandomEvent(random,MaxTextExtent,exception);
+          DistillRandomEvent(random,MaxTextExtent);
         }
     }
   n=length;
@@ -270,5 +260,4 @@ MagickExport unsigned int GetRandomKey(unsigned char *key,const size_t length,
     n-=sizeof(reservoir->digest);
     key+=sizeof(reservoir->digest);
   }
-  return(True);
 }

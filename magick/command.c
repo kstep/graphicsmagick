@@ -62,6 +62,7 @@
 #include "magick.h"
 #include "module.h"
 #include "quantize.h"
+#include "random.h"
 #include "render.h"
 #include "resource.h"
 #include "utility.h"
@@ -2816,13 +2817,18 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("seed",option+1) == 0)
           {
+            unsigned int
+              seed;
+
             if (*option == '-')
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowConvertException(OptionError,"MissingSeedValue",option);
               }
-            srand(atoi(argv[i]));
+            seed=atoi(argv[i]);
+            srand(seed);
+            DistillRandomEvent((unsigned char *) &seed,sizeof(unsigned int));
             break;
           }
         if (LocaleCompare("segment",option+1) == 0)
@@ -4846,13 +4852,18 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("seed",option+1) == 0)
           {
+            unsigned int
+              seed;
+
             if (*option == '-')
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowMogrifyException(OptionError,"MissingImageGamma",option);
               }
-            srand(atoi(argv[i]));
+            seed=atoi(argv[i]);
+            srand(seed);
+            DistillRandomEvent((unsigned char *) &seed,sizeof(unsigned int));
             break;
           }
         if (LocaleCompare("segment",option+1) == 0)
