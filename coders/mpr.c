@@ -56,6 +56,12 @@
 #include "define.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteMPRImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -148,6 +154,7 @@ ModuleExport void RegisterMPRImage(void)
 
   entry=SetMagickInfo("MPR");
   entry->decoder=ReadMPRImage;
+  entry->encoder=WriteMPRImage;
   entry->adjoin=False;
   entry->description=AllocateString("Magick Persistent Registry");
   entry->module=AllocateString("MPR");
@@ -177,4 +184,54 @@ ModuleExport void UnregisterMPRImage(void)
 {
   (void) UnregisterMagickInfo("MPR");
   (void) UnregisterMagickInfo("REGISTRY");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e M P R I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadMPRImage writes an image into the Magick Persistent Registry
+%  image as a blob from memory.  It allocates the memory necessary for the
+%  new Image structure and returns a pointer to the new image.
+%
+%  The format of the WriteMPRImage method is:
+%
+%      unsigned int WriteMPRImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Method WritePRImage return True if the image is written.
+%      False is returned is there is a memory shortage or if the image file
+%      fails to write.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image:  A pointer to a Image structure.
+%
+%
+*/
+static unsigned int WriteMPRImage(const ImageInfo *image_info,Image *image)
+{
+  ExceptionInfo
+    exception;
+
+  long
+    id;
+
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  GetExceptionInfo(&exception);
+  id = SetMagickRegistry(ImageRegistryType,image,sizeof(Image),&exception);
+  if( id < 0 )
+    ThrowWriterException(RegistryWarning,"Unable to write image to registry",image);
+  return(True);
 }
