@@ -213,23 +213,6 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
       DestroyImage(annotate_image);
       (void) strcpy(label+j,"...");
     }
-    if (local_info->image_info->box != (char *) NULL)
-      {
-        /*
-          Surround text with a bounding box.
-        */
-        FormatString(local_info->image_info->filename,"xc:%.1024s",
-          local_info->image_info->box);
-        FormatString(size,"%ux%u",annotate_image->columns,annotate_image->rows);
-        (void) CloneString(&local_info->image_info->size,size);
-        box_image=ReadImage(local_info->image_info);
-        if (box_image != (Image *) NULL)
-          {
-            CompositeImage(image,ReplaceCompositeOp,box_image,
-              local_info->bounds.x,local_info->bounds.y);
-            DestroyImage(box_image);
-          }
-      }
     if (annotate_info->degrees != 0.0)
       {
         Image
@@ -312,6 +295,23 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
         break;
       }
     }
+    if (local_info->image_info->box != (char *) NULL)
+      {
+        /*
+          Surround text with a bounding box.
+        */
+        FormatString(local_info->image_info->filename,"xc:%.1024s",
+          local_info->image_info->box);
+        FormatString(size,"%ux%u",annotate_image->columns,annotate_image->rows);
+        (void) CloneString(&local_info->image_info->size,size);
+        box_image=ReadImage(local_info->image_info);
+        if (box_image != (Image *) NULL)
+          {
+            CompositeImage(image,ReplaceCompositeOp,box_image,
+              local_info->bounds.x,local_info->bounds.y);
+            DestroyImage(box_image);
+          }
+      }
     CompositeImage(image,AnnotateCompositeOp,annotate_image,
       local_info->bounds.x,local_info->bounds.y);
     DestroyImage(annotate_image);
