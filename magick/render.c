@@ -1140,11 +1140,11 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
   if (affine->sx > MagickEpsilon)
     {
       intercept=(-z/affine->sx);
-      x=ceil(intercept+MagickEpsilon-0.5);
+      x=(long) ceil(intercept+MagickEpsilon-0.5);
       if (x > inverse_edge.x1)
         inverse_edge.x1=x;
       intercept=(-z+image->columns)/affine->sx;
-      x=ceil(intercept-MagickEpsilon-0.5);
+      x=(long) ceil(intercept-MagickEpsilon-0.5);
       if (x < inverse_edge.x2)
         inverse_edge.x2=x;
     }
@@ -1152,11 +1152,11 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
     if (affine->sx < -MagickEpsilon)
       {
         intercept=(-z+image->columns)/affine->sx;
-        x=ceil(intercept+MagickEpsilon-0.5);
+        x=(long) ceil(intercept+MagickEpsilon-0.5);
         if (x > inverse_edge.x1)
           inverse_edge.x1=x;
         intercept=(-z/affine->sx);
-        x=ceil(intercept-MagickEpsilon-0.5);
+        x=(long) ceil(intercept-MagickEpsilon-0.5);
         if (x < inverse_edge.x2)
           inverse_edge.x2=x;
       }
@@ -1173,11 +1173,11 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
   if (affine->rx > MagickEpsilon)
     {
       intercept=(-z /affine->rx);
-      x=ceil(intercept+MagickEpsilon-0.5);
+      x=(long) ceil(intercept+MagickEpsilon-0.5);
       if (x > inverse_edge.x1)
         inverse_edge.x1=x;
       intercept=(-z+image->rows)/affine->rx;
-      x=ceil(intercept-MagickEpsilon-0.5);
+      x=(long) ceil(intercept-MagickEpsilon-0.5);
       if (x < inverse_edge.x2)
         inverse_edge.x2=x;
     }
@@ -1185,11 +1185,11 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
     if (affine->rx < -MagickEpsilon)
       {
         intercept=(-z+image->rows)/affine->rx;
-        x=ceil(intercept+MagickEpsilon-0.5);
+        x=(long) ceil(intercept+MagickEpsilon-0.5);
         if (x > inverse_edge.x1)
           inverse_edge.x1=x;
         intercept=(-z/affine->rx);
-        x=ceil(intercept-MagickEpsilon-0.5);
+        x=(long) ceil(intercept-MagickEpsilon-0.5);
         if (x < inverse_edge.x2)
           inverse_edge.x2=x;
       }
@@ -1269,8 +1269,8 @@ MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
   extent[3].y=composite->rows;
   for (i=0; i < 4; i++)
   {
-    x=extent[i].x+0.5;
-    y=extent[i].y+0.5;
+    x=(long) (extent[i].x+0.5);
+    y=(long) (extent[i].y+0.5);
     extent[i].x=x*affine->sx+y*affine->ry+affine->tx;
     extent[i].y=x*affine->rx+y*affine->sy+affine->ty;
   }
@@ -1294,7 +1294,7 @@ MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
   edge.x1=min.x;
   edge.x2=max.x;
   inverse_affine=InverseAffineMatrix(affine);
-  for (y=Max(min.y,0); y < (long) Min(max.y,image->rows); y++)
+  for (y=(long) Max(min.y,0); y < (long) Min(max.y,image->rows); y++)
   {
     inverse_edge=AffineEdge(composite,&inverse_affine,y,&edge);
     if (inverse_edge.x2 < inverse_edge.x1)
@@ -2953,7 +2953,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     bounds.y1=primitive_info[j].point.y;
     bounds.x2=primitive_info[j].point.x;
     bounds.y2=primitive_info[j].point.y;
-    for (k=1; k < primitive_info[j].coordinates; k++)
+    for (k=1; k < (long) primitive_info[j].coordinates; k++)
     {
       point=primitive_info[j+k].point;
       if (point.x < bounds.x1)
@@ -2968,7 +2968,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     alpha=bounds.x2-bounds.x1;
     beta=bounds.y2-bounds.y1;
     radius=sqrt(alpha*alpha+beta*beta);
-    length=2*ceil(MagickPI*radius)+6*BezierQuantum+360;
+    length=(size_t) (2*ceil(MagickPI*radius)+6*BezierQuantum+360);
     if (i >= (long) (number_points-length))
       {
         number_points+=length;
@@ -3213,7 +3213,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     (void) DrawPrimitive(image,graphic_context[n],primitive_info);
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
-    MagickMonitor(RenderImageText,q-primitive,primitive_extent);
+    MagickMonitor(RenderImageText,q-primitive,(off_t) primitive_extent);
   }
   if (graphic_context[n]->debug)
     (void) fprintf(stdout,"end draw-image (%.2fu)\n",GetUserTime(&timer));

@@ -2154,7 +2154,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           {
             if (next->scene != 0)
               i=next->scene;
-            if (i != first)
+            if (i != (long) first)
               {
                 i++;
                 continue;

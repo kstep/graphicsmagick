@@ -1882,10 +1882,14 @@ static void SVGStartElement(void *context,const xmlChar *name,
               if (*token == ',')
                 GetToken(p,&p,token);
               svg_info->view_box.width=atof(token);
+              if (svg_info->bounds.width == 0)
+                svg_info->bounds.width=svg_info->view_box.width;
               GetToken(p,&p,token);
               if (*token == ',')
                 GetToken(p,&p,token);
               svg_info->view_box.height=atof(token);
+              if (svg_info->bounds.height == 0)
+                svg_info->bounds.height=svg_info->view_box.height;
               break;
             }
           break;
