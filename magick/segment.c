@@ -137,10 +137,10 @@ typedef struct _ZeroCrossing
 {
   double
     tau,
-    histogram[MaxRGB+1];
+    histogram[ScaleQuantumToChar(MaxRGB)+1];
 
   short
-    crossings[MaxRGB+1];
+    crossings[ScaleQuantumToChar(MaxRGB)+1];
 } ZeroCrossing;
 
 /*
@@ -453,7 +453,7 @@ static unsigned int Classify(Image *image,short **extrema,
       }
       (void) fprintf(stderr,"\n");
     }
-  if (number_clusters > (MaxRGB+1))
+  if (number_clusters > (ScaleQuantumToChar(MaxRGB)+1))
     ThrowBinaryException(ResourceLimitError,"Unable to segment image",
       "too many clusters");
   /*
@@ -1147,8 +1147,10 @@ static double OptimalTau(const long *histogram,const double max_tau,
   /*
     Initialize zero crossing list.
   */
-  derivative=(double *) AcquireMemory((MaxRGB+1)*sizeof(double));
-  second_derivative=(double *) AcquireMemory((MaxRGB+1)*sizeof(double));
+  derivative=(double *)
+    AcquireMemory((ScaleQuantumToChar(MaxRGB)+1)*sizeof(double));
+  second_derivative=(double *)
+    AcquireMemory((ScaleQuantumToChar(MaxRGB)+1)*sizeof(double));
   if ((derivative == (double *) NULL) || (second_derivative == (double *) NULL))
     MagickFatalError(ResourceLimitFatalError,"Unable to allocate derivatives",
       "Memory allocation failed");
@@ -1310,7 +1312,7 @@ static void ScaleSpace(const long *histogram,const double tau,
     u,
     x;
 
-  gamma=(double *) AcquireMemory((MaxRGB+1)*sizeof(double));
+  gamma=(double *) AcquireMemory((ScaleQuantumToChar(MaxRGB)+1)*sizeof(double));
   if (gamma == (double *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Unable to allocate gamma map",
       "Memory allocation failed");
