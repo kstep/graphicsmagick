@@ -302,7 +302,7 @@ reset changes the matte value of all pixels.</font></td>
 <center><a NAME="DrawablePath"></a><font size=-1>DrawablePath</font></center>
 </td>
 
-<td><font size=-1>const std::list&lt;Magick::Path> &amp;path_</font></td>
+<td><font size=-1>const std::list&lt;Magick::VPath> &amp;path_</font></td>
 
 <td><font size=-1>Draw on image using vector path.</font></td>
 </tr>
@@ -781,7 +781,8 @@ double x_, double y_ );</tt>
 <td ROWSPAN="4" NOSAVE><font size=-1>Draws a cubic B&eacute;zier curve
 from the current point to (x,y) using (x1,y1) as the control point at the
 beginning of the curve and (x2,y2) as the control point at the end of the
-curve. <i>PathCurvetoAbs</i> indicates that absolutecoordinates will follow;&nbsp;
+curve. <i>PathCurvetoAbs</i> indicates that absolutecoordinates will follow;
+
 <i>PathCurvetoRel</i> indicates that relative coordinates will follow.
 Multiple sets of coordinates may be specified to draw a polybezier. At
 the end of the command, the new current point becomes the final (x,y) coordinate
@@ -848,7 +849,7 @@ The quadratic B&eacute;zier commands depend on the <i>PathQuadraticCurvetoArgs</
 argument class, which has the constructor signature:
 <p><tt>&nbsp; PathQuadraticCurvetoArgs( double x1_, double y1_,</tt>
 <br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-double x_, double y_ );</tt><tt></tt>
+double x_, double y_ );</tt>
 <p>The quadratic B&eacute;zier commands are as follows:
 <br>&nbsp;
 <br>&nbsp;
@@ -912,9 +913,10 @@ point to (x,y). The control point is assumed to be the reflection of the
 control point on the previous
 <br>command relative to the current point. (If there is no previous command
 or if the previous command was not a <i>PathQuadraticCurvetoAbs</i>, <i>PathQuadraticCurvetoRel</i>,
-<i>PathSmoothQuadraticCurvetoAbs</i> or <i>PathSmoothQuadraticCurvetoRel</i>,
-assume the control point is coincident with the current point.) <i>PathSmoothQuadraticCurvetoAbs</i>
-indicates that absolute coordinates will follow; <i>PathSmoothQuadraticCurvetoRel</i>
+<i>PathSmoothQuadraticCurvetoAbs</i>
+or <i>PathSmoothQuadraticCurvetoRel</i>, assume the control point is coincident
+with the current point.) <i>PathSmoothQuadraticCurvetoAbs</i> indicates
+that absolute coordinates will follow; <i>PathSmoothQuadraticCurvetoRel</i>
 indicates that relative coordinates will follow. At the end of the command,
 the new current point becomes the final (x,y) coordinate pair used in the
 polybezier.</td>

@@ -18,154 +18,6 @@ using namespace std;
 
 #define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
 
-// Print coordinate to stream.
-std::ostream& Magick::operator<<( std::ostream& stream_, const Magick::Coordinate& coordinate_
-)
-{
-  stream_ << coordinate_._x << "," << coordinate_._y;
-  return stream_;
-}
-
-//
-// DrawableBase implementation
-//
-// Constructor
-Magick::DrawableBase::DrawableBase( void )
-{
-  // All components are self-initializing
-}
-
-// Destructor
-Magick::DrawableBase::~DrawableBase( void )
-{
-  // Nothing to do
-}
-
-std::ostream& Magick::operator<< (std::ostream& stream_,
-                                  const Magick::DrawableBase& drawable_)
-{
-  drawable_.print (stream_);
-  return stream_;
-}
-
-//
-// Drawable surrogate implementation
-//
-// Constructor
-Magick::Drawable::Drawable ( void )
-  : dp(0)
-{
-}
-
-// Construct from DrawableBase
-Magick::Drawable::Drawable ( const Magick::DrawableBase& original_ )
-  : dp(original_.copy())
-{
-}
-
-// Destructor
-Magick::Drawable::~Drawable ( void )
-{
-  delete dp;
-}
-
-// Copy constructor
-Magick::Drawable::Drawable ( const Magick::Drawable& original_ )
-  : dp(original_.dp? original_.dp->copy(): 0)
-{
-}
-
-// Assignment operator
-Magick::Drawable& Magick::Drawable::operator= (const Magick::Drawable& original_ )
-{
-  if (this != &original_)
-    {
-      delete dp;
-      dp = (original_.dp ? original_.dp->copy() : 0);
-    }
-  return *this;
-}
-
-// Print object to stream
-std::ostream& Magick::operator<< (std::ostream& stream_,
-                                  const Magick::Drawable& drawable_)
-
-{
-  if (drawable_.dp != 0)
-    stream_ << *drawable_.dp;
-  return stream_;
-}
-
-//
-// PathBase implementation
-//
-// Constructor
-Magick::PathBase::PathBase( void )
-{
-  // All components are self-initializing
-}
-
-// Destructor
-Magick::PathBase::~PathBase( void )
-{
-  // Nothing to do
-}
-
-std::ostream& Magick::operator<< (std::ostream& stream_,
-                                  const Magick::PathBase& drawable_)
-{
-  drawable_.print (stream_);
-  return stream_;
-}
-
-//
-// Path surrogate implementation
-//
-// Constructor
-Magick::Path::Path ( void )
-  : dp(0)
-{
-}
-
-// Construct from PathBase
-Magick::Path::Path ( const Magick::PathBase& original_ )
-  : dp(original_.copy())
-{
-}
-
-// Destructor
-Magick::Path::~Path ( void )
-{
-  delete dp;
-}
-
-// Copy constructor
-Magick::Path::Path ( const Magick::Path& original_ )
-  : dp(original_.dp? original_.dp->copy(): 0)
-{
-}
-
-// Assignment operator
-Magick::Path& Magick::Path::operator= (const Magick::Path& original_ )
-{
-  if (this != &original_)
-    {
-      delete dp;
-      dp = (original_.dp ? original_.dp->copy() : 0);
-    }
-  return *this;
-}
-
-// Print object to stream
-std::ostream& Magick::operator<< (std::ostream& stream_,
-                                  const Magick::Path& drawable_)
-
-{
-  if (drawable_.dp != 0)
-    stream_ << *drawable_.dp;
-  return stream_;
-}
-
 //
 // Drawable Objects
 //
@@ -188,35 +40,13 @@ void Magick::DrawableAffine::print (std::ostream& stream_) const
 }
 
 // Angle (text drawing angle)
-Magick::DrawableAngle::DrawableAngle ( double angle_ )
-  : _angle(angle_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableAngle::print (std::ostream& stream_) const
 {
   stream_ << "angle "
           << _angle;
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableAngle::copy() const
-{
-  return new DrawableAngle(*this);
-}
 
 // Arc
-Magick::DrawableArc::DrawableArc ( double startX_, double startY_,
-                                   double endX_, double endY_,
-                                   double startDegrees_, double endDegrees_ )
-  : _startX(startX_),
-    _startY(startY_),
-    _endX(endX_),
-    _endY(endY_),
-    _startDegrees(startDegrees_),
-    _endDegrees(endDegrees_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableArc::print (std::ostream& stream_) const
 {
   stream_ << "arc"
@@ -224,18 +54,8 @@ void Magick::DrawableArc::print (std::ostream& stream_) const
           << " " << Coordinate(_endX,_endY)
           << " " << Coordinate(_startDegrees,_endDegrees);
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableArc::copy() const
-{
-  return new DrawableArc(*this);
-}
 
 // Bezier curve (Coordinate list must contain at least three members)
-Magick::DrawableBezier::DrawableBezier ( const std::list<Magick::Coordinate> &coordinates_ )
-  : _coordinates(coordinates_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableBezier::print (std::ostream& stream_) const
 {
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -248,24 +68,8 @@ void Magick::DrawableBezier::print (std::ostream& stream_) const
       p++;
     }
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableBezier::copy() const
-{
-  return new DrawableBezier(*this);
-}
 
 // Circle
-Magick::DrawableCircle::DrawableCircle ( double originX_,
-                                         double originY_,
-                                         double perimX_,
-                                         double perimY_ )
-  : _originX(originX_),
-    _originY(originY_),
-    _perimX(perimX_),
-    _perimY(perimY_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableCircle::print (std::ostream& stream_) const
 {
   stream_ << "circle "
@@ -273,21 +77,8 @@ void Magick::DrawableCircle::print (std::ostream& stream_) const
           << " "
           << Coordinate( _perimX, _perimY );
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableCircle::copy() const
-{
-  return new DrawableCircle(*this);
-}
 
 // Colorize at point using PaintMethod
-Magick::DrawableColor::DrawableColor ( double x_, double y_,
-                                       Magick::PaintMethod paintMethod_ )
-  : _x(x_),
-    _y(y_),
-    _paintMethod(paintMethod_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableColor::print (std::ostream& stream_) const
 {
   stream_ << "color "
@@ -317,21 +108,11 @@ void Magick::DrawableColor::print (std::ostream& stream_) const
       }
     }
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableColor::copy() const
-{
-  return new DrawableColor(*this);
-}
 
 // Drawable Path
-Magick::DrawablePath::DrawablePath ( const std::list<Magick::Path> &path_ )
-  : _path(path_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawablePath::print (std::ostream& stream_) const
 {
-  std::list<Magick::Path>::const_iterator p = _path.begin();
+  std::list<Magick::VPath>::const_iterator p = _path.begin();
 
   stream_ << "path '";
   while ( p != _path.end() )
@@ -340,11 +121,6 @@ void Magick::DrawablePath::print (std::ostream& stream_) const
       p++;
     }
   stream_ << "'";
-}
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawablePath::copy() const
-{
-  return new DrawablePath(*this);
 }
 
 // Decoration (text decoration)
@@ -647,47 +423,20 @@ Magick::DrawableBase* Magick::DrawableMatte::copy() const
 }
 
 // Point
-Magick::DrawablePoint::DrawablePoint ( double x_,
-                                       double y_ )
-  : _x(x_),
-    _y(y_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawablePoint::print (std::ostream& stream_) const
 {
   stream_ << "point "
           << Coordinate( _x, _y );
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawablePoint::copy() const
-{
-  return new DrawablePoint(*this);
-}
 
 // Text pointsize
-Magick::DrawablePointSize::DrawablePointSize( double pointSize_ )
-  : _pointSize(pointSize_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawablePointSize::print (std::ostream& stream_) const
 {
   stream_ << "pointsize "
           << _pointSize;
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawablePointSize::copy() const
-{
-  return new DrawablePointSize(*this);
-}
 
 // Polygon (Coordinate list must contain at least three members)
-Magick::DrawablePolygon::DrawablePolygon ( const std::list<Magick::Coordinate> &coordinates_ )
-  : _coordinates(coordinates_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawablePolygon::print (std::ostream& stream_) const
 {
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -700,18 +449,8 @@ void Magick::DrawablePolygon::print (std::ostream& stream_) const
       p++;
     }
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawablePolygon::copy() const
-{
-  return new DrawablePolygon(*this);
-}
 
 // Polyline (Coordinate list must contain at least three members)
-Magick::DrawablePolyline::DrawablePolyline ( const std::list<Magick::Coordinate> &coordinates_ )
-  : _coordinates(coordinates_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawablePolyline::print (std::ostream& stream_) const
 {
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -723,11 +462,6 @@ void Magick::DrawablePolyline::print (std::ostream& stream_) const
 	      << *p;
       p++;
     }
-}
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawablePolyline::copy() const
-{
-  return new DrawablePolyline(*this);
 }
 
 // Pop Graphic Context
@@ -743,17 +477,6 @@ void Magick::DrawablePushGraphicContext::print (std::ostream& stream_) const
 }
 
 // Rectangle
-Magick::DrawableRectangle::DrawableRectangle ( double upperLeftX_,
-                                               double upperLeftY_,
-                                               double lowerRightX_,
-                                               double lowerRightY_ )
-  : _upperLeftX(upperLeftX_),
-    _upperLeftY(upperLeftY_),
-    _lowerRightX(lowerRightX_),
-    _lowerRightY(lowerRightY_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableRectangle::print (std::ostream& stream_) const
 {
   stream_ << "rectangle "
@@ -761,45 +484,20 @@ void Magick::DrawableRectangle::print (std::ostream& stream_) const
           << " "
           << Coordinate( _lowerRightX, _lowerRightY );
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableRectangle::copy() const
-{
-  return new DrawableRectangle(*this);
-}
 
 // Apply Rotation
-
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableRotation::print (std::ostream& stream_) const
 {
   stream_ << "rotate " << _angle;
 }
 
 // Round Rectangle
-Magick::DrawableRoundRectangle::DrawableRoundRectangle
-( double centerX_, double centerY_,
-  double width_, double hight_,
-  double cornerWidth_, double cornerHeight_ )
-  : _centerX(centerX_),
-    _centerY(centerY_),
-    _width(width_),
-    _hight(hight_),
-    _cornerWidth(cornerWidth_),
-    _cornerHeight(cornerHeight_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableRoundRectangle::print (std::ostream& stream_) const
 {
   stream_ << "roundRectangle"
           << " " << Coordinate(_centerX,_centerY)
           << " " << Coordinate(_width,_hight)
           << " " << Coordinate(_cornerWidth,_cornerHeight);
-}
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableRoundRectangle::copy() const
-{
-  return new DrawableRoundRectangle(*this);
 }
 
 // Apply Scaling
@@ -821,20 +519,10 @@ void Magick::DrawableSkewY::print (std::ostream& stream_) const
 }
 
 // Stroke color
-Magick::DrawableStrokeColor::DrawableStrokeColor ( const Magick::Color &color_ )
-  : _color(color_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableStrokeColor::print (std::ostream& stream_) const
 {
   stream_ << "stroke "
           << string(_color);
-}
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableStrokeColor::copy() const
-{
-  return new DrawableStrokeColor(*this);
 }
 
 // Stroke antialias
@@ -855,32 +543,13 @@ void Magick::DrawableStrokeOpacity::print (std::ostream& stream_) const
 }
 
 // Stroke width
-Magick::DrawableStrokeWidth::DrawableStrokeWidth ( double width_ )
-  : _width(width_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableStrokeWidth::print (std::ostream& stream_) const
 {
   stream_ << "stroke-width "
           << _width;
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableStrokeWidth::copy() const
-{
-  return new DrawableStrokeWidth(*this);
-}
 
 // Draw text at point
-Magick::DrawableText::DrawableText ( double x_,
-                                     double y_,
-                                     const std::string &text_ )
-  : _x(x_),
-    _y(y_),
-    _text(text_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableText::print (std::ostream& stream_) const
 {
   stream_ << "text "
@@ -893,11 +562,6 @@ void Magick::DrawableText::print (std::ostream& stream_) const
       stream_ << _text[i];
     }
   stream_ << "\"";
-}
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableText::copy() const
-{
-  return new DrawableText(*this);
 }
 
 // Apply Translation

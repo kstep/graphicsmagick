@@ -95,7 +95,7 @@ int main( int /*argc*/, char ** argv)
     drawList.push_back(DrawableFillColor("blue"));
     drawList.push_back(DrawableStrokeWidth(4));
     {
-      std::list<Path> path;
+      std::list<VPath> path;
       path.push_back(PathMovetoAbs(Coordinate(160,70)));
       path.push_back(PathLinetoVerticalRel(-40));
       path.push_back(PathArcRel(PathArcArgs(40,40, 0, 0, 0, -40,40)));
@@ -155,7 +155,7 @@ int main( int /*argc*/, char ** argv)
 //     image.annotate( "This is a test!", "+30+140");
 
 
-//     image.write( "piddle.mvg" );
+    image.write( "piddle.mvg" );
 
     cout << "Writing image \"piddle.miff\" ..." << endl;
     image.write( "piddle.miff" );

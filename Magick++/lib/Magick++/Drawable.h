@@ -19,6 +19,7 @@
 
 namespace Magick
 {
+
   //
   // Representation of an x,y coordinate
   //
@@ -68,13 +69,15 @@ namespace Magick
   {
   public:
     // Constructor
-    DrawableBase ( void );
+    DrawableBase ( void )
+      { }
 
     // Destructor
-    virtual ~DrawableBase ( void );
+    virtual ~DrawableBase ( void )
+      { }
 
     // Assignment operator
-    const DrawableBase& operator= (const DrawableBase& original_ );
+    //     const DrawableBase& operator= (const DrawableBase& original_ );
 
     // Print object to stream
     friend std::ostream& operator<< (std::ostream& stream_,
@@ -87,6 +90,7 @@ namespace Magick
     virtual DrawableBase* copy() const = 0;
   };
 
+
   //
   // Representation of a drawable surrogate object to manage drawable objects
   //
@@ -94,19 +98,36 @@ namespace Magick
   {
   public:
     // Constructor
-    Drawable ( void );
+    Drawable ( void )
+      : dp(0)
+      { }
 
     // Construct from DrawableBase
-    Drawable ( const DrawableBase& original_ );
+    Drawable ( const DrawableBase& original_ )
+      : dp(original_.copy())
+      { }
 
     // Destructor
-    ~Drawable ( void );
+    ~Drawable ( void )
+      {
+        delete dp;
+      }
 
     // Copy constructor
-    Drawable ( const Drawable& original_ );
+    Drawable ( const Drawable& original_ )
+      : dp(original_.dp? original_.dp->copy(): 0)
+      { }
 
     // Assignment operator
-    Drawable& operator= (const Drawable& original_ );
+    Drawable& operator= (const Drawable& original_ )
+      {
+        if (this != &original_)
+          {
+            delete dp;
+            dp = (original_.dp ? original_.dp->copy() : 0);
+          }
+        return *this;
+      }
 
     // Print object to stream
     friend std::ostream& operator<< (std::ostream& stream_,
@@ -119,27 +140,29 @@ namespace Magick
   // Base class for all drawable path elements for use with
   // DrawablePath
   //
-  class PathBase
+  class VPathBase
   {
   public:
     // Constructor
-    PathBase ( void );
+    VPathBase ( void )
+      { }
 
     // Destructor
-    virtual ~PathBase ( void );
+    virtual ~VPathBase ( void )
+      { }
 
     // Assignment operator
-    const PathBase& operator= (const PathBase& original_ );
+    const VPathBase& operator= (const VPathBase& original_ );
 
     // Print object to stream
     friend std::ostream& operator<< (std::ostream& stream_,
-                                     const PathBase& drawable_);
+                                     const VPathBase& drawable_);
 
     // Support a polymorphic print-to-stream operator
     virtual void print (std::ostream& stream_) const = 0;
 
     // Return polymorphic copy of object
-    virtual PathBase* copy() const = 0;
+    virtual VPathBase* copy() const = 0;
   };
 
   //
@@ -147,29 +170,46 @@ namespace Magick
   // manage drawable path elements so they may be passed as a list to
   // DrawablePath.
   //
-  class Path
+  class VPath
   {
   public:
     // Constructor
-    Path ( void );
+    VPath ( void )
+      : dp(0)
+      { }
 
-    // Construct from PathBase
-    Path ( const PathBase& original_ );
+    // Construct from VPathBase
+    VPath ( const VPathBase& original_ )
+      : dp(original_.copy())
+      { }
 
     // Destructor
-    ~Path ( void );
+    ~VPath ( void )
+      {
+        delete dp;
+      }
 
     // Copy constructor
-    Path ( const Path& original_ );
+    VPath ( const VPath& original_ )
+      : dp(original_.dp? original_.dp->copy(): 0)
+      { }
 
     // Assignment operator
-    Path& operator= (const Path& original_ );
+    VPath& operator= (const VPath& original_ )
+      {
+        if (this != &original_)
+          {
+            delete dp;
+            dp = (original_.dp ? original_.dp->copy() : 0);
+          }
+        return *this;
+      }
 
     // Print object to stream
     friend std::ostream& operator<< (std::ostream& stream_,
-                                     const Path& drawable_);
+                                     const VPath& drawable_);
   private:
-    PathBase* dp;
+    VPathBase* dp;
   };
 
   //
@@ -215,13 +255,20 @@ namespace Magick
   class DrawableAngle  : public DrawableBase
   {
   public:
-    DrawableAngle ( double angle_ );
+    DrawableAngle ( double angle_ )
+      : _angle(angle_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableAngle(*this);
+      }
+
   private:
     double _angle;
   };
@@ -232,13 +279,23 @@ namespace Magick
   public:
     DrawableArc ( double startX_, double startY_,
                   double endX_, double endY_,
-                  double startDegrees_, double endDegrees_ );
+                  double startDegrees_, double endDegrees_ )
+      : _startX(startX_),
+        _startY(startY_),
+        _endX(endX_),
+        _endY(endY_),
+        _startDegrees(startDegrees_),
+        _endDegrees(endDegrees_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/ DrawableBase* copy() const
+      {
+        return new DrawableArc(*this);
+      }
 
   private:
     double _startX;
@@ -253,13 +310,18 @@ namespace Magick
   class DrawableBezier : public DrawableBase
   {
   public:
-    DrawableBezier ( const std::list<Magick::Coordinate> &coordinates_ );
+    DrawableBezier ( const std::list<Magick::Coordinate> &coordinates_ )
+      : _coordinates(coordinates_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/ DrawableBase* copy() const
+      {
+        return new DrawableBezier(*this);
+      }
 
   private:
     std::list<Magick::Coordinate> _coordinates;
@@ -270,13 +332,22 @@ namespace Magick
   {
   public:
     DrawableCircle ( double originX_, double originY_,
-                     double perimX_, double perimY_ );
+                     double perimX_, double perimY_ )
+      : _originX(originX_),
+        _originY(originY_),
+        _perimX(perimX_),
+        _perimY(perimY_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableCircle(*this);
+      }
 
   private:
     double _originX;
@@ -290,13 +361,21 @@ namespace Magick
   {
   public:
     DrawableColor ( double x_, double y_,
-                    PaintMethod paintMethod_ );
+                    PaintMethod paintMethod_ )
+      : _x(x_),
+        _y(y_),
+        _paintMethod(paintMethod_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableColor(*this);
+      }
 
   private:
     double _x;
@@ -472,29 +551,42 @@ namespace Magick
   class DrawablePath : public DrawableBase
   {
   public:
-    DrawablePath ( const std::list<Magick::Path> &path_ );
+    DrawablePath ( const std::list<Magick::VPath> &path_ )
+      : _path(path_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawablePath(*this);
+      }
 
   private:
-    std::list<Magick::Path> _path;
+    std::list<Magick::VPath> _path;
   };
 
   // Point
   class DrawablePoint : public DrawableBase
   {
   public:
-    DrawablePoint ( double x_, double y_ );
+    DrawablePoint ( double x_, double y_ )
+      : _x(x_),
+        _y(y_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawablePoint(*this);
+      }
 
   private:
     double _x;
@@ -505,13 +597,19 @@ namespace Magick
   class DrawablePointSize : public DrawableBase
   {
   public:
-    DrawablePointSize ( double pointSize_ );
+    DrawablePointSize ( double pointSize_ )
+      : _pointSize(pointSize_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawablePointSize(*this);
+      }
 
   private:
     double _pointSize;
@@ -521,13 +619,19 @@ namespace Magick
   class DrawablePolygon : public DrawableBase
   {
   public:
-    DrawablePolygon ( const std::list<Magick::Coordinate> &coordinates_ );
+    DrawablePolygon ( const std::list<Magick::Coordinate> &coordinates_ )
+      : _coordinates(coordinates_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawablePolygon(*this);
+      }
 
   private:
     std::list<Magick::Coordinate> _coordinates;
@@ -537,13 +641,19 @@ namespace Magick
   class DrawablePolyline : public DrawableBase
   {
   public:
-    DrawablePolyline ( const std::list<Magick::Coordinate> &coordinates_ );
+    DrawablePolyline ( const std::list<Magick::Coordinate> &coordinates_ )
+      : _coordinates(coordinates_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawablePolyline(*this);
+      }
 
   private:
     std::list<Magick::Coordinate> _coordinates;
@@ -592,13 +702,22 @@ namespace Magick
   {
   public:
     DrawableRectangle ( double upperLeftX_, double upperLeftY_,
-                        double lowerRightX_, double lowerRightY );
+                        double lowerRightX_, double lowerRightY_ )
+      : _upperLeftX(upperLeftX_),
+        _upperLeftY(upperLeftY_),
+        _lowerRightX(lowerRightX_),
+        _lowerRightY(lowerRightY_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableRectangle(*this);
+      }
 
   private:
     double _upperLeftX;
@@ -613,8 +732,7 @@ namespace Magick
   public:
     DrawableRotation ( double angle_ )
       : _angle( angle_ )
-      {
-      }
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
@@ -636,13 +754,24 @@ namespace Magick
   public:
     DrawableRoundRectangle ( double centerX_, double centerY_,
                              double width_, double hight_,
-                             double cornerWidth_, double cornerHeight_ );
+                             double cornerWidth_, double cornerHeight_ )
+      : _centerX(centerX_),
+        _centerY(centerY_),
+        _width(width_),
+        _hight(hight_),
+        _cornerWidth(cornerWidth_),
+        _cornerHeight(cornerHeight_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableRoundRectangle(*this);
+      }
 
   private:
     double _centerX;
@@ -660,8 +789,7 @@ namespace Magick
     DrawableScaling ( double x_, double y_ )
       : _x(x_),
         _y(y_)
-      {
-      }
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
@@ -684,8 +812,7 @@ namespace Magick
   public:
     DrawableSkewX ( double angle_ )
       : _angle(angle_)
-      {
-      }
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
@@ -707,8 +834,7 @@ namespace Magick
   public:
     DrawableSkewY ( double angle_ )
       : _angle(angle_)
-      {
-      }
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
@@ -730,7 +856,8 @@ namespace Magick
   {
   public:
     DrawableStrokeAntialias ( bool flag_ )
-      : _flag(flag_) { }
+      : _flag(flag_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
@@ -750,13 +877,19 @@ namespace Magick
   class DrawableStrokeColor : public DrawableBase
   {
   public:
-    DrawableStrokeColor ( const Color &color_ );
+    DrawableStrokeColor ( const Color &color_ )
+      : _color(color_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableStrokeColor(*this);
+      }
 
   private:
     Color _color;
@@ -791,13 +924,19 @@ namespace Magick
   class DrawableStrokeWidth : public DrawableBase
   {
   public:
-    DrawableStrokeWidth ( double width_ );
+    DrawableStrokeWidth ( double width_ )
+      : _width(width_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableStrokeWidth(*this);
+      }
 
   private:
     double _width;
@@ -808,13 +947,21 @@ namespace Magick
   {
   public:
     DrawableText ( double x_, double y_,
-                   const std::string &text_ );
+                   const std::string &text_ )
+      : _x(x_),
+        _y(y_),
+        _text(text_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableText(*this);
+      }
 
   private:
     double _x;
@@ -829,8 +976,7 @@ namespace Magick
     DrawableTranslation ( double x_, double y_ )
       : _x(x_),
         _y(y_)
-      {
-      }
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
@@ -885,8 +1031,8 @@ namespace Magick
         _x(x_),
         _y(y_) { }
 
-   friend std::ostream& operator<<( std::ostream& stream_,
-                                    const PathArcArgs& args_ );
+    friend std::ostream& operator<<( std::ostream& stream_,
+                                     const PathArcArgs& args_ );
 
   private:
     double	_radiusX;	// X radius
@@ -899,7 +1045,7 @@ namespace Magick
   };
 
   // Path Arc (Elliptical Arc)
-  class PathArcAbs : public PathBase
+  class PathArcAbs : public VPathBase
   {
   public:
     // Draw a single arc segment
@@ -914,14 +1060,16 @@ namespace Magick
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ PathBase* copy() const {
-      return new PathArcAbs(*this);
-    }
+    /*virtual*/
+    VPathBase* copy() const
+      {
+        return new PathArcAbs(*this);
+      }
 
   private:
     std::list<Magick::PathArcArgs> _coordinates;
   };
-  class PathArcRel : public PathBase
+  class PathArcRel : public VPathBase
   {
   public:
     // Draw a single arc segment
@@ -936,7 +1084,7 @@ namespace Magick
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ PathBase* copy() const {
+    /*virtual*/ VPathBase* copy() const {
       return new PathArcRel(*this);
     }
 
@@ -945,7 +1093,7 @@ namespace Magick
   };
 
   // Path Closepath
-  class PathClosePath : public PathBase
+  class PathClosePath : public VPathBase
   {
   public:
     PathClosePath ( void )
@@ -955,7 +1103,7 @@ namespace Magick
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ PathBase* copy() const {
+    /*virtual*/ VPathBase* copy() const {
       return new PathClosePath(*this);
     }
 
@@ -991,7 +1139,7 @@ namespace Magick
     double _x;
     double _y;
   };
-  class PathCurvetoAbs : public PathBase
+  class PathCurvetoAbs : public VPathBase
   {
   public:
     // Draw a single curve
@@ -1007,7 +1155,7 @@ namespace Magick
 
     // Return polymorphic copy of object
     /*virtual*/ 
-    PathBase* copy() const
+    VPathBase* copy() const
       {
         return new PathCurvetoAbs(*this);
       }
@@ -1015,7 +1163,7 @@ namespace Magick
   private:
     std::list<Magick::PathCurvetoArgs> _args;
   };
-  class PathCurvetoRel : public PathBase
+  class PathCurvetoRel : public VPathBase
   {
   public:
     // Draw a single curve
@@ -1031,7 +1179,7 @@ namespace Magick
 
     // Return polymorphic copy of object
     /*virtual*/ 
-    PathBase* copy() const
+    VPathBase* copy() const
       {
         return new PathCurvetoRel(*this);
       }
@@ -1039,7 +1187,7 @@ namespace Magick
   private:
     std::list<Magick::PathCurvetoArgs> _args;
   };
-  class PathSmoothCurvetoAbs : public PathBase
+  class PathSmoothCurvetoAbs : public VPathBase
   {
   public:
     // Draw a single curve
@@ -1055,7 +1203,7 @@ namespace Magick
 
     // Return polymorphic copy of object
     /*virtual*/ 
-    PathBase* copy() const
+    VPathBase* copy() const
       {
         return new PathSmoothCurvetoAbs(*this);
       }
@@ -1063,7 +1211,7 @@ namespace Magick
   private:
     std::list<Magick::Coordinate> _coordinates;
   };
-  class PathSmoothCurvetoRel : public PathBase
+  class PathSmoothCurvetoRel : public VPathBase
   {
   public:
     // Draw a single curve
@@ -1079,7 +1227,7 @@ namespace Magick
 
     // Return polymorphic copy of object
     /*virtual*/ 
-    PathBase* copy() const
+    VPathBase* copy() const
       {
         return new PathSmoothCurvetoRel(*this);
       }
@@ -1111,7 +1259,7 @@ namespace Magick
     double _x;
     double _y;
   };
-  class PathQuadraticCurvetoAbs : public PathBase
+  class PathQuadraticCurvetoAbs : public VPathBase
   {
   public:
     // Draw a single curve
@@ -1127,7 +1275,7 @@ namespace Magick
 
     // Return polymorphic copy of object
     /*virtual*/ 
-    PathBase* copy() const
+    VPathBase* copy() const
       {
         return new PathQuadraticCurvetoAbs(*this);
       }
@@ -1135,7 +1283,7 @@ namespace Magick
   private:
     std::list<Magick::PathQuadraticCurvetoArgs> _args;
   };
-  class PathQuadraticCurvetoRel : public PathBase
+  class PathQuadraticCurvetoRel : public VPathBase
   {
   public:
     // Draw a single curve
@@ -1151,7 +1299,7 @@ namespace Magick
 
     // Return polymorphic copy of object
     /*virtual*/ 
-    PathBase* copy() const
+    VPathBase* copy() const
       {
         return new PathQuadraticCurvetoRel(*this);
       }
@@ -1159,7 +1307,7 @@ namespace Magick
   private:
     std::list<Magick::PathQuadraticCurvetoArgs> _args;
   };
-  class PathSmoothQuadraticCurvetoAbs : public PathBase
+  class PathSmoothQuadraticCurvetoAbs : public VPathBase
   {
   public:
     // Draw a single curve
@@ -1175,7 +1323,7 @@ namespace Magick
 
     // Return polymorphic copy of object
     /*virtual*/ 
-    PathBase* copy() const
+    VPathBase* copy() const
       {
         return new PathSmoothQuadraticCurvetoAbs(*this);
       }
@@ -1183,7 +1331,7 @@ namespace Magick
   private:
     std::list<Magick::Coordinate> _coordinates;
   };
-  class PathSmoothQuadraticCurvetoRel : public PathBase
+  class PathSmoothQuadraticCurvetoRel : public VPathBase
   {
   public:
     // Draw a single curve
@@ -1199,7 +1347,7 @@ namespace Magick
 
     // Return polymorphic copy of object
     /*virtual*/ 
-    PathBase* copy() const
+    VPathBase* copy() const
       {
         return new PathSmoothQuadraticCurvetoRel(*this);
       }
@@ -1211,7 +1359,7 @@ namespace Magick
   //
   // Path Lineto
   //
-  class PathLinetoAbs : public PathBase
+  class PathLinetoAbs : public VPathBase
   {
   public:
     // Draw to a single point
@@ -1226,14 +1374,14 @@ namespace Magick
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ PathBase* copy() const {
+    /*virtual*/ VPathBase* copy() const {
       return new PathLinetoAbs(*this);
     }
 
   private:
     std::list<Magick::Coordinate> _coordinates;
   };
-  class PathLinetoRel : public PathBase
+  class PathLinetoRel : public VPathBase
   {
   public:
     // Draw to a single point
@@ -1248,7 +1396,7 @@ namespace Magick
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ PathBase* copy() const {
+    /*virtual*/ VPathBase* copy() const {
       return new PathLinetoRel(*this);
     }
 
@@ -1257,7 +1405,7 @@ namespace Magick
   };
 
   // Path Horizontal Lineto
-  class PathLinetoHorizontalAbs : public PathBase
+  class PathLinetoHorizontalAbs : public VPathBase
   {
   public:
     PathLinetoHorizontalAbs ( double x_ )
@@ -1267,14 +1415,14 @@ namespace Magick
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ PathBase* copy() const {
+    /*virtual*/ VPathBase* copy() const {
       return new PathLinetoHorizontalAbs(*this);
     }
 
   private:
     double _x;
   };
-  class PathLinetoHorizontalRel : public PathBase
+  class PathLinetoHorizontalRel : public VPathBase
   {
   public:
     PathLinetoHorizontalRel ( double x_ )
@@ -1284,7 +1432,7 @@ namespace Magick
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ PathBase* copy() const {
+    /*virtual*/ VPathBase* copy() const {
       return new PathLinetoHorizontalRel(*this);
     }
 
@@ -1293,7 +1441,7 @@ namespace Magick
   };
 
   // Path Vertical Lineto
-  class PathLinetoVerticalAbs : public PathBase
+  class PathLinetoVerticalAbs : public VPathBase
   {
   public:
     PathLinetoVerticalAbs ( double y_ )
@@ -1303,14 +1451,14 @@ namespace Magick
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ PathBase* copy() const {
+    /*virtual*/ VPathBase* copy() const {
       return new PathLinetoVerticalAbs(*this);
     }
 
   private:
     double _y;
   };
-  class PathLinetoVerticalRel : public PathBase
+  class PathLinetoVerticalRel : public VPathBase
   {
   public:
     PathLinetoVerticalRel ( double y_ )
@@ -1320,7 +1468,7 @@ namespace Magick
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ PathBase* copy() const {
+    /*virtual*/ VPathBase* copy() const {
       return new PathLinetoVerticalRel(*this);
     }
 
@@ -1329,7 +1477,7 @@ namespace Magick
   };
 
   // Path Moveto
-  class PathMovetoAbs : public PathBase
+  class PathMovetoAbs : public VPathBase
   {
   public:
     // Simple moveto
@@ -1344,14 +1492,14 @@ namespace Magick
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ PathBase* copy() const {
+    /*virtual*/ VPathBase* copy() const {
       return new PathMovetoAbs(*this);
     }
 
   private:
     std::list<Magick::Coordinate> _coordinates;
   };
-  class PathMovetoRel : public PathBase
+  class PathMovetoRel : public VPathBase
   {
   public:
     // Simple moveto
@@ -1366,7 +1514,7 @@ namespace Magick
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ PathBase* copy() const {
+    /*virtual*/ VPathBase* copy() const {
       return new PathMovetoRel(*this);
     }
 
@@ -1375,5 +1523,49 @@ namespace Magick
   };
 
 } // namespace Magick
+
+// Write Coordinate to stream.
+inline std::ostream& Magick::operator<<( std::ostream& stream_,
+                                         const Magick::Coordinate& coordinate_)
+{
+  stream_ << coordinate_._x << "," << coordinate_._y;
+  return stream_;
+}
+
+// Write DrawableBase to stream
+inline std::ostream& Magick::operator<< (std::ostream& stream_,
+                                           const Magick::DrawableBase& drawable_)
+{
+  drawable_.print (stream_);
+  return stream_;
+}
+
+// Write Drawable to stream
+inline std::ostream& Magick::operator<< (std::ostream& stream_,
+                                         const Magick::Drawable& drawable_)
+  
+{
+  if (drawable_.dp != 0)
+    stream_ << *drawable_.dp;
+  return stream_;
+}
+
+// Write VPathBase to stream
+inline std::ostream& Magick::operator<< (std::ostream& stream_,
+                                         const Magick::VPathBase& drawable_)
+{
+  drawable_.print (stream_);
+  return stream_;
+}
+
+// Write Path to stream
+inline std::ostream& Magick::operator<< (std::ostream& stream_,
+                                         const Magick::VPath& drawable_)
+  
+{
+  if (drawable_.dp != 0)
+    stream_ << *drawable_.dp;
+  return stream_;
+}
 
 #endif // Drawable_header

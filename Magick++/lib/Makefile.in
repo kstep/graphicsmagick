@@ -96,7 +96,6 @@ ILBMEncodeDelegate = @ILBMEncodeDelegate@
 INCLTDL = @INCLTDL@
 LD = @LD@
 LIBLTDL = @LIBLTDL@
-LIBSTDC_LDFLAGS = @LIBSTDC_LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LIB_BZLIB = @LIB_BZLIB@
 LIB_DL = @LIB_DL@
@@ -239,7 +238,7 @@ all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .c .cpp .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign Magick++/lib/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu Magick++/lib/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
