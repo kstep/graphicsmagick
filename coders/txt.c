@@ -212,7 +212,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     AllocateNextImage(image_info,image);
     if (image->next == (Image *) NULL)
       {
-        DestroyImageList(image);
+        DestroyImageList(&image);
         return((Image *) NULL);
       }
     image->next->columns=image->columns;

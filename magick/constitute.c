@@ -2066,7 +2066,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       TemporaryFilename(clone_info->filename);
       (void) InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL,
         exception);
-      DestroyImageList(image);
+      DestroyImageList(&image);
       image=(Image *) NULL;
       clone_info->temporary=True;
       (void) SetImageInfo(clone_info,False,exception);
@@ -2158,7 +2158,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         {
           while (subimages->previous != (Image *) NULL)
             subimages=subimages->previous;
-          DestroyImageList(image);
+          DestroyImageList(&image);
           image=subimages;
         }
     }

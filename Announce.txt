@@ -47,7 +47,7 @@ for details):
   o Utilities enhancements/changes:
 
     - Command line options now stay in effect for any image in command
-      line order until a another option is encountered or if -new is
+      line order until a another option is encountered or if -noop is
       specified.
 
     - Use -trim to trim the edges of an image.

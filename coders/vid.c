@@ -185,7 +185,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)
     ThrowReaderException(CorruptImageWarning,"unable to read VID image",image);
-  DestroyImageList(image);
+  DestroyImageList(&image);
   LiberateMemory((void **) &list[0]);
   LiberateMemory((void **) &list);
   return(montage_image);
@@ -305,6 +305,6 @@ static unsigned int WriteVIDImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(CorruptImageWarning,"unable to write VID image",image);
   FormatString(montage_image->filename,"miff:%.1024s",image->filename);
   status=WriteImage(image_info,montage_image);
-  DestroyImageList(montage_image);
+  DestroyImageList(&montage_image);
   return(status);
 }

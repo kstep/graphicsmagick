@@ -329,6 +329,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
 
   Image
     *image,
+    *image_list,
     *next_image;
 
   ImageInfo
@@ -355,6 +356,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
   GetExceptionInfo(&exception);
   filename=(char *) NULL;
   image=(Image *) NULL;
+  image_list=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,&exception);
@@ -406,6 +408,8 @@ static unsigned int ConvertUtility(int argc,char **argv)
       {
         status&=MogrifyImages(image_info,i-j,argv+j,&image);
         (void) CatchImageException(image);
+        PushImageList(&image_list,image,&exception);
+        DestroyImageList(&image);
         j=k+1;
       }
     switch (*(option+1))
@@ -703,13 +707,15 @@ static unsigned int ConvertUtility(int argc,char **argv)
             status&=WriteImages(clone_info,clone_image,argv[i],&exception);
             DestroyImageInfo(clone_info);
             if (*option == '-')
-              DestroyImageList(clone_image);
+              DestroyImageList(&clone_image);
             else
               {
-                DestroyImageList(image);
+                DestroyImageList(&image);
                 image=clone_image;
               }
-            k=i;
+            PushImageList(&image_list,image,&exception);
+            DestroyImageList(&image);
+            j=k+1;
             break;
           }
         if (LocaleCompare("cycle",option+1) == 0)
@@ -1524,7 +1530,9 @@ static unsigned int ConvertUtility(int argc,char **argv)
                 status&=MogrifyImages(image_info,i-j,argv+j,&image);
                 (void) CatchImageException(image);
                 status&=WriteImages(image_info,image,argv[i],&exception);
-                k=i;
+                PushImageList(&image_list,image,&exception);
+                DestroyImageList(&image);
+                j=k+1;
               }
             break;
           }
@@ -1869,8 +1877,10 @@ static unsigned int ConvertUtility(int argc,char **argv)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   status&=MogrifyImages(image_info,i-j,argv+j,&image);
   (void) CatchImageException(image);
-  status&=WriteImages(image_info,image,argv[argc-1],&exception);
-  DestroyImageList(image);
+  PushImageList(&image_list,image,&exception);
+  DestroyImageList(&image);
+  status&=WriteImages(image_info,image_list,argv[argc-1],&exception);
+  DestroyImageList(&image_list);
   DestroyImageInfo(image_info);
   return(status);
 }

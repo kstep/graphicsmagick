@@ -1289,7 +1289,7 @@ unsigned int CompositeUtility(int argc,char **argv)
     DestroyImages(composite_image);
   if (mask_image != (Image *) NULL)
     DestroyImages(mask_image);
-  DestroyImageList(image);
+  DestroyImageList(&image);
   DestroyImageInfo(image_info);
   return(status);
 }

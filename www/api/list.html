@@ -52,7 +52,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>Image * <STRONG>CloneImageList</STRONG>( const Image *images, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>DeleteImageList</STRONG>( Image *images, const unsigned long offset );</P>
-<P>void  <STRONG>DestroyImageList</STRONG>( Image *image );</P>
+<P>void  <STRONG>DestroyImageList</STRONG>( Image ** image );</P>
 <P>Image * <STRONG>GetImageList</STRONG>( const Image *images, const unsigned long offset, ExceptionInfo *exception );</P>
 <P>size_t  <STRONG>GetImageListIndex</STRONG>( const Image *images );</P>
 <P>size_t  <STRONG>GetImageListSize</STRONG>( const Image *images );</P>
@@ -102,7 +102,7 @@ The position within the list.
 <P>
 <H2><A NAME="destroyimagelist">DestroyImageList</A></H2>
 <blockquote>DestroyImageList() destroys an image list. </blockquote><P>The format of the DestroyImageList method is:</P>
-<blockquote>void DestroyImageList ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>void DestroyImageList ( <A HREF="types/Image.html">Image</A> **image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>

@@ -733,7 +733,7 @@ MagickExport Image *MontageImages(const Image *images,
         AllocateNextImage(image_info,montage);
         if (montage->next == (Image *) NULL)
           {
-            DestroyImageList(montage);
+            DestroyImageList(&montage);
             return((Image *) NULL);
           }
         montage=montage->next;

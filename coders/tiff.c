@@ -889,7 +889,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         AllocateNextImage(image_info,image);
         if (image->next == (Image *) NULL)
           {
-            DestroyImageList(image);
+            DestroyImageList(&image);
             return((Image *) NULL);
           }
         image=image->next;
@@ -1814,7 +1814,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       CloseBlob(image);
     }
   if (LocaleCompare(image_info->magick,"PTIF") == 0)
-    DestroyImageList(image);
+    DestroyImageList(&image);
   return(True);
 }
 #else

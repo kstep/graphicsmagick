@@ -649,7 +649,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             AllocateNextImage(image_info,image);
             if (image->next == (Image *) NULL)
               {
-                DestroyImageList(image);
+                DestroyImageList(&image);
                 return((Image *) NULL);
               }
             image=image->next;
@@ -814,7 +814,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CloseBlob(image);
   if ((image->columns == 0) || (image->rows == 0))
     {
-      DestroyImageList(image);
+      DestroyImageList(&image);
       return((Image *) NULL);
     }
   return(image);

@@ -918,7 +918,7 @@ int main(int argc,char **argv)
   status&=MogrifyImages(image_info,argc-1,argv,&image);
   (void) CatchImageException(image);
   status&=WriteImages(image_info,image,filename,&image->exception);
-  DestroyImageList(image);
+  DestroyImageList(&image);
   DestroyMagick();
   LiberateMemory((void **) &argv);
   Exit(!status);

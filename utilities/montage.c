@@ -1196,7 +1196,7 @@ static unsigned int MontageUtility(int argc,char **argv)
   montage_image=MontageImages(image,montage_info,&exception);
   if (montage_image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  DestroyImageList(image);
+  DestroyImageList(&image);
   /*
     Write image.
   */
@@ -1229,7 +1229,7 @@ static unsigned int MontageUtility(int argc,char **argv)
   }
   (void) strncpy(montage_image->magick_filename,argv[argc-1],MaxTextExtent-1);
   status&=WriteImages(image_info,montage_image,argv[argc-1],&image->exception);
-  DestroyImageList(montage_image);
+  DestroyImageList(&montage_image);
   DestroyMontageInfo(montage_info);
   DestroyImageInfo(image_info);
   return(status);

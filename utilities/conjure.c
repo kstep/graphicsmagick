@@ -210,7 +210,7 @@ int main(int argc,char **argv)
       MagickWarning(exception.severity,exception.reason,exception.description);
     status&=image != (Image *) NULL;
     if (image != (Image *) NULL)
-      DestroyImageList(image);
+      DestroyImageList(&image);
   }
   DestroyImageInfo(image_info);
   DestroyMagick();

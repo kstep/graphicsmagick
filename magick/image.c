@@ -5102,7 +5102,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
               &mogrify_images->exception);
             if (append_image != (Image *) NULL)
               {
-                DestroyImageList(mogrify_images);
+                DestroyImageList(&mogrify_images);
                 mogrify_images=append_image;
               }
             break;
@@ -5116,7 +5116,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
               &mogrify_images->exception);
             if (average_image != (Image *) NULL)
               {
-                DestroyImageList(mogrify_images);
+                DestroyImageList(&mogrify_images);
                 mogrify_images=average_image;
               }
             break;
@@ -5134,7 +5134,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
               &mogrify_images->exception);
             if (coalesce_image != (Image *) NULL)
               {
-                DestroyImageList(mogrify_images);
+                DestroyImageList(&mogrify_images);
                 mogrify_images=coalesce_image;
               }
             break;
@@ -5152,7 +5152,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
               &mogrify_images->exception);
             if (deconstruct_image != (Image *) NULL)
               {
-                DestroyImageList(mogrify_images);
+                DestroyImageList(&mogrify_images);
                 mogrify_images=deconstruct_image;
               }
             break;
@@ -5170,7 +5170,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
               &mogrify_images->exception);
             if (flatten_image != (Image *) NULL)
               {
-                DestroyImageList(mogrify_images);
+                DestroyImageList(&mogrify_images);
                 mogrify_images=flatten_image;
               }
             break;
@@ -5199,7 +5199,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
               &mogrify_images->exception);
             if (morph_image != (Image *) NULL)
               {
-                DestroyImageList(mogrify_images);
+                DestroyImageList(&mogrify_images);
                 mogrify_images=morph_image;
               }
             break;
@@ -5213,7 +5213,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
               &mogrify_images->exception);
             if (mosaic_image != (Image *) NULL)
               {
-                DestroyImageList(mogrify_images);
+                DestroyImageList(&mogrify_images);
                 mogrify_images=mosaic_image;
               }
             break;
