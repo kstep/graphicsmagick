@@ -269,3 +269,5 @@
 /* Define location of 'enscript' program */
 #undef TXTDelegate
 
+/* Define location of the XCF support program 'xcftopnm' */
+#undef XCFDecodeDelegate

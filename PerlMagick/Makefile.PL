@@ -43,7 +43,7 @@ sub MY::test
    #
    # e.g. my @DELEGATES = qw/jpeg tiff/;
    #
-   my @DELEGATES = qw/ cgm hpgl mpeg ps rad x xfig/;
+   my @DELEGATES = qw/ cgm mpeg ps rad x/;
 
    package MY; # so that "SUPER" works right
    my $inherited = shift->SUPER::test(@_);

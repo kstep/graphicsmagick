@@ -216,6 +216,9 @@ txt<=>ps
 wmf=>
 	@WMFDecodeDelegate@ %i %o
 
+xcf=>
+	@XCFDecodeDelegate@ %i > %o 
+
 yuv<=m2v
 	@MPEGEncodeDelegate@ %u %o
 	@ConvertDelegate@ -concatenate %i*.yuv %u

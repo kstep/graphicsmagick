@@ -158,6 +158,7 @@ TXTDelegate = @TXTDelegate@
 VERSION = @VERSION@
 WMFDecodeDelegate = @WMFDecodeDelegate@
 WWWDecodeDelegate = @WWWDecodeDelegate@
+XCFDecodeDelegate = @XCFDecodeDelegate@
 XTP_DEFS = @XTP_DEFS@
 XTP_FTP = @XTP_FTP@
 XTP_LIBS = @XTP_LIBS@

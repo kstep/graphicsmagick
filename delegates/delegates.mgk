@@ -216,6 +216,9 @@ txt<=>ps
 wmf=>
 	wmftogif %i %o
 
+xcf=>
+	xcftopnm %i > %o 
+
 yuv<=m2v
 	mpeg2encode %u %o
 	convert -concatenate %i*.yuv %u
