@@ -645,6 +645,21 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     while (isspace((int) (*p)) && (*p != '\0'))
       p++;
     n=0;
+    if (LocaleCompare("affine",keyword) == 0)
+      {
+        n=0;
+        (void) sscanf(p,"%lf%lf%lf%lf%lf%lf%n",
+          &clone_info->affine[0],&clone_info->affine[1],
+          &clone_info->affine[2],&clone_info->affine[3],
+          &clone_info->affine[4],&clone_info->affine[5],&n);
+        if (n == 0)
+          (void) sscanf(p,"%lf,%lf,%lf,%lf,%lf,%lf%n",
+            &clone_info->affine[0],&clone_info->affine[1],
+            &clone_info->affine[2],&clone_info->affine[3],
+            &clone_info->affine[4],&clone_info->affine[5],&n);
+        p+=n;
+        continue;
+      }
     if (LocaleCompare("angle",keyword) == 0)
       {
         (void) sscanf(p,"%lf%n",&clone_info->angle,&n);
@@ -689,21 +704,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           keyword[x]=(*p++);
         keyword[x]='\0';
         (void) QueryColorDatabase(keyword,&clone_info->stroke);
-        continue;
-      }
-    if (LocaleCompare("transform",keyword) == 0)
-      {
-        n=0;
-        (void) sscanf(p,"%lf%lf%lf%lf%lf%lf%n",
-          &clone_info->transform[0],&clone_info->transform[1],
-          &clone_info->transform[2],&clone_info->transform[3],
-          &clone_info->transform[4],&clone_info->transform[5],&n);
-        if (n == 0)
-          (void) sscanf(p,"%lf,%lf,%lf,%lf,%lf,%lf%n",
-            &clone_info->transform[0],&clone_info->transform[1],
-            &clone_info->transform[2],&clone_info->transform[3],
-            &clone_info->transform[4],&clone_info->transform[5],&n);
-        p+=n;
         continue;
       }
     primitive_type=UndefinedPrimitive;
@@ -1108,10 +1108,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
     {
       pixel=primitive_info[i].pixel;
-      primitive_info[i].pixel.x=clone_info->transform[0]*pixel.x+
-        clone_info->transform[2]*pixel.y+clone_info->transform[4];
-      primitive_info[i].pixel.y=clone_info->transform[1]*pixel.x+
-        clone_info->transform[3]*pixel.y+clone_info->transform[5];
+      primitive_info[i].pixel.x=clone_info->affine[0]*pixel.x+
+        clone_info->affine[2]*pixel.y+clone_info->affine[4];
+      primitive_info[i].pixel.y=clone_info->affine[1]*pixel.x+
+        clone_info->affine[3]*pixel.y+clone_info->affine[5];
     }
     /*
       Compute bounding box.
@@ -1924,9 +1924,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->pointsize=image_info->pointsize;
   draw_info->angle=0.0;
   for (i=0; i < 6; i++)
-    draw_info->transform[i]=0.0;
-  draw_info->transform[0]=1.0;
-  draw_info->transform[3]=1.0;
+    draw_info->affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
   draw_info->fill=image_info->fill;
   draw_info->stroke=image_info->stroke;
   (void) QueryColorDatabase("none",&draw_info->box);
@@ -2394,7 +2392,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
         annotate->pointsize=draw_info->pointsize;
         annotate->degrees=draw_info->angle;
         for (i=0; i < 6; i++)
-          annotate->transform[i]=draw_info->transform[i];
+          annotate->affine[i]=draw_info->affine[i];
         annotate->gravity=draw_info->gravity;
         annotate->text=AllocateString(p->text);
         annotate->geometry=AllocateString("                                  ");

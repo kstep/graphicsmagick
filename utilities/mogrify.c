@@ -55,6 +55,7 @@
 %  Usage: mogrify [options ...] file [ [options ...] file ...]
 %
 %  Where options include:
+%    -affine matrix       drawing transform matrix
 %    -antialias           remove pixel-aliasing
 %    -blur order          apply a filter to blur the image
 %    -border geometry     surround image with a border of color
@@ -183,6 +184,7 @@ static void Usage(const char *client_name)
   static const char
     *options[]=
     {
+      "-affine matrix       drawing transform matrix",
       "-antialias           remove pixel-aliasing",
       "-blur order          apply a filter to blur the image",
       "-border geometry     surround image with a border of color",
@@ -368,6 +370,16 @@ int main(int argc,char **argv)
       {
         case 'a':
         {
+          if (LocaleNCompare("affine",option+1,3) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing matrix",option);
+                }
+              break;
+            }
           if (LocaleNCompare("antialias",option+1,3) == 0)
             {
               image_info->antialias=(*option == '-');
@@ -1352,7 +1364,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("transparent",option+1,3) == 0)
+          if (LocaleNCompare("transparent",option+1,7) == 0)
             {
               if (*option == '-')
                 {

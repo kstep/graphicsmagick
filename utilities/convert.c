@@ -56,6 +56,7 @@
 %
 %  Where options include:
 %    -adjoin              join images into a single multi-image file
+%    -affine matrix       drawing transform matrix
 %    -antialias           remove pixel-aliasing
 %    -append              append an image sequence
 %    -average             average an image sequence
@@ -255,6 +256,7 @@ static void Usage(const char *client_name)
     *options[]=
     {
       "-adjoin              join images into a single multi-image file",
+      "-affine matrix       drawing transform matrix",
       "-antialias           remove pixel-aliasing",
       "-append              append an image sequence",
       "-average             average an image sequence",
@@ -496,6 +498,16 @@ int main(int argc,char **argv)
           if (LocaleNCompare("adjoin",option+1,2) == 0)
             {
               image_info->adjoin=(*option == '-');
+              break;
+            }
+          if (LocaleNCompare("affine",option+1,3) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing matrix",option);
+                }
               break;
             }
           if (LocaleNCompare("antialias",option+1,3) == 0)
@@ -1618,7 +1630,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("transparent",option+1,3) == 0)
+          if (LocaleNCompare("transparent",option+1,7) == 0)
             {
               if (*option == '-')
                 {

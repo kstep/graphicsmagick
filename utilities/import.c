@@ -770,7 +770,7 @@ int main(int argc,char **argv)
         }
         case 't':
         {
-          if (LocaleNCompare("transparent",option+1,3) == 0)
+          if (LocaleNCompare("transparent",option+1,7) == 0)
             {
               if (*option == '-')
                 {

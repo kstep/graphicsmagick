@@ -3597,9 +3597,9 @@ Mogrify(ref,...)
       *value;
 
     double
+      affine[6],
       angle,
-      current[6],
-      transform[6];
+      current[6];
 
     ExceptionInfo
       exception;
@@ -4238,11 +4238,11 @@ Mogrify(ref,...)
             angle=argument_list[j].double_reference;
             for (k=0; k < 6; k++)
             {
-              current[k]=annotate_info->transform[k];
-              transform[k]=0.0;
+              current[k]=annotate_info->affine[k];
+              affine[k]=0.0;
             }
-            transform[0]=1.0;
-            transform[3]=1.0;
+            affine[0]=1.0;
+            affine[3]=1.0;
             switch (j)
             {
               case 12:
@@ -4250,12 +4250,12 @@ Mogrify(ref,...)
                 /*
                   Translate.
                 */
-                transform[0]=1.0;
-                transform[3]=1.0;
-                k=sscanf(value,"%lf%lf",&transform[4],&transform[5]);
-                k=sscanf(value,"%lf,%lf",&transform[4],&transform[5]);
+                affine[0]=1.0;
+                affine[3]=1.0;
+                k=sscanf(value,"%lf%lf",&affine[4],&affine[5]);
+                k=sscanf(value,"%lf,%lf",&affine[4],&affine[5]);
                 if (k == 1)
-                  transform[5]=transform[4];
+                  affine[5]=affine[4];
                 break;
               }
               case 13:
@@ -4263,10 +4263,10 @@ Mogrify(ref,...)
                 /*
                   Scale.
                 */
-                k=sscanf(value,"%lf%lf",&transform[0],&transform[3]);
-                k=sscanf(value,"%lf,%lf",&transform[0],&transform[3]);
+                k=sscanf(value,"%lf%lf",&affine[0],&affine[3]);
+                k=sscanf(value,"%lf,%lf",&affine[0],&affine[3]);
                 if (k == 1)
-                  transform[3]=transform[0];
+                  affine[3]=affine[0];
                 break;
               }
               case 14:
@@ -4274,10 +4274,10 @@ Mogrify(ref,...)
                 /*
                   Rotate.
                 */
-                transform[0]=cos(DegreesToRadians(fmod(angle,360.0)));
-                transform[1]=sin(DegreesToRadians(fmod(angle,360.0)));
-                transform[2]=(-sin(DegreesToRadians(fmod(angle,360.0))));
-                transform[3]=cos(DegreesToRadians(fmod(angle,360.0)));
+                affine[0]=cos(DegreesToRadians(fmod(angle,360.0)));
+                affine[1]=sin(DegreesToRadians(fmod(angle,360.0)));
+                affine[2]=(-sin(DegreesToRadians(fmod(angle,360.0))));
+                affine[3]=cos(DegreesToRadians(fmod(angle,360.0)));
                 break;
               }
               case 15:
@@ -4285,9 +4285,9 @@ Mogrify(ref,...)
                 /*
                   SkewX.
                 */
-                transform[0]=1.0;
-                transform[2]=tan(DegreesToRadians(fmod(angle,360.0)));
-                transform[3]=1.0;
+                affine[0]=1.0;
+                affine[2]=tan(DegreesToRadians(fmod(angle,360.0)));
+                affine[3]=1.0;
                 break;
               }
               case 16:
@@ -4295,24 +4295,24 @@ Mogrify(ref,...)
                 /*
                   SkewY.
                 */
-                transform[0]=1.0;
-                transform[1]=tan(DegreesToRadians(fmod(angle,360.0)));
-                transform[3]=1.0;
+                affine[0]=1.0;
+                affine[1]=tan(DegreesToRadians(fmod(angle,360.0)));
+                affine[3]=1.0;
                 break;
               }
             }
-            annotate_info->transform[0]=
-              current[0]*transform[0]+current[2]*transform[1];
-            annotate_info->transform[1]=
-              current[1]*transform[0]+current[3]*transform[1];
-            annotate_info->transform[2]=
-              current[0]*transform[2]+current[2]*transform[3];
-            annotate_info->transform[3]=
-              current[1]*transform[2]+current[3]*transform[3];
-            annotate_info->transform[4]=
-              current[0]*transform[4]+current[2]*transform[5]+current[4];
-            annotate_info->transform[5]=
-              current[1]*transform[4]+current[3]*transform[5]+current[5];
+            annotate_info->affine[0]=
+              current[0]*affine[0]+current[2]*affine[1];
+            annotate_info->affine[1]=
+              current[1]*affine[0]+current[3]*affine[1];
+            annotate_info->affine[2]=
+              current[0]*affine[2]+current[2]*affine[3];
+            annotate_info->affine[3]=
+              current[1]*affine[2]+current[3]*affine[3];
+            annotate_info->affine[4]=
+              current[0]*affine[4]+current[2]*affine[5]+current[4];
+            annotate_info->affine[5]=
+              current[1]*affine[4]+current[3]*affine[5]+current[5];
           }
           if (attribute_flag[17])
             (void) QueryColorDatabase(argument_list[17].string_reference,
@@ -4515,11 +4515,11 @@ Mogrify(ref,...)
             angle=argument_list[j].double_reference;
             for (k=0; k < 6; k++)
             {
-              current[k]=draw_info->transform[k];
-              transform[k]=0.0;
+              current[k]=draw_info->affine[k];
+              affine[k]=0.0;
             }
-            transform[0]=1.0;
-            transform[3]=1.0;
+            affine[0]=1.0;
+            affine[3]=1.0;
             switch (j)
             {
               case 10:
@@ -4527,12 +4527,12 @@ Mogrify(ref,...)
                 /*
                   Translate.
                 */
-                transform[0]=1.0;
-                transform[3]=1.0;
-                k=sscanf(value,"%lf%lf",&transform[4],&transform[5]);
-                k=sscanf(value,"%lf,%lf",&transform[4],&transform[5]);
+                affine[0]=1.0;
+                affine[3]=1.0;
+                k=sscanf(value,"%lf%lf",&affine[4],&affine[5]);
+                k=sscanf(value,"%lf,%lf",&affine[4],&affine[5]);
                 if (k == 1)
-                  transform[5]=transform[4];
+                  affine[5]=affine[4];
                 break;
               }
               case 11:
@@ -4540,10 +4540,10 @@ Mogrify(ref,...)
                 /*
                   Scale.
                 */
-                k=sscanf(value,"%lf%lf",&transform[0],&transform[3]);
-                k=sscanf(value,"%lf,%lf",&transform[0],&transform[3]);
+                k=sscanf(value,"%lf%lf",&affine[0],&affine[3]);
+                k=sscanf(value,"%lf,%lf",&affine[0],&affine[3]);
                 if (k == 1)
-                  transform[3]=transform[0];
+                  affine[3]=affine[0];
                 break;
               }
               case 12:
@@ -4551,10 +4551,10 @@ Mogrify(ref,...)
                 /*
                   Rotate.
                 */
-                transform[0]=cos(DegreesToRadians(fmod(angle,360.0)));
-                transform[1]=sin(DegreesToRadians(fmod(angle,360.0)));
-                transform[2]=(-sin(DegreesToRadians(fmod(angle,360.0))));
-                transform[3]=cos(DegreesToRadians(fmod(angle,360.0)));
+                affine[0]=cos(DegreesToRadians(fmod(angle,360.0)));
+                affine[1]=sin(DegreesToRadians(fmod(angle,360.0)));
+                affine[2]=(-sin(DegreesToRadians(fmod(angle,360.0))));
+                affine[3]=cos(DegreesToRadians(fmod(angle,360.0)));
                 break;
               }
               case 13:
@@ -4562,9 +4562,9 @@ Mogrify(ref,...)
                 /*
                   SkewX.
                 */
-                transform[0]=1.0;
-                transform[2]=tan(DegreesToRadians(fmod(angle,360.0)));
-                transform[3]=1.0;
+                affine[0]=1.0;
+                affine[2]=tan(DegreesToRadians(fmod(angle,360.0)));
+                affine[3]=1.0;
                 break;
               }
               case 14:
@@ -4572,24 +4572,20 @@ Mogrify(ref,...)
                 /*
                   SkewY.
                 */
-                transform[0]=1.0;
-                transform[1]=tan(DegreesToRadians(fmod(angle,360.0)));
-                transform[3]=1.0;
+                affine[0]=1.0;
+                affine[1]=tan(DegreesToRadians(fmod(angle,360.0)));
+                affine[3]=1.0;
                 break;
               }
             }
-            draw_info->transform[0]=
-              current[0]*transform[0]+current[2]*transform[1];
-            draw_info->transform[1]=
-              current[1]*transform[0]+current[3]*transform[1];
-            draw_info->transform[2]=
-              current[0]*transform[2]+current[2]*transform[3];
-            draw_info->transform[3]=
-              current[1]*transform[2]+current[3]*transform[3];
-            draw_info->transform[4]=
-              current[0]*transform[4]+current[2]*transform[5]+current[4];
-            draw_info->transform[5]=
-              current[1]*transform[4]+current[3]*transform[5]+current[5];
+            draw_info->affine[0]=current[0]*affine[0]+current[2]*affine[1];
+            draw_info->affine[1]=current[1]*affine[0]+current[3]*affine[1];
+            draw_info->affine[2]=current[0]*affine[2]+current[2]*affine[3];
+            draw_info->affine[3]=current[1]*affine[2]+current[3]*affine[3];
+            draw_info->affine[4]=
+              current[0]*affine[4]+current[2]*affine[5]+current[4];
+            draw_info->affine[5]=
+              current[1]*affine[4]+current[3]*affine[5]+current[5];
           }
           if (attribute_flag[15])
             draw_info->tile=argument_list[15].image_reference;

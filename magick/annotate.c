@@ -191,7 +191,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
   image_info->font=AllocateString(annotate_info->font);
   image_info->pointsize=annotate_info->pointsize;
   for (i=0; i < 6; i++)
-    image_info->transform[i]=annotate_info->transform[i];
+    image_info->affine[i]=annotate_info->affine[i];
   image_info->antialias=annotate_info->antialias;
   image_info->fill=annotate_info->fill;
   image_info->stroke=annotate_info->stroke;
@@ -458,7 +458,7 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_info->pointsize=image_info->pointsize;
   annotate_info->degrees=0.0;
   for (i=0; i < 6; i++)
-    annotate_info->transform[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
+    annotate_info->affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
   annotate_info->fill=image_info->fill;
   annotate_info->stroke=image_info->stroke;
   (void) QueryColorDatabase("none",&annotate_info->box);

@@ -78,7 +78,6 @@
 */
 #if defined(macintosh)
 #define HasJPEG
-#define HasLZW
 #define HasPNG
 #define HasTIFF
 #define HasTTF
@@ -88,7 +87,6 @@
 
 #if defined(VMS)
 #define HasJPEG
-#define HasLZW
 #define HasPNG
 #define HasTIFF
 #define HasTTF
@@ -99,7 +97,6 @@
 #if defined(WIN32)
 #define HasJBIG
 #define HasJPEG
-#define HasLZW
 #define HasPNG
 #define HasTIFF
 #define HasTTF

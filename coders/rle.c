@@ -384,7 +384,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           mask;
 
         /*
-          Apply colormap transformation to image.
+          Apply colormap affineation to image.
         */
         mask=(map_length-1);
         p=rle_pixels;

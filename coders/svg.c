@@ -83,7 +83,7 @@ typedef struct _GraphicContext
     pointsize,
     opacity,
     angle,
-    transform[6];
+    affine[6];
 } GraphicContext;
 
 typedef struct _SVGInfo
@@ -551,9 +551,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
     *value;
 
   double
+    affine[6],
     angle,
     current[6],
-    transform[6],
     unit;
 
   int
@@ -728,69 +728,69 @@ static void SVGStartElement(void *context,const xmlChar *name,
           {
             for (k=0; k < 6; k++)
             {
-              current[k]=svg_info->graphic_context[n].transform[k];
-              transform[k]=(k == 0) || (k == 3) ? 1.0 : 0.0;
+              current[k]=svg_info->graphic_context[n].affine[k];
+              affine[k]=(k == 0) || (k == 3) ? 1.0 : 0.0;
             }
             if (LocaleCompare(tokens[j],"matrix") == 0)
               {
-                (void) sscanf(tokens[++j]+1,"%lf%lf%lf%lf%lf%lf",
-                  &transform[0],&transform[1],&transform[2],&transform[3],
-                  &transform[4],&transform[5],&transform[6]);
-                (void) sscanf(tokens[j]+1,"%lf,%lf,%lf,%lf,%lf,%lf",
-                  &transform[0],&transform[1],&transform[2],&transform[3],
-                  &transform[4],&transform[5],&transform[6]);
+                (void) sscanf(tokens[++j]+1,"%lf%lf%lf%lf%lf%lf",&affine[0],
+                  &affine[1],&affine[2],&affine[3],&affine[4],&affine[5],
+                  affine[6]);
+                (void) sscanf(tokens[j]+1,"%lf,%lf,%lf,%lf,%lf,%lf",&affine[0],
+                  &affine[1],&affine[2],&affine[3],&affine[4],&affine[5],
+                  &affine[6]);
               }
             if (LocaleCompare(tokens[j],"rotate") == 0)
               {
                 (void) sscanf(tokens[++j]+1,"%lf",&angle);
                 svg_info->graphic_context[n].angle=angle;
-                transform[0]=cos(DegreesToRadians(fmod(angle,360.0)));
-                transform[1]=sin(DegreesToRadians(fmod(angle,360.0)));
-                transform[2]=(-sin(DegreesToRadians(fmod(angle,360.0))));
-                transform[3]=cos(DegreesToRadians(fmod(angle,360.0)));
+                affine[0]=cos(DegreesToRadians(fmod(angle,360.0)));
+                affine[1]=sin(DegreesToRadians(fmod(angle,360.0)));
+                affine[2]=(-sin(DegreesToRadians(fmod(angle,360.0))));
+                affine[3]=cos(DegreesToRadians(fmod(angle,360.0)));
               }
             if (LocaleCompare(tokens[j],"scale") == 0)
               {
-                k=sscanf(tokens[++j]+1,"%lf%lf",&transform[0],&transform[3]);
-                k=sscanf(tokens[j]+1,"%lf,%lf",&transform[0],&transform[3]);
+                k=sscanf(tokens[++j]+1,"%lf%lf",&affine[0],&affine[3]);
+                k=sscanf(tokens[j]+1,"%lf,%lf",&affine[0],&affine[3]);
                 if (k == 1)
-                  transform[3]=transform[0];
+                  affine[3]=affine[0];
               }
             if (LocaleCompare(tokens[j],"skewX") == 0)
               {
                 (void) sscanf(tokens[++j]+1,"%lf",&angle);
-                transform[0]=1.0;
-                transform[2]=tan(DegreesToRadians(fmod(angle,360.0)));
-                transform[3]=1.0;
+                affine[0]=1.0;
+                affine[2]=tan(DegreesToRadians(fmod(angle,360.0)));
+                affine[3]=1.0;
               }
             if (LocaleCompare(tokens[j],"skewY") == 0)
               {
                 (void) sscanf(tokens[++j]+1,"%lf",&angle);
-                transform[0]=1.0;
-                transform[1]=tan(DegreesToRadians(fmod(angle,360.0)));
-                transform[3]=1.0;
+                affine[0]=1.0;
+                affine[1]=tan(DegreesToRadians(fmod(angle,360.0)));
+                affine[3]=1.0;
               }
             if (LocaleCompare(tokens[j],"translate") == 0)
               {
-                transform[0]=1.0;
-                transform[3]=1.0;
-                k=sscanf(tokens[++j]+1,"%lf%lf",&transform[4],&transform[5]);
-                k=sscanf(tokens[j]+1,"%lf,%lf",&transform[4],&transform[5]);
+                affine[0]=1.0;
+                affine[3]=1.0;
+                k=sscanf(tokens[++j]+1,"%lf%lf",&affine[4],&affine[5]);
+                k=sscanf(tokens[j]+1,"%lf,%lf",&affine[4],&affine[5]);
                 if (k == 1)
-                  transform[5]=transform[4];
+                  affine[5]=affine[4];
               }
-            svg_info->graphic_context[n].transform[0]=
-              current[0]*transform[0]+current[2]*transform[1];
-            svg_info->graphic_context[n].transform[1]=
-              current[1]*transform[0]+current[3]*transform[1];
-            svg_info->graphic_context[n].transform[2]=
-              current[0]*transform[2]+current[2]*transform[3];
-            svg_info->graphic_context[n].transform[3]=
-              current[1]*transform[2]+current[3]*transform[3];
-            svg_info->graphic_context[n].transform[4]=
-              current[0]*transform[4]+current[2]*transform[5]+current[4];
-            svg_info->graphic_context[n].transform[5]=
-              current[1]*transform[4]+current[3]*transform[5]+current[5];
+            svg_info->graphic_context[n].affine[0]=
+              current[0]*affine[0]+current[2]*affine[1];
+            svg_info->graphic_context[n].affine[1]=
+              current[1]*affine[0]+current[3]*affine[1];
+            svg_info->graphic_context[n].affine[2]=
+              current[0]*affine[2]+current[2]*affine[3];
+            svg_info->graphic_context[n].affine[3]=
+              current[1]*affine[2]+current[3]*affine[3];
+            svg_info->graphic_context[n].affine[4]=
+              current[0]*affine[4]+current[2]*affine[5]+current[4];
+            svg_info->graphic_context[n].affine[5]=
+              current[1]*affine[4]+current[3]*affine[5]+current[5];
           }
           for (j=0; j < number_tokens; j++)
             FreeMemory((void **) &tokens[j]);
@@ -921,10 +921,9 @@ static void SVGEndElement(void *context, const xmlChar *name)
     }
   (void) fprintf(svg_info->file,"angle %f\n",
     svg_info->graphic_context[n].angle);
-  (void) fprintf(svg_info->file,"transform ");
+  (void) fprintf(svg_info->file,"affine ");
   for (i=0; i < 6; i++)
-    (void) fprintf(svg_info->file,"%g ",
-      svg_info->graphic_context[n].transform[i]);
+    (void) fprintf(svg_info->file,"%g ",svg_info->graphic_context[n].affine[i]);
   (void) fprintf(svg_info->file,"\n");
   if (LocaleCompare((char *) name,"circle") == 0)
     {
@@ -1283,7 +1282,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.graphic_context[0].pointsize=12.0;
   svg_info.graphic_context[0].opacity=100.0;
   for (i=0; i < 6; i++)
-    svg_info.graphic_context[0].transform[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
+    svg_info.graphic_context[0].affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
   SAXHandler=(&SAXHandlerStruct);
   n=ReadBlob(image,4,buffer);
   if (n > 0)

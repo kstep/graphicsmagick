@@ -395,7 +395,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((y % tile_height) == 0)
       {
         /*
-          Read FPX image tile (with or without viewing transform)..
+          Read FPX image tile (with or without viewing affine)..
         */
         if (image_info->view != (char *) NULL)
           fpx_status=FPX_ReadImageRectangle(flashpix,0,y,image->columns,y+

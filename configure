@@ -2849,7 +2849,8 @@ subdirs=" ltdl"
     DLLDFLAGS=-export-dynamic
 
   fi
-  eval "eval im_cv_x_coder_modules=${libdir}/ImageMagick/modules/coders"
+
+  eval "eval im_cv_x_coder_modules=${exec_prefix}/lib/ImageMagick/modules/coders"
   #
 
 cat >>confdefs.h <<EOF

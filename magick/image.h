@@ -119,7 +119,7 @@ typedef struct _AnnotateInfo
   double
     pointsize,
     degrees,
-    transform[6];
+    affine[6];
 
   PixelPacket
     fill,
@@ -465,7 +465,7 @@ typedef struct _DrawInfo
     linewidth,
     pointsize,
     angle,
-    transform[6];
+    affine[6];
 
   PixelPacket
     fill,
@@ -538,7 +538,7 @@ typedef struct _ImageInfo
 
   double
     pointsize,
-    transform[6];
+    affine[6];
 
   int
     fuzz;

@@ -2440,9 +2440,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->antialias=True;
   image_info->pointsize=atof(DefaultPointSize);
   for (i=0; i < 6; i++)
-    image_info->transform[i]=0.0;
-  image_info->transform[0]=1.0;
-  image_info->transform[3]=1.0;
+    image_info->affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
   image_info->fuzz=0;
   (void) QueryColorDatabase("none",&image_info->stroke);
   (void) QueryColorDatabase("none",&image_info->fill);
@@ -3132,6 +3130,22 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     option=argv[i];
     if ((Extent(option) <= 1) || ((*option != '-') && (*option != '+')))
       continue;
+    if (LocaleNCompare("-affine",option,4) == 0)
+      {
+        /*
+          Draw affine matrix.
+        */
+        i++;
+        (void) sscanf(argv[i],"%lf%lf%lf%lf%lf%lf",
+          &draw_info->affine[0],&draw_info->affine[1],
+          &draw_info->affine[2],&draw_info->affine[3],
+          &draw_info->affine[4],&draw_info->affine[5]);
+        (void) sscanf(argv[i],"%lf,%lf,%lf,%lf,%lf,%lf",
+          &draw_info->affine[0],&draw_info->affine[1],
+          &draw_info->affine[2],&draw_info->affine[3],
+          &draw_info->affine[4],&draw_info->affine[5]);
+        continue;
+      }
     if (LocaleNCompare("antialias",option+1,3) == 0)
       {
         clone_info->antialias=(*option == '-');
@@ -4259,7 +4273,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         ThresholdImage(*image,threshold);
         continue;
       }
-    if (LocaleNCompare("-transparent",option,4) == 0)
+    if (LocaleNCompare("-transparent",option,8) == 0)
       {
         PixelPacket
           target;

@@ -305,7 +305,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     library;
 
   FT_Matrix
-    transform;
+    affine;
 
   FT_Raster_Funcs
     std_raster;
@@ -437,11 +437,11 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   image->bounding_box.x2=(-32000);
   image->bounding_box.y1=32000;
   image->bounding_box.y2=(-32000);
-  transform.xx=65536.0*image_info->transform[0];
-  transform.yx=(-65536.0*image_info->transform[1]);
-  transform.xy=(-65536.0*image_info->transform[2]);
-  transform.yy=65536.0*image_info->transform[3];
-  FT_Set_Transform(face,&transform,0);
+  affine.xx=65536.0*image_info->affine[0];
+  affine.yx=(-65536.0*image_info->affine[1]);
+  affine.xy=(-65536.0*image_info->affine[2]);
+  affine.yy=65536.0*image_info->affine[3];
+  FT_Set_Transform(face,&affine,0);
   for (i=0; i < length; i++)
   {
     glyphs[i].id=FT_Get_Char_Index(face,unicode[i]);
@@ -454,7 +454,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
       }
     bitmap_origin=origin;
     bitmap_origin.y=0;
-    FT_Vector_Transform(&bitmap_origin,&transform);
+    FT_Vector_Transform(&bitmap_origin,&affine);
     status=FT_Get_Glyph_Bitmap(face,glyphs[i].id,FT_LOAD_DEFAULT,
       image_info->antialias ? NumberGrays : 0,&bitmap_origin,(FT_BitmapGlyph *)
       &glyphs[i].image);
@@ -684,8 +684,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   status|=TT_Set_Instance_Resolutions(instance,(unsigned short)
     image->x_resolution,(unsigned short) image->y_resolution);
   pointsize=image_info->pointsize;
-  if (image_info->transform[1] == 0.0)
-    pointsize*=image_info->transform[0];
+  if (image_info->affine[1] == 0.0)
+    pointsize*=image_info->affine[0];
   status|=TT_Set_Instance_CharSize(instance,(int) (64.0*pointsize));
   if (status)
     ThrowReaderException(DelegateWarning,"Cannot initialize TTF instance",
@@ -812,7 +812,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     if ((image->columns % 2) != 0)
       p++;
   }
-  if ((image_info->transform[0] != 1.0) && (image_info->transform[1] != 0.0))
+  if ((image_info->affine[0] != 1.0) && (image_info->affine[1] != 0.0))
     {
       Image
         *rotate_image;
@@ -820,7 +820,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
       /*
         Rotate text.
       */
-      rotate_image=RotateImage(image,180.0*acos(image_info->transform[0])/M_PI,
+      rotate_image=RotateImage(image,180.0*acos(image_info->affine[0])/M_PI,
         &image->exception);
       if (rotate_image == (Image *) NULL)
         return(False);
@@ -909,19 +909,19 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   font=image_info->font;
   if (font == (char *) NULL)
     font="Times-Roman";
-  point.x=AbsoluteValue(image_info->transform[0]*image_info->pointsize*
-    (Extent(text)+2)+image_info->transform[2]*image_info->pointsize);
-  point.y=AbsoluteValue(image_info->transform[1]*image_info->pointsize*
-    (Extent(text)+2)+image_info->transform[3]*image_info->pointsize);
+  point.x=AbsoluteValue(image_info->affine[0]*image_info->pointsize*
+    (Extent(text)+2)+image_info->affine[2]*image_info->pointsize);
+  point.y=AbsoluteValue(image_info->affine[1]*image_info->pointsize*
+    (Extent(text)+2)+image_info->affine[3]*image_info->pointsize);
   (void) fprintf(file,"%g %g moveto\n",Max(point.x,point.y)/2.0,
     Max(point.x,point.y)/2.0);
   (void) fprintf(file,"%g %g scale\n",image_info->pointsize,
     image_info->pointsize);
   (void) fprintf(file,
     "/%.1024s-ISO dup /%.1024s ReencodeFont findfont setfont\n",font,font);
-  (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",image_info->transform[0],
-    -image_info->transform[1],-image_info->transform[2],
-    image_info->transform[3]);
+  (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",image_info->affine[0],
+    -image_info->affine[1],-image_info->affine[2],
+    image_info->affine[3]);
   (void) fprintf(file,"(%.1024s) show\n",EscapeParenthesis(text));
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
@@ -1142,7 +1142,7 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
     if (!SyncImagePixels(image))
       break;
   }
-  if ((image_info->transform[0] != 1.0) && (image_info->transform[1] != 0.0))
+  if ((image_info->affine[0] != 1.0) && (image_info->affine[1] != 0.0))
     {
       Image
         *rotate_image;
@@ -1150,7 +1150,7 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
       /*
         Rotate text.
       */
-      rotate_image=RotateImage(image,180.0*acos(image_info->transform[0])/M_PI,
+      rotate_image=RotateImage(image,180.0*acos(image_info->affine[0])/M_PI,
         &image->exception);
       if (rotate_image == (Image *) NULL)
         return(False);
