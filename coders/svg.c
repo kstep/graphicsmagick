@@ -1108,7 +1108,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"font-family") == 0)
             {
-              (void) fprintf(svg_info->file,"font-family %s\n",value);
+              (void) fprintf(svg_info->file,"font-family '%s'\n",value);
               break;
             }
           if (LocaleCompare(keyword,"font-stretch") == 0)
