@@ -371,7 +371,7 @@ MagickExport void CloseBlob(Image *image)
       errno=0;
       if (!image->blob->exempt)
         {
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if !defined(vms) && !defined(macintosh)
           if (image->blob->pipet)
             (void) pclose(image->blob->file);
           else
@@ -1468,7 +1468,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         return(True);
     }
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if !defined(vms) && !defined(macintosh)
   if (*filename != '|')
     {
       char
@@ -1546,7 +1546,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       image->blob->exempt=True;
     }
   else
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if !defined(vms) && !defined(macintosh)
     if (*filename == '|')
       {
         char
@@ -1555,8 +1555,10 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         /*
           Pipe image to or from a system command.
         */
+#if !defined(WIN32)
         if (*type == 'w')
           (void) signal(SIGPIPE,SIG_IGN);
+#endif
         (void) strncpy(mode,type,1);
         mode[1]='\0';
         image->blob->file=(FILE *) popen(filename+1,mode);

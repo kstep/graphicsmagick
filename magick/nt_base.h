@@ -16,6 +16,7 @@ extern "C" {
 #include <winuser.h>
 #include <wingdi.h>
 #include <io.h>
+#include <process.h>
 #include <errno.h>
 #if defined(_DEBUG)
 #include <crtdbg.h>
@@ -41,6 +42,8 @@ extern "C" {
 #else
 #define SAFE_GLOBAL
 #endif
+#define popen  _popen
+#define pclose  _pclose
 /*
   Typedef declarations.
 */

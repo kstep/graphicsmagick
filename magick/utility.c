@@ -3277,7 +3277,7 @@ MagickExport void TemporaryFilename(char *filename)
     LiberateMemory((void **) &name);
   }
 #endif
-  (void) strncat(filename,".tmp",MaxTextExtent-strlen(filename)-1);
+  FormatString(filename+strlen(filename),"%d.tmp",getpid());
 }
 
 /*
