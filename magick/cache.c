@@ -1302,10 +1302,11 @@ MagickExport unsigned int OpenCache(Image *image)
       ((cache_info->type == UndefinedCache) && (length <= GetCacheMemory(0))))
     {
       if (cache_info->storage_class == UndefinedClass)
-        allocation=AcquireMemory(length);
+        allocation=AcquireMemory(length+sizeof(PixelPacket));
       else
         {
-          ReacquireMemory((void **) &cache_info->pixels,length);
+          ReacquireMemory((void **) &cache_info->pixels,
+            length+sizeof(PixelPacket));
           if (cache_info->pixels == (void *) NULL)
             return(False);
           allocation=cache_info->pixels;
@@ -1722,10 +1723,10 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const unsigned int id,
       (cache_info->colorspace == CMYKColorspace))
     length+=number_pixels*sizeof(IndexPacket);
   if (nexus_info->line == (void *) NULL)
-    nexus_info->line=AcquireMemory(length);
+    nexus_info->line=AcquireMemory(length+sizeof(PixelPacket));
   else
     if (nexus_info->length != length)
-      ReacquireMemory((void **) &nexus_info->line,length);
+      ReacquireMemory((void **) &nexus_info->line,length+sizeof(PixelPacket));
   if (nexus_info->line == (void *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache nexus_info");

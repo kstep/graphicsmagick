@@ -989,8 +989,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
       if (image->directory != (char *) NULL)
         (void) CloneString(&clone_image->directory,image->directory);
       if (clone_image->clip_mask != (Image *) NULL)
-        clone_image->clip_mask=
-          CloneImage(image->clip_mask,0,0,True,&image->clip_mask->exception);
+        clone_image->clip_mask=ReferenceImage(image->clip_mask);
     }
   clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   if (clone_image->orphan || orphan)
@@ -4658,8 +4657,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("-tile",option) == 0)
           {
+            Image
+              *tile_image;
+
             (void) strcpy(clone_info->filename,argv[++i]);
-            draw_info->tile=ReadImage(clone_info,&exception);
+            tile_image=ReadImage(clone_info,&exception);
+            if (tile_image == (Image *) NULL)
+              continue;
+            draw_info->tile=ReferenceImage(tile_image);
+            DestroyImage(tile_image);
             continue;
           }
         if (LocaleNCompare("-transparent",option,8) == 0)
@@ -5744,7 +5750,12 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
         "image widths or heights differ");
   if (image->clip_mask != (Image *) NULL)
     DestroyImage(image->clip_mask);
-  image->clip_mask=clip_mask;
+  if (clip_mask == (Image *) NULL)
+    {
+      image->clip_mask=(Image *) NULL;
+      return(True);
+    }
+  image->clip_mask=ReferenceImage(clip_mask);
   return(True);
 }
 

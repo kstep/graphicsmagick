@@ -206,8 +206,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info->density != (char *) NULL)
     clone_info->density=AllocateString(draw_info->density);
   if (draw_info->tile != (Image *) NULL)
-    clone_info->tile=
-      CloneImage(draw_info->tile,0,0,True,&draw_info->tile->exception);
+    clone_info->tile=ReferenceImage(draw_info->tile);
   if (draw_info->server_name != (char *) NULL)
     clone_info->server_name=AllocateString(draw_info->server_name);
   if (draw_info->dash_pattern != (unsigned int *) NULL)
@@ -1208,6 +1207,9 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
   DrawInfo
     *clone_info;
 
+  Image
+    *clip_mask;
+
   ImageAttribute
     *attribute;
 
@@ -1219,28 +1221,21 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
   attribute=GetImageAttribute(image,clip_path);
   if (attribute == (ImageAttribute *) NULL)
     return(False);
-  if (image->clip_mask == (Image *) NULL)
-    {
-      Image
-        *clip_mask;
-
-      clip_mask=CloneImage(image,0,0,True,&image->exception);
-      if (clip_mask == (Image *) NULL)
-        return(False);
-      SetImageClipMask(image,clip_mask);
-    }
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   CloneString(&clone_info->primitive,attribute->value);
   (void) QueryColorDatabase("black",&clone_info->fill);
   clone_info->clip_path=(char *) NULL;
   if (draw_info->debug)
     (void) fprintf(stdout,"\nbegin clip-path %.1024s\n",draw_info->clip_path);
-  SetImage(image->clip_mask,TransparentOpacity);
-  status=DrawImage(image->clip_mask,clone_info);
+  clip_mask=CloneImage(image,0,0,True,&image->exception);
+  SetImage(clip_mask,TransparentOpacity);
+  status=DrawImage(clip_mask,clone_info);
   if (draw_info->debug)
     (void) fprintf(stdout,"end clip-path\n\n");
   draw_info->clip_units=clone_info->clip_units;
   DestroyDrawInfo(clone_info);
+  SetImageClipMask(image,clip_mask);
+  DestroyImage(clip_mask);
   return(status);
 }
 
