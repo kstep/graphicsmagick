@@ -55,6 +55,13 @@
 */
 #include "magick.h"
 #include "defines.h"
+#if defined(HasLCMS)
+# if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#  include <lcms/lcms.h>
+# else
+#  include "lcms.h"
+# endif
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -964,6 +971,272 @@ MagickExport Image *MosaicImages(Image *image,ExceptionInfo *exception)
     MagickMonitor(MosaicImageText,scene++,GetNumberScenes(image));
   }
   return(mosaic_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P r o f i l e I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ProfileImage() adds or removes a ICM, IPTC, or generic profile to an
+%  image.  If the profile name is defined it is deleted from the image.
+%  If a filename is given, one or more profiles are read and added to the
+%  image.  ProfileImage() returns a value other than 0 if the profile is
+%  successfully added or removed from the image.
+%
+%  The format of the ProfileImage method is:
+%
+%      unsigned int ProfileImage(Image *image,const char *profile_name,
+%        const char *filename)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o profile_name: Type of profile to add or remove.
+%
+%    o filename: Filename of the ICM, IPTC, or generic profile.
+%
+%
+*/
+MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
+  const char *filename)
+{
+  ExceptionInfo
+    exception;
+
+  Image
+    *profile_image;
+
+  ImageInfo
+    *image_info;
+
+  register int
+    i,
+    j;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (filename == (const char *) NULL)
+    {
+      /*
+        Remove an ICM, IPTC, or generic profile from the image.
+      */
+      if ((LocaleCompare("icm",profile_name) == 0) || (*profile_name == '*'))
+        {
+          if (image->color_profile.length != 0)
+            LiberateMemory((void **) &image->color_profile.info);
+          image->color_profile.length=0;
+          image->color_profile.info=(unsigned char *) NULL;
+        }
+      if ((LocaleCompare("8bim",profile_name) == 0) ||
+          (LocaleCompare("iptc",profile_name) == 0) || (*profile_name == '*'))
+        {
+          if (image->iptc_profile.length != 0)
+            LiberateMemory((void **) &image->iptc_profile.info);
+          image->iptc_profile.length=0;
+          image->iptc_profile.info=(unsigned char *) NULL;
+        }
+      for (i=0; i < (int) image->generic_profiles; i++)
+      {
+        if ((LocaleCompare(image->generic_profile[i].name,profile_name) != 0) &&
+            (*profile_name != '*'))
+          continue;
+        if (image->generic_profile[i].name != (char *) NULL)
+          LiberateMemory((void **) &image->generic_profile[i].name);
+        if (image->iptc_profile.length != 0)
+          LiberateMemory((void **) &image->generic_profile[i].info);
+        image->generic_profiles--;
+        for (j=i; j < (int) image->generic_profiles; j++)
+          image->generic_profile[j]=image->generic_profile[j+1];
+        i--;
+      }
+      return(True);
+    }
+  /*
+    Add a ICM, IPTC, or generic profile to the image.
+  */
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  (void) strcpy(image_info->filename,filename);
+  profile_image=ReadImage(image_info,&exception);
+  if (exception.severity != UndefinedException)
+    MagickWarning(exception.severity,exception.reason,exception.description);
+  DestroyImageInfo(image_info);
+  if (profile_image == (Image *) NULL)
+    return(False);
+  if (profile_image->iptc_profile.length != 0)
+    {
+      if (image->iptc_profile.length != 0)
+        LiberateMemory((void **) &image->iptc_profile.info);
+      image->iptc_profile.length=profile_image->iptc_profile.length;
+      image->iptc_profile.info=profile_image->iptc_profile.info;
+      profile_image->iptc_profile.length=0;
+      profile_image->iptc_profile.info=(unsigned char *) NULL;
+    }
+  if (profile_image->color_profile.length != 0)
+    {
+      if (image->color_profile.length != 0)
+        {
+#if defined(HasLCMS)
+          typedef struct _ProfilePacket
+          {
+            unsigned short
+              red,
+              green,
+              blue,
+              opacity;
+          } ProfilePacket;
+
+          cmsHPROFILE
+            image_profile,
+            transform_profile;
+
+          cmsHTRANSFORM
+            transform;
+
+          int
+            intent,
+            y;
+
+          ProfilePacket
+            alpha,
+            beta;
+
+          register int
+            x;
+
+          register PixelPacket
+            *q;
+
+          /*
+            Transform pixel colors as defined by the color profiles.
+          */
+          image_profile=cmsOpenProfileFromMem(image->color_profile.info,
+            image->color_profile.length);
+          transform_profile=cmsOpenProfileFromMem(
+            profile_image->color_profile.info,
+            profile_image->color_profile.length);
+          if ((image_profile == (cmsHPROFILE) NULL) ||
+              (transform_profile == (cmsHPROFILE) NULL))
+            ThrowBinaryException(ResourceLimitWarning,"Unable to manage color",
+              "failed to open color profiles");
+          switch (cmsGetColorSpace(transform_profile))
+          {
+            case icSigCmykData: profile_image->colorspace=CMYKColorspace; break;
+            case icSigYCbCrData:
+              profile_image->colorspace=YCbCrColorspace; break;
+            case icSigLuvData: profile_image->colorspace=YUVColorspace; break;
+            case icSigGrayData: profile_image->colorspace=GRAYColorspace; break;
+            case icSigRgbData: profile_image->colorspace=RGBColorspace; break;
+            default: profile_image->colorspace=RGBColorspace; break;
+          }
+          switch (image->rendering_intent)
+          {
+            case AbsoluteIntent: intent=INTENT_ABSOLUTE_COLORIMETRIC; break;
+            case PerceptualIntent: intent=INTENT_PERCEPTUAL; break;
+            case RelativeIntent: intent=INTENT_RELATIVE_COLORIMETRIC; break;
+            case SaturationIntent: intent=INTENT_SATURATION; break;
+            default: intent=INTENT_PERCEPTUAL; break;
+          }
+          if (image->colorspace == CMYKColorspace)
+            {
+              if (profile_image->colorspace == CMYKColorspace)
+                transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
+                  transform_profile,TYPE_CMYK_16,intent,0);
+              else
+                transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
+                  transform_profile,TYPE_RGBA_16,intent,0);
+            }
+          else
+            {
+              if (profile_image->colorspace == CMYKColorspace)
+                transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
+                  transform_profile,TYPE_CMYK_16,intent,0);
+              else
+                transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
+                  transform_profile,TYPE_RGBA_16,intent,0);
+            }
+          if (transform == (cmsHTRANSFORM) NULL)
+            ThrowBinaryException(ResourceLimitWarning,"Unable to manage color",
+              "failed to create color transform");
+          if (image->colorspace == CMYKColorspace)
+            image->matte=True;
+          for (y=0; y < (int) image->rows; y++)
+          {
+            q=GetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
+            {
+              alpha.red=XUpScale(q->red);
+              alpha.green=XUpScale(q->green);
+              alpha.blue=XUpScale(q->blue);
+              alpha.opacity=XUpScale(q->opacity);
+              cmsDoTransform(transform,&alpha,&beta,1);
+              q->red=XDownScale(beta.red);
+              q->green=XDownScale(beta.green);
+              q->blue=XDownScale(beta.blue);
+              q->opacity=XDownScale(beta.opacity);
+              q++;
+            }
+            if (!SyncImagePixels(image))
+              break;
+          }
+          if (image->colorspace == CMYKColorspace)
+            image->matte=False;
+          image->colorspace=profile_image->colorspace;
+          cmsDeleteTransform(transform);
+          cmsCloseProfile(image_profile);
+          cmsCloseProfile(transform_profile);     
+#endif
+          LiberateMemory((void **) &image->color_profile.info);
+        }
+      image->color_profile.length=profile_image->color_profile.length;
+      image->color_profile.info=profile_image->color_profile.info;
+      profile_image->color_profile.length=0;
+      profile_image->color_profile.info=(unsigned char *) NULL;
+    }
+  if (profile_image->generic_profiles != 0)
+    {
+      unsigned int
+        number_profiles;
+
+      number_profiles=image->generic_profiles+profile_image->generic_profiles;
+      if (image->generic_profile == (ProfileInfo *) NULL)
+        image->generic_profile=(ProfileInfo *)
+          AcquireMemory(number_profiles*sizeof(ProfileInfo));
+      else
+        ReacquireMemory((void **) &image->generic_profile,
+          number_profiles*sizeof(ProfileInfo));
+      if (image->generic_profile == (ProfileInfo *) NULL)
+        {
+          image->generic_profiles=0;
+          DestroyImage(profile_image);
+          ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+            (char *) NULL);
+        }
+      j=image->generic_profiles;
+      for (i=0; i < (int) profile_image->generic_profiles; i++)
+      {
+        image->generic_profile[j].name=profile_image->generic_profile[i].name;
+        image->generic_profile[j].length=
+          profile_image->generic_profile[i].length;
+        image->generic_profile[j].info=profile_image->generic_profile[i].info;
+        profile_image->generic_profile[i].name=(char *) NULL;
+        profile_image->generic_profile[i].length=0;
+        profile_image->generic_profile[i].info=(unsigned char *) NULL;
+        j++;
+      }
+      image->generic_profiles=number_profiles;
+    }
+  DestroyImage(profile_image);
+  return(True);
 }
 
 /*
