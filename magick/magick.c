@@ -76,7 +76,7 @@ static SemaphoreInfo
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method InitializeMagick destroys the ImageMagick environment.
+%  DestroyMagick() destroys the ImageMagick environment.
 %
 %  The format of the DestroyMagick function is:
 %
