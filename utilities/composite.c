@@ -100,7 +100,7 @@ static void CompositeUsage(void)
       "-dispose method      GIF disposal method",
       "-dissolve value      dissolve the two images a given percent",
       "-dither              apply Floyd/Steinberg error diffusion to image",
-      "-encoding type       font encoding type",
+      "-encoding type       text encoding type",
       "-endian type         LSB or MSB",
       "-filter type         use this filter when resizing an image",
       "-font name           render text with this font",

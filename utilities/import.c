@@ -109,7 +109,7 @@ static void ImportUsage(void)
       "-dispose method      GIF disposal method",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-frame               include window manager frame",
-      "-encoding type       font encoding type",
+      "-encoding type       text encoding type",
       "-endian type         LSB or MSB",
       "-geometry geometry   perferred size or location of the image",
       "-interlace type      None, Line, Plane, or Partition",

@@ -113,7 +113,7 @@ static void MogrifyUsage(void)
       "-draw string         annotate the image with a graphic primitive",
       "-edge radius         apply a filter to detect edges in the image",
       "-emboss radius       emboss an image",
-      "-encoding type       font encoding type",
+      "-encoding type       text encoding type",
       "-endian type         LSB or MSB",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",

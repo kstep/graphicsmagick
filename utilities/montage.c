@@ -104,7 +104,7 @@ static void MontageUsage(void)
       "-dispose method      GIF disposal method",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-draw string         annotate the image with a graphic primitive",
-      "-encoding type       font encoding type",
+      "-encoding type       text encoding type",
       "-endian type         LSB or MSB",
       "-fill color          color to use when filling a graphic primitive",
       "-filter type         use this filter when resizing an image",
