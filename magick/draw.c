@@ -1692,11 +1692,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         if (LocaleCompare("decorate",keyword) == 0)
           {
             GetToken(q,&q,token);
-            if (LocaleCompare("#000000ff",token) == 0)
-              {
-                graphic_context[n]->decorate=NoDecoration;
-                break;
-              }
             if (LocaleCompare("underline",token) == 0)
               {
                 graphic_context[n]->decorate=UnderlineDecoration;
@@ -1710,6 +1705,12 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             if (LocaleCompare("line-through",token) == 0)
               {
                 graphic_context[n]->decorate=LineThroughDecoration;
+                break;
+              }
+            (void) QueryColorDatabase(token,&graphic_context[n]->box);
+            if (graphic_context[n]->box.opacity == OpaqueOpacity)
+              {
+                graphic_context[n]->decorate=NoDecoration;
                 break;
               }
             status=False;
