@@ -381,7 +381,7 @@ char SampleSize=1;
        case 0x7E:
 		 break;
        case 0x7F:RunCount=ReadBlobByte(image);	
-		 for(i=0;i<SampleSize*((unsigned)RunCount+1);i++)
+		 for(i=0;i<(int) SampleSize*((unsigned)RunCount+1);i++)
 			{
 			InsertRByte(0);
 			}
@@ -391,7 +391,7 @@ char SampleSize=1;
        case 0xFE:
 		 break;
        case 0xFF:RunCount=ReadBlobByte(image);
-		 for(i=0;i<SampleSize*((unsigned)RunCount+1);i++)
+		 for(i=0;i<(int) SampleSize*((unsigned)RunCount+1);i++)
 			{
 			InsertRByte(0xFF);
 			}
@@ -403,12 +403,12 @@ char SampleSize=1;
 		{	
 		for(i=0;i<(int) SampleSize;i++)
 			SampleBuffer[i]=ReadBlobByte(image);
-		for(i=0;i<=(unsigned)RunCount;i++)
+		for(i=0;i<=(int)RunCount;i++)
 		    for(bbuf=0;bbuf<SampleSize;bbuf++)
 			InsertRByte(SampleBuffer[bbuf]);
 		}
 	   else {
-		for(i=0;i<(int) SampleSize*((unsigned)RunCount+1);i++)
+		for(i=0;i<(int) SampleSize*((int)RunCount+1);i++)
 			{
 			bbuf=ReadBlobByte(image);
 			InsertRByte(bbuf);

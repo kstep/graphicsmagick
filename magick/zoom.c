@@ -810,8 +810,8 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     density=0.0;
     n=0;
     center=(double) x/x_factor;
-    start=Max(center-support+0.5,0);
-    end=Min(center+support+0.5,source->columns);
+    start=(int) Max(center-support+0.5,0);
+    end=(int) Min(center+support+0.5,source->columns);
     for (i=start; i < end; i++)
     {
       contribution[n].pixel=i;
@@ -953,8 +953,8 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     density=0.0;
     n=0;
     center=(double) y/y_factor;
-    start=Max(center-support+0.5,0);
-    end=Min(center+support+0.5,source->rows);
+    start=(int) Max(center-support+0.5,0);
+    end=(int) Min(center+support+0.5,source->rows);
     for (i=start; i < end; i++)
     {
       contribution[n].pixel=i;
@@ -1252,7 +1252,7 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
         /*
           Read a scan line.
         */
-        j=y_offset[y];
+        j=(int) y_offset[y];
         p=GetImagePixels(image,0,j,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
