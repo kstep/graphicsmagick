@@ -177,7 +177,6 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
   const NoiseType noise_type)
 {
 #define NoiseEpsilon  1.0e-5
-#define NoiseMask  0x7fff
 #define SigmaUniform  4.0
 #define SigmaGaussian  4.0
 #define SigmaImpulse  0.10
@@ -192,7 +191,7 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
     sigma,
     value;
 
-  alpha=(double) (rand() & NoiseMask)/NoiseMask;
+  alpha=(double) rand()/RAND_MAX;
   if (alpha == 0.0)
     alpha=1.0;
   switch (noise_type)
@@ -208,7 +207,7 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
       double
         tau;
 
-      beta=(double) (rand() & NoiseMask)/NoiseMask;
+      beta=(double) rand()/RAND_MAX;
       sigma=sqrt(-2.0*log(alpha))*cos(2.0*MagickPI*beta);
       tau=sqrt(-2.0*log(alpha))*sin(2.0*MagickPI*beta);
       value=(double) pixel+
@@ -221,7 +220,7 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
         sigma=MaxRGB;
       else
         sigma=sqrt(-2.0*log(alpha));
-      beta=(rand() & NoiseMask)/NoiseMask;
+      beta=(double) rand()/RAND_MAX;
       value=(double) pixel+
         pixel*SigmaMultiplicativeGaussian*sigma*cos(2.0*MagickPI*beta);
       break;
@@ -261,7 +260,7 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
 
       for (i=0; alpha > exp(-SigmaPoisson*pixel); i++)
       {
-        beta=(double) (rand() & NoiseMask)/NoiseMask;
+        beta=(double) rand()/RAND_MAX;
         alpha=alpha*beta;
       }
       value=i/SigmaPoisson;

@@ -15,6 +15,7 @@
   <module magick="EPSF" name="PS" />
   <module magick="EPSI" name="PS" />
   <module magick="FILE" name="URL" />
+  <module magick="FRACTAL" name="PLASMA" />
   <module magick="FTP" name="URL" />
   <module magick="G" name="GRAY" />
   <module magick="G3" name="FAX" />

@@ -2269,12 +2269,12 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %
 */
 
-static Quantum PlasmaPixel(const double pixel,const double noise)
+static inline Quantum PlasmaPixel(const double pixel,const double noise)
 {
   double
     value;
 
-  value=pixel+(noise/2.0)-(noise ? (rand() % (int) noise) : 0.0);
+  value=pixel+noise*rand()/RAND_MAX-noise/2;
   if (value <= 0.0)
     return(0);
   if (value >= MaxRGB)
@@ -2288,13 +2288,15 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
   double
     plasma;
 
-  int
+  long
+    x,
     x_mid,
+    y,
     y_mid;
 
   PixelPacket
-    pixel_1,
-    pixel_2;
+    u,
+    v;
 
   register PixelPacket
     *q;
@@ -2312,8 +2314,8 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       */
       depth--;
       attenuate++;
-      x_mid=(int) (segment->x1+segment->x2)/2;
-      y_mid=(int) (segment->y1+segment->y2)/2;
+      x_mid=(long) (segment->x1+segment->x2+0.5)/2;
+      y_mid=(long) (segment->y1+segment->y2+0.5)/2;
       local_info=(*segment);
       local_info.x2=x_mid;
       local_info.y2=y_mid;
@@ -2331,42 +2333,44 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       local_info.y1=y_mid;
       return(PlasmaImage(image,&local_info,attenuate,depth));
     }
-  x_mid=(int) (segment->x1+segment->x2)/2;
-  y_mid=(int) (segment->y1+segment->y2)/2;
+  x_mid=(long) (segment->x1+segment->x2+0.5)/2;
+  y_mid=(long) (segment->y1+segment->y2+0.5)/2;
   if ((segment->x1 == x_mid) && (segment->x2 == x_mid) &&
       (segment->y1 == y_mid) && (segment->y2 == y_mid))
     return(False);
   /*
     Average pixels and apply plasma.
   */
-  plasma=(double) (MaxRGB+1)/(2.0*attenuate);
+  plasma=(double) MaxRGB/(2.0*attenuate);
   if ((segment->x1 != x_mid) || (segment->x2 != x_mid))
     {
       /*
         Left pixel.
       */
-      pixel_1=GetOnePixel(image,(int) segment->x1,(int) segment->y1);
-      pixel_2=GetOnePixel(image,(int) segment->x1,(int) segment->y2);
-      q=SetImagePixels(image,(int) segment->x1,(int) y_mid,1,1);
+      x=(long) (segment->x1+0.5);
+      u=GetOnePixel(image,x,(long) (segment->y1+0.5));
+      v=GetOnePixel(image,x,(long) (segment->y2+0.5));
+      q=SetImagePixels(image,x,y_mid,1,1);
       if (q == (PixelPacket *) NULL)
         return(True);
-      q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
-      q->green=PlasmaPixel((int) (pixel_1.green+pixel_2.green)/2,plasma);
-      q->blue=PlasmaPixel((int) (pixel_1.blue+pixel_2.blue)/2,plasma);
+      q->red=PlasmaPixel((double) (u.red+v.red)/2,plasma);
+      q->green=PlasmaPixel((double) (u.green+v.green)/2,plasma);
+      q->blue=PlasmaPixel((double) (u.blue+v.blue)/2,plasma);
       (void) SyncImagePixels(image);
       if (segment->x1 != segment->x2)
         {
           /*
             Right pixel.
           */
-          pixel_1=GetOnePixel(image,(int) segment->x2,(int) segment->y1);
-          pixel_2=GetOnePixel(image,(int) segment->x2,(int) segment->y2);
-          q=SetImagePixels(image,(int) segment->x2,(int) y_mid,1,1);
+          x=(long) (segment->x2+0.5);
+          u=GetOnePixel(image,x,(long) (segment->y1+0.5));
+          v=GetOnePixel(image,x,(long) (segment->y2+0.5));
+          q=SetImagePixels(image,x,y_mid,1,1);
           if (q == (PixelPacket *) NULL)
             return(True);
-          q->red=PlasmaPixel((pixel_1.red+pixel_2.red)/2.0,plasma);
-          q->green=PlasmaPixel((pixel_1.green+pixel_2.green)/2.0,plasma);
-          q->blue=PlasmaPixel((pixel_1.blue+pixel_2.blue)/2.0,plasma);
+          q->red=PlasmaPixel((double) (u.red+v.red)/2,plasma);
+          q->green=PlasmaPixel((double) (u.green+v.green)/2,plasma);
+          q->blue=PlasmaPixel((double) (u.blue+v.blue)/2,plasma);
           (void) SyncImagePixels(image);
         }
     }
@@ -2377,14 +2381,15 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           /*
             Bottom pixel.
           */
-          pixel_1=GetOnePixel(image,(int) segment->x1,(int) segment->y2);
-          pixel_2=GetOnePixel(image,(int) segment->x2,(int) segment->y2);
-          q=SetImagePixels(image,(int) x_mid,(int) segment->y2,1,1);
+          y=(long) (segment->y2+0.5);
+          u=GetOnePixel(image,(long) (segment->x1+0.5),y);
+          v=GetOnePixel(image,(long) (segment->x2+0.5),y);
+          q=SetImagePixels(image,x_mid,y,1,1);
           if (q == (PixelPacket *) NULL)
             return(True);
-          q->red=PlasmaPixel((pixel_1.red+pixel_2.red)/2.0,plasma);
-          q->green=PlasmaPixel((pixel_1.green+pixel_2.green)/2.0,plasma);
-          q->blue=PlasmaPixel((pixel_1.blue+pixel_2.blue)/2.0,plasma);
+          q->red=PlasmaPixel((double) (u.red+v.red)/2,plasma);
+          q->green=PlasmaPixel((double) (u.green+v.green)/2,plasma);
+          q->blue=PlasmaPixel((double) (u.blue+v.blue)/2,plasma);
           (void) SyncImagePixels(image);
         }
       if (segment->y1 != segment->y2)
@@ -2392,14 +2397,15 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           /*
             Top pixel.
           */
-          pixel_1=GetOnePixel(image,(int) segment->x1,(int) segment->y1);
-          pixel_2=GetOnePixel(image,(int) segment->x2,(int) segment->y1);
-          q=SetImagePixels(image,(int) x_mid,(int) segment->y1,1,1);
+          y=(long) (segment->y1+0.5);
+          u=GetOnePixel(image,(long) (segment->x1+0.5),y);
+          v=GetOnePixel(image,(long) (segment->x2+0.5),y);
+          q=SetImagePixels(image,x_mid,y,1,1);
           if (q == (PixelPacket *) NULL)
             return(True);
-          q->red=PlasmaPixel((pixel_1.red+pixel_2.red)/2.0,plasma);
-          q->green=PlasmaPixel((pixel_1.green+pixel_2.green)/2.0,plasma);
-          q->blue=PlasmaPixel((pixel_1.blue+pixel_2.blue)/2.0,plasma);
+          q->red=PlasmaPixel((double) (u.red+v.red)/2,plasma);
+          q->green=PlasmaPixel((double) (u.green+v.green)/2,plasma);
+          q->blue=PlasmaPixel((double) (u.blue+v.blue)/2,plasma);
           (void) SyncImagePixels(image);
         }
     }
@@ -2408,14 +2414,18 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       /*
         Middle pixel.
       */
-      pixel_1=GetOnePixel(image,(int) segment->x1,(int) segment->y1);
-      pixel_2=GetOnePixel(image,(int) segment->x2,(int) segment->y2);
-      q=SetImagePixels(image,(int) x_mid,(int) y_mid,1,1);
+      x=(long) (segment->x1+0.5);
+      y=(long) (segment->y1+0.5);
+      u=GetOnePixel(image,x,y);
+      x=(long) (segment->x2+0.5);
+      y=(long) (segment->y2+0.5);
+      v=GetOnePixel(image,x,y);
+      q=SetImagePixels(image,x_mid,y_mid,1,1);
       if (q == (PixelPacket *) NULL)
         return(True);
-      q->red=PlasmaPixel((pixel_1.red+pixel_2.red)/2.0,plasma);
-      q->green=PlasmaPixel((pixel_1.green+pixel_2.green)/2.0,plasma);
-      q->blue=PlasmaPixel((pixel_1.blue+pixel_2.blue)/2.0,plasma);
+      q->red=PlasmaPixel((double) (u.red+v.red)/2,plasma);
+      q->green=PlasmaPixel((double) (u.green+v.green)/2,plasma);
+      q->blue=PlasmaPixel((double) (u.blue+v.blue)/2,plasma);
       (void) SyncImagePixels(image);
     }
   if (((segment->x2-segment->x1) < 3.0) && ((segment->y2-segment->y1) < 3.0))
@@ -2989,8 +2999,8 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
     {
       do
       {
-        x_distance=(long) (rand() & (2*radius+1))-quantum;
-        y_distance=(long) (rand() & (2*radius+1))-quantum;
+        x_distance=(long) ((double) (2*radius+1)*rand()/RAND_MAX)-quantum;
+        y_distance=(long) ((double) (2*radius+1)*rand()/RAND_MAX)-quantum;
       } while (((x+x_distance) < 0) || ((y+y_distance) < 0) ||
                ((x+x_distance) >= (long) image->columns) ||
                ((y+y_distance) >= (long) image->rows));

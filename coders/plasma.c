@@ -86,21 +86,25 @@
 %
 %
 */
+
+static void PlasmaPixel(Image *image,double x,double y)
+{
+  register PixelPacket
+    *q;
+
+  q=GetImagePixels(image,(long) (x+0.5),(long) (y+0.5),1,1);
+  if (q == (PixelPacket *) NULL)
+    return;
+  q->red=(Quantum) ((double) MaxRGB*rand()/RAND_MAX);
+  q->green=(Quantum) ((double) MaxRGB*rand()/RAND_MAX);
+  q->blue=(Quantum) ((double) MaxRGB*rand()/RAND_MAX);
+  (void) SyncImagePixels(image);
+}
+
 static Image *ReadPlasmaImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
 #define PlasmaImageText  "  Applying image plasma...  "
-#define PlasmaPixel(x,y) \
-{ \
-  q=GetImagePixels(image,(int) x,(int) y,1,1); \
-  if (q != (PixelPacket *) NULL) \
-    { \
-      q->red=(Quantum) (rand() % (MaxRGB+1)); \
-      q->green=(Quantum) (rand() % (MaxRGB+1)); \
-      q->blue=(Quantum) (rand() % (MaxRGB+1)); \
-     (void) SyncImagePixels(image); \
-    } \
-}
 
   Image
     *image;
@@ -160,16 +164,16 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
       /*
         Seed pixels before recursion.
       */
-      PlasmaPixel(segment_info.x1,segment_info.y1);
-      PlasmaPixel(segment_info.x1,(segment_info.y1+segment_info.y2)/2);
-      PlasmaPixel(segment_info.x1,segment_info.y2);
-      PlasmaPixel((segment_info.x1+segment_info.x2)/2,segment_info.y1);
-      PlasmaPixel((segment_info.x1+segment_info.x2)/2,
+      PlasmaPixel(image,segment_info.x1,segment_info.y1);
+      PlasmaPixel(image,segment_info.x1,(segment_info.y1+segment_info.y2)/2);
+      PlasmaPixel(image,segment_info.x1,segment_info.y2);
+      PlasmaPixel(image,(segment_info.x1+segment_info.x2)/2,segment_info.y1);
+      PlasmaPixel(image,(segment_info.x1+segment_info.x2)/2,
         (segment_info.y1+segment_info.y2)/2);
-      PlasmaPixel((segment_info.x1+segment_info.x2)/2,segment_info.y2);
-      PlasmaPixel(segment_info.x2,segment_info.y1);
-      PlasmaPixel(segment_info.x2,(segment_info.y1+segment_info.y2)/2);
-      PlasmaPixel(segment_info.x2,segment_info.y2);
+      PlasmaPixel(image,(segment_info.x1+segment_info.x2)/2,segment_info.y2);
+      PlasmaPixel(image,segment_info.x2,segment_info.y1);
+      PlasmaPixel(image,segment_info.x2,(segment_info.y1+segment_info.y2)/2);
+      PlasmaPixel(image,segment_info.x2,segment_info.y2);
     }
   i=(long) (Max(image->columns,image->rows) >> 1);
   for (max_depth=0; i != 0; max_depth++)
@@ -212,6 +216,12 @@ ModuleExport void RegisterPLASMAImage(void)
     *entry;
 
   entry=SetMagickInfo("PLASMA");
+  entry->decoder=ReadPlasmaImage;
+  entry->adjoin=False;
+  entry->description=AcquireString("Plasma fractal image");
+  entry->module=AcquireString("PLASMA");
+  (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("FRACTAL");
   entry->decoder=ReadPlasmaImage;
   entry->adjoin=False;
   entry->description=AcquireString("Plasma fractal image");
