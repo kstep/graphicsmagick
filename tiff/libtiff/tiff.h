@@ -383,10 +383,12 @@ typedef	enum {
 #define TIFFTAG_IT8COLORCHARACTERIZATION 34029	/* color character. table */
 /* tags 34232-34236 are private tags registered to Texas Instruments */
 #define TIFFTAG_FRAMECOUNT              34232   /* Sequence Frame Count */
-/* tag 34750 is a private tag registered to Adobe? */
+/* tag 34675 is a private tag registered to Adobe? */
 #define TIFFTAG_ICCPROFILE		34675	/* ICC profile data */
 /* tag 34377 is private tag registered to Adobe for PhotoShop */
 #define TIFFTAG_PHOTOSHOP				34377 
+/* tag 37724 is private tag registered to Adobe for PhotoShop */
+#define TIFFTAG_PHOTOSHOP_ISD				37724 
 /* tag 34750 is a private tag registered to Pixel Magic */
 #define	TIFFTAG_JBIGOPTIONS		34750	/* JBIG options */
 /* tags 34908-34914 are private tags registered to SGI */
