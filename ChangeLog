@@ -2,6 +2,8 @@
 
 	* coders/jpeg.c (ReadJPEGImage): Throw a "Corrupt Image" exception
 	if EOF is encountered while reading scanlines.
+	* coders/pcx.c (ReadPCXImage): Throw a "Corrupt Image" exception
+	if EOF is encountered while reading pixels.
 
 2005-03-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
