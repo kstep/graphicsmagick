@@ -10,6 +10,7 @@
 
 #include "Magick++/Include.h"
 
+#include <functional>
 #include <string>
 #include <list>
 #include <utility>
@@ -63,7 +64,7 @@ namespace Magick
   //
   // Base class for all drawable objects
   //
-  class DrawableBase
+  class DrawableBase: public std::unary_function<const MagickLib::DrawContext,void>
   {
   public:
     // Constructor
