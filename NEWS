@@ -6,6 +6,7 @@ Major changes associated with GraphicsMagick 1.0.3 (Not released yet)
     * BMP reader fix to avoid unnecessary rejection of some old
     uncompressed Windows 2.X and OS/2 BMPs.
     * Semaphore fix which is necessary for proper multi-threaded operation.
+    * EXIF attributes were not being retrieved when requested.
 
 Major changes associated with GraphicsMagick 1.0.2 (Released June 6, 2003)
 

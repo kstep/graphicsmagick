@@ -1,5 +1,7 @@
 2003-07-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* GraphicsMagick.spec: Added RPM spec file authored by Troy
+	Edwards <vallimar@sexorcisto.net>.
 	* magick/attribute.c (GenerateEXIFAttribute): Look for the profile
 	name "EXIF" rather than "APP1".
 
