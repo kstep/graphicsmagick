@@ -285,6 +285,10 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
   register MagickInfo
     *p;
 
+#if defined(HasMODULES)
+  if ((name != (const char *) NULL) ||  (LocaleCompare(name,"*") == 0))
+    OpenModules(exception);
+#endif
   AcquireSemaphore(&magick_semaphore);
   if (magick_list == (MagickInfo *) NULL)
     {
@@ -380,12 +384,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
     }
   LiberateSemaphore(&magick_semaphore);
   if ((name == (const char *) NULL) ||  (LocaleCompare(name,"*") == 0))
-    {
-#if defined(HasMODULES)
-      OpenModules(exception);
-#endif
-      return(magick_list);
-    }
+    return(magick_list);
   /*
     Find name in list
   */
