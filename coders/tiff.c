@@ -1360,7 +1360,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           compress_tag=COMPRESSION_CCITTFAX4;
         break;
       }
-      case JPEGCompression: compress_tag=COMPRESSION_JPEG; break;
+      case JPEGCompression:
+      {
+	compress_tag=COMPRESSION_JPEG;
+        image->depth=8;
+        break;
+      }
       case LZWCompression: compress_tag=COMPRESSION_LZW; break;
       case RunlengthEncodedCompression:
         compress_tag=COMPRESSION_PACKBITS; break;
