@@ -453,7 +453,7 @@ MagickExport Image *MontageImages(const Image *images,
   if (montage_info->font != (char *) NULL)
     (void) CloneString(&draw_info->font,montage_info->font);
   draw_info->pointsize=montage_info->pointsize;
-  draw_info->gravity=CenterGravity;
+  draw_info->gravity=NorthGravity;
   draw_info->stroke=montage_info->stroke;
   draw_info->fill=montage_info->fill;
   draw_info->text=AllocateString("");
@@ -709,10 +709,11 @@ MagickExport Image *MontageImages(const Image *images,
               */
               FormatString(geometry,"%lux%lu%+ld%+ld",
                 (montage_info->frame ? image->columns : width)-2*border_width,
-                (unsigned long) metrics.height,(long) (x_offset+border_width),
-                (long) ((montage_info->frame ? y_offset+height+2*border_width-
-                bevel_width-2 : y_offset+tile_info.height+2*border_width+
-                (montage_info->shadow ? 4 : 0))+metrics.ascent));
+                (unsigned long) (metrics.height+4)*
+                MultilineCensus(attribute->value),x_offset+border_width,
+                (montage_info->frame ? y_offset+height+border_width+2 :
+                y_offset+tile_info.height+border_width+(montage_info->shadow ?
+                4 : 0))+(long) metrics.height);
               (void) CloneString(&draw_info->geometry,geometry);
               (void) CloneString(&draw_info->text,attribute->value);
               (void) AnnotateImage(montage,draw_info);
