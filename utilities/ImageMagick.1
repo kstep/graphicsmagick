@@ -1864,14 +1864,24 @@ image file.  Use +profile "*" to remove all profiles.
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level
 
-For the JPEG image format, quality is 0 (worst) to 100 (best). The default
-quality is 75.
+For the JPEG image format, quality is 0 (lowest image quality and highest
+compression) to 100 (best quality but least effective compression). The default
+quality is 75.  If the quality is an odd number, 2x2 chroma downsampling is
+used.  If it is even, 1x1 chroma sampling is used.
 
 
-Quality for the MIFF and PNG image format sets the amount of image compression
-(quality / 10) and filter-type (quality % 10). Compression quality values
-range from 0 (worst) to 100 (best). If filter-type is 4 or less, the specified
-filter-type is used for all scanlines:
+For the MIFF image format, quality is the zlib compression level, which
+is 0 (worst but fastest compression) to 9 (best but slowest).  It has no
+effect on the image appearance, since the compression is always lossless.
+
+For the MNG and PNG image format, the quality value sets the zlib compression
+level (quality / 10) and filter-type (quality % 10). Compression levels
+range from 0 (fastest compression) to 100 (best but slowest). For compression
+level 0, the Huffman-only strategy is used, which is fastest but not
+necessarily the worst compression.
+
+If
+filter-type is 4 or less, the specified filter-type is used for all scanlines:
 
 
      0: none
@@ -1885,12 +1895,19 @@ than 50 and the image does not have a color map, otherwise no filtering
 is used.
 
 
-If filter-type is 6 or more, adaptive filtering with \fIminimum-sum-of-absolute-values\fP
+If filter-type is 6, adaptive filtering
+with \fIminimum-sum-of-absolute-values\fP
 is used.
 
 
-The default is quality is 75. Which means nearly the best compression with
-adaptive filtering.
+Only if the output is MNG, if filter-type is 7, the LOCO color transformation
+and adaptive filtering with \fIminimum-sum-of-absolute-values\fP
+are used.
+
+
+The default is quality is 75, which means nearly the best compression with
+adaptive filtering.  The quality setting has no effect on the appearance
+of PNG and MNG images, since the compression is always lossless.
 
 
 For further information, see the PNG
