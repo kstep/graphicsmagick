@@ -279,8 +279,9 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
     }
   (void) strcpy(module_name,tag);
   (void) strcat(module_name,"Image");
-  method=lt_dlsym(handle,module_name);
-  if (method != NULL)
+  method=(unsigned int (*)(Image *,const int,char **))
+    lt_dlsym(handle,module_name);
+  if (method != (unsigned int (*)(Image *,const int,char **)) NULL)
     status=(*method)(image,argc,argv);
   (void) lt_dlclose(handle);
   LiberateMemory((void **) &module_name);
@@ -686,7 +687,7 @@ MagickExport unsigned int OpenModule(const char *module,
     Locate and execute RegisterFORMATImage function
   */
   ModuleToTag(module_name,"Register%sImage",name);
-  method=lt_dlsym(handle,name);
+  method=(void (*)(void)) lt_dlsym(handle,name);
   if (method == (void (*)(void)) NULL)
     {
       ThrowException(exception,MissingDelegateWarning,"failed to find symbol",
@@ -1151,7 +1152,7 @@ static int UnloadDynamicModule(const char *module)
     Locate and execute UnregisterFORMATImage function
   */
   ModuleToTag(module,"Unregister%sImage",name);
-  method=lt_dlsym((ModuleHandle) module_info->handle,name);
+  method=(void (*)(void)) lt_dlsym((ModuleHandle) module_info->handle,name);
   if (method == (void (*)(void)) NULL)
     MagickWarning(DelegateWarning,"failed to find symbol",lt_dlerror());
   else

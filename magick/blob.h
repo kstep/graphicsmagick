@@ -24,7 +24,7 @@ extern MagickExport Image
 extern MagickExport int
   EOFBlob(const Image *),
   ReadBlobByte(Image *),
-  SyncBlob(const Image *);
+  SyncBlob(Image *);
 
 extern MagickExport off_t
   SeekBlob(Image *,const off_t,const int),
@@ -63,7 +63,7 @@ extern MagickExport void
   *MapBlob(int,const MapMode,size_t *),
   MSBOrderLong(char *,const size_t),
   MSBOrderShort(char *,const size_t),
-  RewindBlob(BlobInfo *),
+  DetachBlob(BlobInfo *),
   SetBlobQuantum(BlobInfo *,const size_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -170,7 +170,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         *clone_info;
 
       clone_info=CloneImageInfo(image_info);
-      RewindBlob(clone_info->blob);
+      DetachBlob(clone_info->blob);
       (void) strcpy(clone_info->filename,image_info->texture);
       texture=ReadImage(clone_info,exception);
       if (texture != (Image *) NULL)
@@ -207,18 +207,16 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Page is full-- allocate next image structure.
     */
-    image->next=CloneImage(image,image->columns,image->rows,True,exception);
+    AllocateNextImage(image_info,image);
     if (image->next == (Image *) NULL)
       {
-        DestroyDrawInfo(draw_info);
+        DestroyImages(image);
         return((Image *) NULL);
       }
-    (void) strcpy(image->next->filename,filename);
-    *image->next->blob=(*image->blob);
-    image->next->file=image->file;
-    image->next->scene=image->scene+1;
-    image->next->previous=image;
+    image->next->columns=image->columns;
+    image->next->rows=image->rows;
     image=image->next;
+    (void) strcpy(image->filename,filename);
     SetImage(image,OpaqueOpacity);
     MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
     /*
@@ -402,8 +400,7 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
     }
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)

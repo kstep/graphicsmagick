@@ -112,7 +112,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   if (*image_info->filename == '\0')
     ThrowReaderException(OptionWarning,"must specify an image name",image);
   clone_info=CloneImageInfo(image_info);
-  RewindBlob(clone_info->blob);
+  DetachBlob(clone_info->blob);
   *clone_info->magick='\0';
   tiled_image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);

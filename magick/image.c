@@ -2244,6 +2244,9 @@ MagickExport void DestroyImage(Image *image)
   register long
     i;
 
+  /*
+    Dereference image.
+  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   destroy=False;
@@ -2255,14 +2258,11 @@ MagickExport void DestroyImage(Image *image)
   if (!destroy)
     return;
   /*
-    Close image.
+    Destroy image.
   */
   CloseBlob(image);
-  if (image->file != (FILE *) NULL)
-    {
-      if (image->temporary)
-        (void) remove(image->filename);
-    }
+  if (image->clip_mask != (Image *) NULL)
+    DestroyImage(image->clip_mask);
   if (image->montage != (char *) NULL)
     LiberateMemory((void **) &image->montage);
   if (image->directory != (char *) NULL)
@@ -2279,9 +2279,6 @@ MagickExport void DestroyImage(Image *image)
     LiberateMemory((void **) &image->iptc_profile.info);
   if (image->generic_profiles != 0)
     {
-      /*
-        Deallocate any generic profiles.
-      */
       for (i=0; i < (long) image->generic_profiles; i++)
       {
         if (image->generic_profile[i].name != (char *) NULL)
@@ -2292,11 +2289,9 @@ MagickExport void DestroyImage(Image *image)
       LiberateMemory((void **) &image->generic_profile);
     }
   DestroyImageAttributes(image);
-  DestroyExceptionInfo(&image->exception);
-  if (image->clip_mask != (Image *) NULL)
-    DestroyImage(image->clip_mask);
-  DestroyBlobInfo(image->blob);
   DestroyImagePixels(image);
+  DestroyExceptionInfo(&image->exception);
+  DestroyBlobInfo(image->blob);
   DestroySemaphoreInfo(image->semaphore);
   if (!image->orphan)
     {

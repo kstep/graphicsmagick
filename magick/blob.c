@@ -132,7 +132,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
         clone_info->magick);
       return((Image *) NULL);
     }
-  RewindBlob(clone_info->blob);
+  DetachBlob(clone_info->blob);
   if (magick_info->blob_support)
     {
       /*
@@ -145,7 +145,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       image=ReadImage(clone_info,exception);
       DestroyImageInfo(clone_info);
       if (image != (Image *) NULL)
-        RewindBlob(image->blob);
+        DetachBlob(image->blob);
       return(image);
     }
   /*
@@ -253,28 +253,33 @@ MagickExport void CloseBlob(Image *image)
   assert(image->signature == MagickSignature);
   CloseImagePixels(image);
   image->taint=False;
-  image->blob->maximum_extent=SizeBlob(image);
-  if (image->blob->data != (unsigned char *) NULL)
-    {
-      register Image
-        *p;
-
-      while (image->previous != (Image *) NULL)
-        image=image->previous;
-      image->blob->extent=image->blob->length;
-      image->blob->eof=False;
-      for (p=image->next; p != (Image *) NULL; p=p->next)
-        RewindBlob(p->blob);
-      return;
-    }
   if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
     {
       (void) image->fifo(image,(const void *) NULL,0);
       image->fifo=(int (*)(const Image *,const void *,const size_t)) NULL;
       return;
     }
+  if (image->blob->data != (unsigned char *) NULL)
+    {
+      image->blob->maximum_extent=image->blob->length;
+      image->blob->eof=False;
+      if (image->exempt)
+        return;
+      if (image->blob->mapped)
+        (void) UnmapBlob(image->blob->data,image->blob->length);
+      DetachBlob(image->blob);
+      if (!image->orphan)
+        {
+          while (image->previous != (Image *) NULL)
+            image=image->previous;
+          for ( ; image != (Image *) NULL; image=image->next)
+            DetachBlob(image->blob);
+         }
+      return;
+    }
   if (image->file == (FILE *) NULL)
     return;
+  image->blob->maximum_extent=SizeBlob(image);
   image->status=ferror(image->file);
   errno=0;
   if (image->exempt)
@@ -323,9 +328,40 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
   assert(blob->signature == MagickSignature);
-  if (blob->mapped)
-    (void) UnmapBlob(blob->data,blob->length);
   LiberateMemory((void **) &blob);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e t a c h B l o b                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DetachBlob rewinds the BlobInfo structure.
+%
+%  The format of the DetachBlob method is:
+%
+%      void DetachBlob(BlobInfo *blob)
+%
+%  A description of each parameter follows:
+%
+%    o blob: Specifies a pointer to a BlobInfo structure.
+%
+%
+*/
+MagickExport void DetachBlob(BlobInfo *blob)
+{
+  assert(blob != (BlobInfo *) NULL);
+  blob->eof=False;
+  blob->mapped=False;
+  blob->length=0;
+  blob->offset=0;
+  blob->data=(unsigned char *) NULL;
 }
 
 /*
@@ -562,6 +598,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       /*
         Native blob support for this image format.
       */
+      image->exempt=True;
       *image->filename='\0';
       clone_info->blob->extent=Max(*length,image->blob->quantum);
       clone_info->blob->data=(unsigned char *)
@@ -586,7 +623,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       DestroyImageInfo(clone_info);
       blob=image->blob->data;
       *length=image->blob->extent;
-      RewindBlob(image->blob);
+      DetachBlob(image->blob);
       return(blob);
     }
   DestroyImageInfo(clone_info);
@@ -863,7 +900,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       *image->blob=(*image_info->blob);
       return(True);
     }
-  RewindBlob(image->blob);
+  DetachBlob(image->blob);
   image->exempt=False;
   if (image_info->fifo !=
       (int (*)(const Image *,const void *,const size_t)) NULL)
@@ -1074,17 +1111,14 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 */
 MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
 {
-  size_t
-    count;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(data != (void *) NULL);
   if (image->blob->data != (unsigned char *) NULL)
     {
-      /*
-        Read bytes from blob.
-      */
+      size_t
+        count;
+
       count=Min(length,image->blob->length-image->blob->offset);
       if (count != 0)
         (void) memcpy(data,image->blob->data+image->blob->offset,count);
@@ -1093,11 +1127,7 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
         image->blob->eof=True;
       return(count);
     }
-  /*
-    Read bytes from a file.
-  */
-  count=fread(data,1,length,image->file);
-  return(count);
+  return(fread(data,1,length,image->file));
 }
 
 /*
@@ -1144,8 +1174,7 @@ MagickExport size_t ReadBlobBlock(Image *image,unsigned char *data)
   count=ReadBlob(image,1,&block_count);
   if (count == 0)
     return(0);
-  count=ReadBlob(image,(size_t) block_count,data);
-  return(count);
+  return(ReadBlob(image,(size_t) block_count,data));
 }
 
 /*
@@ -1179,14 +1208,14 @@ MagickExport int ReadBlobByte(Image *image)
     count;
 
   unsigned char
-    value;
+    buffer[1];
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  count=ReadBlob(image,1,(unsigned char *) &value);
+  count=ReadBlob(image,1,(unsigned char *) buffer);
   if (count == 0)
     return(EOF);
-  return(value);
+  return(*buffer);
 }
 
 /*
@@ -1431,40 +1460,6 @@ MagickExport char *ReadBlobString(Image *image,char *string)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e w i n d B l o b                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method RewindBlob rewinds the BlobInfo structure.
-%
-%  The format of the RewindBlob method is:
-%
-%      void RewindBlob(BlobInfo *blob)
-%
-%  A description of each parameter follows:
-%
-%    o blob: Specifies a pointer to a BlobInfo structure.
-%
-%
-*/
-MagickExport void RewindBlob(BlobInfo *blob)
-{
-  assert(blob != (BlobInfo *) NULL);
-  blob->extent=blob->length;
-  blob->eof=False;
-  blob->mapped=False;
-  blob->length=0;
-  blob->offset=0;
-  blob->data=(unsigned char *) NULL;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +  S e e k B l o b                                                            %
 %                                                                             %
 %                                                                             %
@@ -1498,57 +1493,54 @@ MagickExport void RewindBlob(BlobInfo *blob)
 */
 MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
 {
-  int
-    status;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->blob->data == (unsigned char *) NULL)
+  if (image->blob->data != (unsigned char *) NULL)
     {
-      status=fseek(image->file,offset,whence);
-      if (status == -1)
-        return(status);
+      switch (whence)
+      {
+        case SEEK_SET:
+        default:
+        {
+          if (offset < 0)
+            return(-1);
+          image->blob->offset=offset;
+          break;
+        }
+        case SEEK_CUR:
+        {
+          if ((image->blob->offset+offset) < 0)
+            return(-1);
+          image->blob->offset+=offset;
+          break;
+        }
+        case SEEK_END:
+        {
+          if ((off_t) (image->blob->offset+image->blob->length+offset) < 0)
+            return(-1);
+          image->blob->offset=image->blob->length+offset;
+          break;
+        }
+      }
+      if (image->blob->offset <= image->blob->length)
+        image->blob->eof=False;
+      else
+        {
+          image->blob->extent=image->blob->offset+image->blob->quantum;
+          ReacquireMemory((void **) &image->blob->data,image->blob->extent+1);
+          SyncBlob(image);
+          if (image->blob->data == (unsigned char *) NULL)
+            {
+              DetachBlob(image->blob);
+              return(-1);
+            }
+        }
       return(TellBlob(image));
     }
-  switch (whence)
-  {
-    case SEEK_SET:
-    default:
-    {
-      if (offset < 0)
-        return(-1);
-      image->blob->offset=offset;
-      break;
-    }
-    case SEEK_CUR:
-    {
-      if ((image->blob->offset+offset) < 0)
-        return(-1);
-      image->blob->offset+=offset;
-      break;
-    }
-    case SEEK_END:
-    {
-      if ((off_t) (image->blob->offset+image->blob->length+offset) < 0)
-        return(-1);
-      image->blob->offset=image->blob->length+offset;
-      break;
-    }
-  }
-  if (image->blob->offset <= image->blob->length)
-    image->blob->eof=False;
-  else
-    {
-      image->blob->length=image->blob->offset;
-      ReacquireMemory((void **) &image->blob->data,image->blob->length+1);
-      if (image->blob->data == (unsigned char *) NULL)
-        {
-          image->blob->length=0;
-          return(-1);
-        }
-      image->blob->extent=image->blob->length;
-    }
-  return(image->blob->offset);
+  if (image->file == (FILE *) NULL)
+    return(-1);
+  (void) fseek(image->file,offset,whence);
+  return(TellBlob(image));
 }
 
 /*
@@ -1617,10 +1609,10 @@ MagickExport off_t SizeBlob(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->blob->maximum_extent != 0)
-    return(image->blob->maximum_extent);
-  if (image->file == (FILE *) NULL)
+  if (image->blob->data != (unsigned char *) NULL)
     return(image->blob->length);
+  if (image->file == (FILE *) NULL)
+    return(image->blob->maximum_extent);
   (void) SyncBlob(image);
   return(fstat(fileno(image->file),&attributes) < 0 ? 0 : attributes.st_size);
 }
@@ -1636,11 +1628,12 @@ MagickExport off_t SizeBlob(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SyncBlob flushes the datastream if it is a file.
+%  Method SyncBlob flushes the datastream if it is a file or synchonizes the
+%  data attributes if it is an blob.
 %
 %  The format of the SyncBlob method is:
 %
-%      int SyncBlob(const Image *image)
+%      int SyncBlob(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1651,13 +1644,23 @@ MagickExport off_t SizeBlob(Image *image)
 %
 %
 */
-MagickExport int SyncBlob(const Image *image)
+MagickExport int SyncBlob(Image *image)
 {
+  register Image
+    *p;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->file != (FILE *) NULL)
-    return(fflush(image->file));
-  return(0);
+  if (image->blob->data != (unsigned char *) NULL)
+    {
+      for (p=image; p->previous != (Image *) NULL; p=p->previous);
+      while (p->next != (Image *) NULL)
+        *p->blob=(*image->blob);
+      return(0);
+    }
+  if (image->file == (FILE *) NULL)
+    return(0);
+  return(fflush(image->file));
 }
 
 /*
@@ -1691,9 +1694,11 @@ MagickExport off_t TellBlob(Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->file != (FILE *) NULL)
-    return(ftell(image->file));
-  return(image->blob->offset);
+  if (image->blob->data != (unsigned char) NULL)
+    return(image->blob->offset);
+  if (image->file == (FILE *) NULL)
+    return(-1);
+  return(ftell(image->file));
 }
 
 /*
@@ -1772,34 +1777,33 @@ MagickExport unsigned int UnmapBlob(void *map,const size_t length)
 */
 MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 {
-  size_t
-    count;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(data != (const char *) NULL);
   if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
     return(image->fifo(image,data,length));
-  if (image->blob->data == (unsigned char *) NULL)
+  if (image->blob->data != (unsigned char *) NULL)
     {
-      count=fwrite((char *) data,1,length,image->file);
-      return(count);
-    }
-  if (length > (image->blob->extent-image->blob->offset))
-    {
-      image->blob->extent+=length+image->blob->quantum;
-      ReacquireMemory((void **) &image->blob->data,image->blob->extent+1);
-      if (image->blob->data == (unsigned char *) NULL)
+      if (length > (image->blob->extent-image->blob->offset))
         {
-          image->blob->extent=0;
-          return(0);
+          image->blob->extent+=length+image->blob->quantum;
+          ReacquireMemory((void **) &image->blob->data,image->blob->extent+1);
+          SyncBlob(image);
+          if (image->blob->data == (unsigned char *) NULL)
+            {
+              DetachBlob(image->blob);
+              return(0);
+            }
         }
+      (void) memcpy(image->blob->data+image->blob->offset,data,length);
+      image->blob->offset+=length;
+      if (image->blob->offset > image->blob->length)
+        image->blob->length=image->blob->offset;
+      return(length);
     }
-  (void) memcpy(image->blob->data+image->blob->offset,data,length);
-  image->blob->offset+=length;
-  if (image->blob->offset > image->blob->length)
-    image->blob->length=image->blob->offset;
-  return(length);
+  if (image->file == (FILE *) NULL)
+    return(0);
+  return(fwrite((char *) data,1,length,image->file));
 }
 
 /*
@@ -1832,17 +1836,13 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 */
 MagickExport size_t WriteBlobByte(Image *image,const int value)
 {
-  char
-    c;
-
-  size_t
-    count;
+  unsigned char
+    buffer[1];
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  c=value;
-  count=WriteBlob(image,1,&c);
-  return(count);
+  buffer[0]=value;
+  return(WriteBlob(image,1,buffer));
 }
 
 /*
@@ -2040,12 +2040,8 @@ MagickExport size_t WriteBlobMSBShort(Image *image,const unsigned int value)
 */
 MagickExport size_t WriteBlobString(Image *image,const char *string)
 {
-  size_t
-    count;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(string != (const char *) NULL);
-  count=WriteBlob(image,strlen(string),string);
-  return(count);
+  return(WriteBlob(image,strlen(string),string));
 }
