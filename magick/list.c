@@ -276,23 +276,23 @@ MagickExport unsigned long GetImageListSize(const Image *images)
 %
 %  The format of the GetNextImage method is:
 %
-%      Image *GetNextImage(Image *image)
+%      Image *GetNextImage(Image *images)
 %
 %  A description of each parameter follows:
 %
-%    o image: The image.
+%    o images: The image list.
 %
 %
 */
-MagickExport Image *GetNextImage(Image *image)
+MagickExport Image *GetNextImage(Image *images)
 {
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->next == (Image *) NULL)
+  assert(images != (Image *) NULL);
+  assert(images->signature == MagickSignature);
+  if (images->next == (Image *) NULL)
     return((Image *) NULL);
-  *image->next->blob=(*image->blob);
-  image->next->file=image->file;
-  return(image->next);
+  *images->next->blob=(*images->blob);
+  images->next->file=images->file;
+  return(images->next);
 }
 
 /*
