@@ -687,7 +687,9 @@ MagickExport PixelPacket InterpolateColor(const Image *image,
 {
   double
     alpha,
-    beta;
+    beta,
+    one_minus_alpha,
+    one_minus_beta;
 
   PixelPacket
     color;
@@ -702,14 +704,16 @@ MagickExport PixelPacket InterpolateColor(const Image *image,
     return(AcquireOnePixel(image,(long) x_offset,(long) y_offset,exception));
   alpha=x_offset-floor(x_offset);
   beta=y_offset-floor(y_offset);
-  color.red=(Quantum) ((1.0-beta)*((1.0-alpha)*p[0].red+
-    alpha*p[1].red)+beta*((1.0-alpha)*p[2].red+alpha*p[3].red)+0.5);
-  color.green=(Quantum) ((1.0-beta)*((1.0-alpha)*p[0].green+
-    alpha*p[1].green)+beta*((1.0-alpha)*p[2].green+alpha*p[3].green)+0.5);
-  color.blue=(Quantum) ((1.0-beta)*((1.0-alpha)*p[0].blue+
-    alpha*p[1].blue)+beta*((1.0-alpha)*p[2].blue+alpha*p[3].blue)+0.5);
-  color.opacity=(Quantum) ((1.0-beta)*((1.0-alpha)*p[0].opacity+
-    alpha*p[1].opacity)+beta*((1.0-alpha)*p[2].opacity+alpha*p[3].opacity)+0.5);
+  one_minus_alpha=1.0-alpha;
+  one_minus_beta=1.0-beta;
+  color.red=(Quantum) (one_minus_beta*(one_minus_alpha*p[0].red+
+    alpha*p[1].red)+beta*(one_minus_alpha*p[2].red+alpha*p[3].red)+0.5);
+  color.green=(Quantum) (one_minus_beta*(one_minus_alpha*p[0].green+
+    alpha*p[1].green)+beta*(one_minus_alpha*p[2].green+alpha*p[3].green)+0.5);
+  color.blue=(Quantum) (one_minus_beta*(one_minus_alpha*p[0].blue+
+    alpha*p[1].blue)+beta*(one_minus_alpha*p[2].blue+alpha*p[3].blue)+0.5);
+  color.opacity=(Quantum) (one_minus_beta*(one_minus_alpha*p[0].opacity+
+    alpha*p[1].opacity)+beta*(one_minus_alpha*p[2].opacity+alpha*p[3].opacity)+0.5);
   return(color);
 }
 

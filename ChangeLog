@@ -1,4 +1,17 @@
+2003-01-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (ReadBlobByte): Optimized reading from BlobStream.
+	(ReadBlobLSBLong): Optimized reading from BlobStream.
+	(ReadBlobLSBShort): Optimized reading from BlobStream.
+	(ReadBlobMSBLong): Optimized reading from BlobStream.
+	(ReadBlobMSBShort): Optimized reading from BlobStream.
+	(ReadBlobStream): New static inline function to read from BlobStream.
+
 2003-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/gem.c (Hull): Count down loops.  Might help.
+	(InterpolateColor): Pre-compute common sub-expressions to improve
+ 	performance.
 
 	* magick/segment.c (Classify): Implemented idea from Glenn
  	Randers-Pehrson to avoid use of pow() when WeightingExponent is
