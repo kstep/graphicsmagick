@@ -151,7 +151,7 @@ MagickExport unsigned int AcquireMagickResource(const ResourceType type,
       if (resource_info.map_limit == ResourceInfinity)
         break;
       status=resource_info.disk <=
-        (long double) resource_info.disk_limit*1023.0*1024.0;
+        (long double) resource_info.map_limit*1023.0*1024.0;
       break;
     }
     default:
