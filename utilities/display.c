@@ -468,7 +468,7 @@ int main(int argc,char **argv)
                       /*
                         User selected a visual directory image (montage).
                       */
-                      DestroyImageList(&image);
+                      DestroyImageList(image);
                       image=nexus;
                       break;
                     }
@@ -479,14 +479,14 @@ int main(int argc,char **argv)
                   if ((next == (Image *) NULL) &&
                       (nexus->next != (Image *) NULL))
                     {
-                      DestroyImageList(&image);
+                      DestroyImageList(image);
                       image=nexus->next;
                       nexus=(Image *) NULL;
                     }
                   else
                     {
                       if (nexus != image)
-                        DestroyImageList(&nexus);
+                        DestroyImageList(nexus);
                       nexus=next;
                     }
                 }
@@ -528,7 +528,7 @@ int main(int argc,char **argv)
           /*
             Free image resources.
           */
-          DestroyImageList(&image);
+          DestroyImageList(image);
           if (!(state & FormerImageState))
             {
               last_image=image_number;

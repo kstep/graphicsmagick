@@ -1693,7 +1693,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 AllocateNextImage(image_info,image);
                 if (image->next == (Image *) NULL)
                   {
-                    DestroyImageList(&image);
+                    DestroyImageList(image);
                     MngInfoFreeStruct(mng_info,&have_mng_structure);
                     return((Image *) NULL);
                   }
@@ -2018,7 +2018,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     AllocateNextImage(image_info,image);
                     if (image->next == (Image *) NULL)
                       {
-                        DestroyImageList(&image);
+                        DestroyImageList(image);
                         MngInfoFreeStruct(mng_info,&have_mng_structure);
                         return((Image *) NULL);
                       }
@@ -2476,7 +2476,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     AllocateNextImage(image_info,image);
                     if (image->next == (Image *) NULL)
                       {
-                        DestroyImageList(&image);
+                        DestroyImageList(image);
                         MngInfoFreeStruct(mng_info,&have_mng_structure);
                         return((Image *) NULL);
                       }
@@ -2522,7 +2522,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               AllocateNextImage(image_info,image);
               if (image->next == (Image *) NULL)
                 {
-                  DestroyImageList(&image);
+                  DestroyImageList(image);
                   MngInfoFreeStruct(mng_info,&have_mng_structure);
                   return((Image *) NULL);
                 }
@@ -2563,7 +2563,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             AllocateNextImage(image_info,image);
             if (image->next == (Image *) NULL)
               {
-                DestroyImageList(&image);
+                DestroyImageList(image);
                 MngInfoFreeStruct(mng_info,&have_mng_structure);
                 return((Image *) NULL);
               }
@@ -3604,7 +3604,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     AllocateNextImage(image_info,image);
                     if (image->next == (Image *) NULL)
                       {
-                         DestroyImageList(&image);
+                         DestroyImageList(image);
                          MngInfoFreeStruct(mng_info,&have_mng_structure);
                          ThrowReaderException((ExceptionType)
                             ResourceLimitWarning,
@@ -3646,7 +3646,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if ((prev == (PixelPacket *) NULL) ||
                     (next == (PixelPacket *) NULL))
                   {
-                     DestroyImageList(&image);
+                     DestroyImageList(image);
                      MngInfoFreeStruct(mng_info,&have_mng_structure);
                      ThrowReaderException((ExceptionType) ResourceLimitWarning,
                        "Memory allocation failed while magnifying",image)
@@ -3995,7 +3995,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           AllocateNextImage(image_info,image);
           if (image->next == (Image *) NULL)
             {
-              DestroyImageList(&image);
+              DestroyImageList(image);
               MngInfoFreeStruct(mng_info,&have_mng_structure);
               return((Image *) NULL);
             }
@@ -4048,7 +4048,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowException(&image->exception,(ExceptionType) DelegateWarning,
         "No visible images in file",image_info->filename);
       if (image != (Image *) NULL)
-        DestroyImageList(&image);
+        DestroyImageList(image);
       MngInfoFreeStruct(mng_info,&have_mng_structure);
       return((Image *) NULL);
     }
@@ -4063,7 +4063,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (next_image == (Image *) NULL)
         MagickError(image->exception.severity,image->exception.reason,
           image->exception.description);
-      DestroyImageList(&image);
+      DestroyImageList(image);
       image=next_image;
 
       for(next=image; next->next != (Image *) NULL; next=next_image)

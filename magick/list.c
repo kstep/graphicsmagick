@@ -97,7 +97,7 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
     if (image == (Image *) NULL)
       {
         if (clone_images != (Image *) NULL)
-          DestroyImageList(&clone_images);
+          DestroyImageList(clone_images);
         return((Image *) NULL);
       }
     if (clone_images == (Image *) NULL)
@@ -182,7 +182,7 @@ MagickExport unsigned int DeleteImageList(Image *images,
 %
 %  The format of the DestroyImageList method is:
 %
-%      void DestroyImageList(Image **image)
+%      void DestroyImageList(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -193,25 +193,24 @@ MagickExport unsigned int DeleteImageList(Image *images,
 
 MagickExport void DestroyImages(Image *image)
 {
-  DestroyImageList(&image);
+  DestroyImageList(image);
 }
 
-MagickExport void DestroyImageList(Image **images)
+MagickExport void DestroyImageList(Image *images)
 {
   Image
     *image;
 
-  if (images == (Image **) NULL)
+  if (images == (Image *) NULL)
     return;
-  assert((*images)->signature == MagickSignature);
-  while ((*images)->previous != (Image *) NULL)
-    (*images)=(*images)->previous;
-  for (image=(*images); (*images) != (Image *) NULL; image=(*images))
+  assert(images->signature == MagickSignature);
+  while (images->previous != (Image *) NULL)
+    images=images->previous;
+  for (image=images; images != (Image *) NULL; image=images)
   {
-    (*images)=(*images)->next;
+    images=images->next;
     DestroyImage(image);
   }
-  *images=(Image *) NULL;
 }
 
 /*
@@ -593,7 +592,7 @@ MagickExport Image *ReverseImageList(const Image *images,
     if (image == (Image *) NULL)
       {
         if (reverse_images != (Image *) NULL)
-          DestroyImageList(&reverse_images);
+          DestroyImageList(reverse_images);
         break;
       }
     if (reverse_images == (Image *) NULL)

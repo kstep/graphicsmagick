@@ -1689,7 +1689,7 @@ MagickExport Image *MorphImages(const Image *image,
         morph_images->next=CloneImage(image,0,0,True,exception);
         if (morph_images->next == (Image *) NULL)
           {
-            DestroyImageList(&morph_images);
+            DestroyImageList(morph_images);
             return((Image *) NULL);
           }
         morph_images->next->previous=morph_images;
@@ -1769,7 +1769,7 @@ MagickExport Image *MorphImages(const Image *image,
     morph_images=morph_images->previous;
   if (next->next != (Image *) NULL)
     {
-      DestroyImageList(&morph_images);
+      DestroyImageList(morph_images);
       return((Image *) NULL);
     }
   return(morph_images);

@@ -33,7 +33,7 @@ extern MagickExport unsigned long
   GetImageListIndex(const Image *);
 
 extern MagickExport void
-  DestroyImageList(Image **);
+  DestroyImageList(Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

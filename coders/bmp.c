@@ -1105,7 +1105,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         flipped_image=FlipImage(image,exception);
         if (flipped_image == (Image *) NULL)
           {
-            DestroyImageList(&image);
+            DestroyImageList(image);
             return((Image *) NULL);
           }
         DestroyImage(image);
@@ -1129,7 +1129,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         AllocateNextImage(image_info,image);
         if (image->next == (Image *) NULL)
           {
-            DestroyImageList(&image);
+            DestroyImageList(image);
             return((Image *) NULL);
           }
         image=image->next;

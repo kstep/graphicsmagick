@@ -248,7 +248,7 @@ int IdentifyUtility(int argc,char **argv)
           (void) fputc('\n',stdout);
           LiberateMemory((void **) &text);
         }
-        DestroyImageList(&image);
+        DestroyImageList(image);
         number_images++;
         continue;
       }

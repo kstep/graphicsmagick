@@ -312,7 +312,8 @@ static unsigned int MontageUtility(int argc,char **argv)
         status&=MogrifyImages(image_info,i-j,argv+j,&image);
         (void) CatchImageException(image);
         PushImageList(&image_list,image,&exception);
-        DestroyImageList(&image);
+        DestroyImageList(image);
+        image=(Image *) NULL;
         j=k+1;
       }
     switch (*(option+1))
@@ -1197,12 +1198,12 @@ static unsigned int MontageUtility(int argc,char **argv)
   status&=MogrifyImages(image_info,i-j,argv+j,&image);
   (void) CatchImageException(image);
   PushImageList(&image_list,image,&exception);
-  DestroyImageList(&image);
+  DestroyImageList(image);
   (void) strncpy(montage_info->filename,argv[argc-1],MaxTextExtent-1);
   montage_image=MontageImages(image_list,montage_info,&exception);
   if (montage_image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  DestroyImageList(&image_list);
+  DestroyImageList(image_list);
   /*
     Write image.
   */
@@ -1235,7 +1236,7 @@ static unsigned int MontageUtility(int argc,char **argv)
   }
   (void) strncpy(montage_image->magick_filename,argv[argc-1],MaxTextExtent-1);
   status&=WriteImages(image_info,montage_image,argv[argc-1],&image->exception);
-  DestroyImageList(&montage_image);
+  DestroyImageList(montage_image);
   DestroyMontageInfo(montage_info);
   DestroyImageInfo(image_info);
   return(status);

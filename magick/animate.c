@@ -875,7 +875,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     DestroyImage(image_list[i]);
   LiberateMemory((void **) &image_list);
   if (coalesce)
-    DestroyImageList(&images);
+    DestroyImageList(images);
 }
 
 /*
@@ -2414,7 +2414,7 @@ MagickExport Image *XAnimateImages(Display *display,
     DestroyImage(image_list[i]);
   LiberateMemory((void **) &image_list);
   if (coalesce)
-    DestroyImageList(&images);
+    DestroyImageList(images);
   if ((windows->visual_info->storage_class == GrayScale) ||
       (windows->visual_info->storage_class == PseudoColor) ||
       (windows->visual_info->storage_class == DirectColor))

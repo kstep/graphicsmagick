@@ -577,7 +577,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   (void) CloneString(&montage_info->frame,DefaultTileFrame);
   montage_image=MontageImages(*images,montage_info,&image->exception);
   DestroyMontageInfo(montage_info);
-  DestroyImageList(&*images);
+  DestroyImageList(*images);
   if (montage_image == (Image *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
       image);

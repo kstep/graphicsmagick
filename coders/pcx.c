@@ -595,7 +595,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         AllocateNextImage(image_info,image);
         if (image->next == (Image *) NULL)
           {
-            DestroyImageList(&image);
+            DestroyImageList(image);
             return((Image *) NULL);
           }
         image=image->next;

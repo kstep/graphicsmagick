@@ -965,7 +965,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     LiberateMemory((void **) &compress_pixels);
     if (status == False)
       {
-        DestroyImageList(&image);
+        DestroyImageList(image);
         return((Image *) NULL);
       }
     if (EOFBlob(image))
@@ -988,7 +988,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         AllocateNextImage(image_info,image);
         if (image->next == (Image *) NULL)
           {
-            DestroyImageList(&image);
+            DestroyImageList(image);
             return((Image *) NULL);
           }
         image=image->next;
