@@ -4194,7 +4194,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     *attribute;
 
   int
-#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
+#if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
+    defined(PNG_MNG_FEATURES_SUPPORTED)
     all_images_are_gray,
     equal_palettes,
     need_local_plte,
@@ -4307,7 +4308,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       equal_gammas=True;
       equal_srgbs=True;
       image_count=0;
-#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
+#if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
+    defined(PNG_MNG_FEATURES_SUPPORTED)
       all_images_are_gray=True;
       equal_palettes=False;
       need_local_plte=False;
@@ -4336,7 +4338,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         final_delay=next_image->delay;
         if (final_delay != initial_delay)
           need_fram=1;
-#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
+#if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
+    defined(PNG_MNG_FEATURES_SUPPORTED)
         /*
           check for global palette possibility.
         */
@@ -4641,7 +4644,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     }
   scene=0;
   delay=0;
-#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
+#if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
+    defined(PNG_MNG_FEATURES_SUPPORTED)
   equal_palettes=False;
 #endif
   do
