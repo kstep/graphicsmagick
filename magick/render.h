@@ -1,8 +1,8 @@
 /*
   Drawing methods.
 */
-#ifndef _MAGICK_DRAW_H
-#define _MAGICK_DRAW_H
+#ifndef MAGICK_RENDER_H
+#define MAGICK_RENDER_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
