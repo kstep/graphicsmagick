@@ -173,10 +173,7 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
     {
       if ((x < clone_info.x) || (x >= (int) (clone_info.x+clone_info.width)))
         {
-          if (((image->storage_class == PseudoClass) ||
-               (image->colorspace == CMYKColorspace)) &&
-              ((chop_image->storage_class == PseudoClass) ||
-               (chop_image->colorspace == CMYKColorspace)))
+          if (indexes != (IndexPacket *) NULL)
             chop_indexes[x]=indexes[x];
           *q=(*p);
           q++;
@@ -427,12 +424,9 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
-    if (((image->storage_class == PseudoClass) ||
-         (image->colorspace == CMYKColorspace)) &&
-        ((crop_image->storage_class == PseudoClass) ||
-         (crop_image->colorspace == CMYKColorspace)))
+    indexes=GetIndexes(image);
+    if (indexes != (IndexPacket *) NULL)
       {
-        indexes=GetIndexes(image);
         crop_indexes=GetIndexes(crop_image);
         memcpy(crop_indexes,indexes,crop_image->columns*sizeof(IndexPacket));
       }
@@ -761,16 +755,13 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
     q=SetImagePixels(flip_image,0,flip_image->rows-y-1,flip_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
+    memcpy(q,p,flip_image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(image);
-    flip_indexes=GetIndexes(flip_image);
-    for (x=0; x < (int) flip_image->columns; x++)
-    {
-      *q=(*p);
-      p++;
-      q++;
-    }
-    if (flip_image->storage_class == PseudoClass)
-      memcpy(flip_indexes,indexes,flip_image->columns*sizeof(IndexPacket));
+    if (indexes != (IndexPacket *) NULL)
+      {
+        flip_indexes=GetIndexes(flip_image);
+        memcpy(flip_indexes,indexes,flip_image->columns*sizeof(IndexPacket));
+      }
     status=SyncImagePixels(flip_image);
     if (status == False)
       break;

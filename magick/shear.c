@@ -146,12 +146,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,image->columns*sizeof(PixelPacket));
-        if (((image->storage_class == PseudoClass) ||
-             (image->colorspace == CMYKColorspace)) &&
-            ((rotate_image->storage_class == PseudoClass) ||
-             (rotate_image->colorspace == CMYKColorspace)))
+        indexes=GetIndexes(image);
+        if (indexes != (IndexPacket *) NULL)
           {
-            indexes=GetIndexes(image);
             rotate_indexes=GetIndexes(rotate_image);
             memcpy(rotate_indexes,indexes,image->columns*sizeof(IndexPacket));
           }
@@ -174,12 +171,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,image->columns*sizeof(PixelPacket));
-        if (((image->storage_class == PseudoClass) ||
-             (image->colorspace == CMYKColorspace)) &&
-            ((rotate_image->storage_class == PseudoClass) ||
-             (rotate_image->colorspace == CMYKColorspace)))
+        indexes=GetIndexes(image);
+        if (indexes != (IndexPacket *) NULL)
           {
-            indexes=GetIndexes(image);
             rotate_indexes=GetIndexes(rotate_image);
             memcpy(rotate_indexes,indexes,image->columns*sizeof(IndexPacket));
           }

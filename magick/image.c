@@ -971,12 +971,9 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,image->columns*sizeof(PixelPacket));
-        if (((image->storage_class == PseudoClass) ||
-             (image->colorspace == CMYKColorspace)) &&
-            ((clone_image->storage_class == PseudoClass) ||
-             (clone_image->colorspace == CMYKColorspace)))
+        indexes=GetIndexes(image);
+        if (indexes != (IndexPacket *) NULL)
           {
-            indexes=GetIndexes(image);
             clone_indexes=GetIndexes(clone_image);
             memcpy(clone_indexes,indexes,image->columns*sizeof(IndexPacket));
           }
@@ -1572,9 +1569,9 @@ MagickExport unsigned int CompositeImage(Image *image,
           break;
         }
       }
-      if (image->colorspace == composite_image->colorspace)
-        if (image->colorspace == CMYKColorspace)
-          indexes[x]=(*composite_indexes);
+      if ((indexes != (IndexPacket *) NULL) &&
+          (composite_indexes != (IndexPacket *) NULL))
+        indexes[x]=(*composite_indexes);
       q++;
     }
     if (!SyncImagePixels(image))

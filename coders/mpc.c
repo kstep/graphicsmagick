@@ -941,12 +941,9 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     memcpy(q,p,image->columns*sizeof(PixelPacket));
-    if (((image->storage_class == PseudoClass) ||
-         (image->colorspace == CMYKColorspace)) &&
-        ((clone_image->storage_class == PseudoClass) ||
-         (clone_image->colorspace == CMYKColorspace)))
+    indexes=GetIndexes(image);
+    if (indexes != (IndexPacket *) NULL)
       {
-        indexes=GetIndexes(image);
         clone_indexes=GetIndexes(clone_image);
         memcpy(clone_indexes,indexes,image->columns*sizeof(IndexPacket));
       }

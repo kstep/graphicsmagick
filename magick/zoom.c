@@ -777,12 +777,9 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,source->columns*sizeof(PixelPacket));
-        if (((source->storage_class == PseudoClass) ||
-             (source->colorspace == CMYKColorspace)) &&
-            ((destination->storage_class == PseudoClass) ||
-             (destination->colorspace == CMYKColorspace)))
+        source_indexes=GetIndexes(source);
+        if (source_indexes != (IndexPacket *) NULL)
           {
-            source_indexes=GetIndexes(source);
             destination_indexes=GetIndexes(destination);
             memcpy(destination_indexes,source_indexes,
               source->columns*sizeof(IndexPacket));
@@ -925,12 +922,9 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,source->columns*sizeof(PixelPacket));
-        if (((source->storage_class == PseudoClass) ||
-             (source->colorspace == CMYKColorspace)) &&
-            ((destination->storage_class == PseudoClass) ||
-             (destination->colorspace == CMYKColorspace)))
+        source_indexes=GetIndexes(source);
+        if (source_indexes != (IndexPacket *) NULL)
           {
-            source_indexes=GetIndexes(source);
             destination_indexes=GetIndexes(destination);
             memcpy(destination_indexes,source_indexes,
               source->columns*sizeof(IndexPacket));
@@ -1202,15 +1196,19 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
     j,
     y;
 
+  PixelPacket
+    *pixels;
+
+  register IndexPacket
+    *indexes,
+    *sample_indexes;
+
   register int
     x;
 
   register PixelPacket
     *p,
     *q;
-
-  PixelPacket
-    *pixels;
 
   /*
     Initialize sampled image attributes.
@@ -1273,16 +1271,12 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
     */
     for (x=0; x < (int) sample_image->columns; x++)
       *q++=pixels[(int) x_offset[x]];
-    if (sample_image->storage_class == PseudoClass)
+    indexes=GetIndexes(image);
+    if (indexes != (IndexPacket *) NULL)
       {
-        register IndexPacket
-          *indexes,
-          *sample_indexes;
-
         /*
           Sample colormap indexes.
         */
-        indexes=GetIndexes(image);
         memcpy(index,indexes,image->columns*sizeof(IndexPacket));
         sample_indexes=GetIndexes(sample_image);
         for (x=0; x < (int) sample_image->columns; x++)
