@@ -74,8 +74,8 @@ AC_SUBST(LIBLTDL)
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_SETUP
 # Configure libtool
-AM_ENABLE_SHARED(no)
-AM_ENABLE_STATIC(yes)
+AC_ENABLE_SHARED(no)
+AC_ENABLE_STATIC(yes)
 AC_PROG_LIBTOOL
 
 # Check to see if building shared libraries
