@@ -3571,6 +3571,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                    SetImage(large_image,TransparentOpacity);
                 else
                   {
+                    large_image->background_color.opacity=OpaqueOpacity;
                     SetImage(large_image,OpaqueOpacity);
                     if (magn_methx == 4)
                       magn_methx = 2;
