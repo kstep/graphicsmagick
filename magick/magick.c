@@ -657,7 +657,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method MagickToMime returns the officially registered (or de facto) MIME
-%  media-type corresponding to a magick string. If there is no registered
+%  media-type corresponding to a magick string.  If there is no registered
 %  media-type, then the string "image/x-magick" (all lower case) is returned.
 %  The returned string must be deallocated by the user.
 %
