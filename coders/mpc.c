@@ -861,9 +861,6 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
       int
         file;
 
-      char
-        filename[MaxTextExtent];
-
       register int
         y;
 
