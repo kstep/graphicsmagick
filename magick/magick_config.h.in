@@ -343,6 +343,9 @@
 /* Define if you have TIFF library */
 #undef HasTIFF
 
+/* Define if you have TRIO vsnprintf replacement library */
+#undef HasTRIO
+
 /* Define if you have FreeType (TrueType font) library */
 #undef HasTTF
 

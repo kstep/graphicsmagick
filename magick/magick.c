@@ -704,8 +704,8 @@ MagickExport void InitializeMagick(const char *path)
         debug|=_CRTDBG_CHECK_ALWAYS_DF;
         debug|=_CRTDBG_DELAY_FREE_MEM_DF;
         debug|=_CRTDBG_LEAK_CHECK_DF;
-        // debug=_CrtSetDbgFlag(debug);
-        // _ASSERTE(_CrtCheckMemory());
+        /* debug=_CrtSetDbgFlag(debug);
+           _ASSERTE(_CrtCheckMemory()); */
       }
 # endif /* defined(_DEBUG) */
 #endif /* defined(WIN32) */

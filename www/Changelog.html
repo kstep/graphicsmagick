@@ -53,6 +53,20 @@
 </tr>
 </table>
 <p>
+2003-08-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> README.txt: Add documentation regarding using TRIO.
+  <LI> configure.ac: Test for TRIO library if vsnprintf is not
+        available.<BR>
+  <LI> magick/studio.h: Remap vsnprintf to trio_vsnprintf if TRIO is
+        available.<BR>
+  <LI> coders/topol.c, coders/wmf.c, magick/magick.c, magick/nt_base.c,
+        magick/resource.c: Use traditional C comment form in C source
+        files.
+
+</UL>
+<p>
 2003-07-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

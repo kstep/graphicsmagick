@@ -1,3 +1,14 @@
+2003-08-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* README.txt: Add documentation regarding using TRIO.
+	* configure.ac: Test for TRIO library if vsnprintf is not
+	available.
+	* magick/studio.h: Remap vsnprintf to trio_vsnprintf if TRIO is
+	available.
+	* coders/topol.c, coders/wmf.c, magick/magick.c, magick/nt_base.c,
+	magick/resource.c: Use traditional C comment form in C source
+	files.
+
 2003-07-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/log.h (LogEventType::AllEvents): Increase the value of

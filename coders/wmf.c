@@ -2630,7 +2630,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   wmf_api_destroy(API);
   CloseBlob(image);
 
-  // Check for and report any rendering error
+  /* Check for and report any rendering error */
   if(image->exception.severity != UndefinedException)
     ThrowException(exception,
                    CoderWarning,

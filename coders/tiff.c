@@ -2340,6 +2340,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           Convert PseudoClass packets to contiguous monochrome scanlines.
         */
         SetImageType(image,BilevelType);
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Set image type to BilevelType");
         polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
         if (photometric == PHOTOMETRIC_PALETTE)
           polarity=1;

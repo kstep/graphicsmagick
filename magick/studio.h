@@ -230,6 +230,17 @@ extern "C" {
 #undef pipe
 
 /*
+  If TRIO library is used, remap snprintf and vsnprintf to TRIO equivalents.
+*/
+#if defined(HasTRIO)
+#  include <trio.h>
+#  define snprintf trio_snprintf
+#  define HAVE_SNPRINTF 1
+#  define vsnprintf trio_vsnprintf
+#  define HAVE_VSNPRINTF 1
+#endif
+
+/*
   Review these platform specific definitions.
 */
 #if defined(POSIX)

@@ -586,8 +586,8 @@ ErasePalette:
     
     for(i=0;i<=ldblk;i++)
         {     
-	j=ReadBlobByte(palette);	//Flag
-	if(j==EOF) break;		//unexpected end of file
+        j=ReadBlobByte(palette);	/* Flag */
+        if(j==EOF) break;		/* unexpected end of file */
 	if(j<=ldblk)
 	  {
           image->colormap[j].red=ScaleCharToQuantum(ReadBlobByte(palette));
@@ -643,7 +643,7 @@ NoMemory:
       InsertRow(depth, BImgBuff, i, image, MEZ);
     }
 
- //Finish:
+  /* Finish: */
   if (BImgBuff != NULL)
     free(BImgBuff);
   if (palette != NULL)

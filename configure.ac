@@ -474,6 +474,12 @@ AC_ARG_WITH(tiff,
 	      [with_tiff=$withval],
 	      [with_tiff='yes'])
 
+# Disable TRIO.
+AC_ARG_WITH(trio,
+	      [  --without-trio          disable TRIO support],
+	      [with_trio=$withval],
+	      [with_trio='yes'])
+
 # Disable TTF.
 AC_ARG_WITH(ttf,
 	      [  --without-ttf           disable TrueType support],
@@ -1036,13 +1042,34 @@ fi
 AC_SUBST(LIB_THREAD)
 
 #
+# If vsnprintf is missing, look for TRIO
+#
+have_trio='no'
+LIB_TRIO=''
+if test "$ac_cv_func_vsnprintf" != 'yes' && test "$with_trio" != 'no'
+then
+   AC_MSG_CHECKING(for TRIO vsnprintf replacement)
+   AC_CHECK_LIB(trio,trio_vsnprintf,have_trio='yes',,)
+   if test "$have_trio" == 'yes'
+   then
+     LIB_TRIO="-ltrio"
+     LIBS="$LIB_TRIO $LIBS"
+     AC_DEFINE(HasTRIO,1,Define if you have TRIO vsnprintf replacement library)
+     AC_MSG_RESULT(yes)
+   else
+     AC_MSG_RESULT(no)
+   fi
+fi
+AC_SUBST(LIB_TRIO)
+
+#
 # Check for ZLIB
 #
 have_zlib='no'
+LIB_ZLIB=''
 dnl PNG requires zlib so enable zlib check if PNG is requested
 if test "$with_zlib" != 'no' || test "$with_png" != 'no'
 then
-  LIB_ZLIB=''
   AC_MSG_CHECKING(for ZLIB support )
   AC_MSG_RESULT()
   failed=0;
@@ -2375,9 +2402,9 @@ fi
 #
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_MATH $LIB_CCMALLOC"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_THREAD $LIB_MATH $LIB_CCMALLOC"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_MATH $LIB_CCMALLOC"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_THREAD $LIB_MATH $LIB_CCMALLOC"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -2500,6 +2527,7 @@ echo "Magick++          --with-magick-plus-plus=$with_magick_plus_plus 	$have_ma
 echo "PERL              --with-perl=$with_perl            	$have_perl"
 echo "PNG               --with-png=$with_png          	$have_png"
 echo "TIFF              --with-tiff=$with_tiff        	$have_tiff"
+echo "TRIO              --with-trio=$with_trio        	$have_trio"
 result_windows_font_dir='none'
 if test "${windows_font_dir}x" != 'x'
 then

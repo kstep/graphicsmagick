@@ -344,6 +344,17 @@ file Copyright.txt for the GraphicsMagick licence.
       issues. If you need to use LZW compression, support is available via
       a seperate LZW compression kit (a patch) at the sites listed above.
 
+    o GraphicsMagick may optionally use the TRIO library from
+
+         http://sourceforge.net/projects/ctrio/
+
+      to substitute for the vsnprintf function when the operating system
+      does not provide one. Older operating systems (e.g. Solaris 2.5)
+      may not provide a vsnprintf function. If vsnprintf (or the TRIO
+      replacement) is not used, then vsprintf is used instead, which
+      decreases the security of GraphicsMagick due to possible buffer
+      overrun exploits.
+
     o GraphicsMagick requires libwmf 0.2.5 (or later) from
 
          http://sourceforge.net/projects/wvware/
