@@ -924,14 +924,13 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
                   long
                     a;
 
-                  value[n]='\0';
                   for (a=0; a < n; a++)
                   {
+                    value[a]='.';
                     if (isprint((int) pval[a]) || (pval[a] == '\0'))
                       value[a]=pval[a];
-                    else
-                      value[a]='.';
                   }
+                  value[a]='\0';
                   break;
                 }
               break;
