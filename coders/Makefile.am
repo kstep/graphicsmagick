@@ -38,7 +38,7 @@ MAGICK_CODER_SRCS = art.c avi.c avs.c 8bim.c bmp.c cmyk.c cut.c dcm.c dps.c \
   mpc.c mtv.c mvg.c null.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c plasma.c \
   png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c \
   sfw.c sgi.c stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c \
-  uil.c url.c uyvy.c url.c vicar.c vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c \
+  uil.c url.c uyvy.c vicar.c vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c \
   xc.c xpm.c xwd.c yuv.c
 
 MAJOR_VERSION=@MAJOR_VERSION@
