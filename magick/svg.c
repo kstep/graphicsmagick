@@ -150,6 +150,7 @@ typedef struct _EllipseInfo
     keyword[MaxTextExtent],
     points[MaxTextExtent],
     *primitive,
+    *text,
     **tokens,
     *values,
     *vertices;
@@ -229,7 +230,7 @@ typedef struct _EllipseInfo
     register char
       *p;
 
-    if (!isalnum(c) && (c != '/'))
+    if (!isalnum(c) && (c != '/') && (c != '>'))
       c=ReadByte(image);
     else
       {
@@ -292,7 +293,6 @@ typedef struct _EllipseInfo
         /*
           Interpret the SVG keywords.
         */
-if (0)
 printf("%s : %s\n",keyword,values);
         if (Latin1Compare(keyword,"angle") == 0)
           (void) sscanf(values,"%d",&ellipse.angle);
@@ -369,6 +369,8 @@ printf("%s : %s\n",keyword,values);
           (void) sscanf(values,"%u",&page_info.x);
         if (Latin1Compare(keyword,"y") == 0)
           (void) sscanf(values,"%u",&page_info.y);
+        if (*keyword == '>')
+          text=AllocateString(keyword+1);
         if (((Latin1Compare(keyword,"/>") == 0) ||
              (Latin1Compare(keyword,"/text>") == 0)) &&
             (primitive != (char *) NULL))
@@ -414,7 +416,7 @@ printf("%s : %s\n",keyword,values);
                 FormatString(points,"%d,%d",page_info.x,page_info.y);
                 (void) strcat(command,points);
                 (void) strcat(command," ");
-                (void) strcat(command,"Text");
+                (void) strcat(command,text);
               }
 puts(command);
             (void) CloneString(&draw_info->primitive,command);
