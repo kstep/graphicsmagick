@@ -35,6 +35,8 @@ details):
 
     - Windows specific changes
 
+     - A Windows binary install package is available which is based
+       on the Inno Setup Compiler "http://www.jrsoftware.org/isinfo.php".
      - VisualMagick build works with both Visual C++ 6.0 and 7.0.
      - Tracing support was incorporated for Win32 developers.
      - An ATL-based COM interface to the ImageMagick APIs is provided in
