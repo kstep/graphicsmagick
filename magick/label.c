@@ -481,7 +481,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       }
       TT_Get_Face_Properties(face,&face_properties);
       TT_Get_Instance_Metrics(instance,&instance_metrics);
-      canvas.width=0;
+      canvas.width=3;
       for (i=0; i < length; i++)
       {
         if (glyphs[unicode[i]].z == (TT_Glyph *) NULL)

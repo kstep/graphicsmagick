@@ -2670,12 +2670,6 @@ Get(ref,...)
                 s=newSVpv(info->image_info->server_name,0);
               break;
             }
-          if (strEQcase(attribute,"depth"))
-            {
-              if (image)
-                s=newSViv(image->depth);
-              break;
-            }
           if (strEQcase(attribute,"directory"))
             {
               if (image && image->directory)
