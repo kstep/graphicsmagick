@@ -136,7 +136,7 @@ static unsigned int IsMPC(const unsigned char *magick,const size_t length)
 static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
+    cache_filename[MaxTextExtent],
     id[MaxTextExtent],
     keyword[MaxTextExtent],
     *values;
@@ -789,9 +789,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Attach persistent pixel cache.
         */
-        (void) strncpy(filename,image->filename,MaxTextExtent-1);
-        AppendImageFormat("cache",filename);
-        status=PersistCache(image,filename,True,&offset,exception);
+        (void) strncpy(cache_filename,image->filename,MaxTextExtent-1);
+        AppendImageFormat("cache",cache_filename);
+        status=PersistCache(image,cache_filename,True,&offset,exception);
         if (status == False)
           ThrowReaderException(CacheWarning,"Unable to perist pixel cache",
             image);
@@ -921,7 +921,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[MaxTextExtent],
-    filename[MaxTextExtent];
+    cache_filename[MaxTextExtent];
 
   const ImageAttribute
     *attribute;
@@ -948,6 +948,8 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+  (void) strncpy(cache_filename,image->filename,MaxTextExtent-1);
+  AppendImageFormat("cache",cache_filename);
   scene=0;
   offset=0;
   do
@@ -1242,9 +1244,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize persistent pixel cache.
     */
-    (void) strncpy(filename,image->filename,MaxTextExtent-1);
-    AppendImageFormat("cache",filename);
-    status=PersistCache(image,filename,False,&offset,&image->exception);
+    status=PersistCache(image,cache_filename,False,&offset,&image->exception);
     if (status == False)
       ThrowWriterException(CacheWarning,"Unable to perist pixel cache",image);
     if (image->next == (Image *) NULL)
