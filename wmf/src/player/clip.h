@@ -45,7 +45,7 @@ static void Clipping (wmfAPI* API,wmfRegion* clip,wmfRegion* vis,wmfD_Rect* rect
 		}
 	}
 
-	SetRectRgn (API,&rgn,rect);
+	WMFLibSetRectRgn (API,&rgn,rect);
 
 	if ((clip->numRects == 0) && (flags & CLIP_INTERSECT))
 	{	(*clip) = rgn;
@@ -64,8 +64,8 @@ static void Clipping (wmfAPI* API,wmfRegion* clip,wmfRegion* vis,wmfD_Rect* rect
 			}
 		}
 
-		SetRectRgn (API,clip,0);
-		CombineRgn (API,clip,vis,0,RGN_COPY);
+		WMFLibSetRectRgn (API,clip,0);
+		WMFLibCombineRgn (API,clip,vis,0,RGN_COPY);
 
 		if (ERR (API))
 		{	WMF_DEBUG (API,"bailing...");
@@ -73,7 +73,7 @@ static void Clipping (wmfAPI* API,wmfRegion* clip,wmfRegion* vis,wmfD_Rect* rect
 		}
 	}
 
-	CombineRgn (API,&rgn,clip,&rgn,((flags & CLIP_EXCLUDE) ? RGN_DIFF : RGN_AND));
+	WMFLibCombineRgn (API,&rgn,clip,&rgn,((flags & CLIP_EXCLUDE) ? RGN_DIFF : RGN_AND));
 
 	if (ERR (API))
 	{	WMF_DEBUG (API,"bailing...");

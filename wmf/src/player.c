@@ -139,7 +139,7 @@ wmf_error_t wmf_scan (wmfAPI* API,unsigned long flags,wmfD_Rect* d_r)
 		return (API->err);
 	}
 
-	PlayMetaFile (API);
+	WMFLibPlayMetaFile (API);
 
 	if (ERR (API))
 	{	WMF_DEBUG (API,"bailing...");
@@ -256,7 +256,7 @@ wmf_error_t wmf_play (wmfAPI* API,unsigned long flags,wmfD_Rect* d_r)
 
 	P->flags |= PLAYER_PLAY; /* Set play mode */
 
-	PlayMetaFile (API);
+	WMFLibPlayMetaFile (API);
 
 	if (ERR (API))
 	{	WMF_DEBUG (API,"bailing...");
@@ -269,7 +269,7 @@ wmf_error_t wmf_play (wmfAPI* API,unsigned long flags,wmfD_Rect* d_r)
 	return (API->err);
 }
 
-static wmf_error_t PlayMetaFile (wmfAPI* API)
+static wmf_error_t WMFLibPlayMetaFile (wmfAPI* API)
 {	int i;
 	int byte;
 
@@ -346,7 +346,7 @@ static wmf_error_t PlayMetaFile (wmfAPI* API)
 		return (API->err);
 	}
 
-	SetMapMode (API,(PLACEABLE (API) ? MM_DPI : MM_TEXT));
+	WMFLibSetMapMode (API,(PLACEABLE (API) ? MM_DPI : MM_TEXT));
 
 	if (PLAY (API))
 	{	if (FR->device_begin) FR->device_begin (API);

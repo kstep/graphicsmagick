@@ -132,7 +132,7 @@ static wmfD_Coord wmf_D_Coord_translate (wmfAPI* API,wmfL_Coord l_pt)
 	return (d_pt);
 }
 
-static void SetMapMode (wmfAPI* API,U16 map_mode)
+static void WMFLibSetMapMode (wmfAPI* API,U16 map_mode)
 {	wmfPlayer_t* P = (wmfPlayer_t*) API->player_data;
 
 	switch (map_mode)

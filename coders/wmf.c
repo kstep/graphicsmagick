@@ -66,9 +66,12 @@
  */
 #include "magick.h"
 #include "define.h"
+#if defined(WIN32)
+#define M_PI MagickPI
+#endif
 
 #if defined(HasWMF) || defined(HasWMFlite)
-#if !defined(WIN32)
+/* #if !defined(HasWIN32WMFAPI) */
 
 #define ERR(API)  ((API)->err != wmf_E_None)
 #define XC(x) ((double)x)
@@ -2090,7 +2093,11 @@ static int magick_mvg_printf(wmfAPI * API, char *format, ...)
       argp;
 
     va_start(argp, format);
+#if !defined(HAVE_VSNPRINTF)
+    str_length = vsprintf(buffer, format, argp);
+#else
     str_length = vsnprintf(buffer, MaxTextExtent - 1, format, argp);
+#endif
     va_end(argp);
     if(str_length > 0 && str_length < (MaxTextExtent - 1))
       {
@@ -2149,7 +2156,7 @@ static long wmf_magick_tell(void* context)
   return (long)TellBlob((Image*)context);
 }
 
-static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * exception)
+static Image *ReadWMFImage2(const ImageInfo * image_info, ExceptionInfo * exception)
 {
   Image
     *image;
@@ -2451,7 +2458,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   /* Return image */
   return image;
 }
-#endif
+/* #endif */
 #endif /* HasWMF || HasWMFlite */
 
 /*
@@ -2484,19 +2491,25 @@ ModuleExport void RegisterWMFImage(void)
     *entry;
 
   entry = SetMagickInfo("WMF");
-  entry->decoder = ReadWMFImage;
+  entry->decoder = ReadWMFImage2;
   entry->description = AllocateString("Windows Meta File");
-#if defined(WIN32)
+#if defined(HasWIN32WMFAPI)
   entry->blob_support = False;
 #endif
   entry->module = AllocateString("WMF");
   (void) RegisterMagickInfo(entry);
-#if defined(WIN32)
+#if defined(HasWIN32WMFAPI)
   entry = SetMagickInfo("EMF");
   entry->decoder = ReadWMFImage;
-  entry->description = AllocateString("Windows Enhanced Meta File");
+  entry->description = AllocateString("Windows WIN32 API renderred Enhanced Meta File");
   entry->blob_support = False;
   entry->module = AllocateString("WMF");
+  (void) RegisterMagickInfo(entry);
+  entry = SetMagickInfo("WMFWIN32");
+  entry->decoder = ReadWMFImage;
+  entry->description = AllocateString("Windows WIN32 API renderred Meta File");
+  entry->blob_support = False;
+  entry->module = AllocateString("WMFWIN32");
   (void) RegisterMagickInfo(entry);
 #endif
 #endif /* HasWMF || HasWMFlite */
@@ -2525,8 +2538,9 @@ ModuleExport void UnregisterWMFImage(void)
 {
 #if defined(HasWMF) || defined(HasWMFlite)
   (void) UnregisterMagickInfo("WMF");
-#if defined(WIN32)
+#if defined(HasWIN32WMFAPI)
   (void) UnregisterMagickInfo("EMF");
+  (void) UnregisterMagickInfo("WMFWIN32");
 #endif
 #endif /* defined(HasWMF) */
 }
