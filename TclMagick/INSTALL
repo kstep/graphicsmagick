@@ -14,8 +14,6 @@ GraphicsMagick.
   --with-tk=/usr/lib/tk8.4/ \
   --with-magick=/home/davidw/install/bin/GraphicsMagickWand-config \
 
-Others that might very well be helpful are --enable-shared.
-
 --with-tcl tells it where to find Tcl, and --with-tk the Tk toolkit.
 The --with-magick option is necessary to tell the configure script where
 to get information about the GraphicsMagick or ImageMagick install.
