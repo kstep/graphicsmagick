@@ -184,7 +184,7 @@ MagickExport void DestroyImageList(Image *image)
 %
 %  The format of the GetImageList method is:
 %
-%      Image *GetImageList(Image *images,const unsigned long n,
+%      Image *GetImageList(constconst  Image *images,const unsigned long n,
 %        ExceptionInfo *esception)
 %
 %  A description of each parameter follows:
@@ -198,7 +198,7 @@ MagickExport void DestroyImageList(Image *image)
 %
 %
 */
-MagickExport Image *GetImageList(Image *images,const unsigned long n,
+MagickExport Image *GetImageList(const Image *images,const unsigned long n,
   ExceptionInfo *exception)
 {
   register long
@@ -518,9 +518,9 @@ MagickExport Image *ReverseImageList(const Image *images,
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
   reverse_images=NewImageList();
-  for (i=0; i < SizeImageList(images); i++)
+  for (i=0; i < GetImageListSize(images); i++)
   {
-    image=GetImageList(images,SizeImageList(images)-i-1,exception);
+    image=GetImageList(images,GetImageListSize(images)-i-1,exception);
     if (image == (Image *) NULL)
       {
         if (reverse_images != (Image *) NULL)
@@ -538,7 +538,7 @@ MagickExport Image *ReverseImageList(const Image *images,
   }
   while (reverse_images->previous != (Image *) NULL)
     reverse_images=reverse_images->previous;
-  return(clone_images);
+  return(reverse_images);
 }
 
 /*
@@ -686,8 +686,8 @@ MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
   assert((*images)->signature == MagickSignature);
   while ((*images)->previous != (Image *) NULL)
     (*images)=(*images)->previous;
-  image->next=(*images);
-  (*images)->previous=image;
+  (*images)->previous=CloneImage(image,0,0,True,exception);
+	(*images)->previous->next=(*images);
   (*images)=(*images)->previous;
   return(True);
 }
