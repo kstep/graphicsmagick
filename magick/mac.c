@@ -992,7 +992,8 @@ Export struct dirent *readdir(DIR *entry)
 %
 %  The format of the ReadPICTImage method is:
 %
-%      void ProcessPendingEvents(const char *text)
+%      Image *ReadPICTImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1184,7 +1185,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info,
       q->green=UpScale(Pixel.green & 0xff);
       q->blue=UpScale(Pixel.blue & 0xff);
       if (image->class == PseudoClass)
-        indexes[x]=(unsigned short) Color2Index(&Pixel);
+        indexes[x]=Color2Index(&Pixel);
       q++;
     }
     if (!SyncImagePixels(image))
