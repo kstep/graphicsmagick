@@ -434,6 +434,7 @@ MagickExport void MagickIncarnate(const char *path)
     }
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
+  *magick='\0';
   (void) SetImageMagic(magick,MaxTextExtent,magic);
 }
 
