@@ -2737,6 +2737,7 @@ ModuleExport void RegisterSVGImage(void)
   MagickInfo
     *entry;
 
+  *version='\0';
 #if defined(LIBXML_DOTTED_VERSION)
   (void) strncpy(version,"XML " LIBXML_DOTTED_VERSION,MaxTextExtent-1);
 #endif

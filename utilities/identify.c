@@ -141,7 +141,7 @@ static void IdentifyUsage(void)
 %
 %
 */
-int IdentifyUtility(int argc,char **argv)
+static int IdentifyUtility(int argc,char **argv)
 {
   char
     *format,

@@ -780,7 +780,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		(void) SetImageAttribute(layer_info[i].image,"[layer-ypos]",s);
 		sprintf( s, "%d", layer_info[i].opacity );
 		(void) SetImageAttribute(layer_info[i].image,"[layer-opacity]",s);
-		(void) SetImageAttribute(layer_info[i].image,"[layer-name]",layer_info[i].name);
+		(void) SetImageAttribute(layer_info[i].image,"[layer-name]", (char *) layer_info[i].name);
       }
       /*
         Read pixel data for each layer.

@@ -4450,7 +4450,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    text[0].compression=image_info->compression == NoCompression ||
      (image_info->compression == UndefinedCompression &&
      text[0].text_length < 128) ? -1 : 0;
-   if (text[0].text_length <= allocated_length);
+   if (text[0].text_length <= allocated_length)
      png_set_text(ping,ping_info,text,1);
    png_free(ping,text[0].text);
    png_free(ping,text[0].key);

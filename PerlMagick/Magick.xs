@@ -6816,7 +6816,7 @@ QueryFontMetrics(ref,...)
     draw_info->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
     if (draw_info->geometry == (char *) NULL)
       {
-        draw_info->geometry=GetString((char *) NULL);
+        draw_info->geometry=AllocateString((char *) NULL);
         FormatString(draw_info->geometry,"%g,%g",x,y);
       }
     status=GetTypeMetrics(image,draw_info,&metrics);
