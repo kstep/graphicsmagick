@@ -167,13 +167,13 @@ testFilter('input.miff', 'Quantize',
 ++$test;
 testFilter('input.miff', 'Raise',
   q/10x10/,
-  '63ee7cf715a496513c833b48ac01922f722a7953c3715a88bbd265a65539a3dd',
+  '0c363702b4b6a27a629426255ce71174a3996580ac5211bf6298f63e655bc400',
   'ef9158abb43a7955f05b826ac8ce2f8e643a76df1ed829a9ea9c290e7d4ad54a');
 
 ++$test;
 testFilter('input.miff', 'Resize',
   q/50%/,
-  '2fa321064dcfb3d4b85476473d331326e4fd1084263557ede9548228f85e1d89',
+  'e37ea53b8e167838add16e4a46be3689150df6b8d496da15ec41bee74d2fb9f1',
   'f401a1f40401518dce6a77ef250c8b63cab0b22087176aa7570cbbf230b3c82d');
 
 ++$test;
@@ -184,7 +184,7 @@ testFilter('input.miff', 'Roll',
 ++$test;
 testFilter('input.miff', 'Rotate',
   q/10/,
-  '5bf1ebdbad22c4e650e2e49602790157331ae8080c6cdade9d67363ef12b28c0',
+  'defd7e32e835b6e6cf015ae566bbf3f0b0c65448678cf958991e398b25bdef89',
   '59f6dcf68340ccafcec5f260cc58eeaf4084d72f6ab71c7ebecdd1bfcb6aec82');
 
 ++$test;
@@ -223,7 +223,7 @@ testFilter('input.miff', 'Shave',
 ++$test;
 testFilter('input.miff', 'Shear',
   q/10/,
-  '8a02928f4f3dad2a670847a4147a1672795a58294375a49211d7271cf9a268be',
+  'fdaa73066e3d6ce44921aba2d64673ca931a1edd7c7b74aa9b7f87180cff79d3',
   '04a47e8e7af69f94c2ce226511ce1b9b6b926ed4d27f9ee471655a9dcbf51a89');
 
 ++$test;
