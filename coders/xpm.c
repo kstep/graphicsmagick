@@ -384,7 +384,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   j=0;
   key[width]='\0';
-  if (!image_info->ping);
+  if (!image_info->ping)
     {
       /*
         Read image pixels.
