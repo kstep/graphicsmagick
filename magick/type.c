@@ -242,7 +242,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   (void) GetTypeInfo("*",exception);
   for (p=type_list; p != (TypeInfo *) NULL; p=p->next)
   {
-    if (p->family == (char *) NULL
+    if (p->family == (char *) NULL)
       continue;
     if (family == (char *) NULL)
       {
@@ -252,7 +252,13 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
     else
       if (LocaleCompare(p->family,family) != 0)
         continue;
-    if (p->style != (char *) NULL
+    if (p->style == (char *) NULL)
+      {
+        if (style != (char *) NULL)
+          if (LocaleCompare(style,"normal") != 0)
+            continue;
+      }
+    else
       {
         if (style == (char *) NULL)
           {
@@ -263,7 +269,13 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
           if (LocaleCompare(p->style,style) != 0)
             continue;
       }
-    if (p->stretch != (char *) NULL
+    if (p->stretch == (char *) NULL)
+      {
+        if (stretch != (char *) NULL)
+          if (LocaleCompare(stretch,"normal") != 0)
+            continue;
+      }
+    else
       {
         if (stretch == (char *) NULL)
           {
@@ -274,7 +286,13 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
           if (LocaleCompare(p->stretch,stretch) != 0)
             continue;
       }
-    if (p->weight != (char *) NULL
+    if (p->weight == (char *) NULL)
+      {
+        if (weight != (char *) NULL)
+          if (LocaleCompare(weight,"400") != 0)
+            continue;
+      }
+    else
       {
         if (weight == (char *) NULL)
           {
@@ -284,15 +302,13 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
         else
           {
             if ((LocaleCompare(weight,"normal") == 0) &&
-                (LocaleCompare(p->weight,"400") != 0))
+                (LocaleCompare(p->weight,"400") == 0))
+              break;
+            if ((LocaleCompare(weight,"bold") == 0) &&
+                (LocaleCompare(p->weight,"700") != 0))
+              break;
+            if (LocaleCompare(p->weight,weight) != 0)
               continue;
-            else
-              if ((LocaleCompare(weight,"bold") == 0) &&
-                  (LocaleCompare(p->weight,"700") != 0))
-                continue;
-              else
-                if (LocaleCompare(p->weight,weight) != 0)
-                  continue;
           }
       }
     break;
