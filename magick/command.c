@@ -92,19 +92,1092 @@ typedef struct _CompositeOptions
     stereo,
     tile;
 } CompositeOptions;
+
+typedef unsigned int (*CommandVectorHandler)(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception);
+
+typedef void (*UsageVectorHandler)(void);
+
+typedef struct _CommandInfo
+{
+  const char           *command;
+  const char           *description;
+  CommandVectorHandler  command_vector;
+  UsageVectorHandler    usage_vector;
+} CommandInfo;
+
+static void
+  LiberateArgumentList(const int argc,char **argv),
+  GMUsage(void);
+
+static unsigned int
+  HelpCommand(ImageInfo *image_info,int argc,char **argv,
+              char **metadata,ExceptionInfo *exception),
+  VersionCommand(ImageInfo *image_info,int argc,char **argv,
+                 char **metadata,ExceptionInfo *exception);
+
+const static CommandInfo commands[] =
+  {
+#if defined(HasX11)
+    { "animate", "animate a sequence of images",
+      AnimateImageCommand, AnimateUsage },
+#endif
+    { "composite", "composite images together",
+      CompositeImageCommand, CompositeUsage },
+    { "conjure", "execute a Magick Scripting Language (MSL) XML script",
+      ConjureImageCommand, ConjureUsage },
+    { "convert", "convert an image or sequence of images",
+      ConvertImageCommand, ConvertUsage },
+#if defined(HasX11)
+    { "display", "display an image on a workstation running X",
+      DisplayImageCommand, DisplayUsage },
+#endif
+    { "help", "obtain usage message for named command",
+      HelpCommand, GMUsage },
+    { "identify", "describe an image or image sequence",
+      IdentifyImageCommand, IdentifyUsage },
+#if defined(HasX11)
+    { "import", "capture an application or X server screen",
+      ImportImageCommand, ImportUsage },
+#endif
+    { "mogrify", "transform an image or sequence of images",
+      MogrifyImageCommand, MogrifyUsage },
+    { "montage", "create a composite image (in a grid) from separate images",
+      MontageImageCommand, MontageUsage },
+    { "version", "obtain release version",
+      VersionCommand, 0 },
+    { 0, 0, 0}
+  };
 
 /*
-  Liberate an allocated argument list
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A n i m a t e U s a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AnimateUsage() displays the program command syntax.
+%
+%  The format of the AnimateUsage method is:
+%
+%      void AnimateUsage()
+%
+%  A description of each parameter follows:
+%
+%
 */
-static void LiberateArgumentList(const int argc,char **argv)
+MagickExport void AnimateUsage(void)
 {
-  unsigned int
+  const char
+    **p;
+
+  static const char
+    *buttons[]=
+    {
+      "Press any button to map or unmap the Command widget",
+      (char *) NULL
+    },
+    *options[]=
+    {
+      "-authenticate value  decrypt image with this password",
+      "-backdrop            display image centered on a backdrop",
+      "-colormap type       Shared or Private",
+      "-colors value        preferred number of colors in the image",
+      "-colorspace type     alternate image colorspace",
+      "-crop geometry       preferred size and location of the cropped image",
+      "-debug events        display copious debugging information",
+      "-delay value         display the next image after pausing",
+      "-density geometry    horizontal and vertical density of the image",
+      "-depth value         image depth",
+      "-display server      display image to this X server",
+      "-dither              apply Floyd/Steinberg error diffusion to image",
+      "-gamma value         level of gamma correction",
+      "-geometry geometry   preferred size and location of the Image window",
+      "-help                print program options",
+      "-interlace type      None, Line, Plane, or Partition",
+      "-limit type value    Disk, Map, or Memory resource limit",
+      "-log format          format of debugging information",
+      "-matte               store matte channel if the image has one",
+      "-map type            display image using this Standard Colormap",
+      "-monochrome          transform image to black and white",
+      "-noop                do not apply options to image",
+      "-pause               seconds to pause before reanimating",
+      "-remote command      execute a command in an remote display process",
+      "-rotate degrees      apply Paeth rotation to the image",
+      "-sampling-factor geometry",
+      "                     horizontal and vertical sampling factor",
+      "-scenes range        image scene range",
+      "-size geometry       width and height of image",
+      "-treedepth value     color tree depth",
+      "-trim                trim image edges",
+      "-verbose             print detailed information about the image",
+      "-version             print version information",
+      "-visual type         display image using this visual type",
+      "-virtual-pixel method",
+      "                     Constant, Edge, Mirror, or Tile",
+      "-window id           display image to background of this window",
+      (char *) NULL
+    };
+
+  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
+  (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
+    SetClientName((char *) NULL));
+  (void) printf("\nWhere options include: \n");
+  for (p=options; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+  (void) printf(
+    "\nIn addition to those listed above, you can specify these standard X\n");
+  (void) printf(
+    "resources as command line options:  -background, -bordercolor,\n");
+  (void) printf(
+    "-borderwidth, -font, -foreground, -iconGeometry, -iconic, -name,\n");
+  (void) printf("-mattecolor, -shared-memory, or -title.\n");
+  (void) printf(
+    "\nBy default, the image format of `file' is determined by its magic\n");
+  (void) printf(
+    "number.  To specify a particular image format, precede the filename\n");
+  (void) printf(
+    "with an image format name and a colon (i.e. ps:image) or specify the\n");
+  (void) printf(
+    "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
+  (void) printf("'-' for standard input or output.\n");
+  (void) printf("\nButtons: \n");
+  for (p=buttons; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+}
+MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
+#if defined(HasX11)
+  char
+    *client_name,
+    *option,
+    *resource_value,
+    *server_name;
+
+  Display
+    *display;
+
+  double
+    sans;
+
+  Image
+    *image,
+    *image_list,
+    *loaded_image,
+    *next_image;
+
+  long
+    first_scene,
+    j,
+    k,
+    last_scene,
+    scene,
+    x;
+
+  QuantizeInfo
+    *quantize_info;
+
+  register Image
+    *p;
+
+  register long
     i;
 
-  for (i=0; i< argc; i++)
-    if (argv[i])
-      MagickFreeMemory(argv[i]);
-  MagickFreeMemory(argv);
+  unsigned int
+    status;
+
+  XResourceInfo
+    resource_info;
+
+  XrmDatabase
+    resource_database;
+
+  /*
+    Initialize command line arguments.
+  */
+  InitializeMagick(*argv);
+
+  /*
+    Set defaults.
+  */
+  SetNotifyHandlers;
+  display=(Display *) NULL;
+  first_scene=0;
+  image=(Image *) NULL;
+  image_list=(Image *) NULL;
+  last_scene=0;
+  server_name=(char *) NULL;
+  status=True;
+  /*
+    Check for server name specified on the command line.
+  */
+  for (i=1; i < argc; i++)
+  {
+    /*
+      Check command line for server name.
+    */
+    option=argv[i];
+    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
+      continue;
+    if (LocaleCompare("display",option+1) == 0)
+      {
+        /*
+          User specified server name.
+        */
+        i++;
+        if (i == argc)
+          MagickFatalError(OptionFatalError,"MissingServerName",option);
+        server_name=argv[i];
+        break;
+      }
+    if (LocaleCompare("help",option+1) == 0)
+      {
+        AnimateUsage();
+        return False;
+      }
+    if (LocaleCompare("version",option+1) == 0)
+      {
+        (void) fprintf(stdout,"Version: %.1024s\n",
+          GetMagickVersion((unsigned long *) NULL));
+        (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
+        return False;
+      }
+  }
+
+  /*
+    Expand argument list
+  */
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      (char *) NULL);
+
+  /*
+    Get user defaults from X resource database.
+  */
+  display=XOpenDisplay(server_name);
+  if (display == (Display *) NULL)
+    MagickFatalError(XServerFatalError,"UnableToOpenXServer",
+      XDisplayName(server_name));
+ (void) XSetErrorHandler(XError);
+  client_name=SetClientName((char *) NULL);
+  resource_database=XGetResourceDatabase(display,client_name);
+  XGetResourceInfo(resource_database,client_name,&resource_info);
+  image_info=resource_info.image_info;
+  quantize_info=resource_info.quantize_info;
+  image_info->density=
+    XGetResourceInstance(resource_database,client_name,"density",(char *) NULL);
+  if (image_info->density == (char *) NULL)
+    image_info->density=XGetScreenDensity(display);
+  resource_value=
+    XGetResourceInstance(resource_database,client_name,"interlace","none");
+  image_info->interlace=UndefinedInterlace;
+  if (LocaleCompare("None",resource_value) == 0)
+    image_info->interlace=NoInterlace;
+  if (LocaleCompare("Line",resource_value) == 0)
+    image_info->interlace=LineInterlace;
+  if (LocaleCompare("Plane",resource_value) == 0)
+    image_info->interlace=PlaneInterlace;
+  if (LocaleCompare("Partition",resource_value) == 0)
+    image_info->interlace=PartitionInterlace;
+  if (image_info->interlace == UndefinedInterlace)
+    MagickError(OptionFatalError,"InvalidImageInterlace",resource_value);
+  resource_value=
+    XGetResourceInstance(resource_database,client_name,"verbose","False");
+  image_info->verbose=IsTrue(resource_value);
+  resource_value=
+    XGetResourceInstance(resource_database,client_name,"dither","True");
+  quantize_info->dither=IsTrue(resource_value);
+  /*
+    Parse command line.
+  */
+  j=1;
+  k=0;
+  for (i=1; i <= argc; i++)
+  {
+    if (i < argc)
+      option=argv[i];
+    else
+      if (image != (Image *) NULL)
+        break;
+      else
+        if (!isatty(STDIN_FILENO))
+          option=(char *) "-";
+        else
+          option=(char *) "logo:Untitled";
+    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
+      {
+        /*
+          Option is a file name.
+        */
+        k=i;
+        for (scene=first_scene; scene <= last_scene ; scene++)
+        {
+          /*
+            Read image.
+          */
+          (void) strncpy(image_info->filename,option,MaxTextExtent-1);
+          if (first_scene != last_scene)
+            {
+              char
+                filename[MaxTextExtent];
+
+              /*
+                Form filename for multi-part images.
+              */
+              FormatString(filename,image_info->filename,scene);
+              if (LocaleCompare(filename,image_info->filename) == 0)
+                FormatString(filename,"%.1024s[%lu]",image_info->filename,
+                  scene);
+              (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
+            }
+          image_info->colorspace=quantize_info->colorspace;
+          image_info->dither=quantize_info->dither;
+          next_image=ReadImage(image_info,exception);
+          if (exception->severity > UndefinedException)
+            CatchException(exception);
+          status&=next_image != (Image *) NULL;
+          if (next_image == (Image *) NULL)
+            continue;
+          if (image == (Image *) NULL)
+            {
+              image=next_image;
+              continue;
+            }
+          /*
+            Link image into image list.
+          */
+          for (p=image; p->next != (Image *) NULL; p=p->next);
+          next_image->previous=p;
+          p->next=next_image;
+        }
+        continue;
+      }
+    if (j != (k+1))
+      {
+        status&=MogrifyImages(image_info,i-j,argv+j,&image);
+        (void) CatchImageException(image);
+        AppendImageToList(&image_list,image);
+        image=(Image *) NULL;
+        j=k+1;
+      }
+    switch (*(option+1))
+    {
+      case 'a':
+      {
+        if (LocaleCompare("authenticate",option+1) == 0)
+          {
+            (void) CloneString(&image_info->authenticate,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingPassword",option);
+                (void) CloneString(&image_info->authenticate,argv[i]);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'b':
+      {
+        if (LocaleCompare("backdrop",option+1) == 0)
+          {
+            resource_info.backdrop=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("background",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingColor",option);
+                resource_info.background_color=argv[i];
+                (void) QueryColorDatabase(argv[i],&image_info->background_color,
+                  exception);
+              }
+            break;
+          }
+        if (LocaleCompare("bordercolor",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingColor",option);
+                resource_info.border_color=argv[i];
+                (void) QueryColorDatabase(argv[i],&image_info->border_color,
+                  exception);
+              }
+            break;
+          }
+        if (LocaleCompare("borderwidth",option+1) == 0)
+          {
+            resource_info.border_width=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingWidth",option);
+                resource_info.border_width=atoi(argv[i]);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'c':
+      {
+        if (LocaleCompare("cache",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingThreshold",option);
+                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
+              }
+            break;
+          }
+        if (LocaleCompare("colormap",option+1) == 0)
+          {
+            resource_info.colormap=PrivateColormap;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingType",option);
+                option=argv[i];
+                resource_info.colormap=UndefinedColormap;
+                if (LocaleCompare("private",option) == 0)
+                  resource_info.colormap=PrivateColormap;
+                if (LocaleCompare("shared",option) == 0)
+                  resource_info.colormap=SharedColormap;
+                if (resource_info.colormap == UndefinedColormap)
+                  MagickFatalError(OptionFatalError,"InvalidColormapType",
+                    option);
+              }
+            break;
+          }
+        if (LocaleCompare("colors",option+1) == 0)
+          {
+            quantize_info->number_colors=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingColors",option);
+                quantize_info->number_colors=atol(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("colorspace",option+1) == 0)
+          {
+            quantize_info->colorspace=RGBColorspace;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingType",option);
+                option=argv[i];
+                quantize_info->colorspace=UndefinedColorspace;
+                if (LocaleCompare("cmyk",option) == 0)
+                  quantize_info->colorspace=CMYKColorspace;
+                if (LocaleCompare("gray",option) == 0)
+                  {
+                    quantize_info->colorspace=GRAYColorspace;
+                    quantize_info->number_colors=256;
+                    quantize_info->tree_depth=8;
+                  }
+                if (LocaleCompare("hsl",option) == 0)
+                  quantize_info->colorspace=HSLColorspace;
+                if (LocaleCompare("hwb",option) == 0)
+                  quantize_info->colorspace=HWBColorspace;
+                if (LocaleCompare("ohta",option) == 0)
+                  quantize_info->colorspace=OHTAColorspace;
+                if (LocaleCompare("rgb",option) == 0)
+                  quantize_info->colorspace=RGBColorspace;
+                if (LocaleCompare("srgb",option) == 0)
+                  quantize_info->colorspace=sRGBColorspace;
+                if (LocaleCompare("transparent",option) == 0)
+                  quantize_info->colorspace=TransparentColorspace;
+                if (LocaleCompare("xyz",option) == 0)
+                  quantize_info->colorspace=XYZColorspace;
+                if (LocaleCompare("ycbcr",option) == 0)
+                  quantize_info->colorspace=YCbCrColorspace;
+                if (LocaleCompare("ycc",option) == 0)
+                  quantize_info->colorspace=YCCColorspace;
+                if (LocaleCompare("yiq",option) == 0)
+                  quantize_info->colorspace=YIQColorspace;
+                if (LocaleCompare("ypbpr",option) == 0)
+                  quantize_info->colorspace=YPbPrColorspace;
+                if (LocaleCompare("yuv",option) == 0)
+                  quantize_info->colorspace=YUVColorspace;
+                if (quantize_info->colorspace == UndefinedColorspace)
+                  MagickFatalError(OptionFatalError,"InvalidColorspaceType",
+                    option);
+              }
+            break;
+          }
+        if (LocaleCompare("crop",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'd':
+      {
+        if (LocaleCompare("debug",option+1) == 0)
+          {
+            (void) SetLogEventMask("None");
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingEventMask",
+                    option);
+                (void) SetLogEventMask(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("delay",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingSeconds",option);
+              }
+            break;
+          }
+        if (LocaleCompare("density",option+1) == 0)
+          {
+            (void) CloneString(&image_info->density,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+                (void) CloneString(&image_info->density,argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("depth",option+1) == 0)
+          {
+            image_info->depth=QuantumDepth;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingImageDepth",option);
+                image_info->depth=atol(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("display",option+1) == 0)
+          {
+            (void) CloneString(&image_info->server_name,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingServerName",option);
+                (void) CloneString(&image_info->server_name,argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("dither",option+1) == 0)
+          {
+            quantize_info->dither=(*option == '-');
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'f':
+      {
+        if (LocaleCompare("font",option+1) == 0)
+          {
+            (void) CloneString(&image_info->font,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingFontName",option);
+                (void) CloneString(&image_info->font,argv[i]);
+              }
+            if ((image_info->font == (char *) NULL) ||
+                (*image_info->font != '@'))
+              resource_info.font=AllocateString(image_info->font);
+            break;
+          }
+        if (LocaleCompare("foreground",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingForeground",
+                    option);
+                resource_info.foreground_color=argv[i];
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'g':
+      {
+        if (LocaleCompare("gamma",option+1) == 0)
+          {
+            i++;
+            if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+              MagickFatalError(OptionFatalError,"Missing value",option);
+            break;
+          }
+        if (LocaleCompare("geometry",option+1) == 0)
+          {
+            resource_info.image_geometry=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+                resource_info.image_geometry=argv[i];
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'h':
+      {
+        if (LocaleCompare("help",option+1) == 0)
+          {
+            AnimateUsage();
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'i':
+      {
+        if (LocaleCompare("iconGeometry",option+1) == 0)
+          {
+            resource_info.icon_geometry=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+                resource_info.icon_geometry=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("iconic",option+1) == 0)
+          {
+            resource_info.iconic=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("interlace",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingType",option);
+                option=argv[i];
+                image_info->interlace=UndefinedInterlace;
+                if (LocaleCompare("None",option) == 0)
+                  image_info->interlace=NoInterlace;
+                if (LocaleCompare("Line",option) == 0)
+                  image_info->interlace=LineInterlace;
+                if (LocaleCompare("Plane",option) == 0)
+                  image_info->interlace=PlaneInterlace;
+                if (LocaleCompare("Partition",option) == 0)
+                  image_info->interlace=PartitionInterlace;
+                if (image_info->interlace == UndefinedInterlace)
+                  MagickFatalError(OptionFatalError,"InvalidInterlaceType",
+                    option);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'l':
+      {
+        if (LocaleCompare("limit",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                char
+                  *type;
+
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingResourceType",
+                    option);
+                type=argv[i];
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingResourceLimit",
+                    option);
+                if (LocaleCompare("disk",type) == 0)
+                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                else
+                  if (LocaleCompare("map",type) == 0)
+                    SetMagickResourceLimit(MapResource,atol(argv[i]));
+                  else
+                    if (LocaleCompare("memory",type) == 0)
+                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                    else
+                      MagickFatalError(OptionFatalError,
+                        "UnrecognizedResourceType",type);
+              }
+            break;
+          }
+        if (LocaleCompare("log",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingLogFormat",option);
+                (void) SetLogFormat(argv[i]);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'm':
+      {
+        if (LocaleCompare("map",option+1) == 0)
+          {
+            (void) strcpy(argv[i]+1,"sans");
+            resource_info.map_type=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingMapType",option);
+                resource_info.map_type=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("matte",option+1) == 0)
+          break;
+        if (LocaleCompare("mattecolor",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingColor",option);
+                resource_info.matte_color=argv[i];
+                (void) QueryColorDatabase(argv[i],&image_info->matte_color,
+                  exception);
+              }
+            break;
+          }
+        if (LocaleCompare("monochrome",option+1) == 0)
+          {
+            image_info->monochrome=(*option == '-');
+            if (image_info->monochrome)
+              {
+                quantize_info->number_colors=2;
+                quantize_info->tree_depth=8;
+                quantize_info->colorspace=GRAYColorspace;
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'n':
+      {
+        if (LocaleCompare("name",option+1) == 0)
+          {
+            resource_info.name=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingName",option);
+                resource_info.name=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("noop",option+1) == 0)
+          break;
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'p':
+      {
+        if (LocaleCompare("pause",option+1) == 0)
+          {
+            resource_info.pause=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingSeconds",option);
+              }
+            resource_info.pause=atoi(argv[i]);
+            break;
+          }
+        break;
+      }
+      case 'r':
+      {
+        if (LocaleCompare("remote",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              MagickFatalError(OptionFatalError,"MissingCommand",option);
+            status=XRemoteCommand(display,resource_info.window_id,argv[i]);
+            Exit(!status);
+          }
+        if (LocaleCompare("rotate",option+1) == 0)
+          {
+            i++;
+            if ((i == argc) || !IsGeometry(argv[i]))
+              MagickFatalError(OptionFatalError,"MissingDegrees",option);
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 's':
+      {
+        if (LocaleCompare("sampling-factor",option+1) == 0)
+          {
+            (void) CloneString(&image_info->sampling_factor,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+                (void) CloneString(&image_info->sampling_factor,argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("scenes",option+1) == 0)
+          {
+            first_scene=0;
+            last_scene=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingSceneNumber",
+                    option);
+                first_scene=atol(argv[i]);
+                last_scene=first_scene;
+                (void) sscanf(argv[i],"%ld-%ld",&first_scene,&last_scene);
+              }
+            break;
+          }
+        if (LocaleCompare("shared-memory",option+1) == 0)
+          {
+            resource_info.use_shared_memory=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("size",option+1) == 0)
+          {
+            (void) CloneString(&image_info->size,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+                (void) CloneString(&image_info->size,argv[i]);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 't':
+      {
+        if (LocaleCompare("text-font",option+1) == 0)
+          {
+            resource_info.text_font=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingFontName",option);
+                resource_info.text_font=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("title",option+1) == 0)
+          {
+            resource_info.title=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingTitle",option);
+                resource_info.title=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("treedepth",option+1) == 0)
+          {
+            quantize_info->tree_depth=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingDepth",option);
+                quantize_info->tree_depth=atoi(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("trim",option+1) == 0)
+          break;
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'v':
+      {
+        if (LocaleCompare("verbose",option+1) == 0)
+          {
+            image_info->verbose=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("version",option+1) == 0)
+          break;
+        if (LocaleCompare("virtual-pixel",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                VirtualPixelMethod
+                  virtual_pixel_method;
+
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingVirtualPixelMethod",
+                    option);
+                option=argv[i];
+                virtual_pixel_method=UndefinedVirtualPixelMethod;
+                if (LocaleCompare("Constant",option) == 0)
+                  virtual_pixel_method=ConstantVirtualPixelMethod;
+                if (LocaleCompare("Edge",option) == 0)
+                  virtual_pixel_method=EdgeVirtualPixelMethod;
+                if (LocaleCompare("Mirror",option) == 0)
+                  virtual_pixel_method=MirrorVirtualPixelMethod;
+                if (LocaleCompare("Tile",option) == 0)
+                  virtual_pixel_method=TileVirtualPixelMethod;
+                if (virtual_pixel_method == UndefinedVirtualPixelMethod)
+                  MagickFatalError(OptionFatalError,
+                    "UnrecognizedVirtualPixelMethod",option);
+              }
+            break;
+          }
+        if (LocaleCompare("visual",option+1) == 0)
+          {
+            resource_info.visual_type=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingVisualClass",
+                    option);
+                resource_info.visual_type=argv[i];
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'w':
+      {
+        if (LocaleCompare("window",option+1) == 0)
+          {
+            resource_info.window_id=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingIDNameOrRoot",
+                    option);
+                resource_info.window_id=argv[i];
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case '?':
+      {
+        AnimateUsage();
+        break;
+      }
+      default:
+      {
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+    }
+  }
+  i--;
+  if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
+    MagickFatalError(OptionFatalError,"MissingAnImageFilename",(char *) NULL);
+  if (image == (Image *) NULL)
+    {
+      status&=MogrifyImages(image_info,i-j,argv+j,&image_list);
+      (void) CatchImageException(image_list);
+    }
+  else
+    {
+      status&=MogrifyImages(image_info,i-j,argv+j,&image);
+      (void) CatchImageException(image);
+      AppendImageToList(&image_list,image);
+    }
+  if (resource_info.window_id != (char *) NULL)
+    XAnimateBackgroundImage(display,&resource_info,image_list);
+  else
+    {
+      /*
+        Animate image to X server.
+      */
+      loaded_image=XAnimateImages(display,&resource_info,argv,argc,image_list);
+      while (loaded_image != (Image *) NULL)
+      {
+        image_list=loaded_image;
+        loaded_image=
+          XAnimateImages(display,&resource_info,argv,argc,image_list);
+      }
+    }
+  DestroyImageList(image_list);
+  LiberateArgumentList(argc,argv);
+  return(!status);
+#else
+  MagickFatalError(MissingDelegateError,"XWindowLibraryIsNotAvailable",
+    (char *) NULL);
+#endif
+  return(False);
 }
 
 /*
@@ -1410,6 +2483,103 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o m p o s i t e U s a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CompositeUsage() displays the program command syntax.
+%
+%  The format of the CompositeUsage method is:
+%
+%      void CompositeUsage()
+%
+%
+*/
+MagickExport void CompositeUsage(void)
+{
+  const char
+    **p;
+
+  static const char
+    *options[]=
+    {
+      "-affine matrix       affine transform matrix",
+      "-authenticate value  decrypt image with this password",
+      "-blue-primary point  chomaticity blue primary point",
+      "-colors value        preferred number of colors in the image",
+      "-colorspace type     alternate image colorspace",
+      "-comment string      annotate image with comment",
+      "-compose operator    composite operator",
+      "-compress type       image compression tyhpe",
+      "-debug events        display copious debugging information",
+      "-density geometry    horizontal and vertical density of the image",
+      "-depth value         image depth",
+      "-displace geometry   shift image pixels defined by a displacement map",
+      "-display server      get image or font from this X server",
+      "-dispose method      Undefined, None, Background, Previous",
+      "-dissolve value      dissolve the two images a given percent",
+      "-dither              apply Floyd/Steinberg error diffusion to image",
+      "-encoding type       text encoding type",
+      "-endian type         LSB or MSB",
+      "-filter type         use this filter when resizing an image",
+      "-font name           render text with this font",
+      "-geometry geometry   location of the composite image",
+      "-gravity type        which direction to gravitate towards",
+      "-green-primary point chomaticity green primary point",
+      "-help                print program options",
+      "-interlace type      None, Line, Plane, or Partition",
+      "-label name          ssign a label to an image",
+      "-limit type value    Disk, Map, or Memory resource limit",
+      "-log format          format of debugging information",
+      "-matte               store matte channel if the image has one",
+      "-monochrome          transform image to black and white",
+      "-negate              replace every pixel with its complementary color ",
+      "-page geometry       size and location of an image canvas",
+      "-profile filename    add ICM or IPTC information profile to image",
+      "-quality value       JPEG/MIFF/PNG compression level",
+      "-red-primary point   chomaticity red primary point",
+      "-rotate degrees      apply Paeth rotation to the image",
+      "-resize geometry     resize the image",
+      "-sampling-factor geometry",
+      "                     horizontal and vertical sampling factor",
+      "-scene value         image scene number",
+      "-sharpen geometry    sharpen the image",
+      "-size geometry       width and height of image",
+      "-stegano offset      hide watermark within an image",
+      "-stereo              combine two image to create a stereo anaglyph",
+      "-tile                repeat composite operation across image",
+      "-transform           affine transform image",
+      "-treedepth value     color tree depth",
+      "-type type           image type",
+      "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
+      "-unsharp geometry    sharpen the image",
+      "-verbose             print detailed information about the image",
+      "-version             print version information",
+      "-virtual-pixel method",
+      "                     Constant, Edge, Mirror, or Tile",
+      "-watermark geometry  percent brightness and saturation of a watermark",
+      "-white-point point   chomaticity white point",
+      "-write filename      write images to this file",
+      (char *) NULL
+    };
+
+  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
+  (void) printf("Usage: %.1024s [options ...] image [options ...] composite\n"
+    "  [ [options ...] mask ] [options ...] composite\n",
+    SetClientName((char *) NULL));
+  (void) printf("\nWhere options include:\n");
+  for (p=options; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o n v e r t I m a g e C o m m a n d                                     %
 %                                                                             %
 %                                                                             %
@@ -1509,7 +2679,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
     k,
     x;
 
-  register long
+  register int
     i;
 
   unsigned int
@@ -3339,6 +4509,1947 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o n v e r t U s a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Procedure ConvertUsage displays the program command syntax.
+%
+%  The format of the ConvertUsage method is:
+%
+%      void ConvertUsage()
+%
+*/
+MagickExport void ConvertUsage(void)
+{
+  static const char
+    *options[]=
+    {
+      "-adjoin              join images into a single multi-image file",
+      "-affine matrix       affine transform matrix",
+      "-antialias           remove pixel-aliasing",
+      "-append              append an image sequence",
+      "-authenticate value  decrypt image with this password",
+      "-average             average an image sequence",
+      "-background color    background color",
+      "-blue-primary point  chomaticity blue primary point",
+      "-blur geometry       blur the image",
+      "-border geometry     surround image with a border of color",
+      "-bordercolor color   border color",
+      "-channel type        extract a particular color channel from image",
+      "-charcoal radius     simulate a charcoal drawing",
+      "-chop geometry       remove pixels from the image interior",
+      "-clip                apply clipping path if the image has one",
+      "-coalesce            merge a sequence of images",
+      "-colorize value      colorize the image with the fill color",
+      "-colors value        preferred number of colors in the image",
+      "-colorspace type     alternate image colorspace",
+      "-comment string      annotate image with comment",
+      "-compress type       image compression tyhpe",
+      "-contrast            enhance or reduce the image contrast",
+      "-crop geometry       preferred size and location of the cropped image",
+      "-cycle amount        cycle the image colormap",
+      "-debug events        display copious debugging information",
+      "-deconstruct         break down an image sequence into constituent parts",
+      "-delay value         display the next image after pausing",
+      "-density geometry    horizontal and vertical density of the image",
+      "-depth value         image depth",
+      "-despeckle           reduce the speckles within an image",
+      "-display server      get image or font from this X server",
+      "-dispose method      Undefined, None, Background, Previous",
+      "-dither              apply Floyd/Steinberg error diffusion to image",
+      "-draw string         annotate the image with a graphic primitive",
+      "-edge radius         apply a filter to detect edges in the image",
+      "-emboss radius       emboss an image",
+      "-encoding type       text encoding type",
+      "-endian type         LSB or MSB",
+      "-enhance             apply a digital filter to enhance a noisy image",
+      "-equalize            perform histogram equalization to an image",
+      "-fill color          color to use when filling a graphic primitive",
+      "-filter type         use this filter when resizing an image",
+      "-flatten             flatten a sequence of images",
+      "-flip                flip image in the vertical direction",
+      "-flop                flop image in the horizontal direction",
+      "-font name           render text with this font",
+      "-frame geometry      surround image with an ornamental border",
+      "-fuzz distance       colors within this distance are considered equal",
+      "-gamma value         level of gamma correction",
+      "-gaussian geometry   gaussian blur an image",
+      "-geometry geometry   perferred size or location of the image",
+      "-green-primary point chomaticity green primary point",
+      "-gravity type        horizontal and vertical text placement",
+      "-help                print program options",
+      "-implode amount      implode image pixels about the center",
+      "-intent type         Absolute, Perceptual, Relative, or Saturation",
+      "-interlace type      None, Line, Plane, or Partition",
+      "-label name          assign a label to an image",
+      "-lat geometry        local adaptive thresholding",
+      "-level value         adjust the level of image contrast",
+      "-limit type value    Disk, Map, or Memory resource limit",
+      "-list type           Color, Delegate, Format, Magic, Module, or Type",
+      "-log format          format of debugging information",
+      "-loop iterations     add Netscape loop extension to your GIF animation",
+      "-map filename        transform image colors to match this set of colors",
+      "-mask filename       set the image clip mask",
+      "-matte               store matte channel if the image has one",
+      "-median radius       apply a median filter to the image",
+      "-modulate value      vary the brightness, saturation, and hue",
+      "-monochrome          transform image to black and white",
+      "-morph value         morph an image sequence",
+      "-mosaic              create a mosaic from an image sequence",
+      "-negate              replace every pixel with its complementary color ",
+      "-noop                do not apply options to image",
+      "-noise radius        add or reduce noise in an image",
+      "-normalize           transform image to span the full range of colors",
+      "-opaque color        change this color to the fill color",
+      "-ordered-dither channeltype NxN",
+      "                     ordered dither the image",
+      "-page geometry       size and location of an image canvas",
+      "-paint radius        simulate an oil painting",
+      "-ping                efficiently determine image attributes",
+      "-pointsize value     font point size",
+      "-preview type        image preview type",
+      "-profile filename    add ICM or IPTC information profile to image",
+      "-quality value       JPEG/MIFF/PNG compression level",
+      "-raise value         lighten/darken image edges to create a 3-D effect",
+      "-region geometry     apply options to a portion of the image",
+      "-raise value         lighten/darken image edges to create a 3-D effect",
+      "-random-threshold channeltype LOWxHIGH",
+      "                     random threshold the image",
+      "-red-primary point   chomaticity red primary point",
+      "-render              render vector graphics",
+      "-resize geometry     resize the image",
+      "-roll geometry       roll an image vertically or horizontally",
+      "-rotate degrees      apply Paeth rotation to the image",
+      "-sample geometry     scale image with pixel sampling",
+      "-sampling-factor geometry",
+      "                     horizontal and vertical sampling factor",
+      "-scale geometry      scale the image",
+      "-scene value         image scene number",
+      "-seed value          pseudo-random number generator seed value",
+      "-segment values      segment an image",
+      "-shade degrees       shade the image using a distant light source",
+      "-sharpen geometry    sharpen the image",
+      "-shave geometry      shave pixels from the image edges",
+      "-shear geometry      slide one edge of the image along the X or Y axis",
+      "-size geometry       width and height of image",
+      "-solarize threshold  negate all pixels above the threshold level",
+      "-spread amount       displace image pixels by a random amount",
+      "-stroke color        graphic primitive stroke color",
+      "-strokewidth value   graphic primitive stroke width",
+      "-swirl degrees       swirl image pixels about the center",
+      "-texture filename    name of texture to tile onto the image background",
+      "-threshold value     threshold the image",
+      "-tile filename       tile image when filling a graphic primitive",
+      "-transform           affine transform image",
+      "-transparent color   make this color transparent within the image",
+      "-treedepth value     color tree depth",
+      "-trim                trim image edges",
+      "-type type           image type",
+      "-undercolor color    annotation bounding box color",
+      "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
+      "-unsharp geometry    sharpen the image",
+      "-verbose             print detailed information about the image",
+      "-version             print version information",
+      "-view                FlashPix viewing transforms",
+      "-virtual-pixel method",
+      "                     Constant, Edge, Mirror, or Tile",
+      "-wave geometry       alter an image along a sine wave",
+      "-white-point point   chomaticity white point",
+      "-write filename      write images to this file",
+      (char *) NULL
+    };
+
+  const char
+    **p;
+
+  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
+  (void) printf("Usage: %.1024s [options ...] file [ [options ...] "
+    "file ...] [options ...] file\n",SetClientName((char *) NULL));
+  (void) printf("\nWhere options include:\n");
+  for (p=options; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+  (void) printf(
+    "\nBy default, the image format of `file' is determined by its magic\n");
+  (void) printf(
+    "number.  To specify a particular image format, precede the filename\n");
+  (void) printf(
+    "with an image format name and a colon (i.e. ps:image) or specify the\n");
+  (void) printf(
+    "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
+  (void) printf("'-' for standard input or output.\n");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o n j u r e U s a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConjureUsage() displays the program command syntax.
+%
+%  The format of the ConjureUsage method is:
+%
+%      void ConjureUsage()
+%
+*/
+MagickExport void ConjureUsage(void)
+{
+  static const char
+    *options[]=
+    {
+      "-debug events        display copious debugging information",
+      "-help                print program options",
+      "-log format          format of debugging information",
+      "-verbose             print detailed information about the image",
+      "-version             print version information",
+      (char *) NULL
+    };
+
+  const char
+    **p;
+
+  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
+  (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
+    SetClientName((char *) NULL));
+  (void) printf("\nWhere options include:\n");
+  for (p=options; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+  (void) printf("\nIn additiion, define any key value pairs required by "
+    "your script.  For\nexample,\n\n");
+  (void) printf("    conjure -size 100x100 -color blue -foo bar script.msl\n");
+}
+
+MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
+  char
+    *option;
+
+  Image
+    *image;
+
+  register long
+    i;
+
+  unsigned int
+    status;
+
+  InitializeMagick(*argv);
+  ReadCommandlLine(argc,&argv);
+
+  /*
+    Expand argument list
+  */
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      (char *) NULL);
+
+  /*
+    Validate command list
+  */
+  if (argc < 2)
+    {
+      ConjureUsage();
+      LiberateArgumentList(argc,argv);
+      return (False);
+    }
+
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  image_info->attributes=AllocateImage(image_info);
+  status=True;
+  for (i=1; i < argc; i++)
+  {
+    option=argv[i];
+    if ((strlen(option) != 1) && ((*option == '-') || (*option == '+')))
+      {
+        if (LocaleCompare("debug",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingEventMask",option);
+                (void) SetLogEventMask(argv[i]);
+              }
+            continue;
+          }
+        if (LocaleCompare("help",option+1) == 0 ||
+            LocaleCompare("?",option+1) == 0)
+          {
+            if (*option == '-')
+              ConjureUsage();
+            continue;
+          }
+        if (LocaleCompare("log",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingLogFormat",option);
+                (void) SetLogFormat(argv[i]);
+              }
+            continue;
+          }
+        if (LocaleCompare("verbose",option+1) == 0)
+          {
+            image_info->verbose=(*option == '-');
+            continue;
+          }
+        if (LocaleCompare("version",option+1) == 0)
+          {
+            (void) fprintf(stdout,"Version: %.1024s\n",
+              GetMagickVersion((unsigned long *) NULL));
+            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
+              GetMagickCopyright());
+            Exit(0);
+            continue;
+          }
+        /*
+          Persist key/value pair.
+        */
+        (void) SetImageAttribute(image_info->attributes,option+1,(char *) NULL);
+        status&=SetImageAttribute(image_info->attributes,option+1,argv[i+1]);
+        if (status == False)
+          MagickFatalError(ImageFatalError,"UnableToPersistKey",option);
+        i++;
+        continue;
+      }
+    /*
+      Interpret MSL script.
+    */
+    (void) SetImageAttribute(image_info->attributes,"filename",(char *) NULL);
+    status&=SetImageAttribute(image_info->attributes,"filename",argv[i]);
+    if (status == False)
+      MagickFatalError(ImageFatalError,"UnableToPersistKey",argv[i]);
+    (void) FormatString(image_info->filename,"msl:%.1024s",argv[i]);
+    image=ReadImage(image_info,exception);
+    if (exception->severity > UndefinedException)
+      CatchException(exception);
+    status&=image != (Image *) NULL;
+    if (image != (Image *) NULL)
+      DestroyImageList(image);
+  }
+  DestroyImageInfo(image_info);
+  LiberateArgumentList(argc,argv);
+  return(!status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D i s p l a y U s a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DisplayUsage() displays the program command syntax.
+%
+%  The format of the DisplayUsage method is:
+%
+%      void DisplayUsage(void)
+%
+%  A description of each parameter follows:
+%
+%
+*/
+MagickExport void DisplayUsage(void)
+{
+  const char
+    **p;
+
+  static const char
+    *buttons[]=
+    {
+      "1    press to map or unmap the Command widget",
+      "2    press and drag to magnify a region of an image",
+      "3    press to load an image from a visual image directory",
+      (char *) NULL
+    },
+    *options[]=
+    {
+      "-authenticate value  decrypt image with this password",
+      "-backdrop            display image centered on a backdrop",
+      "-border geometry     surround image with a border of color",
+      "-colormap type       Shared or Private",
+      "-colors value        preferred number of colors in the image",
+      "-colorspace type     alternate image colorspace",
+      "-comment string      annotate image with comment",
+      "-compress type       image compression tyhpe",
+      "-contrast            enhance or reduce the image contrast",
+      "-crop geometry       preferred size and location of the cropped image",
+      "-debug events        display copious debugging information",
+      "-delay value         display the next image after pausing",
+      "-density geometry    horizontal and vertical density of the image",
+      "-depth value         image depth",
+      "-despeckle           reduce the speckles within an image",
+      "-display server      display image to this X server",
+      "-dispose method      Undefined, None, Background, Previous",
+      "-dither              apply Floyd/Steinberg error diffusion to image",
+      "-edge factor         apply a filter to detect edges in the image",
+      "-endian type         LSB or MSB",
+      "-enhance             apply a digital filter to enhance a noisy image",
+      "-filter type         use this filter when resizing an image",
+      "-flip                flip image in the vertical direction",
+      "-flop                flop image in the horizontal direction",
+      "-frame geometry      surround image with an ornamental border",
+      "-gamma value         level of gamma correction",
+      "-geometry geometry   preferred size and location of the Image window",
+      "-help                print program options",
+      "-immutable           displayed image cannot be modified",
+      "-interlace type      None, Line, Plane, or Partition",
+      "-label name          assign a label to an image",
+      "-limit type value    Disk, Map, or Memory resource limit",
+      "-log format          format of debugging information",
+      "-map type            display image using this Standard Colormap",
+      "-matte               store matte channel if the image has one",
+      "-monochrome          transform image to black and white",
+      "-negate              replace every pixel with its complementary color",
+      "-noop                do not apply options to image",
+      "-page geometry       size and location of an image canvas",
+      "-quality value       JPEG/MIFF/PNG compression level",
+      "-raise value         lighten/darken image edges to create a 3-D effect",
+      "-remote command      execute a command in an remote display process",
+      "-roll geometry       roll an image vertically or horizontally",
+      "-rotate degrees      apply Paeth rotation to the image",
+      "-sample geometry     scale image with pixel sampling",
+      "-sampling-factor geometry",
+      "                     horizontal and vertical sampling factor",
+      "-scenes range        image scene range",
+      "-segment value       segment an image",
+      "-sharpen geometry    sharpen the image",
+      "-size geometry       width and height of image",
+      "-texture filename    name of texture to tile onto the image background",
+      "-treedepth value     color tree depth",
+      "-trim                trim image edges",
+      "-update seconds      detect when image file is modified and redisplay",
+      "-verbose             print detailed information about the image",
+      "-version             print version information",
+      "-visual type         display image using this visual type",
+      "-virtual-pixel method",
+      "                     Constant, Edge, Mirror, or Tile",
+      "-window id           display image to background of this window",
+      "-window_group id     exit program when this window id is destroyed",
+      "-write filename      write image to a file",
+      (char *) NULL
+    };
+
+  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
+  (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
+    SetClientName((char *) NULL));
+  (void) printf("\nWhere options include: \n");
+  for (p=options; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+  (void) printf(
+    "\nIn addition to those listed above, you can specify these standard X\n");
+  (void) printf(
+    "resources as command line options:  -background, -bordercolor,\n");
+  (void) printf(
+    "-borderwidth, -font, -foreground, -iconGeometry, -iconic, -mattecolor,\n");
+  (void) printf("-name, -shared-memory, -usePixmap, or -title.\n");
+  (void) printf(
+    "\nBy default, the image format of `file' is determined by its magic\n");
+  (void) printf(
+    "number.  To specify a particular image format, precede the filename\n");
+  (void) printf(
+    "with an image format name and a colon (i.e. ps:image) or specify the\n");
+  (void) printf(
+    "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
+  (void) printf("'-' for standard input or output.\n");
+  (void) printf("\nButtons: \n");
+  for (p=buttons; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+}
+
+MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
+#if defined(HasX11)
+  char
+    *client_name,
+    *option,
+    *resource_value,
+    *server_name;
+
+  Display
+    *display;
+
+  double
+    sans;
+
+  Image
+    *image,
+    *next;
+
+  long
+    first_scene,
+    image_number,
+    j,
+    k,
+    last_scene,
+    scene,
+    x;
+
+  QuantizeInfo
+    *quantize_info;
+
+  register long
+    i;
+
+  unsigned int
+    *image_marker,
+    last_image,
+    status;
+
+  unsigned long
+    state;
+
+  XResourceInfo
+    resource_info;
+
+  XrmDatabase
+    resource_database;
+
+  /*
+    Expand Argument List
+  */
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      (char *) NULL);
+
+  /*
+    Set defaults.
+  */
+  SetNotifyHandlers;
+  display=(Display *) NULL;
+  first_scene=0;
+  image_number=0;
+  last_image=0;
+  last_scene=0;
+  image_marker=MagickAllocateMemory(unsigned int *,(argc+1)*sizeof(unsigned int));
+  if (image_marker == (unsigned int *) NULL)
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "UnableToDisplayImage");
+  for (i=0; i <= argc; i++)
+    image_marker[i]=argc;
+  resource_database=(XrmDatabase) NULL;
+  server_name=(char *) NULL;
+  state=0;
+  /*
+    Check for server name specified on the command line.
+  */
+  for (i=1; i < argc; i++)
+  {
+    /*
+      Check command line for server name.
+    */
+    option=argv[i];
+    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
+      continue;
+    if (LocaleCompare("display",option+1) == 0)
+      {
+        /*
+          User specified server name.
+        */
+        i++;
+        if (i == argc)
+          MagickFatalError(OptionFatalError,"MissingServerName",option);
+        server_name=argv[i];
+        break;
+      }
+    if (LocaleCompare("help",option+1) == 0)
+      {
+        DisplayUsage();
+        LiberateArgumentList(argc,argv);
+        return False;
+      }
+    if (LocaleCompare("version",option+1) == 0)
+      {
+        (void) fprintf(stdout,"Version: %.1024s\n",
+          GetMagickVersion((unsigned long *) NULL));
+        (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
+        LiberateArgumentList(argc,argv);
+        return False;
+      }
+  }
+  /*
+    Get user defaults from X resource database.
+  */
+  display=XOpenDisplay(server_name);
+  if (display == (Display *) NULL)
+    MagickFatalError(XServerFatalError,"UnableToOpenXServer",
+      XDisplayName(server_name));
+  (void) XSetErrorHandler(XError);
+  client_name=SetClientName((char *) NULL);
+  resource_database=XGetResourceDatabase(display,client_name);
+  XGetResourceInfo(resource_database,client_name,&resource_info);
+  image_info=resource_info.image_info;
+  quantize_info=resource_info.quantize_info;
+  image_info->density=
+    XGetResourceInstance(resource_database,client_name,"density",(char *) NULL);
+  if (image_info->density == (char *) NULL)
+    image_info->density=XGetScreenDensity(display);
+  resource_value=
+    XGetResourceInstance(resource_database,client_name,"interlace","none");
+  image_info->interlace=UndefinedInterlace;
+  if (LocaleCompare("None",resource_value) == 0)
+    image_info->interlace=NoInterlace;
+  if (LocaleCompare("Line",resource_value) == 0)
+    image_info->interlace=LineInterlace;
+  if (LocaleCompare("Plane",resource_value) == 0)
+    image_info->interlace=PlaneInterlace;
+  if (LocaleCompare("Partition",resource_value) == 0)
+    image_info->interlace=PartitionInterlace;
+  if (image_info->interlace == UndefinedInterlace)
+    MagickError(OptionError,"Unrecognized interlace type",resource_value);
+  image_info->page=XGetResourceInstance(resource_database,client_name,
+    "pageGeometry",(char *) NULL);
+  resource_value=
+    XGetResourceInstance(resource_database,client_name,"quality","75");
+  image_info->quality=atol(resource_value);
+  resource_value=
+    XGetResourceInstance(resource_database,client_name,"verbose","False");
+  image_info->verbose=IsTrue(resource_value);
+  resource_value=
+    XGetResourceInstance(resource_database,client_name,"dither","True");
+  quantize_info->dither=IsTrue(resource_value);
+  /*
+    Parse command line.
+  */
+  status=True;
+  j=1;
+  k=0;
+  for (i=1; ((i <= argc) && !(state & ExitState)); i++)
+  {
+    if (i < argc)
+      option=argv[i];
+    else
+      if (image_number != 0)
+        break;
+      else
+        if (!isatty(STDIN_FILENO))
+          option=(char *) "-";
+        else
+          option=(char *) "logo:Untitled";
+    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
+      {
+        /*
+          Option is a file name.
+        */
+        k=i;
+        for (scene=first_scene; scene <= last_scene ; scene++)
+        {
+          /*
+            Read image.
+          */
+          (void) strncpy(image_info->filename,option,MaxTextExtent-1);
+          if (first_scene != last_scene)
+            {
+              char
+                filename[MaxTextExtent];
+
+              /*
+                Form filename for multi-part images.
+              */
+              FormatString(filename,image_info->filename,scene);
+              if (LocaleCompare(filename,image_info->filename) == 0)
+                FormatString(filename,"%.1024s.%lu",image_info->filename,scene);
+              (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
+            }
+          (void) strcpy(image_info->magick,"MIFF");
+          image_info->colorspace=quantize_info->colorspace;
+          image_info->dither=quantize_info->dither;
+          image=ReadImage(image_info,exception);
+          if (exception->severity > UndefinedException)
+            CatchException(exception);
+          status&=image != (Image *) NULL;
+          if (image == (Image *) NULL)
+            continue;
+          status&=MogrifyImage(image_info,i-j,argv+j,&image);
+          (void) CatchImageException(image);
+          do
+          {
+            /*
+              Transmogrify image as defined by the image processing options.
+            */
+            resource_info.quantum=1;
+            if (first_scene != last_scene)
+              image->scene=scene;
+            /*
+              Display image to X server.
+            */
+            if (resource_info.window_id != (char *) NULL)
+              {
+                /*
+                  Display image to a specified X window.
+                */
+                if (XDisplayBackgroundImage(display,&resource_info,image))
+                  state|=RetainColorsState;
+              }
+            else
+              do
+              {
+                Image
+                  *nexus;
+
+                /*
+                  Display image to X server.
+                */
+                nexus=
+                  XDisplayImage(display,&resource_info,argv,argc,&image,&state);
+                if (nexus == (Image *) NULL)
+                  break;
+                while ((nexus != (Image *) NULL) && (!(state & ExitState)))
+                {
+                  if (nexus->montage != (char *) NULL)
+                    {
+                      /*
+                        User selected a visual directory image (montage).
+                      */
+                      DestroyImageList(image);
+                      image=nexus;
+                      break;
+                    }
+                  if (first_scene != last_scene)
+                    image->scene=scene;
+                  next=XDisplayImage(display,&resource_info,argv,argc,&nexus,
+                    &state);
+                  if ((next == (Image *) NULL) &&
+                      (nexus->next != (Image *) NULL))
+                    {
+                      DestroyImageList(image);
+                      image=nexus->next;
+                      nexus=(Image *) NULL;
+                    }
+                  else
+                    {
+                      if (nexus != image)
+                        DestroyImageList(nexus);
+                      nexus=next;
+                    }
+                }
+              } while (!(state & ExitState));
+            if (resource_info.write_filename != (char *) NULL)
+              {
+                /*
+                  Write image.
+                */
+                (void) strncpy(image->filename,resource_info.write_filename,
+                  MaxTextExtent-1);
+                (void) SetImageInfo(image_info,True,&image->exception);
+                status&=WriteImage(image_info,image);
+                (void) CatchImageException(image);
+              }
+            if (image_info->verbose)
+              DescribeImage(image,stderr,False);
+            /*
+              Proceed to next/previous image.
+            */
+            next=image;
+            if (state & FormerImageState)
+              for (k=0; k < resource_info.quantum; k++)
+              {
+                next=next->previous;
+                if (next == (Image *) NULL)
+                  break;
+              }
+            else
+              for (k=0; k < resource_info.quantum; k++)
+              {
+                next=next->next;
+                if (next == (Image *) NULL)
+                  break;
+              }
+            if (next != (Image *) NULL)
+              image=next;
+          } while ((next != (Image *) NULL) && !(state & ExitState));
+          /*
+            Free image resources.
+          */
+          DestroyImageList(image);
+          if (!(state & FormerImageState))
+            {
+              last_image=image_number;
+              image_marker[i]=image_number++;
+            }
+          else
+            {
+              /*
+                Proceed to previous image.
+              */
+              for (i--; i > 0; i--)
+                if ((int) image_marker[i] == (image_number-2))
+                  break;
+              image_number--;
+            }
+          if (state & ExitState)
+            break;
+        }
+        /*
+          Determine if we should proceed to the first image.
+        */
+        if (image_number < 0)
+          {
+            if (state & FormerImageState)
+              {
+                for (i=1; i < (argc-2); i++)
+                  if (image_marker[i] == last_image)
+                    break;
+                image_number=image_marker[i]+1;
+              }
+            continue;
+          }
+        continue;
+      }
+    j=k+1;
+    switch (*(option+1))
+    {
+      case 'a':
+      {
+        if (LocaleCompare("authenticate",option+1) == 0)
+          {
+            (void) CloneString(&image_info->authenticate,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionError,"Missing password",option);
+                (void) CloneString(&image_info->authenticate,argv[i]);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'b':
+      {
+        if (LocaleCompare("backdrop",option+1) == 0)
+          {
+            resource_info.backdrop=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("background",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingColor",option);
+                resource_info.background_color=argv[i];
+                (void) QueryColorDatabase(argv[i],&image_info->background_color,
+                  exception);
+              }
+            break;
+          }
+        if (LocaleCompare("border",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+              }
+            break;
+          }
+        if (LocaleCompare("bordercolor",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingColor",option);
+                resource_info.border_color=argv[i];
+                (void) QueryColorDatabase(argv[i],&image_info->border_color,
+                  exception);
+              }
+            break;
+          }
+        if (LocaleCompare("borderwidth",option+1) == 0)
+          {
+            resource_info.border_width=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingWidth",option);
+                resource_info.border_width=atoi(argv[i]);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'c':
+      {
+        if (LocaleCompare("cache",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingThreshold",option);
+                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
+              }
+            break;
+          }
+        if (LocaleCompare("colormap",option+1) == 0)
+          {
+            resource_info.colormap=PrivateColormap;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingType",option);
+                option=argv[i];
+                resource_info.colormap=UndefinedColormap;
+                if (LocaleCompare("private",option) == 0)
+                  resource_info.colormap=PrivateColormap;
+                if (LocaleCompare("shared",option) == 0)
+                  resource_info.colormap=SharedColormap;
+                if (resource_info.colormap == UndefinedColormap)
+                  MagickFatalError(OptionFatalError,"InvalidColormapType",
+                    option);
+              }
+            break;
+          }
+        if (LocaleCompare("colors",option+1) == 0)
+          {
+            quantize_info->number_colors=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingColors",option);
+                quantize_info->number_colors=atol(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("colorspace",option+1) == 0)
+          {
+            quantize_info->colorspace=RGBColorspace;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingType",option);
+                option=argv[i];
+                quantize_info->colorspace=UndefinedColorspace;
+                if (LocaleCompare("cmyk",option) == 0)
+                  quantize_info->colorspace=CMYKColorspace;
+                if (LocaleCompare("gray",option) == 0)
+                  {
+                    quantize_info->colorspace=GRAYColorspace;
+                    quantize_info->number_colors=256;
+                    quantize_info->tree_depth=8;
+                  }
+                if (LocaleCompare("hsl",option) == 0)
+                  quantize_info->colorspace=HSLColorspace;
+                if (LocaleCompare("hwb",option) == 0)
+                  quantize_info->colorspace=HWBColorspace;
+                if (LocaleCompare("ohta",option) == 0)
+                  quantize_info->colorspace=OHTAColorspace;
+                if (LocaleCompare("rgb",option) == 0)
+                  quantize_info->colorspace=RGBColorspace;
+                if (LocaleCompare("srgb",option) == 0)
+                  quantize_info->colorspace=sRGBColorspace;
+                if (LocaleCompare("transparent",option) == 0)
+                  quantize_info->colorspace=TransparentColorspace;
+                if (LocaleCompare("xyz",option) == 0)
+                  quantize_info->colorspace=XYZColorspace;
+                if (LocaleCompare("ycbcr",option) == 0)
+                  quantize_info->colorspace=YCbCrColorspace;
+                if (LocaleCompare("ycc",option) == 0)
+                  quantize_info->colorspace=YCCColorspace;
+                if (LocaleCompare("yiq",option) == 0)
+                  quantize_info->colorspace=YIQColorspace;
+                if (LocaleCompare("ypbpr",option) == 0)
+                  quantize_info->colorspace=YPbPrColorspace;
+                if (LocaleCompare("yuv",option) == 0)
+                  quantize_info->colorspace=YUVColorspace;
+                if (quantize_info->colorspace == UndefinedColorspace)
+                  MagickFatalError(OptionFatalError,"InvalidColorspaceType",
+                    option);
+              }
+            break;
+          }
+        if (LocaleCompare("comment",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"Missing comment",option);
+              }
+            break;
+          }
+        if (LocaleCompare("compress",option+1) == 0)
+          {
+            image_info->compression=NoCompression;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingType",option);
+                option=argv[i];
+                image_info->compression=UndefinedCompression;
+                if (LocaleCompare("None",option) == 0)
+                  image_info->compression=NoCompression;
+                if (LocaleCompare("BZip",option) == 0)
+                  image_info->compression=BZipCompression;
+                if (LocaleCompare("Fax",option) == 0)
+                  image_info->compression=FaxCompression;
+                if (LocaleCompare("Group4",option) == 0)
+                  image_info->compression=Group4Compression;
+                if (LocaleCompare("JPEG",option) == 0)
+                  image_info->compression=JPEGCompression;
+                if (LocaleCompare("Lossless",option) == 0)
+                  image_info->compression=LosslessJPEGCompression;
+                if (LocaleCompare("LZW",option) == 0)
+                  image_info->compression=LZWCompression;
+                if (LocaleCompare("RLE",option) == 0)
+                  image_info->compression=RLECompression;
+                if (LocaleCompare("Zip",option) == 0)
+                  image_info->compression=ZipCompression;
+                if (image_info->compression == UndefinedCompression)
+                  MagickFatalError(OptionFatalError,"UnrecognizedImageCompressionType",
+                    option);
+              }
+            break;
+          }
+        if (LocaleCompare("contrast",option+1) == 0)
+          break;
+        if (LocaleCompare("crop",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'd':
+      {
+        if (LocaleCompare("debug",option+1) == 0)
+          {
+            (void) SetLogEventMask("None");
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingEventMask",option);
+                (void) SetLogEventMask(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("delay",option+1) == 0)
+          {
+            resource_info.delay=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingSeconds",option);
+                resource_info.delay=atoi(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("density",option+1) == 0)
+          {
+            (void) CloneString(&image_info->density,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+                (void) CloneString(&image_info->density,argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("depth",option+1) == 0)
+          {
+            image_info->depth=QuantumDepth;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingImageDepth",option);
+                image_info->depth=atol(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("despeckle",option+1) == 0)
+          break;
+        if (LocaleCompare("display",option+1) == 0)
+          {
+            (void) CloneString(&image_info->server_name,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingServerName",option);
+                image_info->server_name=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("dispose",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"Missing method",option);
+                option=argv[i];
+                if ((LocaleCompare("0",option) != 0) &&
+                    (LocaleCompare("1",option) != 0) &&
+                    (LocaleCompare("2",option) != 0) &&
+                    (LocaleCompare("3",option) != 0) &&
+                    (LocaleCompare("Undefined",option) != 0) &&
+                    (LocaleCompare("None",option) != 0) &&
+                    (LocaleCompare("Background",option) != 0) &&
+                    (LocaleCompare("Previous",option) != 0))
+                  MagickFatalError(OptionFatalError,"UnrecognizedDisposeMethod",
+                    option);
+              }
+            break;
+          }
+        if (LocaleCompare("dither",option+1) == 0)
+          {
+            quantize_info->dither=(*option == '-');
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'e':
+      {
+        if (LocaleCompare("edge",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                  MagickFatalError(OptionFatalError,"Missing factor",option);
+              }
+            break;
+          }
+        if (LocaleCompare("endian",option+1) == 0)
+          {
+            image_info->endian=UndefinedEndian;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingType",option);
+                option=argv[i];
+                image_info->endian=UndefinedEndian;
+                if (LocaleCompare("LSB",option) == 0)
+                  image_info->endian=LSBEndian;
+                if (LocaleCompare("MSB",option) == 0)
+                  image_info->endian=MSBEndian;
+                if (image_info->endian == UndefinedEndian)
+                  MagickFatalError(OptionFatalError,"InvalidEndianType",option);
+              }
+            break;
+          }
+        if (LocaleCompare("enhance",option+1) == 0)
+          break;
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'f':
+      {
+        if (LocaleCompare("filter",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                FilterTypes
+                  filter;
+
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingType",option);
+                option=argv[i];
+                filter=UndefinedFilter;
+                if (LocaleCompare("Point",option) == 0)
+                  filter=PointFilter;
+                if (LocaleCompare("Box",option) == 0)
+                  filter=BoxFilter;
+                if (LocaleCompare("Triangle",option) == 0)
+                  filter=TriangleFilter;
+                if (LocaleCompare("Hermite",option) == 0)
+                  filter=HermiteFilter;
+                if (LocaleCompare("Hanning",option) == 0)
+                  filter=HanningFilter;
+                if (LocaleCompare("Hamming",option) == 0)
+                  filter=HammingFilter;
+                if (LocaleCompare("Blackman",option) == 0)
+                  filter=BlackmanFilter;
+                if (LocaleCompare("Gaussian",option) == 0)
+                  filter=GaussianFilter;
+                if (LocaleCompare("Quadratic",option) == 0)
+                  filter=QuadraticFilter;
+                if (LocaleCompare("Cubic",option) == 0)
+                  filter=CubicFilter;
+                if (LocaleCompare("Catrom",option) == 0)
+                  filter=CatromFilter;
+                if (LocaleCompare("Mitchell",option) == 0)
+                  filter=MitchellFilter;
+                if (LocaleCompare("Lanczos",option) == 0)
+                  filter=LanczosFilter;
+                if (LocaleCompare("Bessel",option) == 0)
+                  filter=BesselFilter;
+                if (LocaleCompare("Sinc",option) == 0)
+                  filter=SincFilter;
+                if (filter == UndefinedFilter)
+                  MagickFatalError(OptionFatalError,"UnrecognizedFilterType",
+                    option);
+              }
+            break;
+          }
+        if (LocaleCompare("flip",option+1) == 0)
+          break;
+        if (LocaleCompare("flop",option+1) == 0)
+          break;
+        if (LocaleCompare("font",option+1) == 0)
+          {
+            (void) CloneString(&image_info->font,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingFontName",option);
+                image_info->font=argv[i];
+              }
+            if ((image_info->font == (char *) NULL) ||
+                (*image_info->font != '@'))
+              resource_info.font=AllocateString(image_info->font);
+            break;
+          }
+        if (LocaleCompare("foreground",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingForeground",option);
+                resource_info.foreground_color=argv[i];
+              }
+             break;
+          }
+        if (LocaleCompare("frame",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'g':
+      {
+        if (LocaleCompare("gamma",option+1) == 0)
+          {
+            i++;
+            if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+              MagickFatalError(OptionFatalError,"Missing value",option);
+            break;
+          }
+        if (LocaleCompare("geometry",option+1) == 0)
+          {
+            resource_info.image_geometry=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+                resource_info.image_geometry=argv[i];
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'h':
+      {
+        if (LocaleCompare("help",option+1) == 0)
+          DisplayUsage();
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'i':
+      {
+        if (LocaleCompare("iconGeometry",option+1) == 0)
+          {
+            resource_info.icon_geometry=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+                resource_info.icon_geometry=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("iconic",option+1) == 0)
+          {
+            resource_info.iconic=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("immutable",option+1) == 0)
+          {
+            resource_info.immutable=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("interlace",option+1) == 0)
+          {
+            image_info->interlace=NoInterlace;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingType",option);
+                option=argv[i];
+                image_info->interlace=UndefinedInterlace;
+                if (LocaleCompare("None",option) == 0)
+                  image_info->interlace=NoInterlace;
+                if (LocaleCompare("Line",option) == 0)
+                  image_info->interlace=LineInterlace;
+                if (LocaleCompare("Plane",option) == 0)
+                  image_info->interlace=PlaneInterlace;
+                if (LocaleCompare("Partition",option) == 0)
+                  image_info->interlace=PartitionInterlace;
+                if (image_info->interlace == UndefinedInterlace)
+                  MagickFatalError(OptionFatalError,"InvalidInterlaceType",
+                    option);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'l':
+      {
+        if (LocaleCompare("label",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingLabelName",option);
+              }
+            break;
+          }
+        if (LocaleCompare("limit",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                char
+                  *type;
+
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingResourceType",
+                    option);
+                type=argv[i];
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingResourceLimit",
+                    option);
+                if (LocaleCompare("disk",type) == 0)
+                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                else
+                  if (LocaleCompare("map",type) == 0)
+                    SetMagickResourceLimit(MapResource,atol(argv[i]));
+                  else
+                    if (LocaleCompare("memory",type) == 0)
+                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                    else
+                      MagickFatalError(OptionFatalError,
+                        "UnrecognizedResourceType",type);
+              }
+            break;
+          }
+        if (LocaleCompare("log",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingLogFormat",option);
+                (void) SetLogFormat(argv[i]);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'm':
+      {
+        if (LocaleCompare("magnify",option+1) == 0)
+          {
+            resource_info.magnify=2;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingLevel",option);
+                resource_info.magnify=atoi(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("map",option+1) == 0)
+          {
+            (void) strcpy(argv[i]+1,"sans");
+            resource_info.map_type=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingMapType",option);
+                resource_info.map_type=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("matte",option+1) == 0)
+          break;
+        if (LocaleCompare("mattecolor",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingColor",option);
+                resource_info.matte_color=argv[i];
+                (void) QueryColorDatabase(argv[i],&image_info->matte_color,
+                  exception);
+              }
+            break;
+          }
+          if (LocaleCompare("monochrome",option+1) == 0)
+          {
+            image_info->monochrome=(*option == '-');
+            if (image_info->monochrome)
+              {
+                quantize_info->number_colors=2;
+                quantize_info->tree_depth=8;
+                quantize_info->colorspace=GRAYColorspace;
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'n':
+      {
+        if (LocaleCompare("name",option+1) == 0)
+          {
+            resource_info.name=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingName",option);
+                resource_info.name=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("negate",option+1) == 0)
+          break;
+        if (LocaleCompare("noop",option+1) == 0)
+          break;
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'p':
+      {
+        if (LocaleCompare("page",option+1) == 0)
+          {
+            (void) CloneString(&image_info->page,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingPageGeometry",
+                    option);
+                image_info->page=GetPageGeometry(argv[i]);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'q':
+      {
+        if (LocaleCompare("quality",option+1) == 0)
+          {
+            image_info->quality=DefaultCompressionQuality;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingCompressionQuality",
+                    option);
+                image_info->quality=atol(argv[i]);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'r':
+      {
+        if (LocaleCompare("raise",option+1) == 0)
+          {
+            i++;
+            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+              MagickFatalError(OptionFatalError,"MissingBevelWidth",option);
+            break;
+          }
+        if (LocaleCompare("remote",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              MagickFatalError(OptionFatalError,"MissingCommand",option);
+            status=XRemoteCommand(display,resource_info.window_id,argv[i]);
+            Exit(!status);
+          }
+        if (LocaleCompare("roll",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+              }
+            break;
+          }
+        if (LocaleCompare("rotate",option+1) == 0)
+          {
+            i++;
+            if ((i == argc) || !IsGeometry(argv[i]))
+              MagickFatalError(OptionFatalError,"MissingDegrees",option);
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 's':
+      {
+        if (LocaleCompare("sample",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+              }
+            break;
+          }
+        if (LocaleCompare("sampling-factor",option+1) == 0)
+          {
+            (void) CloneString(&image_info->sampling_factor,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+                (void) CloneString(&image_info->sampling_factor,argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("scenes",option+1) == 0)
+          {
+            first_scene=0;
+            last_scene=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingSceneNumber",
+                    option);
+                first_scene=atol(argv[i]);
+                last_scene=first_scene;
+                (void) sscanf(argv[i],"%ld-%ld",&first_scene,&last_scene);
+              }
+            break;
+          }
+        if (LocaleCompare("segment",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                  MagickFatalError(OptionFatalError,"MissingThreshold",option);
+              }
+            break;
+          }
+        if (LocaleCompare("sharpen",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+              }
+            break;
+          }
+        if (LocaleCompare("shared-memory",option+1) == 0)
+          {
+            resource_info.use_shared_memory=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("size",option+1) == 0)
+          {
+            (void) CloneString(&image_info->size,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
+                (void) CloneString(&image_info->size,argv[i]);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 't':
+      {
+        if (LocaleCompare("text_font",option+1) == 0)
+          {
+            resource_info.text_font=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingFontName",option);
+                resource_info.text_font=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("texture",option+1) == 0)
+          {
+            (void) CloneString(&image_info->texture,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingFilename",option);
+                (void) CloneString(&image_info->texture,argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("title",option+1) == 0)
+          {
+            resource_info.title=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingTitle",option);
+                resource_info.title=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("treedepth",option+1) == 0)
+          {
+            quantize_info->tree_depth=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingDepth",option);
+                quantize_info->tree_depth=atoi(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("trim",option+1) == 0)
+          break;
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'u':
+      {
+        if (LocaleCompare("update",option+1) == 0)
+          {
+            resource_info.update=(*option == '-');
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"MissingSeconds",option);
+                resource_info.update=atoi(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("use_pixmap",option+1) == 0)
+          {
+            resource_info.use_pixmap=(*option == '-');
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'v':
+      {
+        if (LocaleCompare("verbose",option+1) == 0)
+          {
+            image_info->verbose=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("version",option+1) == 0)
+          break;
+        if (LocaleCompare("visual",option+1) == 0)
+          {
+            resource_info.visual_type=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingVisualClass",
+                    option);
+                resource_info.visual_type=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("virtual-pixel",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                VirtualPixelMethod
+                  virtual_pixel_method;
+
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingVirtualPixelMethod",
+                    option);
+                option=argv[i];
+                virtual_pixel_method=UndefinedVirtualPixelMethod;
+                if (LocaleCompare("Constant",option) == 0)
+                  virtual_pixel_method=ConstantVirtualPixelMethod;
+                if (LocaleCompare("Edge",option) == 0)
+                  virtual_pixel_method=EdgeVirtualPixelMethod;
+                if (LocaleCompare("Mirror",option) == 0)
+                  virtual_pixel_method=MirrorVirtualPixelMethod;
+                if (LocaleCompare("Tile",option) == 0)
+                  virtual_pixel_method=TileVirtualPixelMethod;
+                if (virtual_pixel_method == UndefinedVirtualPixelMethod)
+                  MagickFatalError(OptionFatalError,
+                    "UnrecognizedVirtualPixelMethod",option);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case 'w':
+      {
+        if (LocaleCompare("window",option+1) == 0)
+          {
+            resource_info.window_id=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingIDNameOrRoot",
+                    option);
+                resource_info.window_id=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("window_group",option+1) == 0)
+          {
+            resource_info.window_group=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingIDNameOrRoot",
+                    option);
+                resource_info.window_group=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("write",option+1) == 0)
+          {
+            resource_info.write_filename=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingFilename",option);
+                resource_info.write_filename=argv[i];
+                if (IsAccessible(resource_info.write_filename))
+                  {
+                    char
+                      answer[2];
+
+                    (void) fprintf(stderr,"Overwrite %.1024s? ",
+                      resource_info.write_filename);
+                    (void) fgets(answer,sizeof(answer),stdin);
+                    if (!((*answer == 'y') || (*answer == 'Y')))
+                      Exit(0);
+                  }
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+      case '?':
+      {
+        DisplayUsage();
+        break;
+      }
+      default:
+      {
+        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
+        break;
+      }
+    }
+  }
+  if (state & RetainColorsState)
+    {
+      XRetainWindowColors(display,XRootWindow(display,XDefaultScreen(display)));
+      XSync(display,False);
+    }
+  LiberateArgumentList(argc,argv);
+  return(!status);
+#else
+  MagickFatalError(MissingDelegateError,"XWindowLibraryIsNotAvailable",
+    (char *) NULL);
+#endif
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G M U s a g e                                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GMUsage() displays the gm program command syntax.
+%
+%  The format of the GMUsage method is:
+%
+%      void GMUsage()
+%
+%
+*/
+static void GMUsage(void)
+{
+  int
+    i;
+
+  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
+  (void) printf("Usage: %.1024s command [options ...]\n",
+    SetClientName((char *) NULL));
+  (void) printf("\nWhere options include: \n");
+      
+  for (i=0; commands[i].command != 0; i++)
+    {
+      (void) printf("%11s - %s\n",commands[i].command,
+                    commands[i].description);
+    }
+
+  return;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%    H e l p C o m m a n d                                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  HelpCommand() prints a usage message for gm, or for a gm subcommand.
+%
+%  The format of the HelpCommand method is:
+%
+%      unsigned int HelpCommand(ImageInfo *image_info,const int argc,
+%        char **argv,char **metadata,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o argc: The number of elements in the argument vector.
+%
+%    o argv: A text array containing the command line arguments.
+%
+%    o metadata: any metadata is returned here.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+static unsigned int HelpCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
+  if (argc > 1)
+    {
+      int
+        i;
+      
+      for (i=0; commands[i].command != 0; i++)
+        {
+          if (LocaleCompare(commands[i].command,argv[1]) == 0)
+            {
+              SetClientName(commands[i].command);
+              if (commands[i].usage_vector)
+                {
+                  (commands[i].usage_vector)();
+                  return True;
+                }
+            }
+        }
+    }
+  
+  GMUsage();
+
+  return True;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I d e n t i f y I m a g e C o m m a n d                                   %
 %                                                                             %
 %                                                                             %
@@ -3714,6 +6825,164 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   return(status);
 }
 #undef ThrowIdentifyException
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I d e n t i f y U s a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IdentifyUsage() displays the program command syntax.
+%
+%  The format of the IdentifyUsage method is:
+%
+%      void IdentifyUsage()
+%
+%
+*/
+MagickExport void IdentifyUsage(void)
+{
+  const char
+    **p;
+
+  static const char
+    *options[]=
+    {
+      "-authenticate value  decrypt image with this password",
+      "-debug events        display copious debugging information",
+      "-density geometry    horizontal and vertical density of the image",
+      "-depth value         image depth",
+      "-format \"string\"   output formatted image characteristics",
+      "-help                print program options",
+      "-interlace type      None, Line, Plane, or Partition",
+      "-limit type value    Disk, Map, or Memory resource limit",
+      "-log format          format of debugging information",
+      "-size geometry       width and height of image",
+      "-sampling-factor geometry",
+      "                     horizontal and vertical sampling factor",
+      "-verbose             print detailed information about the image",
+      "-version             print version information",
+      "-virtual-pixel method",
+      "                     Constant, Edge, Mirror, or Tile",
+      (char *) NULL
+    };
+
+  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
+  (void) printf("Usage: %.1024s [options ...] file [ [options ...] "
+    "file ... ]\n",SetClientName((char *) NULL));
+  (void) printf("\nWhere options include:\n");
+  for (p=options; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L i b e r a t e A r g u m e n t L i s t                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  LiberateArgumentList() deallocates the argument list allocated by
+%  ExpandFilenames().
+%
+%  The format of the LiberateArgumentList method is:
+%
+%      void LiberateArgumentList(const int argc,char **argv)
+%
+%  A description of each parameter follows:
+%
+%    o argc: number of arguments in argument vector array
+%
+%    o argv: argument vector array
+%
+*/
+static void LiberateArgumentList(const int argc,char **argv)
+{
+  unsigned int
+    i;
+
+  for (i=0; i< argc; i++)
+    if (argv[i])
+      MagickFreeMemory(argv[i]);
+  MagickFreeMemory(argv);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k C o m m a n d                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickCommand() invokes a GraphicsMagick utility subcommand based
+%  on the first argument supplied in the argument vector.
+%
+%  The format of the MagickCommand method is:
+%
+%      unsigned int MagickCommand(ImageInfo *image_info,const int argc,
+%        char **argv,char **metadata,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o argc: The number of elements in the argument vector.
+%
+%    o argv: A text array containing the command line arguments.
+%
+%    o metadata: any metadata is returned here.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport unsigned int MagickCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
+  char
+    *option;
+
+  unsigned int
+    status=True;
+
+  int
+    i;
+
+  option=argv[0];
+  if (option[0] == '-')
+    option++;
+
+  for (i=0; commands[i].command != 0; i++)
+    {
+      if (LocaleCompare(commands[i].command,option) == 0)
+        {
+          char
+            client_name[MaxTextExtent];
+
+          FormatString(client_name,"%.1024s %s",SetClientName(0),
+                       commands[i].command);
+
+          SetClientName(client_name);
+          return(commands[i].command_vector)(image_info,argc,argv,metadata,
+                                             exception);
+        }
+    }
+  return status;
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -7888,6 +11157,171 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M o g r i f y U s a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MogrifyUsage() displays the program command syntax.
+%
+%  The format of the MogrifyUsage method is:
+%
+%      void MogrifyUsage()
+%
+%
+*/
+MagickExport void MogrifyUsage(void)
+{
+  static const char
+    *options[]=
+    {
+      "-affine matrix       affine transform matrix",
+      "-antialias           remove pixel-aliasing",
+      "-authenticate value  decrypt image with this password",
+      "-background color    background color",
+      "-blue-primary point  chomaticity blue primary point",
+      "-blur radius         blur the image",
+      "-border geometry     surround image with a border of color",
+      "-bordercolor color   border color",
+      "-channel type        extract a particular color channel from image",
+      "-charcoal radius     simulate a charcoal drawing",
+      "-chop geometry       remove pixels from the image interior",
+      "-colorize value      colorize the image with the fill color",
+      "-colors value        preferred number of colors in the image",
+      "-colorspace type     alternate image colorspace",
+      "-comment string      annotate image with comment",
+      "-compress type       image compression tyhpe",
+      "-contrast            enhance or reduce the image contrast",
+      "-crop geometry       preferred size and location of the cropped image",
+      "-cycle amount        cycle the image colormap",
+      "-debug events        display copious debugging information",
+      "-delay value         display the next image after pausing",
+      "-density geometry    horizontal and vertical density of the image",
+      "-depth value         image depth",
+      "-despeckle           reduce the speckles within an image",
+      "-display server      get image or font from this X server",
+      "-dispose method      Undefined, None, Background, Previous",
+      "-dither              apply Floyd/Steinberg error diffusion to image",
+      "-draw string         annotate the image with a graphic primitive",
+      "-edge radius         apply a filter to detect edges in the image",
+      "-emboss radius       emboss an image",
+      "-encoding type       text encoding type",
+      "-endian type         LSB or MSB",
+      "-enhance             apply a digital filter to enhance a noisy image",
+      "-equalize            perform histogram equalization to an image",
+      "-fill color          color to use when filling a graphic primitive",
+      "-filter type         use this filter when resizing an image",
+      "-flip                flip image in the vertical direction",
+      "-flop                flop image in the horizontal direction",
+      "-font name           render text with this font",
+      "-format type         image format type",
+      "-frame geometry      surround image with an ornamental border",
+      "-fuzz distance       colors within this distance are considered equal",
+      "-gamma value         level of gamma correction",
+      "-gaussian geometry   gaussian blur an image",
+      "-geometry geometry   perferred size or location of the image",
+      "-green-primary point chomaticity green primary point",
+      "-implode amount      implode image pixels about the center",
+      "-interlace type      None, Line, Plane, or Partition",
+      "-help                print program options",
+      "-label name          assign a label to an image",
+      "-lat geometry        local adaptive thresholding",
+      "-level value         adjust the level of image contrast",
+      "-limit type value    Disk, Map, or Memory resource limit",
+      "-list type           Color, Delegate, Format, Magic, Module, or Type",
+      "-log format          format of debugging information",
+      "-loop iterations     add Netscape loop extension to your GIF animation",
+      "-map filename        transform image colors to match this set of colors",
+      "-mask filename       set the image clip mask",
+      "-matte               store matte channel if the image has one",
+      "-median radius       apply a median filter to the image",
+      "-modulate value      vary the brightness, saturation, and hue",
+      "-monochrome          transform image to black and white",
+      "-negate              replace every pixel with its complementary color ",
+      "-noop                do not apply options to image"
+      "-noise radius        add or reduce noise in an image.",
+      "-normalize           transform image to span the full range of colors",
+      "-opaque color        change this color to the fill color",
+      "-ordered-dither channeltype NxN",
+      "                     ordered dither the image",
+      "-page geometry       size and location of an image canvas",
+      "-paint radius        simulate an oil painting",
+      "-fill color           color for annotating or changing opaque color",
+      "-pointsize value     font point size",
+      "-profile filename    add ICM or IPTC information profile to image",
+      "-quality value       JPEG/MIFF/PNG compression level",
+      "-raise value         lighten/darken image edges to create a 3-D effect",
+      "-random-threshold channeltype LOWxHIGH",
+      "                     random threshold the image",
+      "-red-primary point  chomaticity red primary point",
+      "-region geometry     apply options to a portion of the image",
+      "-resize geometry     perferred size or location of the image",
+      "-roll geometry       roll an image vertically or horizontally",
+      "-rotate degrees      apply Paeth rotation to the image",
+      "-sample geometry     scale image with pixel sampling",
+      "-sampling-factor geometry",
+      "                     horizontal and vertical sampling factor",
+      "-scale geometry      scale the image",
+      "-scene number        image scene number",
+      "-seed value          pseudo-random number generator seed value",
+      "-segment values      segment an image",
+      "-shade degrees       shade the image using a distant light source",
+      "-sharpen radius      sharpen the image",
+      "-shear geometry      slide one edge of the image along the X or Y axis",
+      "-size geometry       width and height of image",
+      "-solarize threshold  negate all pixels above the threshold level",
+      "-spread amount       displace image pixels by a random amount",
+      "-stroke color        graphic primitive stroke color",
+      "-strokewidth value   graphic primitive stroke width",
+      "-swirl degrees       swirl image pixels about the center",
+      "-texture filename    name of texture to tile onto the image background",
+      "-threshold value     threshold the image",
+      "-tile filename       tile image when filling a graphic primitive",
+      "-transform           affine transform image",
+      "-transparent color   make this color transparent within the image",
+      "-treedepth value     color tree depth",
+      "-trim                trim image edges",
+      "-type type           image type",
+      "-undercolor color    annotation bounding box color",
+      "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
+      "-unsharp geometry    sharpen the image",
+      "-verbose             print detailed information about the image",
+      "-version             print version information",
+      "-view                FlashPix viewing transforms",
+      "-virtual-pixel method",
+      "                     Constant, Edge, Mirror, or Tile",
+      "-wave geometry       alter an image along a sine wave",
+      "-white-point point   chomaticity white point",
+      (char *) NULL
+    };
+
+  const char
+    **p;
+
+  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
+  (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
+    SetClientName((char *) NULL));
+  (void) printf("\nWhere options include: \n");
+  for (p=options; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+  (void) printf(
+    "\nBy default, the image format of `file' is determined by its magic\n");
+  (void) printf(
+    "number.  To specify a particular image format, precede the filename\n");
+  (void) printf(
+    "with an image format name and a colon (i.e. ps:image) or specify the\n");
+  (void) printf(
+    "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
+  (void) printf("'-' for standard input or output.\n");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %    M o n t a g e I m a g e C o m m a n d                                    %
 %                                                                             %
 %                                                                             %
@@ -9179,72 +12613,90 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A n i m a t e U s a g e                                                   %
+%   M o n t a g e U s a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AnimateUsage() displays the program command syntax.
+%  MontageUsage() displays the program command syntax.
 %
-%  The format of the AnimateUsage method is:
+%  The format of the MontageUsage method is:
 %
-%      void AnimateUsage()
-%
-%  A description of each parameter follows:
+%      void MontageUsage()
 %
 %
 */
-MagickExport void AnimateUsage(void)
+MagickExport void MontageUsage(void)
 {
   const char
     **p;
 
   static const char
-    *buttons[]=
-    {
-      "Press any button to map or unmap the Command widget",
-      (char *) NULL
-    },
     *options[]=
     {
+      "-adjoin              join images into a single multi-image file",
+      "-affine matrix       affine transform matrix",
       "-authenticate value  decrypt image with this password",
-      "-backdrop            display image centered on a backdrop",
-      "-colormap type       Shared or Private",
+      "-blue-primary point  chomaticity blue primary point",
+      "-blur factor         apply a filter to blur the image",
       "-colors value        preferred number of colors in the image",
-      "-colorspace type     alternate image colorspace",
+      "-colorspace type     alternate image colorsapce",
+      "-comment string      annotate image with comment",
+      "-compose operator    composite operator",
+      "-compress type       image compression tyhpe",
       "-crop geometry       preferred size and location of the cropped image",
       "-debug events        display copious debugging information",
-      "-delay value         display the next image after pausing",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
-      "-display server      display image to this X server",
+      "-display server      query font from this X server",
+      "-dispose method      Undefined, None, Background, Previous",
       "-dither              apply Floyd/Steinberg error diffusion to image",
+      "-draw string         annotate the image with a graphic primitive",
+      "-encoding type       text encoding type",
+      "-endian type         LSB or MSB",
+      "-fill color          color to use when filling a graphic primitive",
+      "-filter type         use this filter when resizing an image",
+      "-flip                flip image in the vertical direction",
+      "-flop                flop image in the horizontal direction",
+      "-frame geometry      surround image with an ornamental border",
       "-gamma value         level of gamma correction",
-      "-geometry geometry   preferred size and location of the Image window",
-      "-help                print program options",
+      "-geometry geometry   preferred tile and border sizes",
+      "-gravity direction   which direction to gravitate towards",
+      "-green-primary point chomaticity green primary point",
       "-interlace type      None, Line, Plane, or Partition",
+      "-help                print program options",
+      "-label name          assign a label to an image",
       "-limit type value    Disk, Map, or Memory resource limit",
       "-log format          format of debugging information",
       "-matte               store matte channel if the image has one",
-      "-map type            display image using this Standard Colormap",
+      "-mode type           Frame, Unframe, or Concatenate",
       "-monochrome          transform image to black and white",
-      "-noop                do not apply options to image",
-      "-pause               seconds to pause before reanimating",
-      "-remote command      execute a command in an remote display process",
+      "-noop                do not apply options to image"
+      "-page geometry       size and location of an image canvas",
+      "-pointsize value     font point size",
+      "-quality value       JPEG/MIFF/PNG compression level",
+      "-red-primary point   chomaticity red primary point",
+      "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sampling-factor geometry",
       "                     horizontal and vertical sampling factor",
       "-scenes range        image scene range",
+      "-shadow              add a shadow beneath a tile to simulate depth",
       "-size geometry       width and height of image",
+      "-stroke color        color to use when stroking a graphic primitive",
+      "-texture filename    name of texture to tile onto the image background",
+      "-tile geometry       number of tiles per row and column",
+      "-transform           affine transform image",
+      "-transparent color   make this color transparent within the image",
       "-treedepth value     color tree depth",
       "-trim                trim image edges",
+      "-type type           image type",
       "-verbose             print detailed information about the image",
       "-version             print version information",
-      "-visual type         display image using this visual type",
       "-virtual-pixel method",
       "                     Constant, Edge, Mirror, or Tile",
-      "-window id           display image to background of this window",
+      "-white-point point   chomaticity white point",
       (char *) NULL
     };
 
@@ -9260,8 +12712,7 @@ MagickExport void AnimateUsage(void)
   (void) printf(
     "resources as command line options:  -background, -bordercolor,\n");
   (void) printf(
-    "-borderwidth, -font, -foreground, -iconGeometry, -iconic, -name,\n");
-  (void) printf("-mattecolor, -shared-memory, or -title.\n");
+    "-borderwidth, -font, -mattecolor, or -title\n");
   (void) printf(
     "\nBy default, the image format of `file' is determined by its magic\n");
   (void) printf(
@@ -9271,1042 +12722,53 @@ MagickExport void AnimateUsage(void)
   (void) printf(
     "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
   (void) printf("'-' for standard input or output.\n");
-  (void) printf("\nButtons: \n");
-  for (p=buttons; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
 }
-MagickExport unsigned int AnimateImageCommand(int argc,char **argv)
-{
-#if defined(HasX11)
-  char
-    *client_name,
-    *option,
-    *resource_value,
-    *server_name;
-
-  Display
-    *display;
-
-  double
-    sans;
-
-  ExceptionInfo
-    exception;
-
-  Image
-    *image,
-    *image_list,
-    *loaded_image,
-    *next_image;
-
-  ImageInfo
-    *image_info;
-
-  long
-    first_scene,
-    j,
-    k,
-    last_scene,
-    scene,
-    x;
-
-  QuantizeInfo
-    *quantize_info;
-
-  register Image
-    *p;
-
-  register long
-    i;
-
-  unsigned int
-    status;
-
-  XResourceInfo
-    resource_info;
-
-  XrmDatabase
-    resource_database;
-
-  /*
-    Initialize command line arguments.
-  */
-  InitializeMagick(*argv);
-
-  /*
-    Set defaults.
-  */
-  SetNotifyHandlers;
-  display=(Display *) NULL;
-  GetExceptionInfo(&exception);
-  first_scene=0;
-  image=(Image *) NULL;
-  image_list=(Image *) NULL;
-  last_scene=0;
-  server_name=(char *) NULL;
-  status=True;
-  /*
-    Check for server name specified on the command line.
-  */
-  for (i=1; i < argc; i++)
-  {
-    /*
-      Check command line for server name.
-    */
-    option=argv[i];
-    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
-      continue;
-    if (LocaleCompare("display",option+1) == 0)
-      {
-        /*
-          User specified server name.
-        */
-        i++;
-        if (i == argc)
-          MagickFatalError(OptionFatalError,"MissingServerName",option);
-        server_name=argv[i];
-        break;
-      }
-    if (LocaleCompare("help",option+1) == 0)
-      {
-        AnimateUsage();
-        return False;
-      }
-    if (LocaleCompare("version",option+1) == 0)
-      {
-        (void) fprintf(stdout,"Version: %.1024s\n",
-          GetMagickVersion((unsigned long *) NULL));
-        (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
-        return False;
-      }
-  }
-
-  /*
-    Expand argument list
-  */
-  status=ExpandFilenames(&argc,&argv);
-  if (status == False)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      (char *) NULL);
-
-  /*
-    Get user defaults from X resource database.
-  */
-  display=XOpenDisplay(server_name);
-  if (display == (Display *) NULL)
-    MagickFatalError(XServerFatalError,"UnableToOpenXServer",
-      XDisplayName(server_name));
- (void) XSetErrorHandler(XError);
-  client_name=SetClientName((char *) NULL);
-  resource_database=XGetResourceDatabase(display,client_name);
-  XGetResourceInfo(resource_database,client_name,&resource_info);
-  image_info=resource_info.image_info;
-  quantize_info=resource_info.quantize_info;
-  image_info->density=
-    XGetResourceInstance(resource_database,client_name,"density",(char *) NULL);
-  if (image_info->density == (char *) NULL)
-    image_info->density=XGetScreenDensity(display);
-  resource_value=
-    XGetResourceInstance(resource_database,client_name,"interlace","none");
-  image_info->interlace=UndefinedInterlace;
-  if (LocaleCompare("None",resource_value) == 0)
-    image_info->interlace=NoInterlace;
-  if (LocaleCompare("Line",resource_value) == 0)
-    image_info->interlace=LineInterlace;
-  if (LocaleCompare("Plane",resource_value) == 0)
-    image_info->interlace=PlaneInterlace;
-  if (LocaleCompare("Partition",resource_value) == 0)
-    image_info->interlace=PartitionInterlace;
-  if (image_info->interlace == UndefinedInterlace)
-    MagickError(OptionFatalError,"InvalidImageInterlace",resource_value);
-  resource_value=
-    XGetResourceInstance(resource_database,client_name,"verbose","False");
-  image_info->verbose=IsTrue(resource_value);
-  resource_value=
-    XGetResourceInstance(resource_database,client_name,"dither","True");
-  quantize_info->dither=IsTrue(resource_value);
-  /*
-    Parse command line.
-  */
-  j=1;
-  k=0;
-  for (i=1; i <= argc; i++)
-  {
-    if (i < argc)
-      option=argv[i];
-    else
-      if (image != (Image *) NULL)
-        break;
-      else
-        if (!isatty(STDIN_FILENO))
-          option=(char *) "-";
-        else
-          option=(char *) "logo:Untitled";
-    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
-      {
-        /*
-          Option is a file name.
-        */
-        k=i;
-        for (scene=first_scene; scene <= last_scene ; scene++)
-        {
-          /*
-            Read image.
-          */
-          (void) strncpy(image_info->filename,option,MaxTextExtent-1);
-          if (first_scene != last_scene)
-            {
-              char
-                filename[MaxTextExtent];
-
-              /*
-                Form filename for multi-part images.
-              */
-              FormatString(filename,image_info->filename,scene);
-              if (LocaleCompare(filename,image_info->filename) == 0)
-                FormatString(filename,"%.1024s[%lu]",image_info->filename,
-                  scene);
-              (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
-            }
-          image_info->colorspace=quantize_info->colorspace;
-          image_info->dither=quantize_info->dither;
-          next_image=ReadImage(image_info,&exception);
-          if (exception.severity != UndefinedException)
-            CatchException(&exception);
-          status&=next_image != (Image *) NULL;
-          if (next_image == (Image *) NULL)
-            continue;
-          if (image == (Image *) NULL)
-            {
-              image=next_image;
-              continue;
-            }
-          /*
-            Link image into image list.
-          */
-          for (p=image; p->next != (Image *) NULL; p=p->next);
-          next_image->previous=p;
-          p->next=next_image;
-        }
-        continue;
-      }
-    if (j != (k+1))
-      {
-        status&=MogrifyImages(image_info,i-j,argv+j,&image);
-        (void) CatchImageException(image);
-        AppendImageToList(&image_list,image);
-        image=(Image *) NULL;
-        j=k+1;
-      }
-    switch (*(option+1))
-    {
-      case 'a':
-      {
-        if (LocaleCompare("authenticate",option+1) == 0)
-          {
-            (void) CloneString(&image_info->authenticate,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingPassword",option);
-                (void) CloneString(&image_info->authenticate,argv[i]);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'b':
-      {
-        if (LocaleCompare("backdrop",option+1) == 0)
-          {
-            resource_info.backdrop=(*option == '-');
-            break;
-          }
-        if (LocaleCompare("background",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingColor",option);
-                resource_info.background_color=argv[i];
-                (void) QueryColorDatabase(argv[i],&image_info->background_color,
-                  &exception);
-              }
-            break;
-          }
-        if (LocaleCompare("bordercolor",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingColor",option);
-                resource_info.border_color=argv[i];
-                (void) QueryColorDatabase(argv[i],&image_info->border_color,
-                  &exception);
-              }
-            break;
-          }
-        if (LocaleCompare("borderwidth",option+1) == 0)
-          {
-            resource_info.border_width=0;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingWidth",option);
-                resource_info.border_width=atoi(argv[i]);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'c':
-      {
-        if (LocaleCompare("cache",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingThreshold",option);
-                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
-              }
-            break;
-          }
-        if (LocaleCompare("colormap",option+1) == 0)
-          {
-            resource_info.colormap=PrivateColormap;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingType",option);
-                option=argv[i];
-                resource_info.colormap=UndefinedColormap;
-                if (LocaleCompare("private",option) == 0)
-                  resource_info.colormap=PrivateColormap;
-                if (LocaleCompare("shared",option) == 0)
-                  resource_info.colormap=SharedColormap;
-                if (resource_info.colormap == UndefinedColormap)
-                  MagickFatalError(OptionFatalError,"InvalidColormapType",
-                    option);
-              }
-            break;
-          }
-        if (LocaleCompare("colors",option+1) == 0)
-          {
-            quantize_info->number_colors=0;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingColors",option);
-                quantize_info->number_colors=atol(argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("colorspace",option+1) == 0)
-          {
-            quantize_info->colorspace=RGBColorspace;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingType",option);
-                option=argv[i];
-                quantize_info->colorspace=UndefinedColorspace;
-                if (LocaleCompare("cmyk",option) == 0)
-                  quantize_info->colorspace=CMYKColorspace;
-                if (LocaleCompare("gray",option) == 0)
-                  {
-                    quantize_info->colorspace=GRAYColorspace;
-                    quantize_info->number_colors=256;
-                    quantize_info->tree_depth=8;
-                  }
-                if (LocaleCompare("hsl",option) == 0)
-                  quantize_info->colorspace=HSLColorspace;
-                if (LocaleCompare("hwb",option) == 0)
-                  quantize_info->colorspace=HWBColorspace;
-                if (LocaleCompare("ohta",option) == 0)
-                  quantize_info->colorspace=OHTAColorspace;
-                if (LocaleCompare("rgb",option) == 0)
-                  quantize_info->colorspace=RGBColorspace;
-                if (LocaleCompare("srgb",option) == 0)
-                  quantize_info->colorspace=sRGBColorspace;
-                if (LocaleCompare("transparent",option) == 0)
-                  quantize_info->colorspace=TransparentColorspace;
-                if (LocaleCompare("xyz",option) == 0)
-                  quantize_info->colorspace=XYZColorspace;
-                if (LocaleCompare("ycbcr",option) == 0)
-                  quantize_info->colorspace=YCbCrColorspace;
-                if (LocaleCompare("ycc",option) == 0)
-                  quantize_info->colorspace=YCCColorspace;
-                if (LocaleCompare("yiq",option) == 0)
-                  quantize_info->colorspace=YIQColorspace;
-                if (LocaleCompare("ypbpr",option) == 0)
-                  quantize_info->colorspace=YPbPrColorspace;
-                if (LocaleCompare("yuv",option) == 0)
-                  quantize_info->colorspace=YUVColorspace;
-                if (quantize_info->colorspace == UndefinedColorspace)
-                  MagickFatalError(OptionFatalError,"InvalidColorspaceType",
-                    option);
-              }
-            break;
-          }
-        if (LocaleCompare("crop",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'd':
-      {
-        if (LocaleCompare("debug",option+1) == 0)
-          {
-            (void) SetLogEventMask("None");
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingEventMask",
-                    option);
-                (void) SetLogEventMask(argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("delay",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingSeconds",option);
-              }
-            break;
-          }
-        if (LocaleCompare("density",option+1) == 0)
-          {
-            (void) CloneString(&image_info->density,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-                (void) CloneString(&image_info->density,argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("depth",option+1) == 0)
-          {
-            image_info->depth=QuantumDepth;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingImageDepth",option);
-                image_info->depth=atol(argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("display",option+1) == 0)
-          {
-            (void) CloneString(&image_info->server_name,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingServerName",option);
-                (void) CloneString(&image_info->server_name,argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("dither",option+1) == 0)
-          {
-            quantize_info->dither=(*option == '-');
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'f':
-      {
-        if (LocaleCompare("font",option+1) == 0)
-          {
-            (void) CloneString(&image_info->font,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingFontName",option);
-                (void) CloneString(&image_info->font,argv[i]);
-              }
-            if ((image_info->font == (char *) NULL) ||
-                (*image_info->font != '@'))
-              resource_info.font=AllocateString(image_info->font);
-            break;
-          }
-        if (LocaleCompare("foreground",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingForeground",
-                    option);
-                resource_info.foreground_color=argv[i];
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'g':
-      {
-        if (LocaleCompare("gamma",option+1) == 0)
-          {
-            i++;
-            if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-              MagickFatalError(OptionFatalError,"Missing value",option);
-            break;
-          }
-        if (LocaleCompare("geometry",option+1) == 0)
-          {
-            resource_info.image_geometry=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-                resource_info.image_geometry=argv[i];
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'h':
-      {
-        if (LocaleCompare("help",option+1) == 0)
-          {
-            AnimateUsage();
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'i':
-      {
-        if (LocaleCompare("iconGeometry",option+1) == 0)
-          {
-            resource_info.icon_geometry=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-                resource_info.icon_geometry=argv[i];
-              }
-            break;
-          }
-        if (LocaleCompare("iconic",option+1) == 0)
-          {
-            resource_info.iconic=(*option == '-');
-            break;
-          }
-        if (LocaleCompare("interlace",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingType",option);
-                option=argv[i];
-                image_info->interlace=UndefinedInterlace;
-                if (LocaleCompare("None",option) == 0)
-                  image_info->interlace=NoInterlace;
-                if (LocaleCompare("Line",option) == 0)
-                  image_info->interlace=LineInterlace;
-                if (LocaleCompare("Plane",option) == 0)
-                  image_info->interlace=PlaneInterlace;
-                if (LocaleCompare("Partition",option) == 0)
-                  image_info->interlace=PartitionInterlace;
-                if (image_info->interlace == UndefinedInterlace)
-                  MagickFatalError(OptionFatalError,"InvalidInterlaceType",
-                    option);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'l':
-      {
-        if (LocaleCompare("limit",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                char
-                  *type;
-
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingResourceType",
-                    option);
-                type=argv[i];
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingResourceLimit",
-                    option);
-                if (LocaleCompare("disk",type) == 0)
-                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
-                else
-                  if (LocaleCompare("map",type) == 0)
-                    SetMagickResourceLimit(MapResource,atol(argv[i]));
-                  else
-                    if (LocaleCompare("memory",type) == 0)
-                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                    else
-                      MagickFatalError(OptionFatalError,
-                        "UnrecognizedResourceType",type);
-              }
-            break;
-          }
-        if (LocaleCompare("log",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingLogFormat",option);
-                (void) SetLogFormat(argv[i]);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'm':
-      {
-        if (LocaleCompare("map",option+1) == 0)
-          {
-            (void) strcpy(argv[i]+1,"sans");
-            resource_info.map_type=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingMapType",option);
-                resource_info.map_type=argv[i];
-              }
-            break;
-          }
-        if (LocaleCompare("matte",option+1) == 0)
-          break;
-        if (LocaleCompare("mattecolor",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingColor",option);
-                resource_info.matte_color=argv[i];
-                (void) QueryColorDatabase(argv[i],&image_info->matte_color,
-                  &exception);
-              }
-            break;
-          }
-        if (LocaleCompare("monochrome",option+1) == 0)
-          {
-            image_info->monochrome=(*option == '-');
-            if (image_info->monochrome)
-              {
-                quantize_info->number_colors=2;
-                quantize_info->tree_depth=8;
-                quantize_info->colorspace=GRAYColorspace;
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'n':
-      {
-        if (LocaleCompare("name",option+1) == 0)
-          {
-            resource_info.name=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingName",option);
-                resource_info.name=argv[i];
-              }
-            break;
-          }
-        if (LocaleCompare("noop",option+1) == 0)
-          break;
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'p':
-      {
-        if (LocaleCompare("pause",option+1) == 0)
-          {
-            resource_info.pause=0;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingSeconds",option);
-              }
-            resource_info.pause=atoi(argv[i]);
-            break;
-          }
-        break;
-      }
-      case 'r':
-      {
-        if (LocaleCompare("remote",option+1) == 0)
-          {
-            i++;
-            if (i == argc)
-              MagickFatalError(OptionFatalError,"MissingCommand",option);
-            status=XRemoteCommand(display,resource_info.window_id,argv[i]);
-            Exit(!status);
-          }
-        if (LocaleCompare("rotate",option+1) == 0)
-          {
-            i++;
-            if ((i == argc) || !IsGeometry(argv[i]))
-              MagickFatalError(OptionFatalError,"MissingDegrees",option);
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 's':
-      {
-        if (LocaleCompare("sampling-factor",option+1) == 0)
-          {
-            (void) CloneString(&image_info->sampling_factor,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-                (void) CloneString(&image_info->sampling_factor,argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("scenes",option+1) == 0)
-          {
-            first_scene=0;
-            last_scene=0;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingSceneNumber",
-                    option);
-                first_scene=atol(argv[i]);
-                last_scene=first_scene;
-                (void) sscanf(argv[i],"%ld-%ld",&first_scene,&last_scene);
-              }
-            break;
-          }
-        if (LocaleCompare("shared-memory",option+1) == 0)
-          {
-            resource_info.use_shared_memory=(*option == '-');
-            break;
-          }
-        if (LocaleCompare("size",option+1) == 0)
-          {
-            (void) CloneString(&image_info->size,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-                (void) CloneString(&image_info->size,argv[i]);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 't':
-      {
-        if (LocaleCompare("text-font",option+1) == 0)
-          {
-            resource_info.text_font=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingFontName",option);
-                resource_info.text_font=argv[i];
-              }
-            break;
-          }
-        if (LocaleCompare("title",option+1) == 0)
-          {
-            resource_info.title=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingTitle",option);
-                resource_info.title=argv[i];
-              }
-            break;
-          }
-        if (LocaleCompare("treedepth",option+1) == 0)
-          {
-            quantize_info->tree_depth=0;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingDepth",option);
-                quantize_info->tree_depth=atoi(argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("trim",option+1) == 0)
-          break;
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'v':
-      {
-        if (LocaleCompare("verbose",option+1) == 0)
-          {
-            image_info->verbose=(*option == '-');
-            break;
-          }
-        if (LocaleCompare("version",option+1) == 0)
-          break;
-        if (LocaleCompare("virtual-pixel",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                VirtualPixelMethod
-                  virtual_pixel_method;
-
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingVirtualPixelMethod",
-                    option);
-                option=argv[i];
-                virtual_pixel_method=UndefinedVirtualPixelMethod;
-                if (LocaleCompare("Constant",option) == 0)
-                  virtual_pixel_method=ConstantVirtualPixelMethod;
-                if (LocaleCompare("Edge",option) == 0)
-                  virtual_pixel_method=EdgeVirtualPixelMethod;
-                if (LocaleCompare("Mirror",option) == 0)
-                  virtual_pixel_method=MirrorVirtualPixelMethod;
-                if (LocaleCompare("Tile",option) == 0)
-                  virtual_pixel_method=TileVirtualPixelMethod;
-                if (virtual_pixel_method == UndefinedVirtualPixelMethod)
-                  MagickFatalError(OptionFatalError,
-                    "UnrecognizedVirtualPixelMethod",option);
-              }
-            break;
-          }
-        if (LocaleCompare("visual",option+1) == 0)
-          {
-            resource_info.visual_type=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingVisualClass",
-                    option);
-                resource_info.visual_type=argv[i];
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'w':
-      {
-        if (LocaleCompare("window",option+1) == 0)
-          {
-            resource_info.window_id=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingIDNameOrRoot",
-                    option);
-                resource_info.window_id=argv[i];
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case '?':
-      {
-        AnimateUsage();
-        break;
-      }
-      default:
-      {
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-    }
-  }
-  i--;
-  if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
-    MagickFatalError(OptionFatalError,"MissingAnImageFilename",(char *) NULL);
-  if (image == (Image *) NULL)
-    {
-      status&=MogrifyImages(image_info,i-j,argv+j,&image_list);
-      (void) CatchImageException(image_list);
-    }
-  else
-    {
-      status&=MogrifyImages(image_info,i-j,argv+j,&image);
-      (void) CatchImageException(image);
-      AppendImageToList(&image_list,image);
-    }
-  if (resource_info.window_id != (char *) NULL)
-    XAnimateBackgroundImage(display,&resource_info,image_list);
-  else
-    {
-      /*
-        Animate image to X server.
-      */
-      loaded_image=XAnimateImages(display,&resource_info,argv,argc,image_list);
-      while (loaded_image != (Image *) NULL)
-      {
-        image_list=loaded_image;
-        loaded_image=
-          XAnimateImages(display,&resource_info,argv,argc,image_list);
-      }
-    }
-  DestroyImageList(image_list);
-  LiberateArgumentList(argc,argv);
-  return(!status);
-#else
-  MagickFatalError(MissingDelegateError,"XWindowLibraryIsNotAvailable",
-    (char *) NULL);
-#endif
-  return(False);
-}
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I m p o r t U s a g e                                                     %
+%   I m p o r t I m a g e C o m m a n d                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ImportUsage() displays the program command syntax.
+%  ImportImageCommand() reads an image from any visible window on an X server
+%  and outputs it as an image file. You can capture a single window, the
+%  entire screen, or any rectangular portion of the screen.  You can use the
+%  display utility for redisplay, printing, editing, formatting, archiving,
+%  image processing, etc. of the captured image.</dd>
 %
-%  The format of the ImportUsage method is:
+%  The target window can be specified by id, name, or may be selected by
+%  clicking the mouse in the desired window. If you press a button and then
+%  drag, a rectangle will form which expands and contracts as the mouse moves.
+%  To save the portion of the screen defined by the rectangle, just release
+%  the button. The keyboard bell is rung once at the beginning of the screen
+%  capture and twice when it completes.
 %
-%      void ImportUsage()
+%  The format of the ImportImageCommand method is:
+%
+%      unsigned int ImportImageCommand(ImageInfo *image_info,int argc,
+%        char **argv,char **metadata,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o argc: The number of elements in the argument vector.
+%
+%    o argv: A text array containing the command line arguments.
+%
+%    o metadata: any metadata is returned here.
+%
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-MagickExport void ImportUsage(void)
-{
-  const char
-    **p;
-
-  static const char
-    *options[]=
-    {
-      "-adjoin              join images into a single multi-image file",
-      "-border              include image borders in the output image",
-      "-colors value        preferred number of colors in the image",
-      "-colorspace type     alternate image colorspace",
-      "-comment string      annotate image with comment",
-      "-compress type       image compression type",
-      "-crop geometry       preferred size and location of the cropped image",
-      "-debug events        display copious debugging information",
-      "-delay value         display the next image after pausing",
-      "-density geometry    horizontal and vertical density of the image",
-      "-depth value         image depth",
-      "-descend             obtain image by descending window hierarchy",
-      "-display server      X server to contact",
-      "-dispose method      Undefined, None, Background, Previous",
-      "-dither              apply Floyd/Steinberg error diffusion to image",
-      "-frame               include window manager frame",
-      "-encoding type       text encoding type",
-      "-endian type         LSB or MSB",
-      "-geometry geometry   perferred size or location of the image",
-      "-interlace type      None, Line, Plane, or Partition",
-      "-help                print program options",
-      "-label name          assign a label to an image",
-      "-limit type value    Disk, Map, or Memory resource limit",
-      "-log format          format of debugging information",
-      "-monochrome          transform image to black and white",
-      "-negate              replace every pixel with its complementary color ",
-      "-page geometry       size and location of an image canvas",
-      "-pause value         seconds delay between snapshots",
-      "-pointsize value     font point size",
-      "-quality value       JPEG/MIFF/PNG compression level",
-      "-resize geometry     resize the image",
-      "-rotate degrees      apply Paeth rotation to the image",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-scene value         image scene number",
-      "-screen              select image from root window",
-      "-silent              operate silently, i.e. don't ring any bells ",
-      "-snaps value         number of screen snapshots",
-      "-transparent color   make this color transparent within the image",
-      "-treedepth value     color tree depth",
-      "-trim                trim image edges",
-      "-type type           image type",
-      "-verbose             print detailed information about the image",
-      "-version             print version information",
-      "-virtual-pixel method",
-      "                     Constant, Edge, Mirror, or Tile",
-      "-window id           select window with this id or name",
-      (char *) NULL
-    };
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
-  (void) printf("Usage: %.1024s [options ...] [ file ]\n",
-    SetClientName((char *) NULL));
-  (void) printf("\nWhere options include:\n");
-  for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
-  (void) printf(
-  "\nBy default, 'file' is written in the MIFF image format.  To\n");
-  (void) printf(
-    "specify a particular image format, precede the filename with an image\n");
-  (void) printf(
-    "format name and a colon (i.e. ps:image) or specify the image type as\n");
-  (void) printf(
-    "the filename suffix (i.e. image.ps).  Specify 'file' as '-' for\n");
-  (void) printf("standard input or output.\n");
-}
-
-MagickExport unsigned int ImportImageCommand(int argc,char **argv)
+MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
 #if defined(HasX11)
   char
@@ -10320,15 +12782,9 @@ MagickExport unsigned int ImportImageCommand(int argc,char **argv)
   Display
     *display;
 
-  ExceptionInfo
-    exception;
-
   Image
     *image,
     *next_image;
-
-  ImageInfo
-    *image_info;
 
   long
     snapshots,
@@ -10467,7 +12923,6 @@ MagickExport unsigned int ImportImageCommand(int argc,char **argv)
   /*
     Check command syntax.
   */
-  GetExceptionInfo(&exception);
   for (i=1; i < argc; i++)
   {
     option=argv[i];
@@ -10504,7 +12959,7 @@ MagickExport unsigned int ImportImageCommand(int argc,char **argv)
                   MagickFatalError(OptionFatalError,"MissingBorderColor",
                     option);
                 (void) QueryColorDatabase(argv[i],&image_info->border_color,
-                  &exception);
+                  exception);
               }
             break;
           }
@@ -11154,7 +13609,7 @@ MagickExport unsigned int ImportImageCommand(int argc,char **argv)
       }
     }
   }
-  DestroyExceptionInfo(&exception);
+  DestroyExceptionInfo(exception);
   if (filename == (char *) NULL)
     filename=(char *) "magick.miff";
   /*
@@ -11197,2297 +13652,139 @@ MagickExport unsigned int ImportImageCommand(int argc,char **argv)
 #endif
   return(False);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n j u r e U s a g e                                                   %
+%   I m p o r t U s a g e                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConjureUsage() displays the program command syntax.
+%  ImportUsage() displays the program command syntax.
 %
-%  The format of the ConjureUsage method is:
+%  The format of the ImportUsage method is:
 %
-%      void ConjureUsage()
+%      void ImportUsage()
+%
 %
 */
-MagickExport void ConjureUsage(void)
+MagickExport void ImportUsage(void)
 {
-  static const char
-    *options[]=
-    {
-      "-debug events        display copious debugging information",
-      "-help                print program options",
-      "-log format          format of debugging information",
-      "-verbose             print detailed information about the image",
-      "-version             print version information",
-      (char *) NULL
-    };
-
   const char
     **p;
 
+  static const char
+    *options[]=
+    {
+      "-adjoin              join images into a single multi-image file",
+      "-border              include image borders in the output image",
+      "-colors value        preferred number of colors in the image",
+      "-colorspace type     alternate image colorspace",
+      "-comment string      annotate image with comment",
+      "-compress type       image compression type",
+      "-crop geometry       preferred size and location of the cropped image",
+      "-debug events        display copious debugging information",
+      "-delay value         display the next image after pausing",
+      "-density geometry    horizontal and vertical density of the image",
+      "-depth value         image depth",
+      "-descend             obtain image by descending window hierarchy",
+      "-display server      X server to contact",
+      "-dispose method      Undefined, None, Background, Previous",
+      "-dither              apply Floyd/Steinberg error diffusion to image",
+      "-frame               include window manager frame",
+      "-encoding type       text encoding type",
+      "-endian type         LSB or MSB",
+      "-geometry geometry   perferred size or location of the image",
+      "-interlace type      None, Line, Plane, or Partition",
+      "-help                print program options",
+      "-label name          assign a label to an image",
+      "-limit type value    Disk, Map, or Memory resource limit",
+      "-log format          format of debugging information",
+      "-monochrome          transform image to black and white",
+      "-negate              replace every pixel with its complementary color ",
+      "-page geometry       size and location of an image canvas",
+      "-pause value         seconds delay between snapshots",
+      "-pointsize value     font point size",
+      "-quality value       JPEG/MIFF/PNG compression level",
+      "-resize geometry     resize the image",
+      "-rotate degrees      apply Paeth rotation to the image",
+      "-sampling-factor geometry",
+      "                     horizontal and vertical sampling factor",
+      "-scene value         image scene number",
+      "-screen              select image from root window",
+      "-silent              operate silently, i.e. don't ring any bells ",
+      "-snaps value         number of screen snapshots",
+      "-transparent color   make this color transparent within the image",
+      "-treedepth value     color tree depth",
+      "-trim                trim image edges",
+      "-type type           image type",
+      "-verbose             print detailed information about the image",
+      "-version             print version information",
+      "-virtual-pixel method",
+      "                     Constant, Edge, Mirror, or Tile",
+      "-window id           select window with this id or name",
+      (char *) NULL
+    };
+
   (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
-  (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
+  (void) printf("Usage: %.1024s [options ...] [ file ]\n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
-  (void) printf("\nIn additiion, define any key value pairs required by "
-    "your script.  For\nexample,\n\n");
-  (void) printf("    conjure -size 100x100 -color blue -foo bar script.msl\n");
+  (void) printf(
+  "\nBy default, 'file' is written in the MIFF image format.  To\n");
+  (void) printf(
+    "specify a particular image format, precede the filename with an image\n");
+  (void) printf(
+    "format name and a colon (i.e. ps:image) or specify the image type as\n");
+  (void) printf(
+    "the filename suffix (i.e. image.ps).  Specify 'file' as '-' for\n");
+  (void) printf("standard input or output.\n");
 }
 
-MagickExport unsigned int ConjureImageCommand(int argc,char **argv)
-{
-  char
-    *option;
-
-  ExceptionInfo
-    exception;
-
-  Image
-    *image;
-
-  ImageInfo
-    *image_info;
-
-  register long
-    i;
-
-  unsigned int
-    status;
-
-  InitializeMagick(*argv);
-  ReadCommandlLine(argc,&argv);
-
-  /*
-    Expand argument list
-  */
-  status=ExpandFilenames(&argc,&argv);
-  if (status == False)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      (char *) NULL);
-
-  /*
-    Validate command list
-  */
-  if (argc < 2)
-    {
-      ConjureUsage();
-      LiberateArgumentList(argc,argv);
-      return (False);
-    }
-
-  GetExceptionInfo(&exception);
-  image_info=CloneImageInfo((ImageInfo *) NULL);
-  image_info->attributes=AllocateImage(image_info);
-  status=True;
-  for (i=1; i < argc; i++)
-  {
-    option=argv[i];
-    if ((strlen(option) != 1) && ((*option == '-') || (*option == '+')))
-      {
-        if (LocaleCompare("debug",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingEventMask",option);
-                (void) SetLogEventMask(argv[i]);
-              }
-            continue;
-          }
-        if (LocaleCompare("help",option+1) == 0 ||
-            LocaleCompare("?",option+1) == 0)
-          {
-            if (*option == '-')
-              ConjureUsage();
-            continue;
-          }
-        if (LocaleCompare("log",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingLogFormat",option);
-                (void) SetLogFormat(argv[i]);
-              }
-            continue;
-          }
-        if (LocaleCompare("verbose",option+1) == 0)
-          {
-            image_info->verbose=(*option == '-');
-            continue;
-          }
-        if (LocaleCompare("version",option+1) == 0)
-          {
-            (void) fprintf(stdout,"Version: %.1024s\n",
-              GetMagickVersion((unsigned long *) NULL));
-            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
-              GetMagickCopyright());
-            Exit(0);
-            continue;
-          }
-        /*
-          Persist key/value pair.
-        */
-        (void) SetImageAttribute(image_info->attributes,option+1,(char *) NULL);
-        status&=SetImageAttribute(image_info->attributes,option+1,argv[i+1]);
-        if (status == False)
-          MagickFatalError(ImageFatalError,"UnableToPersistKey",option);
-        i++;
-        continue;
-      }
-    /*
-      Interpret MSL script.
-    */
-    (void) SetImageAttribute(image_info->attributes,"filename",(char *) NULL);
-    status&=SetImageAttribute(image_info->attributes,"filename",argv[i]);
-    if (status == False)
-      MagickFatalError(ImageFatalError,"UnableToPersistKey",argv[i]);
-    (void) FormatString(image_info->filename,"msl:%.1024s",argv[i]);
-    image=ReadImage(image_info,&exception);
-    if (exception.severity != UndefinedException)
-      CatchException(&exception);
-    status&=image != (Image *) NULL;
-    if (image != (Image *) NULL)
-      DestroyImageList(image);
-  }
-  DestroyImageInfo(image_info);
-  LiberateArgumentList(argc,argv);
-  return(!status);
-}
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D i s p l a y U s a g e                                                   %
+%    V e r s i o n C o m m a n d                                              %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DisplayUsage() displays the program command syntax.
+%  VersionCommand() prints the package copyright and release version.
 %
-%  The format of the DisplayUsage method is:
+%  The format of the VersionCommand method is:
 %
-%      void DisplayUsage(void)
+%      unsigned int VersionCommand(ImageInfo *image_info,const int argc,
+%        char **argv,char **metadata,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
+%    o image_info: The image info.
 %
-*/
-MagickExport void DisplayUsage(void)
-{
-  const char
-    **p;
-
-  static const char
-    *buttons[]=
-    {
-      "1    press to map or unmap the Command widget",
-      "2    press and drag to magnify a region of an image",
-      "3    press to load an image from a visual image directory",
-      (char *) NULL
-    },
-    *options[]=
-    {
-      "-authenticate value  decrypt image with this password",
-      "-backdrop            display image centered on a backdrop",
-      "-border geometry     surround image with a border of color",
-      "-colormap type       Shared or Private",
-      "-colors value        preferred number of colors in the image",
-      "-colorspace type     alternate image colorspace",
-      "-comment string      annotate image with comment",
-      "-compress type       image compression tyhpe",
-      "-contrast            enhance or reduce the image contrast",
-      "-crop geometry       preferred size and location of the cropped image",
-      "-debug events        display copious debugging information",
-      "-delay value         display the next image after pausing",
-      "-density geometry    horizontal and vertical density of the image",
-      "-depth value         image depth",
-      "-despeckle           reduce the speckles within an image",
-      "-display server      display image to this X server",
-      "-dispose method      Undefined, None, Background, Previous",
-      "-dither              apply Floyd/Steinberg error diffusion to image",
-      "-edge factor         apply a filter to detect edges in the image",
-      "-endian type         LSB or MSB",
-      "-enhance             apply a digital filter to enhance a noisy image",
-      "-filter type         use this filter when resizing an image",
-      "-flip                flip image in the vertical direction",
-      "-flop                flop image in the horizontal direction",
-      "-frame geometry      surround image with an ornamental border",
-      "-gamma value         level of gamma correction",
-      "-geometry geometry   preferred size and location of the Image window",
-      "-help                print program options",
-      "-immutable           displayed image cannot be modified",
-      "-interlace type      None, Line, Plane, or Partition",
-      "-label name          assign a label to an image",
-      "-limit type value    Disk, Map, or Memory resource limit",
-      "-log format          format of debugging information",
-      "-map type            display image using this Standard Colormap",
-      "-matte               store matte channel if the image has one",
-      "-monochrome          transform image to black and white",
-      "-negate              replace every pixel with its complementary color",
-      "-noop                do not apply options to image",
-      "-page geometry       size and location of an image canvas",
-      "-quality value       JPEG/MIFF/PNG compression level",
-      "-raise value         lighten/darken image edges to create a 3-D effect",
-      "-remote command      execute a command in an remote display process",
-      "-roll geometry       roll an image vertically or horizontally",
-      "-rotate degrees      apply Paeth rotation to the image",
-      "-sample geometry     scale image with pixel sampling",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-scenes range        image scene range",
-      "-segment value       segment an image",
-      "-sharpen geometry    sharpen the image",
-      "-size geometry       width and height of image",
-      "-texture filename    name of texture to tile onto the image background",
-      "-treedepth value     color tree depth",
-      "-trim                trim image edges",
-      "-update seconds      detect when image file is modified and redisplay",
-      "-verbose             print detailed information about the image",
-      "-version             print version information",
-      "-visual type         display image using this visual type",
-      "-virtual-pixel method",
-      "                     Constant, Edge, Mirror, or Tile",
-      "-window id           display image to background of this window",
-      "-window_group id     exit program when this window id is destroyed",
-      "-write filename      write image to a file",
-      (char *) NULL
-    };
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
-  (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
-    SetClientName((char *) NULL));
-  (void) printf("\nWhere options include: \n");
-  for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
-  (void) printf(
-    "\nIn addition to those listed above, you can specify these standard X\n");
-  (void) printf(
-    "resources as command line options:  -background, -bordercolor,\n");
-  (void) printf(
-    "-borderwidth, -font, -foreground, -iconGeometry, -iconic, -mattecolor,\n");
-  (void) printf("-name, -shared-memory, -usePixmap, or -title.\n");
-  (void) printf(
-    "\nBy default, the image format of `file' is determined by its magic\n");
-  (void) printf(
-    "number.  To specify a particular image format, precede the filename\n");
-  (void) printf(
-    "with an image format name and a colon (i.e. ps:image) or specify the\n");
-  (void) printf(
-    "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
-  (void) printf("'-' for standard input or output.\n");
-  (void) printf("\nButtons: \n");
-  for (p=buttons; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
-}
-
-MagickExport unsigned int DisplayImageCommand(int argc,char **argv)
-{
-#if defined(HasX11)
-  char
-    *client_name,
-    *option,
-    *resource_value,
-    *server_name;
-
-  Display
-    *display;
-
-  double
-    sans;
-
-  ExceptionInfo
-    exception;
-
-  Image
-    *image,
-    *next;
-
-  ImageInfo
-    *image_info;
-
-  long
-    first_scene,
-    image_number,
-    j,
-    k,
-    last_scene,
-    scene,
-    x;
-
-  QuantizeInfo
-    *quantize_info;
-
-  register long
-    i;
-
-  unsigned int
-    *image_marker,
-    last_image,
-    status;
-
-  unsigned long
-    state;
-
-  XResourceInfo
-    resource_info;
-
-  XrmDatabase
-    resource_database;
-
-  /*
-    Expand Argument List
-  */
-  status=ExpandFilenames(&argc,&argv);
-  if (status == False)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      (char *) NULL);
-
-  /*
-    Set defaults.
-  */
-  SetNotifyHandlers;
-  display=(Display *) NULL;
-  GetExceptionInfo(&exception);
-  first_scene=0;
-  image_number=0;
-  last_image=0;
-  last_scene=0;
-  image_marker=MagickAllocateMemory(unsigned int *,(argc+1)*sizeof(unsigned int));
-  if (image_marker == (unsigned int *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToDisplayImage");
-  for (i=0; i <= argc; i++)
-    image_marker[i]=argc;
-  resource_database=(XrmDatabase) NULL;
-  server_name=(char *) NULL;
-  state=0;
-  /*
-    Check for server name specified on the command line.
-  */
-  for (i=1; i < argc; i++)
-  {
-    /*
-      Check command line for server name.
-    */
-    option=argv[i];
-    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
-      continue;
-    if (LocaleCompare("display",option+1) == 0)
-      {
-        /*
-          User specified server name.
-        */
-        i++;
-        if (i == argc)
-          MagickFatalError(OptionFatalError,"MissingServerName",option);
-        server_name=argv[i];
-        break;
-      }
-    if (LocaleCompare("help",option+1) == 0)
-      {
-        DisplayUsage();
-        LiberateArgumentList(argc,argv);
-        return False;
-      }
-    if (LocaleCompare("version",option+1) == 0)
-      {
-        (void) fprintf(stdout,"Version: %.1024s\n",
-          GetMagickVersion((unsigned long *) NULL));
-        (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
-        LiberateArgumentList(argc,argv);
-        return False;
-      }
-  }
-  /*
-    Get user defaults from X resource database.
-  */
-  display=XOpenDisplay(server_name);
-  if (display == (Display *) NULL)
-    MagickFatalError(XServerFatalError,"UnableToOpenXServer",
-      XDisplayName(server_name));
-  (void) XSetErrorHandler(XError);
-  client_name=SetClientName((char *) NULL);
-  resource_database=XGetResourceDatabase(display,client_name);
-  XGetResourceInfo(resource_database,client_name,&resource_info);
-  image_info=resource_info.image_info;
-  quantize_info=resource_info.quantize_info;
-  image_info->density=
-    XGetResourceInstance(resource_database,client_name,"density",(char *) NULL);
-  if (image_info->density == (char *) NULL)
-    image_info->density=XGetScreenDensity(display);
-  resource_value=
-    XGetResourceInstance(resource_database,client_name,"interlace","none");
-  image_info->interlace=UndefinedInterlace;
-  if (LocaleCompare("None",resource_value) == 0)
-    image_info->interlace=NoInterlace;
-  if (LocaleCompare("Line",resource_value) == 0)
-    image_info->interlace=LineInterlace;
-  if (LocaleCompare("Plane",resource_value) == 0)
-    image_info->interlace=PlaneInterlace;
-  if (LocaleCompare("Partition",resource_value) == 0)
-    image_info->interlace=PartitionInterlace;
-  if (image_info->interlace == UndefinedInterlace)
-    MagickError(OptionError,"Unrecognized interlace type",resource_value);
-  image_info->page=XGetResourceInstance(resource_database,client_name,
-    "pageGeometry",(char *) NULL);
-  resource_value=
-    XGetResourceInstance(resource_database,client_name,"quality","75");
-  image_info->quality=atol(resource_value);
-  resource_value=
-    XGetResourceInstance(resource_database,client_name,"verbose","False");
-  image_info->verbose=IsTrue(resource_value);
-  resource_value=
-    XGetResourceInstance(resource_database,client_name,"dither","True");
-  quantize_info->dither=IsTrue(resource_value);
-  /*
-    Parse command line.
-  */
-  status=True;
-  j=1;
-  k=0;
-  for (i=1; ((i <= argc) && !(state & ExitState)); i++)
-  {
-    if (i < argc)
-      option=argv[i];
-    else
-      if (image_number != 0)
-        break;
-      else
-        if (!isatty(STDIN_FILENO))
-          option=(char *) "-";
-        else
-          option=(char *) "logo:Untitled";
-    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
-      {
-        /*
-          Option is a file name.
-        */
-        k=i;
-        for (scene=first_scene; scene <= last_scene ; scene++)
-        {
-          /*
-            Read image.
-          */
-          (void) strncpy(image_info->filename,option,MaxTextExtent-1);
-          if (first_scene != last_scene)
-            {
-              char
-                filename[MaxTextExtent];
-
-              /*
-                Form filename for multi-part images.
-              */
-              FormatString(filename,image_info->filename,scene);
-              if (LocaleCompare(filename,image_info->filename) == 0)
-                FormatString(filename,"%.1024s.%lu",image_info->filename,scene);
-              (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
-            }
-          (void) strcpy(image_info->magick,"MIFF");
-          image_info->colorspace=quantize_info->colorspace;
-          image_info->dither=quantize_info->dither;
-          image=ReadImage(image_info,&exception);
-          if (exception.severity != UndefinedException)
-            CatchException(&exception);
-          status&=image != (Image *) NULL;
-          if (image == (Image *) NULL)
-            continue;
-          status&=MogrifyImage(image_info,i-j,argv+j,&image);
-          (void) CatchImageException(image);
-          do
-          {
-            /*
-              Transmogrify image as defined by the image processing options.
-            */
-            resource_info.quantum=1;
-            if (first_scene != last_scene)
-              image->scene=scene;
-            /*
-              Display image to X server.
-            */
-            if (resource_info.window_id != (char *) NULL)
-              {
-                /*
-                  Display image to a specified X window.
-                */
-                if (XDisplayBackgroundImage(display,&resource_info,image))
-                  state|=RetainColorsState;
-              }
-            else
-              do
-              {
-                Image
-                  *nexus;
-
-                /*
-                  Display image to X server.
-                */
-                nexus=
-                  XDisplayImage(display,&resource_info,argv,argc,&image,&state);
-                if (nexus == (Image *) NULL)
-                  break;
-                while ((nexus != (Image *) NULL) && (!(state & ExitState)))
-                {
-                  if (nexus->montage != (char *) NULL)
-                    {
-                      /*
-                        User selected a visual directory image (montage).
-                      */
-                      DestroyImageList(image);
-                      image=nexus;
-                      break;
-                    }
-                  if (first_scene != last_scene)
-                    image->scene=scene;
-                  next=XDisplayImage(display,&resource_info,argv,argc,&nexus,
-                    &state);
-                  if ((next == (Image *) NULL) &&
-                      (nexus->next != (Image *) NULL))
-                    {
-                      DestroyImageList(image);
-                      image=nexus->next;
-                      nexus=(Image *) NULL;
-                    }
-                  else
-                    {
-                      if (nexus != image)
-                        DestroyImageList(nexus);
-                      nexus=next;
-                    }
-                }
-              } while (!(state & ExitState));
-            if (resource_info.write_filename != (char *) NULL)
-              {
-                /*
-                  Write image.
-                */
-                (void) strncpy(image->filename,resource_info.write_filename,
-                  MaxTextExtent-1);
-                (void) SetImageInfo(image_info,True,&image->exception);
-                status&=WriteImage(image_info,image);
-                (void) CatchImageException(image);
-              }
-            if (image_info->verbose)
-              DescribeImage(image,stderr,False);
-            /*
-              Proceed to next/previous image.
-            */
-            next=image;
-            if (state & FormerImageState)
-              for (k=0; k < resource_info.quantum; k++)
-              {
-                next=next->previous;
-                if (next == (Image *) NULL)
-                  break;
-              }
-            else
-              for (k=0; k < resource_info.quantum; k++)
-              {
-                next=next->next;
-                if (next == (Image *) NULL)
-                  break;
-              }
-            if (next != (Image *) NULL)
-              image=next;
-          } while ((next != (Image *) NULL) && !(state & ExitState));
-          /*
-            Free image resources.
-          */
-          DestroyImageList(image);
-          if (!(state & FormerImageState))
-            {
-              last_image=image_number;
-              image_marker[i]=image_number++;
-            }
-          else
-            {
-              /*
-                Proceed to previous image.
-              */
-              for (i--; i > 0; i--)
-                if ((int) image_marker[i] == (image_number-2))
-                  break;
-              image_number--;
-            }
-          if (state & ExitState)
-            break;
-        }
-        /*
-          Determine if we should proceed to the first image.
-        */
-        if (image_number < 0)
-          {
-            if (state & FormerImageState)
-              {
-                for (i=1; i < (argc-2); i++)
-                  if (image_marker[i] == last_image)
-                    break;
-                image_number=image_marker[i]+1;
-              }
-            continue;
-          }
-        continue;
-      }
-    j=k+1;
-    switch (*(option+1))
-    {
-      case 'a':
-      {
-        if (LocaleCompare("authenticate",option+1) == 0)
-          {
-            (void) CloneString(&image_info->authenticate,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionError,"Missing password",option);
-                (void) CloneString(&image_info->authenticate,argv[i]);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'b':
-      {
-        if (LocaleCompare("backdrop",option+1) == 0)
-          {
-            resource_info.backdrop=(*option == '-');
-            break;
-          }
-        if (LocaleCompare("background",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingColor",option);
-                resource_info.background_color=argv[i];
-                (void) QueryColorDatabase(argv[i],&image_info->background_color,
-                  &exception);
-              }
-            break;
-          }
-        if (LocaleCompare("border",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-              }
-            break;
-          }
-        if (LocaleCompare("bordercolor",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingColor",option);
-                resource_info.border_color=argv[i];
-                (void) QueryColorDatabase(argv[i],&image_info->border_color,
-                  &exception);
-              }
-            break;
-          }
-        if (LocaleCompare("borderwidth",option+1) == 0)
-          {
-            resource_info.border_width=0;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingWidth",option);
-                resource_info.border_width=atoi(argv[i]);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'c':
-      {
-        if (LocaleCompare("cache",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingThreshold",option);
-                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
-              }
-            break;
-          }
-        if (LocaleCompare("colormap",option+1) == 0)
-          {
-            resource_info.colormap=PrivateColormap;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingType",option);
-                option=argv[i];
-                resource_info.colormap=UndefinedColormap;
-                if (LocaleCompare("private",option) == 0)
-                  resource_info.colormap=PrivateColormap;
-                if (LocaleCompare("shared",option) == 0)
-                  resource_info.colormap=SharedColormap;
-                if (resource_info.colormap == UndefinedColormap)
-                  MagickFatalError(OptionFatalError,"InvalidColormapType",
-                    option);
-              }
-            break;
-          }
-        if (LocaleCompare("colors",option+1) == 0)
-          {
-            quantize_info->number_colors=0;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingColors",option);
-                quantize_info->number_colors=atol(argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("colorspace",option+1) == 0)
-          {
-            quantize_info->colorspace=RGBColorspace;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingType",option);
-                option=argv[i];
-                quantize_info->colorspace=UndefinedColorspace;
-                if (LocaleCompare("cmyk",option) == 0)
-                  quantize_info->colorspace=CMYKColorspace;
-                if (LocaleCompare("gray",option) == 0)
-                  {
-                    quantize_info->colorspace=GRAYColorspace;
-                    quantize_info->number_colors=256;
-                    quantize_info->tree_depth=8;
-                  }
-                if (LocaleCompare("hsl",option) == 0)
-                  quantize_info->colorspace=HSLColorspace;
-                if (LocaleCompare("hwb",option) == 0)
-                  quantize_info->colorspace=HWBColorspace;
-                if (LocaleCompare("ohta",option) == 0)
-                  quantize_info->colorspace=OHTAColorspace;
-                if (LocaleCompare("rgb",option) == 0)
-                  quantize_info->colorspace=RGBColorspace;
-                if (LocaleCompare("srgb",option) == 0)
-                  quantize_info->colorspace=sRGBColorspace;
-                if (LocaleCompare("transparent",option) == 0)
-                  quantize_info->colorspace=TransparentColorspace;
-                if (LocaleCompare("xyz",option) == 0)
-                  quantize_info->colorspace=XYZColorspace;
-                if (LocaleCompare("ycbcr",option) == 0)
-                  quantize_info->colorspace=YCbCrColorspace;
-                if (LocaleCompare("ycc",option) == 0)
-                  quantize_info->colorspace=YCCColorspace;
-                if (LocaleCompare("yiq",option) == 0)
-                  quantize_info->colorspace=YIQColorspace;
-                if (LocaleCompare("ypbpr",option) == 0)
-                  quantize_info->colorspace=YPbPrColorspace;
-                if (LocaleCompare("yuv",option) == 0)
-                  quantize_info->colorspace=YUVColorspace;
-                if (quantize_info->colorspace == UndefinedColorspace)
-                  MagickFatalError(OptionFatalError,"InvalidColorspaceType",
-                    option);
-              }
-            break;
-          }
-        if (LocaleCompare("comment",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"Missing comment",option);
-              }
-            break;
-          }
-        if (LocaleCompare("compress",option+1) == 0)
-          {
-            image_info->compression=NoCompression;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingType",option);
-                option=argv[i];
-                image_info->compression=UndefinedCompression;
-                if (LocaleCompare("None",option) == 0)
-                  image_info->compression=NoCompression;
-                if (LocaleCompare("BZip",option) == 0)
-                  image_info->compression=BZipCompression;
-                if (LocaleCompare("Fax",option) == 0)
-                  image_info->compression=FaxCompression;
-                if (LocaleCompare("Group4",option) == 0)
-                  image_info->compression=Group4Compression;
-                if (LocaleCompare("JPEG",option) == 0)
-                  image_info->compression=JPEGCompression;
-                if (LocaleCompare("Lossless",option) == 0)
-                  image_info->compression=LosslessJPEGCompression;
-                if (LocaleCompare("LZW",option) == 0)
-                  image_info->compression=LZWCompression;
-                if (LocaleCompare("RLE",option) == 0)
-                  image_info->compression=RLECompression;
-                if (LocaleCompare("Zip",option) == 0)
-                  image_info->compression=ZipCompression;
-                if (image_info->compression == UndefinedCompression)
-                  MagickFatalError(OptionFatalError,"UnrecognizedImageCompressionType",
-                    option);
-              }
-            break;
-          }
-        if (LocaleCompare("contrast",option+1) == 0)
-          break;
-        if (LocaleCompare("crop",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'd':
-      {
-        if (LocaleCompare("debug",option+1) == 0)
-          {
-            (void) SetLogEventMask("None");
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingEventMask",option);
-                (void) SetLogEventMask(argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("delay",option+1) == 0)
-          {
-            resource_info.delay=0;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingSeconds",option);
-                resource_info.delay=atoi(argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("density",option+1) == 0)
-          {
-            (void) CloneString(&image_info->density,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-                (void) CloneString(&image_info->density,argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("depth",option+1) == 0)
-          {
-            image_info->depth=QuantumDepth;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingImageDepth",option);
-                image_info->depth=atol(argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("despeckle",option+1) == 0)
-          break;
-        if (LocaleCompare("display",option+1) == 0)
-          {
-            (void) CloneString(&image_info->server_name,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingServerName",option);
-                image_info->server_name=argv[i];
-              }
-            break;
-          }
-        if (LocaleCompare("dispose",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"Missing method",option);
-                option=argv[i];
-                if ((LocaleCompare("0",option) != 0) &&
-                    (LocaleCompare("1",option) != 0) &&
-                    (LocaleCompare("2",option) != 0) &&
-                    (LocaleCompare("3",option) != 0) &&
-                    (LocaleCompare("Undefined",option) != 0) &&
-                    (LocaleCompare("None",option) != 0) &&
-                    (LocaleCompare("Background",option) != 0) &&
-                    (LocaleCompare("Previous",option) != 0))
-                  MagickFatalError(OptionFatalError,"UnrecognizedDisposeMethod",
-                    option);
-              }
-            break;
-          }
-        if (LocaleCompare("dither",option+1) == 0)
-          {
-            quantize_info->dither=(*option == '-');
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'e':
-      {
-        if (LocaleCompare("edge",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                  MagickFatalError(OptionFatalError,"Missing factor",option);
-              }
-            break;
-          }
-        if (LocaleCompare("endian",option+1) == 0)
-          {
-            image_info->endian=UndefinedEndian;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingType",option);
-                option=argv[i];
-                image_info->endian=UndefinedEndian;
-                if (LocaleCompare("LSB",option) == 0)
-                  image_info->endian=LSBEndian;
-                if (LocaleCompare("MSB",option) == 0)
-                  image_info->endian=MSBEndian;
-                if (image_info->endian == UndefinedEndian)
-                  MagickFatalError(OptionFatalError,"InvalidEndianType",option);
-              }
-            break;
-          }
-        if (LocaleCompare("enhance",option+1) == 0)
-          break;
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'f':
-      {
-        if (LocaleCompare("filter",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                FilterTypes
-                  filter;
-
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingType",option);
-                option=argv[i];
-                filter=UndefinedFilter;
-                if (LocaleCompare("Point",option) == 0)
-                  filter=PointFilter;
-                if (LocaleCompare("Box",option) == 0)
-                  filter=BoxFilter;
-                if (LocaleCompare("Triangle",option) == 0)
-                  filter=TriangleFilter;
-                if (LocaleCompare("Hermite",option) == 0)
-                  filter=HermiteFilter;
-                if (LocaleCompare("Hanning",option) == 0)
-                  filter=HanningFilter;
-                if (LocaleCompare("Hamming",option) == 0)
-                  filter=HammingFilter;
-                if (LocaleCompare("Blackman",option) == 0)
-                  filter=BlackmanFilter;
-                if (LocaleCompare("Gaussian",option) == 0)
-                  filter=GaussianFilter;
-                if (LocaleCompare("Quadratic",option) == 0)
-                  filter=QuadraticFilter;
-                if (LocaleCompare("Cubic",option) == 0)
-                  filter=CubicFilter;
-                if (LocaleCompare("Catrom",option) == 0)
-                  filter=CatromFilter;
-                if (LocaleCompare("Mitchell",option) == 0)
-                  filter=MitchellFilter;
-                if (LocaleCompare("Lanczos",option) == 0)
-                  filter=LanczosFilter;
-                if (LocaleCompare("Bessel",option) == 0)
-                  filter=BesselFilter;
-                if (LocaleCompare("Sinc",option) == 0)
-                  filter=SincFilter;
-                if (filter == UndefinedFilter)
-                  MagickFatalError(OptionFatalError,"UnrecognizedFilterType",
-                    option);
-              }
-            break;
-          }
-        if (LocaleCompare("flip",option+1) == 0)
-          break;
-        if (LocaleCompare("flop",option+1) == 0)
-          break;
-        if (LocaleCompare("font",option+1) == 0)
-          {
-            (void) CloneString(&image_info->font,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingFontName",option);
-                image_info->font=argv[i];
-              }
-            if ((image_info->font == (char *) NULL) ||
-                (*image_info->font != '@'))
-              resource_info.font=AllocateString(image_info->font);
-            break;
-          }
-        if (LocaleCompare("foreground",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingForeground",option);
-                resource_info.foreground_color=argv[i];
-              }
-             break;
-          }
-        if (LocaleCompare("frame",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'g':
-      {
-        if (LocaleCompare("gamma",option+1) == 0)
-          {
-            i++;
-            if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-              MagickFatalError(OptionFatalError,"Missing value",option);
-            break;
-          }
-        if (LocaleCompare("geometry",option+1) == 0)
-          {
-            resource_info.image_geometry=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-                resource_info.image_geometry=argv[i];
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'h':
-      {
-        if (LocaleCompare("help",option+1) == 0)
-          DisplayUsage();
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'i':
-      {
-        if (LocaleCompare("iconGeometry",option+1) == 0)
-          {
-            resource_info.icon_geometry=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-                resource_info.icon_geometry=argv[i];
-              }
-            break;
-          }
-        if (LocaleCompare("iconic",option+1) == 0)
-          {
-            resource_info.iconic=(*option == '-');
-            break;
-          }
-        if (LocaleCompare("immutable",option+1) == 0)
-          {
-            resource_info.immutable=(*option == '-');
-            break;
-          }
-        if (LocaleCompare("interlace",option+1) == 0)
-          {
-            image_info->interlace=NoInterlace;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingType",option);
-                option=argv[i];
-                image_info->interlace=UndefinedInterlace;
-                if (LocaleCompare("None",option) == 0)
-                  image_info->interlace=NoInterlace;
-                if (LocaleCompare("Line",option) == 0)
-                  image_info->interlace=LineInterlace;
-                if (LocaleCompare("Plane",option) == 0)
-                  image_info->interlace=PlaneInterlace;
-                if (LocaleCompare("Partition",option) == 0)
-                  image_info->interlace=PartitionInterlace;
-                if (image_info->interlace == UndefinedInterlace)
-                  MagickFatalError(OptionFatalError,"InvalidInterlaceType",
-                    option);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'l':
-      {
-        if (LocaleCompare("label",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingLabelName",option);
-              }
-            break;
-          }
-        if (LocaleCompare("limit",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                char
-                  *type;
-
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingResourceType",
-                    option);
-                type=argv[i];
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingResourceLimit",
-                    option);
-                if (LocaleCompare("disk",type) == 0)
-                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
-                else
-                  if (LocaleCompare("map",type) == 0)
-                    SetMagickResourceLimit(MapResource,atol(argv[i]));
-                  else
-                    if (LocaleCompare("memory",type) == 0)
-                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                    else
-                      MagickFatalError(OptionFatalError,
-                        "UnrecognizedResourceType",type);
-              }
-            break;
-          }
-        if (LocaleCompare("log",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingLogFormat",option);
-                (void) SetLogFormat(argv[i]);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'm':
-      {
-        if (LocaleCompare("magnify",option+1) == 0)
-          {
-            resource_info.magnify=2;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingLevel",option);
-                resource_info.magnify=atoi(argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("map",option+1) == 0)
-          {
-            (void) strcpy(argv[i]+1,"sans");
-            resource_info.map_type=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingMapType",option);
-                resource_info.map_type=argv[i];
-              }
-            break;
-          }
-        if (LocaleCompare("matte",option+1) == 0)
-          break;
-        if (LocaleCompare("mattecolor",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingColor",option);
-                resource_info.matte_color=argv[i];
-                (void) QueryColorDatabase(argv[i],&image_info->matte_color,
-                  &exception);
-              }
-            break;
-          }
-          if (LocaleCompare("monochrome",option+1) == 0)
-          {
-            image_info->monochrome=(*option == '-');
-            if (image_info->monochrome)
-              {
-                quantize_info->number_colors=2;
-                quantize_info->tree_depth=8;
-                quantize_info->colorspace=GRAYColorspace;
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'n':
-      {
-        if (LocaleCompare("name",option+1) == 0)
-          {
-            resource_info.name=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingName",option);
-                resource_info.name=argv[i];
-              }
-            break;
-          }
-        if (LocaleCompare("negate",option+1) == 0)
-          break;
-        if (LocaleCompare("noop",option+1) == 0)
-          break;
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'p':
-      {
-        if (LocaleCompare("page",option+1) == 0)
-          {
-            (void) CloneString(&image_info->page,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingPageGeometry",
-                    option);
-                image_info->page=GetPageGeometry(argv[i]);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'q':
-      {
-        if (LocaleCompare("quality",option+1) == 0)
-          {
-            image_info->quality=DefaultCompressionQuality;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingCompressionQuality",
-                    option);
-                image_info->quality=atol(argv[i]);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'r':
-      {
-        if (LocaleCompare("raise",option+1) == 0)
-          {
-            i++;
-            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-              MagickFatalError(OptionFatalError,"MissingBevelWidth",option);
-            break;
-          }
-        if (LocaleCompare("remote",option+1) == 0)
-          {
-            i++;
-            if (i == argc)
-              MagickFatalError(OptionFatalError,"MissingCommand",option);
-            status=XRemoteCommand(display,resource_info.window_id,argv[i]);
-            Exit(!status);
-          }
-        if (LocaleCompare("roll",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-              }
-            break;
-          }
-        if (LocaleCompare("rotate",option+1) == 0)
-          {
-            i++;
-            if ((i == argc) || !IsGeometry(argv[i]))
-              MagickFatalError(OptionFatalError,"MissingDegrees",option);
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 's':
-      {
-        if (LocaleCompare("sample",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-              }
-            break;
-          }
-        if (LocaleCompare("sampling-factor",option+1) == 0)
-          {
-            (void) CloneString(&image_info->sampling_factor,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-                (void) CloneString(&image_info->sampling_factor,argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("scenes",option+1) == 0)
-          {
-            first_scene=0;
-            last_scene=0;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingSceneNumber",
-                    option);
-                first_scene=atol(argv[i]);
-                last_scene=first_scene;
-                (void) sscanf(argv[i],"%ld-%ld",&first_scene,&last_scene);
-              }
-            break;
-          }
-        if (LocaleCompare("segment",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                  MagickFatalError(OptionFatalError,"MissingThreshold",option);
-              }
-            break;
-          }
-        if (LocaleCompare("sharpen",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-              }
-            break;
-          }
-        if (LocaleCompare("shared-memory",option+1) == 0)
-          {
-            resource_info.use_shared_memory=(*option == '-');
-            break;
-          }
-        if (LocaleCompare("size",option+1) == 0)
-          {
-            (void) CloneString(&image_info->size,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"MissingGeometry",option);
-                (void) CloneString(&image_info->size,argv[i]);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 't':
-      {
-        if (LocaleCompare("text_font",option+1) == 0)
-          {
-            resource_info.text_font=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingFontName",option);
-                resource_info.text_font=argv[i];
-              }
-            break;
-          }
-        if (LocaleCompare("texture",option+1) == 0)
-          {
-            (void) CloneString(&image_info->texture,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingFilename",option);
-                (void) CloneString(&image_info->texture,argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("title",option+1) == 0)
-          {
-            resource_info.title=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingTitle",option);
-                resource_info.title=argv[i];
-              }
-            break;
-          }
-        if (LocaleCompare("treedepth",option+1) == 0)
-          {
-            quantize_info->tree_depth=0;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingDepth",option);
-                quantize_info->tree_depth=atoi(argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("trim",option+1) == 0)
-          break;
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'u':
-      {
-        if (LocaleCompare("update",option+1) == 0)
-          {
-            resource_info.update=(*option == '-');
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingSeconds",option);
-                resource_info.update=atoi(argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("use_pixmap",option+1) == 0)
-          {
-            resource_info.use_pixmap=(*option == '-');
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'v':
-      {
-        if (LocaleCompare("verbose",option+1) == 0)
-          {
-            image_info->verbose=(*option == '-');
-            break;
-          }
-        if (LocaleCompare("version",option+1) == 0)
-          break;
-        if (LocaleCompare("visual",option+1) == 0)
-          {
-            resource_info.visual_type=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingVisualClass",
-                    option);
-                resource_info.visual_type=argv[i];
-              }
-            break;
-          }
-        if (LocaleCompare("virtual-pixel",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                VirtualPixelMethod
-                  virtual_pixel_method;
-
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingVirtualPixelMethod",
-                    option);
-                option=argv[i];
-                virtual_pixel_method=UndefinedVirtualPixelMethod;
-                if (LocaleCompare("Constant",option) == 0)
-                  virtual_pixel_method=ConstantVirtualPixelMethod;
-                if (LocaleCompare("Edge",option) == 0)
-                  virtual_pixel_method=EdgeVirtualPixelMethod;
-                if (LocaleCompare("Mirror",option) == 0)
-                  virtual_pixel_method=MirrorVirtualPixelMethod;
-                if (LocaleCompare("Tile",option) == 0)
-                  virtual_pixel_method=TileVirtualPixelMethod;
-                if (virtual_pixel_method == UndefinedVirtualPixelMethod)
-                  MagickFatalError(OptionFatalError,
-                    "UnrecognizedVirtualPixelMethod",option);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case 'w':
-      {
-        if (LocaleCompare("window",option+1) == 0)
-          {
-            resource_info.window_id=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingIDNameOrRoot",
-                    option);
-                resource_info.window_id=argv[i];
-              }
-            break;
-          }
-        if (LocaleCompare("window_group",option+1) == 0)
-          {
-            resource_info.window_group=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingIDNameOrRoot",
-                    option);
-                resource_info.window_group=argv[i];
-              }
-            break;
-          }
-        if (LocaleCompare("write",option+1) == 0)
-          {
-            resource_info.write_filename=(char *) NULL;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingFilename",option);
-                resource_info.write_filename=argv[i];
-                if (IsAccessible(resource_info.write_filename))
-                  {
-                    char
-                      answer[2];
-
-                    (void) fprintf(stderr,"Overwrite %.1024s? ",
-                      resource_info.write_filename);
-                    (void) fgets(answer,sizeof(answer),stdin);
-                    if (!((*answer == 'y') || (*answer == 'Y')))
-                      Exit(0);
-                  }
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-      case '?':
-      {
-        DisplayUsage();
-        break;
-      }
-      default:
-      {
-        MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
-        break;
-      }
-    }
-  }
-  if (state & RetainColorsState)
-    {
-      XRetainWindowColors(display,XRootWindow(display,XDefaultScreen(display)));
-      XSync(display,False);
-    }
-  LiberateArgumentList(argc,argv);
-  return(!status);
-#else
-  MagickFatalError(MissingDelegateError,"XWindowLibraryIsNotAvailable",
-    (char *) NULL);
-#endif
-  return(False);
-}
-
-
-
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C o m p o s i t e U s a g e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    o argc: The number of elements in the argument vector.
 %
-%  CompositeUsage() displays the program command syntax.
+%    o argv: A text array containing the command line arguments.
 %
-%  The format of the CompositeUsage method is:
+%    o metadata: any metadata is returned here.
 %
-%      void CompositeUsage()
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-MagickExport void CompositeUsage(void)
+static unsigned int VersionCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
-  const char
-    **p;
-
-  static const char
-    *options[]=
-    {
-      "-affine matrix       affine transform matrix",
-      "-authenticate value  decrypt image with this password",
-      "-blue-primary point  chomaticity blue primary point",
-      "-colors value        preferred number of colors in the image",
-      "-colorspace type     alternate image colorspace",
-      "-comment string      annotate image with comment",
-      "-compose operator    composite operator",
-      "-compress type       image compression tyhpe",
-      "-debug events        display copious debugging information",
-      "-density geometry    horizontal and vertical density of the image",
-      "-depth value         image depth",
-      "-displace geometry   shift image pixels defined by a displacement map",
-      "-display server      get image or font from this X server",
-      "-dispose method      Undefined, None, Background, Previous",
-      "-dissolve value      dissolve the two images a given percent",
-      "-dither              apply Floyd/Steinberg error diffusion to image",
-      "-encoding type       text encoding type",
-      "-endian type         LSB or MSB",
-      "-filter type         use this filter when resizing an image",
-      "-font name           render text with this font",
-      "-geometry geometry   location of the composite image",
-      "-gravity type        which direction to gravitate towards",
-      "-green-primary point chomaticity green primary point",
-      "-help                print program options",
-      "-interlace type      None, Line, Plane, or Partition",
-      "-label name          ssign a label to an image",
-      "-limit type value    Disk, Map, or Memory resource limit",
-      "-log format          format of debugging information",
-      "-matte               store matte channel if the image has one",
-      "-monochrome          transform image to black and white",
-      "-negate              replace every pixel with its complementary color ",
-      "-page geometry       size and location of an image canvas",
-      "-profile filename    add ICM or IPTC information profile to image",
-      "-quality value       JPEG/MIFF/PNG compression level",
-      "-red-primary point   chomaticity red primary point",
-      "-rotate degrees      apply Paeth rotation to the image",
-      "-resize geometry     resize the image",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-scene value         image scene number",
-      "-sharpen geometry    sharpen the image",
-      "-size geometry       width and height of image",
-      "-stegano offset      hide watermark within an image",
-      "-stereo              combine two image to create a stereo anaglyph",
-      "-tile                repeat composite operation across image",
-      "-transform           affine transform image",
-      "-treedepth value     color tree depth",
-      "-type type           image type",
-      "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
-      "-unsharp geometry    sharpen the image",
-      "-verbose             print detailed information about the image",
-      "-version             print version information",
-      "-virtual-pixel method",
-      "                     Constant, Edge, Mirror, or Tile",
-      "-watermark geometry  percent brightness and saturation of a watermark",
-      "-white-point point   chomaticity white point",
-      "-write filename      write images to this file",
-      (char *) NULL
-    };
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
-  (void) printf("Usage: %.1024s [options ...] image [options ...] composite\n"
-    "  [ [options ...] mask ] [options ...] composite\n",
-    SetClientName((char *) NULL));
-  (void) printf("\nWhere options include:\n");
-  for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
-}
-
-
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C o n v e r t U s a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Procedure ConvertUsage displays the program command syntax.
-%
-%  The format of the ConvertUsage method is:
-%
-%      void ConvertUsage()
-%
-*/
-MagickExport void ConvertUsage(void)
-{
-  static const char
-    *options[]=
-    {
-      "-adjoin              join images into a single multi-image file",
-      "-affine matrix       affine transform matrix",
-      "-antialias           remove pixel-aliasing",
-      "-append              append an image sequence",
-      "-authenticate value  decrypt image with this password",
-      "-average             average an image sequence",
-      "-background color    background color",
-      "-blue-primary point  chomaticity blue primary point",
-      "-blur geometry       blur the image",
-      "-border geometry     surround image with a border of color",
-      "-bordercolor color   border color",
-      "-channel type        extract a particular color channel from image",
-      "-charcoal radius     simulate a charcoal drawing",
-      "-chop geometry       remove pixels from the image interior",
-      "-clip                apply clipping path if the image has one",
-      "-coalesce            merge a sequence of images",
-      "-colorize value      colorize the image with the fill color",
-      "-colors value        preferred number of colors in the image",
-      "-colorspace type     alternate image colorspace",
-      "-comment string      annotate image with comment",
-      "-compress type       image compression tyhpe",
-      "-contrast            enhance or reduce the image contrast",
-      "-crop geometry       preferred size and location of the cropped image",
-      "-cycle amount        cycle the image colormap",
-      "-debug events        display copious debugging information",
-      "-deconstruct         break down an image sequence into constituent parts",
-      "-delay value         display the next image after pausing",
-      "-density geometry    horizontal and vertical density of the image",
-      "-depth value         image depth",
-      "-despeckle           reduce the speckles within an image",
-      "-display server      get image or font from this X server",
-      "-dispose method      Undefined, None, Background, Previous",
-      "-dither              apply Floyd/Steinberg error diffusion to image",
-      "-draw string         annotate the image with a graphic primitive",
-      "-edge radius         apply a filter to detect edges in the image",
-      "-emboss radius       emboss an image",
-      "-encoding type       text encoding type",
-      "-endian type         LSB or MSB",
-      "-enhance             apply a digital filter to enhance a noisy image",
-      "-equalize            perform histogram equalization to an image",
-      "-fill color          color to use when filling a graphic primitive",
-      "-filter type         use this filter when resizing an image",
-      "-flatten             flatten a sequence of images",
-      "-flip                flip image in the vertical direction",
-      "-flop                flop image in the horizontal direction",
-      "-font name           render text with this font",
-      "-frame geometry      surround image with an ornamental border",
-      "-fuzz distance       colors within this distance are considered equal",
-      "-gamma value         level of gamma correction",
-      "-gaussian geometry   gaussian blur an image",
-      "-geometry geometry   perferred size or location of the image",
-      "-green-primary point chomaticity green primary point",
-      "-gravity type        horizontal and vertical text placement",
-      "-help                print program options",
-      "-implode amount      implode image pixels about the center",
-      "-intent type         Absolute, Perceptual, Relative, or Saturation",
-      "-interlace type      None, Line, Plane, or Partition",
-      "-label name          assign a label to an image",
-      "-lat geometry        local adaptive thresholding",
-      "-level value         adjust the level of image contrast",
-      "-limit type value    Disk, Map, or Memory resource limit",
-      "-list type           Color, Delegate, Format, Magic, Module, or Type",
-      "-log format          format of debugging information",
-      "-loop iterations     add Netscape loop extension to your GIF animation",
-      "-map filename        transform image colors to match this set of colors",
-      "-mask filename       set the image clip mask",
-      "-matte               store matte channel if the image has one",
-      "-median radius       apply a median filter to the image",
-      "-modulate value      vary the brightness, saturation, and hue",
-      "-monochrome          transform image to black and white",
-      "-morph value         morph an image sequence",
-      "-mosaic              create a mosaic from an image sequence",
-      "-negate              replace every pixel with its complementary color ",
-      "-noop                do not apply options to image",
-      "-noise radius        add or reduce noise in an image",
-      "-normalize           transform image to span the full range of colors",
-      "-opaque color        change this color to the fill color",
-      "-ordered-dither channeltype NxN",
-      "                     ordered dither the image",
-      "-page geometry       size and location of an image canvas",
-      "-paint radius        simulate an oil painting",
-      "-ping                efficiently determine image attributes",
-      "-pointsize value     font point size",
-      "-preview type        image preview type",
-      "-profile filename    add ICM or IPTC information profile to image",
-      "-quality value       JPEG/MIFF/PNG compression level",
-      "-raise value         lighten/darken image edges to create a 3-D effect",
-      "-region geometry     apply options to a portion of the image",
-      "-raise value         lighten/darken image edges to create a 3-D effect",
-      "-random-threshold channeltype LOWxHIGH",
-      "                     random threshold the image",
-      "-red-primary point   chomaticity red primary point",
-      "-render              render vector graphics",
-      "-resize geometry     resize the image",
-      "-roll geometry       roll an image vertically or horizontally",
-      "-rotate degrees      apply Paeth rotation to the image",
-      "-sample geometry     scale image with pixel sampling",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-scale geometry      scale the image",
-      "-scene value         image scene number",
-      "-seed value          pseudo-random number generator seed value",
-      "-segment values      segment an image",
-      "-shade degrees       shade the image using a distant light source",
-      "-sharpen geometry    sharpen the image",
-      "-shave geometry      shave pixels from the image edges",
-      "-shear geometry      slide one edge of the image along the X or Y axis",
-      "-size geometry       width and height of image",
-      "-solarize threshold  negate all pixels above the threshold level",
-      "-spread amount       displace image pixels by a random amount",
-      "-stroke color        graphic primitive stroke color",
-      "-strokewidth value   graphic primitive stroke width",
-      "-swirl degrees       swirl image pixels about the center",
-      "-texture filename    name of texture to tile onto the image background",
-      "-threshold value     threshold the image",
-      "-tile filename       tile image when filling a graphic primitive",
-      "-transform           affine transform image",
-      "-transparent color   make this color transparent within the image",
-      "-treedepth value     color tree depth",
-      "-trim                trim image edges",
-      "-type type           image type",
-      "-undercolor color    annotation bounding box color",
-      "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
-      "-unsharp geometry    sharpen the image",
-      "-verbose             print detailed information about the image",
-      "-version             print version information",
-      "-view                FlashPix viewing transforms",
-      "-virtual-pixel method",
-      "                     Constant, Edge, Mirror, or Tile",
-      "-wave geometry       alter an image along a sine wave",
-      "-white-point point   chomaticity white point",
-      "-write filename      write images to this file",
-      (char *) NULL
-    };
-
-  const char
-    **p;
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
-  (void) printf("Usage: %.1024s [options ...] file [ [options ...] "
-    "file ...] [options ...] file\n",SetClientName((char *) NULL));
-  (void) printf("\nWhere options include:\n");
-  for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
-  (void) printf(
-    "\nBy default, the image format of `file' is determined by its magic\n");
-  (void) printf(
-    "number.  To specify a particular image format, precede the filename\n");
-  (void) printf(
-    "with an image format name and a colon (i.e. ps:image) or specify the\n");
-  (void) printf(
-    "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
-  (void) printf("'-' for standard input or output.\n");
-}
-
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M o g r i f y U s a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MogrifyUsage() displays the program command syntax.
-%
-%  The format of the MogrifyUsage method is:
-%
-%      void MogrifyUsage()
-%
-%
-*/
-MagickExport void MogrifyUsage(void)
-{
-  static const char
-    *options[]=
-    {
-      "-affine matrix       affine transform matrix",
-      "-antialias           remove pixel-aliasing",
-      "-authenticate value  decrypt image with this password",
-      "-background color    background color",
-      "-blue-primary point  chomaticity blue primary point",
-      "-blur radius         blur the image",
-      "-border geometry     surround image with a border of color",
-      "-bordercolor color   border color",
-      "-channel type        extract a particular color channel from image",
-      "-charcoal radius     simulate a charcoal drawing",
-      "-chop geometry       remove pixels from the image interior",
-      "-colorize value      colorize the image with the fill color",
-      "-colors value        preferred number of colors in the image",
-      "-colorspace type     alternate image colorspace",
-      "-comment string      annotate image with comment",
-      "-compress type       image compression tyhpe",
-      "-contrast            enhance or reduce the image contrast",
-      "-crop geometry       preferred size and location of the cropped image",
-      "-cycle amount        cycle the image colormap",
-      "-debug events        display copious debugging information",
-      "-delay value         display the next image after pausing",
-      "-density geometry    horizontal and vertical density of the image",
-      "-depth value         image depth",
-      "-despeckle           reduce the speckles within an image",
-      "-display server      get image or font from this X server",
-      "-dispose method      Undefined, None, Background, Previous",
-      "-dither              apply Floyd/Steinberg error diffusion to image",
-      "-draw string         annotate the image with a graphic primitive",
-      "-edge radius         apply a filter to detect edges in the image",
-      "-emboss radius       emboss an image",
-      "-encoding type       text encoding type",
-      "-endian type         LSB or MSB",
-      "-enhance             apply a digital filter to enhance a noisy image",
-      "-equalize            perform histogram equalization to an image",
-      "-fill color          color to use when filling a graphic primitive",
-      "-filter type         use this filter when resizing an image",
-      "-flip                flip image in the vertical direction",
-      "-flop                flop image in the horizontal direction",
-      "-font name           render text with this font",
-      "-format type         image format type",
-      "-frame geometry      surround image with an ornamental border",
-      "-fuzz distance       colors within this distance are considered equal",
-      "-gamma value         level of gamma correction",
-      "-gaussian geometry   gaussian blur an image",
-      "-geometry geometry   perferred size or location of the image",
-      "-green-primary point chomaticity green primary point",
-      "-implode amount      implode image pixels about the center",
-      "-interlace type      None, Line, Plane, or Partition",
-      "-help                print program options",
-      "-label name          assign a label to an image",
-      "-lat geometry        local adaptive thresholding",
-      "-level value         adjust the level of image contrast",
-      "-limit type value    Disk, Map, or Memory resource limit",
-      "-list type           Color, Delegate, Format, Magic, Module, or Type",
-      "-log format          format of debugging information",
-      "-loop iterations     add Netscape loop extension to your GIF animation",
-      "-map filename        transform image colors to match this set of colors",
-      "-mask filename       set the image clip mask",
-      "-matte               store matte channel if the image has one",
-      "-median radius       apply a median filter to the image",
-      "-modulate value      vary the brightness, saturation, and hue",
-      "-monochrome          transform image to black and white",
-      "-negate              replace every pixel with its complementary color ",
-      "-noop                do not apply options to image"
-      "-noise radius        add or reduce noise in an image.",
-      "-normalize           transform image to span the full range of colors",
-      "-opaque color        change this color to the fill color",
-      "-ordered-dither channeltype NxN",
-      "                     ordered dither the image",
-      "-page geometry       size and location of an image canvas",
-      "-paint radius        simulate an oil painting",
-      "-fill color           color for annotating or changing opaque color",
-      "-pointsize value     font point size",
-      "-profile filename    add ICM or IPTC information profile to image",
-      "-quality value       JPEG/MIFF/PNG compression level",
-      "-raise value         lighten/darken image edges to create a 3-D effect",
-      "-random-threshold channeltype LOWxHIGH",
-      "                     random threshold the image",
-      "-red-primary point  chomaticity red primary point",
-      "-region geometry     apply options to a portion of the image",
-      "-resize geometry     perferred size or location of the image",
-      "-roll geometry       roll an image vertically or horizontally",
-      "-rotate degrees      apply Paeth rotation to the image",
-      "-sample geometry     scale image with pixel sampling",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-scale geometry      scale the image",
-      "-scene number        image scene number",
-      "-seed value          pseudo-random number generator seed value",
-      "-segment values      segment an image",
-      "-shade degrees       shade the image using a distant light source",
-      "-sharpen radius      sharpen the image",
-      "-shear geometry      slide one edge of the image along the X or Y axis",
-      "-size geometry       width and height of image",
-      "-solarize threshold  negate all pixels above the threshold level",
-      "-spread amount       displace image pixels by a random amount",
-      "-stroke color        graphic primitive stroke color",
-      "-strokewidth value   graphic primitive stroke width",
-      "-swirl degrees       swirl image pixels about the center",
-      "-texture filename    name of texture to tile onto the image background",
-      "-threshold value     threshold the image",
-      "-tile filename       tile image when filling a graphic primitive",
-      "-transform           affine transform image",
-      "-transparent color   make this color transparent within the image",
-      "-treedepth value     color tree depth",
-      "-trim                trim image edges",
-      "-type type           image type",
-      "-undercolor color    annotation bounding box color",
-      "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
-      "-unsharp geometry    sharpen the image",
-      "-verbose             print detailed information about the image",
-      "-version             print version information",
-      "-view                FlashPix viewing transforms",
-      "-virtual-pixel method",
-      "                     Constant, Edge, Mirror, or Tile",
-      "-wave geometry       alter an image along a sine wave",
-      "-white-point point   chomaticity white point",
-      (char *) NULL
-    };
-
-  const char
-    **p;
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
-  (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
-    SetClientName((char *) NULL));
-  (void) printf("\nWhere options include: \n");
-  for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
-  (void) printf(
-    "\nBy default, the image format of `file' is determined by its magic\n");
-  (void) printf(
-    "number.  To specify a particular image format, precede the filename\n");
-  (void) printf(
-    "with an image format name and a colon (i.e. ps:image) or specify the\n");
-  (void) printf(
-    "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
-  (void) printf("'-' for standard input or output.\n");
-}
-
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M o n t a g e U s a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MontageUsage() displays the program command syntax.
-%
-%  The format of the MontageUsage method is:
-%
-%      void MontageUsage()
-%
-%
-*/
-MagickExport void MontageUsage(void)
-{
-  const char
-    **p;
-
-  static const char
-    *options[]=
-    {
-      "-adjoin              join images into a single multi-image file",
-      "-affine matrix       affine transform matrix",
-      "-authenticate value  decrypt image with this password",
-      "-blue-primary point  chomaticity blue primary point",
-      "-blur factor         apply a filter to blur the image",
-      "-colors value        preferred number of colors in the image",
-      "-colorspace type     alternate image colorsapce",
-      "-comment string      annotate image with comment",
-      "-compose operator    composite operator",
-      "-compress type       image compression tyhpe",
-      "-crop geometry       preferred size and location of the cropped image",
-      "-debug events        display copious debugging information",
-      "-density geometry    horizontal and vertical density of the image",
-      "-depth value         image depth",
-      "-display server      query font from this X server",
-      "-dispose method      Undefined, None, Background, Previous",
-      "-dither              apply Floyd/Steinberg error diffusion to image",
-      "-draw string         annotate the image with a graphic primitive",
-      "-encoding type       text encoding type",
-      "-endian type         LSB or MSB",
-      "-fill color          color to use when filling a graphic primitive",
-      "-filter type         use this filter when resizing an image",
-      "-flip                flip image in the vertical direction",
-      "-flop                flop image in the horizontal direction",
-      "-frame geometry      surround image with an ornamental border",
-      "-gamma value         level of gamma correction",
-      "-geometry geometry   preferred tile and border sizes",
-      "-gravity direction   which direction to gravitate towards",
-      "-green-primary point chomaticity green primary point",
-      "-interlace type      None, Line, Plane, or Partition",
-      "-help                print program options",
-      "-label name          assign a label to an image",
-      "-limit type value    Disk, Map, or Memory resource limit",
-      "-log format          format of debugging information",
-      "-matte               store matte channel if the image has one",
-      "-mode type           Frame, Unframe, or Concatenate",
-      "-monochrome          transform image to black and white",
-      "-noop                do not apply options to image"
-      "-page geometry       size and location of an image canvas",
-      "-pointsize value     font point size",
-      "-quality value       JPEG/MIFF/PNG compression level",
-      "-red-primary point   chomaticity red primary point",
-      "-resize geometry     resize the image",
-      "-rotate degrees      apply Paeth rotation to the image",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-scenes range        image scene range",
-      "-shadow              add a shadow beneath a tile to simulate depth",
-      "-size geometry       width and height of image",
-      "-stroke color        color to use when stroking a graphic primitive",
-      "-texture filename    name of texture to tile onto the image background",
-      "-tile geometry       number of tiles per row and column",
-      "-transform           affine transform image",
-      "-transparent color   make this color transparent within the image",
-      "-treedepth value     color tree depth",
-      "-trim                trim image edges",
-      "-type type           image type",
-      "-verbose             print detailed information about the image",
-      "-version             print version information",
-      "-virtual-pixel method",
-      "                     Constant, Edge, Mirror, or Tile",
-      "-white-point point   chomaticity white point",
-      (char *) NULL
-    };
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
-  (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
-    SetClientName((char *) NULL));
-  (void) printf("\nWhere options include: \n");
-  for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
-  (void) printf(
-    "\nIn addition to those listed above, you can specify these standard X\n");
-  (void) printf(
-    "resources as command line options:  -background, -bordercolor,\n");
-  (void) printf(
-    "-borderwidth, -font, -mattecolor, or -title\n");
-  (void) printf(
-    "\nBy default, the image format of `file' is determined by its magic\n");
-  (void) printf(
-    "number.  To specify a particular image format, precede the filename\n");
-  (void) printf(
-    "with an image format name and a colon (i.e. ps:image) or specify the\n");
-  (void) printf(
-    "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
-  (void) printf("'-' for standard input or output.\n");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I d e n t i f y U s a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IdentifyUsage() displays the program command syntax.
-%
-%  The format of the IdentifyUsage method is:
-%
-%      void IdentifyUsage()
-%
-%
-*/
-MagickExport void IdentifyUsage(void)
-{
-  const char
-    **p;
-
-  static const char
-    *options[]=
-    {
-      "-authenticate value  decrypt image with this password",
-      "-debug events        display copious debugging information",
-      "-density geometry    horizontal and vertical density of the image",
-      "-depth value         image depth",
-      "-format \"string\"   output formatted image characteristics",
-      "-help                print program options",
-      "-interlace type      None, Line, Plane, or Partition",
-      "-limit type value    Disk, Map, or Memory resource limit",
-      "-log format          format of debugging information",
-      "-size geometry       width and height of image",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-verbose             print detailed information about the image",
-      "-version             print version information",
-      "-virtual-pixel method",
-      "                     Constant, Edge, Mirror, or Tile",
-      (char *) NULL
-    };
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
-  (void) printf("Usage: %.1024s [options ...] file [ [options ...] "
-    "file ... ]\n",SetClientName((char *) NULL));
-  (void) printf("\nWhere options include:\n");
-  for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
+  (void) fprintf(stdout,"Version: %.1024s\n",
+                 GetMagickVersion((unsigned long *) NULL));
+  (void) fprintf(stdout,"Copyright: %.1024s\n",GetMagickCopyright());
+  return True;
 }

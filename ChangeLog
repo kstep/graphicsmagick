@@ -1,3 +1,25 @@
+2003-06-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh: Updated LIBRARY_CURRENT and LIBRARY_REVISION since
+	some command.c interfaces have changed, and a new interface has
+	been added. The only user of these interfaces should be 'gm' but
+	it always pays to be careful.
+	* utilities/gm.c (main): Use MagickCommand.
+	* magick/command.c (MagickCommand): New function to provide
+	API-level command access to the command functions provided by the
+	GM utility with an interface similar to ConvertImageCommand.
+	(AnimateImageCommand): Changed function arguments to match
+	ConvertImageCommand.
+	(ConjureImageCommand): Changed function arguments to match
+	ConvertImageCommand.
+	(DisplayImageCommand): Changed function arguments to match
+	ConvertImageCommand.
+	(ImportImageCommand): Changed function arguments to match
+	ConvertImageCommand.
+	* libxml/libxml2.def: Remove LIBRARY line since Visual C++ 6.0
+	doesn't like that the build library doesn't match the name
+	specified by LIBRARY.
+
 2003-05-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/magick.c (GetMagickInfoArray): Resolve thread-safety

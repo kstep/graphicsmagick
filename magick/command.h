@@ -16,17 +16,28 @@ extern "C" {
 #endif
 
 extern MagickExport unsigned int
-  AnimateImageCommand(int,char **),
-  CompositeImageCommand(ImageInfo *,int,char **,char **,ExceptionInfo *),
-  ConjureImageCommand(int,char **),
-  ConvertImageCommand(ImageInfo *,int,char **,char **,ExceptionInfo *),
-  DisplayImageCommand(int,char **),
-  IdentifyImageCommand(ImageInfo *,int,char **,char **,ExceptionInfo *),
-  ImportImageCommand(int,char **),
+  AnimateImageCommand(ImageInfo *image_info,int argc,char **argv,
+                      char **metadata,ExceptionInfo *exception),
+  CompositeImageCommand(ImageInfo *image_info,int argc,char **argv,
+                        char **metadata,ExceptionInfo *exception),
+  ConjureImageCommand(ImageInfo *image_info,int argc,char **argv,
+                      char **metadata,ExceptionInfo *exception),
+  ConvertImageCommand(ImageInfo *image_info,int argc,char **argv,
+                      char **metadata,ExceptionInfo *exception),
+  DisplayImageCommand(ImageInfo *image_info,int argc,char **argv,
+                      char **metadata,ExceptionInfo *exception),
+  IdentifyImageCommand(ImageInfo *image_info,int argc,char **argv,
+                       char **metadata,ExceptionInfo *exception),
+  ImportImageCommand(ImageInfo *image_info,int argc,char **argv,
+                     char **metadata,ExceptionInfo *exception),
+  MagickCommand(ImageInfo *image_info,int argc,char **argv,
+                char **metadata,ExceptionInfo *exception),
   MogrifyImage(const ImageInfo *,int,char **,Image **),
-  MogrifyImageCommand(ImageInfo *,int,char **,char **,ExceptionInfo *),
+  MogrifyImageCommand(ImageInfo *image_info,int argc,char **argv,
+                      char **metadata,ExceptionInfo *exception),
   MogrifyImages(const ImageInfo *,int,char **,Image **),
-  MontageImageCommand(ImageInfo *,int,char **,char **,ExceptionInfo *);
+  MontageImageCommand(ImageInfo *image_info,int argc,char **argv,
+                      char **metadata,ExceptionInfo *exception);
 
 extern MagickExport void
   AnimateUsage(void),

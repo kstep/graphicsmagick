@@ -13,7 +13,7 @@ A:visited { color: #800080 }
 </STYLE>
 
 <TITLE>magick - Methods to Read or List GraphicsMagick Image formats</TITLE>
-<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+<LINK REV="made" HREF="mailto:root@gohan11.freebsd.org">
 </HEAD>
 
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
@@ -70,9 +70,11 @@ DESCRIPTIONS</A>
 		<LI><A HREF="#destroymagickinfo">DestroyMagickInfo</A>
 		<LI><A HREF="#getimagemagick">GetImageMagick</A>
 		<LI><A HREF="#getmagickinfo">GetMagickInfo</A>
+		<LI><A HREF="#getmagickarray">GetMagickArray</A>
 		<LI><A HREF="#initializemagick">InitializeMagick</A>
 		<LI><A HREF="#ismagickconflict">IsMagickConflict</A>
 		<LI><A HREF="#listmagickinfo">ListMagickInfo</A>
+		<LI><A HREF="#listmodulemap">ListModuleMap</A>
 		<LI><A HREF="#magicktomime">MagickToMime</A>
 		<LI><A HREF="#registermagickinfo">RegisterMagickInfo</A>
 		<LI><A HREF="#setmagickinfo">SetMagickInfo</A>
@@ -94,10 +96,12 @@ SYNOPSIS</A></H2>
 <P><STRONG>DestroyMagick</STRONG>( void );</P>
 <P>void  <STRONG>DestroyMagickInfo</STRONG>( void );</P>
 <P>const char * <STRONG>GetImageMagick</STRONG>( const unsigned char *magick, const size_t length );</P>
-<P>const MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *name, Exception *exception );</P>
+<P>const MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *name, ExceptionInfo *exception );</P>
 <P><STRONG>InitializeMagick</STRONG>( const char *path );</P>
 <P>unsigned int  <STRONG>IsMagickConflict</STRONG>( const char *magick );</P>
 <P>unsigned int  <STRONG>ListMagickInfo</STRONG>( 
+FILE *file, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>ListModuleMap</STRONG>( 
 FILE *file, ExceptionInfo *exception );</P>
 <P>char * <STRONG>MagickToMime</STRONG>( const char *magick );</P>
 <P>MagickInfo * <STRONG>RegisterMagickInfo</STRONG>( MagickInfo *magick_info );</P>
@@ -130,8 +134,8 @@ The length of the binary string.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="getmagickinfo">GetMagickInfo</A></H3>
-<blockquote>GetMagickInfo() returns a pointer <A HREF="types.html#MagickInfo">MagickInfo</A> structure that matches the specified name. If name is NULL, the head of the image format list is returned. </blockquote><P>The format of the GetMagickInfo method is:</P>
-<blockquote>const <A HREF="types.html#MagickInfo">MagickInfo</A> *GetMagickInfo ( const char *name, Exception *exception ); </blockquote><P>
+<blockquote>GetMagickInfo() returns a pointer <A HREF="types.html#MagickInfo">MagickInfo</A> structure that matches the specified name. If name is NULL, the head of the image format list is returned. It is not safe to traverse the list by using the previous and next pointers in the <A HREF="types.html#MagickInfo">MagickInfo</A> structure since the list contents or order may be altered while the list is being traversed. If the list must be traversed, access it via the GetMagickInfoArray function instead. </blockquote><P>The format of the GetMagickInfo method is:</P>
+<blockquote>const <A HREF="types.html#MagickInfo">MagickInfo</A> *GetMagickInfo ( const char *name, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
@@ -139,6 +143,19 @@ A description of each parameter follows:</P>
 The image format we are looking for.
 <P></P>
 <DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="getmagickarray">GetMagickArray</A></H3>
+<P><CODE>GetMagickInfoArray()</CODE> returns a sorted null-terminated array of MagickInfo pointers corresponding to the available format registrations.  If necessarly all modules are loaded in order to return a complete list.  This function should be used to access the entire list rather than GetMagickInfo since the list returned by GetMagickInfo may be re-ordered every time it is invoked.</P>
+<P>The format of the GetMagickList method is:</P>
+<PRE>
+    const MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)</PRE>
+<P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
@@ -178,6 +195,23 @@ A description of each parameter follows.</P>
 <DD>
 
 A file handle.
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="listmodulemap">ListModuleMap</A></H3>
+<P>Method ListModuleMap lists the module alias info to a file in the 
+XML format used by modules.mgk.  True is returned on success.</P>
+<P>The format of the ListModuleMap method is:</P>
+<blockquote>unsigned int ListModuleMap ( FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows.</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>file:</STRONG><BR>
+<DD>
+An pointer to a 
+FILE.
 <P></P>
 <DD><P></P><DT><STRONG>exception:</STRONG><BR>
 <DD>

@@ -223,7 +223,10 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %
 %  GetMagickInfo() returns a pointer MagickInfo structure that matches
 %  the specified name.  If name is NULL, the head of the image format list
-%  is returned.
+%  is returned. It is not safe to traverse the list by using the previous and
+%  next pointers in the MagickInfo structure since the list contents or order
+%  may be altered while the list is being traversed. If the list must be
+%  traversed, access it via the GetMagickInfoArray function instead.
 %
 %  The format of the GetMagickInfo method is:
 %

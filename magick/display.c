@@ -41,7 +41,6 @@
 #include "magick/blob.h"
 #include "magick/cache.h"
 #include "magick/color.h"
-#include "magick/command.h"
 #include "magick/composite.h"
 #include "magick/constitute.h"
 #include "magick/decorate.h"
