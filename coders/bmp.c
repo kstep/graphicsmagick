@@ -77,8 +77,8 @@ typedef struct _BMPInfo
   unsigned long
     compression,
     image_size,
-    x_pixels,     /* pixels per meter */
-    y_pixels,     /* pixels per meter */
+    x_pixels,
+    y_pixels,
     number_colors,
     red_mask,
     green_mask,
@@ -88,30 +88,7 @@ typedef struct _BMPInfo
 
   long
     intent,
-  /*
-    BMP Version 5:
-    0: Absolute,   LCS_GM_ABS_COLORIMETRIC (ICC intent == 3)
-    1: Saturation, LCS_GM_BUSINESS         (ICC intent == 2)
-    2: Relative,   LCS_GM_GRAPHICS         (ICC intent == 1)
-    3: Perceptual, LCS_GM_IMAGES           (ICC intent == 0)
-    Query submitted to Microsoft, 13 Dec 2001, about the apparantly
-    reversed enumeration order -- glennrp.
-  */
     colorspace;
-  /*
-    BMP Version 3:
-    0: Calibrated RGB
-    BMP Version 4:
-    0: Calibrated RGB
-    1: Device-dependent RGB
-    2: Device-dependent CMYK
-    BMP Version 5:
-    0: Calibrated RGB
-    1: sRGB
-    2: sRGB (Windows default)
-    3: external profile
-    4: embedded profile
-  */
 
   PointInfo
     red_primary,
@@ -535,9 +512,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bmp_info.offset_bits=ReadBlobLSBLong(image);
       count=ReadBlob(image,2,(char *) magick);
     }
-    if ((count == 0) ||
-        ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
-         (LocaleNCompare((char *) magick,"CI",2) != 0)))
+    if ((count == 0) || ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
+        (LocaleNCompare((char *) magick,"CI",2) != 0)))
       ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
     bmp_info.file_size=ReadBlobLSBLong(image);
     (void) ReadBlobLSBLong(image);
@@ -582,75 +558,75 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.red_mask=ReadBlobLSBLong(image);
             bmp_info.green_mask=ReadBlobLSBLong(image);
             bmp_info.blue_mask=ReadBlobLSBLong(image);
-        if (bmp_info.size > 40)
-          {
-            /*
-              Read color management information.
-              To do: store this info.
-            */
-            bmp_info.alpha_mask=ReadBlobLSBLong(image);
-            bmp_info.colorspace=(long) ReadBlobLSBLong(image);
-            bmp_info.red_primary.x=ReadBlobLSBLong(image);
-            /* The primaries are formatted in 2^30 fixed point */
-            bmp_info.red_primary.y=(double) ReadBlobLSBLong(image)/0x3ffffff;
-            bmp_info.red_primary.z=(double) ReadBlobLSBLong(image)/0x3ffffff;
-            bmp_info.green_primary.x=(double) ReadBlobLSBLong(image)/0x3ffffff;
-            bmp_info.green_primary.y=(double) ReadBlobLSBLong(image)/0x3ffffff;
-            bmp_info.green_primary.z=(double) ReadBlobLSBLong(image)/0x3ffffff;
-            bmp_info.blue_primary.x=(double) ReadBlobLSBLong(image)/0x3ffffff;
-            bmp_info.blue_primary.y=(double) ReadBlobLSBLong(image)/0x3ffffff;
-            bmp_info.blue_primary.z=(double) ReadBlobLSBLong(image)/0x3ffffff;
-            /* The gamma_scales are formatted in 16^16 fixed point */
-            bmp_info.gamma_scale.x=(double) ReadBlobLSBLong(image)/0xffff;
-            bmp_info.gamma_scale.y=(double) ReadBlobLSBLong(image)/0xffff;
-            bmp_info.gamma_scale.z=(double) ReadBlobLSBLong(image)/0xffff;
-          }
-        if (bmp_info.size > 108)
-          {
-            /*
-              Skip BMP Version 5 color management information.
-              To do: read and store this info.
-            */
-            for (i=0; i<4; i++)
-              ReadBlobLSBLong(image);
+            if (bmp_info.size > 40)
+              {
+                /*
+                  Read color management information.
+                */
+                bmp_info.alpha_mask=ReadBlobLSBLong(image);
+                bmp_info.colorspace=(long) ReadBlobLSBLong(image);
+                bmp_info.red_primary.x=ReadBlobLSBLong(image);
+                /*
+                  The primaries are formatted in 2^30 fixed point.
+                */
+                bmp_info.red_primary.y=(double)
+                  ReadBlobLSBLong(image)/0x3ffffff;
+                bmp_info.red_primary.z=(double)
+                  ReadBlobLSBLong(image)/0x3ffffff;
+                bmp_info.green_primary.x=(double)
+                  ReadBlobLSBLong(image)/0x3ffffff;
+                bmp_info.green_primary.y=(double)
+                  ReadBlobLSBLong(image)/0x3ffffff;
+                bmp_info.green_primary.z=(double)
+                  ReadBlobLSBLong(image)/0x3ffffff;
+                bmp_info.blue_primary.x=(double)
+                  ReadBlobLSBLong(image)/0x3ffffff;
+                bmp_info.blue_primary.y=(double)
+                  ReadBlobLSBLong(image)/0x3ffffff;
+                bmp_info.blue_primary.z=(double)
+                  ReadBlobLSBLong(image)/0x3ffffff;
+                /*
+                  The gamma_scales are formatted in 16^16 fixed point.
+                */
+                bmp_info.gamma_scale.x=(double) ReadBlobLSBLong(image)/0xffff;
+                bmp_info.gamma_scale.y=(double) ReadBlobLSBLong(image)/0xffff;
+                bmp_info.gamma_scale.z=(double) ReadBlobLSBLong(image)/0xffff;
+              }
+            if (bmp_info.size > 108)
+              {
+                /*
+                  Skip BMP Version 5 color management information.
+                */
+                for (i=0; i < 4; i++)
+                  ReadBlobLSBLong(image);
                 (void) ReadBlobByte(image);
-          }
-        if (bmp_info.size > 124)
-          {
-            /*
-              Skip future BMP Version information.
-            */
-            for (i=124; i<bmp_info.size; i++)
-              ReadBlobByte(image);
-          }
-        }
+              }
+            if (bmp_info.size > 124)
+              {
+                /*
+                  Skip future BMP Version information.
+                */
+                for (i=124; i < bmp_info.size; i++)
+                  ReadBlobByte(image);
+              }
+            }
       }
-
     switch (bmp_info.compression)
     {
       case 0:
       case 1:
       case 2:
       case 3:
-        {
-          break;
-        }
+        break;
       case 4:
-        {
-          ThrowReaderException(CorruptImageWarning,
-            "JPEG compression not supported",image);
-        }
-
+        ThrowReaderException(CorruptImageWarning,
+          "JPEG compression not supported",image);
       case 5:
-        {
-          ThrowReaderException(CorruptImageWarning,
-            "PNG compression not supported",image);
-        }
+        ThrowReaderException(CorruptImageWarning,
+          "PNG compression not supported",image);
       default:
-        {
-          ThrowReaderException(CorruptImageWarning,
-            "Unrecognized compression method",image);
-        }
+        ThrowReaderException(CorruptImageWarning,
+          "Unrecognized compression method",image);
     }
     image->columns=bmp_info.width;
     image->rows=AbsoluteValue(bmp_info.height);
@@ -736,25 +712,23 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (bmp_info.compression == 0)
       {
         bmp_info.alpha_mask=0;
-        if (bmp_info.bits_per_pixel==16)
+        bmp_info.red_mask=0x00ff0000L;
+        bmp_info.green_mask=0x0000ff00L;
+        bmp_info.blue_mask=0x000000ffL;
+        if (bmp_info.bits_per_pixel == 16)
           {
-            /* RGB555 */
-            bmp_info.red_mask  =0x00007c00L;
+            /*
+              RGB555.
+            */
+            bmp_info.red_mask=0x00007c00L;
             bmp_info.green_mask=0x000003e0L;
-            bmp_info.blue_mask =0x0000001fL;
-          }
-        else
-          {
-            /* RGB888 */
-            bmp_info.red_mask  =0x00ff0000L;
-            bmp_info.green_mask=0x0000ff00L;
-            bmp_info.blue_mask =0x000000ffL;
+            bmp_info.blue_mask=0x0000001fL;
           }
       }
-    if (bmp_info.bits_per_pixel == 16 || bmp_info.bits_per_pixel == 32)
+    if ((bmp_info.bits_per_pixel == 16) || (bmp_info.bits_per_pixel == 32))
       {
         /*
-          Get shift and quantum_bits info from bitfield masks.
+          Get shift and quantum bits info from bitfield masks.
         */
         memset(&shift,0,sizeof(PixelPacket));
         memset(&quantum_bits,0,sizeof(PixelPacket));
@@ -907,7 +881,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (bmp_info.compression != 0 && bmp_info.compression != 3)
           ThrowReaderException(CorruptImageWarning,
             "Compression mode != 0 or 3 in 16-bit BMP image file",image)
-
         bytes_per_line=2*(image->columns+image->columns%2);
         image->storage_class=DirectClass;
         for (y=(long) image->rows-1; y >= 0; y--)
@@ -992,9 +965,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (bmp_info.compression != 0 && bmp_info.compression != 3)
           ThrowReaderException(CorruptImageWarning,
             "Compression mode != 0 or 3 in 32-bit BMP image file",image)
-
         bytes_per_line=4*(image->columns);
-
         for (y=(long) image->rows-1; y >= 0; y--)
         {
           unsigned long
@@ -1248,14 +1219,15 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_info.bits_per_pixel=1;
         bmp_info.number_colors=1 << bmp_info.bits_per_pixel;
         if (image->matte)
-            SetImageType(image, TrueColorMatteType);
-        else if (bmp_info.number_colors < image->colors)
-            SetImageType(image, TrueColorType);
+          SetImageType(image,TrueColorMatteType);
         else
-          {
-            bmp_info.file_size+=4*(1 << bmp_info.bits_per_pixel);
-            bmp_info.offset_bits+=4*(1 << bmp_info.bits_per_pixel);
-          }
+          if (bmp_info.number_colors < image->colors)
+            SetImageType(image, TrueColorType);
+          else
+            {
+              bmp_info.file_size+=4*(1 << bmp_info.bits_per_pixel);
+              bmp_info.offset_bits+=4*(1 << bmp_info.bits_per_pixel);
+            }
       }
     if (image->storage_class == DirectClass)
       {
@@ -1452,15 +1424,15 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         /*
           Write the rest of the 108-byte BMP Version 4 header
         */
-        (void) WriteBlobLSBLong(image,0x00ff0000L); /* Red mask */
-        (void) WriteBlobLSBLong(image,0x0000ff00L); /* Green mask */
-        (void) WriteBlobLSBLong(image,0x000000ffL); /* Blue mask */
-        (void) WriteBlobLSBLong(image,0xff000000L); /* Alpha mask */
-        (void) WriteBlobLSBLong(image,0x00000001L); /* CSType==RGB */
-        for (j=0; j<9; j++)
-          (void) WriteBlobLSBLong(image,0x00000000L); /* Unused RedX etc. */
-        for (j=0; j<3; j++)
-          (void) WriteBlobLSBLong(image,0x00000000L); /* 3 comp. gamma scale */
+        (void) WriteBlobLSBLong(image,0x00ff0000L);  /* Red mask */
+        (void) WriteBlobLSBLong(image,0x0000ff00L);  /* Green mask */
+        (void) WriteBlobLSBLong(image,0x000000ffL);  /* Blue mask */
+        (void) WriteBlobLSBLong(image,0xff000000L);  /* Alpha mask */
+        (void) WriteBlobLSBLong(image,0x00000001L);  /* CSType==RGB */
+        for (j=0; j < 9; j++)
+          (void) WriteBlobLSBLong(image,0x00000000L);  /* Unused RedX etc. */
+        for (j=0; j < 3; j++)
+          (void) WriteBlobLSBLong(image,0x00000000L);  /* 3 comp. gamma scale */
       }
     if (image->storage_class == PseudoClass)
       {
