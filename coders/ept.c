@@ -214,6 +214,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define DocumentMedia  "%%DocumentMedia:"
 #define PageBoundingBox  "%%PageBoundingBox:"
 #define PostscriptLevel  "%!PS-"
+#define RenderPostscriptText  "  Rendering postscript...  "
 
   char
     density[MaxTextExtent],

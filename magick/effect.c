@@ -2113,7 +2113,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         r=p-(width-i-1)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
         {
-          k=Intensity(*r);
+          k=Intensity(r);
           histogram[k]++;
           if ((int) histogram[k] > count)
             {
@@ -2125,7 +2125,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         r=p+(width-i-1)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
         {
-          k=Intensity(*r);
+          k=Intensity(r);
           histogram[k]++;
           if ((int) histogram[k] > count)
             {
@@ -2138,7 +2138,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       r=p-width;
       for (j=0; j < (2*width+1); j++)
       {
-        k=Intensity(*r);
+        k=Intensity(r);
         histogram[k]++;
         if ((int) histogram[k] > count)
           {
@@ -2646,10 +2646,10 @@ MagickExport Image *ShadeImage(const Image *image,
       */
       dx=(x > 0) ? 1 : -1;
       dy=(x < ((long) image->columns-1)) ? 1 : -1;
-      normal.x=Intensity(*(s0-dx))+Intensity(*(s1-dx))+Intensity(*(s2-dx))-
-        Intensity(*(s0+dy))-Intensity(*(s1+dy))-Intensity(*(s2+dy));
-      normal.y=Intensity(*(s2-dx))+Intensity(*s2)+Intensity(*(s2+dy))-
-        Intensity(*(s0-dx))-Intensity(*s0)-Intensity(*(s0+dy));
+      normal.x=Intensity(s0-dx)+Intensity(s1-dx)+Intensity(s2-dx)-
+        Intensity(s0+dy)-Intensity(s1+dy)-Intensity(s2+dy);
+      normal.y=Intensity(s2-dx)+Intensity(s2)+Intensity(s2+dy)-
+        Intensity(s0-dx)-Intensity(s0)-Intensity(s0+dy);
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else
@@ -3044,17 +3044,17 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
         {
           case 0:
           {
-            SetBit(q->red,j,GetBit(Intensity(pixel),i));
+            SetBit(q->red,j,GetBit(Intensity(&pixel),i));
             break;
           }
           case 1:
           {
-            SetBit(q->green,j,GetBit(Intensity(pixel),i));
+            SetBit(q->green,j,GetBit(Intensity(&pixel),i));
             break;
           }
           case 2:
           {
-            SetBit(q->blue,j,GetBit(Intensity(pixel),i));
+            SetBit(q->blue,j,GetBit(Intensity(&pixel),i));
             break;
           }
         }
@@ -3361,7 +3361,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      index=Intensity(*q) < threshold ? 0 : 1;
+      index=Intensity(q) < threshold ? 0 : 1;
       indexes[x]=index;
       *q++=image->colormap[index];
     }

@@ -538,6 +538,23 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
 %
 %
 */
+
+MagickExport inline unsigned int XColorMatch(const PixelPacket *color,
+  const ColorPacket *target,const double distance)
+{
+  if ((distance == 0.0) && (color->red == target->red) &&
+      (color->green == target->green) && (color->blue == target->blue))
+    return(True);
+  if (((((double) color->red-(double) target->red)* 
+       ((double) color->red-(double) target->red))+ 
+      (((double) color->green-(double) target->green)* 
+       ((double) color->green-(double) target->green))+ 
+      (((double) color->blue-(double) target->blue)* 
+       ((double) color->blue-(double) target->blue))) <= (distance*distance))
+    return(True);
+  return(False);
+}
+
 MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
   ExceptionInfo *exception)
 {
@@ -613,7 +630,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
         if (level != MaxTreeDepth)
           continue;
         for (i=0; i < (long) node_info->number_unique; i++)
-           if (ColorMatch(*p,node_info->list[i],0))
+           if (XColorMatch(p,node_info->list+i,0))
              break;
         if (i < (long) node_info->number_unique)
           {
@@ -1046,7 +1063,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
         index--;
       }
       for (i=0; i < (long) node_info->number_unique; i++)
-        if (ColorMatch(*p,node_info->list[i],0))
+        if (XColorMatch(p,node_info->list+i,0))
           break;
       if (i == (long) node_info->number_unique)
         {

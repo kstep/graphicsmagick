@@ -412,7 +412,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
           Identify the deepest node containing the pixel's color.
         */
         for (count=1; (x+count) < (long) image->columns; count++)
-          if (!ColorMatch(*q,*(q+count),0))
+          if (!ColorMatch(q,q+count,0))
             break;
         node_info=cube_info->root;
         for (index=MaxTreeDepth-1; (int) index > 0; index--)
@@ -460,7 +460,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
       /*
         Monochrome image.
       */
-      polarity=Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
+      polarity=Intensity(&image->colormap[0]) > Intensity(&image->colormap[1]);
       image->colormap[polarity].red=0;
       image->colormap[polarity].green=0;
       image->colormap[polarity].blue=0;
@@ -591,7 +591,7 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image,
         Start at the root and descend the color cube tree.
       */
       for (count=1; (x+count) < (long) image->columns; count++)
-        if (!ColorMatch(*p,*(p+count),0))
+        if (!ColorMatch(p,p+count,0))
           break;
       index=MaxTreeDepth-1;
       bisect=(MaxRGB+1)/2.0;
@@ -1711,7 +1711,7 @@ MagickExport unsigned int OrderedDitherImage(Image *image)
     for (x=0; x < (long) image->columns; x++)
     {
       index=(Quantum)
-        Intensity(*q) > Upscale(DitherMatrix[y & 0x07][x & 0x07]) ? 1 : 0;
+        Intensity(q) > Upscale(DitherMatrix[y & 0x07][x & 0x07]) ? 1 : 0;
       indexes[x]=index;
       q->red=image->colormap[index].red;
       q->green=image->colormap[index].green;
@@ -1916,7 +1916,7 @@ MagickExport unsigned int QuantizationError(Image *image)
     for (x=0; x < (long) image->columns; x+=count)
     {
       for (count=1; (x+count) < (long) image->columns; count++)
-        if (!ColorMatch(*p,*(p+count),0))
+        if (!ColorMatch(p,p+count,0))
           break;
       index=indexes[x];
       red=(double) (p->red-image->colormap[index].red);

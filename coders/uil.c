@@ -301,7 +301,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
       FormatString(buffer,"    background color = '%.1024s'",symbol);
     else
       FormatString(buffer,"    color('%.1024s',%.1024s) = '%.1024s'",
-        name,Intensity(*p) < (0.5*(MaxRGB+1)) ? "background" : "foreground",
+        name,Intensity(p) < (0.5*(MaxRGB+1)) ? "background" : "foreground",
         symbol);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"%.1024s",(i == (long) (colors-1) ? ");\n" : ",\n"));

@@ -64,6 +64,8 @@ extern "C" {
 #define MaxNumberPens  11
 #define MaxNumberFonts  11
 #define MaxIconSize  96
+#define XIntensity(color)  \
+  ((9798*(color).red+19235*(color).green+3735*(color).blue)/32768L)
 
 /*
   Enumeration declarations.

@@ -1285,7 +1285,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         c|=(bits_per_pixel-1);   /* size of global colormap */
         (void) WriteBlobByte(image,c);
         for (j=0; j < Max(image->colors-1,1); j++)
-          if (ColorMatch(image->background_color,image->colormap[j],0))
+          if (ColorMatch(&image->background_color,image->colormap+j,0))
             break;
         (void) WriteBlobByte(image,j);  /* background color */
         (void) WriteBlobByte(image,0x0);  /* reserved */

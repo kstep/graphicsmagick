@@ -222,7 +222,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      histogram[Intensity(*p)]++;
+      histogram[Intensity(p)]++;
       p++;
     }
   }
@@ -851,7 +851,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      gray_value=(Quantum) Intensity(*p);
+      gray_value=Intensity(p);
       histogram[gray_value]++;
       p++;
     }

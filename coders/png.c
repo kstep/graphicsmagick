@@ -4990,14 +4990,14 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             background.blue=(png_uint_16)
               (maxval*image->background_color.blue/MaxRGB);
             background.gray=(png_uint_16)
-              (maxval*Intensity(image->background_color)/MaxRGB);
+              (maxval*Intensity(&image->background_color)/MaxRGB);
           }
         else
           {
             background.red = image->background_color.red;
             background.green = image->background_color.green;
             background.blue = image->background_color.blue;
-            background.gray=(png_uint_16) Intensity(image->background_color);
+            background.gray=(png_uint_16) Intensity(&image->background_color);
           }
         background.index=(png_byte) background.gray;
         png_set_bKGD(ping,ping_info,&background);
@@ -5071,7 +5071,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.red=p->red;
             ping_info->trans_values.green=p->green;
             ping_info->trans_values.blue=p->blue;
-            ping_info->trans_values.gray=(png_uint_16) Intensity(*p);
+            ping_info->trans_values.gray=(png_uint_16) Intensity(p);
             ping_info->trans_values.index=(unsigned char)
                (MaxRGB-Downscale(p->opacity));
           }
@@ -5318,7 +5318,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            maxval=(1<<ping_info->bit_depth)-1;
 
            background.gray=(png_uint_16)
-             (maxval*(Intensity(image->background_color))/MaxRGB);
+             (maxval*(Intensity(&image->background_color))/MaxRGB);
 
            png_set_bKGD(ping,ping_info,&background);
 

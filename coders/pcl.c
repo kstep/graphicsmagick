@@ -390,10 +390,10 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
         }
       if (!IsMonochromeImage(monochrome_image,&monochrome_image->exception))
         SetImageType(monochrome_image,BilevelType);
-      polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
+      polarity=Intensity(&image->colormap[0]) > (0.5*MaxRGB);
       if (monochrome_image->colors == 2)
-        polarity=Intensity(monochrome_image->colormap[0]) >
-          Intensity(monochrome_image->colormap[1]);
+        polarity=Intensity(&monochrome_image->colormap[0]) >
+          Intensity(&monochrome_image->colormap[1]);
       FormatString(buffer,"\033*r%lus%luT",monochrome_image->columns,
         monochrome_image->rows);
       (void) WriteBlobString(image,buffer);

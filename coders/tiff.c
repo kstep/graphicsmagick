@@ -1736,14 +1736,14 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Convert PseudoClass packets to contiguous monochrome scanlines.
         */
-        polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
+        polarity=Intensity(&image->colormap[0]) > (0.5*MaxRGB);
         if (photometric == PHOTOMETRIC_PALETTE)
           polarity=1;
         else
           if (image->colors == 2)
             {
               polarity=
-                Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
+                Intensity(&image->colormap[0]) > Intensity(&image->colormap[1]);
               if (photometric == PHOTOMETRIC_MINISBLACK)
                 polarity=!polarity;
             }

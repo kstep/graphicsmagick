@@ -534,7 +534,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
             break;
           }
         for (i=0; i < (long) image->colors; i++)
-          if (!ColorMatch(next->colormap[i],image->colormap[i],next->fuzz))
+          if (!ColorMatch(&next->colormap[i],&image->colormap[i],next->fuzz))
             {
               global_colormap=False;
               break;
@@ -1207,7 +1207,7 @@ MagickExport unsigned int CompositeImage(Image *image,
               q++;
               continue;
             }
-          x_displace=(horizontal_scale*(Intensity(*p)-
+          x_displace=(horizontal_scale*(Intensity(p)-
             (0.5*(MaxRGB+1))))/(0.5*(MaxRGB+1));
           y_displace=x_displace;
           if (composite_image->matte)
@@ -1340,7 +1340,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           int
             offset;
 
-          offset=(int) (Intensity(pixel)-midpoint);
+          offset=(int) (Intensity(&pixel)-midpoint);
           if (offset == 0)
             break;
           TransformHSL(q->red,q->green,q->blue,&hue,&saturation,
@@ -1361,7 +1361,7 @@ MagickExport unsigned int CompositeImage(Image *image,
             case OverCompositeOp:
             default:
             {
-              AlphaComposite(p,pixel.opacity,q,q->opacity);
+              *q=AlphaComposite(p,pixel.opacity,q,q->opacity);
               break;
             }
             case InCompositeOp:
@@ -1503,13 +1503,13 @@ MagickExport unsigned int CompositeImage(Image *image,
             case BumpmapCompositeOp:
             {
               q->red=(Quantum)
-                ((unsigned long) ((Intensity(pixel)*q->red)/MaxRGB));
+                ((unsigned long) ((Intensity(&pixel)*q->red)/MaxRGB));
               q->green=(Quantum)
-                ((unsigned long) ((Intensity(pixel)*q->green)/MaxRGB));
+                ((unsigned long) ((Intensity(&pixel)*q->green)/MaxRGB));
               q->blue=(Quantum)
-                ((unsigned long) ((Intensity(pixel)*q->blue)/MaxRGB));
+                ((unsigned long) ((Intensity(&pixel)*q->blue)/MaxRGB));
               q->opacity=(Quantum)
-                ((unsigned long) (Intensity(pixel)*q->opacity/MaxRGB));
+                ((unsigned long) (Intensity(&pixel)*q->opacity/MaxRGB));
               break;
             }
             case CopyCompositeOp:
@@ -1536,7 +1536,7 @@ MagickExport unsigned int CompositeImage(Image *image,
             {
               if (!composite_image->matte)
                 {
-                  q->opacity=Intensity(pixel);
+                  q->opacity=Intensity(&pixel);
                   break;
                 }
               q->opacity=pixel.opacity;
@@ -2587,16 +2587,16 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     else
       for (x=0; x < (long) image->columns; x++)
       {
-        if (!ColorMatch(*p,corners[0],image->fuzz))
+        if (!ColorMatch(p,&corners[0],image->fuzz))
           if (x < bounds.x)
             bounds.x=x;
-        if (!ColorMatch(*p,corners[1],image->fuzz))
+        if (!ColorMatch(p,&corners[1],image->fuzz))
           if (x > (long) bounds.width)
             bounds.width=x;
-        if (!ColorMatch(*p,corners[0],image->fuzz))
+        if (!ColorMatch(p,&corners[0],image->fuzz))
           if (y < bounds.y)
             bounds.y=y;
-        if (!ColorMatch(*p,corners[2],image->fuzz))
+        if (!ColorMatch(p,&corners[2],image->fuzz))
           if (y > (long) bounds.height)
             bounds.height=y;
         p++;
@@ -6165,7 +6165,7 @@ static int IntensityCompare(const void *x,const void *y)
 
   color_1=(PixelPacket *) x;
   color_2=(PixelPacket *) y;
-  return((int) (Intensity(*color_2)-Intensity(*color_1)));
+  return((int) (Intensity(color_2)-Intensity(color_1)));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

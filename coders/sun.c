@@ -800,10 +800,10 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           /*
             Convert PseudoClass image to a SUN monochrome image.
           */
-          polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
+          polarity=Intensity(&image->colormap[0]) > (0.5*MaxRGB);
           if (image->colors == 2)
             polarity=
-              Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
+              Intensity(&image->colormap[0]) > Intensity(&image->colormap[1]);
           for (y=0; y < (long) image->rows; y++)
           {
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);

@@ -359,6 +359,7 @@ static unsigned int IsPDF(const unsigned char *magick,const size_t offset)
 static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define MediaBox  "/MediaBox"
+#define RenderPostscriptText  "  Rendering postscript...  "
 
   char
     density[MaxTextExtent],

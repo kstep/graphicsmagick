@@ -124,41 +124,8 @@ extern "C" {
   Define declarations.
 */
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
-#define AlphaComposite(p,alpha,q,beta) \
-if ((alpha) == OpaqueOpacity) \
-  *(q)=(*(p)); \
-else \
-  if ((alpha) != TransparentOpacity) \
-    { \
-      double \
-        gamma; \
- \
-      gamma=1.0/MaxRGB; \
-      (q)->red=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->red+ \
-        (double) (alpha)*(MaxRGB-(beta))*(q)->red/MaxRGB)+0.5); \
-      (q)->green=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->green+ \
-        (double) (alpha)*(MaxRGB-(beta))*(q)->green/MaxRGB)+0.5); \
-      (q)->blue=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->blue+ \
-        (double) (alpha)*(MaxRGB-(beta))*(q)->blue/MaxRGB)+0.5); \
-      (q)->opacity=(Quantum) (gamma*((double) (MaxRGB-(alpha))+ \
-        (double) (alpha)*(MaxRGB-(beta))/MaxRGB)+0.5); \
-    }
-#define ColorMatch(color,target,distance) \
-  (((distance) == 0) ? \
-   (((color).red == (target).red) && \
-    ((color).green == (target).green) && \
-    ((color).blue == (target).blue)) : \
-   ((((double) (color).red-(double) (target).red)* \
-      ((double) (color).red-(double) (target).red))+ \
-     (((double) (color).green-(double) (target).green)* \
-      ((double) (color).green-(double) (target).green))+ \
-     (((double) (color).blue-(double) (target).blue)* \
-      ((double) (color).blue-(double) (target).blue))) <= \
-      (double) (distance*distance))
 #define False  0
 #define DegreesToRadians(x) (MagickPI*(x)/180.0)
-#define Intensity(color)  \
-  ((9798*(color).red+19235*(color).green+3735*(color).blue)/32768L)
 #define IsFaxImage(color) \
   (IsMonochromeImage(image) && ((image)->columns <= 2560))
 #define IsGray(color)  \
@@ -171,11 +138,9 @@ else \
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
 #define MaxApplicationProfiles  16
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))
-#define OpenImage(image_info,image,type)  OpenBlob(image,image,type)
 #define QuantumTick(i,span) \
   (((~((span)-i-1) & ((span)-i-2))+1) == ((span)-i-1))
 #define RadiansToDegrees(x) (180.0*(x)/MagickPI)
-#define RenderPostscriptText  "  Rendering postscript...  "
 #define ScaleColor5to8(x)  ((x) << 3)
 #define ScaleColor6to8(x)  ((x) << 2)
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))

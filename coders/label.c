@@ -139,7 +139,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->opacity=(Quantum) Intensity(*q);
+      q->opacity=Intensity(q);
       q->red=image_info->pen.red;
       q->green=image_info->pen.green;
       q->blue=image_info->pen.blue;

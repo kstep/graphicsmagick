@@ -2032,7 +2032,7 @@ static unsigned int XColorEditImage(Display *display,
                     break;
                   for (x=0; x < (long) (*image)->columns; x++)
                   {
-                    if (ColorMatch(*q,target,(*image)->fuzz))
+                    if (ColorMatch(q,&target,(*image)->fuzz))
                       {
                         q->red=(Quantum) XDownscale(color.red);
                         q->green=(Quantum) XDownscale(color.green);
@@ -2047,7 +2047,7 @@ static unsigned int XColorEditImage(Display *display,
             else
               {
                 for (i=0; i < (long) (*image)->colors; i++)
-                  if (ColorMatch((*image)->colormap[i],target,(*image)->fuzz))
+                  if (ColorMatch((*image)->colormap+i,&target,(*image)->fuzz))
                     {
                       (*image)->colormap[i].red=(Quantum) XDownscale(color.red);
                       (*image)->colormap[i].green=(Quantum)
@@ -7787,7 +7787,7 @@ static unsigned int XMatteEditImage(Display *display,
                 break;
               for (x=0; x < (long) (*image)->columns; x++)
               {
-                if (ColorMatch(*q,target,(*image)->fuzz))
+                if (ColorMatch(q,&target,(*image)->fuzz))
                   q->opacity=(Quantum) atol(matte);
                 q++;
               }

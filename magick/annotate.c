@@ -884,7 +884,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
             fill_color=GetOnePixel(draw_info->fill_pattern,
               x % draw_info->fill_pattern->columns,
               y % draw_info->fill_pattern->rows);
-          q->opacity=(Quantum) (MaxRGB-((unsigned long) ((MaxRGB-Intensity(*q))*
+          q->opacity=(Quantum) (MaxRGB-((unsigned long) ((MaxRGB-Intensity(q))*
             (MaxRGB-fill_color.opacity))/MaxRGB));
           q->red=fill_color.red;
           q->green=fill_color.green;
@@ -1266,7 +1266,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                     p++;
                     break;
                   }
-                AlphaComposite(&fill_color,opacity,q,q->opacity);
+                *q=AlphaComposite(&fill_color,opacity,q,q->opacity);
                 if (!active)
                   (void) SyncImagePixels(image);
                 p++;

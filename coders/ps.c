@@ -216,6 +216,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define DocumentMedia  "%%DocumentMedia:"
 #define PageBoundingBox  "%%PageBoundingBox:"
 #define PostscriptLevel  "%!PS-"
+#define RenderPostscriptText  "  Rendering postscript...  "
 
   char
     density[MaxTextExtent],
@@ -1067,10 +1068,10 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 !IsMonochromeImage(preview_image,&preview_image->exception))
               SetImageType(preview_image,BilevelType);
             polarity=(Quantum)
-              Intensity(preview_image->colormap[0]) < (0.5*MaxRGB);
+              Intensity(&preview_image->colormap[0]) < (0.5*MaxRGB);
             if (preview_image->colors == 2)
-              polarity=Intensity(preview_image->colormap[0]) >
-                Intensity(preview_image->colormap[1]);
+              polarity=Intensity(&preview_image->colormap[0]) >
+                Intensity(&preview_image->colormap[1]);
             FormatString(buffer,"%%%%BeginPreview: %lu %lu %lu %lu\n%%  ",
               preview_image->columns,preview_image->rows,(unsigned int) 1,
               (((preview_image->columns+7) >> 3)*preview_image->rows+35)/36);
@@ -1306,7 +1307,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   break;
                 for (x=0; x < (long) image->columns; x++)
                 {
-                  FormatString(buffer,"%02lx",Downscale(Intensity(*p)));
+                  FormatString(buffer,"%02lx",Downscale(Intensity(p)));
                   (void) WriteBlobString(image,buffer);
                   i++;
                   if (i == 36)
@@ -1329,10 +1330,10 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               /*
                 Dump image as bitmap.
               */
-              polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
+              polarity=Intensity(&image->colormap[0]) > (0.5*MaxRGB);
               if (image->colors == 2)
-                polarity=
-                  Intensity(image->colormap[1]) > Intensity(image->colormap[0]);
+                polarity=Intensity(&image->colormap[1]) >
+                  Intensity(&image->colormap[0]);
               count=0;
               for (y=0; y < (long) image->rows; y++)
               {
