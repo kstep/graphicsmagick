@@ -1715,8 +1715,7 @@ Export void XDisplayImageInfo(Display *display,
 %
 %  The format of the XDitherImage method is:
 %
-%      unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
-%        XDrawInfo *draw_info,Image *image)
+%      void XDitherImage(Image *image,XImage *ximage)
 %
 %  A description of each parameter follows:
 %
@@ -2072,20 +2071,17 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
   p=GetPixelCache(image,x,y,1,1);
   if (p != (PixelPacket *) NULL)
     {
-      draw_image->background_color.red=p->red;
-      draw_image->background_color.green=p->green;
-      draw_image->background_color.blue=p->blue;
+      draw_image->background_color=(*p);
       draw_image->matte=True;
     }
   for (y=0; y < (int) draw_image->rows; y++)
   {
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetPixelCache(draw_image,0,y,draw_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) draw_image->columns; x++)
     {
-      q->opacity=(Quantum) XGetPixel(draw_ximage,x,y);
-      if (q->opacity == Transparent)
+      if (XGetPixel(draw_ximage,x,y) == 0)
         {
           /*
             Set this pixel to the background color.
@@ -2203,6 +2199,7 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
     if (!SyncPixelCache(draw_image))
       break;
   }
+  (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
   if (draw_info->stencil == TransparentStencil)
     CompositeImage(image,ReplaceMatteCompositeOp,draw_image,x,y);
   else
