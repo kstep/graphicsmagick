@@ -1177,7 +1177,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           /*
             Convert run-length encoded raster pixels.
           */
-          packets=(unsigned int) 2*bytes_per_line*(bmp_info.height+2)+1;
+          packets=(unsigned int) 2*(bytes_per_line+2)*(image->rows+2)+2;
           bmp_data=(unsigned char *) AcquireMemory(packets);
           if (pixels == (unsigned char *) NULL)
             {

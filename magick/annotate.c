@@ -1061,7 +1061,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           (FT_Vector *) NULL,False);
         if (status != False)
           continue;
-        imaeg->storage_class=DirectClass;
+        image->storage_class=DirectClass;
         bitmap=(FT_BitmapGlyph) glyph.image;
         point.x=offset->x+bitmap->left;
         point.y=offset->y-bitmap->top;

@@ -1118,7 +1118,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  (void) IsPseudoClass(image);
   (void) strcpy((char *) image_info->magick,"MIFF");
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
@@ -1129,6 +1128,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate image pixels.
     */
+    (void) IsPseudoClass(image);
     if (image->storage_class == DirectClass)
       packet_size=image->depth > 8 ? 6 : 3;
     else
