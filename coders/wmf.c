@@ -65,16 +65,6 @@
 #if defined(HasWMF)
 #if !defined(WIN32)
 
-#ifdef  min
-#undef  min
-#endif /* min */
-#define min(a, b) ((a) < (b) ? (a) : (b))
-
-#ifdef  max
-#undef  max
-#endif /* max */
-#define max(a, b) ((a) < (b) ? (b) : (a))
-
 #ifdef abs
 #undef abs
 #endif /* abs */
@@ -107,11 +97,13 @@ struct _wmf_magick_t
   wmfD_Rect
     bbox;
 
+  /* Scale and translation factors */
   double
     bbox_to_pixels_scale_x,
     bbox_to_pixels_scale_y,
     bbox_to_pixels_translate_x,
-    bbox_to_pixels_translate_y;
+    bbox_to_pixels_translate_y,
+    bbox_to_pixels_rotate;
 
   /* MVG output */
   char
@@ -129,10 +121,10 @@ struct _wmf_magick_t
     const ImageInfo
       *image_info;
 
-  /* Maximum and current number of temporary files */
+  /* Maximum and current number of temporary images */
   int
-    max_temp_file_index,
-    cur_temp_file_index;
+    max_temp_image_index,
+    cur_temp_image_index;
 
   /* Temporary image IDs */
   long
@@ -272,21 +264,19 @@ static void wmf_magick_bmp_draw(wmfAPI * API, wmfBMP_Draw_t * bmp_draw)
   if (bmp_draw->bmp.data == 0)
     return;
 
-  magick_mvg_printf(API, "# wmf_magick_bmp_draw\n");
-
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
   GetExceptionInfo(&exception);
   id = SetMagickRegistry(ImageRegistryType, bmp_draw->bmp.data,
                          sizeof(Image), &exception);
-  (ddata->temp_images)[ddata->cur_temp_file_index] = id;
-  ++ddata->cur_temp_file_index;
-  if (ddata->cur_temp_file_index == ddata->max_temp_file_index)
+  (ddata->temp_images)[ddata->cur_temp_image_index] = id;
+  ++ddata->cur_temp_image_index;
+  if (ddata->cur_temp_image_index == ddata->max_temp_image_index)
   {
-    ddata->max_temp_file_index += 2048;
+    ddata->max_temp_image_index += 2048;
     ReacquireMemory((void **) &ddata->temp_images,
-		    ddata->max_temp_file_index * sizeof(long));
+		    ddata->max_temp_image_index * sizeof(long));
   }
   sprintf(imgspec, "mpr:%li", id);
 
@@ -381,10 +371,10 @@ static void wmf_magick_device_open(wmfAPI * API)
   wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
   /* Initialize ddata */
-  ddata->max_temp_file_index = 2048;
-  ddata->cur_temp_file_index = 0;
+  ddata->max_temp_image_index = 2048;
+  ddata->cur_temp_image_index = 0;
   ddata->temp_images =
-    (long *) AcquireMemory(ddata->max_temp_file_index * sizeof(long));
+    (long *) AcquireMemory(ddata->max_temp_image_index * sizeof(long));
   ddata->pattern_id = 0;
   ddata->clipping = False;
 
@@ -416,7 +406,7 @@ static void wmf_magick_device_close(wmfAPI * API)
     size_t
       length;
 
-    for (index = 0; index < ddata->cur_temp_file_index; index++)
+    for (index = 0; index < ddata->cur_temp_image_index; index++)
     {
       image = (Image *) GetMagickRegistry((ddata->temp_images)[index],
 					  &type, &length);
@@ -442,6 +432,9 @@ static void wmf_magick_device_begin(wmfAPI * API)
   magick_mvg_printf(API, "viewbox 0 0 %u %u\n", ddata->image->columns,
 		    ddata->image->rows);
 
+  magick_mvg_printf(API, "# Created by ImageMagick %s http://www.imagemagick.org\n",
+                    MagickLibVersionText);
+
   /* Scale width and height to image */
   magick_mvg_printf(API, "scale %.10g,%.10g\n",
 		    ddata->bbox_to_pixels_scale_x, ddata->bbox_to_pixels_scale_y);
@@ -449,6 +442,35 @@ static void wmf_magick_device_begin(wmfAPI * API)
   magick_mvg_printf(API, "translate %.10g,%.10g\n",
 		    ddata->bbox_to_pixels_translate_x,
 		    ddata->bbox_to_pixels_translate_y);
+
+  /* Apply rotation */
+  magick_mvg_printf(API, "rotate %.10g\n", ddata->bbox_to_pixels_rotate);
+
+  if(ddata->image_info->texture == NULL)
+    {
+      /* Draw rectangle in background color */
+      magick_mvg_printf(API,"fill-opacity %.10g\n",
+                        (double)(TransparentOpacity-ddata->image->background_color.opacity)/TransparentOpacity);
+      
+      magick_mvg_printf(API,
+#if QuantumDepth == 8
+                        "fill #%02x%02x%02x\n",
+#elif QuantumDepth == 16
+                        "fill #%04x%04x%04x\n",
+#endif
+                        ddata->image->background_color.red,
+                        ddata->image->background_color.green,
+                        ddata->image->background_color.blue);
+      magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
+                        ddata->bbox.TL.x,ddata->bbox.TL.y,
+                        ddata->bbox.BR.x,ddata->bbox.BR.y);
+    }
+  else
+    {
+      /* Draw rectangle with texture */
+    }
+
+  magick_mvg_printf(API, "fill-opacity 1\n");
   magick_mvg_printf(API, "fill none\n");
   magick_mvg_printf(API, "stroke none\n");
 }
@@ -475,8 +497,6 @@ static void wmf_magick_flood_interior(wmfAPI * API, wmfFlood_t * flood)
   wmfRGB
     *rgb = &(flood->color);
 
-  magick_mvg_printf(API, "# wmf_magick_flood_interior\n");
-
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
@@ -494,8 +514,6 @@ static void wmf_magick_flood_exterior(wmfAPI * API, wmfFlood_t * flood)
 {
   wmfRGB
     *rgb = &(flood->color);
-
-  magick_mvg_printf(API, "# wmf_magick_flood_exterior\n");
 
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
@@ -518,8 +536,6 @@ static void wmf_magick_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel)
 {
   wmfRGB
     *rgb = &(draw_pixel->color);
-
-  magick_mvg_printf(API, "# wmf_magick_draw_pixel\n");
 
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
@@ -578,8 +594,6 @@ static void magick_draw_arc(wmfAPI * API,
   double
     Rx,
     Ry;
-
-  magick_mvg_printf(API, "# magick_draw_arc\n");
 
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
@@ -657,8 +671,6 @@ static void magick_draw_arc(wmfAPI * API,
 
 static void wmf_magick_draw_line(wmfAPI * API, wmfDrawLine_t * draw_line)
 {
-  magick_mvg_printf(API, "# wmf_magick_draw_line\n");
-
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
@@ -678,8 +690,6 @@ static void wmf_magick_poly_line(wmfAPI * API, wmfPolyLine_t * poly_line)
 {
   U16
     i;
-
-  magick_mvg_printf(API, "# wmf_magick_poly_line\n");
 
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
@@ -709,8 +719,6 @@ static void wmf_magick_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line)
 {
   U16
     i;
-
-  magick_mvg_printf(API, "# wmf_magick_draw_polygon\n");
 
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
@@ -764,8 +772,6 @@ static void wmf_magick_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_re
 
 static void wmf_magick_region_frame(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
 {
-  magick_mvg_printf(API, "# wmf_magick_region_frame\n");
-
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
@@ -811,8 +817,6 @@ static void wmf_magick_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
 
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData (API);
-
-  magick_mvg_printf(API, "# wmf_magick_region_clip\n");
 
   /* Reset any existing clip paths by popping context */
   if(ddata->clipping)
@@ -894,10 +898,6 @@ static void wmf_magick_function(wmfAPI *API)
   /*
      Device data defaults
    */
-  ddata->bbox.TL.x = 0;
-  ddata->bbox.TL.y = 0;
-  ddata->bbox.BR.x = 0;
-  ddata->bbox.BR.y = 0;
   ddata->mvg = 0;
   ddata->mvg_alloc = 0;
   ddata->mvg_length = 0;
@@ -923,7 +923,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   wmfD_Coord
     BL,				/* bottom left of bounding box */
     BR,				/* bottom right of bounding box */
-    TL,				/* top let of bounding box */
+    TL,				/* top left of bounding box */
     TR;				/* top right of bounding box */
 
   wmfD_Coord
@@ -973,8 +973,6 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
      WMF_FONT_HEIGHT & WMF_FONT_WIDTH units to points */
   font_height_points = abs(WMF_FONT_HEIGHT(font) * draw_text->dc->pixel_height);
   font_width_points = abs(WMF_FONT_WIDTH(font) * draw_text->dc->pixel_width);
-
-  magick_mvg_printf(API, "# wmf_magick_draw_text\n");
 
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
@@ -1143,7 +1141,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 	ulTL;			/* top left of underline rectangle */
 
       line_height =
-	max(((double) 1 / (ddata->bbox_to_pixels_scale_x)),
+	Max(((double) 1 / (ddata->bbox_to_pixels_scale_x)),
 	    ((double) abs(metrics.descent)) * 0.5);
       ulTL.x = 0;
       ulTL.y = abs(metrics.descent) - line_height;
@@ -1165,7 +1163,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 	ulTL;			/* top left of strikeout rectangle */
 
       line_height =
-	max(((double) 1 / (ddata->bbox_to_pixels_scale_x)),
+	Max(((double) 1 / (ddata->bbox_to_pixels_scale_x)),
 	    ((double) abs(metrics.descent)) * 0.5);
       ulTL.x = 0;
       ulTL.y = -(((double) metrics.ascent) / 2 + line_height / 2);
@@ -1221,8 +1219,6 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
   unsigned int
     fill_opaque,
     fill_ROP;
-
-  magick_mvg_printf(API, "# magick_brush\n");
 
   fill_opaque = (unsigned int) WMF_DC_OPAQUE(dc);
   fill_ROP = (unsigned int) WMF_DC_ROP(dc);
@@ -1382,13 +1378,13 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
 	  sprintf(imgspec, "mpr:%li", id);
 
           /* Add to ID list */
-	  (ddata->temp_images)[ddata->cur_temp_file_index] = id;
-	  ++ddata->cur_temp_file_index;
-	  if (ddata->cur_temp_file_index == ddata->max_temp_file_index)
+	  (ddata->temp_images)[ddata->cur_temp_image_index] = id;
+	  ++ddata->cur_temp_image_index;
+	  if (ddata->cur_temp_image_index == ddata->max_temp_image_index)
 	  {
-	    ddata->max_temp_file_index += 2048;
+	    ddata->max_temp_image_index += 2048;
 	    ReacquireMemory((void **) &ddata->temp_images,
-			    ddata->max_temp_file_index * sizeof(long));
+			    ddata->max_temp_image_index * sizeof(long));
 	  }
 
 	  sprintf(pattern_id, "fill_%lu", ddata->pattern_id);
@@ -1490,8 +1486,6 @@ static void magick_pen(wmfAPI * API, wmfDC * dc)
     pen_style,
     pen_type;
 
-  magick_mvg_printf(API, "# magick_pen\n");
-
   pen = WMF_DC_PEN(dc);
 
   pen_color = WMF_PEN_COLOR(pen);
@@ -1504,7 +1498,7 @@ static void magick_pen(wmfAPI * API, wmfDC * dc)
 
   /* Don't allow pen_width to be less than pixel_width in order to
      avoid dissapearing or spider-web lines */
-  pen_width = max(pen_width, pixel_width);
+  pen_width = Max(pen_width, pixel_width);
 
   pen_style = (unsigned int) WMF_PEN_STYLE(pen);
   pen_endcap = (unsigned int) WMF_PEN_ENDCAP(pen);
@@ -1519,7 +1513,7 @@ static void magick_pen(wmfAPI * API, wmfDC * dc)
   }
 
   magick_mvg_printf(API, "stroke-antialias 1\n");
-  magick_mvg_printf(API, "stroke-width %.10g\n", max(0, pen_width));
+  magick_mvg_printf(API, "stroke-width %.10g\n", Max(0, pen_width));
 
   switch (pen_endcap)
   {
@@ -1740,7 +1734,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     wmf_api_options;
 
   wmfD_Rect
-    bounding_box;
+    bbox;
 
   image = AllocateImage(image_info);
   if (!OpenBlob(image_info,image,ReadBinaryType,exception))
@@ -1782,10 +1776,11 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     }
 
   /*
-   * Open input via libwmf API
+   * Open BLOB input via libwmf API
    *
    */
-  wmf_error = wmf_bbuf_input(API,wmf_magick_read,wmf_magick_seek,wmf_magick_tell,(void*)image);
+  wmf_error = wmf_bbuf_input(API,wmf_magick_read,wmf_magick_seek,
+                             wmf_magick_tell,(void*)image);
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
@@ -1796,7 +1791,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    * Scan WMF file
    *
    */
-  wmf_error = wmf_scan(API, 0, &bounding_box);
+  wmf_error = wmf_scan(API, 0, &bbox);
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
@@ -1809,7 +1804,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    */
 
   ddata = WMF_MAGICK_GetData(API);
-  ddata->bbox = bounding_box;
+  ddata->bbox = bbox;
 
   /* User specified resolution */
   resolution_y = 72.0;
@@ -1860,38 +1855,42 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    * where to place the logical bounding box within the image.
    *
    */
-  bounding_width  = abs(ddata->bbox.BR.x - ddata->bbox.TL.x);
-  bounding_height = abs(ddata->bbox.BR.y - ddata->bbox.TL.y);
 
-  ddata->bbox_to_pixels_scale_x = (image_width/bounding_width);
-  ddata->bbox_to_pixels_translate_x = -(ddata->bbox.TL.x);
+  bounding_width  = bbox.BR.x - bbox.TL.x;
+  bounding_height = bbox.BR.y - bbox.TL.y;
+
+  ddata->bbox_to_pixels_scale_x = image_width/bounding_width;
+  ddata->bbox_to_pixels_translate_x = 0-bbox.TL.x;
+  ddata->bbox_to_pixels_rotate = 0;
 
   /* Heuristic: guess that if the vertical coordinates mostly span
      negative values, then the image must be inverted. */
-  if( abs(ddata->bbox.BR.y) > abs(ddata->bbox.TL.y) )
+  if( abs(bbox.BR.y) > abs(bbox.TL.y) )
     {
-      /* Normal (Origin at top left) */
+      /* Normal (Origin at top left of image) */
       ddata->bbox_to_pixels_scale_y = (image_height/bounding_height);
-      ddata->bbox_to_pixels_translate_y = -(ddata->bbox.TL.y);
+      ddata->bbox_to_pixels_translate_y = 0-bbox.TL.y;
     }
   else
     {
-      /* Inverted (Origin at bottom left) */
+      /* Inverted (Origin at bottom left of image) */
       ddata->bbox_to_pixels_scale_y = (-image_height/bounding_height);
-      ddata->bbox_to_pixels_translate_y = (ddata->bbox.BR.y);
+      ddata->bbox_to_pixels_translate_y = 0-bbox.BR.y;
     }
 
 #if 0
   printf("\nSize in metafile units:      %.10gx%.10g\n", wmf_width, wmf_height);
   printf("Metafile units/inch:         %.10g\n", units_per_inch);
   printf("Bounding Box:                %.10g,%.10g %.10g,%.10g\n",
-         bounding_box.TL.x, bounding_box.TL.y, bounding_box.BR.x, bounding_box.BR.y);
+         bbox.TL.x, bbox.TL.y, bbox.BR.x, bbox.BR.y);
+  printf("Bounding width x height:     %.10gx%.10g\n", bounding_width, bounding_height);
   printf("Output resolution:           %.10gx%.10g\n", resolution_x, resolution_y);
   printf("Image size:                  %.10gx%.10g\n", image_width, image_height);
   printf("Bounding box scale factor:   %.10g,%.10g\n",
          ddata->bbox_to_pixels_scale_x, ddata->bbox_to_pixels_scale_y);
   printf("Translation:                 %.10g,%.10g\n",
 	 ddata->bbox_to_pixels_translate_x, ddata->bbox_to_pixels_translate_y);
+
 
 #if 0
   {
@@ -1918,6 +1917,12 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     printf("dc->Window.height = %d\n", dc->Window.height);
     printf("dc->pixel_width   = %.10g\n", dc->pixel_width);
     printf("dc->pixel_height  = %.10g\n", dc->pixel_height);
+#if 0  /* Only in libwmf 0.3 */
+    printf("dc->Ox            = %.d\n", dc->Ox);
+    printf("dc->Oy            = %.d\n", dc->Oy);
+    printf("dc->width         = %.d\n", dc->width);
+    printf("dc->height        = %.d\n", dc->height);
+#endif
 
   }
 #endif
@@ -1961,6 +1966,8 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
       else
         background_color = image_info->background_color;
       image->background_color = background_color;
+      if(background_color.opacity != OpaqueOpacity)
+        image->matte = True;
 
       for (row=0; row < (long) image->rows; row++)
         {
@@ -2016,7 +2023,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    */
   ddata->mvg = AcquireMemory(MaxTextExtent);
 
-  wmf_error = wmf_play(API, 0, &bounding_box);
+  wmf_error = wmf_play(API, 0, &bbox);
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
