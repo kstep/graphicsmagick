@@ -35,19 +35,23 @@ an image similar to the one on the right (minus lines and text):
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" NOSAVE >
 <tr NOSAVE>
-<td NOSAVE><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;&nbsp;
+<td NOSAVE><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;
+
 </font><font color="#FF0000">// Create base image</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
-Image image(Geometry(254,218), "white");</font></font></font><font face="Courier New,Courier"><font color="#000099"><font size=-1></font></font></font>
-<p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;&nbsp;
+Image image(Geometry(254,218), "white");</font></font></font>
+<p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;
+
 </font><font color="#FF0000">// Set image pixels to DirectClass representation</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
-image.classType( DirectClass );</font></font></font><font face="Courier New,Courier"><font color="#000099"><font size=-1></font></font></font>
-<p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;&nbsp;
+image.classType( DirectClass );</font></font></font>
+<p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;
+
 </font><font color="#FF0000">// Allocate pixel view</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
-Pixels view(image);</font></font></font><font face="Courier New,Courier"><font color="#000099"><font size=-1></font></font></font>
-<p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;&nbsp;
+Pixels view(image);</font></font></font>
+<p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;
+
 </font><font color="#FF0000">// Set all pixels in region anchored at 38x36,
 with size 160x230 to green.</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
@@ -63,8 +67,9 @@ for ( unsigned int column = 0; column &lt; columns ; ++column )</font></font></f
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 *pixels++=green;</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
-view.sync();</font></font></font><font face="Courier New,Courier"><font color="#000099"><font size=-1></font></font></font>
-<p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;&nbsp;
+view.sync();</font></font></font>
+<p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;
+
 </font><font color="#FF0000">// Set all pixels in region anchored at 86x72,
 with size 108x67 to yellow.</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
@@ -80,8 +85,9 @@ for ( unsigned int column = 0; column &lt; columns ; ++column )</font></font></f
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 *pixels++=yellow;</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
-view.sync();</font></font></font><font face="Courier New,Courier"><font color="#000099"><font size=-1></font></font></font>
-<p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;&nbsp;
+view.sync();</font></font></font>
+<p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;
+
 </font><font color="#FF0000">// Set pixel at position 108,94 to red</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
 *(view.get(108,94,1,1)) = Color("red");</font></font></font>
@@ -221,32 +227,32 @@ for each pixel in the image.</font></td>
 
 <tr>
 <td>
-<center><a NAME="decode"></a><font size=-1>decode</font></center>
+<center><a NAME="decode"></a><font color="#999999"><font size=-1>decode</font></font></center>
 </td>
 
-<td><font size=-1>void</font></td>
+<td><font color="#999999"><font size=-1>void</font></font></td>
 
-<td><font size=-1><a href="Enumerations.html#QuantumTypes">QuantumTypes</a>
-quantum_, unsigned char *source_,</font></td>
+<td><font color="#999999"><font size=-1><a href="Enumerations.html#QuantumTypes">QuantumTypes</a>
+quantum_, unsigned char *source_,</font></font></td>
 
-<td><font size=-1>Transfers one or more pixel components from a buffer
-or file into the image pixel cache of an image. <i>Decode</i> is typically
-used to support image decoders.</font></td>
+<td><font color="#999999"><font size=-1>Transfers one or more pixel components
+from a buffer or file into the image pixel cache of an image. <i>Decode</i>
+is typically used to support image decoders.</font></font></td>
 </tr>
 
 <tr>
 <td>
-<center><a NAME="encode"></a><font size=-1>encode</font></center>
+<center><a NAME="encode"></a><font color="#999999"><font size=-1>encode</font></font></center>
 </td>
 
-<td><font size=-1>void</font></td>
+<td><font color="#999999"><font size=-1>void</font></font></td>
 
-<td><font size=-1><a href="Enumerations.html#QuantumTypes">QuantumTypes</a>
-quantum_, unsigned char *destination_</font></td>
+<td><font color="#999999"><font size=-1><a href="Enumerations.html#QuantumTypes">QuantumTypes</a>
+quantum_, unsigned char *destination_</font></font></td>
 
-<td><font size=-1>Transfers one or more pixel components from the image
-pixel cache to a buffer or file. <i>Encode</i> is typically used to support
-image encoders.</font></td>
+<td><font color="#999999"><font size=-1>Transfers one or more pixel components
+from the image pixel cache to a buffer or file. <i>Encode</i> is typically
+used to support image encoders.</font></font></td>
 </tr>
 </table>
 

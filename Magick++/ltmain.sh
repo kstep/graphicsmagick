@@ -998,6 +998,18 @@ EOF
 	continue
 	;;
 
+        # IRIX has -LANG:[option]
+      -LANG:*)
+        # Unknown arguments in both finalize_command and compile_command need
+        # to be aesthetically quoted because they are evaled later.
+	arg=`$echo "X$arg" | $Xsed -e "$sed_quote_subst"`
+	case "$arg" in
+	*[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*|"")
+	  arg="\"$arg\""
+	  ;;
+	esac
+	;;
+
       -L*)
 	dir=`$echo "X$arg" | $Xsed -e 's/^-L//'`
 	# We need an absolute path.

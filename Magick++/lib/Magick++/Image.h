@@ -715,6 +715,42 @@ namespace Magick
     // y resolution of the image
     double          yResolution ( void ) const;
 
+    //////////////////////////////////////////////////////////////////////    
+    //
+    // Low-level Pixel Access Routines
+    //
+    // Also see the Pixels class, which provides support for multiple
+    // cache views. The low-level pixel access routines in the Image
+    // class are provided in order to support backward compatability.
+    //
+    //////////////////////////////////////////////////////////////////////
+
+    // Transfers pixels from the image to the pixel cache as defined
+    // by the specified region. Modified pixels may be subsequently
+    // transferred back to the image via syncPixels.
+    PixelPacket* getPixels ( int x_, int y_,
+			     unsigned int columns_, unsigned int rows_ );
+
+    // Allocates a pixel cache region to store image pixels as defined
+    // by the region rectangle.  This area is subsequently transferred
+    // from the pixel cache to the image via syncPixels.
+    PixelPacket* setPixels ( int x_, int y_,
+			     unsigned int columns_, unsigned int rows_ );
+
+    // Transfers the image cache pixels to the image.
+    void syncPixels ( void );
+
+    // Transfers one or more pixel components from a buffer or file
+    // into the image pixel cache of an image.
+    // Used to support image decoders.
+    void readPixels ( QuantumTypes quantum_,
+		      unsigned char *source_ );
+    
+    // Transfers one or more pixel components from the image pixel
+    // cache to a buffer or file.
+    // Used to support image encoders.
+    void writePixels ( QuantumTypes quantum_,
+		       unsigned char *destination_ );
 
     //////////////////////////////////////////////////////////////////////    
     //

@@ -358,6 +358,7 @@ namespace Magick
   using MagickLib::GetImageAttribute;
   using MagickLib::GetImageAttribute;
   using MagickLib::GetImageInfo;
+  using MagickLib::GetImagePixels;
   using MagickLib::GetIndexes;
   using MagickLib::GetMagickInfo;
   using MagickLib::GetNumberColors;
@@ -394,8 +395,10 @@ namespace Magick
   using MagickLib::ParseImageGeometry;
   using MagickLib::PercentValue;
   using MagickLib::PingImage;
+  using MagickLib::PopImagePixels;
   using MagickLib::PostscriptGeometry;
   using MagickLib::ProfileInfo;
+  using MagickLib::PushImagePixels;
   using MagickLib::QuantizationError;
   using MagickLib::QuantizeImage;
   using MagickLib::QuantizeInfo;
@@ -419,6 +422,7 @@ namespace Magick
   using MagickLib::SetClientName;
   using MagickLib::SetImageAttribute;
   using MagickLib::SetImageInfo;
+  using MagickLib::SetImagePixels;
   using MagickLib::SetMagickInfo;
   using MagickLib::ShadeImage;
   using MagickLib::SharpenImage;
@@ -430,6 +434,7 @@ namespace Magick
   using MagickLib::SwirlImage;
   using MagickLib::SyncCacheView;
   using MagickLib::SyncImage;
+  using MagickLib::SyncImagePixels;
   using MagickLib::TextureImage;
   using MagickLib::ThresholdImage;
   using MagickLib::TransformHSL;
