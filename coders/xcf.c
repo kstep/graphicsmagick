@@ -886,10 +886,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   XCFDocInfo
 	  doc_info;
 
-  int
-	composite_all_layers = 1;	/* if set to true, we do layer compositing
-								   instead of layers == subimages */
-
   /*
     Open image file.
   */
@@ -1182,7 +1178,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 				QuantizeImage( &qi, image );
 			}
 		} else {
-			if ( composite_all_layers ) {
+			if ( image_info->flatten ) {
 				/* NOTE: XCF layers are REVERSED from composite order! */
 				signed int	j;
 				for (j=number_layers-1; j>=0; j--) {
@@ -1208,7 +1204,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 				signed int	j;
 
 				/* first we copy the last layer on top of the main image */
-				CompositeImage(image, OverCompositeOp, layer_info[number_layers-1].image, 
+				CompositeImage(image, CopyCompositeOp, layer_info[number_layers-1].image, 
 							   layer_info[number_layers-1].offset_x, 
 							   layer_info[number_layers-1].offset_y );
 				DestroyImage( layer_info[number_layers-1].image );
