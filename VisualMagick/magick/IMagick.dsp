@@ -188,7 +188,11 @@ SOURCE=..\..\magick\cache.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\magick\cache_io.c
+SOURCE=..\..\magick\cache_view.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\magick\pixel_cache.c
 # End Source File
 # Begin Source File
 
@@ -364,10 +368,6 @@ SOURCE=..\..\magick\mtv.c
 # Begin Source File
 
 SOURCE=..\..\magick\nt.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\magick\null.c
 # End Source File
 # Begin Source File
 

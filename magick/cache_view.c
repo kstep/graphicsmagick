@@ -333,9 +333,6 @@ Export PixelPacket *SetCacheView(ViewInfo *view,const int x,const int y,
   RectangleInfo
     region;
 
-  unsigned int
-    status;
-
   /*
     Validate pixel cache geometry.
   */

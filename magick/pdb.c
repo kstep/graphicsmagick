@@ -94,7 +94,6 @@ static unsigned int DecodeImage(Image *image,unsigned char *pixels,
     pixel;
 
   register int
-    i,
     j;
 
   register unsigned char
