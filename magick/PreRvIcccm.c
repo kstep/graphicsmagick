@@ -119,6 +119,16 @@ XrmDatabase XrmGetDatabase(Display *display)
 {
   return(display->db);
 }
+
+char *XSetLocaleModifiers(char *modifiers)
+{
+  return((char *) NULL);
+}
+
+Bool XSupportsLocale()
+{
+  return(0);
+}
 #endif
 
 #if defined(PRE_R4_ICCCM)
@@ -241,6 +251,29 @@ void XSetWMName(Display *display,Window window,XTextProperty *property)
   XStoreName(display,window,property->value);
 }
 
+void XSetWMProperties(Display *display,Window window,
+  XTextProperty *window_name,XTextProperty *icon_name,char **argv,
+  int argc,XSizeHints *size_hints,XWMHints *manager_hints,
+  XClassHint *class_hint)
+{
+  XSetStandardProperties(display,window,window_name->value,icon_name->value,
+    None,argv,argc,size_hints);
+  XSetWMHints(display,window,manager_hints);
+  XSetClassHint(display,window,class_hint);
+}
+
+Status XSetWMProtocols(Display *display,Window window,Atom *protocols,
+  int count)
+{
+  Atom
+    wm_protocols;
+
+  wm_protocols=XInternAtom(display,"WM_PROTOCOLS",False);
+  XChangeProperty(display,window,wm_protocols,XA_ATOM,32,PropModeReplace,
+    (unsigned char *) protocols, count);
+  return(True);
+}
+
 int XStringListToTextProperty(char **argv,int argc,XTextProperty *property)
 {
   register int
@@ -293,29 +326,6 @@ int XStringListToTextProperty(char **argv,int argc,XTextProperty *property)
       }
     }
   *property=protocol;
-  return(True);
-}
-
-void XSetWMProperties(Display *display,Window window,
-  XTextProperty *window_name,XTextProperty *icon_name,char **argv,
-  int argc,XSizeHints *size_hints,XWMHints *manager_hints,
-  XClassHint *class_hint)
-{
-  XSetStandardProperties(display,window,window_name->value,icon_name->value,
-    None,argv,argc,size_hints);
-  XSetWMHints(display,window,manager_hints);
-  XSetClassHint(display,window,class_hint);
-}
-
-Status XSetWMProtocols(Display *display,Window window,Atom *protocols,
-  int count)
-{
-  Atom
-    wm_protocols;
-
-  wm_protocols=XInternAtom(display,"WM_PROTOCOLS",False);
-  XChangeProperty(display,window,wm_protocols,XA_ATOM,32,PropModeReplace,
-    (unsigned char *) protocols, count);
   return(True);
 }
 

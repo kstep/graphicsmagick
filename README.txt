@@ -45,7 +45,7 @@ WWW
 
   The official ImageMagick WWW page is
 
-    http://www.wizards.dupont.com/magick/ImageMagick.html
+    http://www.wizards.dupont.com/cristy/ImageMagick.html
 
   To use display as your external image viewer, edit the global
   mail-cap file or your personal mail-cap file .mailrc (located at your

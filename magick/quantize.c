@@ -593,7 +593,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
           /*
             Approximate the quantization error represented by this node.
           */
-          mean=(DownScale(p->red)+mid_red)/2;
+          mean=(unsigned int) (DownScale(p->red)+mid_red) >> 1;
           distance=(int) DownScale(p->red)-mid_red;
           distance_squared=(((2*(MaxRGB+1))+mean)*squares[distance]) >> 8;
           distance=(int) DownScale(p->green)-mid_green;
@@ -677,7 +677,7 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
       */
       squares=cube_info->squares;
       color=cube_info->colormap+node_info->color_number;
-      mean=(color->red+cube_info->color.red)/2;
+      mean=(unsigned int) (color->red+cube_info->color.red) >> 1;
       distance=(int) color->red-(int) cube_info->color.red;
       distance_squared=
         (((2*(MaxRGB+1))+mean)*squares[distance]) >> QuantumDepth;

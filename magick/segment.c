@@ -516,7 +516,7 @@ static unsigned int Classify(Image *image,short **extrema,
         for (j=0; j < image->colors; j++)
         {
           sum=0.0;
-          mean=(q->red+image->colormap[j].red)/2;
+          mean=(unsigned int) (q->red+image->colormap[j].red) >> 1;
           distance=(int) q->red-(int) image->colormap[j].red;
           distance_squared=
             (((2*(MaxRGB+1))+mean)*squares[distance]) >> QuantumDepth;
@@ -528,7 +528,7 @@ static unsigned int Classify(Image *image,short **extrema,
           numerator=sqrt(distance_squared);
           for (k=0; k < image->colors; k++)
           {
-            mean=(q->red+image->colormap[k].red)/2;
+            mean=(unsigned int) (q->red+image->colormap[k].red) >> 1;
             distance=(int) q->red-(int) image->colormap[k].red;
             distance_squared=
               (((2*(MaxRGB+1))+mean)*squares[distance]) >> QuantumDepth;

@@ -265,7 +265,6 @@ int main(int argc,char **argv)
     image_info;
 
   int
-    i,
     x;
 
   MontageInfo
@@ -273,6 +272,9 @@ int main(int argc,char **argv)
 
   QuantizeInfo
     quantize_info;
+
+  register int
+    i;
 
   unsigned int
     first_scene,

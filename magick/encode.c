@@ -12059,7 +12059,7 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     min_distance=3.0*65536.0*65536.0;
     for (q=XPMColorlist; q->name != (char *) NULL; q++)
     {
-      mean=(DownScale(p->red)+q->red)/2;
+      mean=(unsigned int) (DownScale(p->red)+q->red) >> 1;
       distance=(int) DownScale(p->red)-(int) q->red;
       distance_squared=(unsigned int)
         (((2*(MaxRGB+1))+mean)*(distance*distance)) >> 8;

@@ -485,7 +485,7 @@ Export unsigned int QueryColorName(ColorPacket *color,char *name)
   min_distance=3.0*65536.0*65536.0;
   for (p=Colorlist; p->name != (char *) NULL; p++)
   {
-    mean=(DownScale(color->red)+(int) p->red)/2;
+    mean=(unsigned int) (DownScale(color->red)+(int) p->red) >> 1;
     distance=(int) DownScale(color->red)-(int) p->red;
     distance_squared=
       (((2*(MaxRGB+1))+mean)*distance*distance) >> 8;

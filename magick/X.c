@@ -769,7 +769,7 @@ Export void XBestPixel(Display *display,const Colormap colormap,XColor *colors,
   j=0;
   for (i=0; i < number_colors; i++)
   {
-    mean=(colors[i].red+color->red)/2;
+    mean=(unsigned int) (colors[i].red+color->red) >> 1;
     distance=(int) colors[i].red-(int) color->red;
     distance_squared=(unsigned int)
       (((2*(MaxRGB+1))+mean)*distance*distance) >> QuantumDepth;

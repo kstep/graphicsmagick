@@ -1049,7 +1049,7 @@ Export Image *EmbossImage(Image *image)
 Export Image *EnhanceImage(Image *image)
 {
 #define Enhance(weight) \
-  mean=(s->red+red)/2; \
+  mean=(unsigned int) (s->red+red) >> 1; \
   distance=(int) s->red-(int) red; \
   distance_squared= \
     (((2*(MaxRGB+1))+mean)*squares[distance]) >> QuantumDepth; \
