@@ -626,7 +626,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             for (i=0; i < (long) image->colors; i++)
             {
               image->colormap[i].red=(Quantum)
-                (((QuantumPrecision) MaxRGB*i)/Max(image->colors-1,1));
+                (((double) MaxRGB*i)/Max(image->colors-1,1)+0.5);
               image->colormap[i].green=image->colormap[i].red;
               image->colormap[i].blue=image->colormap[i].red;
             }
@@ -638,7 +638,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             for (i=0; i < (long) image->colors; i++)
             {
               image->colormap[i].red=(Quantum) (MaxRGB-
-                (((QuantumPrecision) MaxRGB*i)/Max(image->colors-1,1)));
+                (((double) MaxRGB*i)/Max(image->colors-1,1))+0.5);
               image->colormap[i].green=image->colormap[i].red;
               image->colormap[i].blue=image->colormap[i].red;
             }
@@ -667,11 +667,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             for (i=0; i < (long) image->colors; i++)
             {
               image->colormap[i].red=(Quantum)
-                (((QuantumPrecision) MaxRGB*red_colormap[i])/range);
+                (((double) MaxRGB*red_colormap[i])/range+0.5);
               image->colormap[i].green=(Quantum)
-                (((QuantumPrecision) MaxRGB*green_colormap[i])/range);
+                (((double) MaxRGB*green_colormap[i])/range+0.5);
               image->colormap[i].blue=(Quantum)
-                (((QuantumPrecision) MaxRGB*blue_colormap[i])/range);
+                (((double) MaxRGB*blue_colormap[i])/range+0.5);
             }
             break;
           }
@@ -1827,11 +1827,11 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         for (i=0; i < (long) image->colors; i++)
         {
           red[i]=(unsigned short)
-            (((QuantumPrecision) image->colormap[i].red*65535UL)/MaxRGB);
+            (((double) image->colormap[i].red*65535)/MaxRGB+0.5);
           green[i]=(unsigned short)
-            (((QuantumPrecision) image->colormap[i].green*65535UL)/MaxRGB);
+            (((double) image->colormap[i].green*65535)/MaxRGB+0.5);
           blue[i]=(unsigned short)
-            (((QuantumPrecision) image->colormap[i].blue*65535UL)/MaxRGB);
+            (((double) image->colormap[i].blue*65535)/MaxRGB+0.5);
         }
         (void) TIFFSetField(tiff,TIFFTAG_COLORMAP,red,green,blue);
         LiberateMemory((void **) &red);

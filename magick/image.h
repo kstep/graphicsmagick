@@ -25,7 +25,6 @@ extern "C" {
 #define ScaleToQuantum(value)  ((unsigned long) (value))
 
 typedef unsigned char Quantum;
-typedef unsigned long QuantumPrecision;
 #elif (QuantumDepth == 16)
 #define MaxRGB  65535UL
 #define ScaleCharToQuantum(value)  ((Quantum) (257UL*(value)))
@@ -38,7 +37,6 @@ typedef unsigned long QuantumPrecision;
 #define ScaleToQuantum(value)  ((unsigned long) (257UL*(value)))
 
 typedef unsigned short Quantum;
-typedef unsigned long QuantumPrecision;
 #elif (QuantumDepth == 32)
 #define MaxRGB  4294967295UL
 #define ScaleCharToQuantum(value)  ((Quantum) (16843009UL*(value)))
@@ -51,15 +49,6 @@ typedef unsigned long QuantumPrecision;
 #define ScaleToQuantum(value)  ((unsigned long) (16843009UL*(value)))
 
 typedef unsigned int Quantum;
-#if defined(HAVE_INTTYPES_H)
-typedef uint64_t QuantumPrecision;
-#else
-#if defined(WIN32)
-typedef __uint64 QuantumPrecision;
-#else
-# error "Specified value of QuantumDepth is not supported"
-#endif
-#endif
 #else
 # error "Specified value of QuantumDepth is not supported"
 #endif
@@ -69,13 +58,9 @@ typedef __uint64 QuantumPrecision;
 #define MaxColormapSize  65536
 #define OpaqueOpacity  0
 #define PixelIntensity(pixel) ((unsigned long) \
-  ((299UL*((QuantumPrecision) (pixel)->red)+ \
-    587UL*((QuantumPrecision) (pixel)->green)+ \
-    114UL*((QuantumPrecision) (pixel)->blue)+500)/1000UL))
-#define PixelIntensityToQuantum(pixel) ((Quantum) \
-  ((299UL*((QuantumPrecision) (pixel)->red)+ \
-    587UL*((QuantumPrecision) (pixel)->green)+ \
-    114UL*((QuantumPrecision) (pixel)->blue)+500)/1000UL))
+  (0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue+0.5))
+define PixelIntensityToQuantum(pixel) ((Quantum) \
+  (0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue+0.5))
 #define TransparentOpacity  MaxRGB
 /*
   Deprecated defines.

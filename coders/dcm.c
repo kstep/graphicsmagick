@@ -3263,7 +3263,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(ResourceLimitError,"Memory allocation failed",
           image);
       for (i=0; i <= (long) max_value; i++)
-        scale[i]=(Quantum) (((QuantumPrecision) MaxRGB*i)/max_value);
+        scale[i]=(Quantum) (((double) MaxRGB*i)/max_value+0.5);
     }
   for (scene=0; scene < (long) number_scenes; scene++)
   {

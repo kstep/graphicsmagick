@@ -94,9 +94,9 @@ static void PlasmaPixel(Image *image,double x,double y)
   q=GetImagePixels(image,(long) (x+0.5),(long) (y+0.5),1,1);
   if (q == (PixelPacket *) NULL)
     return;
-  q->red=(Quantum) ((QuantumPrecision) MaxRGB*rand()/RAND_MAX);
-  q->green=(Quantum) ((QuantumPrecision) MaxRGB*rand()/RAND_MAX);
-  q->blue=(Quantum) ((QuantumPrecision) MaxRGB*rand()/RAND_MAX);
+  q->red=(Quantum) ((double) MaxRGB*rand()/RAND_MAX+0.5);
+  q->green=(Quantum) ((double) MaxRGB*rand()/RAND_MAX+0.5);
+  q->blue=(Quantum) ((double) MaxRGB*rand()/RAND_MAX+0.5);
   (void) SyncImagePixels(image);
 }
 

@@ -1364,7 +1364,7 @@ MagickExport unsigned int GetImageQuantizationError(Image *image)
   double
     distance,
     maximum_error_per_pixel,
-		normalize,
+  	normalize,
     total_error;
 
   DoublePixelPacket

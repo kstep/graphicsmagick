@@ -264,10 +264,11 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               j=ReadBlobByte(image);
               k=ReadBlobByte(image);
               pixel.red=(Quantum)
-                (((QuantumPrecision) MaxRGB*((int) (k & 0x7c) >> 2))/31);
+                (((double) MaxRGB*((int) (k & 0x7c) >> 2))/31+0.5);
               pixel.green=(Quantum) ((MaxRGB*
-                (((int) (k & 0x03) << 3)+((int) (j & 0xe0) >> 5)))/31);
-              pixel.blue=(Quantum) (((QuantumPrecision) MaxRGB*((int) (j & 0x1f)))/31);
+                (((int) (k & 0x03) << 3)+((int) (j & 0xe0) >> 5)))/31+0.5);
+              pixel.blue=(Quantum)
+                (((double) MaxRGB*((int) (j & 0x1f)))/31+0.5);
               break;
             }
             case 24:
@@ -359,10 +360,11 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               j=ReadBlobByte(image);
               k=ReadBlobByte(image);
               pixel.red=(Quantum)
-                ((double) (MaxRGB*((int) (k & 0x7c) >> 2))/31);
-              pixel.green=(Quantum) (((double)
-                MaxRGB*(((int) (k & 0x03) << 3)+((int) (j & 0xe0) >> 5)))/31);
-              pixel.blue=(Quantum) (((QuantumPrecision) MaxRGB*((int) (j & 0x1f)))/31);
+                ((double) (MaxRGB*((int) (k & 0x7c) >> 2))/31+0.5);
+              pixel.green=(Quantum) (((double) MaxRGB*
+                (((int) (k & 0x03) << 3)+((int) (j & 0xe0) >> 5)))/31+0.5);
+              pixel.blue=(Quantum)
+                (((double) MaxRGB*((int) (j & 0x1f)))/31+0.5);
               if (image->storage_class == PseudoClass)
                 index=ConstrainColormapIndex(image,((unsigned short) k << 8)+j);
               break;
@@ -377,7 +379,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               pixel.green=ScaleCharToQuantum(ReadBlobByte(image));
               pixel.red=ScaleCharToQuantum(ReadBlobByte(image));
               if (tga_info.bits_per_pixel == 32)
-                pixel.opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image)));
+                pixel.opacity=(Quantum)
+                  (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image)));
               break;
             }
           }

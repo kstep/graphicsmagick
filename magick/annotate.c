@@ -944,6 +944,9 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   char
     font[MaxTextExtent];
 
+  double
+    opacity;
+
   DrawInfo
     *clone_info;
 
@@ -1013,9 +1016,6 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
 
   unsigned int
     active;
-
-  unsigned long
-    opacity;
 
   unsigned short
     *encoding;
@@ -1222,16 +1222,14 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
                 if (draw_info->text_antialias)
                   opacity=ScaleCharToQuantum(*p);
                 else
-                  opacity=(Quantum)
-                    ((*p) < 127 ? OpaqueOpacity : TransparentOpacity);
+                  opacity=((*p) < 127 ? OpaqueOpacity : TransparentOpacity);
                 fill_color=draw_info->fill;
                 if (pattern != (Image *) NULL)
                   fill_color=AcquireOnePixel(pattern,(long) ((unsigned long)
                     (point.x+x-pattern->tile_info.x) % pattern->columns),(long)
                     ((unsigned long) (point.y+y-pattern->tile_info.y) %
                     pattern->rows),&image->exception);
-                opacity=(unsigned long) ((((QuantumPrecision) MaxRGB-opacity)*
-                  (MaxRGB-fill_color.opacity))/MaxRGB);
+                opacity=((MaxRGB-opacity)*(MaxRGB-fill_color.opacity))/MaxRGB;
                 if (!active)
                   q=GetImagePixels(image,(long) ceil(point.x+x-0.5),
                     (long) ceil(point.y+y-0.5),1,1);
@@ -1538,8 +1536,9 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
               (x-pattern->tile_info.x) % pattern->columns),(long)
               ((unsigned long) (y-pattern->tile_info.y) % pattern->rows),
               &image->exception);
-          q->opacity=(Quantum) (MaxRGB-(((MaxRGB-(QuantumPrecision)
-            PixelIntensityToQuantum(q))*(MaxRGB-fill_color.opacity))/MaxRGB));
+          q->opacity=(Quantum) (MaxRGB-(((MaxRGB-(double)
+            PixelIntensityToQuantum(q))*(MaxRGB-fill_color.opacity))/
+            MaxRGB)+0.5);
           q->red=fill_color.red;
           q->green=fill_color.green;
           q->blue=fill_color.blue;

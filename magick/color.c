@@ -1394,7 +1394,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
   double
     scale;
 
-	DoublePixelPacket
+  DoublePixelPacket
     pixel;
 
   register const ColorInfo
@@ -1489,15 +1489,15 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
           }
       n<<=2;
       color->red=(Quantum)
-        (((QuantumPrecision) MaxRGB*pixel.red)/((1 << n)-1));
+        (((double) MaxRGB*pixel.red)/((1 << n)-1)+0.5);
       color->green=(Quantum)
-        (((QuantumPrecision) MaxRGB*pixel.green)/((1 << n)-1));
+        (((double) MaxRGB*pixel.green)/((1 << n)-1)+0.5);
       color->blue=(Quantum)
-        (((QuantumPrecision) MaxRGB*pixel.blue)/((1 << n)-1));
+        (((double) MaxRGB*pixel.blue)/((1 << n)-1)+0.5);
       color->opacity=OpaqueOpacity;
       if ((n != 3) && (n != 6) && (n != 9) && (n != 12))
         color->opacity=(Quantum)
-          (((QuantumPrecision) MaxRGB*pixel.opacity)/((1 << n)-1));
+          (((double) MaxRGB*pixel.opacity)/((1 << n)-1)+0.5);
       return(True);
     }
   if (LocaleNCompare(name,"rgb(",4) == 0)
