@@ -127,6 +127,80 @@ static unsigned int
   WriteCachePixels(Cache,const unsigned long);
 
 /*
+
+  Read data into buffer 'buffer', with size 'length', from file
+  descriptor 'file' at offset 'offset'. Care is taken to make sure
+  that all data requested is read if system calls are interrupted by
+  signals.
+
+*/
+static inline long FilePositionRead(int file, void *buffer, size_t length,
+  ExtendedSignedIntegralType offset)
+{
+  register long
+    count=0;
+
+  register size_t
+    total_count;
+
+#if !HAVE_PREAD
+  if ((MagickSeek(file,offset,SEEK_SET)) < 0)
+    return -1;
+#endif
+
+  for (total_count=0; total_count < length; total_count+=count)
+    {
+#if HAVE_PREAD
+      count=pread(file,(char *) buffer+total_count,length-total_count,
+        offset+total_count);
+#else
+      count=read(file,(char *) buffer+total_count,length-total_count);
+#endif
+      if (count <= 0)
+        break;
+    }
+  if (count < 0)
+    return -1;
+  return total_count;
+}
+/*
+
+  Write data pointed to by 'buffer', with size 'length', to file
+  descriptor 'file' at specified offset 'offset'.  Care is taken to
+  make sure that all data is written if system calls are interrupted
+  by signals.
+
+*/
+static inline long FilePositionWrite(int file, const void *buffer,
+  size_t length,ExtendedSignedIntegralType offset)
+{
+  register long
+    count=0;
+
+  register size_t
+    total_count;
+
+#if !HAVE_PWRITE
+  if ((MagickSeek(file,offset,SEEK_SET)) < 0)
+    return -1;
+#endif /* !HAVE_PWRITE */
+  for (total_count=0; total_count < length; total_count+=count)
+    {
+#if HAVE_PWRITE
+      count=pwrite(file,(char *) buffer+total_count,length-total_count,
+        offset+total_count);
+#else
+      count=write(file,(char *) buffer+total_count,length-total_count);
+#endif
+      if (count <= 0)
+        break;
+    }
+  if (count < 0)
+    return -1;
+  return total_count;
+}
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -2407,7 +2481,6 @@ static unsigned int ReadCacheIndexes(const Cache cache,
     *cache_info;
 
   ExtendedSignedIntegralType
-    count,
     number_pixels,
     offset;
 
@@ -2422,9 +2495,6 @@ static unsigned int ReadCacheIndexes(const Cache cache,
 
   register NexusInfo
     *nexus_info;
-
-  register size_t
-    i;
 
   size_t
     length;
@@ -2469,17 +2539,8 @@ static unsigned int ReadCacheIndexes(const Cache cache,
     cache_info->columns*cache_info->rows;
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=MagickSeek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
-      offset*sizeof(IndexPacket),SEEK_SET);
-    if (count == -1)
-      break;
-    for (i=0; i < length; i+=count)
-    {
-      count=read(file,(char *) indexes+i,length-i);
-      if (count <= 0)
-        break;
-    }
-    if (i < length)
+    if ((FilePositionRead(file,indexes,length,cache_info->offset+
+          number_pixels*sizeof(PixelPacket)+offset*sizeof(IndexPacket))) <= 0)
       break;
     indexes+=nexus_info->columns;
     offset+=cache_info->columns;
@@ -2526,7 +2587,6 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
     *cache_info;
 
   ExtendedSignedIntegralType
-    count,
     offset;
 
   int
@@ -2540,9 +2600,6 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
 
   register PixelPacket
     *pixels;
-
-  register size_t
-    i;
 
   size_t
     length;
@@ -2582,17 +2639,8 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
     }
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=MagickSeek(file,cache_info->offset+offset*sizeof(PixelPacket),
-      SEEK_SET);
-    if (count == -1)
-      break;
-    for (i=0; i < length; i+=count)
-    {
-      count=read(file,(char *) pixels+i,length-i);
-      if (count <= 0)
-        break;
-    }
-    if (i < length)
+    if ((FilePositionRead(file,pixels,length,
+       cache_info->offset+offset*sizeof(PixelPacket))) < length)
       break;
     pixels+=nexus_info->columns;
     offset+=cache_info->columns;
@@ -3250,7 +3298,6 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
     *cache_info;
 
   ExtendedSignedIntegralType
-    count,
     number_pixels,
     offset;
 
@@ -3265,9 +3312,6 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
 
   register NexusInfo
     *nexus_info;
-
-  register size_t
-    i;
 
   size_t
     length;
@@ -3314,18 +3358,9 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
     cache_info->columns*cache_info->rows;
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=MagickSeek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
-      offset*sizeof(IndexPacket),SEEK_SET);
-    if (count == -1)
-      break;
-    for (i=0; i < length; i+=count)
-    {
-      count=write(file,(char *) indexes+i,length-i);
-      if (count <= 0)
-        break;
-    }
-    if (i < length)
-      break;
+    if ((FilePositionWrite(file,indexes,length,cache_info->offset+
+       number_pixels*sizeof(PixelPacket)+offset*sizeof(IndexPacket))) < length)
+       break;
     indexes+=nexus_info->columns;
     offset+=cache_info->columns;
   }
@@ -3372,7 +3407,6 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
     *cache_info;
 
   ExtendedSignedIntegralType
-    count,
     offset;
 
   int
@@ -3386,9 +3420,6 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
 
   register PixelPacket
     *pixels;
-
-  register size_t
-    i;
 
   size_t
     length;
@@ -3430,18 +3461,9 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
     }
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=MagickSeek(file,cache_info->offset+offset*sizeof(PixelPacket),
-      SEEK_SET);
-    if (count == -1)
-      break;
-    for (i=0; i < length; i+=count)
-    {
-      count=write(file,(char *) pixels+i,length-i);
-      if (count <= 0)
-        break;
-    }
-    if (i < length)
-      break;
+    if ((FilePositionWrite(file,pixels,length,
+        cache_info->offset+offset*sizeof(PixelPacket))) < length)
+       break;
     pixels+=nexus_info->columns;
     offset+=cache_info->columns;
   }
