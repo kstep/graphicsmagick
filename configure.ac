@@ -342,6 +342,12 @@ else
   AC_DEFINE_UNQUOTED(MAGICK_FONT_PATH,"$with_fontpath",Define to prepend to default font search path.)
 fi
 
+# Set Windows font directory
+AC_ARG_WITH(windows-font-dir,
+	      [  --with-windows-font-dir directory containing MS-Windows fonts],
+	      [with_windows_font_dir=$withval],
+	      [with_windows_font_dir=''])
+
 # Disable XML.
 AC_ARG_WITH(xml,
 	      [  --without-xml           disable XML support],
@@ -1440,6 +1446,41 @@ AC_PATH_PROG(TXT2HTML, txt2html, txt2html)
 have_txt2html='no' ; if test "$TXT2HTML" != 'txt2html' ; then have_txt2html='yes' ; fi
 AM_CONDITIONAL(HasTXT2HTML, test "$have_txt2html" = 'yes')
 
+#
+# Test for font directories
+#
+type_include_files=''
+
+# Windows
+windows_font_dir=''
+if test "$with_windows_font_dir" != "yes" && test -n "$with_windows_font_dir"
+then
+   windows_font_dir="$with_windows_font_dir"
+else
+  case $host_os in
+    cygwin* | mingw* | pw32*)
+      AC_PATH_PROG(NOTEPADdelegate,notepad.exe,)
+      windows_font_dir=`echo "$NOTEPADdelegate" | sed -e 's:/notepad.exe:/fonts:'`
+      ;;
+  esac
+fi
+if test -n "$windows_font_dir"
+then
+  type_include_files="$type_include_files "'file="type-windows.mgk"'
+fi
+AC_SUBST(windows_font_dir)
+
+# Ghostscript
+ghostscript_font_dir="$prefix/share/ghostscript/fonts"
+if test "$PSDelegate" != 'gs'
+then
+  ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/bin/gs:/share/ghostscript/fonts:'`
+fi
+type_include_files="$type_include_files "'file="type-ghostscript.mgk"'
+AC_SUBST(ghostscript_font_dir)
+
+AC_SUBST(type_include_files)
+
 if test "$with_frozenpaths" != 'yes'
 then
   # Re-set delegate definitions to default (no paths)
@@ -1778,10 +1819,11 @@ AC_SUBST(X_CFLAGS)
 #AC_SUBST(X_EXTRA_LIBS)
 
 AC_OUTPUT(Makefile magick/Makefile coders/delegates.mgk coders/Makefile \
-  utilities/Makefile tests/Makefile coders/type.mgk magick/Magick-config \
-  Magick++/bin/Makefile Magick++/bin/Magick++-config Magick++/Makefile \
-  Magick++/lib/Makefile Magick++/lib/Magick++/Makefile  Magick++/demo/Makefile \
-  Magick++/tests/Makefile PerlMagick/Makefile.PL)
+  utilities/Makefile tests/Makefile coders/type.mgk \
+  coders/type-ghostscript.mgk coders/type-windows.mgk \
+  magick/Magick-config Magick++/bin/Makefile Magick++/bin/Magick++-config \
+  Magick++/Makefile Magick++/lib/Makefile Magick++/lib/Magick++/Makefile  \
+  Magick++/demo/Makefile Magick++/tests/Makefile PerlMagick/Makefile.PL)
 
 echo ""
 

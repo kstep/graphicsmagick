@@ -529,15 +529,24 @@ yuv_la_LIBADD       = $(LIBMAGICK)
 DEFS = @DEFS@ -I../
 
 # Install delegates files
+DATADELEGATES = \
+	delegates.mgk \
+	type-ghostscript.mgk \
+	type-windows.mgk \
+	type.mgk
+
 install-data-delegates: 
 	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
-	$(INSTALL_DATA) delegates.mgk $(DESTDIR)$(pkglibdir)
-	$(INSTALL_DATA) type.mgk $(DESTDIR)$(pkglibdir)
+	for file in $(DATADELEGATES) ; do  \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(pkglibdir) ; \
+	done
 
 # Uninstall delegates files
 uninstall-data-delegates:
-	rm -f $(DESTDIR)$(pkglibdir)/delegates.mgk
-	rm -f $(DESTDIR)$(pkglibdir)/type.mgk
+	for file in $(DATADELEGATES) ; do \
+	  rm -f $(DESTDIR)$(pkglibdir)/$$file ; \
+	done
+
 
 install-exec-local: install-data-delegates
 
