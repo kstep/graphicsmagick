@@ -820,8 +820,8 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
         if (level != MaxTreeDepth)
           continue;
         for (i=0; i < (long) node_info->number_unique; i++)
-           if (ColorMatch(p,&node_info->list[i].pixel))
-             break;
+          if (ColorMatch(p,&node_info->list[i].pixel))
+            break;
         if (i < (long) node_info->number_unique)
           {
             node_info->list[i].count++;

@@ -5763,12 +5763,19 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (long) image->columns; x++)
-    {
-      if (indexes != (IndexPacket *) NULL)
+    if (indexes == (IndexPacket *) NULL)
+      for (x=0; x < (long) image->columns; x++)
+      {
+        *q=background_color;
+        q++;
+      }
+    else
+      for (x=0; x < (long) image->columns; x++)
+      {
         indexes[x]=0;
-      *q++=background_color;
-    }
+        *q=background_color;
+        q++;
+      }
     if (!SyncImagePixels(image))
       break;
   }
