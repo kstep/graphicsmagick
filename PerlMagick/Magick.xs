@@ -4569,9 +4569,6 @@ Mogrify(ref,...)
           CompositeOperator
             compose;
 
-          double
-            opacity;
-
           Image
             *composite_image,
             *rotate_image;
@@ -4580,6 +4577,9 @@ Mogrify(ref,...)
             status,
             x,
             y;
+
+          Quantum
+            opacity;
 
           unsigned int
             height,
@@ -4598,7 +4598,8 @@ Mogrify(ref,...)
             compose=(CompositeOperator) argument_list[1].int_reference;
           opacity=OpaqueOpacity;
           if (attribute_flag[6])
-            opacity=argument_list[6].double_reference;
+            opacity=(Quantum)
+              ceil(MaxRGB*argument_list[6].double_reference/100.0-0.5);
           if (opacity != OpaqueOpacity)
             SetImageOpacity(composite_image,opacity);
           if (compose == DissolveCompositeOp)
