@@ -2070,10 +2070,13 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                       graphic_context[n-1]->clip_path) != 0)
                     (void) SetImageClipMask(image,(Image *) NULL);
                 DestroyDrawInfo(graphic_context[n]);
+                if (n == 0)
+                  {
+                    ThrowException(&image->exception,CorruptImageWarning,
+                      "unbalanced graphic context push/pop",token);
+                    break;
+                  }
                 n--;
-                if (n < 0)
-                  ThrowException(&image->exception,CorruptImageWarning,
-                    "unbalanced graphic context push/pop",token);
                 break;
               }
             if (LocaleCompare("pattern",token) == 0)
