@@ -3604,8 +3604,9 @@ Export unsigned int ZLIBEncodeImage(FILE *file,
   return(!status);
 }
 #else
-Export unsigned int ZLIBEncodeImage(FILE *file,unsigned char *pixels,
-  const unsigned long number_pixels,const unsigned int quality)
+Export unsigned int ZLIBEncodeImage(FILE *file,
+  const unsigned long number_pixels,const unsigned int quality,
+  unsigned char *pixels)
 {
   MagickWarning(MissingDelegateWarning,"ZLIB library is not available",
     (char *) NULL);

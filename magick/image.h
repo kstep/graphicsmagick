@@ -924,6 +924,7 @@ extern Export void
   ContrastImage(Image *,const unsigned int),
   CycleColormapImage(Image *,int),
   DescribeImage(Image *,FILE *,const unsigned int),
+  DestroyAnnotateInfo(AnnotateInfo *),
   DestroyImage(Image *),
   DestroyImageInfo(ImageInfo *),
   DestroyImages(Image *),

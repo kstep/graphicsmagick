@@ -3354,6 +3354,65 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e s t r o y A n n o t a t e I n f o                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyAnnotateInfo deallocates memory associated with an
+%  AnnotateInfo structure.
+%
+%  The format of the DestroyAnnotateInfo routine is:
+%
+%      DestroyAnnotateInfo(annotate_info)
+%
+%  A description of each parameter follows:
+%
+%    o annotate_info: Specifies a pointer to an AnnotateInfo structure.
+%
+%
+*/
+Export void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
+{
+  assert(annotate_info != (AnnotateInfo *) NULL);
+  if (annotate_info->server_name != (char *) NULL)
+    FreeMemory((char *) annotate_info->server_name);
+  annotate_info->server_name=(char *) NULL;
+  if (annotate_info->density != (char *) NULL)
+    FreeMemory((char *) annotate_info->density);
+  annotate_info->density=(char *) NULL;
+  if (annotate_info->border_color != (char *) NULL)
+    FreeMemory((char *) annotate_info->border_color);
+  annotate_info->border_color=(char *) NULL;
+  if (annotate_info->font != (char *) NULL)
+    FreeMemory((char *) annotate_info->font);
+  annotate_info->font=(char *) NULL;
+  if (annotate_info->pen != (char *) NULL)
+    FreeMemory((char *) annotate_info->pen);
+  annotate_info->pen=(char *) NULL;
+  if (annotate_info->geometry != (char *) NULL)
+    FreeMemory((char *) annotate_info->geometry);
+  annotate_info->geometry=(char *) NULL;
+  if (annotate_info->text != (char *) NULL)
+    FreeMemory((char *) annotate_info->text);
+  annotate_info->text=(char *) NULL;
+  if (annotate_info->box != (char *) NULL)
+    FreeMemory((char *) annotate_info->box);
+  annotate_info->box=(char *) NULL;
+  if (annotate_info->primitive != (char *) NULL)
+    FreeMemory((char *) annotate_info->primitive);
+  annotate_info->primitive=(char *) NULL;
+  if (annotate_info->font_name != (char *) NULL)
+    FreeMemory((char *) annotate_info->font_name);
+  annotate_info->font_name=(char *) NULL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D e s t r o y I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -3487,52 +3546,52 @@ Export void DestroyImage(Image *image)
 Export void DestroyImageInfo(ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
-  if (image_info->server_name)
+  if (image_info->server_name != (char *) NULL)
     FreeMemory((char *) image_info->server_name);
   image_info->server_name=(char *) NULL;
-  if (image_info->font)
+  if (image_info->font != (char *) NULL)
     FreeMemory((char *) image_info->font);
   image_info->font=(char *) NULL;
-  if (image_info->pen)
+  if (image_info->pen != (char *) NULL)
     FreeMemory((char *) image_info->pen);
   image_info->pen=(char *) NULL;
-  if (image_info->size)
+  if (image_info->size != (char *) NULL)
     FreeMemory((char *) image_info->size);
   image_info->size=(char *) NULL;
-  if (image_info->tile)
+  if (image_info->tile != (char *) NULL)
     FreeMemory((char *) image_info->tile);
   image_info->tile=(char *) NULL;
-  if (image_info->density)
+  if (image_info->density != (char *) NULL)
     FreeMemory((char *) image_info->density);
   image_info->density=(char *) NULL;
-  if (image_info->page)
+  if (image_info->page != (char *) NULL)
     FreeMemory((char *) image_info->page);
   image_info->page=(char *) NULL;
-  if (image_info->dispose)
+  if (image_info->dispose != (char *) NULL)
     FreeMemory((char *) image_info->dispose);
   image_info->dispose=(char *) NULL;
-  if (image_info->delay)
+  if (image_info->delay != (char *) NULL)
     FreeMemory((char *) image_info->delay);
   image_info->delay=(char *) NULL;
-  if (image_info->iterations)
+  if (image_info->iterations != (char *) NULL)
     FreeMemory((char *) image_info->iterations);
   image_info->iterations=(char *) NULL;
-  if (image_info->texture)
+  if (image_info->texture != (char *) NULL)
     FreeMemory((char *) image_info->texture);
   image_info->texture=(char *) NULL;
-  if (image_info->view)
+  if (image_info->view != (char *) NULL)
     FreeMemory((char *) image_info->view);
   image_info->view=(char *) NULL;
-  if (image_info->background_color)
+  if (image_info->background_color != (char *) NULL)
     FreeMemory((char *) image_info->background_color);
   image_info->background_color=(char *) NULL;
-  if (image_info->border_color)
+  if (image_info->border_color != (char *) NULL)
     FreeMemory((char *) image_info->border_color);
   image_info->border_color=(char *) NULL;
-  if (image_info->matte_color)
+  if (image_info->matte_color != (char *) NULL)
     FreeMemory((char *) image_info->matte_color);
   image_info->matte_color=(char *) NULL;
-  if (image_info->undercolor)
+  if (image_info->undercolor != (char *) NULL)
     FreeMemory((char *) image_info->undercolor);
   image_info->undercolor=(char *) NULL;
 }
@@ -5152,9 +5211,9 @@ Export unsigned int IsGeometry(const char *geometry)
     height,
     width;
 
-  if (geometry == (char *) NULL)
+  if (geometry == (const char *) NULL)
     return(False);
-  flags=XParseGeometry(geometry,&x,&y,&width,&height);
+  flags=XParseGeometry((char *) geometry,&x,&y,&width,&height);
   return((flags != NoValue) || sscanf(geometry,"%lf",&value));
 }
 
@@ -5335,9 +5394,9 @@ Export unsigned int IsSubimage(const char *geometry,const unsigned int pedantic)
     height,
     width;
 
-  if (geometry == (char *) NULL)
+  if (geometry == (const char *) NULL)
     return(False);
-  flags=XParseGeometry(geometry,&x,&y,&width,&height);
+  flags=XParseGeometry((char *) geometry,&x,&y,&width,&height);
   if (pedantic)
     return((flags != NoValue) && !(flags & HeightValue));
   return(IsGeometry(geometry) && !(flags & HeightValue));
@@ -7580,7 +7639,7 @@ Export void MogrifyImages(ImageInfo *image_info,const int argc,char **argv,
 %
 %    o image: Specifies a pointer to an array of Image structures.
 %
-%    o montage_info: Specifies a pointer to a XMontageInfo structure.
+%    o montage_info: Specifies a pointer to a MontageInfo structure.
 %
 %
 */
@@ -10611,7 +10670,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
       image_info->file=(FILE *) NULL;
       TemporaryFilename(image.filename);
       image_info->temporary=True;
-      FormatString(image_info->filename,"%s",image.filename);
+      FormatString(image_info->filename,"%.1024s",image.filename);
       file=fopen(image.filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         {
@@ -11364,7 +11423,7 @@ Export void TransformImage(Image **image,const char *crop_geometry,
 
   assert(image != (Image **) NULL);
   transformed_image=(*image);
-  if (crop_geometry != (char *) NULL)
+  if (crop_geometry != (const char *) NULL)
     {
       Image
         *cropped_image;
@@ -11379,7 +11438,7 @@ Export void TransformImage(Image **image,const char *crop_geometry,
       height=transformed_image->rows;
       crop_info.x=0;
       crop_info.y=0;
-      flags=XParseGeometry(crop_geometry,&crop_info.x,&crop_info.y,
+      flags=XParseGeometry((char *) crop_geometry,&crop_info.x,&crop_info.y,
         &width,&height);
       if ((flags & WidthValue) == 0)
         width=(unsigned int) ((int) transformed_image->columns-crop_info.x);

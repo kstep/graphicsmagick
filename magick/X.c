@@ -555,7 +555,7 @@ Export XFontStruct *XBestFont(Display *display,
   {
     if (font_info != (XFontStruct *) NULL)
       break;
-    font_info=XLoadQueryFont(display,*p);
+    font_info=XLoadQueryFont(display,(char *) *p);
     p++;
   }
   return(font_info);
@@ -1012,7 +1012,7 @@ Export XVisualInfo *XBestVisualInfo(Display *display,
           */
           for (i=0; i < MaxStandardColormaps; i++)
           {
-            map_property=XInternAtom(display,colormap[i],True);
+            map_property=XInternAtom(display,(char *) colormap[i],True);
             if (map_property == (Atom) NULL)
               continue;
             status=XGetRGBColormaps(display,root_window,&map_list,&number_maps,
@@ -1543,95 +1543,82 @@ Export void XDisplayImageInfo(Display *display,
   Image *image)
 {
   char
-    color[MaxTextExtent],
+    filename[MaxTextExtent],
     *text,
-    **textlist,
-    title[MaxTextExtent];
+    **textlist;
+
+  FILE
+    *file;
 
   int
+    c,
     length;
 
-  Image
+  register char
     *p;
-
-  MagickInfo
-    *magick_info;
 
   register int
     i;
 
   unsigned int
     bytes,
-    count,
     levels;
 
-  /*
-    Display information about the image in the Text View widget.
-  */
   assert(display != (Display *) NULL);
   assert(resource_info != (XResourceInfo *) NULL);
   assert(windows != (XWindows *) NULL);
   assert(image != (Image *) NULL);
-  length=50*MaxTextExtent;
-  if (image->class == PseudoClass)
-    length+=128*image->colors;
-  if (image->directory != (char *) NULL)
-    length+=Extent(image->directory);
-  if (image->comments != (char *) NULL)
-    length+=Extent(image->comments);
-  text=(char *) AllocateMemory(length*sizeof(char));
-  if (text == (char *) NULL)
+  /*
+    Write info about the X server to a file.
+  */
+  TemporaryFilename(filename);
+  file=fopen(filename,"w+");
+  if (file == (FILE *) NULL)
     {
-      XNoticeWidget(display,windows,"Unable to display image info:",
-        "Memory allocation failed");
+      XNoticeWidget(display,windows,"Unable to display image info",filename);
       return;
     }
-  *text='\0';
-  /*
-    Display info about the X server.
-  */
-  FormatString(title," Image Info: %s",image->filename);
   if (resource_info->gamma_correct)
     if (resource_info->display_gamma != (char *) NULL)
-      FormatString(text,"%sDisplay\n  gamma: %.1024s\n\n",text,
+      (void) fprintf(file,"Display\n  gamma: %.1024s\n\n",
         resource_info->display_gamma);
   /*
-    Display info about the X image.
+    Write info about the X image to a file.
   */
-  FormatString(text,"%sX\n  visual: %.1024s\n",text,
+  (void) fprintf(file,"X\n  visual: %.1024s\n",
     XVisualClassName(windows->image.class));
-  FormatString(text,"%s  depth: %d\n",text,windows->image.ximage->depth);
+  (void) fprintf(file,"  depth: %d\n",windows->image.ximage->depth);
   if (windows->visual_info->colormap_size != 0)
-    FormatString(text,"%s  colormap size: %d\n",text,
+    (void) fprintf(file,"  colormap size: %d\n",
       windows->visual_info->colormap_size);
   if (resource_info->colormap== SharedColormap)
-    (void) strcat(text,"  colormap type: Shared\n");
+    (void) fprintf(file,"  colormap type: Shared\n");
   else
-    (void) strcat(text,"  colormap type: Private\n");
-  FormatString(text,"%s  geometry: %dx%d\n",text,
-    windows->image.ximage->width,windows->image.ximage->height);
+    (void) fprintf(file,"  colormap type: Private\n");
+  (void) fprintf(file,"  geometry: %dx%d\n",windows->image.ximage->width,
+    windows->image.ximage->height);
   if (windows->image.crop_geometry != (char *) NULL)
-    FormatString(text,"%s  crop geometry: %.1024s\n",text,
+    (void) fprintf(file,"  crop geometry: %.1024s\n",
       windows->image.crop_geometry);
   if (windows->image.pixmap == (Pixmap) NULL)
-    (void) strcat(text,"  type: X Image\n");
+    (void) fprintf(file,"  type: X Image\n");
   else
-    (void) strcat(text,"  type: Pixmap\n");
+    (void) fprintf(file,"  type: Pixmap\n");
   if (windows->image.shape)
-    (void) strcat(text,"  non-rectangular shape: True\n");
+    (void) fprintf(file,"  non-rectangular shape: True\n");
   else
-    (void) strcat(text,"  non-rectangular shape: False\n");
+    (void) fprintf(file,"  non-rectangular shape: False\n");
   if (windows->image.shared_memory)
-    (void) strcat(text,"  shared memory: True\n");
+    (void) fprintf(file,"  shared memory: True\n");
   else
-    (void) strcat(text,"  shared memory: False\n");
-  (void) strcat(text,"\n");
+    (void) fprintf(file,"  shared memory: False\n");
+  (void) fprintf(file,"\n");
   if (resource_info->font != (char *) NULL)
-    FormatString(text,"%sFont: %.1024s\n\n",text,resource_info->font);
+    (void) fprintf(file,"Font: %.1024s\n\n",resource_info->font);
   if (resource_info->text_font != (char *) NULL)
-    FormatString(text,"%sText font: %.1024s\n\n",text,resource_info->text_font);
+    (void) fprintf(file,"Text font: %.1024s\n\n",resource_info->text_font);
   /*
-    Display info about the undo image cache.
+    Write info about the undo cache to a file.
   */
   bytes=0;
   for (levels=0; undo_image != (Image *) NULL; levels++)
@@ -1639,261 +1626,53 @@ Export void XDisplayImageInfo(Display *display,
     bytes+=undo_image->list->packets*sizeof(RunlengthPacket);
     undo_image=undo_image->previous;
   }
-  FormatString(text,"%sUndo Edit Cache\n  levels: %u\n",text,levels);
-  FormatString(text,"%s  bytes: %umb\n",text,(bytes+(1 << 19)) >> 20);
-  FormatString(text,"%s  limit: %umb\n\n",text,resource_info->undo_cache);
+  (void) fprintf(file,"Undo Edit Cache\n  levels: %u\n",levels);
+  (void) fprintf(file,"  bytes: %umb\n",(bytes+(1 << 19)) >> 20);
+  (void) fprintf(file,"  limit: %umb\n\n",resource_info->undo_cache);
   /*
-    Display info about the image.
+    Write info about the image to a file.
   */
-  FormatString(text,"%sImage\n  file: %.1024s\n",text,image->filename);
-  (void) strcat(text,"  type: ");
-  switch (GetImageType(&resource_info->image_info,image))
+  DescribeImage(image,file,True);
+  /*
+    Read the information from the file to a string.
+  */
+  (void) fseek(file,0L,SEEK_SET);
+  length=MaxTextExtent;
+  text=(char *) AllocateMemory(length);
+  for (p=text; text != (char *) NULL; p++)
   {
-    case ColorSeparationType: (void) strcat(text,"color separation"); break;
-    case BilevelType: (void) strcat(text,"bilevel"); break;
-    case GrayscaleType: (void) strcat(text,"grayscale"); break;
-    case PaletteType: (void) strcat(text,"palette"); break;
-    case TrueColorType: (void) strcat(text,"true color");
-    case MatteType: (void) strcat(text,"true color with transparency"); break;
-    default: (void) strcat(text,"undefined"); break;
-  }
-  (void) strcat(text,"\n");
-  if (image->class == DirectClass)
-    (void) strcat(text,"  class: DirectClass\n");
-  else
-    (void) strcat(text,"  class: PseudoClass\n");
-  if (image->class == PseudoClass)
-    {
-      char
-        name[MaxTextExtent];
-
-      ColorPacket
-        *p;
-
-      register int
-        i;
-
-      /*
-        Display image colormap.
-      */
-      if (image->total_colors <= image->colors)
-        FormatString(text,"%s  colors: %u\n",text,image->colors);
-      else
-        FormatString(text,"%s  colors: %lu=>%u\n",text,image->total_colors,
-          image->colors);
-      p=image->colormap;
-      for (i=0; i < (int) image->colors; i++)
+    c=fgetc(file);
+    if (c == EOF)
+      break;
+    if ((p-text+1) >= length)
       {
-        FormatString(text,"%s    %d: (%3d,%3d,%3d)  ",text,i,p->red,
-          p->green,p->blue);
-        (void) QueryColorName(p,name);
-        (void) strcat(text,"  ");
-        (void) strcat(text,name);
-        (void) strcat(text,"\n");
-        p++;
+        *p='\0';
+        length<<=1;
+        text=(char *) ReallocateMemory((char *) text,length);
+        if (text == (char *) NULL)
+          break;
+        p=text+Extent(text);
       }
-    }
-  if (image->mean_error_per_pixel != 0)
-    FormatString(text,"%s  mean error per pixel: %d\n",text,
-      image->mean_error_per_pixel);
-  if (image->normalized_mean_error != 0)
-    FormatString(text,"%s  normalized mean error: %.6f\n",text,
-      image->normalized_mean_error);
-  if (image->normalized_maximum_error != 0)
-    FormatString(text,"%s  normalized maximum error: %.6f\n",text,
-      image->normalized_maximum_error);
-  SignatureImage(image);
-  FormatString(text,"%s  signature: %.1024s\n",text,image->signature);
-  if (image->matte)
-    (void) strcat(text,"  matte: True\n");
-  else
-    (void) strcat(text,"  matte: False\n");
-  if (image->rendering_intent == SaturationIntent)
-    (void) strcat(text,"  rendering-intent: saturation\n");
-  else
-    if (image->rendering_intent == PerceptualIntent)
-      (void) strcat(text,"  rendering-intent: perceptual\n");
-    else
-      if (image->rendering_intent == AbsoluteIntent)
-        (void) strcat(text,"  rendering-intent: absolute\n");
-    else
-      if (image->rendering_intent == RelativeIntent)
-        (void) strcat(text,"  rendering-intent: relative\n");
-  if (image->gamma != 0.0)
-    FormatString(text,"%s  gamma: %g\n",text,image->gamma);
-  if (image->chromaticity.white_point.x != 0.0)
+    *p=(unsigned char) c;
+  }
+  (void) fclose(file);
+  (void) remove(filename);
+  if (text == (char *) NULL)
     {
-      /*
-        Display image chromaticity.
-      */
-      (void) strcat(text,"  chromaticity:\n");
-      FormatString(text,"%s    red primary: (%g,%g)\n",text,
-        image->chromaticity.red_primary.x,image->chromaticity.red_primary.y);
-      FormatString(text,"%s    green primary: (%g,%g)\n",text,
-        image->chromaticity.green_primary.x,
-        image->chromaticity.green_primary.y);
-      FormatString(text,"%s    blue primary: (%g,%g)\n",text,
-        image->chromaticity.blue_primary.x,image->chromaticity.blue_primary.y);
-      FormatString(text,"%s    white point: (%g,%g)\n",text,
-        image->chromaticity.white_point.x,image->chromaticity.white_point.y);
-    }
-  if (image->color_profile.length > 0)
-    FormatString(text,"%s  color profile: %u bytes\n",text,
-      image->color_profile.length);
-  if (image->iptc_profile.length > 0)
-    FormatString(text,"%s  iptc profile: %u bytes\n",text,
-      image->iptc_profile.length);
-  if (image->packets < (image->columns*image->rows))
-    FormatString(text,"%s  runlength packets: %lu of %u\n",text,
-      image->packets,image->columns*image->rows);
-  if ((image->magick_columns != 0) || (image->magick_rows != 0))
-    if ((image->magick_columns != image->columns) ||
-        (image->magick_rows != image->rows))
-      FormatString(text,"%s  base geometry: %ux%u\n",text,
-        image->magick_columns,image->magick_rows);
-  FormatString(text,"%s  geometry: %ux%u\n",text,
-    image->columns,image->rows);
-  if ((image->tile_info.width*image->tile_info.height) != 0)
-      FormatString(text,"%s  tile geometry: %ux%u%+d%+d\n",text,
-        image->tile_info.width,image->tile_info.height,image->tile_info.x,
-        image->tile_info.y);
-  if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
-    {
-      /*
-        Display image resolution.
-      */
-      FormatString(text,"%s  resolution: %gx%g",text,
-        image->x_resolution,image->y_resolution);
-      if (image->units == UndefinedResolution)
-        FormatString(text,"%s pixels\n",text);
-      else
-        if (image->units == PixelsPerInchResolution)
-          FormatString(text,"%s pixels/inch\n",text);
-        else
-          if (image->units == PixelsPerCentimeterResolution)
-            FormatString(text,"%s pixels/centimeter\n",text);
-          else
-            FormatString(text,"%s\n",text);
-    }
-  FormatString(text,"%s  depth: %u\n",text,image->depth);
-  if (image->filesize != 0)
-    {
-      if (image->filesize >= (1 << 24))
-        FormatString(text,"%s  filesize: %ldmb\n",text,
-          image->filesize/1024/1024);
-      else
-        if (image->filesize >= (1 << 14))
-          FormatString(text,"%s  filesize: %ldkb\n",text,
-            image->filesize/1024);
-        else
-          FormatString(text,"%s  filesize: %ldb\n",text,image->filesize);
-    }
-  if (image->interlace == NoInterlace)
-    (void) strcat(text,"  interlace: None\n");
-  else
-    if (image->interlace == LineInterlace)
-      (void) strcat(text,"  interlace: Line\n");
-    else
-      if (image->interlace == PlaneInterlace)
-        (void) strcat(text,"  interlace: Plane\n");
-    else
-      if (image->interlace == PartitionInterlace)
-        (void) strcat(text,"  interlace: Partition\n");
-  (void) QueryColorName(&image->background_color,color);
-  FormatString(text,"%s  background-color: %.1024s\n",text,color);
-  (void) QueryColorName(&image->border_color,color);
-  FormatString(text,"%s  border-color: %.1024s\n",text,color);
-  (void) QueryColorName(&image->matte_color,color);
-  FormatString(text,"%s  matte-color: %.1024s\n",text,color);
-  if (image->page != (char *) NULL)
-    FormatString(text,"%s  page geometry: %.1024s\n",text,image->page);
-  if (image->dispose != 0)
-    FormatString(text,"%s  dispose method: %d\n",text,image->dispose);
-  if (image->delay != 0)
-    FormatString(text,"%s  delay: %d\n",text,image->delay);
-  if (image->iterations != 1)
-    FormatString(text,"%s  iterations: %d\n",text,image->iterations);
-  magick_info=(MagickInfo *) GetMagickInfo(image->magick);
-  if ((magick_info == (MagickInfo *) NULL) ||
-      (*magick_info->description == '\0'))
-    FormatString(text,"%s  format: %.1024s\n",text,image->magick);
-  else
-    FormatString(text,"%s  format: %.1024s (%.1024s)\n",text,image->magick,
-      magick_info->description);
-  p=image;
-  while (p->previous != (Image *) NULL)
-    p=p->previous;
-  for (count=1; p->next != (Image *) NULL; count++)
-    p=p->next;
-  if (count > 1)
-    FormatString(text,"%s  scene: %u of %u\n",text,image->scene,count);
-  else
-    if (image->scene != 0)
-      FormatString(text,"%s  scene: %u\n",text,image->scene);
-  if (image->label != (char *) NULL)
-    FormatString(text,"%s  label: %.1024s\n",text,image->label);
-  (void) strcat(text,"  compression: ");
-  if (image->compression == ZipCompression)
-    (void) strcat(text,"Zip\n");
-  else
-    if (image->compression == RunlengthEncodedCompression)
-      (void) strcat(text,"Runlength Encoded\n");
-    else
-      if (image->compression == LZWCompression)
-        (void) strcat(text,"LZW\n");
-      else
-        if (image->compression == JPEGCompression)
-          (void) strcat(text,"JPEG\n");
-        else
-          if (image->compression == FaxCompression)
-            (void) strcat(text,"Fax\n");
-          else
-            if (image->compression == BZipCompression)
-              (void) strcat(text,"BZip\n");
-            else
-              (void) strcat(text,"None\n");
-  if (image->comments != (char *) NULL)
-    {
-      /*
-        Display image comment.
-      */
-      FormatString(text,"%s  comments:\n",text);
-      textlist=StringToList(image->comments);
-      if (textlist != (char **) NULL)
-        {
-          for (i=0; textlist[i] != (char *) NULL; i++)
-          {
-            FormatString(text,"%s  %.1024s\n",text,textlist[i]);
-            FreeMemory(textlist[i]);
-          }
-          FreeMemory((char *) textlist);
-        }
-    }
-  if (image->montage != (char *) NULL)
-    FormatString(text,"%s  montage: %.1024s\n",text,image->montage);
-  if (image->directory != (char *) NULL)
-    {
-      /*
-        Display image directory.
-      */
-      FormatString(text,"%s  directory:\n",text);
-      textlist=StringToList(image->directory);
-      if (textlist != (char **) NULL)
-        {
-          for (i=0; textlist[i] != (char *) NULL; i++)
-          {
-            FormatString(text,"%s    %.1024s\n",text,textlist[i]);
-            FreeMemory(textlist[i]);
-          }
-          FreeMemory((char *) textlist);
-        }
+      XNoticeWidget(display,windows,"Unable to display image info",
+        "Memory allocation failed");
+      return;
     }
   textlist=StringToList(text);
   if (textlist != (char **) NULL)
     {
-      register int
-        i;
+      char
+        title[MaxTextExtent];
 
+      /*
+        Display information about the image in the Text View widget.
+      */
+      FormatString(title,"Image Info: %.1024s",image->filename);
       XTextViewWidget(display,resource_info,windows,True,title,
         (char const **) textlist);
       for (i=0; textlist[i] != (char *) NULL; i++)
@@ -2981,7 +2760,7 @@ Export void XGetPixelInfo(Display *display,const XVisualInfo *visual_info,
   */
   for (i=0; i < MaxNumberPens; i++)
   {
-    (void) XParseColor(display,colormap,PenColors[i],
+    (void) XParseColor(display,colormap,(char *) PenColors[i],
       &pixel_info->pen_colors[i]);
     status=XParseColor(display,colormap,resource_info->pen_colors[i],
       &pixel_info->pen_colors[i]);
@@ -3155,7 +2934,8 @@ Export char *XGetResourceClass(XrmDatabase database,const char *client_name,
         else
           if ((k >= XK_oslash) && (k <= XK_thorn))
             k-=(XK_oslash-XK_Ooblique);
-      FormatString(resource_class,"%c%.1024s.%c%.1024s",c,client_name+1,k,keyword+1);
+      FormatString(resource_class,"%c%.1024s.%c%.1024s",c,client_name+1,k,
+        keyword+1);
     }
   status=XrmGetResource(database,resource_name,resource_class,&resource_type,
     &resource_value);
@@ -3218,7 +2998,7 @@ Export XrmDatabase XGetResourceDatabase(Display *display,
     Initialize resource database.
   */
   XrmInitialize();
-  XGetDefault(display,client_name,"dummy");
+  XGetDefault(display,(char *) client_name,"dummy");
   resource_database=XrmGetDatabase(display);
   /*
     Combine application database.
@@ -8337,7 +8117,7 @@ Export unsigned int XQueryColorDatabase(const char *target,XColor *color)
       return(False);
     }
   colormap=XDefaultColormap(display,XDefaultScreen(display));
-  status=XParseColor(display,colormap,target,color);
+  status=XParseColor(display,colormap,(char *) target,color);
   if (status == False)
     MagickWarning(XServerWarning,"Color is not known to X server",target);
   return(status != 0);

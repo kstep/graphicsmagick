@@ -5999,7 +5999,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
         }
       annotate_info.font_info=font_info;
       annotate_info.text=text;
-      annotate_info.width=XTextWidth(font_info,text,Extent(text));
+      annotate_info.width=TextWidth(font_info,text,Extent(text));
       annotate_info.height=font_info->ascent+font_info->descent;
       (void) sprintf(annotate_info.geometry,"%ux%u+0+0",annotate_info.width,
         annotate_info.height);
@@ -14134,9 +14134,9 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
         image->chromaticity.blue_primary.x=chromaticity[4];
         image->chromaticity.blue_primary.y=chromaticity[5];
       }
-#if defined(ICC_SUPPORT)
     length=0;
     text=(char *) NULL;
+#if defined(ICC_SUPPORT)
     TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&text);
     TIFFColorProfileHandler(text,length,image);
 #endif
@@ -14146,7 +14146,6 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
     TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text);
     TIFFNewsProfileHandler(text,length,image);
 #endif
-
     /*
       Allocate memory for the image and pixel buffer.
     */

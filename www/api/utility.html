@@ -158,7 +158,7 @@ status=<STRONG>SystemCommand</STRONG>(verbose,command)
 <STRONG>TemporaryFilename</STRONG>(filename)
 
 <P>
-<STRONG>TranslateText</STRONG>(image_info,image,text)
+translated_text=<STRONG>TranslateText</STRONG>(image_info,image,formatted_text)
 
 <P>
 <HR>
@@ -1099,12 +1099,16 @@ appropriate image attribute and returns the translated text.
 The format of the TranslateText routine is:
 
 <P>
-<PRE>        TranslateText(image_info,image,text)
+<PRE>        translated_text=TranslateText(image_info,image,formatted_text)
 </PRE>
 <P>
 A description of each parameter follows:
 
 <DL><DL>
+<DT><STRONG>translated_text:</STRONG><DD>
+<P>
+Method TranslateText returns the translated text string.
+
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
 The address of a structure of type ImageInfo.
@@ -1113,7 +1117,7 @@ The address of a structure of type ImageInfo.
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>text:</STRONG><DD>
+<DT><STRONG>formatted_text:</STRONG><DD>
 <P>
 The address of a character string containing the embedded formatting
 characters.
