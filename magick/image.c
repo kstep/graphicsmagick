@@ -407,11 +407,12 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AppendImages appends a sequence of images.  All the input images must
-%  have the same width or height.  Images of the same width are stacked
-%  top-to-bottom.  Images of the same height are stacked left-to-right.
-%  If stack is false, rectangular images are stacked left-to-right otherwise
-%  top-to-bottom.
+%  The Append() method takes a set of images and appends them to each
+%  other.  Each image in the set must have the equal width or equal height
+%  (or both).  Append() returns a single image where each image in the original
+%  set is side-by-side if all the heights are equal or stacked on top of
+%  each other if all widths are equal.   On failure, a NULL image is returned
+%  and exception describes the reason for the failure.
 %
 %  The format of the AppendImage method is:
 %
@@ -420,13 +421,12 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
+%    o image: The image sequence.
 %
 %    o stack: An unsigned value other than stacks rectangular image
 %      top-to-bottom otherwise left-to-right.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -559,8 +559,11 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AverageImages averages a sequence of images.  All the input image
-%  must be the same size in pixels.
+%  The Average() method takes a set of images and averages them together.
+%  Each image in the set must have the same width and the same height.
+%  Average() returns a single image with each corresponding pixel component
+%  of each image averaged.   On failure, a NULL image is returned and
+%  exception describes the reason for the failure.
 %
 %  The format of the AverageImage method is:
 %
@@ -568,13 +571,9 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
 %
 %  A description of each parameter follows:
 %
-%    o average_image: Method AverageImages returns the mean pixel value
-%      for an image sequence.
+%    o image: The image sequence.
 %
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -715,7 +714,8 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ChannelImage extracts the specified channel from the referenced image.
+%  Extract a channel from the image.  A channel is a particular color component
+%  of each pixel in the image.
 %
 %  The format of the ChannelImage method is:
 %
@@ -723,11 +723,10 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
 %    o channel: A value of type ChannelType that identifies which channel to
-%      extract.
+%      extract: Red, Green, Blue, or Opacity.
 %
 %
 */
@@ -812,10 +811,12 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloneImage clones an image.  If the specified columns and rows is
-%  0, an exact copy of the image is returned, otherwise the pixel data is
-%  undefined and must be initialized with SetImagePixels() and SyncImagePixels()
-%  methods.
+%  CloneImage() copies an image and returns the copy as a new image object.  
+%  If the specified columns and rows is 0, an exact copy of the image is
+%  returned, otherwise the pixel data is undefined and must be initialized
+%  with the SetImagePixels() and SyncImagePixels() methods.  A NULL image
+%  is returned if the image cannot be cloned; check exception for the reason
+%  why.
 %
 %  The format of the CloneImage method is:
 %
@@ -825,20 +826,18 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
 %
 %  A description of each parameter follows:
 %
-%    o clone_image: Method CloneImage returns a pointer to the image after
-%      copying.  A null image is returned if there is a memory shortage.
+%    o image: The image.
 %
-%    o image: The address of a structure of type Image.
+%    o columns: The number of columns in the copied
 %
-%    o columns: An integer that specifies the number of columns in the copied
-%      image.
+%    o rows: The number of rows in the copied image.
 %
-%    o rows: An integer that specifies the number of rows in the copied
-%      image.
+%    o orphan:  With a value other than 0, the cloned image is an orphan.  An
+%      orphan is a stand-alone image that is not assocated with an image list.
+%      In effect, the next and previous members of the cloned image is set to
+%      NULL.
 %
-%    o orphan:  if true, consider this image an orphan.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -1025,8 +1024,8 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloneImageInfo makes a duplicate of the given image info, or if
-%  image info is NULL, a new one.
+%  CloneImageInfo() makes a copy of the given image info, or if is NULL,
+%  a new one.
 %
 %  The format of the CloneImageInfo method is:
 %
@@ -1034,10 +1033,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
 %
 %  A description of each parameter follows:
 %
-%    o clone_info: Method CloneImageInfo returns a duplicate of the given
-%      image info, or if image info is NULL a new one.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info.
 %
 %
 */
@@ -1086,8 +1082,8 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CompositeImage returns the second image composited onto the
-%  first at the specified offsets.
+%  CompositeImage() returns the second image composited onto the first at the
+%  specified offsets.
 %
 %  The format of the CompositeImage method is:
 %
@@ -1096,17 +1092,22 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
-%    o compose: Specifies an image composite operator.
+%    o compose: This operator affects how the composite is applied to
+%      the image.  The default is Over.  Choose from these operators:
 %
-%    o composite_image: The address of a structure of type Image.
+%        OverCompositeOp       InCompositeOp         OutCompositeOP
+%        AtopCompositeOP       XorCompositeOP        PlusCompositeOP
+%        MinusCompositeOP      AddCompositeOP        SubtractCompositeOP
+%        DifferenceCompositeOP BumpmapCompositeOP    CopyCompositeOP
+%        DisplaceCompositeOP
 %
-%    o x_offset: An integer that specifies the column offset of the composited
-%      image.
+%    o composite_image: The composite image.
 %
-%    o y_offset: An integer that specifies the row offset of the composited
-%      image.
+%    o x_offset: The column offset of the composited image.
+%
+%    o y_offset: The row offset of the composited image.
 %
 %
 */
@@ -1590,19 +1591,19 @@ MagickExport unsigned int CompositeImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CycleColormapImage cycles the image colormap by a specified
-%  amount.
+%  CycleColormap() displaces an image's colormap by a given number of positions.
+%  If you cycle the colormap a number of times you can produce a psychodelic
+%  effect.
 %
 %  The format of the CycleColormapImage method is:
 %
-%      CycleColormapImage(image,amount)
+%      CycleColormapImage(Image *image,const int amount)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
-%    o amount:  An unsigned value that specifies the offset of the colormap.
+%    o amount:  Offset of the colormap this much.
 %
 %
 */
@@ -1667,8 +1668,8 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DescribeImage describes an image by printing its attributes to
-%  stdout.
+%  DescribeImage() describes an image by printing its attributes to the
+%  file.  Attributes include the image width, height, size, and others.
 %
 %  The format of the DescribeImage method is:
 %
@@ -1676,11 +1677,11 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
-%    o file: send the image attributes to this file.
+%    o file: The file, typically stdout.
 %
-%    o verbose: an unsigned value other than zero prints detailed information
+%    o verbose: A value other than zero prints more detailed information
 %      about the image.
 %
 %

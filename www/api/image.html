@@ -87,7 +87,7 @@
 <P>Image * <STRONG>CloneImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, const unsigned int orphan, ExceptionInfo *exception );</P>
 <P>ImageInfo * <STRONG>CloneImageInfo</STRONG>( const ImageInfo *image_info );</P>
 <P>unsigned int  <STRONG>CompositeImage</STRONG>( Image *image, const CompositeOperator compose, Image *composite_image, const int x_offset, const int y_offset );</P>
-<P><STRONG>CycleColormapImage</STRONG>( image, amount );</P>
+<P><STRONG>CycleColormapImage</STRONG>( Image *image, const int amount );</P>
 <P>void  <STRONG>DescribeImage</STRONG>( Image *image, 
 <FONT SIZE=-1>FILE</FONT> *file, const unsigned int verbose );</P>
 <P>void  <STRONG>DestroyImage</STRONG>( Image *image );</P>
@@ -127,34 +127,23 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="allocateimage">AllocateImage</A></H2>
-<P>Method AllocateImage allocates an Image structure and initializes each field to a default value.</P>
-<P>The format of the AllocateImage method is:</P>
+<blockquote>AllocateImage ( ) returns a pointer to an image structure initialized todefault values.; </blockquote><P>The format of the AllocateImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *AllocateImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_allocate_image%3A">allocate_image:</A></STRONG><BR>
-<DD>
-Method AllocateImage returns a pointer to an image structure initialized to default values.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
 <DD>
-Specifies a pointer to an ImageInfo structure.
+Many of the image default values are set from this structure.  For example, filename, compression, depth, background color, and others.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="allocateimagecolormap">AllocateImageColormap</A></H2>
-<P>Method AllocateImageColormap allocates an Image colormap and initializes it.  The minimum number of colormap cells allocated is 256.</P>
-<P>The format of the AllocateImageColormap method is:</P>
+<blockquote>AllocateImageColormap ( ) allocates an image colormap and initializesit to a linear gray colorspace. If the image already has a colormap, it is replaced. AllocateImageColormap ( ) returns True if successful, otherwise False if there is not enough memory.; </blockquote><P>The format of the AllocateImageColormap method is:</P>
 <blockquote>unsigned int AllocateImageColormap ( <A HREF="types/Image.html">Image</A> *image, const unsigned int colors ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
-<DD>
-Method AllocateImageColormap returns True if the colormap is successfully allocated and initialized, otherwise False.
-<P></P>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_colors%3A">colors:</A></STRONG><BR>
 <DD>
@@ -162,50 +151,43 @@ The number of colors in the image colormap.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="allocatenextimage">AllocateNextImage</A></H2>
-<P>Method AllocateNextImage allocates an Image structure and initializes each field to a default value.</P>
-<P>The format of the AllocateNextImage method is:</P>
+<blockquote>Use AllocateNextImage ( ) to initialize the next image in a sequence. Thenext member of image points to the newly allocated image. If there is amemory shortage, next is assigned NULL.; </blockquote><P>The format of the AllocateNextImage method is:</P>
 <blockquote>void AllocateNextImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
-Specifies a pointer to an ImageInfo structure.
+Many of the image default values are set from this structure.  For example, filename, compression, depth, background color, and others.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="animateimages">AnimateImages</A></H2>
-<P>Method AnimateImages displays one or more images to an 
-<FONT SIZE=-1>X</FONT> window.</P>
-<P>The format of the AnimateImages method is:</P>
+<blockquote>AnimateImages ( ) repeatedly displays an image sequence to any X window screen. It returns a value other than 0 if successful. Check theexception member of image to determine the reason for any failure.; </blockquote><P>The format of the AnimateImages method is:</P>
 <blockquote>unsigned int AnimateImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
-<DD>
-Method AnimateImages returns True if the images are displayed in an 
-<FONT SIZE=-1>X</FONT> window, otherwise False is returned.
-<P></P>
 <p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
-Specifies a pointer to an ImageInfo structure.
+The image info.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="appendimages">AppendImages</A></H2>
-<P>Method AppendImages appends a sequence of images.  All the input images must have the same width or height.  Images of the same width are stacked top-to-bottom.  Images of the same height are stacked left-to-right.  If stack is false, rectangular images are stacked left-to-right otherwise top-to-bottom.</P>
+<P>The <CODE>Append()</CODE> method takes a set of images and appends them to each other.  Each image in the set must have the equal width or equal height (or both). <CODE>Append()</CODE> returns a single image where each image in the original set is side-by-side if all the heights are equal or stacked on top of each other if all widths are equal.  On failure, a 
+<FONT SIZE=-1>NULL</FONT> image is returned and exception describes the reason for the failure.</P>
 <P>The format of the AppendImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *AppendImages ( <A HREF="types/Image.html">Image</A> *image, const unsigned int stack, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image sequence.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_stack%3A">stack:</A></STRONG><BR>
 <DD>
@@ -213,152 +195,145 @@ An unsigned value other than stacks rectangular image top-to-bottom otherwise le
 <P></P>
 <p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="averageimages">AverageImages</A></H2>
-<P>Method AverageImages averages a sequence of images.  All the input image must be the same size in pixels.</P>
+<P>The <CODE>Average()</CODE> method takes a set of images and averages them together.  Each image in the set must have the same width and the same height.  <CODE>Average()</CODE> returns a single image with each corresponding pixel component of each image averaged.  On failure, a 
+<FONT SIZE=-1>NULL</FONT> image is returned and exception describes the reason for the failure.</P>
 <P>The format of the AverageImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *AverageImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_average_image%3A">average_image:</A></STRONG><BR>
-<DD>
-Method AverageImages returns the mean pixel value for an image sequence.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image sequence.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="channelimage">ChannelImage</A></H2>
-<P>Method ChannelImage extracts the specified channel from the referenced image.</P>
+<P>Extract a channel from the image.  
+<FONT SIZE=-1>A</FONT> channel is a particular color component of each pixel in the image.</P>
 <P>The format of the ChannelImage method is:</P>
 <blockquote>unsigned int ChannelImage ( <A HREF="types/Image.html">Image</A> *image, const ChannelType channel ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_channel%3A">channel:</A></STRONG><BR>
 <DD>
 
-<FONT SIZE=-1>A</FONT> value of type ChannelType that identifies which channel to extract.
+<FONT SIZE=-1>A</FONT> value of type ChannelType that identifies which channel to extract: Red, Green, Blue, or Opacity.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cloneimage">CloneImage</A></H2>
-<P>Method CloneImage clones an image.  If the specified columns and rows is 0, an exact copy of the image is returned, otherwise the pixel data is undefined and must be initialized with <CODE>SetImagePixels()</CODE> and <CODE>SyncImagePixels()</CODE> methods.</P>
-<P>The format of the CloneImage method is:</P>
+<blockquote>CloneImage ( ) copies an image and returns the copy as a new image object. If the specified columns and rows is 0, an exact copy of the image isreturned, otherwise the pixel data is undefined and must be initializedwith the SetImagePixels ( ) and SyncImagePixels ( ) methods. A NULL imageis returned if the image cannot be cloned; check exception for the reasonwhy.; </blockquote><P>The format of the CloneImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *CloneImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, const unsigned int orphan, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_clone_image%3A">clone_image:</A></STRONG><BR>
-<DD>
-Method CloneImage returns a pointer to the image after copying.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_columns%3A">columns:</A></STRONG><BR>
 <DD>
-An integer that specifies the number of columns in the copied image.
+The number of columns in the copied
 <P></P>
 <p><dt><STRONG><A NAME="item_o_rows%3A">rows:</A></STRONG><BR>
 <DD>
-An integer that specifies the number of rows in the copied image.
+The number of rows in the copied image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_orphan%3A">orphan:</A></STRONG><BR>
 <DD>
-if true, consider this image an orphan.
+With a value other than 0, the cloned image is an orphan.  An orphan is a stand-alone image that is not assocated with an image list.  In effect, the next and previous members of the cloned image is set to 
+<FONT SIZE=-1>NULL.</FONT>
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cloneimageinfo">CloneImageInfo</A></H2>
-<P>Method CloneImageInfo makes a duplicate of the given image info, or if image info is 
-<FONT SIZE=-1>NULL,</FONT> a new one.</P>
-<P>The format of the CloneImageInfo method is:</P>
+<blockquote>CloneImageInfo ( ) makes a copy of the given image info, or if is NULL, a new one.; </blockquote><P>The format of the CloneImageInfo method is:</P>
 <blockquote><A HREF="types/ImageInfo.html">ImageInfo</A> *CloneImageInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_clone_info%3A">clone_info:</A></STRONG><BR>
-<DD>
-Method CloneImageInfo returns a duplicate of the given image info, or if image info is 
-<FONT SIZE=-1>NULL</FONT> a new one.
-<P></P>
 <p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
-Specifies a pointer to an ImageInfo structure.
+The image info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="compositeimage">CompositeImage</A></H2>
-<P>Method CompositeImage returns the second image composited onto the first at the specified offsets.</P>
-<P>The format of the CompositeImage method is:</P>
+<blockquote>CompositeImage ( ) returns the second image composited onto the first at thespecified offsets.; </blockquote><P>The format of the CompositeImage method is:</P>
 <blockquote>unsigned int CompositeImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#CompositeOperator">CompositeOperator</A> compose, <A HREF="types/Image.html">Image</A> *composite_image, const int x_offset, const int y_offset ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_compose%3A">compose:</A></STRONG><BR>
 <DD>
-Specifies an image composite operator.
-<P></P>
+This operator affects how the composite is applied to the image.  The default is Over.  Choose from these operators:
+<P></P></DL></DL>
+<PRE>
+      OverCompositeOp       InCompositeOp         OutCompositeOP
+      AtopCompositeOP       XorCompositeOP        PlusCompositeOP
+      MinusCompositeOP      AddCompositeOP        SubtractCompositeOP
+      DifferenceCompositeOP BumpmapCompositeOP    CopyCompositeOP
+      DisplaceCompositeOP
+=over 4</PRE>
+<DL><DL>
 <p><dt><STRONG><A NAME="item_o_composite_image%3A">composite_image:</A></STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The composite image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_x_offset%3A">x_offset:</A></STRONG><BR>
 <DD>
-An integer that specifies the column offset of the composited image.
+The column offset of the composited image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_y_offset%3A">y_offset:</A></STRONG><BR>
 <DD>
-An integer that specifies the row offset of the composited image.
+The row offset of the composited image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cyclecolormapimage">CycleColormapImage</A></H2>
-<P>Method CycleColormapImage cycles the image colormap by a specified amount.</P>
+<P><CODE>CycleColormap()</CODE> displaces an image's colormap by a given number of positions.  If you cycle the colormap a number of times you can produce a psychodelic effect.</P>
 <P>The format of the CycleColormapImage method is:</P>
-<blockquote>CycleColormapImage ( image, amount ); </blockquote><P>
+<blockquote>CycleColormapImage ( <A HREF="types/Image.html">Image</A> *image, const int amount ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_amount%3A">amount:</A></STRONG><BR>
 <DD>
-An unsigned value that specifies the offset of the colormap.
+Offset of the colormap this much.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="describeimage">DescribeImage</A></H2>
-<P>Method DescribeImage describes an image by printing its attributes to stdout.</P>
-<P>The format of the DescribeImage method is:</P>
+<blockquote>DescribeImage ( ) describes an image by printing its attributes to thefile. Attributes include the image width, height, size, and others.; </blockquote><P>The format of the DescribeImage method is:</P>
 <blockquote>void DescribeImage ( <A HREF="types/Image.html">Image</A> *image, FILE *file, const unsigned int verbose ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_file%3A">file:</A></STRONG><BR>
 <DD>
-send the image attributes to this file.
+The file, typically stdout.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_verbose%3A">verbose:</A></STRONG><BR>
 <DD>
-an unsigned value other than zero prints detailed information about the image.
+
+<FONT SIZE=-1>A</FONT> value other than zero prints more detailed information about the image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyimage">DestroyImage</A></H2>
@@ -401,7 +376,7 @@ The address of a structure of type Image.
 <blockquote>unsigned int DisplayImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
 <DD>
 Method DisplayImages returns True if the images are displayed in an 
 <FONT SIZE=-1>X</FONT> window, otherwise False is returned.

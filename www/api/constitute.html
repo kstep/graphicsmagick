@@ -154,19 +154,14 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="writeimage">WriteImage</A></H2>
-<P>Method WriteImage writes an image to a file as defined by image-&gt;filename.  You can specify a particular image format by prefixing the file with the image type and a colon (i.e.  ps:image) or specify the image type as the filename suffix (i.e.  image.ps). The image may be modified to adapt it to the requirements of the image format.  For example, DirectClass images must be color-reduced to PseudoClass if the format is 
-<FONT SIZE=-1>GIF.</FONT></P>
+<P><CODE>Write()</CODE> allows you to write a single or image or a sequence to a file or filehandle.  <CODE>Write()</CODE> returns a value other than 0 if the image is written.  If 0 is returned, check the exception member of image to determine why the image failed to write.</P>
 <P>The format of the WriteImage method is:</P>
 <blockquote>unsigned int WriteImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
-<DD>
-Method WriteImage return True if the image is written.  False is returned is there is a memory shortage or if the image file fails to write.
-<P></P>
 <p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
-Specifies a pointer to an ImageInfo structure.
+Write the image defined by the file or filename members of this structure.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
