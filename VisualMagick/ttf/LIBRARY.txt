@@ -1,6 +1,7 @@
 #ECF - this file contains additional configuration info.
 DEFINE = _TTFLIB_
 DEFINE = HAVE_FREETYPE_FREETYPE_H
+SOURCE = ttf.rc
 #
 EXCLUDE = ahangles.c
 EXCLUDE = ahglobal.c

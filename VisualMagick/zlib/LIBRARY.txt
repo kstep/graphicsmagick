@@ -2,3 +2,4 @@
 EXCLUDE = maketree.c
 EXCLUDE = minigzip.c
 EXCLUDE = example.c
+SOURCE = zlib.rc

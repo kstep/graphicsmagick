@@ -4,3 +4,4 @@ DEFINE = _WIN32
 EXCLUDE = dlltest.c
 EXCLUDE = bzip2recover.c
 EXCLUDE = bzip2.c
+SOURCE = bzlib.rc

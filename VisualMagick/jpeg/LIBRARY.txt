@@ -1,5 +1,6 @@
 #ECF - this file contains additional configuration info.
 DEFINE = _JPEGLIB_
+SOURCE = jpeg.rc
 EXCLUDE = ansi2knr.c
 EXCLUDE = cdjpeg.c
 EXCLUDE = cjpeg.c

@@ -1,3 +1,4 @@
 #ECF - this file contains additional configuration info.
 DEFINE = _JBIGLIB_
 EXCLUDE = tstcodec.c
+SOURCE = jbig.rc

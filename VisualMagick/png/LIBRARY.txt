@@ -8,3 +8,4 @@ DEFINEDLL = PNG_BUILD_DLL
 DEFINE = PNG_NO_MODULEDEF
 EXCLUDE = example.c
 EXCLUDE = pngtest.c
+SOURCE = png.rc

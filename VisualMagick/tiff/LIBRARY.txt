@@ -1,5 +1,6 @@
 #ECF - this file contains additional configuration info.
 DEFINE = _TIFFLIB_
+SOURCE = tiff.rc
 EXCLUDE = mkg3states.c
 EXCLUDE = mkspans.c
 EXCLUDE = mkversion.c
