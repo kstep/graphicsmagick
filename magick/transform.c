@@ -1267,50 +1267,55 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
         }
       crop_info.width=width;
       crop_info.height=height;
-      if ((width == 0) || (height == 0) ||
-          ((flags & XValue) != 0) || ((flags & YValue) != 0))
-        crop_image=CropImage(transform_image,&crop_info,&(*image)->exception);
-      else
+      if ((crop_info.width < transform_image->columns) &&
+          (crop_info.height < transform_image->rows))
         {
-          Image
-            *next_image;
-
-          /*
-            Crop repeatedly to create uniform subimages.
-          */
-          next_image=(Image *) NULL;
-          crop_image=(Image *) NULL;
-          for (y=0; y < (int) transform_image->rows; y+=height)
-          {
-            for (x=0; x < (int) transform_image->columns; x+=width)
+          if ((width == 0) || (height == 0) ||
+              ((flags & XValue) != 0) || ((flags & YValue) != 0))
+            crop_image=CropImage(transform_image,&crop_info,
+              &(*image)->exception);
+          else
             {
-              crop_info.width=width;
-              crop_info.height=height;
-              crop_info.x=x;
-              crop_info.y=y;
-              next_image=
-                CropImage(transform_image,&crop_info,&(*image)->exception);
-              if (next_image == (Image *) NULL)
-                break;
-              if (crop_image == (Image *) NULL)
-                crop_image=next_image;
-              else
+              Image
+                *next_image;
+
+              /*
+                Crop repeatedly to create uniform subimages.
+              */
+              next_image=(Image *) NULL;
+              crop_image=(Image *) NULL;
+              for (y=0; y < (int) transform_image->rows; y+=height)
+              {
+                for (x=0; x < (int) transform_image->columns; x+=width)
                 {
-                  next_image->previous=crop_image;
-                  crop_image->next=next_image;
-                  crop_image=crop_image->next;
+                  crop_info.width=width;
+                  crop_info.height=height;
+                  crop_info.x=x;
+                  crop_info.y=y;
+                  next_image=
+                    CropImage(transform_image,&crop_info,&(*image)->exception);
+                  if (next_image == (Image *) NULL)
+                    break;
+                  if (crop_image == (Image *) NULL)
+                    crop_image=next_image;
+                  else
+                    {
+                      next_image->previous=crop_image;
+                      crop_image->next=next_image;
+                      crop_image=crop_image->next;
+                    }
                 }
+                if (next_image == (Image *) NULL)
+                  break;
+              }
             }
-            if (next_image == (Image *) NULL)
-              break;
-          }
-        }
-      if (crop_image != (Image *) NULL)
-        {
-          DestroyImage(transform_image);
-          while (crop_image->previous != (Image *) NULL)
-            crop_image=crop_image->previous;
-          transform_image=crop_image;
+          if (crop_image != (Image *) NULL)
+            {
+              DestroyImage(transform_image);
+              while (crop_image->previous != (Image *) NULL)
+                crop_image=crop_image->previous;
+              transform_image=crop_image;
+            }
         }
     }
   /*
