@@ -97,30 +97,30 @@ then
 fi
 
 #
-# Enable support for module
-# Only support module if we are building shared libraries
-AC_ARG_WITH(module,
-	      [  --with-module          enable support for dynamically loadable module],
-	      [with_module=$withval],
-	      [with_module='no'])
-if test "$with_module" != 'no' && test "$libtool_build_shared_libs" = 'no'
+# Enable support for modules
+# Only support modules if we are building shared libraries
+AC_ARG_WITH(modules,
+	      [  --with-modules          enable support for dynamically loadable modules],
+	      [with_modules=$withval],
+	      [with_modules='no'])
+if test "$with_modules" != 'no' && test "$libtool_build_shared_libs" = 'no'
 then
-  with_module='no'
+  with_modules='no'
 fi
-AM_CONDITIONAL(WITH_MODULES, test "$with_module" != 'no')
+AM_CONDITIONAL(WITH_MODULES, test "$with_modules" != 'no')
 # Configure libltdl
 AC_CONFIG_SUBDIRS(ltdl)
-if test "$with_module" != 'no'
+if test "$with_modules" != 'no'
 then
-  AC_DEFINE(HasLTDL,,Define if using libltdl to create dynamically loadable module)
+  AC_DEFINE(HasLTDL,,Define if using libltdl to create dynamically loadable modules)
 
   # Set DLLDFLAGS
   if test X"$enable_shared" = Xyes; then
     DLLDFLAGS=-export-dynamic
     AC_SUBST(DLLDFLAGS)
   fi
-   eval "eval im_cv_x_coder_module=${libdir}/ImageMagick/module/coder/"
-  AC_DEFINE_UNQUOTED(MagickModulesPath,"$im_cv_x_coder_module",Location of coder module)
+   eval "eval im_cv_x_coder_modules=${libdir}/ImageMagick/modules/coders/"
+  AC_DEFINE_UNQUOTED(MagickModulesPath,"$im_cv_x_coder_modules",Location of coder modules)
 fi
 
 # Add configure option --enable-maintainer-mode which enables dependency
@@ -1226,7 +1226,7 @@ fi
 # Configure Delegates
 #
 
-# Directory where configured ImageMagick/delegate.mgk lives
+# Directory where configured ImageMagick/delegates.mgk lives
 # (default /usr/local/lib/ImageMagick).
 eval MagickLibPath="${LIB_DIR}/ImageMagick/"
 AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPath",Directory where architecture-dependent files live.)
@@ -1623,7 +1623,7 @@ AC_SUBST(X_CFLAGS)
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
-AC_OUTPUT(Makefile magick/Makefile coders/delegate.mgk coders/Makefile \
+AC_OUTPUT(Makefile magick/Makefile coders/delegates.mgk coders/Makefile \
   utilities/Makefile tests/Makefile coders/type.mgk magick/Magick-config \
   Magick++/bin/Makefile Magick++/bin/Magick++-config Magick++/Makefile \
   Magick++/lib/Makefile Magick++/lib/Magick++/Makefile  Magick++/demo/Makefile \

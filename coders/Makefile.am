@@ -1,4 +1,4 @@
-#  Makefile for building ImageMagick coder module
+#  Makefile for building ImageMagick coder modules
 #
 # Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated
 # to making software imaging solutions freely available.
@@ -47,22 +47,22 @@ MICRO_VERSION=@MICRO_VERSION@
 if WITH_MODULES
 noinst_LTLIBRARIES =
 else
-noinst_LTLIBRARIES = libCoder.la
-libCoder_la_SOURCES = $(MAGICK_CODER_SRCS)
+noinst_LTLIBRARIES = libCoders.la
+libCoders_la_SOURCES = $(MAGICK_CODER_SRCS)
 endif # WITH_MODULES
 
 # Additional files to distribute
-EXTRA_DIST = module.mgk delegate.mgk.in type.mgk.in
+EXTRA_DIST = modules.mgk delegates.mgk.in type.mgk.in
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = 
 
 if WITH_MODULES
-# Where module are installed
-pkgdir = $(libdir)/ImageMagick/module/coder
+# Where modules are installed
+pkgdir = $(libdir)/ImageMagick/modules/coders
 
-# Architecture-dependent data files installed with module
-pkg_DATA = module.mgk
+# Architecture-dependent data files installed with modules
+pkg_DATA = modules.mgk
 
 # Architecture independent data files installed in the package's data directory
 pkgdata_DATA = 
@@ -493,17 +493,17 @@ yuv_la_LIBADD       = ../magick/libMagick.la
 
 DEFS = @DEFS@ -I../
 
-# Install delegate files
-install-data-delegate: 
+# Install delegates files
+install-data-delegates: 
 	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
-	$(INSTALL_DATA) delegate.mgk $(DESTDIR)$(pkglibdir)
+	$(INSTALL_DATA) delegates.mgk $(DESTDIR)$(pkglibdir)
 	$(INSTALL_DATA) type.mgk $(DESTDIR)$(pkglibdir)
 
-# Uninstall delegate files
-uninstall-data-delegate:
-	rm -f $(DESTDIR)$(pkglibdir)/delegate.mgk
+# Uninstall delegates files
+uninstall-data-delegates:
+	rm -f $(DESTDIR)$(pkglibdir)/delegates.mgk
 	rm -f $(DESTDIR)$(pkglibdir)/type.mgk
 
-install-exec-local: install-data-delegate
+install-exec-local: install-data-delegates
 
-uninstall-local: uninstall-data-delegate
+uninstall-local: uninstall-data-delegates

@@ -18,7 +18,7 @@ $  compile_options="/nodebug/optimize/prefix=all/warning=(disable=rightshiftovr)
 $endif
 $
 $
-$write sys$output "Making Coder..."
+$write sys$output "Making Coders..."
 $call Make 8bim.c
 $call Make art.c
 $call Make avi.c
@@ -43,7 +43,6 @@ $call Make icm.c
 $call Make icon.c
 $call Make iptc.c
 $call Make jbig.c
-$call Make jp2.c
 $call Make jpeg.c
 $call Make label.c
 $call Make logo.c
@@ -101,8 +100,8 @@ $call Make xc.c
 $call Make xpm.c
 $call Make xwd.c
 $call Make yuv.c
-$library/create libCoder.olb 8bim,art,avi,avs,bmp,cmyk,cut,dcm,dps,dpx,ept, -
- fax,fits,fpx,gif,gradient,gray,hdf,histogram,html,icm,icon,iptc,jbig,jp2, -
+$library/create libCoders.olb 8bim,art,avi,avs,bmp,cmyk,cut,dcm,dps,dpx,ept, -
+ fax,fits,fpx,gif,gradient,gray,hdf,histogram,html,icm,icon,iptc,jbig, -
   jpeg,label,logo,map,matte,miff,mpc,mono,mtv,mvg,null,pcd,pcl,pcx,pdb, -
   pdf,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,rgb, -
   rla,rle,sct,sfw,sgi,stegano,sun,svg,tga,tiff,tile,tim,ttf, -

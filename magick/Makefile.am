@@ -61,7 +61,7 @@ libMagick_la_LIBADD = @LIB_LCMS@ @LIB_TIFF@ @LIB_XML@ @LIB_TTF@ @LIB_JPEG@ @LIB_
   @LIB_MATH@ $(top_builddir)/ltdl/libltdlc.la
 else
 libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
-libMagick_la_LIBADD = ../coders/libCoder.la @LIB_JBIG@ @LIB_HDF@ \
+libMagick_la_LIBADD = ../coders/libCoders.la @LIB_JBIG@ @LIB_HDF@ \
   @LIB_LCMS@ @LIB_TIFF@ @LIB_TTF@ @LIB_JP2@ @LIB_JPEG@ @LIB_GS@ @LIB_PNG@ \
   @LIB_FPX@ @LIB_WMF@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@ @LIB_BZLIB@ \
   @LIB_XML@ @LIB_ZLIB@ @LIB_THREAD@ @LIB_LF@ @LIB_MATH@
@@ -73,24 +73,24 @@ bin_SCRIPTS = Magick-config
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h cache_view.h \
   classify.h color.h compress.h config.h delegate.h draw.h error.h \
-  gem.h image.h magic.h magick.h module.h monitor.h quantize.h semaphore.h \
+  gem.h image.h magic.h magick.h modules.h monitor.h quantize.h semaphore.h \
   timer.h utility.h version.h widget.h xwindow.h
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = animate.h define.h display.h mac.h magic.h nt.h vms.h
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) color.mgk magic.mgk Magick-config.in \
+EXTRA_DIST = $(ALLMANPAGES) colors.mgk magic.mgk Magick-config.in \
   Magick-config.in Make.com mac.c nt.c vms.c $(MAGICK_BASE_SRCS)
 
-# Where module are installed
-pkgdir = $(libdir)/ImageMagick/module/coder
+# Where modules are installed
+pkgdir = $(libdir)/ImageMagick/modules/coders
 
-# Architecture-dependent data files installed with module
+# Architecture-dependent data files installed with modules
 pkg_DATA = 
 
 # Architecture independent data files installed in the package's data directory
-pkgdata_DATA = color.mgk magic.mgk
+pkgdata_DATA = colors.mgk magic.mgk
 
 # Manual pages to install
 man_MANS = $(ALLMANPAGES)
