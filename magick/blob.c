@@ -912,7 +912,6 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
       }
   }
 #endif
-#if defined(MagickLibPath)
 #if defined(MagickModulesPath)
   /*
     Search hard coded paths.
@@ -922,7 +921,6 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
     ThrowException(exception,ConfigureError,"Unable to access module file",
       path);
   return(FileToBlob(path,length,exception));
-#endif
 #endif
 #else
   if (*SetClientPath((char *) NULL) != '\0')
