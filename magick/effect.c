@@ -1597,10 +1597,10 @@ static void InitializeMedianList(MedianPixelList *pixel_list,long width)
 }
 
 static inline void InsertMedianList(MedianPixelList *pixel_list,
-	const PixelPacket *pixel)
+  const PixelPacket *pixel)
 {
-	unsigned long
-		signature;
+  unsigned long
+    signature;
 
   signature=pixel_list->lists[0].nodes[pixel->red].signature;
   if (signature != pixel_list->signature)
@@ -2719,7 +2719,7 @@ MagickExport Image *ShadeImage(const Image *image,
             {
               normal_distance=
                 normal.x*normal.x+normal.y*normal.y+normal.z*normal.z;
-              if (fabs(normal_distance) > 0.0000001)
+              if (fabs(normal_distance) > MagickEpsilon)
                 shade=distance/sqrt(normal_distance);
             }
         }
