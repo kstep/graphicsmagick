@@ -104,7 +104,7 @@ MAGICK DELEGATES
 
     o GraphicsMagick requires 'dcraw' from
 
-        http://www2.primushost.com/~dcoffin/powershot/
+        http://www.cybercom.net/~dcoffin/dcraw/
 
       to read raw images from digital cameras.  Use similar to
 

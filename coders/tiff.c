@@ -1705,6 +1705,30 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
     *scanlines = (unsigned char *) NULL,
     *tile_pixels = (unsigned char *) NULL;
 
+#if !defined(WORDS_BIGENDIAN)
+  {
+    /*
+      On little-endian machines, the scanline must be converted to
+      little-endian format for libtiff.
+    */
+
+    uint16
+      bits_per_sample;
+    
+    (void) TIFFGetField(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample);
+    if (bits_per_sample >= 32)
+      {
+        TIFFSwabArrayOfLong((uint32*) scanline,
+                            (TIFFScanlineSize(tiff)+(sizeof(uint32)-1))/sizeof(uint32));
+      }
+    else if (bits_per_sample >= 16)
+      {
+        TIFFSwabArrayOfShort((uint16*) scanline,
+                             (TIFFScanlineSize(tiff)+(sizeof(uint16)-1))/sizeof(uint16));
+      }
+  }
+#endif /* !defined(WORDS_BIGENDIAN) */
+
   if (!TIFFIsTiled(tiff))
     return(TIFFWriteScanline(tiff,scanline,(uint32) row,sample));
   if (scanlines == (unsigned char *) NULL)
@@ -2547,17 +2571,6 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                       }
                   }
               }
-#if !defined(WORDS_BIGENDIAN)
-            if (bits_per_sample >= 16)
-                {
-                  /*
-                    On little-endian machines, words in the scanline
-                    must be converted to little-endian format for libtiff.
-                  */
-                  TIFFSwabArrayOfShort((uint16*) scanline,
-                                       (TIFFScanlineSize(tiff)+1)/sizeof(uint16));
-                }
-#endif /* !defined(WORDS_BIGENDIAN) */
             if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
               {
                 status=MagickFail;
