@@ -127,6 +127,8 @@ static void AnimateUsage(void)
       "-pause               seconds to pause before reanimating",
       "-remote command      execute a command in an remote display process",
       "-rotate degrees      apply Paeth rotation to the image",
+      "-sampling_factor geometry",
+      "                     horizontal and vertical sampling factor",
       "-scenes range         image scene range",
       "-size geometry       width and height of image",
       "-treedepth value     depth of the color tree",
@@ -826,6 +828,18 @@ int main(int argc,char **argv)
       }
       case 's':
       {
+        if (LocaleCompare("sampling_factor",option+1) == 0)
+          {
+            (void) CloneString(&image_info->sampling_factor,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&image_info->sampling_factor,argv[i]);
+              }
+            break;
+          }
         if (LocaleCompare("scenes",option+1) == 0)
           {
             first_scene=0;

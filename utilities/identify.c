@@ -92,7 +92,10 @@ static void IdentifyUsage(void)
       "-depth value       depth of the image",
       "-format \"string\"   output formatted image characteristics",
       "-help              print program options",
+      "-interlace type    None, Line, Plane, or Partition",
       "-size geometry     width and height of image",
+      "-sampling_factor geometry",
+      "                     horizontal and vertical sampling factor",
       "-verbose           print detailed information about the image",
       (char *) NULL
     };
@@ -330,6 +333,33 @@ static int IdentifyUtility(int argc,char **argv)
         MagickError(OptionError,"Unrecognized option",option);
         break;
       }
+      case 'i':
+      {
+        if (LocaleCompare("interlace",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                image_info->interlace=UndefinedInterlace;
+                if (LocaleCompare("None",option) == 0)
+                  image_info->interlace=NoInterlace;
+                if (LocaleCompare("Line",option) == 0)
+                  image_info->interlace=LineInterlace;
+                if (LocaleCompare("Plane",option) == 0)
+                  image_info->interlace=PlaneInterlace;
+                if (LocaleCompare("Partition",option) == 0)
+                  image_info->interlace=PartitionInterlace;
+                if (image_info->interlace == UndefinedInterlace)
+                  MagickError(OptionError,"Invalid interlace type",option);
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
       case 'p':
       {
         if (LocaleCompare("ping",option+1) == 0)
@@ -339,6 +369,18 @@ static int IdentifyUtility(int argc,char **argv)
       }
       case 's':
       {
+        if (LocaleCompare("sampling_factor",option+1) == 0)
+          {
+            (void) CloneString(&image_info->sampling_factor,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&image_info->sampling_factor,argv[i]);
+              }
+            break;
+          }
         if (LocaleCompare("size",option+1) == 0)
           {
             (void) CloneString(&image_info->size,(char *) NULL);

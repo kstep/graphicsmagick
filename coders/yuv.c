@@ -151,17 +151,16 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->sampling_factor != (char *) NULL)
     {
     long
-      count;
+      factors;
 
-    count=sscanf(image_info->sampling_factor,"%ldx%ld",&horizontal_factor,
+    factors=sscanf(image_info->sampling_factor,"%ldx%ld",&horizontal_factor,
       &vertical_factor);
-    if (count != 2)
+    if (factors != 2)
       vertical_factor=horizontal_factor;
     if (horizontal_factor != 1 && horizontal_factor != 2 &&
         vertical_factor != 1 && vertical_factor != 2)
       ThrowReaderException(CorruptImageWarning,"Unexpected sampling factor",
         image);
-      
     }
 
   if (interlace == UndefinedInterlace || (interlace == NoInterlace &&
@@ -182,11 +181,6 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i < image->offset; i++)
         (void) ReadBlobByte(image);
     }
-  chroma_image=CloneImage(image,image->columns/horizontal_factor,
-    image->rows/vertical_factor,True,exception);
-  if (chroma_image == (Image *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-      image);
   /*
     Allocate memory for a scanline.
   */
@@ -198,6 +192,11 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   do
   {
+    chroma_image=CloneImage(image,image->columns/horizontal_factor,
+      image->rows/vertical_factor,True,exception);
+    if (chroma_image == (Image *) NULL)
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     /*
       Convert raster image to pixel packets.
     */
@@ -357,7 +356,10 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    count=ReadBlob(image,image->columns,(char *) scanline);
+    if (interlace == NoInterlace)
+      count=ReadBlob(image,2*image->columns,(char *) scanline);
+    else
+      count=ReadBlob(image,image->columns,(char *) scanline);
     if (count != 0)
       {
         /*
@@ -513,11 +515,11 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
   if (image_info->sampling_factor != (char *) NULL)
     {
     long
-      count;
+      factors;
 
-    count=sscanf(image_info->sampling_factor,"%ldx%ld",&horizontal_factor,
+    factors=sscanf(image_info->sampling_factor,"%ldx%ld",&horizontal_factor,
       &vertical_factor);
-    if (count != 2)
+    if (factors != 2)
       vertical_factor=horizontal_factor;
     if (horizontal_factor != 1 && horizontal_factor != 2 &&
         vertical_factor != 1 && vertical_factor != 2)
