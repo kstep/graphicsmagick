@@ -61,6 +61,7 @@
 #include "log.h"
 #include "magick.h"
 #include "monitor.h"
+#include "paint.h"
 #include "utility.h"
 #include "version.h"
 #if defined(WIN32)
@@ -436,6 +437,9 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
   MonitorHandler
     handler;
 
+  PixelPacket
+    white;
+
   if (bmp_draw->bmp.data == 0)
     return;
 
@@ -477,6 +481,19 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
         ThrowException(&ddata->image->exception,exception.severity,
           exception.reason,exception.description);
     }
+
+  QueryColorDatabase( "white", &white, &exception );
+
+  if ( ddata->image_info->texture ||
+       !(ColorMatch(&ddata->image_info->background_color, &white)) ||
+       ddata->image_info->background_color.opacity != OpaqueOpacity )
+  {
+    /*
+      Set image white background to transparent so that it may be
+      overlaid over non-white backgrounds.
+    */
+    TransparentImage( image, white, MaxRGB );
+  }
 
   width = AbsoluteValue(bmp_draw->pixel_width * (double) bmp_draw->crop.w);
   height = AbsoluteValue(bmp_draw->pixel_height * (double) bmp_draw->crop.h);
