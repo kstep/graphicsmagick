@@ -3950,6 +3950,7 @@ Mogrify(ref,...)
 
     char
       *attribute,
+      absolute_geometry[MaxTextExtent],
       attribute_flag[MaxArguments],
       message[MaxTextExtent],
       *value;
@@ -4217,10 +4218,13 @@ Mogrify(ref,...)
         }
         case 5:  /* Border */
         {
-          geometry.height=geometry.width;
           if (attribute_flag[0])
-            flags=ParseImageGeometry(argument_list[0].string_reference,
-              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+            {
+              FormatString(absolute_geometry,"%.1024s!",
+                argument_list[0].string_reference);
+              flags=ParseImageGeometry(absolute_geometry,&geometry.x,
+                &geometry.y,&geometry.width,&geometry.height);
+            }
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -4254,10 +4258,13 @@ Mogrify(ref,...)
         }
         case 7:  /* Chop */
         {
-          geometry.height=geometry.width;
           if (attribute_flag[0])
-            flags=ParseImageGeometry(argument_list[0].string_reference,
-              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+            {
+              FormatString(absolute_geometry,"%.1024s!",
+                argument_list[0].string_reference);
+              flags=ParseImageGeometry(absolute_geometry,&geometry.x,
+                &geometry.y,&geometry.width,&geometry.height);
+            }
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -4278,10 +4285,13 @@ Mogrify(ref,...)
         }
         case 8:  /* Crop */
         {
-          geometry.height=geometry.width;
           if (attribute_flag[0])
-            flags=ParseImageGeometry(argument_list[0].string_reference,
-              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+            {
+              FormatString(absolute_geometry,"%.1024s!",
+                argument_list[0].string_reference);
+              flags=ParseImageGeometry(absolute_geometry,&geometry.x,
+                &geometry.y,&geometry.width,&geometry.height);
+            }
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -5176,10 +5186,13 @@ Mogrify(ref,...)
         }
         case 49:  /* Raise */
         {
-          geometry.height=geometry.width;
           if (attribute_flag[0])
-            flags=ParseImageGeometry(argument_list[0].string_reference,
-              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+            {
+              FormatString(absolute_geometry,"%.1024s!",
+                argument_list[0].string_reference);
+              flags=ParseImageGeometry(absolute_geometry,&geometry.x,
+                &geometry.y,&geometry.width,&geometry.height);
+            }
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -5451,10 +5464,13 @@ Mogrify(ref,...)
         }
         case 72:  /* Shave */
         {
-          geometry.height=geometry.width;
           if (attribute_flag[0])
-            flags=ParseImageGeometry(argument_list[0].string_reference,
-              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+            {
+              FormatString(absolute_geometry,"%.1024s!",
+                argument_list[0].string_reference);
+              flags=ParseImageGeometry(absolute_geometry,&geometry.x,
+                &geometry.y,&geometry.width,&geometry.height);
+            }
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])

@@ -1409,6 +1409,9 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
   transform_image=(*image);
   if (crop_geometry != (const char *) NULL)
     {
+      char
+        absolute_geometry[MaxTextExtent];
+
       Image
         *crop_image;
 
@@ -1420,8 +1423,8 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
       */
       crop_image=(Image *) NULL;
       SetGeometry(transform_image,&geometry);
-      geometry.height=geometry.width;
-      flags=ParseImageGeometry(crop_geometry,&geometry.x,&geometry.y,
+      FormatString(absolute_geometry,"%.1024s!",crop_geometry);
+      flags=ParseImageGeometry(absolute_geometry,&geometry.x,&geometry.y,
         &geometry.width,&geometry.height);
       if ((geometry.width == 0) || (geometry.height == 0) ||
           ((flags & XValue) != 0) || ((flags & YValue) != 0) ||

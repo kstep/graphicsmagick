@@ -3287,6 +3287,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   const int argc,char **argv,Image **image)
 {
   char
+		absolute_geometry[MaxTextExtent],
     *option;
 
   DrawInfo
@@ -3437,8 +3438,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with a border of solid color.
             */
-            geometry.height=geometry.width;
-            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
+            FormatString(absolute_geometry,"%.1024s!",argv[++i]);
+            flags=ParseImageGeometry(absolute_geometry,&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
             border_image=BorderImage(*image,&geometry,&(*image)->exception);
             if (border_image == (Image *) NULL)
@@ -3524,8 +3525,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Chop the image.
             */
-            geometry.height=geometry.width;
-            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
+            FormatString(absolute_geometry,"%.1024s!",argv[++i]);
+            flags=ParseImageGeometry(absolute_geometry,&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
             chop_image=ChopImage(*image,&geometry,&(*image)->exception);
             if (chop_image == (Image *) NULL)
@@ -4470,8 +4471,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with a raise of solid color.
             */
-            geometry.height=geometry.width;
-            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
+            FormatString(absolute_geometry,"%.1024s!",argv[++i]);
+            flags=ParseImageGeometry(absolute_geometry,&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
             (void) RaiseImage(*image,&geometry,*option == '-');
             continue;
@@ -4498,8 +4499,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               Apply transformations to a selected region of the image.
             */
             SetGeometry(*image,&region_geometry);
-            region_geometry.height=geometry.width;
-            flags=ParseImageGeometry(argv[++i],&region_geometry.x,
+            FormatString(absolute_geometry,"%.1024s!",argv[++i]);
+            flags=ParseImageGeometry(absolute_geometry,&region_geometry.x,
               &region_geometry.y,&region_geometry.width,
               &region_geometry.height);
             crop_image=CropImage(*image,&region_geometry,&(*image)->exception);
@@ -4701,8 +4702,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Shave the image edges.
             */
-            geometry.height=geometry.width;
-            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
+            FormatString(absolute_geometry,"%.1024s!",argv[++i]);
+            flags=ParseImageGeometry(absolute_geometry,&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
             shave_image=ShaveImage(*image,&geometry,&(*image)->exception);
             if (shave_image == (Image *) NULL)

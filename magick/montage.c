@@ -411,10 +411,14 @@ MagickExport Image *MontageImages(const Image *images,
   bevel_width=0;
   if (montage_info->frame != (char *) NULL)
     {
+      char
+        absolute_geometry[MaxTextExtent];
+
       (void) memset(&frame_info,0,sizeof(FrameInfo));
       frame_info.width=tile_info.width;
-      frame_info.height=tile_info.width;
-      flags=ParseImageGeometry(montage_info->frame,&frame_info.outer_bevel,
+      frame_info.height=tile_info.height;
+      FormatString(absolute_geometry,"%.1024s!",montage_info->frame);
+      flags=ParseImageGeometry(absolute_geometry,&frame_info.outer_bevel,
         &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
       if ((flags & HeightValue) == 0)
         frame_info.height=frame_info.width;
