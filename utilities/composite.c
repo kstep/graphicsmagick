@@ -205,8 +205,6 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
           assert(mask_image != (Image *) NULL);
           assert(mask_image->signature == MagickSignature);
           SetImageType(composite_image,TrueColorMatteType);
-          if (!composite_image->matte)
-            SetImageOpacity(composite_image,OpaqueOpacity);
           status=CompositeImage(composite_image,CopyOpacityCompositeOp,
             mask_image,0,0);
           if (status == False)
@@ -220,8 +218,7 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
           /*
             Create mattes for dissolve.
           */
-          if (!composite_image->matte)
-            SetImageOpacity(composite_image,OpaqueOpacity);
+          SetImageType(composite_image,TrueColorMatteType);
           for (y=0; y < (long) composite_image->rows; y++)
           {
             q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
