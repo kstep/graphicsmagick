@@ -545,7 +545,7 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,
     if (count == 1)
       for (x=0; x < (long) image->columns; x++)
       {
-        index=PixelIntensityToQuantum(q) < pixel.red ? 0 : 1;
+        index=PixelIntensityToQuantum(q) <= pixel.red ? 0 : 1;
         indexes[x]=index;
         q->red=image->colormap[index].red;
         q->green=image->colormap[index].green;
@@ -555,10 +555,10 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,
     else
       for (x=0; x < (long) image->columns; x++)
       {
-        q->red=q->red < pixel.red ? 0 : MaxRGB;
-        q->green=q->green < pixel.green ? 0 : MaxRGB;
-        q->blue=q->blue < pixel.blue ? 0 : MaxRGB;
-        q->opacity=q->opacity < pixel.opacity ? 0 : MaxRGB;
+        q->red=q->red <= pixel.red ? 0 : MaxRGB;
+        q->green=q->green <= pixel.green ? 0 : MaxRGB;
+        q->blue=q->blue <= pixel.blue ? 0 : MaxRGB;
+        q->opacity=q->opacity <= pixel.opacity ? 0 : MaxRGB;
         q++;
       }
     if (!SyncImagePixels(image))
@@ -2169,7 +2169,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      index=PixelIntensityToQuantum(q) < threshold ? 0 : 1;
+      index=PixelIntensityToQuantum(q) <= threshold ? 0 : 1;
       indexes[x]=index;
       q->red=image->colormap[index].red;
       q->green=image->colormap[index].green;
