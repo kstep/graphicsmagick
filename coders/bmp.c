@@ -747,7 +747,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         image->storage_class=DirectClass;
         if (bmp_info.compression == 1)
-          bytes_per_line=image->columns << 1;
+          bytes_per_line=2*image->columns;
         for (y=image->rows-1; y >= 0; y--)
         {
           p=pixels+(image->rows-y-1)*bytes_per_line;
@@ -835,7 +835,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Acquire next image structure.
         */
-        AcquireNextImage(image_info,image);
+        AllocateNextImage(image_info,image);
         if (image->next == (Image *) NULL)
           {
             DestroyImages(image);
@@ -1160,8 +1160,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           /*
             Convert run-length encoded raster pixels.
           */
-          packets=(unsigned int)
-            ((bytes_per_line*(bmp_info.height+2)+1) << 1);
+          packets=(unsigned int) 2*bytes_per_line*(bmp_info.height+2)+1;
           bmp_data=(unsigned char *) AcquireMemory(packets);
           if (pixels == (unsigned char *) NULL)
             {
