@@ -1,3 +1,7 @@
+2002-01-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/wmf.c (magick_brush): Fixed bug with setting
+	fill color.
+
 2002-01-03  Cristy  <cristy@mystic.es.dupont.com>
 	* Postscript Level II is now DCS compliant.
 

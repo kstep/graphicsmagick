@@ -1231,7 +1231,7 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
 
   /* Set polygon fill rule */
   switch ((unsigned int) WMF_DC_POLYFILL(dc))	/* Is this correct ?? */
-  {
+    {
     case WINDING:
       magick_mvg_printf(API, "fill-rule nonzero\n");
       break;
@@ -1240,10 +1240,10 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
     default:
       magick_mvg_printf(API, "fill-rule evenodd\n");
       break;
-  }
+    }
 
   switch ((unsigned int) WMF_BRUSH_STYLE(brush))
-  {
+    {
     case BS_NULL:		/* BS_HOLLOW & BS_NULL share enum */
       {
 	magick_mvg_printf(API, "fill none\n");
@@ -1254,16 +1254,20 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
 	/* Set fill opacity 
 	 * FIXME: this is probably totally bogus.
 	 */
+#if 0
 	if (fill_opaque)
           {
-	  /* magick_mvg_printf(API, "fill-opacity 1.0\n"); */
-	/* else */
-/* 	  magick_mvg_printf(API, "fill-opacity 0.5\n"); */	/* semi-transparent?? */
-
-          magick_mvg_printf(API, "fill #%02x%02x%02x\n",
-                            (int) brush_color->r,
-                            (int) brush_color->g, (int) brush_color->b);
+            magick_mvg_printf(API, "fill-opacity 1.0\n");
           }
+	else
+          {
+            magick_mvg_printf(API, "fill-opacity 0.5\n"); */	/* semi-transparent?? */
+          }
+#endif
+
+        magick_mvg_printf(API, "fill #%02x%02x%02x\n",
+                          (int) brush_color->r,
+                          (int) brush_color->g, (int) brush_color->b);
 	break;
       }
     case BS_HATCHED:
@@ -1291,7 +1295,7 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
 			  (int) brush_color->g, (int) brush_color->b);
 
 	switch ((unsigned int) WMF_BRUSH_HATCH(brush))
-	{
+          {
 
 	  case HS_HORIZONTAL:	/* ----- */
 	    {
@@ -1328,7 +1332,7 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
 	  default:
 	    {
 	    }
-	}
+          }
 	magick_mvg_printf(API, "pop graphic-context\n");
 	magick_mvg_printf(API, "pop pattern\n");
 	magick_mvg_printf(API, "fill 'url(#%s)'\n", pattern_id);
@@ -1351,96 +1355,96 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
           *brush_bmp = WMF_BRUSH_BITMAP(brush);
 
 	if (brush_bmp && brush_bmp->data != 0)
-	{
-	  char
-            composition_mode[14],
-            imgspec[30],
-	    pattern_id[30];
+          {
+            char
+              composition_mode[14],
+              imgspec[30],
+              pattern_id[30];
 
-          Image
-            *image;
+            Image
+              *image;
 
-          ExceptionInfo
-            exception;
+            ExceptionInfo
+              exception;
 
-          long
-            id;
+            long
+              id;
 
-	  image = (Image *) brush_bmp->data;
+            image = (Image *) brush_bmp->data;
 
-	  GetExceptionInfo(&exception);
-	  id = SetMagickRegistry(ImageRegistryType, (void *) image,
-                                 sizeof(Image), &exception);
-          if( id<0 || exception.severity != UndefinedException)
-            {
-              if (ddata->image->exception.severity < exception.severity)
-                ddata->image->exception = exception;
-              return;
-            }
-	  sprintf(imgspec, "mpr:%li", id);
+            GetExceptionInfo(&exception);
+            id = SetMagickRegistry(ImageRegistryType, (void *) image,
+                                   sizeof(Image), &exception);
+            if( id<0 || exception.severity != UndefinedException)
+              {
+                if (ddata->image->exception.severity < exception.severity)
+                  ddata->image->exception = exception;
+                return;
+              }
+            sprintf(imgspec, "mpr:%li", id);
 
-          /* Add to ID list */
-	  (ddata->temp_images)[ddata->cur_temp_image_index] = id;
-	  ++ddata->cur_temp_image_index;
-	  if (ddata->cur_temp_image_index == ddata->max_temp_image_index)
-	  {
-	    ddata->max_temp_image_index += 2048;
-	    ReacquireMemory((void **) &ddata->temp_images,
-			    ddata->max_temp_image_index * sizeof(long));
-	  }
+            /* Add to ID list */
+            (ddata->temp_images)[ddata->cur_temp_image_index] = id;
+            ++ddata->cur_temp_image_index;
+            if (ddata->cur_temp_image_index == ddata->max_temp_image_index)
+              {
+                ddata->max_temp_image_index += 2048;
+                ReacquireMemory((void **) &ddata->temp_images,
+                                ddata->max_temp_image_index * sizeof(long));
+              }
 
-	  sprintf(pattern_id, "fill_%lu", ddata->pattern_id);
-	  magick_mvg_printf(API, "push pattern %s 0,0, %lu,%lu\n",
-			    pattern_id, image->columns, image->rows);
+            sprintf(pattern_id, "fill_%lu", ddata->pattern_id);
+            magick_mvg_printf(API, "push pattern %s 0,0, %lu,%lu\n",
+                              pattern_id, image->columns, image->rows);
 
-	  strcpy(composition_mode, "Copy");	/* Default is copy */
-	  switch (fill_ROP)
-	  {
-	    case SRCCOPY:	/* dest = source */
-	      strcpy(composition_mode, "Copy");
-	      break;
-	    case SRCPAINT:	/* dest = source OR dest */
-	      break;
-	    case SRCAND:	/* dest = source AND dest */
-	      break;
-	    case SRCINVERT:	/* dest = source XOR dest */
-	      strcpy(composition_mode, "Xor");
-	      break;
-	    case SRCERASE:	/* dest = source AND (NOT dest) */
-	      break;
-	    case NOTSRCCOPY:	/* dest = (NOT source) */
-	      NegateImage(image, False);
-	      strcpy(composition_mode, "Copy");
-	      break;
-	    case NOTSRCERASE:	/* dest = (NOT source) AND (NOT dest) */
-	      break;
-	    case MERGECOPY:	/* dest = (source AND pattern) */
-	      break;
-	    case MERGEPAINT:	/* dest = (NOT source) OR dest */
-	      break;
-	    case PATCOPY:	/* dest = pattern */
-	      break;
-	    case PATPAINT:	/* dest = DPSnoo */
-	      break;
-	    case PATINVERT:	/* dest = pattern XOR dest */
-	      break;
-	    case DSTINVERT:	/* dest = (NOT dest) */
-	      break;
-	    case BLACKNESS:	/* dest = BLACK bits */
-	      break;
-	    case WHITENESS:	/* dest = WHITE bits */
-	      break;
-	    default:
-	      {
-	      }
-	  }
-	  magick_mvg_printf(API, "image %s 0,0 %lu,%lu '%s'\n",
-			    composition_mode, image->columns, image->rows, imgspec);
-	  magick_mvg_printf(API, "pop pattern\n");
-	  magick_mvg_printf(API, "fill url(#%s)\n", pattern_id);
+            strcpy(composition_mode, "Copy");	/* Default is copy */
+            switch (fill_ROP)
+              {
+              case SRCCOPY:	/* dest = source */
+                strcpy(composition_mode, "Copy");
+                break;
+              case SRCPAINT:	/* dest = source OR dest */
+                break;
+              case SRCAND:	/* dest = source AND dest */
+                break;
+              case SRCINVERT:	/* dest = source XOR dest */
+                strcpy(composition_mode, "Xor");
+                break;
+              case SRCERASE:	/* dest = source AND (NOT dest) */
+                break;
+              case NOTSRCCOPY:	/* dest = (NOT source) */
+                NegateImage(image, False);
+                strcpy(composition_mode, "Copy");
+                break;
+              case NOTSRCERASE:	/* dest = (NOT source) AND (NOT dest) */
+                break;
+              case MERGECOPY:	/* dest = (source AND pattern) */
+                break;
+              case MERGEPAINT:	/* dest = (NOT source) OR dest */
+                break;
+              case PATCOPY:	/* dest = pattern */
+                break;
+              case PATPAINT:	/* dest = DPSnoo */
+                break;
+              case PATINVERT:	/* dest = pattern XOR dest */
+                break;
+              case DSTINVERT:	/* dest = (NOT dest) */
+                break;
+              case BLACKNESS:	/* dest = BLACK bits */
+                break;
+              case WHITENESS:	/* dest = WHITE bits */
+                break;
+              default:
+                {
+                }
+              }
+            magick_mvg_printf(API, "image %s 0,0 %lu,%lu '%s'\n",
+                              composition_mode, image->columns, image->rows, imgspec);
+            magick_mvg_printf(API, "pop pattern\n");
+            magick_mvg_printf(API, "fill url(#%s)\n", pattern_id);
 
-	  ++ddata->pattern_id;
-	}
+            ++ddata->pattern_id;
+          }
 	else
 	  printf("magick_brush: no image data!\n");
 
@@ -1464,7 +1468,7 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
     default:
       {
       }
-  }
+    }
 }
 
 static void magick_pen(wmfAPI * API, wmfDC * dc)
