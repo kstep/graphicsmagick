@@ -785,9 +785,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
   center=0.0;
   for (x=0; x < (long) destination->columns; x++)
   {
-    start=(long) Max(ceil(center-support-0.5+MagickEpsilon),0);
-    stop=(long) Min(Min(floor(center+support+0.5-MagickEpsilon),
-      start+2*support-1),source->columns-1);
+    start=(long) Max(ceil(center-support-0.5),0);
+    stop=(long) Min(floor(center+support+0.5),source->columns-1);
     offset=scale*(start-center+(scale >= 1.0 ? 0.5 : -0.5));
     density=0.0;
     for (n=0; start <= stop; n++)
@@ -838,7 +837,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     if (QuantumTick(*quantum,span))
       MagickMonitor(ResizeImageText,*quantum,span);
     (*quantum)++;
-    center+=1.0/x_factor+MagickEpsilon;
+    center+=1.0/x_factor;
   }
   return(x == (long) destination->columns);
 }
@@ -899,9 +898,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
   center=0.0;
   for (y=0; y < (long) destination->rows; y++)
   {
-    start=(long) Max(ceil(center-support-0.5+MagickEpsilon),0);
-    stop=(long) Min(Min(floor(center+support+0.5-MagickEpsilon),
-      start+2*support-1),source->rows-1);
+    start=(long) Max(ceil(center-support-0.5),0);
+    stop=(long) Min(floor(center+support+0.5),source->rows-1);
     offset=scale*(start-center+(scale >= 1.0 ? 0.5 : -0.5));
     density=0.0;
     for (n=0; start <= stop; n++)
@@ -951,7 +949,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     if (QuantumTick(*quantum,span))
       MagickMonitor(ResizeImageText,*quantum,span);
     (*quantum)++;
-    center+=1.0/y_factor+MagickEpsilon;
+    center+=1.0/y_factor;
   }
   return(y == (long) destination->rows);
 }
