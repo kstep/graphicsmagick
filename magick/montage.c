@@ -195,8 +195,8 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   if (image_info->font != (char *) NULL)
     montage_info->font=AllocateString(image_info->font);
   montage_info->pointsize=image_info->pointsize;
-  montage_info->fill=image_info->pen;
-  (void) QueryColorDatabase("#000000ff",&montage_info->stroke);
+  montage_info->fill.opacity=OpaqueOpacity;
+  montage_info->stroke.opacity=TransparentOpacity;
   montage_info->background_color=image_info->background_color;
   montage_info->border_color=image_info->border_color;
   montage_info->matte_color=image_info->matte_color;

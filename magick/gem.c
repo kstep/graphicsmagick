@@ -259,12 +259,12 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
       register long
         i;
 
-      for (i=0; alpha > exp(-SigmaPoisson*Downscale(pixel)); i++)
+      for (i=0; alpha > exp(-SigmaPoisson*pixel); i++)
       {
         beta=(double) (rand() & NoiseMask)/NoiseMask;
-        alpha*=beta;
+        alpha=alpha*beta;
       }
-      value=Upscale(i/SigmaPoisson);
+      value=i/SigmaPoisson;
       break;
     }
   }
@@ -316,7 +316,7 @@ MagickExport int GetOptimalKernelWidth1D(const double radius,const double sigma)
   int
     width;
 
-  register long
+  register int
     u;
 
   if (radius > 0.0)
@@ -344,7 +344,7 @@ MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
   int
     width;
 
-  register long
+  register int
     u,
     v;
 
@@ -400,28 +400,17 @@ MagickExport int GetOptimalKernelWidth(const double radius,const double sigma)
 %
 %
 */
-
-static inline double HSLValue(double u,double v,double hue)
-{
-  if (hue > 360)
-    hue-=360;
-  if (hue < 0)
-    hue+=360;
-  if (hue < 60)
-    return(u+(v-u)*hue/60);
-  if (hue < 180)
-    return(v);
-  if (hue < 240)
-    return(u+(v-u)*(240-hue)/60);
-  return(u);
-}
-
 MagickExport void HSLTransform(const double hue,const double saturation,
   const double luminosity,Quantum *red,Quantum *green,Quantum *blue)
 {
   double
-    u,
-    v;
+    b,
+    g,
+    r,
+    v,
+    x,
+    y,
+    z;
 
   /*
     Convert HSL to RGB colorspace.
@@ -429,18 +418,31 @@ MagickExport void HSLTransform(const double hue,const double saturation,
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
-  if (saturation == 0)
+  v=(luminosity <= 0.5) ? (luminosity*(1.0+saturation)) :
+    (luminosity+saturation-luminosity*saturation);
+  if (saturation == 0.0)
     {
-      *red=(Quantum) (luminosity+0.5); 
-      *green=(Quantum) (luminosity+0.5);
-      *blue=(Quantum) (luminosity+0.5);
+      *red=(Quantum) (MaxRGB*luminosity+0.5);
+      *green=(Quantum) (MaxRGB*luminosity+0.5);
+      *blue=(Quantum) (MaxRGB*luminosity+0.5);
+      return;
     }
-  v=(luminosity < 0.5) ? luminosity*(1+saturation) : luminosity+saturation-
-    luminosity*saturation;
-  u=2*luminosity-v;
-  *red=(Quantum) (HSLValue(u,v,hue+120)+0.5);
-  *green=(Quantum) (HSLValue(u,v,hue)+0.5);
-  *blue=(Quantum) (HSLValue(u,v,hue-120)+0.5);
+  y=2.0*luminosity-v;
+  x=y+(v-y)*(6.0*hue-floor(6.0*hue));
+  z=v-(v-y)*(6.0*hue-floor(6.0*hue));
+  switch ((int) (6.0*hue))
+  {
+    case 0: r=v; g=x; b=y; break;
+    case 1: r=z; g=v; b=y; break;
+    case 2: r=y; g=v; b=x; break;
+    case 3: r=y; g=z; b=v; break;
+    case 4: r=x; g=y; b=v; break;
+    case 5: r=v; g=y; b=z; break;
+    default: r=v; g=x; b=y; break;
+  }
+  *red=(Quantum) (MaxRGB*r+0.5);
+  *green=(Quantum) (MaxRGB*g+0.5);
+  *blue=(Quantum) (MaxRGB*b+0.5);
 }
 
 /*
@@ -818,7 +820,7 @@ MagickExport double Permutate(const long n,const long k)
 %  A description of each parameter follows:
 %
 %    o red, green, blue: A Quantum value representing the red, green, and
-%      blue component of a pixel.
+%      blue component of a pixel..
 %
 %    o hue, saturation, luminosity: A pointer to a double value representing a
 %      component of the HSL color space.
@@ -829,8 +831,12 @@ MagickExport void TransformHSL(const Quantum red,const Quantum green,
   const Quantum blue,double *hue,double *saturation,double *luminosity)
 {
   double
-    u,
-    v;
+    b,
+    delta,
+    g,
+    max,
+    min,
+    r;
 
   /*
     Convert RGB to HSL colorspace.
@@ -838,24 +844,26 @@ MagickExport void TransformHSL(const Quantum red,const Quantum green,
   assert(hue != (double *) NULL);
   assert(saturation != (double *) NULL);
   assert(luminosity != (double *) NULL);
-  u=Max(red,Max(green,blue));
-  v=Min(red,Min(green,blue));
-  *hue=0;
-  *saturation=0;
-  *luminosity=(u+v)/2;
-  if (u == v)
+  r=(double) red/MaxRGB;
+  g=(double) green/MaxRGB;
+  b=(double) blue/MaxRGB;
+  max=Max(r,Max(g,b));
+  min=Min(r,Min(g,b));
+  *hue=0.0;
+  *saturation=0.0;
+  *luminosity=(0.5+MagickEpsilon)*(min+max);
+  delta=max-min;
+  if (delta == 0.0)
     return;
-  *saturation=(*luminosity < 0.5) ? (u-v)/(u+v) : (u-v)/(2-u-v);
-  if (red == u)
-    *hue=(green-blue)/(u-v);
+  *saturation=delta/((*luminosity <= 0.5) ? (min+max) : (2.0-max-min));
+  if (r == max)
+    *hue=(g == min ? 5.0+(max-b)/delta : 1.0-(max-g)/delta);
   else
-    if (green == u)
-      *hue=2+(blue-red)/(u-v);
+    if (g == max)
+      *hue=(b == min ? 1.0+(max-r)/delta : 3.0-(max-b)/delta);
     else
-      *hue=4+(red-green)/(u-v);
-  *hue*=60;
-	if (*hue < 0)
-	  *hue+=360;
+      *hue=(r == min ? 3.0+(max-g)/delta : 5.0-(max-r)/delta);
+  *hue/=6.0;
 }
 
 /*

@@ -859,7 +859,6 @@ MagickExport unsigned int ClipImage(Image *image)
     return(False);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) QueryColorDatabase("none",&image_info->background_color);
-  (void) QueryColorDatabase("white",&image_info->pen);
   clip_mask=BlobToImage(image_info,attribute->value,strlen(attribute->value),
     &image->exception);
   DestroyImageInfo(image_info);
@@ -2944,7 +2943,6 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->quality=DefaultCompressionQuality;
   image_info->antialias=True;
   image_info->pointsize=12;
-  (void) QueryColorDatabase("#000000",&image_info->pen);
   (void) QueryColorDatabase(BackgroundColor,&image_info->background_color);
   (void) QueryColorDatabase(BorderColor,&image_info->border_color);
   (void) QueryColorDatabase(MatteColor,&image_info->matte_color);
@@ -4538,9 +4536,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("-pen",option) == 0)
           {
-            (void) QueryColorDatabase(argv[i],&clone_info->pen);
-            (void) QueryColorDatabase(argv[i],&draw_info->fill);
-            i++;
+            (void) QueryColorDatabase(argv[i++],&draw_info->fill);
             continue;
           }
         if (LocaleCompare("-pointsize",option) == 0)

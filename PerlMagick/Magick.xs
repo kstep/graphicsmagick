@@ -120,6 +120,9 @@ struct PackageInfo
   ImageInfo
     *image_info;
 
+  DrawInfo
+    *draw_info;
+
   QuantizeInfo
     *quantize_info;
 };
@@ -463,7 +466,7 @@ static int
 %
 %  A description of each parameter follows:
 %
-%    o cloned_info: Method ClonePackageInfo returns a duplicate of the given
+%    o clone_info: Method ClonePackageInfo returns a duplicate of the given
 %      info, or if info is NULL, a new one.
 %
 %    o info: a structure of type info.
@@ -473,20 +476,23 @@ static int
 static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
 {
   struct PackageInfo
-    *cloned_info;
+    *clone_info;
 
-  cloned_info=(struct PackageInfo *) AcquireMemory(sizeof(struct PackageInfo));
+  clone_info=(struct PackageInfo *) AcquireMemory(sizeof(struct PackageInfo));
   if (!info)
     {
       InitializeMagick(client_name);
-      cloned_info->image_info=CloneImageInfo((ImageInfo *) NULL);
-      cloned_info->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
-      return(cloned_info);
+      clone_info->image_info=CloneImageInfo((ImageInfo *) NULL);
+      clone_info->draw_info=
+        CloneDrawInfo(clone_info->image_info,(DrawInfo *) NULL);
+      clone_info->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
+      return(clone_info);
     }
-  *cloned_info=(*info);
-  cloned_info->image_info=CloneImageInfo(info->image_info);
-  cloned_info->quantize_info=CloneQuantizeInfo(info->quantize_info);
-  return(cloned_info);
+  *clone_info=(*info);
+  clone_info->image_info=CloneImageInfo(info->image_info);
+  clone_info->draw_info=CloneDrawInfo(info->image_info,info->draw_info);
+  clone_info->quantize_info=CloneQuantizeInfo(info->quantize_info);
+  return(clone_info);
 }
 
 /*
@@ -1331,7 +1337,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (LocaleCompare(attribute,"fill") == 0)
         {
           if (info)
-            (void) QueryColorDatabase(SvPV(sval,na),&info->image_info->pen);
+            (void) QueryColorDatabase(SvPV(sval,na),&info->draw_info->fill);
           return;
         }
       if (LocaleCompare(attribute,"font") == 0)
@@ -1519,7 +1525,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (LocaleCompare(attribute,"pen") == 0)
         {
           if (info)
-            (void) QueryColorDatabase(SvPV(sval,na),&info->image_info->pen);
+            (void) QueryColorDatabase(SvPV(sval,na),&info->draw_info->fill);
           return;
         }
       if (LocaleNCompare(attribute,"pixel",5) == 0)
@@ -1657,7 +1663,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (LocaleCompare(attribute,"stroke") == 0)
         {
           if (info)
-            (void) QueryColorDatabase(SvPV(sval,na),&info->image_info->pen);
+            (void) QueryColorDatabase(SvPV(sval,na),&info->draw_info->stroke);
           return;
         }
       break;
@@ -4645,7 +4651,7 @@ Mogrify(ref,...)
             *draw_info;
 
           draw_info=CloneDrawInfo(info ? info->image_info :
-            (ImageInfo *) NULL,(DrawInfo *) NULL);
+            (ImageInfo *) NULL,info ? info->draw_info : (DrawInfo *) NULL);
           if (attribute_flag[1])
             (void) CloneString(&draw_info->font,
               argument_list[1].string_reference);
@@ -4777,8 +4783,8 @@ Mogrify(ref,...)
           PixelPacket
             target;
 
-          draw_info=CloneDrawInfo(info ? info->image_info : (ImageInfo *) NULL,
-            (DrawInfo *) NULL);
+          draw_info=CloneDrawInfo(info ? info->image_info :
+            (ImageInfo *) NULL,info ? info->draw_info : (DrawInfo *) NULL);
           if (attribute_flag[0])
             flags=GetImageGeometry(image,argument_list[0].string_reference,
               False,&geometry);
@@ -4935,10 +4941,9 @@ Mogrify(ref,...)
             *draw_info;
 
           draw_info=CloneDrawInfo(info ? info->image_info : (ImageInfo *) NULL,
-            (DrawInfo *) NULL);
-          (void) QueryColorDatabase("#000000ff",&draw_info->fill);
-          if (info)
-            draw_info->stroke=info->image_info->pen;
+            info ? info->draw_info : (DrawInfo *) NULL);
+          draw_info->fill.opacity=TransparentOpacity;
+          draw_info->stroke.opacity=OpaqueOpacity;
           (void) CloneString(&draw_info->primitive,"Point");
           if (attribute_flag[0] && (argument_list[0].int_reference > 0))
             (void) CloneString(&draw_info->primitive,
@@ -6628,7 +6633,7 @@ QueryFontMetrics(ref,...)
         MagickWarning(OptionWarning,"No image to query",NULL);
         goto MethodException;
       }
-    draw_info=CloneDrawInfo(info->image_info,(DrawInfo *) NULL);
+    draw_info=CloneDrawInfo(info->image_info,info->draw_info);
     CloneString(&draw_info->text,"");
     current=draw_info->affine;
     IdentityAffine(&affine);
