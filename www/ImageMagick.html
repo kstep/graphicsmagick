@@ -635,10 +635,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>megabytes of memory available to the pixel cache</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Image pixels are stored in memory until 80 megabytes of memory have been
-consumed. Subsequent pixel operations are cached on disk. Operations to
-memory are significantly faster but if your computer does not have a sufficient
-amount of free memory you may want to adjust this threshold value.
+This option is deprecated.  It has been replaced by the <strong>-limit</strong> option.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -2109,6 +2106,25 @@ Give three point values delineated with commas: black, mid, and white
 (e.g. 10,1.0,65000).  The white and black points range from 0 to MaxRGB
 and mid ranges from 0 to 10.
 </font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="details-limit"></a>-limit <i>&lt;type&gt; &lt;value&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, Map, or Memory resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The value is in Megabytes.  By default all are unlimited.
+When the limit is reached, ImageMagick will fail in some fashion, or
+take compensating actions if possible.
+For example, <tt>-limit memory 32 -limit map 64</tt> limits memory
+When the pixel cache reaches the memory limit it uses
+memory mapping.  When that limit is reached it goes to disk.  If disk has
+a hard limit, the program will fail.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
