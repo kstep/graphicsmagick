@@ -573,7 +573,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,image->iptc_profile.length,
         (char *) image->iptc_profile.info);
     }
-  if (LocaleCompare(image_info->magick,"8BIM") == 0)
+  if (LocaleCompare(image_info->magick,"APP1") == 0)
     {
       /*
         Write APP1 image.
@@ -620,6 +620,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
 
       if (image->iptc_profile.length == 0)
         ThrowWriterException(FileOpenWarning,"No IPTC profile available",image);
+      status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
       info=image->iptc_profile.info;
       length=image->iptc_profile.length;
       length=GetIPTCStream(&info,length);
