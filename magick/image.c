@@ -3541,6 +3541,27 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=charcoal_image;
             continue;
           }
+        if (LocaleCompare("-chop",option) == 0)
+          {
+            Image
+              *chop_image;
+
+            RectangleInfo
+              chop_info;
+
+            /*
+              Chop the image.
+            */
+            (void) memset(&chop_info,0,sizeof(RectangleInfo));
+            flags=ParseGeometry(argv[++i],&chop_info.x,&chop_info.y,
+              &chop_info.width,&chop_info.height);
+            chop_image=ChopImage(*image,&chop_info,&(*image)->exception);
+            if (chop_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=chop_image;
+            continue;
+          }
         if (LocaleCompare("clip",option+1) == 0)
           {
             if (*option == '+')
