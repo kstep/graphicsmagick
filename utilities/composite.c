@@ -86,6 +86,7 @@
 %    -treedepth value    depth of the color tree
 %    -type type          image type
 %    -units type         PixelsPerInch, PixelsPerCentimeter, or Undefined
+%    -unsharp geometry   sharpen the image
 %    -verbose            print detailed information about the image
 %
 %
@@ -445,6 +446,7 @@ static void Usage(void)
       "-treedepth value    depth of the color tree",
       "-type type          image type",
       "-units type         PixelsPerInch, PixelsPerCentimeter, or Undefined",
+      "-unsharp geometry   sharpen the image",
       "-verbose            print detailed information about the image",
       (char *) NULL
     };
