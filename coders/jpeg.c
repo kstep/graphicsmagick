@@ -191,7 +191,7 @@ static unsigned int EmitMessage(j_common_ptr jpeg_info,int level)
     message[JMSG_LENGTH_MAX];
 
   ErrorManager
-	  error_manager;
+	  *error_manager;
 
   Image
     *image;
@@ -268,7 +268,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
     *comment;
 
   ErrorManager
-	  error_manager;
+	  *error_manager;
 
   Image
     *image;
@@ -307,7 +307,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
 static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
 {
   ErrorManager
-	  error_manager;
+	  *error_manager;
 
   Image
     *image;
@@ -369,7 +369,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
     magick[12];
 
   ErrorManager
-	  error_manager;
+	  *error_manager;
 
   Image
     *image;
@@ -430,7 +430,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     magick[MaxTextExtent];
 
   ErrorManager
-	  error_manager;
+	  *error_manager;
 
   Image
     *image;
