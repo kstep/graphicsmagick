@@ -28,6 +28,10 @@
 # include <sys/types.h>
 #endif
 
+#if defined(HAVE_INTTYPES_H)
+#  include <inttypes.h>
+#endif
+
 #if defined(macintosh)
 #  include <stat.mac.h>  /* Needed for off_t */
 #endif
