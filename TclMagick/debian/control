@@ -1,0 +1,15 @@
+Source: tclmagick
+Section: graphics
+Priority: optional
+Maintainer: David N. Welton <davidw@debian.org>
+Build-Depends: debhelper (>= 4.0.0), libmagick6-dev, tcl8.4-dev, tk8.4-dev
+Standards-Version: 3.6.0
+
+Package: tclmagick
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Tcl bindings for ImageMagick
+ TclMagick is a Tcl extension that works with both the GraphicsMagick
+ and ImageMagick image manipulation libraries.  TkMagick is a small,
+ simple extension that lets you pass images back and forth between Tk
+ and the TclMagick extension.

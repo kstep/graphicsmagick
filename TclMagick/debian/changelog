@@ -1,0 +1,26 @@
+tclmagick (0.44-1) unstable; urgency=low
+
+  * New version.
+
+ -- David N. Welton <davidw@debian.org>  Mon, 17 Jan 2005 23:08:03 +0100
+
+tclmagick (0.42-1.1) unstable; urgency=low
+
+  * NMU
+  * Add dependency on tk8.4-dev (Closes: #274668)
+  * Remove NEWS file from package, it's empty.
+
+ -- Baruch Even <baruch@debian.org>  Tue,  4 Jan 2005 01:08:19 +0000
+
+tclmagick (0.42-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- David N. Welton <davidw@debian.org>  Tue, 21 Sep 2004 11:09:38 +0200
+
+tclmagick (0.41-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- David N. Welton <davidw@debian.org>  Sun, 19 Sep 2004 20:31:33 +0200
+

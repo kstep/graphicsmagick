@@ -1,0 +1,7 @@
+tclmagick for Debian
+--------------------
+
+If, at some point in the future, GraphicsMagick were to be packaged,
+this could depend on that instead.
+
+ -- David N. Welton <davidw@debian.org>, Sun Sep 19 20:45:49 2004
