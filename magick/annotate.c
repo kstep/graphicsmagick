@@ -778,7 +778,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
     draw_info->pointsize);
   if ((draw_info->font == (char *) NULL) || (*draw_info->font == '\0'))
     (void) fprintf(file,
-      "/Times-ISO dup /Times ReencodeType findfont setfont\n");
+      "/Times-Roman-ISO dup /Times-Roman ReencodeType findfont setfont\n");
   else
     (void) fprintf(file,
       "/%.1024s-ISO dup /%.1024s ReencodeType findfont setfont\n",
