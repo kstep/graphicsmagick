@@ -1345,7 +1345,7 @@ typedef enum
   ImplodeCommand,
   WaveCommand,
   OilPaintCommand,
-  CharcoalDrawingCommand,
+  CharcoalDrawCommand,
   AnnotateCommand,
   DrawCommand,
   ColorCommand,

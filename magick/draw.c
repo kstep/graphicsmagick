@@ -505,8 +505,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     j,
     k,
     n,
-    number_points,
-    y;
+    number_points;
 
   PointInfo
     point;
@@ -567,7 +566,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive+1);
         }
       length=MaxTextExtent;
-      primitive=AllocateString("");
+      primitive=AllocateString((char *) NULL);
       q=primitive;
       while (primitive != (char *) NULL)
       {
@@ -1453,7 +1452,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
       annotate->degrees=draw_info->angle;
       annotate->gravity=draw_info->gravity;
       annotate->decorate=draw_info->decorate;
-      annotate->geometry=AllocateString("");
+      annotate->geometry=AllocateString((char *) NULL);
       annotate->fill=draw_info->fill;
       annotate->stroke=draw_info->stroke;
       annotate->box=draw_info->box;
@@ -2048,7 +2047,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           if (*p == ',')
             p++;
           point.x=attribute == 'L' ? x : point.x+x;
-          point.y=attribute == 'L' ? y : point.y+y-1;
+          point.y=attribute == 'L' ? y : point.y+y;
           GeneratePoint(q,point);
           q+=q->coordinates;
         } while (IsGeometry(p));
@@ -2178,7 +2177,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       case 'V':
       {
         y=strtod(p,&p);
-        point.y=attribute == 'V' ? y : point.y+y-1;
+        point.y=attribute == 'V' ? y : point.y+y;
         GeneratePoint(q,point);
         q+=q->coordinates;
         break;

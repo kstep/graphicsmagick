@@ -320,7 +320,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   /*
     Determine length of generic profile.
   */
-  image->generic_profile[i].name=AllocateString("");
+  image->generic_profile[i].name=AllocateString((char *) NULL);
   FormatString(image->generic_profile[i].name,"APP%d",
     jpeg_info->unread_marker-JPEG_APP0);
   length=GetCharacter(jpeg_info) << 8;

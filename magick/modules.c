@@ -783,7 +783,7 @@ char *TagToProcess(const char *tag)
     *module_name;
 
   assert(tag != (char *) NULL);
-  module_name=AllocateString("");
+  module_name=AllocateString((char *) NULL);
 #if !defined(_VISUALC_)
   (void) FormatString(module_name,"%s.la",tag);
   (void) LocaleLower(module_name);

@@ -87,13 +87,19 @@ MagickExport char *AllocateString(const char *source)
   char
     *destination;
 
-  if (source == (char *) NULL)
-    return((char *) NULL);
-  destination=(char *) AcquireMemory(Extent(source)+MaxTextExtent);
+  unsigned int
+    length;
+
+  length=MaxTextExtent;
+  if (source != (char *) NULL)
+    length+=Extent(source);
+  destination=(char *) AcquireMemory(length);
   if (destination == (char *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate string",
       "Memory allocation failed");
-  (void) strcpy(destination,source);
+  *destination='\0';
+  if (source != (char *) NULL)
+    (void) strcpy(destination,source);
   return(destination);
 }
 
@@ -2923,7 +2929,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
             Read text from a file.
           */
           length=MaxTextExtent;
-          text=AllocateString("");
+          text=AllocateString((char *) NULL);
           for (q=text; text != (char *) NULL; q++)
           {
             c=fgetc(file);

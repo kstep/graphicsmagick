@@ -1913,7 +1913,7 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   length=MaxTextExtent;
-  command=AllocateString("");
+  command=AllocateString((char *) NULL);
   for (p=command; command != (char *) NULL; p++)
   {
     c=fgetc(file);

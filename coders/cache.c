@@ -192,7 +192,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
       Decode image header;  header terminates one character beyond a ':'.
     */
     length=MaxTextExtent;
-    values=AllocateString("");
+    values=AllocateString((char *) NULL);
     GetCacheInfo(&image->cache);
     cache_info=(CacheInfo *) image->cache;
     image->depth=8;
@@ -211,7 +211,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
             Read comment-- any text between { }.
           */
           length=MaxTextExtent;
-          comment=AllocateString("");
+          comment=AllocateString((char *) NULL);
           p=comment;
           for ( ; comment != (char *) NULL; p++)
           {
@@ -610,7 +610,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
         /*
           Image directory.
         */
-        image->directory=AllocateString("");
+        image->directory=AllocateString((char *) NULL);
         if (image->directory == (char *) NULL)
           ThrowReaderException(CorruptImageWarning,"Unable to read image data",
             image);

@@ -608,7 +608,7 @@ void StoreImageAttribute(Image *image,char *text)
 
   next=0;
   state=0;
-  token=AllocateString("");
+  token=AllocateString((char *) NULL);
   for ( ; ; )
   {
     status=Tokenizer(&token_info,0,token,MaxTextExtent,text,"","=","\'",0,

@@ -1338,8 +1338,8 @@ MagickExport Image *XAnimateImages(Display *display,
       /*
         Window name is the base of the filename.
       */
-      windows->image.name=AllocateString("");
-      windows->image.icon_name=AllocateString("");
+      windows->image.name=AllocateString((char *) NULL);
+      windows->image.icon_name=AllocateString((char *) NULL);
       p=display_image->filename+Extent(display_image->filename)-1;
       while ((p > display_image->filename) && !IsBasenameSeparator(*(p-1)))
         p--;
@@ -1506,7 +1506,7 @@ MagickExport Image *XAnimateImages(Display *display,
   FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->widget.name=AllocateString("");
+  windows->widget.name=AllocateString((char *) NULL);
   *windows->widget.name='\0';
   windows->widget.border_width=0;
   windows->widget.flags|=PPosition;
@@ -1535,7 +1535,7 @@ MagickExport Image *XAnimateImages(Display *display,
     LiberateMemory((void **) &windows->popup.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->popup);
-  windows->popup.name=AllocateString("");
+  windows->popup.name=AllocateString((char *) NULL);
   *windows->popup.name='\0';
   windows->popup.border_width=0;
   windows->popup.flags|=PPosition;

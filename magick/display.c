@@ -1063,7 +1063,7 @@ static unsigned int XAnnotateEditImage(Display *display,
 static unsigned int XBackgroundImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image **image)
 {
-#define BackgroundImageText  "  Backgrounding the image...  "
+#define BackgroundImageText  "  Background the image...  "
 
   static char
     window_id[MaxTextExtent] = "root";
@@ -1257,7 +1257,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
           case ChopHelpCommand:
           {
             XTextViewWidget(display,resource_info,windows,False,
-              "Help Viewer - Image Chopping",ImageChopHelp);
+              "Help Viewer - Image Chop",ImageChopHelp);
             break;
           }
           case ChopDismissCommand:
@@ -1328,7 +1328,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
           {
             XSetFunction(display,windows->image.highlight_context,GXcopy);
             XTextViewWidget(display,resource_info,windows,False,
-              "Help Viewer - Image Chopping",ImageChopHelp);
+              "Help Viewer - Image Chop",ImageChopHelp);
             XSetFunction(display,windows->image.highlight_context,GXinvert);
             break;
           }
@@ -2395,7 +2395,7 @@ static unsigned int XCompositeImage(Display *display,
           {
             XSetFunction(display,windows->image.highlight_context,GXcopy);
             XTextViewWidget(display,resource_info,windows,False,
-              "Help Viewer - Image Compositing",ImageCompositeHelp);
+              "Help Viewer - Image Composite",ImageCompositeHelp);
             XSetFunction(display,windows->image.highlight_context,GXinvert);
             break;
           }
@@ -2498,7 +2498,7 @@ static unsigned int XCompositeImage(Display *display,
           {
             XSetFunction(display,windows->image.highlight_context,GXcopy);
             XTextViewWidget(display,resource_info,windows,False,
-              "Help Viewer - Image Compositing",ImageCompositeHelp);
+              "Help Viewer - Image Composite",ImageCompositeHelp);
             XSetFunction(display,windows->image.highlight_context,GXinvert);
             break;
           }
@@ -2978,19 +2978,19 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
               case CopyMode:
               {
                 XTextViewWidget(display,resource_info,windows,False,
-                  "Help Viewer - Image Copying",ImageCopyHelp);
+                  "Help Viewer - Image Copy",ImageCopyHelp);
                 break;
               }
               case CropMode:
               {
                 XTextViewWidget(display,resource_info,windows,False,
-                  "Help Viewer - Image Cropping",ImageCropHelp);
+                  "Help Viewer - Image Crop",ImageCropHelp);
                 break;
               }
               case CutMode:
               {
                 XTextViewWidget(display,resource_info,windows,False,
-                  "Help Viewer - Image Cutting",ImageCutHelp);
+                  "Help Viewer - Image Cut",ImageCutHelp);
                 break;
               }
             }
@@ -3060,19 +3060,19 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
               case CopyMode:
               {
                 XTextViewWidget(display,resource_info,windows,False,
-                  "Help Viewer - Image Copying",ImageCopyHelp);
+                  "Help Viewer - Image Copy",ImageCopyHelp);
                 break;
               }
               case CropMode:
               {
                 XTextViewWidget(display,resource_info,windows,False,
-                  "Help Viewer - Image Cropping",ImageCropHelp);
+                  "Help Viewer - Image Crop",ImageCropHelp);
                 break;
               }
               case CutMode:
               {
                 XTextViewWidget(display,resource_info,windows,False,
-                  "Help Viewer - Image Cutting",ImageCutHelp);
+                  "Help Viewer - Image Cut",ImageCutHelp);
                 break;
               }
             }
@@ -3279,19 +3279,19 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
                   case CopyMode:
                   {
                     XTextViewWidget(display,resource_info,windows,False,
-                      "Help Viewer - Image Copying",ImageCopyHelp);
+                      "Help Viewer - Image Copy",ImageCopyHelp);
                     break;
                   }
                   case CropMode:
                   {
                     XTextViewWidget(display,resource_info,windows,False,
-                      "Help Viewer - Image Cropping",ImageCropHelp);
+                      "Help Viewer - Image Crop",ImageCropHelp);
                     break;
                   }
                   case CutMode:
                   {
                     XTextViewWidget(display,resource_info,windows,False,
-                      "Help Viewer - Image Cutting",ImageCutHelp);
+                      "Help Viewer - Image Cut",ImageCutHelp);
                     break;
                   }
                 }
@@ -3414,19 +3414,19 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
                 case CopyMode:
                 {
                   XTextViewWidget(display,resource_info,windows,False,
-                    "Help Viewer - Image Copying",ImageCopyHelp);
+                    "Help Viewer - Image Copy",ImageCopyHelp);
                   break;
                 }
                 case CropMode:
                 {
                   XTextViewWidget(display,resource_info,windows,False,
-                    "Help Viewer - Image Cropping",ImageCropHelp);
+                    "Help Viewer - Image Cropg",ImageCropHelp);
                   break;
                 }
                 case CutMode:
                 {
                   XTextViewWidget(display,resource_info,windows,False,
-                    "Help Viewer - Image Cutting",ImageCutHelp);
+                    "Help Viewer - Image Cutg",ImageCutHelp);
                   break;
                 }
               }
@@ -3931,7 +3931,7 @@ static unsigned int XDrawEditImage(Display *display,
             case DrawWidthCommand:
             {
               static char
-                width[MaxTextExtent] = "3";
+                width[MaxTextExtent] = "0";
 
               static const char
                 *WidthsMenu[]=
@@ -4681,7 +4681,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
     case ImplodeCommand:
     case WaveCommand:
     case OilPaintCommand:
-    case CharcoalDrawingCommand:
+    case CharcoalDrawCommand:
     case AnnotateCommand:
     case AddBorderCommand:
     case AddFrameCommand:
@@ -4757,7 +4757,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       cache_image->geometry=windows->image.crop_geometry;
       if (windows->image.crop_geometry != (char *) NULL)
         {
-          cache_image->geometry=AllocateString("");
+          cache_image->geometry=AllocateString((char *) NULL);
           (void) strcpy(cache_image->geometry,windows->image.crop_geometry);
         }
       if (undo_image == (Image *) NULL)
@@ -4983,7 +4983,7 @@ static CommandType XImageWindowCommand(Display *display,
     case XK_c:
     {
       if (state & Mod1Mask)
-        return(CharcoalDrawingCommand);
+        return(CharcoalDrawCommand);
       if (!(state & ControlMask))
         return(CropCommand);
       return(CopyCommand);
@@ -5781,7 +5781,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case HueCommand:
     {
       static char
-        hue_percent[MaxTextExtent] = "3";
+        hue_percent[MaxTextExtent] = "0";
 
       /*
         Query user for percent hue change.
@@ -5839,7 +5839,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case BrightnessCommand:
     {
       static char
-        brightness_percent[MaxTextExtent] = "3";
+        brightness_percent[MaxTextExtent] = "0";
 
       /*
         Query user for percent brightness change.
@@ -6088,7 +6088,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case ReduceNoiseCommand:
     {
       static char
-        radius[MaxTextExtent] = "3";
+        radius[MaxTextExtent] = "0";
 
       /*
         Query user for noise radius.
@@ -6220,7 +6220,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case EdgeDetectCommand:
     {
       static char
-        radius[MaxTextExtent] = "3";
+        radius[MaxTextExtent] = "0";
 
       /*
         Query user for edge factor.
@@ -6333,7 +6333,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for smoothing threshold.
       */
-      (void) XDialogWidget(display,windows,"Segment","Smoothing threshold:",
+      (void) XDialogWidget(display,windows,"Segment","Smooth threshold:",
         threshold);
       if (*threshold == '\0')
         break;
@@ -6463,7 +6463,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case OilPaintCommand:
     {
       static char
-        radius[MaxTextExtent] = "3";
+        radius[MaxTextExtent] = "0";
 
       /*
         Query user for circular neighborhood radius.
@@ -6487,15 +6487,15 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XConfigureImage(display,resource_info,windows,*image);
       break;
     }
-    case CharcoalDrawingCommand:
+    case CharcoalDrawCommand:
     {
       static char
-        radius[MaxTextExtent] = "3";
+        radius[MaxTextExtent] = "0.0";
 
       /*
         Query user for charcoal radius.
       */
-      (void) XDialogWidget(display,windows,"Charcoal Drawing",
+      (void) XDialogWidget(display,windows,"Charcoal Draw",
         "Enter the charcoal radius:",radius);
       if (*radius == '\0')
         break;
@@ -7976,7 +7976,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       if (file == (FILE *) NULL)
         return((Image *) NULL);
       length=MaxTextExtent;
-      text=AllocateString("");
+      text=AllocateString((char *) NULL);
       for (p=text ; text != (char *) NULL; p++)
       {
         c=fgetc(file);
@@ -8368,7 +8368,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
           case PasteHelpCommand:
           {
             XTextViewWidget(display,resource_info,windows,False,
-              "Help Viewer - Image Compositing",ImagePasteHelp);
+              "Help Viewer - Image Composite",ImagePasteHelp);
             break;
           }
           case PasteDismissCommand:
@@ -8478,7 +8478,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
           {
             XSetFunction(display,windows->image.highlight_context,GXcopy);
             XTextViewWidget(display,resource_info,windows,False,
-              "Help Viewer - Image Compositing",ImagePasteHelp);
+              "Help Viewer - Image Composite",ImagePasteHelp);
             XSetFunction(display,windows->image.highlight_context,GXinvert);
             break;
           }
@@ -8775,8 +8775,8 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
       "Swirl...",
       "Implode...",
       "Wave...",
-      "Oil Painting...",
-      "Charcoal Drawing...",
+      "Oil Paint...",
+      "Charcoal Draw...",
       (char *) NULL
     },
     *MiscellanyMenu[]=
@@ -8867,7 +8867,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
       ImplodeCommand,
       WaveCommand,
       OilPaintCommand,
-      CharcoalDrawingCommand
+      CharcoalDrawCommand
     },
     MiscellanyCommands[]=
     {
@@ -10517,7 +10517,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
   if (windows->image.crop_geometry != (char *) NULL)
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
   else
-    windows->image.crop_geometry=AllocateString("");
+    windows->image.crop_geometry=AllocateString((char *) NULL);
   /*
     Define the crop geometry string from the cropping rectangle.
   */
@@ -11109,8 +11109,8 @@ static unsigned int XTrimImage(Display *display,XResourceInfo *resource_info,
 static Image *XVisualDirectoryImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows)
 {
-#define LoadImageText  "  Loading images...  "
-#define TileImageText  "  Scaling image tiles...  "
+#define LoadImageText  "  Load images...  "
+#define TileImageText  "  Scale image tiles...  "
 #define XClientName  "montage"
 
   char
@@ -11660,8 +11660,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       "Swirl...",
       "Implode...",
       "Wave...",
-      "Oil Painting...",
-      "Charcoal Drawing...",
+      "Oil Paint...",
+      "Charcoal Draw...",
       (char *) NULL
     },
     *ImageEditMenu[]=
@@ -11829,7 +11829,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       ImplodeCommand,
       WaveCommand,
       OilPaintCommand,
-      CharcoalDrawingCommand
+      CharcoalDrawCommand
     },
     ImageEditCommands[]=
     {
@@ -12173,8 +12173,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       /*
         Window name is the base of the filename.
       */
-      windows->image.name=AllocateString("");
-      windows->image.icon_name=AllocateString("");
+      windows->image.name=AllocateString((char *) NULL);
+      windows->image.icon_name=AllocateString((char *) NULL);
       p=display_image->filename+Extent(display_image->filename)-1;
       while ((p > display_image->filename) && !IsBasenameSeparator(*(p-1)))
         p--;
@@ -12355,7 +12355,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->widget.name=AllocateString("");
+  windows->widget.name=AllocateString((char *) NULL);
   *windows->widget.name='\0';
   windows->widget.border_width=0;
   windows->widget.flags|=PPosition;
@@ -12384,7 +12384,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     LiberateMemory((void **) &windows->popup.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->popup);
-  windows->popup.name=AllocateString("");
+  windows->popup.name=AllocateString((char *) NULL);
   *windows->popup.name='\0';
   windows->popup.border_width=0;
   windows->popup.flags|=PPosition;
@@ -12416,7 +12416,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   FormatString(resource_name,"%.1024s.magnify",resource_info->client_name);
   windows->magnify.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->magnify.name=AllocateString("");
+  windows->magnify.name=AllocateString((char *) NULL);
   FormatString(windows->magnify.name,"Magnify %uX",resource_info->magnify);
   windows->magnify.cursor=XMakeCursor(display,windows->image.id,
     map_info->colormap,resource_info->background_color,
@@ -13190,7 +13190,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             else
               if ((key_symbol == XK_F1) || (key_symbol == XK_Help))
                 XTextViewWidget(display,resource_info,windows,False,
-                  "Help Viewer - Image Panning",ImagePanHelp);
+                  "Help Viewer - Image Pan",ImagePanHelp);
               else
                 XTranslateImage(display,windows,*image,key_symbol);
           }

@@ -4212,21 +4212,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (*option == '+')
               {
                 /*
-                  Remove a ICC or IPTC profile from the image.
+                  Remove a ICC, IPTC, or generic profile from the image.
                 */
-                option=argv[++i];
-                if (LocaleCompare("icm",option) == 0)
-                  ProfileImage(*image,ICMProfile,(const char *) NULL);
-                if (LocaleCompare("iptc",option) == 0)
-                  ProfileImage(*image,IPTCProfile,(const char *) NULL);
-                if (LocaleCompare("8bim",option) == 0)
-                  ProfileImage(*image,IPTCProfile,(const char *) NULL);
+                ProfileImage(*image,argv[++i],(char *) NULL);
                 continue;
               }
             /*
-              Add a ICC or IPTC profile to the image.
+              Add a ICC, IPTC, or generic profile to the image.
             */
-            ProfileImage(*image,UndefinedProfile,argv[++i]);
+            ProfileImage(*image,(char *) NULL,argv[++i]);
             continue;
           }
         break;

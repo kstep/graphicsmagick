@@ -398,7 +398,7 @@ static struct
     { "GaussianBlur", { {"geom", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference} } },
     { "Convolve", { {"coefficients", ArrayReference} } },
-    { "Profile", { {"filen", StringReference}, {"profile", ProfileTypes} } },
+    { "Profile", { {"filen", StringReference}, {"profile", StringReference} } },
     { "UnsharpMask", { {"geom", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference}, {"sigma", DoubleReference},
       {"threshold", DoubleReference} } },
@@ -5176,9 +5176,9 @@ Mogrify(ref,...)
           if (!attribute_flag[0])
             argument_list[0].string_reference=(char *) NULL;
           if (!attribute_flag[1])
-            argument_list[1].int_reference=UndefinedProfile;
-          (void) ProfileImage(image,(ProfileType)
-            argument_list[1].int_reference,argument_list[0].string_reference);
+            argument_list[1].string_reference=(char *) NULL;
+          (void) ProfileImage(image,argument_list[1].string_reference,
+            argument_list[0].string_reference);
         }
         case 69:  /* UnsharpMask */
         {

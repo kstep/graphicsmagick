@@ -891,11 +891,14 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ProfileImage removes or adds a ICC or IPTC profile to an image.
+%  Method ProfileImage removes or adds a ICC, IPTC, or generic profile to an
+%  image.  If the profile name is specified it is deleted from the image.  If
+%  a filename is specified, one or more profiles are read and added to the
+%  image.
 %
 %  The format of the ProfileImage method is:
 %
-%      unsigned int ProfileImage(Image *image,const ProfileType type,
+%      unsigned int ProfileImage(Image *image,const char *profile_name,
 %        const char *filename)
 %
 %  A description of each parameter follows:
@@ -905,79 +908,81 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
 %
 %    o image: The address of a structure of type Image.
 %
-%    o type: Specifies the type of profile to add or remove.
+%    o profile_name: Specifies the type of profile to add or remove.
 %
 %    o filename: Specifies the filename of the ICC or IPTC profile.
 %
 %
 */
-MagickExport unsigned int ProfileImage(Image *image,const ProfileType type,
+MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
   const char *filename)
 {
   Image
-    *profile;
+    *profile_image;
 
   ImageInfo
     *image_info;
+
+  register int
+    i,
+    j;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (filename == (const char *) NULL)
     {
       /*
-        Remove a ICC or IPTC profile from the image.
+        Remove a ICC, IPTC, or generic profile from the image.
       */
-      switch (type)
-      {
-        case ICMProfile:
+      if (LocaleCompare("icm",profile_name) == 0)
         {
           if (image->color_profile.length != 0)
             LiberateMemory((void **) &image->color_profile.info);
           image->color_profile.length=0;
           image->color_profile.info=(unsigned char *) NULL;
-          break;
         }
-        case IPTCProfile:
+      if ((LocaleCompare("8bim",profile_name) == 0) ||
+          (LocaleCompare("iptc",profile_name) == 0))
         {
           if (image->iptc_profile.length != 0)
             LiberateMemory((void **) &image->iptc_profile.info);
           image->iptc_profile.length=0;
           image->iptc_profile.info=(unsigned char *) NULL;
-          break;
         }
-        default:
-          break;
+      for (i=0; i < image->generic_profiles; i++)
+      {
+        if (LocaleCompare(image->generic_profile[i].name,profile_name) != 0)
+          continue;
+        if (image->generic_profile[i].name != (char *) NULL)
+          LiberateMemory((void **) &image->generic_profile[i].name);
+        if (image->iptc_profile.length != 0)
+          LiberateMemory((void **) &image->generic_profile[i].info);
+        image->generic_profiles--;
+        for (j=i; j < image->generic_profiles; j++)
+          image->generic_profile[j]=image->generic_profile[j+1];
+        i--;
       }
       return(True);
     }
   /*
-    Add a ICC or IPTC profile to the image.
+    Add a ICC, IPTC, or generic profile to the image.
   */
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strcpy(image_info->filename,filename);
-  profile=ReadImage(image_info,&image->exception);
+  profile_image=ReadImage(image_info,&image->exception);
   DestroyImageInfo(image_info);
-  if (profile == (Image *) NULL)
+  if (profile_image == (Image *) NULL)
     return(False);
-  if (LocaleCompare("iptc",profile->magick) == 0)
+  if (profile_image->iptc_profile.length > 0)
     {
       if (image->iptc_profile.length != 0)
         LiberateMemory((void **) &image->iptc_profile.info);
-      image->iptc_profile.length=profile->iptc_profile.length;
-      image->iptc_profile.info=profile->iptc_profile.info;
-      profile->iptc_profile.length=0;
-      profile->iptc_profile.info=(unsigned char *) NULL;
+      image->iptc_profile.length=profile_image->iptc_profile.length;
+      image->iptc_profile.info=profile_image->iptc_profile.info;
+      profile_image->iptc_profile.length=0;
+      profile_image->iptc_profile.info=(unsigned char *) NULL;
     }
-  if (LocaleCompare("8bim",profile->magick) == 0)
-    {
-      if (image->iptc_profile.length != 0)
-        LiberateMemory((void **) &image->iptc_profile.info);
-      image->iptc_profile.length=profile->iptc_profile.length;
-      image->iptc_profile.info=profile->iptc_profile.info;
-      profile->iptc_profile.length=0;
-      profile->iptc_profile.info=(unsigned char *) NULL;
-    }
-  if (LocaleCompare("icm",profile->magick) == 0)
+  if (profile_image->color_profile.length > 0)
     {
       if (image->color_profile.length != 0)
         {
@@ -1067,12 +1072,45 @@ MagickExport unsigned int ProfileImage(Image *image,const ProfileType type,
 #endif
           LiberateMemory((void **) &image->color_profile.info);
         }
-      image->color_profile.length=profile->color_profile.length;
-      image->color_profile.info=profile->color_profile.info;
-      profile->color_profile.length=0;
-      profile->color_profile.info=(unsigned char *) NULL;
+      image->color_profile.length=profile_image->color_profile.length;
+      image->color_profile.info=profile_image->color_profile.info;
+      profile_image->color_profile.length=0;
+      profile_image->color_profile.info=(unsigned char *) NULL;
     }
-  DestroyImage(profile);
+  if (profile_image->generic_profiles > 0)
+    {
+      unsigned int
+        number_profiles;
+
+      number_profiles=image->generic_profiles+profile_image->generic_profiles;
+      if (image->generic_profile == (ProfileInfo *) NULL)
+        image->generic_profile=(ProfileInfo *)
+          AcquireMemory(number_profiles*sizeof(ProfileInfo));
+      else
+        ReacquireMemory((void **) &image->generic_profile,
+          number_profiles*sizeof(ProfileInfo));
+      if (image->generic_profile == (ProfileInfo *) NULL)
+        {
+          image->generic_profiles=0;
+          DestroyImage(profile_image);
+          ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+            (char *) NULL);
+        }
+      j=image->generic_profiles;
+      for (i=0; i < profile_image->generic_profiles; i++)
+      {
+        image->generic_profile[j].name=profile_image->generic_profile[i].name;
+        image->generic_profile[j].length=
+          profile_image->generic_profile[i].length;
+        image->generic_profile[j].info=profile_image->generic_profile[i].info;
+        profile_image->generic_profile[i].name=(char *) NULL;
+        profile_image->generic_profile[i].length=0;
+        profile_image->generic_profile[i].info=(unsigned char *) NULL;
+        j++;
+      }
+      image->generic_profiles=number_profiles;
+    }
+  DestroyImage(profile_image);
   return(True);
 }
 

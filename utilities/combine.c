@@ -835,7 +835,7 @@ int main(int argc,char **argv)
               if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing blob buffer",option);
               param1=(void *) argv[i];
-              argv[i]=AllocateString("");
+              argv[i]=AllocateString((char *) NULL);
               sendmode=BlobTransmitType;
               break;
             }
@@ -845,7 +845,7 @@ int main(int argc,char **argv)
               if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing blob length",option);
               param2=(void *) argv[i];
-              argv[i]=AllocateString("");
+              argv[i]=AllocateString((char *) NULL);
               sendmode=BlobTransmitType;
               break;
             }
@@ -855,7 +855,7 @@ int main(int argc,char **argv)
               if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing stream method",option);
               param1=(void *) argv[i];
-              argv[i]=AllocateString("");
+              argv[i]=AllocateString((char *) NULL);
               sendmode=StreamTransmitType;
               break;
             }
@@ -865,7 +865,7 @@ int main(int argc,char **argv)
               if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing stream context",option);
               param2=(void *) argv[i];
-              argv[i]=AllocateString("");
+              argv[i]=AllocateString((char *) NULL);
               sendmode=StreamTransmitType;
               break;
             }
@@ -875,7 +875,7 @@ int main(int argc,char **argv)
               if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing image info ptr",option);
               param1=(void *)argv[i];
-              argv[i]=AllocateString("");
+              argv[i]=AllocateString((char *) NULL);
               sendmode=ImageTransmitType;
               break;
             }
@@ -885,7 +885,7 @@ int main(int argc,char **argv)
               if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing image ptr",option);
               param2=(void *)argv[i];
-              argv[i]=AllocateString("");
+              argv[i]=AllocateString((char *) NULL);
               sendmode=ImageTransmitType;
               break;
             }

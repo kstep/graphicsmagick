@@ -841,7 +841,7 @@ extern MagickExport unsigned int
   OpaqueImage(Image *,const PixelPacket,const PixelPacket),
   PlasmaImage(Image *,const SegmentInfo *,int,int),
   PopImagePixels(const Image *,const QuantumType,unsigned char *),
-  ProfileImage(Image *,const ProfileType,const char *),
+  ProfileImage(Image *,const char *,const char *),
   PushImagePixels(const Image *,const QuantumType,const unsigned char *),
   QueryColorDatabase(const char *,PixelPacket *),
   RaiseImage(Image *,const RectangleInfo *,const int),

@@ -1642,7 +1642,7 @@ MagickExport void XDisplayImageInfo(Display *display,
   */
   (void) rewind(file);
   length=MaxTextExtent;
-  text=AllocateString("");
+  text=AllocateString((char *) NULL);
   for (p=text; text != (char *) NULL; p++)
   {
     c=fgetc(file);

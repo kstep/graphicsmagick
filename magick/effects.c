@@ -1917,7 +1917,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(OptionWarning,"Unable to oil paint",
       "image smaller than radius");
-  paint_image=CloneImage(image,image->columns,image->rows,False,exception);
+  paint_image=CloneImage(image,0,0,False,exception);
   if (paint_image == (Image *) NULL)
     return((Image *) NULL);
   paint_image->storage_class=DirectClass;
@@ -1943,7 +1943,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
       break;
     p+=width*image->columns+width;
     q+=width;
-    for (x=width; x < (int) (image->columns-width); x++)
+    for (x=width; x < (int) (image->columns-width-1); x++)
     {
       /*
         Determine most frequent color.
