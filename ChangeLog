@@ -2,6 +2,8 @@
 
 	* VisualMagick\bin : Brought the MGK files back into sync with
 	the rest of the package and added types for meta.c.
+	* VisualMagick\bin\win32\ATL : removed config files in order to
+	prevent very old ATL project from being picked up in the config
 
 2003-05-06  William Radcliffe  <billr@corbis.com>
 
