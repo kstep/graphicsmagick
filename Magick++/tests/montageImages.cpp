@@ -24,6 +24,10 @@ int main( int /*argc*/, char **argv)
 
   int failures=0;
 
+  string srcdir("");
+  if(getenv("srcdir") != (char*)NULL)
+    srcdir = getenv("srcdir") + string("/");
+
   try {
 
     //
@@ -31,7 +35,7 @@ int main( int /*argc*/, char **argv)
     //
 
     list<Image> imageList;
-    readImages( &imageList, "test_image_anim.miff" );
+    readImages( &imageList, srcdir + "test_image_anim.miff" );
 
     vector<Image> montage;
     MontageFramed montageOpts;

@@ -10,6 +10,353 @@ dnl but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 dnl PARTICULAR PURPOSE.
 
+dnl @synopsis AC_CXX_BOOL
+dnl
+dnl If the compiler recognizes bool as a separate built-in type,
+dnl define HAVE_BOOL. Note that a typedef is not a separate
+dnl type since you cannot overload a function such that it accepts either
+dnl the basic type or the typedef.
+dnl
+dnl @version $Id$
+dnl @author Luc Maisonobe
+dnl
+AC_DEFUN([AC_CXX_BOOL],
+[AC_CACHE_CHECK(whether the compiler recognizes bool as a built-in type,
+ac_cv_cxx_bool,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([
+int f(int  x){return 1;}
+int f(char x){return 1;}
+int f(bool x){return 1;}
+],[bool b = true; return f(b);],
+ ac_cv_cxx_bool=yes, ac_cv_cxx_bool=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_bool" = yes; then
+  AC_DEFINE(HAVE_BOOL,,[define if bool is a built-in type])
+fi
+])
+
+
+dnl @synopsis AC_CXX_CONST_CAST
+dnl
+dnl If the compiler supports const_cast<>, define HAVE_CONST_CAST.
+dnl
+dnl @version $Id$
+dnl @author Luc Maisonobe
+dnl
+AC_DEFUN([AC_CXX_CONST_CAST],
+[AC_CACHE_CHECK(whether the compiler supports const_cast<>,
+ac_cv_cxx_const_cast,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE(,[int x = 0;const int& y = x;int& z = const_cast<int&>(y);return z;],
+ ac_cv_cxx_const_cast=yes, ac_cv_cxx_const_cast=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_const_cast" = yes; then
+  AC_DEFINE(HAVE_CONST_CAST,,[define if the compiler supports const_cast<>])
+fi
+])
+
+
+dnl @synopsis AC_CXX_DEFAULT_TEMPLATE_PARAMETERS
+dnl
+dnl If the compiler supports default template parameters,
+dnl define HAVE_DEFAULT_TEMPLATE_PARAMETERS.
+dnl
+dnl @version $Id$
+dnl @author Luc Maisonobe
+dnl
+AC_DEFUN([AC_CXX_DEFAULT_TEMPLATE_PARAMETERS],
+[AC_CACHE_CHECK(whether the compiler supports default template parameters,
+ac_cv_cxx_default_template_parameters,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([
+template<class T = double, int N = 10> class A {public: int f() {return 0;}};
+],[A<float> a; return a.f();],
+ ac_cv_cxx_default_template_parameters=yes, ac_cv_cxx_default_template_parameters=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_default_template_parameters" = yes; then
+  AC_DEFINE(HAVE_DEFAULT_TEMPLATE_PARAMETERS,,
+            [define if the compiler supports default template parameters])
+fi
+])
+
+
+dnl @synopsis AC_CXX_EXCEPTIONS
+dnl
+dnl If the C++ compiler supports exceptions handling (try,
+dnl throw and catch), define HAVE_EXCEPTIONS.
+dnl
+dnl @version $Id$
+dnl @author Luc Maisonobe
+dnl
+AC_DEFUN([AC_CXX_EXCEPTIONS],
+[AC_CACHE_CHECK(whether the compiler supports exceptions,
+ac_cv_cxx_exceptions,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE(,[try { throw  1; } catch (int i) { return i; }],
+ ac_cv_cxx_exceptions=yes, ac_cv_cxx_exceptions=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_exceptions" = yes; then
+  AC_DEFINE(HAVE_EXCEPTIONS,,[define if the compiler supports exceptions])
+fi
+])
+
+dnl @synopsis AC_CXX_EXPLICIT
+dnl
+dnl If the compiler can be asked to prevent using implicitly one argument
+dnl constructors as converting constructors with the explicit
+dnl keyword, define HAVE_EXPLICIT.
+dnl
+dnl @version $Id$
+dnl @author Luc Maisonobe
+dnl
+AC_DEFUN([AC_CXX_EXPLICIT],
+[AC_CACHE_CHECK(whether the compiler supports the explicit keyword,
+ac_cv_cxx_explicit,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([class A{public:explicit A(double){}};],
+[double c = 5.0;A x(c);return 0;],
+ ac_cv_cxx_explicit=yes, ac_cv_cxx_explicit=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_explicit" = yes; then
+  AC_DEFINE(HAVE_EXPLICIT,,[define if the compiler supports the explicit keyword])
+fi
+])
+
+
+dnl @synopsis AC_CXX_HAVE_STD
+dnl
+dnl If the compiler supports ISO C++ standard library (i.e., can include the
+dnl files iostream, map, iomanip and cmath}), define HAVE_STD.
+dnl
+dnl @version $Id$
+dnl @author Luc Maisonobe
+dnl
+AC_DEFUN([AC_CXX_HAVE_STD],
+[AC_CACHE_CHECK(whether the compiler supports ISO C++ standard library,
+ac_cv_cxx_have_std,
+[AC_REQUIRE([AC_CXX_NAMESPACES])
+ AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([#include <iostream>
+#include <map>
+#include <iomanip>
+#include <cmath>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif],[return 0;],
+ ac_cv_cxx_have_std=yes, ac_cv_cxx_have_std=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_have_std" = yes; then
+  AC_DEFINE(HAVE_STD,,[define if the compiler supports ISO C++ standard library])
+fi
+])
+
+
+dnl @synopsis AC_CXX_HAVE_STL
+dnl
+dnl If the compiler supports the Standard Template Library, define HAVE_STL.
+dnl
+dnl @version $Id$
+dnl @author Luc Maisonobe
+dnl
+AC_DEFUN([AC_CXX_HAVE_STL],
+[AC_CACHE_CHECK(whether the compiler supports Standard Template Library,
+ac_cv_cxx_have_stl,
+[AC_REQUIRE([AC_CXX_NAMESPACES])
+ AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([#include <list>
+#include <deque>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif],[list<int> x; x.push_back(5);
+list<int>::iterator iter = x.begin(); if (iter != x.end()) ++iter; return 0;],
+ ac_cv_cxx_have_stl=yes, ac_cv_cxx_have_stl=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_have_stl" = yes; then
+  AC_DEFINE(HAVE_STL,,[define if the compiler supports Standard Template Library])
+fi
+])
+
+dnl @synopsis AC_CXX_MEMBER_TEMPLATES_OUTSIDE_CLASS
+dnl
+dnl If the compiler supports member templates outside the class declaration,
+dnl define HAVE_MEMBER_TEMPLATES_OUTSIDE_CLASS.
+dnl
+dnl @version $Id$
+dnl @author Luc Maisonobe
+dnl
+AC_DEFUN([AC_CXX_MEMBER_TEMPLATES_OUTSIDE_CLASS],
+[AC_CACHE_CHECK(whether the compiler supports member templates outside the class declaration,
+ac_cv_cxx_member_templates_outside_class,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([
+template<class T, int N> class A
+{ public :
+  template<int N2> A<T,N> operator=(const A<T,N2>& z);
+};
+template<class T, int N> template<int N2>
+A<T,N> A<T,N>::operator=(const A<T,N2>& z){ return A<T,N>(); }],[
+A<double,4> x; A<double,7> y; x = y; return 0;],
+ ac_cv_cxx_member_templates_outside_class=yes, ac_cv_cxx_member_templates_outside_class=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_member_templates_outside_class" = yes; then
+  AC_DEFINE(HAVE_MEMBER_TEMPLATES_OUTSIDE_CLASS,,
+            [define if the compiler supports member templates outside the class declaration])
+fi
+])
+
+
+dnl @synopsis AC_CXX_MUTABLE
+dnl
+dnl If the compiler allows modifying class data members flagged with
+dnl the mutable keyword even in const objects (for example in the
+dnl body of a const member function), define HAVE_MUTABLE.
+dnl
+dnl @version $Id$
+dnl @author Luc Maisonobe
+dnl
+AC_DEFUN([AC_CXX_MUTABLE],
+[AC_CACHE_CHECK(whether the compiler supports the mutable keyword,
+ac_cv_cxx_mutable,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([
+class A { mutable int i;
+          public:
+          int f (int n) const { i = n; return i; }
+        };
+],[A a; return a.f (1);],
+ ac_cv_cxx_mutable=yes, ac_cv_cxx_mutable=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_mutable" = yes; then
+  AC_DEFINE(HAVE_MUTABLE,,[define if the compiler supports the mutable keyword])
+fi
+])
+
+
+
+dnl @synopsis AC_CXX_NAMESPACES
+dnl
+dnl If the compiler can prevent names clashes using namespaces, define
+dnl HAVE_NAMESPACES.
+dnl
+dnl @version $Id$
+dnl @author Luc Maisonobe
+dnl
+AC_DEFUN([AC_CXX_NAMESPACES],
+[AC_CACHE_CHECK(whether the compiler implements namespaces,
+ac_cv_cxx_namespaces,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([namespace Outer { namespace Inner { int i = 0; }}],
+                [using namespace Outer::Inner; return i;],
+ ac_cv_cxx_namespaces=yes, ac_cv_cxx_namespaces=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_namespaces" = yes; then
+  AC_DEFINE(HAVE_NAMESPACES,,[define if the compiler implements namespaces])
+fi
+])
+
+
+dnl @synopsis AC_CXX_NEW_FOR_SCOPING
+dnl
+dnl If the compiler accepts the new for scoping rules (the scope of a
+dnl variable declared inside the parentheses is restricted to the
+dnl for-body), define HAVE_NEW_FOR_SCOPING.
+dnl
+dnl @version $Id$
+dnl @author Luc Maisonobe
+dnl
+AC_DEFUN([AC_CXX_NEW_FOR_SCOPING],
+[AC_CACHE_CHECK(whether the compiler accepts the new for scoping rules,
+ac_cv_cxx_new_for_scoping,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE(,[
+  int z = 0;
+  for (int i = 0; i < 10; ++i)
+    z = z + i;
+  for (int i = 0; i < 10; ++i)
+    z = z - i;
+  return z;],
+ ac_cv_cxx_new_for_scoping=yes, ac_cv_cxx_new_for_scoping=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_new_for_scoping" = yes; then
+  AC_DEFINE(HAVE_NEW_FOR_SCOPING,,[define if the compiler accepts the new for scoping rules])
+fi
+])
+
+dnl @synopsis AC_CXX_STATIC_CAST
+dnl
+dnl If the compiler supports static_cast<>, define HAVE_STATIC_CAST.
+dnl
+dnl @version $Id$
+dnl @author Luc Maisonobe
+dnl
+AC_DEFUN([AC_CXX_STATIC_CAST],
+[AC_CACHE_CHECK(whether the compiler supports static_cast<>,
+ac_cv_cxx_static_cast,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([#include <typeinfo>
+class Base { public : Base () {} virtual void f () = 0; };
+class Derived : public Base { public : Derived () {} virtual void f () {} };
+int g (Derived&) { return 0; }],[
+Derived d; Base& b = d; Derived& s = static_cast<Derived&> (b); return g (s);],
+ ac_cv_cxx_static_cast=yes, ac_cv_cxx_static_cast=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_static_cast" = yes; then
+  AC_DEFINE(HAVE_STATIC_CAST,,
+            [define if the compiler supports static_cast<>])
+fi
+])
+
+
+dnl @synopsis AC_CXX_TEMPLATES
+dnl
+dnl If the compiler supports basic templates, define HAVE_TEMPLATES.
+dnl
+dnl @version $Id$
+dnl @author Luc Maisonobe
+dnl
+AC_DEFUN([AC_CXX_TEMPLATES],
+[AC_CACHE_CHECK(whether the compiler supports basic templates,
+ac_cv_cxx_templates,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([template<class T> class A {public:A(){}};
+template<class T> void f(const A<T>& ){}],[
+A<double> d; A<int> i; f(d); f(i); return 0;],
+ ac_cv_cxx_templates=yes, ac_cv_cxx_templates=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_templates" = yes; then
+  AC_DEFINE(HAVE_TEMPLATES,,[define if the compiler supports basic templates])
+fi
+])
+
+
+
 #
 # Check to make sure that the build environment is sane.
 #
@@ -310,16 +657,39 @@ done
 ac_aux_dir="$ac_aux_dir"])])
 
 
-# serial 44 AC_PROG_LIBTOOL
-AC_DEFUN(AC_PROG_LIBTOOL,[AC_REQUIRE([_AC_PROG_LIBTOOL])])
+# serial 45 AC_PROG_LIBTOOL
+AC_DEFUN(AC_PROG_LIBTOOL,[AC_REQUIRE([_AC_PROG_LIBTOOL])
+dnl If AC_PROG_CXX has already been expanded, run AC_LIBTOOL_CXX
+dnl immediately, otherwise, hook it in at the end of AC_PROG_CXX.
+  AC_PROVIDE_IFELSE([AC_PROG_CXX],
+    [AC_LIBTOOL_CXX],
+    [define([AC_PROG_CXX], defn([AC_PROG_CXX])[AC_LIBTOOL_CXX
+])])
+
+dnl Quote A][M_PROG_GCJ so that aclocal doesn't bring it in needlessly.
+dnl If either AC_PROG_GCJ or A][M_PROG_GCJ have already been expanded, run
+dnl AC_LIBTOOL_GCJ immediately, otherwise, hook it in at the end of both.
+  AC_PROVIDE_IFELSE([AC_PROG_GCJ],
+    [AC_LIBTOOL_GCJ],
+    [AC_PROVIDE_IFELSE([A][M_PROG_GCJ],
+        [AC_LIBTOOL_GCJ],
+	[ifdef([AC_PROG_GCJ],
+	       [define([AC_PROG_GCJ], defn([AC_PROG_GCJ])[AC_LIBTOOL_GCJ
+])])
+	 ifdef([A][M_PROG_GCJ],
+	       [define([A][M_PROG_GCJ], defn([A][M_PROG_GCJ])[AC_LIBTOOL_GCJ
+])])])])])
+
 AC_DEFUN(_AC_PROG_LIBTOOL,
 [AC_REQUIRE([AC_LIBTOOL_SETUP])dnl
+AC_BEFORE([$0],[AC_LIBTOOL_CXX])dnl
+AC_BEFORE([$0],[AC_LIBTOOL_GCJ])dnl
 
 # Save cache, so that ltconfig can load it
 AC_CACHE_SAVE
 
 # Actually configure libtool.  ac_aux_dir is where install-sh is found.
-AR="$AR" CC="$CC" CFLAGS="$CFLAGS" CPPFLAGS="$CPPFLAGS" \
+AR="$AR" LTCC="$CC" CC="$CC" CFLAGS="$CFLAGS" CPPFLAGS="$CPPFLAGS" \
 MAGIC="$MAGIC" LD="$LD" LDFLAGS="$LDFLAGS" LIBS="$LIBS" \
 LN_S="$LN_S" NM="$NM" RANLIB="$RANLIB" STRIP="$STRIP" \
 AS="$AS" DLLTOOL="$DLLTOOL" OBJDUMP="$OBJDUMP" \
@@ -333,7 +703,7 @@ $libtool_flags --no-verify --build="$build" $ac_aux_dir/ltmain.sh $host \
 AC_CACHE_LOAD
 
 # This can be used to rebuild libtool when needed
-LIBTOOL_DEPS="$ac_aux_dir/ltconfig $ac_aux_dir/ltmain.sh"
+LIBTOOL_DEPS="$ac_aux_dir/ltconfig $ac_aux_dir/ltmain.sh $ac_aux_dir/ltcf-c.sh"
 
 # Always use our own libtool.
 LIBTOOL='$(SHELL) $(top_builddir)/libtool'
@@ -357,6 +727,7 @@ AC_REQUIRE([AC_PROG_LD_RELOAD_FLAG])dnl
 AC_REQUIRE([AC_PROG_NM])dnl
 AC_REQUIRE([AC_PROG_LN_S])dnl
 AC_REQUIRE([AC_DEPLIBS_CHECK_METHOD])dnl
+# Autoconf 2.13's AC_OBJEXT and AC_EXEEXT macros only works for C compilers!
 AC_REQUIRE([AC_OBJEXT])dnl
 AC_REQUIRE([AC_EXEEXT])dnl
 dnl
@@ -793,12 +1164,14 @@ cygwin* | mingw*)
   lt_cv_file_magic_cmd='${OBJDUMP} -f'
   ;;
 
-freebsd*)
+freebsd* )
   if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then
     case "$host_cpu" in
     i*86 )
+      # Not sure whether the presence of OpenBSD here was a mistake.
+      # Let's accept both of them until this is cleared up.
       changequote(,)dnl
-      lt_cv_deplibs_check_method=='file_magic OpenBSD/i[3-9]86 demand paged shared library'
+      lt_cv_deplibs_check_method='file_magic (FreeBSD|OpenBSD)/i[3-9]86 (compact )?demand paged shared library'
       changequote([, ])dnl
       lt_cv_file_magic_cmd=/usr/bin/file
       lt_cv_file_magic_test_file=`echo /usr/lib/libc.so.*`
@@ -920,7 +1293,8 @@ else
       # Check to see if the nm accepts a BSD-compat flag.
       # Adding the `sed 1q' prevents false positives on HP-UX, which says:
       #   nm: unknown option "B" ignored
-      if ($tmp_nm -B /dev/null 2>&1 | sed '1q'; exit 0) | egrep /dev/null >/dev/null; then
+      # Tru64's nm complains that /dev/null is an invalid object file
+      if ($tmp_nm -B /dev/null 2>&1 | sed '1q'; exit 0) | egrep '(/dev/null||Invalid file or object type)' >/dev/null; then
 	ac_cv_path_NM="$tmp_nm -B"
 	break
       elif ($tmp_nm -p /dev/null 2>&1 | sed '1q'; exit 0) | egrep /dev/null >/dev/null; then
@@ -1008,6 +1382,74 @@ AC_DEFUN(AC_LIBLTDL_INSTALLABLE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   fi
 ])
 
+# If this macro is not defined by Autoconf, define it here.
+ifdef([AC_PROVIDE_IFELSE],
+      [],
+      [define([AC_PROVIDE_IFELSE],
+              [ifdef([AC_PROVIDE_$1],
+                     [$2], [$3])])])
+
+# AC_LIBTOOL_CXX - enable support for C++ libraries
+AC_DEFUN(AC_LIBTOOL_CXX,[AC_REQUIRE([_AC_LIBTOOL_CXX])])
+AC_DEFUN(_AC_LIBTOOL_CXX,
+[AC_REQUIRE([AC_PROG_LIBTOOL])
+AC_REQUIRE([AC_PROG_CXX])
+AC_REQUIRE([AC_PROG_CXXCPP])
+LIBTOOL_DEPS=$LIBTOOL_DEPS" $ac_aux_dir/ltcf-cxx.sh"
+lt_save_CC="$CC"
+lt_save_CFLAGS="$CFLAGS"
+dnl Make sure LTCC is set to the C compiler, i.e. set LTCC before CC
+dnl is set to the C++ compiler.
+AR="$AR" LTCC="$CC" CC="$CXX" CXX="$CXX" CFLAGS="$CXXFLAGS" CPPFLAGS="$CPPFLAGS" \
+MAGIC="$MAGIC" LDFLAGS="$LDFLAGS" LIBS="$LIBS" \
+LN_S="$LN_S" NM="$NM" RANLIB="$RANLIB" STRIP="$STRIP" \
+AS="$AS" DLLTOOL="$DLLTOOL" OBJDUMP="$OBJDUMP" \
+objext="$OBJEXT" exeext="$EXEEXT" reload_flag="$reload_flag" \
+deplibs_check_method="$deplibs_check_method" \
+file_magic_cmd="$file_magic_cmd" \
+${CONFIG_SHELL-/bin/sh} $ac_aux_dir/ltconfig -o libtool $libtool_flags \
+--build="$build" --add-tag=CXX $ac_aux_dir/ltcf-cxx.sh $host \
+|| AC_MSG_ERROR([libtool tag configuration failed])
+CC="$lt_save_CC"
+CFLAGS="$lt_save_CFLAGS"
+
+# Redirect the config.log output again, so that the ltconfig log is not
+# clobbered by the next message.
+exec 5>>./config.log
+])
+
+# AC_LIBTOOL_GCJ - enable support for GCJ libraries
+AC_DEFUN(AC_LIBTOOL_GCJ,[AC_REQUIRE([_AC_LIBTOOL_GCJ])])
+AC_DEFUN(_AC_LIBTOOL_GCJ,
+[AC_REQUIRE([AC_PROG_LIBTOOL])
+AC_PROVIDE_IFELSE([AC_PROG_GCJ],[],
+  [AC_PROVIDE_IFELSE([A][M_PROG_GCJ],[],
+    [ifdef([AC_PROG_GCJ],[AC_REQUIRE([AC_PROG_GCJ])],
+       [ifdef([A][M_PROG_GCJ],[AC_REQUIRE([A][M_PROG_GCJ])],
+         [AC_REQUIRE([A][C_PROG_GCJ_OR_A][M_PROG_GCJ])])])])])
+LIBTOOL_DEPS=$LIBTOOL_DEPS" $ac_aux_dir/ltcf-gcj.sh"
+lt_save_CC="$CC"
+lt_save_CFLAGS="$CFLAGS"
+dnl Make sure LTCC is set to the C compiler, i.e. set LTCC before CC
+dnl is set to the C++ compiler.
+AR="$AR" LTCC="$CC" CC="$GCJ" CFLAGS="$GCJFLAGS" CPPFLAGS="" \
+MAGIC="$MAGIC" LDFLAGS="$LDFLAGS" LIBS="$LIBS" \
+LN_S="$LN_S" NM="$NM" RANLIB="$RANLIB" STRIP="$STRIP" \
+AS="$AS" DLLTOOL="$DLLTOOL" OBJDUMP="$OBJDUMP" \
+objext="$OBJEXT" exeext="$EXEEXT" reload_flag="$reload_flag" \
+deplibs_check_method="$deplibs_check_method" \
+file_magic_cmd="$file_magic_cmd" \
+${CONFIG_SHELL-/bin/sh} $ac_aux_dir/ltconfig -o libtool $libtool_flags \
+--build="$build" --add-tag=GCJ $ac_aux_dir/ltcf-gcj.sh $host \
+|| AC_MSG_ERROR([libtool tag configuration failed])
+CC="$lt_save_CC"
+CFLAGS="$lt_save_CFLAGS"
+
+# Redirect the config.log output again, so that the ltconfig log is not
+# clobbered by the next message.
+exec 5>>./config.log
+])
+
 dnl old names
 AC_DEFUN(AM_PROG_LIBTOOL, [indir([AC_PROG_LIBTOOL])])dnl
 AC_DEFUN(AM_ENABLE_SHARED, [indir([AC_ENABLE_SHARED], $@)])dnl
@@ -1019,6 +1461,29 @@ AC_DEFUN(AM_PROG_NM, [indir([AC_PROG_NM])])dnl
 
 dnl This is just to silence aclocal about the macro not being used
 ifelse([AC_DISABLE_FAST_INSTALL])dnl
+
+ifdef([AM_PROG_GCJ],,[
+# Stolen from automake
+AC_DEFUN([AM_PROG_GCJ],[
+  AC_CHECK_PROGS(GCJ, gcj, gcj)
+  dnl Automake uses ``='' in the test below, it seems wrong
+  if test "x${GCJFLAGS+set}" != xset; then
+    GCJFLAGS="-g -O2"
+  fi
+  AC_SUBST(GCJFLAGS)
+])])
+
+dnl Check for Java compiler.
+dnl For now we only handle the GNU compiler.
+
+AC_DEFUN(AM_PROG_GCJ,[
+AC_CHECK_PROGS(GCJ, gcj, gcj)
+test -z "$GCJ" && AC_MSG_ERROR([no acceptable gcj found in \$PATH])
+if test "x${GCJFLAGS+set}" = xset; then
+   GCJFLAGS="-g -O2"
+fi
+AC_SUBST(GCJFLAGS)
+])
 
 # Define a conditional.
 

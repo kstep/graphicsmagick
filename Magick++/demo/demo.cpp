@@ -24,6 +24,13 @@ int main( int /*argc*/, char ** argv)
   // Initialize ImageMagick install location for Windows
   MagickIncarnate(*argv);
 
+  string srcdir("");
+  if(getenv("srcdir") != (char*)NULL)
+    srcdir = getenv("srcdir") + string("/");
+
+  // Common font to use.
+  string font = string("@") + srcdir + "Generic.ttf";
+
   try {
 
     //
@@ -34,12 +41,12 @@ int main( int /*argc*/, char ** argv)
     null.size( "70x70" );
     null.read( "null:black" );
 
-    Image model( "model.miff" );
+    Image model( srcdir + "model.miff" );
     model.label( "Magick++" );
     model.borderColor( "black" );
     model.backgroundColor( "black" );
 
-    Image smile( "smile.miff" );
+    Image smile( srcdir + "smile.miff" );
     smile.label( "Smile" );
     smile.borderColor( "black" );
 
@@ -63,7 +70,7 @@ int main( int /*argc*/, char ** argv)
     example.label( "Annotate" );
     example.density( "72x72" );
     example.fontPointsize( 18 );
-    example.font( "@Generic.ttf" );
+    example.font( font );
     example.strokeColor( "gold" );
     example.fillColor( "gold" );
     example.annotate( "Magick++", "+0+20", NorthGravity );
@@ -309,7 +316,7 @@ int main( int /*argc*/, char ** argv)
     title.read( "xc:black" );
 
     title.density( "72x72" );
-    title.font( "@Generic.ttf" );
+    title.font( font );
     title.fontPointsize( 80 );
     title.strokeColor( "white" );
     title.fillColor( "white" );
@@ -327,7 +334,7 @@ int main( int /*argc*/, char ** argv)
     list<Image> montage;
 
     Image& imageRef = images.front();
-    imageRef.font( "@Generic.ttf" );
+    imageRef.font( font );
     imageRef.strokeColor( "#600" );
 
     MontageFramed montageOpts;
@@ -335,7 +342,7 @@ int main( int /*argc*/, char ** argv)
     montageOpts.borderWidth( 1 );
     montageOpts.compose( OverCompositeOp );
     montageOpts.fileName( "Magick++" );
-    montageOpts.font( "@Generic.ttf" );
+    montageOpts.font( font );
     montageOpts.geometry( "130x194+10+5>" );
     montageOpts.gravity( CenterGravity );
     montageOpts.pointSize( 18 );
@@ -348,7 +355,7 @@ int main( int /*argc*/, char ** argv)
     Image& final = montage.front();
     final.composite( title, "+90+50", OverCompositeOp );
 
-    final.font( "@Generic.ttf" );
+    final.font( font );
     final.fontPointsize( 18 );
     final.strokeColor( "#600" );
     final.annotate( "Every thing you see on this page was created with the "\

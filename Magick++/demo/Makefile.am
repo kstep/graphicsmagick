@@ -1,15 +1,15 @@
 #
 # Makefile for Magick++ demo programs
 #
-# Copyright Bob Friesenhahn, 1999
+# Copyright Bob Friesenhahn, 1999, 2000
 #
-AUTOMAKE_OPTIONS = 1.2
+AUTOMAKE_OPTIONS = 1.4
 
-INCLUDES = -I../lib
+INCLUDES = -I$(srcdir)/../lib -I../.. -I$(top_srcdir)
 
 noinst_PROGRAMS = button demo detrans flip shapes
 
-LDADD = ../lib/libMagick++.la
+LDADD = ../lib/libMagick++.la ../../magick/libMagick.la
 
 button_SOURCES = button.cpp
 demo_SOURCES   = demo.cpp
@@ -22,8 +22,8 @@ EXTRA_DIST = Generic.ttf model.miff smile.miff smile_anim.miff tile.miff
 CLEANFILES = button.miff demo.miff flip_out.miff shapes.miff
 
 check:
-	./button
-	./demo
-	./flip
-	./shapes
+	env srcdir=$(srcdir) ./button
+	env srcdir=$(srcdir) ./demo
+	env srcdir=$(srcdir) ./flip
+	env srcdir=$(srcdir) ./shapes
 
