@@ -494,7 +494,7 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
           (void) fprintf(file,"\n");
         (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
         (void) fprintf(file,"%-32.32s %-23.23s %-7.7s %-8s %-3s\n",
-                       "Name","Family","Style","Stretch","Weight");
+          "Name","Family","Style","Stretch","Weight");
         (void) fprintf(file,"--------------------------------------------------"
           "------------------------------\n");
       }
@@ -510,7 +510,7 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
     stretch=StretchTypeToString(p->stretch);
     FormatString(weight,"%lu",p->weight);
     (void) fprintf(file,"%-32.32s %-23.23s %-7.7s %-9s %-3s\n",
-                   name,family,style,stretch,weight);
+      name,family,style,stretch,weight);
   }
   (void) fflush(file);
   LiberateSemaphoreInfo(&type_semaphore);

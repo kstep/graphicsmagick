@@ -54,6 +54,16 @@
   Include declarations.
 */
 #include "studio.h"
+#define MaxRGB  65535
+#define ScaleCharToQuantum(value)  ((Quantum) (257*(value)))
+#define ScaleLongToQuantum(value)  ((Quantum) ((value)/65537))
+#define ScaleQuantum(quantum)  ((unsigned long) ((quantum)/257))
+#define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/257))
+#define ScaleQuantumToLong(quantum)  ((unsigned long) (65537*(quantum)))
+#define ScaleQuantumToShort(quantum)  ((unsigned short) (quantum))
+#define ScaleShortToQuantum(value)  ((Quantum) (value))
+#define ScaleToQuantum(value)  ((unsigned long) (257*(value)))
+
 
 /*
   Constant declaration.
@@ -5272,9 +5282,6 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 #define Z  (2*65536)
 
   double
-    tx,
-    ty,
-    tz,
     *x_map,
     *y_map,
     *z_map;
@@ -5285,14 +5292,15 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   long
     y;
 
+	PrimaryInfo
+    primary_info;
+
   register long
+    i,
     x;
 
   register PixelPacket
     *q;
-
-  register long
-    i;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -5353,9 +5361,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       (z_map == (double *) NULL))
     ThrowBinaryException(ResourceLimitError,
       "Unable to transform color space","Memory allocation failed");
-  tx=0.0;
-  ty=0.0;
-  tz=0.0;
+  memset(&primary_info,0,sizeof(primary_info));
   switch (colorspace)
   {
     case GRAYColorspace:
@@ -5391,8 +5397,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      ty=65536/2;
-      tz=65536/2;
+      primary_info.y=65536/2;
+      primary_info.z=65536/2;
       for (i=0; i <= 65535; i++)
       {
         x_map[i+X]=0.33333*i;
@@ -5418,19 +5424,19 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 
         sRGB is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
-      ty=ScaleQuantumToShort(ScaleCharToQuantum(156));
-      tz=ScaleQuantumToShort(ScaleCharToQuantum(137));
+      primary_info.y=ScaleQuantumToShort(ScaleCharToQuantum(156));
+      primary_info.z=ScaleQuantumToShort(ScaleCharToQuantum(137));
       for (i=0; i <= (long) (0.018*65535); i++)
       {
-        x_map[i+X]=0.003962014134275617*65535*i;
-        y_map[i+X]=0.007778268551236748*65535*i;
-        z_map[i+X]=0.001510600706713781*65535*i;
-        x_map[i+Y]=(-0.002426619775463276)*65535*i;
-        y_map[i+Y]=(-0.004763965913702149)*65535*i;
-        z_map[i+Y]=0.007190585689165425*65535*i;
-        x_map[i+Z]=0.006927257754597858*65535*i;
-        y_map[i+Z]=(-0.005800713697502058)*65535*i;
-        z_map[i+Z]=(-0.0011265440570958)*65535*i;
+        x_map[i+X]=0.003962014134275617*i;
+        y_map[i+X]=0.007778268551236748*i;
+        z_map[i+X]=0.001510600706713781*i;
+        x_map[i+Y]=(-0.002426619775463276)*i;
+        y_map[i+Y]=(-0.004763965913702149)*i;
+        z_map[i+Y]=0.007190585689165425*i;
+        x_map[i+Z]=0.006927257754597858*i;
+        y_map[i+Z]=(-0.005800713697502058)*i;
+        z_map[i+Z]=(-0.0011265440570958)*i;
       }
       for ( ; i <= 65535; i++)
       {
@@ -5481,8 +5487,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      ty=65536/2;
-      tz=65536/2;
+      primary_info.y=65536/2;
+      primary_info.z=65536/2;
       for (i=0; i <= 65535; i++)
       {
         x_map[i+X]=0.299*i;
@@ -5508,19 +5514,19 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 
         YCC is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
-      ty=ScaleQuantumToShort(ScaleCharToQuantum(156));
-      tz=ScaleQuantumToShort(ScaleCharToQuantum(137));
+      primary_info.y=ScaleQuantumToShort(ScaleCharToQuantum(156));
+      primary_info.z=ScaleQuantumToShort(ScaleCharToQuantum(137));
       for (i=0; i <= (long) (0.018*65535); i++)
       {
-        x_map[i+X]=0.003962014134275617*65535*i;
-        y_map[i+X]=0.007778268551236748*65535*i;
-        z_map[i+X]=0.001510600706713781*65535*i;
-        x_map[i+Y]=(-0.002426619775463276)*65535*i;
-        y_map[i+Y]=(-0.004763965913702149)*65535*i;
-        z_map[i+Y]=0.007190585689165425*65535*i;
-        x_map[i+Z]=0.006927257754597858*65535*i;
-        y_map[i+Z]=(-0.005800713697502058)*65535*i;
-        z_map[i+Z]=(-0.0011265440570958)*65535*i;
+        x_map[i+X]=0.003962014134275617*i;
+        y_map[i+X]=0.007778268551236748*i;
+        z_map[i+X]=0.001510600706713781*i;
+        x_map[i+Y]=(-0.002426619775463276)*i;
+        y_map[i+Y]=(-0.004763965913702149)*i;
+        z_map[i+Y]=0.007190585689165425*i;
+        x_map[i+Z]=0.006927257754597858*i;
+        y_map[i+Z]=(-0.005800713697502058)*i;
+        z_map[i+Z]=(-0.0011265440570958)*i;
       }
       for ( ; i <= 65535; i++)
       {
@@ -5548,8 +5554,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      ty=65536/2;
-      tz=65536/2;
+      primary_info.y=65536/2;
+      primary_info.z=65536/2;
       for (i=0; i <= 65535; i++)
       {
         x_map[i+X]=0.299*i;
@@ -5576,8 +5582,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         Pb and Pr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      ty=65536/2;
-      tz=65536/2;
+      primary_info.y=65536/2;
+      primary_info.z=65536/2;
       for (i=0; i <= 65535; i++)
       {
         x_map[i+X]=0.299*i;
@@ -5605,8 +5611,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         U and V, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.  Note that U = 0.493*(B-Y), V = 0.877*(R-Y).
       */
-      ty=65536/2;
-      tz=65536/2;
+      primary_info.y=65536/2;
+      primary_info.z=65536/2;
       for (i=0; i <= 65535; i++)
       {
         x_map[i+X]=0.299*i;
@@ -5642,19 +5648,19 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         {
           pixel.red=x_map[ScaleQuantumToShort(q->red)+X]+
             y_map[ScaleQuantumToShort(q->green)+X]+
-            z_map[ScaleQuantumToShort(q->blue)+X]+tx;
-          pixel.red=(Quantum) ((pixel.red < 0) ? 0.0 :
-            (pixel.red > 65535.0) ? 65535.0 : pixel.red+0.5);
+            z_map[ScaleQuantumToShort(q->blue)+X]+primary_info.x;
+          pixel.red=(Quantum) ((pixel.red < 0) ? 0 :
+            (pixel.red > 65535) ? 65535 : pixel.red+0.5);
           pixel.green=x_map[ScaleQuantumToShort(q->red)+Y]+
             y_map[ScaleQuantumToShort(q->green)+Y]+
-            z_map[ScaleQuantumToShort(q->blue)+Y]+ty;
-          pixel.green=(Quantum) ((pixel.green < 0) ? 0.0 :
-            (pixel.green > 65535.0) ? 65535.0 : pixel.green+0.5);
+            z_map[ScaleQuantumToShort(q->blue)+Y]+primary_info.y;
+          pixel.green=(Quantum) ((pixel.green < 0) ? 0 :
+            (pixel.green > 65535) ? 65535 : pixel.green+0.5);
           pixel.blue=x_map[ScaleQuantumToShort(q->red)+Z]+
             y_map[ScaleQuantumToShort(q->green)+Z]+
-            z_map[ScaleQuantumToShort(q->blue)+Z]+tz;
-          pixel.blue=(Quantum) ((pixel.blue < 0) ? 0.0 :
-            (pixel.blue > 65535.0) ? 65535.0 : pixel.blue+0.5);
+            z_map[ScaleQuantumToShort(q->blue)+Z]+primary_info.z;
+          pixel.blue=(Quantum) ((pixel.blue < 0) ? 0 :
+            (pixel.blue > 65535) ? 65535 : pixel.blue+0.5);
           q->red=ScaleShortToQuantum(pixel.red);
           q->green=ScaleShortToQuantum(pixel.green);
           q->blue=ScaleShortToQuantum(pixel.blue);
@@ -5676,19 +5682,19 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       {
         pixel.red=x_map[ScaleQuantumToShort(image->colormap[i].red)+X]+
           y_map[ScaleQuantumToShort(image->colormap[i].green)+X]+
-          z_map[ScaleQuantumToShort(image->colormap[i].blue)+X]+tx;
+          z_map[ScaleQuantumToShort(image->colormap[i].blue)+X]+primary_info.x;
         pixel.red=(Quantum) ((pixel.red < 0) ? 0.0 :
-          (pixel.red > 65535.0) ? 65535.0 : pixel.red+0.5);
+          (pixel.red > 65535) ? 65535 : pixel.red+0.5);
         pixel.green=x_map[ScaleQuantumToShort(image->colormap[i].red)+Y]+
           y_map[ScaleQuantumToShort(image->colormap[i].green)+Y]+
-          z_map[ScaleQuantumToShort(image->colormap[i].blue)+Y]+ty;
+          z_map[ScaleQuantumToShort(image->colormap[i].blue)+Y]+primary_info.y;
         pixel.green=(Quantum) ((pixel.green < 0) ? 0.0 :
-          (pixel.green > 65535.0) ? 65535.0 : pixel.green+0.5);
+          (pixel.green > 65535) ? 65535 : pixel.green+0.5);
         pixel.blue=x_map[ScaleQuantumToShort(image->colormap[i].red)+Z]+
           y_map[ScaleQuantumToShort(image->colormap[i].green)+Z]+
-          z_map[ScaleQuantumToShort(image->colormap[i].blue)+Z]+tz;
+          z_map[ScaleQuantumToShort(image->colormap[i].blue)+Z]+primary_info.z;
         pixel.blue=(Quantum) ((pixel.blue < 0) ? 0.0 :
-          (pixel.blue > 65535.0) ? 65535.0 : pixel.blue+0.5);
+          (pixel.blue > 65535) ? 65535 : pixel.blue+0.5);
         image->colormap[i].red=ScaleShortToQuantum(pixel.red);
         image->colormap[i].green=ScaleShortToQuantum(pixel.green);
         image->colormap[i].blue=ScaleShortToQuantum(pixel.blue);
@@ -7125,34 +7131,37 @@ MagickExport unsigned int TransformRGBImage(Image *image,
             case YCCColorspace:
             {
               pixel.red=(Quantum) ((pixel.red < 0) ? 0 :
-                (pixel.red > 89950.0) ? 89950.0 : pixel.red+0.5);
+                (pixel.red > 89950) ? 89950 : pixel.red+0.5);
               pixel.green=(Quantum) ((pixel.green < 0) ? 0 :
-                (pixel.green > 89950.0) ? 89950.0 : pixel.green+0.5);
+                (pixel.green > 89950) ? 89950 : pixel.green+0.5);
               pixel.blue=(Quantum) ((pixel.blue < 0) ? 0 :
-                (pixel.blue > 89950.0) ? 89950.0 : pixel.blue+0.5);
+                (pixel.blue > 89950) ? 89950 : pixel.blue+0.5);
               if (colorspace == sRGBColorspace)
                 {
                   q->red=(Quantum)
-                    ScaleToQuantum(sRGBMap[(long) pixel.red/257]);
+                    ScaleToQuantum(sRGBMap[(unsigned long) (pixel.red/257)]);
                   q->green=(Quantum)
-                    ScaleToQuantum(sRGBMap[(long) pixel.green/257]);
+                    ScaleToQuantum(sRGBMap[(unsigned long) (pixel.green/257)]);
                   q->blue=(Quantum)
-                    ScaleToQuantum(sRGBMap[(long) pixel.blue/257]);
+                    ScaleToQuantum(sRGBMap[(unsigned long) (pixel.blue/257)]);
                   break;
                 }
-              q->red=(Quantum) ScaleToQuantum(YCCMap[(long) pixel.red/257]);
-              q->green=(Quantum) ScaleToQuantum(YCCMap[(long) pixel.green/257]);
-              q->blue=(Quantum) ScaleToQuantum(YCCMap[(long) pixel.blue/257]);
+              q->red=(Quantum)
+                ScaleToQuantum(YCCMap[(unsigned long) (pixel.red/257)]);
+              q->green=(Quantum)
+                ScaleToQuantum(YCCMap[(unsigned long) (pixel.green/257)]);
+              q->blue=(Quantum)
+                ScaleToQuantum(YCCMap[(unsigned long) (pixel.blue/257)]);
               break;
             }
             default:
             {
-              pixel.red=(Quantum) ((pixel.red < 0) ? 0.0 :
-                (pixel.red > 65535.0) ? 65535.0 : pixel.red+0.5);
-              pixel.green=(Quantum) ((pixel.green < 0) ? 0.0 :
-                (pixel.green > 65535.0) ? 65535.0 : pixel.green+0.5);
-              pixel.blue=(Quantum) ((pixel.blue < 0) ? 0.0 :
-                (pixel.blue > 65535.0) ? 65535.0 : pixel.blue+0.5);
+              pixel.red=(Quantum) ((pixel.red < 0) ? 0 :
+                (pixel.red > 65535) ? 65535 : pixel.red+0.5);
+              pixel.green=(Quantum) ((pixel.green < 0) ? 0 :
+                (pixel.green > 65535) ? 65535 : pixel.green+0.5);
+              pixel.blue=(Quantum) ((pixel.blue < 0) ? 0 :
+                (pixel.blue > 65535) ? 65535 : pixel.blue+0.5);
               q->red=ScaleShortToQuantum(pixel.red);
               q->green=ScaleShortToQuantum(pixel.green);
               q->blue=ScaleShortToQuantum(pixel.blue);
@@ -7190,37 +7199,37 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           case YCCColorspace:
           {
             pixel.red=(Quantum) ((pixel.red < 0) ? 0 :
-              (pixel.red > 89950.0) ? 89950.0 : pixel.red+0.5);
+              (pixel.red > 89950) ? 89950 : pixel.red+0.5);
             pixel.green=(Quantum) ((pixel.green < 0) ? 0 :
-              (pixel.green > 89950.0) ? 89950.0 : pixel.green+0.5);
+              (pixel.green > 89950) ? 89950 : pixel.green+0.5);
             pixel.blue=(Quantum) ((pixel.blue < 0) ? 0 :
-              (pixel.blue > 89950.0) ? 89950.0 : pixel.blue+0.5);
+              (pixel.blue > 89950) ? 89950 : pixel.blue+0.5);
             if (colorspace == sRGBColorspace)
               {
                 image->colormap[i].red=(Quantum)
-                  ScaleToQuantum(sRGBMap[(long) pixel.red/257]);
+                  ScaleToQuantum(sRGBMap[(unsigned long) (pixel.red/257)]);
                 image->colormap[i].green=(Quantum)
-                  ScaleToQuantum(sRGBMap[(long) pixel.green/257]);
+                  ScaleToQuantum(sRGBMap[(unsigned long) (pixel.green/257)]);
                 image->colormap[i].blue=(Quantum)
-                  ScaleToQuantum(sRGBMap[(long) pixel.blue/257]);
+                  ScaleToQuantum(sRGBMap[(unsigned long) (pixel.blue/257)]);
                 break;
               }
             image->colormap[i].red=(Quantum)
-              ScaleToQuantum(YCCMap[(long) pixel.red/257]);
+              ScaleToQuantum(YCCMap[(unsigned long) (pixel.red/257)]);
             image->colormap[i].green=(Quantum)
-              ScaleToQuantum(YCCMap[(long) pixel.green/257]);
+              ScaleToQuantum(YCCMap[(unsigned long) (pixel.green/257)]);
             image->colormap[i].blue=(Quantum)
-              ScaleToQuantum(YCCMap[(long) pixel.blue/257]);
+              ScaleToQuantum(YCCMap[(unsigned long) (pixel.blue/257)]);
             break;
           }
           default:
           {
-            pixel.red=(Quantum) ((pixel.red < 0) ? 0.0 :
-              (pixel.red > 65535.0) ? 65535.0 : pixel.red+0.5);
-            pixel.green=(Quantum) ((pixel.green < 0) ? 0.0 :
-              (pixel.green > 65535.0) ? 65535.0 : pixel.green+0.5);
-            pixel.blue=(Quantum) ((pixel.blue < 0) ? 0.0 :
-              (pixel.blue > 65535.0) ? 65535.0 : pixel.blue+0.5);
+            pixel.red=(Quantum) ((pixel.red < 0) ? 0 :
+              (pixel.red > 65535) ? 65535 : pixel.red+0.5);
+            pixel.green=(Quantum) ((pixel.green < 0) ? 0 :
+              (pixel.green > 65535) ? 65535 : pixel.green+0.5);
+            pixel.blue=(Quantum) ((pixel.blue < 0) ? 0 :
+              (pixel.blue > 65535) ? 65535 : pixel.blue+0.5);
             image->colormap[i].red=ScaleShortToQuantum(pixel.red);
             image->colormap[i].green=ScaleShortToQuantum(pixel.green);
             image->colormap[i].blue=ScaleShortToQuantum(pixel.blue);
