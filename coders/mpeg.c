@@ -145,7 +145,7 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
   register Image
     *p;
 
-  register int
+  register long
     i;
 
   unsigned int
@@ -500,7 +500,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   register Image
     *p;
 
-  register int
+  register long
     i;
 
   unsigned int
