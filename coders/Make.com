@@ -14,7 +14,7 @@ $endif
 $if (f$getsyi("HW_MODEL") .gt. 1023)
 $then     ! Alpha with DEC C
 $  define/nolog sys decc$library_include
-$  compile_options="/nodebug/optimize/prefix=all/warning=(disable=rightshiftovr)"
+$  compile_options="/nodebug/optimize/prefix=all/warning=(disable=rightshiftovr)/name=(as_is,short)"
 $endif
 $
 $
