@@ -585,6 +585,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
       */
       if (LocaleCompare(p->tag,entry->tag) < 0)
         continue;
+      p=p->previous;
       break;
     }
   /*
