@@ -15,8 +15,7 @@ chdir 't' || die 'Cd failed';
 
 testFilter('input.miff', 'Border',
   q/#ccc/,
-  '36bc2833b05ad1e4e2cace027e045d9d',
-  'same');
+  '36bc2833b05ad1e4e2cace027e045d9d');
 
 ++$test;
 testFilter('input.miff', 'Blur',
@@ -27,26 +26,22 @@ testFilter('input.miff', 'Blur',
 ++$test;
 testFilter('input.miff', 'Border',
   q/10/,
-  '60b20d26fbf98095cc994c21d013d42e',
-  'same');
+  '60b20d26fbf98095cc994c21d013d42e');
 
 ++$test;
 testFilter('input.miff', 'Chop',
   q/+10+10/,
-  '92fd46db3668d557b12c30fc810b1fe6',
-  'same');
+  '92fd46db3668d557b12c30fc810b1fe6');
 
 ++$test;
 testFilter('input.miff', 'ColorFloodfill',
   q/geometry=>+10+10,pen=>black/,
-  'a51dc2d20c36c8e4df18afc567db636e',
-  'same');
+  'a51dc2d20c36c8e4df18afc567db636e');
 
 ++$test;
 testFilter('input.miff', 'Colorize',
   q/red/,
-  'd61bcae2abd48b9a8cb789f054c609e8',
-  'same');
+  'd61bcae2abd48b9a8cb789f054c609e8');
 
 ++$test;
 testFilter('input.miff', 'Contrast',
@@ -57,8 +52,7 @@ testFilter('input.miff', 'Contrast',
 ++$test;
 testFilter('input.miff', 'Crop',
   q/10x10/,
-  '92fd46db3668d557b12c30fc810b1fe6',
-  'same');
+  '92fd46db3668d557b12c30fc810b1fe6');
 
 ++$test;
 testFilter('input.miff', 'Despeckle',
@@ -87,14 +81,12 @@ testFilter('input.miff', 'Equalize',
 ++$test;
 testFilter('input.miff', 'Flip',
   q/ /,
-  'cac8dfaf79af279c6b1f37a495e8552f',
-  'same');
+  'cac8dfaf79af279c6b1f37a495e8552f');
 
 ++$test;
 testFilter('input.miff', 'Flop',
   q/ /,
-  '64ce85ac3a977b2ddbeebb12690965c6',
-  'same');
+  '64ce85ac3a977b2ddbeebb12690965c6');
 
 ++$test;
 testFilter('input.miff', 'Frame',
@@ -117,8 +109,7 @@ testFilter('input.miff', 'Implode',
 ++$test;
 testFilter('input.miff', 'Layer',
   q/Red/,
-  'bf8f741ba7273610138b8e0ef5b5f79b',
-  'same');
+  'bf8f741ba7273610138b8e0ef5b5f79b');
 
 ++$test;
 testFilter('input.miff', 'Magnify',
@@ -129,8 +120,7 @@ testFilter('input.miff', 'Magnify',
 ++$test;
 testFilter('input.miff', 'MatteFloodfill',
   q/geometry=>+10+10,matte=>Opaque/,
-  'd7c89e6b946d94187dc34c58d4c5e2f1',
-  'same');
+  'd7c89e6b946d94187dc34c58d4c5e2f1');
 
 ++$test;
 testFilter('input.miff', 'Minify',
@@ -147,8 +137,7 @@ testFilter('input.miff', 'Modulate',
 ++$test;
 testFilter('input.miff', 'Negate',
   q/0/,
-  'e46a038426f4de5a3f051316aee46046',
-  'same');
+  'e46a038426f4de5a3f051316aee46046');
 
 ++$test;
 testFilter('input.miff', 'Normalize',
@@ -165,8 +154,7 @@ testFilter('input.miff', 'OilPaint',
 ++$test;
 testFilter('input.miff', 'Opaque',
   q/#fefefd/,
-  '6444b7dae412d1d441b3ff8278e874d3',
-  'same');
+  '6444b7dae412d1d441b3ff8278e874d3');
 
 ++$test;
 testFilter('input.miff', 'Quantize',
@@ -183,8 +171,7 @@ testFilter('input.miff', 'Raise',
 ++$test;
 testFilter('input.miff', 'Roll',
   q/+10+10/,
-  '6d1f073f2a9c2c7bb156e25c4436e691',
-  'same');
+  '6d1f073f2a9c2c7bb156e25c4436e691');
 
 ++$test;
 testFilter('input.miff', 'Rotate',
@@ -195,8 +182,7 @@ testFilter('input.miff', 'Rotate',
 ++$test;
 testFilter('input.miff', 'Sample',
   q/50%/,
-  '3d541e271af26574314643698621c4bb',
-  'same');
+  '3d541e271af26574314643698621c4bb');
 
 ++$test;
 testFilter('input.miff', 'Scale',
@@ -207,8 +193,7 @@ testFilter('input.miff', 'Scale',
 ++$test;
 testFilter('input.miff', 'Segment',
   q/1/,
-  '02179931bd9f63a64883c210ba52641e',
-  'same');
+  '02179931bd9f63a64883c210ba52641e');
 
 ++$test;
 testFilter('input.miff', 'Shade',
@@ -225,8 +210,7 @@ testFilter('input.miff', 'Shear',
 ++$test;
 testFilter('input.miff', 'Solarize',
   q/60/,
-  '2594080986a34434961fe5841ae1bebc',
-  'same');
+  '2594080986a34434961fe5841ae1bebc');
 
 ++$test;
 testFilter('input.miff', 'Swirl',
@@ -237,14 +221,12 @@ testFilter('input.miff', 'Swirl',
 ++$test;
 testFilter('input.miff', 'Texture',
   q/filename=>granite:/,
-  '7785d161ea66bd39394bb74ef704a0aa',
-  'same');
+  '7785d161ea66bd39394bb74ef704a0aa');
 
 ++$test;
 testFilter('input.miff', 'Transform',
   q/geometry=>50x60/,
-  '7785d161ea66bd39394bb74ef704a0aa',
-  'same');
+  '7785d161ea66bd39394bb74ef704a0aa');
 
 ++$test;
 testFilter('input.miff', 'Threshold',
@@ -255,14 +237,12 @@ testFilter('input.miff', 'Threshold',
 ++$test;
 testFilter('input.miff', 'Trim',
   q/ /,
-  '7785d161ea66bd39394bb74ef704a0aa',
-  'same');
+  '7785d161ea66bd39394bb74ef704a0aa');
 
 ++$test;
 testFilter('input.miff', 'Wave',
   q/25x157/,
-  'f1408829aaa27452850131e22f222ab6',
-  'same');
+  'f1408829aaa27452850131e22f222ab6');
 
 ++$test;
 testFilter('input.miff', 'Zoom',

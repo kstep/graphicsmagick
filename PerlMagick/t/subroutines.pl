@@ -32,7 +32,7 @@ sub testRead {
       print "Image: $infile, signatures do not match.\n";
       print "       Computed: $signature\n";
       print "       Expected: $md5\n";
-      if ( $md5 ne $md5_16 and $md5_16 ne "same") {
+      if ( $md5 ne $md5_16 ) {
          print "      if 16-bit: $md5_16\n";
       }
       #$image->Display();
@@ -70,7 +70,7 @@ sub testReadSized {
       print "Image: $infile, signatures do not match.\n";
       print "       Computed: $signature\n";
       print "       Expected: $md5\n";
-      if ( $md5 ne $md5_16 and $md5_16 ne "same") {
+      if ( $md5 ne $md5_16 ) {
          print "      if 16-bit: $md5_16\n";
       }
       print "not ok $test\n";
@@ -140,7 +140,7 @@ sub testReadWrite {
           print "Image: $infile, signatures do not match.\n";
           print "       Computed: $signature\n";
           print "       Expected: $md5\n";
-          if ( $md5 ne $md5_16 and $md5_16 ne "same") {
+          if ( $md5 ne $md5_16 ) {
              print "      if 16-bit: $md5_16\n";
           }
 	  print "not ok $test\n";
@@ -274,7 +274,7 @@ sub testReadWriteSized {
           print "Image: $infile, signatures do not match.\n";
           print "       Computed: $signature\n";
           print "       Expected: $md5\n";
-          if ( $md5 ne $md5_16 and $md5_16 ne "same") {
+          if ( $md5 ne $md5_16 ) {
              print "   if 16-bit: $md5_16\n";
           }
 	  print "not ok $test\n";
@@ -432,7 +432,7 @@ sub testMontage {
           print "Test $test, signatures do not match.\n";
           print "       Computed: $signature\n";
           print "       Expected: $md5\n";
-          if ( $md5 ne $md5_16 and $md5_16 ne "same") {
+          if ( $md5 ne $md5_16 ) {
              print "   if 16-bit: $md5_16\n";
           }
 	
@@ -498,7 +498,7 @@ sub testFilter {
       print "Test $test, signatures do not match.\n";
       print "       Computed: $signature\n";
       print "       Expected: $md5\n";
-      if ( $md5 ne $md5_16 and $md5_16 ne "same") {
+      if ( $md5 ne $md5_16 ) {
          print "   if 16-bit: $md5_16\n";
       }
 #      $image->Display();
