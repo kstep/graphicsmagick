@@ -1,3 +1,12 @@
+2004-02-08  David N. Welton  <davidw@dedasys.com>
+
+	* INSTALL: Added a bit to the install text.
+
+	* configure.ac: Created some code to grab
+	--with-magick=/path/to/GraphisMagickWand-config script and use
+	that to get information about includes, ldflags and such needed to
+	compile against Image or GraphicsMagick.
+
 2004-01-29  David N. Welton  <davidw@dedasys.com>
 
 	* generic/Makefile.am: Add correct instructions to build

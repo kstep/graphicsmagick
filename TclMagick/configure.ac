@@ -50,24 +50,29 @@ TEA_MAKE_LIB
 TEA_PROG_TCLSH
 TEA_PROG_WISH
 
-AC_MSG_CHECKING(pre-processor flags)
 
-dnl Here we fetch information from GraphicsMagickWand-config, which
-dnl means that it needs to be in the PATH.
+dnl This is required, because we need this information!
+AC_ARG_WITH(magick, [  --with-magick              location of Graphics/ImageMagickWand-config script], with_magick=${withval})
+AC_MSG_CHECKING([for Graphics/ImageMagick configuration script])
 
-GM_CPPFLAGS=`GraphicsMagickWand-config --cppflags`
-AC_SUBST(GM_CPPFLAGS)
-AC_MSG_RESULT("$GM_CPPFLAGS")
-
-AC_MSG_CHECKING(linker flags)
-GM_LDFLAGS=`GraphicsMagickWand-config --ldflags`
-AC_SUBST(GM_LDFLAGS)
-AC_MSG_RESULT("$GM_LDFLAGS")
-
-AC_MSG_CHECKING(libs)
-GM_LIBS=`GraphicsMagickWand-config --libs`
-AC_SUBST(GM_LIBS)
-AC_MSG_RESULT("$GM_LIBS")
+dnl First check to see if --with-magick-config was specified.
+if test x"${with_magick}" != x ; then
+    if test -x "${with_magick}" ; then
+	dnl It actually calls another script, so the PATH needs to be set.
+	export PATH=$PATH:`dirname ${with_magick}`
+	AC_MSG_RESULT("Using ${with_magick}")
+	GM_CPPFLAGS=`${with_magick} --cppflags`
+	AC_SUBST(GM_CPPFLAGS)
+	GM_LDFLAGS=`${with_magick} --ldflags`
+	AC_SUBST(GM_LDFLAGS)
+	GM_LIBS=`${with_magick} --libs`
+	AC_SUBST(GM_LIBS)
+    else
+	AC_MSG_ERROR([${with_magick} is not an executable file])
+    fi
+else
+    AC_MSG_ERROR([You must specify the Graphics/ImageMagick-config script with --with-magick!])
+fi
 
 AC_OUTPUT([
 Makefile
