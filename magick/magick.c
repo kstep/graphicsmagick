@@ -194,7 +194,7 @@ static const MagickInfo
     { "PM", ReadXPMImage, WriteXPMImage, False, True,
       "X Windows system pixmap (color)" },
 #if defined(HasPNG)
-    { "PNG", ReadPNGImage, WritePNGImage, True, True,
+    { "PNG", ReadPNGImage, WritePNGImage, False, True,
       "Portable Network Graphics" },
 #endif
     { "PNM", ReadPNMImage, WritePNMImage, True, True, "Portable anymap" },

@@ -103,7 +103,6 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
     *magick_info;
 
   local_info=CloneImageInfo(image_info);
-  SetImageInfo(local_info,False);
   magick_info=(MagickInfo *) GetMagickInfo(local_info->magick);
   if (magick_info == (MagickInfo *) NULL)
     {
@@ -117,6 +116,7 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
       /*
         Native blob support for this image format.
       */
+      *local_info->filename='\0';
       local_info->blob.data=(char *) blob;
       local_info->blob.offset=0;
       local_info->blob.length=length;
@@ -405,13 +405,14 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
     status;
 
   local_info=CloneImageInfo(image_info);
-  SetImageInfo(local_info,False);
+  (void) strcpy(local_info->magick,image->magick);
   magick_info=(MagickInfo *) GetMagickInfo(local_info->magick);
   if (magick_info->blob_support)
     {
       /*
         Native blob support for this image format.
       */
+      *image->filename='\0';
       local_info->blob.data=(char *) AllocateMemory(MaxTextExtent);
       local_info->blob.offset=0;
       local_info->blob.length=0;

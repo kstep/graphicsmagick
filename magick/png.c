@@ -121,6 +121,13 @@
 %        o  SHOW
 %        o  PAST
 %        o  BASI
+%        o  MNG-level tEXt/zTXt
+%        o  pHYg (if MNG-0.95e is approved)
+%        o  pHYs (MNG-0.95b version or MNG-0.95e version if approved)
+%        o  sBIT (if MNG-0.95c is approved - prototype done 29 June 1999)
+%        o  bKGD (if MNG-0.95c is approved - prototype done 29 June 1999)
+%        o  iCCP (wait for libpng implementation).
+%        o  iTXt (wait for libpng implementation).
 %
 %    Use the scene signature to discover when an identical scene is
 %    being reused, and just point to the original image->pixels instead
@@ -128,11 +135,6 @@
 %    but could be applied generally.
 %
 %    Upgrade to full MNG with Delta-PNG.
-%
-%    Decode and act on the iCCP chunk (wait for libpng implementation).
-%
-%    Decode and act on the iTXt chunk (wait for libpng implementation).
-%
 */
 
 /*
@@ -155,25 +157,20 @@
   #define MNG_GLOBAL_COLORSPACE_SUPPORTED
 
 /*
-  Define this to 9503 or 9504 to get proposed MNG-0.96 capabilities (Draft
-  0.95c or 0.95d), or to 9501 to get MNG-0.95a capabilities (in MNG-0.95a,
-  object does not "exist" until the embedded image is received and the
-  object attributes for object 0 are discarded immediately; in MNG-0.95b
-  proposal, they "exist" when the DEFI chunk is found and the object
-  attributes for object 0 persist until redefined.)
+  Define this to 9503 or 9505 to get proposed MNG-0.96 capabilities (Draft
+  0.95c or 0.95e), or to 9502 to get MNG-0.95b capabilities.
 
   As of June 26, 1999, version 0.95b is the latest approved version.
-  Versions 0.95c and 0.95d are being discussed and will probably be voted
+  Versions 0.95c and 0.95e are being discussed and will probably be voted
   on by the PNG Development Group in July.
 
-  MNG_LEVEL 9501: MNG-0.95a
   MNG_LEVEL 9502: MNG-0.95b
   MNG_LEVEL 9503: MNG-0.95c
-  MNG_LEVEL 9504: MNG-0.95d
+  MNG_LEVEL 9505: MNG-0.95e
 
 */
 
-#define MNG_LEVEL 9502
+#define MNG_LEVEL 9503
 
 /*
   If this is not defined, spec is interpreted strictly.  If it is
@@ -232,7 +229,9 @@ png_byte FARDATA mng_hIST[5] = {104,  73,  83,  84, '\0'};
 png_byte FARDATA mng_iCCP[5] = {105,  67,  67,  80, '\0'};
 png_byte FARDATA mng_iTXt[5] = {105,  84,  88, 116, '\0'};
 png_byte FARDATA mng_oFFs[5] = {111,  70,  70, 115, '\0'};
+png_byte FARDATA mng_pHYg[5] = {112,  72,  89, 103, '\0'};
 png_byte FARDATA mng_pHYs[5] = {112,  72,  89, 115, '\0'};
+png_byte FARDATA mng_sBIT[5] = {115,  66,  73,  84, '\0'};
 png_byte FARDATA mng_sPLT[5] = {115,  80,  76,  84, '\0'};
 png_byte FARDATA mng_sRGB[5] = {115,  82,  71,  66, '\0'};
 png_byte FARDATA mng_tEXt[5] = {116,  69,  88, 116, '\0'};
@@ -354,6 +353,9 @@ typedef struct _Mng
     dhdr_warning,
     jhdr_warning,
     past_warning,
+    phyg_warning,
+    phys_warning,
+    sbit_warning,
     show_warning,
     verbose;
 
@@ -402,6 +404,13 @@ png_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
     }
 }
 
+/* We use mng_get_data() instead of png_get_data() if we have a libpng
+ * older than libpng-1.0.3a, which was the first to allow the empty
+ * PLTE, or a newer libpng in which PNG_READ_EMPTY_PLTE_SUPPORTED was
+ * ifdef'ed out.  Earlier versions would crash if the empty bKGD chunk was
+ * encountered, so we have to look ahead for empty bKGD chunks and remove
+ * them from the datastream received by libpng.
+ */
 static void
 mng_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
 {
@@ -414,10 +423,6 @@ mng_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
   png_size_t check;
   int i = 0;
 
-
-  /* fread() returns 0 on error, so it is OK to store this in a png_size_t
-   * instead of an int, which is what fread() actually returns.
-   */
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
   while (m->bytes_in_read_buffer && length)
     {
@@ -429,6 +434,9 @@ mng_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
 #endif
   if (length)
     {
+      /* fread() returns 0 on error, so it is OK to store this in a png_size_t
+       * instead of an int, which is what fread() actually returns.
+      */
       check = (png_size_t)ReadBlob(image,(unsigned long) length,(char *)data);
       if (check != length)
         png_error(png_ptr,"Read Error");
@@ -796,6 +804,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     have_global_bkgd,
     have_global_chrm,
     have_global_gama,
+    have_global_phys,
+    have_global_sbit,
     have_global_srgb,
     global_plte_length,
     global_trns_length;
@@ -803,6 +813,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   ColorPacket
     mng_background_color,
     mng_global_bkgd;
+
+  png_color_8p
+    mng_global_sbit;
 
   unsigned int
     framing_mode=1,
@@ -881,6 +894,16 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       have_mng_structure=True;
       m->verbose = image_info->verbose;
       m->image = image;
+      m->global_plte = (png_colorp) NULL;
+      m->basi_warning=False;
+      m->clon_warning=False;
+      m->dhdr_warning=False;
+      m->jhdr_warning=False;
+      m->past_warning=False;
+      m->phyg_warning=False;
+      m->phys_warning=False;
+      m->sbit_warning=False;
+      m->show_warning=False;
 #ifdef MNG_ALWAYS_VERBOSE
       m->verbose = True;
 #endif
@@ -900,10 +923,14 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           m->ob[i]=(MngBuffer *)NULL;
 #endif
         }
-      if (mng_level > 9501)
-         m->exists[0]=True;
+      m->exists[0]=True;
       for (i=0; i<256; i++)
-        m->loop_active[i]=0;
+        {
+          m->loop_active[i]=0;
+          m->loop_count[i]=0;
+          m->loop_iteration[i]=0;
+          m->loop_jump[i]=0;
+        }
     }
   mng_type=0;
   default_frame_delay=0;
@@ -919,11 +946,15 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   have_global_chrm=False;
   have_global_bkgd=False;
   have_global_gama=False;
+  have_global_phys=False;
+  have_global_sbit=False;
   have_global_srgb=False;
   global_plte_length=0;
   global_trns_length=0;
   mng_background_color=image->background_color;
+#ifndef MNG_ALWAYS_VERBOSE
   if(image_info->verbose)
+#endif
      printf("background color is %3d %3d %3d\n",mng_background_color.red,
          mng_background_color.green, mng_background_color.blue);
   do
@@ -1160,16 +1191,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   FreeMemory((char *) chunk);
                   continue;
                 }
-            if (mng_level > 9500)
-              m->exists[object_id] = True;
-            else
-              m->exists[object_id] = False;  /* It doesn't exist until IHDR */
+            m->exists[object_id] = True;
 
             if (length>2)
               m->visible[object_id]=!p[2];
-            else
-              if (mng_level < 9502)
-                m->visible[object_id]=True;
             /*
               Extract object offset info.
             */
@@ -1183,20 +1208,11 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 m->x_off[object_id]=pair.a;
                 m->y_off[object_id]=pair.b;
               }
-            else
-               if (mng_level < 9502)
-                 {
-                   m->x_off[object_id]=0;
-                   m->y_off[object_id]=0;
-                 }
             /*
               Extract object clipping info.
             */
             if (length>27)
               m->object_clip[object_id]=mng_read_box(frame,0,&p[12]);
-            else
-              if (mng_level < 9502)
-                m->object_clip[object_id]=frame;
 
             if (m->verbose)
               {
@@ -1705,6 +1721,52 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             m->show_warning++;
           }
 
+        if (!png_memcmp(type, mng_sBIT, 4))
+          {
+            if(length < 4)
+              {
+                 have_global_sbit = False;
+              }
+            else
+              {
+                if(mng_level > 9502)
+                  {
+                     mng_global_sbit->gray  = p[0];
+                     mng_global_sbit->red   = p[0];
+                     mng_global_sbit->green = p[1];
+                     mng_global_sbit->blue  = p[2];
+                     mng_global_sbit->alpha = p[3];
+                     have_global_sbit = True;
+                  }
+                else
+                  {
+                    if(!m->sbit_warning)
+                    MagickWarning(DelegateWarning,
+                       "Global sBIT is not implemented yet", image->filename);
+                    m->sbit_warning++;
+                  }
+              }
+          }
+
+        if (!png_memcmp(type, mng_pHYs, 4))
+          {
+            if(!m->phys_warning)
+               MagickWarning(DelegateWarning,
+                 "Global pHYs is not implemented yet", image->filename);
+            m->phys_warning++;
+          }
+
+        if (!png_memcmp(type, mng_pHYg, 4))
+          {
+            if(mng_level > 9504)
+              {
+                if(!m->phyg_warning)
+                  MagickWarning(DelegateWarning,"pHYg is not implemented yet",
+                    image->filename);
+                m->phyg_warning++;
+              }
+          }
+
         if (!png_memcmp(type, mng_BASI, 4))
           {
 #ifdef MNG_BASI_SUPPORTED
@@ -1772,13 +1834,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 
         if (!m->visible[object_id])
           {
-            /* DEFI "noshow" flag only persists for one embedded object
-               when object_id is zero, in MNG-0.95.  For other object_id's,
-               it remains in effect until reset by another DEFI chunk. */
-
-            if (object_id == 0 && mng_level < 9502)
-              m->visible[object_id]=True;
-
             if (!image_info->decode_all_MNG_objects)
               {
                 if (m->verbose)
@@ -1902,8 +1957,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 SetImage(image);
               }
             first_mng_object=0;
-            if (mng_level < 9502)
-              m->exists[0]=False;
           }
 
         /* Read the PNG image */
@@ -2199,6 +2252,11 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               (unsigned short)XDownScale(ping_info->trans_values.gray);
           }
       }
+#if defined(PNG_READ_sBIT_SUPPORTED)
+    if (have_global_sbit)
+      if ((!ping_info->valid & PNG_INFO_sBIT))
+        png_set_sBIT(ping, ping_info, mng_global_sbit);
+#endif
     png_read_update_info(ping,ping_info);
     /*
       Initialize image structure.
@@ -2916,6 +2974,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 %    PNG file and copy them  into output PNG files according to the PNG
 %    copying rules.
 %
+%    Write the iCCP chunk at MNG level when (image->color_profile.length > 0)
+%    Write the iCCP chunk at PNG level if appropriate, when libpng has
+%    implemented iCCP.
+%
 %    Improve selection of color type (use indexed-colour or indexed-colour
 %    with tRNS when 256 or fewer unique RGBA values are present).
 %
@@ -2932,6 +2994,12 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 %    gAMA/cHRM if sRGB is found; check for identical gAMA/cHRM and
 %    replace with global gAMA/cHRM (or with sRGB if appropriate; replace
 %    local gAMA/cHRM with local sRGB if appropriate).
+%
+%    If MNG-0.95c is approved, check for identical sBIT and bKGD chunks
+%    and write global ones.
+%
+%    If MNG-0.95e is approved, check for identical pHYs chunks
+%    and write global ones.
 %
 %    Provide option to skip writing the signature tEXt chunks.
 %
