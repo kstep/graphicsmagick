@@ -15,7 +15,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                     Bob Friesenhahn & Francis J. Franklin                   %
-%                            Dec 2000 - May 2001                              %
+%                            Dec 2000 - Oct 2001                              %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
@@ -59,7 +59,6 @@
 #include "define.h"
 
 #if defined(HasWMF)
-#include <wmfapi.h>
 
 /* defines extracted from libwmf's "wmfdefs.h" */
 #ifndef PI
@@ -96,21 +95,24 @@
 typedef struct _wmf_magick_t wmf_magick_t;
 
 struct _wmf_magick_t
-{       /* other */
+{
+  /* other */
 
-        wmfD_Rect bbox;
+  wmfD_Rect bbox;
 
-        wmfStream* out;   /* Output stream */
+  wmfStream* out;   /* Output stream */
 
-        unsigned int width;
-        unsigned int height;
+  unsigned int width;
+  unsigned int height;
 
-        struct _wmf_magick_image /* Magick device layer writes raster images as PNG */
-        {       void* context;
-                char* (*name) (void*); /* takes context; returns file name */
-        } image;
+  /* Magick device layer writes raster images as PNG */
+  struct _wmf_magick_image
+  {
+    void* context;
+    char* (*name) (void*); /* takes context; returns file name */
+  } image;
 
-        unsigned long flags;
+  unsigned long flags;
 };
 
 #define WMF_MAGICK_GetData(Z) ((wmf_magick_t*)((Z)->device_data))
@@ -135,7 +137,8 @@ static float magick_height(wmfAPI *API, float wmf_height);
 static float magick_width(wmfAPI *API, float wmf_width);
 static magickPoint magick_translate(wmfAPI *API, wmfD_Coord d_pt);
 static void magick_brush(wmfAPI *API, wmfDC *dc);
-static void magick_draw_arc(wmfAPI *API, wmfDrawArc_t *draw_arc, magick_arc_t finish);
+static void magick_draw_arc(wmfAPI *API, wmfDrawArc_t *draw_arc,
+                            magick_arc_t finish);
 static void magick_pen(wmfAPI *API, wmfDC *dc);
 static void wmf_magick_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw);
 static void wmf_magick_bmp_free(wmfAPI *API, wmfBMP *bmp);
@@ -151,15 +154,18 @@ static void wmf_magick_draw_line(wmfAPI *API, wmfDrawLine_t *draw_line);
 static void wmf_magick_draw_pie(wmfAPI *API, wmfDrawArc_t *draw_arc);
 static void wmf_magick_draw_pixel(wmfAPI *API, wmfDrawPixel_t *draw_pixel);
 static void wmf_magick_draw_polygon(wmfAPI *API, wmfPolyLine_t *poly_line);
-static void wmf_magick_draw_rectangle(wmfAPI *API, wmfDrawRectangle_t *draw_rect);
+static void wmf_magick_draw_rectangle(wmfAPI *API,
+                                      wmfDrawRectangle_t *draw_rect);
 static void wmf_magick_draw_text(wmfAPI *API, wmfDrawText_t *draw_text);
 static void wmf_magick_flood_exterior(wmfAPI *API, wmfFlood_t *flood);
 static void wmf_magick_flood_interior(wmfAPI *API, wmfFlood_t *flood);
-void wmf_magick_function(wmfAPI *API);
+static void wmf_magick_function(wmfAPI *API);
 static void wmf_magick_poly_line(wmfAPI *API, wmfPolyLine_t *poly_line);
 static void wmf_magick_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect);
-static void wmf_magick_region_frame(wmfAPI *API, wmfPolyRectangle_t *poly_rect);
-static void wmf_magick_region_paint(wmfAPI *API, wmfPolyRectangle_t *poly_rect);
+static void wmf_magick_region_frame(wmfAPI *API,
+                                    wmfPolyRectangle_t *poly_rect);
+static void wmf_magick_region_paint(wmfAPI *API,
+                                    wmfPolyRectangle_t *poly_rect);
 static void wmf_magick_rop_draw(wmfAPI *API, wmfROP_Draw_t *rop_draw);
 static void wmf_magick_udata_copy(wmfAPI *API, wmfUserData_t *userdata);
 static void wmf_magick_udata_free(wmfAPI *API, wmfUserData_t *userdata);
@@ -182,14 +188,18 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 {
   wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
-  float width;
-  float height;
+  float
+    height,
+    width;
 
-  char* name = 0;
+  char
+    *name = 0;
 
-  magickPoint pt;
+  magickPoint
+    pt;
 
-  wmfStream* out = ddata->out;
+  wmfStream
+    *out = ddata->out;
 
   WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]bmp_draw");
 
@@ -210,7 +220,8 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
     return;
     }
 
-  /* Okay, if we've got this far then "name" is the filename of an png (cropped) image */
+  /* Okay, if we've got this far then "name" is the filename of an png
+     (cropped) image */
 
   pt = magick_translate (API,bmp_draw->pt);
 
@@ -223,7 +234,8 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
   width  = ABS (width);
   height = ABS (height);
 
-  wmf_stream_printf (API,out,"image Copy %f,%f %f,%f %s\n",pt.x,pt.y,width,height,name);
+  wmf_stream_printf (API,out,"image Copy %f,%f %f,%f %s\n",
+                     pt.x,pt.y,width,height,name);
 }
 
 static void wmf_magick_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
@@ -275,21 +287,27 @@ static void wmf_magick_device_begin (wmfAPI* API)
 
   if (out == 0) return;
 
-  if ((out->reset (out->context)) && ((API->flags & WMF_OPT_IGNORE_NONFATAL) == 0))
-    {	WMF_ERROR (API,"unable to reset output stream!");
-    API->err = wmf_E_DeviceError;
-    return;
+  if ((out->reset (out->context)) &&
+      ((API->flags & WMF_OPT_IGNORE_NONFATAL) == 0))
+    {
+      WMF_ERROR (API,"unable to reset output stream!");
+      API->err = wmf_E_DeviceError;
+      return;
     }
 
-  if ((ddata->bbox.BR.x <= ddata->bbox.TL.x) || (ddata->bbox.BR.y <= ddata->bbox.TL.y))
-    {	WMF_ERROR (API,"~~~~~~~~wmf_[magick_]device_begin: bounding box has null or negative size!");
-    API->err = wmf_E_Glitch;
-    return;
+  if ((ddata->bbox.BR.x <= ddata->bbox.TL.x) ||
+      (ddata->bbox.BR.y <= ddata->bbox.TL.y))
+    {
+      WMF_ERROR (API,"~~~~~~~~wmf_[magick_]device_begin: "
+                 "bounding box has null or negative size!");
+      API->err = wmf_E_Glitch;
+      return;
     }
 
   if ((ddata->width == 0) || (ddata->height == 0))
-    {	ddata->width  = (unsigned int) ceil (ddata->bbox.BR.x - ddata->bbox.TL.x);
-    ddata->height = (unsigned int) ceil (ddata->bbox.BR.y - ddata->bbox.TL.y);
+    {
+      ddata->width = (unsigned int) ceil (ddata->bbox.BR.x - ddata->bbox.TL.x);
+      ddata->height= (unsigned int) ceil (ddata->bbox.BR.y - ddata->bbox.TL.y);
     }
 
   wmf_stream_printf (API,out,"viewbox 0 0 %u %u\n",ddata->width,ddata->height);
@@ -371,10 +389,10 @@ static void wmf_magick_flood_interior (wmfAPI* API,wmfFlood_t* flood)
 
   if (out == 0) return;
 
+  wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
+                     (int)rgb->r,(int)rgb->g,(int)rgb->b);
+
   pt = magick_translate (API,flood->pt);
-
-  wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",(int)rgb->r,(int)rgb->g,(int)rgb->b);
-
   wmf_stream_printf (API,out,"color %f,%f filltoborder\n",pt.x,pt.y);
 }
 
@@ -394,14 +412,13 @@ static void wmf_magick_flood_exterior (wmfAPI* API,wmfFlood_t* flood)
 
   pt = magick_translate (API,flood->pt);
 
-  wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",(int)rgb->r,(int)rgb->g,(int)rgb->b);
+  wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
+                     (int)rgb->r,(int)rgb->g,(int)rgb->b);
 
   if (flood->type == FLOODFILLSURFACE)
-    {	wmf_stream_printf (API,out,"color %f,%f floodfill\n",pt.x,pt.y);
-    }
+    wmf_stream_printf (API,out,"color %f,%f floodfill\n",pt.x,pt.y);
   else
-    {	wmf_stream_printf (API,out,"color %f,%f filltoborder\n",pt.x,pt.y);
-    }
+    wmf_stream_printf (API,out,"color %f,%f filltoborder\n",pt.x,pt.y);
 }
 
 static void wmf_magick_draw_pixel (wmfAPI* API,wmfDrawPixel_t* draw_pixel)
@@ -430,12 +447,15 @@ static void wmf_magick_draw_pixel (wmfAPI* API,wmfDrawPixel_t* draw_pixel)
 
   wmf_stream_printf (API,out,"fill-opacity 1\n");
 
-  wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",(int)rgb->r,(int)rgb->g,(int)rgb->b);
+  wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
+                     (int)rgb->r,(int)rgb->g,(int)rgb->b);
 
-  wmf_stream_printf (API,out,"rectangle %f,%f %f,%f\n",pt.x,pt.y,pt.x+width,pt.y+height);
+  wmf_stream_printf (API,out,"rectangle %f,%f %f,%f\n",
+                     pt.x,pt.y,pt.x+width,pt.y+height);
 }
 
-static void wmf_magick_draw_pie (wmfAPI* API,wmfDrawArc_t* draw_arc)
+static void wmf_magick_draw_pie (wmfAPI* API,
+                                 wmfDrawArc_t* draw_arc)
 {
   /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
@@ -444,7 +464,8 @@ static void wmf_magick_draw_pie (wmfAPI* API,wmfDrawArc_t* draw_arc)
   magick_draw_arc (API,draw_arc,magick_arc_pie);
 }
 
-static void wmf_magick_draw_chord (wmfAPI* API,wmfDrawArc_t* draw_arc)
+static void wmf_magick_draw_chord (wmfAPI* API,
+                                   wmfDrawArc_t* draw_arc)
 {
   /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
@@ -453,7 +474,8 @@ static void wmf_magick_draw_chord (wmfAPI* API,wmfDrawArc_t* draw_arc)
   magick_draw_arc (API,draw_arc,magick_arc_chord);
 }
 
-static void wmf_magick_draw_arc (wmfAPI* API,wmfDrawArc_t* draw_arc)
+static void wmf_magick_draw_arc (wmfAPI* API,
+                                 wmfDrawArc_t* draw_arc)
 {
   /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
@@ -462,7 +484,8 @@ static void wmf_magick_draw_arc (wmfAPI* API,wmfDrawArc_t* draw_arc)
   magick_draw_arc (API,draw_arc,magick_arc_open);
 }
 
-static void wmf_magick_draw_ellipse (wmfAPI* API,wmfDrawArc_t* draw_arc)
+static void wmf_magick_draw_ellipse (wmfAPI* API,
+                                     wmfDrawArc_t* draw_arc)
 {
   /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
@@ -471,7 +494,9 @@ static void wmf_magick_draw_ellipse (wmfAPI* API,wmfDrawArc_t* draw_arc)
   magick_draw_arc (API,draw_arc,magick_arc_ellipse);
 }
 
-static void magick_draw_arc (wmfAPI* API,wmfDrawArc_t* draw_arc,magick_arc_t finish)
+static void magick_draw_arc (wmfAPI* API,
+                             wmfDrawArc_t* draw_arc,
+                             magick_arc_t finish)
 {
   wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
@@ -498,68 +523,74 @@ static void magick_draw_arc (wmfAPI* API,wmfDrawArc_t* draw_arc,magick_arc_t fin
   if (out == 0) return;
 
   if (TO_FILL (draw_arc) || TO_DRAW (draw_arc))
-    {	centre.x = (draw_arc->TL.x + draw_arc->BR.x) / 2;
-    centre.y = (draw_arc->TL.y + draw_arc->BR.y) / 2;
+    {
+      centre.x = (draw_arc->TL.x + draw_arc->BR.x) / 2;
+      centre.y = (draw_arc->TL.y + draw_arc->BR.y) / 2;
 
-    if (finish != magick_arc_ellipse)
-      {	draw_arc->start.x += centre.x;
-      draw_arc->start.y += centre.y;
+      if (finish != magick_arc_ellipse)
+        {
+          draw_arc->start.x += centre.x;
+          draw_arc->start.y += centre.y;
 
-      draw_arc->end.x += centre.x;
-      draw_arc->end.y += centre.y;
-      }
+          draw_arc->end.x += centre.x;
+          draw_arc->end.y += centre.y;
+        }
 
-    TL = magick_translate (API,draw_arc->TL);
-    BR = magick_translate (API,draw_arc->BR);
+      TL = magick_translate (API,draw_arc->TL);
+      BR = magick_translate (API,draw_arc->BR);
 
-    O = magick_translate (API,centre);
+      O = magick_translate (API,centre);
 
-    if (finish != magick_arc_ellipse)
-      {	start = magick_translate (API,draw_arc->start);
-      end   = magick_translate (API,draw_arc->end  );
-      }
+      if (finish != magick_arc_ellipse)
+        {
+          start = magick_translate (API,draw_arc->start);
+          end   = magick_translate (API,draw_arc->end  );
+        }
 
-    Rx = (BR.x - TL.x) / 2;
-    Ry = (BR.y - TL.y) / 2;
+      Rx = (BR.x - TL.x) / 2;
+      Ry = (BR.y - TL.y) / 2;
 
-    if (finish != magick_arc_ellipse)
-      {	start.x -= O.x;
-      start.y -= O.y;
+      if (finish != magick_arc_ellipse)
+        {
+          start.x -= O.x;
+          start.y -= O.y;
 
-      end.x -= O.x;
-      end.y -= O.y;
+          end.x -= O.x;
+          end.y -= O.y;
 
-      phi_s = (float) (atan2 ((double) start.y,(double) start.x) * 180 / PI);
-      phi_e = (float) (atan2 ((double)   end.y,(double)   end.x) * 180 / PI);
+          phi_s = (float)(atan2((double)start.y,(double) start.x)*180/PI);
+          phi_e = (float)(atan2((double)end.y,(double)end.x)*180/PI);
 
-      if (phi_e <= phi_s) phi_e += 360;
-      }
+          if (phi_e <= phi_s) phi_e += 360;
+        }
 
-    if (finish == magick_arc_open)
-      {	wmf_stream_printf (API,out,"fill none\n");
-      }
-    else
-      {	magick_brush (API,draw_arc->dc);
-      }
-    magick_pen (API,draw_arc->dc);
+      if (finish == magick_arc_open)
+	wmf_stream_printf (API,out,"fill none\n");
+      else
+	magick_brush (API,draw_arc->dc);
+      magick_pen (API,draw_arc->dc);
 
-    if (finish == magick_arc_ellipse)
-      {	wmf_stream_printf (API,out,"ellipse %f,%f %f,%f 0,360\n",O.x,O.y,Rx,Ry);
-      }
-    else if (finish == magick_arc_pie)
-      {	wmf_stream_printf (API,out,"ellipse %f,%f %f,%f %f,%f\n",O.x,O.y,Rx,Ry,phi_s,phi_e);
-      }
-    else if (finish == magick_arc_chord)
-      {	wmf_stream_printf (API,out,"arc %f,%f %f,%f %f,%f\n",O.x,O.y,Rx,Ry,phi_s,phi_e);
-      wmf_stream_printf (API,out,"line %f,%f %f,%f\n",start.x,start.y,end.x,end.y);
-      }
-    else /* if (finish == magick_arc_open) */
-      {	wmf_stream_printf (API,out,"arc %f,%f %f,%f %f,%f\n",O.x,O.y,Rx,Ry,phi_s,phi_e);
-      }
+      if (finish == magick_arc_ellipse)
+	wmf_stream_printf (API,out,"ellipse %f,%f %f,%f 0,360\n",
+                           O.x,O.y,Rx,Ry);
+      else if (finish == magick_arc_pie)
+	wmf_stream_printf (API,out,"ellipse %f,%f %f,%f %f,%f\n",
+                           O.x,O.y,Rx,Ry,phi_s,phi_e);
+      else if (finish == magick_arc_chord)
+        {
+          wmf_stream_printf (API,out,"arc %f,%f %f,%f %f,%f\n",
+                             O.x,O.y,Rx,Ry,phi_s,phi_e);
+          wmf_stream_printf (API,out,"line %f,%f %f,%f\n",
+                             start.x,start.y,end.x,end.y);
+        }
+      else /* if (finish == magick_arc_open) */
+        wmf_stream_printf (API,out,"arc %f,%f %f,%f %f,%f\n",
+                           O.x,O.y,Rx,Ry,phi_s,phi_e);
     }
 }
 
-static void wmf_magick_draw_line (wmfAPI* API,wmfDrawLine_t* draw_line)
+static void wmf_magick_draw_line (wmfAPI* API,
+                                  wmfDrawLine_t* draw_line)
 {
   wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
@@ -573,12 +604,13 @@ static void wmf_magick_draw_line (wmfAPI* API,wmfDrawLine_t* draw_line)
   if (out == 0) return;
 
   if (TO_DRAW (draw_line))
-    {	from = magick_translate (API,draw_line->from);
-    to   = magick_translate (API,draw_line->to  );
+    { 
+      from = magick_translate (API,draw_line->from);
+      to   = magick_translate (API,draw_line->to  );
 
-    magick_pen (API,draw_line->dc);
+      magick_pen (API,draw_line->dc);
 
-    wmf_stream_printf (API,out,"line %f,%f %f,%f\n",from.x,from.y,to.x,to.y);
+      wmf_stream_printf (API,out,"line %f,%f %f,%f\n",from.x,from.y,to.x,to.y);
     }
 }
 
@@ -599,17 +631,18 @@ static void wmf_magick_poly_line (wmfAPI* API,wmfPolyLine_t* poly_line)
   if (poly_line->count <= 1) return;
 
   if (TO_DRAW (poly_line))
-    {	magick_pen (API,poly_line->dc);
+    {
+      magick_pen (API,poly_line->dc);
 
-    wmf_stream_printf (API,out,"polyline");
+      wmf_stream_printf (API,out,"polyline");
 
-    for (i = 0; i < poly_line->count; i++)
-      {	pt = magick_translate (API,poly_line->pt[i]);
+      for (i = 0; i < poly_line->count; i++)
+        {
+          pt = magick_translate (API,poly_line->pt[i]);
+          wmf_stream_printf (API,out," %f,%f",pt.x,pt.y);
+        }
 
-      wmf_stream_printf (API,out," %f,%f",pt.x,pt.y);
-      }
-
-    wmf_stream_printf (API,out,"\n");
+      wmf_stream_printf (API,out,"\n");
     }
 }
 
@@ -630,22 +663,24 @@ static void wmf_magick_draw_polygon (wmfAPI* API,wmfPolyLine_t* poly_line)
   if (poly_line->count <= 2) return;
 
   if (TO_FILL (poly_line) || TO_DRAW (poly_line))
-    {	magick_brush (API,poly_line->dc);
-    magick_pen (API,poly_line->dc);
+    {
+      magick_brush (API,poly_line->dc);
+      magick_pen (API,poly_line->dc);
 
-    wmf_stream_printf (API,out,"polygon");
+      wmf_stream_printf (API,out,"polygon");
 
-    for (i = 0; i < poly_line->count; i++)
-      {	pt = magick_translate (API,poly_line->pt[i]);
+      for (i = 0; i < poly_line->count; i++)
+        {
+          pt = magick_translate (API,poly_line->pt[i]);
+          wmf_stream_printf (API,out," %f,%f",pt.x,pt.y);
+        }
 
-      wmf_stream_printf (API,out," %f,%f",pt.x,pt.y);
-      }
-
-    wmf_stream_printf (API,out,"\n");
+      wmf_stream_printf (API,out,"\n");
     }
 }
 
-static void wmf_magick_draw_rectangle (wmfAPI* API,wmfDrawRectangle_t* draw_rect)
+static void wmf_magick_draw_rectangle (wmfAPI* API,
+                                       wmfDrawRectangle_t* draw_rect)
 {
   wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
@@ -662,25 +697,29 @@ static void wmf_magick_draw_rectangle (wmfAPI* API,wmfDrawRectangle_t* draw_rect
   if (out == 0) return;
 
   if (TO_FILL (draw_rect) || TO_DRAW (draw_rect))
-    {	magick_brush (API,draw_rect->dc);
-    magick_pen (API,draw_rect->dc);
+    {
+      magick_brush (API,draw_rect->dc);
+      magick_pen (API,draw_rect->dc);
 
-    TL = magick_translate (API,draw_rect->TL);
-    BR = magick_translate (API,draw_rect->BR);
+      TL = magick_translate (API,draw_rect->TL);
+      BR = magick_translate (API,draw_rect->BR);
 
-    if ((draw_rect->width > 0) || (draw_rect->height > 0))
-      {	width  = magick_width  (API,draw_rect->width ) / 2;
-      height = magick_height (API,draw_rect->height) / 2;
+      if ((draw_rect->width > 0) || (draw_rect->height > 0))
+        {
+          width  = magick_width  (API,draw_rect->width ) / 2;
+          height = magick_height (API,draw_rect->height) / 2;
 
-      wmf_stream_printf (API,out,"roundrectangle %f,%f %f,%f %f,%f\n",TL.x,TL.y,BR.x,BR.y,width,height);
-      }
-    else
-      {	wmf_stream_printf (API,out,"rectangle %f,%f %f,%f\n",TL.x,TL.y,BR.x,BR.y);
-      }
+          wmf_stream_printf (API,out,"roundrectangle %f,%f %f,%f %f,%f\n",
+                             TL.x,TL.y,BR.x,BR.y,width,height);
+        }
+      else
+	wmf_stream_printf (API,out,"rectangle %f,%f %f,%f\n",
+                           TL.x,TL.y,BR.x,BR.y);
     }
 }
 
-static void wmf_magick_region_frame (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
+static void wmf_magick_region_frame (wmfAPI* API,
+                                     wmfPolyRectangle_t* poly_rect)
 {
   /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
@@ -689,7 +728,8 @@ static void wmf_magick_region_frame (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
 	
 }
 
-static void wmf_magick_region_paint (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
+static void wmf_magick_region_paint (wmfAPI* API,
+                                     wmfPolyRectangle_t* poly_rect)
 {
   /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
@@ -698,7 +738,8 @@ static void wmf_magick_region_paint (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
 	
 }
 
-static void wmf_magick_region_clip (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
+static void wmf_magick_region_clip (wmfAPI* API,
+                                    wmfPolyRectangle_t* poly_rect)
 {
   /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
@@ -707,7 +748,7 @@ static void wmf_magick_region_clip (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
 	
 }
 
-void wmf_magick_function (wmfAPI* API)
+static void wmf_magick_function (wmfAPI* API)
 {
   wmf_magick_t* ddata = 0;
 
@@ -748,8 +789,9 @@ void wmf_magick_function (wmfAPI* API)
   ddata = (wmf_magick_t*) wmf_malloc (API,sizeof (wmf_magick_t));
 
   if (ERR (API))
-    {	WMF_DEBUG (API,"bailing...");
-    return;
+    {
+      WMF_DEBUG (API,"bailing...");
+      return;
     }
 
   API->device_data = (void*) ddata;
@@ -769,16 +811,28 @@ void wmf_magick_function (wmfAPI* API)
   ddata->flags = 0;
 }
 
-static void wmf_magick_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
+static void wmf_magick_draw_text (wmfAPI* API,
+                                  wmfDrawText_t* draw_text)
 {
-  magickPoint pt;
+  char
+    buff[MaxTextExtent],
+    *p,
+    *ps_name=0,
+    *path = 0,
+    *q;
 
-  wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
+  int
+    string_length;
 
-  char* ps_name = 0;
-  char* path = 0;
+  magickPoint
+    pt;
 
-  wmfStream* out = ddata->out;
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData (API);
+
+
+  wmfStream
+    *out = ddata->out;
 
   WMF_DEBUG (API,"wmf_[magick_]draw_text");
 
@@ -789,20 +843,47 @@ static void wmf_magick_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
   path = wmf_ipa_font_lookup (API,ps_name);
 
   if (path)
-    {
-      wmf_stream_printf (API,out,"font '%s'\n",path);
+    wmf_stream_printf (API,out,"font '%s'\n",path);
 
   /* etc. */
 
-      pt = magick_translate(API,draw_text->pt);
-/*       wmf_stream_printf (API,out,"text %i,%i \"%.1024s\"\n", */
-/*                          pt.x, */
-/*                          pt.y, */
-/*                          draw_text->str); */
+#if 0
+    WMF_DC_FONT (draw_text->dc); /* Font */
+  WMF_DC_OPAQUE (draw_text->dc) /* ??? */
+    wmfRGB* bg = WMF_DC_BACKGROUND (draw_text->dc); /* Box color */
+    double theta = WMF_TEXT_ANGLE (font); /* Text angle */
+    WMF_DC_TEXTCOLOR (draw_text->dc); /* Text color */
+#endif
+
+  pt = magick_translate(API,draw_text->pt);
+  /* Build escaped string */
+  for( p=draw_text->str, q=buff, string_length=0;
+       *p!=0 && string_length < (sizeof(buff)-3);
+       ++p )
+    {
+      if(*p == '\'')
+        {
+          *q++='\\';
+          *q++='\\';
+          string_length += 2;
+        }
+      else
+        {
+          *q++=*p;
+          ++string_length;
+        }
     }
+  *q=0;
+          
+  wmf_stream_printf (API,out,"text %f,%f '%.1024s'\n",
+                     pt.x,
+                     pt.y,
+                     buff);
+
 }
 
-static void wmf_magick_udata_init (wmfAPI* API,wmfUserData_t* userdata)
+static void wmf_magick_udata_init (wmfAPI* API,
+                                   wmfUserData_t* userdata)
 {
   /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
@@ -810,7 +891,8 @@ static void wmf_magick_udata_init (wmfAPI* API,wmfUserData_t* userdata)
 
 }
 
-static void wmf_magick_udata_copy (wmfAPI* API,wmfUserData_t* userdata)
+static void wmf_magick_udata_copy (wmfAPI* API,
+                                   wmfUserData_t* userdata)
 {
   /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
@@ -818,7 +900,8 @@ static void wmf_magick_udata_copy (wmfAPI* API,wmfUserData_t* userdata)
 
 }
 
-static void wmf_magick_udata_set (wmfAPI* API,wmfUserData_t* userdata)
+static void wmf_magick_udata_set (wmfAPI* API,
+                                  wmfUserData_t* userdata)
 {
   /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
@@ -826,7 +909,8 @@ static void wmf_magick_udata_set (wmfAPI* API,wmfUserData_t* userdata)
 
 }
 
-static void wmf_magick_udata_free (wmfAPI* API,wmfUserData_t* userdata)
+static void wmf_magick_udata_free (wmfAPI* API,
+                                   wmfUserData_t* userdata)
 {
   /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
@@ -874,16 +958,15 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
   brush_bmp = WMF_BRUSH_BITMAP (brush);
 
   if (brush_style == BS_NULL)
-    {	wmf_stream_printf (API,out,"fill none\n");
-    return;
+    {
+      wmf_stream_printf (API,out,"fill none\n");
+      return;
     }
 
   if (fill_opaque)
-    {	wmf_stream_printf (API,out,"fill-opacity 1.0\n");
-    }
+    wmf_stream_printf (API,out,"fill-opacity 1.0\n");
   else
-    {	wmf_stream_printf (API,out,"fill-opacity 0.5\n"); /* semi-transparent... ?? */
-    }
+    wmf_stream_printf (API,out,"fill-opacity 0.5\n"); /* semi-transparent?? */
 
   switch (fill_polyfill) /* Is this correct ?? */
     {
@@ -906,15 +989,16 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
       wmf_stream_printf (API,out,"clip ");
 
       if (dc->bgmode != TRANSPARENT)
-        {	rgb = dc->bgcolor;
+        {
+          rgb = dc->bgcolor;
 
-        red   = (float) ((int) rgb.r) / 255;
-        green = (float) ((int) rgb.g) / 255;
-        blue  = (float) ((int) rgb.b) / 255;
+          red   = (float) ((int) rgb.r) / 255;
+          green = (float) ((int) rgb.g) / 255;
+          blue  = (float) ((int) rgb.b) / 255;
 
-        wmf_stream_printf (API,out,"%f %f %f setrgbcolor ",red,green,blue);
+          wmf_stream_printf (API,out,"%f %f %f setrgbcolor ",red,green,blue);
 
-        wmf_stream_printf (API,out,"fill ");
+          wmf_stream_printf (API,out,"fill ");
         }
 
       wmf_stream_printf (API,out,"\n");
@@ -982,11 +1066,11 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
 
         default:
           if (API->flags & WMF_OPT_IGNORE_NONFATAL)
-            {	WMF_DEBUG (API,"Unsupported brush/hatch style!");
-            }
+            WMF_DEBUG (API,"Unsupported brush/hatch style!");
           else
-            {	WMF_ERROR (API,"Unsupported brush/hatch style!");
-            API->err = wmf_E_Glitch;
+            {
+              WMF_ERROR (API,"Unsupported brush/hatch style!");
+              API->err = wmf_E_Glitch;
             }
           break;
         }
@@ -995,34 +1079,40 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
 
     case BS_DIBPATTERN:
       if (brush_bmp->data == 0)
-        {	if (API->flags & WMF_OPT_IGNORE_NONFATAL)
-          {	WMF_DEBUG (API,"Attempt to fill with non-existent pattern!");
-          }
-        else
-          {	WMF_ERROR (API,"Attempt to fill with non-existent pattern!");
-          API->err = wmf_E_Glitch;
-          break;
-          }
+        {
+          if (API->flags & WMF_OPT_IGNORE_NONFATAL)
+            WMF_DEBUG (API,"Attempt to fill with non-existent pattern!");
+          else
+            {
+              WMF_ERROR (API,"Attempt to fill with non-existent pattern!");
+              API->err = wmf_E_Glitch;
+              break;
+            }
         }
       /* no break here - TODO: implement bitmap fill */
     default:
       if (API->flags & WMF_OPT_IGNORE_NONFATAL)
-        {	WMF_DEBUG (API,"Unsupported brush style!");
-        /* no break here */
+        {
+          WMF_DEBUG (API,"Unsupported brush style!");
+          /* no break here */
         }
       else
-        {	WMF_ERROR (API,"Unsupported brush style!");
-        API->err = wmf_E_Glitch;
-        break;
+        {
+          WMF_ERROR (API,"Unsupported brush style!");
+          API->err = wmf_E_Glitch;
+          break;
         }
     case BS_SOLID:
       break;
     }
 
-  wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",(int)brush_color->r,(int)brush_color->g,(int)brush_color->b);
+  wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
+                     (int)brush_color->r,
+                     (int)brush_color->g,
+                     (int)brush_color->b);
 }
 
-static void magick_pen (wmfAPI* API,wmfDC* dc)
+static void magick_pen (wmfAPI* API, wmfDC* dc)
 {
   wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
@@ -1047,8 +1137,8 @@ static void magick_pen (wmfAPI* API,wmfDC* dc)
 
   pen_color = WMF_PEN_COLOR (pen);
 
-  pen_width = ( magick_width  (API,(float) WMF_PEN_WIDTH  (pen))
-                + magick_height (API,(float) WMF_PEN_HEIGHT (pen)) ) / 2;
+  pen_width = ( magick_width  (API,(float) WMF_PEN_WIDTH  (pen)) +
+                magick_height (API,(float) WMF_PEN_HEIGHT (pen)) ) / 2;
 
   pen_style  = (unsigned int) WMF_PEN_STYLE (pen);
   pen_endcap = (unsigned int) WMF_PEN_ENDCAP (pen);
@@ -1056,8 +1146,9 @@ static void magick_pen (wmfAPI* API,wmfDC* dc)
   pen_type   = (unsigned int) WMF_PEN_TYPE (pen);
 
   if (pen_style == PS_NULL)
-    {	wmf_stream_printf (API,out,"stroke none\n");
-    return;
+    {
+      wmf_stream_printf (API,out,"stroke none\n");
+      return;
     }
 
   wmf_stream_printf (API,out,"stroke-width %f\n",MAX (0,pen_width));
@@ -1114,7 +1205,8 @@ static void magick_pen (wmfAPI* API,wmfDC* dc)
 
     case PS_DASHDOTDOT: /* DASH_2_DOTS_LINE */
       wmf_stream_printf (API,out,"stroke-dasharray %f,%f,%f,%f,%f,%f\n",
-		         pen_width*10,pen_width*2,pen_width,pen_width*2,pen_width,pen_width*2);
+		         pen_width*10,pen_width*2,pen_width,pen_width*2,
+                         pen_width,pen_width*2);
       break;
 
     case PS_INSIDEFRAME: /* There is nothing to do in this case... */
@@ -1124,11 +1216,12 @@ static void magick_pen (wmfAPI* API,wmfDC* dc)
       break;
     }
 
-  wmf_stream_printf (API,out,"stroke #%02x%02x%02x\n",(int)pen_color->r,(int)pen_color->g,(int)pen_color->b);
+  wmf_stream_printf (API,out,"stroke #%02x%02x%02x\n",
+                     (int)pen_color->r,(int)pen_color->g,(int)pen_color->b);
 }
 
 /* Scribble MVG on image */
-static void ScribbleMVG(Image* image,const char* mvg)
+static void ScribbleMVG(Image* image, const char* mvg)
 {
   DrawInfo*
     draw_info;
@@ -1141,14 +1234,15 @@ static void ScribbleMVG(Image* image,const char* mvg)
   draw_info = (DrawInfo*)AcquireMemory(sizeof(DrawInfo));
   GetDrawInfo( image_info, draw_info );
   draw_info->primitive=(char*)mvg;
-/*   puts(draw_info->primitive); */
+  puts(draw_info->primitive);
   DrawImage(image,draw_info);
   draw_info->primitive = (char*)NULL;
   DestroyDrawInfo(draw_info);
   DestroyImageInfo(image_info);
 }
 
-static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadWMFImage(const ImageInfo *image_info,
+                           ExceptionInfo *exception)
 {
   Image*
     image;
@@ -1234,28 +1328,29 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ( wmf_error != wmf_E_None )
   {
     wmf_api_destroy (API);
-    ThrowReaderException(CorruptImageError,"Failed to compute output size",image);
+    ThrowReaderException(CorruptImageError,"Failed to compute output size",
+                         image);
   }
 /*   printf("twips: %fx%f\n", wmf_width, wmf_height); */
 
-#define TWIPS_PER_INCH 1440
-#define CENTIMETERS_PER_INCH 2.54
+#define TWIPS_INCH 1440
+#define CENTIMETERS_INCH 2.54
   if(image->y_resolution > 0)
     {
       y_resolution = image->y_resolution;
       if ( image->units == PixelsPerCentimeterResolution )
-        y_resolution *= CENTIMETERS_PER_INCH;
+        y_resolution *= CENTIMETERS_INCH;
     }
   
   if(image->x_resolution > 0)
     {
       x_resolution = image->x_resolution;
       if ( image->units == PixelsPerCentimeterResolution )
-        x_resolution *= CENTIMETERS_PER_INCH;
+        x_resolution *= CENTIMETERS_INCH;
     }
 
-  wmf_width  = ceil( ( wmf_width*CENTIMETERS_PER_INCH)/TWIPS_PER_INCH * x_resolution );
-  wmf_height = ceil( (wmf_height*CENTIMETERS_PER_INCH)/TWIPS_PER_INCH * y_resolution );
+  wmf_width  = ceil(( wmf_width*CENTIMETERS_INCH)/TWIPS_INCH*x_resolution);
+  wmf_height = ceil((wmf_height*CENTIMETERS_INCH)/TWIPS_INCH*y_resolution);
 
 /*   printf("Size: %fx%f\n", wmf_width, wmf_height); */
 
