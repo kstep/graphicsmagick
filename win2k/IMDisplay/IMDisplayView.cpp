@@ -834,11 +834,11 @@ void CIMDisplayView::DoDisplayImage( Image &inImage, CDC* pDC )
         for( unsigned int row = 0 ; row < rows ; ++row )
           {
             const PixelPacket *pPixels = inImage.getConstPixels(0,row,columns,row);
-
 #if QuantumDepth == 8
             // Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8
             memcpy((void*)pDestPixel,(const void*)pPixels,sizeof(PixelPacket)*columns);
-            pDestPixel+=columns;
+            unsigned int stride = sizeof(RGBQUAD)*columns;
+            pDestPixel += stride;
 
 #else	// 16 or 32 bit Quantum
             // Transfer pixels, scaling to Quantum
