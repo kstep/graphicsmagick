@@ -179,10 +179,6 @@ SOURCE="..\..\Magick++\lib\Image.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\Magick++\lib\LastError.cpp"
-# End Source File
-# Begin Source File
-
 SOURCE="..\..\Magick++\lib\Montage.cpp"
 # End Source File
 # Begin Source File
@@ -224,10 +220,6 @@ SOURCE="..\..\Magick++\lib\Magick++\Image.h"
 # Begin Source File
 
 SOURCE="..\..\Magick++\lib\Magick++\Include.h"
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\Magick++\lib\Magick++\LastError.h"
 # End Source File
 # Begin Source File
 
