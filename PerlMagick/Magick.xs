@@ -5927,6 +5927,8 @@ Montage(ref,...)
             }
           break;
         }
+        default:
+          MagickWarning(OptionWarning,"Invalid attribute",attribute);
       }
       MagickWarning(OptionWarning,"Invalid attribute",attribute);
     }

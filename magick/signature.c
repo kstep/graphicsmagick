@@ -565,7 +565,7 @@ MagickExport void UniqueImageFilename(char *filename)
       file;
 
     file=mkstemp(filename);
-    if (file != (FILE *) NULL)
+    if (file != -1)
       close(file);
   }
 #elif !defined(vms) && !defined(macintosh)
