@@ -1022,7 +1022,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           if ((bits_per_sample == 8) || (bits_per_sample == 16))
             {
               /*
-                Special treatment of common depths for better performance.
+                Special treatment of common bits-per-sample values for
+                better performance.
               */
               if (image->colorspace == CMYKColorspace)
                 {
@@ -1039,8 +1040,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             }
           else
             {
-#define GET_QUANTUM(stream,bits_per_sample,quantum_scale) \
-  ((Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale))
+              /*
+                Handle arbitrary bits-per-sample values.
+              */
 
               BitStreamReadHandle
                 stream;
@@ -1064,31 +1066,26 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               for (x = (long) width; x > 0; --x)
                 {
                   /* red or cyan */
-                  q->red=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+                  q->red=(Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale);
                   /* green or magenta */
-                  q->green=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+                  q->green=(Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale);
                   /* blue or yellow */
-                  q->blue=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+                  q->blue=(Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale);
                   
                   if (image->colorspace == CMYKColorspace)
                     {
                       /* black */
-                      q->opacity=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+                      q->opacity=(Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale);
                       /* cmyk opacity */
                       if (image->matte)
-                        {
-                          register unsigned int
-                            quantum;
-                          
-                          quantum=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
-                          *indexes=(IndexPacket) (MaxRGB-quantum);
-                        }
+                        *indexes=(IndexPacket) (MaxRGB-
+                          ((Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale)));
                     }
                   else
                     {
                       /* rgb opacity */
                       if (image->matte)
-                        q->opacity=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+                        q->opacity=(Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale);
                     }
                   
                   indexes++;
