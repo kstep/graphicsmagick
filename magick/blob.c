@@ -1552,7 +1552,7 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
           break;
         }
       }
-      if (image->blob->offset <= image->blob->length)
+      if (image->blob->offset <= (off_t) image->blob->length)
         image->blob->eof=False;
       else
         if (image->blob->mapped)
@@ -1799,7 +1799,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
         }
       (void) memcpy(image->blob->data+image->blob->offset,data,length);
       image->blob->offset+=length;
-      if (image->blob->offset > image->blob->length)
+      if (image->blob->offset > (off_t) image->blob->length)
         image->blob->length=image->blob->offset;
       return(length);
     }

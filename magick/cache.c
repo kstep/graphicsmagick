@@ -212,7 +212,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
     return((PixelPacket *) NULL);
   number_pixels=cache_info->columns*cache_info->rows;
   offset+=(rows-1)*cache_info->columns+columns-1;
-  if (offset > number_pixels)
+  if (offset > (off_t) number_pixels)
     return((PixelPacket *) NULL);
   /*
     Return pixel cache.
@@ -1692,7 +1692,7 @@ static unsigned int ReadCacheIndexes(const Cache cache,const unsigned long id)
     if (count == -1)
       return(False);
     count=read(file,(char *) indexes,nexus_info->columns*sizeof(IndexPacket));
-    if (count != (nexus_info->columns*sizeof(IndexPacket)))
+    if (count != (off_t) (nexus_info->columns*sizeof(IndexPacket)))
       return(False);
     indexes+=nexus_info->columns;
     offset+=cache_info->columns;
@@ -1785,7 +1785,7 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long id)
     if (count == -1)
       return(False);
     count=read(file,(char *) pixels,nexus_info->columns*sizeof(PixelPacket));
-    if (count != (nexus_info->columns*sizeof(PixelPacket)))
+    if (count != (off_t) (nexus_info->columns*sizeof(PixelPacket)))
       return(False);
     pixels+=nexus_info->columns;
     offset+=cache_info->columns;
@@ -2516,7 +2516,7 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long id)
     if (count == -1)
       return(False);
     count=write(file,(char *) indexes,nexus_info->columns*sizeof(IndexPacket));
-    if (count != (nexus_info->columns*sizeof(IndexPacket)))
+    if (count != (off_t) (nexus_info->columns*sizeof(IndexPacket)))
       return(False);
     indexes+=nexus_info->columns;
     offset+=cache_info->columns;
@@ -2866,7 +2866,7 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long id)
     if (count == -1)
       return(False);
     count=write(file,(char *) pixels,nexus_info->columns*sizeof(PixelPacket));
-    if (count != (nexus_info->columns*sizeof(PixelPacket)))
+    if (count != (off_t) (nexus_info->columns*sizeof(PixelPacket)))
       return(False);
     pixels+=nexus_info->columns;
     offset+=cache_info->columns;
