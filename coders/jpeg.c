@@ -602,6 +602,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         LiberateMemory((void **) &jpeg_pixels);
       jpeg_destroy_decompress(&jpeg_info);
       *exception=image->exception;
+      GetExceptionInfo(&image->exception);
       return(image);
     }
   jpeg_create_decompress(&jpeg_info);
@@ -678,6 +679,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       jpeg_destroy_decompress(&jpeg_info);
       CloseBlob(image);
       *exception=image->exception;
+      GetExceptionInfo(&image->exception);
       return(image);
     }
   if (jpeg_info.out_color_space == JCS_GRAYSCALE)
@@ -781,6 +783,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   LiberateMemory((void **) &jpeg_pixels);
   CloseBlob(image);
   *exception=image->exception;
+  GetExceptionInfo(&image->exception);
   return(image);
 }
 #else
