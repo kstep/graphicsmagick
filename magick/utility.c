@@ -723,7 +723,7 @@ MagickExport void ExpandFilename(char *filename)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   E x p a n d P a t h   n a m e s                                             %
+%   E x p a n d F i l e n a m e s                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -990,7 +990,7 @@ MagickExport char *GetConfigurePath(const char *filename,
 #if defined(UseInstalledImageMagick)
 #  if defined(WIN32)
   /*
-    Locate file via registry key
+    Locate file via registry key.
   */
   {
     char
@@ -1079,7 +1079,7 @@ MagickExport char *GetConfigurePath(const char *filename,
 #  if defined(WIN32)
   {
     /*
-      Look for a named resource
+      Look for a named resource.
     */
     void
       *blob;
@@ -1097,107 +1097,6 @@ MagickExport char *GetConfigurePath(const char *filename,
   LiberateMemory((void **) &path);
   ThrowException(exception,ConfigurationError,
     "Unable to find configuration file",filename);
-  return((char *) NULL);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  G e t F o n t P a t h                                                      %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetFontPath() searches a number of pre-defined locations for the specified
-%  font file and returns the path.
-%
-%  The format of the GetFontPath method is:
-%
-%      char *GetFontPath(const char *filename,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o path:  GetFontPath() returns the path if the file is found, otherwise
-%      NULL is returned.
-%
-%    o filename: A character string representing the desired font file.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-%
-*/
-MagickExport char *GetFontPath(const char *filename,ExceptionInfo *exception)
-{
-  char
-    *path;
-
-  unsigned int
-    debug;
-
-  assert(filename != (const char *) NULL);
-  assert(exception != (ExceptionInfo *) NULL);
-  debug=getenv("MAGICK_DEBUG") != (char *) NULL;
-  path=AllocateString(filename);
-  if (debug)
-    (void) fprintf(stdout,"Searching for font file \"%s\" ...\n", filename);
-  /*
-    Search current directory.
-  */
-  if (CheckFileAccessability(path,debug))
-    return(path);
-  /*
-    Search MAGICK_FONT_PATH.
-  */
-  if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
-    {
-      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
-       DirectorySeparator,filename);
-      if (CheckFileAccessability(path,debug))
-        return(path);
-    }
-  /*
-    Search MAGICK_HOME.
-  */
-  if (getenv("MAGICK_HOME") != (char *) NULL)
-    {
-      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
-        DirectorySeparator,filename);
-      if (CheckFileAccessability(path,debug))
-        return(path);
-    }
-  /*
-    Search $HOME/.magick.
-  */
-  if (getenv("HOME") != (char *) NULL)
-    {
-      FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
-        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
-      if (CheckFileAccessability(path,debug))
-        return(path);
-    }
-#  if defined(WIN32)
-  {
-    /*
-      Look for a named resource
-    */
-    void
-      *blob;
-
-    FormatString(path,"%.1024s",filename);
-    blob=NTResourceToBlob(path);
-    if (blob != (unsigned char *) NULL)
-      {
-        LiberateMemory((void **) &blob);
-        return(path);
-      }
-  }
-#  endif /* WIN32 */
-  LiberateMemory((void **) &path);
-  ThrowException(exception,ConfigurationError,"Unable to find font file",
-    filename);
   return((char *) NULL);
 }
 
@@ -2639,7 +2538,7 @@ MagickExport unsigned int IsGlob(const char *path)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L i s t P a t h   s                                                         %
+%   L i s t F i l e s                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
