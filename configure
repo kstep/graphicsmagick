@@ -4423,7 +4423,7 @@ echo "$ECHO_T""no" >&6
 	X_LIBS="$X_LIBS -R$x_libraries"
       else
 	X_LIBS="$X_LIBS -R$x_libraries"
-#	LIBS="$ac_xsave_LIBS -R $x_libraries"
+# LIBS="$ac_xsave_LIBS -R $x_libraries"
 	cat >conftest.$ac_ext <<EOF
 
 EOF
@@ -6922,9 +6922,9 @@ fi
 
     #
 
-echo "configure:6321: checking for xmlCreatePushParserCtxt in -lxml" >&5
-echo $ECHO_N "checking for xmlCreatePushParserCtxt in -lxml... $ECHO_C" >&6
-if test "${ac_cv_lib_xml_xmlCreatePushParserCtxt+set}" = set; then
+echo "configure:6321: checking for xmlCreateIOParserCtxt in -lxml" >&5
+echo $ECHO_N "checking for xmlCreateIOParserCtxt in -lxml... $ECHO_C" >&6
+if test "${ac_cv_lib_xml_xmlCreateIOParserCtxt+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_save_LIBS=$LIBS
@@ -6939,28 +6939,28 @@ extern "C"
 #endif
 /* We use char because int might match the return type of a gcc2
    builtin and then its argument prototype would still apply.  */
-char xmlCreatePushParserCtxt ();
+char xmlCreateIOParserCtxt ();
 int
 main ()
 {
-xmlCreatePushParserCtxt ();
+xmlCreateIOParserCtxt ();
   ;
   return 0;
 }
 EOF
 if { (eval echo configure:6346: \"$ac_link\") >&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
-  ac_cv_lib_xml_xmlCreatePushParserCtxt=yes
+  ac_cv_lib_xml_xmlCreateIOParserCtxt=yes
 else
   echo "configure: failed program was:" >&5
   cat conftest.$ac_ext >&5
-  ac_cv_lib_xml_xmlCreatePushParserCtxt=no
+  ac_cv_lib_xml_xmlCreateIOParserCtxt=no
 fi
 rm -f conftest*
 LIBS=$ac_save_LIBS
 fi
-echo "configure:6356: result: $ac_cv_lib_xml_xmlCreatePushParserCtxt" >&5
-echo "$ECHO_T""$ac_cv_lib_xml_xmlCreatePushParserCtxt" >&6
-if test $ac_cv_lib_xml_xmlCreatePushParserCtxt = yes; then
+echo "configure:6356: result: $ac_cv_lib_xml_xmlCreateIOParserCtxt" >&5
+echo "$ECHO_T""$ac_cv_lib_xml_xmlCreateIOParserCtxt" >&6
+if test $ac_cv_lib_xml_xmlCreateIOParserCtxt = yes; then
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
