@@ -52,7 +52,7 @@
 AppName=GraphicsMagick 1.0.0 Q:8
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=GraphicsMagick 1.0.0 Q:8 Snapshot (March 15, 2003)
+AppVerName=GraphicsMagick 1.0.0 Q:8 Snapshot (April 3, 2003)
 AppVersion=1.0.0
 AppCopyright=Copyright (C) 2003 GraphicsMagick Group
 AppPublisher=GraphicsMagick Group
@@ -69,7 +69,7 @@ InfoBeforeFile=before.txt
 InfoAfterFile=after.txt
 UninstallDisplayIcon={app}\ImageMagick.ico
 OutputDir=..\bin
-OutputBaseFilename=GraphicsMagick-1.0.0-030315-Q8-windows
+OutputBaseFilename=GraphicsMagick-1.0.0-030403-Q8-windows
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
 
@@ -79,7 +79,7 @@ Name: desktop_icon; Description: "Create a &desktop icon"; MinVersion: 4,4
 Name: update_path; Description: "Update executable search path"
 Name: associate_extensions; Description: "Associate supported file extensions with GraphicsMagick"; Flags: unchecked
 Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl v5.8.0 build 804"; Flags: unchecked
-;Name: install_Magick_DLL; Description: "Install ImageMagickObject OLE Control for VBscript, Visual Basic, and WSH"; Flags: unchecked
+;Name: install_Magick_DLL; Description: "Register ImageMagickObject OLE Control for VBscript, Visual Basic, and WSH"; Flags: unchecked
 
 ; Windows registry settings
 [Registry]
@@ -831,7 +831,6 @@ Source: "..\..\magick\quantize.h"; DestDir: "{app}\include\magick"; CopyMode: al
 Source: "..\..\magick\registry.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\render.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\resource.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
-Source: "..\..\magick\random.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\semaphore.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\signature.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\timer.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
