@@ -1,5 +1,10 @@
 2002-03-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* lib/Image.cpp (registerId): Bugfix. Register using
+ 	sizeof(MagickLib::Image) rather than sizeof(Image).
+
+2002-03-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
 	* lib/Drawable.cpp (DrawableCompositeImage): Had failed to
  	initialize width and height in object to image width and height.
 

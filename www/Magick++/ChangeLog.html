@@ -2,7 +2,23 @@
 <HEAD>
 <TITLE>Magick++ ChangeLog</TITLE>
 </HEAD>
-<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
+<BODY>
+<p>
+2002-03-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (registerId): Bugfix. Register using
+        sizeof(MagickLib::Image) rather than sizeof(Image).
+
+</UL>
+<p>
+2002-03-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (DrawableCompositeImage): Had failed to
+        initialize width and height in object to image width and height.
+
+</UL>
 <p>
 2002-02-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 

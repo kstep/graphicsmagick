@@ -3288,7 +3288,8 @@ long Magick::Image::registerId( void )
       ExceptionInfo exceptionInfo;
       GetExceptionInfo( &exceptionInfo );
       _imgRef->id(SetMagickRegistry(ImageRegistryType, image(),
-                                    sizeof(Image), &exceptionInfo));
+                                    sizeof(MagickLib::Image),
+				    &exceptionInfo));
       if( _imgRef->id() < 0 )
         throwException( exceptionInfo );
     }
