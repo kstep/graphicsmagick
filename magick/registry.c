@@ -281,11 +281,9 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
   RegistryInfo
     *registry_info;
 
-  registry_info=(RegistryInfo *) AcquireMemory(sizeof(RegistryInfo));
-  if (registry_info == (RegistryInfo *) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate registry",
-      "Memory allocation failed");
-  (void) memset(registry_info,0,sizeof(RegistryInfo));
+  void
+    *clone_blob;
+
   switch (type)
   {
     case ImageRegistryType:
@@ -300,21 +298,27 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
             "Image expected");
           return(-1);
         }
-      registry_info->blob=(void *) CloneImage(image,0,0,True,exception);
-      if (registry_info->blob == (void *) NULL)
+      clone_blob=(void *) CloneImage(image,0,0,True,exception);
+      if (clone_blob == (void *) NULL)
         return(-1);
       break;
     }
     default:
     {
-      registry_info->blob=(void *) AcquireMemory(length);
-      if (registry_info->blob == (void *) NULL)
+      clone_blob=(void *) AcquireMemory(length);
+      if (clone_blob == (void *) NULL)
         return(-1);
-      (void) memcpy(registry_info->blob,blob,length);
+      (void) memcpy(clone_blob,blob,length);
     }
   }
-  registry_info->length=length;
+  registry_info=(RegistryInfo *) AcquireMemory(sizeof(RegistryInfo));
+  if (registry_info == (RegistryInfo *) NULL)
+    MagickError(ResourceLimitError,"Unable to allocate registry",
+      "Memory allocation failed");
+  (void) memset(registry_info,0,sizeof(RegistryInfo));
   registry_info->type=type;
+  registry_info->blob=clone_blob;
+  registry_info->length=length;
   AcquireSemaphoreInfo(&registry_semaphore);
   registry_info->id=id++;
   if (registry_list == (RegistryInfo *) NULL)
