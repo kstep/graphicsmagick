@@ -1,3 +1,11 @@
+2002-01-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h : Imported new composition operators to
+ 	namespace: NoCompositeOp, DarkenCompositeOp, LightenCompositeOp,
+ 	HueCompositeOp, SaturateCompositeOp, ValueCompositeOp,
+ 	ColorizeCompositeOp, LuminizeCompositeOp, ScreenCompositeOp,
+ 	OverlayCompositeOp.
+
 2001-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (strokePattern): New method to specify image to

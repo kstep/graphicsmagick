@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Inclusion of ImageMagick headers (with namespace magic)
 
@@ -101,30 +101,39 @@ namespace Magick
   using MagickLib::sRGBColorspace;
   
   // Composition operations
-  using MagickLib::CompositeOperator;
-  using MagickLib::UndefinedCompositeOp;
-  using MagickLib::OverCompositeOp;
-  using MagickLib::InCompositeOp;
-  using MagickLib::OutCompositeOp;
-  using MagickLib::AtopCompositeOp;
-  using MagickLib::XorCompositeOp;
-  using MagickLib::PlusCompositeOp;
-  using MagickLib::MinusCompositeOp;
   using MagickLib::AddCompositeOp;
-  using MagickLib::SubtractCompositeOp;
-  using MagickLib::DifferenceCompositeOp;
-  using MagickLib::MultiplyCompositeOp;
+  using MagickLib::AtopCompositeOp;
   using MagickLib::BumpmapCompositeOp;
-  using MagickLib::CopyCompositeOp;
-  using MagickLib::CopyRedCompositeOp;
-  using MagickLib::CopyGreenCompositeOp;
-  using MagickLib::CopyBlueCompositeOp;
-  using MagickLib::CopyOpacityCompositeOp;
   using MagickLib::ClearCompositeOp;
-  using MagickLib::DissolveCompositeOp;
+  using MagickLib::ColorizeCompositeOp;
+  using MagickLib::CompositeOperator;
+  using MagickLib::CopyBlueCompositeOp;
+  using MagickLib::CopyCompositeOp;
+  using MagickLib::CopyGreenCompositeOp;
+  using MagickLib::CopyOpacityCompositeOp;
+  using MagickLib::CopyRedCompositeOp;
+  using MagickLib::DarkenCompositeOp;
+  using MagickLib::DifferenceCompositeOp;
   using MagickLib::DisplaceCompositeOp;
+  using MagickLib::DissolveCompositeOp;
+  using MagickLib::HueCompositeOp;
+  using MagickLib::InCompositeOp;
+  using MagickLib::LightenCompositeOp;
+  using MagickLib::LuminizeCompositeOp;
+  using MagickLib::MinusCompositeOp;
   using MagickLib::ModulateCompositeOp;
+  using MagickLib::MultiplyCompositeOp;
+  using MagickLib::NoCompositeOp;
+  using MagickLib::OutCompositeOp;
+  using MagickLib::OverCompositeOp;
+  using MagickLib::OverlayCompositeOp;
+  using MagickLib::PlusCompositeOp;
+  using MagickLib::SaturateCompositeOp;
+  using MagickLib::ScreenCompositeOp;
+  using MagickLib::SubtractCompositeOp;
   using MagickLib::ThresholdCompositeOp;
+  using MagickLib::UndefinedCompositeOp;
+  using MagickLib::XorCompositeOp;
   
   // Compression algorithms
   using MagickLib::CompressionType;
