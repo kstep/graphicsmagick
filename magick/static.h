@@ -122,6 +122,7 @@ extern ModuleExport void
   RegisterTIFFImage(void),
   RegisterTILEImage(void),
   RegisterTIMImage(void),
+  RegisterTOPOLImage(void),
   RegisterTTFImage(void),
   RegisterTXTImage(void),
   RegisterUILImage(void),
@@ -141,8 +142,10 @@ extern ModuleExport void
   RegisterXCFImage(void),
   RegisterXPMImage(void),
   RegisterXVImage(void),
-  RegisterXWDImage(void),
+#if defined(_VISUALC_)
   RegisterXTRNImage(void),
+#endif
+  RegisterXWDImage(void),
   RegisterYUVImage(void),
   UnregisterARTImage(void),
   UnregisterAVIImage(void),
@@ -249,6 +252,7 @@ extern ModuleExport void
   UnregisterTIFFImage(void),
   UnregisterTILEImage(void),
   UnregisterTIMImage(void),
+  UnregisterTOPOLImage(void),
   UnregisterTTFImage(void),
   UnregisterTXTImage(void),
   UnregisterUILImage(void),
@@ -268,12 +272,11 @@ extern ModuleExport void
   UnregisterXCFImage(void),
   UnregisterXPMImage(void),
   UnregisterXVImage(void),
-  UnregisterXWDImage(void),
+#if defined(_VISUALC_)
   UnregisterXTRNImage(void),
+#endif
+  UnregisterXWDImage(void),
   UnregisterYUVImage(void);
-
-extern unsigned int
-  DigimarcImage(Image **,const int,char **);
 
 extern unsigned int
   AnalyzeImage(Image **,const int,char**);

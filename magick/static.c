@@ -73,15 +73,8 @@ MagickExport unsigned int ExecuteStaticModuleProcess(const char *tag,
   Image **image,const int argc,char **argv)
 {
 #if !defined(BuildMagickModules)
-# if !defined(_VISUALC_)
   if (LocaleCompare("analyze",tag) == 0)
     return AnalyzeImage(image,argc,argv);
-#else
-  if (LocaleCompare("digimarc",tag) == 0)
-    return DigimarcImage(image,argc,argv);
-  if (LocaleCompare("analyze",tag) == 0)
-    return AnalyzeImage(image,argc,argv);
-#endif
 #endif
   return(False);
 }
@@ -182,6 +175,7 @@ MagickExport void RegisterStaticModules(void)
   RegisterTIFFImage();
   RegisterTILEImage();
   RegisterTIMImage();
+  RegisterTOPOLImage();
   RegisterTTFImage();
   RegisterTXTImage();
   RegisterUILImage();
@@ -198,6 +192,9 @@ MagickExport void RegisterStaticModules(void)
   RegisterXCImage();
   RegisterXCFImage();
   RegisterXPMImage();
+#if defined(_VISUALC_)
+  RegisterXTRNImage();
+#endif /* defined(_VISUALC_) */
   RegisterXWDImage();
   RegisterYUVImage();
 #endif /* !defined(BuildMagickModules) */
