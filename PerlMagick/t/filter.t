@@ -21,7 +21,7 @@ testFilter('input.miff', 'Blur',
 ++$test;
 testFilter('input.miff', 'Border',
   q/10/,
-  'c7c5fe08cc668a4651bd0670e86dc3f4efd544fe0366c027e50dd209eeb435b1');
+  '64d5519395a5facdba262efa93fc7243d0b384433f45c80199bb98e781b417fe');
 
 ++$test;
 testFilter('input.miff', 'Channel',
@@ -110,7 +110,7 @@ testFilter('input.miff', 'Gamma',
 testFilter('input.miff', 'Implode',
   q/0.5/,
   '587985c66eec744fa48e8b6acafaa2bb5c789472134fb89355351179bfb10997',
-  'a706e31a53a00a9ebb54b8072f8547ab85dc65779ee2434a38e54b3cb58203bc');
+  '800bd416e3b963aa43bdff57bd511289800eda82a35f172152ee9cff1b45fe32');
 
 ++$test;
 testFilter('input.miff', 'Magnify',
@@ -185,7 +185,7 @@ testFilter('input.miff', 'Roll',
 testFilter('input.miff', 'Rotate',
   q/10/,
   'defd7e32e835b6e6cf015ae566bbf3f0b0c65448678cf958991e398b25bdef89',
-  'f18e8c9be004d75444a4dca42d84b4bbccef9f673a44eba07d31fe41013babf7');
+  '1641865f619d3b37b60967233d5841554ba79a9e58622a88bc5fb0c04961f3f1');
 
 ++$test;
 testFilter('input.miff', 'Sample',
@@ -224,7 +224,7 @@ testFilter('input.miff', 'Shave',
 testFilter('input.miff', 'Shear',
   q/10/,
   'fdaa73066e3d6ce44921aba2d64673ca931a1edd7c7b74aa9b7f87180cff79d3',
-  '9d055b6ef2659ed30ffb41360f1279747add8d856fe6e2b30a23126538027ab3');
+  '04a47e8e7af69f94c2ce226511ce1b9b6b926ed4d27f9ee471655a9dcbf51a89');
 
 ++$test;
 testFilter('input.miff', 'Solarize',
@@ -236,7 +236,7 @@ testFilter('input.miff', 'Solarize',
 testFilter('input.miff', 'Swirl',
   q/60/,
   '270e1d5da49b7c47b2cd1b5827890f1c0ba9ba039827a45169881537ab96c36d',
-  '759f12b0edf62330ef73bb1bb927ba65f501dd1dac03ef56e9e585ed6b2db5bd');
+  '04fc9c3b7b0edb7ded34f516b73893dfff158e3e33714d01f2e61df015bdf0d0');
 
 ++$test;
 testFilter('input.miff', 'Threshold',
@@ -253,7 +253,7 @@ testFilter('input.miff', 'Trim',
 testFilter('input.miff', 'Wave',
   q/25x157/,
   'cc4cd6466273a0a0212cd29e0b628d52068dd375e2d7e641f26c36d348ca07d0',
-  '451fc28e685333140899f1f516cd0e8973968bbcb488b5674c86bceb87333b16');
+  '2b349dd31b1ad4e304abebe4e2f75fff9fdb60a48f951884e81661c46ad1726a');
 
 ++$test;
 

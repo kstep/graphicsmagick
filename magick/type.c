@@ -187,9 +187,7 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
   for (p=type_list; p != (TypeInfo *) NULL; p=p->next)
     if ((p->name != (char *) NULL) && (LocaleCompare(p->name,name) == 0))
       break;
-  if (p == (TypeInfo *) NULL)
-    ThrowException(exception,OptionWarning,"Unrecognized type",name);
-  else
+  if (p != (TypeInfo *) NULL)
     if (p != type_list)
       {
         /*
