@@ -361,7 +361,7 @@ MagickExport void CloseBlob(Image *image)
       for (next=image; next->next != (Image *) NULL; next=next->next);
       next->blob->eof=False;
       for ( ; image->next != (Image *) NULL; image=image->next)
-        image->blob=next->blob;
+        *image->blob=(*next->blob);
       return;
     }
   if (image->file == (FILE *) NULL)
