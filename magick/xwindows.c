@@ -3556,7 +3556,26 @@ MagickExport unsigned int XGetWindowColor(Display *display,char *name)
   */
   XQueryColor(display,window_attributes.colormap,&color);
   FormatString(name,"#%04x%04x%04x",color.red,color.green,color.blue);
+#if defined(_VISUALC_)
+  {
+    char
+      path[MaxTextExtent],
+      *client_path;
+
+    client_path=SetClientPath((char *) NULL);
+    if (client_path)
+      {
+        (void) strcpy(path,client_path);
+        (void) strcat(path,DirectorySeparator);
+        (void) strcat(path,"rgb.txt");
+        database=fopen(path,"r");
+      }
+    else
+      database=fopen(RGBColorDatabase,"r");
+  }
+#else
   database=fopen(RGBColorDatabase,"r");
+#endif
   if (database != (FILE *) NULL)
     {
       char
