@@ -2726,13 +2726,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) remove(filename);
   return(image);
 }
-#else
-static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  ThrowException(exception,MissingDelegateError,
-    "XML library is not available",image_info->filename);
-  return((Image *) NULL);
-}
 #endif
 
 /*
@@ -2771,7 +2764,9 @@ ModuleExport void RegisterSVGImage(void)
   (void) strncpy(version,"XML " LIBXML_DOTTED_VERSION,MaxTextExtent-1);
 #endif
   entry=SetMagickInfo("SVG");
+#if defined(HasXML)
   entry->decoder=ReadSVGImage;
+#endif
   entry->encoder=WriteSVGImage;
   entry->description=AcquireString("Scalable Vector Gaphics");
   if (*version != '\0')
