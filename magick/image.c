@@ -909,9 +909,12 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
   clone_image->cache=(void *) NULL;
   if ((columns != 0) || (rows != 0))
     {
+      clone_image->page.width=columns;
+      clone_image->page.height=rows;
+      clone_image->page.x*=(double) columns/clone_image->columns;
+      clone_image->page.y*=(double) rows/clone_image->rows;
       clone_image->columns=columns;
       clone_image->rows=rows;
-      GetPageInfo(&clone_image->page);
     }
   else
     {
