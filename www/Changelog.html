@@ -53,9 +53,39 @@
 </tr>
 </table>
 <p>
+2003-05-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/nt_base.h: Imported some obscure defines from
+        magick\magick_config.h.<BR>
+  <LI> VisualMagick/magick/magick_config.h.in: Improved description
+        text and formatting.  Moved some obscure defines to
+        magick/nt_base.h.<BR>
+  <LI> locale/C.mgk: Added a "RegistryKeyLookupFailed" error message.
+  <LI> magick/type.c (GetTypeBlob): Report registry key lookup
+        failures. Also ensure correct return value when an error is
+        reported.<BR>
+  <LI> magick/log.c (GetLogBlob): Report registry key lookup failures.
+  <LI> magick/delegate.c (ReadConfigureFile): Report registry key
+        lookup failures.<BR>
+  <LI> magick/blob.c (GetConfigureBlob): Report registry key lookup
+        failures. Also ensure correct return value when an error is
+        reported.<BR>
+  <LI> magick/module.c (FindMagickModule): Report registry key lookup
+        failures. Also ensure correct return value when an error is
+        reported.<BR>
+  <LI> magick/nt_base.c (NTRegistryKeyLookup): Simplify base key lookup
+        code, and improve coding style.
+  <LI> coders/logo.c, Copyright.txt, www/Copyright.html: Acknowledge
+        and respect the XFig copyright.
+
+</UL>
+<p>
 2003-05-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/image.h (RoundToQuantum): New macro to round positive
+        double to Quantum.<BR>
   <LI> magick/xwindow.c, magick/xwindow.h, magick/studio.h: Use FreeBSD
         portability fixes from FreeBSD ports collection.
   <LI> configure.ac: Test for &lt;machine/param.h&gt; as used by some *BSD systems.

@@ -1,5 +1,10 @@
 2003-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/nt_base.h: Imported some obscure defines from
+	magick\magick_config.h.
+	* VisualMagick/magick/magick_config.h.in: Improved description
+	text and formatting.  Moved some obscure defines to
+	magick/nt_base.h.
 	* locale/C.mgk: Added a "RegistryKeyLookupFailed" error message.
 	* magick/type.c (GetTypeBlob): Report registry key lookup
 	failures. Also ensure correct return value when an error is
