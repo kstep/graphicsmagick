@@ -85,8 +85,8 @@
 %
 %
 */
-MagickExport PixelPacket AlphaComposite(const PixelPacket *p,
-  const double alpha,const PixelPacket *q,const double beta)
+MagickExport PixelPacket AlphaComposite(const PixelPacket *p,const double alpha,
+  const PixelPacket *q,const double beta)
 {
   register double
     scale;
