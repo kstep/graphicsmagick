@@ -5255,7 +5255,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->colorspace == colorspace)
-    return;
+    return(True);
   if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace))
     return(True);
   if (colorspace == CMYKColorspace)
