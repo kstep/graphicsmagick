@@ -459,18 +459,29 @@ fi
 
 # Evaluate shell variable equivalents to Makefile directory variables
 eval "eval BIN_DIR=$bindir"
+AC_SUBST(BIN_DIR)
 eval "eval SBIN_DIR=$sbindir"
+AC_SUBST(SBIN_DIR)
 eval "eval LIBEXEC_DIR=$libexecdir"
+AC_SUBST(LIBEXEC_DIR)
 eval "eval DATA_DIR=$datadir"
+AC_SUBST(DATA_DIR)
 eval "eval SYSCONF_DIR=$sysconfdir"
+AC_SUBST(SYSCONF_DIR)
 eval "eval SHAREDSTATE_DIR=$sharedstatedir"
+AC_SUBST(SHAREDSTATE_DIR)
 eval "eval LOCALSTATE_DIR=$localstatedir"
+AC_SUBST(LOCALSTATE_DIR)
 eval "eval LIB_DIR=$libdir"
+AC_SUBST(LIB_DIR)
 eval "eval INCLUDE_DIR=$includedir"
+AC_SUBST(INCLUDE_DIR)
 eval "eval OLDINCLUDE_DIR=$oldincludedir"
+AC_SUBST(OLDINCLUDE_DIR)
 eval "eval INFO_DIR=$infodir"
+AC_SUBST(INFO_DIR)
 eval "eval MAN_DIR=$mandir"
-
+AC_SUBST(MAN_DIR)
 
 LDFLAGS="$LDFLAGS -L$LIB_DIR"
 CPPFLAGS="$CPPFLAGS -I$INCLUDE_DIR"

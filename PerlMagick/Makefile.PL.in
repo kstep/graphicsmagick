@@ -55,7 +55,7 @@ WriteMakefile
    'INC'	=> '-I../ -I@top_srcdir@ @CPPFLAGS@',
 
    # Install PerlMagick binary into ImageMagick bin directory
-   'INSTALLBIN'	=> '@bindir@',
+   'INSTALLBIN'	=> '@BIN_DIR@',
 
    # Library specification
    'LIBS'	=> ['@LDFLAGS@ @MAGICKLIB@ @MAGICK_DEP_LIBS@'],

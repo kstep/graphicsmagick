@@ -3584,7 +3584,6 @@ echo "$as_me:$LINENO: result: $lt_cv_deplibs_check_method" >&5
 echo "${ECHO_T}$lt_cv_deplibs_check_method" >&6
 file_magic_cmd=$lt_cv_file_magic_cmd
 deplibs_check_method=$lt_cv_deplibs_check_method
-deplibs_check_method=pass_all
 test -z "$deplibs_check_method" && deplibs_check_method=unknown
 
 
@@ -15091,16 +15090,27 @@ fi
 
 # Evaluate shell variable equivalents to Makefile directory variables
 eval "eval BIN_DIR=$bindir"
+
 eval "eval SBIN_DIR=$sbindir"
+
 eval "eval LIBEXEC_DIR=$libexecdir"
+
 eval "eval DATA_DIR=$datadir"
+
 eval "eval SYSCONF_DIR=$sysconfdir"
+
 eval "eval SHAREDSTATE_DIR=$sharedstatedir"
+
 eval "eval LOCALSTATE_DIR=$localstatedir"
+
 eval "eval LIB_DIR=$libdir"
+
 eval "eval INCLUDE_DIR=$includedir"
+
 eval "eval OLDINCLUDE_DIR=$oldincludedir"
+
 eval "eval INFO_DIR=$infodir"
+
 eval "eval MAN_DIR=$mandir"
 
 
@@ -29796,6 +29806,18 @@ s,@WITH_PERL_STATIC_FALSE@,$WITH_PERL_STATIC_FALSE,;t t
 s,@WITH_PERL_DYNAMIC_TRUE@,$WITH_PERL_DYNAMIC_TRUE,;t t
 s,@WITH_PERL_DYNAMIC_FALSE@,$WITH_PERL_DYNAMIC_FALSE,;t t
 s,@LIB_LF@,$LIB_LF,;t t
+s,@BIN_DIR@,$BIN_DIR,;t t
+s,@SBIN_DIR@,$SBIN_DIR,;t t
+s,@LIBEXEC_DIR@,$LIBEXEC_DIR,;t t
+s,@DATA_DIR@,$DATA_DIR,;t t
+s,@SYSCONF_DIR@,$SYSCONF_DIR,;t t
+s,@SHAREDSTATE_DIR@,$SHAREDSTATE_DIR,;t t
+s,@LOCALSTATE_DIR@,$LOCALSTATE_DIR,;t t
+s,@LIB_DIR@,$LIB_DIR,;t t
+s,@INCLUDE_DIR@,$INCLUDE_DIR,;t t
+s,@OLDINCLUDE_DIR@,$OLDINCLUDE_DIR,;t t
+s,@INFO_DIR@,$INFO_DIR,;t t
+s,@MAN_DIR@,$MAN_DIR,;t t
 s,@LIB_MATH@,$LIB_MATH,;t t
 s,@LIB_THREAD@,$LIB_THREAD,;t t
 s,@HasZLIB_TRUE@,$HasZLIB_TRUE,;t t
