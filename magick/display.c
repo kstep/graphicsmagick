@@ -6946,7 +6946,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
             Display documentation using Netscape remote control.
           */
           FormatString(command,"openURL(%.1024s,new-window,noraise)",
-            "http://www.wizards.dupont.com/cristy/ImageMagick.html");
+            "http://www.imagemagick.org/");
           mozilla_atom=XInternAtom(display,"_MOZILLA_COMMAND",False);
           XChangeProperty(display,mozilla_window,mozilla_atom,XA_STRING,8,
             PropModeReplace,(unsigned char *) command,Extent(command));
