@@ -739,7 +739,8 @@ static unsigned int CheckFileAccessability(const char *filename,
   return(accessible);
 }
 
-static void ChopBlobComponents(char *path,const unsigned long components)
+static void ChopBlobComponents(char *path,const unsigned long components,
+  const unsigned int debug)
 {
   long
     count;
@@ -750,6 +751,8 @@ static void ChopBlobComponents(char *path,const unsigned long components)
   size_t
     length;
 
+  if (debug)
+    (void) fprintf(stdout,"original path  \"%s\"\n",path);
   length=strlen(path);
   p=path+length;
   if (*p == *DirectorySeparator)
@@ -760,6 +763,8 @@ static void ChopBlobComponents(char *path,const unsigned long components)
         *p='\0';
         count++;
       }
+  if (debug)
+    (void) fprintf(stdout,"chopped path  \"%s\"\n",path);
 }
 
 MagickExport void *GetConfigureBlob(const char *filename,char *path,
@@ -822,11 +827,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
         prefix[MaxTextExtent];
 
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      if (debug)
-        (void) fprintf(stdout,"original path  \"%s\"\n",prefix);
-      ChopBlobComponents(prefix,1);
-      if (debug)
-        (void) fprintf(stdout,"chopped path  \"%s\"\n",prefix);
+      ChopBlobComponents(prefix,1,debug);
       FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",prefix,filename);
 #else
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
@@ -990,11 +991,7 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
         Search based on executable directory if directory is known.
       */
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      if (debug)
-        (void) fprintf(stdout,"original path  \"%s\"\n",prefix);
-      ChopBlobComponents(prefix,1);
-      if (debug)
-        (void) fprintf(stdout,"chopped path  \"%s\"\n",prefix);
+      ChopBlobComponents(prefix,1,debug);
       FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",prefix,filename);
 #else
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
@@ -1115,11 +1112,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
         Search based on executable directory if directory is known.
       */
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      if (debug)
-        (void) fprintf(stdout,"original path  \"%s\"\n",prefix);
-      ChopBlobComponents(prefix,1);
-      if (debug)
-        (void) fprintf(stdout,"chopped path  \"%s\"\n",prefix);
+      ChopBlobComponents(prefix,1.debug);
       FormatString(path,"%.1024s/lib/ImageMagick/modules/coders/%.1024s",
         prefix,filename);
 #else
