@@ -1773,7 +1773,7 @@ MagickExport Image *ShadeImage(const Image *image,
             {
               normal_distance=
                 normal.x*normal.x+normal.y*normal.y+normal.z*normal.z;
-              if (normal_distance > 0.0)
+              if (normal_distance > (MagickEpsilon*MagickEpsilon))
                 shade=distance/sqrt(normal_distance);
             }
         }

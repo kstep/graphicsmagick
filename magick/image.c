@@ -4297,7 +4297,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               clone_info->verbose,cluster_threshold,smoothing_threshold);
             continue;
           }
-        if (LocaleCompare("-shade",option) == 0)
+        if (LocaleCompare("shade",option+1) == 0)
           {
             double
               azimuth,
