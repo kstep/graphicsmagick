@@ -175,10 +175,10 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   int
     c,
     j,
-    packet_size;
+    packet_size,
+    quantum;
 
   long
-    quantum,
     scene,
     y;
 
