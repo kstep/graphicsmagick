@@ -3956,7 +3956,7 @@ static unsigned int XDrawEditImage(Display *display,
                 break;
               TemporaryFilename(filename);
               FormatString(stipple_image->filename,"xbm:%.1024s",filename);
-              status=WriteImage(image_info,stipple_image);
+              (void) WriteImage(image_info,stipple_image);
               DestroyImage(stipple_image);
               DestroyImageInfo(image_info);
               status=XReadBitmapFile(display,root_window,filename,&width,
@@ -5391,7 +5391,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Print image.
       */
       status=XPrintImage(display,resource_info,windows,*image);
-      if (status != False)
+      if (status == False)
         {
           XNoticeWidget(display,windows,"Unable to print X image:",
             (*image)->filename);
@@ -6767,7 +6767,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       TemporaryFilename(filename);
       FormatString((*image)->filename,"launch:%s",filename);
       status=WriteImage(image_info,*image);
-      if (status != False)
+      if (status == False)
         XNoticeWidget(display,windows,"Unable to launch image editor",
           (char *) NULL);
       else
@@ -6847,7 +6847,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=WriteImage(image_info,*image);
       FormatString((*image)->filename,"show:%s",filename);
       status=WriteImage(image_info,*image);
-      if (status)
+      if (status == False)
         XNoticeWidget(display,windows,"Unable to show image preview",
           (*image)->filename);
       XDelay(display,1500);
@@ -6868,7 +6868,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=WriteImage(image_info,*image);
       FormatString((*image)->filename,"show:%s",filename);
       status=WriteImage(image_info,*image);
-      if (status)
+      if (status == False)
         XNoticeWidget(display,windows,"Unable to show histogram",
           (*image)->filename);
       XDelay(display,1500);
@@ -6895,8 +6895,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=WriteImage(image_info,*image);
       FormatString((*image)->filename,"show:%s",filename);
       status=WriteImage(image_info,*image);
-      if (status)
-        XNoticeWidget(display,windows,"Unable to show histogram",
+      if (status == False)
+        XNoticeWidget(display,windows,"Unable to show matte",
           (*image)->filename);
       XDelay(display,1500);
       XSetCursorState(display,windows,False);
@@ -8614,8 +8614,8 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
 %
 %  A description of each parameter follows:
 %
-%    o status: Method XPrintImage return False if the image is
-%      printed.  True is returned is there is a memory shortage or if the
+%    o status: Method XPrintImage return True if the image is
+%      printed.  False is returned is there is a memory shortage or if the
 %      image fails to print.
 %
 %    o display: Specifies a connection to an X server; returned from
@@ -8656,7 +8656,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
     "Select Postscript Page Geometry:",geometry);
   if (*geometry == '\0')
-    return(False);
+    return(True);
   image_info->page=PostscriptGeometry(geometry);
   /*
     Apply image transforms.
@@ -8665,7 +8665,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   XCheckRefreshWindows(display,windows);
   print_image=CloneImage(image,0,0,True,&image->exception);
   if (print_image == (Image *) NULL)
-    return(True);
+    return(False);
   FormatString(geometry,"%dx%d!",windows->image.ximage->width,
     windows->image.ximage->height);
   TransformImage(&print_image,windows->image.crop_geometry,geometry);
