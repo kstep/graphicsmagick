@@ -20,7 +20,8 @@
 #ifndef LIBWMF_API_H
 #define LIBWMF_API_H
 
-#include <zlib.h>
+// #include <zlib.h>
+typedef void *gzFile; // This is all that was obtained from zlib.h
 
 #include <libwmf/types.h>
 

@@ -172,7 +172,7 @@ int main(int argc,char **argv)
 #endif
   /* software termination signal from kill */
 #if defined(SIGTERM)
-  (void) signal(SIGQUIT,MagickSignalHandler);
+  (void) signal(SIGTERM,MagickSignalHandler);
 #endif
   /* exceeded cpu limit */
 #if defined(SIGXCPU)

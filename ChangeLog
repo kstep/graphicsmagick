@@ -16,6 +16,13 @@
 	CVS as delegates/freetype2 rather than delegates/ttf
 	so be sure to re-checkout the ttf directory so that
 	the correct files are used.
+	* wmf/incude/libwmf/api.h: Updating FreeType caused
+	a problem since it introduced a copy of zlib and
+	api.h included zlib.h.  Fixed problem by adding
+	a typedef for gzFile and not including zlib.h.
+	* utilities/gm.c: Fixed minor compilation problem
+	under Windows caused by a typo in the signal
+	handler registration code.
 
 2003-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
