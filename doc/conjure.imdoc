@@ -80,11 +80,11 @@ PerlMagick, unless otherwise noted.
 April 2002.
 </p>
 <p>
-This early announcement is to allow ImageMagick users to contribute ideas 
-early in the process so when the scripting language is released it will
-be useful/stable from the get-go!  If you want to contribute suggestions
-about the Magick scripting language (MSL), post them to
-magick-developers@imagemagick.org.
+This early announcement is to allow GraphicsMagick users to contribute
+ideas early in the process so when the scripting language is released it
+will be useful/stable from the get-go! If you want to contribute
+suggestions about the Magick scripting language (MSL), post them to the
+GraphicsMagick tools list at graphicsmagick-tools @ lists.sourceforge.net.
 </p>
 </sect>
 <back>
@@ -131,10 +131,10 @@ Options, above.
 </gm>
 <im>
 <format type=man,tex>
-<i>ImageMagick(1)</i>.
+<i>GraphicsMagick(1)</i>.
 </format>
 <format type=html>
-<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
 </format>
 </im>
 </p>

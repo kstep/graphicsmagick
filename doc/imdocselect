@@ -8,6 +8,21 @@
 # To select all utilities, use imdocselect . options.xml > all.xml
 
 sed "
+       /<gm>/d
+       /<\/gm>/d
+       s/    composite/    gm composite/
+       s/    convert/    gm convert/
+       s/    animate/    gm animate/
+       s/    display/    gm display/
+       s/    conjure/    gm conjure/
+       s/    montage/    gm montage/
+       s/    mogrify/    gm mogrify/
+       s/    identify/    gm identify/
+       s/    import/    gm import/
+       " $3 | \
+              \
+              \
+sed "
      : begin
 
        /<imdoc>/d
@@ -79,6 +94,6 @@ sed "
 
      : select
        d
-     " $3 |         \
+     " |         \
                     \
 sed "/!DELETE!/d"

@@ -440,6 +440,10 @@ display image using this type.</abs>
 <opt>-remote</opt>
 <abs>perform a remote operation</abs>
 </utils>
+<utils apps=convert,mogrify>
+<opt>-resample <horizontal>x<vertical></opt>
+<abs>Resample image to specified horizontal and vertical resolution</abs>
+</utils>
 <utils apps=composite,convert,import,mogrify,montage>
 <opt>-resize <width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}</opt>
 <abs>resize and locate an image</abs>

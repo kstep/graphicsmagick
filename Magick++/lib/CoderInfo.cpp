@@ -31,9 +31,9 @@ Magick::CoderInfo::CoderInfo ( const std::string &name_ )
     {
       _name         = string(magickInfo->name);
       _description  = string(magickInfo->description);
-      _isReadable   = static_cast<bool>(magickInfo->decoder);
-      _isWritable   = static_cast<bool>(magickInfo->encoder);
-      _isMultiFrame = static_cast<bool>(magickInfo->adjoin);
+      _isReadable   = ((magickInfo->decoder) ? false : true);
+      _isWritable   = ((magickInfo->encoder) ? false : true);
+      _isMultiFrame = (magickInfo->adjoin ? true : false);
     }
 }
 

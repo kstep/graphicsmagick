@@ -352,10 +352,10 @@ Options, above.
 </gm>
 <im>
 <format type=man,tex>
-<i>ImageMagick(1)</i>.
+<i>GraphicsMagick(1)</i>.
 </format>
 <format type=html>
-<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
 </format>
 </im>
 </p>
@@ -370,10 +370,10 @@ Options, above.
 </gm>
 <im>
 <format type=man,tex>
-<i>ImageMagick(1)</i>.
+<i>GraphicsMagick(1)</i>.
 </format>
 <format type=html>
-<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
 </format>
 </im>
 </p>
@@ -805,7 +805,7 @@ For example to display the fourth page preceding the current page, press
              or f/x.
     F1       Press to display helpful information about
              the "display" utility.
-    Find     Press to browse documentation about ImageMagick.
+    Find     Press to browse documentation about GraphicsMagick.
     1-9      Press to change the level of magnification.
 </pre>
 
@@ -850,7 +850,7 @@ Specifies the width in pixels of the image window border. The default is
 
 <opt>browseCommand (class browseCommand)</opt>
 <abs>
-Specifies the name of the preferred browser when displaying ImageMagick
+Specifies the name of the preferred browser when displaying GraphicsMagick
 documentation. The default is <tt>netscape %s</tt>.</abs>
 
 <opt>confirmExit (class ConfirmExit)</opt>
@@ -962,9 +962,9 @@ command to print <i>PostScript</i> to your printer. Default value: <tt>lp
 <opt>sharedMemory (class SharedMemory)</opt>
 <abs>
 This resource specifies whether display should attempt use shared memory
-for pixmaps. ImageMagick must be compiled with shared memory support, and
-the display must support the MIT-SHM extension. Otherwise, this resource
-is ignored. The default is True.</abs>
+for pixmaps. GraphicsMagick must be compiled with shared memory support,
+and the display must support the MIT-SHM extension. Otherwise, this
+resource is ignored. The default is True.</abs>
 
 <opt>textFont (class textFont)</opt>
 <abs>
@@ -2757,9 +2757,7 @@ are considered a precious resource, use them with discretion.</dd>
 <im>
 
 <sect NAME="disp-envi">Environment
-<opt>DISPLAY</opt>
-
-<abs>To get the default host, display number, and screen.</abs>
+<include file=environment.imdoc>
 </sect>
 <back>
 
@@ -2771,7 +2769,7 @@ reality.</p>
 
 <p>
 <i>Peder Langlo</i>, <s>Hewlett Packard</s>, Norway, made hundreds of suggestions
-and bug reports. Without Peder, <s>ImageMagick</s> would not be nearly
+and bug reports. Without Peder, <s>GraphicsMagick</s> would not be nearly
 as useful as it is today.</p>
 
 <p>
@@ -2783,8 +2781,8 @@ Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.</p>
 implementation of Alan Paeth's image rotation algorithm.</p>
 
 <p>
-<i>David Pensak</i>, <s>ImageMagick Studio</s>, for providing a computing
-environment that made this program possible.</p>
+<i>David Pensak</i>, <s>E. I. du Pont de Nemours and Company</s>, for
+providing a computing environment that made this program possible.</p>
 
 <p>
 <i>Paul Raveling</i>, <s>USC Information Sciences Institute</s>. The
@@ -2794,7 +2792,7 @@ spatial subdivision color reduction algorithm is based on his Img software.</p>
 <format type=man>
 <sect NAME="disp-also">SEE ALSO
 <p>
-animate(1), composite(1), conjure(1), convert(1), identify(1), ImageMagick(1),
+animate(1), composite(1), conjure(1), convert(1), identify(1), GraphicsMagick(1),
 import(1), mogrify(1), montage(1)
 </p>
 </sect>

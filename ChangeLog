@@ -1,3 +1,25 @@
+2003-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www: Utilities documentation is updated from <imdoc> masters.
+	Formatting could be improved, but the content seems ok.
+	* doc/environment.imdoc: New file to describe environment
+	variables.
+	* coders/cut.c (ReadCUTImage): Use MagickAllocateMemory and
+	MagickFreeMemory rather than malloc and free.
+	* doc/gmdoc2html: Add GraphicsMagick styling to utility web pages.
+	* doc/Makefile: Additional documentation Makefile enhancements.
+	* AUTHORS: New file to acknowledge significant contributors
+	to the software. If an author is not listed here, please let
+	us know.
+	* configure.ac: test -a is not POSIX compliant.
+
+2003-06-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc: Source documentation for 'gm' is now available via a 'doc'
+	CVS module. A Makefile is provided which formats the
+	documentation and installs it into the 'www' and 'utilities'
+	subdirectories.
+
 2003-06-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand: Added Magick Wand library available via

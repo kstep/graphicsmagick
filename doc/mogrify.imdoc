@@ -64,10 +64,10 @@ filename.
 </p>
 The graphics formats supported by <s>mogrify</s> are listed in
 <format type=man,tex>
-<i>ImageMagick(1)</i>.
+<i>GraphicsMagick(1)</i>.
 </format>
 <format type=html>
-<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
 </format>
 </sect>
 <back>
@@ -86,7 +86,7 @@ To convert a directory full of JPEG images to thumbnails, use:</p>
 <pp>
 In this example, <tt>'-size 120x120'</tt> gives a hint to the JPEG decoder
 that the images are going to be downscaled to 120x120, allowing it to run
-faster by avoiding returning full-resolution images to ImageMagick for
+faster by avoiding returning full-resolution images to GraphicsMagick for
 the subsequent resizing operation.  The
 <tt>'-resize 120x120'</tt> specifies the desired dimensions of the
 output images.  It will be scaled so its largest dimension is 120 pixels.  The
@@ -116,10 +116,10 @@ Options, above.
 </gm>
 <im>
 <format type=man,tex>
-<i>ImageMagick(1)</i>.
+<i>GraphicsMagick(1)</i>.
 </format>
 <format type=html>
-<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
 </format>
 </im>
 </p>
@@ -133,10 +133,10 @@ Options, above.
 </gm>
 <im>
 <format type=man,tex>
-<i>ImageMagick(1)</i>.
+<i>GraphicsMagick(1)</i>.
 </format>
 <format type=html>
-<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
 </format>
 </im>
 </p>
@@ -193,16 +193,14 @@ Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</bq></p>
 </sect>
 <back>
 <sect NAME="mog-envi">Environment
-<opt>DISPLAY</opt>
-
-<abs>To get the default host, display number, and screen.</abs>
+<include file=environment.imdoc>
 </sect>
 <back>
 
 <format type=man>
 <sect NAME="mog-also">SEE ALSO
 <p>
-ImageMagick(1), display(1), animate(1), identify(1), montage(1), convert(1),
+GraphicsMagick(1), display(1), animate(1), identify(1), montage(1), convert(1),
 composite(1), conjure(1)
 </p>
 </sect>

@@ -28,7 +28,7 @@
 
 <utils apps=all>
 <p>
-This is a combined list of the commandline options used by the ImageMagick
+This is a combined list of the commandline options used by the GraphicsMagick
 utilities (<i>animate, composite, convert, display, identify,
 import, mogrify</i> and <i>montage</i>).
 </p>
@@ -1488,8 +1488,8 @@ section of <i>X(1)</i>.</pp>
 
 <pp>
 This option will convert any image to the image format you specify.
-See <i>ImageMagick(1)</i> for a list of image format types supported by
-<s>ImageMagick</s>.
+See <i>GraphicsMagick(1)</i> for a list of image format types supported by
+<s>GraphicsMagick</s>.
 </pp>
 
 <pp>
@@ -2029,7 +2029,7 @@ Choices are: <s>Delegate</s>, <s>Format</s>, <s>Magic</s>,
 </pp>
 
 <pp>
-This option lists entries from the ImageMagick configuration files.
+This option lists entries from the GraphicsMagick configuration files.
 </pp>
 
 </utils>
@@ -3113,7 +3113,7 @@ image.
 
 <pp>
 This option specifies whether the utility should attempt use shared memory
-for pixmaps.  ImageMagick must be compiled with shared memory support,
+for pixmaps.  GraphicsMagick must be compiled with shared memory support,
 and the display must support the <i>MIT-SHM</i> extension.  Otherwise, this
 option is ignored.  The default is <s>True</s>.
 </pp>

@@ -1,0 +1,100 @@
+The following people have contributed substantially to the development
+of GraphicsMagick:
+
+John Cristy
+		Creator, principal author, and principal maintainer of
+		ImageMagick, from which GraphicsMagick is originally
+		derived.
+
+Bob Friesenhahn
+		Principal maintainer of GraphicsMagick. Author of
+		Magick++ (C++ API to ImageMagick and GraphicsMagick).
+		Author of module loader facility, automatic file
+		identification (magic) support, Unix/Cygwin/MinGW
+		configure/make facility, Windows setup.exe style
+		installer, WMF renderer, C API documentation formatter,
+		and the C, C++, and Perl test suites used by ImageMagick
+		and GraphicsMagick.
+
+William Radcliffe
+		Author of the VisualMagick project configure facility
+		for Visual C++. Author of FlashPix module. Author of the
+		EMF, XTRN, and META coders. Significant contributions to
+		the MSL, JPEG, TIFF, SVG, and URL coders. Authored
+		"process" module support. Wrote the micro-timer facility
+		used by 'identify'. Ported module loader support to
+		Windows. Significantly improved polygon rendering
+		performance.
+
+Glenn Randers-Pehrson
+		Contributed significantly to the utilities, including
+		writing the 'gm' utility wrapper. Authored support for
+		JNG, MNG, and PNG formats. Provided significant support
+		for the BMP format. Significant improvements to the
+		documentation, including creating a documentation
+		authoring environment based on the <imdoc> format.
+
+Leonard Rosenthol
+		Authored the 'conjure' utility and associated MSL
+		execution environment. Provided MacOS support. Authored
+		the CLIPBOARD, XCF, and PSD coders.  Postscript and PDF expertise.
+		Significant drawing enhancements including support for
+		clipping masks and a mask image.
+
+Jaroslav Fojtik
+		Authored the CUT, ART, and MATLAB coder modules.
+
+Christopher R. Hawks
+		Authored the PALM coder.
+
+Francis J. Franklin
+		Ported the WMF coder to the libwmf 0.2 API.
+
+Nathan Brown
+		Original author of the JP2 coder.
+
+Kyle Shorter
+		Original author of PerlMagick. Author of the LOCALE coder.
+
+Markus Friedl
+		Original author of Base64 encode/decode sources.
+
+Additional Acknowledgements
+===========================
+
+David Pensak, E. I. du Pont de Nemours and Company
+		For providing the computing environment that made
+		developing ImageMagick possible.
+
+Alexander Zimmermann
+		Responsible for the ImageMagick Linux binary
+		distributions for many years. His efforts are very much
+		appreciated.
+
+Paul Heckbert, Carnegie Mellon University
+		Image resizing is based on Paul Heckbert's Zoom program.
+
+Paul Raveling, USC Information Sciences Institute
+		The spatial subdivision color reduction algorithm is
+		based on his Img software.		
+
+Michael Halle, Spatial Imaging Group at MIT
+		For the initial implementation of Alan Paeth's image
+		rotation algorithm.
+
+Peder Langlo, Hewlett Packard
+		Made hundreds of suggestions and bug reports. Without
+		Peder, this software would not be nearly as useful as it
+		is today.
+
+Rod Bogart and John W. Peterson, University of Utah
+		Image compositing is loosely based on rlecomp of the
+		Utah Raster Toolkit.
+
+Alvy Ray Smith and Eric Ray Lyons
+		HWB color transform and algorithm.
+
+Thomas R Crimmins
+		Inventor of the eight hull algorithm used for speckle
+		reduction.
+

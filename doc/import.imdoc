@@ -126,10 +126,10 @@ Options, above.
 </gm>
 <im>
 <format type=man,tex>
-<i>ImageMagick(1)</i>.
+<i>GraphicsMagick(1)</i>.
 </format>
 <format type=html>
-<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
 </format>
 </im>
 </p>
@@ -147,10 +147,10 @@ Options, above.
 </gm>
 <im>
 <format type=man,tex>
-<i>ImageMagick(1)</i>.
+<i>GraphicsMagick(1)</i>.
 </format>
 <format type=html>
-<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
 </format>
 </im>
 </p>
@@ -158,15 +158,14 @@ Options, above.
 <im>
 
 <sect NAME="imp-envi">Environment
-<opt>DISPLAY</opt>
-
+<include file=environment.imdoc>
 </sect>
 
 <format type=man>
 <sect NAME="imp-also">SEE ALSO
 <p>
 animate(1), display(1), composite(1), conjure(1), convert(1), identify(1),
-mogrify(1), montage(1), ImageMagick(1)
+mogrify(1), montage(1), GraphicsMagick(1)
 </p>
 </sect>
 </format>

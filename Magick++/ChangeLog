@@ -1,3 +1,8 @@
+2003-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/CoderInfo.cpp (CoderInfo): Applied compilation fix from
+	Mike Chiarappa to compile using Borland C++.
+
 2003-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Geometry.cpp (string): Throw an exception if a string is

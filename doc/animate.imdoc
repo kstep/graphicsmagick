@@ -130,10 +130,10 @@ Options, above.
 </gm>
 <im>
 <format type=man,tex>
-<i>ImageMagick(1)</i>.
+<i>GraphicsMagick(1)</i>.
 </format>
 <format type=html>
-<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
 </format>
 </im>
 </p>
@@ -146,10 +146,10 @@ Options, above.
 </gm>
 <im>
 <format type=man,tex>
-<i>ImageMagick(1)</i>.
+<i>GraphicsMagick(1)</i>.
 </format>
 <format type=html>
-<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
 </format>
 </im>
 </p>
@@ -325,9 +325,7 @@ of header identifying the window. The default is the image file name.</dd>
 <back>
 <im>
 <sect NAME="envi">Environment
-<opt>DISPLAY</opt>
-
-<abs>To get the default host, display number, and screen.</abs>
+<include file=environment.imdoc>
 </sect>
 <sect NAME="ackn">Acknowledgements
 <dl>
@@ -350,7 +348,7 @@ software.</dd>
 <format type=man>
 <sect NAME="also">SEE ALSO
 <p>
-display(1), composite(1), conjure(1), convert(1), identify(1), ImageMagick(1),
+display(1), composite(1), conjure(1), convert(1), identify(1), GraphicsMagick(1),
 import(1), mogrify(1), montage(1)
 </p>
 </sect>

@@ -528,7 +528,7 @@ AC_ARG_WITH(zlib,
 #
 AC_ARG_WITH(libstdc,
   [  --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)],
-  [if test "$withval" != no -a "$withval" != yes; then
+  [if test "$withval" != no && test "$withval" != yes; then
     if test -d "$withval"; then
       LIBSTDCLDFLAGS="-L$withval"
     fi
@@ -770,19 +770,19 @@ then
  AC_LANG_POP
 
  AC_MSG_CHECKING(whether C++ compiler is sufficient for Magick++)
- if test \
-  $ac_cv_cxx_bool = 'yes' -a \
-  $ac_cv_cxx_const_cast = 'yes' -a \
-  $ac_cv_cxx_default_template_parameters = 'yes' -a \
-  $ac_cv_cxx_exceptions = 'yes' -a \
-  $ac_cv_cxx_explicit = 'yes' -a \
-  $ac_cv_cxx_have_std = 'yes' -a \
-  $ac_cv_cxx_have_stl = 'yes' -a \
-  $ac_cv_cxx_mutable = 'yes' -a \
-  $ac_cv_cxx_namespaces = 'yes' -a \
-  $ac_cv_cxx_new_for_scoping = 'yes' -a \
-  $ac_cv_cxx_static_cast = 'yes' -a \
-  $ac_cv_cxx_templates = 'yes'
+ if \
+  test $ac_cv_cxx_bool = 'yes' && \
+  test $ac_cv_cxx_const_cast = 'yes' &&
+  test $ac_cv_cxx_default_template_parameters = 'yes' &&
+  test $ac_cv_cxx_exceptions = 'yes' && \
+  test $ac_cv_cxx_explicit = 'yes' && \
+  test $ac_cv_cxx_have_std = 'yes' && \
+  test $ac_cv_cxx_have_stl = 'yes' && \
+  test $ac_cv_cxx_mutable = 'yes' && \
+  test $ac_cv_cxx_namespaces = 'yes' && \
+  test $ac_cv_cxx_new_for_scoping = 'yes' && \
+  test $ac_cv_cxx_static_cast = 'yes' && \
+  test $ac_cv_cxx_templates = 'yes'
  then
   have_magick_plus_plus='yes'
  else
@@ -1444,7 +1444,7 @@ then
 
     OLD_LDFLAGS="$LDFLAGS"
     OLD_CPPFLAGS="$CPPFLAGS"
-    if test "$with_delegate_build" != 'no' -a -d "$builddir/ttf/include"
+    if test "$with_delegate_build" != 'no' && test -d "$builddir/ttf/include"
     then
        :
     else

@@ -30,7 +30,7 @@
 
 <utils apps=all>
 <p>
-This is a combined list of the commandline options used by the ImageMagick
+This is a combined list of the commandline options used by the GraphicsMagick
 utilities (<i>animate, composite, convert, display, identify,
 import, mogrify</i> and <i>montage</i>).
 </p>
@@ -86,8 +86,8 @@ use by subsequent <s>-draw</s> or <s>-transform</s> options.
 By default antialiasing algorithms are used when drawing objects (e.g. lines)
 or rendering vector formats (e.g. WMF and Postscript). Use +antialias to
 disable use of antialiasing algorithms. Reasons to disable antialiasing
-</pp>
 include avoiding increasing colors in the image, or improving rendering speed.
+</pp>
 
 </utils>
 
@@ -446,8 +446,11 @@ go <i>technicolor</i> when the image colormap is installed.</pp>
 The actual number of colors in the image may be less than your request,
 but never more. Note, this is a color reduction option. Images with less
 unique colors than specified with this option will have any duplicate or
-unused colors removed. Refer to <a href="quantize.html">quantize</a> for
-more details.
+unused colors removed. The ordering of an existing color palette may be
+altered. When converting an image from color to grayscale, convert the
+image to the gray colorspace before reducing the number of colors since
+doing so is most efficient. Refer to <a
+href="quantize.html">quantize</a> for more details.
 </pp>
 
 <pp>
@@ -468,11 +471,11 @@ affect the color reduction algorithm.
 
 <abs>the type of colorspace</abs>
 <pp>
-Choices are: <s>GRAY</s>, <s>OHTA</s>, <s>RGB</s>,
-<s>Transparent</s>,
-<s>XYZ</s>,
-<s>YCbCr</s>, <s>YIQ</s>, <s>YPbPr</s>,
-<s>YUV</s>, or <s>CMYK</s>.
+Choices are:
+<s>CMYK</s>, <s>GRAY</s>, <s>HSL</s>, <s>HWB</s>, <s>OHTA</s>, <s>RGB</s>,
+<s>Transparent</s>, <s>XYZ</s>, <s>YCbCr</s>, <s>YIQ</s>, <s>YPbPr</s>,
+or
+<s>YUV</s>.
 </pp>
 
 <pp>
@@ -488,8 +491,9 @@ The <s>Transparent</s> color space behaves uniquely in that it preserves
 the matte channel of the image if it exists.
 </pp>
 <pp>
-The <s>-colors</s> or <s>-monochrome</s> option is required for this
-option to take effect.
+The <s>-colors</s> or <s>-monochrome</s> option, or saving to a file
+format which requires color reduction, is required for this option to
+take effect.
 </pp>
 
 
@@ -726,7 +730,8 @@ may result in larger-than-expected GIF files.</pp>
 
 <pp>
 <i>"Lossless"</i> refers to lossless JPEG, which is only available if
-the JPEG library has been patched to support it.</pp>
+the JPEG library has been patched to support it. Use of lossless JPEG is
+generally not recommended.</pp>
 
 <pp>
 Use the <s>-quality</s> option to set the compression level to be used by
@@ -861,13 +866,18 @@ For example, to log cache and blob events, use</pp>
 
 <pp>
 The "User" domain is normally empty, but developers can log "User" events
-in their private copy of ImageMagick.</pp>
+in their private copy of GraphicsMagick.</pp>
 
 <pp>
 Use the <s>-log</s> option to specify the format for debugging output.</pp>
 
 <pp>
 Use <s>+debug</s> to turn off all logging.</pp>
+
+<pp>
+An alternative to using <s>-debug</s> is to use the <s>MAGICK_DEBUG</s>
+environment variable. The allowed values for the <s>MAGICK_DEBUG</s>
+environment variable are the same as for the <s>-debug</s> option.</pp>
 
 </utils>
 
@@ -930,12 +940,25 @@ minimum and maximum delay.
 <utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
 <dopt>-density <width>x<height></opt>
 
-<abs>vertical and horizontal resolution in pixels of the image</abs>
+<abs>horizontal and vertical resolution in pixels of the image</abs>
+
+<pp>This option specifies the image resolution to store while encoding a
+raster image or the canvas resolution while rendering vector formats
+such as Postscript, PDF, WMF, and SVG into a raster image. Image
+resolution provides the unit of measure to apply when rendering to an
+output device or raster image.</pp>
+
+<pp>If the file format supports it, this option may be used to update
+the stored image resolution. Note that Photoshop stores and obtains
+image resolution from a proprietary embedded profile. If this profile is
+not stripped from the image, then Photoshop will continue to treat the
+image using its former resolution, ignoring the image resolution
+specified in the standard file header.</pp>
 
 <pp>
 This option specifies an image density when decoding a <i>PostScript</i>
 or Portable Document page. The default is 72 dots per inch in the horizontal
-and vertical direction. This option is used in concert with <s>-page</s>.
+and vertical direction. This option may be used in concert with <s>-page</s>.
 </pp>
 
 </utils>
@@ -1086,8 +1109,9 @@ to take effect.
 </pp>
 
 <pp>
-Use <s>+dither</s> to turn off dithering and to render PostScript without
-text or graphic aliasing.
+Use <s>+dither</s> to turn off dithering and to render PostScript
+without text or graphic aliasing. Disabling dithering often (but not
+always) leads to decreased processing time.
 </pp>
 
 </utils>
@@ -1229,11 +1253,11 @@ See <s>-compose</s> for a description of the composite operators.
 
 
 <pp>
-Use <s>text</s> to annotate an image with text. Follow the text coordinates
-with a string. If the string has embedded spaces, enclose it in double
-quotes. Optionally you can include the image filename, type, width, height,
-or other image attribute by embedding special format character.
-See <s>-comment</s> for details.
+Use <s>text</s> to annotate an image with text. Follow the text
+coordinates with a string. If the string has embedded spaces, enclose it
+in single or double quotes. Optionally you can include the image
+filename, type, width, height, or other image attribute by embedding
+special format character. See <s>-comment</s> for details.
 </pp>
 
 <pp>
@@ -1400,18 +1424,6 @@ Use <s>+endian</s> to revert to unspecified endianness.
 
 
 
-
-<!-- ------------ -extract ------------------------------------------ -->
-
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
-<opt>-extract <width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}</opt>
-
-<abs>extract an area from the image while decoding</abs>
-
-</utils>
-
-
-
 <!-- ------------ -fill --------------------------------------------- -->
 
 <utils apps=convert,mogrify,montage>
@@ -1420,7 +1432,7 @@ Use <s>+endian</s> to revert to unspecified endianness.
 <abs>color to use when filling a graphic primitive</abs>
 
 <pp>
-Colors are represented in ImageMagick in the same form used by SVG:</pp>
+Colors are represented in GraphicsMagick in the same form used by SVG:</pp>
 
 <pre>
     name                 ("convert -list color" to see names)
@@ -1493,7 +1505,10 @@ Choose from these filters:
 </pre>
 
 <pp>
-The default filter is <s>Lanczos</s>
+The default filter is automatically selected to provide the best quality
+while consuming a reasonable amount of time. The <s>Mitchell</s> filter
+is used if the image supports a palette, supports a matte channel, or is
+being enlarged, otherwise the <s>Lanczos</s> filter is used.
 </pp>
 
 </utils>
@@ -1593,8 +1608,8 @@ option.</pp>
 <pp>
 When used with the <s>mogrify</s> utility,
 this option will convert any image to the image format you specify.
-See <i>ImageMagick(1)</i> for a list of image format types supported by
-<s>ImageMagick</s>.
+See <i>GraphicsMagick(1)</i> for a list of image format types supported by
+<s>GraphicsMagick</s>, or see the output of 'gm -list format'.
 </pp>
 
 <pp>
@@ -1818,7 +1833,8 @@ for these differences.
 
 <pp>
 The <i>distance</i> can be in absolute intensity units or, by appending
-<i>"%"</i>, as a percentage of the maximum possible intensity (255 or 65535).
+<i>"%"</i>, as a percentage of the maximum possible intensity (255,
+65535, or 4294967295).
 </pp>
 
 </utils>
@@ -1834,11 +1850,13 @@ The <i>distance</i> can be in absolute intensity units or, by appending
 <abs>level of gamma correction</abs>
 
 <pp>
-The same color image displayed on two different workstations may look different
-due to differences in the display monitor. Use gamma correction to adjust
-for this color difference. Reasonable values extend from <s>0.8</s> to
-<s>2.3</s>.  Gamma less than 1.0 darkens the image and gamma greater than
-1.0 lightens it.
+The same color image displayed on two different workstations may look
+different due to differences in the display monitor. Use gamma
+correction to adjust for this color difference. Reasonable values extend
+from <s>0.8</s> to <s>2.3</s>. Gamma less than 1.0 darkens the image and
+gamma greater than 1.0 lightens it. Large adjustments to image gamma may
+result in the loss of some image information if the pixel quantum size
+is only eight bits (quantum range 0 to 255).
 </pp>
 
 <pp>
@@ -2239,24 +2257,23 @@ as a percentage.</pp>
 <!-- ------------ -level -------------------------------------------- -->
 
 <utils apps=convert,mogrify>
-<dopt>-level <black_point>{,<white_point>}{%}{,<gamma>}</opt>
+<dopt>-level <black_point>{,<gamma>}{,<white_point>}{%}</opt>
 
 <abs>adjust the level of image contrast</abs>
 
 <pp>
-Give one, two or three values delimited with commas: black, white, and gamma
-(e.g. 10,65000,1.0 or 2%,98%,0.5).  The black and white points range from
-0 to MaxRGB or from 0 to 100%; if the white point is omitted it is
-set to MaxRGB-black_point.  If a "%" sign is present anywhere in the
-string, the black and white points are percentages of MaxRGB.
-Gamma is an exponent that ranges from 0.1 to 10.; if it is omitted,
-the default of 1.0 (no gamma correction) is assumed.
+Give one, two or three values delimited with commas: black-point, gamma,
+white-point (e.g. 10,1.0,250 or 2%,0.5,98%). The black and white
+points range from 0 to MaxRGB or from 0 to 100%; if the white point is
+omitted it is set to MaxRGB-black_point. If a "%" sign is present
+anywhere in the string, the black and white points are percentages of
+MaxRGB. Gamma is an exponent that ranges from 0.1 to 10.; if it is
+omitted, the default of 1.0 (no gamma correction) is assumed. This
+interface works similar to Photoshop's "Image->Adjustments->Levels..."
+"Input Levels" interface.
 </pp>
 
 </utils>
-
-
-
 
 
 
@@ -2271,15 +2288,22 @@ the default of 1.0 (no gamma correction) is assumed.
 
 <pp>
 The value for File is in number of files and the values for the other
-resources are in Megabytes.  By default the limits are 64 files, 512MB memory,
-1024MB map, and unlimited disk, but these are adjusted at startup
+resources are in Megabytes.  By default the limits are 256 files, 1024MB memory,
+4096MB map, and unlimited disk, but these are adjusted at startup
 time on platforms that can provide information about available resources.
-When the limit is reached, ImageMagick will fail in some fashion, or
+When the limit is reached, GraphicsMagick will fail in some fashion, or
 take compensating actions if possible.
 For example, <tt>-limit memory 32 -limit map 64</tt> limits memory
 When the pixel cache reaches the memory limit it uses
 memory mapping.  When that limit is reached it goes to disk.  If disk has
 a hard limit, the program will fail.</pp>
+
+<pp>
+Resource limits may also be set using environment variables. The
+environment variables <s>MAGICK_LIMIT_DISK</s>,
+<s>MAGICK_LIMIT_FILES</s>, <s>MAGICK_LIMIT_MEMORY</s>, and
+<s>MAGICK_LIMIT_MAP</s>, may be used to set the limits for disk space,
+open files, heap memory, and memory map size, respectively.</pp>
 
 <pp>
 You can use the option <tt>-list resource</tt> to find out the limits.</pp>
@@ -2315,7 +2339,7 @@ Choices are: <s>Delegate</s>, <s>Format</s>, <s>Magic</s>,
 </pp>
 
 <pp>
-This option lists information about the ImageMagick configuration.
+This option lists information about the GraphicsMagick configuration.
 </pp>
 
 </utils>
@@ -3064,6 +3088,14 @@ is 0 (worst but fastest compression) to 9 (best but slowest).  It has no
 effect on the image appearance, since the compression is always lossless.</pp>
 
 <pp>
+For the JPEG-2000 image format, quality is mapped using a non-linear
+equation to the compression ratio required by the Jasper library. This
+non-linear equation is intended to loosely approximate the quality
+provided by the JPEG v1 format. The default quality value 75 results in
+a request for 16:1 compression. The quality value 100 results in
+a request for non-lossy compression.</pp>
+
+<pp>
 For the MNG and PNG image formats, the quality value sets the zlib compression
 level (quality / 10) and filter-type (quality % 10). Compression levels
 range from 0 (fastest compression) to 100 (best but slowest). For compression
@@ -3197,13 +3229,38 @@ an image file to load.
 <abs>render vector operations</abs>
 
 <pp>
-Use <s>+render</s> to turn off rendering vector operations.
+Use <s>+render</s> to turn off rendering vector operations. This is
+useful when saving the result to vector formats such as MVG or SVG.
 </pp>
 
 </utils>
 
 
 
+<!-- ------------ -resample ------------------------------------------ -->
+
+
+<utils apps=convert,mogrify>
+<dopt>-resample <horizontal>x<vertical></opt>
+
+<abs>Resample image to specified horizontal and vertical resolution</abs>
+
+<pp>
+Resize the image so that its rendered size remains the same as the
+original at the specified target resolution. For example, if a 300 DPI
+image renders at 3 inches by 2 inches on a 300 DPI device, when the
+image has been resampled to 72 DPI, it will render at 3 inches by 2
+inches on a 72 DPI device. Note that only a small number of image
+formats (e.g. JPEG, PNG, and TIFF) are capable of storing the image
+resolution. For formats which do not support an image resolution, the
+original resolution of the image must be specified via <s>-density</s>
+on the command line prior to specifying the resample resolution.</pp>
+
+<pp>
+Note that Photoshop stores and obtains image resolution from a
+proprietary embedded profile. If this profile exists in the image, then
+Photoshop will continue to treat the image using its former resolution,
+ignoring the image resolution specified in the standard file header.</pp>
 
 
 <!-- ------------ -resize ------------------------------------------ -->
@@ -3303,7 +3360,7 @@ option.</pp>
 <utils apps=convert,display,mogrify>
 <dopt>-sample <geometry></opt>
 
-<abs>scale image with pixel sampling</abs>
+<abs>scale image using pixel sampling</abs>
 
 <pp>
 See <s>-geometry</s> for details about
@@ -3413,26 +3470,6 @@ popups that are independent windows but appear over the specified window.</pp>
 
 
 
-<!-- ------------ -seed --------------------------------------------- -->
-
-<utils apps=convert,mogrify>
-<opt>-seed <value></opt>
-
-<abs>pseudo-random number generator seed value</abs>
-
-<pp>
-The value can be any integer in the range 1 to 2**31-1.  Successive
-runs with a particular seed will generate the same sequence of
-pseudo-random numbers. If the <s>-seed</s> option is not present,
-ImageMagick will generate a random seed from system timers, clocks,
-etc., so that successive runs will generate different sequences.
-The pseudo-random numbers are used by options such as <s>-noise</s>,
-<s>-spread</s>, and the <s>plasma</s> format.</pp>
-
-</utils>
-
-
-
 <!-- ------------ -segment ------------------------------------------ -->
 
 <utils apps=convert,display,mogrify>
@@ -3504,8 +3541,8 @@ image.
 <abs>use shared memory</abs>
 
 <pp>
-This option specifies whether the utility should attempt use shared memory
-for pixmaps.  ImageMagick must be compiled with shared memory support,
+This option specifies whether the utility should attempt to use shared memory
+for pixmaps.  GraphicsMagick must be compiled with shared memory support,
 and the display must support the <i>MIT-SHM</i> extension.  Otherwise, this
 option is ignored.  The default is <s>True</s>.
 </pp>
@@ -3522,9 +3559,8 @@ option is ignored.  The default is <s>True</s>.
 <abs>sharpen the image</abs>
 
 <pp>
-Use a Gaussian operator of the given radius and
-standard deviation (sigma).
-</pp>
+Use a Gaussian operator of the given radius and standard deviation
+(sigma).</pp>
 
 </utils>
 
@@ -3811,9 +3847,9 @@ and <tt>x:fixed</tt> is OPTION1.
 <abs>threshold the image</abs>
 
 <pp>
-Create an image such that any pixel sample that is equal or
-exceeds the threshold is reassigned the maximum intensity otherwise the
-minimum intensity.
+Create an image such that any pixel sample that is equal to, or exceeds
+the threshold, is reassigned the maximum intensity otherwise the minimum
+intensity.
 </pp>
 
 <pp>
@@ -3935,8 +3971,9 @@ option.</pp>
 <abs>tree depth for the color reduction algorithm</abs>
 
 <pp>
-Normally, this integer value is zero or one. A zero or one tells display
-to choose an optimal tree depth for the color reduction algorithm</pp>
+Normally, this integer value is zero or one. A value of zero or one
+causes the use of an optimal tree depth for the color reduction
+algorithm</pp>
 
 <pp>
 An optimal depth generally allows the best representation of the source
@@ -3947,8 +3984,9 @@ Refer to
 <a href="quantize.html">quantize</a> for more details.
 </pp>
 <pp>
-The <s>-colors</s> or <s>-monochrome</s> option is required for this option
-to take effect.
+The <s>-colors</s> or <s>-monochrome</s> option, or writing to an image
+format which requires color reduction, is required for this option to
+take effect.
 </pp>
 
 </utils>
@@ -4023,10 +4061,11 @@ the input file has been changed and update the displayed image accordingly.
 <utils apps=composite,convert,mogrify>
 <dopt>-units <type></opt>
 
-<abs>the type of image resolution</abs>
+<abs>the units of image resolution</abs>
 <pp>
 Choose from: <s>Undefined</s>, <s>PixelsPerInch</s>, or
-<s>PixelsPerCentimeter</s>.
+<s>PixelsPerCentimeter</s>. This option is normally used in conjunction
+with the <s>-density</s> option.
 </pp>
 
 </utils>
@@ -4042,10 +4081,10 @@ Choose from: <s>Undefined</s>, <s>PixelsPerInch</s>, or
 <abs>sharpen the image with an unsharp mask operator</abs>
 
 <pp>
-The <s>-unsharp</s> option sharpens an image.  We convolve the image with a
-Gaussian operator of the given radius and standard deviation (sigma).
-For reasonable results, radius should be larger than sigma.  Use a radius
-of 0 to have the method select a suitable radius.</pp>
+The <s>-unsharp</s> option sharpens an image. The image is convolved
+with a Gaussian operator of the given radius and standard deviation
+(sigma). For reasonable results, radius should be larger than sigma. Use
+a radius of 0 to have the method select a suitable radius.</pp>
 
 <pp>
 The parameters are:
@@ -4110,7 +4149,7 @@ for a description of these values.
 <utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
 <dopt>-version</opt>
 
-<abs>print ImageMagick version string</abs>
+<abs>print GraphicsMagick version string</abs>
 
 </utils>
 

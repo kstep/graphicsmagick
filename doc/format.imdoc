@@ -74,7 +74,7 @@
 <o>JPG      <|>*rw-<|>Joint Photographic Experts Group
 < >         <|>    <|>JFIF format
 <o>LABEL    <|>*r--<|>Text image format
-<o>LOGO     <|>*rw-<|>ImageMagick Logo
+<o>LOGO     <|>*rw-<|>GraphicsMagick Logo
 <o>M2V      <|>*rw+<|>MPEG-2 Video Stream
 <o>MAP      <|>*rw-<|>Colormap intensities (8 or 16 bits,
 < >         <|>    <|>depending on the image depth) and

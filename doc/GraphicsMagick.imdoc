@@ -36,7 +36,7 @@
 <title>GraphicsMagick Utilities</title>
 <sect NAME="top">NAME
 <p>
-gm - GraphicsMagick commandline utilities to create, edit, or convert images
+gm - GraphicsMagick command-line utilities to create, edit, or convert images
 </p>
 </sect>
 <format type=html>
@@ -53,6 +53,9 @@ gm - GraphicsMagick commandline utilities to create, edit, or convert images
 </dt>
 <dt>
 <a href="#opti">Options</a>
+</dt>
+<dt>
+<a href="#envi">Environment</a>
 </dt>
 <dt>
 <a href="#auth">Authors</a>
@@ -110,7 +113,7 @@ gm - GraphicsMagick commandline utilities to create, edit, or convert images
 </sect>
 <sect NAME="desc">Description
 <p>
-GraphicsMagick's <s>gm</s> provides a suite of commandline utilities for
+GraphicsMagick's <s>gm</s> provides a suite of command-line utilities for
 creating,
 converting, editing, and displaying images:</p>
 
@@ -122,7 +125,7 @@ converting, editing, and displaying images:</p>
 <a href="display.html"><s>Gm display</s></a>
 </format>
 is a machine architecture independent
-image processing and display program. It can display an image on any workstation
+image processing and display facility. It can display an image on any workstation
 display running an <i>X</i> server.</p>
 
 <p>
@@ -155,7 +158,8 @@ of the image optionally appearing just below the individual tile.</p>
 <a href="convert.html"><s>Gm convert</s></a>
 </format>
 converts an input file using one image
-format to an output file with a differing image format.</p>
+format to an output file with the same or differing image format while applying
+an arbitrary number of image transformations.</p>
 
 <p>
 <format type=man,tex>
@@ -189,7 +193,7 @@ or corrupt.</p>
 <format type=html>
 <a href="composite.html"><s>Gm composite</s></a>
 </format>
-composites images to create new images.</p>
+composites images (blends or merges images together) to create new images.</p>
 
 <p>
 <format type=man,tex>
@@ -224,7 +228,7 @@ is compiled in 16-bit mode or in 32-bit mode. Here, the raw data
 is expected to be stored two or four
 bytes per pixel, respectively, in most-significant-byte-first order.
 You can tell if <s>gm</s> was compiled in 16-bit mode by typing
-"gm convert" without any options, and looking for "Q:16" in the first line of
+"gm version" without any options, and looking for "Q:16" in the first line of
 output.</p>
 </sect>
 <back>
@@ -251,22 +255,20 @@ The latter can appear after the final group of input images.</p>
 
 <im>
 <sect NAME="envi">Environment
-<opt>DISPLAY</opt>
-
-<abs>To get the default host, display number, and screen.</abs>
+<include file=environment.imdoc>
 </sect>
 <back>
 
 <format type=man>
 <sect NAME="also">SEE ALSO
 <p>
-ImageMagick(1),
+GraphicsMagick(1),
 animate(1), display(1), animate(1), display(1), identify(1), import(1),
 montage(1), mogrify(1), composite(1)
 </p>
 </sect>
 </format>
-<include file=gm-copyright.imdoc>
+<include file=copyright.imdoc>
 </im>
 </utils>
 </imdoc>

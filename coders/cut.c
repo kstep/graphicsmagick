@@ -469,7 +469,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
            
   /* ----- Load RLE compressed raster ----- */
-  BImgBuff=(unsigned char *) malloc(ldblk);  /*Ldblk was set in the check phase*/
+  BImgBuff=MagickAllocateMemory(unsigned char *,ldblk);  /*Ldblk was set in the check phase*/
   if(BImgBuff==NULL) goto NoMemory;
 
   (void) SeekBlob(image,6 /*sizeof(Header)*/,SEEK_SET);
@@ -552,7 +552,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     } 
 
  Finish:
-  if(BImgBuff!=NULL) free(BImgBuff);
+  if(BImgBuff!=NULL) MagickFreeMemory(BImgBuff);
   if(palette!=NULL) DestroyImage(palette);
   if(clone_info!=NULL) DestroyImageInfo(clone_info);
   if (EOFBlob(image))

@@ -38,11 +38,60 @@
 cat <<!!
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
   "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="en-US">
+<html>
 <head>
-<title>gm - Convert, Edit, and Compose Images</title>
+	<meta HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<title>GraphicsMagick GM Utility</title>
+	<style>
+	<!--
+		@page { size: 8.5in 11in }
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		A:link { color: #0085c0 }
+		A:visited { color: #800080 }
+	-->
+	</style>
 
-<body marginheight=1 marginwidth=1 topmargin=1 leftmargin=1>
+</head>
+<body LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<form ACTION="http://www.google.com/search">
+	<input TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+	<input TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+	<table WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+		<col WIDTH=208*>
+		<col WIDTH=48*>
+
+		<tr>
+			<td WIDTH=81%>
+				<p ALIGN=LEFT>[<a HREF="">Home</a>] [<a HREF="www/mission.html">Mission
+				Statement</a>] [<a HREF="www/development.html">Development
+				Process</a>] [<a HREF="www/contribute.html">Contribute</a>]
+				[<a HREF="www/download.html">Download</a>] [<a HREF="www/install.html">Installation</a>]
+				[<a HREF="www/cvs.html">CVS</a>] [<a HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Lists</a>] [<a HREF="www/FAQ.html">FAQ</a>] [<a HREF="www/formats.html">Formats</a>]
+				[<a HREF="www/NEWS.html">News</a> ] [<a HREF="www/Changelog.html">ChangeLog</a>]
+				[<a HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+				Bugs</a>] [<a HREF="www/utilities.html">Utilities</a>]
+				[<a HREF="www/programming.html">Programming</a>] [<a HREF="www/books.html">Books</a>]
+				[<a HREF="www/links.html">Links</a>]</p>
+
+			</td>
+			<td ROWSPAN=2 WIDTH=19%>
+				<p ALIGN=CENTER><img SRC="../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></p>
+			</td>
+		</tr>
+		<tr>
+			<td WIDTH=81%>
+				<div ALIGN=CENTER>
+					<p><font SIZE=4><i>Search GraphicsMagick site <input TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
+
+					<input TYPE=SUBMIT NAME="sa" VALUE="Search"> </i></font>
+					</p>
+				</div>
+			</td>
+		</tr>
+	</table>
+</form>
 <a name="top"></a>
 <table border=0 cellpadding=10 cellspacing=0 style="margin-top:-17px" width="100%"><tr><td>
 !!
@@ -161,7 +210,7 @@ sed  "
      s/+!a!/<\/a>/
      s/!a href=/<a href=/
      s/ *!o!/<dd>!o!/
-     s/!o!/<img SRC=\"..\/images\/star.png\" ALT=\"*\">/
+     s/!o!/<img SRC=\"..\/images\/ball.png\" ALT=\"*\">/
      s/^ *$/<br>\&nbsp;<br>/
 
      s/<tab>/<tab> cellspacing=\"0\" cellpadding=\"2\">/
@@ -174,7 +223,7 @@ sed  "
      /<sect /i\\
 <table BORDER=0 WIDTH=\"100%\"> \\
 <tr> \\
-<td ALIGN=LEFT bgcolor=\"#003399\" background=\"../images/background.gif\"><img \\
+<td ALIGN=LEFT bgcolor=\"#52799E\"><img \\
 SRC=\"../images/right_triangle.png\" \\ ALT=\">\" BORDER=0 \\
 height=14 width=15><b><font face=\"Helvetica, Arial\"><font \\
 color=\"#FFFFFF\"><font size=\"+1\">
@@ -208,18 +257,16 @@ color=\"#FFFFFF\"><font size=\"+1\">
      /<home>/i\\
 <HR>\\
 \\
-<a href=\"#top\"><img src=\"../images/top.jpg\" border=0 width=42 height=42 align=\"right\" alt=\"Top of page\"></a>\\
-<form action=\"mailto:magick-users%40imagemagick.org\" style=\"margin-top:5px\">\\
- <input type=\"submit\" title=\"E-Mail us\" value=\"E-Mail\" style=\"background-im\\age:url('../images/background.gif'); color:white; font-weight:bold\">\\
- <small>&quot;Image manipulation software that works like magick&quot;</small>\\
-</form></td>\\
+[<a href=\"../index.html\">Home</a>] [<a href=\"utilities.html\">Utilities Index</a>]\\
+<BR>\\
+<p align=center <a href=\"Copyright.html\">Copyright © GraphicsMagick Group 2002, 2003</a></p></td>\\
 </tr></table>\\
 </body></html>
      /<home>/d
 
      /opt>.* .*</s/ / <i>/
      /opt>.* .*</s/<\/opt/<\/i><\/opt/
-     /<lopt>/s/>\\([^ <]*\\)/>\<a href=\"gm.html#details\1\">\\1<\/a>/
+     /<lopt>/s/>\\([^ <]*\\)/>\<a href=\"GraphicsMagick.html#details\1\">\\1<\/a>/
      /<dopt>/s/>\\([^ <]*\\)/>\<a name=\"details\\1\"><\/a>\\1/
      s/<lopt>/<opt>/
      s/<dopt>/<opt>/

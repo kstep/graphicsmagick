@@ -12,14 +12,27 @@ UTILITIES = \
 	animate composite conjure convert display identify import \
 	mogrify montage GraphicsMagick
 
-UTILSUBDIR=expanded/$(UTILITY)
-UTILBASE=$(UTILITY)
-UTILSUBWILDCARD=expanded/*
-INSTALLWWW=../www
-INSTALLUTILITIES=../utilities
+UTILSUBDIR       = expanded/$(UTILITY)
+UTILBASE         = $(UTILITY)
+UTILSUBWILDCARD  = expanded/*
+INSTALLWWW       = ../www
+INSTALLUTILITIES = ../utilities
 GMSUBDIR=Gm
 
-all:	gm.1 gm.html gm.tex
+DOC2MAN	         = ./imdoc2man
+DOC2HTML         = ./gmdoc2html
+DOC2TEX          = ./imdoc2tex
+DOCSELECTCOMBINED = ./gmdocselect
+DOCSELECTSEPERATE = ./imdocselect
+DOCINCLUDE       = ./imdocinclude
+
+HTML_TARGETS     = GraphicsMagick.html animate.html composite.html \
+		conjure.html convert.html display.html gm.html identify.html \
+		import.html mogrify.html montage.html
+
+MAN_TARGES       = gm.1
+
+all:	gm.1 targets-html # gm.html # gm.tex
 
 man:	gm.1
 
@@ -35,34 +48,34 @@ clean: targets-clean
 	if test -d $(GMSUBDIR) ; then rmdir $(GMSUBDIR) ; fi
 	if test -d expanded; then rmdir expanded; fi
 
-gm.1: targets-man $(GMSUBDIR)/man.imdoc
-	./imdoc2man gm $(GMSUBDIR)/man.imdoc > $@
+gm.1: targets-man $(GMSUBDIR)/man.imdoc $(DOC2MAN)
+	$(DOC2MAN) gm $(GMSUBDIR)/man.imdoc > $@
 
-gm.html: targets-html $(GMSUBDIR)/html.imdoc
-	./gmdoc2html gm $(GMSUBDIR)/man.imdoc > $@
+gm.html: targets-html $(GMSUBDIR)/html.imdoc $(DOC2HTML)
+	$(DOC2HTML) gm $(GMSUBDIR)/man.imdoc > $@
 
-gm.tex: targets-tex $(GMSUBDIR)/tex.imdoc
-	./imdoc2tex < $(GMSUBDIR)/man.imdoc > $@
+gm.tex: targets-tex $(GMSUBDIR)/tex.imdoc $(DOC2TEX)
+	$(DOC2TEX) < $(GMSUBDIR)/man.imdoc > $@
 
 brief_options.imdoc:	options.imdoc
 	imdoc_select_brief options.imdoc brief_options.imdoc
 
 $(INSTALLWWW)/gm.html: gm.html
-	cp gm.html $@
+	cp $< $@
 
 $(INSTALLUTILITIES)/gm.1: gm.1
-	cp gm.1 $@
+	cp $< $@
 
-$(GMSUBDIR):
-	mkdir -p $@
-
-$(GMSUBDIR)/man.imdoc: targets-man $(GMSUBDIR)
+$(GMSUBDIR)/man.imdoc: targets-man
+	@if test ! -d $(GMSUBDIR); then mkdir -p $(GMSUBDIR); fi
 	cat $(UTILSUBWILDCARD)/man.imdoc > $@
 
-$(GMSUBDIR)/html.imdoc: targets-html $(GMSUBDIR)
+$(GMSUBDIR)/html.imdoc: targets-html
+	@if test ! -d $(GMSUBDIR); then mkdir -p $(GMSUBDIR); fi
 	cat $(UTILSUBWILDCARD)/html.imdoc > $@
 
-$(GMSUBDIR)/tex.imdoc: targets-tex $(GMSUBDIR)
+$(GMSUBDIR)/tex.imdoc: targets-tex
+	@if test ! -d $(GMSUBDIR); then mkdir -p $(GMSUBDIR); fi
 	cat $(UTILSUBWILDCARD)/tex.imdoc > $@
 
 #
@@ -109,44 +122,42 @@ targets-clean:
 #
 utility: utility-man utility-html utility-tex
 
-utility-man:	$(UTILBASE).1
+utility-man:	$(UTILSUBDIR)/man.imdoc
 
 utility-html:	$(UTILBASE).html
 
 utility-tex:	$(UTILBASE).tex
 
-utility-install: $(INSTALLWWW)/$(UTILBASE).html $(INSTALLUTILITIES)/$(UTILBASE).1
+utility-install: $(INSTALLWWW)/$(UTILBASE).html # $(INSTALLUTILITIES)/$(UTILBASE).1
 
-$(UTILSUBDIR):
-	mkdir -p $(UTILSUBDIR)
+$(UTILSUBDIR)/Expanded.imdoc: $(UTILITY).imdoc brief_options.imdoc copyright.imdoc environment.imdoc $(DOCINCLUDE)
+	@if test ! -d $(UTILSUBDIR); then mkdir -p $(UTILSUBDIR); fi
+	$(DOCINCLUDE) $< > $@
 
-$(UTILSUBDIR)/Expanded.imdoc: $(UTILSUBDIR) $(UTILITY).imdoc brief_options.imdoc copyright.imdoc
-	imdocinclude $(UTILITY).imdoc > $@
+$(UTILSUBDIR)/man.imdoc: $(UTILSUBDIR)/Expanded.imdoc $(DOCSELECTCOMBINED)
+	$(DOCSELECTCOMBINED) $(UTILITY) man $< > $@
 
-$(UTILSUBDIR)/man.imdoc: $(UTILSUBDIR) $(UTILSUBDIR)/Expanded.imdoc
-	gmdocselect $(UTILITY) man $(UTILSUBDIR)/Expanded.imdoc > $@
+$(UTILSUBDIR)/html.imdoc: $(UTILSUBDIR)/Expanded.imdoc $(DOCSELECTSEPERATE)
+	$(DOCSELECTSEPERATE) $(UTILITY) html $< > $@
 
-$(UTILSUBDIR)/html.imdoc: $(UTILSUBDIR) $(UTILSUBDIR)/Expanded.imdoc
-	gmdocselect $(UTILITY) html $(UTILSUBDIR)/Expanded.imdoc > $@
+$(UTILSUBDIR)/tex.imdoc: $(UTILSUBDIR)/Expanded.imdoc $(DOCSELECTCOMBINED)
+	$(DOCSELECTCOMBINED) $(UTILITY) tex $< > $@
 
-$(UTILSUBDIR)/tex.imdoc: $(UTILSUBDIR) $(UTILSUBDIR)/Expanded.imdoc
-	gmdocselect $(UTILITY) tex $(UTILSUBDIR)/Expanded.imdoc > $@
+#$(UTILBASE).1:  $(UTILSUBDIR)/man.imdoc $(DOC2MAN)
+#	$(DOC2MAN) $(UTILITY) $< > $@
 
-$(UTILBASE).1:  $(UTILSUBDIR) $(UTILSUBDIR)/man.imdoc
-	imdoc2man $(UTILITY) $(UTILSUBDIR)/man.imdoc > $@
+$(UTILBASE).html:  $(UTILSUBDIR)/html.imdoc $(DOC2HTML)
+	$(DOC2HTML) $(UTILITY) $< > $@
 
-$(UTILBASE).html:  $(UTILSUBDIR) $(UTILSUBDIR)/html.imdoc
-	gmdoc2html $(UTILITY) $(UTILSUBDIR)/html.imdoc > $@
-
-$(UTILBASE).tex:  $(UTILSUBDIR) $(UTILSUBDIR)/tex.imdoc
-	imdoc2tex < $(UTILSUBDIR)/tex.imdoc > $@
+$(UTILBASE).tex:  $(UTILSUBDIR)/tex.imdoc $(DOC2TEX)
+	$(DOC2TEX) < $< > $@
 
 $(INSTALLWWW)/$(UTILITY).html: $(UTILBASE).html
-	cp $(UTILBASE).html $@
+	cp $< $@
 
 $(INSTALLUTILITIES)/$(UTILITY).1: $(UTILBASE).1
-	cp $(UTILBASE).1 $@
+	cp $< $@
 
 utility-clean:
-	/bin/rm -f $(UTILBASE).1 $(UTILBASE).html $(UTILBASE).tex $(UTILSUBDIR)/*
+	rm -f $(UTILBASE).1 $(UTILBASE).html $(UTILBASE).tex $(UTILSUBDIR)/*
 	if test -d $(UTILSUBDIR); then rmdir $(UTILSUBDIR); fi

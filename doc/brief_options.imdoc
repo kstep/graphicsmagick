@@ -139,7 +139,7 @@
 </utils>
 <utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
 <lopt>-density <width>x<height></opt>
-<abs>vertical and horizontal resolution in pixels of the image</abs>
+<abs>horizontal and vertical resolution in pixels of the image</abs>
 </utils>
 <utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
 <lopt>-depth <value></opt>
@@ -202,10 +202,6 @@
 <utils apps=convert,mogrify>
 <opt>-equalize</opt>
 <abs>perform histogram equalization to the image</abs>
-</utils>
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
-<opt>-extract <width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}</opt>
-<abs>extract an area from the image while decoding</abs>
 </utils>
 <utils apps=convert,mogrify,montage>
 <lopt>-fill <color></opt>
@@ -325,7 +321,7 @@
 <abs>perform local adaptive thresholding</abs>
 </utils>
 <utils apps=convert,mogrify>
-<lopt>-level <black_point>{,<white_point>}{%}{,<gamma>}</opt>
+<lopt>-level <black_point>{,<gamma>}{,<white_point>}{%}</opt>
 <abs>adjust the level of image contrast</abs>
 </utils>
 <utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
@@ -485,6 +481,9 @@ display image using this type.</abs>
 <lopt>-render</opt>
 <abs>render vector operations</abs>
 </utils>
+<utils apps=convert,mogrify>
+<lopt>-resample <horizontal>x<vertical></opt>
+<abs>Resample image to specified horizontal and vertical resolution</abs>
 <utils apps=composite,convert,import,mogrify,montage>
 <lopt>-resize <width>x<height>{%}{@}{!}{<}{>}</opt>
 <abs>resize an image</abs>
@@ -507,7 +506,7 @@ display image using this type.</abs>
 </utils>
 <utils apps=convert,display,mogrify>
 <lopt>-sample <geometry></opt>
-<abs>scale image with pixel sampling</abs>
+<abs>scale image using pixel sampling</abs>
 </utils>
 <utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
 <lopt>-sampling-factor <horizontal_factor>x<vertical_factor></opt>
@@ -528,10 +527,6 @@ display image using this type.</abs>
 <utils apps=import>
 <lopt>-screen</opt>
 <abs>specify the screen to capture</abs>
-</utils>
-<utils apps=convert,mogrify>
-<opt>-seed <value></opt>
-<abs>pseudo-random number generator seed value</abs>
 </utils>
 <utils apps=convert,display,mogrify>
 <lopt>-segment <cluster threshold>x<smoothing threshold></opt>
@@ -650,7 +645,7 @@ display image using this type.</abs>
 detect when image file is modified and redisplay.</abs>
 <utils apps=composite,convert,mogrify>
 <lopt>-units <type></opt>
-<abs>the type of image resolution</abs>
+<abs>the units of image resolution</abs>
 </utils>
 <utils apps=composite,convert,mogrify>
 <lopt>-unsharp <radius>{x<sigma>}{+<amount>}{+<threshold>}</opt>
@@ -668,7 +663,7 @@ detect when image file is modified and redisplay.</abs>
 </utils>
 <utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
 <lopt>-version</opt>
-<abs>print ImageMagick version string</abs>
+<abs>print GraphicsMagick version string</abs>
 </utils>
 <utils apps=convert,mogrify>
 <opt>-view <string></opt>
