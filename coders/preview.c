@@ -498,7 +498,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case CharcoalDrawingPreview:
       {
-        FormatString(factor,"%.1f",percentage+5.0);
+        FormatString(factor,"%gx%g",radius,sigma);
         FormatString(label,"charcoal %.1024s",factor);
         commands[argc++]=(char *) "-charcoal";
         commands[argc++]=factor;
