@@ -2,6 +2,17 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+* Add a pixelIndex method to Image class (similar to pixelColor) which
+  associates a colormap index (index used by colorMap) with an x,y
+  pixel position for cache view 0 (default view).
+
+* Add a pixelIndex method to Pixels class which
+  associates a colormap index (index used by colorMap) with an x,y
+  pixel position for the selected view.
+
+* Provide a way for the user to tailor how errors of various types are
+  reported.
+
 * Come up with a way to allow the user to iterate through a list
   of the supported image formats.
 

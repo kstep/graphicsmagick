@@ -445,6 +445,7 @@ namespace Magick
   using MagickLib::QueryColorDatabase;
   using MagickLib::RGBTransformImage;
   using MagickLib::RaiseImage;
+  using MagickLib::ReacquireMemory;
   using MagickLib::ReadImage;
   using MagickLib::RectangleInfo;
   using MagickLib::RectangleInfo;

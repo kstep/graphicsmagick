@@ -1,3 +1,12 @@
+2001-09-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (colorMap): Allocate a colormap if it does not
+ 	already exist.
+
+	* lib/Pixels.cpp (indexes): Don't attempt to validate image type.
+
+	* lib/Image.cpp (colorMap): Optimized more for performance.
+
 2001-09-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (fontTypeMetrics): New method to support
@@ -18,7 +27,7 @@
 
 	* lib/Image.cpp (colorMap): Automatically extend colormap if
  	specified index is past end of current colormap.  Colormap is
- 	still limited to a maximum depth of 256 entries.
+ 	limited to a maximum depth of MaxRGB entries.
 
 2001-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
 //
 // Pixels Implementation
 //
@@ -101,9 +101,11 @@ Magick::PixelPacket* Magick::Pixels::set ( unsigned int x_,
 // Return pixel colormap index array
 Magick::IndexPacket* Magick::Pixels::indexes ( void )
 {
-  if ( _image.constImage()->c_class != Magick::PseudoClass )
-    throwExceptionExplicit( MagickLib::OptionError,
-			    "Image class does not support colormap");
+  IndexPacket* indexes = MagickLib::GetCacheViewIndexes( _view );
 
-  return MagickLib::GetCacheViewIndexes( _view );
+  if ( !indexes )
+    throwExceptionExplicit( MagickLib::OptionError,
+			    "Image does not contain index channel");
+
+  return indexes;
 }

@@ -1935,60 +1935,61 @@ double Magick::Image::colorFuzz ( void ) const
 void Magick::Image::colorMap ( unsigned int index_,
 			       const Color &color_ )
 {
+  MagickLib::Image* imageptr = image();
+
+  if (index_ > MaxRGB )
+    throwExceptionExplicit( OptionError,
+                            "Index greater than MaxRGB" );
+  
   if ( !color_.isValid() )
     throwExceptionExplicit( OptionError,
 			    "Color argument is invalid");
-  
-  if ( constImage()->c_class != PseudoClass )
-    throwExceptionExplicit( OptionError,
-			    "Image is not a PseudoClass image");
 
   modifyImage();
 
-  if ( (!constImage()->colormap) || (index_ > constImage()->colors - 1) )
+  if ( !imageptr->colormap || index_ > imageptr->colors-1 )
     {
-      // ImageMagick is limited a maximum MaxRGB entries in the colormap
-      if (index_ > MaxRGB )
-        throwExceptionExplicit( OptionError,
-                                "Color index greater than MaxRGB" );
 
-      // Allocate new colormap
-      PixelPacket *colormap
-        = static_cast<PixelPacket *>(AcquireMemory((index_+1)*sizeof(PixelPacket)));
-      // Initialize new colormap all black
-      for( int i=0; i <= index_; i++ )
-        colormap[i] = Color(0,0,0);
-      // Copy over existing colormap entries
-      if(constImage()->colormap)
-        memcpy(colormap,constImage()->colormap,constImage()->colors*sizeof(PixelPacket));
-      // Free existing colormap
-      if (constImage()->colormap != 0)
-        LiberateMemory((void **) &image()->colormap);
-      // Add our own colormap.
-      image()->colormap = colormap;
-      image()->colors = index_+1;
+      if( !imageptr->colormap )
+        {
+          // Allocate colormap
+          imageptr->colormap =
+            static_cast<PixelPacket*>(AcquireMemory((index_+1)*sizeof(PixelPacket)));
+          imageptr->colors = 0;
+        }
+      else
+        {
+          // Re-allocate colormap
+          ReacquireMemory(reinterpret_cast<void **>(&(imageptr->colormap)),
+                          (index_+1)*sizeof(PixelPacket));
+        }
+
+      // Initialize new colormap entries as all black
+      Color black(0,0,0);
+      for( int i=imageptr->colors; i<index_; i++ )
+        (imageptr->colormap)[i] = black;
+
+      // Change number of colors
+      imageptr->colors = index_+1;
     }
 
   // Finally, set color at index in colormap
-  *(image()->colormap + index_) = color_;
+  (imageptr->colormap)[index_] = color_;
 }
 // Return color in colormap at index
 Magick::Color Magick::Image::colorMap ( unsigned int index_ ) const
 {
-  if ( constImage()->c_class != PseudoClass )
+  const MagickLib::Image* imageptr = constImage();
+
+  if ( !imageptr->colormap )
     throwExceptionExplicit( OptionError,
-			    "Image is not a PseudoClass image");
+			    "Image does not support a colormap");
 
-  if ( !constImage()->colormap )
-    throwExceptionExplicit( CorruptImageError,
-			    "Image does not contain colormap");
-
-  if ( index_ > constImage()->colors )
+  if ( index_ > imageptr->colors-1 )
     throwExceptionExplicit( OptionError,
-			    "Color index is greater than maximum image color index");
+			    "Index out of range");
 
-  PixelPacket *color = constImage()->colormap + index_;
-  return Magick::Color( color->red, color->green, color->blue );
+  return Magick::Color( (imageptr->colormap)[index_] );
 }
 
 // Image colorspace
@@ -2515,6 +2516,7 @@ Magick::Image  Magick::Image::penTexture ( void  ) const
   return texture;
 }
 
+// Update the truecolor representation of a pixel.
 void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
 				 const Color &color_ )
 {
