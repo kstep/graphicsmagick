@@ -711,6 +711,9 @@ char *NTGetLastError(void)
 */
 MagickExport unsigned char *NTResourceToBlob(const char *id)
 {
+  char
+    directory[MaxTextExtent];
+
   DWORD
     length;
 
@@ -728,7 +731,12 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
     *value;
 
   assert(id != (const char *) NULL);
-  handle=GetModuleHandle(0);
+  FormatString(directory,"%.1024s%.1024s%.1024s",SetClientPath((char *) NULL),
+    DirectorySeparator,SetClientName((char *) NULL));
+  if (IsAccessible(directory))
+    handle=GetModuleHandle(directory);
+  else
+    handle=GetModuleHandle(0);
   if (!handle)
     return((char *) NULL);
   resource=FindResource(handle,id,"IMAGEMAGICK");

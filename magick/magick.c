@@ -415,7 +415,11 @@ MagickExport void InitializeMagick(const char *path)
   (void) SetClientPath(directory);
   GetPathComponent(path,HeadPath,filename);
   SetClientPath(filename);
+#if defined(WIN32)
+  GetPathComponent(path,TailPath,filename);
+#else
   GetPathComponent(path,BasePath,filename);
+#endif
   SetClientName(filename);
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
