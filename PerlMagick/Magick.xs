@@ -437,7 +437,7 @@ static struct
   Variable declarations.
 */
 char
-  *client_name = "PerlMagick";
+  *client_name = "Image::Magick";
 
 static jmp_buf
   *error_jump;  /* long jump return for FATAL errors */
