@@ -1,0 +1,229 @@
+/* magick.css -- default style sheet */
+
+BODY, P, TD, TH, UL, OL  {
+	font-family : Verdana, Arial, Helvetica, sans-serif;
+	font-size : 10pt;
+}
+
+H1, H2, H3, H4  {
+	font-family : Verdana, Arial, Helvetica, sans-serif;
+}
+
+H1  {
+	font-size : 120%;
+}
+
+H2  {
+	font-size : 110%;
+}
+
+H3, H4  {
+	font-size : 105%;
+}
+
+A:LINK  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A:VISITED  {
+	text-decoration : underline;
+	color : Purple;
+}
+
+A:HOVER  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A.nav:LINK  {
+	text-decoration : none;
+	color : #0085C0;
+}
+
+A.nav:VISITED  {
+	text-decoration : none;
+	color : Purple;
+}
+
+A.nav:HOVER  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A.leftcolnav:LINK  {
+	text-decoration : none;
+	color : #0085C0;
+}
+
+A.leftcolnav:HOVER  {
+	text-decoration : none;
+	background : #999999;
+	color: black;
+}
+
+A.leftcolnav:VISITED  {
+	text-decoration : none;
+	color : Purple;
+}
+
+.stripes  {
+	font-size : 9pt;
+}
+
+.navtopon  {
+	background-color : #999999;
+	font-size : 9pt;
+	text-align : center;
+	font-weight : bold;
+}
+
+.navtopoff  {
+	font-size : 9pt;
+	text-align : center;
+	font-weight : bold;
+}
+
+.gutter  {
+	margin-top : 2mm;
+	margin-right : 3mm;
+	margin-bottom : 3mm;
+	margin-left : 5mm;
+}
+
+.bannergutter {
+	margin-top : 2mm;
+	margin-right : 3mm;
+}
+
+.pagebodygutter  {
+	margin-top : 2mm;
+}
+
+.pagecentergutter  {
+        margin-left : 20mm;
+        margin-right: 20mm;
+        margin-top : 5mm;
+        margin-bottom: 2mm;
+}
+
+.leftcolgutter  {
+	margin-top : 2mm;
+	margin-right : 1mm;
+	margin-left : 3mm;
+}
+
+.textcolgutter  {
+	margin-bottom : 1.5mm;
+}
+
+.textpromo  {
+	font-size : 10pt;
+	margin-top : 2mm;
+	margin-right : 1mm;
+	margin-left : 2mm;
+}
+
+.newscolgutter  {
+	margin-left : 1mm;
+	margin-top : 2mm;
+	margin-bottom : 3mm;
+	font-size : 10pt;
+}
+
+.itemgutter  {
+	margin-left : 1.5mm;
+	font-size : 8pt;
+}
+
+.logogutter  {
+	margin-top : 3mm;
+	margin-bottom : 2mm;
+	margin-left : 3mm;
+}
+
+.navtext  {
+	font-size : 9pt;
+}
+
+.navlevel2 {
+	font-size : 9pt;
+}
+
+.navlevel3 {
+	font-size : 8pt;
+}
+
+.navlevel2on {
+        font-size : 9pt;
+	background-color : #cccccc;
+}
+
+.navlevel3on {
+        font-size : 8pt;
+        background-color : #cccccc;
+}
+
+.navlevel1on {
+	background-color : #cccccc;
+}
+
+.note  {
+	font-style : italic;
+	color : gray;
+}
+
+.textwhite  {
+	color : white;
+}
+
+.small  {
+	font-size : 9pt;
+}
+
+.tiny  {
+	font-size : 8pt;
+}
+
+.confirmation  {
+	color : Lime;
+}
+
+.warning  {
+	color : #ffcc66;
+}
+
+.error  {
+	color : Red;
+}
+
+.disclaimer  {
+	font-size : 9pt;
+	color : Gray;
+	margin-top : 1em;
+	margin-bottom : 1em;
+}
+
+.bgwhite {
+        background-color: White;
+}
+
+.1colgutter {
+        margin-top: 2mm;
+        margin-right: 3mm;
+        margin-left: 3mm;
+}
+
+.1colnavgutter {
+        margin-right: 1mm;
+        margin-left: 1mm;
+}
+
+.largeboldfont {
+	font-size : 110%;
+	font-weight: bold;
+}
+
+.redfont {
+	color : red;
+}
