@@ -216,6 +216,10 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   compression=image->compression;
+#if !defined(HasLZW)
+  if (compression == LZWCompression)
+    compression=ZipCompression;
+#endif
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
   page=1;

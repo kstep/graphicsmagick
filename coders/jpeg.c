@@ -402,6 +402,9 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
 
 static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
 {
+  char
+    magick[MaxTextExtent];
+
   Image
     *image;
 
@@ -415,13 +418,8 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   register int
     i;
 
-#ifdef GET_ONLY_IPTC_DATA
   unsigned char
-    tag[2];
-#else
-  char
-    magick[11];
-#endif
+    tag[MaxTextExtent];
 
   /*
     Determine length of binary data stored here.
@@ -431,6 +429,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   length-=2;
   if (length <= 0)
     return(True);
+  tag_length=0;
   image=(Image *) jpeg_info->client_data;
   if (image->iptc_profile.length == 0)
     {
