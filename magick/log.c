@@ -301,8 +301,8 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
 #if defined(WIN32)
   return(NTResourceToBlob(filename));
 #endif
-#endif
   return((void *) NULL);
+#endif
 }
 
 /*
@@ -516,11 +516,13 @@ static long GetThreadId(void)
 {
 #if defined(HasPTHREADS)
   return((long) pthread_self());
-#endif
+#else
 #if defined(WIN32)
   return((long) GetCurrentThreadId());
-#endif
+#else
   return(0);
+#endif
+#endif
 }
 
 MagickExport unsigned int LogMagickEvent(const LogEventType type,
@@ -895,7 +897,7 @@ MagickExport unsigned long SetLogEventMask(const char *events)
   if (GlobExpression(events,"*[Aa]ll*"))
     log_info->events|=AllEvents;
   if (GlobExpression(events,"*[Aa]nnotate*"))
-    log_info->events|=AnnotateEvents;
+    log_info->events|=AnnotateEvent;
   if (GlobExpression(events,"*[Bb]lob*"))
     log_info->events|=BlobEvent;
   if (GlobExpression(events,"*[Cc]ache*"))
