@@ -442,6 +442,9 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
     x,
     y;
 
+  unsigned int
+    status;
+
   unsigned long
     height,
     scene,
@@ -492,7 +495,9 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
           SetImageType(append_image,TrueColorType);
         (void) CompositeImage(append_image,CopyCompositeOp,next,0,y);
         y+=next->rows;
-        if (!MagickMonitor(AppendImageText,scene,GetImageListSize(image),exception))
+        status=MagickMonitor(AppendImageText,scene,GetImageListSize(image),
+          exception);
+        if (status == False)
           break;
         scene++;
       }
@@ -508,7 +513,9 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
       SetImageType(append_image,TrueColorType);
     (void) CompositeImage(append_image,CopyCompositeOp,next,x,0);
     x+=next->columns;
-    if (!MagickMonitor(AppendImageText,scene++,GetImageListSize(image),exception))
+    status=MagickMonitor(AppendImageText,scene++,GetImageListSize(image),
+      exception);
+    if (status == False)
       break;
   }
   return(append_image);
@@ -5669,9 +5676,13 @@ MagickExport unsigned int RGBTransformImage(Image *image,
     case DirectClass:
     default:
     {
+      ExceptionInfo
+        *exception;
+
       /*
         Convert DirectClass image.
       */
+      exception=(&image->exception);
       for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
@@ -5702,7 +5713,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(RGBTransformImageText,y,image->rows,&image->exception))
+          if (!MagickMonitor(RGBTransformImageText,y,image->rows,exception))
             break;
       }
       break;
@@ -7141,9 +7152,13 @@ MagickExport unsigned int TransformRGBImage(Image *image,
     case DirectClass:
     default:
     {
+      ExceptionInfo
+        *exception;
+
       /*
         Convert DirectClass image.
       */
+      exception=(&image->exception);
       for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
@@ -7208,7 +7223,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(TransformRGBImageText,y,image->rows,&image->exception))
+          if (!MagickMonitor(TransformRGBImageText,y,image->rows,exception))
             break;
       }
       break;
