@@ -1,8 +1,11 @@
-This file was last updated on April 10, 2004.
+This file was last updated on May 2, 2004.
 
-Significant changes associated with GraphicsMagick 1.1.1 (not yet released)
+Significant changes associated with GraphicsMagick 1.1.1 (released May 2, 2004))
 
   Bug fixes:
+    * Fixed a strtod/scanf bug with parsing some arguments starting with
+    "0x" under Linux.
+    * Fixed a double-free bug in the display program.
     * GraphicsMagick now successfully builds and passes all tests under
     Digital Unix 5.1, using the vendor compiler.
     * Ghostscript sometimes displays an error message and fails, yet it

@@ -2897,7 +2897,7 @@ to the argument, then the argument has a range of 0 to 100 percent.
 
 <utils apps=composite,convert,display,import,mogrify,montage>
 
-<dopt>-ordered-dither <channeltype> <NxN>
+<dopt>-ordered-dither <channeltype> <NxN></opt>
 
 <abs>ordered dither the image</abs>
 
@@ -3353,7 +3353,7 @@ Use <s>-raise</s> to create a raised effect, otherwise use <s>+raise</s>.
 
 <utils apps=composite,convert,display,import,mogrify,montage>
 
-<dopt>-random-threshold <channeltype> <LOWxHIGH>
+<dopt>-random-threshold <channeltype> <LOWxHIGH></opt>
 
 <abs>random threshold the image</abs>
 

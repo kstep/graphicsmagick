@@ -14,8 +14,8 @@ PACKAGE_VERSION='1.1.1'
 #
 # Formal Package release date
 # Set to string "unreleased" if package is not a formal release.
-#PACKAGE_RELEASE_DATE="04/04/04"
-PACKAGE_RELEASE_DATE="unreleased"
+PACKAGE_RELEASE_DATE="05/02/04"
+#PACKAGE_RELEASE_DATE="unreleased"
 
 #
 # Date of last ChangeLog update
