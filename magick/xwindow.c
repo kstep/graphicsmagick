@@ -237,7 +237,7 @@ MagickExport unsigned int XAnnotateImage(Display *display,
   */
   XDrawImageString(display,annotate_pixmap,annotate_context,0,
     (int) annotate_info->font_info->ascent,annotate_info->text,
-    strlen(annotate_info->text));
+    (int) strlen(annotate_info->text));
   XFreeGC(display,annotate_context);
   /*
     Initialize annotated X image.
@@ -869,7 +869,7 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
   visual_template.screen=XDefaultScreen(display);
   visual_template.depth=XDefaultDepth(display,XDefaultScreen(display));
   if (resource_info->immutable && (resource_info->colors != 0))
-    if ((int) resource_info->colors <= (1 << visual_template.depth))
+    if (resource_info->colors <= (1UL << visual_template.depth))
       visual_mask|=VisualDepthMask;
   if (visual_type != (char *) NULL)
     {
@@ -1620,8 +1620,8 @@ MagickExport void XDisplayImageInfo(Display *display,
     undo_image=undo_image->previous;
   }
   (void) fprintf(file,"Undo Edit Cache\n  levels: %u\n",levels);
-  (void) fprintf(file,"  bytes: %umb\n",(unsigned int) (bytes+(1 << 19)) >> 20);
-  (void) fprintf(file,"  limit: %umb\n\n",resource_info->undo_cache);
+  (void) fprintf(file,"  bytes: %umb\n",(bytes+(1 << 19)) >> 20);
+  (void) fprintf(file,"  limit: %lumb\n\n",resource_info->undo_cache);
   /*
     Write info about the image to a file.
   */
@@ -6440,6 +6440,9 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
   PixelPacket
     color;
 
+  size_t
+    n;
+
   static char
     text[MaxTextExtent];
 
@@ -6465,7 +6468,7 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
   assert(display != (Display *) NULL);
   assert(windows != (XWindows *) NULL);
   magnify=1;
-  for (i=1; i < windows->magnify.data; i++)
+  for (n=1; n < windows->magnify.data; n++)
     magnify<<=1;
   while ((magnify*windows->image.ximage->width) < windows->magnify.width)
     magnify<<=1;
@@ -6813,11 +6816,11 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
   x=windows->magnify.font_info->max_bounds.width >> 1;
   y=windows->magnify.font_info->ascent+(height >> 2);
   XDrawImageString(display,windows->magnify.pixmap,
-    windows->magnify.annotate_context,x,y,text,strlen(text));
+    windows->magnify.annotate_context,x,y,text,(int) strlen(text));
   y+=height;
   (void) QueryColorname(windows->image.image,&color,X11Compliance,text);
   XDrawImageString(display,windows->magnify.pixmap,
-    windows->magnify.annotate_context,x,y,text,strlen(text));
+    windows->magnify.annotate_context,x,y,text,(int) strlen(text));
   /*
     Refresh magnify window.
   */
@@ -7007,16 +7010,16 @@ MagickExport void XMakeStandardColormap(Display *display,
   register IndexPacket
     *indexes;
 
-  register int
-    i;
-
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   register XColor
     *gamma_map;
 
-  unsigned int
+  unsigned long
     number_colors,
     retain_colors;
 
@@ -7057,7 +7060,7 @@ MagickExport void XMakeStandardColormap(Display *display,
             if (map_image == (Image *) NULL)
               MagickError(ResourceLimitError,"Unable to dither image",
                 "Memory allocation failed");
-            map_image->columns=number_colors;
+            map_image->columns=(unsigned int) number_colors;
             map_image->rows=1;
             /*
               Initialize colormap image.
@@ -7065,7 +7068,7 @@ MagickExport void XMakeStandardColormap(Display *display,
             q=SetImagePixels(map_image,0,0,map_image->columns,1);
             if (q != (PixelPacket *) NULL)
               {
-                for (i=0; i < (int) number_colors; i++)
+                for (i=0; i < number_colors; i++)
                 {
                   q->red=0;
                   if (map_info->red_max != 0)
@@ -7154,7 +7157,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       p=colors;
       color.flags=DoRed | DoGreen | DoBlue;
       if (visual_info->storage_class == StaticColor)
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
           color.red=XUpScale(gamma_map[image->colormap[i].red].red);
           color.green=XUpScale(gamma_map[image->colormap[i].green].green);
@@ -7169,7 +7172,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           *p++=color;
         }
       else
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
           gray_value=(short unsigned int)
             Intensity(gamma_map[(int) Intensity(image->colormap[i])]);
@@ -7220,7 +7223,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       */
       colormap_type=resource_info->colormap;
       status=XAllocColorCells(display,colormap,False,(unsigned long *) NULL,0,
-        pixel->pixels,image->colors);
+        pixel->pixels,(int) image->colors);
       if (status != 0)
         colormap_type=PrivateColormap;
       if (colormap_type == SharedColormap)
@@ -7248,7 +7251,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           if (diversity == (DiversityPacket *) NULL)
             MagickError(ResourceLimitError,"Unable to create colormap",
               "Memory allocation failed");
-          for (i=0; i < (int) image->colors; i++)
+          for (i=0; i < image->colors; i++)
           {
             diversity[i].red=image->colormap[i].red;
             diversity[i].green=image->colormap[i].green;
@@ -7270,7 +7273,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           */
           qsort((void *) diversity,image->colors,sizeof(DiversityPacket),
             IntensityCompare);
-          for (i=0; i < (int) image->colors; i+=Max(image->colors >> 4,2))
+          for (i=0; i < image->colors; i+=Max(image->colors >> 4,2))
             diversity[i].count<<=4;  /* increase this colors popularity */
           diversity[image->colors-1].count<<=4;
           qsort((void *) diversity,image->colors,sizeof(DiversityPacket),
@@ -7281,7 +7284,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           p=colors;
           color.flags=DoRed | DoGreen | DoBlue;
           if (visual_info->storage_class == PseudoColor)
-            for (i=0; i < (int) image->colors; i++)
+            for (i=0; i < image->colors; i++)
             {
               index=diversity[i].index;
               color.red=XUpScale(gamma_map[image->colormap[index].red].red);
@@ -7295,7 +7298,7 @@ MagickExport void XMakeStandardColormap(Display *display,
               *p++=color;
             }
           else
-            for (i=0; i < (int) image->colors; i++)
+            for (i=0; i < image->colors; i++)
             {
               index=diversity[i].index;
               gray_value=(short unsigned int)
@@ -7325,7 +7328,7 @@ MagickExport void XMakeStandardColormap(Display *display,
             Select remaining colors from X server colormap.
           */
           if (visual_info->storage_class == PseudoColor)
-            for (; i < (int) image->colors; i++)
+            for (; i < image->colors; i++)
             {
               index=diversity[i].index;
               color.red=XUpScale(gamma_map[image->colormap[index].red].red);
@@ -7338,7 +7341,7 @@ MagickExport void XMakeStandardColormap(Display *display,
               *p++=color;
             }
           else
-            for (; i < (int) image->colors; i++)
+            for (; i < image->colors; i++)
             {
               index=diversity[i].index;
               gray_value=(short unsigned int)
@@ -7357,7 +7360,7 @@ MagickExport void XMakeStandardColormap(Display *display,
                 Fill up colors array-- more choices for pen colors.
               */
               retain_colors=Min(visual_info->colormap_size-image->colors,256);
-              for (i=0; i < (int) retain_colors; i++)
+              for (i=0; i < retain_colors; i++)
                 *p++=server_colors[i];
               number_colors+=retain_colors;
             }
@@ -7388,7 +7391,7 @@ MagickExport void XMakeStandardColormap(Display *display,
               */
               retain_colors=Min(visual_info->colormap_size-image->colors,256);
               p=colors+image->colors;
-              for (i=0; i < (int) retain_colors; i++)
+              for (i=0; i < retain_colors; i++)
               {
                 p->pixel=(unsigned long) i;
                 p++;
@@ -7400,18 +7403,19 @@ MagickExport void XMakeStandardColormap(Display *display,
                 Transfer colors from default to private colormap.
               */
               XAllocColorCells(display,colormap,False,(unsigned long *) NULL,0,
-                pixel->pixels,retain_colors);
+                pixel->pixels,(int) retain_colors);
               p=colors+image->colors;
-              for (i=0; i < (int) retain_colors; i++)
+              for (i=0; i < retain_colors; i++)
               {
                 p->pixel=pixel->pixels[i];
                 p++;
               }
-              XStoreColors(display,colormap,colors+image->colors,retain_colors);
+              XStoreColors(display,colormap,colors+image->colors,
+                (int) retain_colors);
               number_colors+=retain_colors;
             }
           XAllocColorCells(display,colormap,False,(unsigned long *) NULL,0,
-            pixel->pixels,image->colors);
+            pixel->pixels,(int) image->colors);
         }
       /*
         Store the image colormap.
@@ -7419,7 +7423,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       p=colors;
       color.flags=DoRed | DoGreen | DoBlue;
       if (visual_info->storage_class == PseudoColor)
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
           color.red=XUpScale(gamma_map[image->colormap[i].red].red);
           color.green=XUpScale(gamma_map[image->colormap[i].green].green);
@@ -7428,7 +7432,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           *p++=color;
         }
       else
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
           gray_value=(short unsigned int)
             Intensity(gamma_map[(int) Intensity(image->colormap[i])]);
@@ -7438,7 +7442,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           color.pixel=pixel->pixels[i];
           *p++=color;
         }
-      XStoreColors(display,colormap,colors,image->colors);
+      XStoreColors(display,colormap,colors,(int) image->colors);
       break;
     }
     case TrueColor:
@@ -7473,7 +7477,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       p=colors;
       color.flags=DoRed | DoGreen | DoBlue;
       if (linear_colormap)
-        for (i=0; i < (int) number_colors; i++)
+        for (i=0; i < number_colors; i++)
         {
           color.blue=(unsigned short) 0;
           if (map_info->blue_max != 0)
@@ -7485,7 +7489,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           *p++=color;
         }
       else
-        for (i=0; i < (int) number_colors; i++)
+        for (i=0; i < number_colors; i++)
         {
           color.red=(unsigned short) 0;
           if (map_info->red_max != 0)
@@ -7504,24 +7508,24 @@ MagickExport void XMakeStandardColormap(Display *display,
         }
       if ((visual_info->storage_class == DirectColor) &&
           (colormap != XDefaultColormap(display,visual_info->screen)))
-        XStoreColors(display,colormap,colors,number_colors);
+        XStoreColors(display,colormap,colors,(int) number_colors);
       else
-        for (i=0; i < (int) number_colors; i++)
+        for (i=0; i < number_colors; i++)
           XAllocColor(display,colormap,&colors[i]);
       break;
     }
   }
-  if ((visual_info->storage_class != DirectColor) && (visual_info->storage_class != TrueColor))
+  if ((visual_info->storage_class != DirectColor) &&
+      (visual_info->storage_class != TrueColor))
     {
       /*
         Set foreground, background, border, etc. pixels.
       */
-      XBestPixel(display,colormap,colors,number_colors,
+      XBestPixel(display,colormap,colors,(int) number_colors,
         &pixel->foreground_color);
-      XBestPixel(display,colormap,colors,number_colors,
+      XBestPixel(display,colormap,colors,(int) number_colors,
         &pixel->background_color);
-      if (pixel->background_color.pixel ==
-          pixel->foreground_color.pixel)
+      if (pixel->background_color.pixel == pixel->foreground_color.pixel)
         {
           /*
             Foreground and background colors must differ.
@@ -7531,24 +7535,24 @@ MagickExport void XMakeStandardColormap(Display *display,
             (~pixel->foreground_color.green);
           pixel->background_color.blue=
             (~pixel->foreground_color.blue);
-          XBestPixel(display,colormap,colors,number_colors,
+          XBestPixel(display,colormap,colors,(int) number_colors,
             &pixel->background_color);
         }
-      XBestPixel(display,colormap,colors,number_colors,
+      XBestPixel(display,colormap,colors,(int) number_colors,
         &pixel->border_color);
-      XBestPixel(display,colormap,colors,number_colors,
+      XBestPixel(display,colormap,colors,(int) number_colors,
         &pixel->matte_color);
-      XBestPixel(display,colormap,colors,number_colors,
+      XBestPixel(display,colormap,colors,(int) number_colors,
         &pixel->highlight_color);
-      XBestPixel(display,colormap,colors,number_colors,
+      XBestPixel(display,colormap,colors,(int) number_colors,
         &pixel->shadow_color);
-      XBestPixel(display,colormap,colors,number_colors,
+      XBestPixel(display,colormap,colors,(int) number_colors,
         &pixel->depth_color);
-      XBestPixel(display,colormap,colors,number_colors,
+      XBestPixel(display,colormap,colors,(int) number_colors,
         &pixel->trough_color);
       for (i=0; i < MaxNumberPens; i++)
       {
-        XBestPixel(display,colormap,colors,number_colors,
+        XBestPixel(display,colormap,colors,(int) number_colors,
           &pixel->pen_colors[i]);
         pixel->pixels[image->colors+i]=pixel->pen_colors[i].pixel;
       }
@@ -8162,7 +8166,7 @@ MagickExport void XRemoteCommand(Display *display,const char *window,
   */
   remote_atom=XInternAtom(display,"IM_REMOTE_COMMAND",False);
   XChangeProperty(display,remote_window,remote_atom,XA_STRING,8,
-    PropModeReplace,(unsigned char *) filename,strlen(filename));
+    PropModeReplace,(unsigned char *) filename,(int) strlen(filename));
   XSync(display,False);
 }
 

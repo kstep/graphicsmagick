@@ -783,10 +783,10 @@ MagickExport unsigned int NormalizeImage(Image *image)
     Stretch the histogram to create the normalized image mapping.
   */
   for (i=0; i <= MaxRGB; i++)
-    if (i < (int) low)
+    if (i < low)
       normalize_map[i]=0;
     else
-      if (i > (int) high)
+      if (i > high)
         normalize_map[i]=MaxRGB;
       else
         normalize_map[i]=(MaxRGB-1)*(i-low)/(high-low);
