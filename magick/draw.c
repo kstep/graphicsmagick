@@ -3221,17 +3221,17 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
           (((long) ceil(x-bounds.x1-0.5)) % draw_info->fill_pattern->columns),
           (((long) ceil(y-bounds.y1-0.5)) % draw_info->fill_pattern->rows));
       fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
-      *q=AlphaComposite(&fill_color,fill_opacity,q,
-        (fill_opacity != TransparentOpacity) &&
-	(q->opacity == TransparentOpacity) ? OpaqueOpacity : q->opacity);
+      if (fill_opacity != TransparentOpacity)
+        *q=AlphaComposite(&fill_color,fill_opacity,q,
+          (q->opacity == TransparentOpacity) ? OpaqueOpacity : q->opacity);
       if (draw_info->stroke_pattern != (Image *) NULL)
         stroke_color=GetOnePixel(draw_info->stroke_pattern,
           (((long) ceil(x-bounds.x1-0.5)) % draw_info->stroke_pattern->columns),
           (((long) ceil(y-bounds.y1-0.5)) % draw_info->stroke_pattern->rows));
       stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
-      *q=AlphaComposite(&stroke_color,stroke_opacity,q,
-        (stroke_opacity != TransparentOpacity) &&
-	(q->opacity == TransparentOpacity) ? OpaqueOpacity : q->opacity);
+      if (stroke_opacity != TransparentOpacity)
+        *q=AlphaComposite(&stroke_color,stroke_opacity,q,
+          (q->opacity == TransparentOpacity) ? OpaqueOpacity : q->opacity);
       q++;
     }
     if (!SyncImagePixels(image))
