@@ -2068,10 +2068,10 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       (unsigned long) (image->filesize/1024/1024));
   else
     if (image->filesize >= (1 << 16))
-      (void) fprintf(file,"Filesize: %lukb ",
+      (void) fprintf(file,"  Filesize: %lukb\n",
         (unsigned long) (image->filesize/1024));
     else
-      (void) fprintf(file,"Filesize: %lub ",(unsigned long) image->filesize);
+      (void) fprintf(file,"  Filesize: %lub\n",(unsigned long) image->filesize);
   if (image->interlace == NoInterlace)
     (void) fprintf(file,"  Interlace: None\n");
   else
