@@ -1676,8 +1676,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         for (i=0; i < (int) image->colors; i++)
         {
           red[i]=((unsigned long) (65535L*image->colormap[i].red)/MaxRGB);
-          green[i]=((unsigned long) (65535L*image->colormap[i].green)/
-            (MaxRGB+1));
+          green[i]=((unsigned long) (65535L*image->colormap[i].green)/MaxRGB);
           blue[i]=((unsigned long) (65535L*image->colormap[i].blue)/MaxRGB);
         }
         for ( ; i < (1 << image->depth); i++)
