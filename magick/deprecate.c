@@ -104,7 +104,7 @@ MagickExport unsigned int DeleteImageList(Image *images,const long offset)
 %
 %  DestroyImages() destroys an image list.
 %
-%  This method is deprecated as of version 5.5.2.
+%  This method is deprecated as of version 5.4.3.
 %
 %  The format of the DestroyImages method is:
 %
