@@ -742,9 +742,17 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
               continue;
             if (image == previous)
               {
-                MagickError(OptionError,"duplicate image in list",
-                  "remove or use method Clone()");
-                return(NULL);
+                ExceptionInfo
+                  exception;
+
+                image=CloneImage(image,image->columns,image->rows,False,
+                  &exception);
+                if (image == (Image *) NULL)
+                  {
+                    MagickWarning(exception.severity,exception.message,
+                      exception.qualifier);
+                    return(NULL);
+                  }
               }
             image->previous=previous;
             *(previous ? &previous->next : &head)=image;
