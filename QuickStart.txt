@@ -32,7 +32,12 @@ Unix:
   If you downloaded just the binary distribution, you must move
   share/ImageMagick/delegates.mgk to
   /usr/local/share/ImageMagick/delegates.mgk or your home directory and
-  ensure the permissions are set correctly (world-readable).
+  ensure the permissions are set correctly (world-readable).  If the binary
+  distribution is anywhere but /usr/local you will probably need to set
+  the LD_LIBRARY_PATH and DELEGATE_PATH environment variables.  For example,
+
+    setenv LD_LIBRARY_PATH ~/lib
+    setenv DELEGATE_PATH ~/share/ImageMagick
 
 
 NT:

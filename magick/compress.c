@@ -1721,7 +1721,8 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
   const Image *image)
 {
   char
-    *buffer;
+    *buffer,
+    filename[MaxTextExtent];
 
   Image
     *huffman_image;
@@ -1769,16 +1770,18 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
       (void) QuantizeImage(&quantize_info,huffman_image);
       SyncImage(huffman_image);
     }
-  TemporaryFilename(huffman_image->filename);
+  TemporaryFilename(filename);
+  (void) strcpy(huffman_image->filename,filename);
   (void) strcpy(huffman_image->magick,"TIFF");
   local_info=CloneImageInfo(image_info);
+  local_info->compression=Group4Compression;
   status=WriteImage(local_info,huffman_image);
   DestroyImageInfo(local_info);
   DestroyImage(huffman_image);
   if (status == False)
     return(False);
-  tiff=TIFFOpen(huffman_image->filename,ReadBinaryType);
-  (void) remove(huffman_image->filename);
+  tiff=TIFFOpen(filename,ReadBinaryType);
+  (void) remove(filename);
   if (tiff == (TIFF *) NULL)
     {
       MagickWarning(FileOpenWarning,"Unable to open file",image_info->filename);

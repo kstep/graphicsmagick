@@ -9112,8 +9112,8 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         (void) fprintf(image->file,"%%%%CreationDate: (%.1024s)\n",date);
         bounding_box.x1=x;
         bounding_box.y1=y;
-        bounding_box.x2=x+x_scale;
-        bounding_box.y2=y+(height+text_size);
+        bounding_box.x2=x+x_scale-1;
+        bounding_box.y2=y+(height+text_size)-1;
         if (image_info->adjoin && (image->next != (Image *) NULL))
           (void) fprintf(image->file,"%%%%BoundingBox: (atend)\n");
         else
@@ -11979,7 +11979,10 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       if ((image_info->interlace == PlaneInterlace) ||
           (image_info->interlace == PartitionInterlace))
         TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
-    TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,TIFFDefaultStripSize(tiff,-1));
+    if (compress_tag == COMPRESSION_CCITTFAX4)
+      TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
+    else
+      TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,TIFFDefaultStripSize(tiff,-1));
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
         unsigned short
