@@ -319,6 +319,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       height>>=1;
       subimage--;
     }
+  image->depth=8;
   image->columns=width;
   image->rows=height;
   if ((colorspace.numberOfComponents % 2) == 0)
@@ -809,6 +810,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       image->temporary=True;
     }
   CloseBlob(image);
+  image->depth=8;
   TransformRGBImage(image,RGBColorspace);
   /*
     Initialize FPX toolkit.
@@ -845,8 +847,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 #else
     fpx_status=FPX_CreateImageByFilename(image->filename,
 #endif
-    image->columns,image->rows,tile_width,tile_height,colorspace,
-    background_color,compression,&flashpix);
+      image->columns,image->rows,tile_width,tile_height,colorspace,
+      background_color,compression,&flashpix);
   }
   if (fpx_status != FPX_OK)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
