@@ -1,3 +1,7 @@
+2004-05-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* ltmain.sh: Fix to allow exe wrapper to work under MinGW.
+
 2004-04-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pdf.c (ReadPDFImage): Double-check that Ghostscript
