@@ -6884,7 +6884,7 @@ MagickExport MagickPassFail SyncImage(Image *image)
         break;
       }
     indexes=GetIndexes(image);
-    assert(indexes != (PixelPacket *) NULL);
+    assert(indexes != (IndexPacket *) NULL);
     for (x=(long) image->columns; x > 0; x--)
     {
       VerifyColormapIndex(image,*indexes);

@@ -1,5 +1,6 @@
 2004-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* Makefile.am: Update to Automake 1.8.5.
 	* magick/image.h (ImageInfo): New 'progress' monitor to indicate
 	if progress monitor and busy cursor are enabled while displaying
 	an image.  Defaults to True.
