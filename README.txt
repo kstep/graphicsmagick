@@ -25,7 +25,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.1.0.tar.gz
+    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.1.1.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -616,8 +616,8 @@ HOW TO COMPILE
 
     TTF:
       cd ImageMagick
-      gunzip -c freetype-1.3.tar.gz | tar xvof -
-      mv freetype-1.3 ttf
+      gunzip -c freetype-1.3.1.tar.gz | tar xvof -
+      mv freetype-1.3.1 ttf
       cd ttf
       ./configure -disable-shared
       make

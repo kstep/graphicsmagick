@@ -11,7 +11,7 @@ AC_INIT(magick/magick.h)
 # Set version
 MAJOR_VERSION=5
 MINOR_VERSION=1
-MICRO_VERSION=0
+MICRO_VERSION=1
 echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 AC_CANONICAL_SYSTEM
 AC_SUBST(MAJOR_VERSION)dnl
@@ -269,7 +269,7 @@ AC_CHECK_HEADERS(memory.h errno.h fcntl.h)
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
-AC_C_INLINE
+#AC_C_INLINE
 AC_C_BIGENDIAN
 
 AC_RETSIGTYPE

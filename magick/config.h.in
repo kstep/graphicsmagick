@@ -18,9 +18,6 @@
 /* Define if you have the wait3 system call.  */
 #undef HAVE_WAIT3
 
-/* Define as __inline if that's what the C compiler calls it.  */
-#undef inline
-
 /* Define to `int' if <sys/types.h> doesn't define.  */
 #undef mode_t
 
@@ -57,9 +54,6 @@
 
 /* Define to empty if the keyword does not work.  */
 #undef const
-
-/* Define to empty if the keyword does not work.  */
-#undef inline
 
 /* Define if you don't have vprintf but do have _doprnt.  */
 #undef HAVE_DOPRNT

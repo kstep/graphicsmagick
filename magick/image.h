@@ -67,7 +67,7 @@ typedef struct _BlobInfo
     quantum;
 } BlobInfo;
 
-typedef void* CacheHandle;
+typedef void* Cache;
 
 typedef struct _ColorlistInfo
 {
@@ -421,8 +421,8 @@ typedef struct _Image
   char
     *signature;
 
-  CacheHandle
-    cache_handle;
+  Cache
+    cache;
 
   RectangleInfo
     cache_info;

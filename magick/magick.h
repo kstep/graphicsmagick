@@ -95,10 +95,6 @@
 #define HasZLIB
 #endif
 
-#if !defined(inline)
-#define inline
-#endif
-
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #include "magick/api.h"
 #else

@@ -91,45 +91,34 @@
 Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
-  RectangleInfo
-    region_info;
-
   unsigned int
     status;
 
+  assert(image != (Image *) NULL);
+  if (image->class != GetCacheClassType(image->cache))
+    {
+      status=
+        AllocateCache(image->cache,image->class,image->columns,image->rows);
+      if (status == False)
+        {
+          MagickWarning(CacheWarning,"Unable to initialize pixel cache",
+            (char *) NULL);
+          return((PixelPacket *) NULL);
+        }
+    }
   /*
     Transfer pixels from the pixel cache.
   */
-  assert(image != (Image *) NULL);
-  if ((x == image->cache_info.x) && (y == image->cache_info.y) &&
-      (columns == image->cache_info.width) &&
-      (rows == image->cache_info.height))
-    return(image->pixels);
   if (!SetPixelCache(image,x,y,columns,rows))
     return((PixelPacket *) NULL);
-  region_info.x=x;
-  region_info.y=y;
-  region_info.height=rows;
-  region_info.width=columns;
-  status=ReadCachePixels(image->cache_handle,&region_info,image->pixels);
+  status=ReadCachePixels(image->cache,&image->cache_info,image->pixels);
+  if (image->class == PseudoClass)
+    status|=ReadCacheIndexes(image->cache,&image->cache_info,image->indexes);
   if (status == False)
     {
       MagickWarning(CacheWarning,"Unable to read pixels from cache",
         (char *) NULL);
       return((PixelPacket *) NULL);
-    }
-  if (image->class == PseudoClass)
-    {
-      /*
-        Transfer colormap indexes from the pixel cache.
-      */
-      status=ReadCacheIndexes(image->cache_handle,&region_info,image->indexes);
-      if (status == False)
-        {
-          MagickWarning(CacheWarning,"Unable to read indexes from cache",
-            (char *) NULL);
-          return((PixelPacket *) NULL);
-        }
     }
   return(image->pixels);
 }
@@ -475,14 +464,6 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
         "image does not contain the cache geometry");
       return((PixelPacket *) NULL);
     }
-  status=
-    OpenPixelCache(image->cache_handle,image->class,image->columns,image->rows);
-  if (status == False)
-    {
-      MagickWarning(CacheWarning,"Unable to initialize pixel cache",
-        (char *) NULL);
-      return((PixelPacket *) NULL);
-    }
   /*
     Allocate buffer to get/put pixels/indexes to/from the pixel cache.
   */
@@ -549,41 +530,39 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
 */
 Export unsigned int SyncPixelCache(Image *image)
 {
-  register PixelPacket
-    *pixels;
-
   unsigned int
     status;
 
   assert(image != (Image *) NULL);
-  pixels=SetPixelCache(image,image->cache_info.x,image->cache_info.y,
-    image->cache_info.width,image->cache_info.height);
-  if (pixels == (PixelPacket *) NULL)
-    return(False);
+  if (image->pixels == (PixelPacket *) NULL)
+    {
+      MagickWarning(CacheWarning,"Unable to sync pixel cache",
+        "no pixel to write");
+      return(False);
+    }
+  if (image->class != GetCacheClassType(image->cache))
+    {
+      status=
+        AllocateCache(image->cache,image->class,image->columns,image->rows);
+      if (status == False)
+        {
+          MagickWarning(CacheWarning,"Unable to initialize pixel cache",
+            (char *) NULL);
+          return(False);
+        }
+    }
   /*
     Transfer pixels to the pixel cache.
   */
-  image->tainted=True;
-  status=WriteCachePixels(image->cache_handle,&image->cache_info,pixels);
+  status=WriteCachePixels(image->cache,&image->cache_info,image->pixels);
+  if (image->class == PseudoClass)
+    status|=WriteCacheIndexes(image->cache,&image->cache_info,image->indexes);
   if (status == False)
     {
       MagickWarning(CacheWarning,"Unable to sync pixel cache",(char *) NULL);
       return(False);
     }
-  if (image->class == PseudoClass)
-    {
-      /*
-        Transfer colormap indexes to pixel cache.
-      */
-      status=WriteCacheIndexes(image->cache_handle,&image->cache_info,
-        image->indexes);
-      if (status == False)
-        {
-          MagickWarning(CacheWarning,"Unable to sync pixel cache",
-            (char *) NULL);
-          return(False);
-        }
-    }
+  image->tainted=True;
   return(True);
 }
 

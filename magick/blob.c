@@ -198,7 +198,7 @@ Export void CloseBlob(Image *image)
   */
   assert(image != (Image *) NULL);
   image->tainted=False;
-  ClosePixelCache(image->cache_handle);
+  CloseCache(image->cache);
   if (image->blob_info.data != (char *) NULL)
     {
       image->filesize=image->blob_info.length;

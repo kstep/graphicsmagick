@@ -16,25 +16,25 @@ extern "C" {
   Exported interfaces.
 */
 extern Export ClassType
-  GetCacheClassType(CacheHandle);
+  GetCacheClassType(Cache);
 
 extern Export off_t
   GetCacheMemory(off_t),
   GetCacheThreshold();
 
 extern Export unsigned int
-  OpenPixelCache(CacheHandle,ClassType,const unsigned int,const unsigned int),
-  ReadCachePixels(CacheHandle,RectangleInfo *,PixelPacket *),
-  ReadCacheIndexes(CacheHandle,RectangleInfo *,IndexPacket *),
-  WriteCachePixels(CacheHandle,RectangleInfo *,PixelPacket *),
-  WriteCacheIndexes(CacheHandle,RectangleInfo *,IndexPacket *);
+  AllocateCache(Cache,ClassType,const unsigned int,const unsigned int),
+  ReadCachePixels(Cache,RectangleInfo *,PixelPacket *),
+  ReadCacheIndexes(Cache,RectangleInfo *,IndexPacket *),
+  WriteCachePixels(Cache,RectangleInfo *,PixelPacket *),
+  WriteCacheIndexes(Cache,RectangleInfo *,IndexPacket *);
 
 extern Export void
-  ClosePixelCache(CacheHandle),
-  DestroyCacheInfo(CacheHandle),
-  GetCacheInfo(CacheHandle *),
-  SetCacheThreshold(off_t),
-  SetCacheClassType(CacheHandle,ClassType);
+  CloseCache(Cache),
+  DestroyCacheInfo(Cache),
+  GetCacheInfo(Cache *),
+  SetCacheClassType(Cache,ClassType),
+  SetCacheThreshold(off_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

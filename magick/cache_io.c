@@ -71,12 +71,6 @@
 */
 typedef struct _CacheInfo
 {
-  char
-    filename[MaxTextExtent];
-
-  FILE
-    *file;
-
   ClassType
 #if defined(__cplusplus) || defined(c_plusplus)
     c_class;
@@ -97,6 +91,12 @@ typedef struct _CacheInfo
 
   IndexPacket
     *indexes;
+
+  char
+    filename[MaxTextExtent];
+
+  FILE
+    *file;
 } CacheInfo;
 
 /*
@@ -110,32 +110,215 @@ static off_t
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C l o s e P i x e l C a c h e                                             %
+%   A l l o c a t e C a c h e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ClosePixelCache closes the file handle associated with a disk pixel
-%  cache.
+%  Method AllocateCache initializes the pixel cache.  This includes defining
+%  the cache dimensions, allocating space for the image pixels and optionally
+%  the colormap indexes, and memory mapping the cache if it is disk based.
 %
-%  The format of the ClosePixelCache method is:
+%  The format of the AllocateCache method is:
 %
-%      void ClosePixelCache(CacheHandle cache_handle)
+%      unsigned int AllocateCache(Cache cache,ClassType type,
+%        const unsigned int columns,const unsigned int rows)
 %
 %  A description of each parameter follows:
 %
-%    o cache_handle: Specifies a pointer to a CacheHandle structure.
+%    o status: Method AllocateCache returns True if the pixel cache is
+%      initialized successfully otherwise False.
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%    o type: DirectClass or PseudoClass.
+%
+%    o columns: This unsigned integer defines the number of columns in the
+%      pixel cache.
+%
+%    o rows: This unsigned integer defines the number of rows in the pixel
+%      cache.
 %
 %
 */
-Export void ClosePixelCache(CacheHandle cache_handle)
+Export unsigned int AllocateCache(Cache cache,ClassType type,
+  const unsigned int columns,const unsigned int rows)
 {
   CacheInfo
     *cache_info;
 
-  assert(cache_handle != (CacheHandle) NULL);
-  cache_info=(CacheInfo *) cache_handle;
+  int
+    status;
+
+  off_t
+    length,
+    offset;
+
+  size_t
+    sans;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  if (cache_info->class == UndefinedClass)
+    {
+      cache_info->rows=rows;
+      cache_info->columns=columns;
+      cache_info->number_pixels=columns*rows;
+      length=cache_info->number_pixels*sizeof(PixelPacket);
+      if (type == PseudoClass)
+        length+=cache_info->number_pixels*sizeof(IndexPacket);
+      if (length <= GetCacheMemory(0))
+        {
+          /*
+            Create in-memory pixel cache.
+          */
+          cache_info->pixels=(PixelPacket *)
+            AllocateMemory(cache_info->number_pixels*sizeof(PixelPacket));
+          if (cache_info->pixels != (PixelPacket *) NULL)
+            {
+              cache_info->class=DirectClass;
+              offset=cache_info->number_pixels*sizeof(PixelPacket);
+              (void) GetCacheMemory(-offset);
+              if (type == PseudoClass)
+                {
+                  cache_info->indexes=(IndexPacket *) AllocateMemory(
+                    cache_info->number_pixels*sizeof(IndexPacket));
+                  if (cache_info->indexes != (IndexPacket *) NULL)
+                    {
+                      cache_info->class=PseudoClass;
+                      offset=cache_info->number_pixels*sizeof(IndexPacket);
+                      (void) GetCacheMemory(-offset);
+                    }
+                }
+            }
+        }
+      if (cache_info->class == UndefinedClass)
+        {
+          char
+            filename[MaxTextExtent];
+
+          /*
+            Create pixel cache on disk.
+          */
+          TemporaryFilename(filename);
+          cache_info->file=fopen(filename,"wb+");
+          if (cache_info->file != (FILE *) NULL)
+            {
+              status=fseek(cache_info->file,length-1,SEEK_SET);
+              if (status != 0)
+                return(False);
+              cache_info->class=DirectClass;
+              (void) strcpy(cache_info->filename,filename);
+              (void) fputc(0,cache_info->file);
+              (void) fclose(cache_info->file);
+              cache_info->file=(FILE *) NULL;
+              cache_info->pixels=(PixelPacket *)
+                MapBlob(cache_info->filename,IOMode,&sans);
+              if (cache_info->pixels == (PixelPacket *) NULL)
+                {
+                  if (type == PseudoClass)
+                    SetCacheClassType(cache,PseudoClass);
+                }
+              else
+                {
+                  cache_info->mapped=True;
+                  if (type == PseudoClass)
+                    {
+                      SetCacheClassType(cache,PseudoClass);
+                      cache_info->indexes=(IndexPacket *)
+                        (cache_info->pixels+cache_info->number_pixels);
+                    }
+                }
+            }
+        }
+    }
+  if (type == PseudoClass)
+    {
+      if (cache_info->class != PseudoClass)
+        {
+          if (cache_info->filename[0] == '\0')
+            {
+              /*
+                Create in-memory colormap index cache.
+              */
+              cache_info->indexes=(IndexPacket *)
+                AllocateMemory(cache_info->number_pixels*sizeof(IndexPacket));
+              if (cache_info->indexes != (IndexPacket *) NULL)
+                {
+                  SetCacheClassType(cache,PseudoClass);
+                  offset=cache_info->number_pixels*sizeof(IndexPacket);
+                  (void) GetCacheMemory(-offset);
+                }
+            }
+          else
+            {
+              /*
+                Create colormap index cache on disk.
+              */
+              if (cache_info->file == (FILE *) NULL)
+                cache_info->file=fopen(cache_info->filename,"rb+");
+              if (cache_info->file != (FILE *) NULL)
+                {
+                  length=cache_info->number_pixels*sizeof(PixelPacket)+
+                    cache_info->number_pixels*sizeof(IndexPacket);
+                  status=fseek(cache_info->file,length-1,SEEK_SET);
+                  if (status == 0)
+                    {
+                      SetCacheClassType(cache,PseudoClass);
+                      (void) fputc(0,cache_info->file);
+                      (void) fclose(cache_info->file);
+                      cache_info->file=(FILE *) NULL;
+                      offset=cache_info->number_pixels*sizeof(PixelPacket);
+                      if (cache_info->mapped)
+                        (void) UnmapBlob(cache_info->pixels,offset);
+                      cache_info->pixels=(PixelPacket *)
+                        MapBlob(cache_info->filename,IOMode,&sans);
+                      cache_info->mapped=
+                        cache_info->pixels != (PixelPacket *) NULL;
+                      if (cache_info->mapped)
+                        cache_info->indexes=(IndexPacket *)
+                          (cache_info->pixels+cache_info->number_pixels);
+                    }
+                }
+            }
+        }
+      if (cache_info->class != PseudoClass)
+        return(False);
+    }
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C l o s e C a c h e                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CloseCache closes the file handle associated with a disk pixel cache.
+%
+%  The format of the CloseCache method is:
+%
+%      void CloseCache(Cache cache)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%
+*/
+Export void CloseCache(Cache cache)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
   if (cache_info->file != (FILE *) NULL)
     (void) fclose(cache_info->file);
   cache_info->file=(FILE *) NULL;
@@ -156,15 +339,15 @@ Export void ClosePixelCache(CacheHandle cache_handle)
 %
 %  The format of the DestroyCacheInfo method is:
 %
-%      void DestroyCacheInfo(CacheHandle cache_handle)
+%      void DestroyCacheInfo(Cache cache)
 %
 %  A description of each parameter follows:
 %
-%    o cache_handle: Specifies a pointer to a CacheHandle structure.
+%    o cache: Specifies a pointer to a Cache structure.
 %
 %
 */
-Export void DestroyCacheInfo(CacheHandle cache_handle)
+Export void DestroyCacheInfo(Cache cache)
 {
   CacheInfo
     *cache_info;
@@ -172,9 +355,8 @@ Export void DestroyCacheInfo(CacheHandle cache_handle)
   size_t
     length;
 
-  assert(cache_handle != (CacheHandle) NULL);
-  cache_info=(CacheInfo *) cache_handle;
-  ClosePixelCache(cache_handle);
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
   if (cache_info->mapped)
     {
       /*
@@ -187,26 +369,21 @@ Export void DestroyCacheInfo(CacheHandle cache_handle)
       cache_info->pixels=(PixelPacket *) NULL;
       cache_info->indexes=(IndexPacket *) NULL;
     }
+  CloseCache(cache);
   if (*cache_info->filename != '\0')
     (void) remove(cache_info->filename);
-  if (cache_info->pixels != (PixelPacket *) NULL)
-    {
-      /*
-        Free pixels.
-      */
-      FreeMemory(cache_info->pixels);
-      (void) GetCacheMemory(cache_info->number_pixels*sizeof(PixelPacket));
-    }
   if (cache_info->indexes != (IndexPacket *) NULL)
     {
-      /*
-        Free colormap indexes.
-      */
       FreeMemory(cache_info->indexes);
       (void) GetCacheMemory(cache_info->number_pixels*sizeof(IndexPacket));
     }
+  if (cache_info->pixels != (PixelPacket *) NULL)
+    {
+      FreeMemory(cache_info->pixels);
+      (void) GetCacheMemory(cache_info->number_pixels*sizeof(PixelPacket));
+    }
   FreeMemory(cache_info);
-  cache_handle=(void *) NULL;
+  cache=(void *) NULL;
 }
 
 /*
@@ -224,23 +401,23 @@ Export void DestroyCacheInfo(CacheHandle cache_handle)
 %
 %  The format of the GetCacheClassType method is:
 %
-%      ClassType GetCacheClassType(CacheHandle cache_handle)
+%      ClassType GetCacheClassType(Cache cache)
 %
 %  A description of each parameter follows:
 %
 %    o type: Method GetCacheClassType returns DirectClass or PseudoClass.
 %
-%    o cache_handle: Specifies a pointer to a CacheHandle structure.
+%    o cache: Specifies a pointer to a Cache structure.
 %
 %
 */
-Export ClassType GetCacheClassType(CacheHandle cache_handle)
+Export ClassType GetCacheClassType(Cache cache)
 {
   CacheInfo
     *cache_info;
 
-  assert(cache_handle != (CacheHandle) NULL);
-  cache_info=(CacheInfo *) cache_handle;
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
   return(cache_info->class);
 }
 
@@ -255,24 +432,24 @@ Export ClassType GetCacheClassType(CacheHandle cache_handle)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetCacheInfo initializes the CacheHandle structure.
+%  Method GetCacheInfo initializes the Cache structure.
 %
 %  The format of the GetCacheInfo method is:
 %
-%      void GetCacheInfo(CacheHandle *cache_handle)
+%      void GetCacheInfo(Cache *cache)
 %
 %  A description of each parameter follows:
 %
-%    o cache_handle: Specifies a pointer to a CacheHandle structure.
+%    o cache: Specifies a pointer to a Cache structure.
 %
 %
 */
-Export void GetCacheInfo(CacheHandle *cache_handle)
+Export void GetCacheInfo(Cache *cache)
 {
   CacheInfo
     *cache_info;
 
-  assert(cache_handle != (CacheHandle *) NULL);
+  assert(cache != (Cache *) NULL);
   cache_info=(CacheInfo *) AllocateMemory(sizeof(CacheInfo));
   *cache_info->filename='\0';
   cache_info->file=(FILE *) NULL;
@@ -283,7 +460,7 @@ Export void GetCacheInfo(CacheHandle *cache_handle)
   cache_info->number_pixels=0;
   cache_info->rows=0;
   cache_info->columns=0;
-  *cache_handle=cache_info;
+  *cache=cache_info;
 }
 
 /*
@@ -316,8 +493,6 @@ Export off_t GetCacheMemory(off_t memory)
   static off_t
     free_memory = PixelCacheThreshold*1024*1024;
 
-  if (memory == 0)
-    return(free_memory);
 #if defined(HasPTHREADS)
   {
     static pthread_mutex_t
@@ -369,200 +544,6 @@ Export off_t GetCacheThreshold()
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   O p e n P i x e l C a c h e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method OpenPixelCache open the pixel cache.
-%
-%  The format of the OpenPixelCache method is:
-%
-%      unsigned int OpenPixelCache(CacheHandle cache_handle,ClassType type,
-%        const unsigned int columns,const unsigned int rows)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method OpenPixelCache returns True if the pixel cache is
-%      initialized successfully otherwise False.
-%
-%    o cache_handle: Specifies a pointer to a CacheHandle structure.
-%
-%    o type: DirectClass or PseudoClass.
-%
-%    o columns: This unsigned integer defines the number of columns in the
-%      pixel cache.
-%
-%    o rows: This unsigned integer defines the number of rows in the pixel
-%      cache.
-%
-%
-*/
-Export unsigned int OpenPixelCache(CacheHandle cache_handle,ClassType type,
-  const unsigned int columns,const unsigned int rows)
-{
-  CacheInfo
-    *cache_info;
-
-  int
-    status;
-
-  off_t
-    length,
-    number_pixels,
-    offset;
-
-  size_t
-    sans;
-
-  assert(cache_handle != (CacheHandle) NULL);
-  cache_info=(CacheInfo *) cache_handle;
-  number_pixels=columns*rows;
-  if (GetCacheClassType(cache_handle) == UndefinedClass)
-    {
-      length=number_pixels*sizeof(PixelPacket);
-      if (type == PseudoClass)
-        length+=number_pixels*sizeof(IndexPacket);
-      if (length <= GetCacheMemory(0))
-        {
-          /*
-            Create in-memory pixel cache.
-          */
-          cache_info->pixels=(PixelPacket *)
-            AllocateMemory(number_pixels*sizeof(PixelPacket));
-          if (cache_info->pixels != (PixelPacket *) NULL)
-            {
-              SetCacheClassType(cache_handle,DirectClass);
-              offset=number_pixels*sizeof(PixelPacket);
-              (void) GetCacheMemory(-offset);
-              if (type == PseudoClass)
-                {
-                  cache_info->indexes=(IndexPacket *)
-                    AllocateMemory(number_pixels*sizeof(IndexPacket));
-                  if (cache_info->indexes != (IndexPacket *) NULL)
-                    {
-                      SetCacheClassType(cache_handle,PseudoClass);
-                      offset=number_pixels*sizeof(IndexPacket);
-                      (void) GetCacheMemory(-offset);
-                    }
-                }
-            }
-        }
-      if (GetCacheClassType(cache_handle) == UndefinedClass)
-        {
-          char
-            filename[MaxTextExtent];
-
-          /*
-            Create pixel cache on disk.
-          */
-          TemporaryFilename(filename);
-          cache_info->file=fopen(filename,"wb+");
-          if (cache_info->file != (FILE *) NULL)
-            {
-              status=fseek(cache_info->file,length-1,SEEK_SET);
-              if (status != 0)
-                return(False);
-              SetCacheClassType(cache_handle,DirectClass);
-              (void) strcpy(cache_info->filename,filename);
-              (void) fputc(0,cache_info->file);
-              (void) fclose(cache_info->file);
-              cache_info->file=(FILE *) NULL;
-              cache_info->pixels=(PixelPacket *)
-                MapBlob(cache_info->filename,IOMode,&sans);
-              if (cache_info->pixels == (PixelPacket *) NULL)
-                {
-                  if (type == PseudoClass)
-                    SetCacheClassType(cache_handle,PseudoClass);
-                }
-              else
-                {
-                  cache_info->mapped=True;
-                  if (type == PseudoClass)
-                    {
-                      SetCacheClassType(cache_handle,PseudoClass);
-                      cache_info->indexes=(IndexPacket *)
-                        (cache_info->pixels+number_pixels);
-                    }
-                }
-            }
-        }
-      cache_info->number_pixels=number_pixels;
-      cache_info->rows=rows;
-      cache_info->columns=columns;
-    }
-  if (type == PseudoClass)
-    {
-      if (GetCacheClassType(cache_handle) != PseudoClass)
-        {
-          if (cache_info->filename[0] == '\0')
-            {
-              /*
-                Create in-memory colormap index cache.
-              */
-              cache_info->indexes=(IndexPacket *)
-                AllocateMemory(number_pixels*sizeof(IndexPacket));
-              if (cache_info->indexes != (IndexPacket *) NULL)
-                {
-                  SetCacheClassType(cache_handle,PseudoClass);
-                  offset=number_pixels*sizeof(IndexPacket);
-                  (void) GetCacheMemory(-offset);
-                }
-            }
-          else
-            {
-              /*
-                Create colormap index cache on disk.
-              */
-              if (cache_info->file == (FILE *) NULL)
-                cache_info->file=fopen(cache_info->filename,"rb+");
-              if (cache_info->file != (FILE *) NULL)
-                {
-                  length=number_pixels*sizeof(PixelPacket)+
-                    number_pixels*sizeof(IndexPacket);
-                  status=fseek(cache_info->file,length-1,SEEK_SET);
-                  if (status == 0)
-                    {
-                      SetCacheClassType(cache_handle,PseudoClass);
-                      (void) fputc(0,cache_info->file);
-                      (void) fclose(cache_info->file);
-                      cache_info->file=(FILE *) NULL;
-                      offset=number_pixels*sizeof(PixelPacket);
-                      if (cache_info->mapped)
-                        (void) UnmapBlob(cache_info->pixels,offset);
-                      cache_info->pixels=(PixelPacket *)
-                        MapBlob(cache_info->filename,IOMode,&sans);
-                      cache_info->mapped=
-                        cache_info->pixels != (PixelPacket *) NULL;
-                      if (cache_info->mapped)
-                        cache_info->indexes=(IndexPacket *)
-                          (cache_info->pixels+number_pixels);
-                    }
-                }
-            }
-        }
-      if (GetCacheClassType(cache_handle) != PseudoClass)
-        return(False);
-    }
-  if ((cache_info->pixels == (PixelPacket *) NULL) &&
-      (cache_info->file == (FILE *) NULL))
-    {
-      /*
-        Open disk pixel cache.
-      */
-      cache_info->file=fopen(cache_info->filename,"rb+");
-      if (cache_info->file == (FILE *) NULL)
-        return(False);
-    }
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   R e a d C a c h e I n d e x e s                                           %
 %                                                                             %
 %                                                                             %
@@ -574,8 +555,8 @@ Export unsigned int OpenPixelCache(CacheHandle cache_handle,ClassType type,
 %
 %  The format of the ReadCacheIndexes method is:
 %
-%      unsigned int ReadCacheIndexes(CacheHandle cache_handle,
-%        RectangleInfo *region_info,IndexPacket *indexes)
+%      unsigned int ReadCacheIndexes(Cache cache,RectangleInfo *region_info,
+%        IndexPacket *indexes)
 %
 %  A description of each parameter follows:
 %
@@ -592,8 +573,8 @@ Export unsigned int OpenPixelCache(CacheHandle cache_handle,ClassType type,
 %
 %
 */
-Export unsigned int ReadCacheIndexes(CacheHandle cache_handle,
-  RectangleInfo *region_info,IndexPacket *indexes)
+Export unsigned int ReadCacheIndexes(Cache cache,RectangleInfo *region_info,
+  IndexPacket *indexes)
 {
   CacheInfo
     *cache_info;
@@ -607,8 +588,8 @@ Export unsigned int ReadCacheIndexes(CacheHandle cache_handle,
   register int
     y;
 
-  assert(cache_handle != (CacheHandle) NULL);
-  cache_info=(CacheInfo *) cache_handle;
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
   offset=region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
   {
@@ -617,6 +598,12 @@ Export unsigned int ReadCacheIndexes(CacheHandle cache_handle,
         region_info->width*sizeof(IndexPacket));
     else
       {
+        if (cache_info->file == (FILE *) NULL)
+          {
+            cache_info->file=fopen(cache_info->filename,"rb+");
+            if (cache_info->file == (FILE *) NULL)
+              return(False);
+          }
         count=fseek(cache_info->file,cache_info->number_pixels*
           sizeof(PixelPacket)+offset*sizeof(IndexPacket),SEEK_SET);
         if (count != 0)
@@ -650,8 +637,8 @@ Export unsigned int ReadCacheIndexes(CacheHandle cache_handle,
 %
 %  The format of the ReadCachePixels method is:
 %
-%      unsigned int ReadCachePixels(CacheHandle cache_handle,
-%        RectangleInfo *region_info,IndexPacket *indexes)
+%      unsigned int ReadCachePixels(Cache cache,RectangleInfo *region_info,
+%        IndexPacket *indexes)
 %
 %  A description of each parameter follows:
 %
@@ -668,8 +655,8 @@ Export unsigned int ReadCacheIndexes(CacheHandle cache_handle,
 %
 %
 */
-Export unsigned int ReadCachePixels(CacheHandle cache_handle,
-  RectangleInfo *region_info,PixelPacket *pixels)
+Export unsigned int ReadCachePixels(Cache cache,RectangleInfo *region_info,
+  PixelPacket *pixels)
 {
   CacheInfo
     *cache_info;
@@ -683,8 +670,8 @@ Export unsigned int ReadCachePixels(CacheHandle cache_handle,
   register int
     y;
 
-  assert(cache_handle != (CacheHandle *) NULL);
-  cache_info=(CacheInfo *) cache_handle;
+  assert(cache != (Cache *) NULL);
+  cache_info=(CacheInfo *) cache;
   offset=region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
   {
@@ -693,6 +680,12 @@ Export unsigned int ReadCachePixels(CacheHandle cache_handle,
         region_info->width*sizeof(PixelPacket));
     else
       {
+        if (cache_info->file == (FILE *) NULL)
+          {
+            cache_info->file=fopen(cache_info->filename,"rb+");
+            if (cache_info->file == (FILE *) NULL)
+              return(False);
+          }
         count=fseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
         if (count != 0)
           return(False);
@@ -724,23 +717,23 @@ Export unsigned int ReadCachePixels(CacheHandle cache_handle,
 %
 %  The format of the SetCacheClassType method is:
 %
-%      void SetCacheClassType(CacheHandle cache_handle)
+%      void SetCacheClassType(Cache cache)
 %
 %  A description of each parameter follows:
 %
-%    o cache_handle: Specifies a pointer to a CacheHandle structure.
+%    o cache: Specifies a pointer to a Cache structure.
 %
 %    o type: The pixel cache type DirectClass or PseudoClass.
 %
 %
 */
-Export void SetCacheClassType(CacheHandle cache_handle,ClassType type)
+Export void SetCacheClassType(Cache cache,ClassType type)
 {
   CacheInfo
     *cache_info;
 
-  assert(cache_handle != (CacheHandle) NULL);
-  cache_info=(CacheInfo *) cache_handle;
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
   cache_info->class=type;
 }
 
@@ -791,13 +784,13 @@ Export void SetCacheThreshold(off_t threshold)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteCachePixels writes a colormap indexes to the specified region
+%  Method WriteCachePixels writes the colormap indexes to the specified region
 %  of the pixel cache.
 %
 %  The format of the WriteCachePixels method is:
 %
-%      unsigned int WriteCachePixels(CacheHandle cache_handle,
-%        RectangleInfo *region_info,IndexPacket *indexes)
+%      unsigned int WriteCachePixels(Cache cache,RectangleInfo *region_info,
+%        IndexPacket *indexes)
 %
 %  A description of each parameter follows:
 %
@@ -814,8 +807,8 @@ Export void SetCacheThreshold(off_t threshold)
 %
 %
 */
-Export unsigned int WriteCacheIndexes(CacheHandle cache_handle,
-  RectangleInfo *region_info,IndexPacket *indexes)
+Export unsigned int WriteCacheIndexes(Cache cache,RectangleInfo *region_info,
+  IndexPacket *indexes)
 {
   CacheInfo
     *cache_info;
@@ -829,8 +822,8 @@ Export unsigned int WriteCacheIndexes(CacheHandle cache_handle,
   register int
     y;
 
-  assert(cache_handle != (CacheHandle) NULL);
-  cache_info=(CacheInfo *) cache_handle;
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
   offset=region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
   {
@@ -839,6 +832,12 @@ Export unsigned int WriteCacheIndexes(CacheHandle cache_handle,
         region_info->width*sizeof(IndexPacket));
     else
       {
+        if (cache_info->file == (FILE *) NULL)
+          {
+            cache_info->file=fopen(cache_info->filename,"rb+");
+            if (cache_info->file == (FILE *) NULL)
+              return(False);
+          }
         count=fseek(cache_info->file,cache_info->number_pixels*
           sizeof(PixelPacket)+offset*sizeof(IndexPacket),SEEK_SET);
         if (count != 0)
@@ -867,13 +866,13 @@ Export unsigned int WriteCacheIndexes(CacheHandle cache_handle,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteCachePixels writes pixels to the specified region of the pixel
-%  cache.
+%  Method WriteCachePixels writes image pixels to the specified region of the
+%  pixel cache.
 %
 %  The format of the WriteCachePixels method is:
 %
-%      unsigned int WriteCachePixels(CacheHandle cache_handle,
-%        RectangleInfo *region_info,PixelPacket *pixels)
+%      unsigned int WriteCachePixels(Cache cache,RectangleInfo *region_info,
+%        PixelPacket *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -890,8 +889,8 @@ Export unsigned int WriteCacheIndexes(CacheHandle cache_handle,
 %
 %
 */
-Export unsigned int WriteCachePixels(CacheHandle cache_handle,
-  RectangleInfo *region_info,PixelPacket *pixels)
+Export unsigned int WriteCachePixels(Cache cache,RectangleInfo *region_info,
+  PixelPacket *pixels)
 {
   CacheInfo
     *cache_info;
@@ -905,8 +904,8 @@ Export unsigned int WriteCachePixels(CacheHandle cache_handle,
   register int
     y;
 
-  assert(cache_handle != (CacheHandle) NULL);
-  cache_info=(CacheInfo *) cache_handle;
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
   offset=region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
   {
@@ -915,6 +914,12 @@ Export unsigned int WriteCachePixels(CacheHandle cache_handle,
         region_info->width*sizeof(PixelPacket));
     else
       {
+        if (cache_info->file == (FILE *) NULL)
+          {
+            cache_info->file=fopen(cache_info->filename,"rb+");
+            if (cache_info->file == (FILE *) NULL)
+              return(False);
+          }
         count=fseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
         if (count != 0)
           return(False);
