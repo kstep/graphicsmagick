@@ -407,6 +407,45 @@ static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
   return((tsize_t) WriteBlob((Image *) image,(size_t) size,data));
 }
 
+/* Get a TIFF scanline, adjusting for word ordering (wrapper for
+   TIFFReadScanline()) */
+static int ReadScanline(TIFF *tiff, tdata_t scanline, uint32 row, tsample_t sample)
+{
+  int
+    status;
+
+  status = TIFFReadScanline(tiff, scanline, row, sample);
+#if !defined(WORDS_BIGENDIAN)
+    /*
+      On little-endian machines, the scanline must be converted from
+      little-endian format.
+    */
+  if (-1 != status)
+    {
+      uint16
+        bits_per_sample;
+      
+    tsize_t
+      scanline_size;
+    
+    (void) TIFFGetField(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample);
+    scanline_size=TIFFScanlineSize(tiff);
+    if (bits_per_sample >= 32)
+      {
+        TIFFSwabArrayOfLong((uint32*) scanline,
+                            (TIFFScanlineSize(tiff)+(sizeof(uint32)-1))/sizeof(uint32));
+      }
+    else
+      if (bits_per_sample >= 16)
+      {
+        TIFFSwabArrayOfShort((uint16*) scanline,
+                             (TIFFScanlineSize(tiff)+(sizeof(uint16)-1))/sizeof(uint16));
+      }
+    }
+#endif /* !defined(WORDS_BIGENDIAN) */
+  return (status);
+}
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
@@ -708,17 +747,26 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Palette or grayscale image
         */
-        image->colors=1UL << bits_per_sample;
-        /* Constrain image colormap to MaxColormapSize */
-        image->colors=Min(MaxColormapSize,image->colors);
-        /* Allocate colormap */
-        if (!AllocateImageColormap(image,image->colors))
+        unsigned int
+          max_sample_value=MaxRGBGivenBits(bits_per_sample);
+
+        image->colors=0;
+        if (MaxColormapSize > max_sample_value)
+          image->colors=max_sample_value+1;
+        else if (MaxColormapSize > MaxRGB)
+          image->colors=MaxColormapSize;
+
+        if (image->colors > 0)
           {
-            TIFFClose(tiff);
-            if (filename_is_temporary)
-              (void) remove(filename);
-            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-              image)
+            /* Allocate colormap, setting image to PseudoClass. */
+            if (!AllocateImageColormap(image,image->colors))
+              {
+                TIFFClose(tiff);
+                if (filename_is_temporary)
+                  (void) remove(filename);
+                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+                                     image);
+              }
           }
         /* Extra samples are opacity samples */
         if (samples_per_pixel == 2)
@@ -767,6 +815,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             method=DirectClassScanLineMethod;
         if (image->colorspace == CMYKColorspace)
           method=DirectClassScanLineMethod;
+        if ((photometric == PHOTOMETRIC_MINISBLACK) ||
+            (photometric == PHOTOMETRIC_MINISWHITE))
+          method=DirectClassScanLineMethod;
         if (TIFFIsTiled(tiff))
           method=DirectClassTiledMethod;
       }
@@ -775,9 +826,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     {
       case PseudoClassMethod:
       {
-        unsigned long
-          packet_size;
-
         size_t
           scanline_size;
 
@@ -795,10 +843,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 bits_per_sample, image->colors);
           }
         
-        packet_size=image->depth > 8 ? 2 : 1;
-        if (image->matte)
-          packet_size*=2;
-        scanline_size=Max((size_t) TIFFScanlineSize(tiff),packet_size*width);
+        scanline_size=(size_t) TIFFScanlineSize(tiff);
         scanline=MagickAllocateMemory(unsigned char *,scanline_size);
         if (scanline == (unsigned char *) NULL)
           {
@@ -812,70 +857,71 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           Create colormap.
         */
         switch (photometric)
-        {
-          case PHOTOMETRIC_MINISBLACK:
           {
-            Quantum
-              quantum;
-
-            for (i=0; i < image->colors; i++)
+          case PHOTOMETRIC_MINISBLACK:
             {
-              quantum = (Quantum) (i*(MaxRGB/Max(image->colors-1,1)));
-              image->colormap[i].red=quantum;
-              image->colormap[i].green=quantum;
-              image->colormap[i].blue=quantum;
-              image->colormap[i].opacity=OpaqueOpacity;
+              Quantum
+                quantum;
+              
+              for (i=0; i < image->colors; i++)
+                {
+                  quantum = (Quantum) (i*(MaxRGB/Max(image->colors-1,1)));
+                  image->colormap[i].red=quantum;
+                  image->colormap[i].green=quantum;
+                  image->colormap[i].blue=quantum;
+                  image->colormap[i].opacity=OpaqueOpacity;
+                }
+              break;
             }
-            break;
-          }
           case PHOTOMETRIC_MINISWHITE:
           default:
-          {
-            Quantum
-              quantum;
-
-            for (i=0; i < image->colors; i++)
             {
-              quantum = (Quantum) (MaxRGB - (i*(MaxRGB/Max(image->colors-1,1))));
-              image->colormap[i].red=quantum;
-              image->colormap[i].green=quantum;
-              image->colormap[i].blue=quantum;
-              image->colormap[i].opacity=OpaqueOpacity;
-            }
-            break;
-          }
-          case PHOTOMETRIC_PALETTE:
-          {
-            long
-              range;
-
-            uint16
-              *blue_colormap,
-              *green_colormap,
-              *red_colormap;
-
-            (void) TIFFGetField(tiff,TIFFTAG_COLORMAP,&red_colormap,
-              &green_colormap,&blue_colormap);
-            range=256L;  /* might be old style 8-bit colormap */
-            for (i=0; i < image->colors; i++)
-              if ((red_colormap[i] >= 256) || (green_colormap[i] >= 256) ||
-                  (blue_colormap[i] >= 256))
+              Quantum
+                quantum;
+              
+              for (i=0; i < image->colors; i++)
                 {
-                  range=65535L;
-                  break;
+                  quantum = (Quantum) (MaxRGB - (i*(MaxRGB/Max(image->colors-1,1))));
+                  image->colormap[i].red=quantum;
+                  image->colormap[i].green=quantum;
+                  image->colormap[i].blue=quantum;
+                  image->colormap[i].opacity=OpaqueOpacity;
                 }
-            for (i=0; i < image->colors; i++)
-            {
-              image->colormap[i].red=(Quantum)
-                (((double) MaxRGB*red_colormap[i])/range+0.5);
-              image->colormap[i].green=(Quantum)
-                (((double) MaxRGB*green_colormap[i])/range+0.5);
-              image->colormap[i].blue=(Quantum)
-                (((double) MaxRGB*blue_colormap[i])/range+0.5);
+              break;
             }
-            break;
+          case PHOTOMETRIC_PALETTE:
+            {
+              long
+                range;
+              
+              uint16
+                *blue_colormap,
+                *green_colormap,
+                *red_colormap;
+              
+              (void) TIFFGetField(tiff,TIFFTAG_COLORMAP,&red_colormap,
+                                  &green_colormap,&blue_colormap);
+              range=256L;  /* might be old style 8-bit colormap */
+              for (i=0; i < image->colors; i++)
+                if ((red_colormap[i] >= 256) || (green_colormap[i] >= 256) ||
+                    (blue_colormap[i] >= 256))
+                  {
+                    range=65535L;
+                    break;
+                  }
+              for (i=0; i < image->colors; i++)
+                {
+                  image->colormap[i].red=(Quantum)
+                    (((double) MaxRGB*red_colormap[i])/range+0.5);
+                  image->colormap[i].green=(Quantum)
+                    (((double) MaxRGB*green_colormap[i])/range+0.5);
+                  image->colormap[i].blue=(Quantum)
+                    (((double) MaxRGB*blue_colormap[i])/range+0.5);
+                }
+              break;
+            }
           }
-        }
+          
         /*
           Convert image to PseudoClass pixel packets.
         */
@@ -898,19 +944,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              (void) TIFFReadScanline(tiff,(char *) scanline,(uint32) y,0);
-#if !defined(WORDS_BIGENDIAN)
-              if (bits_per_sample >= 16)
-                {
-                  /*
-                    On little-endian machines, words in the scanline
-                    must be converted to big-endian format prior to
-                    parsing.
-                  */
-                  TIFFSwabArrayOfShort((uint16*) scanline,
-                                       (TIFFScanlineSize(tiff)+1)/sizeof(uint16));
-                }
-#endif /* !defined(WORDS_BIGENDIAN) */
+              if(ReadScanline(tiff,(char *) scanline,(uint32) y,0) == -1)
+                break;
               (void) ImportImagePixelArea(image,quantum_type,bits_per_sample,scanline);
               if (!SyncImagePixels(image))
                 break;
@@ -937,9 +972,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                bits_per_sample);
 
         /*
-          Allocate memory for one 16-bit CMYK scanline (largest size).
+          Allocate memory for one scanline.
         */
-        scanline=MagickAllocateMemory(unsigned char *,8*TIFFScanlineSize(tiff));
+        scanline=MagickAllocateMemory(unsigned char *,TIFFScanlineSize(tiff));
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
@@ -955,6 +990,20 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               quantum_type=CMYKAQuantum;
             else
               quantum_type=CMYKQuantum;
+          }
+        else if (photometric == PHOTOMETRIC_MINISBLACK)
+          {
+            if (image->matte)
+              quantum_type=GrayAlphaQuantum;
+            else
+              quantum_type=GrayQuantum;
+          }
+        else if (photometric == PHOTOMETRIC_MINISWHITE)
+          {
+            if (image->matte)
+              quantum_type=GrayInvertedAlphaQuantum;
+            else
+              quantum_type=GrayInvertedQuantum;
           }
         else
           {
@@ -974,17 +1023,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             break;
 
           indexes=GetIndexes(image);
-          (void) TIFFReadScanline(tiff,(char *) scanline,(uint32) y,0);
-
-          /*
-            Ensure the header byte-order is most-significant byte first.
-          */
-          if (bits_per_sample >= 16)
-            {
-              unsigned long lsb_first=1;
-              if (*(char *) &lsb_first)
-                MSBOrderShort(scanline,8*TIFFScanlineSize(tiff));
-            }
+          if(ReadScanline(tiff,(char *) scanline,(uint32) y,0) == -1)
+            break;
 
           /*
             Import scanline into image.
@@ -1582,7 +1622,7 @@ static void WriteNewsProfile(TIFF *tiff,
   MagickFreeMemory(profile);
 }
 
-static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
+static int32 WriteScanline(TIFF *tiff,tdata_t scanline,unsigned long row,
   tsample_t sample,Image *image)
 {
   int32
@@ -1885,10 +1925,11 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Using %s compression", CompressionTagToString(compress_tag));
 
-    if (depth > 8)
-      {
-        bits_per_sample=16;
-      }
+    /*
+      Support writing RGB bits per sample of 8, 16, & 32 by default.
+    */
+    for (bits_per_sample=8; bits_per_sample < depth; )
+      bits_per_sample*=2;
 
     if (((image_info->colorspace == UndefinedColorspace) &&
          (image->colorspace == CMYKColorspace)) ||
@@ -2267,7 +2308,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Write image scanlines.
     */
-    scanline=MagickAllocateMemory(unsigned char *,8*TIFFScanlineSize(tiff));
+    scanline=MagickAllocateMemory(unsigned char *,TIFFScanlineSize(tiff));
     if (scanline == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     switch (photometric)
@@ -2282,6 +2323,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           case NoInterlace:
           default:
           {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Writing RGB pixels without interlace.");
             for (y=0; y < image->rows; y++)
             {
               p=AcquireImagePixels(image,0,y,image->columns,1,
@@ -2297,7 +2340,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
               else
                 (void) ExportImagePixelArea(image,RGBAQuantum,bits_per_sample,
                                             scanline);
-              if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
+              if (WriteScanline(tiff,(char *) scanline,y,0,image) < 0)
                 {
                   status=MagickFail;
                   break;
@@ -2317,6 +2360,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             /*
               Plane interlacing:  RRRRRR...GGGGGG...BBBBBB...
             */
+
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Writing RGB pixels with plane/partition interlace.");
             for (y=0; y < image->rows; y++)
             {
               p=AcquireImagePixels(image,0,y,image->columns,1,
@@ -2328,7 +2374,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 }
               (void) ExportImagePixelArea(image,RedQuantum,bits_per_sample,
                                           scanline);
-              if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
+              if (WriteScanline(tiff,(char *) scanline,y,0,image) < 0)
                 {
                   status=MagickFail;
                   break;
@@ -2348,7 +2394,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 }
               (void) ExportImagePixelArea(image,GreenQuantum,bits_per_sample,
                                           scanline);
-              if (TIFFWritePixels(tiff,(char *) scanline,y,1,image) < 0)
+              if (WriteScanline(tiff,(char *) scanline,y,1,image) < 0)
                 {
                   status=MagickFail;
                   break;
@@ -2368,7 +2414,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 }
               (void) ExportImagePixelArea(image,BlueQuantum,bits_per_sample,
                                           scanline);
-              if (TIFFWritePixels(tiff,(char *) scanline,y,2,image) < 0)
+              if (WriteScanline(tiff,(char *) scanline,y,2,image) < 0)
                 {
                   status=MagickFail;
                   break;
@@ -2389,7 +2435,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   }
                 (void) ExportImagePixelArea(image,AlphaQuantum,
                                             bits_per_sample,scanline);
-                if (TIFFWritePixels(tiff,(char *) scanline,y,3,image) < 0)
+                if (WriteScanline(tiff,(char *) scanline,y,3,image) < 0)
                   {
                     status=MagickFail;
                     break;
@@ -2424,7 +2470,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           else
             (void) ExportImagePixelArea(image,CMYKAQuantum,bits_per_sample,
                                         scanline);
-          if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
+          if (WriteScanline(tiff,(char *) scanline,y,0,image) < 0)
             {
               status=MagickFail;
               break;
@@ -2526,7 +2572,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 status=MagickFail;
                 break;
               }
-            if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
+            if (WriteScanline(tiff,(char *) scanline,y,0,image) < 0)
               {
                 status=MagickFail;
                 break;

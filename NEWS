@@ -1,9 +1,16 @@
-This file was last updated on July 9, 2004.
+This file was last updated on December 28, 2004.
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file.
 
 Significant changes associated with GraphicsMagick 1.2 (not yet released)
+
+  Security fixes:
+    * Fixes for CERT security alert TA04-217A described at
+    "http://www.us-cert.gov/cas/techalerts/TA04-217A.html".
+    * AVI, BMP, & DIB security fixes.
+    * Implementation has replaced usage of strcpy, strcat, and strncat
+    with the more security conscious strlcat and strlcpy.
 
   Bug fixes:
     * The configure script now searches for a web browser in the order
@@ -25,6 +32,12 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     * Support reading and writing large PCX files.
     * The Red Hat source RPM was failing to install the *-config scripts
     with execute permissions.
+    * Fixed a bug which could cause possible truncation while cloning the
+    image cache.
+    * Ensure that MIFF files indicate the compression which was actually used.
+    * Properly handle errors from libtiff so that corrupted images are not
+    output.
+    * Improved handling of corrupt GIF files.
 
   Feature improvements:
     * LZW compression is now enabled by default.
@@ -37,6 +50,21 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     ImageMagick utilities compatibility links.
     * The display program now supports the +progress option to disable any
     visual progress indication (and hourglass cursor) while loading images.
+
+  Coder additions/improvements:
+
+    * TIFF coder now supports reading and writing RGB, CMYK, and
+    grayscale, scanline-oriented TIFF images with arbitrary (1 to 32
+    bits) depth.
+    * TIFF coder now supports retrieving and saving XMP profiles.
+    * Support 32-bit raw RGB images.
+    * Support 32-bit raw CMYK images.
+    * Support 32-bit raw gray images.
+
+  API enhancements:
+    * Added ExportImageChannel() and ImportImageChannel() APIs to support
+    exporting and importing pixel regions with an arbitary range of (1 to
+    32) bits per quantum.
 
   Performance improvments:
 
@@ -52,6 +80,11 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     build as a static library since otherwise C++ exceptions don't work.
     * Determine location of Ghostscript fonts only once in order to improve
     performance.
+    * Updated LCMS to version 1.13.
+    * Libtiff updated to support LZW compression.
+    * Use GlobalMemoryStatusEx(), if available, to determine how much physical
+    memory is available.  Important for large-memory machines.
+    * Fixed opendir() emulation function so it can't overwrite the stack.
 
 Significant changes associated with GraphicsMagick 1.1 (Released April 4, 2004)
 
@@ -86,6 +119,8 @@ Significant changes associated with GraphicsMagick 1.1 (Released April 4, 2004)
     DIB, and TIM datastreams.
     * GM utility now reports an error rather than silently returning if
     an unsupported sub-command is provided.
+    * TIFF coder was writing 16-bit per sample RGB images incorrectly on
+    little-endian CPUs.
 
   Performance improvements:
     * Texture tiling is now 7X faster.
@@ -107,7 +142,7 @@ Significant changes associated with GraphicsMagick 1.1 (Released April 4, 2004)
     * The convert and montage commands now support an -operator command to
     perform arithmetic and bitwise operations on specified image channels.
 
-  Coder additions/improvments
+  Coder additions/improvements
     * The META coder supports wide characters for the IPTC and 8BIM
     formats.
     * The XTRN coder now supports wide characters.

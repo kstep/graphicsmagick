@@ -178,7 +178,7 @@ testRead( 'input_gray_08bit_matte.tiff',
 ++$test;
 print("Grayscale (10-bit) ...\n");
 testRead( 'input_gray_10bit.tiff',
-  '0b2b6cd7afd3fe90a8e4b77c8812b97a3d8a08b33c332f40fec3f51ebac14011',
+  'c52de8e70c226c7872e1384e119532791ea9955a01485ae68bbc1236d3f9f9ee',
   'b278e43185a407d0419768dc57f2e714597cdb8f3b6c80278a6307af68a0a5f1',
   'b5be0d42f6e491343f86744af8fcd4b51ef70373fad69593046a27ad2d805788');
 
@@ -188,7 +188,7 @@ testRead( 'input_gray_10bit.tiff',
 ++$test;
 print("Grayscale (12-bit) ...\n");
 testRead( 'input_gray_12bit.tiff',
-  'a33305fe6345131a1526ce3a184df1c9b3df4da83435867346cdf986b710b20a',
+  'c52de8e70c226c7872e1384e119532791ea9955a01485ae68bbc1236d3f9f9ee',
   'df4cf35c2408487c2727ed288908d563ecb758260d09ce8605839394db930505',
   '4d382632a407732017ec16d6cbcb92a81cdb56150e9aedce1b987ac9b68d5948');
 
@@ -198,7 +198,7 @@ testRead( 'input_gray_12bit.tiff',
 ++$test;
 print("Grayscale (14-bit) ...\n");
 testRead( 'input_gray_14bit.tiff',
-  '242789a92fff666ef472202305c4d762beef8b048ba871f8ad20700c01392334',
+  'c52de8e70c226c7872e1384e119532791ea9955a01485ae68bbc1236d3f9f9ee',
   'a8ecb9b559640e7db2505543cd85c7a614460bed067cf197e3d2116246b1fd05',
   'e61921b0de711a9a109cb97920a4487852f0aea9fdb255c357b8290be408ebaa');
 

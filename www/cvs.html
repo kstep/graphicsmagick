@@ -5,8 +5,8 @@
 	<TITLE>GraphicsMagick Source Access Using CVS</TITLE>
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020908;16044300">
-	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20040626;10113900">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20041228;14171800">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
 	<STYLE>
@@ -206,14 +206,17 @@ will cause a help message to be printed for the specified &quot;<I>command</I>&q
 <P>A live source tree for GraphicsMagick is available from
 <TT>cvs.graphicsmagick.org</TT>. This source tree may be retrieved
 over the network using the <A HREF="http://www.cvshome.org/" TARGET="_top">CVS
-program</A>. There are currently two CVS protocols available for use:
-'EXT' and 'PSERVER'. The 'EXT' protocol is used on top of encrypted
-SSH so it is very secure. The 'PSERVER' protocol uses simple TCP and
-plain-text passwords so it is not very secure. GraphicsMagick CVS is
-in the process of transitioning to using SSH access only (due to
-security concerns), so using the EXT protocol is recommended. Some
-corporate firewalls do not allow outbound PSERVER connections (to TCP
-port 2401) while they do allow SSH connections.</P>
+program</A>. Microsoft Windows users may be interested in
+<A HREF="http://www.tortoisecvs.org/" TARGET="_top">TortoiseCVS</A>,
+which transparently extends the Windows file manager to support CVS.
+There are currently two CVS protocols available for use: 'EXT' and
+'PSERVER'. The 'EXT' protocol is used on top of encrypted SSH so it
+is very secure. The 'PSERVER' protocol uses simple TCP and plain-text
+passwords so it is not very secure. GraphicsMagick CVS is in the
+process of transitioning to using SSH access only (due to security
+concerns), so using the EXT protocol is recommended. Some corporate
+firewalls do not allow outbound PSERVER connections (to TCP port
+2401) while they do allow SSH connections.</P>
 <P>The protocol to use is indicated by the prefix of the CVSROOT
 specification. The CVSROOT specification may be specified via the
 CVSROOT environment variable or as an argument to the cvs -d option.

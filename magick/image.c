@@ -1599,42 +1599,57 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
     if (image->colorspace == CMYKColorspace)
     {
       (void) fprintf(file,"    Cyan:\n");
-      (void) fprintf(file,"      Minimum:            %10u\n",
-               (unsigned int) RoundToQuantum(MaxRGB*statistics.red.minimum));
-      (void) fprintf(file,"      Maximum:            %10u\n",
-               (unsigned int) RoundToQuantum(MaxRGB*statistics.red.maximum));
-      (void) fprintf(file,"      Mean:               %15.4lf\n",
-               MaxRGB*statistics.red.mean);
-      (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
-               MaxRGB*statistics.red.standard_deviation);
+      (void) fprintf(file,"      Minimum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.red.minimum,
+                     statistics.red.minimum);
+      (void) fprintf(file,"      Maximum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.red.maximum,
+                     statistics.red.maximum);
+      (void) fprintf(file,"      Mean:               %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.red.mean,
+                     statistics.red.mean);
+      (void) fprintf(file,"      Standard Deviation: %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.red.standard_deviation,
+                     statistics.red.standard_deviation);
       (void) fprintf(file,"    Magenta:\n");
-      (void) fprintf(file,"      Minimum:            %10u\n",
-               (unsigned int) RoundToQuantum(MaxRGB*statistics.green.minimum));
-      (void) fprintf(file,"      Maximum:            %10u\n",
-               (unsigned int) RoundToQuantum(MaxRGB*statistics.green.maximum));
-      (void) fprintf(file,"      Mean:               %15.4lf\n",
-               MaxRGB*statistics.green.mean);
-      (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
-               MaxRGB*statistics.green.standard_deviation);
+      (void) fprintf(file,"      Minimum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.green.minimum,
+                     statistics.green.minimum);
+      (void) fprintf(file,"      Maximum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.green.maximum,
+                     statistics.green.maximum);
+      (void) fprintf(file,"      Mean:               %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.green.mean,
+                     statistics.green.mean);
+      (void) fprintf(file,"      Standard Deviation: %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.green.standard_deviation,
+                     statistics.green.standard_deviation);
       (void) fprintf(file,"    Yellow:\n");
-      (void) fprintf(file,"    Blue:\n");
-      (void) fprintf(file,"      Minimum:            %10u\n",
-               (unsigned int) RoundToQuantum(MaxRGB*statistics.blue.minimum));
-      (void) fprintf(file,"      Maximum:            %10u\n",
-               (unsigned int) RoundToQuantum(MaxRGB*statistics.blue.maximum));
-      (void) fprintf(file,"      Mean:               %15.4lf\n",
-               MaxRGB*statistics.blue.mean);
-      (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
-               MaxRGB*statistics.blue.standard_deviation);
+      (void) fprintf(file,"      Minimum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.blue.minimum,
+                     statistics.blue.minimum);
+      (void) fprintf(file,"      Maximum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.blue.maximum,
+                     statistics.blue.maximum);
+      (void) fprintf(file,"      Mean:               %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.blue.mean,
+                     statistics.blue.mean);
+      (void) fprintf(file,"      Standard Deviation: %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.blue.standard_deviation,
+                     statistics.blue.standard_deviation);
       (void) fprintf(file,"    Black:\n");
-      (void) fprintf(file,"      Minimum:            %10u\n",
-              (unsigned int) RoundToQuantum(MaxRGB*statistics.opacity.minimum));
-      (void) fprintf(file,"      Maximum:            %10u\n",
-              (unsigned int) RoundToQuantum(MaxRGB*statistics.opacity.maximum));
-      (void) fprintf(file,"      Mean:               %15.4lf\n",
-              MaxRGB*statistics.opacity.mean);
-      (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
-              MaxRGB*statistics.opacity.standard_deviation);
+      (void) fprintf(file,"      Minimum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.opacity.minimum,
+                     statistics.opacity.minimum);
+      (void) fprintf(file,"      Maximum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.opacity.maximum,
+                     statistics.opacity.maximum);
+      (void) fprintf(file,"      Mean:               %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.opacity.mean,
+                     statistics.opacity.mean);
+      (void) fprintf(file,"      Standard Deviation: %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.opacity.standard_deviation,
+                     statistics.opacity.standard_deviation);
       /*
       if (image->matte)
         (void) fprintf(file,"    Opacity:\n");
@@ -1643,43 +1658,59 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
   else
     {
       (void) fprintf(file,"    Red:\n");
-      (void) fprintf(file,"      Minimum:            %10u\n",
-               (unsigned int) RoundToQuantum(MaxRGB*statistics.red.minimum));
-      (void) fprintf(file,"      Maximum:            %10u\n",
-               (unsigned int) RoundToQuantum(MaxRGB*statistics.red.maximum));
-      (void) fprintf(file,"      Mean:               %15.4lf\n",
-               MaxRGB*statistics.red.mean);
-      (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
-               MaxRGB*statistics.red.standard_deviation);
+      (void) fprintf(file,"      Minimum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.red.minimum,
+                     statistics.red.minimum);
+      (void) fprintf(file,"      Maximum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.red.maximum,
+                     statistics.red.maximum);
+      (void) fprintf(file,"      Mean:               %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.red.mean,
+                     statistics.red.mean);
+      (void) fprintf(file,"      Standard Deviation: %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.red.standard_deviation,
+                     statistics.red.standard_deviation);
       (void) fprintf(file,"    Green:\n");
-      (void) fprintf(file,"      Minimum:            %10u\n",
-               (unsigned int) RoundToQuantum(MaxRGB*statistics.green.minimum));
-      (void) fprintf(file,"      Maximum:            %10u\n",
-               (unsigned int) RoundToQuantum(MaxRGB*statistics.green.maximum));
-      (void) fprintf(file,"      Mean:               %15.4lf\n",
-               MaxRGB*statistics.green.mean);
-      (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
-               MaxRGB*statistics.green.standard_deviation);
+      (void) fprintf(file,"      Minimum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.green.minimum,
+                     statistics.green.minimum);
+      (void) fprintf(file,"      Maximum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.green.maximum,
+                     statistics.green.maximum);
+      (void) fprintf(file,"      Mean:               %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.green.mean,
+                     statistics.green.mean);
+      (void) fprintf(file,"      Standard Deviation: %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.green.standard_deviation,
+                     statistics.green.standard_deviation);
       (void) fprintf(file,"    Blue:\n");
-      (void) fprintf(file,"      Minimum:            %10u\n",
-               (unsigned int) RoundToQuantum(MaxRGB*statistics.blue.minimum));
-      (void) fprintf(file,"      Maximum:            %10u\n",
-               (unsigned int) RoundToQuantum(MaxRGB*statistics.blue.maximum));
-      (void) fprintf(file,"      Mean:               %15.4lf\n",
-               MaxRGB*statistics.blue.mean);
-      (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
-               MaxRGB*statistics.blue.standard_deviation);
+      (void) fprintf(file,"      Minimum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.blue.minimum,
+                     statistics.blue.minimum);
+      (void) fprintf(file,"      Maximum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.blue.maximum,
+                     statistics.blue.maximum);
+      (void) fprintf(file,"      Mean:               %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.blue.mean,
+                     statistics.blue.mean);
+      (void) fprintf(file,"      Standard Deviation: %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.blue.standard_deviation,
+                     statistics.blue.standard_deviation);
       if (image->matte)
         {
           (void) fprintf(file,"    Opacity:\n");
-          (void) fprintf(file,"      Minimum:            %10u\n",
-                   (unsigned int) RoundToQuantum(MaxRGB*statistics.opacity.minimum));
-          (void) fprintf(file,"      Maximum:            %10u\n",
-                   (unsigned int) RoundToQuantum(MaxRGB*statistics.opacity.maximum));
-          (void) fprintf(file,"      Mean:               %15.4lf\n",
-                   MaxRGB*statistics.opacity.mean);
-          (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
-                   MaxRGB*statistics.opacity.standard_deviation);
+          (void) fprintf(file,"      Minimum:            %13.02lf (%1.4f)\n",
+                         MaxRGB*statistics.opacity.minimum,
+                         statistics.opacity.minimum);
+          (void) fprintf(file,"      Maximum:            %13.02lf (%1.4f)\n",
+                         MaxRGB*statistics.opacity.maximum,
+                         statistics.opacity.maximum);
+          (void) fprintf(file,"      Mean:               %13.02lf (%1.4f)\n",
+                         MaxRGB*statistics.opacity.mean,
+                         statistics.opacity.mean);
+          (void) fprintf(file,"      Standard Deviation: %13.02lf (%1.4f)\n",
+                         MaxRGB*statistics.opacity.standard_deviation,
+                         statistics.opacity.standard_deviation);
         }
     }
   }

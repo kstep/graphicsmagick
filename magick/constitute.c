@@ -2421,12 +2421,18 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   register PixelPacket
     *q;
 
+  unsigned int
+    maximum_sample_value;
+
   long
     number_pixels;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(source != (const unsigned char *) NULL);
+
+  /* Maximum value which may be represented by a sample */
+  maximum_sample_value=MaxRGBGivenBits(quantum_size);
 
   if (QuantumDepth == quantum_size)
     {
@@ -2439,7 +2445,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   else if (QuantumDepth < quantum_size)
     {
       /* Divide to scale down */
-      quantum_scale=(MaxRGBGivenBits(quantum_size)/ MaxRGB);
+      quantum_scale=(maximum_sample_value/MaxRGB);
     }
 
   number_pixels=(long) GetPixelCacheArea(image);
@@ -2559,36 +2565,171 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
     case GrayInvertedQuantum:
     case GrayQuantum:
       {
-        register unsigned int
-          indexes_scale = 1U;
-
-        assert(image->colors <= MaxColormapSize);
-
-        if (MaxRGBGivenBits(quantum_size) > MaxColormapSize)
-          indexes_scale=(1U << quantum_size) / image->colors + 1;
-
-        if ( (quantum_size >= 8) && (quantum_size % 8U == 0U) )
+        if (DirectClass == image->storage_class)
           {
             /*
-              Modulo-8 sample sizes
+              DirectClass representation.
             */
-            if (indexes_scale == 1U)
+            if ( (quantum_size >= 8) && (quantum_size % 8U == 0U) )
               {
-                for (x = number_pixels; x > 0; --x)
+                /*
+                  Modulo-8 sample sizes
+                */
+                if( QuantumDepth == quantum_size)
                   {
-                    ImportModulo8Quantum(index,quantum_size,p);
-                    VerifyColormapIndex(image,index);
-                    if (GrayInvertedQuantum == quantum_type)
-                      index=(image->colors-1)-index;
-                    *indexes++=index;
-                    *q++=image->colormap[index];
+                    /* Unity scale */
+                    for (x = number_pixels; x > 0; --x)
+                      {
+                        ImportModulo8Quantum(quantum,quantum_size,p);
+                        if (GrayInvertedQuantum == quantum_type)
+                          quantum=MaxRGB-quantum;
+                        q->red=q->green=q->blue=quantum;
+                        q->opacity=0U;
+                        q++;
+                      }
+                  }
+                else if (QuantumDepth >  quantum_size)
+                  {
+                    /* Scale up */
+                    for (x = number_pixels; x > 0; --x)
+                      {
+                        ImportModulo8Quantum(quantum,quantum_size,p);
+                        quantum *= quantum_scale;
+                        if (GrayInvertedQuantum == quantum_type)
+                          quantum=MaxRGB-quantum;
+                        q->red=q->green=q->blue=quantum;
+                        q->opacity=0U;
+                        q++;
+                      }
+                  }
+                else
+                  {
+                    /* Scale down */
+                    for (x = number_pixels; x > 0; --x)
+                      {
+                        ImportModulo8Quantum(quantum,quantum_size,p);
+                        quantum /= quantum_scale;
+                        if (GrayInvertedQuantum == quantum_type)
+                          quantum=MaxRGB-quantum;
+                        q->red=q->green=q->blue=quantum;
+                        q->opacity=0U;
+                        q++;
+                      }
                   }
               }
             else
               {
+                BitStreamReadHandle
+                  stream;
+
+                BitStreamInitializeRead(&stream,p);
+                if (QuantumDepth >=  quantum_size)
+                  {
+                    /* Scale up */
+                    for (x = number_pixels; x > 0; --x)
+                      {
+                        quantum=BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
+                        if (GrayInvertedQuantum == quantum_type)
+                          quantum = MaxRGB-quantum;
+                        q->red=q->green=q->blue=quantum;
+                        q->opacity=0U;
+                        q++;
+                      }
+                  }
+                else
+                  {
+                    /* Scale down */
+                    for (x = number_pixels; x > 0; --x)
+                      {
+                        quantum=BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
+                        if (GrayInvertedQuantum == quantum_type)
+                          quantum = MaxRGB-quantum;
+                        q->red=q->green=q->blue=quantum;
+                        q->opacity=0U;
+                        q++;
+                      }
+                  }
+              }
+          }
+        else
+          {
+            /*
+              PseudoClass representation.
+            */
+            register unsigned int
+              indexes_scale = 1U;
+
+            assert(image->colors <= MaxColormapSize);
+
+            if (maximum_sample_value > (image->colors-1))
+              indexes_scale=(maximum_sample_value/(image->colors-1));
+
+            if ( (quantum_size >= 8) && (quantum_size % 8U == 0U) )
+              {
+                /*
+                  Modulo-8 sample sizes
+                */
+                if (indexes_scale == 1U)
+                  {
+                    for (x = number_pixels; x > 0; --x)
+                      {
+                        ImportModulo8Quantum(index,quantum_size,p);
+                        VerifyColormapIndex(image,index);
+                        if (GrayInvertedQuantum == quantum_type)
+                          index=(image->colors-1)-index;
+                        *indexes++=index;
+                        *q++=image->colormap[index];
+                      }
+                  }
+                else
+                  {
+                    for (x = number_pixels; x > 0; --x)
+                      {
+                        ImportModulo8Quantum(index,quantum_size,p);
+                        index /= indexes_scale;
+                        VerifyColormapIndex(image,index);
+                        if (GrayInvertedQuantum == quantum_type)
+                          index=(image->colors-1)-index;
+                        *indexes++=index;
+                        *q++=image->colormap[index];
+                      }
+                  }
+              }
+            else if (quantum_size == 1)
+              {
+                /*
+                  Special fast support for bi-level gray.
+                */
+                register int
+                  bit = 8;
+
+                for (x = number_pixels ; x > 0 ; --x )
+                  {
+                    --bit;
+                    index=(*p >> bit) & 0x01;
+                    if (GrayInvertedQuantum == quantum_type)
+                      index ^= 0x01;
+                    *indexes++=index;
+                    *q++=image->colormap[index];
+                    if (bit == 0)
+                      {
+                        bit=8;
+                        p++;
+                      }
+                  }
+              }
+            else
+              {
+                /*
+                  Arbitrary sample size
+                */
+                BitStreamReadHandle
+                  stream;
+            
+                BitStreamInitializeRead(&stream,p);
                 for (x = number_pixels; x > 0; --x)
                   {
-                    ImportModulo8Quantum(index,quantum_size,p);
+                    index=BitStreamMSBRead(&stream,quantum_size);
                     index /= indexes_scale;
                     VerifyColormapIndex(image,index);
                     if (GrayInvertedQuantum == quantum_type)
@@ -2596,49 +2737,6 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     *indexes++=index;
                     *q++=image->colormap[index];
                   }
-              }
-          }
-        else if (quantum_size == 1)
-          {
-            /*
-              Special fast support for bi-level gray.
-            */
-            register int
-                bit = 8;
-
-              for (x = number_pixels ; x > 0 ; --x )
-                {
-                  --bit;
-                  index=(*p >> bit) & 0x01;
-                  if (GrayInvertedQuantum == quantum_type)
-                    index ^= 0x01;
-                  *indexes++=index;
-                  *q++=image->colormap[index];
-                  if (bit == 0)
-                    {
-                      bit=8;
-                      p++;
-                    }
-                }
-          }
-        else
-          {
-            /*
-              Arbitrary sample size
-            */
-            BitStreamReadHandle
-              stream;
-            
-            BitStreamInitializeRead(&stream,p);
-            for (x = number_pixels; x > 0; --x)
-              {
-                index=BitStreamMSBRead(&stream,quantum_size);
-                index /= indexes_scale;
-                VerifyColormapIndex(image,index);
-                if (GrayInvertedQuantum == quantum_type)
-                  index=(image->colors-1)-index;
-                *indexes++=index;
-                *q++=image->colormap[index];
               }
           }
         break;
@@ -2646,92 +2744,198 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
     case GrayInvertedAlphaQuantum:
     case GrayAlphaQuantum:
       {
-        /*
-          Input is organized as a gray level followed by opacity level
-          Colormap array is pre-stuffed with ascending or descending gray
-          levels according to the gray quantum representation.
-        */
-        register unsigned int
-          indexes_scale = 1U;
-
-        assert(image->colors <= MaxColormapSize);
-
-        if (MaxRGBGivenBits(quantum_size) > MaxColormapSize)
-          indexes_scale=(1U << quantum_size) / image->colors + 1;
-
-        if ( (quantum_size >= 8) && (quantum_size % 8U == 0U) )
+        if (DirectClass == image->storage_class)
           {
             /*
-              Modulo-8 sample sizes
+              DirectClass representation.
             */
-            if (indexes_scale == 1U)
+            if ( (quantum_size >= 8) && (quantum_size % 8U == 0U) )
               {
-                for (x = number_pixels; x > 0; --x)
+                /*
+                  Modulo-8 sample sizes
+                */
+                if( QuantumDepth == quantum_size)
                   {
-                    ImportModulo8Quantum(index,quantum_size,p);
-                    VerifyColormapIndex(image,index);
-                    if (GrayInvertedAlphaQuantum == quantum_type)
-                      index=(image->colors-1)-index;
-                    *indexes++=index;
-                    *q=image->colormap[index];
-                    
-                    ImportModulo8Quantum(quantum,quantum_size,p);
-                    if (QuantumDepth >  quantum_size)
-                      quantum *= quantum_scale;
-                    else if (QuantumDepth <  quantum_size)
-                      quantum /= quantum_scale;
-                    q->opacity=MaxRGB-quantum;
-                    q++;
+                    /* Unity scale */
+                    for (x = number_pixels; x > 0; --x)
+                      {
+                        ImportModulo8Quantum(quantum,quantum_size,p);
+                        if (GrayInvertedQuantum == quantum_type)
+                          quantum=MaxRGB-quantum;
+                        q->red=q->green=q->blue=quantum;
+
+                        ImportModulo8Quantum(quantum,quantum_size,p);
+                        q->opacity=MaxRGB-quantum;
+                        q++;
+                      }
+                  }
+                else if (QuantumDepth >  quantum_size)
+                  {
+                    /* Scale up */
+                    for (x = number_pixels; x > 0; --x)
+                      {
+                        ImportModulo8Quantum(quantum,quantum_size,p);
+                        quantum *= quantum_scale;
+                        if (GrayInvertedQuantum == quantum_type)
+                          quantum=MaxRGB-quantum;
+                        q->red=q->green=q->blue=quantum;
+
+                        ImportModulo8Quantum(quantum,quantum_size,p);
+                        quantum *= quantum_scale;
+                        q->opacity=MaxRGB-quantum;
+                        q++;
+                      }
+                  }
+                else
+                  {
+                    /* Scale down */
+                    for (x = number_pixels; x > 0; --x)
+                      {
+                        ImportModulo8Quantum(quantum,quantum_size,p);
+                        quantum /= quantum_scale;
+                        if (GrayInvertedQuantum == quantum_type)
+                          quantum=MaxRGB-quantum;
+                        q->red=q->green=q->blue=quantum;
+
+                        ImportModulo8Quantum(quantum,quantum_size,p);
+                        quantum /= quantum_scale;
+                        q->opacity=MaxRGB-quantum;
+                        q++;
+                      }
                   }
               }
             else
               {
-                for (x = number_pixels; x > 0; --x)
+                BitStreamReadHandle
+                  stream;
+
+                BitStreamInitializeRead(&stream,p);
+                if (QuantumDepth >=  quantum_size)
                   {
-                    ImportModulo8Quantum(index,quantum_size,p);
-                    index /= indexes_scale;
-                    VerifyColormapIndex(image,index);
-                    if (GrayInvertedAlphaQuantum == quantum_type)
-                      index=(image->colors-1)-index;
-                    *indexes++=index;
-                    *q=image->colormap[index];
-                    
-                    ImportModulo8Quantum(quantum,quantum_size,p);
-                    if (QuantumDepth >  quantum_size)
-                      quantum *= quantum_scale;
-                    else if (QuantumDepth <  quantum_size)
-                      quantum /= quantum_scale;
-                    q->opacity=MaxRGB-quantum;
-                    q++;
+                    /* Scale up */
+                    for (x = number_pixels; x > 0; --x)
+                      {
+                        quantum=BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
+                        if (GrayInvertedQuantum == quantum_type)
+                          quantum = MaxRGB-quantum;
+                        q->red=q->green=q->blue=quantum;
+
+                        quantum=BitStreamMSBRead(&stream,quantum_size);
+                        quantum *= quantum_scale;
+                        q->opacity=MaxRGB-quantum;
+                        q++;
+                      }
+                  }
+                else
+                  {
+                    /* Scale down */
+                    for (x = number_pixels; x > 0; --x)
+                      {
+                        quantum=BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
+                        if (GrayInvertedQuantum == quantum_type)
+                          quantum = MaxRGB-quantum;
+                        q->red=q->green=q->blue=quantum;
+
+                        quantum=BitStreamMSBRead(&stream,quantum_size);
+                        quantum /= quantum_scale;
+                        q->opacity=MaxRGB-quantum;
+                        q++;
+                      }
                   }
               }
           }
         else
           {
             /*
-              Arbitrary sample size
+              PseudoClass representation.
             */
-            BitStreamReadHandle
-              stream;
-            
-            BitStreamInitializeRead(&stream,p);
-            for (x = number_pixels; x > 0; --x)
-              {
-                index=BitStreamMSBRead(&stream,quantum_size);
-                index /= indexes_scale;
-                VerifyColormapIndex(image,index);
-                if (GrayInvertedAlphaQuantum == quantum_type)
-                  index=(image->colors-1)-index;
-                *indexes++=index;
-                *q=image->colormap[index];
+            /*
+              Input is organized as a gray level followed by opacity level
+              Colormap array is pre-stuffed with ascending or descending gray
+              levels according to the gray quantum representation.
+            */
+            register unsigned int
+              indexes_scale = 1U;
 
-                quantum=BitStreamMSBRead(&stream,quantum_size);
-                if (QuantumDepth >  quantum_size)
-                  quantum *= quantum_scale;
-                else if (QuantumDepth <  quantum_size)
-                  quantum /= quantum_scale;
-                q->opacity=MaxRGB-quantum;
-                q++;
+            assert(image->colors <= MaxColormapSize);
+
+            if (maximum_sample_value > (image->colors-1))
+              indexes_scale=(maximum_sample_value/(image->colors-1));
+
+            if ( (quantum_size >= 8) && (quantum_size % 8U == 0U) )
+              {
+                /*
+                  Modulo-8 sample sizes
+                */
+                if (indexes_scale == 1U)
+                  {
+                    for (x = number_pixels; x > 0; --x)
+                      {
+                        ImportModulo8Quantum(index,quantum_size,p);
+                        VerifyColormapIndex(image,index);
+                        if (GrayInvertedAlphaQuantum == quantum_type)
+                          index=(image->colors-1)-index;
+                        *indexes++=index;
+                        *q=image->colormap[index];
+                    
+                        ImportModulo8Quantum(quantum,quantum_size,p);
+                        if (QuantumDepth >  quantum_size)
+                          quantum *= quantum_scale;
+                        else if (QuantumDepth <  quantum_size)
+                          quantum /= quantum_scale;
+                        q->opacity=MaxRGB-quantum;
+                        q++;
+                      }
+                  }
+                else
+                  {
+                    for (x = number_pixels; x > 0; --x)
+                      {
+                        ImportModulo8Quantum(index,quantum_size,p);
+                        index /= indexes_scale;
+                        VerifyColormapIndex(image,index);
+                        if (GrayInvertedAlphaQuantum == quantum_type)
+                          index=(image->colors-1)-index;
+                        *indexes++=index;
+                        *q=image->colormap[index];
+                    
+                        ImportModulo8Quantum(quantum,quantum_size,p);
+                        if (QuantumDepth >  quantum_size)
+                          quantum *= quantum_scale;
+                        else if (QuantumDepth <  quantum_size)
+                          quantum /= quantum_scale;
+                        q->opacity=MaxRGB-quantum;
+                        q++;
+                      }
+                  }
+              }
+            else
+              {
+                /*
+                  Arbitrary sample size
+                */
+                BitStreamReadHandle
+                  stream;
+            
+                BitStreamInitializeRead(&stream,p);
+                for (x = number_pixels; x > 0; --x)
+                  {
+                    index=BitStreamMSBRead(&stream,quantum_size);
+                    index /= indexes_scale;
+                    VerifyColormapIndex(image,index);
+                    if (GrayInvertedAlphaQuantum == quantum_type)
+                      index=(image->colors-1)-index;
+                    *indexes++=index;
+                    *q=image->colormap[index];
+
+                    quantum=BitStreamMSBRead(&stream,quantum_size);
+                    if (QuantumDepth >  quantum_size)
+                      quantum *= quantum_scale;
+                    else if (QuantumDepth <  quantum_size)
+                      quantum /= quantum_scale;
+                    q->opacity=MaxRGB-quantum;
+                    q++;
+                  }
               }
           }
         break;

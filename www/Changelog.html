@@ -21,6 +21,26 @@
 </tr>
 </table>
 <p>
+2004-12-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (DescribeImage): Add normalized channel statistics
+        to output.<BR>
+  <LI> NEWS: Updated with changes since July.
+  <LI> magick/constitute.c (ImportImagePixelArea): For GrayQuantum,
+        GrayInvertedQuantum, GrayAlphaQuantum, and
+        GrayInvertedAlphaQuantum, observe image storage_class so that a
+        gray DirectClass image may be created.
+  <LI> coders/tiff.c (ReadTIFFImage): Fix overflow when computing
+        colormap size for bits-per-sample of 32.
+        (WriteTIFFImage): Support writing 32-bit RGB(A) for
+        QuantumDepth=32 build.<BR>
+        (ReadTIFFImage): Support reading 32-bit RGB(A) for QuantumDepth=32
+        build.  Support reading 32-bit grayscale without any quality loss
+        for QuantumDepth=32 build.
+
+</UL>
+<p>
 2004-12-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
