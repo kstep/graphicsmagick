@@ -2336,11 +2336,15 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   register const char
     *p;
 
+  image=(Image*)NULL;
   for (p=content; (*p != ',') && (*p != '\0'); p++);
   if (*p == '\0')
-    return((Image *) NULL);
+    ThrowReaderException(CorruptImageWarning,"data URL: no data",image);
   p++;
+  errno=0;
   blob=Base64Decode(p,&length);
+  if(length==0)
+    ThrowReaderException(CorruptImageWarning,"data URL: data corrupt",image);
   image=BlobToImage(image_info,blob,length,exception);
   LiberateMemory((void **) &blob);
   return(image);
