@@ -45,20 +45,15 @@ extern "C" {
 #if !defined(WIN32)
 #  include <sys/time.h>
 #  include <sys/times.h>
-#  include "nt.h"
 #endif
 #  include "magick/api.h"
 #else
 #  include <types.h>
 #  include <stat.h>
-#if defined(vms)
-#  include "vms.h"
-#endif
 #if defined(macintosh)
 #  include <SIOUX.h>
 #  include <console.h>
 #  include <unix.h>
-#  include "mac.h"
 #endif
 #  include "api.h"
 #endif
@@ -71,6 +66,15 @@ extern "C" {
 #endif
 #if defined(HAVE_POLL)
 #  include <sys/poll.h>
+#endif
+#if defined(WIN32)
+#  include "nt.h"
+#endif
+#if defined(macintosh)
+#  include "mac.h"
+#endif
+#if defined(vms)
+#  include "vms.h"
 #endif
 
 #undef index

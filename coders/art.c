@@ -134,8 +134,8 @@ register IndexPacket *indexes;
 static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image *image;
-  int i,j;
-  unsigned width,heigth,dummy;
+  int i;
+  unsigned width,height,dummy;
   long ldblk;
   unsigned char *BImgBuff=NULL;
   unsigned char k;
@@ -153,17 +153,17 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   dummy=ReadBlobLSBShort(image);
   width=ReadBlobLSBShort(image);
   dummy=ReadBlobLSBShort(image);
-  heigth=ReadBlobLSBShort(image);
+  height=ReadBlobLSBShort(image);
 
   ldblk=(width+7) / 8;
   k=(-ldblk) & 1;
 
-   if(image->filesize!=(8+((long)ldblk+k)*heigth))
-ART_KO:  ThrowReaderException(CorruptImageWarning,"Not a ART image file",image);
+   if(image->filesize!=(8+((long)ldblk+k)*height))
+     ThrowReaderException(CorruptImageWarning,"Not a ART image file",image);
 
 
  image->columns=width;
- image->rows=heigth;
+ image->rows=height;
  image->depth=1;
  image->colors=1l << image->depth;
  
@@ -176,14 +176,13 @@ ART_KO:  ThrowReaderException(CorruptImageWarning,"Not a ART image file",image);
  if(BImgBuff==NULL)
 NoMemory: ThrowReaderException(CorruptImageWarning,"Memory exhausted",image);
 
- for(i=0;i<heigth;i++)
+ for(i=0;i<height;i++)
       {
       ReadBlob(image,ldblk,(char *)BImgBuff);
       ReadBlob(image,k,(char *)&dummy);
       InsertRow(BImgBuff,i,image);
       }
 
-Finish:
  CloseBlob(image);
  if(BImgBuff!=NULL) free(BImgBuff);
  return(image);
