@@ -1,3 +1,9 @@
+2004-01-15  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TclMagick.h: Added findMagickObj and myMagickError to .h
+	file, and made then non-static in the .c file.  They are used in
+	TkMagick.c.
+
 2004-01-09  Rolf Schroedter <rolf.schroedter@dlr.de>
 
 	* generic/TclMagick.c: Fixed types casts of (int *).

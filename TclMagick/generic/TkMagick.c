@@ -64,7 +64,9 @@ static int MagickToPhoto(
     magickblock.pixelSize = 3;
     magickblock.width = MagickGetImageWidth (wand);
     magickblock.height = MagickGetImageHeight (wand);
-    magickblock.pixelPtr = ckalloc(magickblock.height * magickblock.width * magickblock.pixelSize);
+    magickblock.pixelPtr = ckalloc((unsigned)magickblock.height *
+				   (unsigned)magickblock.width *
+				   magickblock.pixelSize);
     magickblock.pitch = magickblock.width * magickblock.pixelSize;
     magickblock.offset[0] = 0;
     magickblock.offset[1] = 1;
@@ -72,7 +74,7 @@ static int MagickToPhoto(
     magickblock.offset[3] = 3;
 
     if (MagickGetImagePixels (
-	    wand, 0, 0, magickblock.width, magickblock.height,
+	    wand, 0, 0, (unsigned)magickblock.width, (unsigned)magickblock.height,
 	    "RGB", CharPixel, magickblock.pixelPtr) == False) {
 	return myMagickError(interp, wand);
     }
@@ -141,7 +143,7 @@ static int PhotoToMagick(
 	Tcl_AddErrorInfo(interp, "Not a magick wand.");
 	return TCL_ERROR;
     }
-    MagickSetSize (wand, photoblock.width, photoblock.height);
+    MagickSetSize (wand, (unsigned)photoblock.width, (unsigned)photoblock.height);
     result = MagickReadImage(wand, "xc:white");
     if (!result) {
 	return myMagickError(interp, wand);
@@ -166,7 +168,8 @@ static int PhotoToMagick(
 	return TCL_ERROR;
     };
 
-    if (MagickSetImagePixels (wand, 0, 0, photoblock.width, photoblock.height,
+    if (MagickSetImagePixels (wand, 0, 0, (unsigned)photoblock.width, 
+			      (unsigned)photoblock.height,
 			      map, CharPixel, photoblock.pixelPtr) == False) {
 	return myMagickError(interp, wand);
     }

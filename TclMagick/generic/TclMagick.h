@@ -5,6 +5,7 @@
 #define _TCLMAGICK_H_
 
 #include <tcl.h>
+#include <wand/magick_wand.h>
 
 #define DEBUG 1
 
@@ -29,6 +30,8 @@ typedef struct {
 char *getMagickObjName(TclMagickObj *mPtr);
 TclMagickObj *newMagickObj(Tcl_Interp  *interp, int type,
 			   void *wandPtr, char *name);
+TclMagickObj *findMagickObj(Tcl_Interp *interp, int type, char *name);
+int myMagickError(Tcl_Interp  *interp, MagickWand *wandPtr );
 
 #ifdef __WIN32__
 #   define WIN32_LEAN_AND_MEAN

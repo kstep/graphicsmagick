@@ -48,7 +48,7 @@ static Tcl_ObjCmdProc    drawObjCmd;
  * Return ImageMagick error description as a TCL result
  *----------------------------------------------------------------------
  */
-static int myMagickError(Tcl_Interp  *interp, MagickWand *wandPtr )
+int myMagickError(Tcl_Interp  *interp, MagickWand *wandPtr )
 {
     char *description;
 
@@ -231,7 +231,7 @@ static char *newPixelObj(Tcl_Interp  *interp, PixelWand *wandPtr, char *name)
  * Find TclMagick objects
  *----------------------------------------------------------------------
  */
-static TclMagickObj *findMagickObj(Tcl_Interp *interp, int type, char *name)
+TclMagickObj *findMagickObj(Tcl_Interp *interp, int type, char *name)
 {
     Tcl_HashEntry *hPtr = Tcl_FindHashEntry( &TM.hashTable, name );
     TclMagickObj  *mPtr;
@@ -3873,7 +3873,7 @@ static int wandObjCmd(
     case TM_MATTE_FLOODFILL:        /* mattefloodfill opacity ?fuzz=0.0? ?borderPix=none? ?x=0 y=0? */
     case TM_MATTE_FLOODFILL_IMAGE:  /* MatteFloodfillImage opacity ?fuzz? ?borderPix? ?x y? */
     {
-	int	opacity;
+	unsigned int	opacity;
 	long x = 0, y = 0;
 	double  fuzz=0.0;
 	char	*name;
@@ -5008,7 +5008,7 @@ static int wandObjCmd(
 	if( (objc > 4) && ((stat = Tcl_GetDoubleFromObj(interp, objv[4], &fuzz)) != TCL_OK) ) {
 	    return stat;
 	}
-	result = MagickTransparentImage(wandPtr, targetPtr, (Quantum)opacity, fuzz);
+	result = MagickTransparentImage(wandPtr, targetPtr, (const Quantum)opacity, fuzz);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
 	}
