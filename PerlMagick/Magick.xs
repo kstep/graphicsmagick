@@ -3077,7 +3077,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"filesize") == 0)
             {
               if (image)
-                s=newSViv((long) SizeBlob(image));
+                s=newSViv((long) GetBlobSize(image));
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -3745,7 +3745,7 @@ ImageToBlob(ref,...)
     }
     SetImageInfo(package_info->image_info,True,&image->exception);
     GetExceptionInfo(&exception);
-    EXTEND(sp,(int) SizeImageList(image));
+    EXTEND(sp,(int) GetImageListSize(image));
     for (next=image; next; next=next->next)
     {
       length=0;
@@ -6294,7 +6294,7 @@ Ping(ref,...)
           PUSHs(&sv_undef);
           continue;
         }
-      count+=SizeImageList(image);
+      count+=GetImageListSize(image);
       EXTEND(sp,4*count);
       for (p=image ; p != (Image *) NULL; p=p->next)
       {
@@ -6302,7 +6302,7 @@ Ping(ref,...)
         PUSHs(sv_2mortal(newSVpv(message,0)));
         FormatString(message,"%u",p->rows);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        FormatString(message,"%lu",(unsigned long) SizeBlob(p));
+        FormatString(message,"%lu",(unsigned long) GetBlobSize(p));
         PUSHs(sv_2mortal(newSVpv(message,0)));
         PUSHs(sv_2mortal(newSVpv(p->magick,0)));
       }

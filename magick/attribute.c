@@ -1202,15 +1202,15 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
     {
       if (LocaleNCompare("size",key,2) == 0)
         {
-          if (SizeBlob(image) >= (1 << 24))
+          if (GetBlobSize(image) >= (1 << 24))
             FormatString(attribute,"%lumb",
-              (unsigned long) (SizeBlob(image)/1024/1024));
+              (unsigned long) (GetBlobSize(image)/1024/1024));
           else
-            if (SizeBlob(image) >= (1 << 16))
+            if (GetBlobSize(image) >= (1 << 16))
               FormatString(attribute,"%lukb",
-                (unsigned long) (SizeBlob(image)/1024));
+                (unsigned long) (GetBlobSize(image)/1024));
             else
-              FormatString(attribute,"%lu",(unsigned long) SizeBlob(image));
+              FormatString(attribute,"%lu",(unsigned long) GetBlobSize(image));
           break;
         }
       if (LocaleNCompare("scene",key,2) == 0)
@@ -1222,7 +1222,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
         }
       if (LocaleNCompare("scenes",key,6) == 0)
         {
-          FormatString(attribute,"%u",SizeImageList(image));
+          FormatString(attribute,"%u",GetImageListSize(image));
           break;
         }
        break;

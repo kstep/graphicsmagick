@@ -629,7 +629,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
+        MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
       }
   } while ((count != 0) && (format == 'P'));
   while (image->previous != (Image *) NULL)
@@ -1232,7 +1232,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,SizeImageList(image));
+    MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

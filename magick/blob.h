@@ -28,6 +28,7 @@ extern MagickExport int
   SyncBlob(Image *);
 
 extern MagickExport off_t
+  GetBlobSize(const Image *image),
   SeekBlob(Image *,const off_t,const int),
   SizeBlob(const Image *image),
   TellBlob(const Image *image);

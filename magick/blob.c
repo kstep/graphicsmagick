@@ -305,7 +305,7 @@ MagickExport void CloseBlob(Image *image)
     }
   if (image->file == (FILE *) NULL)
     return;
-  image->blob->size=SizeBlob(image);
+  image->blob->size=GetBlobSize(image);
   image->status=ferror(image->file);
   errno=0;
   if (image->exempt)
@@ -535,6 +535,53 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
   (void) memset(blob_info,0,sizeof(BlobInfo));
   blob_info->quantum=65536;
   blob_info->signature=MagickSignature;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  G e t B l o b S i z e                                                      %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetBlobSize returns the current length of the image file or blob.
+%
+%  The format of the GetBlobSize method is:
+%
+%      off_t GetBlobSize(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o size:  Method GetBlobSize returns the current length of the image file
+%      or blob.
+%
+%    o image: The image.
+%
+%
+*/
+
+MagickExport off_t SizeBlob(const Image *image)
+{
+  return(GetBlobSize(image));
+}
+
+MagickExport off_t GetBlobSize(const Image *image)
+{
+  struct stat
+    attributes;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->blob->data != (unsigned char *) NULL)
+    return(image->blob->length);
+  if (image->file == (FILE *) NULL)
+    return(image->blob->size);
+  (void) fflush(image->file);
+  return(fstat(fileno(image->file),&attributes) < 0 ? 0 : attributes.st_size);
 }
 
 /*
@@ -1081,7 +1128,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                   }
               }
           }
-        image->blob->size=SizeBlob(image);
+        image->blob->size=GetBlobSize(image);
       }
   image->status=False;
   if (*type == 'r')
@@ -1586,47 +1633,6 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
     return(-1);
   (void) fseek(image->file,offset,whence);
   return(TellBlob(image));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  S i z e B l o b                                                            %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method SizeBlob returns the current length of the image file or blob.
-%
-%  The format of the SizeBlob method is:
-%
-%      off_t SizeBlob(const Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o size:  Method SizeBlob returns the current length of the image file
-%      or blob.
-%
-%    o image: The image.
-%
-%
-*/
-MagickExport off_t SizeBlob(const Image *image)
-{
-  struct stat
-    attributes;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->blob->data != (unsigned char *) NULL)
-    return(image->blob->length);
-  if (image->file == (FILE *) NULL)
-    return(image->blob->size);
-  (void) fflush(image->file);
-  return(fstat(fileno(image->file),&attributes) < 0 ? 0 : attributes.st_size);
 }
 
 /*

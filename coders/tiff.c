@@ -281,9 +281,9 @@ static toff_t TIFFSeekBlob(thandle_t image,toff_t offset,int whence)
   return((toff_t) SeekBlob((Image *) image,(off_t) offset,whence));
 }
 
-static toff_t TIFFSizeBlob(thandle_t image)
+static toff_t TIFFGetBlobSize(thandle_t image)
 {
-  return((toff_t) SizeBlob((Image *) image));
+  return((toff_t) GetBlobSize((Image *) image));
 }
 
 static void TIFFUnmapBlob(thandle_t image,tdata_t base,toff_t size)
@@ -384,7 +384,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   tiff=TIFFClientOpen(image->filename,ReadBinaryUnbufferedType,
     (thandle_t) image,TIFFReadBlob,TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,
-    TIFFSizeBlob,TIFFMapBlob,TIFFUnmapBlob);
+    TIFFGetBlobSize,TIFFMapBlob,TIFFUnmapBlob);
   if (tiff == (TIFF *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   if (image_info->subrange != 0)
@@ -1503,11 +1503,11 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       WriteNewsProfile(tiff,TIFFTAG_RICHTIFFIPTC,image);
 #endif
 #endif
-    if (adjoin && (SizeImageList(image) > 1))
+    if (adjoin && (GetImageListSize(image) > 1))
       {
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
         (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short)
-          image->scene,SizeImageList(image));
+          image->scene,GetImageListSize(image));
       }
     attribute=GetImageAttribute(image,"artist");
     if (attribute != (const ImageAttribute *) NULL)
@@ -1786,7 +1786,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,SizeImageList(image));
+    MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
   } while (adjoin);
   while (image->previous != (Image *) NULL)
     image=image->previous;

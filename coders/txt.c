@@ -221,7 +221,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image=image->next;
     (void) strncpy(image->filename,filename,MaxTextExtent-1);
     SetImage(image,OpaqueOpacity);
-    MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
+    MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
     /*
       Initialize text image to background color.
     */
@@ -409,7 +409,7 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,SizeImageList(image));
+    MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

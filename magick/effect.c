@@ -1762,7 +1762,7 @@ MagickExport Image *MorphImages(const Image *image,
     morph_images->next->previous=morph_images;
     morph_images=morph_images->next;
     (void) SetMonitorHandler(handler);
-    MagickMonitor(MorphImageText,scene,SizeImageList(image));
+    MagickMonitor(MorphImageText,scene,GetImageListSize(image));
     scene++;
   }
   while (morph_images->previous != (Image *) NULL)

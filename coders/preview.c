@@ -537,16 +537,16 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
                 images[i]=quality_image;
               }
           }
-        if (SizeBlob(images[i]) >= (1 << 24))
+        if (GetBlobSize(images[i]) >= (1 << 24))
           FormatString(label,"quality %.1024s\n%lumb ",factor,
-            (unsigned long) (SizeBlob(images[i])/1024/1024));
+            (unsigned long) (GetBlobSize(images[i])/1024/1024));
         else
-          if (SizeBlob(images[i]) >= (1 << 16))
+          if (GetBlobSize(images[i]) >= (1 << 16))
             FormatString(label,"quality %.1024s\n%lukb ",factor,
-              (unsigned long) (SizeBlob(images[i])/1024));
+              (unsigned long) (GetBlobSize(images[i])/1024));
           else
             FormatString(label,"quality %.1024s\n%lub ",factor,
-              (unsigned long) SizeBlob(images[i]));
+              (unsigned long) GetBlobSize(images[i]));
         break;
       }
     }

@@ -475,7 +475,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
+        MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
       }
   }
   while (image->previous != (Image *) NULL)

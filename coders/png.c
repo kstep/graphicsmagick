@@ -2535,7 +2535,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image=image->next;
           }
         mng_info->image=image;
-        MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
+        MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
         if (term_chunk_found)
           {
             image->start_loop=True;
@@ -5760,7 +5760,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,SizeImageList(image));
+    MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
   } while (adjoin);
   if (adjoin)
     while (image->previous != (Image *) NULL)

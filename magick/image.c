@@ -476,14 +476,14 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   /*
     Initialize append next attributes.
   */
-  if (((image->columns*SizeImageList(image)) == width) && stack)
+  if (((image->columns*GetImageListSize(image)) == width) && stack)
     append_image=CloneImage(image,image->columns,height,True,exception);
   else
     append_image=CloneImage(image,width,image->rows,True,exception);
   if (append_image == (Image *) NULL)
     return((Image *) NULL);
   scene=0;
-  if (((image->columns*SizeImageList(image)) == width) && stack)
+  if (((image->columns*GetImageListSize(image)) == width) && stack)
     {
       register long
         y;
@@ -498,7 +498,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
           SetImageType(append_image,TrueColorType);
         (void) CompositeImage(append_image,CopyCompositeOp,next,0,y);
         y+=next->rows;
-        MagickMonitor(AppendImageText,scene,SizeImageList(image));
+        MagickMonitor(AppendImageText,scene,GetImageListSize(image));
         scene++;
       }
     }
@@ -517,7 +517,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
           SetImageType(append_image,TrueColorType);
         (void) CompositeImage(append_image,CopyCompositeOp,next,x,0);
         x+=next->columns;
-        MagickMonitor(AppendImageText,scene++,SizeImageList(image));
+        MagickMonitor(AppendImageText,scene++,GetImageListSize(image));
       }
     }
   if (append_image->storage_class == PseudoClass)
@@ -1938,17 +1938,17 @@ MagickExport void DescribeImage(Image *image,FILE *file,
               image->normalized_maximum_error);
           }
       (void) fprintf(file,"%lu-bit ",image->depth);
-      if (SizeBlob(image) != 0)
+      if (GetBlobSize(image) != 0)
         {
-          if (SizeBlob(image) >= (1 << 24))
+          if (GetBlobSize(image) >= (1 << 24))
             (void) fprintf(file,"%lumb ",
-              (unsigned long) (SizeBlob(image)/1024/1024));
+              (unsigned long) (GetBlobSize(image)/1024/1024));
           else
-            if (SizeBlob(image) >= (1 << 16))
+            if (GetBlobSize(image) >= (1 << 16))
               (void) fprintf(file,"%lukb ",
-                (unsigned long) (SizeBlob(image)/1024));
+                (unsigned long) (GetBlobSize(image)/1024));
             else
-              (void) fprintf(file,"%lub ",(unsigned long) SizeBlob(image));
+              (void) fprintf(file,"%lub ",(unsigned long) GetBlobSize(image));
         }
       (void) fprintf(file,"%.1fu %d:%02d\n",user_time,(int) (elapsed_time/60.0),
         (int) ceil(fmod(elapsed_time,60.0)));
@@ -2241,15 +2241,15 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           else
             (void) fprintf(file,"\n");
     }
-  if (SizeBlob(image) >= (1 << 24))
+  if (GetBlobSize(image) >= (1 << 24))
     (void) fprintf(file,"  Filesize: %lumb\n",
-      (unsigned long) (SizeBlob(image)/1024/1024));
+      (unsigned long) (GetBlobSize(image)/1024/1024));
   else
-    if (SizeBlob(image) >= (1 << 16))
+    if (GetBlobSize(image) >= (1 << 16))
       (void) fprintf(file,"  Filesize: %lukb\n",
-        (unsigned long) (SizeBlob(image)/1024));
+        (unsigned long) (GetBlobSize(image)/1024));
     else
-      (void) fprintf(file,"  Filesize: %lub\n",(unsigned long) SizeBlob(image));
+      (void) fprintf(file,"  Filesize: %lub\n",(unsigned long) GetBlobSize(image));
   if (image->interlace == NoInterlace)
     (void) fprintf(file,"  Interlace: None\n");
   else
@@ -2932,6 +2932,50 @@ MagickExport Image *GetImageList(Image *images,const unsigned long n,
   if (images == (Image *) NULL)
     return((Image *) NULL);
   return(CloneImage(images,0,0,True,exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e L i s t S i z e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetImageListSize returns the number of images in the image list.
+%
+%  The format of the GetImageListSize method is:
+%
+%      unsigned long GetImageListSize(const Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%
+*/
+
+MagickExport unsigned int GetNumberScenes(const Image *image)
+{
+  return(GetImageListSize(image));
+}
+
+MagickExport unsigned long GetImageListSize(const Image *images)
+{
+  register long
+    i;
+
+  if (images == (Image *) NULL)
+    return(0);
+  assert(images->signature == MagickSignature);
+  while (images->previous != (Image *) NULL)
+    images=images->previous;
+  for (i=0; images != (Image *) NULL; images=images->next)
+    i++;
+  return(i);
 }
 
 /*
@@ -5251,7 +5295,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(images != (Image **) NULL);
   assert((*images)->signature == MagickSignature);
-  number_images=SizeImageList(*images);
+  number_images=GetImageListSize(*images);
   if (number_images == 1)
     return(MogrifyImage(image_info,argc,argv,images));
   MagickMonitor(MogrifyImageText,0,number_images);
@@ -6592,50 +6636,6 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     default:
       break;
   }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S i z e I m a g e L i s t                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method SizeImageList returns the number of images in the image list.
-%
-%  The format of the SizeImageList method is:
-%
-%      unsigned long SizeImageList(const Image *images)
-%
-%  A description of each parameter follows:
-%
-%    o images: The image list.
-%
-%
-*/
-
-MagickExport unsigned int GetNumberScenes(const Image *image)
-{
-  return(SizeImageList(image));
-}
-
-MagickExport unsigned long SizeImageList(const Image *images)
-{
-  register long
-    i;
-
-  if (images == (Image *) NULL)
-    return(0);
-  assert(images->signature == MagickSignature);
-  while (images->previous != (Image *) NULL)
-    images=images->previous;
-  for (i=0; images != (Image *) NULL; images=images->next)
-    i++;
-  return(i);
 }
 
 /*

@@ -653,7 +653,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 return((Image *) NULL);
               }
             image=image->next;
-            MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
+            MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
           }
         continue;
       }

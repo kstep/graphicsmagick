@@ -599,7 +599,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
+        MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
       }
   }
   if (page_table != (off_t *) NULL)
@@ -1011,7 +1011,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,SizeImageList(image));
+    MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
     if (scene >= 1023)
       break;
   } while (image_info->adjoin);

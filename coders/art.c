@@ -163,7 +163,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ldblk=(long) ((width+7) / 8);
   k=(unsigned char) ((-ldblk) & 0x01);
 
-   if(SizeBlob(image)!=(8+((long)ldblk+k)*height))
+   if(GetBlobSize(image)!=(8+((long)ldblk+k)*height))
      ThrowReaderException(CorruptImageWarning,"Not a ART image file",image);
 
 

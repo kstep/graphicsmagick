@@ -2891,13 +2891,13 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
     {
       case 'b':
       {
-        if (SizeBlob(image) >= (1 << 24))
-          FormatString(q,"%lumb ",(unsigned long) (SizeBlob(image)/1024/1024));
+        if (GetBlobSize(image) >= (1 << 24))
+          FormatString(q,"%lumb ",(unsigned long) (GetBlobSize(image)/1024/1024));
         else
-          if (SizeBlob(image) >= (1 << 16))
-            FormatString(q,"%lukb ",(unsigned long) (SizeBlob(image)/1024));
+          if (GetBlobSize(image) >= (1 << 16))
+            FormatString(q,"%lukb ",(unsigned long) (GetBlobSize(image)/1024));
           else
-            FormatString(q,"%lub ",(unsigned long) SizeBlob(image));
+            FormatString(q,"%lub ",(unsigned long) GetBlobSize(image));
         q=translated_text+strlen(translated_text);
         break;
       }
@@ -2994,7 +2994,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
       }
       case 'n':
       {
-        FormatString(q,"%lu",SizeImageList(image));
+        FormatString(q,"%lu",GetImageListSize(image));
         q=translated_text+strlen(translated_text);
         break;
       }

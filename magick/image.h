@@ -792,8 +792,8 @@ extern MagickExport unsigned int
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *),
-  GetNumberColors(const Image *,FILE *,ExceptionInfo *),
-  SizeImageList(const Image *);
+  GetImageListSize(const Image *),
+  GetNumberColors(const Image *,FILE *,ExceptionInfo *);
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),
