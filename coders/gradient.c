@@ -204,13 +204,6 @@ ModuleExport void RegisterGRADIENTImage(void)
     AllocateString("Gradual passing from one shade to another");
   entry->module=AllocateString("GRADIENT");
   RegisterMagickInfo(entry);
-  entry=SetMagickInfo("GRADATION");
-  entry->decoder=ReadGRADIENTImage;
-  entry->adjoin=False;
-  entry->description=
-    AllocateString("Gradual passing from one shade to another");
-  entry->module=AllocateString("GRADIENT");
-  RegisterMagickInfo(entry);
 }
 
 /*

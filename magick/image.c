@@ -1596,9 +1596,6 @@ MagickExport unsigned int CompositeImage(Image *image,
           offset=(int) (Intensity(*p)-midpoint);
           if (offset != 0)
             {
-              double
-                percent_brightness;
-
               /*
                 Pixel is not at 0 point.
               */
@@ -5732,6 +5729,8 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       */
       (void) strncpy(magic,image_info->filename,p-image_info->filename);
       magic[p-image_info->filename]='\0';
+      if (LocaleCompare(magic,"GRADATION") == 0)
+        (void) strcpy(magic,"GRADIENT");
       LocaleUpper(magic);
 #if defined(macintosh) || defined(WIN32) || defined(vms)
       if (!ImageFormatConflict(magic))
