@@ -49,7 +49,7 @@ END
 
 COLORS.MGK        IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\colors.mgk"
 DELEGATES.MGK     IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\delegates.mgk"
-FONTS.MGK         IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\fonts.mgk"
+TYPE.MGK          IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\type.mgk"
 MAGIC.MGK         IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\magic.mgk"
 MODULES.MGK       IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\modules.mgk"
 
