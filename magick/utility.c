@@ -750,47 +750,6 @@ MagickExport void ExpandFilename(char *filename)
 */
 MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
 {
-  const static char
-    *no_arg_options[]=
-  {
-    "adjoin",
-    "antialias",
-    "append",
-    "average",
-    "clip",
-    "coalesce",
-    "contrast",
-    "deconstruct",
-    "descend",
-    "despeckle",
-    "dither",
-    "enhance",
-    "equalize",
-    "flatten",
-    "flop",
-    "frame",
-    "iconic",
-    "immutable",
-    "matte",
-    "monochrome",
-    "mosaic",
-    "negate",
-    "noop",
-    "normalize",
-    "ping",
-    "remote",
-    "render",
-    "screen",
-    "silent",
-    "stereo",
-    "temporary",
-    "transform",
-    "trim",
-    "verbose",
-    "version",
-    NULL
-  };
-
   char
     **filelist,
     filename[MaxTextExtent],
@@ -831,28 +790,10 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
   {
     option=(*argv)[i];
     vector[count++]=option;
-    if ((strlen(option) > 1) && ((*option == '-') || (*option == '+')))
+    if (LocaleNCompare("+profile",option+1,8) == 0)
       {
-        if (*option == '+')
-          if (LocaleNCompare("profile",option+1,4) != 0)
-            continue;
-        {
-          /* If argument requires an option, then advance past
-            argument to next option or filename */
-          const char
-            **no_arg_options_p;
-
-          for(no_arg_options_p=no_arg_options; *no_arg_options_p;
-              no_arg_options_p++)
-              if (LocaleCompare(*no_arg_options_p,option+1) == 0)
-                break;
-
-          if (*no_arg_options_p == NULL)
-            i++;
-        }
-
         if (i == *argc)
-          continue;
+            continue;
         option=(*argv)[i];
         vector[count++]=option;
         continue;
