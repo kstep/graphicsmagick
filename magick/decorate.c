@@ -419,7 +419,6 @@ MagickExport unsigned int RaiseImage(Image *image,
 		y;
 
   register long
-    i,
     x;
 
   register PixelPacket
