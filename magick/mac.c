@@ -1101,14 +1101,13 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   picture_handle=(PicHandle)
-    NewHandle(Max(image->filesize-PICTHeaderSize,PICTHeaderSize));
+    NewHandle(Max(SizeBlob(image)-PICTHeaderSize,PICTHeaderSize));
   if (picture_handle == nil)
     ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
       image);
   HLock((Handle) picture_handle);
   (void) ReadBlob(image,PICTHeaderSize,*(char **) picture_handle);
-  status=
-    ReadBlob(image,image->filesize-PICTHeaderSize,*(char **) picture_handle);
+  status=ReadBlob(image,SizeBlob(image)-PICTHeaderSize,*(char **) picture_handle);
   if (status == False)
     {
       DisposeHandle((Handle) picture_handle);
