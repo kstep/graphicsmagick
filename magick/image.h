@@ -740,6 +740,8 @@ extern MagickExport Image
   *SteganoImage(Image *,Image *,ExceptionInfo *),
   *StereoImage(Image *,Image *,ExceptionInfo *),
   *SwirlImage(Image *,double,ExceptionInfo *),
+  *UnsharpMaskImage(Image *,const double,const double,const double,const double,
+    ExceptionInfo *),
   *WaveImage(Image *,const double,const double,ExceptionInfo *),
   *ZoomImage(Image *,const unsigned int,const unsigned int,ExceptionInfo *);
 
