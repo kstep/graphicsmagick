@@ -537,7 +537,7 @@ Optional Packages:
   --with-dmalloc          use dmalloc, as in
                           http://www.dmalloc.com/dmalloc.tar.gz
   --with-cache            set pixel cache threshhold (default 80MB)
-  --with-threads        enable threads support
+  --with-threads          enable threads support
   --without-frozenpaths   disable frozen delegate paths
   --without-largefiles    disable support for large (64 bit) file offsets
   --without-perl          disable build/install of PerlMagick
