@@ -14,9 +14,9 @@ extern "C" {
 typedef enum
 {
   UndefinedAlign,
-	LeftAlign,
-	CenterAlign,
-	RightAlign
+  LeftAlign,
+  CenterAlign,
+  RightAlign
 } AlignType;
 
 typedef enum
