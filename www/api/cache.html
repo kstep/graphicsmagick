@@ -22,7 +22,6 @@
 
 		<LI><A HREF="#acquireimagepixels">AcquireImagePixels</A></LI>
 		<LI><A HREF="#acquireonepixel">AcquireOnePixel</A></LI>
-		<LI><A HREF="#closeimagepixels">CloseImagePixels</A></LI>
 		<LI><A HREF="#destroyimagepixels">DestroyImagePixels</A></LI>
 		<LI><A HREF="#getimagepixels">GetImagePixels</A></LI>
 		<LI><A HREF="#getindexes">GetIndexes</A></LI>
@@ -49,7 +48,6 @@
 <P>status: Method  <STRONG>AcquireImagePixels</STRONG>( )returns a pointer to the pixels if they are transferred, otherwise a 
 <FONT SIZE=-1>NULL</FONT> is returned.;</P>
 <P>pixels: Method  <STRONG>AcquireOnePixel</STRONG>( )returns a pixel at the specified( x, y );</P>
-<P>void  <STRONG>CloseImagePixels</STRONG>( Image *image );</P>
 <P>void  <STRONG>DestroyImagePixels</STRONG>( Image *image );</P>
 <P>status: Method  <STRONG>GetImagePixels</STRONG>( )returns a pointer to the pixels if they are transferred, otherwise a 
 <FONT SIZE=-1>NULL</FONT> is returned.;</P>
@@ -102,15 +100,6 @@ These values define the location of the pixel to return.
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="closeimagepixels">CloseImagePixels</A></H2>
-<blockquote>Method CloseImagePixels ( ) closes the pixel cache. Use this method to preventtoo many file descriptors from being allocated when reading an imagesequence. File descriptors are only used for a disk-based cache. This isessentially a no-op for a memory-based cache.; </blockquote><blockquote>The format of the CloseImagePixels ( ) method is:; </blockquote><blockquote>void CloseImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyimagepixels">DestroyImagePixels</A></H2>
