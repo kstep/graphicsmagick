@@ -1,3 +1,9 @@
+2004-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/operator.c: New file for quantum operator implementation.
+	(QuantumOperatorImage): Moved from image.c.
+	(QuantumOperatorRegionImage): Moved from from image.c.
+
 2004-12-22  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	* magick/Makefile.am (MAGICK_BASE_SRCS): Remove mention of

@@ -46,8 +46,6 @@
 		<li><a href="#istaintimage">IsTaintImage</a></li>
 		<li><a href="#modifyimage">ModifyImage</a></li>
 		<li><a href="#plasmaimage">PlasmaImage</a></li>
-		<li><a href="#quantumoperatorimage">QuantumOperatorImage</a></li>
-		<li><a href="#quantumoperatorregionimage">QuantumOperatorRegionImage</a></li>
 		<li><a href="#referenceimage">ReferenceImage</a></li>
 		<li><a href="#removedefinitions">RemoveDefinitions</a></li>
 		<li><a href="#setimage">SetImage</a></li>
@@ -99,8 +97,6 @@
 <P>unsigned int  <strong>IsTaintImage</strong>( const Image *image );</P>
 <P><strong>ModifyImage</strong>( Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <strong>PlasmaImage</strong>( Image *image, const SegmentInfo *segment, unsigned long attenuate, unsigned long depth );</P>
-<P>MagickPassFail  <strong>QuantumOperatorImage</strong>( Image *image, ChannelType channel, QuantumOperator operator, double rvalue );</P>
-<P>MagickPassFail  <strong>QuantumOperatorRegionImage</strong>( Image *image, long x, long y, unsigned long columns, unsigned long rows, ChannelType channel, QuantumOperator quantum_operator, double rvalue );</P>
 <P>Image * <strong>ReferenceImage</strong>( Image *image );</P>
 <P>void  <strong>RemoveDefinitions</strong>( ImageInfo *image_info, const char *options );</P>
 <P>void  <strong>SetImage</strong>( Image *image, const Quantum opacity );</P>
@@ -700,102 +696,6 @@ Define the plasma attenuation factor.
 </dt>
 <DD>
 Limit the plasma recursion depth.
-</dd>
-<P></P></dl>
-<P>
-</P>
-<h2><a name="quantumoperatorimage">QuantumOperatorImage</a></h2>
-<blockquote>QuantumOperatorImage() performs the requested integer arithmetic operation on the selected channels of the image. </blockquote><P>The format of the QuantumOperatorImage method is:</P>
-<blockquote>MagickPassFail QuantumOperatorImage ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ChannelType">ChannelType</A> channel, QuantumOperator operator, double rvalue ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong><br />
-</dt>
-<DD>
-The image.
-</dd>
-<P></P>
-<dt><strong><a name="item_o_channel_3a">channel:</a></strong><br />
-</dt>
-<DD>
-Channel to operate on.
-</dd>
-<P></P>
-<dt><strong><a name="item_o_quantum_operator_3a">quantum_operator:</a></strong><br />
-</dt>
-<DD>
-arithmetic or bitwise operator to use (AddQuantumOp, AndQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, XorQuantumOp).
-</dd>
-<P></P>
-<dt><strong><a name="item_o_rvalue_3a">rvalue:</a></strong><br />
-</dt>
-<DD>
-Operator argument.
-</dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
-<DD>
-Updated with error description.
-</dd>
-<P></P></dl>
-<P>
-</P>
-<h2><a name="quantumoperatorregionimage">QuantumOperatorRegionImage</a></h2>
-<blockquote>QuantumOperatorRegionImage() performs the requested integer arithmetic operation on the selected channels of the image over the specified region. </blockquote><P>The format of the QuantumOperatorRegionImage method is:</P>
-<blockquote>MagickPassFail QuantumOperatorRegionImage ( <A HREF="types.html#Image">Image</A> *image, long x, long y, unsigned long columns, unsigned long rows, <A HREF="types.html#ChannelType">ChannelType</A> channel, QuantumOperator quantum_operator, double rvalue ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong><br />
-</dt>
-<DD>
-The image.
-</dd>
-<P></P>
-<dt><strong>channel:</strong><br />
-</dt>
-<DD>
-Channel to operate on.
-</dd>
-<P></P>
-<dt><strong><a name="item_o_x_3a">x:</a></strong><br />
-</dt>
-<DD>
-Ordinate of left row of region.
-</dd>
-<P></P>
-<dt><strong><a name="item_o_y_3a">y:</a></strong><br />
-</dt>
-<DD>
-Orginate of top column of region.
-</dd>
-<P></P>
-<dt><strong>columns:</strong><br />
-</dt>
-<DD>
-Width of region.
-</dd>
-<P></P>
-<dt><strong>rows:</strong><br />
-</dt>
-<DD>
-Height of region.
-</dd>
-<P></P>
-<dt><strong>quantum_operator:</strong><br />
-</dt>
-<DD>
-arithmetic or bitwise operator to use (AddQuantumOp, AndQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, XorQuantumOp).
-</dd>
-<P></P>
-<dt><strong>rvalue:</strong><br />
-</dt>
-<DD>
-Operator argument.
-</dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
-<DD>
-Updated with error description.
 </dd>
 <P></P></dl>
 <P>

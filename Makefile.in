@@ -688,48 +688,48 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST = magick/animate.c \
 	magick/magick.c magick/magick.h magick/map.c magick/map.h \
 	magick/memory.c magick/module.c magick/module.h \
 	magick/monitor.c magick/monitor.h magick/montage.c \
-	magick/montage.h magick/paint.c magick/paint.h \
-	magick/pixel_iterator.c magick/pixel_iterator.h \
-	magick/PreRvIcccm.c magick/PreRvIcccm.h magick/profile.c \
-	magick/profile.h magick/quantize.c magick/quantize.h \
-	magick/registry.c magick/registry.h magick/render.c \
-	magick/render.h magick/resize.c magick/resize.h \
-	magick/resource.c magick/resource.h magick/segment.c \
-	magick/semaphore.c magick/semaphore.h magick/shear.c \
-	magick/shear.h magick/signature.c magick/signature.h \
-	magick/spinlock.h magick/static.c magick/static.h \
-	magick/stream.c magick/stream.h magick/studio.h \
-	magick/symbols.h magick/tempfile.c magick/tempfile.h \
-	magick/timer.c magick/timer.h magick/transform.c \
-	magick/transform.h magick/type.c magick/utility.c \
-	magick/utility.h magick/version.c magick/version.h \
-	magick/widget.c magick/widget.h magick/xwindow.c \
-	magick/xwindow.h magick/nt_feature.c magick/nt_feature.h \
-	magick/nt_base.c magick/nt_base.h coders/art.c coders/avi.c \
-	coders/avs.c coders/bmp.c coders/caption.c coders/cineon.c \
-	coders/cmyk.c coders/cut.c coders/dcm.c coders/dib.c \
-	coders/dps.c coders/dpx.c coders/fax.c coders/fits.c \
-	coders/gif.c coders/gradient.c coders/gray.c \
-	coders/histogram.c coders/html.c coders/icon.c coders/label.c \
-	coders/locale.c coders/logo.c coders/map.c coders/mat.c \
-	coders/matte.c coders/meta.c coders/miff.c coders/mono.c \
-	coders/mpc.c coders/mpeg.c coders/mpr.c coders/msl.c \
-	coders/mtv.c coders/mvg.c coders/null.c coders/otb.c \
-	coders/palm.c coders/pcd.c coders/pcl.c coders/pcx.c \
-	coders/pdb.c coders/pdf.c coders/pict.c coders/pix.c \
-	coders/plasma.c coders/pnm.c coders/preview.c coders/ps.c \
-	coders/ps2.c coders/ps3.c coders/psd.c coders/pwp.c \
-	coders/rgb.c coders/rla.c coders/rle.c coders/sct.c \
-	coders/sfw.c coders/sgi.c coders/stegano.c coders/sun.c \
-	coders/svg.c coders/tga.c coders/tile.c coders/tim.c \
-	coders/topol.c coders/ttf.c coders/txt.c coders/uil.c \
-	coders/url.c coders/uyvy.c coders/vicar.c coders/vid.c \
-	coders/viff.c coders/wbmp.c coders/wmf.c coders/wpg.c \
-	coders/xbm.c coders/xc.c coders/xcf.c coders/xpm.c \
-	coders/yuv.c coders/clipboard.c coders/emf.c coders/fpx.c \
-	coders/jbig.c coders/jpeg.c coders/jp2.c coders/png.c \
-	coders/ept.c coders/tiff.c coders/x.c coders/xwd.c \
-	filters/analyze.c
+	magick/montage.h magick/operator.c magick/operator.h \
+	magick/paint.c magick/paint.h magick/pixel_iterator.c \
+	magick/pixel_iterator.h magick/PreRvIcccm.c \
+	magick/PreRvIcccm.h magick/profile.c magick/profile.h \
+	magick/quantize.c magick/quantize.h magick/registry.c \
+	magick/registry.h magick/render.c magick/render.h \
+	magick/resize.c magick/resize.h magick/resource.c \
+	magick/resource.h magick/segment.c magick/semaphore.c \
+	magick/semaphore.h magick/shear.c magick/shear.h \
+	magick/signature.c magick/signature.h magick/spinlock.h \
+	magick/static.c magick/static.h magick/stream.c \
+	magick/stream.h magick/studio.h magick/symbols.h \
+	magick/tempfile.c magick/tempfile.h magick/timer.c \
+	magick/timer.h magick/transform.c magick/transform.h \
+	magick/type.c magick/utility.c magick/utility.h \
+	magick/version.c magick/version.h magick/widget.c \
+	magick/widget.h magick/xwindow.c magick/xwindow.h \
+	magick/nt_feature.c magick/nt_feature.h magick/nt_base.c \
+	magick/nt_base.h coders/art.c coders/avi.c coders/avs.c \
+	coders/bmp.c coders/caption.c coders/cineon.c coders/cmyk.c \
+	coders/cut.c coders/dcm.c coders/dib.c coders/dps.c \
+	coders/dpx.c coders/fax.c coders/fits.c coders/gif.c \
+	coders/gradient.c coders/gray.c coders/histogram.c \
+	coders/html.c coders/icon.c coders/label.c coders/locale.c \
+	coders/logo.c coders/map.c coders/mat.c coders/matte.c \
+	coders/meta.c coders/miff.c coders/mono.c coders/mpc.c \
+	coders/mpeg.c coders/mpr.c coders/msl.c coders/mtv.c \
+	coders/mvg.c coders/null.c coders/otb.c coders/palm.c \
+	coders/pcd.c coders/pcl.c coders/pcx.c coders/pdb.c \
+	coders/pdf.c coders/pict.c coders/pix.c coders/plasma.c \
+	coders/pnm.c coders/preview.c coders/ps.c coders/ps2.c \
+	coders/ps3.c coders/psd.c coders/pwp.c coders/rgb.c \
+	coders/rla.c coders/rle.c coders/sct.c coders/sfw.c \
+	coders/sgi.c coders/stegano.c coders/sun.c coders/svg.c \
+	coders/tga.c coders/tile.c coders/tim.c coders/topol.c \
+	coders/ttf.c coders/txt.c coders/uil.c coders/url.c \
+	coders/uyvy.c coders/vicar.c coders/vid.c coders/viff.c \
+	coders/wbmp.c coders/wmf.c coders/wpg.c coders/xbm.c \
+	coders/xc.c coders/xcf.c coders/xpm.c coders/yuv.c \
+	coders/clipboard.c coders/emf.c coders/fpx.c coders/jbig.c \
+	coders/jpeg.c coders/jp2.c coders/png.c coders/ept.c \
+	coders/tiff.c coders/x.c coders/xwd.c filters/analyze.c
 am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-annotate.lo \
 	magick/magick_libGraphicsMagick_la-attribute.lo \
@@ -763,6 +763,7 @@ am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-module.lo \
 	magick/magick_libGraphicsMagick_la-monitor.lo \
 	magick/magick_libGraphicsMagick_la-montage.lo \
+	magick/magick_libGraphicsMagick_la-operator.lo \
 	magick/magick_libGraphicsMagick_la-paint.lo \
 	magick/magick_libGraphicsMagick_la-pixel_iterator.lo \
 	magick/magick_libGraphicsMagick_la-PreRvIcccm.lo \
@@ -1714,7 +1715,7 @@ LTDL_SRCS = \
 @INSTALL_LTDL_TRUE@@WITH_LTDL_TRUE@LTDL_INSTALLHEADERS = $(LTDL_HDRS)
 @INSTALL_LTDL_FALSE@@WITH_LTDL_TRUE@LTDL_NOINST_HDRS = $(LTDL_HDRS)
 LTDL_CLEANFILES = \
-        lib/libltdl.la
+        ltdl/libltdl.la
 
 ltdl_libltdl_la_SOURCES = $(LTDL_SRCS)
 ltdl_libltdl_la_LDFLAGS = -no-undefined -version-info 4:0:1
@@ -2511,6 +2512,8 @@ MAGICK_BASE_SRCS = \
 	magick/monitor.h \
 	magick/montage.c \
 	magick/montage.h \
+	magick/operator.c \
+	magick/operator.h \
 	magick/paint.c \
 	magick/paint.h \
 	magick/pixel_iterator.c \
@@ -4605,6 +4608,8 @@ magick/magick_libGraphicsMagick_la-monitor.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-montage.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-operator.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-paint.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-pixel_iterator.lo:  \
@@ -5596,6 +5601,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-nt_base.lo
 	-rm -f magick/magick_libGraphicsMagick_la-nt_feature.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-nt_feature.lo
+	-rm -f magick/magick_libGraphicsMagick_la-operator.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-operator.lo
 	-rm -f magick/magick_libGraphicsMagick_la-paint.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-paint.lo
 	-rm -f magick/magick_libGraphicsMagick_la-pixel_iterator.$(OBJEXT)
@@ -5922,6 +5929,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-montage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-nt_base.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-nt_feature.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-operator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-paint.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-pixel_iterator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-profile.Plo@am__quote@
@@ -6855,6 +6863,13 @@ magick/magick_libGraphicsMagick_la-montage.lo: magick/montage.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/montage.c' object='magick/magick_libGraphicsMagick_la-montage.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-montage.lo `test -f 'magick/montage.c' || echo '$(srcdir)/'`magick/montage.c
+
+magick/magick_libGraphicsMagick_la-operator.lo: magick/operator.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-operator.lo -MD -MP -MF "magick/$(DEPDIR)/magick_libGraphicsMagick_la-operator.Tpo" -c -o magick/magick_libGraphicsMagick_la-operator.lo `test -f 'magick/operator.c' || echo '$(srcdir)/'`magick/operator.c; \
+@am__fastdepCC_TRUE@	then mv -f "magick/$(DEPDIR)/magick_libGraphicsMagick_la-operator.Tpo" "magick/$(DEPDIR)/magick_libGraphicsMagick_la-operator.Plo"; else rm -f "magick/$(DEPDIR)/magick_libGraphicsMagick_la-operator.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/operator.c' object='magick/magick_libGraphicsMagick_la-operator.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-operator.lo `test -f 'magick/operator.c' || echo '$(srcdir)/'`magick/operator.c
 
 magick/magick_libGraphicsMagick_la-paint.lo: magick/paint.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-paint.lo -MD -MP -MF "magick/$(DEPDIR)/magick_libGraphicsMagick_la-paint.Tpo" -c -o magick/magick_libGraphicsMagick_la-paint.lo `test -f 'magick/paint.c' || echo '$(srcdir)/'`magick/paint.c; \
@@ -8731,6 +8746,7 @@ $(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS
 $(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
 	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' Install README' < $(top_srcdir)/README.txt > $(top_srcdir)/www/README.html
 
+# Format C API documentation
 format_c_api_docs:
 	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api
 $(DIST_WINDOWS_SRC_ZIP) windows-dist:

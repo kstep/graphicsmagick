@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003, 2004 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -149,6 +149,7 @@ extern "C" {
 # include "magick/delegate.h"
 # include "magick/module.h"
 # include "magick/monitor.h"
+# include "magick/operator.h"
 # include "magick/profile.h"
 # include "magick/resource.h"
 # include "magick/version.h"
@@ -196,6 +197,7 @@ extern "C" {
 # include "delegate.h"
 # include "module.h"
 # include "monitor.h"
+# include "operator.h"
 # include "profile.h"
 # include "resource.h"
 # include "version.h"

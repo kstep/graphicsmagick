@@ -421,20 +421,6 @@ typedef enum
 
 typedef enum
 {
-  UndefinedQuantumOp = 0,
-  AddQuantumOp,
-  AndQuantumOp,
-  DivideQuantumOp,
-  LShiftQuantumOp,
-  MultiplyQuantumOp,
-  OrQuantumOp,
-  RShiftQuantumOp,
-  SubtractQuantumOp,
-  XorQuantumOp
- } QuantumOperator;
-
-typedef enum
-{
   UndefinedIntent,
   SaturationIntent,
   PerceptualIntent,
@@ -1047,13 +1033,6 @@ extern MagickExport MagickPassFail
   GetImageStatistics(const Image *image,ImageStatistics *statistics,
     ExceptionInfo *exception),
   PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
-  QuantumOperatorImage(Image *image,const ChannelType channel,
-    const QuantumOperator quantum_operator,const double rvalue,
-    ExceptionInfo *exception),
-  QuantumOperatorRegionImage(Image *image,const long x,const long y,
-    const unsigned long columns,const unsigned long rows,
-    const ChannelType channel,const QuantumOperator quantum_operator,
-    const double rvalue,ExceptionInfo *exception),
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
   RGBTransformImage(Image *,const ColorspaceType),
   SetImageClipMask(Image *image,const Image *clip_mask),

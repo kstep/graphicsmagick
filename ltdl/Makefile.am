@@ -34,7 +34,7 @@ endif # WITH_LTDL
 
 
 LTDL_CLEANFILES = \
-        lib/libltdl.la
+        ltdl/libltdl.la
 
 ltdl_libltdl_la_SOURCES = $(LTDL_SRCS)
 ltdl_libltdl_la_LDFLAGS = -no-undefined -version-info 4:0:1

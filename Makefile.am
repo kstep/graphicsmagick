@@ -279,6 +279,7 @@ $(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS
 $(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
 	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' Install README' < $(top_srcdir)/README.txt > $(top_srcdir)/www/README.html
 
+# Format C API documentation
 format_c_api_docs:
 	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api
 

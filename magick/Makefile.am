@@ -108,6 +108,8 @@ MAGICK_BASE_SRCS = \
 	magick/monitor.h \
 	magick/montage.c \
 	magick/montage.h \
+	magick/operator.c \
+	magick/operator.h \
 	magick/paint.c \
 	magick/paint.h \
 	magick/pixel_iterator.c \

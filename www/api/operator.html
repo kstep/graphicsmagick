@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>operator - Methods to apply mathematic or boolean operators to pixels.</title>
+<link rev="made" href="mailto:bfriesen@scooby.simplesystems.org" />
+</head>
+
+<body style="background-color: white">
+
+<P><a name="__index__"></a></P>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
+	<ul>
+
+		<li><a href="#quantumoperatorimage">QuantumOperatorImage</a></li>
+		<li><a href="#quantumoperatorregionimage">QuantumOperatorRegionImage</a></li>
+	</ul>
+
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<P>
+</P>
+<h1><a name="name">NAME</a></h1>
+<P>operator - Methods to apply mathematic or boolean operators to pixels.</P>
+<P>
+</P>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<P>MagickPassFail  <strong>QuantumOperatorImage</strong>( Image *image, ChannelType channel, QuantumOperator operator, double rvalue );</P>
+<P>MagickPassFail  <strong>QuantumOperatorRegionImage</strong>( Image *image, long x, long y, unsigned long columns, unsigned long rows, ChannelType channel, QuantumOperator quantum_operator, double rvalue );</P>
+<P>
+</P>
+<hr />
+<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
+<P>
+</P>
+<h2><a name="quantumoperatorimage">QuantumOperatorImage</a></h2>
+<blockquote>QuantumOperatorImage() performs the requested integer arithmetic operation on the selected channels of the image. </blockquote><P>The format of the QuantumOperatorImage method is:</P>
+<blockquote>MagickPassFail QuantumOperatorImage ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ChannelType">ChannelType</A> channel, QuantumOperator operator, double rvalue ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
+</dt>
+<DD>
+The image.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_channel_3a">channel:</a></strong><br />
+</dt>
+<DD>
+Channel to operate on.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_quantum_operator_3a">quantum_operator:</a></strong><br />
+</dt>
+<DD>
+arithmetic or bitwise operator to use (AddQuantumOp, AndQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, XorQuantumOp).
+</dd>
+<P></P>
+<dt><strong><a name="item_o_rvalue_3a">rvalue:</a></strong><br />
+</dt>
+<DD>
+Operator argument.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
+</dt>
+<DD>
+Updated with error description.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="quantumoperatorregionimage">QuantumOperatorRegionImage</a></h2>
+<blockquote>QuantumOperatorRegionImage() performs the requested integer arithmetic operation on the selected channels of the image over the specified region. </blockquote><P>The format of the QuantumOperatorRegionImage method is:</P>
+<blockquote>MagickPassFail QuantumOperatorRegionImage ( <A HREF="types.html#Image">Image</A> *image, long x, long y, unsigned long columns, unsigned long rows, <A HREF="types.html#ChannelType">ChannelType</A> channel, QuantumOperator quantum_operator, double rvalue ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
+<DD>
+The image.
+</dd>
+<P></P>
+<dt><strong>channel:</strong><br />
+</dt>
+<DD>
+Channel to operate on.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_x_3a">x:</a></strong><br />
+</dt>
+<DD>
+Ordinate of left row of region.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_y_3a">y:</a></strong><br />
+</dt>
+<DD>
+Orginate of top column of region.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_columns_3a">columns:</a></strong><br />
+</dt>
+<DD>
+Width of region.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_rows_3a">rows:</a></strong><br />
+</dt>
+<DD>
+Height of region.
+</dd>
+<P></P>
+<dt><strong>quantum_operator:</strong><br />
+</dt>
+<DD>
+arithmetic or bitwise operator to use (AddQuantumOp, AndQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, XorQuantumOp).
+</dd>
+<P></P>
+<dt><strong>rvalue:</strong><br />
+</dt>
+<DD>
+Operator argument.
+</dd>
+<P></P>
+<dt><strong>exception:</strong><br />
+</dt>
+<DD>
+Updated with error description.
+</dd>
+</dl>
+
+</body>
+
+</html>
