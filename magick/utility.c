@@ -562,6 +562,8 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
         */
         if (IsDirectory(filename))
           count--;
+        else
+          expanded=True;
         continue;
       }
     /*
