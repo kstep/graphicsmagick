@@ -77,6 +77,9 @@ const char
   *SaveImageText = "  Saving image...  ",
   *SaveImagesText = "  Saving images...  ",
   *WriteBinaryType = "wb";
+
+const int
+  DefaultCompressionQuality = 75;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2683,7 +2686,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->adjoin=True;
   image_info->depth=QuantumDepth;
   image_info->interlace=NoInterlace;
-  image_info->quality=75;
+  image_info->quality=DefaultCompressionQuality;
   image_info->antialias=True;
   image_info->pointsize=12;
   (void) QueryColorDatabase("#000000ff",&image_info->pen);

@@ -613,6 +613,9 @@ extern MagickExport const char
   *SaveImageText,
   *SaveImagesText,
   *WriteBinaryType;
+
+extern MagickExport const int
+  DefaultCompressionQuality;
 
 /*
   Image utilities methods.
