@@ -21,8 +21,7 @@ extern MagickExport DrawContext
 
 extern MagickExport int
   DrawRender(const DrawContext context,
-             Image *image,
-             const ImageInfo *image_info);
+             const ImageInfo *image_info, Image *image);
 
 extern MagickExport void
   DrawAnnotation(DrawContext context,

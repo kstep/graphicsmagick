@@ -1576,8 +1576,9 @@ MagickExport void DrawRectangle(DrawContext context,
   DrawPrintf(context, "rectangle %.4g,%.4g %.4g,%.4g\n", x1, y1, x2, y2);
 }
 
-MagickExport int DrawRender(const DrawContext context, Image *image,
-                            const ImageInfo *image_info)
+MagickExport int DrawRender(const DrawContext context,
+                            const ImageInfo *image_info,
+                            Image *image)
 {
   DrawInfo
     *draw_info;

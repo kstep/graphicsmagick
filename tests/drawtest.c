@@ -352,7 +352,7 @@ static void ScribbleImage ( Image *image,  ExceptionInfo *exception)
   }
   DrawPopGraphicContext(context);
 
-  DrawRender(context, image, image_info);
+  DrawRender(context, image_info, image);
   DrawDestroyContext(context);
 }
 
