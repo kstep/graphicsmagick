@@ -1,3 +1,8 @@
+2004-08-24  Glenn Randers-Pehrson <glennrp@glennrp.com>
+	* coders/png.c: fixed call to png_set_keep_unknown_chunks()
+	and deleted tEXt and zTXt from list of unused chunks.
+	* coders/avi.c, bmp.c, and dib.c: applied security patch from Cristy.
+
 2004-08-07  David R. Linn  <drl@vuse.vanderbilt.edu>
 
 	* www/formats.html: Titles for JNG and MNG were reversed.

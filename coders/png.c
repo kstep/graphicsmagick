@@ -1611,9 +1611,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         112,  67,  65,  76, '\0',   /* pCAL */
         115,  67,  65,  76, '\0',   /* sCAL */
         115,  80,  76,  84, '\0',   /* sPLT */
-        116,  69,  88, 116, '\0',   /* tEXt */
         116,  73,  77,  69, '\0',   /* tIME */
-        122,  84,  88, 116, '\0',   /* zTXt */
         };
 #endif
 
@@ -1704,7 +1702,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
   /* Ignore unused chunks */
-  png_set_keep_unknown_chunks(ping, 0, unused_chunks,
+  png_set_keep_unknown_chunks(ping, 1, unused_chunks,
      (int)sizeof(unused_chunks)/5);
 #endif
 
