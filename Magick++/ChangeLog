@@ -1,3 +1,8 @@
+2002-02-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (coderInfoList): Finally wrote some
+ 	documentation.
+
 2002-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Options.cpp : Use DestroyImageList() rather than DestroyImage().

@@ -4,7 +4,7 @@
 //
 // CoderInfo Definition
 //
-// Return format coder details.
+// Container for image format support information.
 //
 
 #if !defined (Magick_CoderInfo_header)

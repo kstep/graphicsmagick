@@ -2027,7 +2027,9 @@ modules known as "coders". A user-provided container is updated based on
 a boolean truth-table match. The truth-table supports matching based on
 whether ImageMagick can read the format, write the format, or supports
 multiple frames for the format. A wildcard specifier is supported for any
-"don't care" field.
+"don't care" field. The data obtained via coderInfoList() may be useful
+for preparing GUI dialog boxes or for deciding which output format to write
+based on support within the ImageMagick build.
 <p>The definition of coderInfoList is:
 <p><tt><font color="#000066">&nbsp; template &lt;class Container ></font></tt>
 <br><tt><font color="#000066">&nbsp; void coderInfoList( Container *container_,</font></tt>
@@ -2049,7 +2051,7 @@ AnyMatch, AnyMatch);</font></tt>
 = coderList.begin();</font></tt>
 <br><tt><font color="#000066">&nbsp; while( entry != coderList.end() )</font></tt>
 <br><tt><font color="#000066">&nbsp; {</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt;&nbsp;entry->name()
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; entry->name()
 &lt;&lt; ": (" &lt;&lt; entry->description() &lt;&lt; ") : ";</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Readable
 = ";</font></tt>
@@ -2060,7 +2062,7 @@ AnyMatch, AnyMatch);</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; else</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
 "false";</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; ",&nbsp;";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; ", ";</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Writable
 = ";</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; if ( entry->isWritable()
@@ -2070,7 +2072,7 @@ AnyMatch, AnyMatch);</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; else</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
 "false";</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; ",&nbsp;";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; ", ";</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Multiframe
 = ";</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; if ( entry->isMultiframe()
@@ -2082,7 +2084,7 @@ AnyMatch, AnyMatch);</font></tt>
 "false";</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; endl;</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp; }</font></tt>
-<br><tt><font color="#000066"></font></tt>&nbsp;
+<br>&nbsp;
 <br>&nbsp;
 </body>
 </html>

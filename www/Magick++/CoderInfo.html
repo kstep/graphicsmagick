@@ -1,0 +1,158 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Bob Friesenhahn">
+   <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="Description" content="Class to access raw image pixels.">
+   <meta name="Keywords" content="ImageMagick,Pixel,Magick++">
+   <title>Magick::CoderInfo Class</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#FF0000" alink="#000088">
+
+<center>
+<h3>
+Magick::CoderInfo</h3></center>
+The <i>CoderInfo</i> class provides the means to provide information regarding
+ImageMagick support for an image format (designated by a magick string).
+It may be used to provide support for a specific named format (provided
+as an argument to the constructor), or as an element of a container when
+format support is queried using the <a href="STL.html#coderInfoList">coderInfoList()</a>
+templated function.
+<p>The following code fragment illustrates how CoderInfo may be used.
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; CoderInfo info("GIF");</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; info->name()
+&lt;&lt; ": (" &lt;&lt; info->description() &lt;&lt; ") : ";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Readable
+= ";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; if ( info->isReadable()
+)</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"true";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; else</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"false";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; ", ";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Writable
+= ";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; if ( info->isWritable()
+)</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"true";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; else</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"false";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; ", ";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Multiframe
+= ";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; if ( info->isMultiframe()
+)</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"true";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; else</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"false";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; endl;</font></tt>
+<p>The methods available in the <i>CoderInfo</i> class are shown in the
+following table:
+<br>&nbsp;
+<table BORDER WIDTH="100%" NOSAVE >
+<caption><b>CoderInfo Methods</b></caption>
+
+<tr>
+<td>
+<center><b>Method</b></center>
+</td>
+
+<td>
+<center><b>Returns</b></center>
+</td>
+
+<td>
+<center><b>Signature</b></center>
+</td>
+
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
+
+<tr NOSAVE>
+<td>
+<center><a NAME="CoderInfo"></a><font size=-1>CoderInfo</font></center>
+</td>
+
+<td BGCOLOR="#999999" NOSAVE><font size=-1>&nbsp;</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Construct object corresponding to named format (e.g.
+"GIF"). An exception is thrown if the format is not supported.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="name"></a><font size=-1>name</font></center>
+</td>
+
+<td><font size=-1>std::string</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Format name (e.g. "GIF").</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="description"></a><font size=-1>description</font></center>
+</td>
+
+<td><font size=-1>std::string</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Format description (e.g. "CompuServe graphics interchange
+format").</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="isReadable"></a><font size=-1>isReadable</font></center>
+</td>
+
+<td><font size=-1>bool</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Format is readable.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="isWritable"></a><font size=-1>isWritable</font></center>
+</td>
+
+<td><font size=-1>bool</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Format is writeable.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="isMultiFrame"></a><font size=-1>isMultiFrame</font></center>
+</td>
+
+<td><font size=-1>bool</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Format supports multiple frames.</font></td>
+</tr>
+</table>
+
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>
