@@ -1338,12 +1338,22 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        index=DownScale(*p++) << 8;
-        index|=DownScale(*p++);
+#if (QuantumDepth == 16)
+        index=(*p++ << 8);
+        index|=(*p++);
+#else
+        index=(*p++);
+        p++;
+#endif
         indexes[x]=index;
         *q=image->colormap[index];
-        q->opacity=(DownScale(MaxRGB)-DownScale(*p++)) << 8;
-        q->opacity|=DownScale(MaxRGB)-DownScale(*p++);
+#if (QuantumDepth == 16)
+        q->opacity=(MaxRGB-(*p++)) << 8;
+        q->opacity|=MaxRGB-(*p++);
+#else
+        q->opacity=MaxRGB-(*p++);
+        p++;
+#endif
         q++;
       }
       break;
@@ -1362,8 +1372,13 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        index=DownScale(*p++) << 8;
-        index|=DownScale(*p++);
+#if (QuantumDepth == 16)
+        index=(*p++ << 8);
+        index|=(*p++);
+#else
+        index=(*p++);
+        p++;
+#endif
         indexes[x]=index;
         *q++=image->colormap[index];
       }
@@ -1385,12 +1400,22 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        index=DownScale(*p++) << 8;
-        index|=DownScale(*p++);
+#if (QuantumDepth == 16)
+        index=(*p++ << 8);
+        index|=(*p++);
+#else
+        index=(*p++);
+        p++;
+#endif
         indexes[x]=index;
         *q=image->colormap[index];
-        q->opacity=(DownScale(MaxRGB)-DownScale(*p++)) << 8;
-        q->opacity|=DownScale(MaxRGB)-DownScale(*p++);
+#if (QuantumDepth == 16)
+        q->opacity=(MaxRGB-(*p++)) << 8;
+        q->opacity|=MaxRGB-(*p++);
+#else
+        q->opacity=MaxRGB-(*p++);
+        p++;
+#endif
         q++;
       }
       break;
@@ -1409,8 +1434,13 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        q->red=DownScale(*p++) << 8;
-        q->red|=DownScale(*p++);
+#if (QuantumDepth == 16)
+        q->red=(*p++ << 8);
+        q->red|=(*p++);
+#else
+        q->red=(*p++);
+        p++;
+#endif
         q++;
       }
       break;
@@ -1429,8 +1459,13 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        q->green=DownScale(*p++) << 8;
-        q->green|=DownScale(*p++);
+#if (QuantumDepth == 16)
+        q->green=(*p++ << 8);
+        q->green|=(*p++);
+#else
+        q->green=(*p++);
+        p++;
+#endif
         q++;
       }
       break;
@@ -1449,8 +1484,13 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        q->blue=DownScale(*p++) << 8;
-        q->blue|=DownScale(*p++);
+#if (QuantumDepth == 16)
+        q->blue=(*p++ << 8);
+        q->blue|=(*p++);
+#else
+        q->blue=(*p++);
+        p++;
+#endif
         q++;
       }
       break;
@@ -1468,8 +1508,13 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        q->opacity=(DownScale(MaxRGB)-DownScale(*p++)) << 8;
-        q->opacity|=DownScale(MaxRGB)-DownScale(*p++);
+#if (QuantumDepth == 16)
+        q->opacity=(MaxRGB-(*p++)) << 8;
+        q->opacity|=MaxRGB-(*p++);
+#else
+        q->opacity=MaxRGB-(*p++);
+        p++;
+#endif
         q++;
       }
       break;
@@ -1487,8 +1532,13 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        q->opacity=DownScale(*p++) << 8;
-        q->opacity|=DownScale(*p++);
+#if (QuantumDepth == 16)
+        q->opacity=(*p++ << 8);
+        q->opacity|=(*p++);
+#else
+        q->opacity=(*p++);
+        p++;
+#endif
         q++;
       }
       break;
@@ -1509,13 +1559,23 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        q->red=DownScale(*p++) << 8;
-        q->red|=DownScale(*p++);
-        q->green=DownScale(*p++) << 8;
-        q->green|=DownScale(*p++);
-        q->blue=DownScale(*p++) << 8;
-        q->blue|=DownScale(*p++);
+#if (QuantumDepth == 16)
+        q->red=(*p++ << 8);
+        q->red|=(*p++);
+        q->green=(*p++ << 8);
+        q->green|=(*p++);
+        q->blue=(*p++ << 8);
+        q->blue|=(*p++);
         q++;
+#else
+        q->red=(*p++);
+        p++;
+        q->green=(*p++);
+        p++;
+        q->blue=(*p++);
+        p++;
+        q++;
+#endif
       }
       break;
     }
@@ -1535,14 +1595,26 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        q->red=DownScale(*p++) << 8;
-        q->red|=DownScale(*p++);
-        q->green=DownScale(*p++) << 8;
-        q->green|=DownScale(*p++);
-        q->blue=DownScale(*p++) << 8;
-        q->blue|=DownScale(*p++);
-        q->opacity=(DownScale(MaxRGB)-DownScale(*p++)) << 8;
-        q->opacity|=DownScale(MaxRGB)-DownScale(*p++);
+#if (QuantumDepth == 16)
+        q->red=(*p++ << 8);
+        q->red|=(*p++);
+        q->green=(*p++ << 8);
+        q->green|=(*p++);
+        q->blue=(*p++ << 8);
+        q->blue|=(*p++);
+        q->opacity=(MaxRGB-(*p++)) << 8;
+        q->opacity|=MaxRGB-(*p++);
+#else
+        q->red=(*p++);
+        p++;
+        q->green=(*p++);
+        p++;
+        q->blue=(*p++);
+        p++;
+        q->opacity=MaxRGB-(*p++);
+        p++;
+        q++;
+#endif
         q++;
       }
       break;
@@ -1563,14 +1635,26 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        q->red=DownScale(*p++) << 8;
-        q->red|=DownScale(*p++);
-        q->green=DownScale(*p++) << 8;
-        q->green|=DownScale(*p++);
-        q->blue=DownScale(*p++) << 8;
-        q->blue|=DownScale(*p++);
-        q->opacity=DownScale(*p++) << 8;
-        q->opacity|=DownScale(*p++);
+#if (QuantumDepth == 16)
+        q->red=(*p++ << 8);
+        q->red|=(*p++);
+        q->green=(*p++ << 8);
+        q->green|=(*p++);
+        q->blue=(*p++ << 8);
+        q->blue|=(*p++);
+        q->opacity=(*p++ << 8);
+        q->opacity|=(*p++);
+#else
+        q->red=(*p++);
+        p++;
+        q->green=(*p++);
+        p++;
+        q->blue=(*p++);
+        p++;
+        q->opacity=(*p++);
+        p++;
+        q++;
+#endif
         q++;
       }
       break;
