@@ -1588,7 +1588,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         {
           LogMagickEvent(CoderEvent,"  Image colorspace is RGB");
           LogMagickEvent(CoderEvent,
-            "  Sampling factors=(%d,%d),(%d,%d),(%d,%d)",
+            "  Sampling factors: (%d,%d),(%d,%d),(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor,
             jpeg_info.comp_info[1].h_samp_factor,
