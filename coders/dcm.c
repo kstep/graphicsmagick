@@ -2770,7 +2770,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   graymap=(unsigned short *) NULL;
   group=0;
   height=0;
-  max_value=MaxRGB;
+  max_value=255;
   mask=0xffff;
   msb_first=False;
   number_scenes=1;
@@ -3253,7 +3253,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return(image);
     }
   scale=(Quantum *) NULL;
-  if (max_value != MaxRGB)
+  if (max_value > MaxRGB)
     {
       /*
         Compute pixel scaling table.
@@ -3273,7 +3273,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=width;
     image->rows=height;
     if ((image->colormap == (PixelPacket *) NULL) && (samples_per_pixel == 1))
-      if (!AllocateImageColormap(image,Min(max_value,MaxRGB)+1))
+      if (!AllocateImageColormap(image,max_value+1))
         ThrowReaderException(ResourceLimitError,"Memory allocation failed",
           image);
     if (image_info->ping)
