@@ -4930,9 +4930,19 @@ Mogrify(ref,...)
               PrimitiveTypes[argument_list[0].int_reference]);
           if (attribute_flag[1])
             {
-              (void) ConcatenateString(&draw_info->primitive," ");
-              ConcatenateString(&draw_info->primitive,
-                argument_list[1].string_reference);
+              if (LocaleCompare(draw_info->primitive,"path") == 0)
+                {
+                  (void) ConcatenateString(&draw_info->primitive," '");
+                  ConcatenateString(&draw_info->primitive,
+                    argument_list[1].string_reference);
+                  (void) ConcatenateString(&draw_info->primitive,"'");
+                }
+              else
+                {
+                  (void) ConcatenateString(&draw_info->primitive," ");
+                  ConcatenateString(&draw_info->primitive,
+                    argument_list[1].string_reference);
+                }
             }
           if (attribute_flag[2])
             {
