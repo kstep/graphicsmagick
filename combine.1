@@ -309,15 +309,15 @@ By default the images are combined relative to the image gravity
 (see \fB-gravity\fP).  Use \fI<x offset>\fP and
 \fI<y offset>\fP to specify a particular location to combine the images.
 .TP
-.B "-gravity \fIdirection\fP"
-direction image gravitates to within the composite.  See \fBX(1)\fP for
-details about the gravity specification.
+.B "-gravity \fItype\fP"
+direction image gravitates to within the composite: NorthWest, North,
+NorthEast, West, Center, East, SouthWest, South, SouthEast.
+See \fBX(1)\fP for details about the gravity specification.
 
 The image may not fill the composite completely (see
 \fB-geometry\fP).  The direction you choose specifies where to
 position the image within the composite.  For example \fICenter\fP gravity
-forces the image to be centered within the composite.  A gravity of
-\fIForget\fP stretches the composite to the same size as the image.
+forces the image to be centered within the composite.  
 By default, the image gravity is \fINorthWest\fP.
 .TP
 .B "-interlace \fItype\fP"

@@ -16,6 +16,7 @@
 	<UL>
 
 		<LI><A HREF="#IsPseudoClass">IsPseudoClass</A>
+		<LI><A HREF="#QueryColorName">QueryColorName</A>
 		<LI><A HREF="#NumberColors">NumberColors</A>
 	</UL>
 
@@ -36,6 +37,9 @@ status=<STRONG>IsPseudoClass</STRONG>(image)
 
 <P>
 <STRONG>NumberColors</STRONG>(image,file)
+
+<P>
+distance=<STRONG>QueryColorName</STRONG>(color,name)
 
 <P>
 <HR>
@@ -91,6 +95,39 @@ color or less.
 The address of a byte (8 bits) array of run-length encoded pixel data of
 your source image. The sum of the run-length counts in the source image
 must be equal to or exceed the number of pixels.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="QueryColorName">QueryColorName</A></H2>
+<P>
+Method QueryColorName returns the name of the color that is closest to the
+supplied color in RGB space.
+
+<P>
+The format of the QueryColorName routine is:
+
+<P>
+<PRE>        distance=QueryColorName(color,name)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>distance:</STRONG><DD>
+<P>
+Method QueryColorName returns the distance-squared in RGB space as well as
+the color name that is at a minimum distance.
+
+<DT><STRONG>color:</STRONG><DD>
+<P>
+This is a pointer to a ColorPacket structure that contains the color we are
+searching for.
+
+<DT><STRONG>name:</STRONG><DD>
+<P>
+The name of the color that is closest to the supplied color is returned in
+this character buffer.
 
 </DL></DL>
 <P>

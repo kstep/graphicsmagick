@@ -128,9 +128,6 @@ static char *p_noises[] = {
     "Uniform", "Gaussian", "Multiplicative", "Impulse", "Laplacian", "Poisson",
 0 };
 
-static char *p_alignments[] = {
-    "Undefined", "Left", "Center", "Right", 0 };
-
 static char *p_boolean[] = {
     "False", "True", 0 };
 
@@ -253,10 +250,10 @@ static struct routines {
     {	"Zoom", { {"geom", P_STR}, {"width", P_INT}, {"height", P_INT},
 		  {"filter", p_filters} } },
     {	"IsGrayImage", },
-    {	"Annotate", { {"server", P_STR}, {"font", P_STR}, {"point", P_INT},
+    {	"Annotate", { {"text", P_STR}, {"font", P_STR}, {"point", P_INT},
 		    {"density", P_STR}, {"box", P_STR}, {"pen", P_STR},
-		    {"geom", P_STR}, {"text", P_STR}, {"x", P_INT},
-		    {"y", P_INT}, {"align", p_alignments} } },
+		    {"geom", P_STR}, {"server", P_STR}, {"x", P_INT},
+		    {"y", P_INT}, {"grav", p_gravities} } },
     {	"ColorFloodfill", { {"geom", P_STR}, {"x", P_INT}, {"y", P_INT},
 			    {"pen", P_STR}, {"bordercolor", P_STR} } },
     {	"Composite", { {"compos", p_composites}, {"image", P_IMG},
@@ -2909,8 +2906,8 @@ Mogrify(ref, ...)
 			GetAnnotateInfo(&annotate);
 			temp = copy_info(info);
 			annotate.image_info = &temp->info;
-			if (aflag[0])
-			    newval(&temp->info.server_name, alist[0].t_str);
+			if (aflag[7])
+			    newval(&temp->info.server_name, alist[7].t_str);
 			if (aflag[1])
 			    newval(&temp->info.font, alist[1].t_str);
 			if (aflag[2])
@@ -2923,8 +2920,8 @@ Mogrify(ref, ...)
 			    newval(&temp->info.pen, alist[5].t_str);
 			if (aflag[6])
 			    annotate.geometry = alist[6].t_str;
-			if (aflag[7])
-			    annotate.text = alist[7].t_str;
+			if (aflag[0])
+			    annotate.text = alist[0].t_str;
 			if (aflag[8] || aflag[9])
 			{
 			    if (!aflag[8])
@@ -2936,7 +2933,7 @@ Mogrify(ref, ...)
 			    annotate.geometry = b;
 			}
 			if (aflag[10])
-			    annotate.alignment = (AlignmentType) alist[10].t_int;
+			    annotate.gravity = alist[10].t_int;
 		    }
 		    AnnotateImage(image, &annotate);
 		    break;
@@ -3255,11 +3252,15 @@ Mogrify(ref, ...)
 				(info? info->quant.colorspace : RGBColorspace));
 			quan.dither = aflag[3] ? alist[3].t_int :
 				(info? info->quant.dither : False);
-			(void) QuantizeImages(&quan, image);
+			if ((image->class == DirectClass) ||
+			    (image->colors > quan.number_colors))
+			    (void) QuantizeImage(&quan, image);
+			else
+			    CompressColormap(image);
 			if (aflag[4] && alist[4].t_int)
 			    (void) QuantizationError(image);
 		    	SyncImage(image);
-			goto return_it;
+			break;
 		    }
 		case 49:	/* Raise */
 		    if (first)

@@ -324,7 +324,7 @@ Export void AllocateNextImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AnnotateImage annotates an image with test.  Optionally the
+%  Method AnnotateImage annotates an image with text.  Optionally the
 %  annotation can include the image filename, type, width, height, or scene
 %  number by embedding special format characters.
 %
@@ -342,8 +342,10 @@ Export void AllocateNextImage(const ImageInfo *image_info,Image *image)
 */
 Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
 {
+#define Alphabet  "`-=[]\\;',./~!@#$%^&*()_+{}|:\"<>?" \
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
   char
-    *color,
     *text,
     **textlist;
 
@@ -351,19 +353,17 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     *annotate_image;
 
   int
-    flags,
-    offset,
     x,
     y;
 
   register int
-    i,
-    j;
+    i;
 
   unsigned int
     height,
     length,
     matte,
+    number_lines,
     width;
 
   /*
@@ -372,6 +372,22 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   assert(image != (Image *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
   assert(annotate_info->image_info != (ImageInfo *) NULL);
+  if (!UncondenseImage(image))
+    return;
+  /*
+    Determine font width and height.
+  */
+  FormatString(annotate_info->image_info->filename,"label:%s",Alphabet);
+  annotate_image=ReadImage(annotate_info->image_info);
+  if (annotate_image == (Image *) NULL)
+    return;
+  annotate_info->bounds.width=
+    (annotate_image->columns+(strlen(Alphabet) >> 1))/strlen(Alphabet);
+  annotate_info->bounds.height=annotate_image->rows;
+  DestroyImage(annotate_image);
+  /*
+    Translate any embedded format characters (e.g. %f).
+  */
   if (image->text != (char *) NULL)
     FreeMemory((char *) image->text);
   image->text=TranslateText((ImageInfo *) NULL,image,annotate_info->text);
@@ -383,116 +399,135 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   if (textlist == (char **) NULL)
     return;
   length=Extent(textlist[0]);
-  for (i=0; textlist[i] != (char *) NULL; i++)
+  for (i=1; textlist[i] != (char *) NULL; i++)
     if (Extent(textlist[i]) > length)
       length=Extent(textlist[i]);
+  number_lines=i;
   text=(char *) AllocateMemory(length+MaxTextExtent);
-  color=(char *) AllocateMemory(MaxTextExtent);
-  if ((text == (char *) NULL) || (color == (char *) NULL))
+  if (text == (char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to annotate image",
         "Memory allocation failed");
       return;
     }
-  if (!UncondenseImage(image))
-    return;
-  /*
-    Get annotate geometry.
-  */
   width=image->columns;
-  height=annotate_info->image_info->pointsize;
+  height=image->rows;
   x=0;
   y=0;
-  flags=NoValue;
   if (annotate_info->geometry != (char *) NULL)
     {
+      int
+        flags;
+
+      /*
+        User specified annotation geometry.
+      */
       flags=XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
       if ((flags & XNegative) != 0)
         x+=image->columns;
+      if ((flags & WidthValue) == 0)
+        width-=x;
       if ((flags & YNegative) != 0)
         y+=image->rows;
+      if ((flags & HeightValue) == 0)
+        height-=y;
     }
-  annotate_info->image_info->undercolor=color;
+  /*
+    Annotate image.
+  */
   for (i=0; textlist[i] != (char *) NULL; i++)
   {
-    if ((x >= image->columns) || (y >= image->rows))
-      break;
     if (*textlist[i] == '\0')
       {
         FreeMemory(textlist[i]);
-        y+=height;
         continue;
       }
     /*
-      Set alias color to pixel color at annotation location.
+      Convert text to image.
     */
     FormatString(annotate_info->image_info->filename,"label:%s",textlist[i]);
+    FreeMemory(textlist[i]);
     annotate_image=ReadImage(annotate_info->image_info);
-    if (annotate_info->alignment == CenterAlignment)
-      for (j=(Extent(textlist[i])-1) >> 1; j >= 0; j--)
-      {
-        if (annotate_image == (Image *) NULL)
-          break;
-        if (annotate_image->columns < width)
-          break;
-        DestroyImage(annotate_image);
-        (void) strcpy(text,textlist[i]);
-        (void) strcpy(text+j,"...");
-        (void) strcat(text,textlist[i]+Extent(textlist[i])-j-1);
-        FormatString(annotate_info->image_info->filename,"label:%s",text);
-        annotate_image=ReadImage(annotate_info->image_info);
-      }
     if (annotate_image == (Image *) NULL)
       {
         MagickWarning(ResourceLimitWarning,"Unable to annotate image",
           (char *) NULL);
         break;
       }
-    FreeMemory(textlist[i]);
-    height=annotate_image->rows;
     /*
       Composite text onto the image.
     */
-    if (annotate_info->alignment == RightAlignment)
-      offset=(-((int) annotate_image->columns));
-    else
-      if (annotate_info->alignment == CenterAlignment)
-        offset=(width >> 1)-(annotate_image->columns >> 1);
-      else
-        offset=0;
-    if (annotate_info->image_info->box != (char *) NULL)
+    switch (annotate_info->gravity)
+    {
+      case NorthWestGravity:
       {
-        char
-          size[MaxTextExtent];
-
-        Image
-          *box_image;
-
-        ImageInfo
-          local_info;
-
-        /*
-          Surround text with a bounding box.
-        */
-        local_info=(*annotate_info->image_info);
-        local_info.size=size;
-        FormatString(local_info.filename,"xc:%s",local_info.box);
-        FormatString(local_info.size,"%ux%u",annotate_image->columns,
-          annotate_image->rows);
-        box_image=ReadImage(&local_info);
-        if (box_image != (Image *) NULL)
-          {
-            CompositeImage(image,ReplaceCompositeOp,box_image,x+offset,y);
-            DestroyImage(box_image);
-          }
+        annotate_info->bounds.x=x;
+        annotate_info->bounds.y=i*annotate_info->bounds.height+y;
+        break;
       }
+      case NorthGravity:
+      {
+        annotate_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
+        annotate_info->bounds.y=y+i*annotate_info->bounds.height;
+        break;
+      }
+      case NorthEastGravity:
+      {
+        annotate_info->bounds.x=x+width-annotate_image->columns;
+        annotate_info->bounds.y=y+i*annotate_info->bounds.height;
+        break;
+      }
+      case WestGravity:
+      {
+        annotate_info->bounds.x=x;
+        annotate_info->bounds.y=y+(height >> 1)-
+          (number_lines*annotate_info->bounds.height >> 1)+
+	  i*annotate_info->bounds.height;
+        break;
+      }
+      case ForgetGravity:
+      case StaticGravity:
+      case CenterGravity:
+      default:
+      {
+        annotate_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
+        annotate_info->bounds.y=y+(height >> 1)-
+          (number_lines*annotate_info->bounds.height >> 1)+
+	  i*annotate_info->bounds.height;
+        break;
+      }
+      case EastGravity:
+      {
+        annotate_info->bounds.x=x+width-annotate_image->columns;
+        annotate_info->bounds.y=y+(height >> 1)-
+          (number_lines*annotate_info->bounds.height >> 1)+
+	  i*annotate_info->bounds.height;
+        break;
+      }
+      case SouthWestGravity:
+      {
+        annotate_info->bounds.x=x;
+        annotate_info->bounds.y=y+height-(i+1)*annotate_info->bounds.height;
+        break;
+      }
+      case SouthGravity:
+      {
+        annotate_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
+        annotate_info->bounds.y=y+height-(i+1)*annotate_info->bounds.height;
+        break;
+      }
+      case SouthEastGravity:
+      {
+        annotate_info->bounds.x=x+width-annotate_image->columns;
+        annotate_info->bounds.y=y+height-(i+1)*annotate_info->bounds.height;
+        break;
+      }
+    }
     matte=image->matte;
-    CompositeImage(image,OverCompositeOp,annotate_image,x+offset,y);
+    CompositeImage(image,OverCompositeOp,annotate_image,annotate_info->bounds.x,
+      annotate_info->bounds.y);
     image->matte=matte;
     DestroyImage(annotate_image);
-    if (height > annotate_info->height)
-      annotate_info->height=height;
-    y+=height;
   }
   FreeMemory(text);
   for ( ; textlist[i] != (char *) NULL; i++)
@@ -4691,8 +4726,11 @@ Export void GetAnnotateInfo(AnnotateInfo *annotate_info)
   annotate_info->text=(char *) NULL;
   annotate_info->primitive=(char *) NULL;
   annotate_info->linewidth=1;
-  annotate_info->height=0;
-  annotate_info->alignment=LeftAlignment;
+  annotate_info->bounds.width=0;
+  annotate_info->bounds.height=0;
+  annotate_info->bounds.x=0;
+  annotate_info->bounds.y=0;
+  annotate_info->gravity=NorthWestGravity;
 }
 
 /*
@@ -6039,16 +6077,16 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       continue;
     if (strncmp("align",option+1,2) == 0)
       {
-        annotate_info.alignment=LeftAlignment;
+        annotate_info.gravity=WestGravity;
         if (*option == '-')
           {
             option=argv[++i];
             if (Latin1Compare("Left",option) == 0)
-              annotate_info.alignment=LeftAlignment;
+              annotate_info.gravity=WestGravity;
             if (Latin1Compare("Center",option) == 0)
-              annotate_info.alignment=CenterAlignment;
+              annotate_info.gravity=CenterGravity;
             if (Latin1Compare("Right",option) == 0)
-              annotate_info.alignment=RightAlignment;
+              annotate_info.gravity=EastGravity;
           }
         continue;
       }
@@ -6421,6 +6459,33 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       {
         TransformImage(image,(char *) NULL,argv[++i]);
         annotate_info.geometry=argv[i];
+        continue;
+      }
+    if (strncmp("gravity",option+1,2) == 0)
+      {
+        annotate_info.gravity=NorthWestGravity;
+        if (*option == '-')
+          {
+            option=argv[++i];
+            if (Latin1Compare("NorthWest",option) == 0)
+              annotate_info.gravity=NorthWestGravity;
+            if (Latin1Compare("North",option) == 0)
+              annotate_info.gravity=NorthGravity;
+            if (Latin1Compare("NorthEast",option) == 0)
+              annotate_info.gravity=NorthEastGravity;
+            if (Latin1Compare("West",option) == 0)
+              annotate_info.gravity=WestGravity;
+            if (Latin1Compare("Center",option) == 0)
+              annotate_info.gravity=CenterGravity;
+            if (Latin1Compare("East",option) == 0)
+              annotate_info.gravity=EastGravity;
+            if (Latin1Compare("SouthWest",option) == 0)
+              annotate_info.gravity=SouthWestGravity;
+            if (Latin1Compare("South",option) == 0)
+              annotate_info.gravity=SouthGravity;
+            if (Latin1Compare("SouthEast",option) == 0)
+              annotate_info.gravity=SouthEastGravity;
+          }
         continue;
       }
     if (strncmp("-implode",option,4) == 0)
@@ -9701,7 +9766,7 @@ Export Image *SteganoImage(Image *image,Image *watermark)
   r=watermark->pixels;
   for (i=0; i < image->packets; i++)
   {
-    if (image->class == PseudoClass)
+    if (stegano_image->class == PseudoClass)
       EmbedBit(q->index)
     else
       {
@@ -9735,8 +9800,8 @@ Export Image *SteganoImage(Image *image,Image *watermark)
 %
 %  Method StereoImage combines two images and produces a single image that
 %  is the composite of a left and right image of a stereo pair.  The left
-%  image is converted to gray_scale and written to the red channel of the
-%  stereo image.  The right image is converted to gray_scale and written to the
+%  image is converted to gray scale and written to the red channel of the
+%  stereo image.  The right image is converted to gray scale and written to the
 %  blue channel of the stereo image.  View the composite image with red-blue
 %  glasses to create a stereo effect.
 %
@@ -9822,9 +9887,9 @@ Export Image *StereoImage(Image *left_image,Image *right_image)
           q++;
           right_runlength=q->length;
         }
-      r->red=q->red;
-      r->green=p->green;
-      r->blue=p->blue;
+      r->red=Intensity(*p);
+      r->green=0;
+      r->blue=Intensity(*q);
       r->index=0;
       r->length=0;
       r++;

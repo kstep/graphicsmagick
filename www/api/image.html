@@ -20,10 +20,11 @@
 		<LI><A HREF="#AnnotateImage">AnnotateImage</A>
 		<LI><A HREF="#AppendImages">AppendImages</A>
 		<LI><A HREF="#AverageImages">AverageImages</A>
-		<LI><A HREF="#NegateImage">NegateImage</A>
+		<LI><A HREF="#BlackImage">BlackImage</A>
 		<LI><A HREF="#BorderImage">BorderImage</A>
 		<LI><A HREF="#ChopImage">ChopImage</A>
 		<LI><A HREF="#CloseImage">CloseImage</A>
+		<LI><A HREF="#CoalesceImage">CoalesceImage</A>
 		<LI><A HREF="#ColorFloodfillImage">ColorFloodfillImage</A>
 		<LI><A HREF="#ColorizeImage">ColorizeImage</A>
 		<LI><A HREF="#CommentImage">CommentImage</A>
@@ -74,6 +75,7 @@
 		<LI><A HREF="#SetImageInfo">SetImageInfo</A>
 		<LI><A HREF="#SetNumberScenes">SetNumberScenes</A>
 		<LI><A HREF="#SortColormapByIntentsity">SortColormapByIntentsity</A>
+		<LI><A HREF="#SteganoImage">SteganoImage</A>
 		<LI><A HREF="#StereoImage">StereoImage</A>
 		<LI><A HREF="#SyncImage">SyncImage</A>
 		<LI><A HREF="#TextureImage">TextureImage</A>
@@ -108,6 +110,9 @@ allocated_image=<STRONG>AllocateImage</STRONG>(image_info)
 
 <P>
 averaged_image=<STRONG>AverageImages</STRONG>(images)
+
+<P>
+<STRONG>BlackImage</STRONG>(image)
 
 <P>
 bordered_image=<STRONG>BorderImage</STRONG>(image,border_info)
@@ -230,9 +235,6 @@ morphed_image=<STRONG>MorphImages</STRONG>(images,number_frames)
 <STRONG>NegateImage</STRONG>(image,grayscale)
 
 <P>
-<STRONG>NegateImage</STRONG>(image,grayscale)
-
-<P>
 <STRONG>NormalizeImage</STRONG>(image)
 
 <P>
@@ -261,6 +263,9 @@ scaled_image=<STRONG>ScaleImage</STRONG>(image,columns,rows)
 
 <P>
 <STRONG>SetNumberScenes</STRONG>(image)
+
+<P>
+stegano_image=<STRONG>SteganoImage</STRONG>(image,watermark)
 
 <P>
 stereo_image=<STRONG>StereoImage</STRONG>(left_image,right_image)
@@ -346,7 +351,7 @@ The address of a structure of type Image.
 <HR>
 <H2><A NAME="AnnotateImage">AnnotateImage</A></H2>
 <P>
-Method AnnotateImage annotates an image with test. Optionally the
+Method AnnotateImage annotates an image with text. Optionally the
 annotation can include the image filename, type, width, height, or scene
 number by embedding special format characters.
 
@@ -427,15 +432,15 @@ The address of a structure of type Image; returned from ReadImage.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="NegateImage">NegateImage</A></H2>
+<H2><A NAME="BlackImage">BlackImage</A></H2>
 <P>
-Method BlackImage inializes the reference image to all black pixels.
+Method BlackImage initializes the reference image to all black pixels.
 
 <P>
 The format of the BlackImage routine is:
 
 <P>
-<PRE>    BlackImage(image)
+<PRE>        BlackImage(image)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -532,6 +537,28 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="CoalesceImage">CoalesceImage</A></H2>
+<P>
+Method CoalesceImages merges a sequence of images. This is useful for GIF
+animation sequences that have page offsets and disposal methods.
+
+<P>
+The format of the CoalesceImages routine is:
+
+<P>
+<PRE>    CoalesceImages(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
 
 </DL></DL>
 <P>
@@ -2019,6 +2046,36 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 A pointer to a Image structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SteganoImage">SteganoImage</A></H2>
+<P>
+Method SteganoImage hides a digital watermark within the image.
+
+<P>
+The format of the SteganoImage routine is:
+
+<P>
+<PRE>        stegano_image=SteganoImage(image,watermark)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>stegano_image:</STRONG><DD>
+<P>
+Method SteganoImage returns a pointer to the steganographic image with the
+watermark hidden. A null image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>watermark:</STRONG><DD>
+<P>
+The address of a structure of type Image.
 
 </DL></DL>
 <P>

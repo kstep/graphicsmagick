@@ -1021,13 +1021,13 @@ int main(int argc,char **argv)
             }
           if (strncmp("tile",option+1,3) == 0)
             {
-              montage_info.tile=(char *) NULL;
+              *montage_info.tile=(char) NULL;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  montage_info.tile=argv[i];
+                  (void) strcpy(montage_info.tile,argv[i]);
                 }
               break;
             }

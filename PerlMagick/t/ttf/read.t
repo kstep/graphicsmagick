@@ -24,7 +24,7 @@ testRead( 'input.ttf', 'baaf49ac19e459bd9cdf877024a9ffb8' );
 #
 ++$test;
 $infile = 'input.ttf';
-$md5    = '34c3e1e15e39b330299d40c0b57a3b75';
+$md5    = 'f927f35fdc0aed4622734e996b0bd309';
 
 $image=Image::Magick->new;
 $x=$image->Set(font=>"\@$infile", pen=>'#0000FF', pointsize=>14);

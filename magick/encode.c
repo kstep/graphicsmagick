@@ -13427,7 +13427,7 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
       */
       TemporaryFilename(image->filename);
       status=InvokeDelegate(image_info,image,(char *) NULL,image_info->magick);
-      remove(image->filename);
+      (void) remove(image->filename);
       return(status);
     }
   /*

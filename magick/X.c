@@ -8259,7 +8259,7 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
   annotate_info.image_info->font=resource_info->font;
   annotate_info.image_info->pointsize=montage_info->pointsize;
   annotate_info.geometry=geometry;
-  annotate_info.alignment=CenterAlignment;
+  annotate_info.gravity=CenterGravity;
   /*
     Initialize font info.
   */
@@ -8621,6 +8621,7 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
         number_images-=tiles_per_page;
       }
   }
+  FreeMemory((char *) images);
   while (montage_image->previous != (Image *) NULL)
     montage_image=montage_image->previous;
   return(montage_image);

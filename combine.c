@@ -64,7 +64,7 @@
 %    -dither             apply Floyd/Steinberg error diffusion to image
 %    -font name          X11 font for displaying text
 %    -geometry geometry  perferred size or location of the image
-%    -gravity direction  which direction to gravitate towards
+%    -gravity type       which direction to gravitate towards
 %    -interlace type     None, Line, Plane, or Partition
 %    -label name         assign a label to an image
 %    -matte              store matte channel if the image has one
@@ -131,7 +131,7 @@ static void Usage(const char *client_name)
       "-dither             apply Floyd/Steinberg error diffusion to image",
       "-font name          X11 font for displaying text",
       "-geometry geometry  perferred size or location of the image",
-      "-gravity direction  which direction to gravitate towards",
+      "-gravity type       which direction to gravitate towards",
       "-interlace type     None, Line, Plane, or Partition",
       "-label name         ssign a label to an image",
       "-matte              store matte channel if the image has one",
@@ -517,14 +517,13 @@ int main(int argc,char **argv)
             }
           if (strncmp("gravity",option+1,2) == 0)
             {
-              gravity=NorthWestGravity;
+              gravity=ForgetGravity;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  gravity=(-1);
                   if (Latin1Compare("Forget",option) == 0)
                     gravity=ForgetGravity;
                   if (Latin1Compare("NorthWest",option) == 0)
@@ -545,9 +544,7 @@ int main(int argc,char **argv)
                     gravity=SouthGravity;
                   if (Latin1Compare("SouthEast",option) == 0)
                     gravity=SouthEastGravity;
-                  if (Latin1Compare("Static",option) == 0)
-                    gravity=StaticGravity;
-                  if (gravity == (-1))
+                  if (gravity == ForgetGravity)
                     MagickError(OptionError,"Invalid gravity type",option);
                 }
               break;

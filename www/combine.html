@@ -350,15 +350,14 @@ the image is 1024x1024, it is resized to 640x480.
 &lt;<B>y</B> <EM>offset</EM>&gt; to specify a particular location to
 combine the images. 
 <P>
-<DT><B>-gravity</B> <EM>direction</EM>
-<dd> direction image gravitates to within the composite.  See <b>X(1)</b> for
-details about the gravity specification.
+<DT><B>-gravity</B> <EM>type</EM>
+<dd> direction image gravitates to within the composite: NorthWest, North,
+NorthEast, West, Center, East, SouthWest, South, SouthEast.
+See X(1) for details about the gravity specification.
 <p> 
-<dd>The image may not fill the composite completely (see
-<b>-geometry</b>).  The direction you choose specifies where to
+<dd> The direction you choose specifies where to
 position the image within the composite.  For example <em>Center</em> gravity
-forces the image to be centered within the composite.  A gravity of
-<i>Forget</i> stretches the composite to the same size as the image.
+forces the image to be centered within the composite.
 By default, the image gravity is <em>NorthWest</em>.
 <P>
 <DT><B>-interlace</B> <EM>type</EM>

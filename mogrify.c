@@ -54,7 +54,6 @@
 %  Usage: mogrify [options ...] file [ [options ...] file ...]
 %
 %  Where options include:
-%    -align type          Left, Center, Right
 %    -blur factor         apply a filter to blur the image
 %    -border geometry     surround image with a border of color
 %    -box color           color for annotation bounding box
@@ -173,7 +172,6 @@ static void Usage(const char *client_name)
   static char
     *options[]=
     {
-      "-align type          Left, Center, Right",
       "-blur factor         apply a filter to blur the image",
       "-border geometry     surround image with a border of color",
       "-box color           color for annotation bounding box",
@@ -297,6 +295,7 @@ int main(int argc,char **argv)
     *image;
 
   int
+    gravity,
     x;
 
   register Image
@@ -339,25 +338,25 @@ int main(int argc,char **argv)
         {
           if (strncmp("align",option+1,2) == 0)
             {
-              int
-                alignment;
-
-              alignment=UndefinedAlignment;
+              /*
+                Alignment is deprecated, use -gravity.
+              */
+              gravity=ForgetGravity;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  alignment=UndefinedAlignment;
+                  gravity=ForgetGravity;
                   if (Latin1Compare("Left",option) == 0)
-                    alignment=LeftAlignment;
+                    gravity=WestGravity;
                   if (Latin1Compare("Center",option) == 0)
-                    alignment=CenterAlignment;
+                    gravity=CenterGravity;
                   if (Latin1Compare("Right",option) == 0)
-                    alignment=RightAlignment;
-                  if (alignment == UndefinedAlignment)
-                    MagickError(OptionError,"Invalid alignment type",option);
+                    gravity=EastGravity;
+                  if (gravity == ForgetGravity)
+                    MagickError(OptionError,"Invalid gravity type",option);
                 }
               break;
             }
@@ -757,6 +756,38 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
+                }
+              break;
+            }
+          if (strncmp("gravity",option+1,2) == 0)
+            {
+              gravity=ForgetGravity;
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing type",option);
+                  option=argv[i];
+                  if (Latin1Compare("NorthWest",option) == 0)
+                    gravity=NorthWestGravity;
+                  if (Latin1Compare("North",option) == 0)
+                    gravity=NorthGravity;
+                  if (Latin1Compare("NorthEast",option) == 0)
+                    gravity=NorthEastGravity;
+                  if (Latin1Compare("West",option) == 0)
+                    gravity=WestGravity;
+                  if (Latin1Compare("Center",option) == 0)
+                    gravity=CenterGravity;
+                  if (Latin1Compare("East",option) == 0)
+                    gravity=EastGravity;
+                  if (Latin1Compare("SouthWest",option) == 0)
+                    gravity=SouthWestGravity;
+                  if (Latin1Compare("South",option) == 0)
+                    gravity=SouthGravity;
+                  if (Latin1Compare("SouthEast",option) == 0)
+                    gravity=SouthEastGravity;
+                  if (gravity == ForgetGravity)
+                    MagickError(OptionError,"Invalid gravity type",option);
                 }
               break;
             }

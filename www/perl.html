@@ -400,10 +400,11 @@ Image Manipulation Methods
 <tr>
   <td>Annotate</td>
   <td>
-    server=&gt;<i>string</i>, font=&gt;<i>string</i>, pointsize=&gt;<i>integer</i>, 
+    text=&gt;<i>string</i>, font=&gt;<i>string</i>, pointsize=&gt;<i>integer</i>, 
     density=&gt;<i>geometry</i>, box=&gt;<i>colorname</i>, 
     pen=&gt;<i>colorname</i>, geometry=&gt;<i>geometry</i>, 
-    text=&gt;{<i>string</i>, @<i>filename</i>}, align=&gt;{Left, Center, Right}, 
+    server=&gt;{<i>string</i>, @<i>filename</i>}, gravity=&gt;{NorthWest, North,
+    NorthEast, West, Center, East, SouthWest, South, SouthEast},
     x=&gt;<i>integer</i>, y=&gt;<i>integer</i>
   </td>
   <td>annotate an image with text.</td>

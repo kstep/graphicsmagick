@@ -5120,6 +5120,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
     *default_font = DefaultFont;
 
   XColor
+    box_color,
     pen_color;
 
   /*
@@ -5135,6 +5136,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
   if (local_info.font == (char *) NULL)
     local_info.font=default_font;
   text=local_info.filename;
+  (void) XQueryColorDatabase("white",&box_color);
+  if (local_info.box != (char *) NULL)
+    (void) XQueryColorDatabase(local_info.box,&box_color);
   (void) XQueryColorDatabase("black",&pen_color);
   if (local_info.pen != (char *) NULL)
     (void) XQueryColorDatabase(local_info.pen,&pen_color);
@@ -5328,9 +5332,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
         q->index=(int) (Opaque*Min(*p,4))/4;
         if (q->index == Transparent)
           {
-            q->red=image->background_color.red;
-            q->green=image->background_color.green;
-            q->blue=image->background_color.blue;
+            q->red=XDownScale(box_color.red);
+            q->green=XDownScale(box_color.green);
+            q->blue=XDownScale(box_color.blue);
           }
         q->length=0;
         x++;
@@ -5515,9 +5519,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
             q->blue=XDownScale(pen_color.blue);
             if (q->index == Transparent)
               {
-                q->red=image->background_color.red;
-                q->green=image->background_color.green;
-                q->blue=image->background_color.blue;
+                q->red=XDownScale(box_color.red);
+                q->green=XDownScale(box_color.green);
+                q->blue=XDownScale(box_color.blue);
               }
             q++;
           }
@@ -5598,9 +5602,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
     q->blue=XDownScale(pen_color.blue);
     if (q->index == Transparent)
       {
-        q->red=image->background_color.red;
-        q->green=image->background_color.green;
-        q->blue=image->background_color.blue;
+        q->red=XDownScale(box_color.red);
+        q->green=XDownScale(box_color.green);
+        q->blue=XDownScale(box_color.blue);
       }
     q++;
   }
@@ -7841,8 +7845,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
     *p;
 
   register int
-    c,
-    i;
+    c;
 
   unsigned int
     alias_bits,
@@ -10157,6 +10160,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
 #define DocumentMedia  "%%DocumentMedia:"
 #define PageBoundingBox  "%%PageBoundingBox:"
 #define PostscriptLevel  "%!PS-"
+#define ShowPage  "showpage"
 
   char
     density[MaxTextExtent],
@@ -10297,6 +10301,8 @@ static Image *ReadPSImage(const ImageInfo *image_info)
     p=command;
     if (strncmp(PostscriptLevel,command,Extent(PostscriptLevel)) == 0)
       (void) sscanf(command,"%%!PS-Adobe-%d.0 EPSF-%d.0",&level,&eps_level);
+    if (strncmp(ShowPage,command,Extent(ShowPage)) == 0)
+      eps_level=0;
     /*
       Parse a bounding box statement.
     */
@@ -13474,7 +13480,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info)
   annotate_info.image_info=(ImageInfo *) image_info;
   annotate_info.text=text;
   annotate_info.geometry=geometry;
-  annotate_info.height=image_info->pointsize;
+  annotate_info.bounds.height=image_info->pointsize;
   (void) strcpy(filename,image_info->filename);
   /*
     Annotate the text image.
@@ -13494,12 +13500,12 @@ static Image *ReadTEXTImage(const ImageInfo *image_info)
     FormatString(annotate_info.geometry,"%+d%+d",bounding_box.x,
       bounding_box.y+offset);
     AnnotateImage(image,&annotate_info);
-    offset+=annotate_info.height;
+    offset+=annotate_info.bounds.height;
     (void) SetMonitorHandler(handler);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(bounding_box.y+offset,image->rows))
         ProgressMonitor(LoadImageText,bounding_box.y+offset,image->rows);
-    if (((bounding_box.y << 1)+offset+annotate_info.height) < image->rows)
+    if (((bounding_box.y << 1)+offset+annotate_info.bounds.height) < image->rows)
       continue;
     /*
       Page is full-- allocate next image structure.

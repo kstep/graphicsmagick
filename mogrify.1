@@ -25,11 +25,6 @@ pixels in height, use:
 .fi
 .SH OPTIONS
 .TP
-.B "-align \fItype\fP"
-the type of text alignment: \fBLeft\fP, \fBCenter\fP, or \fBRight\fP.
-The default is \fBCenter\fP.  See \fB-draw\fP or
-for further details.
-.TP
 .B "-blur \fIfactor\fP"
 blurs an image.  Specify \fIfactor\fP as the percent enhancement
 (0.0 - 99.9%).
@@ -420,6 +415,16 @@ the image \fIonly\fP if its dimensions is less than the geometry
 specification.  For example, if you specify \fB640x480>\fP and the
 image size is 512x512, the image size does not change.  However, if
 the image is 1024x1024, it is resized to 640x480.
+.TP
+.B "-gravity \fItype\fP"
+direction text gravitates to when annotating the image: NorthWest, North,
+NorthEast, West, Center, East, SouthWest, South, SouthEast.
+See \fBX(1)\fP for details about the gravity specification.
+
+The direction you choose specifies where to
+position the text when annotating the image.  For example \fICenter\fP gravity
+forces the text to be centered within the image.
+By default, the text gravity is \fINorthWest\fP.
 .TP
 .B "-implode \fIfactor\fP"
 implode image pixels about the center. Specify \fIfactor\fP as the percent

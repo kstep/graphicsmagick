@@ -55,7 +55,6 @@
 %
 %  Where options include:
 %    -adjoin              join images into a single multi-image file
-%    -align type          Left, Center, Right
 %    -append              append an image sequence
 %    -average             average an image sequence
 %    -blur factor         apply a filter to blur the image
@@ -89,6 +88,7 @@
 %    -frame geometry      surround image with an ornamental border
 %    -gamma value         level of gamma correction
 %    -geometry geometry   perferred size or location of the image
+%    -gravity type        vertical and horizontal text placement
 %    -implode amount      implode image pixels about the center
 %    -interlace type      None, Line, Plane, or Partition
 %    -label name          assign a label to an image
@@ -415,7 +415,6 @@ static void Usage(const char *client_name)
     *options[]=
     {
       "-adjoin              join images into a single multi-image file",
-      "-align type          Left, Center, Right",
       "-append              append an image sequence",
       "-average             average an image sequence",
       "-blur factor         apply a filter to blur the image",
@@ -449,6 +448,7 @@ static void Usage(const char *client_name)
       "-frame geometry      surround image with an ornamental border",
       "-gamma value         level of gamma correction",
       "-geometry geometry   perferred size or location of the image",
+      "-gravity type        vertical and horizontal text placement",
       "-implode amount      implode image pixels about the center",
       "-interlace type      None, Line, Plane, or Partition",
       "-label name          assign a label to an image",
@@ -551,6 +551,7 @@ int main(int argc,char **argv)
 
   int
     append,
+    gravity,
     x;
 
   register int
@@ -623,25 +624,25 @@ int main(int argc,char **argv)
             }
           if (strncmp("align",option+1,2) == 0)
             {
-              int
-                alignment;
-
-              alignment=UndefinedAlignment;
+              /*
+                Alignment is deprecated, use -gravity.
+              */
+              gravity=ForgetGravity;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  alignment=UndefinedAlignment;
+                  gravity=ForgetGravity;
                   if (Latin1Compare("Left",option) == 0)
-                    alignment=LeftAlignment;
+                    gravity=WestGravity;
                   if (Latin1Compare("Center",option) == 0)
-                    alignment=CenterAlignment;
+                    gravity=CenterGravity;
                   if (Latin1Compare("Right",option) == 0)
-                    alignment=RightAlignment;
-                  if (alignment == UndefinedAlignment)
-                    MagickError(OptionError,"Invalid alignment type",option);
+                    gravity=EastGravity;
+                  if (gravity == ForgetGravity)
+                    MagickError(OptionError,"Invalid gravity type",option);
                 }
               break;
             }
@@ -1039,6 +1040,38 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
+                }
+              break;
+            }
+          if (strncmp("gravity",option+1,2) == 0)
+            {
+              gravity=ForgetGravity;
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing type",option);
+                  option=argv[i];
+                  if (Latin1Compare("NorthWest",option) == 0)
+                    gravity=NorthWestGravity;
+                  if (Latin1Compare("North",option) == 0)
+                    gravity=NorthGravity;
+                  if (Latin1Compare("NorthEast",option) == 0)
+                    gravity=NorthEastGravity;
+                  if (Latin1Compare("West",option) == 0)
+                    gravity=WestGravity;
+                  if (Latin1Compare("Center",option) == 0)
+                    gravity=CenterGravity;
+                  if (Latin1Compare("East",option) == 0)
+                    gravity=EastGravity;
+                  if (Latin1Compare("SouthWest",option) == 0)
+                    gravity=SouthWestGravity;
+                  if (Latin1Compare("South",option) == 0)
+                    gravity=SouthGravity;
+                  if (Latin1Compare("SouthEast",option) == 0)
+                    gravity=SouthEastGravity;
+                  if (gravity == ForgetGravity)
+                    MagickError(OptionError,"Invalid gravity type",option);
                 }
               break;
             }

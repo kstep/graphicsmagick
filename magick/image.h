@@ -114,14 +114,6 @@ typedef unsigned char Quantum;
 */
 typedef enum
 {
-  UndefinedAlignment,
-  LeftAlignment,
-  CenterAlignment,
-  RightAlignment
-} AlignmentType;
-
-typedef enum
-{
   UndefinedClass,
   DirectClass,
   PseudoClass
@@ -519,11 +511,11 @@ typedef struct _AnnotateInfo
   unsigned int
     linewidth;
 
-  AlignmentType
-    alignment;
+  int
+    gravity;
 
-  unsigned int
-    height;
+  RectangleInfo
+    bounds;
 } AnnotateInfo;
 
 typedef struct _ChromaticityInfo
