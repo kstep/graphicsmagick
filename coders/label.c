@@ -140,6 +140,7 @@ static char *EscapeParenthesis(const char *text)
 }
 
 #if defined(HasTTF)
+#if FREETYPE_MAJOR == 1
 static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
   Image *image)
 {
@@ -240,6 +241,7 @@ static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
       *q++|=(*p++);
   }
 }
+#endif
 #endif
 
 static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
@@ -414,10 +416,12 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   {
     glyphs[i].id=FT_Get_Char_Index(face,unicode[i]);
     if (i > 0)
-      FT_Get_Kerning(face,glyphs[i-1].id,glyphs[i].id,&kern);
-    kern.x=FT_MulFix(kern.x,face->size->metrics.x_scale);
-    kern.x=(kern.x+32) & -64;
-    origin.x+=kern.x;
+      {
+        FT_Get_Kerning(face,glyphs[i-1].id,glyphs[i].id,&kern);
+        kern.x=FT_MulFix(kern.x,face->size->metrics.x_scale);
+        kern.x=(kern.x+32) & -64;
+        origin.x+=kern.x;
+      }
     status=FT_Get_Glyph_Bitmap(face,glyphs[i].id,FT_LOAD_DEFAULT,
       image_info->antialias ? NumberGrays : 0,&origin,(FT_BitmapGlyph *)
       &glyphs[i].image);
@@ -434,7 +438,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   /*
     Render label.
   */
-  image->columns=(((origin.x+32) & -64)+3) & -4;
+  image->columns=(origin.x/64+3) & -4;
   image->rows-=descent;
   SetImage(image,Transparent);
   for (i=0; i < length; i++)
