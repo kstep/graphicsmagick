@@ -57,6 +57,15 @@ static void Usage(const char *client_name)
   Include the convert mainline as a subroutine
 */
 #define CONVERT_MAIN
+//#define IO_USING_BLOB
+#define IO_USING_STREAM
+#if defined(IO_USING_STREAM)
+int CGIFifo(const Image *image,const void *data,const size_t length)
+{
+  fwrite(data,1,length,stdout);
+  return(length);
+}
+#endif
 #include "convert.c"
 /*
   Include the combine mainline as a subroutine
@@ -215,7 +224,7 @@ char *cgi_get_input(int iMethod)
   if (!iStdinLen)
       return (NULL);
 
-  strHead = strRetBuf = (char *) AllocateMemory(sizeof (char) * iStdinLen + 1);
+  strHead = strRetBuf = (char *) AcquireMemory(sizeof (char) * iStdinLen + 1);
   if (strHead == (char *) NULL)
       return (NULL);
 
@@ -278,7 +287,7 @@ unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
       break;
     q++;
   }
-  vector=(char **) AllocateMemory((count+2)*sizeof(char *));
+  vector=(char **) AcquireMemory((count+2)*sizeof(char *));
   if (vector == (char **) NULL)
     {
       MagickError(ResourceLimitError,"Unable to convert string to argv",
@@ -288,7 +297,7 @@ unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
   /*
     Convert string to an ASCII list.
   */
-  vector[0]=AllocateString("magick");
+  vector[0]=AllocateString("cgimagick");
   vector[count+1]=(char *) NULL;
   q=text;
   i=1;
@@ -308,7 +317,7 @@ unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
     len=q-p;
     if (len > 0)
       {
-        vector[i]=(char *) AllocateMemory(q-p+1);
+        vector[i]=(char *) AcquireMemory(q-p+1);
         if (vector[i] == (char *) NULL)
           {
             MagickError(ResourceLimitError,"Unable to convert string to argv",
@@ -356,12 +365,6 @@ int main(int argc,char **argv)
   unsigned int
     status;
 
-  char
-    *blob_data;
-
-  size_t
-    blob_length;
-
   /*
     Initialize command line arguments.
   */
@@ -382,12 +385,19 @@ int main(int argc,char **argv)
 
           query=cgi_get_input(CGI_ANY);
           status=CGIToArgv(query,&argc,&argv);
-          FreeMemory((void **) &query);
+          LiberateMemory((void **) &query);
         }
       if (status == True)
         {
           for (argc_hw=1; argc_hw < argc; argc_hw++)
           {
+#if defined(IO_USING_BLOB)
+            char
+              *blob_data;
+
+            size_t
+              blob_length;
+#endif
             argv_hw = &argv[argc_hw];
             if (LocaleNCompare("-convert",argv[argc_hw],8) == 0)
               {
@@ -396,10 +406,16 @@ int main(int argc,char **argv)
                   if (LocaleNCompare("convert-",argv[i],8) == 0)
                     break;
                 }
+#if defined(IO_USING_BLOB)
                 blob_length=8192;
                 convert_main(i-argc_hw,argv_hw,&blob_data,&blob_length);
                 fwrite(prefix,1,Extent(prefix),stdout);
                 fwrite(blob_data,1,blob_length,stdout);
+#endif
+#if defined(IO_USING_STREAM)
+                fwrite(prefix,1,Extent(prefix),stdout);
+                convert_main(i-argc_hw,argv_hw,CGIFifo,(void *)NULL);
+#endif
                 argc_hw = i+1;
                 argv_hw = &argv[argc_hw];
               }
@@ -410,17 +426,23 @@ int main(int argc,char **argv)
                   if (LocaleNCompare("convert-",argv[i],8) == 0)
                     break;
                 }
+#if defined(IO_USING_BLOB)
                 blob_length=8192;
                 combine_main(i-argc_hw,argv_hw,&blob_data,&blob_length);
                 fwrite(prefix,1,Extent(prefix),stdout);
                 fwrite(blob_data,1,blob_length,stdout);
+#endif
+#if defined(IO_USING_STREAM)
+                fwrite(prefix,1,Extent(prefix),stdout);
+                combine_main(i-argc_hw,argv_hw,CGIFifo,(void *)NULL);
+#endif
                 argc_hw = i+1;
                 argv_hw = &argv[argc_hw];
               }
           }
         }
     }
-  FreeMemory((void **) &argv);
+  LiberateMemory((void **) &argv);
   Exit(0);
   return(False);
 }

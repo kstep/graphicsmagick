@@ -167,8 +167,14 @@ void ConcatenateImages(int argc,char **argv);
   Include declarations.
 */
 #if defined(CONVERT_MAIN)
+#if defined(IO_USING_BLOB)
 static int convert_main(int argc,char **argv,
   char **blob_data,size_t *blob_length)
+#endif
+#if defined(IO_USING_STREAM)
+static int convert_main(int argc,char **argv,
+  int (*Fifo)(const Image *,const void *,const size_t), void *context)
+#endif
 #else
 #include "magick/magick.h"
 #include "magick/defines.h"
@@ -372,6 +378,7 @@ int main(int argc,char **argv)
     average,
     coalesce,
     deconstruct,
+    mode,
     morph,
     mosaic,
     global_colormap,
@@ -381,10 +388,14 @@ int main(int argc,char **argv)
   /*
     Initialize command line arguments.
   */
-#if !defined(CONVERT_MAIN)
-  ReadCommandlLine(argc,&argv);
-  MagickIncarnate(*argv);
-#endif
+  if (LocaleCompare("-convert",argv[0]) == 0)
+    mode=1; /* set mode to - called as a subroutine */
+  else
+    {
+      mode=0; /* set mode to - called as normal executable */
+      ReadCommandlLine(argc,&argv);
+      MagickIncarnate(*argv);
+    }
   client_name=SetClientName((char *) NULL);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
@@ -1818,20 +1829,31 @@ int main(int argc,char **argv)
   SetImageInfo(image_info,True);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
-#if defined(CONVERT_MAIN)
-    ExceptionInfo exception;
+    if (!mode)
+      {
+        status=WriteImage(image_info,p);
+        if (status == False)
+          CatchImageException(p);
+      }
+    else
+      {
+#if defined(IO_USING_BLOB)
+        ExceptionInfo exception;
 
-    (void) strcpy(p->magick,image_info->magick);
-    if (*blob_length == 0)
-      *blob_length = 8192;
-    *blob_data = ImageToBlob(image_info,p,blob_length,&exception);
-    if (*blob_data == NULL)
-      CatchImageException(p);
-#else
-    status=WriteImage(image_info,p);
-    if (status == False)
-      CatchImageException(p);
+        (void) strcpy(p->magick,image_info->magick);
+        if (*blob_length == 0)
+          *blob_length = 8192;
+        *blob_data = ImageToBlob(image_info,p,blob_length,&exception);
+        if (*blob_data == NULL)
+          CatchImageException(p);
 #endif
+#if defined(IO_USING_STREAM)
+        p->client_data=context;
+        status=WriteStream(image_info,p,Fifo);
+        if (status == False)
+          CatchImageException(p);
+#endif
+      }
     if (image_info->adjoin)
       break;
   }
@@ -1839,13 +1861,14 @@ int main(int argc,char **argv)
     DescribeImage(image,stderr,False);
   DestroyImages(image);
   DestroyImageInfo(image_info);
-#if !defined(CONVERT_MAIN)
-  LiberateMemory((void **) &argv);
-  Exit(0);
-  return(False);
-#else
-  return(True);
-#endif
+  if (!mode)
+    {
+      LiberateMemory((void **) &argv);
+      Exit(0);
+      return(False);
+    }
+  else
+    return(True);
 }
 
 /*

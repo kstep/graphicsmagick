@@ -89,8 +89,14 @@
   Include declarations.
 */
 #if defined(COMBINE_MAIN)
+#if defined(IO_USING_BLOB)
 static int combine_main(int argc,char **argv,
   char **blob_data,size_t *blob_length)
+#endif
+#if defined(IO_USING_STREAM)
+static int combine_main(int argc,char **argv,
+  int (*Fifo)(const Image *,const void *,const size_t), void *context)
+#endif
 #else
 #include "magick/magick.h"
 #include "magick/defines.h"
@@ -222,6 +228,7 @@ int main(int argc,char **argv)
     i;
 
   unsigned int
+    mode,
     status,
     stegano,
     stereo,
@@ -230,10 +237,14 @@ int main(int argc,char **argv)
   /*
     Initialize command line arguments.
   */
-#if !defined(COMBINE_MAIN)
-  ReadCommandlLine(argc,&argv);
-  MagickIncarnate(*argv);
-#endif
+  mode=0; /* set mode to - called as normal executable */
+  if (LocaleCompare("-combine",argv[0]) == 0)
+    mode=1; /* set mode to - called as a subroutine */
+  else
+    {
+      ReadCommandlLine(argc,&argv);
+      MagickIncarnate(*argv);
+    }
   client_name=SetClientName((char *) NULL);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
@@ -993,31 +1004,41 @@ int main(int argc,char **argv)
   */
   (void) strcpy(combined_image->filename,write_filename);
   SetImageInfo(image_info,True);
-#if defined(COMBINE_MAIN)
-  {
-    ExceptionInfo exception;
+  if (!mode)
+    {
+      status=WriteImage(image_info,combined_image);
+      if (status == False)
+        CatchImageException(combined_image);
+    }
+  else
+    {
+#if defined(IO_USING_BLOB)
+      ExceptionInfo exception;
 
-    (void) strcpy(combined_image->magick,image_info->magick);
-    if (*blob_length == 0)
-      *blob_length = 8192;
-    *blob_data = ImageToBlob(image_info,combined_image,blob_length,&exception);
-    if (*blob_data == NULL)
-      CatchImageException(combined_image);
-  }
-#else
-  status=WriteImage(image_info,combined_image);
-  if (status == False)
-    CatchImageException(combined_image);
+      (void) strcpy(combined_image->magick,image_info->magick);
+      if (*blob_length == 0)
+        *blob_length = 8192;
+      *blob_data = ImageToBlob(image_info,combined_image,blob_length,&exception);
+      if (*blob_data == NULL)
+        CatchImageException(combined_image);
 #endif
+#if defined(IO_USING_STREAM)
+      combined_image->client_data=context;
+      status=WriteStream(image_info,combined_image,Fifo);
+      if (status == False)
+        CatchImageException(combined_image);
+#endif
+    }
   if (image_info->verbose)
     DescribeImage(combined_image,stderr,False);
   DestroyImages(combined_image);
   DestroyImageInfo(image_info);
-#if !defined(COMBINE_MAIN)
-  LiberateMemory((void **) &argv);
-  Exit(0);
-  return(False);
-#else
-  return(True);
-#endif
+  if (!mode)
+    {
+      LiberateMemory((void **) &argv);
+      Exit(0);
+      return(False);
+    }
+  else
+    return(True);
 }
