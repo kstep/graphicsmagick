@@ -556,7 +556,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   */
   if (window_info.id == root_window)
     XDestroyWindowColors(display,root_window);
-  coalesce_image=image;
+  coalesce_image=(Image *) NULL;
   if (image->next != (Image *)NULL)
     {
       Image
@@ -845,7 +845,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     }
   } while (event.type != DestroyNotify);
   XSync(display,False);
-  if (!resource_info->immutable)
+  if (coalesce_image != (Image *) NULL)
     DestroyImages(image);
 }
 
@@ -1147,7 +1147,7 @@ MagickExport Image *XAnimateImages(Display *display,
   class_hints=windows->class_hints;
   manager_hints=windows->manager_hints;
   root_window=XRootWindow(display,visual_info->screen);
-  coalesce_image=image;
+  coalesce_image=(Image *) NULL;
   if (image->next != (Image *)NULL)
     {
       Image
@@ -2470,7 +2470,7 @@ MagickExport Image *XAnimateImages(Display *display,
       (void) XSetWindows((XWindows *) NULL);
     }
   XSync(display,False);
-  if (!resource_info->immutable)
+  if (coalesce_image != (Image *) NULL)
     DestroyImages(image);
   /*
     Restore our progress monitor and warning handlers.
