@@ -39,9 +39,9 @@ typedef enum
   UndefinedStream,
   FileStream,
   StandardStream,
+  PipeStream,
   ZipStream,
   BZipStream,
-  PipeStream,
   FifoStream,
   BlobStream
 } StreamType;

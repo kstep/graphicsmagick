@@ -417,6 +417,13 @@ MagickExport void CloseBlob(Image *image)
       status=fclose(image->blob->file);
       break;
     }
+    case PipeStream:
+    {
+#if !defined(vms) && !defined(macintosh)
+      status=pclose(image->blob->file);
+#endif
+      break;
+    }
     case ZipStream:
     {
 #if defined(HasZLIB)
@@ -428,13 +435,6 @@ MagickExport void CloseBlob(Image *image)
     {
 #if defined(HasBZLIB)
       BZ2_bzclose(image->blob->file);
-#endif
-      break;
-    }
-    case PipeStream:
-    {
-#if !defined(vms) && !defined(macintosh)
-      status=pclose(image->blob->file);
 #endif
       break;
     }
@@ -571,14 +571,14 @@ MagickExport int EOFBlob(const Image *image)
     case FileStream:
     case StandardStream:
     case PipeStream:
-      return(feof(image->blob->file));
+    {
+      image->blob->eof=feof(image->blob->file);
+      break;
+    }
     case ZipStream:
     {
-#if defined(HasZLIB)
-      return(gzeof(image->blob->file));
-#else
-      return(0);
-#endif
+      image->blob->eof=False;
+      break;
     }
     case BZipStream:
     {
@@ -587,17 +587,18 @@ MagickExport int EOFBlob(const Image *image)
         status;
 
       (void) BZ2_bzerror(image->blob->file,&status);
-      return(status == BZ_UNEXPECTED_EOF);
-#else
-      return(0);
+      image->blob->eof=status == BZ_UNEXPECTED_EOF;
 #endif
     }
     case FifoStream:
-      return(0);
+    {
+      image->blob->eof=False;
+      break;
+    }
     case BlobStream:
-      return(image->blob->eof);
+      break;
   }
-  return(0);
+  return(image->blob->eof);
 }
 
 /*
@@ -792,6 +793,7 @@ MagickExport ExtendedSignedIntegralType GetBlobSize(const Image *image)
       break;
     }
     case StandardStream:
+    case PipeStream:
       break;
     case ZipStream:
     {
@@ -807,7 +809,6 @@ MagickExport ExtendedSignedIntegralType GetBlobSize(const Image *image)
 #endif
       break;
     }
-    case PipeStream:
     case FifoStream:
       break;
     case BlobStream:
@@ -1855,52 +1856,54 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
 */
 MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
 {
+  size_t
+    count;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->type != UndefinedStream);
   assert(data != (void *) NULL);
+  count=(-1);
   switch (image->blob->type)
   {
     case UndefinedStream:
-      return(0);
+      break;
     case FileStream:
     case StandardStream:
     case PipeStream:
-      return(fread(data,1,length,image->blob->file));
+    {
+      count=fread(data,1,length,image->blob->file);
+      break;
+    }
     case ZipStream:
     {
 #if defined(HasZLIB)
-      return(gzread(image->blob->file,data,length));
-#else
-      return(0);
+      count=gzread(image->blob->file,data,length);
 #endif
+      break;
     }
     case BZipStream:
     {
 #if defined(HasBZLIB)
-      return(BZ2_bzread(image->blob->file,data,length));
-#else
-      return(0);
+      count=BZ2_bzread(image->blob->file,data,length);
 #endif
+      break;
     }
     case FifoStream:
-      return(0);
+      break;
     case BlobStream:
     {
-      size_t
-        count;
-
       count=Min(length,image->blob->length-image->blob->offset);
       if (count != 0)
         (void) memcpy(data,image->blob->data+image->blob->offset,count);
       image->blob->offset+=count;
       if (count < length)
         image->blob->eof=True;
-      return(count);
+      break;
     }
   }
-  return(0);
+  return(count);
 }
 
 /*
@@ -2262,17 +2265,18 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
   switch (image->blob->type)
   {
     case UndefinedStream:
-      return(-1);
+      break;
     case FileStream:
     {
       if (fseek(image->blob->file,(off_t) offset,whence) < 0)
         return(-1);
-      return(TellBlob(image));
+      image->blob->offset=TellBlob(image);
+      break;
     }
     case StandardStream:
+    case PipeStream:
     case ZipStream:
     case BZipStream:
-    case PipeStream:
     case FifoStream:
       return(-1);
     case BlobStream:
@@ -2320,10 +2324,10 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
                 return(-1);
               }
           }
-      return(TellBlob(image));
+      break;
     }
   }
-  return(-1);
+  return(image->blob->offset);
 }
 
 /*
@@ -2355,6 +2359,9 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
 */
 MagickExport int SyncBlob(Image *image)
 {
+  int
+    status;
+
   register Image
     *p;
 
@@ -2365,35 +2372,37 @@ MagickExport int SyncBlob(Image *image)
   for (p=image; p->previous != (Image *) NULL; p=p->previous);
   for ( ; p->next != (Image *) NULL; p=p->next)
     *p->blob=(*image->blob);
+  status=0;
   switch (image->blob->type)
   {
     case UndefinedStream:
-      return(0);
+      break;
     case FileStream:
     case StandardStream:
     case PipeStream:
-      return(fflush(image->blob->file));
+    {
+      status=fflush(image->blob->file);
+      break;
+    }
     case ZipStream:
     {
 #if defined(HasZLIB)
-      return(gzflush(image->blob->file,Z_SYNC_FLUSH));
-#else
-      return(0);
+      status=gzflush(image->blob->file,Z_SYNC_FLUSH);
 #endif
+      break;
     }
     case BZipStream:
     {
 #if defined(HasBZLIB)
-      return(BZ2_bzflush(image->blob->file));
-#else
-      return(0);
+      status=BZ2_bzflush(image->blob->file);
 #endif
+      break;
     }
     case FifoStream:
     case BlobStream:
-      return(0);
+      break;
   }
-  return(0);
+  return(status);
 }
 
 /*
@@ -2425,25 +2434,36 @@ MagickExport int SyncBlob(Image *image)
 */
 MagickExport ExtendedSignedIntegralType TellBlob(const Image *image)
 {
+  ExtendedSignedIntegralType
+    offset;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->type != UndefinedStream);
+  offset=(-1);
   switch (image->blob->type)
   {
     case UndefinedStream:
+      break;
     case FileStream:
-      return(ftell(image->blob->file));
+    {
+      offset=ftell(image->blob->file);
+      break;
+    }
     case StandardStream:
+    case PipeStream:
     case ZipStream:
     case BZipStream:
-    case PipeStream:
     case FifoStream:
-      return(-1);
+      break;
     case BlobStream:
-      return(image->blob->offset);
+    {
+      offset=image->blob->offset;
+      break;
+    }
   }
-  return(-1);
+  return(offset);
 }
 
 /*
@@ -2523,37 +2543,45 @@ MagickExport unsigned int UnmapBlob(void *map,const size_t length)
 */
 MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 {
+  size_t
+    count;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(data != (const char *) NULL);
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->type != UndefinedStream);
+  count=0;
   switch (image->blob->type)
   {
     case UndefinedStream:
-      return(0);
+      break;
     case FileStream:
     case StandardStream:
     case PipeStream:
-      return(fwrite((char *) data,1,length,image->blob->file));
-    case BZipStream:
     {
-#if defined(HasBZLIB)
-      return(BZ2_bzwrite(image->blob->file,(void *) data,length));
-#else
-      return(0);
-#endif
+      count=fwrite((char *) data,1,length,image->blob->file);
+      break;
     }
     case ZipStream:
     {
 #if defined(HasZLIB)
-      return(gzwrite(image->blob->file,(void *) data,length));
-#else
-      return(0);
+      count=gzwrite(image->blob->file,(void *) data,length);
 #endif
+      break;
+    }
+    case BZipStream:
+    {
+#if defined(HasBZLIB)
+      count=BZ2_bzwrite(image->blob->file,(void *) data,length);
+#endif
+      break;
     }
     case FifoStream:
-      return(image->blob->stream(image,data,length));
+    {
+      count=image->blob->stream(image,data,length);
+      break;
+    }
     case BlobStream:
     {
       if ((image->blob->offset+length) >= image->blob->extent)
@@ -2575,10 +2603,10 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
       if (image->blob->offset > (ExtendedSignedIntegralType)
           image->blob->length)
         image->blob->length=image->blob->offset;
-      return(length);
+      count=length;
     }
   }
-  return(0);
+  return(count);
 }
 
 /*
