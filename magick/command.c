@@ -166,7 +166,7 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
             for (x=0; x < (long) composite_image->columns; x++)
             {
               q->opacity=(Quantum)
-                (((MaxRGB-q->opacity)*option_info->dissolve)/100);
+                (((MaxRGB-q->opacity)*option_info->dissolve)/100.0);
               q++;
             }
             if (!SyncImagePixels(composite_image))
