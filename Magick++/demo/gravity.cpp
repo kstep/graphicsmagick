@@ -44,6 +44,7 @@ int main( int /*argc*/, char ** argv)
 
     Image base( Geometry(600,600), Color("white") );
     base.strokeColor("#600");
+    base.fillColor(Color());
     base.draw( DrawableLine( 300,100, 300,500 ) );
     base.draw( DrawableLine( 100,300, 500,300 ) );
     base.draw( DrawableRectangle( 100,100, 500,500 ) );
