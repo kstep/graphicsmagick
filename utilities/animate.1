@@ -52,14 +52,6 @@ use:
 
     animate +borderwidth -backdrop cockatoo.*
 .SH OPTIONS
-
-Options are processed in command line order. Any option you specify on
-the command line remains in effect until it is explicitly changed by specifying
-the option again with a different effect.
-
-\fBAnimate\fP options can appear on the command line or in your X resources
-file. See \fIX(1)\fP. Options on the command line supersede values specified
-in your X resources file.
 .TP
 .B "-backdrop \fI<color>"\fP
 \fRdisplay the image centered on a backdrop.
@@ -626,13 +618,19 @@ unique colors than the target window colormap allows.  Use
 \fB-colors\fP to reduce the number of colors.
 
 
-Any option you specify on the command line remains in effect until it is
-explicitly changed by specifying the option again with a different effect.
-For example, to animate two images, the first with 32 colors and the second
-with only 16 colors, use:
+Any option you specify on the command line remains in effect for the group
+of images following it, until the group is terminated by the appearance of
+any option or \fB-noop\fP.  For example, to animate three images, the first
+with 32 colors, the second with an unlimited number of colors, and the
+third with only 16 colors, use:
 
 
-     animate -colors 32 cockatoo.1 -colors 16 cockatoo.2
+     animate -colors 32 cockatoo.1 -noop cockatoo.2 \\
+             -colors 16 cockatoo.3
+
+\fBAnimate\fP options can appear on the command line or in your X resources
+file. See \fIX(1)\fP. Options on the command line supersede values specified
+in your X resources file.
 .SH FILES AND FORMATS
 
 By default, the image format is determined by its magic number, i.e., the

@@ -37,8 +37,9 @@ comment:
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
-the command line remains in effect until it is explicitly changed by specifying
-the option again with a different effect.
+the command line remains in effect for the set of images immediately
+following, until the set is terminated by the appearance of any option
+or \fB-noop\fP.
 .TP
 .B "-cache \fI<threshold>"\fP
 \fRmegabytes of memory available to the pixel cache

@@ -95,13 +95,15 @@ no label, no shadowing, no surrounding tile frame), use:
             *.png joined.png
 .SH OPTIONS
 
-Options are processed in command line order. Any option you specify on
-the command line remains in effect until it is explicitly changed by specifying
-the option again with a different effect. For example, to montage two images,
-the first with 32 colors and the second with only 16 colors, use:
+Any option you specify on the command line remains in effect for the group
+of images following it, until the group is terminated by the appearance of
+any option or \fB-noop\fP.  For example, to make a montage of three images,
+the first with 32 colors, the second with an unlimited number of colors, and
+the third with only 16 colors, use:
 
-     montage -colors 32 cockatoo.1 -colors 16 cockatoo.2 \\
-             cockatoo.miff
+
+     montage -colors 32 cockatoo.1 -noop cockatoo.2 \\
+             -colors 16 cockatoo.3 cockatoos.miff
 .TP
 .B "-adjoin"
 \fRjoin images into a single multi-image file
@@ -995,10 +997,10 @@ relative to the lower left hand corner of the page by
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
 The default gravity for the \fB-page\fP
-option is \fISouthWest\fP, i.e., positive \fBx\fP and
-\fBy\fP \fIoffset\fP are measured rightward and upward from the bottom
+option is \fINorthWest\fP, i.e., positive \fBx\fP and
+\fBy\fP \fIoffset\fP are measured rightward and downward from the top
 left corner of the page, unless the \fB-gravity\fP option is present with
-a value other than \fISouthWest\fP.
+a value other than \fINorthWest\fP.
 
 
 The default page dimensions for a TEXT image is 612x792.

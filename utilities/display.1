@@ -124,10 +124,12 @@ To display histogram of an image, use:
 
 Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
-the option again with a different effect. For example to display two images,
-the first with 32 colors, and the second with only 16 colors, use:
+the option again with a different effect. For example to display three images,
+the first with 32 colors, the second with an unlimited number of colors,
+and the third with only 16 colors, use:
 
-      display -colors 32 cockatoo.miff -colors 16 macaw.miff
+      display -colors 32 cockatoo.miff -noop duck.miff \\
+              -colors 16 macaw.miff
 
 \fBDisplay\fP options can appear on the command line or in your X resources
 file. See \fIX(1)\fP. Options on the command line supersede values specified
@@ -735,10 +737,10 @@ relative to the lower left hand corner of the page by
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
 The default gravity for the \fB-page\fP
-option is \fISouthWest\fP, i.e., positive \fBx\fP and
-\fBy\fP \fIoffset\fP are measured rightward and upward from the bottom
+option is \fINorthWest\fP, i.e., positive \fBx\fP and
+\fBy\fP \fIoffset\fP are measured rightward and downward from the top
 left corner of the page, unless the \fB-gravity\fP option is present with
-a value other than \fISouthWest\fP.
+a value other than \fINorthWest\fP.
 
 
 The default page dimensions for a TEXT image is 612x792.

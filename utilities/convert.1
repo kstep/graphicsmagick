@@ -268,8 +268,10 @@ To create a MNG animation from a DNA molecule sequence, use:
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
-the command line remains in effect until it is explicitly changed by specifying
-the option again with a different effect.
+the command line remains in effect for the set of images that follows,
+until the set is terminated by the appearance of any option or \fB-noop\fP.
+Some options only affect the decoding of images and others only the encoding.
+The latter can appear after the final group of input images.
 .TP
 .B "-adjoin"
 \fRjoin images into a single multi-image file
@@ -292,11 +294,18 @@ behavior.
 This option creates a single image where the images in the original set
 are stacked top-to-bottom.  If they are not of the same width,
 any narrow images will be expanded to fit using the background color.
-Use \fB+append\fP to stack images left-to-right.
+Use \fB+append\fP to stack images left-to-right.  The set of images
+is terminated by the appearance of any option.
+If the \fB-append\fP
+option appears after all of the input images, all images are appended.
 
 .TP
 .B "-average"
 \fRaverage a set of images
+The set of images
+is terminated by the appearance of any option.
+If the \fB-average\fP
+option appears after all of the input images, all images are averaged.
 .TP
 .B "-background \fI<color>"\fP
 \fRthe background color
@@ -397,6 +406,10 @@ is not present, the option is ignored.
 .TP
 .B "-coalesce"
 \fRmerge a sequence of images
+The set of images
+is terminated by the appearance of any option.
+If the \fB-coalesce\fP
+option appears after all of the input images, all images are coalesced.
 .TP
 .B "-colorize \fI<value>"\fP
 \fRcolorize the image with the pen color
@@ -800,6 +813,10 @@ shifted.
 .TP
 .B "-deconstruct"
 \fRbreak down an image sequence into constituent parts
+The sequence of images
+is terminated by the appearance of any option.
+If the \fB-deconstruct\fP
+option appears after all of the input images, all images are deconstructed.
 .TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
@@ -1051,6 +1068,10 @@ The default filter is \fBLanczos\fP
 .TP
 .B "-flatten"
 \fRflatten a sequence of images
+The sequence of images
+is terminated by the appearance of any option.
+If the \fB-flatten\fP
+option appears after all of the input images, all images are flattened.
 .TP
 .B "-flip"
 \fRcreate a "mirror image"
@@ -1293,11 +1314,14 @@ times.
 
 By default, color reduction chooses an optimal set of colors that best
 represent the original image. Alternatively, you can choose a particular
-set of colors from an image file with this option. Use
+set of colors from an image file with this option.
+Use
 \fB+map\fP to reduce
-all images provided on the command line to a single optimal set of colors
-that best represent all the images.
-
+all images in the image sequence that follows to a single optimal set of colors
+that best represent all the images.  The sequence of images
+is terminated by the appearance of any option.
+If the \fB+map\fP
+option appears after all of the input images, all images are mapped.
 .TP
 .B "-mask \fI<filename>"\fP
 \fRSpecify a clipping mask
@@ -1347,9 +1371,20 @@ use: \fB-modulate 120,90\fP.
 Both the image pixels and size are linearly interpolated to give the appearance
 of a meta-morphosis from one image to the next.
 
+The sequence of images
+is terminated by the appearance of any option.
+If the \fB-morph\fP
+option appears after all of the input images, all images are morphed.
 .TP
 .B "-mosaic"
 \fRcreate a mosaic from an image sequence
+
+The \fB-page\fP option is used to locate the images within the mosaic.
+The sequence of images
+is terminated by the appearance of any option.
+If the \fB-mosaic\fP
+option appears after all of the input images, all images are included
+in the mosaic.
 .TP
 .B "-negate"
 \fRreplace every pixel with its complementary color
@@ -1387,7 +1422,10 @@ from these noise types:
      Poisson
 .TP
 .B "-noop"
-\fRNOOP (does nothing)
+\fRNOOP (no option)
+The \fB-noop\fP option can be used to terminate a group of images
+and reset all options to their default values, when no other option is
+desired.
 .TP
 .B "-normalize"
 \fRtransform image to span the full range of color values
@@ -1469,10 +1507,10 @@ relative to the lower left hand corner of the page by
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
 The default gravity for the \fB-page\fP
-option is \fISouthWest\fP, i.e., positive \fBx\fP and
-\fBy\fP \fIoffset\fP are measured rightward and upward from the bottom
+option is \fINorthWest\fP, i.e., positive \fBx\fP and
+\fBy\fP \fIoffset\fP are measured rightward and downward from the top
 left corner of the page, unless the \fB-gravity\fP option is present with
-a value other than \fISouthWest\fP.
+a value other than \fINorthWest\fP.
 
 
 The default page dimensions for a TEXT image is 612x792.
@@ -1541,8 +1579,12 @@ convert
 The default preview is \fBJPEG\fP.
 
 .TP
-.B "-process"
-\fRprocess an image
+.B "-process \fI<command>"\fP
+\fRprocess a sequence of images
+The sequence of images
+is terminated by the appearance of any option.
+If the \fB-process\fP
+option appears after all of the input images, all images are processed.
 .TP
 .B "-profile \fI<filename>"\fP
 \fRadd ICM, IPTC, or generic profile  to image
@@ -1886,13 +1928,6 @@ Use the given radius and standard deviation (sigma).
 Specify \fIamplitude\fP and \fIwavelength\fP to effect the characteristics
 of the wave.
 
-.SH PROCESSING ORDER
-
-Options are processed in command line order.  Any option you
-specify on the command line remains in effect until it is
-explicitly changed by specifying the option again with a
-different effect.  Some options only affect the decoding of
-images and others only the encoding.
 .SH FILES AND FORMATS
 
 By default, the image format is determined by its magic number, i.e., the

@@ -42,8 +42,8 @@ try
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
-the command line remains in effect until it is explicitly changed by specifying
-the option again with a different effect.
+the command line remains in effect only for the image that follows.  All
+options are reset to their default values after each image is read.
 .TP
 .B "-background \fI<color>"\fP
 \fRthe background color
@@ -715,10 +715,10 @@ relative to the lower left hand corner of the page by
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
 The default gravity for the \fB-page\fP
-option is \fISouthWest\fP, i.e., positive \fBx\fP and
-\fBy\fP \fIoffset\fP are measured rightward and upward from the bottom
+option is \fINorthWest\fP, i.e., positive \fBx\fP and
+\fBy\fP \fIoffset\fP are measured rightward and downward from the top
 left corner of the page, unless the \fB-gravity\fP option is present with
-a value other than \fISouthWest\fP.
+a value other than \fINorthWest\fP.
 
 
 The default page dimensions for a TEXT image is 612x792.

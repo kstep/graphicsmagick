@@ -63,9 +63,6 @@ color="#FFFFFF"><font size="+1">
 <a href="#opti">Options</a>
 </dt>
 <dt>
-<a href="#order">Processing order</a>
-</dt>
-<dt>
 <a href="#files">Files and Formats</a>
 </dt>
 <dt>
@@ -397,8 +394,10 @@ color="#FFFFFF"><font size="+1">
 <tr><td width="3%"><br></td><td>
 <p>
 Options are processed in command line order. Any option you specify on
-the command line remains in effect until it is explicitly changed by specifying
-the option again with a different effect.
+the command line remains in effect for the set of images that follows,
+until the set is terminated by the appearance of any option or <strong>-noop</strong>.
+Some options only affect the decoding of images and others only the encoding.
+The latter can appear after the final group of input images.
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -453,7 +452,10 @@ width=15><b><font face="Helvetica, Arial"
 This option creates a single image where the images in the original set
 are stacked top-to-bottom.  If they are not of the same width,
 any narrow images will be expanded to fit using the background color.
-Use <strong>+append</strong> to stack images left-to-right.
+Use <strong>+append</strong> to stack images left-to-right.  The set of images
+is terminated by the appearance of any option.
+If the <strong>-append</strong>
+option appears after all of the input images, all images are appended.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -466,6 +468,10 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-average">-average</a>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>average a set of images</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">The set of images
+is terminated by the appearance of any option.
+If the <strong>-average</strong>
+option appears after all of the input images, all images are averaged.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -655,6 +661,10 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-coalesce">-coalesce</a>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>merge a sequence of images</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">The set of images
+is terminated by the appearance of any option.
+If the <strong>-coalesce</strong>
+option appears after all of the input images, all images are coalesced.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1071,6 +1081,10 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-deconstruct">-deconstruct</a>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>break down an image sequence into constituent parts</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">The sequence of images
+is terminated by the appearance of any option.
+If the <strong>-deconstruct</strong>
+option appears after all of the input images, all images are deconstructed.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1449,6 +1463,10 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-flatten">-flatten</a>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>flatten a sequence of images</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">The sequence of images
+is terminated by the appearance of any option.
+If the <strong>-flatten</strong>
+option appears after all of the input images, all images are flattened.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1836,11 +1854,14 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 By default, color reduction chooses an optimal set of colors that best
 represent the original image. Alternatively, you can choose a particular
-set of colors from an image file with this option. Use
+set of colors from an image file with this option.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">Use
 <strong>+map</strong> to reduce
-all images provided on the command line to a single optimal set of colors
-that best represent all the images.
-</font></td></tr></table>
+all images in the image sequence that follows to a single optimal set of colors
+that best represent all the images.  The sequence of images
+is terminated by the appearance of any option.
+If the <strong>+map</strong>
+option appears after all of the input images, all images are mapped.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1938,6 +1959,10 @@ width=15><b><font face="Helvetica, Arial"
 Both the image pixels and size are linearly interpolated to give the appearance
 of a meta-morphosis from one image to the next.
 </font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">The sequence of images
+is terminated by the appearance of any option.
+If the <strong>-morph</strong>
+option appears after all of the input images, all images are morphed.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1949,6 +1974,13 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-mosaic">-mosaic</a>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>create a mosaic from an image sequence</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The <strong>-page</strong> option is used to locate the images within the mosaic.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">The sequence of images
+is terminated by the appearance of any option.
+If the <strong>-mosaic</strong>
+option appears after all of the input images, all images are included
+in the mosaic.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2011,7 +2043,10 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="-noop">-noop</a>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>NOOP (does nothing)</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>NOOP (no option)</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">The <strong>-noop</strong> option can be used to terminate a group of images
+and reset all options to their default values, when no other option is
+desired.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2118,10 +2153,10 @@ relative to the lower left hand corner of the page by
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
 The default gravity for the <strong>-page</strong>
-option is <em>SouthWest</em>, i.e., positive <strong>x</strong> and
-<strong>y</strong> <em>offset</em> are measured rightward and upward from the bottom
+option is <em>NorthWest</em>, i.e., positive <strong>x</strong> and
+<strong>y</strong> <em>offset</em> are measured rightward and downward from the top
 left corner of the page, unless the <strong>-gravity</strong> option is present with
-a value other than <em>SouthWest</em>.
+a value other than <em>NorthWest</em>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The default page dimensions for a TEXT image is 612x792.
@@ -2238,9 +2273,13 @@ The default preview is <strong>JPEG</strong>.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-process">-process</a>
+    <a name="-process">-process</a> <i>&lt;command&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>process an image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>process a sequence of images</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">The sequence of images
+is terminated by the appearance of any option.</font></td></tr></table>
+If the <strong>-process</strong>
+option appears after all of the input images, all images are processed.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2874,26 +2913,6 @@ width=15><b><font face="Helvetica, Arial"
 Specify <em>amplitude</em> and <em>wavelength</em> to effect the characteristics
 of the wave.
 </font></td></tr></table>
-</td></tr></table>
-     <p>
-<i><a href="#top">Back to Contents</a></i> 
-&nbsp;</p>
-<table BORDER=0 WIDTH="100%"> 
-<tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
-SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
-height=14 width=15><b><font face="Helvetica, Arial"><font 
-color="#FFFFFF"><font size="+1">
-<a NAME="order">Processing order</a>
-</font></font></font></b></td></tr></table>
-<table width="94%" border="0" cellspacing="0" cellpadding="8">
-<tr><td width="3%"><br></td><td>
-<p>
-Options are processed in command line order.  Any option you
-specify on the command line remains in effect until it is
-explicitly changed by specifying the option again with a
-different effect.  Some options only affect the decoding of
-images and others only the encoding.
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 

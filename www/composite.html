@@ -154,8 +154,8 @@ color="#FFFFFF"><font size="+1">
 <tr><td width="3%"><br></td><td>
 <p>
 Options are processed in command line order. Any option you specify on
-the command line remains in effect until it is explicitly changed by specifying
-the option again with a different effect.
+the command line remains in effect only for the image that follows.  All
+options are reset to their default values after each image is read.
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -964,10 +964,10 @@ relative to the lower left hand corner of the page by
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
 The default gravity for the <strong>-page</strong>
-option is <em>SouthWest</em>, i.e., positive <strong>x</strong> and
-<strong>y</strong> <em>offset</em> are measured rightward and upward from the bottom
+option is <em>NorthWest</em>, i.e., positive <strong>x</strong> and
+<strong>y</strong> <em>offset</em> are measured rightward and downward from the top
 left corner of the page, unless the <strong>-gravity</strong> option is present with
-a value other than <em>SouthWest</em>.
+a value other than <em>NorthWest</em>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The default page dimensions for a TEXT image is 612x792.

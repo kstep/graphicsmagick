@@ -281,10 +281,11 @@ color="#FFFFFF"><font size="+1">
 <p>
 Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
-the option again with a different effect. For example to display two images,
-the first with 32 colors, and the second with only 16 colors, use:
+the option again with a different effect. For example to display three images,
+the first with 32 colors, the second with an unlimited number of colors,
+and the third with only 16 colors, use:
 <pre>
-      display -colors 32 cockatoo.miff -colors 16 macaw.miff
+      display -colors 32 cockatoo.miff -noop duck.miff -colors 16 macaw.miff
 </pre>
 <p>
 <strong>Display</strong> options can appear on the command line or in your X resources
@@ -1260,10 +1261,10 @@ relative to the lower left hand corner of the page by
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
 The default gravity for the <strong>-page</strong>
-option is <em>SouthWest</em>, i.e., positive <strong>x</strong> and
-<strong>y</strong> <em>offset</em> are measured rightward and upward from the bottom
+option is <em>NorthWest</em>, i.e., positive <strong>x</strong> and
+<strong>y</strong> <em>offset</em> are measured rightward and downward from the top
 left corner of the page, unless the <strong>-gravity</strong> option is present with
-a value other than <em>SouthWest</em>.
+a value other than <em>NorthWest</em>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The default page dimensions for a TEXT image is 612x792.
@@ -1430,17 +1431,17 @@ Each image in the range is read
 with the filename followed by a period (<strong>.</strong>) and the decimal scene
 number.  You
 can change this behavior by embedding a <strong>%0Nd, %0No, or %0Nx printf</strong>
-format specification in the file name. For example,
+format specification in the file name. For example,</font></td></tr></table>
 <pre>
     montage -scenes 5-7 image.miff
 </pre>
-<p>
-makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and 
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and</font></td></tr></table> 
 <pre>
     animate -scenes 0-12 image%02d.miff
 </pre>
-<p>
-animates files image00.miff, image01.miff, through image12.miff. 
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+animates files image00.miff, image01.miff, through image12.miff.</font></td></tr></table> 
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1770,10 +1771,10 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-write">-write</a>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write the image to a file</td></tr></table>
-<p>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 If <em>file</em> already exists, you will be prompted as to whether it should
-be overwritten.
-<p>
+be overwritten.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 By default, the image is written in the format that it was read in as.
 To specify a particular image format, prefix <em>file</em> with the image
 type and a colon (e.g., ps:image) or specify the image type as the filename
@@ -1784,14 +1785,14 @@ extension <strong>.Z</strong> or
 <strong>gzip</strong>
 respectively. Precede the image file name with | to pipe to a system command.
 If <em>file</em> already exists, you will be prompted as to whether it should
-be overwritten.
-<p>Use <strong>-compress</strong> to specify the type of image compression.
-<p>
+be overwritten.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">Use <strong>-compress</strong> to specify the type of image compression.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The equivalent X resource for this option is
 <strong>writeFilename</strong> (class <strong>WriteFilename</strong>).
 See
 <a href="#xres">X Resources</a>
-for details.
+for details.</font></td></tr></table>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
