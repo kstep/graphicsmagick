@@ -1394,16 +1394,16 @@ static void DrawPolygonPrimitive(PrimitiveInfo *primitive_info,
       bounds.y2=p->point.y;
   }
   mid=draw_info->linewidth/2.0;
-  bounds.x1-=mid;
+  bounds.x1-=(mid+1.0);
   if (bounds.x1 < 0.0)
     bounds.x1=0.0;
-  bounds.y1-=mid;
+  bounds.y1-=(mid+1.0);
   if (bounds.y1 < 0.0)
     bounds.y1=0.0;
-  bounds.x2+=mid;
+  bounds.x2+=(mid+1.0);
   if (bounds.x2 >= image->columns)
     bounds.x2=image->columns-1.0;
-  bounds.y2+=mid;
+  bounds.y2+=(mid+1.0);
   if (bounds.y2 >= image->rows)
     bounds.y2=image->rows-1.0;
   for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
