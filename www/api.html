@@ -122,7 +122,10 @@ found in <tt>image.c</tt> and <tt>effects.c</tt>.
 <p>Here is a full example of a program, <tt>example.c</tt>, that reads
 a JPEG image, creates a thumbnail, and writes it to disk in the PNG image
 format.
-<pre>&nbsp;&nbsp;&nbsp; #include &lt;magick.h>
+<pre>&nbsp;&nbsp;&nbsp; #include &lt;stdio.h>
+&nbsp;&nbsp;&nbsp; #include &lt;time.h>
+&nbsp;&nbsp;&nbsp; #include &lt;sys/types.h>
+&nbsp;&nbsp;&nbsp; #include &lt;magick/api.h>
 
 &nbsp;&nbsp;&nbsp; int main(int argc,char **argv)
 &nbsp;&nbsp;&nbsp; {
