@@ -33,6 +33,9 @@
 #include <assert.h>
 
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if defined(HAVE_VARARGS_H)
+#  include "varargs.h"
+#endif
 #  include <sys/types.h>
 #  include <sys/stat.h>
 #  include <sys/time.h>
@@ -42,9 +45,6 @@
 #endif
 #if defined(HAVE_MMAP)
 #  include <sys/mman.h>
-#endif
-#if defined(HAVE_VARARGS_H)
-#  include "varargs.h"
 #endif
 #if defined(HasPTHREADS)
 #  include <pthread.h>
