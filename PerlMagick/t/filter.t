@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..35\n"; }
+BEGIN { $| = 1; $test=1, print "1..40\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -13,6 +13,11 @@ require 't/subroutines.pl';
 
 chdir 't' || die 'Cd failed';
 
+testFilter('input.miff', 'Border',
+  q/#ccc/,
+  '36bc2833b05ad1e4e2cace027e045d9d');
+
+++$test;
 testFilter('input.miff', 'Blur',
   q/60/,
   '7669a6d89e4c47b3b98752f9ff9b8224');
@@ -31,6 +36,11 @@ testFilter('input.miff', 'Charcoal',
 testFilter('input.miff', 'Chop',
   q/+10+10/,
   '92fd46db3668d557b12c30fc810b1fe6');
+
+++$test;
+testFilter('input.miff', 'ColorFloodfill',
+  q/geometry=>+10+10,pen=>black/,
+  'a51dc2d20c36c8e4df18afc567db636e');
 
 ++$test;
 testFilter('input.miff', 'Contrast',
@@ -83,9 +93,19 @@ testFilter('input.miff', 'Gamma',
   'b5f821615ecb6f3856fef4a6939d9ad1');
 
 ++$test;
+testFilter('input.miff', 'Layer',
+  q/Red/,
+  'bf8f741ba7273610138b8e0ef5b5f79b');
+
+++$test;
 testFilter('input.miff', 'Magnify',
   q/ /,
   '7e926c0a076f567b61eeb08d553bc7e3');
+
+++$test;
+testFilter('input.miff', 'MatteFloodfill',
+  q/geometry=>+10+10,matte=>Opaque/,
+  'd7c89e6b946d94187dc34c58d4c5e2f1');
 
 ++$test;
 testFilter('input.miff', 'Minify',
@@ -163,9 +183,14 @@ testFilter('input.miff', 'Solarize',
   '2594080986a34434961fe5841ae1bebc');
 
 ++$test;
+testFilter('input.miff', 'Texture',
+  q/filename=>granite:/,
+  '7785d161ea66bd39394bb74ef704a0aa');
+
+++$test;
 testFilter('input.miff', 'Transform',
-  q/geometry=>50%60/,
-  '0b0565f2bebf00dd82ddbde12f0d0083');
+  q/geometry=>50x60/,
+  '7785d161ea66bd39394bb74ef704a0aa');
 
 ++$test;
 testFilter('input.miff', 'Threshold',

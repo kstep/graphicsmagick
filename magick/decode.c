@@ -7836,6 +7836,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
+  (void) sprintf(density,"%gx%g",image->x_resolution,image->y_resolution);
   bounding_box.width=612;
   bounding_box.height=792;
   bounding_box.x=0;
@@ -7925,7 +7926,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
       break;
   }
   alias_bits=image_info->dither && !image_info->monochrome ? 4 : 1;
-  (void) sprintf(density,"%gx%g",image->x_resolution,image->y_resolution);
   (void) sprintf(command,delegate_info.commands,device,alias_bits,alias_bits,
     geometry,density,options,image_info->filename,postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);
@@ -10126,6 +10126,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
 #define BoundingBox  "%%BoundingBox:"
 #define DocumentMedia  "%%DocumentMedia:"
 #define PageBoundingBox  "%%PageBoundingBox:"
+#define PostscriptLevel  "%!PS-"
 
   char
     density[MaxTextExtent],
@@ -10178,7 +10179,9 @@ static Image *ReadPSImage(const ImageInfo *image_info)
 
   unsigned int
     alias_bits,
+    eps_level,
     height,
+    level,
     width;
 
   if (!GetDelegateInfo("gs",True,&delegate_info))
@@ -10216,6 +10219,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
+  (void) sprintf(density,"%gx%g",image->x_resolution,image->y_resolution);
   bounding_box.width=612;
   bounding_box.height=792;
   bounding_box.x=0;
@@ -10239,6 +10243,11 @@ static Image *ReadPSImage(const ImageInfo *image_info)
     }
   box.width=0;
   box.height=0;
+  /*
+    Copy Postscript to temporary file.
+  */
+  level=0;
+  eps_level=0;
   p=command;
   for (i=0; (Latin1Compare(image_info->magick,"EPT") != 0) || i < filesize; i++)
   {
@@ -10251,6 +10260,8 @@ static Image *ReadPSImage(const ImageInfo *image_info)
       continue;
     *p='\0';
     p=command;
+    if (strncmp(PostscriptLevel,command,Extent(PostscriptLevel)) == 0)
+      (void) sscanf(command,"%%!PS-Adobe-%d.0 EPSF-%d.0",&level,&eps_level);
     /*
       Parse a bounding box statement.
     */
@@ -10283,6 +10294,8 @@ static Image *ReadPSImage(const ImageInfo *image_info)
     bounding_box.height=height;
     box=bounding_box;
   }
+  if (eps_level != 0)
+    (void) fputs("showpage\n",file);
   if (image_info->page != (char *) NULL)
     (void) ParseImageGeometry(image_info->page,&bounding_box.x,&bounding_box.y,
       &bounding_box.width,&bounding_box.height);
@@ -10323,7 +10336,6 @@ static Image *ReadPSImage(const ImageInfo *image_info)
       break;
   }
   alias_bits=image_info->dither && !image_info->monochrome ? 4 : 1;
-  (void) sprintf(density,"%gx%g",image->x_resolution,image->y_resolution);
   (void) sprintf(command,delegate_info.commands,device,alias_bits,alias_bits,
     geometry,density,options,image_info->filename,postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);
@@ -10344,7 +10356,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
       /*
         Ghostscript requires a showpage operator.
       */
-      file=fopen(postscript_filename,"a");
+      file=fopen(postscript_filename,AppendBinaryType);
       if (file == (FILE *) NULL)
         PrematureExit(FileOpenWarning,"Unable to write file",image);
       (void) fputs("showpage\n",file);
@@ -17605,7 +17617,8 @@ Export Image *ReadImage(ImageInfo *image_info)
           image=ReadJBIGImage(image_info);
           break;
         }
-      if (Latin1Compare(image_info->magick,"JPEG") == 0)
+      if ((Latin1Compare(image_info->magick,"JPG") == 0) ||
+          (Latin1Compare(image_info->magick,"JPEG") == 0))
         {
           image=ReadJPEGImage(image_info);
           break;

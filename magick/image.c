@@ -1091,8 +1091,12 @@ Export void CloseImage(Image *image)
       (void) fclose(image->file);
   image->file=(FILE *) NULL;
   if (!image->orphan)
-    for ( ; image != (Image *) NULL; image=image->next)
-      image->file=(FILE *) NULL;
+    {
+      while (image->previous != (Image *) NULL)
+        image=image->previous;
+      for ( ; image != (Image *) NULL; image=image->next)
+        image->file=(FILE *) NULL;
+    }
 }
 
 /*
@@ -3203,7 +3207,7 @@ Export void DestroyImage(Image *image)
       register Image
         *p;
 
-      (void) fclose(image->file);
+      (void) fclose(image->ps_file);
       if (!image->orphan)
         for (p=image; p != (Image *) NULL; p=p->next)
           p->ps_file=(FILE *) NULL;

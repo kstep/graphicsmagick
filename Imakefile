@@ -103,7 +103,7 @@ InstallMultipleMan(combine.1,$(LOCALMAN1))
 InstallMultipleMan(ImageMagick.1,$(LOCALMAN1))
 InstallMultipleMan(miff.4,$(LOCALMAN4))
 InstallMultipleMan(quantize.5,$(LOCALMAN5))
-InstallNonExecFile(delegates.mgk,$(PREFIX)/share/ImageMagick)
+InstallNamedNonExec(delegates/delegates.mgk,delegates.mgk,$(PREFIX)/share/ImageMagick)
 
 strip:
 	strip display animate montage convert combine mogrify import identify

@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 #
-# Test writing files using zlib-based compression
+# Test writing files using bzlib-based compression
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #

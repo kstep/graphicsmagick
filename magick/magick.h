@@ -110,6 +110,7 @@ extern "C" {
 /*
   Review these definitions and change them to suit your local requirements.
 */
+#define AppendBinaryType  "ab"
 #define DefaultDisplayGamma  "2.2"
 #define DefaultFont  "-adobe-helvetica-medium-r-*-*-14-*-*-*-*-*-iso8859-*"
 #define DefaultImageQuality  "75"

@@ -5266,38 +5266,39 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     number_packets,
     *xref;
 
-  if ((image->ps_file != (FILE *) NULL) && image_info->adjoin)
-    if ((image->previous == (Image *) NULL) && !IsTainted(image))
-      if (GetDelegateInfo("gs",False,&delegate_info))
-        {
-          char
-            command[MaxTextExtent],
-            filename[MaxTextExtent];
+  if (image->ps_file != (FILE *) NULL) 
+    if ((image->next == (Image *) NULL) || image_info->adjoin)
+      if ((image->previous == (Image *) NULL) && !IsTainted(image))
+        if (GetDelegateInfo("gs",False,&delegate_info))
+          {
+            char
+              command[MaxTextExtent],
+              filename[MaxTextExtent];
 
-          FILE
-            *file;
+            FILE
+              *file;
 
-          TemporaryFilename(filename);
-          file=fopen(filename,WriteBinaryType);
-          if (file != (FILE *) NULL)
-            {
-              int
-                c;
+            TemporaryFilename(filename);
+            file=fopen(filename,WriteBinaryType);
+            if (file != (FILE *) NULL)
+              {
+                int
+                  c;
 
-              /*
-                Use Ghostscript's PDF writer.
-              */
-              for (c=fgetc(image->ps_file); c != EOF; c=fgetc(image->ps_file))
-                (void) putc(c,file);
-              (void) fclose(file);
-              (void) sprintf(command,delegate_info.commands,"pdfwrite",
-                image->filename,filename);
-              status=SystemCommand(image_info->verbose,command);
-              (void) remove(filename);
-              if (status == False)
-                return(True);
-            }
-        }
+                /*
+                  Use Ghostscript's PDF writer.
+                */
+                for (c=fgetc(image->ps_file); c != EOF; c=fgetc(image->ps_file))
+                  (void) putc(c,file);
+                (void) fclose(file);
+                (void) sprintf(command,delegate_info.commands,"pdfwrite",
+                  image->filename,filename);
+                status=SystemCommand(image_info->verbose,command);
+                (void) remove(filename);
+                if (status == False)
+                  return(True);
+              }
+          }
   /*
     Open output image file.
   */
@@ -8458,42 +8459,43 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   XSegment
     bounding_box;
 
-  if ((image->ps_file != (FILE *) NULL) && image_info->adjoin)
-    if ((image->previous == (Image *) NULL) && !IsTainted(image))
-      if (GetDelegateInfo("gs",False,&delegate_info))
-        {
-          char
-            command[MaxTextExtent],
-            filename[MaxTextExtent];
+  if (image->ps_file != (FILE *) NULL) 
+    if ((image->next == (Image *) NULL) || image_info->adjoin)
+      if ((image->previous == (Image *) NULL) && !IsTainted(image))
+        if (GetDelegateInfo("gs",False,&delegate_info))
+          {
+            char
+              command[MaxTextExtent],
+              filename[MaxTextExtent];
 
-          FILE
-            *file;
+            FILE
+              *file;
 
-          TemporaryFilename(filename);
-          file=fopen(filename,WriteBinaryType);
-          if (file != (FILE *) NULL)
-            {
-              int
-                c;
+            TemporaryFilename(filename);
+            file=fopen(filename,WriteBinaryType);
+            if (file != (FILE *) NULL)
+              {
+                int
+                  c;
 
-              unsigned int
-                status;
+                unsigned int
+                  status;
 
-              /*
-                Use Ghostscript's PDF writer.
-              */
-              for (c=fgetc(image->ps_file); c != EOF; c=fgetc(image->ps_file))
-                (void) putc(c,file);
-              (void) fclose(file);
-              (void) sprintf(command,delegate_info.commands,
-                Latin1Compare(image_info->magick,"PS") == 0 ? "pswrite" :
-                "epswrite",image->filename,filename);
-              status=SystemCommand(image_info->verbose,command);
-              (void) remove(filename);
-              if (status == False)
-                return(True);
-            }
-        }
+                /*
+                  Use Ghostscript's PDF writer.
+                */
+                for (c=fgetc(image->ps_file); c != EOF; c=fgetc(image->ps_file))
+                  (void) putc(c,file);
+                (void) fclose(file);
+                (void) sprintf(command,delegate_info.commands,
+                  Latin1Compare(image_info->magick,"PS") == 0 ? "pswrite" :
+                  "epswrite",image->filename,filename);
+                status=SystemCommand(image_info->verbose,command);
+                (void) remove(filename);
+                if (status == False)
+                  return(True);
+              }
+          }
   /*
     Open output image file.
   */

@@ -10950,7 +10950,7 @@ static Image *XVisualDirectoryImage(Display *display,
 #define XClientName  "montage"
 
   char
-    *commands[5],
+    *commands[10],
     **filelist,
     *resource_value,
     window_id[MaxTextExtent];
@@ -11056,6 +11056,8 @@ static Image *XVisualDirectoryImage(Display *display,
   commands[0]=resource_info->client_name;
   commands[1]="-label";
   commands[2]=DefaultTileLabel;
+  commands[3]="-geometry";
+  commands[4]=vid_resources.image_geometry;
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   for (i=0; i < number_files; i++)
@@ -11070,7 +11072,7 @@ static Image *XVisualDirectoryImage(Display *display,
       FreeMemory((char *) filelist[i]);
     if (next_image != (Image *) NULL)
       {
-        MogrifyImages(&local_info,3,commands,&next_image);
+        MogrifyImages(&local_info,5,commands,&next_image);
         next_image->matte=False;
         if (backdrop)
           {

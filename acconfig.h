@@ -168,6 +168,9 @@
 /* Define if you have OSF/1 style pty allocation (/dev/ptmx_bsd) */
 #undef HAVE_PTMX_BSD
 
+/* Define directory where ImageMagick/delegates.h lives. (default /usr/local/share) */
+#undef DelegatePath
+
 /* Define location of 'bzip2' program */
 #undef BZIPDelegate
 

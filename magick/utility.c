@@ -2361,10 +2361,18 @@ Export int SystemCommand(unsigned int verbose,char *command)
 */
 Export void TemporaryFilename(char *filename)
 {
+  register char
+    *p;
+
   assert(filename != (char *) NULL);
   *filename='\0';
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-  (void) strcpy(filename,(char *) tempnam((char *) NULL,TemporaryTemplate));
+  p=(char *) tempnam((char *) NULL,TemporaryTemplate);
+  if (p != (char *) NULL)
+    {
+      (void) strcpy(filename,p);
+      FreeMemory((char *) p);
+    }
 #else
 #if defined(WIN32)
   (void) NTTemporaryFilename(filename);
