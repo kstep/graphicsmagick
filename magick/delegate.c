@@ -292,10 +292,7 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
       if (LocaleCompare(encode,"*") == 0)
         break;
   }
-  if (p == (DelegateInfo *) NULL)
-    ThrowException(exception,OptionWarning,"Unrecognized delegate",
-      decode != (const char *) NULL ? decode : encode);
-  else
+  if (p != (DelegateInfo *) NULL)
     if (p != delegate_list)
       {
         /*

@@ -182,9 +182,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
     if (memcmp(magic+p->offset,p->magic,p->length) == 0)
       break;
-  if (p == (MagicInfo *) NULL)
-    ThrowException(exception,OptionWarning,"Unrecognized magic",magic);
-  else
+  if (p != (MagicInfo *) NULL)
     if (p != magic_list)
       {
         /*
