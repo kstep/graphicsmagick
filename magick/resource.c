@@ -93,7 +93,7 @@ static SemaphoreInfo
 %
 %
 */
-MagickExport unsigned int AcquireMagickResources(const ResourceType type,
+MagickExport unsigned int AcquireMagickResource(const ResourceType type,
   const off_t size)
 {
   unsigned int
@@ -228,7 +228,7 @@ MagickExport off_t GetMagickResources(const ResourceType type)
 %
 %
 */
-MagickExport void LiberateMagickResources(const ResourceType type,
+MagickExport void LiberateMagickResource(const ResourceType type,
   const off_t size)
 {
   LiberateSemaphoreInfo(&resource_semaphore);

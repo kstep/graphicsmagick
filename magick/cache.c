@@ -694,13 +694,18 @@ MagickExport void DestroyCacheInfo(Cache cache)
     case MemoryCache:
     {
       LiberateMemory((void **) &cache_info->pixels);
+      LiberateMagickResource(MemoryResource,cache_info->length);
       break;
     }
     case MemoryMappedCache:
+    {
       (void) UnmapBlob(cache_info->pixels,cache_info->length);
+      LiberateMagickResource(MemoryMapResource,cache_info->length);
+    }
     case DiskCache:
     {
       (void) remove(cache_info->cache_filename);
+      LiberateMagickResource(DiskResource,cache_info->length);
       break;
     }
     default:
@@ -1835,10 +1840,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class != UndefinedClass)
-    {
-      if (cache_info->type == MemoryMappedCache)
-        (void) UnmapBlob(cache_info->pixels,cache_info->length);
-    }
+    if (cache_info->type == MemoryMappedCache)
+      (void) UnmapBlob(cache_info->pixels,cache_info->length);
   FormatString(cache_info->filename,"%.1024s[%ld]",image->filename,
     GetImageListIndex(image));
   cache_info->rows=image->rows;
@@ -1873,7 +1876,9 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   cache_info->length=offset;
   if (cache_info->length == (size_t) cache_info->length)
     if ((cache_info->type == MemoryCache) ||
-        (cache_info->type == UndefinedCache))
+        ((cache_info->type == UndefinedCache) &&
+         ((AcquireMagickResource(MemoryResource,0) == ~0) ||
+          (cache_info->length <= AcquireMagickResource(MemoryResource,0)))))
       {
         if (cache_info->storage_class == UndefinedClass)
           pixels=(PixelPacket *) AcquireMemory(cache_info->length);
@@ -1898,6 +1903,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
             if ((cache_info->storage_class == PseudoClass) ||
                 (cache_info->colorspace == CMYKColorspace))
               cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
+            (void) AcquireMagickResource(MemoryResource,cache_info->length);
             FormatSize(cache_info->length,format);
             FormatString(message,"open %.1024s (%.1024s)",cache_info->filename,
               format);
@@ -1908,6 +1914,10 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   /*
     Create pixel cache on disk.
   */
+  if ((AcquireMagickResource(DiskResource,0) == ~0) ||
+      (cache_info->length <= AcquireMagickResource(DiskResource,0)))
+    ThrowBinaryException(ResourceLimitError,"Cache resources exhausted",
+      image->filename);
   if (*cache_info->cache_filename == '\0')
     TemporaryFilename(cache_info->cache_filename);
   switch (mode)
@@ -1946,7 +1956,9 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
   if ((cache_info->length > MinBlobExtent) &&
-      (cache_info->length == (size_t) cache_info->length))
+      (cache_info->length == (size_t) cache_info->length) &&
+      ((AcquireMagickResource(MemoryMapResource,0) == ~0) ||
+       (cache_info->length <= AcquireMagickResource(MemoryMapResource,0))))
     {
       pixels=(PixelPacket *)
         MapBlob(file,mode,cache_info->offset,cache_info->length);
@@ -1964,6 +1976,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
         }
     }
   (void) close(file);
+  (void) AcquireMagickResource(DiskResource,cache_info->length);
 #if defined(SIGBUS)
   (void) signal(SIGBUS,CacheSignalHandler);
 #endif

@@ -36,11 +36,11 @@ extern MagickExport off_t
   GetMagickResources(const ResourceType);
 
 extern MagickExport unsigned int
-  AcquireMagickResources(const ResourceType,const off_t);
+  AcquireMagickResource(const ResourceType,const off_t);
 
 extern MagickExport void
   DestroyMagickResources(void),
-  LiberateMagickResources(const ResourceType,const off_t),
+  LiberateMagickResource(const ResourceType,const off_t),
   SetMagickResources(const ResourceType,const off_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -60,6 +60,7 @@
 #include "list.h"
 #include "log.h"
 #include "magick.h"
+#include "resource.h"
 #include "utility.h"
 
 /*
@@ -1271,6 +1272,9 @@ MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
   */
   if (file == -1)
     return((void *) NULL);
+  if ((AcquireMagickResource(MemoryMapResource,0) != ~0) &&
+			(length > AcquireMagickResource(MemoryMapResource,0)))
+    return((void *) NULL);
   switch (mode)
   {
     case ReadMode:
@@ -1293,6 +1297,7 @@ MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
   }
   if (map == (void *) MAP_FAILED)
     return((void *) NULL);
+  (void) AcquireMagickResource(MemoryMapResource,length);
   return((void *) map);
 #else
   return((void *) NULL);
@@ -2313,6 +2318,7 @@ MagickExport unsigned int UnmapBlob(void *map,const size_t length)
     status;
 
   status=munmap(map,length);
+  LiberateMagickResource(MemoryMapResource,length);
   return(status == 0);
 #else
   return(False);
