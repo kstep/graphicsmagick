@@ -3,4 +3,4 @@ shows how to use MFC and ImageMagick together. It is meant as a starting
 point only. It creates a GUI that supports loading and displaying and
 image, as well as rotating it.
 
-NtMagick is written by Bill Radcliffe <BillR@corbis.com>
+The author of NtMagick is currently unknown.
