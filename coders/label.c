@@ -87,6 +87,7 @@
 %
 %
 */
+/* #define NEW_AUTO_SCALE_SUPPORT */
 static Image *ReadLABELImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -115,13 +116,53 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->text=AllocateString(image_info->filename);
+#ifdef NEW_AUTO_SCALE_SUPPORT
+  if ((image->columns != 0) || (image->rows != 0))
+    {
+      unsigned long
+        height,
+        width;
+
+      status=True;
+      while((status=GetTypeMetrics(image,draw_info,&metrics)))
+      {
+        width=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
+        height=(unsigned long) floor(metrics.height+0.5);
+        if ((image->columns != 0) && (width > image->columns))
+          {
+            draw_info->pointsize--;
+            status=GetTypeMetrics(image,draw_info,&metrics);
+            image->rows=(unsigned long) floor(metrics.height+0.5);
+            break;
+          }
+        if ((image->rows != 0) && (height > image->rows))
+          {
+            draw_info->pointsize--;
+            status=GetTypeMetrics(image,draw_info,&metrics);
+            image->columns=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
+            break;
+          }
+        draw_info->pointsize++;
+      }
+    }
+  else
+    status=GetTypeMetrics(image,draw_info,&metrics);
+#else
   status=GetTypeMetrics(image,draw_info,&metrics);
+#endif
   if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
   FormatString(geometry,"+%g+%g",0.5*metrics.max_advance,metrics.ascent);
   draw_info->geometry=AllocateString(geometry);
+#ifdef NEW_AUTO_SCALE_SUPPORT
+  if (image->columns == 0)
+    image->columns=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
+  if (image->rows == 0)
+    image->rows=(unsigned long) floor(metrics.height+0.5);
+#else
   image->columns=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
   image->rows=(unsigned long) floor(metrics.height+0.5);
+#endif
   SetImage(image,OpaqueOpacity);
   (void) AnnotateImage(image,draw_info);
   DestroyDrawInfo(draw_info);
