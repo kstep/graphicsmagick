@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <colormap>
+  <color name="opaque" opacity="0" />
+  <color name="transparent" opacity="255" />
   <color name="none" red="0" green="0" blue="0" opacity="255" compliance="SVG" />
   <color name="white" red="255" green="255" blue="255" compliance="SVG, X11" />
   <color name="red" red="255" green="0" blue="0" compliance="SVG, X11" />

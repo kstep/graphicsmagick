@@ -1449,6 +1449,12 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
   DestroyExceptionInfo(&exception);
   if (p == (const ColorInfo *) NULL)
     return(False);
+  if ((LocaleCompare(p->name,"opaque") == 0) ||
+      (LocaleCompare(p->name,"transparent") == 0))
+    {
+      color->opacity=p->color.opacity;
+      return(True);
+    }
   *color=p->color;
   return(True);
 }
