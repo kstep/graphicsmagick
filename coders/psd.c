@@ -563,7 +563,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	logging;
 
 
-  logging=LogMagickEvent(GetMagickMethod(CoderEvent),"enter ReadPSDImage()");
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter ReadPSDImage()");
 
   /*
     Open image file.
@@ -577,8 +577,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == False) {
 	  if(logging)
 		{
-		  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  OpenBlob failed");
-		  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"leave ReadPSDImage()");
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  OpenBlob failed");
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
 		}
     ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   }
@@ -592,8 +592,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (psd_info.version != 1)) {
       if(logging)
         {
-          (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  File signature was %.4s instead of '8BPS'", psd_info.signature );
-          (void) LogMagickEvent(GetMagickMethod(CoderEvent),"leave ReadPSDImage()");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  File signature was %.4s instead of '8BPS'", psd_info.signature );
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
         }
     ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
   }
@@ -606,7 +606,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if(logging)
 	{
-	  (void) LogMagickEvent(GetMagickMethod(CoderEvent),
+	  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 							"  Image is %d x %d with channels=%d, depth=%d, mode=%s",
 							psd_info.columns, psd_info.rows, psd_info.channels,
 							psd_info.depth, ModeToString(psd_info.mode));
@@ -631,21 +631,21 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!AllocateImageColormap(image,256)) {
 		  if(logging)
 			{
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  allocation of ImageColorMap failed");
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"leave ReadPSDImage()");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of ImageColorMap failed");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
 			}
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
 	  }
       image->matte=psd_info.channels >= 2;
 	  if(logging)
 		{
-		  (void) LogMagickEvent(GetMagickMethod(CoderEvent), "  ImageColorMap allocated");
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(), "  ImageColorMap allocated");
 		}
     }
 
   if(logging)
 	{
-	  (void) LogMagickEvent(GetMagickMethod(CoderEvent), 
+	  (void) LogMagickEvent(CoderEvent,GetMagickModule(), 
 							image->matte ? "  image has matte" : "  image has no matte");
 	}
 	
@@ -657,7 +657,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
 	  if(logging)
 		{
-		  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  reading colormap");
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  reading colormap");
 		}
 
       if (psd_info.mode == DuotoneMode)
@@ -669,8 +669,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (data == (unsigned char *) NULL) {
 			  if(logging)
 				{
-				  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  allocation of ImageColorMap failed");
-				  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"leave ReadPSDImage()");
+				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of ImageColorMap failed");
+				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
 				}
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image);
@@ -686,8 +686,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!AllocateImageColormap(image,length/3)) {
 			  if(logging)
 				{
-				  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  allocation of ImageColorMap failed");
-				  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"leave ReadPSDImage()");
+				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of ImageColorMap failed");
+				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
 				}
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image);
@@ -712,14 +712,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
 	  if(logging)
 		{
-		  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  reading image resources (IPTC) - %ld bytes", length);
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  reading image resources (IPTC) - %ld bytes", length);
 		}
       data=(unsigned char *) AcquireMemory(length);
       if (data == (unsigned char *) NULL) {
 		  if(logging)
 			{
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  allocation of resources/IPTC failed");
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"leave ReadPSDImage()");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of resources/IPTC failed");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
 			}
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
 	  }
@@ -727,8 +727,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((count == 0) || (LocaleNCompare((char *) data,"8BIM",4) != 0)) {
 		  if(logging)
 			{
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  image resources invalid");
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"leave ReadPSDImage()");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  image resources invalid");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
 			}
         ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
 	  }
@@ -745,8 +745,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 	  if(logging)
 		{
-		  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  pinging of image complete");
-		  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"leave ReadPSDImage()");
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  pinging of image complete");
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
 		}
 
       return(image);
@@ -770,7 +770,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       number_layers=(short) ReadBlobMSBShort(image);
 	  if(logging)
 		{
-		  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  image contains %d layers", number_layers);
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  image contains %d layers", number_layers);
 		}
       if (number_layers < 0)
         {
@@ -781,15 +781,15 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           number_layers=AbsoluteValue(number_layers);
 		  if(logging)
 			{
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  negative layer count corrected for");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  negative layer count corrected for");
 			}
         }
       layer_info=(LayerInfo *) AcquireMemory(number_layers*sizeof(LayerInfo));
       if (layer_info == (LayerInfo *) NULL) {
 		  if(logging)
 			{
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  allocation of LayerInfo failed");
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"leave ReadPSDImage()");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of LayerInfo failed");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
 			}
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
 	  }
@@ -798,7 +798,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
 		  if(logging)
 			{
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  reading layer #%d", i+1);
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  reading layer #%d", i+1);
 			}
         layer_info[i].page.y=(long) ReadBlobMSBLong(image);
         layer_info[i].page.x=(long) ReadBlobMSBLong(image);
@@ -807,7 +807,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_info[i].channels=ReadBlobMSBShort(image);
 		  if(logging)
 			{
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"    offset(%ld,%ld), size(%ld,%ld), channels=%d", 
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    offset(%ld,%ld), size(%ld,%ld), channels=%d", 
 									layer_info[i].page.x, layer_info[i].page.y, 
 									layer_info[i].page.height, layer_info[i].page.width,
 									layer_info[i].channels);
@@ -819,7 +819,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 		  if(logging)
 			{
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"    channel[%d]: type=%d, size=%ld", 
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    channel[%d]: type=%d, size=%ld", 
 									j, layer_info[i].channel_info[j].type, 
 									layer_info[i].channel_info[j].size);
 			}
@@ -828,8 +828,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0)) {
 		  if(logging)
 			{
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  layer type was %.4s instead of 8BIM", type);
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"leave ReadPSDImage()");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  layer type was %.4s instead of 8BIM", type);
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
 			}
           ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
 		}
@@ -840,7 +840,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_info[i].visible=!(layer_info[i].flags & 0x02);
 		  if(logging)
 			{
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"    blend=%.4s, opacity=%d, clipping=%s, flags=%d, visible=%s", 
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    blend=%.4s, opacity=%d, clipping=%s, flags=%d, visible=%s", 
 									layer_info[i].blendkey, layer_info[i].opacity,
 									layer_info[i].clipping ? "true" : "false",
 									layer_info[i].flags,
@@ -854,7 +854,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
 			  if(logging)
 				{
-				  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"    layer contains additional info");
+				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    layer contains additional info");
 				}
             length=ReadBlobMSBLong(image);
             if (length != 0)
@@ -871,7 +871,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 				  if(logging)
 					{
-					  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"      layer mask: offset(%d,%d), size(%d,%d), length=%ld",
+					  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"      layer mask: offset(%d,%d), size(%d,%d), length=%ld",
 											layer_info[i].mask.x, layer_info[i].mask.y,
 											layer_info[i].mask.width, layer_info[i].mask.height,
 											length-16);
@@ -895,7 +895,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 */
 				  if(logging)
 					{
-					  (void) LogMagickEvent(GetMagickMethod(CoderEvent),
+					  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 									"      layer blending ranges: length=%ld",
 									length);
 					}
@@ -914,7 +914,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 				  if(logging)
 					{
-					  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"      layer name: %s",
+					  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"      layer name: %s",
 											layer_info[i].name);
 					}
 			  }
@@ -925,7 +925,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
 			  if(logging)
 				{
-				  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"      unsupported data: length=%ld",
+				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"      unsupported data: length=%ld",
 										size-combinedlength);
 				}
             for (j=0; j < (long) (size-combinedlength); j++)
@@ -944,8 +944,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 			  if(logging)
 				{
-				  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  allocation of image for layer %d failed", i);
-				  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"leave ReadPSDImage()");
+				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of image for layer %d failed", i);
+				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
 				}
 
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
@@ -953,7 +953,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
 		  if(logging)
 			{
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"    setting up new layer image");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    setting up new layer image");
 			}
         SetImage(layer_info[i].image,OpaqueOpacity);
         layer_info[i].image->compose=
@@ -979,7 +979,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 	  if(logging)
 		{
-		  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  reading image data for layers");
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  reading image data for layers");
 		}
       /*
         Read pixel data for each layer.
@@ -988,13 +988,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
 		  if(logging)
 			{
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  reading data for layer %d", i);
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  reading data for layer %d", i);
 			}
         for (j=0; j < layer_info[i].channels; j++)
         {
 		  if(logging)
 			{
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"    reading data for channel %d", j);
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    reading data for channel %d", j);
 			}
           if (layer_info[i].channel_info[j].size <=
               (2*layer_info[i].image->rows))
@@ -1128,7 +1128,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
 			  if(logging)
 				{
-				  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"    correcting CMYK values");
+				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    correcting CMYK values");
 				}
             for (y=0; y < (long) layer_info[i].image->rows; y++)
             {
@@ -1160,7 +1160,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 		  if(logging)
 			{
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  putting layers into image list");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  putting layers into image list");
 			}
           for (i=0; i < number_layers; i++)
           {
@@ -1180,7 +1180,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 		  if(logging)
 			{
-			  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"leave ReadPSDImage()");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
 			}
 
           return(returnImage);
@@ -1188,7 +1188,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     } else {
 	  if(logging)
 		{
-		  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  image has no layers");
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  image has no layers");
 		}
 	}
 
@@ -1197,7 +1197,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   if(logging)
 	{
-	  (void) LogMagickEvent(GetMagickMethod(CoderEvent),"  reading the precombined layer");
+	  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  reading the precombined layer");
 	}
   compression=ReadBlobMSBShort(image);
   if (compression == 1)
@@ -1315,7 +1315,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if(logging)
 	{
-	  (void) LogMagickEvent(GetMagickMethod(CoderEvent), "leave ReadPSDImage()");
+	  (void) LogMagickEvent(CoderEvent,GetMagickModule(), "leave ReadPSDImage()");
 	}
 
   return(image);
