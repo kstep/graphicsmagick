@@ -13,14 +13,14 @@
 #   %e   filename extention
 #   %f   filename
 #   %h   height
-#   "%i"   input filename
+#   %i   input filename
 #   %l   label
 #   %m   magick
 #   %n   number of scenes
-#   "%o"   output filename
+#   %o   output filename
 #   %p   page number
 #   %q   quantum depth
-#   "%s"   scene number
+#   %s   scene number
 #   %t   top of filename
 #   %u   unique temporary filename
 #   %w   width
@@ -106,11 +106,11 @@ edit=>
 
 eps<=>pdf
 	gswin32c -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 eps<=>ps
 	gswin32c -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 fig=>
 	fig2dev -L ps "%i" "%o"
@@ -124,12 +124,12 @@ gplt=>
 gs-color=>
 	gswin32c -dMaxBitmap=300000000 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
-	  -sOutputFile="%s" -- "%s" -c quit
+	  -sOutputFile=%s -- "%s" -c quit
 
 gs-mono=>
 	gswin32c -dMaxBitmap=300000000 -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
-	  -sOutputFile="%s" -- "%s" -c quit
+	  -sOutputFile=%s -- "%s" -c quit
 
 hpgl=>
 	hp2xx -q -m eps -f "%i" "%o"
@@ -153,11 +153,11 @@ pcl<=print
 
 pdf<=>eps
 	gswin32c -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 pdf<=>ps
 	gswin32c -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 pgp=>
 	pgpv -fq "%i"
@@ -168,11 +168,11 @@ pov=>
 
 ps<=>eps
 	gswin32c -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 ps<=>pdf
 	gswin32c -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 rad=>
 	ra_ppm -g 1.0 "%i" "%o"
