@@ -1920,6 +1920,15 @@ MagickExport void DestroyImage(Image *image)
   if (!destroy)
     return;
   /*
+    Ensure that this image is not referenced by another image
+  */
+#if 0
+  if (image->previous)
+    assert(image->previous->next != image);
+  if (image->next)
+    assert(image->next->previous != image);
+#endif
+  /*
     Destroy image.
   */
   DestroyImagePixels(image);

@@ -166,7 +166,7 @@ sub testReadCompare {
       goto COMPARE_RUNTIME_ERROR;
     }
 
-#  if ("$srcimage_name" eq "input_70x46.uyvy") {
+#  if ("$srcimage_name" eq "input.wpg") {
 #    $srcimage->write(filename=>"$refimage_name", compression=>'None');
 #  }
 
@@ -220,11 +220,15 @@ sub testReadCompare {
       return 1
     }
 
+  undef $srcimage;
+  undef $refimage;
   print "ok $test\n";
   return 0;
 
  COMPARE_RUNTIME_ERROR:
   warn("$errorinfo");
+  undef $srcimage;
+  undef $refimage;
   print "not ok $test\n";
   return 1
 }

@@ -195,7 +195,7 @@ MAGICK DELEGATES
       to read lossless jpeg-encoded DICOM images, please disregard the patch.
 
     o GraphicsMagick requires the JasPer Project's Jasper library version
-      1.700.1 available via http from
+      1.700.2 available via http from
 
          http://www.ece.uvic.ca/~mdadams/jasper/
 

@@ -2819,6 +2819,10 @@ DESTROY(ref)
         image=(Image *) SvIV(reference);
         if (image)
           {
+            if (image->previous && image->previous->next == image)
+              image->previous->next=0;
+            if (image->next && image->next->previous == image)
+              image->next->previous=0;
             DestroyImage(image);
             sv_setiv(reference,0);
           }
@@ -6034,6 +6038,7 @@ Mogrify(ref,...)
           if (next && (next != image))
             {
               image->next=next->next;
+              next->previous=0;
               DestroyImage(next);
             }
           sv_setiv(*pv,(IV) image);

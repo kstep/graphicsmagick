@@ -252,6 +252,9 @@ MagickExport void DestroyImageList(Image *images)
   for (images=p; p != (Image *) NULL; images=p)
   {
     p=p->next;
+    images->next=0;
+    if(p)
+      p->previous=0;
     DestroyImage(images);
   }
 }

@@ -33,7 +33,7 @@ libGraphicsMagick___la_LIBADD = ../../magick/libGraphicsMagick.la
 
 include_HEADERS = Magick++.h
 
-EXTRA_DIST = GraphicsMagick.pc.in
+EXTRA_DIST = GraphicsMagick++.pc.in
 
 AM_LDFLAGS = @LDFLAGS@ $(LIBSTDCLDFLAGS)
 

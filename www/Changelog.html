@@ -13,9 +13,35 @@
 </tr>
 </table>
 <p>
+2003-03-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (DestroyImage): Comment out new assertions until
+        we are certain that there are no ill effects.
+  <LI> coders/mat.c (ReadMATImage): Set image-&gt;depth to valid values.
+  <LI> PerlMagick/Magick.xs: Update so that new DestroyImage assertions
+        aren't asserted.<BR>
+  <LI> magick/list.c (DestroyImageList): Update so that new DestroyImage
+        assertions aren't asserted.<BR>
+  <LI> coders/wpg.c (ReadWPGImage): Don't leave dangling pointer when
+        trimming list. Don't set image-&gt;depth to invalid values.
+
+</UL>
+<p>
 2003-03-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/image.c (DestroyImage): Add assertions to verify
+        that destroyed image is not currently referenced by another
+        image.  This should help prevent accidental continued use
+        of a destroyed image.<BR>
+        (DestroyImage): Added assertions to enforce that images
+        should not continue to reference the destroyed image.
+  <LI> coders/wpg.c: Incorporated fixes from Jaroslav Fojtik.
+  <LI> version.sh (PACKAGE_VERSION_ADDENDUM): Construct a package
+        snapshot version based on the ChangeLog modification time.
+        This requires GNU find to work propery since the -printf
+        option is used.<BR>
   <LI> configure.ac (LIB_GS): Do not test for the Ghostscript
         library by default due to the issue of its embedded libjpeg
         conflicting with libjpeg.<BR>
