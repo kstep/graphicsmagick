@@ -870,7 +870,7 @@ MagickExport unsigned int SpliceImageIntoList(Image **images,const long offset,
   if (image == (Image *) NULL)
     return(False);
   next=image;
-  for (i=0; (i < length; i++)
+  for (i=0; i < length; i++)
   {
     if (next->next == (Image *) NULL)
       break;
