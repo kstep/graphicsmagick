@@ -402,7 +402,7 @@ static struct
     { "Convolve", { {"coefficients", ArrayReference} } },
     { "Profile", { {"filen", StringReference}, {"profile", StringReference} } },
     { "UnsharpMask", { {"geom", StringReference}, {"radius", DoubleReference},
-      {"sigma", DoubleReference}, {"sigma", DoubleReference},
+      {"sigma", DoubleReference}, {"amount", DoubleReference},
       {"threshold", DoubleReference} } },
   };
 
