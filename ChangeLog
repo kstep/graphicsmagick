@@ -1,3 +1,6 @@
+2004-08-13  Glenn Randers-Pehrson <glennrp@glennrp.com>
+	* tEXt and zTXt were inadvertently included in list of unused chunks.
+
 2004-08-09  Glenn Randers-Pehrson <glennrp@glennrp.com>
 	* fix incorrect argument to png_set_keep_unknown_chunks().
 
