@@ -154,6 +154,8 @@ static unsigned int GetToken(Image *image,char **token,int *c,
     quote=(*c) == '"';
     for ( ; ; )
     {
+      if ((*c == '\n') || (*c == '\r'))
+        *c=' ';
       if (Extent(*token) >= (length-1))
         {
           length=(length << 1)+MaxTextExtent;
@@ -219,7 +221,7 @@ Export char **StringToTokens(const char *text,int *number_tokens)
     while (!isspace((int) (*p)) && (*p != '\0'))
     {
       p++;
-      if (!isspace((int) *p) && (*(p-1) == ':'))
+      if (!isspace((int) *p) && ((*(p-1) == ':') || (*(p-1) == ';')))
         (*number_tokens)++;
     }
   }
@@ -251,7 +253,7 @@ Export char **StringToTokens(const char *text,int *number_tokens)
         while (!isspace((int) (*q)) && (*q != '\0'))
         {
           q++;
-          if (!isspace((int) *q) && (*(q-1) == ':'))
+          if (!isspace((int) *q) && ((*(q-1) == ':') || (*(q-1) == ';')))
             break;
         }
     tokens[i]=(char *) AllocateMemory(q-p+1);
@@ -261,7 +263,7 @@ Export char **StringToTokens(const char *text,int *number_tokens)
     (void) strncpy(tokens[i],p,q-p);
     tokens[i][q-p]='\0';
     p=q;
-    if (*(q-1) == ':')
+    if ((*(q-1) == ':') || (*(q-1) == ';'))
       continue;
     while (!isspace((int) (*p)) && (*p != '\0'))
       p++;
@@ -466,7 +468,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (Latin1Compare(graphic_context[n].fill,"none") != 0)
               (void) strncpy(command,"fill",4);
             for (i=0; i < strlen(vertices); i++)
-              if (!isdigit(vertices[i]) && (vertices[i] != ','))
+              if (isalpha((int) vertices[i]))
                 vertices[i]=' ';
             (void) strcat(command,vertices);
           }
@@ -475,7 +477,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (Latin1Compare(graphic_context[n].fill,"none") != 0)
               (void) strncpy(command,"fill",4);
             for (i=0; i < strlen(vertices); i++)
-              if (!isdigit(vertices[i]) && (vertices[i] != ','))
+              if (isalpha((int) vertices[i]))
                 vertices[i]=' ';
             (void) strcat(command,vertices);
           }
