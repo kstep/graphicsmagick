@@ -59,7 +59,7 @@ noinst_HEADERS =
 
 if WITH_MODULES
 # Where module are installed
-pkgdir = $(libdir)/ImageMagick/module/coders
+pkgdir = $(libdir)/ImageMagick/module/coder
 
 # Architecture-dependent data files installed with module
 pkg_DATA = module.mgk

@@ -230,7 +230,7 @@ EXTRA_DIST = module.mgk delegate.mgk.in type.mgk.in
 noinst_HEADERS = 
 
 # Where module are installed
-@WITH_MODULES_TRUE@pkgdir = @WITH_MODULES_TRUE@$(libdir)/ImageMagick/module/coders
+@WITH_MODULES_TRUE@pkgdir = @WITH_MODULES_TRUE@$(libdir)/ImageMagick/module/coder
 
 # Architecture-dependent data files installed with module
 @WITH_MODULES_TRUE@pkg_DATA = @WITH_MODULES_TRUE@module.mgk
@@ -659,7 +659,7 @@ yuv_la_LDFLAGS = -no-undefined -module -avoid-version
 yuv_la_LIBADD = ../magick/libMagick.la
 
 DEFS = @DEFS@ -I../
-subdir = coders
+subdir = coder
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../magick/config.h
 CONFIG_CLEAN_FILES =  delegate.mgk type.mgk
@@ -1010,7 +1010,7 @@ all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign coders/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign coder/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
