@@ -1498,8 +1498,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   WriteBlobMSBShort(image,0);
   WriteBlobMSBShort(image,size_rectangle.top);
   WriteBlobMSBShort(image,size_rectangle.left);
-  WriteBlobMSBShort(image,size_rectangle.right);
   WriteBlobMSBShort(image,size_rectangle.bottom);
+  WriteBlobMSBShort(image,size_rectangle.right);
   WriteBlobMSBShort(image,PictVersion);
   WriteBlobMSBShort(image,0x02ff);
   WriteBlobMSBShort(image,PictInfoOp);
@@ -1513,8 +1513,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   WriteBlobMSBShort(image,0x0000);
   WriteBlobMSBShort(image,frame_rectangle.top);
   WriteBlobMSBShort(image,frame_rectangle.left);
-  WriteBlobMSBShort(image,frame_rectangle.right);
   WriteBlobMSBShort(image,frame_rectangle.bottom);
+  WriteBlobMSBShort(image,frame_rectangle.right);
   WriteBlobMSBLong(image,0x00000000L);
   if (image->iptc_profile.info != (unsigned char *) NULL)
     {
@@ -1543,8 +1543,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   WriteBlobMSBShort(image,0xa);
   WriteBlobMSBShort(image,crop_rectangle.top);
   WriteBlobMSBShort(image,crop_rectangle.left);
-  WriteBlobMSBShort(image,crop_rectangle.right);
   WriteBlobMSBShort(image,crop_rectangle.bottom);
+  WriteBlobMSBShort(image,crop_rectangle.right);
   if (image->compression == JPEGCompression)
     {
       size_t
@@ -1622,8 +1622,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   WriteBlobMSBShort(image,row_bytes | 0x8000);
   WriteBlobMSBShort(image,bounds.top);
   WriteBlobMSBShort(image,bounds.left);
-  WriteBlobMSBShort(image,bounds.right);
   WriteBlobMSBShort(image,bounds.bottom);
+  WriteBlobMSBShort(image,bounds.right);
   /*
     Write pack type, pack size, resolution, pixel type, and pixel size.
   */
@@ -1673,12 +1673,12 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   */
   WriteBlobMSBShort(image,source_rectangle.top);
   WriteBlobMSBShort(image,source_rectangle.left);
-  WriteBlobMSBShort(image,source_rectangle.right);
   WriteBlobMSBShort(image,source_rectangle.bottom);
+  WriteBlobMSBShort(image,source_rectangle.right);
   WriteBlobMSBShort(image,destination_rectangle.top);
   WriteBlobMSBShort(image,destination_rectangle.left);
-  WriteBlobMSBShort(image,destination_rectangle.right);
   WriteBlobMSBShort(image,destination_rectangle.bottom);
+  WriteBlobMSBShort(image,destination_rectangle.right);
   WriteBlobMSBShort(image,transfer_mode);
   /*
     Write picture data.
