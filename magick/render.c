@@ -1293,8 +1293,8 @@ static unsigned int DrawAffineImage(Image *image,const Image *composite,
         inverse_affine.tx;
       point.y=(x+0.5)*inverse_affine.rx+(y+0.5)*inverse_affine.sy+
         inverse_affine.ty;
-      pixel=AcquireOnePixel(composite,(long) floor(point.x),
-        (long) floor(point.y),&image->exception);
+      pixel=AcquireOnePixel(composite,(long) floor(point.x+0.5),
+        (long) floor(point.y+0.5),&image->exception);
       *q=AlphaComposite(&pixel,pixel.opacity,q,q->opacity);
       q++;
     }

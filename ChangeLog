@@ -1,5 +1,8 @@
+2002-04-15  Cristy  <cristy@mystic.es.dupont.com>
+  * Fixed DrawImage() to properly handle affine image transforms.
+
 2002-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * magick/utility.c (MagickToMime): New function to return the MIME
+  * magick/magick.c (MagickToMime): New method to return the MIME
     media type corresponding to a specified magick tag.
 
 2002-04-12  Leonard Rosenthol  <leonardr@lazerware.com>
