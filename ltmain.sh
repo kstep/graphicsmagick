@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4c
-TIMESTAMP=" (1.1075 2001/10/28 12:22:38)"
+TIMESTAMP=" (1.1065 2001/09/22 16:43:43)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -2647,21 +2647,16 @@ EOF
 	  versuffix=".$current";
 	  ;;
 
-	irix | nonstopux)
-	  case $version_type in
-	    nonstopux) verstring_prefix=nonstopux ;;
-	    *)         verstring_prefix=sgi ;;
-	  esac
-	  verstring="$verstring_prefix$major.$revision"
-
+	irix)
 	  major=`expr $current - $age + 1`
+	  verstring="sgi$major.$revision"
 
 	  # Add in all the interfaces that we are compatible with.
 	  loop=$revision
 	  while test "$loop" -ne 0; do
 	    iface=`expr $revision - $loop`
 	    loop=`expr $loop - 1`
-	    verstring="$verstring_prefix$major.$iface:$verstring"
+	    verstring="sgi$major.$iface:$verstring"
 	  done
 
 	  # Before this point, $major must not contain `.'.
@@ -2978,13 +2973,6 @@ EOF
 			*) potlib=`$echo "X$potlib" | $Xsed -e 's,[^/]*$,,'`"$potliblink";;
 			esac
 		      done
-		      # It is ok to link against an archive when
-		      # building a shared library.
-		      if $AR -t $potlib > /dev/null 2>&1; then
-		        newdeplibs="$newdeplibs $a_deplib"
-		        a_deplib=""
-		        break 2
-		      fi
 		      if eval $file_magic_cmd \"\$potlib\" 2>/dev/null \
 			 | sed 10q \
 			 | egrep "$file_magic_regex" > /dev/null; then
