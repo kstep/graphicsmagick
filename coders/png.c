@@ -4566,7 +4566,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       need_geom=True;
       if (image_info->page != (char *) NULL)
         {
-          (void) ParseGeometry(image_info->page,&page.x,&page.y,
+          (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
             &page.width,&page.height);
           need_geom=False;
         }

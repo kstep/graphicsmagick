@@ -210,10 +210,10 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   SetGeometry(image,&geometry);
   if (image_info->density != (char *) NULL)
-    (void) ParseGeometry(image_info->density,&geometry.x,&geometry.y,
+    (void) ParseImageGeometry(image_info->density,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
   else
-    (void) ParseGeometry(HistogramDensity,&geometry.x,&geometry.y,
+    (void) ParseImageGeometry(HistogramDensity,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
   histogram_image=CloneImage(image,geometry.width,geometry.height,True,
     &image->exception);
