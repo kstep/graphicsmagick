@@ -395,6 +395,8 @@ MagickExport void CloseBlob(Image *image)
           break;
         }
 #endif
+        case StandardStream:
+          break;
         default:
         {
           image->blob->status=ferror(image->blob->file);
@@ -427,8 +429,10 @@ MagickExport void CloseBlob(Image *image)
               break;
             }
 #endif
+            case StandardStream:
+              break;
             default:
-            (void) fclose(image->blob->file);
+              (void) fclose(image->blob->file);
           }
           image->blob->file=(FILE *) NULL;
         }
@@ -772,6 +776,11 @@ MagickExport ExtendedSignedIntegralType GetBlobSize(const Image *image)
       break;
     }
 #endif
+    case StandardStream:
+		{
+      offset=0;
+      break;
+    }
     default:
     {
       offset=fstat(fileno(image->blob->file),&attributes) < 0 ? 0 :
@@ -1567,6 +1576,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       if (strchr(type,'b') != (char *) NULL)
         _setmode(_fileno(image->blob->file),_O_BINARY);
 #endif
+      image->blob->type=StandardStream;
       image->blob->exempt=True;
     }
   else
@@ -1659,6 +1669,8 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
               break;
             }
 #endif
+            case StandardStream:
+              break;
             default:
             {
               image->blob->file=(FILE *) fopen(filename,type);
@@ -1666,7 +1678,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
             }
           }
         if ((image->blob->file != (FILE *) NULL) &&
-            (image->blob->type == StandardStream) && (*type == 'r'))
+            (image->blob->type == FileStream) && (*type == 'r'))
           {
             const MagickInfo
               *magick_info;
@@ -2276,6 +2288,8 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
     case ZipStream:
       return(-1);
 #endif
+    case StandardStream:
+      return(-1);
     default:
     {
       if (fseek(image->blob->file,(off_t) offset,whence) < 0)

@@ -397,7 +397,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   tiff_exception=exception;
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  if ((image->blob->file != stdin) && !(image->blob->type == PipeStream))
+  if (image->blob->type == FileStream)
     tiff=TIFFClientOpen(image->filename,"rb",(thandle_t) image,TIFFReadBlob,
       TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFGetBlobSize,TIFFMapBlob,
       TIFFUnmapBlob);
@@ -423,7 +423,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     }
   if (tiff == (TIFF *) NULL)
     {
-      if ((image->blob->file == stdin) || (image->blob->type == PipeStream))
+      if (image->blob->type != FileStream)
         remove(filename);
       ThrowReaderException(FileOpenError,"UnableToOpenFile",image)
     }
@@ -438,7 +438,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       if (status == False)
         {
           TIFFClose(tiff);
-          if ((image->blob->file == stdin) || (image->blob->type == PipeStream))
+          if (image->blob->type != FileStream)
             remove(filename);
           ThrowReaderException(CorruptImageError,"UnableToReadSubimage",
             image)
@@ -607,7 +607,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (!AllocateImageColormap(image,image->colors))
           {
             TIFFClose(tiff);
-            if ((image->blob->file == stdin) || (image->blob->type == PipeStream))
+            if (image->blob->type != FileStream)
               remove(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
@@ -682,7 +682,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             (scanline == (unsigned char *) NULL))
           {
             TIFFClose(tiff);
-            if ((image->blob->file == stdin) || (image->blob->type == PipeStream))
+            if (image->blob->type != FileStream)
               remove(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
@@ -879,7 +879,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
-            if ((image->blob->file == stdin) || (image->blob->type == PipeStream))
+            if (image->blob->type != FileStream)
               remove(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
@@ -960,7 +960,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
-            if ((image->blob->file == stdin) || (image->blob->type == PipeStream))
+            if (image->blob->type != FileStream)
               remove(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
@@ -1017,12 +1017,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        if (!MagickMonitor(LoadImageText,image->scene-1,image->scene,&image->exception))
+        status=MagickMonitor(LoadImageText,image->scene-1,image->scene,
+          &image->exception);
+        if (status == False)
           break;
       }
   } while (status == True);
   TIFFClose(tiff);
-  if ((image->blob->file == stdin) || (image->blob->type == PipeStream))
+  if (image->blob->type != FileStream)
     remove(filename);
   while (image->previous != (Image *) NULL)
     image=image->previous;
@@ -1455,7 +1457,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  if ((image->blob->file == stdout) || (image->blob->type == PipeStream) ||
+  if ((image->blob->type != FileStream) ||
       (image->blob->data != (unsigned char *) NULL))
     TemporaryFilename(filename);
   else
@@ -1786,8 +1788,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                    break;
+                  {
+                    status=MagickMonitor(SaveImageText,y,image->rows,
+                      &image->exception);
+                    if (status == False)
+                      break;
+                  }
             }
             break;
           }
@@ -1942,8 +1948,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                    break;
+                  {
+                    status=MagickMonitor(SaveImageText,y,image->rows,
+                      &image->exception);
+                    if (status == False)
+                      break;
+                  }
             }
             break;
           }
@@ -2003,14 +2013,16 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
+    status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
+      &image->exception);
+    if (status == False)
       break;
   } while (image_info->adjoin);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
   image->blob->status=False;
-  if ((image->blob->file == stdout) || (image->blob->type == PipeStream) ||
+  if ((image->blob->type != FileStream) ||
       (image->blob->data != (unsigned char *) NULL))
     {
       FILE

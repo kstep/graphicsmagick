@@ -36,10 +36,13 @@ typedef enum
 
 typedef enum
 {
+  FileStream,
   StandardStream,
   ZipStream,
   BZipStream,
-  PipeStream
+  PipeStream,
+  FifoStream,
+  BlobStream
 } StreamType;
 
 /*
@@ -71,11 +74,11 @@ typedef struct _BlobInfo
     status,
     temporary;
 
-  StreamType
-    type;
-
   FILE
     *file;
+
+  StreamType
+    type;
 
   StreamHandler
     stream;
