@@ -29,25 +29,34 @@ set TMP "../tmp"
 #
 set TestFunctions {
     AdaptiveThresholdImage      img     1
+    AddImage                    img     0
     AddNoiseImage               img     1
     AffineTransformImage        img     1
     ???-how-to-AnnotateImage    img     0
+    AppendImage                 img     0
+    AverageImage                img     0
     BlackThresholdImage         img     1
     BlurImage                   img     1
     BorderImage                 img     1
     ChannelImage                img     1
     CharcoalImage               img     1
     ChopImage                   img     1
+    ClipImage                   img     0
+    ClipPathImage               img     0
+    Clone-No-Test               img     0
+    CoalesceImages              img     0
     ???-how-to-ClipImage        img     0
     ColorFloodfillImage         img     1
     ColorizeImage               img     1
     CommentImage                img     1
     CompareImages               img     1
+    CompareImageChannels        img     0
     CompositeImage              img     1
     ContrastImage               img     1
     ConvolveImage               img     1
     CropImage                   img     1
     CycleColormapImage          img     1
+    DeconstructImages           img     0
     DescribeImage               img     1
     DespeckleImage              img     1
     DrawImage                   img     1
@@ -59,26 +68,74 @@ set TestFunctions {
     FlipImage                   img     1
     FlopImage                   img     1
     FrameImage                  img     1
-    Filename                    img     1
+    FxImageChannel              img     0
     GammaImage                  img     1
+    GammaImageChannel           img     0
+
+    GetSetFilename              img     1
+    GetSetBackgroundColor       img     0
+    GetSetBluePrimary           img     0
+    GetSetBorderColor           img     0
+    GetSetChannelDepth          img     0
+    GetChannelExtrema           img     0
+    GetChannelMean              img     0
+    GetSetColormapColor         img     0
+    GetColors                   img     0
+    GetSetColorspace            img     0
+    GetSetCompose               img     0
+    GetSetCompression           img     0
+    GetSetDelay                 img     0
+    GetSetDepth                 img     0
+    GetSetDispose               img     0
+    GetExtrema                  img     0
+    Getformat                   img     0
+    GetSetGamma                 img     0
+    GetsetGreenPrimary          img     0
+    GetHeight                   img     0
+    GetSetIndex                 img     0
+    GetSetInterlaceScheme       img     0
+    GetSetIterations            img     0
+    GetSetMatteColor            img     0
+    GetSetImageFilename         img     0
+    GetSetRemoveProfile         img     0
+    GetSetRedPrimary            img     0
+    GetSetRendering             img     0
+    GetSetResolution            img     0
+    GetSetScene                 img     0
+    GetImageSize                img     0
     GetSignature                img     1
+    GetSetImageType             img     0
+    GetSetImageUnits            img     0
+    GetSetVirtualPixelMethod    img     0
+    GetSetWhitePoint            img     0
+    GetWidth                    img     0
+    GetSetSamplingFactors       img     0
+    GetSetSize                  img     1
+    
     ImplodeImage                img     1
     LabelImage                  img     1
     LevelImage                  img     1
+    LevelImageChannel           img     0
     MagnifyImage                img     1
     MapImage                    img     1
     MatteFloodfillImage         img     1
     MedianFilterImage           img     1
     MinifyImage                 img     1
     ModulateImage               img     1
+    MontageImage                img     0
+    MorphImages                 img     0
+    MosaicImages                img     0
     MotionBlurImage             img     1
     NegateImage                 img     1
     NormalizeImage              img     1
     OilPaintImage               img     1
     OpaqueImage                 img     1
-    SetProfile                  img     1
+    PingImage                   img     0
+    PreviewImages               img     0
     QuantizeImage               img     1
+    QueryFontMetrics            img     0
     RaiseImage                  img     1
+    ReadBlobImage               img     0
     ReduceNoiseImage            img     1
     ResampleImage               img     1
     ResizeImage                 img     1
@@ -86,10 +143,14 @@ set TestFunctions {
     RotateImage                 img     1
     SampleImage                 img     1
     ScaleImage                  img     1
+
+    SetImage                    img     0
+    SetOption                   img     0
+    SetPassphrase               img     0
+
     SharpenImage                img     1
     ShaveImage                  img     1
     ShearImage                  img     1
-    Size                        img     1
     SolarizeImage               img     1
     SpreadImage                 img     1
     SteganoImage                img     1
@@ -98,6 +159,10 @@ set TestFunctions {
     SwirlImage                  img     1
     TextureImage                img     1
     ThresholdImage              img     1
+    ThresholdImageChannel       img     0
+    TintImage                   img     0
+    TransformImage              img     0
+    
     TransparentImage            img     1
     TrimImage                   img     1
     UnsharpMaskImage            img     1
@@ -433,7 +498,16 @@ proc FrameImage {img} {
     $wand WriteImage "$::TMP/x-Frame.jpg"
     magick delete $frm $wand
 }
-proc Filename {img} {
+proc GammaImage {img} {
+    set wand [$img clone imgX]
+    debug $wand
+    
+    $wand GammaImage 2.0
+    
+    $wand WriteImage "$::TMP/x-Gamma.jpg"
+    magick delete $wand
+}
+proc GetSetFilename {img} {
     set wand [$img clone imgX]
     debug $wand
     
@@ -445,19 +519,29 @@ proc Filename {img} {
 
     magick delete $wand
 }
-proc GammaImage {img} {
+proc GetSetRemoveSetProfile {img} {
     set wand [$img clone imgX]
     debug $wand
-    
-    $wand GammaImage 2.0
-    
-    $wand WriteImage "$::TMP/x-Gamma.jpg"
-    magick delete $wand
+    $wand SetProfile ICC HALLO
+    $wand WriteImage "$::TMP/x-Profile.jpg"
+    magick delete $wand 
 }
 proc GetSignature {img} {
     set wand [$img clone imgX]
     debug $wand
     $wand GetSignature
+    magick delete $wand
+}
+proc GetSetSize {img} {
+    set wand [$img clone imgX]
+    debug $wand
+    
+    $img GetSize
+    $wand size 100 200
+    $wand size
+    $wand SetSize 300 400
+    $wand GetSize
+
     magick delete $wand
 }
 proc ImplodeImage {img} {
@@ -571,13 +655,6 @@ proc OpaqueImage {img} {
     
     magick delete $wand $pix1 $pix2
 }
-proc SetProfile {img} {
-    set wand [$img clone imgX]
-    debug $wand
-    $wand SetProfile ICC HALLO
-    $wand WriteImage "$::TMP/x-Profile.jpg"
-    magick delete $wand 
-}
 proc QuantizeImage {img} {
     set wand [$img clone imgX]
     debug $wand
@@ -671,18 +748,6 @@ proc ShearImage {img} {
     $wand ShearImage $pix 30 20
     $wand WriteImage "$::TMP/x-Shear.jpg"
     magick delete $wand $pix
-}
-proc Size {img} {
-    set wand [$img clone imgX]
-    debug $wand
-    
-    $img GetSize
-    $wand size 100 200
-    $wand size
-    $wand SetSize 300 400
-    $wand GetSize
-
-    magick delete $wand
 }
 proc SolarizeImage {img} {
     set wand [$img clone imgX]
@@ -833,7 +898,7 @@ proc SequenceTest {seq} {
     set wand [$seq clone imgX]
     debug $wand
     
-    set N [$wand GetNumberOfImages] 
+    set N [$wand GetNumberImages] 
     if {$N != 5} {
         error [format "Expected 5 images, got %d" $N]
     }
