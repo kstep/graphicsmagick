@@ -23,8 +23,16 @@ process. \fBConvert\fP recognizes the image formats listed in
 
 To make a thumbnail of a JPEG image, use:
 
-    convert -size 120x120 cockatoo.jpg -geometry 120x120
+    convert -size 120x120 cockatoo.jpg -resize 120x120
             +profile '*' thumbnail.jpg
+
+In this example, "-size 120x120" gives a hint to the JPEG decoder
+that the image is going to be downscaled to 120x120, allowing it to run
+faster by avoiding returning a full-resolution image.  The
+"-resize 120x120" specifies the desired dimensions of the
+output image.  It will be scaled so its largest dimension is 120 pixels.  The
+"+profile '*'" removes any ICM, EXIF, IPTC, or other profiles
+that might be present in the input and aren't needed in the thumbnail.
 
 To convert a \fIMIFF\fP image of a cockatoo to a SUN raster image, use:
 
@@ -338,8 +346,8 @@ For a more detailed description of each option, see
 .B "-region \fI<width>x<height>{+-}<x>{+-}<y>"\fP
 \fRapply options to a portion of the image
 .TP
-.B "-resize \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{<}{>}"\fP
-\fRresize and locate an image
+.B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
+\fRresize an image
 .TP
 .B "-roll \fI{+-}<x>{+-}<y>"\fP
 \fRroll an image vertically or horizontally

@@ -124,8 +124,16 @@ color="#FFFFFF"><font size="+1">
 <p>
 To make a thumbnail of a JPEG image, use:
 <pre>
-    convert -size 120x120 cockatoo.jpg -geometry 120x120 +profile '*' thumbnail.jpg
+    convert -size 120x120 cockatoo.jpg -resize 120x120 +profile '*' thumbnail.jpg
 </pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+In this example, <tt>"-size 120x120"</tt> gives a hint to the JPEG decoder
+that the image is going to be downscaled to 120x120, allowing it to run
+faster by avoiding returning a full-resolution image.  The
+<tt>"-resize 120x120"</tt> specifies the desired dimensions of the
+output image.  It will be scaled so its largest dimension is 120 pixels.  The
+<tt>"+profile '*'"</tt> removes any ICM, EXIF, IPTC, or other profiles
+that might be present in the input and aren't needed in the thumbnail.</font></td></tr></table>
 <p>
 To convert a <em>MIFF</em> image of a cockatoo to a SUN raster image, use:
 <pre>
@@ -1138,9 +1146,9 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-resize">-resize</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
+    <a name="-resize">-resize</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>resize and locate an image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>resize an image</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
