@@ -235,7 +235,7 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %
 */
 MagickExport char *GetMagickConfigurePath(const char *filename,
-  const unsigned restrict restrict,ExceptionInfo *exception)
+  const unsigned int restrict,ExceptionInfo *exception)
 {
   char
     *path,
