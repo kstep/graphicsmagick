@@ -74,9 +74,6 @@ extern "C" {
 #include "XSUB.h"
 #include <math.h>
 #include <magick/api.h>
-#define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
-#define False 0
-#define True 1
 #undef tainted
 #if !defined(WIN32)
 #include <setjmp.h>
@@ -94,24 +91,23 @@ extern "C" {
   Define declarations.
 */
 #define ArrayReference  (char **) 4
+#define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
 #define DoubleReference  (char **) 2
 #define EndOf(array)  (&array[NumberOf(array)])
+#define False  0
 #define ImageReference  (char **) 3
 #define IntegerReference  (char **) 1
 #define MaxArguments  20
-#define NumberOf(array)  (sizeof(array)/sizeof(*array))
-#define PackageName   "Image::Magick"
-#define StringReference  (char **) 0
-
-/*
-  Perl 5.006 no longer defines na and sv_undef.
-*/
 #ifndef na
 #define na  PL_na
 #endif
+#define NumberOf(array)  (sizeof(array)/sizeof(*array))
+#define PackageName   "Image::Magick"
+#define StringReference  (char **) 0
 #ifndef sv_undef
 #define sv_undef  PL_sv_undef
 #endif
+#define True  1
 
 /*
   Typedef and structure declarations.
@@ -119,12 +115,6 @@ extern "C" {
 typedef void
   *Image__Magick;  /* data type for the Image::Magick package */
 
-/*
-  The data type for remembering options set by the user, which basically
-  correspond to ImageMagick's command line options.  Each AV* type of
-  Image__Magick has a special variable created for it (see GetPackageInfo) that
-  holds one.
-*/
 struct PackageInfo
 {
   ImageInfo
@@ -134,9 +124,6 @@ struct PackageInfo
     *quantize_info;
 };
 
-/*
-  The different types of arguments that can be passed as arguments from Perl.
-*/
 union ArgumentList
 {
   long
@@ -157,11 +144,6 @@ union ArgumentList
 
 /*
   Static declarations.
-*/
-/*
-  These arrays match the ImageMagick enums.  The positions must match between
-  both.  The names are the minimum length to match, e.g., in NoiseTypes
-  AddNoise("laplacian") and AddNoise("LaplacianNoise") both work.
 */
 static char
   *BooleanTypes[] =
@@ -252,14 +234,6 @@ static char
     "Undefined", "PixelsPerInch", "PixelsPerCentimeter", (char *) NULL
   };
 
-/*
-  The list of ImageMagick methods and their parameters currently
-  supported by this interface (except for Read, Write, and new).  I did
-  it this way to avoid a lot of duplicated code, and to use the neato
-  ALIASes that XS provides.  Parameter names are matched up to the
-  name's length so that e.g. the parameter name "comment" matches
-  "commentstuff".
-*/
 static struct
   Methods
   {
@@ -402,7 +376,8 @@ static struct
     { "GaussianBlur", { {"geom", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference} } },
     { "Convolve", { {"coefficients", ArrayReference} } },
-    { "Profile", { {"profile", StringReference}, {"filename", StringReference} } },
+    { "Profile", { {"profile", StringReference},
+      {"filename", StringReference} } },
     { "UnsharpMask", { {"geom", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference}, {"amount", DoubleReference},
       {"threshold", DoubleReference} } },
@@ -419,14 +394,11 @@ static struct
 char
   *client_name = "PerlMagick";
 
-int
-  warning_flag = False;  /* if != 0: error messages call Perl warn */
+static jmp_buf
+  *error_jump;  /* long jump return for FATAL errors */
 
 SV
   *error_list;  /* Perl variable for storing messages */
-
-static jmp_buf
-  *error_jump;  /* long jump return for FATAL errors */
 
 /*
   Forward declarations.
@@ -453,7 +425,7 @@ static int
 %
 %  The format of the ClonePackageInfo routine is:
 %
-%      cloned_info=ClonePackageInfo(info)
+%      struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
 %
 %  A description of each parameter follows:
 %
@@ -498,7 +470,7 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
 %
 %  The format of the constant routine is:
 %
-%      value=constant(name,sans)
+%      double constant(char *name,int sans)
 %
 %  A description of each parameter follows:
 %
@@ -633,7 +605,7 @@ static double constant(char *name,int sans)
 %
 %  The format of the DestroyPackageInfo routine is:
 %
-%      DestroyPackageInfo(info)
+%      DestroyPackageInfo(struct PackageInfo *info)
 %
 %  A description of each parameter follows:
 %
@@ -646,72 +618,6 @@ static void DestroyPackageInfo(struct PackageInfo *info)
   DestroyImageInfo(info->image_info);
   DestroyQuantizeInfo(info->quantize_info);
   LiberateMemory((void **) &info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   e r r o r h a n d l e r                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method errorhandler replaces ImageMagick's fatal error handler.  This
-%  stores the message in a Perl variable,and longjmp's to return the error to
-%  Perl.  If the error_flag variable is set, it also calls the Perl warn
-%  routine.  Note that this doesn't exit but returns control to Perl; the
-%  Image::Magick handle may be left in a bad state.
-%
-%  The format of the errorhandler routine is:
-%
-%      errorhandler(error,message,qualifier)
-%
-%  A description of each parameter follows:
-%
-%    o error: Specifies the numeric error category.
-%
-%    o message: Specifies the message to display before terminating the
-%      program.
-%
-%    o qualifier: Specifies any qualifier to the message.
-%
-%
-*/
-static void errorhandler(const ExceptionType error,const char *message,
-  const char *qualifier)
-{
-  char
-    text[MaxTextExtent];
-
-  int
-    error_number;
-
-  error_number=errno;
-  errno=0;
-  FormatString(text,"Exception %d: %.1024s%s%.1024s%s%s%.64s%s",error,
-    (message ? message : "ERROR"),
-    qualifier ? " (" : "",qualifier ? qualifier : "",qualifier ? ")" : "",
-    error_number ? " [" : "",error_number ? strerror(error_number) : "",
-    error_number? "]" : "");
-  if ((error_list == NULL) || (error_jump == NULL) || warning_flag)
-    {
-      /*
-        Set up message buffer.
-      */
-      warn("%s",text);
-      if (error_jump == NULL)
-        exit((int) error % 100);
-    }
-  if (error_list)
-    {
-      if (SvCUR(error_list))
-        sv_catpv(error_list,"\n");
-      sv_catpv(error_list,text);
-    }
-  longjmp(*error_jump,(int) error);
 }
 
 /*
@@ -854,7 +760,8 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
 %
 %  The format of the GetPackageInfo routine is:
 %
-%      GetPackageInfo(info)
+%      struct PackageInfo *GetPackageInfo(void *reference,
+%        struct PackageInfo *oldinfo)
 %
 %  A description of each parameter follows:
 %
@@ -907,7 +814,7 @@ static struct PackageInfo *GetPackageInfo(void *reference,
 %
 %  The format of the LookupStr routine is:
 %
-%      status=LookupStr(list,string)
+%      int LookupStr(char **list,const char *string)
 %
 %  A description of each parameter follows:
 %
@@ -945,6 +852,135 @@ static int LookupStr(char **list,const char *string)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k E r r o r H a n d l e r                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickErrorHandler replaces ImageMagick's fatal error handler.  This
+%  stores the message in a Perl variable,and longjmp's to return the error to
+%  Perl.  If the error_flag variable is set, it also calls the Perl warn
+%  routine.  Note that this doesn't exit but returns control to Perl; the
+%  Image::Magick handle may be left in a bad state.
+%
+%  The format of the MagickErrorHandler routine is:
+%
+%      MagickErrorHandler(const ExceptionType error,const char *message,
+%        const char *qualifier)
+%
+%  A description of each parameter follows:
+%
+%    o error: Specifies the numeric error category.
+%
+%    o message: Specifies the message to display before terminating the
+%      program.
+%
+%    o qualifier: Specifies any qualifier to the message.
+%
+%
+*/
+static void MagickErrorHandler(const ExceptionType error,const char *message,
+  const char *qualifier)
+{
+  char
+    text[MaxTextExtent];
+
+  int
+    error_number;
+
+  error_number=errno;
+  errno=0;
+  FormatString(text,"Exception %d: %.1024s%s%.1024s%s%s%.64s%s",error,
+    (message ? message : "ERROR"),
+    qualifier ? " (" : "",qualifier ? qualifier : "",qualifier ? ")" : "",
+    error_number ? " [" : "",error_number ? strerror(error_number) : "",
+    error_number? "]" : "");
+  if ((error_list == NULL) || (error_jump == NULL))
+    {
+      /*
+        Set up message buffer.
+      */
+      warn("%s",text);
+      if (error_jump == NULL)
+        exit((int) error % 100);
+    }
+  if (error_list)
+    {
+      if (SvCUR(error_list))
+        sv_catpv(error_list,"\n");
+      sv_catpv(error_list,text);
+    }
+  longjmp(*error_jump,(int) error);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k W a r n i n g H a n d l e r                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickWarningHandler replaces the ImageMagick warning handler.  This
+%  stores the (possibly multiple) messages in a Perl variable for later
+%  returning.
+%
+%  The format of the MagickWarningHandler routine is:
+%
+%      MagickWarningHandler(const ExceptionType warning,const char *message,
+%        const char *qualifier)
+%
+%  A description of each parameter follows:
+%
+%    o warning: Specifies the numeric warning category.
+%
+%    o message: Specifies the message to display before terminating the
+%      program.
+%
+%    o qualifier: Specifies any qualifier to the message.
+%
+%
+*/
+static void MagickWarningHandler(const ExceptionType warning,
+  const char *message,const char *qualifier)
+{
+  char
+    text[MaxTextExtent];
+
+  int
+    error_number;
+
+  error_number=errno;
+  errno=0;
+  if (!message)
+    return;
+  FormatString(text,"Warning %d: %.1024s%s%.1024s%s%s%.64s%s",warning,
+    message,qualifier ? " (" : "",qualifier ? qualifier : "",
+    qualifier? ")" : "",error_number ? " [" : "",
+    error_number ? strerror(error_number) : "",error_number ? "]" : "");
+  if (error_list == NULL)
+    {
+      /*
+        Set up message buffer.
+      */
+      warn("%s",text);
+      if (error_list == NULL)
+        return;
+    }
+  if (SvCUR(error_list))
+    sv_catpv(error_list,"\n");  /* add \n separator between messages */
+  sv_catpv(error_list,text);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t A t t r i b u t e                                                   %
 %                                                                             %
 %                                                                             %
@@ -956,7 +992,8 @@ static int LookupStr(char **list,const char *string)
 %
 %  The format of the SetAttribute routine is:
 %
-%      status=SetAttribute(list,string)
+%      SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
+%        SV *sval)
 %
 %  A description of each parameter follows:
 %
@@ -983,6 +1020,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
 
   int
     sp;
+
+  long
+    x,
+    y;
 
   PixelPacket
     *color,
@@ -1281,12 +1322,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     {
       if (LocaleNCompare(attribute,"index",5) == 0)
         {
-          int
-            index;
-
           long
-            x,
-            y;
+            index;
 
           IndexPacket
             *indexes;
@@ -1300,13 +1337,13 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               continue;
             x=0;
             y=0;
-            (void) sscanf(attribute,"%*[^[][%d %d",&x,&y);
-            (void) sscanf(attribute,"%*[^[][%d,%d",&x,&y);
+            (void) sscanf(attribute,"%*[^[][%ld %ld",&x,&y);
+            (void) sscanf(attribute,"%*[^[][%ld,%ld",&x,&y);
             pixel=GetImagePixels(image,x % image->columns,y % image->rows,1,1);
             if (pixel == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
-            (void) sscanf(SvPV(sval,na),"%d",&index);
+            (void) sscanf(SvPV(sval,na),"%ld",&index);
             if ((index >= 0) && (index < image->colors))
               *indexes=(IndexPacket) index;
             (void) SyncImagePixels(image);
@@ -1424,10 +1461,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       if (LocaleNCompare(attribute,"pixel",5) == 0)
         {
-          long
-            x,
-            y;
-
           PixelPacket
             *pixel;
 
@@ -1435,8 +1468,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           {
             x=0;
             y=0;
-            (void) sscanf(attribute,"%*[^[][%d %d",&x,&y);
-            (void) sscanf(attribute,"%*[^[][%d,%d",&x,&y);
+            (void) sscanf(attribute,"%*[^[][%ld %ld",&x,&y);
+            (void) sscanf(attribute,"%*[^[][%ld,%ld",&x,&y);
             pixel=GetImagePixels(image,x % image->columns,y % image->rows,1,1);
             if (pixel == (PixelPacket *) NULL)
               break;
@@ -1459,8 +1492,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                   ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
                 pixel->blue=(Quantum)
                   ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-                pixel->opacity=(Quantum)
-                  ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+                pixel->opacity=(Quantum) ((opacity < 0) ? 0 :
+                  (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
               }
             (void) SyncImagePixels(image);
           }
@@ -1492,7 +1525,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (LocaleCompare(attribute,"quality") == 0)
         {
           if (info)
-	    info->image_info->quality=SvIV(sval);
+            info->image_info->quality=SvIV(sval);
           return;
         }
       break;
@@ -1688,7 +1721,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
 %
 %  The format of the SetupList routine is:
 %
-%      status=SetupList(list,string)
+%      Image *SetupList(SV *reference,struct PackageInfo **info,
+%        SV ***reference_vector)
 %
 %  A description of each parameter follows:
 %
@@ -1740,7 +1774,7 @@ static Image *SetupList(SV *reference,struct PackageInfo **info,
 %
 %  The format of the strEQcase routine is:
 %
-%      status=strEQcase(p,q)
+%      int strEQcase(const char *p,const char *q)
 %
 %  A description of each parameter follows:
 %
@@ -1776,67 +1810,6 @@ static int strEQcase(const char *p,const char *q)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   w a r n i n g h a n d l e r                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method warninghandler replaces the ImageMagick warning handler.  This stores
-%  the (possibly multiple) messages in a Perl variable for later returning.  If
-%  the warning_flag variable is set, it also calls the Perl warn routine.
-%
-%  The format of the warninghandler routine is:
-%
-%      warninghandler(warning,message,qualifier)
-%
-%  A description of each parameter follows:
-%
-%    o warning: Specifies the numeric warning category.
-%
-%    o message: Specifies the message to display before terminating the
-%      program.
-%
-%    o qualifier: Specifies any qualifier to the message.
-%
-%
-*/
-static void warninghandler(const ExceptionType warning,const char *message,
-  const char *qualifier)
-{
-  char
-    text[MaxTextExtent];
-
-  int
-    error_number;
-
-  error_number=errno;
-  errno=0;
-  if (!message)
-    return;
-  FormatString(text,"Warning %d: %.1024s%s%.1024s%s%s%.64s%s",warning,
-    message,qualifier ? " (" : "",qualifier ? qualifier : "",
-    qualifier? ")" : "",error_number ? " [" : "",
-    error_number ? strerror(error_number) : "",error_number ? "]" : "");
-  if ((error_list == NULL) || warning_flag)
-    {
-      /*
-        Set up message buffer.
-      */
-      warn("%s",text);
-      if (error_list == NULL)
-        return;
-    }
-  if (SvCUR(error_list))
-    sv_catpv(error_list,"\n");  /* add \n separator between messages */
-  sv_catpv(error_list,text);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   I m a g e : : M a g i c k                                                 %
 %                                                                             %
 %                                                                             %
@@ -1850,8 +1823,8 @@ MODULE = Image::Magick PACKAGE = Image::Magick
 PROTOTYPES: ENABLE
 
 BOOT:
-  SetWarningHandler(warninghandler);
-  SetErrorHandler(errorhandler);
+  SetWarningHandler(MagickWarningHandler);
+  SetErrorHandler(MagickErrorHandler);
 
 double
 constant(name,argument)
@@ -3235,8 +3208,8 @@ Get(ref,...)
                 break;
               x=0;
               y=0;
-              (void) sscanf(attribute,"%*[^[][%d %d",&x,&y);
-              (void) sscanf(attribute,"%*[^[][%d,%d",&x,&y);
+              (void) sscanf(attribute,"%*[^[][%ld %ld",&x,&y);
+              (void) sscanf(attribute,"%*[^[][%ld,%ld",&x,&y);
               (void) GetOnePixel(image,x % image->columns,y % image->rows);
               indexes=GetIndexes(image);
               FormatString(name,"%u",*indexes);
@@ -3387,8 +3360,8 @@ Get(ref,...)
                 break;
               x=0;
               y=0;
-              (void) sscanf(attribute,"%*[^[][%d %d",&x,&y);
-              (void) sscanf(attribute,"%*[^[][%d,%d",&x,&y);
+              (void) sscanf(attribute,"%*[^[][%ld %ld",&x,&y);
+              (void) sscanf(attribute,"%*[^[][%ld,%ld",&x,&y);
               pixel=GetOnePixel(image,x % image->columns,y % image->rows);
               FormatString(name,"%u,%u,%u,%u",pixel.red,pixel.green,pixel.blue,
                 pixel.opacity);
@@ -6333,7 +6306,7 @@ QueryColor(ref,...)
         ColorInfo
           *color_info;
 
-        ExceptionInfo 
+        ExceptionInfo
           exception;
 
         register ColorInfo
@@ -6463,7 +6436,7 @@ QueryFont(ref,...)
     char
       *name;
 
-    ExceptionInfo 
+    ExceptionInfo
       exception;
 
     register int
@@ -6808,7 +6781,7 @@ QueryFormat(ref,...)
       message[MaxTextExtent],
       *name;
 
-    ExceptionInfo 
+    ExceptionInfo
       exception;
 
     MagickInfo

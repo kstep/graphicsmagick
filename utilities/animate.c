@@ -262,8 +262,7 @@ int main(int argc,char **argv)
   Image
     *image,
     *loaded_image,
-    *next_image,
-    *p;
+    *next_image;
 
   ImageInfo
     *image_info;
@@ -272,13 +271,18 @@ int main(int argc,char **argv)
     i,
     x;
 
+  long
+    first_scene,
+    last_scene,
+    scene;
+
   QuantizeInfo
     *quantize_info;
 
+  register Image
+    *p;
+
   unsigned int
-    first_scene,
-    last_scene,
-    scene,
     status;
 
   XResourceInfo
@@ -444,7 +448,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing threshold",option);
-                  SetCacheThreshold(atoi(argv[i]));
+                  SetCacheThreshold(atol(argv[i]));
                 }
               break;
             }
@@ -475,7 +479,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing colors",option);
-                  quantize_info->number_colors=atoi(argv[i]);
+                  quantize_info->number_colors=atol(argv[i]);
                 }
               break;
             }
@@ -572,7 +576,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing image depth",option);
-                  image_info->depth=atoi(argv[i]);
+                  image_info->depth=atol(argv[i]);
                 }
               break;
             }
@@ -811,9 +815,9 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing scene number",option);
-                  first_scene=atoi(argv[i]);
+                  first_scene=atol(argv[i]);
                   last_scene=first_scene;
-                  (void) sscanf(argv[i],"%u-%u",&first_scene,&last_scene);
+                  (void) sscanf(argv[i],"%ld-%ld",&first_scene,&last_scene);
                 }
               break;
             }

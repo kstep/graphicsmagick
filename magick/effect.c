@@ -1232,7 +1232,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   distance=r->opacity-(int) pixel.opacity; \
   distance_squared+= \
     (double) (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
-  if (distance_squared < Threshold) \
+  if (distance_squared < (10.0*(1L << QuantumDepth))) \
     { \
       aggregate.red+=(weight)*r->red; \
       aggregate.green+=(weight)*r->green; \
@@ -1242,7 +1242,6 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
     } \
   r++;
 #define EnhanceImageText  "  Enhance image...  "
-#define Threshold  2500
 
   AggregatePacket
     aggregate;

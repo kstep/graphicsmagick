@@ -238,6 +238,9 @@ int main(int argc,char **argv)
     i,
     x;
 
+  long
+    number_scenes;
+
   QuantizeInfo
     *quantize_info;
 
@@ -245,7 +248,6 @@ int main(int argc,char **argv)
     *p;
 
   unsigned int
-    number_scenes,
     status;
 
   XImportInfo
@@ -343,7 +345,7 @@ int main(int argc,char **argv)
     "pageGeometry",(char *) NULL);
   resource_value=
     XGetResourceInstance(resource_database,client_name,"quality","85");
-  image_info->quality=atoi(resource_value);
+  image_info->quality=atol(resource_value);
   resource_value=
     XGetResourceInstance(resource_database,client_name,"screen","False");
   ximage_info.screen=IsTrue(resource_value);
@@ -411,7 +413,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing threshold",option);
-                  SetCacheThreshold(atoi(argv[i]));
+                  SetCacheThreshold(atol(argv[i]));
                 }
               break;
             }
@@ -423,7 +425,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing colors",option);
-                  quantize_info->number_colors=atoi(argv[i]);
+                  quantize_info->number_colors=atol(argv[i]);
                 }
               break;
             }
@@ -562,7 +564,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing image depth",option);
-                  image_info->depth=atoi(argv[i]);
+                  image_info->depth=atol(argv[i]);
                 }
               break;
             }
@@ -747,7 +749,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing quality",option);
-                  image_info->quality=atoi(argv[i]);
+                  image_info->quality=atol(argv[i]);
                 }
               break;
             }
@@ -776,7 +778,7 @@ int main(int argc,char **argv)
               i++;
               if ((i == argc) || !sscanf(argv[i],"%d",&x))
                 MagickError(OptionError,"Missing scene",option);
-              number_scenes=atoi(argv[i]);
+              number_scenes=atol(argv[i]);
               break;
             }
           if (LocaleNCompare("screen",option+1,3) == 0)
@@ -895,7 +897,7 @@ int main(int argc,char **argv)
   image_info->colorspace=quantize_info->colorspace;
   image_info->dither=quantize_info->dither;
   image=(Image *) NULL;
-  for (i=0; i < (int) Max(number_scenes,1); i++)
+  for (i=0; i < (long) Max(number_scenes,1); i++)
   {
     next_image=XImportImage(image_info,&ximage_info);
     if (next_image == (Image *) NULL)

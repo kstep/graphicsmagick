@@ -338,6 +338,9 @@ int main(int argc,char **argv)
   int
     x;
 
+  long
+    scene;
+
   register Image
     *p;
 
@@ -346,7 +349,6 @@ int main(int argc,char **argv)
 
   unsigned int
     global_colormap,
-    scene,
     status;
 
   /*
@@ -466,7 +468,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing threshold",option);
-                  SetCacheThreshold(atoi(argv[i]));
+                  SetCacheThreshold(atol(argv[i]));
                 }
               break;
             }
@@ -668,7 +670,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing image depth",option);
-                  image_info->depth=atoi(argv[i]);
+                  image_info->depth=atol(argv[i]);
                 }
               break;
             }
@@ -1259,7 +1261,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing quality",option);
-                  image_info->quality=atoi(argv[i]);
+                  image_info->quality=atol(argv[i]);
                 }
               break;
             }
@@ -1338,7 +1340,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing scene number",option);
-                  scene=atoi(argv[i]);
+                  scene=atol(argv[i]);
                 }
               break;
             }
@@ -1350,7 +1352,7 @@ int main(int argc,char **argv)
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing value",option);
                 }
-              srand((unsigned int) atoi(argv[i]));
+              srand(atoi(argv[i]));
               break;
             }
           if (LocaleNCompare("segment",option+1,3) == 0)

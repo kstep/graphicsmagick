@@ -146,21 +146,25 @@ int main(int argc,char **argv)
     exception;
 
   Image
-    *image,
-    *p;
+    *image;
 
   ImageInfo
     *image_info;
 
   int
-    number_images,
     x;
+
+  long
+    count,
+    number_images;
+
+  register Image
+    *p;
 
   register int
     i;
 
   unsigned int
-    count,
     status;
 
   /*
@@ -218,7 +222,7 @@ int main(int argc,char **argv)
                     i++;
                     if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                       MagickError(OptionError,"Missing threshold",option);
-                    SetCacheThreshold(atoi(argv[i]));
+                    SetCacheThreshold(atol(argv[i]));
                   }
                 break;
               }
@@ -252,7 +256,7 @@ int main(int argc,char **argv)
                     i++;
                     if ((i == argc) || !sscanf(argv[i],"%d",&x))
                       MagickError(OptionError,"Missing image depth",option);
-                    image_info->depth=atoi(argv[i]);
+                    image_info->depth=atol(argv[i]);
                   }
                 break;
               }

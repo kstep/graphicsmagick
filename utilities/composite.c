@@ -218,6 +218,7 @@ int main(int argc,char **argv)
     gravity;
 
   long
+    stegano,
     x,
     y;
 
@@ -228,7 +229,6 @@ int main(int argc,char **argv)
     doexit,
     matte,
     status,
-    stegano,
     stereo,
     tile;
 
@@ -350,7 +350,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing threshold",option);
-                  SetCacheThreshold(atoi(argv[i]));
+                  SetCacheThreshold(atol(argv[i]));
                 }
               break;
             }
@@ -522,7 +522,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing image depth",option);
-                  image_info->depth=atoi(argv[i]);
+                  image_info->depth=atol(argv[i]);
                 }
               break;
             }
@@ -741,7 +741,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing quality",option);
-                  image_info->quality=atoi(argv[i]);
+                  image_info->quality=atol(argv[i]);
                 }
               break;
             }
@@ -795,7 +795,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing offset",option);
-                  stegano=atoi(argv[i])+1;
+                  stegano=atol(argv[i])+1;
                 }
               break;
             }
@@ -934,12 +934,12 @@ int main(int argc,char **argv)
       /*
         Create mattes for dissolve.
       */
-      for (y=0; y < (int) composite_image->rows; y++)
+      for (y=0; y < (long) composite_image->rows; y++)
       {
         q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) composite_image->columns; x++)
+        for (x=0; x < (long) composite_image->columns; x++)
         {
           if (composite_image->matte)
             q->opacity=(Quantum) (((MaxRGB-q->opacity)*dissolve)/100);
@@ -977,8 +977,8 @@ int main(int argc,char **argv)
           /*
             Tile the composite image.
           */
-          for (y=0; y < (int) image->rows; y+=composite_image->rows)
-            for (x=0; x < (int) image->columns; x+=composite_image->columns)
+          for (y=0; y < (long) image->rows; y+=composite_image->rows)
+            for (x=0; x < (long) image->columns; x+=composite_image->columns)
             {
               status=CompositeImage(image,compose,composite_image,x,y);
               if (status == False)
@@ -1006,11 +1006,11 @@ int main(int argc,char **argv)
           if ((flags & XNegative) != 0)
             x+=image->columns;
           if ((flags & WidthValue) == 0)
-            width-=2*x > (int) width ? width : 2*x;
+            width-=2*x > (long) width ? width : 2*x;
           if ((flags & YNegative) != 0)
             y+=image->rows;
           if ((flags & HeightValue) == 0)
-            height-=2*y > (int) height ? height : 2*y;
+            height-=2*y > (long) height ? height : 2*y;
           switch (gravity)
           {
             case NorthWestGravity:

@@ -324,6 +324,11 @@ int main(int argc,char **argv)
     image_number,
     x;
 
+  long
+    first_scene,
+    last_scene,
+    scene;
+
   QuantizeInfo
     *quantize_info;
 
@@ -332,11 +337,8 @@ int main(int argc,char **argv)
     j;
 
   unsigned int
-    first_scene,
     *image_marker,
     last_image,
-    last_scene,
-    scene,
     status;
 
   unsigned long
@@ -437,7 +439,7 @@ int main(int argc,char **argv)
     "pageGeometry",(char *) NULL);
   resource_value=
     XGetResourceInstance(resource_database,client_name,"quality","75");
-  image_info->quality=atoi(resource_value);
+  image_info->quality=atol(resource_value);
   resource_value=
     XGetResourceInstance(resource_database,client_name,"verbose","False");
   image_info->verbose=IsTrue(resource_value);
@@ -530,7 +532,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing threshold",option);
-                  SetCacheThreshold(atoi(argv[i]));
+                  SetCacheThreshold(atol(argv[i]));
                 }
               break;
             }
@@ -561,7 +563,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing colors",option);
-                  quantize_info->number_colors=atoi(argv[i]);
+                  quantize_info->number_colors=atol(argv[i]);
                 }
               break;
             }
@@ -705,7 +707,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing image depth",option);
-                  image_info->depth=atoi(argv[i]);
+                  image_info->depth=atol(argv[i]);
                 }
               break;
             }
@@ -1049,7 +1051,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing quality",option);
-                  image_info->quality=atoi(argv[i]);
+                  image_info->quality=atol(argv[i]);
                 }
               break;
             }
@@ -1117,9 +1119,9 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing scene number",option);
-                  first_scene=atoi(argv[i]);
+                  first_scene=atol(argv[i]);
                   last_scene=first_scene;
-                  (void) sscanf(argv[i],"%u-%u",&first_scene,&last_scene);
+                  (void) sscanf(argv[i],"%ld-%ld",&first_scene,&last_scene);
                 }
               break;
             }
