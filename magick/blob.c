@@ -1695,7 +1695,7 @@ MagickExport int SyncBlob(Image *image)
   if (image->blob->data != (unsigned char *) NULL)
     {
       for (p=image; p->previous != (Image *) NULL; p=p->previous);
-      while (p->next != (Image *) NULL)
+      for ( ; p->next != (Image *) NULL; p=p->next)
         *p->blob=(*image->blob);
       return(0);
     }
