@@ -21,6 +21,19 @@
 </tr>
 </table>
 <p>
+2004-12-04  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/nt_base.c (opendir): Ensure that data may not overwrite
+        the stack.<BR>
+        (readdir): Ensure that data may not overwrite the stack.
+  <LI> magick/blob.c (ImageToBlob): Ensure that image-&gt;logging is
+        set prior to encoding image.<BR>
+  <LI> magick/constitute.c (WriteImage): Ensure that image-&gt;logging is
+        set prior to encoding image.
+
+</UL>
+<p>
 2004-11-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

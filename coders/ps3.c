@@ -331,7 +331,7 @@ static unsigned int JPEGEncodeImage(const ImageInfo *image_info,
     *blob;
 
   /*
-    Write image as JPEG image to a temporary file.
+    Write image as JPEG image to an in-memory BLOB
   */
   jpeg_image=CloneImage(image,0,0,True,&image->exception);
   if (jpeg_image == (Image *) NULL)

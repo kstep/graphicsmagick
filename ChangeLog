@@ -1,3 +1,13 @@
+2004-12-04  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+
+	* magick/nt_base.c (opendir): Ensure that data may not overwrite
+	the stack.
+	(readdir): Ensure that data may not overwrite the stack.
+	* magick/blob.c (ImageToBlob): Ensure that image->logging is
+	set prior to encoding image.
+	* magick/constitute.c (WriteImage): Ensure that image->logging is
+	set prior to encoding image.
+
 2004-11-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* rungm.sh.in: Compute final variable definitions from within

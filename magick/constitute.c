@@ -4221,6 +4221,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   assert(image_info->filename != (char *) NULL);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  image->logging=IsEventLogging();
   clone_info=CloneImageInfo(image_info);
   (void) strlcpy(clone_info->filename,image->filename,MaxTextExtent);
   (void) strlcpy(clone_info->magick,image->magick,MaxTextExtent);

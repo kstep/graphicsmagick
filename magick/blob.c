@@ -1731,6 +1731,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
+  image->logging=IsEventLogging();
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),"Entering ImageToBlob");
   SetExceptionInfo(exception,UndefinedException);
   clone_info=CloneImageInfo(image_info);

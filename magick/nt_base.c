@@ -2026,8 +2026,10 @@ MagickExport DIR *opendir(char *path)
     *entry;
 
   assert(path != (char *) NULL);
-  (void) strlcpy(file_specification,path,MaxTextExtent);
-  (void) strcat(file_specification,DirectorySeparator);
+  if (strlcpy(file_specification,path,MaxTextExtent) >= MaxTextExtent)
+    return (DIR *) NULL;;
+  if (strlcat(file_specification,DirectorySeparator,MaxTextExtent) >= MaxTextExtent)
+    return (DIR *) NULL;;
   entry=MagickAllocateMemory(DIR *,sizeof(DIR));
   if (entry != (DIR *) NULL)
     {
@@ -2036,12 +2038,16 @@ MagickExport DIR *opendir(char *path)
     }
   if (entry->hSearch == INVALID_HANDLE_VALUE)
     {
-      (void) strcat(file_specification,"\\*.*");
+      if (strlcat(file_specification,"\\*.*",MaxTextExtent) >= MaxTextExtent)
+        {
+          MagickFreeMemory(entry);
+          return (DIR *) NULL;
+        }
       entry->hSearch=FindFirstFile(file_specification,&entry->Win32FindData);
       if (entry->hSearch == INVALID_HANDLE_VALUE)
         {
           MagickFreeMemory(entry);
-          return (DIR *)NULL;
+          return (DIR *) NULL;
         }
     }
   return(entry);
@@ -2078,18 +2084,19 @@ MagickExport struct dirent *readdir(DIR *entry)
     status;
 
   if (entry == (DIR *) NULL)
-    return((struct dirent *) NULL);
+    return ((struct dirent *) NULL);
   if (!entry->firsttime)
     {
       status=FindNextFile(entry->hSearch,&entry->Win32FindData);
       if (status == 0)
-        return((struct dirent *) NULL);
+        return ((struct dirent *) NULL);
     }
+  if (strlcpy(entry->file_info.d_name,entry->Win32FindData.cFileName,
+              MaxTextExtent) >= MaxTextExtent)
+    return ((struct dirent *) NULL);
   entry->firsttime=FALSE;
-  (void) strlcpy(entry->file_info.d_name,entry->Win32FindData.cFileName,
-    MaxTextExtent);
   entry->file_info.d_namlen=strlen(entry->file_info.d_name);
-  return(&entry->file_info);
+  return (&entry->file_info);
 }
 
 /*
