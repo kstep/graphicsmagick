@@ -1131,8 +1131,8 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,int *width,
   HMETAFILE
     hOld;
 
-  width=512;
-  height=512;
+  *width=512;
+  *height=512;
   hTemp=GetEnhMetaFile(szFileName);
   if (hTemp != (HENHMETAFILE) NULL)
     {
@@ -1258,10 +1258,10 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
     *pBits,
     *ppBits;
 
+  image=AllocateImage(image_info);
   hemf=ReadEnhMetaFile(image_info->filename,&width,&height);
   if (!hemf)
     ThrowReaderException(FatalException,"file is not a metafile",image);
-  image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
     {
       image->rows=height;
@@ -1348,14 +1348,14 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
   pBits=ppBits;
   for (y=0; y < (long) image->rows; y++)
   {
-    q=SetImagePixels(image,0,y,image->columns,1,exception);
-    if (p == (PixelPacket *) NULL)
+    q=SetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
       q->red=UpScale(pBits->rgbRed);
       q->green=UpScale(pBits->rgbGreen);
-      q->blue=Upscale(pBits->rgbBlue);
+      q->blue=UpScale(pBits->rgbBlue);
       q->opacity=OpaqueOpacity;
       pBits++;
       q++;

@@ -346,7 +346,7 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
   info=0;
   if ((image->columns >= 256) || (image->rows >= 256))
     SetBit(info,4,1);
-  (void) WriteBlobMSBShort(image,info);
+  (void) WriteBlobByte(image,info);
   if ((image->columns >= 256) || (image->rows >= 256))
     {
       (void) WriteBlobMSBShort(image,image->columns);
