@@ -271,7 +271,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
   coalesce_image=CloneImage(image,0,0,True,exception);
   if (coalesce_image == (Image *) NULL)
     return((Image *) NULL);
-  memset(coalesce_image->page,0,sizeof(RectangleInfo));
+  memset(&coalesce_image->page,0,sizeof(RectangleInfo));
   /*
     Coalesce image.
   */
@@ -289,7 +289,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
     coalesce_image->start_loop=next->start_loop;
     CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
       CopyCompositeOp,next,next->page.x,next->page.y);
-    memset(coalesce_image->page,0,sizeof(RectangleInfo));
+    memset(&coalesce_image->page,0,sizeof(RectangleInfo));
   }
   while (coalesce_image->previous != (Image *) NULL)
     coalesce_image=coalesce_image->previous;
