@@ -296,7 +296,7 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       image=(Image *) blob;
       if (image->signature != MagickSignature)
         {
-          ThrowException(exception,RegistryWarning,"Unable set registry",
+          ThrowException(exception,RegistryWarning,"Unable to set registry",
             "Image expected");
           return(-1);
         }
