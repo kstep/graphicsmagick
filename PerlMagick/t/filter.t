@@ -174,7 +174,7 @@ testFilter('input.miff', 'Raise',
 testFilter('input.miff', 'Resize',
   q/50%/,
   '7ea3136a58612a2f6763337b129ba6215524c881c3d69af1bfe34ddd327fed13',
-  'e7f9bb6c93f51990f873cc0c968089e6a42dd7356c87cafc86dd51a91ac0e8f4');
+  'e5b49be4a49daa90760c029a67de8324db52ca088efa39b25e25c5247ea11469');
 
 ++$test;
 testFilter('input.miff', 'Roll',
