@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020908;16044300">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20020915;18325700">
+	<META NAME="CHANGED" CONTENT="20030209;19484800">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
 	<STYLE>
@@ -21,10 +21,9 @@
 	</STYLE>
 </HEAD>
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-
 <P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
-<P>The GraphicsMagick source is available via anonymous CVS. This is a
-convenient way for developers from around the country or world to
+<P>The GraphicsMagick source is available via anonymous CVS. This is
+a convenient way for developers from around the country or world to
 download the GraphicsMagick source, fix bugs, or add new features. 
 </P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
@@ -40,8 +39,7 @@ Concurrent Version System and is a very popular mean of version
 control for software projects. It is designed to allow multiple
 authors to be able to simultaneously operate on the same source tree.
 This source tree is centrally maintained, but each developer has a
-local mirror of this repository that they make their changes to. 
-</DD>
+local mirror of this repository that they make their changes to.</DD>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
 		<TD BGCOLOR="#52799e">
@@ -52,8 +50,10 @@ local mirror of this repository that they make their changes to.
 </TABLE>
 <DD STYLE="margin-left: 0in">Here is a summary of CVS commands. See
 the <A HREF="http://www.cvshome.org/">CVS Home Page</A> for detailed
-information and documentation about CVS. 
-</DD><CENTER>
+information and documentation about CVS. The command &quot;cvs
+&ndash;help-commands&quot; will print out all of the available
+commands. The command &quot;cvs <I>command</I> &ndash;help&quot; will
+cause a help message to be printed for the specified &quot;<I>command</I>&quot;.</DD><CENTER>
 	<TABLE WIDTH=96% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 BGCOLOR="#99ccff">
 		<COL WIDTH=30*>
 		<COL WIDTH=226*>
@@ -81,7 +81,7 @@ information and documentation about CVS.
 		<TR>
 			<TD WIDTH=12% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>get</FONT></FONT></P>
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>checkout</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=88% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
@@ -179,24 +179,24 @@ information and documentation about CVS.
 	</TR>
 </TABLE>
 <DD STYLE="margin-left: 0in; margin-bottom: 0.2in">The source tree
-for GraphicsMagick is stored on <TT>cvs.simplesystems.org</TT>. To
+for GraphicsMagick is stored on <TT>cvs.graphicsmagick.org</TT>. To
 access the tree you need to first set up your CVSROOT environment
 variable so that cvs knows where to go to grab the source from. The
 proper value for CVSROOT is: 
-</DD><PRE STYLE="margin-bottom: 0.2in"> :pserver:anonymous@cvs.simplesystems.org:/cvsroot</PRE><P>
+</DD><PRE STYLE="margin-bottom: 0.2in"> :pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick</PRE><P>
 For example, in tcsh do: 
 </P>
-<PRE STYLE="margin-bottom: 0.2in"> setenv CVSROOT :pserver:anonymous@cvs.simplesystems.org:/cvsroot</PRE><P>
+<PRE STYLE="margin-bottom: 0.2in"> setenv CVSROOT :pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick</PRE><P>
 In a bourne shell descendant (e.g. bash) the following syntax has to
 be used 
 </P>
-<PRE STYLE="margin-bottom: 0.2in"> export CVSROOT=':pserver:anonymous@cvs.simplesystems.org:/cvsroot'</PRE><P>
+<PRE STYLE="margin-bottom: 0.2in"> export CVSROOT=':pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick'</PRE><P>
 Or whatever the approriate syntax for your shell of choice is. 
 </P>
 <P>Alternatively, you can specify the cvs root directly on the
 command line: 
 </P>
-<PRE STYLE="margin-bottom: 0.2in"> cvs -d :pserver:anonymous@cvs.simplesystems.org:/cvsroot</PRE><P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs -d :pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick</PRE><P>
 Next, the first time the source tree is checked out, a cvs login is
 needed. 
 </P>
@@ -231,7 +231,8 @@ and only the files which have changed will be updated.
 		</DD></DL>
 </DL>
 <P>
-To check out the GraphicsMagick source for NT, try this commmand line: 
+To check out the GraphicsMagick source for NT, try this commmand
+line: 
 </P>
 <PRE STYLE="margin-bottom: 0.2in"> cvs -z3 co -P GraphicsMagick-NT</PRE><P>
 If you require a specific release of GraphicsMagick, you may check it
@@ -246,15 +247,20 @@ are available.</P>
 <PRE STYLE="margin-bottom: 0.2in"> cvs -z3 update -r GraphicsMagick-1_0_0 </PRE><P>
 from within an existing checked out directory to move it up (or down)
 to that release branch.</P>
-<P>Once a release has been tagged, checking out from a release branch
-is the only reliable way to obtain release files from CVS since the
+<P>Checking out from release tag, or updating to a release tag,
+causes the &quot;sticky&quot; flag to be set on checked out files so
+that further update requests will only cause an update if the tag is
+a branch tag, and is a newer version on the branch. To clear the
+sticky flags and update to the most current version on the main
+branch, use</P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 update -A</PRE><P>
+Once a release has been tagged, checking out from a release branch is
+the only reliable way to obtain release files from CVS since the
 default is to always check out the current development sources, which
 may not be stable or released.</P>
-<P>The anoncvs tree is only updated once a day or so, so updating
-more than once a day serves no purpose. Also, using compression
-levels over <TT>-z3</TT>,may actually slow the CVS transfer since
-they require the CVS server to work much harder, yet doesn't compress
-the data much more.</P>
+<P>Using compression levels over <TT>-z3</TT>,may actually slow the
+CVS transfer since they require the CVS server to work much harder,
+yet don't compress the data much more.</P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
 		<TD BGCOLOR="#52799e">
@@ -265,7 +271,7 @@ the data much more.</P>
 </TABLE>
 <DD STYLE="margin-left: 0in; margin-bottom: 0.2in">The best place to
 look for the latest version of CVS is at the <A HREF="http://www.cvshome.org/">CVS
-Home Page </A>. There is also a lot of infomation and documentation
+Home Page </A>. There is also a lot of information and documentation
 about CVS available. 
 </DD><HR>
 <P><A HREF="../index.html"><IMG SRC="../images/home.png" NAME="Graphic9" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@graphicsmagick.org"><IMG SRC="../images/mail.png" NAME="Graphic10" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=1>
