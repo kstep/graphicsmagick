@@ -144,7 +144,10 @@ static unsigned int DecodeImage(Image *image,const int channel)
             }
             case 1:
             {
-              q->green=UpScale(pixel);
+              if (image->storage_class == PseudoClass)
+                q->opacity=UpScale(pixel);
+              else
+                q->green=UpScale(pixel);
               break;
             }
             case 2:
@@ -155,10 +158,8 @@ static unsigned int DecodeImage(Image *image,const int channel)
             case 3:
             case -1:
             {
-              if (image->colorspace == CMYKColorspace)
-                q->opacity=UpScale(pixel);
-              else
-                q->opacity=MaxRGB-UpScale(pixel);
+              q->opacity=UpScale(pixel);
+              break;
             }
             case 4:
             {
@@ -198,7 +199,10 @@ static unsigned int DecodeImage(Image *image,const int channel)
         }
         case 1:
         {
-          q->green=UpScale(pixel);
+          if (image->storage_class == PseudoClass)
+            q->opacity=UpScale(pixel);
+          else
+            q->green=UpScale(pixel);
           break;
         }
         case 2:
@@ -209,10 +213,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
         case 3:
         case -1:
         {
-          if (image->colorspace == CMYKColorspace)
-            q->opacity=UpScale(pixel);
-          else
-            q->opacity=MaxRGB-UpScale(pixel);
+          q->opacity=UpScale(pixel);
           break;
         }
         case 4:
@@ -454,9 +455,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->rows=psd_info.rows;
   image->depth=psd_info.depth <= 8 ? 8 : QuantumDepth;
   if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode))
-    if (!AllocateImageColormap(image,256))
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-        image);
+    {
+      if (!AllocateImageColormap(image,256))
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          image);
+      image->matte=psd_info.channels >= 2;
+    }
   length=ReadBlobMSBLong(image);
   if (length > 0)
     {
@@ -472,6 +476,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->colormap[i].green=UpScale(ReadBlobByte(image));
       for (i=0; i < (int) image->colors; i++)
         image->colormap[i].blue=UpScale(ReadBlobByte(image));
+      image->matte=psd_info.channels >= 2;
     }
   length=ReadBlobMSBLong(image);
   if (length != 0)
@@ -632,6 +637,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               layer_info[i].image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
+            indexes=GetIndexes(image);
             (void) ReadBlob(layer_info[i].image,packet_size*
               layer_info[i].image->columns,(char *) scanline);
             switch (layer_info[i].channel_info[j].type)
@@ -648,8 +654,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
               case 1:
               {
-                (void) PushImagePixels(layer_info[i].image,GreenQuantum,
-                  scanline);
+                if (image->storage_class == PseudoClass)
+                  (void) PushImagePixels(layer_info[i].image,AlphaQuantum,
+                    scanline);
+                else
+                  (void) PushImagePixels(layer_info[i].image,GreenQuantum,
+                    scanline);
                 break;
               }
               case 2:
@@ -674,7 +684,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (layer_info[i].image->colorspace == CMYKColorspace)
                   (void) PushImagePixels(layer_info[i].image,AlphaQuantum,
                     scanline);
-                break;
+		    break;
               }
               default:
                 break;
@@ -788,7 +798,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case 1:
             {
-              (void) PushImagePixels(image,GreenQuantum,scanline);
+              if (image->storage_class == PseudoClass)
+                (void) PushImagePixels(image,AlphaQuantum,scanline);
+              else
+                (void) PushImagePixels(image,GreenQuantum,scanline);
               break;
             }
             case 2:

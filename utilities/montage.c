@@ -214,7 +214,7 @@ static void Usage()
       "-tile geometry      number of tiles per row and column",
       "-transparent color  make this color transparent within the image",
       "-treedepth value    depth of the color color tree",
-      "-type type          image type
+      "-type type          image type",
       "-verbose            print detailed information about the image",
       (char *) NULL
     };
