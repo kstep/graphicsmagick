@@ -662,6 +662,21 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         clone_info->antialias=strtod(p,&p);
         continue;
       }
+    if (LocaleCompare("decorate",keyword) == 0)
+      {
+        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
+          keyword[x]=(*p++);
+        keyword[x]='\0';
+        if (LocaleCompare("none",keyword) == 0)
+          clone_info->decorate=NoDecoration;
+        if (LocaleCompare("underline",keyword) == 0)
+          clone_info->decorate=UnderlineDecoration;
+        if (LocaleCompare("overline",keyword) == 0)
+          clone_info->decorate=OverlineDecoration;
+        if (LocaleCompare("line-through",keyword) == 0)
+          clone_info->decorate=LineThroughDecoration;
+        continue;
+      }
     if (LocaleCompare("fill",keyword) == 0)
       {
         for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
@@ -1983,6 +1998,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->stroke=image_info->stroke;
   (void) QueryColorDatabase("none",&draw_info->box);
   draw_info->border_color=image_info->border_color;
+  draw_info->decorate=NoDecoration;
   draw_info->tile=(Image *) NULL;
 }
 
@@ -2422,11 +2438,15 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
         for (i=0; i < 6; i++)
           annotate->affine[i]=draw_info->affine[i];
         annotate->gravity=draw_info->gravity;
-        annotate->text=AllocateString(p->text);
+        annotate->decorate=draw_info->decorate;
         annotate->geometry=AllocateString("                                  ");
         annotate->fill=draw_info->fill;
         annotate->stroke=draw_info->stroke;
         annotate->box=draw_info->box;
+        annotate->text=(char *) AllocateMemory(r-p->text+1);
+        if (annotate->text == (char *) NULL)
+          MagickError(ResourceLimitError,"Unable to annotate image",
+            "Memory allocation failed");
         (void) strncpy(annotate->text,p->text,r-p->text);
         annotate->text[r-p->text]='\0';
         FormatString(annotate->geometry,"%+f%+f",p->pixel.x,p->pixel.y);

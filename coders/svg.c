@@ -82,6 +82,9 @@ typedef struct _GraphicContext
   GravityType
     gravity;
 
+  DecorationType
+    decorate;
+
   double
     linewidth,
     pointsize,
@@ -710,6 +713,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 if (LocaleCompare(tokens[j],"right") == 0)
                   q->gravity=NorthEastGravity;
               }
+            if (LocaleCompare(tokens[j],"text-decoration:") == 0)
+              {
+                j++;
+                if (LocaleCompare(tokens[j],"underline") == 0)
+                  q->decorate=UnderlineDecoration;
+                if (LocaleCompare(tokens[j],"line-through") == 0)
+                  q->decorate=LineThroughDecoration;
+                if (LocaleCompare(tokens[j],"overline") == 0)
+                  q->decorate=OverlineDecoration;
+              }
             if (LocaleCompare(tokens[j],"text-antialiasing:") == 0)
               q->antialias=LocaleCompare(tokens[++j],"true");
           }
@@ -744,19 +757,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   angle;
 
                 angle=atof(tokens[++j]+1);
-                q->angle=angle;
                 affine[0]=cos(DegreesToRadians(fmod(angle,360.0)));
-                affine[1]=sin(DegreesToRadians(fmod(angle,360.0)));
-                affine[2]=(-sin(DegreesToRadians(fmod(angle,360.0))));
+                affine[1]=(-sin(DegreesToRadians(fmod(angle,360.0))));
+                affine[2]=sin(DegreesToRadians(fmod(angle,360.0)));
                 affine[3]=cos(DegreesToRadians(fmod(angle,360.0)));
               }
             if (LocaleCompare(tokens[j],"scale") == 0)
               {
-                j++;
-                k=sscanf(tokens[j]+1,"%lf%lf",&affine[0],&affine[3]);
-                if (k == 1)
-                  affine[3]=affine[0];
-                k=sscanf(tokens[j]+1,"%lf,%lf",&affine[0],&affine[3]);
+                p=tokens[++j]+1;
+                affine[0]=strtod(p,&p);
+                affine[3]=affine[0];
               }
             if (LocaleCompare(tokens[j],"skewX") == 0)
               {
@@ -906,13 +916,47 @@ static void SVGEndElement(void *context,const xmlChar *name)
     (void) fprintf(stdout,"SAX.endElement(%s)\n",(char *) name);
   p=svg_info->graphic_context+svg_info->n;
   (void) fprintf(svg_info->file,"antialias %d\n",p->antialias);
-  if (p->gravity == NorthEastGravity)
-    (void) fprintf(svg_info->file,"gravity NorthEast\n");
-  else
-    if (p->gravity == NorthGravity)
+  switch (p->gravity)
+  {
+    case NorthEastGravity:
+    {
+      (void) fprintf(svg_info->file,"gravity NorthEast\n");
+      break;
+    }
+    case NorthGravity:
+    {
       (void) fprintf(svg_info->file,"gravity North\n");
-    else
+      break;
+    }
+    case NorthWestGravity:
+    {
       (void) fprintf(svg_info->file,"gravity NorthWest\n");
+      break;
+    }
+  }
+  switch (p->decorate)
+  {
+    case NoDecoration:
+    {
+      (void) fprintf(svg_info->file,"decorate none\n");
+      break;
+    }
+    case UnderlineDecoration:
+    {
+      (void) fprintf(svg_info->file,"decorate underline\n");
+      break;
+    }
+    case LineThroughDecoration:
+    {
+      (void) fprintf(svg_info->file,"decorate line-through\n");
+      break;
+    }
+    case OverlineDecoration:
+    {
+      (void) fprintf(svg_info->file,"decorate overline\n");
+      break;
+    }
+  }
   (void) fprintf(svg_info->file,"linewidth %g\n",p->linewidth);
   (void) fprintf(svg_info->file,"pointsize %g\n",p->pointsize);
   (void) fprintf(svg_info->file,"opacity %g\n",p->opacity);
@@ -1280,6 +1324,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     AllocateString(image_info->font ? image_info->font : "Times");
   svg_info.graphic_context[0].antialias=True;
   svg_info.graphic_context[0].gravity=NorthWestGravity;
+  svg_info.graphic_context[0].decorate=NoDecoration;
   svg_info.graphic_context[0].linewidth=1.0;
   svg_info.graphic_context[0].pointsize=12.0;
   svg_info.graphic_context[0].opacity=100.0;

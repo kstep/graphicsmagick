@@ -4517,10 +4517,8 @@ Mogrify(ref,...)
             for (k=0; k < 6; k++)
             {
               current[k]=draw_info->affine[k];
-              affine[k]=0.0;
+              affine[k]=(k == 0) || (k == 3) ? 1.0 : 0.0;
             }
-            affine[0]=1.0;
-            affine[3]=1.0;
             switch (j)
             {
               case 10:

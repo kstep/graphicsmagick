@@ -109,8 +109,7 @@ typedef struct _AnnotateInfo
   char
     *geometry,
     *text,
-    *font,
-    *font_name;
+    *font;
 
   unsigned int
     antialias;
@@ -127,6 +126,12 @@ typedef struct _AnnotateInfo
     fill,
     stroke,
     box;
+
+  DecorationType
+    decorate;
+
+  char
+    *font_name;
 
   RectangleInfo
     bounds;
@@ -478,6 +483,9 @@ typedef struct _DrawInfo
     stroke,
     box,
     border_color;
+
+  DecorationType
+    decorate;
 
   Image
     *tile;

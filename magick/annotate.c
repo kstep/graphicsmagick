@@ -211,6 +211,33 @@ MagickExport unsigned int AnnotateImage(Image *image,
     annotate_image=ReadImage(image_info,&image->exception);
     if (annotate_image == (Image *) NULL)
       break;
+    if (annotate_info->decorate != NoDecoration)
+      {
+        register PixelPacket
+          *q;
+
+        /*
+          Decorate text.
+        */
+        if (annotate_info->decorate == OverlineDecoration)
+          q=GetImagePixels(annotate_image,0,0,annotate_image->columns,1);
+        else
+          if (annotate_info->decorate == UnderlineDecoration)
+            q=GetImagePixels(annotate_image,0,annotate_image->bounding_box.y2,
+              annotate_image->columns,1);
+          else
+            q=GetImagePixels(annotate_image,0,annotate_image->bounding_box.y2/
+              2.0,annotate_image->columns,1);
+        if (q != (PixelPacket *) NULL)
+          {
+            register int
+              j;
+
+            for (j=0; j < annotate_image->columns; j++)
+              *q++=annotate_info->fill;
+            SyncImagePixels(annotate_image);
+          }
+     }
     if (annotate_info->degrees != 0.0)
       {
         Image
@@ -464,7 +491,6 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_info->text=(char *) NULL;
   annotate_info->font=AllocateString(image_info->font);
   annotate_info->antialias=image_info->antialias;
-  annotate_info->font_name=(char *) NULL;
   annotate_info->gravity=NorthWestGravity;
   annotate_info->pointsize=image_info->pointsize;
   annotate_info->degrees=0.0;
@@ -473,6 +499,8 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_info->fill=image_info->fill;
   annotate_info->stroke=image_info->stroke;
   (void) QueryColorDatabase("none",&annotate_info->box);
+  annotate_info->decorate=NoDecoration;
+  annotate_info->font_name=(char *) NULL;
   annotate_info->bounds.width=ceil(image_info->pointsize);
   annotate_info->bounds.height=ceil(image_info->pointsize);
   annotate_info->bounds.x=0;

@@ -738,7 +738,6 @@ int main(int argc,char **argv)
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  montage_info->gravity=(~0);
                   if (LocaleCompare("Forget",option) == 0)
                     montage_info->gravity=ForgetGravity;
                   if (LocaleCompare("NorthWest",option) == 0)

@@ -83,6 +83,14 @@ typedef enum
 
 typedef enum
 {
+  NoDecoration,
+  UnderlineDecoration,
+  OverlineDecoration,
+  LineThroughDecoration
+} DecorationType;
+
+typedef enum
+{
   UndefinedException,
   ResourceLimitWarning = 300,
   XServerWarning = 305,
