@@ -276,7 +276,8 @@ The address of a structure of type Image.
 
 <DT><STRONG>length:</STRONG><DD>
 <P>
-This pointer to an unsigned int is set to the length of the image blob.
+This pointer to an unsigned int sets the initial length of the blob. On
+return, it reflects the actual length of the blob.
 
 </DL></DL>
 <P>
@@ -460,7 +461,7 @@ Specifies an integer representing the number of items to write to the file.
 
 <DT><STRONG>data:</STRONG><DD>
 <P>
-Specifies an data to write to the file.
+The address of the data to write to the blob or file.
 
 </DL></DL>
 </BODY>

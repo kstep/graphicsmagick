@@ -8,7 +8,9 @@
 extern "C" {
 #endif
 
-#define MaxBlobExtent  65535
+#if !defined(BlobQuantum)
+#define BlobQuantum  65535
+#endif
 
 /*
   Blob methods.
@@ -35,7 +37,8 @@ extern Export unsigned long
 
 extern Export void
   CloseBlob(Image *),
-  GetBlobInfo(BlobInfo *);
+  GetBlobInfo(BlobInfo *),
+  SetBlobQuantum(BlobInfo *,const unsigned long);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -106,7 +106,7 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
   magick_info=(MagickInfo *) GetMagickInfo(local_info->magick);
   if (magick_info == (MagickInfo *) NULL)
     {
-      MagickWarning(FileOpenWarning,"Unrecognized image format",
+      MagickWarning(BlobWarning,"Unrecognized image format",
         local_info->magick);
       DestroyImageInfo(local_info);
       return((Image *) NULL);
@@ -131,7 +131,7 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
   file=fopen(local_info->filename,"w");
   if (file == (FILE *) NULL)
     {
-      MagickWarning(FileOpenWarning,"Unable to convert blob to an image",
+      MagickWarning(BlobWarning,"Unable to convert blob to an image",
         local_info->filename);
       DestroyImageInfo(local_info);
       return((Image *) NULL);
@@ -177,6 +177,9 @@ Export void CloseBlob(Image *image)
   if (image->blob.data != (char *) NULL)
     {
       image->filesize=image->blob.length;
+      image->blob.extent=image->blob.length;
+      image->blob.data=(char *)
+        ReallocateMemory(image->blob.data,image->blob.extent);
       return;
     }
   if (image->file == (FILE *) NULL)
@@ -302,6 +305,7 @@ Export void GetBlobInfo(BlobInfo *blob_info)
   blob_info->offset=0;
   blob_info->length=0;
   blob_info->extent=0;
+  blob_info->quantum=BlobQuantum;
 }
 
 /*
@@ -380,8 +384,8 @@ Export char *GetStringBlob(Image *image,char *string)
 %
 %    o image: The address of a structure of type Image.
 %
-%    o length: This pointer to an unsigned int is set to the length of
-%      the image blob.
+%    o length: This pointer to an unsigned int sets the initial length of the
+%      blob.  On return, it reflects the actual length of the blob.
 %
 %
 */
@@ -413,15 +417,21 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
         Native blob support for this image format.
       */
       *image->filename='\0';
-      local_info->blob.data=(char *) AllocateMemory(MaxTextExtent);
+      local_info->blob.extent=Max(*length,image->blob.quantum);
+      local_info->blob.data=(char *) AllocateMemory(local_info->blob.extent);
+      if (local_info->blob.data == (char *) NULL)
+        {
+          MagickWarning(BlobWarning,"Unable to create blob",
+            "Memory allocation failed");
+          return((char *) NULL);
+        }
       local_info->blob.offset=0;
       local_info->blob.length=0;
       status=WriteImage(local_info,image);
       DestroyImageInfo(local_info);
       if (status == False)
         {
-          MagickWarning(FileOpenWarning,"Unable to convert image to a blob",
-            local_info->magick);
+          MagickWarning(BlobWarning,"Unable to create blob",local_info->magick);
           return((char *) NULL);
         }
       *length=image->blob.length;
@@ -438,8 +448,7 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
   status=WriteImage(local_info,image);
   if (status == False)
     {
-      MagickWarning(FileOpenWarning,"Unable to convert image to a blob",
-        image->filename);
+      MagickWarning(BlobWarning,"Unable to create blob",image->filename);
       return((char *) NULL);
     }
   /*
@@ -451,19 +460,20 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
   DestroyImageInfo(local_info);
   if (file == (FILE *) NULL)
     {
-      MagickWarning(FileOpenWarning,"Unable to convert image to a blob",
-        image->filename);
+      MagickWarning(BlobWarning,"Unable to create blob",image->filename);
       return((char *) NULL);
     }
   (void) fseek(file,0L,SEEK_END);
   *length=ftell(file);
   (void) fseek(file,0L,SEEK_SET);
   blob=(char *) AllocateMemory(*length*sizeof(char));
-  if (blob != (char *) NULL)
-    (void) fread((char *) blob,1,*length,file);
-  else
-    MagickError(ResourceLimitWarning,"Unable to create blob",
-      "Memory allocation failed");
+  if (blob == (char *) NULL)
+    {
+      MagickWarning(BlobWarning,"Unable to create blob",
+        "Memory allocation failed");
+      return((char *) NULL);
+    }
+  (void) fread((char *) blob,1,*length,file);
   (void) fclose(file);
   return(blob);
 }
@@ -705,7 +715,7 @@ Export unsigned long ReadBlob(Image *image,const unsigned long number_bytes,
         Read bytes from blob.
       */
       offset=Min(number_bytes,(unsigned long)
-	(image->blob.length-image->blob.offset));
+        (image->blob.length-image->blob.offset));
       if (number_bytes > 0)
         (void) memcpy(data,image->blob.data+image->blob.offset,offset);
       image->blob.offset+=offset;
@@ -805,6 +815,40 @@ Export int SeekBlob(Image *image,const long offset,const int whence)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  S e t B l o b Q u a n t u m                                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetBlobQuantum set the current value of the blob quantum.  This
+%  is the size in bytes to add to a blob when writing to a blob exceeds its
+%  current length.
+%
+%  The format of the SetBlobQuantum routine is:
+%
+%      status=SetBlobQuantum(blob_info,quantum)
+%
+%  A description of each parameter follows:
+%
+%    o blob_info:  A pointer to a BlobInfo structure.
+%
+%    o quantum: An unsigned long that reflects the number of bytes to
+%      increase a blob.
+%
+%
+*/
+Export void SetBlobQuantum(BlobInfo *blob_info,const unsigned long quantum)
+{
+  assert(blob_info != (BlobInfo *) NULL);
+  blob_info->quantum=quantum;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  T e l l B l o b                                                            %
 %                                                                             %
 %                                                                             %
@@ -884,7 +928,7 @@ Export unsigned long WriteBlob(Image *image,const unsigned long number_bytes,
     }
   if (number_bytes > (unsigned long) (image->blob.extent-image->blob.offset))
     {
-      image->blob.extent+=number_bytes+MaxBlobExtent;
+      image->blob.extent+=number_bytes+image->blob.quantum;
       image->blob.data=(char *)
         ReallocateMemory(image->blob.data,image->blob.extent);
       if (image->blob.data == (char *) NULL)

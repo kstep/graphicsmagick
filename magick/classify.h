@@ -300,7 +300,8 @@ typedef enum
   DelegateError = 415,
   MissingDelegateError = 420,
   CorruptImageError = 425,
-  FileOpenError = 430
+  FileOpenError = 430,
+  BlobError = 435
 } ErrorType;
 
 typedef enum
@@ -312,7 +313,8 @@ typedef enum
   DelegateWarning = 315,
   MissingDelegateWarning = 320,
   CorruptImageWarning = 325,
-  FileOpenWarning = 330
+  FileOpenWarning = 330,
+  BlobWarning = 335
 } WarningType;
 
 #if defined(__cplusplus) || defined(c_plusplus)

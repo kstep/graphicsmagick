@@ -58,7 +58,8 @@ typedef struct _BlobInfo
   long
     offset,
     length,
-    extent;
+    extent,
+    quantum;
 } BlobInfo;
 
 typedef struct _ColorlistInfo

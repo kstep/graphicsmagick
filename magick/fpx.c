@@ -103,7 +103,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
     *flashpix;
 
   FPXStatus
-    status;
+    fpx_status;
 
   FPXSummaryInformation
     summary_info;
@@ -139,6 +139,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
     *scanline;
 
   unsigned int
+    status,
     subimage;
 
   unsigned long
@@ -193,8 +194,8 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
     Initialize FPX toolkit.
   */
   memory_limit=20000000;
-  status=FPX_SetToolkitMemoryLimit(&memory_limit);
-  if (status != FPX_OK)
+  fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);
+  if (fpx_status != FPX_OK)
     ReaderExit(DelegateWarning,"Unable to initialize FPX library",image);
   tile_width=64;
   tile_height=64;
@@ -205,18 +206,18 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
       fsspec;
 
     FilenameToFSSpec(image->filename,&fsspec);
-    status=FPX_OpenBlobByFilename((const FSSpec &) fsspec,
+    fpx_status=FPX_OpenImageByFilename((const FSSpec &) fsspec,
 #else
-    status=FPX_OpenBlobByFilename(image->filename,
+    fpx_status=FPX_OpenImageByFilename(image->filename,
 #endif
       NULL,&width,&height,&tile_width,&tile_height,&colorspace,&flashpix);
   }
-  if (status == FPX_LOW_MEMORY_ERROR)
+  if (fpx_status == FPX_LOW_MEMORY_ERROR)
     {
       FPX_ClearSystem();
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     }
-  if (status != FPX_OK)
+  if (fpx_status != FPX_OK)
     {
       FPX_ClearSystem();
       ReaderExit(FileOpenWarning,"Unable to open FPX file",image);
@@ -230,15 +231,15 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
         Get the aspect ratio.
       */
       aspect_ratio=(float) width/height;
-      status=FPX_GetImageResultAspectRatio(flashpix,&aspect_ratio);
-      if (status != FPX_OK)
+      fpx_status=FPX_GetImageResultAspectRatio(flashpix,&aspect_ratio);
+      if (fpx_status != FPX_OK)
         MagickWarning(DelegateWarning,"Unable to read aspect ratio",
           image_info->filename);
       if (width != (unsigned long) ((aspect_ratio*height)+0.5))
         Swap(width,height);
     }
-  status=FPX_GetSummaryInformation(flashpix,&summary_info);
-  if (status != FPX_OK)
+  fpx_status=FPX_GetSummaryInformation(flashpix,&summary_info);
+  if (fpx_status != FPX_OK)
     {
       FPX_ClearSystem();
       ReaderExit(FileOpenWarning,"Unable to read summary info",image);
@@ -346,7 +347,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
       (scanline == (unsigned char *) NULL))
     {
       FPX_ClearSystem();
-      (void) FPX_CloseBlob(flashpix);
+      (void) FPX_CloseImage(flashpix);
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     }
   /*
@@ -392,17 +393,17 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
           Read FPX image tile (with or without viewing transform)..
         */
         if (image_info->view != (char *) NULL)
-          status=FPX_ReadImageRectangle(flashpix,0,y,image->columns,y+
+          fpx_status=FPX_ReadImageRectangle(flashpix,0,y,image->columns,y+
             tile_height-1,subimage,&fpx_info);
         else
-          status=FPX_ReadImageTransformRectangle(flashpix,0.0F,(float) y/
+          fpx_status=FPX_ReadImageTransformRectangle(flashpix,0.0F,(float) y/
             image->rows,(float) image->columns/image->rows,(float) (y+
             tile_height-1)/image->rows,(long) image->columns,(long) tile_height,
             &fpx_info);
-        if (status == FPX_LOW_MEMORY_ERROR)
+        if (fpx_status == FPX_LOW_MEMORY_ERROR)
           {
             FreeMemory((char *) scanline);
-            (void) FPX_CloseBlob(flashpix);
+            (void) FPX_CloseImage(flashpix);
             FPX_ClearSystem();
             ReaderExit(ResourceLimitWarning,"Memory allocation failed",
               image);
@@ -456,7 +457,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
   }
   SetRunlengthPackets(image,packets);
   FreeMemory((char *) scanline);
-  (void) FPX_CloseBlob(flashpix);
+  (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
   if (image->temporary)
     {
@@ -491,11 +492,11 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
 %
 %  The format of the WriteFPXImage routine is:
 %
-%      status=WriteFPXImage(image_info,image)
+%      fpx_status=WriteFPXImage(image_info,image)
 %
 %  A description of each parameter follows.
 %
-%    o status: Method WriteFPXImage return True if the image is written.
+%    o fpx_status: Method WriteFPXImage return True if the image is written.
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
@@ -712,7 +713,7 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     *flashpix;
 
   FPXStatus
-    status;
+    fpx_status;
 
   FPXSummaryInformation
     summary_info;
@@ -736,6 +737,9 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 
   unsigned char
     *pixels;
+
+  unsigned int
+    status;
 
   unsigned long
     memory_limit,
@@ -768,8 +772,8 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     Initialize FPX toolkit.
   */
   memory_limit=20000000;
-  status=FPX_SetToolkitMemoryLimit(&memory_limit);
-  if (status != FPX_OK)
+  fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);
+  if (fpx_status != FPX_OK)
     WriterExit(ResourceLimitWarning,"Unable to initialize FPX library",
       image);
   tile_width=64;
@@ -795,23 +799,23 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       fsspec;
 
     FilenameToFSSpec(image->filename,&fsspec);
-    status=FPX_CreateImageByFilename((const FSSpec &) fsspec,
+    fpx_status=FPX_CreateImageByFilename((const FSSpec &) fsspec,
 #else
-    status=FPX_CreateImageByFilename(image->filename,
+    fpx_status=FPX_CreateImageByFilename(image->filename,
 #endif
     image->columns,image->rows,tile_width,tile_height,colorspace,
     background_color,compression,&flashpix);
   }
-  if (status != FPX_OK)
+  if (fpx_status != FPX_OK)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   if (image_info->compression == JPEGCompression)
     {
       /*
         Initialize the compression by quality for the entire image.
       */
-      status=
+      fpx_status=
         FPX_SetJPEGCompression(flashpix,(unsigned short) (image_info->quality));
-      if (status != FPX_OK)
+      if (fpx_status != FPX_OK)
         MagickWarning(DelegateWarning,"Unable to set JPEG level",(char *) NULL);
     }
   /*
@@ -863,8 +867,8 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         MagickWarning(DelegateWarning,"Unable to set image comments",
           (char *) NULL);
     }
-  status=FPX_SetSummaryInformation(flashpix,&summary_info);
-  if (status != FPX_OK)
+  fpx_status=FPX_SetSummaryInformation(flashpix,&summary_info);
+  if (fpx_status != FPX_OK)
     MagickWarning(DelegateWarning,"Unable to set summary info",(char *) NULL);
   /*
     Allocate pixels.
@@ -873,7 +877,7 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     image->columns*sizeof(unsigned char));
   if (pixels == (unsigned char *) NULL)
     {
-      (void) FPX_CloseBlob(flashpix);
+      (void) FPX_CloseImage(flashpix);
       FPX_ClearSystem();
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     }
@@ -921,8 +925,8 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       x++;
       if (x == (int) image->columns)
         {
-          status=FPX_WriteImageLine(flashpix,&fpx_info);
-          if (status != FPX_OK)
+          fpx_status=FPX_WriteImageLine(flashpix,&fpx_info);
+          if (fpx_status != FPX_OK)
             break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(SaveImageText,y,image->rows);
@@ -1021,48 +1025,48 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         }
       if (affine_valid)
         {
-          status=FPX_SetImageAffineMatrix(flashpix,&affine);
-          if (status != FPX_OK)
+          fpx_status=FPX_SetImageAffineMatrix(flashpix,&affine);
+          if (fpx_status != FPX_OK)
             MagickWarning(DelegateWarning,"Unable to set affine matrix",
               (char *) NULL);
         }
       if (aspect_ratio_valid)
         {
-          status=FPX_SetImageResultAspectRatio(flashpix,&aspect_ratio);
-          if (status != FPX_OK)
+          fpx_status=FPX_SetImageResultAspectRatio(flashpix,&aspect_ratio);
+          if (fpx_status != FPX_OK)
             MagickWarning(DelegateWarning,"Unable to set aspect ratio",
               (char *) NULL);
         }
       if (color_twist_valid)
         {
-          status=FPX_SetImageColorTwistMatrix(flashpix,&color_twist);
-          if (status != FPX_OK)
+          fpx_status=FPX_SetImageColorTwistMatrix(flashpix,&color_twist);
+          if (fpx_status != FPX_OK)
             MagickWarning(DelegateWarning,"Unable to set color color twist",
               (char *) NULL);
         }
       if (contrast_valid)
         {
-          status=FPX_SetImageContrastAdjustment(flashpix,&contrast);
-          if (status != FPX_OK)
+          fpx_status=FPX_SetImageContrastAdjustment(flashpix,&contrast);
+          if (fpx_status != FPX_OK)
             MagickWarning(DelegateWarning,"Unable to set contrast",
               (char *) NULL);
         }
       if (sharpen_valid)
         {
-          status=FPX_SetImageFilteringValue(flashpix,&sharpen);
-          if (status != FPX_OK)
+          fpx_status=FPX_SetImageFilteringValue(flashpix,&sharpen);
+          if (fpx_status != FPX_OK)
             MagickWarning(DelegateWarning,"Unable to set filtering value",
               (char *) NULL);
         }
       if (view_rect_valid)
         {
-          status=FPX_SetImageROI(flashpix, &view_rect);
-          if (status != FPX_OK)
+          fpx_status=FPX_SetImageROI(flashpix, &view_rect);
+          if (fpx_status != FPX_OK)
             MagickWarning(DelegateWarning,"Unable to set region of interest",
               (char *) NULL);
         }
     }
-  (void) FPX_CloseBlob(flashpix);
+  (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
   FreeMemory((char *) pixels);
   if (image->temporary)

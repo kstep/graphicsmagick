@@ -22,6 +22,7 @@ $call Make PreRvIcccm.c
 $call Make animate.c
 $call Make annotate.c
 $call Make avs.c
+$call Make blob.c
 $call Make bmp.c
 $call Make cmyk.c
 $call Make colors.c
@@ -115,7 +116,7 @@ $call Make xwindows.c
 $call Make yuv.c
 $call Make zoom.c
 $library/create libmagick.olb PreRvIcccm.obj,animate.obj,annotate.obj, -
-  avs.obj,bmp.obj,cmyk.obj,colors.obj,compress.obj,dcm.obj, -
+  avs.obj,blob.obj,bmp.obj,cmyk.obj,colors.obj,compress.obj,dcm.obj, -
   decorate.obj,delegates.obj,display.obj,dps.obj,draw.obj, -
   effects.obj,enhance.obj,ept.obj,error.obj,fax.obj,fits.obj, -
   fpx.obj,gems.obj,gif.obj,gradation.obj,gray.obj,hdf.obj, -

@@ -39,7 +39,6 @@
 		<LI><A HREF="#GetPixels">GetPixels</A>
 		<LI><A HREF="#IsGeometry">IsGeometry</A>
 		<LI><A HREF="#IsGrayImage">IsGrayImage</A>
-		<LI><A HREF="#IsMonochromeImage">IsMonochromeImage</A>
 		<LI><A HREF="#IsSubimage">IsSubimage</A>
 		<LI><A HREF="#IsTainted">IsTainted</A>
 		<LI><A HREF="#LabelImage">LabelImage</A>
@@ -148,9 +147,6 @@ status=<STRONG>IsGeometry</STRONG>(geometry)
 
 <P>
 status=<STRONG>IsGrayImage</STRONG>(image)
-
-<P>
-status=<STRONG>IsMonochromeImage</STRONG>(image)
 
 <P>
 status=<STRONG>IsSubimage</STRONG>(geometry,pedantic)
@@ -876,34 +872,6 @@ A description of each parameter follows:
 <P>
 Method IsGrayImage returns True if the image is grayscale otherwise False
 is returned.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image; returned from ReadImage.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="IsMonochromeImage">IsMonochromeImage</A></H2>
-<P>
-Method IsMonochromeImage returns True if the image is monochrome otherwise
-False is returned. If the image is DirectClass and monochrome, it is
-demoted to PseudoClass.
-
-<P>
-The format of the IsMonochromeImage routine is:
-
-<P>
-<PRE>        status=IsMonochromeImage(image)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>status:</STRONG><DD>
-<P>
-Method IsMonochromeImage returns True if the image is monochrome otherwise
-False is returned.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>

@@ -16,6 +16,7 @@
 	<UL>
 
 		<LI><A HREF="#GetNumberColors">GetNumberColors</A>
+		<LI><A HREF="#IsMonochromeImage">IsMonochromeImage</A>
 		<LI><A HREF="#IsPseudoClass">IsPseudoClass</A>
 		<LI><A HREF="#QueryColorDatabase">QueryColorDatabase</A>
 		<LI><A HREF="#QueryColorName">QueryColorName</A>
@@ -35,6 +36,9 @@ colors - Methods to Count the Colors in an Image
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
 number_colors=<STRONG>GetNumberColors</STRONG>(image,file)
+
+<P>
+status=<STRONG>IsMonochromeImage</STRONG>(image)
 
 <P>
 status=<STRONG>IsPseudoClass</STRONG>(image)
@@ -102,6 +106,34 @@ A pointer to the CubeInfo structure.
 <DT><STRONG>level:</STRONG><DD>
 <P>
 Specifies the level in the classification the node resides.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="IsMonochromeImage">IsMonochromeImage</A></H2>
+<P>
+Method IsMonochromeImage returns True if the image is monochrome otherwise
+False is returned. If the image is DirectClass and monochrome, it is
+demoted to PseudoClass.
+
+<P>
+The format of the IsMonochromeImage routine is:
+
+<P>
+<PRE>        status=IsMonochromeImage(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method IsMonochromeImage returns True if the image is monochrome otherwise
+False is returned.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
 
 </DL></DL>
 <P>

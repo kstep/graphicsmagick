@@ -3317,6 +3317,7 @@ ImageToBlob(ref,...)
     SetImageInfo(package_info->image_info,True);
     for (next=image; next; next=next->next)
     {
+      length=0;
       blob=ImageToBlob(package_info->image_info,next,&length);
       if (blob != (char *) NULL)
         {
