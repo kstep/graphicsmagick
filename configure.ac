@@ -1048,6 +1048,11 @@ then
     O_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$CPPFLAGS -I${ac_x_includes}/X11"
     AC_CHECK_HEADER(DPS/dpsXclient.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    # DPS issues:
+    # XFree86-4.x needs -lXt to provide XtMalloc for -ldps.
+    # Cygwin doesn't deliver -lXt as a DLL, which prevents a DLL build.
+    # Adobe DPS (as delivered on Solaris) doesn't require -lXt.
+    # GraphicsMagick itself doesn't use -lXt.
     AC_CHECK_LIB(dps,DPSInitialize,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_CHECK_LIB(dpstk,XDPSPixelsPerPoint,passed=`expr $passed + 1`,failed=`expr $failed + 1`,-ldps)
     AC_MSG_CHECKING(if DPS package is complete)

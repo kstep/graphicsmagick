@@ -620,6 +620,17 @@ MagickExport Image *ConstituteImage(const unsigned long width,
       ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
     }
   }
+  if (image->storage_class == PseudoClass)
+    {
+      /*
+        Check and cache monochrome and grayscale status
+      */
+      (void) IsMonochromeImage(image,exception);
+      if (image->is_monochrome)
+        image->is_grayscale=True;
+      else
+        (void) IsGrayImage(image,exception);
+    }
   return(image);
 }
 

@@ -1,3 +1,12 @@
+2003-02-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wmf.c (ipa_device_begin): Use MagickWebSite definition.
+	* www/Copyright.html: Updated to match Copyright.txt
+	* www/perl: Updated to reflect GraphicsMagick vs ImageMagick.
+	* magick/xwindow.c (XMakeImageMSBFirst): Minor loop optimizations.
+	* magick/constitute.c (ConstituteImage): Check for grayscale
+	and monochrome image if image is PseudoClass.
+
 2003-02-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/enhance.c (ContrastImage): Preserve is_grayscale flag.

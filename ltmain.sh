@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4e
-TIMESTAMP=" (1.1175 2003/01/01 01:57:46)"
+TIMESTAMP=" (1.1192 2003/02/18 05:15:03)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -123,24 +123,34 @@ o2lo="s/\\.${objext}\$/.lo/"
 # that is supplied when $file_magic_command is called.
 win32_libid () {
   win32_libid_type="unknown"
-  if eval $OBJDUMP -f $1 2>/dev/null | \
-     grep -E 'file format pei+-i386(.*architecture: i386)?' >/dev/null ; then
-    win32_libid_type="x86 DLL"
-  else
-    if eval $OBJDUMP -f $1 2>/dev/null | \
-      grep -E 'file format pei*-i386(.*architecture: i386)?' >/dev/null ; then
-      win32_libid_type="x86"
-      if eval file $1 2>/dev/null | \
-         grep -E 'ar archive' >/dev/null; then
-        win32_libid_type="$win32_libid_type archive"
-        if eval $NM -f posix -A $1 | awk '{print $3}' | grep "I" >/dev/null ; then
-          win32_libid_type="$win32_libid_type import"
-        else
-          win32_libid_type="$win32_libid_type static"
-        fi
+  win32_fileres=`file -L $1 2>/dev/null`
+  case $win32_fileres in
+  *ar\ archive\ import\ library*) # definitely import
+    win32_libid_type="x86 archive import"
+    ;;
+  *ar\ archive*) # could be an import, or static
+    if eval $OBJDUMP -f $1 | head -n 10 2>/dev/null | \
+      grep -E 'file format pe-i386(.*architecture: i386)?' >/dev/null ; then
+      win32_nmres=`eval $NM -f posix -A $1 | \
+        sed -n -e '1,100{/ I /{x;/import/!{s/^/import/;h;p;};x;}}'`
+      if test "X$win32_nmres" = "Ximport" ; then
+        win32_libid_type="x86 archive import"
+      else
+        win32_libid_type="x86 archive static"
       fi
     fi
-  fi
+    ;;
+  *DLL*) 
+    win32_libid_type="x86 DLL"
+    ;;
+  *executable*) # but shell scripts are "executable" too...
+    case $win32_fileres in
+    *MS\ Windows\ PE\ Intel*)
+      win32_libid_type="x86 DLL"
+      ;;
+    esac
+    ;;
+  esac
   echo $win32_libid_type
 }
 
@@ -2660,6 +2670,7 @@ EOF
       case $outputname in
       lib*)
 	name=`$echo "X$outputname" | $Xsed -e 's/\.la$//' -e 's/^lib//'`
+	eval shared_ext=\"$shrext\"
 	eval libname=\"$libname_spec\"
 	;;
       *)
@@ -2671,6 +2682,7 @@ EOF
 	if test "$need_lib_prefix" != no; then
 	  # Add the "lib" prefix for modules if required
 	  name=`$echo "X$outputname" | $Xsed -e 's/\.la$//'`
+	  eval shared_ext=\"$shrext\"
 	  eval libname=\"$libname_spec\"
 	else
 	  libname=`$echo "X$outputname" | $Xsed -e 's/\.la$//'`
@@ -2798,7 +2810,7 @@ EOF
 	  ;;
 
 	irix | nonstopux)
-	  major=`expr $current - $age +1`
+	  major=`expr $current - $age + 1`
 
 	  case $version_type in
 	    nonstopux) verstring_prefix=nonstopux ;;
@@ -3365,7 +3377,11 @@ EOF
 	  if test -n "$hardcode_libdir_separator" &&
 	     test -n "$hardcode_libdirs"; then
 	    libdir="$hardcode_libdirs"
-	    eval dep_rpath=\"$hardcode_libdir_flag_spec\"
+	    if test -n "$hardcode_libdir_flag_spec_ld"; then
+	      eval dep_rpath=\"$hardcode_libdir_flag_spec_ld\"
+	    else
+	      eval dep_rpath=\"$hardcode_libdir_flag_spec\"
+	    fi
 	  fi
 	  if test -n "$runpath_var" && test -n "$perm_rpath"; then
 	    # We should set the runpath_var.
@@ -3385,6 +3401,7 @@ EOF
 	fi
 
 	# Get the real and link names of the library.
+	eval shared_ext=\"$shrext\"
 	eval library_names=\"$library_names_spec\"
 	set dummy $library_names
 	realname="$2"
@@ -3476,8 +3493,34 @@ EOF
 	      if test "$status" -ne 0 && test ! -d "$xdir"; then
 		exit $status
 	      fi
+	      # We will extract separately just the conflicting names and we will no
+	      # longer touch any unique names. It is faster to leave these extract
+	      # automatically by $AR in one run.
 	      $show "(cd $xdir && $AR x $xabs)"
 	      $run eval "(cd \$xdir && $AR x \$xabs)" || exit $?
+	      if ($AR t "$xabs" | sort | sort -uc >/dev/null 2>&1); then
+		:
+	      else
+		$echo "$modename: warning: object name conflicts; renaming object files" 1>&2
+		$echo "$modename: warning: to ensure that they will not overwrite" 1>&2
+		$AR t "$xabs" | sort | uniq -cd | while read -r count name
+		do
+		  i=1
+		  while test "$i" -le "$count"
+		  do
+		   # Put our $i before any first dot (extension)
+		   # Never overwrite any file
+		   name_to="$name"
+		   while test "X$name_to" = "X$name" || test -f "$xdir/$name_to"
+		   do
+		     name_to=`$echo "X$name_to" | $Xsed -e "s/\([^.]*\)/\1-$i/"`
+		   done
+		   $show "(cd $xdir && $AR xN $i $xabs '$name' && $mv '$name' '$name_to')"
+		   $run eval "(cd \$xdir && $AR xN $i \$xabs '$name' && $mv '$name' '$name_to')" || exit $?
+		   i=`expr $i + 1`
+		  done
+		done
+	      fi
 
 	      libobjs="$libobjs "`find $xdir -name \*.$objext -print -o -name \*.lo -print | $NL2SP`
 	    done
@@ -3738,8 +3781,34 @@ EOF
 	    if test "$status" -ne 0 && test ! -d "$xdir"; then
 	      exit $status
 	    fi
+	    # We will extract separately just the conflicting names and we will no
+	    # longer touch any unique names. It is faster to leave these extract
+	    # automatically by $AR in one run.
 	    $show "(cd $xdir && $AR x $xabs)"
 	    $run eval "(cd \$xdir && $AR x \$xabs)" || exit $?
+	    if ($AR t "$xabs" | sort | sort -uc >/dev/null 2>&1); then
+	      :
+	    else
+	      $echo "$modename: warning: object name conflicts; renaming object files" 1>&2
+	      $echo "$modename: warning: to ensure that they will not overwrite" 1>&2
+	      $AR t "$xabs" | sort | uniq -cd | while read -r count name
+	      do
+		i=1
+		while test "$i" -le "$count"
+		do
+		 # Put our $i before any first dot (extension)
+		 # Never overwrite any file
+		 name_to="$name"
+		 while test "X$name_to" = "X$name" || test -f "$xdir/$name_to"
+		 do
+		   name_to=`$echo "X$name_to" | $Xsed -e "s/\([^.]*\)/\1-$i/"`
+		 done
+		 $show "(cd $xdir && $AR xN $i $xabs '$name' && $mv '$name' '$name_to')"
+		 $run eval "(cd \$xdir && $AR xN $i \$xabs '$name' && $mv '$name' '$name_to')" || exit $?
+		 i=`expr $i + 1`
+		done
+	      done
+	    fi
 
 	    reload_conv_objs="$reload_objs "`find $xdir -name \*.$objext -print -o -name \*.lo -print | $NL2SP`
 	  done
@@ -4284,6 +4353,219 @@ static const void *lt_preloaded_setup() {
 	    outputname=`echo $outputname|${SED} 's,.exe$,,'` ;;
 	  *) exeext= ;;
 	esac
+	case $host in
+	  *cygwin* | *mingw* )
+	    cwrappersource=`echo ${objdir}/lt-${output}.c`
+	    cwrapper=`echo ${output}.exe`
+	    $rm $cwrappersource $cwrapper
+	    trap "$rm $cwrappersource $cwrapper; exit 1" 1 2 15
+
+	    cat > $cwrappersource <<EOF
+
+/* $cwrappersource - temporary wrapper executable for $objdir/$outputname
+   Generated by $PROGRAM - GNU $PACKAGE $VERSION$TIMESTAMP
+
+   The $output program cannot be directly executed until all the libtool
+   libraries that it depends on are installed.
+   
+   This wrapper executable should never be moved out of the build directory.
+   If it is, it will not operate correctly.
+
+   Currently, it simply execs the wrapper *script* "/bin/sh $output",
+   but could eventually absorb all of the scripts functionality and
+   exec $objdir/$outputname directly.
+*/
+EOF
+	    cat >> $cwrappersource<<"EOF"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <malloc.h>
+#include <stdarg.h>
+#include <assert.h>
+
+#if defined(PATH_MAX)
+# define LT_PATHMAX PATH_MAX
+#elif defined(MAXPATHLEN)
+# define LT_PATHMAX MAXPATHLEN
+#else
+# define LT_PATHMAX 1024
+#endif
+
+#ifndef DIR_SEPARATOR
+#define DIR_SEPARATOR '/'
+#endif
+
+#if defined (_WIN32) || defined (__MSDOS__) || defined (__DJGPP__) || \
+  defined (__OS2__)
+#define HAVE_DOS_BASED_FILE_SYSTEM
+#ifndef DIR_SEPARATOR_2 
+#define DIR_SEPARATOR_2 '\\'
+#endif
+#endif
+
+#ifndef DIR_SEPARATOR_2
+# define IS_DIR_SEPARATOR(ch) ((ch) == DIR_SEPARATOR)
+#else /* DIR_SEPARATOR_2 */
+# define IS_DIR_SEPARATOR(ch) \
+        (((ch) == DIR_SEPARATOR) || ((ch) == DIR_SEPARATOR_2))
+#endif /* DIR_SEPARATOR_2 */
+
+#define XMALLOC(type, num)      ((type *) xmalloc ((num) * sizeof(type)))
+#define XFREE(stale) do { \
+  if (stale) { free ((void *) stale); stale = 0; } \
+} while (0)
+
+const char *program_name = NULL;
+
+void * xmalloc (size_t num);
+char * xstrdup (const char *string);
+char * basename (const char *name);
+char * fnqualify(const char *path);
+char * strendzap(char *str, const char *pat);
+void lt_fatal (const char *message, ...);
+
+int
+main (int argc, char *argv[])
+{
+  char **newargz;
+  int i;
+  
+  program_name = (char *) xstrdup ((char *) basename (argv[0]));
+  newargz = XMALLOC(char *, argc+2);
+EOF
+
+	    cat >> $cwrappersource <<EOF
+  newargz[0] = "$SHELL";
+EOF
+
+	    cat >> $cwrappersource <<"EOF"
+  newargz[1] = fnqualify(argv[0]);
+  /* we know the script has the same name, without the .exe */
+  /* so make sure newargz[1] doesn't end in .exe */
+  strendzap(newargz[1],".exe"); 
+  for (i = 1; i < argc; i++)
+    newargz[i+1] = xstrdup(argv[i]);
+  newargz[argc+1] = NULL;
+EOF
+
+	    cat >> $cwrappersource <<EOF
+  execv("$SHELL",newargz);
+EOF
+
+	    cat >> $cwrappersource <<"EOF"
+}
+
+void *
+xmalloc (size_t num)
+{
+  void * p = (void *) malloc (num);
+  if (!p)
+    lt_fatal ("Memory exhausted");
+
+  return p;
+}
+
+char * 
+xstrdup (const char *string)
+{
+  return string ? strcpy ((char *) xmalloc (strlen (string) + 1), string) : NULL
+;
+}
+
+char *
+basename (const char *name)
+{
+  const char *base;
+
+#if defined (HAVE_DOS_BASED_FILE_SYSTEM)
+  /* Skip over the disk name in MSDOS pathnames. */
+  if (isalpha (name[0]) && name[1] == ':') 
+    name += 2;
+#endif
+
+  for (base = name; *name; name++)
+    if (IS_DIR_SEPARATOR (*name))
+      base = name + 1;
+  return (char *) base;
+}
+
+char * 
+fnqualify(const char *path)
+{
+  size_t size;
+  char *p;
+  char tmp[LT_PATHMAX + 1];
+
+  assert(path != NULL);
+
+  /* Is it qualified already? */
+#if defined (HAVE_DOS_BASED_FILE_SYSTEM)
+  if (isalpha (path[0]) && path[1] == ':')
+    return xstrdup (path);
+#endif
+  if (IS_DIR_SEPARATOR (path[0]))
+    return xstrdup (path);
+
+  /* prepend the current directory */
+  /* doesn't handle '~' */
+  if (getcwd (tmp, LT_PATHMAX) == NULL)
+    lt_fatal ("getcwd failed");
+  size = strlen(tmp) + 1 + strlen(path) + 1; /* +2 for '/' and '\0' */
+  p = XMALLOC(char, size);
+  sprintf(p, "%s%c%s", tmp, DIR_SEPARATOR, path);
+  return p;
+}
+
+char *
+strendzap(char *str, const char *pat) 
+{
+  size_t len, patlen;
+
+  assert(str != NULL);
+  assert(pat != NULL);
+
+  len = strlen(str);
+  patlen = strlen(pat);
+
+  if (patlen <= len)
+  {
+    str += len - patlen;
+    if (strcmp(str, pat) == 0)
+      *str = '\0';
+  }
+  return str;
+}
+
+static void
+lt_error_core (int exit_status, const char * mode, 
+          const char * message, va_list ap)
+{
+  fprintf (stderr, "%s: %s: ", program_name, mode);
+  vfprintf (stderr, message, ap);
+  fprintf (stderr, ".\n");
+
+  if (exit_status >= 0)
+    exit (exit_status);
+}
+
+void
+lt_fatal (const char *message, ...)
+{
+  va_list ap;
+  va_start (ap, message);
+  lt_error_core (EXIT_FAILURE, "FATAL", message, ap);
+  va_end (ap);
+}
+EOF
+	  # we should really use a build-platform specific compiler
+	  # here, but OTOH, the wrappers (shell script and this C one)
+	  # are only useful if you want to execute the "real" binary.
+	  # Since the "real" binary is built for $host, then this
+	  # wrapper might as well be built for $host, too.
+	  $run $LTCC -s -o $cwrapper $cwrappersource
+	  ;;
+	esac
 	$rm $output
 	trap "$rm $output; exit 1" 1 2 15
 
@@ -4511,8 +4793,34 @@ fi\
 	  if test "$status" -ne 0 && test ! -d "$xdir"; then
 	    exit $status
 	  fi
+	  # We will extract separately just the conflicting names and we will no
+	  # longer touch any unique names. It is faster to leave these extract
+	  # automatically by $AR in one run.
 	  $show "(cd $xdir && $AR x $xabs)"
 	  $run eval "(cd \$xdir && $AR x \$xabs)" || exit $?
+	  if ($AR t "$xabs" | sort | sort -uc >/dev/null 2>&1); then
+	    :
+	  else
+	    $echo "$modename: warning: object name conflicts; renaming object files" 1>&2
+	    $echo "$modename: warning: to ensure that they will not overwrite" 1>&2
+	    $AR t "$xabs" | sort | uniq -cd | while read -r count name
+	    do
+	      i=1
+	      while test "$i" -le "$count"
+	      do
+	       # Put our $i before any first dot (extension)
+	       # Never overwrite any file
+	       name_to="$name"
+	       while test "X$name_to" = "X$name" || test -f "$xdir/$name_to"
+	       do
+		 name_to=`$echo "X$name_to" | $Xsed -e "s/\([^.]*\)/\1-$i/"`
+	       done
+	       $show "(cd $xdir && $AR xN $i $xabs '$name' && $mv '$name' '$name_to')"
+	       $run eval "(cd \$xdir && $AR xN $i \$xabs '$name' && $mv '$name' '$name_to')" || exit $?
+	       i=`expr $i + 1`
+	      done
+	    done
+	  fi
 
 	  oldobjs="$oldobjs "`find $xdir -name \*.${objext} -print -o -name \*.lo -print | $NL2SP`
 	done
@@ -4567,7 +4875,11 @@ fi\
 	  done
 	  RANLIB=$save_RANLIB
 	  oldobjs=$objlist
-	  eval cmds=\"\$concat_cmds~$old_archive_cmds\"
+	  if test "X$oldobjs" = "X" ; then
+	    eval cmds=\"\$concat_cmds\"
+	  else
+	    eval cmds=\"\$concat_cmds~$old_archive_cmds\"
+	  fi
 	fi
       fi
       save_ifs="$IFS"; IFS='~'
@@ -5064,10 +5376,17 @@ relink_command=\"$relink_command\""
 	  notinst_deplibs=
 	  relink_command=
 
+	  # To insure that "foo" is sourced, and not "foo.exe",
+	  # finese the cygwin/MSYS system by explicitly sourcing "foo."
+	  # which disallows the automatic-append-.exe behavior.
+	  case $host in
+	  *cygwin* | *mingw*) wrapperdot=${wrapper}. ;;
+	  *) wrapperdot=${wrapper} ;;
+	  esac
 	  # If there is no directory component, then add one.
 	  case $file in
-	  */* | *\\*) . $wrapper ;;
-	  *) . ./$wrapper ;;
+	  */* | *\\*) . ${wrapperdot} ;;
+	  *) . ./${wrapperdot} ;;
 	  esac
 
 	  # Check the variables that should have been set.
@@ -5095,10 +5414,17 @@ relink_command=\"$relink_command\""
 	  done
 
 	  relink_command=
+	  # To insure that "foo" is sourced, and not "foo.exe",
+	  # finese the cygwin/MSYS system by explicitly sourcing "foo."
+	  # which disallows the automatic-append-.exe behavior.
+	  case $host in
+	  *cygwin* | *mingw*) wrapperdot=${wrapper}. ;;
+	  *) wrapperdot=${wrapper} ;;
+	  esac
 	  # If there is no directory component, then add one.
 	  case $file in
-	  */* | *\\*) . $file ;;
-	  *) . ./$file ;;
+	  */* | *\\*) . ${wrapperdot} ;;
+	  *) . ./${wrapperdot} ;;
 	  esac
 
 	  outputname=
@@ -5541,15 +5867,31 @@ relink_command=\"$relink_command\""
 	;;
 
       *)
-	# Do a test to see if this is a libtool program.
-	if test "$mode" = clean &&
-	   (${SED} -e '4q' $file | grep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then
-	  relink_command=
-	  . $dir/$file
+	if test "$mode" = clean ; then
+	  noexename=$name
+	  case $file in
+	  *.exe) 
+	    file=`echo $file|${SED} 's,.exe$,,'`
+	    noexename=`echo $name|${SED} 's,.exe$,,'`
+	    # $file with .exe has already been added to rmfiles,
+	    # add $file without .exe
+	    rmfiles="$rmfiles $file"
+	    ;;
+	  esac
+	  # Do a test to see if this is a libtool program.
+	  if (${SED} -e '4q' $file | grep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then
+	    relink_command=
+	    . $dir/$file
 
-	  rmfiles="$rmfiles $objdir/$name $objdir/${name}S.${objext}"
-	  if test "$fast_install" = yes && test -n "$relink_command"; then
-	    rmfiles="$rmfiles $objdir/lt-$name"
+	    # note $name still contains .exe if it was in $file originally
+	    # as does the version of $file that was added into $rmfiles
+	    rmfiles="$rmfiles $objdir/$name $objdir/${name}S.${objext}"
+	    if test "$fast_install" = yes && test -n "$relink_command"; then
+	      rmfiles="$rmfiles $objdir/lt-$name"
+	    fi
+	    if test "X$noexename" != "X$name" ; then
+	      rmfiles="$rmfiles $objdir/lt-${noexename}.c"
+	    fi
 	  fi
 	fi
 	;;

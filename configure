@@ -4478,7 +4478,7 @@ echo $ECHO_N "checking dynamic linker characteristics... $ECHO_C" >&6
 library_names_spec=
 libname_spec='lib$name'
 soname_spec=
-shrext="so"
+shrext=".so"
 postinstall_cmds=
 postuninstall_cmds=
 finish_cmds=
@@ -4512,11 +4512,11 @@ need_version=unknown
 case $host_os in
 aix3*)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix $libname.a'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix $libname.a'
   shlibpath_var=LIBPATH
 
   # AIX 3 has no versioning support, so we append a major version to the name.
-  soname_spec='${libname}${release}.${shrext}$major'
+  soname_spec='${libname}${release}${shared_ext}$major'
   ;;
 
 aix4* | aix5*)
@@ -4526,7 +4526,7 @@ aix4* | aix5*)
   hardcode_into_libs=yes
   if test "$host_cpu" = ia64; then
     # AIX 5 supports IA64
-    library_names_spec='${libname}${release}.${shrext}$major ${libname}${release}.${shrext}$versuffix $libname.${shrext}'
+    library_names_spec='${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext}$versuffix $libname${shared_ext}'
     shlibpath_var=LD_LIBRARY_PATH
   else
     # With GCC up to 2.95.x, collect2 would create an import file
@@ -4552,12 +4552,12 @@ aix4* | aix5*)
       # If using run time linking (on AIX 4.2 or later) use lib<name>.so
       # instead of lib<name>.a to let people know that these are not
       # typical AIX shared libraries.
-      library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+      library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
     else
       # We preserve .a as extension for shared libraries through AIX4.2
       # and later when we are not doing run time linking.
       library_names_spec='${libname}${release}.a $libname.a'
-      soname_spec='${libname}${release}.${shrext}$major'
+      soname_spec='${libname}${release}${shared_ext}$major'
     fi
     shlibpath_var=LIBPATH
   fi
@@ -4570,7 +4570,7 @@ amigaos*)
   ;;
 
 beos*)
-  library_names_spec='${libname}.${shrext}'
+  library_names_spec='${libname}${shared_ext}'
   dynamic_linker="$host_os ld.so"
   shlibpath_var=LIBRARY_PATH
   ;;
@@ -4578,8 +4578,8 @@ beos*)
 bsdi4*)
   version_type=linux
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   finish_cmds='PATH="\$PATH:/sbin" ldconfig $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   sys_lib_search_path_spec="/shlib /usr/lib /usr/X11/lib /usr/contrib/lib /lib /usr/local/lib"
@@ -4591,7 +4591,7 @@ bsdi4*)
 
 cygwin* | mingw* | pw32*)
   version_type=windows
-  shrext="dll"
+  shrext=".dll"
   need_version=no
   need_lib_prefix=no
 
@@ -4612,12 +4612,12 @@ cygwin* | mingw* | pw32*)
     case $host_os in
     cygwin*)
       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}.${shrext}'
+      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
       sys_lib_search_path_spec="/lib /lib/w32api /usr/lib /usr/local/lib"
       ;;
     mingw*)
       # MinGW DLLs use traditional 'lib' prefix
-      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}.${shrext}'
+      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
       sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
       if echo "$sys_lib_search_path_spec" | grep ';[c-zC-Z]:/' >/dev/null; then
         # It is most probably a Windows format PATH printed by
@@ -4633,13 +4633,13 @@ cygwin* | mingw* | pw32*)
       ;;
     pw32*)
       # pw32 DLLs use 'pw' prefix rather than 'lib'
-      library_names_spec='`echo ${libname} | sed -e 's/^lib/pw/'``echo ${release} | $SED -e 's/./-/g'`${versuffix}.${shrext}'
+      library_names_spec='`echo ${libname} | sed -e 's/^lib/pw/'``echo ${release} | $SED -e 's/./-/g'`${versuffix}${shared_ext}'
       ;;
     esac
     ;;
 
   *)
-    library_names_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}.${shrext} $libname.lib'
+    library_names_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext} $libname.lib'
     ;;
   esac
   dynamic_linker='Win32 ld.exe'
@@ -4655,19 +4655,21 @@ darwin* | rhapsody*)
   # FIXME: Relying on posixy $() will cause problems for
   #        cross-compilation, but unfortunately the echo tests do not
   #        yet detect zsh echo's removal of \ escapes.
-  library_names_spec='${libname}${release}${versuffix}.$shrext ${libname}${release}${major}.$shrext ${libname}.$shrext'
-  soname_spec='${libname}${release}${major}.$shrext'
+  library_names_spec='${libname}${release}${versuffix}$shared_ext ${libname}${release}${major}$shared_ext ${libname}$shared_ext'
+  soname_spec='${libname}${release}${major}$shared_ext'
   shlibpath_overrides_runpath=yes
   shlibpath_var=DYLD_LIBRARY_PATH
-  shrext='$(test .$module = .yes && echo so || echo dylib)'
+  shrext='$(test .$module = .yes && echo .so || echo .dylib)'
+  # Apple's gcc prints 'gcc -print-search-dirs' doesn't operate the same.
+  sys_lib_search_path_spec=`$CC -print-search-dirs | tr "\n" "$PATH_SEPARATOR" | sed -e 's/libraries:/@libraries:/' | tr "@" "\n" | grep "^libraries:" | sed -e "s/^libraries://" -e "s,=/,/,g" -e "s,$PATH_SEPARATOR, ,g"`
   ;;
 
 dgux*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.$shrext'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname$shared_ext'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
@@ -4680,12 +4682,12 @@ freebsd*)
   version_type=freebsd-$objformat
   case $version_type in
     freebsd-elf*)
-      library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext} $libname.${shrext}'
+      library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext} $libname${shared_ext}'
       need_version=no
       need_lib_prefix=no
       ;;
     freebsd-*)
-      library_names_spec='${libname}${release}.${shrext}$versuffix $libname.${shrext}$versuffix'
+      library_names_spec='${libname}${release}${shared_ext}$versuffix $libname${shared_ext}$versuffix'
       need_version=yes
       ;;
   esac
@@ -4709,8 +4711,8 @@ gnu*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}${major} ${libname}.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}${major} ${libname}${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   hardcode_into_libs=yes
   ;;
@@ -4721,27 +4723,42 @@ hpux9* | hpux10* | hpux11*)
   version_type=sunos
   need_lib_prefix=no
   need_version=no
-  if test "$host_cpu" = ia64; then
+  case "$host_cpu" in
+  ia64*)
+    shrext='.so'
     hardcode_into_libs=yes
     dynamic_linker="$host_os dld.so"
     shlibpath_var=LD_LIBRARY_PATH
     shlibpath_overrides_runpath=yes # Unless +noenvvar is specified.
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-    soname_spec='${libname}${release}.${shrext}$major'
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+    soname_spec='${libname}${release}${shared_ext}$major'
     if test "X$HPUX_IA64_MODE" = X32; then
       sys_lib_search_path_spec="/usr/lib/hpux32 /usr/local/lib/hpux32 /usr/local/lib"
     else
       sys_lib_search_path_spec="/usr/lib/hpux64 /usr/local/lib/hpux64"
     fi
     sys_lib_dlsearch_path_spec=$sys_lib_search_path_spec
-  else
+    ;;
+   hppa*64*)
+     shrext='.sl'
+     hardcode_into_libs=yes
+     dynamic_linker="$host_os dld.sl"
+     shlibpath_var=LD_LIBRARY_PATH # How should we handle SHLIB_PATH
+     shlibpath_overrides_runpath=yes # Unless +noenvvar is specified.
+     library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+     soname_spec='${libname}${release}${shared_ext}$major'
+     sys_lib_search_path_spec="/usr/lib/pa20_64 /usr/ccs/lib/pa20_64"
+     sys_lib_dlsearch_path_spec=$sys_lib_search_path_spec
+     ;;
+   *)
+    shrext='.sl'
     dynamic_linker="$host_os dld.sl"
     shlibpath_var=SHLIB_PATH
     shlibpath_overrides_runpath=no # +s is required to enable SHLIB_PATH
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-    soname_spec='${libname}${release}.${shrext}$major'
-    shrext="sl"
-  fi
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+    soname_spec='${libname}${release}${shared_ext}$major'
+    ;;
+  esac
   # HP-UX runs *really* slowly unless shared libraries are mode 555.
   postinstall_cmds='chmod 555 $lib'
   ;;
@@ -4753,8 +4770,8 @@ irix5* | irix6* | nonstopux*)
   esac
   need_lib_prefix=no
   need_version=no
-  soname_spec='${libname}${release}.${shrext}$major'
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major ${libname}${release}.${shrext} $libname.${shrext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext} $libname${shared_ext}'
   case $host_os in
   irix5* | nonstopux*)
     libsuff= shlibsuff=
@@ -4772,6 +4789,7 @@ irix5* | irix6* | nonstopux*)
   shlibpath_overrides_runpath=no
   sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
   sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
+  hardcode_into_libs=yes
   ;;
 
 # No shared lib support for Linux oldld, aout, or coff.
@@ -4781,12 +4799,11 @@ linux*oldld* | linux*aout* | linux*coff*)
 
 # This must be Linux ELF.
 linux*)
-  shrext="so"
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=no
@@ -4809,12 +4826,12 @@ netbsd*)
   need_lib_prefix=no
   need_version=no
   if echo __ELF__ | $CC -E - | grep __ELF__ >/dev/null; then
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}.${shrext}$versuffix'
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
     finish_cmds='PATH="\$PATH:/sbin" ldconfig -m $libdir'
     dynamic_linker='NetBSD (a.out) ld.so'
   else
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major ${libname}${release}.${shrext} ${libname}.${shrext}'
-    soname_spec='${libname}${release}.${shrext}$major'
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext} ${libname}${shared_ext}'
+    soname_spec='${libname}${release}${shared_ext}$major'
     dynamic_linker='NetBSD ld.elf_so'
   fi
   shlibpath_var=LD_LIBRARY_PATH
@@ -4824,7 +4841,7 @@ netbsd*)
 
 newsos6)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
   ;;
@@ -4833,8 +4850,8 @@ nto-qnx)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
   ;;
@@ -4843,7 +4860,7 @@ openbsd*)
   version_type=sunos
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}.${shrext}$versuffix'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
   finish_cmds='PATH="\$PATH:/sbin" ldconfig -m $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   if test -z "`echo __ELF__ | $CC -E - | grep __ELF__`" || test "$host_os-$host_cpu" = "openbsd2.8-powerpc"; then
@@ -4862,9 +4879,9 @@ openbsd*)
 
 os2*)
   libname_spec='$name'
-  shrext="dll"
+  shrext=".dll"
   need_lib_prefix=no
-  library_names_spec='$libname.${shrext} $libname.a'
+  library_names_spec='$libname${shared_ext} $libname.a'
   dynamic_linker='OS/2 ld.exe'
   shlibpath_var=LIBPATH
   ;;
@@ -4873,8 +4890,8 @@ osf3* | osf4* | osf5*)
   version_type=osf
   need_lib_prefix=no
   need_version=no
-  soname_spec='${libname}${release}.${shrext}$major'
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
   shlibpath_var=LD_LIBRARY_PATH
   sys_lib_search_path_spec="/usr/shlib /usr/ccs/lib /usr/lib/cmplrs/cc /usr/lib /usr/local/lib /var/shlib"
   sys_lib_dlsearch_path_spec="$sys_lib_search_path_spec"
@@ -4882,8 +4899,8 @@ osf3* | osf4* | osf5*)
 
 sco3.2v5*)
   version_type=osf
-  soname_spec='${libname}${release}.${shrext}$major'
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
@@ -4891,8 +4908,8 @@ solaris*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
   hardcode_into_libs=yes
@@ -4902,7 +4919,7 @@ solaris*)
 
 sunos4*)
   version_type=sunos
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}.${shrext}$versuffix'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
   finish_cmds='PATH="\$PATH:/usr/etc" ldconfig $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
@@ -4914,8 +4931,8 @@ sunos4*)
 
 sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   case $host_vendor in
     sni)
@@ -4939,16 +4956,16 @@ sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
 sysv4*MP*)
   if test -d /usr/nec ;then
     version_type=linux
-    library_names_spec='$libname.${shrext}.$versuffix $libname.${shrext}.$major $libname.${shrext}'
-    soname_spec='$libname.${shrext}.$major'
+    library_names_spec='$libname${shared_ext}.$versuffix $libname${shared_ext}.$major $libname${shared_ext}'
+    soname_spec='$libname${shared_ext}.$major'
     shlibpath_var=LD_LIBRARY_PATH
   fi
   ;;
 
 uts4*)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
@@ -5882,7 +5899,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 5885 "configure"
+#line 5902 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7415,13 +7432,20 @@ gnu*)
 
 hpux10.20* | hpux11*)
   lt_cv_file_magic_cmd=/usr/bin/file
-  if test "$host_cpu" = ia64; then
+  case "$host_cpu" in
+  ia64*)
     lt_cv_deplibs_check_method='file_magic (s[0-9][0-9][0-9]|ELF-[0-9][0-9]) shared object file - IA64'
     lt_cv_file_magic_test_file=/usr/lib/hpux32/libc.so
-  else
+    ;;
+  hppa*64*)
+    lt_cv_deplibs_check_method='file_magic (s[0-9][0-9][0-9]|ELF-[0-9][0-9]) shared object file - PA-RISC [0-9].[0-9]'
+    lt_cv_file_magic_test_file=/usr/lib/pa20_64/libc.sl
+    ;;
+  *)
     lt_cv_deplibs_check_method='file_magic (s[0-9][0-9][0-9]|PA-RISC[0-9].[0-9]) shared library'
     lt_cv_file_magic_test_file=/usr/lib/libc.sl
-  fi
+    ;;
+  esac
   ;;
 
 irix5* | irix6* | nonstopux*)
@@ -7542,8 +7566,7 @@ test -z "$deplibs_check_method" && deplibs_check_method=unknown
 LTCC=${LTCC-"$CC"}
 
 # Allow CC to be a program name with arguments.
-set dummy $CC
-compiler="$2"
+compiler=$CC
 
 # Check whether --enable-libtool-lock or --disable-libtool-lock was given.
 if test "${enable_libtool_lock+set}" = set; then
@@ -7576,7 +7599,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 7579 "configure"' > conftest.$ac_ext
+  echo '#line 7602 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8680,7 +8703,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:8683:" \
+echo "$as_me:8706:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -9518,8 +9541,7 @@ lt_simple_link_test_code='int main(){return(0);}\n'
 LTCC=${LTCC-"$CC"}
 
 # Allow CC to be a program name with arguments.
-set dummy $CC
-compiler="$2"
+compiler=$CC
 
 
 #
@@ -9606,11 +9628,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9609: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9631: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9613: \$? = $ac_status" >&5
+   echo "$as_me:9635: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -9689,10 +9711,16 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6
       ;;
 
     hpux*)
-      # PIC is the default for IA64 HP-UX, but not for PA HP-UX.
-      if test "$host_cpu" != ia64; then
+      # PIC is the default for IA64 HP-UX and 64-bit HP-UX, but
+      # not for PA HP-UX.
+      case "$host_cpu" in
+      hppa*64*|ia64*)
+	# +Z the default
+	;;
+      *)
 	lt_prog_compiler_pic='-fPIC'
-      fi
+	;;
+      esac
       ;;
 
     *)
@@ -9720,9 +9748,16 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6
 
     hpux9* | hpux10* | hpux11*)
       lt_prog_compiler_wl='-Wl,'
-      if test "$host_cpu" != ia64; then
+      # PIC is the default for IA64 HP-UX and 64-bit HP-UX, but
+      # not for PA HP-UX.
+      case "$host_cpu" in
+      hppa*64*|ia64*)
+	# +Z the default
+	;;
+      *)
 	lt_prog_compiler_pic='+Z'
-      fi
+	;;
+      esac
       # Is there a better lt_prog_compiler_static that works with the bundled CC?
       lt_prog_compiler_static='${wl}-a ${wl}archive'
       ;;
@@ -9740,7 +9775,7 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6
 
     linux*)
       if test "$CC" = "icc"; then
-	lt_prog_compiler_wl='-Qoption,ld,'
+	lt_prog_compiler_wl='-Wl,'
 	lt_prog_compiler_pic='-KPIC'
 	lt_prog_compiler_static='-static'
       fi
@@ -9818,11 +9853,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9821: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9856: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9825: \$? = $ac_status" >&5
+   echo "$as_me:9860: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -9885,11 +9920,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9888: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9923: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9892: \$? = $ac_status" >&5
+   echo "$as_me:9927: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -9939,7 +9974,6 @@ echo $ECHO_N "checking whether the $compiler linker ($LD) supports shared librar
   allow_undefined_flag=
   enable_shared_with_static_runtimes=no
   archive_cmds=
-  archive_cmds_need_lc=
   archive_expsym_cmds=
   old_archive_From_new_cmds=
   old_archive_from_expsyms_cmds=
@@ -9947,6 +9981,7 @@ echo $ECHO_N "checking whether the $compiler linker ($LD) supports shared librar
   whole_archive_flag_spec=
   thread_safe_flag_spec=
   hardcode_libdir_flag_spec=
+  hardcode_libdir_flag_spec_ld=
   hardcode_libdir_separator=
   hardcode_direct=no
   hardcode_minus_L=no
@@ -10061,8 +10096,8 @@ EOF
 	archive_cmds='$LD -Bshareable $libobjs $deplibs $linker_flags -o $lib'
 	wlarc=
       else
-	archive_cmds='$CC -shared -nodefaultlibs $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
-	archive_expsym_cmds='$CC -shared -nodefaultlibs $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname ${wl}-retain-symbols-file $wl$export_symbols -o $lib'
+	archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
+	archive_expsym_cmds='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname ${wl}-retain-symbols-file $wl$export_symbols -o $lib'
       fi
       ;;
 
@@ -10352,7 +10387,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       # Tell ltmain to make .lib files, not .a files.
       libext=lib
       # Tell ltmain to make .dll files, not .so files.
-      shrext="dll"
+      shrext=".dll"
       # FIXME: Setting linknames here is a bad hack.
       archive_cmds='$CC -o $lib $libobjs $compiler_flags `echo "$deplibs" | $SED -e '\''s/ -lc$//'\''` -link -dll~linknames='
       # The linker will automatically build a .lib file if we build a DLL.
@@ -10364,6 +10399,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       ;;
 
     darwin* | rhapsody*)
+      archive_cmds_need_lc=no
       case "$host_os" in
       rhapsody* | darwin1.[012])
 	allow_undefined_flag='-undefined suppress'
@@ -10422,47 +10458,72 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       hardcode_shlibpath_var=no
       ;;
 
-    hpux9* | hpux10* | hpux11*)
+    hpux9*)
       if test "$GCC" = yes; then
-	case $host_os in
-	  hpux9*)
-	    archive_cmds='$rm $output_objdir/$soname~$CC -shared -fPIC ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $libobjs $deplibs $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
-	    ;;
-	  *)
-	    if test "$host_cpu" = ia64; then
-	      archive_cmds='$CC -shared ${wl}+h ${wl}$soname -o $lib $libobjs $deplibs $compiler_flags'
-	    else
-	      archive_cmds='$CC -shared -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
-	    fi
-	    ;;
-	esac
+	archive_cmds='$rm $output_objdir/$soname~$CC -shared -fPIC ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $libobjs $deplibs $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       else
-	case $host_os in
-	  hpux9*)
-	    archive_cmds='$rm $output_objdir/$soname~$LD -b +b $install_libdir -o $output_objdir/$soname $libobjs $deplibs $linker_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
-	    ;;
-	  *)
-	    if test "$host_cpu" = ia64; then
-	      archive_cmds='$LD -b +h $soname -o $lib $libobjs $deplibs $linker_flags'
-	    else
-	      archive_cmds='$LD -b +h $soname +b $install_libdir -o $lib $libobjs $deplibs $linker_flags'
-	    fi
-	    ;;
-	esac
+	archive_cmds='$rm $output_objdir/$soname~$LD -b +b $install_libdir -o $output_objdir/$soname $libobjs $deplibs $linker_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       fi
-      if test "$host_cpu" = ia64; then
-	hardcode_libdir_flag_spec='-L$libdir'
-	hardcode_direct=no
-	hardcode_shlibpath_var=no
-      else
-	hardcode_libdir_flag_spec='${wl}+b ${wl}$libdir'
-	hardcode_libdir_separator=:
-	hardcode_direct=yes
-      fi
+      hardcode_libdir_flag_spec='${wl}+b ${wl}$libdir'
+      hardcode_libdir_separator=:
+      hardcode_direct=yes
+
       # hardcode_minus_L: Not really in the search PATH,
       # but as the default location of the library.
       hardcode_minus_L=yes
       export_dynamic_flag_spec='${wl}-E'
+      ;;
+
+    hpux10* | hpux11*)
+      if test "$GCC" = yes -a "$with_gnu_ld" = no; then
+	case "$host_cpu" in
+	hppa*64*|ia64*)
+	  archive_cmds='$CC -shared ${wl}+h ${wl}$soname -o $lib $libobjs $deplibs $compiler_flags'
+	  ;;
+	*)
+	  archive_cmds='$CC -shared -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
+	  ;;
+	esac
+      else
+	case "$host_cpu" in
+	hppa*64*|ia64*)
+	  archive_cmds='$LD -b +h $soname -o $lib $libobjs $deplibs $linker_flags'
+	  ;;
+	*)
+	  archive_cmds='$LD -b +h $soname +b $install_libdir -o $lib $libobjs $deplibs $linker_flags'
+	  ;;
+	esac
+      fi
+      if test "$with_gnu_ld" = no; then
+	case "$host_cpu" in
+	hppa*64*)
+	  hardcode_libdir_flag_spec='${wl}+b ${wl}$libdir'
+	  hardcode_libdir_flag_spec_ld='+b $libdir'
+	  hardcode_libdir_separator=:
+	  hardcode_direct=no
+	  hardcode_shlibpath_var=no
+	  ;;
+	ia64*)
+	  hardcode_libdir_flag_spec='-L$libdir'
+	  hardcode_direct=no
+	  hardcode_shlibpath_var=no
+
+	  # hardcode_minus_L: Not really in the search PATH,
+	  # but as the default location of the library.
+	  hardcode_minus_L=yes
+	  ;;
+	*)
+	  hardcode_libdir_flag_spec='${wl}+b ${wl}$libdir'
+	  hardcode_libdir_separator=:
+	  hardcode_direct=yes
+	  export_dynamic_flag_spec='${wl}-E'
+
+	  # hardcode_minus_L: Not really in the search PATH,
+	  # but as the default location of the library.
+	  hardcode_minus_L=yes
+	  ;;
+	esac
+      fi
       ;;
 
     irix5* | irix6* | nonstopux*)
@@ -10470,6 +10531,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname ${wl}$soname `test -n "$verstring" && echo ${wl}-set_version ${wl}$verstring` ${wl}-update_registry ${wl}${output_objdir}/so_locations -o $lib'
       else
 	archive_cmds='$LD -shared $libobjs $deplibs $linker_flags -soname $soname `test -n "$verstring" && echo -set_version $verstring` -update_registry ${output_objdir}/so_locations -o $lib'
+	hardcode_libdir_flag_spec_ld='-rpath $libdir'
       fi
       hardcode_libdir_flag_spec='${wl}-rpath ${wl}$libdir'
       hardcode_libdir_separator=:
@@ -10544,7 +10606,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       else
 	allow_undefined_flag=' -expect_unresolved \*'
 	archive_cmds='$LD -shared${allow_undefined_flag} $libobjs $deplibs $linker_flags -msym -soname $soname `test -n "$verstring" && echo -set_version $verstring` -update_registry ${output_objdir}/so_locations -o $lib'
-	archive_expsym_cmds='for i in `cat $export_symbols`; do printf "-exported_symbol " >> $lib.exp; echo "\$i" >> $lib.exp; done; echo "-hidden">> $lib.exp~
+	archive_expsym_cmds='for i in `cat $export_symbols`; do printf "%s %s\\n" -exported_symbol "\$i" >> $lib.exp; done; echo "-hidden">> $lib.exp~
 	$LD -shared${allow_undefined_flag} -input $lib.exp $linker_flags $libobjs $deplibs -soname $soname `test -n "$verstring" && echo -set_version $verstring` -update_registry ${objdir}/so_locations -o $lib~$rm $lib.exp'
 
 	# Both c and cxx compiler support -rpath directly
@@ -10690,58 +10752,64 @@ fi
 #
 # Do we need to explicitly link libc?
 #
-archive_cmds_need_lc=yes
-if test "$enable_shared" = yes && test "$GCC" = yes; then
-  case $archive_cmds in
-  *'~'*)
-    # FIXME: we may have to deal with multi-command sequences.
-    ;;
-  '$CC '*)
-    # Test whether the compiler implicitly links with -lc since on some
-    # systems, -lgcc has to come before -lc. If gcc already passes -lc
-    # to ld, don't add -lc before -lgcc.
-    echo "$as_me:$LINENO: checking whether -lc should be explicitly linked in" >&5
-echo $ECHO_N "checking whether -lc should be explicitly linked in... $ECHO_C" >&6
-    $rm conftest*
-    printf "$lt_simple_compile_test_code" > conftest.$ac_ext
+case "x$archive_cmds_need_lc" in
+x|xyes)
+  # Assume -lc should be added
+  archive_cmds_need_lc=yes
 
-    if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  if test "$enable_shared" = yes && test "$GCC" = yes; then
+    case $archive_cmds in
+    *'~'*)
+      # FIXME: we may have to deal with multi-command sequences.
+      ;;
+    '$CC '*)
+      # Test whether the compiler implicitly links with -lc since on some
+      # systems, -lgcc has to come before -lc. If gcc already passes -lc
+      # to ld, don't add -lc before -lgcc.
+      echo "$as_me:$LINENO: checking whether -lc should be explicitly linked in" >&5
+echo $ECHO_N "checking whether -lc should be explicitly linked in... $ECHO_C" >&6
+      $rm conftest*
+      printf "$lt_simple_compile_test_code" > conftest.$ac_ext
+
+      if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } 2>conftest.err; then
-      soname=conftest
-      lib=conftest
-      libobjs=conftest.$ac_objext
-      deplibs=
-      wl=$lt_prog_compiler_wl
-      compiler_flags=-v
-      linker_flags=-v
-      verstring=
-      output_objdir=.
-      libname=conftest
-      lt_save_allow_undefined_flag=$allow_undefined_flag
-      allow_undefined_flag=
-      if { (eval echo "$as_me:$LINENO: \"$archive_cmds 2\>\&1 \| grep \" -lc \" \>/dev/null 2\>\&1\"") >&5
+        soname=conftest
+        lib=conftest
+        libobjs=conftest.$ac_objext
+        deplibs=
+        wl=$lt_prog_compiler_wl
+        compiler_flags=-v
+        linker_flags=-v
+        verstring=
+        output_objdir=.
+        libname=conftest
+        lt_save_allow_undefined_flag=$allow_undefined_flag
+        allow_undefined_flag=
+        if { (eval echo "$as_me:$LINENO: \"$archive_cmds 2\>\&1 \| grep \" -lc \" \>/dev/null 2\>\&1\"") >&5
   (eval $archive_cmds 2\>\&1 \| grep \" -lc \" \>/dev/null 2\>\&1) 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }
-      then
-	archive_cmds_need_lc=no
+        then
+	  archive_cmds_need_lc=no
+        else
+	  archive_cmds_need_lc=yes
+        fi
+        allow_undefined_flag=$lt_save_allow_undefined_flag
       else
-	archive_cmds_need_lc=yes
+        cat conftest.err 1>&5
       fi
-      allow_undefined_flag=$lt_save_allow_undefined_flag
-    else
-      cat conftest.err 1>&5
-    fi
-    $rm conftest*
-    echo "$as_me:$LINENO: result: $archive_cmds_need_lc" >&5
+      $rm conftest*
+      echo "$as_me:$LINENO: result: $archive_cmds_need_lc" >&5
 echo "${ECHO_T}$archive_cmds_need_lc" >&6
-    ;;
-  esac
-fi
+      ;;
+    esac
+  fi
+  ;;
+esac
 
 echo "$as_me:$LINENO: checking how to hardcode library paths into programs" >&5
 echo $ECHO_N "checking how to hardcode library paths into programs... $ECHO_C" >&6
@@ -10798,7 +10866,7 @@ echo $ECHO_N "checking dynamic linker characteristics... $ECHO_C" >&6
 library_names_spec=
 libname_spec='lib$name'
 soname_spec=
-shrext="so"
+shrext=".so"
 postinstall_cmds=
 postuninstall_cmds=
 finish_cmds=
@@ -10832,11 +10900,11 @@ need_version=unknown
 case $host_os in
 aix3*)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix $libname.a'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix $libname.a'
   shlibpath_var=LIBPATH
 
   # AIX 3 has no versioning support, so we append a major version to the name.
-  soname_spec='${libname}${release}.${shrext}$major'
+  soname_spec='${libname}${release}${shared_ext}$major'
   ;;
 
 aix4* | aix5*)
@@ -10846,7 +10914,7 @@ aix4* | aix5*)
   hardcode_into_libs=yes
   if test "$host_cpu" = ia64; then
     # AIX 5 supports IA64
-    library_names_spec='${libname}${release}.${shrext}$major ${libname}${release}.${shrext}$versuffix $libname.${shrext}'
+    library_names_spec='${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext}$versuffix $libname${shared_ext}'
     shlibpath_var=LD_LIBRARY_PATH
   else
     # With GCC up to 2.95.x, collect2 would create an import file
@@ -10872,12 +10940,12 @@ aix4* | aix5*)
       # If using run time linking (on AIX 4.2 or later) use lib<name>.so
       # instead of lib<name>.a to let people know that these are not
       # typical AIX shared libraries.
-      library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+      library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
     else
       # We preserve .a as extension for shared libraries through AIX4.2
       # and later when we are not doing run time linking.
       library_names_spec='${libname}${release}.a $libname.a'
-      soname_spec='${libname}${release}.${shrext}$major'
+      soname_spec='${libname}${release}${shared_ext}$major'
     fi
     shlibpath_var=LIBPATH
   fi
@@ -10890,7 +10958,7 @@ amigaos*)
   ;;
 
 beos*)
-  library_names_spec='${libname}.${shrext}'
+  library_names_spec='${libname}${shared_ext}'
   dynamic_linker="$host_os ld.so"
   shlibpath_var=LIBRARY_PATH
   ;;
@@ -10898,8 +10966,8 @@ beos*)
 bsdi4*)
   version_type=linux
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   finish_cmds='PATH="\$PATH:/sbin" ldconfig $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   sys_lib_search_path_spec="/shlib /usr/lib /usr/X11/lib /usr/contrib/lib /lib /usr/local/lib"
@@ -10911,7 +10979,7 @@ bsdi4*)
 
 cygwin* | mingw* | pw32*)
   version_type=windows
-  shrext="dll"
+  shrext=".dll"
   need_version=no
   need_lib_prefix=no
 
@@ -10932,12 +11000,12 @@ cygwin* | mingw* | pw32*)
     case $host_os in
     cygwin*)
       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}.${shrext}'
+      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
       sys_lib_search_path_spec="/lib /lib/w32api /usr/lib /usr/local/lib"
       ;;
     mingw*)
       # MinGW DLLs use traditional 'lib' prefix
-      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}.${shrext}'
+      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
       sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
       if echo "$sys_lib_search_path_spec" | grep ';[c-zC-Z]:/' >/dev/null; then
         # It is most probably a Windows format PATH printed by
@@ -10953,13 +11021,13 @@ cygwin* | mingw* | pw32*)
       ;;
     pw32*)
       # pw32 DLLs use 'pw' prefix rather than 'lib'
-      library_names_spec='`echo ${libname} | sed -e 's/^lib/pw/'``echo ${release} | $SED -e 's/./-/g'`${versuffix}.${shrext}'
+      library_names_spec='`echo ${libname} | sed -e 's/^lib/pw/'``echo ${release} | $SED -e 's/./-/g'`${versuffix}${shared_ext}'
       ;;
     esac
     ;;
 
   *)
-    library_names_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}.${shrext} $libname.lib'
+    library_names_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext} $libname.lib'
     ;;
   esac
   dynamic_linker='Win32 ld.exe'
@@ -10975,19 +11043,21 @@ darwin* | rhapsody*)
   # FIXME: Relying on posixy $() will cause problems for
   #        cross-compilation, but unfortunately the echo tests do not
   #        yet detect zsh echo's removal of \ escapes.
-  library_names_spec='${libname}${release}${versuffix}.$shrext ${libname}${release}${major}.$shrext ${libname}.$shrext'
-  soname_spec='${libname}${release}${major}.$shrext'
+  library_names_spec='${libname}${release}${versuffix}$shared_ext ${libname}${release}${major}$shared_ext ${libname}$shared_ext'
+  soname_spec='${libname}${release}${major}$shared_ext'
   shlibpath_overrides_runpath=yes
   shlibpath_var=DYLD_LIBRARY_PATH
-  shrext='$(test .$module = .yes && echo so || echo dylib)'
+  shrext='$(test .$module = .yes && echo .so || echo .dylib)'
+  # Apple's gcc prints 'gcc -print-search-dirs' doesn't operate the same.
+  sys_lib_search_path_spec=`$CC -print-search-dirs | tr "\n" "$PATH_SEPARATOR" | sed -e 's/libraries:/@libraries:/' | tr "@" "\n" | grep "^libraries:" | sed -e "s/^libraries://" -e "s,=/,/,g" -e "s,$PATH_SEPARATOR, ,g"`
   ;;
 
 dgux*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.$shrext'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname$shared_ext'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
@@ -11000,12 +11070,12 @@ freebsd*)
   version_type=freebsd-$objformat
   case $version_type in
     freebsd-elf*)
-      library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext} $libname.${shrext}'
+      library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext} $libname${shared_ext}'
       need_version=no
       need_lib_prefix=no
       ;;
     freebsd-*)
-      library_names_spec='${libname}${release}.${shrext}$versuffix $libname.${shrext}$versuffix'
+      library_names_spec='${libname}${release}${shared_ext}$versuffix $libname${shared_ext}$versuffix'
       need_version=yes
       ;;
   esac
@@ -11029,8 +11099,8 @@ gnu*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}${major} ${libname}.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}${major} ${libname}${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   hardcode_into_libs=yes
   ;;
@@ -11041,27 +11111,42 @@ hpux9* | hpux10* | hpux11*)
   version_type=sunos
   need_lib_prefix=no
   need_version=no
-  if test "$host_cpu" = ia64; then
+  case "$host_cpu" in
+  ia64*)
+    shrext='.so'
     hardcode_into_libs=yes
     dynamic_linker="$host_os dld.so"
     shlibpath_var=LD_LIBRARY_PATH
     shlibpath_overrides_runpath=yes # Unless +noenvvar is specified.
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-    soname_spec='${libname}${release}.${shrext}$major'
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+    soname_spec='${libname}${release}${shared_ext}$major'
     if test "X$HPUX_IA64_MODE" = X32; then
       sys_lib_search_path_spec="/usr/lib/hpux32 /usr/local/lib/hpux32 /usr/local/lib"
     else
       sys_lib_search_path_spec="/usr/lib/hpux64 /usr/local/lib/hpux64"
     fi
     sys_lib_dlsearch_path_spec=$sys_lib_search_path_spec
-  else
+    ;;
+   hppa*64*)
+     shrext='.sl'
+     hardcode_into_libs=yes
+     dynamic_linker="$host_os dld.sl"
+     shlibpath_var=LD_LIBRARY_PATH # How should we handle SHLIB_PATH
+     shlibpath_overrides_runpath=yes # Unless +noenvvar is specified.
+     library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+     soname_spec='${libname}${release}${shared_ext}$major'
+     sys_lib_search_path_spec="/usr/lib/pa20_64 /usr/ccs/lib/pa20_64"
+     sys_lib_dlsearch_path_spec=$sys_lib_search_path_spec
+     ;;
+   *)
+    shrext='.sl'
     dynamic_linker="$host_os dld.sl"
     shlibpath_var=SHLIB_PATH
     shlibpath_overrides_runpath=no # +s is required to enable SHLIB_PATH
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-    soname_spec='${libname}${release}.${shrext}$major'
-    shrext="sl"
-  fi
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+    soname_spec='${libname}${release}${shared_ext}$major'
+    ;;
+  esac
   # HP-UX runs *really* slowly unless shared libraries are mode 555.
   postinstall_cmds='chmod 555 $lib'
   ;;
@@ -11073,8 +11158,8 @@ irix5* | irix6* | nonstopux*)
   esac
   need_lib_prefix=no
   need_version=no
-  soname_spec='${libname}${release}.${shrext}$major'
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major ${libname}${release}.${shrext} $libname.${shrext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext} $libname${shared_ext}'
   case $host_os in
   irix5* | nonstopux*)
     libsuff= shlibsuff=
@@ -11092,6 +11177,7 @@ irix5* | irix6* | nonstopux*)
   shlibpath_overrides_runpath=no
   sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
   sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
+  hardcode_into_libs=yes
   ;;
 
 # No shared lib support for Linux oldld, aout, or coff.
@@ -11101,12 +11187,11 @@ linux*oldld* | linux*aout* | linux*coff*)
 
 # This must be Linux ELF.
 linux*)
-  shrext="so"
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=no
@@ -11129,12 +11214,12 @@ netbsd*)
   need_lib_prefix=no
   need_version=no
   if echo __ELF__ | $CC -E - | grep __ELF__ >/dev/null; then
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}.${shrext}$versuffix'
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
     finish_cmds='PATH="\$PATH:/sbin" ldconfig -m $libdir'
     dynamic_linker='NetBSD (a.out) ld.so'
   else
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major ${libname}${release}.${shrext} ${libname}.${shrext}'
-    soname_spec='${libname}${release}.${shrext}$major'
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext} ${libname}${shared_ext}'
+    soname_spec='${libname}${release}${shared_ext}$major'
     dynamic_linker='NetBSD ld.elf_so'
   fi
   shlibpath_var=LD_LIBRARY_PATH
@@ -11144,7 +11229,7 @@ netbsd*)
 
 newsos6)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
   ;;
@@ -11153,8 +11238,8 @@ nto-qnx)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
   ;;
@@ -11163,7 +11248,7 @@ openbsd*)
   version_type=sunos
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}.${shrext}$versuffix'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
   finish_cmds='PATH="\$PATH:/sbin" ldconfig -m $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   if test -z "`echo __ELF__ | $CC -E - | grep __ELF__`" || test "$host_os-$host_cpu" = "openbsd2.8-powerpc"; then
@@ -11182,9 +11267,9 @@ openbsd*)
 
 os2*)
   libname_spec='$name'
-  shrext="dll"
+  shrext=".dll"
   need_lib_prefix=no
-  library_names_spec='$libname.${shrext} $libname.a'
+  library_names_spec='$libname${shared_ext} $libname.a'
   dynamic_linker='OS/2 ld.exe'
   shlibpath_var=LIBPATH
   ;;
@@ -11193,8 +11278,8 @@ osf3* | osf4* | osf5*)
   version_type=osf
   need_lib_prefix=no
   need_version=no
-  soname_spec='${libname}${release}.${shrext}$major'
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
   shlibpath_var=LD_LIBRARY_PATH
   sys_lib_search_path_spec="/usr/shlib /usr/ccs/lib /usr/lib/cmplrs/cc /usr/lib /usr/local/lib /var/shlib"
   sys_lib_dlsearch_path_spec="$sys_lib_search_path_spec"
@@ -11202,8 +11287,8 @@ osf3* | osf4* | osf5*)
 
 sco3.2v5*)
   version_type=osf
-  soname_spec='${libname}${release}.${shrext}$major'
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
@@ -11211,8 +11296,8 @@ solaris*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
   hardcode_into_libs=yes
@@ -11222,7 +11307,7 @@ solaris*)
 
 sunos4*)
   version_type=sunos
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}.${shrext}$versuffix'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
   finish_cmds='PATH="\$PATH:/usr/etc" ldconfig $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
@@ -11234,8 +11319,8 @@ sunos4*)
 
 sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   case $host_vendor in
     sni)
@@ -11259,16 +11344,16 @@ sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
 sysv4*MP*)
   if test -d /usr/nec ;then
     version_type=linux
-    library_names_spec='$libname.${shrext}.$versuffix $libname.${shrext}.$major $libname.${shrext}'
-    soname_spec='$libname.${shrext}.$major'
+    library_names_spec='$libname${shared_ext}.$versuffix $libname${shared_ext}.$major $libname${shared_ext}'
+    soname_spec='$libname${shared_ext}.$major'
     shlibpath_var=LD_LIBRARY_PATH
   fi
   ;;
 
 uts4*)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
@@ -11731,7 +11816,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 11734 "configure"
+#line 11819 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11829,7 +11914,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 11832 "configure"
+#line 11917 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12013,6 +12098,7 @@ if test -f "$ltmain"; then
     no_undefined_flag \
     export_symbols_cmds \
     hardcode_libdir_flag_spec \
+    hardcode_libdir_flag_spec_ld \
     hardcode_libdir_separator \
     lt_cv_prog_compiler_c_o \
     exclude_expsyms \
@@ -12180,8 +12266,8 @@ objext="$ac_objext"
 # Old archive suffix (normally "a").
 libext="$libext"
 
-# Shared library suffix (normally "so").
-shrext="$shrext"
+# Shared library suffix (normally ".so").
+shrext='$shrext'
 
 # Executable file suffix (normally "").
 exeext="$exeext"
@@ -12330,10 +12416,15 @@ hardcode_into_libs=$hardcode_into_libs
 # This must work even if \$libdir does not exist.
 hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec
 
+# If ld is used when linking, flag to hardcode \$libdir into
+# a binary during linking. This must work even if \$libdir does
+# not exist.
+hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld
+
 # Whether we need a single -rpath flag with a separated argument.
 hardcode_libdir_separator=$lt_hardcode_libdir_separator
 
-# Set to yes if using DIR/libNAME.${shrext} during linking hardcodes DIR into the
+# Set to yes if using DIR/libNAME${shared_ext} during linking hardcodes DIR into the
 # resulting binary.
 hardcode_direct=$hardcode_direct
 
@@ -12491,6 +12582,7 @@ archive_expsym_cmds_CXX=
 export_dynamic_flag_spec_CXX=
 hardcode_direct_CXX=no
 hardcode_libdir_flag_spec_CXX=
+hardcode_libdir_flag_spec_ld_CXX=
 hardcode_libdir_separator_CXX=
 hardcode_minus_L_CXX=no
 link_all_deplibs_CXX=unknown
@@ -12525,15 +12617,13 @@ lt_simple_link_test_code='int main(int, char *) { return(0); }\n'
 LTCC=${LTCC-"$CC"}
 
 # Allow CC to be a program name with arguments.
-set dummy $CC
-compiler="$2"
+compiler=$CC
 
 
 # Allow CC to be a program name with arguments.
 lt_save_CC="$CC"
 CC=${CXX-"c++"}
-set dummy $CC
-compiler="$2"
+compiler=$CC
 compiler_CXX=$CC
 cc_basename=`$echo X"$compiler" | $Xsed -e 's%^.*/%%'`
 
@@ -12831,30 +12921,9 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
   ;;
 
   darwin* | rhapsody*)
+    archive_cmds_need_lc_CXX=no
     case "$host_os" in
     rhapsody* | darwin1.[012])
-      allow_undefined_flag_CXX='-undefined suppress'
-      ;;
-    *) # Darwin 1.3 on
-      allow_undefined_flag_CXX='-flat_namespace -undefined suppress'
-      ;;
-    esac
-
-    # FIXME: Relying on posixy $() will cause problems for
-    #        cross-compilation, but unfortunately the echo tests do not
-    #        yet detect zsh echo's removal of \ escapes.  Also zsh mangles
-    #	       `"' quotes if we put them in here... so don't!
-    archive_cmds_CXX='$CC -r ${wl}-bind_at_load -keep_private_externs -nostdlib -o ${lib}-master.o $libobjs && $CC $(test .$module = .yes && echo -bundle || echo -dynamiclib) $allow_undefined_flag -o $lib ${lib}-master.o $deplibs$linker_flags $(test .$module != .yes && echo -install_name $rpath/$soname $verstring)'
-    # We need to add '_' to the symbols in $export_symbols first
-    #_LT_AC_TAGVAR(archive_expsym_cmds, CXX)="$_LT_AC_TAGVAR(archive_cmds, CXX)"' && strip -s $export_symbols'
-    hardcode_direct_CXX=yes
-    hardcode_shlibpath_var_CXX=no
-    whole_archive_flag_spec_CXX='-all_load $convenience'
-    ;;
-
-  darwin* | rhapsody*)
-    case "$host_os" in
-      rhapsody* | darwin1.[012])
       allow_undefined_flag_CXX='-undefined suppress'
       ;;
     *) # Darwin 1.3 on
@@ -12905,25 +12974,79 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
     ;;
   gnu*)
     ;;
-  hpux*)
-    if test $with_gnu_ld = no; then
-      if test "$host_cpu" = ia64; then
-	hardcode_libdir_flag_spec_CXX='-L$libdir'
+  hpux9*)
+    hardcode_libdir_flag_spec_CXX='${wl}+b ${wl}$libdir'
+    hardcode_libdir_separator_CXX=:
+    export_dynamic_flag_spec_CXX='${wl}-E'
+    hardcode_direct_CXX=yes
+    hardcode_minus_L_CXX=yes # Not in the search PATH,
+				# but as the default
+				# location of the library.
+
+    case $cc_basename in
+    CC)
+      # FIXME: insert proper C++ library support
+      ld_shlibs_CXX=no
+      ;;
+    aCC)
+      archive_cmds_CXX='$rm $output_objdir/$soname~$CC -b ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
+      # Commands to make compiler produce verbose output that lists
+      # what "hidden" libraries, object files and flags are used when
+      # linking a shared library.
+      #
+      # There doesn't appear to be a way to prevent this compiler from
+      # explicitly linking system object files so we need to strip them
+      # from the output so that they don't get included in the library
+      # dependencies.
+      output_verbose_link_cmd='templist=`($CC -b $CFLAGS -v conftest.$objext 2>&1) | egrep "\-L"`; list=""; for z in $templist; do case $z in conftest.$objext) list="$list $z";; *.$objext);; *) list="$list $z";;esac; done; echo $list'
+      ;;
+    *)
+      if test "$GXX" = yes; then
+        archive_cmds_CXX='$rm $output_objdir/$soname~$CC -shared -nostdlib -fPIC ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       else
+        # FIXME: insert proper C++ library support
+        ld_shlibs_CXX=no
+      fi
+      ;;
+    esac
+    ;;
+  hpux10*|hpux11*)
+    if test $with_gnu_ld = no; then
+      case "$host_cpu" in
+      hppa*64*)
+	hardcode_libdir_flag_spec_CXX='${wl}+b ${wl}$libdir'
+	hardcode_libdir_flag_spec_ld_CXX='+b $libdir'
+	hardcode_libdir_separator_CXX=:
+        ;;
+      ia64*)
+	hardcode_libdir_flag_spec_CXX='-L$libdir'
+        ;;
+      *)
 	hardcode_libdir_flag_spec_CXX='${wl}+b ${wl}$libdir'
 	hardcode_libdir_separator_CXX=:
 	export_dynamic_flag_spec_CXX='${wl}-E'
-      fi
+        ;;
+      esac
     fi
-    if test "$host_cpu" = ia64; then
+    case "$host_cpu" in
+    hppa*64*)
       hardcode_direct_CXX=no
       hardcode_shlibpath_var_CXX=no
-    else
+      ;;
+    ia64*)
+      hardcode_direct_CXX=no
+      hardcode_shlibpath_var_CXX=no
+      hardcode_minus_L_CXX=yes # Not in the search PATH,
+					      # but as the default
+					      # location of the library.
+      ;;
+    *)
       hardcode_direct_CXX=yes
-    fi
-    hardcode_minus_L_CXX=yes # Not in the search PATH,
-					    # but as the default
-					    # location of the library.
+      hardcode_minus_L_CXX=yes # Not in the search PATH,
+					      # but as the default
+					      # location of the library.
+      ;;
+    esac
 
     case $cc_basename in
       CC)
@@ -12931,16 +13054,12 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	ld_shlibs_CXX=no
 	;;
       aCC)
-	case $host_os in
-	hpux9*)
-	  archive_cmds_CXX='$rm $output_objdir/$soname~$CC -b ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
+	case "$host_cpu" in
+	hppa*64*|ia64*)
+	  archive_cmds_CXX='$LD -b +h $soname -o $lib $linker_flags $libobjs $deplibs'
 	  ;;
 	*)
-	  if test "$host_cpu" = ia64; then
-	    archive_cmds_CXX='$LD -b +h $soname -o $lib $linker_flags $libobjs $deplibs'
-	  else
-	    archive_cmds_CXX='$CC -b ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
-	  fi
+	  archive_cmds_CXX='$CC -b ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
 	  ;;
 	esac
 	# Commands to make compiler produce verbose output that lists
@@ -12956,16 +13075,12 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       *)
 	if test "$GXX" = yes; then
 	  if test $with_gnu_ld = no; then
-	    case $host_os in
-	    hpux9*)
-	      archive_cmds_CXX='$rm $output_objdir/$soname~$CC -shared -nostdlib -fPIC ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
+	    case "$host_cpu" in
+	    ia64*|hppa*64*)
+	      archive_cmds_CXX='$LD -b +h $soname -o $lib $linker_flags $libobjs $deplibs'
 	      ;;
 	    *)
-	      if test "$host_cpu" = ia64; then
-		archive_cmds_CXX='$LD -b +h $soname -o $lib $linker_flags $libobjs $deplibs'
-	      else
-		archive_cmds_CXX='$CC -shared -nostdlib -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
-	      fi
+	      archive_cmds_CXX='$CC -shared -nostdlib -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags'
 	      ;;
 	    esac
 	  fi
@@ -13010,8 +13125,8 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	# KCC will only create a shared library if the output file
 	# ends with ".so" (or ".sl" for HP-UX), so rename the library
 	# to its proper name (with version) after linking.
-	archive_cmds_CXX='templib=`echo $lib | $SED -e "s/\.${shrext}\..*/\.${shrext}/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib; mv \$templib $lib'
-	archive_expsym_cmds_CXX='templib=`echo $lib | $SED -e "s/\.${shrext}\..*/\.${shrext}/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib ${wl}-retain-symbols-file,$export_symbols; mv \$templib $lib'
+	archive_cmds_CXX='tempext=`echo $shared_ext | $SED -e '\''s/\([^()0-9A-Za-z{}]\)/\\\\\1/g'\''`; templib=`echo $lib | $SED -e "s/\${tempext}\..*/.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib; mv \$templib $lib'
+	archive_expsym_cmds_CXX='tempext=`echo $shared_ext | $SED -e '\''s/\([^()0-9A-Za-z{}]\)/\\\\\1/g'\''`; templib=`echo $lib | $SED -e "s/\${tempext}\..*/.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib ${wl}-retain-symbols-file,$export_symbols; mv \$templib $lib'
 	# Commands to make compiler produce verbose output that lists
 	# what "hidden" libraries, object files and flags are used when
 	# linking a shared library.
@@ -13020,7 +13135,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	# explicitly linking system object files so we need to strip them
 	# from the output so that they don't get included in the library
 	# dependencies.
-	output_verbose_link_cmd='templist=`$CC $CFLAGS -v conftest.$objext -o libconftest.$shrext 2>&1 | grep "ld"`; rm -f libconftest.$shrext; list=""; for z in $templist; do case $z in conftest.$objext) list="$list $z";; *.$objext);; *) list="$list $z";;esac; done; echo $list'
+	output_verbose_link_cmd='templist=`$CC $CFLAGS -v conftest.$objext -o libconftest$shared_ext 2>&1 | grep "ld"`; rm -f libconftest$shared_ext; list=""; for z in $templist; do case $z in conftest.$objext) list="$list $z";; *.$objext);; *) list="$list $z";;esac; done; echo $list'
 
 	hardcode_libdir_flag_spec_CXX='${wl}--rpath,$libdir'
 	export_dynamic_flag_spec_CXX='${wl}--export-dynamic'
@@ -13033,8 +13148,8 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	# Intel C++
 	with_gnu_ld=yes
 	archive_cmds_need_lc_CXX=no
-	archive_cmds_CXX='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-soname $wl$soname -o $lib'
-	archive_expsym_cmds_CXX='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-soname $wl$soname ${wl}-retain-symbols-file $wl$export_symbols -o $lib'
+	archive_cmds_CXX='$CC -shared $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-soname $wl$soname -o $lib'
+	archive_expsym_cmds_CXX='$CC -shared $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-soname $wl$soname ${wl}-retain-symbols-file $wl$export_symbols -o $lib'
 	hardcode_libdir_flag_spec_CXX='${wl}-rpath,$libdir'
 	export_dynamic_flag_spec_CXX='${wl}--export-dynamic'
 	whole_archive_flag_spec_CXX='${wl}--whole-archive$convenience ${wl}--no-whole-archive'
@@ -13099,7 +13214,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	# KCC will only create a shared library if the output file
 	# ends with ".so" (or ".sl" for HP-UX), so rename the library
 	# to its proper name (with version) after linking.
-	archive_cmds_CXX='templib=`echo $lib | $SED -e "s/\.${shrext}\..*/\.${shrext}/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib; mv \$templib $lib'
+	archive_cmds_CXX='tempext=`echo $shared_ext | $SED -e '\''s/\([^()0-9A-Za-z{}]\)/\\\\\1/g'\''`; templib=`echo $lib | $SED -e "s/\${tempext}\..*/.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib; mv \$templib $lib'
 
 	hardcode_libdir_flag_spec_CXX='${wl}-rpath,$libdir'
 	hardcode_libdir_separator_CXX=:
@@ -13159,7 +13274,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	# KCC will only create a shared library if the output file
 	# ends with ".so" (or ".sl" for HP-UX), so rename the library
 	# to its proper name (with version) after linking.
-	archive_cmds_CXX='templib=`echo $lib | $SED -e "s/\.${shrext}\..*/\.${shrext}/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib; mv \$templib $lib'
+	archive_cmds_CXX='tempext=`echo $shared_ext | $SED -e '\''s/\([^()0-9A-Za-z{}]\)/\\\\\1/g'\''`; templib=`echo $lib | $SED -e "s/\${tempext}\..*/.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib; mv \$templib $lib'
 
 	hardcode_libdir_flag_spec_CXX='${wl}-rpath,$libdir'
 	hardcode_libdir_separator_CXX=:
@@ -13176,7 +13291,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       cxx)
 	allow_undefined_flag_CXX=' -expect_unresolved \*'
 	archive_cmds_CXX='$CC -shared${allow_undefined_flag} $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -msym -soname $soname `test -n "$verstring" && echo -set_version $verstring` -update_registry ${objdir}/so_locations -o $lib'
-	archive_expsym_cmds_CXX='for i in `cat $export_symbols`; do printf "-exported_symbol " >> $lib.exp; echo "\$i" >> $lib.exp; done~
+	archive_expsym_cmds_CXX='for i in `cat $export_symbols`; do printf "%s %s\\n" -exported_symbol "\$i" >> $lib.exp; done~
 	  echo "-hidden">> $lib.exp~
 	  $CC -shared$allow_undefined_flag $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -msym -soname $soname -Wl,-input -Wl,$lib.exp  `test -n "$verstring" && echo -set_version	$verstring` -update_registry $objdir/so_locations -o $lib~
 	  $rm $lib.exp'
@@ -13462,7 +13577,6 @@ $rm -f confest.$objext
 
 case " $postdeps_CXX " in
 *" -lc "*) archive_cmds_need_lc_CXX=no ;;
-*) archive_cmds_need_lc_CXX=yes ;;
 esac
 
 lt_prog_compiler_wl_CXX=
@@ -13514,10 +13628,15 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6
       fi
       ;;
     hpux*)
-      # PIC is the default for IA64 HP-UX, but not for PA HP-UX.
-      if test "$host_cpu" != ia64; then
+      # PIC is the default for IA64 HP-UX and 64-bit HP-UX, but
+      # not for PA HP-UX.
+      case "$host_cpu" in
+      hppa*64*|ia64*)
+	;;
+      *)
 	lt_prog_compiler_pic_CXX='-fPIC'
-      fi
+	;;
+      esac
       ;;
     *)
       lt_prog_compiler_pic_CXX='-fPIC'
@@ -13570,9 +13689,14 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6
 	  aCC)
 	    lt_prog_compiler_wl_CXX='-Wl,'
 	    lt_prog_compiler_static_CXX="${ac_cv_prog_cc_wl}-a ${ac_cv_prog_cc_wl}archive"
-	    if test "$host_cpu" != ia64; then
+	    case "$host_cpu" in
+	    hppa*64*|ia64*)
+	      # +Z the default
+	      ;;
+	    *)
 	      lt_prog_compiler_pic_CXX='+Z'
-	    fi
+	      ;;
+	    esac
 	    ;;
 	  *)
 	    ;;
@@ -13598,7 +13722,7 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6
 	    ;;
 	  icpc)
 	    # Intel C++
-	    lt_prog_compiler_wl_CXX='-Qoption,ld,'
+	    lt_prog_compiler_wl_CXX='-Wl,'
 	    lt_prog_compiler_pic_CXX='-KPIC'
 	    lt_prog_compiler_static_CXX='-static'
 	    ;;
@@ -13736,11 +13860,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13739: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13863: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:13743: \$? = $ac_status" >&5
+   echo "$as_me:13867: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -13803,11 +13927,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13806: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13930: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:13810: \$? = $ac_status" >&5
+   echo "$as_me:13934: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -13887,58 +14011,64 @@ fi
 #
 # Do we need to explicitly link libc?
 #
-archive_cmds_need_lc_CXX=yes
-if test "$enable_shared" = yes && test "$GCC" = yes; then
-  case $archive_cmds_CXX in
-  *'~'*)
-    # FIXME: we may have to deal with multi-command sequences.
-    ;;
-  '$CC '*)
-    # Test whether the compiler implicitly links with -lc since on some
-    # systems, -lgcc has to come before -lc. If gcc already passes -lc
-    # to ld, don't add -lc before -lgcc.
-    echo "$as_me:$LINENO: checking whether -lc should be explicitly linked in" >&5
-echo $ECHO_N "checking whether -lc should be explicitly linked in... $ECHO_C" >&6
-    $rm conftest*
-    printf "$lt_simple_compile_test_code" > conftest.$ac_ext
+case "x$archive_cmds_need_lc_CXX" in
+x|xyes)
+  # Assume -lc should be added
+  archive_cmds_need_lc_CXX=yes
 
-    if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  if test "$enable_shared" = yes && test "$GCC" = yes; then
+    case $archive_cmds_CXX in
+    *'~'*)
+      # FIXME: we may have to deal with multi-command sequences.
+      ;;
+    '$CC '*)
+      # Test whether the compiler implicitly links with -lc since on some
+      # systems, -lgcc has to come before -lc. If gcc already passes -lc
+      # to ld, don't add -lc before -lgcc.
+      echo "$as_me:$LINENO: checking whether -lc should be explicitly linked in" >&5
+echo $ECHO_N "checking whether -lc should be explicitly linked in... $ECHO_C" >&6
+      $rm conftest*
+      printf "$lt_simple_compile_test_code" > conftest.$ac_ext
+
+      if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } 2>conftest.err; then
-      soname=conftest
-      lib=conftest
-      libobjs=conftest.$ac_objext
-      deplibs=
-      wl=$lt_prog_compiler_wl_CXX
-      compiler_flags=-v
-      linker_flags=-v
-      verstring=
-      output_objdir=.
-      libname=conftest
-      lt_save_allow_undefined_flag=$allow_undefined_flag_CXX
-      allow_undefined_flag_CXX=
-      if { (eval echo "$as_me:$LINENO: \"$archive_cmds_CXX 2\>\&1 \| grep \" -lc \" \>/dev/null 2\>\&1\"") >&5
+        soname=conftest
+        lib=conftest
+        libobjs=conftest.$ac_objext
+        deplibs=
+        wl=$lt_prog_compiler_wl_CXX
+        compiler_flags=-v
+        linker_flags=-v
+        verstring=
+        output_objdir=.
+        libname=conftest
+        lt_save_allow_undefined_flag=$allow_undefined_flag_CXX
+        allow_undefined_flag_CXX=
+        if { (eval echo "$as_me:$LINENO: \"$archive_cmds_CXX 2\>\&1 \| grep \" -lc \" \>/dev/null 2\>\&1\"") >&5
   (eval $archive_cmds_CXX 2\>\&1 \| grep \" -lc \" \>/dev/null 2\>\&1) 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }
-      then
-	archive_cmds_need_lc_CXX=no
+        then
+	  archive_cmds_need_lc_CXX=no
+        else
+	  archive_cmds_need_lc_CXX=yes
+        fi
+        allow_undefined_flag_CXX=$lt_save_allow_undefined_flag
       else
-	archive_cmds_need_lc_CXX=yes
+        cat conftest.err 1>&5
       fi
-      allow_undefined_flag_CXX=$lt_save_allow_undefined_flag
-    else
-      cat conftest.err 1>&5
-    fi
-    $rm conftest*
-    echo "$as_me:$LINENO: result: $archive_cmds_need_lc_CXX" >&5
+      $rm conftest*
+      echo "$as_me:$LINENO: result: $archive_cmds_need_lc_CXX" >&5
 echo "${ECHO_T}$archive_cmds_need_lc_CXX" >&6
-    ;;
-  esac
-fi
+      ;;
+    esac
+  fi
+  ;;
+esac
 
 echo "$as_me:$LINENO: checking how to hardcode library paths into programs" >&5
 echo $ECHO_N "checking how to hardcode library paths into programs... $ECHO_C" >&6
@@ -13995,7 +14125,7 @@ echo $ECHO_N "checking dynamic linker characteristics... $ECHO_C" >&6
 library_names_spec=
 libname_spec='lib$name'
 soname_spec=
-shrext="so"
+shrext=".so"
 postinstall_cmds=
 postuninstall_cmds=
 finish_cmds=
@@ -14029,11 +14159,11 @@ need_version=unknown
 case $host_os in
 aix3*)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix $libname.a'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix $libname.a'
   shlibpath_var=LIBPATH
 
   # AIX 3 has no versioning support, so we append a major version to the name.
-  soname_spec='${libname}${release}.${shrext}$major'
+  soname_spec='${libname}${release}${shared_ext}$major'
   ;;
 
 aix4* | aix5*)
@@ -14043,7 +14173,7 @@ aix4* | aix5*)
   hardcode_into_libs=yes
   if test "$host_cpu" = ia64; then
     # AIX 5 supports IA64
-    library_names_spec='${libname}${release}.${shrext}$major ${libname}${release}.${shrext}$versuffix $libname.${shrext}'
+    library_names_spec='${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext}$versuffix $libname${shared_ext}'
     shlibpath_var=LD_LIBRARY_PATH
   else
     # With GCC up to 2.95.x, collect2 would create an import file
@@ -14069,12 +14199,12 @@ aix4* | aix5*)
       # If using run time linking (on AIX 4.2 or later) use lib<name>.so
       # instead of lib<name>.a to let people know that these are not
       # typical AIX shared libraries.
-      library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+      library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
     else
       # We preserve .a as extension for shared libraries through AIX4.2
       # and later when we are not doing run time linking.
       library_names_spec='${libname}${release}.a $libname.a'
-      soname_spec='${libname}${release}.${shrext}$major'
+      soname_spec='${libname}${release}${shared_ext}$major'
     fi
     shlibpath_var=LIBPATH
   fi
@@ -14087,7 +14217,7 @@ amigaos*)
   ;;
 
 beos*)
-  library_names_spec='${libname}.${shrext}'
+  library_names_spec='${libname}${shared_ext}'
   dynamic_linker="$host_os ld.so"
   shlibpath_var=LIBRARY_PATH
   ;;
@@ -14095,8 +14225,8 @@ beos*)
 bsdi4*)
   version_type=linux
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   finish_cmds='PATH="\$PATH:/sbin" ldconfig $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   sys_lib_search_path_spec="/shlib /usr/lib /usr/X11/lib /usr/contrib/lib /lib /usr/local/lib"
@@ -14108,7 +14238,7 @@ bsdi4*)
 
 cygwin* | mingw* | pw32*)
   version_type=windows
-  shrext="dll"
+  shrext=".dll"
   need_version=no
   need_lib_prefix=no
 
@@ -14129,12 +14259,12 @@ cygwin* | mingw* | pw32*)
     case $host_os in
     cygwin*)
       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}.${shrext}'
+      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
       sys_lib_search_path_spec="/lib /lib/w32api /usr/lib /usr/local/lib"
       ;;
     mingw*)
       # MinGW DLLs use traditional 'lib' prefix
-      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}.${shrext}'
+      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
       sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
       if echo "$sys_lib_search_path_spec" | grep ';[c-zC-Z]:/' >/dev/null; then
         # It is most probably a Windows format PATH printed by
@@ -14150,13 +14280,13 @@ cygwin* | mingw* | pw32*)
       ;;
     pw32*)
       # pw32 DLLs use 'pw' prefix rather than 'lib'
-      library_names_spec='`echo ${libname} | sed -e 's/^lib/pw/'``echo ${release} | $SED -e 's/./-/g'`${versuffix}.${shrext}'
+      library_names_spec='`echo ${libname} | sed -e 's/^lib/pw/'``echo ${release} | $SED -e 's/./-/g'`${versuffix}${shared_ext}'
       ;;
     esac
     ;;
 
   *)
-    library_names_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}.${shrext} $libname.lib'
+    library_names_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext} $libname.lib'
     ;;
   esac
   dynamic_linker='Win32 ld.exe'
@@ -14172,19 +14302,21 @@ darwin* | rhapsody*)
   # FIXME: Relying on posixy $() will cause problems for
   #        cross-compilation, but unfortunately the echo tests do not
   #        yet detect zsh echo's removal of \ escapes.
-  library_names_spec='${libname}${release}${versuffix}.$shrext ${libname}${release}${major}.$shrext ${libname}.$shrext'
-  soname_spec='${libname}${release}${major}.$shrext'
+  library_names_spec='${libname}${release}${versuffix}$shared_ext ${libname}${release}${major}$shared_ext ${libname}$shared_ext'
+  soname_spec='${libname}${release}${major}$shared_ext'
   shlibpath_overrides_runpath=yes
   shlibpath_var=DYLD_LIBRARY_PATH
-  shrext='$(test .$module = .yes && echo so || echo dylib)'
+  shrext='$(test .$module = .yes && echo .so || echo .dylib)'
+  # Apple's gcc prints 'gcc -print-search-dirs' doesn't operate the same.
+  sys_lib_search_path_spec=`$CC -print-search-dirs | tr "\n" "$PATH_SEPARATOR" | sed -e 's/libraries:/@libraries:/' | tr "@" "\n" | grep "^libraries:" | sed -e "s/^libraries://" -e "s,=/,/,g" -e "s,$PATH_SEPARATOR, ,g"`
   ;;
 
 dgux*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.$shrext'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname$shared_ext'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
@@ -14197,12 +14329,12 @@ freebsd*)
   version_type=freebsd-$objformat
   case $version_type in
     freebsd-elf*)
-      library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext} $libname.${shrext}'
+      library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext} $libname${shared_ext}'
       need_version=no
       need_lib_prefix=no
       ;;
     freebsd-*)
-      library_names_spec='${libname}${release}.${shrext}$versuffix $libname.${shrext}$versuffix'
+      library_names_spec='${libname}${release}${shared_ext}$versuffix $libname${shared_ext}$versuffix'
       need_version=yes
       ;;
   esac
@@ -14226,8 +14358,8 @@ gnu*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}${major} ${libname}.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}${major} ${libname}${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   hardcode_into_libs=yes
   ;;
@@ -14238,27 +14370,42 @@ hpux9* | hpux10* | hpux11*)
   version_type=sunos
   need_lib_prefix=no
   need_version=no
-  if test "$host_cpu" = ia64; then
+  case "$host_cpu" in
+  ia64*)
+    shrext='.so'
     hardcode_into_libs=yes
     dynamic_linker="$host_os dld.so"
     shlibpath_var=LD_LIBRARY_PATH
     shlibpath_overrides_runpath=yes # Unless +noenvvar is specified.
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-    soname_spec='${libname}${release}.${shrext}$major'
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+    soname_spec='${libname}${release}${shared_ext}$major'
     if test "X$HPUX_IA64_MODE" = X32; then
       sys_lib_search_path_spec="/usr/lib/hpux32 /usr/local/lib/hpux32 /usr/local/lib"
     else
       sys_lib_search_path_spec="/usr/lib/hpux64 /usr/local/lib/hpux64"
     fi
     sys_lib_dlsearch_path_spec=$sys_lib_search_path_spec
-  else
+    ;;
+   hppa*64*)
+     shrext='.sl'
+     hardcode_into_libs=yes
+     dynamic_linker="$host_os dld.sl"
+     shlibpath_var=LD_LIBRARY_PATH # How should we handle SHLIB_PATH
+     shlibpath_overrides_runpath=yes # Unless +noenvvar is specified.
+     library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+     soname_spec='${libname}${release}${shared_ext}$major'
+     sys_lib_search_path_spec="/usr/lib/pa20_64 /usr/ccs/lib/pa20_64"
+     sys_lib_dlsearch_path_spec=$sys_lib_search_path_spec
+     ;;
+   *)
+    shrext='.sl'
     dynamic_linker="$host_os dld.sl"
     shlibpath_var=SHLIB_PATH
     shlibpath_overrides_runpath=no # +s is required to enable SHLIB_PATH
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-    soname_spec='${libname}${release}.${shrext}$major'
-    shrext="sl"
-  fi
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+    soname_spec='${libname}${release}${shared_ext}$major'
+    ;;
+  esac
   # HP-UX runs *really* slowly unless shared libraries are mode 555.
   postinstall_cmds='chmod 555 $lib'
   ;;
@@ -14270,8 +14417,8 @@ irix5* | irix6* | nonstopux*)
   esac
   need_lib_prefix=no
   need_version=no
-  soname_spec='${libname}${release}.${shrext}$major'
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major ${libname}${release}.${shrext} $libname.${shrext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext} $libname${shared_ext}'
   case $host_os in
   irix5* | nonstopux*)
     libsuff= shlibsuff=
@@ -14289,6 +14436,7 @@ irix5* | irix6* | nonstopux*)
   shlibpath_overrides_runpath=no
   sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
   sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
+  hardcode_into_libs=yes
   ;;
 
 # No shared lib support for Linux oldld, aout, or coff.
@@ -14298,12 +14446,11 @@ linux*oldld* | linux*aout* | linux*coff*)
 
 # This must be Linux ELF.
 linux*)
-  shrext="so"
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=no
@@ -14326,12 +14473,12 @@ netbsd*)
   need_lib_prefix=no
   need_version=no
   if echo __ELF__ | $CC -E - | grep __ELF__ >/dev/null; then
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}.${shrext}$versuffix'
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
     finish_cmds='PATH="\$PATH:/sbin" ldconfig -m $libdir'
     dynamic_linker='NetBSD (a.out) ld.so'
   else
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major ${libname}${release}.${shrext} ${libname}.${shrext}'
-    soname_spec='${libname}${release}.${shrext}$major'
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext} ${libname}${shared_ext}'
+    soname_spec='${libname}${release}${shared_ext}$major'
     dynamic_linker='NetBSD ld.elf_so'
   fi
   shlibpath_var=LD_LIBRARY_PATH
@@ -14341,7 +14488,7 @@ netbsd*)
 
 newsos6)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
   ;;
@@ -14350,8 +14497,8 @@ nto-qnx)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
   ;;
@@ -14360,7 +14507,7 @@ openbsd*)
   version_type=sunos
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}.${shrext}$versuffix'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
   finish_cmds='PATH="\$PATH:/sbin" ldconfig -m $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   if test -z "`echo __ELF__ | $CC -E - | grep __ELF__`" || test "$host_os-$host_cpu" = "openbsd2.8-powerpc"; then
@@ -14379,9 +14526,9 @@ openbsd*)
 
 os2*)
   libname_spec='$name'
-  shrext="dll"
+  shrext=".dll"
   need_lib_prefix=no
-  library_names_spec='$libname.${shrext} $libname.a'
+  library_names_spec='$libname${shared_ext} $libname.a'
   dynamic_linker='OS/2 ld.exe'
   shlibpath_var=LIBPATH
   ;;
@@ -14390,8 +14537,8 @@ osf3* | osf4* | osf5*)
   version_type=osf
   need_lib_prefix=no
   need_version=no
-  soname_spec='${libname}${release}.${shrext}$major'
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
   shlibpath_var=LD_LIBRARY_PATH
   sys_lib_search_path_spec="/usr/shlib /usr/ccs/lib /usr/lib/cmplrs/cc /usr/lib /usr/local/lib /var/shlib"
   sys_lib_dlsearch_path_spec="$sys_lib_search_path_spec"
@@ -14399,8 +14546,8 @@ osf3* | osf4* | osf5*)
 
 sco3.2v5*)
   version_type=osf
-  soname_spec='${libname}${release}.${shrext}$major'
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
@@ -14408,8 +14555,8 @@ solaris*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
   hardcode_into_libs=yes
@@ -14419,7 +14566,7 @@ solaris*)
 
 sunos4*)
   version_type=sunos
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}.${shrext}$versuffix'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
   finish_cmds='PATH="\$PATH:/usr/etc" ldconfig $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
@@ -14431,8 +14578,8 @@ sunos4*)
 
 sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   case $host_vendor in
     sni)
@@ -14456,16 +14603,16 @@ sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
 sysv4*MP*)
   if test -d /usr/nec ;then
     version_type=linux
-    library_names_spec='$libname.${shrext}.$versuffix $libname.${shrext}.$major $libname.${shrext}'
-    soname_spec='$libname.${shrext}.$major'
+    library_names_spec='$libname${shared_ext}.$versuffix $libname${shared_ext}.$major $libname${shared_ext}'
+    soname_spec='$libname${shared_ext}.$major'
     shlibpath_var=LD_LIBRARY_PATH
   fi
   ;;
 
 uts4*)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
@@ -14928,7 +15075,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 14931 "configure"
+#line 15078 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -15026,7 +15173,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 15029 "configure"
+#line 15176 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -15173,6 +15320,7 @@ if test -f "$ltmain"; then
     no_undefined_flag_CXX \
     export_symbols_cmds_CXX \
     hardcode_libdir_flag_spec_CXX \
+    hardcode_libdir_flag_spec_ld_CXX \
     hardcode_libdir_separator_CXX \
     lt_cv_prog_compiler_c_o_CXX \
     exclude_expsyms_CXX \
@@ -15292,8 +15440,8 @@ objext="$ac_objext"
 # Old archive suffix (normally "a").
 libext="$libext"
 
-# Shared library suffix (normally "so").
-shrext="$shrext"
+# Shared library suffix (normally ".so").
+shrext='$shrext'
 
 # Executable file suffix (normally "").
 exeext="$exeext"
@@ -15442,10 +15590,15 @@ hardcode_into_libs=$hardcode_into_libs
 # This must work even if \$libdir does not exist.
 hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_CXX
 
+# If ld is used when linking, flag to hardcode \$libdir into
+# a binary during linking. This must work even if \$libdir does
+# not exist.
+hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_CXX
+
 # Whether we need a single -rpath flag with a separated argument.
 hardcode_libdir_separator=$lt_hardcode_libdir_separator_CXX
 
-# Set to yes if using DIR/libNAME.${shrext} during linking hardcodes DIR into the
+# Set to yes if using DIR/libNAME${shared_ext} during linking hardcodes DIR into the
 # resulting binary.
 hardcode_direct=$hardcode_direct_CXX
 
@@ -15526,6 +15679,7 @@ archive_expsym_cmds_F77=
 export_dynamic_flag_spec_F77=
 hardcode_direct_F77=no
 hardcode_libdir_flag_spec_F77=
+hardcode_libdir_flag_spec_ld_F77=
 hardcode_libdir_separator_F77=
 hardcode_minus_L_F77=no
 link_all_deplibs_F77=unknown
@@ -15553,15 +15707,13 @@ lt_simple_link_test_code="      program t\n      end\n"
 LTCC=${LTCC-"$CC"}
 
 # Allow CC to be a program name with arguments.
-set dummy $CC
-compiler="$2"
+compiler=$CC
 
 
 # Allow CC to be a program name with arguments.
 lt_save_CC="$CC"
 CC=${F77-"f77"}
-set dummy $CC
-compiler="$2"
+compiler=$CC
 compiler_F77=$CC
 cc_basename=`$echo X"$compiler" | $Xsed -e 's%^.*/%%'`
 
@@ -15660,10 +15812,16 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6
       ;;
 
     hpux*)
-      # PIC is the default for IA64 HP-UX, but not for PA HP-UX.
-      if test "$host_cpu" != ia64; then
+      # PIC is the default for IA64 HP-UX and 64-bit HP-UX, but
+      # not for PA HP-UX.
+      case "$host_cpu" in
+      hppa*64*|ia64*)
+	# +Z the default
+	;;
+      *)
 	lt_prog_compiler_pic_F77='-fPIC'
-      fi
+	;;
+      esac
       ;;
 
     *)
@@ -15691,9 +15849,16 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6
 
     hpux9* | hpux10* | hpux11*)
       lt_prog_compiler_wl_F77='-Wl,'
-      if test "$host_cpu" != ia64; then
+      # PIC is the default for IA64 HP-UX and 64-bit HP-UX, but
+      # not for PA HP-UX.
+      case "$host_cpu" in
+      hppa*64*|ia64*)
+	# +Z the default
+	;;
+      *)
 	lt_prog_compiler_pic_F77='+Z'
-      fi
+	;;
+      esac
       # Is there a better lt_prog_compiler_static that works with the bundled CC?
       lt_prog_compiler_static_F77='${wl}-a ${wl}archive'
       ;;
@@ -15711,7 +15876,7 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6
 
     linux*)
       if test "$CC" = "icc"; then
-	lt_prog_compiler_wl_F77='-Qoption,ld,'
+	lt_prog_compiler_wl_F77='-Wl,'
 	lt_prog_compiler_pic_F77='-KPIC'
 	lt_prog_compiler_static_F77='-static'
       fi
@@ -15779,7 +15944,7 @@ else
   lt_prog_compiler_pic_works_F77=no
   ac_outfile=conftest.$ac_objext
    printf "$lt_simple_compile_test_code" > conftest.$ac_ext
-   lt_compiler_flag="$lt_prog_compiler_pic_F77 -DPIC"
+   lt_compiler_flag="$lt_prog_compiler_pic_F77"
    # Insert the option either (1) after the last *FLAGS variable, or
    # (2) before a word containing "conftest.", or (3) at the end.
    # Note that $ac_compile itself does not contain backslashes and begins
@@ -15789,11 +15954,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15792: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15957: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15796: \$? = $ac_status" >&5
+   echo "$as_me:15961: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -15824,7 +15989,7 @@ case "$host_os" in
     lt_prog_compiler_pic_F77=
     ;;
   *)
-    lt_prog_compiler_pic_F77="$lt_prog_compiler_pic_F77 -DPIC"
+    lt_prog_compiler_pic_F77="$lt_prog_compiler_pic_F77"
     ;;
 esac
 
@@ -15856,11 +16021,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15859: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16024: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15863: \$? = $ac_status" >&5
+   echo "$as_me:16028: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15910,7 +16075,6 @@ echo $ECHO_N "checking whether the $compiler linker ($LD) supports shared librar
   allow_undefined_flag_F77=
   enable_shared_with_static_runtimes_F77=no
   archive_cmds_F77=
-  archive_cmds_need_lc_F77=
   archive_expsym_cmds_F77=
   old_archive_From_new_cmds_F77=
   old_archive_from_expsyms_cmds_F77=
@@ -15918,6 +16082,7 @@ echo $ECHO_N "checking whether the $compiler linker ($LD) supports shared librar
   whole_archive_flag_spec_F77=
   thread_safe_flag_spec_F77=
   hardcode_libdir_flag_spec_F77=
+  hardcode_libdir_flag_spec_ld_F77=
   hardcode_libdir_separator_F77=
   hardcode_direct_F77=no
   hardcode_minus_L_F77=no
@@ -16032,8 +16197,8 @@ EOF
 	archive_cmds_F77='$LD -Bshareable $libobjs $deplibs $linker_flags -o $lib'
 	wlarc=
       else
-	archive_cmds_F77='$CC -shared -nodefaultlibs $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
-	archive_expsym_cmds_F77='$CC -shared -nodefaultlibs $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname ${wl}-retain-symbols-file $wl$export_symbols -o $lib'
+	archive_cmds_F77='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
+	archive_expsym_cmds_F77='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname ${wl}-retain-symbols-file $wl$export_symbols -o $lib'
       fi
       ;;
 
@@ -16301,7 +16466,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       # Tell ltmain to make .lib files, not .a files.
       libext=lib
       # Tell ltmain to make .dll files, not .so files.
-      shrext="dll"
+      shrext=".dll"
       # FIXME: Setting linknames here is a bad hack.
       archive_cmds_F77='$CC -o $lib $libobjs $compiler_flags `echo "$deplibs" | $SED -e '\''s/ -lc$//'\''` -link -dll~linknames='
       # The linker will automatically build a .lib file if we build a DLL.
@@ -16313,6 +16478,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       ;;
 
     darwin* | rhapsody*)
+      archive_cmds_need_lc_F77=no
       case "$host_os" in
       rhapsody* | darwin1.[012])
 	allow_undefined_flag_F77='-undefined suppress'
@@ -16371,47 +16537,72 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       hardcode_shlibpath_var_F77=no
       ;;
 
-    hpux9* | hpux10* | hpux11*)
+    hpux9*)
       if test "$GCC" = yes; then
-	case $host_os in
-	  hpux9*)
-	    archive_cmds_F77='$rm $output_objdir/$soname~$CC -shared -fPIC ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $libobjs $deplibs $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
-	    ;;
-	  *)
-	    if test "$host_cpu" = ia64; then
-	      archive_cmds_F77='$CC -shared ${wl}+h ${wl}$soname -o $lib $libobjs $deplibs $compiler_flags'
-	    else
-	      archive_cmds_F77='$CC -shared -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
-	    fi
-	    ;;
-	esac
+	archive_cmds_F77='$rm $output_objdir/$soname~$CC -shared -fPIC ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $libobjs $deplibs $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       else
-	case $host_os in
-	  hpux9*)
-	    archive_cmds_F77='$rm $output_objdir/$soname~$LD -b +b $install_libdir -o $output_objdir/$soname $libobjs $deplibs $linker_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
-	    ;;
-	  *)
-	    if test "$host_cpu" = ia64; then
-	      archive_cmds_F77='$LD -b +h $soname -o $lib $libobjs $deplibs $linker_flags'
-	    else
-	      archive_cmds_F77='$LD -b +h $soname +b $install_libdir -o $lib $libobjs $deplibs $linker_flags'
-	    fi
-	    ;;
-	esac
+	archive_cmds_F77='$rm $output_objdir/$soname~$LD -b +b $install_libdir -o $output_objdir/$soname $libobjs $deplibs $linker_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       fi
-      if test "$host_cpu" = ia64; then
-	hardcode_libdir_flag_spec_F77='-L$libdir'
-	hardcode_direct_F77=no
-	hardcode_shlibpath_var_F77=no
-      else
-	hardcode_libdir_flag_spec_F77='${wl}+b ${wl}$libdir'
-	hardcode_libdir_separator_F77=:
-	hardcode_direct_F77=yes
-      fi
+      hardcode_libdir_flag_spec_F77='${wl}+b ${wl}$libdir'
+      hardcode_libdir_separator_F77=:
+      hardcode_direct_F77=yes
+
       # hardcode_minus_L: Not really in the search PATH,
       # but as the default location of the library.
       hardcode_minus_L_F77=yes
       export_dynamic_flag_spec_F77='${wl}-E'
+      ;;
+
+    hpux10* | hpux11*)
+      if test "$GCC" = yes -a "$with_gnu_ld" = no; then
+	case "$host_cpu" in
+	hppa*64*|ia64*)
+	  archive_cmds_F77='$CC -shared ${wl}+h ${wl}$soname -o $lib $libobjs $deplibs $compiler_flags'
+	  ;;
+	*)
+	  archive_cmds_F77='$CC -shared -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
+	  ;;
+	esac
+      else
+	case "$host_cpu" in
+	hppa*64*|ia64*)
+	  archive_cmds_F77='$LD -b +h $soname -o $lib $libobjs $deplibs $linker_flags'
+	  ;;
+	*)
+	  archive_cmds_F77='$LD -b +h $soname +b $install_libdir -o $lib $libobjs $deplibs $linker_flags'
+	  ;;
+	esac
+      fi
+      if test "$with_gnu_ld" = no; then
+	case "$host_cpu" in
+	hppa*64*)
+	  hardcode_libdir_flag_spec_F77='${wl}+b ${wl}$libdir'
+	  hardcode_libdir_flag_spec_ld_F77='+b $libdir'
+	  hardcode_libdir_separator_F77=:
+	  hardcode_direct_F77=no
+	  hardcode_shlibpath_var_F77=no
+	  ;;
+	ia64*)
+	  hardcode_libdir_flag_spec_F77='-L$libdir'
+	  hardcode_direct_F77=no
+	  hardcode_shlibpath_var_F77=no
+
+	  # hardcode_minus_L: Not really in the search PATH,
+	  # but as the default location of the library.
+	  hardcode_minus_L_F77=yes
+	  ;;
+	*)
+	  hardcode_libdir_flag_spec_F77='${wl}+b ${wl}$libdir'
+	  hardcode_libdir_separator_F77=:
+	  hardcode_direct_F77=yes
+	  export_dynamic_flag_spec_F77='${wl}-E'
+
+	  # hardcode_minus_L: Not really in the search PATH,
+	  # but as the default location of the library.
+	  hardcode_minus_L_F77=yes
+	  ;;
+	esac
+      fi
       ;;
 
     irix5* | irix6* | nonstopux*)
@@ -16419,6 +16610,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	archive_cmds_F77='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname ${wl}$soname `test -n "$verstring" && echo ${wl}-set_version ${wl}$verstring` ${wl}-update_registry ${wl}${output_objdir}/so_locations -o $lib'
       else
 	archive_cmds_F77='$LD -shared $libobjs $deplibs $linker_flags -soname $soname `test -n "$verstring" && echo -set_version $verstring` -update_registry ${output_objdir}/so_locations -o $lib'
+	hardcode_libdir_flag_spec_ld_F77='-rpath $libdir'
       fi
       hardcode_libdir_flag_spec_F77='${wl}-rpath ${wl}$libdir'
       hardcode_libdir_separator_F77=:
@@ -16493,7 +16685,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       else
 	allow_undefined_flag_F77=' -expect_unresolved \*'
 	archive_cmds_F77='$LD -shared${allow_undefined_flag} $libobjs $deplibs $linker_flags -msym -soname $soname `test -n "$verstring" && echo -set_version $verstring` -update_registry ${output_objdir}/so_locations -o $lib'
-	archive_expsym_cmds_F77='for i in `cat $export_symbols`; do printf "-exported_symbol " >> $lib.exp; echo "\$i" >> $lib.exp; done; echo "-hidden">> $lib.exp~
+	archive_expsym_cmds_F77='for i in `cat $export_symbols`; do printf "%s %s\\n" -exported_symbol "\$i" >> $lib.exp; done; echo "-hidden">> $lib.exp~
 	$LD -shared${allow_undefined_flag} -input $lib.exp $linker_flags $libobjs $deplibs -soname $soname `test -n "$verstring" && echo -set_version $verstring` -update_registry ${objdir}/so_locations -o $lib~$rm $lib.exp'
 
 	# Both c and cxx compiler support -rpath directly
@@ -16639,58 +16831,64 @@ fi
 #
 # Do we need to explicitly link libc?
 #
-archive_cmds_need_lc_F77=yes
-if test "$enable_shared" = yes && test "$GCC" = yes; then
-  case $archive_cmds_F77 in
-  *'~'*)
-    # FIXME: we may have to deal with multi-command sequences.
-    ;;
-  '$CC '*)
-    # Test whether the compiler implicitly links with -lc since on some
-    # systems, -lgcc has to come before -lc. If gcc already passes -lc
-    # to ld, don't add -lc before -lgcc.
-    echo "$as_me:$LINENO: checking whether -lc should be explicitly linked in" >&5
-echo $ECHO_N "checking whether -lc should be explicitly linked in... $ECHO_C" >&6
-    $rm conftest*
-    printf "$lt_simple_compile_test_code" > conftest.$ac_ext
+case "x$archive_cmds_need_lc_F77" in
+x|xyes)
+  # Assume -lc should be added
+  archive_cmds_need_lc_F77=yes
 
-    if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  if test "$enable_shared" = yes && test "$GCC" = yes; then
+    case $archive_cmds_F77 in
+    *'~'*)
+      # FIXME: we may have to deal with multi-command sequences.
+      ;;
+    '$CC '*)
+      # Test whether the compiler implicitly links with -lc since on some
+      # systems, -lgcc has to come before -lc. If gcc already passes -lc
+      # to ld, don't add -lc before -lgcc.
+      echo "$as_me:$LINENO: checking whether -lc should be explicitly linked in" >&5
+echo $ECHO_N "checking whether -lc should be explicitly linked in... $ECHO_C" >&6
+      $rm conftest*
+      printf "$lt_simple_compile_test_code" > conftest.$ac_ext
+
+      if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } 2>conftest.err; then
-      soname=conftest
-      lib=conftest
-      libobjs=conftest.$ac_objext
-      deplibs=
-      wl=$lt_prog_compiler_wl_F77
-      compiler_flags=-v
-      linker_flags=-v
-      verstring=
-      output_objdir=.
-      libname=conftest
-      lt_save_allow_undefined_flag=$allow_undefined_flag_F77
-      allow_undefined_flag_F77=
-      if { (eval echo "$as_me:$LINENO: \"$archive_cmds_F77 2\>\&1 \| grep \" -lc \" \>/dev/null 2\>\&1\"") >&5
+        soname=conftest
+        lib=conftest
+        libobjs=conftest.$ac_objext
+        deplibs=
+        wl=$lt_prog_compiler_wl_F77
+        compiler_flags=-v
+        linker_flags=-v
+        verstring=
+        output_objdir=.
+        libname=conftest
+        lt_save_allow_undefined_flag=$allow_undefined_flag_F77
+        allow_undefined_flag_F77=
+        if { (eval echo "$as_me:$LINENO: \"$archive_cmds_F77 2\>\&1 \| grep \" -lc \" \>/dev/null 2\>\&1\"") >&5
   (eval $archive_cmds_F77 2\>\&1 \| grep \" -lc \" \>/dev/null 2\>\&1) 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }
-      then
-	archive_cmds_need_lc_F77=no
+        then
+	  archive_cmds_need_lc_F77=no
+        else
+	  archive_cmds_need_lc_F77=yes
+        fi
+        allow_undefined_flag_F77=$lt_save_allow_undefined_flag
       else
-	archive_cmds_need_lc_F77=yes
+        cat conftest.err 1>&5
       fi
-      allow_undefined_flag_F77=$lt_save_allow_undefined_flag
-    else
-      cat conftest.err 1>&5
-    fi
-    $rm conftest*
-    echo "$as_me:$LINENO: result: $archive_cmds_need_lc_F77" >&5
+      $rm conftest*
+      echo "$as_me:$LINENO: result: $archive_cmds_need_lc_F77" >&5
 echo "${ECHO_T}$archive_cmds_need_lc_F77" >&6
-    ;;
-  esac
-fi
+      ;;
+    esac
+  fi
+  ;;
+esac
 
 echo "$as_me:$LINENO: checking how to hardcode library paths into programs" >&5
 echo $ECHO_N "checking how to hardcode library paths into programs... $ECHO_C" >&6
@@ -16747,7 +16945,7 @@ echo $ECHO_N "checking dynamic linker characteristics... $ECHO_C" >&6
 library_names_spec=
 libname_spec='lib$name'
 soname_spec=
-shrext="so"
+shrext=".so"
 postinstall_cmds=
 postuninstall_cmds=
 finish_cmds=
@@ -16781,11 +16979,11 @@ need_version=unknown
 case $host_os in
 aix3*)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix $libname.a'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix $libname.a'
   shlibpath_var=LIBPATH
 
   # AIX 3 has no versioning support, so we append a major version to the name.
-  soname_spec='${libname}${release}.${shrext}$major'
+  soname_spec='${libname}${release}${shared_ext}$major'
   ;;
 
 aix4* | aix5*)
@@ -16795,7 +16993,7 @@ aix4* | aix5*)
   hardcode_into_libs=yes
   if test "$host_cpu" = ia64; then
     # AIX 5 supports IA64
-    library_names_spec='${libname}${release}.${shrext}$major ${libname}${release}.${shrext}$versuffix $libname.${shrext}'
+    library_names_spec='${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext}$versuffix $libname${shared_ext}'
     shlibpath_var=LD_LIBRARY_PATH
   else
     # With GCC up to 2.95.x, collect2 would create an import file
@@ -16821,12 +17019,12 @@ aix4* | aix5*)
       # If using run time linking (on AIX 4.2 or later) use lib<name>.so
       # instead of lib<name>.a to let people know that these are not
       # typical AIX shared libraries.
-      library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+      library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
     else
       # We preserve .a as extension for shared libraries through AIX4.2
       # and later when we are not doing run time linking.
       library_names_spec='${libname}${release}.a $libname.a'
-      soname_spec='${libname}${release}.${shrext}$major'
+      soname_spec='${libname}${release}${shared_ext}$major'
     fi
     shlibpath_var=LIBPATH
   fi
@@ -16839,7 +17037,7 @@ amigaos*)
   ;;
 
 beos*)
-  library_names_spec='${libname}.${shrext}'
+  library_names_spec='${libname}${shared_ext}'
   dynamic_linker="$host_os ld.so"
   shlibpath_var=LIBRARY_PATH
   ;;
@@ -16847,8 +17045,8 @@ beos*)
 bsdi4*)
   version_type=linux
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   finish_cmds='PATH="\$PATH:/sbin" ldconfig $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   sys_lib_search_path_spec="/shlib /usr/lib /usr/X11/lib /usr/contrib/lib /lib /usr/local/lib"
@@ -16860,7 +17058,7 @@ bsdi4*)
 
 cygwin* | mingw* | pw32*)
   version_type=windows
-  shrext="dll"
+  shrext=".dll"
   need_version=no
   need_lib_prefix=no
 
@@ -16881,12 +17079,12 @@ cygwin* | mingw* | pw32*)
     case $host_os in
     cygwin*)
       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}.${shrext}'
+      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
       sys_lib_search_path_spec="/lib /lib/w32api /usr/lib /usr/local/lib"
       ;;
     mingw*)
       # MinGW DLLs use traditional 'lib' prefix
-      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}.${shrext}'
+      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
       sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
       if echo "$sys_lib_search_path_spec" | grep ';[c-zC-Z]:/' >/dev/null; then
         # It is most probably a Windows format PATH printed by
@@ -16902,13 +17100,13 @@ cygwin* | mingw* | pw32*)
       ;;
     pw32*)
       # pw32 DLLs use 'pw' prefix rather than 'lib'
-      library_names_spec='`echo ${libname} | sed -e 's/^lib/pw/'``echo ${release} | $SED -e 's/./-/g'`${versuffix}.${shrext}'
+      library_names_spec='`echo ${libname} | sed -e 's/^lib/pw/'``echo ${release} | $SED -e 's/./-/g'`${versuffix}${shared_ext}'
       ;;
     esac
     ;;
 
   *)
-    library_names_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}.${shrext} $libname.lib'
+    library_names_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext} $libname.lib'
     ;;
   esac
   dynamic_linker='Win32 ld.exe'
@@ -16924,19 +17122,21 @@ darwin* | rhapsody*)
   # FIXME: Relying on posixy $() will cause problems for
   #        cross-compilation, but unfortunately the echo tests do not
   #        yet detect zsh echo's removal of \ escapes.
-  library_names_spec='${libname}${release}${versuffix}.$shrext ${libname}${release}${major}.$shrext ${libname}.$shrext'
-  soname_spec='${libname}${release}${major}.$shrext'
+  library_names_spec='${libname}${release}${versuffix}$shared_ext ${libname}${release}${major}$shared_ext ${libname}$shared_ext'
+  soname_spec='${libname}${release}${major}$shared_ext'
   shlibpath_overrides_runpath=yes
   shlibpath_var=DYLD_LIBRARY_PATH
-  shrext='$(test .$module = .yes && echo so || echo dylib)'
+  shrext='$(test .$module = .yes && echo .so || echo .dylib)'
+  # Apple's gcc prints 'gcc -print-search-dirs' doesn't operate the same.
+  sys_lib_search_path_spec=`$CC -print-search-dirs | tr "\n" "$PATH_SEPARATOR" | sed -e 's/libraries:/@libraries:/' | tr "@" "\n" | grep "^libraries:" | sed -e "s/^libraries://" -e "s,=/,/,g" -e "s,$PATH_SEPARATOR, ,g"`
   ;;
 
 dgux*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.$shrext'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname$shared_ext'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
@@ -16949,12 +17149,12 @@ freebsd*)
   version_type=freebsd-$objformat
   case $version_type in
     freebsd-elf*)
-      library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext} $libname.${shrext}'
+      library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext} $libname${shared_ext}'
       need_version=no
       need_lib_prefix=no
       ;;
     freebsd-*)
-      library_names_spec='${libname}${release}.${shrext}$versuffix $libname.${shrext}$versuffix'
+      library_names_spec='${libname}${release}${shared_ext}$versuffix $libname${shared_ext}$versuffix'
       need_version=yes
       ;;
   esac
@@ -16978,8 +17178,8 @@ gnu*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}${major} ${libname}.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}${major} ${libname}${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   hardcode_into_libs=yes
   ;;
@@ -16990,27 +17190,42 @@ hpux9* | hpux10* | hpux11*)
   version_type=sunos
   need_lib_prefix=no
   need_version=no
-  if test "$host_cpu" = ia64; then
+  case "$host_cpu" in
+  ia64*)
+    shrext='.so'
     hardcode_into_libs=yes
     dynamic_linker="$host_os dld.so"
     shlibpath_var=LD_LIBRARY_PATH
     shlibpath_overrides_runpath=yes # Unless +noenvvar is specified.
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-    soname_spec='${libname}${release}.${shrext}$major'
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+    soname_spec='${libname}${release}${shared_ext}$major'
     if test "X$HPUX_IA64_MODE" = X32; then
       sys_lib_search_path_spec="/usr/lib/hpux32 /usr/local/lib/hpux32 /usr/local/lib"
     else
       sys_lib_search_path_spec="/usr/lib/hpux64 /usr/local/lib/hpux64"
     fi
     sys_lib_dlsearch_path_spec=$sys_lib_search_path_spec
-  else
+    ;;
+   hppa*64*)
+     shrext='.sl'
+     hardcode_into_libs=yes
+     dynamic_linker="$host_os dld.sl"
+     shlibpath_var=LD_LIBRARY_PATH # How should we handle SHLIB_PATH
+     shlibpath_overrides_runpath=yes # Unless +noenvvar is specified.
+     library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+     soname_spec='${libname}${release}${shared_ext}$major'
+     sys_lib_search_path_spec="/usr/lib/pa20_64 /usr/ccs/lib/pa20_64"
+     sys_lib_dlsearch_path_spec=$sys_lib_search_path_spec
+     ;;
+   *)
+    shrext='.sl'
     dynamic_linker="$host_os dld.sl"
     shlibpath_var=SHLIB_PATH
     shlibpath_overrides_runpath=no # +s is required to enable SHLIB_PATH
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-    soname_spec='${libname}${release}.${shrext}$major'
-    shrext="sl"
-  fi
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+    soname_spec='${libname}${release}${shared_ext}$major'
+    ;;
+  esac
   # HP-UX runs *really* slowly unless shared libraries are mode 555.
   postinstall_cmds='chmod 555 $lib'
   ;;
@@ -17022,8 +17237,8 @@ irix5* | irix6* | nonstopux*)
   esac
   need_lib_prefix=no
   need_version=no
-  soname_spec='${libname}${release}.${shrext}$major'
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major ${libname}${release}.${shrext} $libname.${shrext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext} $libname${shared_ext}'
   case $host_os in
   irix5* | nonstopux*)
     libsuff= shlibsuff=
@@ -17041,6 +17256,7 @@ irix5* | irix6* | nonstopux*)
   shlibpath_overrides_runpath=no
   sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
   sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
+  hardcode_into_libs=yes
   ;;
 
 # No shared lib support for Linux oldld, aout, or coff.
@@ -17050,12 +17266,11 @@ linux*oldld* | linux*aout* | linux*coff*)
 
 # This must be Linux ELF.
 linux*)
-  shrext="so"
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=no
@@ -17078,12 +17293,12 @@ netbsd*)
   need_lib_prefix=no
   need_version=no
   if echo __ELF__ | $CC -E - | grep __ELF__ >/dev/null; then
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}.${shrext}$versuffix'
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
     finish_cmds='PATH="\$PATH:/sbin" ldconfig -m $libdir'
     dynamic_linker='NetBSD (a.out) ld.so'
   else
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major ${libname}${release}.${shrext} ${libname}.${shrext}'
-    soname_spec='${libname}${release}.${shrext}$major'
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext} ${libname}${shared_ext}'
+    soname_spec='${libname}${release}${shared_ext}$major'
     dynamic_linker='NetBSD ld.elf_so'
   fi
   shlibpath_var=LD_LIBRARY_PATH
@@ -17093,7 +17308,7 @@ netbsd*)
 
 newsos6)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
   ;;
@@ -17102,8 +17317,8 @@ nto-qnx)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
   ;;
@@ -17112,7 +17327,7 @@ openbsd*)
   version_type=sunos
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}.${shrext}$versuffix'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
   finish_cmds='PATH="\$PATH:/sbin" ldconfig -m $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   if test -z "`echo __ELF__ | $CC -E - | grep __ELF__`" || test "$host_os-$host_cpu" = "openbsd2.8-powerpc"; then
@@ -17131,9 +17346,9 @@ openbsd*)
 
 os2*)
   libname_spec='$name'
-  shrext="dll"
+  shrext=".dll"
   need_lib_prefix=no
-  library_names_spec='$libname.${shrext} $libname.a'
+  library_names_spec='$libname${shared_ext} $libname.a'
   dynamic_linker='OS/2 ld.exe'
   shlibpath_var=LIBPATH
   ;;
@@ -17142,8 +17357,8 @@ osf3* | osf4* | osf5*)
   version_type=osf
   need_lib_prefix=no
   need_version=no
-  soname_spec='${libname}${release}.${shrext}$major'
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
   shlibpath_var=LD_LIBRARY_PATH
   sys_lib_search_path_spec="/usr/shlib /usr/ccs/lib /usr/lib/cmplrs/cc /usr/lib /usr/local/lib /var/shlib"
   sys_lib_dlsearch_path_spec="$sys_lib_search_path_spec"
@@ -17151,8 +17366,8 @@ osf3* | osf4* | osf5*)
 
 sco3.2v5*)
   version_type=osf
-  soname_spec='${libname}${release}.${shrext}$major'
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
@@ -17160,8 +17375,8 @@ solaris*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
   hardcode_into_libs=yes
@@ -17171,7 +17386,7 @@ solaris*)
 
 sunos4*)
   version_type=sunos
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}.${shrext}$versuffix'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
   finish_cmds='PATH="\$PATH:/usr/etc" ldconfig $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
@@ -17183,8 +17398,8 @@ sunos4*)
 
 sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   case $host_vendor in
     sni)
@@ -17208,16 +17423,16 @@ sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
 sysv4*MP*)
   if test -d /usr/nec ;then
     version_type=linux
-    library_names_spec='$libname.${shrext}.$versuffix $libname.${shrext}.$major $libname.${shrext}'
-    soname_spec='$libname.${shrext}.$major'
+    library_names_spec='$libname${shared_ext}.$versuffix $libname${shared_ext}.$major $libname${shared_ext}'
+    soname_spec='$libname${shared_ext}.$major'
     shlibpath_var=LD_LIBRARY_PATH
   fi
   ;;
 
 uts4*)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
@@ -17273,6 +17488,7 @@ if test -f "$ltmain"; then
     no_undefined_flag_F77 \
     export_symbols_cmds_F77 \
     hardcode_libdir_flag_spec_F77 \
+    hardcode_libdir_flag_spec_ld_F77 \
     hardcode_libdir_separator_F77 \
     lt_cv_prog_compiler_c_o_F77 \
     exclude_expsyms_F77 \
@@ -17392,8 +17608,8 @@ objext="$ac_objext"
 # Old archive suffix (normally "a").
 libext="$libext"
 
-# Shared library suffix (normally "so").
-shrext="$shrext"
+# Shared library suffix (normally ".so").
+shrext='$shrext'
 
 # Executable file suffix (normally "").
 exeext="$exeext"
@@ -17542,10 +17758,15 @@ hardcode_into_libs=$hardcode_into_libs
 # This must work even if \$libdir does not exist.
 hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_F77
 
+# If ld is used when linking, flag to hardcode \$libdir into
+# a binary during linking. This must work even if \$libdir does
+# not exist.
+hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_F77
+
 # Whether we need a single -rpath flag with a separated argument.
 hardcode_libdir_separator=$lt_hardcode_libdir_separator_F77
 
-# Set to yes if using DIR/libNAME.${shrext} during linking hardcodes DIR into the
+# Set to yes if using DIR/libNAME${shared_ext} during linking hardcodes DIR into the
 # resulting binary.
 hardcode_direct=$hardcode_direct_F77
 
@@ -17634,15 +17855,13 @@ lt_simple_link_test_code='public class conftest { public static void main(String
 LTCC=${LTCC-"$CC"}
 
 # Allow CC to be a program name with arguments.
-set dummy $CC
-compiler="$2"
+compiler=$CC
 
 
 # Allow CC to be a program name with arguments.
 lt_save_CC="$CC"
 CC=${GCJ-"gcj"}
-set dummy $CC
-compiler="$2"
+compiler=$CC
 compiler_GCJ=$CC
 
 # GCJ did not exist at the time GCC didn't implicitly link libc in.
@@ -17672,11 +17891,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17675: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17894: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:17679: \$? = $ac_status" >&5
+   echo "$as_me:17898: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -17755,10 +17974,16 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6
       ;;
 
     hpux*)
-      # PIC is the default for IA64 HP-UX, but not for PA HP-UX.
-      if test "$host_cpu" != ia64; then
+      # PIC is the default for IA64 HP-UX and 64-bit HP-UX, but
+      # not for PA HP-UX.
+      case "$host_cpu" in
+      hppa*64*|ia64*)
+	# +Z the default
+	;;
+      *)
 	lt_prog_compiler_pic_GCJ='-fPIC'
-      fi
+	;;
+      esac
       ;;
 
     *)
@@ -17786,9 +18011,16 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6
 
     hpux9* | hpux10* | hpux11*)
       lt_prog_compiler_wl_GCJ='-Wl,'
-      if test "$host_cpu" != ia64; then
+      # PIC is the default for IA64 HP-UX and 64-bit HP-UX, but
+      # not for PA HP-UX.
+      case "$host_cpu" in
+      hppa*64*|ia64*)
+	# +Z the default
+	;;
+      *)
 	lt_prog_compiler_pic_GCJ='+Z'
-      fi
+	;;
+      esac
       # Is there a better lt_prog_compiler_static that works with the bundled CC?
       lt_prog_compiler_static_GCJ='${wl}-a ${wl}archive'
       ;;
@@ -17806,7 +18038,7 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6
 
     linux*)
       if test "$CC" = "icc"; then
-	lt_prog_compiler_wl_GCJ='-Qoption,ld,'
+	lt_prog_compiler_wl_GCJ='-Wl,'
 	lt_prog_compiler_pic_GCJ='-KPIC'
 	lt_prog_compiler_static_GCJ='-static'
       fi
@@ -17884,11 +18116,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17887: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18119: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:17891: \$? = $ac_status" >&5
+   echo "$as_me:18123: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -17951,11 +18183,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17954: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18186: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:17958: \$? = $ac_status" >&5
+   echo "$as_me:18190: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18005,7 +18237,6 @@ echo $ECHO_N "checking whether the $compiler linker ($LD) supports shared librar
   allow_undefined_flag_GCJ=
   enable_shared_with_static_runtimes_GCJ=no
   archive_cmds_GCJ=
-  archive_cmds_need_lc_GCJ=
   archive_expsym_cmds_GCJ=
   old_archive_From_new_cmds_GCJ=
   old_archive_from_expsyms_cmds_GCJ=
@@ -18013,6 +18244,7 @@ echo $ECHO_N "checking whether the $compiler linker ($LD) supports shared librar
   whole_archive_flag_spec_GCJ=
   thread_safe_flag_spec_GCJ=
   hardcode_libdir_flag_spec_GCJ=
+  hardcode_libdir_flag_spec_ld_GCJ=
   hardcode_libdir_separator_GCJ=
   hardcode_direct_GCJ=no
   hardcode_minus_L_GCJ=no
@@ -18127,8 +18359,8 @@ EOF
 	archive_cmds_GCJ='$LD -Bshareable $libobjs $deplibs $linker_flags -o $lib'
 	wlarc=
       else
-	archive_cmds_GCJ='$CC -shared -nodefaultlibs $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
-	archive_expsym_cmds_GCJ='$CC -shared -nodefaultlibs $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname ${wl}-retain-symbols-file $wl$export_symbols -o $lib'
+	archive_cmds_GCJ='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
+	archive_expsym_cmds_GCJ='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname ${wl}-retain-symbols-file $wl$export_symbols -o $lib'
       fi
       ;;
 
@@ -18418,7 +18650,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       # Tell ltmain to make .lib files, not .a files.
       libext=lib
       # Tell ltmain to make .dll files, not .so files.
-      shrext="dll"
+      shrext=".dll"
       # FIXME: Setting linknames here is a bad hack.
       archive_cmds_GCJ='$CC -o $lib $libobjs $compiler_flags `echo "$deplibs" | $SED -e '\''s/ -lc$//'\''` -link -dll~linknames='
       # The linker will automatically build a .lib file if we build a DLL.
@@ -18430,6 +18662,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       ;;
 
     darwin* | rhapsody*)
+      archive_cmds_need_lc_GCJ=no
       case "$host_os" in
       rhapsody* | darwin1.[012])
 	allow_undefined_flag_GCJ='-undefined suppress'
@@ -18488,47 +18721,72 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       hardcode_shlibpath_var_GCJ=no
       ;;
 
-    hpux9* | hpux10* | hpux11*)
+    hpux9*)
       if test "$GCC" = yes; then
-	case $host_os in
-	  hpux9*)
-	    archive_cmds_GCJ='$rm $output_objdir/$soname~$CC -shared -fPIC ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $libobjs $deplibs $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
-	    ;;
-	  *)
-	    if test "$host_cpu" = ia64; then
-	      archive_cmds_GCJ='$CC -shared ${wl}+h ${wl}$soname -o $lib $libobjs $deplibs $compiler_flags'
-	    else
-	      archive_cmds_GCJ='$CC -shared -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
-	    fi
-	    ;;
-	esac
+	archive_cmds_GCJ='$rm $output_objdir/$soname~$CC -shared -fPIC ${wl}+b ${wl}$install_libdir -o $output_objdir/$soname $libobjs $deplibs $compiler_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       else
-	case $host_os in
-	  hpux9*)
-	    archive_cmds_GCJ='$rm $output_objdir/$soname~$LD -b +b $install_libdir -o $output_objdir/$soname $libobjs $deplibs $linker_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
-	    ;;
-	  *)
-	    if test "$host_cpu" = ia64; then
-	      archive_cmds_GCJ='$LD -b +h $soname -o $lib $libobjs $deplibs $linker_flags'
-	    else
-	      archive_cmds_GCJ='$LD -b +h $soname +b $install_libdir -o $lib $libobjs $deplibs $linker_flags'
-	    fi
-	    ;;
-	esac
+	archive_cmds_GCJ='$rm $output_objdir/$soname~$LD -b +b $install_libdir -o $output_objdir/$soname $libobjs $deplibs $linker_flags~test $output_objdir/$soname = $lib || mv $output_objdir/$soname $lib'
       fi
-      if test "$host_cpu" = ia64; then
-	hardcode_libdir_flag_spec_GCJ='-L$libdir'
-	hardcode_direct_GCJ=no
-	hardcode_shlibpath_var_GCJ=no
-      else
-	hardcode_libdir_flag_spec_GCJ='${wl}+b ${wl}$libdir'
-	hardcode_libdir_separator_GCJ=:
-	hardcode_direct_GCJ=yes
-      fi
+      hardcode_libdir_flag_spec_GCJ='${wl}+b ${wl}$libdir'
+      hardcode_libdir_separator_GCJ=:
+      hardcode_direct_GCJ=yes
+
       # hardcode_minus_L: Not really in the search PATH,
       # but as the default location of the library.
       hardcode_minus_L_GCJ=yes
       export_dynamic_flag_spec_GCJ='${wl}-E'
+      ;;
+
+    hpux10* | hpux11*)
+      if test "$GCC" = yes -a "$with_gnu_ld" = no; then
+	case "$host_cpu" in
+	hppa*64*|ia64*)
+	  archive_cmds_GCJ='$CC -shared ${wl}+h ${wl}$soname -o $lib $libobjs $deplibs $compiler_flags'
+	  ;;
+	*)
+	  archive_cmds_GCJ='$CC -shared -fPIC ${wl}+h ${wl}$soname ${wl}+b ${wl}$install_libdir -o $lib $libobjs $deplibs $compiler_flags'
+	  ;;
+	esac
+      else
+	case "$host_cpu" in
+	hppa*64*|ia64*)
+	  archive_cmds_GCJ='$LD -b +h $soname -o $lib $libobjs $deplibs $linker_flags'
+	  ;;
+	*)
+	  archive_cmds_GCJ='$LD -b +h $soname +b $install_libdir -o $lib $libobjs $deplibs $linker_flags'
+	  ;;
+	esac
+      fi
+      if test "$with_gnu_ld" = no; then
+	case "$host_cpu" in
+	hppa*64*)
+	  hardcode_libdir_flag_spec_GCJ='${wl}+b ${wl}$libdir'
+	  hardcode_libdir_flag_spec_ld_GCJ='+b $libdir'
+	  hardcode_libdir_separator_GCJ=:
+	  hardcode_direct_GCJ=no
+	  hardcode_shlibpath_var_GCJ=no
+	  ;;
+	ia64*)
+	  hardcode_libdir_flag_spec_GCJ='-L$libdir'
+	  hardcode_direct_GCJ=no
+	  hardcode_shlibpath_var_GCJ=no
+
+	  # hardcode_minus_L: Not really in the search PATH,
+	  # but as the default location of the library.
+	  hardcode_minus_L_GCJ=yes
+	  ;;
+	*)
+	  hardcode_libdir_flag_spec_GCJ='${wl}+b ${wl}$libdir'
+	  hardcode_libdir_separator_GCJ=:
+	  hardcode_direct_GCJ=yes
+	  export_dynamic_flag_spec_GCJ='${wl}-E'
+
+	  # hardcode_minus_L: Not really in the search PATH,
+	  # but as the default location of the library.
+	  hardcode_minus_L_GCJ=yes
+	  ;;
+	esac
+      fi
       ;;
 
     irix5* | irix6* | nonstopux*)
@@ -18536,6 +18794,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	archive_cmds_GCJ='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname ${wl}$soname `test -n "$verstring" && echo ${wl}-set_version ${wl}$verstring` ${wl}-update_registry ${wl}${output_objdir}/so_locations -o $lib'
       else
 	archive_cmds_GCJ='$LD -shared $libobjs $deplibs $linker_flags -soname $soname `test -n "$verstring" && echo -set_version $verstring` -update_registry ${output_objdir}/so_locations -o $lib'
+	hardcode_libdir_flag_spec_ld_GCJ='-rpath $libdir'
       fi
       hardcode_libdir_flag_spec_GCJ='${wl}-rpath ${wl}$libdir'
       hardcode_libdir_separator_GCJ=:
@@ -18610,7 +18869,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       else
 	allow_undefined_flag_GCJ=' -expect_unresolved \*'
 	archive_cmds_GCJ='$LD -shared${allow_undefined_flag} $libobjs $deplibs $linker_flags -msym -soname $soname `test -n "$verstring" && echo -set_version $verstring` -update_registry ${output_objdir}/so_locations -o $lib'
-	archive_expsym_cmds_GCJ='for i in `cat $export_symbols`; do printf "-exported_symbol " >> $lib.exp; echo "\$i" >> $lib.exp; done; echo "-hidden">> $lib.exp~
+	archive_expsym_cmds_GCJ='for i in `cat $export_symbols`; do printf "%s %s\\n" -exported_symbol "\$i" >> $lib.exp; done; echo "-hidden">> $lib.exp~
 	$LD -shared${allow_undefined_flag} -input $lib.exp $linker_flags $libobjs $deplibs -soname $soname `test -n "$verstring" && echo -set_version $verstring` -update_registry ${objdir}/so_locations -o $lib~$rm $lib.exp'
 
 	# Both c and cxx compiler support -rpath directly
@@ -18756,58 +19015,64 @@ fi
 #
 # Do we need to explicitly link libc?
 #
-archive_cmds_need_lc_GCJ=yes
-if test "$enable_shared" = yes && test "$GCC" = yes; then
-  case $archive_cmds_GCJ in
-  *'~'*)
-    # FIXME: we may have to deal with multi-command sequences.
-    ;;
-  '$CC '*)
-    # Test whether the compiler implicitly links with -lc since on some
-    # systems, -lgcc has to come before -lc. If gcc already passes -lc
-    # to ld, don't add -lc before -lgcc.
-    echo "$as_me:$LINENO: checking whether -lc should be explicitly linked in" >&5
-echo $ECHO_N "checking whether -lc should be explicitly linked in... $ECHO_C" >&6
-    $rm conftest*
-    printf "$lt_simple_compile_test_code" > conftest.$ac_ext
+case "x$archive_cmds_need_lc_GCJ" in
+x|xyes)
+  # Assume -lc should be added
+  archive_cmds_need_lc_GCJ=yes
 
-    if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  if test "$enable_shared" = yes && test "$GCC" = yes; then
+    case $archive_cmds_GCJ in
+    *'~'*)
+      # FIXME: we may have to deal with multi-command sequences.
+      ;;
+    '$CC '*)
+      # Test whether the compiler implicitly links with -lc since on some
+      # systems, -lgcc has to come before -lc. If gcc already passes -lc
+      # to ld, don't add -lc before -lgcc.
+      echo "$as_me:$LINENO: checking whether -lc should be explicitly linked in" >&5
+echo $ECHO_N "checking whether -lc should be explicitly linked in... $ECHO_C" >&6
+      $rm conftest*
+      printf "$lt_simple_compile_test_code" > conftest.$ac_ext
+
+      if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } 2>conftest.err; then
-      soname=conftest
-      lib=conftest
-      libobjs=conftest.$ac_objext
-      deplibs=
-      wl=$lt_prog_compiler_wl_GCJ
-      compiler_flags=-v
-      linker_flags=-v
-      verstring=
-      output_objdir=.
-      libname=conftest
-      lt_save_allow_undefined_flag=$allow_undefined_flag_GCJ
-      allow_undefined_flag_GCJ=
-      if { (eval echo "$as_me:$LINENO: \"$archive_cmds_GCJ 2\>\&1 \| grep \" -lc \" \>/dev/null 2\>\&1\"") >&5
+        soname=conftest
+        lib=conftest
+        libobjs=conftest.$ac_objext
+        deplibs=
+        wl=$lt_prog_compiler_wl_GCJ
+        compiler_flags=-v
+        linker_flags=-v
+        verstring=
+        output_objdir=.
+        libname=conftest
+        lt_save_allow_undefined_flag=$allow_undefined_flag_GCJ
+        allow_undefined_flag_GCJ=
+        if { (eval echo "$as_me:$LINENO: \"$archive_cmds_GCJ 2\>\&1 \| grep \" -lc \" \>/dev/null 2\>\&1\"") >&5
   (eval $archive_cmds_GCJ 2\>\&1 \| grep \" -lc \" \>/dev/null 2\>\&1) 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }
-      then
-	archive_cmds_need_lc_GCJ=no
+        then
+	  archive_cmds_need_lc_GCJ=no
+        else
+	  archive_cmds_need_lc_GCJ=yes
+        fi
+        allow_undefined_flag_GCJ=$lt_save_allow_undefined_flag
       else
-	archive_cmds_need_lc_GCJ=yes
+        cat conftest.err 1>&5
       fi
-      allow_undefined_flag_GCJ=$lt_save_allow_undefined_flag
-    else
-      cat conftest.err 1>&5
-    fi
-    $rm conftest*
-    echo "$as_me:$LINENO: result: $archive_cmds_need_lc_GCJ" >&5
+      $rm conftest*
+      echo "$as_me:$LINENO: result: $archive_cmds_need_lc_GCJ" >&5
 echo "${ECHO_T}$archive_cmds_need_lc_GCJ" >&6
-    ;;
-  esac
-fi
+      ;;
+    esac
+  fi
+  ;;
+esac
 
 echo "$as_me:$LINENO: checking how to hardcode library paths into programs" >&5
 echo $ECHO_N "checking how to hardcode library paths into programs... $ECHO_C" >&6
@@ -18864,7 +19129,7 @@ echo $ECHO_N "checking dynamic linker characteristics... $ECHO_C" >&6
 library_names_spec=
 libname_spec='lib$name'
 soname_spec=
-shrext="so"
+shrext=".so"
 postinstall_cmds=
 postuninstall_cmds=
 finish_cmds=
@@ -18898,11 +19163,11 @@ need_version=unknown
 case $host_os in
 aix3*)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix $libname.a'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix $libname.a'
   shlibpath_var=LIBPATH
 
   # AIX 3 has no versioning support, so we append a major version to the name.
-  soname_spec='${libname}${release}.${shrext}$major'
+  soname_spec='${libname}${release}${shared_ext}$major'
   ;;
 
 aix4* | aix5*)
@@ -18912,7 +19177,7 @@ aix4* | aix5*)
   hardcode_into_libs=yes
   if test "$host_cpu" = ia64; then
     # AIX 5 supports IA64
-    library_names_spec='${libname}${release}.${shrext}$major ${libname}${release}.${shrext}$versuffix $libname.${shrext}'
+    library_names_spec='${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext}$versuffix $libname${shared_ext}'
     shlibpath_var=LD_LIBRARY_PATH
   else
     # With GCC up to 2.95.x, collect2 would create an import file
@@ -18938,12 +19203,12 @@ aix4* | aix5*)
       # If using run time linking (on AIX 4.2 or later) use lib<name>.so
       # instead of lib<name>.a to let people know that these are not
       # typical AIX shared libraries.
-      library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+      library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
     else
       # We preserve .a as extension for shared libraries through AIX4.2
       # and later when we are not doing run time linking.
       library_names_spec='${libname}${release}.a $libname.a'
-      soname_spec='${libname}${release}.${shrext}$major'
+      soname_spec='${libname}${release}${shared_ext}$major'
     fi
     shlibpath_var=LIBPATH
   fi
@@ -18956,7 +19221,7 @@ amigaos*)
   ;;
 
 beos*)
-  library_names_spec='${libname}.${shrext}'
+  library_names_spec='${libname}${shared_ext}'
   dynamic_linker="$host_os ld.so"
   shlibpath_var=LIBRARY_PATH
   ;;
@@ -18964,8 +19229,8 @@ beos*)
 bsdi4*)
   version_type=linux
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   finish_cmds='PATH="\$PATH:/sbin" ldconfig $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   sys_lib_search_path_spec="/shlib /usr/lib /usr/X11/lib /usr/contrib/lib /lib /usr/local/lib"
@@ -18977,7 +19242,7 @@ bsdi4*)
 
 cygwin* | mingw* | pw32*)
   version_type=windows
-  shrext="dll"
+  shrext=".dll"
   need_version=no
   need_lib_prefix=no
 
@@ -18998,12 +19263,12 @@ cygwin* | mingw* | pw32*)
     case $host_os in
     cygwin*)
       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
-      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}.${shrext}'
+      soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
       sys_lib_search_path_spec="/lib /lib/w32api /usr/lib /usr/local/lib"
       ;;
     mingw*)
       # MinGW DLLs use traditional 'lib' prefix
-      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}.${shrext}'
+      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
       sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
       if echo "$sys_lib_search_path_spec" | grep ';[c-zC-Z]:/' >/dev/null; then
         # It is most probably a Windows format PATH printed by
@@ -19019,13 +19284,13 @@ cygwin* | mingw* | pw32*)
       ;;
     pw32*)
       # pw32 DLLs use 'pw' prefix rather than 'lib'
-      library_names_spec='`echo ${libname} | sed -e 's/^lib/pw/'``echo ${release} | $SED -e 's/./-/g'`${versuffix}.${shrext}'
+      library_names_spec='`echo ${libname} | sed -e 's/^lib/pw/'``echo ${release} | $SED -e 's/./-/g'`${versuffix}${shared_ext}'
       ;;
     esac
     ;;
 
   *)
-    library_names_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}.${shrext} $libname.lib'
+    library_names_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext} $libname.lib'
     ;;
   esac
   dynamic_linker='Win32 ld.exe'
@@ -19041,19 +19306,21 @@ darwin* | rhapsody*)
   # FIXME: Relying on posixy $() will cause problems for
   #        cross-compilation, but unfortunately the echo tests do not
   #        yet detect zsh echo's removal of \ escapes.
-  library_names_spec='${libname}${release}${versuffix}.$shrext ${libname}${release}${major}.$shrext ${libname}.$shrext'
-  soname_spec='${libname}${release}${major}.$shrext'
+  library_names_spec='${libname}${release}${versuffix}$shared_ext ${libname}${release}${major}$shared_ext ${libname}$shared_ext'
+  soname_spec='${libname}${release}${major}$shared_ext'
   shlibpath_overrides_runpath=yes
   shlibpath_var=DYLD_LIBRARY_PATH
-  shrext='$(test .$module = .yes && echo so || echo dylib)'
+  shrext='$(test .$module = .yes && echo .so || echo .dylib)'
+  # Apple's gcc prints 'gcc -print-search-dirs' doesn't operate the same.
+  sys_lib_search_path_spec=`$CC -print-search-dirs | tr "\n" "$PATH_SEPARATOR" | sed -e 's/libraries:/@libraries:/' | tr "@" "\n" | grep "^libraries:" | sed -e "s/^libraries://" -e "s,=/,/,g" -e "s,$PATH_SEPARATOR, ,g"`
   ;;
 
 dgux*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.$shrext'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname$shared_ext'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
@@ -19066,12 +19333,12 @@ freebsd*)
   version_type=freebsd-$objformat
   case $version_type in
     freebsd-elf*)
-      library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext} $libname.${shrext}'
+      library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext} $libname${shared_ext}'
       need_version=no
       need_lib_prefix=no
       ;;
     freebsd-*)
-      library_names_spec='${libname}${release}.${shrext}$versuffix $libname.${shrext}$versuffix'
+      library_names_spec='${libname}${release}${shared_ext}$versuffix $libname${shared_ext}$versuffix'
       need_version=yes
       ;;
   esac
@@ -19095,8 +19362,8 @@ gnu*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}${major} ${libname}.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}${major} ${libname}${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   hardcode_into_libs=yes
   ;;
@@ -19107,27 +19374,42 @@ hpux9* | hpux10* | hpux11*)
   version_type=sunos
   need_lib_prefix=no
   need_version=no
-  if test "$host_cpu" = ia64; then
+  case "$host_cpu" in
+  ia64*)
+    shrext='.so'
     hardcode_into_libs=yes
     dynamic_linker="$host_os dld.so"
     shlibpath_var=LD_LIBRARY_PATH
     shlibpath_overrides_runpath=yes # Unless +noenvvar is specified.
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-    soname_spec='${libname}${release}.${shrext}$major'
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+    soname_spec='${libname}${release}${shared_ext}$major'
     if test "X$HPUX_IA64_MODE" = X32; then
       sys_lib_search_path_spec="/usr/lib/hpux32 /usr/local/lib/hpux32 /usr/local/lib"
     else
       sys_lib_search_path_spec="/usr/lib/hpux64 /usr/local/lib/hpux64"
     fi
     sys_lib_dlsearch_path_spec=$sys_lib_search_path_spec
-  else
+    ;;
+   hppa*64*)
+     shrext='.sl'
+     hardcode_into_libs=yes
+     dynamic_linker="$host_os dld.sl"
+     shlibpath_var=LD_LIBRARY_PATH # How should we handle SHLIB_PATH
+     shlibpath_overrides_runpath=yes # Unless +noenvvar is specified.
+     library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+     soname_spec='${libname}${release}${shared_ext}$major'
+     sys_lib_search_path_spec="/usr/lib/pa20_64 /usr/ccs/lib/pa20_64"
+     sys_lib_dlsearch_path_spec=$sys_lib_search_path_spec
+     ;;
+   *)
+    shrext='.sl'
     dynamic_linker="$host_os dld.sl"
     shlibpath_var=SHLIB_PATH
     shlibpath_overrides_runpath=no # +s is required to enable SHLIB_PATH
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-    soname_spec='${libname}${release}.${shrext}$major'
-    shrext="sl"
-  fi
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+    soname_spec='${libname}${release}${shared_ext}$major'
+    ;;
+  esac
   # HP-UX runs *really* slowly unless shared libraries are mode 555.
   postinstall_cmds='chmod 555 $lib'
   ;;
@@ -19139,8 +19421,8 @@ irix5* | irix6* | nonstopux*)
   esac
   need_lib_prefix=no
   need_version=no
-  soname_spec='${libname}${release}.${shrext}$major'
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major ${libname}${release}.${shrext} $libname.${shrext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext} $libname${shared_ext}'
   case $host_os in
   irix5* | nonstopux*)
     libsuff= shlibsuff=
@@ -19158,6 +19440,7 @@ irix5* | irix6* | nonstopux*)
   shlibpath_overrides_runpath=no
   sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
   sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
+  hardcode_into_libs=yes
   ;;
 
 # No shared lib support for Linux oldld, aout, or coff.
@@ -19167,12 +19450,11 @@ linux*oldld* | linux*aout* | linux*coff*)
 
 # This must be Linux ELF.
 linux*)
-  shrext="so"
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=no
@@ -19195,12 +19477,12 @@ netbsd*)
   need_lib_prefix=no
   need_version=no
   if echo __ELF__ | $CC -E - | grep __ELF__ >/dev/null; then
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}.${shrext}$versuffix'
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
     finish_cmds='PATH="\$PATH:/sbin" ldconfig -m $libdir'
     dynamic_linker='NetBSD (a.out) ld.so'
   else
-    library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major ${libname}${release}.${shrext} ${libname}.${shrext}'
-    soname_spec='${libname}${release}.${shrext}$major'
+    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext} ${libname}${shared_ext}'
+    soname_spec='${libname}${release}${shared_ext}$major'
     dynamic_linker='NetBSD ld.elf_so'
   fi
   shlibpath_var=LD_LIBRARY_PATH
@@ -19210,7 +19492,7 @@ netbsd*)
 
 newsos6)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
   ;;
@@ -19219,8 +19501,8 @@ nto-qnx)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
   ;;
@@ -19229,7 +19511,7 @@ openbsd*)
   version_type=sunos
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}.${shrext}$versuffix'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
   finish_cmds='PATH="\$PATH:/sbin" ldconfig -m $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   if test -z "`echo __ELF__ | $CC -E - | grep __ELF__`" || test "$host_os-$host_cpu" = "openbsd2.8-powerpc"; then
@@ -19248,9 +19530,9 @@ openbsd*)
 
 os2*)
   libname_spec='$name'
-  shrext="dll"
+  shrext=".dll"
   need_lib_prefix=no
-  library_names_spec='$libname.${shrext} $libname.a'
+  library_names_spec='$libname${shared_ext} $libname.a'
   dynamic_linker='OS/2 ld.exe'
   shlibpath_var=LIBPATH
   ;;
@@ -19259,8 +19541,8 @@ osf3* | osf4* | osf5*)
   version_type=osf
   need_lib_prefix=no
   need_version=no
-  soname_spec='${libname}${release}.${shrext}$major'
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
   shlibpath_var=LD_LIBRARY_PATH
   sys_lib_search_path_spec="/usr/shlib /usr/ccs/lib /usr/lib/cmplrs/cc /usr/lib /usr/local/lib /var/shlib"
   sys_lib_dlsearch_path_spec="$sys_lib_search_path_spec"
@@ -19268,8 +19550,8 @@ osf3* | osf4* | osf5*)
 
 sco3.2v5*)
   version_type=osf
-  soname_spec='${libname}${release}.${shrext}$major'
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
@@ -19277,8 +19559,8 @@ solaris*)
   version_type=linux
   need_lib_prefix=no
   need_version=no
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
   hardcode_into_libs=yes
@@ -19288,7 +19570,7 @@ solaris*)
 
 sunos4*)
   version_type=sunos
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}.${shrext}$versuffix'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
   finish_cmds='PATH="\$PATH:/usr/etc" ldconfig $libdir'
   shlibpath_var=LD_LIBRARY_PATH
   shlibpath_overrides_runpath=yes
@@ -19300,8 +19582,8 @@ sunos4*)
 
 sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   case $host_vendor in
     sni)
@@ -19325,16 +19607,16 @@ sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
 sysv4*MP*)
   if test -d /usr/nec ;then
     version_type=linux
-    library_names_spec='$libname.${shrext}.$versuffix $libname.${shrext}.$major $libname.${shrext}'
-    soname_spec='$libname.${shrext}.$major'
+    library_names_spec='$libname${shared_ext}.$versuffix $libname${shared_ext}.$major $libname${shared_ext}'
+    soname_spec='$libname${shared_ext}.$major'
     shlibpath_var=LD_LIBRARY_PATH
   fi
   ;;
 
 uts4*)
   version_type=linux
-  library_names_spec='${libname}${release}.${shrext}$versuffix ${libname}${release}.${shrext}$major $libname.${shrext}'
-  soname_spec='${libname}${release}.${shrext}$major'
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
@@ -19797,7 +20079,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 19800 "configure"
+#line 20082 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -19895,7 +20177,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 19898 "configure"
+#line 20180 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -20042,6 +20324,7 @@ if test -f "$ltmain"; then
     no_undefined_flag_GCJ \
     export_symbols_cmds_GCJ \
     hardcode_libdir_flag_spec_GCJ \
+    hardcode_libdir_flag_spec_ld_GCJ \
     hardcode_libdir_separator_GCJ \
     lt_cv_prog_compiler_c_o_GCJ \
     exclude_expsyms_GCJ \
@@ -20161,8 +20444,8 @@ objext="$ac_objext"
 # Old archive suffix (normally "a").
 libext="$libext"
 
-# Shared library suffix (normally "so").
-shrext="$shrext"
+# Shared library suffix (normally ".so").
+shrext='$shrext'
 
 # Executable file suffix (normally "").
 exeext="$exeext"
@@ -20311,10 +20594,15 @@ hardcode_into_libs=$hardcode_into_libs
 # This must work even if \$libdir does not exist.
 hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_GCJ
 
+# If ld is used when linking, flag to hardcode \$libdir into
+# a binary during linking. This must work even if \$libdir does
+# not exist.
+hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_GCJ
+
 # Whether we need a single -rpath flag with a separated argument.
 hardcode_libdir_separator=$lt_hardcode_libdir_separator_GCJ
 
-# Set to yes if using DIR/libNAME.${shrext} during linking hardcodes DIR into the
+# Set to yes if using DIR/libNAME${shared_ext} during linking hardcodes DIR into the
 # resulting binary.
 hardcode_direct=$hardcode_direct_GCJ
 
@@ -20403,15 +20691,13 @@ lt_simple_link_test_code="$lt_simple_compile_test_code"
 LTCC=${LTCC-"$CC"}
 
 # Allow CC to be a program name with arguments.
-set dummy $CC
-compiler="$2"
+compiler=$CC
 
 
 # Allow CC to be a program name with arguments.
 lt_save_CC="$CC"
 CC=${RC-"windres"}
-set dummy $CC
-compiler="$2"
+compiler=$CC
 compiler_RC=$CC
 lt_cv_prog_compiler_c_o_RC=yes
 
@@ -20458,6 +20744,7 @@ if test -f "$ltmain"; then
     no_undefined_flag_RC \
     export_symbols_cmds_RC \
     hardcode_libdir_flag_spec_RC \
+    hardcode_libdir_flag_spec_ld_RC \
     hardcode_libdir_separator_RC \
     lt_cv_prog_compiler_c_o_RC \
     exclude_expsyms_RC \
@@ -20577,8 +20864,8 @@ objext="$ac_objext"
 # Old archive suffix (normally "a").
 libext="$libext"
 
-# Shared library suffix (normally "so").
-shrext="$shrext"
+# Shared library suffix (normally ".so").
+shrext='$shrext'
 
 # Executable file suffix (normally "").
 exeext="$exeext"
@@ -20727,10 +21014,15 @@ hardcode_into_libs=$hardcode_into_libs
 # This must work even if \$libdir does not exist.
 hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_RC
 
+# If ld is used when linking, flag to hardcode \$libdir into
+# a binary during linking. This must work even if \$libdir does
+# not exist.
+hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_RC
+
 # Whether we need a single -rpath flag with a separated argument.
 hardcode_libdir_separator=$lt_hardcode_libdir_separator_RC
 
-# Set to yes if using DIR/libNAME.${shrext} during linking hardcodes DIR into the
+# Set to yes if using DIR/libNAME${shared_ext} during linking hardcodes DIR into the
 # resulting binary.
 hardcode_direct=$hardcode_direct_RC
 
@@ -30504,6 +30796,11 @@ else
 fi
 
 
+    # DPS issues:
+    # XFree86-4.x needs -lXt to provide XtMalloc for -ldps.
+    # Cygwin doesn't deliver -lXt as a DLL, which prevents a DLL build.
+    # Adobe DPS (as delivered on Solaris) doesn't require -lXt.
+    # GraphicsMagick itself doesn't use -lXt.
     echo "$as_me:$LINENO: checking for DPSInitialize in -ldps" >&5
 echo $ECHO_N "checking for DPSInitialize in -ldps... $ECHO_C" >&6
 if test "${ac_cv_lib_dps_DPSInitialize+set}" = set; then

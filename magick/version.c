@@ -106,3 +106,27 @@ MagickExport const char *GetMagickVersion(unsigned long *version)
     *version=MagickLibVersion;
   return(MagickVersion);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t M a g i c k W e b S i t e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickWebSite() returns the GraphicsMagick web site URL as a string.
+%
+%  The format of the GetMagickWebSite method is:
+%
+%      const char *GetMagickWebSite(void)
+%
+%
+*/
+MagickExport const char *GetMagickWebSite(void)
+{
+  return(MagickWebSite);
+}

@@ -5953,10 +5953,10 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         indexes=GetIndexes(image);
         bit=0;
         byte=0;
-        for (x=0; x < (long) image->columns; x++)
+        for (x=(long) image->columns; x > 0; x--)
         {
           byte<<=1;
-          if (indexes[x] == polarity)
+          if (*indexes++ == polarity)
             byte|=foreground;
           else
             byte|=background;
@@ -5992,9 +5992,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
               break;
             indexes=GetIndexes(image);
             nibble=0;
-            for (x=0; x < (long) image->columns; x++)
+            for (x=(long) image->columns; x > 0; x--)
             {
-              pixel=pixels[indexes[x]] & 0xf;
+              pixel=pixels[*indexes++] & 0xf;
               switch (nibble)
               {
                 case 0:
@@ -6043,9 +6043,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
               break;
             indexes=GetIndexes(image);
             nibble=0;
-            for (x=0; x < (long) image->columns; x++)
+            for (x=(long) image->columns; x > 0; x--)
             {
-              pixel=pixels[indexes[x]] & 0xf;
+              pixel=pixels[*indexes++] & 0xf;
               switch (nibble)
               {
                 case 0:
@@ -6085,11 +6085,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             if (p == (const PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
-            for (x=0; x < (long) image->columns; x++)
-            {
-              pixel=pixels[indexes[x]];
-              *q++=(unsigned char) pixel;
-            }
+            for (x=(long) image->columns; x > 0; x--)
+              *q++=(unsigned char) (pixels[*indexes++]);
             q+=scanline_pad;
           }
           break;
@@ -6115,9 +6112,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             if (p == (const PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
-            for (x=0; x < (long) image->columns; x++)
+            for (x=(long) image->columns; x > 0; x--)
             {
-              pixel=pixels[indexes[x]];
+              pixel=pixels[*indexes++];
               for (k=bytes_per_pixel-1; k >= 0; k--)
               {
                 channel[k]=(unsigned char) pixel;
@@ -6148,7 +6145,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             if (p == (const PixelPacket *) NULL)
               break;
             nibble=0;
-            for (x=0; x < (long) image->columns; x++)
+            for (x=(long) image->columns; x > 0; x--)
             {
               pixel=XGammaPixel(map_info,p);
               pixel&=0xf;
@@ -6200,7 +6197,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             if (p == (const PixelPacket *) NULL)
               break;
             nibble=0;
-            for (x=0; x < (long) image->columns; x++)
+            for (x=(long) image->columns; x > 0; x--)
             {
               pixel=XGammaPixel(map_info,p);
               pixel&=0xf;
@@ -6243,7 +6240,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) image->columns; x++)
+            for (x=(long) image->columns; x > 0; x--)
             {
               pixel=XGammaPixel(map_info,p);
               *q++=(unsigned char) pixel;
@@ -6357,7 +6354,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                     &image->exception);
                   if (p == (const PixelPacket *) NULL)
                     break;
-                  for (x=0; x < (long) image->columns; x++)
+                  for (x=(long) image->columns; x > 0; x--)
                   {
                     pixel=XGammaPixel(map_info,p);
                     for (k=bytes_per_pixel-1; k >= 0; k--)
@@ -6390,7 +6387,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           break;
         bit=0;
         byte=0;
-        for (x=0; x < (long) image->columns; x++)
+        for (x=(long) image->columns; x > 0; x--)
         {
           byte<<=1;
           if (p->opacity == TransparentOpacity)

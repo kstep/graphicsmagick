@@ -249,12 +249,12 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "This program is part of the ImageMagick imaging tookit."
-            VALUE "CompanyName", "ImageMagick Development Group"
+            VALUE "Comments", "This program is part of the GraphicsMagick imaging tookit."
+            VALUE "CompanyName", "GraphicsMagick Group"
             VALUE "FileDescription", "ImageMagick Win32 Configure Application"
             VALUE "FileVersion", "1, 0, 0, 2"
             VALUE "InternalName", "Configure"
-            VALUE "LegalCopyright", "This program is LGPL"
+            VALUE "LegalCopyright", "Copyright (C) 2002 GraphicsMagick Group"
             VALUE "OriginalFilename", "Configure.EXE"
             VALUE "ProductName", "Win32 Configure Application"
             VALUE "ProductVersion", "1, 0, 0, 2"
