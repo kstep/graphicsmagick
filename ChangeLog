@@ -1,3 +1,9 @@
+2003-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/semaphore.c (UnlockSemaphoreInfo): Bugfix, modify
+	the 'locked' flag while still under protection of the lock.
+	This fix is necessary for thread-safety.
+
 2003-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jpeg.c (ReadJPEGImage): Conditionally copy exception.
