@@ -1,18 +1,19 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<HTML>
-<HEAD>
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <title>ImageMagick - Image Processing and Display Package</title>
    <meta name="description" content="ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
    <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software    development, simulation, image, software, AniMagick, Animagic,    Magick++">
-   <link rel="StyleSheet" href="magick.css" type="text/css">
+   <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <title>ImageMagick - Image Processing and Display Package</title>
+<link rel="StyleSheet" href="magick.css" type="text/css">
 </head>
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
+<body text="#000000" bgcolor="#FFFFFF" link="#0085C0" vlink="#800080" alink="#0085C0">
 
-<center><img SRC="../images/magick_small.png" alt="" width=129 height=133></center>
+<center><img SRC="../images/magick_small.png" ALT="" height=133 width=129></center>
 
 <p><br>
+<br>
 <br>
 <p>Here is a table of image formats <b>ImageMagick</b> can read and/or
 write. Support for some of the formats are delegated to libraries or external
@@ -231,7 +232,7 @@ SDK</a></td>
 <td BGCOLOR="#9EBAC6">Gradual passing from one shade to another</td>
 
 <td BGCOLOR="#9EBAC6">specify the desired shading as the filename (e.g.
-<tt>gradient:red-blue</tt>&nbsp;</td>
+<tt>gradient:red-blue</tt></td>
 </tr>
 
 <tr>
@@ -356,7 +357,7 @@ format</td>
 <td BGCOLOR="#9EBAC6">text image format</td>
 
 <td BGCOLOR="#9EBAC6">specify the desired text as the filename (e.g. <tt>label:This
-is a label</tt>&nbsp;</td>
+is a label</tt></td>
 </tr>
 
 <tr>
@@ -365,7 +366,7 @@ is a label</tt>&nbsp;</td>
 <td BGCOLOR="#9EBAC6">colormap intensities and indices</td>
 
 <td BGCOLOR="#9EBAC6">set -depth to set the sample size of the intensities;
-indices are 16-bit if colors &gt; 256.</td>
+indices are 16-bit if colors > 256.</td>
 </tr>
 
 <tr>
@@ -544,7 +545,7 @@ to read</td>
 <td BGCOLOR="#9EBAC6">plasma fractal image.</td>
 
 <td BGCOLOR="#9EBAC6">Specify the base color as the filename (e.g. <tt>plasma:blue-yellow</tt>).
-Use <tt>fractal</tt> to initialize to a random value (e.g. <tt>plasma:fractal</tt>&nbsp;</td>
+Use <tt>fractal</tt> to initialize to a random value (e.g. <tt>plasma:fractal</tt></td>
 </tr>
 
 <tr>
@@ -695,7 +696,7 @@ the image width, height, and depth</td>
 <td BGCOLOR="#9EBAC6">Import image from a scanner device</td>
 
 <td BGCOLOR="#9EBAC6">requires <a href="http://www.mostang.com/sane/">SANE</a>
-Specify the device name and path as the filename (e.g. <tt>scan:mustek:/dev/scanner</tt>&nbsp;</td>
+Specify the device name and path as the filename (e.g. <tt>scan:mustek:/dev/scanner</tt></td>
 </tr>
 
 <tr>
@@ -754,8 +755,7 @@ width, height, and offset of the steganographic image</td>
 <td BGCOLOR="#9EBAC6">Scalable Vector Graphics</td>
 
 <td BGCOLOR="#9EBAC6">requires <a href="http://xmlsoft.org/">libxml2-2.0.0</a>;
-affine text transformations requires 
-<a href="ftp://ftp.freetype.org/pub/freetype2/">freetype2-current.tar.gz</a></td>
+affine text transformations requires <a href="ftp://ftp.freetype.org/pub/freetype2/">freetype2-current.tar.gz</a></td>
 </tr>
 
 <tr>
@@ -852,7 +852,7 @@ width and height</td>
 
 <td BGCOLOR="#9EBAC6">Wireless bitmap image file</td>
 
-<td BGCOLOR="#9EBAC6">support for uncompressed monochrome only </td>
+<td BGCOLOR="#9EBAC6">support for uncompressed monochrome only&nbsp;</td>
 </tr>
 
 <tr>
@@ -877,11 +877,15 @@ screen</td>
 
 <td BGCOLOR="#9EBAC6">Windows Meta File</td>
 
-<td BGCOLOR="#9EBAC6">requires <a href="http://sourceforge.net/projects/wvware/">libwmf</a></td>
+<td BGCOLOR="#9EBAC6">Requires <a href="http://sourceforge.net/projects/wvware/">libwmf</a>.&nbsp;
+By default, renders WMF files to the size specified by the metafile header.
+Use the -density option to adjust the output resolution, and thereby adjust
+the ouput size. The default output resolution is 72DPI so '-density 144'
+results in an image twice as large as the default.</td>
 </tr>
 
 <tr>
-<td BGCOLOR="#D0D0D0"><b>X</b></td>
+<td BGCOLOR="#D0D0D0">X</td>
 
 <td BGCOLOR="#9EBAC6">Select image from or display image to your X server
 screen</td>
@@ -942,7 +946,7 @@ PNM image called <tt>image.pnm.gz</tt> is automatically uncompressed with
 the <tt>gzip</tt> program and the image is subsequently read.
 <p>
 <hr>
-<p><a href="../ImageMagick.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=MIDDLE></a><font size="-2">
+<p><a href="../ImageMagick.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
 Image manipulation software that works like magic.</font>
 </body>
 </html>
