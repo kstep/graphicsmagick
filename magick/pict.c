@@ -309,7 +309,8 @@ const PICTCode
 %
 %  The format of the DecodeImage method is:
 %
-%      Image *ReadPICTImage(const ImageInfo *image_info)
+%      unsigned char* DecodeImage(Image *image,int bytes_per_line,
+%        const int bits_per_pixel)
 %
 %  A description of each parameter follows:
 %
@@ -686,7 +687,7 @@ static unsigned int EncodeImage(Image *image,const unsigned char *scanline,
 %
 %  The format of the ReadPICTImage method is:
 %
-%      image=ReadPICTImage(image_info)
+%      Image *ReadPICTImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
