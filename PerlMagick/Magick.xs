@@ -1403,11 +1403,11 @@ Append(ref)
 
 	    if (!(image = setup_list(rref, &info, (SV ***) NULV)))
 	    {
-		warning(OptionWarning, "No images to Append", NULV);
+		warning(OptionWarning, "No images to append", NULV);
 		goto badreturn;
 	    }
 
-	    image = AppendImages(image);
+	    image = AppendImages(image, True);
 	    if (!image)
 		goto badreturn;
 
@@ -1669,6 +1669,94 @@ Display(ref, ...)
 	}
 
 void
+Blob(ref, ...)
+	Image::Magick	ref = NO_INIT
+	ALIAS:
+	    blob		= 1
+	PPCODE:
+	{
+	    SV *rref;	/* rref is the SV* of ref=SvIV(rref) */
+	    int n;
+	    char *p, *arg = NULL;
+	    jmp_buf error_jmp;
+	    Image *im, *image;
+	    FILE *file;
+	    char *data;
+	    struct info *info;
+	    volatile int retval = 0;
+	    SV **svarr = NULL;
+	    AV *av = NULL;
+	    HV *hv;
+	    SV *sv, *rv, *avref;
+
+	    im_er_mes = newSVpv("", 0);
+
+	    if (!sv_isobject(ST(0)))
+	    {
+		warning(OptionWarning, complain, IM_packname);
+		goto badreturn;
+	    }
+	    rref = SvRV(ST(0));
+	    hv = SvSTASH(rref);
+
+	    av = newAV();
+	    avref = sv_2mortal(sv_bless(newRV((SV *)av), hv));
+	    SvREFCNT_dec(av);
+
+	    im_er_jmp = &error_jmp;
+	    if ((retval = setjmp(error_jmp)))
+		goto badreturn;
+
+	    if (!(image = setup_list(rref, &info, &svarr)))
+	    {
+		warning(OptionWarning, "No images to blob", NULV);
+		goto badreturn;
+	    }
+	    
+	    info = getinfo((void *) av, info);
+
+	    for (im = image; im; im = im->next)
+	    {
+		TemporaryFilename(im->filename);
+		puts(im->filename);
+		if (!WriteImage((ImageInfo *) &info->info, im))
+		    goto badreturn;
+
+		file = fopen(im->filename, ReadBinaryType);
+		(void) remove(im->filename);
+		if ( file == (FILE *) NULL)
+		    goto badreturn;
+
+		printf("%d\n",im->filesize);
+		data = safemalloc( im->filesize );
+		ReadData(data, 1, im->filesize, file);
+		fclose(file);
+
+		sv = newSVpv((char*) data, im->filesize);
+		rv = newRV(sv);
+		av_push(av, sv_bless(rv, hv));
+		SvREFCNT_dec(sv);
+		safefree((char *) data);
+		if (info->info.adjoin)
+		    break;
+	    }
+
+	    ST(0) = avref;
+	    im_er_jmp = NULL;
+	    SvREFCNT_dec(im_er_mes);	/* can't return warning messages */
+	    im_er_mes = NULL;
+	    XSRETURN(1);
+
+	badreturn:
+	    im_er_jmp = NULL;
+	    sv_setiv(im_er_mes, (IV)(retval ? retval : SvCUR(im_er_mes) != 0));
+	    SvPOK_on(im_er_mes);
+	    ST(0) = sv_2mortal(im_er_mes);
+	    im_er_mes = NULL, im_er_jmp = NULL;
+	    XSRETURN(1);
+	}
+
+void
 Montage(ref, ...)
 	Image::Magick	ref = NO_INIT
 	ALIAS:
@@ -1716,7 +1804,7 @@ Montage(ref, ...)
 
 	    if (!(image = setup_list(rref, &info, &svarr)))
 	    {
-		warning(OptionWarning, "No images to Montage", NULV);
+		warning(OptionWarning, "No images to montage", NULV);
 		goto badreturn;
 	    }
 	    info = getinfo((void *) av, info);
@@ -2124,7 +2212,7 @@ Write(ref, ...)
 
 	    if (!(image = setup_list(rref, &info, (SV ***) NULV)))
 	    {
-		warning(OptionWarning, "No images to Write", NULV);
+		warning(OptionWarning, "No images to write", NULV);
 		goto badreturn;
 	    }
 

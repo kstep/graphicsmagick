@@ -702,7 +702,7 @@ extern Export void
 extern Export Image
   *AddNoiseImage(Image *,NoiseType),
   *AllocateImage(const ImageInfo *),
-  *AppendImages(Image *),
+  *AppendImages(Image *,unsigned int),
   *AverageImages(Image *),
   *BorderImage(Image *,RectangleInfo *),
   *BlurImage(Image *,double),

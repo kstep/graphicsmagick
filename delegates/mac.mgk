@@ -67,13 +67,13 @@
 	|compress -c > %o
 
 <=gs-eps
-        -sDEVICE=epswrite -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" -c quit
+	-sDEVICE=epswrite -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" -c quit
 
 <=gs-pdf
-        -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" -c quit
+	-sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" -c quit
 
 <=gs-ps
-        -sDEVICE=pswrite -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" -c quit
+	-sDEVICE=pswrite -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" -c quit
 
 <=zip
 	|gzip -cf > %o
@@ -105,11 +105,11 @@ ftp=>
 	GET %m:%i > %o 2>&1
 
 gs-color=>
-        -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
+	-sDEVICE=pnmraw -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
 	  -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
-        -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
+	-sDEVICE=pbmraw -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
 	  -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>

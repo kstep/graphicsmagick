@@ -908,9 +908,6 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
   int
     c;
 
-  register int
-    i;
-
   unsigned int
     status;
 
@@ -4010,9 +4007,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           Set image resolution.
         */
         (void) strcpy(units,"undefined");
-        if (image->units == PixelsPerInchResolution);
+        if (image->units == PixelsPerInchResolution)
           (void) strcpy(units,"pixels-per-inch");
-        if (image->units == PixelsPerCentimeterResolution);
+        if (image->units == PixelsPerCentimeterResolution)
           (void) strcpy(units,"pixels-per-centimeter");
         (void) fprintf(image->file,"resolution=%gx%g  units=%s\n",
           image->x_resolution,image->y_resolution,units);

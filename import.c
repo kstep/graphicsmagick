@@ -244,10 +244,7 @@ int main(int argc,char **argv)
   /*
     Connect to X server.
   */
-#if defined(WIN32)
-  SetErrorHandler(NTErrorHandler);
-  SetWarningHandler(NTWarningHandler);
-#endif
+  SetNotifyHandlers;
   ReadCommandlLine(argc,&argv);
   GetImageInfo(&image_info);
   GetQuantizeInfo(&quantize_info);

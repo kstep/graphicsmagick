@@ -1,4 +1,9 @@
-
+/*
+  ImageMagick X Window Widget declarations.
+*/
+#ifndef _WIDGET_H
+#define _WIDGET_H
+
 /*
   Define declarations.
 */
@@ -61,3 +66,5 @@ extern Export void
   XNoticeWidget(Display *,XWindows *,char *,char *),
   XTextViewWidget(Display *,const XResourceInfo *,XWindows *,const unsigned int,
     char *,char **);
+
+#endif

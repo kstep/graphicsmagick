@@ -485,13 +485,13 @@ int main(int argc,char **argv)
     image_info;
 
   int
+    append,
     x;
 
   register int
     i;
 
   unsigned int
-    append,
     average,
     global_colormap,
     scene;
@@ -503,7 +503,7 @@ int main(int argc,char **argv)
   client_name=SetClientName(*argv);
   if (argc < 3)
     Usage(client_name);
-  append=False;
+  append=0;
   average=False;
   filename=(char *) NULL;
   image=(Image *) NULL;
@@ -576,7 +576,7 @@ int main(int argc,char **argv)
             }
           if (strncmp("append",option+1,2) == 0)
             {
-              append=(*option == '-');
+              append=(*option) == '-' ? 1 : -1;
               break;
             }
           if (strncmp("average",option+1,2) == 0)
@@ -1583,7 +1583,7 @@ int main(int argc,char **argv)
     MogrifyImages(&image_info,i,argv,&image);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  if (append)
+  if (append != 0)
     {
       Image
         *appended_image;
@@ -1591,7 +1591,7 @@ int main(int argc,char **argv)
       /*
         Append a set of images.
       */
-      appended_image=AppendImages(image);
+      appended_image=AppendImages(image,append == 1);
       if (appended_image != (Image *) NULL)
         {
           DestroyImages(image);

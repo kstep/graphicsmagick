@@ -11,7 +11,6 @@ extern "C" {
 #include <stat.h>
 #include <errno.h>
 #include <Errors.h>
-#include <Files.h>
 
 /*
   Define declarations.
@@ -61,7 +60,9 @@ extern struct dirent
  
 extern void
   closedir(DIR *),
-  FilenameToFSSpec(const char *,FSSpec *),
+  MACErrorHandler(const char *,const char *),
+  MACWarningHandler(const char *,const char *),
+  ProcessPendingEvents(char *),
   seekdir(DIR *,long),
   SetApplicationType(const char *,const char *,OSType);
 

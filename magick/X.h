@@ -1,3 +1,9 @@
+/*
+  ImageMagick X Window declarations.
+*/
+#ifndef _X_H
+#define _X_H
+
 #undef False
 #undef True
 #define XLIB_ILLEGAL_ACCESS  1
@@ -658,3 +664,5 @@ extern Export XWindows
 #define PRE_R4_ICCCM
 #endif
 #include "PreRvIcccm.h"
+
+#endif

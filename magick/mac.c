@@ -57,6 +57,8 @@
 /*
   Include declarations.
 */
+#define _X_H
+#define _WIDGET_H
 #include "magick.h"
 #include "mac.h"
 #include <AppleEvents.h>
@@ -68,8 +70,10 @@
 #include <QDOffscreen.h>
 #include <Palettes.h>
 #include <ImageCompression.h>
-#include <Movies.h>
 #include <PictUtils.h>
+#include <Files.h>
+#include <Gestalt.h>
+#include <TextUtils.h>
 
 /*
   Global declaractions.
@@ -86,6 +90,7 @@ static Boolean
 static pascal void
   ArcMethod(GrafVerb,Rect *,short,short),
   BitsMethod(BitMap *,Rect *,Rect *,short,RgnHandle),
+  FilenameToFSSpec(const char *filename,FSSpec *fsspec),
   LineMethod(Point),
   OvalMethod(GrafVerb,Rect *),
   PolyMethod(GrafVerb,PolyHandle),
@@ -351,15 +356,60 @@ int Exit(int status)
 %
 %
 */
-void FilenameToFSSpec(const char *filename,FSSpec *fsspec)
+void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
 {
   Str255
     name;
 
   assert(filename != (char *) NULL);
   (void) strcpy((char *) name,filename);
-  CtoPstr((char *) name);
+  c2pstr((char *) name);
   FSMakeFSSpec(0,0,name,fsspec);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   M A C E r r o r H a n d l e r                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MACErrorHandler displays an error message and then terminates
+%  the program.
+%
+%  The format of the MACErrorHandler routine is:
+%
+%      MACErrorHandler(message,qualifier)
+%
+%  A description of each parameter follows:
+%
+%    o message: Specifies the message to display before terminating the
+%      program.
+%
+%    o qualifier: Specifies any qualifier to the message.
+%
+%
+*/
+Export void MACErrorHandler(const char *message,const char *qualifier)
+{
+  char
+    buffer[2048];
+
+  if (message == (char *) NULL)
+    Exit(0);
+  (void) sprintf(buffer,"%s: %s",SetClientName((char *) NULL),message);
+  if (qualifier != (char *) NULL)
+    (void) sprintf(buffer,"%s (%s)",buffer,qualifier);
+  if (errno)
+    (void) sprintf(buffer,"%s [%s]",buffer,strerror(errno));
+  (void) sprintf(buffer,"%s.\n",buffer);
+  /* display error to message window */
+  puts(buffer);
+  Exit(0);
 }
 
 /*
@@ -446,9 +496,6 @@ static OSErr MacGSLaunchApplicationCore(long flags)
 
   OSErr
     error;
-
-  ProcessSerialNumber
-    serial_number;
 
   if (!SearchForFile('gsVR','APPL',&file_info,1))
     return(-43);
@@ -649,6 +696,47 @@ int MACSystemCommand(const char * command)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M A C W a r n i n g H a n d l e r                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MACWarningHandler displays a warning message.
+%
+%  The format of the MACWarningHandler routine is:
+%
++      MACWarningHandler(message,qualifier)
+%
+%  A description of each parameter follows:
+%
+%    o message: Specifies the message to display before terminating the
+%      program.
+%
+%    o qualifier: Specifies any qualifier to the message.
+%
+%
+*/
+Export void MACWarningHandler(const char *message,const char *qualifier)
+{
+  char
+    buffer[2048];
+
+  if (message == (char *) NULL)
+    return;
+  (void) sprintf(buffer,"%s: %s",SetClientName((char *) NULL),message);
+  if (qualifier != (char *) NULL)
+    (void) sprintf(buffer,"%s (%s)",buffer,qualifier);
+  (void) sprintf(buffer,"%s.\n",buffer);
+  /* display warning to message window */
+  puts(buffer);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   o p e n d i r                                                             %
 %                                                                             %
 %                                                                             %
@@ -685,7 +773,7 @@ DIR *opendir(char *path)
   search_info.hFileInfo.ioNamePtr=0;
   if ((path != (char *) NULL) || (*path != '\0'))
     if ((path[0] != '.') || (path[1] != '\0'))
-      search_info.hFileInfo.ioNamePtr=CtoPstr(strcpy(pathname,path));
+      search_info.hFileInfo.ioNamePtr=c2pstr(strcpy(pathname,path));
   search_info.hFileInfo.ioCompletion=0;
   search_info.hFileInfo.ioVRefNum=0;
   search_info.hFileInfo.ioFDirIndex=0;
@@ -703,6 +791,47 @@ DIR *opendir(char *path)
   entry->d_DirID=search_info.hFileInfo.ioDirID;
   entry->d_index=1;
   return(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P r o c e s s P e n d i n g E v e n t s i                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ProcessPendingEvents processes any pending events.  This prevents
+%  ImageMagick from monopolizing the processor.
+%
+%  The format of the ProcessPendingEvents routine is:
+%
+%      ProcessPendingEvents(text)
+%
+%  A description of each parameter follows:
+%
+%    o text: A character string representing the current process.
+%
+%
+*/
+Export void ProcessPendingEvents(char *text)
+{
+  static char
+    *mark = (char *) NULL;
+
+  EventRecord
+    event;
+
+  while (WaitNextEvent(everyEvent,&event,0L,nil))
+    SIOUXHandleOneEvent(&event);
+  if (isatty(STDIN_FILENO) && (text != mark))
+    {
+      (void) puts(text);
+      mark=text;
+    }
 }
 
 /*
@@ -758,7 +887,7 @@ struct dirent *readdir(DIR *entry)
       return((struct dirent *) NULL);
     }
   entry->d_index++;
-  (void) strcpy(dir_entry.d_name,PtoCstr(search_info.hFileInfo.ioNamePtr));
+  (void) strcpy(dir_entry.d_name,p2cstr(search_info.hFileInfo.ioNamePtr));
   dir_entry.d_namlen=strlen(dir_entry.d_name);
   return(&dir_entry);
 }
@@ -1201,7 +1330,7 @@ void SetApplicationType(const char *filename,const char *magick,
 
   assert(filename != (char *) NULL);
   (void) strcpy((char *) name,filename);
-  CtoPstr((char *) name);
+  c2pstr((char *) name);
   filetype='    ';
   (void) strncpy((char *) &filetype,magick,Min(Extent(magick),4));
   Create(name,0,application,filetype);

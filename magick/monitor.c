@@ -91,21 +91,7 @@ static MonitorHandler
 Export void ProgressMonitor(char *text,const unsigned int quantum,
   const unsigned int span)
 {
-#if defined(macintosh)
-  static char
-    *mark = (char *) NULL;
-
-  EventRecord
-    event;
-
-  while (WaitNextEvent(everyEvent,&event,0L,nil))
-    SIOUXHandleOneEvent(&event);
-  if (isatty(STDIN_FILENO) && (text != mark))
-    {
-      (void) puts(text);
-      mark=text;
-    }
-#endif
+  ProcessPendingEvents(text);
   if (monitor_handler != (MonitorHandler) NULL)
     (*monitor_handler)(text,quantum,span);
 }

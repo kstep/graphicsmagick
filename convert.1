@@ -360,7 +360,12 @@ The default is \fBCenter\fP.  See \fB-draw\fP or
 for further details.
 .TP
 .B "-append
-append a set of images.
+append a set of images.  
+
+All the input images must have the same width or height.  Images of the
+same width are stacked top-to-bottom.  Images of the same height are
+stacked left-to-right.  Use \fB+append\fP to stack rectangular images
+left-to-right.
 .TP
 .B "-average
 averages a set of images.

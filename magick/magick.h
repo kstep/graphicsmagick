@@ -155,17 +155,21 @@ extern "C" {
 #define EditorOptions  " -title \"Edit Image Comment\" -e vi"
 #define Exit  exit
 #define PreferencesDefaults  "~/."
+#define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
+#define SetNotifyHandlers
 #else
 #if defined(vms)
 #define ApplicationDefaults  "decw$system_defaults:"
 #define EditorOptions  ""
 #define Exit(errno)  errno ? exit(-1) : exit(0)
 #define PreferencesDefaults  "decw$user_defaults:"
+#define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
 #if !defined(RGBColorDatabase)
 #define RGBColorDatabase  "sys$common:[sysmgr]decw$rgb.dat"
 #endif
+#define SetNotifyHandlers
 #endif
 #if defined(macintosh)
 #define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
@@ -175,6 +179,9 @@ extern "C" {
 #if !defined(RGBColorDatabase)
 #define RGBColorDatabase  "../xlib/lib/X11/rgb.txt"
 #endif
+#define SetNotifyHandlers \
+  SetErrorHandler(MACErrorHandler); \
+  SetWarningHandler(MACWarningHandler)
 #endif
 #if defined(WIN32)
 #define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
@@ -182,10 +189,14 @@ extern "C" {
 #undef isatty
 #define isatty(filedes)  1
 #define PreferencesDefaults  "~/."
+#define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
 #if !defined(RGBColorDatabase)
-#define RGBColorDatabase  "../xlib/lib/X11/rgb.txt"
+#define RGBColorDatabase  "c:\ImageMagick\rgb.txt"
 #endif
+#define SetNotifyHandlers \
+  SetErrorHandler(NTErrorHandler); \
+  SetWarningHandler(NTWarningHandler)
 #undef sleep
 #define sleep(seconds)  Sleep(seconds*1000)
 #endif

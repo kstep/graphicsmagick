@@ -6274,9 +6274,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info)
         unsigned char
           *compressed_pixels;
 
-        unsigned int
-          compressed_packets;
-
         /*
           Uncompress image pixels with BZip decoding.
         */
@@ -6288,11 +6285,16 @@ static Image *ReadMIFFImage(const ImageInfo *image_info)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
         status=True;
 #if defined(HasBZLIB)
-        compressed_packets=max_packets;
-        status=bzBuffToBuffDecompress((char *) image->packed_pixels,
-          &compressed_packets,(char *) compressed_pixels,image->packets,
-          image_info->verbose,False);
-        max_packets=compressed_packets;
+        {
+          unsigned int
+            compressed_packets;
+
+          compressed_packets=max_packets;
+          status=bzBuffToBuffDecompress((char *) image->packed_pixels,
+            &compressed_packets,(char *) compressed_pixels,image->packets,
+            image_info->verbose,False);
+          max_packets=compressed_packets;
+        }
 #endif
         image->packets=(unsigned int) (max_packets/image->packet_size);
         FreeMemory((char *) compressed_pixels);
@@ -17185,9 +17187,6 @@ static Image *ReadYUVImage(const ImageInfo *image_info)
   unsigned char
     *scanline;
 
-  unsigned short
-    value;
-
   /*
     Allocate image structure.
   */
@@ -17400,9 +17399,6 @@ Export Image *ReadImage(ImageInfo *image_info)
 
   register char
     *p;
-
-  register int
-    i;
 
   unsigned int
     temporary;

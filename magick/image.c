@@ -221,6 +221,8 @@ Export Image *AllocateImage(const ImageInfo *image_info)
         if ((flags & HeightValue) == 0)
           allocated_image->rows=allocated_image->columns;
       }
+  allocated_image->compression=image_info->compression;
+  allocated_image->interlace=image_info->interlace;
   if (image_info->density != (char *) NULL)
     {
       int
@@ -507,20 +509,26 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method AppendImages appends a set of images.  All the input images must
-%  have the same column width.
+%  have the same width or height.  Images of the same width are stacked
+%  top-to-bottom.  Images of the same height are stacked left-to-right.
+%  If the stack is false, rectangular images are stacked left-to-right
+%  otherwise top-to-bottom.
 %
 %  The format of the AppendImage routine is:
 %
-%      AppendImages(images)
+%      AppendImages(images,stack)
 %
 %  A description of each parameter follows:
 %
 %    o images: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
+%    o stack: An unsigned value other than stacks rectangular images
+%      top-to-bottom otherwise left-to-right.
+%
 %
 */
-Export Image *AppendImages(Image *images)
+Export Image *AppendImages(Image *images,unsigned int stack)
 {
   Image
     *appended_image,
@@ -534,24 +542,38 @@ Export Image *AppendImages(Image *images)
     *q;
 
   unsigned int
+    height,
     max_packets,
-    rows;
+    width;
 
   /*
     Ensure the images have the same column width.
   */
   assert(images != (Image *) NULL);
-  rows=images->rows;
+  if (images->next == (Image *) NULL)
+    {
+      MagickWarning(OptionWarning,"Unable to append image",
+        "image sequence required");
+      return((Image *) NULL);
+    }
+  for (next_image=images->next; next_image != (Image *) NULL; )
+  {
+    if ((next_image->columns != images->columns) &&
+        (next_image->rows != images->rows))
+      {
+        MagickWarning(OptionWarning,"Unable to append image",
+          "image widths or heights differ");
+        return((Image *) NULL);
+      }
+    next_image=next_image->next;
+  }
+  width=images->columns;
+  height=images->rows;
   max_packets=images->packets;
   for (next_image=images->next; next_image != (Image *) NULL; )
   {
-    if (next_image->columns != images->columns)
-      {
-        MagickWarning(OptionWarning,"Unable to append image",
-          "column widths must be the same");
-        return((Image *) NULL);
-      }
-    rows+=next_image->rows;
+    width+=next_image->columns;
+    height+=next_image->rows;
     max_packets+=next_image->packets;
     next_image=next_image->next;
   }
@@ -559,7 +581,10 @@ Export Image *AppendImages(Image *images)
     Initialize append image attributes.
   */
   images->orphan=True;
-  appended_image=CloneImage(images,images->columns,images->rows,True);
+  if ((images->columns != images->next->columns) || !stack)
+    appended_image=CloneImage(images,width,images->rows,False);
+  else
+    appended_image=CloneImage(images,images->columns,images->rows,False);
   images->orphan=False;
   if (appended_image == (Image *) NULL)
     {
@@ -567,31 +592,55 @@ Export Image *AppendImages(Image *images)
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  appended_image->rows=rows;
-  appended_image->packets=max_packets;
-  appended_image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-    appended_image->pixels,appended_image->packets*sizeof(RunlengthPacket));
-  if (appended_image->pixels == (RunlengthPacket *) NULL)
+  if ((images->columns != images->next->columns) || !stack)
     {
-      DestroyImage(appended_image);
-      MagickWarning(ResourceLimitWarning,"Unable to append image",
-        "Memory allocation failed");
-      return((Image *) NULL);
+      register int
+        x;
+
+      /*
+        Stack left-to-right.
+      */
+      x=0;
+      for (next_image=images; next_image != (Image *) NULL; )
+      {
+        if (next_image->class == DirectClass)
+          appended_image->class=DirectClass;
+        CompositeImage(appended_image,ReplaceCompositeOp,next_image,x,0);
+        x+=next_image->columns;
+        next_image=next_image->next;
+      }
     }
-  q=appended_image->pixels;
-  for (next_image=images; next_image != (Image *) NULL; )
-  {
-    if (next_image->class == DirectClass)
-      appended_image->class=DirectClass;
-    p=next_image->pixels;
-    for (i=0; i < next_image->packets; i++)
+  else
     {
-      *q=(*p);
-      p++;
-      q++;
+      /*
+        Stack top-to-bottom.
+      */
+      appended_image->rows=height;
+      appended_image->packets=max_packets;
+      appended_image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
+        appended_image->pixels,appended_image->packets*sizeof(RunlengthPacket));
+      if (appended_image->pixels == (RunlengthPacket *) NULL)
+        {
+          DestroyImage(appended_image);
+          MagickWarning(ResourceLimitWarning,"Unable to append image",
+            "Memory allocation failed");
+          return((Image *) NULL);
+        }
+      q=appended_image->pixels;
+      for (next_image=images; next_image != (Image *) NULL; )
+      {
+        if (next_image->class == DirectClass)
+          appended_image->class=DirectClass;
+        p=next_image->pixels;
+        for (i=0; i < next_image->packets; i++)
+        {
+          *q=(*p);
+          p++;
+          q++;
+        }
+        next_image=next_image->next;
+      }
     }
-    next_image=next_image->next;
-  }
   if (appended_image->class == PseudoClass)
     {
       unsigned int
@@ -3644,16 +3693,16 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         {
           primitive_info[j].text=p;
           if (*p == '"')
-            for (p++; *p != '\0'; p++);
+            for (p++; *p != '\0'; p++)
               if ((*p == '"') && (*(p-1) != '\\'))
                 break;
           else
             if (*p == '\'')
-              for (p++; *p != '\0'; p++);
+              for (p++; *p != '\0'; p++)
                 if ((*p == '\'') && (*(p-1) != '\\'))
                   break;
             else
-              for (p++;  *p != '\0'; p++);
+              for (p++;  *p != '\0'; p++)
                 if (isspace(*p) && (*(p-1) != '\\'))
                   break;
           if (*p != '\0')

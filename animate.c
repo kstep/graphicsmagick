@@ -272,10 +272,7 @@ int main(int argc,char **argv)
   /*
     Set defaults.
   */
-#if defined(WIN32)
-  SetErrorHandler(NTErrorHandler);
-  SetWarningHandler(NTWarningHandler);
-#endif
+  SetNotifyHandlers;
   ReadCommandlLine(argc,&argv);
   client_name=SetClientName(*argv);
   display=(Display *) NULL;
