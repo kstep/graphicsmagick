@@ -963,8 +963,7 @@ MagickExport unsigned int IsOpaqueImage(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method IsPaletteImage returns True if the image is PseudoClass and has 256
-%  unique colors or less.  If the image is DirectClass and has 256 colors
-%  or less, the image is demoted to PseudoClass.
+%  unique colors or less.
 %
 %  The format of the IsPaletteImage method is:
 %
@@ -1021,12 +1020,12 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
         "Unable to determine image class","Memory allocation failed");
       return(False);
     }
-  for (y=0; (y < (long) image->rows) && (cube_info->colors <= 256); y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       return(False);
-    for (x=0; (x < (long) image->columns) && (cube_info->colors <= 256); x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       /*
         Start at the root and proceed level by level.
@@ -1075,12 +1074,17 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
           node_info->list[i].blue=p->blue;
           node_info->list[i].index=cube_info->colors++;
           node_info->number_unique++;
+          if (cube_info->colors > 256)
+            {
+              DestroyCubeInfo(cube_info);
+              return(False);
+            }
         }
       p++;
     }
   }
   DestroyCubeInfo(cube_info);
-  return(cube_info->colors <= 256);
+  return(True);
 }
 
 /*
