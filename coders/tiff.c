@@ -922,24 +922,27 @@ ModuleExport void RegisterTIFFImage(void)
     *entry;
 
   entry=SetMagickInfo("PTIF");
-  entry->decoder=ReadTIFFImage;
-  entry->encoder=WriteTIFFImage;
-  entry->adjoin=False;
   entry->description=AllocateString("Pyramid encoded TIFF");
   entry->module=AllocateString("TIFF");
+  entry->adjoin=False;
+  entry->thread_support=False;
+  entry->decoder=ReadTIFFImage;
+  entry->encoder=WriteTIFFImage;
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("TIF");
-  entry->decoder=ReadTIFFImage;
-  entry->encoder=WriteTIFFImage;
   entry->description=AllocateString("Tagged Image File Format");
   entry->module=AllocateString("TIFF");
+  entry->thread_support=False;
+  entry->decoder=ReadTIFFImage;
+  entry->encoder=WriteTIFFImage;
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("TIFF");
-  entry->decoder=ReadTIFFImage;
-  entry->encoder=WriteTIFFImage;
-  entry->magick=IsTIFF;
   entry->description=AllocateString("Tagged Image File Format");
   entry->module=AllocateString("TIFF");
+  entry->magick=IsTIFF;
+  entry->thread_support=False;
+  entry->decoder=ReadTIFFImage;
+  entry->encoder=WriteTIFFImage;
   RegisterMagickInfo(entry);
 }
 

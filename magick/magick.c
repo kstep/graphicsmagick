@@ -971,6 +971,7 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
   magick_info->name=AllocateString(name);
   magick_info->adjoin=True;
   magick_info->blob_support=True;
+  magick_info->thread_support=True;
   magick_info->signature=MagickSignature;
   return(magick_info);
 }

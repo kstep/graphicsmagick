@@ -268,7 +268,7 @@ static void Usage()
       "-treedepth value     depth of the color tree",
       "-type type           image type",
       "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
-      "-unsharp geometry    sharpen the image
+      "-unsharp geometry    sharpen the image",
       "-verbose             print detailed information about the image",
       "-view                FlashPix viewing transforms",
       "-wave geometry       alter an image along a sine wave",
