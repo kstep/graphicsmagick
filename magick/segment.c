@@ -100,7 +100,7 @@
 /*
   Define declarations.
 */
-#define  Dimension  3
+#define  MaxDimension  3
 
 /*
   Typedef declarations.
@@ -425,7 +425,7 @@ static unsigned int Classify(Image *image,short **extrema,
         Print the cluster extents.
       */
       (void) fprintf(stderr,
-        "\n\n\nCluster Extents:        (Vector Size: %d)\n",Dimension);
+        "\n\n\nCluster Extents:        (Vector Size: %d)\n",MaxDimension);
       (void) fprintf(stderr, "================");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
@@ -439,7 +439,7 @@ static unsigned int Classify(Image *image,short **extrema,
         Print the cluster center values.
       */
       (void) fprintf(stderr,
-        "\n\n\nCluster Center Values:        (Vector Size: %d)\n",Dimension);
+        "\n\n\nCluster Center Values:        (Vector Size: %d)\n",MaxDimension);
       (void) fprintf(stderr, "=====================");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
@@ -1432,13 +1432,13 @@ Export unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
 #define WeightingExponent  2.0
 
   long
-    *histogram[Dimension];
+    *histogram[MaxDimension];
 
   register int
     i;
 
   short
-    *extrema[Dimension];
+    *extrema[MaxDimension];
 
   unsigned int
     status;
@@ -1447,7 +1447,7 @@ Export unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
     Allocate histogram and extrema.
   */
   assert(image != (Image *) NULL);
-  for (i=0; i < Dimension; i++)
+  for (i=0; i < MaxDimension; i++)
   {
     histogram[i]=(long *) AllocateMemory((DownScale(MaxRGB)+1)*sizeof(long));
     extrema[i]=(short *) AllocateMemory((DownScale(MaxRGB)+1)*sizeof(short));
@@ -1483,7 +1483,7 @@ Export unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
   /*
     Free memory.
   */
-  for (i=0; i < Dimension; i++)
+  for (i=0; i < MaxDimension; i++)
   {
     FreeMemory((void *) &extrema[i]);
     FreeMemory((void *) &histogram[i]);
