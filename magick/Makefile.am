@@ -50,7 +50,7 @@ libMagick_la_LDFLAGS = -no-undefined \
 AM_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 
 # Library base sources
-MAGICK_BASE_SRCS = memory.c blob.c cache.c message.c error.c monitor.c \
+MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
   constitute.c image.c composite.c list.c color.c quantize.c segment.c \
 	resize.c transform.c shear.c enhance.c effect.c fx.c decorate.c annotate.c \
 	type.c draw.c render.c montage.c semaphore.c attribute.c signature.c \
@@ -86,7 +86,7 @@ bin_SCRIPTS = Magick-config
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h \
   cache_view.h classify.h command.h compress.h magick_config.h delegate.h \
-  draw.h render.h error.h gem.h image.h list.h magic.h magick.h message.h \
+  draw.h render.h error.h gem.h image.h list.h locale.h magic.h magick.h \
 	module.h monitor.h quantize.h registry.h semaphore.h timer.h utility.h \
 	version.h widget.h xwindow.h
 

@@ -97,7 +97,7 @@ extern "C" {
 #if !defined(vms) && !defined(macintosh)
 # include "magick/classify.h"
 # include "magick/semaphore.h"
-# include "magick/message.h"
+# include "magick/locale.h"
 # include "magick/error.h"
 # include "magick/timer.h"
 # include "magick/image.h"
@@ -124,7 +124,7 @@ extern "C" {
 # include "classify.h"
 # include "semaphore.h"
 # include "timer.h"
-# include "message.h"
+# include "locale.h"
 # include "error.h"
 # include "image.h"
 # include "list.h"

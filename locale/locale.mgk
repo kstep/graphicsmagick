@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<typemap>
+  <include locale="iso8859-1" file="iso8859-1.mgk" />
+</typemap>
