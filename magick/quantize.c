@@ -1356,7 +1356,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
 
 MagickExport unsigned int QuantizationError(Image *image)
 {
-  QuantizationError(image);
+  return(GetImageQuantizationError(image));
 }
 
 MagickExport unsigned int GetImageQuantizationError(Image *image)
@@ -1486,7 +1486,7 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %
 %  The format of the HilbertCurve method is:
 %
-%      void HilbertCurve(CubeInfo *cube_info,Image *image,const int level,
+%      void HilbertCurve(CubeInfo *cube_info,Image *image,const long level,
 %        const unsigned int direction)
 %
 %  A description of each parameter follows.
@@ -1501,7 +1501,7 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %
 %
 */
-static void HilbertCurve(CubeInfo *cube_info,Image *image,const int level,
+static void HilbertCurve(CubeInfo *cube_info,Image *image,const long level,
   const unsigned int direction)
 {
   if (level == 1)
