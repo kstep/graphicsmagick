@@ -59,7 +59,7 @@ int main( int /*argc*/, char ** argv)
     image.strokeColor( "black" );
     image.fillColor( "red" );
     image.lineWidth( 5 );
-    image.draw( DrawableEllipse( 100,100, 100,150, 0,360 ) );
+    image.draw( DrawableEllipse( 100,100, 50,75, 0,360 ) );
     image.fillColor( Color() ); // Clear out fill color
 
     //
@@ -68,9 +68,6 @@ int main( int /*argc*/, char ** argv)
     image.strokeColor( "black" );
     image.lineWidth( 5 );
     list<Drawable> drawlist;
-
-    // Add ellipse to list
-    drawlist.push_back( DrawableEllipse( 100,100, 100,150, 0,360 ) );
 
     // Add polygon to list
     poly_coord.clear();
@@ -94,19 +91,19 @@ int main( int /*argc*/, char ** argv)
     image.strokeColor( "red" );
     image.font( font );
     image.fontPointsize( 18 );
-    image.annotate( "Hello world!", "+150+10" );
+    image.annotate( "Hello world!", "+150+20" );
 
     image.fillColor( "blue" );
     image.strokeColor( "blue" );
     image.font( font );
     image.fontPointsize( 14 );
-    image.annotate( "Goodbye cruel world!", "+150+28" );
+    image.annotate( "Goodbye cruel world!", "+150+38" );
 
     image.fillColor( "black" );
     image.strokeColor( "black" );
     image.font( font );
     image.fontPointsize( 14 );
-    image.annotate( "I'm climbing the wall!", "+280+150",
+    image.annotate( "I'm climbing the wall!", "+280+120",
                     NorthWestGravity, 90.0);
     //image.display();
     //
