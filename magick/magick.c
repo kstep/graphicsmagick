@@ -576,35 +576,27 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   assert(entry != (MagickInfo *) NULL);
   assert(entry->signature == MagickSignature);
   UnregisterMagickInfo(entry->tag);
-  p=(MagickInfo *) NULL;
-  if (magick_list != (MagickInfo *) NULL)
-    for (p=magick_list; p->next != (MagickInfo *) NULL; p=p->next)
-    {
-      /*
-        Position new tag in alphabetical order.
-      */
-      if (LocaleCompare(p->tag,entry->tag) < 0)
-        continue;
-      p=p->previous;
-      break;
-    }
-  /*
-    Add tag info to the image format list.
-  */
   if (magick_list == (MagickInfo *) NULL)
     {
       entry->previous=(MagickInfo *) NULL;
       entry->next=(MagickInfo *) NULL;
       magick_list=entry;
+      return(entry);
     }
-  else
-    {
-      entry->previous=p;
-      entry->next=p->next;
-      if (p->next != (MagickInfo *) NULL)
-        p->next->previous=entry;
-      p->next=entry;
-    }
+  for (p=magick_list; p->next != (MagickInfo *) NULL; p=p->next)
+  {
+    /*
+      Position new tag in alphabetical order.
+    */
+    if (LocaleCompare(p->next->tag,entry->tag) < 0)
+      continue;
+    break;
+  }
+  entry->previous=p;
+  entry->next=p->next;
+  if (p->next != (MagickInfo *) NULL)
+    p->next->previous=entry;
+  p->next=entry;
   return(entry);
 }
 
