@@ -346,11 +346,16 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
   char
+    size[MaxTextExtent],
     *text,
     **textlist;
 
   Image
+    *box_image,
     *annotate_image;
+
+  ImageInfo
+    local_info;
 
   int
     x,
@@ -524,6 +529,24 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
       }
     }
     matte=image->matte;
+    if (annotate_info->image_info->box != (char *) NULL)
+      {
+        /*
+          Surround text with a bounding box.
+        */
+        local_info=(*annotate_info->image_info);
+        local_info.size=size;
+        (void) sprintf(local_info.filename,"xc:%s",local_info.box);
+        (void) sprintf(local_info.size,"%ux%u",annotate_image->columns,
+          annotate_image->rows);
+        box_image=ReadImage(&local_info);
+        if (box_image != (Image *) NULL)
+          {
+            CompositeImage(image,ReplaceCompositeOp,box_image,
+              annotate_info->bounds.x,annotate_info->bounds.y);
+            DestroyImage(box_image);
+          }
+      }
     CompositeImage(image,OverCompositeOp,annotate_image,annotate_info->bounds.x,
       annotate_info->bounds.y);
     image->matte=matte;

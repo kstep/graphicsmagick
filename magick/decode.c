@@ -5120,7 +5120,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
     *default_font = DefaultFont;
 
   XColor
-    box_color,
     pen_color;
 
   /*
@@ -5136,9 +5135,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
   if (local_info.font == (char *) NULL)
     local_info.font=default_font;
   text=local_info.filename;
-  (void) XQueryColorDatabase("white",&box_color);
-  if (local_info.box != (char *) NULL)
-    (void) XQueryColorDatabase(local_info.box,&box_color);
   (void) XQueryColorDatabase("black",&pen_color);
   if (local_info.pen != (char *) NULL)
     (void) XQueryColorDatabase(local_info.pen,&pen_color);
@@ -5330,12 +5326,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
         q->green=XDownScale(pen_color.green);
         q->blue=XDownScale(pen_color.blue);
         q->index=(int) (Opaque*Min(*p,4))/4;
-        if (q->index == Transparent)
-          {
-            q->red=XDownScale(box_color.red);
-            q->green=XDownScale(box_color.green);
-            q->blue=XDownScale(box_color.blue);
-          }
         q->length=0;
         x++;
         if (x == image->columns)
@@ -5491,7 +5481,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
           annotate_info.text=text;
           annotate_info.width=XTextWidth(font_info,text,Extent(text));
           annotate_info.height=font_info->ascent+font_info->descent;
-          FormatString(annotate_info.geometry,"%ux%u+0+0",
+          (void) sprintf(annotate_info.geometry,"%ux%u+0+0",
             annotate_info.width,annotate_info.height);
           cache_info=local_info;
           /*
@@ -5513,16 +5503,10 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
           q=image->pixels;
           for (i=0; i < image->packets; i++)
           {
-            q->index=Intensity(*q);
             q->red=XDownScale(pen_color.red);
             q->green=XDownScale(pen_color.green);
             q->blue=XDownScale(pen_color.blue);
-            if (q->index == Transparent)
-              {
-                q->red=XDownScale(box_color.red);
-                q->green=XDownScale(box_color.green);
-                q->blue=XDownScale(box_color.blue);
-              }
+            q->index=Intensity(*q);
             q++;
           }
           CondenseImage(image);
@@ -5534,7 +5518,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
   */
   local_info.density=(char *) NULL;
   local_info.page=page;
-  FormatString(local_info.page,"%ux%u+0+0!",
+  (void) sprintf(local_info.page,"%ux%u+0+0!",
     local_info.pointsize*Extent(text),local_info.pointsize << 1);
   TemporaryFilename(filename);
   file=fopen(filename,WriteBinaryType);
@@ -5588,24 +5572,17 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
     }
   }
   crop_info.width++;
-  FormatString(geometry,"%ux%u%+d%+d",crop_info.width,crop_info.height,
+  (void) sprintf(geometry,"%ux%u%+d%+d",crop_info.width,crop_info.height,
     crop_info.x,crop_info.y);
   TransformImage(&image,geometry,(char *) NULL);
-  image->class=DirectClass;
   image->matte=True;
   q=image->pixels;
   for (i=0; i < image->packets; i++)
   {
-    q->index=Intensity(*q);
     q->red=XDownScale(pen_color.red);
     q->green=XDownScale(pen_color.green);
     q->blue=XDownScale(pen_color.blue);
-    if (q->index == Transparent)
-      {
-        q->red=XDownScale(box_color.red);
-        q->green=XDownScale(box_color.green);
-        q->blue=XDownScale(box_color.blue);
-      }
+    q->index=Intensity(*q);
     q++;
   }
   CondenseImage(image);
