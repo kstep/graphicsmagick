@@ -129,23 +129,20 @@ struct PackageInfo
 
 struct ArgumentList
 {
-  union
-	{
-    long
-      int_reference;
+  long
+    int_reference;
 
-    double
-      double_reference;
+  double
+    double_reference;
 
-    char
-      *string_reference;
+  char
+    *string_reference;
 
-    Image
-      *image_reference;
+  Image
+    *image_reference;
 
-    SV
-      *array_reference;
-  };
+  SV
+    *array_reference;
 
   size_t
     length;
