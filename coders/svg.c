@@ -59,6 +59,8 @@
 /*
   Typedef declaractions.
 */
+#if defined(HasXML)
+#include <libxml/parser.h>
 typedef struct _ElementInfo
 {
   double
@@ -129,8 +131,16 @@ typedef struct _SVGInfo
   char
     *text,
     *vertices,
-    *url;
+    *url,
+    *entities;
+
+  xmlParserCtxtPtr
+    parser;
+
+  xmlDocPtr
+    document;
 } SVGInfo;
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -173,7 +183,6 @@ static unsigned int IsSVG(const unsigned char *magick,
 }
 
 #if defined(HasXML)
-#include <libxml/parser.h>
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -322,7 +331,7 @@ static int SVGIsStandalone(void *context)
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.SVGIsStandalone()\n");
-  return(0);
+  return(svg_info->document->standalone == 1);
 }
 
 static int SVGHasInternalSubset(void *context)
@@ -336,7 +345,7 @@ static int SVGHasInternalSubset(void *context)
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.SVGHasInternalSubset()\n");
-  return(0);
+  return(svg_info->document->intSubset != NULL);
 }
 
 static int SVGHasExternalSubset(void *context)
@@ -350,7 +359,7 @@ static int SVGHasExternalSubset(void *context)
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.SVGHasExternalSubset()\n");
-  return(0);
+  return(svg_info->document->extSubset != NULL);
 }
 
 static void SVGInternalSubset(void *context,const xmlChar *name,
@@ -372,6 +381,7 @@ static void SVGInternalSubset(void *context,const xmlChar *name,
         (void) fprintf(stdout,", %s",system_id);
       (void) fprintf(stdout,"\n");
     }
+  (void) xmlCreateIntSubset(svg_info->document,name,external_id,system_id);
 }
 
 static xmlParserInputPtr SVGResolveEntity(void *context,
@@ -379,6 +389,9 @@ static xmlParserInputPtr SVGResolveEntity(void *context,
 {
   SVGInfo
     *svg_info;
+
+  xmlParserInputPtr
+    stream;
 
   /*
     Special entity resolver, better left to the parser, it has more
@@ -399,7 +412,9 @@ static xmlParserInputPtr SVGResolveEntity(void *context,
       else
         (void) fprintf(stdout,", )\n");
     }
-  return(NULL);
+  stream=xmlLoadExternalEntity((const char *) system_id,(const char *)
+    public_id,svg_info->parser);
+  return(stream);
 }
 
 static xmlEntityPtr SVGGetEntity(void *context,const xmlChar *name)
@@ -413,7 +428,7 @@ static xmlEntityPtr SVGGetEntity(void *context,const xmlChar *name)
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.SVGGetEntity(%s)\n",name);
-  return(NULL);
+  return(xmlGetDocEntity(svg_info->document,name));
 }
 
 static xmlEntityPtr SVGGetParameterEntity(void *context,const xmlChar *name)
@@ -427,7 +442,7 @@ static xmlEntityPtr SVGGetParameterEntity(void *context,const xmlChar *name)
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.getParameterEntity(%s)\n",name);
-  return(NULL);
+  return(xmlGetParameterEntity(svg_info->document,name));
 }
 
 static void SVGEntityDeclaration(void *context,const xmlChar *name,int type,
@@ -444,6 +459,13 @@ static void SVGEntityDeclaration(void *context,const xmlChar *name,int type,
     (void) fprintf(stdout,"SAX.entityDecl(%s, %d, %s, %s, %s)\n",name,type,
       public_id ? (char *) public_id : "none",
       system_id ? (char *) system_id : "none",content);
+  if (svg_info->parser->inSubset == 1)
+    (void) xmlAddDocEntity(svg_info->document,name,type,public_id,system_id,
+      content);
+  else
+    if (svg_info->parser->inSubset == 2)
+      (void) xmlAddDtdEntity(svg_info->document,name,type,public_id,system_id,
+        content);
 }
 
 void SVGAttributeDeclaration(void *context,const xmlChar *element,
@@ -553,6 +575,7 @@ static void SVGStartDocument(void *context)
   for (i=0; i < 6; i++)
     svg_info->graphic_context[0].affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
   GetExceptionInfo(svg_info->exception);
+  svg_info->document=xmlNewDoc(svg_info->parser->version);
 }
 
 static void SVGEndDocument(void *context)
@@ -1193,19 +1216,6 @@ static void SVGProcessingInstructions(void *context,const xmlChar *target,
       (char *) data);
 }
 
-static void SVGCDataBlock(void *context,const xmlChar *value,int length)
-{
-  SVGInfo
-    *svg_info;
-
-  /*
-    Called when a pcdata block has been parsed.
-  */
-  svg_info=(SVGInfo *) context;
-  if (svg_info->verbose)
-    (void) fprintf(stderr, "SAX.pcdata(%.20s, %d)\n",(char *) value,length);
-}
-
 static void SVGComment(void *context,const xmlChar *value)
 {
   SVGInfo
@@ -1284,23 +1294,38 @@ static void SVGError(void *context,const char *format,...)
   va_end(operands);
 }
 
-static void SVGFatalError(void *context,const char *message,...)
+static void SVGCDataBlock(void *context,const xmlChar *value,int length)
 {
   SVGInfo
     *svg_info;
 
-  va_list
-    operands;
-
-  /**
-    Display and format a fatalError messages, gives file, line, position and
-    extra parameters.
+  /*
+    Called when a pcdata block has been parsed.
   */
   svg_info=(SVGInfo *) context;
-  va_start(operands,message);
-  (void) fprintf(stdout,"SAX.fatalError: ");
-  vfprintf(stdout,message,operands);
-  va_end(operands);
+  if (svg_info->verbose)
+    (void) fprintf(stderr, "SAX.pcdata(%.20s, %d)\n",(char *) value,length);
+}
+
+static void SVGExternalSubset(void *context,const xmlChar *name,
+  const xmlChar *external_id,const xmlChar *system_id)
+{
+  SVGInfo
+    *svg_info;
+
+  /*
+    Does this document has an enternal subset?
+  */
+  svg_info=(SVGInfo *) context;
+  if (svg_info->verbose)
+    {
+      (void) fprintf(stdout,"SAX.InternalSubset(%s",name);
+      if (external_id != NULL)
+        (void) fprintf(stdout,", %s",external_id);
+      if (system_id != NULL)
+        (void) fprintf(stdout,", %s",system_id);
+      (void) fprintf(stdout,"\n");
+    }
 }
 
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -1331,9 +1356,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SVGComment,
       SVGWarning,
       SVGError,
-      SVGFatalError,
+      SVGError,
       SVGGetParameterEntity,
-      SVGCDataBlock
+      SVGCDataBlock,
+      SVGExternalSubset
     };
 
   char
@@ -1361,9 +1387,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned int
     status;
-
-  xmlParserCtxtPtr
-    context;
 
   xmlSAXHandlerPtr
     SAXHandler;
@@ -1394,13 +1417,13 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   n=ReadBlob(image,4,buffer);
   if (n > 0)
     {
-      context=
-        xmlCreatePushParserCtxt(SAXHandler,&svg_info,buffer,n,image->filename);
+      svg_info.parser=xmlCreatePushParserCtxt(SAXHandler,&svg_info,buffer,n,
+        image->filename);
       while ((n=ReadBlob(image,3,buffer)) > 0)
-        xmlParseChunk(context,buffer,n,0);
+        xmlParseChunk(svg_info.parser,buffer,n,0);
     }
-  n=xmlParseChunk(context,buffer,0,1);
-  xmlFreeParserCtxt(context);
+  n=xmlParseChunk(svg_info.parser,buffer,0,1);
+  xmlFreeParserCtxt(svg_info.parser);
   xmlCleanupParser();
   (void) fclose(file);
   CloseBlob(image);
