@@ -141,7 +141,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'False',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-  'fd7ad72249c7fbd3dff4942d916edc5b5d7211827196a6d50c717212de95961c',
+  'e8c78e09b2bc842b57470332659b6ca12dd5a6d0224f3109020346f33ae6139f',
   '49dec854bc61bfff6785c0b4325c5ec63f9778ab2c25e270d84c8d68a6989760');
 
 #
@@ -151,7 +151,7 @@ testMontage( q//,
 testMontage( q/bordercolor=>'red'/, 
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'False',
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
-  'cea55f11c06a780b82e4125ee5f3105169f7b6bcbf24742e8a4a6c06f62ef327',
+  'd369869860ec335d43f4632d5dc6fa91077b9871a57df25cba03b044682108c5',
   'bc25ee3e594f2a3a1f633e220ff2916b213ef78bd812f33be75d230f9810cb56');
 
 #
