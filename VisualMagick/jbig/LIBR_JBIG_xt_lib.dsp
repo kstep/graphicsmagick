@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\lib\LIBR_JBIG.lib"
+# ADD LIB32 /nologo /out:"..\lib\LIBR_RL_JBIG_.lib"
 
 !ELSEIF  "$(CFG)" == "LIBR_JBIG - Win32 Debug"
 
@@ -74,7 +74,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\lib\LIBR_DB_JBIG.lib"
+# ADD LIB32 /nologo /out:"..\lib\LIBR_DB_JBIG_.lib"
 
 !ENDIF 
 

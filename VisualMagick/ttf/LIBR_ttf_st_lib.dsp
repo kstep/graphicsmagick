@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\lib\LIBR_ttf.lib"
+# ADD LIB32 /nologo /out:"..\lib\LIBR_RL_ttf_.lib"
 
 !ELSEIF  "$(CFG)" == "LIBR_ttf - Win32 Debug"
 
@@ -74,7 +74,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\lib\LIBR_DB_ttf.lib"
+# ADD LIB32 /nologo /out:"..\lib\LIBR_DB_ttf_.lib"
 
 !ENDIF 
 
