@@ -2924,11 +2924,12 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="-sampling_factor">-sampling_factor</a> <i>&lt;horizontal_factor&gt;x&lt;vertical_factor&gt; </i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sampling factors used by JPEG encoder.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sampling factors used by JPEG encoder and YUV decoder/encoder.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This option specifies the sampling factors to be used by the JPEG encoder for
 chroma downsampling.  If this option is omitted, the JPEG library
-will use its own default values.</font></td></tr></table>
+will use its own default values.  When reading or writing the YUV format, use
+<strong>-sampling_factor 2x1</strong>to specify the 4:2:2 downsampling method</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

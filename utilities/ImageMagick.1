@@ -2006,11 +2006,12 @@ the \fB-gravity\fP option has no effect.
 
 .TP
 .B "-sampling_factor \fI<horizontal_factor>x<vertical_factor> "\fP
-\fRsampling factors used by JPEG encoder.
+\fRsampling factors used by JPEG encoder and YUV decoder/encoder.
 
 This option specifies the sampling factors to be used by the JPEG encoder for
 chroma downsampling.  If this option is omitted, the JPEG library
-will use its own default values.
+will use its own default values.  When reading or writing the YUV format, use
+\fB-sampling_factor 2x1\fPto specify the 4:2:2 downsampling method
 .TP
 .B "-scale \fI<geometry>"\fP
 \fRscale the image.
