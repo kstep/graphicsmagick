@@ -470,7 +470,7 @@ MAGICK DELEGATES
 
     o ImageMagick requires the PNG library, version 1.0 or above, from
 
-          http://www.cdrom.com/pub/png/pngcode.html
+          http://www.libpng.org/pub/png/pngcode.html
 
       to read the PNG image format.
 
@@ -531,7 +531,7 @@ MAGICK DELEGATES
 
     o ImageMagick requires the ZLIB library from
 
-          http://www.cdrom.com/pub/infozip/zlib/index.html
+          http://ftp.freesoftware.com/pub/infozip/zlib/
 
       to read or write the PNG or Zip compressed MIFF images.
 

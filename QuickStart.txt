@@ -66,8 +66,6 @@ Win2K, NT, Win95, Win98:
 
     c:\ImageMagick\magic.mgk
 
-  respectively.
-
   If you have an X server, change to directory
   ImageMagick-5.2.0/ImageMagick-5.2.0/bin and double-click on
   display.exe.  Otherwise, select Start->Programs->Command Prompt.  In
