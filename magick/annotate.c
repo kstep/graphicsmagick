@@ -500,7 +500,7 @@ static unsigned short *ConvertTextToUnicode(const char *text,size_t *count)
           unicode[i]=(unsigned char) text[i];
         return(unicode);
       }
-    *q=c;
+    *q=(unsigned short) c;
     q++;
   }
   *count=q-unicode;

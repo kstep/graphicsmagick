@@ -803,31 +803,31 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         memset(&shift,0,sizeof(PixelPacket));
         memset(&quantum_bits,0,sizeof(PixelPacket));
         if (bmp_info.red_mask != 0)
-          while (((bmp_info.red_mask << shift.red) & 0x80000000L) == 0)
+          while (((bmp_info.red_mask << shift.red) & 0x80000000UL) == 0)
             shift.red++;
         if (bmp_info.green_mask != 0)
-          while (((bmp_info.green_mask << shift.green) & 0x80000000L) == 0)
+          while (((bmp_info.green_mask << shift.green) & 0x80000000UL) == 0)
             shift.green++;
         if (bmp_info.blue_mask != 0)
-          while (((bmp_info.blue_mask << shift.blue) & 0x80000000L) == 0)
+          while (((bmp_info.blue_mask << shift.blue) & 0x80000000UL) == 0)
             shift.blue++;
         if (bmp_info.alpha_mask != 0)
-          while (((bmp_info.alpha_mask << shift.opacity) & 0x80000000L) == 0)
+          while (((bmp_info.alpha_mask << shift.opacity) & 0x80000000UL) == 0)
             shift.opacity++;
         i=shift.red;
-        while (((bmp_info.red_mask << i) & 0x80000000L) != 0)
+        while (((bmp_info.red_mask << i) & 0x80000000UL) != 0)
           i++;
         quantum_bits.red=(Quantum) (i-shift.red);
         i=shift.green;
-        while (((bmp_info.green_mask << i) & 0x80000000L) != 0)
+        while (((bmp_info.green_mask << i) & 0x80000000UL) != 0)
           i++;
         quantum_bits.green=(Quantum) (i-shift.green);
         i=shift.blue;
-        while (((bmp_info.blue_mask << i) & 0x80000000L) != 0)
+        while (((bmp_info.blue_mask << i) & 0x80000000UL) != 0)
           i++;
         quantum_bits.blue=(Quantum) (i-shift.blue);
         i=shift.opacity;
-        while (((bmp_info.alpha_mask << i) & 0x80000000L) != 0)
+        while (((bmp_info.alpha_mask << i) & 0x80000000UL) != 0)
           i++;
         quantum_bits.opacity=(Quantum) (i-shift.opacity);
       }
@@ -1510,7 +1510,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobLSBLong(image,0x00ff0000L);  /* Red mask */
         (void) WriteBlobLSBLong(image,0x0000ff00L);  /* Green mask */
         (void) WriteBlobLSBLong(image,0x000000ffL);  /* Blue mask */
-        (void) WriteBlobLSBLong(image,0xff000000L);  /* Alpha mask */
+        (void) WriteBlobLSBLong(image,0xff000000UL);  /* Alpha mask */
         (void) WriteBlobLSBLong(image,0x00000001L);  /* CSType==Calib. RGB */
         (void) WriteBlobLSBLong(image,
            (long) image->chromaticity.red_primary.x*0x3ffffff);

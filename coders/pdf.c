@@ -1732,7 +1732,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"0000000000 65535 f \n");
   for (i=0; i < (long) object; i++)
   {
-    if (xref[i] > (off_t) 0xffffffffL)
+    if (xref[i] > (off_t) 0xffffffffUL)
       ThrowWriterException(FileOpenWarning,"Unable to open file",image);
     FormatString(buffer,"%010lu 00000 n \n",(unsigned long) xref[i]);
     (void) WriteBlobString(image,buffer);
