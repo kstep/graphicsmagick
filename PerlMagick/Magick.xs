@@ -1181,8 +1181,11 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"filen"))
         {
           if (info)
-            (void) strncpy(info->image_info->filename,SvPV(sval,na),
-              MaxTextExtent-1);
+            {
+              info->image_info->file=(FILE *) NULL;
+              (void) strncpy(info->image_info->filename,SvPV(sval,na),
+                MaxTextExtent-1);
+            }
           for ( ; image; image=image->next)
             (void) strncpy(image->filename,SvPV(sval,na),MaxTextExtent-1);
           return;
