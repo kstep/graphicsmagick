@@ -491,6 +491,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     x,
     y;
 
+  off_t
+	  offset;
+
   register const PixelPacket
     *p;
 
@@ -725,7 +728,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,"%%PageResources: font Times-Roman\n");
     if (LocaleCompare(image_info->magick,"PS2") != 0)
       (void) WriteBlobString(image,"userdict begin\n");
-    (void) WriteBlobString(image,"%%BeginData:\n");
+    offset=TellBlob(image);
+    FormatString(buffer,"%%%%BeginData:%13d BINARY Bytes\n",0);
+    (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"DisplayImage\n");
     /*
       Output image data.
@@ -1003,6 +1008,10 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     if (LocaleCompare(image_info->magick,"PS2") != 0)
       (void) WriteBlobString(image,"end\n");
     (void) WriteBlobString(image,"%%PageTrailer\n");
+    i=TellBlob(image)-offset;
+    (void) SeekBlob(image,offset,SEEK_SET);
+    FormatString(buffer,"%%%%BeginData:%13d BINARY Bytes\n",i);
+    (void) WriteBlobString(image,buffer);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
