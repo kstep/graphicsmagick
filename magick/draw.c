@@ -836,7 +836,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               value[x]=(*q++);
             value[x]='\0';
             CloneString(&graphic_context[n]->font,value);
-CloneString(&graphic_context[n]->font,"@Generic.ttf");
             break;
           }
         status=True;
