@@ -17,6 +17,10 @@
 extern "C" {
 #endif
 
+#if defined(HAVE_INTTYPES_H)
+# include <inttypes.h>
+#endif
+
 #if !defined(_MAGICK_CONFIG_H)
 # define _MAGICK_CONFIG_H
 # if !defined(vms) && !defined(macintosh)

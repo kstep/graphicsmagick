@@ -39,7 +39,7 @@ typedef unsigned long QuantumPrecision;
 
 typedef unsigned short Quantum;
 typedef unsigned long QuantumPrecision;
-#elif ((QuantumDepth == 32) && defined(HAVE_INTTYPES_H))
+#elif (QuantumDepth == 32)
 #define MaxRGB  4294967295UL
 #define ScaleCharToQuantum(value)  ((Quantum) (16843009UL*(value)))
 #define ScaleLongToQuantum(value)  ((Quantum) ((value)))
@@ -51,7 +51,15 @@ typedef unsigned long QuantumPrecision;
 #define ScaleToQuantum(value)  ((unsigned long) (16843009UL*(value)))
 
 typedef unsigned int Quantum;
+#if defined(HAVE_INTTYPES_H)
 typedef uint64_t QuantumPrecision;
+#else
+#if defined(WIN32)
+typedef __uint64 QuantumPrecision;
+#else
+# error "Specified value of QuantumDepth is not supported"
+#endif
+#endif
 #else
 # error "Specified value of QuantumDepth is not supported"
 #endif

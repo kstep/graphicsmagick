@@ -60,9 +60,6 @@ extern "C" {
 #include <signal.h>
 #include <assert.h>
 
-#if defined(HAVE_INTTYPES_H)
-# include <inttypes.h>
-#endif
 #if !defined(vms) && !defined(macintosh)
 # include <sys/types.h>
 # include <sys/stat.h>
