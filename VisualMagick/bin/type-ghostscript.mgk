@@ -396,6 +396,7 @@
     metrics="@ghostscript_font_dir@s050000l.afm"
     glyphs="@ghostscript_font_dir@s050000l.pfb"
     version="0.1"
-    encoding="AdobeCustom" />
+    encoding="AdobeCustom"
+    />
 </typemap>
 
