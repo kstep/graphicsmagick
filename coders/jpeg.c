@@ -612,11 +612,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   /*
     Initialize image structure.
   */
-  jpeg_pixels=(JSAMPLE *) NULL;
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) EmitMessage;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
-  jpeg_info.client_data=(void *) &error_manager;
+  jpeg_pixels=(JSAMPLE *) NULL;
   error_manager.image=image;
   if (setjmp(error_manager.error_recovery))
     {
@@ -631,6 +630,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       DestroyImage(image);
       return((Image *) NULL);
     }
+  jpeg_info.client_data=(void *) &error_manager;
   jpeg_create_decompress(&jpeg_info);
   JPEGSourceManager(&jpeg_info,image);
   jpeg_set_marker_processor(&jpeg_info,JPEG_COM,ReadComment);
