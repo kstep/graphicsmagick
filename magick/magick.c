@@ -24,7 +24,7 @@
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
 %  copy of this software and associated documentation files ("ImageMagick"),  %
-%  to deal in ImageMagick without restriction, including without limitation   %
+%  to deal in ImageMagick without circumscribeion, including without limitation   %
 %  the rights to use, copy, modify, merge, publish, distribute, sublicense,   %
 %  and/or sell copies of ImageMagick, and to permit persons to whom the       %
 %  ImageMagick is furnished to do so, subject to the following conditions:    %
@@ -218,7 +218,7 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %  The format of the GetMagickConfigurePath method is:
 %
 %      char *GetMagickConfigurePath(const char *filename,
-%        const unsigned int restrict,ExceptionInfo *exception)
+%        const unsigned int circumscribe,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -228,14 +228,14 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %    o filename: A character string representing the desired configuration
 %      file.
 %
-%    o restrict: restrict search to hard-coded paths only.
+%    o circumscribe: circumscribe search to hard-coded paths only.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
 MagickExport char *GetMagickConfigurePath(const char *filename,
-  const unsigned int restrict,ExceptionInfo *exception)
+  const unsigned int circumscribe,ExceptionInfo *exception)
 {
   char
     *path,
@@ -245,7 +245,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   assert(exception != (ExceptionInfo *) NULL);
   path=AllocateString(filename);
   search_path=AllocateString(path);
-  if (!restrict)
+  if (!circumscribe)
     {
       /*
         Search current directory.
