@@ -394,8 +394,9 @@ printf("%s : %s\n",keyword,values);
             if ((Latin1Compare(primitive,"Ellipse") == 0) ||
                 (Latin1Compare(primitive,"fillEllipse") == 0))
               {
-                FormatString(points,"%d,%d %d,%d 0,%d",ellipse.cx,ellipse.cy,
-                  ellipse.major,ellipse.minor,ellipse.angle);
+                FormatString(points,"%d,%d %d,%d 0,360",ellipse.cx,ellipse.cy,
+                  ellipse.angle == 0 ? ellipse.major: ellipse.minor,
+                  ellipse.angle == 0 ? ellipse.minor: ellipse.major);
                 (void) strcat(command,points);
               }
             if ((Latin1Compare(primitive,"Polygon") == 0) ||
