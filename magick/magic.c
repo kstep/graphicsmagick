@@ -105,8 +105,8 @@ MagickExport void DestroyMagicInfo(void)
       LiberateMemory((void **) &p->name);
     if (p->target != (char *) NULL)
       LiberateMemory((void **) &p->target);
-    if (p->magick != (unsigned char *) NULL)
-      LiberateMemory((void **) &p->magick);
+    if (p->magic != (unsigned char *) NULL)
+      LiberateMemory((void **) &p->magic);
     magic_list=p;
     p=p->next;
     LiberateMemory((void **) &magic_list);
@@ -135,7 +135,7 @@ MagickExport void DestroyMagicInfo(void)
 %
 %  The format of the GetMagicInfo method is:
 %
-%      MagicInfo *GetMagicInfo(const unsigned char *magick,
+%      MagicInfo *GetMagicInfo(const unsigned char *magic,
 %        const unsigned int length,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -146,7 +146,7 @@ MagickExport void DestroyMagicInfo(void)
 %
 %    o image: The address of a structure of type Image.
 %
-%    o magick: A binary string generally representing the first few characters
+%    o magic: A binary string generally representing the first few characters
 %      of the image file or blob.
 %
 %    o length: The length of the binary signature.
@@ -155,7 +155,7 @@ MagickExport void DestroyMagicInfo(void)
 %
 %
 */
-MagickExport MagicInfo *GetMagicInfo(const unsigned char *magick,
+MagickExport MagicInfo *GetMagicInfo(const unsigned char *magic,
   const unsigned int length,ExceptionInfo *exception)
 {
   register MagicInfo
@@ -177,13 +177,13 @@ MagickExport MagicInfo *GetMagicInfo(const unsigned char *magick,
       atexit(DestroyMagicInfo);
     }
   LiberateSemaphore(&magic_semaphore);
-  if (LocaleCompare(magick,"*") == 0)
+  if (LocaleCompare(magic,"*") == 0)
     return(magic_list);
   /*
     Search for requested magic.
   */
   for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
-    if (memcmp(magick+p->offset,p->magick,p->length) == 0)
+    if (memcmp(magic+p->offset,p->magic,p->length) == 0)
       break;
   return(p);
 }
@@ -398,8 +398,8 @@ static unsigned int ReadConfigurationFile(const char *filename)
               *q;
 
             magic_list->target=AllocateString(value);
-            magic_list->magick=AllocateString(value);
-            q=magic_list->magick;
+            magic_list->magic=AllocateString(value);
+            q=magic_list->magic;
             for (p=magic_list->target; *p != '\0'; )
             {
               if (*p == '\\')

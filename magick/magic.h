@@ -18,7 +18,7 @@ typedef struct _MagicInfo
     *target;
 
   unsigned char
-    *magick;
+    *magic;
 
   unsigned int
     length,
