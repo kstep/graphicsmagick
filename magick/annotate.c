@@ -1017,7 +1017,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   */
   status=FT_Init_FreeType(&library);
   if (status)
-    ThrowBinaryException(DelegateError,"Unable to open freetype library",
+    ThrowBinaryException(TypeError,"UnableToInitializeFreetypeLibrary",
       draw_info->font);
   if (*draw_info->font != '@')
     status=FT_New_Face(library,draw_info->font,0,&face);
@@ -1026,7 +1026,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (status != 0)
     {
       (void) FT_Done_FreeType(library);
-      ThrowBinaryException(DelegateError,"Unable to read font",draw_info->font)
+      ThrowBinaryException(DelegateError,"UnableToReadFont",draw_info->font)
     }
   if (face->num_charmaps != 0)
     status=FT_Set_Charmap(face,face->charmaps[0]);
@@ -1063,8 +1063,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
         encoding_type=ft_encoding_wansung;
       status=FT_Select_Charmap(face,encoding_type);
       if (status != 0)
-        ThrowBinaryException(DelegateError,"Unrecognized font encoding",
-          encoding);
+        ThrowBinaryException(TypeError,"UnrecognizedFontEncoding",encoding);
     }
   /*
     Set text size.
@@ -1133,7 +1132,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
       (void) FT_Done_Face(face);
       (void) FT_Done_FreeType(library);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "MemoryAllocationFailed")
+        draw_info->font)
     }
   /*
     Compute bounding box.
@@ -1304,7 +1303,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
 static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   const char *encoding,const PointInfo *offset,TypeMetric *metrics)
 {
-  ThrowBinaryException(MissingDelegateError,"FreeType library is not available",
+  ThrowBinaryException(MissingDelegateError,"FreeTypeLibraryIsNotAvailable",
     draw_info->font)
 }
 #endif
@@ -1419,7 +1418,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   TemporaryFilename(filename);
   file=fopen(filename,"wb");
   if (file == (FILE *) NULL)
-    ThrowBinaryException(FileOpenError,"Unable to open file",filename);
+    ThrowBinaryException(FileOpenError,"UnableToOpenFile",filename);
   (void) fprintf(file,"%%!PS-Adobe-3.0\n");
   (void) fprintf(file,"/ReencodeType\n");
   (void) fprintf(file,"{\n");
@@ -1653,7 +1652,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       */
       display=XOpenDisplay(draw_info->server_name);
       if (display == (Display *) NULL)
-        ThrowBinaryException(XServerError,"Unable to open X server",
+        ThrowBinaryException(XServerError,"UnableToOpenXServer",
           draw_info->server_name);
       /*
         Get user defaults from X resource database.
@@ -1676,7 +1675,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       */
       visual_info=XBestVisualInfo(display,map_info,&resource_info);
       if (visual_info == (XVisualInfo *) NULL)
-        ThrowBinaryException(XServerError,"Unable to get visual",
+        ThrowBinaryException(XServerError,"UnableToGetVisual",
           draw_info->server_name);
       map_info->colormap=(Colormap) NULL;
       pixel.pixels=(unsigned long *) NULL;
@@ -1693,15 +1692,14 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       */
       font_info=XBestFont(display,&resource_info,False);
       if (font_info == (XFontStruct *) NULL)
-        ThrowBinaryException(XServerError,"Unable to load font",
-          draw_info->font);
+        ThrowBinaryException(XServerError,"UnableToLoadFont",draw_info->font);
       if ((map_info == (XStandardColormap *) NULL) ||
           (visual_info == (XVisualInfo *) NULL) ||
           (font_info == (XFontStruct *) NULL))
         {
           XFreeResources(display,visual_info,map_info,&pixel,font_info,
             &resource_info,(XWindowInfo *) NULL);
-          ThrowBinaryException(XServerError,"Unable to get X server font",
+          ThrowBinaryException(XServerError,"UnableToLoadFont",
             draw_info->server_name)
         }
       cache_info=(*draw_info);
@@ -1720,8 +1718,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       (void) CloneString(&resource_info.font,draw_info->font);
       font_info=XBestFont(display,&resource_info,False);
       if (font_info == (XFontStruct *) NULL)
-        ThrowBinaryException(ResourceLimitError,"Unable to load font",
-          draw_info->font);
+        ThrowBinaryException(XServerError,"UnableToLoadFont",draw_info->font);
     }
   LogMagickEvent(AnnotateEvent,"Font %.1024s; pointsize %g",
     draw_info->font != (char *) NULL ? draw_info->font : "none",
@@ -1777,7 +1774,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
 static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,TypeMetric *metrics)
 {
-  ThrowBinaryException(MissingDelegateError,
-    "X11 library is not available",draw_info->font);
+  ThrowBinaryException(MissingDelegateError,"XWindowLibraryIsNotAvailable",
+    draw_info->font);
 }
 #endif

@@ -2,9 +2,6 @@
 <locale name="en_US">
   <Blob>
     <Error>
-      <Message name="UnableToCreateBlob">
-        Unable to create blob
-      </Message>
       <Message name="UnableToOpenFile">
         Unable to open file
       </Message>
@@ -111,6 +108,12 @@
       <Message name="ImageSequenceIsRequired">
         Image sequence is required
       </Message>
+      <Message name="InputImagesAlreadySpecified">
+        Input images already specified
+      </Message>
+      <Message name="NoImagesWereLoaded">
+        No images were loaded
+      </Message>
       <Message name="UnableToCompareImages">
         Unable to compare images
       </Message>
@@ -119,6 +122,18 @@
       </Message>
     </Error>
   </Image>
+  <Missing>
+    <Delegate>
+      <Error>
+        <Message name="FreeTypeLibraryIsNotAvailable">
+          FreeType library is not available
+        </Message>
+        <Message name="XWindowLibraryIsNotAvailable">
+          X Window library is not available
+        </Message>
+      </Error>
+    </Delegate>
+  </Missing>
   <Option>
     <Error>
       <Message name="GeometryDimensionsAreZero">
@@ -129,6 +144,144 @@
       </Message>
       <Message name="ImagesAreNotTheSameSize">
         Images are not the same size
+      </Message>
+      <Message name="InvalidColorspace">
+        Invalid image colorspace
+      </Message>
+      <Message name="InvalidComposeOperator">
+        Invalid compose operator
+      </Message>
+      <Message name="InvalidCompression">
+        Invalid image compression
+      </Message>
+      <Message name="InvalidDisposeMethod">
+        Invalid dispose method
+      </Message>
+      <Message name="InvalidEndianType">
+        Invalid endian type
+      </Message>
+      <Message name="InvalidImageFilter">
+        Invalid image filter
+      </Message>
+      <Message name="InvalidImageInterlace">
+        Invalid image interlace
+      </Message>
+      <Message name="InvalidImageMode">
+        Invalid image mode
+      </Message>
+      <Message name="InvalidImageType">
+        Invalid image type
+      </Message>
+      <Message name="InvalidResourceType">
+        Invalid resource type
+      </Message>
+      <Message name="InvalidVirtualPixelMethod">
+        Invalid virtual pixel method
+      </Message>
+      <Message name="MissingAffineMatrix">
+        Missing affine matrix
+      </Message>
+      <Message name="MissingAnImageFilename">
+        Missing an image filename
+      </Message>
+      <Message name="MissingBackgroundColor">
+        Missing background color
+      </Message>
+      <Message name="MissingComment">
+        Missing comment
+      </Message>
+      <Message name="MissingColors">
+        Missing colors
+      </Message>
+      <Message name="MissingDisposeMethod">
+        Missing dispose method
+      </Message>
+      <Message name="MissingDrawingPrimitive">
+        Missing drawing primitive
+      </Message>
+      <Message name="MissingEnodingType">
+        Missing encoding type
+      </Message>
+      <Message name="MissingEventMask">
+        Missing event mask
+      </Message>
+      <Message name="MissingFilename">
+        Missing filename
+      </Message>
+      <Message name="MissingFillColor">
+        Missing fill color
+      </Message>
+      <Message name="MissingFontName">
+        Missing font name
+      </Message>
+      <Message name="MissingFormatSpecifier">
+        Missing format specifier
+      </Message>
+      <Message name="MissingGeometry">
+        Missing geometry
+      </Message>
+      <Message name="MissingImageDepth">
+        Missing image depth
+      </Message>
+      <Message name="MissingImageGamma">
+        Missing image gamma
+      </Message>
+      <Message name="MissingImageLabel">
+        Missing image label
+      </Message>
+      <Message name="MissingImageRotation">
+        Missing image rotation
+      </Message>
+      <Message name="MissingImageScene">
+        Missing image scene
+      </Message>
+      <Message name="MissingPageGeometry">
+        Missing page geometry
+      </Message>
+      <Message name="MissingPassword">
+        Missing password
+      </Message>
+      <Message name="MissingPoint">
+        Missing point
+      </Message>
+      <Message name="MissingPaintRadius">
+        Missing paint radius
+      </Message>
+      <Message name="MissingPointsize">
+        Missing pointsize
+      </Message>
+      <Message name="MissingResourceLimit">
+        Missing resource limit
+      </Message>
+      <Message name="MissingResourceType">
+        Missing resource type
+      </Message>
+      <Message name="MissingServerName">
+        Missing server name
+      </Message>
+      <Message name="MissingThreshold">
+        Missing threshold
+      </Message>
+      <Message name="MissingTitle">
+        Missing title
+      </Message>
+      <Message name="MissingTransparentColor">
+        Missing transparent color
+      </Message>
+      <Message name="MissingTreeDepth">
+        Missing tree depth
+      </Message>
+      <Message name="MissingType">
+        Missing type
+      </Message>
+      <Message name="MissingViewTransform">
+        Missing view transform
+      </Message>
+      <Message name="MissingVirtualPixelMethod">
+        Missing virtual pixel method
+      </Message>
+      <Message name="MissingWidth">
+        Missing width
       </Message>
       <Message name="NoProfileNameWasGiven">
         No profile name was given
@@ -159,6 +312,9 @@
       </Message>
       <Message name="UnableToThresholdImage">
         Unable to threshold image
+      </Message>
+      <Message name="UnrecognizedOption">
+        Unrecognized option
       </Message>
     </Error>
   </Option>
@@ -193,6 +349,31 @@
       <Message name="FontSubstitutionRequired">
         Font substitution required
       </Message>
+      <Message name="UnableToInitializeFreetypeLibrary">
+        Unable to initialize freetype library
+      </Message>
+      <Message name="UnableToReadFont">
+        Unable to read font
+      </Message>
+      <Message name="UnrecognizedFontEncoding">
+        Unrecognized font encoding
+      </Message>
     </Error>
   </Type>
+  <XServer>
+    <Error>
+      <Message name="NoWindowWithSpecifiedIDExists">
+        No window with specified ID exists
+      </Message>
+      <Message name="UnableToGetVisual">
+        Unable to get visual
+      </Message>
+      <Message name="UnableToLoadFont">
+        Unable to load font
+      </Message>
+      <Message name="UnableToOpenXServer">
+        Unable to open X server
+      </Message>
+    </Error>
+  </XServer>
 </locale>

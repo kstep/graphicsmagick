@@ -172,10 +172,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if ((status == False) || (number_files == 0))
         {
           if (number_files == 0)
-            MagickError(OptionError,"no images were found",filenames);
+            MagickError(ImageError,"NoImagesWereLoaded",filenames);
           else
-            MagickError(ResourceLimitError,"MemoryAllocationFailed",
-              filenames);
+            MagickError(ResourceLimitError,"MemoryAllocationFailed",filenames);
           return((Image *) NULL);
         }
       clone_info=CloneImageInfo(resource_info->image_info);
@@ -217,7 +216,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if (image == (Image *) NULL)
         {
           XSetCursorState(display,windows,False);
-          MagickError(OptionError,"No images were loaded",filenames);
+          MagickError(OptionError,"NoImagesWereLoaded",filenames);
           return((Image *) NULL);
         }
       while (image->previous != (Image *) NULL)
@@ -523,7 +522,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     }
   if (window_info.id == (Window) NULL)
     {
-      MagickError(OptionError,"No window with specified id exists",
+      MagickError(XServerError,"NoWindowWithSpecifiedIDExists",
         resources.window_id);
       return;
     }

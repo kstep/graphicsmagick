@@ -794,7 +794,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
   if (cube_info == (CubeInfo *) NULL)
     {
       ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
-        "unable to determine the number of image colors");
+        "Unable to determine the number of image colors");
       return(0);
     }
   for (y=0; y < (long) image->rows; y++)
@@ -822,7 +822,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
               {
                 ThrowException(exception,ResourceLimitError,
                   "MemoryAllocationFailed",
-                  "unable to determine the number of image colors");
+                  "Unable to determine the number of image colors");
                 return(0);
               }
           }

@@ -563,8 +563,8 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
   if ((offset < 0) || (offset != (size_t) offset))
     {
       (void) close(file);
-      ThrowException(exception,BlobError,"UnableToCreateBlob",
-        "MemoryAllocationFailed");
+      ThrowException(exception,BlobError,"MemoryAllocationFailed",
+        "Unable to create blob");
       return((void *) NULL);
     }
   *length=(size_t) offset;
@@ -572,8 +572,8 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
   if (blob == (unsigned char *) NULL)
     {
       (void) close(file);
-      ThrowException(exception,BlobError,"UnableToCreateBlob",
-        "MemoryAllocationFailed");
+      ThrowException(exception,BlobError,"MemoryAllocationFailed",
+        "Unable to create blob");
       return((void *) NULL);
     }
   map=MapBlob(file,ReadMode,0,*length);
@@ -1032,7 +1032,8 @@ MagickExport void *GetTypeBlob(const char *filename,char *path,
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
           filename);
         if (!IsAccessible(path))
-          ThrowException(exception,ConfigureError,"UnableToAccessFontFile",path);
+          ThrowException(exception,ConfigureError,"UnableToAccessFontFile",
+            path);
         return(FileToBlob(path,length,exception));
       }
   }
@@ -1154,8 +1155,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       clone_info->blob=(void *) AcquireMemory(65535L);
       if (clone_info->blob == (void *) NULL)
         {
-          ThrowException(exception,BlobError,"Unable to create blob",
-            "MemoryAllocationFailed");
+          ThrowException(exception,BlobError,"MemoryAllocationFailed",
+            "Unable to create blob");
           DestroyImageInfo(clone_info);
           return((void *) NULL);
         }
