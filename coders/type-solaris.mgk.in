@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<typemap>
+  <type
+    name="Courier"
+    fullname="Courier Regular"
+    familyname="Courier"
+    weight="Regular"
+    style="Regular"
+    format="type1"
+    metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Courier.afm"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/cour.pfa"
+    version="0.1" />
+  <type
+    name="Courier-Bold"
+    fullname="Courier Bold"
+    familyname="Courier"
+    weight="Bold"
+    style="Regular"
+    format="type1"
+    metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Courier-Bold.afm"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/courb.pfa"
+    version="0.1" />
+  <type
+    name="Courier-Oblique"
+    fullname="Courier Regular Oblique"
+    familyname="Courier"
+    weight="Regular"
+    style="Oblique"
+    format="type1"
+    metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Courier-Oblique.afm"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/couri.pfa"
+    version="0.1" />
+  <type
+    name="Courier-BoldOblique"
+    fullname="Courier Bold Oblique"
+    familyname="Courier"
+    weight="Bold"
+    style="Oblique"
+    format="type1"
+    metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Courier-BoldOblique.afm"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/courbi.pfa"
+    version="0.1" />
+  <type
+    name="Helvetica"
+    fullname="Helvetica Regular"
+    familyname="Helvetica"
+    weight="Regular"
+    style="Regular"
+    format="type1"
+    metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Helvetica.afm"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/Helvetica.pfa"
+    version="0.1" />
+  <type
+    name="Helvetica-Bold"
+    fullname="Helvetica Bold"
+    familyname="Helvetica"
+    weight="Bold"
+    style="Regular"
+    format="type1"
+    metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Helvetica-Bold.afm"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/Helvetica-Bold.pfa"
+    version="0.1" />
+  <type
+    name="Helvetica-Oblique"
+    fullname="Helvetica Regular Italic"
+    familyname="Helvetica"
+    weight="Regular"
+    style="Italic"
+    format="type1"
+    metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Helvetica-Oblique.afm"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/Helvetica-Oblique.pfa"
+    version="0.1" />
+  <type
+    name="Helvetica-BoldOblique"
+    fullname="Helvetica Bold Italic"
+    familyname="Helvetica"
+    weight="Bold"
+    style="Italic"
+    format="type1"
+    metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Helvetica-BoldOblique.afm"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/Helvetica-BoldOblique.pfa"
+    version="0.1" />
+  <type
+    name="Times-Roman"
+    fullname="Times Regular"
+    familyname="Times"
+    weight="Regular"
+    style="Regular"
+    format="type1"
+    metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Times-Roman.afm"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/Times-Roman.pfa"
+    version="0.1" />
+  <type
+    name="Times-Bold"
+    fullname="Times Medium"
+    familyname="Times"
+    weight="Bold"
+    style="Regular"
+    format="type1"
+    metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Times-Bold.afm"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/Times-Bold.pfa"
+    version="0.1" />
+  <type
+    name="Times-Italic"
+    fullname="Times Regular Italic"
+    familyname="Times"
+    weight="Regular"
+    style="Italic"
+    format="type1"
+    metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Times-Italic.afm"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/Times-Italic.pfa"
+    version="0.1" />
+  <type
+    name="Times-BoldItalic"
+    fullname="Times Medium Italic"
+    familyname="Times"
+    weight="Bold"
+    style="Italic"
+    format="type1"
+    metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Times-BoldItalic.afm"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/Times-BoldItalic.pfa"
+    version="0.1" />
+  <type
+    name="Symbol"
+    fullname="Symbol"
+    familyname="Symbol"
+    weight="Regular"
+    style="Regular"
+    format="type1"
+    metrics="/usr/openwin/lib/X11/fonts/Type1/Symbol.afm"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/Symbol.pfa"
+    version="0.1"
+    encoding="AdobeCustom" />
+  <type
+    name="Utopia-Regular"
+    fullname="Utopia Regular"
+    familyname="Utopia"
+    weight="Regular"
+    style="Regular"
+    format="type1"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/UTRG____.pfa"
+    version="0.1" >
+  <type
+    name="Utopia-Italic"
+    fullname="Utopia Italic"
+    familyname="Utopia"
+    weight="Regular"
+    style="Italic"
+    format="type1"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/UTI_____.pfa"
+    version="0.1" >
+  <type
+    name="Utopia-Bold"
+    fullname="Utopia Bold"
+    familyname="Utopia"
+    weight="Bold"
+    style="Regular"
+    format="type1"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/UTB_____.pfa"
+    version="0.1" >
+  <type
+    name="Utopia-BoldItalic"
+    fullname="Utopia Bold Italic"
+    familyname="Utopia"
+    weight="Bold"
+    style="Italic"
+    format="type1"
+    glyphs="/usr/openwin/lib/X11/fonts/Type1/UTBI____.pfa"
+    version="0.1" >
+</typemap>
+
