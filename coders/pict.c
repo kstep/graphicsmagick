@@ -1340,6 +1340,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 #define MaxCount  128
 #define PictCropRegionOp  0x01
 #define PictEndOfPictureOp  0xff
+#define PictJPEGOp  0x8200
 #define PictInfoOp  0x0C00
 #define PictInfoSize  512
 #define PictPixmapOp  0x9A
@@ -1488,6 +1489,38 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   WriteBlobMSBShort(image,crop_rectangle.left);
   WriteBlobMSBShort(image,crop_rectangle.right);
   WriteBlobMSBShort(image,crop_rectangle.bottom);
+#if defined(HasJPEG)
+  if (image->compression == JPEGCompression)
+    {
+      size_t
+        length;
+
+      void
+        *blob;
+
+      TemporaryFilename(image->filename);
+      (void) strcpy(image->magick,"JPEG");
+      blob=ImageToBlob(image_info,image,&length,&image->exception);
+      if (blob == (void *) NULL)
+        return(False);
+      WriteBlobMSBShort(image,PictJPEGOp);
+      WriteBlobMSBLong(image,length+154);
+      WriteBlobMSBShort(image,frame_rectangle.top);
+      WriteBlobMSBShort(image,frame_rectangle.left);
+      WriteBlobMSBShort(image,frame_rectangle.right);
+      WriteBlobMSBShort(image,frame_rectangle.bottom);
+      for (i=0; i < 146; i++)
+        (void) WriteBlobByte(image,'\0');
+      WriteBlob(image,length,blob);
+      WriteBlobMSBShort(image,PictEndOfPictureOp);
+      LiberateMemory((void **) &blob);
+      LiberateMemory((void **) &scanline);
+      LiberateMemory((void **) &packed_scanline);
+      LiberateMemory((void **) &buffer);
+      CloseBlob(image);
+      return(True);
+    }
+#endif
   /*
     Write picture opcode, row bytes, and picture bounding box, and version.
   */
