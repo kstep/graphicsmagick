@@ -419,6 +419,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   primitive=AllocateString("none");
   text=AllocateString("none");
   token=AllocateString("none");
+  translate.x=0.0;
+  translate.y=0.0;
   url=AllocateString("logo:");
   value=AllocateString("none");
   vertices=AllocateString("");
