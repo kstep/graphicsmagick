@@ -11351,7 +11351,9 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
     window_info;
 
   unsigned int
-    status,
+    status;
+
+  unsigned long
     height,
     width;
 
@@ -11521,7 +11523,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
         MagickError(ResourceLimitError,"Unable to display on window",
           "Memory allocation failed");
       size_hints->flags=(long) NULL;
-      FormatString(default_geometry,"%ux%u",width,height);
+      FormatString(default_geometry,"%lux%lu",width,height);
       flags=XWMGeometry(display,visual_info->screen,resources.image_geometry,
         default_geometry,window_info.border_width,size_hints,&window_info.x,
         &window_info.y,(int *) &width,(int *) &height,&gravity);

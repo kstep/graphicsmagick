@@ -472,12 +472,12 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     i;
 
   unsigned int
-    height,
-    status,
-    width;
+    status;
 
   unsigned long
-    number_scenes;
+    height,
+    number_scenes,
+    width;
 
   Window
     root_window;
@@ -737,7 +737,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
         MagickError(ResourceLimitError,"Unable to display on window",
           "Memory allocation failed");
       size_hints->flags=(long) NULL;
-      FormatString(default_geometry,"%ux%u",width,height);
+      FormatString(default_geometry,"%lux%lu",width,height);
       flags=XWMGeometry(display,visual_info->screen,resources.image_geometry,
         default_geometry,window_info.border_width,size_hints,&window_info.x,
         &window_info.y,(int *) &width,(int *) &height,&gravity);
