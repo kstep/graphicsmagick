@@ -61,6 +61,7 @@
 */
 #if defined(HasXML)
 #include <libxml/parser.h>
+#include <libxml/xml-error.h>
 typedef struct _ElementInfo
 {
   double
@@ -475,6 +476,13 @@ void SVGAttributeDeclaration(void *context,const xmlChar *element,
   SVGInfo
     *svg_info;
 
+  xmlChar
+    *fullname,
+    *prefix;
+
+  xmlParserCtxtPtr
+    parser;
+
   /*
     An attribute definition has been parsed.
   */
@@ -482,6 +490,22 @@ void SVGAttributeDeclaration(void *context,const xmlChar *element,
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.attributeDecl(%s, %s, %d, %d, %s, ...)\n",
       element,name,type,value,default_value);
+  fullname=NULL;
+  prefix=NULL;
+  parser=svg_info->parser;
+  fullname=(xmlChar *) xmlSplitQName(parser,name,&prefix);
+  if (parser->inSubset == 1)
+    (void) xmlAddAttributeDecl(&parser->vctxt,svg_info->document->intSubset,
+      element,fullname,prefix,type,value,default_value,tree);
+  else
+    if (parser->inSubset == 2)
+      (void) xmlAddAttributeDecl(&parser->vctxt,svg_info->document->extSubset,
+        element,fullname,prefix,type,value,default_value,tree);
+  if (prefix != NULL)
+    xmlFree(prefix);
+  if (fullname != NULL)
+    xmlFree(fullname);
+
 }
 
 static void SVGElementDeclaration(void *context,const xmlChar *name,int type,
@@ -490,12 +514,23 @@ static void SVGElementDeclaration(void *context,const xmlChar *name,int type,
   SVGInfo
     *svg_info;
 
+  xmlParserCtxtPtr
+    parser;
+
   /*
     An element definition has been parsed.
   */
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.elementDecl(%s, %d, ...)\n",name,type);
+  parser=svg_info->parser;
+  if (parser->inSubset == 1)
+    (void) xmlAddElementDecl(&parser->vctxt,svg_info->document->intSubset,
+      name,type,content);
+  else
+    if (parser->inSubset == 2)
+      (void) xmlAddElementDecl(&parser->vctxt,svg_info->document->extSubset,
+        name,type,content);
 }
 
 static void SVGNotationDeclaration(void *context,const xmlChar *name,
@@ -503,6 +538,9 @@ static void SVGNotationDeclaration(void *context,const xmlChar *name,
 {
   SVGInfo
     *svg_info;
+
+  xmlParserCtxtPtr
+    parser;
 
   /*
     What to do when a notation declaration has been parsed.
@@ -512,6 +550,14 @@ static void SVGNotationDeclaration(void *context,const xmlChar *name,
     (void) fprintf(stdout,"SAX.notationDecl(%s, %s, %s)\n",(char *) name,
       public_id ? (char *) public_id : "none",
       system_id ? (char *) system_id : "none");
+  parser=svg_info->parser;
+  if (parser->inSubset == 1)
+    (void) xmlAddNotationDecl(&parser->vctxt,svg_info->document->intSubset,
+      name,public_id,system_id);
+  else
+    if (parser->inSubset == 2)
+      (void) xmlAddNotationDecl(&parser->vctxt,svg_info->document->intSubset,
+        name,public_id,system_id);
 }
 
 static void SVGUnparsedEntityDeclaration(void *context,const xmlChar *name,
@@ -528,6 +574,9 @@ static void SVGUnparsedEntityDeclaration(void *context,const xmlChar *name,
     (void) fprintf(stdout,"SAX.unparsedEntityDecl(%s, %s, %s, %s)\n",
       (char *) name,public_id ? (char *) public_id : "none",
       system_id ? (char *) system_id : "none",(char *) notation);
+  xmlAddDocEntity(svg_info->document,name,XML_EXTERNAL_GENERAL_UNPARSED_ENTITY,
+    public_id,system_id,notation);
+
 }
 
 static void SVGSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
@@ -989,7 +1038,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
               svg_info->width=svg_info->page.width;
             }
         }
-      return;
     }
 }
 
@@ -1179,12 +1227,20 @@ static void SVGReference(void *context,const xmlChar *name)
   SVGInfo
     *svg_info;
 
+  xmlParserCtxtPtr
+    parser;
+
   /*
     Called when an entity reference is detected.
   */
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.reference(%s)\n",name);
+  parser=svg_info->parser;
+  if (*name == '#')
+    xmlAddChild(parser->node,xmlNewCharRef(svg_info->document,name));
+  else
+    xmlAddChild(parser->node,xmlNewReference(svg_info->document,name));
 }
 
 static void SVGIgnorableWhitespace(void *context,const xmlChar *c,int length)
@@ -1245,7 +1301,7 @@ static void SVGWarning(void *context,const char *format,...)
     Display and format a warning messages, gives file, line, position and
     extra parameters.
   */
-  va_start(operands,message);
+  va_start(operands,format);
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     {
@@ -1313,6 +1369,15 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
   SVGInfo
     *svg_info;
 
+  xmlParserCtxt
+    wenus;
+
+  xmlParserCtxtPtr
+    parser;
+
+  xmlParserInputPtr
+    input;
+
   /*
     Does this document has an enternal subset?
   */
@@ -1326,6 +1391,48 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
         (void) fprintf(stdout,", %s",system_id);
       (void) fprintf(stdout,"\n");
     }
+  parser=svg_info->parser;
+  if (((external_id == NULL) && (system_id == NULL)) ||
+      (!parser->validate || !parser->wellFormed || !svg_info->document))
+    return;
+  input=SVGResolveEntity(context,external_id,system_id);
+  if (input == NULL)
+    return;
+  xmlNewDtd(svg_info->document,name,external_id,system_id);
+  wenus=(*parser);
+  parser->inputTab=(xmlParserInputPtr *) xmlMalloc(5*sizeof(xmlParserInputPtr));
+  if (parser->inputTab == NULL)
+    {
+      parser->errNo=XML_ERR_NO_MEMORY;
+      parser->input=wenus.input;
+      parser->inputNr=wenus.inputNr;
+      parser->inputMax=wenus.inputMax;
+      parser->inputTab=wenus.inputTab;
+      parser->charset=wenus.charset;
+      return;
+  }
+  parser->inputNr=0;
+  parser->inputMax=5;
+  parser->input=NULL;
+  xmlPushInput(parser,input);
+  xmlSwitchEncoding(parser,xmlDetectCharEncoding(parser->input->cur,4));
+  if (input->filename == NULL)
+    input->filename=(char *) xmlStrdup(system_id);
+  input->line=1;
+  input->col=1;
+  input->base=parser->input->cur;
+  input->cur=parser->input->cur;
+  input->free=NULL;
+  xmlParseExternalSubset(parser,external_id,system_id);
+  while (parser->inputNr > 1)
+    xmlPopInput(parser);
+  xmlFreeInputStream(parser->input);
+  xmlFree(parser->inputTab);
+  parser->input=wenus.input;
+  parser->inputNr=wenus.inputNr;
+  parser->inputMax=wenus.inputMax;
+  parser->inputTab=wenus.inputTab;
+  parser->charset=wenus.charset;
 }
 
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
