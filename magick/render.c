@@ -4485,7 +4485,8 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
     y;
 
   int
-    attribute;
+    attribute,
+    last_attribute;
 
   PointInfo
     end,
@@ -4506,6 +4507,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
     number_coordinates,
     z_count;
 
+  attribute=0;
   point.x=0;
   point.y=0;
   number_coordinates=0;
@@ -4518,6 +4520,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
       p++;
     if (*p == '\0')
       break;
+    last_attribute=attribute;
     attribute=(*p++);
     switch (attribute)
     {
@@ -4725,6 +4728,11 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
             end.y=attribute == 'S' ? y : point.y+y;
             points[i]=end;
           }
+          if (strchr("CcSs",last_attribute) == (char *) NULL)
+            {
+              points[0]=points[2];
+              points[1]=points[3];
+            }
           for (i=0; i <= 4; i++)
             (q+i)->point=points[i];
           TraceBezier(q,4);
@@ -4758,6 +4766,11 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
             end.y=attribute == 'T' ? y : point.y+y;
             points[i]=end;
           }
+          if (strchr("QqTt",last_attribute) == (char *) NULL)
+            {
+              points[0]=points[2];
+              points[1]=points[3];
+            }
           for (i=0; i < 3; i++)
             (q+i)->point=points[i];
           TraceBezier(q,3);
