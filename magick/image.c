@@ -5079,6 +5079,7 @@ MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
 +     R G B T r a n s f o r m I m a g e                                       %
 %                                                                             %
 %                                                                             %
