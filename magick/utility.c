@@ -133,7 +133,7 @@ Export void AppendImageFormat(const char *format,char *filename)
 %
 %  A description of each parameter follows:
 %
-%    o name: Specifies a pointer to an character array that contains the
+%    o name: Specifies a pointer to a character array that contains the
 %      name.
 %
 %
@@ -245,7 +245,7 @@ void CloneString(char **destination,const char *source)
 %      unsigned short array representing the Unicode translation of the
 %      ASCII string.
 %
-%    o text: Specifies a pointer to an character array that contains the
+%    o text: Specifies a pointer to a character array that contains the
 %      text to convert.
 %
 %    o count: The number of characters that were translated from ASCII to
@@ -254,7 +254,7 @@ void CloneString(char **destination,const char *source)
 %
 */
 
-static int InterpretUnicode(char *code,int n)
+static int InterpretUnicode(const char *code,const int n)
 {
   int
     total,
@@ -293,12 +293,12 @@ static int InterpretUnicode(char *code,int n)
   return(total);
 }
 
-unsigned short *ConvertTextToUnicode(char *text,unsigned int *count)
+unsigned short *ConvertTextToUnicode(const char *text,unsigned int *count)
 {
   int
     value;
 
-  register char
+  register const char
     *p;
 
   register unsigned short
@@ -357,7 +357,7 @@ unsigned short *ConvertTextToUnicode(char *text,unsigned int *count)
 %
 %  A description of each parameter follows:
 %
-%    o filename: Specifies a pointer to an character array that contains the
+%    o filename: Specifies a pointer to a character array that contains the
 %      filename.
 %
 %
@@ -472,58 +472,6 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
   */
   assert(argc != (int *) NULL);
   assert(argv != (char ***) NULL);
-  if ((*argc == 2) && (*((*argv)[1]) == '@'))
-    {
-      char
-        *command;
-
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Read text from a file.
-      */
-      file=(FILE *) fopen((*argv)[1]+1,"r");
-      if (file == (FILE *) NULL)
-        {
-          MagickWarning(FileOpenWarning,"Unable to read command file",
-            (*argv)[1]+1);
-          return(False);
-        }
-      count=MaxTextExtent;
-      command=(char *) AllocateMemory(count);
-      for (q=command; command != (char *) NULL; q++)
-      {
-        c=fgetc(file);
-        if (c == EOF)
-          break;
-        if ((q-command+1) >= count)
-          {
-            *q='\0';
-            count<<=1;
-            command=(char *) ReallocateMemory((char *) command,count);
-            if (command == (char *) NULL)
-              break;
-            q=command+Extent(command);
-          }
-        *q=(unsigned char) c;
-      }
-      (void) fclose(file);
-      if (command == (char *) NULL)
-        {
-          MagickWarning(ResourceLimitWarning,"Unable to read command file",
-            "Memory allocation failed");
-          return(False);
-        }
-      *q='\0';
-      Strip(command);
-      *argv=StringToArgv(command,argc);
-      (*argv)[0]=SetClientName((char *) NULL);
-      FreeMemory((char *) command);
-    }
   vector=(char **) AllocateMemory((*argc+1)*sizeof(char *));
   for (i=1; i < *argc; i++)
     if (Extent((*argv)[i]) > (MaxTextExtent/2-1))
@@ -2347,14 +2295,16 @@ Export char **StringToArgv(const char *text,int *argc)
 %
 %
 */
-Export char **StringToList(char *text)
+Export char **StringToList(const char *text)
 {
   char
     **textlist;
 
   register char
-    *p,
     *q;
+
+  register const char
+    *p;
 
   register int
     i;
@@ -2386,7 +2336,7 @@ Export char **StringToList(char *text)
       p=text;
       for (i=0; i < (int) lines; i++)
       {
-        for (q=p; *q != '\0'; q++)
+        for (q=(char *) p; *q != '\0'; q++)
           if ((*q == '\r') || (*q == '\n'))
             break;
         textlist[i]=(char *) AllocateMemory((q-p+1)*sizeof(char));

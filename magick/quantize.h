@@ -49,10 +49,11 @@ extern Export unsigned int
   QuantizationError(Image *),
   QuantizeImage(QuantizeInfo *,Image *),
   QuantizeImages(QuantizeInfo *,Image *),
-  QueryColorName(ColorPacket *,char *);
+  QueryColorName(const ColorPacket *,char *);
 
 extern Export void
-  GetQuantizeInfo(QuantizeInfo *);
+  GetQuantizeInfo(QuantizeInfo *),
+  NumberColors(Image *,FILE *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

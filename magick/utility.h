@@ -79,7 +79,7 @@ extern Export char
   *PostscriptGeometry(const char *),
   *SetClientName(const char *),
   **StringToArgv(const char *,int *),
-  **StringToList(char *),
+  **StringToList(const char *),
   *TranslateText(const ImageInfo *,Image *,char *);
 
 extern Export int
@@ -100,7 +100,7 @@ extern Export unsigned long
   MSBFirstReadLong(FILE *);
 
 extern Export unsigned short
-  *ConvertTextToUnicode(char *,unsigned int *),
+  *ConvertTextToUnicode(const char *,unsigned int *),
   LSBFirstReadShort(FILE *),
   MSBFirstReadShort(FILE *);
 

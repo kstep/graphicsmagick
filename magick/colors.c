@@ -464,7 +464,7 @@ Export unsigned int IsPseudoClass(Image *image)
 %
 %
 */
-Export unsigned int QueryColorName(ColorPacket *color,char *name)
+Export unsigned int QueryColorName(const ColorPacket *color,char *name)
 {
   double
     min_distance;

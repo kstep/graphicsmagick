@@ -324,14 +324,14 @@ useful for comparing two very similar images.
 with <EM>composite image</EM>.  Here the matte information is ignored.
 <P>
 </DL>
-<dd>The image compositor requires an matte, or alpha
+<dd>The image compositor requires a matte, or alpha
 channel in the image for some operations.  This
 extra channel usually defines a mask which
 represents a sort of a cookie-cutter for the image.
 This is the case when matte is 255 (full coverage)
 for pixels inside the shape, zero outside, and
 between zero and 255 on the boundary.  If <EM>image</EM>
-does not have an matte channel, it is initialized
+does not have a matte channel, it is initialized
 with 0 for any pixel matching in color to pixel
 location (0,0), otherwise 255 (to work properly
 <B>borderwidth</B> must be 0).
@@ -796,7 +796,7 @@ the composite.
 <P>
 <DT><B>-treedepth</B> <EM>value</EM>
 <DD>Normally, this integer value is zero or one.  A zero or
-one tells <B>montage</B> to choose a optimal tree depth for
+one tells <B>montage</B> to choose an optimal tree depth for
 the color reduction algorithm.
 <P>
 <DD>An optimal depth generally allows the best

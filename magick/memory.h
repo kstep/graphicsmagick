@@ -6,6 +6,6 @@
   Memory declarations.
 */
 extern Export void
-  *AllocateMemory(size_t),
+  *AllocateMemory(const size_t),
   FreeMemory(void *),
-  *ReallocateMemory(void *,size_t);
+  *ReallocateMemory(void *,const size_t);

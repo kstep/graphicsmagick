@@ -1132,6 +1132,7 @@ int main(int argc,char **argv)
   }
   if (image_info.verbose)
     DescribeImage(montage_image,stderr,False);
+  DestroyImageInfo(&image_info);
   DestroyImage(montage_image);
   DestroyDelegateInfo();
   Exit(0);

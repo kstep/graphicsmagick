@@ -3195,12 +3195,13 @@ Export char *XGetResourceClass(XrmDatabase database,const char *client_name,
 %
 %
 */
-Export XrmDatabase XGetResourceDatabase(Display *display,char *client_name)
+Export XrmDatabase XGetResourceDatabase(Display *display,
+  const char *client_name)
 {
   char
     filename[MaxTextExtent];
 
-  register char
+  register const char
     *p;
 
   unsigned char
@@ -8181,6 +8182,7 @@ Export unsigned int XQueryColorDatabase(const char *target,XColor *color)
     blue,
     count,
     green,
+    index,
     red,
     status;
 
@@ -8200,6 +8202,7 @@ Export unsigned int XQueryColorDatabase(const char *target,XColor *color)
   color->red=0;
   color->green=0;
   color->blue=0;
+  color->pixel=0;
   color->flags=DoRed | DoGreen | DoBlue;
   if ((target == (char *) NULL) || (*target == '\0'))
     target=BackgroundColor;
@@ -8216,42 +8219,78 @@ Export unsigned int XQueryColorDatabase(const char *target,XColor *color)
       unsigned long
         n;
 
-      /*
-        Parse RGB specification.
-      */
-      target++;
-      n=Extent(target);
-      if ((n != 3) && (n != 6) && (n != 9) && (n != 12))
-        return(False);
-      n/=3;
       green=0;
       blue=0;
-      do
-      {
-        red=green;
-        green=blue;
-        blue=0;
-        for (i=(int) n-1; i >= 0; i--)
+      index=0;
+      target++;
+      n=Extent(target);
+      if ((n == 3) || (n == 6) || (n == 9) || (n == 12))
         {
-          c=(*target++);
-          blue<<=4;
-          if ((c >= '0') && (c <= '9'))
-            blue|=c-'0';
-          else
-            if ((c >= 'A') && (c <= 'F'))
-              blue|=c-('A'-10);
-            else
-              if ((c >= 'a') && (c <= 'f'))
-                blue|=c-('a'-10);
+          /*
+            Parse RGB specification.
+          */
+          n/=3;
+          do
+          {
+            red=green;
+            green=blue;
+            blue=0;
+            for (i=(int) n-1; i >= 0; i--)
+            {
+              c=(*target++);
+              blue<<=4;
+              if ((c >= '0') && (c <= '9'))
+                blue|=c-'0';
               else
-                return(False);
-         }
-      } while (*target != '\0');
+                if ((c >= 'A') && (c <= 'F'))
+                  blue|=c-('A'-10);
+                else
+                  if ((c >= 'a') && (c <= 'f'))
+                    blue|=c-('a'-10);
+                  else
+                    return(False);
+            }
+          } while (*target != '\0');
+        }
+      else
+        if ((n != 4) && (n != 8) && (n != 16))
+          return(False);
+        else
+          {
+            /*
+              Parse RGBA specification.
+            */
+            color->flags|=DoOpacity;
+            n/=4;
+            do
+            {
+              red=green;
+              green=blue;
+              blue=index;
+              index=0;
+              for (i=(int) n-1; i >= 0; i--)
+              {
+                c=(*target++);
+                index<<=4;
+                if ((c >= '0') && (c <= '9'))
+                  index|=c-'0';
+                else
+                  if ((c >= 'A') && (c <= 'F'))
+                    index|=c-('A'-10);
+                  else
+                    if ((c >= 'a') && (c <= 'f'))
+                      index|=c-('a'-10);
+                    else
+                      return(False);
+              }
+            } while (*target != '\0');
+          }
       n<<=2;
       n=16-n;
       color->red=red << n;
       color->green=green << n;
       color->blue=blue << n;
+      color->pixel=index << n;
       return(True);
     }
   if (database == (FILE *) NULL)

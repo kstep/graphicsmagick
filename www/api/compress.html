@@ -53,7 +53,7 @@ compress - Image Compression/Decompression Coders
 <STRONG>ASCII85Encode</STRONG>(code,file)
 
 <P>
-status=<STRONG>BMPDecodeImage</STRONG>(file,pixels,compression,number_columns,number_rows)
+status=<STRONG>BMPDecodeImage</STRONG>(file,compression,number_columns,number_rows,pixels)
 
 <P>
 status=<STRONG>GIFDecodeImage</STRONG>(image)
@@ -86,7 +86,7 @@ status=<STRONG>PICTEncodeImage</STRONG>(image,scanline,pixels)
 status=<STRONG>PackbitsDecodeImage</STRONG>(image,channel)
 
 <P>
-status=<STRONG>PackbitsEncodeImage</STRONG>(file,pixels,number_pixels)
+status=<STRONG>PackbitsEncodeImage</STRONG>(file,number_pixels,pixels)
 
 <P>
 status=<STRONG>RunlengthDecodeImage</STRONG>(image)
@@ -101,7 +101,7 @@ count=<STRONG>RunlengthEncodeImage</STRONG>(image)
 <STRONG>SetRunlengthPackets</STRONG>(image,packets)
 
 <P>
-status=<STRONG>ZLIBEncodeImage</STRONG>(file,pixels,number_pixels)
+status=<STRONG>ZLIBEncodeImage</STRONG>(file,number_pixels,quality,pixels)
 
 <P>
 <HR>
@@ -144,7 +144,7 @@ runlength-encoded pixel packets.
 The format of the BMPDecodeImage routine is:
 
 <P>
-<PRE>        status=BMPDecodeImage(file,pixels,compression,number_columns,number_rows)
+<PRE>        status=BMPDecodeImage(file,compression,number_columns,number_rows,pixels)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -159,11 +159,6 @@ without error, otherwise False.
 <P>
 The address of a structure of type FILE. BMP encoded pixels are read from
 this file.
-
-<DT><STRONG>pixels:</STRONG><DD>
-<P>
-The address of a byte (8 bits) array of pixel data created by the decoding
-process.
 
 <DT><STRONG>compression:</STRONG><DD>
 <P>
@@ -180,6 +175,11 @@ source image.
 An integer value that is the number of rows or heigth in pixels of your
 source image.
 
+<DT><STRONG>pixels:</STRONG><DD>
+<P>
+The address of a byte (8 bits) array of pixel data created by the decoding
+process.
+
 </DL></DL>
 <P>
 <HR>
@@ -191,10 +191,10 @@ Method BMPEncodeImage compresses pixels using a runlength encoded format.
 The format of the BMPEncodeImage routine is:
 
 <P>
-<PRE>    status=BMPEncodeImage(pixels,compressed_pixels,number_columns,
+<PRE>    status=BMPEncodeImage(pixels,number_columns,number_rows,
 </PRE>
 <P>
-<PRE>      number_rows)
+<PRE>      compressed_pixels)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -210,10 +210,6 @@ compress_pixels array.
 The address of a byte (8 bits) array of pixel data created by the
 compression process.
 
-<DT><STRONG>compressed_pixels:</STRONG><DD>
-<P>
-The address of a byte (8 bits) array of compressed pixel data.
-
 <DT><STRONG>number_columns:</STRONG><DD>
 <P>
 An integer value that is the number of columns or width in pixels of your
@@ -223,6 +219,10 @@ source image.
 <P>
 An integer value that is the number of rows or heigth in pixels of your
 source image.
+
+<DT><STRONG>compressed_pixels:</STRONG><DD>
+<P>
+The address of a byte (8 bits) array of compressed pixel data.
 
 </DL></DL>
 <P>
@@ -446,7 +446,7 @@ ensure portability, the binary Packbits bytes are encoded as ASCII Base-85.
 The format of the PackbitsEncodeImage routine is:
 
 <P>
-<PRE>        status=PackbitsEncodeImage(file,pixels,number_pixels)
+<PRE>        status=PackbitsEncodeImage(file,number_pixels,pixels)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -462,14 +462,14 @@ without error, otherwise False.
 The address of a structure of type FILE. LZW encoded pixels are written to
 this file.
 
+<DT><STRONG>number_pixels:</STRONG><DD>
+<P>
+An unsigned integer that specifies the number of pixels to compress.
+
 <DT><STRONG>pixels:</STRONG><DD>
 <P>
 The address of an unsigned array of characters containing the pixels to
 compress.
-
-<DT><STRONG>number_pixels:</STRONG><DD>
-<P>
-An unsigned integer that specifies the number of pixels to compress.
 
 </DL></DL>
 <P>
@@ -695,10 +695,10 @@ runlength-encoded pixel packets.
 The format of the SUNDecodeImage routine is:
 
 <P>
-<PRE>    status=SUNDecodeImage(compressed_pixels,pixels,number_columns,
+<PRE>    status=SUNDecodeImage(compressed_pixels,number_columns,number_rows,
 </PRE>
 <P>
-<PRE>      number_rows)
+<PRE>      pixels)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -742,7 +742,7 @@ binary ZLIB bytes are encoded as ASCII base-85.
 The format of the ZLIBEncodeImage routine is:
 
 <P>
-<PRE>        status=ZLIBEncodeImage(file,pixels,number_pixels)
+<PRE>        status=ZLIBEncodeImage(file,number_pixels,quality,pixels)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -758,11 +758,6 @@ without error, otherwise False.
 The address of a structure of type FILE. ZLIB encoded pixels are written to
 this file.
 
-<DT><STRONG>pixels:</STRONG><DD>
-<P>
-The address of an unsigned array of characters containing the pixels to
-compress.
-
 <DT><STRONG>number_pixels:</STRONG><DD>
 <P>
 An unsigned integer that specifies the number of pixels to compress.
@@ -770,6 +765,11 @@ An unsigned integer that specifies the number of pixels to compress.
 <DT><STRONG>quality:</STRONG><DD>
 <P>
 the compression level (0-100).
+
+<DT><STRONG>pixels:</STRONG><DD>
+<P>
+The address of an unsigned array of characters containing the pixels to
+compress.
 
 </DL></DL>
 </BODY>

@@ -480,7 +480,7 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             }
           bmp_header.file_size-=bmp_header.image_size;
           bmp_header.image_size=
-            BMPEncodeImage(bmp_pixels,bmp_data,image->columns,image->rows);
+            BMPEncodeImage(bmp_pixels,image->columns,image->rows,bmp_data);
           bmp_header.file_size+=bmp_header.image_size;
           FreeMemory((char *) bmp_pixels);
           bmp_pixels=bmp_data;
@@ -5750,13 +5750,13 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 ProgressMonitor(SaveImageText,i,image->packets);
           }
           if (compression == ZipCompression)
-            status=ZLIBEncodeImage(image->file,pixels,number_packets,
-              image_info->quality);
+            status=ZLIBEncodeImage(image->file,number_packets,
+              image_info->quality,pixels);
           else
             if (compression == LZWCompression)
-              status=LZWEncodeImage(image->file,pixels,number_packets);
+              status=LZWEncodeImage(image->file,number_packets,pixels);
             else
-              status=PackbitsEncodeImage(image->file,pixels,number_packets);
+              status=PackbitsEncodeImage(image->file,number_packets,pixels);
           FreeMemory((char *) pixels);
           if (!status)
             {
@@ -5900,13 +5900,13 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                     ProgressMonitor(SaveImageText,i,image->packets);
               }
               if (compression == ZipCompression)
-                status=ZLIBEncodeImage(image->file,pixels,number_packets,
-                  image_info->quality);
+                status=ZLIBEncodeImage(image->file,number_packets,
+                  image_info->quality,pixels);
               else
                 if (compression == LZWCompression)
-                  status=LZWEncodeImage(image->file,pixels,number_packets);
+                  status=LZWEncodeImage(image->file,number_packets,pixels);
                 else
-                  status=PackbitsEncodeImage(image->file,pixels,number_packets);
+                  status=PackbitsEncodeImage(image->file,number_packets,pixels);
               FreeMemory((char *) pixels);
               if (!status)
                 {
@@ -6045,13 +6045,13 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             p++;
           }
           if (compression == ZipCompression)
-            status=ZLIBEncodeImage(image->file,pixels,number_packets,
-              image_info->quality);
+            status=ZLIBEncodeImage(image->file,number_packets,
+              image_info->quality,pixels);
           else
             if (compression == LZWCompression)
-              status=LZWEncodeImage(image->file,pixels,number_packets);
+              status=LZWEncodeImage(image->file,number_packets,pixels);
             else
-              status=PackbitsEncodeImage(image->file,pixels,number_packets);
+              status=PackbitsEncodeImage(image->file,number_packets,pixels);
           FreeMemory((char *) pixels);
           if (!status)
             {
@@ -6159,13 +6159,13 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 p++;
               }
               if (compression == ZipCompression)
-                status=ZLIBEncodeImage(image->file,pixels,number_packets,
-                  image_info->quality);
+                status=ZLIBEncodeImage(image->file,number_packets,
+                  image_info->quality,pixels);
               else
                 if (compression == LZWCompression)
-                  status=LZWEncodeImage(image->file,pixels,number_packets);
+                  status=LZWEncodeImage(image->file,number_packets,pixels);
                 else
-                  status=PackbitsEncodeImage(image->file,pixels,number_packets);
+                  status=PackbitsEncodeImage(image->file,number_packets,pixels);
               FreeMemory((char *) pixels);
               if (!status)
                 {
@@ -6251,13 +6251,13 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 p++;
               }
               if (compression == ZipCompression)
-                status=ZLIBEncodeImage(image->file,pixels,number_packets,
-                  image_info->quality);
+                status=ZLIBEncodeImage(image->file,number_packets,
+                  image_info->quality,pixels);
               else
                 if (compression == LZWCompression)
-                  status=LZWEncodeImage(image->file,pixels,number_packets);
+                  status=LZWEncodeImage(image->file,number_packets,pixels);
                 else
-                  status=PackbitsEncodeImage(image->file,pixels,number_packets);
+                  status=PackbitsEncodeImage(image->file,number_packets,pixels);
               FreeMemory((char *) pixels);
               if (!status)
                 {
@@ -9596,13 +9596,13 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 ProgressMonitor(SaveImageText,i,image->packets);
           }
           if (compression == ZipCompression)
-            status=ZLIBEncodeImage(image->file,pixels,number_packets,
-              image_info->quality);
+            status=ZLIBEncodeImage(image->file,number_packets,
+              image_info->quality,pixels);
           else
             if (compression == LZWCompression)
-              status=LZWEncodeImage(image->file,pixels,number_packets);
+              status=LZWEncodeImage(image->file,number_packets,pixels);
             else
-              status=PackbitsEncodeImage(image->file,pixels,number_packets);
+              status=PackbitsEncodeImage(image->file,number_packets,pixels);
           if (!status)
             {
               CloseImage(image);
@@ -9755,13 +9755,13 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                     ProgressMonitor(SaveImageText,i,image->packets);
               }
               if (compression == ZipCompression)
-                status=ZLIBEncodeImage(image->file,pixels,number_packets,
-                  image_info->quality);
+                status=ZLIBEncodeImage(image->file,number_packets,
+                  image_info->quality,pixels);
               else
                 if (compression == LZWCompression)
-                  status=LZWEncodeImage(image->file,pixels,number_packets);
+                  status=LZWEncodeImage(image->file,number_packets,pixels);
                 else
-                  status=PackbitsEncodeImage(image->file,pixels,number_packets);
+                  status=PackbitsEncodeImage(image->file,number_packets,pixels);
               FreeMemory((char *) pixels);
               if (!status)
                 {

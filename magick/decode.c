@@ -81,7 +81,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadAVSImage reads a AVS X image file and returns it.  It
+%  Method ReadAVSImage reads an AVS X image file and returns it.  It
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
@@ -92,7 +92,7 @@
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadAVSImage returns a pointer to the image after
-%      reading. A null image is returned if there is a a memory shortage or if
+%      reading. A null image is returned if there is a memory shortage or if
 %      the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -260,7 +260,7 @@ Image *ReadAVSImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadBMPImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -520,9 +520,9 @@ Image *ReadBMPImage(const ImageInfo *image_info)
         /*
           Convert run-length encoded raster pixels.
         */
-        (void) BMPDecodeImage(image->file,bmp_pixels,
-          (unsigned int) bmp_header.compression,(unsigned int) bmp_header.width,
-          (unsigned int) bmp_header.height);
+        (void) BMPDecodeImage(image->file,(unsigned int) bmp_header.compression,
+          (unsigned int) bmp_header.width,(unsigned int) bmp_header.height,
+          bmp_pixels);
       }
     /*
       Initialize image structure.
@@ -751,7 +751,7 @@ Image *ReadBMPImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadCMYKImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -1129,7 +1129,7 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadDCMImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -1742,7 +1742,7 @@ Image *ReadDCMImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadDPSImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -2184,7 +2184,7 @@ Image *ReadDPSImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadFAXImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -2266,7 +2266,7 @@ Image *ReadFAXImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image: Method ReadFITSImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or if
+%      reading.  A null image is returned if there is a memory shortage or if
 %      the image cannot be read.
 %
 %    o filename: Specifies the name of the image to read.
@@ -2623,7 +2623,7 @@ Image *ReadFITSImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadFPXImage returns a pointer to the image after
-%      reading. A null image is returned if there is a a memory shortage or if
+%      reading. A null image is returned if there is a memory shortage or if
 %      the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -3058,7 +3058,7 @@ Image *ReadFPXImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadGIFImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      an error occurs.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -3417,7 +3417,7 @@ Image *ReadGIFImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadGRADATIONImage returns a pointer to the image after
-%      creating it. A null image is returned if there is a a memory shortage
+%      creating it. A null image is returned if there is a memory shortage
 %      or if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -3535,7 +3535,7 @@ Image *ReadGRADATIONImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadGRAYImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -3745,7 +3745,7 @@ Image *ReadGRAYImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadHDFImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -4019,7 +4019,7 @@ Image *ReadHDFImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadHISTOGRAMImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -4059,7 +4059,7 @@ Image *ReadHISTOGRAMImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadICCImage returns a pointer to the image after
-%      reading. A null image is returned if there is a a memory shortage or if
+%      reading. A null image is returned if there is a memory shortage or if
 %      the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -4144,7 +4144,7 @@ Image *ReadICCImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadICONImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -4523,6 +4523,125 @@ Image *ReadICONImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e a d I m a g e s                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadImages reads a list of image names from a file and then returns 
+%  the images as a linked list.
+%
+%  The format of the ReadImage routine is:
+%
+%      image=ReadImages(image_info)
+%
+%  A description of each parameter follows:
+%
+%    o image: Method ReadImage returns a pointer to the image after
+%      reading.  A null image is returned if there is a memory shortage or
+%      if the image cannot be read.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%
+*/
+static Image *ReadImages(ImageInfo *image_info)
+{
+  char
+    *command,
+    **images;
+
+  FILE
+    *file;
+
+  Image
+    *image,
+    *next_image;
+
+  int
+    c,
+    length,
+    number_images;
+
+  register char
+    *p;
+
+  register int
+    i;
+
+  /*
+    Read image list from a file.
+  */
+  file=(FILE *) fopen(image_info->filename+1,"r");
+  if (file == (FILE *) NULL)
+    {
+      MagickWarning(FileOpenWarning,"Unable to read image list",
+        image_info->filename);
+      return(False);
+    }
+  length=MaxTextExtent;
+  command=(char *) AllocateMemory(length);
+  for (p=command; command != (char *) NULL; p++)
+  {
+    c=fgetc(file);
+    if (c == EOF)
+      break;
+    if ((p-command+1) >= length)
+      {
+        *p='\0';
+        length<<=1;
+        command=(char *) ReallocateMemory((char *) command,length);
+        if (command == (char *) NULL)
+          break;
+        p=command+Extent(command);
+      }
+    *p=(unsigned char) c;
+  }
+  (void) fclose(file);
+  if (command == (char *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to read image list",
+        "Memory allocation failed");
+      return(False);
+    }
+  *p='\0';
+  Strip(command);
+  images=StringToArgv(command,&number_images);
+  FreeMemory((char *) command);
+  /*
+    Read the images into a linked list.
+  */
+  image=(Image *) NULL;
+  for (i=1; i < number_images; i++)
+  {
+    (void) strcpy(image_info->filename,images[i]);
+    next_image=ReadImage(image_info);
+    if (next_image == (Image *) NULL)
+      continue;
+    if (image == (Image *) NULL)
+      image=next_image;
+    else
+      {
+        register Image
+          *q;
+
+        /*
+          Link image into image list.
+        */
+        for (q=image; q->next != (Image *) NULL; q=q->next);
+        next_image->previous=q;
+        q->next=next_image;
+      }
+  }
+  return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d I P T C I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -4542,7 +4661,7 @@ Image *ReadICONImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadIPTCImage returns a pointer to the image after
-%      reading. A null image is returned if there is a a memory shortage or if
+%      reading. A null image is returned if there is a memory shortage or if
 %      the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -4628,7 +4747,7 @@ Image *ReadIPTCImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadJBIGImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -4855,7 +4974,7 @@ static jmp_buf
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadJPEGImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o filename:  Specifies the name of the jpeg image to read.
@@ -5326,7 +5445,7 @@ Image *ReadJPEGImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadLABELImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -5370,7 +5489,7 @@ static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
   char
     *name;
 
-  const static unsigned short
+  static const unsigned short
     ids[] = { 4, 5, 0, 7 };
 
   register char
@@ -6019,7 +6138,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadLOGOImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -6119,7 +6238,7 @@ Image *ReadLOGOImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadMAPImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -6234,7 +6353,7 @@ Image *ReadMAPImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image: Method ReadMIFFImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -6829,7 +6948,7 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadMONOImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -6972,7 +7091,7 @@ Image *ReadMONOImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadMTVImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -7138,7 +7257,7 @@ Image *ReadMTVImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadNULLImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -7173,7 +7292,7 @@ Image *ReadNULLImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadPCDImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -7210,6 +7329,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
   montage_image=MontageImages(image,&montage_info);
   montage_info.font=image_info->font;
   montage_info.pointsize=image_info->pointsize;
+  montage_info.texture="Granite:";
   if (montage_image == (Image *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   DestroyImage(image);
@@ -7585,7 +7705,7 @@ Image *ReadPCDImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadPCLImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -7621,7 +7741,7 @@ Image *ReadPCLImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadPCXImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -8138,7 +8258,7 @@ Image *ReadPCXImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadPDFImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -8396,7 +8516,7 @@ Image *ReadPDFImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadPICTImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -8973,7 +9093,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadPIXImage returns a pointer to the image after
-%      reading. A null image is returned if there is a a memory shortage or if
+%      reading. A null image is returned if there is a memory shortage or if
 %      the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -9157,7 +9277,7 @@ Image *ReadPIXImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadPLASMAImage returns a pointer to the image after
-%      creating it. A null image is returned if there is a a memory shortage
+%      creating it. A null image is returned if there is a memory shortage
 %      or if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -9258,7 +9378,7 @@ Image *ReadPLASMAImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadPNGImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -9915,7 +10035,7 @@ Image *ReadPNGImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadPNMImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -10528,7 +10648,7 @@ Image *ReadPNMImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadPSImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -10824,7 +10944,7 @@ Image *ReadPSImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadPSDImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -11324,7 +11444,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadRGBImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -11724,7 +11844,7 @@ Image *ReadRGBImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadRLAImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -12045,7 +12165,7 @@ Image *ReadRLAImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadRLEImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -12504,7 +12624,7 @@ Image *ReadRLEImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadSGIImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -12888,7 +13008,7 @@ Image *ReadSGIImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadSTEGANOImage returns a pointer to the image
-%      after reading.  A null image is returned if there is a a memory shortage
+%      after reading.  A null image is returned if there is a memory shortage
 %      of if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -13017,7 +13137,7 @@ Image *ReadSTEGANOImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadSUNImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -13212,7 +13332,7 @@ Image *ReadSUNImage(const ImageInfo *image_info)
           AllocateMemory(bytes_per_line*height*sizeof(unsigned char));
         if (sun_pixels == (unsigned char *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) SUNDecodeImage(sun_data,sun_pixels,bytes_per_line,height);
+        (void) SUNDecodeImage(sun_data,bytes_per_line,height,sun_pixels);
         FreeMemory((char *) sun_data);
       }
     /*
@@ -13375,7 +13495,7 @@ Image *ReadSUNImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadTGAImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -13765,7 +13885,7 @@ Image *ReadTGAImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadTIFFImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -14481,7 +14601,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadTILEImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -14568,7 +14688,7 @@ Image *ReadTILEImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadTIMImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -14875,7 +14995,7 @@ Image *ReadTIMImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadTTFImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -15024,7 +15144,7 @@ Image *ReadTTFImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadTXTImage returns a pointer to the image after
-%      reading. A null image is returned if there is a a memory shortage or if
+%      reading. A null image is returned if there is a memory shortage or if
 %      the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -15224,7 +15344,7 @@ Image *ReadTXTImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadUILImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -15261,7 +15381,7 @@ Image *ReadUILImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadUYVYImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -15367,7 +15487,7 @@ Image *ReadUYVYImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image: Method ReadVICARImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or if
+%      reading.  A null image is returned if there is a memory shortage or if
 %      the image cannot be read.
 %
 %    o filename: Specifies the name of the image to read.
@@ -15593,7 +15713,7 @@ Image *ReadVICARImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadVIDImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -15664,18 +15784,19 @@ Image *ReadVIDImage(const ImageInfo *image_info)
   commands[0]=SetClientName((char *) NULL);
   commands[1]="-label";
   commands[2]=DefaultTileLabel;
+  commands[3]="-geometry";
+  commands[4]=DefaultTileGeometry;
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    if (local_info.size == (char *) NULL)
-      local_info.size=montage_info.geometry;
     (void) strcpy(local_info.filename,filelist[i]);
     *local_info.magick='\0';
+    local_info.size=DefaultTileGeometry;
     next_image=ReadImage(&local_info);
     FreeMemory((char *) filelist[i]);
     if (next_image != (Image *) NULL)
       {
-        MogrifyImages(&local_info,3,commands,&next_image);
+        MogrifyImages(&local_info,5,commands,&next_image);
         if (image == (Image *) NULL)
           image=next_image;
         else
@@ -15704,6 +15825,7 @@ Image *ReadVIDImage(const ImageInfo *image_info)
   (void) strcpy(montage_info.filename,image_info->filename);
   montage_info.font=image_info->font;
   montage_info.pointsize=image_info->pointsize;
+  montage_info.texture="Granite:";
   montage_image=MontageImages(image,&montage_info);
   if (montage_image == (Image *) NULL)
     {
@@ -15739,7 +15861,7 @@ Image *ReadVIDImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image: Method ReadVIFFImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or if
+%      reading.  A null image is returned if there is a memory shortage or if
 %      the image cannot be read.
 %
 %    o filename: Specifies the name of the image to read.
@@ -16398,7 +16520,7 @@ Image *ReadXImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadXBMImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -16689,7 +16811,7 @@ Image *ReadXBMImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadXCImage returns a pointer to the image after
-%      creating it. A null image is returned if there is a a memory shortage
+%      creating it. A null image is returned if there is a memory shortage
 %      or if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -16776,7 +16898,7 @@ Image *ReadXCImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadXPMImage returns a pointer to the image after
-%      creating it. A null image is returned if there is a a memory shortage
+%      creating it. A null image is returned if there is a memory shortage
 %      or if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -17105,7 +17227,7 @@ Image *ReadXPMImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadXWDImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -17505,7 +17627,7 @@ Image *ReadXWDImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image:  Method ReadYUVImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -17727,7 +17849,7 @@ Image *ReadYUVImage(const ImageInfo *image_info)
 %  A description of each parameter follows:
 %
 %    o image: Method ReadImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
+%      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -17757,6 +17879,8 @@ Export Image *ReadImage(ImageInfo *image_info)
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->filename != (char *) NULL);
+  if (*image_info->filename == '@')
+    return(ReadImages(image_info));
   SetImageInfo(image_info,False);
   /*
     Call appropriate image reader based on image type.

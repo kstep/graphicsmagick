@@ -32,6 +32,7 @@ extern "C" {
 #define MaxColormapSize  65535L
 #define MaxStacksize  (1 << 15)
 #define MaxTextExtent  1664
+#define Opaque  MaxRGB
 #define PixelOffset(x,y) image->pixels+((y)*image->columns+(x))
 #define Push(up,left,right,delta) \
   if ((p < (segment_stack+MaxStacksize)) && (((up)+(delta)) >= 0) && \
@@ -97,7 +98,6 @@ extern "C" {
 #define HexColorFormat "#%04x%04x%04x"
 #define MaxRGB  65535L
 #define MaxRunlength  65535L
-#define Opaque  65535L
 #define QuantumDepth  16
 #define UpScale(quantum)  (((unsigned int) (quantum))*257)
 #define XDownScale(color)  ((unsigned int) (color))
@@ -112,7 +112,6 @@ typedef unsigned short Quantum;
 #define HexColorFormat "#%02x%02x%02x"
 #define MaxRGB  255
 #define MaxRunlength  255
-#define Opaque  255
 #define QuantumDepth  8
 #define UpScale(quantum)  ((unsigned int) (quantum))
 #define XDownScale(color)  (((unsigned int) (color)) >> 8)
@@ -549,21 +548,19 @@ typedef struct _AnnotateInfo
     *density,
     *border_color,
     *font,
-    *font_name,
     *pen;
 
   unsigned int
-    pointsize;
+    pointsize,
+    linewidth,
+    gravity;
 
   char
     *geometry,
     *text,
     *box,
-    *primitive;
-
-  unsigned int
-    linewidth,
-    gravity;
+    *primitive,
+    *font_name;
 
   RectangleInfo
     bounds;
@@ -747,26 +744,26 @@ typedef struct _Image
 extern Export Image
   *AddNoiseImage(Image *,NoiseType),
   *AllocateImage(const ImageInfo *),
-  *AppendImages(Image *,unsigned int),
+  *AppendImages(Image *,const unsigned int),
   *AverageImages(Image *),
-  *BlurImage(Image *,double),
-  *BorderImage(Image *,RectangleInfo *),
+  *BlurImage(Image *,const double),
+  *BorderImage(Image *,const RectangleInfo *),
   *ChopImage(Image *,RectangleInfo *),
   *CloneImage(Image *,const unsigned int,const unsigned int,const unsigned int),
   *CropImage(Image *,RectangleInfo *),
   *DespeckleImage(Image *),
-  *EdgeImage(Image *,double),
+  *EdgeImage(Image *,const double),
   *EmbossImage(Image *),
   *EnhanceImage(Image *),
   *FlipImage(Image *),
   *FlopImage(Image *),
-  *FrameImage(Image *,FrameInfo *),
+  *FrameImage(Image *,const FrameInfo *),
   *ImplodeImage(Image *,double),
   **ListToGroupImage(Image *,unsigned int *),
   *MagnifyImage(Image *),
   *MinifyImage(Image *),
-  *MontageImages(Image *,MontageInfo *),
-  *MorphImages(Image *,unsigned int),
+  *MontageImages(Image *,const MontageInfo *),
+  *MorphImages(Image *,const unsigned int),
   *OilPaintImage(Image *,const unsigned int),
   *ReadAVSImage(const ImageInfo *image_info),
   *ReadBMPImage(const ImageInfo *image_info),
@@ -833,28 +830,28 @@ extern Export Image
   *RotateImage(Image *,double,const unsigned int,const unsigned int),
   *SampleImage(Image *,unsigned int,unsigned int),
   *ScaleImage(Image *,const unsigned int,const unsigned int),
-  *ShadeImage(Image *,unsigned int,double,double),
-  *SharpenImage(Image *,double),
+  *ShadeImage(Image *,const unsigned int,double,double),
+  *SharpenImage(Image *,const double),
   *ShearImage(Image *,double,double,const unsigned int),
   *SpreadImage(Image *,unsigned int),
   *SteganoImage(Image *,Image *),
-  *StereoImage(Image *,Image *),
+  *StereoImage(Image *,const Image *),
   *SwirlImage(Image *,double),
-  *WaveImage(Image *,double,double),
+  *WaveImage(Image *,const double,const double),
   *ZoomImage(Image *,const unsigned int,const unsigned int);
 
 extern Export ImageType
   GetImageType(const ImageInfo *,Image *);
 
 extern Export int
-  ParseImageGeometry(char *,int *,int *,unsigned int *,unsigned int *);
+  ParseImageGeometry(const char *,int *,int *,unsigned int *,unsigned int *);
 
 extern Export unsigned int
-  IsGeometry(char *),
+  IsGeometry(const char *),
   IsGrayImage(Image *),
   IsMonochromeImage(Image *),
   IsPseudoClass(Image *),
-  IsSubimage(char *,unsigned int),
+  IsSubimage(const char *,const unsigned int),
   IsTainted(Image *),
   MapImage(Image *,Image *,const unsigned int),
   MapImages(Image *,Image *,const unsigned int),
@@ -921,7 +918,7 @@ extern Export void
   CoalesceImages(Image *),
   ColorFloodfillImage(Image *,const RunlengthPacket *,const char *,int x,int y,
     const PaintMethod),
-  ColorizeImage(Image *,char *,char *),
+  ColorizeImage(Image *,const char *,const char *),
   CommentImage(Image *,char *),
   CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),
   CompressColormap(Image *),
@@ -930,43 +927,43 @@ extern Export void
   CycleColormapImage(Image *,int),
   DescribeImage(Image *,FILE *,const unsigned int),
   DestroyImage(Image *),
+  DestroyImageInfo(ImageInfo *),
   DestroyImages(Image *),
   DrawImage(Image *,AnnotateInfo *),
   EqualizeImage(Image *),
-  GammaImage(Image *,char *),
+  GammaImage(Image *,const char *),
   GetAnnotateInfo(ImageInfo *,AnnotateInfo *),
   GetImageInfo(ImageInfo *),
   GetMontageInfo(MontageInfo *),
   HSLTransform(double,const double,const double,Quantum *,Quantum *,Quantum *),
   LabelImage(Image *,char *),
-  LayerImage(Image *,LayerType),
+  LayerImage(Image *,const LayerType),
   MatteFloodfillImage(Image *,const RunlengthPacket *,const unsigned int,int x,
     int y,const PaintMethod),
   MatteImage(Image *),
-  ModulateImage(Image *,char *),
-  MogrifyImage(ImageInfo *,int,char **,Image **),
-  MogrifyImages(ImageInfo *,int,char **,Image **),
-  NegateImage(Image *,unsigned int),
+  ModulateImage(Image *,const char *),
+  MogrifyImage(ImageInfo *,const int,char **,Image **),
+  MogrifyImages(ImageInfo *,const int,char **,Image **),
+  NegateImage(Image *,const unsigned int),
   NormalizeImage(Image *),
-  NumberColors(Image *,FILE *),
-  OpaqueImage(Image *,char *,char *),
+  OpaqueImage(Image *,const char *,const char *),
   OpenImage(const ImageInfo *,Image *,const char *),
-  RaiseImage(Image *,RectangleInfo *,const int),
+  RaiseImage(Image *,const RectangleInfo *,const int),
   RGBTransformImage(Image *,const unsigned int),
   SetImage(Image *),
-  SetImageInfo(ImageInfo *,unsigned int),
+  SetImageInfo(ImageInfo *,const unsigned int),
   SetNumberScenes(Image *),
   SignatureImage(Image *),
   SolarizeImage(Image *,const double),
   SortColormapByIntensity(Image *),
   SyncImage(Image *),
   TextureImage(Image *,char *),
-  ThresholdImage(Image *,double),
+  ThresholdImage(Image *,const double),
   TransformHSL(const Quantum,const Quantum,const Quantum,double *,double *,
     double *),
-  TransformImage(Image **,char *,char *),
+  TransformImage(Image **,const char *,const char *),
   TransformRGBImage(Image *,const unsigned int),
-  TransparentImage(Image *,char *);
+  TransparentImage(Image *,const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

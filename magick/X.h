@@ -50,6 +50,7 @@
 /*
   Define declarations.
 */
+#define DoOpacity  (1 << 20)
 #define MaxNumberFonts  11
 #define MaxNumberPens  11 
 #if !defined(RGBColorDatabase)
@@ -611,7 +612,7 @@ extern Export XFontStruct
   *XBestFont(Display *,const XResourceInfo *,const unsigned int);
 
 extern Export XrmDatabase
-  XGetResourceDatabase(Display *,char *);
+  XGetResourceDatabase(Display *,const char *);
 
 extern Export XVisualInfo
   *XBestVisualInfo(Display *,XStandardColormap *,XResourceInfo *);

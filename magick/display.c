@@ -1999,9 +1999,6 @@ static unsigned int XColorEditImage(Display *display,
           case FloodfillMethod:
           case FillToBorderMethod:
           {
-            ColorPacket
-              pen_color;
-
             RunlengthPacket
               target;
 
@@ -2012,9 +2009,6 @@ static unsigned int XColorEditImage(Display *display,
             if (!UncondenseImage(*image))
               break;
             target=(*image)->pixels[y_offset*(*image)->columns+x_offset];
-            pen_color.red=XDownScale(color.red);
-            pen_color.green=XDownScale(color.green);
-            pen_color.blue=XDownScale(color.blue);
             if (method == FillToBorderMethod)
               {
                 target.red=XDownScale(border_color.red);
@@ -11038,7 +11032,7 @@ static Image *XVisualDirectoryImage(Display *display,
   commands[1]="-label";
   commands[2]=DefaultTileLabel;
   commands[3]="-geometry";
-  commands[4]=montage_info.geometry;
+  commands[4]=DefaultTileGeometry;
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   for (i=0; i < number_files; i++)
@@ -11046,8 +11040,7 @@ static Image *XVisualDirectoryImage(Display *display,
     handler=SetMonitorHandler((MonitorHandler) NULL);
     (void) strcpy(local_info.filename,filelist[i]);
     *local_info.magick='\0';
-    if (local_info.size == (char *) NULL)
-      local_info.size=montage_info.geometry;
+    local_info.size=DefaultTileGeometry;
     next_image=ReadImage(&local_info);
     if (filelist[i] != filenames)
       FreeMemory((char *) filelist[i]);
@@ -11089,6 +11082,7 @@ static Image *XVisualDirectoryImage(Display *display,
   (void) strcpy(montage_info.filename,filename);
   montage_info.font=resource_info->image_info.font;
   montage_info.pointsize=resource_info->image_info.pointsize;
+  montage_info.texture="Granite:";
   montage_image=MontageImages(image,&montage_info);
   DestroyImages(image);
   XSetCursorState(display,windows,False);

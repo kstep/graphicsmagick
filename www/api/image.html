@@ -36,6 +36,7 @@
 		<LI><A HREF="#CycleColormapImage">CycleColormapImage</A>
 		<LI><A HREF="#DescribeImage">DescribeImage</A>
 		<LI><A HREF="#DestroyImage">DestroyImage</A>
+		<LI><A HREF="#DestroyImageInfo">DestroyImageInfo</A>
 		<LI><A HREF="#DestroyImages">DestroyImages</A>
 		<LI><A HREF="#DrawImage">DrawImage</A>
 		<LI><A HREF="#EqualizeImage">EqualizeImage</A>
@@ -158,6 +159,9 @@ cropped_image=<STRONG>CropImage</STRONG>(image,crop_info)
 
 <P>
 <STRONG>DestroyImage</STRONG>(image)
+
+<P>
+<STRONG>DestroyImageInfo</STRONG>(image_info)
 
 <P>
 <STRONG>DestroyImages</STRONG>(image)
@@ -333,7 +337,7 @@ default values. A null image is returned if there is a memory shortage.
 
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
-Specifies a pointer to a ImageInfo structure.
+Specifies a pointer to an ImageInfo structure.
 
 </DL></DL>
 <P>
@@ -355,7 +359,7 @@ A description of each parameter follows:
 <DL><DL>
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
-Specifies a pointer to a ImageInfo structure.
+Specifies a pointer to an ImageInfo structure.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -466,7 +470,7 @@ A description of each parameter follows:
 <DT><STRONG>bordered_image:</STRONG><DD>
 <P>
 Method BorderImage returns a pointer to the bordered image. A null image is
-returned if there is a a memory shortage.
+returned if there is a memory shortage.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -499,7 +503,7 @@ A description of each parameter follows:
 <DT><STRONG>chop_image:</STRONG><DD>
 <P>
 Method ChopImage returns a pointer to the chop image. A null image is
-returned if there is a a memory shortage or if the image width or height is
+returned if there is a memory shortage or if the image width or height is
 zero.
 
 <DT><STRONG>image:</STRONG><DD>
@@ -818,7 +822,7 @@ A description of each parameter follows:
 <DT><STRONG>cropped_image:</STRONG><DD>
 <P>
 Method CropImage returns a pointer to the cropped image. A null image is
-returned if there is a a memory shortage or if the image width or height is
+returned if there is a memory shortage or if the image width or height is
 zero.
 
 <DT><STRONG>image:</STRONG><DD>
@@ -906,6 +910,28 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="DestroyImageInfo">DestroyImageInfo</A></H2>
+<P>
+Method DestroyImageInfo deallocates memory associated with an ImageInfo
+structure.
+
+<P>
+The format of the DestroyImageInfo routine is:
+
+<P>
+<PRE>        DestroyImageInfo(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
 
 </DL></DL>
 <P>
@@ -1054,7 +1080,7 @@ A description of each parameter follows:
 <DT><STRONG>framed_image:</STRONG><DD>
 <P>
 Method FrameImage returns a pointer to the framed image. A null image is
-returned if there is a a memory shortage.
+returned if there is a memory shortage.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -1109,7 +1135,7 @@ A description of each parameter follows:
 <DL><DL>
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
-Specifies a pointer to a ImageInfo structure.
+Specifies a pointer to an ImageInfo structure.
 
 <DT><STRONG>annotate_info:</STRONG><DD>
 <P>
@@ -1134,7 +1160,7 @@ A description of each parameter follows:
 <DL><DL>
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
-Specifies a pointer to a ImageInfo structure.
+Specifies a pointer to an ImageInfo structure.
 
 </DL></DL>
 <P>
@@ -1160,7 +1186,7 @@ specified image (e.g. bilevel, palette, etc).
 
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
-Specifies a pointer to a ImageInfo structure.
+Specifies a pointer to an ImageInfo structure.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -1446,7 +1472,7 @@ A description of each parameter follows:
 <DT><STRONG>magnified_image:</STRONG><DD>
 <P>
 Method MagnifyImage returns a pointer to the image after magnification. A
-null image is returned if there is a a memory shortage.
+null image is returned if there is a memory shortage.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -1556,7 +1582,7 @@ A description of each parameter follows:
 <DT><STRONG>minified_image:</STRONG><DD>
 <P>
 Method MinifyImage returns a pointer to the image after reducing. A null
-image is returned if there is a a memory shortage or if the image size is
+image is returned if there is a memory shortage or if the image size is
 less than IconSize*2.
 
 <DT><STRONG>image:</STRONG><DD>
@@ -1610,7 +1636,7 @@ A description of each parameter follows:
 <DL><DL>
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
-Specifies a pointer to a ImageInfo structure.
+Specifies a pointer to an ImageInfo structure.
 
 <DT><STRONG>argc:</STRONG><DD>
 <P>
@@ -1645,7 +1671,7 @@ A description of each parameter follows:
 <DL><DL>
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
-Specifies a pointer to a ImageInfo structure.
+Specifies a pointer to an ImageInfo structure.
 
 <DT><STRONG>argc:</STRONG><DD>
 <P>
@@ -1811,7 +1837,7 @@ A description of each parameter follows:
 <DL><DL>
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
-Specifies a pointer to a ImageInfo structure.
+Specifies a pointer to an ImageInfo structure.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -2090,7 +2116,7 @@ A description of each parameter follows:
 <DL><DL>
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
-Specifies a pointer to a ImageInfo structure.
+Specifies a pointer to an ImageInfo structure.
 
 <DT><STRONG>rectify:</STRONG><DD>
 <P>

@@ -131,7 +131,7 @@ Export void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
 %
 %
 */
-Export Quantum GenerateNoise(Quantum pixel,NoiseType noise_type)
+Export Quantum GenerateNoise(const Quantum pixel,const NoiseType noise_type)
 {
 #define NoiseEpsilon  1.0e-5
 #define NoiseMask  0x7fff
@@ -339,8 +339,8 @@ Export void HSLTransform(double hue,const double saturation,
 %
 %
 */
-Export void Hull(int x_offset,int y_offset,int polarity,unsigned int columns,
-  unsigned int rows,Quantum *f,Quantum *g)
+Export void Hull(const int x_offset,const int y_offset,const int polarity,
+  const unsigned int columns,const unsigned int rows,Quantum *f,Quantum *g)
 {
   int
     y;
@@ -469,7 +469,7 @@ Export void Hull(int x_offset,int y_offset,int polarity,unsigned int columns,
 %
 */
 Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
-  AnnotateInfo *annotate_info,int x,int y,Image *image)
+  AnnotateInfo *annotate_info,const int x,const int y,Image *image)
 {
   double
     mid,
@@ -1106,7 +1106,7 @@ Export void TransformHSL(const Quantum red,const Quantum green,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method Upsample
+%  Method Upsample doubles the size of the image.
 %
 %  The format of the UpSample routine is:
 %
@@ -1114,7 +1114,7 @@ Export void TransformHSL(const Quantum red,const Quantum green,
 %
 %  A description of each parameter follows:
 %
-%    o width,height:  Unsigned values representinf the width and height of
+%    o width,height:  Unsigned values representing the width and height of
 %      the image pixel array.
 %
 %    o scaled_width:  Specifies the final width of the upsampled pixel array.
@@ -1124,8 +1124,8 @@ Export void TransformHSL(const Quantum red,const Quantum green,
 %
 %
 */
-Export void Upsample(unsigned int width,unsigned int height,
-  unsigned int scaled_width,unsigned char *pixels)
+Export void Upsample(const unsigned int width,const unsigned int height,
+  const unsigned int scaled_width,unsigned char *pixels)
 {
   register int
     x,

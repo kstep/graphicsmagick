@@ -79,7 +79,7 @@
 %      structure initialized to default values.  A null image is returned if
 %      there is a memory shortage.
 %
-%    o image_info: Specifies a pointer to a ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %
 */
@@ -295,7 +295,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to a ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -582,7 +582,7 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
 %
 %
 */
-Export Image *AppendImages(Image *images,unsigned int stack)
+Export Image *AppendImages(Image *images,const unsigned int stack)
 {
 #define AppendImageText  "  Appending image sequence...  "
 
@@ -867,7 +867,7 @@ Export Image *AverageImages(Image *images)
 %  A description of each parameter follows:
 %
 %    o bordered_image: Method BorderImage returns a pointer to the bordered
-%      image.  A null image is returned if there is a a memory shortage.
+%      image.  A null image is returned if there is a memory shortage.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -875,7 +875,7 @@ Export Image *AverageImages(Image *images)
 %      defines the border region.
 %
 */
-Export Image *BorderImage(Image *image,RectangleInfo *border_info)
+Export Image *BorderImage(Image *image,const RectangleInfo *border_info)
 {
   ColorPacket
     color;
@@ -923,7 +923,7 @@ Export Image *BorderImage(Image *image,RectangleInfo *border_info)
 %  A description of each parameter follows:
 %
 %    o chop_image: Method ChopImage returns a pointer to the chop
-%      image.  A null image is returned if there is a a memory shortage or
+%      image.  A null image is returned if there is a memory shortage or
 %      if the image width or height is zero.
 %
 %    o image: The address of a structure of type Image.
@@ -1239,13 +1239,13 @@ Export void CoalesceImages(Image *image)
 %
 */
 Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
-  const char *pen, int x,int y,const PaintMethod method)
+  const char *pen,int x,int y,const PaintMethod method)
 {
   ColorPacket
     color;
 
   Image
-    *tiled_image;
+    *tile;
 
   int
     offset,
@@ -1282,7 +1282,7 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
   color.red=0;
   color.green=0;
   color.blue=0;
-  tiled_image=(Image *) NULL;
+  tile=(Image *) NULL;
   markers=(unsigned char *) NULL;
   if ((pen == (char *) NULL) || (*pen != '@'))
     {
@@ -1307,12 +1307,12 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
       */
       GetImageInfo(&local_info);
       (void) strcpy(local_info.filename,pen+1);
-      tiled_image=ReadImage(&local_info);
-      if (tiled_image == (Image *) NULL)
+      tile=ReadImage(&local_info);
+      if (tile == (Image *) NULL)
         return;
-      if (!UncondenseImage(tiled_image))
+      if (!UncondenseImage(tile))
         {
-          DestroyImage(tiled_image);
+          DestroyImage(tile);
           return;
         }
       markers=(unsigned char *)
@@ -1321,7 +1321,7 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
         {
           MagickWarning(ResourceLimitWarning,"Unable to floodfill image",
             "Memory allocation failed");
-          DestroyImage(tiled_image);
+          DestroyImage(tile);
           return;
         }
       for (i=0; i < (image->rows*image->columns); i++)
@@ -1341,10 +1341,10 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
     {
       MagickWarning(ResourceLimitWarning,"Unable to floodfill image",
         "Memory allocation failed");
-      if (tiled_image != (Image *) NULL)
+      if (tile != (Image *) NULL)
         {
           FreeMemory((char *) markers);
-          DestroyImage(tiled_image);
+          DestroyImage(tile);
         }
       return;
     }
@@ -1463,9 +1463,9 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
         {
           if (*p)
             {
-              pixel=tiled_image->pixels[(y % tiled_image->rows)*
-                tiled_image->columns+(x % tiled_image->columns)];
-              if (!tiled_image->matte)
+              pixel=tile->pixels[(y % tile->rows)*
+                tile->columns+(x % tile->columns)];
+              if (!tile->matte)
                 {
                   q->red=pixel.red;
                   q->green=pixel.green;
@@ -1488,7 +1488,7 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
         }
       }
       FreeMemory((char *) markers);
-      DestroyImage(tiled_image);
+      DestroyImage(tile);
     }
   FreeMemory((char *) segment_stack);
 }
@@ -1520,7 +1520,8 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
 %
 %
 */
-Export void ColorizeImage(Image *image,char *opacity,char *pen_color)
+Export void ColorizeImage(Image *image,const char *opacity,
+  const char *pen_color)
 {
 #define ColorizeImageText  "  Colorizing the image...  "
 
@@ -1560,9 +1561,6 @@ Export void ColorizeImage(Image *image,char *opacity,char *pen_color)
   target.red=XDownScale(target_color.red);
   target.green=XDownScale(target_color.green);
   target.blue=XDownScale(target_color.blue);
-  status=XQueryColorDatabase(pen_color,&target_color);
-  if (status == False)
-    return;
   red_opacity=100;
   green_opacity=100;
   blue_opacity=100;
@@ -2610,7 +2608,7 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
 %  A description of each parameter follows:
 %
 %    o cropped_image: Method CropImage returns a pointer to the cropped
-%      image.  A null image is returned if there is a a memory shortage or
+%      image.  A null image is returned if there is a memory shortage or
 %      if the image width or height is zero.
 %
 %    o image: The address of a structure of type Image.
@@ -3455,6 +3453,83 @@ Export void DestroyImage(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e s t r o y I m a g e I n f o                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyImageInfo deallocates memory associated with an ImageInfo
+%  structure.
+%
+%  The format of the DestroyImageInfo routine is:
+%
+%      DestroyImageInfo(image_info)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%
+*/
+Export void DestroyImageInfo(ImageInfo *image_info)
+{
+  assert(image_info != (ImageInfo *) NULL);
+  if (image_info->server_name)
+    FreeMemory((char *) image_info->server_name);
+  image_info->server_name=(char *) NULL;
+  if (image_info->font)
+    FreeMemory((char *) image_info->font);
+  image_info->font=(char *) NULL;
+  if (image_info->pen)
+    FreeMemory((char *) image_info->pen);
+  image_info->pen=(char *) NULL;
+  if (image_info->size)
+    FreeMemory((char *) image_info->size);
+  image_info->size=(char *) NULL;
+  if (image_info->tile)
+    FreeMemory((char *) image_info->tile);
+  image_info->tile=(char *) NULL;
+  if (image_info->density)
+    FreeMemory((char *) image_info->density);
+  image_info->density=(char *) NULL;
+  if (image_info->page)
+    FreeMemory((char *) image_info->page);
+  image_info->page=(char *) NULL;
+  if (image_info->dispose)
+    FreeMemory((char *) image_info->dispose);
+  image_info->dispose=(char *) NULL;
+  if (image_info->delay)
+    FreeMemory((char *) image_info->delay);
+  image_info->delay=(char *) NULL;
+  if (image_info->iterations)
+    FreeMemory((char *) image_info->iterations);
+  image_info->iterations=(char *) NULL;
+  if (image_info->texture)
+    FreeMemory((char *) image_info->texture);
+  image_info->texture=(char *) NULL;
+  if (image_info->view)
+    FreeMemory((char *) image_info->view);
+  image_info->view=(char *) NULL;
+  if (image_info->background_color)
+    FreeMemory((char *) image_info->background_color);
+  image_info->background_color=(char *) NULL;
+  if (image_info->border_color)
+    FreeMemory((char *) image_info->border_color);
+  image_info->border_color=(char *) NULL;
+  if (image_info->matte_color)
+    FreeMemory((char *) image_info->matte_color);
+  image_info->matte_color=(char *) NULL;
+  if (image_info->undercolor)
+    FreeMemory((char *) image_info->undercolor);
+  image_info->undercolor=(char *) NULL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D e s t r o y I m a g e s                                                 %
 %                                                                             %
 %                                                                             %
@@ -3533,7 +3608,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     *primitive;
 
   Image
-    *tiled_image;
+    *tile;
 
   int
     j,
@@ -3549,6 +3624,9 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
 
   PrimitiveType
     primitive_type;
+
+  RunlengthPacket
+    pixel;
 
   SegmentInfo
     bounds;
@@ -3581,7 +3659,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     return;
   if (!UncondenseImage(image))
     return;
-  tiled_image=(Image *) NULL;
+  tile=(Image *) NULL;
   if ((annotate_info->pen != (char *) NULL) && (*annotate_info->pen == '@'))
     {
       ImageInfo
@@ -3592,12 +3670,12 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
       */
       GetImageInfo(&local_info);
       (void) strcpy(local_info.filename,annotate_info->pen+1);
-      tiled_image=ReadImage(&local_info);
-      if (tiled_image == (Image *) NULL)
+      tile=ReadImage(&local_info);
+      if (tile == (Image *) NULL)
         return;
-      if (!UncondenseImage(tiled_image))
+      if (!UncondenseImage(tile))
         {
-          DestroyImage(tiled_image);
+          DestroyImage(tile);
           return;
         }
     }
@@ -3783,69 +3861,34 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     }
     primitive_info[j].coordinates=x;
     primitive_info[j].method=FloodfillMethod;
-    if ((primitive_type == ColorPrimitive) ||
-        (primitive_type == MattePrimitive))
-      {
-        /*
-          Define method.
-        */
-        while (isspace((int) (*p)))
-          p++;
-        for (x=0; isalpha((int) (*p)); x++)
-          keyword[x]=(*p++);
-        keyword[x]='\0';
-        if (*keyword == '\0')
-          break;
-        if (Latin1Compare("point",keyword) == 0)
-          primitive_info[j].method=PointMethod;
-        else
-          if (Latin1Compare("replace",keyword) == 0)
-            primitive_info[j].method=ReplaceMethod;
-          else
-            if (Latin1Compare("floodfill",keyword) == 0)
-              primitive_info[j].method=FloodfillMethod;
-            else
-              if (Latin1Compare("filltoborder",keyword) == 0)
-                primitive_info[j].method=FillToBorderMethod;
-              else
-                if (Latin1Compare("reset",keyword) == 0)
-                  primitive_info[j].method=ResetMethod;
-                else
-                  primitive_type=UndefinedPrimitive;
-        while (isspace((int) (*p)))
-          p++;
-      }
     primitive_info[j].text=(char *) NULL;
-    if ((primitive_type == TextPrimitive) || (primitive_type == ImagePrimitive))
-      if (*p != '\0')
-        {
-          primitive_info[j].text=p;
-          if (*p == '"')
-            {
-              for (p++; *p != '\0'; p++)
-                if ((*p == '"') && (*(p-1) != '\\'))
-                  break;
-            }
-          else
-            if (*p == '\'')
-              {
-                for (p++; *p != '\0'; p++)
-                  if ((*p == '\'') && (*(p-1) != '\\'))
-                    break;
-              }
-            else
-              for (p++;  *p != '\0'; p++)
-                if (isspace((int) *p) && (*(p-1) != '\\'))
-                  break;
-          if (*p != '\0')
-            p++;
-        }
-    if ((primitive_type == CirclePrimitive) ||
-        (primitive_type == FillCirclePrimitive))
+    switch (primitive_type)
+    {
+      case PointPrimitive:
+      {
+        if (primitive_info[j].coordinates != 1)
+          primitive_type=UndefinedPrimitive;
+        break;
+      }
+      case LinePrimitive:
+      case RectanglePrimitive:
+      case FillRectanglePrimitive:
+      {
+        if (primitive_info[j].coordinates != 2)
+          primitive_type=UndefinedPrimitive;
+        break;
+      }
+      case CirclePrimitive:
+      case FillCirclePrimitive:
       {
         double
           radius;
 
+        if (primitive_info[j].coordinates != 2)
+          {
+            primitive_type=UndefinedPrimitive;
+            break;
+          }
         /*
           Determine circle bounding box.
         */
@@ -3864,9 +3907,10 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
           bounds.x2=(int) point.x;
         if (point.y > bounds.y2)
           bounds.y2=(int) point.y;
+        break;
       }
-    if ((primitive_type == EllipsePrimitive) ||
-        (primitive_type == FillEllipsePrimitive))
+      case EllipsePrimitive:
+      case FillEllipsePrimitive:
       {
         RectangleInfo
           arc;
@@ -3874,6 +3918,11 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         PointInfo
           degrees;
 
+        if (primitive_info[j].coordinates < 3)
+          {
+            primitive_type=UndefinedPrimitive;
+            break;
+          }
         /*
           Arc's are just short segmented polygons.
         */
@@ -3907,15 +3956,97 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
           i++;
           primitive_info[j].coordinates++;
         }
+        break;
       }
+      case PolygonPrimitive:
+      case FillPolygonPrimitive:
+      {
+        if (primitive_info[j].coordinates < 3)
+          primitive_type=UndefinedPrimitive;
+        break;
+      }
+      case ColorPrimitive:
+      case MattePrimitive:
+      {
+        if (primitive_info[j].coordinates != 1)
+          {
+            primitive_type=UndefinedPrimitive;
+            break;
+          }
+        /*
+          Define method.
+        */
+        while (isspace((int) (*p)))
+          p++;
+        for (x=0; isalpha((int) (*p)); x++)
+          keyword[x]=(*p++);
+        keyword[x]='\0';
+        if (*keyword == '\0')
+          break;
+        if (Latin1Compare("point",keyword) == 0)
+          primitive_info[j].method=PointMethod;
+        else
+          if (Latin1Compare("replace",keyword) == 0)
+            primitive_info[j].method=ReplaceMethod;
+          else
+            if (Latin1Compare("floodfill",keyword) == 0)
+              primitive_info[j].method=FloodfillMethod;
+            else
+              if (Latin1Compare("filltoborder",keyword) == 0)
+                primitive_info[j].method=FillToBorderMethod;
+              else
+                if (Latin1Compare("reset",keyword) == 0)
+                  primitive_info[j].method=ResetMethod;
+                else
+                  primitive_type=UndefinedPrimitive;
+        while (isspace((int) (*p)))
+          p++;
+        break;
+      }
+      case TextPrimitive:
+      case ImagePrimitive:
+      {
+        if (primitive_info[j].coordinates != 1)
+          {
+            primitive_type=UndefinedPrimitive;
+            break;
+          }
+        if (*p != '\0')
+          {
+            primitive_info[j].text=p;
+            if (*p == '"')
+              {
+                for (p++; *p != '\0'; p++)
+                  if ((*p == '"') && (*(p-1) != '\\'))
+                    break;
+              }
+            else
+              if (*p == '\'')
+                {
+                  for (p++; *p != '\0'; p++)
+                    if ((*p == '\'') && (*(p-1) != '\\'))
+                      break;
+                }
+              else
+                for (p++;  *p != '\0'; p++)
+                  if (isspace((int) *p) && (*(p-1) != '\\'))
+                    break;
+            if (*p != '\0')
+              p++;
+          }
+        break;
+      }
+    }
+    if (primitive_type == UndefinedPrimitive)
+      break;
   }
   primitive_info[i].primitive=UndefinedPrimitive;
   if (primitive_type == UndefinedPrimitive)
     {
       MagickWarning(OptionWarning,
-        "Non-conforming drawing primitive definition",p);
-      if (tiled_image != (Image *)NULL)
-        DestroyImage(tiled_image);
+        "Non-conforming drawing primitive definition",keyword);
+      if (tile != (Image *)NULL)
+        DestroyImage(tile);
       FreeMemory((char *) primitive_info);
       if (indirection)
         FreeMemory((char *) primitive);
@@ -3938,6 +4069,12 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   /*
     Draw the primitive on the image.
   */
+  pixel.red=XDownScale(pen_color.red);
+  pixel.green=XDownScale(pen_color.green);
+  pixel.blue=XDownScale(pen_color.blue);
+  pixel.index=XDownScale(pen_color.pixel);
+  if ((tile != (Image *) NULL) && tile->matte)
+    pen_color.flags|=DoOpacity;
   image->class=DirectClass;
   mid=(int) ((annotate_info->linewidth+0.5)/2.0);
   for (y=bounds.y1-mid; y <= (bounds.y2+mid); y++)
@@ -3947,36 +4084,25 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     {
       if (InsidePrimitive(primitive_info,annotate_info,x,y,image))
         {
-          if (tiled_image == (Image *) NULL)
+          if (tile != (Image *) NULL)
+            pixel=tile->pixels[(y % tile->rows)*
+              tile->columns+(x % tile->columns)];
+          if (!(pen_color.flags & DoOpacity))
             {
-              q->red=XDownScale(pen_color.red);
-              q->green=XDownScale(pen_color.green);
-              q->blue=XDownScale(pen_color.blue);
+              q->red=pixel.red;
+              q->green=pixel.green;
+              q->blue=pixel.blue;
             }
           else
             {
-              RunlengthPacket
-                pixel;
-
-              pixel=tiled_image->pixels[(y % tiled_image->rows)*
-                tiled_image->columns+(x % tiled_image->columns)];
-              if (!tiled_image->matte)
-                {
-                  q->red=pixel.red;
-                  q->green=pixel.green;
-                  q->blue=pixel.blue;
-                }
-              else
-                {
-                  q->red=(Quantum) ((long) (pixel.red*pixel.index+q->red*
-                    (Opaque-pixel.index))/Opaque);
-                  q->green=(Quantum) ((long) (pixel.green*pixel.index+q->green*
-                    (Opaque-pixel.index))/Opaque);
-                  q->blue=(Quantum) ((long) (pixel.blue*pixel.index+q->blue*
-                    (Opaque-pixel.index))/Opaque);
-                  q->index=(Quantum) ((long) (pixel.index*pixel.index+q->index*
-                    (Opaque-pixel.index))/Opaque);
-                }
+              q->red=(Quantum) ((long) (pixel.red*pixel.index+q->red*
+                (Opaque-pixel.index))/Opaque);
+              q->green=(Quantum) ((long) (pixel.green*pixel.index+q->green*
+                (Opaque-pixel.index))/Opaque);
+              q->blue=(Quantum) ((long) (pixel.blue*pixel.index+q->blue*
+                (Opaque-pixel.index))/Opaque);
+              q->index=(Quantum) ((long) (pixel.index*pixel.index+q->index*
+                (Opaque-pixel.index))/Opaque);
             }
         }
       q++;
@@ -3987,8 +4113,8 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   /*
     Free resources.
   */
-  if (tiled_image != (Image *)NULL)
-    DestroyImage(tiled_image);
+  if (tile != (Image *)NULL)
+    DestroyImage(tile);
   FreeMemory((char *) primitive_info);
   if (indirection)
     FreeMemory((char *) primitive);
@@ -4387,7 +4513,7 @@ Export Image *FlopImage(Image *image)
 %  A description of each parameter follows:
 %
 %    o framed_image: Method FrameImage returns a pointer to the framed
-%      image.  A null image is returned if there is a a memory shortage.
+%      image.  A null image is returned if there is a memory shortage.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -4396,7 +4522,7 @@ Export Image *FlopImage(Image *image)
 %
 %
 */
-Export Image *FrameImage(Image *image,FrameInfo *frame_info)
+Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
 {
 #define FrameImageText  "  Adding frame to image...  "
 
@@ -4639,7 +4765,7 @@ Export Image *FrameImage(Image *image,FrameInfo *frame_info)
 %
 %
 */
-Export void GammaImage(Image *image,char *gamma)
+Export void GammaImage(Image *image,const char *gamma)
 {
 #define GammaImageText  "  Gamma correcting the image...  "
 
@@ -4765,7 +4891,7 @@ Export void GammaImage(Image *image,char *gamma)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to a ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %    o annotate_info: Specifies a pointer to a AnnotateInfo structure.
 %
@@ -4835,7 +4961,7 @@ Export void GetAnnotateInfo(ImageInfo *image_info,AnnotateInfo *annotate_info)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to a ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %
 */
@@ -4907,7 +5033,7 @@ Export void GetImageInfo(ImageInfo *image_info)
 %    o type: Method GetImageType returns a ImageType enum that specifies the
 %      type of the specified image (e.g. bilevel, palette, etc).
 %
-%    o image_info: Specifies a pointer to a ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -5000,7 +5126,7 @@ Export void GetMontageInfo(MontageInfo *montage_info)
 %
 %
 */
-Export unsigned int IsGeometry(char *geometry)
+Export unsigned int IsGeometry(const char *geometry)
 {
   double
     value;
@@ -5186,7 +5312,7 @@ Export unsigned int IsMonochromeImage(Image *image)
 %
 %
 */
-Export unsigned int IsSubimage(char *geometry,unsigned int pedantic)
+Export unsigned int IsSubimage(const char *geometry,const unsigned int pedantic)
 {
   int
     x,
@@ -5320,7 +5446,7 @@ Export void LabelImage(Image *image,char *label)
 %
 %
 */
-Export void LayerImage(Image *image,LayerType layer)
+Export void LayerImage(Image *image,const LayerType layer)
 {
 #define LayerImageText  "  Extracting the layer from the image...  "
 
@@ -5484,7 +5610,7 @@ Export Image **ListToGroupImage(Image *image,unsigned int *number_images)
 %  A description of each parameter follows:
 %
 %    o magnified_image: Method MagnifyImage returns a pointer to the image
-%      after magnification.  A null image is returned if there is a a memory
+%      after magnification.  A null image is returned if there is a memory
 %      shortage.
 %
 %    o image: The address of a structure of type Image.
@@ -5868,7 +5994,7 @@ Export void MatteImage(Image *image)
 %  A description of each parameter follows:
 %
 %    o minified_image: Method MinifyImage returns a pointer to the image
-%      after reducing.  A null image is returned if there is a a memory
+%      after reducing.  A null image is returned if there is a memory
 %      shortage or if the image size is less than IconSize*2.
 %
 %    o image: The address of a structure of type Image.
@@ -6119,7 +6245,7 @@ Export Image *MinifyImage(Image *image)
 %
 %
 */
-Export void ModulateImage(Image *image,char *modulate)
+Export void ModulateImage(Image *image,const char *modulate)
 {
 #define ModulateImageText  "  Modulating image...  "
 
@@ -6200,7 +6326,7 @@ Export void ModulateImage(Image *image,char *modulate)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to a ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %    o argc: Specifies a pointer to an integer describing the number of
 %      elements in the argument vector.
@@ -6213,7 +6339,7 @@ Export void ModulateImage(Image *image,char *modulate)
 %
 %
 */
-Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
+Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
   Image **image)
 {
   AnnotateInfo
@@ -6305,7 +6431,8 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       }
     if (strncmp("-background",option,6) == 0)
       {
-        (void) XQueryColorDatabase(argv[++i],&target_color);
+        image_info->background_color=argv[++i];
+        (void) XQueryColorDatabase(image_info->background_color,&target_color);
         (*image)->background_color.red=XDownScale(target_color.red);
         (*image)->background_color.green=XDownScale(target_color.green);
         (*image)->background_color.blue=XDownScale(target_color.blue);
@@ -6361,7 +6488,9 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       }
     if (strncmp("-bordercolor",option,8) == 0)
       {
-        (void) XQueryColorDatabase(argv[++i],&target_color);
+        image_info->border_color=argv[++i];
+        annotate_info.border_color=image_info->border_color;
+        (void) XQueryColorDatabase(image_info->border_color,&target_color);
         (*image)->border_color.red=XDownScale(target_color.red);
         (*image)->border_color.green=XDownScale(target_color.green);
         (*image)->border_color.blue=XDownScale(target_color.blue);
@@ -6413,8 +6542,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       }
     if (strncmp("-colorspace",option,8) == 0)
       {
-        i++;
-        option=argv[i];
+        option=argv[++i];
         if (Latin1Compare("cmyk",option) == 0)
           quantize_info.colorspace=CMYKColorspace;
         if (Latin1Compare("gray",option) == 0)
@@ -6481,6 +6609,8 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
         /*
           Set image density.
         */
+        image_info->density=argv[++i];
+        annotate_info.density=image_info->density;
         count=sscanf(image_info->density,"%lfx%lf",
           &(*image)->x_resolution,&(*image)->y_resolution);
         if (count != 2)
@@ -6505,10 +6635,12 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
     if (strncmp("-display",option,6) == 0)
       {
         image_info->server_name=argv[++i];
+        annotate_info.server_name=image_info->server_name;
         continue;
       }
     if (strncmp("dither",option+1,3) == 0)
       {
+        image_info->dither=(*option == '-');
         quantize_info.dither=(*option == '-');
         continue;
       }
@@ -6688,6 +6820,12 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
         (*image)->fuzz=atoi(argv[++i]);
         continue;
       }
+    if (Latin1Compare("-font",option) == 0)
+      {
+        image_info->font=argv[++i];
+        annotate_info.font=image_info->font;
+        continue;
+      }
     if (strncmp("gamma",option+1,2) == 0)
       {
         if (*option == '+')
@@ -6806,7 +6944,8 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       }
     if (strncmp("-mattecolor",option,7) == 0)
       {
-        (void) XQueryColorDatabase(argv[++i],&target_color);
+        image_info->matte_color=argv[++i];
+        (void) XQueryColorDatabase(image_info->matte_color,&target_color);
         (*image)->matte_color.red=XDownScale(target_color.red);
         (*image)->matte_color.green=XDownScale(target_color.green);
         (*image)->matte_color.blue=XDownScale(target_color.blue);
@@ -6819,6 +6958,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       }
     if (strncmp("-monochrome",option,4) == 0)
       {
+        image_info->monochrome=True;
         quantize_info.number_colors=2;
         quantize_info.tree_depth=8;
         quantize_info.colorspace=GRAYColorspace;
@@ -6889,6 +7029,17 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
             DestroyImage(*image);
             *image=painted_image;
           }
+        continue;
+      }
+    if (Latin1Compare("-pen",option) == 0)
+      {
+        image_info->pen=argv[++i];
+        annotate_info.pen=image_info->pen;
+        continue;
+      }
+    if (strncmp("pointsize",option+1,2) == 0)
+      {
+        annotate_info.pointsize=atoi(argv[++i]);
         continue;
       }
     if (strncmp("profile",option+1,4) == 0)
@@ -7336,7 +7487,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to a ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %    o argc: Specifies a pointer to an integer describing the number of
 %      elements in the argument vector.
@@ -7349,7 +7500,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
 %
 %
 */
-Export void MogrifyImages(ImageInfo *image_info,int argc,char **argv,
+Export void MogrifyImages(ImageInfo *image_info,const int argc,char **argv,
   Image **images)
 {
 #define MogrifyImageText  "  Transforming images...  "
@@ -7480,7 +7631,7 @@ static int SceneCompare(const void *x,const void *y)
   return((int) (*image_1)->scene-(int) (*image_2)->scene);
 }
 
-Export Image *MontageImages(Image *image,MontageInfo *montage_info)
+Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
 {
 #define MontageImageText  "  Creating visual image directory...  "
 #define TileImageText  "  Creating image tiles...  "
@@ -8087,7 +8238,7 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
 %
 %
 */
-Export Image *MorphImages(Image *images,unsigned int number_frames)
+Export Image *MorphImages(Image *images,const unsigned int number_frames)
 {
 #define MorphImageText  "  Morphing image sequence...  "
 
@@ -8243,7 +8394,7 @@ Export Image *MorphImages(Image *images,unsigned int number_frames)
 %
 %
 */
-Export void NegateImage(Image *image,unsigned int grayscale)
+Export void NegateImage(Image *image,const unsigned int grayscale)
 {
 #define NegateImageText  "  Negating the image colors...  "
 
@@ -8480,7 +8631,8 @@ Export void NormalizeImage(Image *image)
 %
 %
 */
-Export void OpaqueImage(Image *image,char *opaque_color,char *pen_color)
+Export void OpaqueImage(Image *image,const char *opaque_color,
+  const char *pen_color)
 {
 #define OpaqueImageText  "  Setting opaque color in the image...  "
 
@@ -8588,7 +8740,7 @@ Export void OpaqueImage(Image *image,char *opaque_color,char *pen_color)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to a ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -8778,7 +8930,7 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
 %
 %
 */
-Export int ParseImageGeometry(char *image_geometry,int *x, int *y,
+Export int ParseImageGeometry(const char *image_geometry,int *x, int *y,
   unsigned int *width,unsigned int *height)
 {
   char
@@ -10272,7 +10424,7 @@ Export void SetImage(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to a ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %    o rectify: an unsigned value other than zero rectifies the attribute for
 %      multi-frame support (user may want multi-frame but image format may not
@@ -10280,7 +10432,7 @@ Export void SetImage(Image *image)
 %
 %
 */
-Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
+Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
 {
   char
     magick[MaxTextExtent];
@@ -10871,7 +11023,7 @@ Export Image *SteganoImage(Image *image,Image *watermark)
 %
 %
 */
-Export Image *StereoImage(Image *left_image,Image *right_image)
+Export Image *StereoImage(Image *left_image,const Image *right_image)
 {
 #define StereoImageText  "  Stereo image...  "
 
@@ -11093,7 +11245,7 @@ Export void TextureImage(Image *image,char *filename)
 %
 %
 */
-Export void ThresholdImage(Image *image,double threshold)
+Export void ThresholdImage(Image *image,const double threshold)
 {
 #define ThresholdImageText  "  Threshold the image...  "
 
@@ -11182,8 +11334,8 @@ Export void ThresholdImage(Image *image,double threshold)
 %
 %
 */
-Export void TransformImage(Image **image,char *crop_geometry,
-  char *image_geometry)
+Export void TransformImage(Image **image,const char *crop_geometry,
+  const char *image_geometry)
 {
   Image
     *transformed_image;
@@ -11825,7 +11977,7 @@ Export void TransformRGBImage(Image *image,const unsigned int colorspace)
 %
 %
 */
-Export void TransparentImage(Image *image,char *color)
+Export void TransparentImage(Image *image,const char *color)
 {
 #define TransparentImageText  "  Setting transparent color in the image...  "
 

@@ -62,7 +62,7 @@
 <DT>Examples
 </A>
 </H2>
-<DD>To combine a image of a cockatoo with a perch, use:
+<DD>To combine an image of a cockatoo with a perch, use:
 <dl>
 <p><dd><tt>combine cockatoo.miff perch.ras composite.miff</tt><p>
 </dl>
@@ -70,7 +70,7 @@
 <dl>
 <p><dd><tt>combine -compose difference series.1 series.2 difference.miff</tt><p>
 </dl>
-<dd>To combine a image of a cockatoo with a perch starting at
+<dd>To combine an image of a cockatoo with a perch starting at
 location (100,150), use:
 <dl>
 <p><dd><tt>combine -geometry +100+150 cockatoo.miff perch.ras composite.miff</tt><p>
@@ -244,7 +244,7 @@ defines a mask which represents a sort of a cookie-cutter for the image.  This
 is the case when matte is 255 (full coverage) for pixels inside the shape, zero
 outside, and between zero and 255 on the boundary.  For certain operations,
 if <EM>image</EM> does not
-have an matte channel, it is initialized with 0 for any pixel matching in
+have a matte channel, it is initialized with 0 for any pixel matching in
 color to pixel location (0,0), otherwise 255 (to work properly
 <B>borderwidth</B> must be 0).
 <P>
@@ -543,7 +543,7 @@ required to properly view the stereo image.
 <P>
 <DT><B>-treedepth</B> <EM>value</EM>
 <DD>Normally, this integer value is zero or one.  A zero or
-one tells <B>combine</B> to choose a optimal tree depth for
+one tells <B>combine</B> to choose an optimal tree depth for
 the color reduction algorithm.
 <P>
 <DD>An optimal depth generally allows the best

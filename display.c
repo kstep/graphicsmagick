@@ -1450,6 +1450,7 @@ int main(int argc,char **argv)
       XRetainWindowColors(display,XRootWindow(display,XDefaultScreen(display)));
       XSync(display,False);
     }
+  DestroyImageInfo(image_info);
   DestroyDelegateInfo();
   Exit(0);
   return(False);

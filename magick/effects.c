@@ -187,7 +187,7 @@ Export Image *AddNoiseImage(Image *image,NoiseType noise_type)
 %
 %
 */
-Export Image *BlurImage(Image *image,double factor)
+Export Image *BlurImage(Image *image,const double factor)
 {
 #define Blur(weight) \
   total_red+=(weight)*(int) (s->red); \
@@ -599,7 +599,7 @@ Export Image *DespeckleImage(Image *image)
 %
 %
 */
-Export Image *EdgeImage(Image *image,double factor)
+Export Image *EdgeImage(Image *image,const double factor)
 {
 #define Edge(weight) \
   total_red+=(long) ((weight)*(int) (s->red)); \
@@ -1616,7 +1616,7 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
 %
 */
 
-static Quantum PlasmaPixel(unsigned int pixel,double noise)
+static Quantum PlasmaPixel(const unsigned int pixel,const double noise)
 {
   double
     value;
@@ -1791,7 +1791,8 @@ Export unsigned int PlasmaImage(Image *image,SegmentInfo *segment_info,
 %
 %
 */
-Export void RaiseImage(Image *image,RectangleInfo *raise_info,const int raised)
+Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
+  const int raised)
 {
 #define AccentuateFactor  UpScale(135)
 #define HighlightFactor  UpScale(190)
@@ -2206,8 +2207,8 @@ Export Image *ReduceNoiseImage(Image *image)
 %
 %
 */
-Export Image *ShadeImage(Image *image,unsigned int color_shading,double azimuth,
-  double elevation)
+Export Image *ShadeImage(Image *image,const unsigned int color_shading,
+  double azimuth,double elevation)
 {
 #define ShadeImageText  "  Shading image...  "
 
@@ -2404,7 +2405,7 @@ Export Image *ShadeImage(Image *image,unsigned int color_shading,double azimuth,
 %
 %
 */
-Export Image *SharpenImage(Image *image,double factor)
+Export Image *SharpenImage(Image *image,const double factor)
 {
 #define Sharpen(weight) \
   total_red+=(weight)*(int) (s->red); \
@@ -2960,7 +2961,8 @@ Export Image *SwirlImage(Image *image,double degrees)
 %
 %
 */
-Export Image *WaveImage(Image *image,double amplitude,double wavelength)
+Export Image *WaveImage(Image *image,const double amplitude,
+  const double wavelength)
 {
 #define WaveImageText  "  Waving image...  "
 

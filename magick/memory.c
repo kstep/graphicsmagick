@@ -81,7 +81,7 @@
 %
 %
 */
-Export void *AllocateMemory(size_t size)
+Export void *AllocateMemory(const size_t size)
 {
   return(malloc(size));
 }
@@ -144,7 +144,7 @@ Export void FreeMemory(void *memory)
 %
 %
 */
-Export void *ReallocateMemory(void *memory,size_t size)
+Export void *ReallocateMemory(void *memory,const size_t size)
 {
   void
     *new_memory;

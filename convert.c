@@ -378,8 +378,7 @@ int main(int argc,char **argv)
 
   Image
     *image,
-    *next_image,
-    *p;
+    *next_image;
 
   ImageInfo
     image_info;
@@ -388,6 +387,9 @@ int main(int argc,char **argv)
     append,
     gravity,
     x;
+
+  register Image
+    *p;
 
   register int
     i;
@@ -1659,6 +1661,7 @@ int main(int argc,char **argv)
   }
   if (image_info.verbose)
     DescribeImage(image,stdout,False);
+  DestroyImageInfo(&image_info);
   DestroyImages(image);
   DestroyDelegateInfo();
   Exit(0);

@@ -30,6 +30,7 @@
 		<LI><A HREF="#ReadHISTOGRAMImage">ReadHISTOGRAMImage</A>
 		<LI><A HREF="#ReadICCImage">ReadICCImage</A>
 		<LI><A HREF="#ReadICONImage">ReadICONImage</A>
+		<LI><A HREF="#ReadImages">ReadImages</A>
 		<LI><A HREF="#ReadIPTCImage">ReadIPTCImage</A>
 		<LI><A HREF="#ReadJBIGImage">ReadJBIGImage</A>
 		<LI><A HREF="#ReadJPEGImage">ReadJPEGImage</A>
@@ -139,6 +140,9 @@ image=<STRONG>ReadIPTCImage</STRONG>(image_info)
 
 <P>
 image=<STRONG>ReadImage</STRONG>(image_info)
+
+<P>
+image=<STRONG>ReadImages</STRONG>(image_info)
 
 <P>
 image=<STRONG>ReadJBIGImage</STRONG>(image_info)
@@ -276,7 +280,7 @@ image=<STRONG>ReadYUVImage</STRONG>(image_info)
 <HR>
 <H2><A NAME="ReadAVSImage">ReadAVSImage</A></H2>
 <P>
-Method ReadAVSImage reads a AVS X image file and returns it. It allocates
+Method ReadAVSImage reads an AVS X image file and returns it. It allocates
 the memory necessary for the new Image structure and returns a pointer to
 the new image.
 
@@ -293,7 +297,7 @@ A description of each parameter follows:
 <DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>
 <P>
 Method ReadAVSImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -322,7 +326,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadBMPImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -351,7 +355,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadCMYKImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -380,7 +384,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadDCMImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -409,7 +413,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadDPSImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -438,7 +442,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadFAXImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -467,7 +471,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadFITSImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>filename:</STRONG><DD>
@@ -497,7 +501,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadFPXImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -526,7 +530,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadGIFImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or an error occurs.
+image is returned if there is a memory shortage or an error occurs.
 
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
@@ -555,7 +559,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadGRADATIONImage returns a pointer to the image after creating it.
-A null image is returned if there is a a memory shortage or if the image
+A null image is returned if there is a memory shortage or if the image
 cannot be read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -584,7 +588,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadGRAYImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -613,7 +617,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadHDFImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -642,8 +646,8 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadHISTOGRAMImage returns a pointer to the image after reading. A
-null image is returned if there is a a memory shortage or if the image
-cannot be read.
+null image is returned if there is a memory shortage or if the image cannot
+be read.
 
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
@@ -673,7 +677,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadICCImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -702,8 +706,35 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadICONImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadImages">ReadImages</A></H2>
+<P>
+Method ReadImages reads a list of image names from a file and then returns
+the images as a linked list.
+
+<P>
+The format of the ReadImage routine is:
+
+<P>
+<PRE>        image=ReadImages(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Method ReadImage returns a pointer to the image after reading. A null image
+is returned if there is a memory shortage or if the image cannot be read.
 
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
@@ -733,7 +764,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadIPTCImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -762,7 +793,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadJBIGImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -791,7 +822,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadJPEGImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>filename:</STRONG><DD>
@@ -820,7 +851,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadLABELImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -849,7 +880,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadLOGOImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -878,7 +909,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadMAPImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -907,7 +938,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadMIFFImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -936,7 +967,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadMONOImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -965,7 +996,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadMTVImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -994,7 +1025,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadNULLImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1024,7 +1055,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadPCDImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1053,7 +1084,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadPCLImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1082,7 +1113,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadPCXImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1111,7 +1142,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadPDFImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1140,7 +1171,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadPICTImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1169,7 +1200,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadPIXImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1197,8 +1228,8 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadPLASMAImage returns a pointer to the image after creating it. A
-null image is returned if there is a a memory shortage or if the image
-cannot be read.
+null image is returned if there is a memory shortage or if the image cannot
+be read.
 
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
@@ -1226,7 +1257,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadPNGImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1255,7 +1286,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadPNMImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1284,7 +1315,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadPSImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1313,7 +1344,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadPSDImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1342,7 +1373,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadRGBImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1375,7 +1406,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadRLAImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1404,7 +1435,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadRLEImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1433,7 +1464,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadSGIImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1462,8 +1493,8 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadSTEGANOImage returns a pointer to the image after reading. A
-null image is returned if there is a a memory shortage of if the image
-cannot be read.
+null image is returned if there is a memory shortage of if the image cannot
+be read.
 
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
@@ -1491,7 +1522,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadSUNImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1520,7 +1551,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadTGAImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1549,7 +1580,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadTIFFImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1578,7 +1609,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadTILEImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1610,7 +1641,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadTIMImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1639,7 +1670,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadTTFImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1668,7 +1699,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadTXTImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1697,7 +1728,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadUILImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1726,7 +1757,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadUYVYImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1755,7 +1786,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadVICARImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>filename:</STRONG><DD>
@@ -1784,7 +1815,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadVIDImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1813,7 +1844,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadVIFFImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>filename:</STRONG><DD>
@@ -1863,7 +1894,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadXBMImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1893,7 +1924,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadXCImage returns a pointer to the image after creating it. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1922,8 +1953,8 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadXPMImage returns a pointer to the image after creating it. A
-null image is returned if there is a a memory shortage or if the image
-cannot be read.
+null image is returned if there is a memory shortage or if the image cannot
+be read.
 
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
@@ -1951,7 +1982,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadXWDImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1980,7 +2011,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadYUVImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
+image is returned if there is a memory shortage or if the image cannot be
 read.
 
 <DT><STRONG>image_info:</STRONG><DD>
@@ -2012,7 +2043,7 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadImage returns a pointer to the image after reading. A null image
-is returned if there is a a memory shortage or if the image cannot be read.
+is returned if there is a memory shortage or if the image cannot be read.
 
 <DT><STRONG>image_info:</STRONG><DD>
 <P>

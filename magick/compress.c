@@ -300,7 +300,7 @@ Export void Ascii85Encode(const unsigned int code,FILE *file)
   register unsigned char
     *p;
 
-  assert(file != (FILE *) NULL);
+  assert(file != (const FILE *) NULL);
   ascii85_buffer[offset]=code;
   offset++;
   if (offset < 4)
@@ -342,7 +342,7 @@ Export void Ascii85Encode(const unsigned int code,FILE *file)
 %
 %  The format of the BMPDecodeImage routine is:
 %
-%      status=BMPDecodeImage(file,pixels,compression,number_columns,number_rows)
+%      status=BMPDecodeImage(file,compression,number_columns,number_rows,pixels)
 %
 %  A description of each parameter follows:
 %
@@ -351,9 +351,6 @@ Export void Ascii85Encode(const unsigned int code,FILE *file)
 %
 %    o file: The address of a structure of type FILE.  BMP encoded pixels
 %      are read from this file.
-%
-%    o pixels:  The address of a byte (8 bits) array of pixel data created by
-%      the decoding process.
 %
 %    o compression:  A value of 1 means the compressed pixels are runlength
 %      encoded for a 256-color bitmap.  A value of 2 means a 16-color bitmap.
@@ -364,11 +361,14 @@ Export void Ascii85Encode(const unsigned int code,FILE *file)
 %    o number_rows:  An integer value that is the number of rows or
 %      heigth in pixels of your source image.
 %
+%    o pixels:  The address of a byte (8 bits) array of pixel data created by
+%      the decoding process.
+%
 %
 */
-Export unsigned int BMPDecodeImage(FILE *file,unsigned char *pixels,
-  const unsigned int compression,const unsigned int number_columns,
-  const unsigned int number_rows)
+Export unsigned int BMPDecodeImage(FILE *file,const unsigned int compression,
+  const unsigned int number_columns,const unsigned int number_rows,
+  unsigned char *pixels)
 {
   int
     byte,
@@ -490,8 +490,8 @@ Export unsigned int BMPDecodeImage(FILE *file,unsigned char *pixels,
 %
 %  The format of the BMPEncodeImage routine is:
 %
-%      status=BMPEncodeImage(pixels,compressed_pixels,number_columns,
-%        number_rows)
+%      status=BMPEncodeImage(pixels,number_columns,number_rows,
+%        compressed_pixels)
 %
 %  A description of each parameter follows:
 %
@@ -501,28 +501,30 @@ Export unsigned int BMPDecodeImage(FILE *file,unsigned char *pixels,
 %    o pixels:  The address of a byte (8 bits) array of pixel data created by
 %      the compression process.
 %
-%    o compressed_pixels:  The address of a byte (8 bits) array of compressed
-%      pixel data.
-%
 %    o number_columns:  An integer value that is the number of columns or
 %      width in pixels of your source image.
 %
 %    o number_rows:  An integer value that is the number of rows or
 %      heigth in pixels of your source image.
 %
+%    o compressed_pixels:  The address of a byte (8 bits) array of compressed
+%      pixel data.
+%
 %
 */
-Export unsigned int BMPEncodeImage(unsigned char *pixels,
-  unsigned char *compressed_pixels,const unsigned int number_columns,
-  const unsigned int number_rows)
+Export unsigned int BMPEncodeImage(const unsigned char *pixels,
+  const unsigned int number_columns,const unsigned int number_rows,
+  unsigned char *compressed_pixels)
 {
+  register const unsigned char
+    *p;
+
   register int
     i,
     x,
     y;
 
   register unsigned char
-    *p,
     *q;
 
   /*
@@ -1802,8 +1804,8 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 %
 %
 */
-Export unsigned int LZWEncodeImage(FILE *file,unsigned char *pixels,
-  const unsigned int number_pixels)
+Export unsigned int LZWEncodeImage(FILE *file,const unsigned int number_pixels,
+  unsigned char *pixels)
 {
 #define LZWClr  256  /* Clear Table Marker */
 #define LZWEod  257  /* End of Data marker */
@@ -1974,7 +1976,7 @@ Export unsigned int LZWEncodeImage(FILE *file,unsigned char *pixels,
 %
 %
 */
-Export unsigned int PackbitsDecodeImage(Image *image,int channel)
+Export unsigned int PackbitsDecodeImage(Image *image,const int channel)
 {
   int
     count,
@@ -2107,7 +2109,7 @@ Export unsigned int PackbitsDecodeImage(Image *image,int channel)
 %
 %  The format of the PackbitsEncodeImage routine is:
 %
-%      status=PackbitsEncodeImage(file,pixels,number_pixels)
+%      status=PackbitsEncodeImage(file,number_pixels,pixels)
 %
 %  A description of each parameter follows:
 %
@@ -2117,16 +2119,16 @@ Export unsigned int PackbitsDecodeImage(Image *image,int channel)
 %    o file: The address of a structure of type FILE.  LZW encoded pixels
 %      are written to this file.
 %
-%    o pixels: The address of an unsigned array of characters containing the
+%    o number_pixels:  An unsigned integer that specifies the number of
 %      pixels to compress.
 %
-%    o number_pixels:  An unsigned integer that specifies the number of
+%    o pixels: The address of an unsigned array of characters containing the
 %      pixels to compress.
 %
 %
 */
-Export unsigned int PackbitsEncodeImage(FILE *file,unsigned char *pixels,
-  unsigned int number_pixels)
+Export unsigned int PackbitsEncodeImage(FILE *file,unsigned int number_pixels,
+  unsigned char *pixels)
 {
   register int
     count,
@@ -2747,7 +2749,7 @@ Export unsigned char* PICTDecodeImage(Image *image,int bytes_per_line,
 %
 %
 */
-Export unsigned int PICTEncodeImage(Image *image,unsigned char *scanline,
+Export unsigned int PICTEncodeImage(Image *image,const unsigned char *scanline,
   unsigned char *pixels)
 {
 #define MaxCount  128
@@ -2758,6 +2760,9 @@ Export unsigned int PICTEncodeImage(Image *image,unsigned char *scanline,
     repeat_count,
     runlength;
 
+  register const unsigned char
+    *p;
+
   register int
     i;
 
@@ -2765,7 +2770,6 @@ Export unsigned int PICTEncodeImage(Image *image,unsigned char *scanline,
     packets;
 
   register unsigned char
-    *p,
     *q;
 
   unsigned char
@@ -3414,7 +3418,7 @@ Export void SetRunlengthEncoder(RunlengthPacket *packet)
 %
 %
 */
-Export void SetRunlengthPackets(Image *image,unsigned long packets)
+Export void SetRunlengthPackets(Image *image,const unsigned long packets)
 {
   image->packets=packets;
   image->pixels=(RunlengthPacket *) ReallocateMemory((char *) image->pixels,
@@ -3437,8 +3441,8 @@ Export void SetRunlengthPackets(Image *image,unsigned long packets)
 %
 %  The format of the SUNDecodeImage routine is:
 %
-%      status=SUNDecodeImage(compressed_pixels,pixels,number_columns,
-%        number_rows)
+%      status=SUNDecodeImage(compressed_pixels,number_columns,number_rows,
+%        pixels)
 %
 %  A description of each parameter follows:
 %
@@ -3461,15 +3465,17 @@ Export void SetRunlengthPackets(Image *image,unsigned long packets)
 %
 %
 */
-Export unsigned int SUNDecodeImage(unsigned char *compressed_pixels,
-  unsigned char *pixels,const unsigned int number_columns,
-  const unsigned int number_rows)
+Export unsigned int SUNDecodeImage(const unsigned char *compressed_pixels,
+  const unsigned int number_columns,const unsigned int number_rows,
+  unsigned char *pixels)
 {
+  register const unsigned char
+    *p;
+
   register int
     count;
 
   register unsigned char
-    *p,
     *q;
 
   unsigned char
@@ -3520,7 +3526,7 @@ Export unsigned int SUNDecodeImage(unsigned char *compressed_pixels,
 %
 %  The format of the ZLIBEncodeImage routine is:
 %
-%      status=ZLIBEncodeImage(file,pixels,number_pixels)
+%      status=ZLIBEncodeImage(file,number_pixels,quality,pixels)
 %
 %  A description of each parameter follows:
 %
@@ -3530,18 +3536,19 @@ Export unsigned int SUNDecodeImage(unsigned char *compressed_pixels,
 %    o file: The address of a structure of type FILE.  ZLIB encoded pixels
 %      are written to this file.
 %
-%    o pixels: The address of an unsigned array of characters containing the
-%      pixels to compress.
-%
 %    o number_pixels:  An unsigned integer that specifies the number of
 %      pixels to compress.
 %
 %    o quality: the compression level (0-100).
 %
+%    o pixels: The address of an unsigned array of characters containing the
+%      pixels to compress.
+%
 %
 */
-Export unsigned int ZLIBEncodeImage(FILE *file,unsigned char *pixels,
-  const unsigned long number_pixels,const unsigned int quality)
+Export unsigned int ZLIBEncodeImage(FILE *file,
+  const unsigned long number_pixels,const unsigned int quality,
+  unsigned char *pixels)
 {
   int
     status;

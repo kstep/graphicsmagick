@@ -424,7 +424,7 @@ static unsigned int Assignment(CubeInfo *cube_info,QuantizeInfo *quantize_info,
       cube_info->color.red=p->red;
       cube_info->color.green=p->green;
       cube_info->color.blue=p->blue;
-      cube_info->distance=9.0*(MaxRGB+1)*(MaxRGB+1);
+      cube_info->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
       ClosestColor(cube_info,node_info->parent);
       index=cube_info->color_number;
       if (image->class == PseudoClass)
@@ -512,8 +512,8 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
     mid_green,
     mid_blue;
 
-  int
-    distance;
+  register double
+    distance_squared;
 
   register int
     i;
@@ -537,7 +537,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
 
   squares=cube_info->squares;
   cube_info->root->quantization_error=
-    9.0*(MaxRGB/2.0)*(MaxRGB/2.0)*image->columns*image->rows;
+    3.0*(MaxRGB/2.0)*(MaxRGB/2.0)*image->columns*image->rows;
   if (image->packets == (image->columns*image->rows))
     CondenseImage(image);
   p=image->pixels;
@@ -586,18 +586,12 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
       node_info=node_info->child[id];
       if (level != 8)
         {
-          register double
-            distance_squared;
-
           /*
             Approximate the quantization error represented by this node.
           */
-          distance=(int) (DownScale(p->red)-mid_red);
-          distance_squared=squares[(int) distance];
-          distance=(int) (DownScale(p->green)-mid_green);
-          distance_squared+=squares[(int) distance];
-          distance=(int) (DownScale(p->blue)-mid_blue);
-          distance_squared+=squares[(int) distance];
+          distance_squared=squares[(int) (DownScale(p->red)-mid_red)]+
+            squares[(int) (DownScale(p->green)-mid_green)]+
+            squares[(int) (DownScale(p->blue)-mid_blue)];
           node_info->quantization_error+=distance_squared*(p->length+1);
         }
       index--;
@@ -648,46 +642,39 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
   register unsigned int
     id;
 
-  /*
-    Traverse any children.
-  */
-  if (node_info->census != 0)
-    for (id=0; id < 8; id++)
-      if (node_info->census & (1 << id))
-        ClosestColor(cube_info,node_info->child[id]);
-  if (node_info->number_unique != 0)
+  if (cube_info->distance != 0.0)
     {
-      register ColorPacket
-        *color;
-
-      register double
-        distance_squared;
-
-      register int
-        distance;
-
-      register long
-        mean;
-
-      register unsigned int
-        *squares;
-
       /*
-        Determine if this color is "closest".
+        Traverse any children.
       */
-      squares=cube_info->squares;
-      color=cube_info->colormap+node_info->color_number;
-      mean=(color->red+cube_info->color.red)/2;
-      distance=color->red-(int) cube_info->color.red;
-      distance_squared=(2.0*(MaxRGB+1)+mean)*squares[distance]/(MaxRGB+1);
-      distance=color->green-(int) cube_info->color.green;
-      distance_squared+=4.0*squares[distance];
-      distance=color->blue-(int) cube_info->color.blue;
-      distance_squared+=(3.0*(MaxRGB+1)-1.0-mean)*squares[distance]/(MaxRGB+1);
-      if (distance_squared < cube_info->distance)
+      if (node_info->census != 0)
+        for (id=0; id < 8; id++)
+          if (node_info->census & (1 << id))
+            ClosestColor(cube_info,node_info->child[id]);
+      if (node_info->number_unique != 0)
         {
-          cube_info->distance=distance_squared;
-          cube_info->color_number=(unsigned short) node_info->color_number;
+          register ColorPacket
+            *color;
+
+          register double
+            distance_squared;
+
+          register unsigned int
+            *squares;
+
+          /*
+            Determine if this color is "closest".
+          */
+          squares=cube_info->squares;
+          color=cube_info->colormap+node_info->color_number;
+          distance_squared=squares[color->red-(int) cube_info->color.red]+
+            squares[color->green-(int) cube_info->color.green]+
+            squares[color->blue-(int) cube_info->color.blue];
+          if (distance_squared < cube_info->distance)
+            {
+              cube_info->distance=distance_squared;
+              cube_info->color_number=(unsigned short) node_info->color_number;
+            }
         }
     }
 }
@@ -903,7 +890,7 @@ static void Dither(CubeInfo *cube_info,Image *image,unsigned int direction)
           p->color.red=red;
           p->color.green=green;
           p->color.blue=blue;
-          p->distance=9.0*(MaxRGB+1)*(MaxRGB+1);
+          p->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
           ClosestColor(p,node_info->parent);
           p->cache[i]=p->color_number;
         }
@@ -1895,18 +1882,20 @@ unsigned int QuantizationError(Image *image)
     cube_info;
 
   double
-    distance_squared,
     maximum_error_per_pixel,
     total_error;
 
-  int
-    distance;
+  register double
+    distance_squared;
 
   register int
     i;
 
   register RunlengthPacket
     *p;
+
+  register unsigned int
+    *squares;
 
   /*
     Initialize measurement.
@@ -1932,17 +1921,15 @@ unsigned int QuantizationError(Image *image)
   /*
     For each pixel, collect error statistics.
   */
+  squares=cube_info.squares;
   maximum_error_per_pixel=0;
   total_error=0;
   p=image->pixels;
   for (i=0; i < (int) image->packets; i++)
   {
-    distance=p->red-(int) image->colormap[p->index].red;
-    distance_squared=cube_info.squares[distance];
-    distance=p->green-(int) image->colormap[p->index].green;
-    distance_squared+=cube_info.squares[distance];
-    distance=p->blue-(int) image->colormap[p->index].blue;
-    distance_squared+=cube_info.squares[distance];
+    distance_squared=squares[p->red-(int) image->colormap[p->index].red]+
+      squares[p->green-(int) image->colormap[p->index].green]+
+      squares[p->blue-(int) image->colormap[p->index].blue];
     total_error+=(distance_squared*(p->length+1));
     if (distance_squared > maximum_error_per_pixel)
       maximum_error_per_pixel=distance_squared;
@@ -1951,8 +1938,7 @@ unsigned int QuantizationError(Image *image)
   /*
     Compute final error statistics.
   */
-  image->mean_error_per_pixel=(unsigned int)
-    total_error/(image->columns*image->rows);
+  image->mean_error_per_pixel=total_error/(image->columns*image->rows);
   image->normalized_mean_error=
     (image->mean_error_per_pixel)/(3.0*(MaxRGB+1)*(MaxRGB+1));
   image->normalized_maximum_error=

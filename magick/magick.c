@@ -224,7 +224,7 @@ static const MagickInfo
     { "VDA", ReadTGAImage, WriteTGAImage, True, "Truevision Targa image file" },
     { "VICAR", ReadVICARImage, WriteVICARImage, False,
       "VICAR rasterfile format" },
-    { "VID", ReadVIDImage, WriteMIFFImage, False, "Visual Image Directory" },
+    { "VID", ReadVIDImage, WriteMIFFImage, True, "Visual Image Directory" },
     { "VIFF", ReadVIFFImage, WriteVIFFImage, True,
       "Khoros Visualization image file" },
     { "VST", ReadTGAImage, WriteTGAImage, True, "Truevision Targa image file" },

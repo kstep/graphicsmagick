@@ -664,7 +664,7 @@ Export void ListDelegateInfo(FILE *file)
   register int
     i;
 
-  if (file == (FILE *) NULL)
+  if (file == (const FILE *) NULL)
     file=stdout;
   delegates=SetDelegateInfo((DelegateInfo *) NULL);
   if (delegates == (DelegateInfo *) NULL)

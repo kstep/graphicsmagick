@@ -205,7 +205,7 @@ Export void MagickError(const int error,const char *message,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MagickWarning calls the warning handler routines with an warning
+%  Method MagickWarning calls the warning handler routines with a warning
 %  message.
 %
 %  The format of the MagickWarning routine is:
