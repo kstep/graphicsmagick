@@ -729,8 +729,8 @@ static double Triangle(double x)
 
 static unsigned int HorizontalFilter(const Image *source,Image *destination,
   const double x_factor,const FilterInfo *filter_info,const double blur,
-  ContributionInfo *contribution,const unsigned int feedback,const size_t span,
-  unsigned int *quantum,ExceptionInfo *exception)
+  ContributionInfo *contribution,const size_t span,unsigned int *quantum,
+  ExceptionInfo *exception)
 {
 #define ResizeImageText  "  Resize image...  "
 
@@ -767,8 +767,6 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     Apply filter to resize horizontally from source to destination.
   */
   scale=blur*Max(1.0/x_factor,1.0);
-  if (feedback)
-    scale=blur/x_factor;
   support=scale*filter_info->support;
   if (support < 0.5)
     {
@@ -779,7 +777,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
-  mid=(scale >= 1.0 ? 1.0 : -1.0)*(0.5-MagickEpsilon);
+  mid=(scale >= 1.0 ? 1.0 : -1.0)*0.5;
   for (x=0; x < (long) destination->columns; x++)
   {
     center=(double) x/x_factor;
@@ -847,8 +845,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
 
 static unsigned int VerticalFilter(const Image *source,Image *destination,
   const double y_factor,const FilterInfo *filter_info,const double blur,
-  ContributionInfo *contribution,const unsigned int feedback,const size_t span,
-  unsigned int *quantum,ExceptionInfo *exception)
+  ContributionInfo *contribution,const size_t span,unsigned int *quantum,
+  ExceptionInfo *exception)
 {
   double
     blue,
@@ -883,8 +881,6 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     Apply filter to resize vertically from source to destination.
   */
   scale=blur*Max(1.0/y_factor,1.0);
-  if (feedback)
-    scale=blur/y_factor;
   support=scale*filter_info->support;
   if (support < 0.5)
     {
@@ -895,7 +891,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
-  mid=(scale >= 1.0 ? 1.0 : -1.0)*(0.5-MagickEpsilon);
+  mid=(scale >= 1.0 ? 1.0 : -1.0)*0.5;
   for (y=0; y < (long) destination->rows; y++)
   {
     center=(double) y/y_factor;
@@ -1057,10 +1053,9 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
         }
       span=source_image->columns+resize_image->rows;
       status=HorizontalFilter(image,source_image,x_factor,&filters[filter],blur,
-        contribution,columns == rows,span,&quantum,exception);
+        contribution,span,&quantum,exception);
       status|=VerticalFilter(source_image,resize_image,y_factor,
-        &filters[filter],blur,contribution,columns == rows,span,&quantum,
-        exception);
+        &filters[filter],blur,contribution,span,&quantum,exception);
     }
   else
     {
@@ -1073,10 +1068,9 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
         }
       span=resize_image->columns+source_image->columns;
       status=VerticalFilter(image,source_image,y_factor,&filters[filter],blur,
-        contribution,columns == rows,span,&quantum,exception);
+        contribution,span,&quantum,exception);
       status|=HorizontalFilter(source_image,resize_image,x_factor,
-        &filters[filter],blur,contribution,columns == rows,span,&quantum,
-        exception);
+        &filters[filter],blur,contribution,span,&quantum,exception);
     }
   /*
     Free allocated memory.
