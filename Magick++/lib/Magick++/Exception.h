@@ -21,7 +21,6 @@ namespace Magick
 {
   class Exception : public std::exception
   {
-    friend std::ostream& operator<<(std::ostream& stream_, const Exception& exception_);
   public:
     Exception( const std::string& what_ );
     virtual const char* what () const throw();
@@ -184,4 +183,14 @@ namespace Magick
 
 
 } // namespace Magick
+
+
+// Print exception to stream.
+inline std::ostream& operator<<( std::ostream& stream_,
+                                 const Magick::Exception& exception_)
+{
+  stream_ << exception_.what();
+  return stream_;
+}
+
 #endif
