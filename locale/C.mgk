@@ -422,6 +422,9 @@
         <Message name="StaticPlanesValueNotEqualToOne">
 					Static planes value not equal to 1
         </Message>
+        <Message name="UnableToReadColormapFromDumpFile">
+          Unable to read colormap from dump file
+        </Message>
         <Message name="UnableToReadColorProfile">
           Unable to read color profile
         </Message>
@@ -440,8 +443,17 @@
         <Message name="UnableToReadImageData">
           Unable to read image data
         </Message>
+        <Message name="UnableToReadPixmapFromDumpFile">
+          Unable to read pixmap from dump file
+        </Message>
+        <Message name="UnableToReadSubmage">
+          Unable to read subimage
+        </Message>
         <Message name="UnableToReadVIDImage">
           Unable to read VID image
+        </Message>
+        <Message name="UnableToReadWindowNameFromDumpFile">
+          Unable to read window name from dump file
         </Message>
         <Message name="UnableToRunlengthDecodeImage">
           Unable to runlength decode image
@@ -595,7 +607,7 @@
   </File>
   <Image>
     <Error>
-      <Message name="AngleIs discontinuous">
+      <Message name="AngleIsDiscontinuous">
         angle is discontinuous
       </Message>
       <Message name="ColorSeparatedImageRequired">
@@ -958,6 +970,9 @@
       </Message>
       <Message name="UnableToAddOrRemoveProfile">
         Unable to add or remove profile
+      </Message>
+      <Message name="UnableToAllocateICCProfile">
+        unable to allocate ICC profile
       </Message>
       <Message name="UnableToBlurImage">
         Unable to blur image
@@ -1369,6 +1384,9 @@
         <Message name="UnableToQuantizeImageSequence">
           unable to quantize image sequence
         </Message>
+        <Message name="UnableToReadTextChunk">
+          unable to read text chunk
+        </Message>
         <Message name="UnableToReadXImage">
           unable to read X image
         </Message>
@@ -1410,11 +1428,14 @@
         </Message>
       </Error>
       <FatalError>
+        <Message name="MemoryAllocationFailed">
+          Memory allocation failed
+        </Message>
         <Message name="UnableToDisplayImage">
           unable to display image
         </Message>
-        <Message name="MemoryAllocationFailed">
-          Memory allocation failed
+        <Message name="UnableToInterpretMSLImage">
+          unable to interpret MSL image
         </Message>
       </FatalError>
       <Warning>

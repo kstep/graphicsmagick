@@ -1446,10 +1446,7 @@ static int formatIPTC(Image *ifile, Image *ofile)
     c=ReadBlobByte(ifile);
     if (c == EOF) return -1;
     if (c & (unsigned char) 0x80)
-      {
-        printf("Unable to read block longer then 32k");
-        return 0;
-      }
+      return 0;
     else
       {
         int
@@ -1576,10 +1573,7 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, long len)
     c = *s++; len--;
     if (len < 0) return -1;
     if (c & (unsigned char) 0x80)
-      {
-        printf("Unable to read block longer then 32k");
-        return 0;
-      }
+      return 0;
     else
       {
         s--; len++;

@@ -693,6 +693,9 @@ const char *GetLocaleMessage(const char *tag)
                   return tag;
 
               case 'u':  case 'U':
+                if (p - tp == 32 && !LocaleNCompare(tp, "UnableToReadColormapFromDumpFile", 32))
+                  return *np ? tag : "Unable to read colormap from dump file";
+                else
                 if (p - tp == 24 && !LocaleNCompare(tp, "UnableToReadColorProfile", 24))
                   return *np ? tag : "Unable to read color profile";
                 else
@@ -711,8 +714,17 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 23 && !LocaleNCompare(tp, "UnableToReadIPTCProfile", 23))
                   return *np ? tag : "Unable to read IPTC profile";
                 else
+                if (p - tp == 30 && !LocaleNCompare(tp, "UnableToReadPixmapFromDumpFile", 30))
+                  return *np ? tag : "Unable to read pixmap from dump file";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToReadSubmage", 19))
+                  return *np ? tag : "Unable to read subimage";
+                else
                 if (p - tp == 20 && !LocaleNCompare(tp, "UnableToReadVIDImage", 20))
                   return *np ? tag : "Unable to read VID image";
+                else
+                if (p - tp == 34 && !LocaleNCompare(tp, "UnableToReadWindowNameFromDumpFile", 34))
+                  return *np ? tag : "Unable to read window name from dump file";
                 else
                 if (p - tp == 28 && !LocaleNCompare(tp, "UnableToRunlengthDecodeImage", 28))
                   return *np ? tag : "Unable to runlength decode image";
@@ -940,7 +952,7 @@ const char *GetLocaleMessage(const char *tag)
             return tag;
 
           case 'a':  case 'A':
-            if (p - tp == 21 && !LocaleNCompare(tp, "AngleIs discontinuous", 21))
+            if (p - tp == 20 && !LocaleNCompare(tp, "AngleIsDiscontinuous", 20))
               return *np ? tag : "angle is discontinuous";
             else
               return tag;
@@ -1541,6 +1553,9 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 26 && !LocaleNCompare(tp, "UnableToAddOrRemoveProfile", 26))
               return *np ? tag : "Unable to add or remove profile";
             else
+            if (p - tp == 26 && !LocaleNCompare(tp, "UnableToAllocateICCProfile", 26))
+              return *np ? tag : "unable to allocate ICC profile";
+            else
             if (p - tp == 17 && !LocaleNCompare(tp, "UnableToBlurImage", 17))
               return *np ? tag : "Unable to blur image";
             else
@@ -1850,6 +1865,9 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 29 && !LocaleNCompare(tp, "UnableToQuantizeImageSequence", 29))
                   return *np ? tag : "unable to quantize image sequence";
                 else
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToReadTextChunk", 21))
+                  return *np ? tag : "unable to read text chunk";
+                else
                 if (p - tp == 18 && !LocaleNCompare(tp, "UnableToReadXImage", 18))
                   return *np ? tag : "unable to read X image";
                 else
@@ -1910,6 +1928,9 @@ const char *GetLocaleMessage(const char *tag)
               case 'u':  case 'U':
                 if (p - tp == 20 && !LocaleNCompare(tp, "UnableToDisplayImage", 20))
                   return *np ? tag : "unable to display image";
+                else
+                if (p - tp == 25 && !LocaleNCompare(tp, "UnableToInterpretMSLImage", 25))
+                  return *np ? tag : "unable to interpret MSL image";
                 else
                   return tag;
               }

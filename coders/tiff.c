@@ -439,7 +439,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           TIFFClose(tiff);
           if ((image->blob->file == stdin) || image->blob->pipet)
             remove(filename);
-          ThrowReaderException(CorruptImageError,"Unable to read subimage",
+          ThrowReaderException(CorruptImageError,"UnableToReadSubimage",
             image)
         }
     }

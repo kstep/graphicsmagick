@@ -2772,8 +2772,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->color_profile.info=(unsigned char *) AcquireMemory(length);
             if (image->color_profile.info == (unsigned char *) NULL)
               {
-                 MagickError(OptionError, "Unable to allocate ICC profile",
-                    "MemoryAllocationFailed");
+                 MagickError(OptionError,"MemoryAllocationFailed",
+									"UnableToAllocateICCProfile");
                  image->color_profile.length=0;
               }
             else
@@ -3549,9 +3549,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             value=(char *) AcquireMemory(length+1);
             if (value == (char *) NULL)
               {
-                ThrowException(&image->exception,(ExceptionType)
-                   ResourceLimitError,
-                  "Unable to read text chunk","MemoryAllocationFailed");
+                ThrowException(&image->exception,ResourceLimitError,
+                  "MemoryAllocationFailed","UnableToReadTextChunk");
                 break;
               }
             *value='\0';
@@ -4760,8 +4759,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter WritePNGImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException((ExceptionType) FileOpenError,
-      "Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
 
   write_mng=LocaleCompare(image_info->magick,"MNG") == 0;
   write_png8=LocaleCompare(image_info->magick,"PNG8") == 0;

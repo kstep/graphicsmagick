@@ -4163,8 +4163,8 @@ static unsigned int ProcessMSLScript(const ImageInfo *image_info,Image **image,
   status=OpenBlob(image_info,msl_image,ReadBinaryBlobMode,exception);
   if (status == False)
     {
-      ThrowException(exception,FileOpenError,
-        "Unable to open the MSL file",(msl_image)->filename);
+      ThrowException(exception,FileOpenError,"UnableToOpenFile",
+        msl_image->filename);
       return(False);
     }
     
@@ -4183,8 +4183,8 @@ static unsigned int ProcessMSLScript(const ImageInfo *image_info,Image **image,
       (msl_info.image == (Image **) NULL) ||
       (msl_info.attributes == (Image **) NULL) ||
       (msl_info.group_info == (MSLGroupInfo *) NULL))
-    MagickFatalError(ResourceLimitFatalError,"Unable to interpret MSL image",
-      "MemoryAllocationFailed");
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "UnableToInterpretMSLImage");
   *msl_info.image_info=CloneImageInfo(image_info);
   *msl_info.draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   *msl_info.attributes=CloneImage(image_info->attributes,0,0,True,exception);

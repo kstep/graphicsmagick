@@ -231,8 +231,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) SetImageAttribute(image,"comment",comment);
   LiberateMemory((void **) &comment);
   if (count == 0)
-    ThrowReaderException(CorruptImageError,
-      "Unable to read window name from dump file",image);
+    ThrowReaderException(CorruptImageError,"UnableToReadWindowNameFromDumpFile",
+      image);
   /*
     Initialize the X image.
   */
@@ -274,7 +274,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         count=ReadBlob(image,sz_XWDColor,(char *) &color);
         if (count == 0)
           ThrowReaderException(CorruptImageError,
-            "Unable to read color map from dump file",image);
+            "UnableToReadColormapFromDumpfile",image);
         colors[i].pixel=color.pixel;
         colors[i].red=color.red;
         colors[i].green=color.green;
@@ -306,7 +306,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   count=ReadBlob(image,length,ximage->data);
   if (count == 0)
-    ThrowReaderException(CorruptImageError,"Unable to read dump pixmap",
+    ThrowReaderException(CorruptImageError,"UnableToReadPixmapFromDumpFile",
       image);
   /*
     Convert image to MIFF format.
