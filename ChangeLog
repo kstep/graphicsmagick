@@ -1,3 +1,7 @@
+2004-04-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/symbols.h (GetMagickDimension): Added GetMagickDimension.
+
 2004-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (GetMagickDimension): New function to replace
