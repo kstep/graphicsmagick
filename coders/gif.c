@@ -159,6 +159,9 @@ static unsigned int DecodeImage(Image *image,const int opacity,
     Initialize GIF data stream decoder.
   */
   data_size=ReadBlobByte(image);
+  if (data_size > 8)
+    ThrowBinaryException(CorruptImageWarning,"Corrupt GIF image",
+      image->filename);
   clear=1 << data_size;
   end_of_information=clear+1;
   available=clear+2;
@@ -976,14 +979,15 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     status=DecodeImage(image,opacity,exception);
     if (status == False)
-      ThrowBinaryException(CorruptImageWarning,"Corrupt GIF image",
-        image->filename);
+      ThrowReaderException(CorruptImageWarning,"Corrupt GIF image",image);
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
   }
   if (global_colormap != (unsigned char *) NULL)
     LiberateMemory((void **) &global_colormap);
+  if ((image->columns == 0) || (image->rows == 0))
+    ThrowReaderException(CorruptImageWarning,"image size is 0",image);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
