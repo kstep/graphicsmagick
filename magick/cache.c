@@ -269,14 +269,14 @@ static unsigned int CompressCache(Cache cache)
   gzFile
     file;
 
+  int
+    y;
+
   long
     count;
 
   size_t
     length;
-
-  unsigned int
-    y;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -301,16 +301,16 @@ static unsigned int CompressCache(Cache cache)
       (void) gzclose(file);
       return(False);
     }
-  for (y=0; y < cache_info->rows; y++)
+  for (y=0; y < (int) cache_info->rows; y++)
   {
     count=read(cache_info->file,pixels,cache_info->columns*sizeof(PixelPacket));
     if ((long) gzwrite(file,pixels,(unsigned) count) != count)
       break;
   }
-  if (y == cache_info->rows)
+  if (y == (int) cache_info->rows)
     if ((cache_info->storage_class == PseudoClass) ||
         (cache_info->colorspace == CMYKColorspace))
-      for (y=0; y < cache_info->rows; y++)
+      for (y=0; y < (int) cache_info->rows; y++)
       {
         count=read(cache_info->file,pixels,
           cache_info->columns*sizeof(IndexPacket));
@@ -324,7 +324,7 @@ static unsigned int CompressCache(Cache cache)
     (void) remove(filename);
   else
     (void) remove(cache_info->cache_filename);
-  return(y == cache_info->rows);
+  return(y == (int) cache_info->rows);
 #else
   return(True);
 #endif
@@ -383,9 +383,6 @@ static void DestroyCacheInfo(Cache cache)
   CacheInfo
     *cache_info;
 
-  register unsigned int
-    id;
-
   size_t
     length;
 
@@ -425,6 +422,9 @@ static void DestroyCacheInfo(Cache cache)
   }
   if (cache_info->type != UndefinedCache)
     {
+      register unsigned int
+        id;
+
       for (id=0; id < (cache_info->rows+3); id++)
         DestroyCacheNexus(cache,id);
       LiberateMemory((void **) &cache_info->nexus_info);
@@ -1450,6 +1450,9 @@ static unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
   CacheInfo
     *cache_info;
 
+  int
+    y;
+
   off_t
     count,
     number_pixels,
@@ -1460,9 +1463,6 @@ static unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 
   register NexusInfo
     *nexus_info;
-
-  unsigned int
-    y;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -1480,7 +1480,7 @@ static unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
       /*
         Read indexes from memory.
       */
-      for (y=0; y < nexus_info->rows; y++)
+      for (y=0; y < (int) nexus_info->rows; y++)
       {
         (void) memcpy(indexes,cache_info->indexes+offset,
           nexus_info->columns*sizeof(IndexPacket));
@@ -1501,7 +1501,7 @@ static unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
         return(False);
     }
   number_pixels=cache_info->columns*cache_info->rows;
-  for (y=0; y < nexus_info->rows; y++)
+  for (y=0; y < (int) nexus_info->rows; y++)
   {
     count=lseek(cache_info->file,number_pixels*sizeof(PixelPacket)+offset*
       sizeof(IndexPacket),SEEK_SET);
@@ -1551,6 +1551,9 @@ static unsigned int ReadCachePixels(Cache cache,const unsigned int id)
   CacheInfo
     *cache_info;
 
+  int
+    y;
+
   off_t
     count,
     offset;
@@ -1560,9 +1563,6 @@ static unsigned int ReadCachePixels(Cache cache,const unsigned int id)
 
   register PixelPacket
     *pixels;
-
-  unsigned int
-    y;
 
   assert(cache != (Cache *) NULL);
   cache_info=(CacheInfo *) cache;
@@ -1577,7 +1577,7 @@ static unsigned int ReadCachePixels(Cache cache,const unsigned int id)
       /*
         Read pixels from memory.
       */
-      for (y=0; y < nexus_info->rows; y++)
+      for (y=0; y < (int) nexus_info->rows; y++)
       {
         (void) memcpy(pixels,cache_info->pixels+offset,
           nexus_info->columns*sizeof(PixelPacket));
@@ -1597,7 +1597,7 @@ static unsigned int ReadCachePixels(Cache cache,const unsigned int id)
       if (cache_info->file == -1)
         return(False);
     }
-  for (y=0; y < nexus_info->rows; y++)
+  for (y=0; y < (int) nexus_info->rows; y++)
   {
     count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
@@ -2079,22 +2079,22 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned int id)
         nexus_info->rows);
       if ((p != (PixelPacket *) NULL) && (q != (PixelPacket *) NULL))
         {
-          register PixelPacket
-            *r;
+          int
+            y;
 
-          register unsigned int
+          register int
             x;
 
-          unsigned int
-            y;
+          register PixelPacket
+            *r;
 
           /*
             Apply clip mask.
           */
           r=nexus_info->pixels;
-          for (y=0; y < nexus_info->rows; y++)
+          for (y=0; y < (int) nexus_info->rows; y++)
           {
-            for (x=0; x < nexus_info->columns; x++)
+            for (x=0; x < (int) nexus_info->columns; x++)
             {
               if (q->opacity == TransparentOpacity)
                 *r=(*p);
@@ -2216,6 +2216,9 @@ static unsigned int UncompressCache(Cache cache)
     filename[MaxTextExtent],
     *pixels;
 
+  int
+    y;
+
   gzFile
     file;
 
@@ -2224,9 +2227,6 @@ static unsigned int UncompressCache(Cache cache)
 
   size_t
     length;
-
-  unsigned int
-    y;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -2252,17 +2252,17 @@ static unsigned int UncompressCache(Cache cache)
       (void) gzclose(file);
       return(False);
     }
-  for (y=0; y < cache_info->rows; y++)
+  for (y=0; y < (int) cache_info->rows; y++)
   {
     length=cache_info->columns*sizeof(PixelPacket);
     count=(long) gzread(file,pixels,(unsigned int) length);
     if (write(cache_info->file,pixels,count) != count)
       break;
   }
-  if (y == cache_info->rows)
+  if (y == (int) cache_info->rows)
     if ((cache_info->storage_class == PseudoClass) ||
         (cache_info->colorspace == CMYKColorspace))
-      for (y=0; y < cache_info->rows; y++)
+      for (y=0; y < (int) cache_info->rows; y++)
       {
         length=cache_info->columns*sizeof(IndexPacket);
         count=(long) gzread(file,pixels,(unsigned int) length);
@@ -2272,7 +2272,7 @@ static unsigned int UncompressCache(Cache cache)
   LiberateMemory((void **) &pixels);
   (void) gzclose(file);
   (void) remove(filename);
-  return(y == cache_info->rows);
+  return(y == (int) cache_info->rows);
 #else
   return(True);
 #endif
@@ -2312,6 +2312,9 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
   CacheInfo
     *cache_info;
 
+  int
+    y;
+
   off_t
     count,
     number_pixels,
@@ -2322,9 +2325,6 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 
   register NexusInfo
     *nexus_info;
-
-  unsigned int
-    y;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -2342,7 +2342,7 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
       /*
         Write indexes to memory.
       */
-      for (y=0; y < nexus_info->rows; y++)
+      for (y=0; y < (int) nexus_info->rows; y++)
       {
         (void) memcpy(cache_info->indexes+offset,indexes,
           nexus_info->columns*sizeof(IndexPacket));
@@ -2363,7 +2363,7 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
         return(False);
     }
   number_pixels=cache_info->columns*cache_info->rows;
-  for (y=0; y < nexus_info->rows; y++)
+  for (y=0; y < (int) nexus_info->rows; y++)
   {
     count=lseek(cache_info->file,number_pixels*sizeof(PixelPacket)+offset*
       sizeof(IndexPacket),SEEK_SET);
@@ -2670,6 +2670,9 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned int id)
   CacheInfo
     *cache_info;
 
+  int
+    y;
+
   off_t
     count,
     offset;
@@ -2679,9 +2682,6 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned int id)
 
   register PixelPacket
     *pixels;
-
-  unsigned int
-    y;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -2696,7 +2696,7 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned int id)
       /*
         Write pixels to memory.
       */
-      for (y=0; y < nexus_info->rows; y++)
+      for (y=0; y < (int) nexus_info->rows; y++)
       {
         (void) memcpy(cache_info->pixels+offset,pixels,
           nexus_info->columns*sizeof(PixelPacket));
@@ -2716,7 +2716,7 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned int id)
       if (cache_info->file == -1)
         return(False);
     }
-  for (y=0; y < nexus_info->rows; y++)
+  for (y=0; y < (int) nexus_info->rows; y++)
   {
     count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
