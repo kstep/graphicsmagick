@@ -676,7 +676,7 @@ proc GetSetColorspace {img} {
     debug $wand
 
     $wand GetColorspace
-    $wand SetColorspace "CMYK"
+    $wand SetColorspace "RGB"
     $wand GetColorspace
 
     magick delete $wand

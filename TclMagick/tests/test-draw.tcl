@@ -70,7 +70,6 @@ proc DrawTest {img} {
     [magick create pixel pix7] SetColor "lightgray"
     [magick create pixel pix8] SetColor "black"
 
-# push defs; push pattern "foo" 10 10 20 20
     $draw PushGraphicContext
         $draw SetStrokeWidth 1.0
         $draw SetStrokeColor pix1
@@ -112,7 +111,6 @@ proc DrawTest {img} {
         $draw SetFillColor pix0
         $draw Color 0 0 replace
     $draw PopGraphicContext
-# pop pattern; pop defs
     
     $wand DrawImage $draw
     $wand WriteImage "$::TMP/y-Draw-%0d.bmp"

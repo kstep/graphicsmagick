@@ -6309,44 +6309,61 @@ static int drawObjCmd(
 	break;
     }
 
-    case TM_FILLCOLOR:              /* fillcolor get|set pixel */
-    case TM_STROKE_COLOR:           /* strokecolor get|set pixel */
-    case TM_TEXT_UNDERCOLOR:        /* textundercolor get|set pixel */
-        {
-            static CONST char *subCmds[] = {"get", "set", (char *) NULL};
-            int         subIdx;
-            PixelWand   *pixelPtr;
-            char        *name;
+    case TM_FILLCOLOR:              /* fillcolor ?pixel? */
+    case TM_STROKE_COLOR:           /* strokecolor ?pixel? */
+    case TM_TEXT_UNDERCOLOR:        /* textundercolor ?pixel? */
+    {
+        PixelWand   *pixelPtr;
+        char        *name;
 
-            if( objc != 4 ) {
-                Tcl_WrongNumArgs(interp, 2, objv, "get|set pixelName");
-                return TCL_ERROR;
-            }
-            if (Tcl_GetIndexFromObj(interp, objv[2], subCmds, "subcmd", 0, &subIdx) != TCL_OK) {
-                return TCL_ERROR;
-            }
-            name = Tcl_GetString(objv[3]);
-            if( (pixelPtr = findPixelWand(interp, name)) == NULL ) {
-		return TCL_ERROR;
-	    }
-            switch ((enum subIndex)index) {
-	    case TM_FILLCOLOR:
-		(subIdx == 0) ? DrawGetFillColor(wandPtr, pixelPtr) :
-		    DrawSetFillColor(wandPtr, pixelPtr);
-		break;
-	    case TM_STROKE_COLOR:
-		(subIdx == 0) ? DrawGetStrokeColor(wandPtr, pixelPtr) :
-		    DrawSetStrokeColor(wandPtr, pixelPtr);
-		break;
-	    case TM_TEXT_UNDERCOLOR:
-		(subIdx == 0) ? DrawGetTextUnderColor(wandPtr, pixelPtr) :
-		    DrawSetTextUnderColor(wandPtr, pixelPtr);
-		break;
-	    default:
-		break;
-            }
-            break;
+        if( objc > 3 ) {
+            Tcl_WrongNumArgs(interp, 2, objv, "?pixelName?");
+            return TCL_ERROR;
         }
+	if (objc > 2) { /* Set color / Get color with new name */
+	    name = Tcl_GetString(objv[2]);
+	    pixelPtr = findPixelWand(interp, name);
+        }
+        /*
+         * GET color if pixel object doesn't exists
+         * otherwise SET color
+         */
+        if( pixelPtr == NULL ) {
+            pixelPtr = NewPixelWand();
+            name = newPixelObj(interp, pixelPtr, name );
+
+            switch ((enum subIndex)index) {
+		case TM_FILLCOLOR:
+			DrawGetFillColor(wandPtr, pixelPtr);
+			break;
+		case TM_STROKE_COLOR:
+			DrawGetStrokeColor(wandPtr, pixelPtr);
+			break;
+		case TM_TEXT_UNDERCOLOR:
+			DrawGetTextUnderColor(wandPtr, pixelPtr);
+			break;
+		default:
+			break;
+            }
+            Tcl_SetResult(interp, name, TCL_VOLATILE);
+
+        } else {
+            switch ((enum subIndex)index) {
+		case TM_FILLCOLOR:
+			DrawSetFillColor(wandPtr, pixelPtr);
+			break;
+		case TM_STROKE_COLOR:
+			DrawSetStrokeColor(wandPtr, pixelPtr);
+			break;
+		case TM_TEXT_UNDERCOLOR:
+			DrawSetTextUnderColor(wandPtr, pixelPtr);
+			break;
+		default:
+			break;
+            }
+        }
+	break;
+    }
 
     case TM_GET_FILLCOLOR:          /* GetFillColor pixel */
     case TM_GET_STROKE_COLOR:       /* GetStrokeColor pixel */
