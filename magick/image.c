@@ -135,7 +135,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   /*
     Initialize Image structure.
   */
-  GetBlobInfo(&allocated_image->blob);
+  GetBlobInfo(&(allocated_image->blob));
   allocated_image->file=(FILE *) NULL;
   allocated_image->exempt=False;
   allocated_image->status=False;
@@ -2550,7 +2550,7 @@ Export void GetImageInfo(ImageInfo *image_info)
     File and image dimension members.
   */
   assert(image_info != (ImageInfo *) NULL);
-  GetBlobInfo(&image_info->blob);
+  GetBlobInfo(&(image_info->blob));
   image_info->file=(FILE *) NULL;
   *image_info->filename='\0';
   *image_info->magick='\0';

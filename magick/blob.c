@@ -105,9 +105,9 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
 
   local_info=CloneImageInfo(image_info);
   local_info->blob.data=(char *) blob;
+  local_info->blob.offset=0;
   local_info->blob.length=length;
   SetImageInfo(local_info,True);
-  GetBlobInfo(&local_info->blob);
   magick_info=(MagickInfo *) GetMagickInfo(local_info->magick);
   if (magick_info == (MagickInfo *) NULL)
     {
@@ -116,6 +116,7 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
       DestroyImageInfo(local_info);
       return((Image *) NULL);
     }
+  GetBlobInfo(&(local_info->blob));
   if (magick_info->blob_support)
     {
       /*

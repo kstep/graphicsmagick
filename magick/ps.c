@@ -336,7 +336,7 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
       return((Image *) NULL);
     }
   local_info=CloneImageInfo(image_info);
-  GetBlobInfo(&local_info->blob);
+  GetBlobInfo(&(local_info->blob));
   image=ReadPNMImage(local_info);
   DestroyImageInfo(local_info);
   (void) remove(image_info->filename);
