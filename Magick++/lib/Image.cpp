@@ -1880,6 +1880,46 @@ Magick::ClassType Magick::Image::classType ( void ) const
   return static_cast<Magick::ClassType>(constImage()->c_class);
 }
 
+// Associate a clip mask with the image. The clip mask must be the
+// same dimensions as the image. Pass an invalid image to unset an
+// existing clip mask.
+void Magick::Image::clipMask ( const Magick::Image clipMask_ )
+{
+  modifyImage();
+
+  if( clipMask_.isValid() )
+    {
+      // Set clip mask
+      ExceptionInfo exceptionInfo;
+      GetExceptionInfo( &exceptionInfo );
+      MagickLib::Image* clip_mask =
+	CloneImage( const_cast<MagickLib::Image *>(clipMask_.constImage()) ,
+                    0,
+                    0,
+                    static_cast<int>(true),
+                    &exceptionInfo);
+      SetImageClipMask( image(), clip_mask );
+    }
+  else
+    {
+      // Unset existing clip mask
+      MagickLib::SetImageClipMask( image(), 0 );
+    }
+}
+Magick::Image Magick::Image::clipMask ( void  ) const
+{
+      ExceptionInfo exceptionInfo;
+      GetExceptionInfo( &exceptionInfo );
+      MagickLib::Image* image =
+	CloneImage( constImage()->clip_mask,
+                    0,
+                    0,
+                    static_cast<int>(true),
+                    &exceptionInfo);
+
+      return Magick::Image( image, new Magick::Options());
+}
+
 void Magick::Image::colorFuzz ( double fuzz_ )
 {
   modifyImage();

@@ -1,3 +1,9 @@
+2001-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (clipMask): New method to add a clip mask to the
+ 	image.  Adds clipping to any image operation wherever the clip
+ 	mask image is tranparent.
+
 2001-08-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (print): Add single quotes around file names
@@ -10,7 +16,7 @@
 2001-07-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (flattenImages): New function to flatten a
- 	layered image.  Still needs documentation.
+ 	layered image.
 
 	* lib/Montage.cpp (Montage): Montage initial defaults are no
  	longer drawn from ImageInfo.  MontageInfo structure is entirely
@@ -26,9 +32,9 @@
 
 	* lib/Magick++/STL.h (medianFilterImage): Changed argument from
  	unsigned int to const double.
-	(fillColorImage): New method. Still needs documentation
-	(strokeColorImage): New method. Still needs documentation
-	(isValidImage): New method. Still needs documentation
+	(fillColorImage): New method.
+	(strokeColorImage): New method.
+	(isValidImage): New method.
 
 	* lib/Magick++/Image.h (edge): Change argument from unsigned int to double.
 	(medianFilter): Changed argument from unsigned int to const double.
@@ -61,7 +67,7 @@
 
 2001-01-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* lib/Image.cpp (fillRule): New method to specify the rule to use when filling drawn objects.  Still needs documentation!
+	* lib/Image.cpp (fillRule): New method to specify the rule to use when filling drawn objects.
 
 2001-01-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

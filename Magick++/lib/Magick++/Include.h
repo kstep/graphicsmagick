@@ -460,6 +460,7 @@ namespace Magick
   using MagickLib::SetCacheView;
   using MagickLib::SetClientName;
   using MagickLib::SetImageAttribute;
+  using MagickLib::SetImageClipMask;
   using MagickLib::SetImageInfo;
   using MagickLib::SetImagePixels;
   using MagickLib::SetMagickInfo;
