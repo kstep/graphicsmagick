@@ -91,16 +91,19 @@ int main( int /*argc*/, char ** argv)
     // Draw text
     //
     image.fillColor( "red" );
+    image.strokeColor( "red" );
     image.font( font );
     image.fontPointsize( 18 );
     image.annotate( "Hello world!", "+150+10" );
 
     image.fillColor( "blue" );
+    image.strokeColor( "blue" );
     image.font( font );
     image.fontPointsize( 14 );
     image.annotate( "Goodbye cruel world!", "+150+28" );
 
     image.fillColor( "black" );
+    image.strokeColor( "black" );
     image.font( font );
     image.fontPointsize( 14 );
     image.annotate( "I'm climbing the wall!", "+280+150",
