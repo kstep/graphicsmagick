@@ -1415,7 +1415,12 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   sprintf( buff, "%ix%i", (int)wmf_width, (int)wmf_height );
   (void) CloneString(&(clone_info->size), buff);
   if(image_info->texture == (char*)NULL)
-    sprintf(clone_info->filename,"XC:#%02x%02x%02x%02x",
+    sprintf(clone_info->filename,
+#if QuantumDepth == 8
+            "XC:#%02x%02x%02x%02x",
+#elif QuantumDepth == 16
+            "XC:#%04x%04x%04x%04x",
+#endif    
             image_info->background_color.red,
             image_info->background_color.green,
             image_info->background_color.blue,
