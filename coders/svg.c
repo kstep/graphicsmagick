@@ -3085,8 +3085,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         if (LocaleCompare("gradient-units",keyword) == 0)
           {
             GetToken(q,&q,token);
-            FormatString(message,"gradientUnits=%.1024s;",token);
-            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("gravity",keyword) == 0)
@@ -3355,6 +3353,19 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           {
             GetToken(q,&q,token);
             FormatString(message,"skewY(%.1024s) ",token);
+            (void) WriteBlobString(image,message);
+            break;
+          }
+        if (LocaleCompare("stop-color",keyword) == 0)
+          {
+            char
+              color[MaxTextExtent];
+
+            GetToken(q,&q,token);
+            (void) strncpy(color,token,MaxTextExtent-1);
+            GetToken(q,&q,token);
+            FormatString(message,
+              "  <stop offset=\"%s%\" stop-color=\"%s\" />\n",token,color);
             (void) WriteBlobString(image,message);
             break;
           }
