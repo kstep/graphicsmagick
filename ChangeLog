@@ -1,3 +1,7 @@
+2003-07-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/programming.html: Update Rmagick URL.
+
 2003-07-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* GraphicsMagick.spec: Added RPM spec file authored by Troy
