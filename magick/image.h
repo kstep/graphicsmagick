@@ -240,6 +240,11 @@ typedef struct _SegmentInfo
     y2;
 } SegmentInfo;
 
+struct SemaphoreInfo;
+
+typedef struct SemaphoreInfo
+  SemaphoreInfo;
+
 typedef struct _Timer
 {
   double
@@ -420,6 +425,9 @@ typedef struct _Image
 
   void
     *client_data;
+
+  SemaphoreInfo
+    *semaphore;
 
   int
     reference_count;

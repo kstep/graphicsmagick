@@ -2228,24 +2228,25 @@ MagickExport void DescribeImage(Image *image,FILE *file,
 */
 MagickExport void DestroyImage(Image *image)
 {
+  int
+    destroy;
+
   register int
     i;
 
-  int
-    destroy_image=False;
-
-  /* Lock here */
-  if(--image->reference_count==0)
-      destroy_image=True;
-  /* Unlock here */
-  if(destroy_image==False)
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  destroy=False;
+  AcquireSemaphoreInfo(&image->semaphore);
+  image->reference_count--;
+  if (image->reference_count == 0)
+    destroy=True;
+  LiberateSemaphoreInfo(&image->semaphore);
+  if (!destroy)
     return;
-
   /*
     Close image.
   */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
   DestroyBlobInfo(&image->blob);
   if (image->file != (FILE *) NULL)
     {
@@ -2306,6 +2307,7 @@ MagickExport void DestroyImage(Image *image)
             image->next->previous=(Image *) NULL;
         }
     }
+  DestroySemaphoreInfo(image->semaphore);
   LiberateMemory((void **) &image);
 }
 
@@ -3194,7 +3196,7 @@ MagickExport Image **ListToGroupImage(Image *image,unsigned int *number_images)
 %
 %  The format of the ModifyImage method is:
 %
-%      Image * ReferenceImage(Image *image)
+%      Image *ModifyImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -3204,26 +3206,27 @@ MagickExport Image **ListToGroupImage(Image *image,unsigned int *number_images)
 */
 MagickExport void ModifyImage(Image** image, ExceptionInfo *exception)
 {
-  int
-    copy_image=False;
-
   Image
-    *original_image;
+    *clone_image;
 
-  /* Lock here */
-  if((*image)->reference_count>1)
-    copy_image=True;
-  /* Unlock here */
+  int
+    clone;
 
-  if(copy_image==False)
+  assert(image != (Image **) NULL);
+  assert(*image != (Image *) NULL);
+  assert((*image)->signature == MagickSignature);
+  clone=False;
+  AcquireSemaphoreInfo(&(*image)->semaphore);
+  if ((*image)->reference_count > 1)
+    clone=True;
+  LiberateSemaphoreInfo(&(*image)->semaphore);
+  if (!clone)
     return;
-
-  original_image=*image;
-  *image=CloneImage(original_image,0,0,True,exception);
-
-  /* Lock here */
-  --original_image->reference_count;
-  /* Unlock here */
+  clone_image=CloneImage(*image,0,0,True,exception);
+  AcquireSemaphoreInfo(&(*image)->semaphore);
+  (*image)->reference_count--;
+  LiberateSemaphoreInfo(&(*image)->semaphore);
+  *image=clone_image;
 }
 
 /*
@@ -5135,7 +5138,7 @@ MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
 %
 %  The format of the ReferenceImage method is:
 %
-%      Image * ReferenceImage(Image *image)
+%      Image *ReferenceImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -5143,12 +5146,14 @@ MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
 %
 %
 */
-MagickExport Image * ReferenceImage(Image *image)
+MagickExport Image *ReferenceImage(Image *image)
 {
-  /* Lock here */
-  ++image->reference_count;
-  /* Unlock here */
-  return image;
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  AcquireSemaphoreInfo(&image->semaphore);
+  image->reference_count++;
+  LiberateSemaphoreInfo(&image->semaphore);
+  return(image);
 }
 
 /*
