@@ -275,13 +275,15 @@ MagickExport unsigned int EqualizeImage(Image *image)
         for (x=0; x < (long) image->columns; x++)
         {
           if (low.red != high.red)
-            q->red=equalize_map[ScaleQuantumToShort(q->red)].red;
+            q->red=(Quantum) equalize_map[ScaleQuantumToShort(q->red)].red;
           if (low.green != high.green)
-            q->green=equalize_map[ScaleQuantumToShort(q->green)].green;
+            q->green=(Quantum)
+              equalize_map[ScaleQuantumToShort(q->green)].green;
           if (low.blue != high.blue)
-            q->blue=equalize_map[ScaleQuantumToShort(q->blue)].blue;
+            q->blue=(Quantum) equalize_map[ScaleQuantumToShort(q->blue)].blue;
           if (low.opacity != high.opacity)
-            q->opacity=equalize_map[ScaleQuantumToShort(q->opacity)].opacity;
+            q->opacity=(Quantum)
+              equalize_map[ScaleQuantumToShort(q->opacity)].opacity;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -299,13 +301,13 @@ MagickExport unsigned int EqualizeImage(Image *image)
       for (i=0; i < (long) image->colors; i++)
       {
         if (low.red != high.red)
-          image->colormap[i].red=
+          image->colormap[i].red=(Quantum) 
             equalize_map[ScaleQuantumToShort(image->colormap[i].red)].red;
         if (low.green != high.green)
-          image->colormap[i].green=
+          image->colormap[i].green=(Quantum) 
             equalize_map[ScaleQuantumToShort(image->colormap[i].green)].green;
         if (low.blue != high.blue)
-          image->colormap[i].blue=
+          image->colormap[i].blue=(Quantum)
             equalize_map[ScaleQuantumToShort(image->colormap[i].blue)].blue;
       }
       SyncImage(image);
@@ -421,9 +423,9 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
           break;
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=gamma_map[ScaleQuantumToShort(q->red)].red;
-          q->green=gamma_map[ScaleQuantumToShort(q->green)].green;
-          q->blue=gamma_map[ScaleQuantumToShort(q->blue)].blue;
+          q->red=(Quantum) gamma_map[ScaleQuantumToShort(q->red)].red;
+          q->green=(Quantum) gamma_map[ScaleQuantumToShort(q->green)].green;
+          q->blue=(Quantum) gamma_map[ScaleQuantumToShort(q->blue)].blue;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -440,11 +442,11 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
       */
       for (i=0; i < (long) image->colors; i++)
       {
-        image->colormap[i].red=
+        image->colormap[i].red=(Quantum) 
           gamma_map[ScaleQuantumToShort(image->colormap[i].red)].red;
-        image->colormap[i].green=
+        image->colormap[i].green=(Quantum) 
           gamma_map[ScaleQuantumToShort(image->colormap[i].green)].green;
-        image->colormap[i].blue=
+        image->colormap[i].blue=(Quantum) 
           gamma_map[ScaleQuantumToShort(image->colormap[i].blue)].blue;
       }
       SyncImage(image);
@@ -1081,13 +1083,15 @@ MagickExport unsigned int NormalizeImage(Image *image)
         for (x=0; x < (long) image->columns; x++)
         {
           if (low.red != high.red)
-            q->red=normalize_map[ScaleQuantumToShort(q->red)].red;
+            q->red=(Quantum) normalize_map[ScaleQuantumToShort(q->red)].red;
           if (low.green != high.green)
-            q->green=normalize_map[ScaleQuantumToShort(q->green)].green;
+            q->green=(Quantum)
+              normalize_map[ScaleQuantumToShort(q->green)].green;
           if (low.blue != high.blue)
-            q->blue=normalize_map[ScaleQuantumToShort(q->blue)].blue;
+            q->blue=(Quantum) normalize_map[ScaleQuantumToShort(q->blue)].blue;
           if (low.opacity != high.opacity)
-            q->opacity=normalize_map[ScaleQuantumToShort(q->opacity)].opacity;
+            q->opacity=(Quantum)
+              normalize_map[ScaleQuantumToShort(q->opacity)].opacity;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -1105,13 +1109,13 @@ MagickExport unsigned int NormalizeImage(Image *image)
       for (i=0; i < (long) image->colors; i++)
       {
         if (low.red != high.red)
-          image->colormap[i].red=
+          image->colormap[i].red=(Quantum) 
             normalize_map[ScaleQuantumToShort(image->colormap[i].red)].red;
         if (low.green != high.green)
-          image->colormap[i].green=
+          image->colormap[i].green=(Quantum) 
             normalize_map[ScaleQuantumToShort(image->colormap[i].green)].green;
         if (low.blue != high.blue)
-          image->colormap[i].blue=
+          image->colormap[i].blue=(Quantum) 
             normalize_map[ScaleQuantumToShort(image->colormap[i].blue)].blue;
       }
       SyncImage(image);

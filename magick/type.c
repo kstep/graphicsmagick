@@ -449,7 +449,7 @@ static const char *StretchTypeToString(StretchType stretch)
     case ExtraExpandedStretch: return("extra-expanded");
     case UltraExpandedStretch: return("ultra-expanded");
     case AnyStretch: return("any");
-    default: return("unknown");
+    default: break;
   }
   return("unknown");
 }
@@ -462,7 +462,7 @@ static const char *StyleTypeToString(StyleType style)
     case ItalicStyle: return("italic");
     case ObliqueStyle: return("oblique");
     case AnyStyle: return("any");
-    default: return("unknown");
+    default:  break;
   }
   return("unknown");
 }

@@ -7131,7 +7131,7 @@ MagickExport void XMakeStandardColormap(Display *display,
         color.blue=ScaleQuantumToShort(XBlueGamma(image->colormap[i].blue));
         if (visual_info->storage_class != StaticColor)
           {
-            gray_value=PixelIntensity(&color);
+            gray_value=(unsigned short) PixelIntensity(&color);
             color.red=gray_value;
             color.green=gray_value;
             color.blue=gray_value;
@@ -7251,7 +7251,7 @@ MagickExport void XMakeStandardColormap(Display *display,
               ScaleQuantumToShort(XBlueGamma(image->colormap[index].blue));
             if (visual_info->storage_class != PseudoColor)
               {
-                gray_value=PixelIntensity(&color);
+                gray_value=(unsigned short) PixelIntensity(&color);
                 color.red=gray_value;
                 color.green=gray_value;
                 color.blue=gray_value;
@@ -7288,7 +7288,7 @@ MagickExport void XMakeStandardColormap(Display *display,
               ScaleQuantumToShort(XBlueGamma(image->colormap[index].blue));
             if (visual_info->storage_class != PseudoColor)
               {
-                gray_value=PixelIntensity(&color);
+                gray_value=(unsigned short) PixelIntensity(&color);
                 color.red=gray_value;
                 color.green=gray_value;
                 color.blue=gray_value;
@@ -7373,7 +7373,7 @@ MagickExport void XMakeStandardColormap(Display *display,
         color.blue=ScaleQuantumToShort(XBlueGamma(image->colormap[i].blue));
         if (visual_info->storage_class != PseudoColor)
           {
-            gray_value=PixelIntensity(&color);
+            gray_value=(unsigned short) PixelIntensity(&color);
             color.red=gray_value;
             color.green=gray_value;
             color.blue=gray_value;
