@@ -22,20 +22,26 @@ release the button. The keyboard bell is rung once at the beginning of
 the screen capture and twice when it completes.
 .SH EXAMPLES
 
-To select an X window with the mouse and save it in the MIFF image format
-to a file titled window.miff, use:
+To select an X window or an area of the screen with the mouse and save it
+in the MIFF image format to a file entitled window.miff, use:
 
     import window.miff
 
-To select an X window and save it in the Encapsulated Postscript format
-to include in another document, use:
+To select an X window or an area of the screen with the mouse and save it
+in the Encapsulated Postscript format to include in another document, use:
 
     import figure.eps
 
 To capture the entire X server screen in the JPEG image format in a file
-titled root.jpeg, use:
+entitled root.jpeg, without using the mouse, use:
 
     import -window root root.jpeg
+
+To capture the 512x256 area at the upper right corner of the X server
+screen in the PNG image format in a well-compressed file entitled corner.png,
+without using the mouse,  use:
+
+    import -window root -crop 512x256-0+0 -quality 90 corner.png
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
@@ -49,7 +55,7 @@ values specified in your X resources file.
 .B "-border \fI<width>x<height>"\fP
 \fRsurround the image with a border of color
 
-See \fIX(1)\fP for details
+See \fB-geometry\fP for details
 about the geometry specification.
 
 .TP
@@ -151,7 +157,7 @@ is read from a file titled by the remaining characters in the string.
 .B "-crop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
 \fRpreferred size and location of the cropped image
 
-See \fIX(1)\fP for details
+See \fB-geometry\fP for details
 about the geometry specification.
 
 
@@ -170,6 +176,13 @@ use \fB-crop 10%\fP.
 Use cropping to apply image processing options to, or display, a particular
 area of an image.
 
+
+The x and y offsets specify the location of the upper left corner of
+the cropping region with respect to the upper left corner of the image.
+If the x offset is negative, it gives the distance leftward from the right edge
+of the image to the right edge of the cropping region.  Similarly, if
+the y offset is negative, the distance is measured upward between the bottom
+edges.
 
 Omit the x and y offset to generate one or more subimages of a uniform
 size.
@@ -253,8 +266,7 @@ text or graphic aliasing.
 .B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 
-See \fIX(1)\fP for details
-about the geometry specification. By default, the window size is the image
+By default, the window size is the image
 size and the location is chosen by you when it is mapped.
 
 
@@ -270,12 +282,6 @@ If only the width is specified, the width assumes the
 value and the height is chosen to maintain the aspect ratio of the image.
 Similarly, if only the height is specified (e.g., -geometry x256),
 the width is chosen to maintain the aspect ratio. 
-
-
-If the \fIx offset\fP is negative, the offset is measured outward
-from the right edge of the image.  To measure inward from the right edge,
-use \fBtwo\fP minus signs.  Similarly, use one or two minus signs
-on \fIy offset\fP to measure from the bottom.
 
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
@@ -296,6 +302,11 @@ size does not change. However, if the image is 1024x1024, it is resized
 to 640x480.  Enclose the geometry specification in quotation marks to
 prevent the > or > from being interpreted by your shell
 as a file redirection.
+
+
+When used as a \fIconvert\fP, \fIimport\fP or \fImogrify\fP option,
+\fB-geometry\fP
+specifies the size of the output image and the offsets, if present, are ignored.
 
 .TP
 .B "-help"
@@ -429,6 +440,10 @@ relative to the lower left hand corner of the page by
 -page 612x792>, for example, to center the
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
+Unlike in \fB-geometry\fP, a positive \fBy\fP \fIoffset\fP is measured
+upward from the bottom edge of the page, and negative offsets are not treated
+specially.  They simply specify leftward and downward distances from the lower
+left hand corner of the page.
 
 
 The default page dimensions for a TEXT image is 612x792.
@@ -483,7 +498,8 @@ specification.
 \fRresize and locate an image
 
 This is an alias for the \fB-geometry\fP option and it behaves in the
-same manner.
+same manner. If the \fB-filter\fP option preceded the \fB-resize\fP
+option, the specified filter is used.
 .TP
 .B "-rotate \fI<degrees{<}{>}>"\fP
 \fRapply Paeth image rotation to the image

@@ -493,8 +493,7 @@ is Postscript, and x:fixed is OPTION1.
 .B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 
-See \fIX(1)\fP for details
-about the geometry specification. By default, the window size is the image
+By default, the window size is the image
 size and the location is chosen by you when it is mapped.
 
 
@@ -510,12 +509,6 @@ If only the width is specified, the width assumes the
 value and the height is chosen to maintain the aspect ratio of the image.
 Similarly, if only the height is specified (e.g., -geometry x256),
 the width is chosen to maintain the aspect ratio. 
-
-
-If the \fIx offset\fP is negative, the offset is measured outward
-from the right edge of the image.  To measure inward from the right edge,
-use \fBtwo\fP minus signs.  Similarly, use one or two minus signs
-on \fIy offset\fP to measure from the bottom.
 
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
@@ -539,8 +532,11 @@ as a file redirection.
 
 
 When used as a \fBcomposite\fP option, \fB-geometry\fP
-gives the dimensions of the composite image and its location with respect
-to the main image.
+gives the dimensions of the image and its location with respect
+to the composite image.  If the x offset is negative, it represents the
+distance from the right edge of the image to the right edge of
+the composite image.  Similarly, if the y offset is negative, the distance
+is measured between the bottom edges.
 
 .TP
 .B "-gravity \fI<type>"\fP
@@ -700,6 +696,10 @@ relative to the lower left hand corner of the page by
 -page 612x792>, for example, to center the
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
+Unlike in \fB-geometry\fP, a positive \fBy\fP \fIoffset\fP is measured
+upward from the bottom edge of the page, and negative offsets are not treated
+specially.  They simply specify leftward and downward distances from the lower
+left hand corner of the page.
 
 
 The default page dimensions for a TEXT image is 612x792.

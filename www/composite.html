@@ -676,8 +676,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-See <em>X(1)</em> for details
-about the geometry specification. By default, the window size is the image
+By default, the window size is the image
 size and the location is chosen by you when it is mapped.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -694,12 +693,6 @@ value and the height is chosen to maintain the aspect ratio of the image.
 Similarly, if only the height is specified (e.g., <tt>-geometry x256</tt>),
 the width is chosen to maintain the aspect ratio. 
 </font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If the <em>x offset</em> is negative, the offset is measured outward
-from the right edge of the image.  To measure inward from the right edge,
-use <strong>two</strong> minus signs.  Similarly, use one or two minus signs
-on <em>y offset</em> to measure from the bottom.</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
 dimensions. To increase the size of an image, use a value greater than
@@ -722,8 +715,11 @@ as a file redirection.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When used as a <strong>composite</strong> option, <strong>-geometry</strong>
-gives the dimensions of the composite image and its location with respect
-to the main image.
+gives the dimensions of the image and its location with respect
+to the composite image.  If the x offset is negative, it represents the
+distance from the right edge of the image to the right edge of
+the composite image.  Similarly, if the y offset is negative, the distance
+is measured between the bottom edges.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -949,6 +945,10 @@ relative to the lower left hand corner of the page by
 <tt>-page 612x792&gt;</tt>, for example, to center the
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
+Unlike in <strong>-geometry</strong>, a positive <strong>y</strong> <em>offset</em> is measured
+upward from the bottom edge of the page, and negative offsets are not treated
+specially.  They simply specify leftward and downward distances from the lower
+left hand corner of the page.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The default page dimensions for a TEXT image is 612x792.

@@ -333,7 +333,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>surround the image with a border of color</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-See <em>X(1)</em> for details
+See <strong>-geometry</strong> for details
 about the geometry specification.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -561,7 +561,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the cropped image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-See <em>X(1)</em> for details
+See <strong>-geometry</strong> for details
 about the geometry specification.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -580,6 +580,13 @@ use <strong>-crop 10%</strong>.
 Use cropping to apply image processing options to, or display, a particular
 area of an image.
 </font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The x and y offsets specify the location of the upper left corner of
+the cropping region with respect to the upper left corner of the image.
+If the x offset is negative, it gives the distance leftward from the right edge
+of the image to the right edge of the cropping region.  Similarly, if
+the y offset is negative, the distance is measured upward between the bottom
+edges.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Omit the x and y offset to generate one or more subimages of a uniform
 size.
@@ -849,7 +856,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>surround the image with an ornamental border</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-See <em>X(1)</em> for details
+See <strong>-geometry</strong> for details
 about the geometry specification.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -897,8 +904,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-See <em>X(1)</em> for details
-about the geometry specification. By default, the window size is the image
+By default, the window size is the image
 size and the location is chosen by you when it is mapped.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -916,10 +922,10 @@ Similarly, if only the height is specified (e.g., <tt>-geometry x256</tt>),
 the width is chosen to maintain the aspect ratio. 
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If the <em>x offset</em> is negative, the offset is measured outward
-from the right edge of the image.  To measure inward from the right edge,
-use <strong>two</strong> minus signs.  Similarly, use one or two minus signs
-on <em>y offset</em> to measure from the bottom.</font></td></tr></table>
+If the <em>x offset</em> is negative, the offset is measured leftward
+from the right edge of the
+screen to the right edge of the image being displayed.
+Similarly, negative <em>y offset</em> is measured between the bottom edges.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
@@ -1235,6 +1241,10 @@ relative to the lower left hand corner of the page by
 <tt>-page 612x792&gt;</tt>, for example, to center the
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
+Unlike in <strong>-geometry</strong>, a positive <strong>y</strong> <em>offset</em> is measured
+upward from the bottom edge of the page, and negative offsets are not treated
+specially.  They simply specify leftward and downward distances from the lower
+left hand corner of the page.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The default page dimensions for a TEXT image is 612x792.
@@ -1299,7 +1309,8 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>lighten or darken image edges</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This will create a 3-D effect. See <em>X(1)</em> for
+This will create a 3-D effect.
+See <strong>-geometry</strong> for details
 details about the geometry specification.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1332,7 +1343,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>roll an image vertically or horizontally</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-See <em>X(1)</em> for details about
+See <strong>-geometry</strong> for details
 the geometry specification.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1376,6 +1387,8 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 See <strong>-geometry</strong> for details about
 the geometry specification.
+<strong>-sample</strong> ignores the <strong>-filter</strong> selection if the <strong>-filter</strong> option
+is present.  Offsets, if present in the geometry string, are ignored.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>

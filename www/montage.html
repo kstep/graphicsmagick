@@ -322,6 +322,11 @@ and the offsets give the location of the leftmost column and topmost
 row to remove.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+If the x offset is negative, it gives the distance leftward from the right edge
+of the image to the rightmost column to remove.  Similarly, if
+the y offset is negative, the distance to the bottommost column to remove
+is measured upward from the bottom edge of the image.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The <strong>-chop</strong> option removes entire rows and columns,
 and moves the remaining corner blocks leftward and upward to close the gaps.
 </font></td></tr></table>
@@ -614,7 +619,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the cropped image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-See <em>X(1)</em> for details
+See <strong>-geometry</strong> for details
 about the geometry specification.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -633,6 +638,13 @@ use <strong>-crop 10%</strong>.
 Use cropping to apply image processing options to, or display, a particular
 area of an image.
 </font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The x and y offsets specify the location of the upper left corner of
+the cropping region with respect to the upper left corner of the image.
+If the x offset is negative, it gives the distance leftward from the right edge
+of the image to the right edge of the cropping region.  Similarly, if
+the y offset is negative, the distance is measured upward between the bottom
+edges.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Omit the x and y offset to generate one or more subimages of a uniform
 size.
@@ -961,7 +973,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>surround the image with an ornamental border</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-See <em>X(1)</em> for details
+See <strong>-geometry</strong> for details
 about the geometry specification.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1009,8 +1021,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-See <em>X(1)</em> for details
-about the geometry specification. By default, the window size is the image
+By default, the window size is the image
 size and the location is chosen by you when it is mapped.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1027,12 +1038,6 @@ value and the height is chosen to maintain the aspect ratio of the image.
 Similarly, if only the height is specified (e.g., <tt>-geometry x256</tt>),
 the width is chosen to maintain the aspect ratio. 
 </font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If the <em>x offset</em> is negative, the offset is measured outward
-from the right edge of the image.  To measure inward from the right edge,
-use <strong>two</strong> minus signs.  Similarly, use one or two minus signs
-on <em>y offset</em> to measure from the bottom.</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
 dimensions. To increase the size of an image, use a value greater than
@@ -1054,9 +1059,9 @@ prevent the <tt>&gt;</tt> or <tt>&gt;</tt> from being interpreted by your shell
 as a file redirection.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-When used as a <em>montage</em> option, <strong>-geometry</strong> gives the image
-size and border size
-for each tile; default is 256x256+0+0.
+When used as a <em>montage</em> option, <strong>-geometry</strong> specifies the image
+size and border size for each tile; default is 256x256+0+0.  Negative
+offsets (border dimensions) are meaningless.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -1286,6 +1291,10 @@ relative to the lower left hand corner of the page by
 <tt>-page 612x792&gt;</tt>, for example, to center the
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
+Unlike in <strong>-geometry</strong>, a positive <strong>y</strong> <em>offset</em> is measured
+upward from the bottom edge of the page, and negative offsets are not treated
+specially.  They simply specify leftward and downward distances from the lower
+left hand corner of the page.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The default page dimensions for a TEXT image is 612x792.

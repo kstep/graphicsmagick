@@ -153,7 +153,7 @@ for details.
 .B "-border \fI<width>x<height>"\fP
 \fRsurround the image with a border of color
 
-See \fIX(1)\fP for details
+See \fB-geometry\fP for details
 about the geometry specification.
 
 .TP
@@ -299,7 +299,7 @@ or \fB+contrast\fP to reduce the image contrast.
 .B "-crop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
 \fRpreferred size and location of the cropped image
 
-See \fIX(1)\fP for details
+See \fB-geometry\fP for details
 about the geometry specification.
 
 
@@ -318,6 +318,13 @@ use \fB-crop 10%\fP.
 Use cropping to apply image processing options to, or display, a particular
 area of an image.
 
+
+The x and y offsets specify the location of the upper left corner of
+the cropping region with respect to the upper left corner of the image.
+If the x offset is negative, it gives the distance leftward from the right edge
+of the image to the right edge of the cropping region.  Similarly, if
+the y offset is negative, the distance is measured upward between the bottom
+edges.
 
 Omit the x and y offset to generate one or more subimages of a uniform
 size.
@@ -457,7 +464,7 @@ is Postscript, and x:fixed is OPTION1.
 .B "-frame \fI<width>x<height>+<outer bevel width>+<inner bevel width>"\fP
 \fRsurround the image with an ornamental border
 
-See \fIX(1)\fP for details
+See \fB-geometry\fP for details
 about the geometry specification.
 
 
@@ -489,8 +496,7 @@ but not set as an image attribute (e.g. PNG images).
 .B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 
-See \fIX(1)\fP for details
-about the geometry specification. By default, the window size is the image
+By default, the window size is the image
 size and the location is chosen by you when it is mapped.
 
 
@@ -508,10 +514,10 @@ Similarly, if only the height is specified (e.g., -geometry x256),
 the width is chosen to maintain the aspect ratio. 
 
 
-If the \fIx offset\fP is negative, the offset is measured outward
-from the right edge of the image.  To measure inward from the right edge,
-use \fBtwo\fP minus signs.  Similarly, use one or two minus signs
-on \fIy offset\fP to measure from the bottom.
+If the \fIx offset\fP is negative, the offset is measured leftward
+from the right edge of the
+screen to the right edge of the image being displayed.
+Similarly, negative \fIy offset\fP is measured between the bottom edges.
 
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
@@ -712,6 +718,10 @@ relative to the lower left hand corner of the page by
 -page 612x792>, for example, to center the
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
+Unlike in \fB-geometry\fP, a positive \fBy\fP \fIoffset\fP is measured
+upward from the bottom edge of the page, and negative offsets are not treated
+specially.  They simply specify leftward and downward distances from the lower
+left hand corner of the page.
 
 
 The default page dimensions for a TEXT image is 612x792.
@@ -759,7 +769,8 @@ specification.
 .B "-raise \fI<width>x<height>"\fP
 \fRlighten or darken image edges
 
-This will create a 3-D effect. See \fIX(1)\fP for
+This will create a 3-D effect.
+See \fB-geometry\fP for details
 details about the geometry specification.
 
 
@@ -776,7 +787,7 @@ an image file to load.
 .B "-roll \fI{+-}<x offset>{+-}<y offset>"\fP
 \fRroll an image vertically or horizontally
 
-See \fIX(1)\fP for details about
+See \fB-geometry\fP for details
 the geometry specification.
 
 
@@ -804,6 +815,8 @@ for details.
 
 See \fB-geometry\fP for details about
 the geometry specification.
+\fB-sample\fP ignores the \fB-filter\fP selection if the \fB-filter\fP option
+is present.  Offsets, if present in the geometry string, are ignored.
 
 .TP
 .B "-scene \fI<value{-value}>"\fP

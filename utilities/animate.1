@@ -77,7 +77,7 @@ for details.
 .B "-border \fI<width>x<height>"\fP
 \fRsurround the image with a border of color
 
-See \fIX(1)\fP for details
+See \fB-geometry\fP for details
 about the geometry specification.
 
 .TP
@@ -103,6 +103,11 @@ The width and height give the number of columns and rows to remove,
 and the offsets give the location of the leftmost column and topmost
 row to remove.
 
+
+If the x offset is negative, it gives the distance leftward from the right edge
+of the image to the rightmost column to remove.  Similarly, if
+the y offset is negative, the distance to the bottommost column to remove
+is measured upward from the bottom edge of the image.
 
 The \fB-chop\fP option removes entire rows and columns,
 and moves the remaining corner blocks leftward and upward to close the gaps.
@@ -164,7 +169,7 @@ option to take effect.
 .B "-crop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
 \fRpreferred size and location of the cropped image
 
-See \fIX(1)\fP for details
+See \fB-geometry\fP for details
 about the geometry specification.
 
 
@@ -183,6 +188,13 @@ use \fB-crop 10%\fP.
 Use cropping to apply image processing options to, or display, a particular
 area of an image.
 
+
+The x and y offsets specify the location of the upper left corner of
+the cropping region with respect to the upper left corner of the image.
+If the x offset is negative, it gives the distance leftward from the right edge
+of the image to the right edge of the cropping region.  Similarly, if
+the y offset is negative, the distance is measured upward between the bottom
+edges.
 
 Omit the x and y offset to generate one or more subimages of a uniform
 size.
@@ -291,8 +303,7 @@ but not set as an image attribute (e.g. PNG images).
 .B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 
-See \fIX(1)\fP for details
-about the geometry specification. By default, the window size is the image
+By default, the window size is the image
 size and the location is chosen by you when it is mapped.
 
 
@@ -310,10 +321,10 @@ Similarly, if only the height is specified (e.g., -geometry x256),
 the width is chosen to maintain the aspect ratio. 
 
 
-If the \fIx offset\fP is negative, the offset is measured outward
-from the right edge of the image.  To measure inward from the right edge,
-use \fBtwo\fP minus signs.  Similarly, use one or two minus signs
-on \fIy offset\fP to measure from the bottom.
+If the \fIx offset\fP is negative, the offset is measured leftward
+from the right edge of the
+image to the right edge of the region being specified.
+Similarly, negative \fIy offset\fP is measured between the bottom edges.
 
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
