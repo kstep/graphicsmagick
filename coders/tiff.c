@@ -310,7 +310,6 @@ static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
 static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
     *text;
 
   float
@@ -895,7 +894,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
   TIFFClose(tiff);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  (void) strncpy(image->filename,filename,MaxTextExtent-1);
   CloseBlob(image);
   return(image);
 }
