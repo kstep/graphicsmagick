@@ -48,14 +48,10 @@ for details):
 
     - Corrected bias when downsizing an image with ResizeImage().
     
-    - Added a number of new CompositeOperators: 
-    	  NoCompositeOp, DarkenCompositeOp,
-	  LightenCompositeOp, HueCompositeOp, SaturateCompositeOp,
-	  ValueCompositeOp, ColorizeCompositeOp, LuminizeCompositeOp,
-	  ScreenCompositeOp, OverlayCompositeOp.
-
-    - Image now has a compose member for storing the CompositeOperator
-      to be used when flattening.
+    - Added a number of new CompositeOperators: NoCompositeOp,
+      DarkenCompositeOp, LightenCompositeOp, HueCompositeOp,
+      SaturateCompositeOp, ValueCompositeOp, ColorizeCompositeOp,
+      LuminizeCompositeOp, ScreenCompositeOp, OverlayCompositeOp.
 
   o C++ API enhancements:
 
