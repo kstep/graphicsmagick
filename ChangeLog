@@ -1,5 +1,10 @@
 2003-09-24  Lars Ruben Skyum  <lars.skyum@stibo.com>
 
+	* coders/ps3.c: Now creates a correct %%BoundingBox for images
+	with resolution stored as pixels per centimeter. Renamed serialize
+	functions. Added comment headers where they were
+	missing. Reformatted code to be in alignment with GraphicsMagick
+	standard formatting.
 	* magick/map.c: Fixed semaphore double locking problem in
 	MagickMapCloneMap.
 

@@ -163,7 +163,7 @@ static unsigned int SerializeHuffman2DImage(const ImageInfo *image_info,
     return(False);
   /* 
     TODO: If (image, then) huffman_image->compression is JPEG, huffman_image
-    in changed to DirectClass in WriteTIFFImage and the huffman_image ends up
+    is changed to DirectClass in WriteTIFFImage and the huffman_image ends up
     broken. Change WriteTIFFIMage to not alter bilevel image to directclass
     when clone_info is G4 compression. Until then, set
     huffman_image->compression here:
@@ -284,9 +284,35 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
 }
 #endif
 
-
-
 #if defined(HasJPEG)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   J P E G E n c o d e I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method JPEGEncodeImage compresses an image via JPEG compression.
+%
+%  The format of the JPEGEncodeImage method is:
+%
+%      unsigned int JPEGEncodeImage(const ImageInfo *image_info,
+%        Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method JPEGEncodeImage returns True if all the pixels are
+%      compressed without error, otherwise False.
+%
+%    o image_info: The image info.
+%
+%    o image: The image.
+%
+*/
 static unsigned int JPEGEncodeImage(const ImageInfo *image_info,
   Image *image)
 {
@@ -373,7 +399,37 @@ ModuleExport void RegisterPS3Image(void)
   (void) RegisterMagickInfo(entry);
 }
 
-static unsigned int SerializeColorMappedImage(const ImageInfo *image_info,
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e r i a l i z e P s e u d o C l a s s I m a g e                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Convert the indexes of a color mapped image to a stream of bytes.
+%
+%  The format of the SerializePseudoClassImage method is:
+%
+%       unsigned int SerializePseudoClassImage(const ImageInfo *image_info,
+%         Image *image, unsigned char **pixels, size_t *length)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: Specifies a pointer to a ImageInfo structure. required by
+%                  exception handlers.
+%
+%    o image: The image for which the color map indexes should be serialized.
+%
+%    o pixels: the serialized indexes.
+%
+%    o length: the length of the pixels mamory area.
+%
+*/
+static unsigned int SerializePseudoClassImage(const ImageInfo *image_info,
   Image *image, unsigned char **pixels, size_t *length)
 {
   long
@@ -421,7 +477,38 @@ static unsigned int SerializeColorMappedImage(const ImageInfo *image_info,
   return(status);
 }
 
-static unsigned int SerializeMultiComponentImage(const ImageInfo *image_info,
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e r i a l i z e M u l t i C h a n n e l I m a g e                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Convert three and four channel images to a stream of bytes.
+%
+%  The format of the SerializeMultiChannelImage method is:
+%
+%       unsigned int SerializeMultiChannelImage(const ImageInfo *image_info,
+%         Image *image, unsigned char **pixels, size_t *length)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: Specifies a pointer to a ImageInfo structure. required by
+%                  exception handlers.
+%
+%    o image: The image for which the RGB or CMYK channels should be
+%             serialized.
+%
+%    o pixels: the serialized image channels.
+%
+%    o length: the length of the pixels mamory area.
+%
+*/
+static unsigned int SerializeMultiChannelImage(const ImageInfo *image_info,
   Image *image, unsigned char **pixels, size_t *length)
 {
   long
@@ -481,7 +568,39 @@ static unsigned int SerializeMultiComponentImage(const ImageInfo *image_info,
   return(status);
 }
 
-static unsigned int SerializeSingleComponentImage(const ImageInfo *image_info,
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e r i a l i z e S i n g l e C h a n n e l I m a g e                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Convert 1 and 8 bit single channel images to a stream of bytes. Bilevel
+%  image pixels are packed 8 pixels in a byte.
+%
+%  The format of the SerializeSingleChannelImage method is:
+%
+%       unsigned int SerializeSingleChannelImage(const ImageInfo *image_info,
+%         Image *image, unsigned char **pixels, size_t *length)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure. Required by
+%                  exception handlers.
+%
+%    o image: The image for which the RGB or CMYK channels should be
+%             serialized.
+%
+%    o pixels: the serialized image channels.
+%
+%    o length: the length of the pixels mamory area.
+%
+*/
+static unsigned int SerializeSingleChannelImage(const ImageInfo *image_info,
   Image *image, unsigned char **pixels, size_t *length)
 {
   long
@@ -509,8 +628,9 @@ static unsigned int SerializeSingleComponentImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   status=True;
   pack=IsMonochromeImage(image,&image->exception) ? 8 : 1;
-  padded_columns = ((image->columns + pack - 1) / pack) * pack; /* padded to byte boundary */
-  *length = padded_columns * image->rows / pack;
+  /* Padded columns are padded to byte boundary */
+  padded_columns=((image->columns+pack-1)/pack)*pack;
+  *length=padded_columns*image->rows/pack;
   *pixels=MagickAllocateMemory(unsigned char *, *length);
   if (*pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
@@ -522,7 +642,15 @@ static unsigned int SerializeSingleComponentImage(const ImageInfo *image_info,
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    if (pack != 1)
+    if (pack == 1)
+    {
+      for (x=0; x < (long) image->columns; x++)
+      {
+        *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
+        p++;
+      }
+    }
+    else
     {
       code=0;
       for (x=0; x < (long) padded_columns; x++)
@@ -536,14 +664,6 @@ static unsigned int SerializeSingleComponentImage(const ImageInfo *image_info,
           *q++=code;
           code=0;
         }
-        p++;
-      }
-    }
-    else
-    {
-      for (x=0; x < (long) image->columns; x++)
-      {
-        *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
         p++;
       }
     }
@@ -590,30 +710,29 @@ ModuleExport void UnregisterPS3Image(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e P S 3 I m a g e                                                 %
+%   W r i t e P S 3 M a s k I m a g e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WritePS3Image translates an image to encapsulated Postscript
-%  Level III for printing.  If the supplied geometry is null, the image is
-%  centered on the Postscript page.  Otherwise, the image is positioned as
-%  specified by the geometry.
+%  Method WritePS3ImageMask writes the alpha channel of an image as an
+%  Encapsulated Postscript Level III image mask. The mask is written as a
+%  bilevel image, converted from the grayscale alpha channel using dithering
+%  options supplied in image_info.
 %
-%  The format of the WritePS3Image method is:
+%  The format of the WritePS3MaskImage method is:
 %
-%      unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
+%      unsigned int WritePS3MaskImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method WritePS3Image return True if the image is printed.
-%      False is returned if the image file cannot be opened for printing.
+%    o status: Method WritePS3MaskImage return True if the mask is printed.
+%      False is returned on errors like out-of-memory.
 %
 %    o image_info: Specifies a pointer to a ImageInfo structure.
 %
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
+%    o image: The address of a structure of type Image.
 %
 %
 */
@@ -719,7 +838,7 @@ static unsigned int WritePS3MaskImage(const ImageInfo *image_info,Image *image)
   switch (compression)
   {
     case NoCompression:
-      status=SerializeSingleComponentImage(image_info,mask_image,&pixels,&length);
+      status=SerializeSingleChannelImage(image_info,mask_image,&pixels,&length);
       if (status)
       {
         Ascii85Initialize(image);
@@ -755,7 +874,7 @@ static unsigned int WritePS3MaskImage(const ImageInfo *image_info,Image *image)
       }
       break;
     case RLECompression:
-      status=SerializeSingleComponentImage(image_info,mask_image,&pixels,&length);
+      status=SerializeSingleChannelImage(image_info,mask_image,&pixels,&length);
       if (status)
       {
         Ascii85Initialize(image);
@@ -766,7 +885,7 @@ static unsigned int WritePS3MaskImage(const ImageInfo *image_info,Image *image)
       }
       break;
     case LZWCompression:
-      status=SerializeSingleComponentImage(image_info,mask_image,&pixels,&length);
+      status=SerializeSingleChannelImage(image_info,mask_image,&pixels,&length);
       if (status)
       {
         Ascii85Initialize(image);
@@ -776,7 +895,7 @@ static unsigned int WritePS3MaskImage(const ImageInfo *image_info,Image *image)
       }
       break;
     case ZipCompression:
-      status=SerializeSingleComponentImage(image_info,mask_image,&pixels,&length);
+      status=SerializeSingleChannelImage(image_info,mask_image,&pixels,&length);
       if (status)
       {
         Ascii85Initialize(image);
@@ -798,7 +917,39 @@ static unsigned int WritePS3MaskImage(const ImageInfo *image_info,Image *image)
   (void)WriteBlobString(image, "/mask_stream exch def\n");
   return(status);
 }
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e P S 3 I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WritePS3Image translates an image to encapsulated Postscript
+%  Level III for printing.  If the supplied geometry is null, the image is
+%  centered on the Postscript page.  Otherwise, the image is positioned as
+%  specified by the geometry.
+%
+%  The format of the WritePS3Image method is:
+%
+%      unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method WritePS3Image return True if the image is printed.
+%      False is returned if the image file cannot be opened for printing.
+%
+%    o image_info: Specifies a pointer to a ImageInfo structure.
+%
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%
+*/
 static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 {
   static const char
@@ -1033,6 +1184,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   double
     dx_resolution,
     dy_resolution,
+    unit_conversion,
     x_resolution,
     x_scale,
     y_resolution,
@@ -1123,7 +1275,8 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     text_size=0;
     attribute=GetImageAttribute(image,"label");
     if (attribute != (const ImageAttribute *) NULL)
-      text_size=(unsigned int)(MultilineCensus(attribute->value)*image_info->pointsize+12);
+      text_size=(unsigned int)(MultilineCensus(attribute->value)*
+        image_info->pointsize+12);
     SetGeometry(image,&geometry);
     geometry.y=(long) text_size;
     FormatString(page_geometry,"%lux%lu",image->columns,image->rows);
@@ -1134,8 +1287,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     else
       {
         if ((image->page.width != 0) && (image->page.height != 0))
-          (void) FormatString(page_geometry,"%lux%lu%+ld%+ld",image->page.width,
-            image->page.height,image->page.x,image->page.y);
+          (void) FormatString(page_geometry,"%lux%lu%+ld%+ld",
+            image->page.width,image->page.height,image->page.x,
+              image->page.y);
         else
           if (LocaleCompare(image_info->magick,"PS3") == 0)
             (void) strcpy(page_geometry,PSPageGeometry);
@@ -1147,6 +1301,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       in image_info. Then resolution from the image. Last default PS
       resolution.
     */
+    unit_conversion=1.0;
     dx_resolution=72.0;
     dy_resolution=72.0;
     x_resolution=72.0;
@@ -1156,17 +1311,24 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       y_resolution=x_resolution;
     if (image_info->density != (char *) NULL)
       {
+        unit_conversion=
+          image_info->units == PixelsPerCentimeterResolution ? 2.54 : 1.0;
         count=sscanf(image_info->density,"%lfx%lf",&x_resolution,
           &y_resolution);
+        x_resolution*=unit_conversion;
         if (count != 2)
           y_resolution=x_resolution;
+        else
+          y_resolution*=unit_conversion;
       }
     else
       {
+        unit_conversion=
+          image->units == PixelsPerCentimeterResolution ? 2.54 : 1.0;
         if (image->x_resolution > 0.0)
-          x_resolution=image->x_resolution;
+          x_resolution=image->x_resolution*unit_conversion;
         if (image->y_resolution > 0.0)
-          y_resolution=image->y_resolution;
+          y_resolution=image->y_resolution*unit_conversion;
       }
     x_scale=(geometry.width*dx_resolution)/x_resolution;
     geometry.width=(unsigned long) (x_scale+0.5);
@@ -1186,7 +1348,8 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
 
         /* Creator */
-        FormatString(buffer,"%%%%Creator: GraphicsMagick %s\n", MagickLibVersionText);
+        FormatString(buffer,"%%%%Creator: GraphicsMagick %s\n",
+          MagickLibVersionText);
         (void) WriteBlobString(image,buffer);
 
         /* Title */
@@ -1218,7 +1381,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
               floor(bounds.x1+0.5),floor(bounds.y1+0.5),ceil(bounds.x2-0.5),
               ceil(bounds.y2-0.5));
             (void) WriteBlobString(image,buffer);
-            FormatString(buffer,"%%%%HiResBoundingBox: %.8g %.8g %.8g %.8g\n",
+            FormatString(buffer,"%%%%HiResBoundingBox: %.7g %.7g %.7g %.7g\n",
               bounds.x1,bounds.y1,bounds.x2,bounds.y2);
             (void) WriteBlobString(image,buffer);
 
@@ -1261,33 +1424,33 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         /* The static postscript procedures prolog. */
         (void)WriteBlobString(image,"%%BeginProlog\n");
         for (q=PostscriptProlog; *q; q++)
-        {
-          (void) WriteBlobString(image,*q);
-          (void) WriteBlobByte(image,'\n');
-        }
+          {
+            (void) WriteBlobString(image,*q);
+            (void) WriteBlobByte(image,'\n');
+          }
 
         /* One label line for each line in label string */
         attribute=GetImageAttribute(image,"label");
         if (attribute != (const ImageAttribute *) NULL)
-        {
-          (void) WriteBlobString(image,
-            "\n  % LABELS\n  /Helvetica findfont pointsize scalefont setfont\n");
-          for (i=(long) MultilineCensus(attribute->value)-1; i >= 0; i--)
           {
-            (void) WriteBlobString(image,
-              "  currentfile buffer readline pop token pop\n");
-            FormatString(buffer,"  0 y %g add moveto show pop\n",
-              i*image_info->pointsize+12);
-            (void) WriteBlobString(image,buffer);
+            (void) WriteBlobString(image,"\n  % LABELS\n  /Helvetica "
+              "findfont pointsize scalefont setfont\n");
+            for (i=(long) MultilineCensus(attribute->value)-1; i >= 0; i--)
+              {
+                (void) WriteBlobString(image,
+                  "  currentfile buffer readline pop token pop\n");
+                FormatString(buffer,"  0 y %g add moveto show pop\n",
+                  i*image_info->pointsize+12);
+                (void) WriteBlobString(image,buffer);
+              }
           }
-        }
 
         /* The static postscript procedures epilog. */
         for (q=PostscriptEpilog; *q; q++)
-        {
-          (void) WriteBlobString(image,*q);
-          (void) WriteBlobByte(image,'\n');
-        }
+          {
+            (void) WriteBlobString(image,*q);
+            (void) WriteBlobByte(image,'\n');
+          }
         (void)WriteBlobString(image,"%%EndProlog\n");
       }
 
@@ -1303,7 +1466,8 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 
     /* Page process colors if not RGB */
     if (image->colorspace == CMYKColorspace)
-      (void) WriteBlobString(image,"%%PageProcessColors: Cyan Magenta Yellow Black\n");
+      (void) WriteBlobString(image,
+        "%%PageProcessColors: Cyan Magenta Yellow Black\n");
     else
       if (IsGrayImage(image,&image->exception))
         (void) WriteBlobString(image,"%%PageProcessColors: Black\n");
@@ -1329,21 +1493,21 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     /* PS clipping path from Photoshop clipping path */
     if ((image->clip_mask != (Image *) NULL) && 
       (LocaleNCompare("8BIM:",image->clip_mask->magick_filename,5) == 0))
-    {
-      const ImageAttribute
-        *attribute;
+      {
+        const ImageAttribute
+          *attribute;
 
-      attribute=GetImageAttribute(image,image->clip_mask->magick_filename);
-      if (attribute == (const ImageAttribute *) NULL)
-        return(False);
-      (void) WriteBlobString(image,attribute->value);
-      (void) WriteBlobByte(image,'\n');
-    }
+        attribute=GetImageAttribute(image,image->clip_mask->magick_filename);
+        if (attribute == (const ImageAttribute *) NULL)
+          return(False);
+        (void) WriteBlobString(image,attribute->value);
+        (void) WriteBlobByte(image,'\n');
+      }
     else
-    {
-      /* Reset definition in case previous image had a clipping path.*/
-      (void)WriteBlobString(image,"/ClipImage {} def\n");
-    }
+      {
+        /* Reset definition in case previous image had a clipping path.*/
+        (void)WriteBlobString(image,"/ClipImage {} def\n");
+      }
 
     /* Push a dictionary for our own def's if this is an EPS */
     if (LocaleCompare(image_info->magick,"PS3") != 0)
@@ -1371,7 +1535,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"DisplayImage\n");
 
     /* Translate, scale, and font point size */
-    FormatString(buffer,"%ld %ld\n%g %g\n%f\n",geometry.x,geometry.y,
+    FormatString(buffer,"%ld %ld\n%.7g %.7g\n%f\n",geometry.x,geometry.y,
       x_scale,y_scale,image_info->pointsize);
     (void) WriteBlobString(image,buffer);
 
@@ -1383,14 +1547,14 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     if (labels != (char **) NULL)
       {
         for (i=0; labels[i] != (char *) NULL; i++)
-        {
-          Ascii85Initialize(image);
-          (void) WriteBlobString(image,"<~");
-          for (j=0; labels[i][j] != '\0'; j++)
-            Ascii85Encode(image, (unsigned long)labels[i][j]);
-          Ascii85Flush(image);
-          MagickFreeMemory(labels[i]);
-        }
+          {
+            Ascii85Initialize(image);
+            (void) WriteBlobString(image,"<~");
+            for (j=0; labels[i][j] != '\0'; j++)
+              Ascii85Encode(image, (unsigned long)labels[i][j]);
+            Ascii85Flush(image);
+            MagickFreeMemory(labels[i]);
+          }
         MagickFreeMemory(labels);
       }
 
@@ -1410,19 +1574,19 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       SetImageType(image, BilevelType);
 
     /* Showpage for non-EPS. */
-    (void) WriteBlobString(image,LocaleCompare(image_info->magick,"PS3") == 0 ?
-      "true\n" : "false\n");
+    (void) WriteBlobString(image,
+      LocaleCompare(image_info->magick,"PS3") == 0 ? "true\n" : "false\n");
 
     /* Image columns and rows; color space */
     FormatString(buffer,"%lu %lu\n%.1024s\n",
-      image->columns,image->rows,
-      image->colorspace == CMYKColorspace ? PS3_CMYKColorspace : PS3_RGBColorspace);
+      image->columns,image->rows,image->colorspace == CMYKColorspace ?
+        PS3_CMYKColorspace : PS3_RGBColorspace);
     (void) WriteBlobString(image,buffer);
 
     /* Masked image? */
     (void) WriteBlobString(image,image->matte ? "true\n" : "false\n");
 
-    /* render with imagemask operator? */
+    /* Render with imagemask operator? */
     if (image_info->coder_options != 0)
     {
       const char
@@ -1442,13 +1606,13 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 
     /*
       Output data in one of three ways:
-      1) 1 bit and 8 bit single component direct color image data.
-      2) 3 and 4 component direct color image data
+      1) 1 bit and 8 bit single channel direct color image data.
+      2) 3 and 4 channel direct color image data
       3) 8 bit color mapped image data
     */
 
     /*
-      Output 1 bit and 8 bit single component image data. IsGray and IsMono
+      Output 1 bit and 8 bit single channel image data. IsGray and IsMono
       may return true for both direct class RGB and CMYK colors, so we need
       to test that these were not requested explicitly.
     */
@@ -1457,7 +1621,8 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
          (image_info->type != ColorSeparationType) &&
          (image_info->type != ColorSeparationMatteType) &&
          (image->colorspace != CMYKColorspace) &&
-         (IsGrayImage(image,&image->exception) || IsMonochromeImage(image,&image->exception)))
+         (IsGrayImage(image,&image->exception) ||
+          IsMonochromeImage(image,&image->exception)))
     {
       /* Image class */
       (void) WriteBlobString(image,PS3_PseudoClass"\n");
@@ -1490,190 +1655,201 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,"0\n");
 
       /* 1 bit or 8 bit components? */
-      FormatString(buffer,"%d\n", IsMonochromeImage(image,&image->exception) ? 1 : 8);
+      FormatString(buffer,"%d\n", 
+        IsMonochromeImage(image,&image->exception) ? 1 : 8);
       (void) WriteBlobString(image,buffer);
 
-      /* Image data. Always ASCII85 encoded on top of (compressed) binary data. */
+      /* Image data. Always ASCII85 encoded. */
       if (compression == JPEGCompression)
-      {
-          status=JPEGEncodeImage(image_info,image);
-      }
-      else if (compression == FaxCompression)
-      {
-          if (LocaleCompare(CCITTParam,"0") == 0)
-            status=HuffmanEncodeImage(image_info,image);
-          else
-            status=Huffman2DEncodeImage(image_info,image);
-      }
+        {
+            status=JPEGEncodeImage(image_info,image);
+        }
       else
-      {
-        status=SerializeSingleComponentImage(image_info,image,&pixels,&length);
-        if (!status)
-        {
-          CloseBlob(image);
-          return(False);
-        }
-        Ascii85Initialize(image);
-        switch (compression)
-        {
-          case NoCompression:
-          default:
-            for (i=0; i < length; i++)
-              Ascii85Encode(image, (unsigned long)pixels[i]);
-            break;
-          case RLECompression:
-            status=PackbitsEncode2Image(image,length,pixels,Ascii85WriteByteHook,(void*)NULL);
-            break;
-          case LZWCompression:
-            status=LZWEncode2Image(image,length,pixels,Ascii85WriteByteHook,(void*)NULL);
-            break;
-          case ZipCompression:
-            status=ZLIBEncode2Image(image,length,image_info->quality,pixels,
-              Ascii85WriteByteHook,(void*)NULL);
-            break;
-        }
-        Ascii85Flush(image);
-        MagickFreeMemory(pixels);
-      }
+        if (compression == FaxCompression)
+          {
+              if (LocaleCompare(CCITTParam,"0") == 0)
+                status=HuffmanEncodeImage(image_info,image);
+              else
+                status=Huffman2DEncodeImage(image_info,image);
+          }
+        else
+          {
+            status=SerializeSingleChannelImage(image_info,image,&pixels,
+              &length);
+            if (!status)
+              {
+                CloseBlob(image);
+                return(False);
+              }
+            Ascii85Initialize(image);
+            switch (compression)
+            {
+              case NoCompression:
+              default:
+                for (i=0; i < length; i++)
+                  Ascii85Encode(image, (unsigned long)pixels[i]);
+                break;
+              case RLECompression:
+                status=PackbitsEncode2Image(image,length,pixels,
+                  Ascii85WriteByteHook,(void*)NULL);
+                break;
+              case LZWCompression:
+                status=LZWEncode2Image(image,length,pixels,
+                  Ascii85WriteByteHook,(void*)NULL);
+                break;
+              case ZipCompression:
+                status=ZLIBEncode2Image(image,length,image_info->quality,
+                  pixels,Ascii85WriteByteHook,(void*)NULL);
+                break;
+            }
+            Ascii85Flush(image);
+            MagickFreeMemory(pixels);
+          }
     }
-    else if ((image->storage_class == DirectClass) || (image->colors > 256) ||
+    else
+      if ((image->storage_class == DirectClass) || (image->colors > 256) ||
           (compression == JPEGCompression))
-    {
-      /* Image class */
-      (void) WriteBlobString(image,PS3_DirectClass"\n");
+        {
+          /* Image class */
+          (void) WriteBlobString(image,PS3_DirectClass"\n");
 
-      /* Compression scheme - fax is only for bilevel images */
-      switch (compression)
-      {
-        case NoCompression:
-        default:
-          (void) WriteBlobString(image,PS3_NoCompression"\n");
-          break;
-        case RLECompression:
-          (void) WriteBlobString(image,PS3_RLECompression"\n");
-          break;
-        case LZWCompression:
-          (void) WriteBlobString(image,PS3_LZWCompression"\n");
-          break;
-        case ZipCompression:
-          (void) WriteBlobString(image,PS3_ZipCompression"\n");
-          break;
-        case JPEGCompression:
-          (void) WriteBlobString(image,PS3_JPEGCompression"\n");
-          break;
-      }
+          /* Compression scheme - fax is only for bilevel images */
+          switch (compression)
+          {
+            case NoCompression:
+            default:
+              (void) WriteBlobString(image,PS3_NoCompression"\n");
+              break;
+            case RLECompression:
+              (void) WriteBlobString(image,PS3_RLECompression"\n");
+              break;
+            case LZWCompression:
+              (void) WriteBlobString(image,PS3_LZWCompression"\n");
+              break;
+            case ZipCompression:
+              (void) WriteBlobString(image,PS3_ZipCompression"\n");
+              break;
+            case JPEGCompression:
+              (void) WriteBlobString(image,PS3_JPEGCompression"\n");
+              break;
+          }
 
-      /* Image data. Always ASCII85 encoded on top of (compressed) binary data. */
-      if (compression == JPEGCompression)
-      {
-          status=JPEGEncodeImage(image_info,image);
-      }
+          /* Image data. Always ASCII85 encoded. */
+          if (compression == JPEGCompression)
+            {
+                status=JPEGEncodeImage(image_info,image);
+            }
+          else
+            {
+              /* Stream based compressions */
+              status=SerializeMultiChannelImage(image_info,image,&pixels,
+                &length);
+              if (!status)
+                {
+                  CloseBlob(image);
+                  return(False);
+                }
+              Ascii85Initialize(image);
+              switch (compression)
+              {
+                case NoCompression:
+                default:
+                  for (i=0; i < length; i++)
+                    Ascii85Encode(image, (unsigned long)pixels[i]);
+                  status=True;
+                  break;
+                case RLECompression:
+                  status=PackbitsEncode2Image(image,length,pixels,
+                    Ascii85WriteByteHook,(void*)NULL);
+                  break;
+                case LZWCompression:
+                  status=LZWEncode2Image(image,length,pixels,
+                    Ascii85WriteByteHook,(void*)NULL);
+                  break;
+                case ZipCompression:
+                  status=ZLIBEncode2Image(image,length,image_info->quality,
+                    pixels,Ascii85WriteByteHook,(void*)NULL);
+                  break;
+              }
+              Ascii85Flush(image);
+              MagickFreeMemory(pixels);
+            }
+        }
       else
-      {
-        /* Stream based compressions */
-        status=SerializeMultiComponentImage(image_info,image,&pixels,&length);
-        if (!status)
         {
-          CloseBlob(image);
-          return(False);
+          /*
+            Color mapped images.
+            
+            Image class.
+          */
+          (void) WriteBlobString(image,PS3_PseudoClass"\n");
+
+          /*
+            Compression scheme - fax is only for bilevel images,
+            JPEG for true color (single channel) images.
+          */
+          switch (compression)
+          {
+            case NoCompression:
+            default:
+              (void) WriteBlobString(image,PS3_NoCompression"\n");
+              break;
+            case RLECompression:
+              (void) WriteBlobString(image,PS3_RLECompression"\n");
+              break;
+            case LZWCompression:
+              (void) WriteBlobString(image,PS3_LZWCompression"\n");
+              break;
+            case ZipCompression:
+              (void) WriteBlobString(image,PS3_ZipCompression"\n");
+              break;
+          }
+          
+          /* Number of colors in color map */
+          FormatString(buffer,"%lu\n",image->colors);
+          (void) WriteBlobString(image,buffer);
+
+          /* Color map - uncompressed, ascii85 encoded */
+          Ascii85Initialize(image);
+          for (i=0; i < (long) image->colors; i++)
+          {
+            Ascii85Encode(image, (unsigned long)image->colormap[i].red);
+            Ascii85Encode(image, (unsigned long)image->colormap[i].green);
+            Ascii85Encode(image, (unsigned long)image->colormap[i].blue);
+          }
+          Ascii85Flush(image);
+
+          status=SerializePseudoClassImage(image_info,image,&pixels,&length);
+          if (!status)
+            {
+              CloseBlob(image);
+              return(False);
+            }
+          Ascii85Initialize(image);
+          switch (compression)
+          {
+            case NoCompression:
+            default:
+              for (i=0; i < length; i++)
+                Ascii85Encode(image, (unsigned long)pixels[i]);
+              status=True;
+              break;
+            case RLECompression:
+              status=PackbitsEncode2Image(image,length,pixels,
+                Ascii85WriteByteHook,(void *)NULL);
+              break;
+            case LZWCompression:
+              status=LZWEncode2Image(image,length,pixels,Ascii85WriteByteHook,
+                (void *)NULL);
+              break;
+            case ZipCompression:
+              status=ZLIBEncode2Image(image,length,image_info->quality,pixels,
+                Ascii85WriteByteHook,(void *)NULL);
+              break;
+          }
+          Ascii85Flush(image);
+          MagickFreeMemory(pixels);
         }
-        Ascii85Initialize(image);
-        switch (compression)
-        {
-          case NoCompression:
-          default:
-            for (i=0; i < length; i++)
-              Ascii85Encode(image, (unsigned long)pixels[i]);
-            status=True;
-            break;
-          case RLECompression:
-            status=PackbitsEncode2Image(image,length,pixels,
-              Ascii85WriteByteHook,(void*)NULL);
-            break;
-          case LZWCompression:
-            status=LZWEncode2Image(image,length,pixels,
-              Ascii85WriteByteHook,(void*)NULL);
-            break;
-          case ZipCompression:
-            status=ZLIBEncode2Image(image,length,image_info->quality,pixels,
-              Ascii85WriteByteHook,(void*)NULL);
-            break;
-        }
-        Ascii85Flush(image);
-        MagickFreeMemory(pixels);
-      }
-    }
-    else  /* Color mapped images */
-    {
-      /* Image class */
-      (void) WriteBlobString(image,PS3_PseudoClass"\n");
-
-      /*
-        Compression scheme - fax is only for bilevel images,
-        JPEG for true color (single component) images.
-      */
-      switch (compression)
-      {
-        case NoCompression:
-        default:
-          (void) WriteBlobString(image,PS3_NoCompression"\n");
-          break;
-        case RLECompression:
-          (void) WriteBlobString(image,PS3_RLECompression"\n");
-          break;
-        case LZWCompression:
-          (void) WriteBlobString(image,PS3_LZWCompression"\n");
-          break;
-        case ZipCompression:
-          (void) WriteBlobString(image,PS3_ZipCompression"\n");
-          break;
-      }
-      
-      /* Number of colors in color map */
-      FormatString(buffer,"%lu\n",image->colors);
-      (void) WriteBlobString(image,buffer);
-
-      /* Color map - uncompressed, ascii85 encoded */
-      Ascii85Initialize(image);
-      for (i=0; i < (long) image->colors; i++)
-      {
-        Ascii85Encode(image, (unsigned long)image->colormap[i].red);
-        Ascii85Encode(image, (unsigned long)image->colormap[i].green);
-        Ascii85Encode(image, (unsigned long)image->colormap[i].blue);
-      }
-      Ascii85Flush(image);
-
-      status=SerializeColorMappedImage(image_info,image,&pixels,&length);
-      if (!status)
-      {
-        CloseBlob(image);
-        return(False);
-      }
-      Ascii85Initialize(image);
-      switch (compression)
-      {
-        case NoCompression:
-        default:
-          for (i=0; i < length; i++)
-            Ascii85Encode(image, (unsigned long)pixels[i]);
-          status=True;
-          break;
-        case RLECompression:
-          status=PackbitsEncode2Image(image,length,pixels,
-            Ascii85WriteByteHook,(void *)NULL);
-          break;
-        case LZWCompression:
-          status=LZWEncode2Image(image,length,pixels,Ascii85WriteByteHook,
-            (void *)NULL);
-          break;
-        case ZipCompression:
-          status=ZLIBEncode2Image(image,length,image_info->quality,pixels,
-            Ascii85WriteByteHook,(void *)NULL);
-          break;
-      }
-      Ascii85Flush(image);
-      MagickFreeMemory(pixels);
-    }
 
     if (!status)
       {
@@ -1714,7 +1890,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         floor(bounds.x1+0.5),floor(bounds.y1+0.5),ceil(bounds.x2-0.5),
         ceil(bounds.y2-0.5));
       (void) WriteBlobString(image,buffer);
-      FormatString(buffer,"%%%%HiResBoundingBox: %.8g %.8g %.8g %.8g\n",
+      FormatString(buffer,"%%%%HiResBoundingBox: %.7g %.7g %.7g %.7g\n",
         bounds.x1,bounds.y1,bounds.x2,bounds.y2);
       (void) WriteBlobString(image,buffer);
     }
@@ -1730,28 +1906,26 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   Z L I B E n c o d e I m a g e                                             %
+%   Z L I B E n c o d e 2 I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ZLIBEncodeImage compresses an image via ZLIB-coding specific to
+%  Method ZLIBEncode2Image compresses an image via ZLIB-coding specific to
 %  Postscript Level II or Portable Document Format.  To ensure portability, the
 %  binary ZLIB bytes are encoded as ASCII base-85.
 %
-%  The format of the ZLIBEncodeImage method is:
+%  The format of the ZLIBEncode2Image method is:
 %
-%      unsigned int ZLIBEncodeImage(Image *image,const size_t length,
-%        const unsigned long quality,unsigned char *pixels)
+%      unsigned int ZLIBEncode2Image(Image *image,const size_t length,
+%        const unsigned long quality,unsigned char *pixels,
+%        WriteByteHook write_byte,void *info)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method ZLIBEncodeImage returns True if all the pixels are
-%      compressed without error, otherwise False.
-%
-%    o file: The address of a structure of type FILE.  ZLIB encoded pixels
-%      are written to this file.
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.
 %
 %    o length:  A value that specifies the number of pixels to compress.
 %
@@ -1759,6 +1933,12 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 %
 %    o pixels: The address of an unsigned array of characters containing the
 %      pixels to compress.
+%
+%    o write_byte: function (hook) to call for writing each byte of compressed
+%      data.
+%
+%    o info: information block to pass along when calling write_byte
+%      function.
 %
 %
 */
