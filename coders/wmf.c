@@ -16,7 +16,7 @@
 %                              Software Design                                %
 %                              Bob Friesenhahn                                %
 %                            Dec 2000 - May 2001                              %
-%                            Oct 2001 - Apr 2002                              %
+%                            Oct 2001 - May 2002                              %
 %                                                                             %
 %                           Port to libwmf 0.2 API                            %
 %                            Francis J. Franklin                              %
@@ -143,15 +143,6 @@ struct _wmf_magick_t
     const ImageInfo
       *image_info;
 
-  /* Maximum and current number of temporary images */
-  int
-    max_temp_image_index,
-    cur_temp_image_index;
-
-  /* Temporary image IDs */
-  long
-    *temp_images;
-
   /* Pattern ID */
   unsigned long
     pattern_id;
@@ -264,9 +255,6 @@ static int          util_append_mvg(wmfAPI * API, char *format, ...);
 static void         util_draw_arc(wmfAPI * API, wmfDrawArc_t * draw_arc,magick_arc_t finish);
 static int          util_font_weight( const char* font );
 static double       util_pointsize( wmfAPI* API, wmfFont* font, char* str, double font_height);
-static long         util_registry_add(wmfAPI * API, const Image *image, ExceptionInfo *exception);
-static const Image* util_registry_get(wmfAPI * API, const long id, ExceptionInfo *exception);
-static void         util_registry_remove(wmfAPI * API, const long id);
 static void         util_render_mvg(wmfAPI * API);
 static void         util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_apply);
 static void         util_set_pen(wmfAPI * API, wmfDC * dc);
@@ -314,6 +302,206 @@ static void draw_color_stroke_rgb( wmfAPI* API, const wmfRGB* rgb )
 static void draw_color_stroke_reset( wmfAPI* API )
 {
   util_append_mvg(API, "stroke none\n");
+}
+
+static void draw_composite(wmfAPI* API,
+                           const CompositeOperator composite_operator,
+                           const double x, const double y,
+                           const double width, const double height,
+                           const Image * image )
+{
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData(API);
+
+  ExceptionInfo
+    exception_info;
+
+  ImageInfo
+    *image_info;
+
+  Image
+    *clone_image;
+
+  char
+    *media_type = NULL,
+    *base64 = NULL;
+
+  const char
+    *mode = NULL;
+
+  unsigned char
+    *blob = (unsigned char*)NULL;
+
+  size_t
+    blob_length = 2048;
+
+  assert(API != (wmfAPI*)NULL);
+  assert(image != (Image *) NULL);
+  assert(width != 0);
+  assert(height != 0);
+  assert(*image->magick != '\0');
+
+  GetExceptionInfo( &exception_info );
+
+  clone_image = CloneImage(image,0,0,True,&exception_info);
+  if(!clone_image)
+    {
+      ThrowException(&ddata->image->exception,exception_info.severity,
+                     exception_info.reason,exception_info.description);
+      return;
+    }
+  image_info = CloneImageInfo((const ImageInfo *)NULL);
+  blob = (unsigned char*)ImageToBlob( image_info, clone_image, &blob_length, &exception_info );
+  DestroyImageList(clone_image);
+  if(!blob)
+    {
+      ThrowException(&ddata->image->exception,exception_info.severity,
+                     exception_info.reason,exception_info.description);
+      return;
+    }
+
+  base64 = Base64Encode(blob,blob_length);
+  LiberateMemory((void**)&blob);
+  if(!base64)
+    {
+      char
+        buffer[MaxTextExtent];
+
+      FormatString(buffer,"%d bytes", (4*blob_length/3+4));
+      ThrowException(&ddata->image->exception,ResourceLimitWarning,
+                     "allocating Base64 memory",buffer);
+      return;
+    }
+
+  mode = "copy";
+  switch (composite_operator)
+    {
+    case AddCompositeOp:
+      mode = "add";
+      break;
+    case AtopCompositeOp:
+      mode = "atop";
+      break;
+    case BumpmapCompositeOp:
+      mode = "bumpmap";
+      break;
+    case ClearCompositeOp:
+      mode = "clear";
+      break;
+    case ColorizeCompositeOp:
+      mode = "colorize_not_supported";
+      break;
+    case CopyBlueCompositeOp:
+      mode = "copyblue";
+      break;
+    case CopyCompositeOp:
+      mode = "copy";
+      break;
+    case CopyGreenCompositeOp:
+      mode = "copygreen";
+      break;
+    case CopyOpacityCompositeOp:
+      mode = "copyopacity";
+      break;
+    case CopyRedCompositeOp:
+      mode = "copyred";
+      break;
+    case DarkenCompositeOp:
+      mode = "darken_not_supported";
+      break;
+    case DifferenceCompositeOp:
+      mode = "difference";
+      break;
+    case DisplaceCompositeOp:
+      mode = "displace_not_supported";
+      break;
+    case DissolveCompositeOp:
+      mode = "dissolve_not_supported";
+      break;
+    case HueCompositeOp:
+      mode = "hue_not_supported";
+      break;
+    case InCompositeOp:
+      mode = "in";
+      break;
+    case LightenCompositeOp:
+      mode = "lighten_not_supported";
+      break;
+    case LuminizeCompositeOp:
+      mode = "luminize_not_supported";
+      break;
+    case MinusCompositeOp:
+      mode = "minus";
+      break;
+    case ModulateCompositeOp:
+      mode = "modulate_not_supported";
+      break;
+    case MultiplyCompositeOp:
+      mode = "multiply";
+      break;
+    case NoCompositeOp:
+      mode = "no_not_supported";
+      break;
+    case OutCompositeOp:
+      mode = "out";
+      break;
+    case OverCompositeOp:
+      mode = "over";
+      break;
+    case OverlayCompositeOp:
+      mode = "overlay_not_supported";
+      break;
+    case PlusCompositeOp:
+      mode = "plus";
+      break;
+    case SaturateCompositeOp:
+      mode = "saturate_not_supported";
+      break;
+    case ScreenCompositeOp:
+      mode = "screen_not_supported";
+      break;
+    case SubtractCompositeOp:
+      mode = "subtract";
+      break;
+    case ThresholdCompositeOp:
+      mode = "threshold";
+      break;
+    case XorCompositeOp:
+      mode = "xor";
+      break;
+    default:
+      break;
+    }
+
+  media_type = MagickToMime( clone_image->magick );
+
+  if( media_type != NULL )
+    {
+      long
+        remaining;
+
+      char
+        *str;
+
+      util_append_mvg(API, "image %s %.4g,%.4g %.4g,%.4g 'data:%s;base64,\n",
+                      mode, x, y, width, height, media_type);
+
+      remaining = strlen(base64);
+      for( str = base64; remaining > 0; )
+        {
+          util_append_mvg(API,"%.76s", str);
+          remaining -= 76;
+          str += 76;
+          if(remaining > 0)
+            util_append_mvg(API,"\n");
+        }
+
+      util_append_mvg(API,"'\n");
+    }
+
+  LiberateMemory((void**)&media_type);
+  DestroyExceptionInfo(&exception_info);
+  DestroyImageInfo(image_info);
 }
 
 static void draw_clip_pop( wmfAPI* API )
@@ -425,51 +613,6 @@ static void draw_viewbox(wmfAPI* API, unsigned long x1, unsigned long y1, unsign
   util_append_mvg(API, "viewbox %lu %lu %lu %lu\n", x1,y1, x2,y2);
 }
 
-/* Register an image with the image registry */
-static long util_registry_add(wmfAPI * API, const Image *image, ExceptionInfo *exception)
-{
-  wmf_magick_t
-    *ddata = WMF_MAGICK_GetData(API);
-
-  long
-    id;
-
-  id = SetMagickRegistry(ImageRegistryType,image,sizeof(Image),exception);
-
-  if( id > -1 )
-    {
-      (ddata->temp_images)[ddata->cur_temp_image_index] = id;
-      ++ddata->cur_temp_image_index;
-      if (ddata->cur_temp_image_index == ddata->max_temp_image_index)
-        {
-          ddata->max_temp_image_index += 2048;
-          ReacquireMemory((void **) &ddata->temp_images,
-                          ddata->max_temp_image_index * sizeof(long));
-        }
-    }
-
-  return id;
-}
-
-/* Remove an image from the image registry */
-static void util_registry_remove(wmfAPI * API, const long id)
-{
-  DeleteMagickRegistry( id );
-}
-
-/* Retrieve an image from the image registry */
-static const Image* util_registry_get(wmfAPI * API, const long id,
-                                        ExceptionInfo *exception)
-{
-  size_t
-    length;
-
-  RegistryType
-    type;
-
-  return (const Image*)GetMagickRegistry(id,&type,&length,exception);
-}
-
 static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
 {
   if (!TO_FILL(rop_draw))
@@ -549,22 +692,18 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
   ExceptionInfo
     exception;
 
-  const Image
+  Image
     *image;
 
   double
     height,
     width;
 
-  long
-    *id;
-
   if (bmp_draw->bmp.data == 0)
     return;
 
   GetExceptionInfo(&exception);
-  id = (long*)bmp_draw->bmp.data;
-  image = util_registry_get( API, *id, &exception );
+  image = (Image*)bmp_draw->bmp.data;
   if(!image)
     {
        ThrowException(&ddata->image->exception,exception.severity,
@@ -591,8 +730,9 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
       crop_image = CropImage( image, &crop_info, &exception );
       if(crop_image)
         {
-          *id = util_registry_add( API, crop_image, &exception );
+          DestroyImageList(image);
           image = crop_image;
+          bmp_draw->bmp.data = (void*)image;
         }
       else
         ThrowException(&ddata->image->exception,exception.severity,
@@ -602,12 +742,8 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
   width = AbsoluteValue(bmp_draw->pixel_width * (double) bmp_draw->crop.w);
   height = AbsoluteValue(bmp_draw->pixel_height * (double) bmp_draw->crop.h);
 
-  if( *id > -1 )
-    util_append_mvg(API, "image Copy %.4g,%.4g %.4g,%.4g 'mpri:%li'\n",
-                      XC(bmp_draw->pt.x), YC(bmp_draw->pt.y), width, height, *id);
-  else
-    ThrowException(&ddata->image->exception,exception.severity,
-                   exception.reason,exception.description);
+  draw_composite(API, CopyCompositeOp, XC(bmp_draw->pt.x), YC(bmp_draw->pt.y),
+                 width, height, image );
 
 #if 0
   printf("bmp_draw->bmp.data   = 0x%lx\n", (long)bmp_draw->bmp.data);
@@ -633,9 +769,6 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
 
   Image
     *image;
-
-  long
-    *id;
 
   bmp_read->bmp.data = 0;
 
@@ -673,9 +806,8 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
 #if 0
       printf("ipa_bmp_read: rows=%ld,columns=%ld\n\n", image->rows, image->columns);
 #endif
-      id = (long*)AcquireMemory(sizeof(long));
-      *id = util_registry_add( API, image, &exception);
-      bmp_read->bmp.data   = (void*)id;
+
+      bmp_read->bmp.data   = (void*)image;
       bmp_read->bmp.width  = (U16)image->columns;
       bmp_read->bmp.height = (U16)image->rows;
     }
@@ -683,14 +815,8 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
 
 static void ipa_bmp_free(wmfAPI * API, wmfBMP * bmp)
 {
-  /*
-   * We don't actually free the image here since we need the image
-   * to persist until DrawImage() has been executed.
-   * The images are freed by ipa_device_close()
-   */
-
-  LiberateMemory(&bmp->data);
-  /* bmp->data = (void *) 0; */
+  DestroyImageList((Image*)bmp->data);
+  bmp->data = (void*) 0;
   bmp->width = (U16) 0;
   bmp->height = (U16) 0;
 }
@@ -702,11 +828,6 @@ static void ipa_device_open(wmfAPI * API)
 {
   wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
-  /* Initialize ddata */
-  ddata->max_temp_image_index = 2048;
-  ddata->cur_temp_image_index = 0;
-  ddata->temp_images =
-    (long *) AcquireMemory(ddata->max_temp_image_index * sizeof(long));
   ddata->pattern_id = 0;
   ddata->clipping = False;
   ddata->clip_path_id = 0;
@@ -723,19 +844,8 @@ static void ipa_device_open(wmfAPI * API)
  */
 static void ipa_device_close(wmfAPI * API)
 {
-  int
-    index;
-
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
-
-  /* Destroy and de-register images saved in the image registry */
-  if (ddata->temp_images != 0)
-  {
-    for (index = 0; index < ddata->cur_temp_image_index; index++)
-      util_registry_remove( API, (ddata->temp_images)[index] );
-    LiberateMemory((void **) &ddata->temp_images);
-  }
 
   LiberateMemory((void **)&ddata->mvg);
 }
@@ -754,7 +864,7 @@ static void ipa_device_begin(wmfAPI * API)
   draw_viewbox( API, 0, 0, ddata->image->columns, ddata->image->rows );
 
   util_append_mvg(API, "#Created by ImageMagick %s (http://www.imagemagick.org/)\n",
-                    MagickLibVersionText);
+                  MagickLibVersionText);
 
   /* Scale width and height to image */
   draw_scale(API, ddata->scale_x, ddata->scale_y);
@@ -784,9 +894,6 @@ static void ipa_device_begin(wmfAPI * API)
       
       ExceptionInfo
         exception;
-      
-      long
-        id;
 
       GetExceptionInfo(&exception);
 
@@ -796,25 +903,24 @@ static void ipa_device_begin(wmfAPI * API)
       DestroyImageInfo(image_info);
       if(image)
         {
-          id = util_registry_add(API, image, &exception);
-          if( id > -1 )
-            {
-              draw_defs_push(API);
-              draw_pattern_push(API, ddata->pattern_id, image->columns, image->rows);
-              util_append_mvg(API, "image Copy 0,0 %lu,%lu 'mpri:%li'\n",
-                                image->columns, image->rows, id);
-              draw_pattern_pop(API);
-              draw_defs_pop(API);
-              util_append_mvg(API, "fill url(#brush_%lu)\n", ddata->pattern_id);
-              ++ddata->pattern_id;
+          draw_defs_push(API);
+          draw_pattern_push(API, ddata->pattern_id, image->columns, image->rows);
+          draw_composite(API, CopyCompositeOp, 0, 0, image->columns, image->rows, image);
+          draw_pattern_pop(API);
+          draw_defs_pop(API);
+          util_append_mvg(API, "fill url(#brush_%lu)\n", ddata->pattern_id);
+          ++ddata->pattern_id;
 
-              draw_rectangle(API,
-                             XC(ddata->bbox.TL.x),YC(ddata->bbox.TL.y),
-                             XC(ddata->bbox.BR.x),YC(ddata->bbox.BR.y));
-            }
+          draw_rectangle(API,
+                         XC(ddata->bbox.TL.x),YC(ddata->bbox.TL.y),
+                         XC(ddata->bbox.BR.x),YC(ddata->bbox.BR.y));
+          DestroyImageList(image);
         }
-      ThrowException(&ddata->image->exception,exception.severity,
-                     exception.reason,exception.description);
+      else
+        {
+          ThrowException(&ddata->image->exception,exception.severity,
+                         exception.reason,exception.description);
+        }
     }
 
   util_append_mvg(API, "fill-opacity 1\n");
@@ -1708,35 +1814,24 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_appl
 
         if (brush_bmp && brush_bmp->data != 0)
           {
-            const char
-              *mode;
+            CompositeOperator            
+              mode;
 
             const Image
               *image;
 
             ExceptionInfo
               exception;
-            
-            const long
-              *id;
 
             GetExceptionInfo(&exception);
 
-            id = (long*)brush_bmp->data;
+            image = (Image*)brush_bmp->data;
 
-            image = util_registry_get( API, *id, &exception );
-            if(!image)
-              {
-                ThrowException(&ddata->image->exception,exception.severity,
-                               exception.reason,exception.description);
-                break;
-              }
-
-            mode = "Copy";  /* Default is copy */
+            mode = CopyCompositeOp;  /* Default is copy */
             switch (WMF_DC_ROP(dc))
               {
               case SRCCOPY:  /* dest = source */
-                mode = "Copy";
+                mode = CopyCompositeOp;
                 break;
               case SRCPAINT:  /* dest = source OR dest */
                 printf("util_set_brush SRCPAINT ROP mode not supported!\n");
@@ -1745,7 +1840,7 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_appl
                 printf("util_set_brush SRCAND ROP mode not supported!\n");
                 break;
               case SRCINVERT:  /* dest = source XOR dest */
-                mode = "Xor";
+                mode = XorCompositeOp;
                 break;
               case SRCERASE:  /* dest = source AND (NOT dest) */
                 printf("util_set_brush SRCERASE ROP mode not supported!\n");
@@ -1787,23 +1882,17 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_appl
                 }
               }
 
-            if( *id > -1 )
-              {
-                draw_defs_push(API);
-                draw_pattern_push(API, ddata->pattern_id, brush_bmp->width, brush_bmp->height);
-                util_append_mvg(API, "image %s 0,0 %u,%u 'mpri:%li'\n",
-                                mode, brush_bmp->width, brush_bmp->height, *id);
-                draw_pattern_pop(API);
-                draw_defs_pop(API);
-                if( brush_apply == BrushApplyStroke )
-                  util_append_mvg(API, "stroke url(#brush_%lu)\n", ddata->pattern_id);
-                else
-                  util_append_mvg(API, "fill url(#brush_%lu)\n", ddata->pattern_id);
-                ++ddata->pattern_id;
-              }
+            draw_defs_push(API);
+            draw_pattern_push(API, ddata->pattern_id, brush_bmp->width, brush_bmp->height);
+            draw_composite(API,mode, 0, 0, brush_bmp->width, brush_bmp->height, image);
+            draw_pattern_pop(API);
+            draw_defs_pop(API);
+            if( brush_apply == BrushApplyStroke )
+              util_append_mvg(API, "stroke url(#brush_%lu)\n", ddata->pattern_id);
             else
-              ThrowException(&ddata->image->exception,exception.severity,
-                             exception.reason,exception.description);
+              util_append_mvg(API, "fill url(#brush_%lu)\n", ddata->pattern_id);
+            ++ddata->pattern_id;
+
           }
         else
           printf("util_set_brush: no BMP image data!\n");

@@ -1,3 +1,7 @@
+2002-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * WMF now supplies bitmaps as inline images rather than via
+    a mpri reference.
+
 2002-04-15  Cristy  <cristy@mystic.es.dupont.com>
   * Fixed DrawImage() to properly handle affine image transforms.
   * Added AffineTransformImage() to C API.
