@@ -3368,7 +3368,7 @@ MagickExport int SubstituteString(char **buffer,const char *search,
           "UnableToAllocateString");
     }
   (void) strcat(destination,source);
-  MagickFreeMemory(buffer);
+  MagickFreeMemory(*buffer);
   *buffer=result;
   return True;
 }

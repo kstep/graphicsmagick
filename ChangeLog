@@ -1,3 +1,8 @@
+2003-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* utility.c (SubstituteString): Fixed a bug which was introduced
+	while updating the code to use the memory allocation macros.
+
 2003-05-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/GraphicsMagick-config.in (usage): Added example
