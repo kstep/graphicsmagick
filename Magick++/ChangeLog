@@ -1,3 +1,8 @@
+2002-04-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/STL.cpp: Moved function object implementations from STL.h to
+ 	STL.cpp.
+
 2002-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (getConstPixels): Changed offset parameter type

@@ -46,7 +46,7 @@ namespace Magick
   public:
     addNoiseImage ( NoiseType noiseType_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     NoiseType _noiseType;
@@ -78,7 +78,7 @@ namespace Magick
     annotateImage ( const std::string &text_,
 		    const GravityType gravity_ );
     
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const std::string   _text;
@@ -93,7 +93,7 @@ namespace Magick
   public:
     blurImage( const double radius_ = 1, const double sigma_ = 0.5 );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _radius;
@@ -106,7 +106,7 @@ namespace Magick
   public:
     borderImage( const Geometry &geometry_ = borderGeometryDefault  );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Geometry _geometry;
@@ -118,7 +118,7 @@ namespace Magick
   public:
     charcoalImage( const double radius_ = 1, const double sigma_ = 0.5  );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _radius;
@@ -131,7 +131,7 @@ namespace Magick
   public:
     chopImage( const Geometry &geometry_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Geometry _geometry;
@@ -149,7 +149,7 @@ namespace Magick
     colorizeImage( const unsigned int opacity_,
                    const Color &penColor_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _opacityRed;
@@ -164,7 +164,7 @@ namespace Magick
   public:
     colorSpaceImage( ColorspaceType colorSpace_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const ColorspaceType _colorSpace;
@@ -176,7 +176,7 @@ namespace Magick
   public:
     commentImage( const std::string &comment_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const std::string _comment;
@@ -196,7 +196,7 @@ namespace Magick
 		    const Geometry &offset_,
 		    CompositeOperator compose_ = InCompositeOp );
     
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Image             _compositeImage;
@@ -211,7 +211,7 @@ namespace Magick
   public:
     contrastImage( const unsigned int sharpen_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _sharpen;
@@ -223,7 +223,7 @@ namespace Magick
   public:
     cropImage( const Geometry &geometry_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Geometry _geometry;
@@ -235,7 +235,7 @@ namespace Magick
   public:
     cycleColormapImage( const int amount_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const int _amount;
@@ -247,7 +247,7 @@ namespace Magick
   public:
     despeckleImage( void );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
   };
@@ -263,7 +263,7 @@ namespace Magick
     // Draw on image using a drawable list
     drawImage( const std::list<Drawable> &drawable_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     std::list<Drawable> _drawableList;
@@ -275,7 +275,7 @@ namespace Magick
   public:
     edgeImage( const double radius_ = 0.0  );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _radius;
@@ -288,7 +288,7 @@ namespace Magick
     embossImage( void );
     embossImage( const double radius_, const double sigma_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _radius;
@@ -301,7 +301,7 @@ namespace Magick
   public:
     enhanceImage( void );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
   };
@@ -312,7 +312,7 @@ namespace Magick
   public:
     equalizeImage( void );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
   };
@@ -323,7 +323,7 @@ namespace Magick
   public:
     fillColorImage( const Color &fillColor_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Color _fillColor;
@@ -335,7 +335,7 @@ namespace Magick
   public:
     flipImage( void );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
   };
@@ -366,7 +366,7 @@ namespace Magick
 			 const Color &fillColor_,
 			 const Color &borderColor_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int   _x;
@@ -401,7 +401,7 @@ namespace Magick
 			   const Image &texture_,
 			   const Color &borderColor_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int  _x;
@@ -416,7 +416,7 @@ namespace Magick
   public:
     flopImage( void );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
   };
@@ -430,7 +430,7 @@ namespace Magick
     frameImage( const unsigned int width_, const unsigned int height_,
 		const int innerBevel_ = 6, const int outerBevel_ = 6 );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     unsigned int _width;
@@ -449,7 +449,7 @@ namespace Magick
 		 const double gammaGreen_,
 		 const double gammaBlue_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     double _gammaRed;
@@ -466,7 +466,7 @@ namespace Magick
   public:
     gaussianBlurImage( const double width_, const double sigma_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     double _width;
@@ -479,7 +479,7 @@ namespace Magick
   public:
     implodeImage( const double factor_ = 50 );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _factor;
@@ -492,7 +492,7 @@ namespace Magick
   public:
     isValidImage( const bool isValid_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const bool _isValid;
@@ -504,7 +504,7 @@ namespace Magick
   public:
     labelImage( const std::string &label_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const std::string _label;
@@ -516,7 +516,7 @@ namespace Magick
   public:
     channelImage( const ChannelType channel_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const ChannelType _channel;
@@ -528,7 +528,7 @@ namespace Magick
   public:
     magnifyImage( void );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
   };
@@ -540,7 +540,7 @@ namespace Magick
     mapImage( const Image &mapImage_ ,
               const bool dither_ = false );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Image   _mapImage;
@@ -556,7 +556,7 @@ namespace Magick
 			 const int x_, const int y_,
 			 const PaintMethod method_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Color         _target;
@@ -573,7 +573,7 @@ namespace Magick
   public:
     medianFilterImage( const double radius_ = 0.0 );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _radius;
@@ -585,7 +585,7 @@ namespace Magick
   public:
     minifyImage( void );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
   };
@@ -598,7 +598,7 @@ namespace Magick
 		   const double saturation_,
 		   const double hue_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _brightness;
@@ -613,7 +613,7 @@ namespace Magick
   public:
     negateImage( const bool grayscale_ = false );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const bool _grayscale;
@@ -626,7 +626,7 @@ namespace Magick
   public:
     normalizeImage( void );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
   };  
@@ -637,7 +637,7 @@ namespace Magick
   public:
     oilPaintImage( const double radius_ = 3 );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _radius;
@@ -655,7 +655,7 @@ namespace Magick
   public:
     opacityImage( const unsigned int opacity_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _opacity;
@@ -668,7 +668,7 @@ namespace Magick
     opaqueImage( const Color &opaqueColor_,
 		 const Color &penColor_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Color & _opaqueColor;
@@ -681,7 +681,7 @@ namespace Magick
   public:
     quantizeImage( const bool measureError_ = false );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const bool _measureError;
@@ -695,7 +695,7 @@ namespace Magick
     raiseImage( const Geometry &geometry_ = raiseGeometryDefault,
 		const bool raisedFlag_ = false );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Geometry   _geometry;
@@ -710,7 +710,7 @@ namespace Magick
 
     reduceNoiseImage (const  unsigned int order_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     unsigned int _order;
@@ -725,7 +725,7 @@ namespace Magick
 
     rollImage( const int columns_, const int rows_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     int _columns;
@@ -738,7 +738,7 @@ namespace Magick
   public:
     rotateImage( const double degrees_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double       _degrees;
@@ -750,7 +750,7 @@ namespace Magick
   public:
     sampleImage( const Geometry &geometry_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Geometry  _geometry;
@@ -762,7 +762,7 @@ namespace Magick
   public:
     scaleImage( const Geometry &geometry_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Geometry  _geometry;
@@ -778,7 +778,7 @@ namespace Magick
     segmentImage( const double clusterThreshold_ = 1.0, 
 		  const double smoothingThreshold_ = 1.5 );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double  _clusterThreshold;
@@ -792,7 +792,7 @@ namespace Magick
     shadeImage( const double clusterThreshold_ = 1.0, 
 		const double smoothingThreshold_ = 1.5 );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double  _clusterThreshold;
@@ -805,7 +805,7 @@ namespace Magick
   public:
     sharpenImage( const double radius_ = 1, const double sigma_ = 0.5 );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _radius;
@@ -818,7 +818,7 @@ namespace Magick
   public:
     shaveImage( const Geometry &geometry_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Geometry _geometry;
@@ -832,7 +832,7 @@ namespace Magick
     shearImage( const double xShearAngle_,
 		const double yShearAngle_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _xShearAngle;
@@ -846,7 +846,7 @@ namespace Magick
   public:
     solarizeImage( const double factor_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _factor;
@@ -858,7 +858,7 @@ namespace Magick
   public:
     spreadImage( const unsigned int amount_ = 3 );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _amount;
@@ -870,7 +870,7 @@ namespace Magick
   public:
     steganoImage( const Image &waterMark_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Image _waterMark;
@@ -883,7 +883,7 @@ namespace Magick
   public:
     stereoImage( const Image &rightImage_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Image _rightImage;
@@ -895,7 +895,7 @@ namespace Magick
   public:
     strokeColorImage( const Color &strokeColor_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Color _strokeColor;
@@ -907,7 +907,7 @@ namespace Magick
   public:
     swirlImage( const double degrees_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _degrees;
@@ -919,7 +919,7 @@ namespace Magick
   public:
     textureImage( const Image &texture_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Image _texture;
@@ -931,7 +931,7 @@ namespace Magick
   public:
     thresholdImage( const double threshold_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _threshold;
@@ -946,7 +946,7 @@ namespace Magick
     transformImage( const Geometry &imageGeometry_,
 		    const Geometry &cropGeometry_  );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Geometry _imageGeometry;
@@ -959,7 +959,7 @@ namespace Magick
   public:
     transparentImage( const Color& color_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Color _color;
@@ -971,7 +971,7 @@ namespace Magick
   public:
     trimImage( void );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
   };
@@ -983,7 +983,7 @@ namespace Magick
     waveImage( const double amplitude_ = 25.0,
 	       const double wavelength_ = 150.0 );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _amplitude;
@@ -996,7 +996,7 @@ namespace Magick
   public:
     zoomImage( const Geometry &geometry_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Geometry _geometry;
@@ -1012,7 +1012,7 @@ namespace Magick
   public:
     antiAliasImage( const bool flag_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const bool _flag;
@@ -1024,7 +1024,7 @@ namespace Magick
   public:
     adjoinImage( const bool flag_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const bool _flag;
@@ -1037,7 +1037,7 @@ namespace Magick
   public:
     animationDelayImage( const unsigned int delay_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _delay;
@@ -1050,7 +1050,7 @@ namespace Magick
   public:
     animationIterationsImage( const unsigned int iterations_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _iterations;
@@ -1062,7 +1062,7 @@ namespace Magick
   public:
     backgroundColorImage( const Color &color_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Color _color;
@@ -1074,7 +1074,7 @@ namespace Magick
   public:
     backgroundTextureImage( const std::string &backgroundTexture_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const std::string _backgroundTexture;
@@ -1086,7 +1086,7 @@ namespace Magick
   public:
     borderColorImage( const Color &color_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Color _color;
@@ -1098,7 +1098,7 @@ namespace Magick
   public:
     boxColorImage( const Color &boxColor_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Color _boxColor;
@@ -1110,7 +1110,7 @@ namespace Magick
   public:
     chromaBluePrimaryImage( const double x_, const double y_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _x;
@@ -1123,7 +1123,7 @@ namespace Magick
   public:
     chromaGreenPrimaryImage( const double x_, const double y_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _x;
@@ -1136,7 +1136,7 @@ namespace Magick
   public:
     chromaRedPrimaryImage( const double x_, const double y_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _x;
@@ -1149,7 +1149,7 @@ namespace Magick
   public:
     chromaWhitePointImage( const double x_, const double y_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _x;
@@ -1162,7 +1162,7 @@ namespace Magick
   public:
     colorFuzzImage( const double fuzz_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _fuzz;
@@ -1174,7 +1174,7 @@ namespace Magick
   public:
     colorMapImage( const unsigned int index_, const Color &color_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _index;
@@ -1187,7 +1187,7 @@ namespace Magick
   public:
     compressTypeImage( const CompressionType compressType_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const CompressionType _compressType;
@@ -1199,7 +1199,7 @@ namespace Magick
   public:
     densityImage( const Geometry &geomery_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Geometry _geomery;
@@ -1211,7 +1211,7 @@ namespace Magick
   public:
     depthImage( const unsigned int depth_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _depth;
@@ -1224,7 +1224,7 @@ namespace Magick
   public:
     endianImage( const EndianType endian_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const EndianType  _endian;
@@ -1236,7 +1236,7 @@ namespace Magick
   public:
     fileNameImage( const std::string &fileName_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const std::string _fileName;
@@ -1248,7 +1248,7 @@ namespace Magick
   public:
     filterTypeImage( const FilterTypes filterType_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const FilterTypes _filterType;
@@ -1260,7 +1260,7 @@ namespace Magick
   public:
     fontImage( const std::string &font_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const std::string _font;
@@ -1272,7 +1272,7 @@ namespace Magick
   public:
     fontPointsizeImage( const unsigned int pointsize_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _pointsize;
@@ -1284,7 +1284,7 @@ namespace Magick
   public:
     gifDisposeMethodImage( const unsigned int disposeMethod_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _disposeMethod;
@@ -1296,7 +1296,7 @@ namespace Magick
   public:
     interlaceTypeImage( const InterlaceType interlace_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const InterlaceType _interlace;
@@ -1308,7 +1308,7 @@ namespace Magick
   public:
     lineWidthImage( const double lineWidth_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const double _lineWidth;
@@ -1320,7 +1320,7 @@ namespace Magick
   public:
     magickImage( const std::string &magick_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const std::string _magick;
@@ -1332,7 +1332,7 @@ namespace Magick
   public:
     matteImage( const bool matteFlag_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const bool _matteFlag;
@@ -1344,7 +1344,7 @@ namespace Magick
   public:
     matteColorImage( const Color &matteColor_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Color _matteColor;
@@ -1356,7 +1356,7 @@ namespace Magick
   public:
     monochromeImage( const bool monochromeFlag_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const bool _monochromeFlag;
@@ -1368,7 +1368,7 @@ namespace Magick
   public:
     penColorImage( const Color &penColor_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Color _penColor;
@@ -1380,7 +1380,7 @@ namespace Magick
   public:
     penTextureImage( const Image &penTexture_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Image _penTexture;
@@ -1394,7 +1394,7 @@ namespace Magick
                      const unsigned int y_,
 		     const Color &color_);
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _x;
@@ -1408,7 +1408,7 @@ namespace Magick
   public:
     pageImage( const Geometry &pageSize_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Geometry _pageSize;
@@ -1420,7 +1420,7 @@ namespace Magick
   public:
     qualityImage( const unsigned int quality_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _quality;
@@ -1432,7 +1432,7 @@ namespace Magick
   public:
     quantizeColorsImage( const unsigned int colors_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _colors;
@@ -1444,7 +1444,7 @@ namespace Magick
   public:
     quantizeColorSpaceImage( const ColorspaceType colorSpace_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const ColorspaceType _colorSpace;
@@ -1456,7 +1456,7 @@ namespace Magick
   public:
     quantizeDitherImage( const bool ditherFlag_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const bool _ditherFlag;
@@ -1468,7 +1468,7 @@ namespace Magick
   public:
     quantizeTreeDepthImage( const unsigned int treeDepth_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _treeDepth;
@@ -1480,7 +1480,7 @@ namespace Magick
   public:
     renderingIntentImage( const RenderingIntent renderingIntent_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const RenderingIntent _renderingIntent;
@@ -1492,7 +1492,7 @@ namespace Magick
   public:
     resolutionUnitsImage( const ResolutionType resolutionUnits_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const ResolutionType _resolutionUnits;
@@ -1504,7 +1504,7 @@ namespace Magick
   public:
     sceneImage( const unsigned int scene_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _scene;
@@ -1516,7 +1516,7 @@ namespace Magick
   public:
     sizeImage( const Geometry &geometry_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Geometry _geometry;
@@ -1528,7 +1528,7 @@ namespace Magick
   public:
     subImageImage( const unsigned int subImage_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _subImage;
@@ -1540,7 +1540,7 @@ namespace Magick
   public:
     subRangeImage( const unsigned int subRange_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const unsigned int _subRange;
@@ -1552,7 +1552,7 @@ namespace Magick
   public:
     tileNameImage( const std::string &tileName_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const std::string _tileName;
@@ -1564,7 +1564,7 @@ namespace Magick
   public:
     typeImage( const ImageType type_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const Magick::ImageType _type;
@@ -1577,7 +1577,7 @@ namespace Magick
   public:
     verboseImage( const bool verbose_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const bool _verbose;
@@ -1589,7 +1589,7 @@ namespace Magick
   public:
     viewImage( const std::string &view_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const std::string _view;
@@ -1602,7 +1602,7 @@ namespace Magick
   public:
     x11DisplayImage( const std::string &display_ );
 
-    void operator()( Image &image_ );
+    void operator()( Image &image_ ) const;
 
   private:
     const std::string _display;

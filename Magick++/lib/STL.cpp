@@ -14,7 +14,7 @@ Magick::addNoiseImage::addNoiseImage( Magick::NoiseType noiseType_ )
   : _noiseType( noiseType_ )
 {
 }
-void Magick::addNoiseImage::operator()( Magick::Image &image_ )
+void Magick::addNoiseImage::operator()( Magick::Image &image_ ) const
 {
   image_.addNoise( _noiseType );
 }
@@ -62,7 +62,7 @@ Magick::annotateImage::annotateImage ( const std::string &text_,
     _degrees( 0 )
 {
 }
-void Magick::annotateImage::operator()( Magick::Image &image_ )
+void Magick::annotateImage::operator()( Magick::Image &image_ ) const
 {
   image_.annotate( _text, _geometry, _gravity, _degrees );
 }
@@ -73,7 +73,7 @@ Magick::blurImage::blurImage( const double radius_, const double sigma_  )
         _sigma( sigma_ )
 {
 }
-void Magick::blurImage::operator()( Magick::Image &image_ )
+void Magick::blurImage::operator()( Magick::Image &image_ ) const
 {
   image_.blur( _radius, _sigma );
 }
@@ -83,7 +83,7 @@ Magick::borderImage::borderImage( const Magick::Geometry &geometry_ )
   : _geometry( geometry_ )
 {
 }
-void Magick::borderImage::operator()( Magick::Image &image_ )
+void Magick::borderImage::operator()( Magick::Image &image_ ) const
 {
   image_.border( _geometry );
 }
@@ -94,7 +94,7 @@ Magick::charcoalImage::charcoalImage( const double radius_, const double sigma_ 
         _sigma( sigma_ )
 {
 }
-void Magick::charcoalImage::operator()( Magick::Image &image_ )
+void Magick::charcoalImage::operator()( Magick::Image &image_ ) const
 {
   image_.charcoal( _radius, _sigma );
 }
@@ -104,7 +104,7 @@ Magick::chopImage::chopImage( const Magick::Geometry &geometry_ )
   : _geometry( geometry_ )
 {
 }
-void Magick::chopImage::operator()( Magick::Image &image_ )
+void Magick::chopImage::operator()( Magick::Image &image_ ) const
 {
   image_.chop( _geometry );
 }
@@ -128,7 +128,7 @@ Magick::colorizeImage::colorizeImage( const unsigned int opacity_,
     _penColor( penColor_ )
 {
 }
-void Magick::colorizeImage::operator()( Magick::Image &image_ )
+void Magick::colorizeImage::operator()( Magick::Image &image_ ) const
 {
   image_.colorize( _opacityRed, _opacityGreen, _opacityBlue, _penColor );
 }
@@ -138,7 +138,7 @@ Magick::colorSpaceImage::colorSpaceImage( Magick::ColorspaceType colorSpace_ )
   : _colorSpace( colorSpace_ )
 {
 }
-void Magick::colorSpaceImage::operator()( Magick::Image &image_ )
+void Magick::colorSpaceImage::operator()( Magick::Image &image_ ) const
 {
   image_.colorSpace( _colorSpace );
 }
@@ -148,7 +148,7 @@ Magick::commentImage::commentImage( const std::string &comment_ )
   : _comment( comment_ )
 {
 }
-void Magick::commentImage::operator()( Magick::Image &image_ )
+void Magick::commentImage::operator()( Magick::Image &image_ ) const
 {
   image_.comment( _comment );
 }
@@ -174,7 +174,7 @@ Magick::compositeImage::compositeImage( const Magick::Image &compositeImage_,
     _compose ( compose_ )
 {
 }
-void Magick::compositeImage::operator()( Image &image_ )
+void Magick::compositeImage::operator()( Image &image_ ) const
 {
   image_.composite( _compositeImage, _xOffset, _yOffset, _compose );
 }
@@ -184,7 +184,7 @@ Magick::contrastImage::contrastImage( const unsigned int sharpen_ )
   : _sharpen( sharpen_ )
 {
 }
-void Magick::contrastImage::operator()( Magick::Image &image_ )
+void Magick::contrastImage::operator()( Magick::Image &image_ ) const
 {
   image_.contrast( _sharpen );
 }
@@ -194,7 +194,7 @@ Magick::cropImage::cropImage( const Magick::Geometry &geometry_ )
   : _geometry( geometry_ )
 {
 }
-void Magick::cropImage::operator()( Magick::Image &image_ )
+void Magick::cropImage::operator()( Magick::Image &image_ ) const
 {
   image_.crop( _geometry );
 }
@@ -204,7 +204,7 @@ Magick::cycleColormapImage::cycleColormapImage( const int amount_ )
   : _amount( amount_ )
 {
 }
-void Magick::cycleColormapImage::operator()( Magick::Image &image_ )
+void Magick::cycleColormapImage::operator()( Magick::Image &image_ ) const
 {
   image_.cycleColormap( _amount );
 }
@@ -213,7 +213,7 @@ void Magick::cycleColormapImage::operator()( Magick::Image &image_ )
 Magick::despeckleImage::despeckleImage( void )
 {
 }
-void Magick::despeckleImage::operator()( Magick::Image &image_ )
+void Magick::despeckleImage::operator()( Magick::Image &image_ ) const
 {
   image_.despeckle( );
 }
@@ -228,7 +228,7 @@ Magick::drawImage::drawImage( const std::list<Magick::Drawable> &drawable_ )
   : _drawableList( drawable_ )
 {
 }
-void Magick::drawImage::operator()( Magick::Image &image_ )
+void Magick::drawImage::operator()( Magick::Image &image_ ) const
 {
   image_.draw( _drawableList );
 }
@@ -238,7 +238,7 @@ Magick::edgeImage::edgeImage( const double radius_ )
   : _radius( radius_ )
 {
 }
-void Magick::edgeImage::operator()( Magick::Image &image_ )
+void Magick::edgeImage::operator()( Magick::Image &image_ ) const
 {
   image_.edge( _radius );
 }
@@ -254,7 +254,7 @@ Magick::embossImage::embossImage( const double radius_, const double sigma_ )
     _sigma( sigma_ )
 {
 }
-void Magick::embossImage::operator()( Magick::Image &image_ )
+void Magick::embossImage::operator()( Magick::Image &image_ ) const
 {
   image_.emboss( _radius, _sigma );
 }
@@ -263,7 +263,7 @@ void Magick::embossImage::operator()( Magick::Image &image_ )
 Magick::enhanceImage::enhanceImage( void )
 {
 }
-void Magick::enhanceImage::operator()( Magick::Image &image_ )
+void Magick::enhanceImage::operator()( Magick::Image &image_ ) const
 {
   image_.enhance( );
 }
@@ -272,7 +272,7 @@ void Magick::enhanceImage::operator()( Magick::Image &image_ )
 Magick::equalizeImage::equalizeImage( void )
 {
 }
-void Magick::equalizeImage::operator()( Magick::Image &image_ )
+void Magick::equalizeImage::operator()( Magick::Image &image_ ) const
 {
   image_.equalize( );
 }
@@ -282,7 +282,7 @@ Magick::fillColorImage::fillColorImage( const Magick::Color &fillColor_ )
   : _fillColor( fillColor_ )
 {
 }
-void Magick::fillColorImage::operator()( Magick::Image &image_ )
+void Magick::fillColorImage::operator()( Magick::Image &image_ ) const
 {
   image_.fillColor( _fillColor );
 }
@@ -291,7 +291,7 @@ void Magick::fillColorImage::operator()( Magick::Image &image_ )
 Magick::flipImage::flipImage( void )
 {
 }
-void Magick::flipImage::operator()( Magick::Image &image_ )
+void Magick::flipImage::operator()( Magick::Image &image_ ) const
 {
   image_.flip( );
 }
@@ -339,7 +339,7 @@ Magick::floodFillColorImage::floodFillColorImage( const Geometry &point_,
     _borderColor(borderColor_)
 {
 }
-void Magick::floodFillColorImage::operator()( Magick::Image &image_ )
+void Magick::floodFillColorImage::operator()( Magick::Image &image_ ) const
 {
   if ( _borderColor.isValid() )
     {
@@ -395,7 +395,7 @@ Magick::floodFillTextureImage::floodFillTextureImage( const Magick::Geometry &po
     _borderColor(borderColor_)
 {
 }
-void Magick::floodFillTextureImage::operator()( Magick::Image &image_ )
+void Magick::floodFillTextureImage::operator()( Magick::Image &image_ ) const
 {
   if ( _borderColor.isValid() )
     {
@@ -411,7 +411,7 @@ void Magick::floodFillTextureImage::operator()( Magick::Image &image_ )
 Magick::flopImage::flopImage( void )
 {
 }
-void Magick::flopImage::operator()( Magick::Image &image_ )
+void Magick::flopImage::operator()( Magick::Image &image_ ) const
 {
   image_.flop( );
 }
@@ -432,7 +432,7 @@ Magick::frameImage::frameImage( const unsigned int width_, const unsigned int he
     _innerBevel( innerBevel_ )
 {
 }
-void Magick::frameImage::operator()( Magick::Image &image_ )
+void Magick::frameImage::operator()( Magick::Image &image_ ) const
 {
   image_.frame( _width, _height, _innerBevel, _outerBevel );
 }
@@ -452,7 +452,7 @@ Magick::gammaImage::gammaImage ( const double gammaRed_,
     _gammaBlue( gammaBlue_ )
 {
 }
-void Magick::gammaImage::operator()( Magick::Image &image_ )
+void Magick::gammaImage::operator()( Magick::Image &image_ ) const
 {
   image_.gamma( _gammaRed, _gammaGreen, _gammaBlue );
 }
@@ -467,7 +467,7 @@ Magick::gaussianBlurImage::gaussianBlurImage( const double width_,
     _sigma( sigma_ )
 {
 }
-void Magick::gaussianBlurImage::operator()( Magick::Image &image_ )
+void Magick::gaussianBlurImage::operator()( Magick::Image &image_ ) const
 {
   image_.gaussianBlur( _width, _sigma );
 }
@@ -477,7 +477,7 @@ Magick::implodeImage::implodeImage( const double factor_  )
   : _factor( factor_ )
 {
 }
-void Magick::implodeImage::operator()( Magick::Image &image_ )
+void Magick::implodeImage::operator()( Magick::Image &image_ ) const
 {
   image_.implode( _factor );
 }
@@ -488,7 +488,7 @@ Magick::isValidImage::isValidImage( const bool isValid_  )
   : _isValid( isValid_ )
 {
 }
-void Magick::isValidImage::operator()( Magick::Image &image_ )
+void Magick::isValidImage::operator()( Magick::Image &image_ ) const
 {
   image_.isValid( _isValid );
 }
@@ -498,7 +498,7 @@ Magick::labelImage::labelImage( const std::string &label_ )
   : _label( label_ )
 {
 }
-void Magick::labelImage::operator()( Magick::Image &image_ )
+void Magick::labelImage::operator()( Magick::Image &image_ ) const
 {
   image_.label( _label );
 }
@@ -508,7 +508,7 @@ Magick::channelImage::channelImage( const Magick::ChannelType channel_ )
   : _channel( channel_ )
 {
 }
-void Magick::channelImage::operator()( Magick::Image &image_ )
+void Magick::channelImage::operator()( Magick::Image &image_ ) const
 {
   image_.channel( _channel );
 }
@@ -517,7 +517,7 @@ void Magick::channelImage::operator()( Magick::Image &image_ )
 Magick::magnifyImage::magnifyImage( void )
 {
 }
-void Magick::magnifyImage::operator()( Magick::Image &image_ )
+void Magick::magnifyImage::operator()( Magick::Image &image_ ) const
 {
   image_.magnify( );
 }
@@ -529,7 +529,7 @@ Magick::mapImage::mapImage( const Magick::Image &mapImage_ ,
     _dither( dither_ )
 {
 }
-void Magick::mapImage::operator()( Magick::Image &image_ )
+void Magick::mapImage::operator()( Magick::Image &image_ ) const
 {
   image_.map( _mapImage, _dither );
 }
@@ -546,7 +546,7 @@ Magick::matteFloodfillImage::matteFloodfillImage( const Color &target_ ,
     _method( method_ )
 {
 }
-void Magick::matteFloodfillImage::operator()( Magick::Image &image_ )
+void Magick::matteFloodfillImage::operator()( Magick::Image &image_ ) const
 {
   image_.matteFloodfill( _target, _matte, _x, _y, _method );
 }
@@ -557,7 +557,7 @@ Magick::medianFilterImage::medianFilterImage( const double radius_  )
   : _radius( radius_ )
 {
 }
-void Magick::medianFilterImage::operator()( Magick::Image &image_ )
+void Magick::medianFilterImage::operator()( Magick::Image &image_ ) const
 {
   image_.medianFilter( _radius );
 }
@@ -566,7 +566,7 @@ void Magick::medianFilterImage::operator()( Magick::Image &image_ )
 Magick::minifyImage::minifyImage( void )
 {
 }
-void Magick::minifyImage::operator()( Magick::Image &image_ )
+void Magick::minifyImage::operator()( Magick::Image &image_ ) const
 {
   image_.minify( );
 }
@@ -580,7 +580,7 @@ Magick::modulateImage::modulateImage( const double brightness_,
     _hue( hue_ )
 {
 }
-void Magick::modulateImage::operator()( Magick::Image &image_ )
+void Magick::modulateImage::operator()( Magick::Image &image_ ) const
 {
   image_.modulate( _brightness, _saturation, _hue );
 }
@@ -591,7 +591,7 @@ Magick::negateImage::negateImage( const bool grayscale_  )
   : _grayscale( grayscale_ )
 {
 }
-void Magick::negateImage::operator()( Magick::Image &image_ )
+void Magick::negateImage::operator()( Magick::Image &image_ ) const
 {
   image_.negate( _grayscale );
 }
@@ -601,7 +601,7 @@ void Magick::negateImage::operator()( Magick::Image &image_ )
 Magick::normalizeImage::normalizeImage( void )
 {
 }
-void Magick::normalizeImage::operator()( Magick::Image &image_ )
+void Magick::normalizeImage::operator()( Magick::Image &image_ ) const
 {
   image_.normalize( );
 }
@@ -611,7 +611,7 @@ Magick::oilPaintImage::oilPaintImage( const double radius_ )
   : _radius( radius_ )
 {
 }
-void Magick::oilPaintImage::operator()( Magick::Image &image_ )
+void Magick::oilPaintImage::operator()( Magick::Image &image_ ) const
 {
   image_.oilPaint( _radius );
 }
@@ -626,7 +626,7 @@ Magick::opacityImage::opacityImage( const unsigned int opacity_ )
   : _opacity( opacity_ )
 {
 }
-void Magick::opacityImage::operator()( Magick::Image &image_ )
+void Magick::opacityImage::operator()( Magick::Image &image_ ) const
 {
   image_.opacity( _opacity );
 }
@@ -638,7 +638,7 @@ Magick::opaqueImage::opaqueImage( const Magick::Color &opaqueColor_,
     _penColor( penColor_ )
 {
 }
-void Magick::opaqueImage::operator()( Magick::Image &image_ )
+void Magick::opaqueImage::operator()( Magick::Image &image_ ) const
 {
   image_.opaque( _opaqueColor, _penColor );
 }
@@ -648,7 +648,7 @@ Magick::quantizeImage::quantizeImage( const bool measureError_  )
   : _measureError( measureError_ )
 {
 }
-void Magick::quantizeImage::operator()( Image &image_ )
+void Magick::quantizeImage::operator()( Image &image_ ) const
 {
   image_.quantize( _measureError );
 }
@@ -661,7 +661,7 @@ Magick::raiseImage::raiseImage( const Magick::Geometry &geometry_ ,
     _raisedFlag( raisedFlag_ )
 {
 }
-void Magick::raiseImage::operator()( Magick::Image &image_ )
+void Magick::raiseImage::operator()( Magick::Image &image_ ) const
 {
   image_.raise( _geometry, _raisedFlag );
 }
@@ -675,7 +675,7 @@ Magick::reduceNoiseImage::reduceNoiseImage ( const unsigned int order_ )
       : _order(order_)
 {
 }
-void Magick::reduceNoiseImage::operator()( Image &image_ )
+void Magick::reduceNoiseImage::operator()( Image &image_ ) const
 {
   image_.reduceNoise( _order );
 }
@@ -693,7 +693,7 @@ Magick::rollImage::rollImage( const int columns_,
     _rows( rows_ )
 {
 }
-void Magick::rollImage::operator()( Magick::Image &image_ )
+void Magick::rollImage::operator()( Magick::Image &image_ ) const
 {
   image_.roll( _columns, _rows );
 }
@@ -703,7 +703,7 @@ Magick::rotateImage::rotateImage( const double degrees_ )
   : _degrees( degrees_ )
 {
 }
-void Magick::rotateImage::operator()( Magick::Image &image_ )
+void Magick::rotateImage::operator()( Magick::Image &image_ ) const
 {
   image_.rotate( _degrees );
 }
@@ -713,7 +713,7 @@ Magick::sampleImage::sampleImage( const Magick::Geometry &geometry_ )
   : _geometry( geometry_ )
 {
 }
-void Magick::sampleImage::operator()( Magick::Image &image_ )
+void Magick::sampleImage::operator()( Magick::Image &image_ ) const
 {
   image_.sample( _geometry );
 }
@@ -723,7 +723,7 @@ Magick::scaleImage::scaleImage( const Magick::Geometry &geometry_ )
   : _geometry( geometry_ )
 {
 }
-void Magick::scaleImage::operator()( Magick::Image &image_ )
+void Magick::scaleImage::operator()( Magick::Image &image_ ) const
 {
   image_.scale( _geometry );
 }
@@ -738,7 +738,7 @@ Magick::segmentImage::segmentImage( const double clusterThreshold_ ,
     _smoothingThreshold( smoothingThreshold_ )
 {
 }
-void Magick::segmentImage::operator()( Magick::Image &image_ )
+void Magick::segmentImage::operator()( Magick::Image &image_ ) const
 {
   image_.segment( _clusterThreshold, _smoothingThreshold );
 }
@@ -750,7 +750,7 @@ Magick::shadeImage::shadeImage( const double clusterThreshold_,
     _smoothingThreshold( smoothingThreshold_ )
 {
 }
-void Magick::shadeImage::operator()( Magick::Image &image_ )
+void Magick::shadeImage::operator()( Magick::Image &image_ ) const
 {
   image_.shade( _clusterThreshold, _smoothingThreshold );
 }
@@ -761,7 +761,7 @@ Magick::sharpenImage::sharpenImage( const double radius_, const double sigma_ )
     _sigma( sigma_ )
 {
 }
-void Magick::sharpenImage::operator()( Magick::Image &image_ )
+void Magick::sharpenImage::operator()( Magick::Image &image_ ) const
 {
   image_.sharpen( _radius, _sigma );
 }
@@ -771,7 +771,7 @@ Magick::shaveImage::shaveImage( const Magick::Geometry &geometry_ )
   : _geometry( geometry_ )
 {
 }
-void Magick::shaveImage::operator()( Magick::Image &image_ )
+void Magick::shaveImage::operator()( Magick::Image &image_ ) const
 {
   image_.shave( _geometry );
 }
@@ -783,7 +783,7 @@ Magick::shearImage::shearImage( const double xShearAngle_,
     _yShearAngle( yShearAngle_ )
 {
 }
-void Magick::shearImage::operator()( Magick::Image &image_ )
+void Magick::shearImage::operator()( Magick::Image &image_ ) const
 {
   image_.shear( _xShearAngle, _yShearAngle );
 }
@@ -794,7 +794,7 @@ Magick::solarizeImage::solarizeImage( const double factor_ )
   : _factor( factor_ )
 {
 }
-void Magick::solarizeImage::operator()( Magick::Image &image_ )
+void Magick::solarizeImage::operator()( Magick::Image &image_ ) const
 {
   image_.solarize( _factor );
 }
@@ -804,7 +804,7 @@ Magick::spreadImage::spreadImage( const unsigned int amount_ )
   : _amount( amount_ )
 {
 }
-void Magick::spreadImage::operator()( Magick::Image &image_ )
+void Magick::spreadImage::operator()( Magick::Image &image_ ) const
 {
   image_.spread( _amount );
 }
@@ -814,7 +814,7 @@ Magick::steganoImage::steganoImage( const Magick::Image &waterMark_ )
   : _waterMark( waterMark_ )
 {
 }
-void Magick::steganoImage::operator()( Magick::Image &image_ )
+void Magick::steganoImage::operator()( Magick::Image &image_ ) const
 {
   image_.stegano( _waterMark );
 }
@@ -825,7 +825,7 @@ Magick::stereoImage::stereoImage( const Magick::Image &rightImage_ )
   : _rightImage( rightImage_ )
 {
 }
-void Magick::stereoImage::operator()( Magick::Image &image_ )
+void Magick::stereoImage::operator()( Magick::Image &image_ ) const
 {
   image_.stereo( _rightImage );
 }
@@ -835,7 +835,7 @@ Magick::strokeColorImage::strokeColorImage( const Magick::Color &strokeColor_ )
   : _strokeColor( strokeColor_ )
 {
 }
-void Magick::strokeColorImage::operator()( Magick::Image &image_ )
+void Magick::strokeColorImage::operator()( Magick::Image &image_ ) const
 {
   image_.strokeColor( _strokeColor );
 }
@@ -845,7 +845,7 @@ Magick::swirlImage::swirlImage( const double degrees_ )
   : _degrees( degrees_ )
 {
 }
-void Magick::swirlImage::operator()( Magick::Image &image_ )
+void Magick::swirlImage::operator()( Magick::Image &image_ ) const
 {
   image_.swirl( _degrees );
 }
@@ -855,7 +855,7 @@ Magick::textureImage::textureImage( const Magick::Image &texture_ )
   : _texture( texture_ )
 {
 }
-void Magick::textureImage::operator()( Magick::Image &image_ )
+void Magick::textureImage::operator()( Magick::Image &image_ ) const
 {
   image_.texture( _texture );
 }
@@ -865,7 +865,7 @@ Magick::thresholdImage::thresholdImage( const double threshold_ )
   : _threshold( threshold_ )
 {
 }
-void Magick::thresholdImage::operator()( Magick::Image &image_ )
+void Magick::thresholdImage::operator()( Magick::Image &image_ ) const
 {
   image_.threshold( _threshold );
 }
@@ -882,7 +882,7 @@ Magick::transformImage::transformImage( const Magick::Geometry &imageGeometry_,
     _cropGeometry( cropGeometry_ )
 {
 }
-void Magick::transformImage::operator()( Magick::Image &image_ )
+void Magick::transformImage::operator()( Magick::Image &image_ ) const
 {
   if ( _cropGeometry.isValid() )
     image_.transform( _imageGeometry, _cropGeometry );
@@ -895,7 +895,7 @@ Magick::transparentImage::transparentImage( const Magick::Color& color_ )
   : _color( color_ )
 {
 }
-void Magick::transparentImage::operator()( Magick::Image &image_ )
+void Magick::transparentImage::operator()( Magick::Image &image_ ) const
 {
   image_.transparent( _color );
 }
@@ -904,7 +904,7 @@ void Magick::transparentImage::operator()( Magick::Image &image_ )
 Magick::trimImage::trimImage( void )
 {
 }
-void Magick::trimImage::operator()( Magick::Image &image_ )
+void Magick::trimImage::operator()( Magick::Image &image_ ) const
 {
   image_.trim( );
 }
@@ -916,7 +916,7 @@ Magick::waveImage::waveImage( const double amplitude_,
     _wavelength( wavelength_ )
 {
 }
-void Magick::waveImage::operator()( Magick::Image &image_ )
+void Magick::waveImage::operator()( Magick::Image &image_ ) const
 {
   image_.wave( _amplitude, _wavelength );
 }
@@ -926,7 +926,7 @@ Magick::zoomImage::zoomImage( const Magick::Geometry &geometry_ )
   : _geometry( geometry_ )
 {
 }
-void Magick::zoomImage::operator()( Magick::Image &image_ )
+void Magick::zoomImage::operator()( Magick::Image &image_ ) const
 {
   image_.zoom( _geometry );
 }
@@ -940,7 +940,7 @@ Magick::antiAliasImage::antiAliasImage( const bool flag_ )
   : _flag( flag_ )
 {
 }
-void Magick::antiAliasImage::operator()( Magick::Image &image_ )
+void Magick::antiAliasImage::operator()( Magick::Image &image_ ) const
 {
   image_.antiAlias( _flag );
 }
@@ -950,7 +950,7 @@ Magick::adjoinImage::adjoinImage( const bool flag_ )
   : _flag( flag_ )
 {
 }
-void Magick::adjoinImage::operator()( Magick::Image &image_ )
+void Magick::adjoinImage::operator()( Magick::Image &image_ ) const
 {
   image_.adjoin( _flag );
 }
@@ -961,7 +961,7 @@ Magick::animationDelayImage::animationDelayImage( const unsigned int delay_ )
   : _delay( delay_ )
 {
 }
-void Magick::animationDelayImage::operator()( Magick::Image &image_ )
+void Magick::animationDelayImage::operator()( Magick::Image &image_ ) const
 {
   image_.animationDelay( _delay );
 }
@@ -972,7 +972,7 @@ Magick::animationIterationsImage::animationIterationsImage( const unsigned int i
   : _iterations( iterations_ )
 {
 }
-void Magick::animationIterationsImage::operator()( Magick::Image &image_ )
+void Magick::animationIterationsImage::operator()( Magick::Image &image_ ) const
 {
   image_.animationIterations( _iterations );
 }
@@ -982,7 +982,7 @@ Magick::backgroundColorImage::backgroundColorImage( const Magick::Color &color_ 
   : _color( color_ )
 {
 }
-void Magick::backgroundColorImage::operator()( Magick::Image &image_ )
+void Magick::backgroundColorImage::operator()( Magick::Image &image_ ) const
 {
   image_.backgroundColor( _color );
 }
@@ -992,7 +992,7 @@ Magick::backgroundTextureImage::backgroundTextureImage( const std::string &backg
   : _backgroundTexture( backgroundTexture_ )
 {
 }
-void Magick::backgroundTextureImage::operator()( Magick::Image &image_ )
+void Magick::backgroundTextureImage::operator()( Magick::Image &image_ ) const
 {
   image_.backgroundTexture( _backgroundTexture );
 }
@@ -1002,7 +1002,7 @@ Magick::borderColorImage::borderColorImage( const Magick::Color &color_ )
   : _color( color_ )
 {
 }
-void Magick::borderColorImage::operator()( Magick::Image &image_ )
+void Magick::borderColorImage::operator()( Magick::Image &image_ ) const
 {
   image_.borderColor( _color );
 }
@@ -1011,7 +1011,7 @@ void Magick::borderColorImage::operator()( Magick::Image &image_ )
 Magick::boxColorImage::boxColorImage( const Magick::Color &boxColor_ )
   : _boxColor( boxColor_ ) { }
 
-void Magick::boxColorImage::operator()( Magick::Image &image_ )
+void Magick::boxColorImage::operator()( Magick::Image &image_ ) const
 {
   image_.boxColor( _boxColor );
 }
@@ -1023,7 +1023,7 @@ Magick::chromaBluePrimaryImage::chromaBluePrimaryImage( const double x_,
     _y( y_ )
 {
 }
-void Magick::chromaBluePrimaryImage::operator()( Magick::Image &image_ )
+void Magick::chromaBluePrimaryImage::operator()( Magick::Image &image_ ) const
 {
   image_.chromaBluePrimary( _x, _y );
 }
@@ -1035,7 +1035,7 @@ Magick::chromaGreenPrimaryImage::chromaGreenPrimaryImage( const double x_,
     _y( y_ )
 {
 }
-void Magick::chromaGreenPrimaryImage::operator()( Magick::Image &image_ )
+void Magick::chromaGreenPrimaryImage::operator()( Magick::Image &image_ ) const
 {
   image_.chromaGreenPrimary( _x, _y );
 }
@@ -1047,7 +1047,7 @@ Magick::chromaRedPrimaryImage::chromaRedPrimaryImage( const double x_,
     _y( y_ )
 {
 }
-void Magick::chromaRedPrimaryImage::operator()( Magick::Image &image_ )
+void Magick::chromaRedPrimaryImage::operator()( Magick::Image &image_ ) const
 {
   image_.chromaRedPrimary( _x, _y );
 }
@@ -1059,7 +1059,7 @@ Magick::chromaWhitePointImage::chromaWhitePointImage( const double x_,
     _y( y_ )
 {
 }
-void Magick::chromaWhitePointImage::operator()( Magick::Image &image_ )
+void Magick::chromaWhitePointImage::operator()( Magick::Image &image_ ) const
 {
   image_.chromaWhitePoint( _x, _y );
 }
@@ -1069,7 +1069,7 @@ Magick::colorFuzzImage::colorFuzzImage( const double fuzz_ )
   : _fuzz( fuzz_ )
 {
 }
-void Magick::colorFuzzImage::operator()( Magick::Image &image_ )
+void Magick::colorFuzzImage::operator()( Magick::Image &image_ ) const
 {
   image_.colorFuzz( _fuzz );
 }
@@ -1081,7 +1081,7 @@ Magick::colorMapImage::colorMapImage( const unsigned int index_,
     _color( color_ )
 {
 }
-void Magick::colorMapImage::operator()( Magick::Image &image_ )
+void Magick::colorMapImage::operator()( Magick::Image &image_ ) const
 {
   image_.colorMap( _index, _color );
 }
@@ -1091,7 +1091,7 @@ Magick::compressTypeImage::compressTypeImage( const CompressionType compressType
   : _compressType( compressType_ )
 {
 }
-void Magick::compressTypeImage::operator()( Magick::Image &image_ )
+void Magick::compressTypeImage::operator()( Magick::Image &image_ ) const
 {
   image_.compressType( _compressType );
 }
@@ -1101,7 +1101,7 @@ Magick::densityImage::densityImage( const Geometry &geomery_ )
   : _geomery( geomery_ )
 {
 }
-void Magick::densityImage::operator()( Magick::Image &image_ )
+void Magick::densityImage::operator()( Magick::Image &image_ ) const
 {
   image_.density( _geomery );
 }
@@ -1111,7 +1111,7 @@ Magick::depthImage::depthImage( const unsigned int depth_ )
   : _depth( depth_ )
 {
 }
-void Magick::depthImage::operator()( Magick::Image &image_ )
+void Magick::depthImage::operator()( Magick::Image &image_ ) const
 {
   image_.depth( _depth );
 }
@@ -1122,7 +1122,7 @@ Magick::endianImage::endianImage( const Magick::EndianType endian_ )
   : _endian( endian_ )
 {
 }
-void Magick::endianImage::operator()( Magick::Image &image_ )
+void Magick::endianImage::operator()( Magick::Image &image_ ) const
 {
   image_.endian( _endian );
 }
@@ -1132,7 +1132,7 @@ Magick::fileNameImage::fileNameImage( const std::string &fileName_ )
   : _fileName( fileName_ )
 {
 }
-void Magick::fileNameImage::operator()( Magick::Image &image_ )
+void Magick::fileNameImage::operator()( Magick::Image &image_ ) const
 {
   image_.fileName( _fileName );
 }
@@ -1142,7 +1142,7 @@ Magick::filterTypeImage::filterTypeImage( const FilterTypes filterType_ )
   : _filterType( filterType_ )
 {
 }
-void Magick::filterTypeImage::operator()( Magick::Image &image_ )
+void Magick::filterTypeImage::operator()( Magick::Image &image_ ) const
 {
   image_.filterType( _filterType );
 }
@@ -1152,7 +1152,7 @@ Magick::fontImage::fontImage( const std::string &font_ )
   : _font( font_ )
 {
 }
-void Magick::fontImage::operator()( Magick::Image &image_ )
+void Magick::fontImage::operator()( Magick::Image &image_ ) const
 {
   image_.font( _font );
 }
@@ -1162,7 +1162,7 @@ Magick::fontPointsizeImage::fontPointsizeImage( const unsigned int pointsize_ )
   : _pointsize( pointsize_ )
 {
 }
-void Magick::fontPointsizeImage::operator()( Magick::Image &image_ )
+void Magick::fontPointsizeImage::operator()( Magick::Image &image_ ) const
 {
   image_.fontPointsize( _pointsize );
 }
@@ -1172,7 +1172,7 @@ Magick::gifDisposeMethodImage::gifDisposeMethodImage( const unsigned int dispose
   : _disposeMethod( disposeMethod_ )
 {
 }
-void Magick::gifDisposeMethodImage::operator()( Magick::Image &image_ )
+void Magick::gifDisposeMethodImage::operator()( Magick::Image &image_ ) const
 {
   image_.gifDisposeMethod( _disposeMethod );
 }
@@ -1182,7 +1182,7 @@ Magick::interlaceTypeImage::interlaceTypeImage( const InterlaceType interlace_ )
   : _interlace( interlace_ )
 {
 }
-void Magick::interlaceTypeImage::operator()( Magick::Image &image_ )
+void Magick::interlaceTypeImage::operator()( Magick::Image &image_ ) const
 {
   image_.interlaceType( _interlace );
 }
@@ -1192,7 +1192,7 @@ Magick::lineWidthImage::lineWidthImage( const double lineWidth_ )
   : _lineWidth( lineWidth_ )
 {
 }
-void Magick::lineWidthImage::operator()( Magick::Image &image_ )
+void Magick::lineWidthImage::operator()( Magick::Image &image_ ) const
 {
   image_.lineWidth( _lineWidth );
 }
@@ -1202,7 +1202,7 @@ Magick::magickImage::magickImage( const std::string &magick_ )
   : _magick( magick_ )
 {
 }
-void Magick::magickImage::operator()( Magick::Image &image_ )
+void Magick::magickImage::operator()( Magick::Image &image_ ) const
 {
   image_.magick( _magick );
 }
@@ -1212,7 +1212,7 @@ Magick::matteImage::matteImage( const bool matteFlag_ )
   : _matteFlag( matteFlag_ )
 {
 }
-void Magick::matteImage::operator()( Magick::Image &image_ )
+void Magick::matteImage::operator()( Magick::Image &image_ ) const
 {
   image_.matte( _matteFlag );
 }
@@ -1222,7 +1222,7 @@ Magick::matteColorImage::matteColorImage( const Color &matteColor_ )
   : _matteColor( matteColor_ )
 {
 }
-void Magick::matteColorImage::operator()( Magick::Image &image_ )
+void Magick::matteColorImage::operator()( Magick::Image &image_ ) const
 {
   image_.matteColor( _matteColor );
 }
@@ -1232,7 +1232,7 @@ Magick::monochromeImage::monochromeImage( const bool monochromeFlag_ )
   : _monochromeFlag( monochromeFlag_ )
 {
 }
-void Magick::monochromeImage::operator()( Magick::Image &image_ )
+void Magick::monochromeImage::operator()( Magick::Image &image_ ) const
 {
   image_.monochrome( _monochromeFlag );
 }
@@ -1242,7 +1242,7 @@ Magick::penColorImage::penColorImage( const Color &penColor_ )
   : _penColor( penColor_ )
 {
 }
-void Magick::penColorImage::operator()( Magick::Image &image_ )
+void Magick::penColorImage::operator()( Magick::Image &image_ ) const
 {
   image_.penColor( _penColor );
 }
@@ -1252,7 +1252,7 @@ Magick::penTextureImage::penTextureImage( const Image &penTexture_ )
   : _penTexture( penTexture_ )
 {
 }
-void Magick::penTextureImage::operator()( Magick::Image &image_ )
+void Magick::penTextureImage::operator()( Magick::Image &image_ ) const
 {
   image_.penTexture( _penTexture );
 }
@@ -1265,7 +1265,7 @@ Magick::pixelColorImage::pixelColorImage( const unsigned int x_,
     _y( y_ ),
     _color( color_ ) { }
 
-void Magick::pixelColorImage::operator()( Magick::Image &image_ )
+void Magick::pixelColorImage::operator()( Magick::Image &image_ ) const
 {
   image_.pixelColor( _x, _y, _color );
 }
@@ -1275,7 +1275,7 @@ Magick::pageImage::pageImage( const Geometry &pageSize_ )
   : _pageSize( pageSize_ )
 {
 }
-void Magick::pageImage::operator()( Magick::Image &image_ )
+void Magick::pageImage::operator()( Magick::Image &image_ ) const
 {
   image_.page( _pageSize );
 }
@@ -1285,7 +1285,7 @@ Magick::qualityImage::qualityImage( const unsigned int quality_ )
   : _quality( quality_ )
 {
 }
-void Magick::qualityImage::operator()( Magick::Image &image_ )
+void Magick::qualityImage::operator()( Magick::Image &image_ ) const
 {
   image_.quality( _quality );
 }
@@ -1295,7 +1295,7 @@ Magick::quantizeColorsImage::quantizeColorsImage( const unsigned int colors_ )
   : _colors( colors_ )
 {
 }
-void Magick::quantizeColorsImage::operator()( Magick::Image &image_ )
+void Magick::quantizeColorsImage::operator()( Magick::Image &image_ ) const
 {
   image_.quantizeColors( _colors );
 }
@@ -1305,7 +1305,7 @@ Magick::quantizeColorSpaceImage::quantizeColorSpaceImage( const ColorspaceType c
   : _colorSpace( colorSpace_ )
 {
 }
-void Magick::quantizeColorSpaceImage::operator()( Magick::Image &image_ )
+void Magick::quantizeColorSpaceImage::operator()( Magick::Image &image_ ) const
 {
   image_.quantizeColorSpace( _colorSpace );
 }
@@ -1315,7 +1315,7 @@ Magick::quantizeDitherImage::quantizeDitherImage( const bool ditherFlag_ )
   : _ditherFlag( ditherFlag_ ) 
 {
 }
-void Magick::quantizeDitherImage::operator()( Magick::Image &image_ )
+void Magick::quantizeDitherImage::operator()( Magick::Image &image_ ) const
 {
   image_.quantizeDither( _ditherFlag );
 }
@@ -1324,7 +1324,7 @@ void Magick::quantizeDitherImage::operator()( Magick::Image &image_ )
 Magick::quantizeTreeDepthImage::quantizeTreeDepthImage( const unsigned int treeDepth_ )
   : _treeDepth( treeDepth_ ) { }
 
-void Magick::quantizeTreeDepthImage::operator()( Magick::Image &image_ )
+void Magick::quantizeTreeDepthImage::operator()( Magick::Image &image_ ) const
 {
   image_.quantizeTreeDepth( _treeDepth );
 }
@@ -1334,7 +1334,7 @@ Magick::renderingIntentImage::renderingIntentImage( const Magick::RenderingInten
   : _renderingIntent( renderingIntent_ )
 {
 }
-void Magick::renderingIntentImage::operator()( Magick::Image &image_ )
+void Magick::renderingIntentImage::operator()( Magick::Image &image_ ) const
 {
   image_.renderingIntent( _renderingIntent );
 }
@@ -1344,7 +1344,7 @@ Magick::resolutionUnitsImage::resolutionUnitsImage( const Magick::ResolutionType
   : _resolutionUnits( resolutionUnits_ )
 {
 }
-void Magick::resolutionUnitsImage::operator()( Magick::Image &image_ )
+void Magick::resolutionUnitsImage::operator()( Magick::Image &image_ ) const
 {
   image_.resolutionUnits( _resolutionUnits );
 }
@@ -1354,7 +1354,7 @@ Magick::sceneImage::sceneImage( const unsigned int scene_ )
   : _scene( scene_ )
 {
 }
-void Magick::sceneImage::operator()( Magick::Image &image_ )
+void Magick::sceneImage::operator()( Magick::Image &image_ ) const
 {
   image_.scene( _scene );
 }
@@ -1364,7 +1364,7 @@ Magick::sizeImage::sizeImage( const Magick::Geometry &geometry_ )
   : _geometry( geometry_ )
 {
 }
-void Magick::sizeImage::operator()( Magick::Image &image_ )
+void Magick::sizeImage::operator()( Magick::Image &image_ ) const
 {
   image_.size( _geometry );
 }
@@ -1374,7 +1374,7 @@ Magick::subImageImage::subImageImage( const unsigned int subImage_ )
   : _subImage( subImage_ )
 {
 }
-void Magick::subImageImage::operator()( Magick::Image &image_ )
+void Magick::subImageImage::operator()( Magick::Image &image_ ) const
 {
   image_.subImage( _subImage );
 }
@@ -1384,7 +1384,7 @@ Magick::subRangeImage::subRangeImage( const unsigned int subRange_ )
   : _subRange( subRange_ )
 {
 }
-void Magick::subRangeImage::operator()( Magick::Image &image_ )
+void Magick::subRangeImage::operator()( Magick::Image &image_ ) const
 {
   image_.subRange( _subRange );
 }
@@ -1394,7 +1394,7 @@ Magick::tileNameImage::tileNameImage( const std::string &tileName_ )
   : _tileName( tileName_ )
 {
 }
-void Magick::tileNameImage::operator()( Magick::Image &image_ )
+void Magick::tileNameImage::operator()( Magick::Image &image_ ) const
 {
   image_.tileName( _tileName );
 }
@@ -1404,7 +1404,7 @@ Magick::typeImage::typeImage( const Magick::ImageType type_ )
   : _type( type_ )
 {
 }
-void Magick::typeImage::operator()( Magick::Image &image_ )
+void Magick::typeImage::operator()( Magick::Image &image_ ) const
 {
   image_.type( _type );
 }
@@ -1414,7 +1414,7 @@ Magick::verboseImage::verboseImage( const bool verbose_ )
   : _verbose( verbose_ )
 {
 }
-void Magick::verboseImage::operator()( Magick::Image &image_ )
+void Magick::verboseImage::operator()( Magick::Image &image_ ) const
 {
   image_.verbose( _verbose );
 }
@@ -1423,7 +1423,7 @@ void Magick::verboseImage::operator()( Magick::Image &image_ )
 Magick::viewImage::viewImage( const std::string &view_ )
   : _view( view_ ) { }
 
-void Magick::viewImage::operator()( Magick::Image &image_ )
+void Magick::viewImage::operator()( Magick::Image &image_ ) const
 {
   image_.view( _view );
 }
@@ -1434,7 +1434,7 @@ Magick::x11DisplayImage::x11DisplayImage( const std::string &display_ )
   : _display( display_ )
 {
 }
-void Magick::x11DisplayImage::operator()( Magick::Image &image_ )
+void Magick::x11DisplayImage::operator()( Magick::Image &image_ ) const
 {
   image_.x11Display( _display );
 }
