@@ -1594,7 +1594,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
 static int CompareEdges(const void *x,const void *y)
 {
-  const EdgeInfo
+  register const EdgeInfo
     *p,
     *q;
 
@@ -1712,8 +1712,8 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
       Line to.
     */
     next_direction=((path_info[i].point.y > point.y) ||
-       ((path_info[i].point.y == point.y) &&
-        (path_info[i].point.x > point.x))) ? 1 : -1;
+      ((path_info[i].point.y == point.y) &&
+       (path_info[i].point.x > point.x))) ? 1 : -1;
     if (direction && (direction != next_direction))
       {
         /*
@@ -1945,10 +1945,18 @@ static inline double DistanceToLine(const PointInfo *p,const double x,
   dy=q->y-p->y;
   dot_product=dx*(x-p->x)+dy*(y-p->y);
   if (dot_product < 0.0)
-    return((x-p->x)*(x-p->x)+(y-p->y)*(y-p->y));
+    {
+      dx=x-p->x;
+      dy=y-p->y;
+      return(dx*dx+dy*dy);
+    }
   alpha=dx*dx+dy*dy;
   if (dot_product > alpha)
-    return((x-q->x)*(x-q->x)+(y-q->y)*(y-q->y));
+    {
+      dx=x-q->x;
+      dy=y-q->y;
+      return(dx*dx+dy*dy);
+    }
   beta=dx*(y-p->y)-dy*(x-p->x);
   return(beta*beta/alpha+MagickEpsilon);
 }
@@ -2238,6 +2246,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
 {
   double
     alpha,
+    beta,
     distance,
     fill_opacity,
     mid,
@@ -2247,7 +2256,6 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
   int
     fill,
     j,
-    number_edges,
     winding_number,
     y;
 
@@ -2276,10 +2284,6 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   bounds=polygon_info->edges[0].bounds;
-  fill=False;
-  if ((primitive_info->method == FillToBorderMethod) ||
-      (primitive_info->method == FloodfillMethod))
-    fill=True;
   mid=draw_info->linewidth/2.0;
   for (i=1; i < polygon_info->number_edges; i++)
   {
@@ -2305,6 +2309,8 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
   bounds.y2+=(mid+1.0);
   if (bounds.y2 >= image->rows)
     bounds.y2=image->rows-1.0;
+  fill=(primitive_info->method == FillToBorderMethod) ||
+    (primitive_info->method == FloodfillMethod);
   for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
   {
     x=(int) ceil(bounds.x1-0.5);
@@ -2333,15 +2339,14 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
         default:
         {
           winding_number=fill ? GetWindingNumber(polygon_info,x,y) : 0;
-          number_edges=polygon_info->number_edges;
-          for (i=0; i < number_edges; i++)
+          for (i=0; i < polygon_info->number_edges; i++)
           {
             p=polygon_info->edges+i;
             if ((p->bounds.y1-mid-0.5) > y)
               break;
             if ((p->bounds.y2+mid+0.5) < y)
               {
-                number_edges=DestroyEdge(polygon_info,i);
+                (void) DestroyEdge(polygon_info,i);
                 continue;
               }
             if (x > (p->bounds.x2+mid+0.5))
@@ -2361,23 +2366,24 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                   p->highwater=j;
                 }
               distance=DistanceToLine(p->points+j-1,x,y);
+              beta=0.0;
               if (!p->visibility)
                 {
-                  if ((distance <= ((mid+0.5)*(mid+0.5))) &&
-                      (stroke_opacity < 1.0))
+                  alpha=mid+0.5;
+                  if ((stroke_opacity < 1.0) && (distance <= (alpha*alpha)))
                     {
-                      if (distance <= ((mid-0.5)*(mid-0.5)))
+                      alpha=mid-0.5;
+                      if (distance <= (alpha*alpha))
                         stroke_opacity=1.0;
                       else
                         {
-                          alpha=sqrt(distance)-(mid+0.5);
+                          beta=sqrt(distance);
+                          alpha=beta-mid-0.5;
                           stroke_opacity=Max(stroke_opacity,alpha*alpha);
                         }
                     }
                 }
-              if (!fill)
-                continue;
-              if ((distance > 1.0) || (subpath_opacity >= 1.0))
+              if (!fill || (distance > 1.0) || (subpath_opacity >= 1.0))
                 continue;
               if (distance <= 0.0)
                 {
@@ -2386,7 +2392,9 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                 }
               if (distance > 1.0)
                 continue;
-              alpha=sqrt(distance)-1.0;
+              if (beta == 0.0)
+                beta=sqrt(distance);
+              alpha=beta-1.0;
               subpath_opacity=Max(subpath_opacity,alpha*alpha);
             }
           }
@@ -2394,7 +2402,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
             break;
           if (subpath_opacity > 0.0)
             fill_opacity=subpath_opacity;
-          if (draw_info->fill_rule == NonZeroRule) 
+          if (draw_info->fill_rule == NonZeroRule)
             {
               if (AbsoluteValue(winding_number) > 0)
                 fill_opacity=1.0;

@@ -141,7 +141,6 @@ static int GenerateIPTCAttribute(Image *image,const char *key)
     *attribute;
 
   int
-    foundit,
     count,
     dataset,
     record;
@@ -153,11 +152,10 @@ static int GenerateIPTCAttribute(Image *image,const char *key)
     length;
 
   if (image->iptc_profile.length == 0)
-    return False;
+    return(False);
   count=sscanf(key,"IPTC:%d:%d",&dataset,&record);
   if (count != 2)
-    return False;
-  foundit=False;
+    return(False);
   for (i=0; i < image->iptc_profile.length; i++)
   {
     if (image->iptc_profile.info[i] != 0x1c)
@@ -175,12 +173,12 @@ static int GenerateIPTCAttribute(Image *image,const char *key)
     attribute[length]='\0';
     SetImageAttribute(image,key,(const char *) attribute);
     LiberateMemory((void **) &attribute);
-    foundit=True;
+    break;
   }
-  return foundit;
+  return(i < image->iptc_profile.length);
 }
 
-static long readLongFromBuffer(char **s, unsigned int *len)
+static long readLongFromBuffer(char **s,unsigned int *len)
 {
   unsigned char
     buffer[4];
@@ -189,19 +187,21 @@ static long readLongFromBuffer(char **s, unsigned int *len)
     i,
     c;
 
-  if (*len < 4) return -1;
-  for (i=0; i<4; i++)
+  if (*len < 4)
+    return(-1);
+  for (i=0; i < 4; i++)
   {
-    c = *(*s)++; (*len)--;
-    buffer[i] = c;
+    c=(*(*s)++);
+    (*len)--;
+    buffer[i]=c;
   }
-  return (((long) buffer[ 0 ]) << 24) |
-         (((long) buffer[ 1 ]) << 16) | 
-	       (((long) buffer[ 2 ]) <<  8) |
-         (((long) buffer[ 3 ]));
+  return (((long) buffer[0]) << 24) |
+         (((long) buffer[1]) << 16) | 
+         (((long) buffer[2]) <<  8) |
+         (((long) buffer[3]));
 }
 
-static int readWordFromBuffer(char **s, unsigned int *len)
+static int readWordFromBuffer(char **s,unsigned int *len)
 {
   unsigned char
     buffer[2];
@@ -210,28 +210,31 @@ static int readWordFromBuffer(char **s, unsigned int *len)
     i,
     c;
 
-  if (*len < 2) return -1;
-  for (i=0; i<2; i++)
+  if (*len < 2)
+    return(-1);
+  for (i=0; i < 2; i++)
   {
-    c = *(*s)++; (*len)--;
-    buffer[i] = c;
+    c=(*(*s)++);
+    (*len)--;
+    buffer[i]=c;
   }
-  return (((int) buffer[ 0 ]) <<  8) |
-         (((int) buffer[ 1 ]));
+  return (((int) buffer[0]) << 8) |
+         (((int) buffer[1]));
 }
 
-static unsigned char readByteFromBuffer(char **s, unsigned int *len)
+static unsigned char readByteFromBuffer(char **s,unsigned int *len)
 {
   unsigned char
     c;
 
-  if (*len < 1) return 0xff;
-  c = *(*s)++; (*len)--;
-  return c;
+  if (*len < 1)
+    return(0xff);
+  c=(*(*s)++);
+  (*len)--;
+  return(c);
 }
 
-static char *GenerateClippingPath(char *s, unsigned int len,
-    int columns, int rows)
+static char *GenerateClippingPath(char *s,unsigned int len,int columns,int rows)
 {
   char
     *outs;
@@ -262,15 +265,18 @@ static char *GenerateClippingPath(char *s, unsigned int len,
     char
       *temp;
 
-    selector = readWordFromBuffer(&s, &len);
-	  if (selector != 6) /* Path fill record */
-    {
-      s += 24;
-      len -= 24;
-      continue;
-    }
-    s += 24;
-    len -= 24;
+    selector=readWordFromBuffer(&s,&len);
+    if (selector != 6)
+      {
+        /*
+          Path fill record.
+        */
+        s+=24;
+        len-=24;
+        continue;
+      }
+    s+=24;
+    len-=24;
     temp=AllocateString((char *) NULL);
     FormatString(temp,"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
     ConcatenateString(&outs,temp);
@@ -282,53 +288,52 @@ static char *GenerateClippingPath(char *s, unsigned int len,
     ConcatenateString(&outs,temp);
     while (len > 0)
     {
-      selector = readWordFromBuffer(&s, &len);
-	    if ((selector != 0) && (selector != 3))
+      selector=readWordFromBuffer(&s,&len);
+      if ((selector != 0) && (selector != 3))
         break;
-      length = readWordFromBuffer(&s, &len);
-      s += 22;
-      len -= 22;
-
+      length=readWordFromBuffer(&s,&len);
+      s+=22;
+      len-=22;
       first=1;
       while (length > 0)
       {
-        selector = readWordFromBuffer(&s, &len);
-	      if ((selector == 1) || (selector == 2) ||
+        selector=readWordFromBuffer(&s,&len);
+        if ((selector == 1) || (selector == 2) ||
             (selector == 4) || (selector == 5))
-        {
-			    for(i=0;i<3;i++)
-				  {
-            y = readLongFromBuffer(&s, &len);
-            x = readLongFromBuffer(&s, &len);
-            fy[i] = ((double)y * (double)rows)/16777216.0;
-            fx[i] = ((double)x * (double)columns)/16777216.0;
-				  }
-          if (first)
           {
-            FormatString(temp, "M %.1f,%.1f\n",fx[1],fy[1]);
-			      for(i=0;i<3;i++)
-				    {
-              previ_fx[i] = first_fx[i] = fx[i];
-              previ_fy[i] = first_fy[i] = fy[i];
-				    }
-          }
-          else
-          {
-            FormatString(temp, "C %.1f,%.1f %.1f,%.1f %.1f,%.1f\n",
-              previ_fx[2],previ_fy[2],fx[0],fy[0],fx[1],fy[1]);
-			      for(i=0;i<3;i++)
-				    {
-              previ_fx[i] = fx[i];
-              previ_fy[i] = fy[i];
-				    }
-          }
+            for (i=0; i < 3; i++)
+            {
+              y=readLongFromBuffer(&s,&len);
+              x=readLongFromBuffer(&s,&len);
+              fy[i]=((double) y*(double) rows)/16777216.0;
+              fx[i]=((double) x*(double) columns)/16777216.0;
+            }
+            if (first)
+              {
+                FormatString(temp,"M %.1f,%.1f\n",fx[1],fy[1]);
+                for (i=0; i < 3; i++)
+                {
+                  previ_fx[i]=first_fx[i]=fx[i];
+                  previ_fy[i]=first_fy[i]=fy[i];
+                }
+              }
+            else
+              {
+                FormatString(temp,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f\n",
+                  previ_fx[2],previ_fy[2],fx[0],fy[0],fx[1],fy[1]);
+                for(i=0; i < 3; i++)
+                {
+                  previ_fx[i]=fx[i];
+                  previ_fy[i]=fy[i];
+                }
+              }
           ConcatenateString(&outs,temp);
           first=0;
           length--;
         }
       }
-      FormatString(temp, "C %.1f,%.1f %.1f,%.1f %.1f,%.1f Z\n",
-        previ_fx[2],previ_fy[2],first_fx[0],first_fy[0],first_fx[1],first_fy[1]);
+      FormatString(temp, "C %.1f,%.1f %.1f,%.1f %.1f,%.1f Z\n",previ_fx[2],
+        previ_fy[2],first_fx[0],first_fy[0],first_fx[1],first_fy[1]);
       ConcatenateString(&outs,temp);
     }
     FormatString(temp,"\"/>\n");
@@ -340,7 +345,7 @@ static char *GenerateClippingPath(char *s, unsigned int len,
     LiberateMemory((void **) &temp);
     break;
   }
-  return outs;
+  return(outs);
 }
 
 static int Generate8BIMAttribute(Image *image,const char *key)
@@ -353,9 +358,9 @@ static int Generate8BIMAttribute(Image *image,const char *key)
     count,
     foundit,
     i,
-    ID,
-    IDstart,
-    IDend;
+    id,
+    idstart,
+    idend;
 
   unsigned int
     length;
@@ -369,44 +374,44 @@ static int Generate8BIMAttribute(Image *image,const char *key)
     *string;
 
   if (image->iptc_profile.length == 0)
-    return False;
-  count=sscanf(key,"8BIM:%d,%d",&IDstart,&IDend);
+    return(False);
+  count=sscanf(key,"8BIM:%d,%d",&idstart,&idend);
   if (count != 2)
-    return False;
+    return(False);
   foundit=False;
   length=image->iptc_profile.length;
   string=image->iptc_profile.info;
   while (length > 0)
   {
-    if (readByteFromBuffer(&string,&length) != '8')
+    if (readByteFromBuffer((char **) &string,&length) != '8')
       continue;
-    if (readByteFromBuffer(&string,&length) != 'B')
+    if (readByteFromBuffer((char **) &string,&length) != 'B')
       continue;
-    if (readByteFromBuffer(&string,&length) != 'I')
+    if (readByteFromBuffer((char **) &string,&length) != 'I')
       continue;
-    if (readByteFromBuffer(&string,&length) != 'M')
+    if (readByteFromBuffer((char **) &string,&length) != 'M')
       continue;
-    ID=readWordFromBuffer(&string,&length);
-    if (ID < IDstart)
+    id=readWordFromBuffer((char **) &string,&length);
+    if (id < idstart)
       continue;
-    if (ID > IDend)
+    if (id > idend)
       continue;
-    plen = readByteFromBuffer(&string,&length);
+    plen = readByteFromBuffer((char **) &string,&length);
     PString=(char *) NULL;
     if ((plen > 0) && (plen <= length))
       {
         PString=(char *) AcquireMemory(plen+1);
         if (PString != (char *) NULL)
           {
-            for (i=0; i<plen; i++)
-              PString[i]=(char)readByteFromBuffer(&string,&length);
-            PString[ plen ] = 0;
+            for (i=0; i < plen; i++)
+              PString[i]=(char) readByteFromBuffer((char **) &string,&length);
+            PString[plen]=0;
             LiberateMemory((void **) &PString);
           }
       }
     if (!(plen&1))
-      c=readByteFromBuffer(&string,&length);
-    Size=readLongFromBuffer(&string,&length);
+      c=readByteFromBuffer((char **) &string,&length);
+    Size=readLongFromBuffer((char **) &string,&length);
     attribute=(char *) AcquireMemory(Size+1);
     if (attribute != (char *) NULL)
       {
@@ -414,7 +419,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
         attribute[Size]='\0';
         string+=Size;
         length-=Size;
-        if ((ID > 1999) && (ID <2999))
+        if ((id > 1999) && (id < 2999))
           {
             char
               *text;
@@ -422,16 +427,15 @@ static int Generate8BIMAttribute(Image *image,const char *key)
             text=GenerateClippingPath(attribute,Size,
               image->columns,image->rows);
             SetImageAttribute(image,key,(const char *) text);
-            //SetImageAttribute(image,key,(const char *) "This is simply a test!");
             LiberateMemory((void **) &text);
           }
         else
           SetImageAttribute(image,key,(const char *) attribute);
-        foundit=True;
         LiberateMemory((void **) &attribute);
+        foundit=True;
       }
   }
-  return foundit;
+  return(foundit);
 }
 
 MagickExport ImageAttribute *GetImageAttribute(const Image *image,
@@ -449,12 +453,12 @@ MagickExport ImageAttribute *GetImageAttribute(const Image *image,
       return(p);
   if (LocaleNCompare("IPTC:",key,5) == 0)
     {
-      if (GenerateIPTCAttribute((Image *) image, key) == True)
+      if (GenerateIPTCAttribute((Image *) image,key) == True)
         return(GetImageAttribute(image,key));
     }
   if (LocaleNCompare("8BIM:",key,5) == 0)
     {
-      if (Generate8BIMAttribute((Image *) image, key) == True)
+      if (Generate8BIMAttribute((Image *) image,key) == True)
         return(GetImageAttribute(image,key));
     }
   return(p);
