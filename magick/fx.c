@@ -355,7 +355,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   }
 
   logging=LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  ConvolveImage with %dx%d kernel:",width,width);
+        "  ConvolveImage with %ldx%ld kernel:",width,width);
   if (logging)
     {
       char
