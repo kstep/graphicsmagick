@@ -968,6 +968,7 @@ void Magick::Image::segment ( double clusterThreshold_,
 			    options()->verbose(),
 			    clusterThreshold_,
 			    smoothingThreshold_ );
+  throwMagickError();
   MagickLib::SyncImage( image() );
   throwMagickError();
 }
