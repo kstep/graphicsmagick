@@ -741,6 +741,9 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
       char
         name[MaxTextExtent];
 
+      PixelPacket
+        color;
+
       register ColorPacket
         *p;
 
@@ -754,7 +757,10 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
           p->count,p->red,p->green,p->blue,(unsigned int) p->red,
           (unsigned int) p->green,(unsigned int) p->blue);
         (void) fprintf(file,"  ");
-        (void) QueryColorName(p,name);
+        color.red=p->red;
+        color.green=p->green;
+        color.blue=p->blue;
+        (void) QueryColorName(&color,name);
         (void) fprintf(file,"%.1024s",name);
         (void) fprintf(file,"\n");
         p++;
