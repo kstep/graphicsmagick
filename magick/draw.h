@@ -26,7 +26,6 @@ typedef struct _DrawInfo
 {
   char
     *primitive,
-    *text,
     *geometry;
 
   Image
@@ -41,6 +40,9 @@ typedef struct _DrawInfo
   PixelPacket
     fill,
     stroke;
+
+  double
+    stroke_width;
 
   Image
     *fill_pattern,
@@ -71,14 +73,8 @@ typedef struct _DrawInfo
   CompositeOperator
     compose;
 
-  double
-    stroke_width;
-
-  double
-    pointsize;
-
   char
-    *density,
+    *text,
     *encoding,
     *font,
     *family;
@@ -91,6 +87,12 @@ typedef struct _DrawInfo
 
   unsigned long
     weight;
+
+  double
+    pointsize;
+
+  char
+    *density;
 
   PixelPacket
     box,
@@ -125,15 +127,9 @@ typedef struct _TypeInfo
 {
   char
     *filename,
-    *foundry,
     *name,
     *alias,
     *description,
-    *format,
-    *glyphs,
-    *metrics,
-    *version,
-    *encoding,
     *family;
 
   StyleType
@@ -144,6 +140,14 @@ typedef struct _TypeInfo
 
   unsigned long
     weight;
+
+  char
+    *encoding,
+    *foundry,
+    *format,
+    *metrics,
+    *glyphs,
+    *version,
 
   unsigned int
     stealth;
