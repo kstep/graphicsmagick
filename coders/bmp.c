@@ -187,6 +187,7 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
 
   assert(image != (Image *) NULL);
   assert(pixels != (unsigned char *) NULL);
+  LogMagickEvent(CoderEvent,"   Decoding RLE pixels");
   (void) memset(pixels,0,image->columns*image->rows);
   byte=0;
   x=0;
@@ -546,6 +547,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bmp_info.offset_bits=ReadBlobLSBLong(image);
       count=ReadBlob(image,2,(char *) magick);
     }
+    LogMagickEvent(CoderEvent,"   Magick=%c%c",magick[0],magick[1]);
     if ((count == 0) || ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
         (LocaleNCompare((char *) magick,"CI",2) != 0)))
       ThrowReaderException(CorruptImageError,"Not a BMP image file",image);
@@ -553,6 +555,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ReadBlobLSBLong(image);
     bmp_info.offset_bits=ReadBlobLSBLong(image);
     bmp_info.size=ReadBlobLSBLong(image);
+    LogMagickEvent(CoderEvent,"   BMP size=%lu",bmp_info.size);
     if (bmp_info.file_size != GetBlobSize(image))
       ThrowReaderException(CorruptImageWarning,
         "Corrupt BMP image: length and filesize do not match", image);
@@ -571,6 +574,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.compression=BI_RGB;
         bmp_info.image_size=0;
         bmp_info.alpha_mask=0;
+        LogMagickEvent(CoderEvent,"   Decoding OS/2 BMP datastream");
+        LogMagickEvent(CoderEvent,"   width=%d, height=%d",bmp_info.width,
+          bmp_info.height);
       }
     else
       {
@@ -592,6 +598,39 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.colors_important=ReadBlobLSBLong(image);
         profile_data=0;
         profile_size=0;
+
+        LogMagickEvent(CoderEvent,"   Decoding MS Windows BMP datastream");
+        LogMagickEvent(CoderEvent,"   width=%d, height=%d",bmp_info.width,
+          bmp_info.height);
+        LogMagickEvent(CoderEvent,"   bits per pixel=%d",
+          bmp_info.bits_per_pixel);
+        switch ((int) bmp_info.compression)
+        {
+          case BI_RGB:
+            LogMagickEvent(CoderEvent,"   compression=BI_RGB");
+            break;
+          case BI_RLE4:
+            LogMagickEvent(CoderEvent,"   compression=BI_RLE4");
+            break;
+          case BI_RLE8:
+            LogMagickEvent(CoderEvent,"   compression=BI_RLE8");
+            break;
+          case BI_BITFIELDS:
+            LogMagickEvent(CoderEvent,"   compression=BI_BITFIELDS");
+            break;
+          case BI_PNG:
+            LogMagickEvent(CoderEvent,"   compression=BI_PNG");
+            break;
+          case BI_JPEG:
+            LogMagickEvent(CoderEvent,"   compression=BI_JPEG");
+            break;
+          default:
+            LogMagickEvent(CoderEvent,"   compression=UNKNOWN (%d)",
+              bmp_info.compression);
+        }
+        LogMagickEvent(CoderEvent,"   number_colors=%lu",
+          bmp_info.number_colors);
+
         if ((bmp_info.compression == BI_BITFIELDS) &&
             ((bmp_info.bits_per_pixel == 16) ||
              (bmp_info.bits_per_pixel == 32)))
@@ -599,101 +638,102 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.red_mask=ReadBlobLSBLong(image);
             bmp_info.green_mask=ReadBlobLSBLong(image);
             bmp_info.blue_mask=ReadBlobLSBLong(image);
-            if (bmp_info.size > 40)
-              {
-                double
-                  sum;
+          }
+        if (bmp_info.size > 40)
+          {
+            double
+              sum;
 
-                /*
-                  Read color management information.
-                */
-                bmp_info.alpha_mask=ReadBlobLSBLong(image);
-                bmp_info.colorspace=(long) ReadBlobLSBLong(image);
-                /*
-                  Decode 2^30 fixed point formatted CIE primaries.
-                */
-                bmp_info.red_primary.x=(double)
-                  ReadBlobLSBLong(image)/0x3ffffff;
-                bmp_info.red_primary.y=(double)
-                  ReadBlobLSBLong(image)/0x3ffffff;
-                bmp_info.red_primary.z=(double)
-                  ReadBlobLSBLong(image)/0x3ffffff;
-                bmp_info.green_primary.x=(double)
-                  ReadBlobLSBLong(image)/0x3ffffff;
-                bmp_info.green_primary.y=(double)
-                  ReadBlobLSBLong(image)/0x3ffffff;
-                bmp_info.green_primary.z=(double)
-                  ReadBlobLSBLong(image)/0x3ffffff;
-                bmp_info.blue_primary.x=(double)
-                  ReadBlobLSBLong(image)/0x3ffffff;
-                bmp_info.blue_primary.y=(double)
-                  ReadBlobLSBLong(image)/0x3ffffff;
-                bmp_info.blue_primary.z=(double)
-                  ReadBlobLSBLong(image)/0x3ffffff;
-                sum=bmp_info.red_primary.x+bmp_info.red_primary.x+
-                  bmp_info.red_primary.z;
-                image->chromaticity.red_primary.x/=sum;
-                image->chromaticity.red_primary.y/=sum;
-                sum=bmp_info.green_primary.x+bmp_info.green_primary.x+
-                  bmp_info.green_primary.z;
-                image->chromaticity.green_primary.x/=sum;
-                image->chromaticity.green_primary.y/=sum;
-                sum=bmp_info.blue_primary.x+bmp_info.blue_primary.x+
-                  bmp_info.blue_primary.z;
-                image->chromaticity.blue_primary.x/=sum;
-                image->chromaticity.blue_primary.y/=sum;
-                /*
-                  Decode 16^16 fixed point formatted gamma_scales.
-                */
-                bmp_info.gamma_scale.x=(double) ReadBlobLSBLong(image)/0xffff;
-                bmp_info.gamma_scale.y=(double) ReadBlobLSBLong(image)/0xffff;
-                bmp_info.gamma_scale.z=(double) ReadBlobLSBLong(image)/0xffff;
-                /*
-                  Compute a single gamma from the BMP 3-channel gamma.
-                */
-                image->gamma=(bmp_info.gamma_scale.x+bmp_info.gamma_scale.y+
-                  bmp_info.gamma_scale.z)/3.0;
-              }
-            if (bmp_info.size > 108)
-              {
-                unsigned long
-                  intent;
+            /*
+              Read color management information.
+            */
+            bmp_info.alpha_mask=ReadBlobLSBLong(image);
+            bmp_info.colorspace=(long) ReadBlobLSBLong(image);
+            /*
+              Decode 2^30 fixed point formatted CIE primaries.
+            */
+            bmp_info.red_primary.x=(double)
+              ReadBlobLSBLong(image)/0x3ffffff;
+            bmp_info.red_primary.y=(double)
+              ReadBlobLSBLong(image)/0x3ffffff;
+            bmp_info.red_primary.z=(double)
+              ReadBlobLSBLong(image)/0x3ffffff;
+            bmp_info.green_primary.x=(double)
+              ReadBlobLSBLong(image)/0x3ffffff;
+            bmp_info.green_primary.y=(double)
+              ReadBlobLSBLong(image)/0x3ffffff;
+            bmp_info.green_primary.z=(double)
+              ReadBlobLSBLong(image)/0x3ffffff;
+            bmp_info.blue_primary.x=(double)
+              ReadBlobLSBLong(image)/0x3ffffff;
+            bmp_info.blue_primary.y=(double)
+              ReadBlobLSBLong(image)/0x3ffffff;
+            bmp_info.blue_primary.z=(double)
+              ReadBlobLSBLong(image)/0x3ffffff;
+            sum=bmp_info.red_primary.x+bmp_info.red_primary.x+
+              bmp_info.red_primary.z;
+            image->chromaticity.red_primary.x/=sum;
+            image->chromaticity.red_primary.y/=sum;
+            sum=bmp_info.green_primary.x+bmp_info.green_primary.x+
+              bmp_info.green_primary.z;
+            image->chromaticity.green_primary.x/=sum;
+            image->chromaticity.green_primary.y/=sum;
+            sum=bmp_info.blue_primary.x+bmp_info.blue_primary.x+
+              bmp_info.blue_primary.z;
+            image->chromaticity.blue_primary.x/=sum;
+            image->chromaticity.blue_primary.y/=sum;
+            /*
+              Decode 16^16 fixed point formatted gamma_scales.
+            */
+            bmp_info.gamma_scale.x=(double) ReadBlobLSBLong(image)/0xffff;
+            bmp_info.gamma_scale.y=(double) ReadBlobLSBLong(image)/0xffff;
+            bmp_info.gamma_scale.z=(double) ReadBlobLSBLong(image)/0xffff;
+            /*
+              Compute a single gamma from the BMP 3-channel gamma.
+            */
+            image->gamma=(bmp_info.gamma_scale.x+bmp_info.gamma_scale.y+
+              bmp_info.gamma_scale.z)/3.0;
+          }
+        if (bmp_info.size > 108)
+          {
+            unsigned long
+              intent;
 
-                /*
-                  Read BMP Version 5 color management information.
-                */
-                intent=ReadBlobLSBLong(image);
-                switch ((int) intent)
-                {
-                  case LCS_GM_BUSINESS:
-                  {
-                    image->rendering_intent=SaturationIntent;
-                    break;
-                  }
-                  case LCS_GM_GRAPHICS:
-                  {
-                    image->rendering_intent=RelativeIntent;
-                    break;
-                  }
-                  case LCS_GM_IMAGES:
-                  {
-                    image->rendering_intent=PerceptualIntent;
-                    break;
-                  }
-                  case LCS_GM_ABS_COLORIMETRIC:
-                  {
-                    image->rendering_intent=AbsoluteIntent;
-                    break;
-                  }
-                }
-                profile_data=ReadBlobLSBLong(image);
-                profile_data=profile_data;
-                profile_size=ReadBlobLSBLong(image);
-                profile_size=profile_size;
-                ReadBlobLSBLong(image);  /* Reserved byte */
+            /*
+              Read BMP Version 5 color management information.
+            */
+            intent=ReadBlobLSBLong(image);
+            switch ((int) intent)
+            {
+              case LCS_GM_BUSINESS:
+              {
+                image->rendering_intent=SaturationIntent;
+                break;
               }
+              case LCS_GM_GRAPHICS:
+              {
+                image->rendering_intent=RelativeIntent;
+                break;
+              }
+              case LCS_GM_IMAGES:
+              {
+                image->rendering_intent=PerceptualIntent;
+                break;
+              }
+              case LCS_GM_ABS_COLORIMETRIC:
+              {
+                image->rendering_intent=AbsoluteIntent;
+                break;
+              }
+            }
+            profile_data=ReadBlobLSBLong(image);
+            profile_data=profile_data;
+            profile_size=ReadBlobLSBLong(image);
+            profile_size=profile_size;
+            ReadBlobLSBLong(image);  /* Reserved byte */
           }
       }
+
     if (bmp_info.width <= 0)
       ThrowReaderException(CorruptImageWarning,
         "Corrupt BMP image: Negative or zero width",image);
@@ -765,6 +805,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read BMP raster colormap.
         */
+        LogMagickEvent(CoderEvent,"   Reading colormap of %d colors",
+          image->colors);
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
@@ -807,7 +849,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image);
     if ((bmp_info.compression == BI_RGB) ||
         (bmp_info.compression == BI_BITFIELDS))
-      (void) ReadBlob(image,length,(char *) pixels);
+      {
+        LogMagickEvent(CoderEvent,"  Reading pixels (%d bytes)",length);
+        (void) ReadBlob(image,length,(char *) pixels);
+      }
     else
       {
         /*
@@ -1218,7 +1263,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
-  LogMagickEvent(CoderEvent," End   ReadBMPImage()");
+  LogMagickEvent(CoderEvent," End ReadBMPImage()");
   return(image);
 }
 
@@ -1431,7 +1476,10 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
       bmp_info.size=12;
     else
       if ((type == 3) || (!image->matte && !have_color_info))
-        bmp_info.size=40;
+        {
+          type=3;
+          bmp_info.size=40;
+        }
       else
         {
           int
@@ -1594,6 +1642,24 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     /*
       Write BMP for Windows, all versions, 14-byte header.
     */
+    LogMagickEvent(CoderEvent,"   Writing BMP version %d datastream",type);
+    LogMagickEvent(CoderEvent,"   bits_per_pixel=%d",bmp_info.bits_per_pixel);
+    switch ((int) bmp_info.compression)
+    {
+       case BI_RGB:
+         LogMagickEvent(CoderEvent,"   compression=BI_RGB");
+         break;
+       case BI_RLE8:
+         LogMagickEvent(CoderEvent,"   compression=BI_RLE8");
+         break;
+       case BI_BITFIELDS:
+         LogMagickEvent(CoderEvent,"   compression=BI_BITFIELDS");
+         break;
+       default:
+         LogMagickEvent(CoderEvent,"   compression=UNKNOWN (%d)",
+           bmp_info.compression);
+     }
+    LogMagickEvent(CoderEvent,"   number_colors=%lu",bmp_info.number_colors);
     (void) WriteBlob(image,2,"BM");
     (void) WriteBlobLSBLong(image,bmp_info.file_size);
     (void) WriteBlobLSBLong(image,bmp_info.ba_offset);  /* always 0 */
@@ -1708,6 +1774,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         /*
           Dump colormap to file.
         */
+        LogMagickEvent(CoderEvent,"   Writing colormap with %d entries",
+          image->colors);
         bmp_colormap=(unsigned char *)
           AcquireMemory(4*(1 << bmp_info.bits_per_pixel));
         if (bmp_colormap == (unsigned char *) NULL)
@@ -1732,6 +1800,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           (char *) bmp_colormap);
         LiberateMemory((void **) &bmp_colormap);
       }
+    LogMagickEvent(CoderEvent,"   Writing pixels (%d bytes)",bmp_info.image_size);
     (void) WriteBlob(image,bmp_info.image_size,(char *) pixels);
     LiberateMemory((void **) &pixels);
     if (image->next == (Image *) NULL)
@@ -1746,6 +1815,6 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     while (image->previous != (Image *) NULL)
       image=image->previous;
   CloseBlob(image);
-  LogMagickEvent(CoderEvent," End   WriteBMPImage()");
+  LogMagickEvent(CoderEvent," End WriteBMPImage()");
   return(True);
 }
