@@ -129,6 +129,7 @@ extern MagickExport double
 
 extern MagickExport int
 #if !defined(HasLTDL)
+  lt_dlclose(void *),
   lt_dlexit(void),
   lt_dlinit(void),
 #endif /* !HasLTDL */
@@ -161,7 +162,6 @@ extern MagickExport void
   ,
   lt_dlsetsearchpath(char *),
   *lt_dlopen(char *),
-  lt_dlclose(void *),
   *lt_dlsym(void *, char *)
 #endif /* !HasLTDL */
   ;

@@ -56,6 +56,10 @@
 2003-05-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/nt_base.h: lt_dlclose should return an 'int'.
+  <LI> magick/nt_base.c (lt_dlclose): Return status from lt_dlclose.
+  <LI> magick/module.c (lt_dlclose): lt_dlclose is supposed to return
+        an 'int', not 'void'. A return value of zero indicates success.
   <LI> VisualMagick/tests/run_constitute.bat: Add batch script to
         run constitute tests.<BR>
   <LI> magick/module.c: Added a ltdl_initialized static flag to track

@@ -169,8 +169,9 @@ static void *lt_dlopen(char *filename)
 }
 #endif /* defined(SupportMagickModules) */
 
-static void lt_dlclose(void *handle)
+static int lt_dlclose(void *handle)
 {
+  return 0;
 }
 
 static const char *lt_dlerror(void)

@@ -468,6 +468,7 @@ MagickExport int IsWindows95()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %   Method lt_dlclose unloads the module associated with the passed handle.
+%   Zero is returned on success.
 %
 %  The format of the lt_dlclose method is:
 %
@@ -478,9 +479,10 @@ MagickExport int IsWindows95()
 %    o handle: Specifies a handle to a previously loaded dynamic module.
 %
 */
-void lt_dlclose(void *handle)
+int lt_dlclose(void *handle)
 {
-  FreeLibrary(handle);
+  /* FreeLibrary returns zero for failure */
+  return (!(FreeLibrary(handle)));
 }
 
 /*
