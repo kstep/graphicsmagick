@@ -336,7 +336,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
 
   long
     j,
-  	k,
+    k,
     x;
 
   register Image
