@@ -599,7 +599,7 @@ namespace Magick
   using MagickLib::ProfileImage;
   using MagickLib::ProfileInfo;
   using MagickLib::PushImagePixels;
-  using MagickLib::GetImageQuantizationError;
+  using MagickLib::GetImageQuantizeError;
   using MagickLib::QuantizeImage;
   using MagickLib::QuantizeInfo;
   using MagickLib::QueryColorDatabase;
