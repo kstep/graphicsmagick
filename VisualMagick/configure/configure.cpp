@@ -45,13 +45,6 @@ CConfigureApp theApp;
 enum {MULTITHREADEDDLL, SINGLETHREADEDSTATIC, MULTITHREADEDSTATIC, MULTITHREADEDSTATICDLL};
 
 enum {DISABLED, UTILITY, LIBRARY, STATICLIB, MODULE, THIRDPARTY};
-typedef struct _ConfigureInfo
-{
-  char
-    *name;
-  int
-    type;
-} ConfigureInfo;
 
 BOOL useX11Stubs = TRUE;
 BOOL decorateFilenames = FALSE;
@@ -299,6 +292,55 @@ void CConfigureApp::process_utility(ofstream &dsw,
   }
 }
 
+static void add_includes(std::list<std::string> &includes_list,
+  std::string &libpath)
+{
+	WIN32_FIND_DATA	libdata;
+	HANDLE libhandle = FindFirstFile(libpath.c_str(), &libdata);
+	if (libhandle != INVALID_HANDLE_VALUE)
+  {
+    FindClose(libhandle);
+		if ((libdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
+    {
+      std::string ipath = "..\\";
+      ipath += libpath;
+		  includes_list.push_back(ipath);
+      ipath = libpath;
+      ipath += "\\*";
+      libhandle = FindFirstFile(ipath.c_str(), &libdata);
+	    if (libhandle != INVALID_HANDLE_VALUE)
+      {
+	      static const char *exclude_from_build[] =
+	      {
+		      ".",
+		      "..",
+		      "CVS",
+		      NULL
+	      };
+
+	      do
+	      {
+		      bool skip = false;
+
+		      for (int i=0; exclude_from_build[i] != NULL; i++)
+			      if (stricmp(libdata.cFileName, exclude_from_build[i]) == 0)
+              skip = true;
+
+		      if (skip) continue;
+
+		      if ((libdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
+          {
+            ipath = libpath;
+            ipath += "\\";
+			      add_includes(includes_list, ipath + libdata.cFileName);
+          }
+	      } while (FindNextFile(libhandle, &libdata));
+        FindClose(libhandle);
+      }
+    }
+  }
+}
+
 void CConfigureApp::process_library(ofstream &dsw,
                       const char *filename, bool dll, int runtime)
 {
@@ -314,33 +356,9 @@ void CConfigureApp::process_library(ofstream &dsw,
 	includes_list.push_back("..\\..\\tiff\\libtiff");
 
   std::string libpath;
-  libpath = "..\\..\\";
+  libpath = "..\\";
   libpath += name;
-  std::string dependency;
-	WIN32_FIND_DATA	libdata;
-	HANDLE libhandle = FindFirstFile(libpath.c_str(), &libdata);
-	if (libhandle != INVALID_HANDLE_VALUE)
-  {
-		includes_list.push_back(libpath);
-
-    FindClose(libhandle);
-    // also look for a subdirectory of the form lib and
-    // libxxx and add an include path if it exists
-    libpath += "\\lib";
-    libhandle = FindFirstFile(libpath.c_str(), &libdata);
-	  if (libhandle != INVALID_HANDLE_VALUE)
-    {
-		  includes_list.push_back(libpath);
-      FindClose(libhandle);
-    }
-    libpath += name;
-    libhandle = FindFirstFile(libpath.c_str(), &libdata);
-	  if (libhandle != INVALID_HANDLE_VALUE)
-    {
-		  includes_list.push_back(libpath);
-      FindClose(libhandle);
-    }
-  }
+  add_includes(includes_list, libpath);
 
 	write_lib_dsp(
     dll,
@@ -972,6 +990,14 @@ void CConfigureApp::add_project_dependency(ofstream &dsw, const char *dep_name)
 	dsw << "    End Project Dependency" << endl;
 }
 
+typedef struct _ConfigureInfo
+{
+  char
+    *name,
+    *extn,
+    *group;
+} ConfigureInfo;
+
 void CConfigureApp::write_lib_dsp(
   bool dll,
   int runtime,
@@ -1311,81 +1337,46 @@ void CConfigureApp::write_lib_dsp(
 
   CString dir;
   CString spec;
+  CString group;
 
-void get_dir(
-{
-	dir = "..\\..\\";
-  dir += directory.c_str();
-  dir += "\\";
-  if (search.length() > 0)
-	  spec = search.c_str();
-  else
-	  spec = dspname.c_str();
-  spec += ".c";
-}
+  const ConfigureInfo
+    valid_dirs[] = {
+    { "\\",          ".c",   "src"     },
+    { "\\",          ".cpp", "src"     },
+#ifdef USETHIS
+    { "\\lib\\",     ".c",   "src"     },
+    { "\\lib\\",     ".cpp", "src"     },
+    { "\\src\\",     ".c",   "src"     },
+    { "\\src\\",     ".cpp", "src"     },
+#endif
+    { "\\",          ".h",   "include" },
+#ifdef USETHIS
+    { "\\lib\\",     ".h",   "include" },
+    { "\\include\\", ".h",   "include" },
+#endif
+    { NULL,          NULL,   NULL      }
+  };
 
-	begin_group(dsp, "src");
-	dir = "..\\..\\";
-  dir += directory.c_str();
-  dir += "\\";
-  if (search.length() > 0)
-	  spec = search.c_str();
-  else
-	  spec = dspname.c_str();
-  spec += ".c";
-	generate_dir(dsp, dir, spec);
-
-	dir = "..\\..\\";
-  dir += directory.c_str();
-  dir += "\\lib\\";
-  if (search.length() > 0)
-	  spec = search.c_str();
-  else
-	  spec = dspname.c_str();
-  spec += ".c";
-	generate_dir(dsp, dir, spec);
-
-	dir = "..\\..\\";
-  dir += directory.c_str();
-  dir += "\\";
-  if (search.length() > 0)
-	  spec = search.c_str();
-  else
-	  spec = dspname.c_str();
-  spec += ".cpp";
-	generate_dir(dsp, dir, spec);
-
-	dir = "..\\..\\";
-  dir += directory.c_str();
-  dir += "\\lib\\";
-  if (search.length() > 0)
-	  spec = search.c_str();
-  else
-	  spec = dspname.c_str();
-  spec += ".cpp";
-	generate_dir(dsp, dir, spec);
-	end_group(dsp);
-
-	begin_group(dsp, "include");
-	dir = "..\\..\\";
-  dir += directory.c_str();
-  dir += "\\";
-  if (search.length() > 0)
-	  spec = search.c_str();
-  else
-	  spec = dspname.c_str();
-  spec += ".h";
-	generate_dir(dsp, dir, spec);
-
-	dir = "..\\..\\";
-  dir += directory.c_str();
-  dir += "\\lib\\";
-  if (search.length() > 0)
-	  spec = search.c_str();
-  else
-	  spec = dspname.c_str();
-  spec += ".h";
-	generate_dir(dsp, dir, spec);
+  group = valid_dirs[0].group;
+	begin_group(dsp, group);
+  for (int i=0; valid_dirs[i].name != NULL; i++)
+  {
+    if (group.CompareNoCase(valid_dirs[i].group) != 0)
+    {
+	    end_group(dsp);
+      group = valid_dirs[i].group;
+	    begin_group(dsp, group);
+    }
+	  dir = "..\\";
+    dir += directory.c_str();
+    dir += valid_dirs[i].name;
+    if (search.length() > 0)
+	    spec = search.c_str();
+    else
+	    spec = dspname.c_str();
+    spec += valid_dirs[i].extn;
+	  generate_dir(dsp, dir, spec);
+  }
 	end_group(dsp);
 
 	// End .dsp file:
@@ -1656,41 +1647,46 @@ void CConfigureApp::write_exe_dsp(
 
   CString dir;
   CString spec;
-	begin_group(dsp, "src");
-	dir = "..\\..\\";
-	//if (stricmp(directory.c_str(), "utilities") != 0)
+  CString group;
+
+  const ConfigureInfo
+    valid_dirs[] = {
+    { "\\",          ".c",   "src"     },
+    { "\\",          ".cpp", "src"     },
+#ifdef USETHIS
+    { "\\lib\\",     ".c",   "src"     },
+    { "\\lib\\",     ".cpp", "src"     },
+    { "\\src\\",     ".c",   "src"     },
+    { "\\src\\",     ".cpp", "src"     },
+#endif
+    { "\\",          ".h",   "include" },
+#ifdef USETHIS
+    { "\\lib\\",     ".h",   "include" },
+    { "\\include\\", ".h",   "include" },
+#endif
+    { NULL,          NULL,   NULL      }
+  };
+
+  group = valid_dirs[0].group;
+	begin_group(dsp, group);
+  for (int i=0; valid_dirs[i].name != NULL; i++)
   {
+    if (group.CompareNoCase(valid_dirs[i].group) != 0)
+    {
+	    end_group(dsp);
+      group = valid_dirs[i].group;
+	    begin_group(dsp, group);
+    }
+	  dir = "..\\";
     dir += directory.c_str();
-    dir += "\\";
+    dir += valid_dirs[i].name;
+    if (search.length() > 0)
+	    spec = search.c_str();
+    else
+	    spec = dspname.c_str();
+    spec += valid_dirs[i].extn;
+	  generate_dir(dsp, dir, spec);
   }
-  if (search.length() > 0)
-	  spec = search.c_str();
-  else
-	  spec = dspname.c_str();
-  spec += ".c";
-	generate_dir(dsp, dir, spec);
-
-	dir = "..\\..\\";
-  dir += directory.c_str();
-  dir += "\\";
-  if (search.length() > 0)
-	  spec = search.c_str();
-  else
-	  spec = dspname.c_str();
-  spec += ".cpp";
-	generate_dir(dsp, dir, spec);
-	end_group(dsp);
-
-	begin_group(dsp, "include");
-	dir = "..\\..\\";
-  dir += directory.c_str();
-  dir += "\\";
-  if (search.length() > 0)
-	  spec = search.c_str();
-  else
-	  spec = dspname.c_str();
-  spec += ".h";
-	generate_dir(dsp, dir, spec);
 	end_group(dsp);
 
 	// End .dsp file:
@@ -1698,46 +1694,65 @@ void CConfigureApp::write_exe_dsp(
 	dsp << "# End Project" << endl;
 }
 
-void CConfigureApp::generate_dir(ofstream &dsp, const char *dir, const char *spec)
+void CConfigureApp::generate_dir(ofstream &dsp,
+    const char *dir, const char *spec)
 {
+	static const char *exclude_from_build[] =
+	{
+		".",
+		"..",
+		"CVS",
+		NULL
+	};
+
 	CString path = dir;
 	if (path.GetAt(path.GetLength() - 1) != '\\') {
     path += "\\";
   }
 
 	WIN32_FIND_DATA	data;
-	HANDLE handle = FindFirstFile(path + spec, &data);
-	if (handle == INVALID_HANDLE_VALUE) return;
 
-	static const char *exclude_from_build[] =
-	{
-		".",
-		"..",
-		NULL
-	};
+	HANDLE handle = FindFirstFile(path + "*", &data);
+	if (handle != INVALID_HANDLE_VALUE)
+  {
+	  do
+	  {
+		  bool skip = false;
 
-	do
-	{
-		bool skip = false;
+		  for (int i=0; exclude_from_build[i] != NULL; i++)
+			  if (stricmp(data.cFileName, exclude_from_build[i]) == 0)
+          skip = true;
 
-		for (int i=0; exclude_from_build[i] != NULL; i++)
-			if (stricmp(data.cFileName, exclude_from_build[i]) == 0) skip = true;
+		  if (skip) continue;
 
-		if (skip) continue;
+		  if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
+			  generate_dir(dsp, path + data.cFileName, spec);
+	  } while (FindNextFile(handle, &data));
+    FindClose(handle);
+  }
 
-		if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
-		{
-			//begin_group(dsp, data.cFileName + postfix);
-			generate_dir(dsp, path + data.cFileName, spec);
-			//end_group(dsp);
-		}
-		else
-		{
-			add_file(dsp, path + data.cFileName);
-		}
+  CString otherpath = "..\\";
+  otherpath += path;
+	handle = FindFirstFile(otherpath + spec, &data);
+	if (handle != INVALID_HANDLE_VALUE)
+  {
+	  do
+	  {
+		  bool skip = false;
 
-	} while (FindNextFile(handle, &data));
-  FindClose(handle);
+		  for (int i=0; exclude_from_build[i] != NULL; i++)
+			  if (stricmp(data.cFileName, exclude_from_build[i]) == 0)
+          skip = true;
+
+		  if (skip) continue;
+
+		  if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
+			  continue;
+	    add_file(dsp, otherpath + data.cFileName);
+
+	  } while (FindNextFile(handle, &data));
+    FindClose(handle);
+  }
 }
 
 void CConfigureApp::begin_group(ofstream &dsp, const char *group_name)
