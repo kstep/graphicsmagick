@@ -1,3 +1,11 @@
+2005-01-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/tiff/read.t: Added test for reading truecolor
+	planar TIFF image.
+	Added test for reading 32-bit TrueColor TIFF image.
+	Added test for reading 32-bit grayscale TIFF image.
+	* coders/tiff.c (ReadTIFFImage): Fixed stripped TIFF reader.
+
 2005-01-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): Only set TIFFTAG_PREDICTOR to 2
