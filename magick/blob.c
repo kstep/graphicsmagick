@@ -757,7 +757,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       /*
         Native blob support for this image format.
       */
-      clone_info->blob=(void *) AcquireMemory(65535);
+      clone_info->blob=(void *) AcquireMemory(65535L);
       if (clone_info->blob == (void *) NULL)
         {
           ThrowException(exception,BlobError,"Unable to create blob",

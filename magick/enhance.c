@@ -228,7 +228,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
     Integrate the histogram to get the equalization map.
   */
   memset(&intensity,0,sizeof(LongPixelPacket));
-  for (i=0; i <= 65535; i++)
+  for (i=0; i <= 65535L; i++)
   {
     intensity.red+=histogram[i].red;
     intensity.green+=histogram[i].green;
@@ -237,22 +237,22 @@ MagickExport unsigned int EqualizeImage(Image *image)
     map[i]=intensity;
   }
   low=map[0];
-  high=map[65535];
+  high=map[65535L];
   memset(equalize_map,0,65536*sizeof(LongPixelPacket));
-  for (i=0; i <= 65535; i++)
+  for (i=0; i <= 65535L; i++)
   {
     if (high.red != low.red)
       equalize_map[i].red=ScaleShortToQuantum(
-        (65535.0*(map[i].red-low.red))/(high.red-low.red));
+        (65535L.0*(map[i].red-low.red))/(high.red-low.red));
     if (high.green != low.green)
       equalize_map[i].green=ScaleShortToQuantum(
-        (65535.0*(map[i].green-low.green))/(high.green-low.green));
+        (65535L.0*(map[i].green-low.green))/(high.green-low.green));
     if (high.blue != low.blue)
       equalize_map[i].blue=ScaleShortToQuantum(
-        (65535.0*(map[i].blue-low.blue))/(high.blue-low.blue));
+        (65535L.0*(map[i].blue-low.blue))/(high.blue-low.blue));
     if (high.opacity != low.opacity)
       equalize_map[i].opacity=ScaleShortToQuantum(
-        (65535.0*(map[i].opacity-low.opacity))/(high.opacity-low.opacity));
+        (65535L.0*(map[i].opacity-low.opacity))/(high.opacity-low.opacity));
   }
   LiberateMemory((void **) &histogram);
   LiberateMemory((void **) &map);
@@ -394,17 +394,17 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
     ThrowBinaryException(ResourceLimitError,"Unable to gamma correct image",
       "Memory allocation failed");
   (void) memset(gamma_map,0,65536*sizeof(LongPixelPacket));
-  for (i=0; i <= 65535; i++)
+  for (i=0; i <= 65535L; i++)
   {
     if (gamma.red != 0.0)
       gamma_map[i].red=
-        ScaleShortToQuantum((65535*pow((double) i/65535,1.0/gamma.red)));
+        ScaleShortToQuantum((65535L*pow((double) i/65535L,1.0/gamma.red)));
     if (gamma.green != 0.0)
       gamma_map[i].green=
-        ScaleShortToQuantum((65535*pow((double) i/65535,1.0/gamma.green)));
+        ScaleShortToQuantum((65535L*pow((double) i/65535L,1.0/gamma.green)));
     if (gamma.blue != 0.0)
       gamma_map[i].blue=
-        ScaleShortToQuantum((65535*pow((double) i/65535,1.0/gamma.blue)));
+        ScaleShortToQuantum((65535L*pow((double) i/65535L,1.0/gamma.blue)));
   }
   switch (image->storage_class)
   {
@@ -516,16 +516,16 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
     return(False);
   black_point=0.0;
   mid_point=1.0;
-  white_point=65535;
+  white_point=65535L;
   count=sscanf(levels,"%lf%*[,/]%lf%*[,/]%lf",&black_point,&mid_point,
     &white_point);
   if (count == 1)
-    white_point=65535-black_point;
+    white_point=65535L-black_point;
   levels_map=(unsigned short *) AcquireMemory(65536*sizeof(Quantum));
   if (levels_map == (unsigned short *) NULL)
     ThrowBinaryException(ResourceLimitError,"Unable to level the image",
       "Memory allocation failed");
-  for (i=0; i <= 65535; i++)
+  for (i=0; i <= 65535L; i++)
   {
     if (i < black_point)
       {
@@ -534,10 +534,10 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
       }
     if (i > white_point)
       {
-        levels_map[i]=65535;
+        levels_map[i]=65535L;
         continue;
       }
-    levels_map[i]=(unsigned short) (65535*(pow(((double) i-black_point)/
+    levels_map[i]=(unsigned short) (65535L*(pow(((double) i-black_point)/
       (white_point-black_point),1.0/mid_point)));
   }
   switch (image->storage_class)
@@ -879,14 +879,14 @@ MagickExport unsigned int NormalizeImage(Image *image)
   */
   threshold_intensity=(long) (image->columns*image->rows)/100;
   memset(&intensity,0,sizeof(LongPixelPacket));
-  for (low.red=0; low.red < 65535; low.red++)
+  for (low.red=0; low.red < 65535L; low.red++)
   {
     intensity.red+=histogram[low.red].red;
     if (intensity.red > threshold_intensity)
       break;
   }
   memset(&intensity,0,sizeof(LongPixelPacket));
-  for (high.red=65535; high.red != 0; high.red--)
+  for (high.red=65535L; high.red != 0; high.red--)
   {
     intensity.red+=histogram[high.red].red;
     if (intensity.red > threshold_intensity)
@@ -1023,7 +1023,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
     Stretch the histogram to create the normalized image mapping.
   */
   memset(normalize_map,0,65536*sizeof(LongPixelPacket));
-  for (i=0; i <= 65535; i++)
+  for (i=0; i <= 65535L; i++)
   {
     if (i < (long) low.red)
       normalize_map[i].red=0;
@@ -1033,7 +1033,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       else
         if (low.red != high.red)
           normalize_map[i].red=
-            ScaleShortToQuantum((65535*(i-low.red))/(high.red-low.red));
+            ScaleShortToQuantum((65535L*(i-low.red))/(high.red-low.red));
     if (i < (long) low.green)
       normalize_map[i].green=0;
     else
@@ -1042,7 +1042,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       else
         if (low.green != high.green)
           normalize_map[i].green=
-            ScaleShortToQuantum((65535*(i-low.green))/(high.green-low.green));
+            ScaleShortToQuantum((65535L*(i-low.green))/(high.green-low.green));
     if (i < (long) low.blue)
       normalize_map[i].blue=0;
     else
@@ -1051,16 +1051,16 @@ MagickExport unsigned int NormalizeImage(Image *image)
       else
         if (low.blue != high.blue)
           normalize_map[i].blue=
-            ScaleShortToQuantum((65535*(i-low.blue))/(high.blue-low.blue));
+            ScaleShortToQuantum((65535L*(i-low.blue))/(high.blue-low.blue));
     if (i < (long) low.opacity)
       normalize_map[i].opacity=0;
     else
       if (i > (long) high.opacity)
-        normalize_map[i].opacity=65535;
+        normalize_map[i].opacity=65535L;
       else
         if (low.opacity != high.opacity)
           normalize_map[i].opacity=ScaleShortToQuantum(
-            (65535*(i-low.opacity))/(high.opacity-low.opacity));
+            (65535L*(i-low.opacity))/(high.opacity-low.opacity));
   }
   /*
     Normalize the image.

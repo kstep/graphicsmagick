@@ -62,20 +62,20 @@
 #define XBlueGamma(color) ((Quantum) (blue_gamma == 1.0 ? (color) : \
   ((pow((double) (color)/MaxRGB,1.0/blue_gamma)*MaxRGB)+0.5)))
 #define XGammaPixel(map,color)  (unsigned long) (map->base_pixel+ \
-  ((ScaleQuantumToShort(XRedGamma((color)->red))*map->red_max/65535)* \
+  ((ScaleQuantumToShort(XRedGamma((color)->red))*map->red_max/65535L)* \
     map->red_mult)+ \
-  ((ScaleQuantumToShort(XGreenGamma((color)->green))*map->green_max/65535)* \
+  ((ScaleQuantumToShort(XGreenGamma((color)->green))*map->green_max/65535L)* \
     map->green_mult)+ \
-  ((ScaleQuantumToShort(XBlueGamma((color)->blue))*map->blue_max/65535)* \
+  ((ScaleQuantumToShort(XBlueGamma((color)->blue))*map->blue_max/65535L)* \
     map->blue_mult))
 #define XGreenGamma(color) ((Quantum) (green_gamma == 1.0 ? (color) : \
   ((pow((double) (color)/MaxRGB,1.0/green_gamma)*MaxRGB)+0.5)))
 #define XRedGamma(color) ((Quantum) (red_gamma == 1.0 ? (color) : \
   ((pow((double) (color)/MaxRGB,1.0/red_gamma)*MaxRGB)+0.5)))
 #define XStandardPixel(map,color)  (unsigned long) (map->base_pixel+ \
-  (((color)->red*map->red_max/65535)*map->red_mult)+ \
-  (((color)->green*map->green_max/65535)*map->green_mult)+ \
-  (((color)->blue*map->blue_max/65535)*map->blue_mult))
+  (((color)->red*map->red_max/65535L)*map->red_mult)+ \
+  (((color)->green*map->green_max/65535L)*map->green_mult)+ \
+  (((color)->blue*map->blue_max/65535L)*map->blue_mult))
 
 /*
   Constant declaractions.
@@ -2703,13 +2703,13 @@ MagickExport void XGetPixelPacket(Display *display,
     Set highlight color.
   */
   pixel->highlight_color.red=(unsigned short) (((double)
-     pixel->matte_color.red*ScaleQuantumToShort(HighlightModulate))/65535+
+     pixel->matte_color.red*ScaleQuantumToShort(HighlightModulate))/65535L+
      (ScaleQuantumToShort((double) MaxRGB-HighlightModulate)));
   pixel->highlight_color.green=(unsigned short) (((double)
-     pixel->matte_color.green*ScaleQuantumToShort(HighlightModulate))/65535+
+     pixel->matte_color.green*ScaleQuantumToShort(HighlightModulate))/65535L+
      (ScaleQuantumToShort((double) MaxRGB-HighlightModulate)));
   pixel->highlight_color.blue=(unsigned short) (((double)
-     pixel->matte_color.blue*ScaleQuantumToShort(HighlightModulate))/65535+
+     pixel->matte_color.blue*ScaleQuantumToShort(HighlightModulate))/65535L+
      (ScaleQuantumToShort((double) MaxRGB-HighlightModulate)));
   pixel->highlight_color.pixel=XStandardPixel(map_info,&pixel->highlight_color);
   pixel->highlight_color.flags=DoRed | DoGreen | DoBlue;
@@ -2717,33 +2717,33 @@ MagickExport void XGetPixelPacket(Display *display,
     Set shadow color.
   */
   pixel->shadow_color.red=(unsigned short) (((double)
-    pixel->matte_color.red*ScaleQuantumToShort(ShadowModulate))/65535);
+    pixel->matte_color.red*ScaleQuantumToShort(ShadowModulate))/65535L);
   pixel->shadow_color.green=(unsigned short) (((double)
-    pixel->matte_color.green*ScaleQuantumToShort(ShadowModulate))/65535);
+    pixel->matte_color.green*ScaleQuantumToShort(ShadowModulate))/65535L);
   pixel->shadow_color.blue=(unsigned short) (((double)
-    pixel->matte_color.blue*ScaleQuantumToShort(ShadowModulate))/65535);
+    pixel->matte_color.blue*ScaleQuantumToShort(ShadowModulate))/65535L);
   pixel->shadow_color.pixel=XStandardPixel(map_info,&pixel->shadow_color);
   pixel->shadow_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set depth color.
   */
   pixel->depth_color.red=(unsigned short) (((double)
-    pixel->matte_color.red*ScaleQuantumToShort(DepthModulate))/65535);
+    pixel->matte_color.red*ScaleQuantumToShort(DepthModulate))/65535L);
   pixel->depth_color.green=(unsigned short) (((double)
-    pixel->matte_color.green*ScaleQuantumToShort(DepthModulate))/65535);
+    pixel->matte_color.green*ScaleQuantumToShort(DepthModulate))/65535L);
   pixel->depth_color.blue=(unsigned short) (((double)
-    pixel->matte_color.blue*ScaleQuantumToShort(DepthModulate))/65535);
+    pixel->matte_color.blue*ScaleQuantumToShort(DepthModulate))/65535L);
   pixel->depth_color.pixel=XStandardPixel(map_info,&pixel->depth_color);
   pixel->depth_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set trough color.
   */
   pixel->trough_color.red=(unsigned short) (((double)
-    pixel->matte_color.red*ScaleQuantumToShort(TroughModulate))/65535);
+    pixel->matte_color.red*ScaleQuantumToShort(TroughModulate))/65535L);
   pixel->trough_color.green=(unsigned short) (((double)
-    pixel->matte_color.green*ScaleQuantumToShort(TroughModulate))/65535);
+    pixel->matte_color.green*ScaleQuantumToShort(TroughModulate))/65535L);
   pixel->trough_color.blue=(unsigned short) (((double)
-    pixel->matte_color.blue*ScaleQuantumToShort(TroughModulate))/65535);
+    pixel->matte_color.blue*ScaleQuantumToShort(TroughModulate))/65535L);
   pixel->trough_color.pixel=XStandardPixel(map_info,&pixel->trough_color);
   pixel->trough_color.flags=DoRed | DoGreen | DoBlue;
   /*
@@ -4030,11 +4030,11 @@ static Image *XGetWindowImage(Display *display,const Window window,
                 {
                   pixel=XGetPixel(ximage,x,y);
                   color=(pixel >> red_shift) & red_mask;
-                  q->red=ScaleShortToQuantum((65535*color)/red_mask);
+                  q->red=ScaleShortToQuantum((65535L*color)/red_mask);
                   color=(pixel >> green_shift) & green_mask;
-                  q->green=ScaleShortToQuantum((65535*color)/green_mask);
+                  q->green=ScaleShortToQuantum((65535L*color)/green_mask);
                   color=(pixel >> blue_shift) & blue_mask;
-                  q->blue=ScaleShortToQuantum((65535*color)/blue_mask);
+                  q->blue=ScaleShortToQuantum((65535L*color)/blue_mask);
                   q++;
                 }
                 if (!SyncImagePixels(composite_image))
@@ -7418,7 +7418,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           color.blue=(unsigned short) 0;
           if (map_info->blue_max != 0)
             color.blue=(unsigned short) ((unsigned long)
-              ((65535*(i % map_info->green_mult))/map_info->blue_max));
+              ((65535L*(i % map_info->green_mult))/map_info->blue_max));
           color.green=color.blue;
           color.red=color.blue;
           color.pixel=XStandardPixel(map_info,&color);
@@ -7430,16 +7430,16 @@ MagickExport void XMakeStandardColormap(Display *display,
           color.red=(unsigned short) 0;
           if (map_info->red_max != 0)
             color.red=(unsigned short) ((unsigned long)
-              ((65535*(i/map_info->red_mult))/map_info->red_max));
+              ((65535L*(i/map_info->red_mult))/map_info->red_max));
           color.green=(unsigned int) 0;
           if (map_info->green_max != 0)
             color.green=(unsigned short) ((unsigned long)
-              ((65535*((i/map_info->green_mult) % (map_info->green_max+1)))/
+              ((65535L*((i/map_info->green_mult) % (map_info->green_max+1)))/
                 map_info->green_max));
           color.blue=(unsigned short) 0;
           if (map_info->blue_max != 0)
             color.blue=(unsigned short) ((unsigned long)
-              ((65535*(i % map_info->green_mult))/map_info->blue_max));
+              ((65535L*(i % map_info->green_mult))/map_info->blue_max));
           color.pixel=XStandardPixel(map_info,&color);
           *p++=color;
         }

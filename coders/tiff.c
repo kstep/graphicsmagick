@@ -1825,11 +1825,11 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         for (i=0; i < (long) image->colors; i++)
         {
           red[i]=(unsigned short)
-            (((double) image->colormap[i].red*65535)/MaxRGB+0.5);
+            (((double) image->colormap[i].red*65535L)/MaxRGB+0.5);
           green[i]=(unsigned short)
-            (((double) image->colormap[i].green*65535)/MaxRGB+0.5);
+            (((double) image->colormap[i].green*65535L)/MaxRGB+0.5);
           blue[i]=(unsigned short)
-            (((double) image->colormap[i].blue*65535)/MaxRGB+0.5);
+            (((double) image->colormap[i].blue*65535L)/MaxRGB+0.5);
         }
         (void) TIFFSetField(tiff,TIFFTAG_COLORMAP,red,green,blue);
         LiberateMemory((void **) &red);

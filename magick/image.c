@@ -2159,7 +2159,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 %
 %  GetImageDepth() returns the depth of the image, either 8 or 16 bits.  By
 %  default, pixels components are stored as 16-bit two byte unsigned short
-%  integers that range in value from 0 to 65535.  However, If all the pixels
+%  integers that range in value from 0 to 65535L.  However, If all the pixels
 %  have lower-order bytes that are identical to their higher-order bytes, the
 %  image depth is 8-bit.
 %
@@ -5355,7 +5355,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 
           G = 0.29900*R+0.58700*G+0.11400*B
       */
-      for (i=0; i <= 65535; i++)
+      for (i=0; i <= 65535L; i++)
       {
         x_map[i+X]=0.299*i;
         y_map[i+X]=0.587*i;
@@ -5383,7 +5383,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       */
       primary_info.y=65536/2;
       primary_info.z=65536/2;
-      for (i=0; i <= 65535; i++)
+      for (i=0; i <= 65535L; i++)
       {
         x_map[i+X]=0.33333*i;
         y_map[i+X]=0.33334*i;
@@ -5410,7 +5410,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       */
       primary_info.y=ScaleQuantumToShort(ScaleCharToQuantum(156));
       primary_info.z=ScaleQuantumToShort(ScaleCharToQuantum(137));
-      for (i=0; i <= (long) (0.018*65535); i++)
+      for (i=0; i <= (long) (0.018*65535L); i++)
       {
         x_map[i+X]=0.003962014134275617*i;
         y_map[i+X]=0.007778268551236748*i;
@@ -5422,7 +5422,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         y_map[i+Z]=(-0.005800713697502058)*i;
         z_map[i+Z]=(-0.0011265440570958)*i;
       }
-      for ( ; i <= 65535; i++)
+      for ( ; i <= 65535L; i++)
       {
         x_map[i+X]=0.2201118963486454*(1.099*i-0.099);
         y_map[i+X]=0.4321260306242638*(1.099*i-0.099);
@@ -5445,7 +5445,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
           Y = 0.212671*X+0.715160*Y+0.072169*Z
           Z = 0.019334*X+0.119193*Y+0.950227*Z
       */
-      for (i=0; i <= 65535; i++)
+      for (i=0; i <= 65535L; i++)
       {
         x_map[i+X]=0.412453*i;
         y_map[i+X]=0.35758*i;
@@ -5473,7 +5473,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       */
       primary_info.y=65536/2;
       primary_info.z=65536/2;
-      for (i=0; i <= 65535; i++)
+      for (i=0; i <= 65535L; i++)
       {
         x_map[i+X]=0.299*i;
         y_map[i+X]=0.587*i;
@@ -5500,7 +5500,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       */
       primary_info.y=ScaleQuantumToShort(ScaleCharToQuantum(156));
       primary_info.z=ScaleQuantumToShort(ScaleCharToQuantum(137));
-      for (i=0; i <= (long) (0.018*65535); i++)
+      for (i=0; i <= (long) (0.018*65535L); i++)
       {
         x_map[i+X]=0.003962014134275617*i;
         y_map[i+X]=0.007778268551236748*i;
@@ -5512,7 +5512,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         y_map[i+Z]=(-0.005800713697502058)*i;
         z_map[i+Z]=(-0.0011265440570958)*i;
       }
-      for ( ; i <= 65535; i++)
+      for ( ; i <= 65535L; i++)
       {
         x_map[i+X]=0.2201118963486454*(1.099*i-0.099);
         y_map[i+X]=0.4321260306242638*(1.099*i-0.099);
@@ -5540,7 +5540,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       */
       primary_info.y=65536/2;
       primary_info.z=65536/2;
-      for (i=0; i <= 65535; i++)
+      for (i=0; i <= 65535L; i++)
       {
         x_map[i+X]=0.299*i;
         y_map[i+X]=0.587*i;
@@ -5568,7 +5568,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       */
       primary_info.y=65536/2;
       primary_info.z=65536/2;
-      for (i=0; i <= 65535; i++)
+      for (i=0; i <= 65535L; i++)
       {
         x_map[i+X]=0.299*i;
         y_map[i+X]=0.587*i;
@@ -5597,7 +5597,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       */
       primary_info.y=65536/2;
       primary_info.z=65536/2;
-      for (i=0; i <= 65535; i++)
+      for (i=0; i <= 65535L; i++)
       {
         x_map[i+X]=0.299*i;
         y_map[i+X]=0.587*i;
@@ -5634,17 +5634,17 @@ MagickExport unsigned int RGBTransformImage(Image *image,
             y_map[ScaleQuantumToShort(q->green)+X]+
             z_map[ScaleQuantumToShort(q->blue)+X]+primary_info.x;
           pixel.red=(unsigned long) ((pixel.red < 0) ? 0 :
-            (pixel.red > 65535) ? 65535 : pixel.red+0.5);
+            (pixel.red > 65535L) ? 65535L : pixel.red+0.5);
           pixel.green=x_map[ScaleQuantumToShort(q->red)+Y]+
             y_map[ScaleQuantumToShort(q->green)+Y]+
             z_map[ScaleQuantumToShort(q->blue)+Y]+primary_info.y;
           pixel.green=(unsigned long) ((pixel.green < 0) ? 0 :
-            (pixel.green > 65535) ? 65535 : pixel.green+0.5);
+            (pixel.green > 65535L) ? 65535L : pixel.green+0.5);
           pixel.blue=x_map[ScaleQuantumToShort(q->red)+Z]+
             y_map[ScaleQuantumToShort(q->green)+Z]+
             z_map[ScaleQuantumToShort(q->blue)+Z]+primary_info.z;
           pixel.blue=(unsigned long) ((pixel.blue < 0) ? 0 :
-            (pixel.blue > 65535) ? 65535 : pixel.blue+0.5);
+            (pixel.blue > 65535L) ? 65535L : pixel.blue+0.5);
           q->red=ScaleShortToQuantum(pixel.red);
           q->green=ScaleShortToQuantum(pixel.green);
           q->blue=ScaleShortToQuantum(pixel.blue);
@@ -5668,17 +5668,17 @@ MagickExport unsigned int RGBTransformImage(Image *image,
           y_map[ScaleQuantumToShort(image->colormap[i].green)+X]+
           z_map[ScaleQuantumToShort(image->colormap[i].blue)+X]+primary_info.x;
         pixel.red=(unsigned long) ((pixel.red < 0) ? 0.0 :
-          (pixel.red > 65535) ? 65535 : pixel.red+0.5);
+          (pixel.red > 65535L) ? 65535L : pixel.red+0.5);
         pixel.green=x_map[ScaleQuantumToShort(image->colormap[i].red)+Y]+
           y_map[ScaleQuantumToShort(image->colormap[i].green)+Y]+
           z_map[ScaleQuantumToShort(image->colormap[i].blue)+Y]+primary_info.y;
         pixel.green=(unsigned long) ((pixel.green < 0) ? 0.0 :
-          (pixel.green > 65535) ? 65535 : pixel.green+0.5);
+          (pixel.green > 65535L) ? 65535L : pixel.green+0.5);
         pixel.blue=x_map[ScaleQuantumToShort(image->colormap[i].red)+Z]+
           y_map[ScaleQuantumToShort(image->colormap[i].green)+Z]+
           z_map[ScaleQuantumToShort(image->colormap[i].blue)+Z]+primary_info.z;
         pixel.blue=(unsigned long) ((pixel.blue < 0) ? 0.0 :
-          (pixel.blue > 65535) ? 65535 : pixel.blue+0.5);
+          (pixel.blue > 65535L) ? 65535L : pixel.blue+0.5);
         image->colormap[i].red=ScaleShortToQuantum(pixel.red);
         image->colormap[i].green=ScaleShortToQuantum(pixel.green);
         image->colormap[i].blue=ScaleShortToQuantum(pixel.blue);
@@ -6881,17 +6881,17 @@ MagickExport unsigned int TransformRGBImage(Image *image,
         I and Q, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxRGB.
       */
-      for (i=0; i <= 65535; i++)
+      for (i=0; i <= 65535L; i++)
       {
         red_map[i+R]=i;
-        green_map[i+R]=0.5*(2.0*i-65535);
-        blue_map[i+R]=(-0.33334)*(2.0*i-65535);
+        green_map[i+R]=0.5*(2.0*i-65535L);
+        blue_map[i+R]=(-0.33334)*(2.0*i-65535L);
         red_map[i+G]=i;
         green_map[i+G]=0.0;
-        blue_map[i+G]=0.666665*(2.0*i-65535);
+        blue_map[i+G]=0.666665*(2.0*i-65535L);
         red_map[i+B]=i;
-        green_map[i+B]=(-0.5)*(2.0*i-65535);
-        blue_map[i+B]=(-0.33334)*(2.0*i-65535);
+        green_map[i+B]=(-0.5)*(2.0*i-65535L);
+        blue_map[i+B]=(-0.33334)*(2.0*i-65535L);
       }
       break;
     }
@@ -6906,7 +6906,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
 
         sRGB is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
-      for (i=0; i <= 65535; i++)
+      for (i=0; i <= 65535L; i++)
       {
         red_map[i+R]=1.40200*i;
         green_map[i+R]=0.0;
@@ -6933,7 +6933,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           G = -0.969256*R+1.875992*G+0.041556*B
           B =  0.055648*R-0.204043*G+1.057311*B
       */
-      for (i=0; i <= 65535; i++)
+      for (i=0; i <= 65535L; i++)
       {
         red_map[i+R]=3.240479*i;
         green_map[i+R]=(-1.537150)*i;
@@ -6959,16 +6959,16 @@ MagickExport unsigned int TransformRGBImage(Image *image,
         Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxRGB.
       */
-      for (i=0; i <= 65535; i++)
+      for (i=0; i <= 65535L; i++)
       {
         red_map[i+R]=i;
         green_map[i+R]=0.0;
-        blue_map[i+R]=(1.402000*0.5)*(2.0*i-65535);
+        blue_map[i+R]=(1.402000*0.5)*(2.0*i-65535L);
         red_map[i+G]=i;
-        green_map[i+G]=(-0.344136*0.5)*(2.0*i-65535);
-        blue_map[i+G]=(-0.714136*0.5)*(2.0*i-65535);
+        green_map[i+G]=(-0.344136*0.5)*(2.0*i-65535L);
+        blue_map[i+G]=(-0.714136*0.5)*(2.0*i-65535L);
         red_map[i+B]=i;
-        green_map[i+B]=(1.772000*0.5)*(2.0*i-65535);
+        green_map[i+B]=(1.772000*0.5)*(2.0*i-65535L);
         blue_map[i+B]=0.0;
       }
       break;
@@ -6984,7 +6984,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
 
         YCC is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
-      for (i=0; i <= 65535; i++)
+      for (i=0; i <= 65535L; i++)
       {
         red_map[i+R]=1.3584*i;
         green_map[i+R]=0.0;
@@ -7014,17 +7014,17 @@ MagickExport unsigned int TransformRGBImage(Image *image,
         I and Q, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxRGB.
       */
-      for (i=0; i <= 65535; i++)
+      for (i=0; i <= 65535L; i++)
       {
         red_map[i+R]=i;
-        green_map[i+R]=0.4781*(2.0*i-65535);
-        blue_map[i+R]=0.3107*(2.0*i-65535);
+        green_map[i+R]=0.4781*(2.0*i-65535L);
+        blue_map[i+R]=0.3107*(2.0*i-65535L);
         red_map[i+G]=i;
-        green_map[i+G]=(-0.13635)*(2.0*i-65535);
-        blue_map[i+G]=(-0.3234)*(2.0*i-65535);
+        green_map[i+G]=(-0.13635)*(2.0*i-65535L);
+        blue_map[i+G]=(-0.3234)*(2.0*i-65535L);
         red_map[i+B]=i;
-        green_map[i+B]=(-0.55185)*(2.0*i-65535);
-        blue_map[i+B]=0.8503*(2.0*i-65535);
+        green_map[i+B]=(-0.55185)*(2.0*i-65535L);
+        blue_map[i+B]=0.8503*(2.0*i-65535L);
       }
       break;
     }
@@ -7040,16 +7040,16 @@ MagickExport unsigned int TransformRGBImage(Image *image,
         Pb and Pr, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxRGB.
       */
-      for (i=0; i <= 65535; i++)
+      for (i=0; i <= 65535L; i++)
       {
         red_map[i+R]=i;
         green_map[i+R]=0.0;
-        blue_map[i+R]=0.701*(2.0*i-65535);
+        blue_map[i+R]=0.701*(2.0*i-65535L);
         red_map[i+G]=i;
-        green_map[i+G]=(-0.172068)*(2.0*i-65535);
-        blue_map[i+G]=0.357068*(2.0*i-65535);
+        green_map[i+G]=(-0.172068)*(2.0*i-65535L);
+        blue_map[i+G]=0.357068*(2.0*i-65535L);
         red_map[i+B]=i;
-        green_map[i+B]=0.886*(2.0*i-65535);
+        green_map[i+B]=0.886*(2.0*i-65535L);
         blue_map[i+B]=0.0;
       }
       break;
@@ -7067,16 +7067,16 @@ MagickExport unsigned int TransformRGBImage(Image *image,
         U and V, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxRGB.
       */
-      for (i=0; i <= 65535; i++)
+      for (i=0; i <= 65535L; i++)
       {
         red_map[i+R]=i;
         green_map[i+R]=0.0;
-        blue_map[i+R]=0.5699*(2.0*i-65535);
+        blue_map[i+R]=0.5699*(2.0*i-65535L);
         red_map[i+G]=i;
-        green_map[i+G]=(-0.1969)*(2.0*i-65535);
-        blue_map[i+G]=(-0.29025)*(2.0*i-65535);
+        green_map[i+G]=(-0.1969)*(2.0*i-65535L);
+        blue_map[i+G]=(-0.29025)*(2.0*i-65535L);
         red_map[i+B]=i;
-        green_map[i+B]=1.01395*(2.0*i-65535);
+        green_map[i+B]=1.01395*(2.0*i-65535L);
         blue_map[i+B]=0;
       }
       break;
@@ -7141,11 +7141,11 @@ MagickExport unsigned int TransformRGBImage(Image *image,
             default:
             {
               pixel.red=(unsigned long) ((pixel.red < 0) ? 0 :
-                (pixel.red > 65535) ? 65535 : pixel.red+0.5);
+                (pixel.red > 65535L) ? 65535L : pixel.red+0.5);
               pixel.green=(unsigned long) ((pixel.green < 0) ? 0 :
-                (pixel.green > 65535) ? 65535 : pixel.green+0.5);
+                (pixel.green > 65535L) ? 65535L : pixel.green+0.5);
               pixel.blue=(unsigned long) ((pixel.blue < 0) ? 0 :
-                (pixel.blue > 65535) ? 65535 : pixel.blue+0.5);
+                (pixel.blue > 65535L) ? 65535L : pixel.blue+0.5);
               q->red=ScaleShortToQuantum(pixel.red);
               q->green=ScaleShortToQuantum(pixel.green);
               q->blue=ScaleShortToQuantum(pixel.blue);
@@ -7209,11 +7209,11 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           default:
           {
             pixel.red=(unsigned long) ((pixel.red < 0) ? 0 :
-              (pixel.red > 65535) ? 65535 : pixel.red+0.5);
+              (pixel.red > 65535L) ? 65535L : pixel.red+0.5);
             pixel.green=(unsigned long) ((pixel.green < 0) ? 0 :
-              (pixel.green > 65535) ? 65535 : pixel.green+0.5);
+              (pixel.green > 65535L) ? 65535L : pixel.green+0.5);
             pixel.blue=(unsigned long) ((pixel.blue < 0) ? 0 :
-              (pixel.blue > 65535) ? 65535 : pixel.blue+0.5);
+              (pixel.blue > 65535L) ? 65535L : pixel.blue+0.5);
             image->colormap[i].red=ScaleShortToQuantum(pixel.red);
             image->colormap[i].green=ScaleShortToQuantum(pixel.green);
             image->colormap[i].blue=ScaleShortToQuantum(pixel.blue);

@@ -1721,7 +1721,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 mng_info->image=image;
               }
 
-            if ((mng_width > 65535) || (mng_height > 65535))
+            if ((mng_width > 65535L) || (mng_height > 65535L))
               ThrowException(&image->exception,(ExceptionType) DelegateError,
                 "image dimensions are too large.",image->filename);
             FormatString(page_geometry,"%lux%lu+0+0",mng_width,mng_height);
@@ -2440,7 +2440,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             else
               {
                 if (basi_sample_depth == 16)
-                  basi_alpha=65535;
+                  basi_alpha=65535L;
                 else
                   basi_alpha=255;
               }
