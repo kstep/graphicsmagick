@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -27,18 +27,18 @@ LANGUAGE LANG_DANISH, SUBLANG_DEFAULT
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"
@@ -78,15 +78,15 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON    DISCARDABLE     "res\\Configure.ico"
+IDR_MAINFRAME           ICON                    "res\\Configure.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Dialog
 //
 
-IDD_WELCOME_PAGE DIALOG DISCARDABLE  0, 0, 318, 233
-STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+IDD_WELCOME_PAGE DIALOG  0, 0, 318, 233
+STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Welcome to the VisualMagick configuration tool."
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -94,10 +94,10 @@ BEGIN
     CONTROL         132,IDC_STATIC,"Static",SS_BITMAP,91,7,132,126
 END
 
-IDD_TARGET_PAGE DIALOG DISCARDABLE  0, 0, 318, 233
-STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+IDD_TARGET_PAGE DIALOGEX 0, 0, 318, 233
+STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Target Setup"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     GROUPBOX        "Build type setup:",IDC_STATIC,7,7,304,107
     CONTROL         "Dynamic Multi-threaded DLL runtimes",IDC_PROJECT_TYPE,
@@ -117,9 +117,9 @@ BEGIN
                     "Button",BS_AUTORADIOBUTTON,15,95,124,10
     LTEXT           "Static Builds",IDC_STATIC,13,50,40,8
     LTEXT           "Dynamic (DLL) Builds",IDC_STATIC,13,19,68,8
-    CONTROL         "Include all demo, test, and contrib programs",
+    CONTROL         "Include all demo, test, appl, and contrib directories",
                     IDC_INCLUDE_OPTIONAL,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,15,151,158,10
+                    WS_TABSTOP,15,151,204,10
     CONTROL         "Generate all utility projects with full paths rather then relative paths.",
                     IDC_STANDALONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
                     167,236,10
@@ -128,8 +128,8 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,182,140,10
 END
 
-IDD_SYSTEM_PAGE DIALOG DISCARDABLE  0, 0, 318, 233
-STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+IDD_SYSTEM_PAGE DIALOG  0, 0, 318, 233
+STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "System Setup"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -156,8 +156,8 @@ BEGIN
     PUSHBUTTON      "Browse",IDC_OUTPUT_LIB_BROWSE,275,183,30,13
 END
 
-IDD_FINISHED_PAGE DIALOG DISCARDABLE  0, 0, 318, 233
-STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+IDD_FINISHED_PAGE DIALOG  0, 0, 318, 233
+STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "VisualMagick configuration finished."
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -165,8 +165,9 @@ BEGIN
     PUSHBUTTON      "Build It!",IDC_BuildIt,135,212,50,14,NOT WS_VISIBLE
 END
 
-IDD_WAITDIALOG DIALOG DISCARDABLE  0, 0, 228, 82
-STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_WAITDIALOG DIALOG  0, 0, 228, 82
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
 FONT 8, "MS Sans Serif"
 BEGIN
     CTEXT           "",IDC_MSGCTRL,8,5,214,32,SS_NOPREFIX
@@ -182,7 +183,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_WELCOME_PAGE, DIALOG
     BEGIN
@@ -224,9 +225,8 @@ END
 // Bitmap
 //
 
-IDB_LOGO1               BITMAP  DISCARDABLE     "res\\magick.bmp"
+IDB_LOGO1               BITMAP                  "res\\magick.bmp"
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -249,18 +249,15 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "This program is part of the ImageMagick imaging tookit.\0"
-            VALUE "CompanyName", "ImageMagick Development Group\0"
-            VALUE "FileDescription", "ImageMagick Win32 Configure Application\0"
-            VALUE "FileVersion", "1, 0, 0, 2\0"
-            VALUE "InternalName", "Configure\0"
-            VALUE "LegalCopyright", "This program is LGPL\0"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "Configure.EXE\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "Win32 Configure Application\0"
-            VALUE "ProductVersion", "1, 0, 0, 2\0"
-            VALUE "SpecialBuild", "\0"
+            VALUE "Comments", "This program is part of the ImageMagick imaging tookit."
+            VALUE "CompanyName", "ImageMagick Development Group"
+            VALUE "FileDescription", "ImageMagick Win32 Configure Application"
+            VALUE "FileVersion", "1, 0, 0, 2"
+            VALUE "InternalName", "Configure"
+            VALUE "LegalCopyright", "This program is LGPL"
+            VALUE "OriginalFilename", "Configure.EXE"
+            VALUE "ProductName", "Win32 Configure Application"
+            VALUE "ProductVersion", "1, 0, 0, 2"
         END
     END
     BLOCK "VarFileInfo"
@@ -269,15 +266,13 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
 //
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_PROPSHT_CAPTION     "Wizard"
 END
