@@ -445,6 +445,7 @@ MagickExport void DetachBlob(BlobInfo *blob_info)
   blob_info->length=0;
   blob_info->offset=0;
   blob_info->data=(unsigned char *) NULL;
+  blob_info->exempt=False;
 }
 
 /*
