@@ -179,7 +179,8 @@ Export unsigned int AllocateCache(Cache cache,const ClassType class_type,
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  if (class_type == cache_info->class)
+  if ((cache_info->class != UndefinedClass) &&
+      (class_type == cache_info->class))
     return(True);
   length=cache_info->number_pixels*sizeof(PixelPacket);
   if (cache_info->class == PseudoClass)
