@@ -18,11 +18,42 @@
 #endif
 
 #if defined(WIN32) || defined(__CYGWIN__)
-#define Export  __declspec(dllexport)
 #if defined(_VISUALC_)
+/**
+ * Under VISUALC we have single threaded static libraries, or
+ * mutli-threaded DLLs using the multithreaded runtime DLLs.
+ **/
+#	if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_)
+#		define _MAGICKDLL_
+#	endif
+
+#	if defined(_MT) && !defined(_MAGICKDLL_)
+#		error To use the Visualmagick libraries from a multithreaded project, you must use the DLLs
+#		error Use the Mutlithreaded DLL runtime libraries (prefered), or define the macro "_MAGICKDLL_"
+#	endif
+
+#	if !defined(_MT) && defined(_MAGICKDLL_)
+#		error To use the Visualmagick libraries from a single-threaded project, you must use static libraries
+#		error Undefine the macro "_MAGICKDLL_"
+#	endif
+
+#	if defined(_MAGICKDLL_)
+#		pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
+#		if !defined(_MAGICKLIB_)
+#			define Export __declspec(dllimport)
+#		else
+#			define Export __declspec(dllexport)
+#		endif
+#	else
+#		define Export
+#	endif
+
 #pragma warning(disable : 4018)
 #pragma warning(disable : 4244)
 #pragma warning(disable : 4142)
+
+#else
+#define Export __declspec(dllexport)
 #endif
 #else
 # define Export
