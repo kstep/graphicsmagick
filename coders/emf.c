@@ -14,8 +14,10 @@
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
+%                              J.A. Gutierrez                                 %
+%                                 Oct 1997                                    %
+%                               Prepared By                                   %
 %                              Bill Radcliffe                                 %
-%                                ???  2001                                    %
 %                                                                             %
 %  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
 %  to making software imaging solutions freely available.                     %
