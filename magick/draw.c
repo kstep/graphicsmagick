@@ -2465,7 +2465,6 @@ static void DrawRoundCap(DrawInfo *draw_info, PrimitiveInfo *primitive_info, Ima
   PathInfo *path_info;
   
   PolygonInfo *polygon_info;
-  long l1;
   assert(primitive_info != (PrimitiveInfo *) NULL);
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickSignature);
@@ -2522,11 +2521,6 @@ static void StrokePolygon(DrawInfo *draw_info, PrimitiveInfo *primitive_info, Im
          yoffset1,
          yoffset2;
   
-  double scxoffset1,
-         scyoffset1,
-         scxoffset2,
-         scyoffset2;
- 
   double inverse_slope1,
          inverse_slope2,
          slope1,
@@ -3079,13 +3073,11 @@ static void StrokePolygon(DrawInfo *draw_info, PrimitiveInfo *primitive_info, Im
 static void DashStrokePolygon(DrawInfo *draw_info, PrimitiveInfo *primitive_info, Image *image) {
   PrimitiveInfo *dash_info;
 
-  double        dist,
-                curr_dist,
+  double        curr_dist,
                 offset_dist;
 
   double        dx,
-                dy,
-                pt_dist;
+                dy;
 
   int           num_verts,
                 i,

@@ -489,9 +489,6 @@ static unsigned int ReadMagicConfigureFiles(const char *filename)
 MagickExport unsigned int SetImageMagic(const unsigned char *magick,
   const unsigned int length,char *magic)
 {
-  char
-    filename[MaxTextExtent];
-
   MagicInfoMember
     *member;
 
