@@ -122,6 +122,7 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
       local_info->blob.length=length;
       image=ReadImage(local_info);
       DestroyImageInfo(local_info);
+      GetBlobInfo(&(image->blob));
       return(image);
     }
   /*
@@ -435,7 +436,9 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
           return((char *) NULL);
         }
       *length=image->blob.length;
-      return(image->blob.data);
+      blob=image->blob.data;
+      GetBlobInfo(&(image->blob));
+      return(blob);
     }
   /*
     Write file to disk in blob image format.
