@@ -35,9 +35,14 @@
 3) Open Windows Command Shell Window
 
    3a) cd PerlMagick
-   3b) nmake clean
+   3b) nmake clean (only if this is a rebuild)
    3c) perl Makefile.nt
    3d) nmake release
+
+NOTE: access to nmake requires that there be a path to it. Depending n how the install
+of Visual Studio was done, this may not be the case. Visual Studio provides a batch
+script in VC98\Bin called VCVARS32.BAT that can be used to do this manually after you
+open up a command prompt.
 
 4) Open VisualMagick\installer\ImageMagick-16.iss by double-clicking from Windows Explorer.
 
