@@ -1154,7 +1154,6 @@ MagickExport unsigned int CompositeImage(Image *image,
   assert(composite_image->signature == MagickSignature);
   if (compose == NoCompositeOp)
     return(True);
-  SetImageType(image,TrueColorMatteType);
   switch (compose)
   {
     case DisplaceCompositeOp:
@@ -1443,8 +1442,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           q->red=(Quantum) AbsoluteValue((double) pixel.red-q->red);
           q->green=(Quantum) AbsoluteValue((double) pixel.green-q->green);
           q->blue=(Quantum) AbsoluteValue((double) pixel.blue-q->blue);
-          q->opacity=(Quantum)
-            AbsoluteValue((double) pixel.opacity-q->opacity);
+          q->opacity=(Quantum) AbsoluteValue((double) pixel.opacity-q->opacity);
           break;
         }
         case BumpmapCompositeOp:
@@ -1670,20 +1668,8 @@ MagickExport unsigned int CompositeImage(Image *image,
             q->opacity=pixel.opacity;
           break;
         }
-        case ScreenCompositeOp:
-        {
-          /*
-            No op.
-          */
+        default:
           break;
-        }
-        case OverlayCompositeOp:
-        {
-          /*
-            No op.
-          */
-          break;
-        }
       }
       if ((indexes != (IndexPacket *) NULL) &&
           (composite_indexes != (IndexPacket *) NULL))
