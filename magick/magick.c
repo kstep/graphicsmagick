@@ -380,7 +380,12 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
     }
   LiberateSemaphore(&magick_semaphore);
   if ((name == (const char *) NULL) ||  (LocaleCompare(name,"*") == 0))
-    return(magick_list);
+    {
+#if defined(HasMODULES)
+      OpenModules(exception);
+#endif
+      return(magick_list);
+    }
   /*
     Find name in list
   */
@@ -523,9 +528,6 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   (void) fprintf(file,"    Format  Mode  Description\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------------\n");
-#if defined(HasMODULES)
-  OpenModules(exception);
-#endif
   p=GetMagickInfo("*",exception);
   if (p == (MagickInfo *) NULL)
     return(False);
