@@ -2810,8 +2810,8 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %
 %
 */
-MagickExport char *TranslateText(const ImageInfo *image_info,const Image *image,
-  const char *formatted_text)
+MagickExport char *TranslateText(const ImageInfo *image_info,
+  const Image *image,const char *formatted_text)
 {
   char
     filename[MaxTextExtent],
