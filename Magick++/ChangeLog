@@ -1213,3 +1213,4 @@
  	to be sharpened when resizing while a value > 1 leaves the image
  	blurry.  Magick++ does not yet support the blur member.
 
+
