@@ -639,8 +639,11 @@ MagickExport Image *RemoveFirstImageFromList(Image **images)
     image=image->previous;
   if (image == *images)
     *images=(*images)->next;
-  image->previous=(Image *) NULL;
-  image->next=(Image *) NULL;
+  if (image->next != (Image *) NULL)
+    {
+      image->next->previous=(Image *) NULL;
+      image->next=(Image *) NULL;
+    }
   return(image);
 }
 
@@ -679,9 +682,14 @@ MagickExport Image *RemoveLastImageFromList(Image **images)
   image=(*images);
   while (image->next != (Image *) NULL)
     image=image->next;
+  if (image == *images)
+    *images=(*images)->previous;
   if (image->previous != (Image *) NULL)
-    image=image->previous;
-  return(SplitImageList(image));
+    {
+      image->previous->next=(Image *) NULL;
+      image->previous=(Image *) NULL;
+    }
+  return(image);
 }
 
 /*
