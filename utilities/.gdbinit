@@ -1,1 +1,1 @@
-dir ../magick:../modules:$cdir:$cwd
+dir ../magick:../coders:$cdir:$cwd
