@@ -341,7 +341,7 @@ static struct
       {"y", IntegerReference}, {"grav", GravityTypes},
       {"translate", StringReference}, {"scale", StringReference},
       {"rotate", DoubleReference}, {"skewX", DoubleReference},
-      {"skewY", DoubleReference}, {"pen", StringReference} } },
+      {"skewY", DoubleReference}, {"stroke_width", IntegerReference} } },
     { "ColorFloodfill", { {"geom", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"fill", StringReference},
       {"bordercolor", StringReference} } },
@@ -4515,8 +4515,7 @@ Mogrify(ref,...)
               current.ty;
           }
           if (attribute_flag[17])
-            (void) QueryColorDatabase(argument_list[17].string_reference,
-              &annotate_info->fill);
+            annotate_info->stroke_width=argument_list[17].int_reference;
           AnnotateImage(image,annotate_info);
           DestroyAnnotateInfo(annotate_info);
           break;
