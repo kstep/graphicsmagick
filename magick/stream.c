@@ -88,6 +88,58 @@ static void
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   A c q u i r e P i x e l S t r e a m                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AcquirePixelStream() gets pixels from the in-memory or disk pixel
+%  cache as defined by the geometry parameters.   A pointer to the pixels is
+%  returned if the pixels are transferred, otherwise a NULL is returned.  For
+%  streams this method is a no-op.
+%
+%  The format of the AcquirePixelStream() method is:
+%
+%      const PixelPacket *AcquirePixelStream(const Image *image,const long x,
+%        const long y,const unsigned long columns,const unsigned long rows,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method GetPixelStream() returns a pointer to the pixels if they
+%      are transferred, otherwise a NULL is returned.
+%
+%    o image: The image.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
+  const long y,const unsigned long columns,const unsigned long rows,
+  ExceptionInfo *exception)
+{
+#if defined(FUTURE)
+  PixelPacket
+    *pixels;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  pixels=SetPixelStream(image,x,y,columns,rows);
+  return(pixels);
+#endif
+  return((const PixelPacket *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   C l o s e P i x e l S t r e a m                                           %
 %                                                                             %
 %                                                                             %
@@ -368,9 +420,9 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  SetPixelCacheMethods(GetPixelStream,SetPixelStream,SyncPixelStream,
-    GetPixelsFromStream,GetIndexesFromStream,GetOnePixelFromStream,
-    ClosePixelStream,DestroyPixelStream);
+  SetPixelCacheMethods(AcquirePixelStream,GetPixelStream,SetPixelStream,
+    SyncPixelStream,GetPixelsFromStream,GetIndexesFromStream,
+    GetOnePixelFromStream,ClosePixelStream,DestroyPixelStream);
   clone_info=CloneImageInfo(image_info);
   clone_info->fifo=fifo;
   image=ReadImage(clone_info,exception);

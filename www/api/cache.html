@@ -20,6 +20,7 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
+		<LI><A HREF="#acquireimagepixels">AcquireImagePixels</A></LI>
 		<LI><A HREF="#closeimagepixels">CloseImagePixels</A></LI>
 		<LI><A HREF="#destroyimagepixels">DestroyImagePixels</A></LI>
 		<LI><A HREF="#getimagepixels">GetImagePixels</A></LI>
@@ -42,6 +43,8 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>status: Method  <STRONG>AcquireImagePixels</STRONG>( )returns a pointer to the pixels if they are transferred, otherwise a 
+<FONT SIZE=-1>NULL</FONT> is returned.;</P>
 <P>void  <STRONG>CloseImagePixels</STRONG>( Image *image );</P>
 <P>void  <STRONG>DestroyImagePixels</STRONG>( Image *image );</P>
 <P>status: Method  <STRONG>GetImagePixels</STRONG>( )returns a pointer to the pixels if they are transferred, otherwise a 
@@ -57,11 +60,28 @@
 <FONT SIZE=-1>FUNCTION</FONT> 
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
+<H2><A NAME="acquireimagepixels">AcquireImagePixels</A></H2>
+<blockquote>Method AcquireImagePixels ( ) gets pixels from the in-memory or disk pixel cacheas defined by the geometry parameters. A pointer to the pixels is returnedif the pixels are transferred, otherwise a NULL is returned.; </blockquote><blockquote>The format of the AcquireImagePixels ( ) method is:; </blockquote><blockquote>const <A HREF="types/PixelPacket.html">PixelPacket</A> *AcquireImagePixels ( const <A HREF="types/Image.html">Image</A> *image, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<blockquote>status: Method AcquireImagePixels ( ) returns a pointer to the pixels if they are transferred, otherwise a NULL is returned.; </blockquote><DL><DL>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
+The image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_x%2Cy%2Ccolumns%2Crows%3A">x,y,columns,rows:</A></STRONG><BR>
+<DD>
+These values define the perimeter of a region of pixels.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="closeimagepixels">CloseImagePixels</A></H2>
 <blockquote>Method CloseImagePixels ( ) closes the pixel cache. Use this method to preventtoo many file descriptors from being allocated when reading an imagesequence. File descriptors are only used for a disk-based cache. This isessentially a no-op for a memory-based cache.; </blockquote><blockquote>The format of the CloseImagePixels ( ) method is:; </blockquote><blockquote>void CloseImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P></DL></DL>
@@ -83,7 +103,7 @@ The image.
 <DD>
 The image.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_x%2Cy%2Ccolumns%2Crows%3A">x,y,columns,rows:</A></STRONG><BR>
+<p><dt><STRONG>x,y,columns,rows:</STRONG><BR>
 <DD>
 These values define the perimeter of a region of pixels.
 <P></P></DL></DL>

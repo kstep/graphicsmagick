@@ -65,6 +65,50 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   A c q u i r e C a c h e V i e w                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AcquireCacheView gets pixels from the in-memory or disk pixel cache
+%  as defined by the geometry parameters.   A pointer to the pixels is returned
+%  if the pixels are transferred, otherwise a NULL is returned.
+%
+%  The format of the GetCacheView method is:
+%
+%      const PixelPacket *AcquireCacheView(const ViewInfo *view,const long x,
+%        const long y,const unsigned long columns,const unsigned long rows,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method GetCacheView returns a null pointer if an error
+%      occurs, otherwise a pointer to the view pixels.
+%
+%    o view: The address of a structure of type ViewInfo.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport const PixelPacket *AcquireCacheView(const ViewInfo *view,
+  const long x,const long y,const unsigned long columns,const unsigned long rows,
+  ExceptionInfo *exception)
+{
+  assert(view != (ViewInfo *) NULL);
+  assert(view->signature == MagickSignature);
+  return(AcquireCacheNexus(view->image,x,y,columns,rows,view->id,exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C l o s e C a c h e V i e w                                               %
 %                                                                             %
 %                                                                             %

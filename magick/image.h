@@ -587,6 +587,10 @@ extern MagickExport char
   *GetMagickConfigurePath(const char *),
   *GetMagickVersion(unsigned int *);
 
+extern MagickExport const PixelPacket
+  *AcquireImagePixels(const Image *,const long,const long,const unsigned long,
+    const unsigned long,ExceptionInfo *);
+
 extern MagickExport ColorInfo
   *GetColorInfo(const char *,ExceptionInfo *);
 

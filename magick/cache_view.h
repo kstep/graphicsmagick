@@ -26,6 +26,10 @@ typedef struct _ViewInfo
 /*
   MagickExport cache view interfaces.
 */
+extern MagickExport const PixelPacket
+  *AcquireCacheView(const ViewInfo *,const long,const long,const unsigned long,
+    const unsigned long,ExceptionInfo *);
+
 extern MagickExport IndexPacket
   *GetCacheViewIndexes(const ViewInfo *);
 

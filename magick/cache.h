@@ -80,10 +80,14 @@ typedef struct _CacheInfo
     meta_filename[MaxTextExtent];
 } CacheInfo;
 
+typedef const PixelPacket
+  *(*AcquirePixelHandler)(const Image *,const long,const long,const unsigned long,
+    const unsigned long,ExceptionInfo *);
+
 typedef PixelPacket
+  (*GetOnePixelFromHandler)(Image *,const long,const long),
   *(*GetPixelHandler)(Image *,const long,const long,const unsigned long,
     const unsigned long),
-  (*GetOnePixelFromHandler)(Image *,const long,const long),
   *(*GetPixelsFromHandler)(const Image *),
   *(*SetPixelHandler)(Image *,const long,const long,const unsigned long,
     const unsigned long);
@@ -104,6 +108,10 @@ extern MagickExport ClassType
 
 extern MagickExport ColorspaceType
   GetCacheColorspace(const Cache);
+
+extern MagickExport const PixelPacket
+  *AcquireCacheNexus(const Image *,const long,const long,const unsigned long,
+    const unsigned long,const unsigned long,ExceptionInfo *);
 
 extern MagickExport IndexPacket
   *GetNexusIndexes(const Cache,const unsigned long);
@@ -129,9 +137,9 @@ extern MagickExport void
   GetCacheInfo(Cache *),
   ResetPixelCacheMethods(void),
   SetCacheThreshold(const off_t),
-  SetPixelCacheMethods(GetPixelHandler,SetPixelHandler,SyncPixelHandler,
-    GetPixelsFromHandler,GetIndexesFromHandler,GetOnePixelFromHandler,
-    ClosePixelHandler,DestroyPixelHandler);
+  SetPixelCacheMethods(AcquirePixelHandler,GetPixelHandler,SetPixelHandler,
+    SyncPixelHandler,GetPixelsFromHandler,GetIndexesFromHandler,
+    GetOnePixelFromHandler,ClosePixelHandler,DestroyPixelHandler);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
