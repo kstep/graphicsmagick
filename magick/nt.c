@@ -227,6 +227,7 @@ Export int IsWindows95()
 %
 */
 static char *lt_slsearchpath = (char *)NULL;
+
 void lt_dlsetsearchpath(char *s)
 {
   if (lt_slsearchpath)
@@ -311,9 +312,55 @@ char *lt_dlerror(void)
 %            is to be loaded.
 %
 */
-void *lt_dlopen(char *path)
+void *lt_dlopen(char *filename)
 {
-  return (void *)LoadLibrary(path);
+  int
+    max_path_elements = 31,
+    path_index = 0;
+
+  char
+    scratch[MaxTextExtent];
+
+  void
+    *handle;
+
+  handle=(void *)NULL;
+  if(lt_slsearchpath != (char*)NULL)
+  {
+    char
+      *path,
+      *path_end;
+
+    int
+      i;
+    
+    path=lt_slsearchpath;
+    while(path_index<max_path_elements)
+    {
+      path_end=strchr(path,DirectoryListSeparator);
+      if (path_end == (char *) NULL)
+        {
+          (void) strcpy(scratch,path);
+          strcat(scratch,"\\");
+          strcat(scratch,filename);
+          handle=(void *)LoadLibrary(scratch);
+          break;
+        }
+      else
+        {
+          i=(int) (path_end-path);
+          (void) strncpy(scratch,path,i);
+          scratch[i]='\0';
+          strcat(scratch,"\\");
+          strcat(scratch,filename);
+          handle=(void *)LoadLibrary(scratch);
+          if (handle)
+            break;
+          path=path_end+1;
+        }
+    }
+  }
+  return handle;
 }
 
 /*

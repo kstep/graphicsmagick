@@ -393,8 +393,8 @@ static void InitializeModuleSearchPath(void)
 #endif
             }
 #if defined(_VISUALC_)
-          strcat(module_path[i],"\\");
-          strcat(module_path[i],ModuleSearchSpec);
+          //strcat(module_path[i],"\\");
+          //strcat(module_path[i],ModuleSearchSpec);
 #endif
           strcat(scratch,module_path[i]);
         }
@@ -526,6 +526,11 @@ Export char **ListModules(void)
 #endif
     max_entries;
 
+#if defined(_VISUALC_)
+  char
+    scratch[MaxTextExtent];
+#endif
+
   max_entries=255;
   entry_index=0;
 
@@ -537,7 +542,14 @@ Export char **ListModules(void)
 
   for( path_index=0; module_path[path_index]; ++path_index)
     {
+#if !defined(_VISUALC_)
       directory=opendir(module_path[path_index]);
+#else
+      strcpy(scratch,module_path[path_index]);
+      strcat(scratch,"\\");
+      strcat(scratch,ModuleSearchSpec);
+      directory=opendir(scratch);
+#endif
       if(directory == (DIR *) NULL)
         continue;
 
