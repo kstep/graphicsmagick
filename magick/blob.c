@@ -590,6 +590,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
       register size_t
         i;
 
+      lseek(file,0,SEEK_SET);
       count=0;
       for (i=0; i < *length; i+=count)
       {
