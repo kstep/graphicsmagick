@@ -26,12 +26,12 @@
 #if !defined(False)
 # define False 0
 #endif
-static void ScribbleImage ( ImageInfo* image_info, Image *image)
+static void ScribbleImage ( Image *image)
 {
   DrawContext
     context;
 
-  context = DrawAllocateContext(image_info, image);
+  context = DrawAllocateContext((DrawInfo*)NULL, image);
   
   DrawPushGraphicContext(context);
   {
@@ -394,7 +394,7 @@ int main ( int argc, char **argv )
   /*
    * Scribble on image
    */
-  ScribbleImage( image_info, canvas );
+  ScribbleImage( canvas );
 
   /*
    * Save image to file

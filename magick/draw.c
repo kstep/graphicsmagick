@@ -98,9 +98,6 @@ PathMode;
 struct _DrawContext
 {
   /* Support structures */
-  ImageInfo
-    *image_info;
-
   Image
     *image;
 
@@ -376,7 +373,7 @@ MagickExport void DrawSetAffine(DrawContext context, const AffineMatrix *affine)
              affine->tx, affine->ty);
 }
 
-MagickExport DrawContext DrawAllocateContext(const ImageInfo *image_info,
+MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
                                              Image *image)
 {
   DrawContext
@@ -386,10 +383,10 @@ MagickExport DrawContext DrawAllocateContext(const ImageInfo *image_info,
   context = (DrawContext) AcquireMemory(sizeof(struct _DrawContext));
   if(context == (DrawContext) NULL)
     MagickFatalError(ResourceLimitFatalError,
-      "Unable to allocate initial drawing context","Memory allocation failed");
+                     "Unable to allocate initial drawing context",
+                     "Memory allocation failed");
 
   /* Support structures */
-  context->image_info = CloneImageInfo(image_info);
   context->image = image;
 
   /* MVG output string and housekeeping */
@@ -402,9 +399,10 @@ MagickExport DrawContext DrawAllocateContext(const ImageInfo *image_info,
   context->index = 0;
   context->graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
   if(context->graphic_context == (DrawInfo **) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to allocate drawing context",
-      "Memory allocation failed");
-  CurrentContext=CloneDrawInfo(image_info,(DrawInfo*)NULL);
+    MagickFatalError(ResourceLimitFatalError,
+                     "Unable to allocate drawing context",
+                     "Memory allocation failed");
+  CurrentContext=CloneDrawInfo((ImageInfo*)NULL,draw_info);
 
   context->filter_off = False;
 
@@ -592,7 +590,6 @@ MagickExport void DrawDestroyContext(DrawContext context)
   context->mvg_length = 0;
 
   /* Support structures */
-  DestroyImageInfo(context->image_info);
   context->image = (Image*)NULL;
 
   /* Context itself */
@@ -902,6 +899,9 @@ MagickExport void DrawComposite(DrawContext context,
                                 const Image * image )
 
 {
+  ImageInfo
+    *image_info;
+
   Image
     *clone_image;
 
@@ -928,8 +928,13 @@ MagickExport void DrawComposite(DrawContext context,
   if(!clone_image)
     return;
 
-  blob = (unsigned char*)ImageToBlob( context->image_info, clone_image, &blob_length,
+  image_info = CloneImageInfo((ImageInfo*)NULL);
+  if(!image_info)
+    return;
+
+  blob = (unsigned char*)ImageToBlob( image_info, clone_image, &blob_length,
                                       &context->image->exception );
+  DestroyImageInfo(image_info);
   DestroyImageList(clone_image);
   if(!blob)
     return;
@@ -1645,20 +1650,13 @@ MagickExport void DrawRectangle(DrawContext context,
 
 MagickExport int DrawRender(const DrawContext context)
 {
-  DrawInfo
-    *draw_info;
-
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  draw_info = (DrawInfo *) AcquireMemory(sizeof(DrawInfo));
-  GetDrawInfo(context->image_info, draw_info);
-  draw_info->primitive = context->mvg;
-  if(context->image_info->debug != False)
-    printf("MVG:\n'%s\n'",draw_info->primitive);
-  DrawImage(context->image, draw_info);
-  draw_info->primitive = (char *) NULL;
-  DestroyDrawInfo(draw_info);
+  CurrentContext->primitive = context->mvg;
+  DrawImage(context->image, CurrentContext);
+  CurrentContext->primitive = (char *) NULL;
+
   return True;
 }
 

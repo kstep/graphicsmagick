@@ -615,7 +615,7 @@ void Magick::Image::draw ( const Magick::Drawable &drawable_ )
   modifyImage();
 
 #if 1
-  DrawContext context = DrawAllocateContext( options()->imageInfo(), image());
+  DrawContext context = DrawAllocateContext( options()->drawInfo(), image());
   drawable_.dp->operator()(context);
   DrawRender(context);
   DrawDestroyContext(context);
@@ -643,7 +643,7 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
   modifyImage();
 
 #if 1
-  DrawContext context = DrawAllocateContext( options()->imageInfo(), image());
+  DrawContext context = DrawAllocateContext( options()->drawInfo(), image());
   for( std::list<Magick::Drawable>::const_iterator p = drawable_.begin();
        p != drawable_.end(); p++ )
     p->dp->operator()(context);

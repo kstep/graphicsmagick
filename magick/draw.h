@@ -17,7 +17,7 @@ extern "C" {
 typedef struct _DrawContext *DrawContext;
 
 extern MagickExport DrawContext
-  DrawAllocateContext(const ImageInfo *image_info, Image *image);
+  DrawAllocateContext(const DrawInfo *draw_info, Image *image);
 
 extern MagickExport int
   DrawRender(const DrawContext context);
