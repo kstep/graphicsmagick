@@ -1092,6 +1092,10 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
   }
   return(image);
 #else
+  Image
+    *image;
+
+  image=AllocateImage(image_info);
   ThrowReaderException(MissingDelegateWarning,
     "X11 library is not available",image);
 #endif
