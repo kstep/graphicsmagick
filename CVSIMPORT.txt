@@ -1,0 +1,47 @@
+These are notes pertaining to 'cvs import' commands required
+to maintain the ImageMagick delegate libraries in ImageMagick CVS.
+As such, it is intended for developers only.
+
+The commands are only examples and must be modified based on the
+CVS user name and package version.
+
+bzlib:
+
+  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+    import -m 'Import bzip2 1.0.2' delegates/bzlib \
+    INITIAL BZIP2_1_0_2
+
+jbig:
+
+  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+    import -m 'Import jbigkit 1.2' delegates/jbig \
+    INITIAL JBIGKIT_1_2
+
+lcms:
+  
+  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+    import -m 'Import lcms 1.08' delegates/lcms \
+    LCMS_DIST LCMS_1_08
+
+png:
+
+  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+    import -m 'Import latest libpng' delegates/png \
+    INITIAL LIBPNG_1_2_2
+
+wmf:
+
+  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+    import -m 'Import CVS libwmf 0.2.5' delegates/wmf \
+    LIBWMF_DIST LIBWMF_0_2_5
+
+  Where 'LIBWMF_DIST' is the CVS vendor branch, and 'LIBWMF_0_2_5' is the
+  vendor release tag.
+
+zlib:
+
+  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+    import -m 'Import latest zlib' delegates/zlib \
+    INITIAL ZLIB_1_1_4
+
+
