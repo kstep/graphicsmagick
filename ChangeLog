@@ -1,5 +1,7 @@
 2005-03-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/nt_base.h (lt_dlerror): Needed to provide a mapping to
+	NTdlerror().
 	* coders/tiff.c (TIFFErrors): Update to make thread safe via
 	thread specific data.
 	(TIFFWarnings): Update to make thread safe via thread specific

@@ -246,6 +246,7 @@ extern MagickExport const char
   *NTdlerror(void);
 
 #define lt_dlclose(handle) NTdlclose(handle)
+#define lt_dlerror() NTdlerror()
 #define lt_dlexit() NTdlexit()
 #define lt_dlinit() NTdlinit()
 #define lt_dlopen(filename) NTdlopen(filename)
