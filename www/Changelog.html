@@ -13,9 +13,24 @@
 <center><img SRC="../images/magick_small.png" height=125 width=121></center>
 
 <h3>
-<a href="../ImageMagick.html">ImageMagick</a> 5.1.1, January 1, 2000</h3>
+<a href="../ImageMagick.html">ImageMagick</a> 5.1.1, February 1, 2000</h3>
 
 <ul>
+<li>
+ImageMagick has a new logo (contributed by Ofer Tenenbaum).</li>
+
+<li>
+Requests for all or part of a pixel row, or multiple complete pixel
+rows, are mapped directly to the underlying image in memory, or
+memory mapped from a disk file, avoiding performance-robbing pixel
+copying. Requested rectangular regions which are narrower than the
+image width must still be copied to a scratch space.</li>
+
+<li>
+Support for WBMP, Wireless Bitmap (level 0) images (contributed by
+Milan Votava)</li>
+
+
 <li>
 Image sizes are limited by physical memory plus available disk space on
 the machine, or the file addressing limits of the operating system, whichever
@@ -53,11 +68,12 @@ Lots of minor C API fixes and improvements.</li>
 Cache threshold setting for setting the boundary between use of RAM or
 RAM + disk when processing an image:</li>
 
-<p><br>- Use the --enable-cache option (e.g. --enable-cache=160) to set
+<p>- Use the --enable-cache option (e.g. --enable-cache=160) to set
 the compiled-in default when running the configure script.
 <p>- Use -cache for ImageMagick utilities
 <p>- Set the cache_threshold attribute in PerlMagick
 <p>- Set the cacheThreshold attribute in Magick++
+<p>
 <li>
 The identify utility now displays precise read-time values.</li>
 
