@@ -249,7 +249,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
 }
 #endif
 
-static unsigned int TIFFErrorHandler(const char *module,const char *format,
+static unsigned int TIFFErrors(const char *module,const char *format,
   va_list warning)
 {
   char
@@ -271,8 +271,7 @@ static unsigned int TIFFErrorHandler(const char *module,const char *format,
   return(True);
 }
 
-static Image *ReadTIFFImage(const ImageInfo *image_info,
-static unsigned int TIFFWarningHandler(const char *module,const char *format,
+static unsigned int TIFFWarnings(const char *module,const char *format,
   va_list warning)
 {
   char
@@ -392,8 +391,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) strcpy(image->filename,image_info->filename);
       image->temporary=True;
     }
-  TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrorHandler);
-  TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarningHandler);
+  TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
+  TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
   if (tiff == (TIFF *) NULL)
     {
@@ -1320,8 +1319,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       image->temporary=True;
     }
   CloseBlob(image);
-  TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrorHandler);
-  TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarningHandler);
+  TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
+  TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   tiff=TIFFOpen(image->filename,WriteBinaryType);
   if (tiff == (TIFF *) NULL)
     return(False);
