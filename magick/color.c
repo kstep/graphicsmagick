@@ -1394,7 +1394,7 @@ MagickExport unsigned int QueryColorname(const Image *image,
         return(True);
       }
     }
-  if (color->opacity == OpaqueOpacity)
+  if (!image->matte || (color->opacity == OpaqueOpacity))
     {
       if (image->depth <= 8)
         FormatString(name,"#%02x%02x%02x",DownScale(color->red),
