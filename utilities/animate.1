@@ -53,358 +53,665 @@ backdrop, use:
      animate +borderwidth -backdrop cockatoo.*
 .fi
 .SH OPTIONS
-.TP
-.B "-backdrop"
-display the image centered on a backdrop.
 
-This backdrop covers the entire workstation screen and is useful for
-hiding other X window activity while viewing the image sequence.   The color
-of the backdrop is specified as the background color.  Refer to \fBX
-RESOURCES\fP for details.
-.TP
-.B "-cache \fIthreshold\fP"
-megabytes of memory available to the pixel cache.
+This is a combined list of the commandline options used by the ImageMagick
+utilities (\fIanimate, composite, convert, display, identify,
+import, mogrify\fP and\fI montage\fP).
 
-Image pixels are stored in memory until 80 megabytes of memory
-have been consumed.  Subsequent pixel operations are cached on disk.
-Operations to memory are significantly faster but if your computer does not
-have a sufficient amount of free memory you may want to adjust this threshold
-value.
 .TP
-.B "-colormap \fItype\fP"
-the type of colormap: \fBShared\fP or \fBPrivate\fP.
+.B "-backdrop \fIcolor"
 
-This option only applies when the default X server visual is
-\fIPseudoColor\fP or \fIGrayScale\fP.  Refer to \fB-visual\fP for more
-details.  By default, a shared colormap is allocated.  The image shares
-colors with other X clients.  Some image colors could be approximated,
-therefore your image may look very different than intended.  Choose
-\fBPrivate\fP and the image colors appear exactly as they are
-defined.  However, other clients may go "technicolor" when the image
-colormap is installed.
+\fRdisplay the image centered on a backdrop.
+
+
+This backdrop covers the entire workstation screen and is useful for hiding
+other X window activity while viewing the image. The color of the backdrop
+is specified as the background color. Refer to <a href="#xres">X Resources</a>
+for details.
+
+
 .TP
-.B "-colors \fIvalue\fP"
-preferred number of colors in the image.
+.B "-background \fIcolor"
+
+\fRthe background color
+
+.TP
+.B "-border \fI<width>x<height>"
+
+\fRsurround the image with a border of color
+
+
+See \fIX(1)\fP for details
+about the geometry specification.
+
+
+.TP
+.B "-bordercolor \fIcolor"
+
+\fRthe border color
+
+.TP
+.B "-borderwidth \fIcolor"
+
+\fRthe border width
+
+.TP
+.B "-cache \fIthreshold"
+
+\fRmegabytes of memory available to the pixel cache
+
+
+Image pixels are stored in memory until 80 megabytes of memory have been
+consumed. Subsequent pixel operations are cached on disk. Operations to
+memory are significantly faster but if your computer does not have a sufficient
+amount of free memory you may want to adjust this threshold value.
+
+
+.TP
+.B "-chop
+<width>x<height>{+-}<x offset>{+-}<y offset>{%}"
+
+\fRremove pixels from the interior of an image
+
+
+The width and height give the number of columns and rows to remove,
+and the offsets give the location of the leftmost column and topmost
+row to remove.
+
+
+
+The \fB-chop\fP option removes entire rows and columns,
+and moves the remaining corner blocks leftward and upward to close the gaps.
+
+
+.TP
+.B "-colormap \fItype"
+
+\fRdefine the colormap type
+
+
+Choose between \fBshared\fP or \fBprivate\fP.
+
+
+
+This option only applies when the default X server visual is \fIPseudoColor\fP
+or \fIGRAYScale\fP. Refer to \fB-visual\fP for more details. By default,
+a shared colormap is allocated. The image shares colors with other X clients.
+Some image colors could be approximated, therefore your image may look
+very different than intended. Choose \fBPrivate\fP and the image colors
+appear exactly as they are defined. However, other clients may
+go \fItechnicolor\fP when the image colormap is installed.
+
+.TP
+.B "-colors \fIvalue"
+
+\fRpreferred number of colors in the image
+
 
 The actual number of colors in the image may be less than your request,
-but never more.  Note, this is a color reduction option.  Images with
-less unique colors than specified with this option will have any duplicate
-or unused colors removed.
-Refer to \fBquantize(5)\fP for more details.
+but never more. Note, this is a color reduction option. Images with less
+unique colors than specified with this option will have any duplicate or
+unused colors removed. Refer to <a href="quantize.html">quantize</a> for
+more details.
 
-Note, options \fB-dither\fP, \fB-colorspace\fP, and \fB-treedepth\fP affect
-the color reduction algorithm.
+
+
+Note, options \fB-dither\fP, \fB-colorspace\fP, and \fB-treedepth\fP
+affect the color reduction algorithm.
+
+
 .TP
-.B "-colorspace \fIvalue\fP"
-the type of colorspace: \fBGRAY\fP, \fBOHTA\fP, \fBRGB\fP,
-\fBTransparent\fP, \fBXYZ\fP, \fBYCbCr\fP, \fBYIQ\fP, \fBYPbPr\fP,
+.B "-colorspace \fIvalue"
+
+\fRthe type of colorspace
+
+Choices are: \fBGRAY\fP, \fBOHTA\fP, \fBRGB\fP,
+\fBTransparent\fP,
+\fBXYZ\fP,
+\fBYCbCr\fP, \fBYIQ\fP, \fBYPbPr\fP,
 \fBYUV\fP, or \fBCMYK\fP.
 
-Color reduction, by default, takes place in the RGB color space.
-Empirical evidence suggests that distances in color spaces such as YUV
-or YIQ correspond to perceptual color differences more closely
-than do distances in RGB space.  These color spaces may give better
-results when color reducing an image.  Refer to \fBquantize(5)\fP for
-more details.
+
+
+Color reduction, by default, takes place in the RGB color space. Empirical
+evidence suggests that distances in color spaces such as YUV or YIQ correspond
+to perceptual color differences more closely than do distances in RGB space.
+These color spaces may give better results when color reducing an image.
+Refer to <a href="quantize.html">quantize</a> for more details.
+
+
 
 The \fBTransparent\fP color space behaves uniquely in that it preserves
 the matte channel of the image if it exists.
 
-The \fB-colors\fP or \fB-monochrome\fP option is required for this option
-to take effect.
+
+The \fB-colors\fP or \fB-monochrome\fP option is required for this
+option to take effect.
+
+
 .TP
-.B "-crop \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}\fP"
-preferred size and location of the cropped image.  See \fBX(1)\fP for details
+.B "-crop
+<width>x<height>{+-}<x offset>{+-}<y offset>{%}"
+
+\fRpreferred size and location of the cropped image
+
+See \fIX(1)\fP for details
 about the geometry specification.
 
-To specify a percentage width or height instead, append \fB%\fP.  For example
-to crop the image by ten percent on all sides of the image, use \fB-crop 10%\fP.
 
-Use cropping to apply image processing options, or display, only a
-particular area of an image.  
 
-Use cropping to crop a particular area of an image.   Use \fB-crop
-0x0\fP to trim edges that are the background color.  Add an x and y offset
-to leave a portion of the trimmed edges with the image.
+The width and height give the size of the image that remains after cropping,
+and the offsets give the location of the top left corner of the cropped
+image with respect to the original image.  To specify the amount to be
+removed, use \fB-shave\fP instead.
 
-The equivalent X resource for this option is \fBcropGeometry\fP
-(class \fBCropGeometry\fP).  See \fBX RESOURCES\fP for details.
+
+
+To specify a percentage width or height to be removed instead, append
+\fB%\fP. For example
+to crop the image by ten percent (five percent on each side of the image),
+use \fB-crop 10%\fP.
+
+
+
+Use cropping to apply image processing options to, or display, a particular
+area of an image.
+
+
+
+Omit the x and y offset to generate one or more subimages of a uniform
+size.
+
+
+
+Use cropping to crop a particular area of an image. Use \fB-crop 0x0\fP
+to trim edges that are the background color. Add an x and y offset to leave
+a portion of the trimmed edges with the image.
+
+
 .TP
-.B "-delay \fI<1/100ths of a second>\fP"
-display the next image after pausing.
+.B "-delay \fI<1/100ths of a second>"
 
-This option is useful for regulating the animation of a sequence of
-GIF images within Netscape.  \fI1/100ths of a second\fP must expire
-before the redisplay of the image sequence.  The default is no delay
-between each showing of the image sequence.
+\fRdisplay the next image after pausing
 
-You can specify a delay range (e.g. -delay 10-500) which sets the
+
+This option is useful for regulating the animation of GIF images
+within Netscape. \fIDelay/100\fP seconds must expire
+before the display
+of the next image. The default is no delay between each showing of the
+image sequence. The maximum delay is 65535.
+
+
+
+You can specify a delay range (e.g. \fI-delay 10-500\fP) which sets the
 minimum and maximum delay.
-.TP
-.B "-density \fI<width>x<height>\fP
-vertical and horizontal resolution in pixels of the image.
 
-This option specifies an image density when decoding a Postscript or Portable
-Document page.  The default is 72 pixels per inch in the horizontal and
-vertical direction.
+
 .TP
-.B "-depth \fIvalue\fP"
-depth of the image. This is the number of bits in a pixel. The only acceptable
+.B "-density \fI<width>x<height>"
+
+\fRvertical and horizontal resolution in pixels of the image
+
+
+This option specifies an image density when decoding a \fIPostScript\fP
+or Portable Document page. The default is 72 dots per inch in the horizontal
+and vertical direction. This option is used in concert with \fB-page\fP.
+
+
+.TP
+.B "-depth \fIvalue"
+
+\fRdepth of the image
+
+
+This is the number of bits in a pixel. The only acceptable
 values are 8 or 16.  Use this option to specify the depth of raw images whose
-depth is unknown such as \fBGRAY\fP, \fBRGB\fP, or \fBCMYK\fP,
-or to change the depth of any
+depth is unknown such as GRAY, RGB, or CMYK, or to change the depth of any
 image after it has been read.
+
+
 .TP
-.B "-display \fIhost:display[.screen]\fP"
-specifies the X server to contact; see \fBX(1)\fP.
+.B "-display \fIhost:display[.screen]"
+
+\fRspecifies the X server to contact
+
+.TP
+.B "-dispose \fImethod"
+
+\fRGIF disposal method
+
+
+Here are the valid methods:
+
+
+     0     No disposal specified.
+     1     Do not dispose between frames.      
+     2     Overwrite frame with background color from header.
+     3     Overwrite with previous frame.
+
+.TP
+.B "-dissolve \fIvalue"
+
+\fRdissolve an image
+
 .TP
 .B "-dither"
-apply Floyd/Steinberg error diffusion to the image.
 
-The basic strategy of dithering is to trade intensity resolution for
-spatial resolution by averaging the intensities of several neighboring
-pixels.  Images which suffer from severe contouring when reducing colors
-can be improved with this option.
+\fRapply Floyd/Steinberg error diffusion to the image
+
+
+The basic strategy of dithering is to trade intensity resolution for spatial
+resolution by averaging the intensities of several neighboring pixels.
+Images which suffer from severe contouring when reducing colors can be
+improved with this option.
+
+
 
 The \fB-colors\fP or \fB-monochrome\fP option is required for this option
 to take effect.
 
+
+
 Use \fB+dither\fP to render Postscript without text or graphic aliasing.
+
+
 .TP
-.B "-gamma \fIvalue\fP"
-level of gamma correction.
+.B "-font \fIname"
 
-The same color image displayed on two different workstations may look
-different due to differences in the display monitor.  Use gamma
-correction to adjust for this color difference.  Reasonable values
-extend from 0.8 to 2.3.
+\fRuse this font when annotating the image with text
 
-You can apply separate gamma values to the red, green, and blue
-channels of the image with a gamma value list delineated with slashes
-(i.e. 1.7/2.3/1.2).
 
-Use \fB+gamma\fP to set the image gamma level without actually adjusting
-the image pixels.  This option is useful if the image is of a known
-gamma but not set as an image attribute (e.g. PNG images).
+You can tag a font to specify whether it is a Postscript, Truetype, or OPTION1
+font.  For example, Arial.ttf is a Truetype font, ps:helvetica
+is Postscript, and x:fixed is OPTION1. 
+
+
 .TP
-.B "-geometry \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{@}{!}{<}{>}\fP"
-preferred size and location of the Image window.  See \fBX(1)\fP for details
-about the geometry specification.  By default, the window size is the image
+.B "-foreground \fIcolor"
+
+\fRdefine the foreground color
+
+.TP
+.B "-gamma \fIvalue"
+
+\fRlevel of gamma correction
+
+
+The same color image displayed on two different workstations may look different
+due to differences in the display monitor. Use gamma correction to adjust
+for this color difference. Reasonable values extend from \fB0.8\fP to
+\fB2.3\fP.
+
+
+
+You can apply separate gamma values to the red, green, and blue channels
+of the image with a gamma value list delineated with slashes
+(i.e. \fB1.7\fP/\fB2.3\fP/\fB1.2\fP).
+
+
+
+Use \fB+gamma\fP \fIvalue\fP
+to set the image gamma level without actually adjusting
+the image pixels. This option is useful if the image is of a known gamma
+but not set as an image attribute (e.g. PNG images).
+
+
+.TP
+.B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"
+
+\fRpreferred size and location of the Image window.
+
+See \fIX(1)\fP for details
+about the geometry specification. By default, the window size is the image
 size and the location is chosen by you when it is mapped.
 
-By default, the width and height are maximum values.  That is, the
-image is expanded or contracted to fit the width and height value while
-maintaining the aspect ratio of the image.  Append an exclamation point
-to the geometry to force the image size to exactly the size you
-specify.  For example, if you specify \fB640x480!\fP the image width is
-set to 640 pixels and height to 480.  If only one factor is
-specified, both the width and height assume the value.
 
-To specify a percentage width or height instead, append \fB%\fP.  The
-image size is multiplied by the width and height percentages to obtain
-the final image dimensions.  To increase the size of an image, use a
-value greater than 100 (e.g. 125%).  To decrease an image's size, use a
-percentage less than 100.
+
+By default, the width and height are maximum values. That is, the image
+is expanded or contracted to fit the width and height value while maintaining
+the aspect ratio of the image. \fIAppend an exclamation point to the geometry
+to force the image size to exactly the size you specify\fP. For example,
+if you specify \fB640x480!\fP the image width is set to 640 pixels and
+height to 480. If only one factor is specified, both the width and height
+assume the value.
+
+
+
+To specify a percentage width or height instead, append %. The image size
+is multiplied by the width and height percentages to obtain the final image
+dimensions. To increase the size of an image, use a value greater than
+100 (e.g. 125%). To decrease an image's size, use a percentage less than
+100.
+
+
 
 Use \fB@\fP to specify the maximum area in pixels of an image.
 
-Use \fB>\fP to change the dimensions of the image \fIonly\fP
-if its size exceeds the geometry specification.  \fB<>\fP resizes
-the image \fIonly\fP if its dimensions is less than the geometry
-specification.  For example, if you specify \fB'640x480>'\fP and the
-image size is 512x512, the image size does not change.  However, if
-the image is 1024x1024, it is resized to 640x480.
 
-When displaying an image on an X server, \fI<x offset>\fP and
-\fI<y offset>\fP is relative to the root window.
 
-The equivalent X resource for this option is \fBgeometry\fP
-(class \fBGeometry\fP).  See \fBX RESOURCES\fP for details.
+Use \fB>\fP to change the dimensions of the image \fIonly\fP if
+its size exceeds the geometry specification. \fB<\fP resizes the image
+\fIonly\fP
+if its dimensions is less than the geometry specification. For example,
+if you specify \fB'640x480>'\fP and the image size is 512x512, the image
+size does not change. However, if the image is 1024x1024, it is resized
+to 640x480.
+
+
+Use \fB<\fP to change the dimensions of the image \fIonly\fP if
+its size exceeds the geometry specification. \fB>\fP resizes the image
+\fIonly\fP
+if its dimensions is less than the geometry specification. For example,
+if you specify \fB640x480>\fP and the image size is 512x512, the image
+size does not change. However, if the image is 1024x1024, it is resized
+to 640x480.
+
+
+There are 72 pixels per inch in PostScript coordinates.
+
+
 .TP
-.B "-interlace \fItype\fP"
-the type of interlacing scheme: \fBNone\fP, \fBLine\fP, \fBPlane\fP, or
-\fBPartition\fP.  The default is \fBNone\fP.
+.B "-help"
 
-This option is used to specify the type of interlacing scheme for raw
-image formats such as \fBRGB\fP or \fBYUV\fP.  \fBNone\fP means do not
-interlace (RGBRGBRGBRGBRGBRGB...), \fBLine\fP uses scanline
-interlacing (RRR...GGG...BBB...RRR...GGG...BBB...), and \fBPlane\fP uses
-plane interlacing (RRRRRR...GGGGGG...BBBBBB...).  \fBPartition\fP is like
-plane except the different planes are saved to individual files (e.g.
-image.R, image.G, and image.B).
+\fRprint usage instructions
 
-Use \fBLine\fP, or \fBPlane\fP to create an interlaced GIF or progressive
-JPEG image.
 .TP
-.B "-map \fItype\fP"
-display image using this \fIStandard Colormap\fP type.
+.B "-iconGeometry \fIgeometry"
 
-Choose from these \fIStandard Colormap\fP types:
+\fRspecify the icon geometry
 
-    best
-    default
-    gray
-    red
-    green
-    blue
+.TP
+.B "-iconic"
 
-The \fIX server\fP must support the \fIStandard Colormap\fP you choose,
-otherwise an error occurs.  Use \fBlist\fP as the type and \fBanimate(1)\fP
-searches the list of colormap types in top-to-bottom order until one is
-located. See \fBxstdcmap(1)\fP for one way of creating \fIStandard Colormaps\fP.
+\fRiconic animation
+
+.TP
+.B "-interlace \fItype"
+
+\fRthe type of interlacing scheme
+
+Choices are: \fBNone, Line, Plane,\fP
+or \fBPartition\fP. The default is \fBNone\fP.
+
+
+
+This option is used to specify the type of interlacing scheme for raw image
+formats such as \fBRGB\fP or \fBYUV\fP. \fBNone\fP means do not interlace
+(RGBRGBRGBRGBRGBRGB...), \fBLine\fP uses scanline interlacing (RRR...GGG...BBB...RRR...GGG...BBB...),
+and \fBPlane\fP uses plane interlacing (RRRRRR...GGGGGG...BBBBBB...).
+\fBPartition\fP
+is like plane except the different planes are saved to individual files
+(e.g. image.R, image.G, and image.B).
+
+
+
+Use \fBLine\fP, or \fBPlane\fP to create an
+\fBinterlaced PNG\fP or \fB GIF\fP or
+\fBprogressive JPEG\fP image.
+
+
+.TP
+.B "-matte"
+
+\fRstore matte channel if the image has one
+
+
+If the image does not have a matte channel, create an opaque one.
+
+
+.TP
+.B "-mattecolor \fIcolor"
+
+\fRspecify the matte color
+
 .TP
 .B "-monochrome"
-transform the image to black and white.
-.TP
-.B "-pause \fI<seconds>\fP"
-the number of \fIseconds\fP to pause before repeating your animation sequence.
-.TP
-.B "-remote \fIstring\fP"
-execute a command in an remote display process.
 
-The only command recognized at this time is the name of an image file to
-load.
-.TP
-.B "-rotate \fIdegrees{<}{>}\fP"
-apply Paeth image rotation to the image.
+\fRtransform the image to black and white
 
-Use \fB>\fP to rotate the image \fIonly\fP if its width exceeds the
-height.  \fB<\fP rotates the image \fIonly\fP if its width is less than
-the height.  For example, if you specify \fB-90>\fP and the image size
-is 480x640, the image is not rotated by the specified angle.  However,
-if the image is 640x480, it is rotated by -90 degrees.
-
-Empty triangles left over from rotating the image are filled with
-the color defined as \fBbordercolor\fP (class \fBborderColor\fP).
 .TP
-.B "-scene \fIvalue{-value}\fP"
-image scene number.
+.B "-name"
+
+\fRname an image
+
+.TP
+.B "-pause \fIseconds"
+
+\fRpause between animation loops
+
+
+Pause for the specified number of seconds before repeating the
+animation.
+
+.TP
+.B "-remote"
+
+\fRperform a remote operation
+
+
+The only command recognized at this time is the name of
+an image file to load.
+
+
+.TP
+.B "-rotate \fIdegrees{<}{>}"
+
+\fRapply Paeth image rotation to the image
+
+
+Use > to rotate the image only if its width exceeds the height.
+< rotates the image \fIonly\fP if its width is less than the
+height. For example, if you specify -90> and the image size is
+480x640, the image is not rotated by the specified angle. However, if the
+image is 640x480, it is rotated by -90 degrees.
+
+
+
+Empty triangles left over from rotating the image are filled with the color
+defined as \fBbackground\fP (class \fBbackgroundColor\fP). See \fIX(1)\fP
+for details.
+
+
+.TP
+.B "-scene \fIvalue{-value}"
+
+\fRimage scene number or range
+
 
 Use this option to specify an image sequence with a single filename. See
 the discussion of \fIfile\fP below for details.
+
+.TP
+.B "-shared_memory"
+
+\fRuse shared memory
+
+
+This resource specifies whether the utility should attempt use shared memory
+for pixmaps.  ImageMagick must be compiled with shared memory support,
+and the display must support the \fIMIT-SHM\fP extension.  Otherwise, this
+resource is ignored.  The default is \fBTrue\fP.
+
+
 .TP
 .B "-size \fI<width>x<height>{+offset}"
-width and height of the image.
 
-Use this option to specify the width and height of raw images whose
-dimensions are unknown such as \fBGRAY\fP, \fBRGB\fP, or \fBCMYK\fP.
-In addition to width and height, use \fB-size\fP to skip any header
-information in the image or tell the number of colors in a \fBMAP\fP
-image file, (e.g. -size 640x512+256).
+\fRwidth and height of the image
+
+
+Use this option to specify the width and height of raw images whose dimensions
+are unknown such as \fBGRAY\fP,
+\fBRGB\fP, or \fBCMYK\fP. In addition
+to width and height, use
+\fB-size\fP with an offset to skip any header information in
+the image or tell the number of colors in a \fBMAP\fP image
+file, (e.g. -size 640x512+256).
+
+
+
+For Photo CD images, choose from these sizes:
+
+     192x128
+     384x256
+     768x512
+     1536x1024
+     3072x2048
+
+
+Finally, use this option to choose a particular resolution layer of a JBIG
+or JPEG image (e.g. -size 1024x768).
+
+
 .TP
-.B "-title \fIstring\fP"
-assign a title to the displayed image.
+.B "-text-font \fIname"
 
-Use this option to assign a specific title to the image.  This is
-assigned to the image window and is typically displayed in the window
-title bar.  Optionally you can include the image filename, type, width,
-height, or other image attributes by embedding special format characters:
+\fRfont for writing fixed-width text
 
-.nf
-    %b   file size
-    %c   comment
-    %d   directory
-    %e   filename extention
-    %f   filename
-    %h   height
-    %i   input filename
-    %k   number of unique colors
-    %l   label
-    %m   magick
-    %n   number of scenes
-    %o   output filename
-    %p   page number
-    %q   quantum depth
-    %s   scene number
-    %t   top of filename
-    %u   unique temporary filename
-    %w   width
-    %x   x resolution
-    %y   y resolution
-    \\n   newline
-    \\r   carriage return
-.fi
+
+Specifies the name of the preferred font to use in fixed (typewriter style)
+formatted text.  The default is 14 point \fICourier\fP.
+
+
+
+You can tag a font to specify whether it is a Postscript, Truetype, or
+OPTION1 font.  For example, Courier.ttf is a Truetype font
+and x:fixed is OPTION1. 
+
+
+.TP
+.B "-title \fI"string""
+
+\fRassign a title to the displayed image
+
+
+Use this option to assign a specific title to the image. This is assigned
+to the image window and is typically displayed in the window title bar.
+Optionally you can include the image filename, type, width, height, or
+other image attribute by embedding special format characters:
+
+     %b file size
+     %c comment
+     %d directory
+     %e filename extention
+     %f filename
+     %h height
+     %i input filename
+     %k number of unique colors
+     %l label
+     %m magick
+     %n number of scenes
+     %o output filename
+     %p page number
+     %q quantum depth
+     %s scene number
+     %t top of filename
+     %u unique temporary filename
+     %w width
+     %x x resolution
+     %y y resolution
+     \\n newline
+     \\r carriage return
+
 
 For example,
 
-.nf
+
      -title "%m:%f %wx%h"
-.fi
 
-produces an image title of \fBMIFF:bird.miff 512x480\fP for an image
-titled \fBbird.miff\fP and whose width is 512 and height is 480.
 
-If the first character of \fIstring\fP is \fB@\fP, the image title is read
-from a file titled by the remaining characters in the string.
+produces an image title of MIFF:bird.miff 512x480 for an image
+titled bird.miff and whose width is 512 and height is 480.
+
+
 .TP
-.B "-treedepth \fIvalue\fP"
-Normally, this integer value is zero or one.  A zero or one tells
-\fBanimate\fP to choose a optimal tree depth for the color reduction
-algorithm.
+.B "-treedepth \fIvalue"
+
+\fRtree depth for the color reduction algorithm
+
+
+Normally, this integer value is zero or one. A zero or one tells display
+to choose an optimal tree depth for the color reduction algorithm
+
 
 An optimal depth generally allows the best representation of the source
-image with the fastest computational speed and the least amount of
-memory.  However, the default depth is inappropriate for some images.
-To assure the best representation, try values between 2 and 8 for this
-parameter.  Refer to \fBquantize(5)\fP for more details.
+image with the fastest computational speed and the least amount of memory.
+However, the default depth is inappropriate for some images. To assure
+the best representation, try values between 2 and 8 for this parameter.
+Refer to
+<a href="quantize.html">quantize</a> for more details.
+
 
 The \fB-colors\fP or \fB-monochrome\fP option is required for this option
 to take effect.
-.TP
-.B -verbose
-print detailed information about the image.
 
-This information is printed: image scene number;  image name;  image
-size; the image class (\fIDirectClass\fP or \fIPseudoClass\fP);  the total
-number of unique colors;  and the number of seconds to read and
-transform the image.  Refer to \fBmiff(5)\fP for a description of
-the image class.
+
+.TP
+.B "-verbose"
+
+\fRprint detailed information about the image
+
+
+This information is printed: image scene number; image name; image size;
+the image class (\fIDirectClass\fP or \fIPseudoClass\fP); the total number
+of unique colors; and the number of seconds to read and transform the image.
+Refer to <a href="miff.html">miff</a> for a description of the image class.
+
+
 
 If \fB-colors\fP is also specified, the total unique colors in the image
-and color reduction error values are printed.  Refer to \fBquantize(5)\fP
+and color reduction error values are printed. Refer to <a href="quantize.html">quantize</a>
 for a description of these values.
+
+
 .TP
-.B "-visual \fItype\fP"
-animate images using this visual type.
+.B "-visual \fItype"
+
+\fRanimate images using this X visual type
+
 
 Choose from these visual classes:
 
-.nf
-    StaticGray
-    GrayScale
-    StaticColor
-    PseudoColor
-    TrueColor
-    DirectColor
-    default
-    \fIvisual id\fP
-.fi
+
+     StaticGray
+     GrayScale
+     StaticColor
+     PseudoColor
+     TrueColor
+     DirectColor
+     default
+     visual id
+
 
 The X server must support the visual you choose, otherwise an error occurs.
 If a visual is not specified, the visual class that can display the most
 simultaneous colors on the default screen is chosen.
-.TP
-.B "-window \fIid\fP"
-set the background pixmap of this window to the image.
 
-\fIid\fP can be a window id or name.  Specify \fBroot\fP to select X's root
-window as the target window.
+
+.TP
+.B "-window \fIid"
+
+\fRmake image the background of a window
+
+
+\fIid\fP can be a window id or name.  Specify \fBroot\fP to
+select X's root window as the target window.
+
+
 
 By default the image is tiled onto the background of the target
-window.   If \fB-backdrop\fP or \fB-geometry\fP are specified, the
-image is surrounded by the background color.  Refer to \fBX
-RESOURCES\fP for details.
+window.   If \fBbackdrop\fP or \fB-geometry\fP are
+specified, the image is surrounded by the background color.  Refer to
+\fBX RESOURCES\fP for details.
+
+
 
 The image will not display on the root window if the image has more
 unique colors than the target window colormap allows.  Use
 \fB-colors\fP to reduce the number of colors.
-.PP
-In addition to those listed above, you can specify these standard X
-resources as command line options:  \fB-background\fP,
-\fB-bordercolor\fP, \fB-borderwidth\fP,  \fB-font\fP,
-\fB-foreground\fP, \fB-iconGeometry\fP, \fB-iconic\fP, \fB-mattecolor\fP,
-\fB-name\fP, or \fB-title\fP.  See \fBX RESOURCES\fP for details.
 
+
+
+.PP
 Any option you specify on the command line remains in effect until it is
 explicitly changed by specifying the option again with a different effect.
 For example, to animate two images, the first with 32 colors and the
@@ -626,16 +933,6 @@ Except as contained in this notice, the name of the ImageMagick Studio
 shall not be used in advertising or otherwise to promote the sale, use or
 other dealings in ImageMagick without prior written authorization from the
 ImageMagick Studio.
-.SH ACKNOWLEDGEMENTS
-The MIT X Consortium for making network transparent graphics a reality.
-
-Michael Halle, Spatial Imaging Group at MIT, for the initial
-implementation of Alan Paeth's image rotation algorithm.
-
-David Pensak, E. I. du Pont de Nemours and Company, for providing a
-computing environment that made this program possible.
-
-Paul Raveling, USC Information Sciences Institute, for the original
-idea of using space subdivision for the color reduction algorithm.
 .SH AUTHORS
-John Cristy, ImageMagick Studio
+John Cristy, ImageMagick Studio LLC
+
