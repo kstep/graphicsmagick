@@ -15,8 +15,6 @@
 	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
 	<UL>
 
-		<LI><A HREF="#AllocateImage">AllocateImage</A>
-		<LI><A HREF="#AllocateNextImage">AllocateNextImage</A>
 		<LI><A HREF="#AnimateImages">AnimateImages</A>
 		<LI><A HREF="#AppendImages">AppendImages</A>
 		<LI><A HREF="#AverageImages">AverageImages</A>
@@ -37,7 +35,6 @@
 		<LI><A HREF="#GetNumberScenes">GetNumberScenes</A>
 		<LI><A HREF="#GetPixels">GetPixels</A>
 		<LI><A HREF="#IsGeometry">IsGeometry</A>
-		<LI><A HREF="#IsGrayImage">IsGrayImage</A>
 		<LI><A HREF="#IsSubimage">IsSubimage</A>
 		<LI><A HREF="#IsTainted">IsTainted</A>
 		<LI><A HREF="#LabelImage">LabelImage</A>
@@ -75,12 +72,6 @@ image - ImageMagick Image Methods
 <P>
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
-<P>
-Image * <STRONG>AllocateImage</STRONG>( const ImageInfo <CODE>*image_info</CODE> );
-
-<P>
-void  <STRONG>AllocateNextImage</STRONG>( const ImageInfo *image_info, Image <CODE>*image</CODE> );
-
 <P>
 unsigned int  <STRONG>AnimateImages</STRONG>( const ImageInfo *image_info, Image <CODE>*image</CODE> );
 
@@ -141,9 +132,6 @@ unsigned int  <STRONG>GetNumberScenes</STRONG>( const Image <CODE>*image</CODE> 
 
 <P>
 unsigned int  <STRONG>IsGeometry</STRONG>( const char <CODE>*geometry</CODE> );
-
-<P>
-unsigned int  <STRONG>IsGrayImage</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
 unsigned int  <STRONG>IsSubimage</STRONG>( const char *geometry, const unsigned int pedantic );
@@ -220,60 +208,6 @@ unsigned int  <STRONG>WriteImage</STRONG>( const ImageInfo *image_info, Image <C
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
 <P>
 <HR>
-<H2><A NAME="AllocateImage">AllocateImage</A></H2>
-<P>
-Method AllocateImage allocates an Image structure and initializes each
-field to a default value.
-
-<P>
-The format of the AllocateImage method is:
-
-<blockquote><A HREF="types/Image.html">Image</A> *AllocateImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o">allocated_image:</A></STRONG><DD>
-<P>
-Method AllocateImage returns a pointer to an image structure initialized to default values. 
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-
-
-<p><dt><STRONG>image_info:</STRONG><DD>
-<P>
-Specifies a pointer to an ImageInfo structure.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="AllocateNextImage">AllocateNextImage</A></H2>
-<P>
-Method AllocateNextImage allocates an Image structure and initializes each
-field to a default value.
-
-<P>
-The format of the AllocateNextImage method is:
-
-<blockquote>void AllocateNextImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-<DL><DL>
-<p><dt><STRONG>image_info:</STRONG><DD>
-<P>
-Specifies a pointer to an ImageInfo structure.
-
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-</DL></DL>
-<P>
-<HR>
 <H2><A NAME="AnimateImages">AnimateImages</A></H2>
 <P>
 Method AnimateImages displays one or more images to an 
@@ -289,7 +223,7 @@ The format of the AllocateNextImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<p><dt><STRONG>status:</STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">status:</A></STRONG><DD>
 <P>
 Method DisplayImages returns True if the images are displayed in an 
 <FONT SIZE=-1>X</FONT> window, otherwise False is returned.
@@ -832,34 +766,6 @@ otherwise False is returned.
 <p><dt><STRONG>geometry:</STRONG><DD>
 <P>
 This string is the geometry specification.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="IsGrayImage">IsGrayImage</A></H2>
-<P>
-Method IsGrayImage returns True if the image is grayscale otherwise False
-is returned. If the image is DirectClass and grayscale, it is demoted to
-PseudoClass.
-
-<P>
-The format of the IsGrayImage method is:
-
-<blockquote>unsigned int IsGrayImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-<DL><DL>
-<p><dt><STRONG>status:</STRONG><DD>
-<P>
-Method IsGrayImage returns True if the image is grayscale otherwise False
-is returned.
-
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image; returned from ReadImage.
 
 </DL></DL>
 <P>

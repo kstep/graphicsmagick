@@ -17,6 +17,7 @@
 
 		<LI><A HREF="#GetMagickInfo">GetMagickInfo</A>
 		<LI><A HREF="#ListMagickInfo">ListMagickInfo</A>
+		<LI><A HREF="#RegisterMagickInfo">RegisterMagickInfo</A>
 	</UL>
 
 </UL>
@@ -80,7 +81,7 @@ a character string that represents the image format we are looking for.
 <HR>
 <H2><A NAME="ListMagickInfo">ListMagickInfo</A></H2>
 <P>
-Method ListMagickInfo lists the image formats to a.
+Method ListMagickInfo lists the image formats to a file.
 
 <P>
 The format of the ListMagickInfo method is:
@@ -91,10 +92,17 @@ The format of the ListMagickInfo method is:
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
+<DL><DL>
+<p><dt><STRONG>file:</STRONG><DD>
 <P>
-<PRE>  o:  An pointer to a FILE.
-=head2 RegisterMagickInfo
-</PRE>
+
+<FONT SIZE=-1>A</FONT> pointer to a 
+<FONT SIZE=-1>FILE</FONT> structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="RegisterMagickInfo">RegisterMagickInfo</A></H2>
 <P>
 Method RegisterMagickInfo adds attributes for a particular image format to the list of supported formats. The attributes include the image format tag, a method to read and/or write the format, whether the format supports the saving of more than one frame to the same file or blob, whether the format supports native in-memory 
 <FONT SIZE=-1>I/O,</FONT> and a brief description of the format.

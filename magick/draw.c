@@ -900,7 +900,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I n s i d e P r i m i t i v e                                             %
++   I n s i d e P r i m i t i v e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %

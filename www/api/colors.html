@@ -17,6 +17,7 @@
 
 		<LI><A HREF="#CompressColormap">CompressColormap</A>
 		<LI><A HREF="#GetNumberColors">GetNumberColors</A>
+		<LI><A HREF="#IsGrayImage">IsGrayImage</A>
 		<LI><A HREF="#IsMonochromeImage">IsMonochromeImage</A>
 		<LI><A HREF="#IsPseudoClass">IsPseudoClass</A>
 		<LI><A HREF="#QueryColorDatabase">QueryColorDatabase</A>
@@ -40,6 +41,9 @@ void  <STRONG>CompressColormap</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
 number_colors= <STRONG>GetNumberColors</STRONG>( image, file );
+
+<P>
+unsigned int  <STRONG>IsGrayImage</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
 status= <STRONG>IsMonochromeImage</STRONG>( image );
@@ -130,6 +134,34 @@ Specifies the level in the classification the node resides.
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="IsGrayImage">IsGrayImage</A></H2>
+<P>
+Method IsGrayImage returns True if the image is grayscale otherwise False
+is returned. If the image is DirectClass and grayscale, it is demoted to
+PseudoClass.
+
+<P>
+The format of the IsGrayImage method is:
+
+<blockquote>unsigned int IsGrayImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+<DL><DL>
+<p><dt><STRONG>status:</STRONG><DD>
+<P>
+Method IsGrayImage returns True if the image is grayscale otherwise False
+is returned.
+
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="IsMonochromeImage">IsMonochromeImage</A></H2>
 <P>
 Method IsMonochromeImage returns True if the image is monochrome otherwise
@@ -161,8 +193,8 @@ The address of a structure of type Image; returned from ReadImage.
 <H2><A NAME="IsPseudoClass">IsPseudoClass</A></H2>
 <P>
 Method IsPseudoClass returns True if the image is PseudoClass and has 256
-unique colors or less. If the image is DirectClass and has less 256 colors
-or less, the image is demoted to PseudoClass.
+unique colors or less. If the image is DirectClass and has 256 colors or
+less, the image is demoted to PseudoClass.
 
 <P>
 The format of the IsPseudoClass method is:

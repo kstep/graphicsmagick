@@ -771,7 +771,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ListMagickInfo lists the image formats to a.
+%  Method ListMagickInfo lists the image formats to a file.
 %
 %  The format of the ListMagickInfo method is:
 %
@@ -779,7 +779,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 %
 %  A description of each parameter follows.
 %
-%    o:  An pointer to a FILE.
+%    o file: A pointer to a FILE structure.
 %
 %
 */

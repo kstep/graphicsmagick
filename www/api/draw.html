@@ -17,7 +17,6 @@
 
 		<LI><A HREF="#ColorFloodfillImage">ColorFloodfillImage</A>
 		<LI><A HREF="#DrawImage">DrawImage</A>
-		<LI><A HREF="#InsidePrimitive">InsidePrimitive</A>
 		<LI><A HREF="#MatteFloodfillImage">MatteFloodfillImage</A>
 		<LI><A HREF="#OpaqueImage">OpaqueImage</A>
 	</UL>
@@ -40,10 +39,6 @@ x_offset, const int y_offset, const PaintMethod method );
 
 <P>
 void  <STRONG>DrawImage</STRONG>( Image *image, const AnnotateInfo <CODE>*annotate_info</CODE> );
-
-<P>
-unsigned short  <STRONG>InsidePrimitive</STRONG>( PrimitiveInfo *primitive_info, const AnnotateInfo *annotate_info, const
-PointInfo *pixel, Image <CODE>*image</CODE> );
 
 <P>
 void  <STRONG>MatteFloodfillImage</STRONG>( Image *image, const RunlengthPacket *target, const unsigned int matte,
@@ -121,49 +116,6 @@ The address of a structure of type Image.
 <p><dt><STRONG>annotate_info:</STRONG><DD>
 <P>
 The address of a DrawInfo structure.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="InsidePrimitive">InsidePrimitive</A></H2>
-<P>
-Method InsidePrimitive returns the opacity of the pen at the (x,y) position of the image. The opacity is Opaque if the (x,y) position is within the primitive as defined in primitive_info. 
-<FONT SIZE=-1>A</FONT> value less than fully opaque and greater than fully transparent is returned for a primitive edge pixel to allow for anti-aliasing. Otherwise fully transparent is returned.
-
-
-<P>
-Rick Mabry provided the algorithms for anti-aliased primitives.
-
-<P>
-The format of the InsidePrimitive method is:
-
-<blockquote>unsigned short InsidePrimitive ( PrimitiveInfo *primitive_info, const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info, const <A HREF="types/PointInfo.html">PointInfo</A> *pixel, <A HREF="types/Image.html">Image</A> *image ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-<DL><DL>
-<p><dt><STRONG>opacity:</STRONG><DD>
-<P>
-Method InsidePrimitive returns a pen opacity associated with the (x,y)
-position of the image.
-
-<p><dt><STRONG>primitive_info:</STRONG><DD>
-<P>
-Specifies a pointer to a PrimitiveInfo structure.
-
-<p><dt><STRONG>annotate_info:</STRONG><DD>
-<P>
-Specifies a pointer to a AnnotateInfo structure.
-
-<p><dt><STRONG>target:</STRONG><DD>
-<P>
-PointInfo representing the (x,y) location in the image.
-
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
 
 </DL></DL>
 <P>

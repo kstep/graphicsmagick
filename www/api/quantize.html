@@ -16,8 +16,6 @@
 	<UL>
 
 		<LI><A HREF="#CloneQuantizeInfo">CloneQuantizeInfo</A>
-		<LI><A HREF="#DestroyCubeInfo">DestroyCubeInfo</A>
-		<LI><A HREF="#DestroyQuantizeInfo">DestroyQuantizeInfo</A>
 		<LI><A HREF="#GetQuantizeInfo">GetQuantizeInfo</A>
 		<LI><A HREF="#MapImage">MapImage</A>
 		<LI><A HREF="#MapImages">MapImages</A>
@@ -40,12 +38,6 @@ quantize - Methods to Reduce the Number of Unique Colors in an Image
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
 cloned_info= <STRONG>CloneQuantizeInfo</STRONG>( quantize_info );
-
-<P>
-<STRONG>DestroyCubeInfo</STRONG>( cube_info ));
-
-<P>
-<STRONG>DestroyQuantizeInfo</STRONG>( quantize_info );
 
 <P>
 <STRONG>GetQuantizeInfo</STRONG>( quantize_info );
@@ -95,49 +87,6 @@ Method CloneQuantizeInfo returns a duplicate of the given quantize info, or if i
 <p><dt><STRONG>quantize_info:</STRONG><DD>
 <P>
 a structure of type info.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="DestroyCubeInfo">DestroyCubeInfo</A></H2>
-<P>
-Method DestroyCubeInfo deallocates memory associated with an image.
-
-<P>
-The format of the DestroyCubeInfo method is:
-
-<blockquote>DestroyCubeInfo ( cube_info ) ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-<DL><DL>
-<p><dt><STRONG>cube_info:</STRONG><DD>
-<P>
-The address of a structure of type CubeInfo.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="DestroyQuantizeInfo">DestroyQuantizeInfo</A></H2>
-<P>
-Method DestroyQuantizeInfo deallocates memory associated with an
-QuantizeInfo structure.
-
-<P>
-The format of the DestroyQuantizeInfo method is:
-
-<blockquote>DestroyQuantizeInfo ( quantize_info ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-<DL><DL>
-<p><dt><STRONG>quantize_info:</STRONG><DD>
-<P>
-Specifies a pointer to an QuantizeInfo structure.
 
 </DL></DL>
 <P>

@@ -799,7 +799,7 @@ static void DefineColormap(CubeInfo *cube_info,NodeInfo *node_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y C u b e I n f o                                             %
++   D e s t r o y C u b e I n f o                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -848,7 +848,7 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y Q u a n t i z e I n f o                                     %
++   D e s t r o y Q u a n t i z e I n f o                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
