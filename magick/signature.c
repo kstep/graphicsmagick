@@ -344,8 +344,8 @@ static void TransformSignature(SignatureInfo *signature_info)
 %
 %  The format of the UpdateSignature method is:
 %
-%      UpdateSignature(SignatureInfo *signature_info,unsigned char *message,
-%        size_t length)
+%      UpdateSignature(SignatureInfo *signature_info,
+%        const unsigned char *message,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -358,10 +358,13 @@ static void TransformSignature(SignatureInfo *signature_info)
 %
 */
 static void UpdateSignature(SignatureInfo *signature_info,
-  unsigned char *message,size_t length)
+  const unsigned char *message,const size_t length)
 {
   register long
     i;
+
+  size_t
+	  n;
 
   unsigned long
     count;
@@ -369,34 +372,35 @@ static void UpdateSignature(SignatureInfo *signature_info,
   /*
     Update the SHA digest.
   */
-  count=Trunc32(signature_info->low_order+((unsigned char) length << 3));
-  if (length < signature_info->low_order)
+  n=length;
+  count=Trunc32(signature_info->low_order+((unsigned char) n << 3));
+  if (n < signature_info->low_order)
     signature_info->high_order++;
   signature_info->low_order=count;
-  signature_info->high_order+=(unsigned char) (length >> 29);
+  signature_info->high_order+=(unsigned char) (n >> 29);
   if (signature_info->offset)
     {
       i=SignatureSize-signature_info->offset;
-      if (i > (long) length)
-        i=(long) length;
+      if (i > (long) n)
+        i=(long) n;
       (void) memcpy(signature_info->message+signature_info->offset,
         message,i);
-      length-=i;
+      n-=i;
       message+=i;
       signature_info->offset+=i;
       if (signature_info->offset != SignatureSize)
         return;
       TransformSignature(signature_info);
     }
-  while (length >= SignatureSize)
+  while (n >= SignatureSize)
   {
     (void) memcpy(signature_info->message,message,SignatureSize);
     message+=SignatureSize;
-    length-=SignatureSize;
+    n-=SignatureSize;
     TransformSignature(signature_info);
   }
-  (void) memcpy(signature_info->message,message,length);
-  signature_info->offset=(long) length;
+  (void) memcpy(signature_info->message,message,n);
+  signature_info->offset=(long) n;
 }
 
 /*
