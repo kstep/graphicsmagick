@@ -1,3 +1,11 @@
+2002-01-28  Cristy  <cristy@mystic.es.dupont.com>,
+            Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
+  * Geometry strings respect -gravity (e.g. -gravity SouthWest -crop
+    100x100).
+  * Postive offsets in geometry strings move within the image canvas
+    with respect to the gravity (SouthWest gravity is similar to Postscript
+    page offsets).
+
 2002-01-24  Cristy  <cristy@mystic.es.dupont.com>
   * Use -trim to trim the edges of an image.
   * Palm pixmap supported contributed by Christopher R. Hawks.
