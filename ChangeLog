@@ -1,13 +1,13 @@
 2002-11-05  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
-  * There are now separate ReadMNGImage() and ReadPNGImage() methods
-    that call ReadOnePNGImage(); likewise for Write.  Some compilers
-    optimize this better.
+  * There are now separate ReadMNGImage() and ReadPNGImage() methods that
+    call ReadOnePNGImage(); likewise for Write.  Some compilers optimize
+    this better.
 
 2002-11-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * Modified IMdisplay so that larger images may be loaded
-    (primarily limited by Windows bitmap size limits).
-  * Added some more file types (EPS, GIF, MIFF, SVG, & WMF) to
-    IMdisplay's file open list.
+  * Modified IMdisplay so that larger images may be loaded (primarily
+    limited by Windows bitmap size limits).
+  * Added some more file types (EPS, GIF, MIFF, SVG, & WMF) to IMdisplay's
+    file open list.
   * The list management methods were given more meaningful names.
 
 2002-11-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

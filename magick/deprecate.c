@@ -520,7 +520,11 @@ MagickExport void SetCacheThreshold(const unsigned long size)
 MagickExport unsigned int SetImageList(Image **images,const Image *image,
   const long offset,ExceptionInfo *exception)
 {
-  return(InsertImageInList(images,image,offset,exception));
+  Image
+    *clone;
+
+  clone=CloneImageList(image,exception);
+  return(InsertImageInList(images,clone,offset));
 }
 
 /*
@@ -626,10 +630,10 @@ MagickExport Image *SpliceImageList(Image *images,const long offset,
   const unsigned long length,const Image *splices,ExceptionInfo *exception)
 {
   Image
-    *clone_images;
+    *clone;
 
-  clone_images=CloneImageList(splices,exception);
-  (void) SpliceImageIntoList(&images,offset,length,clone_images);
+  clone=CloneImageList(splices,exception);
+  (void) SpliceImageIntoList(&images,offset,length,clone);
   return(images);
 }
 
