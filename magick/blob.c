@@ -346,8 +346,7 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloseBlob() closes a file associated with the image.  If the filename
-%  prefix is '|', the file is a pipe and is closed with PipeClose.
+%  CloseBlob() closes a stream associated with the image.
 %
 %  The format of the CloseBlob method is:
 %
@@ -380,23 +379,21 @@ MagickExport void CloseBlob(Image *image)
     case StandardStream:
     case PipeStream:
     {
-      image->blob->status=ferror(image->blob->file);
+      status=ferror(image->blob->file);
       break;
     }
     case ZipStream:
     {
 #if defined(HasZLIB)
-      (void) gzerror(image->blob->file,&status);
+      gzerror(image->blob->file,&status);
 #endif
-      image->blob->status=status < 0;
       break;
     }
     case BZipStream:
     {
 #if defined(HasBZLIB)
-      (void) BZ2_bzerror(image->blob->file,&status);
+      BZ2_bzerror(image->blob->file,&status);
 #endif
-      image->blob->status=status < 0;
       break;
     }
     case FifoStream:
@@ -407,6 +404,7 @@ MagickExport void CloseBlob(Image *image)
   image->taint=False;
   image->blob->size=GetBlobSize(image);
   image->blob->eof=False;
+  image->blob->status=status < 0;
   if (image->blob->exempt)
     return;
   switch (image->blob->type)
@@ -416,39 +414,40 @@ MagickExport void CloseBlob(Image *image)
     case FileStream:
     case StandardStream:
     {
-      (void) fclose(image->blob->file);
+      status=fclose(image->blob->file);
       break;
     }
     case ZipStream:
     {
 #if defined(HasZLIB)
-      (void) gzclose(image->blob->file);
+      status=gzclose(image->blob->file);
 #endif
       break;
     }
     case BZipStream:
     {
 #if defined(HasBZLIB)
-      (void) BZ2_bzclose(image->blob->file);
+      BZ2_bzclose(image->blob->file);
 #endif
       break;
     }
     case PipeStream:
     {
 #if !defined(vms) && !defined(macintosh)
-      (void) pclose(image->blob->file);
+      status=pclose(image->blob->file);
 #endif
       break;
     }
     case FifoStream:
     {
-      (void) pclose(image->blob->file);
+      status=pclose(image->blob->file);
       break;
     }
     case BlobStream:
       break;
   }
   DetachBlob(image->blob);
+  image->blob->status=status < 0;
 }
 
 /*
