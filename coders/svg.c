@@ -3227,12 +3227,14 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             FormatString(message,"font-stretch:%.1024s;",token);
             (void) WriteBlobString(image,message);
             break;
+          }
         if (LocaleCompare("font-style",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"font-style:%.1024s;",token);
             (void) WriteBlobString(image,message);
             break;
+          }
         if (LocaleCompare("font-size",keyword) == 0)
           {
             GetToken(q,&q,token);
@@ -3246,6 +3248,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             FormatString(message,"font-weight:%.1024s;",token);
             (void) WriteBlobString(image,message);
             break;
+          }
         status=False;
         break;
       }
