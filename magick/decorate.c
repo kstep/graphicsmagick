@@ -425,9 +425,6 @@ MagickExport unsigned int RaiseImage(Image *image,
   register PixelPacket
     *q;
 
-  unsigned long
-    height;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(raise_info != (RectangleInfo *) NULL);
@@ -459,7 +456,7 @@ MagickExport unsigned int RaiseImage(Image *image,
         (MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
-    for (x=0; x < (long) (image->columns-(y << 1)); x++)
+    for (x=0; x < (long) (image->columns-2*y); x++)
     {
       q->red=(Quantum) ((unsigned long) (q->red*AccentuateFactor+foreground*
         (MaxRGB-AccentuateFactor))/MaxRGB);
@@ -484,8 +481,7 @@ MagickExport unsigned int RaiseImage(Image *image,
     if (QuantumTick(i,image->rows))
       MagickMonitor(RaiseImageText,i,image->rows);
   }
-  height=image->rows-(raise_info->height << 1);
-  for (y=0; y < (long) height; y++)
+  for (y=0; y < (long) (image->rows-2*raise_info->height); y++)
   {
     q=GetImagePixels(image,0,i++,image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -500,7 +496,7 @@ MagickExport unsigned int RaiseImage(Image *image,
         (MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
-    for (x=0; x < (long) (image->columns-(raise_info->width << 1)); x++)
+    for (x=0; x < (long) (image->columns-2*raise_info->width); x++)
       q++;
     for (x=0; x < (long) raise_info->width; x++)
     {
@@ -532,7 +528,7 @@ MagickExport unsigned int RaiseImage(Image *image,
         (MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
-    for (x=0; x < (long) (image->columns-((raise_info->width-y) << 1)); x++)
+    for (x=0; x < (long) (image->columns-2*raise_info->width-y); x++)
     {
       q->red=(Quantum) ((unsigned long) (q->red*TroughFactor+background*
         (MaxRGB-TroughFactor))/MaxRGB);
