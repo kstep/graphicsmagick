@@ -1707,9 +1707,6 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   unsigned int
     count;
 
-  unsigned long
-    number_colors;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(file != (FILE *) NULL);
@@ -1785,7 +1782,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     Display verbose info about the image.
   */
   SignatureImage(image);
-  number_colors=GetNumberColors(image,(FILE *) NULL);
+  (void) GetNumberColors(image,(FILE *) NULL);
   (void) fprintf(file,"Image: %.1024s\n",image->filename);
   GetExceptionInfo(&exception);
   magick_info=(MagickInfo *) GetMagickInfo(image->magick,&exception);
@@ -1852,15 +1849,16 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           p->red,p->green,p->blue,p->red,p->green,p->blue);
     }
   if (image->storage_class == DirectClass)
-    (void) fprintf(file,"  Colors: %lu\n",number_colors);
+    (void) fprintf(file,"  Colors: %u\n",(unsigned int) image->total_colors);
   else
-    if (number_colors <= image->colors)
+    if (image->total_colors <= image->colors)
       (void) fprintf(file,"  Colors: %u\n",image->colors);
     else
-      (void) fprintf(file,"  Colors: %lu=>%u\n",number_colors,image->colors);
+      (void) fprintf(file,"  Colors: %u=>%u\n",
+        (unsigned int) image->total_colors,image->colors);
   if (image->storage_class == DirectClass)
     {
-      if (number_colors < 1024)
+      if (image->total_colors < 1024)
         (void) GetNumberColors(image,file);
     }
   else
@@ -2064,18 +2062,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           else
             (void) fprintf(file,"\n");
     }
-  if (image->filesize != 0)
-    {
-      if (image->filesize >= (1 << 24))
-        (void) fprintf(file,"  Filesize: %dmb\n",(int)
-          (image->filesize/1024/1024));
-      else
-        if (image->filesize >= (1 << 16))
-          (void) fprintf(file,"  Filesize: %dkb\n",(int)
-            (image->filesize/1024));
-        else
-          (void) fprintf(file,"  Filesize: %db\n",(int) image->filesize);
-    }
+  (void) fprintf(file,"  Filesize: %u\n",(unsigned int) image->filesize);
   if (image->interlace == NoInterlace)
     (void) fprintf(file,"  Interlace: None\n");
   else
@@ -2978,7 +2965,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
   assert(image->signature == MagickSignature);
   assert(reference != (Image *) NULL);
   assert(reference->signature == MagickSignature);
-  image->total_colors=GetNumberColors(image,(FILE *) NULL);
+  (void) GetNumberColors(image,(FILE *) NULL);
   image->mean_error_per_pixel=0.0;
   image->normalized_mean_error=0.0;
   image->normalized_maximum_error=0.0;

@@ -658,6 +658,7 @@ MagickExport off_t GetNumberColors(Image *image,FILE *file)
     }
   number_colors=cube_info->colors;
   DestroyCubeInfo(cube_info);
+  image->total_colors=number_colors;
   return(number_colors);
 }
 
