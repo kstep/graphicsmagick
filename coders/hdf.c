@@ -148,20 +148,20 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   int
-    interlace,
-    is_palette,
-    status,
-    y;
+    interlace;
 
   int32
     height,
     length,
     width;
 
+  long
+    y;
+
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i,
     x;
 
@@ -178,6 +178,10 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *hdf_pixels;
 
   unsigned int
+    is_palette,
+    status;
+
+  unsigned long
     packet_size;
 
   /*
@@ -247,7 +251,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->colormap[i].blue=UpScale(*p++);
           }
         else
-          for (i=0; i < (int) image->colors; i++)
+          for (i=0; i < (long) image->colors; i++)
           {
             image->colormap[i].red=(Quantum) UpScale(i);
             image->colormap[i].green=(Quantum) UpScale(i);
@@ -255,13 +259,13 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         LiberateMemory((void **) &hdf_palette);
         p=hdf_pixels;
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
             indexes[x]=(*p++);
           if (!SyncImagePixels(image))
             break;
@@ -280,12 +284,12 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         reference=DF24lastref();
         p=hdf_pixels;
         image->interlace=interlace ? PlaneInterlace : NoInterlace;
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             q->red=UpScale(*p++);
             q->green=UpScale(*p++);
@@ -478,9 +482,11 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
   ImageAttribute
     *attribute;
 
-  int
-    status,
+  long
     y;
+
+  register const PixelPacket
+    *p;
 
   register IndexPacket
     *indexes;
@@ -488,9 +494,6 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
   register int
     i,
     x;
-
-  register PixelPacket
-    *p;
 
   register unsigned char
     *q;
@@ -505,6 +508,9 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     compression;
 
   unsigned int
+    status;
+
+  unsigned long
     packet_size,
     scene;
 
@@ -543,12 +549,13 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               No interlacing:  RGBRGBRGBRGBRGBRGB...
             */
             DF24setil(DFIL_PIXEL);
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
-              p=GetImagePixels(image,0,y,image->columns,1);
-              if (p == (PixelPacket *) NULL)
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 *q++=DownScale(p->red);
                 *q++=DownScale(p->green);
@@ -567,28 +574,31 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               Line interlacing:  RRR...GGG...BBB...RRR...GGG...BBB...
             */
             DF24setil(DFIL_LINE);
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
-              p=GetImagePixels(image,0,y,image->columns,1);
-              if (p == (PixelPacket *) NULL)
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 *q++=DownScale(p->red);
                 p++;
               }
-              p=GetImagePixels(image,0,y,image->columns,1);
-              if (p == (PixelPacket *) NULL)
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 *q++=DownScale(p->green);
                 p++;
               }
-              p=GetImagePixels(image,0,y,image->columns,1);
-              if (p == (PixelPacket *) NULL)
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 *q++=DownScale(p->blue);
                 p++;
@@ -605,36 +615,39 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               Plane interlacing:  RRRRRR...GGGGGG...BBBBBB...
             */
             DF24setil(DFIL_PLANE);
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
-              p=GetImagePixels(image,0,y,image->columns,1);
-              if (p == (PixelPacket *) NULL)
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 *q++=DownScale(p->red);
                 p++;
               }
             }
             MagickMonitor(SaveImageText,100,400);
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
-              p=GetImagePixels(image,0,y,image->columns,1);
-              if (p == (PixelPacket *) NULL)
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 *q++=DownScale(p->green);
                 p++;
               }
             }
             MagickMonitor(SaveImageText,250,400);
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
-              p=GetImagePixels(image,0,y,image->columns,1);
-              if (p == (PixelPacket *) NULL)
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 *q++=DownScale(p->blue);
                 p++;
@@ -659,12 +672,12 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
         */
         q=hdf_pixels;
         if (IsGrayImage(image ,  &image->exception ))
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               *q++=DownScale(Intensity(*p));
               p++;
@@ -683,7 +696,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);
             q=hdf_palette;
-            for (i=0; i < (int) image->colors; i++)
+            for (i=0; i < (long) image->colors; i++)
             {
               *q++=DownScale(image->colormap[i].red);
               *q++=DownScale(image->colormap[i].green);
@@ -692,13 +705,14 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             (void) DFR8setpalette(hdf_palette);
             LiberateMemory((void **) &hdf_palette);
             q=hdf_pixels;
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
-              p=GetImagePixels(image,0,y,image->columns,1);
-              if (p == (PixelPacket *) NULL)
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 *q++=indexes[x];
                 p++;

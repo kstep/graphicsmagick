@@ -1299,7 +1299,7 @@ static int XScreenEvent(Display *display,XEvent *event,char *data)
       if (event->xexpose.window == windows->command.id)
         if (event->xexpose.count == 0)
           {
-            (void) XCommandWidget(display,windows,(char const **) NULL,event);
+            (void) XCommandWidget(display,windows,(const char **) NULL,event);
             break;
           }
       break;
@@ -2837,7 +2837,7 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
       /*
         Determine command window attributes.
       */
-      assert(selections != (char const **) NULL);
+      assert(selections != (const char **) NULL);
       windows->command.width=0;
       for (i=0; selections[i] != (char *) NULL; i++)
       {
@@ -3042,7 +3042,7 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
       /*
         Initialize button information.
       */
-      assert(selections != (char const **) NULL);
+      assert(selections != (const char **) NULL);
       y=tile_height+20;
       for (i=0; i < (int) number_selections; i++)
       {
@@ -4118,71 +4118,6 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
 #define HomeButtonText  "Home"
 #define UpButtonText  "Up"
 
-  static const char
-    *ImageOutputFormats[]=
-    {
-      "avs",
-      "bie",
-      "bmp",
-      "bmp24",
-      "cmyk",
-      "dcx",
-      "eps",
-      "epsf",
-      "epsi",
-      "fax",
-      "fits",
-      "fpx",
-      "gif",
-      "gif87",
-      "gray",
-      "g3",
-      "hdf",
-      "histogram",
-      "html",
-      "jbig",
-      "jpeg",
-      "jpg",
-      "map",
-      "matte",
-      "miff",
-      "mono",
-      "mpg",
-      "mtv",
-      "pbm",
-      "pcl",
-      "pcx",
-      "pdf",
-      "pgm",
-      "pict",
-      "png",
-      "ppm",
-      "pnm",
-      "ps",
-      "psd",
-      "ps2",
-      "ras",
-      "rgb",
-      "rle",
-      "sgi",
-      "shtml",
-      "sun",
-      "tga",
-      "tiff",
-      "uil",
-      "uyvy",
-      "vid",
-      "viff",
-      "x",
-      "xbm",
-      "xpm",
-      "xv",
-      "xwd",
-      "yuv",
-      "yuv3",
-      (char *) NULL
-    };
-
   char
     **filelist,
     home_directory[MaxTextExtent],
@@ -4878,16 +4813,45 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
           {
             if (!anomaly)
               {
+                const char
+                  **formats;
+
+                ExceptionInfo
+                  exception;
+
+                MagickInfo
+                  *magick_info;
+
+                register MagickInfo
+                  *p;
+
                 /*
                   Let user select image format.
                 */
+                GetExceptionInfo(&exception);
+                magick_info=GetMagickInfo("*",&exception);
+                i=0;
+                for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
+                  i++;
+                formats=(const char **) AcquireMemory((i+1)*sizeof(char *));
+                i=0;
+                for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
+                {
+                  if (p->stealth)
+                    continue;
+                  if (!p->encoder)
+                    continue;
+                  formats[i]=AllocateString(p->name);
+                  LocaleLower((char *) formats[i]);
+                  i++;
+                }
+                formats[i]=(char *) NULL;
                 (void) XDefineCursor(display,windows->widget.id,
                   windows->widget.busy_cursor);
                 windows->popup.x=windows->widget.x+60;
                 windows->popup.y=windows->widget.y+60;
                 XListBrowserWidget(display,windows,&windows->popup,
-                  ImageOutputFormats,"Select","Select image format type:",
-                  format);
+                  formats,"Select","Select image format type:",format);
                 XSetCursorState(display,windows,True);
                 (void) XDefineCursor(display,windows->widget.id,
                   windows->widget.cursor);
@@ -4896,6 +4860,9 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 XDrawMatteText(display,&windows->widget,&reply_info);
                 special_info.raised=True;
                 XDrawBeveledButton(display,&windows->widget,&special_info);
+                for (i=0; formats[i] != (char *) NULL; i++)
+                  LiberateMemory((void **) &formats[i]);
+                LiberateMemory((void **) &formats);
                 break;
               }
             if (event.xbutton.window == windows->widget.id)
@@ -6608,7 +6575,7 @@ MagickExport void XInfoWidget(Display *display,XWindows *windows,
 %  The format of the XListBrowserWidget method is:
 %
 %      void XListBrowserWidget(Display *display,XWindows *windows,
-%        XWindowInfo *window_info,char const **list,const char *action,
+%        XWindowInfo *window_info,const char **list,const char *action,
 %        const char *query,char *reply)
 %
 %  A description of each parameter follows:
@@ -6630,7 +6597,7 @@ MagickExport void XInfoWidget(Display *display,XWindows *windows,
 %
 */
 MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
-  XWindowInfo *window_info,char const **list,const char *action,
+  XWindowInfo *window_info,const char **list,const char *action,
   const char *query,char *reply)
 {
 #define CancelButtonText  "Cancel"
@@ -6690,13 +6657,13 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
   assert(display != (Display *) NULL);
   assert(windows != (XWindows *) NULL);
   assert(window_info != (XWindowInfo *) NULL);
-  assert(list != (char const **) NULL);
+  assert(list != (const char **) NULL);
   assert(action != (char *) NULL);
   assert(query != (char *) NULL);
   assert(reply != (char *) NULL);
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  if (list == (char const **) NULL)
+  if (list == (const char **) NULL)
     {
       XNoticeWidget(display,windows,"No text to browse:",(char *) NULL);
       return;
@@ -7572,7 +7539,7 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
   assert(display != (Display *) NULL);
   assert(windows != (XWindows *) NULL);
   assert(title != (char *) NULL);
-  assert(selections != (char const **) NULL);
+  assert(selections != (const char **) NULL);
   assert(item != (char *) NULL);
   font_info=windows->widget.font_info;
   windows->widget.width=!submenu_info.active ?
@@ -7977,7 +7944,7 @@ MagickExport void XMonitorWidget(Display *display,XWindows *windows,
     Update image windows if there is a pending expose event.
   */
   while (XCheckTypedWindowEvent(display,windows->command.id,Expose,&event))
-    (void) XCommandWidget(display,windows,(char const **) NULL,&event);
+    (void) XCommandWidget(display,windows,(const char **) NULL,&event);
   while (XCheckTypedWindowEvent(display,windows->image.id,Expose,&event))
     XRefreshWindow(display,&windows->image,&event);
   while (XCheckTypedWindowEvent(display,windows->info.id,Expose,&event))
@@ -8763,7 +8730,7 @@ MagickExport unsigned int XPreferencesWidget(Display *display,
 %
 %      void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
 %        XWindows *windows,const unsigned int mono,const char *title,
-%        char const **textlist)
+%        const char **textlist)
 %
 %  A description of each parameter follows:
 %
@@ -8785,7 +8752,7 @@ MagickExport unsigned int XPreferencesWidget(Display *display,
 */
 MagickExport void XTextViewWidget(Display *display,
   const XResourceInfo *resource_info,XWindows *windows,const unsigned int mono,
-  const char *title,char const **textlist)
+  const char *title,const char **textlist)
 {
 #define DismissButtonText  "Dismiss"
 
@@ -8842,10 +8809,10 @@ MagickExport void XTextViewWidget(Display *display,
   assert(resource_info != (XResourceInfo *) NULL);
   assert(windows != (XWindows *) NULL);
   assert(title != (const char *) NULL);
-  assert(textlist != (char const **) NULL);
+  assert(textlist != (const char **) NULL);
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  if (textlist == (char const **) NULL)
+  if (textlist == (const char **) NULL)
     {
       XNoticeWidget(display,windows,"No text to view:",(char *) NULL);
       return;

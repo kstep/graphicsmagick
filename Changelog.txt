@@ -1,3 +1,6 @@
+2001-10-26  Cristy  <cristy@mystic.es.dupont.com>
+	* Added VMS patches (thanks to Jouk Jansen).
+
 2001-10-25 Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
         * Fixed parsing bug for decorate #FFFFFF.
 
