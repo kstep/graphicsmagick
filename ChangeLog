@@ -1,5 +1,11 @@
 2002-01-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac : Renamed configure option --with-ttf-fontpath to
+ 	--with-fontpath since ImageMagick loads more than TrueType fonts.
+  	The user-specified font path is now specified via the
+ 	MAGICK_FONT_PATH environment variable (was TT_FONT_PATH), and
+ 	MAGICK_FONT_PATH #define.
+
 	* ChangeLog : Renamed Changelog.txt to ChangeLog in order to
  	conform to GNU and open-source standards.
 
