@@ -1626,7 +1626,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("clip-units",keyword) == 0)
           {
             GetToken(q,&q,token);
-            if (LocaleCompare("userSpace",token) == 0)
+            if (LocaleCompare("userSpaceOnUse",token) == 0)
               break;
             if (LocaleCompare("objectBoundingBox",token) == 0)
               {
@@ -2555,8 +2555,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         graphic_context[n]->bounds.y2=point.y;
     }
     if (graphic_context[n]->clip_mask != (Image *) NULL)
-      if (graphic_context[n]->clip_mask != graphic_context[n-1]->clip_mask)
-        (void) DrawClipPath(image,graphic_context[n]);
+      (void) DrawClipPath(image,graphic_context[n]);
     (void) DrawPrimitive(image,graphic_context[n],primitive_info);
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
