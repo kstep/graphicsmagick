@@ -267,7 +267,8 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 #define ConvolveImageText  "  Convolving image...  "
 
   DoublePixelPacket
-    pixel;
+    pixel,
+    zero;
 
   double
     normalize;
@@ -319,6 +320,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   normalize=0.0;
   for (i=0; i < (width*width); i++)
     normalize+=kernel[i];
+  (void) memset(&zero,0,sizeof(DoublePixelPacket));
   for (y=0; y < (long) convolve_image->rows; y++)
   {
     p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
@@ -328,7 +330,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
       break;
     for (x=0; x < (long) convolve_image->columns; x++)
     {
-      (void) memset(&pixel,0,sizeof(DoublePixelPacket));
+      pixel=zero;
       r=p;
       k=kernel;
       for (v=0; v < width; v++)

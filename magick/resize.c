@@ -472,7 +472,8 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 #define MinifyImageText  "  Minify image...  "
 
   DoublePixelPacket
-    total;
+    total,
+    zero;
 
   Image
     *minify_image;
@@ -505,6 +506,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
   /*
     Reduce each row.
   */
+  memset(&zero,0,sizeof(DoublePixelPacket));
   for (y=0; y < (long) minify_image->rows; y++)
   {
     p=AcquireImagePixels(image,-2,2*(y-1),image->columns+4,4,exception);
@@ -516,7 +518,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
       /*
         Compute weighted average of target pixel color components.
       */
-      memset(&total,0,sizeof(DoublePixelPacket));
+      total=zero;
       r=p;
       Minify(3L); Minify(7L);  Minify(7L);  Minify(3L);
       r=p+(image->columns+4);
