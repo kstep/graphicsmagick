@@ -900,16 +900,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     {
       case 1:
       {
-        register unsigned char
-          polarity;
-
         /*
           Convert image to a PBM image.
         */
-        polarity=PixelIntensityToQuantum(&image->colormap[0]) > (0.5*MaxRGB);
-        if (image->colors == 2)
-          polarity=PixelIntensityToQuantum(&image->colormap[0]) >
-            PixelIntensityToQuantum(&image->colormap[1]);
         i=0;
         for (y=0; y < (long) image->rows; y++)
         {
@@ -919,7 +912,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           indexes=GetIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
-            FormatString(buffer,"%d ",(int) (indexes[x] == polarity));
+            FormatString(buffer,"%u ",PixelIntensityToQuantum(p) <= (MaxRGB/2));
             (void) WriteBlobString(image,buffer);
             i++;
             if (i == 36)
@@ -927,6 +920,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
                 (void) WriteBlobByte(image,'\n');
                 i=0;
               }
+            p++;
           }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -955,9 +949,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           {
             index=PixelIntensityToQuantum(p);
             if (image->depth <= 8)
-              FormatString(buffer," %u\n",ScaleQuantumToChar(index));
+              FormatString(buffer," %u",ScaleQuantumToChar(index));
             else
-              FormatString(buffer," %u\n",ScaleQuantumToShort(index));
+              FormatString(buffer," %u",ScaleQuantumToShort(index));
             (void) WriteBlobString(image,buffer);
             i++;
             if (i == 12)
