@@ -613,12 +613,10 @@ static void XShearImage(Image *image,const double degrees,
           p++;
           q++;
         }
-        for (i=0; i < step; i++)
-        {
-          *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
-            image->background_color.opacity);
-          q++;
-        }
+        *q++=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+          image->background_color.opacity);
+        for (i=0; i < (step-1); i++)
+          *q++=image->background_color;
         break;
       }
       case RIGHT:
@@ -640,12 +638,10 @@ static void XShearImage(Image *image,const double degrees,
           *q=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
           pixel=(*p);
         }
-        for (i=0; i < step; i++)
-        {
-          q--;
-          *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
-            image->background_color.opacity);
-        }
+        *--q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+          image->background_color.opacity);
+        for (i=0; i < (step-1); i++)
+          *--q=image->background_color;
         break;
       }
     }
@@ -812,12 +808,10 @@ static void YShearImage(Image *image,const double degrees,
           p++;
           q++;
         }
-        for (i=0; i < step; i++)
-        {
-          *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
-            image->background_color.opacity);
-          q++;
-        }
+        *q++=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+          image->background_color.opacity);
+        for (i=0; i < (step-1); i++)
+          *q++=image->background_color;
         break;
       }
       case DOWN:
@@ -839,12 +833,10 @@ static void YShearImage(Image *image,const double degrees,
           *q=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
           pixel=(*p);
         }
+        *--q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+          image->background_color.opacity);
         for (i=0; i < step; i++)
-        {
-          q--;
-          *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
-            image->background_color.opacity);
-        }
+          *--q=image->background_color;
         break;
       }
     }
