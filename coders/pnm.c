@@ -514,8 +514,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           count=ReadBlob(image,packets*image->columns,pixels);
           if (count == 0)
-            ThrowReaderException(CorruptImageError,
-              "Unable to read image data",image);
+            ThrowReaderException(CorruptImageError,"Unable to read image data",
+              image);
           p=pixels;
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
