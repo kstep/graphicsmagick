@@ -492,15 +492,20 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
   p=GetDelegateInfo("*","*",exception);
   if (p == (const DelegateInfo *) NULL)
     return(False);
-  if (p->filename != (char *) NULL)
-    (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
-  (void) fprintf(file,"Delegate             Command\n");
-  (void) fprintf(file,"-------------------------------------------------------"
-    "------------------------\n");
   for ( ; p != (const DelegateInfo *) NULL; p=p->next)
   {
     if (p->stealth)
       continue;
+    if ((p->previous == (DelegateInfo *) NULL) ||
+        (LocaleCompare(p->filename,p->previous->filename) != 0))
+      {
+        if (p->previous != (DelegateInfo *) NULL)
+          (void) fprintf(file,"\n");
+        (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
+        (void) fprintf(file,"Delegate             Command\n");
+        (void) fprintf(file,"-------------------------------------------------"
+          "------------------------------\n");
+      }
     *delegate='\0';
     if (p->encode != (char *) NULL)
       (void) strncpy(delegate,p->encode,MaxTextExtent-1);
@@ -608,7 +613,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
             continue;
           GetToken(q,&q,token);
           if (LocaleCompare(keyword,"file") == 0)
-            (void) ReadConfigurationFile(token,exception);
+            {
+              (void) ReadConfigurationFile(token,exception);
+              while (delegate_list->next != (DelegateInfo *) NULL)
+                delegate_list=delegate_list->next;
+            }
         }
         continue;
       }
@@ -625,12 +634,12 @@ static unsigned int ReadConfigurationFile(const char *basename,
           MagickError(ResourceLimitError,"Unable to allocate delegate",
             "Memory allocation failed");
         (void) memset(delegate_info,0,sizeof(DelegateInfo));
+        delegate_info->filename=AllocateString(filename);
         if (delegate_list == (DelegateInfo *) NULL)
           {
             delegate_list=delegate_info;
             continue;
           }
-        delegate_list->filename=AllocateString(filename);
         delegate_list->next=delegate_info;
         delegate_info->previous=delegate_list;
         delegate_list=delegate_list->next;

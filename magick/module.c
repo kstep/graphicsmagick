@@ -537,13 +537,20 @@ MagickExport unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
   p=GetModuleAlias("*",exception);
   if (p == (ModuleAlias *) NULL)
     return(False);
-  if (p->filename != (char *) NULL)
-    (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
-  (void) fprintf(file,"Name      Alias\n");
-  (void) fprintf(file,"-------------------------------------------------------"
-    "------------------------\n");
   for ( ; p != (ModuleAlias *) NULL; p=p->next)
   {
+    if (p->stealth)
+      continue;
+    if ((p->previous == (ModuleAlias *) NULL) ||
+        (LocaleCompare(p->filename,p->previous->filename) != 0))
+      {
+        if (p->previous != (ModuleAlias *) NULL)
+          (void) fprintf(file,"\n");
+        (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
+        (void) fprintf(file,"Name      Alias\n");
+        (void) fprintf(file,"-------------------------------------------------"
+          "------------------------------\n");
+      }
     (void) fprintf(file,"%.1024s",p->name);
     for (i=(long) strlen(p->name); i <= 9; i++)
       (void) fprintf(file," ");
@@ -856,7 +863,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
             continue;
           GetToken(q,&q,token);
           if (LocaleCompare(keyword,"file") == 0)
-            (void) ReadConfigurationFile(token,exception);
+            {
+              (void) ReadConfigurationFile(token,exception);
+              while (module_aliases->next != (ModuleAlias *) NULL)
+                module_aliases=module_aliases->next;
+            }
         }
         continue;
       }
@@ -873,12 +884,12 @@ static unsigned int ReadConfigurationFile(const char *basename,
           MagickError(ResourceLimitError,"Unable to allocate module aliases",
             "Memory allocation failed");
         (void) memset(alias_info,0,sizeof(ModuleAlias));
+        alias_info->filename=AllocateString(filename);
         if (module_aliases == (ModuleAlias *) NULL)
           {
             module_aliases=alias_info;
             continue;
           }
-        module_aliases->filename=AllocateString(filename);
         module_aliases->next=alias_info;
         alias_info->previous=module_aliases;
         module_aliases=module_aliases->next;
@@ -909,6 +920,16 @@ static unsigned int ReadConfigurationFile(const char *basename,
         if (LocaleCompare((char *) keyword,"name") == 0)
           {
             module_aliases->name=AllocateString(token);
+            break;
+          }
+        break;
+      }
+      case 'S':
+      case 's':
+      {
+        if (LocaleCompare((char *) keyword,"stealth") == 0)
+          {
+            module_aliases->stealth=LocaleCompare(token,"True") == 0;
             break;
           }
         break;

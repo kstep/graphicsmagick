@@ -220,15 +220,20 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
   p=GetMagicInfo((unsigned char *) NULL,0,exception);
   if (p == (MagicInfo *) NULL)
     return(False);
-  if (p->filename != (char *) NULL)
-    (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
-  (void) fprintf(file,"Name      Offset Target\n");
-  (void) fprintf(file,"-------------------------------------------------------"
-    "------------------------\n");
   for ( ; p != (MagicInfo *) NULL; p=p->next)
   {
     if (p->stealth)
       continue;
+    if ((p->previous == (MagicInfo *) NULL) ||
+        (LocaleCompare(p->filename,p->previous->filename) != 0))
+      {
+        if (p->previous != (MagicInfo *) NULL)
+          (void) fprintf(file,"\n");
+        (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
+        (void) fprintf(file,"Name      Offset Target\n");
+        (void) fprintf(file,"-------------------------------------------------"
+          "------------------------------\n");
+      }
     (void) fprintf(file,"%.1024s",p->name);
     for (i=(long) strlen(p->name); i <= 9; i++)
       (void) fprintf(file," ");
@@ -330,7 +335,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
             continue;
           GetToken(q,&q,token);
           if (LocaleCompare(keyword,"file") == 0)
-            (void) ReadConfigurationFile(token,exception);
+            {
+              (void) ReadConfigurationFile(token,exception);
+              while (magic_list->next != (MagicInfo *) NULL)
+                magic_list=magic_list->next;
+            }
         }
         continue;
       }
@@ -347,12 +356,12 @@ static unsigned int ReadConfigurationFile(const char *basename,
           MagickError(ResourceLimitError,"Unable to allocate magics",
             "Memory allocation failed");
         (void) memset(magic_info,0,sizeof(MagicInfo));
+        magic_info->filename=AllocateString(filename);
         if (magic_list == (MagicInfo *) NULL)
           {
             magic_list=magic_info;
             continue;
           }
-        magic_list->filename=AllocateString(filename);
         magic_list->next=magic_info;
         magic_info->previous=magic_list;
         magic_list=magic_list->next;

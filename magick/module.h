@@ -15,6 +15,9 @@ typedef struct _ModuleAlias
     *name,
     *alias;
 
+  unsigned int
+    stealth;
+
   struct _ModuleAlias
     *previous,
     *next;

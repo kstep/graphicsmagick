@@ -227,20 +227,25 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
   p=GetTypeInfo("*",exception);
   if (p == (const TypeInfo *) NULL)
     return(False);
-  if (p->filename != (char *) NULL)
-    (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
-  (void) fprintf(file,"Name                                 Description\n");
-  (void) fprintf(file,"-------------------------------------------------------"
-    "------------------------\n");
   for ( ; p != (const TypeInfo *) NULL; p=p->next)
   {
     if (p->stealth)
       continue;
+    if ((p->previous == (TypeInfo *) NULL) ||
+		    (LocaleCompare(p->filename,p->previous->filename) != 0))
+      {
+        if (p->previous != (TypeInfo *) NULL)
+          (void) fprintf(file,"\n");
+        (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
+        (void) fprintf(file,"Name                             Description\n");
+        (void) fprintf(file,"-------------------------------------------------"
+          "------------------------------\n");
+      }
     (void) fprintf(file,"%.1024s",p->name);
-    for (i=(long) strlen(p->name); i <= 36; i++)
+    for (i=(long) strlen(p->name); i <= 32; i++)
       (void) fprintf(file," ");
     if (p->description != (char *) NULL)
-      (void) fprintf(file,"%.1024s",p->description);
+      (void) fprintf(file," %.1024s",p->description);
     (void) fprintf(file,"\n");
   }
   (void) fflush(file);
@@ -336,7 +341,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
             continue;
           GetToken(q,&q,token);
           if (LocaleCompare(keyword,"file") == 0)
-            (void) ReadConfigurationFile(token,exception);
+            {
+              (void) ReadConfigurationFile(token,exception);
+              while (type_list->next != (TypeInfo *) NULL)
+                type_list=type_list->next;
+            }
         }
         continue;
       }
@@ -353,12 +362,12 @@ static unsigned int ReadConfigurationFile(const char *basename,
           MagickError(ResourceLimitError,"Unable to allocate fonts",
             "Memory allocation failed");
         (void) memset(type_info,0,sizeof(TypeInfo));
+        type_info->filename=AllocateString(filename);
         if (type_list == (TypeInfo *) NULL)
           {
             type_list=type_info;
             continue;
           }
-        type_list->filename=AllocateString(filename);
         type_list->next=type_info;
         type_info->previous=type_list;
         type_list=type_list->next;

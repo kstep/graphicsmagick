@@ -545,11 +545,11 @@ MagickExport inline unsigned int XColorMatch(const PixelPacket *color,
   if ((distance == 0.0) && (color->red == target->red) &&
       (color->green == target->green) && (color->blue == target->blue))
     return(True);
-  if (((((double) color->red-(double) target->red)* 
-       ((double) color->red-(double) target->red))+ 
-      (((double) color->green-(double) target->green)* 
-       ((double) color->green-(double) target->green))+ 
-      (((double) color->blue-(double) target->blue)* 
+  if (((((double) color->red-(double) target->red)*
+       ((double) color->red-(double) target->red))+
+      (((double) color->green-(double) target->green)*
+       ((double) color->green-(double) target->green))+
+      (((double) color->blue-(double) target->blue)*
        ((double) color->blue-(double) target->blue))) <= (distance*distance))
     return(True);
   return(False);
@@ -1139,16 +1139,21 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
   p=GetColorInfo("*",exception);
   if (p == (const ColorInfo *) NULL)
     return(False);
-  if (p->filename != (char *) NULL)
-    (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
-  (void) fprintf(file,
-    "Name                   Color                   Compliance\n");
-  (void) fprintf(file,"-------------------------------------------------------"
-    "------------------------\n");
   for ( ; p != (const ColorInfo *) NULL; p=p->next)
   {
     if (p->stealth)
       continue;
+    if ((p->previous == (ColorInfo *) NULL) ||
+        (LocaleCompare(p->filename,p->previous->filename) != 0))
+      {
+        if (p->previous != (ColorInfo *) NULL)
+          (void) fprintf(file,"\n");
+        (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
+        (void) fprintf(file,
+          "Name                   Color                   Compliance\n");
+        (void) fprintf(file,"-------------------------------------------------"
+          "------------------------------\n");
+      }
     (void) fprintf(file,"%.1024s",p->name);
     for (i=(long) strlen(p->name); i <= 22; i++)
       (void) fprintf(file," ");
@@ -1529,7 +1534,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
             continue;
           GetToken(q,&q,token);
           if (LocaleCompare(keyword,"file") == 0)
-            (void) ReadConfigurationFile(token,exception);
+            {
+              (void) ReadConfigurationFile(token,exception);
+              while (color_list->next != (ColorInfo *) NULL)
+                color_list=color_list->next;
+            }
         }
         continue;
       }
@@ -1546,12 +1555,12 @@ static unsigned int ReadConfigurationFile(const char *basename,
           MagickError(ResourceLimitError,"Unable to allocate colors",
             "Memory allocation failed");
         (void) memset(color_info,0,sizeof(ColorInfo));
+        color_info->filename=AllocateString(filename);
         if (color_list == (ColorInfo *) NULL)
           {
             color_list=color_info;
             continue;
           }
-        color_list->filename=AllocateString(filename);
         color_list->next=color_info;
         color_info->previous=color_list;
         color_list=color_list->next;
