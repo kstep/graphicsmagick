@@ -99,7 +99,7 @@ extern "C" {
 #define EndOf(array)  (&array[NumberOf(array)])
 #define ImageReference  (char **) 3
 #define IntegerReference  (char **) 1
-#define MaxArguments  13
+#define MaxArguments  14
 #define NumberOf(array)  (sizeof(array)/sizeof(*array))
 #define PackageName   "Image::Magick"
 #define StringReference  (char **) 0
@@ -326,7 +326,7 @@ static struct
       {"fill", StringReference}, {"geom", StringReference},
       {"server", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"grav", GravityTypes},
-      {"degree", DoubleReference} } },
+      {"degree", DoubleReference}, {"pen", StringReference} } },
     { "ColorFloodfill", { {"geom", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"fill", StringReference},
       {"bordercolor", StringReference} } },
@@ -353,7 +353,8 @@ static struct
     { "Negate", { {"gray", BooleanTypes} } },
     { "Normalize", },
     { "NumberColors", },
-    { "Opaque", { {"color", StringReference}, {"fill", StringReference} } },
+    { "Opaque", { {"color", StringReference}, {"fill", StringReference},
+      {"pen", StringReference} } },
     { "Quantize", { {"colors", IntegerReference}, {"tree", IntegerReference},
       {"colorsp", ColorspaceTypes}, {"dither", BooleanTypes},
       {"measure", BooleanTypes}, {"global", BooleanTypes} } },
@@ -4218,6 +4219,9 @@ Mogrify(ref,...)
             annotate_info->gravity=argument_list[11].int_reference;
           if (attribute_flag[12])
             annotate_info->degrees=argument_list[12].double_reference;
+          if (attribute_flag[13])
+            (void) QueryColorDatabase(argument_list[13].string_reference,
+              &annotate_info->fill);
           AnnotateImage(image,annotate_info);
           DestroyAnnotateInfo(annotate_info);
           break;
@@ -4549,6 +4553,9 @@ Mogrify(ref,...)
           pen_color=GetOnePixel(image,0,0);
           if (attribute_flag[1])
             (void) QueryColorDatabase(argument_list[1].string_reference,
+              &pen_color);
+          if (attribute_flag[2])
+            (void) QueryColorDatabase(argument_list[2].string_reference,
               &pen_color);
           OpaqueImage(image,target,pen_color);
           break;
