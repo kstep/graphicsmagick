@@ -72,6 +72,8 @@
 %
 %  DeleteImageList() deletes an image at the specified position in the list.
 %
+%  This method is deprecated as of version 5.5.2.
+%
 %  The format of the DeleteImageList method is:
 %
 %      unsigned int DeleteImageList(Image *images,const long offset)
@@ -102,6 +104,8 @@ MagickExport unsigned int DeleteImageList(Image *images,const long offset)
 %
 %  DestroyImages() destroys an image list.
 %
+%  This method is deprecated as of version 5.5.2.
+%
 %  The format of the DestroyImages method is:
 %
 %      void DestroyImages(Image *image)
@@ -129,6 +133,8 @@ MagickExport void DestroyImages(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetImageList() returns an image at the specified position in the list.
+%
+%  This method is deprecated as of version 5.5.2.
 %
 %  The format of the GetImageList method is:
 %
@@ -165,6 +171,8 @@ MagickExport Image *GetImageList(const Image *images,const long offset,
 %  GetImageListIndex() returns the position in the list of the specified
 %  image.
 %
+%  This method is deprecated as of version 5.5.2.
+%
 %  The format of the GetImageListIndex method is:
 %
 %      long GetImageListIndex(const Image *images)
@@ -192,6 +200,8 @@ MagickExport long GetImageListIndex(const Image *images)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetImageListSize() returns the number of images in the list.
+%
+%  This method is deprecated as of version 5.5.2.
 %
 %  The format of the GetImageListSize method is:
 %
@@ -221,6 +231,8 @@ MagickExport unsigned long GetImageListSize(const Image *images)
 %
 %  GetNextImage() returns the next image in a list.
 %
+%  This method is deprecated as of version 5.5.2.
+%
 %  The format of the GetNextImage method is:
 %
 %      Image *GetNextImage(const Image *images)
@@ -249,6 +261,8 @@ MagickExport Image *GetNextImage(const Image *images)
 %
 %  GetNumberScenes() returns the number of images in the list.
 %
+%  This method is deprecated as of version 5.5.2.
+%
 %  The format of the GetNumberScenes method is:
 %
 %      unsigned int GetNumberScenes(const Image *images)
@@ -276,6 +290,8 @@ MagickExport unsigned int GetNumberScenes(const Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetPreviousImage() returns the previous image in a list.
+%
+%  This method is deprecated as of version 5.5.2.
 %
 %  The format of the GetPreviousImage method is:
 %
@@ -306,6 +322,8 @@ MagickExport Image *GetPreviousImage(const Image *images)
 %  ParseImageGeometry() is similar to GetGeometry() except the returned
 %  geometry is modified as determined by the meta characters:  %, !, <,
 %  and >.
+%
+%  This method is deprecated as of version 5.5.1.
 %
 %  The format of the ParseImageGeometry method is:
 %
@@ -347,6 +365,8 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
 %
 %  PopImageList() removes the last image in the list.
 %
+%  This method is deprecated as of version 5.5.2.
+%
 %  The format of the PopImageList method is:
 %
 %      Image *PopImageList(Image **images)
@@ -375,6 +395,8 @@ MagickExport Image *PopImageList(Image **images)
 %
 %  PostscriptGeometry() replaces any page mneumonic with the equivalent size in
 %  picas.
+%
+%  This method is deprecated as of version 5.5.1.
 %
 %  The format of the PostscriptGeometry method is:
 %
@@ -405,6 +427,8 @@ MagickExport char *PostscriptGeometry(const char *page)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  PushImageList() adds an image to the end of the list.
+%
+%  This method is deprecated as of version 5.5.2.
 %
 %  The format of the PushImageList method is:
 %
@@ -442,6 +466,8 @@ MagickExport unsigned int PushImageList(Image **images,const Image *image,
 %  pixel cache.  Once this threshold is exceeded, all subsequent pixels cache
 %  operations are to/from disk.
 %
+%  This method is deprecated as of version 5.5.1.
+%
 %  The format of the SetCacheThreshold() method is:
 %
 %      void SetCacheThreshold(const size_t threshold)
@@ -471,6 +497,8 @@ MagickExport void SetCacheThreshold(const unsigned long size)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SetImageList() inserts an image into the list at the specified position.
+%
+%  This method is deprecated as of version 5.5.2.
 %
 %  The format of the SetImageList method is:
 %
@@ -508,6 +536,8 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
 %
 %  ShiftImageList() removes an image from the beginning of the list.
 %
+%  This method is deprecated as of version 5.5.2.
+%
 %  The format of the ShiftImageList method is:
 %
 %      Image *ShiftImageList(Image **images)
@@ -535,6 +565,8 @@ MagickExport Image *ShiftImageList(Image **images)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SizeBlob() returns the current length of the image file or blob.
+%
+%  This method is deprecated as of version 5.4.3.
 %
 %  The format of the SizeBlob method is:
 %
@@ -567,6 +599,8 @@ MagickExport ExtendedSignedIntegralType SizeBlob(const Image *image)
 %
 %  SpliceImageList() removes the images designated by offset and length from
 %  the list and replaces them with the specified list.
+%
+%  This method is deprecated as of version 5.5.2.
 %
 %  The format of the SpliceImageList method is:
 %
@@ -612,6 +646,8 @@ MagickExport Image *SpliceImageList(Image *images,const long offset,
 %
 %  UnshiftImageList() adds the image to the beginning of the list.
 %
+%  This method is deprecated as of version 5.5.2.
+%
 %  The format of the UnshiftImageList method is:
 %
 %      unsigned int UnshiftImageList(Image *images,const Image *image,
@@ -647,6 +683,8 @@ MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
 %  ValidateColormapIndex() validates the colormap index.  If the index does
 %  not range from 0 to the number of colors in the colormap an exception
 %  is issued and 0 is returned.
+%
+%  This method is deprecated as of version 5.4.4.
 %
 %  The format of the ValidateColormapIndex method is:
 %
