@@ -22,7 +22,7 @@ chdir 't/ttf' || die 'Cd failed';
 print("Default ImageMagick read ...\n");
 testRead( 'input.ttf',
   '848d2eb1da7ed49e68c716be7864651808336d52d3ba932213a9ebd4b1f19a9a',
-  '0d1f76494273791080a0783f5b877db6b49f2e95356e04a3ea49284e7de1ad88' );
+  'c02dfeb51910c071f0dd7e656c441f6c375ed8ba1a4fa3ee64d7bb193435611c' );
 
 #
 # 2) Test drawing text using font
