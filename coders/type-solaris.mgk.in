@@ -3,7 +3,7 @@
   <type
     name="Courier"
     fullname="Courier Regular"
-    familyname="Courier"
+    family="Courier"
     foundry="Adobe"
     weight="400"
     style="normal"
@@ -15,7 +15,7 @@
   <type
     name="Courier-Bold"
     fullname="Courier Bold"
-    familyname="Courier"
+    family="Courier"
     foundry="Adobe"
     weight="700"
     style="normal"
@@ -27,7 +27,7 @@
   <type
     name="Courier-Oblique"
     fullname="Courier Regular Oblique"
-    familyname="Courier"
+    family="Courier"
     foundry="Adobe"
     weight="400"
     style="oblique"
@@ -39,7 +39,7 @@
   <type
     name="Courier-BoldOblique"
     fullname="Courier Bold Oblique"
-    familyname="Courier"
+    family="Courier"
     foundry="Adobe"
     weight="700"
     style="oblique"
@@ -51,7 +51,7 @@
   <type
     name="Helvetica"
     fullname="Helvetica Regular"
-    familyname="Helvetica"
+    family="Helvetica"
     foundry="Linotype"
     weight="400"
     style="normal"
@@ -63,7 +63,7 @@
   <type
     name="Helvetica-Bold"
     fullname="Helvetica Bold"
-    familyname="Helvetica"
+    family="Helvetica"
     foundry="Linotype"
     weight="700"
     style="normal"
@@ -75,7 +75,7 @@
   <type
     name="Helvetica-Oblique"
     fullname="Helvetica Regular Italic"
-    familyname="Helvetica"
+    family="Helvetica"
     foundry="Linotype"
     weight="400"
     style="italic"
@@ -87,7 +87,7 @@
   <type
     name="Helvetica-BoldOblique"
     fullname="Helvetica Bold Italic"
-    familyname="Helvetica"
+    family="Helvetica"
     foundry="Linotype"
     weight="700"
     style="italic"
@@ -99,7 +99,7 @@
   <type
     name="Times-Roman"
     fullname="Times Regular"
-    familyname="Times"
+    family="Times"
     foundry="Linotype"
     weight="400"
     style="normal"
@@ -111,7 +111,7 @@
   <type
     name="Times-Bold"
     fullname="Times Medium"
-    familyname="Times"
+    family="Times"
     foundry="Linotype"
     weight="700"
     style="normal"
@@ -123,7 +123,7 @@
   <type
     name="Times-Italic"
     fullname="Times Regular Italic"
-    familyname="Times"
+    family="Times"
     foundry="Linotype"
     weight="400"
     style="italic"
@@ -135,7 +135,7 @@
   <type
     name="Times-BoldItalic"
     fullname="Times Medium Italic"
-    familyname="Times"
+    family="Times"
     foundry="Linotype"
     weight="700"
     style="italic"
@@ -147,7 +147,7 @@
   <type
     name="Symbol"
     fullname="Symbol"
-    familyname="Symbol"
+    family="Symbol"
     foundry="Adobe"
     weight="400"
     style="normal"
@@ -160,7 +160,7 @@
   <type
     name="Utopia-Regular"
     fullname="Utopia Regular"
-    familyname="Utopia"
+    family="Utopia"
     foundry="Adobe"
     weight="400"
     style="normal"
@@ -171,7 +171,7 @@
   <type
     name="Utopia-Italic"
     fullname="Utopia Italic"
-    familyname="Utopia"
+    family="Utopia"
     foundry="Adobe"
     weight="400"
     style="italic"
@@ -182,7 +182,7 @@
   <type
     name="Utopia-Bold"
     fullname="Utopia Bold"
-    familyname="Utopia"
+    family="Utopia"
     foundry="Adobe"
     weight="700"
     style="normal"
@@ -193,7 +193,7 @@
   <type
     name="Utopia-BoldItalic"
     fullname="Utopia Bold Italic"
-    familyname="Utopia"
+    family="Utopia"
     foundry="Adobe"
     weight="700"
     style="italic"

@@ -3,7 +3,7 @@
   <type
     name="AvantGarde-Book"
     fullname="AvantGarde Book"
-    familyname="AvantGarde"
+    family="AvantGarde"
     foundry="URW"
     weight="400"
     style="normal"
@@ -15,7 +15,7 @@
   <type
     name="AvantGarde-BookOblique"
     fullname="AvantGarde Book Oblique"
-    familyname="AvantGarde"
+    family="AvantGarde"
     foundry="URW"
     weight="400"
     style="oblique"
@@ -27,7 +27,7 @@
   <type
     name="AvantGarde-Demi"
     fullname="AvantGarde DemiBold"
-    familyname="AvantGarde"
+    family="AvantGarde"
     foundry="URW"
     weight="600"
     style="normal"
@@ -39,7 +39,7 @@
   <type
     name="AvantGarde-DemiOblique"
     fullname="AvantGarde DemiOblique"
-    familyname="AvantGarde"
+    family="AvantGarde"
     foundry="URW"
     weight="600"
     style="oblique"
@@ -51,7 +51,7 @@
   <type
     name="Bookman-Demi"
     fullname="Bookman DemiBold"
-    familyname="Bookman"
+    family="Bookman"
     foundry="URW"
     weight="600"
     style="normal"
@@ -63,7 +63,7 @@
   <type
     name="Bookman-DemiItalic"
     fullname="Bookman DemiBold Italic"
-    familyname="Bookman"
+    family="Bookman"
     foundry="URW"
     weight="600"
     style="italic"
@@ -75,7 +75,7 @@
   <type
     name="Bookman-Light"
     fullname="Bookman Light"
-    familyname="Bookman"
+    family="Bookman"
     foundry="URW"
     weight="300"
     style="normal"
@@ -87,7 +87,7 @@
   <type
     name="Bookman-LightItalic"
     fullname="Bookman Light Italic"
-    familyname="Bookman"
+    family="Bookman"
     foundry="URW"
     weight="300"
     style="italic"
@@ -99,7 +99,7 @@
   <type
     name="Courier"
     fullname="Courier Regular"
-    familyname="Courier"
+    family="Courier"
     foundry="URW"
     weight="400"
     style="normal"
@@ -111,7 +111,7 @@
   <type
     name="Courier-Bold"
     fullname="Courier Bold"
-    familyname="Courier"
+    family="Courier"
     foundry="URW"
     weight="700"
     style="normal"
@@ -123,7 +123,7 @@
   <type
     name="Courier-Oblique"
     fullname="Courier Regular Oblique"
-    familyname="Courier"
+    family="Courier"
     foundry="URW"
     weight="400"
     style="oblique"
@@ -135,7 +135,7 @@
   <type
     name="Courier-BoldOblique"
     fullname="Courier Bold Oblique"
-    familyname="Courier"
+    family="Courier"
     foundry="URW"
     weight="700"
     style="oblique"
@@ -147,7 +147,7 @@
   <type
     name="Helvetica"
     fullname="Helvetica Regular"
-    familyname="Helvetica"
+    family="Helvetica"
     foundry="URW"
     weight="400"
     style="normal"
@@ -159,7 +159,7 @@
   <type
     name="Helvetica-Bold"
     fullname="Helvetica Bold"
-    familyname="Helvetica"
+    family="Helvetica"
     foundry="URW"
     weight="700"
     style="normal"
@@ -171,7 +171,7 @@
   <type
     name="Helvetica-Oblique"
     fullname="Helvetica Regular Italic"
-    familyname="Helvetica"
+    family="Helvetica"
     foundry="URW"
     weight="400"
     style="italic"
@@ -183,7 +183,7 @@
   <type
     name="Helvetica-BoldOblique"
     fullname="Helvetica Bold Italic"
-    familyname="Helvetica"
+    family="Helvetica"
     foundry="URW"
     weight="700"
     style="italic"
@@ -195,7 +195,7 @@
   <type
     name="Helvetica-Narrow"
     fullname="Helvetica Narrow"
-    familyname="Helvetica Narrow"
+    family="Helvetica Narrow"
     foundry="URW"
     weight="400"
     style="normal"
@@ -207,7 +207,7 @@
   <type
     name="Helvetica-Narrow-Oblique"
     fullname="Helvetica Narrow Oblique"
-    familyname="Helvetica Narrow"
+    family="Helvetica Narrow"
     foundry="URW"
     weight="400"
     style="oblique"
@@ -219,7 +219,7 @@
   <type
     name="Helvetica-Narrow-Bold"
     fullname="Helvetica Narrow Bold"
-    familyname="Helvetica Narrow"
+    family="Helvetica Narrow"
     foundry="URW"
     weight="700"
     style="normal"
@@ -231,7 +231,7 @@
   <type
     name="Helvetica-Narrow-BoldOblique"
     fullname="Helvetica Narrow Bold Oblique"
-    familyname="Helvetica Narrow"
+    family="Helvetica Narrow"
     foundry="URW"
     weight="700"
     style="oblique"
@@ -243,7 +243,7 @@
   <type
     name="NewCenturySchlbk-Roman"
     fullname="New Century Schoolbook"
-    familyname="NewCenturySchlbk"
+    family="NewCenturySchlbk"
     foundry="URW"
     weight="400"
     style="normal"
@@ -255,7 +255,7 @@
   <type
     name="NewCenturySchlbk-Italic"
     fullname="New Century Schoolbook Italic"
-    familyname="NewCenturySchlbk"
+    family="NewCenturySchlbk"
     foundry="URW"
     weight="400"
     style="italic"
@@ -267,7 +267,7 @@
   <type
     name="NewCenturySchlbk-Bold"
     fullname="New Century Schoolbook Bold"
-    familyname="NewCenturySchlbk"
+    family="NewCenturySchlbk"
     foundry="URW"
     weight="700"
     style="normal"
@@ -279,7 +279,7 @@
   <type
     name="NewCenturySchlbk-BoldItalic"
     fullname="New Century Schoolbook Bold Italic"
-    familyname="NewCenturySchlbk"
+    family="NewCenturySchlbk"
     foundry="URW"
     weight="700"
     style="italic"
@@ -291,7 +291,7 @@
   <type
     name="Palatino-Roman"
     fullname="Palatino Regular"
-    familyname="Palatino"
+    family="Palatino"
     foundry="URW"
     weight="400"
     style="normal"
@@ -303,7 +303,7 @@
   <type
     name="Palatino-Italic"
     fullname="Palatino Italic"
-    familyname="Palatino"
+    family="Palatino"
     foundry="URW"
     weight="400"
     style="italic"
@@ -315,7 +315,7 @@
   <type
     name="Palatino-Bold"
     fullname="Palatino Bold"
-    familyname="Palatino"
+    family="Palatino"
     foundry="URW"
     weight="700"
     style="normal"
@@ -327,7 +327,7 @@
   <type
     name="Palatino-BoldItalic"
     fullname="Palatino Bold Italic"
-    familyname="Palatino"
+    family="Palatino"
     foundry="URW"
     weight="700"
     style="italic"
@@ -339,7 +339,7 @@
   <type
     name="Times-Roman"
     fullname="Times Regular"
-    familyname="Times"
+    family="Times"
     foundry="URW"
     weight="400"
     style="normal"
@@ -351,7 +351,7 @@
   <type
     name="Times-Bold"
     fullname="Times Medium"
-    familyname="Times"
+    family="Times"
     foundry="URW"
     weight="700"
     style="normal"
@@ -363,7 +363,7 @@
   <type
     name="Times-Italic"
     fullname="Times Regular Italic"
-    familyname="Times"
+    family="Times"
     foundry="URW"
     weight="400"
     style="italic"
@@ -375,7 +375,7 @@
   <type
     name="Times-BoldItalic"
     fullname="Times Medium Italic"
-    familyname="Times"
+    family="Times"
     foundry="URW"
     weight="700"
     style="italic"
@@ -387,7 +387,7 @@
   <type
     name="Symbol"
     fullname="Symbol"
-    familyname="Symbol"
+    family="Symbol"
     foundry="URW"
     weight="400"
     style="normal"
