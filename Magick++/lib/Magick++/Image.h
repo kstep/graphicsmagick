@@ -845,8 +845,7 @@ namespace Magick
     // Low-level Pixel Access Routines
     //
     // Also see the Pixels class, which provides support for multiple
-    // cache views. The low-level pixel access routines in the Image
-    // class are provided in order to support backward compatability.
+    // cache views.
     //
     //////////////////////////////////////////////////////////////////////
 
@@ -910,7 +909,7 @@ namespace Magick
     void            throwImageException( void );
 
   private:
-    ImageRef *                       _imgRef;
+    ImageRef *      _imgRef;
   };
 
 

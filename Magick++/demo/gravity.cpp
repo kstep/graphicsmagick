@@ -69,7 +69,7 @@ int main( int /*argc*/, char ** argv)
         pic.annotate( "West", Geometry(0,0,x,y), WestGravity, angle );
         animation.push_back( pic );
       }
-    cout << "Writing to \"gravity_out.miff\" ..." << endl;
+    cout << "Writing image \"gravity_out.miff\" ..." << endl;
     writeImages( animation.begin(), animation.end(), "gravity_out.miff" );
     // system( "animate gravity_out.miff" );
 

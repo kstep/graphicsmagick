@@ -1,5 +1,10 @@
-Items large and small which remain to be completed
+
+Items large and small which remain to be worked on.
 --------------------------------------------------------------------
+
+* Manage Options instance seperate from Image instance.
+
+* Support options stack similar to graphic-context.
 
 * Add support for ConvolveImage().
 
@@ -9,7 +14,11 @@ Items large and small which remain to be completed
 
 * Add support for UnsharpMaskImage().
 
-* Add suppport for viewbox (e.g. "viewbox 0 0 640 480") primitive.
+* Add suppport for new drawing primitives:
+  - clip-path %s  (%s is the name of the clip path
+  - pop clip-path
+  - push clip-path-%s  (%s is the name of the clip path)
+  - viewbox (e.g. "viewbox 0 0 640 480")
 
 * Support manipulating IPTC profiles directly. Bill Radcliffe
   <BillR@corbis.com> has agreed to write a container class to support
@@ -18,7 +27,7 @@ Items large and small which remain to be completed
 Items which will require the aid of volunteers.  Volunteers?
 --------------------------------------------------------------------
 
-* Port to CodeWarrior Professional 5.0 (released in June 2000) under NT
+* Port to CodeWarrior Professional 6.0 under NT
 
 * Port to Borland C++ Builder 4.0 (http://www.borland.com/)
 
