@@ -1669,8 +1669,8 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SyncBlob flushes the datastream if it is a file or synchonizes the
-%  data attributes if it is an blob.
+%  SyncBlob() flushes the datastream if it is a file or synchonizes the data
+%  attributes if it is an blob.
 %
 %  The format of the SyncBlob method is:
 %
