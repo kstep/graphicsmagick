@@ -86,7 +86,7 @@
 */
 #undef MNG_OBJECT_BUFFERS
 #undef MNG_BASI_SUPPORTED
-#define MNG_INSERT_LAYERS
+#define MNG_INSERT_LAYERS /* identify crashes in 5.4.4 */
 #define PNG_BUILD_PALETTE /* This works as of 5.4.3 */
 #define PNG_SORT_PALETTE  /* This works as of 5.4.0 */
 
@@ -400,7 +400,6 @@ static unsigned int CompressColormapTransFirst(Image *image)
     j,
     new_number_colors,
     number_colors,
-    top_used,
     y;
 
   PixelPacket
@@ -410,7 +409,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
     *p;
 
   register IndexPacket
-    *indexes;
+    *indexes,
+    top_used;
 
   register long
     i,
@@ -460,17 +460,26 @@ static unsigned int CompressColormapTransFirst(Image *image)
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (long) image->columns; x++)
-    {
-      marker[(int) indexes[x]]=True;
-      opacity[(int) indexes[x]]=p->opacity;
-      if ((long) indexes[x] > top_used)
-         top_used=indexes[x];
-      if (p->opacity != OpaqueOpacity)
-         transparent_pixels++;
-      p++;
-    }
+    if (image->matte)
+      for (x=0; x < (long) image->columns; x++)
+      {
+        marker[(int) indexes[x]]=True;
+        opacity[(int) indexes[x]]=p->opacity;
+        if (indexes[x] > top_used)
+           top_used=indexes[x];
+        if (p->opacity != OpaqueOpacity)
+           transparent_pixels++;
+        p++;
+      }
+    else
+      for (x=0; x < (long) image->columns; x++)
+      {
+        marker[(int) indexes[x]]=True;
+        if (indexes[x] > top_used)
+           top_used=indexes[x];
+      }
   }
+
   if (image->matte)
   {
     /*
@@ -520,7 +529,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     }
 
   remap_needed=False;
-  if (top_used >= new_number_colors)
+  if ((long) top_used >= new_number_colors)
      remap_needed=True;
 
   /*
@@ -4573,7 +4582,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
     for(p=image; p != (Image *) NULL; p=p->next)
     {
-      if(p->storage_class == PseudoClass)
+      if(p->taint && p->storage_class == PseudoClass)
          SyncImage(p);
       if (!image_info->adjoin)
         break;
