@@ -28,12 +28,7 @@ localstatedir = @localstatedir@
 libdir = @libdir@
 infodir = @infodir@
 mandir = @mandir@
-includedir = @includedir@
 oldincludedir = /usr/include
-
-pkgdatadir = $(datadir)/@PACKAGE@
-pkglibdir = $(libdir)/@PACKAGE@
-pkgincludedir = $(includedir)/@PACKAGE@
 
 top_builddir = ../..
 
@@ -176,6 +171,11 @@ AUTOMAKE_OPTIONS = 1.4
 SUBDIRS = Magick++
 
 INCLUDES = -I../.. -I$(top_srcdir)
+
+includedir = ${prefix}/include
+pkgdatadir = $(datadir)/Magick++
+pkglibdir = $(libdir)/Magick++
+pkgincludedir = $(includedir)/Magick++
 
 lib_LTLIBRARIES = libMagick++.la
 MAJOR_VERSION = @MAJOR_VERSION@

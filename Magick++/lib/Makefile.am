@@ -9,6 +9,11 @@ SUBDIRS = Magick++
 
 INCLUDES = -I../.. -I$(top_srcdir)
 
+includedir = ${prefix}/include
+pkgdatadir = $(datadir)/Magick++
+pkglibdir = $(libdir)/Magick++
+pkgincludedir = $(includedir)/Magick++
+
 lib_LTLIBRARIES    = libMagick++.la
 MAJOR_VERSION      = @MAJOR_VERSION@
 MINOR_VERSION      = @MINOR_VERSION@

@@ -55,7 +55,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4a
-TIMESTAMP=" (1.641.2.91 2000/09/03 03:14:30)"
+TIMESTAMP=" (1.641.2.112 2000/09/05 12:36:42)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -570,7 +570,7 @@ if test -z "$show_help"; then
     # Lock this critical section if it is needed
     # We use this script file to make the link, it avoids creating a new file
     if test "$need_locks" = yes; then
-      until ln "$0" "$lockfile" 2>/dev/null; do
+      until $run ln "$0" "$lockfile" 2>/dev/null; do
 	$show "Waiting for $lockfile to be removed"
 	sleep 2
       done
@@ -768,7 +768,7 @@ EOF
 
     # Unlock the critical section if it was locked
     if test "$need_locks" != no; then
-      $rm "$lockfile"
+      $run $rm "$lockfile"
     fi
 
     exit 0
@@ -1180,11 +1180,11 @@ EOF
 	;;
 
       -static)
-	# If we have no pic_flag, then this is the same as -all-static.
-	if test -z "$pic_flag" && test -n "$link_static_flag"; then
-	  compile_command="$compile_command $link_static_flag"
-	  finalize_command="$finalize_command $link_static_flag"
-	fi
+        # The effects of -static are defined in a previous loop.
+	# We used to do the same as -all-static on platforms that
+	# didn't have a PIC flag, but the assumption that the effects
+	# would be equivalent was wrong.  It would break on at least
+	# Digital Unix and AIX.
 	continue
 	;;
 
@@ -1821,6 +1821,9 @@ EOF
 	  # are required to link).
 	  if test -n "$old_library"; then
 	    newdlprefiles="$newdlprefiles $dir/$old_library"
+	  # Otherwise, use the dlname, so that lt_dlopen finds it.
+	  elif test -n "$dlname"; then
+	    newdlprefiles="$newdlprefiles $dir/$dlname"
 	  else
 	    newdlprefiles="$newdlprefiles $dir/$linklib"
 	  fi
@@ -1872,7 +1875,6 @@ EOF
 
 	if test "$linkmode,$pass" = "prog,link"; then
 	  if test -n "$library_names" &&
-	     { test "$hardcode_into_libs" != all || test "$alldeplibs" != yes; } &&
 	     { test "$prefer_static_libs" = no || test -z "$old_library"; }; then
 	    # We need to hardcode the library path
 	    if test -n "$shlibpath_var"; then
@@ -1925,7 +1927,8 @@ EOF
 	    need_relink=yes
 	  fi
 	  # This is a shared library
-	  if test $linkmode = lib && test "$hardcode_into_libs" = all; then
+	  if test $linkmode = lib &&
+	     test $hardcode_into_libs = yes; then
 	    # Hardcode the library path.
 	    # Skip directories that are in the system default run-time
 	    # search path.
@@ -2125,7 +2128,7 @@ EOF
 
 	if test $linkmode = lib; then
 	  if test -n "$dependency_libs" &&
-	     { test "$hardcode_into_libs" = no || test $build_old_libs = yes ||
+	     { test $hardcode_into_libs != yes || test $build_old_libs = yes ||
 	       test $link_static = yes; }; then
 	    # Extract -R from dependency_libs
 	    temp_deplibs=
@@ -2568,7 +2571,7 @@ EOF
 	  *) finalize_rpath="$finalize_rpath $libdir" ;;
 	  esac
 	done
-	if test "$hardcode_into_libs" = no || test $build_old_libs = yes; then
+	if test $hardcode_into_libs != yes || test $build_old_libs = yes; then
 	  dependency_libs="$temp_xrpath $dependency_libs"
 	fi
       fi
@@ -2818,7 +2821,7 @@ EOF
 
       # Test again, we may have decided not to build it any more
       if test "$build_libtool_libs" = yes; then
-	if test "$hardcode_into_libs" != no; then
+	if test $hardcode_into_libs = yes; then
 	  # Hardcode the library paths
 	  hardcode_libdirs=
 	  dep_rpath=
@@ -2984,7 +2987,7 @@ EOF
 	fi
 
 	# Make a backup of the uninstalled library when relinking
-	if test "$mode" = relink && test "$hardcode_into_libs" = all; then
+	if test "$mode" = relink; then
 	  $run eval '(cd $output_objdir && $rm ${realname}U && $mv $realname ${realname}U)' || exit $?
 	fi
 
@@ -3003,7 +3006,7 @@ EOF
 	IFS="$save_ifs"
 
 	# Restore the uninstalled library and exit
-	if test "$mode" = relink && test "$hardcode_into_libs" = all; then
+	if test "$mode" = relink; then
 	  $run eval '(cd $output_objdir && $rm ${realname}T && $mv $realname ${realname}T && $mv "$realname"U $realname)' || exit $?
 	  exit 0
 	fi
@@ -3564,7 +3567,7 @@ static const void *lt_preloaded_setup() {
 	exit 0
       fi
 
-      if test "$hardcode_action" = relink || test "$hardcode_into_libs" = all; then
+      if test "$hardcode_action" = relink; then
 	# Fast installation is not supported
 	link_command="$compile_var$compile_command$compile_rpath"
 	relink_command="$finalize_var$finalize_command$finalize_rpath"
@@ -4020,8 +4023,7 @@ dlpreopen='$dlprefiles'
 
 # Directory that this library needs to be installed in:
 libdir='$install_libdir'"
-	  if test $hardcode_into_libs = all &&
-	     test "$installed" = no && test $need_relink = yes; then
+	  if test "$installed" = no && test $need_relink = yes; then
 	    $echo >> $output "\
 relink_command=\"$relink_command\""
 	  fi
@@ -4231,7 +4233,7 @@ relink_command=\"$relink_command\""
 	test "X$dir" = "X$file/" && dir=
 	dir="$dir$objdir"
 
-	if test "$hardcode_into_libs" = all && test -n "$relink_command"; then
+	if test -n "$relink_command"; then
 	  $echo "$modename: warning: relinking \`$file'" 1>&2
 	  $show "$relink_command"
 	  if $run eval "$relink_command"; then :
@@ -4249,7 +4251,7 @@ relink_command=\"$relink_command\""
 	  shift
 
 	  srcname="$realname"
-	  test "$hardcode_into_libs" = all && test -n "$relink_command" && srcname="$realname"T
+	  test -n "$relink_command" && srcname="$realname"T
 
 	  # Install the shared library and build the symlinks.
 	  $show "$install_prog $dir/$srcname $destdir/$realname"
