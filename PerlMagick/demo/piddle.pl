@@ -23,6 +23,11 @@ $image->Draw(primitve=>'fillrectangle',points=>'30,30 100,100',pen=>blue);
 $image->Draw(primitve=>'rectangle',points=>'30,30 100,100',pen=>maroon,
   linewidth=>4);
 #
+# Draw curve.
+#
+$image->Draw(primitve=>'bezier',points=>'20,20, 100,50, 50,100, 160,160',
+  pen=>black,linewidth=>4);
+#
 # Draw line.
 #
 $image->Draw(primitive=>'line',points=>"10,200 20,190",pen=>red);

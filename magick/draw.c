@@ -486,8 +486,26 @@ Export void DestroyDrawInfo(DrawInfo *draw_info)
 %
 %
 */
+
+double Permutate(int n,int k)
+{
+  double
+    r;
+
+  register int
+    i;
+
+  r=1.0;
+  for (i=k+1; i <= n; i++)
+    r*=i;
+  for (i=1; i <= (n-k); i++)
+    r/=i;
+  return(r);
+}
+
 Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 {
+#define BezierQuantum  25
 #define DrawImageText  "  Drawing on image...  "
 
   DrawInfo
@@ -663,6 +681,10 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       primitive_type=PolygonPrimitive;
     if (Latin1Compare("FillPolygon",keyword) == 0)
       primitive_type=FillPolygonPrimitive;
+    if (Latin1Compare("Bezier",keyword) == 0)
+      primitive_type=BezierPrimitive;
+    if (Latin1Compare("FillBezier",keyword) == 0)
+      primitive_type=FillBezierPrimitive;
     if (Latin1Compare("Color",keyword) == 0)
       primitive_type=ColorPrimitive;
     if (Latin1Compare("Matte",keyword) == 0)
@@ -712,7 +734,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       while (isspace((int) (*p)) || (*p == ','))
         p++;
       i++;
-      if (i < (int) (number_coordinates-360-1))
+      if (i < (int) (number_coordinates-Max(BezierQuantum*x,360)-1))
         continue;
       number_coordinates<<=1;
       primitive_info=(PrimitiveInfo *) ReallocateMemory(primitive_info,
@@ -793,7 +815,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         /*
-          Arc's are just short segmented polygons.
+          Arc's are just short segmented polys.
         */
         primitive_info[j].primitive=PolygonPrimitive;
         if (primitive_type == FillEllipsePrimitive)
@@ -844,6 +866,85 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates < 3)
           primitive_type=UndefinedPrimitive;
+        break;
+      }
+      case BezierPrimitive:
+      case FillBezierPrimitive:
+      {
+        double
+          alpha,
+          *coefficients,
+          weight;
+
+        int
+          control_points;
+
+        PointInfo
+          *points;
+
+        register int
+          k,
+	  l;
+
+        if (primitive_info[j].coordinates < 3)
+          {
+            primitive_type=UndefinedPrimitive;
+            break;
+          }
+        /*
+          Allocate coeficients.
+        */
+        control_points=primitive_info[j].coordinates;
+        coefficients=(double *) AllocateMemory(control_points*sizeof(double));
+        points=(PointInfo *)
+          AllocateMemory(BezierQuantum*control_points*sizeof(PointInfo));
+        if ((coefficients == (double *) NULL) || (points == (PointInfo *) NULL))
+          ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
+            "Memory allocation failed");
+        /*
+          Compute bezier points.
+        */
+        for (l=0; l < control_points; l++)
+          coefficients[l]=Permutate(control_points-1,l);
+        weight=0.0;
+        for (l=0; l < (BezierQuantum*control_points); l++)
+        {
+          pixel.x=0;
+          pixel.y=0;
+          alpha=pow(1.0-weight,control_points-1);
+          for(k=j; k < i; k++)
+          {
+            pixel.x+=alpha*coefficients[k]*primitive_info[k].pixel.x;
+            pixel.y+=alpha*coefficients[k]*primitive_info[k].pixel.y;
+            alpha*=weight/(1.0-weight);
+          }
+          points[l]=pixel;
+          weight+=1.0/BezierQuantum/control_points;
+        }
+        FreeMemory((void *) &coefficients);
+        /*
+          Bezier curves are just short segmented polys.
+        */
+        primitive_info[j].primitive=PolygonPrimitive;
+        if (primitive_type == FillBezierPrimitive)
+          primitive_info[j].primitive=FillPolygonPrimitive;
+        primitive_info[j].coordinates=BezierQuantum*control_points;
+        i=j;
+        for (l=0; l < (BezierQuantum*control_points); l++)
+        {
+          pixel=points[l];
+          if (pixel.x < bounds.x1)
+            bounds.x1=pixel.x;
+          if (pixel.y < bounds.y1)
+            bounds.y1=pixel.y;
+          if (pixel.x > bounds.x2)
+            bounds.x2=pixel.x;
+          if (pixel.y > bounds.y2)
+            bounds.y2=pixel.y;
+          primitive_info[i].pixel=pixel;
+          i++;
+        }
+        FreeMemory((void *) &points);
         break;
       }
       case ColorPrimitive:

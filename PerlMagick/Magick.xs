@@ -241,7 +241,7 @@ static char
   {
     "Undefined", "Point", "Line", "Rectangle", "FillRectangle",
     "Circle", "FillCircle", "Ellipse", "FillEllipse", "Polygon",
-    "FillPolygon", "Color", "Matte", "Text", "Image", (char *) NULL
+    "FillPolygon", "Bezier", "Color", "Matte", "Text", "Image", (char *) NULL
   },
   *ResolutionTypes[] =
   {
