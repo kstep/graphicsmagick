@@ -2731,17 +2731,22 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterSVGImage(void)
 {
+  char
+    version[MaxTextExtent];
+
   MagickInfo
     *entry;
 
+#if defined(LIBXML_DOTTED_VERSION)
+  (void) strncpy(version,"XML " LIBXML_DOTTED_VERSION,MaxTextExtent-1);
+#endif
   entry=SetMagickInfo("SVG");
   entry->decoder=ReadSVGImage;
   entry->encoder=WriteSVGImage;
   entry->description=AcquireString("Scalable Vector Gaphics");
+  if (*version != '\0')
+    entry->version=AcquireString(version);
   entry->module=AcquireString("SVG");
-#if defined(LIBXML_DOTTED_VERSION)
-  entry->version=AcquireString("XML " LIBXML_DOTTED_VERSION);
-#endif
   (void) RegisterMagickInfo(entry);
 }
 
