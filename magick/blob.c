@@ -2127,17 +2127,21 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
       break;
     case BlobStream:
     {
-      void
+      const unsigned char
         *source;
 
-      count=ReadBlobStream(image,length,&source);
+      count=ReadBlobStream(image,length,(void *) &source);
       if (count <= 10)
         {
           register size_t
             i;
 
           for(i=count; i > 0; i--)
-            *((unsigned char*)data++)=*((const unsigned char*)source++);
+            {
+              *((unsigned char*)data)=*source;
+              data++;
+              source++;
+            }
         }
       else 
         (void) memcpy(data,source,count);
@@ -2991,8 +2995,15 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
           register size_t
             i;
 
+          const unsigned char
+            *source=(const unsigned char*) data;
+
           for(i=length; i > 0; i--)
-            *((unsigned char*)dest++)=*((const unsigned char*)data++);
+            {
+              *((unsigned char*)dest)=*source;
+              dest++;
+              source++;
+            }
         }
       else
         {
