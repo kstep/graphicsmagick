@@ -10,7 +10,6 @@
 #include "Magick++/Thread.h"
 #include "Magick++/Exception.h"
 
-
 // Default constructor
 Magick::MutexLock::MutexLock(void)
 #if defined(HasPTHREADS)
@@ -24,7 +23,8 @@ Magick::MutexLock::MutexLock(void)
       return;
   throw Magick::ErrorOption( "mutex initialization failed" );
 }
-#elsif defined(_VISUALC_) && defined(_MT)
+#else
+#if defined(_VISUALC_) && defined(_MT)
 // Win32 threads
   : _mutex()
 {
@@ -45,6 +45,7 @@ Magick::MutexLock::MutexLock(void)
 // Threads not supported
 {
 }
+#endif
 #endif
 
 // Destructor
