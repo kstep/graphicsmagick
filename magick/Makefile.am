@@ -54,12 +54,22 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
   magick.c delegate.c module.c static.c timer.c utility.c cache_view.c \
   stream.c animate.c display.c widget.c xwindow.c PreRvIcccm.c
 
+
+# Platform specific source files that may appear in the library
+EXTRA_libMagick_la_SOURCES = nt.c
+
+if WIN32
+MAGICK_PLATFORM_SRCS = nt.c
+else
+MAGICK_PLATFORM_SRCS =
+endif
+
 # Library sources
 if WITH_MODULES
-libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
+libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
 libMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(top_builddir)/ltdl/libltdlc.la
 else
-libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
+libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
 libMagick_la_LIBADD = ../coders/libCoders.la @MAGICK_DEP_LIBS@
 endif # WITH_MODULES
 

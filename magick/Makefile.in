@@ -256,9 +256,15 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
   stream.c animate.c display.c widget.c xwindow.c PreRvIcccm.c
 
 
+# Platform specific source files that may appear in the library
+EXTRA_libMagick_la_SOURCES = nt.c
+
+@WIN32_TRUE@MAGICK_PLATFORM_SRCS = nt.c
+@WIN32_FALSE@MAGICK_PLATFORM_SRCS = 
+
 # Library sources
-@WITH_MODULES_TRUE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
-@WITH_MODULES_FALSE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
+@WITH_MODULES_TRUE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
+@WITH_MODULES_FALSE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
 @WITH_MODULES_TRUE@libMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(top_builddir)/ltdl/libltdlc.la
 @WITH_MODULES_FALSE@libMagick_la_LIBADD = ../coders/libCoders.la @MAGICK_DEP_LIBS@
 
@@ -311,8 +317,12 @@ am__objects_1 = memory.lo blob.lo cache.lo error.lo monitor.lo \
 	magic.lo magick.lo delegate.lo module.lo static.lo timer.lo \
 	utility.lo cache_view.lo stream.lo animate.lo display.lo \
 	widget.lo xwindow.lo PreRvIcccm.lo
-@WITH_MODULES_TRUE@am_libMagick_la_OBJECTS = $(am__objects_1)
-@WITH_MODULES_FALSE@am_libMagick_la_OBJECTS = $(am__objects_1)
+@WIN32_TRUE@am__objects_2 = nt.lo
+@WIN32_FALSE@am__objects_2 =
+@WITH_MODULES_TRUE@am_libMagick_la_OBJECTS = $(am__objects_1) \
+@WITH_MODULES_TRUE@	$(am__objects_2)
+@WITH_MODULES_FALSE@am_libMagick_la_OBJECTS = $(am__objects_1) \
+@WITH_MODULES_FALSE@	$(am__objects_2)
 libMagick_la_OBJECTS = $(am_libMagick_la_OBJECTS)
 SCRIPTS = $(bin_SCRIPTS)
 
@@ -335,15 +345,15 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/list.Plo ./$(DEPDIR)/magic.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/magick.Plo ./$(DEPDIR)/memory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/module.Plo ./$(DEPDIR)/monitor.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/montage.Plo ./$(DEPDIR)/quantize.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/registry.Plo ./$(DEPDIR)/render.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/segment.Plo ./$(DEPDIR)/semaphore.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/shear.Plo ./$(DEPDIR)/signature.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/static.Plo ./$(DEPDIR)/stream.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/timer.Plo ./$(DEPDIR)/transform.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/type.Plo ./$(DEPDIR)/utility.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/widget.Plo ./$(DEPDIR)/xwindow.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/zoom.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/montage.Plo ./$(DEPDIR)/nt.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/quantize.Plo ./$(DEPDIR)/registry.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/render.Plo ./$(DEPDIR)/segment.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/semaphore.Plo ./$(DEPDIR)/shear.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/signature.Plo ./$(DEPDIR)/static.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/stream.Plo ./$(DEPDIR)/timer.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/transform.Plo ./$(DEPDIR)/type.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/utility.Plo ./$(DEPDIR)/widget.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/xwindow.Plo ./$(DEPDIR)/zoom.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -352,7 +362,7 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
-DIST_SOURCES = $(libMagick_la_SOURCES)
+DIST_SOURCES = $(libMagick_la_SOURCES) $(EXTRA_libMagick_la_SOURCES)
 
 NROFF = nroff
 MANS = $(man_MANS)
@@ -362,7 +372,7 @@ HEADERS = $(include_HEADERS) $(noinst_HEADERS)
 
 DIST_COMMON = $(include_HEADERS) $(noinst_HEADERS) Magick-config.in \
 	Makefile.am Makefile.in magick_config.h.in
-SOURCES = $(libMagick_la_SOURCES)
+SOURCES = $(libMagick_la_SOURCES) $(EXTRA_libMagick_la_SOURCES)
 
 all: $(BUILT_SOURCES) magick_config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -480,6 +490,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/module.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/monitor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/montage.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quantize.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/registry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/render.Plo@am__quote@

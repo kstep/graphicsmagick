@@ -3233,20 +3233,28 @@ fi
 #
 # Tests for Windows
 #
-case $host_os in
-  *cygwin* ) CYGWIN=yes;;
-         * ) CYGWIN=no;;
+
+
+
+native_win32_build='no'
+case "${host_os}" in
+  mingw* )
+    native_win32_build='yes'
+    ;;
 esac
 
-case $host_os in
-  *mingw32* ) MINGW32=yes;;
-          * ) MINGW32=no;;
-esac
+
+if test "$native_win32_build" != 'no'; then
+  WIN32_TRUE=
+  WIN32_FALSE='#'
+else
+  WIN32_TRUE='#'
+  WIN32_FALSE=
+fi
 
 
-
-
-if test "${GCC}" != "yes" ; then
+if test "${GCC}" != "yes"
+then
   case "${host}" in
     *-*-hpux* )
       # aCC: HP ANSI C++ B3910B A.03.34
@@ -3700,7 +3708,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3703 "configure"' > conftest.$ac_ext
+  echo '#line 3711 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7606,7 +7614,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7609 "configure"
+#line 7617 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7704,7 +7712,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7707 "configure"
+#line 7715 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10851,7 +10859,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10854 "configure"
+#line 10862 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10949,7 +10957,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10952 "configure"
+#line 10960 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13611,7 +13619,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13614 "configure"
+#line 13622 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13709,7 +13717,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13712 "configure"
+#line 13720 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -28803,7 +28811,10 @@ else
         windows_font_dir="$font_dir"
       fi
       ;;
-    #mingw* )
+    mingw* )
+      # FIXME: need a real test here.
+      windows_font_dir="c:\\windows\\fonts"
+      ;;
     #pw32*)
   esac
 fi
@@ -29256,6 +29267,13 @@ if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"AMDEP\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"AMDEP\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${WIN32_TRUE}" && test -z "${WIN32_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"WIN32\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"WIN32\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -29991,6 +30009,8 @@ s,@CCDEPMODE@,$CCDEPMODE,;t t
 s,@CPP@,$CPP,;t t
 s,@LD@,$LD,;t t
 s,@LN_S@,$LN_S,;t t
+s,@WIN32_TRUE@,$WIN32_TRUE,;t t
+s,@WIN32_FALSE@,$WIN32_FALSE,;t t
 s,@INCLTDL@,$INCLTDL,;t t
 s,@LIBLTDL@,$LIBLTDL,;t t
 s,@ECHO@,$ECHO,;t t

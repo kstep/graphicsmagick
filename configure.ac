@@ -53,12 +53,19 @@ AC_PROG_LN_S
 #
 # Tests for Windows
 #
-AC_CYGWIN
-AC_MINGW32
 AC_EXEEXT
 AC_OBJEXT
 
-if test "${GCC}" != "yes" ; then
+native_win32_build='no'
+case "${host_os}" in
+  mingw* )
+    native_win32_build='yes'
+    ;;
+esac
+AM_CONDITIONAL(WIN32, test "$native_win32_build" != 'no')
+
+if test "${GCC}" != "yes"
+then
   case "${host}" in
     *-*-hpux* )
       # aCC: HP ANSI C++ B3910B A.03.34
@@ -1589,7 +1596,10 @@ else
         windows_font_dir="$font_dir"
       fi
       ;;
-    #mingw* )
+    mingw* )
+      # FIXME: need a real test here.
+      windows_font_dir="c:\\windows\\fonts"
+      ;;
     #pw32*)
   esac
 fi
