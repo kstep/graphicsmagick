@@ -1,3 +1,9 @@
+2003-08-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (ReadImage): Ensure that the reported image
+	magic string is that of the user-specified input file rather than
+	a temporary file prepared by an external delegate program.
+
 2003-08-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c (BlobToImage): Skip calling SetImageInfo() if
