@@ -174,6 +174,11 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   const long x,const long y,const unsigned long columns,
   const unsigned long rows,const unsigned long id,ExceptionInfo *exception)
 {
+#define Cx(x) ((x) < 0 ? 0 : (x) >= (long) cache_info->columns ? \
+  (long) cache_info->columns-1 : (x))
+#define Cy(y) ((y) < 0 ? 0 : (y) >= (long) cache_info->rows ? \
+  (long) cache_info->rows-1 : (y))
+
   CacheInfo
     *cache_info;
 
@@ -260,10 +265,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   {
     for (u=0; u < (long) columns; u++)
     {
-      p=AcquireCacheNexus(image,
-        x+u >= 0 ? x+u < cache_info->columns ? x+u : cache_info->columns-1 : 0,
-        y+v >= 0 ? y+v < cache_info->rows ? y+v : cache_info->rows-1 : 0,1,1,
-        image_nexus,exception);
+      p=AcquireCacheNexus(image,Cx(x+u),Cy(y+v),1,1,image_nexus,exception);
       if (p != (const PixelPacket *) NULL)
         *q=(*p);
       if (indexes != (IndexPacket *) NULL)
