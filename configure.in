@@ -165,9 +165,9 @@ AM_CONDITIONAL(HasLZW, test "$have_lzw" != 'no')
 
 # Enable 16-bit pixels.
 AC_ARG_ENABLE(16bit-pixel,
-	      [  --enable-16bit-pixel    enable 16 bit/quantum pixels (default is no)],
+	      [  --enable-16bit-pixel    enable 16 bit/quantum pixels (default is yes)],
 	      [with_16_bit_pixel=$enableval],
-	      [with_16_bit_pixel='no'])
+	      [with_16_bit_pixel='yes'])
 test "$with_16_bit_pixel" = 'yes' && AC_DEFINE(QuantumLeap,,Increase max color value from 255 to 65535)
 
 # Set pixel cache threshold
