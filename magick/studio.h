@@ -8,6 +8,10 @@
 extern "C" {
 #endif
 
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+# define POSIX
+#endif
+
 /*
   System include declarations.
 */
@@ -60,10 +64,10 @@ extern "C" {
 #include <signal.h>
 #include <assert.h>
 
-#if !defined(vms) && !defined(macintosh)
+#if defined(WIN32) || defined(POSIX)
 # include <sys/types.h>
 # include <sys/stat.h>
-# if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+# if defined(POSIX)
 #  if defined(HAVE_SYS_NDIR_H) || defined(HAVE_SYS_DIR_H) || defined(HAVE_NDIR_H)
 #   define dirent direct
 #   define NAMLEN(dirent) (dirent)->d_namlen
@@ -129,7 +133,7 @@ extern "C" {
 /*
   Review these platform specific definitions.
 */
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if defined(POSIX)
 # define DirectorySeparator  "/"
 # define DirectoryListSeparator  ':'
 # define EditorOptions  " -title \"Edit Image Comment\" -e vi"

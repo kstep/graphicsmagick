@@ -72,20 +72,19 @@ Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl 
 Root: HKLM; Subkey: "Software\ImageMagick"; ValueType: none; Flags: uninsdeletekeyifempty
 Root: HKLM; Subkey: "Software\ImageMagick\5.4.9"; ValueType: none; Flags: uninsdeletekeyifempty
 Root: HKLM; Subkey: "Software\ImageMagick\5.4.9\Q:16"; ValueType: none; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.9\Q:16"; ValueType: string; ValueName: "ApplicationDefaultsPath"; ValueData: "{app}\config"
 Root: HKLM; Subkey: "Software\ImageMagick\5.4.9\Q:16"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.9\Q:16"; ValueType: string; ValueName: "ConfigurePath"; ValueData: "{app}\config"
 Root: HKLM; Subkey: "Software\ImageMagick\5.4.9\Q:16"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"
 Root: HKLM; Subkey: "Software\ImageMagick\5.4.9\Q:16"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.9\Q:16"; ValueType: string; ValueName: "SharePath"; ValueData: "{app}\config"
 
 Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: none; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "Version"; ValueData: "5.4.9"
 Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: dword; ValueName: "QuantumDepth"; ValueData: 16
-Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "ApplicationDefaultsPath"; ValueData: "{app}\config"
+
 Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
+Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "ConfigurePath"; ValueData: "{app}\config"
 Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"
 Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"
-Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "SharePath"; ValueData: "{app}\config"
 
 ;
 ; Tell windows to use our convert.exe

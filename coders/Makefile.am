@@ -1,6 +1,6 @@
 #  Makefile for building ImageMagick coder modules
 #
-# Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated
+# Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated
 # to making software imaging solutions freely available.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
@@ -77,8 +77,8 @@ pkgdir = $(libdir)/ImageMagick/modules/coders
 # Architecture-dependent data files installed with modules
 pkg_DATA = modules.mgk
 
-# Architecture independent data files installed in the package's data directory
-pkgdata_DATA = 
+# Architecture independent data files installed into ImageMagick/share
+pkgdata_DATA =
 
 # Modules which are to be built
 pkg_LTLIBRARIES = \

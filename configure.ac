@@ -213,6 +213,18 @@ AC_ARG_ENABLE(delegate-build,
 	      [with_delegate_build=$enableval],
 	      [with_delegate_build='no'])
 
+# Build a version of ImageMagick which operates uninstalled.
+# Used to build distributions located via MAGICK_HOME / executable path
+AC_ARG_ENABLE(installed,
+	      [  --disable-installed      disable building an installed ImageMagick
+                          (default enabled)],
+	      [with_installed=$enableval],
+	      [with_installed='yes'])
+if test "$with_installed" = 'yes'
+then
+  AC_DEFINE(UseInstalledImageMagick,1,[ImageMagick is formally installed under prefix])
+fi
+
 # Enable verbose output from libtool (enable libtool's default)
 AC_ARG_ENABLE(libtool-verbose,
 	      [  --enable-libtool-verbose enable verbose libtool output (default disabled)],
@@ -580,7 +592,7 @@ AC_FUNC_MEMCMP
 AC_TYPE_SIGNAL
 AC_FUNC_VPRINTF
 AC_FUNC_MMAP
-AC_CHECK_FUNCS(closedir getcwd gettimeofday mkdir mkstemp \
+AC_CHECK_FUNCS(closedir getcwd getexecname gettimeofday mkdir mkstemp \
   opendir poll readdir select snprintf strchr strerror strtol sysconf \
   tempnam vsnprintf)
 

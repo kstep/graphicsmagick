@@ -1647,7 +1647,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     Read the color configuration file.
   */
   FormatString(filename,"%.1024s",basename);
-  path=GetMagickConfigurePath(basename,False,exception);
+  path=FindConfigurationFile(basename,exception);
   if (path != (char *) NULL)
     {
       FormatString(filename,"%.1024s",path);
