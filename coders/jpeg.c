@@ -1192,7 +1192,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       break;
     }
   }
-  if ((image_info->type != TruecolorType) &&
+  if ((image_info->type != TrueColorType) &&
       IsGrayImage(image,&image->exception))
     {
       jpeg_info.input_components=1;
