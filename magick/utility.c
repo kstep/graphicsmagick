@@ -763,6 +763,9 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
     expanded,
     number_files;
 
+  register char
+    *p;
+
   register long
     i,
     j;
@@ -805,7 +808,8 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
       continue;
     (void) strncpy(path,option,MaxTextExtent-1);
     ExpandFilename(path);
-    if (!IsGlob(path))
+    p=path+Max((long) strlen(path)-1,0);
+    if ((*p == ']') || !IsGlob(path))
       {
         expanded=True;
         continue;
