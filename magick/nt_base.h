@@ -169,10 +169,12 @@ extern MagickExport struct dirent
   *NTreaddir(DIR *);
 
 extern MagickExport DIR
-  *NTopendir(char *);
+  *NTopendir(const char *);
+
+extern MagickExport int
+  NTclosedir(DIR *);
 
 extern MagickExport void
-  NTclosedir(DIR *),
   NTseekdir(DIR *,long);
 
 #define closedir(dir) NTclosedir(dir)

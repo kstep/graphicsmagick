@@ -26,13 +26,13 @@
 MagickExport MagickPassFail MagickTsdKeyCreate(MagickTsdKey_t *key)
 {
 #if defined(HAVE_PTHREAD)
-  return (pthread_key_create(key, 0) ==0 ? MagickPass : MagickFail);
+  return ((pthread_key_create(key, 0) == 0) ? MagickPass : MagickFail);
 #elif defined(WIN32)
   *key=TlsAlloc();
-  return (*key != TLS_OUT_OF_INDEXES ? MagickPass : MagickFail);
+  return ((*key != TLS_OUT_OF_INDEXES) ? MagickPass : MagickFail);
 #else
   *key=MagickAllocateMemory(unsigned long *,sizeof(unsigned long));
-  return (*key != (void *) NULL ? MagickPass : MagickFail);
+  return ((*key != (void *) NULL) ? MagickPass : MagickFail);
 #endif
 }
 
@@ -43,9 +43,9 @@ MagickExport MagickPassFail MagickTsdKeyCreate(MagickTsdKey_t *key)
 MagickExport MagickPassFail MagickTsdKeyDelete(MagickTsdKey_t key)
 {
 #if defined(HAVE_PTHREAD)
-  return (pthread_key_delete(key) == 0 ? MagickPass : MagickFail);
+  return ((pthread_key_delete(key) == 0) ? MagickPass : MagickFail);
 #elif defined(WIN32)
-  return (TlsFree(key) != 0 ? MagickPass : MagickFail);
+  return ((TlsFree(key) != 0) ? MagickPass : MagickFail);
 #else
   MagickFreeMemory(key);
   return MagickPass;
@@ -58,9 +58,9 @@ MagickExport MagickPassFail MagickTsdKeyDelete(MagickTsdKey_t key)
 MagickExport MagickPassFail MagickTsdSetSpecific(MagickTsdKey_t key, const void *value)
 {
 #if defined(HAVE_PTHREAD)
-  return ((pthread_setspecific(key, value)) == 0 ? MagickPass : MagickFail);
+  return ((pthread_setspecific(key, value) == 0) ? MagickPass : MagickFail);
 #elif defined(WIN32)
-  return (TlsSetValue(key,value) != 0 ? MagickPass : MagickFail);
+  return ((TlsSetValue(key,(void *) value) != 0) ? MagickPass : MagickFail);
 #else
   *key=(unsigned long) value;
   return MagickPass;
