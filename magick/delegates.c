@@ -95,8 +95,7 @@ static DelegateInfo
 MagickExport void DestroyDelegateInfo(void)
 {
   DelegateInfo
-    *delegate,
-    *delegates;
+    *delegate;
 
   register DelegateInfo
     *p;
