@@ -17,6 +17,7 @@ EXCLUDE = ftstream.c
 EXCLUDE = ftlist.c
 EXCLUDE = ftoutln.c
 EXCLUDE = ftnames.c
+EXCLUDE = ftdbgmem.c
 EXCLUDE = ftextend.c
 EXCLUDE = ftmac.c
 EXCLUDE = ftmac.h
