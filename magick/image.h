@@ -127,11 +127,10 @@ typedef enum
 
 typedef enum
 {
-  UndefinedCompliance = 0x0000,
-  NoCompliance = 0x0001,
-  SVGCompliance = 0x0002,
-  X11Compliance = 0x0004,
-  XPMCompliance = 0x0008
+  NoCompliance = 0x0000,
+  SVGCompliance = 0x0001,
+  X11Compliance = 0x0002,
+  XPMCompliance = 0x0004,
   AllCompliance = 0xffff
 } ComplianceType;
 
