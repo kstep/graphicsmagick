@@ -130,7 +130,6 @@ Export Image *AllocateImage(const ImageInfo *image_info)
     Initialize Image structure.
   */
   GetBlobInfo(&(allocated_image->blob_info));
-  GetCacheInfo(&(allocated_image->cache_info));
   allocated_image->file=(FILE *) NULL;
   allocated_image->exempt=False;
   allocated_image->status=False;
@@ -176,6 +175,11 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->color_profile.info=(unsigned char *) NULL;
   allocated_image->iptc_profile.length=0;
   allocated_image->iptc_profile.info=(unsigned char *) NULL;
+  GetCacheInfo(&(allocated_image->cache_handle));
+  allocated_image->cache_info.x=0;
+  allocated_image->cache_info.y=0;
+  allocated_image->cache_info.width=0;
+  allocated_image->cache_info.height=0;
   allocated_image->pixels=(PixelPacket *) NULL;
   allocated_image->indexes=(IndexPacket *) NULL;
   allocated_image->geometry=(char *) NULL;
@@ -300,7 +304,7 @@ Export void AllocateNextImage(const ImageInfo *image_info,Image *image)
     Allocate image structure.
   */
   assert(image != (Image *) NULL);
-  ClosePixelCache(&image->cache_info);
+  ClosePixelCache(image->cache_handle);
   image->next=AllocateImage(image_info);
   if (image->next == (Image *) NULL)
     return;
@@ -798,9 +802,13 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
         (char *) image->iptc_profile.info,length);
     }
   GetBlobInfo(&clone_image->blob_info);
+  GetCacheInfo(&clone_image->cache_handle);
+  clone_image->cache_info.x=0;
+  clone_image->cache_info.y=0;
+  clone_image->cache_info.width=0;
+  clone_image->cache_info.height=0;
   clone_image->pixels=(PixelPacket *) NULL;
   clone_image->indexes=(IndexPacket *) NULL;
-  GetCacheInfo(&clone_image->cache_info);
   if ((image->columns != columns) || (image->rows != rows))
     {
       clone_image->columns=columns;
@@ -2595,7 +2603,7 @@ Export void DestroyImage(Image *image)
   */
   assert(image != (Image *) NULL);
   DestroyBlobInfo(&image->blob_info);
-  DestroyCacheInfo(&image->cache_info);
+  DestroyCacheInfo(image->cache_handle);
   if (image->file != (FILE *) NULL)
     {
       CloseBlob(image);
@@ -5169,7 +5177,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
   if (geometry != (char *) NULL)
     FreeMemory(geometry);
   DestroyImageInfo(local_info);
-  ClosePixelCache(&(*image)->cache_info);
+  ClosePixelCache((*image)->cache_handle);
 }
 
 /*

@@ -67,6 +67,8 @@ typedef struct _BlobInfo
     quantum;
 } BlobInfo;
 
+typedef void* CacheHandle;
+
 typedef struct _ColorlistInfo
 {
   char
@@ -317,42 +319,6 @@ typedef struct _TimerInfo
     state;
 } TimerInfo;
 
-typedef struct _CacheInfo
-{
-  char
-    filename[MaxTextExtent];
-
-  FILE
-    *file;
-
-  ClassType
-#if defined(__cplusplus) || defined(c_plusplus)
-    c_class;
-#else
-    class;
-#endif
-
-  size_t
-    number_pixels;
-
-  unsigned int
-    mapped;
-
-  PixelPacket
-    *pixels;
-
-  IndexPacket
-    *indexes;
-
-  int
-    x,
-    y;
-
-  unsigned int
-    width,
-    height;
-} CacheInfo;
-
 typedef struct _ChromaticityInfo
 {
   PointInfo
@@ -364,9 +330,6 @@ typedef struct _ChromaticityInfo
 
 typedef struct _Image
 {
-  CacheInfo
-    cache_info;
-
   BlobInfo
     blob_info;
 
@@ -457,6 +420,12 @@ typedef struct _Image
 
   char
     *signature;
+
+  CacheHandle
+    cache_handle;
+
+  RectangleInfo
+    cache_info;
 
   PixelPacket
     *pixels;

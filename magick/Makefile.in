@@ -175,7 +175,7 @@ INCLUDES = -I$(top_srcdir)
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
 # Library sources
-libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c avs.c blob.c bmp.c   cache.c cmyk.c colors.c compress.c dcm.c decorate.c delegates.c display.c   dps.c draw.c effects.c enhance.c ept.c error.c fax.c fits.c fpx.c gems.c   gif.c gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c image.c   iptc.c jbig.c jpeg.c label.c logo.c magick.c map.c matte.c memory.c   miff.c monitor.c mono.c montage.c mtv.c null.c pcd.c pcl.c pcx.c   pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c   psd.c pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c sfw.c sgi.c shear.c   signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c timer.c transform.c   ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c widget.c x.c   xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c 8bim.c
+libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c avs.c blob.c bmp.c   cache.c cache_io.c cmyk.c colors.c compress.c dcm.c decorate.c delegates.c   display.c dps.c draw.c effects.c enhance.c ept.c error.c fax.c fits.c fpx.c   gems.c gif.c gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c   image.c iptc.c jbig.c jpeg.c label.c logo.c magick.c map.c matte.c memory.c   miff.c monitor.c mono.c montage.c mtv.c null.c pcd.c pcl.c pcx.c   pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c   psd.c pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c sfw.c sgi.c shear.c   signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c timer.c transform.c   ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c widget.c x.c   xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c 8bim.c
 
 
 # Source files not used for Unix library but which are distributed
@@ -189,7 +189,7 @@ include_HEADERS = magick.h api.h classify.h image.h quantize.h gems.h 	blob.h co
 
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = defines.h animate.h display.h mac.h nt.h vms.h mng.h 	PreRvIcccm.h widget.h 
+noinst_HEADERS = animate.h cache_io.h defines.h display.h mac.h mng.h nt.h 	PreRvIcccm.h vms.h widget.h 
 
 
 # Additional files to distribute
@@ -204,8 +204,8 @@ LTLIBRARIES =  $(lib_LTLIBRARIES)
 LIBS = @LIBS@
 libMagick_la_LIBADD = 
 libMagick_la_OBJECTS =  PreRvIcccm.lo animate.lo annotate.lo avs.lo \
-blob.lo bmp.lo cache.lo cmyk.lo colors.lo compress.lo dcm.lo \
-decorate.lo delegates.lo display.lo dps.lo draw.lo effects.lo \
+blob.lo bmp.lo cache.lo cache_io.lo cmyk.lo colors.lo compress.lo \
+dcm.lo decorate.lo delegates.lo display.lo dps.lo draw.lo effects.lo \
 enhance.lo ept.lo error.lo fax.lo fits.lo fpx.lo gems.lo gif.lo \
 gradation.lo gray.lo hdf.lo histogram.lo html.lo icc.lo icon.lo \
 image.lo iptc.lo jbig.lo jpeg.lo label.lo logo.lo magick.lo map.lo \

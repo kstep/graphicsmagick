@@ -18,6 +18,9 @@ AC_SUBST(MAJOR_VERSION)dnl
 AC_SUBST(MINOR_VERSION)dnl
 AC_SUBST(MICRO_VERSION)dnl
 
+# Ensure that make can run correctly
+AM_SANITY_CHECK
+
 # Generate configure header.
 AM_CONFIG_HEADER(magick/config.h)
 

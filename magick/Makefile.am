@@ -42,10 +42,10 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 
 # Library sources
 libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c avs.c blob.c bmp.c \
-  cache.c cmyk.c colors.c compress.c dcm.c decorate.c delegates.c display.c \
-  dps.c draw.c effects.c enhance.c ept.c error.c fax.c fits.c fpx.c gems.c \
-  gif.c gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c image.c \
-  iptc.c jbig.c jpeg.c label.c logo.c magick.c map.c matte.c memory.c \
+  cache.c cache_io.c cmyk.c colors.c compress.c dcm.c decorate.c delegates.c \
+  display.c dps.c draw.c effects.c enhance.c ept.c error.c fax.c fits.c fpx.c \
+  gems.c gif.c gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c \
+  image.c iptc.c jbig.c jpeg.c label.c logo.c magick.c map.c matte.c memory.c \
   miff.c monitor.c mono.c montage.c mtv.c null.c pcd.c pcl.c pcx.c \
   pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c \
   psd.c pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c sfw.c sgi.c shear.c \
@@ -65,8 +65,8 @@ include_HEADERS = magick.h api.h classify.h image.h quantize.h gems.h \
 	delegates.h timer.h version.h xwindows.h config.h
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = defines.h animate.h display.h mac.h nt.h vms.h mng.h \
-	PreRvIcccm.h widget.h 
+noinst_HEADERS = animate.h cache_io.h defines.h display.h mac.h mng.h nt.h \
+	PreRvIcccm.h vms.h widget.h 
 
 # Additional files to distribute
 EXTRA_DIST = Imakefile Magick-config.in Make.com
