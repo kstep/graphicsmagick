@@ -145,8 +145,8 @@ extern "C" {
 #define Extent(string)  ((int) strlen(string))
 #define False  0
 #define DegreesToRadians(x) ((x)*M_PI/180.0)
-#define Intensity(color)  \
-  ((unsigned long) ((0.299*(color).red+0.587*(color).green+0.114*(color).blue)))
+#define Intensity(color)  ((unsigned long) \
+  ((0.299*(color).red+0.587*(color).green+0.1140000000000001*(color).blue)))
 #define IsFaxImage(color)  \
   (IsMonochromeImage(image) && ((image)->columns <= 2560))
 #define IsGray(color)  \
