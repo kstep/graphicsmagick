@@ -1594,8 +1594,7 @@ MagickExport unsigned int QueryColorname(const Image *image,
       {
         if (!(p->compliance & compliance))
           continue;
-        if ((p->color.red != color->red) ||
-            (p->color.green != color->green) ||
+        if ((p->color.red != color->red) || (p->color.green != color->green) ||
             (p->color.blue != color->blue) ||
             (p->color.opacity != color->opacity))
           continue;
