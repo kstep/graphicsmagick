@@ -609,7 +609,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       jpeg_destroy_decompress(&jpeg_info);
       *exception=image->exception;
       GetExceptionInfo(&image->exception);
-      if ((size_t) (image->columns*image->rows) != 0)
+      if ((image->columns*image->rows) != 0)
         return(image);
       DestroyImage(image);
       return((Image *) NULL);

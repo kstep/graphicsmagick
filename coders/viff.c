@@ -214,6 +214,9 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     bit,
     y;
 
+  size_t
+    number_pixels;
+
   register IndexPacket
     *indexes;
 
@@ -226,9 +229,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
 
   register unsigned char
     *p;
-
-  size_t
-    number_pixels;
 
   unsigned char
     buffer[7],

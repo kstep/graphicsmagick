@@ -3050,7 +3050,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   (byte)&=(~0x01); \
   (byte)|=((unsigned int) Intensity(*p) >> shift) & 0x01; \
   j++; \
-  if (j == (off_t) (watermark->columns*watermark->rows)) \
+  if (j == (watermark->columns*watermark->rows)) \
     { \
       j=0; \
       shift--; \
@@ -3064,8 +3064,12 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
     *stegano_image;
 
   int
+    j,
     shift,
     y;
+
+  register int
+    i;
 
   register IndexPacket
     *indexes;
@@ -3076,10 +3080,6 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   register PixelPacket
     *p,
     *q;
-
-  off_t
-    i,
-    j;
 
   /*
     Initialize steganographic image attributes.
@@ -3138,7 +3138,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   {
     for (x=0; x < (int) image->columns; x++)
     {
-      if (i == (off_t) (stegano_image->columns*stegano_image->rows))
+      if (i == (stegano_image->columns*stegano_image->rows))
         i=0;
       q=GetImagePixels(stegano_image,i % stegano_image->columns,
         i/stegano_image->columns,1,1);

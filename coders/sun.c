@@ -156,7 +156,7 @@ static unsigned int DecodeImage(const unsigned char *compressed_pixels,
   assert(pixels != (unsigned char *) NULL);
   p=compressed_pixels;
   q=pixels;
-  while ((size_t) (p-compressed_pixels) < length)
+  while ((p-compressed_pixels) < length)
   {
     byte=(*p++);
     if (byte != 128)

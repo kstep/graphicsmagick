@@ -4706,10 +4706,10 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       Image
         *previous_image;
 
-      size_t
+      off_t
         bytes;
 
-      bytes=(size_t) ((*image)->columns*(*image)->rows*sizeof(PixelPacket));
+      bytes=((*image)->columns*(*image)->rows*sizeof(PixelPacket));
       if (undo_image != (Image *) NULL)
         {
           /*

@@ -272,8 +272,10 @@ static unsigned int CompressCache(Cache cache)
   int
     y;
 
-  off_t
-    count,
+  long
+    count;
+
+  size_t
     length;
 
   assert(cache != (Cache) NULL);
@@ -2210,8 +2212,10 @@ static unsigned int UncompressCache(Cache cache)
   int
     y;
 
-  off_t
-    count,
+  long
+    count;
+
+  size_t
     length;
 
   assert(cache != (Cache) NULL);

@@ -280,8 +280,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     r=pcd_table[plane];
     for (i=0; ((i < (int) length) && ((sum & r->mask) != r->sequence)); i++)
       r++;
-    if (((size_t) (q-luma) > (size_t) (image->columns*image->rows)) ||
-        (r == (PCDTable *) NULL))
+    if (((q-luma) > (image->columns*image->rows)) || (r == (PCDTable *) NULL))
       {
         ThrowException(&image->exception,CorruptImageWarning,
           "Corrupt PCD image, skipping to sync byte",image->filename);
@@ -485,7 +484,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine resolution by subimage specification.
   */
-  if ((size_t) (image->columns*image->rows) == 0)
+  if ((image->columns*image->rows) == 0)
     subimage=3;
   else
     {

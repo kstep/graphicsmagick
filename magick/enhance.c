@@ -683,9 +683,6 @@ MagickExport unsigned int NormalizeImage(Image *image)
     gray_value,
     *normalize_map;
 
-  off_t
-    threshold_intensity;
-
   register int
     i,
     intensity,
@@ -698,6 +695,9 @@ MagickExport unsigned int NormalizeImage(Image *image)
   unsigned int
     high,
     low;
+
+  unsigned long
+    threshold_intensity;
 
   /*
     Allocate histogram and normalize map.
@@ -729,7 +729,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
   /*
     Find the histogram boundaries by locating the 1 percent levels.
   */
-  threshold_intensity=(off_t) (image->columns*image->rows)/100;
+  threshold_intensity=(image->columns*image->rows)/100;
   intensity=0;
   for (low=0; low < MaxRGB; low++)
   {

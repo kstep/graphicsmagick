@@ -91,7 +91,7 @@ typedef struct _ColorPacket
   unsigned short
     index;
 
-  off_t
+  unsigned long
     count;
 } ColorPacket;
 
@@ -100,7 +100,7 @@ typedef struct _NodeInfo
   unsigned char
     level;
 
-  off_t
+  unsigned long
     number_unique;
 
   ColorPacket
@@ -127,7 +127,7 @@ typedef struct _CubeInfo
   unsigned int
     progress;
 
-  off_t
+  unsigned long
     colors;
 
   unsigned int

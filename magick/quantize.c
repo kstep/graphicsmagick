@@ -248,7 +248,7 @@ typedef struct _CubeInfo
   unsigned int
     depth;
 
-  off_t
+  unsigned long
     colors;
 
   PixelPacket
