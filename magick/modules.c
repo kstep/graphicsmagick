@@ -727,7 +727,7 @@ Export int LoadDynamicModule(const char* module)
   *dest=0;
   strcat(module_file,".la");
 #else
-  if (strlen(module_name) < 5)
+  if (strlen(module_name) < 6)
   {
     char
       scratch[MaxTextExtent];
@@ -785,7 +785,7 @@ Export int LoadDynamicModule(const char* module)
   strcat(func_name, "Image");
 #else
   strcpy(func_name, "Register");
-  if (strlen(module_name) < 5)
+  if (strlen(module_name) < 6)
     strcat(func_name,module_name);
   else
     AddModuleTag(module_name, func_name);
@@ -954,7 +954,7 @@ Export int UnloadDynamicModule(const char* module)
       strcat(func_name, "Image");
 #else
       strcpy(func_name, "Unregister");
-      if (strlen(module) < 5)
+      if (strlen(module) < 6)
         strcat(func_name,module);
       else
         AddModuleTag(module, func_name);
