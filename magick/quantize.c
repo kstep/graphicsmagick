@@ -571,16 +571,16 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
+    if ((int) cube_info->nodes > MaxNodes)
+      {
+        /*
+          Prune one level if the color tree is too large.
+        */
+        PruneLevel(cube_info,cube_info->root);
+        cube_info->depth--;
+      }
     for (x=0; x < (int) image->columns; x++)
     {
-      if ((int) cube_info->nodes > MaxNodes)
-        {
-          /*
-            Prune one level if the color tree is too large.
-          */
-          PruneLevel(cube_info,cube_info->root);
-          cube_info->depth--;
-        }
       /*
         Start at the root and descend the color cube tree.
       */
@@ -614,16 +614,13 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
               cube_info->colors++;
           }
         node_info=node_info->child[id];
-        if (level != MaxTreeDepth)
-          {
-            /*
-              Approximate the quantization error represented by this node.
-            */
-            distance_squared=squares[(int) p->red-(int) mid_red]+
-              squares[(int) p->green-(int) mid_green]+
-              squares[(int) p->blue-(int) mid_blue];
-            node_info->quantization_error+=distance_squared;
-          }
+        /*
+          Approximate the quantization error represented by this node.
+        */
+        distance_squared=squares[(int) p->red-(int) mid_red]+
+          squares[(int) p->green-(int) mid_green]+
+          squares[(int) p->blue-(int) mid_blue];
+        node_info->quantization_error+=distance_squared;
         index--;
       }
       /*
@@ -1093,11 +1090,6 @@ static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
     i>>=1;
   HilbertCurve(cube_info,image,depth-1,NorthGravity);
   Dither(cube_info,image,ForgetGravity);
-  if (cube_info->quantize_info->measure_error)
-    {
-      QuantizationError(image);
-      SyncImage(image);
-    }
   return(True);
 }
 
