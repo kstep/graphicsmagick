@@ -1559,26 +1559,18 @@ static unsigned int IsNexusInCore(const Cache cache,const unsigned long id)
 %
 %  The format of the ModifyCache method is:
 %
-%      unsigned int ModifyCache(Image *image,ExceptionInfo *exception)
+%      unsigned int ModifyCache(Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
-%    o exception: Return any errors or warnings in this structure.
-%
 %
 */
-static unsigned int ModifyCache(Image *image,ExceptionInfo *exception)
+static unsigned int ModifyCache(Image *image)
 {
   CacheInfo
     *cache_info;
-
-  ClassType
-    storage_class;
-
-  ColorspaceType
-    colorspace;
 
   Image
     *clone_image;
@@ -1590,60 +1582,48 @@ static unsigned int ModifyCache(Image *image,ExceptionInfo *exception)
     *p;
 
   register IndexPacket
+    *clone_indexes,
     *indexes;
 
   register PixelPacket
     *q;
 
-  unsigned int
-    clone;
-
-  assert(image != (Image *) NULL);
   cache_info=(CacheInfo *) image->cache;
-  clone=False;
   AcquireSemaphoreInfo(&cache_info->semaphore);
-  if (cache_info->reference_count > 1)
-    clone=True;
-  LiberateSemaphoreInfo(&cache_info->semaphore);
-  if (!clone)
-    return(True);
-  /*
-    Clone pixel cache.
-  */
-  storage_class=image->storage_class;
-  colorspace=image->colorspace;
-  image->storage_class=GetCacheClass(image->cache);
-  image->colorspace=GetCacheColorspace(image->cache);
+  if (cache_info->reference_count <= 1)
+    {
+      LiberateSemaphoreInfo(&cache_info->semaphore);
+      return(True);
+   }
+  cache_info->reference_count--;
   clone_image=AllocateImage((ImageInfo *) NULL);
   *clone_image=(*image);
-  GetCacheInfo(&clone_image->cache);
+  clone_image->storage_class=GetCacheClass(image->cache);
+  clone_image->colorspace=GetCacheColorspace(image->cache);
+  GetCacheInfo(&image->cache);
   for (y=0; y < (long) image->rows; y++)
   {
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
+    p=AcquireImagePixels(clone_image,0,y,image->columns,1,&image->exception);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+    (void) memcpy(q,p,clone_image->columns*sizeof(PixelPacket));
+    clone_indexes=GetIndexes(clone_image);
     indexes=GetIndexes(image);
-    if (indexes != (IndexPacket *) NULL)
-      (void) memcpy(GetIndexes(clone_image),indexes,
-        image->columns*sizeof(IndexPacket));
-    if (!SyncImagePixels(clone_image))
+    if ((clone_indexes != (IndexPacket *) NULL) &&
+        (indexes != (IndexPacket *) NULL))
+      (void) memcpy(indexes,clone_indexes,image->columns*sizeof(IndexPacket));
+    if (!SyncImagePixels(image))
       break;
   }
-  image->cache=clone_image->cache;
-  image->storage_class=storage_class;
-  image->colorspace=colorspace;
   LiberateMemory((void **) &clone_image);
+  LiberateSemaphoreInfo(&cache_info->semaphore);
   if (y < (long) image->rows)
     {
-      ThrowException(exception,CacheWarning,"Unable to clone cache",
-        "could not get image cache");
+      ThrowBinaryException(CacheWarning,"Unable to clone cache",
+        image->filename);
       return(False);
     }
-  AcquireSemaphoreInfo(&cache_info->semaphore);
-  cache_info->reference_count--;
-  LiberateSemaphoreInfo(&cache_info->semaphore);
   return(True);
 }
 
@@ -1680,9 +1660,6 @@ MagickExport unsigned int OpenCache(Image *image)
 {
   CacheInfo
     *cache_info;
-
-  char
-    null = 0;
 
   off_t
     length;
@@ -1769,7 +1746,8 @@ MagickExport unsigned int OpenCache(Image *image)
         {
           ReacquireMemory((void **) &cache_info->pixels,length);
           if (cache_info->pixels == (void *) NULL)
-            return(False);
+            ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+              image->filename);
           pixels=cache_info->pixels;
         }
       if (pixels != (PixelPacket *) NULL)
@@ -1803,16 +1781,16 @@ MagickExport unsigned int OpenCache(Image *image)
         cache_info->file=open(cache_info->cache_filename,O_RDWR | O_CREAT |
           O_BINARY,0777);
       if (cache_info->file == -1)
-        return(False);
+        ThrowBinaryException(CacheWarning,"Unable to open cache",image->filename);
     }
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
   if (ftruncate(cache_info->file,length) == -1)
-    return(False);
-else
+    ThrowBinaryException(CacheWarning,"Unable to truncate cache",image->filename);
+#else
   if (lseek(cache_info->file,length,SEEK_SET) == -1)
-    return(False);
-  if (write(cache_info->file,&null,sizeof(null)) == -1)
-    return(False);
+    ThrowBinaryException(CacheWarning,"Unable to seek cache",image->filename);
+  if (write(cache_info->file,&offset,sizeof(size_t)) == -1)
+    ThrowBinaryException(CacheWarning,"Unable to write cache",image->filename);
 #endif
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
@@ -2150,30 +2128,18 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
   RectangleInfo
     region;
 
-  unsigned int
-    status;
-
   unsigned long
     number_pixels;
 
   assert(image != (Image *) NULL);
   assert(image->cache != (Cache) NULL);
   assert(image->signature == MagickSignature);
-  (void) ModifyCache(image,&image->exception);
+  if (ModifyCache(image) == False)
+    return((PixelPacket *) NULL);
   if ((image->storage_class != GetCacheClass(image->cache)) ||
       (image->colorspace != GetCacheColorspace(image->cache)))
-    {
-      /*
-        Open pixel cache.
-      */
-      status=OpenCache(image);
-      if (status == False)
-        {
-          ThrowException(&image->exception,CacheWarning,
-            "Unable to open pixel cache",image->filename);
-          return((PixelPacket *) NULL);
-        }
-    }
+    if (OpenCache(image) == False)
+      return((PixelPacket *) NULL);
   /*
     Validate pixel cache geometry.
   */
