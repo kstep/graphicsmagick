@@ -38,8 +38,8 @@ extern Export ErrorHandler
   SetWarningHandler(ErrorHandler);
 
 extern Export void
-  MagickError(const unsigned int,const char *,const char *),
-  MagickWarning(const unsigned int,const char *,const char *);
+  MagickError(const ErrorType,const char *,const char *),
+  MagickWarning(const WarningType,const char *,const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

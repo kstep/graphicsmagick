@@ -19,11 +19,11 @@ extern "C" {
 /*
   Define declarations.
 */
-#define PROT_READ 1
-#define PROT_WRITE 2
-#define PROT_READWRITE 3
-#define MAP_SHARED 1
-#define MAP_FAILED ((void*)0xffffffff)
+#define PROT_READ  1
+#define PROT_WRITE  2
+#define PROT_READWRITE  3
+#define MAP_SHARED  1
+#define MAP_FAILED  ((void*) 0xffffffff)
 /*
   Typedef declarations.
 */

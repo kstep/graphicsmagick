@@ -64,8 +64,8 @@ extern "C" {
 #endif
 
 static void
-  DefaultErrorHandler(const unsigned int,const char *,const char *),
-  DefaultWarningHandler(const unsigned int,const char *,const char *);
+  DefaultErrorHandler(const ErrorType,const char *,const char *),
+  DefaultWarningHandler(const WarningType,const char *,const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
@@ -94,7 +94,7 @@ static ErrorHandler
 %
 %  The format of the DefaultErrorHandler method is:
 %
-%      void MagickError(const unsigned int error,const char *message,
+%      void MagickError(const ErrorType error,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
@@ -108,7 +108,7 @@ static ErrorHandler
 %
 %
 */
-static void DefaultErrorHandler(const unsigned int error,const char *message,
+static void DefaultErrorHandler(const ErrorType error,const char *message,
   const char *qualifier)
 {
   DestroyDelegateInfo();
@@ -118,7 +118,7 @@ static void DefaultErrorHandler(const unsigned int error,const char *message,
     message);
   if (qualifier != (char *) NULL)
     (void) fprintf(stderr," (%.1024s)",qualifier);
-  if (errno)
+  if ((error != OptionError) && errno)
     (void) fprintf(stderr," [%.1024s]",strerror(errno));
   (void) fprintf(stderr,".\n");
   Exit(error % 100);
@@ -139,7 +139,8 @@ static void DefaultErrorHandler(const unsigned int error,const char *message,
 %
 %  The format of the DefaultWarningHandler method is:
 %
-+      DefaultWarningHandler(warning,message,qualifier)
+%      void DefaultWarningHandler(const WarningType warning,const char *message,
+%        const char *qualifier)
 %
 %  A description of each parameter follows:
 %
@@ -152,8 +153,8 @@ static void DefaultErrorHandler(const unsigned int error,const char *message,
 %
 %
 */
-static void DefaultWarningHandler(const unsigned int warning,
-  const char *message,const char *qualifier)
+static void DefaultWarningHandler(const WarningType warning,const char *message,
+  const char *qualifier)
 {
   if (message == (char *) NULL)
     return;
@@ -179,7 +180,8 @@ static void DefaultWarningHandler(const unsigned int warning,
 %
 %  The format of the MagickError method is:
 %
-%      MagickError(error,message,qualifier)
+%      void MagickError(const ErrorType error,const char *message,
+%        const char *qualifier)
 %
 %  A description of each parameter follows:
 %
@@ -192,7 +194,7 @@ static void DefaultWarningHandler(const unsigned int warning,
 %
 %
 */
-Export void MagickError(const unsigned int error,const char *message,
+Export void MagickError(const ErrorType error,const char *message,
   const char *qualifier)
 {
   if (error_handler != (ErrorHandler) NULL)
@@ -216,7 +218,7 @@ Export void MagickError(const unsigned int error,const char *message,
 %
 %  The format of the MagickWarning method is:
 %
-%      void MagickWarning(const unsigned int warning,const char *message,
+%      void MagickWarning(const WarningType warning,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
@@ -230,7 +232,7 @@ Export void MagickError(const unsigned int error,const char *message,
 %
 %
 */
-Export void MagickWarning(const unsigned int warning,const char *message,
+Export void MagickWarning(const WarningType warning,const char *message,
   const char *qualifier)
 {
   if (warning_handler != (ErrorHandler) NULL)

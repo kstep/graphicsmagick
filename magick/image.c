@@ -900,7 +900,7 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 
   clone_info=(ImageInfo *) AllocateMemory(sizeof(ImageInfo));
   if (clone_info == (ImageInfo *) NULL)
-    MagickError(ResourceLimitWarning,"Unable to clone image info",
+    MagickError(ResourceLimitError,"Unable to clone image info",
       "Memory allocation failed");
   if (image_info == (ImageInfo *) NULL)
     {
