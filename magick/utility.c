@@ -3523,7 +3523,7 @@ MagickExport void Strip(char *message)
   if (q > p)
     if ((*q == '\'') || (*q == '"'))
       q--;
-  (void) memcpy(message,p,q-p+1);
+  (void) memmove(message,p,q-p+1);
   message[q-p+1]='\0';
 }
 

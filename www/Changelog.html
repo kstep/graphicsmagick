@@ -53,6 +53,43 @@
 </tr>
 </table>
 <p>
+2004-02-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/constitute.c (ConstituteImage): Added map support for 'P',
+        in order to skip over a pad quantum.
+        (DispatchImage): Added map support for 'P', in order to write a pad
+        quantum.<BR>
+  <LI> magick/resize.c (HorizontalFilter): Don't process opacity
+        channel unless matte is enabled.
+        (VerticalFilter): Don't process opacity channel unless matte is
+        enabled.<BR>
+  <LI> magick/compress.c (Ascii85Initialize): Don't overwrite an
+        existing ascii85 allocation.<BR>
+  <LI> magick/utility.c (Strip): Use 'memmove' rather than 'memcpy' to
+        copy overlapping data.<BR>
+  <LI> tests/rwfile.c (main): Fix memory leak in test. Only apply size
+        if format requires it.<BR>
+  <LI> tests/rwblob.c (main): Fix memory leak in test. Only apply size
+        if format requires it.<BR>
+  <LI> coders/mono.c (RegisterMONOImage): Mono is a raw format.
+  <LI> magick/magic.c (GetMagicInfo): Ensure that magic tests are
+        within the range of header data which was read.
+
+</UL>
+<p>
+2004-01-31  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
+
+<UL>
+  <LI> magick/studio.h: Fixed problem related to DLL version of BCBMagick.
+        Sometimes was incorrectly checked the presence of VC++ DLL. Thanks
+        very much to Oliver Bertini for bringing this problem to our attention.
+  <LI> BCBMagick: added libpng delegate library in both static and DLL
+        modes.<BR>
+  <LI> BCBMagick: removed all unuseful files from CVS.
+
+</UL>
+<p>
 2004-01-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

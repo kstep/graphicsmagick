@@ -457,7 +457,7 @@ xml2_config = @xml2_config@
 #
 # Makefile for Magick++ tests
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2002
+# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004
 #
 AUTOMAKE_OPTIONS = 1.8 foreign
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/Magick++/lib -I$(top_srcdir)
@@ -474,13 +474,42 @@ montageImages_SOURCES = montageImages.cpp
 morphImages_SOURCES = morphImages.cpp
 readWriteBlob_SOURCES = readWriteBlob.cpp
 readWriteImages_SOURCES = readWriteImages.cpp
+@WIN32_NATIVE_BUILD_FALSE@SRCDIR = "$(srcdir)/"
+@WIN32_NATIVE_BUILD_TRUE@SRCDIR = '$(shell @WinPathScript@ $(srcdir)/)'
+RUNENV = "$(SHELL) $(top_builddir)/rungm.sh"
+
+# Environment parameters to be used during tests
+TESTS_ENVIRONMENT = \
+	RUNENV=$(RUNENV) \
+	SRCDIR=$(SRCDIR)
+
+
+# Tests to run
+TESTS = \
+	test_exceptions.sh \
+	test_appendImages.sh \
+	test_attributes.sh \
+	test_averageImages.sh \
+	test_coalesceImages.sh \
+	test_coderInfo.sh \
+	test_colorHistogram.sh \
+	test_color.sh \
+	test_montageImages.sh \
+	test_morphImages.sh \
+	test_readWriteBlob.sh \
+	test_readWriteImages.sh
+
+
+# Tests which are expected to fail
+XFAIL_TESTS = 
+
+# Extra files to distribute
 EXTRA_DIST = \
-	test_image.miff test_image_anim.miff
+	$(TESTS) \
+	test_image.miff \
+	test_image_anim.miff
 
 CLEANFILES = colorHistogram.txt testmagick_anim_out.miff ir.out # SunWS_cache
-@WIN32_NATIVE_BUILD_FALSE@SRCDIR = '$(srcdir)/'
-@WIN32_NATIVE_BUILD_TRUE@SRCDIR = '$(shell @WinPathScript@ $(srcdir)/)'
-RUNENV = $(SHELL) $(top_builddir)/rungm.sh
 all: all-am
 
 .SUFFIXES:
@@ -657,6 +686,79 @@ GTAGS:
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
+check-TESTS: $(TESTS)
+	@failed=0; all=0; xfail=0; xpass=0; skip=0; \
+	srcdir=$(srcdir); export srcdir; \
+	list='$(TESTS)'; \
+	if test -n "$$list"; then \
+	  for tst in $$list; do \
+	    if test -f ./$$tst; then dir=./; \
+	    elif test -f $$tst; then dir=; \
+	    else dir="$(srcdir)/"; fi; \
+	    if $(TESTS_ENVIRONMENT) $${dir}$$tst; then \
+	      all=`expr $$all + 1`; \
+	      case " $(XFAIL_TESTS) " in \
+	      *" $$tst "*) \
+		xpass=`expr $$xpass + 1`; \
+		failed=`expr $$failed + 1`; \
+		echo "XPASS: $$tst"; \
+	      ;; \
+	      *) \
+		echo "PASS: $$tst"; \
+	      ;; \
+	      esac; \
+	    elif test $$? -ne 77; then \
+	      all=`expr $$all + 1`; \
+	      case " $(XFAIL_TESTS) " in \
+	      *" $$tst "*) \
+		xfail=`expr $$xfail + 1`; \
+		echo "XFAIL: $$tst"; \
+	      ;; \
+	      *) \
+		failed=`expr $$failed + 1`; \
+		echo "FAIL: $$tst"; \
+	      ;; \
+	      esac; \
+	    else \
+	      skip=`expr $$skip + 1`; \
+	      echo "SKIP: $$tst"; \
+	    fi; \
+	  done; \
+	  if test "$$failed" -eq 0; then \
+	    if test "$$xfail" -eq 0; then \
+	      banner="All $$all tests passed"; \
+	    else \
+	      banner="All $$all tests behaved as expected ($$xfail expected failures)"; \
+	    fi; \
+	  else \
+	    if test "$$xpass" -eq 0; then \
+	      banner="$$failed of $$all tests failed"; \
+	    else \
+	      banner="$$failed of $$all tests did not behave as expected ($$xpass unexpected passes)"; \
+	    fi; \
+	  fi; \
+	  dashes="$$banner"; \
+	  skipped=""; \
+	  if test "$$skip" -ne 0; then \
+	    skipped="($$skip tests were not run)"; \
+	    test `echo "$$skipped" | wc -c` -gt `echo "$$banner" | wc -c` && \
+	      dashes="$$skipped"; \
+	  fi; \
+	  report=""; \
+	  if test "$$failed" -ne 0 && test -n "$(PACKAGE_BUGREPORT)"; then \
+	    report="Please report to $(PACKAGE_BUGREPORT)"; \
+	    test `echo "$$report" | wc -c` -gt `echo "$$banner" | wc -c` && \
+	      dashes="$$report"; \
+	  fi; \
+	  dashes=`echo "$$dashes" | sed s/./=/g`; \
+	  echo "$$dashes"; \
+	  echo "$$banner"; \
+	  test -n "$$skipped" && echo "$$skipped"; \
+	  test -n "$$report" && echo "$$report"; \
+	  echo "$$dashes"; \
+	  test "$$failed" -eq 0; \
+	else :; fi
+
 distdir: $(DISTFILES)
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
@@ -686,6 +788,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
 all-am: Makefile
 installdirs:
@@ -765,7 +868,7 @@ ps-am:
 
 uninstall-am: uninstall-info-am
 
-.PHONY: CTAGS GTAGS all all-am check check-am clean \
+.PHONY: CTAGS GTAGS all all-am check check-TESTS check-am clean \
 	clean-checkPROGRAMS clean-generic clean-libtool ctags \
 	distclean distclean-compile distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am html \
@@ -777,20 +880,6 @@ uninstall-am: uninstall-info-am
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-info-am
 
-
-check:
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./exceptions
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./attributes
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./appendImages
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./averageImages
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./coalesceImages
-	-@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./coderInfo # Test fails for moby build since no .so file exists.
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./color
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./colorHistogram > colorHistogram.txt
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./montageImages
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./morphImages
-	-@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./readWriteBlob # HP compiler fails on this one due to libxml2!
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./readWriteImages
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

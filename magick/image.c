@@ -2274,26 +2274,20 @@ MagickExport void DestroyImage(Image *image)
   DestroyImagePixels(image);
   if (image->clip_mask != (Image *) NULL)
     DestroyImage(image->clip_mask);
-  if (image->montage != (char *) NULL)
-    MagickFreeMemory(image->montage);
-  if (image->directory != (char *) NULL)
-    MagickFreeMemory(image->directory);
-  if (image->colormap != (PixelPacket *) NULL)
-    MagickFreeMemory(image->colormap);
-  if (image->color_profile.name != (char *) NULL)
-    MagickFreeMemory(image->color_profile.name);
+  MagickFreeMemory(image->montage);
+  MagickFreeMemory(image->directory);
+  MagickFreeMemory(image->colormap);
+  MagickFreeMemory(image->color_profile.name);
   if (image->color_profile.length != 0)
     MagickFreeMemory(image->color_profile.info);
-  if (image->iptc_profile.name != (char *) NULL)
-    MagickFreeMemory(image->iptc_profile.name);
+  MagickFreeMemory(image->iptc_profile.name);
   if (image->iptc_profile.length != 0)
     MagickFreeMemory(image->iptc_profile.info);
   if (image->generic_profiles != 0)
     {
       for (i=0; i < (long) image->generic_profiles; i++)
       {
-        if (image->generic_profile[i].name != (char *) NULL)
-          MagickFreeMemory(image->generic_profile[i].name);
+        MagickFreeMemory(image->generic_profile[i].name);
         if (image->generic_profile[i].length != 0)
           MagickFreeMemory(image->generic_profile[i].info);
       }
@@ -2301,8 +2295,7 @@ MagickExport void DestroyImage(Image *image)
     }
   DestroyImageAttributes(image);
   DestroyExceptionInfo(&image->exception);
-  if (image->ascii85 != (Ascii85Info *) NULL)
-    MagickFreeMemory(image->ascii85);
+  MagickFreeMemory(image->ascii85);
   DestroyBlob(image);
   if (image->semaphore)
     DestroySemaphoreInfo((SemaphoreInfo **) &image->semaphore);
@@ -5300,6 +5293,9 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   register char
     *p;
 
+  size_t
+    magick_length;
+
   unsigned char
     magick[2*MaxTextExtent];
 
@@ -5496,14 +5492,14 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       (void) strcpy(image_info->filename,filename);
       image_info->temporary=True;
     }
-  *magick='\0';
-  (void) ReadBlob(image,2*MaxTextExtent,magick);
+  magick[0]='\0';
+  magick_length = ReadBlob(image,2*MaxTextExtent,magick);
   CloseBlob(image);
   DestroyImage(image);
   /*
     Check magic.mgk configuration file.
   */
-  magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
+  magic_info=GetMagicInfo(magick,magick_length,exception);
   if ((magic_info != (const MagicInfo *) NULL) &&
       (magic_info->name != (char *) NULL) &&
       (exception->severity == UndefinedException))

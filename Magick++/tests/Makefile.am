@@ -1,7 +1,7 @@
 #
 # Makefile for Magick++ tests
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2002
+# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004
 #
 AUTOMAKE_OPTIONS = 1.8 foreign
 
@@ -39,30 +39,42 @@ morphImages_SOURCES	= morphImages.cpp
 readWriteBlob_SOURCES	= readWriteBlob.cpp
 readWriteImages_SOURCES = readWriteImages.cpp
 
-EXTRA_DIST = \
-	test_image.miff test_image_anim.miff
-
-CLEANFILES = colorHistogram.txt testmagick_anim_out.miff ir.out # SunWS_cache
 
 if WIN32_NATIVE_BUILD
 SRCDIR='$(shell @WinPathScript@ $(srcdir)/)'
 else
-SRCDIR='$(srcdir)/'
+SRCDIR="$(srcdir)/"
 endif
 
-RUNENV = $(SHELL) $(top_builddir)/rungm.sh
+RUNENV = "$(SHELL) $(top_builddir)/rungm.sh"
 
-check:
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./exceptions
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./attributes
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./appendImages
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./averageImages
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./coalesceImages
-	-@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./coderInfo # Test fails for moby build since no .so file exists.
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./color
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./colorHistogram > colorHistogram.txt
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./montageImages
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./morphImages
-	-@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./readWriteBlob # HP compiler fails on this one due to libxml2!
-	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./readWriteImages
+# Environment parameters to be used during tests
+TESTS_ENVIRONMENT = \
+	RUNENV=$(RUNENV) \
+	SRCDIR=$(SRCDIR)
 
+# Tests to run
+TESTS = \
+	test_exceptions.sh \
+	test_appendImages.sh \
+	test_attributes.sh \
+	test_averageImages.sh \
+	test_coalesceImages.sh \
+	test_coderInfo.sh \
+	test_colorHistogram.sh \
+	test_color.sh \
+	test_montageImages.sh \
+	test_morphImages.sh \
+	test_readWriteBlob.sh \
+	test_readWriteImages.sh
+
+# Tests which are expected to fail
+XFAIL_TESTS =
+
+# Extra files to distribute
+EXTRA_DIST = \
+	$(TESTS) \
+	test_image.miff \
+	test_image_anim.miff
+
+CLEANFILES = colorHistogram.txt testmagick_anim_out.miff ir.out # SunWS_cache

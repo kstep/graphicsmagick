@@ -162,8 +162,9 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   */
   AcquireSemaphoreInfo(&magic_semaphore);
   for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
-    if (memcmp(magic+p->offset,p->magic,p->length) == 0)
-      break;
+    if (p->offset+p->length <= length)
+      if (memcmp(magic+p->offset,p->magic,p->length) == 0)
+        break;
   if (p != (MagicInfo *) NULL)
     if (p != magic_list)
       {

@@ -1,3 +1,25 @@
+2004-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (ConstituteImage): Added map support for 'P',
+	in order to skip over a pad quantum.
+	(DispatchImage): Added map support for 'P', in order to write a pad
+	quantum.
+	* magick/resize.c (HorizontalFilter): Don't process opacity
+	channel unless matte is enabled.
+	(VerticalFilter): Don't process opacity channel unless matte is
+	enabled.
+	* magick/compress.c (Ascii85Initialize): Don't overwrite an
+	existing ascii85 allocation.
+	* magick/utility.c (Strip): Use 'memmove' rather than 'memcpy' to
+	copy overlapping data.
+	* tests/rwfile.c (main): Fix memory leak in test. Only apply size
+	if format requires it.
+	* tests/rwblob.c (main): Fix memory leak in test. Only apply size
+	if format requires it.
+	* coders/mono.c (RegisterMONOImage): Mono is a raw format.
+	* magick/magic.c (GetMagicInfo): Ensure that magic tests are
+	within the range of header data which was read.
+
 2004-02-02  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/bmp.c: fix potential use of unitialized data.

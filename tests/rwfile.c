@@ -31,11 +31,14 @@ int main ( int argc, char **argv )
     *final = (Image *) NULL,
     *original = (Image *) NULL;
 
+  const MagickInfo
+    *magick_info;
+
   char
     filename[80],
     format[MaxTextExtent],
     infile[MaxTextExtent],
-    *size = NULL;
+    size[MaxTextExtent];
 
   int
     arg = 1,
@@ -48,7 +51,7 @@ int main ( int argc, char **argv )
     fuzz_factor = 0;
 
   ImageInfo
-    imageInfo;
+    *imageInfo;
 
   ExceptionInfo
     exception;
@@ -58,7 +61,7 @@ int main ( int argc, char **argv )
   else
     InitializeMagick(*argv);
 
-  GetImageInfo( &imageInfo );
+  imageInfo=CloneImageInfo(0);
   GetExceptionInfo( &exception );
 
   for (arg=1; arg < argc; arg++)
@@ -72,42 +75,42 @@ int main ( int argc, char **argv )
             {
               arg++;
               option=argv[arg];
-              imageInfo.compression=UndefinedCompression;
+              imageInfo->compression=UndefinedCompression;
               if (LocaleCompare("None",option) == 0)
-                imageInfo.compression=NoCompression;
+                imageInfo->compression=NoCompression;
               if (LocaleCompare("BZip",option) == 0)
-                imageInfo.compression=BZipCompression;
+                imageInfo->compression=BZipCompression;
               if (LocaleCompare("Fax",option) == 0)
-                imageInfo.compression=FaxCompression;
+                imageInfo->compression=FaxCompression;
               if (LocaleCompare("Group4",option) == 0)
-                imageInfo.compression=Group4Compression;
+                imageInfo->compression=Group4Compression;
               if (LocaleCompare("JPEG",option) == 0)
-                imageInfo.compression=JPEGCompression;
+                imageInfo->compression=JPEGCompression;
               if (LocaleCompare("Lossless",option) == 0)
-                imageInfo.compression=LosslessJPEGCompression;
+                imageInfo->compression=LosslessJPEGCompression;
               if (LocaleCompare("LZW",option) == 0)
-                imageInfo.compression=LZWCompression;
+                imageInfo->compression=LZWCompression;
               if (LocaleCompare("RLE",option) == 0)
-                imageInfo.compression=RunlengthEncodedCompression;
+                imageInfo->compression=RunlengthEncodedCompression;
               if (LocaleCompare("Zip",option) == 0)
-                imageInfo.compression=ZipCompression;
+                imageInfo->compression=ZipCompression;
             }
           else if (LocaleCompare("debug",option+1) == 0)
               (void) SetLogEventMask(argv[++arg]);
           else if (LocaleCompare("depth",option+1) == 0)
             {
-              imageInfo.depth=QuantumDepth;
+              imageInfo->depth=QuantumDepth;
               arg++;
-              if ((arg == argc) || !sscanf(argv[arg],"%ld",&imageInfo.depth))
+              if ((arg == argc) || !sscanf(argv[arg],"%ld",&imageInfo->depth))
                 {
                   printf("-depth argument missing or not integer\n");
                   fflush(stdout);
                   exit_status = 1;
                   goto program_exit;
                 }
-              if(imageInfo.depth != 8 && imageInfo.depth != 16 && imageInfo.depth != 32)
+              if(imageInfo->depth != 8 && imageInfo->depth != 16 && imageInfo->depth != 32)
                 {
-                  printf("-depth (%ld) not 8, 16, or 32\n", imageInfo.depth);
+                  printf("-depth (%ld) not 8, 16, or 32\n", imageInfo->depth);
                   fflush(stdout);
                   exit_status = 1;
                   goto program_exit;
@@ -127,7 +130,7 @@ int main ( int argc, char **argv )
                   exit_status = 1;
                   goto program_exit;
                 }
-              (void) CloneString(&imageInfo.size,argv[arg]);
+              (void) CloneString(&imageInfo->size,argv[arg]);
             }
         }
       else
@@ -155,17 +158,17 @@ int main ( int argc, char **argv )
    * Read original image
    */
 
-  imageInfo.dither = 0;
-  strncpy( imageInfo.filename, infile, MaxTextExtent-1 );
+  imageInfo->dither = 0;
+  strncpy( imageInfo->filename, infile, MaxTextExtent-1 );
   fflush(stdout);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "Reading image %s", imageInfo.filename);
-  original = ReadImage ( &imageInfo, &exception );
+    "Reading image %s", imageInfo->filename);
+  original = ReadImage ( imageInfo, &exception );
   if (exception.severity != UndefinedException)
     CatchException(&exception);
   if ( original == (Image *)NULL )
     {
-      printf ( "Failed to read original image %s\n", imageInfo.filename );
+      printf ( "Failed to read original image %s\n", imageInfo->filename );
       fflush(stdout);
       exit_status = 1;
       goto program_exit;
@@ -176,8 +179,10 @@ int main ( int argc, char **argv )
    */
   rows    = original->rows;
   columns = original->columns;
-  size = (char *) AcquireMemory( 40 );
-  sprintf( size, "%dx%d", columns, rows );
+  size[0] = '\0';
+  magick_info=GetMagickInfo(format,&exception);
+  if (magick_info && magick_info->raw)
+    FormatString( size, "%dx%d", columns, rows );
 
   /*
    * Save image to file
@@ -189,26 +194,26 @@ int main ( int argc, char **argv )
   fflush(stdout);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "Writing image %s", original->filename);
-  WriteImage ( &imageInfo, original );
-  imageInfo.depth=original->depth;
+  WriteImage ( imageInfo, original );
+  imageInfo->depth=original->depth;
   DestroyImage( original );
   original = (Image*)NULL;
 
   /*
    * Read image back from file
    */
-  strncpy( imageInfo.magick, format, MaxTextExtent-1 );
-  strncpy( imageInfo.filename, filename, MaxTextExtent-1 );
-  if (size != NULL)
-    CloneString( &imageInfo.size, size );
+  strncpy( imageInfo->magick, format, MaxTextExtent-1 );
+  strncpy( imageInfo->filename, filename, MaxTextExtent-1 );
+  if ( size[0] != '\0' )
+    CloneString( &imageInfo->size, size );
   fflush(stdout);
-  original = ReadImage ( &imageInfo, &exception );
+  original = ReadImage ( imageInfo, &exception );
   if (exception.severity != UndefinedException)
     CatchException(&exception);
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read image from file in format %s\n",
-               imageInfo.magick );
+               imageInfo->magick );
       fflush(stdout);
       exit_status = 1;
       goto program_exit;
@@ -222,25 +227,25 @@ int main ( int argc, char **argv )
   strncpy( original->filename, filename, MaxTextExtent-1 );
   original->delay = 10;
   fflush(stdout);
-  WriteImage ( &imageInfo, original );
+  WriteImage ( imageInfo, original );
 
   /*
    * Read image back from file
    */
-  strncpy( imageInfo.magick, format, MaxTextExtent-1 );
-  strncpy( imageInfo.filename, filename, MaxTextExtent-1 );
-  if ( size != NULL )
-    CloneString( &imageInfo.size, size );
+  strncpy( imageInfo->magick, format, MaxTextExtent-1 );
+  strncpy( imageInfo->filename, filename, MaxTextExtent-1 );
+  if ( size[0] != '\0' )
+    CloneString( &imageInfo->size, size );
   fflush(stdout);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "Reading image %s", imageInfo.filename);
-  final = ReadImage ( &imageInfo, &exception );
+    "Reading image %s", imageInfo->filename);
+  final = ReadImage ( imageInfo, &exception );
   if (exception.severity != UndefinedException)
     CatchException(&exception);
   if ( final == (Image *)NULL )
     {
       printf ( "Failed to read image from file in format %s\n",
-               imageInfo.magick );
+               imageInfo->magick );
       fflush(stdout);
       exit_status = 1;
       goto program_exit;
@@ -285,6 +290,7 @@ int main ( int argc, char **argv )
     DestroyImage( final );
   final = (Image*)NULL;
 
+  DestroyImageInfo( imageInfo );
   DestroyMagick();
 
   if (pause)

@@ -235,13 +235,11 @@ CHECK_SIZED_FILE_FORMATS = \
 	YUV
 
 CHECK_CONSTITUTE_MAPS = \
-	RGB \
 	rgb \
 	rgba \
+	prgb \
 	cmy \
 	cmyk \
-	bGr \
-	Gbr \
 	i
 
 CHECK_CONSTITUTE_STORAGETYPES = \

@@ -57,7 +57,8 @@ typedef enum
   GreenMapQuantum,
   BlueMapQuanum,
   OpacityMapQuantum,
-  IntensityMapQuantum
+  IntensityMapQuantum,
+  PadMapQuantum,
 } MapQuantumType;
 
 static SemaphoreInfo
@@ -80,11 +81,21 @@ static Image
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConstituteImage() returns an image from the the pixel data you supply.
-%  The pixel data must be in scanline order top-to-bottom.  The data can be
-%  char, short int, int, float, or double.  Float and double require the
-%  pixels to be normalized [0..1], otherwise [0..MaxRGB].  For example, to
-%  create a 640x480 image from unsigned red-green-blue character data, use
+%  ConstituteImage() returns an Image corresponding to an image stored
+%  in a raw memory array format. The pixel data must be in scanline order
+%  top-to-bottom. The data can be unsigned char, unsigned short int, unsigned
+%  int, unsigned long, float, or double.  Float and double require the pixels
+%  to be normalized to the range [0..1], otherwise the range is [0..MaxVal]
+%  where MaxVal is the maximum possible value for that type.
+%
+%  Note that for most 32-bit architectures the size of an unsigned long is
+%  the same as unsigned int, but for 64-bit architectures observing the LP64
+%  standard, an unsigned long is 64 bits, while an unsigned int remains 32
+%  bits. This should be considered when deciding if the data should be
+%  described as "Integer" or "Long".
+%
+%  For example, to create a 640x480 image from unsigned red-green-blue
+%  character data, use
 %
 %      image=ConstituteImage(640,480,"RGB",CharPixel,pixels,&exception);
 %
@@ -103,8 +114,9 @@ static Image
 %    o map: This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
 %      A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or
-%      I = intensity (for grayscale). Creation of an alpha channel for CMYK
-%      images is currently not supported.
+%      I = intensity (for grayscale). Specify "P" = pad, to skip over a
+%      quantum which is intentionally ignored. Creation of an alpha channel
+%      for CMYK images is currently not supported.
 %
 %    o type: Define the data type of the pixels.  Float and double types are
 %      expected to be normalized [0..1] otherwise [0..MaxRGB].  Choose from
@@ -224,6 +236,11 @@ MagickExport Image *ConstituteImage(const unsigned long width,
             switch_map[i]=IntensityMapQuantum;
             break;
           }
+        case 'P':
+          {
+            switch_map[i]=PadMapQuantum;
+            break;
+          }
         default:
           {
             DestroyImage(image);
@@ -281,12 +298,18 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case IntensityMapQuantum:
               {
-                indexes[x]=ScaleQuantumToIndex(ScaleCharToQuantum(*p++));
-                q->red=image->colormap[indexes[x]].red;
-                q->green=image->colormap[indexes[x]].green;
-                q->blue=image->colormap[indexes[x]].blue;
+                *indexes=ScaleQuantumToIndex(ScaleCharToQuantum(*p++));
+                VerifyColormapIndex(image,*indexes);
+                q->red=image->colormap[*indexes].red;
+                q->green=image->colormap[*indexes].green;
+                q->blue=image->colormap[*indexes].blue;
                 break;
               }
+              case PadMapQuantum:
+                {
+                  p++;
+                  break;
+                }
               default:
               {
                 DestroyImage(image);
@@ -294,6 +317,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
             }
           }
+          indexes++;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -345,12 +369,18 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case IntensityMapQuantum:
               {
-                indexes[x]=ScaleQuantumToIndex(ScaleShortToQuantum(*p++));
-                q->red=image->colormap[indexes[x]].red;
-                q->green=image->colormap[indexes[x]].green;
-                q->blue=image->colormap[indexes[x]].blue;
+                *indexes=ScaleQuantumToIndex(ScaleShortToQuantum(*p++));
+                VerifyColormapIndex(image,*indexes);
+                q->red=image->colormap[*indexes].red;
+                q->green=image->colormap[*indexes].green;
+                q->blue=image->colormap[*indexes].blue; /* FIXME Valgrind bad read */
                 break;
               }
+              case PadMapQuantum:
+                {
+                  p++;
+                  break;
+                }
               default:
               {
                 DestroyImage(image);
@@ -358,6 +388,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
             }
           }
+          indexes++;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -409,12 +440,18 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case IntensityMapQuantum:
               {
-                indexes[x]=ScaleQuantumToIndex(ScaleLongToQuantum(*p++));
-                q->red=image->colormap[indexes[x]].red;
-                q->green=image->colormap[indexes[x]].green;
-                q->blue=image->colormap[indexes[x]].blue;
+                *indexes=ScaleQuantumToIndex(ScaleLongToQuantum(*p++));
+                VerifyColormapIndex(image,*indexes);
+                q->red=image->colormap[*indexes].red;
+                q->green=image->colormap[*indexes].green;
+                q->blue=image->colormap[*indexes].blue;
                 break;
               }
+              case PadMapQuantum:
+                {
+                  p++;
+                  break;
+                }
               default:
               {
                 DestroyImage(image);
@@ -422,6 +459,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
             }
           }
+          indexes++;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -473,12 +511,18 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case IntensityMapQuantum:
               {
-                indexes[x]=ScaleQuantumToIndex(ScaleLongToQuantum(*p++));
-                q->red=image->colormap[indexes[x]].red;
-                q->green=image->colormap[indexes[x]].green;
-                q->blue=image->colormap[indexes[x]].blue;
+                *indexes=ScaleQuantumToIndex(ScaleLongToQuantum(*p++));
+                VerifyColormapIndex(image,*indexes);
+                q->red=image->colormap[*indexes].red;
+                q->green=image->colormap[*indexes].green;
+                q->blue=image->colormap[*indexes].blue;
                 break;
               }
+              case PadMapQuantum:
+                {
+                  p++;
+                  break;
+                }
               default:
               {
                 DestroyImage(image);
@@ -486,6 +530,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
             }
           }
+          indexes++;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -537,12 +582,18 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case IntensityMapQuantum:
               {
-                indexes[x]=(Quantum) ((MaxColormapSize-1)*(*p++)+0.5);
-                q->red=image->colormap[indexes[x]].red;
-                q->green=image->colormap[indexes[x]].green;
-                q->blue=image->colormap[indexes[x]].blue;
+                *indexes=(Quantum) ((MaxColormapSize-1)*(*p++)+0.5);
+                VerifyColormapIndex(image,*indexes);
+                q->red=image->colormap[*indexes].red;
+                q->green=image->colormap[*indexes].green;
+                q->blue=image->colormap[*indexes].blue;
                 break;
               }
+              case PadMapQuantum:
+                {
+                  p++;
+                  break;
+                }
               default:
               {
                 DestroyImage(image);
@@ -550,6 +601,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
             }
           }
+          indexes++;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -601,12 +653,18 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case IntensityMapQuantum:
               {
-                indexes[x]=(Quantum) ((MaxColormapSize-1)*(*p++)+0.5);
-                q->red=image->colormap[indexes[x]].red;
-                q->green=image->colormap[indexes[x]].green;
-                q->blue=image->colormap[indexes[x]].blue;
+                *indexes=(Quantum) ((MaxColormapSize-1)*(*p++)+0.5);
+                VerifyColormapIndex(image,*indexes);
+                q->red=image->colormap[*indexes].red;
+                q->green=image->colormap[*indexes].green;
+                q->blue=image->colormap[*indexes].blue;
                 break;
               }
+              case PadMapQuantum:
+                {
+                  p++;
+                  break;
+                }
               default:
               {
                 DestroyImage(image);
@@ -614,6 +672,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
             }
           }
+          indexes++;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -684,10 +743,17 @@ MagickExport void DestroyConstitute(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DispatchImage() extracts pixel data from an image and returns it to you.
+%  DispatchImage() extracts pixel data from an Image into a raw memory array.
+%  The pixel data is written in scanline order top-to-bottom using an 
+%  arbitrary quantum order specified by 'map', and with quantum size
+%  specified by 'type'.
+%
+%  The output array data may be unsigned char, unsigned short int, unsigned
+%  int, unsigned long, float, or double.  Float and double require the pixels
+%  to be normalized to the range [0..1], otherwise the range is [0..MaxVal]
+%  where MaxVal is the maximum possible value for that type.
+%
 %  The method returns False on success or True if an error is encountered.
-%  The data is returned as char, short int, int, long, float, or double in
-%  the order specified by map.
 %
 %  Suppose we want want to extract the first scanline of a 640x480 image as
 %  character data in red-green-blue order:
@@ -708,15 +774,16 @@ MagickExport void DestroyConstitute(void)
 %    o x_offset, y_offset, columns, rows:  These values define the perimeter
 %      of a region of pixels you want to extract.
 %
-%    o map:  This string reflects the expected ordering of the pixel array.
+%    o map: This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
 %      A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or
-%      I = intensity (for grayscale).
+%      I = intensity (for grayscale). Specify "P" = pad, to output a pad
+%      quantum. Pad quantums are zero-value.
 %
 %    o type: Define the data type of the pixels.  Float and double types are
-%      normalized to [0..1] otherwise [0..MaxRGB].  Choose from these types:
-%      CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or
-%      DoublePixel.
+%      expected to be normalized [0..1] otherwise [0..MaxRGB].  Choose from
+%      these types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel,
+%      or DoublePixel.
 %
 %    o pixels: This array of values contain the pixel components as defined by
 %      map and type.  You must preallocate this array where the expected
@@ -816,6 +883,11 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             switch_map[i]=IntensityMapQuantum;
             break;
           }
+        case 'P':
+          {
+            switch_map[i]=PadMapQuantum;
+            break;
+          }
         default:
           {
             ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
@@ -868,6 +940,11 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
                 *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
                 break;
               }
+              case PadMapQuantum:
+                {
+                  *q++=0U;
+                  break;
+                }
               default:
               {
                 ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
@@ -922,6 +999,11 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
                 *q++=ScaleQuantumToShort(PixelIntensityToQuantum(p));
                 break;
               }
+              case PadMapQuantum:
+                {
+                  *q++=0U;
+                  break;
+                }
               default:
               {
                 ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
@@ -976,6 +1058,11 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
                 *q++=ScaleQuantumToLong(PixelIntensityToQuantum(p));
                 break;
               }
+              case PadMapQuantum:
+                {
+                  *q++=0U;
+                  break;
+                }
               default:
               {
                 ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
@@ -1030,6 +1117,11 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
                 *q++=ScaleQuantumToLong(PixelIntensityToQuantum(p));
                 break;
               }
+              case PadMapQuantum:
+                {
+                  *q++=0UL;
+                  break;
+                }
               default:
               {
                 ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
@@ -1084,6 +1176,11 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
 		*q++=(double) PixelIntensity(p)/MaxRGB;
                 break;
               }
+              case PadMapQuantum:
+                {
+                  *q++=0.0;
+                  break;
+                }
               default:
               {
                 ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
@@ -1138,6 +1235,11 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
                 *q++=(double) PixelIntensityToQuantum(p)/MaxRGB;
                 break;
               }
+              case PadMapQuantum:
+                {
+                  *q++=0.0;
+                  break;
+                }
               default:
               {
                 ThrowException(exception,OptionError,UnrecognizedPixelMap,map);

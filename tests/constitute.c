@@ -8,7 +8,8 @@
  *
  * The image returned by both reads must be identical in order for the
  * test to pass.
- * */
+ *
+ */
 
 #if !defined(_VISUALC_)
 #include <magick_config.h>
@@ -106,11 +107,14 @@ int main ( int argc, char **argv )
   unsigned int
     quantum_size=sizeof(unsigned char);
 
+  size_t
+    pixels_size;
+
   double
     fuzz_factor = 0.0;
 
   ImageInfo
-    imageInfo;
+    *imageInfo;
 
   ExceptionInfo
     exception;
@@ -123,7 +127,7 @@ int main ( int argc, char **argv )
   else
     InitializeMagick(*argv);
 
-  GetImageInfo( &imageInfo );
+  imageInfo=CloneImageInfo(0);
   GetExceptionInfo( &exception );
 
   for (arg=1; arg < argc; arg++)
@@ -137,17 +141,17 @@ int main ( int argc, char **argv )
             (void) SetLogEventMask(argv[++arg]);
           else if (LocaleCompare("depth",option+1) == 0)
             {
-              imageInfo.depth=QuantumDepth;
+              imageInfo->depth=QuantumDepth;
               arg++;
-              if ((arg == argc) || !sscanf(argv[arg],"%ld",&imageInfo.depth))
+              if ((arg == argc) || !sscanf(argv[arg],"%ld",&imageInfo->depth))
                 {
                   printf("-depth argument missing or not integer\n");
                   exit_status = 1;
                   goto program_exit;
                 }
-              if(imageInfo.depth != 8 && imageInfo.depth != 16 && imageInfo.depth != 32)
+              if(imageInfo->depth != 8 && imageInfo->depth != 16 && imageInfo->depth != 32)
                 {
-                  printf("-depth (%ld) not 8, 16, or 32\n", imageInfo.depth);
+                  printf("-depth (%ld) not 8, 16, or 32\n", imageInfo->depth);
                   exit_status = 1;
                   goto program_exit;
                 }
@@ -165,7 +169,7 @@ int main ( int argc, char **argv )
                   exit_status = 1;
                   goto program_exit;
                 }
-              (void) CloneString(&imageInfo.size,argv[arg]);
+              (void) CloneString(&imageInfo->size,argv[arg]);
             }
           else if (LocaleCompare("storagetype",option+1) == 0)
             {
@@ -236,18 +240,17 @@ int main ( int argc, char **argv )
   /*
    * Read original image
    */
-  GetImageInfo( &imageInfo );
   GetExceptionInfo( &exception );
-  imageInfo.dither = 0;
-  strncpy( imageInfo.filename, infile, MaxTextExtent-1 );
+  imageInfo->dither = 0;
+  strncpy( imageInfo->filename, infile, MaxTextExtent-1 );
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Reading image %s", imageInfo.filename);
-  original = ReadImage ( &imageInfo, &exception );
+                        "Reading image %s", imageInfo->filename);
+  original = ReadImage ( imageInfo, &exception );
   if (exception.severity != UndefinedException)
     CatchException(&exception);
   if ( original == (Image *)NULL )
     {
-      printf ( "Failed to read original image %s\n", imageInfo.filename );
+      printf ( "Failed to read original image %s\n", imageInfo->filename );
       exit_status = 1;
       goto program_exit;
     }
@@ -266,13 +269,15 @@ int main ( int argc, char **argv )
   /*
    * Save image to array
    */
-  pixels=AcquireMemory(quantum_size*strlen(map)*rows*columns);
+  pixels_size=quantum_size*strlen(map)*rows*columns;
+  pixels=AcquireMemory(pixels_size);
   if( !pixels )
     {
       printf ( "Failed to allocate memory for pixels\n");
       exit_status = 1;
       goto program_exit;
     }
+  memset((void *) pixels, 0, pixels_size);
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Writing image to pixel array");
@@ -306,6 +311,7 @@ int main ( int argc, char **argv )
   /*
    * Save image to pixel array
    */
+  memset((void *) pixels, 0, pixels_size);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Writing image to pixel array");
   if( !DispatchImage(original,0,0,original->columns,original->rows,map,
@@ -363,18 +369,21 @@ int main ( int argc, char **argv )
       goto program_exit;
     }
 
-  /* DisplayImages( &imageInfo, final ); */
+  /* DisplayImages( imageInfo, final ); */
 
  program_exit:
   fflush(stdout);
   if (original)
     DestroyImage( original );
-  original = (Image*)NULL;
+  original = 0;
   if (final)
     DestroyImage( final );
-  final = (Image*)NULL;
+  final = 0;
   if (pixels)
     LiberateMemory( (void**)&pixels );
+  if (imageInfo)
+    DestroyImageInfo(imageInfo);
+  imageInfo = 0;
 
   DestroyMagick();
 
