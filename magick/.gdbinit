@@ -1,1 +1,1 @@
-dir ../modules:$cdir:$cwd
+dir ../coders:$cdir:$cwd
