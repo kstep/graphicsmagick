@@ -455,7 +455,7 @@ ModuleExport void UnregisterXBMImage(void)
 static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
 {
   char
-    *basename,
+    basename[MaxTextExtent],
     buffer[MaxTextExtent];
 
   int
@@ -492,12 +492,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   /*
     Write X bitmap header.
   */
-  basename=BaseFilename(image->filename);
-  q=basename;
-  while ((*q != '.') && (*q != '\0'))
-    q++;
-  if (*q == '.')
-    *q='\0';
+  GetPathComponent(image->filename,BasePath,basename);
   FormatString(buffer,"#define %.1024s_width %u\n",basename,image->columns);
   (void) WriteBlob(image,Extent(buffer),buffer);
   FormatString(buffer,"#define %.1024s_height %u\n",basename,image->rows);

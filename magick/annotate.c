@@ -962,7 +962,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
               filename[q-p]='\0';
             }
           i=strlen(filename);
-          if ((i > 0) && (!IsBasenameSeparator(filename[i-1])))
+          if ((i > 0) && (filename[i-1] != *DirectorySeparator))
             (void) strcat(filename,DirectorySeparator);
           (void) strcat(filename,draw_info->font);
           status=FT_New_Face(library,filename,0,&face);

@@ -499,37 +499,16 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,
 {
   char
     attribute[MaxTextExtent],
-    directory[MaxTextExtent],
-    *extension,
-    *filename;
+    filename[MaxTextExtent];
 
   attribute[0]='\0';
-  if (Extent(image->magick_filename) <= 0)
-    {
-      directory[0]='\0';
-      extension=directory;
-      filename=extension;
-    }
-  else
-    {
-      (void) strcpy(directory,image->magick_filename);
-      extension=directory+Extent(directory);
-      filename=extension;
-      while ((filename > directory) && !IsBasenameSeparator(*(filename-1)))
-      {
-        if (*filename == '.')
-          if (*extension == '\0')
-            extension=filename+1;
-        filename--;
-      }
-    }
   switch(*(key))
   {
     case 'b':
     {
       if (LocaleNCompare("base",key,2) == 0)
         {
-          *(extension-1)='\0';
+          GetPathComponent(image->magick_filename,BasePath,filename);
           (void) strcpy(attribute,filename);
           break;
         }
@@ -544,8 +523,8 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,
         }
       if (LocaleNCompare("directory",key,2) == 0)
         {
-          *filename='\0';
-          (void) strcpy(attribute,directory);
+          GetPathComponent(image->magick_filename,HeadPath,filename);
+          (void) strcpy(attribute,filename);
           break;
         }
       break;
@@ -554,7 +533,8 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,
     {
       if (LocaleNCompare("extension",key,2) == 0)
         {
-          (void) strcpy(attribute,extension);
+          GetPathComponent(image->magick_filename,ExtensionPath,filename);
+          (void) strcpy(attribute,filename);
           break;
         }
       break;

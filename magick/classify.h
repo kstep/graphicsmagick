@@ -278,6 +278,15 @@ typedef enum
 
 typedef enum
 {
+  RootPath,
+  HeadPath,
+  TailPath,
+  BasePath,
+  ExtensionPath
+} PathType;
+
+typedef enum
+{
   UndefinedProfile,
   ICMProfile,
   IPTCProfile

@@ -10080,19 +10080,10 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
   else
     {
       char
-        working_directory[MaxTextExtent];
+        path[MaxTextExtent];
 
-      register char
-        *p;
-
-      p=image->filename+Extent(image->filename)-1;
-      while ((p > image->filename) && !IsBasenameSeparator(*(p-1)))
-        p--;
-      (void) strcpy(filename,p);
-      (void) strcpy(working_directory,image->filename);
-      working_directory[p-image->filename]='\0';
-      if (p != image->filename)
-        (void) chdir(working_directory);
+      GetPathComponent(image->filename,HeadPath,path);
+      (void) chdir(path);
     }
   XFileBrowserWidget(display,windows,"Save",filename);
   if (*filename == '\0')
@@ -12168,8 +12159,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     }
   else
     {
-      register char
-        *p;
+      char
+        filename[MaxTextExtent];
 
       register Image
         *q;
@@ -12182,23 +12173,21 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       */
       windows->image.name=AllocateString((char *) NULL);
       windows->image.icon_name=AllocateString((char *) NULL);
-      p=display_image->filename+Extent(display_image->filename)-1;
-      while ((p > display_image->filename) && !IsBasenameSeparator(*(p-1)))
-        p--;
-      FormatString(windows->image.name,"ImageMagick: %.1024s[%u]",p,
+      GetPathComponent(display_image->filename,TailPath,filename);
+      FormatString(windows->image.name,"ImageMagick: %.1024s[%u]",filename,
         display_image->scene);
       q=display_image;
       while (q->previous != (Image *) NULL)
         q=q->previous;
       for (count=1; q->next != (Image *) NULL; count++)
         q=q->next;
-      FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",p,
-        display_image->scene,count);
+      FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",
+        filename,display_image->scene,count);
       if ((display_image->previous == (Image *) NULL) &&
           (display_image->next == (Image *) NULL) &&
           (display_image->scene == 0))
-        FormatString(windows->image.name,"ImageMagick: %.1024s",p);
-      (void) strcpy(windows->image.icon_name,p);
+        FormatString(windows->image.name,"ImageMagick: %.1024s",filename);
+      (void) strcpy(windows->image.icon_name,filename);
     }
   if (resource_info->immutable)
     windows->image.immutable=True;

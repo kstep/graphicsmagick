@@ -223,16 +223,15 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case PlayCommand:
     {
       char
-        *basename;
+        basename[MaxTextExtent];
 
       /*
         Window name is the base of the filename.
       */
       *state|=PlayAnimationState;
       *state&=(~AutoReverseAnimationState);
-      basename=BaseFilename((*image)->filename);
+      GetPathComponent((*image)->filename,BasePath,basename);
       FormatString(windows->image.name,"ImageMagick: %.1024s",basename);
-      LiberateMemory((void **) &basename);
       if (resource_info->title != (char *) NULL)
         windows->image.name=
           TranslateText(resource_info->image_info,*image,resource_info->title);
@@ -1337,16 +1336,17 @@ MagickExport Image *XAnimateImages(Display *display,
     }
   else
     {
+      char
+        filename[MaxTextExtent];
+
       /*
         Window name is the base of the filename.
       */
       windows->image.name=AllocateString((char *) NULL);
       windows->image.icon_name=AllocateString((char *) NULL);
-      p=display_image->filename+Extent(display_image->filename)-1;
-      while ((p > display_image->filename) && !IsBasenameSeparator(*(p-1)))
-        p--;
-      FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",p,
-        display_image->scene,number_scenes);
+      GetPathComponent(display_image->filename,TailPath,filename);
+      FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",
+        filename,display_image->scene,number_scenes);
       (void) strcpy(windows->image.icon_name,p);
     }
   if (resource_info->immutable)

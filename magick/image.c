@@ -2583,6 +2583,7 @@ MagickExport Image *GetNextImage(Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  CloseImagePixels(image);
   image->next->blob=image->blob;
   image->next->file=image->file;
   return(image->next);

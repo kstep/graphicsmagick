@@ -160,6 +160,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
                          "lzxcvbnmMNBVCZASDFGHJKLPIUYTREWQ!~^/()_`'][{}|";
 
   char
+    basename[MaxTextExtent],
     buffer[MaxTextExtent],
     name[MaxTextExtent],
     symbol[MaxTextExtent];
@@ -267,8 +268,8 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     UIL header.
   */
   (void) WriteBlobString(image,"/* UIL */\n");
-  FormatString(buffer,"value\n  %.1024s_ct : color_table(\n",
-    BaseFilename(image->filename));
+  GetPathComponent(image->filename,BasePath,basename);
+  FormatString(buffer,"value\n  %.1024s_ct : color_table(\n",basename);
   (void) WriteBlobString(image,buffer);
   for (i=0; i < (int) colors; i++)
   {
@@ -303,9 +304,9 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   /*
     Define UIL pixels.
   */
+  GetPathComponent(image->filename,BasePath,basename);
   FormatString(buffer,
-    "  %.1024s_icon : icon(color_table = %.1024s_ct,\n",
-    BaseFilename(image->filename),BaseFilename(image->filename));
+    "  %.1024s_icon : icon(color_table = %.1024s_ct,\n",basename,basename);
   (void) WriteBlobString(image,buffer);
   for (y=0; y < (int) image->rows; y++)
   {

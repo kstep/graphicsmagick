@@ -212,7 +212,7 @@ ModuleExport void UnregisterHTMLImage(void)
 static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
 {
   char
-    *basename,
+    basename[MaxTextExtent],
     buffer[MaxTextExtent],
     filename[MaxTextExtent],
     mapname[MaxTextExtent],
@@ -267,9 +267,8 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   */
   (void) strcpy(filename,image->filename);
   AppendImageFormat("map",filename);
-  basename=BaseFilename(filename);
+  GetPathComponent(filename,BasePath,basename);
   (void) strcpy(mapname,basename);
-  LiberateMemory((void **) &basename);
   (void) strcpy(image->filename,image_info->filename);
   (void) strcpy(filename,image->filename);
   clone_info=CloneImageInfo(image_info);
@@ -298,9 +297,8 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
         FormatString(buffer,"<title>%.1024s</title>\n",attribute->value);
       else
         {
-          basename=BaseFilename(filename);
+          GetPathComponent(filename,BasePath,basename);
           FormatString(buffer,"<title>%.1024s</title>\n",basename);
-          LiberateMemory((void **) &basename);
         }
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"</head>\n");

@@ -457,7 +457,8 @@ MagickExport char **ListModules(void)
     /*
       Add new module name to list.
     */
-    module_list[i]=BaseFilename(entry->d_name);
+    module_list[i]=AllocateString((char *) NULL);
+    GetPathComponent(entry->d_name,BasePath,module_list[i]);
     LocaleUpper(module_list[i]);
     if (LocaleNCompare("IM_MOD_",module_list[i],7) == 0)
       {

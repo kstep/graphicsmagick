@@ -84,13 +84,13 @@ static PixelPacket
     const unsigned int);
 
 static unsigned int
-  SyncPixelCache(Image *);
+  CompressCache(Cache),
+  SyncPixelCache(Image *),
+  UncompressCache(Cache);
 
 static void
   ClosePixelCache(Image *),
-  CompressCache(Cache),
-  DestroyPixelCache(Image *),
-  UncompressCache(Cache);
+  DestroyPixelCache(Image *);
 
 /*
   Initialize the image pixel methods.
@@ -181,7 +181,7 @@ static void ClosePixelCache(Image *image)
   assert(image->signature == MagickSignature);
   if (image->cache == (void *) NULL)
     return;
-  CompressCache(image->cache);
+  (void) CompressCache(image->cache);
   CloseCache(image->cache);
 }
 
@@ -200,7 +200,7 @@ static void ClosePixelCache(Image *image)
 %
 %  The format of the CompressCache method is:
 %
-%      void CompressCache(Cache cache)
+%      unsigned int CompressCache(Cache cache)
 %
 %  A description of each parameter follows:
 %
@@ -208,7 +208,7 @@ static void ClosePixelCache(Image *image)
 %
 %
 */
-static void CompressCache(Cache cache)
+static unsigned int CompressCache(Cache cache)
 {
 #if defined(HasZLIB)
   CacheInfo
@@ -270,6 +270,9 @@ static void CompressCache(Cache cache)
     (void) remove(filename);
   else
     (void) remove(cache_info->cache_filename);
+  return(y == cache_info->rows);
+#else
+  return(True);
 #endif
 }
 
@@ -1080,7 +1083,7 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
       cache_info->file=open(cache_info->cache_filename,O_RDWR | O_CREAT |
         O_BINARY,0777);
       if (cache_info->file == -1)
-        UncompressCache(cache);
+        (void) UncompressCache(cache);
       if (cache_info->file == -1)
         return(False);
     }
@@ -1193,7 +1196,7 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
     {
       cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
       if (cache_info->file == -1)
-        UncompressCache(cache);
+        (void) UncompressCache(cache);
       if (cache_info->file == -1)
         return(False);
     }
@@ -1290,7 +1293,7 @@ MagickExport unsigned int ReadCachePixels(Cache cache,const unsigned int id)
     {
       cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
       if (cache_info->file == -1)
-        UncompressCache(cache);
+        (void) UncompressCache(cache);
       if (cache_info->file == -1)
         return(False);
     }
@@ -1606,9 +1609,9 @@ static unsigned int SyncPixelCache(Image *image)
 %
 %  Method UncompressCache uncompresses the disk-based pixel cache.  
 %
-%  The format of the CompressCache method is:
+%  The format of the UncompressCache method is:
 %
-%      void CompressCache(Cache cache)
+%      unsigned int UncompressCache(Cache cache)
 %
 %  A description of each parameter follows:
 %
@@ -1616,7 +1619,7 @@ static unsigned int SyncPixelCache(Image *image)
 %
 %
 */
-static void UncompressCache(Cache cache)
+static unsigned int UncompressCache(Cache cache)
 {
 #if defined(HasZLIB)
   CacheInfo
@@ -1675,6 +1678,9 @@ static void UncompressCache(Cache cache)
   LiberateMemory((void **) &pixels);
   (void) gzclose(file);
   (void) remove(filename);
+  return(y == cache_info->rows);
+#else
+  return(True);
 #endif
 }
 
@@ -1757,7 +1763,7 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
     {
       cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
       if (cache_info->file == -1)
-        UncompressCache(cache);
+        (void) UncompressCache(cache);
       if (cache_info->file == -1)
         return(False);
     }
@@ -2114,7 +2120,7 @@ MagickExport unsigned int WriteCachePixels(Cache cache,const unsigned int id)
     {
       cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
       if (cache_info->file == -1)
-        UncompressCache(cache);
+        (void) UncompressCache(cache);
       if (cache_info->file == -1)
         return(False);
     }

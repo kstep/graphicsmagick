@@ -32,8 +32,6 @@ typedef struct _TokenInfo
 */
 extern MagickExport char
   *AllocateString(const char *),
-  *BaseFilename(const char *),
-  *GetExecutionPath(const char *),
   **ListFiles(const char *,const char *,int *),
   *PostscriptGeometry(const char *),
   *SetClientName(const char *),
@@ -67,6 +65,7 @@ extern MagickExport void
   AppendImageFormat(const char *,char *),
   DestroyPostscriptGeometry(char *),
   ExpandFilename(char *),
+  GetPathComponent(const char *,PathType,char *),
   FormatString(char *,const char *,...),
   LiberateMemory(void **),
   LocaleLower(char *),

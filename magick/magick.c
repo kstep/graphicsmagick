@@ -517,6 +517,7 @@ MagickExport void MagickIncarnate(const char *path)
 {
   char
     directory[MaxTextExtent],
+    filename[MaxTextExtent],
     magic[MaxTextExtent];
 
   unsigned char
@@ -525,40 +526,10 @@ MagickExport void MagickIncarnate(const char *path)
   assert(path != (const char *) NULL);
   (void) getcwd(directory,MaxTextExtent);
   (void) SetClientPath(directory);
-  if (path != (const char *) NULL)
-    {
-      char
-        *filename;
-
-      register char
-        *p;
-
-      /*
-        Set client path.
-      */
-      filename=GetExecutionPath(path);
-      for (p=filename+(Extent(filename)-1); p > filename; p--)
-        if (IsBasenameSeparator(*p))
-          {
-            p++;
-            (void) strncpy(directory,filename,p-filename);
-            directory[p-filename]='\0';
-            SetClientPath(directory);
-            (void) strcpy(filename,p);
-            break;
-          }
-      /*
-        Set client name.
-      */
-      for (p=filename+(Extent(filename)-1); p > filename; p--)
-        if (*p == '.')
-          {
-            *p='\0';
-            break;
-          }
-      SetClientName(filename);
-      LiberateMemory((void **) &filename);
-    }
+  GetPathComponent(path,HeadPath,filename);
+  SetClientPath(filename);
+  GetPathComponent(path,BasePath,filename);
+  SetClientName(filename);
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
   *magick='\0';

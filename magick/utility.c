@@ -134,7 +134,7 @@ MagickExport char *AllocateString(const char *source)
 MagickExport void AppendImageFormat(const char *format,char *filename)
 {
   char
-    staging[MaxTextExtent];
+    basename[MaxTextExtent];
 
   register char
     *p;
@@ -145,87 +145,15 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
     return;
   if (LocaleCompare(filename,"-") == 0)
     {
-      FormatString(staging,"%.1024s:%.1024s",format,filename);
-      (void) strcpy(filename,staging);
+      char
+        message[MaxTextExtent];
+
+      FormatString(message,"%.1024s:%.1024s",format,filename);
+      (void) strcpy(filename,message);
       return;
     }
-  p=filename+Extent(filename)-1;
-  while ((p > (filename+1)) && !IsBasenameSeparator(*p))
-  {
-    if (*(p-1) == '.')
-      {
-        (void) strcpy(p,format);
-        return;
-      }
-    p--;
-  }
-  (void) strcat(filename,".");
-  (void) strcat(filename,format);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   B a s e F i l e n a m e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method BaseFilename removes the path name component and any extensions.
-%
-%  The format of the BaseFilename function is:
-%
-%      BaseFilename(name)
-%
-%  A description of each parameter follows:
-%
-%    o name: Specifies a pointer to a character array that contains the
-%      name.
-%
-%
-*/
-MagickExport char *BaseFilename(const char *name)
-{
-  char
-    *basename;
-
-  register char
-    *p;
-
-  /*
-    Get basename of client.
-  */
-  assert(name != (char *) NULL);
-  basename=AllocateString(name);
-  p=basename+(Extent(basename)-1);
-  while (p > basename)
-  {
-    if (!IsBasenameSeparator(*p))
-      {
-        p--;
-        continue;
-      }
-    (void) strcpy(basename,p+1);
-    break;
-  }
-  /*
-    Delete any extension.
-  */
-  p=basename+(Extent(basename)-1);
-  while (p > basename)
-  {
-    if (*p != '.')
-      {
-        p--;
-        continue;
-      }
-    *p='\0';
-    break;
-  }
-  return(basename);
+  GetPathComponent(filename,BasePath,basename);
+  FormatString(filename,"%.1024s.%.1024s",basename,format);
 }
 
 /*
@@ -549,20 +477,17 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
     filename[MaxTextExtent],
     home_directory[MaxTextExtent],
     *option,
+    path[MaxTextExtent],
     **vector,
     working_directory[MaxTextExtent];
 
   int
     count,
     expanded,
+    i,
     number_files;
 
-  register char
-    *p,
-    *q;
-
   register int
-    i,
     j;
 
   /*
@@ -590,9 +515,9 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
       continue;
     if ((*option == '"') || (*option == '\''))
       continue;
-    (void) strcpy(filename,option);
-    ExpandFilename(filename);
-    if (!IsGlob(filename))
+    (void) strcpy(path,option);
+    ExpandFilename(path);
+    if (!IsGlob(path))
       {
         expanded=True;
         continue;
@@ -600,21 +525,11 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
     /*
       Get the list of image file names.
     */
-    (void) getcwd(working_directory,MaxTextExtent-1);
-    for (p=filename+Extent(filename)-1; p > filename; p--)
-      if (IsBasenameSeparator(*p))
-        {
-          /*
-            Filename includes a directory name.
-          */
-          q=working_directory;
-          for (j=0; j < (p-filename+1); j++)
-            *q++=filename[j];
-          *q='\0';
-          p++;
-          break;
-        }
-    filelist=ListFiles(working_directory,p,&number_files);
+    GetPathComponent(path,HeadPath,working_directory);
+    GetPathComponent(path,TailPath,filename);
+    if (*working_directory == '\0')
+      (void) getcwd(working_directory,MaxTextExtent-1);
+    filelist=ListFiles(working_directory,filename,&number_files);
     if (filelist == (char **) NULL)
       continue;
     for (j=0; j < number_files; j++)
@@ -643,17 +558,9 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
           continue;
         }
       expanded=True;
-      vector[count]=(char *)
-        AcquireMemory(((p-filename)+Extent(filelist[j])+MaxTextExtent+1));
-      if (vector[count] == (char *) NULL)
-        {
-          for ( ; j < number_files; j++)
-            LiberateMemory((void **) &filelist[j]);
-          LiberateMemory((void **) &filelist);
-          return(False);
-        }
-      FormatString(vector[count],"%.*s%.1024s",(int) (p-filename),filename,
-        filelist[j]);
+      vector[count]=AllocateString(path);
+      FormatString(vector[count],"%.1024s%.1024s%.1024s",working_directory,
+        DirectorySeparator,filelist[j]);
       LiberateMemory((void **) &filelist[j]);
       count++;
     }
@@ -709,42 +616,6 @@ MagickExport void FormatString(char *string,const char *format,...)
   (void) vsnprintf(string,MaxTextExtent,format,operands);
 #endif
   va_end(operands);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t E x e c u t i o n P a t h                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetExecutionPath function returns the pathname of the executable
-%  that started the process.
-%
-%  The format of the GetExecutionPath method is:
-%
-%      char *GetExecutionPath(const char *path)
-%
-%  A description of each parameter follows:
-%
-%    o execution_path: Method GetExecutionPath returns the pathname of the
-%      executable that started the process.
-%
-%    o path: This character string is returned if no method is available to
-%      determine the pathname of the executable.
-%
-%
-*/
-MagickExport char *GetExecutionPath(const char *path)
-{
-#if defined(WIN32)
-  return(NTGetExecutionPath());
-#endif
-  return(AllocateString(path));
 }
 
 /*
@@ -852,6 +723,101 @@ MagickExport int GetGeometry(const char *image_geometry,int *x,int *y,
   */
   flags|=ParseGeometry(geometry,x,y,width,height);
   return(flags);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t P a t h C o m p o n e n t                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetPathComponent returns the parent directory name, filename, 
+%  basename, or extension of a file path.
+%
+%  The format of the GetPathComponent function is:
+%
+%      GetPathComponent(const char *path,PathType type,char *component)
+%
+%  A description of each parameter follows:
+%
+%    o path: Specifies a pointer to a character array that contains the
+%      file path.
+%
+%    o type: Specififies which file path component to return.
+%
+%    o component: The selected file path component is returned here.
+%
+*/
+MagickExport void GetPathComponent(const char *path,PathType type,
+  char *component)
+{
+  register char
+    *p;
+
+  /*
+    Get basename of client.
+  */
+  assert(path != (const char *) NULL);
+  assert(component != (const char *) NULL);
+  (void) strcpy(component,path);
+  if (*path == '\0')
+    return;
+  for (p=component+(Extent(component)-1); p > component; p--)
+    if (IsBasenameSeparator(*p))
+      break;
+  switch (type)
+  {
+    case RootPath:
+    {
+      for (p=component+(Extent(component)-1); p > component; p--)
+        if (*p == '.')
+          break;
+      *component='\0';
+      if (*p == '.')
+        (void) strcpy(component,p+1);
+      break;
+    }
+    case HeadPath:
+    {
+      *p='\0';
+      break;
+    }
+    case TailPath:
+    {
+      if (IsBasenameSeparator(*p))
+        (void) strcpy(component,p+1);
+      break;
+    }
+    case BasePath:
+    {
+      if (IsBasenameSeparator(*p))
+        (void) strcpy(component,p+1);
+      for (p=component+(Extent(component)-1); p > component; p--)
+        if (*p == '.')
+          {
+            *p='\0';
+            break;
+          }
+      break;
+    }
+    case ExtensionPath:
+    {
+      if (IsBasenameSeparator(*p))
+        (void) strcpy(component,p+1);
+      for (p=component+(Extent(component)-1); p > component; p--)
+        if (*p == '.')
+          break;
+      *component='\0';
+      if (*p == '.')
+        (void) strcpy(component,p+1);
+      break;
+    }
+  }
 }
 
 /*
@@ -1593,21 +1559,14 @@ MagickExport void LocaleUpper(char *string)
 */
 MagickExport void LocaleFilename(char *filename)
 {
-  register char
-    *p,
-    *q;
+  char
+    path[MaxTextExtent],
+    unique[MaxTextExtent];
 
   assert(filename != (char *) NULL);
-  p=filename+Extent(filename)-1;
-  while ((p > filename) && !IsBasenameSeparator(*p))
-    p--;
-  p++;
-  TemporaryFilename(p);
-  q=filename+Extent(filename)-1;
-  while ((q >= p) && !IsBasenameSeparator(*q))
-    q--;
-  q++;
-  (void) strcpy(p,q);
+  GetPathComponent(filename,HeadPath,path);
+  TemporaryFilename(unique);
+  FormatString(filename,"%.1024s%.1024s%.1024s",path,DirectorySeparator,unique);
 }
 
 /*
@@ -2932,49 +2891,39 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       case 't':
       {
         char
-          directory[MaxTextExtent],
-          *extension,
-          *filename;
+          filename[MaxTextExtent];
 
         /*
           Label segment is the base of the filename.
         */
         if (Extent(image->magick_filename) == 0)
           break;
-        (void) strcpy(directory,image->magick_filename);
-        extension=directory+Extent(directory);
-        filename=extension;
-        while ((filename > directory) && !IsBasenameSeparator(*(filename-1)))
-        {
-          if (*filename == '.')
-            if (*extension == '\0')
-              extension=filename+1;
-          filename--;
-        }
         switch (*p)
         {
           case 'd':
           {
-            *filename='\0';
-            (void) strcpy(q,directory);
-            q+=Extent(directory);
+            GetPathComponent(image->magick_filename,HeadPath,filename);
+            (void) strcpy(q,filename);
+            q+=Extent(filename);
             break;
           }
           case 'e':
           {
-            (void) strcpy(q,extension);
-            q+=Extent(extension);
+            GetPathComponent(image->magick_filename,ExtensionPath,filename);
+            (void) strcpy(q,filename);
+            q+=Extent(filename);
             break;
           }
           case 'f':
           {
+            GetPathComponent(image->magick_filename,TailPath,filename);
             (void) strcpy(q,filename);
             q+=Extent(filename);
             break;
           }
           case 't':
           {
-            *(extension-1)='\0';
+            GetPathComponent(image->magick_filename,BasePath,filename);
             (void) strcpy(q,filename);
             q+=Extent(filename);
             break;
