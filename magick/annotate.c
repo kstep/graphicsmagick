@@ -1024,6 +1024,9 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   DrawInfo
     *clone_info;
 
+  FT_BBox
+    bounds;
+
   FT_BitmapGlyph
     bitmap;
 
@@ -1152,10 +1155,10 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   metrics->width=0;
   metrics->height=(double) face->size->metrics.height/64.0;
   metrics->max_advance=(double) face->size->metrics.max_advance/64.0;
-  metrics->bounds.x1=(double) face->bbox.xMin/64.0;
-  metrics->bounds.y1=(double) face->bbox.yMin/64.0;
-  metrics->bounds.x2=(double) face->bbox.xMax/64.0;
-  metrics->bounds.y2=(double) face->bbox.yMax/64.0;
+  metrics->bounds.x1=65536.0;
+  metrics->bounds.y1=65536.0;
+  metrics->bounds.x2=(-65536.0);
+  metrics->bounds.y2=(-65536.0);
   metrics->underline_position=face->underline_position/64.0;
   metrics->underline_thickness=face->underline_thickness/64.0;
   /*
@@ -1214,6 +1217,15 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
             &OutlineMethods,clone_info);
         }
+    FT_Glyph_Get_CBox(glyph.image,ft_glyph_bbox_gridfit,&bounds);
+    if (bounds.xMin > metrics->bounds.x1)
+      metrics->bounds.x1=bounds.xMin;
+    if (bounds.yMin > metrics->bounds.y1)
+      metrics->bounds.y1=bounds.yMin;
+    if (bounds.xMax > metrics->bounds.x2)
+      metrics->bounds.x2=bounds.xMax;
+    if (bounds.yMax > metrics->bounds.y2)
+      metrics->bounds.y2=bounds.yMax;
     FT_Vector_Transform(&glyph.origin,&affine);
     (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
     if (render)
@@ -1293,6 +1305,10 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     last_glyph=glyph;
   }
   metrics->width/=64.0;
+  metrics->bounds.x1/=64.0;
+  metrics->bounds.y1/=64.0;
+  metrics->bounds.x2/=64.0;
+  metrics->bounds.y2/=64.0;
   if (render)
     if ((draw_info->stroke.opacity != TransparentOpacity) ||
         (draw_info->stroke_pattern != (Image *) NULL))
@@ -1510,7 +1526,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
     }
   FormatString(annotate_info.geometry,"%ux%u+%d+%d",width,height,
     (int) ceil(offset->x-0.5),
-		(int) ceil(offset->y-metrics->ascent-metrics->descent-0.5));
+    (int) ceil(offset->y-metrics->ascent-metrics->descent-0.5));
   pixel.pen_color.red=XUpscale(draw_info->fill.red);
   pixel.pen_color.green=XUpscale(draw_info->fill.green);
   pixel.pen_color.blue=XUpscale(draw_info->fill.blue);
