@@ -72,7 +72,7 @@ testGetAttribute('input.miff','signature',
 testGetAttribute('input.miff','texture',undef);
 
 ++$test;
-testGetAttribute('input.miff','type','TrueColorMatte');
+testGetAttribute('input.miff','type','TrueColor');
 
 ++$test;
 testGetAttribute('input.miff','units','undefined units');

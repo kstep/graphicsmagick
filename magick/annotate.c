@@ -785,9 +785,10 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
         return(RenderFreetype(image,draw_info,(char *) NULL,offset,metrics));
       if (*draw_info->font == '-')
         return(RenderX11(image,draw_info,offset,metrics));
-      if (IsAccessible(draw_info->font))
-        return(RenderFreetype(image,draw_info,(char *) NULL,offset,metrics));
       type_info=GetTypeInfo(draw_info->font,&image->exception);
+      if (type_info == (const TypeInfo *) NULL)
+        if (IsAccessible(draw_info->font))
+          return(RenderFreetype(image,draw_info,(char *) NULL,offset,metrics));
     }
   if (type_info == (const TypeInfo *) NULL)
     type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
