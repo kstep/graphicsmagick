@@ -47,8 +47,8 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
   cache.c cache_view.c colors.c compress.c constitute.c decorate.c delegates.c \
   display.c draw.c effects.c enhance.c error.c gems.c gradation.c histogram.c \
-  html.c image.c label.c magick.c map.c matte.c memory.c monitor.c montage.c \
-  quantize.c segment.c shear.c signature.c stegano.c stream.c \
+  html.c image.c label.c magick.c map.c matte.c memory.c modules.c monitor.c \
+  montage.c quantize.c segment.c shear.c signature.c stegano.c stream.c \
   timer.c transform.c ttf.c utility.c widget.c xwindows.c zoom.c
 
 # Library coder sources

@@ -55,6 +55,9 @@
 */
 #include "magick.h"
 #include "defines.h"
+#if defined(HasLTDL)
+#  include <ltdl.h>
+#endif
 
 /*
   Global declarations.
@@ -204,7 +207,6 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 	    Locate and execute RegisterFORMATImage function
 	  */
 	  strcpy(func_name, "Register");
-	  // The result from BaseFilename() should not be freed!
 	  base_name = BaseFilename( file_list[i] );
 	  Latin1Upper(base_name);
 
@@ -213,6 +215,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 	     strcat(func_name,"8");
 
 	  strcat(func_name,base_name);
+/* 	  FreeMemory(base_name); */
 	  strcat(func_name, "Image");
 
 	  func=(void (*)(void))lt_dlsym(handle, func_name);
