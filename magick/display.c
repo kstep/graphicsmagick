@@ -11182,7 +11182,8 @@ static Image *XVisualDirectoryImage(Display *display,
   Image
     *image,
     *montage_image,
-    *next_image;
+    *next_image,
+    *thumbnail_image;
 
   ImageInfo
     *clone_info;
@@ -11195,6 +11196,9 @@ static Image *XVisualDirectoryImage(Display *display,
 
   MontageInfo
     *montage_info;
+
+  RectangleInfo
+    geometry;
 
   register int
     i;
@@ -11270,7 +11274,16 @@ static Image *XVisualDirectoryImage(Display *display,
       {
         (void) SetImageAttribute(next_image,"label",(char *) NULL);
         (void) SetImageAttribute(next_image,"label",DefaultTileLabel);
-        TransformImage(&next_image,(char *) NULL,DefaultTileGeometry);
+        SetGeometry(next_image,&geometry);
+        (void) GetMagickGeometry(clone_info->size,&geometry.x,&geometry.y,
+          &geometry.width,&geometry.height);
+        thumbnail_image=ThumbnailImage(next_image,geometry.width,
+          geometry.height,exception);
+        if (thumbnail_image != (Image *) NULL)
+          {
+            DestroyImage(next_image);
+            next_image=thumbnail_image;
+          }
         if (backdrop)
           {
             (void) XDisplayBackgroundImage(display,&background_resources,
