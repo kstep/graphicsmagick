@@ -20,7 +20,7 @@ using namespace std;
 //
 // Explicit template instantiations
 //
-#if 1
+#if 0
 template class std::list <Magick::Coordinate>;
 // template class std::list<const Magick::Drawable>;
 // template class std::list<const Magick::PathArcArgs>;
