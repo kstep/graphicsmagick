@@ -120,7 +120,7 @@ static void ImportUsage(void)
       "-interlace type      None, Line, Plane, or Partition",
       "-help                print program options",
       "-label name          assign a label to an image",
-			"-limit type value    Disk, Map, or Memory resource limit",
+      "-limit type value    Disk, Map, or Memory resource limit",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",
       "-page geometry       size and location of an image canvas",
@@ -389,7 +389,7 @@ int main(int argc,char **argv)
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   MagickFatalError(OptionFatalError,"Missing threshold",option);
                 SetCacheThreshold(atol(argv[i]));
-							}
+              }
             break;
           }
         if (LocaleCompare("colors",option+1) == 0)

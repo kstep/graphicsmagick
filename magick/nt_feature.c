@@ -496,7 +496,7 @@ MagickExport void *ImageToHBITMAP(Image* image)
     /* Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8 */
     memcpy((void*)pDestPixel,(const void*)pPixels,sizeof(PixelPacket)*nPixels);
 
-#else	/* 16 or 32 bit Quantum */
+#else  /* 16 or 32 bit Quantum */
     {
       unsigned long nPixelCount;
 

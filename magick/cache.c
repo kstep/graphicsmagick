@@ -1888,7 +1888,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
           }
         if (pixels == (PixelPacket *) NULL)
           LiberateMagickResource(MemoryResource,cache_info->length);
-				else
+        else
           {
             /*
               Create in-memory pixel cache.

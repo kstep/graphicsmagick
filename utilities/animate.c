@@ -501,7 +501,7 @@ int main(int argc,char **argv)
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   MagickFatalError(OptionFatalError,"Missing threshold",option);
                 SetCacheThreshold(atol(argv[i]));
-							}
+              }
             break;
           }
         if (LocaleCompare("colormap",option+1) == 0)

@@ -198,10 +198,10 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
               break;
             for (x=0; x < (long) image->columns; x++)
               {
-                q->red		= ScaleCharToQuantum(pBits->rgbRed);
-                q->green	= ScaleCharToQuantum(pBits->rgbGreen);
-                q->blue		= ScaleCharToQuantum(pBits->rgbBlue);
-                q->opacity	= OpaqueOpacity;
+                q->red    = ScaleCharToQuantum(pBits->rgbRed);
+                q->green  = ScaleCharToQuantum(pBits->rgbGreen);
+                q->blue    = ScaleCharToQuantum(pBits->rgbBlue);
+                q->opacity  = OpaqueOpacity;
                 pBits++;
                 q++;
               }
@@ -264,10 +264,10 @@ static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image
     OpenClipboard( NULL );
     EmptyClipboard();
 
-	bitmapH = ImageToHBITMAP(image);
-	SetClipboardData(CF_BITMAP, bitmapH);
+  bitmapH = ImageToHBITMAP(image);
+  SetClipboardData(CF_BITMAP, bitmapH);
 
-	CloseClipboard();
+  CloseClipboard();
 
     return(True);
   }

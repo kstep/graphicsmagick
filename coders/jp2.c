@@ -375,7 +375,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           q->opacity=ScaleCharToQuantum(jas_matrix_getv(pixels[3],x));
         q++;
       }
-		else
+    else
       if (image->depth <= 16)
         for (x=0; x < (long) image->columns; x++)
         {
@@ -390,7 +390,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
             q->opacity=ScaleShortToQuantum(jas_matrix_getv(pixels[3],x));
           q++;
         }
-			else
+      else
         for (x=0; x < (long) image->columns; x++)
         {
           q->red=ScaleLongToQuantum(jas_matrix_getv(pixels[0],x));
@@ -637,7 +637,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
           }
         p++;
       }
-		else
+    else
       if (image->depth <= 16)
         for (x=0; x < (long) image->columns; x++)
         {
@@ -654,7 +654,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
             }
           p++;
         }
-			else
+      else
         for (x=0; x < (long) image->columns; x++)
         {
           if (number_components == 1)

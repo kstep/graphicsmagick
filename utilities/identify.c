@@ -96,7 +96,7 @@ static void IdentifyUsage(void)
       "-format \"string\"   output formatted image characteristics",
       "-help                print program options",
       "-interlace type      None, Line, Plane, or Partition",
-			"-limit type value    Disk, Map, or Memory resource limit",
+      "-limit type value    Disk, Map, or Memory resource limit",
       "-size geometry       width and height of image",
       "-sampling-factor geometry",
       "                     horizontal and vertical sampling factor",

@@ -230,8 +230,8 @@ static xmlParserInputPtr MSLResolveEntity(void *context,
     built in the structure (and the parameter values).
   */
   LogMagickEvent(CoderEvent,"  SAX.resolveEntity(%.1024s, %.1024s)",
-		(public_id != (const xmlChar *) NULL ? (char *) public_id : "none"),
-		(system_id != (const xmlChar *) NULL ? (char *) system_id : "none"));
+    (public_id != (const xmlChar *) NULL ? (char *) public_id : "none"),
+    (system_id != (const xmlChar *) NULL ? (char *) system_id : "none"));
   msl_info=(MSLInfo *) context;
   stream=xmlLoadExternalEntity((const char *) system_id,(const char *)
     public_id,msl_info->parser);
@@ -4052,7 +4052,7 @@ static void MSLExternalSubset(void *context,const xmlChar *name,
   LogMagickEvent(CoderEvent,
     "  SAX.externalSubset(%.1024s %.1024s %.1024s)",name,
     (external_id != (const xmlChar *) NULL ? (char *) external_id : " "),
-		(system_id != (const xmlChar *) NULL ? (char *) system_id : " "));
+    (system_id != (const xmlChar *) NULL ? (char *) system_id : " "));
   msl_info=(MSLInfo *) context;
   parser=msl_info->parser;
   if (((external_id == NULL) && (system_id == NULL)) ||

@@ -417,8 +417,8 @@ static void SVGInternalSubset(void *context,const xmlChar *name,
   */
   LogMagickEvent(CoderEvent,"  SAX.internalSubset(%.1024s, %.1024s, %.1024s)",
     (char *) name,
-		(external_id != (const xmlChar *) NULL ? (char *) external_id : "none"),
-		(system_id != (const xmlChar *) NULL ? (char *) system_id : "none"));
+    (external_id != (const xmlChar *) NULL ? (char *) external_id : "none"),
+    (system_id != (const xmlChar *) NULL ? (char *) system_id : "none"));
   svg_info=(SVGInfo *) context;
   (void) xmlCreateIntSubset(svg_info->document,name,external_id,system_id);
 }
@@ -439,8 +439,8 @@ static xmlParserInputPtr SVGResolveEntity(void *context,
     built in the structure (and the parameter values).
   */
   LogMagickEvent(CoderEvent,"  SAX.resolveEntity(%.1024s, %.1024s)",
-		(public_id != (const xmlChar *) NULL ? (char *) public_id : "none"),
-		(system_id != (const xmlChar *) NULL ? (char *) system_id : "none"));
+    (public_id != (const xmlChar *) NULL ? (char *) public_id : "none"),
+    (system_id != (const xmlChar *) NULL ? (char *) system_id : "none"));
   svg_info=(SVGInfo *) context;
   stream=xmlLoadExternalEntity((const char *) system_id,(const char *)
     public_id,svg_info->parser);
@@ -2455,7 +2455,7 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
   LogMagickEvent(CoderEvent,
     "  SAX.externalSubset(%.1024s, %.1024s, %.1024s)",name,
     (external_id != (const xmlChar *) NULL ? (char *) external_id : "none"),
-		(system_id != (const xmlChar *) NULL ? (char *) system_id : "none"));
+    (system_id != (const xmlChar *) NULL ? (char *) system_id : "none"));
   svg_info=(SVGInfo *) context;
   parser=svg_info->parser;
   if (((external_id == NULL) && (system_id == NULL)) ||

@@ -145,7 +145,7 @@ static void DisplayUsage(void)
       "-immutable           displayed image cannot be modified",
       "-interlace type      None, Line, Plane, or Partition",
       "-label name          assign a label to an image",
-			"-limit type value    Disk, Map, or Memory resource limit",
+      "-limit type value    Disk, Map, or Memory resource limit",
       "-map type            display image using this Standard Colormap",
       "-matte               store matte channel if the image has one",
       "-monochrome          transform image to black and white",
@@ -674,7 +674,7 @@ int main(int argc,char **argv)
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   MagickFatalError(OptionFatalError,"Missing threshold",option);
                 SetCacheThreshold(atol(argv[i]));
-							}
+              }
             break;
           }
         if (LocaleCompare("colormap",option+1) == 0)
@@ -1493,7 +1493,7 @@ int main(int argc,char **argv)
                 resource_info.visual_type=argv[i];
               }
             break;
-  				}
+          }
         if (LocaleCompare("virtual-pixel",option+1) == 0)
           {
             if (*option == '-')

@@ -122,7 +122,7 @@ static void MontageUsage(void)
       "-interlace type      None, Line, Plane, or Partition",
       "-help                print program options",
       "-label name          assign a label to an image",
-			"-limit type value    Disk, Map, or Memory resource limit",
+      "-limit type value    Disk, Map, or Memory resource limit",
       "-matte               store matte channel if the image has one",
       "-mode type           Frame, Unframe, or Concatenate",
       "-monochrome          transform image to black and white",
