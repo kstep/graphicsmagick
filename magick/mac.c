@@ -1083,7 +1083,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   GetGWorld(&port,&device);
   theErr=NewGWorld(&graphic_world,0,&(**picture_handle).picFrame,nil,nil,
     useTempMem | keepLocal);
-  if (theErr != noErr && graphic_world == nil)
+  if ((theErr != noErr) && (graphic_world == nil))
     {
       DisposeHandle((Handle) picture_handle);
       ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",

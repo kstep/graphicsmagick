@@ -55,7 +55,6 @@
 #include "magick.h"
 #include "defines.h"
 
-#if defined(HasTTF)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -161,14 +160,6 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DestroyImageInfo(clone_info);
   return(image);
 }
-#else
-static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  ThrowException(exception,MissingDelegateWarning,"Cannot read TTF images",
-    image_info->filename);
-  return((Image *) NULL);
-}
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -227,7 +218,5 @@ ModuleExport void RegisterTTFImage(void)
 */
 ModuleExport void UnregisterTTFImage(void)
 {
-#if defined(HasTTF)
   UnregisterMagickInfo("TTF");
-#endif
 }

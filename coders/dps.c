@@ -536,7 +536,7 @@ ModuleExport void RegisterDPSImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r D P S I m a g e                                        %
+%   U n r e g i s t e r D P S I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
