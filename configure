@@ -14311,7 +14311,7 @@ LIBS=""
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
-ac_config_files="$ac_config_files Makefile magick/Makefile coders/delegates.mgk coders/Makefile utilities/Makefile tests/Makefile coders/fonts.mgk magick/Magick-config Magick++/bin/Makefile Magick++/bin/Magick++-config Magick++/Makefile Magick++/lib/Makefile Magick++/lib/Magick++/Makefile Magick++/demo/Makefile Magick++/tests/Makefile PerlMagick/Makefile.PL"
+ac_config_files="$ac_config_files Makefile magick/Makefile coders/delegates.mgk coders/Makefile utilities/Makefile tests/Makefile coders/type.mgk magick/Magick-config Magick++/bin/Makefile Magick++/bin/Magick++-config Magick++/Makefile Magick++/lib/Makefile Magick++/lib/Magick++/Makefile Magick++/demo/Makefile Magick++/tests/Makefile PerlMagick/Makefile.PL"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -14592,7 +14592,7 @@ Try \`$0 --help' for more information." >&2;}
   'coders/Makefile' ) CONFIG_FILES="$CONFIG_FILES coders/Makefile" ;;
   'utilities/Makefile' ) CONFIG_FILES="$CONFIG_FILES utilities/Makefile" ;;
   'tests/Makefile' ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
-  'coders/fonts.mgk' ) CONFIG_FILES="$CONFIG_FILES coders/fonts.mgk" ;;
+  'coders/type.mgk' ) CONFIG_FILES="$CONFIG_FILES coders/type.mgk" ;;
   'magick/Magick-config' ) CONFIG_FILES="$CONFIG_FILES magick/Magick-config" ;;
   'Magick++/bin/Makefile' ) CONFIG_FILES="$CONFIG_FILES Magick++/bin/Makefile" ;;
   'Magick++/bin/Magick++-config' ) CONFIG_FILES="$CONFIG_FILES Magick++/bin/Magick++-config" ;;
@@ -15491,10 +15491,6 @@ echo "$as_me: error: $ac_sub_configure failed for $ac_subdir" >&2;}
 
     cd $ac_popdir
   done
-fi
-
-if test -f /usr/share/fonts/fontmap; then
-  cp -f /usr/share/fonts/fontmap coders/fonts.mgk
 fi
 
 echo ""

@@ -3,14 +3,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                        FFFFF   OOO   N   N  TTTTT                           %
-%                        F      O   O  NN  N    T                             %
-%                        FFF    O   O  N N N    T                             %
-%                        F      O   O  N  NN    T                             %
-%                        F       OOO   N   N    T                             %
+%                        TTTTT  Y   Y  PPPP   EEEEE                           %
+%                          T     Y Y   P   P  E                               %
+%                          T      Y    PPPP   EEE                             %
+%                          T      Y    P      E                               %
+%                          T      Y    P      EEEEE                           %
 %                                                                             %
 %                                                                             %
-%                     ImageMagick Image Font Methods                          %
+%                     ImageMagick Image Type Methods                          %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -58,26 +58,26 @@
 /*
   Define declarations.
 */
-#define FontFilename  "fonts.mgk"
+#define TypeFilename  "type.mgk"
 
 /*
-  Declare font map.
+  Declare type map.
 */
 static char
-  *FontMap =
+  *TypeMap =
     "<?xml version=\"1.0\"?>"
-    "<fontmap>"
-    "  <font />"
-    "</fontmap>";
+    "<typemap>"
+    "  <type />"
+    "</typemap>";
 
 /*
   Static declarations.
 */
-static FontInfo
-  *font_list = (FontInfo *) NULL;
+static TypeInfo
+  *type_list = (TypeInfo *) NULL;
 
 static SemaphoreInfo
-  *font_semaphore = (SemaphoreInfo *) NULL;
+  *type_semaphore = (SemaphoreInfo *) NULL;
 
 /*
   Forward declarations.
@@ -90,27 +90,27 @@ static unsigned int
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y F o n t I n f o                                             %
++   D e s t r o y T y p e I n f o                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyFontInfo deallocates memory associated with the fonts list.
+%  Method DestroyTypeInfo deallocates memory associated with the font list.
 %
-%  The format of the DestroyFontInfo method is:
+%  The format of the DestroyTypeInfo method is:
 %
-%      DestroyFontInfo(void)
+%      DestroyTypeInfo(void)
 %
 %
 */
-MagickExport void DestroyFontInfo(void)
+MagickExport void DestroyTypeInfo(void)
 {
-  register FontInfo
+  register TypeInfo
     *p;
 
-  AcquireSemaphoreInfo(&font_semaphore);
-  for (p=font_list; p != (FontInfo *) NULL; )
+  AcquireSemaphoreInfo(&type_semaphore);
+  for (p=type_list; p != (TypeInfo *) NULL; )
   {
     if (p->filename != (char *) NULL)
       LiberateMemory((void **) &p->filename);
@@ -132,12 +132,12 @@ MagickExport void DestroyFontInfo(void)
       LiberateMemory((void **) &p->glyphs);
     if (p->version != (char *) NULL)
       LiberateMemory((void **) &p->version);
-    font_list=p;
+    type_list=p;
     p=p->next;
-    LiberateMemory((void **) &font_list);
+    LiberateMemory((void **) &type_list);
   }
-  font_list=(FontInfo *) NULL;
-  DestroySemaphoreInfo(font_semaphore);
+  type_list=(TypeInfo *) NULL;
+  DestroySemaphoreInfo(type_semaphore);
 }
 
 /*
@@ -145,45 +145,45 @@ MagickExport void DestroyFontInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t F o n t I n f o                                                     %
++   G e t T y p e I n f o                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetFontInfo searches the font list for the specified name and if
-%  found returns attributes for that font.
+%  Method GetTypeInfo searches the type list for the specified name and if
+%  found returns attributes for that type.
 %
-%  The format of the GetFontInfo method is:
+%  The format of the GetTypeInfo method is:
 %
-%      FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
+%      TypeInfo *GetTypeInfo(const char *name,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o font_info: Method GetFontInfo searches the font list for the specified
-%      name and if found returns attributes for that font.
+%    o type_info: Method GetTypeInfo searches the type list for the specified
+%      name and if found returns attributes for that type.
 %
-%    o name: The font name.
+%    o name: The type name.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
+MagickExport TypeInfo *GetTypeInfo(const char *name,ExceptionInfo *exception)
 {
-  register FontInfo
+  register TypeInfo
     *p;
 
-  AcquireSemaphoreInfo(&font_semaphore);
-  if (font_list == (FontInfo *) NULL)
-    (void) ReadConfigurationFile(FontFilename,exception);
-  LiberateSemaphoreInfo(&font_semaphore);
+  AcquireSemaphoreInfo(&type_semaphore);
+  if (type_list == (TypeInfo *) NULL)
+    (void) ReadConfigurationFile(TypeFilename,exception);
+  LiberateSemaphoreInfo(&type_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
-    return(font_list);
+    return(type_list);
   /*
-    Search for requested font.
+    Search for requested type.
   */
-  for (p=font_list; p != (FontInfo *) NULL; p=p->next)
+  for (p=type_list; p != (TypeInfo *) NULL; p=p->next)
     if ((p->name != (char *) NULL) && (LocaleCompare(p->name,name) == 0))
       break;
   return(p);
@@ -194,17 +194,17 @@ MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  L i s t F o n t I n f o                                                    %
+%  L i s t T y p e I n f o                                                    %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ListFontInfo lists the text fonts to a file.
+%  Method ListTypeInfo lists the fonts to a file.
 %
-%  The format of the ListFontInfo method is:
+%  The format of the ListTypeInfo method is:
 %
-%      unsigned int ListFontInfo(FILE *file,ExceptionInfo *exception)
+%      unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -214,26 +214,26 @@ MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
 %
 %
 */
-MagickExport unsigned int ListFontInfo(FILE *file,ExceptionInfo *exception)
+MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 {
-  register FontInfo
-    *p;
-
   register int
     i;
+
+  register TypeInfo
+    *p;
 
   if (file == (const FILE *) NULL)
     file=stdout;
   (void) fprintf(file,"ImageMagick supports these built-in fonts.\n");
-  p=GetFontInfo("*",exception);
-  if (p == (FontInfo *) NULL)
+  p=GetTypeInfo("*",exception);
+  if (p == (TypeInfo *) NULL)
     return(False);
   if (p->filename != (char *) NULL)
     (void) fprintf(file,"\nFilename: %.1024s\n\n",p->filename);
   (void) fprintf(file,"Name                         Description\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");
-  for ( ; p != (FontInfo *) NULL; p=p->next)
+  for ( ; p != (TypeInfo *) NULL; p=p->next)
   {
     (void) fprintf(file,"%.1024s",p->name);
     for (i=Extent(p->name); i <= 28; i++)
@@ -291,7 +291,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     length;
 
   /*
-    Read the font configuration file.
+    Read the type configuration file.
   */
   FormatString(filename,"%.1024s",basename);
   path=GetMagickConfigurePath(filename);
@@ -302,7 +302,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    xml=AllocateString(FontMap);
+    xml=AllocateString(TypeMap);
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
@@ -322,31 +322,31 @@ static unsigned int ReadConfigurationFile(const char *basename,
           GetToken(q,&q,token);
         continue;
       }
-    if (LocaleCompare(keyword,"<font") == 0)
+    if (LocaleCompare(keyword,"<type") == 0)
       {
-        FontInfo
-          *font_info;
+        TypeInfo
+          *type_info;
 
         /*
-          Allocate memory for the font list.
+          Allocate memory for the type list.
         */
-        font_info=(FontInfo *) AcquireMemory(sizeof(FontInfo));
-        if (font_info == (FontInfo *) NULL)
+        type_info=(TypeInfo *) AcquireMemory(sizeof(TypeInfo));
+        if (type_info == (TypeInfo *) NULL)
           MagickError(ResourceLimitError,"Unable to allocate fonts",
             "Memory allocation failed");
-        memset(font_info,0,sizeof(FontInfo));
-        if (font_list == (FontInfo *) NULL)
+        memset(type_info,0,sizeof(TypeInfo));
+        if (type_list == (TypeInfo *) NULL)
           {
-            font_info->filename=AllocateString(filename);
-            font_list=font_info;
+            type_info->filename=AllocateString(filename);
+            type_list=type_info;
             continue;
           }
-        font_list->next=font_info;
-        font_info->previous=font_list;
-        font_list=font_list->next;
+        type_list->next=type_info;
+        type_info->previous=type_list;
+        type_list=type_list->next;
         continue;
       }
-    if (font_list == (FontInfo *) NULL)
+    if (type_list == (TypeInfo *) NULL)
       continue;
     GetToken(q,(char **) NULL,token);
     if (*token != '=')
@@ -360,7 +360,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"alias") == 0)
           {
-            font_list->alias=AllocateString(token);
+            type_list->alias=AllocateString(token);
             break;
           }
         break;
@@ -370,12 +370,12 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"format") == 0)
           {
-            font_list->format=AllocateString(token);
+            type_list->format=AllocateString(token);
             break;
           }
         if (LocaleCompare((char *) keyword,"fullname") == 0)
           {
-            font_list->description=AllocateString(token);
+            type_list->description=AllocateString(token);
             break;
           }
         break;
@@ -385,7 +385,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"glyphs") == 0)
           {
-            font_list->glyphs=AllocateString(token);
+            type_list->glyphs=AllocateString(token);
             break;
           }
         break;
@@ -395,7 +395,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"metrics") == 0)
           {
-            font_list->metrics=AllocateString(token);
+            type_list->metrics=AllocateString(token);
             break;
           }
         break;
@@ -405,7 +405,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"name") == 0)
           {
-            font_list->name=AllocateString(token);
+            type_list->name=AllocateString(token);
             break;
           }
         break;
@@ -415,7 +415,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"version") == 0)
           {
-            font_list->version=AllocateString(token);
+            type_list->version=AllocateString(token);
             break;
           }
         break;
@@ -425,7 +425,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"weight") == 0)
           {
-            font_list->weight=AllocateString(token);
+            type_list->weight=AllocateString(token);
             break;
           }
         break;
@@ -436,9 +436,9 @@ static unsigned int ReadConfigurationFile(const char *basename,
   }
   LiberateMemory((void **) &token);
   LiberateMemory((void **) &xml);
-  if (font_list == (FontInfo *) NULL)
+  if (type_list == (TypeInfo *) NULL)
     return(False);
-  while (font_list->previous != (FontInfo *) NULL)
-    font_list=font_list->previous;
+  while (type_list->previous != (TypeInfo *) NULL)
+    type_list=type_list->previous;
   return(True);
 }

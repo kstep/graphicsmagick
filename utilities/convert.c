@@ -103,7 +103,7 @@
 %    -intent type         Absolute, Perceptual, Relative, or Saturation
 %    -interlace type      None, Line, Plane, or Partition
 %    -label name          assign a label to an image
-%    -list type           Color, Delegate, Format, Font, Magic, or Module
+%    -list type           Color, Delegate, Format, Magic, Module, or Type
 %    -loop iterations     add Netscape loop extension to your GIF animation
 %    -map filename        transform image colors to match this set of colors
 %    -matte               store matte channel if the image has one
@@ -303,7 +303,7 @@ static void Usage()
       "-intent type         Absolute, Perceptual, Relative, or Saturation",
       "-interlace type      None, Line, Plane, or Partition",
       "-label name          assign a label to an image",
-      "-list type           Color, Delegate, Format, Font, Magic, or Module",
+      "-list type           Color, Delegate, Format, Magic, Module, or Type",
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-map filename        transform image colors to match this set of colors",
       "-matte               store matte channel if the image has one",
@@ -1196,11 +1196,6 @@ int main(int argc,char **argv)
                     case 'F':
                     case 'f':
                     {
-                      if (LocaleCompare("Font",option) == 0)
-                        {
-                          (void) ListFontInfo((FILE *) NULL,&exception);
-                          break;
-                        }
                       if (LocaleCompare("Format",option) == 0)
                         {
                           (void) ListMagickInfo((FILE *) NULL,&exception);
@@ -1223,6 +1218,16 @@ int main(int argc,char **argv)
                           break;
                         }
 #endif /* HasMODULES */
+                      MagickError(OptionError,"Invalid list type",option);
+                    }
+                    case 'T':
+                    case 't':
+                    {
+                      if (LocaleCompare("Type",option) == 0)
+                        {
+                          (void) ListTypeInfo((FILE *) NULL,&exception);
+                          break;
+                        }
                       MagickError(OptionError,"Invalid list type",option);
                     }
                     default:

@@ -36,7 +36,6 @@ $call Make draw.c
 $call Make effects.c
 $call Make enhance.c
 $call Make error.c
-$call Make fonts.c
 $call Make gems.c
 $call Make image.c
 $call Make semaphore.c
@@ -53,6 +52,7 @@ $call Make signature.c
 $call Make stream.c
 $call Make timer.c
 $call Make transform.c
+$call Make type.c
 $call Make utility.c
 $call Make vms.c
 $call Make widget.c
@@ -60,9 +60,9 @@ $call Make xwindows.c
 $call Make zoom.c
 $library/create libMagick.olb PreRvIcccm,animate,annotate,attributes,blob, -
   cache,cache_view,colors,compress,constitute,decorate,delegates,display,draw, -
-  effects,enhance,error,fonts,gems,image,magic,magick,memory,modules,monitor, -
+  effects,enhance,error,gems,image,magic,magick,memory,modules,monitor, -
   montage,quantize,segment,semaphore,shear,signature,stream,timer,transform, -
-  utility,vms,widget,xwindows,zoom
+  type,utility,vms,widget,xwindows,zoom
 $exit
 $
 $Make: subroutine

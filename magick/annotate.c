@@ -70,14 +70,14 @@
   Forward declarations.
 */
 static unsigned int
-  RenderFont(Image *,const DrawInfo *,const PointInfo *,
-    const unsigned int,FontMetric *),
+  RenderType(Image *,const DrawInfo *,const PointInfo *,
+    const unsigned int,TypeMetric *),
   RenderPostscript(Image *,const DrawInfo *,const PointInfo *,
-    const unsigned int,FontMetric *),
+    const unsigned int,TypeMetric *),
   RenderTruetype(Image *,const DrawInfo *,const PointInfo *,
-    const unsigned int,FontMetric *),
+    const unsigned int,TypeMetric *),
   RenderX11(Image *,const DrawInfo *,const PointInfo *,const unsigned int,
-    FontMetric *);
+    TypeMetric *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -120,7 +120,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     *annotate,
     *clone_info;
 
-  FontMetric
+  TypeMetric
     metrics;
 
   int
@@ -207,7 +207,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       Position text relative to image.
     */
     (void) CloneString(&annotate->text,textlist[i]);
-    status=GetFontMetrics(image,annotate,&metrics);
+    status=GetTypeMetrics(image,annotate,&metrics);
     if (status == False)
       break;
     switch (annotate->gravity)
@@ -310,7 +310,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     /*
       Annotate image with text.
     */
-    status=RenderFont(image,annotate,&offset,True,&metrics);
+    status=RenderType(image,annotate,&offset,True,&metrics);
     if (status == False)
       break;
     if (annotate->decorate == NoDecoration)
@@ -363,13 +363,13 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t F o n t M e t r i c s                                               %
+%   G e t T y p e M e t r i c s                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetFontMetrics returns the following information for the specified
+%  Method GetTypeMetrics returns the following information for the specified
 %  font and text:
 %
 %    o character width, expressed in integer pixels
@@ -380,26 +380,26 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %    o text height, expressed in 26.6 fixed point pixels
 %    o maximum horizontal advance, expressed in 26.6 fixed point pixels
 %
-%  The format of the GetFontMetrics method is:
+%  The format of the GetTypeMetrics method is:
 %
-%      unsigned int GetFontMetrics(Image *image,
-%        const DrawInfo *draw_info,FontMetric metrics)
+%      unsigned int GetTypeMetrics(Image *image,
+%        const DrawInfo *draw_info,TypeMetric metrics)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method GetFontMetrics returns True if the metrics are
+%    o status: Method GetTypeMetrics returns True if the metrics are
 %      available otherwise False.
 %
 %    o image: The image.
 %
 %    o draw_info: The draw info.
 %
-%    o metrics: Method GetFontMetrics returns the font metrics.
+%    o metrics: Method GetTypeMetrics returns the font metrics.
 %
 %
 */
-MagickExport unsigned int GetFontMetrics(Image *image,
-  const DrawInfo *draw_info,FontMetric *metrics)
+MagickExport unsigned int GetTypeMetrics(Image *image,
+  const DrawInfo *draw_info,TypeMetric *metrics)
 {
   PointInfo
     offset;
@@ -412,7 +412,7 @@ MagickExport unsigned int GetFontMetrics(Image *image,
   assert(draw_info->signature == MagickSignature);
   offset.x=0.0;
   offset.y=0.0;
-  status=RenderFont(image,draw_info,&offset,False,metrics);
+  status=RenderType(image,draw_info,&offset,False,metrics);
   return(status);
 }
 
@@ -421,23 +421,23 @@ MagickExport unsigned int GetFontMetrics(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e n d e r F o n t                                                       %
++   R e n d e r T y p e                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RenderFont renders text on the image.  It also returns the bounding
+%  Method RenderType renders text on the image.  It also returns the bounding
 %  box of the text relative to the image.
 %
-%  The format of the RenderFont method is:
+%  The format of the RenderType method is:
 %
-%      unsigned int RenderFont(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,const unsigned int render,FontMetric *metrics)
+%      unsigned int RenderType(Image *image,DrawInfo *draw_info,
+%        const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method RenderFont returns True if the text is rendered on the
+%    o status: Method RenderType returns True if the text is rendered on the
 %      image, otherwise False.
 %
 %    o image: The image.
@@ -453,17 +453,17 @@ MagickExport unsigned int GetFontMetrics(Image *image,
 %
 %
 */
-static unsigned int RenderFont(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,FontMetric *metrics)
+static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
+  const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 {
   DrawInfo
     *clone_info;
 
-  FontInfo
-    *font_info;
-
   ImageInfo
     *image_info;
+
+  TypeInfo
+    *type_info;
 
   unsigned int
     status;
@@ -471,9 +471,9 @@ static unsigned int RenderFont(Image *image,const DrawInfo *draw_info,
   if (draw_info->font == (char *) NULL)
     return(RenderPostscript(image,draw_info,offset,render,metrics));
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  font_info=GetFontInfo(draw_info->font,&image->exception);
-  if ((font_info != (FontInfo *) NULL) && (font_info->glyphs != (char *) NULL))
-    (void) strcpy(image_info->filename,font_info->glyphs);
+  type_info=GetTypeInfo(draw_info->font,&image->exception);
+  if ((type_info != (TypeInfo *) NULL) && (type_info->glyphs != (char *) NULL))
+    (void) strcpy(image_info->filename,type_info->glyphs);
   else
     (void) strcpy(image_info->filename,draw_info->font);
   (void) strcpy(image_info->magick,"PS");
@@ -522,7 +522,7 @@ static unsigned int RenderFont(Image *image,const DrawInfo *draw_info,
 %  The format of the RenderPostscript method is:
 %
 %      unsigned int RenderPostscript(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,const unsigned int render,FontMetric *metrics)
+%        const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 %
 %  A description of each parameter follows:
 %
@@ -574,7 +574,7 @@ static char *EscapeParenthesis(const char *text)
 }
 
 static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,FontMetric *metrics)
+  const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 {
   char
     filename[MaxTextExtent],
@@ -619,7 +619,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   if (file == (FILE *) NULL)
     ThrowBinaryException(FileOpenWarning,"Unable to open file",filename);
   (void) fprintf(file,"%%!PS-Adobe-3.0\n");
-  (void) fprintf(file,"/ReencodeFont\n");
+  (void) fprintf(file,"/ReencodeType\n");
   (void) fprintf(file,"{\n");
   (void) fprintf(file,"  findfont dup length\n");
   (void) fprintf(file,
@@ -651,10 +651,10 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
     draw_info->pointsize);
   if ((draw_info->font == (char *) NULL) || (*draw_info->font == '\0'))
     (void) fprintf(file,
-      "/Times-ISO dup /Times ReencodeFont findfont setfont\n");
+      "/Times-ISO dup /Times ReencodeType findfont setfont\n");
   else
     (void) fprintf(file,
-      "/%.1024s-ISO dup /%.1024s ReencodeFont findfont setfont\n",
+      "/%.1024s-ISO dup /%.1024s ReencodeType findfont setfont\n",
       draw_info->font,draw_info->font);
   (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",draw_info->affine.sx,
     -draw_info->affine.rx,-draw_info->affine.ry,draw_info->affine.sy);
@@ -773,7 +773,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
 %  The format of the RenderTruetype method is:
 %
 %      unsigned int RenderTruetype(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,const unsigned int render,FontMetric *metrics)
+%        const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 %
 %  A description of each parameter follows:
 %
@@ -841,7 +841,7 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
 }
 
 static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,FontMetric *metrics)
+  const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 {
   typedef struct _GlyphInfo
   {
@@ -1149,7 +1149,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
 }
 #else
 static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,FontMetric *metrics)
+  const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 {
   ThrowBinaryException(MissingDelegateWarning,
     "FreeType library is not available",draw_info->font);
@@ -1173,7 +1173,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
 %  The format of the RenderX11 method is:
 %
 %      unsigned int RenderX11(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,const unsigned int render,FontMetric *metrics)
+%        const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 %
 %  A description of each parameter follows:
 %
@@ -1195,7 +1195,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
 */
 #if defined(HasX11)
 static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,FontMetric *metrics)
+  const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 {
   static DrawInfo
     cache_info;
@@ -1206,8 +1206,8 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   static XAnnotateInfo
     annotate_info;
 
-  static XFontStruct
-    *font_info;
+  static XTypeStruct
+    *type_info;
 
   static XPixelInfo
     pixel;
@@ -1278,15 +1278,15 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       /*
         Initialize font info.
       */
-      font_info=XBestFont(display,&resource_info,False);
-      if (font_info == (XFontStruct *) NULL)
+      type_info=XBestType(display,&resource_info,False);
+      if (type_info == (XTypeStruct *) NULL)
         ThrowBinaryException(XServerWarning,"Unable to load font",
           draw_info->font);
       if ((map_info == (XStandardColormap *) NULL) ||
           (visual_info == (XVisualInfo *) NULL) ||
-          (font_info == (XFontStruct *) NULL))
+          (type_info == (XTypeStruct *) NULL))
         {
-          XFreeResources(display,visual_info,map_info,&pixel,font_info,
+          XFreeResources(display,visual_info,map_info,&pixel,type_info,
             &resource_info,(XWindowInfo *) NULL);
           ThrowBinaryException(XServerWarning,"Unable to get X server font",
             draw_info->server_name);
@@ -1301,29 +1301,29 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   if (cache_info.font != draw_info->font)
     {
       /*
-        Font name has changed.
+        Type name has changed.
       */
-      XFreeFont(display,font_info);
+      XFreeType(display,type_info);
       (void) CloneString(&resource_info.font,draw_info->font);
-      font_info=XBestFont(display,&resource_info,False);
-      if (font_info == (XFontStruct *) NULL)
+      type_info=XBestType(display,&resource_info,False);
+      if (type_info == (XTypeStruct *) NULL)
         ThrowBinaryException(ResourceLimitWarning,"Unable to load font",
           draw_info->font);
     }
   cache_info=(*draw_info);
-  annotate_info.font_info=font_info;
+  annotate_info.type_info=type_info;
   annotate_info.text=(char *) draw_info->text;
-  annotate_info.width=XTextWidth(font_info,draw_info->text,
+  annotate_info.width=XTextWidth(type_info,draw_info->text,
     Extent(draw_info->text));
-  annotate_info.height=font_info->ascent+font_info->descent;
-  metrics->pixels_per_em.x=font_info->max_bounds.width;
-  metrics->pixels_per_em.y=font_info->max_bounds.width;
-  metrics->ascent=font_info->ascent;
-  metrics->descent=(-font_info->descent);
+  annotate_info.height=type_info->ascent+type_info->descent;
+  metrics->pixels_per_em.x=type_info->max_bounds.width;
+  metrics->pixels_per_em.y=type_info->max_bounds.width;
+  metrics->ascent=type_info->ascent;
+  metrics->descent=(-type_info->descent);
   metrics->width=(unsigned int)
     (annotate_info.width/ExpandAffine(&draw_info->affine));
   metrics->height=(unsigned int) (metrics->pixels_per_em.x+4);
-  metrics->max_advance=font_info->max_bounds.width;
+  metrics->max_advance=type_info->max_bounds.width;
   if (!render)
     return(True);
   if (draw_info->fill.opacity == TransparentOpacity)
@@ -1354,7 +1354,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
 }
 #else
 static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,FontMetric *metrics)
+  const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 {
   ThrowBinaryException(MissingDelegateWarning,
     "X11 library is not available",draw_info->font);

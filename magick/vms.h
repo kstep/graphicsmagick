@@ -128,7 +128,7 @@ extern "C" {
 #define XFreeDeviceList XFREEDEVICELIST
 #define XFreeDeviceState XFREEDEVICESTATE
 #define XFreeFont XFREEFONT
-#define XFreeFontInfo XFREEFONTINFO
+#define XFreeTypeInfo XFREEFONTINFO
 #define XFreeFontNames XFREEFONTNAMES
 #define XFreeFontSet XFREEFONTSET
 #define XFreeGC XFREEGC

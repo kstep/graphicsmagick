@@ -88,7 +88,7 @@ MagickExport void DestroyMagick(void)
 {
   DestroyColorInfo();
   DestroyDelegateInfo();
-  DestroyFontInfo();
+  DestroyTypeInfo();
   DestroyModuleInfo();
   DestroyMagicInfo();
   DestroyMagickInfo();

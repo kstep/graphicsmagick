@@ -75,8 +75,6 @@
 #include <Gestalt.h>
 #include <TextUtils.h>
 #define ColorInfo  KolorInfo
-#define FontInfo  PhontInfo
-#define GetFontInfo  GetPhontInfo
 #include "magick.h"
 #include "defines.h"
 #include "mac.h"

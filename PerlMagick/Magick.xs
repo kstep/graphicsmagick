@@ -6468,33 +6468,33 @@ QueryFont(ref,...)
     ExceptionInfo 
       exception;
 
-    FontInfo
-      *font_info;
-
     register int
       i;
 
     SV
       *s;
 
+    TypeInfo
+      *type_info;
+
     error_list=newSVpv("",0);
     GetExceptionInfo(&exception);
     if (items == 1)
       {
-        register FontInfo
+        register TypeInfo
           *p;
 
-        font_info=GetFontInfo("*",&exception);
-        if (font_info == (FontInfo *) NULL)
+        type_info=GetTypeInfo("*",&exception);
+        if (type_info == (TypeInfo *) NULL)
           {
             PUSHs(&sv_undef);
             goto MethodException;
           }
         i=0;
-        for (p=font_info; p != (FontInfo *) NULL; p=p->next)
+        for (p=type_info; p != (TypeInfo *) NULL; p=p->next)
           i++;
         EXTEND(sp,i);
-        for (p=font_info; p != (FontInfo *) NULL; p=p->next)
+        for (p=type_info; p != (TypeInfo *) NULL; p=p->next)
         {
           if (p->name == (char *) NULL)
             {
@@ -6509,44 +6509,44 @@ QueryFont(ref,...)
     for (i=1; i < items; i++)
     {
       name=(char *) SvPV(ST(i),na);
-      font_info=GetFontInfo(name,&exception);
-      if (font_info == (FontInfo *) NULL)
+      type_info=GetTypeInfo(name,&exception);
+      if (type_info == (TypeInfo *) NULL)
         {
           PUSHs(&sv_undef);
           continue;
         }
-      if (font_info->family == (char *) NULL)
+      if (type_info->family == (char *) NULL)
         PUSHs(&sv_undef);
       else
-        PUSHs(sv_2mortal(newSVpv(font_info->family,0)));
-      if (font_info->alias == (char *) NULL)
+        PUSHs(sv_2mortal(newSVpv(type_info->family,0)));
+      if (type_info->alias == (char *) NULL)
         PUSHs(&sv_undef);
       else
-        PUSHs(sv_2mortal(newSVpv(font_info->alias,0)));
-      if (font_info->description == (char *) NULL)
+        PUSHs(sv_2mortal(newSVpv(type_info->alias,0)));
+      if (type_info->description == (char *) NULL)
         PUSHs(&sv_undef);
       else
-        PUSHs(sv_2mortal(newSVpv(font_info->description,0)));
-      if (font_info->format == (char *) NULL)
+        PUSHs(sv_2mortal(newSVpv(type_info->description,0)));
+      if (type_info->format == (char *) NULL)
         PUSHs(&sv_undef);
       else
-        PUSHs(sv_2mortal(newSVpv(font_info->format,0)));
-      if (font_info->weight == (char *) NULL)
+        PUSHs(sv_2mortal(newSVpv(type_info->format,0)));
+      if (type_info->weight == (char *) NULL)
         PUSHs(&sv_undef);
       else
-        PUSHs(sv_2mortal(newSVpv(font_info->weight,0)));
-      if (font_info->glyphs == (char *) NULL)
+        PUSHs(sv_2mortal(newSVpv(type_info->weight,0)));
+      if (type_info->glyphs == (char *) NULL)
         PUSHs(&sv_undef);
       else
-        PUSHs(sv_2mortal(newSVpv(font_info->glyphs,0)));
-      if (font_info->metrics == (char *) NULL)
+        PUSHs(sv_2mortal(newSVpv(type_info->glyphs,0)));
+      if (type_info->metrics == (char *) NULL)
         PUSHs(&sv_undef);
       else
-        PUSHs(sv_2mortal(newSVpv(font_info->metrics,0)));
-      if (font_info->version == (char *) NULL)
+        PUSHs(sv_2mortal(newSVpv(type_info->metrics,0)));
+      if (type_info->version == (char *) NULL)
         PUSHs(&sv_undef);
       else
-        PUSHs(sv_2mortal(newSVpv(font_info->version,0)));
+        PUSHs(sv_2mortal(newSVpv(type_info->version,0)));
     }
 
   MethodException:
