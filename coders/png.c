@@ -3333,6 +3333,19 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     q++;
                   }
 #else
+#  if (QuantumDepth == 32)
+                *r=((*p++) << 8);
+                *r|=(*p++);
+                *r++*=65537;
+                if (ping_info->color_type == 4)
+                  {
+                    q->opacity=((*p++) << 8);
+                    q->opacity|=(*p++);
+                    q->opacity=(Quantum) (MAXRGB-q->opacity);
+                    q->opacity*=65537;
+                    q++;
+                  }
+#  else
                 *r++=(*p++);
                 p++; /* strip low byte */
                 if (ping_info->color_type == 4)
@@ -3341,6 +3354,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     p++;
                     q++;
                   }
+#  endif
 #endif
               }
               break;
@@ -3925,7 +3939,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
       }
 
-#if (QuantumDepth == 16)
+#if (QuantumDepth == 16)  /* TO DO: treat Q:32 */
     /* Determine if bit depth can be reduced from 16 to 8.
      * Note that the method GetImageDepth doesn't check background
      * and doesn't handle PseudoClass specially.  Also it uses
@@ -5038,11 +5052,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 PNGType(chunk,mng_PLTE);
                 for (i=0; i < (long) image->colors; i++)
                 {
-                  chunk[4+i*3]=ScaleQuantumToChar(image->colormap[i].red) & 0xff;
-                  chunk[5+i*3]=
-                     ScaleQuantumToChar(image->colormap[i].green) & 0xff;
-                  chunk[6+i*3]=
-                     ScaleQuantumToChar(image->colormap[i].blue) & 0xff;
+                  chunk[4+i*3]=ScaleQuantumToChar(image->colormap[i].red);
+                  chunk[5+i*3]=ScaleQuantumToChar(image->colormap[i].green);
+                  chunk[6+i*3]=ScaleQuantumToChar(image->colormap[i].blue);
                 }
                 (void) WriteBlob(image,data_length+4,(char *) chunk);
                 (void) WriteBlobMSBULong(image,crc32(0,chunk,
@@ -5140,6 +5152,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 #endif
     ping_info->width=image->columns;
     ping_info->height=image->rows;
+    if (image->depth > 16)
+       image->depth=16;
     save_image_depth=image->depth;
     ping_info->bit_depth=(png_byte) save_image_depth;
 #if defined(PNG_pHYs_SUPPORTED)
@@ -5478,11 +5492,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                     index=indexes[x];
                     assert((unsigned long) index < number_colors);
                     ping_info->trans[index]=(png_byte) (255-
-#if (QuantumDepth == 8)
-                       p->opacity);
-#else
-                       ((p->opacity>>8)&0xff));
-#endif
+                      ScaleQuantumToChar(p->opacity));
                   }
                 p++;
               }
@@ -5504,7 +5514,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             for (i=0; i < (long) Max(number_colors-1,1); i++)
               if (ColorMatchExact(ping_info->background,image->colormap[i]))
                 break;
-            ping_info->background.index=(Quantum) i;
+            ping_info->background.index=(png_uint_16) i;
           }
       }
     else
