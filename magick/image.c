@@ -4455,8 +4455,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               continue;
             next=0;
             arguments=argv[i];
-            status=Tokenizer(&token_info,0,token,length,arguments,
-              (char *) "",(char *) "=",(char *) "\"",0,&breaker,&next,&quote);
+            status=Tokenizer(&token_info,0,token,length,arguments,(char *) "",
+              (char *) "=",(char *) "\"",0,&breaker,&next,&quote);
             if (status == 0)
               {
                 char
