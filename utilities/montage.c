@@ -151,30 +151,126 @@
 */
 #include "magick/magick.h"
 #include "magick/define.h"
-/*
-  Forward declarations.
-*/
-static void
-  MontageUsage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%    M o n t a g e I m a g e s M a i n                                        %
+%   M o n t a g e U s a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MontageImagesMain() reads one or more images, applies one or more image
+%  Method MontageUsage displays the program command syntax.
+%
+%  The format of the MontageUsage method is:
+%
+%      void MontageUsage()
+%
+%
+*/
+static void MontageUsage(void)
+{
+  const char
+    **p;
+
+  static const char
+    *options[]=
+    {
+      "-adjoin             join images into a single multi-image file",
+      "-blur factor        apply a filter to blur the image",
+      "-cache threshold    megabytes of memory available to the pixel cache",
+      "-colors value       preferred number of colors in the image",
+      "-colorspace type    alternate image colorsapce",
+      "-comment string     annotate image with comment",
+      "-compose operator   composite operator",
+      "-compress type      type of image compression",
+      "-crop geometry      preferred size and location of the cropped image",
+      "-debug              display copious debugging information",
+      "-density geometry   vertical and horizontal density of the image",
+      "-depth value        depth of the image",
+      "-display server     query font from this X server",
+      "-dispose method     GIF disposal method",
+      "-dither             apply Floyd/Steinberg error diffusion to image",
+      "-draw string        annotate the image with a graphic primitive",
+      "-fill color         color to use when filling a graphic primitive",
+      "-filter type        use this filter when resizing an image",
+      "-frame geometry     surround image with an ornamental border",
+      "-gamma value        level of gamma correction",
+      "-geometry geometry  preferred tile and border sizes",
+      "-gravity direction  which direction to gravitate towards",
+      "-interlace type     None, Line, Plane, or Partition",
+      "-help               print program options",
+      "-label name         assign a label to an image",
+      "-matte              store matte channel if the image has one",
+      "-mode type          Frame, Unframe, or Concatenate",
+      "-monochrome         transform image to black and white",
+      "-page geometry      size and location of an image canvas",
+      "-pointsize value    pointsize of Postscript font",
+      "-quality value      JPEG/MIFF/PNG compression level",
+      "-resize geometry    resize the image",
+      "-rotate degrees     apply Paeth rotation to the image",
+      "-scene value        image scene number",
+      "-shadow             add a shadow beneath a tile to simulate depth",
+      "-size geometry      width and height of image",
+      "-stroke color       color to use when stroking a graphic primitive",
+      "-texture filename   name of texture to tile onto the image background",
+      "-tile geometry      number of tiles per row and column",
+      "-transparent color  make this color transparent within the image",
+      "-treedepth value    depth of the color tree",
+      "-type type          image type",
+      "-verbose            print detailed information about the image",
+      (char *) NULL
+    };
+
+  unsigned int
+    version;
+
+  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
+  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
+  (void) printf("Usage: %.1024s [ -option value ...] file [ [ -options value "
+    "... ] file ... ]\n",SetClientName((char *) NULL));
+  (void) printf("\nWhere options include: \n");
+  for (p=options; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+  (void) printf(
+    "\nIn addition to those listed above, you can specify these standard X\n");
+  (void) printf(
+    "resources as command line options:  -background, -bordercolor,\n");
+  (void) printf(
+    "-borderwidth, -font, -mattecolor, or -title\n");
+  (void) printf(
+    "\nBy default, the image format of `file' is determined by its magic\n");
+  (void) printf(
+    "number.  To specify a particular image format, precede the filename\n");
+  (void) printf(
+    "with an image format name and a colon (i.e. ps:image) or specify the\n");
+  (void) printf(
+    "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
+  (void) printf("'-' for standard input or output.\n");
+  Exit(0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%    M o n t a g e U t i l i t y                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MontageUtility() reads one or more images, applies one or more image
 %  processing operations, and writes out the image in the same or
 %  differing format.
 %
-%  The format of the MontageImagesMain method is:
+%  The format of the MontageUtility method is:
 %
-%      unsigned int MontageImagesMain(const int argc,char **argv)
+%      unsigned int MontageUtility(const int argc,char **argv)
 %
 %  A description of each parameter follows:
 %
@@ -184,7 +280,7 @@ static void
 %
 %
 */
-unsigned int MontageImagesMain(int argc,char **argv)
+MagickExport unsigned int MontageUtility(int argc,char **argv)
 {
   char
     *option,
@@ -1214,107 +1310,6 @@ unsigned int MontageImagesMain(int argc,char **argv)
   return(status);
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M o n t a g e U s a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method MontageUsage displays the program command syntax.
-%
-%  The format of the MontageUsage method is:
-%
-%      void MontageUsage()
-%
-%
-*/
-static void MontageUsage(void)
-{
-  const char
-    **p;
-
-  static const char
-    *options[]=
-    {
-      "-adjoin             join images into a single multi-image file",
-      "-blur factor        apply a filter to blur the image",
-      "-cache threshold    megabytes of memory available to the pixel cache",
-      "-colors value       preferred number of colors in the image",
-      "-colorspace type    alternate image colorsapce",
-      "-comment string     annotate image with comment",
-      "-compose operator   composite operator",
-      "-compress type      type of image compression",
-      "-crop geometry      preferred size and location of the cropped image",
-      "-debug              display copious debugging information",
-      "-density geometry   vertical and horizontal density of the image",
-      "-depth value        depth of the image",
-      "-display server     query font from this X server",
-      "-dispose method     GIF disposal method",
-      "-dither             apply Floyd/Steinberg error diffusion to image",
-      "-draw string        annotate the image with a graphic primitive",
-      "-fill color         color to use when filling a graphic primitive",
-      "-filter type        use this filter when resizing an image",
-      "-frame geometry     surround image with an ornamental border",
-      "-gamma value        level of gamma correction",
-      "-geometry geometry  preferred tile and border sizes",
-      "-gravity direction  which direction to gravitate towards",
-      "-interlace type     None, Line, Plane, or Partition",
-      "-help               print program options",
-      "-label name         assign a label to an image",
-      "-matte              store matte channel if the image has one",
-      "-mode type          Frame, Unframe, or Concatenate",
-      "-monochrome         transform image to black and white",
-      "-page geometry      size and location of an image canvas",
-      "-pointsize value    pointsize of Postscript font",
-      "-quality value      JPEG/MIFF/PNG compression level",
-      "-resize geometry    resize the image",
-      "-rotate degrees     apply Paeth rotation to the image",
-      "-scene value        image scene number",
-      "-shadow             add a shadow beneath a tile to simulate depth",
-      "-size geometry      width and height of image",
-      "-stroke color       color to use when stroking a graphic primitive",
-      "-texture filename   name of texture to tile onto the image background",
-      "-tile geometry      number of tiles per row and column",
-      "-transparent color  make this color transparent within the image",
-      "-treedepth value    depth of the color tree",
-      "-type type          image type",
-      "-verbose            print detailed information about the image",
-      (char *) NULL
-    };
-
-  unsigned int
-    version;
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
-  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [ -option value ...] file [ [ -options value "
-    "... ] file ... ]\n",SetClientName((char *) NULL));
-  (void) printf("\nWhere options include: \n");
-  for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
-  (void) printf(
-    "\nIn addition to those listed above, you can specify these standard X\n");
-  (void) printf(
-    "resources as command line options:  -background, -bordercolor,\n");
-  (void) printf(
-    "-borderwidth, -font, -mattecolor, or -title\n");
-  (void) printf(
-    "\nBy default, the image format of `file' is determined by its magic\n");
-  (void) printf(
-    "number.  To specify a particular image format, precede the filename\n");
-  (void) printf(
-    "with an image format name and a colon (i.e. ps:image) or specify the\n");
-  (void) printf(
-    "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
-  (void) printf("'-' for standard input or output.\n");
-  Exit(0);
-}
-
 #if !defined(MagickAPI)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1345,7 +1340,7 @@ int main(int argc,char **argv)
       (char *) NULL);
   if (argc < 3)
     MontageUsage();
-  status=MontageImagesMain(argc,argv);
+  status=MontageUtility(argc,argv);
   DestroyMagick();
   LiberateMemory((void **) &argv);
   Exit(!status);

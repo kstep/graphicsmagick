@@ -72,30 +72,80 @@
 */
 #include "magick/magick.h"
 #include "magick/define.h"
-/*
-  Forward declarations.
-*/
-static void
-  IdentifyUsage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I d e n t i f y I m a g e s M a i n                                       %
+%   I d e n t i f y U s a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IdentifyImagesMain() reads one or more images, applies one or more image
-%  processing operations, and writes out the image in the same or
-%  differing format.
+%  IdentifyUsage() displays the program usage;
 %
-%  The format of the IdentifyImagesMain method is:
+%  The format of the IdentifyUsage method is:
 %
-%      unsigned int IdentifyImagesMain(const int argc,char **argv)
+%      void IdentifyUsage()
+%
+%
+*/
+static void IdentifyUsage(void)
+{
+  const char
+    **p;
+
+  static const char
+    *options[]=
+    {
+      "-cache threshold   megabytes of memory available to the pixel cache",
+      "-debug             display copious debugging information",
+      "-density geometry  vertical and horizontal density of the image",
+      "-depth value       depth of the image",
+      "-format \"string\"   output formatted image characteristics",
+      "-help              print program options",
+      "-size geometry     width and height of image",
+      "-verbose           print detailed information about the image",
+      (char *) NULL
+    };
+
+  unsigned int
+    version;
+
+  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
+  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
+  (void) printf("Usage: %.1024s [ -option value ... ] file [ file ... ]\n",
+    SetClientName((char *) NULL));
+  (void) printf("\nWhere options include:\n");
+  for (p=options; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+  Exit(0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I d e n t i f y U t i l i t y                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IdentifyUtility() describes the format and characteristics of one or more
+%  image files. It will also report if an image is incomplete or corrupt.
+%  The information displayed includes the scene number, the file name, the
+%  width and height of the image, whether the image is colormapped or not,
+%  the number of colors in the image, the number of bytes in the image, the
+%  format of the image (JPEG, PNM, etc.), and finally the number of seconds
+%  it took to read and process the image.
+%
+%  The format of the IdentifyUtility method is:
+%
+%      unsigned int IdentifyUtility(const int argc,char **argv)
 %
 %  A description of each parameter follows:
 %
@@ -105,7 +155,7 @@ static void
 %
 %
 */
-int IdentifyImagesMain(int argc,char **argv)
+int IdentifyUtility(int argc,char **argv)
 {
   char
     *format,
@@ -342,57 +392,6 @@ int IdentifyImagesMain(int argc,char **argv)
   return(status);
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I d e n t i f y U s a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Procedure IdentifyUsage displays the program usage;
-%
-%  The format of the IdentifyUsage method is:
-%
-%      void IdentifyUsage()
-%
-%
-*/
-static void IdentifyUsage(void)
-{
-  const char
-    **p;
-
-  static const char
-    *options[]=
-    {
-      "-cache threshold   megabytes of memory available to the pixel cache",
-      "-debug             display copious debugging information",
-      "-density geometry  vertical and horizontal density of the image",
-      "-depth value       depth of the image",
-      "-format \"string\"   output formatted image characteristics",
-      "-help              print program options",
-      "-size geometry     width and height of image",
-      "-verbose           print detailed information about the image",
-      (char *) NULL
-    };
-
-  unsigned int
-    version;
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
-  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [ -option value ... ] file [ file ... ]\n",
-    SetClientName((char *) NULL));
-  (void) printf("\nWhere options include:\n");
-  for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
-  Exit(0);
-}
-
 #if !defined(MagickAPI)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -423,7 +422,7 @@ int main(int argc,char **argv)
       (char *) NULL);
   if (argc < 2)
     IdentifyUsage();
-  status=IdentifyImagesMain(argc,argv);
+  status=IdentifyUtility(argc,argv);
   DestroyMagick();
   LiberateMemory((void **) &argv);
   Exit(!status);

@@ -45,7 +45,22 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Conjure is an interpreter of the Magick Scripting Language.
+%  Conjure interprets and executes scripts in the Magick Scripting Language
+%  (MSL). The Magick scripting language (MSL) will primarily benefit those
+%  that want to accomplish custom image processing tasks but do not wish
+%  to program, or those that do not have access to a Perl interpreter or a
+%  compiler. The interpreter is called conjure and here is an example script:
+%
+%      <?xml version="1.0" encoding="UTF-8"?>
+%      <image size="400x400" >
+%      <read filename="image.gif" />
+%      <get width="base-width" height="base-height" />
+%      <resize geometry="%[dimensions]" />
+%      <get width="width" height="height" />
+%      <print output="Image sized from %[base-width]x%[base-height]
+%          to %[width]x%[height].\n" />
+%      <write filename="image.png" />
+%      </image>
 %
 %  The conjure program syntax is:
 %
@@ -56,11 +71,13 @@
 %    -help     print program options
 %    -verbose  print detailed information about the image
 %  
-%  In additiion, define any key value pairs required by your script.  For
+%  In addition, define any key value pairs required by your script.  For
 %  example,
 %  
-%      conjure -size 100x100 -color blue -foo bar script.msl
+%       conjure -dimensions 400x400 incantation.msl
 %
+%  All operations will closely follow the key/value pairs defined in
+%  PerlMagick, unless otherwise noted.
 %
 */
 

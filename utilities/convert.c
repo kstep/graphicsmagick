@@ -196,11 +196,6 @@ typedef struct _ConvertOptions
     flatten,
     mosaic;
 } ConvertOptions;
-/*
-  Forward declarations.
-*/
-static void
-  ConvertUsage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -458,19 +453,177 @@ static unsigned int ConvertImageList(ImageInfo *image_info,Image **image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t I m a g e s M a i n                                         %
+%   C o n v e r t U s a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertImagesMain() reads one or more images, applies one or more image
-%  processing operations, and writes out the image in the same or
-%  differing format.
+%  Procedure ConvertUsage displays the program usage;
 %
-%  The format of the ConvertImagesMain method is:
+%  The format of the ConvertUsage method is:
 %
-%      unsigned int ConvertImagesMain(const int argc,char **argv)
+%      void ConvertUsage()
+%
+*/
+static void ConvertUsage(void)
+{
+  static const char
+    *options[]=
+    {
+      "-adjoin              join images into a single multi-image file",
+      "-affine matrix       drawing transform matrix",
+      "-antialias           remove pixel-aliasing",
+      "-append              append an image sequence",
+      "-average             average an image sequence",
+      "-background color    background color",
+      "-blur geometry       blur the image",
+      "-border geometry     surround image with a border of color",
+      "-bordercolor color   border color",
+      "-box color           color for annotation bounding box",
+      "-cache threshold     megabytes of memory available to the pixel cache",
+      "-channel type        extract a particular color channel from image",
+      "-charcoal radius     simulate a charcoal drawing",
+      "-chop geometry       remove pixels from the image interior",
+      "-clip                apply clipping path if the image has one",
+      "-coalesce            merge a sequence of images",
+      "-colorize value      colorize the image with the fill color",
+      "-colors value        preferred number of colors in the image",
+      "-colorspace type     alternate image colorspace",
+      "-comment string      annotate image with comment",
+      "-compress type       type of image compression",
+      "-contrast            enhance or reduce the image contrast",
+      "-crop geometry       preferred size and location of the cropped image",
+      "-cycle amount        cycle the image colormap",
+      "-debug               display copious debugging information",
+      "-deconstruct         break down an image sequence into constituent parts",
+      "-delay value         display the next image after pausing",
+      "-density geometry    vertical and horizontal density of the image",
+      "-depth value         depth of the image",
+      "-despeckle           reduce the speckles within an image",
+      "-display server      obtain image or font from this X server",
+      "-dispose method      GIF disposal method",
+      "-dither              apply Floyd/Steinberg error diffusion to image",
+      "-draw string         annotate the image with a graphic primitive",
+      "-edge radius         apply a filter to detect edges in the image",
+      "-emboss radius       emboss an image",
+      "-enhance             apply a digital filter to enhance a noisy image",
+      "-equalize            perform histogram equalization to an image",
+      "-fill color          color to use when filling a graphic primitive",
+      "-filter type         use this filter when resizing an image",
+      "-flatten             flatten a sequence of images",
+      "-flip                flip image in the vertical direction",
+      "-flop                flop image in the horizontal direction",
+      "-font name           font for rendering text",
+      "-frame geometry      surround image with an ornamental border",
+      "-fuzz distance       colors within this distance are considered equal",
+      "-gamma value         level of gamma correction",
+      "-gaussian geometry   gaussian blur an image",
+      "-geometry geometry   perferred size or location of the image",
+      "-gravity type        vertical and horizontal text placement",
+      "-help                print program options",
+      "-implode amount      implode image pixels about the center",
+      "-intent type         Absolute, Perceptual, Relative, or Saturation",
+      "-interlace type      None, Line, Plane, or Partition",
+      "-label name          assign a label to an image",
+      "-level value         adjust the level of image contrast",
+      "-list type           Color, Delegate, Format, Magic, Module, or Type",
+      "-loop iterations     add Netscape loop extension to your GIF animation",
+      "-map filename        transform image colors to match this set of colors",
+      "-matte               store matte channel if the image has one",
+      "-median radius       apply a median filter to the image",
+      "-modulate value      vary the brightness, saturation, and hue",
+      "-monochrome          transform image to black and white",
+      "-morph value         morph an image sequence",
+      "-mosaic              create an mosaic from an image sequence",
+      "-negate              replace every pixel with its complementary color ",
+      "-noise radius        add or reduce noise in an image",
+      "-normalize           transform image to span the full range of colors",
+      "-opaque color        change this color to the fill color",
+      "-page geometry       size and location of an image canvas",
+      "-paint radius        simulate an oil painting",
+      "-ping                efficiently determine image attributes",
+      "-pointsize value     pointsize of Postscript font",
+      "-preview type        image preview type",
+      "-profile filename    add ICM or IPTC information profile to image",
+      "-quality value       JPEG/MIFF/PNG compression level",
+      "-raise value         lighten/darken image edges to create a 3-D effect",
+      "-region geometry     apply options to a portion of the image",
+      "-resize geometry     resize the image",
+      "-roll geometry       roll an image vertically or horizontally",
+      "-rotate degrees      apply Paeth rotation to the image",
+      "-sample geometry     scale image with pixel sampling",
+      "-scale geometry      scale the image",
+      "-scene value         image scene number",
+      "-seed value          pseudo-random number generator seed value",
+      "-segment values      segment an image",
+      "-shade degrees       shade the image using a distant light source",
+      "-sharpen geometry    sharpen the image",
+      "-shave geometry      shave pixels from the image edges",
+      "-shear geometry      slide one edge of the image along the X or Y axis",
+      "-size geometry       width and height of image",
+      "-solarize threshold  negate all pixels above the threshold level",
+      "-spread amount       displace image pixels by a random amount",
+      "-stroke color        color to use when stoking a graphic primitive",
+      "-strokewidth value   width of stroke",
+      "-swirl degrees       swirl image pixels about the center",
+      "-texture filename    name of texture to tile onto the image background",
+      "-threshold value     threshold the image",
+      "-tile filename       tile image when filling a graphic primitive",
+      "-transparent color   make this color transparent within the image",
+      "-treedepth value     depth of the color tree",
+      "-type type           image type",
+      "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
+      "-unsharp geometry    sharpen the image",
+      "-verbose             print detailed information about the image",
+      "-view                FlashPix viewing transforms",
+      "-wave geometry       alter an image along a sine wave",
+      (char *) NULL
+    };
+
+  const char
+    **p;
+
+  unsigned int
+    version;
+
+  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
+  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
+  (void) printf("Usage: %.1024s [ -option value ... ] file [ file ... ] file\n",
+    SetClientName((char *) NULL));
+  (void) printf("\nWhere options include:\n");
+  for (p=options; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+  (void) printf(
+    "\nBy default, the image format of `file' is determined by its magic\n");
+  (void) printf(
+    "number.  To specify a particular image format, precede the filename\n");
+  (void) printf(
+    "with an image format name and a colon (i.e. ps:image) or specify the\n");
+  (void) printf(
+    "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
+  (void) printf("'-' for standard input or output.\n");
+  Exit(0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o n v e r t U t i l i t y                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertUtility() reads one or more images, applies one or more image
+%  processing operations, and writes out the image in the same or differing
+%  format.
+%
+%  The format of the ConvertUtility method is:
+%
+%      unsigned int ConvertUtility(const int argc,char **argv)
 %
 %  A description of each parameter follows:
 %
@@ -480,7 +633,7 @@ static unsigned int ConvertImageList(ImageInfo *image_info,Image **image,
 %
 %
 */
-unsigned int ConvertImagesMain(int argc,char **argv)
+MagickExport unsigned int ConvertUtility(int argc,char **argv)
 {
 #define NotInitialized  (unsigned int) (~0)
 
@@ -2047,164 +2200,6 @@ unsigned int ConvertImagesMain(int argc,char **argv)
   return(status);
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C o n v e r t U s a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Procedure ConvertUsage displays the program usage;
-%
-%  The format of the ConvertUsage method is:
-%
-%      void ConvertUsage()
-%
-*/
-static void ConvertUsage(void)
-{
-  static const char
-    *options[]=
-    {
-      "-adjoin              join images into a single multi-image file",
-      "-affine matrix       drawing transform matrix",
-      "-antialias           remove pixel-aliasing",
-      "-append              append an image sequence",
-      "-average             average an image sequence",
-      "-background color    background color",
-      "-blur geometry       blur the image",
-      "-border geometry     surround image with a border of color",
-      "-bordercolor color   border color",
-      "-box color           color for annotation bounding box",
-      "-cache threshold     megabytes of memory available to the pixel cache",
-      "-channel type        extract a particular color channel from image",
-      "-charcoal radius     simulate a charcoal drawing",
-      "-chop geometry       remove pixels from the image interior",
-      "-clip                apply clipping path if the image has one",
-      "-coalesce            merge a sequence of images",
-      "-colorize value      colorize the image with the fill color",
-      "-colors value        preferred number of colors in the image",
-      "-colorspace type     alternate image colorspace",
-      "-comment string      annotate image with comment",
-      "-compress type       type of image compression",
-      "-contrast            enhance or reduce the image contrast",
-      "-crop geometry       preferred size and location of the cropped image",
-      "-cycle amount        cycle the image colormap",
-      "-debug               display copious debugging information",
-      "-deconstruct         break down an image sequence into constituent parts",
-      "-delay value         display the next image after pausing",
-      "-density geometry    vertical and horizontal density of the image",
-      "-depth value         depth of the image",
-      "-despeckle           reduce the speckles within an image",
-      "-display server      obtain image or font from this X server",
-      "-dispose method      GIF disposal method",
-      "-dither              apply Floyd/Steinberg error diffusion to image",
-      "-draw string         annotate the image with a graphic primitive",
-      "-edge radius         apply a filter to detect edges in the image",
-      "-emboss radius       emboss an image",
-      "-enhance             apply a digital filter to enhance a noisy image",
-      "-equalize            perform histogram equalization to an image",
-      "-fill color          color to use when filling a graphic primitive",
-      "-filter type         use this filter when resizing an image",
-      "-flatten             flatten a sequence of images",
-      "-flip                flip image in the vertical direction",
-      "-flop                flop image in the horizontal direction",
-      "-font name           font for rendering text",
-      "-frame geometry      surround image with an ornamental border",
-      "-fuzz distance       colors within this distance are considered equal",
-      "-gamma value         level of gamma correction",
-      "-gaussian geometry   gaussian blur an image",
-      "-geometry geometry   perferred size or location of the image",
-      "-gravity type        vertical and horizontal text placement",
-      "-help                print program options",
-      "-implode amount      implode image pixels about the center",
-      "-intent type         Absolute, Perceptual, Relative, or Saturation",
-      "-interlace type      None, Line, Plane, or Partition",
-      "-label name          assign a label to an image",
-      "-level value         adjust the level of image contrast",
-      "-list type           Color, Delegate, Format, Magic, Module, or Type",
-      "-loop iterations     add Netscape loop extension to your GIF animation",
-      "-map filename        transform image colors to match this set of colors",
-      "-matte               store matte channel if the image has one",
-      "-median radius       apply a median filter to the image",
-      "-modulate value      vary the brightness, saturation, and hue",
-      "-monochrome          transform image to black and white",
-      "-morph value         morph an image sequence",
-      "-mosaic              create an mosaic from an image sequence",
-      "-negate              replace every pixel with its complementary color ",
-      "-noise radius        add or reduce noise in an image",
-      "-normalize           transform image to span the full range of colors",
-      "-opaque color        change this color to the fill color",
-      "-page geometry       size and location of an image canvas",
-      "-paint radius        simulate an oil painting",
-      "-ping                efficiently determine image attributes",
-      "-pointsize value     pointsize of Postscript font",
-      "-preview type        image preview type",
-      "-profile filename    add ICM or IPTC information profile to image",
-      "-quality value       JPEG/MIFF/PNG compression level",
-      "-raise value         lighten/darken image edges to create a 3-D effect",
-      "-region geometry     apply options to a portion of the image",
-      "-resize geometry     resize the image",
-      "-roll geometry       roll an image vertically or horizontally",
-      "-rotate degrees      apply Paeth rotation to the image",
-      "-sample geometry     scale image with pixel sampling",
-      "-scale geometry      scale the image",
-      "-scene value         image scene number",
-      "-seed value          pseudo-random number generator seed value",
-      "-segment values      segment an image",
-      "-shade degrees       shade the image using a distant light source",
-      "-sharpen geometry    sharpen the image",
-      "-shave geometry      shave pixels from the image edges",
-      "-shear geometry      slide one edge of the image along the X or Y axis",
-      "-size geometry       width and height of image",
-      "-solarize threshold  negate all pixels above the threshold level",
-      "-spread amount       displace image pixels by a random amount",
-      "-stroke color        color to use when stoking a graphic primitive",
-      "-strokewidth value   width of stroke",
-      "-swirl degrees       swirl image pixels about the center",
-      "-texture filename    name of texture to tile onto the image background",
-      "-threshold value     threshold the image",
-      "-tile filename       tile image when filling a graphic primitive",
-      "-transparent color   make this color transparent within the image",
-      "-treedepth value     depth of the color tree",
-      "-type type           image type",
-      "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
-      "-unsharp geometry    sharpen the image",
-      "-verbose             print detailed information about the image",
-      "-view                FlashPix viewing transforms",
-      "-wave geometry       alter an image along a sine wave",
-      (char *) NULL
-    };
-
-  const char
-    **p;
-
-  unsigned int
-    version;
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
-  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [ -option value ... ] file [ file ... ] file\n",
-    SetClientName((char *) NULL));
-  (void) printf("\nWhere options include:\n");
-  for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
-  (void) printf(
-    "\nBy default, the image format of `file' is determined by its magic\n");
-  (void) printf(
-    "number.  To specify a particular image format, precede the filename\n");
-  (void) printf(
-    "with an image format name and a colon (i.e. ps:image) or specify the\n");
-  (void) printf(
-    "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
-  (void) printf("'-' for standard input or output.\n");
-  Exit(0);
-}
-
 #if !defined(MagickAPI)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2235,7 +2230,7 @@ int main(int argc,char **argv)
       (char *) NULL);
   if (argc < 3)
     ConvertUsage();
-  status=ConvertImagesMain(argc,argv);
+  status=ConvertUtility(argc,argv);
   DestroyMagick();
   LiberateMemory((void **) &argv);
   Exit(!status);
