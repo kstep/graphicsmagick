@@ -46,6 +46,9 @@
 #if defined(HAVE_CONFIG_H)
 #  include "magick/config.h"
 #endif
+#if defined(HAVE_VARARGS_H)
+#  include <varargs.h>
+#endif
 #if defined(HAVE_MMAP)
 #  include <sys/mman.h>
 #endif

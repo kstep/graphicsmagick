@@ -157,6 +157,10 @@ ilbm=>
 man=>
 	@MANDelegate@ -man -Tps "%i" > %o
 
+mpeg=>
+	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 %o%%05d
+	@ConvertDelegate@ -concatenate %o*.ppm %o
+
 mpg=>
 	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 %o%%05d
 	@ConvertDelegate@ -concatenate %o*.ppm %o
@@ -223,6 +227,10 @@ xcf=>
 	@XCFDecodeDelegate@ "%i" > %o 
 
 yuv<=m2v
+	@MPEGEncodeDelegate@ %u %o
+	@ConvertDelegate@ -concatenate "%i*.yuv" %u
+
+yuv<=mpeg
 	@MPEGEncodeDelegate@ %u %o
 	@ConvertDelegate@ -concatenate "%i*.yuv" %u
 

@@ -81,7 +81,9 @@ typedef struct _GraphicContext
   char
     *fill,
     *stroke,
-    *font;
+    *font,
+    *font_style,
+    *font_weight;
 
   unsigned int
     antialias;
@@ -622,8 +624,6 @@ static void SVGStartDocument(void *context)
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.startDocument()\n");
-  svg_info->width=640;
-  svg_info->height=480;
   svg_info->graphic_context=(GraphicContext *)
     AcquireMemory(sizeof(GraphicContext));
   if (svg_info->graphic_context == (GraphicContext *) NULL)
@@ -631,6 +631,8 @@ static void SVGStartDocument(void *context)
   svg_info->graphic_context[0].fill=AllocateString("none");
   svg_info->graphic_context[0].stroke=AllocateString("none");
   svg_info->graphic_context[0].font=AllocateString("none");
+  svg_info->graphic_context[0].font_style=AllocateString("none");
+  svg_info->graphic_context[0].font_weight=AllocateString("none");
   svg_info->graphic_context[0].antialias=True;
   svg_info->graphic_context[0].gravity=NorthWestGravity;
   svg_info->graphic_context[0].decorate=NoDecoration;
@@ -717,6 +719,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
   q->fill=AllocateString((q-1)->fill);
   q->stroke=AllocateString((q-1)->stroke);
   q->font=AllocateString((q-1)->font);
+  q->font_style=AllocateString((q-1)->font_style);
+  q->font_weight=AllocateString((q-1)->font_weight);
   if (attributes != (const xmlChar **) NULL)
     for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
     {
@@ -823,6 +827,18 @@ static void SVGStartElement(void *context,const xmlChar *name,
             if (LocaleCompare(keyword,"font-family:") == 0)
               {
                 (void) CloneString(&q->font,value);
+                continue;
+              }
+            if (LocaleCompare(keyword,"font-style:") == 0)
+              {
+                (void) CloneString(&q->font_style,value);
+                *q->font_style=toupper((int) *q->font_style);
+                continue;
+              }
+            if (LocaleCompare(keyword,"font-weight:") == 0)
+              {
+                (void) CloneString(&q->font_weight,value);
+                *q->font_weight=toupper((int) *q->font_weight);
                 continue;
               }
             if (LocaleCompare(keyword,"fill-opacity:") == 0)
@@ -1131,7 +1147,19 @@ static void SVGEndElement(void *context,const xmlChar *name)
   (void) fprintf(svg_info->file,"fill %s\n",p->fill);
   (void) fprintf(svg_info->file,"stroke %s\n",p->stroke);
   if (LocaleCompare(p->font,"none") != 0)
-    (void) fprintf(svg_info->file,"font %s\n",p->font);
+    {
+      (void) fprintf(svg_info->file,"font %s",p->font);
+      if ((LocaleCompare(p->font_style,"none") != 0) &&
+          (LocaleCompare(p->font_weight,"none") != 0))
+        (void) fprintf(svg_info->file,"-%s-%s",p->font_weight,p->font_style);
+      else
+        if (LocaleCompare(p->font_style,"none") != 0)
+          (void) fprintf(svg_info->file,"-%s",p->font_style);
+        else
+          if (LocaleCompare(p->font_weight,"none") != 0)
+            (void) fprintf(svg_info->file,"-%s",p->font_weight);
+      (void) fprintf(svg_info->file,"\n");
+    }
   (void) fprintf(svg_info->file,"angle %f\n",p->angle);
   (void) fprintf(svg_info->file,"affine ");
   for (i=0; i < 6; i++)
@@ -1140,6 +1168,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
   LiberateMemory((void **) &p->fill);
   LiberateMemory((void **) &p->stroke);
   LiberateMemory((void **) &p->font);
+  LiberateMemory((void **) &p->font_style);
+  LiberateMemory((void **) &p->font_weight);
   svg_info->n--;
   if (LocaleCompare((char *) name,"circle") == 0)
     {
@@ -1216,8 +1246,12 @@ static void SVGEndElement(void *context,const xmlChar *name)
   if (LocaleCompare((char *) name,"text") == 0)
     {
       Strip(svg_info->text);
-      (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->page.x,
-        svg_info->page.y,svg_info->text);
+      if (strchr(svg_info->text,'"') == 0)
+        (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->page.x,
+          svg_info->page.y,svg_info->text);
+      else
+        (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",svg_info->page.x,
+          svg_info->page.y,svg_info->text);
       *svg_info->text='\0';
       return;
     }
@@ -1562,6 +1596,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.file=file;
   svg_info.verbose=image_info->verbose;
   svg_info.exception=exception;
+  svg_info.width=image->columns;
+  svg_info.height=image->rows;
   xmlSubstituteEntitiesDefault(1);
   SAXHandler=(&SAXHandlerStruct);
   n=ReadBlob(image,4,buffer);

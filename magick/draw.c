@@ -1435,7 +1435,8 @@ static void GenerateArc(PrimitiveInfo *primitive_info,const PointInfo start,
     points[2].y=center.y+sin((alpha+(i+1)*arc_angle/number_segments));
     points[1].x=points[2].x+gamma*sin((alpha+(i+1)*arc_angle/number_segments));
     points[1].y=points[2].y-gamma*cos((alpha+(i+1)*arc_angle/number_segments));
-    p->point=p == primitive_info ? start : (p-1)->point;
+    p->point.x=(p == primitive_info) ? start.x : (p-1)->point.x;
+    p->point.y=(p == primitive_info) ? start.y : (p-1)->point.y;
     (p+1)->point.x=cosine*arc.x*points[0].x-sine*arc.y*points[0].y;
     (p+1)->point.y=sine*arc.x*points[0].x+cosine*arc.y*points[0].y;
     (p+2)->point.x=cosine*arc.x*points[1].x-sine*arc.y*points[1].y;

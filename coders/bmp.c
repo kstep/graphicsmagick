@@ -377,6 +377,8 @@ static unsigned int IsBMP(const unsigned char *magick,const unsigned int length)
 {
   if (length < 2)
     return(False);
+  if (LocaleNCompare((char *) magick,"BA",2) == 0)
+    return(True);
   if (LocaleNCompare((char *) magick,"BM",2) == 0)
     return(True);
   if (LocaleNCompare((char *) magick,"IC",2) == 0)
@@ -477,6 +479,14 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Verify BMP identifier.
     */
+    while (LocaleNCompare((char *) magick,"BA",2) == 0)
+    {
+      bmp_info.file_size=LSBFirstReadLong(image);
+      bmp_info.reserved[0]=LSBFirstReadShort(image);
+      bmp_info.reserved[1]=LSBFirstReadShort(image);
+      bmp_info.offset_bits=LSBFirstReadLong(image);
+      status=ReadBlob(image,2,(char *) magick);
+    }
     start_position=TellBlob(image)-2;
     if ((status == False) || (LocaleNCompare((char *) magick,"BM",2) != 0))
       ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
@@ -830,7 +840,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     *magick='\0';
     (void) ReadBlob(image,2,(char *) magick);
-    if (LocaleNCompare((char *) magick,"BM",2) == 0)
+    if (IsBMP(magick,2))
       {
         /*
           Acquire next image structure.
@@ -844,7 +854,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=image->next;
         ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
-  } while (LocaleNCompare((char *) magick,"BM",2) == 0);
+  } while (IsBMP(magick,2));
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -1068,7 +1078,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
         if (image->colors == 2)
           polarity=
-            Intensity(image->colormap[1]) < Intensity(image->colormap[0]);
+            Intensity(image->colormap[1]) > Intensity(image->colormap[0]);
         for (y=0; y < (int) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);

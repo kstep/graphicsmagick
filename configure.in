@@ -6,6 +6,7 @@ dnl Currently maintained by Bob Friesenhahn, bfriesen@simple.dallas.tx.us
 # Report ImageMagick configure bugs via http://www.simplesystems.org/ImageMagick/bugs
 #
 
+AC_PREREQ(2.2)
 AC_INIT(magick/magick.h)
 
 # Set version
@@ -52,6 +53,14 @@ AC_PROG_LN_S
 AC_CYGWIN
 AC_EXEEXT
 AC_OBJEXT
+
+if test "${CC}" != "gcc" ; then
+    case "${host}" in
+          *-*-hpux* )
+               CFLAGS="${CFLAGS} -Wp,-H30000 -Ae"
+               ;;
+    esac
+fi
 
 #
 # Configure libtool and ltdl

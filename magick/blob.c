@@ -1222,7 +1222,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   if (LocaleCompare(filename,"-") == 0)
     {
       image->file=(*type == 'r') ? stdin : stdout;
-#if defined(_VISUALC_)
+#if defined(_VISUALC_) || defined(__BORLANDC__)
       if (strchr(type,'b') != (char *) NULL)
         _setmode(_fileno(image->file),_O_BINARY);
 #endif
