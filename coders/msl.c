@@ -3677,7 +3677,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           char thresholds[MaxTextExtent];
 
         FormatString(thresholds,"%g",threshold);
-        ThresholdImage(msl_info->image[n], thresholds);
+        ThresholdRGBImage(msl_info->image[n], thresholds);
         break;
         }
       }

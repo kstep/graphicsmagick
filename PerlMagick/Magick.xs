@@ -1215,7 +1215,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     {
       if (LocaleCompare(attribute,"cache-threshold") == 0)
         {
-          SetCacheThreshold(SvIV(sval));
+          SetMagickResourceLimit(MemoryResource,SvIV(sval));
+          SetMagickResourceLimit(MapResource,2*SvIV(sval));
           return;
         }
       if (LocaleCompare(attribute,"clip-mask") == 0)
@@ -5631,7 +5632,7 @@ Mogrify(ref,...)
         {
           if (!attribute_flag[0])
             argument_list[0].string_reference="50%";
-          ThresholdImage(image,argument_list[0].string_reference);
+          ThresholdRGBImage(image,argument_list[0].string_reference);
           break;
         }
         case 58:  /* Charcoal */

@@ -2016,7 +2016,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
 %
 %  The format of the ThresholdImage method is:
 %
-%      unsigned int ThresholdImage(Image *image,const char *threshold)
+%      unsigned int ThresholdImage(Image *image,const double threshold)
 %
 %  A description of each parameter follows:
 %
@@ -2026,9 +2026,86 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
 %
 %
 */
-MagickExport unsigned int ThresholdImage(Image *image,const char *threshold)
+MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 {
 #define ThresholdImageText  "  Threshold the image...  "
+
+  IndexPacket
+    index;
+
+  long
+    y;
+
+  register IndexPacket
+    *indexes;
+
+  register long
+    x;
+
+  register PixelPacket
+    *q;
+
+  /*
+    Threshold image.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (!AllocateImageColormap(image,2))
+    ThrowBinaryException(ResourceLimitError,"Unable to threshold image",
+      "Memory allocation failed");
+  for (y=0; y < (long) image->rows; y++)
+  {
+    q=GetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    indexes=GetIndexes(image);
+    for (x=0; x < (long) image->columns; x++)
+    {
+      index=PixelIntensityToQuantum(q) < threshold ? 0 : 1;
+      indexes[x]=index;
+      q->red=image->colormap[index].red;
+      q->green=image->colormap[index].green;
+      q->blue=image->colormap[index].blue;
+      q++;
+    }
+    if (!SyncImagePixels(image))
+      break;
+    if (QuantumTick(y,image->rows))
+      if (!MagickMonitor(ThresholdImageText,y,image->rows,&image->exception))
+        break;
+  }
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     T h r e s h o l d R G B I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ThresholdRGBImage() changes the value of individual pixels based on
+%  the intensity of each pixel compared to threshold.  The result is a
+%  high-contrast, two color image.
+%
+%  The format of the ThresholdRGBImage method is:
+%
+%      unsigned int ThresholdRGBImage(Image *image,const char *threshold)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o threshold: define the threshold values.
+%
+%
+*/
+MagickExport unsigned int ThresholdRGBImage(Image *image,const char *threshold)
+{
+#define ThresholdRGBImageText  "  ThresholdRGB the image...  "
 
   DoublePixelPacket
     pixel;

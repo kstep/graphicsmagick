@@ -1487,10 +1487,8 @@ void Magick::Image::texture ( const Image &texture_ )
 // Threshold image
 void Magick::Image::threshold ( const double threshold_ )
 {
-  char threshold[MaxTextExtent];
   modifyImage();
-  FormatString(threshold, "%g", threshold_);
-  ThresholdImage( image(), threshold );
+  ThresholdImage( image(), threshold_ );
   throwImageException();
 }
 
