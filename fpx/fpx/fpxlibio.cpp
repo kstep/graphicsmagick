@@ -7,7 +7,7 @@
 //	COMMENTS	: 
 //  	SCCSID          : @(#)fpxlibio.cpp	1.13 12:35:57 22 Jul 1997
 //	----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //	----------------------------------------------------------------------------
@@ -69,6 +69,9 @@
 #endif
 #ifndef FlashPixJPEG_h
 	#include "fpxjpeg.h"
+#endif
+#if	defined(__unix) // for CoFileTimeNow
+ 	#include "time.hxx"
 #endif
 
 //	Constants

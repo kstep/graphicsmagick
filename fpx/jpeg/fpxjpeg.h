@@ -7,7 +7,7 @@
 //				  FlashPix based on HP JPEG code. 
 //	COMMENTS	: The functions calls include two parts, encoder and decoder.
 //	----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //	----------------------------------------------------------------------------

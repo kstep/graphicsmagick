@@ -1,0 +1,37 @@
+These are instructions for building the static and shared flashpix library that image magick will link to on Solaris 2.7.  If you follow these instructions exactly, you should not have any problems putting flashpix support into Image Magick.  This codebase was tested with gnu gcc 2.95.2 and ImageMagick 5.2.4.
+
+You must have libtool, gnumake, gcc installed on your system.  It is probably a good idea to have gdb for debugging.
+
+1) cd to /oless run 'make -f makefile.gcc'
+
+2) cd to /fpx/jpeg run 'make -f makefile.gcc'
+
+3) cd to /fpx
+-  to build the static library run make -f makefile.gcc obj/libfpx.a
+-  to build the dynamic library run make -f makefile.gcc obj/libfpx.so
+-  to build both, run make -f makefile.gcc
+
+After this, you should have one static library obj/libfpx.a or one dynamic library obj/libfpx.so that can be linked to Image Magick.  Image Magick will look for this library when configure is run by checking the LD_LIBRARY_PATH environment variable.  If it determines that this library is present and it can call the function FPX_OpenImageByFilename from it and it can find the needed header file fpx.h, then it will try to link in the flashpix stuff when you build it.  The path to fpx.h needs to be specified in the environment variable CPPFLAGS as so:
+export CPPFLAGS="-I/export/whatever"
+
+and the environment variable LD_LIBRARY_PATH should be specified as:
+
+export LD_LIBRARY_PATH=/export/whatever:$LD_LIBRARY_PATH
+
+Even though configure looks for the file fpx.h, the file ImageMagick/coders/fpx.c tries to include the file fpxlib.h so both files should be present in a directory pointed to by CPPFLAGS.  fpx.h simply includes fpxlib.h and also includes another file flashpix.h which just has some legal mumbo jumbo in it.
+
+To test that you have done this all correctly, after building and installing image magick run the convert utility to convert a file to flashpix like so -->
+
+convert examples.jpg examples.fpx
+
+and then verify that examples.fpx is a flashpix file.  examples.jpg is included in the images subdirectory of the Image Magick distribution.
+
+To verify that you can generate jpeg compressed flashpix files run -->
+
+convert -compress JPEG examples.jpg examples.fpx
+
+That should be it.  Any questions?  Contact: gurupix@hotmail.com.
+
+November 12th, 2000
+
+

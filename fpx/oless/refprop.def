@@ -1,0 +1,20 @@
+LIBRARY refstg
+DESCRIPTION 'Microsoft (R) OLE storage reference DLL 1.00'
+
+EXPORTS
+	StgOpenStorage
+	StgCreateDocfileOnILockBytes
+	StgOpenStorageOnILockBytes
+	StgIsStorageFile
+	StgIsStorageILockBytes
+	StgCreateDocfile
+        CoGetMalloc
+        CoTaskMemAlloc
+        CoTaskMemFree
+        CoTaskMemRealloc
+        IsEqualGUID
+        FreePropVariantArray    
+        PropVariantClear
+        PropVariantCopy
+        SysAllocString
+        SysFreeString

@@ -14,7 +14,7 @@
 #include <memory.h>
 #include <string.h>
 #include "jpegconf.h"
-#include "FPXMem.h"
+#include "fpxmem.h"
 
 MallocHookType  fpxMallocHook = 0;
 FreeHookType	fpxFreeHook = 0;

@@ -7,7 +7,7 @@
 //	COMMENT		:
 //  SCCSID      : @(#)cp32to24.cpp	1.1 11:46:38 18 Dec 1996
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------

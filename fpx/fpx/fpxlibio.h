@@ -1,6 +1,6 @@
 /*  FPXBaselineIO.h
  *
- *  Copyright (c) 1999 Digital Imaging Group
+ *  Copyright (c) 1999 Digital Imaging Group, Inc.
  *  For conditions of distribution and use, see copyright notice
  *  in Flashpix.h
  *  FlashPix Baseline I/O Layer API
@@ -22,6 +22,11 @@
 
 	#ifdef macintosh
 		#include "Compobj.h"
+	#elif defined(__GNUC__) 
+		// use the reference implementation header files
+        	#include "exphead.cxx"
+ 		#include "msfhead.cxx"
+		#include "dfhead.cxx"
 	#else
 		#include "objbase.h"
 		struct IStream;
@@ -59,7 +64,7 @@
 
 	// Copied from OAIDL.H
 			/* size is 4 */
-#ifdef macintosh
+#if defined(macintosh) || defined(__GNUC__)
   #ifndef _tagCLIPDATA_DEFINED
     #define _tagCLIPDATA_DEFINED
     #define _CLIPDATA_DEFINED

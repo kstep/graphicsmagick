@@ -1,0 +1,35 @@
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  msf.cxx -o obj/msf.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  dir.cxx -o obj/dir.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  dirp.cxx -o obj/dirp.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  fat.cxx -o obj/fat.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  mstream.cxx -o obj/mstream.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  sstream.cxx -o obj/sstream.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  msfiter.cxx -o obj/msfiter.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  header.cxx -o obj/header.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  difat.cxx -o obj/difat.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  page.cxx -o obj/page.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  vect.cxx -o obj/vect.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  refilb.cxx -o obj/refilb.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  funcs.cxx -o obj/funcs.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  chinst.cxx -o obj/chinst.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  entry.cxx -o obj/entry.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  dffuncs.cxx -o obj/dffuncs.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  dfstream.cxx -o obj/dfstream.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  dfiter.cxx -o obj/dfiter.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  iter.cxx -o obj/iter.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  expdf.cxx -o obj/expdf.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  cdocfile.cxx -o obj/cdocfile.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  rexpdf.cxx -o obj/rexpdf.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  time.cxx -o obj/time.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  docfile.cxx -o obj/docfile.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  ascii.cxx -o obj/ascii.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  expst.cxx -o obj/expst.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  expiter.cxx -o obj/expiter.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  storage.cxx -o obj/storage.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  mem.cxx -o obj/mem.o
+mem.cxx: In method `void * CAllocator::Realloc(void *, long unsigned int)':
+mem.cxx:236: warning: `void *' is not a pointer-to-object type
+mem.cxx: In method `void CAllocator::Free(void *)':
+mem.cxx:256: warning: `void *' is not a pointer-to-object type
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX  -DBIGENDIAN=1 -fPIC  wchar.c -o obj/wchar.o
+ar cr obj/refstg.a ./obj/msf.o ./obj/dir.o ./obj/dirp.o ./obj/fat.o ./obj/mstream.o ./obj/sstream.o ./obj/msfiter.o ./obj/header.o ./obj/difat.o ./obj/page.o ./obj/vect.o ./obj/refilb.o ./obj/funcs.o ./obj/chinst.o ./obj/entry.o ./obj/dffuncs.o ./obj/dfstream.o ./obj/dfiter.o ./obj/iter.o ./obj/expdf.o ./obj/cdocfile.o ./obj/rexpdf.o ./obj/time.o ./obj/docfile.o ./obj/ascii.o ./obj/expst.o ./obj/expiter.o ./obj/storage.o ./obj/mem.o ./obj/wchar.o 

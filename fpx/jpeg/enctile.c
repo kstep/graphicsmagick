@@ -10,7 +10,7 @@
 * Language:     C
 * Package:      Hewlett-Packard JPEG Encoder/Decoder
 *
-* Copyright (c) 1999 Digital Imaging Group
+* Copyright (c) 1999 Digital Imaging Group, Inc.
 * For conditions of distribution and use, see copyright notice
 * in Flashpix.h
 *
@@ -28,7 +28,7 @@
 #include "eparser.h"
 #include "win_dct.h"
 #include "huffman.h"
-#include "FPXMem.h"
+#include "fpxmem.h"
 
 #define SHIFT 128
 #define BOUND 1023

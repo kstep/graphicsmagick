@@ -7,7 +7,7 @@
 //	COMMENT		:
 //  SCCSID      : @(#)a_file.cpp	1.1 11:49:53 18 Dec 1996
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -25,10 +25,14 @@
 
 #include "b_error.h"
 	
-#ifdef IRIS
+#ifdef __GNUC__ 
 	#include <sys/types.h>
 	#include <sys/stat.h>
 	#include <sys/statfs.h>
+	#include <sys/ioctl.h>
+	#include <fcntl.h>
+	#include <unistd.h>
+ 	#define O_BINARY 0x0
 #endif
 
 #ifdef _WINDOWS
@@ -241,7 +245,8 @@ void Fichier::Ouverture(const FicNom& fNom, mode_Ouverture mode, OSType fileSign
 	// Convert Pascal string to C string
 	int len = fNom.nom[0];
 	cname[len] = '\0';
-	for (int i = len-1; i >= 0; i--)
+ 	int i;
+	for (i = len-1; i >= 0; i--)
 		cname[i] = fNom.nom[i+1];
 
 	// remove access path from name

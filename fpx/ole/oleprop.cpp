@@ -56,7 +56,7 @@
 //
 //  SCCSID            : @(#)oleprop.cpp	1.5 10:45:17 12 Sep 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -167,14 +167,14 @@ OLEProperty::~OLEProperty ()
 //-------------------------------------------------------------------------------------
 
 OLEProperty::operator short() const		{ return short(V_I2(&val)); }
-OLEProperty::operator WORD() const		{ return WORD(V_I2(&val)); }
+OLEProperty::operator WORD() const	                { return (WORD)(V_I2(&val)); }
+OLEProperty::operator DWORD() const		        { return (DWORD)(V_I4(&val)); }
 OLEProperty::operator long() const		{ return long(V_I4(&val)); }
-OLEProperty::operator DWORD() const		{ return DWORD(V_I4(&val)); }
 OLEProperty::operator float() const		{ return float(V_R4(&val)); }
-OLEProperty::operator double() const	{ return double(V_R8(&val)); }
-OLEProperty::operator Boolean() const	{ return (V_BOOL(&val) != 0); }
+OLEProperty::operator double() const		{ return double(V_R8(&val)); }
+OLEProperty::operator Boolean() const		{ return (V_BOOL(&val) != 0); }
 OLEProperty::operator CY() const		{ return CY(V_CY(&val)); }
-OLEProperty::operator FILETIME() const	{ return *(FILETIME *)&(V_CY(&val)); }
+OLEProperty::operator FILETIME() const	        { return *(FILETIME *)(&V_CY(&val)); }
 
 OLEProperty::operator char*() const 	
 { 
@@ -227,7 +227,6 @@ OLEProperty::operator VECTOR*() const
 	return DuplicateVECTOR(pvec, V_VT(&val)); 		  
 }
 
-
 //-------------------------------------------------------------------------------------
 //	The following functions assign VT data types defined in variant.h to the 
 //	OLEProperty class through operator =
@@ -241,7 +240,8 @@ float&		OLEProperty::operator=(const float& v)		{ Clear(); V_R4(&val) = v; retur
 double&		OLEProperty::operator=(const double& v)		{ Clear(); V_R8(&val) = v; return V_R8(&val); }
 Boolean&	OLEProperty::operator=(const Boolean& v)	{ Clear(); V_BOOL(&val) = v; return (Boolean&)V_BOOL(&val); }
 CY&			OLEProperty::operator=(const CY& v)			{ Clear(); V_CY(&val) = v; return V_CY(&val); }
-FILETIME&	OLEProperty::operator=(const FILETIME& v)	{ Clear(); V_CY(&val) = *(CY *)&v; return *(FILETIME *)&V_CY(&val); }
+FILETIME&	OLEProperty::operator=(const FILETIME& v)	{ Clear(); V_CY(&val) = *((CY *)&v); return *((FILETIME *)&V_CY(&val)); }
+// FILETIME&	OLEProperty::operator=(const FILETIME& v)	{ Clear(); *(FILETIME*)(V_CY(&val)) = v; return *(FILETIME*)(V_CY(&val)); }
 
 // This function assigns LPSTR to the OLEProperty class through operator =
 void OLEProperty::operator=(const char * v)
@@ -259,7 +259,7 @@ void OLEProperty::operator=(const WCHAR * v)
 }
 
 // This function assigns BLOB to the OLEProperty class through operator =
-void OLEProperty::operator=(const BLOB * pblob)
+void OLEProperty::operator=(const BLOB* pblob)
 {
 	// Save the blob into variant, new memory is allocated
 	len = VTtoVariant(&val, pblob); 
@@ -312,7 +312,7 @@ DWORD VTtoVariant(VARIANT* pvar, const char * v)
 	V_R8(pvar) = 0;
 
 	// Save the string into variant.bstrVal
-#ifdef _WINDOWS
+#if defined(_WINDOWS) 
 	V_UI1REF(pvar) = (unsigned char *)str;
 #else
 	V_UI1REF(pvar) = (char *)str;
@@ -555,7 +555,7 @@ OLEProperty::operator FPXOpticalFilterArray() const
 
 // This function assigns FPXStr to the OLEProperty class through operator =
 // The FPXStr is stored as VT_LPSTR type in OLEProperty class
-FPXStr& OLEProperty::operator=( FPXStr& fpxstr)
+const FPXStr& OLEProperty::operator=(const FPXStr& fpxstr)
 {
 	// Assign the FPXStr to the variant
 	char * str = FPXStrToLPSTR(fpxstr); 
@@ -569,7 +569,7 @@ FPXStr& OLEProperty::operator=( FPXStr& fpxstr)
 
 // This function assigns FPXWideStr to the OLEProperty class through operator =
 // The FPXWideStr is stored as VT_LPWSTR type in OLEProperty class
-FPXWideStr& OLEProperty::operator=( FPXWideStr& fpxwstr)
+const FPXWideStr& OLEProperty::operator=(const FPXWideStr& fpxwstr)
 {
 	// Assign the FPXWideStr to the variant
 	LPWSTR wstr = FPXWideStrToLPWSTR(fpxwstr);
@@ -583,7 +583,7 @@ FPXWideStr& OLEProperty::operator=( FPXWideStr& fpxwstr)
 
 // This function assigns FPXShortArray to the OLEProperty class through operator =
 // The FPXShortArray is stored as VT_UI2 | VT_VECTOR type in OLEProperty class
-FPXShortArray& OLEProperty::operator=( FPXShortArray& sa)
+const FPXShortArray& OLEProperty::operator=(const FPXShortArray& sa)
 {
 	// Convert the FPXShortArray to vector and assign to the OLEProperty
 	VECTOR* vec = FPXShortArrayToVector(sa);
@@ -595,7 +595,7 @@ FPXShortArray& OLEProperty::operator=( FPXShortArray& sa)
 
 // This function assigns FPXLongArray to the OLEProperty class through operator =
 // The FPXLongArray is stored as VT_UI4 | VT_VECTOR type in OLEProperty class
-FPXLongArray& OLEProperty::operator=( FPXLongArray& la)
+const FPXLongArray& OLEProperty::operator=(const FPXLongArray& la)
 {
 	// Convert the FPXLongArray to vector and assign to the OLEProperty
 	VECTOR* vec = FPXLongArrayToVector(la);
@@ -607,7 +607,7 @@ FPXLongArray& OLEProperty::operator=( FPXLongArray& la)
 
 // This function assigns FPXRealArray to the OLEProperty class through operator =
 // The FPXRealArray is stored as VT_R4 | VT_VECTOR type in OLEProperty class
-FPXRealArray& OLEProperty::operator=( FPXRealArray& fa)
+const FPXRealArray& OLEProperty::operator=(const FPXRealArray& fa)
 {
 	// Convert the FPXRealArray to vector and assign to the OLEProperty
 	VECTOR* vec = FPXRealArrayToVector(fa);
@@ -619,7 +619,7 @@ FPXRealArray& OLEProperty::operator=( FPXRealArray& fa)
 
 // This function assigns FPXClsIDArray to the OLEProperty class through operator =
 // The FPXClsIDArray is stored as VT_CLSID | VT_VECTOR type in OLEProperty class
-FPXClsIDArray& OLEProperty::operator=( FPXClsIDArray& ca)
+const FPXClsIDArray& OLEProperty::operator=(const FPXClsIDArray& ca)
 {
 	// Convert the FPXClsIDArray to vector and assign to the OLEProperty
 	VECTOR* vec = FPXClsIDArrayToVector(ca);
@@ -631,7 +631,7 @@ FPXClsIDArray& OLEProperty::operator=( FPXClsIDArray& ca)
 
 // This function assigns FPXStrArray to the OLEProperty class through operator =
 // The FPXStrArray is stored as VT_LPSTR | VT_VECTOR type in the OLEProperty class
-FPXStrArray& OLEProperty::operator=( FPXStrArray& sa)
+const FPXStrArray& OLEProperty::operator=(const FPXStrArray& sa)
 {
 	// Convert the FPXStrArray to vector and assign to the OLEProperty
 	VECTOR* vec = FPXStrArrayToVector(sa);
@@ -643,7 +643,7 @@ FPXStrArray& OLEProperty::operator=( FPXStrArray& sa)
 
 // This function assigns FPXWideStrArray to the OLEProperty class through operator =
 // The FPXWideStrArray is stored as VT_LPWSTR | VT_VECTOR type in the OLEProperty class
-FPXWideStrArray& OLEProperty::operator=( FPXWideStrArray& wa)
+const FPXWideStrArray& OLEProperty::operator=(const FPXWideStrArray& wa)
 {
 	// Convert the FPXWideStrArray to vector and assign to the OLEProperty
 	VECTOR* vec = FPXWideStrArrayToVector(wa);
@@ -656,7 +656,7 @@ FPXWideStrArray& OLEProperty::operator=( FPXWideStrArray& wa)
 // This function assigns FPXSpacialFrequencyResponseBlockArray to the OLEProperty class 
 // through operator = . The FPXSpacialFrequencyResponseBlockArray is stored as VT_VARIANT 
 // | VT_VECTOR type in the OLEProperty class
-FPXSpacialFrequencyResponseBlock& OLEProperty::operator=( FPXSpacialFrequencyResponseBlock& sfra)
+const FPXSpacialFrequencyResponseBlock& OLEProperty::operator=(const FPXSpacialFrequencyResponseBlock& sfra)
 {
 	// Convert the FPXSpacialFrequencyResponseBlockArray to vector and assign to the OLEProperty
 	VECTOR* vec = FPXSpacialFrequencyResponseBlockToVector(sfra);
@@ -668,7 +668,7 @@ FPXSpacialFrequencyResponseBlock& OLEProperty::operator=( FPXSpacialFrequencyRes
 
 // This function assigns FPXCFA_PatternBlockArray to the OLEProperty class through operator =
 // The FPXCFA_PatternBlockArray is stored as VT_VARIANT | VT_VECTOR type in the OLEProperty class
-FPXCFA_PatternBlock& OLEProperty::operator=( FPXCFA_PatternBlock& cpba)
+const FPXCFA_PatternBlock& OLEProperty::operator=(const FPXCFA_PatternBlock& cpba)
 {
 	// Convert the FPXCFA_PatternBlockArray to vector and assign to the OLEProperty
 	VECTOR* vec = FPXCFA_PatternBlockToVector(cpba);
@@ -680,7 +680,7 @@ FPXCFA_PatternBlock& OLEProperty::operator=( FPXCFA_PatternBlock& cpba)
 
 // This function assigns FPXOECF_BlockArray to the OLEProperty class through operator =
 // The FPXOECF_BlockArray is stored as VT_VARIANT | VT_VECTOR type in the OLEProperty class
-FPXOECF_Block& OLEProperty::operator=( FPXOECF_Block& oba)
+const FPXOECF_Block& OLEProperty::operator=(const FPXOECF_Block& oba)
 {
 	// Convert the FPXOECF_BlockArray to vector and assign to the OLEProperty
 	VECTOR* vec = FPXOECF_BlockToVector(oba);
@@ -692,7 +692,7 @@ FPXOECF_Block& OLEProperty::operator=( FPXOECF_Block& oba)
 // PTCH_DCG	- **/
 // This function assigns FPXScannedImageSizeBlock to the OLEProperty class through operator =
 // The FPXScannedImageSizeBlock is stored as VT_VARIANT | VT_VECTOR type in the OLEProperty class
-FPXScannedImageSizeBlock& OLEProperty::operator=( FPXScannedImageSizeBlock& sisb)
+const FPXScannedImageSizeBlock& OLEProperty::operator=(const FPXScannedImageSizeBlock& sisb)
 {
 	// Convert the FPXScannedImageSizeBlock to vector and assign to the OLEProperty
 	VECTOR* vec = FPXScannedImageSizeBlockToVector(sisb);
@@ -702,7 +702,7 @@ FPXScannedImageSizeBlock& OLEProperty::operator=( FPXScannedImageSizeBlock& sisb
 	return sisb;
 }
 
-FPXOpticalFilterArray& OLEProperty::operator=( FPXOpticalFilterArray& la)
+const FPXOpticalFilterArray& OLEProperty::operator=(const FPXOpticalFilterArray& la)
 {
 	// Convert the FPXLongArray to vector and assign to the OLEProperty
 	VECTOR* vec = FPXOpticalFilterArrayToVector(la);
@@ -721,7 +721,7 @@ FPXOpticalFilterArray& OLEProperty::operator=( FPXOpticalFilterArray& la)
 
 
 // This function converts FPXStr to LPSTR
-char* FPXStrToLPSTR( FPXStr& fpxstr )  	
+char* FPXStrToLPSTR(const FPXStr& fpxstr )  	
 { 
 	char* pstr;
 	
@@ -740,7 +740,7 @@ char* FPXStrToLPSTR( FPXStr& fpxstr )
 }
 
 // This function converts FPXWideStr to LPWSTR
-LPWSTR FPXWideStrToLPWSTR( FPXWideStr& fpxwstr )  	
+LPWSTR FPXWideStrToLPWSTR(const FPXWideStr& fpxwstr )  	
 { 
 	LPWSTR pwstr;
 	
@@ -761,7 +761,7 @@ LPWSTR FPXWideStrToLPWSTR( FPXWideStr& fpxwstr )
 // PTCH_DCG - added method to copy an array of bytes in an FPXStr to a vector
 //	of (unsigned) bytes. This is not NULL-terminated, but is padded to 32 bits
 // This function converts FPXStr to VECTOR
-VECTOR* FPXStrToVector( FPXStr& sa )  	
+VECTOR* FPXStrToVector(const FPXStr& sa )  	
 { 
 	VECTOR *pvec;
 	
@@ -778,7 +778,7 @@ VECTOR* FPXStrToVector( FPXStr& sa )
 }
 
 // This function converts FPXShortArray to VECTOR
-VECTOR* FPXShortArrayToVector( FPXShortArray& sa )  	
+VECTOR* FPXShortArrayToVector(const FPXShortArray& sa )  	
 { 
 	VECTOR *pvec;
 	
@@ -795,7 +795,7 @@ VECTOR* FPXShortArrayToVector( FPXShortArray& sa )
 }
 
 // This function converts FPXLongArray to VECTOR
-VECTOR* FPXLongArrayToVector( FPXLongArray& la )  	
+VECTOR* FPXLongArrayToVector(const FPXLongArray& la )  	
 { 
 	VECTOR *pvec;
 	
@@ -812,7 +812,7 @@ VECTOR* FPXLongArrayToVector( FPXLongArray& la )
 }
 
 // This function converts FPXRealArray to VECTOR
-VECTOR* FPXRealArrayToVector( FPXRealArray& fa )  	
+VECTOR* FPXRealArrayToVector(const FPXRealArray& fa )  	
 { 
 	VECTOR *pvec;
 	
@@ -829,7 +829,7 @@ VECTOR* FPXRealArrayToVector( FPXRealArray& fa )
 }
 
 // This function converts FPXClsIDArray to VECTOR
-VECTOR* FPXClsIDArrayToVector( FPXClsIDArray& ca )  	
+VECTOR* FPXClsIDArrayToVector(const FPXClsIDArray& ca )  	
 { 
 	VECTOR *pvec;
 	
@@ -846,7 +846,7 @@ VECTOR* FPXClsIDArrayToVector( FPXClsIDArray& ca )
 }
 
 // This function converts FPXStrArray to VECTOR
-VECTOR* FPXStrArrayToVector( FPXStrArray& sa )  	
+VECTOR* FPXStrArrayToVector(const FPXStrArray& sa )  	
 { 
 	VECTOR *pvec;
 	
@@ -876,7 +876,7 @@ VECTOR* FPXStrArrayToVector( FPXStrArray& sa )
 }
 
 // This function converts FPXWideStrArray to VECTOR
-VECTOR* FPXWideStrArrayToVector( FPXWideStrArray& wa )  	
+VECTOR* FPXWideStrArrayToVector(const FPXWideStrArray& wa )  	
 { 
 	VECTOR *pvec;
 	
@@ -906,7 +906,7 @@ VECTOR* FPXWideStrArrayToVector( FPXWideStrArray& wa )
 
 // PTCH_DCG - removed array implementation and updated string type to meet spec
 // This function converts FPXSpacialFrequencyResponseBlock to VECTOR
-VECTOR* FPXSpacialFrequencyResponseBlockToVector( FPXSpacialFrequencyResponseBlock& sfra )  	
+VECTOR* FPXSpacialFrequencyResponseBlockToVector(const FPXSpacialFrequencyResponseBlock& sfra )  	
 { 
 	VECTOR *pvec;
 	
@@ -935,7 +935,7 @@ VECTOR* FPXSpacialFrequencyResponseBlockToVector( FPXSpacialFrequencyResponseBlo
 	
 // PTCH_DCG - removed array implementation and updated string type to meet spec
 // This function converts FPXCFA_PatternBlock to VECTOR
-VECTOR* FPXCFA_PatternBlockToVector( FPXCFA_PatternBlock& cpba )  	
+VECTOR* FPXCFA_PatternBlockToVector(const FPXCFA_PatternBlock& cpba )  	
 { 
 	VECTOR *pvec;
 	
@@ -964,7 +964,7 @@ VECTOR* FPXCFA_PatternBlockToVector( FPXCFA_PatternBlock& cpba )
 
 // PTCH_DCG - removed array implementation and updated string type to meet spec
 // This function converts FPXOECF_BlockArray to VECTOR
-VECTOR* FPXOECF_BlockToVector( FPXOECF_Block& oeba )  	
+VECTOR* FPXOECF_BlockToVector(const FPXOECF_Block& oeba )  	
 { 
 	VECTOR *pvec;
 	
@@ -992,7 +992,7 @@ VECTOR* FPXOECF_BlockToVector( FPXOECF_Block& oeba )
 }
 
 // This function converts FPXScannedImageSizeBlock to VECTOR
-VECTOR* FPXScannedImageSizeBlockToVector( FPXScannedImageSizeBlock& sisb )  	
+VECTOR* FPXScannedImageSizeBlockToVector(const FPXScannedImageSizeBlock& sisb )  	
 { 
 	VECTOR *pvec;
 	
@@ -1024,7 +1024,7 @@ VECTOR* FPXScannedImageSizeBlockToVector( FPXScannedImageSizeBlock& sisb )
 }
 	
 // This function converts FPXLongArray to VECTOR
-VECTOR* FPXOpticalFilterArrayToVector( FPXOpticalFilterArray& la )  	
+VECTOR* FPXOpticalFilterArrayToVector(const FPXOpticalFilterArray& la )  	
 { 
 	VECTOR *pvec;
 	

@@ -10,7 +10,7 @@
 //				  and only here as a define. 
 //  SCCSID      : @(#)fpxutils.h	1.2 04:09:42 29 Jan 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -471,7 +471,7 @@
 	#define DefaultPaletteSize	256 		// Default size of Palette
 	
 // Define window DIB structures	 
-#ifdef macintosh 
+#if defined(macintosh) || defined(__unix) 
 
 	// Bitmap information header
 	typedef struct tagBITMAPINFOHEADER

@@ -7,7 +7,7 @@
 //	COMMENTS	: 
 //      SCCSID          : @(#)f_fpxvw.h	1.4 12:47:17 01 Jul 1997
 //	----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //	----------------------------------------------------------------------------

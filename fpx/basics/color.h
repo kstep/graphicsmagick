@@ -7,7 +7,7 @@
 //	COMMENT		:
 //  SCCSID      : @(#)color.h	1.1 11:49:57 18 Dec 1996
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -25,7 +25,7 @@
 	#include "b_types.h"
 	#include "mac_comp.h"
 
-	#include "NPixel.h"
+	#include "npixel.h"
 
 	// to avoid inclusion of ColorMatching.h
 	class obj_ColorMatching;

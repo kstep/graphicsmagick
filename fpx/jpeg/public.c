@@ -10,7 +10,7 @@
 * Language:     C
 * Package:      Hewlett-Packard JPEG Encoder/Decoder
 *
-* Copyright (c) 1999 Digital Imaging Group
+* Copyright (c) 1999 Digital Imaging Group, Inc.
 * For conditions of distribution and use, see copyright notice
 * in Flashpix.h
 *
@@ -25,7 +25,7 @@
 #include "encoder.h"
 #include "public.h"
 #include "process.h"
-#include "FPXMem.h"
+#include "fpxmem.h"
 
 #ifndef FALSE
 #define FALSE 0

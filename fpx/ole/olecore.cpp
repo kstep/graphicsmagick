@@ -8,7 +8,7 @@
 //	COMMENT		: Enhanced OLE objects which are platform independent 
 //  	SCCSID            : @(#)olecore.cpp	1.5 10:45:11 12 Sep 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 	
@@ -19,7 +19,7 @@
 	#include "debug.h"
 #endif
 
-#ifdef _WINDOWS	
+#if defined(_WINDOWS)
 	#include "b_error.h"
 #endif
 #ifndef OLECommun_h
@@ -1659,14 +1659,14 @@ LPWSTR MultiByteToWideChar(const char * pchar)
 }
 
 // This function calculates the length of Unicode string which is terminated by two consecutive NULLs
-DWORD wcslen(const WCHAR * pwchar) 
-{
-	DWORD i= 0; 
+// DWORD wcslen(const WCHAR * pwchar) 
+// {
+//	DWORD i= 0; 
 	
-	while (pwchar[i] != 0)
-		i++; 		
-	return i; 
-}
+//	while (pwchar[i] != 0)
+//		i++; 		
+//	return i; 
+// }
 
 #endif
 
@@ -1700,7 +1700,7 @@ void SwapBytes(unsigned char *pbData, short cBytes)
 
 HRESULT OLEInit()
 {
-	HRESULT res;
+	HRESULT res = S_OK;
 	
 #ifdef macintosh	
 #ifndef powerc				// If Code Warrior 68k
@@ -1711,20 +1711,24 @@ HRESULT OLEInit()
 	if (res == S_OK)
 #endif // powerc
 #endif // macintosh
+#ifdef _WINDOWS
 	res = OleInitialize(NULL);
+#endif
+// on UNIX, for now, there is no need for OleInitialize
 	
 	return res;
 }
 //This function uninitializes the OLE library
 Boolean OLEUninit()
 {
-	OleUninitialize();
-	
 #ifdef macintosh	
 	#ifndef powerc	
 		UninitOleManager();
 	#endif // powerc
 #endif // macintosh
+#ifdef _WINDOWS
+        OleUninitialize();
+#endif
 
 	
 	return true;

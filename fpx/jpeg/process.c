@@ -10,7 +10,7 @@
 * Language:     C
 * Package:      Hewlett-Packard JPEG Encoder/Decoder
 *
-* Copyright (c) 1999 Digital Imaging Group
+* Copyright (c) 1999 Digital Imaging Group, Inc.
 * For conditions of distribution and use, see copyright notice
 * in Flashpix.h
 *
@@ -18,7 +18,7 @@
 */
 #include <stdlib.h>
 #include "jpegconf.h"
-#include "FPXMem.h"
+#include "fpxmem.h"
 
 #include "ejpeg.h"			// CHG_JPEG_MEM_FIX - added this to get error code
 

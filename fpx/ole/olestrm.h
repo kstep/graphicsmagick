@@ -7,7 +7,7 @@
 //	COMMENT		: Enhanced OLE objects are platform independent 
 //      SCCSID            : @(#)olestrm.h	1.3 10:45:32 12 Sep 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------

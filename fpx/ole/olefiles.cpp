@@ -7,7 +7,7 @@
 //	COMMENT		: Enhanced OLE objects which are independent of platform
 //      SCCSID      	: @(#)olefiles.cpp	1.4 12:37:31 08 Jul 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -176,7 +176,7 @@ Boolean	OLEFile::OpenOLEFile(CLSID& classID, OLEStorage ** currentStorage, DWORD
 
 		// Check if it's really a file
 		// PTCH_WS_FIX - replaced "fileName" with "newName" in StgIsStorageFile() call
-		if (FAILED( err = StgIsStorageFile(OLE_STR(newName)))) {
+		if (FAILED( err = StgIsStorageFile(OLESTR(newName)))) {
 			lastError = TranslateOLEError(err);		
 			fpxStatus = OLEtoFPXError(err);
 			return false; 
@@ -184,12 +184,12 @@ Boolean	OLEFile::OpenOLEFile(CLSID& classID, OLEStorage ** currentStorage, DWORD
 
 		// PTCH_WS_FIX - replaced "fileName" with "newName" in StgOpenStorage() call
 		// CHG_FILE_ERR - OLE err for missing file is 'invalid handle'. Return 'file not found' instead
-		err = StgOpenStorage (OLE_STR(newName), NULL, mode, NULL, 0, &oleStorage);
+		err = StgOpenStorage (OLESTR(newName), NULL, mode, NULL, 0, &oleStorage);
 	 	if (FAILED(err) && (mode == OLE_READWRITE_MODE)) {
 	 		isReadOnly = 1;
 	 		// Try to open at least in read mode if the read/write failed
 			// PTCH_WS_FIX - replaced "fileName" with "newName" in StgOpenStorage() call
-			err = StgOpenStorage (OLE_STR(newName), NULL, OLE_READ_ONLY_MODE, NULL, 0, &oleStorage);
+			err = StgOpenStorage (OLESTR(newName), NULL, OLE_READ_ONLY_MODE, NULL, 0, &oleStorage);
 		}
 #endif
 	
@@ -301,7 +301,7 @@ Boolean	OLEFile::CreateOLEFile(CLSID& classID, OLEStorage ** newStorage)
 	OLECHAR *newName = AsciiToOLECHAR (fileName);
 
 	// PTCH_WS_FIX - replaced "fileName" with "newName" in StgCreateDocfile() call
-	 err = StgCreateDocfile		(OLE_STR(newName), OLE_CREATE_MODE, 0, &oleStorage);
+	 err = StgCreateDocfile		(OLESTR(newName), OLE_CREATE_MODE, 0, &oleStorage);
 #endif
 
 	if (FAILED(err)) {
@@ -386,7 +386,7 @@ static OLECHAR * AsciiToOLECHAR(const char * filename)
         if (filename == NULL)
                 return NULL;
 
-#ifdef macintosh
+#if defined(macintosh) || defined(__unix)
         // find the length of filename.
         long len = strlen(filename);
 

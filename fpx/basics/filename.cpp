@@ -7,7 +7,7 @@
 //	COMMENTAIRE	:
 //      SCCSID          : @(#)filename.cpp	1.5 12:54:10 02 Jun 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -34,10 +34,12 @@
 	#include 	"a_file.h"
 #endif
 	
-#ifdef IRIS
+#ifdef __GNUC__ 
 	#include <sys/types.h>
 	#include <sys/stat.h>
 	#include <sys/statfs.h>
+	#include <stdio.h>
+	#include <unistd.h>
 #endif
 
 #ifdef _WINDOWS

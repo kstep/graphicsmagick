@@ -1,0 +1,23 @@
+# DO NOT DELETE
+
+cpropvar.o: cpropvar.hxx chresult.hxx ../../h/props.h ../../h/ref.hxx
+cpropvar.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+cpropvar.o: /usr/include/stdarg.h /usr/include/varargs.h ../../h/storage.h
+cpropvar.o: ../../h/tchar.h ../../h/wchar.h /usr/include/stdlib.h
+cpropvar.o: /usr/include/assert.h ../../props/olechar.h /usr/include/memory.h
+cpropvar.o: /usr/include/string.h ../../props/h/windef.h
+cpropvar.o: ../../props/h/ntstatus.h ../../props/olechar.h ../../h/tchar.h
+proptest.o: ../../props/h/windef.h ../../h/props.h ../../h/ref.hxx
+proptest.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+proptest.o: /usr/include/stdarg.h /usr/include/varargs.h ../../h/storage.h
+proptest.o: ../../h/tchar.h ../../h/wchar.h /usr/include/stdlib.h
+proptest.o: /usr/include/assert.h ../../props/olechar.h /usr/include/memory.h
+proptest.o: ../../props/h/ntstatus.h ../../props/h/propapi.h
+proptest.o: ../../props/h/propset.h cpropvar.hxx chresult.hxx
+proptest.o: /usr/include/string.h ../../props/olechar.h
+proptest.o: ../../props/h/propmac.hxx ../../byteordr.hxx
+proptest.o: /usr/include/limits.h ../../props/h/propapi.h ../../time.hxx
+proptest.o: ../../h/storage.h /usr/include/time.h proptest.hxx
+proptest.o: /usr/include/sys/types.h /usr/include/sys/machtypes.h
+proptest.o: /usr/include/sys/isa_defs.h /usr/include/sys/stat.h
+proptest.o: /usr/include/sys/time.h

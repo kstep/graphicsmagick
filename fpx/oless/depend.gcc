@@ -1,0 +1,982 @@
+ # DO NOT DELETE
+
+msf.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+msf.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+msf.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+msf.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx byteordr.hxx
+msf.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+msf.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+msf.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+msf.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+msf.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx h/handle.hxx
+msf.o: h/msffunc.hxx h/dirfunc.hxx
+dir.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+dir.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+dir.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+dir.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx byteordr.hxx
+dir.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+dir.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+dir.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+dir.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+dir.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx h/dirfunc.hxx
+dir.o: mread.hxx h/difat.hxx h/sstream.hxx h/handle.hxx h/msffunc.hxx
+dir.o: h/dirfunc.hxx h/entry.hxx
+dirp.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+dirp.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+dirp.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+dirp.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx byteordr.hxx
+dirp.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+dirp.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+dirp.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+dirp.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+dirp.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx
+dirp.o: h/dirfunc.hxx
+fat.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+fat.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+fat.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+fat.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx byteordr.hxx
+fat.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+fat.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+fat.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+fat.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+fat.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx h/difat.hxx
+fat.o: h/sstream.hxx h/handle.hxx h/msffunc.hxx h/dirfunc.hxx h/entry.hxx
+fat.o: mread.hxx
+mstream.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+mstream.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+mstream.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+mstream.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx
+mstream.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+mstream.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+mstream.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+mstream.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+mstream.o: h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx
+mstream.o: h/dir.hxx h/dirfunc.hxx h/sstream.hxx h/handle.hxx h/msffunc.hxx
+mstream.o: h/dirfunc.hxx h/entry.hxx h/difat.hxx h/msfiter.hxx mread.hxx
+mstream.o: h/docfilep.hxx
+sstream.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+sstream.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+sstream.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+sstream.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx
+sstream.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+sstream.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+sstream.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+sstream.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+sstream.o: h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx
+sstream.o: h/dir.hxx h/dirfunc.hxx h/sstream.hxx h/handle.hxx h/msffunc.hxx
+sstream.o: h/dirfunc.hxx h/entry.hxx mread.hxx h/difat.hxx
+msfiter.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+msfiter.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+msfiter.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+msfiter.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx
+msfiter.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+msfiter.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+msfiter.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+msfiter.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+msfiter.o: h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx
+msfiter.o: h/dir.hxx h/dirfunc.hxx h/msfiter.hxx
+header.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+header.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+header.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+header.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx
+header.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+header.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+header.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+header.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+header.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx h/dfver.h
+difat.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+difat.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+difat.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+difat.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx byteordr.hxx
+difat.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+difat.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+difat.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+difat.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+difat.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx h/difat.hxx
+difat.o: mread.hxx h/sstream.hxx h/handle.hxx h/msffunc.hxx h/dirfunc.hxx
+difat.o: h/entry.hxx
+page.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+page.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+page.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+page.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx byteordr.hxx
+page.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+page.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+page.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+page.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+page.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx mread.hxx
+page.o: h/difat.hxx h/sstream.hxx h/handle.hxx h/msffunc.hxx h/dirfunc.hxx
+page.o: h/entry.hxx
+vect.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+vect.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+vect.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+vect.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx byteordr.hxx
+vect.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+vect.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+vect.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+vect.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+vect.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx
+refilb.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+refilb.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+refilb.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+refilb.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx
+refilb.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+refilb.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+refilb.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+refilb.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+refilb.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx
+refilb.o: /usr/include/errno.h /usr/include/sys/errno.h h/refilb.hxx
+refilb.o: /usr/include/sys/stat.h /usr/include/sys/time.h
+refilb.o: /usr/include/sys/types.h /usr/include/sys/machtypes.h
+refilb.o: /usr/include/sys/isa_defs.h time.hxx h/tchar.h
+refilb.o: /usr/include/unistd.h /usr/include/sys/unistd.h h/ole.hxx
+funcs.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+funcs.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+funcs.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+funcs.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+funcs.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+funcs.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+funcs.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx
+funcs.o: h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+funcs.o: h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+funcs.o: h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+funcs.o: h/revert.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+funcs.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+funcs.o: props/h/stgprops.hxx h/docfilep.hxx h/dffuncs.hxx h/cdocfile.hxx
+funcs.o: h/sstream.hxx h/funcs.hxx h/piter.hxx h/sstream.hxx
+chinst.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+chinst.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+chinst.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+chinst.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+chinst.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+chinst.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+chinst.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx
+chinst.o: h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+chinst.o: h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+chinst.o: h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+chinst.o: h/revert.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+chinst.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+chinst.o: props/h/stgprops.hxx h/docfilep.hxx h/dffuncs.hxx h/cdocfile.hxx
+chinst.o: h/sstream.hxx h/funcs.hxx h/piter.hxx h/sstream.hxx
+entry.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+entry.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+entry.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+entry.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+entry.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+entry.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+entry.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx
+entry.o: h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+entry.o: h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+entry.o: h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+entry.o: h/revert.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+entry.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+entry.o: props/h/stgprops.hxx h/docfilep.hxx h/dffuncs.hxx h/cdocfile.hxx
+entry.o: h/sstream.hxx h/funcs.hxx h/piter.hxx h/sstream.hxx
+dffuncs.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+dffuncs.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+dffuncs.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+dffuncs.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+dffuncs.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+dffuncs.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+dffuncs.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+dffuncs.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+dffuncs.o: h/difat.hxx h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx
+dffuncs.o: h/msffunc.hxx h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx
+dffuncs.o: dfbasis.hxx h/revert.hxx h/chinst.hxx props/h/windef.h
+dffuncs.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+dffuncs.o: props/psetstg.hxx props/h/stgprops.hxx h/docfilep.hxx
+dffuncs.o: h/dffuncs.hxx h/cdocfile.hxx h/sstream.hxx h/funcs.hxx h/piter.hxx
+dffuncs.o: h/sstream.hxx iter.hxx
+dfstream.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+dfstream.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+dfstream.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+dfstream.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+dfstream.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+dfstream.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+dfstream.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+dfstream.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+dfstream.o: h/difat.hxx h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx
+dfstream.o: h/msffunc.hxx h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx
+dfstream.o: dfbasis.hxx h/revert.hxx h/chinst.hxx props/h/windef.h
+dfstream.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+dfstream.o: props/psetstg.hxx props/h/stgprops.hxx h/docfilep.hxx
+dfstream.o: h/dffuncs.hxx h/cdocfile.hxx h/sstream.hxx h/funcs.hxx
+dfstream.o: h/piter.hxx h/sstream.hxx
+dfiter.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+dfiter.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+dfiter.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+dfiter.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+dfiter.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+dfiter.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+dfiter.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx
+dfiter.o: h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+dfiter.o: h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+dfiter.o: h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+dfiter.o: h/revert.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+dfiter.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+dfiter.o: props/h/stgprops.hxx h/docfilep.hxx h/dffuncs.hxx h/cdocfile.hxx
+dfiter.o: h/sstream.hxx h/funcs.hxx h/piter.hxx h/sstream.hxx h/msfiter.hxx
+dfiter.o: iter.hxx
+iter.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+iter.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+iter.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+iter.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+iter.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+iter.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+iter.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx
+iter.o: h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+iter.o: h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+iter.o: h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+iter.o: h/revert.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+iter.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+iter.o: props/h/stgprops.hxx h/docfilep.hxx h/dffuncs.hxx h/cdocfile.hxx
+iter.o: h/sstream.hxx h/funcs.hxx h/piter.hxx h/sstream.hxx h/msfiter.hxx
+iter.o: iter.hxx
+expdf.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+expdf.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/ref.hxx
+expdf.o: h/tchar.h h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+expdf.o: exphead.cxx /usr/include/memory.h /usr/include/string.h
+expdf.o: h/dfexcept.hxx h/msf.hxx h/error.hxx byteordr.hxx
+expdf.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+expdf.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx
+expdf.o: h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+expdf.o: h/docfilep.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx h/ole.hxx
+expdf.o: h/revert.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx h/dirfunc.hxx
+expdf.o: h/entry.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+expdf.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+expdf.o: props/h/stgprops.hxx h/funcs.hxx h/piter.hxx expst.hxx h/sstream.hxx
+expdf.o: h/propstm.hxx h/props.h props/h/propapi.h props/h/propset.h
+expdf.o: expiter.hxx logfile.hxx h/rexpdf.hxx expdf.hxx
+cdocfile.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+cdocfile.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+cdocfile.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+cdocfile.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+cdocfile.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+cdocfile.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+cdocfile.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+cdocfile.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+cdocfile.o: h/difat.hxx h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx
+cdocfile.o: h/msffunc.hxx h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx
+cdocfile.o: dfbasis.hxx h/revert.hxx h/chinst.hxx props/h/windef.h
+cdocfile.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+cdocfile.o: props/psetstg.hxx props/h/stgprops.hxx h/docfilep.hxx
+cdocfile.o: h/dffuncs.hxx h/cdocfile.hxx h/sstream.hxx h/funcs.hxx
+cdocfile.o: h/piter.hxx h/sstream.hxx h/vectfunc.hxx
+rexpdf.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+rexpdf.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+rexpdf.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+rexpdf.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+rexpdf.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+rexpdf.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+rexpdf.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx
+rexpdf.o: h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+rexpdf.o: h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+rexpdf.o: h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+rexpdf.o: h/revert.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+rexpdf.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+rexpdf.o: props/h/stgprops.hxx h/docfilep.hxx h/dffuncs.hxx h/cdocfile.hxx
+rexpdf.o: h/sstream.hxx h/funcs.hxx h/piter.hxx h/sstream.hxx h/header.hxx
+rexpdf.o: h/rexpdf.hxx expdf.hxx h/tchar.h
+time.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+time.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/ref.hxx
+time.o: h/tchar.h h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+time.o: time.hxx h/ole.hxx /usr/include/limits.h
+docfile.o: exphead.cxx /usr/include/memory.h /usr/include/stdio.h
+docfile.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+docfile.o: /usr/include/string.h h/ref.hxx /usr/include/stdarg.h
+docfile.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+docfile.o: /usr/include/assert.h h/dfexcept.hxx h/msf.hxx h/error.hxx
+docfile.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+docfile.o: time.hxx h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+docfile.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+docfile.o: h/difat.hxx h/docfilep.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+docfile.o: h/ole.hxx h/revert.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+docfile.o: h/dirfunc.hxx h/entry.hxx h/chinst.hxx props/h/windef.h
+docfile.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+docfile.o: props/psetstg.hxx props/h/stgprops.hxx h/funcs.hxx h/piter.hxx
+docfile.o: expst.hxx h/sstream.hxx h/propstm.hxx h/props.h props/h/propapi.h
+docfile.o: props/h/propset.h h/rexpdf.hxx expdf.hxx h/docfile.hxx ascii.hxx
+docfile.o: logfile.hxx h/refilb.hxx
+ascii.o: exphead.cxx /usr/include/memory.h /usr/include/stdio.h
+ascii.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+ascii.o: /usr/include/string.h h/ref.hxx /usr/include/stdarg.h
+ascii.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+ascii.o: /usr/include/assert.h h/dfexcept.hxx h/msf.hxx h/error.hxx
+ascii.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+ascii.o: time.hxx h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+ascii.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+ascii.o: h/difat.hxx h/docfilep.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+ascii.o: h/ole.hxx h/revert.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+ascii.o: h/dirfunc.hxx h/entry.hxx h/chinst.hxx props/h/windef.h
+ascii.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+ascii.o: props/psetstg.hxx props/h/stgprops.hxx h/funcs.hxx h/piter.hxx
+ascii.o: expiter.hxx expst.hxx h/sstream.hxx h/propstm.hxx h/props.h
+ascii.o: props/h/propapi.h props/h/propset.h ascii.hxx h/docfile.hxx
+expst.o: exphead.cxx /usr/include/memory.h /usr/include/stdio.h
+expst.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+expst.o: /usr/include/string.h h/ref.hxx /usr/include/stdarg.h
+expst.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+expst.o: /usr/include/assert.h h/dfexcept.hxx h/msf.hxx h/error.hxx
+expst.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+expst.o: time.hxx h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+expst.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+expst.o: h/difat.hxx h/docfilep.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+expst.o: h/ole.hxx h/revert.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+expst.o: h/dirfunc.hxx h/entry.hxx h/chinst.hxx props/h/windef.h
+expst.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+expst.o: props/psetstg.hxx props/h/stgprops.hxx h/funcs.hxx h/piter.hxx
+expst.o: expst.hxx h/sstream.hxx h/propstm.hxx h/props.h props/h/propapi.h
+expst.o: props/h/propset.h logfile.hxx
+expiter.o: exphead.cxx /usr/include/memory.h /usr/include/stdio.h
+expiter.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+expiter.o: /usr/include/string.h h/ref.hxx /usr/include/stdarg.h
+expiter.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+expiter.o: /usr/include/assert.h h/dfexcept.hxx h/msf.hxx h/error.hxx
+expiter.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+expiter.o: time.hxx h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+expiter.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+expiter.o: h/difat.hxx h/docfilep.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+expiter.o: h/ole.hxx h/revert.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+expiter.o: h/dirfunc.hxx h/entry.hxx h/chinst.hxx props/h/windef.h
+expiter.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+expiter.o: props/psetstg.hxx props/h/stgprops.hxx h/funcs.hxx h/piter.hxx
+expiter.o: expiter.hxx h/sstream.hxx
+storage.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+storage.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/ref.hxx
+storage.o: h/tchar.h h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+storage.o: h/dfexcept.hxx h/msf.hxx h/error.hxx byteordr.hxx
+storage.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+storage.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+storage.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+storage.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+storage.o: h/docfile.hxx h/storagep.h h/refilb.hxx h/ole.hxx h/funcs.hxx
+mem.o: exphead.cxx /usr/include/memory.h /usr/include/stdio.h
+mem.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+mem.o: /usr/include/string.h h/ref.hxx /usr/include/stdarg.h
+mem.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+mem.o: /usr/include/assert.h h/dfexcept.hxx h/msf.hxx h/error.hxx
+mem.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+mem.o: time.hxx h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+mem.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+mem.o: h/difat.hxx h/docfilep.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx h/ole.hxx
+mem.o: h/revert.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx h/dirfunc.hxx
+mem.o: h/entry.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+mem.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+mem.o: props/h/stgprops.hxx h/funcs.hxx h/piter.hxx h/mem.hxx
+wchar.o: h/wchar.h /usr/include/stdlib.h /usr/include/sys/feature_tests.h
+wchar.o: /usr/include/errno.h /usr/include/sys/errno.h /usr/include/assert.h
+ascii.o: h/dfmsp.hxx h/docfile.hxx h/dfmsp.hxx h/ref.hxx /usr/include/stdio.h
+ascii.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+ascii.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+ascii.o: /usr/include/stdlib.h /usr/include/assert.h h/ole.hxx h/error.hxx
+ascii.o: h/msf.hxx /usr/include/memory.h /usr/include/string.h time.hxx
+ascii.o: h/storage.h /usr/include/time.h
+dfbasis.o: h/ole.hxx
+expiter.o: h/dfmsp.hxx
+iter.o: h/piter.hxx
+mread.o: h/difat.hxx h/sstream.hxx h/msf.hxx h/handle.hxx h/msffunc.hxx
+mread.o: h/dir.hxx h/wchar.h /usr/include/stdlib.h
+mread.o: /usr/include/sys/feature_tests.h h/vect.hxx /usr/include/malloc.h
+mread.o: h/page.hxx h/dirfunc.hxx h/entry.hxx
+byteordr.o: /usr/include/limits.h /usr/include/sys/feature_tests.h
+expdf.o: h/dfmsp.hxx dfbasis.hxx h/ole.hxx h/revert.hxx h/dfmsp.hxx h/ref.hxx
+expdf.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+expdf.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+expdf.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h h/ole.hxx
+expdf.o: h/error.hxx h/msf.hxx /usr/include/memory.h /usr/include/string.h
+expdf.o: time.hxx h/storage.h /usr/include/time.h h/cdocfile.hxx h/handle.hxx
+expdf.o: h/msffunc.hxx h/dir.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx
+expdf.o: h/dirfunc.hxx h/entry.hxx h/chinst.hxx props/h/windef.h
+expdf.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+expdf.o: props/psetstg.hxx props/h/stgprops.hxx
+expst.o: h/dfmsp.hxx expdf.hxx dfbasis.hxx h/ole.hxx h/revert.hxx h/dfmsp.hxx
+expst.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+expst.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+expst.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h h/ole.hxx
+expst.o: h/error.hxx h/msf.hxx /usr/include/memory.h /usr/include/string.h
+expst.o: time.hxx h/storage.h /usr/include/time.h h/cdocfile.hxx h/handle.hxx
+expst.o: h/msffunc.hxx h/dir.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx
+expst.o: h/dirfunc.hxx h/entry.hxx h/chinst.hxx props/h/windef.h
+expst.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+expst.o: props/psetstg.hxx props/h/stgprops.hxx h/sstream.hxx h/propstm.hxx
+expst.o: h/props.h props/h/propapi.h props/h/propset.h
+time.o: h/storage.h /usr/include/time.h /usr/include/sys/feature_tests.h
+cdocfile.o: h/handle.hxx h/msf.hxx h/msffunc.hxx h/dir.hxx h/wchar.h
+cdocfile.o: /usr/include/stdlib.h /usr/include/sys/feature_tests.h h/vect.hxx
+cdocfile.o: /usr/include/malloc.h h/page.hxx h/dirfunc.hxx h/entry.hxx
+dirfunc.o: h/page.hxx h/vect.hxx /usr/include/malloc.h
+handle.o: h/msf.hxx h/msffunc.hxx h/dir.hxx h/wchar.h /usr/include/stdlib.h
+handle.o: /usr/include/sys/feature_tests.h h/vect.hxx /usr/include/malloc.h
+handle.o: h/page.hxx h/dirfunc.hxx
+storage.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+storage.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+storage.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+docfile.o: h/dfmsp.hxx h/ref.hxx /usr/include/stdio.h
+docfile.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+docfile.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+docfile.o: /usr/include/stdlib.h /usr/include/assert.h h/ole.hxx h/error.hxx
+docfile.o: h/msf.hxx /usr/include/memory.h /usr/include/string.h time.hxx
+docfile.o: h/storage.h /usr/include/time.h
+header.o: h/msf.hxx h/storagep.h
+props.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+props.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+props.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+props.o: props/olechar.h /usr/include/memory.h
+mem.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+mem.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+mem.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+propstm.o: h/props.h props/h/propapi.h props/h/propset.h
+propstm.o: /usr/include/memory.h
+tchar.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+tchar.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+tchar.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+dffuncs.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+dffuncs.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+dffuncs.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+dffuncs.o: h/cdocfile.hxx h/sstream.hxx h/msf.hxx h/handle.hxx h/msffunc.hxx
+dffuncs.o: h/dir.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx
+dffuncs.o: h/dirfunc.hxx h/entry.hxx
+entry.o: h/msf.hxx
+msf.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+msf.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+msf.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h h/error.hxx
+msf.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+msf.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+msf.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+msf.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+ref.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+ref.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/ref.hxx
+ref.o: h/tchar.h h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+vect.o: /usr/include/malloc.h h/page.hxx h/vect.hxx
+dfmsp.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+dfmsp.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+dfmsp.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h h/ole.hxx
+dfmsp.o: h/error.hxx h/msf.hxx /usr/include/memory.h /usr/include/string.h
+dfmsp.o: time.hxx h/storage.h /usr/include/time.h
+msffunc.o: h/msf.hxx h/dir.hxx h/wchar.h /usr/include/stdlib.h
+msffunc.o: /usr/include/sys/feature_tests.h h/vect.hxx /usr/include/malloc.h
+msffunc.o: h/page.hxx h/dirfunc.hxx
+refilb.o: h/storage.h h/ref.hxx /usr/include/stdio.h
+refilb.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+refilb.o: /usr/include/varargs.h h/tchar.h h/wchar.h /usr/include/stdlib.h
+refilb.o: /usr/include/assert.h
+fat.o: h/vect.hxx /usr/include/malloc.h h/page.hxx
+msfiter.o: h/msf.hxx
+revert.o: h/dfmsp.hxx h/ref.hxx /usr/include/stdio.h
+revert.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+revert.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+revert.o: /usr/include/stdlib.h /usr/include/assert.h h/ole.hxx h/error.hxx
+revert.o: h/msf.hxx /usr/include/memory.h /usr/include/string.h time.hxx
+revert.o: h/storage.h /usr/include/time.h
+wchar.o: /usr/include/stdlib.h /usr/include/sys/feature_tests.h
+funcs.o: h/dfmsp.hxx h/ref.hxx /usr/include/stdio.h
+funcs.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+funcs.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+funcs.o: /usr/include/stdlib.h /usr/include/assert.h h/ole.hxx h/error.hxx
+funcs.o: h/msf.hxx /usr/include/memory.h /usr/include/string.h time.hxx
+funcs.o: h/storage.h /usr/include/time.h
+ole.o: h/error.hxx h/ref.hxx /usr/include/stdio.h
+ole.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+ole.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+ole.o: /usr/include/stdlib.h /usr/include/assert.h
+rexpdf.o: expdf.hxx
+dir.o: h/msf.hxx h/wchar.h /usr/include/stdlib.h
+dir.o: /usr/include/sys/feature_tests.h h/vect.hxx /usr/include/malloc.h
+dir.o: h/page.hxx
+page.o: h/vect.hxx /usr/include/malloc.h h/page.hxx
+sstream.o: h/msf.hxx h/handle.hxx h/msffunc.hxx h/dir.hxx h/wchar.h
+sstream.o: /usr/include/stdlib.h /usr/include/sys/feature_tests.h h/vect.hxx
+sstream.o: /usr/include/malloc.h h/page.hxx h/dirfunc.hxx h/entry.hxx
+# DO NOT DELETE
+
+msf.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+msf.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+msf.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+msf.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx byteordr.hxx
+msf.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+msf.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+msf.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+msf.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+msf.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx h/handle.hxx
+msf.o: h/msffunc.hxx h/dirfunc.hxx
+dir.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+dir.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+dir.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+dir.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx byteordr.hxx
+dir.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+dir.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+dir.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+dir.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+dir.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx h/dirfunc.hxx
+dir.o: mread.hxx h/difat.hxx h/sstream.hxx h/handle.hxx h/msffunc.hxx
+dir.o: h/dirfunc.hxx h/entry.hxx
+dirp.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+dirp.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+dirp.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+dirp.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx byteordr.hxx
+dirp.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+dirp.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+dirp.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+dirp.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+dirp.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx
+dirp.o: h/dirfunc.hxx
+fat.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+fat.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+fat.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+fat.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx byteordr.hxx
+fat.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+fat.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+fat.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+fat.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+fat.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx h/difat.hxx
+fat.o: h/sstream.hxx h/handle.hxx h/msffunc.hxx h/dirfunc.hxx h/entry.hxx
+fat.o: mread.hxx
+mstream.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+mstream.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+mstream.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+mstream.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx
+mstream.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+mstream.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+mstream.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+mstream.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+mstream.o: h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx
+mstream.o: h/dir.hxx h/dirfunc.hxx h/sstream.hxx h/handle.hxx h/msffunc.hxx
+mstream.o: h/dirfunc.hxx h/entry.hxx h/difat.hxx h/msfiter.hxx mread.hxx
+mstream.o: h/docfilep.hxx
+sstream.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+sstream.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+sstream.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+sstream.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx
+sstream.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+sstream.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+sstream.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+sstream.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+sstream.o: h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx
+sstream.o: h/dir.hxx h/dirfunc.hxx h/sstream.hxx h/handle.hxx h/msffunc.hxx
+sstream.o: h/dirfunc.hxx h/entry.hxx mread.hxx h/difat.hxx
+msfiter.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+msfiter.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+msfiter.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+msfiter.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx
+msfiter.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+msfiter.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+msfiter.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+msfiter.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+msfiter.o: h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx
+msfiter.o: h/dir.hxx h/dirfunc.hxx h/msfiter.hxx
+header.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+header.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+header.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+header.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx
+header.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+header.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+header.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+header.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+header.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx h/dfver.h
+difat.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+difat.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+difat.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+difat.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx byteordr.hxx
+difat.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+difat.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+difat.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+difat.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+difat.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx h/difat.hxx
+difat.o: mread.hxx h/sstream.hxx h/handle.hxx h/msffunc.hxx h/dirfunc.hxx
+difat.o: h/entry.hxx
+page.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+page.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+page.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+page.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx byteordr.hxx
+page.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+page.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+page.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+page.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+page.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx mread.hxx
+page.o: h/difat.hxx h/sstream.hxx h/handle.hxx h/msffunc.hxx h/dirfunc.hxx
+page.o: h/entry.hxx
+vect.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+vect.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+vect.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+vect.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx byteordr.hxx
+vect.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+vect.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+vect.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+vect.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+vect.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx
+refilb.o: msfhead.cxx h/msf.hxx h/ref.hxx /usr/include/stdio.h
+refilb.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+refilb.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+refilb.o: /usr/include/stdlib.h /usr/include/assert.h h/error.hxx
+refilb.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+refilb.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+refilb.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+refilb.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx h/header.hxx
+refilb.o: h/vect.hxx h/page.hxx h/vectfunc.hxx h/fat.hxx h/dir.hxx
+refilb.o: /usr/include/errno.h /usr/include/sys/errno.h h/refilb.hxx
+refilb.o: /usr/include/sys/stat.h /usr/include/sys/time.h
+refilb.o: /usr/include/sys/types.h /usr/include/sys/machtypes.h
+refilb.o: /usr/include/sys/isa_defs.h time.hxx h/tchar.h
+refilb.o: /usr/include/unistd.h /usr/include/sys/unistd.h h/ole.hxx
+funcs.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+funcs.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+funcs.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+funcs.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+funcs.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+funcs.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+funcs.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx
+funcs.o: h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+funcs.o: h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+funcs.o: h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+funcs.o: h/revert.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+funcs.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+funcs.o: props/h/stgprops.hxx h/docfilep.hxx h/dffuncs.hxx h/cdocfile.hxx
+funcs.o: h/sstream.hxx h/funcs.hxx h/piter.hxx h/sstream.hxx
+chinst.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+chinst.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+chinst.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+chinst.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+chinst.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+chinst.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+chinst.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx
+chinst.o: h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+chinst.o: h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+chinst.o: h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+chinst.o: h/revert.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+chinst.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+chinst.o: props/h/stgprops.hxx h/docfilep.hxx h/dffuncs.hxx h/cdocfile.hxx
+chinst.o: h/sstream.hxx h/funcs.hxx h/piter.hxx h/sstream.hxx
+entry.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+entry.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+entry.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+entry.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+entry.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+entry.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+entry.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx
+entry.o: h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+entry.o: h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+entry.o: h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+entry.o: h/revert.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+entry.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+entry.o: props/h/stgprops.hxx h/docfilep.hxx h/dffuncs.hxx h/cdocfile.hxx
+entry.o: h/sstream.hxx h/funcs.hxx h/piter.hxx h/sstream.hxx
+dffuncs.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+dffuncs.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+dffuncs.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+dffuncs.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+dffuncs.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+dffuncs.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+dffuncs.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+dffuncs.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+dffuncs.o: h/difat.hxx h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx
+dffuncs.o: h/msffunc.hxx h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx
+dffuncs.o: dfbasis.hxx h/revert.hxx h/chinst.hxx props/h/windef.h
+dffuncs.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+dffuncs.o: props/psetstg.hxx props/h/stgprops.hxx h/docfilep.hxx
+dffuncs.o: h/dffuncs.hxx h/cdocfile.hxx h/sstream.hxx h/funcs.hxx h/piter.hxx
+dffuncs.o: h/sstream.hxx iter.hxx
+dfstream.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+dfstream.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+dfstream.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+dfstream.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+dfstream.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+dfstream.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+dfstream.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+dfstream.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+dfstream.o: h/difat.hxx h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx
+dfstream.o: h/msffunc.hxx h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx
+dfstream.o: dfbasis.hxx h/revert.hxx h/chinst.hxx props/h/windef.h
+dfstream.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+dfstream.o: props/psetstg.hxx props/h/stgprops.hxx h/docfilep.hxx
+dfstream.o: h/dffuncs.hxx h/cdocfile.hxx h/sstream.hxx h/funcs.hxx
+dfstream.o: h/piter.hxx h/sstream.hxx
+dfiter.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+dfiter.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+dfiter.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+dfiter.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+dfiter.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+dfiter.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+dfiter.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx
+dfiter.o: h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+dfiter.o: h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+dfiter.o: h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+dfiter.o: h/revert.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+dfiter.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+dfiter.o: props/h/stgprops.hxx h/docfilep.hxx h/dffuncs.hxx h/cdocfile.hxx
+dfiter.o: h/sstream.hxx h/funcs.hxx h/piter.hxx h/sstream.hxx h/msfiter.hxx
+dfiter.o: iter.hxx
+iter.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+iter.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+iter.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+iter.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+iter.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+iter.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+iter.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx
+iter.o: h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+iter.o: h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+iter.o: h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+iter.o: h/revert.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+iter.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+iter.o: props/h/stgprops.hxx h/docfilep.hxx h/dffuncs.hxx h/cdocfile.hxx
+iter.o: h/sstream.hxx h/funcs.hxx h/piter.hxx h/sstream.hxx h/msfiter.hxx
+iter.o: iter.hxx
+expdf.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+expdf.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/ref.hxx
+expdf.o: h/tchar.h h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+expdf.o: exphead.cxx /usr/include/memory.h /usr/include/string.h
+expdf.o: h/dfexcept.hxx h/msf.hxx h/error.hxx byteordr.hxx
+expdf.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+expdf.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx
+expdf.o: h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+expdf.o: h/docfilep.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx h/ole.hxx
+expdf.o: h/revert.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx h/dirfunc.hxx
+expdf.o: h/entry.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+expdf.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+expdf.o: props/h/stgprops.hxx h/funcs.hxx h/piter.hxx expst.hxx h/sstream.hxx
+expdf.o: h/propstm.hxx h/props.h props/h/propapi.h props/h/propset.hxx
+expdf.o: props/h/propmac.hxx props/../byteordr.hxx props/h/propapi.h
+expdf.o: expiter.hxx logfile.hxx h/rexpdf.hxx expdf.hxx
+cdocfile.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+cdocfile.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+cdocfile.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+cdocfile.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+cdocfile.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+cdocfile.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+cdocfile.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+cdocfile.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+cdocfile.o: h/difat.hxx h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx
+cdocfile.o: h/msffunc.hxx h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx
+cdocfile.o: dfbasis.hxx h/revert.hxx h/chinst.hxx props/h/windef.h
+cdocfile.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+cdocfile.o: props/psetstg.hxx props/h/stgprops.hxx h/docfilep.hxx
+cdocfile.o: h/dffuncs.hxx h/cdocfile.hxx h/sstream.hxx h/funcs.hxx
+cdocfile.o: h/piter.hxx h/sstream.hxx h/vectfunc.hxx
+rexpdf.o: dfhead.cxx /usr/include/memory.h /usr/include/stdio.h
+rexpdf.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+rexpdf.o: /usr/include/string.h h/ole.hxx h/ref.hxx /usr/include/stdarg.h
+rexpdf.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+rexpdf.o: /usr/include/assert.h h/msf.hxx h/error.hxx byteordr.hxx
+rexpdf.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx time.hxx
+rexpdf.o: h/storage.h /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx
+rexpdf.o: h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+rexpdf.o: h/dfexcept.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+rexpdf.o: h/dirfunc.hxx h/entry.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+rexpdf.o: h/revert.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+rexpdf.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+rexpdf.o: props/h/stgprops.hxx h/docfilep.hxx h/dffuncs.hxx h/cdocfile.hxx
+rexpdf.o: h/sstream.hxx h/funcs.hxx h/piter.hxx h/sstream.hxx h/header.hxx
+rexpdf.o: h/rexpdf.hxx expdf.hxx h/tchar.h
+time.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+time.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/ref.hxx
+time.o: h/tchar.h h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+time.o: time.hxx h/ole.hxx /usr/include/limits.h
+docfile.o: exphead.cxx /usr/include/memory.h /usr/include/stdio.h
+docfile.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+docfile.o: /usr/include/string.h h/ref.hxx /usr/include/stdarg.h
+docfile.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+docfile.o: /usr/include/assert.h h/dfexcept.hxx h/msf.hxx h/error.hxx
+docfile.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+docfile.o: time.hxx h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+docfile.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+docfile.o: h/difat.hxx h/docfilep.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+docfile.o: h/ole.hxx h/revert.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+docfile.o: h/dirfunc.hxx h/entry.hxx h/chinst.hxx props/h/windef.h
+docfile.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+docfile.o: props/psetstg.hxx props/h/stgprops.hxx h/funcs.hxx h/piter.hxx
+docfile.o: expst.hxx h/sstream.hxx h/propstm.hxx h/props.h props/h/propapi.h
+docfile.o: props/h/propset.hxx props/h/propmac.hxx props/../byteordr.hxx
+docfile.o: props/h/propapi.h h/rexpdf.hxx expdf.hxx h/docfile.hxx ascii.hxx
+docfile.o: logfile.hxx h/refilb.hxx
+ascii.o: exphead.cxx /usr/include/memory.h /usr/include/stdio.h
+ascii.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+ascii.o: /usr/include/string.h h/ref.hxx /usr/include/stdarg.h
+ascii.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+ascii.o: /usr/include/assert.h h/dfexcept.hxx h/msf.hxx h/error.hxx
+ascii.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+ascii.o: time.hxx h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+ascii.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+ascii.o: h/difat.hxx h/docfilep.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+ascii.o: h/ole.hxx h/revert.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+ascii.o: h/dirfunc.hxx h/entry.hxx h/chinst.hxx props/h/windef.h
+ascii.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+ascii.o: props/psetstg.hxx props/h/stgprops.hxx h/funcs.hxx h/piter.hxx
+ascii.o: expiter.hxx expst.hxx h/sstream.hxx h/propstm.hxx h/props.h
+ascii.o: props/h/propapi.h props/h/propset.hxx props/h/propmac.hxx
+ascii.o: props/../byteordr.hxx props/h/propapi.h ascii.hxx h/docfile.hxx
+expst.o: exphead.cxx /usr/include/memory.h /usr/include/stdio.h
+expst.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+expst.o: /usr/include/string.h h/ref.hxx /usr/include/stdarg.h
+expst.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+expst.o: /usr/include/assert.h h/dfexcept.hxx h/msf.hxx h/error.hxx
+expst.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+expst.o: time.hxx h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+expst.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+expst.o: h/difat.hxx h/docfilep.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+expst.o: h/ole.hxx h/revert.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+expst.o: h/dirfunc.hxx h/entry.hxx h/chinst.hxx props/h/windef.h
+expst.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+expst.o: props/psetstg.hxx props/h/stgprops.hxx h/funcs.hxx h/piter.hxx
+expst.o: expst.hxx h/sstream.hxx h/propstm.hxx h/props.h props/h/propapi.h
+expst.o: props/h/propset.hxx props/h/propmac.hxx props/../byteordr.hxx
+expst.o: props/h/propapi.h logfile.hxx
+expiter.o: exphead.cxx /usr/include/memory.h /usr/include/stdio.h
+expiter.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+expiter.o: /usr/include/string.h h/ref.hxx /usr/include/stdarg.h
+expiter.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+expiter.o: /usr/include/assert.h h/dfexcept.hxx h/msf.hxx h/error.hxx
+expiter.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+expiter.o: time.hxx h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+expiter.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+expiter.o: h/difat.hxx h/docfilep.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+expiter.o: h/ole.hxx h/revert.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx
+expiter.o: h/dirfunc.hxx h/entry.hxx h/chinst.hxx props/h/windef.h
+expiter.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+expiter.o: props/psetstg.hxx props/h/stgprops.hxx h/funcs.hxx h/piter.hxx
+expiter.o: expiter.hxx h/sstream.hxx
+storage.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+storage.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/ref.hxx
+storage.o: h/tchar.h h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+storage.o: h/dfexcept.hxx h/msf.hxx h/error.hxx byteordr.hxx
+storage.o: /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+storage.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+storage.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+storage.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+storage.o: h/docfile.hxx h/storagep.h h/refilb.hxx h/ole.hxx h/funcs.hxx
+mem.o: exphead.cxx /usr/include/memory.h /usr/include/stdio.h
+mem.o: /usr/include/sys/feature_tests.h /usr/include/stdlib.h
+mem.o: /usr/include/string.h h/ref.hxx /usr/include/stdarg.h
+mem.o: /usr/include/varargs.h h/storage.h h/ref.hxx h/tchar.h h/wchar.h
+mem.o: /usr/include/assert.h h/dfexcept.hxx h/msf.hxx h/error.hxx
+mem.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+mem.o: time.hxx h/storage.h /usr/include/time.h h/header.hxx h/storagep.h
+mem.o: h/fat.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx h/dir.hxx
+mem.o: h/difat.hxx h/docfilep.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx h/ole.hxx
+mem.o: h/revert.hxx h/cdocfile.hxx h/handle.hxx h/msffunc.hxx h/dirfunc.hxx
+mem.o: h/entry.hxx h/chinst.hxx props/h/windef.h props/../h/props.h
+mem.o: props/olechar.h props/h/ntstatus.h props/psetstg.hxx
+mem.o: props/h/stgprops.hxx h/funcs.hxx h/piter.hxx h/mem.hxx
+wchar.o: h/wchar.h /usr/include/stdlib.h /usr/include/sys/feature_tests.h
+wchar.o: /usr/include/errno.h /usr/include/sys/errno.h /usr/include/assert.h
+ascii.o: h/dfmsp.hxx h/docfile.hxx h/dfmsp.hxx h/ref.hxx /usr/include/stdio.h
+ascii.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+ascii.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+ascii.o: /usr/include/stdlib.h /usr/include/assert.h h/ole.hxx h/error.hxx
+ascii.o: h/msf.hxx /usr/include/memory.h /usr/include/string.h time.hxx
+ascii.o: h/storage.h /usr/include/time.h
+dfbasis.o: h/ole.hxx
+expiter.o: h/dfmsp.hxx
+iter.o: h/piter.hxx
+mread.o: h/difat.hxx h/sstream.hxx h/msf.hxx h/handle.hxx h/msffunc.hxx
+mread.o: h/dir.hxx h/wchar.h /usr/include/stdlib.h
+mread.o: /usr/include/sys/feature_tests.h h/vect.hxx /usr/include/malloc.h
+mread.o: h/page.hxx h/dirfunc.hxx h/entry.hxx
+byteordr.o: /usr/include/limits.h /usr/include/sys/feature_tests.h
+expdf.o: h/dfmsp.hxx dfbasis.hxx h/ole.hxx h/revert.hxx h/dfmsp.hxx h/ref.hxx
+expdf.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+expdf.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+expdf.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h h/ole.hxx
+expdf.o: h/error.hxx h/msf.hxx /usr/include/memory.h /usr/include/string.h
+expdf.o: time.hxx h/storage.h /usr/include/time.h h/cdocfile.hxx h/handle.hxx
+expdf.o: h/msffunc.hxx h/dir.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx
+expdf.o: h/dirfunc.hxx h/entry.hxx h/chinst.hxx props/h/windef.h
+expdf.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+expdf.o: props/psetstg.hxx props/h/stgprops.hxx
+expst.o: h/dfmsp.hxx expdf.hxx dfbasis.hxx h/ole.hxx h/revert.hxx h/dfmsp.hxx
+expst.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+expst.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+expst.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h h/ole.hxx
+expst.o: h/error.hxx h/msf.hxx /usr/include/memory.h /usr/include/string.h
+expst.o: time.hxx h/storage.h /usr/include/time.h h/cdocfile.hxx h/handle.hxx
+expst.o: h/msffunc.hxx h/dir.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx
+expst.o: h/dirfunc.hxx h/entry.hxx h/chinst.hxx props/h/windef.h
+expst.o: props/../h/props.h props/olechar.h props/h/ntstatus.h
+expst.o: props/psetstg.hxx props/h/stgprops.hxx h/sstream.hxx h/propstm.hxx
+expst.o: h/props.h props/h/propapi.h props/h/propset.hxx props/h/propmac.hxx
+expst.o: props/../byteordr.hxx props/h/propapi.h
+time.o: h/storage.h /usr/include/time.h /usr/include/sys/feature_tests.h
+cdocfile.o: h/handle.hxx h/msf.hxx h/msffunc.hxx h/dir.hxx h/wchar.h
+cdocfile.o: /usr/include/stdlib.h /usr/include/sys/feature_tests.h h/vect.hxx
+cdocfile.o: /usr/include/malloc.h h/page.hxx h/dirfunc.hxx h/entry.hxx
+dirfunc.o: h/page.hxx h/vect.hxx /usr/include/malloc.h
+handle.o: h/msf.hxx h/msffunc.hxx h/dir.hxx h/wchar.h /usr/include/stdlib.h
+handle.o: /usr/include/sys/feature_tests.h h/vect.hxx /usr/include/malloc.h
+handle.o: h/page.hxx h/dirfunc.hxx
+storage.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+storage.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+storage.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+docfile.o: h/dfmsp.hxx h/ref.hxx /usr/include/stdio.h
+docfile.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+docfile.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+docfile.o: /usr/include/stdlib.h /usr/include/assert.h h/ole.hxx h/error.hxx
+docfile.o: h/msf.hxx /usr/include/memory.h /usr/include/string.h time.hxx
+docfile.o: h/storage.h /usr/include/time.h
+header.o: h/msf.hxx h/storagep.h
+props.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+props.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+props.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+props.o: props/olechar.h /usr/include/memory.h
+mem.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+mem.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+mem.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+propstm.o: h/props.h props/h/propapi.h props/h/propset.hxx
+propstm.o: props/h/propmac.hxx props/../byteordr.hxx props/h/propapi.h
+propstm.o: /usr/include/memory.h
+tchar.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+tchar.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+tchar.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+dffuncs.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+dffuncs.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+dffuncs.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+dffuncs.o: h/cdocfile.hxx h/sstream.hxx h/msf.hxx h/handle.hxx h/msffunc.hxx
+dffuncs.o: h/dir.hxx h/vect.hxx /usr/include/malloc.h h/page.hxx
+dffuncs.o: h/dirfunc.hxx h/entry.hxx
+entry.o: h/msf.hxx
+msf.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+msf.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+msf.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h h/error.hxx
+msf.o: byteordr.hxx /usr/include/limits.h h/dfmsp.hxx h/ole.hxx h/msf.hxx
+msf.o: /usr/include/memory.h /usr/include/string.h time.hxx h/storage.h
+msf.o: /usr/include/time.h h/header.hxx h/storagep.h h/fat.hxx h/vect.hxx
+msf.o: /usr/include/malloc.h h/page.hxx h/dir.hxx h/difat.hxx
+ref.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+ref.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/ref.hxx
+ref.o: h/tchar.h h/wchar.h /usr/include/stdlib.h /usr/include/assert.h
+vect.o: /usr/include/malloc.h h/page.hxx h/vect.hxx
+dfmsp.o: h/ref.hxx /usr/include/stdio.h /usr/include/sys/feature_tests.h
+dfmsp.o: /usr/include/stdarg.h /usr/include/varargs.h h/storage.h h/tchar.h
+dfmsp.o: h/wchar.h /usr/include/stdlib.h /usr/include/assert.h h/ole.hxx
+dfmsp.o: h/error.hxx h/msf.hxx /usr/include/memory.h /usr/include/string.h
+dfmsp.o: time.hxx h/storage.h /usr/include/time.h
+msffunc.o: h/msf.hxx h/dir.hxx h/wchar.h /usr/include/stdlib.h
+msffunc.o: /usr/include/sys/feature_tests.h h/vect.hxx /usr/include/malloc.h
+msffunc.o: h/page.hxx h/dirfunc.hxx
+refilb.o: h/storage.h h/ref.hxx /usr/include/stdio.h
+refilb.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+refilb.o: /usr/include/varargs.h h/tchar.h h/wchar.h /usr/include/stdlib.h
+refilb.o: /usr/include/assert.h
+fat.o: h/vect.hxx /usr/include/malloc.h h/page.hxx
+msfiter.o: h/msf.hxx
+revert.o: h/dfmsp.hxx h/ref.hxx /usr/include/stdio.h
+revert.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+revert.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+revert.o: /usr/include/stdlib.h /usr/include/assert.h h/ole.hxx h/error.hxx
+revert.o: h/msf.hxx /usr/include/memory.h /usr/include/string.h time.hxx
+revert.o: h/storage.h /usr/include/time.h
+wchar.o: /usr/include/stdlib.h /usr/include/sys/feature_tests.h
+funcs.o: h/dfmsp.hxx h/ref.hxx /usr/include/stdio.h
+funcs.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+funcs.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+funcs.o: /usr/include/stdlib.h /usr/include/assert.h h/ole.hxx h/error.hxx
+funcs.o: h/msf.hxx /usr/include/memory.h /usr/include/string.h time.hxx
+funcs.o: h/storage.h /usr/include/time.h
+ole.o: h/error.hxx h/ref.hxx /usr/include/stdio.h
+ole.o: /usr/include/sys/feature_tests.h /usr/include/stdarg.h
+ole.o: /usr/include/varargs.h h/storage.h h/tchar.h h/wchar.h
+ole.o: /usr/include/stdlib.h /usr/include/assert.h
+rexpdf.o: expdf.hxx
+dir.o: h/msf.hxx h/wchar.h /usr/include/stdlib.h
+dir.o: /usr/include/sys/feature_tests.h h/vect.hxx /usr/include/malloc.h
+dir.o: h/page.hxx
+page.o: h/vect.hxx /usr/include/malloc.h h/page.hxx
+sstream.o: h/msf.hxx h/handle.hxx h/msffunc.hxx h/dir.hxx h/wchar.h
+sstream.o: /usr/include/stdlib.h /usr/include/sys/feature_tests.h h/vect.hxx
+sstream.o: /usr/include/malloc.h h/page.hxx h/dirfunc.hxx h/entry.hxx

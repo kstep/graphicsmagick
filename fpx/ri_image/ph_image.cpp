@@ -7,7 +7,7 @@
 //	COMMENTS	: 
 //  	SCCSID          : @(#)ph_image.cpp	1.2 12:48:36 22 Jul 1997
 //	----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //	----------------------------------------------------------------------------

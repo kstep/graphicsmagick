@@ -1,0 +1,20 @@
+This package, the Flashpix OpenSource Toolkit, is based on source code
+obtained from the Digital Imaging Group Inc.
+(http://www.digitalimaging.org/), and includes a sample FlashPIX library
+implementation contributed by the Eastman Kodak Company.
+
+The package was extended and modified by gurupix@hotmail.com to compile under
+Solaris 2.7 using gcc 2.95.2 and GNU make.
+
+The package was further extended and modified by Bob Friesenhahn
+<bfriesen@simple.dallas.tx.us> to support a Unix build environment based on
+GNU Autoconf, Automake, and Libtool. The build environment is based on a
+'configure' script. The makefiles created by gurupix@hotmail.com were
+slightly modified in order to be able to coexist (to serve as a reference)
+with the configure-based build environment.
+
+Bill Radcliffe <BillR@corbis.com> has provided key support for the Flashpix
+toolkit, both as a member of the Digital Imaging Group (the Flashpix
+Initiative Group), and as a member of ImageMagick Studio, the creators of
+ImageMagick.
+

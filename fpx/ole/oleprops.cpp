@@ -7,7 +7,7 @@
 //	COMMENT		: Enhanced OLE objects are platform independent
 //      SCCSID            : @(#)oleprops.cpp	1.4 10:45:23 12 Sep 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -148,6 +148,9 @@ Boolean	OLEPropertySet::Revert( )
 // Display the entire property set
 Boolean	OLEPropertySet::Display( ofstream * pLogStream )
 {
+#if defined(__GNUC__)
+	return false;
+#else
 	char 	str[512]; 
 	
 	// Display the property set header
@@ -169,6 +172,7 @@ Boolean	OLEPropertySet::Display( ofstream * pLogStream )
 	pPropSection->Display(pLogStream);
 	
 	return true;
+#endif
 }
 
 //	----------------------------------------------------------------------------
@@ -500,6 +504,9 @@ Boolean OLEPropertySection::Write()
 // Display a property section
 Boolean	OLEPropertySection::Display( ofstream * pLogStream )
 {
+#if	defined(__GNUC__)
+	return false;
+#else
 	char 	str[512]; 
 	char *	strPtr = NULL; 
 	DWORD	properType; 
@@ -521,5 +528,6 @@ Boolean	OLEPropertySection::Display( ofstream * pLogStream )
 	}
 	
 	return true;
+#endif
 }
 

@@ -10,7 +10,7 @@
 //	COMMENT		:
 //      SCCSID          : @(#)f_fpxio.cpp	1.6 12:47:06 01 Jul 1997
 //	----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //	----------------------------------------------------------------------------

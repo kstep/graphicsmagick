@@ -7,7 +7,7 @@
 //	COMMENT		: Most of the definitions are copied from Windows headers
 //  SCCSID      : @(#)olecomm.h	1.2 14:47:37 06 Jan 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -44,6 +44,13 @@
 	#include	<dispatch.h>
 #endif 
 
+#if defined(__GNUC__)
+ 	// use the reference implementation header files
+	#include "exphead.cxx"
+	#include "msfhead.cxx"
+	#include "dfhead.cxx"
+	#include "props.h" // for VARIANT defenition 
+#endif // __GNUC__
 	
 //	Constants
 //	---------
@@ -57,7 +64,7 @@
 	#define OLE_CREATE_MODE		(STGM_READWRITE | STGM_SHARE_EXCLUSIVE  | STGM_DIRECT | STGM_CREATE)
 
 	// value to define if the file is to be read/written in Intel mode or not
-	#ifdef macintosh
+	#if	defined(macintosh) || defined(__unix)
 	#define	IN_BIG_ENDIAN			short(-257)	// 0xFEFF
 	#else
 	#define	IN_LITTLE_ENDIAN		short(-2)	// 0xFFFE	
@@ -130,7 +137,6 @@ typedef struct tagBLOB __RPC_FAR *LPBLOB;
 #endif
 
 			/* size is 4 */
-#ifdef macintosh
   #ifndef _tagCLIPDATA_DEFINED
     #define _tagCLIPDATA_DEFINED
     #define _CLIPDATA_DEFINED
@@ -142,7 +148,6 @@ typedef struct tagBLOB __RPC_FAR *LPBLOB;
     }	CLIPDATA;
 
   #endif
-#endif
 	// End of the OAIDL.H copy
 
 // This is the structure used to define read/writable arrays (vectors).
@@ -166,15 +171,24 @@ typedef struct
 	} VECTOR;  
 
 	// The following comes from Microsoft's WINDEF.H
-#define LOWORD(l)           ((WORD)(l))
-#define HIWORD(l)           ((WORD)(((DWORD)(l) >> 16) & 0xFFFF))
+	// I know I put this in here a long time ago but why?  What was I smoking?
+#if !defined(__GNUC__)
+    #ifndef LOWORD
+        #define LOWORD(l)           ((WORD)(l))
+    #endif
+    #ifndef HIWORD
+        #define HIWORD(l)           ((WORD)(((DWORD)(l) >> 16) & 0xFFFF))
+    #endif
+#endif
 	// End of the WINDEF.H copy
 
-	#ifdef macintosh
+	#if defined(macintosh) || defined(__unix)
 		// the macintosh is in big endian
 		#define	COMPUTER_BYTE_ORDER		IN_BIG_ENDIAN
+		// #error "This system has been identified as big endian!"
 	#else
 		#define	COMPUTER_BYTE_ORDER		IN_LITTLE_ENDIAN
+ 	 	// #error "This system has been identified as little endian!"
 	#endif
 
 	// ComObj structure

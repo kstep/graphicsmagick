@@ -1,0 +1,398 @@
+
+msf.obj: msfhead.cxx h/msf.hxx ./h\ref.hxx stdio.h
+msf.obj: stdarg.h ./h\storage.h ./h\tchar.h ./h\wchar.h
+msf.obj: stdlib.h assert.h ./h\error.hxx
+msf.obj: ./h\../byteordr.hxx limits.h ./h\dfmsp.hxx
+msf.obj: ./h\ole.hxx ./h\msf.hxx memory.h
+msf.obj: string.h ./h\../time.hxx h/storage.h
+msf.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+msf.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+msf.obj: ./h\difat.hxx h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx
+msf.obj: h/fat.hxx h/dir.hxx h/handle.hxx ./h\msffunc.hxx ./h\dirfunc.hxx
+dir.obj: msfhead.cxx h/msf.hxx ./h\ref.hxx stdio.h
+dir.obj: stdarg.h ./h\storage.h ./h\tchar.h ./h\wchar.h
+dir.obj: stdlib.h assert.h ./h\error.hxx
+dir.obj: ./h\../byteordr.hxx limits.h ./h\dfmsp.hxx
+dir.obj: ./h\ole.hxx ./h\msf.hxx memory.h
+dir.obj: string.h ./h\../time.hxx h/storage.h
+dir.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+dir.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+dir.obj: ./h\difat.hxx h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx
+dir.obj: h/fat.hxx h/dir.hxx h/dirfunc.hxx mread.hxx h/difat.hxx
+dir.obj: h/sstream.hxx ./h\handle.hxx ./h\msffunc.hxx ./h\dirfunc.hxx
+dir.obj: ./h\entry.hxx
+dirp.obj: msfhead.cxx h/msf.hxx ./h\ref.hxx stdio.h
+dirp.obj: stdarg.h ./h\storage.h ./h\tchar.h ./h\wchar.h
+dirp.obj: stdlib.h assert.h ./h\error.hxx
+dirp.obj: ./h\../byteordr.hxx limits.h ./h\dfmsp.hxx
+dirp.obj: ./h\ole.hxx ./h\msf.hxx memory.h
+dirp.obj: string.h ./h\../time.hxx h/storage.h
+dirp.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+dirp.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+dirp.obj: ./h\difat.hxx h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx
+dirp.obj: h/fat.hxx h/dir.hxx h/dirfunc.hxx
+fat.obj: msfhead.cxx h/msf.hxx ./h\ref.hxx stdio.h
+fat.obj: stdarg.h ./h\storage.h ./h\tchar.h ./h\wchar.h
+fat.obj: stdlib.h assert.h ./h\error.hxx
+fat.obj: ./h\../byteordr.hxx limits.h ./h\dfmsp.hxx
+fat.obj: ./h\ole.hxx ./h\msf.hxx memory.h
+fat.obj: string.h ./h\../time.hxx h/storage.h
+fat.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+fat.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+fat.obj: ./h\difat.hxx h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx
+fat.obj: h/fat.hxx h/dir.hxx h/difat.hxx h/sstream.hxx ./h\handle.hxx
+fat.obj: ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx mread.hxx
+mstream.obj: msfhead.cxx h/msf.hxx ./h\ref.hxx stdio.h
+mstream.obj: stdarg.h ./h\storage.h ./h\tchar.h ./h\wchar.h
+mstream.obj: stdlib.h assert.h ./h\error.hxx
+mstream.obj: ./h\../byteordr.hxx limits.h ./h\dfmsp.hxx
+mstream.obj: ./h\ole.hxx ./h\msf.hxx memory.h
+mstream.obj: string.h ./h\../time.hxx h/storage.h
+mstream.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+mstream.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+mstream.obj: ./h\difat.hxx h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx
+mstream.obj: h/fat.hxx h/dir.hxx h/dirfunc.hxx h/sstream.hxx ./h\handle.hxx
+mstream.obj: ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx h/difat.hxx
+mstream.obj: h/msfiter.hxx mread.hxx h/docfilep.hxx
+sstream.obj: msfhead.cxx h/msf.hxx ./h\ref.hxx stdio.h
+sstream.obj: stdarg.h ./h\storage.h ./h\tchar.h ./h\wchar.h
+sstream.obj: stdlib.h assert.h ./h\error.hxx
+sstream.obj: ./h\../byteordr.hxx limits.h ./h\dfmsp.hxx
+sstream.obj: ./h\ole.hxx ./h\msf.hxx memory.h
+sstream.obj: string.h ./h\../time.hxx h/storage.h
+sstream.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+sstream.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+sstream.obj: ./h\difat.hxx h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx
+sstream.obj: h/fat.hxx h/dir.hxx h/dirfunc.hxx h/sstream.hxx ./h\handle.hxx
+sstream.obj: ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx mread.hxx
+sstream.obj: h/difat.hxx
+msfiter.obj: msfhead.cxx h/msf.hxx ./h\ref.hxx stdio.h
+msfiter.obj: stdarg.h ./h\storage.h ./h\tchar.h ./h\wchar.h
+msfiter.obj: stdlib.h assert.h ./h\error.hxx
+msfiter.obj: ./h\../byteordr.hxx limits.h ./h\dfmsp.hxx
+msfiter.obj: ./h\ole.hxx ./h\msf.hxx memory.h
+msfiter.obj: string.h ./h\../time.hxx h/storage.h
+msfiter.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+msfiter.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+msfiter.obj: ./h\difat.hxx h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx
+msfiter.obj: h/fat.hxx h/dir.hxx h/dirfunc.hxx h/msfiter.hxx
+header.obj: msfhead.cxx h/msf.hxx ./h\ref.hxx stdio.h
+header.obj: stdarg.h ./h\storage.h ./h\tchar.h ./h\wchar.h
+header.obj: stdlib.h assert.h ./h\error.hxx
+header.obj: ./h\../byteordr.hxx limits.h ./h\dfmsp.hxx
+header.obj: ./h\ole.hxx ./h\msf.hxx memory.h
+header.obj: string.h ./h\../time.hxx h/storage.h
+header.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+header.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+header.obj: ./h\difat.hxx h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx
+header.obj: h/fat.hxx h/dir.hxx h/dfver.h
+difat.obj: msfhead.cxx h/msf.hxx ./h\ref.hxx stdio.h
+difat.obj: stdarg.h ./h\storage.h ./h\tchar.h ./h\wchar.h
+difat.obj: stdlib.h assert.h ./h\error.hxx
+difat.obj: ./h\../byteordr.hxx limits.h ./h\dfmsp.hxx
+difat.obj: ./h\ole.hxx ./h\msf.hxx memory.h
+difat.obj: string.h ./h\../time.hxx h/storage.h
+difat.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+difat.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+difat.obj: ./h\difat.hxx h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx
+difat.obj: h/fat.hxx h/dir.hxx h/difat.hxx mread.hxx h/sstream.hxx
+difat.obj: ./h\handle.hxx ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx
+page.obj: msfhead.cxx h/msf.hxx ./h\ref.hxx stdio.h
+page.obj: stdarg.h ./h\storage.h ./h\tchar.h ./h\wchar.h
+page.obj: stdlib.h assert.h ./h\error.hxx
+page.obj: ./h\../byteordr.hxx limits.h ./h\dfmsp.hxx
+page.obj: ./h\ole.hxx ./h\msf.hxx memory.h
+page.obj: string.h ./h\../time.hxx h/storage.h
+page.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+page.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+page.obj: ./h\difat.hxx h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx
+page.obj: h/fat.hxx h/dir.hxx mread.hxx h/difat.hxx h/sstream.hxx
+page.obj: ./h\handle.hxx ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx
+vect.obj: msfhead.cxx h/msf.hxx ./h\ref.hxx stdio.h
+vect.obj: stdarg.h ./h\storage.h ./h\tchar.h ./h\wchar.h
+vect.obj: stdlib.h assert.h ./h\error.hxx
+vect.obj: ./h\../byteordr.hxx limits.h ./h\dfmsp.hxx
+vect.obj: ./h\ole.hxx ./h\msf.hxx memory.h
+vect.obj: string.h ./h\../time.hxx h/storage.h
+vect.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+vect.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+vect.obj: ./h\difat.hxx h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx
+vect.obj: h/fat.hxx h/dir.hxx
+refilb.obj: msfhead.cxx h/msf.hxx ./h\ref.hxx stdio.h
+refilb.obj: stdarg.h ./h\storage.h ./h\tchar.h ./h\wchar.h
+refilb.obj: stdlib.h assert.h ./h\error.hxx
+refilb.obj: ./h\../byteordr.hxx limits.h ./h\dfmsp.hxx
+refilb.obj: ./h\ole.hxx ./h\msf.hxx memory.h
+refilb.obj: string.h ./h\../time.hxx h/storage.h
+refilb.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+refilb.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+refilb.obj: ./h\difat.hxx h/header.hxx h/vect.hxx h/page.hxx h/vectfunc.hxx
+refilb.obj: h/fat.hxx h/dir.hxx errno.h h/refilb.hxx
+refilb.obj: sys/stat.h sys/types.h time.hxx
+refilb.obj: h/tchar.h unistd.h h/ole.hxx
+funcs.obj: dfhead.cxx memory.h stdio.h
+funcs.obj: stdlib.h string.h h/ole.hxx
+funcs.obj: h/ref.hxx stdarg.h ./h\storage.h ./h\ref.hxx
+funcs.obj: ./h\tchar.h ./h\wchar.h assert.h h/msf.hxx
+funcs.obj: ./h\error.hxx ./h\../byteordr.hxx limits.h
+funcs.obj: ./h\dfmsp.hxx ./h\ole.hxx ./h\msf.hxx ./h\../time.hxx h/storage.h
+funcs.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+funcs.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+funcs.obj: ./h\difat.hxx h/dfexcept.hxx h/cdocfile.hxx ./h\handle.hxx
+funcs.obj: ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx expdf.hxx
+funcs.obj: h/dfmsp.hxx dfbasis.hxx h/revert.hxx h/chinst.hxx props/h/windef.h
+funcs.obj: props/h\../../h/props.h ./h\../props/olechar.h props/h\ntstatus.h
+funcs.obj: props/psetstg.hxx h/stgprops.hxx h/docfilep.hxx h/dffuncs.hxx
+funcs.obj: ./h\cdocfile.hxx ./h\sstream.hxx h/funcs.hxx h/piter.hxx
+funcs.obj: h/sstream.hxx
+chinst.obj: dfhead.cxx memory.h stdio.h
+chinst.obj: stdlib.h string.h h/ole.hxx
+chinst.obj: h/ref.hxx stdarg.h ./h\storage.h ./h\ref.hxx
+chinst.obj: ./h\tchar.h ./h\wchar.h assert.h h/msf.hxx
+chinst.obj: ./h\error.hxx ./h\../byteordr.hxx limits.h
+chinst.obj: ./h\dfmsp.hxx ./h\ole.hxx ./h\msf.hxx ./h\../time.hxx h/storage.h
+chinst.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+chinst.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+chinst.obj: ./h\difat.hxx h/dfexcept.hxx h/cdocfile.hxx ./h\handle.hxx
+chinst.obj: ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx expdf.hxx
+chinst.obj: h/dfmsp.hxx dfbasis.hxx h/revert.hxx h/chinst.hxx
+chinst.obj: props/h/windef.h props/h\../../h/props.h ./h\../props/olechar.h
+chinst.obj: props/h\ntstatus.h props/psetstg.hxx h/stgprops.hxx
+chinst.obj: h/docfilep.hxx h/dffuncs.hxx ./h\cdocfile.hxx ./h\sstream.hxx
+chinst.obj: h/funcs.hxx h/piter.hxx h/sstream.hxx
+entry.obj: dfhead.cxx memory.h stdio.h
+entry.obj: stdlib.h string.h h/ole.hxx
+entry.obj: h/ref.hxx stdarg.h ./h\storage.h ./h\ref.hxx
+entry.obj: ./h\tchar.h ./h\wchar.h assert.h h/msf.hxx
+entry.obj: ./h\error.hxx ./h\../byteordr.hxx limits.h
+entry.obj: ./h\dfmsp.hxx ./h\ole.hxx ./h\msf.hxx ./h\../time.hxx h/storage.h
+entry.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+entry.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+entry.obj: ./h\difat.hxx h/dfexcept.hxx h/cdocfile.hxx ./h\handle.hxx
+entry.obj: ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx expdf.hxx
+entry.obj: h/dfmsp.hxx dfbasis.hxx h/revert.hxx h/chinst.hxx props/h/windef.h
+entry.obj: props/h\../../h/props.h ./h\../props/olechar.h props/h\ntstatus.h
+entry.obj: props/psetstg.hxx h/stgprops.hxx h/docfilep.hxx h/dffuncs.hxx
+entry.obj: ./h\cdocfile.hxx ./h\sstream.hxx h/funcs.hxx h/piter.hxx
+entry.obj: h/sstream.hxx
+dffuncs.obj: dfhead.cxx memory.h stdio.h
+dffuncs.obj: stdlib.h string.h h/ole.hxx
+dffuncs.obj: h/ref.hxx stdarg.h ./h\storage.h ./h\ref.hxx
+dffuncs.obj: ./h\tchar.h ./h\wchar.h assert.h h/msf.hxx
+dffuncs.obj: ./h\error.hxx ./h\../byteordr.hxx limits.h
+dffuncs.obj: ./h\dfmsp.hxx ./h\ole.hxx ./h\msf.hxx ./h\../time.hxx
+dffuncs.obj: h/storage.h time.h ./h\header.hxx ./h\storagep.h
+dffuncs.obj: ./h\fat.hxx ./h\vect.hxx malloc.h ./h\page.hxx
+dffuncs.obj: ./h\dir.hxx ./h\difat.hxx h/dfexcept.hxx h/cdocfile.hxx
+dffuncs.obj: ./h\handle.hxx ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx
+dffuncs.obj: expdf.hxx h/dfmsp.hxx dfbasis.hxx h/revert.hxx h/chinst.hxx
+dffuncs.obj: props/h/windef.h props/h\../../h/props.h ./h\../props/olechar.h
+dffuncs.obj: props/h\ntstatus.h props/psetstg.hxx h/stgprops.hxx
+dffuncs.obj: h/docfilep.hxx h/dffuncs.hxx ./h\cdocfile.hxx ./h\sstream.hxx
+dffuncs.obj: h/funcs.hxx h/piter.hxx h/sstream.hxx iter.hxx
+dfstream.obj: dfhead.cxx memory.h stdio.h
+dfstream.obj: stdlib.h string.h h/ole.hxx
+dfstream.obj: h/ref.hxx stdarg.h ./h\storage.h ./h\ref.hxx
+dfstream.obj: ./h\tchar.h ./h\wchar.h assert.h h/msf.hxx
+dfstream.obj: ./h\error.hxx ./h\../byteordr.hxx limits.h
+dfstream.obj: ./h\dfmsp.hxx ./h\ole.hxx ./h\msf.hxx ./h\../time.hxx
+dfstream.obj: h/storage.h time.h ./h\header.hxx ./h\storagep.h
+dfstream.obj: ./h\fat.hxx ./h\vect.hxx malloc.h ./h\page.hxx
+dfstream.obj: ./h\dir.hxx ./h\difat.hxx h/dfexcept.hxx h/cdocfile.hxx
+dfstream.obj: ./h\handle.hxx ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx
+dfstream.obj: expdf.hxx h/dfmsp.hxx dfbasis.hxx h/revert.hxx h/chinst.hxx
+dfstream.obj: props/h/windef.h props/h\../../h/props.h ./h\../props/olechar.h
+dfstream.obj: props/h\ntstatus.h props/psetstg.hxx h/stgprops.hxx
+dfstream.obj: h/docfilep.hxx h/dffuncs.hxx ./h\cdocfile.hxx ./h\sstream.hxx
+dfstream.obj: h/funcs.hxx h/piter.hxx h/sstream.hxx
+dfiter.obj: dfhead.cxx memory.h stdio.h
+dfiter.obj: stdlib.h string.h h/ole.hxx
+dfiter.obj: h/ref.hxx stdarg.h ./h\storage.h ./h\ref.hxx
+dfiter.obj: ./h\tchar.h ./h\wchar.h assert.h h/msf.hxx
+dfiter.obj: ./h\error.hxx ./h\../byteordr.hxx limits.h
+dfiter.obj: ./h\dfmsp.hxx ./h\ole.hxx ./h\msf.hxx ./h\../time.hxx h/storage.h
+dfiter.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+dfiter.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+dfiter.obj: ./h\difat.hxx h/dfexcept.hxx h/cdocfile.hxx ./h\handle.hxx
+dfiter.obj: ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx expdf.hxx
+dfiter.obj: h/dfmsp.hxx dfbasis.hxx h/revert.hxx h/chinst.hxx
+dfiter.obj: props/h/windef.h props/h\../../h/props.h ./h\../props/olechar.h
+dfiter.obj: props/h\ntstatus.h props/psetstg.hxx h/stgprops.hxx
+dfiter.obj: h/docfilep.hxx h/dffuncs.hxx ./h\cdocfile.hxx ./h\sstream.hxx
+dfiter.obj: h/funcs.hxx h/piter.hxx h/sstream.hxx h/msfiter.hxx iter.hxx
+iter.obj: dfhead.cxx memory.h stdio.h
+iter.obj: stdlib.h string.h h/ole.hxx h/ref.hxx
+iter.obj: stdarg.h ./h\storage.h ./h\ref.hxx ./h\tchar.h
+iter.obj: ./h\wchar.h assert.h h/msf.hxx ./h\error.hxx
+iter.obj: ./h\../byteordr.hxx limits.h ./h\dfmsp.hxx
+iter.obj: ./h\ole.hxx ./h\msf.hxx ./h\../time.hxx h/storage.h
+iter.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+iter.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+iter.obj: ./h\difat.hxx h/dfexcept.hxx h/cdocfile.hxx ./h\handle.hxx
+iter.obj: ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx expdf.hxx h/dfmsp.hxx
+iter.obj: dfbasis.hxx h/revert.hxx h/chinst.hxx props/h/windef.h
+iter.obj: props/h\../../h/props.h ./h\../props/olechar.h props/h\ntstatus.h
+iter.obj: props/psetstg.hxx h/stgprops.hxx h/docfilep.hxx h/dffuncs.hxx
+iter.obj: ./h\cdocfile.hxx ./h\sstream.hxx h/funcs.hxx h/piter.hxx
+iter.obj: h/sstream.hxx h/msfiter.hxx iter.hxx
+cdocfile.obj: dfhead.cxx memory.h stdio.h
+cdocfile.obj: stdlib.h string.h h/ole.hxx
+cdocfile.obj: h/ref.hxx stdarg.h ./h\storage.h ./h\ref.hxx
+cdocfile.obj: ./h\tchar.h ./h\wchar.h assert.h h/msf.hxx
+cdocfile.obj: ./h\error.hxx ./h\../byteordr.hxx limits.h
+cdocfile.obj: ./h\dfmsp.hxx ./h\ole.hxx ./h\msf.hxx ./h\../time.hxx
+cdocfile.obj: h/storage.h time.h ./h\header.hxx ./h\storagep.h
+cdocfile.obj: ./h\fat.hxx ./h\vect.hxx malloc.h ./h\page.hxx
+cdocfile.obj: ./h\dir.hxx ./h\difat.hxx h/dfexcept.hxx h/cdocfile.hxx
+cdocfile.obj: ./h\handle.hxx ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx
+cdocfile.obj: expdf.hxx h/dfmsp.hxx dfbasis.hxx h/revert.hxx h/chinst.hxx
+cdocfile.obj: props/h/windef.h props/h\../../h/props.h ./h\../props/olechar.h
+cdocfile.obj: props/h\ntstatus.h props/psetstg.hxx h/stgprops.hxx
+cdocfile.obj: h/docfilep.hxx h/dffuncs.hxx ./h\cdocfile.hxx ./h\sstream.hxx
+cdocfile.obj: h/funcs.hxx h/piter.hxx h/sstream.hxx h/vectfunc.hxx
+rexpdf.obj: dfhead.cxx memory.h stdio.h
+rexpdf.obj: stdlib.h string.h h/ole.hxx
+rexpdf.obj: h/ref.hxx stdarg.h ./h\storage.h ./h\ref.hxx
+rexpdf.obj: ./h\tchar.h ./h\wchar.h assert.h h/msf.hxx
+rexpdf.obj: ./h\error.hxx ./h\../byteordr.hxx limits.h
+rexpdf.obj: ./h\dfmsp.hxx ./h\ole.hxx ./h\msf.hxx ./h\../time.hxx h/storage.h
+rexpdf.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+rexpdf.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+rexpdf.obj: ./h\difat.hxx h/dfexcept.hxx h/cdocfile.hxx ./h\handle.hxx
+rexpdf.obj: ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx expdf.hxx
+rexpdf.obj: h/dfmsp.hxx dfbasis.hxx h/revert.hxx h/chinst.hxx
+rexpdf.obj: props/h/windef.h props/h\../../h/props.h ./h\../props/olechar.h
+rexpdf.obj: props/h\ntstatus.h props/psetstg.hxx h/stgprops.hxx
+rexpdf.obj: h/docfilep.hxx h/dffuncs.hxx ./h\cdocfile.hxx ./h\sstream.hxx
+rexpdf.obj: h/funcs.hxx h/piter.hxx h/sstream.hxx h/header.hxx h/rexpdf.hxx
+rexpdf.obj: ./h\../expdf.hxx h/tchar.h
+docfile.obj: exphead.cxx memory.h stdio.h
+docfile.obj: stdlib.h string.h h/ref.hxx
+docfile.obj: stdarg.h ./h\storage.h ./h\ref.hxx ./h\tchar.h
+docfile.obj: ./h\wchar.h assert.h h/dfexcept.hxx h/msf.hxx
+docfile.obj: ./h\error.hxx ./h\../byteordr.hxx limits.h
+docfile.obj: ./h\dfmsp.hxx ./h\ole.hxx ./h\msf.hxx ./h\../time.hxx
+docfile.obj: h/storage.h time.h ./h\header.hxx ./h\storagep.h
+docfile.obj: ./h\fat.hxx ./h\vect.hxx malloc.h ./h\page.hxx
+docfile.obj: ./h\dir.hxx ./h\difat.hxx h/docfilep.hxx expdf.hxx h/dfmsp.hxx
+docfile.obj: dfbasis.hxx h/ole.hxx h/revert.hxx h/cdocfile.hxx ./h\handle.hxx
+docfile.obj: ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx h/chinst.hxx
+docfile.obj: props/h/windef.h props/h\../../h/props.h ./h\../props/olechar.h
+docfile.obj: props/h\ntstatus.h props/psetstg.hxx h/stgprops.hxx h/funcs.hxx
+docfile.obj: h/piter.hxx expst.hxx h/sstream.hxx h/propstm.hxx ./h\props.h
+docfile.obj: ./h\../props/h/propapi.h ./h\../props/h/propset.h h/rexpdf.hxx
+docfile.obj: ./h\../expdf.hxx h/docfile.hxx ascii.hxx logfile.hxx
+docfile.obj: h/refilb.hxx
+expst.obj: exphead.cxx memory.h stdio.h
+expst.obj: stdlib.h string.h h/ref.hxx
+expst.obj: stdarg.h ./h\storage.h ./h\ref.hxx ./h\tchar.h
+expst.obj: ./h\wchar.h assert.h h/dfexcept.hxx h/msf.hxx
+expst.obj: ./h\error.hxx ./h\../byteordr.hxx limits.h
+expst.obj: ./h\dfmsp.hxx ./h\ole.hxx ./h\msf.hxx ./h\../time.hxx h/storage.h
+expst.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+expst.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+expst.obj: ./h\difat.hxx h/docfilep.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+expst.obj: h/ole.hxx h/revert.hxx h/cdocfile.hxx ./h\handle.hxx
+expst.obj: ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx h/chinst.hxx
+expst.obj: props/h/windef.h props/h\../../h/props.h ./h\../props/olechar.h
+expst.obj: props/h\ntstatus.h props/psetstg.hxx h/stgprops.hxx h/funcs.hxx
+expst.obj: h/piter.hxx expst.hxx h/sstream.hxx h/propstm.hxx ./h\props.h
+expst.obj: ./h\../props/h/propapi.h ./h\../props/h/propset.h logfile.hxx
+expiter.obj: exphead.cxx memory.h stdio.h
+expiter.obj: stdlib.h string.h h/ref.hxx
+expiter.obj: stdarg.h ./h\storage.h ./h\ref.hxx ./h\tchar.h
+expiter.obj: ./h\wchar.h assert.h h/dfexcept.hxx h/msf.hxx
+expiter.obj: ./h\error.hxx ./h\../byteordr.hxx limits.h
+expiter.obj: ./h\dfmsp.hxx ./h\ole.hxx ./h\msf.hxx ./h\../time.hxx
+expiter.obj: h/storage.h time.h ./h\header.hxx ./h\storagep.h
+expiter.obj: ./h\fat.hxx ./h\vect.hxx malloc.h ./h\page.hxx
+expiter.obj: ./h\dir.hxx ./h\difat.hxx h/docfilep.hxx expdf.hxx h/dfmsp.hxx
+expiter.obj: dfbasis.hxx h/ole.hxx h/revert.hxx h/cdocfile.hxx ./h\handle.hxx
+expiter.obj: ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx h/chinst.hxx
+expiter.obj: props/h/windef.h props/h\../../h/props.h ./h\../props/olechar.h
+expiter.obj: props/h\ntstatus.h props/psetstg.hxx h/stgprops.hxx h/funcs.hxx
+expiter.obj: h/piter.hxx expiter.hxx h/sstream.hxx
+expdf.obj: h/ref.hxx stdio.h stdarg.h
+expdf.obj: ./h\storage.h ./h\ref.hxx ./h\tchar.h ./h\wchar.h
+expdf.obj: stdlib.h assert.h exphead.cxx
+expdf.obj: memory.h string.h h/dfexcept.hxx
+expdf.obj: h/msf.hxx ./h\error.hxx ./h\../byteordr.hxx
+expdf.obj: limits.h ./h\dfmsp.hxx ./h\ole.hxx ./h\msf.hxx
+expdf.obj: ./h\../time.hxx h/storage.h time.h ./h\header.hxx
+expdf.obj: ./h\storagep.h ./h\fat.hxx ./h\vect.hxx malloc.h
+expdf.obj: ./h\page.hxx ./h\dir.hxx ./h\difat.hxx h/docfilep.hxx expdf.hxx
+expdf.obj: h/dfmsp.hxx dfbasis.hxx h/ole.hxx h/revert.hxx h/cdocfile.hxx
+expdf.obj: ./h\handle.hxx ./h\msffunc.hxx ./h\dirfunc.hxx ./h\entry.hxx
+expdf.obj: h/chinst.hxx props/h/windef.h props/h\../../h/props.h
+expdf.obj: ./h\../props/olechar.h props/h\ntstatus.h props/psetstg.hxx
+expdf.obj: h/stgprops.hxx h/funcs.hxx h/piter.hxx expst.hxx h/sstream.hxx
+expdf.obj: h/propstm.hxx ./h\props.h ./h\../props/h/propapi.h
+expdf.obj: ./h\../props/h/propset.h expiter.hxx logfile.hxx h/rexpdf.hxx
+expdf.obj: ./h\../expdf.hxx
+storage.obj: h/ref.hxx stdio.h stdarg.h
+storage.obj: ./h\storage.h ./h\ref.hxx ./h\tchar.h ./h\wchar.h
+storage.obj: stdlib.h assert.h h/dfexcept.hxx
+storage.obj: h/msf.hxx ./h\error.hxx ./h\../byteordr.hxx
+storage.obj: limits.h ./h\dfmsp.hxx ./h\ole.hxx ./h\msf.hxx
+storage.obj: memory.h string.h ./h\../time.hxx
+storage.obj: h/storage.h time.h ./h\header.hxx ./h\storagep.h
+storage.obj: ./h\fat.hxx ./h\vect.hxx malloc.h ./h\page.hxx
+storage.obj: ./h\dir.hxx ./h\difat.hxx h/docfile.hxx h/storagep.h
+storage.obj: h/refilb.hxx h/ole.hxx h/funcs.hxx
+mem.obj: exphead.cxx memory.h stdio.h
+mem.obj: stdlib.h string.h h/ref.hxx
+mem.obj: stdarg.h ./h\storage.h ./h\ref.hxx ./h\tchar.h
+mem.obj: ./h\wchar.h assert.h h/dfexcept.hxx h/msf.hxx
+mem.obj: ./h\error.hxx ./h\../byteordr.hxx limits.h
+mem.obj: ./h\dfmsp.hxx ./h\ole.hxx ./h\msf.hxx ./h\../time.hxx h/storage.h
+mem.obj: time.h ./h\header.hxx ./h\storagep.h ./h\fat.hxx
+mem.obj: ./h\vect.hxx malloc.h ./h\page.hxx ./h\dir.hxx
+mem.obj: ./h\difat.hxx h/docfilep.hxx expdf.hxx h/dfmsp.hxx dfbasis.hxx
+mem.obj: h/ole.hxx h/revert.hxx h/cdocfile.hxx ./h\handle.hxx ./h\msffunc.hxx
+mem.obj: ./h\dirfunc.hxx ./h\entry.hxx h/chinst.hxx props/h/windef.h
+mem.obj: props/h\../../h/props.h ./h\../props/olechar.h props/h\ntstatus.h
+mem.obj: props/psetstg.hxx h/stgprops.hxx h/funcs.hxx h/piter.hxx h/mem.hxx
+time.obj: h/ref.hxx stdio.h stdarg.h
+time.obj: ./h\storage.h ./h\ref.hxx ./h\tchar.h ./h\wchar.h
+time.obj: stdlib.h assert.h time.hxx h/ole.hxx
+time.obj: limits.h
+wchar.obj: h/wchar.h stdlib.h stdarg.h
+wchar.obj: errno.h assert.h
+ascii.obj: h/dfmsp.hxx h/docfile.hxx ./h\dfmsp.hxx ./h\ref.hxx
+ascii.obj: stdio.h stdarg.h ./h\storage.h
+ascii.obj: ./h\tchar.h ./h\wchar.h stdlib.h
+ascii.obj: assert.h ./h\ole.hxx ./h\error.hxx ./h\msf.hxx
+ascii.obj: memory.h string.h ./h\../time.hxx
+ascii.obj: h/storage.h time.h
+dfbasis.obj: h/ole.hxx
+expiter.obj: h/dfmsp.hxx
+iter.obj: h/piter.hxx
+mread.obj: h/difat.hxx h/sstream.hxx ./h\msf.hxx ./h\handle.hxx
+mread.obj: ./h\msffunc.hxx ./h\dir.hxx ./h\wchar.h stdlib.h
+mread.obj: stdarg.h ./h\vect.hxx malloc.h
+mread.obj: ./h\page.hxx ./h\dirfunc.hxx ./h\entry.hxx
+byteordr.obj: limits.h
+expdf.obj: h/dfmsp.hxx dfbasis.hxx h/ole.hxx h/revert.hxx ./h\dfmsp.hxx
+expdf.obj: ./h\ref.hxx stdio.h stdarg.h
+expdf.obj: ./h\storage.h ./h\tchar.h ./h\wchar.h stdlib.h
+expdf.obj: assert.h ./h\ole.hxx ./h\error.hxx ./h\msf.hxx
+expdf.obj: memory.h string.h ./h\../time.hxx
+expdf.obj: h/storage.h time.h h/cdocfile.hxx ./h\handle.hxx
+expdf.obj: ./h\msffunc.hxx ./h\dir.hxx ./h\vect.hxx malloc.h
+expdf.obj: ./h\page.hxx ./h\dirfunc.hxx ./h\entry.hxx h/chinst.hxx
+expdf.obj: props/h/windef.h props/h\../../h/props.h ./h\../props/olechar.h
+expdf.obj: props/h\ntstatus.h props/psetstg.hxx h/stgprops.hxx
+expst.obj: h/dfmsp.hxx expdf.hxx dfbasis.hxx h/ole.hxx h/revert.hxx
+expst.obj: ./h\dfmsp.hxx ./h\ref.hxx stdio.h
+expst.obj: stdarg.h ./h\storage.h ./h\tchar.h ./h\wchar.h
+expst.obj: stdlib.h assert.h ./h\ole.hxx
+expst.obj: ./h\error.hxx ./h\msf.hxx memory.h
+expst.obj: string.h ./h\../time.hxx h/storage.h
+expst.obj: time.h h/cdocfile.hxx ./h\handle.hxx
+expst.obj: ./h\msffunc.hxx ./h\dir.hxx ./h\vect.hxx malloc.h
+expst.obj: ./h\page.hxx ./h\dirfunc.hxx ./h\entry.hxx h/chinst.hxx
+expst.obj: props/h/windef.h props/h\../../h/props.h ./h\../props/olechar.h
+expst.obj: props/h\ntstatus.h props/psetstg.hxx h/stgprops.hxx h/sstream.hxx
+expst.obj: h/propstm.hxx ./h\props.h ./h\../props/h/propapi.h
+expst.obj: ./h\../props/h/propset.h
+time.obj: h/storage.h time.h

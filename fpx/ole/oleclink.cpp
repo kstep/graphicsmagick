@@ -8,7 +8,7 @@
 //				found in OLE 2.07:SDK:Sample Code (OLE):Outline:Source:doccntr.c
 //  SCCSID      : @(#)oleclink.cpp	1.1 11:53:27 18 Dec 1996
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -269,7 +269,7 @@ static void NormalizeFileName (char* name, char* normName)
 //	Member Functions
 //	----------------------------------------------------------------------------
 
-OLECustomLink::OLECustomLink(OLEStorage& initialStorage)
+OLECustomLink::OLECustomLink(OLEStorage* initialStorage)
 {
 	// Init linked pointers
 	linkedStorage	= NULL;
@@ -285,7 +285,7 @@ OLECustomLink::OLECustomLink(OLEStorage& initialStorage)
 
 	// Open and read the Custom Link property set
 	GUID customLinkGuid = ID_LocalFileMoniker;
-	if (initialStorage.OpenPropertySet (customLinkGuid, customLinkName, &customLinkPropertySet, OLE_READWRITE_MODE)) {
+	if (initialStorage->OpenPropertySet (customLinkGuid, customLinkName, &customLinkPropertySet, OLE_READWRITE_MODE)) {
 		if (customLinkPropertySet->Revert()) {
 			// Read the data from the property set (update the property set record and resolve the OLE Moniker if any)
 			GetCustomLinkPropertySet (customLinkPropertySet, &customLinkDescriptor);
@@ -298,7 +298,7 @@ OLECustomLink::OLECustomLink(OLEStorage& initialStorage)
 
 	// Resolve the link if the reading has been successful
 	if (customLinkPropertySet)
-		ResolveLink(&initialStorage,customLinkDescriptor);
+		ResolveLink(initialStorage,customLinkDescriptor);
 
 	// Delete the property set (useless from that point...)
 	if (customLinkPropertySet)
@@ -319,6 +319,11 @@ OLECustomLink::~OLECustomLink()
 
 Boolean OLECustomLink::GetCustomLinkPropertySet (OLEPropertySet* customLinkSet, FPXCustomLink* customLinkDescriptor)
 {
+#if	defined(__GNUC__)
+ 	// TODO: put moniker support into oless for UNIX (if needed??)
+ 	return false;
+#else
+
 	OLEProperty* aProp;
 	Boolean ok = true;
 	
@@ -341,7 +346,7 @@ Boolean OLECustomLink::GetCustomLinkPropertySet (OLEPropertySet* customLinkSet, 
 			linkBlob.ReadVT_VECTOR(&tmp);
 
 			// The trick is to write this Blob in a temporary stream and to do as if it was a moniker really written by OLE
-			// (I know it's ugly, but it's the FlashPix spec...)
+			// (I know it's ugly, but it's the sucky FlashPix spec...)
     		IStream*	lpStream;
 		    HRESULT		hrErr = NOERROR;
 		    
@@ -406,10 +411,15 @@ Boolean OLECustomLink::GetCustomLinkPropertySet (OLEPropertySet* customLinkSet, 
 		customLinkDescriptor->lastMountPointIsValid = FALSE;
 	
 	return ok;
+#endif
 }
 
 HRESULT OLECustomLink::BindMonikerToStorage (IStream* lpStream, IStorage** pStg)
 {
+#if	defined(__GNUC__)
+        return false;
+        // TODO: put Moniker support in for UNIX (if needed??)
+#else 
     IMoniker *pmk	= NULL;
     HRESULT status;
     IBindCtx *pbc	= NULL;
@@ -446,6 +456,7 @@ HRESULT OLECustomLink::BindMonikerToStorage (IStream* lpStream, IStorage** pStg)
     pmk->Release();
 
     return status;
+#endif
 }
 
 // CAUTION : don't call this method if customLinkDescriptor is not properly updated

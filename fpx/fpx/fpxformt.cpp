@@ -7,7 +7,7 @@
 //	COMMENTS	: 
 //      SCCSID          : @(#)fpxformt.cpp	1.3 13:16:17 02 Jun 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -361,6 +361,17 @@ Boolean PFlashPixFile::GetICCProfile(WORD index, char **ppICCProfileStr)
 				
 	return true;
 }
+
+// This should probably go somewhere else
+#if     defined(__GNUC__)
+
+#define USERCLASSTYPE_APPNAME   0
+
+extern HRESULT OleRegGetUserType(REFCLSID clsid, DWORD whatever, LPOLESTR FAR* pszUserType);
+
+extern HRESULT StringFromCLSID(REFCLSID clsid, LPOLESTR FAR* lplpsz);
+
+#endif
 
 // Create CompObj in root storage 
 Boolean PFlashPixFile::CreateCompObj()

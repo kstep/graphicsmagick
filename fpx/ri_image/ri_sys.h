@@ -10,7 +10,7 @@
 //	COMMENT		: This package is a part of the IVUE Toolkit I/O and the FlashPix Baseline I/O
 //  SCCSID      : @(#)ri_sys.h	1.2 14:49:49 06 Jan 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------

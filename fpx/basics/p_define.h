@@ -6,7 +6,7 @@
 //	COMMENT		: Mustn't include ApplCommun.h
 //  SCCSID      : @(#)p_define.h	1.1 11:50:04 18 Dec 1996
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -103,7 +103,7 @@
         #undef   ENABLE_FREE_NULL
         #define  USE_EXCEPTIONS
    #else
-        #ifdef IRIS                                             // If Silicon Graphics
+        #ifdef __GNUC__ // If gnu compiler 
             #define DEFINE_INT32_FUNCTIONS
             #define newAllocAray
             #define ENABLE_FREE_NULL
@@ -129,22 +129,26 @@
 #endif
 
 // Define __bigEndian
-#ifdef macintosh                                                // If MacIntosh
+#ifdef WORDS_BIGENDIAN
     #define __bigEndian
 #else
-    #ifdef __alpha                                              // If DEC ALPHA
-        #undef __bigEndian
-    #else
-        #ifdef IRIS                                             // If Silicon Graphics
-            #define __bigEndian
-        #else
-            #ifdef _WINDOWS                                     // If IBM PC
-                #undef __bigEndian
-            #else
-                // error
-            #endif
-        #endif
-    #endif
+    #ifdef macintosh                                                // If MacIntosh
+       #define __bigEndian
+   #else
+       #ifdef __alpha                                              // If DEC ALPHA
+           #undef __bigEndian
+       #else
+           #ifdef IRIS                                             // If Silicon Graphics
+               #define __bigEndian
+           #else
+               #ifdef _WINDOWS                                     // If IBM PC
+                   #undef __bigEndian
+               #else
+                  // error
+               #endif
+           #endif
+       #endif
+   #endif
 #endif
 
 //  ------------------------------------------------------------------------------------------------

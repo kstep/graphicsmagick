@@ -1,0 +1,156 @@
+
+propstg.obj: pch.cxx olechar.h h/windef.h ./h\../../h/props.h ../h\ref.hxx
+propstg.obj: stdio.h stdarg.h ../h\storage.h
+propstg.obj: ../h\tchar.h ../h\wchar.h stdlib.h
+propstg.obj: assert.h ../props/olechar.h
+propstg.obj: memory.h ./h\ntstatus.h h/propset.h h/propapi.h
+propstg.obj: ../h/propstm.hxx ../h\props.h ../props/h/propapi.h
+propstg.obj: ../props/h/propset.h ../h/msf.hxx ../h\error.hxx ../byteordr.hxx
+propstg.obj: limits.h ../h\dfmsp.hxx ../h\ole.hxx ../h\msf.hxx
+propstg.obj: string.h ../time.hxx ..\h/storage.h
+propstg.obj: time.h ../h\header.hxx ../h\storagep.h
+propstg.obj: ../h\fat.hxx ../h\vect.hxx malloc.h ../h\page.hxx
+propstg.obj: ../h\dir.hxx ../h\difat.hxx ../expdf.hxx ..\h/dfmsp.hxx
+propstg.obj: ..\dfbasis.hxx ..\h/ole.hxx ..\h/revert.hxx ..\h/cdocfile.hxx
+propstg.obj: ../h\handle.hxx ../h\msffunc.hxx ../h\dirfunc.hxx ../h\entry.hxx
+propstg.obj: ..\h/chinst.hxx ..\props/h/windef.h ..\props/psetstg.hxx
+propstg.obj: h/stgprops.hxx ../expst.hxx ..\expdf.hxx ..\h/sstream.hxx
+propstg.obj: ..\h/propstm.hxx psetstg.hxx utils.hxx propstg.hxx ../h/ref.hxx
+propstg.obj: propdbg.hxx h/propmac.hxx ./h\../../byteordr.hxx ./h\propapi.h
+propstg.obj: h/propvar.hxx ./h\propset.h
+psetstg.obj: pch.cxx olechar.h h/windef.h ./h\../../h/props.h ../h\ref.hxx
+psetstg.obj: stdio.h stdarg.h ../h\storage.h
+psetstg.obj: ../h\tchar.h ../h\wchar.h stdlib.h
+psetstg.obj: assert.h ../props/olechar.h
+psetstg.obj: memory.h ./h\ntstatus.h h/propset.h h/propapi.h
+psetstg.obj: ../h/propstm.hxx ../h\props.h ../props/h/propapi.h
+psetstg.obj: ../props/h/propset.h ../h/msf.hxx ../h\error.hxx ../byteordr.hxx
+psetstg.obj: limits.h ../h\dfmsp.hxx ../h\ole.hxx ../h\msf.hxx
+psetstg.obj: string.h ../time.hxx ..\h/storage.h
+psetstg.obj: time.h ../h\header.hxx ../h\storagep.h
+psetstg.obj: ../h\fat.hxx ../h\vect.hxx malloc.h ../h\page.hxx
+psetstg.obj: ../h\dir.hxx ../h\difat.hxx ../expdf.hxx ..\h/dfmsp.hxx
+psetstg.obj: ..\dfbasis.hxx ..\h/ole.hxx ..\h/revert.hxx ..\h/cdocfile.hxx
+psetstg.obj: ../h\handle.hxx ../h\msffunc.hxx ../h\dirfunc.hxx ../h\entry.hxx
+psetstg.obj: ..\h/chinst.hxx ..\props/h/windef.h ..\props/psetstg.hxx
+psetstg.obj: h/stgprops.hxx ../expst.hxx ..\expdf.hxx ..\h/sstream.hxx
+psetstg.obj: ..\h/propstm.hxx psetstg.hxx utils.hxx propstg.hxx ../h/ref.hxx
+psetstg.obj: propdbg.hxx h/propmac.hxx ./h\../../byteordr.hxx ./h\propapi.h
+psetstg.obj: h/propvar.hxx ./h\propset.h prophdr.hxx
+utils.obj: pch.cxx olechar.h h/windef.h ./h\../../h/props.h ../h\ref.hxx
+utils.obj: stdio.h stdarg.h ../h\storage.h
+utils.obj: ../h\tchar.h ../h\wchar.h stdlib.h
+utils.obj: assert.h ../props/olechar.h memory.h
+utils.obj: ./h\ntstatus.h h/propset.h h/propapi.h ../h/propstm.hxx
+utils.obj: ../h\props.h ../props/h/propapi.h ../props/h/propset.h
+utils.obj: ../h/msf.hxx ../h\error.hxx ../byteordr.hxx
+utils.obj: limits.h ../h\dfmsp.hxx ../h\ole.hxx ../h\msf.hxx
+utils.obj: string.h ../time.hxx ..\h/storage.h
+utils.obj: time.h ../h\header.hxx ../h\storagep.h ../h\fat.hxx
+utils.obj: ../h\vect.hxx malloc.h ../h\page.hxx ../h\dir.hxx
+utils.obj: ../h\difat.hxx ../expdf.hxx ..\h/dfmsp.hxx ..\dfbasis.hxx
+utils.obj: ..\h/ole.hxx ..\h/revert.hxx ..\h/cdocfile.hxx ../h\handle.hxx
+utils.obj: ../h\msffunc.hxx ../h\dirfunc.hxx ../h\entry.hxx ..\h/chinst.hxx
+utils.obj: ..\props/h/windef.h ..\props/psetstg.hxx h/stgprops.hxx
+utils.obj: ../expst.hxx ..\expdf.hxx ..\h/sstream.hxx ..\h/propstm.hxx
+utils.obj: psetstg.hxx utils.hxx propstg.hxx ../h/ref.hxx propdbg.hxx
+utils.obj: h/propmac.hxx ./h\../../byteordr.hxx ./h\propapi.h h/propvar.hxx
+utils.obj: ./h\propset.h
+ntprop.obj: pch.cxx olechar.h h/windef.h ./h\../../h/props.h ../h\ref.hxx
+ntprop.obj: stdio.h stdarg.h ../h\storage.h
+ntprop.obj: ../h\tchar.h ../h\wchar.h stdlib.h
+ntprop.obj: assert.h ../props/olechar.h
+ntprop.obj: memory.h ./h\ntstatus.h h/propset.h h/propapi.h
+ntprop.obj: ../h/propstm.hxx ../h\props.h ../props/h/propapi.h
+ntprop.obj: ../props/h/propset.h ../h/msf.hxx ../h\error.hxx ../byteordr.hxx
+ntprop.obj: limits.h ../h\dfmsp.hxx ../h\ole.hxx ../h\msf.hxx
+ntprop.obj: string.h ../time.hxx ..\h/storage.h
+ntprop.obj: time.h ../h\header.hxx ../h\storagep.h
+ntprop.obj: ../h\fat.hxx ../h\vect.hxx malloc.h ../h\page.hxx
+ntprop.obj: ../h\dir.hxx ../h\difat.hxx ../expdf.hxx ..\h/dfmsp.hxx
+ntprop.obj: ..\dfbasis.hxx ..\h/ole.hxx ..\h/revert.hxx ..\h/cdocfile.hxx
+ntprop.obj: ../h\handle.hxx ../h\msffunc.hxx ../h\dirfunc.hxx ../h\entry.hxx
+ntprop.obj: ..\h/chinst.hxx ..\props/h/windef.h ..\props/psetstg.hxx
+ntprop.obj: h/stgprops.hxx ../expst.hxx ..\expdf.hxx ..\h/sstream.hxx
+ntprop.obj: ..\h/propstm.hxx psetstg.hxx utils.hxx propstg.hxx ../h/ref.hxx
+ntprop.obj: propdbg.hxx h/propmac.hxx ./h\../../byteordr.hxx ./h\propapi.h
+ntprop.obj: h/propvar.hxx ./h\propset.h
+ntpropb.obj: pch.cxx olechar.h h/windef.h ./h\../../h/props.h ../h\ref.hxx
+ntpropb.obj: stdio.h stdarg.h ../h\storage.h
+ntpropb.obj: ../h\tchar.h ../h\wchar.h stdlib.h
+ntpropb.obj: assert.h ../props/olechar.h
+ntpropb.obj: memory.h ./h\ntstatus.h h/propset.h h/propapi.h
+ntpropb.obj: ../h/propstm.hxx ../h\props.h ../props/h/propapi.h
+ntpropb.obj: ../props/h/propset.h ../h/msf.hxx ../h\error.hxx ../byteordr.hxx
+ntpropb.obj: limits.h ../h\dfmsp.hxx ../h\ole.hxx ../h\msf.hxx
+ntpropb.obj: string.h ../time.hxx ..\h/storage.h
+ntpropb.obj: time.h ../h\header.hxx ../h\storagep.h
+ntpropb.obj: ../h\fat.hxx ../h\vect.hxx malloc.h ../h\page.hxx
+ntpropb.obj: ../h\dir.hxx ../h\difat.hxx ../expdf.hxx ..\h/dfmsp.hxx
+ntpropb.obj: ..\dfbasis.hxx ..\h/ole.hxx ..\h/revert.hxx ..\h/cdocfile.hxx
+ntpropb.obj: ../h\handle.hxx ../h\msffunc.hxx ../h\dirfunc.hxx ../h\entry.hxx
+ntpropb.obj: ..\h/chinst.hxx ..\props/h/windef.h ..\props/psetstg.hxx
+ntpropb.obj: h/stgprops.hxx ../expst.hxx ..\expdf.hxx ..\h/sstream.hxx
+ntpropb.obj: ..\h/propstm.hxx psetstg.hxx utils.hxx propstg.hxx ../h/ref.hxx
+ntpropb.obj: propdbg.hxx h/propmac.hxx ./h\../../byteordr.hxx ./h\propapi.h
+ntpropb.obj: h/propvar.hxx ./h\propset.h
+propstm.obj: pch.cxx olechar.h h/windef.h ./h\../../h/props.h ../h\ref.hxx
+propstm.obj: stdio.h stdarg.h ../h\storage.h
+propstm.obj: ../h\tchar.h ../h\wchar.h stdlib.h
+propstm.obj: assert.h ../props/olechar.h
+propstm.obj: memory.h ./h\ntstatus.h h/propset.h h/propapi.h
+propstm.obj: ../h/propstm.hxx ../h\props.h ../props/h/propapi.h
+propstm.obj: ../props/h/propset.h ../h/msf.hxx ../h\error.hxx ../byteordr.hxx
+propstm.obj: limits.h ../h\dfmsp.hxx ../h\ole.hxx ../h\msf.hxx
+propstm.obj: string.h ../time.hxx ..\h/storage.h
+propstm.obj: time.h ../h\header.hxx ../h\storagep.h
+propstm.obj: ../h\fat.hxx ../h\vect.hxx malloc.h ../h\page.hxx
+propstm.obj: ../h\dir.hxx ../h\difat.hxx ../expdf.hxx ..\h/dfmsp.hxx
+propstm.obj: ..\dfbasis.hxx ..\h/ole.hxx ..\h/revert.hxx ..\h/cdocfile.hxx
+propstm.obj: ../h\handle.hxx ../h\msffunc.hxx ../h\dirfunc.hxx ../h\entry.hxx
+propstm.obj: ..\h/chinst.hxx ..\props/h/windef.h ..\props/psetstg.hxx
+propstm.obj: h/stgprops.hxx ../expst.hxx ..\expdf.hxx ..\h/sstream.hxx
+propstm.obj: ..\h/propstm.hxx psetstg.hxx utils.hxx propstg.hxx ../h/ref.hxx
+propstm.obj: propdbg.hxx h/propmac.hxx ./h\../../byteordr.hxx ./h\propapi.h
+propstm.obj: h/propvar.hxx ./h\propset.h
+propvar.obj: pch.cxx olechar.h h/windef.h ./h\../../h/props.h ../h\ref.hxx
+propvar.obj: stdio.h stdarg.h ../h\storage.h
+propvar.obj: ../h\tchar.h ../h\wchar.h stdlib.h
+propvar.obj: assert.h ../props/olechar.h
+propvar.obj: memory.h ./h\ntstatus.h h/propset.h h/propapi.h
+propvar.obj: ../h/propstm.hxx ../h\props.h ../props/h/propapi.h
+propvar.obj: ../props/h/propset.h ../h/msf.hxx ../h\error.hxx ../byteordr.hxx
+propvar.obj: limits.h ../h\dfmsp.hxx ../h\ole.hxx ../h\msf.hxx
+propvar.obj: string.h ../time.hxx ..\h/storage.h
+propvar.obj: time.h ../h\header.hxx ../h\storagep.h
+propvar.obj: ../h\fat.hxx ../h\vect.hxx malloc.h ../h\page.hxx
+propvar.obj: ../h\dir.hxx ../h\difat.hxx ../expdf.hxx ..\h/dfmsp.hxx
+propvar.obj: ..\dfbasis.hxx ..\h/ole.hxx ..\h/revert.hxx ..\h/cdocfile.hxx
+propvar.obj: ../h\handle.hxx ../h\msffunc.hxx ../h\dirfunc.hxx ../h\entry.hxx
+propvar.obj: ..\h/chinst.hxx ..\props/h/windef.h ..\props/psetstg.hxx
+propvar.obj: h/stgprops.hxx ../expst.hxx ..\expdf.hxx ..\h/sstream.hxx
+propvar.obj: ..\h/propstm.hxx psetstg.hxx utils.hxx propstg.hxx ../h/ref.hxx
+propvar.obj: propdbg.hxx h/propmac.hxx ./h\../../byteordr.hxx ./h\propapi.h
+propvar.obj: h/propvar.hxx ./h\propset.h
+stgvarb.obj: pch.cxx olechar.h h/windef.h ./h\../../h/props.h ../h\ref.hxx
+stgvarb.obj: stdio.h stdarg.h ../h\storage.h
+stgvarb.obj: ../h\tchar.h ../h\wchar.h stdlib.h
+stgvarb.obj: assert.h ../props/olechar.h
+stgvarb.obj: memory.h ./h\ntstatus.h h/propset.h h/propapi.h
+stgvarb.obj: ../h/propstm.hxx ../h\props.h ../props/h/propapi.h
+stgvarb.obj: ../props/h/propset.h ../h/msf.hxx ../h\error.hxx ../byteordr.hxx
+stgvarb.obj: limits.h ../h\dfmsp.hxx ../h\ole.hxx ../h\msf.hxx
+stgvarb.obj: string.h ../time.hxx ..\h/storage.h
+stgvarb.obj: time.h ../h\header.hxx ../h\storagep.h
+stgvarb.obj: ../h\fat.hxx ../h\vect.hxx malloc.h ../h\page.hxx
+stgvarb.obj: ../h\dir.hxx ../h\difat.hxx ../expdf.hxx ..\h/dfmsp.hxx
+stgvarb.obj: ..\dfbasis.hxx ..\h/ole.hxx ..\h/revert.hxx ..\h/cdocfile.hxx
+stgvarb.obj: ../h\handle.hxx ../h\msffunc.hxx ../h\dirfunc.hxx ../h\entry.hxx
+stgvarb.obj: ..\h/chinst.hxx ..\props/h/windef.h ..\props/psetstg.hxx
+stgvarb.obj: h/stgprops.hxx ../expst.hxx ..\expdf.hxx ..\h/sstream.hxx
+stgvarb.obj: ..\h/propstm.hxx psetstg.hxx utils.hxx propstg.hxx ../h/ref.hxx
+stgvarb.obj: propdbg.hxx h/propmac.hxx ./h\../../byteordr.hxx ./h\propapi.h
+stgvarb.obj: h/propvar.hxx ./h\propset.h ctype.h
+ntdllmac.obj: ./h\propapi.h
+propstg.obj: ../h/ref.hxx h/stgprops.hxx
+psetstg.obj: h/stgprops.hxx

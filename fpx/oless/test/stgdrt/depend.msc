@@ -1,0 +1,68 @@
+# makedepend will append dependencies after this line, do not
+# insert any thing after this line
+# DO NOT DELETE THIS LINE -- "make depend" depends on it.
+
+drt.o: headers.cxx $(CRTDIR)\memory.h $(CRTDIR)\stdio.h
+drt.o: $(CRTDIR)\sys\feature_tests.h $(CRTDIR)\stdlib.h drt.hxx ref.hxx
+drt.o: $(CRTDIR)\stdarg.h $(CRTDIR)\varargs.h tchar.h
+drt.o: $(CRTDIR)\assert.h $(CRTDIR)\string.h storage.h wrap.hxx
+drt.o: util.hxx strlist.hxx tests.hxx illeg.hxx
+drtguid.o: headers.cxx $(CRTDIR)\memory.h $(CRTDIR)\stdio.h
+drtguid.o: $(CRTDIR)\sys\feature_tests.h $(CRTDIR)\stdlib.h drt.hxx
+drtguid.o: ref.hxx $(CRTDIR)\stdarg.h $(CRTDIR)\varargs.h tchar.h
+drtguid.o: $(CRTDIR)\assert.h $(CRTDIR)\string.h storage.h wrap.hxx
+drtguid.o: util.hxx strlist.hxx initguid.h
+headers.o: $(CRTDIR)\memory.h $(CRTDIR)\stdio.h
+headers.o: $(CRTDIR)\sys\feature_tests.h $(CRTDIR)\stdlib.h drt.hxx
+headers.o: ref.hxx $(CRTDIR)\stdarg.h $(CRTDIR)\varargs.h tchar.h
+headers.o: $(CRTDIR)\assert.h $(CRTDIR)\string.h storage.h wrap.hxx
+headers.o: util.hxx strlist.hxx
+ilb.o: headers.cxx $(CRTDIR)\memory.h $(CRTDIR)\stdio.h
+ilb.o: $(CRTDIR)\sys\feature_tests.h $(CRTDIR)\stdlib.h drt.hxx ref.hxx
+ilb.o: $(CRTDIR)\stdarg.h $(CRTDIR)\varargs.h tchar.h
+ilb.o: $(CRTDIR)\assert.h $(CRTDIR)\string.h storage.h wrap.hxx
+ilb.o: util.hxx strlist.hxx ilb.hxx
+illeg.o: headers.cxx $(CRTDIR)\memory.h $(CRTDIR)\stdio.h
+illeg.o: $(CRTDIR)\sys\feature_tests.h $(CRTDIR)\stdlib.h drt.hxx
+illeg.o: ref.hxx $(CRTDIR)\stdarg.h $(CRTDIR)\varargs.h tchar.h
+illeg.o: $(CRTDIR)\assert.h $(CRTDIR)\string.h storage.h wrap.hxx
+illeg.o: util.hxx strlist.hxx $(CRTDIR)\unistd.h $(CRTDIR)\sys\types.h
+illeg.o: $(CRTDIR)\sys\machtypes.h $(CRTDIR)\sys\isa_defs.h
+illeg.o: $(CRTDIR)\sys\unistd.h winio.hxx $(CRTDIR)\sys\stat.h
+illeg.o: $(CRTDIR)\sys\time.h $(CRTDIR)\sys\param.h
+illeg.o: $(CRTDIR)\fcntl.h $(CRTDIR)\sys\fcntl.h illeg.hxx
+strlist.o: headers.cxx $(CRTDIR)\memory.h $(CRTDIR)\stdio.h
+strlist.o: $(CRTDIR)\sys\feature_tests.h $(CRTDIR)\stdlib.h drt.hxx
+strlist.o: ref.hxx $(CRTDIR)\stdarg.h $(CRTDIR)\varargs.h tchar.h
+strlist.o: $(CRTDIR)\assert.h $(CRTDIR)\string.h storage.h wrap.hxx
+strlist.o: util.hxx strlist.hxx
+tests.o: headers.cxx $(CRTDIR)\memory.h $(CRTDIR)\stdio.h
+tests.o: $(CRTDIR)\sys\feature_tests.h $(CRTDIR)\stdlib.h drt.hxx
+tests.o: ref.hxx $(CRTDIR)\stdarg.h $(CRTDIR)\varargs.h tchar.h
+tests.o: $(CRTDIR)\assert.h $(CRTDIR)\string.h storage.h wrap.hxx
+tests.o: util.hxx strlist.hxx tests.hxx ilb.hxx
+util.o: headers.cxx $(CRTDIR)\memory.h $(CRTDIR)\stdio.h
+util.o: $(CRTDIR)\sys\feature_tests.h $(CRTDIR)\stdlib.h drt.hxx
+util.o: ref.hxx $(CRTDIR)\stdarg.h $(CRTDIR)\varargs.h tchar.h
+util.o: $(CRTDIR)\assert.h $(CRTDIR)\string.h storage.h wrap.hxx
+util.o: util.hxx strlist.hxx winio.hxx $(CRTDIR)\unistd.h
+util.o: $(CRTDIR)\sys\types.h $(CRTDIR)\sys\machtypes.h
+util.o: $(CRTDIR)\sys\isa_defs.h $(CRTDIR)\sys\unistd.h
+util.o: $(CRTDIR)\sys\stat.h $(CRTDIR)\sys\time.h
+util.o: $(CRTDIR)\sys\param.h $(CRTDIR)\fcntl.h
+util.o: $(CRTDIR)\sys\fcntl.h
+wrap.o: headers.cxx $(CRTDIR)\memory.h $(CRTDIR)\stdio.h
+wrap.o: $(CRTDIR)\sys\feature_tests.h $(CRTDIR)\stdlib.h drt.hxx
+wrap.o: ref.hxx $(CRTDIR)\stdarg.h $(CRTDIR)\varargs.h tchar.h
+wrap.o: $(CRTDIR)\assert.h $(CRTDIR)\string.h storage.h wrap.hxx
+wrap.o: util.hxx strlist.hxx
+drt.o: ref.hxx $(CRTDIR)\stdio.h $(CRTDIR)\sys\feature_tests.h
+drt.o: $(CRTDIR)\stdarg.h $(CRTDIR)\varargs.h tchar.h
+drt.o: $(CRTDIR)\assert.h $(CRTDIR)\string.h storage.h
+strlist.o: drt.hxx ref.hxx $(CRTDIR)\stdio.h
+strlist.o: $(CRTDIR)\sys\feature_tests.h $(CRTDIR)\stdarg.h
+strlist.o: $(CRTDIR)\varargs.h tchar.h $(CRTDIR)\assert.h
+strlist.o: $(CRTDIR)\string.h storage.h
+wrap.o: ref.hxx $(CRTDIR)\stdio.h $(CRTDIR)\sys\feature_tests.h
+wrap.o: $(CRTDIR)\stdarg.h $(CRTDIR)\varargs.h tchar.h
+wrap.o: $(CRTDIR)\assert.h $(CRTDIR)\string.h storage.h

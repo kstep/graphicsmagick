@@ -14,7 +14,7 @@
 //				: 2/26/97	PBH		PTCH_101 fixes buffer reuse bugs; adds debug calls
 //  SCCSID      : @(#)ptile.cpp	1.5 15:15:42 14 Apr 1997
 //	----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //	----------------------------------------------------------------------------

@@ -7,7 +7,7 @@
 //	COMMENTAIRE	:
 //  SCCSID      : @(#)graphic.cpp	1.1 11:50:02 18 Dec 1996
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -198,7 +198,7 @@ Boolean PRectangle::IsEmpty()
 	return ((top >= bottom) || (left >= right));
 }
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS) || defined(__GNUC__)
 int operator ==(const PRectangle &r1, const PRectangle &r2)
 #else
 int operator ==(const PRectangle &const r1, const PRectangle &const r2)
@@ -209,7 +209,7 @@ int operator ==(const PRectangle &const r1, const PRectangle &const r2)
 			&& r1.top==r2.top && r1.bottom==r2.bottom);
 }
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS) || defined(__GNUC__)
 int operator !=(const PRectangle &r1, const PRectangle &r2)
 #else
 int operator !=(const PRectangle &const r1, const PRectangle &const r2)
@@ -239,7 +239,7 @@ PRectangle PRectangle::operator |=(const PRectangle& r)
 }
 
 // Union of two rectangles
-#ifdef _WINDOWS
+#if defined(_WINDOWS) || defined(__GNUC__)
 PRectangle operator |(const PRectangle &r1, const PRectangle &r2)
 #else
 PRectangle operator |(const PRectangle& const r1, const PRectangle& const r2)
@@ -270,7 +270,7 @@ PRectangle PRectangle::operator &=(const PRectangle& r)
 }
 
 // Intersection of two rectangles
-#ifdef _WINDOWS
+#if defined(_WINDOWS) || defined(__GNUC__)
 PRectangle operator &(const PRectangle &r1, const PRectangle &r2)
 #else
 PRectangle operator &(const PRectangle &const r1, const PRectangle &const r2)

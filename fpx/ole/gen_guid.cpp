@@ -6,7 +6,7 @@
 //	DESCRIPTION	: Guid generation compatible Mac and Windows.
 //  SCCSID      : @(#)gen_guid.cpp	1.1 11:53:26 18 Dec 1996
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -47,24 +47,26 @@
 //	Variables
 //	---------
 
+#if 	!defined(__unix)
 typedef struct _timespec
 {
 	unsigned long tv_nsec;
 	unsigned long tv_sec;
 } timespec;
+#endif
 
 //	----------------------------------------------------------------------------
 //	Internal Functions
 //	----------------------------------------------------------------------------
 
-#ifdef macintosh
+#if defined(macintosh) || defined(__unix)
 static void GetENETAddress(unsigned char *ENETaddress)
 {
-	MPPParamBlock thePB;
+	// MPPParamBlock thePB;
 	short i;
 	char linkAddr[7];
 	char zoneName[34];
-	OSErr err;
+	// OSErr err;
 	
 	linkAddr[0] = 0x08;
 	linkAddr[1] = 0x00;
@@ -72,11 +74,11 @@ static void GetENETAddress(unsigned char *ENETaddress)
 	linkAddr[3] = 0x20;
 	linkAddr[4] = 0x32;
 	linkAddr[5] = 0xd0;
-	thePB.GAIINFO.version = 1;
-	thePB.GAIINFO.LAlength = 6;
-	thePB.GAIINFO.linkAddr = linkAddr;
-	thePB.GAIINFO.zoneName = zoneName;
-	err = PGetAppleTalkInfo(&thePB, 0);
+	// thePB.GAIINFO.version = 1;
+	// thePB.GAIINFO.LAlength = 6;
+	// thePB.GAIINFO.linkAddr = linkAddr;
+	// thePB.GAIINFO.zoneName = zoneName;
+	// err = PGetAppleTalkInfo(&thePB, 0);
 	for(i=0;i<6;i++)
 		*(ENETaddress+i) = linkAddr[i];
 }
@@ -90,7 +92,7 @@ static void GetENETAddress(unsigned char *ENETaddress)
 //	External Functions
 //	----------------------------------------------------------------------------
 
-#ifdef macintosh
+#if defined(macintosh) || defined(__unix)
 HRESULT GenGuid(CLSID *clsid)
 {
   timespec ts;
@@ -102,9 +104,14 @@ HRESULT GenGuid(CLSID *clsid)
   offset = 0;
 
   uuid = (unsigned char *)clsid;
- 
+
+#if	defined(macintosh)
   ts.tv_sec  = TickCount() * 60;
   ts.tv_nsec = ts.tv_sec   * 100000; 
+#else
+  // clock_gettime(CLOCK_REALTIME, &ts);
+#endif
+
 //  clock_gettime(CLOCK_REALTIME, &ts);
 
   /* Copy in TIME_LOW to uuid from nano seconds */

@@ -7,7 +7,7 @@
 //	COMMENTS	: 
 //  SCCSID      : @(#)ptil_fpx.h	1.2 14:44:16 06 Jan 1997
 //	----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //	----------------------------------------------------------------------------

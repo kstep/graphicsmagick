@@ -1,0 +1,34 @@
+
+CC = gcc
+CFLAGS = -fPIC
+
+CFILES = chen_dct.c\
+dbuffer.c\
+decoder.c\
+dectile.c\
+dhuff.c\
+djpeg.c\
+dllmain.c\
+dparser.c\
+dscan.c\
+ebuffer.c\
+ejpeg.c\
+enctile.c\
+eparser.c\
+fpxmem.c\
+huffman.c\
+mcu2rast.c\
+process.c\
+public.c\
+tables.c\
+win_dct.c\
+winograd.c
+
+COBJS = $(CFILES:%.c=%.o)
+
+default: $(COBJS)
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(CINC) $< -o $@
+
+

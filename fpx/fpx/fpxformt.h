@@ -7,7 +7,7 @@
 //	COMMENTS	: 
 //  SCCSID      : @(#)fpxformt.h	1.2 14:43:35 06 Jan 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------

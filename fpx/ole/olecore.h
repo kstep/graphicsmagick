@@ -8,7 +8,7 @@
 //	COMMENT		: Enhanced OLE objects which are platform independent 
 //  	SCCSID            : @(#)olecore.h	1.4 10:45:14 12 Sep 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -139,6 +139,9 @@ const GUID BlankGUID = { 0, 0, 0, { 0, 0,  0,  0,  0,  0,  0,  0 } };
 #endif
 #ifdef _WIN32
 #define	ORIGINATING_OS_VERSION	0x0002	// 32-bit Windows
+#endif
+#ifdef __unix
+#define ORIGINATING_OS_VERSION  0x0003  // generic UNIX identifier
 #endif
 #ifndef ORIGINATING_OS_VERSION
 #define ORIGINATING_OS_VERSION	0x0000	// 16-bit Windows
@@ -328,7 +331,7 @@ inline void  OLEBlob::SetPointer(long offset)		{ bufPtr = ((bufPtr + offset) < b
 	WCHAR * MultiByteToWideChar(const char * pchar);
 	
 	// This function calculates the length of Unicode string
-	DWORD wcslen(const WCHAR * pwchar); 
+	// DWORD wcslen(const WCHAR * pwchar); 
 #endif
 
 	// This function returns the name string of a variant type

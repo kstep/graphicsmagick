@@ -7,7 +7,7 @@
 //	COMMENTS	: 
 //      SCCSID          : @(#)fpximgvw.cpp	1.9 12:46:34 01 Jul 1997
 //	----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //	----------------------------------------------------------------------------
@@ -765,11 +765,11 @@ FPXStatus PFlashPixImageView::MakeNewThumbnail ( OLEProperty *aProp)
 	long 	thumbNailWidth, thumbNailHeight; 
 	if ( finalWidth >= finalHeight ) {
 		thumbNailWidth = MaxThumbNailSize;
-		thumbNailHeight = (long)( thumbNailWidth * finalHeight ) / finalWidth; 
+		thumbNailHeight = (long)((float)( thumbNailWidth * finalHeight ) / (float)finalWidth); 
 	}
 	else {
 		thumbNailHeight = MaxThumbNailSize; 
-		thumbNailWidth = (long)( thumbNailHeight * finalWidth ) / finalHeight; 
+		thumbNailWidth = (long)((float)( thumbNailHeight * finalWidth ) / (float)finalHeight); 
 	}
 
 	// The thumbnail should either be monochrome or 24-bit RGB (never YCC). Save the old

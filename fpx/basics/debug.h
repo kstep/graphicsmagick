@@ -7,7 +7,7 @@
 //	COMMENTAIRE	:
 //  SCCSID      : @(#)debug.h	1.2 09:04:26 20 Jan 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------

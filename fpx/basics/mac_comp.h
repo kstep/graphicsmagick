@@ -8,7 +8,7 @@
 //	COMMENT		  LS 04/09/96: Merge with Sophia's server
 //  SCCSID      : @(#)mac_comp.h	1.1 11:50:03 18 Dec 1996
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------

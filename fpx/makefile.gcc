@@ -1,0 +1,220 @@
+#********************************************************************
+#**                     Microsoft Windows                          **
+#**               Copyright(c) Microsoft Corp., 1992 - 1993        **
+#********************************************************************
+
+#
+# GNU MAKE VERSION OF MAKEFILE FOR THE REFERENCE IMPL
+#
+
+ifneq (,)
+This makefile requires GNU Make.
+endif
+
+include commk.gcc
+
+# the base directory where the code resides
+BASE_DIR=.
+
+# Put compiler specific flags in CFLAGS
+CFLAGS = $(DBG_FLAGS) -D_UNIX -D__bigEndian $(ADD_CFLAGS) $(BYTE_ORDER) -fPIC
+
+ifeq ($(U_OPTS),use_unicode)
+        CFLAGS += -D_UNICODE=1                   
+endif
+
+# export variables so that sub- Make processes can see them
+export CFLAGS
+export DBG_FLAGS
+
+CINC = -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h
+
+OBJDIR = obj
+
+CPPFILES = ./basics/a_file.cpp \
+./basics/b_string.cpp \
+./basics/color.cpp \
+./basics/common_b.cpp \
+./basics/debug.cpp \
+./basics/filename.cpp \
+./basics/geometry.cpp \
+./basics/graphic.cpp \
+./fpx/buffdesc.cpp \
+./fpx/coltwist.cpp \
+./fpx/f_fpxio.cpp \
+./fpx/f_fpxvw.cpp \
+./fpx/filter.cpp \
+./fpx/fpxformt.cpp \
+./fpx/fpximgvw.cpp \
+./fpx/fpxlib.cpp \
+./fpx/fpxlibio.cpp \
+./fpx/fpxutils.cpp \
+./fpx/imginfio.cpp \
+./fpx/pres_fpx.cpp \
+./fpx/ptil_fpx.cpp \
+./ole/gen_guid.cpp \
+./ole/olecore.cpp \
+./ole/olefiles.cpp \
+./ole/olehstrm.cpp \
+./ole/oleprop.cpp \
+./ole/oleprops.cpp \
+./ole/olestats.cpp \
+./ole/olestorg.cpp \
+./ole/olestrm.cpp \
+./ole/oleclink.cpp \
+./ri_image/viewimg.cpp \
+./ri_image/ri_sys.cpp \
+./ri_image/ri_page.cpp \
+./ri_image/ptile.cpp \
+./ri_image/priimage.cpp \
+./ri_image/pr_level.cpp \
+./ri_image/pimgfile.cpp \
+./ri_image/ph_image.cpp \
+./ri_image/matrix.cpp \
+./ri_image/fn_srch.cpp \
+./ri_image/cp_jpeg.cpp \
+./ri_image/cp32to24.cpp \
+./ri_image/corr_lut.cpp \
+./ri_image/compress.cpp
+
+HEADERS = ./jpeg/eparser.h \
+./jpeg/enctile.h \
+./jpeg/encoder.h \
+./jpeg/ejpeg.h \
+./jpeg/ebuffer.h \
+./jpeg/dparser.h \
+./jpeg/djpeg.h \
+./jpeg/dhuff.h \
+./jpeg/dectile.h \
+./jpeg/decoder.h \
+./jpeg/dct.h \
+./jpeg/dbuffer.h \
+./jpeg/chen_dct.h \
+./macdeps/aliases.h \
+./macdeps/appleeve.h \
+./macdeps/appletal.h \
+./macdeps/coguid.h \
+./macdeps/colorcon.h \
+./macdeps/colormat.h \
+./macdeps/componen.h \
+./macdeps/controle.h \
+./macdeps/desk.h \
+./macdeps/dialogs.h \
+./macdeps/dialogue.h \
+./macdeps/errors.h \
+./macdeps/evenemen.h \
+./macdeps/events.h \
+./macdeps/files.h \
+./macdeps/finder.h \
+./macdeps/fonts.h \
+./macdeps/gestalte.h \
+./macdeps/gxprinti.h \
+./macdeps/lists.h \
+./macdeps/lowmem.h \
+./macdeps/lpfilety.h \
+./macdeps/menus.h \
+./macdeps/nif_api.h \
+./macdeps/osevents.h \
+./macdeps/osutils.h \
+./macdeps/packages.h \
+./macdeps/pmemory.h \
+./macdeps/pnoffscr.h \
+./macdeps/preferen.h \
+./macdeps/prefs.h \
+./macdeps/printing.h \
+./macdeps/pwrdef.h \
+./macdeps/qdoffscr.h \
+./macdeps/quickdra.h \
+./macdeps/quicktim.h \
+./macdeps/resource.h \
+./macdeps/sane.h \
+./macdeps/segload.h \
+./macdeps/standard.h \
+./macdeps/strings.h \
+./macdeps/sysequ.h \
+./macdeps/textutil.h \
+./macdeps/unistd.h \
+./macdeps/wininclu.h \
+./macdeps/winolein.h \
+./macdeps/xbitmap.h \
+./macdeps/xnoffscr.h \
+./macdeps/xtrackab.h \
+./macdeps/xvt.h \
+./macdeps/xvt_env.h \
+./macdeps/xvt_styp.h \
+./macdeps/xvt_type.h \
+./macdeps/rw/regexp.h \
+./macdeps/rw/cstring.h \
+./macdeps/sys/statfs.h \
+./ole/gen_guid.h \
+./ole/oleclink.h \
+./ole/olecomm.h \
+./ole/olecore.h \
+./ole/olefiles.h \
+./ole/olehstrm.h \
+./ole/oleprop.h \
+./ole/oleprops.h \
+./ole/olestats.h \
+./ole/olestorg.h \
+./ole/olestrm.h \
+./ole/str8_16.h \
+./ri_image/viewimg.h \
+./ri_image/ri_sys.h \
+./ri_image/ri_page.h \
+./ri_image/ri_libio.h \
+./ri_image/ri_lib.h \
+./ri_image/ri_imgvw.h \
+./ri_image/ptile.h \
+./ri_image/priimage.h \
+./ri_image/pr_level.h \
+./ri_image/pimgfile.h \
+./ri_image/ph_image.h \
+./ri_image/matrix.h \
+./ri_image/fn_srch.h \
+./ri_image/cpqtime.h \
+./ri_image/cp_jpeg.h \
+./ri_image/cp32to24.h \
+./ri_image/corr_lut.h \
+./ri_image/compress.h
+
+SOURCES= $(CPPFILES) $(HEADERS)
+CPP_OBJS1=$(CPPFILES:%.cpp=%.o)
+CPP_OBJS=$(CPP_OBJS1:%.c=%.o)
+
+default: "$(OBJDIR)" $(OBJDIR)/libfpx.a $(OBJDIR)/libfpx.so
+
+#clear all the files then build
+clean: clobber default
+
+depend:: $(SOURCES)
+	@echo "### Making dependencies "
+	@echo @$(DEPEND) -f depend.gcc $(CINC) -s "# DO NOT DELETE" -- $(CFLAGS) -- $(SOURCES)
+	@$(DEPEND) -f depend.gcc -I $(CINC) -s "# DO NOT DELETE" -- $(CFLAGS) -- $(SOURCES)
+
+# make etags for source browsing
+tags: $(SOURCES)
+	etags $(SOURCES) 
+	
+# clear all the files:
+clobber:	
+	-@rm -rf $(OBJDIR)/*.o $(OBJDIR)/libfpx.so $(OBJDIR)/libfpx.a jpeg/*.o
+
+# make the directory 
+"$(OBJDIR)":
+	-@if [ ! -r $(OBJDIR) ]; then mkdir $(OBJDIR); fi
+
+$(OBJDIR)/libfpx.so: $(CPP_OBJS) jpeg/*.o
+	ld -G -o $@ $(wildcard jpeg/*.o) $(wildcard oless/obj/*.o) $(CPP_OBJS)
+
+$(OBJDIR)/libfpx.a: $(CPP_OBJS) jpeg/*.o
+	$(ARCHIVE) $@ $(CPP_OBJS) $(wildcard jpeg/*.o) $(wildcard oless/obj/*.o)
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(CINC) $< -o $@
+
+%.o: %.cpp
+	$(CC) -c $(CFLAGS) $(CINC) $< -o $@
+
+include depend.gcc
+
+

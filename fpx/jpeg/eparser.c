@@ -11,7 +11,7 @@
 * Language:     C
 * Package:      Hewlett-Packard JPEG Encoder/Decoder
 *
-* Copyright (c) 1999 Digital Imaging Group
+* Copyright (c) 1999 Digital Imaging Group, Inc.
 * For conditions of distribution and use, see copyright notice
 * in Flashpix.h
 *
@@ -22,7 +22,7 @@
 #include "jpegconf.h"
 #include "ebuffer.h"
 #include "eparser.h"
-#include "FPXMem.h"
+#include "fpxmem.h"
 
 #define EP_BUFFER_SIZE 256
 unsigned char *ep_buf;

@@ -7,7 +7,7 @@
 //	COMMENTS	: Mustn't include Commun.h
 //  SCCSID      : @(#)common_b.h	1.1 11:49:58 18 Dec 1996
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -373,25 +373,25 @@
 //	Inline C functions
 //	------------------
 
-	inline CoefPondere(Coef a, Coef b)
+	inline Coef CoefPondere(Coef a, Coef b)
 	
 	{
 		return (a*b) >> 8;
 	}
 	
-	inline CoefMoyenne(Coef a, Coef b)
+	inline Coef CoefMoyenne(Coef a, Coef b)
 	
 	{
 		return (a+b) >> 1;
 	}
 	
-	inline CoefComplemente(Coef a)
+	inline Coef CoefComplemente(Coef a)
 	
 	{
 		return 256 - a;
 	}
 	
-	inline CoefClipping(Coef a)
+	inline Coef CoefClipping(Coef a)
 	
 	{
 		return (a < 0) ? 0 : ((a > 255) ? 255 : a);

@@ -7,7 +7,7 @@
 //	COMMENTS	: 
 //  	SCCSID      : @(#)f_fpxvw.cpp	1.5 12:24:50 08 Jul 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -595,6 +595,36 @@ Boolean PFileFlashPixView::Commit()
 	return ok;
 }
 
+// This should probably go somewhere else
+#if 	defined(__GNUC__)
+
+#define USERCLASSTYPE_APPNAME	0
+
+HRESULT OleRegGetUserType(REFCLSID clsid, DWORD whatever, LPOLESTR FAR* pszUserType)
+{
+    if (*pszUserType == NULL) {
+        *pszUserType = new OLECHAR[512];
+    }
+    *pszUserType = OLESTR("Flashpix Toolkit Application");
+    return S_OK;
+}
+
+HRESULT StringFromCLSID(REFCLSID clsid, LPOLESTR FAR* lplpsz)
+{
+   
+    *lplpsz = new OLECHAR[512];
+    char lpsz[512];
+   
+    WORD  Data4 = clsid.Data4[0]<<8 & clsid.Data4[1];
+    WORD  Data5 = clsid.Data4[2]<<8 & clsid.Data4[3];  
+    DWORD Data6 = clsid.Data4[4]<<24 & clsid.Data4[5]<<16 & clsid.Data4[6]<<8 & clsid.Data4[7];
+
+    sprintf(lpsz, "{%08x-%04x-%04x-%04x-%04x%08x}", clsid.Data1, clsid.Data2, clsid.Data3, Data4, Data5, Data6);
+    INIT_OLESTR(*lplpsz, lpsz);
+    return S_OK;
+}
+
+#endif    
 
 // Create CompObj in root storage 
 Boolean PFileFlashPixView::CreateCompObj()
@@ -622,10 +652,10 @@ Boolean PFileFlashPixView::CreateCompObj()
 		LPOLESTR lpszNew = NULL;
 		if (OleRegGetUserType(clsID, USERCLASSTYPE_APPNAME, &lpszNew) != S_OK)
 			lpszNew = &chZero;
-#ifdef macintosh
+#if defined(macintosh) || defined(__unix)
 		curCompObj->WriteVT_LPSTR_NoPad(lpszNew);
 #elif _WINDOWS
-		char str[128];
+		char str[1024];
 		WideCharToMultiByte(CP_ACP, 0, lpszNew, -1, str, 128, NULL, NULL);
 		curCompObj->WriteVT_LPSTR_NoPad(str);
 #endif			
@@ -633,7 +663,7 @@ Boolean PFileFlashPixView::CreateCompObj()
 		// Get and write clsID string
 		LPOLESTR FAR clsIDStr;			
 		StringFromCLSID(clsID, &clsIDStr);
-#ifdef macintosh
+#if defined(macintosh) || defined(__unix)
 		curCompObj->WriteVT_LPSTR_NoPad(clsIDStr);
 #elif _WINDOWS
 		WideCharToMultiByte(CP_ACP, 0, clsIDStr, -1, str, 128, NULL, NULL);
@@ -641,7 +671,7 @@ Boolean PFileFlashPixView::CreateCompObj()
 #endif
 
 		// Write prog id ( for now just write length = 0 )
-#ifdef macintosh
+#if defined(macintosh) || defined(__unix)
 		curCompObj->WriteVT_LPSTR_NoPad(&chZero);
 #elif _WINDOWS
 		char progID = 0; 
@@ -653,25 +683,29 @@ Boolean PFileFlashPixView::CreateCompObj()
 		curCompObj->WriteVT_I4(&temp);
 		
 		// Write unicode user type ( for now just write length = 0 )
-#ifdef macintosh
+#if defined(macintosh) || defined(__unix)
 		curCompObj->WriteVT_LPWSTR_NoPad(MultiByteToWideChar(lpszNew));
 #elif _WINDOWS
 		curCompObj->WriteVT_LPWSTR_NoPad(lpszNew);
 #endif			
 		
 		// Write unicode clipboard format 
-#ifdef macintosh
+#if defined(macintosh) || defined(__unix)
 		curCompObj->WriteVT_LPWSTR_NoPad(MultiByteToWideChar(&chZero));
 #elif _WINDOWS
 		curCompObj->WriteVT_LPWSTR_NoPad(&chZero);
 #endif			
 		
 		// Write unicode prog id ( for now just write length = 0 )
-#ifdef macintosh
+#if defined(macintosh) || defined(__unix)
 		curCompObj->WriteVT_LPWSTR_NoPad(MultiByteToWideChar(&chZero));
 #elif _WINDOWS
 		curCompObj->WriteVT_LPWSTR_NoPad(&chZero);
 #endif		
+
+        // We may need to call some other memory methods.
+        delete[] lpszNew;
+
 	} 
 	else
 		return FALSE; 

@@ -9,7 +9,7 @@
 //							   Extract FIDefines.h, MacCompatibility.h, FIErrors.h and SwapBytes.h
 //  SCCSID      : @(#)b_types.h	1.1 11:49:56 18 Dec 1996
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -56,10 +56,10 @@
         typedef unsigned short unsigned16;
         typedef unsigned char  unsigned8;
     #else
-        #ifdef IRIS                                             // If Silicon Graphics
+        #ifdef __GNUC__ // gnu compiler 
             typedef signed long  int32;
             typedef signed short int16;
-            typedef signed char  int8;
+            typedef char  int8;
 
             typedef unsigned long  unsigned32;
             typedef unsigned short unsigned16;

@@ -7,7 +7,7 @@
 //	COMMENTAIRE	:
 //  SCCSID      : @(#)b_string.cpp	1.1 11:49:56 18 Dec 1996
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -335,7 +335,7 @@ void Chaine::PlaceParametre(const Chaine& replaceStr, short numParam )
 		toSearch[1] = '2';
 		
 	// Search
-	char * foundStr = strstr(Texte(), toSearch);
+	char * foundStr = strstr((const char*)Texte(), toSearch);
 	
 	// If found, build the string with replacment
 	if (foundStr != NULL)
@@ -345,7 +345,7 @@ void Chaine::PlaceParametre(const Chaine& replaceStr, short numParam )
 		
 		// Copy unmodified start of string *this
 		nbUnchangedStartingChars = foundStr - Texte();
-		strncpy(modifiedStr, Texte(), nbUnchangedStartingChars);
+		strncpy(modifiedStr, (const char*)Texte(), nbUnchangedStartingChars);
 		modifiedStr[nbUnchangedStartingChars] = '\0';
 		
 		// Replace "^i" by replaceStr
@@ -644,7 +644,7 @@ void Chaine63::PlaceParametre(const Chaine63& replaceStr, short numParam )
 		
 		// Copy unmodified start of string *this
 		nbUnchangedStartingChars = foundStr - Texte();
-		strncpy(modifiedStr, Texte(), nbUnchangedStartingChars);
+		strncpy(modifiedStr, (const char*)Texte(), nbUnchangedStartingChars);
 		modifiedStr[nbUnchangedStartingChars] = '\0';
 		
 		// Replace "^i" by replaceStr

@@ -3,7 +3,8 @@ Description:  Main module for dllJPEG libraries.
 */ 
 
 
-# include <windows.h>
+#ifndef __unix
+#include <windows.h>
 #include "jpegconf.h"
 
 int FAR PASCAL LibMain(
@@ -20,3 +21,4 @@ int FAR PASCAL WEP(int nParameter)
 {
     return(1);
 };
+#endif //__unix

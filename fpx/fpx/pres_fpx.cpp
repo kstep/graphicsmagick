@@ -7,7 +7,7 @@
 //	COMMENTS	: 
 //      SCCSID          : @(#)pres_fpx.cpp	1.6 13:18:52 02 Jun 1997
 //	----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //	----------------------------------------------------------------------------
@@ -600,7 +600,7 @@ FPXStatus PResolutionFlashPix::SetResolutionDescription()
 				colorBlob.WriteVT_I4(tmp);
 				// CAUTION: we don't analyse extra subimages (Baseline limitation)
 			}
-			*aProp = (BLOB*)(&colorBlob); 
+			*aProp = (BLOB*)(colorBlob.GetBlob()); 
 		} else 
 			status = FPX_FILE_WRITE_ERROR;
 	} else 

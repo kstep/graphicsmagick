@@ -1,0 +1,8 @@
+# run make in the main directory
+all: 
+	cd ..
+	$(MAKE) -f makefile.gcc $(MAKEFLAGS)
+
+clean
+	cd ..
+	$(MAKE) -f makefile.gcc $(MAKEFLAGS)

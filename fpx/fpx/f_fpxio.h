@@ -10,7 +10,7 @@
 //	COMMENT		: This package is a part of the FlashPix Toolkit I/O
 //	SCCSID          : @(#)f_fpxio.h	1.3 12:36:08 22 Jul 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------

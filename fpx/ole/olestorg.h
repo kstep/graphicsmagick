@@ -7,7 +7,7 @@
 //	COMMENT		: Enhanced OLE objects are platform independent
 //  SCCSID      : @(#)olestorg.h	1.1 11:53:31 18 Dec 1996
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -51,13 +51,13 @@
 	public:
 							// This constructor creates an OLEStorage within a parent OLE storage
 							OLEStorage(OLEStorage * parentStorage, IStorage * currentStorage);
-							OLEStorage(CLSID& classID, OLEStorage * parentStorage, IStorage * currentStorage);
+							OLEStorage(REFCLSID classID, OLEStorage * parentStorage, IStorage * currentStorage);
 							OLEStorage(OLEStorage * parentStorage, IStorage * currentStorage, List *theOpenOLEObjList);
 							OLEStorage(OLEStorage * parentStorage, IStorage * currentStorage, OLECustomLink * theCustomLink);
 		
 							// This constructor creates an OLEStorage within a parent OLE file
 							OLEStorage(OLEFile * parentFile, IStorage * currentStorage);
-							OLEStorage(CLSID& classID, OLEFile * parentFile, IStorage * currentStorage);
+							OLEStorage(REFCLSID classID, OLEFile * parentFile, IStorage * currentStorage);
 							OLEStorage(OLEFile  * parentFile, IStorage * currentStorage, List *	theOpenOLEObjList);
 		
 							~OLEStorage();
@@ -75,42 +75,42 @@
 		virtual Boolean		OpenStorage(const char * name, OLEStorage ** currentStorage, DWORD mode = OLE_READWRITE_MODE);
 
 		// This function opens a storage specified by its name and a CLSID provided by the user
-		virtual Boolean		OpenStorage(CLSID& classID, const char * name, OLEStorage ** currentStorage, DWORD mode = OLE_READWRITE_MODE);
+		virtual Boolean		OpenStorage(REFCLSID classID, const char * name, OLEStorage ** currentStorage, DWORD mode = OLE_READWRITE_MODE);
 
 		// This function creates a storage specified by its name within an open OLE storage
 		// using a default CLSID 
 		virtual Boolean		CreateStorage(const char * name, OLEStorage ** newStorage);
 
 		// This function creates a storage specified by its name and a CLSID provided by the user
-		virtual Boolean		CreateStorage(CLSID& classID, const char * name, OLEStorage ** newStorage);
+		virtual Boolean		CreateStorage(REFCLSID classID, const char * name, OLEStorage ** newStorage);
 
 		// This function opens a property set specified by its name within an open OLE storage 
 		// using a default CLSID 
 		virtual Boolean		OpenPropertySet(const char *name, OLEPropertySet **currentPropertySet, DWORD mode = OLE_READWRITE_MODE);
 
 		// This function opens a property set specified by its name and a CLSID provided by the user
-		virtual Boolean		OpenPropertySet(CLSID& classID, const char *name, OLEPropertySet **currentPropertySet, DWORD mode = OLE_READWRITE_MODE);
+		virtual Boolean		OpenPropertySet(REFCLSID classID, const char *name, OLEPropertySet **currentPropertySet, DWORD mode = OLE_READWRITE_MODE);
 
 		// This function creates a property set specified by its name within an open OLE storage
 		// using a default CLSID 
 		virtual Boolean		CreatePropertySet(const char *name, OLEPropertySet **newPropertySet);
 		
 		// This function creates a property set specified by its name and its CLSID provided by the user
-		virtual Boolean		CreatePropertySet(CLSID& classID, const char *name, OLEPropertySet **newPropertySet);
+		virtual Boolean		CreatePropertySet(REFCLSID classID, const char *name, OLEPropertySet **newPropertySet);
 		
 		// This function opens a header stream specified by its name within an open OLE storage 
 		// using a default CLSID 
 		virtual Boolean		OpenHeaderStream(const char *name, OLEHeaderStream **currentHeaderStream, DWORD mode = OLE_READWRITE_MODE);
 
 		// This function opens a header stream specified by its name and its CLSID provided by the user
-		virtual Boolean		OpenHeaderStream(CLSID& classID, const char *name, OLEHeaderStream **currentHeaderStream, DWORD mode = OLE_READWRITE_MODE);
+		virtual Boolean		OpenHeaderStream(REFCLSID classID, const char *name, OLEHeaderStream **currentHeaderStream, DWORD mode = OLE_READWRITE_MODE);
 
 		// This function creates a header stream specified by its name within an open OLE storage. 
 		// using a default CLSID 
 		virtual Boolean		CreateHeaderStream(const char *name, OLEHeaderStream **newHeaderStream);
 		
 		// This function creates a header stream specified by its name and its CLSID provided by the user
-		virtual Boolean		CreateHeaderStream(CLSID& classID, const char *name, OLEHeaderStream **newHeaderStream);
+		virtual Boolean		CreateHeaderStream(REFCLSID classID, const char *name, OLEHeaderStream **newHeaderStream);
 		
 	  	virtual OLEFile *	GetFile()    	{ return parFile;    };		// Return parent file
 		virtual	OLEStorage* GetParStorage() { return parStorage; }; 	// Return parent storage

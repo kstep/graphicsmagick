@@ -7,7 +7,7 @@
 //	COMMENT		: Enhanced OLE objects which are independent of platform
 //  	SCCSID            : @(#)oleprop.h	1.5 10:45:20 12 Sep 1997
 //  ----------------------------------------------------------------------------
-//  Copyright (c) 1999 Digital Imaging Group
+//  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
@@ -126,8 +126,8 @@
 		// from an OLEProperty class through operator=
 		virtual		operator short() const;
 		virtual		operator WORD() const;
-		virtual		operator long() const;
 		virtual		operator DWORD() const;
+		virtual		operator long() const;
 		virtual		operator float() const;
 		virtual		operator double() const;
 		virtual		operator Boolean() const;
@@ -142,21 +142,21 @@
 
 		// Following functions define the data types in FPXBaselineIO.h that can be 
 		// assigned to an OLEProperty class through operator=
-		virtual		FPXStr&			operator=(FPXStr& fpxstr);
-		virtual		FPXWideStr&		operator=(FPXWideStr& fpxwstr);
-		virtual		FPXShortArray&	operator=(FPXShortArray& sa);
-		virtual		FPXLongArray&	operator=(FPXLongArray& la);
-		virtual		FPXRealArray&	operator=(FPXRealArray& fa);
-		virtual		FPXClsIDArray&	operator=(FPXClsIDArray& ca);
-		virtual		FPXWideStrArray&operator=(FPXWideStrArray& wa);
-		virtual		FPXStrArray&	operator=(FPXStrArray& sa);
+		virtual		const FPXStr&			operator=(const FPXStr& fpxstr);
+		virtual		const FPXWideStr&		operator=(const FPXWideStr& fpxwstr);
+		virtual		const FPXShortArray&	operator=(const FPXShortArray& sa);
+		virtual		const FPXLongArray&	operator=(const FPXLongArray& la);
+		virtual		const FPXRealArray&	operator=(const FPXRealArray& fa);
+		virtual		const FPXClsIDArray&	operator=(const FPXClsIDArray& ca);
+		virtual		const FPXWideStrArray&operator=(const FPXWideStrArray& wa);
+		virtual		const FPXStrArray&	operator=(const FPXStrArray& sa);
 		// PTCH_DCG	- reinstated the following 3 prototypes
-		virtual 	FPXSpacialFrequencyResponseBlock& operator=( 
-						FPXSpacialFrequencyResponseBlock& sfra);
-		virtual		FPXCFA_PatternBlock& 	operator=( FPXCFA_PatternBlock& cpba); 
-		virtual		FPXOECF_Block& 			operator=( FPXOECF_Block& oba); 
-		virtual		FPXScannedImageSizeBlock& 	operator=( FPXScannedImageSizeBlock& susb);
-		virtual		FPXOpticalFilterArray& 	operator=( FPXOpticalFilterArray& ofa); 
+		virtual 	const FPXSpacialFrequencyResponseBlock& operator=( 
+						const FPXSpacialFrequencyResponseBlock& sfra);
+		virtual		const FPXCFA_PatternBlock& 	operator=(const  FPXCFA_PatternBlock& cpba); 
+		virtual		const FPXOECF_Block& 			operator=(const  FPXOECF_Block& oba); 
+		virtual		const FPXScannedImageSizeBlock& 	operator=(const  FPXScannedImageSizeBlock& susb);
+		virtual		const FPXOpticalFilterArray& 	operator=(const  FPXOpticalFilterArray& ofa); 
 	
 		// Following functions define the data types in FPXBaselineIO.h that can be 
 		// extracted from an OLEProperty class through operator=
@@ -227,48 +227,48 @@
 //-------------------------------------------------------------------------------------------
 
 	// This function converts FPXStr to LPSTR
-	char* FPXStrToLPSTR( FPXStr& fpxstr );   	
+	char* FPXStrToLPSTR(const FPXStr& fpxstr );   	
 
 	// This function converts FPXWideStr to LPWSTR
-	LPWSTR FPXWideStrToLPWSTR( FPXWideStr& fpxwstr );  	
+	LPWSTR FPXWideStrToLPWSTR(const FPXWideStr& fpxwstr );  	
 
 	// PTCH_DCG - added prototype
 	// This function converts an array of bytes in FPXStr to vector
-	VECTOR* FPXStrToVector( FPXStr& sa ); 	
+	VECTOR* FPXStrToVector(const FPXStr& sa ); 	
 
 	// This function converts FPXShortArray to VECTOR
-	VECTOR* FPXShortArrayToVector( FPXShortArray& sa );  	
+	VECTOR* FPXShortArrayToVector(const FPXShortArray& sa );  	
 
 	// This function converts FPXLongArray to VECTOR
-	VECTOR* FPXLongArrayToVector( FPXLongArray& la );  	
+	VECTOR* FPXLongArrayToVector(const FPXLongArray& la );  	
 
 	// This function converts FPXRealArray to VECTOR
-	VECTOR* FPXRealArrayToVector( FPXRealArray& fa );  	
+	VECTOR* FPXRealArrayToVector(const FPXRealArray& fa );  	
 	
 	// This function converts FPXClsIDArray to VECTOR
-	VECTOR* FPXClsIDArrayToVector( FPXClsIDArray& ca ); 
+	VECTOR* FPXClsIDArrayToVector(const FPXClsIDArray& ca ); 
 	  	
 	// This function converts FPXStrArray to VECTOR
-	VECTOR* FPXStrArrayToVector( FPXStrArray& sa );  	
+	VECTOR* FPXStrArrayToVector(const FPXStrArray& sa );  	
 	
 	// This function converts FPXWideStrArray to VECTOR
-	VECTOR* FPXWideStrArrayToVector( FPXWideStrArray& wa );  	
+	VECTOR* FPXWideStrArrayToVector(const FPXWideStrArray& wa );  	
 
 	// PTCH_DCG	- reinstated
 	// This function converts FPXSpacialFrequencyResponseBlock to VECTOR
-	VECTOR* FPXSpacialFrequencyResponseBlockToVector( FPXSpacialFrequencyResponseBlock& sfra );  	
+	VECTOR* FPXSpacialFrequencyResponseBlockToVector(const FPXSpacialFrequencyResponseBlock& sfra );  	
 
 	// This function converts FPXCFA_PatternBlock to VECTOR
-	VECTOR* FPXCFA_PatternBlockToVector( FPXCFA_PatternBlock& cpba );  	
+	VECTOR* FPXCFA_PatternBlockToVector(const FPXCFA_PatternBlock& cpba );  	
 
 	// This function converts FPXOECF_Block to VECTOR
-	VECTOR* FPXOECF_BlockToVector( FPXOECF_Block& oeba );  	
+	VECTOR* FPXOECF_BlockToVector(const FPXOECF_Block& oeba );  	
 
 	// This function converts FPXScannedImageSizeBlock to VECTOR
-	VECTOR* FPXScannedImageSizeBlockToVector( FPXScannedImageSizeBlock& sisb );  
+	VECTOR* FPXScannedImageSizeBlockToVector(const FPXScannedImageSizeBlock& sisb );  
 	
 	// This function converts FPXOpticalFilterArray to VECTOR
-	VECTOR* FPXOpticalFilterArrayToVector( FPXOpticalFilterArray& sisb );  		
+	VECTOR* FPXOpticalFilterArrayToVector(const FPXOpticalFilterArray& sisb );  		
 
 	// This function converts LPSTR to FPXStr
 	FPXStr& LPSTRToFPXStr( char* pstr );

@@ -1,0 +1,73 @@
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h basics/a_file.cpp -o basics/a_file.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h basics/b_string.cpp -o basics/b_string.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h basics/color.cpp -o basics/color.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h basics/common_b.cpp -o basics/common_b.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h basics/debug.cpp -o basics/debug.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h basics/filename.cpp -o basics/filename.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h basics/geometry.cpp -o basics/geometry.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h basics/graphic.cpp -o basics/graphic.o
+
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h fpx/buffdesc.cpp -o fpx/buffdesc.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h fpx/coltwist.cpp -o fpx/coltwist.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h fpx/f_fpxio.cpp -o fpx/f_fpxio.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h fpx/f_fpxvw.cpp -o fpx/f_fpxvw.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h fpx/filter.cpp -o fpx/filter.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h fpx/fpxformt.cpp -o fpx/fpxformt.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h fpx/fpximgvw.cpp -o fpx/fpximgvw.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h fpx/fpxlib.cpp -o fpx/fpxlib.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h fpx/fpxlibio.cpp -o fpx/fpxlibio.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h fpx/fpxutils.cpp -o fpx/fpxutils.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h fpx/imginfio.cpp -o fpx/imginfio.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h fpx/pres_fpx.cpp -o fpx/pres_fpx.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h fpx/ptil_fpx.cpp -o fpx/ptil_fpx.o
+
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ole/gen_guid.cpp -o ole/gen_guid.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ole/olecore.cpp -o ole/olecore.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ole/olefiles.cpp -o ole/olefiles.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ole/olehstrm.cpp -o ole/olehstrm.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ole/oleprop.cpp -o ole/oleprop.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ole/oleprops.cpp -o ole/oleprops.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ole/olestats.cpp -o ole/olestats.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ole/olestorg.cpp -o ole/olestorg.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ole/olestrm.cpp -o ole/olestrm.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ole/oleclink.cpp -o ole/oleclink.o
+
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ri_image/viewimg.cpp -o ri_image/viewimg.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ri_image/ri_sys.cpp -o ri_image/ri_sys.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ri_image/ri_page.cpp -o ri_image/ri_page.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ri_image/ptile.cpp -o ri_image/ptile.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ri_image/priimage.cpp -o ri_image/priimage.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ri_image/pr_level.cpp -o ri_image/pr_level.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ri_image/pimgfile.cpp -o ri_image/pimgfile.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ri_image/ph_image.cpp -o ri_image/ph_image.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ri_image/matrix.cpp -o ri_image/matrix.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ri_image/fn_srch.cpp -o ri_image/fn_srch.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ri_image/cp_jpeg.cpp -o ri_image/cp_jpeg.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ri_image/cp32to24.cpp -o ri_image/cp32to24.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ri_image/corr_lut.cpp -o ri_image/corr_lut.o
+gcc -c -g -DDBG=1 -DDEVL=1 -D_UNIX -D__bigEndian  -DBIGENDIAN=1 -fPIC -I./ -I./basics -I./fpx -I./ole -I./ri_image -I./jpeg -I./oless -I./oless/h ri_image/compress.cpp -o ri_image/compress.o
+
+In jpeg directory ...
+gcc -c -fPIC  chen_dct.c -o chen_dct.o
+gcc -c -fPIC  dbuffer.c -o dbuffer.o
+gcc -c -fPIC  decoder.c -o decoder.o
+gcc -c -fPIC  dectile.c -o dectile.o
+gcc -c -fPIC  dhuff.c -o dhuff.o
+gcc -c -fPIC  djpeg.c -o djpeg.o
+gcc -c -fPIC  dllmain.c -o dllmain.o
+gcc -c -fPIC  dparser.c -o dparser.o
+gcc -c -fPIC  dscan.c -o dscan.o
+gcc -c -fPIC  ebuffer.c -o ebuffer.o
+gcc -c -fPIC  ejpeg.c -o ejpeg.o
+gcc -c -fPIC  enctile.c -o enctile.o
+gcc -c -fPIC  eparser.c -o eparser.o
+gcc -c -fPIC  fpxmem.c -o fpxmem.o
+gcc -c -fPIC  huffman.c -o huffman.o
+gcc -c -fPIC  mcu2rast.c -o mcu2rast.o
+gcc -c -fPIC  process.c -o process.o
+gcc -c -fPIC  public.c -o public.o
+gcc -c -fPIC  tables.c -o tables.o
+gcc -c -fPIC  win_dct.c -o win_dct.o
+gcc -c -fPIC  winograd.c -o winograd.o
+ar cr obj/libfpx.a ./basics/a_file.o ./basics/b_string.o ./basics/color.o ./basics/common_b.o ./basics/debug.o ./basics/filename.o ./basics/geometry.o ./basics/graphic.o ./fpx/buffdesc.o ./fpx/coltwist.o ./fpx/f_fpxio.o ./fpx/f_fpxvw.o ./fpx/filter.o ./fpx/fpxformt.o ./fpx/fpximgvw.o ./fpx/fpxlib.o ./fpx/fpxlibio.o ./fpx/fpxutils.o ./fpx/imginfio.o ./fpx/pres_fpx.o ./fpx/ptil_fpx.o ./ole/gen_guid.o ./ole/olecore.o ./ole/olefiles.o ./ole/olehstrm.o ./ole/oleprop.o ./ole/oleprops.o ./ole/olestats.o ./ole/olestorg.o ./ole/olestrm.o ./ole/oleclink.o ./ri_image/viewimg.o ./ri_image/ri_sys.o ./ri_image/ri_page.o ./ri_image/ptile.o ./ri_image/priimage.o ./ri_image/pr_level.o ./ri_image/pimgfile.o ./ri_image/ph_image.o ./ri_image/matrix.o ./ri_image/fn_srch.o ./ri_image/cp_jpeg.o ./ri_image/cp32to24.o ./ri_image/corr_lut.o ./ri_image/compress.o jpeg/*.o oless/obj/*.o
+ld -G -o obj/libfpx.so jpeg/*.o oless/obj/*.o ./basics/a_file.o ./basics/b_string.o ./basics/color.o ./basics/common_b.o ./basics/debug.o ./basics/filename.o ./basics/geometry.o ./basics/graphic.o ./fpx/buffdesc.o ./fpx/coltwist.o ./fpx/f_fpxio.o ./fpx/f_fpxvw.o ./fpx/filter.o ./fpx/fpxformt.o ./fpx/fpximgvw.o ./fpx/fpxlib.o ./fpx/fpxlibio.o ./fpx/fpxutils.o ./fpx/imginfio.o ./fpx/pres_fpx.o ./fpx/ptil_fpx.o ./ole/gen_guid.o ./ole/olecore.o ./ole/olefiles.o ./ole/olehstrm.o ./ole/oleprop.o ./ole/oleprops.o ./ole/olestats.o ./ole/olestorg.o ./ole/olestrm.o ./ole/oleclink.o ./ri_image/viewimg.o ./ri_image/ri_sys.o ./ri_image/ri_page.o ./ri_image/ptile.o ./ri_image/priimage.o ./ri_image/pr_level.o ./ri_image/pimgfile.o ./ri_image/ph_image.o ./ri_image/matrix.o ./ri_image/fn_srch.o ./ri_image/cp_jpeg.o ./ri_image/cp32to24.o ./ri_image/corr_lut.o ./ri_image/compress.o

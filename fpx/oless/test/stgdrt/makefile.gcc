@@ -1,0 +1,73 @@
+
+###
+### Unix version of the Makefile  
+### This should work with at least GCC
+###
+
+include ../../commk.gcc
+
+# directory of source files
+BUILDTOP=.
+DESTDIR=$(BUILDTOP)
+
+# Some flags here
+INCLUDES=
+DBG_FLAGS= -g -DDBG=1 -DDEVL=1
+CFLAGS=$(DBG_FLAGS) $(INCLUDES) -D_UNIX -D_REF
+
+ifeq ($(U_OPTS),use_unicode)
+        CFLAGS += -D_UNICODE=1                   
+endif
+
+# Source files
+CXXS= drt.cxx\
+	headers.cxx\
+	ilb.cxx\
+	illeg.cxx\
+	strlist.cxx\
+	tests.cxx\
+	util.cxx\
+	wrap.cxx\
+
+HEADERS= drt.hxx\
+	ilb.hxx\
+	illeg.hxx \
+	strlist.hxx\
+	tests.hxx\
+	util.hxx\
+	wrap.hxx
+
+SRCS= $(CXXS) $(HEADERS)
+
+OBJS=$(CXXS:%.cxx=%.o)
+TAGSFILE=TAGS
+
+#put subdirectories here
+SUBDIRS=
+
+TARGET=stgdrt
+LIBS=../../obj/refstg.a
+
+all:: $(TARGET) 
+
+clean:: clobber all
+
+clobber::
+	$(RM) $(TAGSFILE)
+	$(RM) $(OBJS)
+	$(RM) $(TARGET)
+
+depend:: $(SRCS)
+	@echo "### Making dependencies "
+	@$(DEPEND) -f depend.gcc -s "# DO NOT DELETE" -- $(CFLAGS) -- $(SRCS)
+
+stgdrt:: $(OBJS) $(LIBS) 
+	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LIBS)
+
+$(TAGSFILE)::
+	etags $(SRCS) -o $(TAGSFILE)
+
+%.o: $(BUILDTOP)/%.cxx
+	$(CC) -c $(CFLAGS) $(INC) $< -o $@
+
+include depend.gcc
