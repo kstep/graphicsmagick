@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <delegatemap>
+  <delegate decode="bmp" encode="launch" mode="encode" command='c:\Program Files\Accessories\mspaint.exe "%i."' />
+  <delegate decode="bmp" encode="win" mode="encode" command='c:\Program Files\Accessories\mspaint.exe "%i."' />
   <delegate decode="browse" restrain="True" spawn="True" command='cmd /C start http://www.imagemagick.org/ImageMagick/'  />
   <delegate decode="bzip" restrain="True" command='|bzip2 -cd "%i"' />
   <delegate decode="cgm" command='ralcgm -d ps "%i" "%o" %u\nconvert -concatenate "%o"*.ps "%o"' />
@@ -26,8 +28,6 @@
   <delegate decode="pdf" encode="ps" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pswrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="pgp" command='pgpv -fq "%i"' />
   <delegate decode="pnm" encode="ilbm" mode="encode" command='ppmtoilbm -24if "%i" > "%o"' />
-  <delegate decode="bmp" encode="launch" mode="encode" command='c:"\Program Files\Accessories\mspaint.exe" "%i"' />
-  <delegate decode="bmp" encode="win" mode="encode" command='c:"\Program Files\Accessories\mspaint.exe" "%i"' />
   <delegate decode="pov" command='povray "+i"%i"" +o"%o" +fn%q +w%w +h%h +a -q9 -kfi"%s" -kff"%n"\nconvert -concatenate "%o*.png" "%o"' />
   <delegate decode="ps" encode="eps" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=epswrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="ps" encode="pdf" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite -sOutputFile=%o -- "%i" -c quit' />
