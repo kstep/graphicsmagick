@@ -1452,7 +1452,7 @@ compute_layer_info:
 
           theAttr = (ImageAttribute *)GetImageAttribute(tmp_image, "[layer-name]");
           if (theAttr) {
-			  sprintf((char *) &(layer_name[1]), "%04s", theAttr->value );
+			  sprintf((char *) &(layer_name[1]), "%4s", theAttr->value );
 			  (void) WriteBlobByte(image, 3);
 			  (void) WriteBlob(image, 3, &layer_name[1]);			
 		  } else {

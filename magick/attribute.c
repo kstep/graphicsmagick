@@ -475,7 +475,7 @@ typedef struct _TagInfo
     *description;
 } TagInfo;
 
-TagInfo
+static TagInfo
   tag_table[] =
   {
     {  0x100, "ImageWidth"},
