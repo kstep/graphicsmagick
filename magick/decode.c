@@ -1156,10 +1156,11 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
 #include "dicom.h"
 
   char
+    explicit_vr[3],
     implicit_vr[3],
     magick[128],
     photometric[MaxTextExtent],
-    explicit_vr[3];
+    transfer_syntax[MaxTextExtent];
 
   Image
     *image;
@@ -1274,6 +1275,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
       {
         quantum=2;
         if ((strcmp(explicit_vr,"OB") == 0) ||
+            (strcmp(explicit_vr,"UN") == 0) ||
             (strcmp(explicit_vr,"OW") == 0) || (strcmp(explicit_vr,"SQ") == 0))
           {
             (void) LSBFirstReadShort(image->file);
@@ -1404,18 +1406,16 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
             /*
               Transfer Syntax.
             */
-            if (strcmp((char *) data,"1.2.840.10008.1.2.2") == 0)
+            (void) strcpy(transfer_syntax,(char *) data);
+            if (strcmp(transfer_syntax,"1.2.840.10008.1.2.2") == 0)
               PrematureExit(CorruptImageWarning,
                 "big endian byte order not supported",image);
-            if (strcmp((char *) data,"1.2.840.10008.1.2.5") == 0)
+            if (strcmp(transfer_syntax,"1.2.840.10008.1.2.5") == 0)
               PrematureExit(CorruptImageWarning,"RLE compression not supported",
                 image);
-            if (strcmp((char *) data,"1.2.840.10008.1.2.4.70") == 0)
+            if (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0)
               PrematureExit(CorruptImageWarning,
                 "lossless JPEG compression not supported",image);
-            if (strcmp((char *) data,"1.2.840.10008.1.2.4.50") == 0)
-              PrematureExit(CorruptImageWarning,
-                "lossy jpeg compression not supported",image);
             break;
           }
           default:
@@ -1604,6 +1604,40 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
   }
   if ((width == 0) || (height == 0))
     PrematureExit(CorruptImageWarning,"Not a DCM image file",image);
+  if (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.50") == 0)
+    {
+      FILE
+        *file;
+
+      int
+        c;
+
+      ImageInfo
+        *local_info;
+
+      /*
+        Lossy JPEG.
+      */
+      local_info=CloneImageInfo(image_info);
+      TemporaryFilename((char *) local_info->filename);
+      file=fopen(local_info->filename,WriteBinaryType);
+      if (file == (FILE *) NULL)
+        PrematureExit(FileOpenWarning,"Unable to write file",image);
+      for (i=0; i < 16; i++)
+        (void) fgetc(image->file);
+      c=fgetc(image->file);
+      while (c != EOF)
+      {
+        (void) putc(c,file);
+        c=fgetc(image->file);
+      }
+      (void) fclose(file);
+      DestroyImage(image);
+      image=ReadJPEGImage(local_info);
+      (void) unlink(local_info->filename);
+      DestroyImageInfo(local_info);
+      return(image);
+    }
   max_value=(1 << (8*bytes_per_pixel))-1;
   if (strncmp(photometric,"MONOCHROME",10) == 0)
     max_value=(1 << significant_bits)-1;
@@ -1721,7 +1755,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
                   index=fgetc(image->file);
                 else
                   if (bits_allocated != 12)
-                    index=LSBFirstReadShort(image->file);
+                    index=MSBFirstReadShort(image->file);
                   else
                     {
                       if (i & 0x01)
@@ -1794,7 +1828,11 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
         }
         SetRunlengthPackets(image,packets);
         if (image->class == PseudoClass)
-          SyncImage(image);
+          {
+            SyncImage(image);
+            if (bytes_per_pixel == 2)
+              NormalizeImage(image);
+          }
       }
     /*
       Proceed to next image.
@@ -2400,7 +2438,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
       number_of_axis,
       columns,
       rows,
-      depth;
+      number_scenes;
 
     double
       min_data,
@@ -2449,6 +2487,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
     *fits_pixels;
 
   unsigned int
+    scene,
     status,
     value_expected;
 
@@ -2471,7 +2510,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
   fits_header.bits_per_pixel=8;
   fits_header.columns=1;
   fits_header.rows=1;
-  fits_header.depth=1;
+  fits_header.number_scenes=1;
   fits_header.min_data=0.0;
   fits_header.max_data=0.0;
   fits_header.zero=0.0;
@@ -2545,7 +2584,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
         if (Latin1Compare(keyword,"NAXIS2") == 0)
           fits_header.rows=(unsigned int) atoi(value);
         if (Latin1Compare(keyword,"NAXIS3") == 0)
-          fits_header.depth=(unsigned int) atoi(value);
+          fits_header.number_scenes=(unsigned int) atoi(value);
         if (Latin1Compare(keyword,"DATAMAX") == 0)
           fits_header.max_data=atof(value);
         if (Latin1Compare(keyword,"DATAMIN") == 0)
@@ -2572,75 +2611,113 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
       (fits_header.number_of_axis > 4) ||
       (fits_header.columns*fits_header.rows) == 0)
     PrematureExit(CorruptImageWarning,"image type not supported",image);
-  /*
-    Create linear colormap.
-  */
-  image->columns=fits_header.columns;
-  image->rows=fits_header.rows;
-  image->class=PseudoClass;
-  image->colors=MaxRGB+1;
-  if (image_info->ping)
-    {
-      CloseImage(image);
-      return(image);
-    }
-  image->colormap=(ColorPacket *)
-    AllocateMemory(image->colors*sizeof(ColorPacket));
-  if (image->colormap == (ColorPacket *) NULL)
-    PrematureExit(FileOpenWarning,"Unable to open file",image);
-  for (i=0; i < (int) image->colors; i++)
+  for (scene=0; scene < fits_header.number_scenes; scene++)
   {
-    image->colormap[i].red=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
-    image->colormap[i].green=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
-    image->colormap[i].blue=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
-  }
-  /*
-    Initialize image structure.
-  */
-  image->packets=image->columns*image->rows;
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
-  packet_size=fits_header.bits_per_pixel/8;
-  if (packet_size < 0)
-    packet_size=(-packet_size);
-  fits_pixels=(unsigned char *)
-    AllocateMemory(image->packets*packet_size*sizeof(unsigned char));
-  if ((image->pixels == (RunlengthPacket *) NULL) ||
-      (fits_pixels == (unsigned char *) NULL))
-    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-  SetImage(image);
-  /*
-    Convert FITS pixels to runlength-encoded packets.
-  */
-  status=ReadData((char *) fits_pixels,(unsigned int) packet_size,
-    image->packets,image->file);
-  if (status == False)
-    MagickWarning(CorruptImageWarning,"Insufficient image data in file",
-      image->filename);
-  if ((fits_header.min_data == 0.0) && (fits_header.max_data == 0.0))
-    {
-      /*
-        Determine minimum and maximum intensity.
-      */
-      p=fits_pixels;
-      long_quantum[0]=(*p);
-      quantum=(*p++);
-      for (j=0; j < (packet_size-1); j++)
+    /*
+      Create linear colormap.
+    */
+    image->columns=fits_header.columns;
+    image->rows=fits_header.rows;
+    image->class=PseudoClass;
+    image->colors=MaxRGB+1;
+    image->scene=scene;
+    if (image_info->ping)
       {
-        long_quantum[j+1]=(*p);
-        quantum=(quantum << 8) | (*p++);
+        CloseImage(image);
+        return(image);
       }
-      pixel=(double) quantum;
-      if (fits_header.bits_per_pixel == 16)
-        if (pixel > 32767)
-          pixel-=65536;
-      if (fits_header.bits_per_pixel == -32)
-        pixel=(double) (*((float *) &quantum));
-      if (fits_header.bits_per_pixel == -64)
-        pixel=(double) (*((double *) long_quantum));
-      fits_header.min_data=pixel*fits_header.scale+fits_header.zero;
-      fits_header.max_data=pixel*fits_header.scale+fits_header.zero;
-      for (i=1; i < (int) image->packets; i++)
+    image->colormap=(ColorPacket *)
+      AllocateMemory(image->colors*sizeof(ColorPacket));
+    if (image->colormap == (ColorPacket *) NULL)
+      PrematureExit(FileOpenWarning,"Unable to open file",image);
+    for (i=0; i < (int) image->colors; i++)
+    {
+      image->colormap[i].red=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
+      image->colormap[i].green=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
+      image->colormap[i].blue=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
+    }
+    /*
+      Initialize image structure.
+    */
+    image->packets=image->columns*image->rows;
+    image->pixels=(RunlengthPacket *)
+      AllocateMemory(image->packets*sizeof(RunlengthPacket));
+    packet_size=fits_header.bits_per_pixel/8;
+    if (packet_size < 0)
+      packet_size=(-packet_size);
+    fits_pixels=(unsigned char *)
+      AllocateMemory(image->packets*packet_size*sizeof(unsigned char));
+    if ((image->pixels == (RunlengthPacket *) NULL) ||
+        (fits_pixels == (unsigned char *) NULL))
+      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+    SetImage(image);
+    /*
+      Convert FITS pixels to runlength-encoded packets.
+    */
+    status=ReadData((char *) fits_pixels,(unsigned int) packet_size,
+      image->packets,image->file);
+    if (status == False)
+      MagickWarning(CorruptImageWarning,"Insufficient image data in file",
+        image->filename);
+    if ((fits_header.min_data == 0.0) && (fits_header.max_data == 0.0))
+      {
+        /*
+          Determine minimum and maximum intensity.
+        */
+        p=fits_pixels;
+        long_quantum[0]=(*p);
+        quantum=(*p++);
+        for (j=0; j < (packet_size-1); j++)
+        {
+          long_quantum[j+1]=(*p);
+          quantum=(quantum << 8) | (*p++);
+        }
+        pixel=(double) quantum;
+        if (fits_header.bits_per_pixel == 16)
+          if (pixel > 32767)
+            pixel-=65536;
+        if (fits_header.bits_per_pixel == -32)
+          pixel=(double) (*((float *) &quantum));
+        if (fits_header.bits_per_pixel == -64)
+          pixel=(double) (*((double *) long_quantum));
+        fits_header.min_data=pixel*fits_header.scale+fits_header.zero;
+        fits_header.max_data=pixel*fits_header.scale+fits_header.zero;
+        for (i=1; i < (int) image->packets; i++)
+        {
+          long_quantum[0]=(*p);
+          quantum=(*p++);
+          for (j=0; j < (packet_size-1); j++)
+          {
+            long_quantum[j+1]=(*p);
+            quantum=(quantum << 8) | (*p++);
+          }
+          pixel=(double) quantum;
+          if (fits_header.bits_per_pixel == 16)
+            if (pixel > 32767)
+              pixel-=65536;
+          if (fits_header.bits_per_pixel == -32)
+            pixel=(double) (*((float *) &quantum));
+          if (fits_header.bits_per_pixel == -64)
+            pixel=(double) (*((double *) long_quantum));
+          scaled_pixel=pixel*fits_header.scale+fits_header.zero;
+          if (scaled_pixel < fits_header.min_data)
+            fits_header.min_data=scaled_pixel;
+          if (scaled_pixel > fits_header.max_data)
+            fits_header.max_data=scaled_pixel;
+        }
+      }
+    /*
+      Convert FITS pixels to runlength-encoded packets.
+    */
+    scale=1.0;
+    if (fits_header.min_data != fits_header.max_data)
+      scale=MaxRGB/(fits_header.max_data-fits_header.min_data);
+    p=fits_pixels;
+    q=image->pixels;
+    for (y=image->rows-1; y >= 0; y--)
+    {
+      q=image->pixels+(y*image->columns);
+      for (x=0; x < (int) image->columns; x++)
       {
         long_quantum[0]=(*p);
         quantum=(*p++);
@@ -2657,58 +2734,49 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
           pixel=(double) (*((float *) &quantum));
         if (fits_header.bits_per_pixel == -64)
           pixel=(double) (*((double *) long_quantum));
-        scaled_pixel=pixel*fits_header.scale+fits_header.zero;
-        if (scaled_pixel < fits_header.min_data)
-          fits_header.min_data=scaled_pixel;
-        if (scaled_pixel > fits_header.max_data)
-          fits_header.max_data=scaled_pixel;
+        scaled_pixel=scale*
+          (pixel*fits_header.scale-fits_header.min_data-fits_header.zero);
+        if (scaled_pixel < 0)
+          scaled_pixel=0;
+        else
+          if (scaled_pixel > MaxRGB)
+            scaled_pixel=MaxRGB;
+        q->index=(unsigned short) scaled_pixel;
+        q->length=0;
+        q++;
       }
+      if (QuantumTick(y,image->rows))
+        ProgressMonitor(LoadImageText,y,image->rows);
     }
-  /*
-    Convert FITS pixels to runlength-encoded packets.
-  */
-  scale=1.0;
-  if (fits_header.min_data != fits_header.max_data)
-    scale=MaxRGB/(fits_header.max_data-fits_header.min_data);
-  p=fits_pixels;
-  q=image->pixels;
-  for (y=image->rows-1; y >= 0; y--)
-  {
-    q=image->pixels+(y*image->columns);
-    for (x=0; x < (int) image->columns; x++)
-    {
-      long_quantum[0]=(*p);
-      quantum=(*p++);
-      for (j=0; j < (packet_size-1); j++)
+    FreeMemory((char *) fits_pixels);
+    SyncImage(image);
+    CondenseImage(image);
+    /*
+      Proceed to next image.
+    */
+    if (feof(image->file))
+      break;
+    if (image_info->subrange != 0)
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
+    if (scene < (int) (fits_header.number_scenes-1))
       {
-        long_quantum[j+1]=(*p);
-        quantum=(quantum << 8) | (*p++);
+        /*
+          Allocate next image structure.
+        */
+        AllocateNextImage(image_info,image);
+        if (image->next == (Image *) NULL)
+          {
+            DestroyImages(image);
+            return((Image *) NULL);
+          }
+        image=image->next;
+        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+          (unsigned int) image->filesize);
       }
-      pixel=(double) quantum;
-      if (fits_header.bits_per_pixel == 16)
-        if (pixel > 32767)
-          pixel-=65536;
-      if (fits_header.bits_per_pixel == -32)
-        pixel=(double) (*((float *) &quantum));
-      if (fits_header.bits_per_pixel == -64)
-        pixel=(double) (*((double *) long_quantum));
-      scaled_pixel=scale*
-        (pixel*fits_header.scale-fits_header.min_data-fits_header.zero);
-      if (scaled_pixel < 0)
-        scaled_pixel=0;
-      else
-        if (scaled_pixel > MaxRGB)
-          scaled_pixel=MaxRGB;
-      q->index=(unsigned short) scaled_pixel;
-      q->length=0;
-      q++;
-    }
-    if (QuantumTick(y,image->rows))
-      ProgressMonitor(LoadImageText,y,image->rows);
   }
-  FreeMemory((char *) fits_pixels);
-  SyncImage(image);
-  CondenseImage(image);
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
   CloseImage(image);
   return(image);
 }
@@ -5748,8 +5816,6 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
     Create image label.
   */
   local_info=CloneImageInfo(image_info);
-  if (local_info == (ImageInfo *) NULL)
-    return((Image *) NULL);
   if (local_info->font == (char *) NULL)
     (void) CloneString(&local_info->font,DefaultXFont);
   (void) strcpy(text,local_info->filename);

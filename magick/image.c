@@ -194,7 +194,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->delay=0;
   allocated_image->iterations=1;
   allocated_image->fuzz=0;
-  allocated_image->filter=MitchellFilter;
+  allocated_image->filter=LanczosFilter;
   allocated_image->blur=1.0;
   (void) XQueryColorDatabase(BackgroundColor,&color);
   allocated_image->background_color.red=XDownScale(color.red);
@@ -12889,20 +12889,21 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
   double
     blue_weight,
     center,
+    density,
     green_weight,
     index_weight,
     red_weight,
     scale_factor,
-    sum,
     support;
 
   int
+    end,
     n,
+    start,
     x;
 
   register int
     i,
-    j,
     y;
 
   register RunlengthPacket
@@ -12925,29 +12926,26 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
       support=0.5;
       scale_factor=1.0;
     }
-  support+=1.e-7;
+  support+=1.0e-7;
   for (x=0; x < (int) destination->columns; x++)
   {
-    sum=0.0;
+    density=0.0;
     n=0;
     center=(double) x/x_factor;
-    for (i=(int) (center-support+0.5); i < (int) (center+support+0.5); i++)
+    start=center-support+0.5;
+    end=center+support+0.5;
+    for (i=Max(start,0); i < Min(end,source->columns); i++)
     {
-      j=i;
-      if (j < 0)
-        j=0;
-      else
-        if (j >= (int) source->columns)
-          j=source->columns-1;
-      contribution_info[n].pixel=j;
-      contribution_info[n].weight=filter_info->function(
-        ((double) i-center+0.5)/scale_factor)/scale_factor;
-      sum+=contribution_info[n].weight;
+      contribution_info[n].pixel=i;
+      contribution_info[n].weight=
+        filter_info->function(((double) i-center+0.5)/scale_factor);
+      contribution_info[n].weight/=scale_factor;
+      density+=contribution_info[n].weight;
       n++;
     }
-    if ((sum != 0.0) && (sum != 1.0))
+    if ((density != 0.0) && (density != 1.0))
       for (i=0; i < n; i++)
-        contribution_info[i].weight/=sum;  /* normalize */
+        contribution_info[i].weight/=density;  /* normalize */
     q=destination->pixels+x;
     for (y=0; y < (int) destination->rows; y++)
     {
@@ -12989,20 +12987,21 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
   double
     blue_weight,
     center,
+    density,
     green_weight,
     index_weight,
     red_weight,
     scale_factor,
-    sum,
     support;
 
   int
+    end,
     n,
+    start,
     y;
 
   register int
     i,
-    j,
     x;
 
   register RunlengthPacket
@@ -13025,30 +13024,27 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
       support=0.5;
       scale_factor=1.0;
     }
-  support+=1.e-7;
+  support+=1.0e-7;
   q=destination->pixels;
   for (y=0; y < (int) destination->rows; y++)
   {
-    sum=0.0;
+    density=0.0;
     n=0;
     center=(double) y/y_factor;
-    for (i=(int) (center-support+0.5); i < (int) (center+support+0.5); i++)
+    start=center-support+0.5;
+    end=center+support+0.5;
+    for (i=Max(start,0); i < Min(end,source->rows); i++)
     {
-      j=i;
-      if (j < 0)
-        j=0;
-      else
-        if (j >= (int) source->rows)
-          j=source->rows-1;
-      contribution_info[n].pixel=j;
-      contribution_info[n].weight=filter_info->function(
-        ((double) i-center+0.5)/scale_factor)/scale_factor;
-      sum+=contribution_info[n].weight;
+      contribution_info[n].pixel=i;
+      contribution_info[n].weight=
+        filter_info->function(((double) i-center+0.5)/scale_factor);
+      contribution_info[n].weight/=scale_factor;
+      density+=contribution_info[n].weight;
       n++;
     }
-    if ((sum != 0.0) && (sum != 1.0))
+    if ((density != 0.0) && (density != 1.0))
       for (i=0; i < n; i++)
-        contribution_info[i].weight/=sum;  /* normalize */
+        contribution_info[i].weight/=density;  /* normalize */
     for (x=0; x < (int) destination->columns; x++)
     {
       blue_weight=0.0;
