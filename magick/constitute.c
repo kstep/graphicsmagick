@@ -2090,8 +2090,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         exception);
       DestroyImages(image);
       image=(Image *) NULL;
-      if (status != False)
-        clone_info->temporary=True;
+      clone_info->temporary=True;
       (void) SetImageInfo(clone_info,False,exception);
       magick_info=GetMagickInfo(clone_info->magick,exception);
       if ((magick_info == (const MagickInfo *) NULL) ||
