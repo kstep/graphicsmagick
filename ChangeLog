@@ -1,3 +1,8 @@
+2002-11-05  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+  * There are now separate ReadMNGImage() and ReadPNGImage() methods
+    that call ReadOnePNGImage(); likewise for Write.  Some compilers
+    optimize this better.
+
 2002-11-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Modified IMdisplay so that larger images may be loaded
     (primarily limited by Windows bitmap size limits).
