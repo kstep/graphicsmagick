@@ -51,7 +51,7 @@
     family="Arial Narrow"
     weight="400"
     style="normal"
-    style="condensed"
+    stretch="condensed"
     glyphs="@windows_font_dir@/arialn.ttf"
     version="0.1" />
   <type
@@ -60,7 +60,7 @@
     family="Arial Narrow"
     weight="700"
     style="normal"
-    style="condensed"
+    stretch="condensed"
     glyphs="@windows_font_dir@/arialnb.ttf"
     version="0.1" />
   <type
@@ -69,7 +69,7 @@
     family="Arial Narrow"
     weight="700"
     style="italic"
-    style="condensed"
+    stretch="condensed"
     glyphs="@windows_font_dir@/arialnbi.ttf"
     version="0.1" />
   <type
@@ -78,7 +78,7 @@
     family="Arial Narrow"
     weight="400"
     style="italic"
-    style="condensed"
+    stretch="condensed"
     glyphs="@windows_font_dir@/arnari.ttf"
     version="0.1" />
   <type
@@ -87,7 +87,7 @@
     family="Arial Narrow Special G1"
     weight="400"
     style="normal"
-    style="condensed"
+    stretch="condensed"
     glyphs="@windows_font_dir@/msgeonr1.ttf"
     version="0.1" />
   <type
@@ -96,7 +96,7 @@
     family="Arial Narrow Special G1"
     weight="700"
     style="normal"
-    style="condensed"
+    stretch="condensed"
     glyphs="@windows_font_dir@/msgeonb1.ttf"
     version="0.1" />
   <type
@@ -105,7 +105,7 @@
     family="Arial Narrow Special G1"
     weight="400"
     style="italic"
-    style="condensed"
+    stretch="condensed"
     glyphs="@windows_font_dir@/msgeoni1.ttf"
     version="0.1" />
   <type
@@ -114,7 +114,7 @@
     family="Arial Narrow Special G2"
     weight="400"
     style="normal"
-    style="condensed"
+    stretch="condensed"
     glyphs="@windows_font_dir@/msgeonr2.ttf"
     version="0.1" />
   <type
@@ -132,7 +132,7 @@
     family="Arial Narrow Special G2"
     weight="400"
     style="italic"
-    style="condensed"
+    stretch="condensed"
     glyphs="@windows_font_dir@/msgeoni2.ttf"
     version="0.1" />
   <type
@@ -375,7 +375,7 @@
     family="Gill Sans MT"
     weight="700"
     style="normal"
-    style="extra-condensed"
+    stretch="extra-condensed"
     glyphs="@windows_font_dir@/glsnecb.ttf"
     version="0.1" />
   <type
