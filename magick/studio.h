@@ -24,7 +24,7 @@ extern "C" {
   headers when MAGICK_IMPLEMENTATION is defined.
 */
 #define MAGICK_IMPLEMENTATION 1
-#define MAGICK_IDBASED_MESSAGES 1
+/* #define MAGICK_IDBASED_MESSAGES 1 */
 
 /*
   System include declarations.
