@@ -149,9 +149,6 @@ Export DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   DrawInfo
     *cloned_info;
 
-  ExceptionInfo
-    exception;
-
   cloned_info=(DrawInfo *) AllocateMemory(sizeof(DrawInfo));
   if (cloned_info == (DrawInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to clone draw info",
@@ -556,7 +553,6 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
   unsigned int
     indirection,
-    interior,
     length,
     number_points;
 
@@ -1906,9 +1902,6 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
 */
 Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 {
-  ExceptionInfo
-    error;
-
   /*
     Initialize draw attributes.
   */

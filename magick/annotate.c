@@ -99,12 +99,10 @@ Export unsigned int AnnotateImage(Image *image,
 
   char
     label[MaxTextExtent],
-    size[MaxTextExtent],
     *text,
     **textlist;
 
   Image
-    *box_image,
     *annotate_image;
 
   ImageInfo

@@ -5244,9 +5244,6 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
     *p,
     *q;
 
-  register MagickInfo
-    *r;
-
   unsigned int
     affirm,
     status;
