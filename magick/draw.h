@@ -5,9 +5,6 @@
 
 */
 
-#include "magick.h"
-#include "define.h"
-
 typedef struct _MgkDrawContext *MgkDrawContext;
 
 extern MagickExport MgkDrawContext
