@@ -282,7 +282,8 @@ an up-to-date listing of the formats supported by your particular
 configuration, run "convert -list format".
 
 Raw images are expected to have one byte per pixel unless \fBImageMagick\fP
-is compiled in 16-bit mode. Here, the raw data is expected to be stored
+is compiled in the default 16-bit mode or in 32-bit mode. Here, the raw data
+is expected to be stored
 two bytes per pixel in most-significant-byte-first order.
 You can tell if \fBImageMagick\fP was compiled in 16-bit mode by typing
 "convert" without any options, and looking for "Q:16" in the first line of
@@ -2356,7 +2357,7 @@ and x:fixed is OPTION1.
 .B "-texture \fI<filename>"\fP
 \fRname of texture to tile onto the image background
 .TP
-.B "-threshold \fI<value>"\fP
+.B "-threshold \fI<value>{%}"\fP
 \fRthreshold the image
 
 Create a bi-level image such that any pixel intensity that is equal or

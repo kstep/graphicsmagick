@@ -366,7 +366,8 @@ an up-to-date listing of the formats supported by your particular
 configuration, run <tt>"convert -list format"</tt>.
 <p>
 Raw images are expected to have one byte per pixel unless <strong>ImageMagick</strong>
-is compiled in 16-bit mode. Here, the raw data is expected to be stored
+is compiled in the default 16-bit mode or in 32-bit mode. Here, the raw data
+is expected to be stored
 two bytes per pixel in most-significant-byte-first order.
 You can tell if <strong>ImageMagick</strong> was compiled in 16-bit mode by typing
 "convert" without any options, and looking for "Q:16" in the first line of
@@ -3496,7 +3497,7 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="details-threshold"></a>-threshold <i>&lt;value&gt;</i>
+    <a name="details-threshold"></a>-threshold <i>&lt;value&gt;</i>{<i>%</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>threshold the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
