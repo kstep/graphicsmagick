@@ -153,7 +153,7 @@ jas_image_t *jp2_decode(jas_stream_t *in, char *optstr)
 		goto error;
 	}
 
-	fprintf(stderr, "%s", JAS_JP2DISCLAIMER);
+	/* fprintf(stderr, "%s", JAS_JP2DISCLAIMER); */
 
 	/* Get the first box.  This should be a JP box. */
 
