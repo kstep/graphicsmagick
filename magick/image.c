@@ -242,21 +242,26 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
   register int
     i;
 
+  unsigned int
+    length;
+
   /*
     Allocate image colormap.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(colors != 0);
-  if (image->colormap != (PixelPacket *) NULL)
-    LiberateMemory((void **) &image->colormap);
   image->storage_class=PseudoClass;
   image->colors=colors;
-  image->colormap=(PixelPacket *)
-    AcquireMemory(Max(colors,256)*sizeof(PixelPacket));
+  length=Max(image->colors,256);
+  if (image->colormap == (PixelPacket *) NULL)
+    image->colormap=(PixelPacket *)
+      AcquireMemory(length*sizeof(PixelPacket));
+  else
+    ReacquireMemory((void **) &image->colormap,length*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
     return(False);
-  for (i=0; i < (int) colors; i++)
+  for (i=0; i < (int) image->colors; i++)
   {
     image->colormap[i].red=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
     image->colormap[i].green=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
@@ -875,7 +880,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
       /*
         Allocate and copy the image colormap.
       */
-      length=image->colors*sizeof(PixelPacket);
+      length=Min(image->colors,256)*sizeof(PixelPacket);
       clone_image->colormap=(PixelPacket *) AcquireMemory(length);
       if (clone_image->colormap == (PixelPacket *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
