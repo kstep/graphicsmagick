@@ -977,7 +977,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q->blue|=(q->blue >> 5);
             if (image->matte)
               q->opacity=ScaleShortToQuantum(opacity);
-#if QuantumDepth == 16
+#if (QuantumDepth > 8)
             if (quantum_bits.blue <= 8)
               q->blue|=((q->blue & 0xff00) >> 8);
             if (quantum_bits.green <= 8)
@@ -1058,7 +1058,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->blue=ScaleShortToQuantum(blue);
             if (image->matte)
               q->opacity=ScaleShortToQuantum(opacity);
-#if QuantumDepth == 16
+#if (QuantumDepth > 8)
             if (quantum_bits.red == 8)
               q->red|=(q->red >> 8);
             if (quantum_bits.green == 8)
