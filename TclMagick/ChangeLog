@@ -1,3 +1,12 @@
+2004-04-02  David N. Welton  <davidw@dedasys.com>
+
+	* pkgIndex.tcl: Fixed pkgIndex.tcl, thanks to Arjen Markus.
+
+2004-03-25  David N. Welton  <davidw@dedasys.com>
+
+	* images/tclmagick*.png: Added a couple of "logos", that will have
+	to suffice untill someone artistic has a go at it.
+
 2004-03-19  David N. Welton  <davidw@dedasys.com>
 
 	* doc/index.html: Added CVS login command to CVS instructions.
