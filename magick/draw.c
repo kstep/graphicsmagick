@@ -64,7 +64,7 @@
   Define declarations.
 */
 #define BezierQuantum  200
-#define MatteMatch(color,target,fuzz) \
+#define FuzzyMatteMatch(color,target,fuzz) \
   (FuzzyColorMatch(color,target,fuzz) && \
 	 ((color)->opacity == (target)->opacity))
 #define MaxStacksize  (1 << 15)
@@ -4228,11 +4228,11 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
     {
       if (method == FloodfillMethod)
         {
-          if (!MatteMatch(q,&target,image->fuzz))
+          if (!FuzzyMatteMatch(q,&target,image->fuzz))
             break;
         }
       else
-        if (MatteMatch(q,&target,image->fuzz) || (q->opacity == opacity))
+        if (FuzzyMatteMatch(q,&target,image->fuzz) || (q->opacity == opacity))
           break;
       q->opacity=opacity;
       q--;
@@ -4259,11 +4259,12 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
           {
             if (method == FloodfillMethod)
               {
-                if (!MatteMatch(q,&target,image->fuzz))
+                if (!FuzzyMatteMatch(q,&target,image->fuzz))
                   break;
               }
             else
-              if (MatteMatch(q,&target,image->fuzz) || (q->opacity == opacity))
+              if (FuzzyMatteMatch(q,&target,image->fuzz) ||
+                  (q->opacity == opacity))
                 break;
             q->opacity=opacity;
             q++;
@@ -4284,11 +4285,12 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
         q++;
         if (method == FloodfillMethod)
           {
-            if (MatteMatch(q,&target,image->fuzz))
+            if (FuzzyMatteMatch(q,&target,image->fuzz))
               break;
           }
         else
-          if (!MatteMatch(q,&target,image->fuzz) && (q->opacity != opacity))
+          if (!FuzzyMatteMatch(q,&target,image->fuzz) &&
+              (q->opacity != opacity))
             break;
       }
       start=x;
