@@ -9,6 +9,7 @@ void OpenStaticModules(void)
   RegisterAVIImage();
   RegisterAVSImage();
   RegisterBMPImage();
+  RegisterCAPTIONImage();
   RegisterCMYKImage();
   RegisterCUTImage();
   RegisterDCMImage();
