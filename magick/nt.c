@@ -1225,12 +1225,12 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
   BITMAPINFO
     DIBinfo;
 
-  HDC
-    hDC;
-
   HBITMAP
     hBitmap,
     hOldBitmap;
+
+  HDC
+    hDC;
 
   HENHMETAFILE
     hemf;
