@@ -32,7 +32,7 @@
   #include "b_error.h"
 #endif
 
-#ifdef _UNIX
+#ifdef _UNIX // FIXME: should be based on HAVE_SYS_TIME_H define.
   #include <sys/time.h>
 #endif
 
@@ -113,14 +113,14 @@ HRESULT GenGuid(CLSID *clsid)
   ts.tv_sec  = TickCount() * 60;
   ts.tv_nsec = ts.tv_sec   * 100000; 
 #else
-#  ifdef _UNIX
+# ifdef _UNIX // FIXME: Should be based on HAVE_GETTIMEOFDAY
   {
     struct timeval tv;
     gettimeofday(&tv,NULL);
     ts.tv_sec = tv.tv_sec;
     ts.tv_nsec = tv.tv_usec * 1000;
   }
-#  endif
+# endif
 #endif
 
 //  clock_gettime(CLOCK_REALTIME, &ts);

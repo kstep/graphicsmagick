@@ -28,7 +28,7 @@ void * FPX_calloc(size_t num, size_t size)
 {
   size_t realsize = num*size;
   void * ptr;
-  if (ptr = FPX_malloc(realsize))
+  if ((ptr = FPX_malloc(realsize)))
     memset(ptr,0,realsize);
   return ptr;
 }

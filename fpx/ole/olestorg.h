@@ -29,7 +29,7 @@
   class OLEStream;
   class OLEHeaderStream;
   class OLEPropertySet;
-  class   OLECustomLink;
+  class OLECustomLink;
 
 
 //  Constants
@@ -141,12 +141,12 @@
     virtual   void  Release();
 
   private:
-    IStorage *    oleStorage;   // The real OLE pointer to the storage...
-    CLSID     clsID;      // The Identifier of the storage
-    OLEStorage *  parStorage;   // Parent storage
-    OLEFile *   parFile;    // Parent file
-    OLECustomLink*  customLink;   // If the storage is linked to another storage, we maintain the link
-    List *      openOLEObjList; // List for all opened OLE objects within the storage   
+    IStorage *     oleStorage;     // The real OLE pointer to the storage...
+    CLSID          clsID;          // The Identifier of the storage
+    OLEStorage *   parStorage;     // Parent storage
+    OLEFile *      parFile;        // Parent file
+    OLECustomLink* customLink;     // If the storage is linked to another storage, we maintain the link
+    List *         openOLEObjList; // List for all opened OLE objects within the storage   
   };
 
 

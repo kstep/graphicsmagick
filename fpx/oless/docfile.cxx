@@ -262,7 +262,7 @@ HRESULT DfOpenStorageOnILockBytesW(ILockBytes *plkbyt,
         olChk(ValidatePtrBuffer(ppstgOpen));
         *ppstgOpen = NULL;
         if (snbExclude) olChk(ValidateSNBW(snbExclude));
-#endif /!UNICODE
+#endif // !UNICODE
 
         olChk(ValidateInterface(plkbyt, IID_ILockBytes));
         if (pstgPriority)

@@ -233,7 +233,7 @@ CAllocator::Realloc( void *pv, ULONG cb )
       if (pvNew)
         {
           memcpy(pvNew, pv, cb);
-          delete[] pv;
+            delete[] (LONGLONG*) pv;
         }
     }
   return pvNew;
@@ -253,7 +253,7 @@ CAllocator::Realloc( void *pv, ULONG cb )
 
 STDMETHODIMP_(void) CAllocator::Free(void *pv)
 {
-    delete[] pv;
+    delete[] (LONGLONG*)pv;
 }
 
 //+---------------------------------------------------------------------------
