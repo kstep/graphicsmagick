@@ -4847,11 +4847,11 @@ Mogrify(ref,...)
           if ((flags & XNegative) != 0)
             x+=image->columns;
           if ((flags & WidthValue) == 0)
-            width-=2*x > (int) width ? width : 2*x;
+            width-=2*x > (long) width ? width : 2*x;
           if ((flags & YNegative) != 0)
             y+=image->rows;
           if ((flags & HeightValue) == 0)
-            height-=2*y > (int) height ? height : 2*y;
+            height-=2*y > (long) height ? height : 2*y;
           if (attribute_flag[5])
             switch (argument_list[5].int_reference)
             {
@@ -4862,7 +4862,7 @@ Mogrify(ref,...)
               }
               case NorthGravity:
               {
-                x+=(long) (0.5*width-composite_image->columns/2);
+                x+=(long) (width/2-composite_image->columns/2);
                 y-=composite_image->rows;
                 break;
               }
@@ -4874,7 +4874,7 @@ Mogrify(ref,...)
               }
               case WestGravity:
               {
-                y+=(long) (0.5*height-composite_image->rows/2);
+                y+=(long) (width/2-composite_image->rows/2);
                 break;
               }
               case ForgetGravity:
@@ -4882,14 +4882,14 @@ Mogrify(ref,...)
               case CenterGravity:
               default:
               {
-                x+=(long) (0.5*width-composite_image->columns/2);
-                y+=(long) (0.5*height-composite_image->rows/2);
+                x+=(long) (width/2-composite_image->columns/2);
+                y+=(long) (width/2-composite_image->rows/2);
                 break;
               }
               case EastGravity:
               {
                 x+=width-composite_image->columns;
-                y+=(long) (0.5*height-composite_image->rows/2);
+                y+=(long) (width/2-composite_image->rows/2);
                 break;
               }
               case SouthWestGravity:
@@ -4899,7 +4899,7 @@ Mogrify(ref,...)
               }
               case SouthGravity:
               {
-                x+=(long) (0.5*width-composite_image->columns/2);
+                x+=(long) (width/2-composite_image->columns/2);
                 y+=height;
                 break;
               }
@@ -4920,8 +4920,8 @@ Mogrify(ref,...)
               /*
                 Rotate image.
               */
-              x-=(int) (rotate_image->columns-composite_image->columns)/2;
-              y-=(int) (rotate_image->rows-composite_image->rows)/2;
+              x-=(long) (rotate_image->columns-composite_image->columns)/2;
+              y-=(long) (rotate_image->rows-composite_image->rows)/2;
               CompositeImage(image,compose,rotate_image,x,y);
               DestroyImage(rotate_image);
             }
@@ -5457,8 +5457,7 @@ Mogrify(ref,...)
           if (!attribute_flag[1])
             argument_list[1].string_reference=(char *) NULL;
           (void) ProfileImage(image,argument_list[0].string_reference,
-            (const unsigned char *) argument_list[1].string_reference,
-            argument_list[1].length);
+            (const unsigned char *) argument_list[1].string_reference,argument_list[1].length);
           break;
         }
         case 69:  /* UnsharpMask */
