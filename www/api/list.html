@@ -59,7 +59,7 @@
 <p>Image * <strong>GetNextImageInList</strong>( const Image *images );</p>
 <p>Image * <strong>GetPreviousImageInList</strong>( const Image *images );</p>
 <p>Image **  <strong>ImageListToArray</strong>( const Image *images, ExceptionInfo *exception );</p>
-<p>unsigned int  <strong>InsertImageInList</strong>( Image *images, const Image *image, const long offset, ExceptionInfo *exception );</p>
+<p>unsigned int  <strong>InsertImageInList</strong>( Image ** images, Image *image, const long offset );</p>
 <p>Image * <strong>NewImageList</strong>( void );</p>
 <p>unsigned int  <strong>PrependImageToList</strong>( Image *images, Image *image );</p>
 <p>Image * <strong>RemoveFirstImageFromList</strong>( Image ** images );</p>
@@ -110,7 +110,7 @@ Return any errors or warnings in this structure.
 <p>
 </p>
 <h2><a name="deleteimagefromlist">DeleteImageFromList</a></h2>
-<blockquote>DeleteImageFromList() deletes an image at the specified position from the list. </blockquote><p>The format of the DeleteImageFromList method is:</p>
+<blockquote>DeleteImageFromList() deletes an image at the specified offset from the list. </blockquote><p>The format of the DeleteImageFromList method is:</p>
 <blockquote>unsigned int DeleteImageFromList ( <A HREF="types/Image.html">Image</A> **images, const long offset ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
@@ -140,7 +140,7 @@ The image sequence.
 <p>
 </p>
 <h2><a name="getimagefromlist">GetImageFromList</a></h2>
-<blockquote>GetImageFromList() returns an image at the specified position from the list. </blockquote><p>The format of the GetImageFromList method is:</p>
+<blockquote>GetImageFromList() returns an image at the specified offset from the list. </blockquote><p>The format of the GetImageFromList method is:</p>
 <blockquote><A HREF="types/Image.html">Image</A> *GetImageFromList ( const <A HREF="types/Image.html">Image</A> *images, const long offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
@@ -164,7 +164,7 @@ Return any errors or warnings in this structure.
 <p>
 </p>
 <h2><a name="getimageindexinlist">GetImageIndexInList</a></h2>
-<blockquote>GetImageIndexInList() returns the position in the list of the specified image. </blockquote><p>The format of the GetImageIndexInList method is:</p>
+<blockquote>GetImageIndexInList() returns the offset in the list of the specified image. </blockquote><p>The format of the GetImageIndexInList method is:</p>
 <blockquote>long GetImageIndexInList ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
@@ -230,8 +230,8 @@ Return any errors or warnings in this structure.
 <p>
 </p>
 <h2><a name="insertimageinlist">InsertImageInList</a></h2>
-<blockquote>InsertImageInList() inserts an image in the list at the specified position. </blockquote><p>The format of the InsertImageInList method is:</p>
-<blockquote>unsigned int InsertImageInList ( <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/Image.html">Image</A> *image, const long offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>InsertImageInList() inserts an image in the list at the specified offset. </blockquote><p>The format of the InsertImageInList method is:</p>
+<blockquote>unsigned int InsertImageInList ( <A HREF="types/Image.html">Image</A> **images, <A HREF="types/Image.html">Image</A> *image, const long offset ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
 </dt>
@@ -249,12 +249,6 @@ The image.
 </dt>
 <dd>
 The position within the list.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
-Return any errors or warnings in this structure.
 </dd>
 <p></p></dl>
 <p>
