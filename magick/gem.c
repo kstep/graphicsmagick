@@ -18,7 +18,7 @@
 %                                 August 1996                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
+%  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
 %  to making software imaging solutions freely available.                     %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
@@ -199,7 +199,7 @@ MagickExport void Contrast(const int sign,Quantum *red,Quantum *green,
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
   TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
-  alpha=0.5;
+  alpha=0.5+MagickEpsilon;
   brightness+=
     alpha*sign*(alpha*(sin(MagickPI*(brightness-alpha))+1.0)-brightness);
   if (brightness > 1.0)
@@ -429,7 +429,7 @@ MagickExport int GetOptimalKernelWidth1D(const double radius,const double sigma)
       normalize+=exp(-(double) (u*u)/(2.0*sigma*sigma));
     u=width/2;
     value=exp(-(double) (u*u)/(2.0*sigma*sigma))/normalize;
-    if ((int) (MaxRGB*value) <= 0)
+    if ((long) (MaxRGB*value) <= 0)
       break;
     width+=2;
   }
@@ -461,7 +461,7 @@ MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
     }
     v=width/2;
     value=exp(-(double) (v*v)/(sigma*sigma))/normalize;
-    if ((int) (MaxRGB*value) <= 0)
+    if ((long) (MaxRGB*value) <= 0)
       break;
     width+=2;
   }
@@ -834,13 +834,13 @@ MagickExport void Modulate(const double percent_hue,
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
   TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
-  brightness*=0.01*percent_brightness;
+  brightness*=(0.01+MagickEpsilon)*percent_brightness;
   if (brightness < 0.0)
     brightness=0.0;
   else
     if (brightness > 1.0)
       brightness=1.0;
-  saturation*=0.01*percent_saturation;
+  saturation*=(0.01+MagickEpsilon)*percent_saturation;
   if (saturation < 0.0)
     saturation=0.0;
   else
@@ -848,7 +848,7 @@ MagickExport void Modulate(const double percent_hue,
       saturation=1.0;
   if (hue != -1.0)
     {
-      hue*=0.01*percent_hue;
+      hue*=(0.01+MagickEpsilon)*percent_hue;
       if (hue < 0.0)
         hue+=1.0;
       else
@@ -952,7 +952,7 @@ MagickExport void TransformHSL(const Quantum red,const Quantum green,
   min=Min(r,Min(g,b));
   *hue=(-1.0);
   *saturation=0.0;
-  *luminosity=0.5*(min+max);
+  *luminosity=(0.5+MagickEpsilon)*(min+max);
   delta=max-min;
   if (delta == 0.0)
     return;
