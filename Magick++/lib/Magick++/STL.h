@@ -244,21 +244,33 @@ namespace Magick
     const Geometry _geometry;
   };
 
-  // Colorize opaque color in image using pen color
+  // Colorize image using pen color at specified percent opacity
   class colorizeImage : public std::unary_function<Image&,void>
   {
   public:
-    colorizeImage( const Color &opaqueColor_,
+    colorizeImage( const unsigned int opacityRed_,
+                   const unsigned int opacityGreen_,
+                   const unsigned int opacityBlue_,
 		   const Color &penColor_ )
-      : _opaqueColor( opaqueColor_ ),
+      : _opacityRed ( opacityRed_ ),
+        _opacityGreen ( opacityGreen_ ),
+        _opacityBlue ( opacityBlue_ ),
+	_penColor( penColor_ ) { }
+    colorizeImage( const unsigned int opacity_,
+                   const Color &penColor_ )
+      : _opacityRed ( opacity_ ),
+        _opacityGreen ( opacity_ ),
+        _opacityBlue ( opacity_ ),
 	_penColor( penColor_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.colorize( _opaqueColor, _penColor );
+	image_.colorize( _opacityRed, _opacityGreen, _opacityBlue, _penColor );
       }
   private:
-    const Color _opaqueColor;
+    const unsigned int _opacityRed;
+    const unsigned int _opacityGreen;
+    const unsigned int _opacityBlue;
     const Color _penColor;
   };
 

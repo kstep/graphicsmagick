@@ -1,3 +1,9 @@
+2000-09-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (colorize): API change to match change in
+ 	ImageMagick.  Now accepts percentage of red, green, and blue to
+ 	colorize with using specified pen color.
+
 2000-09-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Drawable.h: Reverted Coordinate implemenation back

@@ -9,6 +9,7 @@
 
 #include <string>
 #include <iostream>
+#include <strstream>
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
@@ -299,28 +300,36 @@ void Magick::Image::chop( const Geometry &geometry_ )
 }
 
 // Colorize
-void Magick::Image::colorize ( const Color &opaqueColor_,
+void Magick::Image::colorize ( const unsigned int opacityRed_,
+                               const unsigned int opacityGreen_,
+                               const unsigned int opacityBlue_,
 			       const Color &penColor_ )
 {
-  if ( !opaqueColor_.isValid() )
-  {
-    throwExceptionExplicit( OptionError,
-			    "Opaque color argument is invalid");
-  }
-
   if ( !penColor_.isValid() )
   {
     throwExceptionExplicit( OptionError,
 			    "Pen color argument is invalid");
   }
 
+  char opacity[MaxTextExtent + 1];
+  ostrstream buffstr( opacity, sizeof(opacity));
+  buffstr << opacityRed_ << "/"
+          << opacityGreen_ << "/"
+          << opacityBlue_
+          << ends;
+
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
-  ColorizeImage ( image(), std::string(opaqueColor_).c_str(),
+  ColorizeImage ( image(), opacity,
 		  penColor_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
+}
+void Magick::Image::colorize ( const unsigned int opacity_,
+			       const Color &penColor_ )
+{
+  colorize( opacity_, opacity_, opacity_, penColor_ );
 }
 
 // Composite two images

@@ -394,15 +394,23 @@ deviation of the Laplacian, in pixels.</font></td>
 image)</font></td>
 </tr>
 
-<tr>
-<td>
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
 <center><a NAME="colorizeImage"></a><font size=-1>colorizeImage</font></center>
 </td>
 
-<td><font size=-1>const <a href="Color.html">Color</a> &amp;opaqueColor_,
-const <a href="Color.html">Color</a> &amp;penColor_</font></td>
+<td><font size=-1>const unsigned int opacityRed_, const unsigned int opacityGreen_,
+const unsigned int opacityBlue_, const Color &amp;penColor_</font></td>
 
-<td><font size=-1>Colorize opaque color in image using pen color</font></td>
+<td><font size=-1>Colorize image with pen color, using specified percent
+opacity for red, green, and blue quantums.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const unsigned int opacity_, const Color &amp;penColor_</font></td>
+
+<td><font size=-1>Colorize image with pen color, using specified percent
+opacity.</font></td>
 </tr>
 
 <tr>

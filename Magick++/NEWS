@@ -5,6 +5,10 @@ This file records noteworthy changes in Magick++
   * Magick++ is now built by the regular ImageMagick build process.
     when --with-magick_plus_plus is specified to configure.
   * Fixed bug with setting text drawing options.
+  * Fixed API bug with colorize.  Options adjusted to match ImageMagick
+    API change (API change was long ago).
+  * Library compiles using Sun Workshop compiler.  Linkage problems with
+    some demos/tests due to libtool-related bug.
 
 (5.2.3)
   * Switched to new release numbering (match ImageMagick release number)

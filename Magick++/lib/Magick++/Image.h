@@ -122,8 +122,14 @@ namespace Magick
     // vertical subregion of image.
     void            chop ( const Geometry &geometry_ );
     
-    // Colorize opaque color in image using pen color
-    void            colorize ( const Color &opaqueColor_,
+    // Colorize image with pen color, using specified percent opacity
+    // for red, green, and blue quantums
+    void            colorize ( const unsigned int opacityRed_,
+                               const unsigned int opacityGreen_,
+                               const unsigned int opacityBlue_,
+			       const Color &penColor_ );
+    // Colorize image with pen color, using specified percent opacity.
+    void            colorize ( const unsigned int opacity_,
 			       const Color &penColor_ );
     
     // Comment image (add comment string to image)
