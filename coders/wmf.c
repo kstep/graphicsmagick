@@ -491,9 +491,6 @@ static void wmf_magick_device_close(wmfAPI * API)
   int
     index;
 
-  Image
-    *image;
-
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
 
@@ -501,14 +498,7 @@ static void wmf_magick_device_close(wmfAPI * API)
   if (ddata->temp_images != 0)
   {
     for (index = 0; index < ddata->cur_temp_image_index; index++)
-    {
-      image = (Image*) magick_get_registry( API, (ddata->temp_images)[index] );
-      if (image)
-        {
-          DestroyImage(image);
-          magick_remove_registry( API, (ddata->temp_images)[index] );
-        }
-    }
+      magick_remove_registry( API, (ddata->temp_images)[index] );
     LiberateMemory((void **) &ddata->temp_images);
   }
 }
