@@ -30,9 +30,10 @@
 3) Open Windows Command Shell Window
 
    3a) cd PerlMagick
-   3b) perl Makefile.nt
-   3c) nmake
-   3d) nmake ppm
+   3b) nmake clean
+   3c) perl Makefile.nt
+   3d) nmake
+   3e) nmake ppm
 
 4) Open VisualMagick\ImageMagick.iss by double-clicking from Windows Explorer.
 

@@ -1,3 +1,9 @@
+2002-08-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Changed configure argument --disable-16bit-pixel to
+    --with-quantum-depth in order to make its usage more
+    straightforward and generic.  Build ImageMagick using
+    an eight-bit quantum via --with-quantum-depth=8.
+
 2002-07-31  Cristy  <cristy@mystic.es.dupont.com>
   * Delegates/modules are restricted to hard-coded search paths (a
     security feature suggested by Bob Friesenhahn).

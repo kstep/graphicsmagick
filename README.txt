@@ -180,9 +180,9 @@ UNIX/Cygwin/MinGW COMPILATION
    --enable-gcov           enable 'gcov' profiling support (default disabled)
    --disable-largefile     disable support for large (64 bit) file offsets
    --enable-lzw            enable LZW support (default disabled)
-   --disable-16bit-pixel   disable 16 bit/quantum pixels (default enabled)
 
-  Optional Packages:
+  Optional Packages/Options:
+   --with-quantum-depth    number of bits in a pixel quantum (default 16)
    --with-modules          enable support for dynamically loadable modules
    --with-cache            set pixel cache threshhold (defaults to available memory)
    --without-threads       disable threads support
@@ -300,15 +300,21 @@ UNIX/Cygwin/MinGW COMPILATION
       order to support LZW compression, and that this support must be
       explicitly enabled in the libtiff Makefiles.
 
-    o --disable-16bit-pixel: By default ImageMagick represents images
-      internally using a sixteen-bit pixel quantum (the size of the
-      red, green, blue, and alpha pixel components). The definition
-      QuantumDepth=8 is applied when ImageMagick is built, allowing
-      RGBA values to range from 0 to 255 rather than 0 to 65535. Use
-      of sixteen-bit pixel quantums typically causes ImageMagick to run
-      about 30% slower (and take twice as much memory) than when it is
-      built to support eight-bit pixel quantums. Those who value
-      performance over accuracy may specify --disable-16bit-pixel.
+    o --with-quantum-depth: This option allows the user to specify the
+      number of bits to use per pixel quantum (the size of the red,
+      green, blue, and alpha pixel components. For example,
+      "--with-quantum-depth=8" builds ImageMagick using eight-bit
+      quantums. Currently supported arguments are 8 or 16. The default
+      is 16.
+
+      A quantum depth of sixteen provides a range of 0 to 65535. A
+      quantum depth of eight provides a range of 0 to 255. Notice that
+      the eight-bit quantum is 256 times less accurate than the
+      sixteen-bit quantum size. Use of sixteen-bit pixel quantums
+      typically causes ImageMagick to run about 30% slower (and take
+      twice as much memory) than when it is built to support eight-bit
+      pixel quantums. Those who value performance over accuracy may
+      specify --with-quantum-depth=8.
       
     o --without-magick-plus-plus: Disable building Magick++, the C++
       application programming interface to ImageMagick. A suitable C++

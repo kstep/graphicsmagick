@@ -277,12 +277,19 @@ AM_CONDITIONAL(HasLZW, test "$have_lzw" != 'no')
 
 # Number of bits in a Quantum
 QuantumDepth=16
-AC_ARG_ENABLE(16bit-pixel,
-	      [  --disable-16bit-pixel   disable 16 bit/quantum pixels (default enabled)],
-	      [with_16_bit_pixel=$enableval],
-	      [with_16_bit_pixel='yes'])
-test "$with_16_bit_pixel" = 'no' && QuantumDepth=8
-AC_DEFINE_UNQUOTED(QuantumDepth,$QuantumDepth,[Number of bits in a pixel Quantum (8 or 16)])
+AC_ARG_WITH(quantum-depth,
+	      [  --with-quantum-depth    number of bits in a pixel quantum (default 16)],
+	      [with_quantum_depth=$withval],
+	      [with_quantum_depth=16])
+
+case "${with_quantum_depth}" in
+  8 ) ;;
+  16 ) ;;
+  32 ) ;;
+  * ) AC_ERROR("Pixel quantum depth must have value of 8, 16, or 32") ;;
+esac
+QuantumDepth="$with_quantum_depth"
+AC_DEFINE_UNQUOTED(QuantumDepth,$QuantumDepth,[Number of bits in a pixel Quantum (8/16/32)])
 
 # Set pixel cache threshold
 with_cache=''
@@ -2094,7 +2101,7 @@ echo "Shared libraries  --enable-shared=$enable_shared    	$libtool_build_shared
 echo "Static libraries  --enable-static=$enable_static    	$libtool_build_static_libs"
 echo "GNU ld            --with-gnu-ld=$with_gnu_ld        	$lt_cv_prog_gnu_ld"
 echo "LZW support       --enable-lzw=$with_lzw            	$with_lzw"
-echo "16 bit pixels     --enable-16bit-pixel=$with_16_bit_pixel 	$with_16_bit_pixel"
+echo "Quantum depth     --with-quantum-depth=$with_quantum_depth 	$with_quantum_depth"
 echo ""
 echo "Delegate Configuration:"
 echo "BZLIB             --with-bzlib=$with_bzlib          	$have_bzlib"
