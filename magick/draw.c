@@ -2985,10 +2985,51 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
         case ReplaceMethod:
         {
           PixelPacket
+            color,
             target;
 
+          color=draw_info->fill;
           target=GetOnePixel(image,x,y);
-          (void) OpaqueImage(image,target,draw_info->fill);
+          for (y=0; y < (int) image->rows; y++)
+          {
+            q=GetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
+            {
+              if (!ColorMatch(*q,target,image->fuzz))
+                {
+                  q++;
+                  continue;
+                }
+              if (draw_info->tile != (Image *) NULL)
+                {
+                  color=GetOnePixel(draw_info->tile,
+                    x % draw_info->tile->columns,y % draw_info->tile->rows);
+                  if (!draw_info->tile->matte)
+                    color.opacity=OpaqueOpacity;
+                }
+              switch (color.opacity)
+              {
+                case TransparentOpacity:
+                  break;
+                case OpaqueOpacity:
+                {
+                  *q=color;
+                  break;
+                }
+                default:
+                {
+                  *q=AlphaComposite(OverCompositeOp,&color,color.opacity,q,
+                    q->opacity);
+                  break;
+                }
+              }
+              q++;
+            }
+            if (!SyncImagePixels(image))
+              break;
+          }
           break;
         }
         case FloodfillMethod:
