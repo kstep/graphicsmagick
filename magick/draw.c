@@ -57,6 +57,8 @@
 /*
   Define declarations.
 */
+#define DRAW_BINARY_IMPLEMENTATION 0
+
 #define ThrowDrawException(code,reason,description) \
 { \
   if (context->image->exception.severity > (long)code) \
@@ -111,6 +113,16 @@ struct _DrawContext
 
   int
     mvg_width;          /* current line length */
+
+  /* Pattern support */
+  char
+    *pattern_id;
+
+  RectangleInfo
+    pattern_bounds;
+
+  size_t
+    pattern_offset;
 
   /* Graphic context */
   long
@@ -318,7 +330,26 @@ static void MvgAppendPointsCommand(DrawContext context, const char* command,
   MvgPrintf(context, "\n");
 }
 
+static void AdjustAffine(DrawContext context, const AffineMatrix *affine)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
 
+  if ((affine->sx != 1.0) || (affine->rx != 0.0) || (affine->ry != 0.0) ||
+      (affine->sy != 1.0) || (affine->tx != 0.0) || (affine->ty != 0.0))
+    {
+      AffineMatrix
+        current;
+
+      current = CurrentContext->affine;
+      CurrentContext->affine.sx=current.sx*affine->sx+current.ry*affine->rx;
+      CurrentContext->affine.rx=current.rx*affine->sx+current.sy*affine->rx;
+      CurrentContext->affine.ry=current.sx*affine->ry+current.ry*affine->sy;
+      CurrentContext->affine.sy=current.rx*affine->ry+current.sy*affine->sy;
+      CurrentContext->affine.tx=current.sx*affine->tx+current.ry*affine->ty+current.tx;
+      CurrentContext->affine.ty=current.rx*affine->tx+current.sy*affine->ty+current.ty;
+    }
+}
 
 MagickExport void DrawAnnotation(DrawContext context,
                                  const double x, const double y,
@@ -366,22 +397,7 @@ MagickExport void DrawSetAffine(DrawContext context, const AffineMatrix *affine)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-#if 0
-  if ((affine->sx != 1.0) || (affine->rx != 0.0) || (affine->ry != 0.0) ||
-      (affine->sy != 1.0) || (affine->tx != 0.0) || (affine->ty != 0.0))
-    {
-      AffineMatrix
-        current;
-
-      current = CurrentContext->affine;
-      CurrentContext->affine.sx=current.sx*affine->sx+current.ry*affine->rx;
-      CurrentContext->affine.rx=current.rx*affine->sx+current.sy*affine->rx;
-      CurrentContext->affine.ry=current.sx*affine->ry+current.ry*affine->sy;
-      CurrentContext->affine.sy=current.rx*affine->ry+current.sy*affine->sy;
-      CurrentContext->affine.tx=current.sx*affine->tx+current.ry*affine->ty+current.tx;
-      CurrentContext->affine.ty=current.rx*affine->tx+current.sy*affine->ty+current.ty;
-    }
-#endif
+  AdjustAffine( context, affine );
 
   MvgPrintf(context, "affine %.4g,%.4g,%.4g,%.4g,%.4g,%.4g\n",
             affine->sy, affine->rx, affine->ry, affine->sy,
@@ -409,6 +425,15 @@ MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
   context->mvg_alloc = 0;
   context->mvg_length = 0;
   context->mvg_width = 0;
+
+  /* Pattern support */
+  context->pattern_id = NULL;
+  context->pattern_offset = 0;
+
+  context->pattern_bounds.x = 0;
+  context->pattern_bounds.y = 0;
+  context->pattern_bounds.width = 0;
+  context->pattern_bounds.height = 0;
 
   /* Graphic context */
   context->index = 0;
@@ -487,7 +512,9 @@ MagickExport void DrawSetClipPath(DrawContext context, const char *clip_path)
         ThrowDrawException(ResourceLimitError, "Unable to draw image",
                            "Memory allocation failed");
 
+#if DRAW_BINARY_IMPLEMENTATION
       (void) DrawClipPath(context->image,CurrentContext,CurrentContext->clip_path);
+#endif
 
       MvgPrintf(context, "clip-path url(#%s)\n", clip_path);
     }
@@ -548,7 +575,7 @@ MagickExport void DrawSetClipUnits(DrawContext context,
           affine.tx=CurrentContext->bounds.x1;
           affine.ty=CurrentContext->bounds.y1;
 
-          DrawSetAffine(context, &affine);
+          AdjustAffine( context, &affine );
         }
 
       switch (clip_units)
@@ -627,6 +654,15 @@ MagickExport void DrawDestroyContext(DrawContext context)
     }
   LiberateMemory((void **) &context->graphic_context);
 
+  /* Pattern support */
+  LiberateMemory((void **) &context->pattern_id);
+  context->pattern_offset = 0;
+
+  context->pattern_bounds.x = 0;
+  context->pattern_bounds.y = 0;
+  context->pattern_bounds.width = 0;
+  context->pattern_bounds.height = 0;
+
   /* MVG output string and housekeeping */
   LiberateMemory((void **) &context->mvg);
   context->mvg_alloc = 0;
@@ -688,23 +724,34 @@ MagickExport void DrawSetFillColorString(DrawContext context, const char* fill_c
 MagickExport void DrawSetFillPatternURL(DrawContext context, const char* fill_url)
 {
   char
-    fill_spec[MaxTextExtent],
     pattern[MaxTextExtent];
 
-  FormatString(fill_spec,"url(%.1024s)",fill_url);
-  FormatString(pattern,"[%.1024s]",fill_spec);
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(fill_url != NULL);
+
+  if(fill_url[0] != '#')
+    ThrowDrawException(OptionWarning, "Not relative URL", fill_url);
+
+  FormatString(pattern,"[%.1024s]",fill_url+1);
 
   if (GetImageAttribute(context->image,pattern) == (ImageAttribute *) NULL)
     {
-        ThrowDrawException(OptionWarning, "URL not found", fill_url);
+      ThrowDrawException(OptionWarning, "URL not found", fill_url);
     }
   else
     {
-      DrawPatternPath(context->image,CurrentContext,fill_spec,&CurrentContext->fill_pattern);
+      char
+        pattern_spec[MaxTextExtent];
+
+      FormatString(pattern_spec,"url(%.1024s)",fill_url);
+#if DRAW_BINARY_IMPLEMENTATION
+      DrawPatternPath(context->image,CurrentContext,pattern_spec,&CurrentContext->fill_pattern);
+#endif
       if (CurrentContext->fill.opacity != TransparentOpacity)
         CurrentContext->fill.opacity=CurrentContext->opacity;
-      
-      MvgPrintf(context, "fill %s\n",fill_spec);
+
+      MvgPrintf(context, "fill %s\n",pattern_spec);
     }
 }
 
@@ -1633,10 +1680,12 @@ MagickExport void DrawPopGraphicContext(DrawContext context)
   if(context->index > 0)
     {
       /* Destroy clip path if not same in preceding context */
+#if DRAW_BINARY_IMPLEMENTATION
       if (CurrentContext->clip_path != (char *) NULL)
         if (LocaleCompare(CurrentContext->clip_path,
                           context->graphic_context[context->index-1]->clip_path) != 0)
           (void) SetImageClipMask(context->image,(Image *) NULL);
+#endif
 
       DestroyDrawInfo(CurrentContext);
       CurrentContext=(DrawInfo*)NULL;
@@ -1649,8 +1698,31 @@ MagickExport void DrawPopGraphicContext(DrawContext context)
 
 MagickExport void DrawPopPattern(DrawContext context)
 {
+  char
+    geometry[MaxTextExtent],
+    key[MaxTextExtent];
+
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
+
+  if( context->pattern_id == NULL )
+    ThrowDrawException(OptionWarning,"Not currently pushing pattern definition",NULL);
+
+  FormatString(key,"[%.1024s]",context->pattern_id);
+
+  (void) SetImageAttribute(context->image,key,context->mvg+context->pattern_offset);
+  FormatString(geometry,"%lux%lu%+ld%+ld",
+               context->pattern_bounds.width,context->pattern_bounds.height,
+               context->pattern_bounds.x,context->pattern_bounds.y);
+  (void) SetImageAttribute(context->image,key,geometry);
+
+  LiberateMemory( (void**)&context->pattern_id );
+  context->pattern_offset = NULL;
+
+  context->pattern_bounds.x = 0;
+  context->pattern_bounds.y = 0;
+  context->pattern_bounds.width = 0;
+  context->pattern_bounds.height = 0;
 
   context->filter_off = False;
 
@@ -1706,29 +1778,27 @@ MagickExport void DrawPushPattern(DrawContext context,
                                   const double x, const double y,
                                   const double width, const double height)
 {
-  RectangleInfo
-    bounds;
-
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
   assert(pattern_id != (const char *) NULL);
 
-  bounds.x = (long) ceil(x-0.5);
-  bounds.y = (long) ceil(y-0.5);
-  bounds.width = (unsigned long) floor(width+0.5);
-  bounds.height = (unsigned long) floor(height+0.5);
-
-  /* How to represent & store pattern ???  Probably record as MVG ...
-     DrawImage saves MVG as an image attibute with name "[pattern"
-     along with a geometry attribute in form "%lux%lu%+ld%+ld" named
-     like "[%.1024s-geometry]".
-  */
+  if( context->pattern_id != NULL )
+    ThrowDrawException(OptionWarning,"Already pushing pattern definition",
+                       context->pattern_id);
 
   context->filter_off = True;
 
   MvgPrintf(context, "push pattern %s %.4g,%.4g %.4g,%.4g\n",
             pattern_id, x, y, width, height);
   context->indent_depth++;
+
+  /* Record current pattern ID, bounds, and start position in MVG */
+  context->pattern_id = AllocateString(pattern_id);
+  context->pattern_bounds.x = (long) ceil(x-0.5);
+  context->pattern_bounds.y = (long) ceil(y-0.5);
+  context->pattern_bounds.width = (unsigned long) floor(width+0.5);
+  context->pattern_bounds.height = (unsigned long) floor(height+0.5);
+  context->pattern_offset = context->mvg_length;
 }
 
 MagickExport void DrawRectangle(DrawContext context,
@@ -1757,7 +1827,6 @@ MagickExport int DrawRender(const DrawContext context)
 
 MagickExport void DrawSetRotate(DrawContext context, const double degrees)
 {
-#if 0
   AffineMatrix
     affine;
 
@@ -1769,10 +1838,9 @@ MagickExport void DrawSetRotate(DrawContext context, const double degrees)
   affine.rx=sin(DegreesToRadians(fmod(degrees,360.0)));
   affine.ry=(-sin(DegreesToRadians(fmod(degrees,360.0))));
   affine.sy=cos(DegreesToRadians(fmod(degrees,360.0)));
-  DrawSetAffine(context,&affine);
-#else
+  AdjustAffine( context, &affine );
+
   MvgPrintf(context, "rotate %.4g\n", degrees);
-#endif
 }
 
 MagickExport void DrawRoundRectangle(DrawContext context,
@@ -1790,7 +1858,6 @@ MagickExport void DrawRoundRectangle(DrawContext context,
 MagickExport void DrawSetScale(DrawContext context,
                                const double x, const double y)
 {
-#if 0
   AffineMatrix
     affine;
 
@@ -1800,15 +1867,13 @@ MagickExport void DrawSetScale(DrawContext context,
   IdentityAffine(&affine);
   affine.sx=x;
   affine.sy=y;
-  DrawSetAffine(context,&affine);
-#else
+  AdjustAffine( context, &affine );
+
   MvgPrintf(context, "scale %.4g,%.4g\n", x, y);
-#endif
 }
 
 MagickExport void DrawSetSkewX(DrawContext context, const double degrees)
 {
-#if 0
   AffineMatrix
     affine;
 
@@ -1817,15 +1882,13 @@ MagickExport void DrawSetSkewX(DrawContext context, const double degrees)
 
   IdentityAffine(&affine);
   affine.ry=tan(DegreesToRadians(fmod(degrees,360.0)));
-  DrawSetAffine(context,&affine);
-#else
+  AdjustAffine(context,&affine);
+
   MvgPrintf(context, "skewX %.4g\n", degrees);
-#endif
 }
 
 MagickExport void DrawSetSkewY(DrawContext context, const double degrees)
 {
-#if 0
   AffineMatrix
     affine;
 
@@ -1835,9 +1898,8 @@ MagickExport void DrawSetSkewY(DrawContext context, const double degrees)
   IdentityAffine(&affine);
   affine.rx=tan(DegreesToRadians(fmod(degrees,360.0)));
   DrawSetAffine(context,&affine);
-#else
+
   MvgPrintf(context, "skewY %.4g\n", degrees);
-#endif
 }
 
 MagickExport void DrawSetStopColor(DrawContext context,
@@ -1890,7 +1952,36 @@ MagickExport void DrawSetStrokeColorString(DrawContext context, const char* stro
 }
 MagickExport void DrawSetStrokePatternURL(DrawContext context, const char* stroke_url)
 {
-  MvgPrintf(context, "stroke url(%s)\n",stroke_url);
+  char
+    pattern[MaxTextExtent];
+
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(stroke_url != NULL);
+
+  if(stroke_url[0] != '#')
+    ThrowDrawException(OptionWarning, "Not relative URL", stroke_url);
+
+  FormatString(pattern,"[%.1024s]",stroke_url+1);
+
+  if (GetImageAttribute(context->image,pattern) == (ImageAttribute *) NULL)
+    {
+      ThrowDrawException(OptionWarning, "URL not found", stroke_url);
+    }
+  else
+    {
+      char
+        pattern_spec[MaxTextExtent];
+
+      FormatString(pattern_spec,"url(%.1024s)",stroke_url);
+#if DRAW_BINARY_IMPLEMENTATION
+      DrawPatternPath(context->image,CurrentContext,pattern_spec,&CurrentContext->stroke_pattern);
+#endif
+      if (CurrentContext->stroke.opacity != TransparentOpacity)
+        CurrentContext->stroke.opacity=CurrentContext->opacity;
+
+      MvgPrintf(context, "stroke %s\n",pattern_spec);
+    }
 }
 
 MagickExport void DrawSetStrokeAntialias(DrawContext context,
@@ -2194,7 +2285,6 @@ MagickExport void DrawSetTextUnderColorString(DrawContext context, const char* u
 MagickExport void DrawSetTranslate(DrawContext context,
                                    const double x, const double y)
 {
-#if 0
   AffineMatrix
     affine;
 
@@ -2204,10 +2294,9 @@ MagickExport void DrawSetTranslate(DrawContext context,
   IdentityAffine(&affine);
   affine.tx=x;
   affine.ty=y;
-  DrawSetAffine(context,&affine);
-#else
+  AdjustAffine( context, &affine );
+
   MvgPrintf(context, "translate %.4g,%.4g\n", x, y);
-#endif
 }
 
 MagickExport void DrawSetViewbox(DrawContext context,
