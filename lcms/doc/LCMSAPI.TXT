@@ -1,6 +1,6 @@
 
 
-                     little cms Engine 1.12
+                     little cms Engine 1.13
 
                          API Definition
 
@@ -24,7 +24,7 @@
         11 - LUT manipultation
         12 - Named color functions
         13 - PostScript
-
+        14 - CGATS.13 - 200
 
 1 - Profile & Transform functions
 _________________________________
@@ -485,7 +485,24 @@ Parameters:
 _________________________________________________________________________________
 
   These functions are intended for identify profiles. Its main use 
-  if bor building user interfaces.
+  if for building user interfaces.
+
+
+
+_________________________________________________________________________________
+
+void cmsSetLanguage(int LanguageCode, int CountryCode);
+_________________________________________________________________________________
+
+
+Parameters:
+    LanguageCode: first name language code from ISO-639. 
+                  http://lcweb.loc.gov/standards/iso639-2/iso639jac.html 
+
+
+    CountryCode: first name region code from ISO-3166. 
+                  http://www.iso.ch/iso/en/prods-services/iso3166ma/index.html 
+
 
 
 _________________________________________________________________________________
@@ -494,6 +511,20 @@ const char* cmsTakeProductName(cmsHPROFILE hProfile);
 _________________________________________________________________________________
 
   Returns a pointer to a string containing the product name. The
+  string is holded in a static buffer that is overwritten in
+  every call to this function.
+
+Parameters:
+            hProfile: Handle to an open profile
+
+
+
+_________________________________________________________________________________
+
+const char* cmsTakeProductDesc(cmsHPROFILE hProfile);
+_________________________________________________________________________________
+
+  Returns a pointer to a string containing the product Description. The
   string is holded in a static buffer that is overwritten in
   every call to this function.
 
@@ -531,7 +562,7 @@ Parameters:
 
 _________________________________________________________________________________
 
-const char*   LCMSEXPORT cmsTakeModel(cmsHPROFILE hProfile);
+const char*  cmsTakeModel(cmsHPROFILE hProfile);
 _________________________________________________________________________________
 
   Returns a pointer to a string containing uncooked info about
@@ -541,6 +572,18 @@ ________________________________________________________________________________
 Parameters:
             hProfile: Handle to an open profile
 
+
+_________________________________________________________________________________
+
+const char*  cmsTakeCopyright(cmsHPROFILE hProfile);
+_________________________________________________________________________________
+
+  Returns a pointer to a string containing uncooked info about
+  copyright. The string is holded in a static buffer overwritten
+  in each call to this function.
+
+Parameters:
+            hProfile: Handle to an open profile
 
 
 _________________________________________________________________________________
@@ -571,6 +614,15 @@ Parameters:
 
 Returns:
                 The color space of the profile
+
+
+_________________________________________________________________________________
+
+DWORD cmsGetProfileICCversion(cmsHPROFILE hProfile);
+_________________________________________________________________________________
+
+
+
 
 
 _________________________________________________________________________________
@@ -689,6 +741,16 @@ Returns:        one of the following values:
               INTENT_SATURATION                                 2
               INTENT_ABSOLUTE_COLORIMETRIC                      3
 
+
+_________________________________________________________________________________
+
+int  cmsTakeHeaderFlags(cmsHPROFILE hProfile);
+_________________________________________________________________________________
+
+
+
+
+
 _________________________________________________________________________________
 
 BOOL cmsIsIntentSupported(cmsHPROFILE hProfile, int Intent, int UsedDirection);
@@ -781,6 +843,17 @@ ________________________________________________________________________________
   Used to establish the out-of-gamut alarm color. This color will
   replace all out-of-gamut colors if sFLAGS_GAMUTCHEK is used in
   dwFlags parameter. See cmsCreateTransform()
+
+
+_________________________________________________________________________________
+
+void _cmsSetLUTdepth(cmsHPROFILE hProfile, int depth);
+
+BOOL _cmsSaveProfile(cmsHPROFILE hProfile, const char* FileName);
+BOOL _cmsSaveProfileToMem(cmsHPROFILE hProfile, void *MemPtr, size_t* BytesNeeded);
+_________________________________________________________________________________
+
+
 
 
 _________________________________________________________________________________
@@ -1146,6 +1219,35 @@ Returns:
     TRUE on success. FALSE on error
 
 
+_________________________________________________________________________________
+
+double cmsEstimateGamma(LPGAMMATABLE t);
+double cmsEstimateGammaEx(LPWORD Table, int nEntries, double Thereshold); 
+_________________________________________________________________________________
+
+_________________________________________________________________________________
+
+LPGAMMATABLE  cmsReadICCGamma(cmsHPROFILE hProfile, icTagSignature sig);
+LPGAMMATABLE  cmsReadICCGammaReversed(cmsHPROFILE hProfile, icTagSignature sig);
+LCMSAPI int           LCMSEXPORT cmsReadICCText(cmsHPROFILE hProfile, icTagSignature sig, char *Text);
+LCMSAPI LPcmsSEQ LCMSEXPORT cmsReadProfileSequenceDescription(cmsHPROFILE hProfile);
+
+_________________________________________________________________________________
+
+
+_________________________________________________________________________________
+
+LCMSAPI void LCMSEXPORT cmsSetUserFormatters(cmsHTRANSFORM hTransform, DWORD dwInput,  cmsFORMATTER Input,
+                                                               DWORD dwOutput, cmsFORMATTER Output);
+
+LCMSAPI void LCMSEXPORT cmsGetUserFormatters(cmsHTRANSFORM hTransform, 
+                                                               LPDWORD InputFormat, cmsFORMATTER* Input, 
+                                                               LPDWORD OutputFormat, cmsFORMATTER* Output);
+
+_________________________________________________________________________________
+
+
+
 
 _________________________________________________________________________________
 
@@ -1324,6 +1426,14 @@ ________________________________________________________________________________
     if Lab value is inside gamut, this function don't touch anything, if outside,
     converts to LCh, and keeping h constant, reduce C until inside gamut. 
     
+
+
+_________________________________________________________________________________
+
+LCMSAPI icColorSpaceSignature LCMSEXPORT _cmsICCcolorSpace(int OurNotation);
+LCMSAPI                   int LCMSEXPORT _cmsLCMScolorSpace(icColorSpaceSignature ProfileSpace);
+LCMSAPI                   int LCMSEXPORT _cmsChannelsOf(icColorSpaceSignature ColorSpace);
+_________________________________________________________________________________
 
 
 _________________________________________________________________________________
@@ -1516,7 +1626,7 @@ ________________________________________________________________________________
        icSigPreview1Tag                 LPLUT
        icSigPreview2Tag                 LPLUT
        icSigChromaticityTag             LPcmsCIExyYTRIPLE
-    
+       icSigNamedColor2Tag              LPcmsNAMEDCOLORLIST
 
 
 _________________________________________________________________________________
@@ -1841,9 +1951,11 @@ ________________________________________________________________________________
 
 
 
+_________________________________________________________________________________
 
  13. PostScript generation
- ============================================================================
+_________________________________________________________________________________
+
  3 functions carry the task of obtaining CRD and CSA. 
 
 
@@ -1891,5 +2003,409 @@ ________________________________________________________________________________
   can choose between normal transforms and CSA/CRD, normal transforms will 
   give more accurancy. However, there are situations where there is no 
   chance.
+
+
+_________________________________________________________________________________
+
+14 - CGATS.13 - 200
+_________________________________________________________________________________
+
+
+This standard defines an exchange format for spectral measurement data,
+colorimetric data, and densitometric data in electronic form using
+keywords and data tables. It maintains human readability of the data as
+well as enabling machine readability. It includes a series of predefined
+keywords and data format identifiers and makes provision for the dynamic
+definition of additional keywords and data format identifiers as
+necessary. 
+
+
+It was prepared by CGATS/SC3 in an effort to consolidate the common format 
+requirements for the exchange of spectral measurement data, colorimetric 
+data, and densitometric data in electronic form.
+
+These requirements presently appear in a number of CGATS and IT8 standards 
+such as CGAT S.5, IT8.7/1, IT8.7/2, and IT8.7/3. While it is the intent that 
+each of these individual standards will continue to identify required data, 
+the basic data format and keywords and data identifier s will be defined in 
+this standard for consistent use across all applicable standards.
+
+The Committee for Graphic Arts Technologies Standards (CGATS) was accredited 
+by the American National Standards Institute in 1989 to serve as the 
+coordinator of graphic arts standards activities.
+
+CGATS recommends the adoption and use of this standard by the graphic
+arts industry and its suppliers at their earliest convenience.
+ 
+
+
+_________________________________________________________________________________
+
+ LCMSHANDLE  cmsIT8Alloc(void);
+_________________________________________________________________________________
+
+  Does allocate an empty CGATS.13/IT8 object. Mostly used for creating new IT8 files
+
+  Returns:
+
+    A handle to a CGATS.13, or NULL if error.
+
+
+_________________________________________________________________________________
+
+ void   cmsIT8Free(LCMSHANDLE hIT8);
+_________________________________________________________________________________
+
+  Free any used memory. After this call the IT8 parser is not longer valid
+
+   Parameters:
+
+        hIT8: The CGATS.13 parser handle
+
+
+_________________________________________________________________________________
+
+ Tables
+_________________________________________________________________________________
+
+
+    In the lcms implementation, a CGATS.13/IT8 object may contain any number of
+    tables. Tables are separated by END_DATA keyword.
+
+
+_________________________________________________________________________________
+
+ int              cmsIT8TableCount(LCMSHANDLE hIT8);
+_________________________________________________________________________________
+
+  Returns the number of tables the CGATS.13/IT8 object contains.
+  
+Parameters:
+
+        hIT8: The CGATS.13 parser handle
+
+  
+  
+_________________________________________________________________________________  
+    
+ int              cmsIT8SetTable(LCMSHANDLE hIT8, int nTable);
+_________________________________________________________________________________
+
+    Sets the current table on a given CGATS.13/IT8 object
+
+Parameters:
+
+        hIT8: The CGATS.13 parser handle
+        nTable: The table number (0 based)
+
+
+Returns:
+       the number of tables the CGATS.13/IT8 object contains.
+
+
+Comments:
+
+       Setting nTable to TableCount + 1 does allocate a new empty table
+
+    
+_________________________________________________________________________________
+    
+ Persistence
+_________________________________________________________________________________
+
+ These are functions to load/save CGATS.13/IT8 objects from file and memory stream.
+
+_________________________________________________________________________________
+
+ LCMSHANDLE       cmsIT8LoadFromFile(const char* cFileName);
+_________________________________________________________________________________
+
+  Does allocate an CGATS.13/IT8 object and fills it with the contents of cFileName. 
+  Mostly used for reading existing IT8 files.
+
+Parameters:
+    
+    cFileName: The IT8/CGATS.13 file name to read/parse 
+
+Returns:
+
+    A handle to a CGATS.13, or NULL if error.
+
+
+_________________________________________________________________________________
+
+ LCMSHANDLE       cmsIT8LoadFromMem(void *Ptr, size_t len);
+_________________________________________________________________________________
+
+    Same as anterior, but the IT8/CGATS.13 stream is readed from a memory block.
+
+ Parameters:
+
+       Ptr: Points to a block of contiguous memory containing the IT8/CGATS.13 stream.
+       len: IT8/CGATS.13 stream s size measured in bytes.
+
+ Returns:
+
+       NULL on error, a profile handle on success.
+
+
+_________________________________________________________________________________
+
+ BOOL             cmsIT8SaveToFile(LCMSHANDLE hIT8, const char* cFileName);
+_________________________________________________________________________________
+
+ Saves a IT8/CGATS.13 object to a file.
+
+ Parameters:
+
+        hIT8: The CGATS.13 parser handle
+
+ Returns:
+ 
+
+_________________________________________________________________________________
+
+  Type and comments 
+_________________________________________________________________________________
+
+The sheet type is a identifier placed on the very first line of the IT8/CGATS.13 
+stream. It can be IT8.7/xx or whatever.
+
+ 
+ _________________________________________________________________________________
+
+ const char*      cmsIT8GetSheetType(LCMSHANDLE hIT8);
+_________________________________________________________________________________
+
+ Parameters:
+
+         hIT8: The CGATS.13 parser handle
+
+ Returns:
+
+_________________________________________________________________________________
+
+ BOOL             cmsIT8SetSheetType(LCMSHANDLE hIT8, const char* Type);
+_________________________________________________________________________________
+
+ Parameters:
+
+         hIT8: The CGATS.13 parser handle
+
+ Returns:
+
+
+_________________________________________________________________________________
+
+ BOOL             cmsIT8SetComment(LCMSHANDLE hIT8, const char* cComment);
+_________________________________________________________________________________
+
+This function is intended to provide a way automated IT8 creators can embed comments 
+into file. Comments have no effect, and its only purpose is to document any of the
+file meaning.
+
+
+ Parameters:
+
+         hIT8: The CGATS.13 parser handle       
+
+ Returns:
+
+_________________________________________________________________________________
+
+  Properties
+_________________________________________________________________________________
+
+ Each table may contain any number of properties. 
+
+
+
+
+_________________________________________________________________________________
+
+ BOOL cmsIT8SetPropertyStr(LCMSHANDLE hIT8, const char* cProp, const char *Str);
+ BOOL cmsIT8SetPropertyDbl(LCMSHANDLE hIT8, const char* cProp, double Val);
+ BOOL cmsIT8SetPropertyHex(LCMSHANDLE hIT8, const char* cProp, int Val);
+ BOOL cmsIT8SetPropertyF(LCMSHANDLE hIT8, const char* Key, const char* Frm, ...);
+_________________________________________________________________________________
+
+ Parameters:
+
+        hIT8: The CGATS.13 parser handle
+
+ Returns:
+
+_________________________________________________________________________________
+
+ const char*      cmsIT8GetProperty(LCMSHANDLE hIT8, const char* cProp);
+ double           cmsIT8GetPropertyDbl(LCMSHANDLE hIT8, const char* cProp);
+_________________________________________________________________________________
+
+ Parameters:
+
+        hIT8: The CGATS.13 parser handle
+
+ Returns:
+
+
+_________________________________________________________________________________
+
+ int    cmsIT8EnumProperties(LCMSHANDLE IT8, char ***PropertyNames);
+_________________________________________________________________________________
+
+ Parameters:
+
+        hIT8: The CGATS.13 parser handle
+        PropertyNames: A pointer to a variable which would recive a pointer to an 
+                       array of property name strings.
+
+ Returns:
+
+
+_________________________________________________________________________________
+
+ Datasets
+_________________________________________________________________________________
+
+
+_________________________________________________________________________________
+
+ const char*      cmsIT8GetDataSetByPos(LCMSHANDLE IT8, int col, int row);                                                
+_________________________________________________________________________________
+
+ Parameters:
+
+        hIT8: The CGATS.13 parser handle
+
+ Returns:
+
+
+_________________________________________________________________________________
+
+ double           cmsIT8GetDataSetByPosDbl(LCMSHANDLE IT8, int col, int row);
+_________________________________________________________________________________
+
+ Parameters:
+
+        hIT8: The CGATS.13 parser handle
+        
+ Returns:
+
+
+_________________________________________________________________________________
+
+ BOOL             cmsIT8SetDataSetByPos(LCMSHANDLE hIT8, int col, int row, 
+                                                const char* Val);
+_________________________________________________________________________________
+
+ Parameters:
+
+       hIT8: The CGATS.13 parser handle
+
+ Returns:
+
+
+_________________________________________________________________________________
+
+ BOOL             cmsIT8SetDataSetByPosDbl(LCMSHANDLE hIT8, int col, int row, 
+                                                double Val);
+_________________________________________________________________________________
+
+ Parameters:
+
+       hIT8: The CGATS.13 parser handle
+
+ Returns:
+
+
+_________________________________________________________________________________
+
+ const char*  cmsIT8GetDataSet(LCMSHANDLE IT8, const char* cPatch, 
+                                               const char* cSample);                                                
+_________________________________________________________________________________
+
+ Parameters:
+
+        hIT8: The CGATS.13 parser handle
+
+ Returns:
+
+
+_________________________________________________________________________________
+
+ double  cmsIT8GetDataSetDbl(LCMSHANDLE IT8, const char* cPatch, 
+                                             const char* cSample);
+_________________________________________________________________________________
+
+ Parameters:
+
+        hIT8: The CGATS.13 parser handle
+
+ Returns:
+
+
+_________________________________________________________________________________
+
+ BOOL  cmsIT8SetDataSet(LCMSHANDLE IT8, const char* cPatch,
+                                        const char* cSample,
+                                        char *Val);
+_________________________________________________________________________________
+
+ Parameters:
+
+       hIT8: The CGATS.13 parser handle
+
+ Returns:
+
+
+_________________________________________________________________________________
+
+ BOOL             cmsIT8SetDataSetDbl(LCMSHANDLE hIT8, const char* cPatch,
+                                                const char* cSample,
+                                                double Val);
+_________________________________________________________________________________
+
+ Parameters:
+
+       hIT8: The CGATS.13 parser handle
+
+ Returns:
+
+
+_________________________________________________________________________________
+
+ BOOL             cmsIT8SetDataFormat(LCMSHANDLE IT8, int n, const char *Sample);
+_________________________________________________________________________________
+
+ Parameters:
+
+       hIT8: The CGATS.13 parser handle
+
+ Returns:
+
+
+_________________________________________________________________________________
+
+ int              cmsIT8EnumDataFormat(LCMSHANDLE IT8, char ***SampleNames);
+_________________________________________________________________________________
+
+ Parameters:
+
+       hIT8: The CGATS.13 parser handle
+
+ Returns:
+
+
+_________________________________________________________________________________
+
+ const char*      cmsIT8GetPatchName(LCMSHANDLE hIT8, int nPatch, char* buffer);
+_________________________________________________________________________________
+
+
+ Parameters:
+
+       hIT8: The CGATS.13 parser handle
+
+ Returns:
 
 

@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -26,20 +26,21 @@
 #include "lcms.h"
 
 
-LPcmsNAMEDCOLORLIST  cdecl cmsAllocNamedColorList(void);
+LPcmsNAMEDCOLORLIST  cdecl cmsAllocNamedColorList(int n);
 void                 cdecl cmsFreeNamedColorList(LPcmsNAMEDCOLORLIST List);
 BOOL                 cdecl cmsAppendNamedColor(cmsHTRANSFORM xform, const char* Name, WORD PCS[3], WORD Colorant[MAXCHANNELS]);
 
 
 // ---------------------------------------------------------------------------------
 
+
 static
-BOOL GrowNamedColorList(LPcmsNAMEDCOLORLIST v, int ByElements)
-{
-    LPcmsNAMEDCOLOR NewList;
-    int NewElements;
-    
+LPcmsNAMEDCOLORLIST GrowNamedColorList(LPcmsNAMEDCOLORLIST v, int ByElements)
+{           
     if (ByElements > v ->Allocated) {
+        
+        LPcmsNAMEDCOLORLIST TheNewList;
+        int NewElements;
 
         if (v ->Allocated == 0)
             NewElements = 64;   // Initial guess
@@ -49,47 +50,45 @@ BOOL GrowNamedColorList(LPcmsNAMEDCOLORLIST v, int ByElements)
         while (ByElements > NewElements)
                 NewElements *= 2;
         
-        NewList = (LPcmsNAMEDCOLOR) malloc(sizeof(cmsNAMEDCOLOR) * NewElements);
+        TheNewList = (LPcmsNAMEDCOLORLIST) malloc(sizeof(cmsNAMEDCOLORLIST) 
+                                                        + (sizeof(cmsNAMEDCOLOR) * NewElements));
 
-        if (NewList == NULL) {
+        if (TheNewList == NULL) {
             cmsSignalError(LCMS_ERRC_ABORTED, "Out of memory reallocating named color list");
-            return FALSE;
+            return NULL;
         }
         else {
+              CopyMemory(TheNewList, v, sizeof(cmsNAMEDCOLORLIST) + (v ->nColors - 1) * sizeof(cmsNAMEDCOLOR));
+              TheNewList -> Allocated = NewElements;
 
-            if (v -> List) {
-                CopyMemory(NewList, v -> List, v ->nColors* sizeof(cmsNAMEDCOLOR));
-                free(v -> List);                
-            }
-
-            v -> List = NewList;
-            v -> Allocated = NewElements;
-            return TRUE;
+              free(v);
+              return TheNewList;
         }
     }
-
-    return TRUE;
+    
+    return v;
 }
 
 
-LPcmsNAMEDCOLORLIST cmsAllocNamedColorList(void)
+LPcmsNAMEDCOLORLIST cmsAllocNamedColorList(int n)
 {
-    LPcmsNAMEDCOLORLIST v = (LPcmsNAMEDCOLORLIST) malloc(sizeof(cmsNAMEDCOLORLIST));
+    size_t size = sizeof(cmsNAMEDCOLORLIST) + (n - 1) * sizeof(cmsNAMEDCOLOR);
+
+    LPcmsNAMEDCOLORLIST v = (LPcmsNAMEDCOLORLIST) malloc(size);
+    
 
     if (v == NULL) {
         cmsSignalError(LCMS_ERRC_ABORTED, "Out of memory creating named color list");
         return NULL;
     }
 
-    ZeroMemory(v, sizeof(cmsNAMEDCOLORLIST));
+    ZeroMemory(v, size);
 
-    v ->nColors   = 0;
-    v ->Allocated = 0;  
+    v ->nColors   = n;
+    v ->Allocated = n;  
     v ->Prefix[0] = 0;
     v ->Suffix[0] = 0;  
-    v -> List     = NULL; 
-    
-    
+           
     return v;
 }
 
@@ -99,23 +98,24 @@ void cmsFreeNamedColorList(LPcmsNAMEDCOLORLIST v)
         cmsSignalError(LCMS_ERRC_RECOVERABLE, "Couldn't free a NULL named color list");
         return;
     }
-                
-    if (v -> List) free(v->List);
+                    
     free(v);
 }   
-
 
 
 
 BOOL cmsAppendNamedColor(cmsHTRANSFORM xform, const char* Name, WORD PCS[3], WORD Colorant[MAXCHANNELS])
 {
     _LPcmsTRANSFORM v = (_LPcmsTRANSFORM) xform;
-    LPcmsNAMEDCOLORLIST List = v ->NamedColorList;
+    LPcmsNAMEDCOLORLIST List;
     int i;
 
-    if (List == NULL) return FALSE;
-    if (!GrowNamedColorList(List, List ->nColors + 1)) return FALSE;
+    if (v ->NamedColorList == NULL) return FALSE;
+
+    v ->NamedColorList = GrowNamedColorList(v ->NamedColorList, v->NamedColorList ->nColors + 1);
     
+    List = v ->NamedColorList;
+
     for (i=0; i < MAXCHANNELS; i++)
         List ->List[List ->nColors].DeviceColorant[i] = Colorant[i];
 
@@ -172,3 +172,5 @@ int  LCMSEXPORT cmsNamedColorIndex(cmsHTRANSFORM xform, const char* Name)
 
         return -1;
 }
+
+

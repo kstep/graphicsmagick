@@ -45,6 +45,9 @@ or <tt>"-fuzz 2%"</tt>.
 </p>
 </utils>
 
+
+
+
 <!-- ------------ -adjoin ------------------------------------------- -->
 
 <utils apps=convert,montage>
@@ -56,10 +59,12 @@ or <tt>"-fuzz 2%"</tt>.
 By default, all images of an image sequence are stored in the same
 file. However, some formats (e.g. JPEG) do not support more than one image
 and are saved to separate files. Use <s>+adjoin</s> to force this
-behavior.
-</pp>
+behavior.</pp>
 
 </utils>
+
+
+
 
 <!-- ------------ -affine ------------------------------------------- -->
 
@@ -70,10 +75,12 @@ behavior.
 
 <pp>
 This option provides a transform matrix <tt>{sx,rx,ry,sy,tx,ty}</tt> for
-use by subsequent <s>-draw</s> or <s>-transform</s> options.
-</pp>
+use by subsequent <s>-draw</s> or <s>-transform</s> options.</pp>
 
 </utils>
+
+
+
 
 <!-- ------------ -antialias ---------------------------------------- -->
 
@@ -86,8 +93,7 @@ use by subsequent <s>-draw</s> or <s>-transform</s> options.
 By default antialiasing algorithms are used when drawing objects (e.g. lines)
 or rendering vector formats (e.g. WMF and Postscript). Use +antialias to
 disable use of antialiasing algorithms. Reasons to disable antialiasing
-include avoiding increasing colors in the image, or improving rendering speed.
-</pp>
+include avoiding increasing colors in the image, or improving rendering speed.</pp>
 
 </utils>
 
@@ -105,11 +111,11 @@ any narrow images will be expanded to fit using the background color.
 Use <s>+append</s> to stack images left-to-right.  The set of images
 is terminated by the appearance of any option.
 If the <s>-append</s>
-option appears after all of the input images, all images are appended.
-</pp>
-
+option appears after all of the input images, all images are appended.</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -authenticate ------------------------------------- -->
@@ -142,6 +148,7 @@ option appears after all of the input images, all images are averaged.</pp>
 
 
 
+
 <!-- ------------ -backdrop ----------------------------------------- -->
 
 <utils apps=animate,display>
@@ -152,8 +159,7 @@ option appears after all of the input images, all images are averaged.</pp>
 <pp>
 This backdrop covers the entire workstation screen and is useful for hiding
 other X window activity while viewing the image. The color of the backdrop
-is specified as the foreground color (X11 default is black).
-</pp>
+is specified as the foreground color (X11 default is black).</pp>
 
 <pp>Refer to
 <format type=html>
@@ -165,10 +171,10 @@ is specified as the foreground color (X11 default is black).
 <format type=tex>
 "X Resources" in the manual page for <i>display</i>
 </format>
-for details.
-</pp>
+for details.</pp>
 
 </utils>
+
 
 
 
@@ -188,6 +194,7 @@ option.</pp>
 
 
 
+
 <!-- ------------ -blue-primary ------------------------------------- -->
 
 <utils apps=composite,convert,mogrify,montage>
@@ -196,6 +203,8 @@ option.</pp>
 <abs>blue chromaticity primary point</abs>
 
 </utils>
+
+
 
 
 <!-- ------------ -blur --------------------------------------------- -->
@@ -207,8 +216,7 @@ option.</pp>
 
 <pp>
 Blur with the given radius and
-standard deviation (sigma).
-</pp>
+standard deviation (sigma).</pp>
 
 </utils>
 
@@ -222,10 +230,11 @@ standard deviation (sigma).
 
 <pp>
 See <s>-geometry</s> for details
-about the geometry specification.
-</pp>
+about the geometry specification.</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -bordercolor -------------------------------------- -->
@@ -243,6 +252,8 @@ option.</pp>
 </utils>
 
 
+
+
 <!-- ------------ -borderwidth -------------------------------------- -->
 
 <utils apps=animate,display,montage>
@@ -251,6 +262,9 @@ option.</pp>
 <abs>the border width</abs>
 
 </utils>
+
+
+
 
 <!-- ------------ -box ---------------------------------------------- -->
 
@@ -265,10 +279,10 @@ option.</pp>
 
 <pp>
 See <s>-draw</s> for further
-details.
-</pp>
+details.</pp>
 
 </utils>
+
 
 
 
@@ -284,7 +298,6 @@ details.
 
 
 
-
 <!-- ------------ -channel ------------------------------------------ -->
 
 <utils apps=convert,mogrify>
@@ -293,14 +306,12 @@ details.
 <abs>the type of channel</abs>
 <pp>
 Choose from: <s>Red</s>, <s>Green</s>, <s>Blue</s>, <s>Opacity</s>,
-<s>Matte</s>, <s>Cyan</s>, <s>Magenta</s>, <s>Yellow</s>, or <s>Black</s>.
-</pp>
+<s>Matte</s>, <s>Cyan</s>, <s>Magenta</s>, <s>Yellow</s>, or <s>Black</s>.</pp>
 
 <pp>
 Use this option to extract a particular <i>channel</i> from the image.
 <s>Matte</s>,
-for example, is useful for extracting the opacity values from an image.
-</pp>
+for example, is useful for extracting the opacity values from an image.</pp>
 
 </utils>
 
@@ -318,6 +329,7 @@ for example, is useful for extracting the opacity values from an image.
 
 
 
+
 <!-- ------------ -chop --------------------------------------------- -->
 
 <utils apps=animate,convert,montage>
@@ -328,8 +340,7 @@ for example, is useful for extracting the opacity values from an image.
 <pp>
 <i>Width</i> and <i>height</i> give the number of columns and rows to remove,
 and <i>x</i> and <i>y</i> are offsets that give the location of the
-leftmost column and topmost row to remove.
-</pp>
+leftmost column and topmost row to remove.</pp>
 
 <pp>
 The <i>x</i> offset normally specifies the leftmost column to remove.
@@ -345,10 +356,12 @@ image to the bottom row to remove.</pp>
 
 <pp>
 The <s>-chop</s> option removes entire rows and columns,
-and moves the remaining corner blocks leftward and upward to close the gaps.
-</pp>
+and moves the remaining corner blocks leftward and upward to close the gaps.</pp>
 
 </utils>
+
+
+
 
 <!-- ------------ -clip --------------------------------------------- -->
 
@@ -374,6 +387,9 @@ is not present, the option is ignored.</pp>
 
 </utils>
 
+
+
+
 <!-- ------------ -coalesce ----------------------------------------- -->
 
 <utils apps=convert>
@@ -394,6 +410,7 @@ option appears after all of the input images, all images are coalesced.</pp>
 
 
 
+
 <!-- ------------ -colorize ----------------------------------------- -->
 
 <utils apps=convert,mogrify>
@@ -404,10 +421,11 @@ option appears after all of the input images, all images are coalesced.</pp>
 <pp>
 Specify the amount of colorization as a percentage. You can apply separate
 colorization values to the red, green, and blue channels of the image with
-a colorization value list delimited with slashes (e.g. 0/0/50).
-</pp>
+a colorization value list delimited with slashes (e.g. 0/0/50).</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -colormap ----------------------------------------- -->
@@ -418,8 +436,7 @@ a colorization value list delimited with slashes (e.g. 0/0/50).
 <abs>define the colormap type</abs>
 
 <pp>
-Choose between <s>shared</s> or <s>private</s>.
-</pp>
+Choose between <s>shared</s> or <s>private</s>.</pp>
 
 <pp>
 This option only applies when the default X server visual is <i>PseudoColor</i>
@@ -431,6 +448,7 @@ appear exactly as they are defined. However, other clients may
 go <i>technicolor</i> when the image colormap is installed.</pp>
 
 </utils>
+
 
 
 
@@ -449,15 +467,14 @@ unused colors removed. The ordering of an existing color palette may be
 altered. When converting an image from color to grayscale, convert the
 image to the gray colorspace before reducing the number of colors since
 doing so is most efficient. Refer to <a
-href="quantize.html">quantize</a> for more details.
-</pp>
+href="quantize.html">quantize</a> for more details.</pp>
 
 <pp>
 Note, options <s>-dither</s>, <s>-colorspace</s>, and <s>-treedepth</s>
-affect the color reduction algorithm.
-</pp>
+affect the color reduction algorithm.</pp>
 
 </utils>
+
 
 
 
@@ -466,39 +483,33 @@ affect the color reduction algorithm.
 <utils apps=animate,composite,convert,display,import,mogrify,montage>
 <dopt>-colorspace <value></opt>
 
-
-
 <abs>the type of colorspace</abs>
 <pp>
 Choices are:
 <s>CMYK</s>, <s>GRAY</s>, <s>HSL</s>, <s>HWB</s>, <s>OHTA</s>, <s>RGB</s>,
 <s>Transparent</s>, <s>XYZ</s>, <s>YCbCr</s>, <s>YIQ</s>, <s>YPbPr</s>,
 or
-<s>YUV</s>.
-</pp>
+<s>YUV</s>.</pp>
 
 <pp>
 Color reduction, by default, takes place in the RGB color space. Empirical
 evidence suggests that distances in color spaces such as YUV or YIQ correspond
 to perceptual color differences more closely than do distances in RGB space.
 These color spaces may give better results when color reducing an image.
-Refer to <a href="quantize.html">quantize</a> for more details.
-</pp>
+Refer to <a href="quantize.html">quantize</a> for more details.</pp>
 
 <pp>
 The <s>Transparent</s> color space behaves uniquely in that it preserves
-the matte channel of the image if it exists.
-</pp>
+the matte channel of the image if it exists.</pp>
 <pp>
 The <s>-colors</s> or <s>-monochrome</s> option, or saving to a file
 format which requires color reduction, is required for this option to
-take effect.
-</pp>
-
-
-
+take effect.</pp>
 
 </utils>
+
+
+
 
 <!-- ------------ -comment ------------------------------------------ -->
 
@@ -514,25 +525,21 @@ image filename, type, width, height, or other image attribute by embedding
 special format characters listed under the <s>-format</s> option.
 The comment is not drawn on the image, but is embedded in the image
 datastream via a "Comment" tag or similar mechanism.  If you want the
-comment to be visible on the image itself, use the <s>-draw</s> option.
-</pp>
+comment to be visible on the image itself, use the <s>-draw</s> option.</pp>
 
 <pp>
-For example,
-</pp>
+For example,</pp>
 <pre>
      -comment "%m:%f %wx%h"
 </pre>
 
 <pp>
 produces an image comment of <s>MIFF:bird.miff 512x480</s> for an image
-titled <s>bird.miff</s> and whose width is 512 and height is 480.
-</pp>
+titled <s>bird.miff</s> and whose width is 512 and height is 480.</pp>
 
 <pp>
 If the first character of <i>string</i> is <i>@</i>, the image comment
-is read from a file titled by the remaining characters in the string.
-</pp>
+is read from a file titled by the remaining characters in the string.</pp>
 
 </utils>
 
@@ -559,8 +566,7 @@ may be used to determine the influence of the pixel color when
 compositing the pixel with another image pixel. If the image matte
 channel is disabled, then all pixels in the image are treated as opaque.
 The color of an <i>opaque</i> pixel is fully visible while the color of a
-<i>transparent</i> pixel color is entirely absent (pixel color is ignored).
-</pp>
+<i>transparent</i> pixel color is entirely absent (pixel color is ignored).</pp>
 
 <pp>
 By definition, raster images have a rectangular shape. All image rows are
@@ -575,14 +581,11 @@ image "shape" in order to make the description of the operators easier to
 understand. While it is convenient to describe the operators in terms of
 "shapes" they are by no means limited to mask-style operations since they
 are based on continuous floating-point mathematics rather than simple
-boolean operations.
-</pp>
+boolean operations.</pp>
 
 <pp>
 By default, the <i>Over</i> composite operator is used. The following
-composite operators are available:
-</pp>
-
+composite operators are available:</pp>
 <pre>
      Over
      In
@@ -604,33 +607,28 @@ composite operators are available:
 </pre>
 
 <pp>
-The behavior of each operator is described below.
-</pp>
+The behavior of each operator is described below.</pp>
 
 <dl>
 <dt>Over</dt>
-<dd>
-The result will be the union of the two image shapes, with opaque areas
+<dd>The result will be the union of the two image shapes, with opaque areas
 of <i>change-image</i> obscuring <i>base-image</i> in the region of
 overlap.
 </dd>
 
 <dt>In</dt>
-<dd>
-The result is simply <i>change-image</i> cut by the shape of
+<dd>The result is simply <i>change-image</i> cut by the shape of
 <i>base-image</i>. None of the image data of <i>base-image</i> will be in
 the result.
 </dd>
 
 <dt>Out</dt>
-<dd>
-The resulting image is <i>change-image</i> with the shape of
+<dd>The resulting image is <i>change-image</i> with the shape of
 <i>base-image</i> cut out.
 </dd>
 
 <dt>Atop</dt>
-<dd>
-The result is the same shape as <i>base-image</i>, with
+<dd>The result is the same shape as <i>base-image</i>, with
 <i>change-image</i> obscuring <i>base-image</i> where the image shapes
 overlap. Note this differs from <s>over</s> because the portion of
 <i>change-image</i> outside <i>base-image</i>'s shape does not appear in
@@ -638,92 +636,80 @@ the result.
 </dd>
 
 <dt>Xor</dt>
-<dd>
-The result is the image data from both <i>change-image</i> and
+<dd>The result is the image data from both <i>change-image</i> and
 <i>base-image</i> that is outside the overlap region. The overlap region
 will be blank.
 </dd>
 
 <dt>Plus</dt>
-<dd>
-The result is just the sum of the image data. Output values are cropped
+<dd>The result is just the sum of the image data. Output values are cropped
 to MaxRGB (no overflow). This operation is independent of the matte
 channels.
 </dd>
 
 <dt>Minus</dt>
-<dd>
-The result of <i>change-image</i> - <i>base-image</i>, with underflow
+<dd>The result of <i>change-image</i> - <i>base-image</i>, with underflow
 cropped to zero. The matte channel is ignored (set to opaque, full
 coverage).
 </dd>
 
 <dt>Add</dt>
-<dd>
-The result of <i>change-image</i> + <i>base-image</i>, with overflow
+<dd>The result of <i>change-image</i> + <i>base-image</i>, with overflow
 wrapping around (<i>mod</i> MaxRGB+1).
 </dd>
 
 <dt>Subtract</dt>
-<dd>
-The result of <i>change-image</i> - <i>base-image</i>, with underflow
+<dd>The result of <i>change-image</i> - <i>base-image</i>, with underflow
 wrapping around (<i>mod</i> MaxRGB+1). The <s>add</s> and <s>subtract</s>
 operators can be used to perform reversible transformations.
 </dd>
 
 <dt>Difference</dt>
-<dd>
-The result of abs(<i>change-image</i> - <i>base-image</i>). This is
+<dd>The result of abs(<i>change-image</i> - <i>base-image</i>). This is
 useful for comparing two very similar images.
 </dd>
 
 <dt>Multiply</dt>
-<dd>
-The result of <i>change-image</i> * <i>base-image</i>. This is useful for
+<dd>The result of <i>change-image</i> * <i>base-image</i>. This is useful for
 the creation of drop-shadows.
 </dd>
 
 <dt>Bumpmap</dt>
-<dd>
-The result <i>base-image</i> shaded by <i>change-image</i>.
+<dd>The result <i>base-image</i> shaded by <i>change-image</i>.
 </dd>
 
 <dt>Copy</dt>
-<dd>
-The resulting image is <i>base-image</i> replaced with
+<dd>The resulting image is <i>base-image</i> replaced with
 <i>change-image</i>. Here the matte information is ignored.
 </dd>
 
 <dt>CopyRed</dt>
-<dd>
-The resulting image is the red channel in <i>base-image</i> replaced with
+<dd>The resulting image is the red channel in <i>base-image</i> replaced with
 the red channel in <i>change-image</i>. The other channels are copied
 untouched.
 </dd>
 
 <dt>CopyGreen</dt>
-<dd>
-The resulting image is the green channel in <i>base-image</i> replaced
+<dd>The resulting image is the green channel in <i>base-image</i> replaced
 with the green channel in <i>change-image</i>. The other channels are
 copied untouched.
 </dd>
 
 <dt>CopyBlue</dt>
-<dd>
-The resulting image is the blue channel in <i>base-image</i> replaced
+<dd>The resulting image is the blue channel in <i>base-image</i> replaced
 with the blue channel in <i>change-image</i>. The other channels are
 copied untouched.
 </dd>
 
 <dt>CopyOpacity</dt>
-<dd>
-The resulting image is the opacity channel in <i>base-image</i> replaced
+<dd>The resulting image is the opacity channel in <i>base-image</i> replaced
 with the opacity channel in <i>change-image</i>. The other channels are
 copied untouched.
 </dd>
 </dl>
 
 </utils>
+
 
 
 
@@ -742,8 +728,7 @@ Choices are: <i>None</i>, <i>BZip</i>, <i>Fax</i>,
 
 <pp>
 Specify <s>+compress</s> to store the binary image in an uncompressed format.
-The default is the compression type of the specified image file.
-</pp>
+The default is the compression type of the specified image file.</pp>
 
 <pp>
 If <i>LZW</i> compression is specified but LZW compression has not been enabled,
@@ -790,6 +775,7 @@ For a more pronounced effect you can repeat the option:</pp>
 
 
 
+
 <!-- ------------ -convolve ------------------------------------------ -->
 
 <utils apps=convert,mogrify>
@@ -803,6 +789,9 @@ left-to right, starting with the top row.
 The order of the kernel is determined by the square root of the
 number of entries.  Presently only square kernels are supported.</pp>
 
+</utils>
+
+
 
 
 <!-- ------------ -crop --------------------------------------------- -->
@@ -813,16 +802,14 @@ number of entries.  Presently only square kernels are supported.</pp>
 <abs>preferred size and location of the cropped image</abs>
 <pp>
 See <s>-geometry</s> for details
-about the geometry specification.
-</pp>
+about the geometry specification.</pp>
 
 <pp>
 The width and height give the size of the image that remains after cropping,
 and <i>x</i> and <i>y</i> are offsets that give the location of the top left
 corner of the cropped
 image with respect to the original image.  To specify the amount to be
-removed, use <s>-shave</s> instead.
-</pp>
+removed, use <s>-shave</s> instead.</pp>
 
 <pp>
 If the <i>x</i> and <i>y</i> offsets are present, a single image is
@@ -843,10 +830,10 @@ edges.</pp>
 If the <i>x</i> and <i>y</i> offsets are omitted, a set of tiles of the
 specified geometry, covering the entire input image, is generated.  The
 rightmost tiles and the bottom tiles are smaller if the
-specified geometry extends beyond the dimensions of the input image.
-</pp>
+specified geometry extends beyond the dimensions of the input image.</pp>
 
 </utils>
+
 
 
 
@@ -858,8 +845,7 @@ specified geometry extends beyond the dimensions of the input image.
 <abs>displace image colormap by amount</abs>
 
 <pp>
-<i>Amount</i> defines the number of positions each colormap entry is
-shifted.
+<i>Amount</i> defines the number of positions each colormap entry isshifted.
 </pp>
 
 </utils>
@@ -950,46 +936,60 @@ that name. This is used to control on/off options. Use <tt>+define
 <tt>+define "*"</tt> to remove all existing definitions.</pp>
 
 <pp>
-The following definitions may be created:
-</pp>
+The following definitions may be created:</pp>
 
-<pre>
-    jp2:rate=<value>
-	Specify the compression factor to use while writing JPEG-2000
-	files. The compression factor is the reciprocal of the compression
-	ratio. The valid range is 0.0 to 1.0, with 1.0 indicating lossless
-	compression. If defined, this value overrides the -quality setting.
-	The default quality setting of 75 results in a rate value of 0.06641.
-    jpeg:preserve-settings
-        If the jpeg:preserve-settings flag is defined, the JPEG encoder
-        will use the same "quality" and "sampling-factor" settings that
-        were found in the input file, if the input was in JPEG format.
-        These settings are also preserved if the input is a JPEG file
-        and the output is a JNG file.  If the colorspace of the output
-        file differs from that of the input file, the quality setting is
-        preserved but the sampling-factors are not.
-    ps:imagemask
-        If the ps:imagemask flag is defined, the PS3 and EPS3 coders will
-        create Postscript files that render bilevel images with the Postscript
-        imagemask operator instead of the image operator.
-    tiff:bits-per-sample=<value>
-        If the tiff:bits-per-sample key is defined to a value less than the
-        GraphicsMagick Quantum depth, the TIFF coder will write TIFF images
-        with the defined bits per sample, overriding any value stored in the
-        image.
-    tiff:samples-per-pixel=<value>
-        If the tiff:samples-per-pixel key is defined to a value, the TIFF
-        coder will write TIFF images with the defined samples per pixel,
-        overriding any value stored in the image.
-</pre>
+<dl>
+<dt>jp2:rate=<value></dt>
+<dd>
+Specify the compression factor to use while writing JPEG-2000
+files. The compression factor is the reciprocal of the compression
+ratio. The valid range is 0.0 to 1.0, with 1.0 indicating lossless
+compression. If defined, this value overrides the -quality
+setting. The default quality setting of 75 results in a rate value of
+0.06641.
+</dd>
+
+<dt>jpeg:preserve-settings</dt>
+<dd>
+If the jpeg:preserve-settings flag is defined, the JPEG encoder will
+use the same "quality" and "sampling-factor" settings that were found
+in the input file, if the input was in JPEG format. These settings are
+also preserved if the input is a JPEG file and the output is a JNG
+file.  If the colorspace of the output file differs from that of the
+input file, the quality setting is preserved but the sampling-factors
+are not.
+</dd>
+
+<dt>ps:imagemask</dt>
+<dd>
+If the ps:imagemask flag is defined, the PS3 and EPS3 coders will
+create Postscript files that render bilevel images with the Postscript
+imagemask operator instead of the image operator.
+</dd>
+
+<dt>tiff:bits-per-sample=<value></dt>
+<dd>
+If the tiff:bits-per-sample key is defined to a value less than the
+GraphicsMagick Quantum depth, the TIFF coder will write TIFF images
+with the defined bits per sample, overriding any value stored in the
+image.
+</dd>
+
+<dt>tiff:samples-per-pixel=<value></dt>
+<dd>
+If the tiff:samples-per-pixel key is defined to a value, the TIFF
+coder will write TIFF images with the defined samples per pixel,
+overriding any value stored in the image.
+</dd>
+</dl>
 
 <pp>
 For example, to create a postscript file that will render only the black
-pixels of a bilevel image, use:
-</pp>
+pixels of a bilevel image, use:</pp>
 <pre>
     convert bilevel.tif -define ps:imagemask eps3:stencil.ps
 </pre>
+
 </utils>
 
 
@@ -1006,13 +1006,11 @@ pixels of a bilevel image, use:
 This option is useful for regulating the animation of image sequences
 <i>Delay/100</i> seconds must expire before the display
 of the next image. The default is no delay between each showing of the
-image sequence. The maximum delay is 65535.
-</pp>
+image sequence. The maximum delay is 65535.</pp>
 
 <pp>
 You can specify a delay range (e.g. <i>-delay 10-500</i>) which sets the
-minimum and maximum delay.
-</pp>
+minimum and maximum delay.</pp>
 
 </utils>
 
@@ -1071,10 +1069,10 @@ use the <s>-resample</s> option.</pp>
 This is the number of bits in a color sample within a pixel. The only
 acceptable values are 8 or 16.  Use this option to specify the depth of
 raw images whose depth is unknown such as GRAY, RGB, or CMYK, or to change
-the depth of any image after it has been read.
-</pp>
+the depth of any image after it has been read.</pp>
 
 </utils>
+
 
 
 
@@ -1086,6 +1084,7 @@ the depth of any image after it has been read.
 <abs>obtain image by descending window hierarchy</abs>
 
 </utils>
+
 
 
 
@@ -1115,8 +1114,7 @@ maximum negative displacement and middle gray is neutral.  The displacement
 is scaled to determine the pixel shift.  By default, the displacement applies
 in both the horizontal and vertical directions.  However, if you specify
 <i>mask</i>, <i>composite image</i> is the horizontal X displacement and
-<i>mask</i> the vertical Y displacement.
-</pp>
+<i>mask</i> the vertical Y displacement.</pp>
 
 </utils>
 
@@ -1132,10 +1130,10 @@ in both the horizontal and vertical directions.  However, if you specify
 <utils apps=convert>
 <pp>
 This option is used with convert for
-obtaining image or font from this X server.  See <i>X(1)</i>.
-</pp>
+obtaining image or font from this X server.  See <i>X(1)</i>.</pp>
 
 </utils>
+
 
 
 
@@ -1150,8 +1148,7 @@ obtaining image or font from this X server.  See <i>X(1)</i>.
 The Disposal Method indicates the way in which the graphic is to
 be treated after being displayed.</pp>
 <pp>
-Here are the valid methods:
-</pp>
+Here are the valid methods:</pp>
 
 <pre>
     Undefined       No disposal specified.
@@ -1183,6 +1180,7 @@ then it is composited over the main image.</pp>
 
 
 
+
 <!-- ------------ -dither ------------------------------------------- -->
 
 <utils apps=animate,composite,convert,display,import,mogrify,montage>
@@ -1194,19 +1192,16 @@ then it is composited over the main image.</pp>
 The basic strategy of dithering is to trade intensity resolution for spatial
 resolution by averaging the intensities of several neighboring pixels.
 Images which suffer from severe contouring when reducing colors can be
-improved with this option.
-</pp>
+improved with this option.</pp>
 
 <pp>
 The <s>-colors</s> or <s>-monochrome</s> option is required for this option
-to take effect.
-</pp>
+to take effect.</pp>
 
 <pp>
 Use <s>+dither</s> to turn off dithering and to render PostScript
 without text or graphic aliasing. Disabling dithering often (but not
-always) leads to decreased processing time.
-</pp>
+always) leads to decreased processing time.</pp>
 
 </utils>
 
@@ -1223,8 +1218,7 @@ always) leads to decreased processing time.
 <pp>
 Use this option to annotate an image with one or more graphic primitives.
 The primitives include shapes, text, transformations,
-and pixel operations.  The shape primitives are
-</pp>
+and pixel operations.  The shape primitives are</pp>
 
 <pre>
      point           x,y
@@ -1242,8 +1236,7 @@ and pixel operations.  The shape primitives are
 </pre>
 
 <pp>
-The text primitive is
-</pp>
+The text primitive is</pp>
 <pre>
      text            x0,y0 string
 </pre>
@@ -1261,8 +1254,7 @@ using the <s>-gravity</s> commandline option, except that it is
 limited in scope to the <s>-draw</s> option in which it appears.</pp>
 
 <pp>
-The transformation primitives are
-</pp>
+The transformation primitives are</pp>
 <pre>
      rotate          degrees
      translate       dx,dy
@@ -1272,8 +1264,7 @@ The transformation primitives are
 </pre>
 
 <pp>
-The pixel operation primitives are
-</pp>
+The pixel operation primitives are</pp>
 <pre>
      color           x0,y0 method
      matte           x0,y0 method
@@ -1310,8 +1301,7 @@ Finally, <s>polyline</s> and <s>polygon</s> require
 three or more coordinates to define its boundaries.
 Coordinates are integers separated by an optional comma.  For example,
 to define a circle centered at 100,100
-that extends to 150,150 use:
-</pp>
+that extends to 150,150 use:</pp>
 
 <pre>
      -draw 'circle 100,100 150,150'
@@ -1327,14 +1317,12 @@ circular arc) and closepath (close the current shape by drawing a line
 to the last moveto) elements. Compound paths (i.e., a path with
 subpaths, each consisting of a single moveto followed by one or more
 line or curve operations) are possible to allow effects such as
-"donut holes" in objects.
-</pp>
+"donut holes" in objects.</pp>
 
 <pp>
 Use <s>image</s> to composite an image with another image. Follow the
 image keyword with the composite operator, image location, image size,
-and filename:
-</pp>
+and filename:</pp>
 <pre>
      -draw 'image Over 100,100 225,225 image.jpg'
 </pre>
@@ -1342,8 +1330,7 @@ and filename:
 You can use 0,0 for the image size, which means to use the actual
 dimensions found in the image header. Otherwise, it will
 be scaled to the given dimensions.
-See <s>-compose</s> for a description of the composite operators.
-</pp>
+See <s>-compose</s> for a description of the composite operators.</pp>
 
 
 <pp>
@@ -1351,8 +1338,7 @@ Use <s>text</s> to annotate an image with text. Follow the text
 coordinates with a string. If the string has embedded spaces, enclose it
 in single or double quotes. Optionally you can include the image
 filename, type, width, height, or other image attribute by embedding
-special format character. See <s>-comment</s> for details.
-</pp>
+special format character. See <s>-comment</s> for details.</pp>
 
 <pp>
 For example,
@@ -1365,13 +1351,11 @@ For example,
 <pp>
 annotates the image with <tt>MIFF:bird.miff 512x480</tt> for an image titled
 <tt>bird.miff</tt>
-and whose width is 512 and height is 480.
-</pp>
+and whose width is 512 and height is 480.</pp>
 
 <pp>
 If the first character of <i>string</i> is <i>@</i>, the text is read from
-a file titled by the remaining characters in the string.
-</pp>
+a file titled by the remaining characters in the string.</pp>
 
 <pp>
 <s>Rotate</s> rotates subsequent shape primitives and text primitives about
@@ -1392,14 +1376,12 @@ Transformations are cumulative within the <s>-draw</s> option.
 The initial affine matrix is not affected; that matrix is only changed by the
 appearance of another <s>-affine</s> option.  If another <s>-draw</s>
 option appears, the current affine matrix is reinitialized from
-the initial affine matrix.
-</pp>
+the initial affine matrix.</pp>
 
 <pp>
 Use <s>color</s> to change the color of a pixel to the fill color (see
 <s>-fill</s>). Follow the pixel coordinate
-with a method:
-</pp>
+with a method:</pp>
 
 <pre>
      point
@@ -1417,8 +1399,7 @@ pixel that matches the color of the target pixel.
 <s>Floodfill</s> recolors
 any pixel that matches the color of the target pixel and is a neighbor,
 whereas <s>filltoborder</s> recolors any neighbor pixel that is not the
-border color. Finally, <s>reset</s> recolors all pixels.
-</pp>
+border color. Finally, <s>reset</s> recolors all pixels.</pp>
 
 <pp>
 Use <s>matte</s> to the change the pixel matte value to transparent. Follow
@@ -1430,16 +1411,14 @@ changes the matte value of any pixel that matches the color of the target
 pixel and is a neighbor, whereas
 <s>filltoborder</s> changes the matte
 value of any neighbor pixel that is not the border color (<s>-bordercolor</s>).
-Finally <s>reset</s> changes the matte value of all pixels.
-</pp>
+Finally <s>reset</s> changes the matte value of all pixels.</pp>
 
 <pp>
 You can set the primitive color, font, and font bounding box
 color with
 <s>-fill</s>, <s>-font</s>, and <s>-box</s> respectively. Options
 are processed in command line order so be sure to use these
-options <i>before</i> the <s>-draw</s> option.
-</pp>
+options <i>before</i> the <s>-draw</s> option.</pp>
 
 </utils>
 
@@ -1457,6 +1436,7 @@ options <i>before</i> the <s>-draw</s> option.
 
 
 
+
 <!-- ------------ -emboss ------------------------------------------- -->
 
 <utils apps=convert,mogrify>
@@ -1465,6 +1445,9 @@ options <i>before</i> the <s>-draw</s> option.
 <abs>emboss an image</abs>
 
 </utils>
+
+
+
 
 <!-- ------------ -encoding ----------------------------------------- -->
 
@@ -1475,10 +1458,11 @@ options <i>before</i> the <s>-draw</s> option.
 
 <pp>
 Choose from <i>AdobeCustom, AdobeExpert, AdobeStandard, AppleRoman,
-BIG5, GB2312, Latin 2, None, SJIScode, Symbol, Unicode, Wansung.</i>
-</pp>
+BIG5, GB2312, Latin 2, None, SJIScode, Symbol, Unicode, Wansung.</i></pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -endian ------------------------------------------- -->
@@ -1489,8 +1473,8 @@ BIG5, GB2312, Latin 2, None, SJIScode, Symbol, Unicode, Wansung.</i>
 <abs>specify endianness (MSB or LSB) of output image</abs>
 
 <pp>
-Use <s>+endian</s> to revert to unspecified endianness.
-</pp>
+Use <s>+endian</s> to revert to unspecified endianness.</pp>
+
 </utils>
 
 
@@ -1507,6 +1491,7 @@ Use <s>+endian</s> to revert to unspecified endianness.
 
 
 
+
 <!-- ------------ -equalize ----------------------------------------- -->
 
 <utils apps=convert,mogrify>
@@ -1518,6 +1503,7 @@ Use <s>+endian</s> to revert to unspecified endianness.
 
 
 
+
 <!-- ------------ -fill --------------------------------------------- -->
 
 <utils apps=convert,mogrify,montage>
@@ -1526,20 +1512,20 @@ Use <s>+endian</s> to revert to unspecified endianness.
 <abs>color to use when filling a graphic primitive</abs>
 
 <pp>
-Colors are represented in GraphicsMagick in the same form used by SVG:</pp>
+Colors are represented in GraphicsMagick in the same form used by SVG. Use "gm convert -list color" to list named colors:</pp>
 
 <pre>
-    name                 ("convert -list color" to see names)
-    #RGB                 (R,G,B are hex numbers, 4 bits each)
-    #RRGGBB              (8 bits each)
-    #RRRGGGBBB           (12 bits each)
-    #RRRRGGGGBBBB        (16 bits each)
-    #RGBA                (4 bits each)
-    #RRGGBBAA            (8 bits each)
-    #RRRGGGBBBAAA        (12 bits each)
-    #RRRRGGGGBBBBAAAA    (16 bits each)
-    rgb(r,g,b)           (r,g,b are decimal numbers)
-    rgba(r,g,b,a)        (r,g,b,a are decimal numbers)
+    name               (named color)
+    #RGB               (hex numbers, 4 bits each)
+    #RRGGBB            (8 bits each)
+    #RRRGGGBBB         (12 bits each)
+    #RRRRGGGGBBBB      (16 bits each)
+    #RGBA              (4 bits each)
+    #RRGGBBAA          (8 bits each)
+    #RRRGGGBBBAAA      (12 bits each)
+    #RRRRGGGGBBBBAAAA  (16 bits each)
+    rgb(r,g,b)         (r,g,b are decimal numbers)
+    rgba(r,g,b,a)      (r,g,b,a are decimal numbers)
 </pre>
 <pp>
 Enclose the color specification in quotation marks to prevent the "#"
@@ -1557,11 +1543,10 @@ The shorter forms are scaled up, if necessary by replication.  For example,
 #3af, #33aaff, and #3333aaaaffff are all equivalent.</pp>
 
 <pp>
-See <s>-draw</s> for further
-details.
-</pp>
+See <s>-draw</s> for further details.</pp>
 
 </utils>
+
 
 
 
@@ -1570,15 +1555,12 @@ details.
 <utils apps=composite,convert,display,mogrify,montage>
 <dopt>-filter <type></opt>
 
-
-
 <abs>use this type of filter when resizing an image</abs>
 
 <pp>
 Use this option to affect the resizing operation of an image (see
 <s>-geometry</s>).
-Choose from these filters:
-</pp>
+Choose from these filters:</pp>
 
 <pre>
      Point
@@ -1602,8 +1584,7 @@ Choose from these filters:
 The default filter is automatically selected to provide the best quality
 while consuming a reasonable amount of time. The <s>Mitchell</s> filter
 is used if the image supports a palette, supports a matte channel, or is
-being enlarged, otherwise the <s>Lanczos</s> filter is used.
-</pp>
+being enlarged, otherwise the <s>Lanczos</s> filter is used.</pp>
 
 </utils>
 
@@ -1639,10 +1620,10 @@ option appears after all of the input images, all images are flattened.</pp>
 <abs>create a "mirror image"</abs>
 
 <pp>
-reflect the scanlines in the vertical direction.
-</pp>
+reflect the scanlines in the vertical direction.</pp>
 
 </utils>
+
 
 
 
@@ -1654,10 +1635,11 @@ reflect the scanlines in the vertical direction.
 <abs>create a "mirror image"</abs>
 
 <pp>
-reflect the scanlines in the horizontal direction.
-</pp>
+reflect the scanlines in the horizontal direction.</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -font --------------------------------------------- -->
@@ -1670,10 +1652,10 @@ reflect the scanlines in the horizontal direction.
 <pp>
 You can tag a font to specify whether it is a PostScript, TrueType, or OPTION1
 font.  For example, <tt>Arial.ttf</tt> is a TrueType font, <tt>ps:helvetica</tt>
-is PostScript, and <tt>x:fixed</tt> is OPTION1.
-</pp>
+is PostScript, and <tt>x:fixed</tt> is OPTION1.</pp>
 
 </utils>
+
 
 
 
@@ -1692,6 +1674,7 @@ option.</pp>
 
 
 
+
 <!-- ------------ -format [mogrify]---------------------------------- -->
 
 <utils apps=mogrify>
@@ -1703,8 +1686,7 @@ option.</pp>
 When used with the <s>mogrify</s> utility,
 this option will convert any image to the image format you specify.
 See <i>GraphicsMagick(1)</i> for a list of image format types supported by
-<s>GraphicsMagick</s>, or see the output of 'gm -list format'.
-</pp>
+<s>GraphicsMagick</s>, or see the output of 'gm -list format'.</pp>
 
 <pp>
 By default the file is written to its original name.  However, if the
@@ -1712,10 +1694,12 @@ filename extension matches a supported format, the extension is replaced
 with the image format type specified with <s>-format</s>.  For example,
 if you specify <i>tiff</i> as the format type and the input image
 filename is <i>image.gif</i>, the output image filename becomes
-<i>image.tiff</i>.
-</pp>
+<i>image.tiff</i>.</pp>
 
 </utils>
+
+
+
 
 <!-- ------------ -format [identify]--------------------------------- -->
 
@@ -1886,18 +1870,17 @@ from misinterpreting any spaces and square brackets.</pp>
 <abs>surround the image with an ornamental border</abs>
 
 <pp>
-See <s>-geometry</s> for details
-about the geometry specification.
-The <s>-frame</s> option is not affected by the <s>-gravity</s> option.
-</pp>
+See <s>-geometry</s> for details about the geometry
+specification.  The <s>-frame</s> option is not affected by the
+<s>-gravity</s> option.</pp>
 
 <pp>
-The color of the border is specified with the
-<s>-mattecolor</s> command
-line option.
-</pp>
+The color of the border is specified with the <s>-mattecolor</s>
+command line option.</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -frame [import] ----------------------------------- -->
@@ -1908,6 +1891,9 @@ line option.
 <abs>include the X window frame in the imported image</abs>
 
 </utils>
+
+
+
 
 <!-- ------------ -fuzz --------------------------------------------- -->
 
@@ -1922,14 +1908,12 @@ must be exact. Use this option to match colors that are close to the target
 color in RGB space. For example, if you want to automatically trim the
 edges of an image with <s>-trim</s> but the image was scanned and the
 target background color may differ by a small amount. This option can account
-for these differences.
-</pp>
+for these differences.</pp>
 
 <pp>
 The <i>distance</i> can be in absolute intensity units or, by appending
 <i>"%"</i>, as a percentage of the maximum possible intensity (255,
-65535, or 4294967295).
-</pp>
+65535, or 4294967295).</pp>
 
 </utils>
 
@@ -1950,21 +1934,18 @@ correction to adjust for this color difference. Reasonable values extend
 from <s>0.8</s> to <s>2.3</s>. Gamma less than 1.0 darkens the image and
 gamma greater than 1.0 lightens it. Large adjustments to image gamma may
 result in the loss of some image information if the pixel quantum size
-is only eight bits (quantum range 0 to 255).
-</pp>
+is only eight bits (quantum range 0 to 255).</pp>
 
 <pp>
 You can apply separate gamma values to the red, green, and blue channels
 of the image with a gamma value list delimited with slashes
-(e.g., <s>1.7</s>/<s>2.3</s>/<s>1.2</s>).
-</pp>
+(e.g., <s>1.7</s>/<s>2.3</s>/<s>1.2</s>).</pp>
 
 <pp>
 Use <s>+gamma</s> <i>value</i>
 to set the image gamma level without actually adjusting
 the image pixels. This option is useful if the image is of a known gamma
-but not set as an image attribute (e.g. PNG images).
-</pp>
+but not set as an image attribute (e.g. PNG images).</pp>
 
 </utils>
 
@@ -1978,8 +1959,7 @@ but not set as an image attribute (e.g. PNG images).
 
 <abs>blur the image with a Gaussian operator</abs>
 <pp>
-Use the given radius and standard deviation (sigma).
-</pp>
+Use the given radius and standard deviation (sigma).</pp>
 
 </utils>
 
@@ -1995,8 +1975,7 @@ Use the given radius and standard deviation (sigma).
 <abs>preferred size and location of the Image window.</abs>
 <pp>
 By default, the window size is the image
-size and the location is chosen by you when it is mapped.
-</pp>
+size and the location is chosen by you when it is mapped.</pp>
 
 <pp>
 By default, the width and height are maximum values. That is, the image
@@ -2004,28 +1983,23 @@ is expanded or contracted to fit the width and height value while maintaining
 the aspect ratio of the image. <i>Append an exclamation point to the geometry
 to force the image size to exactly the size you specify</i>. For example,
 if you specify <tt>640x480!</tt> the image width is set to 640 pixels and
-height to 480.
-</pp>
+height to 480.</pp>
 
 <pp>
 If only the width is specified, the width assumes the
 value and the height is chosen to maintain the aspect ratio of the image.
 Similarly, if only the height is specified (e.g., <tt>-geometry x256</tt>),
-the width is chosen to maintain the aspect ratio.
-</pp>
-
+the width is chosen to maintain the aspect ratio.</pp>
 
 <pp>
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
 dimensions. To increase the size of an image, use a value greater than
 100 (e.g. 125%). To decrease an image's size, use a percentage less than
-100.
-</pp>
+100.</pp>
 
 <pp>
-Use <tt>@</tt> to specify the maximum area in pixels of an image.
-</pp>
+Use <tt>@</tt> to specify the maximum area in pixels of an image.</pp>
 
 <pp>
 Use <tt>></tt> to change the dimensions of the image <i>only</i> if
@@ -2036,8 +2010,7 @@ if you specify <tt>'640x480>'</tt> and the image size is 256x256, the image
 size does not change. However, if the image is 512x512 or 1024x1024, it is
 resized to 480x480.  Enclose the geometry specification in quotation marks to
 prevent the <tt><</tt> or <tt>></tt> from being interpreted by your shell
-as a file redirection.
-</pp>
+as a file redirection.</pp>
 </utils>
 
 <utils apps=animate,display>
@@ -2064,16 +2037,14 @@ is measured between the bottom edges. Accordingly, a positive offset will
 never point in the direction outside of the image.  The
 offsets are not affected by "%"; they are always measured in pixels.
 To specify the dimensions of the composite image, use the <s>-resize</s>
-option.
-</pp>
+option.</pp>
 </utils>
 
 <utils apps=import,convert,mogrify>
 <pp>
 When used as a <i>convert</i>, <i>import</i> or <i>mogrify</i> option,
 <s>-geometry</s> is synonymous with <s>-resize</s> and
-specifies the size of the output image.  The offsets, if present, are ignored.
-</pp>
+specifies the size of the output image.  The offsets, if present, are ignored.</pp>
 </utils>
 
 <utils apps=montage>
@@ -2086,9 +2057,10 @@ gravity for this purpose is <i>Center</i>.  If the "%" sign appears in
 the geometry specification, the tile size is the specified percentage of
 the original dimensions of the first tile.
 To specify the dimensions of the montage, use the <s>-resize</s>
-option.
-</pp>
+option.</pp>
 </utils>
+
+
 
 
 <!-- ------------ -gravity ------------------------------------------ -->
@@ -2100,8 +2072,7 @@ option.
 
 <pp>
 Choices are: NorthWest, North,
-NorthEast, West, Center, East, SouthWest, South, SouthEast.
-</pp>
+NorthEast, West, Center, East, SouthWest, South, SouthEast.</pp>
 
 <pp>
 The direction you choose specifies where to position the text 
@@ -2109,8 +2080,7 @@ when annotating
 the image. For example <i>Center</i> gravity forces the text to be centered
 within the image. By default, the image gravity is <i>NorthWest</i>.
 See <s>-draw</s> for more details about graphic primitives.  Only the
-text primitive is affected by the <s>-gravity</s> option.
-</pp>
+text primitive is affected by the <s>-gravity</s> option.</pp>
 
 <pp>
 The <s>-gravity</s> option is also used in concert with the <s>-geometry</s>
@@ -2123,17 +2093,17 @@ specification.</pp>
 <utils apps=composite>
 <pp>
 When used as an option to <i>composite</i>, <s>-gravity</s>
-gives the direction that the image gravitates within the composite.
-</pp>
+gives the direction that the image gravitates within the composite.</pp>
 </utils>
 
 <utils apps=montage>
 <pp>
 When used as an option to <i>montage</i>, <s>-gravity</s> gives the direction
 that an image gravitates within a tile.  The default gravity is <i>Center</i>
-for this purpose.
-</pp>
+for this purpose.</pp>
+
 </utils>
+
 
 
 
@@ -2226,12 +2196,10 @@ Use this option to affect the the color management operation of an image (see
 <s>-profile</s>).
 
 Choose from these intents:
-<s>Absolute, Perceptual, Relative, Saturation</s>
-</pp>
+<s>Absolute, Perceptual, Relative, Saturation</s>.</pp>
 
 <pp>
-The default intent is undefined.
-</pp>
+The default intent is undefined.</pp>
 
 </utils>
 
@@ -2246,34 +2214,29 @@ The default intent is undefined.
 <abs>the type of interlacing scheme</abs>
 <pp>
 Choices are: <s>None, Line, Plane,</s>
-or <s>Partition</s>. The default is <s>None</s>.
-</pp>
+or <s>Partition</s>. The default is <s>None</s>.</pp>
 
 <pp>
 This option is used to specify the type of interlacing scheme for raw image
-formats such as <s>RGB</s> or <s>YUV</s>.</pp>
-<pp>
+formats such as <s>RGB</s> or <s>YUV</s>.</pp><pp>
 <s>None</s> means do not interlace
 (RGBRGBRGBRGBRGBRGB...),</pp>
 <pp>
 <s>Line</s> uses scanline interlacing
 (RRR...GGG...BBB...RRR...GGG...BBB...),
-and</pp>
-<pp>
+and</pp><pp>
 <s>Plane</s> uses plane interlacing (RRRRRR...GGGGGG...BBBBBB...).</pp>
 <pp>
 <s>Partition</s>
 is like plane except the different planes are saved to individual files
-(e.g. image.R, image.G, and image.B).
-</pp>
+(e.g. image.R, image.G, and image.B).</pp>
 </utils>
 
 <utils apps=composite,convert,display,import,mogrify,montage>
 <pp>
 Use <s>Line</s> or <s>Plane</s> to create an
 <s>interlaced PNG</s> or <s> GIF</s> or
-<s>progressive JPEG</s> image.
-</pp>
+<s>progressive JPEG</s> image.</pp>
 
 </utils>
 
@@ -2295,12 +2258,10 @@ or other image attribute by embedding special format character.  A label
 is not drawn on the image, but is embedded in the image datastream via
 a "Label" tag or similar mechanism.  If you want the
 label to be visible on the image itself, use the <s>-draw</s> option.
-See <s>-comment</s> for details.
-</pp>
+See <s>-comment</s> for details.</pp>
 
 <pp>
-For example,
-</pp>
+For example,</pp>
 
 <pre>
      -label "%m:%f %wx%h"
@@ -2309,19 +2270,16 @@ For example,
 <pp>
 produces an image label of <s>MIFF:bird.miff 512x480</s> for an image titled
 <s>bird.miff</s>
-and whose width is 512 and height is 480.
-</pp>
+and whose width is 512 and height is 480.</pp>
 
 <pp>
 If the first character of <i>string</i> is <i>@</i>, the image label is
-read from a file titled by the remaining characters in the string.
-</pp>
+read from a file titled by the remaining characters in the string.</pp>
 
 <pp>
 When converting to <i>PostScript</i>, use this option to specify a header
 string to print above the image. Specify the label font with
-<s>-font</s>.
-</pp>
+<s>-font</s>.</pp>
 
 <pp>
 When creating a montage, by default the label associated with an image
@@ -2329,6 +2287,8 @@ is displayed with the corresponding tile in the montage.  Use the
 <s>+label</s> option to suppress this behavior.</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -lat ---------------------------------------------- -->
@@ -2348,6 +2308,7 @@ as a percentage.</pp>
 
 
 
+
 <!-- ------------ -level -------------------------------------------- -->
 
 <utils apps=convert,mogrify>
@@ -2364,11 +2325,9 @@ anywhere in the string, the black and white points are percentages of
 MaxRGB. Gamma is an exponent that ranges from 0.1 to 10.; if it is
 omitted, the default of 1.0 (no gamma correction) is assumed. This
 interface works similar to Photoshop's "Image->Adjustments->Levels..."
-"Input Levels" interface.
-</pp>
+"Input Levels" interface.</pp>
 
 </utils>
-
 
 
 
@@ -2407,7 +2366,6 @@ You can use the option <tt>-list resource</tt> to find out the limits.</pp>
 
 
 
-
 <!-- ------------ -linewidth ---------------------------------------- -->
 
 <utils apps=mogrify>
@@ -2430,14 +2388,14 @@ You can use the option <tt>-list resource</tt> to find out the limits.</pp>
 <pp>
 Choices are: <s>Color</s>, <s>Delegate</s>, <s>Format</s>, <s>Magic</s>,
 <s>Module</s>, <s>Resource</s>, or <s>Type</s>. The <s>Module</s> option
-is only available if GraphicsMagick was built to support loadable modules.
-</pp>
+is only available if GraphicsMagick was built to support loadable modules.</pp>
 
 <pp>
-This option lists information about the GraphicsMagick configuration.
-</pp>
+This option lists information about the GraphicsMagick configuration.</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -log  --------------------------------------------- -->
@@ -2481,6 +2439,9 @@ The default behavior is to print all of the components.</pp>
 
 </utils>
 
+
+
+
 <!-- ------------ -loop --------------------------------------------- -->
 
 <utils apps=convert,mogrify>
@@ -2491,8 +2452,7 @@ The default behavior is to print all of the components.</pp>
 <pp>
 A value other than zero forces the animation to repeat itself up to
 <i>iterations</i>
-times.
-</pp>
+times.</pp>
 
 </utils>
 
@@ -2547,8 +2507,7 @@ option appears after all of the input images, all images are mapped.</pp>
 
 <dopt>-map <type></opt>
 
-<abs>
-display image using this type.</abs>
+<abs>display image using this type.</abs>
 
 <pp>
 [<i>animate</i> or <i>display</i>]</pp>
@@ -2573,6 +2532,8 @@ one is located. See <i>xstdcmap(1)</i> for one way of creating Standard
 Colormaps.</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -mask --------------------------------------------- -->
@@ -2602,6 +2563,7 @@ is implied by <s>-mask</s>.</pp>
 
 
 
+
 <!-- ------------ -matte -------------------------------------------- -->
 
 <utils apps=animate,composite,convert,display,mogrify,montage>
@@ -2611,8 +2573,7 @@ is implied by <s>-mask</s>.</pp>
 <abs>store matte channel if the image has one</abs>
 
 <pp>
-If the image does not have a matte channel, create an opaque one.
-</pp>
+If the image does not have a matte channel, create an opaque one.</pp>
 
 <pp>
 Use <s>+matte</s> to ignore the matte channel and to avoid writing a
@@ -2639,7 +2600,6 @@ option.</pp>
 
 
 
-
 <!-- ------------ -median ------------------------------------------- -->
 
 <utils apps=convert,mogrify>
@@ -2648,7 +2608,6 @@ option.</pp>
 <abs>apply a median filter to the image</abs>
 
 </utils>
-
 
 
 
@@ -2676,8 +2635,7 @@ option.</pp>
 Specify the percent change in brightness, the color saturation, and the
 hue separated by commas. For example, to increase the color brightness
 by 20% and decrease the color saturation by 10% and leave the hue unchanged,
-use: <s>-modulate 120,90</s>.
-</pp>
+use: <s>-modulate 120,90</s>.</pp>
 
 </utils>
 
@@ -2695,6 +2653,7 @@ use: <s>-modulate 120,90</s>.
 
 
 
+
 <!-- ------------ -morph -------------------------------------------- -->
 
 <utils apps=convert>
@@ -2704,8 +2663,7 @@ use: <s>-modulate 120,90</s>.
 
 <pp>
 Both the image pixels and size are linearly interpolated to give the appearance
-of a meta-morphosis from one image to the next.
-</pp>
+of a meta-morphosis from one image to the next.</pp>
 
 <pp>
 The sequence of images
@@ -2713,8 +2671,8 @@ is terminated by the appearance of any option.
 If the <s>-morph</s>
 option appears after all of the input images, all images are morphed.</pp>
 
-
 </utils>
+
 
 
 
@@ -2740,6 +2698,7 @@ in the mosaic.</pp>
 
 
 
+
 <!-- ------------ -name --------------------------------------------- -->
 
 <utils apps=animate,display>
@@ -2748,6 +2707,7 @@ in the mosaic.</pp>
 <abs>name an image</abs>
 
 </utils>
+
 
 
 
@@ -2763,8 +2723,7 @@ The red, green, and blue intensities of an image are negated.
 White becomes black,
 yellow becomes blue, etc.
 Use <s>+negate</s>
-to only negate the grayscale pixels of the image.
-</pp>
+to only negate the grayscale pixels of the image.</pp>
 
 </utils>
 
@@ -2784,16 +2743,13 @@ objects within an image without losing edge information and without creating
 undesired structures. The central idea of the algorithm is to replace a
 pixel with its next neighbor in value within a pixel window, if this pixel
 has been found to be noise. A pixel is defined as noise if and only if
-this pixel is a maximum or minimum within the pixel window.
-</pp>
+this pixel is a maximum or minimum within the pixel window.</pp>
 <pp>
-Use <s>radius</s> to specify the width of the neighborhood.
-</pp>
+Use <s>radius</s> to specify the width of the neighborhood.</pp>
 
 <pp>
 Use <s>+noise</s> followed by a noise type to add noise to an image. Choose
-from these noise types:
-</pp>
+from these noise types:</pp>
 
 <pre>
      Uniform
@@ -2834,8 +2790,7 @@ desired.</pp>
 <abs>transform image to span the full range of color values</abs>
 
 <pp>
-This is a contrast enhancement technique.
-</pp>
+This is a contrast enhancement technique.</pp>
 
 </utils>
 
@@ -2854,10 +2809,10 @@ The color is specified using the format described under the <s>-fill</s>
 option.</pp>
 
 <pp>
-See <s>-fill</s> for more details.
-</pp>
+See <s>-fill</s> for more details.</pp>
 
 </utils>
+
 
 
 
@@ -2877,35 +2832,33 @@ available range are reset to the maximum possible value.
 <pp>
 Select a channel from: <s>Red</s>, <s>Green</s>, <s>Blue</s>, <s>Opacity</s>,
 <s>Matte</s>, <s>Cyan</s>, <s>Magenta</s>, <s>Yellow</s>, <s>Black</s>,
-or <s>All</s>.
-</pp>
+or <s>All</s>.</pp>
 <pp>
 Select an operator from <s>Add</s>, <s>And</s>, <s>Divide</s>, <s>LShift</s>,
-<s>Multiply</s>, <s>Or</s>, <s>RShift</s>, <s>Subtract</s>, <s>Xor</s>.
-</pp>
+<s>Multiply</s>, <s>Or</s>, <s>RShift</s>, <s>Subtract</s>, <s>Xor</s>.</pp>
 <pp>
 Rvalue may be any floating point value in the range of 0 to MaxRGB, where
 MaxRGB is the largest quantum value supported by the GraphicsMagick build
 (255, 65535, or 4294967295). If a percent (<s>%</s>) symbol is appended
-to the argument, then the argument has a range of 0 to 100 percent.
-</pp>
+to the argument, then the argument has a range of 0 to 100 percent.</pp>
 
 </utils>
 
 
+
+
 <!-- ------------ -ordered-dither------------------------------------ -->
 
-<utils apps=composite,convert,display,import,mogrify,montage>
+<utils apps=convert,mogrify>
 
 <dopt>-ordered-dither <channeltype> <NxN></opt>
 
 <abs>ordered dither the image</abs>
 
 <pp>
-The channel or channels specified in the <channeltype> argument are
+The channel or channels specified in the <s>channeltype</s> argument are
 reduced to binary, using an ordered dither method.
-The choices for <s>channeltype</s> are:
-</pp>
+The choices for <s>channeltype</s> are:</pp>
 <pre>
     all
     intensity
@@ -2916,19 +2869,21 @@ The choices for <s>channeltype</s> are:
 When <s>channeltype</s> is "all", the color samples are dithered into
 a graylevel and then that graylevel is stored in the three color
 channels.  Separately, the opacity channel is dithered into a bilevel
-opacity value which is stored in the opacity channel.
-</pp>
+opacity value which is stored in the opacity channel.</pp>
 <pp>
 When <s>channeltype</s> is "intensity", only the color samples are
 dithered.  When <s>channeltype</s> is "opacity" or "matte", only the
-opacity channel is dithered.
+opacity channel is dithered.</pp>
 <pp>
 The choices for N are 2, 3, or 4. When N is 2, the image is divided into
 2x2 pixel tiles.  In each tile, 0, 1, 2, 3, or 4 pixels are turned to
 white depending on their intensity.  When N is 3, there are 3x3 tiles
 and 10 levels of gray can be represented.  When N is 4, there are 4x4
-tiles and 17 levels of gray.
-</pp>
+tiles and 17 levels of gray.</pp>
+
+</utils>
+
+
 
 
 <!-- ------------ -page --------------------------------------------- -->
@@ -2942,8 +2897,7 @@ tiles and 17 levels of gray.
 Use this option to specify the dimensions of the
 <i>PostScript</i> page
 in dots per inch or a TEXT page in pixels. The choices for a PostScript
-page are:
-</pp>
+page are:</pp>
 
 <pre>
      11x17         792  1224
@@ -2989,8 +2943,7 @@ page are:
 <pp>
 For convenience you can specify the page size by media (e.g. A4, Ledger,
 etc.). Otherwise, <s>-page</s> behaves much like
-<s>-geometry</s> (e.g.  <tt>-page letter+43+43></tt>).
-</pp>
+<s>-geometry</s> (e.g.  <tt>-page letter+43+43></tt>).</pp>
 
 <pp>
 This option is also used to place subimages when writing to a multi-image
@@ -3005,8 +2958,7 @@ width and height defines the width and height values that are written in
 the <s>MHDR</s> chunk.  Otherwise, the MNG width and height are computed
 from the bounding box that contains all images in the sequence.  When
 writing a GIF89 file, only the bounding box method is used to determine its
-dimensions.
-</pp>
+dimensions.</pp>
 
 <pp>
 For a PostScript page, the image is sized as in <s>-geometry</s> and positioned
@@ -3021,16 +2973,13 @@ The default gravity for the <s>-page</s>
 option is <i>NorthWest</i>, i.e., positive <s>x</s> and
 <s>y</s> <i>offset</i> are measured rightward and downward from the top
 left corner of the page, unless the <s>-gravity</s> option is present with
-a value other than <i>NorthWest</i>.
-</pp>
+a value other than <i>NorthWest</i>.</pp>
 
 <pp>
-The default page dimensions for a TEXT image is 612x792.
-</pp>
+The default page dimensions for a TEXT image is 612x792.</pp>
 
 <pp>
-This option is used in concert with <s>-density</s>.
-</pp>
+This option is used in concert with <s>-density</s>.</pp>
 
 <pp>
 Use <s>+page</s> to remove the page settings for an image.</pp>
@@ -3049,8 +2998,7 @@ Use <s>+page</s> to remove the page settings for an image.</pp>
 
 <pp>
 Each pixel is replaced by the most frequent color in a circular neighborhood
-whose width is specified with <i>radius</i>.
-</pp>
+whose width is specified with <i>radius</i>.</pp>
 
 </utils>
 
@@ -3088,6 +3036,7 @@ snapshot.</pp>
 
 
 
+
 <!-- ------------ -pen ---------------------------------------------- -->
 
 <utils apps=convert,mogrify,montage>
@@ -3099,6 +3048,7 @@ snapshot.</pp>
 
 
 
+
 <!-- ------------ -ping --------------------------------------------- -->
 
 <utils apps=convert,identify,import>
@@ -3107,7 +3057,6 @@ snapshot.</pp>
 <abs>efficiently determine image characteristics</abs>
 
 </utils>
-
 
 
 
@@ -3124,7 +3073,6 @@ snapshot.</pp>
 
 
 
-
 <!-- ------------ -preview ------------------------------------------ -->
 
 <utils apps=convert>
@@ -3134,9 +3082,8 @@ snapshot.</pp>
 
 <pp>
 Use this option to affect the preview operation of an image (e.g.
-<tt>convert file.png
--preview Gamma Preview:gamma.png</tt>). Choose from these previews:
-</pp>
+<tt>convert file.png -preview Gamma Preview:gamma.png</tt>). Choose
+from these previews:</pp>
 
 <pre>
      Rotate
@@ -3171,8 +3118,7 @@ Use this option to affect the preview operation of an image (e.g.
 </pre>
 
 <pp>
-The default preview is <s>JPEG</s>.
-</pp>
+The default preview is <s>JPEG</s>.</pp>
 
 </utils>
 
@@ -3190,8 +3136,7 @@ The default preview is <s>JPEG</s>.
 The command argument has the form <s>module=arg1,arg2,arg3,...,argN</s>
 where <s>module</s> is the name of the module to invoke (e.g. "analyze")
 and arg1,arg2,arg3,...,argN are an arbitrary number of arguments to
-pass to the process module.</pp>
-<pp>
+pass to the process module.</pp><pp>
 The sequence of images
 is terminated by the appearance of any option.</pp>
 <pp>
@@ -3199,6 +3144,7 @@ If the <s>-process</s>
 option appears after all of the input images, all images are processed.</pp>
 
 </utils>
+
 
 
 
@@ -3217,8 +3163,7 @@ option appears after all of the input images, all images are processed.</pp>
 Use <tt>+profile icm</tt>, <tt>+profile iptc</tt>,
 or <tt>+profile profile_name</tt> to remove the respective
 profile.  Use <tt>identify -verbose</tt> to find out what profiles are in the
-image file.  Use <tt>+profile "*"</tt> to remove all profiles.
-</pp>
+image file.  Use <tt>+profile "*"</tt> to remove all profiles.</pp>
 <pp>
 To extract a profile, the <s>-profile</s> option is not used.  Instead,
 simply write the file to an image
@@ -3236,6 +3181,28 @@ in the <i>APP1</i> profile), use
 
 
 
+<!-- ------------ -progress ------------------------------------------ -->
+
+<utils apps=display>
+<dopt>+progress</opt>
+
+<abs>disable progress monitor and busy cursor</abs>
+
+<pp>
+By default, when an image is displayed, a progress monitor bar is shown
+in the top left corner of an existing image display window, and the
+current cursor is replaced with an hourglass cursor. Use <s>+progress</s>
+to disable the progress monitor and busy cursor during display operations.
+While the progress monitor is disabled for all operations, the busy
+cursor continues to be enabled for non-display operations such as image
+processing. This option is useful for non-interactive display operations,
+or when a "clean" look is desired.</pp>
+
+</utils>
+
+
+
+
 <!-- ------------ -quality ------------------------------------------ -->
 
 <utils apps=composite,convert,display,import,mogrify,montage>
@@ -3243,15 +3210,12 @@ in the <i>APP1</i> profile), use
 
 <abs>JPEG/MIFF/PNG compression level</abs>
 
-<pp>
-For the JPEG and MPEG image formats, quality is 0 (lowest image quality
-and highest
-compression) to 100 (best quality but least effective compression). The default
-quality is 75.  Use the <s>-sampling-factor</s> option to specify the factors
-for chroma downsampling.
-To use the same quality value as that found by the JPEG decoder,
-use the <tt>-define jpeg:preserve-settings</tt> flag.
-</pp>
+<pp> For the JPEG and MPEG image formats, quality is 0 (lowest image
+quality and highest compression) to 100 (best quality but least
+effective compression). The default quality is 75.  Use the
+<s>-sampling-factor</s> option to specify the factors for chroma
+downsampling.  To use the same quality value as that found by the JPEG
+decoder, use the <tt>-define jpeg:preserve-settings</tt> flag.</pp>
 
 <pp>
 For the MIFF image format, quality/10 is the zlib compression level, which
@@ -3274,8 +3238,7 @@ level 0, the Huffman-only strategy is used, which is fastest but not
 necessarily the worst compression.</pp>
 <pp>
 If
-filter-type is 4 or less, the specified filter-type is used for all scanlines:
-</pp>
+filter-type is 4 or less, the specified filter-type is used for all scanlines:</pp>
 
 <pre>
      0: none
@@ -3288,31 +3251,26 @@ filter-type is 4 or less, the specified filter-type is used for all scanlines:
 <pp>
 If filter-type is 5, adaptive filtering is used when quality is greater
 than 50 and the image does not have a color map, otherwise no filtering
-is used.
-</pp>
+is used.</pp>
 
 <pp>
 If filter-type is 6, adaptive filtering
 with <i>minimum-sum-of-absolute-values</i>
-is used.
-</pp>
+is used.</pp>
 
 <pp>
 Only if the output is MNG, if filter-type is 7, the LOCO color transformation
 and adaptive filtering with <i>minimum-sum-of-absolute-values</i>
-are used.
-</pp>
+are used.</pp>
 
 <pp>
 The default is quality is 75, which means nearly the best compression with
 adaptive filtering.  The quality setting has no effect on the appearance
-of PNG and MNG images, since the compression is always lossless.
-</pp>
+of PNG and MNG images, since the compression is always lossless.</pp>
 
 <pp>
 For further information, see the <a href="http://www.w3.org/pub/WWW/TR">PNG</a>
-specification.
-</pp>
+specification.</pp>
 
 <pp>
 When writing a JNG image with transparency, two quality values are required,
@@ -3321,7 +3279,6 @@ opacity channel.  These are written as a single integer equal to the main
 image quality plus 1000 times the opacity quality.  For example, if you
 want to use quality 75 for the main image and quality 90 to compress 
 the opacity data, use <tt>-quality 90075</tt>.</pp>
-
 
 </utils>
 
@@ -3336,22 +3293,20 @@ the opacity data, use <tt>-quality 90075</tt>.</pp>
 <abs>lighten or darken image edges</abs>
 
 <pp>
-This will create a 3-D effect.
-See <s>-geometry</s> for details
-details about the geometry specification.
-Offsets are not used.
-</pp>
+This will create a 3-D effect. See <s>-geometry</s> for details
+details about the geometry specification. Offsets are not used.</pp>
 
 <pp>
-Use <s>-raise</s> to create a raised effect, otherwise use <s>+raise</s>.
-</pp>
+Use <s>-raise</s> to create a raised effect, otherwise use <s>+raise</s>.</pp>
 
 </utils>
 
 
+
+
 <!-- ------------ -random-threshold --------------------------------- -->
 
-<utils apps=composite,convert,display,import,mogrify,montage>
+<utils apps=convert,mogrify>
 
 <dopt>-random-threshold <channeltype> <LOWxHIGH></opt>
 
@@ -3359,9 +3314,9 @@ Use <s>-raise</s> to create a raised effect, otherwise use <s>+raise</s>.
 
 <pp>
 The channel or channels specified in the <channeltype> argument are
-reduced to binary, using an random-threshold method.
-The choices for <s>channeltype</s> are:
-</pp>
+reduced to binary, using an random-threshold method.  The choices for
+<s>channeltype</s> are:</pp>
+
 <pre>
     all
     intensity
@@ -3375,13 +3330,15 @@ channels.  Separately, the opacity channel is thresholded into a bilevel
 opacity value which is stored in the opacity channel.  For each pixel,
 a new random number is used to establish the threshold to be used.  The
 threshold never exceeds the specified maximum (HIGH) and is never less
-than the specified minimum (LOW).
-</pp>
+than the specified minimum (LOW).</pp>
 <pp>
 When <s>channeltype</s> is "intensity", only the color samples are
 thresholded.  When <s>channeltype</s> is "opacity" or "matte", only the
-opacity channel is thresholded.
-<pp>
+opacity channel is thresholded.</pp>
+
+</utils>
+
+
 
 
 <!-- ------------ -red-primary -------------------------------------- -->
@@ -3392,6 +3349,9 @@ opacity channel is thresholded.
 <abs>red chromaticity primary point</abs>
 
 </utils>
+
+
+
 
 <!-- ------------ -region ------------------------------------------- -->
 
@@ -3406,21 +3366,25 @@ The <i>x</i> and <i>y</i> offsets are treated in the same manner as in <s>-crop<
 </utils>
 
 
+
+
 <!-- ------------ -remote ------------------------------------------- -->
 
 <utils apps=animate,display>
 <dopt>-remote</opt>
 
-<abs>perform a remote operation</abs>
+<abs>perform a X11 remote operation</abs>
 
 <pp>
-The only command recognized at this time is the name of
-an image file to load.
-</pp>
+The <s>-remote</s> command sends a command to a "gm display" or "gm
+animate" which is already running. The only command recognized at this
+time is the name of an image file to load. This capability is very
+useful to load new images without needing to restart GraphicsMagick
+(e.g. for a slide-show or to use GraphicsMagick as the display engine
+for a different GUI). Also see the <s>+progress</s> option for a way
+to disable progress indication for a clean look while loading new images.</pp>
 
 </utils>
-
-
 
 
 
@@ -3434,15 +3398,14 @@ an image file to load.
 
 <pp>
 Use <s>+render</s> to turn off rendering vector operations. This is
-useful when saving the result to vector formats such as MVG or SVG.
-</pp>
+useful when saving the result to vector formats such as MVG or SVG.</pp>
 
 </utils>
 
 
 
-<!-- ------------ -resample ------------------------------------------ -->
 
+<!-- ------------ -resample ------------------------------------------ -->
 
 <utils apps=convert,mogrify>
 <dopt>-resample <horizontal>x<vertical></opt>
@@ -3451,20 +3414,36 @@ useful when saving the result to vector formats such as MVG or SVG.
 
 <pp>
 Resize the image so that its rendered size remains the same as the
-original at the specified target resolution. For example, if a 300 DPI
-image renders at 3 inches by 2 inches on a 300 DPI device, when the
-image has been resampled to 72 DPI, it will render at 3 inches by 2
-inches on a 72 DPI device. Note that only a small number of image
-formats (e.g. JPEG, PNG, and TIFF) are capable of storing the image
+original at the specified target resolution. Either the current image
+resolution units or the previously set with <s>-units</s> are used to
+interpret the argument. For example, if a 300 DPI image renders at 3
+inches by 2 inches on a 300 DPI device, when the image has been
+resampled to 72 DPI, it will render at 3 inches by 2 inches on a 72
+DPI device.  Note that only a small number of image formats
+(e.g. JPEG, PNG, and TIFF) are capable of storing the image
 resolution. For formats which do not support an image resolution, the
 original resolution of the image must be specified via <s>-density</s>
 on the command line prior to specifying the resample resolution.</pp>
 
 <pp>
 Note that Photoshop stores and obtains image resolution from a
-proprietary embedded profile. If this profile exists in the image, then
-Photoshop will continue to treat the image using its former resolution,
-ignoring the image resolution specified in the standard file header.</pp>
+proprietary embedded profile. If this profile exists in the image,
+then Photoshop will continue to treat the image using its former
+resolution, ignoring the image resolution specified in the standard
+file header.</pp>
+
+<pp>
+Some image formats (e.g. PNG) require use of metric or english units
+so even if the original image used a particular unit system, if it is
+saved to a different format prior to resampling, then it may be
+necessary to specify the desired resolution units using <s>-units</s>
+since the original units may have been lost. In other words, do not
+assume that the resolution units are restored if the image has been
+saved to a file.</pp>
+
+</utils>
+
+
 
 
 <!-- ------------ -resize ------------------------------------------ -->
@@ -3491,9 +3470,9 @@ There are some exceptions:</pp>
 
 <utils apps=composite>
 <pp>
-When used as a <i>composite</i> option, <s>-resize</s> conveys the preferred
-size of the output image, while <s>-geometry</s> conveys
-the size and placement of the <i>composite image</i> within the main
+When used as a <i>composite</i> option, <s>-resize</s> conveys the
+preferred size of the output image, while <s>-geometry</s> conveys the
+size and placement of the <i>composite image</i> within the main
 image.</pp>
 </utils>
 
@@ -3502,8 +3481,8 @@ image.</pp>
 When used as a <i>montage</i> option, <s>-resize</s> conveys the preferred
 size of the montage, while <s>-geometry</s> conveys
 information about the tiles.</pp>
-
 </utils>
+
 
 
 
@@ -3515,16 +3494,13 @@ information about the tiles.</pp>
 <abs>roll an image vertically or horizontally</abs>
 
 <pp>
-See <s>-geometry</s> for details
-the geometry specification.
-The <i>x</i> and <i>y</i> offsets are not affected
-by the <s>-gravity</s> option.
-</pp>
+See <s>-geometry</s> for details the geometry specification.  The
+<i>x</i> and <i>y</i> offsets are not affected by the <s>-gravity</s>
+option.</pp>
 
 <pp>
-A negative <i>x</i>  offset rolls the image left-to-right. A negative <i>y</i>
-offset rolls the image top-to-bottom.
-</pp>
+A negative <i>x</i> offset rolls the image left-to-right. A negative
+<i>y</i> offset rolls the image top-to-bottom.</pp>
 
 </utils>
 
@@ -3545,8 +3521,7 @@ height. For example, if you specify <tt>-rotate "-90>"</tt> and the image
 size is 480x640, the image is not rotated.  However, if the
 image is 640x480, it is rotated by -90 degrees.  If you use <tt>></tt> or
 <tt><</tt>, enclose it in quotation marks to prevent it from being
-misinterpreted as a file redirection.
-</pp>
+misinterpreted as a file redirection.</pp>
 
 <pp>
 Empty triangles left over from rotating the image are filled with the color
@@ -3571,11 +3546,9 @@ See <s>-geometry</s> for details about
 the geometry specification.
 <s>-sample</s> ignores the <s>-filter</s> selection if the <s>-filter</s> option
 is present.  Offsets, if present in the geometry string, are ignored, and
-the <s>-gravity</s> option has no effect.
-</pp>
+the <s>-gravity</s> option has no effect.</pp>
 
 </utils>
-
 
 
 
@@ -3594,9 +3567,13 @@ will use its own default values.  When reading or writing the YUV format
 and when writing the M2V (MPEG-2) format, use
 <s>-sampling-factor 2x1</s> to specify the 4:2:2 downsampling method.</pp>
 
+<pp>
 To use the same sampling factors as those found by the JPEG decoder, use
-the <tt>-define jpeg:preserve-settings</tt> flag.
+the <tt>-define jpeg:preserve-settings</tt> flag.</pp>
+
 </utils>
+
+
 
 
 <!-- ------------ -scale -------------------------------------------- -->
@@ -3611,17 +3588,15 @@ See <s>-geometry</s> for details about
 the geometry specification.  <s>-scale</s> uses a simpler, faster algorithm,
 and it ignores the <s>-filter</s> selection if the <s>-filter</s> option
 is present.  Offsets, if present in the geometry string, are ignored, and
-the <s>-gravity</s> option has no effect.
-</pp>
+the <s>-gravity</s> option has no effect.</pp>
 
 </utils>
 
 
 
 
-
-
 <!-- ------------ -scene -------------------------------------------- -->
+
 <utils apps=composite,convert,import,mogrify>
 <dopt>-scene <value></opt>
 
@@ -3630,9 +3605,14 @@ the <s>-gravity</s> option has no effect.
 <pp>
 This option sets the scene number of an image or the first image in
 an image sequence.</pp>
+
 </utils>
 
+
+
+
 <!-- ------------ -scenes ------------------------------------------- -->
+
 <utils apps=animate,display,montage>
 <dopt>-scenes <value-value></opt>
 
@@ -3686,8 +3666,7 @@ popups that are independent windows but appear over the specified window.</pp>
 
 <pp>
 Segment an image by analyzing the histograms of the color components and
-identifying units that are homogeneous with the fuzzy c-means technique.
-</pp>
+identifying units that are homogeneous with the fuzzy c-means technique.</pp>
 
 <pp>
 Specify <i>cluster threshold</i> as the number of pixels in each cluster
@@ -3704,8 +3683,7 @@ The default is 1.5. See
 <format type=tex>
 "Image Segmentation" in the manual page for <i>display</i>
 </format>
-for details.
-</pp>
+for details.</pp>
 
 </utils>
 
@@ -3722,10 +3700,11 @@ for details.
 <pp>
 Specify <i>azimuth</i> and <i>elevation</i> as the position of the light
 source. Use <s>+shade</s> to return the shading results as a grayscale
-image.
-</pp>
+image.</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -shadow ------------------------------------------- -->
@@ -3739,6 +3718,7 @@ image.
 
 
 
+
 <!-- ------------ -shared-memory ------------------------------------ -->
 
 <utils apps=animate,display>
@@ -3747,13 +3727,14 @@ image.
 <abs>use shared memory</abs>
 
 <pp>
-This option specifies whether the utility should attempt to use shared memory
-for pixmaps.  GraphicsMagick must be compiled with shared memory support,
-and the display must support the <i>MIT-SHM</i> extension.  Otherwise, this
-option is ignored.  The default is <s>True</s>.
-</pp>
+This option specifies whether the utility should attempt to use shared
+memory for pixmaps.  GraphicsMagick must be compiled with shared
+memory support, and the display must support the <i>MIT-SHM</i>
+extension.  Otherwise, this option is ignored.  The default is
+<s>True</s>.</pp>
 
 </utils>
+
 
 
 
@@ -3773,7 +3754,6 @@ Use a Gaussian operator of the given radius and standard deviation
 
 
 
-
 <!-- ------------ -shave -------------------------------------------- -->
 
 <utils apps=convert,mogrify>
@@ -3784,8 +3764,7 @@ Use a Gaussian operator of the given radius and standard deviation
 <pp>
 Specify the width of the region to be removed from both
 sides of the image and the height of the regions to be removed from
-top and bottom.
-</pp>
+top and bottom.</pp>
 
 </utils>
 
@@ -3800,28 +3779,27 @@ top and bottom.
 <abs>shear the image along the X or Y axis</abs>
 
 <pp>
-Use the specified positive or negative shear angle.
-</pp>
+Use the specified positive or negative shear angle.</pp>
 
 <pp>
 Shearing slides one edge of an image along the X or Y axis, creating a
-parallelogram. An X direction shear slides an edge along the X axis, while
-a Y direction shear slides an edge along the Y axis. The amount of the
-shear is controlled by a shear angle. For X direction shears, <i>x degrees</i>
-is measured relative to the Y axis, and similarly, for Y direction shears
-<i>y
-degrees</i> is measured relative to the X axis.
-</pp>
+parallelogram. An X direction shear slides an edge along the X axis,
+while a Y direction shear slides an edge along the Y axis. The amount
+of the shear is controlled by a shear angle. For X direction shears,
+<i>x degrees</i> is measured relative to the Y axis, and similarly,
+for Y direction shears <i>y degrees</i> is measured relative to the X
+axis.</pp>
 
 <pp>
-Empty triangles left over from shearing the image are filled with the color
-defined as <s>background</s> (class <s>backgroundColor</s>).
-The color is specified using the format described under the <s>-fill</s>
-option.</pp>
-
-
+Empty triangles left over from shearing the image are filled with the
+color defined as <s>background</s> (class <s>backgroundColor</s>).
+The color is specified using the format described under the
+<s>-fill</s> option.</pp>
 
 </utils>
+
+
+
 
 <!-- ------------ -silent ------------------------------------------- -->
 
@@ -3843,14 +3821,11 @@ option.</pp>
 <abs>width and height of the image</abs>
 
 <pp>
-Use this option to specify the width and height of raw images whose dimensions
-are unknown such as <s>GRAY</s>,
-<s>RGB</s>, or <s>CMYK</s>. In addition
-to width and height, use
-<s>-size</s> with an offset to skip any header information in
-the image or tell the number of colors in a <s>MAP</s> image
-file, (e.g. -size 640x512+256).
-</pp>
+Use this option to specify the width and height of raw images whose
+dimensions are unknown such as <s>GRAY</s>, <s>RGB</s>, or
+<s>CMYK</s>. In addition to width and height, use <s>-size</s> with an
+offset to skip any header information in the image or tell the number
+of colors in a <s>MAP</s> image file, (e.g. -size 640x512+256).</pp>
 
 <pp>
 For Photo CD images, choose from these sizes:</pp>
@@ -3865,10 +3840,11 @@ For Photo CD images, choose from these sizes:</pp>
 
 <pp>
 Finally, use this option to choose a particular resolution layer of a JBIG
-or JPEG image (e.g. -size 1024x768).
-</pp>
+or JPEG image (e.g. -size 1024x768).</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -snaps [import ] ---------------------------------- -->
@@ -3888,8 +3864,6 @@ an animation sequence.</pp>
 
 
 
-
-
 <!-- ------------ -solarize ----------------------------------------- -->
 
 <utils apps=convert,mogrify>
@@ -3898,13 +3872,11 @@ an animation sequence.</pp>
 <abs>negate all pixels above the threshold level</abs>
 <pp>
 Specify <i>factor</i> as the
-percent threshold of the intensity (0 - 99.9%).
-</pp>
+percent threshold of the intensity (0 - 99.9%).</pp>
 
 <pp>
 This option produces a <i>solarization</i> effect seen when exposing a
-photographic film to light during the development process.
-</pp>
+photographic film to light during the development process.</pp>
 
 </utils>
 
@@ -3916,15 +3888,13 @@ photographic film to light during the development process.
 <utils apps=convert,mogrify>
 <dopt>-spread <amount></opt>
 
-
-
 <abs>displace image pixels by a random amount</abs>
 <pp>
 <i>Amount</i> defines the size of the neighborhood around each pixel to
-choose a candidate pixel to swap.
-</pp>
+choose a candidate pixel to swap.</pp>
 
 </utils>
+
 
 
 
@@ -3939,10 +3909,10 @@ choose a candidate pixel to swap.
 Use an offset to start the image hiding some number of pixels from the
 beginning of the image.  Note this offset and the image size.  You will
 need this information to recover the steganographic image
-(e.g. display -size 320x256+35 stegano:image.png).
-</pp>
+(e.g. display -size 320x256+35 stegano:image.png).</pp>
 
 </utils>
+
 
 
 
@@ -3956,8 +3926,10 @@ need this information to recover the steganographic image
 <pp>
 The left side of the stereo pair is saved as the red channel of the output
 image.  The right side is saved as the green channel.  Red-green stereo
-glasses are required to properly view the stereo image.
-</pp>
+glasses are required to properly view the stereo image.</pp>
+
+</utils>
+
 
 
 
@@ -3972,9 +3944,7 @@ glasses are required to properly view the stereo image.
 The color is specified using the format described under the <s>-fill</s>
 option.</pp>
 <pp>
-See <s>-draw</s> for further
-details.
-</pp>
+See <s>-draw</s> for further details.</pp>
 
 </utils>
 
@@ -3986,12 +3956,9 @@ details.
 <utils apps=convert,mogrify,montage>
 <dopt>-strokewidth <value></opt>
 
-
-
 <abs>set the stroke width</abs>
 <pp>
-See <s>-draw</s> for further details.
-</pp>
+See <s>-draw</s> for further details.</pp>
 
 </utils>
 
@@ -4005,10 +3972,10 @@ See <s>-draw</s> for further details.
 
 <abs>swirl image pixels about the center</abs>
 <pp>
-<i>Degrees</i> defines the tightness of the swirl.
-</pp>
+<i>Degrees</i> defines the tightness of the swirl.</pp>
 
 </utils>
+
 
 
 
@@ -4021,14 +3988,12 @@ See <s>-draw</s> for further details.
 
 <pp>
 Specifies the name of the preferred font to use in fixed (typewriter style)
-formatted text.  The default is 14 point <i>Courier</i>.
-</pp>
+formatted text.  The default is 14 point <i>Courier</i>.</pp>
 
 <pp>
 You can tag a font to specify whether it is a PostScript, TrueType, or
 OPTION1 font.  For example, <tt>Courier.ttf</tt> is a TrueType font
-and <tt>x:fixed</tt> is OPTION1.
-</pp>
+and <tt>x:fixed</tt> is OPTION1.</pp>
 
 </utils>
 
@@ -4045,6 +4010,8 @@ and <tt>x:fixed</tt> is OPTION1.
 </utils>
 
 
+
+
 <!-- ------------ -threshold ---------------------------------------- -->
 
 <utils apps=convert,mogrify>
@@ -4055,8 +4022,7 @@ and <tt>x:fixed</tt> is OPTION1.
 <pp>
 Create an image such that any pixel sample that is equal to, or exceeds
 the threshold, is reassigned the maximum intensity otherwise the minimum
-intensity.
-</pp>
+intensity.</pp>
 
 <pp>
 If the green or blue value is omitted, these channels use the same value
@@ -4064,8 +4030,7 @@ as the first one provided.  If all three color values are the same,
 the result is a bi-level image.  If the opacity threshold is omitted,
 OpaqueOpacity will be used and any partially transparent pixel will
 become fully transparent.  If only a single 0 is provided,
-auto-thresholding will be performed.
-</pp>
+auto-thresholding will be performed.</pp>
 
 <pp>
 To generate an all-black or all-white image with the same dimensions as
@@ -4076,6 +4041,7 @@ the input image, you can use</pp>
 </pre>
 
 </utils>
+
 
 
 
@@ -4101,6 +4067,8 @@ the input image, you can use</pp>
 </utils>
 
 
+
+
 <!-- ------------ -title -------------------------------------------- -->
 
 <utils apps=animate,display,montage>
@@ -4109,16 +4077,15 @@ the input image, you can use</pp>
 <abs>assign title to displayed image [<i>animate, display, montage</i>]</abs>
 
 <pp>
-Use this option to assign a specific title to the image. This is assigned
-to the image window and is typically displayed in the window title bar.
-Optionally you can include the image filename, type, width, height,
-Exif data, or
-other image attribute by embedding special format characters described
-under the <s>-format</s> option.</pp>
+Use this option to assign a specific title to the image. This is
+assigned to the image window and is typically displayed in the window
+title bar.  Optionally you can include the image filename, type,
+width, height, Exif data, or other image attribute by embedding
+special format characters described under the <s>-format</s>
+option.</pp>
 
 <pp>
-For example,
-</pp>
+For example,</pp>
 
 <pre>
      -title "%m:%f %wx%h"
@@ -4126,11 +4093,9 @@ For example,
 
 <pp>
 produces an image title of <tt>MIFF:bird.miff 512x480</tt> for an image
-titled <tt>bird.miff</tt> and whose width is 512 and height is 480.
-</pp>
+titled <tt>bird.miff</tt> and whose width is 512 and height is 480.</pp>
 
 </utils>
-
 
 
 
@@ -4144,14 +4109,15 @@ titled <tt>bird.miff</tt> and whose width is 512 and height is 480.
 
 <pp>
 This option applies the transformation matrix from a previous
-<s>-affine</s> option.
-</pp>
+<s>-affine</s> option.</pp>
 <pre>
     convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
 </pre>
 
-
 </utils>
+
+
+
 
 <!-- ------------ -transparent -------------------------------------- -->
 
@@ -4187,15 +4153,15 @@ image with the fastest computational speed and the least amount of memory.
 However, the default depth is inappropriate for some images. To assure
 the best representation, try values between 2 and 8 for this parameter.
 Refer to
-<a href="quantize.html">quantize</a> for more details.
-</pp>
+<a href="quantize.html">quantize</a> for more details.</pp>
 <pp>
 The <s>-colors</s> or <s>-monochrome</s> option, or writing to an image
 format which requires color reduction, is required for this option to
-take effect.
-</pp>
+take effect.</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -trim --------------------------------------------- -->
@@ -4213,6 +4179,8 @@ are nearly the same color as the corner pixels.</pp>
 </utils>
 
 
+
+
 <!-- ------------ -type --------------------------------------------- -->
 
 <utils apps=composite,convert,mogrify,montage>
@@ -4223,26 +4191,25 @@ are nearly the same color as the corner pixels.</pp>
 Choose from:
 <s>Bilevel</s>, <s>Grayscale</s>, <s>Palette</s>,
 <s>PaletteMatte</s>, <s>TrueColor</s>, <s>TrueColorMatte</s>,
-<s>ColorSeparation</s>, <s>ColorSeparationMatte</s>, or <s>Optimize</s>.
-</pp>
+<s>ColorSeparation</s>, <s>ColorSeparationMatte</s>, or <s>Optimize</s>.</pp>
 
 <pp>
 Normally, when a format supports different subformats such as grayscale
 and truecolor, the encoder will try to choose an efficient subformat.
 The <s>-type</s> option can be used to overrride this behavior.  For
 example, to prevent a JPEG from being written in grayscale format even
-though only gray pixels are present, use
-</pp>
+though only gray pixels are present, use</pp>
 <pre>
     convert bird.pgm -type TrueColor bird.jpg
 </pre>
 <pp>
 Similarly, using <tt>-type TrueColorMatte</tt> will force the encoder
 to write an alpha channel even though the image is opaque, if the
-output format supports transparency.
-</pp>
+output format supports transparency.</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -update ------------------------------------------- -->
@@ -4257,8 +4224,10 @@ detect when image file is modified and redisplay.</abs>
 Suppose that while you are displaying an image the file that is currently
 displayed is over-written.
 <s>display</s> will automatically detect that
-the input file has been changed and update the displayed image accordingly.
-</pp>
+the input file has been changed and update the displayed image accordingly.</pp>
+
+</utils>
+
 
 
 
@@ -4271,8 +4240,7 @@ the input file has been changed and update the displayed image accordingly.
 <pp>
 Choose from: <s>Undefined</s>, <s>PixelsPerInch</s>, or
 <s>PixelsPerCentimeter</s>. This option is normally used in conjunction
-with the <s>-density</s> option.
-</pp>
+with the <s>-density</s> option.</pp>
 
 </utils>
 
@@ -4293,20 +4261,31 @@ with a Gaussian operator of the given radius and standard deviation
 a radius of 0 to have the method select a suitable radius.</pp>
 
 <pp>
-The parameters are:
-</pp>
+The parameters are:</pp>
 
-<pre>
-    radius:    The radius of the Gaussian, in pixels,  not
-               counting the center pixel (default 0).
-    sigma:     The standard deviation of the Gaussian, in
-               pixels (default 1.0).
-    amount:    The percentage of the difference between the
-               original and the blur image that is added back
-               into the original (default 1.0).
-    threshold: The threshold, as a fraction of MaxRGB, needed
-               to apply the difference amount (default 0.05).
-</pre>
+<dl>
+<dt>radius</dt>
+<dd>
+The radius of the Gaussian, in pixels, not counting the center pixel (default 0).
+</dd>
+
+<dt>sigma</dt>
+<dd>
+The standard deviation of the Gaussian, in pixels (default 1.0).
+</dd>
+
+<dt>amount</dt>
+<dd>
+The percentage of the difference between the original and the blur image that
+is added back into the original (default 1.0).
+</dd>
+
+<dt>threshold</dt>
+<dd>
+The threshold, as a fraction of MaxRGB, needed to apply the difference
+amount (default 0.05).
+</dd>
+</dl>
 
 </utils>
 
@@ -4338,16 +4317,16 @@ The parameters are:
 This information is printed: image scene number; image name; image size;
 the image class (<i>DirectClass</i> or <i>PseudoClass</i>); the total number
 of unique colors; and the number of seconds to read and transform the image.
-Refer to <a href="miff.html">miff</a> for a description of the image class.
-</pp>
+Refer to <a href="miff.html">miff</a> for a description of the image class.</pp>
 
 <pp>
 If <s>-colors</s> is also specified, the total unique colors in the image
 and color reduction error values are printed. Refer to <a href="quantize.html">quantize</a>
-for a description of these values.
-</pp>
+for a description of these values.</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -version ------------------------------------------ -->
@@ -4359,6 +4338,9 @@ for a description of these values.
 
 </utils>
 
+
+
+
 <!-- ------------ -view --------------------------------------------- -->
 
 <utils apps=convert,mogrify>
@@ -4367,6 +4349,7 @@ for a description of these values.
 <abs>FlashPix viewing parameters</abs>
 
 </utils>
+
 
 
 
@@ -4382,21 +4365,39 @@ This option
 defines "virtual pixels" for use in operations that can access pixels outside
 the boundaries of an image.</pp>
 <pp>
-Choose from these methods:
-</pp>
+Choose from these methods:</pp>
 
-<pre>
-    Constant:  Use the image background color.
-    Edge:      Extend the edge pixel toward infinity (default).
-    Mirror:    Mirror the image.
-    Tile:      Tile the image.
-</pre>
+<dl>
+<dt>Constant</dt>
+<dd>
+Use the image background color.
+</dd>
+
+<dt>Edge</dt>
+<dd>
+Extend the edge pixel toward infinity (default).
+</dd>
+
+<dt>Mirror</dt>
+<dd>
+Mirror the image.
+</dd>
+
+<dt>Tile</dt>
+<dd>
+Tile the image.
+</dd>
+</dl>
 
 <pp>
 This option affects operations that use
 virtual pixels such as <s>-blur</s>, <s>-sharpen</s>, <s>-wave</s>, etc.</pp>
 
 </utils>
+
+
+
+
 <!-- ------------ -visual ------------------------------------------- -->
 
 <utils apps=animate,display>
@@ -4405,8 +4406,7 @@ virtual pixels such as <s>-blur</s>, <s>-sharpen</s>, <s>-wave</s>, etc.</pp>
 <abs>animate images using this X visual type</abs>
 
 <pp>
-Choose from these visual classes:
-</pp>
+Choose from these visual classes:</pp>
 
 <pre>
      StaticGray
@@ -4422,10 +4422,11 @@ Choose from these visual classes:
 <pp>
 The X server must support the visual you choose, otherwise an error occurs.
 If a visual is not specified, the visual class that can display the most
-simultaneous colors on the default screen is chosen.
-</pp>
+simultaneous colors on the default screen is chosen.</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -watermark ---------------------------------------- -->
@@ -4439,6 +4440,7 @@ simultaneous colors on the default screen is chosen.
 
 
 
+
 <!-- ------------ -wave --------------------------------------------- -->
 
 <utils apps=convert,mogrify>
@@ -4448,10 +4450,11 @@ simultaneous colors on the default screen is chosen.
 
 <pp>
 Specify <i>amplitude</i> and <i>wavelength</i>
-of the wave.
-</pp>
+of the wave.</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -white-point -------------------------------------- -->
@@ -4475,23 +4478,22 @@ of the wave.
 
 <pp>
 <i>id</i> can be a window id or name.  Specify <s>root</s> to
-select X's root window as the target window.
-</pp>
+select X's root window as the target window.</pp>
 
 <pp>
 By default the image is tiled onto the background of the target
 window.   If <s>backdrop</s> or <s>-geometry</s> are
 specified, the image is surrounded by the background color.  Refer to
-<s>X RESOURCES</s> for details.
-</pp>
+<s>X RESOURCES</s> for details.</pp>
 
 <pp>
 The image will not display on the root window if the image has more
 unique colors than the target window colormap allows.  Use
-<s>-colors</s> to reduce the number of colors.
-</pp>
+<s>-colors</s> to reduce the number of colors.</pp>
 
 </utils>
+
+
 
 
 <!-- ------------ -window-group ------------------------------------- -->
@@ -4502,6 +4504,7 @@ unique colors than the target window colormap allows.  Use
 <abs>specify the window group</abs>
 
 </utils>
+
 
 
 
@@ -4537,15 +4540,13 @@ be overwritten.</pp>
 
 <pp>
 By default, the image is written in the format that it was read in as.
-To specify a particular image format, prefix <i>filename</i> with the image
-type and a colon (e.g., ps:image) or specify the image type as the filename
-suffix (e.g., image.ps). See convert(1) for a list of valid image formats.
-Specify file as - for standard output. If file has the
-extension <s>.Z</s> or
-<s>.gz</s>, the file size is <s>compressed</s> using compress or
-<s>gzip</s>
-respectively. Precede the image file name with | to pipe to a system command.
-</pp>
+To specify a particular image format, prefix <i>filename</i> with the
+image type and a colon (e.g., ps:image) or specify the image type as
+the filename suffix (e.g., image.ps). Specify file as - for standard
+output. If file has the extension <s>.Z</s> or <s>.gz</s>, the file
+size is <s>compressed</s> using compress or <s>gzip</s>
+respectively. Precede the image file name with | to pipe to a system
+command.</pp>
 
 <pp>
 Use <s>-compress</s> to specify the type of image compression.</pp>
@@ -4566,4 +4567,8 @@ See
 for details.</pp>
 
 </utils>
+
+
+
+
 </imdoc>

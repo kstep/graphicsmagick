@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -88,6 +88,8 @@ CIELAB (16 bit)     b*            -128.0 -> +127      0x0000 -> 0x8080 -> 0xffff
 */
 
 
+
+
 // On most modern computers, D > 4 M (i.e. a division takes more than 4
 // multiplications worth of time), so it is probably preferable to compute
 // a 24 bit result directly.
@@ -147,7 +149,7 @@ double f(double t)
 {
 
        if (t <= 0.008856)
-              return 7.787*t + (16./116.);
+              return 7.787037037037037037037037037037*t + (16./116.);
        else
               return CubeRoot((float) t); // more precisse than return pow(t, 1.0/3.0);
 
@@ -203,9 +205,9 @@ void cmsXYZ2LabEncoded(WORD XYZ[3], WORD Lab[3])
        // PCS is in D50
 
 
-       x = FIXED_TO_DOUBLE(X) / 0.964294;
-       y = FIXED_TO_DOUBLE(Y);
-       z = FIXED_TO_DOUBLE(Z) / 0.825104;
+       x = FIXED_TO_DOUBLE(X) / D50X;
+       y = FIXED_TO_DOUBLE(Y) / D50Y;
+       z = FIXED_TO_DOUBLE(Z) / D50Z;
 
 
        fx = f(x);
@@ -243,7 +245,7 @@ double f_1(double t)
        {
               double tmp;
 
-              tmp = ((t - (16./116.)) / 7.787);
+              tmp = ((t - (16./116.)) / 7.787037037037037037037037037037);
               if (tmp <= 0.0) return 0.0;
               else return tmp;
        }
@@ -287,8 +289,8 @@ void cmsLab2XYZEncoded(WORD Lab[3], WORD XYZ[3])
 
 
        L = ((double) Lab[0] * 100.0) / 65280.0;
-       if (L==0.0)
-       {
+       if (L==0.0) {
+
        XYZ[0] = 0; XYZ[1] = 0; XYZ[2] = 0;
        return;
        }
@@ -300,15 +302,17 @@ void cmsLab2XYZEncoded(WORD Lab[3], WORD XYZ[3])
        x = y + 0.002 * a;
        z = y - 0.005 * b;
 
-       X = f_1(x) * 0.964294;
-       Y = f_1(y) * 1.000000 ;
-       Z = f_1(z) * 0.825104;
+       X = f_1(x) * D50X;
+       Y = f_1(y) * D50Y;
+       Z = f_1(z) * D50Z;
 
        // Convert to 1.15 fixed format PCS
 
-       XYZ[0] = Clamp_XYZ((DOUBLE_TO_FIXED(X) >> 1));
-       XYZ[1] = Clamp_XYZ((DOUBLE_TO_FIXED(Y) >> 1));
-       XYZ[2] = Clamp_XYZ((DOUBLE_TO_FIXED(Z) >> 1));
+       
+       XYZ[0] = Clamp_XYZ((int) floor(X * 32768.0 + 0.5));
+       XYZ[1] = Clamp_XYZ((int) floor(Y * 32768.0 + 0.5));
+       XYZ[2] = Clamp_XYZ((int) floor(Z * 32768.0 + 0.5));
+       
 
 }
 
@@ -345,9 +349,8 @@ WORD ab2Fix3(double ab)
         return (WORD) ((ab + 128.0) * 256.0 + 0.5);
 }
 
-#if 0
 
-// ICC 4.0 -- Braindead. ICC has changed PCS Lab encoding.
+// ICC 4.0 -- ICC has changed PCS Lab encoding.
 
 static 
 WORD L2Fix4(double L)
@@ -374,7 +377,7 @@ double L2float4(WORD v)
 // the a/b part
 
 static
-double ab2float3(WORD v)
+double ab2float4(WORD v)
 {
        Fixed32 fix32;
 
@@ -383,15 +386,21 @@ double ab2float3(WORD v)
 }
 
 
-
-#endif
-
 void LCMSEXPORT cmsLabEncoded2Float(LPcmsCIELab Lab, const WORD wLab[3])
 {
         Lab->L = L2float3(wLab[0]);
         Lab->a = ab2float3(wLab[1]);
         Lab->b = ab2float3(wLab[2]);
 }
+
+
+void LCMSEXPORT cmsLabEncoded2Float4(LPcmsCIELab Lab, const WORD wLab[3])
+{
+        Lab->L = L2float4(wLab[0]);
+        Lab->a = ab2float4(wLab[1]);
+        Lab->b = ab2float4(wLab[2]);
+}
+
 
 void LCMSEXPORT cmsFloat2LabEncoded(WORD wLab[3], const LPcmsCIELab fLab)
 {
@@ -415,6 +424,31 @@ void LCMSEXPORT cmsFloat2LabEncoded(WORD wLab[3], const LPcmsCIELab fLab)
     wLab[0] = L2Fix3(Lab.L);
     wLab[1] = ab2Fix3(Lab.a);
     wLab[2] = ab2Fix3(Lab.b);
+}
+
+
+void LCMSEXPORT cmsFloat2LabEncoded4(WORD wLab[3], const LPcmsCIELab fLab)
+{
+    cmsCIELab Lab;
+
+    
+    Lab.L = fLab ->L;
+    Lab.a = fLab ->a;
+    Lab.b = fLab ->b;
+                                
+
+    if (Lab.L < 0) Lab.L = 0;
+    if (Lab.L > 100.) Lab.L = 100.;
+
+    if (Lab.a < -128.) Lab.a = -128.;
+    if (Lab.a > 127.) Lab.a = 127.;
+    if (Lab.b < -128.) Lab.b = -128.;
+    if (Lab.b > 127.) Lab.b = 127.;
+                
+
+    wLab[0] = L2Fix4(Lab.L);
+    wLab[1] = ab2Fix4(Lab.a);
+    wLab[2] = ab2Fix4(Lab.b);
 }
 
 
@@ -494,8 +528,8 @@ void LCMSEXPORT cmsLCh2Lab(LPcmsCIELab Lab, const LPcmsCIELCh LCh)
 
 static
 WORD XYZ2Fix(double d)
-{
-       return (WORD) ((Fixed32) (DOUBLE_TO_FIXED(d) >> 1));
+{     
+    return (WORD) floor(d * 32768.0 + 0.5);
 }
 
 

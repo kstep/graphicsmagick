@@ -45,7 +45,7 @@ static int PrecalcMode = 1;
 static BOOL BlackPointCompensation = FALSE;
 static double InkLimit             = 400;
 static BOOL lUse8bits = FALSE;
-
+static BOOL TagResult = FALSE;
 
 static
 void FatalError(const char *frm, ...)
@@ -59,6 +59,73 @@ void FatalError(const char *frm, ...)
        exit(1);
 }
 
+
+static
+void Help(int level)
+{
+    switch(level) {
+
+     default:
+     case 0:
+
+     fprintf(stderr, "\nLinks two or more profiles into a single devicelink profile.\n");     
+	 fprintf(stderr, "Colorspaces must be paired except Lab/XYZ, that can be interchanged.\n");
+	 fprintf(stderr, "\n");     
+     fprintf(stderr, "usage: icclink [flags] <profiles>\n\n");
+     fprintf(stderr, "flags:\n\n");         
+     fprintf(stderr, "%co<profile> - Output devicelink profile. [defaults to 'devicelink.icm']\n", SW);        
+     fprintf(stderr, "%ct<0,1,2,3> - Intent (0=Perceptual, 1=Colorimetric, 2=Saturation, 3=Absolute)\n", SW);    
+	 fprintf(stderr, "%cc<0,1,2> - Precission (0=LowRes, 1=Normal, 2=Hi-res) [defaults to 1]\n", SW);     
+     fprintf(stderr, "%cd<description> - description text (quotes can be used)\n", SW);     
+     fprintf(stderr, "\n%cb - Black point compensation\n", SW);
+     fprintf(stderr, "%ck<0..400> - Ink-limiting in %% (CMYK only)\n", SW);
+     fprintf(stderr, "%c8 - Creates 8-bit devicelink\n", SW);
+     fprintf(stderr, "%cx - Creatively, guess deviceclass of resulting profile.\n", SW);
+     fprintf(stderr, "\n");
+     fprintf(stderr, "%ch<0,1,2,3> - More help\n", SW);
+     break;
+
+     case 1:
+
+     fprintf(stderr, "\nBuilt-in profiles:\n\n");
+     fprintf(stderr, "\t*Lab  -- D50-based CIEL*a*b (PCS)\n"
+                     "\t*XYZ  -- CIE XYZ (PCS)\n"
+                     "\t*sRGB -- sRGB color space\n" 
+                     "\t*Gray22- Monochrome of Gamma 2.2\n"
+                     "\t*Lin2222- CMYK linearization of gamma 2.2 on each channel\n");
+     break;
+
+     case 2:
+
+     fprintf(stderr, "\nExamples:\n\n"
+                     "To create 'devicelink.icm' from a.icc to b.icc:\n"
+                     "\ticclink a.icc b.icc\n\n"
+                     "To create 'out.icc' from sRGB to cmyk.icc:\n"
+                     "\ticclink -o out.icc *sRGB cmyk.icc\n\n"
+                     "To create a sRGB input profile working in Lab:\n"
+                     "\ticclink -x -o sRGBLab.icc *sRGB *Lab\n\n"
+                     "To create a XYZ -> sRGB output profile:\n"
+                     "\ticclink -x -o sRGBLab.icc *XYZ *sRGB\n\n"
+                     "To create a abstract profile doing softproof for cmyk.icc:\n"
+                     "\ticclink -t1 -x -o softproof.icc *Lab cmyk.icc cmyk.icc *Lab\n\n"
+                     "To create a 'grayer' sRGB input profile:\n"
+                     "\ticclink -x -o grayer.icc *sRGB gray.icc gray.icc *Lab\n\n"
+                     "To embed ink limiting into a cmyk output profile:\n"
+                     "\ticclink -x -o cmyklimited.icc -k 250 cmyk.icc *Lab\n\n");                     
+      break;                       
+
+     case 3:
+	 
+     fprintf(stderr, "This program is intended to be a demo of the little cms\n"
+                     "engine. Both lcms and this program are freeware. You can\n"
+                     "obtain both in source code at http://www.littlecms.com\n"
+                     "For suggestions, comments, bug reports etc. send mail to\n"
+                     "info@littlecms.com\n\n");
+    }
+
+    exit(0);
+}
+
 // The toggles stuff
 
 static
@@ -66,7 +133,7 @@ void HandleSwitches(int argc, char *argv[])
 {
        int s;
       
-       while ((s = xgetopt(argc,argv,"8k:K:BbO:o:T:t:D:d:C:c:")) != EOF) {
+       while ((s = xgetopt(argc,argv,"xXH:h:8k:K:BbO:o:T:t:D:d:C:c:")) != EOF) {
 
        switch (s){
 
@@ -112,39 +179,21 @@ void HandleSwitches(int argc, char *argv[])
                         FatalError("Ink limit must be 0%%..400%%");
                 break;
         
-  default:
+        case 'x':
+        case 'X': TagResult = TRUE;
+                  break;
+
+        case 'h':
+        case 'H':
+                Help(atoi(xoptarg));
+                break;
+        
+     default:
 
        FatalError("Unknown option - run without args to see valid ones.\n");
     }       
     }
 }
-
-static
-void Help(void)
-{
-    
-     fprintf(stderr, "\nLinks two or more profiles into a single devicelink profile.\n");     
-	 fprintf(stderr, "Colorspaces must be paired except Lab/XYZ, that can be interchanged.\n");
-	 fprintf(stderr, "\n");     
-     fprintf(stderr, "usage: icclink [flags] <profiles>\n\n");
-     fprintf(stderr, "flags:\n\n");         
-     fprintf(stderr, "%co<profile> - Output devicelink profile. [defaults to 'devicelink.icm']\n", SW);        
-     fprintf(stderr, "%ct<0,1,2,3> - Intent (0=Perceptual, 1=Colorimetric, 2=Saturation, 3=Absolute)\n", SW);    
-	 fprintf(stderr, "%cc<0,1,2> - Precission (0=LowRes, 1=Normal, 2=Hi-res) [defaults to 1]\n", SW);     
-     fprintf(stderr, "%cd<description> - description text (quotes can be used)\n", SW);     
-     fprintf(stderr, "\n%cb - Black point compensation\n", SW);
-     fprintf(stderr, "%ck<0..400> - Ink-limiting in %% (CMYK only)\n", SW);
-     fprintf(stderr, "\n%c8 - Creates 8-bit devicelink\n", SW);
-     
-	 fprintf(stderr, "\n");
-     fprintf(stderr, "This program is intended to be a demo of the little cms\n"
-                     "engine. Both lcms and this program are freeware. You can\n"
-                     "obtain both in source code at http://www.littlecms.com\n"
-                     "For suggestions, comments, bug reports etc. send mail to\n"
-                     "info@littlecms.com\n\n");
-     exit(0);
-}
-
 
 static
 cmsHPROFILE OpenProfile(const char* File)
@@ -232,7 +281,7 @@ int main(int argc, char *argv[])
 
      nargs = (argc - xoptind);
 	 if (nargs < 2)
-				Help(); 
+				Help(0); 
 	 
 	 if (nargs > 255)
 			FatalError("ERROR: Holy profile! what are you trying to do with so many profiles?");
@@ -255,6 +304,8 @@ int main(int argc, char *argv[])
      if (BlackPointCompensation)
             dwFlags |= cmsFLAGS_BLACKPOINTCOMPENSATION;
 
+     if (TagResult)
+            dwFlags |= cmsFLAGS_GUESSDEVICECLASS;
 
      if (InkLimit != 400.0) {
 
@@ -283,9 +334,9 @@ int main(int argc, char *argv[])
 	       
 		hProfile = 	cmsTransform2DeviceLink(hTransform, dwFlags);
 
-		cmsAddTag(hProfile, icSigProfileDescriptionTag, Description);
-		cmsAddTag(hProfile, icSigCopyrightTag, "Generated by littlecms icclink. No copyright, use freely");
-        cmsAddTag(hProfile, icSigProfileSequenceDescTag, pseq);
+		cmsAddTag(hProfile, icSigProfileDescriptionTag, (LPVOID) Description);
+		cmsAddTag(hProfile, icSigCopyrightTag, (LPVOID) "Generated by littlecms icclink. No copyright, use freely");
+        cmsAddTag(hProfile, icSigProfileSequenceDescTag, (LPVOID) pseq);
 
         if (lUse8bits) _cmsSetLUTdepth(hProfile, 8);
 

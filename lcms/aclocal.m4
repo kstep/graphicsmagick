@@ -1,4 +1,4 @@
-# generated automatically by aclocal 1.7.6 -*- Autoconf -*-
+# generated automatically by aclocal 1.7.9 -*- Autoconf -*-
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002
 # Free Software Foundation, Inc.
@@ -227,7 +227,7 @@ AC_DEFUN([AM_AUTOMAKE_VERSION],[am__api_version="1.7"])
 # Call AM_AUTOMAKE_VERSION so it can be traced.
 # This function is AC_REQUIREd by AC_INIT_AUTOMAKE.
 AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
-	 [AM_AUTOMAKE_VERSION([1.7.6])])
+	 [AM_AUTOMAKE_VERSION([1.7.9])])
 
 # Helper functions for option handling.                    -*- Autoconf -*-
 
@@ -2030,7 +2030,7 @@ cygwin* | mingw* | pw32*)
     cygwin*)
       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
       soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[[.]]/-/g'`${versuffix}${shared_ext}'
-      sys_lib_search_path_spec="/lib /lib/w32api /usr/lib /usr/local/lib"
+      sys_lib_search_path_spec="/usr/lib /lib/w32api /lib /usr/local/lib"
       ;;
     mingw*)
       # MinGW DLLs use traditional 'lib' prefix
@@ -6701,7 +6701,7 @@ AC_MSG_RESULT([$SED])
 # environment variable, or create a .pth file (see the python
 # documentation for details).
 
-# If the MINIUMUM-VERSION argument is passed, AM_PATH_PYTHON will
+# If the MINIMUM-VERSION argument is passed, AM_PATH_PYTHON will
 # cause an error if the version of python installed on the system
 # doesn't meet the requirement.  MINIMUM-VERSION should consist of
 # numbers and dots only.
@@ -6718,7 +6718,7 @@ AC_DEFUN([AM_PATH_PYTHON],
   m4_if([$1],[],[
     dnl No version check is needed.
     # Find any Python interpreter.
-    AC_PATH_PROG([PYTHON], _AM_PYTHON_INTERPRETER_LIST)
+    AC_PATH_PROGS([PYTHON], _AM_PYTHON_INTERPRETER_LIST)
     am_display_PYTHON=python
   ], [
     dnl A version check is needed.
@@ -6773,7 +6773,7 @@ AC_DEFUN([AM_PATH_PYTHON],
 
   dnl pythondir -- where to install python scripts.  This is the
   dnl   site-packages directory, not the python standard library
-  dnl   directory like in previous automake betas.  This behaviour
+  dnl   directory like in previous automake betas.  This behavior
   dnl   is more consistent with lispdir.m4 for example.
   dnl Query distutils for this directory.  distutils does not exist in
   dnl Python 1.5, so we fall back to the hardcoded directory if it
@@ -6811,7 +6811,7 @@ AC_DEFUN([AM_PATH_PYTHON],
 # ---------------------------------------------------------------------------
 # Run ACTION-IF-TRUE if the Python interpreter PROG has version >= VERSION.
 # Run ACTION-IF-FALSE otherwise.
-# This test uses sys.hexversion instead of the string equivalant (first
+# This test uses sys.hexversion instead of the string equivalent (first
 # word of sys.version), in order to cope with versions such as 2.2c1.
 # hexversion has been introduced in Python 1.5.2; it's probably not
 # worth to support older versions (1.5.1 was released on October 31, 1998).

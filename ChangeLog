@@ -1,3 +1,9 @@
+2004-07-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tiff/libtiff/tif_lzw.c: Incorporated TIFF LZW compression
+	support.
+	* lcms: Merged in lcms 1.13 from CVS HEAD.
+
 2004-07-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh (CVS_BRANCH_TAG): Record the CVS branch tag that

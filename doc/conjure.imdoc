@@ -46,12 +46,12 @@ syntax is subject to change!</s>
 <sect NAME="conj-desc">Description
 </im>
 <p>
-The Magick scripting language (MSL) will primarily
-benefit those that want to accomplish custom image processing tasks but
-do not wish to program, or those that do not have access to a Perl
-interpreter or a compiler.  The interpreter is called conjure and here
-is an example script:
-</p>
+The Magick scripting language (MSL) will primarily benefit those that
+want to accomplish custom image processing tasks but do not wish to
+program, or those that do not have access to a Perl interpreter or a
+compiler.  The interpreter is called conjure and here is an example
+script:</p>
+
 <pre>
     <?xml version="1.0" encoding="UTF-8"?>
     <image size="400x400" >
@@ -66,26 +66,22 @@ is an example script:
     </image>
 </pre>
 <p>
-invoked with
-</p>
+invoked with</p>
 <pre>
     conjure -dimensions 400x400 incantation.msl
 </pre>
 <p>
 All operations will closely follow the key/value pairs defined in
-PerlMagick, unless otherwise noted.
-</p>
+PerlMagick, unless otherwise noted.</p>
 <p>
 <s>Conjure</s> is in the early stages of development as of
-April 2002.
-</p>
+April 2002.</p>
 <p>
 This early announcement is to allow GraphicsMagick users to contribute
 ideas early in the process so when the scripting language is released it
 will be useful/stable from the get-go! If you want to contribute
 suggestions about the Magick scripting language (MSL), post them to the
-GraphicsMagick tools list at graphicsmagick-tools @ lists.sourceforge.net.
-</p>
+GraphicsMagick tools list at graphicsmagick-tools @ lists.sourceforge.net.</p>
 </sect>
 <back>
 <sect NAME="conj-opti">Options
@@ -93,8 +89,7 @@ GraphicsMagick tools list at graphicsmagick-tools @ lists.sourceforge.net.
 Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
 the option again with a different effect, or if it is changed by a statement
-in the scripting language.
-</p>
+in the scripting language.</p>
 <p>
 You can define your own keyword/value pairs on the command line.
 The script can then use this information when setting values by including
@@ -104,11 +99,11 @@ then any string
 containing "%[dimensions]" would have 400x400 substituted.
 The "%[string]" can be used either an entire string, such as
 geometry="%[dimensions]" or as a part of a string such as
-filename="%[basename].png".
+filename="%[basename].png".</p>
 <p>
 The keyword can be any string except for the following reserved
 strings (in any upper, lower, or mixed case variant): <s>debug</s>,
-<s>help</s>, and <s>verbose</s>, whose usage is described below.
+<s>help</s>, and <s>verbose</s>, whose usage is described below.</p>
 
 <p>
 The value can be any string.  If
@@ -122,8 +117,7 @@ space and special symbols.
 Keywords and values are case dependent.  "Key",
 "key",
 and "KEY" would
-be three different keywords.
-</p>
+be three different keywords.</p>
 <p>
 For a more detailed description of each option, see
 <gm>
@@ -147,16 +141,17 @@ Options, above.
 <back>
 <sect NAME="conj-msl">Magick Scripting Language
 
+<p>
 The Magick Scripting Language (MSL) presently defines the following
-elements and their attributes:
+elements and their attributes:</p>
 
 <dl>
 <dt><image></dt>
-<dd>Define a new image object.
-<s></image></s> destroys it. Because of this, if you wish
-to reference multiple "subimages" (aka pages or layers),
-you can embed one <s>image</s> element inside of
-another. For example:
+<dd>
+Define a new image object.  <s></image></s> destroys it. Because of
+this, if you wish to reference multiple "subimages" (aka pages or
+layers), you can embed one <s>image</s> element inside of another. For
+example:
 </dd>
 <dd>
 <pre>
@@ -177,9 +172,9 @@ another. For example:
 
 
 <dt><group></dt>
-<dd>Define a new group of image objects.
-By default, images are only valid for the life of
-their <s><image></s>element.
+<dd>
+Define a new group of image objects.  By default, images are only
+valid for the life of their <s><image></s>element.
 </dd>
 <dd>
 <pre>
@@ -190,8 +185,8 @@ their <s><image></s>element.
 </dd>
 
 <dd>
-However, in a group, all images in that group will stay 
-around for the life of the group:
+However, in a group, all images in that group will stay around for the
+life of the group:
 </dd>
 
 <dd>
@@ -211,14 +206,16 @@ around for the life of the group:
 
 
 <dt><read></dt>
-<dd>Read a new image from a disk file.
+<dd>
+Read a new image from a disk file.
 </dd>
 <dd>
 <pre>
     <read filename="image.gif" />
 </pre>
 </dd>
-<dd>To read two images use
+<dd>
+To read two images use
 </dd>
 <dd>
 <pre>
@@ -321,8 +318,7 @@ PerlMagick's GetAttribute().</dd>
 <sect NAME="conj-also">SEE ALSO
 <p>
 animate(1), display(1), composite(1), convert(1), identify(1),
-import(1), mogrify(1), montage(1)
-</p>
+import(1), mogrify(1), montage(1)</p>
 </sect>
 </format>
 <include file=conjure_copyright.imdoc>

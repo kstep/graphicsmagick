@@ -27,5 +27,5 @@ liblcms_la_CFLAGS = -O3
 liblcms_la_SOURCES = \
   cmscnvrt.c cmserr.c cmsgamma.c cmsgmt.c cmsintrp.c cmsio1.c cmslut.c \
   cmsmatsh.c cmsmtrx.c cmspack.c cmspcs.c cmswtpnt.c cmsxform.c \
-  cmssamp.c cmscam97.c cmsnamed.c cmsps2.c cmscam02.c cmsvirt.c
+  cmssamp.c cmscam97.c cmsnamed.c cmsps2.c cmscam02.c cmsvirt.c cmscgats.c
 

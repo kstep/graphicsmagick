@@ -2,7 +2,7 @@ SHELL = /bin/sh
 MAKE_SILENT = $(MAKE) -s -f makefile.simple
 
 init: FORCED
-	@echo "little cms color management engine 1.12"
+	@echo "little cms color management engine 1.13"
 	@echo
 	@echo "Available targets are 'all', 'test', 'clean'"
 	@echo " 'utils' and 'python'"

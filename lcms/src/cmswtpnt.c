@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -513,9 +513,10 @@ int BlackPointAsDarkerColorant(cmsHPROFILE hInput,
     
     cmsDoTransform(xform, Black, &Lab, 1);
 
-    // Force to neutral
+    // Force it to be neutral
 
     Lab.a = Lab.b = 0;
+    if (Lab.L > 50) Lab.L = 50;
 
     cmsCloseProfile(hLab);
     cmsDeleteTransform(xform);
@@ -524,61 +525,171 @@ int BlackPointAsDarkerColorant(cmsHPROFILE hInput,
     
     if (Intent == INTENT_ABSOLUTE_COLORIMETRIC) {
         
-        *BlackPoint = BlackXYZ;
+        *BlackPoint = BlackXYZ; 
     }
     else {
+        
+        if (!(dwFlags & LCMS_BPFLAGS_D50_ADAPTED)) {
 
-        cmsTakeMediaWhitePoint(&MediaWhite, hInput);
-
-        if (!(dwFlags & LCMS_BPFLAGS_D50_ADAPTED))
+            cmsTakeMediaWhitePoint(&MediaWhite, hInput);
             cmsAdaptToIlluminant(BlackPoint, cmsD50_XYZ(), &MediaWhite, &BlackXYZ);
+        }
         else
             *BlackPoint = BlackXYZ;
     }
-    
-    
+        
     return 1;
 }
 
 
-// This function shouldn't exist at all-- there is such quantity of broken
+// Get a black point of output CMYK profile, discounting any ink-limiting embedded 
+// in the profile. Fou doing that, use perceptual intent in input direction:
+// Lab (0, 0, 0) -> [Perceptual] Profile -> CMYK -> [Rel. colorimetric] Profile -> Lab
+
+static
+int BlackPointUsingPerceptualBlack(LPcmsCIEXYZ BlackPoint, 
+                                   cmsHPROFILE hProfile, 
+                                   DWORD dwFlags)
+{
+    cmsHTRANSFORM hPercLab2CMYK, hRelColCMYK2Lab;
+    cmsHPROFILE hLab;
+    cmsCIELab LabIn, LabOut;
+    WORD CMYK[MAXCHANNELS];
+    cmsCIEXYZ  BlackXYZ, MediaWhite;        
+
+
+     if (!cmsIsIntentSupported(hProfile, INTENT_PERCEPTUAL, LCMS_USED_AS_INPUT)) {
+
+        BlackPoint -> X = BlackPoint ->Y = BlackPoint -> Z = 0.0;
+        return 0;
+    }
+   
+    hLab = cmsCreateLabProfile(NULL);
+
+    hPercLab2CMYK  = cmsCreateTransform(hLab, TYPE_Lab_DBL, 
+                                        hProfile, TYPE_CMYK_16, 
+                                        INTENT_PERCEPTUAL, cmsFLAGS_NOTPRECALC);
+
+    hRelColCMYK2Lab = cmsCreateTransform(hProfile, TYPE_CMYK_16, 
+                                         hLab, TYPE_Lab_DBL, 
+                                         INTENT_RELATIVE_COLORIMETRIC, cmsFLAGS_NOTPRECALC);
+
+    LabIn.L = LabIn.a = LabIn.b = 0;
+
+    cmsDoTransform(hPercLab2CMYK, &LabIn, CMYK, 1);
+    cmsDoTransform(hRelColCMYK2Lab, CMYK, &LabOut, 1);
+
+    if (LabOut.L > 50) LabOut.L = 50;
+    LabOut.a = LabOut.b = 0;
+
+    cmsDeleteTransform(hPercLab2CMYK);
+    cmsDeleteTransform(hRelColCMYK2Lab);
+    cmsCloseProfile(hLab);
+
+    cmsLab2XYZ(NULL, &BlackXYZ, &LabOut);   
+    
+    if (!(dwFlags & LCMS_BPFLAGS_D50_ADAPTED)){
+            cmsTakeMediaWhitePoint(&MediaWhite, hProfile);
+            cmsAdaptToIlluminant(BlackPoint, cmsD50_XYZ(), &MediaWhite, &BlackXYZ);
+    }
+    else
+            *BlackPoint = BlackXYZ;
+   
+    return 1;
+
+}
+
+
+// Get Perceptual black of v4 profiles.
+static
+int GetV4PerceptualBlack(LPcmsCIEXYZ BlackPoint, cmsHPROFILE hProfile, DWORD dwFlags)
+{
+        if (dwFlags & LCMS_BPFLAGS_D50_ADAPTED) {
+
+            BlackPoint->X = PERCEPTUAL_BLACK_X;
+            BlackPoint->Y = PERCEPTUAL_BLACK_Y;
+            BlackPoint->Z = PERCEPTUAL_BLACK_Z;
+        }
+        else {
+
+            cmsCIEXYZ D50BlackPoint, MediaWhite;
+
+            cmsTakeMediaWhitePoint(&MediaWhite, hProfile);
+            D50BlackPoint.X = PERCEPTUAL_BLACK_X; 
+            D50BlackPoint.Y = PERCEPTUAL_BLACK_Y;
+            D50BlackPoint.Z = PERCEPTUAL_BLACK_Z;
+
+            cmsAdaptToIlluminant(BlackPoint, cmsD50_XYZ(), &MediaWhite, &D50BlackPoint);
+        }
+
+
+        return 1;
+}
+
+
+// This function shouldn't exist at all -- there is such quantity of broken
 // profiles on black point tag, that we must somehow fix chromaticity to 
 // avoid huge tint when doing Black point compensation. This function does
 // just that. If BP is specified, then forces it to neutral and uses only L
-// component. If not exist, computes it by taking 400% of ink or RGB=0 This
-// works well on relative intent and is undefined on perceptual & saturation
+// component. If does not exist, computes it by taking 400% of ink or RGB=0 This
+// works well on relative intent and is undefined on perceptual & saturation.
 // However, I will support all intents for tricking & trapping.
 
 
 int cmsDetectBlackPoint(LPcmsCIEXYZ BlackPoint, cmsHPROFILE hProfile, int Intent, DWORD dwFlags)
 {    
+
+    // v4 + perceptual & saturation intents does have its own black point
+
+    if ((cmsGetProfileICCversion(hProfile) >= 0x4000000) &&
+        (Intent == INTENT_PERCEPTUAL || Intent == INTENT_SATURATION)) {
+
+       return GetV4PerceptualBlack(BlackPoint, hProfile, dwFlags);
+    }
+
+    // v2, v4 rel/abs colorimetric
+
     if (cmsIsTag(hProfile, icSigMediaBlackPointTag) && 
                     Intent == INTENT_RELATIVE_COLORIMETRIC) {
 
         cmsCIEXYZ BlackXYZ, UntrustedBlackPoint, TrustedBlackPoint, MediaWhite;
         cmsCIELab Lab;
 
-        // If black point is specified, then use it, 
-        // but force a=b=0 as sanity check.
-
+             // If black point is specified, then use it, 
+        
              cmsTakeMediaBlackPoint(&BlackXYZ, hProfile);
              cmsTakeMediaWhitePoint(&MediaWhite, hProfile);
 
+             // Black point is absolute XYZ, so adapt to D50 to get PCS value
+
              cmsAdaptToIlluminant(&UntrustedBlackPoint, &MediaWhite, cmsD50_XYZ(), &BlackXYZ);
+
+             // Force a=b=0 to get rid of any chroma
 
              cmsXYZ2Lab(NULL, &Lab, &UntrustedBlackPoint);
              Lab.a = Lab.b = 0;
+             if (Lab.L > 50) Lab.L = 50; // Clip to L* <= 50
+
              cmsLab2XYZ(NULL, &TrustedBlackPoint, &Lab);
 
-             
+             // Return BP as D50 relative or absolute XYZ (depends on flags)
+
              if (!(dwFlags & LCMS_BPFLAGS_D50_ADAPTED))
                     cmsAdaptToIlluminant(BlackPoint, cmsD50_XYZ(), &MediaWhite, &TrustedBlackPoint);
              else
                     *BlackPoint = TrustedBlackPoint;
     }
 
-    // Nope, compute BP using current intent.
     
+    // If output profile, discount ink-limiting
+
+    if (Intent == INTENT_RELATIVE_COLORIMETRIC && 
+            (cmsGetDeviceClass(hProfile) == icSigOutputClass) &&
+            (cmsGetColorSpace(hProfile) == icSigCmykData) )
+            return BlackPointUsingPerceptualBlack(BlackPoint, hProfile, dwFlags);
+
+    // Nope, compute BP using current intent.
+
     return BlackPointAsDarkerColorant(hProfile, Intent, BlackPoint, dwFlags);
 
 }

@@ -730,18 +730,19 @@ For example to display the fourth page preceding the current page, press
     >        Press to double the image size.
     %        Press to resize the image to a width and height
              you specify.
-    Cmd-A    Press to make any image transformations permanent.
+    Cmd-A    Press to make any image transformations
+             permanent.
      
              By default, any image size transformations are
-             applied to the original image to create the image
-             displayed on the X server.  However, the
-             transformations are not permanent (i.e. the original
-             image does not change size only the X image does).
-             For example, if you press ">" the X image will
-             appear to double in size, but the original image
-             will in fact remain the same size.  To force the
-             original image to double in size, press ">" followed
-             by "Cmd-A".
+             applied to the original image to create the
+             image displayed on the X server.  However, the
+             transformations are not permanent (i.e. the
+             original image does not change size only the
+             X image does). For example, if you press ">"
+             the X image will appear to double in size, but
+             the original image will in fact remain the same
+             size.  To force the original image to double in
+             size, press ">" followed by "Cmd-A".
 
     @        Press to refresh the image window.
     C        Press to <a href="#disp-imcr">crop</a> the image.
@@ -782,8 +783,8 @@ For example to display the fourth page preceding the current page, press
     F10      Press to displace pixels by a random amount.
     F11      Press to shade the image using a distant light
              source.
-    F12      Press to lighten or darken image edges to create
-             a 3-D effect.
+    F12      Press to lighten or darken image edges to
+             create a 3-D effect.
     F13      Press to segment the image by color.
     Meta-S   Press to swirl image pixels about the center.
     Meta-I   Press to implode image pixels about the center.
@@ -808,7 +809,8 @@ For example to display the fourth page preceding the current page, press
              or f/x.
     F1       Press to display helpful information about
              the "display" utility.
-    Find     Press to browse documentation about GraphicsMagick.
+    Find     Press to browse documentation about
+             GraphicsMagick.
     1-9      Press to change the level of magnification.
 </pre>
 

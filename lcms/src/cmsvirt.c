@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -74,15 +74,15 @@ cmsHPROFILE LCMSEXPORT cmsCreateRGBProfile(LPcmsCIExyY WhitePoint,
 
        // Fill-in the tags
 
-       cmsAddTag(hICC, icSigDeviceMfgDescTag,       "(lcms internal)");
-       cmsAddTag(hICC, icSigProfileDescriptionTag,  "lcms RGB virtual profile");
-       cmsAddTag(hICC, icSigDeviceModelDescTag,     "rgb built-in");      
+       cmsAddTag(hICC, icSigDeviceMfgDescTag,       (LPVOID) "(lcms internal)");
+       cmsAddTag(hICC, icSigProfileDescriptionTag,  (LPVOID) "lcms RGB virtual profile");
+       cmsAddTag(hICC, icSigDeviceModelDescTag,     (LPVOID) "rgb built-in");      
           
 
        if (WhitePoint) {
 
        cmsxyY2XYZ(&tmp, WhitePoint);
-       cmsAddTag(hICC, icSigMediaWhitePointTag, &tmp);
+       cmsAddTag(hICC, icSigMediaWhitePointTag, (LPVOID) &tmp);
        }
 
        if (WhitePoint && Primaries) {
@@ -111,9 +111,9 @@ cmsHPROFILE LCMSEXPORT cmsCreateRGBProfile(LPcmsCIExyY WhitePoint,
        Colorants.Blue.Y = MColorants.v[1].n[2];
        Colorants.Blue.Z = MColorants.v[2].n[2];
 
-       cmsAddTag(hICC, icSigRedColorantTag,   &Colorants.Red);
-       cmsAddTag(hICC, icSigBlueColorantTag,  &Colorants.Blue);
-       cmsAddTag(hICC, icSigGreenColorantTag, &Colorants.Green);
+       cmsAddTag(hICC, icSigRedColorantTag,   (LPVOID) &Colorants.Red);
+       cmsAddTag(hICC, icSigBlueColorantTag,  (LPVOID) &Colorants.Blue);
+       cmsAddTag(hICC, icSigGreenColorantTag, (LPVOID) &Colorants.Green);
        }
 
 
@@ -121,13 +121,13 @@ cmsHPROFILE LCMSEXPORT cmsCreateRGBProfile(LPcmsCIExyY WhitePoint,
 
        // In case of gamma, we must dup' the table pointer
 
-        cmsAddTag(hICC, icSigRedTRCTag,   TransferFunction[0]);
-        cmsAddTag(hICC, icSigGreenTRCTag, TransferFunction[1]);
-        cmsAddTag(hICC, icSigBlueTRCTag,  TransferFunction[2]);
+        cmsAddTag(hICC, icSigRedTRCTag,   (LPVOID) TransferFunction[0]);
+        cmsAddTag(hICC, icSigGreenTRCTag, (LPVOID) TransferFunction[1]);
+        cmsAddTag(hICC, icSigBlueTRCTag,  (LPVOID) TransferFunction[2]);
        }
 
        if (Primaries) {
-            cmsAddTag(hICC, icSigChromaticityTag, Primaries);
+            cmsAddTag(hICC, icSigChromaticityTag, (LPVOID) Primaries);
        }
 
        return hICC;
@@ -167,15 +167,15 @@ cmsHPROFILE   LCMSEXPORT cmsCreateGrayProfile(LPcmsCIExyY WhitePoint,
        // Fill-in the tags
 
        
-       cmsAddTag(hICC, icSigDeviceMfgDescTag,       "(lcms internal)");
-       cmsAddTag(hICC, icSigProfileDescriptionTag,  "lcms gray virtual profile");
-       cmsAddTag(hICC, icSigDeviceModelDescTag,     "gray built-in");      
+       cmsAddTag(hICC, icSigDeviceMfgDescTag,       (LPVOID) "(lcms internal)");
+       cmsAddTag(hICC, icSigProfileDescriptionTag,  (LPVOID) "lcms gray virtual profile");
+       cmsAddTag(hICC, icSigDeviceModelDescTag,     (LPVOID) "gray built-in");      
     
 
        if (WhitePoint) {
 
        cmsxyY2XYZ(&tmp, WhitePoint);
-       cmsAddTag(hICC, icSigMediaWhitePointTag, &tmp);
+       cmsAddTag(hICC, icSigMediaWhitePointTag, (LPVOID) &tmp);
        }
 
 
@@ -183,7 +183,7 @@ cmsHPROFILE   LCMSEXPORT cmsCreateGrayProfile(LPcmsCIExyY WhitePoint,
 
        // In case of gamma, we must dup' the table pointer
 
-       cmsAddTag(hICC, icSigGrayTRCTag, TransferFunction);
+       cmsAddTag(hICC, icSigGrayTRCTag, (LPVOID) TransferFunction);
        }
 
        return hICC;
@@ -201,37 +201,86 @@ int IsPCS(icColorSpaceSignature ColorSpace)
 static
 void FixColorSpaces(cmsHPROFILE hProfile, 
                               icColorSpaceSignature ColorSpace, 
-                              icColorSpaceSignature PCS)
+                              icColorSpaceSignature PCS,
+                              DWORD dwFlags)
 {
 
-    if (IsPCS(ColorSpace) && IsPCS(PCS)) { 
+    if (dwFlags & cmsFLAGS_GUESSDEVICECLASS) {
 
-            cmsSetDeviceClass(hProfile,      icSigAbstractClass);
-            cmsSetColorSpace(hProfile,       ColorSpace);
-            cmsSetPCS(hProfile,              PCS);
-            return;
+            if (IsPCS(ColorSpace) && IsPCS(PCS)) { 
+
+                    cmsSetDeviceClass(hProfile,      icSigAbstractClass);
+                    cmsSetColorSpace(hProfile,       ColorSpace);
+                    cmsSetPCS(hProfile,              PCS);
+                    return;
+            }
+
+            if (IsPCS(ColorSpace) && !IsPCS(PCS)) {
+
+                    cmsSetDeviceClass(hProfile, icSigOutputClass);
+                    cmsSetPCS(hProfile,         ColorSpace);
+                    cmsSetColorSpace(hProfile,  PCS);        
+                    return;
+            }
+
+            if (IsPCS(PCS) && !IsPCS(ColorSpace)) {
+
+                   cmsSetDeviceClass(hProfile,  icSigInputClass);
+                   cmsSetColorSpace(hProfile,   ColorSpace);
+                   cmsSetPCS(hProfile,          PCS);
+                   return;
+            }
     }
 
-    if (IsPCS(ColorSpace) && !IsPCS(PCS)) {
+    cmsSetDeviceClass(hProfile,      icSigLinkClass);
+    cmsSetColorSpace(hProfile,       ColorSpace);
+    cmsSetPCS(hProfile,              PCS);
 
-            cmsSetDeviceClass(hProfile, icSigOutputClass);
-            cmsSetPCS(hProfile,         ColorSpace);
-            cmsSetColorSpace(hProfile,  PCS);        
-            return;
+}
+
+
+static
+cmsHPROFILE CreateNamedColorDevicelink(cmsHTRANSFORM xform)
+{
+    _LPcmsTRANSFORM v = (_LPcmsTRANSFORM) xform;
+    cmsHPROFILE hICC;
+    cmsCIEXYZ WhitePoint;    
+    int i, nColors;
+    size_t Size;
+    LPcmsNAMEDCOLORLIST nc2;
+
+
+    hICC = _cmsCreateProfilePlaceholder();
+    if (hICC == NULL) return NULL;
+
+    cmsSetRenderingIntent(hICC, v -> Intent); 
+    cmsSetDeviceClass(hICC, icSigNamedColorClass);
+    cmsSetColorSpace(hICC, v ->ExitColorSpace);
+    cmsSetPCS(hICC, cmsGetPCS(v ->InputProfile));
+    cmsTakeMediaWhitePoint(&WhitePoint, v ->InputProfile);
+
+    cmsAddTag(hICC, icSigMediaWhitePointTag,  &WhitePoint);
+    cmsAddTag(hICC, icSigDeviceMfgDescTag,       (LPVOID) "LittleCMS");       
+    cmsAddTag(hICC, icSigProfileDescriptionTag,  (LPVOID) "Named color Device link");
+    cmsAddTag(hICC, icSigDeviceModelDescTag,     (LPVOID) "Named color Device link");      
+    
+
+    nColors = cmsNamedColorCount(xform);
+    nc2     = cmsAllocNamedColorList(nColors);
+
+    Size = sizeof(cmsNAMEDCOLORLIST) + (sizeof(cmsNAMEDCOLOR) * (nColors-1));
+
+    CopyMemory(nc2, v->NamedColorList, Size);
+    nc2 ->ColorantCount = _cmsChannelsOf(v ->ExitColorSpace);
+
+    for (i=0; i < nColors; i++) {
+        cmsDoTransform(xform, &i, nc2 ->List[i].DeviceColorant, 1);
     }
 
-    if (IsPCS(PCS) && !IsPCS(ColorSpace)) {
+    cmsAddTag(hICC, icSigNamedColor2Tag, (void*) nc2);
+    cmsFreeNamedColorList(nc2);
 
-           cmsSetDeviceClass(hProfile,  icSigInputClass);
-           cmsSetColorSpace(hProfile,   ColorSpace);
-           cmsSetPCS(hProfile,          PCS);
-           return;
-    }
-
-     cmsSetDeviceClass(hProfile,      icSigLinkClass);
-     cmsSetColorSpace(hProfile,       ColorSpace);
-     cmsSetPCS(hProfile,              PCS);
-
+    return hICC;
 }
 
 
@@ -239,11 +288,19 @@ void FixColorSpaces(cmsHPROFILE hProfile,
 
 cmsHPROFILE LCMSEXPORT cmsTransform2DeviceLink(cmsHTRANSFORM hTransform, DWORD dwFlags)
 {
-         cmsHPROFILE hICC;
+        cmsHPROFILE hICC;
         _LPcmsTRANSFORM v = (_LPcmsTRANSFORM) hTransform;
         LPLUT Lut;
         BOOL MustFreeLUT;
       
+        // Check if is a named color transform
+
+        if (cmsGetDeviceClass(v ->InputProfile) == icSigNamedColorClass) {
+                           
+            return CreateNamedColorDevicelink(hTransform);
+                
+        }
+
         if (v ->DeviceLink) {
 
                 Lut = v -> DeviceLink;
@@ -264,7 +321,7 @@ cmsHPROFILE LCMSEXPORT cmsTransform2DeviceLink(cmsHTRANSFORM hTransform, DWORD d
        }
 
 
-       FixColorSpaces(hICC, v -> EntryColorSpace, v -> ExitColorSpace);             
+       FixColorSpaces(hICC, v -> EntryColorSpace, v -> ExitColorSpace, dwFlags);             
 
        cmsSetRenderingIntent(hICC,  v -> Intent); 
               
@@ -275,21 +332,21 @@ cmsHPROFILE LCMSEXPORT cmsTransform2DeviceLink(cmsHTRANSFORM hTransform, DWORD d
        //  3 icSigAToB0Tag
        
                  
-       cmsAddTag(hICC, icSigDeviceMfgDescTag,       "LittleCMS");       
-       cmsAddTag(hICC, icSigProfileDescriptionTag,  "Device link");
-       cmsAddTag(hICC, icSigDeviceModelDescTag,     "Device link");      
+       cmsAddTag(hICC, icSigDeviceMfgDescTag,       (LPVOID) "LittleCMS");       
+       cmsAddTag(hICC, icSigProfileDescriptionTag,  (LPVOID) "Device link");
+       cmsAddTag(hICC, icSigDeviceModelDescTag,     (LPVOID) "Device link");      
     
 
-       cmsAddTag(hICC, icSigMediaWhitePointTag,  cmsD50_XYZ());
+       cmsAddTag(hICC, icSigMediaWhitePointTag,  (LPVOID) cmsD50_XYZ());
 
        if (cmsGetDeviceClass(hICC) == icSigOutputClass) {
            
                 
-                cmsAddTag(hICC, icSigBToA0Tag, Lut);
+                cmsAddTag(hICC, icSigBToA0Tag, (LPVOID) Lut);
        }
 
        else
-                cmsAddTag(hICC, icSigAToB0Tag, Lut);
+                cmsAddTag(hICC, icSigAToB0Tag, (LPVOID) Lut);
 
        
        if (MustFreeLUT) cmsFreeLUT(Lut);
@@ -330,12 +387,12 @@ cmsHPROFILE LCMSEXPORT cmsCreateLinearizationDeviceLink(icColorSpaceSignature Co
        cmsAllocLinearTable(Lut, TransferFunctions, 1);
 
        // Create tags       
-       cmsAddTag(hICC, icSigDeviceMfgDescTag,       "(lcms internal)");
-       cmsAddTag(hICC, icSigProfileDescriptionTag,  "lcms linearization device link");
-       cmsAddTag(hICC, icSigDeviceModelDescTag,     "linearization built-in");      
+       cmsAddTag(hICC, icSigDeviceMfgDescTag,       (LPVOID) "(lcms internal)");
+       cmsAddTag(hICC, icSigProfileDescriptionTag,  (LPVOID) "lcms linearization device link");
+       cmsAddTag(hICC, icSigDeviceModelDescTag,     (LPVOID) "linearization built-in");      
     
-       cmsAddTag(hICC, icSigMediaWhitePointTag, cmsD50_XYZ());
-       cmsAddTag(hICC, icSigAToB0Tag, Lut);
+       cmsAddTag(hICC, icSigMediaWhitePointTag, (LPVOID) cmsD50_XYZ());
+       cmsAddTag(hICC, icSigAToB0Tag, (LPVOID) Lut);
        
        // LUT is already on virtual profile
        cmsFreeLUT(Lut);
@@ -439,13 +496,13 @@ cmsHPROFILE LCMSEXPORT cmsCreateInkLimitingDeviceLink(icColorSpaceSignature Colo
        
        // Create tags
         
-       cmsAddTag(hICC, icSigDeviceMfgDescTag,     "(lcms internal)"); 
-       cmsAddTag(hICC, icSigProfileDescriptionTag, "lcms ink limiting device link");  
-       cmsAddTag(hICC, icSigDeviceModelDescTag,    "ink limiting built-in");      
+       cmsAddTag(hICC, icSigDeviceMfgDescTag,      (LPVOID) "(lcms internal)"); 
+       cmsAddTag(hICC, icSigProfileDescriptionTag, (LPVOID) "lcms ink limiting device link");  
+       cmsAddTag(hICC, icSigDeviceModelDescTag,    (LPVOID) "ink limiting built-in");      
        
-       cmsAddTag(hICC, icSigMediaWhitePointTag, cmsD50_XYZ());
+       cmsAddTag(hICC, icSigMediaWhitePointTag, (LPVOID) cmsD50_XYZ());
 
-       cmsAddTag(hICC, icSigAToB0Tag, Lut);
+       cmsAddTag(hICC, icSigAToB0Tag, (LPVOID) Lut);
        
        // LUT is already on virtual profile
        cmsFreeLUT(Lut);
@@ -480,17 +537,17 @@ cmsHPROFILE LCMSEXPORT cmsCreateLabProfile(LPcmsCIExyY WhitePoint)
         cmsSetColorSpace(hProfile,  icSigLabData);
         cmsSetPCS(hProfile,         icSigLabData);
 
-        cmsAddTag(hProfile, icSigDeviceMfgDescTag,     "(lcms internal)"); 
-        cmsAddTag(hProfile, icSigProfileDescriptionTag, "lcms Lab identity");      
-        cmsAddTag(hProfile, icSigDeviceModelDescTag,    "Lab built-in");      
+        cmsAddTag(hProfile, icSigDeviceMfgDescTag,     (LPVOID) "(lcms internal)"); 
+        cmsAddTag(hProfile, icSigProfileDescriptionTag, (LPVOID) "lcms Lab identity");      
+        cmsAddTag(hProfile, icSigDeviceModelDescTag,    (LPVOID) "Lab built-in");      
 
 
        // An empty LUTs is all we need
        Lut = Create3x3EmptyLUT();
        if (Lut == NULL) return NULL;
 
-       cmsAddTag(hProfile, icSigAToB0Tag,    Lut);
-       cmsAddTag(hProfile, icSigBToA0Tag,    Lut);
+       cmsAddTag(hProfile, icSigAToB0Tag,    (LPVOID) Lut);
+       cmsAddTag(hProfile, icSigBToA0Tag,    (LPVOID) Lut);
     
        cmsFreeLUT(Lut);
 
@@ -510,17 +567,17 @@ cmsHPROFILE LCMSEXPORT cmsCreateXYZProfile(void)
         cmsSetColorSpace(hProfile, icSigXYZData);
         cmsSetPCS(hProfile,  icSigXYZData);
 
-        cmsAddTag(hProfile, icSigDeviceMfgDescTag,      "(lcms internal)");    
-        cmsAddTag(hProfile, icSigProfileDescriptionTag, "lcms XYZ identity");     
-        cmsAddTag(hProfile, icSigDeviceModelDescTag,     "XYZ built-in");
+        cmsAddTag(hProfile, icSigDeviceMfgDescTag,      (LPVOID) "(lcms internal)");    
+        cmsAddTag(hProfile, icSigProfileDescriptionTag, (LPVOID) "lcms XYZ identity");     
+        cmsAddTag(hProfile, icSigDeviceModelDescTag,    (LPVOID)  "XYZ built-in");
 
        // An empty LUTs is all we need
        Lut = Create3x3EmptyLUT();
        if (Lut == NULL) return NULL;
 
-       cmsAddTag(hProfile, icSigAToB0Tag,    Lut);
-       cmsAddTag(hProfile, icSigBToA0Tag,    Lut);
-       cmsAddTag(hProfile, icSigPreview0Tag, Lut);
+       cmsAddTag(hProfile, icSigAToB0Tag,    (LPVOID) Lut);
+       cmsAddTag(hProfile, icSigBToA0Tag,    (LPVOID) Lut);
+       cmsAddTag(hProfile, icSigPreview0Tag, (LPVOID) Lut);
 
        cmsFreeLUT(Lut);
 
@@ -580,9 +637,9 @@ cmsHPROFILE LCMSEXPORT cmsCreate_sRGBProfile(void)
        cmsFreeGamma(Gamma22[0]);
 
       
-       cmsAddTag(hsRGB, icSigDeviceMfgDescTag,      "(lcms internal)");
-       cmsAddTag(hsRGB, icSigDeviceModelDescTag,    "sRGB built-in");
-       cmsAddTag(hsRGB, icSigProfileDescriptionTag, "sRGB built-in");
+       cmsAddTag(hsRGB, icSigDeviceMfgDescTag,      (LPVOID) "(lcms internal)");
+       cmsAddTag(hsRGB, icSigDeviceModelDescTag,    (LPVOID) "sRGB built-in");
+       cmsAddTag(hsRGB, icSigProfileDescriptionTag, (LPVOID) "sRGB built-in");
         
        return hsRGB;
 }
@@ -688,13 +745,13 @@ cmsHPROFILE LCMSEXPORT cmsCreateBCHSWabstractProfile(int nLUTPoints,
        
        // Create tags
         
-       cmsAddTag(hICC, icSigDeviceMfgDescTag,     "(lcms internal)"); 
-       cmsAddTag(hICC, icSigProfileDescriptionTag, "lcms BCHSW abstract profile");  
-       cmsAddTag(hICC, icSigDeviceModelDescTag,    "BCHSW built-in");      
+       cmsAddTag(hICC, icSigDeviceMfgDescTag,      (LPVOID) "(lcms internal)"); 
+       cmsAddTag(hICC, icSigProfileDescriptionTag, (LPVOID) "lcms BCHSW abstract profile");  
+       cmsAddTag(hICC, icSigDeviceModelDescTag,    (LPVOID) "BCHSW built-in");      
        
-       cmsAddTag(hICC, icSigMediaWhitePointTag, cmsD50_XYZ());
+       cmsAddTag(hICC, icSigMediaWhitePointTag, (LPVOID) cmsD50_XYZ());
 
-       cmsAddTag(hICC, icSigAToB0Tag, Lut);
+       cmsAddTag(hICC, icSigAToB0Tag, (LPVOID) Lut);
        
        // LUT is already on virtual profile
        cmsFreeLUT(Lut);

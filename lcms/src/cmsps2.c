@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -269,9 +269,9 @@ LCMSAPI DWORD LCMSEXPORT cmsGetPostScriptCRDEx(cmsHPROFILE hProfile, int Intent,
 */
 
 static icTagSignature Device2PCSTab[] = {icSigAToB0Tag,       // Perceptual
-                                      icSigAToB1Tag,       // Relative colorimetric
-                                      icSigAToB2Tag,       // Saturation
-                                      icSigAToB1Tag };     // Absolute colorimetric
+                                         icSigAToB1Tag,       // Relative colorimetric
+                                         icSigAToB2Tag,       // Saturation
+                                         icSigAToB1Tag };     // Absolute colorimetric
                                                            // (Relative/WhitePoint)
 
 
@@ -791,11 +791,11 @@ int EmitCIEBasedA(LPMEMSTREAM m, LPWORD Tab, int nEntries, LPcmsCIEXYZ BlackPoin
         Writef(m, "[ /CIEBasedA\n");
         Writef(m, "  <<\n");
 
-        Writef(m, "/DecodeA [ ");
+        Writef(m, "/DecodeA ");
 
         Emit1Gamma(m,Tab, nEntries);
 
-        Writef(m, " ]\n");
+        Writef(m, " \n");
 
         Writef(m, "/MatrixA [ 0.9642 1.0000 0.8249 ]\n");
         Writef(m, "/RangeLMN [ 0.0 0.9642 0.0 1.0000 0.0 0.8249 ]\n");
@@ -1126,7 +1126,7 @@ DWORD LCMSEXPORT cmsGetPostScriptCSA(cmsHPROFILE hProfile,
     DWORD dwBytesUsed;
     
     // Set up the serialization engine
-    mem = CreateMemStream(Buffer, dwBufferLen, MAXPSCOLS);
+    mem = CreateMemStream((LPBYTE) Buffer, dwBufferLen, MAXPSCOLS);
     if (!mem) return 0;
 
     
@@ -1271,7 +1271,7 @@ void EmitPQRStage(LPMEMSTREAM m, int DoBPC)
                   "/TransformPQR [\n"
                   "{exch pop exch 3 get mul exch pop exch 3 get div} bind\n"
                   "{exch pop exch 4 get mul exch pop exch 4 get div} bind\n"
-	              "{exch pop exch 5 get mul exch pop exch 5 get div} bind\n]\n"); 
+                  "{exch pop exch 5 get mul exch pop exch 5 get div} bind\n]\n"); 
         } else {
 
         // BPC
@@ -1298,18 +1298,7 @@ void EmitPQRStage(LPMEMSTREAM m, int DoBPC)
                 "exch pop exch pop exch pop exch pop } bind\n]\n");
 
         }
-
-    
-    
-    /*
-    Writef(m, "/MatrixPQR [0.40024 -0.2263 0.0 0.7076 1.16532 0.0 -0.08081 0.0457 0.91822 ]\n");
-    Writef(m, "/RangePQR [-0.125 1.375 -0.125 1.375 -0.125 1.375 ]\n");
-    Writef(m, "/TransformPQR [\n");
-    Writef(m, "{4 index 3 get div 2 index 3 get mul exch pop exch pop exch pop exch pop } bind\n");
-    Writef(m, "{4 index 4 get div 2 index 4 get mul exch pop exch pop exch pop exch pop } bind\n");
-    Writef(m, "{4 index 5 get div 2 index 5 get mul exch pop exch pop exch pop exch pop } bind\n");
-    Writef(m, "]\n");
-    */
+          
 }
 
 
@@ -1547,7 +1536,7 @@ DWORD LCMSEXPORT cmsGetPostScriptCRDEx(cmsHPROFILE hProfile,
     DWORD dwBytesUsed;
 
     // Set up the serialization artifact
-    mem = CreateMemStream(Buffer, dwBufferLen, MAXPSCOLS);
+    mem = CreateMemStream((LPBYTE) Buffer, dwBufferLen, MAXPSCOLS);
     if (!mem) return 0;
 
     

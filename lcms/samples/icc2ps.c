@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
 {
 	int nargs;
 
-     fprintf(stderr, "little cms PostScript converter - v1.3\n\n");
+     fprintf(stderr, "little cms PostScript converter - v1.4\n\n");
 
 	 HandleSwitches(argc, argv);
 
@@ -204,10 +204,7 @@ int main(int argc, char *argv[])
 			OutFile = stdout;
 	 else
 			OutFile = fopen(argv[xoptind], "wt");
-
-	   
-	
-	
+	   		
 
 	 if (cInProf == NULL && cOutProf == NULL)
 				Help();

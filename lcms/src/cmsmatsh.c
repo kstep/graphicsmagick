@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -302,9 +302,9 @@ void InputBehaviour(LPMATSHAPER MatShaper, WORD In[], WORD Out[])
 
        // PCS in 1Fixed15 format, adjusting
 
-       Out[0] = (WORD) Clamp_XYZ(OutVect.n[VX] >> 1);
-       Out[1] = (WORD) Clamp_XYZ(OutVect.n[VY] >> 1);
-       Out[2] = (WORD) Clamp_XYZ(OutVect.n[VZ] >> 1);
+       Out[0] = (WORD) Clamp_XYZ((OutVect.n[VX]) >> 1);
+       Out[1] = (WORD) Clamp_XYZ((OutVect.n[VY]) >> 1);
+       Out[2] = (WORD) Clamp_XYZ((OutVect.n[VZ]) >> 1);
 
 }
 

@@ -2,9 +2,9 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=us-ascii">
+	<meta HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
 	<title>GraphicsMagick GM Utility</title>
-	<style type=text/css>
+	<style>
 	<!--
 		@page { size: 8.5in 11in }
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
@@ -16,6 +16,44 @@
 
 </head>
 <body LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<form ACTION="http://www.google.com/search">
+	<input TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+	<input TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+	<table WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+		<col WIDTH=208*>
+		<col WIDTH=48*>
+
+		<tr>
+			<td WIDTH=81%>
+				<p ALIGN=LEFT>[<a HREF="../">Home</a>] [<a HREF="mission.html">Mission
+				Statement</a>] [<a HREF="development.html">Development
+				Process</a>] [<a HREF="contribute.html">Contribute</a>]
+				[<a HREF="download.html">Download</a>] [<a HREF="install.html">Installation</a>]
+				[<a HREF="cvs.html">CVS</a>] [<a HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Lists</a>] [<a HREF="FAQ.html">FAQ</a>] [<a HREF="formats.html">Formats</a>]
+				[<a HREF="NEWS.html">News</a> ] [<a HREF="Changelog.html">ChangeLog</a>]
+				[<a HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+				Bugs</a>] [<a HREF="www/utilities.html">Utilities</a>]
+				[<a HREF="programming.html">Programming</a>] [<a HREF="books.html">Books</a>]
+				[<a HREF="links.html">Links</a>]</p>
+
+			</td>
+			<td ROWSPAN=2 WIDTH=19%>
+				<p ALIGN=CENTER><img SRC="../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></p>
+			</td>
+		</tr>
+		<tr>
+			<td WIDTH=81%>
+				<div ALIGN=CENTER>
+					<p><font SIZE=4><i>Search GraphicsMagick site <input TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
+
+					<input TYPE=SUBMIT NAME="sa" VALUE="Search"> </i></font>
+					</p>
+				</div>
+			</td>
+		</tr>
+	</table>
+</form>
 <a name="top"></a>
 <table border=0 cellpadding=10 cellspacing=0 style="margin-top:-17px" width="100%"><tr><td>
 <br>&nbsp;<br>
@@ -102,12 +140,11 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-The Magick scripting language (MSL) will primarily
-benefit those that want to accomplish custom image processing tasks but
-do not wish to program, or those that do not have access to a Perl
-interpreter or a compiler.  The interpreter is called conjure and here
-is an example script:
-<br>&nbsp;<br>
+The Magick scripting language (MSL) will primarily benefit those that
+want to accomplish custom image processing tasks but do not wish to
+program, or those that do not have access to a Perl interpreter or a
+compiler.  The interpreter is called conjure and here is an example
+script:
 <pre>
     &lt;?xml version="1.0" encoding="UTF-8"?&gt;
     &lt;image size="400x400" &gt;
@@ -123,25 +160,21 @@ is an example script:
 </pre>
 <p>
 invoked with
-<br>&nbsp;<br>
 <pre>
     gm conjure -dimensions 400x400 incantation.msl
 </pre>
 <p>
 All operations will closely follow the key/value pairs defined in
 PerlMagick, unless otherwise noted.
-<br>&nbsp;<br>
 <p>
 <strong>Conjure</strong> is in the early stages of development as of
 April 2002.
-<br>&nbsp;<br>
 <p>
 This early announcement is to allow GraphicsMagick users to contribute
 ideas early in the process so when the scripting language is released it
 will be useful/stable from the get-go! If you want to contribute
 suggestions about the Magick scripting language (MSL), post them to the
 GraphicsMagick tools list at graphicsmagick-tools @ lists.sourceforge.net.
-<br>&nbsp;<br>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -161,7 +194,6 @@ Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
 the option again with a different effect, or if it is changed by a statement
 in the scripting language.
-<br>&nbsp;<br>
 <p>
 You can define your own keyword/value pairs on the command line.
 The script can then use this information when setting values by including
@@ -189,7 +221,6 @@ Keywords and values are case dependent.  "Key",
 "key",
 and "KEY" would
 be three different keywords.
-<br>&nbsp;<br>
 <p>
 For a more detailed description of each option, see
 Options, above.
@@ -275,15 +306,16 @@ color="#FFFFFF"><font size="+1">
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
+<p>
 The Magick Scripting Language (MSL) presently defines the following
 elements and their attributes:
 <dl>
 <dt>&lt;image&gt;</dt>
-<dd>Define a new image object.
-<strong>&lt;/image&gt;</strong> destroys it. Because of this, if you wish
-to reference multiple "subimages" (aka pages or layers),
-you can embed one <strong>image</strong> element inside of
-another. For example:
+<dd>
+Define a new image object.  <strong>&lt;/image&gt;</strong> destroys it. Because of
+this, if you wish to reference multiple "subimages" (aka pages or
+layers), you can embed one <strong>image</strong> element inside of another. For
+example:
 </dd>
 <dd>
 <pre>
@@ -302,9 +334,9 @@ another. For example:
 </pre>
 </dd>
 <dt>&lt;group&gt;</dt>
-<dd>Define a new group of image objects.
-By default, images are only valid for the life of
-their <strong>&lt;image&gt;</strong>element.
+<dd>
+Define a new group of image objects.  By default, images are only
+valid for the life of their <strong>&lt;image&gt;</strong>element.
 </dd>
 <dd>
 <pre>
@@ -314,8 +346,8 @@ their <strong>&lt;image&gt;</strong>element.
 </pre>
 </dd>
 <dd>
-However, in a group, all images in that group will stay 
-around for the life of the group:
+However, in a group, all images in that group will stay around for the
+life of the group:
 </dd>
 <dd>
 <pre>
@@ -331,14 +363,16 @@ around for the life of the group:
 </pre>
 </dd>
 <dt>&lt;read&gt;</dt>
-<dd>Read a new image from a disk file.
+<dd>
+Read a new image from a disk file.
 </dd>
 <dd>
 <pre>
     &lt;read filename="image.gif" /&gt;
 </pre>
 </dd>
-<dd>To read two images use
+<dd>
+To read two images use
 </dd>
 <dd>
 <pre>
@@ -502,6 +536,6 @@ otherwise see http://www.graphicsmagick.org/www/Copyright.html.</strong>
 
 [<a href="../index.html">Home</a>] [<a href="utilities.html">Utilities Index</a>]
 <BR>
-<p align=center <a href="Copyright.html">Copyright &#169; GraphicsMagick Group 2002, 2003, 2004</a></p></td>
+<p align=center <a href="Copyright.html">Copyright © GraphicsMagick Group 2002, 2003</a></p></td>
 </tr></table>
 </body></html>

@@ -1,14 +1,23 @@
 
- New in ver 1.12
+ New in ver 1.13
  ===============
 
+	Overall speedup
+	Full ICC v4 support
+	New CGATS.13/IT8 parser 
+	8-bit transforms optimization
+	Improved named color -- lcms can now write such profiles as well
+	lcms can now write 8 bit profiles as well as 16 bit
+	softproof now honors proofing intent
+	Absolute colorimetric works fine on mixed v2/v4 transforms
+	Improved black point compensation
+	Several new utility functions
+	Black point compensation on PostScript CRD
+	Added support for HiFi (> 4 inks) on tifficc
+	Improved icclink
+	Add lcms.pc pkg-config file (http://www.freedesktop.org/Software/pkgconfig). (Thanks to Albert Chin)
+	USE_TETRAHEDRAL and USE_TRILINEAR no longer used -- engine now chooses between interpolation methods
+	on depending on several heuristics.
 
-  License changed to MIT
-
-  [Added] cmsCreateBCHSWabstractProfile : Bright/Contrast/Hue/Saturation controls
-  [Added] pseq tag handling: cmsReadProfileSequenceDescription and cmsSEQ, cmsPSEQDESC structures
-  [Added] CRD generation now supports black point compensation, see cmsGetPostScriptCRDEx
-  [Added] cmsTakeManufacturer and cmsTakeModel for uncooked info on these tags
-  [Added] Wriiting 8 bit profiles is now supported
+		
   
-   

@@ -21,16 +21,16 @@ meaning. It specifies an X window by <s>id, name</s>, or
 <s>root</s>. If
 no filename is specified, the window is selected by clicking the mouse
 in the desired window.</p>
+
 <p>
 Specify <i>input_file</i> as <s>-</s> for standard input,
-<i>output_file</i>
-as <s>-</s> for standard output. If <i>input_file</i> has the extension
-<s>.Z</s> or
-<s>.gz</s>, the file is uncompressed with <s>uncompress</s> or <s>gunzip</s>
-respectively. If <i>output_file</i> has the extension <s>.Z</s> or
-<s>.gz</s>,
-the file is compressed using with <i>compress</i> or <i>gzip</i>
-respectively.</p>
+<i>output_file</i> as <s>-</s> for standard output.
+If <i>input_file</i> has the extension <s>.Z</s> or <s>.gz</s>, the
+file is uncompressed with <s>uncompress</s> or <s>gunzip</s>
+respectively.
+If <i>output_file</i> has the extension <s>.Z</s> or <s>.gz</s>,
+the file is compressed using with <i>compress</i> or <i>gzip</i> respectively.</p>
+
 <p>
 Finally, when running on platforms that allow it, precede the image file name
 with <s>|</s> to pipe to or from a system command (this feature is not
