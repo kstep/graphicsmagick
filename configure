@@ -14087,7 +14087,7 @@ LIBS=""
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
-ac_config_files="$ac_config_files Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile coders/Makefile utilities/Makefile tests/Makefile magick/Magick-config Magick++/bin/Makefile Magick++/bin/Magick++-config Magick++/Makefile Magick++/lib/Makefile Magick++/lib/Magick++/Makefile Magick++/demo/Makefile Magick++/tests/Makefile PerlMagick/Makefile.PL"
+ac_config_files="$ac_config_files Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile coders/Makefile utilities/Makefile tests/Makefile magick/fonts.mgk magick/Magick-config Magick++/bin/Makefile Magick++/bin/Magick++-config Magick++/Makefile Magick++/lib/Makefile Magick++/lib/Magick++/Makefile Magick++/demo/Makefile Magick++/tests/Makefile PerlMagick/Makefile.PL"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
