@@ -9,15 +9,9 @@ extern "C" {
 #endif
 
 #include <windows.h>
+#include <winuser.h>
+#include <wingdi.h>
 #include <errno.h>
-
-/*
-  Define declarations.
-*/
-#if !defined(_VISUALC_)
-#define S_IREAD  00400
-#define S_IWRITE  00200
-#endif
 
 /*
   Typedef declarations.

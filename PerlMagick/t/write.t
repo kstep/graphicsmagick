@@ -95,7 +95,7 @@ testReadWrite( 'GIF87:input.gif87',
 testReadWrite( 'MIFF:input.miff',
                'MIFF:output.miff',
                q//,
-               '30fe8b9fee6480481f3aa4e9931499f6' );
+               '7785d161ea66bd39394bb74ef704a0aa' );
 
 #
 # MTV Raytracing image format

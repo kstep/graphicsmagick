@@ -14544,18 +14544,20 @@ static Image *ReadTILEImage(ImageInfo *image_info)
     *image,
     *tiled_image;
 
-  tiled_image=ReadImage(image_info);
-  if (tiled_image == (Image *) NULL)
-    return((Image *) NULL);
   /*
     Allocate image structure.
   */
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
+  if ((image->columns == 0) || (image->rows == 0))
+    PrematureExit(OptionWarning,"must specify image size",image);
   /*
     Initialize Image structure.
   */
+  tiled_image=ReadImage(image_info);
+  if (tiled_image == (Image *) NULL)
+    return((Image *) NULL);
   tiled_image->orphan=True;
   image=CloneImage(tiled_image,image->columns,image->rows,False);
   tiled_image->orphan=False;

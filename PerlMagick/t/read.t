@@ -85,7 +85,7 @@ testRead( 'input.ico', 'd6fb93a149f45c8002358d58cd2db2c7' );
 # Magick image file format
 #
 ++$test;
-testRead( 'input.miff', '30fe8b9fee6480481f3aa4e9931499f6' );
+testRead( 'input.miff', '7785d161ea66bd39394bb74ef704a0aa' );
 
 #
 # MTV Raytracing image format
@@ -208,14 +208,6 @@ testRead( 'input.im24', 'e9b162b8431709942886f79b7b7c11bb' );
 testRead( 'input.tga', 'e9b162b8431709942886f79b7b7c11bb' );
 
 #
-# TILE (Tile image with a texture)
-# This is an internal generated format
-# We will tile using the default image and a MIFF file
-#
-++$test;
-testRead( 'TILE:input.miff', 'd41d8cd98f00b204e9800998ecf8427e' );
-
-#
 # PSX TIM file
 #
 ++$test;
@@ -250,6 +242,14 @@ testRead( 'input.xpm', '948df732ca8abbd1f7348a029f056c94' );
 #
 ++$test;
 testRead( 'input.xwd', 'e9b162b8431709942886f79b7b7c11bb' );
+
+#
+# TILE (Tile image with a texture)
+# This is an internal generated format
+# We will tile using the default image and a MIFF file
+#
+++$test;
+testReadSized( 'TILE:input.miff', '140x92', 'ea3df20e9ae6e1b6fc948d1ee64b571c');
 
 #
 # GRAY format

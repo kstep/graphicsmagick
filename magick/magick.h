@@ -32,7 +32,7 @@ extern "C" {
 #include <time.h>
 #include <math.h>
 #include <assert.h>
-#if !defined(macintosh)
+#if !defined(__MWERKS__)
 #include <sys/types.h>
 #include <sys/stat.h>
 #else
