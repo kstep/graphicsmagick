@@ -8,6 +8,9 @@ Utilities
 
 Library
 
+  * Implement font mapping subsystem to map font names to font
+    files.
+
   * Implement API support to compose and interpret IPTC records.
 
   * Implement clipping mask support MVG and SVG.
@@ -23,7 +26,8 @@ Library
 
 Coders
 
-  * Support the DjVu (http://www.djvu.com/products/djvu.html) library.
+  * Investigate supporting the DjVu
+    (http://www.djvu.com/products/djvu.html) library.
 
   * Add support for Exif extensions to the JPEG and TIFF coders.
 
