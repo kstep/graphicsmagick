@@ -1605,11 +1605,13 @@ static unsigned int ModifyCache(Image *image,ExceptionInfo *exception)
     Clone pixel cache.
   */
   clone_image=AllocateImage((ImageInfo *) NULL);
+  *clone_image=(*image);
+  GetCacheInfo(&clone_image->cache);
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(image);
@@ -1621,7 +1623,7 @@ static unsigned int ModifyCache(Image *image,ExceptionInfo *exception)
   }
   image->cache=clone_image->cache;
   GetCacheInfo(&clone_image->cache);
-  DestroyImage(clone_image);
+  LiberateMemory((void **) &clone_image);
   if (y < (long) image->rows)
     {
       ThrowException(exception,CacheWarning,"Unable to clone cache",
