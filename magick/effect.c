@@ -664,10 +664,6 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   const double *kernel,ExceptionInfo *exception)
 {
 #define ConvolveImageText  "  Convolving image...  "
-#define Cx(x) (x) < 0 ? (x)+(long) image->columns : \
-  (x) >= (long) image->columns ? (x)-(long) image->columns : x
-#define Cy(y) (y) < 0 ? (y)+(long) image->rows : \
-  (y) >= (long) image->rows ? (y)-(long) image->rows : y
 
   AggregatePacket
     aggregate;
@@ -727,53 +723,28 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     normalize+=kernel[i];
   for (y=0; y < (long) convolve_image->rows; y++)
   {
-    p=(const PixelPacket *) NULL;
+    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns,width,
+      exception);
     q=SetImagePixels(convolve_image,0,y,convolve_image->columns,1);
-    if (q == (PixelPacket *) NULL)
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < (long) convolve_image->columns; x++)
     {
       (void) memset(&aggregate,0,sizeof(AggregatePacket));
       k=kernel;
-      if ((x < (width/2)) || (x >= (long) (image->columns-width/2)) ||
-          (y < (width/2)) || (y >= (long) (image->rows-width/2)))
+      r=p+x;
+      for (v=(-width/2); v <= (width/2); v++)
+      {
+        for (u=(-width/2); u <= (width/2); u++)
         {
-          for (v=(-width/2); v <= (width/2); v++)
-          {
-            for (u=(-width/2); u <= (width/2); u++)
-            {
-              pixel=AcquireOnePixel(image,Cx(x+u),Cy(y+v),exception);
-              aggregate.red+=(*k)*pixel.red;
-              aggregate.green+=(*k)*pixel.green;
-              aggregate.blue+=(*k)*pixel.blue;
-              aggregate.opacity+=(*k)*pixel.opacity;
-              k++;
-            }
-          }
+          aggregate.red+=(*k)*r[u].red;
+          aggregate.green+=(*k)*r[u].green;
+          aggregate.blue+=(*k)*r[u].blue;
+          aggregate.opacity+=(*k)*r[u].opacity;
+          k++;
         }
-      else
-        {
-          if (p == (const PixelPacket *) NULL)
-            {
-              p=AcquireImagePixels(image,0,y-width/2,image->columns,width,
-                exception);
-              if (p == (const PixelPacket *) NULL)
-                break;
-            }
-          r=p+x;
-          for (v=(-width/2); v <= (width/2); v++)
-          {
-            for (u=(-width/2); u <= (width/2); u++)
-            {
-              aggregate.red+=(*k)*r[u].red;
-              aggregate.green+=(*k)*r[u].green;
-              aggregate.blue+=(*k)*r[u].blue;
-              aggregate.opacity+=(*k)*r[u].opacity;
-              k++;
-            }
-            r+=image->columns;
-          }
-        }
+        r+=image->columns;
+      }
       if ((normalize != 0.0) && (normalize != 1.0))
         {
           aggregate.red/=normalize;
