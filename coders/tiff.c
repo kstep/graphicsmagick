@@ -377,9 +377,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
   tiff_exception=exception;
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  tiff=TIFFClientOpen(image->filename,ReadBinaryUnbufferedType,(thandle_t) image,
-    TIFFReadBlob,TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFSizeBlob,
-    TIFFMapBlob,TIFFUnmapBlob);
+  tiff=TIFFClientOpen(image->filename,ReadBinaryUnbufferedType,
+    (thandle_t) image,TIFFReadBlob,TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,
+    TIFFSizeBlob,TIFFMapBlob,TIFFUnmapBlob);
   if (tiff == (TIFF *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   if (image_info->subrange != 0)
@@ -391,7 +391,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
       image->scene++;
       status=TIFFReadDirectory(tiff);
       if (status == False)
-        ThrowReaderException(CorruptImageWarning,"Unable to read subimage",image);
+        ThrowReaderException(CorruptImageWarning,"Unable to read subimage",
+          image);
     }
   do
   {
@@ -407,7 +408,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
     if (photometric == PHOTOMETRIC_SEPARATED)
       image->colorspace=CMYKColorspace;
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
+      &samples_per_pixel);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units);
     x_resolution=image->x_resolution;
     y_resolution=image->y_resolution;
@@ -550,8 +552,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
             (scanline == (unsigned char *) NULL))
           {
             TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-              image)
+            ThrowReaderException(ResourceLimitWarning,
+              "Memory allocation failed",image)
           }
         /*
           Create colormap.
@@ -640,7 +642,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
               */
               lsb_first=1;
               if (*(char *) &lsb_first)
-                MSBOrderShort((char *) scanline,(TIFFScanlineSize(tiff) << 1)+4);
+                MSBOrderShort((char *) scanline,
+                  (TIFFScanlineSize(tiff) << 1)+4);
             }
           p=scanline;
           r=quantum_scanline;
@@ -832,8 +835,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-              image)
+            ThrowReaderException(ResourceLimitWarning,
+              "Memory allocation failed",image)
           }
         (void) TIFFReadRGBAImage(tiff,(uint32) image->columns,
           (uint32) image->rows,pixels+image->columns*sizeof(uint32),0);
@@ -898,8 +901,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
 static Image *ReadTIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateWarning,"TIFF library is not available",
-    image_info->filename);
+  ThrowException(exception,MissingDelegateWarning,
+    "TIFF library is not available",image_info->filename);
   return((Image *) NULL);
 }
 #endif
@@ -1128,7 +1131,8 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,long row,
   status=0;
   bytes_per_pixel=
     TIFFTileSize(tiff)/(image->tile_info.height*image->tile_info.width);
-  number_tiles=(image->columns+image->tile_info.width-1)/image->tile_info.height;
+  number_tiles=
+    (image->columns+image->tile_info.width-1)/image->tile_info.height;
   for (i=0; i < number_tiles; i++)
   {
     tile_width=(i == number_tiles-1) ?
@@ -1371,7 +1375,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
           &samples_per_pixel);
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel+1);
-        (void) TIFFSetField(tiff,TIFFTAG_EXTRASAMPLES,extra_samples,&sample_info);
+        (void) TIFFSetField(tiff,TIFFTAG_EXTRASAMPLES,extra_samples,
+          &sample_info);
       }
     switch (image_info->compression)
     {
@@ -1461,8 +1466,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     if (adjoin && (GetNumberScenes(image) > 1))
       {
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
-        (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short) image->scene,
-          GetNumberScenes(image));
+        (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short)
+          image->scene,GetNumberScenes(image));
       }
     attribute=GetImageAttribute(image,"artist");
     if (attribute != (ImageAttribute *) NULL)
@@ -1498,7 +1503,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     */
     scanline=(unsigned char *) AcquireMemory(2*TIFFScanlineSize(tiff)+4);
     if (scanline == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     switch (photometric)
     {
       case PHOTOMETRIC_RGB:
@@ -1513,7 +1519,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           {
             for (y=0; y < (long) image->rows; y++)
             {
-              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
               if (!image->matte)
@@ -1536,7 +1543,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             */
             for (y=0; y < (long) image->rows; y++)
             {
-              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
               (void) PopImagePixels(image,RedQuantum,scanline);
@@ -1546,7 +1554,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             MagickMonitor(SaveImageText,100,400);
             for (y=0; y < (long) image->rows; y++)
             {
-              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
               (void) PopImagePixels(image,GreenQuantum,scanline);
@@ -1556,7 +1565,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             MagickMonitor(SaveImageText,200,400);
             for (y=0; y < (long) image->rows; y++)
             {
-              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
               (void) PopImagePixels(image,BlueQuantum,scanline);
@@ -1660,7 +1670,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             */
             for (y=0; y < (long) image->rows; y++)
             {
-              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
               if (photometric != PHOTOMETRIC_PALETTE)
