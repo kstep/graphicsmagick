@@ -1722,7 +1722,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         (void) strcpy(image->filename,filename);
     }
   if (image == (Image *) NULL) {
-    DestroyImageInfo(clone_info); //WPA
+    DestroyImageInfo(clone_info); /* WPA */
     return(image);
   }
   if (image->temporary)
