@@ -342,17 +342,17 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
           }
       }
-    if (image->storage_class != PseudoClass || max_value > MaxRGB)
+    if ((image->storage_class != PseudoClass) || (max_value > MaxRGB))
       {
         /*
           Compute pixel scaling table.
         */
         scale=(Quantum *) AcquireMemory((max_value+1)*sizeof(Quantum));
         if (scale == (Quantum *) NULL)
-          ThrowReaderException(ResourceLimitWarning,
-            "Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         for (i=0; i <= (long) max_value; i++)
-            scale[i]=(Quantum) ((double) (MaxRGB*i)/max_value +.001);
+          scale[i]=(Quantum) ((double) (MaxRGB*i)/max_value+MagickEpsilon);
       }
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -389,6 +389,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       case '2':
       {
+        unsigned long
+          intensity;
+
         /*
           Convert PGM image to pixel packets.
         */
@@ -400,15 +403,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
-            unsigned short
-              input;
-
-            input=PNMInteger(image,10);
+            intensity=PNMInteger(image,10);
             if (scale != (Quantum *) NULL)
-                index=scale[input];
-            else
-                index=input;
-            index=ValidateColormapIndex(image,index);
+              intensity=scale[intensity];
+            index=ValidateColormapIndex(image,intensity);
             indexes[x]=index;
             *q++=image->colormap[index];
           }
@@ -930,7 +928,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             if (QuantumTick(y,image->rows))
               MagickMonitor(SaveImageText,y,image->rows);
         }
-        if (i != 36)
+        if (i != 0)
           (void) WriteBlobByte(image,'\n');
         break;
       }
@@ -966,7 +964,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             if (QuantumTick(y,image->rows))
               MagickMonitor(SaveImageText,y,image->rows);
         }
-        if (i != 12)
+        if (i != 0)
           (void) WriteBlobByte(image,'\n');
         break;
       }
@@ -1003,7 +1001,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             if (QuantumTick(y,image->rows))
               MagickMonitor(SaveImageText,y,image->rows);
         }
-        if (i != 4)
+        if (i != 0)
           (void) WriteBlobByte(image,'\n');
         break;
       }
