@@ -1014,7 +1014,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   unsigned int
     active;
 
-  double
+  unsigned long
     opacity;
 
   unsigned short

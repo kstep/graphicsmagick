@@ -483,7 +483,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               case 'c':
               case 'C':
               {
-                q->red=(float) MaxRGB*(*p++);
+                q->red=(Quantum) ((float) MaxRGB*(*p++));
                 break;
               }
               case 'g':
@@ -491,7 +491,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               case 'm':
               case 'M':
               {
-                q->green=(float) MaxRGB*(*p++);
+                q->green=(Quantum) ((float) MaxRGB*(*p++));
                 break;
               }
               case 'b':
@@ -499,7 +499,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               case 'y':
               case 'Y':
               {
-                q->blue=(float) MaxRGB*(*p++);
+                q->blue=(Quantum) ((float) MaxRGB*(*p++));
                 break;
               }
               case 'a':
@@ -507,12 +507,12 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               case 'k':
               case 'K':
               {
-                q->opacity=(float) MaxRGB*(*p++);
+                q->opacity=(Quantum) ((float) MaxRGB*(*p++));
                 break;
               }
               case 'I':
               {
-                q->red=(float) MaxRGB*(*p++);
+                q->red=(Quantum) ((float) MaxRGB*(*p++));
                 q->green=q->red;
                 q->blue=q->red;
                 break;
@@ -553,7 +553,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               case 'c':
               case 'C':
               {
-                q->red=(QuantumPrecision) MaxRGB*(*p++);
+                q->red=(Quantum) ((double) MaxRGB*(*p++));
                 break;
               }
               case 'g':
@@ -561,7 +561,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               case 'm':
               case 'M':
               {
-                q->green=(QuantumPrecision) MaxRGB*(*p++);
+                q->green=(Quantum) ((double) MaxRGB*(*p++));
                 break;
               }
               case 'b':
@@ -569,7 +569,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               case 'y':
               case 'Y':
               {
-                q->blue=(QuantumPrecision) MaxRGB*(*p++);
+                q->blue=(Quantum) ((double) MaxRGB*(*p++));
                 break;
               }
               case 'a':
@@ -577,12 +577,12 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               case 'k':
               case 'K':
               {
-                q->opacity=(QuantumPrecision) MaxRGB*(*p++);
+                q->opacity=(Quantum) ((double) MaxRGB*(*p++));
                 break;
               }
               case 'I':
               {
-                q->red=(QuantumPrecision) MaxRGB*(*p++);
+                q->red=(Quantum) ((double) MaxRGB*(*p++));
                 q->green=q->red;
                 q->blue=q->red;
                 break;

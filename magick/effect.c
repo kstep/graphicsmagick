@@ -1093,16 +1093,16 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
 #define Enhance(weight) \
-  mean=(long) (r->red+pixel.red)/2; \
+  mean=((QuantumPrecision) r->red+pixel.red)/2; \
   distance=r->red-(double) pixel.red; \
   distance_squared=(2.0*((double) MaxRGB+1.0)+mean)*distance*distance/MaxRGB; \
-  mean=(long) (r->green+pixel.green)/2; \
+  mean=((QuantumPrecision) r->green+pixel.green)/2; \
   distance=r->green-(double) pixel.green; \
   distance_squared+=4.0*distance*distance; \
-  mean=(long) (r->blue+pixel.blue)/2; \
+  mean=((QuantumPrecision) r->blue+pixel.blue)/2; \
   distance=r->blue-(double) pixel.blue; \
   distance_squared+=(3.0*((double) MaxRGB+1.0)-1.0-mean)*distance*distance/MaxRGB; \
-  mean=(long) (r->opacity+pixel.opacity)/2; \
+  mean=((QuantumPrecision) r->opacity+pixel.opacity)/2; \
   distance=r->opacity-(double) pixel.opacity; \
   distance_squared+=(3.0*((double) MaxRGB+1.0)-1.0-mean)*distance*distance/MaxRGB; \
   if (distance_squared < ((QuantumPrecision) MaxRGB*MaxRGB/25.0)) \
@@ -1120,6 +1120,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
     aggregate;
 
   double
+    distance,
     distance_squared,
     mean,
     total_weight;
@@ -1128,7 +1129,6 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
     *enhance_image;
 
   long
-    distance,
     y;
 
   PixelPacket

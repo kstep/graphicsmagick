@@ -31,9 +31,6 @@ extern "C" {
 
 #include <stdarg.h>
 #include <stdio.h>
-#if defined(HAVE_INTTYPES_H)
-#  include <inttypes.h>
-#endif
 #if defined(WIN32) && defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #endif
@@ -104,6 +101,9 @@ extern "C" {
 # include "api.h"
 #endif
 
+#if defined(HAVE_INTTYPES_H)
+#  include <inttypes.h>
+#endif
 #if defined(WIN32)
 # include "ntbase.h"
 #endif
