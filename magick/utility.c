@@ -835,7 +835,7 @@ MagickExport void ExpandFilename(char *filename)
 MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
 {
   char
-    starting_directory[MaxTextExtent],
+    current_directory[MaxTextExtent],
     *option,
     **vector;
 
@@ -846,6 +846,9 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
   register long
     i,
     j;
+
+  unsigned int
+    first;
 
   /*
     Allocate argument vector.
@@ -862,12 +865,21 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
   /*
     Expand any wildcard filenames.
   */
-  (void) getcwd(starting_directory,MaxTextExtent-1);
+  (void) getcwd(current_directory,MaxTextExtent-1);
   count=0;
   for (i=0; i < *argc; i++)
   {
+    char
+      **filelist,
+      filename[MaxTextExtent],
+      magick[MaxTextExtent],
+      path[MaxTextExtent],
+      subimage[MaxTextExtent];
+
     option=(*argv)[i];
+    /* Never throw options away, so copy here, then perhaps modify later */
     vector[count++]=AllocateString(option);
+    first=True;
 
     /*
       Don't expand or process any VID: argument since the VID coder
@@ -877,12 +889,12 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
       continue;
 
     /*
-      Skip the argument to +profile and +coder-options since it
-      can be a glob specification, and we don't want it interpreted
+      Skip the argument to +profile and +define since it
+      can be glob specifications, and we don't want it interpreted
       as a file.
     */
     if ((LocaleNCompare("+profile",option,8) == 0) ||
-        (LocaleNCompare("+define",option,14) == 0))
+        (LocaleNCompare("+define",option,7) == 0))
       {
         i++;
         if (i == *argc)
@@ -892,196 +904,104 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
         continue;
       }
 
-    /*
-      Pass quotes through to the command-line parser
-    */
+    /* Pass quotes through to the command-line parser */
     if ((*option == '"') || (*option == '\''))
       continue;
 
-    /*
-      Check for, and handle subimage specifications, i.e. img0001.pcd[2].
-      FIXME: Should the subimage spec be applied to each filename
-      expanded by a glob specification as it now is for the format?
-      The apparent subimage specification could be a glob specification,
-      so it could be tried as a glob first, and if there is no match, could
-      be appended as a subimage specification.
+    /* 
+      Fast cycle options that are not expandable filename patterns.
+      ListFiles only expands patterns in the filename.
     */
-    if (strchr(option,'['))
+    GetPathComponent(option,TailPath,filename);
+    if (!IsGlob(filename))
+      continue;
+
+    /* Chop the option to get its other filename components. */
+    GetPathComponent(option,MagickPath,magick);
+    GetPathComponent(option,HeadPath,path);
+    GetPathComponent(option,SubImagePath,subimage);
+
+    /* GetPathComponent throws away the colon */
+    if (*magick != '\0')
+      strcat(magick,":");
+    ExpandFilename(path);
+
+    /* Get the list of matching file names. */
+    filelist=ListFiles(*path=='\0' ? current_directory : path,
+      filename,&number_files);
+    if (filelist == 0)
+      continue;
+
+    /* 
+      Check that there's at least one real (non-directory), matching 
+      filename.
+
+      ListFiles returns all sub-directories plus files matching the filename
+      pattern. Check if it found only directories, continue if it did.
+    */
+    for (j=0; j < number_files; j++)
+      if (IsDirectory(filelist[j]) <= 0)
+        break;
+    if (j == number_files)
       {
-        ExceptionInfo
-          exception;
+        /*
+          Bourne/Bash shells passes through unchanged any glob patterns
+          not matching anything (abc* and there's no file starting with
+          abc). Do the same for behaviour consistent with that.
+        */
+        for (j=0; j < number_files; j++)
+          MagickFreeMemory(filelist[j]);
+        MagickFreeMemory(filelist);
+        continue;
+      }
 
-        ImageInfo
-          *image_info;
+    /*
+      There's at least one matching filename.
+      Transfer file list to argument vector.
+    */
+    MagickReallocMemory(vector,
+                    (*argc+count+number_files+MaxTextExtent)*sizeof(char *));
+    if (vector == (char **) NULL)
+      return(False);
 
-        unsigned int
-          exempt;
-
-        image_info=CloneImageInfo((ImageInfo *) NULL);
-        (void) strncpy(image_info->filename,option,MaxTextExtent-1);
-        GetExceptionInfo(&exception);
-        (void) SetImageInfo(image_info,True,&exception);
-        DestroyExceptionInfo(&exception);
-        exempt=image_info->subimage;
-        DestroyImageInfo(image_info);
-        if (exempt)
-          {
-            continue;
-          }
-       }
-    {
-      char
-        format[MaxTextExtent],
-        path[MaxTextExtent];
-
-      /*
-        Extract format specification (if any) from filename
-        specification. Set path to remaining string.
-      */
-      format[0]='\0';
-      if (strchr(option,':'))
-        {
-          for(j=0; ((j< MaxTextExtent-2) && (option[j] != ':') &&
-                    (isalnum((int) option[j]))); j++)
-            format[j]=option[j];
-          if (option[j] == ':')
-            {
-              format[j]=option[j];
-              j++;
-              format[j]='\0';
-            }
-          else
-            format[0]='\0';
-        }
-      if (IsMagickConflict(format))
-        format[0]='\0';
-
-      (void) strncpy(path,option+strlen(format),MaxTextExtent-strlen(format)-1);
-
-      /*
-        Expand arguments of form ~path or format:~path such that
-        tilde ('~') expands to the user's home directory (or $HOME).
-      */
-      if (path[0] == '~')
-        {
-          ExpandFilename(path);
-          if (path[0] != '~')
-            {
-              char
-                buffer[MaxTextExtent];
-
-              strcpy(buffer,format);
-              strcat(buffer,path);
-              CloneString(&vector[count-1],buffer);
-            }
-        }
-      
-      if (!IsGlob(path))
-        {
-          continue;
-        }
-
+    for (j=0; j < number_files; j++)
       {
         char
-          **filelist,
-          filename[MaxTextExtent],
-          working_directory[MaxTextExtent];
+          filename_buffer[MaxTextExtent];
 
-        /*
-          Fully qualify the base path for the file specification.
-        */
-        {
-          char
-            specified_directory[MaxTextExtent];
-          
-          GetPathComponent(path,HeadPath,specified_directory);
-          if (specified_directory[0] == '\0')
-            (void) getcwd(working_directory,MaxTextExtent-1);
-          else if ((specified_directory[0] != DirectorySeparator[0])
-#if defined(WIN32)
-                   /*
-                     Windows does allow relative inferior qualified
-                     specifications like "c:image.gif" to access
-                     image.gif in the current directory but we will
-                     require a fully qualified specification like
-                     "c:\path\image.gif" or an unqualified
-                     specification like "image.gif". Testing shows
-                     that Windows does not allow creating directories
-                     named like drive letters so we can ignore that
-                     possibility. For example, Windows won't allow
-                     creating the directory "c:".
-                   */
-                   &&
-                   !((strlen(specified_directory) >= 3) &&
-                     (isalpha((int)specified_directory[0]) &&
-                      (specified_directory[1] == ':') &&
-                      (specified_directory[2] == DirectorySeparator[0])))
-#endif
-                     )
-            {
-              char
-                current_directory[MaxTextExtent];
-              
-              (void) getcwd(current_directory,MaxTextExtent-1);
-              if (current_directory[strlen(current_directory)-1] != DirectorySeparator[0])
-                strcat(current_directory,DirectorySeparator);
-              strcpy(working_directory,current_directory);
-              strcat(working_directory,specified_directory);
-            }
-          else
-            strcpy(working_directory,specified_directory);
-        }
-
-        GetPathComponent(path,TailPath,filename);
-
-        /*
-          Get the list of matching file names.
-        */
-        filelist=ListFiles(working_directory,filename,&number_files);
-        if (filelist == (char **) NULL)
-          continue;
-        for (j=0; j < number_files; j++)
-          if (IsDirectory(filelist[j]) <= 0)
-            break;
-        if (j == number_files)
+        *filename_buffer='\0';
+        strcat(filename_buffer,path);
+        if (*path != '\0')
+          strcat(filename_buffer,DirectorySeparator);
+        strcat(filename_buffer,filelist[j]);
+        /* If it's a filename (not a directory) ... */
+        if (IsDirectory(filename_buffer) == 0) 
           {
-            for (j=0; j < number_files; j++)
-              MagickFreeMemory(filelist[j]);
-            MagickFreeMemory(filelist);
-            continue;
-          }
-        /*
-          Transfer file list to argument vector.
-        */
-        MagickReallocMemory(vector,
-                        (*argc+count+number_files+MaxTextExtent)*sizeof(char *));
-        if (vector == (char **) NULL)
-          return(False);
-        count--;
-        for (j=0; j < number_files; j++)
-          {
-            FormatString(filename,"%.1024s%s%.1024s",working_directory,
-                         DirectorySeparator,filelist[j]);
-            if (IsDirectory(filename) != 0)
+            char
+              formatted_buffer[MaxTextExtent];
+
+            *formatted_buffer='\0';
+            strcat(formatted_buffer,magick);
+            strcat(formatted_buffer,filename_buffer);
+            strcat(formatted_buffer,subimage);
+
+            if (first)
               {
-                MagickFreeMemory(filelist[j]);
-                continue;
+                /* Deallocate original option assigned above */
+                --count;
+                MagickFreeMemory(vector[count]);
+                first=False;
               }
-            {
-              char
-                file_spec[MaxTextExtent];
-
-              sprintf(file_spec,"%s%s",format,filename);
-              vector[count]=AllocateString(file_spec);
-            }
-            MagickFreeMemory(filelist[j]);
-            count++;
+            vector[count++]=AllocateString(formatted_buffer);
           }
-        MagickFreeMemory(filelist);
+        MagickFreeMemory(filelist[j]);
       }
-    }
+    MagickFreeMemory(filelist);
   }
-  (void) chdir(starting_directory);
+  /*
+    ListFiles changes cd without restoring.
+  */
+  (void) chdir(current_directory);
   *argc=count;
   *argv=vector;
   return(True);
@@ -1911,11 +1831,24 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
 %    o component: The selected file path component is returned here.
 %
 */
+static inline unsigned int IsFrame(const char *point)
+{
+  char
+    *p;
+
+  (void) strtol(point,&p,10);
+  return(p != point);
+}
+
 MagickExport void GetPathComponent(const char *path,PathType type,
   char *component)
 {
   register char
     *p;
+
+  char
+    magick[MaxTextExtent],
+    subimage[MaxTextExtent];
 
   /*
     Get basename of client.
@@ -1925,16 +1858,79 @@ MagickExport void GetPathComponent(const char *path,PathType type,
   (void) strncpy(component,path,MaxTextExtent-1);
   if (*path == '\0')
     return;
+  subimage[0]=magick[0]='\0';
+
+  /*
+    Remove magic and subimage spec. from the path to make
+    it easier to extract filename parts.
+  */
+  for (p=component; (*p != '\0') && (*p != ':'); p++)
+    ;
+  if (*p == ':')
+    {
+      strncpy(magick,component,(size_t)(p-component)+1);
+      magick[p-component+1]='\0';
+      if (IsMagickConflict(magick))
+        {
+          magick[0]='\0';
+        }
+      else
+        {
+          register char
+            *q;
+
+          /*
+            Safe-copy the remaining component part on top of the magic part.
+          */
+          magick[p-component]='\0';
+          p++;
+          q=component;
+          while (*q++=*p++)
+            ;
+        }
+    }
+
+  p=component+strlen(component);
+  if ((p > component) && (*--p == ']'))
+    {
+      /* Look for a '[' matching the ']' */
+      while ((p > component) && (*p != '[') && (strchr("0123456789,- ", (int)(unsigned char)*p) != 0))
+        p--;
+
+      /* Copy to subimage and remove from component */
+      if ((p > component) && (*p == '[') && IsFrame(p+1))
+        {
+          (void) strcpy(subimage, p);
+          *p='\0';
+        }
+    }
+
   /* first locate the spot were the filename begins */
-  for (p=component+(strlen(component)-1); p > component; p--)
+  for (p=component+strlen(component); p > component; p--)
     if (IsBasenameSeparator(*p))
       break;
+
   switch (type)
   {
+    case MagickPath:
+    {
+      (void)strcpy(component,magick);
+      break;
+    }
+    case SubImagePath:
+    {
+      (void)strcpy(component,subimage);
+      break;
+    }
+    case FullPath:
+    {
+      /* this returns the full path except magic and sub-image spec. */
+      break;
+    }
     case RootPath:
     {
-      /* this returns that path as well as the name of the file */
-      for (p=component+(strlen(component)-1); p > component; p--)
+      /* this returns the path as well as the name of the file */
+      for (p=component+strlen(component); p > component; p--)
         if (*p == '.')
           break;
       if (*p == '.')
@@ -1959,7 +1955,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
       /* this returns just the filename with no extension */
       if (IsBasenameSeparator(*p))
         (void) strncpy(component,p+1,MaxTextExtent-1);
-      for (p=component+(strlen(component)-1); p > component; p--)
+      for (p=component+strlen(component); p > component; p--)
         if (*p == '.')
           {
             *p='\0';
@@ -1972,7 +1968,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
       /* this returns the file extension only */
       if (IsBasenameSeparator(*p))
         (void) strncpy(component,p+1,MaxTextExtent-1);
-      for (p=component+(strlen(component)-1); p > component; p--)
+      for (p=component+strlen(component); p > component; p--)
         if (*p == '.')
           break;
       *component='\0';

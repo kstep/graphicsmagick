@@ -1,3 +1,20 @@
+2003-10-30  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* coders/jpeg.c: changed to not write gray CMYK images as
+	grayscales. That would not be a valid optimization.
+	* magick/color.c (IsGrayImage, IsMonochromeImage): Changed to
+	never return true for CMYK images. Separated images get wrong
+	colors when optimized to grayscales based on what these two
+	functions return. Gray and CMYK are two different color spaces.
+	* magick/nt_feature.c (NTIsMagickConflict): changed to accept
+	colon as part of the magick string, consistent with the way the
+	function is used.
+	* magick/utility.c, magick/utility.h (ExpandFilenames,
+	GetPathComponent): Fixed filename glob expansion. Added handling
+	of filename prefix-magick and sub-image specification to
+	GetPathComponent. Sub-image specification takes precedence over
+	any filename patterns.
+
 2003-10-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/static.c (ExecuteModuleProcess): Renamed from

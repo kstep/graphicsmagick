@@ -1439,7 +1439,12 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       break;
     }
   }
+
   if ((image_info->type != TrueColorType) &&
+      (image_info->type != TrueColorMatteType) &&
+      (image_info->type != ColorSeparationType) &&
+      (image_info->type != ColorSeparationMatteType) &&
+      (image->colorspace != CMYKColorspace) &&
       IsGrayImage(image,&image->exception))
     {
       jpeg_info.input_components=1;

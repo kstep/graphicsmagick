@@ -1188,6 +1188,8 @@ MagickExport unsigned int IsGrayImage(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  if (image->colorspace == CMYKColorspace)
+    return(False);
   if (image->is_grayscale)
     return(True);
   switch (image->storage_class)
@@ -1266,6 +1268,8 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  if (image->colorspace == CMYKColorspace)
+    return(False);
   if (image->is_monochrome)
     return(True);
   switch (image->storage_class)

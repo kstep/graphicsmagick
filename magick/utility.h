@@ -25,7 +25,10 @@ typedef enum
   HeadPath,
   TailPath,
   BasePath,
-  ExtensionPath
+  ExtensionPath,
+  MagickPath,
+  SubImagePath,
+  FullPath
 } PathType;
 
 /*

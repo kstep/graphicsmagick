@@ -245,7 +245,9 @@ MagickExport void *CropImageToHBITMAP(Image *image,
 MagickExport unsigned int NTIsMagickConflict(const char *magick)
 {
   assert(magick != (char *) NULL);
-  if (strlen(magick) > 1)
+  if (strlen(magick) > 2)
+    return(False);
+  if ((strlen(magick) > 1) && (magick[1] != ':'))
     return(False);
   return((GetLogicalDrives()) & (1 << ((toupper((int) (*magick)))-'A')));
 }
