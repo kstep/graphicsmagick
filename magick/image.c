@@ -1358,11 +1358,13 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           (void) fprintf(file,"DirectClass ");
           if (image->total_colors != 0)
             {
-              if (image->total_colors >= (1 << 24))
-                (void) fprintf(file,"%lumc ",image->total_colors/1024/1024);
+              if ((image->total_colors/1024) >= 1024)
+                (void) fprintf(file,"%gmc ",
+                  (double) image->total_colors/1024.0/1024.0);
               else
-                if (image->total_colors >= (1 << 16))
-                  (void) fprintf(file,"%lukc ",image->total_colors/1024);
+                if (image->total_colors >= 1024)
+                  (void) fprintf(file,"%lukc ",
+                    (double) image->total_colors/1024.0);
                 else
                   (void) fprintf(file,"%luc ",image->total_colors);
             }
@@ -1382,13 +1384,12 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       (void) fprintf(file,"%lu-bit ",image->depth);
       if (GetBlobSize(image) != 0)
         {
-          if (GetBlobSize(image) >= (1 << 24))
-            (void) fprintf(file,"%lumb ",
-              (unsigned long) (GetBlobSize(image)/1024/1024));
+          if ((GetBlobSize(image)/1024) >= 1024)
+            (void) fprintf(file,"%gmb ",
+              (double) GetBlobSize(image)/1024.0/1024.0);
           else
-            if (GetBlobSize(image) >= (1 << 16))
-              (void) fprintf(file,"%lukb ",
-                (unsigned long) (GetBlobSize(image)/1024));
+            if (GetBlobSize(image) >= 1024)
+              (void) fprintf(file,"%lukb ",(double) GetBlobSize(image)/1024.0);
             else
               (void) fprintf(file,"%lub ",(unsigned long) GetBlobSize(image));
         }
@@ -1693,13 +1694,13 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           else
             (void) fprintf(file,"\n");
     }
-  if (GetBlobSize(image) >= (1 << 24))
-    (void) fprintf(file,"  Filesize: %lumb\n",
-      (unsigned long) (GetBlobSize(image)/1024/1024));
+  if ((GetBlobSize(image)/1024) >= 1024)
+    (void) fprintf(file,"  Filesize: %gmb\n",
+      (double) GetBlobSize(image)/1024.0/1024.0);
   else
-    if (GetBlobSize(image) >= (1 << 16))
-      (void) fprintf(file,"  Filesize: %lukb\n",
-        (unsigned long) (GetBlobSize(image)/1024));
+    if (GetBlobSize(image) >= 1024)
+      (void) fprintf(file,"  Filesize: %gkb\n",
+        (double) GetBlobSize(image)/1024.0);
     else
       (void) fprintf(file,"  Filesize: %lub\n",(unsigned long)
         GetBlobSize(image));
@@ -1728,6 +1729,14 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       image->page.height,image->page.x,image->page.y);
   if (image->dispose != 0)
     (void) fprintf(file,"  Dispose Method: %lu\n",image->dispose);
+  switch (image->dispose)
+  {
+    case UndefinedDispose: (void) fprintf(file,"Undefined\n"); break;
+    case NoneDispose: (void) fprintf(file,"None\n"); break;
+    case BackgroundDispose: (void) fprintf(file,"Background\n"); break;
+    case PreviousDispose: (void) fprintf(file,"Previous\n"); break;
+    default: (void) fprintf(file,"\n");  break;
+  }
   if (image->delay != 0)
     (void) fprintf(file,"  Delay: %lu\n",image->delay);
   if (image->iterations != 1)
@@ -3444,10 +3453,33 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("dispose",option+1) == 0)
           {
-            /*
-              Set image dispose.
-            */
-            (*image)->dispose=atol(argv[++i]);
+            DisposeType
+              dispose;;
+
+            if (*option == '+')
+              {
+                (*image)->dispose=UndefinedDispose;
+                continue;
+              }
+            option=argv[++i];
+            dispose=UndefinedDispose;
+            if (LocaleCompare("0",option) == 0)
+              dispose=UndefinedDispose;
+            if (LocaleCompare("1",option) == 0)
+              dispose=NoneDispose;
+            if (LocaleCompare("2",option) == 0)
+              dispose=BackgroundDispose;
+            if (LocaleCompare("3",option) == 0)
+              dispose=PreviousDispose;
+            if (LocaleCompare("Background",option) == 0)
+              dispose=BackgroundDispose;
+            if (LocaleCompare("None",option) == 0)
+              dispose=NoneDispose;
+            if (LocaleCompare("Previous",option) == 0)
+              dispose=PreviousDispose;
+            if (LocaleCompare("Undefined",option) == 0)
+              dispose=UndefinedDispose;
+            (*image)->dispose=dispose;
             continue;
           }
         if (LocaleCompare("dither",option+1) == 0)

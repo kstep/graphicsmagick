@@ -968,7 +968,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->page.y=page.y;
     image->page.x=page.x;
     image->delay=delay;
-    image->dispose=dispose;
+    image->dispose=(DisposeType) dispose;
     image->iterations=iterations;
     image->matte=opacity >= 0;
     delay=0;
@@ -1370,7 +1370,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,0x21);
         (void) WriteBlobByte(image,0xf9);
         (void) WriteBlobByte(image,0x04);
-        c=(unsigned char) (image->dispose << 2);
+        c=(unsigned char) ((int) image->dispose << 2);
         if (opacity >= 0)
           c|=0x01;
         (void) WriteBlobByte(image,c);

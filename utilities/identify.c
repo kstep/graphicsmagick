@@ -58,8 +58,8 @@
 */
 #include "magick/studio.h"
 #include "magick/command.h"
-#include "magick/version.h"
 #include "magick/utility.h"
+#include "magick/version.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,6 +100,7 @@ static void IdentifyUsage(void)
       "-sampling_factor geometry",
       "                     horizontal and vertical sampling factor",
       "-verbose             print detailed information about the image",
+      "-version             print version information",
       "-virtual_pixel method",
       "                     Constant, Edge, Mirror, or Tile",
       (char *) NULL

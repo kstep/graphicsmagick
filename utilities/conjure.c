@@ -102,6 +102,7 @@ static void ConjureUsage(void)
       "-debug events        display copious debugging information",
       "-help                print program options",
       "-verbose             print detailed information about the image",
+      "-version             print version information",
       (char *) NULL
     };
 
@@ -192,6 +193,14 @@ int main(int argc,char **argv)
         if (LocaleCompare("verbose",option+1) == 0)
           {
             image_info->verbose=(*option == '-');
+            continue;
+          }
+        if (LocaleCompare("version",option+1) == 0)
+          {
+            (void) fprintf(stdout,"Version: %.1024s\n",
+              GetMagickVersion((unsigned long *) NULL));
+            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
+              GetMagickCopyright());
             continue;
           }
         /*

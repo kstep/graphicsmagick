@@ -2001,8 +2001,12 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
                 (cache_info->colorspace == CMYKColorspace))
               cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
             (void) GetCacheThreshold(cache_info->length);
-            FormatString(message,"open %.1024s (%lumb)",cache_info->filename,
-              (unsigned long) (cache_info->length/1024/1024));
+            if ((cache_info->length/1024/1024) >= 1024)
+              FormatString(message,"open %.1024s (%ggb)",cache_info->filename,
+                (double) cache_info->length/1024.0/1024.0/1024.0);
+            else
+              FormatString(message,"open %.1024s (%gmb)",cache_info->filename,
+                (double) cache_info->length/1024.0/1024.0);
             LogMagickEvent(CacheEvent,message);
             return(True);
           }

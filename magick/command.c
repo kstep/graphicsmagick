@@ -64,6 +64,7 @@
 #include "quantize.h"
 #include "render.h"
 #include "utility.h"
+#include "version.h"
 
 /*
   Typedef declarations.
@@ -679,8 +680,18 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if (i == argc)
                   ThrowCompositeException(OptionError,"Missing method",option);
+                if ((LocaleCompare("0",option) != 0) &&
+                    (LocaleCompare("1",option) != 0) &&
+                    (LocaleCompare("2",option) != 0) &&
+                    (LocaleCompare("3",option) != 0) &&
+                    (LocaleCompare("Undefined",option) != 0) &&
+                    (LocaleCompare("None",option) != 0) &&
+                    (LocaleCompare("Background",option) != 0) &&
+                    (LocaleCompare("Previous",option) != 0))
+                  ThrowCompositeException(OptionError,"Invalid dispose method",
+                    option);
               }
             break;
           }
@@ -1184,6 +1195,14 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
         if (LocaleCompare("verbose",option+1) == 0)
           {
             image_info->verbose=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("version",option+1) == 0)
+          {
+            (void) fprintf(stdout,"Version: %.1024s\n",
+              GetMagickVersion((unsigned long *) NULL));
+            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
+              GetMagickCopyright());
             break;
           }
         if (LocaleCompare("virtual_pixel",option+1) == 0)
@@ -1839,8 +1858,18 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if (i == argc)
                   ThrowConvertException(OptionError,"Missing method",option);
+                if ((LocaleCompare("0",option) != 0) &&
+                    (LocaleCompare("1",option) != 0) &&
+                    (LocaleCompare("2",option) != 0) &&
+                    (LocaleCompare("3",option) != 0) &&
+                    (LocaleCompare("Undefined",option) != 0) &&
+                    (LocaleCompare("None",option) != 0) &&
+                    (LocaleCompare("Background",option) != 0) &&
+                    (LocaleCompare("Previous",option) != 0))
+                  ThrowConvertException(OptionError,"Invalid dispose method",
+                    option);
               }
             break;
           }
@@ -2925,6 +2954,14 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             image_info->verbose=(*option == '-');
             break;
           }
+        if (LocaleCompare("version",option+1) == 0)
+          {
+            (void) fprintf(stdout,"Version: %.1024s\n",
+              GetMagickVersion((unsigned long *) NULL));
+            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
+              GetMagickCopyright());
+            break;
+          }
         if (LocaleCompare("view",option+1) == 0)
           {
             (void) CloneString(&image_info->view,(char *) NULL);
@@ -3330,6 +3367,14 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("verbose",option+1) == 0)
           {
             image_info->verbose=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("version",option+1) == 0)
+          {
+            (void) fprintf(stdout,"Version: %.1024s\n",
+              GetMagickVersion((unsigned long *) NULL));
+            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
+              GetMagickCopyright());
             break;
           }
         if (LocaleCompare("virtual_pixel",option+1) == 0)
@@ -3898,8 +3943,18 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if (i == argc)
                   ThrowMogrifyException(OptionWarning,"Missing method",option);
+                if ((LocaleCompare("0",option) != 0) &&
+                    (LocaleCompare("1",option) != 0) &&
+                    (LocaleCompare("2",option) != 0) &&
+                    (LocaleCompare("3",option) != 0) &&
+                    (LocaleCompare("Undefined",option) != 0) &&
+                    (LocaleCompare("None",option) != 0) &&
+                    (LocaleCompare("Background",option) != 0) &&
+                    (LocaleCompare("Previous",option) != 0))
+                  ThrowMogrifyException(OptionError,"Invalid dispose method",
+                    option);
               }
             break;
           }
@@ -4890,6 +4945,14 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             image_info->verbose=(*option == '-');
             break;
           }
+        if (LocaleCompare("version",option+1) == 0)
+          {
+            (void) fprintf(stdout,"Version: %.1024s\n",
+              GetMagickVersion((unsigned long *) NULL));
+            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
+              GetMagickCopyright());
+            break;
+          }
         if (LocaleCompare("view",option+1) == 0)
           {
             (void) CloneString(&image_info->view,(char *) NULL);
@@ -5435,8 +5498,18 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if (i == argc)
                   ThrowMontageException(OptionError,"Missing method",option);
+                if ((LocaleCompare("0",option) != 0) &&
+                    (LocaleCompare("1",option) != 0) &&
+                    (LocaleCompare("2",option) != 0) &&
+                    (LocaleCompare("3",option) != 0) &&
+                    (LocaleCompare("Undefined",option) != 0) &&
+                    (LocaleCompare("None",option) != 0) &&
+                    (LocaleCompare("Background",option) != 0) &&
+                    (LocaleCompare("Previous",option) != 0))
+                  ThrowMontageException(OptionError,"Invalid dispose method",
+                    option);
               }
             break;
           }
@@ -6063,6 +6136,14 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
         if (LocaleCompare("verbose",option+1) == 0)
           {
             image_info->verbose=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("version",option+1) == 0)
+          {
+            (void) fprintf(stdout,"Version: %.1024s\n",
+              GetMagickVersion((unsigned long *) NULL));
+            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
+              GetMagickCopyright());
             break;
           }
         if (LocaleCompare("virtual_pixel",option+1) == 0)

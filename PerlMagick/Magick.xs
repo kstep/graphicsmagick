@@ -220,6 +220,10 @@ static char
     "Undefined", "None", "BZip", "Fax", "Group4", "JPEG", "LosslessJPEG",
     "LZW", "RLE", "Zip", (char *) NULL
   },
+  *DisposeTypes[] =
+  {
+    "Undefined", "None", "Background", "Previous", (char *) NULL
+  },
   *EndianTypes[] =
   {
     "Undefined", "LSB", "MSB", (char *) NULL
@@ -1355,8 +1359,14 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"dispose") == 0)
         {
-          for (; image; image=image->next)
-            image->dispose=SvIV(sval);
+          sp=SvPOK(sval) ? LookupStr(DisposeTypes,SvPV(sval,na)) : SvIV(sval);
+          if (sp < 0)
+            {
+              MagickError(OptionError,"Invalid disposal type",SvPV(sval,na));
+              return;
+            }
+          for ( ; image; image=image->next)
+            image->dispose=(DisposeType) sp;
           return;
         }
       if (LocaleCompare(attribute,"dither") == 0)
@@ -3269,8 +3279,16 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"dispose") == 0)
             {
-              if (image)
-                s=newSViv((long) image->dispose);
+              if (!image)
+                break;
+
+              j=image->dispose;
+              s=newSViv(j);
+              if ((j >= 0) && (j < (long) NumberOf(DisposeTypes)-1))
+                {
+                  (void) sv_setpv(s,DisposeTypes[j]);
+                  SvIOK_on(s);
+                }
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }

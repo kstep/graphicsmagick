@@ -59,8 +59,8 @@
 */
 #include "magick/studio.h"
 #include "magick/command.h"
-#include "magick/version.h"
 #include "magick/utility.h"
+#include "magick/version.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -111,7 +111,7 @@ static void MogrifyUsage(void)
       "-depth value         image depth",
       "-despeckle           reduce the speckles within an image",
       "-display server      get image or font from this X server",
-      "-dispose method      GIF disposal method",
+      "-dispose method      Undefined, None, Background, Previous",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-draw string         annotate the image with a graphic primitive",
       "-edge radius         apply a filter to detect edges in the image",
@@ -188,6 +188,7 @@ static void MogrifyUsage(void)
       "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
       "-unsharp geometry    sharpen the image",
       "-verbose             print detailed information about the image",
+      "-version             print version information",
       "-view                FlashPix viewing transforms",
       "-virtual_pixel method",
       "                     Constant, Edge, Mirror, or Tile",

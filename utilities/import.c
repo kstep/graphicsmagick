@@ -66,8 +66,8 @@
 #include "magick/command.h"
 #include "magick/list.h"
 #include "magick/log.h"
-#include "magick/version.h"
 #include "magick/utility.h"
+#include "magick/version.h"
 #include "magick/xwindow.h"
 
 /*
@@ -111,7 +111,7 @@ static void ImportUsage(void)
       "-depth value         image depth",
       "-descend             obtain image by descending window hierarchy",
       "-display server      X server to contact",
-      "-dispose method      GIF disposal method",
+      "-dispose method      Undefined, None, Background, Previous",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-frame               include window manager frame",
       "-encoding type       text encoding type",
@@ -139,6 +139,7 @@ static void ImportUsage(void)
       "-trim                trim image edges",
       "-type type           image type",
       "-verbose             print detailed information about the image",
+      "-version             print version information",
       "-virtual_pixel method",
       "                     Constant, Edge, Mirror, or Tile",
       "-window id           select window with this id or name",
@@ -574,8 +575,18 @@ int main(int argc,char **argv)
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing method",option);
+                if ((LocaleCompare("0",option) != 0) &&
+                    (LocaleCompare("1",option) != 0) &&
+                    (LocaleCompare("2",option) != 0) &&
+                    (LocaleCompare("3",option) != 0) &&
+                    (LocaleCompare("Undefined",option) != 0) &&
+                    (LocaleCompare("None",option) != 0) &&
+                    (LocaleCompare("Background",option) != 0) &&
+                    (LocaleCompare("Previous",option) != 0))
+                  MagickFatalError(OptionFatalError,"Invalid dispose method",
+                    option);
               }
             break;
           }
@@ -949,6 +960,14 @@ int main(int argc,char **argv)
         if (LocaleCompare("verbose",option+1) == 0)
           {
             image_info->verbose=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("version",option+1) == 0)
+          {
+            (void) fprintf(stdout,"Version: %.1024s\n",
+              GetMagickVersion((unsigned long *) NULL));
+            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
+              GetMagickCopyright());
             break;
           }
         MagickFatalError(OptionFatalError,"Unrecognized option",option);

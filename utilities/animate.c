@@ -71,8 +71,8 @@
 #include "magick/command.h"
 #include "magick/list.h"
 #include "magick/log.h"
-#include "magick/version.h"
 #include "magick/utility.h"
+#include "magick/version.h"
 #include "magick/xwindow.h"
 
 /*
@@ -140,6 +140,7 @@ static void AnimateUsage(void)
       "-treedepth value     color tree depth",
       "-trim                trim image edges",
       "-verbose             print detailed information about the image",
+      "-version             print version information",
       "-visual type         display image using this visual type",
       "-virtual_pixel method",
       "                     Constant, Edge, Mirror, or Tile",
@@ -968,6 +969,14 @@ int main(int argc,char **argv)
         if (LocaleCompare("verbose",option+1) == 0)
           {
             image_info->verbose=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("version",option+1) == 0)
+          {
+            (void) fprintf(stdout,"Version: %.1024s\n",
+              GetMagickVersion((unsigned long *) NULL));
+            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
+              GetMagickCopyright());
             break;
           }
         if (LocaleCompare("visual",option+1) == 0)

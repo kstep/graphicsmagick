@@ -415,7 +415,17 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"dispose") == 0)
                   {
-                    image->dispose=atol(values);
+                    image->dispose=(DisposeType) atol(values);
+                    if (LocaleCompare(values,"Background") == 0)
+                      image->dispose=BackgroundDispose;
+                    else
+                      if (LocaleCompare(values,"None") == 0)
+                        image->dispose=NoneDispose;
+                      else
+                        if (LocaleCompare(values,"Previous") == 0)
+                          image->dispose=PreviousDispose;
+                        else
+                          image->dispose=UndefinedDispose;
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
@@ -1445,12 +1455,11 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
       {
         if (image->scene == 0)
-          FormatString(buffer,"iterations=%lu  delay=%lu  dispose=%lu\n",
-            image->iterations,image->delay,image->dispose);
+          FormatString(buffer,"iterations=%lu  delay=%lu\n",image->iterations,
+            image->delay);
         else
-          FormatString(buffer,
-            "scene=%lu  iterations=%lu  delay=%lu  dispose=%lu\n",
-            image->scene,image->iterations,image->delay,image->dispose);
+          FormatString(buffer,"scene=%lu  iterations=%lu  delay=%lu\n",
+            image->scene,image->iterations,image->delay);
         (void) WriteBlobString(image,buffer);
       }
     else
@@ -1470,11 +1479,17 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             FormatString(buffer,"delay=%lu\n",image->delay);
             (void) WriteBlobString(image,buffer);
           }
-        if (image->dispose != 0)
-          {
-            FormatString(buffer,"dispose=%lu\n",image->dispose);
-            (void) WriteBlobString(image,buffer);
-          }
+      }
+    if (image->dispose != UndefinedDispose)
+      {
+        if (image->dispose == BackgroundDispose)
+          (void) strcpy(buffer,"dispose=background\n");
+        else
+          if (image->dispose == NoneDispose)
+            (void) strcpy(buffer,"dispose=none\n");
+          else
+            (void) strcpy(buffer,"dispose=previous\n");
+        (void) WriteBlobString(image,buffer);
       }
     if (image->rendering_intent != UndefinedIntent)
       {

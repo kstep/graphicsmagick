@@ -24,6 +24,7 @@ extern "C" {
 #endif
 
 #if (QuantumDepth == 8)
+#define MaxColormapSize  256UL
 #define MaxRGB  255UL
 #define ScaleCharToQuantum(value)  ((Quantum) (value))
 #define ScaleLongToQuantum(value)  ((Quantum) ((value)/16843009UL))
@@ -36,6 +37,7 @@ extern "C" {
 
 typedef unsigned char Quantum;
 #elif (QuantumDepth == 16)
+#define MaxColormapSize  65536UL
 #define MaxRGB  65535UL
 #define ScaleCharToQuantum(value)  ((Quantum) (257UL*(value)))
 #define ScaleLongToQuantum(value)  ((Quantum) ((value)/65537UL))
@@ -48,6 +50,7 @@ typedef unsigned char Quantum;
 
 typedef unsigned short Quantum;
 #elif (QuantumDepth == 32)
+#define MaxColormapSize  65536UL
 #define MaxRGB  4294967295UL
 #define ScaleCharToQuantum(value)  ((Quantum) (16843009UL*(value)))
 #define ScaleLongToQuantum(value)  ((Quantum) ((value)))
@@ -65,7 +68,6 @@ typedef unsigned int Quantum;
 
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
-#define MaxColormapSize  65536
 #define OpaqueOpacity  0UL
 #define PixelIntensity(pixel) ((unsigned long) \
   (0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue+0.5))
@@ -180,6 +182,14 @@ typedef enum
   RLECompression,
   ZipCompression
 } CompressionType;
+
+typedef enum
+{
+  UndefinedDispose,
+  NoneDispose,
+  BackgroundDispose,
+  PreviousDispose
+} DisposeType;
 
 typedef enum
 {
@@ -677,12 +687,14 @@ typedef struct _Image
   CompositeOperator
     compose;
 
+  DisposeType
+    dispose;
+
   struct _Image
     *clip_mask;
 
   unsigned long
     scene,
-    dispose,
     delay,
     iterations,
     total_colors;

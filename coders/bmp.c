@@ -1650,7 +1650,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     image=GetNextImage(image);
     status=MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),
       &image->exception);
-    if (status == False);
+    if (status == False)
       break;
   } while (image_info->adjoin);
   if (image_info->adjoin)

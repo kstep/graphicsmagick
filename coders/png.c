@@ -4778,7 +4778,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           need_defi=True;
         if (next_image->matte)
           need_matte=True;
-        if (next_image->dispose >= 2)
+        if ((int) next_image->dispose >= 2)
           if (next_image->matte || next_image->page.x || next_image->page.y ||
               ((next_image->columns < page.width) &&
                (next_image->rows < page.height)))
@@ -5772,7 +5772,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       }
     ping_info->interlace_type=image_info->interlace != NoInterlace;
 
-    if (image->dispose >= 3)
+    if ((int) image->dispose >= 3)
        framing_mode=3;
 
     if (need_fram && adjoin && ((image->delay != delay) ||
@@ -6011,7 +6011,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 #endif
     }
     png_write_end(ping,ping_info);
-    if (need_fram && image->dispose == 2)
+    if (need_fram && (int) image->dispose == 2)
       {
         if (page.x || page.y || (ping_info->width != page.width) ||
             (ping_info->height != page.height))
@@ -6041,7 +6041,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         else
           framing_mode=3;
       }
-    if (write_mng && !need_fram && (image->dispose == 3))
+    if (write_mng && !need_fram && ((int) image->dispose == 3))
        ThrowException(&image->exception,(ExceptionType) DelegateError,
          "Cannot convert GIF with disposal method 3 to MNG-LC",(char *) NULL);
     image->depth=save_image_depth;

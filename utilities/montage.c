@@ -59,8 +59,8 @@
 */
 #include "magick/studio.h"
 #include "magick/command.h"
-#include "magick/version.h"
 #include "magick/utility.h"
+#include "magick/version.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -104,7 +104,7 @@ static void MontageUsage(void)
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
       "-display server      query font from this X server",
-      "-dispose method      GIF disposal method",
+      "-dispose method      Undefined, None, Background, Previous",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-draw string         annotate the image with a graphic primitive",
       "-encoding type       text encoding type",
@@ -143,6 +143,7 @@ static void MontageUsage(void)
       "-trim                trim image edges",
       "-type type           image type",
       "-verbose             print detailed information about the image",
+      "-version             print version information",
       "-virtual_pixel method",
       "                     Constant, Edge, Mirror, or Tile",
       (char *) NULL

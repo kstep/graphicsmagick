@@ -73,8 +73,8 @@
 #include "magick/command.h"
 #include "magick/list.h"
 #include "magick/log.h"
-#include "magick/version.h"
 #include "magick/utility.h"
+#include "magick/version.h"
 #include "magick/xwindow.h"
 
 /*
@@ -130,7 +130,7 @@ static void DisplayUsage(void)
       "-depth value         image depth",
       "-despeckle           reduce the speckles within an image",
       "-display server      display image to this X server",
-      "-dispose method      GIF disposal method",
+      "-dispose method      Undefined, None, Background, Previous",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-edge factor         apply a filter to detect edges in the image",
       "-endian type         LSB or MSB",
@@ -168,6 +168,7 @@ static void DisplayUsage(void)
       "-trim                trim image edges",
       "-update seconds      detect when image file is modified and redisplay",
       "-verbose             print detailed information about the image",
+      "-version             print version information",
       "-visual type         display image using this visual type",
       "-virtual_pixel method",
       "                     Constant, Edge, Mirror, or Tile",
@@ -880,8 +881,18 @@ int main(int argc,char **argv)
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing method",option);
+                if ((LocaleCompare("0",option) != 0) &&
+                    (LocaleCompare("1",option) != 0) &&
+                    (LocaleCompare("2",option) != 0) &&
+                    (LocaleCompare("3",option) != 0) &&
+                    (LocaleCompare("Undefined",option) != 0) &&
+                    (LocaleCompare("None",option) != 0) &&
+                    (LocaleCompare("Background",option) != 0) &&
+                    (LocaleCompare("Previous",option) != 0))
+                  MagickFatalError(OptionFatalError,"Invalid dispose method",
+                    option);
               }
             break;
           }
@@ -1433,6 +1444,14 @@ int main(int argc,char **argv)
         if (LocaleCompare("verbose",option+1) == 0)
           {
             image_info->verbose=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("version",option+1) == 0)
+          {
+            (void) fprintf(stdout,"Version: %.1024s\n",
+              GetMagickVersion((unsigned long *) NULL));
+            (void) fprintf(stdout,"Copyright: %.1024s\n\n",
+              GetMagickCopyright());
             break;
           }
         if (LocaleCompare("visual",option+1) == 0)

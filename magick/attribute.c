@@ -1206,13 +1206,13 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
     {
       if (LocaleNCompare("size",key,2) == 0)
         {
-          if (GetBlobSize(image) >= (1 << 24))
-            FormatString(attribute,"%lumb",
-              (unsigned long) (GetBlobSize(image)/1024/1024));
+          if ((GetBlobSize(image)/1024) >= 1024)
+            FormatString(attribute,"%gmb",
+              (double) GetBlobSize(image)/1024.0/1024.0);
           else
-            if (GetBlobSize(image) >= (1 << 16))
+            if (GetBlobSize(image) >= 1024)
               FormatString(attribute,"%lukb",
-                (unsigned long) (GetBlobSize(image)/1024));
+                (double) GetBlobSize(image)/1024.0);
             else
               FormatString(attribute,"%lu",(unsigned long) GetBlobSize(image));
           break;
