@@ -9,14 +9,16 @@
 
 #include <string>
 
-#include "Magick++/Montage.h"
-#include "Magick++/Functions.h"
+#include <Magick++/Montage.h>
+#include <Magick++/Functions.h>
 
 
 void Magick::Montage::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ ) const
 {
   if ( _backgroundColor.isValid() )
-    montageInfo_.background_color = _backgroundColor;
+    {
+      Magick::CloneString( &montageInfo_.background_color, _backgroundColor );
+    }
 
   if ( _compose != Magick::UndefinedCompositeOp )
     montageInfo_.compose = _compose;
@@ -43,7 +45,7 @@ void Magick::Montage::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ )
     montageInfo_.pointsize = _pointSize;
 
   if ( _shadow == true )
-    montageInfo_.shadow = (int)true;
+    montageInfo_.shadow = True;
 
   if ( _texture.length() != 0 )
     Magick::CloneString( &montageInfo_.texture, _texture );
@@ -61,14 +63,13 @@ void Magick::Montage::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ )
 //
 
 
-/* virtual */ void
-Magick::MontageFramed::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ ) const
+/* virtual */ void  Magick::MontageFramed::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ ) const
 {
   // Do base updates
   Montage::updateMontageInfo ( montageInfo_ );
 
   if ( _borderColor.isValid() )
-    montageInfo_.border_color = _borderColor;
+    Magick::CloneString( &montageInfo_.border_color, _borderColor );
 
   if ( _borderWidth != 0 )
     montageInfo_.border_width = _borderWidth;
@@ -77,5 +78,5 @@ Magick::MontageFramed::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ 
     Magick::CloneString( &montageInfo_.frame, _frame );
 
   if ( _matteColor.isValid() )
-    montageInfo_.matte_color = _matteColor;
+    Magick::CloneString( &montageInfo_.matte_color, _matteColor );
 }

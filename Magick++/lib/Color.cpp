@@ -14,9 +14,9 @@
 
 using namespace std;
 
-#include "Magick++/Color.h"
-#include "Magick++/Functions.h"
-#include "Magick++/Exception.h"
+#include <Magick++/Color.h>
+#include <Magick++/Functions.h>
+#include <Magick++/LastError.h>
 
 //
 // Color operator fuctions
@@ -79,36 +79,36 @@ int Magick::operator <= ( const Magick::Color& left_,
 
 // Copy constructor
 Magick::Color::Color ( const Color & color_ )
+  : _packet(0)
 {
-  // If not being set to ourself
   if ( this != &color_ )
     {
-      // Allocate a new pixel, with our ownership, and set value
-      _pixel = new MagickLib::PixelPacket;
-      _pixelOwn  = true;
-      *_pixel    = *color_._pixel;
-      
-      // Copy pixel type
-      _pixelType = color_._pixelType;
-
-      // Copy validity
-      _valid = color_._valid;
+      if ( color_._packet != 0 )
+	{
+	  _packet = new MagickLib::RunlengthPacket;
+	  _packet->red    = color_._packet->red;
+	  _packet->green  = color_._packet->green;
+	  _packet->blue   = color_._packet->blue;
+	  _packet->length = 1;
+	  _packet->index  = color_._packet->index;
+	}
     }
 }
 
 Magick::Color Magick::Color::operator = ( const Color& color_ )
 {
-  // If not being set to ourself
   if ( this != &color_ )
     {
-      // Copy pixel value
-      *_pixel = *color_._pixel;
-
-      // Copy pixel type
-      _pixelType = color_._pixelType;
-
-      // Copy pixel validity
-      _valid = color_._valid;
+      if ( color_._packet != 0 )
+	{
+	  if ( ! _packet )
+	    _packet = new MagickLib::RunlengthPacket;
+	  _packet->red    = color_._packet->red;
+	  _packet->green  = color_._packet->green;
+	  _packet->blue   = color_._packet->blue;
+	  _packet->length = 1;
+	  _packet->index  = color_._packet->index;
+	}
     }
   return *this;
 }
@@ -116,26 +116,28 @@ Magick::Color Magick::Color::operator = ( const Color& color_ )
 // Set color via X11 color specification string
 const Magick::Color& Magick::Color::operator = ( std::string x11color_ )
 {
-  initPixel();
-  MagickLib::PixelPacket target_color;
+  if ( !_packet )
+    initRep();
+
+  MagickLib::ColorPacket target_color;
   if ( MagickLib::QueryColorDatabase( x11color_.c_str(), &target_color ) )
     {
-      redQuantum( target_color.red );
-      greenQuantum( target_color.green );
-      blueQuantum( target_color.blue );
-      alphaQuantum( target_color.opacity );
+      redQuantum( XDownScale(target_color.red) );
+      greenQuantum( XDownScale(target_color.green) );
+      blueQuantum( XDownScale(target_color.blue) );
 
-      if ( target_color.opacity < Opaque )
-	_pixelType = RGBAPixel;
+      if ( target_color.flags & MagickLib::DoMatte )
+	// MagickLib::DoMatte is set if alpha was set by XQueryColorDatabase()
+	alphaQuantum(  XDownScale(target_color.index) );
       else
-	_pixelType = RGBPixel;
+	// If alpha is not set, then set to MaxRGB (Opaque) since that
+	// is the default when a color is specified.
+	alphaQuantum( MaxRGB );
     }
   else
     {
-      std::string message = "Color \"";
-      message += x11color_;
-      message += "\" not valid";
-      throw ErrorOption( message );
+      LastError err( MagickLib::OptionError, "Color not valid.", x11color_ );
+      err.throwException();
     }
 
   return *this;
@@ -153,7 +155,7 @@ Magick::Color::operator std::string() const
 {
 
   if ( !isValid() )
-    return std::string("INVALID");
+    return std::string("");
 
   char colorbuf[17];
   ostrstream colorstr( colorbuf, sizeof(colorbuf ));
@@ -166,7 +168,7 @@ Magick::Color::operator std::string() const
 	   << setw(4) << (unsigned int)redQuantum()
 	   << setw(4) << (unsigned int)greenQuantum()
 	   << setw(4) << (unsigned int)blueQuantum();
-  if ( _pixelType == RGBAPixel )
+  if ( alphaQuantum() < MaxRGB )
     colorstr << hex << setw(4) << (unsigned int)alphaQuantum();
 #else
   colorstr << "#"
@@ -174,7 +176,7 @@ Magick::Color::operator std::string() const
 	   << setw(2) << (unsigned int)redQuantum()
 	   << setw(2) << (unsigned int)greenQuantum()
 	   << setw(2) << (unsigned int)blueQuantum();
-  if ( _pixelType == RGBAPixel )
+  if ( alphaQuantum() < MaxRGB )
     colorstr << hex << setw(2) << (unsigned int)alphaQuantum();
 #endif
 
@@ -182,33 +184,6 @@ Magick::Color::operator std::string() const
 
   return std::string(colorbuf);
 }
-
-// Construct color via ImageMagick PixelPacket
-Magick::Color::Color ( MagickLib::PixelPacket &color_ )
-  : _pixel(new MagickLib::PixelPacket),
-    _pixelOwn(true),	    // We allocated this pixel
-    _pixelType(RGBPixel),  // RGB pixel by default
-    _valid(true)
-{
-  *_pixel = color_;
-
-  if ( color_.opacity != Opaque )
-    _pixelType = RGBAPixel;
-}
-
-// Set color via ImageMagick PixelPacket
-const Magick::Color Magick::Color::operator= ( MagickLib::PixelPacket &color_ )
-{
-  Magick::Color color( color_ );
-  return color;
-}
-
-// Return ImageMagick PixelPacket struct based on color.
-Magick::Color::operator MagickLib::PixelPacket () const
-{
-  return *_pixel;
-}
-
 
 //
 // ColorHSL Implementation

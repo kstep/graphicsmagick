@@ -14,27 +14,12 @@
 // user code.
 //
 
-#if defined(__BORLANDC__)
-//
-// The following includes need to be specified to compile with Borland
-// C++ Builder 4.0.
-//
-#include <vcl.h>
-#include <stdio.h>
-#endif // defined(__BORLANDC__)
-
 // If <clocale> is not included, then SPARC Works 5.0 blows up when
 // including locale.h
 #include <clocale>
 
 // Needed for stdio FILE
 #include <cstdio>
-
-// Needed for time_t
-#include <ctime>
-
-// Needed for off_t
-#include <sys/types.h>
 
 namespace MagickLib
 {
@@ -43,6 +28,9 @@ namespace MagickLib
 
 #include <magick/api.h>
 
+#ifdef MAGICK_IMPLEMENTATION
+# include <magick/defines.h>
+#endif // MAGICK_IMPLEMENTATION
 #undef class
 }
 
@@ -96,11 +84,6 @@ namespace Magick
   using MagickLib::ReplaceGreenCompositeOp;
   using MagickLib::ReplaceBlueCompositeOp;
   using MagickLib::ReplaceMatteCompositeOp;
-  using MagickLib::BlendCompositeOp;
-  using MagickLib::DisplaceCompositeOp;
-  using MagickLib::AnnotateCompositeOp;
-  using MagickLib::ModulateCompositeOp;
-
   
   // Compression algorithms
   using MagickLib::CompressionType;
@@ -132,30 +115,15 @@ namespace Magick
   using MagickLib::LanczosFilter;
   using MagickLib::BesselFilter;
   using MagickLib::SincFilter;
-
-  // Bit gravity
-  using MagickLib::GravityType;
-  using MagickLib::ForgetGravity;
-  using MagickLib::NorthWestGravity;
-  using MagickLib::NorthGravity;
-  using MagickLib::NorthEastGravity;
-  using MagickLib::WestGravity;
-  using MagickLib::CenterGravity;
-  using MagickLib::EastGravity;
-  using MagickLib::SouthWestGravity;
-  using MagickLib::SouthGravity;
-  using MagickLib::SouthEastGravity;
-  using MagickLib::StaticGravity;
-
+  
   // Image types
   using MagickLib::ImageType;
   using MagickLib::UndefinedType;
   using MagickLib::BilevelType;
   using MagickLib::GrayscaleType;
   using MagickLib::PaletteType;
-  using MagickLib::PaletteMatteType;
   using MagickLib::TrueColorType;
-  using MagickLib::TrueColorMatteType;
+  using MagickLib::MatteType;
   using MagickLib::ColorSeparationType;
   
   // Interlace types
@@ -191,8 +159,9 @@ namespace Magick
   using MagickLib::FillToBorderMethod;
   using MagickLib::ResetMethod;
 
-  // Preview types.  Not currently used by Magick++
-  using MagickLib::PreviewType;
+
+  // Preview types
+  // Not currently actually used by Magick++
   using MagickLib::UndefinedPreview;
   using MagickLib::RotatePreview;
   using MagickLib::ShearPreview;
@@ -213,35 +182,17 @@ namespace Magick
   using MagickLib::ThresholdPreview;
   using MagickLib::EdgeDetectPreview;
   using MagickLib::SpreadPreview;
-  using MagickLib::SolarizePreview;
   using MagickLib::ShadePreview;
   using MagickLib::RaisePreview;
   using MagickLib::SegmentPreview;
+  using MagickLib::SolarizePreview;
   using MagickLib::SwirlPreview;
   using MagickLib::ImplodePreview;
   using MagickLib::WavePreview;
   using MagickLib::OilPaintPreview;
   using MagickLib::CharcoalDrawingPreview;
   using MagickLib::JPEGPreview;
-
-  // Quantum types
-  using MagickLib::QuantumTypes;
-  using MagickLib::IndexQuantum;
-  using MagickLib::GrayQuantum;
-  using MagickLib::IndexOpacityQuantum;
-  using MagickLib::GrayOpacityQuantum;
-  using MagickLib::RedQuantum;
-  using MagickLib::CyanQuantum;
-  using MagickLib::GreenQuantum;
-  using MagickLib::YellowQuantum;
-  using MagickLib::BlueQuantum;
-  using MagickLib::MagentaQuantum;
-  using MagickLib::OpacityQuantum;
-  using MagickLib::BlackQuantum;
-  using MagickLib::RGBQuantum;
-  using MagickLib::RGBAQuantum;
-  using MagickLib::CMYKQuantum;
-
+  
   // Rendering intents
   using MagickLib::RenderingIntent;
   using MagickLib::UndefinedIntent;
@@ -256,8 +207,33 @@ namespace Magick
   using MagickLib::PixelsPerInchResolution;
   using MagickLib::PixelsPerCentimeterResolution;
 
-  // PixelPacket structure
-  using MagickLib::PixelPacket;
+  // Bit gravity
+  // The enumeration values are safely defined by the X11 protocol.
+  enum GravityType
+  {
+#undef ForgetGravity
+    ForgetGravity,	//  0
+#undef NorthWestGravity
+    NorthWestGravity,	//  1
+#undef NorthGravity
+    NorthGravity,	//  2
+#undef NorthEastGravity
+    NorthEastGravity,	//  3
+#undef WestGravity
+    WestGravity,	//  4
+#undef CenterGravity
+    CenterGravity,	//  5
+#undef EastGravity
+    EastGravity,	//  6
+#undef SouthWestGravity
+    SouthWestGravity,	//  7
+#undef SouthGravity
+    SouthGravity,	//  8
+#undef SouthEastGravity
+    SouthEastGravity,	//  9
+#undef StaticGravity
+    StaticGravity	// 10
+  };
 
 }
 

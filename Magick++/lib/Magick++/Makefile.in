@@ -77,10 +77,12 @@ DLLTOOL = @DLLTOOL@
 INTERFACE_AGE = @INTERFACE_AGE@
 INTERFACE_CURRENT = @INTERFACE_CURRENT@
 INTERFACE_REVISION = @INTERFACE_REVISION@
+LD = @LD@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
@@ -88,7 +90,7 @@ VERSION = @VERSION@
 
 AUTOMAKE_OPTIONS = 1.2
 
-pkginclude_HEADERS = Blob.h Color.h Drawable.h 	Exception.h Functions.h Geometry.h Image.h 	Include.h LastError.h Montage.h Options.h 	Thread.h STL.h
+pkginclude_HEADERS = Blob.h Color.h Drawable.h 	Exception.h Functions.h Geometry.h Image.h 	Include.h LastError.h Montage.h Options.h 	STL.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 

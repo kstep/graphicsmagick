@@ -77,10 +77,12 @@ DLLTOOL = @DLLTOOL@
 INTERFACE_AGE = @INTERFACE_AGE@
 INTERFACE_CURRENT = @INTERFACE_CURRENT@
 INTERFACE_REVISION = @INTERFACE_REVISION@
+LD = @LD@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
@@ -93,25 +95,20 @@ INCLUDES = -I../lib
 #
 # Execute 'make check' to compile and run a test program
 #
-check_PROGRAMS = color attributes appendImages averageImages coalesceImages 	montageImages morphImages readWriteImages readWriteBlob
-
+check_PROGRAMS = color attributes manipulate readwrite
 
 LDADD = ../lib/libMagick++.la
 
-appendImages_SOURCES = appendImages.cpp
 attributes_SOURCES = attributes.cpp
-averageImages_SOURCES = averageImages.cpp
-coalesceImages_SOURCES = coalesceImages.cpp
+
 color_SOURCES = color.cpp
-montageImages_SOURCES = montageImages.cpp
-morphImages_SOURCES = morphImages.cpp
-readWriteImages_SOURCES = readWriteImages.cpp
-readWriteBlob_SOURCES = readWriteBlob.cpp
 
-EXTRA_DIST =  	Generic.ttf test_image.miff test_image_anim.miff
+manipulate_SOURCES = manipulate.cpp
 
+readwrite_SOURCES = readwrite.cpp
 
-CLEANFILES = testmagick_anim_out.miff
+EXTRA_DIST = Generic.ttf test_image.miff test_image_anim.gif 	attributes.dsp color.dsp manipulate.dsp readwrite.dsp
+
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
 
@@ -127,34 +124,14 @@ attributes_OBJECTS =  attributes.o
 attributes_LDADD = $(LDADD)
 attributes_DEPENDENCIES =  ../lib/libMagick++.la
 attributes_LDFLAGS = 
-appendImages_OBJECTS =  appendImages.o
-appendImages_LDADD = $(LDADD)
-appendImages_DEPENDENCIES =  ../lib/libMagick++.la
-appendImages_LDFLAGS = 
-averageImages_OBJECTS =  averageImages.o
-averageImages_LDADD = $(LDADD)
-averageImages_DEPENDENCIES =  ../lib/libMagick++.la
-averageImages_LDFLAGS = 
-coalesceImages_OBJECTS =  coalesceImages.o
-coalesceImages_LDADD = $(LDADD)
-coalesceImages_DEPENDENCIES =  ../lib/libMagick++.la
-coalesceImages_LDFLAGS = 
-montageImages_OBJECTS =  montageImages.o
-montageImages_LDADD = $(LDADD)
-montageImages_DEPENDENCIES =  ../lib/libMagick++.la
-montageImages_LDFLAGS = 
-morphImages_OBJECTS =  morphImages.o
-morphImages_LDADD = $(LDADD)
-morphImages_DEPENDENCIES =  ../lib/libMagick++.la
-morphImages_LDFLAGS = 
-readWriteImages_OBJECTS =  readWriteImages.o
-readWriteImages_LDADD = $(LDADD)
-readWriteImages_DEPENDENCIES =  ../lib/libMagick++.la
-readWriteImages_LDFLAGS = 
-readWriteBlob_OBJECTS =  readWriteBlob.o
-readWriteBlob_LDADD = $(LDADD)
-readWriteBlob_DEPENDENCIES =  ../lib/libMagick++.la
-readWriteBlob_LDFLAGS = 
+manipulate_OBJECTS =  manipulate.o
+manipulate_LDADD = $(LDADD)
+manipulate_DEPENDENCIES =  ../lib/libMagick++.la
+manipulate_LDFLAGS = 
+readwrite_OBJECTS =  readwrite.o
+readwrite_LDADD = $(LDADD)
+readwrite_DEPENDENCIES =  ../lib/libMagick++.la
+readwrite_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -167,8 +144,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(color_SOURCES) $(attributes_SOURCES) $(appendImages_SOURCES) $(averageImages_SOURCES) $(coalesceImages_SOURCES) $(montageImages_SOURCES) $(morphImages_SOURCES) $(readWriteImages_SOURCES) $(readWriteBlob_SOURCES)
-OBJECTS = $(color_OBJECTS) $(attributes_OBJECTS) $(appendImages_OBJECTS) $(averageImages_OBJECTS) $(coalesceImages_OBJECTS) $(montageImages_OBJECTS) $(morphImages_OBJECTS) $(readWriteImages_OBJECTS) $(readWriteBlob_OBJECTS)
+SOURCES = $(color_SOURCES) $(attributes_SOURCES) $(manipulate_SOURCES) $(readwrite_SOURCES)
+OBJECTS = $(color_OBJECTS) $(attributes_OBJECTS) $(manipulate_OBJECTS) $(readwrite_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -236,33 +213,13 @@ attributes: $(attributes_OBJECTS) $(attributes_DEPENDENCIES)
 	@rm -f attributes
 	$(CXXLINK) $(attributes_LDFLAGS) $(attributes_OBJECTS) $(attributes_LDADD) $(LIBS)
 
-appendImages: $(appendImages_OBJECTS) $(appendImages_DEPENDENCIES)
-	@rm -f appendImages
-	$(CXXLINK) $(appendImages_LDFLAGS) $(appendImages_OBJECTS) $(appendImages_LDADD) $(LIBS)
+manipulate: $(manipulate_OBJECTS) $(manipulate_DEPENDENCIES)
+	@rm -f manipulate
+	$(CXXLINK) $(manipulate_LDFLAGS) $(manipulate_OBJECTS) $(manipulate_LDADD) $(LIBS)
 
-averageImages: $(averageImages_OBJECTS) $(averageImages_DEPENDENCIES)
-	@rm -f averageImages
-	$(CXXLINK) $(averageImages_LDFLAGS) $(averageImages_OBJECTS) $(averageImages_LDADD) $(LIBS)
-
-coalesceImages: $(coalesceImages_OBJECTS) $(coalesceImages_DEPENDENCIES)
-	@rm -f coalesceImages
-	$(CXXLINK) $(coalesceImages_LDFLAGS) $(coalesceImages_OBJECTS) $(coalesceImages_LDADD) $(LIBS)
-
-montageImages: $(montageImages_OBJECTS) $(montageImages_DEPENDENCIES)
-	@rm -f montageImages
-	$(CXXLINK) $(montageImages_LDFLAGS) $(montageImages_OBJECTS) $(montageImages_LDADD) $(LIBS)
-
-morphImages: $(morphImages_OBJECTS) $(morphImages_DEPENDENCIES)
-	@rm -f morphImages
-	$(CXXLINK) $(morphImages_LDFLAGS) $(morphImages_OBJECTS) $(morphImages_LDADD) $(LIBS)
-
-readWriteImages: $(readWriteImages_OBJECTS) $(readWriteImages_DEPENDENCIES)
-	@rm -f readWriteImages
-	$(CXXLINK) $(readWriteImages_LDFLAGS) $(readWriteImages_OBJECTS) $(readWriteImages_LDADD) $(LIBS)
-
-readWriteBlob: $(readWriteBlob_OBJECTS) $(readWriteBlob_DEPENDENCIES)
-	@rm -f readWriteBlob
-	$(CXXLINK) $(readWriteBlob_LDFLAGS) $(readWriteBlob_OBJECTS) $(readWriteBlob_LDADD) $(LIBS)
+readwrite: $(readwrite_OBJECTS) $(readwrite_DEPENDENCIES)
+	@rm -f readwrite
+	$(CXXLINK) $(readwrite_LDFLAGS) $(readwrite_OBJECTS) $(readwrite_LDADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
 .cpp.lo:
@@ -312,71 +269,30 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-appendImages.o: appendImages.cpp ../lib/Magick++.h \
-	../lib/Magick++/Image.h ../lib/Magick++/Blob.h \
-	../lib/Magick++/Thread.h ../lib/Magick++/Include.h \
-	../lib/Magick++/Color.h ../lib/Magick++/Drawable.h \
-	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
-	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
-	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
-	../lib/Magick++/Functions.h
 attributes.o: attributes.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Thread.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
-	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
-	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
-	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
-averageImages.o: averageImages.cpp ../lib/Magick++.h \
-	../lib/Magick++/Image.h ../lib/Magick++/Blob.h \
-	../lib/Magick++/Thread.h ../lib/Magick++/Include.h \
-	../lib/Magick++/Color.h ../lib/Magick++/Drawable.h \
-	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
-	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
-	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
-	../lib/Magick++/Functions.h
-coalesceImages.o: coalesceImages.cpp ../lib/Magick++.h \
-	../lib/Magick++/Image.h ../lib/Magick++/Blob.h \
-	../lib/Magick++/Thread.h ../lib/Magick++/Include.h \
-	../lib/Magick++/Color.h ../lib/Magick++/Drawable.h \
+	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
 	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
 	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
 	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
 	../lib/Magick++/Functions.h
 color.o: color.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Thread.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
-	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
-	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
-	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
-montageImages.o: montageImages.cpp ../lib/Magick++.h \
-	../lib/Magick++/Image.h ../lib/Magick++/Blob.h \
-	../lib/Magick++/Thread.h ../lib/Magick++/Include.h \
-	../lib/Magick++/Color.h ../lib/Magick++/Drawable.h \
+	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
 	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
 	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
 	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
 	../lib/Magick++/Functions.h
-morphImages.o: morphImages.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Thread.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
-	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
-	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
-	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
-readWriteBlob.o: readWriteBlob.cpp ../lib/Magick++.h \
-	../lib/Magick++/Image.h ../lib/Magick++/Blob.h \
-	../lib/Magick++/Thread.h ../lib/Magick++/Include.h \
-	../lib/Magick++/Color.h ../lib/Magick++/Drawable.h \
+manipulate.o: manipulate.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
+	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
 	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
 	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
 	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
 	../lib/Magick++/Functions.h
-readWriteImages.o: readWriteImages.cpp ../lib/Magick++.h \
-	../lib/Magick++/Image.h ../lib/Magick++/Blob.h \
-	../lib/Magick++/Thread.h ../lib/Magick++/Include.h \
-	../lib/Magick++/Color.h ../lib/Magick++/Drawable.h \
+readwrite.o: readwrite.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
+	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
 	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
 	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
 	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
@@ -412,7 +328,6 @@ installdirs:
 mostlyclean-generic:
 
 clean-generic:
-	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
@@ -462,13 +377,8 @@ mostlyclean distclean maintainer-clean
 check:
 	./color
 	./attributes
-	./appendImages
-	./averageImages
-	./coalesceImages
-	./montageImages
-	./morphImages
-	./readWriteImages
-	./readWriteBlob
+	./manipulate
+	./readwrite
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

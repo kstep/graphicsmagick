@@ -11,7 +11,7 @@
 
 #include <string>
 
-#include "Magick++/Include.h"
+#include <Magick++/Include.h>
 
 namespace Magick
 {

@@ -1,7 +1,8 @@
+// !/usr/local/bin/perl
 //
 // Magick++ demo to generate a simple text button
 //
-// Bob Friesenhahn, 1999, 2000
+// Bob Friesenhahn, 1999
 // 
 
 #include <string>
@@ -76,11 +77,10 @@ int main( int /*argc*/, char ** /*argv*/)
     button.quantize();
 
     // Save to file
-    cout << "Writing to button.miff" << endl;
-    button.write("button.miff");
+    button.write("GIF:button.gif");
 
     // Display on screen
-    // button.display();
+    button.display();
 
   }
   catch( Exception error_ )

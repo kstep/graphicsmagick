@@ -2,11 +2,9 @@
 //
 // Copyright Bob Friesenhahn, 1999
 //
-// Definition of Magick::Exception and derived classes
-// Magick::Warning* and Magick::Error*.  Derived from C++ STD
-// 'exception' class for convenience.
-//
-// These classes form part of the Magick++ user interface.
+// Definition of Exception and derived classes MagickWarning*
+// and MagickError*.  Derived from C++ STD 'exception' class for
+// convenience.
 //
 
 #if !defined(Exception_header)
@@ -14,6 +12,7 @@
 
 #include <string>
 #include <exception>
+#include <iostream>
 
 namespace Magick
 {
@@ -85,18 +84,6 @@ namespace Magick
     WarningFileOpen ( const std::string& what_ );
   };
 
-  class WarningBlob: public Warning
-  {
-  public:
-    WarningBlob ( const std::string& what_ );
-  };
-
-  class WarningCache: public Warning
-  {
-  public:
-    WarningCache ( const std::string& what_ );
-  };
-
   //
   // Error exceptions
   //
@@ -153,18 +140,6 @@ namespace Magick
   {
   public:
     ErrorFileOpen ( const std::string& what_ );
-  };
-
-  class ErrorBlob: public Error
-  {
-  public:
-    ErrorBlob ( const std::string& what_ );
-  };
-
-  class ErrorCache: public Error
-  {
-  public:
-    ErrorCache ( const std::string& what_ );
   };
 
 } // namespace Magick

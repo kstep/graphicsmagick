@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Description of Magick::Image Class">
    <title>Magick::Image Class</title>
@@ -12,29 +12,8 @@
 <center>
 <h1>
 Magick::Image Class</h1></center>
-
-<h4>
-Quick Contents</h4>
-
-<ul>
-<li>
-<a href="#BLOBs">BLOBs</a></li>
-
-<li>
-<a href="#Constructors">Constructors</a></li>
-
-<li>
-<a href="#Image Manipulation Methods">Image Manipulation Methods</a></li>
-
-<li>
-<a href="#Image Attributes">Image Attributes</a></li>
-
-<li>
-<a href="#Raw Image Pixel Access">Raw Image Pixel Access</a></li>
-</ul>
-
-<hr WIDTH="100%">Image is the primary object in Magick++ and represents
-a single image frame (see <a href="ImageDesign.html">design</a>). The <a href="STL.html">STL
+Image is the primary object in Magick++ and represents a single image frame
+(see <a href="ImageDesign.html">design</a>). The <a href="STL.html">STL
 interface</a> must be used to operate on image sequences or image formats
 which are comprized of multiple image frames. Various image manipulation
 operations may be applied to the image. Attributes may be set on the image
@@ -46,7 +25,7 @@ name or add the statement "<tt>using namespace Magick;</tt>" after including
 the <tt>Magick++.h </tt>header.
 <p>Image is very easy to use. For example, here is a the source to a program
 which reads an image, crops it, and writes it to a new file (the exception
-handling is optional but strongly recommended):
+handling is optional):
 <blockquote><tt><font color="#000066">#include &lt;Magick++.h></font></tt>
 <br><tt><font color="#000066">#include &lt;iostream></font></tt>
 <br><tt><font color="#000066">using namespace std;</font></tt>
@@ -60,10 +39,8 @@ and read an image</font></tt>
 );</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Crop the image to specified
 size</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // (Geometry implicitly
-initialized by char *)</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.crop("100x100+100+100"
-);</font></tt>
+); // Geometry implicitly initialized by char *</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Write the image to a
 file</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.write( "x.gif" );</font></tt>
@@ -77,9 +54,8 @@ file</font></tt>
 <br><tt><font color="#000066">&nbsp; return 0;</font></tt>
 <br><tt><font color="#000066">}</font></tt></blockquote>
 The following is the source to a program which illustrates the use of Magick++'s
-efficient reference-counted assignment and copy-constructor operations
-which minimize use of memory and eliminate unncessary copy operations (allowing
-Image objects to be efficiently assigned, and copied into containers).&nbsp;
+efficient reference-counted assignment and copy-constructor operation which
+minimizes use of memory and eliminates unncessary copy operations.&nbsp;
 The program accomplishes the following:
 <ol>
 <li>
@@ -110,16 +86,18 @@ Write the third image to a file.</li>
 <br><tt><font color="#000066">using namespace Magick;</font></tt>
 <br><tt><font color="#000066">int main(int argc,char **argv)</font></tt>
 <br><tt><font color="#000066">{</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image master("horse.jpg");</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image second = master;</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Magick::Image master("horse.jpg");</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Magick::Image second =
+master;</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; second.zoom("640x480");</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image third = master;</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Magick::Image third =
+master;</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; third.zoom("800x600");</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; second.write("horse640x480.jpg");</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; third.write("horse800x600.jpg");</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; return 0;</font></tt>
 <br><tt><font color="#000066">}</font></tt></blockquote>
-During the entire operation, a maximum of three images exist in memory
+During the entire operation, a maximum of three images exists in memory
 and the image data is never copied.
 <p>The following is the source for another simple program which creates
 a 100 by 100 pixel white image with a red pixel in the center and writes
@@ -146,7 +124,7 @@ GRAYColorspace );</font></tt>
 <p>prior to writing the image.
 <center>
 <h3>
-<a NAME="BLOBs"></a>BLOBs</h3></center>
+BLOBs</h3></center>
 While encoded images (e.g. JPEG) are most often written-to and read-from
 a disk file, encoded images may also reside in memory. Encoded images in
 memory are known as BLOBs (Binary Large OBjects) and may be represented
@@ -173,8 +151,7 @@ format</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Blob blob;</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.magick( "JPEG" )
 // Set JPEG output format</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.write( &amp;blob
-);</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.write( blob );</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; [ Use BLOB data (in JPEG
 format) here ]</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; return 0;</font></tt>
@@ -182,26 +159,24 @@ format) here ]</font></tt>
 
 <p><br>likewise, to read an image from a Blob, you could use one of the
 following examples:
-<p>[ <font color="#000000">Entry condition for the following examples is
-that <i>data</i> is pointer to encoded image data and <i>length</i> represents
-the size of the data</font> ]
+<p>[ Entry condition for the following examples is that <i>data</i> is
+pointer to encoded image data and <i>length</i> represents the size of
+the data ]
 <blockquote><tt><font color="#000066">Blob blob( data, length );</font></tt>
 <br><tt><font color="#000066">Image image( blob );</font></tt></blockquote>
 or
 <blockquote><tt><font color="#000066">Blob blob( data, length );</font></tt>
 <br><tt><font color="#000066">Image image;</font></tt>
 <br><tt><font color="#000066">image.read( blob);</font></tt></blockquote>
-some images do not contain their size or format so the size and format
-must be specified in advance:
+some images do not contain their size so the size must be specified seperately:
 <blockquote><tt><font color="#000066">Blob blob( data, length );</font></tt>
 <br><tt><font color="#000066">Image image;</font></tt>
 <br><tt><font color="#000066">image.size( "640x480")</font></tt>
-<br><tt><font color="#000066">image.magick( "RGBA" );</font></tt>
 <br><tt><font color="#000066">image.read( blob);</font></tt></blockquote>
 
 <center>
 <h3>
-<a NAME="Constructors"></a>Constructors</h3></center>
+Constructors</h3></center>
 Image may be constructed in a number of ways. It may be constructed from
 a file, a URL, or an encoded image (e.g. JPEG) contained in an in-memory
 <a href="Blob.html">BLOB</a>.
@@ -225,8 +200,7 @@ The available Image constructors are shown in the following table:
 <td><font size=-1>const std::string &amp;imageSpec_</font></td>
 
 <td><font size=-1>Construct Image by reading from file or URL specified
-by <i>imageSpec_</i>. Use array notation (e.g. filename[9]) to select a
-specific scene from a multi-frame image.</font></td>
+by <i>imageSpec_</i>.</font></td>
 </tr>
 
 <tr>
@@ -237,57 +211,34 @@ specific scene from a multi-frame image.</font></td>
 color</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td><a NAME="constructor_blob"></a><font size=-1>const <a href="Blob.html">Blob</a>
 &amp;blob_</font></td>
 
-<td ROWSPAN="5" NOSAVE><font size=-1>Construct Image by reading from encoded
-image data contained in an in-memory <a href="Blob.html">BLOB</a>. Depending
-on the constructor arguments, the Blob <a href="#size">size</a>, <a href="#depth">depth</a>,
-<a href="#magick">magick</a>
-(format) may also be specified. Some image formats require that size be
-specified. The default ImageMagick uses for depth depends on the compiled-in
-Quantum size (8 or 16).&nbsp; If ImageMagick's Quantum size does not match
-that of the image, the depth may need to be specified. ImageMagick can
-usually automatically detect the image's format. When a format can't be
-automatically detected, the format (<a href="#magick">magick</a>) must
-be specified.</font></td>
+<td><font size=-1>Construct Image by reading from encoded image data contained
+in an in-memory <a href="Blob.html">BLOB</a>.</font></td>
 </tr>
 
 <tr>
-<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
-<a href="Geometry.html">Geometry</a>
-&amp;size_</font></td>
-</tr>
+<td><font size=-1>const <a href="Geometry.html">Geometry</a> &amp;size_,
+const <a href="Blob.html">Blob</a> &amp;blob_</font></td>
 
-<tr>
-<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
-<a href="Geometry.html">Geometry</a>
-&amp;size, unsigned int depth</font></td>
-</tr>
-
-<tr>
-<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
-<a href="Geometry.html">Geometry</a>
-&amp;size, unsigned int depth_, const string &amp;magick_</font></td>
-</tr>
-
-<tr>
-<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
-<a href="Geometry.html">Geometry</a>
-&amp;size, const string &amp;magick_</font></td>
+<td><font size=-1>Construct Image of specified size from encoded image
+data contained in an in-memory <a href="Blob.html">BLOB</a>. This form
+is useful for images that do not specifiy their size or to specify a size
+hint for decoding an image. For example, when reading a Photo CD, JBIG,
+or JPEG image, a size request causes the library to return an image which
+is the next resolution greater or equal to the specified size. This may
+result in memory and time savings.</font></td>
 </tr>
 </table>
 
 <center>
 <h3>
-<a NAME="Image Manipulation Methods"></a>Image Manipulation Methods</h3></center>
-<i>Image</i> supports access to all the single-image (versus image-list)
-manipulation operations provided by the ImageMagick library. If you must
-process a multi-image file (such as an animation), the <a href="STL.html">STL
-interface</a>, which provides a multi-image abstraction on top of <i>Image</i>,
-must be used.
-<p>The operations supported by Image are shown in the following table:
+Image Manipulation Methods</h3></center>
+Image supports access to all the single-image (versus image-list) manipulation
+operations provided by the ImageMagick library. These operations are shown
+in the following table:
 <br>&nbsp;
 <table BORDER NOSAVE >
 <caption>Image Image Manipulation Methods</caption>
@@ -426,9 +377,9 @@ int xOffset_, int yOffset_,
 <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 
-<td NOSAVE><font size=-1>Compose an image onto the current image at offset
-specified by <i>xOffset_</i>, <i>yOffset_ </i>using the composition algorithm
-specified by <i>compose_</i>.&nbsp;</font></td>
+<td NOSAVE><font size=-1>Compose an image onto another at offset specified
+by <i>xOffset_</i>, <i>yOffset_&nbsp;</i> using composition algorithm specified
+by <i>compose_</i>.</font></td>
 </tr>
 
 <tr>
@@ -437,9 +388,9 @@ const <a href="Geometry.html">Geometry</a> &amp;offset_,
 <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 
-<td><font size=-1>Compose an image onto the current image at offset specified
-by
-<i>offset_</i> using the composition algorithm specified by <i>compose_</i>.&nbsp;</font></td>
+<td><font size=-1>Compose an image onto another at offset specified by
+<i>offset_</i>
+using composition algorithm specified by <i>compose_</i>.</font></td>
 </tr>
 
 <tr>
@@ -448,9 +399,18 @@ by
 gravity_, <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 
-<td><font size=-1>Compose an image onto the current image with placement
-specified by <i>gravity_ </i>using the composition algorithm specified
-by <i>compose_</i>.&nbsp;</font></td>
+<td><font size=-1>Compose an image onto another with placement specified
+by <i>gravity_</i> using composition algorithm specified by <i>compose_</i>.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="condense"></a><font size=-1>condense</font></center>
+</td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Condense image (Run-length encode image in memory).</font></td>
 </tr>
 
 <tr>
@@ -582,7 +542,7 @@ and allows batching draw objects together in a list for repeated use.</font></td
 <br><font size=-1>Color</font></center>
 </td>
 
-<td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
+<td><font size=-1>int x_, int y_, const <a href="Color.html">Color</a>
 &amp;fillColor_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill color across pixels that
@@ -596,7 +556,7 @@ const <a href="Color.html">Color</a> &amp;fillColor_</font></td>
 </tr>
 
 <tr NOSAVE>
-<td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
+<td><font size=-1>int x_, int y_, const <a href="Color.html">Color</a>
 &amp;fillColor_, const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill color across pixels starting
@@ -616,7 +576,7 @@ const <a href="Color.html">Color</a> &amp;fillColor_, const <a href="Color.html"
 <br><font size=-1>Texture</font></center>
 </td>
 
-<td><font size=-1>unsigned int x_, unsigned int y_,&nbsp; const Image &amp;texture_</font></td>
+<td><font size=-1>int x_, int y_,&nbsp; const Image &amp;texture_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill texture across pixels that
 match the color of the target pixel and are neighbors of the target pixel.
@@ -629,8 +589,8 @@ const Image &amp;texture_</font></td>
 </tr>
 
 <tr NOSAVE>
-<td><font size=-1>unsigned int x_, unsigned int y_, const Image &amp;texture_,
-const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
+<td><font size=-1>int x_, int y_, const Image &amp;texture_, const <a href="Color.html">Color</a>
+&amp;borderColor_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill texture across pixels starting
 at target-pixel and stopping at pixels matching specified border color.
@@ -761,15 +721,6 @@ method_</font></td>
 </tr>
 
 <tr>
-<td><a NAME="medianFilter"></a><font size=-1>medianFilter</font></td>
-
-<td><font size=-1>unsigned int radius_</font></td>
-
-<td><font size=-1>Filter image by replacing each pixel component with the
-median color in a circular neighborhood</font></td>
-</tr>
-
-<tr>
 <td>
 <center><a NAME="minify"></a><font size=-1>minify</font></center>
 </td>
@@ -873,7 +824,7 @@ to give a 3-D raised or lowered effect)</font></td>
 </tr>
 
 <tr NOSAVE>
-<td ROWSPAN="7" NOSAVE>
+<td ROWSPAN="4" NOSAVE>
 <center><a NAME="read"></a><font size=-1>read</font></center>
 </td>
 
@@ -894,42 +845,28 @@ which is the next resolution greater or equal to the specified size. This
 may result in memory and time savings.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_</font></td>
 
-<td ROWSPAN="5" NOSAVE><font size=-1>Read encoded image of specified size
-from an in-memory
-<a href="Blob.html">BLOB</a> into current object. Depending
-on the method arguments, the Blob size, depth, and format may also be specified.
-Some image formats require that size be specified. The default ImageMagick
-uses for depth depends on its Quantum size (8 or 16).&nbsp; If ImageMagick's
-Quantum size does not match that of the image, the depth may need to be
-specified. ImageMagick can usually automatically detect the image's format.
-When a format can't be automatically detected, the format must be specified.</font></td>
-</tr>
+<td><font size=-1>Read encoded image contained in an in-memory <a href="Blob.html">BLOB</a>
+into current object</font></td>
 
-<tr NOSAVE>
-<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
-<a href="Geometry.html">Geometry</a>
-&amp;size_</font></td>
+<td></td>
 </tr>
 
 <tr>
-<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
-<a href="Geometry.html">Geometry</a>
-&amp;size_, unsigned int depth_</font></td>
-</tr>
+<td><font size=-1>const Geometry &amp;size_, const <a href="Blob.html">Blob</a>
+&amp;blob_</font></td>
 
-<tr>
-<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
-<a href="Geometry.html">Geometry</a>
-&amp;size_, unsigned short depth_, const string &amp;magick_&nbsp;</font></td>
-</tr>
+<td><font size=-1>Read encoded image of specified size from an in-memory
+<a href="Blob.html">BLOB</a>
+into current object. This form is useful for images that do not specifiy
+their size or to specify a size hint for decoding an image. For example,
+when reading a Photo CD, JBIG, or JPEG image, a size request causes the
+library to return an image which is the next resolution greater or equal
+to the specified size. This may result in memory and time savings.</font></td>
 
-<tr>
-<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
-<a href="Geometry.html">Geometry</a>
-&amp;size_, const string &amp;magick_</font></td>
+<td></td>
 </tr>
 
 <tr>
@@ -959,10 +896,11 @@ by specified number of columnms and rows)</font></td>
 <center><a NAME="rotate"></a><font size=-1>rotate</font></center>
 </td>
 
-<td><font size=-1>double degrees_</font></td>
+<td><font size=-1>double degrees_, bool crop_ = false, unsigned int sharpen_
+= false</font></td>
 
 <td><font size=-1>Rotate image counter-clockwise by specified number of
-degrees.</font></td>
+degrees. Optionally crop image to original size and sharpen image.</font></td>
 </tr>
 
 <tr>
@@ -1035,7 +973,8 @@ enhancement (0.0 - 99.9%).</font></td>
 <center><a NAME="shear"></a><font size=-1>shear</font></center>
 </td>
 
-<td><font size=-1>double xShearAngle_, double yShearAngle_</font></td>
+<td><font size=-1>double xShearAngle_, double yShearAngle_,</font>
+<br><font size=-1>&nbsp;bool crop_ = false</font></td>
 
 <td><font size=-1>Shear image (create parallelogram by sliding image by
 X or Y axis).&nbsp; Shearing slides one edge of an image along the X&nbsp;
@@ -1046,7 +985,8 @@ the shear is controlled by a shear angle.&nbsp; For X direction&nbsp; shears,&nb
 x&nbsp; degrees is measured relative to the Y axis, and similarly, for
 Y direction shears&nbsp; y&nbsp; degrees is measured relative to the X
 axis. Empty triangles left over from shearing the&nbsp; image&nbsp; are
-filled&nbsp; with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.&nbsp;</font></td>
+filled&nbsp; with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.
+Specify crop_ as true_ to crop the sheared image to the original size.</font></td>
 </tr>
 
 <tr NOSAVE>
@@ -1109,7 +1049,7 @@ red-blue glasses (Red image on left, blue on right)</font></td>
 
 <td><font size=-1>const Image &amp;texture_</font></td>
 
-<td><font size=-1>Layer a texture on pixels matching image background color.</font></td>
+<td><font size=-1>Layer a texture on image background</font></td>
 </tr>
 
 <tr>
@@ -1139,6 +1079,16 @@ const <a href="Geometry.html">Geometry</a> &amp;cropGeometry_&nbsp;</font></td>
 </tr>
 
 <tr>
+<td><a NAME="transformColorSpace"></a><font size=-1>transform-</font>
+<br><font size=-1>ColorSpace</font></td>
+
+<td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a>
+colorSpace_</font></td>
+
+<td><font size=-1>Transform the image representation to a different colorspace.</font></td>
+</tr>
+
+<tr>
 <td>
 <center><a NAME="transparent"></a><font size=-1>transparent</font></center>
 </td>
@@ -1160,6 +1110,15 @@ to transparent.</font></td>
 </tr>
 
 <tr>
+<td><a NAME="uncondense"></a><font size=-1>uncondense</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Uncondense image. Removes any run-length encoding from
+image pixels so that they may be edited as an array.</font></td>
+</tr>
+
+<tr>
 <td>
 <center><a NAME="wave"></a><font size=-1>wave</font></center>
 </td>
@@ -1170,7 +1129,7 @@ to transparent.</font></td>
 </tr>
 
 <tr NOSAVE>
-<td ROWSPAN="4" NOSAVE>
+<td ROWSPAN="2" NOSAVE>
 <center><a NAME="write"></a><font size=-1>write</font></center>
 </td>
 
@@ -1183,26 +1142,15 @@ original image or quantization has been requested, the original image will
 be quantized to fewer colors. Use a copy of the original if this is a problem.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td><font size=-1><a href="Blob.html">Blob</a> *blob_</font></td>
 
-<td ROWSPAN="3" NOSAVE><font size=-1>Write image to a in-memory <a href="Blob.html">BLOB</a>
-stored in <i>blob_</i>. The <i>magick</i>_ parameter specifies the image
-format to write (defaults to <a href="#magick">magick</a> ). The depth_
-parameter species the image depth (defaults to <a href="#depth">depth</a>).</font>
+<td><font size=-1>Write image to a in-memory <a href="Blob.html">BLOB</a>
+stored in <i>blob_</i>.</font>
 <br><font size=-1><b><font color="#FF0000">Caution: </font></b>if an image
 format is selected which is capable of supporting fewer colors than the
 original image or quantization has been requested, the original image will
 be quantized to fewer colors. Use a copy of the original if this is a problem.</font></td>
-</tr>
-
-<tr>
-<td><font size=-1><a href="Blob.html">Blob</a> *blob_, std::string &amp;magick_</font></td>
-</tr>
-
-<tr>
-<td><font size=-1><a href="Blob.html">Blob</a> *blob_, std::string &amp;magick_,
-unsigned int depth_</font></td>
 </tr>
 
 <tr>
@@ -1218,7 +1166,7 @@ unsigned int depth_</font></td>
 
 <center>
 <h3>
-<a NAME="Image Attributes"></a>Image Attributes</h3></center>
+Image Attributes</h3></center>
 Image attributes are set and obtained via methods in Image. Except for
 methods which accept pointer arguments (e.g. c<tt>hromaBluePrimary)</tt>
 all methods return attributes by value. Within the image object, attributes
@@ -1370,8 +1318,7 @@ loop extension) for.</font></td>
 
 <td><font size=-1>const string &amp;texture_</font></td>
 
-<td><font size=-1>Image file name to use as the background texture. Does
-not modify image pixels.</font></td>
+<td><font size=-1>Image to use as background texture.</font></td>
 </tr>
 
 <tr NOSAVE>
@@ -1453,23 +1400,6 @@ not modify image pixels.</font></td>
 <td><font size=-1>const <a href="Color.html">Color</a> &amp;boxColor_</font></td>
 
 <td><font size=-1>Base color that annotation text is rendered on.</font></td>
-</tr>
-
-<tr NOSAVE>
-<td><a NAME="cacheThreshold"></a><font size=-1>cacheThreshold</font></td>
-
-<td><font size=-1>All Images</font></td>
-
-<td><font size=-1>unsigned int</font></td>
-
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
-
-<td><font size=-1>unsigned int</font></td>
-
-<td><font size=-1>Pixel cache threshold in megabytes with default value
-80MB. Once this threshold is exceeded, all subsequent pixels cach operations
-are to/from disk. This is a static method and the attribute it sets is
-shared by all Image objects.</font></td>
 </tr>
 
 <tr>
@@ -1596,24 +1526,6 @@ color in RGB space.</font></td>
 <td><font size=-1>Color at color-pallet index.</font></td>
 </tr>
 
-<tr>
-<td><a NAME="colorSpace"></a><font size=-1>colorSpace</font></td>
-
-<td><font size=-1>Image</font></td>
-
-<td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a>
-colorSpace_</font></td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a>
-colorSpace_</font></td>
-
-<td><font size=-1>The colorspace (e.g. CMYK) used to represent the image
-pixel colors. Image pixels are always stored as RGB(A) except for the case
-of CMY(K).</font></td>
-</tr>
-
 <tr NOSAVE>
 <td>
 <center><a NAME="columns"></a><font size=-1>columns</font></center>
@@ -1664,6 +1576,20 @@ compressType_</font></td>
 
 <td><font size=-1>Image compresion type. The default is the compression
 type of the specified image file.</font></td>
+</tr>
+
+<tr NOSAVE>
+<td><a NAME="condensed"></a><font size=-1>condensed</font></td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>bool</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+
+<td><font size=-1>Image is condensed (uses run-length encoding).</font></td>
 </tr>
 
 <tr>
@@ -2158,28 +2084,6 @@ to true and the image has just been quantized.</font></td>
 
 <tr>
 <td>
-<center><a NAME="page"></a><font size=-1>page</font></center>
-</td>
-
-<td><font size=-1>Image &amp; Options</font></td>
-
-<td><font size=-1><a href="Geometry.html#PostscriptPageSize">Geometry</a></font></td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1>const <a href="Geometry.html#PostscriptPageSize">Geometry</a>
-&amp;pageSize_</font></td>
-
-<td><font size=-1>Preferred size and location of an image canvas.</font>
-<p><font size=-1>Use this option to specify the dimensions and position
-of the Postscript page in dots per inch or a TEXT page in pixels. This
-option is typically used in concert with <i><a href="#density">density</a></i>.</font>
-<p><font size=-1>Page may also be used to position a GIF image (such as
-for a scene in an animation)</font></td>
-</tr>
-
-<tr>
-<td>
 <center><a NAME="penColor"></a><font size=-1>penColor</font></center>
 </td>
 
@@ -2225,6 +2129,26 @@ for a scene in an animation)</font></td>
 &amp;color_</font></td>
 
 <td><font size=-1>Get/set pixel color at location x &amp; y.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="psPageSize"></a><font size=-1>psPageSize</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Geometry.html#PostscriptPageSize">Geometry</a></font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>const <a href="Geometry.html#PostscriptPageSize">Geometry</a>
+&amp;pageSize_</font></td>
+
+<td><font size=-1>Postscript page size. Use this&nbsp; option to specify
+the dimensions&nbsp; of the Postscript page in dots per inch or a TEXT
+page in pixels. This option is typically used in concert with <i>density</i>.</font></td>
 </tr>
 
 <tr>
@@ -2307,6 +2231,24 @@ be improved with this option. The quantizeColors or monochrome option must
 be set for this option to take effect.</font></td>
 </tr>
 
+<tr NOSAVE>
+<td>
+<center><a NAME="quantizeError"></a><font size=-1>quantize-</font>
+<br><font size=-1>Error</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td BGCOLOR="#666666" NOSAVE>&nbsp;</td>
+
+<td><font size=-1>Quantization error.&nbsp; Only valid if verbose is set
+to true prior to executing quantize and the value is read back immediately.</font></td>
+</tr>
+
 <tr>
 <td>
 <center><a NAME="quantizeTreeDepth"></a><font size=-1>quantize-</font>
@@ -2315,7 +2257,7 @@ be set for this option to take effect.</font></td>
 
 <td><font size=-1>Options</font></td>
 
-<td><font size=-1>unsigned int&nbsp;</font></td>
+<td><font size=-1>unsigned int (0 to 8)</font></td>
 
 <td><font size=-1>void</font></td>
 
@@ -2594,151 +2536,5 @@ image from</font></td>
 </tr>
 </table>
 
-<center>
-<h3>
-<a NAME="Raw Image Pixel Access"></a>Raw Image Pixel Access</h3></center>
-Image pixels (of type <i><a href="PixelPacket.html">PixelPacket</a></i>)
-may be accessed directly via the <i>Image Pixel Cache</i>.&nbsp; The image
-pixel cache is a rectangular window into the actual image pixels (which
-may be in memory, memory-mapped from a disk file, or entirely on disk).
-Obtain existing image pixels via <i>getPixels()</i>. Create a new pixel
-region using <i>setPixels().</i>
-<p>Depending on the capabilities of the operating system, and the relationship
-of the window to the image, the pixel cache may be a copy of the pixels
-in the selected window, or it may be the actual image pixels. In any case
-calling <i>syncPixels()</i> insures that the base image is updated with
-the contents of the modified pixel cache. The method
-<i>readPixels()</i>
-supports copying foreign pixel data formats into the pixel cache according
-to the <i>QuantumTypes</i>. The method <i>writePixels()</i> supports copying
-the pixels in the cache to a foreign pixel representation according to
-the format specified by <i>QuantumTypes</i>.
-<p>The pixel region is effectively a small image in which the pixels may
-be accessed, addressed, and updated, as shown in the following example:
-<table BORDER=0 WIDTH="100%" NOSAVE >
-<tr NOSAVE>
-<td NOSAVE><font face="Courier New,Courier"><font color="#000099"><font size=-1>Image
-image("cow.png");</font></font></font>
-<br><font face="Courier New,Courier"><font color="#FF0000"><font size=-1>//
-Obtain pixel region with size 60x40, and top origin at 20x30</font></font></font>
-<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>int
-columns = 60;</font></font></font>
-<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>PixelPacket
-*pixel_cache = image.GetPixels(20,30,columns,40);</font></font></font>
-<br><font face="Courier New,Courier"><font color="#FF0000"><font size=-1>//
-Set pixel at column 5, and row 10 in the pixel cache to red.</font></font></font>
-<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>int
-column = 5;</font></font></font>
-<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>int
-row = 10;</font></font></font>
-<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>PixelPacket
-*pixel = pixel_cache+row*columns*sizeof(PixelPacket)+column;</font></font></font>
-<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>pixel
-= Color("red");</font></font></font>
-<br><font face="Courier New,Courier"><font color="#FF0000"><font size=-1>//
-Save updated pixel cache back to underlying image</font></font></font>
-<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>image.syncPixels();</font></font></font>
-<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>image.write("horse.png");</font></font></font></td>
-
-<td><img SRC="Cache.png" height=218 width=254></td>
-</tr>
-</table>
-
-<p>The image cache supports the following methods:
-<br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
-<caption>Image Cache Methods</caption>
-
-<tr>
-<td>
-<center><b>Method</b></center>
-</td>
-
-<td>
-<center><b>Returns</b></center>
-</td>
-
-<td>
-<center><b>Signature</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><a NAME="getPixels"></a><font size=-1>getPixels</font></center>
-</td>
-
-<td><font size=-1><a href="PixelPacket.html">PixelPacket</a>*</font></td>
-
-<td><font size=-1>int x_, int y_, unsigned int columns_, unsigned int rows_</font></td>
-
-<td><font size=-1>Transfers pixels from the image to the pixel cache as
-defined by the specified rectangular region. Modified pixels may be subsequently
-transferred back to the image via syncPixels.</font></td>
-</tr>
-
-<tr NOSAVE>
-<td>
-<center><a NAME="setPixels"></a><font size=-1>setPixels</font></center>
-</td>
-
-<td><font size=-1><a href="PixelPacket.html">PixelPacket</a>*</font></td>
-
-<td NOSAVE><font size=-1>int x_, int y_, unsigned int columns_, unsigned
-int rows_</font></td>
-
-<td><font size=-1>Allocates a pixel cache region to store image pixels
-as defined by the region rectangle.&nbsp; This area is subsequently transferred
-from the pixel cache to the image via syncPixels.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><a NAME="syncPixels"></a><font size=-1>syncPixels</font></center>
-</td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1>Transfers the image cache pixels to the image.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><a NAME="readPixels"></a><font size=-1>readPixels</font></center>
-</td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1><a href="Enumerations.html#QuantumTypes">QuantumTypes</a>
-quantum_, unsigned char *source_,</font></td>
-
-<td><font size=-1>Transfers one or more pixel components from a buffer
-or file into the image pixel cache of an image. ReadPixels is typically
-used to support image decoders.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><a NAME="writePixels"></a><font size=-1>writePixels</font></center>
-</td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1><a href="Enumerations.html#QuantumTypes">QuantumTypes</a>
-quantum_, unsigned char *destination_</font></td>
-
-<td><font size=-1>Transfers one or more pixel components from the image
-pixel cache to a buffer or file. WritePixels is typically used to support
-image encoders.</font></td>
-</tr>
-</table>
-
-<br>&nbsp;
 </body>
 </html>

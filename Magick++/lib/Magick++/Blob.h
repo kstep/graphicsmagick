@@ -8,8 +8,6 @@
 #if !defined(Blob_header)
 #define Blob_header
 
-#include "Magick++/Thread.h"
-
 namespace Magick
 {
   // Forward decl
@@ -25,7 +23,7 @@ namespace Magick
     Blob ( void );
 
     // Construct object with data, making a copy of the supplied data.
-    Blob ( const void* data_, size_t length_ );
+    Blob ( const void* data_, unsigned long length_ );
 
     // Copy constructor (reference counted)
     Blob ( const Blob& blob_ );
@@ -38,21 +36,21 @@ namespace Magick
 
     // Update object contents, making a copy of the supplied data.
     // Any existing data in the object is deallocated.
-    void          update ( const void* data_, size_t length_ );
-
-    // Update object contents, using supplied pointer directly (no
-    // copy). Any existing data in the object is deallocated.  The user
-    // must ensure that the pointer supplied is not deleted or
-    // otherwise modified after it has been supplied to this method.
-    void          updateNoCopy ( void* data_, size_t length_ );
+    void          update ( const void* data_, unsigned long length_ );
 
     // Obtain pointer to data
     const void*   data ( void ) const;
 
     // Obtain data length
-    size_t length ( void ) const;
+    unsigned long length ( void ) const;
 
   protected:
+
+    // Update object contents, using supplied pointer directly (no
+    // copy) Any existing data in the object is deallocated.  The user
+    // must ensure that the pointer supplied is not deleted or
+    // otherwise modified after it has been supplied to this method.
+    void          updateNoCopy ( void* data_, unsigned long length_ );
 
   private:
     BlobRef * _blobRef;
@@ -69,7 +67,7 @@ namespace Magick
 
   private:
     // Construct with data, making private copy of data
-    BlobRef ( const void* data_, size_t length_ );
+    BlobRef ( const void* data_, unsigned long length_ );
 
     // Destructor (actually destroys data)
     ~BlobRef ( void );
@@ -79,9 +77,8 @@ namespace Magick
     BlobRef operator= (const BlobRef&);
 
     void *        _data;     // Blob data
-    size_t        _length;   // Blob length
+    unsigned long _length;   // Blob length
     int           _refCount; // Reference count
-    MutexLock     _mutexLock;// Mutex lock
   };
 
 } // namespace Magick
@@ -93,7 +90,7 @@ inline const void* Magick::Blob::data( void ) const
 }
 
 // Obtain data length
-inline size_t Magick::Blob::length( void ) const
+inline unsigned long Magick::Blob::length( void ) const
 {
   return _blobRef->_length;
 }

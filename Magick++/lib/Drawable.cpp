@@ -14,7 +14,7 @@
 
 using namespace std;
 
-#include "Magick++/Drawable.h"
+#include <Magick++/Drawable.h>
 
 
 std::ostream& Magick::operator<<( std::ostream& stream_, const Magick::Coordinate& coordinate_)

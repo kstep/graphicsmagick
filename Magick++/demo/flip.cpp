@@ -4,14 +4,13 @@
 //
 // Demonstration of unary function-object based operations
 //
-// Reads the multi-frame file "smile_anim.miff" and writes a
-// flipped and morphed version to "flip_out.miff".
+// Reads the multi-frame file "smile_anim.gif" and writes a
+// flipped and morphed version to "flip_out.gif".
 //
 
 #include <string>
 #include <iostream>
 #include <list>
-#include <algorithm>
 
 #include <Magick++.h>
 
@@ -26,9 +25,7 @@ int main( int /*argc*/, char ** /*argv*/)
 
     // Read images into STL list
     list<Image> imageList;
-    readImages( &imageList, "smile_anim.miff" );
-
-    // cout << "Total scenes: " << imageList.size() << endl;
+    readImages( &imageList, "smile_anim.gif" );
 
     // Flip images
     for_each( imageList.begin(), imageList.end(), flipImage() );
@@ -39,8 +36,7 @@ int main( int /*argc*/, char ** /*argv*/)
     morphImages( &morphed, imageList.begin(), imageList.end(), 3 );
 
     // Write out images
-    cout << "Writing image \"flip_out.miff\" ..." << endl;
-    writeImages( morphed.begin(), morphed.end(), "flip_out.miff" );
+    writeImages( morphed.begin(), morphed.end(), "flip_out.gif" );
 
   }
   catch( Exception error_ )

@@ -77,10 +77,12 @@ DLLTOOL = @DLLTOOL@
 INTERFACE_AGE = @INTERFACE_AGE@
 INTERFACE_CURRENT = @INTERFACE_CURRENT@
 INTERFACE_REVISION = @INTERFACE_REVISION@
+LD = @LD@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
@@ -90,19 +92,17 @@ AUTOMAKE_OPTIONS = 1.2
 
 INCLUDES = -I../lib
 
-noinst_PROGRAMS = button demo detrans flip shapes
+noinst_PROGRAMS = button demo flip shapes
 
 LDADD = ../lib/libMagick++.la
 
 button_SOURCES = button.cpp
 demo_SOURCES = demo.cpp
-detrans_SOURCES = detrans.cpp
 flip_SOURCES = flip.cpp
 shapes_SOURCES = shapes.cpp
 
-EXTRA_DIST = Generic.ttf model.miff smile.miff smile_anim.miff tile.miff
+EXTRA_DIST = Generic.ttf model.gif smile.gif smile_anim.gif tile.gif 	button.dsp demo.dsp flip.dsp shapes.dsp
 
-CLEANFILES = button.miff demo.miff flip_out.miff shapes.miff
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
 PROGRAMS =  $(noinst_PROGRAMS)
@@ -120,10 +120,6 @@ demo_OBJECTS =  demo.o
 demo_LDADD = $(LDADD)
 demo_DEPENDENCIES =  ../lib/libMagick++.la
 demo_LDFLAGS = 
-detrans_OBJECTS =  detrans.o
-detrans_LDADD = $(LDADD)
-detrans_DEPENDENCIES =  ../lib/libMagick++.la
-detrans_LDFLAGS = 
 flip_OBJECTS =  flip.o
 flip_LDADD = $(LDADD)
 flip_DEPENDENCIES =  ../lib/libMagick++.la
@@ -144,8 +140,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(button_SOURCES) $(demo_SOURCES) $(detrans_SOURCES) $(flip_SOURCES) $(shapes_SOURCES)
-OBJECTS = $(button_OBJECTS) $(demo_OBJECTS) $(detrans_OBJECTS) $(flip_OBJECTS) $(shapes_OBJECTS)
+SOURCES = $(button_SOURCES) $(demo_SOURCES) $(flip_SOURCES) $(shapes_SOURCES)
+OBJECTS = $(button_OBJECTS) $(demo_OBJECTS) $(flip_OBJECTS) $(shapes_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -213,10 +209,6 @@ demo: $(demo_OBJECTS) $(demo_DEPENDENCIES)
 	@rm -f demo
 	$(CXXLINK) $(demo_LDFLAGS) $(demo_OBJECTS) $(demo_LDADD) $(LIBS)
 
-detrans: $(detrans_OBJECTS) $(detrans_DEPENDENCIES)
-	@rm -f detrans
-	$(CXXLINK) $(detrans_LDFLAGS) $(detrans_OBJECTS) $(detrans_LDADD) $(LIBS)
-
 flip: $(flip_OBJECTS) $(flip_DEPENDENCIES)
 	@rm -f flip
 	$(CXXLINK) $(flip_LDFLAGS) $(flip_OBJECTS) $(flip_LDADD) $(LIBS)
@@ -274,40 +266,33 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 button.o: button.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Thread.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
-	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
-	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
-	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
+	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
+	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
+	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
+	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
+	../lib/Magick++/Functions.h
 demo.o: demo.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Thread.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
-	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
-	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
-	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
-detrans.o: detrans.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Thread.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
-	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
-	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
-	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
+	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
+	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
+	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
+	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
+	../lib/Magick++/Functions.h
 flip.o: flip.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Thread.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
-	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
-	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
-	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
+	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
+	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
+	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
+	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
+	../lib/Magick++/Functions.h
 shapes.o: shapes.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Thread.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
-	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
-	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
-	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
+	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
+	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
+	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
+	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
+	../lib/Magick++/Functions.h
 
 info-am:
 info: info-am
@@ -338,7 +323,6 @@ installdirs:
 mostlyclean-generic:
 
 clean-generic:
-	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
@@ -384,12 +368,6 @@ uninstall-am uninstall all-redirect all-am all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
-
-check:
-	./button
-	./demo
-	./flip
-	./shapes
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Documentation for Magick::Exception class">
    <title>Magick::Exception</title>
@@ -27,32 +27,32 @@ of error checking while ensuring that all objects created to deal with
 that object are safely destroyed (C++ exceptions unroll the stack until
 the enclosing try block, destroying any created objects).
 <p>The pseudocode for the main loop of your program may look like:
-<p><tt><font color="#000066">for each image in list</font></tt>
-<br><tt><font color="#000066">&nbsp; try {</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; create image object</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; read image</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; process image</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; save result</font></tt>
-<br><tt><font color="#000066">&nbsp; }</font></tt>
-<br><tt><font color="#000066">&nbsp; catch( ErrorFileOpen error )</font></tt>
-<br><tt><font color="#000066">&nbsp; {</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; process Magick++ file
-open error</font></tt>
-<br><tt><font color="#000066">&nbsp; }</font></tt>
-<br><tt><font color="#000066">&nbsp; catch( Exception error )</font></tt>
-<br><tt><font color="#000066">&nbsp; {</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; process any Magick++ error</font></tt>
-<br><tt><font color="#000066">}</font></tt>
-<br><tt><font color="#000066">&nbsp; catch( exception error )</font></tt>
-<br><tt><font color="#000066">&nbsp; {</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; process any other exceptions
-derived from standard C++ exception</font></tt>
-<br><tt><font color="#000066">&nbsp; }</font></tt>
-<br><tt><font color="#000066">&nbsp; catch( ... )</font></tt>
-<br><tt><font color="#000066">&nbsp; {</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; process *any* exception
-(last-ditch effort)</font></tt>
-<br><tt><font color="#000066">&nbsp; }</font></tt>
+<p><font color="#000066">for each image in list</font>
+<br><font color="#000066">&nbsp; try {</font>
+<br><font color="#000066">&nbsp;&nbsp;&nbsp; create image object</font>
+<br><font color="#000066">&nbsp;&nbsp;&nbsp; read image</font>
+<br><font color="#000066">&nbsp;&nbsp;&nbsp; process image</font>
+<br><font color="#000066">&nbsp;&nbsp;&nbsp; save result</font>
+<br><font color="#000066">&nbsp; }</font>
+<br><font color="#000066">&nbsp; catch( ErrorFileOpen error )</font>
+<br><font color="#000066">&nbsp; {</font>
+<br><font color="#000066">&nbsp;&nbsp;&nbsp; process Magick++ file open
+error</font>
+<br><font color="#000066">&nbsp; }</font>
+<br><font color="#000066">&nbsp; catch( Exception error )</font>
+<br><font color="#000066">&nbsp; {</font>
+<br><font color="#000066">&nbsp;&nbsp;&nbsp; process any Magick++ error</font>
+<br><font color="#000066">}</font>
+<br><font color="#000066">&nbsp; catch( exception error )</font>
+<br><font color="#000066">&nbsp; {</font>
+<br><font color="#000066">&nbsp;&nbsp;&nbsp; process any other exceptions
+derived from standard C++ exception</font>
+<br><font color="#000066">&nbsp; }</font>
+<br><font color="#000066">&nbsp; catch( ... )</font>
+<br><font color="#000066">&nbsp; {</font>
+<br><font color="#000066">&nbsp;&nbsp;&nbsp; process *any* exception (last-ditch
+effort)</font>
+<br><font color="#000066">&nbsp; }</font>
 <p>This catches errors opening a file first, followed by any Magick++ exception
 if the exception was not caught previously.
 <p>The <i>Exception</i> class is derived from the C++ standard exception
@@ -101,7 +101,7 @@ are thrown to represent fatal errors that can not produce a valid result
 <center><font size=-1>WarningResourceLimit</font></center>
 </td>
 
-<td><font size=-1>A program resource is exhausted (e.g. not enough memory).</font></td>
+<td><font size=-1>A program resource is exhausted (e.g. not enough memory)</font></td>
 </tr>
 
 <tr>
@@ -109,7 +109,7 @@ are thrown to represent fatal errors that can not produce a valid result
 <center><font size=-1>WarningXServer</font></center>
 </td>
 
-<td><font size=-1>An X resource is unavailable.</font></td>
+<td><font size=-1>An X resource is unavailable</font></td>
 </tr>
 
 <tr>
@@ -117,7 +117,7 @@ are thrown to represent fatal errors that can not produce a valid result
 <center><font size=-1>WarningOption</font></center>
 </td>
 
-<td><font size=-1>An option was malformed or out of range.</font></td>
+<td><font size=-1>An option was malformed or out of range</font></td>
 </tr>
 
 <tr>
@@ -125,7 +125,7 @@ are thrown to represent fatal errors that can not produce a valid result
 <center><font size=-1>WarningDelegate</font></center>
 </td>
 
-<td><font size=-1>An ImageMagick delegate returned an error.</font></td>
+<td><font size=-1>An ImageMagick delegate returned an error</font></td>
 </tr>
 
 <tr>
@@ -134,7 +134,7 @@ are thrown to represent fatal errors that can not produce a valid result
 </td>
 
 <td><font size=-1>The image type can not be read or written because the
-appropriate Delegate is missing.</font></td>
+appropriate Delegate is missing</font></td>
 </tr>
 
 <tr>
@@ -142,7 +142,7 @@ appropriate Delegate is missing.</font></td>
 <center><font size=-1>WarningCorruptImage</font></center>
 </td>
 
-<td><font size=-1>The image file is corrupt (or otherwise can't be read).</font></td>
+<td><font size=-1>The image file is corrupt (or otherwise can't be read)</font></td>
 </tr>
 
 <tr>
@@ -152,22 +152,6 @@ appropriate Delegate is missing.</font></td>
 
 <td><font size=-1>The image file could not be opened (permission problem,
 wrong file type, or does not exist).</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>WarningBlob</font></center>
-</td>
-
-<td><font size=-1>A binary large object could not be allocated.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>WarningCache</font></center>
-</td>
-
-<td><font size=-1>Pixels could not be saved to the pixel cache.</font></td>
 </tr>
 </table>
 
@@ -198,7 +182,7 @@ wrong file type, or does not exist).</font></td>
 <center><font size=-1>ErrorResourceLimit</font></center>
 </td>
 
-<td><font size=-1>A program resource is exhausted (e.g. not enough memory).</font></td>
+<td><font size=-1>A program resource is exhausted (e.g. not enough memory)</font></td>
 </tr>
 
 <tr>
@@ -206,7 +190,7 @@ wrong file type, or does not exist).</font></td>
 <center><font size=-1>ErrorXServer</font></center>
 </td>
 
-<td><font size=-1>An X resource is unavailable.</font></td>
+<td><font size=-1>An X resource is unavailable</font></td>
 </tr>
 
 <tr>
@@ -214,7 +198,7 @@ wrong file type, or does not exist).</font></td>
 <center><font size=-1>ErrorOption</font></center>
 </td>
 
-<td><font size=-1>An option was malformed or out of range.</font></td>
+<td><font size=-1>An option was malformed or out of range</font></td>
 </tr>
 
 <tr>
@@ -222,7 +206,7 @@ wrong file type, or does not exist).</font></td>
 <center><font size=-1>ErrorDelegate</font></center>
 </td>
 
-<td><font size=-1>An ImageMagick delegate returned an error.</font></td>
+<td><font size=-1>An ImageMagick delegate returned an error</font></td>
 </tr>
 
 <tr>
@@ -231,7 +215,7 @@ wrong file type, or does not exist).</font></td>
 </td>
 
 <td><font size=-1>The image type can not be read or written because the
-appropriate Delegate is missing.</font></td>
+appropriate Delegate is missing</font></td>
 </tr>
 
 <tr>
@@ -239,7 +223,7 @@ appropriate Delegate is missing.</font></td>
 <center><font size=-1>ErrorCorruptImage</font></center>
 </td>
 
-<td><font size=-1>The image file is corrupt (or otherwise can't be read).</font></td>
+<td><font size=-1>The image file is corrupt (or otherwise can't be read)</font></td>
 </tr>
 
 <tr>
@@ -250,24 +234,8 @@ appropriate Delegate is missing.</font></td>
 <td><font size=-1>The image file could not be opened (permission problem,
 wrong file type, or does not exist).</font></td>
 </tr>
-
-<tr>
-<td>
-<center><font size=-1>ErrorBlob</font></center>
-</td>
-
-<td><font size=-1>A binary large object could not be allocated.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ErrorCache</font></center>
-</td>
-
-<td><font size=-1>Pixels could not be saved to the pixel cache.</font></td>
-</tr>
 </table>
-<font size=-1></font>
+
 <br>&nbsp;
 </body>
 </html>

@@ -1,94 +1,36 @@
+
 This is Magick++, the object-oriented C++ API to the ImageMagick
-image-processing library.
+image-processing library. Please report any problems to Bob Friesenhahn
+<bfriesen@simple.dallas.tx.us>.
 
 Magick++ supports an object model which is inspired by PerlMagick. Magick++
-executes faster than PerlMagick since it is accessed from a compiled
-language rather than from a scripting language. This makes it more suitable
-for Web CGI programs which must start-up and execute quickly. Images support
-implicit reference counting so that copy constructors and assignment incur
-almost no cost. The cost of actually copying an image (if necessary) is done
-just before modification and this copy is managed automatically by Magick++.
-De-referenced copies are automatically deleted. The image objects support
-value (rather than pointer)  semantics so it is trivial to support multiple
-generations of an image in memory at one time.
+should be a bit faster than PerlMagick since it is written in a compiled
+language which is not parsed at run-time. This makes it suitable for Web CGI
+programs. Images support implicit reference counting so that copy
+constructors and assignment incur almost no cost. The cost of actually
+copying an image (if necessary) is done just before modification and this
+copy is managed automatically by Magick++. De-referenced copies are
+automatically deleted. The image objects support value (rather than
+pointer)  semantics so it is trivial to support multiple generations of an
+image in memory at one time.
 
 Magick++ provides integrated support for STL. This support allows Magick++
 to be used with the Standard Template Library (STL) so that the powerful
-containers available (e.g. deque, vector, list, and map)  can be used to
-write programs similar to those possible with PERL & PerlMagick.
-STL-compatable template versions of ImageMagick's list-style operations are
-provided so that operations may be performed on multiple images stored in
-STL containers.
+containers available (e.g. vector and list)  can be used to write programs
+similar to those possible with PERL & PerlMagick. STL-compatable template
+versions of ImageMagick's list-style operations are provided so that
+operations may be performed on multiple images stored in STL containers.
 
 Please be aware that until Magick++ reaches version 1.0, some minor changes
 may be expected to implemented APIs based on operational experience.
 
-                                Documentation
-
-Detailed documentation are provided for all Magick++ classes, class methods,
-and template functions which comprise the API.
-
-                             Obtaining Magick++
-
-You may download Magick++ source packages from this page, retrieve the
-latest sources via anonymous CVS, or use the copy of Magick++ which is
-co-packaged as a subdirectory of the ImageMagick source releases.
-
-Magick++ Source Packages
-
-[ These packages are retrieved from ftp.simplesystems.org. ]
-
-   * Version 0.9.1 (compatible with ImageMagick 5.1.0)
-        o Magick++-0.9.1.tar.gz (gzip'ed tar format, 440K)
-        o Magick++-0.9.1.zip (PK-ZIP format, 496K)
-   * Version 0.8.9 (compatible with ImageMagick 4.2.9)
-        o Magick++-0.8.9.tar.gz (gzip'ed tar format, 472K)
-        o Magick++-0.8.9.zip (PK-ZIP format, 504K)
-   * Version 0.8.5 (compatible with ImageMagick 4.2.8)
-        o Magick++-0.8.5.tar.gz (gzip'ed tar format, 456K)
-        o Magick++-0.8.5.zip (PK-ZIP format, 504K)
-   * Version 0.8.4  (compatible with ImageMagick 4.2.7)
-        o Magick++-0.8.4.tar.gz (gzip'ed tar format, 432K)
-        o Magick++-0.8.4.zip (PK-ZIP format, 464K)
-
-CVS Source Access
-
-[ Note: The main CVS branch now requires the latest ImageMagick 5.1.0 since
-the current sources are on the main branch. ]
-
-Magick++ sources may be retrieved via remote CVS. Remote CVS is valuable for
-developers and for those who must maintain the most current sources.  Check
-out files from the CVS server (into subdirectory "Magick++") by performing
-these steps:
-
- cvs -d ':pserver:anonymous@cvs.simplesystems.org:/cvsroot' login
-
-Provide the password "anonymous" to the " CVS password:" prompt, and then
-execute
-
- cvs -d ':pserver:anonymous@cvs.simplesystems.org:/cvsroot' co Magick++
-
-to check out the Magick++ files.  You may also set your CVSROOT environment
-variable to ':pserver:anonymous@cvs.simplesystems.org:/cvsroot' prior to
-executing the commands in order to avoid specifying the -d option.
-
-The CVS repository version of Magick++ does not include the configure
-script, Makefile.in, or libtool files required to build under Unix. To
-overcome this, ensure that you have GNU libtool 1.1.3, automake 1.4, and
-autoconf 2.13 installed and then execute
-
- ./bootstrap
-
-in the Magick++ directory prior to continuing with installation.
-
 
                                 Installation
 
-Once you have the sources available, follow these detailed installation
-instructions for UNIX and Windows.
+Please read instructions in the file INSTALL to buidl and install Magick++.
 
-                               Reporting Bugs
+                                Documentation
 
-Please report any bugs via the Magick++ Bug Tracking System. Questions
-regarding usage should be directed to Bob Friesenhahn
-<bfriesen@simple.dallas.tx.us>.
+
+Magick++ documentation is available by opening the file doc/Documentation.html
+in a Web browser.

@@ -10,34 +10,23 @@ INCLUDES = -I../lib
 #
 # Execute 'make check' to compile and run a test program
 #
-check_PROGRAMS = color attributes appendImages averageImages coalesceImages \
-	montageImages morphImages readWriteImages readWriteBlob
+check_PROGRAMS = color attributes manipulate readwrite
 
 LDADD = ../lib/libMagick++.la
 
-appendImages_SOURCES	= appendImages.cpp
-attributes_SOURCES	= attributes.cpp
-averageImages_SOURCES	= averageImages.cpp
-coalesceImages_SOURCES	= coalesceImages.cpp
-color_SOURCES		= color.cpp
-montageImages_SOURCES	= montageImages.cpp
-morphImages_SOURCES	= morphImages.cpp
-readWriteImages_SOURCES = readWriteImages.cpp
-readWriteBlob_SOURCES	= readWriteBlob.cpp
+attributes_SOURCES = attributes.cpp
 
-EXTRA_DIST = \
-	Generic.ttf test_image.miff test_image_anim.miff
+color_SOURCES = color.cpp
 
-CLEANFILES = testmagick_anim_out.miff
+manipulate_SOURCES = manipulate.cpp
+
+readwrite_SOURCES = readwrite.cpp
+
+EXTRA_DIST = Generic.ttf test_image.miff test_image_anim.gif \
+	attributes.dsp color.dsp manipulate.dsp readwrite.dsp
 
 check:
 	./color
 	./attributes
-	./appendImages
-	./averageImages
-	./coalesceImages
-	./montageImages
-	./morphImages
-	./readWriteImages
-	./readWriteBlob
-
+	./manipulate
+	./readwrite

@@ -12,9 +12,9 @@
 #include <string>
 #include <cstdlib>
 #include <iostream>
-#include "Magick++/Options.h"
-#include "Magick++/Functions.h"
-#include "Magick++/Include.h"
+#include <Magick++/Options.h>
+#include <Magick++/Functions.h>
+#include <Magick++/Include.h>
 
 // Constructor
 Magick::Options::Options( void )
@@ -41,7 +41,7 @@ Magick::Options::Options( const Magick::Options& options_ )
       _penTexture = MagickLib::CloneImage( options_._penTexture,
 					   options_._penTexture->columns,
 					   options_._penTexture->rows,
-					   (int)true );
+					   True );
     }
 }
 
@@ -99,11 +99,23 @@ unsigned int Magick::Options::animationIterations ( void ) const
 
 void Magick::Options::backgroundColor ( const Magick::Color &color_ )
 {
-  _imageInfo->background_color = color_;
+  if ( !color_.isValid() )
+    {
+      if ( _imageInfo->background_color )
+	{
+	  MagickLib::FreeMemory( _imageInfo->background_color );
+	  _imageInfo->background_color = (char *)NULL;
+	}
+      return;
+    }
+  Magick::CloneString( &_imageInfo->background_color, color_ );
 }
 Magick::Color Magick::Options::backgroundColor ( void ) const
 {
-  return Magick::Color( _imageInfo->background_color );
+  if ( _imageInfo->background_color )
+      return Magick::Color( _imageInfo->background_color );
+
+  return Magick::Color();
 }
 
 void Magick::Options::backgroundTexture ( const std::string &backgroundTexture_ )
@@ -130,11 +142,24 @@ std::string Magick::Options::backgroundTexture ( void ) const
 
 void Magick::Options::borderColor ( const Color &color_ )
 {
-  _imageInfo->border_color = color_;
+  if ( !color_.isValid() )
+    {
+      if ( _imageInfo->border_color )
+	{
+	  MagickLib::FreeMemory( _imageInfo->border_color );
+	  _imageInfo->border_color = (char *)NULL;
+	}
+      return;
+    }
+
+  Magick::CloneString( &_imageInfo->border_color, color_ );
 }
 Magick::Color Magick::Options::borderColor ( void ) const
 {
-  return Magick::Color( _imageInfo->border_color );
+    if ( _imageInfo->border_color )
+      return Magick::Color( _imageInfo->border_color );
+
+    return Magick::Color();
 }
 
 // Text bounding-box base color
@@ -261,33 +286,24 @@ std::string Magick::Options::magick ( void ) const
 
 void Magick::Options::matteColor ( const Magick::Color &matteColor_ )
 {
-  _imageInfo->matte_color = matteColor_;
-}
-Magick::Color Magick::Options::matteColor ( void ) const
-{
-  return Magick::Color( _imageInfo->matte_color );
-}
-
-void Magick::Options::page ( const Magick::Geometry &pageSize_ )
-{
-  if ( !pageSize_.isValid() )
+  if ( !matteColor_.isValid() )
     {
-      if ( _imageInfo->page )
+      if ( _imageInfo->matte_color )
 	{
-	  MagickLib::FreeMemory( _imageInfo->page );
-	  _imageInfo->page = (char *)NULL;
+	  MagickLib::FreeMemory( _imageInfo->matte_color );
+	  _imageInfo->matte_color = (char *)NULL;
 	}
       return;
     }
 
-  Magick::CloneString( &_imageInfo->page, pageSize_ );
+  Magick::CloneString( &_imageInfo->matte_color, matteColor_ );
 }
-Magick::Geometry Magick::Options::page ( void ) const
+Magick::Color Magick::Options::matteColor ( void ) const
 {
-  if ( _imageInfo->page )
-    return Geometry( _imageInfo->page );
+  if ( _imageInfo->matte_color )
+    return Magick::Color( _imageInfo->matte_color );
 
-    return Geometry();
+  return Magick::Color();
 }
 
 void Magick::Options::penColor ( const Color &penColor_ )
@@ -319,15 +335,37 @@ void Magick::Options::penTexture ( const MagickLib::Image *penTexture_ )
 
   _penTexture = (MagickLib::Image *)NULL;
 
-  if ( penTexture_ && penTexture_->pixels )
-    _penTexture = MagickLib::CloneImage( const_cast<MagickLib::Image*>(penTexture_),
+  if ( penTexture_ && penTexture_->packets )
+    _penTexture = MagickLib::CloneImage( penTexture_,
 					 penTexture_->columns,
 					 penTexture_->rows,
-					 (int)true );
+					 True );
 }
 const MagickLib::Image* Magick::Options::penTexture ( void  ) const
 {
   return _penTexture;
+}
+
+void Magick::Options::psPageSize ( const Magick::Geometry &pageSize_ )
+{
+  if ( !pageSize_.isValid() )
+    {
+      if ( _imageInfo->page )
+	{
+	  MagickLib::FreeMemory( _imageInfo->page );
+	  _imageInfo->page = (char *)NULL;
+	}
+      return;
+    }
+
+  Magick::CloneString( &_imageInfo->page, pageSize_ );
+}
+Magick::Geometry Magick::Options::psPageSize ( void ) const
+{
+  if ( _imageInfo->page )
+    return std::string( _imageInfo->page );
+
+    return std::string();
 }
 
 void Magick::Options::resolutionUnits ( Magick::ResolutionType resolutionUnits_ )
