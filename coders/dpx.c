@@ -60,6 +60,48 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s D P X                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsDPX returns True if the image format type, identified by the
+%  magick string, is DPX.
+%
+%  The format of the IsDPX method is:
+%
+%      unsigned int IsDPX(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsDPX returns True if the image format type is DPX.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+static unsigned int IsDPX(const unsigned char *magick,
+  const unsigned int length)
+{
+  if (length < 4)
+    return(False);
+  if (LocaleNCompare((char *) magick,"SDPX",4) == 0)
+    return(True);
+  if (LocaleNCompare((char *) magick,"XODS",4) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d D P X I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -200,8 +242,9 @@ ModuleExport void RegisterDPXImage(void)
 
   entry=SetMagickInfo("DPX");
   entry->decoder=ReadDPXImage;
-  entry->description=AllocateString("Digital Moving Picture Exchange");
   entry->module=AllocateString("DPX");
+  entry->magick=IsDPX;
+  entry->description=AllocateString("Digital Moving Picture Exchange");
   RegisterMagickInfo(entry);
 }
 
