@@ -209,7 +209,6 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   clone_info->dash_offset=draw_info->dash_offset;
   clone_info->decorate=draw_info->decorate;
   clone_info->compose=draw_info->compose;
-  clone_info->unicode=draw_info->unicode;
   if (draw_info->text != (char *) NULL)
     clone_info->text=AllocateString(draw_info->text);
   if (draw_info->font != (char *) NULL)
@@ -2037,11 +2036,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("encoding",keyword) == 0)
           {
             GetToken(q,&q,token);
-            if (LocaleCompare("UTF-8",token) == 0)
-              {
-                graphic_context[n]->unicode=True;
-                break;
-              }
+            (void) CloneString(&graphic_context[n]->encoding,token);
             break;
           }
         status=False;

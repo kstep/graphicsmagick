@@ -60,9 +60,6 @@ typedef struct _DrawInfo
   CompositeOperator
     compose;
 
-  unsigned int
-    unicode;
-
   char
     *text,
     *font,

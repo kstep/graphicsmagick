@@ -1061,6 +1061,8 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
         encoding_type=ft_encoding_symbol;
       if (LocaleCompare(draw_info->encoding,"Unicode") == 0)
         encoding_type=ft_encoding_unicode;
+      if (LocaleCompare(draw_info->encoding,"UTF-8") == 0)
+        encoding_type=ft_encoding_unicode;
       if (LocaleCompare(draw_info->encoding,"Wansung") == 0)
         encoding_type=ft_encoding_wansung;
       status=FT_Select_Charmap(face,encoding_type);
@@ -1105,17 +1107,14 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
       encoding=EncodeSJIS(draw_info->text,&length);
       break;
     }
-    default:
-    {
-      if (!draw_info->unicode)
-        {
-          encoding=EncodeText(draw_info->text,&length);
-          break;
-        }
-    }
     case ft_encoding_unicode:
     {
       encoding=EncodeUnicode(draw_info->text,&length);
+      break;
+    }
+    default:
+    {
+      encoding=EncodeText(draw_info->text,&length);
       break;
     }
   }
