@@ -6,19 +6,21 @@ See website for "wish list".
 For 1.2 Branch
 ==============
 
-  o Use non-recursive build for Unix (done).
 
   o Update to libtool 2.0 (partially done in sandbox).
 
-  o Convert to using safe string copy and append (done).
-
   o Re-write metadata handling to use accessor functions rather
     than accessing Image members directly (50% complete).
-
-  o Re-write pixel export/import functions (done)
 
   o Optimize lcms interface (0% complete).
 
   o Update Windows libtiff to version 3.7.X.
 
-  o Update Windows lcms to version 1.14.
+  o Update Windows lcms to version 1.14. (done).
+
+  o Re-write pixel export/import functions (done).
+
+  o Convert to using safe string copy and append (done).
+
+  o Use non-recursive build for Unix (done).
+
