@@ -42,6 +42,8 @@
   <magic name="PCX" offset="0" target="\012\005" />
   <magic name="PDB" offset="60" target="vIMGView" />
   <magic name="PDF" offset="0" target="%PDF-" />
+  <magic name="PFA" offset="0" target="%!PS-AdobeFont-1.0" />
+  <magic name="PFB" offset="6" target="%!PS-AdobeFont-1.0" />
   <magic name="PNG" offset="0" target="\211PNG\r\n\032\n" />
   <magic name="PNM" offset="0" target="P1" />
   <magic name="PNM" offset="0" target="P2" />
