@@ -250,7 +250,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Find the start of the JFIF data
   */
-  header=SFWScan(buffer,buffer+image->filesize-1,(unsigned char *)
+  header=SFWScan(buffer,buffer+(int) image->filesize-1,(unsigned char *)
     "\377\310\377\320",4);
   if (header == (unsigned char *) NULL)
     {
@@ -273,7 +273,8 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset+=(offset[2] << 8)+offset[3]+2;
   }
   offset--;
-  data=SFWScan(offset,buffer+image->filesize-1,(unsigned char *) "\377\311",2);
+  data=SFWScan(offset,buffer+(int) image->filesize-1,
+    (unsigned char *) "\377\311",2);
   if (data == (unsigned char *) NULL)
     {
       LiberateMemory((void **) &buffer);
