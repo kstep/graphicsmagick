@@ -1,0 +1,12 @@
+BUGS (lots of others, see TODO)
+====
+
+Notation
+--------
+( ) fix a.s.a.p.
+(X) fixed
+
+Bugs
+----
+(X) flood-fill in gd with clipping can cause core dump (silly me, I forgot...)
+( ) ltmain.sh broken for Mac OS X build

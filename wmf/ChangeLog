@@ -1,3 +1,12 @@
+	* install font.h (Bob Friesenhahn)
+	* remove wmf_api_destroy from api.c (Bob Friesenhahn)
+	* configure.ac: define TRIO_REPLACE_STDIO (Masafumi Matsumura)
+	  close WMF file on exit, if opened via libwmf2 (Bob Friesenhahn)
+	* config updates - no more lt trickery (fjf)
+	* major internal reorganization to separate out libwmflite;
+	  move font engine behind user_data handles;
+	  addition of wmf_lite_create () & wmf_lite_destroy ();
+	  post libwmf-0.2.2 versioning (fjf)
 v. 0.2.2
 	* fix wmf2x arg detection bug (Bob Friesenhahn)
 	* added --with-layers option (fjf)

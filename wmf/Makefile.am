@@ -2,10 +2,6 @@ SUBDIRS = . src include fonts doc
 
 bin_SCRIPTS = libwmf-config
 
-WMFPATCHES = \
-	patches/lt142main.sh \
-	patches/lt142macosx.patch
-
 WMFEXAMPLES = \
 	examples/2doorvan.wmf \
 	examples/Eg.wmf \
@@ -25,4 +21,4 @@ WMFEXAMPLES = \
 	examples/sample2.wmf \
 	examples/text.wmf
 
-EXTRA_DIST = AUTHORS BUILDING CREDITS NEWS README $(WMFEXAMPLES) $(WMFPATCHES) libwmf.spec
+EXTRA_DIST = AUTHORS BUILDING CREDITS NEWS README $(WMFEXAMPLES) libwmf.spec
