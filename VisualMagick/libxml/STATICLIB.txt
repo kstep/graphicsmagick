@@ -1,4 +1,6 @@
 #ECF - this file contains additional configuration info.
+DEFINE = STATIC
+DEFINE = LIBXML_STATIC
 EXCLUDE = testC14N.c
 EXCLUDE = testDocbook.c
 EXCLUDE = testHTML.c
