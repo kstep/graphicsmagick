@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.0.4 News</TITLE>
+<TITLE>GraphicsMagick 1.0.5 News</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -49,9 +49,32 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0.4 News</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0.5 News</font></font></font></b></td>
 </tr>
 </table>
+<p>
+Major changes associated with GraphicsMagick 1.0.5 (Released November 26, 2004)
+
+<p>
+  Bug Fixes
+
+<UL>
+  <LI> Fix Unix uninstall target.
+  <LI> For Unix, apply user specified LIBS when configuring.
+  <LI> Properly locate and use shmctl() under Cygwin.
+  <LI> Fix text rendering on PseudoClass images (bad bug).
+  <LI> Don't lose opacity channel when writing SGI images.
+  <LI> Fix *huge* memory leaks in MontageImages (montage).
+  <LI> Fix memory leak in JNG coder.
+  <LI> Fix bad memory leak in the 2D rendering code.
+  <LI> Fix a small memory leak in the color quantization code.
+  <LI> Fix inverted exit status from 'display' and 'animate'.
+  <LI> Fix module dependencies for the label coder (failed to load).
+  <LI> Fixed type.mgk parsing bug which sometimes corrupted memory.
+  <LI> Fixed type.mgk syntax error.
+  <LI> Various fixes for use of unintialized data.
+
+</UL>
 <p>
 Major changes associated with GraphicsMagick 1.0.4 (Released December 6, 2003)
 

@@ -53,6 +53,54 @@
 </tr>
 </table>
 <p>
+2004-02-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> version.sh: GraphicsMagick 1.0.5 released.
+  <LI> ltmain.sh: Updated to CVS libtool 2004/01/04.
+  <LI> Makefile.am: Updated to Automake 1.8.2.
+  <LI> configure.ac: Updated to Autoconf 2.59.
+  <LI> magick/memory.c (CloneMemory): Fix logic for deciding when it is
+        ok to use memcpy. Use memmove for overlapping copies.
+
+</UL>
+<p>
+2004-02-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/xpm.c (UnregisterXPMImage): Unregister PICON.
+
+</UL>
+<p>
+2004-02-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/Makefile.am (label_la_LDFLAGS): Add a dependency on the
+        math library since floor() is used.
+
+</UL>
+<p>
+2004-02-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (DisplayImageCommand): Exit status was inverted
+        so 'gm display' was returning 1 for successful commands, and 0 for
+        failures.<BR>
+        (AnimateImageCommand): Exit status was inverted so 'gm animate'
+        was returning 1 for successful commands, and 0 for failures.
+
+</UL>
+<p>
+2004-02-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/pict.c (WritePICTImage): Avoid use of uninitialized data
+        while writing.<BR>
+        (ReadPICTImage) Validate tile_image rather than image colormap
+        indexes (cut and paste error).
+
+</UL>
+<p>
 2004-02-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

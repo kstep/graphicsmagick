@@ -217,7 +217,7 @@ jp2_la_LIBADD       = $(LIBMAGICK) @LIB_JP2@  @LIB_JPEG@ $(LIB_MATH)
 
 # LABEL module
 label_la_SOURCES    = label.c
-label_la_LDFLAGS    = $(MODULECOMMONFLAGS)
+label_la_LDFLAGS    = $(MODULECOMMONFLAGS) $(LIB_MATH)
 label_la_LIBADD     = $(LIBMAGICK)
 
 # LOCALE module

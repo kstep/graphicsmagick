@@ -1,3 +1,22 @@
+Major changes associated with GraphicsMagick 1.0.5 (Released November 26, 2004)
+
+  Bug Fixes
+
+    * Fix Unix uninstall target.
+    * For Unix, apply user specified LIBS when configuring.
+    * Properly locate and use shmctl() under Cygwin.
+    * Fix text rendering on PseudoClass images (bad bug).
+    * Don't lose opacity channel when writing SGI images.
+    * Fix *huge* memory leaks in MontageImages (montage).
+    * Fix memory leak in JNG coder.
+    * Fix bad memory leak in the 2D rendering code.
+    * Fix a small memory leak in the color quantization code.
+    * Fix inverted exit status from 'display' and 'animate'.
+    * Fix module dependencies for the label coder (failed to load).
+    * Fixed type.mgk parsing bug which sometimes corrupted memory.
+    * Fixed type.mgk syntax error.
+    * Various fixes for use of unintialized data.
+
 Major changes associated with GraphicsMagick 1.0.4 (Released December 6, 2003)
 
   Bug Fixes:

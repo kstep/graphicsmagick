@@ -1,3 +1,36 @@
+2004-02-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh: GraphicsMagick 1.0.5 released.
+	* ltmain.sh: Updated to CVS libtool 2004/01/04.
+	* Makefile.am: Updated to Automake 1.8.2.
+	* configure.ac: Updated to Autoconf 2.59.
+	* magick/memory.c (CloneMemory): Fix logic for deciding when it is
+	ok to use memcpy. Use memmove for overlapping copies.
+
+2004-02-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/xpm.c (UnregisterXPMImage): Unregister PICON.
+
+2004-02-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/Makefile.am (label_la_LDFLAGS): Add a dependency on the
+	math library since floor() is used.
+
+2004-02-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (DisplayImageCommand): Exit status was inverted
+	so 'gm display' was returning 1 for successful commands, and 0 for
+	failures.
+	(AnimateImageCommand): Exit status was inverted so 'gm animate'
+	was returning 1 for successful commands, and 0 for failures.
+
+2004-02-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pict.c (WritePICTImage): Avoid use of uninitialized data
+	while writing.
+	(ReadPICTImage) Validate tile_image rather than image colormap
+	indexes (cut and paste error).
+
 2004-02-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/montage.c (MontageImages): Fix leak of texture image (big

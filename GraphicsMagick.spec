@@ -7,7 +7,7 @@
 
 Summary: An X application for displaying and manipulating images.
 Name: GraphicsMagick
-Version: 1.0.3
+Version: 1.0.5
 Release: 1
 License: freeware
 Group: X11/Applications/Graphics

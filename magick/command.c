@@ -10169,7 +10169,7 @@ MagickExport unsigned int AnimateImageCommand(int argc,char **argv)
     }
   DestroyImageList(image_list);
   LiberateArgumentList(argc,argv);
-  return(!status);
+  return(status);
 #else
   MagickFatalError(MissingDelegateError,"XWindowLibraryIsNotAvailable",
     (char *) NULL);
@@ -12831,7 +12831,7 @@ MagickExport unsigned int DisplayImageCommand(int argc,char **argv)
       XSync(display,False);
     }
   LiberateArgumentList(argc,argv);
-  return(!status);
+  return(status);
 #else
   MagickFatalError(MissingDelegateError,"XWindowLibraryIsNotAvailable",
     (char *) NULL);

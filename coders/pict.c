@@ -1072,7 +1072,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 if (tile_image->storage_class == PseudoClass)
                   {
                     index=(IndexPacket) (*p);
-                    VerifyColormapIndex(image,index);
+                    VerifyColormapIndex(tile_image,index);
                     indexes[x]=index;
                     q->red=tile_image->colormap[index].red;
                     q->green=tile_image->colormap[index].green;
@@ -1773,7 +1773,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
               *opacity++=ScaleQuantumToChar(MaxRGB-p->opacity);
             p++;
           }
-          count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);
+          count+=EncodeImage(image,scanline,bytes_per_line & 0x7FFF,packed_scanline);
           if (QuantumTick(y,image->rows))
             if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
               break;

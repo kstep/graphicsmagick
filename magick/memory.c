@@ -101,29 +101,19 @@ MagickExport void *AcquireMemory(const size_t size)
 MagickExport void *CloneMemory(void *destination,const void *source,
   const size_t size)
 {
-  register unsigned char
-    *q;
+  unsigned char
+    *d=(unsigned char*) destination;
 
-  register const unsigned char
-    *p;
-
-  register long
-    i;
+  const unsigned char
+    *s=(const unsigned char*) source;
 
   assert(destination != (void *) NULL);
   assert(source != (const void *) NULL);
-  p=(const unsigned char *) source;
-  q=(unsigned char *) destination;
-  if ((p <= q) || ((p+size) >= q))
+
+  if (((d+size) < s) || (d > (s+size)))
     return(memcpy(destination,source,size));
-  /*
-    Overlap, copy backwards.
-  */
-  p+=size;
-  q+=size;
-  for (i=(long) (size-1); i >= 0; i--)
-    *--q=(*--p);
-  return(destination);
+
+  return(memmove(destination,source,size));
 }
 
 /*

@@ -9,7 +9,7 @@
 # GraphicsMagick Configure Script
 #
  
-AC_PREREQ(2.57)
+AC_PREREQ(2.59)
 AC_INIT(magick/magick.h)
 
 # Source file containing package/library versioning information.
@@ -179,6 +179,7 @@ AC_SUBST(LIBLTDL)
 # Configure libtool
 AC_DISABLE_SHARED
 AC_ENABLE_STATIC
+AC_LIBTOOL_TAGS([CXX])
 AC_LIBTOOL_WIN32_DLL
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_SETUP
@@ -187,14 +188,14 @@ AC_SUBST(LIBTOOL_DEPS)
 
 # Check to see if building shared libraries
 libtool_build_shared_libs='no'
-if ./libtool --config | grep 'build_libtool_libs=yes' > /dev/null
+if test "$enable_shared" = 'yes'
 then
   libtool_build_shared_libs='yes'
 fi
 
 # Check to see if building static libraries
 libtool_build_static_libs='no'
-if ./libtool --config | grep 'build_old_libs=yes' > /dev/null
+if test "$enable_static" = 'yes'
 then
   libtool_build_static_libs='yes'
 fi
@@ -2216,7 +2217,7 @@ MAGICKLIB="-L${MAGICKLIBDIR} -lGraphicsMagick"
 if test $with_perl_static = 'yes'
 then
   # Find out where libtool hides its uninstalled libraries (as libtool_objdir)
-  eval `./libtool --config|grep '^objdir='|sed -e 's/^objdir/libtool_objdir/'`
+  libtool_objdir=$objdir
 
   # Find out what extension is applied to static libraries (as libtool_libext)
   #eval `./libtool --config|grep '^libext='|sed -e 's/^libext/libtool_libext/'`
