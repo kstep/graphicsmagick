@@ -24,6 +24,62 @@
 #include <time.h>
 #include <magick/api.h>
 
+static const char *ColorspaceTypeToString(const ColorspaceType colorspace)
+{
+  const char
+    *log_colorspace = "Unknown";
+  
+  switch (colorspace)
+    {
+    case UndefinedColorspace:
+      log_colorspace="Undefined";
+      break;
+    case RGBColorspace:
+      log_colorspace="RGB";
+      break;
+    case GRAYColorspace:
+      log_colorspace="GRAY";
+      break;
+    case TransparentColorspace:
+      log_colorspace="Transparent";
+      break;
+    case OHTAColorspace:
+      log_colorspace="OHTA";
+      break;
+    case XYZColorspace:
+      log_colorspace="XYZ";
+      break;
+    case YCbCrColorspace:
+      log_colorspace="YCbCr";
+      break;
+    case YCCColorspace:
+      log_colorspace="PhotoCD YCC";
+      break;
+    case YIQColorspace:
+      log_colorspace="YIQ";
+      break;
+    case YPbPrColorspace:
+      log_colorspace="YPbPr";
+      break;
+    case YUVColorspace:
+      log_colorspace="YUV";
+      break;
+    case CMYKColorspace:
+      log_colorspace="CMYK";
+      break;
+    case sRGBColorspace:
+      log_colorspace="PhotoCD sRGB";
+      break;
+    case HSLColorspace:
+      log_colorspace="HSL";
+      break;
+    case HWBColorspace:
+      log_colorspace="HWB";
+      break;
+    }
+  return log_colorspace;
+}
+
 int main ( int argc, char **argv )
 {
   Image
@@ -48,7 +104,7 @@ int main ( int argc, char **argv )
     quantum_size=sizeof(unsigned char);
 
   double
-    fuzz_factor = 0;
+    fuzz_factor = 0.0;
 
   ImageInfo
     imageInfo;
@@ -75,7 +131,7 @@ int main ( int argc, char **argv )
       if (*option == '-')
         {
           if (LocaleCompare("debug",option+1) == 0)
-              (void) SetLogEventMask(argv[++arg]);
+            (void) SetLogEventMask(argv[++arg]);
           else if (LocaleCompare("depth",option+1) == 0)
             {
               imageInfo.depth=QuantumDepth;
@@ -83,29 +139,26 @@ int main ( int argc, char **argv )
               if ((arg == argc) || !sscanf(argv[arg],"%ld",&imageInfo.depth))
                 {
                   printf("-depth argument missing or not integer\n");
-                  fflush(stdout);
                   exit_status = 1;
                   goto program_exit;
                 }
               if(imageInfo.depth != 8 && imageInfo.depth != 16 && imageInfo.depth != 32)
                 {
                   printf("-depth (%ld) not 8, 16, or 32\n", imageInfo.depth);
-                  fflush(stdout);
                   exit_status = 1;
                   goto program_exit;
                 }
             }
           else if (LocaleCompare("log",option+1) == 0)
-              (void) SetLogFormat(argv[++arg]);
+            (void) SetLogFormat(argv[++arg]);
           else if (LocaleCompare("pause",option+1) == 0)
-              pause=1;
+            pause=1;
           else if (LocaleCompare("size",option+1) == 0)
             {
               arg++;
               if ((arg == argc) || !IsGeometry(argv[arg]))
                 {
                   printf("-size argument missing or not geometry\n");
-                  fflush(stdout);
                   exit_status = 1;
                   goto program_exit;
                 }
@@ -117,7 +170,6 @@ int main ( int argc, char **argv )
               if ((arg == argc))
                 {
                   printf("-storagetype argument missing\n");
-                  fflush(stdout);
                   exit_status = 1;
                   goto program_exit;
                 }
@@ -154,7 +206,6 @@ int main ( int argc, char **argv )
               else
                 {
                   printf("Unrecognized storagetype argument %s\n",argv[arg]);
-                  fflush(stdout);
                   exit_status = 1;
                   goto program_exit;
                 }
@@ -166,7 +217,6 @@ int main ( int argc, char **argv )
   if (arg != argc-2)
     {
       printf ( "Usage: %s -debug events -depth integer -log format -size geometry -storagetype type] infile map\n", argv[0] );
-      fflush(stdout);
       exit_status = 1;
       goto program_exit;
     }
@@ -188,14 +238,13 @@ int main ( int argc, char **argv )
   imageInfo.dither = 0;
   strncpy( imageInfo.filename, infile, MaxTextExtent-1 );
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "Reading image %s", imageInfo.filename);
+                        "Reading image %s", imageInfo.filename);
   original = ReadImage ( &imageInfo, &exception );
   if (exception.severity != UndefinedException)
     CatchException(&exception);
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read original image %s\n", imageInfo.filename );
-      fflush(stdout);
       exit_status = 1;
       goto program_exit;
     }
@@ -218,20 +267,18 @@ int main ( int argc, char **argv )
   if( !pixels )
     {
       printf ( "Failed to allocate memory for pixels\n");
-      fflush(stdout);
       exit_status = 1;
       goto program_exit;
     }
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "Writing image to pixel array");
+                        "Writing image to pixel array");
   if( !DispatchImage(original,0,0,original->columns,original->rows,map,
-                storage_type,pixels,&exception) )
+                     storage_type,pixels,&exception) )
     {
       printf ( "DispatchImage returned error status\n");
       if (exception.severity != UndefinedException)
         CatchException(&exception);
-      fflush(stdout);
       exit_status = 1;
       goto program_exit;
     }
@@ -249,7 +296,6 @@ int main ( int argc, char **argv )
       printf ( "Failed to read image from pixels array\n" );
       if (exception.severity != UndefinedException)
         CatchException(&exception);
-      fflush(stdout);
       exit_status = 1;
       goto program_exit;
     }
@@ -258,14 +304,13 @@ int main ( int argc, char **argv )
    * Save image to pixel array
    */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "Writing image to pixel array");
+                        "Writing image to pixel array");
   if( !DispatchImage(original,0,0,original->columns,original->rows,map,
-                storage_type,pixels,&exception) )
+                     storage_type,pixels,&exception) )
     {
-      printf ( "DispatchImage returned error status\n");
+      printf ( "DispatchImage returned error status\n" );
       if (exception.severity != UndefinedException)
         CatchException(&exception);
-      fflush(stdout);
       exit_status = 1;
       goto program_exit;
     }
@@ -273,13 +318,14 @@ int main ( int argc, char **argv )
   /*
    * Read image back from pixel array
    */
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Reading image from pixel array");
   final = ConstituteImage(columns,rows,map,storage_type,pixels,&exception);
   if ( final == (Image *)NULL )
     {
       printf ( "Failed to read image from pixels array\n" );
       if (exception.severity != UndefinedException)
         CatchException(&exception);
-      fflush(stdout);
       exit_status = 1;
       goto program_exit;
     }
@@ -289,20 +335,35 @@ int main ( int argc, char **argv )
   /*
    * Check final output
    */
-  
-  if ( !IsImagesEqual(original, final ) &&
-       (original->error.normalized_mean_error > fuzz_factor) )
+
+  if (original->colorspace != final->colorspace)
     {
-      printf( "Constitute check failed: %u/%.6f/%.6fe\n",
-              (unsigned int) original->error.mean_error_per_pixel,
-              original->error.normalized_mean_error,
-              original->error.normalized_maximum_error);
-      fflush(stdout);
+      printf("Original colorspace (%s) != final colorspace (%s)\n",
+	     ColorspaceTypeToString(original->colorspace),
+	     ColorspaceTypeToString(final->colorspace));
+      exit_status = 1;
+      goto program_exit;
+    }
+  
+  if ( !IsImagesEqual(original, final) )
+    {
+      CatchException(&original->exception);
+      CatchException(&final->exception);
+      if (original->error.normalized_mean_error > fuzz_factor)
+        {
+          printf( "Constitute check failed: %u/%g/%g\n",
+                  (unsigned int) original->error.mean_error_per_pixel,
+                  original->error.normalized_mean_error,
+                  original->error.normalized_maximum_error);
+        }
       exit_status = 1;
       goto program_exit;
     }
 
+  /* DisplayImages( &imageInfo, final ); */
+
  program_exit:
+  fflush(stdout);
   if (original)
     DestroyImage( original );
   original = (Image*)NULL;

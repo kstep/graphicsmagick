@@ -251,6 +251,10 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
+	  q->red=0;
+	  q->green=0;
+	  q->blue=0;
+	  q->opacity=OpaqueOpacity;
           for (i=0; i < (long) length; i++)
           {
             switch (switch_map[i])
@@ -277,7 +281,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case IntensityMapQuantum:
               {
-                indexes[x]=ScaleCharToQuantum(*p++);
+                indexes[x]=ScaleQuantumToIndex(ScaleCharToQuantum(*p++));
                 q->red=image->colormap[indexes[x]].red;
                 q->green=image->colormap[indexes[x]].green;
                 q->blue=image->colormap[indexes[x]].blue;
@@ -311,6 +315,10 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
+	  q->red=0;
+	  q->green=0;
+	  q->blue=0;
+	  q->opacity=OpaqueOpacity;
           for (i=0; i < (long) length; i++)
           {
             switch (switch_map[i])
@@ -337,7 +345,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case IntensityMapQuantum:
               {
-                indexes[x]=ScaleShortToQuantum(*p++);
+                indexes[x]=ScaleQuantumToIndex(ScaleShortToQuantum(*p++));
                 q->red=image->colormap[indexes[x]].red;
                 q->green=image->colormap[indexes[x]].green;
                 q->blue=image->colormap[indexes[x]].blue;
@@ -371,6 +379,10 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
+	  q->red=0;
+	  q->green=0;
+	  q->blue=0;
+	  q->opacity=OpaqueOpacity;
           for (i=0; i < (long) length; i++)
           {
             switch (switch_map[i])
@@ -397,7 +409,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case IntensityMapQuantum:
               {
-                indexes[x]=ScaleLongToQuantum(*p++);
+                indexes[x]=ScaleQuantumToIndex(ScaleLongToQuantum(*p++));
                 q->red=image->colormap[indexes[x]].red;
                 q->green=image->colormap[indexes[x]].green;
                 q->blue=image->colormap[indexes[x]].blue;
@@ -431,6 +443,10 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
+	  q->red=0;
+	  q->green=0;
+	  q->blue=0;
+	  q->opacity=OpaqueOpacity;
           for (i=0; i < (long) length; i++)
           {
             switch (switch_map[i])
@@ -457,7 +473,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case IntensityMapQuantum:
               {
-                indexes[x]=ScaleLongToQuantum(*p++);
+                indexes[x]=ScaleQuantumToIndex(ScaleLongToQuantum(*p++));
                 q->red=image->colormap[indexes[x]].red;
                 q->green=image->colormap[indexes[x]].green;
                 q->blue=image->colormap[indexes[x]].blue;
@@ -491,33 +507,37 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
+	  q->red=0;
+	  q->green=0;
+	  q->blue=0;
+	  q->opacity=OpaqueOpacity;
           for (i=0; i < (long) length; i++)
           {
             switch (switch_map[i])
             {
               case RedMapQuantum:
               {
-                q->red=(Quantum) ((float) MaxRGB*(*p++));
+                q->red=(Quantum) ((double) MaxRGB*(*p++)+0.5);
                 break;
               }
               case GreenMapQuantum:
               {
-                q->green=(Quantum) ((float) MaxRGB*(*p++));
+                q->green=(Quantum) ((double) MaxRGB*(*p++)+0.5);
                 break;
               }
               case BlueMapQuanum:
               {
-                q->blue=(Quantum) ((float) MaxRGB*(*p++));
+                q->blue=(Quantum) ((double) MaxRGB*(*p++)+0.5);
                 break;
               }
               case OpacityMapQuantum:
               {
-                q->opacity=(Quantum) ((float) MaxRGB*(*p++));
+                q->opacity=(Quantum) ((double) MaxRGB*(*p++)+0.5);
                 break;
               }
               case IntensityMapQuantum:
               {
-                indexes[x]=(Quantum) ((float) MaxRGB*(*p++));
+                indexes[x]=(Quantum) ((MaxColormapSize-1)*(*p++)+0.5);
                 q->red=image->colormap[indexes[x]].red;
                 q->green=image->colormap[indexes[x]].green;
                 q->blue=image->colormap[indexes[x]].blue;
@@ -551,33 +571,37 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
+          q->red=0;
+	  q->green=0;
+          q->blue=0;
+          q->opacity=OpaqueOpacity;
           for (i=0; i < (long) length; i++)
           {
             switch (switch_map[i])
             {
               case RedMapQuantum:
               {
-                q->red=(Quantum) ((double) MaxRGB*(*p++));
+                q->red=(Quantum) ((double) MaxRGB*(*p++)+0.5);
                 break;
               }
               case GreenMapQuantum:
               {
-                q->green=(Quantum) ((double) MaxRGB*(*p++));
+                q->green=(Quantum) ((double) MaxRGB*(*p++)+0.5);
                 break;
               }
               case BlueMapQuanum:
               {
-                q->blue=(Quantum) ((double) MaxRGB*(*p++));
+                q->blue=(Quantum) ((double) MaxRGB*(*p++)+0.5);
                 break;
               }
               case OpacityMapQuantum:
               {
-                q->opacity=(Quantum) ((double) MaxRGB*(*p++));
+                q->opacity=(Quantum) ((double) MaxRGB*(*p++)+0.5);
                 break;
               }
               case IntensityMapQuantum:
               {
-                indexes[x]=(Quantum) ((double) MaxRGB*(*p++));
+                indexes[x]=(Quantum) ((MaxColormapSize-1)*(*p++)+0.5);
                 q->red=image->colormap[indexes[x]].red;
                 q->green=image->colormap[indexes[x]].green;
                 q->blue=image->colormap[indexes[x]].blue;
@@ -751,17 +775,26 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
         case 'C':
           {
             switch_map[i]=RedMapQuantum;
-            break;
+            if (image->colorspace == CMYKColorspace)
+              break;
+            ThrowException(exception,OptionError,"ColorSeparatedImageRequired",map);
+            return(False);
           }
         case 'M':
           {
             switch_map[i]=GreenMapQuantum;
-            break;
+            if (image->colorspace == CMYKColorspace)
+              break;
+            ThrowException(exception,OptionError,"ColorSeparatedImageRequired",map);
+            return(False);
           }
         case 'Y':
           {
             switch_map[i]=BlueMapQuanum;
-            break;
+            if (image->colorspace == CMYKColorspace)
+              break;
+            ThrowException(exception,OptionError,"ColorSeparatedImageRequired",map);
+            return(False);
           }
         case 'K':
           {
@@ -1021,27 +1054,27 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             {
               case RedMapQuantum:
               {
-                *q++=(float) p->red/MaxRGB;
+                *q++=(double) p->red/MaxRGB;
                 break;
               }
               case GreenMapQuantum:
               {
-                *q++=(float) p->green/MaxRGB;
+                *q++=(double) p->green/MaxRGB;
                 break;
               }
               case BlueMapQuanum:
               {
-                *q++=(float) p->blue/MaxRGB;
+                *q++=(double) p->blue/MaxRGB;
                 break;
               }
               case OpacityMapQuantum:
               {
-                *q++=(float) p->opacity/MaxRGB;
+                *q++=(double) p->opacity/MaxRGB;
                 break;
               }
               case IntensityMapQuantum:
               {
-                *q++=(float) PixelIntensityToQuantum(p)/MaxRGB;
+		*q++=(double) PixelIntensity(p)/MaxRGB;
                 break;
               }
               default:

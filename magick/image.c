@@ -2802,7 +2802,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
               indexes=GetIndexes(image);
               for (x=(long) image->columns; x > 0; x--)
                 {
-                  *indexes=ScaleQuantumToMap(q->red);
+                  *indexes=ScaleQuantumToIndex(q->red);
                   q++;
                   indexes++;
                 } 

@@ -248,7 +248,7 @@ CHECK_CONSTITUTE_STORAGETYPES = \
 	float \
 	double
 
-check-constitute:
+check-constitute: constitute$(EXEEXT)
 	-@status=0 ; \
 	storage_type='' ; \
 	for storage_type in $(CHECK_CONSTITUTE_STORAGETYPES) ; \
@@ -275,7 +275,7 @@ check-constitute:
 	fi ; \
 	exit $$status
 
-check-rwblob:
+check-rwblob: rwblob$(EXEEXT)
 	-@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_BLOB_FORMATS) ; \
@@ -302,7 +302,7 @@ check-rwblob:
 	fi ; \
 	exit $$status
 
-check-rwfile:
+check-rwfile: rwfile$(EXEEXT)
 	-@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_FILE_FORMATS) ; \
@@ -329,7 +329,7 @@ check-rwfile:
 	fi ; \
 	exit $$status
 
-check-rwblob-sized:
+check-rwblob-sized: rwblob$(EXEEXT)
 	-@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_SIZED_BLOB_FORMATS) ; \
@@ -356,7 +356,7 @@ check-rwblob-sized:
 	fi ; \
 	exit $$status
 
-check-rwfile-sized:
+check-rwfile-sized: rwfile$(EXEEXT)
 	-@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_SIZED_FILE_FORMATS) ; \
@@ -383,7 +383,7 @@ check-rwfile-sized:
 	fi ; \
 	exit $$status
 
-check-drawtest:
+check-drawtest: drawtest$(EXEEXT)
 	-./drawtest drawtest_out.miff
 	-./drawtest drawtest_out.mvg
 
@@ -393,7 +393,7 @@ CHECK_MIFF_FILE_COMPRESS= \
 	$(BZIPCOMPRESS) \
 	$(RLECOMPRESS)
 
-check-miff:
+check-miff: rwfile$(EXEEXT)
 	-@status=0 ; \
 	compress='' ; \
 	for compress in $(CHECK_MIFF_FILE_COMPRESS) ; \

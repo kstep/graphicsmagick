@@ -53,6 +53,31 @@
 </tr>
 </table>
 <p>
+2003-04-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/constitute.c (ConstituteImage): Fixed problems with
+        reading intensity (gray) pixel arrays.
+  <LI> magick/image.c (GrayscalePseudoClassImage): Use
+        ScaleQuantumToIndex rather than ScaleQuantumToMap.
+  <LI> magick/constitute.c (ConstituteImage): Use ScaleQuantumToIndex
+        macro to scale integral intensity values to colormap range.
+  <LI> magick/image.h (ScaleQuantumToIndex): New macro to scale a
+        quantum to the maximum range of a colormap index.  Useful when
+        writing to PsuedoClass grayscale images.
+
+</UL>
+<p>
+2003-04-22  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> utilities/Makefile.am (check) fixed typos (RM -&gt; RMDelegate
+        and removed stray "gm"), added -random-threshold, ordered-dither.
+  <LI> magick/effect.c: Random-threshold was not treating non-gray
+        PseudoColor images correctly.
+
+</UL>
+<p>
 2003-04-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -35,18 +35,19 @@ extern "C" {
 #define MaxColormapSize  256UL
 #define MaxMap  255UL
 #define MaxRGB  255UL
-#define ScaleCharToMap(value)      ((unsigned char) (value))
-#define ScaleCharToQuantum(value)  ((Quantum) (value))
-#define ScaleLongToQuantum(value)  ((Quantum) ((value)/16843009UL))
-#define ScaleMapToChar(value)     ((unsigned int) (value))
-#define ScaleMapToQuantum(value)  ((Quantum) (value))
-#define ScaleQuantum(quantum)  ((unsigned long) (quantum))
+#define ScaleCharToMap(value)        ((unsigned char) (value))
+#define ScaleCharToQuantum(value)    ((Quantum) (value))
+#define ScaleLongToQuantum(value)    ((Quantum) ((value)/16843009UL))
+#define ScaleMapToChar(value)        ((unsigned int) (value))
+#define ScaleMapToQuantum(value)     ((Quantum) (value))
+#define ScaleQuantum(quantum)        ((unsigned long) (quantum))
 #define ScaleQuantumToChar(quantum)  ((unsigned char) (quantum))
 #define ScaleQuantumToLong(quantum)  ((unsigned long) (16843009UL*(quantum)))
-#define ScaleQuantumToMap(quantum)  ((unsigned char) (quantum))
-#define ScaleQuantumToShort(quantum)  ((unsigned short) (257UL*(quantum)))
-#define ScaleShortToQuantum(value)  ((Quantum) ((value)/257UL))
-#define ScaleToQuantum(value)  ((unsigned long) (value))
+#define ScaleQuantumToMap(quantum)   ((unsigned char) (quantum))
+#define ScaleQuantumToShort(quantum) ((unsigned short) (257UL*(quantum)))
+#define ScaleShortToQuantum(value)   ((Quantum) ((value)/257UL))
+#define ScaleToQuantum(value)        ((unsigned long) (value))
+#define ScaleQuantumToIndex(value)   ((unsigned char) (value))
 /*
   intensity=0.299*red+0.587*green+0.114*blue.
   Premultiply by 1024 to obtain integral values, and then divide
@@ -64,18 +65,19 @@ typedef gm_int64_t QuantumSumType;
 #define MaxColormapSize  65536UL
 #define MaxMap 65535UL
 #define MaxRGB  65535UL
-#define ScaleCharToMap(value)      ((unsigned short) (257UL*(value)))
-#define ScaleCharToQuantum(value)  ((Quantum) (257UL*(value)))
-#define ScaleLongToQuantum(value)  ((Quantum) ((value)/65537UL))
-#define ScaleMapToChar(value)      ((unsigned int) ((value)/257UL))
-#define ScaleMapToQuantum(value)  ((Quantum) (value))
-#define ScaleQuantum(quantum)  ((unsigned long) ((quantum)/257UL))
+#define ScaleCharToMap(value)        ((unsigned short) (257UL*(value)))
+#define ScaleCharToQuantum(value)    ((Quantum) (257UL*(value)))
+#define ScaleLongToQuantum(value)    ((Quantum) ((value)/65537UL))
+#define ScaleMapToChar(value)        ((unsigned int) ((value)/257UL))
+#define ScaleMapToQuantum(value)     ((Quantum) (value))
+#define ScaleQuantum(quantum)        ((unsigned long) ((quantum)/257UL))
 #define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/257UL))
 #define ScaleQuantumToLong(quantum)  ((unsigned long) (65537UL*(quantum)))
-#define ScaleQuantumToMap(quantum)  ((unsigned short) (quantum))
-#define ScaleQuantumToShort(quantum)  ((unsigned short) (quantum))
-#define ScaleShortToQuantum(value)  ((Quantum) (value))
-#define ScaleToQuantum(value)  ((unsigned long) (257UL*(value)))
+#define ScaleQuantumToMap(quantum)   ((unsigned short) (quantum))
+#define ScaleQuantumToShort(quantum) ((unsigned short) (quantum))
+#define ScaleShortToQuantum(value)   ((Quantum) (value))
+#define ScaleToQuantum(value)        ((unsigned long) (257UL*(value)))
+#define ScaleQuantumToIndex(value)   ((unsigned short) (value))
 /*
   intensity=0.299*red+0.587*green+0.114*blue.
   Premultiply by 1024 to obtain integral values, and then divide
@@ -93,18 +95,19 @@ typedef gm_int64_t QuantumSumType;
 #define MaxColormapSize  65536UL
 #define MaxMap 65535UL
 #define MaxRGB  4294967295UL
-#define ScaleCharToMap(value)      ((unsigned short) (257UL*(value)))
-#define ScaleCharToQuantum(value)  ((Quantum) (16843009UL*(value)))
-#define ScaleLongToQuantum(value)  ((Quantum) ((value)))
-#define ScaleMapToChar(value)      ((unsigned int) ((value)/257UL))
-#define ScaleMapToQuantum(value)  ((Quantum) (65537UL*(value)))
-#define ScaleQuantum(quantum)  ((unsigned long) ((quantum)/16843009UL))
+#define ScaleCharToMap(value)        ((unsigned short) (257UL*(value)))
+#define ScaleCharToQuantum(value)    ((Quantum) (16843009UL*(value)))
+#define ScaleLongToQuantum(value)    ((Quantum) ((value)))
+#define ScaleMapToChar(value)        ((unsigned int) ((value)/257UL))
+#define ScaleMapToQuantum(value)     ((Quantum) (65537UL*(value)))
+#define ScaleQuantum(quantum)        ((unsigned long) ((quantum)/16843009UL))
 #define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/16843009UL))
 #define ScaleQuantumToLong(quantum)  ((unsigned long) (quantum))
-#define ScaleQuantumToMap(quantum)  ((unsigned short) ((quantum)/65537UL))
-#define ScaleQuantumToShort(quantum)  ((unsigned short) ((quantum)/65537UL))
-#define ScaleShortToQuantum(value)  ((Quantum) (65537UL*(value)))
-#define ScaleToQuantum(value)  ((unsigned long) (16843009UL*(value)))
+#define ScaleQuantumToMap(quantum)   ((unsigned short) ((quantum)/65537UL))
+#define ScaleQuantumToShort(quantum) ((unsigned short) ((quantum)/65537UL))
+#define ScaleShortToQuantum(value)   ((Quantum) (65537UL*(value)))
+#define ScaleToQuantum(value)        ((unsigned long) (16843009UL*(value)))
+#define ScaleQuantumToIndex(value)   ((unsigned short) ((value)/65537UL))
 /*
   intensity=0.299*red+0.587*green+0.114*blue.
   Premultiply by 1024 to obtain integral values, and then divide
