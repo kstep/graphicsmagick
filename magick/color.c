@@ -594,8 +594,8 @@ MagickExport void GetColorTuple(const PixelPacket *color,
         }
       FormatString(tuple,
         hex ? "#%08lX%08lX%08lX%08lX" : "(%10lu,%10lu,%10lu,%10lu)",
-        ScaleQuantumToInt(color->red),ScaleQuantumToInt(color->green),
-        ScaleQuantumToInt(color->blue),ScaleQuantumToInt(color->opacity));
+        ScaleQuantumToLong(color->red),ScaleQuantumToLong(color->green),
+        ScaleQuantumToLong(color->blue),ScaleQuantumToLong(color->opacity));
       return;
     }
   if (depth <= 8)
@@ -613,8 +613,8 @@ MagickExport void GetColorTuple(const PixelPacket *color,
       return;
     }
   FormatString(tuple,hex ? "#%08lX%08lX%08lX" : "(%10lu,%10lu,%10lu)",
-    ScaleQuantumToInt(color->red),ScaleQuantumToInt(color->green),
-    ScaleQuantumToInt(color->blue));
+    ScaleQuantumToLong(color->red),ScaleQuantumToLong(color->green),
+    ScaleQuantumToLong(color->blue));
   return;
 }
 

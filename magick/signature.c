@@ -480,17 +480,17 @@ MagickExport unsigned int SignatureImage(Image *image)
     q=message;
     for (x=0; x < (long) image->columns; x++)
     {
-      quantum=ScaleQuantumToInt(p->red);
+      quantum=ScaleQuantumToLong(p->red);
       *q++=(quantum >> 24);
       *q++=(quantum >> 16);
       *q++=(quantum >> 8);
       *q++=quantum;
-      quantum=ScaleQuantumToInt(p->green);
+      quantum=ScaleQuantumToLong(p->green);
       *q++=(quantum >> 24);
       *q++=(quantum >> 16);
       *q++=(quantum >> 8);
       *q++=quantum;
-      quantum=ScaleQuantumToInt(p->blue);
+      quantum=ScaleQuantumToLong(p->blue);
       *q++=(quantum >> 24);
       *q++=(quantum >> 16);
       *q++=(quantum >> 8);
@@ -499,13 +499,13 @@ MagickExport unsigned int SignatureImage(Image *image)
         {
           if (image->colorspace == CMYKColorspace)
             {
-              quantum=ScaleQuantumToInt(p->opacity);
+              quantum=ScaleQuantumToLong(p->opacity);
               *q++=(quantum >> 24);
               *q++=(quantum >> 16);
               *q++=(quantum >> 8);
               *q++=quantum;
             }
-          quantum=ScaleQuantumToInt(OpaqueOpacity);
+          quantum=ScaleQuantumToLong(OpaqueOpacity);
           *q++=(quantum >> 24);
           *q++=(quantum >> 16);
           *q++=(quantum >> 8);
@@ -513,14 +513,14 @@ MagickExport unsigned int SignatureImage(Image *image)
         }
       else
         {
-          quantum=ScaleQuantumToInt(p->opacity);
+          quantum=ScaleQuantumToLong(p->opacity);
           *q++=(quantum >> 24);
           *q++=(quantum >> 16);
           *q++=(quantum >> 8);
           *q++=quantum;
           if (image->colorspace == CMYKColorspace)
             {
-              quantum=ScaleQuantumToInt(indexes[x]);
+              quantum=ScaleQuantumToLong(indexes[x]);
               *q++=(quantum >> 24);
               *q++=(quantum >> 16);
               *q++=(quantum >> 8);
