@@ -116,6 +116,7 @@ namespace Magick
   using MagickLib::AddCompositeOp;
   using MagickLib::SubtractCompositeOp;
   using MagickLib::DifferenceCompositeOp;
+  using MagickLib::MultiplyCompositeOp;
   using MagickLib::BumpmapCompositeOp;
   using MagickLib::ReplaceCompositeOp;
   using MagickLib::ReplaceRedCompositeOp;
