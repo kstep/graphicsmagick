@@ -467,9 +467,23 @@ ModuleExport void RegisterJP2Image(void)
   entry->encoder=(EncoderHandler) WriteJP2Image;
 #endif
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("JPC");
   entry->description=AcquireString("JPEG-2000 Code Stream Syntax");
   entry->module=AcquireString("JPC");
+  entry->magick=(MagickHandler) IsJPC;
+  entry->adjoin=False;
+  entry->seekable_stream=True;
+  entry->thread_support=False;
+#if defined(HasJP2)
+  entry->decoder=(DecoderHandler) ReadJP2Image;
+  entry->encoder=(EncoderHandler) WriteJP2Image;
+#endif
+  (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("PGX");
+  entry->description=AcquireString("JPEG-2000 VM Format");
+  entry->module=AcquireString("PGX");
   entry->magick=(MagickHandler) IsJPC;
   entry->adjoin=False;
   entry->seekable_stream=True;

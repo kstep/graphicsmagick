@@ -997,7 +997,7 @@ MagickExport unsigned int IsGrayImage(const Image *image,
           return(False);
         for (x=(long) image->columns; x > 0; x--)
         {
-          if (!IsGray(*p))
+          if ((p->red != p->green) || (p->green != p->blue))
             return(False);
           p++;
         }
@@ -1009,7 +1009,7 @@ MagickExport unsigned int IsGrayImage(const Image *image,
       p=image->colormap;
       for (x=(long) image->colors; x > 0; x--)
         {
-          if (!IsGray(*p))
+          if ((p->red != p->green) || (p->green != p->blue))
             return(False);
           p++;
         }
@@ -1075,7 +1075,8 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
           return(False);
         for (x=(long) image->columns; x > 0; x--)
         {
-          if ((!IsGray(*p)) || ((p->red != 0) && (p->red != MaxRGB)))
+          if ((p->red != p->green) || (p->green != p->blue) ||
+              ((p->red != 0) && (p->red != MaxRGB)))
             return(False);
           p++;
         }
@@ -1087,7 +1088,8 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
       p=image->colormap;
       for (x=(long) image->colors; x > 0; x--)
       {
-        if ((!IsGray(*p)) || ((p->red != 0) && (p->red != MaxRGB)))
+        if ((p->red != p->green) || (p->green != p->blue) ||
+            ((p->red != 0) && (p->red != MaxRGB)))
           return(False);
         p++;
       }

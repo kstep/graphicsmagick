@@ -1,5 +1,17 @@
 2003-02-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/jp2.c (RegisterJP2Image): Added registration for
+	"PGX" magick tag.
+	* magick/magic.mgk: Added entry for JPEG V2's PGX format.
+	* PerlMagick/t/jp2/read.t: Added JPEG Version 2 read tests.
+	* coders/modules.mgk: Added JPC and PGX magick types to
+	support JPEG V2.
+	* magick/color.c (IsMonochromeImage): Re-arranged test logic
+	to short-circuit test using ORs.
+	(IsGrayImage): Re-arranged test logic to short-circuit test
+	using ORs.
+	* magick/constitute.c (PopImagePixels): Speed GrayQuantum
+	and GrayAlphaQuantum cases if is_grayscale is True.
 	* magick/quantize.c (AssignImageColors): Sync image to
 	update DirectClass pixels to new colormap.
 	* coders/fpx.c (RegisterFPXImage): FlashPIX does not

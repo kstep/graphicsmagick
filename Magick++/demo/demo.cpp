@@ -71,7 +71,7 @@ int main( int /*argc*/, char ** argv)
       //  3. apply operation to image
       //  4. append image to container
 
-      cout << "  add noise" << endl;
+      cout << "  add noise ..." << endl;
       example.label( "Add Noise" );
       example.addNoise( LaplacianNoise );
       images.push_back( example );
@@ -93,7 +93,7 @@ int main( int /*argc*/, char ** argv)
       example.blur( 0, 1.5 );
       images.push_back( example );
 
-      cout << "  border" << endl;
+      cout << "  border ..." << endl;
       example = model;
       example.label( "Border" );
       example.borderColor( "gold" );

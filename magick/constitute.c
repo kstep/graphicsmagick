@@ -1344,78 +1344,159 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x= (long) number_pixels; x > 0; --x)
-          {
-            pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
-            *q++=(Quantum) pixel;
-            p++;
-          }
+          if (image->is_grayscale)
+            for (x= (long) number_pixels; x > 0; --x)
+              *q++=(Quantum) ScaleQuantumToChar(p++->red);
+          else
+            for (x= (long) number_pixels; x > 0; --x)
+              {
+                *q++=(Quantum) ScaleQuantumToChar(PixelIntensityToQuantum(p));
+                p++;
+              }
           break;
         }
       if (image->depth <= 16)
         {
-          for (x= (long) number_pixels; x > 0; --x)
-          {
-            pixel=ScaleQuantumToShort(PixelIntensityToQuantum(p));
-            *q++=(Quantum) (pixel >> 8);
-            *q++=(Quantum) pixel;
-            p++;
-          }
+          if (image->is_grayscale)
+            {
+              for (x= (long) number_pixels; x > 0; --x)
+                {
+                  pixel=ScaleQuantumToShort(p->red);
+                  *q++=(Quantum) (pixel >> 8);
+                  *q++=(Quantum) pixel;
+                  p++;
+                }
+            }
+          else
+            {
+              for (x= (long) number_pixels; x > 0; --x)
+                {
+                  pixel=ScaleQuantumToShort(PixelIntensityToQuantum(p));
+                  *q++=(Quantum) (pixel >> 8);
+                  *q++=(Quantum) pixel;
+                  p++;
+                }
+            }
           break;
         }
-      for (x= (long) number_pixels; x > 0; --x)
-      {
-        pixel=ScaleQuantumToLong(PixelIntensityToQuantum(p));
-        *q++=(Quantum) (pixel >> 24);
-        *q++=(Quantum) (pixel >> 16);
-        *q++=(Quantum) (pixel >> 8);
-        *q++=(Quantum) pixel;
-        p++;
-      }
+      if (image->is_grayscale)
+            {
+              for (x= (long) number_pixels; x > 0; --x)
+                {
+                  pixel=ScaleQuantumToLong(p->red);
+                  *q++=(Quantum) (pixel >> 24);
+                  *q++=(Quantum) (pixel >> 16);
+                  *q++=(Quantum) (pixel >> 8);
+                  *q++=(Quantum) pixel;
+                  p++;
+                }
+            }
+      else
+        {
+          for (x= (long) number_pixels; x > 0; --x)
+            {
+              pixel=ScaleQuantumToLong(PixelIntensityToQuantum(p));
+              *q++=(Quantum) (pixel >> 24);
+              *q++=(Quantum) (pixel >> 16);
+              *q++=(Quantum) (pixel >> 8);
+              *q++=(Quantum) pixel;
+              p++;
+            }
+        }
       break;
     }
     case GrayAlphaQuantum:
     {
       if (image->depth <= 8)
         {
-          for (x= (long) number_pixels; x > 0; --x)
-          {
-            pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
-            *q++=(Quantum) pixel;
-            pixel=ScaleQuantumToChar(MaxRGB-p->opacity);
-            *q++=(Quantum) pixel;
-            p++;
-          }
+          if (image->is_grayscale)
+            {
+              for (x= (long) number_pixels; x > 0; --x)
+                {
+                  pixel=ScaleQuantumToChar(p->red);
+                  *q++=(Quantum) pixel;
+                  pixel=ScaleQuantumToChar(MaxRGB-p->opacity);
+                  *q++=(Quantum) pixel;
+                  p++;
+                }
+            }
+          else
+            {
+              for (x= (long) number_pixels; x > 0; --x)
+                {
+                  pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
+                  *q++=(Quantum) pixel;
+                  pixel=ScaleQuantumToChar(MaxRGB-p->opacity);
+                  *q++=(Quantum) pixel;
+                  p++;
+                }
+            }
           break;
         }
       if (image->depth <= 16)
         {
-          for (x= (long) number_pixels; x > 0; --x)
-          {
-            pixel=ScaleQuantumToShort(PixelIntensityToQuantum(p));
-            *q++=(Quantum) (pixel >> 8);
-            *q++=(Quantum) pixel;
-            pixel=ScaleQuantumToShort(MaxRGB-p->opacity);
-            *q++=(Quantum) (pixel >> 8);
-            *q++=(Quantum) pixel;
-            p++;
-          }
+          if (image->is_grayscale)
+            {
+              for (x= (long) number_pixels; x > 0; --x)
+                {
+                  pixel=ScaleQuantumToShort(p->red);
+                  *q++=(Quantum) (pixel >> 8);
+                  *q++=(Quantum) pixel;
+                  pixel=ScaleQuantumToShort(MaxRGB-p->opacity);
+                  *q++=(Quantum) (pixel >> 8);
+                  *q++=(Quantum) pixel;
+                  p++;
+                }
+            }
+          else
+            {
+              for (x= (long) number_pixels; x > 0; --x)
+                {
+                  pixel=ScaleQuantumToShort(PixelIntensityToQuantum(p));
+                  *q++=(Quantum) (pixel >> 8);
+                  *q++=(Quantum) pixel;
+                  pixel=ScaleQuantumToShort(MaxRGB-p->opacity);
+                  *q++=(Quantum) (pixel >> 8);
+                  *q++=(Quantum) pixel;
+                  p++;
+                }
+            }
           break;
         }
-      for (x= (long) number_pixels; x > 0; --x)
-      {
-        pixel=ScaleQuantumToLong(PixelIntensityToQuantum(p));
-        *q++=(Quantum) (pixel >> 24);
-        *q++=(Quantum) (pixel >> 16);
-        *q++=(Quantum) (pixel >> 8);
-        *q++=(Quantum) pixel;
-        pixel=ScaleQuantumToLong(MaxRGB-p->opacity);
-        *q++=(Quantum) (pixel >> 24);
-        *q++=(Quantum) (pixel >> 16);
-        *q++=(Quantum) (pixel >> 8);
-        *q++=(Quantum) pixel;
-        p++;
-      }
+      if (image->is_grayscale)
+        {
+          for (x= (long) number_pixels; x > 0; --x)
+            {
+              pixel=ScaleQuantumToLong(p->red);
+              *q++=(Quantum) (pixel >> 24);
+              *q++=(Quantum) (pixel >> 16);
+              *q++=(Quantum) (pixel >> 8);
+              *q++=(Quantum) pixel;
+              pixel=ScaleQuantumToLong(MaxRGB-p->opacity);
+              *q++=(Quantum) (pixel >> 24);
+              *q++=(Quantum) (pixel >> 16);
+              *q++=(Quantum) (pixel >> 8);
+              *q++=(Quantum) pixel;
+              p++;
+            }
+        }
+      else
+        {
+          for (x= (long) number_pixels; x > 0; --x)
+            {
+              pixel=ScaleQuantumToLong(PixelIntensityToQuantum(p));
+              *q++=(Quantum) (pixel >> 24);
+              *q++=(Quantum) (pixel >> 16);
+              *q++=(Quantum) (pixel >> 8);
+              *q++=(Quantum) pixel;
+              pixel=ScaleQuantumToLong(MaxRGB-p->opacity);
+              *q++=(Quantum) (pixel >> 24);
+              *q++=(Quantum) (pixel >> 16);
+              *q++=(Quantum) (pixel >> 8);
+              *q++=(Quantum) pixel;
+              p++;
+            }
+        }
       break;
     }
     case RedQuantum:
