@@ -1,3 +1,7 @@
+2003-06-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Bumped package version to 1.2.0.9.
+
 2003-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* fpx/ptil_fpx.cpp (WriteHeader): One of the BSD patches had
