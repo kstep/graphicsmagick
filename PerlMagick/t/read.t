@@ -47,10 +47,10 @@ print("CompuServe graphics interchange format (1987) ...\n");
 ++$test;
 testRead( 'input.gif87', '45e5c63ac641eda9bedd4f42a7f6b4cd');
 
-print("GRADATION (gradual passing from one shade to another) ...\n");
+print("Gradient (gradual passing from one shade to another) ...\n");
 #
 ++$test;
-testRead( 'gradation:red-blue', 'ce3e346956f17cc6131dfe7213d5e11a',
+testRead( 'gradient:red-blue', 'ce3e346956f17cc6131dfe7213d5e11a',
                                 '826cc95b15955517fcd9bc8c6bbe6490' );
 
 print("GRANITE (granite texture) ...\n");
