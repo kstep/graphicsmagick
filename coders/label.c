@@ -120,16 +120,27 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->text=AllocateString(image_info->filename);
   if ((image->columns != 0) || (image->rows != 0))
-    for ( ; GetTypeMetrics(image,draw_info,&metrics); draw_info->pointsize++)
     {
-      width=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
-      height=(unsigned long) floor(metrics.height+0.5);
-      if (((image->columns != 0) && (width > image->columns)) ||
-          ((image->rows != 0) && (height > image->rows)))
-        {
-          draw_info->pointsize--;
+      /*
+        Fit label to canvas size.
+      */
+      draw_info->pointsize=1.0;
+      for ( ; GetTypeMetrics(image,draw_info,&metrics); draw_info->pointsize*=2)
+      {
+        width=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
+        height=(unsigned long) floor(metrics.height+0.5);
+        if (((image->columns != 0) && (width >= image->columns)) ||
+            ((image->rows != 0) && (height >= image->rows)))
           break;
-        }
+      }
+      for ( ; GetTypeMetrics(image,draw_info,&metrics); draw_info->pointsize--)
+      {
+        width=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
+        height=(unsigned long) floor(metrics.height+0.5);
+        if (((image->columns != 0) && (width <= image->columns)) ||
+            ((image->rows != 0) && (height <= image->rows)))
+          break;
+      }
     }
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
