@@ -389,21 +389,21 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 %  The format of the RaiseImage method is:
 %
 %      unsigned int RaiseImage(Image *image,const RectangleInfo *raise_info,
-%        const int raised)
+%        const int raise)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
-%    o raise_info: Define the width and height of the raised area.
+%    o raise_info: Define the width and height of the raise area.
 %
-%    o raised: A value other than zero creates a 3-D raised effect,
+%    o raise: A value other than zero creates a 3-D raise effect,
 %      otherwise it has a lowered effect.
 %
 %
 */
 MagickExport unsigned int RaiseImage(Image *image,
-  const RectangleInfo *raise_info,const int raised)
+  const RectangleInfo *raise_info,const int raise)
 {
 #define AccentuateFactor  Upscale(135)
 #define HighlightFactor  Upscale(190)
@@ -433,7 +433,7 @@ MagickExport unsigned int RaiseImage(Image *image,
       "image size must exceed bevel width");
   foreground=MaxRGB;
   background=0;
-  if (!raised)
+  if (!raise)
     {
       foreground=0;
       background=MaxRGB;
