@@ -15,8 +15,7 @@
 
 void Magick::Montage::updateMontageInfo ( MontageInfo &montageInfo_ ) const
 {
-  if ( _backgroundColor.isValid() )
-    montageInfo_.background_color = _backgroundColor;
+  montageInfo_.background_color = _backgroundColor;
 
   if ( _compose != Magick::UndefinedCompositeOp )
     montageInfo_.compose = _compose;
@@ -35,11 +34,9 @@ void Magick::Montage::updateMontageInfo ( MontageInfo &montageInfo_ ) const
 
   montageInfo_.gravity = _gravity;
 
-  if ( _fill.isValid() )
-    montageInfo_.fill = _fill;
+  montageInfo_.fill = _fill;
 
-  if ( _stroke.isValid() )
-    montageInfo_.stroke = _stroke;
+  montageInfo_.stroke = _stroke;
 
   if ( _pointSize != 0 )
     montageInfo_.pointsize = _pointSize;
@@ -69,8 +66,7 @@ Magick::MontageFramed::updateMontageInfo ( MontageInfo &montageInfo_ ) const
   // Do base updates
   Montage::updateMontageInfo ( montageInfo_ );
 
-  if ( _borderColor.isValid() )
-    montageInfo_.border_color = _borderColor;
+  montageInfo_.border_color = _borderColor;
 
   if ( _borderWidth != 0 )
     montageInfo_.border_width = _borderWidth;
@@ -78,6 +74,5 @@ Magick::MontageFramed::updateMontageInfo ( MontageInfo &montageInfo_ ) const
   if ( _frame.isValid() )
     Magick::CloneString( &montageInfo_.frame, _frame );
 
-  if ( _matteColor.isValid() )
-    montageInfo_.matte_color = _matteColor;
+  montageInfo_.matte_color = _matteColor;
 }

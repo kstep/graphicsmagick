@@ -402,6 +402,7 @@ int main( int /*argc*/, char ** argv)
       montageOpts.font( font );
       montageOpts.pointSize( 18 );
       montageOpts.fillColor( "#600" );
+      montageOpts.strokeColor( Color() );
       montageOpts.fileName( "Magick++ Demo" );
       montageImages( &montage, images.begin(), images.end(), montageOpts );
     }

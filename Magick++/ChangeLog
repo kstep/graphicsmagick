@@ -1,3 +1,9 @@
+2001-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Montage.cpp (updateMontageInfo): Bugfix; colors which were
+ 	intentionally specified as invalid (unset) were being ignored.
+  	This produced unattractive label text when doing a montage.
+
 2001-07-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (medianFilterImage): Changed argument from

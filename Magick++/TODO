@@ -2,6 +2,9 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+* Add read/write methods to support user-supplied BLOBs which are
+  supplied in raw form rather than via a Blob object.
+
 * Use verbose flag on image to enable run-time tracing.
 
 * Add microtimer support for image processing operations so that the
