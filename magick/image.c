@@ -4208,6 +4208,9 @@ static const char *ColorspaceTypeToString(const ColorspaceType colorspace)
     case HWBColorspace:
       log_colorspace="HWB";
       break;
+    case LABColorspace:
+      log_colorspace="LAB";
+      break;
     }
   return log_colorspace;
 }

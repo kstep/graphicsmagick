@@ -51,6 +51,7 @@ typedef struct _MagickMapObject
 
   unsigned long
     signature;
+
 } MagickMapObject;
 
 /*
@@ -452,6 +453,7 @@ MagickMapAllocateMap(MagickMapObjectClone clone,
       map->list=0;
       map->signature=MagickSignature;
     }
+
   return map;
 }
 
@@ -1048,7 +1050,9 @@ MagickMapRemoveEntry(MagickMap map,const char *key)
 MagickExport void *
 MagickMapCopyString(const void *string, const size_t size)
 {
-  return (void *) AllocateString((const char *)string);
+  if (string)
+    return (void *) AcquireString((const char *)string);
+  return 0;
 }
 
 /*
@@ -1110,14 +1114,17 @@ MagickMapDeallocateString(void *string)
 MagickExport void *
 MagickMapCopyBlob(const void *blob, const size_t size)
 {
-  void
-    *memory;
+  if (blob)
+    {
+      void
+        *memory;
 
-  memory=MagickAllocateMemory(void *,size);
-  if (memory)
-    memcpy(memory,blob,size);
-
-  return (memory);
+      memory=MagickAllocateMemory(void *,size);
+      if (memory)
+        memcpy(memory,blob,size);
+      return (memory);
+    }
+  return 0;
 }
 
 /*

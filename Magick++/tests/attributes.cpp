@@ -1504,7 +1504,6 @@ int main( int /*argc*/, char ** argv)
              << ", yResolution default (" << image.yResolution()
              << ") is not zero as expected" << endl;
       }
-
   }
   catch( Exception &error_ )
     {

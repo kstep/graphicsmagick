@@ -56,12 +56,19 @@
 2003-12-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> tests/maptest.c (main): Extended test to add an entry to the
+        list after an entry has already been removed.
+  <LI> magick/image.c (ColorspaceTypeToString): Add support for LAB
+        colorspace.<BR>
   <LI> magick/map.c: Added signature members to all structures and
         added assertions to ensure that the signature == MagickSignature
         prior to use. MagickMapAllocateObject now initializes the object
         reference count to one, and MagickMapDestroyObject decrements it
         in order to be more correct even though the object reference count
         is not actually used yet.<BR>
+        (MagickMapCopyString): Preserve a null argument, and use
+        AcquireString since it doesn't enlarge the string storage.
+        (MagickMapCopyBlob): Preserve null blobs.
   <LI> configure.ac: Search for the shmctl() function.  Under current
         Cygwin, this is hiding in -lcygipc.
 
