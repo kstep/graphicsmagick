@@ -2223,8 +2223,8 @@ Magick::Image  Magick::Image::penTexture ( void  ) const
       GetExceptionInfo( &exceptionInfo );
       MagickLib::Image* image =
 	CloneImage( const_cast<MagickLib::Image *>(tmpTexture),
-			       tmpTexture->columns,
-			       tmpTexture->rows,
+			       0,
+			       0,
 			       (int)true,
 			       &exceptionInfo);
       texture.replaceImage( image );

@@ -285,8 +285,8 @@ void Magick::Options::penTexture ( const MagickLib::Image *penTexture_ )
       GetExceptionInfo( &exceptionInfo );
       _drawInfo->tile =
 	CloneImage( const_cast<MagickLib::Image*>(penTexture_),
-		    penTexture_->columns,
-		    penTexture_->rows,
+		    0,
+		    0,
 		    (int)true,
 		    &exceptionInfo );
       throwException( exceptionInfo );
