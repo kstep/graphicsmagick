@@ -760,7 +760,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
     /*
       Locate file via registry key.
     */
-    key_value=XPRegistryKeyLookup("ConfigurePath");
+    key_value=NTRegistryKeyLookup("ConfigurePath");
     if (key_value != (char *) NULL)
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
@@ -833,7 +833,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   if (IsAccessible(path))
     return(FileToBlob(path,length,exception));
 #if defined(WIN32)
-  return(XPResourceToBlob(filename));
+  return(NTResourceToBlob(filename));
 #endif
 #endif
   ThrowException(exception,ConfigureError,"Unable to access configure file",
@@ -890,7 +890,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
     /*
       Locate path via registry key.
     */
-    key_value=XPRegistryKeyLookup("ModulesPath");
+    key_value=NTRegistryKeyLookup("ModulesPath");
     if (key_value != (char *) NULL)
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
@@ -966,7 +966,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
   if (IsAccessible(path))
     return(FileToBlob(path,length,exception));
 #if defined(WIN32)
-  return(XPResourceToBlob(path));
+  return(NTResourceToBlob(path));
 #endif
 #endif
   ThrowException(exception,ConfigureError,"Unable to access module file",
@@ -1036,7 +1036,7 @@ MagickExport void *GetTypeBlob(const char *filename,char *path,
     /*
       Locate file via registry key.
     */
-    key_value=XPRegistryKeyLookup("ConfigurePath");
+    key_value=NTRegistryKeyLookup("ConfigurePath");
     if (key_value != (char *) NULL)
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
@@ -1084,7 +1084,7 @@ MagickExport void *GetTypeBlob(const char *filename,char *path,
   if (IsAccessible(path))
     return(FileToBlob(path,length,exception));
 #if defined(WIN32)
-  return(XPResourceToBlob(filename));
+  return(NTResourceToBlob(filename));
 #endif
 #endif
   ThrowException(exception,ConfigureError,"Unable to access font file",

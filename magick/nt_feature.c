@@ -3,11 +3,12 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                                 X   X  PPPP                                 %
-%                                  X X   P   P                                %
-%                                   X    PPPP                                 %
-%                                  X X   P                                    %
-%                                 X   X  P                                    %
+%                                                                             %
+%                                 N   N  TTTTT                                %
+%                                 NN  N    T                                  %
+%                                 N N N    T                                  %
+%                                 N  NN    T                                  %
+%                                 N   N    T                                  %
 %                                                                             %
 %                                                                             %
 %                  Windows NT Feature Methods for ImageMagick                 %
@@ -86,7 +87,7 @@
 %
 %
 */
-MagickExport unsigned int XPIsMagickConflict(const char *magick)
+MagickExport unsigned int NTIsMagickConflict(const char *magick)
 {
   assert(magick != (char *) NULL);
   if (strlen(magick) > 1)
@@ -105,14 +106,14 @@ MagickExport unsigned int XPIsMagickConflict(const char *magick)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XPGetTypeList returns a TypeInfo list corresponding to installed
+%  Method NTGetTypeList returns a TypeInfo list corresponding to installed
 %  Windows TrueType fonts. The user is responsible for destroying the
 %  returned list once it is no longer needed. NULL is returned if a fatal
 %  error is encountered.
 %
-%  The format of the XPGetTypeList method is:
+%  The format of the NTGetTypeList method is:
 %
-%      TypeInfo* XPGetTypeList( void )
+%      TypeInfo* NTGetTypeList( void )
 %
 %  A description of each parameter follows:
 %
@@ -129,7 +130,7 @@ static int TypeInfoCompare(const void *x,const void *y)
   info_2=(TypeInfo **) y;
   return( strcmp((*info_1)->name, (*info_2)->name) );
 }
-MagickExport TypeInfo* XPGetTypeList( void )
+MagickExport TypeInfo* NTGetTypeList( void )
 {
   TypeInfo
     *type_list;

@@ -3,14 +3,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                                 X   X  PPPP                                 %
-%                                  X X   P   P                                %
-%                                   X    PPPP                                 %
-%                                  X X   P                                    %
-%                                 X   X  P                                    %
+%                                 N   N  TTTTT                                %
+%                                 NN  N    T                                  %
+%                                 N N N    T                                  %
+%                                 N  NN    T                                  %
+%                                 N   N    T                                  %
 %                                                                             %
 %                                                                             %
-%                  Windows XP Utility Methods for ImageMagick                 %
+%                  Windows NT Utility Methods for ImageMagick                 %
 %                                                                             %
 %                                                                             %
 %                               Software Design                               %
@@ -674,16 +674,16 @@ MagickExport int munmap(void *map,size_t length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XPElapsedTime returns the elapsed time (in seconds) since the last
+%  Method NTElapsedTime returns the elapsed time (in seconds) since the last
 %  call to StartTimer().
 %
 %  The format of the ElapsedTime method is:
 %
-%      double XPElapsedTime(void)
+%      double NTElapsedTime(void)
 %
 %
 */
-MagickExport double XPElapsedTime(void)
+MagickExport double NTElapsedTime(void)
 {
   union
   {
@@ -774,15 +774,15 @@ MagickExport void NTErrorHandler(const ExceptionType error,const char *reason,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XPGetExecutionPath returns the execution path of a program.
+%  Method NTGetExecutionPath returns the execution path of a program.
 %
 %  The format of the GetExecutionPath method is:
 %
-%      unsigned int XPGetExecutionPath(char *path)
+%      unsigned int NTGetExecutionPath(char *path)
 %
 %
 */
-MagickExport unsigned int XPGetExecutionPath(char *path)
+MagickExport unsigned int NTGetExecutionPath(char *path)
 {
   GetModuleFileName(0,path,MaxTextExtent);
   return(True);
@@ -1195,12 +1195,12 @@ MagickExport const GhostscriptVectors *NTGhostscriptDLLVectors( void )
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method XPGhostscriptEXE obtains the path to the latest Ghostscript
+%   Method NTGhostscriptEXE obtains the path to the latest Ghostscript
 %   executable.  The method returns False if a value is not obtained.
 %
-%  The format of the XPGhostscriptEXE method is:
+%  The format of the NTGhostscriptEXE method is:
 %
-%      int XPGhostscriptEXE(char *path, int path_length)
+%      int NTGhostscriptEXE(char *path, int path_length)
 %
 %  A description of each parameter follows:
 %
@@ -1209,7 +1209,7 @@ MagickExport const GhostscriptVectors *NTGhostscriptDLLVectors( void )
 %    o path_length: Length of buffer
 %
 */
-MagickExport int XPGhostscriptEXE(char *path, int path_length)
+MagickExport int NTGhostscriptEXE(char *path, int path_length)
 {
   int
     gsver;
@@ -1249,12 +1249,12 @@ MagickExport int XPGhostscriptEXE(char *path, int path_length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method XPGhostscriptFonts obtains the path to the Ghostscript fonts.
+%   Method NTGhostscriptFonts obtains the path to the Ghostscript fonts.
 %   The method returns False if a value is not obtained.
 %
-%  The format of the XPGhostscriptFonts method is:
+%  The format of the NTGhostscriptFonts method is:
 %
-%      int XPGhostscriptFonts(char *path, int path_length)
+%      int NTGhostscriptFonts(char *path, int path_length)
 %
 %  A description of each parameter follows:
 %
@@ -1263,7 +1263,7 @@ MagickExport int XPGhostscriptEXE(char *path, int path_length)
 %    o path_length: Length of buffer
 %
 */
-MagickExport int XPGhostscriptFonts(char *path, int path_length)
+MagickExport int NTGhostscriptFonts(char *path, int path_length)
 {
   int
     gsver;
@@ -1354,15 +1354,15 @@ MagickExport int NTGhostscriptLoadDLL(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method XPGhostscriptUnLoadDLL unloads the Ghostscript DLL if it is loaded.
+%   Method NTGhostscriptUnLoadDLL unloads the Ghostscript DLL if it is loaded.
 %
-%  The format of the XPGhostscriptUnLoadDLL method is:
+%  The format of the NTGhostscriptUnLoadDLL method is:
 %
-%      int XPGhostscriptUnLoadDLL(void)
+%      int NTGhostscriptUnLoadDLL(void)
 %
 %%
 */
-MagickExport int XPGhostscriptUnLoadDLL(void)
+MagickExport int NTGhostscriptUnLoadDLL(void)
 {
   if (gs_dll_handle != (void *) NULL)
     {
@@ -1386,7 +1386,7 @@ MagickExport int XPGhostscriptUnLoadDLL(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XPRegistryKeyLookup returns ImageMagick installation path settings
+%  Method NTRegistryKeyLookup returns ImageMagick installation path settings
 %  stored in the Windows Registry. Path settings are specific to the
 %  installed ImageMagick version so that multiple ImageMagick installations
 %  may coexist.
@@ -1394,9 +1394,9 @@ MagickExport int XPGhostscriptUnLoadDLL(void)
 %  Values are stored in the registry under a path path similar to
 %  "HKEY_LOCAL_MACHINE/SOFTWARE/ImageMagick/5.4.7/LibPath".
 %
-%  The format of the XPRegistryKeyLookup method is:
+%  The format of the NTRegistryKeyLookup method is:
 %
-%      char *XPRegistryKeyLookup(const char *key)
+%      char *NTRegistryKeyLookup(const char *key)
 %
 %  A description of each parameter follows:
 %
@@ -1405,7 +1405,7 @@ MagickExport int XPGhostscriptUnLoadDLL(void)
 %           "BinPath", "LibPath", "ModulesPath", and "SharePath".
 %
 */
-MagickExport char *XPRegistryKeyLookup(const char *key)
+MagickExport char *NTRegistryKeyLookup(const char *key)
 {
   static HKEY
     reg_key = (HKEY) INVALID_HANDLE_VALUE;
@@ -1473,14 +1473,14 @@ MagickExport char *XPRegistryKeyLookup(const char *key)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XPResourceToBlob returns a blob containing the contents of the
+%  Method NTResourceToBlob returns a blob containing the contents of the
 %  resource in the current executable specified by the id parameter. This
 %  is currently used to retrieve MGK files tha have been embedded into
 %  the various command line utilities.
 %
 %  The format of the telldir method is:
 %
-%      unsigned char *XPResourceToBlob(const char *id)
+%      unsigned char *NTResourceToBlob(const char *id)
 %
 %  A description of each parameter follows:
 %
@@ -1488,7 +1488,7 @@ MagickExport char *XPRegistryKeyLookup(const char *key)
 %
 %
 */
-MagickExport unsigned char *XPResourceToBlob(const char *id)
+MagickExport unsigned char *NTResourceToBlob(const char *id)
 {
   char
     directory[MaxTextExtent];
@@ -1553,12 +1553,12 @@ MagickExport unsigned char *XPResourceToBlob(const char *id)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method XPSystemComman executes the specified command and waits until it
+%   Method NTSystemComman executes the specified command and waits until it
 %   terminates.  The returned value is the exit status of the command.
 %
-%  The format of the XPSystemComman method is:
+%  The format of the NTSystemComman method is:
 %
-%      int XPSystemComman(const char *command)
+%      int NTSystemComman(const char *command)
 %
 %  A description of each parameter follows:
 %
@@ -1566,7 +1566,7 @@ MagickExport unsigned char *XPResourceToBlob(const char *id)
 %
 %
 */
-MagickExport int XPSystemComman(const char *command)
+MagickExport int NTSystemComman(const char *command)
 {
   char
     local_command[MaxTextExtent];
@@ -1629,16 +1629,16 @@ MagickExport int XPSystemComman(const char *command)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XPUserTime returns the total time the process has been scheduled (i
+%  Method NTUserTime returns the total time the process has been scheduled (i
 %  seconds) since the last call to StartTimer().
 %
 %  The format of the UserTime method is:
 %
-%      double XPUserTime(void)
+%      double NTUserTime(void)
 %
 %
 */
-MagickExport double XPUserTime(void)
+MagickExport double NTUserTime(void)
 {
   DWORD
     status;
@@ -1671,7 +1671,7 @@ MagickExport double XPUserTime(void)
   OsVersionInfo.dwOSVersionInfoSize=sizeof(OSVERSIONINFO);
   GetVersionEx(&OsVersionInfo);
   if (OsVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
-    return(XPElapsedTime());
+    return(NTElapsedTime());
   status=GetProcessTimes(GetCurrentProcess(),&create_time,&exit_time,
     &kernel_time.filetime,&user_time.filetime);
   if (status != TRUE)

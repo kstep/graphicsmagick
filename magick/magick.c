@@ -98,7 +98,7 @@ MagickExport void DestroyMagick(void)
   DestroySemaphore();
 #if defined(WIN32)
   DestroyTracingCriticalSection();
-  XPGhostscriptUnLoadDLL();
+  NTGhostscriptUnLoadDLL();
 #endif
 }
 
@@ -423,7 +423,7 @@ MagickExport int unsigned IsMagickConflict(const char *magick)
   return(VMSIsMagickConflict(magick));
 #endif
 #if defined(WIN32) || defined(__CYGWIN__)
-  return(XPIsMagickConflict(magick));
+  return(NTIsMagickConflict(magick));
 #endif
   return(False);
 }

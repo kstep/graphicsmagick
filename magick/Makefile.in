@@ -269,11 +269,11 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
 
 
 # Platform specific source files that may appear in the library
-EXTRA_libMagick_la_SOURCES = xp_base.c xp_feature.c
+EXTRA_libMagick_la_SOURCES = nt_base.c nt_feature.c
 
 @CYGWIN_BUILD_FALSE@@WIN32_NATIVE_BUILD_FALSE@MAGICK_PLATFORM_SRCS = 
-@CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@MAGICK_PLATFORM_SRCS = xp_feature.c
-@WIN32_NATIVE_BUILD_TRUE@MAGICK_PLATFORM_SRCS = xp_base.c xp_feature.c
+@CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@MAGICK_PLATFORM_SRCS = nt_feature.c
+@WIN32_NATIVE_BUILD_TRUE@MAGICK_PLATFORM_SRCS = nt_base.c nt_feature.c
 
 # Library sources
 @WITH_MODULES_TRUE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
@@ -293,11 +293,11 @@ include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h \
 
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h display.h mac.h xp_base.h xp_feature.h studio.h vms.h
+noinst_HEADERS = animate.h display.h mac.h nt_base.h nt_feature.h studio.h vms.h
 
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk Magick-config.in \
-  Magick-config.in Make.com mac.c xp_base.c xp_feature.c vms.c $(MAGICK_BASE_SRCS)
+  Magick-config.in Make.com mac.c nt_base.c nt_feature.c vms.c $(MAGICK_BASE_SRCS)
 
 
 # Where configuration files get installed
@@ -332,8 +332,8 @@ am__objects_1 = memory.lo blob.lo cache.lo locale.lo error.lo monitor.lo \
 	widget.lo xwindow.lo PreRvIcccm.lo version.lo
 @CYGWIN_BUILD_FALSE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 =
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 = \
-@CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@	xp_feature.lo
-@WIN32_NATIVE_BUILD_TRUE@am__objects_2 = xp_base.lo xp_feature.lo
+@CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@	nt_feature.lo
+@WIN32_NATIVE_BUILD_TRUE@am__objects_2 = nt_base.lo nt_feature.lo
 @WITH_MODULES_TRUE@am_libMagick_la_OBJECTS = $(am__objects_1) \
 @WITH_MODULES_TRUE@	$(am__objects_2)
 @WITH_MODULES_FALSE@am_libMagick_la_OBJECTS = $(am__objects_1) \
@@ -363,7 +363,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/magic.Plo ./$(DEPDIR)/magick.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/memory.Plo ./$(DEPDIR)/module.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/monitor.Plo ./$(DEPDIR)/montage.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/xp_base.Plo ./$(DEPDIR)/xp_feature.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/nt_base.Plo ./$(DEPDIR)/nt_feature.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/quantize.Plo ./$(DEPDIR)/registry.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/render.Plo ./$(DEPDIR)/resize.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/segment.Plo ./$(DEPDIR)/semaphore.Plo \
@@ -512,8 +512,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/module.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/monitor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/montage.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xp_base.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xp_feature.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nt_base.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nt_feature.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quantize.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/registry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/render.Plo@am__quote@

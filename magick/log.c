@@ -229,7 +229,7 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
     /*
       Locate file via registry key.
     */
-    key_value=XPRegistryKeyLookup("LogPath");
+    key_value=NTRegistryKeyLookup("LogPath");
     if (key_value != (char *) NULL)
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
@@ -296,7 +296,7 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
   if (IsLogAccessible(path))
     return(LogToBlob(path,length,exception));
 #if defined(WIN32)
-  return(XPResourceToBlob(filename));
+  return(NTResourceToBlob(filename));
 #endif
 #endif
   return((void *) NULL);

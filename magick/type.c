@@ -184,7 +184,7 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
         TypeInfo
           *type_info;
 
-        type_info=XPGetTypeList();
+        type_info=NTGetTypeList();
         if (type_info != (TypeInfo *) NULL)
           {
             if (type_list == (TypeInfo *) NULL)
@@ -713,7 +713,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                 char
                   path[MaxTextExtent];
 
-                XPGhostscriptFonts(path,MaxTextExtent-2);
+                NTGhostscriptFonts(path,MaxTextExtent-2);
                 (void) strcat(path,DirectorySeparator);
                 SubstituteString(&glyphs,"@ghostscript_font_dir@",path);
               }
@@ -739,7 +739,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                 char
                   path[MaxTextExtent];
 
-                XPGhostscriptFonts(path,MaxTextExtent-2);
+                NTGhostscriptFonts(path,MaxTextExtent-2);
                 (void) strcat(path,DirectorySeparator);
                 SubstituteString(&metrics,"@ghostscript_font_dir@",path);
               }

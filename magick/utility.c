@@ -961,7 +961,7 @@ MagickExport unsigned int GetExecutionPath(char *path)
 {
   *path='\0';
 #if defined(WIN32)
-  return(XPGetExecutionPath(path));
+  return(NTGetExecutionPath(path));
 #endif
 #if defined(HAVE_GETEXECNAME)
   {
@@ -3170,7 +3170,7 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
   status=MACSystemCommand(command);
 #endif
 #if defined(WIN32)
-  status=XPSystemComman(command);
+  status=NTSystemComman(command);
 #endif
   if (verbose)
     MagickError(DelegateError,command,!status ? strerror(status) :

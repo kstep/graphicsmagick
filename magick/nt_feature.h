@@ -22,7 +22,7 @@ extern "C" {
   NT features routines.
 */
 extern MagickExport char
-  *XPRegistryKeyLookup(const char *key);
+  *NTRegistryKeyLookup(const char *key);
 
 extern MagickExport HBITMAP 
 	ImageToHBITMAP(Image* image);
@@ -30,10 +30,10 @@ extern MagickExport HBITMAP
 #if !defined(XS_VERSION)
 
 extern MagickExport unsigned int
-  XPIsMagickConflict(const char *);
+  NTIsMagickConflict(const char *);
 
 extern MagickExport TypeInfo
-  * XPGetTypeList( void );
+  * NTGetTypeList( void );
 
 #endif /* !XS_VERSION */
 
