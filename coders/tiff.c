@@ -1507,7 +1507,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       WriteNewsProfile(tiff,TIFFTAG_RICHTIFFIPTC,image);
 #endif
 #endif
-    if (GetNumberScenes(image) > 1)
+    if (image_info->adjoin && (GetNumberScenes(image) > 1))
       {
         TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
         TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short) image->scene,
