@@ -457,6 +457,7 @@ ModuleExport void RegisterJP2Image(void)
   entry->module=AcquireString("JP2");
   entry->magick=(MagickHandler) IsJP2;
   entry->adjoin=False;
+  entry->seekable_stream=True;
   entry->thread_support=False;
 #if defined(HasJP2)
   entry->decoder=(DecoderHandler) ReadJP2Image;
@@ -468,6 +469,7 @@ ModuleExport void RegisterJP2Image(void)
   entry->module=AcquireString("JPC");
   entry->magick=(MagickHandler) IsJPC;
   entry->adjoin=False;
+  entry->seekable_stream=True;
   entry->thread_support=False;
 #if defined(HasJP2)
   entry->decoder=(DecoderHandler) ReadJP2Image;
