@@ -3168,7 +3168,7 @@ MagickExport unsigned int IsImageTainted(const Image *image)
 %
 %    o geometry: This string is the geometry specification.
 %
-%    o pedantic: A value other than 0 invokes a more restriction set of
+%    o pedantic: A value other than 0 invokes a more restrictive set of
 %      conditions for a valid specification (e.g. [1], [1-4], [4-1]).
 %
 %
