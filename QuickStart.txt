@@ -44,13 +44,14 @@ Unix/Linux/Cygwin Install:
 
       gunzip -c ImageMagick-5.2.9.tar.gz | tar xvf -
       cd ImageMagick-5.2.9
-      ./configure
+      ./configure -prefix=/usr/local
       make
       make install
       identify -verbose logo:
 
   Alternatively, download the appropriate binary from
-  ftp://ftp.simplesystems.org/pub/ImageMagick/binaries.
+  ftp://ftp.simplesystems.org/pub/ImageMagick/binaries.  The Unix
+  binaries must be installed in the /usr/local heirarchy.
 
 
 Win2K, NT, Win98, Win95 Install:
