@@ -2804,13 +2804,15 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 3)
           {
-            status=False;
+            primitive_type=UndefinedPrimitive;
             break;
           }
-        TraceArc(primitive_info+j,primitive_info[j].point,
-          primitive_info[j+1].point,primitive_info[j+2].point,0,True,False);
+        point.x=primitive_info[j+1].point.x/2;
+        point.y=primitive_info[j+1].point.y/2;
+        TraceEllipse(primitive_info+j,primitive_info[j].point,point,
+          primitive_info[j+2].point);
         i=(long) (j+primitive_info[j].coordinates);
-        break;
+      	break;
       }
       case EllipsePrimitive:
       {
