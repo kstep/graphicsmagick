@@ -1030,7 +1030,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("strokewidth",option+1,2) == 0)
+          if (LocaleNCompare("strokewidth",option+1,6) == 0)
             {
               if (*option == '-')
                 {
