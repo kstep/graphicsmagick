@@ -432,14 +432,15 @@ static int magickCmd(
 
     case TM_RESOURCE:      /* resourcelimit resourceType ?limit? */
     {
-        long limit;
+        unsigned long limit;
         int  resourceIdx;
 
 	if( (objc != 3) && (objc != 4) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "resourceType ?limit?");
 	    return TCL_ERROR;
 	}
-	if (Tcl_GetIndexFromObj(interp, objv[2], resourceNames, "resourceType", 0, &resourceIdx) != TCL_OK) {
+	if (Tcl_GetIndexFromObj(interp, objv[2], resourceNames,
+				"resourceType", 0, &resourceIdx) != TCL_OK) {
 	    return TCL_ERROR;
 	}
 	if (objc == 3) {
@@ -458,7 +459,7 @@ static int magickCmd(
 	     * Get channel depth
 	     */
 	    limit = MagickGetResourceLimit(resourceTypes[resourceIdx]);
-	    Tcl_SetObjResult(interp, Tcl_NewLongObj(limit));
+	    Tcl_SetObjResult(interp, Tcl_NewLongObj((long)limit));
 	}
 	break;
     }
@@ -484,7 +485,7 @@ static int magickCmd(
             listPtr = Tcl_NewListObj(0, NULL);
 	    for( i=0; i < listLen; i++ ) {
                 Tcl_ListObjAppendElement(interp, listPtr,
-					 Tcl_NewStringObj(fonts[i], strlen(fonts[i])) );
+					 Tcl_NewStringObj(fonts[i], (int)strlen(fonts[i])) );
             }
     	    Tcl_SetObjResult(interp, listPtr);
         }
@@ -513,7 +514,8 @@ static int magickCmd(
 	if( (fonts != NULL) && (listLen > 0) ) {
             listPtr = Tcl_NewListObj(0, NULL);
 	    for( i=0; i < listLen; i++ ) {
-                Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(fonts[i], strlen(fonts[i])) );
+                Tcl_ListObjAppendElement(interp, listPtr,
+					 Tcl_NewStringObj(fonts[i], (int)strlen(fonts[i])) );
             }
     	    Tcl_SetObjResult(interp, listPtr);
         }
@@ -1000,7 +1002,7 @@ static int wandObjCmd(
         CharcoalDrawingPreview, JPEGPreview
     };
 
-    int index, stat, result;
+    int index, stat, result=TCL_OK;
     TclMagickObj *magickPtr = (TclMagickObj *) clientData;
     MagickWand   *wandPtr   = (MagickWand *) magickPtr->wandPtr;
 
@@ -1027,20 +1029,21 @@ static int wandObjCmd(
     case TM_ADAPTIVE:                   /* adaptive ?width? ?height? ?ofs? */
     case TM_ADAPTIVE_THRESHOLD_IMAGE:   /* AdaptiveThresholdImage ?width? ?height? ?ofs? */
     {
-	int width=1, height=1, ofs=0;
+	unsigned long width=1, height=1;
+	long ofs=0;
 
 	if( (objc > 5) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?width? ?height? ?ofs?");
 	    return TCL_ERROR;
 	}
-	if( (objc > 2) && ((stat = Tcl_GetIntFromObj(interp, objv[2], &width)) != TCL_OK) ) {
+	if( (objc > 2) && ((stat = Tcl_GetLongFromObj(interp, objv[2], &width)) != TCL_OK) ) {
 	    return stat;
 	}
 	height = width; /* default */
-	if( (objc > 3) && ((stat = Tcl_GetIntFromObj(interp, objv[3], &height)) != TCL_OK) ) {
+	if( (objc > 3) && ((stat = Tcl_GetLongFromObj(interp, objv[3], &height)) != TCL_OK) ) {
 	    return stat;
 	}
-	if( (objc > 4) && ((stat = Tcl_GetIntFromObj(interp, objv[4], &ofs)) != TCL_OK) ) {
+	if( (objc > 4) && ((stat = Tcl_GetLongFromObj(interp, objv[4], &ofs)) != TCL_OK) ) {
 	    return stat;
 	}
 
@@ -1157,7 +1160,7 @@ static int wandObjCmd(
     case TM_APPEND:         /* append ?stack=0? ?newName? */
     case TM_APPEND_IMAGES:  /* AppendImages ?stack=0? ?newName? */
     {
-	int stack=0;
+	unsigned int stack=0;
 	MagickWand *newWand;
 	char *name=NULL;
 
@@ -1252,7 +1255,7 @@ static int wandObjCmd(
     case TM_BORDER:        /* border borderPixel ?width? ?height? */
     case TM_BORDER_IMAGE:  /* BorderImage borderPixel ?width? ?height? */
     {
-	int	    width=1, height=1;
+	unsigned long width=1, height=1;
 	char        *name;
 	PixelWand   *borderPtr;
 
@@ -1264,11 +1267,11 @@ static int wandObjCmd(
 	if( (borderPtr = findPixelWand(interp, name)) == NULL ) {
 	    return TCL_ERROR;
 	}
-	if( (objc > 3) && ((stat = Tcl_GetIntFromObj(interp, objv[3], &width)) != TCL_OK) ) {
+	if( (objc > 3) && ((stat = Tcl_GetLongFromObj(interp, objv[3], &width)) != TCL_OK) ) {
 	    return stat;
 	}
 	height = width; /* default */
-	if( (objc > 4) && ((stat = Tcl_GetIntFromObj(interp, objv[4], &height)) != TCL_OK) ) {
+	if( (objc > 4) && ((stat = Tcl_GetLongFromObj(interp, objv[4], &height)) != TCL_OK) ) {
 	    return stat;
 	}
 
@@ -1323,22 +1326,23 @@ static int wandObjCmd(
     case TM_CHOP:        /* chop width height ?x y? */
     case TM_CHOP_IMAGE:  /* ChopImage width height ?x y? */
     {
-	int width, height, x=0, y=0;
+	unsigned long width, height;
+	long x=0, y=0;
 
 	if( (objc < 4) || (objc > 6) || (objc == 5) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "width height ?x=0 y=0?");
 	    return TCL_ERROR;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[2], &width)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[2], &width)) != TCL_OK ) {
 	    return stat;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[3], &height)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[3], &height)) != TCL_OK ) {
 	    return stat;
 	}
-	if( (objc > 4) && ((stat = Tcl_GetIntFromObj(interp, objv[4], &x)) != TCL_OK) ) {
+	if( (objc > 4) && ((stat = Tcl_GetLongFromObj(interp, objv[4], &x)) != TCL_OK) ) {
 	    return stat;
 	}
-	if( (objc > 5) && ((stat = Tcl_GetIntFromObj(interp, objv[5], &y)) != TCL_OK) ) {
+	if( (objc > 5) && ((stat = Tcl_GetLongFromObj(interp, objv[5], &y)) != TCL_OK) ) {
 	    return stat;
 	}
 	result = MagickChopImage(wandPtr, width, height, x, y);
@@ -1366,7 +1370,7 @@ static int wandObjCmd(
     case TM_CLIP_PATH:          /* clip pathname ?inside=0? */
     case TM_CLIP_PATH_IMAGE:    /* ClipImage pathname ?inside=0? */
     {
-	int inside=0;
+	unsigned int inside=0;
 	char *pathname=NULL;
 
 	if( (objc < 3) || (objc > 4) ) {
@@ -1607,7 +1611,7 @@ static int wandObjCmd(
     case TM_CONTRAST:        /* contrast ?sharpen? */
     case TM_CONTRAST_IMAGE:  /* ContrastImage ?sharpen? */
     {
-	int sharpen=1;
+	unsigned int sharpen=1;
 
 	if( objc > 3 ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?sharpen=yes?");
@@ -1626,7 +1630,8 @@ static int wandObjCmd(
     case TM_CONVOLVE:       /* convolve order kernelList */
     case TM_CONVOLVE_IMAGE: /* ConvolveImage order kernelList */
     {
-	int     i, order, listLen;
+	int     i, listLen;
+	unsigned long order;
 	double  *kernel;
 	Tcl_Obj **listPtr;
 
@@ -1634,7 +1639,7 @@ static int wandObjCmd(
 	    Tcl_WrongNumArgs(interp, 2, objv, "order kernelList");
 	    return TCL_ERROR;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[2], &order)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[2], &order)) != TCL_OK ) {
 	    return stat;
 	}
 	if( (stat = Tcl_ListObjGetElements(interp, objv[3], &listLen, &listPtr)) != TCL_OK) {
@@ -1666,22 +1671,23 @@ static int wandObjCmd(
     case TM_CROP:        /* crop width height ?x y? */
     case TM_CROP_IMAGE:  /* CropImage width height ?x y? */
     {
-	int width, height, x=0, y=0;
+	unsigned long width, height;
+	long x=0, y=0;
 
 	if( (objc < 4) || (objc > 6) || (objc == 5) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "width height ?x=0 y=0?");
 	    return TCL_ERROR;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[2], &width)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[2], &width)) != TCL_OK ) {
 	    return stat;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[3], &height)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[3], &height)) != TCL_OK ) {
 	    return stat;
 	}
-	if( (objc > 4) && ((stat = Tcl_GetIntFromObj(interp, objv[4], &x)) != TCL_OK) ) {
+	if( (objc > 4) && ((stat = Tcl_GetLongFromObj(interp, objv[4], &x)) != TCL_OK) ) {
 	    return stat;
 	}
-	if( (objc > 5) && ((stat = Tcl_GetIntFromObj(interp, objv[5], &y)) != TCL_OK) ) {
+	if( (objc > 5) && ((stat = Tcl_GetLongFromObj(interp, objv[5], &y)) != TCL_OK) ) {
 	    return stat;
 	}
 	result = MagickCropImage(wandPtr, width, height, x, y);
@@ -1909,7 +1915,8 @@ static int wandObjCmd(
     case TM_FRAME:          /* frame framePixel ?width? ?height? ?inner? ?outer? */
     case TM_FRAME_IMAGE:    /* FrameImage framePixel ?width? ?height? ?inner? ?outer? */
     {
-	int	        width=1, height=1, inner=0, outer=0;
+	unsigned long width=1, height=1;
+	long inner=0, outer=0;
 	char        *name;
 	PixelWand	*framePtr;
 
@@ -1921,18 +1928,18 @@ static int wandObjCmd(
 	if( (framePtr = findPixelWand(interp, name)) == NULL ) {
 	    return TCL_ERROR;
 	}
-	if( (objc > 3) && ((stat = Tcl_GetIntFromObj(interp, objv[3], &width)) != TCL_OK) ) {
+	if( (objc > 3) && ((stat = Tcl_GetLongFromObj(interp, objv[3], &width)) != TCL_OK) ) {
 	    return stat;
 	}
 	height = width; /* default */
-	if( (objc > 4) && ((stat = Tcl_GetIntFromObj(interp, objv[4], &height)) != TCL_OK) ) {
+	if( (objc > 4) && ((stat = Tcl_GetLongFromObj(interp, objv[4], &height)) != TCL_OK) ) {
 	    return stat;
 	}
-	if( (objc > 5) && ((stat = Tcl_GetIntFromObj(interp, objv[5], &inner)) != TCL_OK) ) {
+	if( (objc > 5) && ((stat = Tcl_GetLongFromObj(interp, objv[5], &inner)) != TCL_OK) ) {
 	    return stat;
 	}
 	outer = inner; /* default */
-	if( (objc > 6) && ((stat = Tcl_GetIntFromObj(interp, objv[6], &outer)) != TCL_OK) ) {
+	if( (objc > 6) && ((stat = Tcl_GetLongFromObj(interp, objv[6], &outer)) != TCL_OK) ) {
 	    return stat;
 	}
 
@@ -2193,7 +2200,7 @@ static int wandObjCmd(
     case TM_GET_CHANNEL_DEPTH:  /* GetChannelDepth channel */
     case TM_SET_CHANNEL_DEPTH:  /* SetChannelDepth channel depth */
     {
-        int depth;
+        unsigned long depth;
         int chanIdx;
 
 	if( ((enum subIndex)index == TM_CHANNEL_DEPTH) && (objc != 3) && (objc != 4) ) {
@@ -2215,7 +2222,7 @@ static int wandObjCmd(
 	    /*
 	     * Set channel depth
 	     */
-	    if( (stat = Tcl_GetIntFromObj(interp, objv[3], &depth)) != TCL_OK ) {
+	    if( (stat = Tcl_GetLongFromObj(interp, objv[3], &depth)) != TCL_OK ) {
 		return stat;
 	    }
 	    result = MagickSetImageChannelDepth(wandPtr, chanTypes[chanIdx], depth);
@@ -2227,7 +2234,7 @@ static int wandObjCmd(
 	     * Get channel depth
 	     */
 	    depth = MagickGetImageChannelDepth(wandPtr, chanTypes[chanIdx]);
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(depth));
+	    Tcl_SetObjResult(interp, Tcl_NewLongObj((long)depth));
 	}
 	break;
     }
@@ -2291,7 +2298,7 @@ static int wandObjCmd(
     case TM_SET_COLORMAP_COLOR:  /* SetColormapColor index pixel */
     {
 	char *name = NULL;
-        int  idx;
+        unsigned long idx;
         PixelWand *pixPtr = NULL;
 
 	if( ((enum subIndex)index == TM_SET_COLORMAP_COLOR) && (objc != 4) ) {
@@ -2302,7 +2309,7 @@ static int wandObjCmd(
 	    Tcl_WrongNumArgs(interp, 2, objv, "index ?pixel?");
 	    return TCL_ERROR;
 	}
-	if (Tcl_GetIntFromObj(interp, objv[2], &idx) != TCL_OK) {
+	if (Tcl_GetLongFromObj(interp, objv[2], &idx) != TCL_OK) {
 	    return TCL_ERROR;
 	}
 	if (objc > 3) { /* Set color / Get color with new name */
@@ -2393,7 +2400,7 @@ static int wandObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(cs));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)cs));
 	}
 	break;
     }
@@ -2439,7 +2446,7 @@ static int wandObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(op));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)op));
 	}
 	break;
     }
@@ -2485,7 +2492,7 @@ static int wandObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(cs));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)cs));
 	}
 	break;
     }
@@ -2494,7 +2501,7 @@ static int wandObjCmd(
     case TM_GET_DELAY:  /* GetDelay */
     case TM_SET_DELAY:  /* SetDelay delay */
     {
-        long delay;
+        unsigned long delay;
 
 	if( ((enum subIndex)index == TM_DELAY) && (objc > 3) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?delay?");
@@ -2524,7 +2531,7 @@ static int wandObjCmd(
 	     * Get delay
 	     */
 	    delay = MagickGetImageDelay(wandPtr);
-	    Tcl_SetObjResult(interp, Tcl_NewLongObj(delay));
+	    Tcl_SetObjResult(interp, Tcl_NewLongObj((long)delay));
 	}
 	break;
     }
@@ -2533,7 +2540,7 @@ static int wandObjCmd(
     case TM_GET_DEPTH:  /* GetDepth */
     case TM_SET_DEPTH:  /* SetDepth depth */
     {
-        long depth;
+        unsigned long depth;
 
 	if( ((enum subIndex)index == TM_DEPTH) && (objc > 3) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?depth?");
@@ -2563,7 +2570,7 @@ static int wandObjCmd(
 	     * Get depth
 	     */
 	    depth = MagickGetImageDepth(wandPtr);
-	    Tcl_SetObjResult(interp, Tcl_NewLongObj(depth));
+	    Tcl_SetObjResult(interp, Tcl_NewLongObj((long)depth));
 	}
 	break;
     }
@@ -2609,7 +2616,7 @@ static int wandObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(dispose));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)dispose));
 	}
 	break;
     }
@@ -2819,7 +2826,7 @@ static int wandObjCmd(
     case TM_GET_INDEX:  /* GetIndex */
     case TM_SET_INDEX:  /* SetIndex index */
     {
-        long idx;
+        unsigned long idx;
 
 	if( ((enum subIndex)index == TM_INDEX) && (objc > 3) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?index?");
@@ -2849,7 +2856,7 @@ static int wandObjCmd(
 	     * Get depth
 	     */
 	    idx = MagickGetImageIndex(wandPtr);
-	    Tcl_SetObjResult(interp, Tcl_NewLongObj(idx));
+	    Tcl_SetObjResult(interp, Tcl_NewLongObj((long)idx));
 	}
 	break;
     }
@@ -2877,7 +2884,8 @@ static int wandObjCmd(
 	    /*
 	     * Set interlace
 	     */
-            if (Tcl_GetIndexFromObj(interp, objv[2], interlaceNames, "interlaceType", 0, &interlaceIdx) != TCL_OK) {
+            if (Tcl_GetIndexFromObj(interp, objv[2], interlaceNames,
+				    "interlaceType", 0, &interlaceIdx) != TCL_OK) {
 	        return TCL_ERROR;
 	    }
 	    result = MagickSetImageInterlaceScheme(wandPtr, interlaceTypes[interlaceIdx]);
@@ -2889,13 +2897,15 @@ static int wandObjCmd(
 	     * Get interlace
 	     */
 	    interlace = MagickGetImageInterlaceScheme(wandPtr);
-	    for (interlaceIdx = 0; interlaceIdx < sizeof(interlaceTypes)/sizeof(interlaceTypes[0]); interlaceIdx++) {
+	    for (interlaceIdx = 0;
+		 interlaceIdx < sizeof(interlaceTypes)/sizeof(interlaceTypes[0]);
+		 interlaceIdx++) {
 		if( interlaceTypes[interlaceIdx] == interlace ) {
 		    Tcl_SetResult(interp, (char *)interlaceNames[interlaceIdx], TCL_VOLATILE);
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(interlace));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)interlace));
 	}
 	break;
     }
@@ -2904,7 +2914,7 @@ static int wandObjCmd(
     case TM_GET_ITERATIONS:  /* GetIterations */
     case TM_SET_ITERATIONS:  /* SetIterations num */
     {
-        long num;
+        unsigned long num;
 
 	if( (index == TM_ITERATIONS) && (objc > 3) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?num?");
@@ -2934,7 +2944,7 @@ static int wandObjCmd(
 	     * Get depth
 	     */
 	    num = MagickGetImageIterations(wandPtr);
-	    Tcl_SetObjResult(interp, Tcl_NewLongObj(num));
+	    Tcl_SetObjResult(interp, Tcl_NewLongObj((long)num));
 	}
 	break;
     }
@@ -3001,7 +3011,10 @@ static int wandObjCmd(
 	static size_t storSize[] = {
 	    sizeof(char), sizeof(short), sizeof(int), sizeof(long), sizeof(float), sizeof(double)
 	};
-	int  storIdx, x0, y0, cols, rows, size, len;
+	unsigned int size;
+	unsigned long cols, rows;
+	long x0, y0;
+	int  storIdx, len;
 	char *map;
 	unsigned char *pixels;
 
@@ -3017,16 +3030,16 @@ static int wandObjCmd(
 	    Tcl_WrongNumArgs(interp, 2, objv, "x0 y0 cols rows map storageType data");
 	    return TCL_ERROR;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[2], &x0)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[2], &x0)) != TCL_OK ) {
 	    return stat;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[3], &y0)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[3], &y0)) != TCL_OK ) {
 	    return stat;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[4], &cols)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[4], &cols)) != TCL_OK ) {
 	    return stat;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[5], &rows)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[5], &rows)) != TCL_OK ) {
 	    return stat;
 	}
 	map = Tcl_GetString(objv[6]);
@@ -3045,7 +3058,8 @@ static int wandObjCmd(
 		return TCL_ERROR;
 	    }
 
-	    result = MagickGetImagePixels(wandPtr, x0, y0, cols, rows, map, storTypes[storIdx], pixels);
+	    result = MagickGetImagePixels(wandPtr, x0, y0, cols, rows, map,
+					  storTypes[storIdx], pixels);
 	    if (!result) {
 		ckfree(pixels);
 		return myMagickError(interp, wandPtr);
@@ -3054,7 +3068,7 @@ static int wandObjCmd(
 	    /*
 	     * Return ByteArray object
 	     */
-	    Tcl_SetObjResult(interp, Tcl_NewByteArrayObj(pixels, size));
+	    Tcl_SetObjResult(interp, Tcl_NewByteArrayObj(pixels, (int)size));
 	    ckfree(pixels);
 	} else {
 	    pixels = Tcl_GetByteArrayFromObj( objv[8], &len);
@@ -3062,7 +3076,8 @@ static int wandObjCmd(
 		Tcl_AppendResult(interp, "TclMagick: not enough data bytes", NULL);
 		return TCL_ERROR;
 	    }
-	    result = MagickSetImagePixels(wandPtr, x0, y0, cols, rows, map, storTypes[storIdx], pixels);
+	    result = MagickSetImagePixels(wandPtr, x0, y0, cols, rows, map,
+					  storTypes[storIdx], pixels);
 	    if (!result) {
 		return myMagickError(interp, wandPtr);
 	    }
@@ -3074,7 +3089,7 @@ static int wandObjCmd(
     {
 	char *name;
 	unsigned char *profile = NULL;
-        int length = 0;
+        unsigned long length = 0;
 
         if( (objc != 3) && (objc != 4) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "name ?profile?");
@@ -3083,7 +3098,7 @@ static int wandObjCmd(
 	name = Tcl_GetString(objv[2]);
 
         if( objc > 3 ) {
-	    profile = Tcl_GetByteArrayFromObj(objv[3], &length);
+	    profile = Tcl_GetByteArrayFromObj(objv[3], (int*)&length);
         }
         result = MagickProfileImage(wandPtr, name, profile, length);
 	if (!result) {
@@ -3104,9 +3119,9 @@ static int wandObjCmd(
 	}
 	name = Tcl_GetString(objv[2]);
 
-        profile = MagickRemoveImageProfile(wandPtr, name, &length);
+        profile = MagickRemoveImageProfile(wandPtr, (const char*)name, &length);
         if(profile != NULL) {
-	    Tcl_SetObjResult(interp, Tcl_NewByteArrayObj(profile, length));
+	    Tcl_SetObjResult(interp, Tcl_NewByteArrayObj(profile, (long)length));
 	    MagickRelinquishMemory(profile); /* Free TclMagick resource */
         }
         break;
@@ -3134,12 +3149,12 @@ static int wandObjCmd(
 	name = Tcl_GetString(objv[2]);
 
         if( objc == 4 ) {
-            int length;
+            unsigned long length;
             /*
              * Set/Add image profile
              */
-	    profile = Tcl_GetByteArrayFromObj(objv[3], &length);
-	    result = MagickSetImageProfile(wandPtr, name, profile, length);
+	    profile = Tcl_GetByteArrayFromObj(objv[3], (int *)&length);
+	    result = MagickSetImageProfile(wandPtr, (const char*)name, profile, length);
 	    if (!result) {
 	        return myMagickError(interp, wandPtr);
 	    }
@@ -3148,7 +3163,7 @@ static int wandObjCmd(
 
             profile = (char *)MagickGetImageProfile(wandPtr, name, &length);
 	    if(profile != NULL) {
-	        Tcl_SetObjResult(interp, Tcl_NewByteArrayObj(profile, length));
+	        Tcl_SetObjResult(interp, Tcl_NewByteArrayObj(profile, (long)length));
 	        MagickRelinquishMemory(profile); /* Free TclMagick resource */
             }
 	}
@@ -3246,7 +3261,7 @@ static int wandObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(render));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)render));
 	}
 	break;
     }
@@ -3306,7 +3321,7 @@ static int wandObjCmd(
     case TM_GET_SCENE:  /* GetScene */
     case TM_SET_SCENE:  /* SetScene num */
     {
-        long num;
+        unsigned long num;
 
 	if( (index == TM_SCENE) && (objc > 3) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?num?");
@@ -3336,7 +3351,7 @@ static int wandObjCmd(
 	     * Get scene number
 	     */
 	    num = MagickGetImageScene(wandPtr);
-	    Tcl_SetObjResult(interp, Tcl_NewLongObj(num));
+	    Tcl_SetObjResult(interp, Tcl_NewLongObj((long)num));
 	}
 	break;
     }
@@ -3417,7 +3432,7 @@ static int wandObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(type));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)type));
 	}
 	break;
     }
@@ -3463,7 +3478,7 @@ static int wandObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(unit));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)unit));
 	}
 	break;
     }
@@ -3509,7 +3524,7 @@ static int wandObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(method));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)method));
 	}
 	break;
     }
@@ -3599,7 +3614,7 @@ static int wandObjCmd(
     {
         double  *factors;
         int     i;
-	long listLen = 0;
+	unsigned long listLen = 0;
 
 	if( ((enum subIndex)index == TM_SAMPLING_FACTORS) && (objc != 2) && (objc != 3) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?factorList?");
@@ -3660,6 +3675,8 @@ static int wandObjCmd(
     case TM_GET_SIZE:  /* size */
     case TM_SET_SIZE:  /* size x y */
     {
+	unsigned long x, y;
+
 	if( ((enum subIndex)index == TM_SIZE) && (objc != 2) && (objc != 4) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?xSize ySize?");
 	    return TCL_ERROR;
@@ -3676,12 +3693,11 @@ static int wandObjCmd(
 	    /*
 	     * Set size = x y
 	     */
-	    int     x, y;
 
-	    if( (stat = Tcl_GetIntFromObj(interp, objv[2], &x)) != TCL_OK ) {
+	    if( (stat = Tcl_GetLongFromObj(interp, objv[2], &x)) != TCL_OK ) {
 		return stat;
 	    }
-	    if( (stat = Tcl_GetIntFromObj(interp, objv[3], &y)) != TCL_OK ) {
+	    if( (stat = Tcl_GetLongFromObj(interp, objv[3], &y)) != TCL_OK ) {
 		return stat;
 	    }
 	    MagickSetSize(wandPtr, x, y);
@@ -3689,15 +3705,14 @@ static int wandObjCmd(
 	    /*
 	     * Get size={xSize ySize}
 	     */
-	    long x, y;
 	    Tcl_Obj *listPtr = Tcl_NewListObj(0, NULL);
 
 	    result = MagickGetSize(wandPtr, &x, &y);
 	    if (!result) {
 	        return myMagickError(interp, wandPtr);
 	    }
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewLongObj(x));
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewLongObj(y));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewLongObj((long)x));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewLongObj((long)y));
 	    Tcl_SetObjResult(interp, listPtr);
 	}
 	break;
@@ -3835,7 +3850,7 @@ static int wandObjCmd(
     {
 	MagickWand      *mapWand;
 	char            *name;
-	int             dither=0;
+	unsigned int    dither=0;
 
 	if( objc > 4 ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "mapName ?dither=no?");
@@ -3859,7 +3874,8 @@ static int wandObjCmd(
     case TM_MATTE_FLOODFILL:        /* mattefloodfill opacity ?fuzz=0.0? ?borderPix=none? ?x=0 y=0? */
     case TM_MATTE_FLOODFILL_IMAGE:  /* MatteFloodfillImage opacity ?fuzz? ?borderPix? ?x y? */
     {
-	int	opacity, x=0, y=0;
+	int	opacity;
+	long x = 0, y = 0;
 	double  fuzz=0.0;
 	char	*name;
 	PixelWand	*borderPtr=NULL;
@@ -3880,10 +3896,10 @@ static int wandObjCmd(
 		return TCL_ERROR;
 	    }
 	}
-	if( (objc > 5) && ((stat = Tcl_GetIntFromObj(interp, objv[5], &x)) != TCL_OK) ) {
+	if( (objc > 5) && ((stat = Tcl_GetLongFromObj(interp, objv[5], &x)) != TCL_OK) ) {
 	    return stat;
 	}
-	if( (objc > 6) && ((stat = Tcl_GetIntFromObj(interp, objv[6], &y)) != TCL_OK) ) {
+	if( (objc > 6) && ((stat = Tcl_GetLongFromObj(interp, objv[6], &y)) != TCL_OK) ) {
 	    return stat;
 	}
 	result = MagickMatteFloodfillImage(wandPtr, (Quantum)opacity, fuzz, borderPtr, x, y);
@@ -3985,7 +4001,8 @@ static int wandObjCmd(
 	if( objc > 7 ) {
 	    newName = Tcl_GetString(objv[7]);
 	}
-	newWand = MagickMontageImage(wandPtr, drawPtr, tileGeom, thumbGeom, modeTypes[modeIdx], frameGeom);
+	newWand = MagickMontageImage(wandPtr, drawPtr, tileGeom, thumbGeom,
+				     modeTypes[modeIdx], frameGeom);
 	if (newWand == NULL) {
 	    return myMagickError(interp, wandPtr);
 	}
@@ -3998,7 +4015,7 @@ static int wandObjCmd(
     case TM_MORPH:         /* morph num ?newName? */
     case TM_MORPH_IMAGES:  /* MorphImages num ?newName? */
     {
-	int num;
+	unsigned long num;
 	MagickWand *newWand;
 	char *name=NULL;
 
@@ -4006,7 +4023,7 @@ static int wandObjCmd(
 	    Tcl_WrongNumArgs(interp, 2, objv, "num ?newName?");
 	    return TCL_ERROR;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[2], &num)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[2], &num)) != TCL_OK ) {
 	    return stat;
 	}
 	if( objc > 3 ) {
@@ -4073,7 +4090,7 @@ static int wandObjCmd(
     case TM_NEGATE:       /* negate ?gray=false? */
     case TM_NEGATE_IMAGE: /* NegateImage ?gray=false? */
     {
-	int gray=0;
+	unsigned int gray=0;
 
 	if (objc > 3) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?gray=no?");
@@ -4092,7 +4109,7 @@ static int wandObjCmd(
     case TM_NEGATE_CHANNEL:       /* negatechannel channelType ?gray=false? */
     case TM_NEGATE_IMAGE_CHANNEL: /* NegateImageChannel channelType ?gray=false? */
     {
-	int gray=0;
+	unsigned int gray=0;
         int chanIdx;
 
 	if( (objc < 3) || (objc > 4) ) {
@@ -4261,20 +4278,21 @@ static int wandObjCmd(
     case TM_QUANTIZE_IMAGE:  /* QuantizeImage numColors ?colorspaceType? ?treedepth? ?dither? ?measureError? */
     case TM_QUANTIZE_IMAGES: /* QuantizeImage numColors ?colorspaceType? ?treedepth? ?dither? ?measureError? */
     {
-	int numColors, treeDepth=0, dither=0, measureError=0;
+	unsigned long numColors, treeDepth=0;
+	unsigned int dither=0, measureError=0;
 	int csIdx=RGBColorspace;
 
 	if( (objc < 3) || (objc > 7) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "numColors ?colorspaceType=RGB? ?treedepth=0? ?dither=no? ?measureError=no?");
 	    return TCL_ERROR;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[2], &numColors)) != TCL_OK ) {
+	if( (stat = Tcl_GetIntFromObj(interp, objv[2], (int *)&numColors)) != TCL_OK ) {
 	    return stat;
 	}
 	if( (objc > 3) && (Tcl_GetIndexFromObj(interp, objv[3], csNames, "colorspaceType", 0, &csIdx) != TCL_OK) ) {
 	    return TCL_ERROR;
 	}
-	if( (objc > 4) && ((stat = Tcl_GetIntFromObj(interp, objv[4], &treeDepth)) != TCL_OK) ) {
+	if( (objc > 4) && ((stat = Tcl_GetLongFromObj(interp, objv[4], &treeDepth)) != TCL_OK) ) {
 	    return stat;
 	}
 	if( (objc > 5) && ((stat = Tcl_GetBooleanFromObj(interp, objv[5], &dither)) != TCL_OK) ) {
@@ -4329,22 +4347,24 @@ static int wandObjCmd(
     case TM_RAISE:        /* raise width height ?x y? ?raise? */
     case TM_RAISE_IMAGE:  /* RaiseImage width height ?x y? ?raise? */
     {
-	int width, height, x=0, y=0, raise=0;
+	unsigned long width, height;
+	long x=0, y=0;
+	unsigned int raise=0;
 
 	if( (objc < 4) || (objc > 7) || (objc == 5) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "width height ?x y? ?raise=no?");
 	    return TCL_ERROR;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[2], &width)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[2], &width)) != TCL_OK ) {
 	    return stat;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[3], &height)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[3], &height)) != TCL_OK ) {
 	    return stat;
 	}
-	if( (objc > 4) && ((stat = Tcl_GetIntFromObj(interp, objv[4], &x)) != TCL_OK) ) {
+	if( (objc > 4) && ((stat = Tcl_GetLongFromObj(interp, objv[4], &x)) != TCL_OK) ) {
 	    return stat;
 	}
-	if( (objc > 5) && ((stat = Tcl_GetIntFromObj(interp, objv[5], &y)) != TCL_OK) ) {
+	if( (objc > 5) && ((stat = Tcl_GetLongFromObj(interp, objv[5], &y)) != TCL_OK) ) {
 	    return stat;
 	}
 	if( (objc > 6) && ((stat = Tcl_GetBooleanFromObj(interp, objv[6], &raise)) != TCL_OK) ) {
@@ -4378,13 +4398,13 @@ static int wandObjCmd(
     case TM_READ_IMAGE_BLOB:    /* ReadImageBlob data */
     {
 	unsigned char *data;
-        int length;
+        size_t length;
 
 	if (objc != 3) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "data");
 	    return TCL_ERROR;
 	}
-	data = Tcl_GetByteArrayFromObj(objv[2], &length);
+	data = Tcl_GetByteArrayFromObj(objv[2], (int *)&length);
 	result = MagickReadImageBlob(wandPtr, data, length);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
@@ -4453,7 +4473,8 @@ static int wandObjCmd(
 	if( (objc > 3) && ((stat = Tcl_GetDoubleFromObj(interp, objv[3], &yRes)) != TCL_OK) ) {
 	    return stat;
 	}
-	if( (objc > 4) && (Tcl_GetIndexFromObj(interp, objv[4], filterNames, "filterType", 0, &filterIdx) != TCL_OK) ) {
+	if( (objc > 4) && (Tcl_GetIndexFromObj(interp, objv[4], filterNames, "filterType",
+					       0, &filterIdx) != TCL_OK) ) {
 	    return TCL_ERROR;
 	}
 	if( (objc > 5) && ((stat = Tcl_GetDoubleFromObj(interp, objv[5], &blur)) != TCL_OK) ) {
@@ -4469,17 +4490,18 @@ static int wandObjCmd(
     case TM_RESIZE:        /* resize x y ?filter? ?blur=1.0? */
     case TM_RESIZE_IMAGE:  /* ResizeImage x y ?filter? ?blur=1.0? */
     {
-	int     filterIdx=0, x, y;
+	int     filterIdx=0;
+	unsigned long x, y;
 	double  blur=1.0;
 
 	if( (objc < 4) || (objc > 6) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "x y ?filterType=undefined? ?blur=1.0?");
 	    return TCL_ERROR;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[2], &x)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[2], &x)) != TCL_OK ) {
 	    return stat;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[3], &y)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[3], &y)) != TCL_OK ) {
 	    return stat;
 	}
 	if( (objc > 4) && (Tcl_GetIndexFromObj(interp, objv[4], filterNames, "filterType", 0, &filterIdx) != TCL_OK) ) {
@@ -4545,16 +4567,16 @@ static int wandObjCmd(
     case TM_SAMPLE:       /* sample x y */
     case TM_SAMPLE_IMAGE: /* SampleImage x y */
     {
-	int  x, y;
+	unsigned long  x, y;
 
 	if( objc != 4 ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "x y");
 	    return TCL_ERROR;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[2], &x)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[2], &x)) != TCL_OK ) {
 	    return stat;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[3], &y)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[3], &y)) != TCL_OK ) {
 	    return stat;
 	}
 	result = MagickSampleImage(wandPtr, x, y);
@@ -4567,16 +4589,16 @@ static int wandObjCmd(
     case TM_SCALE:       /* scale x y */
     case TM_SCALE_IMAGE: /* ScaleImage x y */
     {
-	int  x, y;
+	unsigned long  x, y;
 
 	if( objc != 4 ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "x y");
 	    return TCL_ERROR;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[2], &x)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[2], &x)) != TCL_OK ) {
 	    return stat;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[3], &y)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[3], &y)) != TCL_OK ) {
 	    return stat;
 	}
 	result = MagickScaleImage(wandPtr, x, y);
@@ -4668,16 +4690,16 @@ static int wandObjCmd(
     case TM_SHAVE:       /* shave x y */
     case TM_SHAVE_IMAGE: /* ShaveImage x y */
     {
-	int  x, y;
+	unsigned long x, y;
 
 	if( objc != 4 ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "x y");
 	    return TCL_ERROR;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[2], &x)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[2], &x)) != TCL_OK ) {
 	    return stat;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[3], &y)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[3], &y)) != TCL_OK ) {
 	    return stat;
 	}
 	result = MagickShaveImage(wandPtr, x, y);
@@ -5090,7 +5112,7 @@ static int wandObjCmd(
     case TM_WRITE_IMAGES:  /* WriteImages filename ?adjoin? */
     {
 	char *filename;
-	int  adjoin=0;
+	unsigned int  adjoin=0;
 
 	if( ((enum subIndex)index == TM_WRITE_IMAGES) && ((objc < 3) || (objc > 4)) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "filename ?adjoin=no?");
@@ -6068,7 +6090,8 @@ static int drawObjCmd(
     case TM_PPOLYLINE:  /* Polyline x y x y ... */
     {
 	PointInfo *coordinates;
-	int       i, num;
+	int       i;
+	unsigned long num;
 
 	if( (objc-2) % 2 != 0 ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "x y x y ...");
@@ -6313,8 +6336,8 @@ static int drawObjCmd(
     case TM_STROKE_COLOR:           /* strokecolor ?pixel? */
     case TM_TEXT_UNDERCOLOR:        /* textundercolor ?pixel? */
     {
-        PixelWand   *pixelPtr;
-        char        *name;
+        PixelWand   *pixelPtr = NULL;
+        char        *name = NULL;
 
         if( objc > 3 ) {
             Tcl_WrongNumArgs(interp, 2, objv, "?pixelName?");
@@ -7138,7 +7161,7 @@ static int drawObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(join));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)join));
 	}
 	break;
     }
@@ -7166,7 +7189,7 @@ static int drawObjCmd(
 	    DrawSetStrokeMiterLimit(wandPtr, val);
 	} else {    /* Get stroke miterlimit */
 	    val = DrawGetStrokeMiterLimit(wandPtr);
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(val));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)val));
 	}
 	break;
     }
@@ -7264,7 +7287,7 @@ static int drawObjCmd(
 	    DrawSetTextAntialias(wandPtr, flag);
 	} else {    /* Get antialias flag */
 	    flag = DrawGetTextAntialias(wandPtr);
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(flag));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)flag));
 	}
 	break;
     }

@@ -1,3 +1,7 @@
+2004-01-08  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TclMagick.c: Fixed types of a large number of variables.
+
 2004-01-08  Rolf Schroedter <rolf.schroedter@dlr.de>
 
 	* Fixed DRAW incompatibility between to Wand color settings:
