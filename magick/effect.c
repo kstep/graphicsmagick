@@ -1688,6 +1688,9 @@ MagickExport Image *ShadeImage(const Image *image,
   const unsigned int color_shading,double azimuth,double elevation,
   ExceptionInfo *exception)
 {
+#define ShadeIntensity(pixel) \
+  (0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue)
+
 #define ShadeImageText  "  Shade image...  "
 
   double
@@ -1757,12 +1760,10 @@ MagickExport Image *ShadeImage(const Image *image,
       /*
         Determine the surface normal and compute shading.
       */
-      normal.x=(double) PixelIntensity(s0-1)+(double) PixelIntensity(s1-1)+
-        (double) PixelIntensity(s2-1)-(double) PixelIntensity(s0+1)-
-        (double) PixelIntensity(s1+1)-(double) PixelIntensity(s2+1);
-      normal.y=(double) PixelIntensity(s2-1)+(double) PixelIntensity(s2)+
-        (double) PixelIntensity(s2+1)-(double) PixelIntensity(s0-1)-
-        (double) PixelIntensity(s0)-(double) PixelIntensity(s0+1);
+      normal.x=ShadeIntensity(s0-1)+ShadeIntensity(s1-1)+ShadeIntensity(s2-1)-
+        ShadeIntensity(s0+1)-ShadeIntensity(s1+1)-ShadeIntensity(s2+1);
+      normal.y=ShadeIntensity(s2-1)+ShadeIntensity(s2)+ShadeIntensity(s2+1)-
+        ShadeIntensity(s0-1)-ShadeIntensity(s0)-ShadeIntensity(s0+1);
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else

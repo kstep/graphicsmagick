@@ -207,7 +207,7 @@ testFilter('input.miff', 'Segment',
 testFilter('input.miff', 'Shade',
   q/30/,
   'b5e864463e316b3789c601fd8db6045d3cb92e96a71f77d7b83b86e02ed186b2',
-  '54fc3c4f1cc15bae82866f53ed5e7da88f697505ae3e68b7699684910cb5c185');
+  '531994f86cf8aa09ade1484f21a5d783a800fa53d55233a99ffafa16ff4f7e5a');
 
 ++$test;
 testFilter('input.miff', 'Sharpen',
