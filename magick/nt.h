@@ -90,8 +90,9 @@ extern MagickExport double
   NTUserTime(void);
 
 extern MagickExport int
-  munmap(void *,size_t),
-  lt_dlinit(void);
+  lt_dlexit(void),
+  lt_dlinit(void),
+  munmap(void *,size_t);
 
 extern MagickExport long
   telldir(DIR *);
