@@ -540,7 +540,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
       ThrowException(exception,BlobWarning,"Unable to open file",filename);
       return((void *) NULL);
     }
-  *length=(size_t) (fstat(file,&attributes) < 0 ? 0 : attributes.st_size);
+  *length=(size_t) (fstat(file,&attributes) == -1 ? 0 : attributes.st_size);
   if (*length != (size_t) attributes.st_size)
     {
       (void) close(file);
@@ -664,7 +664,7 @@ MagickExport off_t GetBlobSize(const Image *image)
   if (image->file == (FILE *) NULL)
     return(image->blob->size);
   (void) fflush(image->file);
-  return(fstat(fileno(image->file),&attributes) < 0 ? 0 : attributes.st_size);
+  return(fstat(fileno(image->file),&attributes) == -1 ? 0 : attributes.st_size);
 }
 
 /*
