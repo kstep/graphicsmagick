@@ -2482,7 +2482,7 @@ Export void ContrastImage(Image *image,const unsigned int sharpen)
 %
 %
 */
-Export Image *CloneImage(Image *image,const unsigned int columns,
+Export Image *CloneImage(const Image *image,const unsigned int columns,
   const unsigned int rows,const unsigned int clone_pixels)
 {
   Image
@@ -11125,10 +11125,14 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
     (void) strcpy(image_info->magick,"PS");
   if (strncmp(magick,"8BPS",4) == 0)
     (void) strcpy(image_info->magick,"PSD");
+  if (strncmp(magick,"SFW95",5) == 0)
+    (void) strcpy(image_info->magick,"PWP");
   if (strncmp(magick,"#?RADIANCE",10) == 0)
     (void) strcpy(image_info->magick,"RAD");
   if (strncmp(magick,"\122\314",2) == 0)
     (void) strcpy(image_info->magick,"RLE");
+  if (strncmp(magick,"SFW94",5) == 0)
+    (void) strcpy(image_info->magick,"SFW");
   if (strncmp(magick,"\001\332",2) == 0)
     (void) strcpy(image_info->magick,"SGI");
   if (strncmp(magick,"\131\246\152\225",4) == 0)

@@ -100,7 +100,7 @@
 %
 %
 */
-Image *ReadAVSImage(const ImageInfo *image_info)
+Export Image *ReadAVSImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -268,7 +268,7 @@ Image *ReadAVSImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadBMPImage(const ImageInfo *image_info)
+Export Image *ReadBMPImage(const ImageInfo *image_info)
 {
   typedef struct _BMPHeader
   {
@@ -760,7 +760,7 @@ Image *ReadBMPImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadCMYKImage(const ImageInfo *image_info)
+Export Image *ReadCMYKImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -1138,7 +1138,7 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadDCMImage(const ImageInfo *image_info)
+Export Image *ReadDCMImage(const ImageInfo *image_info)
 {
 #include "dicom.h"
 
@@ -1162,14 +1162,14 @@ Image *ReadDCMImage(const ImageInfo *image_info)
     datum;
 
   Quantum
-    blue,
-    green,
-    red,
     *scale;
 
   register int
     x,
     i;
+
+  register long
+    packets;
 
   register RunlengthPacket
     *q;
@@ -1177,13 +1177,11 @@ Image *ReadDCMImage(const ImageInfo *image_info)
   register unsigned char
     *p;
 
-  register long
-    packets;
-
   unsigned char
     *data;
 
   unsigned int
+    bits_allocated,
     bytes_per_pixel,
     height,
     high_bit,
@@ -1225,6 +1223,7 @@ Image *ReadDCMImage(const ImageInfo *image_info)
     Read DCM Medical image.
   */
   (void) strcpy(photometric,"MONOCHROME1 ");
+  bits_allocated=8;
   bytes_per_pixel=1;
   data=(unsigned char) NULL;
   element=0;
@@ -1317,28 +1316,26 @@ Image *ReadDCMImage(const ImageInfo *image_info)
           }
         else
           if ((strcmp(implicit_vr,"UL") == 0) ||
+              (strcmp(implicit_vr,"FD") == 0) ||
               (strcmp(implicit_vr,"SL") == 0) ||
               (strcmp(implicit_vr,"FL") == 0))
             quantum=4;
           else
-            if (strcmp(implicit_vr,"FD") == 0)
-              quantum=4;
+            if (strcmp(implicit_vr,"xs") != 0)
+              {
+                quantum=1;
+                length=datum;
+              }
             else
-              if (strcmp(implicit_vr,"xs") != 0)
+              if ((strcmp(explicit_vr,"SS") == 0) ||
+                  (strcmp(explicit_vr,"US") == 0))
+                quantum=2;
+              else
                 {
-                  quantum=1;
+                  quantum=2;
+                  datum=datum/2;
                   length=datum;
                 }
-              else
-                if ((strcmp(explicit_vr,"SS") == 0) ||
-                    (strcmp(explicit_vr,"US") == 0))
-                  quantum=2;
-                else
-                  {
-                    quantum=2;
-                    datum=datum/2;
-                    length=datum;
-                  }
       }
     if (image_info->verbose)
       {
@@ -1407,6 +1404,15 @@ Image *ReadDCMImage(const ImageInfo *image_info)
             photometric[i]='\0';
             break;
           }
+          case 0x0006:
+          {
+            /*
+              Planar configuration.
+            */
+            if (datum == 1)
+              image->interlace=PlaneInterlace;
+            break;
+          }
           case 0x0008:
           {
             /*
@@ -1436,6 +1442,7 @@ Image *ReadDCMImage(const ImageInfo *image_info)
             /*
               Bits allocated.
             */
+            bits_allocated=datum;
             bytes_per_pixel=1;
             if (datum > 8)
               bytes_per_pixel=2;
@@ -1601,6 +1608,8 @@ Image *ReadDCMImage(const ImageInfo *image_info)
       }
     packets=0;
     max_packets=Max((image->columns*image->rows+4) >> 3,1);
+    if ((samples_per_pixel == 3) && (image->interlace == PlaneInterlace))
+      max_packets=image->columns*image->rows;
     image->pixels=(RunlengthPacket *)
       AllocateMemory(max_packets*sizeof(RunlengthPacket));
     if (image->pixels == (RunlengthPacket *) NULL)
@@ -1610,82 +1619,141 @@ Image *ReadDCMImage(const ImageInfo *image_info)
         CloseImage(image);
         return(image);
       }
-    /*
-      Convert DCM Medical image to runlength-encoded packets.
-    */
-    red=0;
-    green=0;
-    blue=0;
-    index=0;
-    q=image->pixels;
-    SetRunlengthEncoder(q);
-    for (y=0; y < (int) image->rows; y++)
-    {
-      for (x=0; x < (int) image->columns; x++)
+    if ((samples_per_pixel > 1) && (image->interlace == PlaneInterlace))
       {
-        if (samples_per_pixel == 1)
+        /*
+          Convert Planar RGB DCM Medical image to runlength-encoded packets.
+        */
+        image->packets=image->columns*image->rows;
+        SetImage(image);
+        for (i=0; i < samples_per_pixel; i++)
+        {
+          q=image->pixels;
+          for (y=0; y < (int) image->rows; y++)
           {
-            if (bytes_per_pixel == 1)
-              index=fgetc(image->file);
-            else
-              index=LSBFirstReadShort(image->file);
-            if (index > max_value)
-              index=max_value;
-            if (graymap != (unsigned short *) NULL)
-              index=graymap[index];
-          }
-        else
-          if (bytes_per_pixel == 1)
+            for (x=0; x < (int) image->columns; x++)
             {
-              red=fgetc(image->file);
-              green=fgetc(image->file);
-              blue=fgetc(image->file);
-            }
-          else
-            {
-              red=LSBFirstReadShort(image->file);
-              green=LSBFirstReadShort(image->file);
-              blue=LSBFirstReadShort(image->file);
-            }
-        if (scale != (Quantum *) NULL)
-          {
-            red=scale[red];
-            green=scale[green];
-            blue=scale[blue];
-            index=scale[index];
-          }
-        if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-            (index == q->index) && ((int) q->length < MaxRunlength))
-          q->length++;
-        else
-          {
-            if (packets != 0)
-              q++;
-            packets++;
-            if (packets == (int) max_packets)
+              switch (i)
               {
-                max_packets<<=1;
-                image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                  image->pixels,max_packets*sizeof(RunlengthPacket));
-                if (image->pixels == (RunlengthPacket *) NULL)
-                  {
-                    if (scale != (Quantum *) NULL)
-                      FreeMemory((char *) scale);
-                    PrematureExit(ResourceLimitWarning,
-                      "Memory allocation failed",image);
-                  }
-                q=image->pixels+packets-1;
+                case 0: q->red=(Quantum) fgetc(image->file); break;
+                case 1: q->green=(Quantum) fgetc(image->file); break;
+                case 2: q->blue=(Quantum) fgetc(image->file); break;
+                case 3: q->index=(unsigned int) fgetc(image->file); break;
+                default: break;
               }
-            q->index=index;
-            q->length=0;
+              q++;
+            }
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(LoadImageText,y,image->rows);
           }
+        }
       }
-      if (image->previous == (Image *) NULL)
-        if (QuantumTick(y,image->rows))
-          ProgressMonitor(LoadImageText,y,image->rows);
-    }
-    SetRunlengthPackets(image,packets);
-    SyncImage(image);
+    else
+      {
+        Quantum
+          blue,
+          green,
+          red;
+
+        unsigned char
+          byte;
+
+        /*
+          Convert DCM Medical image to runlength-encoded packets.
+        */
+        i=0;
+        red=0;
+        green=0;
+        blue=0;
+        index=0;
+        q=image->pixels;
+        SetRunlengthEncoder(q);
+        for (y=0; y < (int) image->rows; y++)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            if (samples_per_pixel == 1)
+              {
+                if (bytes_per_pixel == 1)
+                  index=fgetc(image->file);
+                else
+                  if (bits_allocated != 12)
+                    index=LSBFirstReadShort(image->file);
+                  else
+                    {
+                      if (i & 0x01)
+                        index=(fgetc(image->file) << 8) | byte;
+                      else
+                        {
+                          index=MSBFirstReadShort(image->file);
+                          byte=index & 0x0f;
+                          index>>=4;
+                        }
+                      i++;
+                    }
+                if (index > max_value)
+                  index=max_value;
+                if (graymap != (unsigned short *) NULL)
+                  index=graymap[index];
+              }
+            else
+              if (bytes_per_pixel == 1)
+                {
+                  red=fgetc(image->file);
+                  green=fgetc(image->file);
+                  blue=fgetc(image->file);
+                }
+              else
+                {
+                  red=LSBFirstReadShort(image->file);
+                  green=LSBFirstReadShort(image->file);
+                  blue=LSBFirstReadShort(image->file);
+                }
+            if (scale != (Quantum *) NULL)
+              {
+                red=scale[red];
+                green=scale[green];
+                blue=scale[blue];
+                index=scale[index];
+              }
+            if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
+                (index == q->index) && ((int) q->length < MaxRunlength))
+              q->length++;
+            else
+              {
+                if (packets != 0)
+                  q++;
+                packets++;
+                if (packets == (int) max_packets)
+                  {
+                    max_packets<<=1;
+                    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
+                      image->pixels,max_packets*sizeof(RunlengthPacket));
+                    if (image->pixels == (RunlengthPacket *) NULL)
+                      {
+                        if (scale != (Quantum *) NULL)
+                          FreeMemory((char *) scale);
+                        PrematureExit(ResourceLimitWarning,
+                          "Memory allocation failed",image);
+                      }
+                    q=image->pixels+packets-1;
+                  }
+                q->red=red;
+                q->green=green;
+                q->blue=blue;
+                q->index=index;
+                q->length=0;
+              }
+          }
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
+        }
+        SetRunlengthPackets(image,packets);
+        if (image->class == PseudoClass)
+          SyncImage(image);
+      }
     /*
       Proceed to next image.
     */
@@ -1751,7 +1819,7 @@ Image *ReadDCMImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadDPSImage(const ImageInfo *image_info)
+Export Image *ReadDPSImage(const ImageInfo *image_info)
 {
   char
     *client_name;
@@ -2156,7 +2224,7 @@ Image *ReadDPSImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Image *ReadDPSImage(const ImageInfo *image_info)
+Export Image *ReadDPSImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"Cannot read DPS images",
     image_info->filename);
@@ -2193,7 +2261,7 @@ Image *ReadDPSImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadFAXImage(const ImageInfo *image_info)
+Export Image *ReadFAXImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -2275,7 +2343,7 @@ Image *ReadFAXImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadFITSImage(const ImageInfo *image_info)
+Export Image *ReadFITSImage(const ImageInfo *image_info)
 {
   typedef struct _FITSHeader
   {
@@ -2632,7 +2700,7 @@ Image *ReadFITSImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadFPXImage(const ImageInfo *image_info)
+Export Image *ReadFPXImage(const ImageInfo *image_info)
 {
   FPXColorspace
     colorspace;
@@ -3030,7 +3098,7 @@ Image *ReadFPXImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Image *ReadFPXImage(const ImageInfo *image_info)
+Export Image *ReadFPXImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"FPX library is not available",
     image_info->filename);
@@ -3067,7 +3135,7 @@ Image *ReadFPXImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadGIFImage(const ImageInfo *image_info)
+Export Image *ReadGIFImage(const ImageInfo *image_info)
 {
 #define BitSet(byte,bit)  (((byte) & (bit)) == (bit))
 #define LSBFirstOrder(x,y)  (((y) << 8) | (x))
@@ -3426,7 +3494,7 @@ Image *ReadGIFImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadGRADATIONImage(const ImageInfo *image_info)
+Export Image *ReadGRADATIONImage(const ImageInfo *image_info)
 {
   char
     colorname[MaxTextExtent];
@@ -3544,7 +3612,7 @@ Image *ReadGRADATIONImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadGRAYImage(const ImageInfo *image_info)
+Export Image *ReadGRAYImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -3754,7 +3822,7 @@ Image *ReadGRAYImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadHDFImage(const ImageInfo *image_info)
+Export Image *ReadHDFImage(const ImageInfo *image_info)
 {
 #include "hdf.h"
 #undef BSD
@@ -3991,7 +4059,7 @@ Image *ReadHDFImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Image *ReadHDFImage(const ImageInfo *image_info)
+Export Image *ReadHDFImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"HDF library is not available",
     image_info->filename);
@@ -4028,7 +4096,7 @@ Image *ReadHDFImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadHISTOGRAMImage(const ImageInfo *image_info)
+Export Image *ReadHISTOGRAMImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -4068,7 +4136,7 @@ Image *ReadHISTOGRAMImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadICCImage(const ImageInfo *image_info)
+Export Image *ReadICCImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -4153,7 +4221,7 @@ Image *ReadICCImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadICONImage(const ImageInfo *image_info)
+Export Image *ReadICONImage(const ImageInfo *image_info)
 {
 #define MaxIcons  256
 
@@ -4670,7 +4738,7 @@ static Image *ReadImages(ImageInfo *image_info)
 %
 %
 */
-Image *ReadIPTCImage(const ImageInfo *image_info)
+Export Image *ReadIPTCImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -4756,7 +4824,7 @@ Image *ReadIPTCImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadJBIGImage(const ImageInfo *image_info)
+Export Image *ReadJBIGImage(const ImageInfo *image_info)
 {
 #define MaxBufferSize  8192
 
@@ -4939,7 +5007,7 @@ Image *ReadJBIGImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Image *ReadJBIGImage(const ImageInfo *image_info)
+Export Image *ReadJBIGImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"JBIG library is not available",
     image_info->filename);
@@ -5176,7 +5244,7 @@ static boolean JPEGNewsProfileHandler(j_decompress_ptr jpeg_info)
   return(True);
 }
 
-Image *ReadJPEGImage(const ImageInfo *image_info)
+Export Image *ReadJPEGImage(const ImageInfo *image_info)
 {
   int
     x,
@@ -5434,7 +5502,7 @@ Image *ReadJPEGImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Image *ReadJPEGImage(const ImageInfo *image_info)
+Export Image *ReadJPEGImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"JPEG library is not available",
     image_info->filename);
@@ -5602,7 +5670,7 @@ static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
 }
 #endif
 
-Image *ReadLABELImage(const ImageInfo *image_info)
+Export Image *ReadLABELImage(const ImageInfo *image_info)
 {
 #define MaxGlyphs  65535
 
@@ -6175,7 +6243,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadLOGOImage(const ImageInfo *image_info)
+Export Image *ReadLOGOImage(const ImageInfo *image_info)
 {
 #include "logo.h"
 
@@ -6280,7 +6348,7 @@ Image *ReadLOGOImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadMAPImage(const ImageInfo *image_info)
+Export Image *ReadMAPImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -6395,7 +6463,7 @@ Image *ReadMAPImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadMIFFImage(const ImageInfo *image_info)
+Export Image *ReadMIFFImage(const ImageInfo *image_info)
 {
   char
     keyword[MaxTextExtent],
@@ -6992,7 +7060,7 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadMONOImage(const ImageInfo *image_info)
+Export Image *ReadMONOImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -7135,7 +7203,7 @@ Image *ReadMONOImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadMTVImage(const ImageInfo *image_info)
+Export Image *ReadMTVImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -7301,7 +7369,7 @@ Image *ReadMTVImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadNULLImage(const ImageInfo *image_info)
+Export Image *ReadNULLImage(const ImageInfo *image_info)
 {
   return(ReadXCImage(image_info));
 }
@@ -7376,7 +7444,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
   return(montage_image);
 }
 
-Image *ReadPCDImage(const ImageInfo *image_info)
+Export Image *ReadPCDImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -7752,7 +7820,7 @@ Image *ReadPCDImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadPCLImage(const ImageInfo *image_info)
+Export Image *ReadPCLImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"Cannot read PCL images",
     image_info->filename);
@@ -7788,7 +7856,7 @@ Image *ReadPCLImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadPCXImage(const ImageInfo *image_info)
+Export Image *ReadPCXImage(const ImageInfo *image_info)
 {
   typedef struct _PCXHeader
   {
@@ -8305,7 +8373,7 @@ Image *ReadPCXImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadPDFImage(const ImageInfo *image_info)
+Export Image *ReadPDFImage(const ImageInfo *image_info)
 {
 #define MediaBox  "/MediaBox ["
 
@@ -9138,7 +9206,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadPIXImage(const ImageInfo *image_info)
+Export Image *ReadPIXImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -9322,7 +9390,7 @@ Image *ReadPIXImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadPLASMAImage(const ImageInfo *image_info)
+Export Image *ReadPLASMAImage(const ImageInfo *image_info)
 {
 #define PlasmaImageText  "  Applying image plasma...  "
 #define PlasmaPixel(x,y) \
@@ -9467,7 +9535,7 @@ static void PNGWarning(png_struct *ping,png_const_charp message)
 }
 #endif
 
-Image *ReadPNGImage(const ImageInfo *image_info)
+Export Image *ReadPNGImage(const ImageInfo *image_info)
 {
   ColorPacket
     transparent_color;
@@ -10044,7 +10112,7 @@ Image *ReadPNGImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Image *ReadPNGImage(const ImageInfo *image_info)
+Export Image *ReadPNGImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"PNG library is not available",
     image_info->filename);
@@ -10170,7 +10238,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
   return(value);
 }
 
-Image *ReadPNMImage(const ImageInfo *image_info)
+Export Image *ReadPNMImage(const ImageInfo *image_info)
 {
 #define MaxRawValue  255
 
@@ -10690,7 +10758,7 @@ Image *ReadPNMImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadPSImage(const ImageInfo *image_info)
+Export Image *ReadPSImage(const ImageInfo *image_info)
 {
 #define BoundingBox  "%%BoundingBox:"
 #define DocumentMedia  "%%DocumentMedia:"
@@ -10981,7 +11049,7 @@ Image *ReadPSImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadPSDImage(const ImageInfo *image_info)
+Export Image *ReadPSDImage(const ImageInfo *image_info)
 {
 #define BitmapMode  0
 #define GrayscaleMode  1
@@ -11459,6 +11527,146 @@ Image *ReadPSDImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e a d L O G O I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadPWPImage reads a Seattle Film Works multi-image file and returns
+%  it.  It allocates the memory necessary for the new Image structure and
+%  returns a pointer to the new image.
+%
+%  The format of the ReadPWPImage routine is:
+%
+%      image=ReadPWPImage(image_info)
+%
+%  A description of each parameter follows:
+%
+%    o image:  Method ReadPWPImage returns a pointer to the image after
+%      reading.  A null image is returned if there is a memory shortage or
+%      if the image cannot be read.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%
+*/
+Export Image *ReadPWPImage(const ImageInfo *image_info)
+{
+  FILE
+    *file;
+
+  Image
+    *image,
+    *next_image,
+    *pwp_image;
+
+  ImageInfo
+    *local_info;
+
+  int
+    c;
+
+  long
+    filesize;
+
+  MonitorHandler
+    handler;
+
+  register Image
+    *p;
+
+  register int
+    i;
+
+  unsigned char
+    magick[MaxTextExtent];
+
+  unsigned int
+    status;
+
+  /*
+    Allocate image structure.
+  */
+  pwp_image=AllocateImage(image_info);
+  if (pwp_image == (Image *) NULL)
+    return((Image *) NULL);
+  /*
+    Open image file.
+  */
+  OpenImage(image_info,pwp_image,ReadBinaryType);
+  if (pwp_image->file == (FILE *) NULL)
+    PrematureExit(FileOpenWarning,"Unable to open file",pwp_image);
+  status=ReadData((char *) magick,1,5,pwp_image->file);
+  if ((status == False) || (strncmp((char *) magick,"SFW95",5) != 0))
+    PrematureExit(CorruptImageWarning,"Not a PWP image file",pwp_image);
+  local_info=CloneImageInfo(image_info);
+  TemporaryFilename(local_info->filename);
+  image=(Image *) NULL;
+  for ( ; ; )
+  {
+    for (c=fgetc(pwp_image->file); c != EOF; c=fgetc(pwp_image->file))
+    {
+      for (i=0; i < 17; i++)
+        magick[i]=magick[i+1];
+      magick[17]=c;
+      if (strncmp((char *) (magick+12),"SFW94A",6) == 0)
+        break;
+    }
+    if (c == EOF)
+      break;
+    if (strncmp((char *) (magick+12),"SFW94A",6) != 0)
+      PrematureExit(CorruptImageWarning,"Not a PWP image file",pwp_image);
+    /*
+      Dump SFW image to a temporary file.
+    */
+    file=fopen(local_info->filename,WriteBinaryType);
+    if (file == (FILE *) NULL)
+      PrematureExit(FileOpenWarning,"Unable to write file",image);
+    (void) fwrite("SFW94A",1,6,file);
+    filesize=65535L*magick[2]+256L*magick[1]+magick[0];
+    for (i=0; i < filesize; i++)
+    {
+      c=fgetc(pwp_image->file);
+      (void) fputc(c,file);
+    }
+    (void) fclose(file);
+    handler=SetMonitorHandler((MonitorHandler) NULL);
+    next_image=ReadSFWImage(local_info);
+    (void) SetMonitorHandler(handler);
+    if (next_image == (Image *) NULL)
+      break;
+    FormatString(next_image->filename,"slide_%02d.sfw",next_image->scene);
+    if (image == (Image *) NULL)
+      image=next_image;
+    else
+      {
+        /*
+          Link image into image list.
+        */
+        for (p=image; p->next != (Image *) NULL; p=p->next);
+        next_image->previous=p;
+        next_image->scene=p->scene+1;
+        p->next=next_image;
+      }
+    if (image_info->subrange != 0)
+      if (next_image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
+    ProgressMonitor(LoadImagesText,(unsigned int) ftell(pwp_image->file),
+      (unsigned int) pwp_image->filesize);
+  }
+  (void) remove(local_info->filename);
+  DestroyImageInfo(local_info);
+  CloseImage(pwp_image);
+  DestroyImage(pwp_image);
+  return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d R G B I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -11483,7 +11691,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadRGBImage(const ImageInfo *image_info)
+Export Image *ReadRGBImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -11883,7 +12091,7 @@ Image *ReadRGBImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadRLAImage(const ImageInfo *image_info)
+Export Image *ReadRLAImage(const ImageInfo *image_info)
 {
   typedef struct _WindowFrame
   {
@@ -12204,7 +12412,7 @@ Image *ReadRLAImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadRLEImage(const ImageInfo *image_info)
+Export Image *ReadRLEImage(const ImageInfo *image_info)
 {
 #define SkipLinesOp  0x01
 #define SetColorOp  0x02
@@ -12639,6 +12847,240 @@ Image *ReadRLEImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e a d S F W I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadSFWImage reads a Seattle Film Works image file and returns it.
+%  It allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
+%
+%  The format of the ReadSFWImage routine is:
+%
+%      image=ReadSFWImage(image_info)
+%
+%  A description of each parameter follows:
+%
+%    o image:  Method ReadSFWImage returns a pointer to the image after
+%      reading.  A null image is returned if there is a memory shortage or
+%      if the image cannot be read.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%
+*/
+
+static unsigned char *SFWScan(const unsigned char *p,const unsigned char *q,
+  const unsigned char *target,const int length)
+{
+  register int
+    i;
+
+  for ( ; p < q; p++)
+  {
+    if (*p != *target)
+      continue;
+    if (length == 1)
+      return((unsigned char *) p);
+    for (i=1; i < length; i++)
+      if (*(p+i) != *(target+i))
+        break;
+    if (i == length)
+      return((unsigned char *) p);
+  }
+  return((unsigned char *) NULL);
+}
+
+static void TranslateSFWMarker(unsigned char *marker)
+{
+  switch (marker[1])
+  {
+    case 0xc8: marker[1]=0xd8; break;  /* soi */
+    case 0xd0: marker[1]=0xe0; break;  /* app */
+    case 0xcb: marker[1]=0xdb; break;  /* dqt */
+    case 0xa0: marker[1]=0xc0; break;  /* sof */
+    case 0xca: marker[1]=0xda; break;  /* sos */
+    case 0xc9: marker[1]=0xd9; break;  /* eoi */
+    default: break;
+  }
+}
+
+Export Image *ReadSFWImage(const ImageInfo *image_info)
+{
+  static unsigned char
+    HuffmanTable[] =
+    {
+      0xFF, 0xC4, 0x01, 0xA2, 0x00, 0x00, 0x01, 0x05, 0x01, 0x01, 0x01,
+      0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B,
+      0x01, 0x00, 0x03, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+      0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04,
+      0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x10, 0x00, 0x02, 0x01,
+      0x03, 0x03, 0x02, 0x04, 0x03, 0x05, 0x05, 0x04, 0x04, 0x00, 0x00,
+      0x01, 0x7D, 0x01, 0x02, 0x03, 0x00, 0x04, 0x11, 0x05, 0x12, 0x21,
+      0x31, 0x41, 0x06, 0x13, 0x51, 0x61, 0x07, 0x22, 0x71, 0x14, 0x32,
+      0x81, 0x91, 0xA1, 0x08, 0x23, 0x42, 0xB1, 0xC1, 0x15, 0x52, 0xD1,
+      0xF0, 0x24, 0x33, 0x62, 0x72, 0x82, 0x09, 0x0A, 0x16, 0x17, 0x18,
+      0x19, 0x1A, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2A, 0x34, 0x35, 0x36,
+      0x37, 0x38, 0x39, 0x3A, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49,
+      0x4A, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x63, 0x64,
+      0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x73, 0x74, 0x75, 0x76, 0x77,
+      0x78, 0x79, 0x7A, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8A,
+      0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9A, 0xA2, 0xA3,
+      0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9, 0xAA, 0xB2, 0xB3, 0xB4, 0xB5,
+      0xB6, 0xB7, 0xB8, 0xB9, 0xBA, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7,
+      0xC8, 0xC9, 0xCA, 0xD2, 0xD3, 0xD4, 0xD5, 0xD6, 0xD7, 0xD8, 0xD9,
+      0xDA, 0xE1, 0xE2, 0xE3, 0xE4, 0xE5, 0xE6, 0xE7, 0xE8, 0xE9, 0xEA,
+      0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0x11,
+      0x00, 0x02, 0x01, 0x02, 0x04, 0x04, 0x03, 0x04, 0x07, 0x05, 0x04,
+      0x04, 0x00, 0x01, 0x02, 0x77, 0x00, 0x01, 0x02, 0x03, 0x11, 0x04,
+      0x05, 0x21, 0x31, 0x06, 0x12, 0x41, 0x51, 0x07, 0x61, 0x71, 0x13,
+      0x22, 0x32, 0x81, 0x08, 0x14, 0x42, 0x91, 0xA1, 0xB1, 0xC1, 0x09,
+      0x23, 0x33, 0x52, 0xF0, 0x15, 0x62, 0x72, 0xD1, 0x0A, 0x16, 0x24,
+      0x34, 0xE1, 0x25, 0xF1, 0x17, 0x18, 0x19, 0x1A, 0x26, 0x27, 0x28,
+      0x29, 0x2A, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3A, 0x43, 0x44, 0x45,
+      0x46, 0x47, 0x48, 0x49, 0x4A, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
+      0x59, 0x5A, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x73,
+      0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A, 0x82, 0x83, 0x84, 0x85,
+      0x86, 0x87, 0x88, 0x89, 0x8A, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97,
+      0x98, 0x99, 0x9A, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9,
+      0xAA, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6, 0xB7, 0xB8, 0xB9, 0xBA, 0xC2,
+      0xC3, 0xC4, 0xC5, 0xC6, 0xC7, 0xC8, 0xC9, 0xCA, 0xD2, 0xD3, 0xD4,
+      0xD5, 0xD6, 0xD7, 0xD8, 0xD9, 0xDA, 0xE2, 0xE3, 0xE4, 0xE5, 0xE6,
+      0xE7, 0xE8, 0xE9, 0xEA, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8,
+      0xF9, 0xFA
+    };
+
+  FILE
+    *file;
+
+  Image
+    *flipped_image,
+    *image;
+
+  ImageInfo
+    *local_info;
+
+  register int
+    i;
+
+  register unsigned char
+    *header,
+    *data;
+
+  unsigned char
+    *buffer,
+    *offset;
+
+  unsigned int
+    status;
+
+  /*
+    Allocate image structure.
+  */
+  image=AllocateImage(image_info);
+  if (image == (Image *) NULL)
+    return((Image *) NULL);
+  /*
+    Open image file.
+  */
+  OpenImage(image_info,image,ReadBinaryType);
+  if (image->file == (FILE *) NULL)
+    PrematureExit(FileOpenWarning,"Unable to open file",image);
+  /*
+    Read image into a buffer.
+  */
+  buffer=(unsigned char *)
+    AllocateMemory(image->filesize*sizeof(unsigned char));
+  if (buffer == (unsigned char *) NULL)
+    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+  status=ReadData((char *) buffer,1,image->filesize,image->file);
+  if ((status == False) || (strncmp((char *) buffer,"SFW",3) != 0))
+    PrematureExit(CorruptImageWarning,"Not a SFW image file",image);
+  CloseImage(image);
+  DestroyImage(image);
+  /*
+    Find the start of the JFIF data
+  */
+  header=SFWScan(buffer,buffer+image->filesize-1,(unsigned char *)
+    "\377\310\377\320",4);
+  if (header == (unsigned char *) NULL)
+    {
+      FreeMemory((char *) buffer);
+      PrematureExit(CorruptImageWarning,"Not a SFW image file",image);
+    }
+  TranslateSFWMarker(header);  /* translate soi and app tags */
+  TranslateSFWMarker(header+2);
+  (void) memcpy(header+6,"JFIF\0\001\0",7);  /* JFIF magic */
+  /*
+    Translate remaining markers.
+  */
+  offset=header+2;
+  offset+=(offset[2] << 8)+offset[3]+2;
+  for ( ; ; )
+  {
+    TranslateSFWMarker(offset);
+    if (offset[1] == 0xda)
+      break;
+    offset+=(offset[2] << 8)+offset[3]+2;
+  }
+  offset--;
+  data=SFWScan(offset,buffer+image->filesize-1,(unsigned char *) "\377\311",2);
+  if (data == (unsigned char *) NULL)
+    {
+      FreeMemory((char *) buffer);
+      PrematureExit(CorruptImageWarning,"Not a SFW image file",image);
+    }
+  TranslateSFWMarker(data++);  /* translate eoi marker */
+  /*
+    Write JFIF file.
+  */
+  local_info=CloneImageInfo(image_info);
+  TemporaryFilename(local_info->filename);
+  file=fopen(local_info->filename,WriteBinaryType);
+  if (file == (FILE *) NULL)
+    {
+      FreeMemory((char *) buffer);
+      DestroyImageInfo(local_info);
+      PrematureExit(FileOpenWarning,"Unable to write file",image);
+    }
+  (void) fwrite(header,offset-header+1,1,file);
+  (void) fwrite(HuffmanTable,1,sizeof(HuffmanTable)/sizeof(*HuffmanTable),file);
+  (void) fwrite(offset+1,data-offset,1,file);
+  status=ferror(file);
+  (void) fclose(file);
+  FreeMemory((char *) buffer);
+  if (status)
+    {
+      (void) remove(local_info->filename);
+      DestroyImageInfo(local_info);
+      PrematureExit(FileOpenWarning,"Unable to write file",image);
+    }
+  /*
+    Read JPEG image.
+  */
+  image=ReadImage(local_info);
+  (void) remove(local_info->filename);
+  DestroyImageInfo(local_info);
+  if (image == (Image *) NULL)
+    return(image);
+  /*
+    Correct image orientation.
+  */
+  flipped_image=FlipImage(image);
+  if (flipped_image == (Image *) NULL)
+    return(image);
+  DestroyImage(image);
+  return(flipped_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d S G I I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -12694,7 +13136,7 @@ static void SGIDecode(unsigned char *max_packets,unsigned char *pixels)
   }
 }
 
-Image *ReadSGIImage(const ImageInfo *image_info)
+Export Image *ReadSGIImage(const ImageInfo *image_info)
 {
   typedef struct _SGIHeader
   {
@@ -13047,7 +13489,7 @@ Image *ReadSGIImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadSTEGANOImage(const ImageInfo *image_info)
+Export Image *ReadSTEGANOImage(const ImageInfo *image_info)
 {
 #define UnembedBit(byte) \
 { \
@@ -13179,7 +13621,7 @@ Image *ReadSTEGANOImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadSUNImage(const ImageInfo *image_info)
+Export Image *ReadSUNImage(const ImageInfo *image_info)
 {
 #define RMT_EQUAL_RGB  1
 #define RMT_NONE  0
@@ -13537,7 +13979,7 @@ Image *ReadSUNImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadTGAImage(const ImageInfo *image_info)
+Export Image *ReadTGAImage(const ImageInfo *image_info)
 {
 #define TGAColormap 1
 #define TGARGB 2
@@ -14061,7 +14503,7 @@ static void TIFFWarningMessage(const char *module,const char *format,
 }
 #endif
 
-Image *ReadTIFFImage(const ImageInfo *image_info)
+Export Image *ReadTIFFImage(const ImageInfo *image_info)
 {
   char
     *text;
@@ -14716,7 +15158,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Image *ReadTIFFImage(const ImageInfo *image_info)
+Export Image *ReadTIFFImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"TIFF library is not available",
     image_info->filename);
@@ -14753,7 +15195,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadTILEImage(const ImageInfo *image_info)
+Export Image *ReadTILEImage(const ImageInfo *image_info)
 {
   Image
     *cloned_image,
@@ -14843,7 +15285,7 @@ Image *ReadTILEImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadTIMImage(const ImageInfo *image_info)
+Export Image *ReadTIMImage(const ImageInfo *image_info)
 {
 #define ScaleColor5to8(x)  ((x) << 3)
 
@@ -15150,7 +15592,7 @@ Image *ReadTIMImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadTTFImage(const ImageInfo *image_info)
+Export Image *ReadTTFImage(const ImageInfo *image_info)
 {
   AnnotateInfo
     annotate_info;
@@ -15277,7 +15719,7 @@ Image *ReadTTFImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Image *ReadTTFImage(const ImageInfo *image_info)
+Export Image *ReadTTFImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"Cannot read TTF images",
     image_info->filename);
@@ -15314,7 +15756,7 @@ Image *ReadTTFImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadTXTImage(const ImageInfo *image_info)
+Export Image *ReadTXTImage(const ImageInfo *image_info)
 {
   AnnotateInfo
     annotate_info;
@@ -15528,7 +15970,7 @@ Image *ReadTXTImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadUILImage(const ImageInfo *image_info)
+Export Image *ReadUILImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"Cannot read UIL images",
     image_info->filename);
@@ -15565,7 +16007,7 @@ Image *ReadUILImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadUYVYImage(const ImageInfo *image_info)
+Export Image *ReadUYVYImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -15671,7 +16113,7 @@ Image *ReadUYVYImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadVICARImage(const ImageInfo *image_info)
+Export Image *ReadVICARImage(const ImageInfo *image_info)
 {
   char
     keyword[MaxTextExtent],
@@ -15897,7 +16339,7 @@ Image *ReadVICARImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadVIDImage(const ImageInfo *image_info)
+Export Image *ReadVIDImage(const ImageInfo *image_info)
 {
 #define ClientName  "montage"
 
@@ -16048,7 +16490,7 @@ Image *ReadVIDImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadVIFFImage(const ImageInfo *image_info)
+Export Image *ReadVIFFImage(const ImageInfo *image_info)
 {
 #define VFF_CM_genericRGB  15
 #define VFF_CM_ntscRGB  1
@@ -16669,7 +17111,7 @@ Image *ReadVIFFImage(const ImageInfo *image_info)
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 */
-Image *ReadXImage(const ImageInfo *image_info)
+Export Image *ReadXImage(const ImageInfo *image_info)
 {
   XImportInfo
     ximage_info;
@@ -16737,7 +17179,7 @@ static int XBMInteger(FILE *file,short int *hex_digits)
   return(value);
 }
 
-Image *ReadXBMImage(const ImageInfo *image_info)
+Export Image *ReadXBMImage(const ImageInfo *image_info)
 {
   char
     buffer[MaxTextExtent],
@@ -16998,7 +17440,7 @@ Image *ReadXBMImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadXCImage(const ImageInfo *image_info)
+Export Image *ReadXCImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -17126,7 +17568,7 @@ static char *ParseColor(char *data)
   return((char *) NULL);
 }
 
-Image *ReadXPMImage(const ImageInfo *image_info)
+Export Image *ReadXPMImage(const ImageInfo *image_info)
 {
   char
     key[MaxTextExtent],
@@ -17414,7 +17856,7 @@ Image *ReadXPMImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadXWDImage(const ImageInfo *image_info)
+Export Image *ReadXWDImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -17814,7 +18256,7 @@ Image *ReadXWDImage(const ImageInfo *image_info)
 %
 %
 */
-Image *ReadYUVImage(const ImageInfo *image_info)
+Export Image *ReadYUVImage(const ImageInfo *image_info)
 {
   Image
     *image,

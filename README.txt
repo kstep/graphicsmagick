@@ -535,8 +535,8 @@ HOW TO COMPILE
 
     BZLIB:
       cd ImageMagick
-      gunzip -c bzip2-0.9.0.tar.gz | tar xvof -
-      mv bzip2-0.9.0 bzlib
+      gunzip -c bzip2-0.9.0c.tar.gz | tar xvof -
+      mv bzip2-0.9.0c bzlib
       cd bzlib
       make
       cd ..

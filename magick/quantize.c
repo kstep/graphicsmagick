@@ -723,9 +723,9 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
           */
           squares=cube_info->squares;
           color=cube_info->colormap+node_info->color_number;
-          distance_squared=squares[color->red-(int) cube_info->color.red]+
-            squares[color->green-(int) cube_info->color.green]+
-            squares[color->blue-(int) cube_info->color.blue];
+          distance_squared=squares[(int) color->red-(int) cube_info->color.red]+
+            squares[(int) color->green-(int) cube_info->color.green]+
+            squares[(int) color->blue-(int) cube_info->color.blue];
           if (distance_squared < cube_info->distance)
             {
               cube_info->distance=distance_squared;
@@ -945,9 +945,9 @@ static void Dither(CubeInfo *cube_info,Image *image,unsigned int direction)
         green_error+=p->error[i].green*p->weights[i];
         blue_error+=p->error[i].blue*p->weights[i];
       }
-      red=p->range_limit[q->red+(int) red_error];
-      green=p->range_limit[q->green+(int) green_error];
-      blue=p->range_limit[q->blue+(int) blue_error];
+      red=p->range_limit[(int) q->red+(int) red_error];
+      green=p->range_limit[(int) q->green+(int) green_error];
+      blue=p->range_limit[(int) q->blue+(int) blue_error];
       i=(blue >> CacheShift) << 12 | (green >> CacheShift) << 6 |
         (red >> CacheShift);
       if (p->cache[i] < 0)
@@ -1189,7 +1189,7 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,unsigned int dither,
   for (i=0; i < ErrorQueueLength; i++)
   {
     cube_info->weights[ErrorQueueLength-i-1]=1.0/weight;
-    weight*=exp(log(MaxRGB+1)/(ErrorQueueLength-1));
+     weight*=exp(log((double) MaxRGB+1.0)/(ErrorQueueLength-1.0));
   }
   /*
     Normalize the weighting factors.

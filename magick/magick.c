@@ -204,6 +204,8 @@ static const MagickInfo
 #if defined(HasTIFF)
     { "PTIF", ReadTIFFImage, WriteTIFFImage, True, "Pyramid encoded TIFF" },
 #endif
+    { "PWP", ReadPWPImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      True, "Seattle Film Works" },
     { "RAS", ReadSUNImage, WriteSUNImage, True, "SUN Rasterfile" },
     { "RGB", ReadRGBImage, WriteRGBImage, True,
       "Raw red, green, and blue bytes" },
@@ -213,6 +215,8 @@ static const MagickInfo
       False, "Alias/Wavefront image file" },
     { "RLE", ReadRLEImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
       False, "Utah Run length encoded image file" },
+    { "SFW", ReadSFWImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      False, "Seattle Film Works" },
     { "SGI", ReadSGIImage, WriteSGIImage, True, "Irix RGB image file" },
     { "SHTML", (Image *(*)(const ImageInfo *)) NULL, WriteHTMLImage, False,
       "Hypertext Markup Language with a client-side image map" },

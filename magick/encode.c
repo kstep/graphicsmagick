@@ -102,7 +102,7 @@
 %
 %
 */
-unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
 {
   int
     x,
@@ -219,7 +219,7 @@ unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 {
   typedef struct _BMPHeader
   {
@@ -585,7 +585,7 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
 {
   int
     x,
@@ -827,7 +827,7 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
 {
   char
     filename[MaxTextExtent];
@@ -944,7 +944,7 @@ unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
 {
   unsigned int
     scene,
@@ -1020,7 +1020,7 @@ unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[81],
@@ -1312,7 +1312,7 @@ static void SetSaturation(double saturation,FPXColorTwistMatrix *color_twist)
   *color_twist=result;
 }
 
-unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 {
   FPXBackground
     background_color;
@@ -1714,7 +1714,7 @@ unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"FPX library is not available",
     image->filename);
@@ -1752,7 +1752,7 @@ unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
 {
   Image
     *next_image;
@@ -2125,7 +2125,7 @@ unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
 {
   int
     x,
@@ -2242,7 +2242,7 @@ unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
 #include "hdf.h"
 #undef BSD
@@ -2475,7 +2475,7 @@ unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
   return(status != -1);
 }
 #else
-unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"HDF library is not available",
     image->filename);
@@ -2520,7 +2520,7 @@ unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
+Export unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   Image *image)
 {
 #define HistogramDensity  "256x200"
@@ -2721,7 +2721,7 @@ unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
 %
 %
 */
-unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
 {
   char
     filename[MaxTextExtent],
@@ -2970,7 +2970,7 @@ static void JBIGEncode(unsigned char *start,size_t length,void *file)
   return;
 }
 
-unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 {
   int
     sans_offset,
@@ -3118,7 +3118,7 @@ unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"JBIG library is not available",
     image->filename);
@@ -3192,6 +3192,9 @@ static void JPEGColorProfileHandler(j_compress_ptr jpeg_info,Image *image)
 
 static void JPEGNewsProfileHandler(j_compress_ptr jpeg_info,Image *image)
 {
+  int
+    roundup;
+
   register int
     i,
     j;
@@ -3205,21 +3208,24 @@ static void JPEGNewsProfileHandler(j_compress_ptr jpeg_info,Image *image)
   /*
     Save IPTC profile as a APP marker.
   */
-  for (i=0; i < (int) image->iptc_profile.length; i+=65507)
+  for (i=0; i < image->iptc_profile.length; i+=65500)
   {
-    length=Min(image->iptc_profile.length-i,65507);
-    profile=(unsigned char *) AllocateMemory((length+27)*sizeof(unsigned char));
+    length=Min(image->iptc_profile.length-i,65500);
+    roundup=(length & 0x01); /* round up for Photoshop */
+    profile=(unsigned char *)
+      AllocateMemory((length+roundup+26)*sizeof(unsigned char));
     if (profile == (unsigned char *) NULL)
       break;
     (void) memcpy((char *) profile,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
     profile[13]=0x00;
     profile[24]=length >> 8;
     profile[25]=length & 0xff;
-    for (j=0; j < (int) length; j++)
+    for (j=0; j < length; j++)
       profile[j+26]=image->iptc_profile.info[j];
-    profile[j+26]=0x001;
-    jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int) length+
-      (length & 0x01 ? 1 : 0)+26);
+    if (roundup)
+      profile[length+roundup+25]=0;
+    jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int)
+      length+roundup+26);
     FreeMemory((char *) profile);
   }
 }
@@ -3245,7 +3251,7 @@ static void JPEGWarningHandler(j_common_ptr jpeg_info,int level)
       MagickWarning(DelegateWarning,(char *) message,(char *) NULL);
 }
 
-unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
   int
     x,
@@ -3528,7 +3534,7 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"JPEG library is not available",
     image->filename);
@@ -3565,7 +3571,7 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
 {
   if (image->color_profile.length == 0)
     PrematureExit(FileOpenWarning,"No color profile available",image);
@@ -3610,7 +3616,7 @@ unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
 {
   if (image->iptc_profile.length == 0)
     PrematureExit(FileOpenWarning,"No IPTC profile available",image);
@@ -3657,7 +3663,7 @@ unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
 {
   char
     filename[MaxTextExtent];
@@ -3751,7 +3757,7 @@ unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
 {
   register int
     i;
@@ -3852,7 +3858,7 @@ unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
 {
   Image
     *matte_image;
@@ -3918,7 +3924,7 @@ unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 {
   char
     color[MaxTextExtent];
@@ -4262,7 +4268,7 @@ unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
 {
   int
     x,
@@ -4376,7 +4382,7 @@ unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
 {
   int
     x,
@@ -4489,7 +4495,7 @@ unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
 %
 */
 
-unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
+Export unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   char *geometry,char *tile_geometry)
 {
   Image
@@ -4590,7 +4596,7 @@ unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   return(True);
 }
 
-unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
 {
   Image
     *pcd_image;
@@ -4681,7 +4687,7 @@ unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
 {
   char
     geometry[MaxTextExtent];
@@ -4944,7 +4950,7 @@ unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
 {
   typedef struct _PCXHeader
   {
@@ -5328,7 +5334,7 @@ unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 {
 #define ObjectsPerImage  12
 
@@ -6375,7 +6381,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 {
 #include "pict.h"
 
@@ -6733,7 +6739,7 @@ static void PNGWarning(png_struct *ping,png_const_charp message)
 }
 #endif
 
-unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
   int
     x,
@@ -7218,7 +7224,7 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"PNG library is not available",
     image->filename);
@@ -7256,7 +7262,7 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 {
 #define MaxRawValue  255
 
@@ -7745,7 +7751,7 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
 {
 #define NumberTiles  9
 #define PreviewImageText  "  Creating image preview...  "
@@ -8202,7 +8208,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
 {
   static const char
     *PostscriptProlog[]=
@@ -9048,7 +9054,7 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
 {
   register int
     i,
@@ -9200,7 +9206,7 @@ unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
+Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
 {
   static const char
     *PostscriptProlog[]=
@@ -9851,7 +9857,7 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
 {
   int
     x,
@@ -10148,7 +10154,7 @@ static int SGIEncode(unsigned char *pixels,int count,
   return((int) (q-packets));
 }
 
-unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
 {
   typedef struct _SGIHeader
   {
@@ -10398,7 +10404,7 @@ unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
 {
 #define RMT_EQUAL_RGB  1
 #define RMT_NONE  0
@@ -10681,7 +10687,7 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
 {
 #define TargaColormap 1
 #define TargaRGB 2
@@ -11088,7 +11094,8 @@ static void TIFFNewsProfileHandler(TIFF *tiff,int type,Image *image)
     *profile;
 
   unsigned int
-    length;
+    length,
+    roundup;
 
   if (type == TIFFTAG_RICHTIFFIPTC)
     {
@@ -11096,14 +11103,18 @@ static void TIFFNewsProfileHandler(TIFF *tiff,int type,Image *image)
         Handle TIFFTAG_RICHTIFFIPTC tag.
       */
       length=image->iptc_profile.length;
-      profile=(unsigned char *) AllocateMemory(length*sizeof(unsigned char));
+      roundup=4-(length & 0x03); /* round up for long word alignment */
+      profile=(unsigned char *)
+        AllocateMemory((length+roundup)*sizeof(unsigned char));
       if ((length == 0) || (profile == (unsigned char *) NULL))
         return;
       (void) memcpy((char *) profile,image->iptc_profile.info,length);
-      length=image->iptc_profile.length/4;
+      for (i=0; i < roundup; i++)
+        profile[length + i] = 0;
+      length=(image->iptc_profile.length+roundup)/4;
       if (TIFFIsByteSwapped(tiff))
         TIFFSwabArrayOfLong((uint32 *) profile,length);
-      TIFFSetField(tiff,type,(uint32) length,(void *) profile);
+      TIFFSetField(tiff,type,(uint32) (length+roundup),(void *) profile);
       FreeMemory((char *) profile);
       return;
     }
@@ -11111,9 +11122,10 @@ static void TIFFNewsProfileHandler(TIFF *tiff,int type,Image *image)
     Handle TIFFTAG_PHOTOSHOP tag.
   */
   length=image->iptc_profile.length;
-  profile=(unsigned char *) AllocateMemory((length+13)*sizeof(unsigned char));
+  roundup=(length & 0x01); /* round up for Photoshop */
+  profile=(unsigned char *)
+    AllocateMemory((length+roundup+12)*sizeof(unsigned char));
   if ((length == 0) || (profile == (unsigned char *) NULL))
-    return;
   (void) memcpy((char *) profile,"8BIM\04\04\0\0",8);
   profile[8]=(length >> 24) & 0xff;
   profile[9]=(length >> 16) & 0xff;
@@ -11121,9 +11133,9 @@ static void TIFFNewsProfileHandler(TIFF *tiff,int type,Image *image)
   profile[11]=length & 0xff;
   for (i=0; i < length; i++)
     profile[i+12]=image->iptc_profile.info[i];
-  profile[i+12]=0x00;
-  TIFFSetField(tiff,type,(uint32) length+(length & 0x01 ? 1 : 0)+12,
-    (void *) profile);
+  if (roundup)
+    profile[length+roundup+11]=0;
+  TIFFSetField(tiff,type,(uint32) length+roundup+12,(void *) profile);
   FreeMemory((char *) profile);
 }
 #endif
@@ -11212,7 +11224,7 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
   return(status);
 }
 
-unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
 #if !defined(TIFFDefaultStripSize)
 #define TIFFDefaultStripSize(tiff,request)  ((8*1024)/TIFFScanlineSize(tiff))
@@ -11841,7 +11853,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"TIFF library is not available",
     image->filename);
@@ -11878,7 +11890,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
 {
   int
     x,
@@ -11979,7 +11991,7 @@ unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
 {
 #define MaxCixels  92
 
@@ -12216,7 +12228,7 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
 %      Implicit assumption: number of columns is even.
 %
 */
-unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
 {
   register int
     i,
@@ -12319,7 +12331,7 @@ unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
 {
   char
     header[MaxTextExtent],
@@ -12439,7 +12451,7 @@ unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
 {
 #define VFF_CM_genericRGB  15
 #define VFF_CM_NONE  0
@@ -12822,7 +12834,7 @@ unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 {
   char
     *client_name;
@@ -12903,7 +12915,7 @@ unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
 {
   char
     name[MaxTextExtent];
@@ -13060,7 +13072,7 @@ unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
 {
 #define MaxCixels  92
 
@@ -13293,7 +13305,7 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
 {
   Image
     *downsampled_image,
@@ -13452,7 +13464,7 @@ unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
+Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 {
   int
     x,

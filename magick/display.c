@@ -705,6 +705,8 @@ static unsigned int XAnnotateEditImage(Display *display,
           }
         switch (key_symbol)
         {
+          case XK_h:
+          case XK_H:
           case XK_BackSpace:
           {
             /*
@@ -733,6 +735,11 @@ static unsigned int XAnnotateEditImage(Display *display,
             text_event.xexpose.x=x;
             text_event.xexpose.y=y-font_info->max_bounds.ascent;
             XRefreshWindow(display,&windows->image,&text_event);
+            break;
+          }
+          case XK_bracketleft:
+          {
+            key_symbol=XK_Escape;
             break;
           }
           case DeleteCommand:
