@@ -1,0 +1,263 @@
+#!/bin/sh
+
+# gmdoc2html utility utility.imdoc > utility.html
+
+# <!-- ---------------------------------------------------------------- -->
+# <!-- Options.xml: "options" subsection of convert, composite, et al.  -->
+# <!-- ---------------------------------------------------------------- -->
+# <!-- Markup tags in this document are                                 -->
+# <!--   imdoc (Identifies file as ImageMagick document source file)    -->
+# <!--   sect name=section_name (section); remainder of line is title   -->
+# <!--   opt  (option)                                                  -->
+# <!--   abs  (abstract)                                                -->
+# <!--   p    (regular print paragraph, not OK to nest)                 -->
+# <!--   pp   (small print paragraph, not OK to nest)                   -->
+# <!--   pre  (== HTML pre, not allowed in dd, p, pp or sp)             -->
+# <!--   tab  (== simple HTML table)                                    -->
+# <!--   |    (tab char, separates table cells)                         -->
+# <!--   sp   (subparagraph, must be inside p or pp, OK to nest         -->
+# <!--   ul   (== HTML ul)                                              -->
+# <!--   li   (== HTML li)                                              -->
+# <!--   dl   (== HTML dl)                                              -->
+# <!--   dt   (== HTML dt, dt without a dd is OK)                       -->
+# <!--   dd   (== HTML dd, dd without a dt is OK)                       -->
+# <!--   br   (== HTML br)                                              -->
+# <!--   i    (== HTML em)                                              -->
+# <!--   s    (== HTML strong)                                          -->
+# <!--   tt   (== HTML tt)                                              -->
+# <!--   bq   (== HTML blockquote)                                      -->
+# <!--   o    ("dd" list item with ball)                                -->
+# <!--   back (write "back to contents" link)                           -->
+# <!--   utils apps=name ... (which apps the enclosed lines pertain to) -->
+# <!--   format type=name ... (html, man, tex, ...)                     -->
+# <!--   !--  (== HTML !--) comment                                     -->
+# <!--                                                                  -->
+# <!--   All tags must close with </...> form of tag, e.g. <pp>..</pp>  -->
+# <!-- ---------------------------------------------------------------- -->
+
+cat <<!!
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-US">
+<head>
+<title>gm - Convert, Edit, and Compose Images</title>
+
+<body marginheight=1 marginwidth=1 topmargin=1 leftmargin=1>
+<a name="top"></a>
+<table border=0 cellpadding=10 cellspacing=0 style="margin-top:-17px" width="100%"><tr><td>
+!!
+
+sed  "
+     /<!--/d
+     /<include file=/d
+
+     /<imdoc>/d
+     /<\/imdoc>/d
+
+     s/<title>.*<\/title>//
+
+     s/<utils/!utils!/
+     /!utils!/s/>/+!!/
+     s/<.utils>/+!utils!/
+
+     s/<sect/!sect!/
+     /!sect!/s/>/+!!/
+     s/<\/sect>/+!sect!/
+
+     s/<back>/!back!/
+     s/<home>/!home!/
+     s/<bq>/!bq!/
+     s/<\/bq>/+!bq!/
+     s/<lopt>/!lopt!/
+     s/<dopt>/!dopt!/
+     s/<opt>/!opt!/
+     s/<\/opt>/+!opt!/
+     s/<abs>/!abs!/
+     s/<\/abs>/+!abs!/
+     s/<p>/!p!/
+     s/<\/p>//
+     s/<pp>/!pp!/
+     s/<\/pp>/+!pp!/
+     s/<sp>/!sp!/
+     s/<\/sp>/+!sp!/
+     s/<br>/!br!/
+     s/<\/br>/+!br!/
+
+     s/<ul>/!ul!/
+     s/<\/ul>/+!ul!/
+     s/<li>/!li!/
+     s/<\/li>//
+     s/<dl>/!dl!/
+     s/<\/dl>/+!dl!/
+     s/<dt>/!dt!/
+     s/<\/dt>/+!dt!/
+     s/<dd>/!dd!/
+     s/<\/dd>/+!dd!/
+     s/<o>/!o!/
+     s/< >/ /
+
+     s/<i>/!em!/g
+     s/<\/i>/+!em!/g
+     s/<tt>/!tt!/g
+     s/<\/tt>/+!tt!/g
+     s/<s>/!strong!/g
+     s/<\/s>/+!strong!/g
+     s/<pre>/!pre!/
+     s/<\/pre>/+!pre!/
+     s/<tab>/!tab!/
+     s/<\/tab>/+!tab!/
+     s/<|>/!|!/g
+     s/<a href=\([^>]*\)>/!a href=\1+!!/
+     s/<\/a>/+!a!/
+
+     s/\&/\&amp;/g
+     s/</\&lt;/g
+     s/>/\&gt;/g
+
+     s/+!!/>/
+     s/+!sect!/<\/sect>/
+     s/!sect!/<sect/
+     s/+!utils!/<\/utils>/
+     s/!utils!/<utils/
+     s/+!opt!/<\/opt>/
+     s/!opt!/<opt>/
+     s/!lopt!/<lopt>/
+     s/!dopt!/<dopt>/
+     s/!back!/<back>/
+     s/!home!/<home>/
+     s/+!abs!/<\/abs>/
+     s/!abs!/<abs>/
+     s/+!bq!/<\/blockquote>/
+     s/!bq!/<blockquote>/
+
+     s/+!dl!/<\/dl>/
+     s/!dl!/<dl>/
+     s/+!dt!/<\/dt>/
+     s/!dt!/<dt>/
+     s/+!dd!/<\/dd>/
+     s/!dd!/<dd>/
+     s/+!ul!/<\/ul>/
+     s/!ul!/<ul>/
+     s/!li!/<li>/
+
+     s/!p!/<p>/
+     s/+!pp!/<\/pp>/
+     s/!pp!/<pp>/
+     s/+!sp!/<\/sp>/
+     s/!sp!/<sp>/
+     s/+!br!/<\/br>/
+     s/!br!/<br>/
+     s/+!em!/<\/em>/g
+     s/!em!/<em>/g
+     s/+!tt!/<\/tt>/g
+     s/!tt!/<tt>/g
+     s/+!strong!/<\/strong>/g
+     s/!strong!/<strong>/g
+     s/+!pre!/<\/pre>/
+     s/!pre!/<pre>/
+     s/+!tab!/<\/tab>/
+     s/!tab!/<tab>/
+     s/!|!/<|>/g
+     s/+!a!/<\/a>/
+     s/!a href=/<a href=/
+     s/ *!o!/<dd>!o!/
+     s/!o!/<img SRC=\"..\/images\/star.png\" ALT=\"*\">/
+     s/^ *$/<br>\&nbsp;<br>/
+
+     s/<tab>/<tab> cellspacing=\"0\" cellpadding=\"2\">/
+     s/<tab>/<table border=\"0\"/
+     s/<\/tab>/<\/table>/
+     /<|>/s/^/<tr><td>/
+     /<|>/s/$/<\/td><\/tr>/
+     s/<|>/<\/td><td>/g
+
+     /<sect /i\\
+<table BORDER=0 WIDTH=\"100%\"> \\
+<tr> \\
+<td ALIGN=LEFT bgcolor=\"#003399\" background=\"../images/background.gif\"><img \\
+SRC=\"../images/right_triangle.png\" \\ ALT=\">\" BORDER=0 \\
+height=14 width=15><b><font face=\"Helvetica, Arial\"><font \\
+color=\"#FFFFFF\"><font size=\"+1\">
+
+     t dummy
+   : dummy
+     s/<sect /<a /
+     t sect
+     b notsect
+
+   : sect
+     s/>/><\/a>/
+     a\\
+</font></font></font></b></td></tr></table>\\
+<table width=\"94%\" border=\"0\" cellspacing=\"0\" cellpadding=\"8\">\\
+<tr><td width=\"3%\"><br></td><td>
+
+   : notsect
+
+     /<\/sect>/i\\
+</td></tr></table>
+
+     /<\/sect>/d
+
+     /<back>/i\\
+     <p>\\
+<i><a href=\"\#top\">Back to Contents</a></i> \\
+&nbsp;</p>
+     /<back>/d
+
+     /<home>/i\\
+<HR>\\
+\\
+<a href=\"#top\"><img src=\"../images/top.jpg\" border=0 width=42 height=42 align=\"right\" alt=\"Top of page\"></a>\\
+<form action=\"mailto:magick-users%40imagemagick.org\" style=\"margin-top:5px\">\\
+ <input type=\"submit\" title=\"E-Mail us\" value=\"E-Mail\" style=\"background-im\\age:url('../images/background.gif'); color:white; font-weight:bold\">\\
+ <small>&quot;Image manipulation software that works like magick&quot;</small>\\
+</form></td>\\
+</tr></table>\\
+</body></html>
+     /<home>/d
+
+     /opt>.* .*</s/ / <i>/
+     /opt>.* .*</s/<\/opt/<\/i><\/opt/
+     /<lopt>/s/>\\([^ <]*\\)/>\<a href=\"gm.html#details\1\">\\1<\/a>/
+     /<dopt>/s/>\\([^ <]*\\)/>\<a name=\"details\\1\"><\/a>\\1/
+     s/<lopt>/<opt>/
+     s/<dopt>/<opt>/
+     /opt>/s/\([{}]\)/<\/i>\1<i>/g
+     /<opt>/i\\
+<table BORDER=0 WIDTH=\"94%\">\\
+<tr>\\
+<td width=\"3%\"><br></td> \\
+<td ALIGN=LEFT BGCOLOR=\"#9EBAC6\">\\
+<img SRC=\"../images/right_triangle_option.png\"\\
+ALT=\">\" BORDER=0 height=14\\
+width=15><b><font face=\"Helvetica, Arial\"\\
+><font color=\"#FFFFFF\"><font size=\"+1\">
+
+     /^<opt>$/d
+     /<\/opt>/a\\
+</font></font></font></b></td></tr></table>
+     /^<.opt>$/d
+     s/<.opt>//
+     s/<opt>/    /
+
+     /<utils.*>/d
+     /<\/utils>/d
+
+     s/<abs>/<table width=\"90%\" border=\"0\" cellspacing=\"0\" \
+             cellpadding=\"8\"> \
+             <tr><td width=\"6%\"><br><\/td><td>/g
+     s/<\/abs>/<\/td><\/tr><\/table>/g
+
+     s/<pp>/<table width=\"90%\" border=\"0\" cellspacing=\"0\" \
+            cellpadding=\"8\"> \
+            <tr><td width=\"6%\"><br><\/td><td><font size=\"-1\">/g
+     s/<\/pp>/<\/font><\/td><\/tr><\/table>/g
+
+     s/<sp>/<\/font><table width=\"84%\" border=\"0\" cellspacing=\"0\" \
+            cellpadding=\"8\"> \
+            <tr><td width=\"12%\"><br><\/td><td><font size=\"-1\">/g
+     s/<\/sp>/<\/font><\/td><\/tr><\/table><font>/g
+
+
+     " $2

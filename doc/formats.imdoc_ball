@@ -1,0 +1,112 @@
+<dl>
+<ball><s>AVS</s> - AVS X image file.</ball>
+<ball><s>BIE+</s> - Joint Bi-level Image experts Group file interchange
+format.</ball>
+<ball><s>BMP+</s> - Microsoft Windows bitmap image file.</ball>
+<ball><s>BMP24+</s> - Microsoft Windows 24-bit bitmap image file.</ball>
+<ball><s>CGM</s> - Computer Graphics Metafile.</ball>
+<ball><s>CMYK</s> - Raw cyan, magenta, yellow, and black samples
+(8 or 16 bits, depending on the setting of the -depth option).</ball>
+<ball><s>DCX+</s> - ZSoft IBM PC multi-page Paintbrush file.</ball>
+<ball><s>DIB</s> - Microsoft Windows bitmap image file.</ball>
+<ball><s>DICOM</s> - Medical image file.</ball>
+<ball><s>EPDF</s> - Encapsulated Portable Document Format.</ball>
+<ball><s>EPI</s> - Adobe Encapsulated PostScript Interchange format.</ball>
+<ball><s>EPS</s> - Adobe Encapsulated PostScript file.</ball>
+<ball><s>EPS2</s> - Adobe Level II Encapsulated PostScript file.</ball>
+<ball><s>EPSF</s> - Adobe Encapsulated PostScript file.</ball>
+<ball><s>EPSI</s> - Adobe Encapsulated PostScript Interchange format.</ball>
+<ball><s>EPT</s> - Adobe Encapsulated PostScript Interchange format with
+TIFF preview.</ball>
+<ball><s>FAX+</s> - Group 3.</ball>
+<ball><s>FIG</s> - TransFig image format.</ball>
+<ball><s>FITS</s> - Flexible Image Transport System.</ball>
+<ball><s>FPX</s> - FlashPix Format.</ball>
+<ball><s>GIF</s> - CompuServe graphics interchange format; 8-bit color.</ball>
+<ball><s>GIF87</s> - CompuServe graphics interchange format; 8-bit color
+(version 87a).</ball>
+<ball><s>GRAY</s> - Raw gray samples (8 or 16 bits, depending on the
+setting of the -depth option).</ball>
+<ball><s>GRADIENT</s>- gradual passing from one shade to another. Specify
+the desired shading with the filename (e.g. <tt>gradient:red-blue</tt>).</ball>
+<ball><s>GRANITE</s> - granite texture.</ball>
+<ball><s>HDF+</s> - Hierarchical Data Format.</ball>
+<ball><s>HISTOGRAM</s></ball>
+<ball><s>HPGL</s> - HP-GL plotter language.</ball>
+<ball><s>HTML</s> - Hypertext Markup Language
+a with client-side image map.</ball>
+<ball><s>JBIG+</s> - Joint Bi-level Image experts Group file interchange
+format.</ball>
+<ball><s>JPEG</s> - Joint Photographic Experts Group JFIF format;
+compressed 24-bit color.</ball>
+<ball><s>ICO</s> - Microsoft icon.</ball>
+<ball><s>LABEL</s> - text image.</ball>
+<ball><s>MAP</s> - colormap intensities
+(8 or 16 bits, depending on the setting of the -depth option) and indices
+(8 or 16 bits, depending on whether colors > 256).</ball>
+<ball><s>MIFF+</s> - Magick image file format.</ball>
+<ball><s>MNG+</s> - Multiple-image Network Graphics.</ball>
+<ball><s>MONO</s> - Bi-level bitmap in least-significant-byte (LSB) first
+order.</ball>
+<ball><s>MPEG+</s> - Motion Picture Experts Group file interchange
+format.</ball>
+<ball><s>MTV+</s> -</ball>
+<ball><s>MVG</s> - Magick Vector Graphics.</ball>
+<ball><s>M2V+</s> - Motion Picture Experts Group file interchange
+format (version 2).</ball>
+<ball><s>NETSCAPE</s> - Netscape 216 color cube.</ball>
+<ball><s>NULL</s> - NULL image.</ball>
+<ball><s>PBM+</s> - Portable bitmap format (black and white).</ball>
+<ball><s>PCD</s> - Photo CD. The maximum resolution written is 512x768
+pixels.</ball>
+<ball><s>PCDS</s> - Photo CD. Decode with the sRGB color table.</ball>
+<ball><s>PCL</s> - Page Control Language.</ball>
+<ball><s>PCX</s> - ZSoft IBM PC Paintbrush file.</ball>
+<ball><s>PDF+</s> - Portable Document Format.</ball>
+<ball><s>PGM+</s> - Portable graymap format (gray scale).</ball>
+<ball><s>PICT</s> - Apple Macintosh QuickDraw/PICT file.</ball>
+<ball><s>PIX</s> - Alias/Wavefront RLE image format.</ball>
+<ball><s>PLASMA </s>- plasma fractal image. Specify the base color as
+the filename (e.g. <tt>plasma:gray</tt>). Use <tt>fractal</tt> to
+initialize to a random value (e.g. <tt>plasma:fractal</tt>).</ball>
+<ball><s>PNG</s> - Portable Network Graphics.</ball>
+<ball><s>PNM+</s> - Portable anymap.</ball>
+<ball><s>PPM+</s> - Portable pixmap format (color).</ball>
+<ball><s>PS+</s> - Adobe PostScript file.</ball>
+<ball><s>PSD</s> - Adobe PhotoShop bitmap file.</ball>
+<ball><s>PS2+</s> - Adobe Level II PostScript file.</ball>
+<ball><s>RAD</s> - Radiance image file.</ball>
+<ball><s>RGB</s> - Raw red, green, and blue samples (8 or 16 bits,
+depending on the setting of the -depth option).</ball>
+<ball><s>RGBA</s> - Raw red, green, blue, and matte samples (8 or 16 bits,
+depending on the setting of the -depth option).</ball>
+<ball><s>RLA</s> - Alias/Wavefront image file; read only.</ball>
+<ball><s>RLE</s> - Utah Run length encoded image file; read only.</ball>
+<ball><s>SGI+</s> - Irix RGB image file.</ball>
+<ball><s>SHTML</s> - Hypertext Markup Language a with client-side
+image map.</ball>
+<ball><s>SUN+</s> - SUN Rasterfile.</ball>
+<ball><s>SVG+</s> - Scalable Vector Graphics.</ball>
+<ball><s>TEXT</s> - raw text file; read only.</ball>
+<ball><s>TGA+</s> - Truevision Targa image file.</ball>
+<ball><s>TIFF+</s> - Tagged Image File Format.</ball>
+<ball><s>TIFF24+</s> - 24-bit Tagged Image File Format.</ball>
+<ball><s>TILE</s> - tile image with a texture.</ball>
+<ball><s>TIM</s> - PSX TIM file.</ball>
+<ball><s>TTF</s> - TrueType font file.</ball>
+<ball><s>UIL</s> - X-Motif UIL table.</ball>
+<ball><s>UYVY</s> - Interleaved YUV.</ball>
+<ball><s>VICAR</s> - read only.</ball>
+<ball><s>VID</s> - Visual Image Directory.</ball>
+<ball><s>VIFF+</s> - Khoros Visualization image file.</ball>
+<ball><s>WIN</s> - select image from or display image to your
+computer screen.</ball>
+<ball><s>X</s> - select image from or display image to your X server
+screen.</ball>
+<ball><s>XC</s> - constant image of X server color. Specify the image
+color as the filename (e.g. <tt>xc:yellow</tt>).</ball>
+<ball><s>XBM</s> - X Windows system bitmap, black and white only.</ball>
+<ball><s>XPM</s> - X Windows system pixmap file (color).</ball>
+<ball><s>XWD</s> - X Windows system window dump file (color).</ball>
+<ball><s>YUV+</s> - CCIR 601 4:1:1 file.</ball>
+</dl>

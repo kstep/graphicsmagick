@@ -1,0 +1,16 @@
+
+# for x in format
+# for x in format animate composite conjure convert display identify import \
+ for x in animate composite conjure convert display identify import \
+          mogrify montage GraphicsMagick
+
+do
+make -f make-utility UTILITY=$x $*
+done
+
+case $* in
+   clean)
+      rm -f options.tex;;
+   *)
+      make options.tex;;
+esac

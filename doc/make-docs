@@ -1,0 +1,15 @@
+
+rm gm-Gm/*
+makegm clean
+makem clean
+makegm
+
+set -x
+
+cat gm-*/man.imdoc > gm-Gm/man.imdoc
+cat gm-*/html.imdoc > gm-Gm/html.imdoc
+cat gm-*/tex.imdoc > gm-Gm/tex.imdoc
+
+imdoc2man gm gm-Gm/man.imdoc > gm.1
+gmdoc2html gm gm-Gm/html.imdoc > gm.html
+imdoc2tex < gm-Gm/tex.imdoc > gm.tex

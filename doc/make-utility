@@ -1,0 +1,47 @@
+
+all:	man tex html
+
+man:	$(UTILITY).1
+
+html:	$(UTILITY).html
+
+tex:	$(UTILITY).tex
+
+brief_options.imdoc:	options.imdoc
+	imdoc_select_brief options.imdoc brief_options.imdoc
+
+$(UTILITY)/Expanded.imdoc: $(UTILITY).imdoc brief_options.imdoc copyright.imdoc
+	imdocinclude $(UTILITY).imdoc > $(UTILITY)/Expanded.imdoc
+
+$(UTILITY)/man.imdoc: $(UTILITY)/Expanded.imdoc
+	imdocselect $(UTILITY) man $(UTILITY)/Expanded.imdoc > \
+	$(UTILITY)/man.imdoc
+
+$(UTILITY)/html.imdoc: $(UTILITY)/Expanded.imdoc
+	imdocselect $(UTILITY) html $(UTILITY)/Expanded.imdoc > \
+	$(UTILITY)/html.imdoc
+
+$(UTILITY)/tex.imdoc: $(UTILITY)/Expanded.imdoc
+	imdocselect $(UTILITY) tex $(UTILITY)/Expanded.imdoc > \
+	$(UTILITY)/tex.imdoc
+
+$(UTILITY).1:  $(UTILITY)/man.imdoc
+	imdoc2man $(UTILITY) $(UTILITY)/man.imdoc > $(UTILITY).1
+
+$(UTILITY).html:  $(UTILITY)/html.imdoc
+	imdoc2html $(UTILITY) $(UTILITY)/html.imdoc > $(UTILITY).html
+
+$(UTILITY).tex:  $(UTILITY)/tex.imdoc
+	imdoc2tex < $(UTILITY)/tex.imdoc > $(UTILITY).tex
+
+install: www/$(UTILITY).html utilities/$(UTILITY).1
+
+www/$(UTILITY).html: $(UTILITY).html
+	cp $(UTILITY).html www/$(UTILITY).html
+
+utilities/$(UTILITY).1: $(UTILITY).1
+	cp $(UTILITY).1 utilities/$(UTILITY).1
+
+clean:
+	/bin/rm -f $(UTILITY).1 $(UTILITY).html $(UTILITY).tex $(UTILITY)/*
+	/bin/rm -f www/$(UTILITY).html utilities/$(UTILITY).1

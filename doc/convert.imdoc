@@ -1,0 +1,311 @@
+<imdoc>
+
+<!-- ------------------------------------------------------------------ -->
+<!-- Options.xml: "options" subsection of convert, composite, et al.    -->
+<!-- ------------------------------------------------------------------- -->
+<!-- Markup tags in this document are                                    -->
+<!--   <imdoc> (Identifies file as ImageMagick document source file)     -->
+<!--   <sect> name=section_name (section); remainder of line is title    -->
+<!--   <ss>   (subsection)                                               -->
+<!--   <opt>  (option)                                                   -->
+<!--   <abs>  (abstract of an option)                                    -->
+<!--   <p>    (regular print paragraph, not OK to nest)                  -->
+<!--   <pp>   (small print paragraph, not OK to nest)                    -->
+<!--   <sp>   (subparagraph, must be inside p or pp, OK to nest          -->
+<!--   <ul>   (== HTML ul)                                               -->
+<!--   <li>   (== HTML li)                                               -->
+<!--   <dl>   (== HTML dl)                                               -->
+<!--   <dt>   (== HTML dt, dt without a dd is OK)                        -->
+<!--   <dd>   (== HTML dd, dd without a dt is OK)                        -->
+<!--   <i>    (== HTML em)                                               -->
+<!--   <s>    (== HTML strong)                                           -->
+<!--   <tt>   (== HTML tt)                                               -->
+<!--   <bq>   (== HTML blockquote)                                       -->
+<!--   <pre>  (== HTML pre, not allowed in pp or sp)                     -->
+<!--   <utils apps=name,...> (which apps the enclosed lines pertain to)  -->
+<!--   <format type=html|tex|man>                                        -->
+<!--   <back>                                                            -->
+<!--   <home>                                                            -->
+<!--   <include file=filename>                                           -->
+<!--   <!-- (== HTML !--) comment, must not contain newlines, close with -->
+<!--                                                                     -->
+<!--   All tags must close with </...> form of tag, e.g. <pp>..</pp>     -->
+<!-- ------------------------------------------------------------------- -->
+
+<utils convert>
+<title>Convert</title>
+<gm>
+<sect convert="top">gm convert
+</gm>
+<im>
+<sect NAME="conv-top">NAME
+<p>
+convert - convert an image or sequence of images
+</p>
+</sect>
+<format type=html>
+<sect NAME="conv-contents">Contents
+<dl>
+<dt>
+<a href="#conv-syno">Synopsis</a>
+</dt>
+<dt>
+<a href="#conv-desc">Description</a>
+</dt>
+<dt>
+<a href="#conv-exam">Examples</a>
+</dt>
+<dt>
+<a href="#conv-opti">Options</a>
+</dt>
+<dt>
+<a href="#conv-segm">Image Segmentation</a>
+</dt>
+<dt>
+<a href="#conv-envi">Environment</a>
+</dt>
+<dt>
+<a href="#conv-auth">Authors</a>
+</dt>
+<dt>
+<a href="#conv-copy">Copyright</a>
+</dt>
+</dl>
+</sect>
+</format>
+<sect NAME="conv-syno">Synopsis
+<p>
+<s>convert</s> <s>[</s> <i>options</i> <s>... ]</s> <i>input_file output_file</i>
+</p>
+</sect>
+<sect NAME="conv-desc">Description
+</im>
+<p>
+<s>Convert</s> converts an input file using one image format to an output
+file with a differing image format. In addition, various types of image
+processing can be performed on the converted image during the conversion
+process. <s>Convert</s> recognizes the image formats listed in
+<format type=man,tex>
+<i>ImageMagick(1)</i>.
+</format>
+<format type=html>
+<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+</format>
+</p>
+</sect>
+<back>
+<sect NAME="conv-exam">Examples
+<p>
+To make a thumbnail of a JPEG image, use:</p>
+<pre>
+<format type=man,tex>
+    convert -size 120x120 cockatoo.jpg -resize 120x120
+            +profile "*" thumbnail.jpg
+</format>
+<format type=html>
+    convert -size 120x120 cockatoo.jpg -resize 120x120 +profile "*" thumbnail.jpg
+</format>
+</pre>
+<pp>
+In this example, <tt>'-size 120x120'</tt> gives a hint to the JPEG decoder
+that the image is going to be downscaled to 120x120, allowing it to run
+faster by avoiding returning full-resolution images to ImageMagick for
+the subsequent resizing operation.  The
+<tt>'-resize 120x120'</tt> specifies the desired dimensions of the
+output image.  It will be scaled so its largest dimension is 120 pixels.  The
+<tt>'+profile "*"'</tt> removes any ICM, EXIF, IPTC, or other profiles
+that might be present in the input and aren't needed in the thumbnail.</pp>
+
+<p>
+To convert a <i>MIFF</i> image of a cockatoo to a SUN raster image, use:</p>
+<pre>
+    convert cockatoo.miff sun:cockatoo.ras
+</pre>
+<p>
+To convert a multi-page <i>PostScript</i> document to individual FAX pages,
+use:</p>
+<pre>
+    convert -monochrome document.ps fax:page
+</pre>
+<p>
+To convert a TIFF image to a <i>PostScript</i> A4 page with the image in
+the lower left-hand corner, use:</p>
+<pre>
+    convert -page A4+0+0 image.tiff document.ps
+</pre>
+<p>
+To convert a raw Gray image with a 128 byte header to a portable graymap,
+use:</p>
+<pre>
+<format type=man,tex>
+    convert -depth 8 -size 768x512+128 gray:raw
+            image.pgm
+</format>
+<format type=html>
+    convert -depth 8 -size 768x512+128 gray:raw image.pgm
+</format>
+</pre>
+<p>
+In this example, "raw" is the input file.  Its format is "gray" and it
+has the dimensions and number of header bytes specified by the -size
+option and the sample depth specified by the
+-depth option.  The output file is "image.pgm".  The suffix ".pgm"
+specifies its format.
+<p>
+To convert a Photo CD image to a TIFF image, use:</p>
+<pre>
+    convert -size 1536x1024 img0009.pcd image.tiff
+    convert img0009.pcd[4] image.tiff
+</pre>
+<p>
+To create a visual image directory of all your JPEG images, use:</p>
+<pre>
+    convert 'vid:*.jpg' directory.miff
+</pre>
+<p>
+To annotate an image with blue text using font 12x24 at position (100,100),
+use:</p>
+<pre>
+<format type=man,tex>
+    convert -font helvetica -fill blue
+            -draw "text 100,100 Cockatoo"
+            bird.jpg bird.miff
+</format>
+<format type=html>
+    convert -font helvetica -fill blue -draw "text 100,100 Cockatoo"
+            bird.jpg bird.miff
+</format>
+</pre>
+<p>
+To tile a 640x480 image with a JPEG texture with bumps use:</p>
+<pre>
+    convert -size 640x480 tile:bumps.jpg tiled.png
+</pre>
+
+<p>
+To surround an icon with an ornamental border to use with Mosaic(1), use:</p>
+<pre>
+<format type=man,tex>
+    convert -mattecolor "#697B8F" -frame 6x6 bird.jpg
+            icon.png
+</format>
+<format type=html>
+    convert -mattecolor "#697B8F" -frame 6x6 bird.jpg icon.png
+</format>
+</pre>
+
+<p>
+To create a MNG animation from a DNA molecule sequence, use:</p>
+<pre>
+    convert -delay 20 dna.* dna.mng
+</pre>
+</sect>
+<back>
+
+<!-- --------------------- Options ---------------------------------- -->
+
+<sect NAME="conv-opti">Options
+
+<p>
+Options are processed in command line order. Any option you specify on
+the command line remains in effect for the set of images that follows,
+until the set is terminated by the appearance of any option or <s>-noop</s>.
+Some options only affect the decoding of images and others only the encoding.
+The latter can appear after the final group of input images.</p>
+
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>ImageMagick(1)</i>.
+</format>
+<format type=html>
+<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+</format>
+</im>
+</p>
+
+<include file=brief_options.imdoc>
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>ImageMagick(1)</i>.
+</format>
+<format type=html>
+<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+</format>
+</p>
+</sect>
+<back>
+
+<sect NAME="conv-segm">Segmentation
+<p>
+Use <s>-segment</s> to segment an image by analyzing the histograms of
+the color components and identifying units that are homogeneous with the
+fuzzy c-means technique. The scale-space filter analyzes the histograms
+of the three color components of the image and identifies a set of classes.
+The extents of each class is used to coarsely segment the image with thresholding.
+The color associated with each class is determined by the mean color of
+all pixels within the extents of a particular class. Finally, any unclassified
+pixels are assigned to the closest class with the fuzzy c-means technique.</p>
+<p>
+The fuzzy c-Means algorithm can be summarized as follows:
+<ul>
+<li>
+Build a histogram, one for each color component of the image.</li>
+<li>
+For each histogram, successively apply the scale-space filter and build
+an interval tree of zero crossings in the second derivative at each scale.
+Analyze this scale-space "fingerprint" to determine which peaks or valleys
+in the histogram are most predominant.</li>
+<li>
+The fingerprint defines intervals on the axis of the histogram. Each interval
+contains either a minima or a maxima in the original signal. If each color
+component lies within the maxima interval, that pixel is considered "classified"
+and is assigned an unique class number.</li>
+<li>
+Any pixel that fails to be classified in the above thresholding pass is
+classified using the fuzzy c-Means technique. It is assigned to one of
+the classes discovered in the histogram analysis phase.</li>
+</ul>
+<p>
+The fuzzy c-Means technique attempts to cluster a pixel by finding the
+local minima of the generalized within group sum of squared error objective
+function. A pixel is assigned to the closest class of which the fuzzy membership
+has a maximum value.
+<p>
+For additional information see:
+<bq><i>Young Won Lim, Sang Uk Lee</i>, ``<s>On The Color Image Segmentation
+Algorithm Based on the Thresholding and the Fuzzy c-Means Techniques</s>'',
+Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</bq>
+</p>
+</sect>
+<back>
+<sect NAME="conv-envi">Environment
+<opt>DISPLAY</opt>
+
+<abs>To get the default host, display number, and screen.</abs>
+</sect>
+<back>
+
+<format type=man>
+<sect NAME="conv-also">SEE ALSO
+<p>
+display(1), animate(1), identify(1), ImageMagick(1), montage(1), mogrify(1),
+composite(1)
+</p>
+</sect>
+</format>
+</im>
+</utils>
+<im>
+<include file=copyright.imdoc>
+</im>
+</imdoc>

@@ -1,0 +1,361 @@
+<imdoc>
+<utils animate>
+<title>Animate</title>
+<gm>
+<sect NAME="animate">gm animate
+</gm>
+<im>
+<sect NAME="top">NAME
+animate - animate a sequence of images
+</sect>
+<format type=html>
+<sect NAME="contents">Contents
+
+<dl>
+<dt>
+<a href="#syno">Synopsis</a>
+</dt>
+
+<dt>
+<a href="#desc">Description</a>
+</dt>
+
+<dt>
+<a href="#exam">Examples</a>
+</dt>
+
+<dt>
+<a href="#opti">Options</a>
+</dt>
+
+<dt>
+<a href="#mous">Mouse Buttons</a>
+</dt>
+
+<dt>
+<a href="#comm">Command Widget</a>
+</dt>
+
+<dt>
+<a href="#keyb">Keyboard Accelerators</a>
+</dt>
+
+<dt>
+<a href="#xres">X Resources</a>
+</dt>
+
+<dt>
+<a href="#envi">Environment</a>
+</dt>
+
+<dt>
+<a href="#copy">Copyright</a>
+</dt>
+
+<dt>
+<a href="#ackn">Acknowledgement</a>
+</dt>
+
+<dt>
+<a href="#auth">Authors</a>
+</dt>
+</dl>
+</sect>
+</format>
+
+<sect NAME="syno">Synopsis
+<p>
+<s>animate</s> <s>[</s> <i>options</i> <s>...]</s> <i>file</i> [ [
+<i>options</i> ...] <i>file</i> ...]
+</p>
+</sect>
+<sect NAME="desc">Description
+</im>
+<p>
+<s>Animate</s> displays a sequence of images on any workstation display
+running an X server. <s>animate</s> first determines the hardware capabilities
+of the workstation. If the number of unique colors in an image is less
+than or equal to the number the workstation can support, the image is displayed
+in an X window. Otherwise the number of colors in the image is first reduced
+to match the color resolution of the workstation before it is displayed.</p>
+<p>
+This means that a continuous-tone 24 bits-per-pixel image can display on
+a 8 bit pseudo-color device or monochrome device. In most instances the
+reduced color image closely resembles the original. Alternatively, a monochrome
+or pseudo-color image sequence can display on a continuous-tone 24 bits-per-pixel
+device.</p>
+<p>
+To help prevent color flashing on X server visuals that have colormaps,
+<s>animate</s>
+creates a single colormap from the image sequence. This can be rather time
+consuming. You can speed this operation up by reducing the colors in the
+image before you "animate" them. Use <s>mogrify</s> to color reduce the
+images to a single colormap. See <s>mogrify(1)</s> for details. Alternatively,
+you can use a Standard Colormap; or a static, direct, or true color visual.
+You can define a Standard Colormap with <i>xstdcmap</i>. See <s>xstdcmap(1)</s>
+for details. This method is recommended for colormapped X server because
+it eliminates the need to compute a global colormap.</p>
+</sect>
+<back>
+<sect NAME="exam">Examples
+
+<p>
+To animate a set of images of a cockatoo, use:
+</p>
+<pre>
+    animate cockatoo.*
+</pre>
+<p>
+To animate a cockatoo image sequence while using the Standard Colormap
+<i>best</i>, use:
+</p>
+<pre>
+    xstdcmap -best
+    animate -map best cockatoo.*
+</pre>
+<p>
+To animate an image of a cockatoo without a border centered on a backdrop,
+use:
+</p>
+<pre>
+    animate +borderwidth -backdrop cockatoo.*
+</pre>
+</sect>
+<back>
+<sect NAME="opti">Options
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>ImageMagick(1)</i>.
+</format>
+<format type=html>
+<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+</format>
+</im>
+</p>
+
+<include file=brief_options.imdoc>
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>ImageMagick(1)</i>.
+</format>
+<format type=html>
+<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+</format>
+</im>
+</p>
+
+<p>
+Any option you specify on the command line remains in effect for the group
+of images following it, until the group is terminated by the appearance of
+any option or <s>-noop</s>.  For example, to animate three images, the first
+with 32 colors, the second with an unlimited number of colors, and the
+third with only 16 colors, use:
+</p>
+<pre>
+<format type=man,tex>
+     animate -colors 32 cockatoo.1 -noop cockatoo.2
+             -colors 16 cockatoo.3
+</format>
+<format type=html>
+     animate -colors 32 cockatoo.1 -noop cockatoo.2 -colors 16 cockatoo.3
+</format>
+</pre>
+<p>
+<s>Animate</s> options can appear on the command line or in your X resources
+file. See <i>X(1)</i>. Options on the command line supersede values specified
+in your X resources file.</p>
+
+<p>Image filenames may appear in any order on the command line if the image
+format is <i>MIFF</i> (refer to <s>miff(5)</s> and the
+<s>scene</s> keyword
+is specified in the image. Otherwise the images will display in the order
+they appear on the command line.</p>
+</sect>
+<back>
+<sect NAME="mous">Mouse Buttons
+<p>
+Press any button to map or unmap the Command widget. See the next section
+for more information about the Command widget.</p>
+</sect>
+<back>
+<sect NAME="comm">Command Widget
+<p>
+The Command widget lists a number of sub-menus and commands. They are</p>
+<ul>
+<li><s>Animate</s>
+<ul>
+<li>    Open</li>
+<li>    Play</li>
+<li>    Step</li>
+<li>    Repeat</li>
+<li>    Auto Reverse</li>
+</ul></li>
+<li><s>Speed</s>
+<ul>
+<li>    Faster</li>
+<li>    Slower</li>
+</ul></li>
+<li><s>Direction</s>
+<ul>
+<li>    Forward</li>
+<li>    Reverse</li>
+</ul></li>
+<li><s>Image Info</s></li>
+<li><s>Help</s></li>
+<li><s>Quit</s></li>
+</ul>
+<p>
+Menu items with a indented triangle have a sub-menu. They are represented
+above as the indented items. To access a sub-menu item, move the pointer
+to the appropriate menu and press a button and drag. When you find the
+desired sub-menu item, release the button and the command is executed.
+Move the pointer away from the sub-menu if you decide not to execute a
+particular command.</p>
+</sect>
+<back>
+<sect NAME="keyb">Keyboard Accelerators
+<dl>
+<dt><s>Ctl+O</s></dt>
+<dd>Press to load an image from a file.</dd>
+<dt><s>space</s></dt>
+<dd>Press to display the next image in the sequence.</dd>
+<dt><s><</s></dt>
+<dd>Press to speed-up the display of the images.  Refer to
+<s>-delay</s> for more information.</dd>
+<dt><s>></s></dt>
+<dd>Press to slow the display of the images.  Refer to
+<s>-delay</s> for more information.</dd>
+<dt><s>?</s></dt>
+<dd>Press to display information about the image.  Press
+any key or button to erase the information.</dd>
+<dd>This information is printed: image name;  image size;
+and the total number of unique colors in the image.</dd>
+<dt><s>F1</s></dt>
+<dd>Press to display helpful information about <s>animate(1)</s>.</dd>
+<dt><s>Ctl-q</s></dt>
+<dd>Press to discard all images and exit program.</dd>
+</dl>
+</sect>
+<back>
+<sect NAME="xres">X Resources
+<p>
+<s>Animate</s> options can appear on the command line or in your X resource
+file. Options on the command line supersede values specified in your X
+resource file. See <s>X(1)</s> for more information on X resources.</p>
+<p>
+All <s>animate</s> options have a corresponding X resource. In addition,
+the <s>animate</s> program uses the following X resources:</p>
+<dl>
+<dt><s>background</s> <s>(</s><i>class</i> <s>Background)</s></dt>
+<dd>
+Specifies the preferred color to use for the Image window background. The
+default is #ccc.</dd>
+<dt><s>borderColor</s> <s>(</s><i>class</i> <s>BorderColor)</s></dt>
+<dd>
+Specifies the preferred color to use for the Image window border. The default
+is #ccc.</dd>
+<dt><s>borderWidth</s> <s>(</s><i>class</i> <s>BorderWidth)</s></dt>
+<dd>
+Specifies the width in pixels of the Image window border. The default is
+2.</dd>
+<dt><s>font</s> <s>(</s><i>class</i> <s>Font</s> <s>or</s> <s>FontList)</s></dt>
+<dd>
+Specifies the name of the preferred font to use in normal formatted text.
+The default is 14 point <i>Helvetica</i>.</dd>
+<dt><s>foreground</s> <s>(</s><i>class</i> <s>Foreground)</s></dt>
+<dd>
+Specifies the preferred color to use for text within the Image window.
+The default is black.</dd>
+<dt><s>geometry</s> <s>(</s><i>class</i> <s>geometry)</s></dt>
+<dd>
+Specifies the preferred size and position of the image window. It is not
+necessarily obeyed by all window managers.
+Offsets, if present, are handled in <i>X(1)</i> style.  A negative x offset is
+measured from the right edge of the screen to the right edge of the icon,
+and a negative y offset is measured from the bottom edge of the screen
+to the bottom edge of the icon.</dd>
+<dt><s>iconGeometry</s> <s>(</s><i>class</i> <s>IconGeometry)</s></dt>
+<dd>
+Specifies the preferred size and position of the application when iconified.
+It is not necessarily obeyed by all window managers.
+Offsets, if present, are handled in the same manner as in class Geometry.</dd>
+<dt><s>iconic</s> <s>(</s><i>class</i> <s>Iconic)</s></dt>
+<dd>
+This resource indicates that you would prefer that the application's windows
+initially not be visible as if the windows had be immediately iconified
+by you. Window managers may choose not to honor the application's request.</dd>
+<dt><s>matteColor</s> <s>(</s><i>class</i> <s>MatteColor)</s></dt>
+<dd>
+Specify the color of windows. It is used for the backgrounds of windows,
+menus, and notices. A 3D effect is achieved by using highlight and shadow
+colors derived from this color. Default value: #ddd.</dd>
+<dt><s>name</s> <s>(</s><i>class</i> <s>Name)</s></dt>
+<dd>
+This resource specifies the name under which resources for the application
+should be found. This resource is useful in shell aliases to distinguish
+between invocations of an application, without resorting to creating links
+to alter the executable file name. The default is the application name.</dd>
+<dt><s>sharedMemory</s> <s>(</s><i>class</i> <s>SharedMemory)</s></dt>
+<dd>
+This resource specifies whether animate should attempt use shared memory
+for pixmaps. ImageMagick must be compiled with shared memory support, and
+the display must support the MIT-SHM extension. Otherwise, this resource
+is ignored. The default is True.</dd>
+<dt><s>text_font</s> <s>(</s><i>class</i> <s>textFont)</s></dt>
+<dd>
+Specifies the name of the preferred font to use in fixed (typewriter style)
+formatted text. The default is 14 point <i>Courier</i>.</dd>
+<dt><s>title</s> <s>(</s><i>class</i> <s>Title)</s></dt>
+<dd>
+This resource specifies the title to be used for the Image window. This
+information is sometimes used by a window manager to provide some sort
+of header identifying the window. The default is the image file name.</dd>
+</dl>
+</sect>
+<back>
+<im>
+<sect NAME="envi">Environment
+<opt>DISPLAY</opt>
+
+<abs>To get the default host, display number, and screen.</abs>
+</sect>
+<sect NAME="ackn">Acknowledgements
+<dl>
+<dt></dt><dd>
+The <s>MIT X Consortium</s> for making network transparent graphics a
+reality.</dd>
+<dt></dt><dd>
+<i>Michael Halle</i>, <s>Spatial Imaging Group at MIT</s>, for the initial
+implementation of Alan Paeth's image rotation algorithm.</dd>
+<dt></dt><dd>
+<i>David Pensak</i>, <s>duPont</s>, for providing a computing
+environment that made this program possible.</dd>
+<dt></dt><dd><i>Paul Raveling</i>, <s>USC Information Sciences Institute</s>.
+The spatial subdivision color reduction algorithm is based on his Img
+software.</dd>
+</dl>
+</sect>
+<back>
+
+<format type=man>
+<sect NAME="also">SEE ALSO
+<p>
+display(1), composite(1), conjure(1), convert(1), identify(1), ImageMagick(1),
+import(1), mogrify(1), montage(1)
+</p>
+</sect>
+</format>
+<include file=copyright.imdoc>
+</im>
+</utils>
+</imdoc>

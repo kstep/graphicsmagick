@@ -1,0 +1,84 @@
+#!/bin/sh
+
+# imdocselect utility format options.xml > file.xml
+
+# Selects lines from options.html based on <utils ...> tags.
+# Removes all blank lines.
+
+# To select all utilities, use imdocselect . options.xml > all.xml
+
+sed "
+     : begin
+
+       /<imdoc>/d
+       /<\/imdoc>/d
+       /<im>/d
+       /<\/im>/d
+
+       /^ *$/d
+
+       /<.utils>/d
+       s/<utils/<UTIL/
+       t dummy
+
+     : dummy
+       s/<UTIL/<utils ImageMagick/
+       t inutil
+
+       s/<gm//
+       t skipgm
+
+       /<.format>/d
+       s/<format/<FORMAT/
+       t dummy1
+
+     : dummy1
+
+       s/<FORMAT/<format/
+       t inform
+       b
+
+     : inutil
+       s/<$1/<u/
+       t
+       s/$1/found/
+       t select
+       s/<utils/</
+       t skip
+
+     : skip
+       s/<.utils>//
+       t select
+       s/<utils/<UTIL/
+       t inutil
+       s/.*/!DELETE!/
+       n
+       b skip
+
+     : skipgm
+       s/<.gm>//
+       t select
+       s/.*/!DELETE!/
+       n
+       b skipgm
+
+     : inform
+       s/$2/found/
+       t select
+       s/.*/!DELETE!/
+       t skipform
+
+     : skipform
+       s/<.format>//
+       t select
+       s/<format/<FORMAT/
+       t inform
+       s/.*/!DELETE!/
+       n
+       b skipform
+
+     : select
+       d
+     " $3 |         \
+                    \
+sed "/!DELETE!/d"

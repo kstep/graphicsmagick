@@ -1,0 +1,117 @@
+   : begin
+
+     s/<imdoc>//
+     s/<\/imdoc>//
+
+     /<title>/{
+     s/<title>/\\title\{/
+     s/<\/title>/\}/
+     p
+     s/title/toctitle/
+     p
+     s/toctitle/titlerunning/
+     p
+     s/titlerunning/maketitle\\label/
+     p
+     s/.*//
+     }
+
+     s/<home>//
+     s/<back>//
+
+     s/<bq>//
+     s/<\/bq>//
+
+     s/<include.*//
+
+     s/<\/a>//
+     s/<a href=[^>]*>//
+     s/[{]/\\{/g
+     s/[}]/\\}/g
+
+     /<sect/s/$/\}/
+     s/<sect [^>]*>/\\section\{/
+     s/<\/sect>//
+
+     s/%/\\%/g
+     s/#/\\#/g
+     s/_/\\_/g
+     s/\&/\\&/g
+
+     s/<br>/\\newline\{\}/
+
+     s/<lopt>/<opt>/
+     s/<dopt>/<opt>/
+     s/<opt>/\\subsubsection\{/
+     s/<\/opt>/\}/
+
+     /<utils/s/>//
+     s/<utils/% Utilities:/
+     /<\/utils>/d
+     /<!--/d
+
+     s/<i>/\{\\it /g
+     s/<\/i>/\\\/\}/g
+
+     s/<s>/\{\\bf /g
+     s/<\/s>/\}/g
+
+     s/<tt>/\{\\tt /g
+     s/<\/tt>/\}/g
+
+     s/<tab>/\\begin\{longtable\}\{llll\}/
+     /<|>/s/<o>//g
+     /<|>/s/$/ \\\\/
+     s/<|>/ \& /g
+     s/< >//
+     s/<\/tab>/\\end\{longtable\}/
+
+     /<o>/s/$/\}/
+     s/<o>/\\item\{/
+
+     s/<abs>//g
+     s/<\/abs>//g
+
+     s/<p>//g
+     s/<\/p>//g
+
+     s/<pp>//g
+     s/<\/pp>//g
+
+     s/<sp>//g
+     s/<\/sp>//g
+
+     s/<dl>/\\begin\{description\}/
+     s/<ul>/\{\\begin\{description\}/
+     s/<ol>/\\begin\{description\}/
+     s/<li>/\\item\{/
+     s/<.li>/\}/
+     s/<dt>/\\item\{/
+     s/<.dt>/\}/
+     s/<dd>//
+     s/<.dd>//
+     s/<\/dl>/\\end\{description\}/
+     s/<\/ol>/\\end\{description\}/
+     s/<\/ul>/\\end\{description\}\}/
+
+     s/</$<$/g
+     s/>/$>$/g
+     s/|/$|$/g
+     s/!/\{!\}/g
+
+     s/$/@@/
+     s/\'\([^']*\)\'/`\1\'/g
+     s/\"\([^']*\)\"/``\1\'\'/g
+     /\\tt/s/[`\'][`\']/\"/g
+     s/@@[^@]*$//
+
+     t dummy
+   : dummy
+     s/.<.pre.>./\\begin\{verbatim\}/
+     t inpre
+     b
+   : inpre
+     s/<\/pre>/\\end{verbatim}/
+     t
+     n
+     b inpre

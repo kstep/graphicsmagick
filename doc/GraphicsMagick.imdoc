@@ -1,0 +1,272 @@
+<imdoc>
+
+<!-- ------------------------------------------------------------------- -->
+<!-- GraphicsMagick.imdoc: combined pages of convert, composite, et al.  -->
+<!-- ------------------------------------------------------------------- -->
+<!-- Markup tags in this document are                                    -->
+<!--   <imdoc> (Identifies file as ImageMagick document source file)     -->
+<!--   <sect> name=section_name (section); remainder of line is title    -->
+<!--   <ss>   (subsection)                                               -->
+<!--   <opt>  (option)                                                   -->
+<!--   <abs>  (abstract of an option)                                    -->
+<!--   <p>    (regular print paragraph, not OK to nest)                  -->
+<!--   <pp>   (small print paragraph, not OK to nest)                    -->
+<!--   <sp>   (subparagraph, must be inside p or pp, OK to nest          -->
+<!--   <ul>   (== HTML ul)                                               -->
+<!--   <li>   (== HTML li)                                               -->
+<!--   <dl>   (== HTML dl)                                               -->
+<!--   <dt>   (== HTML dt, dt without a dd is OK)                        -->
+<!--   <dd>   (== HTML dd, dd without a dt is OK)                        -->
+<!--   <i>    (== HTML em)                                               -->
+<!--   <s>    (== HTML strong)                                           -->
+<!--   <tt>   (== HTML tt)                                               -->
+<!--   <bq>   (== HTML blockquote)                                       -->
+<!--   <pre>  (== HTML pre, not allowed in pp or sp)                     -->
+<!--   <utils apps=name,...> (which apps the enclosed lines pertain to)  -->
+<!--   <format type=html|tex|man>                                        -->
+<!--   <back>                                                            -->
+<!--   <home>                                                            -->
+<!--   <include file=filename>                                           -->
+<!--   <!-- (== HTML !--) comment, must not contain newlines, close with -->
+<!--                                                                     -->
+<!--   All tags must close with </...> form of tag, e.g. <pp>..</pp>     -->
+<!-- ------------------------------------------------------------------- -->
+
+<utils apps=all>
+<title>GraphicsMagick Utilities</title>
+<sect NAME="top">NAME
+<p>
+gm - GraphicsMagick commandline utilities to create, edit, or convert images
+</p>
+</sect>
+<format type=html>
+<sect NAME="contents">Contents
+<dl>
+<dt>
+<a href="#syno">Synopsis</a>
+</dt>
+<dt>
+<a href="#desc">Description</a>
+</dt>
+<dt>
+<a href="#files">Files and Formats</a>
+</dt>
+<dt>
+<a href="#opti">Options</a>
+</dt>
+<dt>
+<a href="#auth">Authors</a>
+</dt>
+<dt>
+<a href="#copy">Copyright</a>
+</dt>
+</dl>
+</sect>
+</format>
+<sect NAME="syno">Synopsis
+
+<p>
+<s>gm animate</s> <s>[</s> <i>options ...</i> <s>]</s> <i>file</i> <s>[ [</s>
+<i>options ...</i> <s>]</s> <i>file ...</i> <s>]</s>
+</p>
+
+<p>
+<s>gm composite</s> <s>[</s> <i>options ...</i> <s>]</s> <i>image composite</i>
+<s>[</s> <i>mask</i> <s>]</s> <i>composited</i>
+</p>
+
+<p>
+<s>gm conjure</s> <s>[</s> <i>options</i> <s>]</s> <i>script.msl</i>
+<s>[ [</s> <i>options</i> <s>]</s> <i>script.msl</i> <s>]</s>
+</p>
+
+<p>
+<s>gm convert</s> <s>[ [</s> <i>options ...</i> <s>] [</s> <i>input_file ...</i>
+<s>]</s> <i>...</i> <s>[</s> <i>output_file</i> <s>] ]</s>
+</p>
+
+<p>
+<s>gm display</s> <s>[</s> <i>options ...</i> <s>]</s> <i>file ...</i>
+<s>[ [</s><i>options ...</i> <s>]</s><i>file ...</i> <s>]</s>
+</p>
+
+<p>
+<s>gm identify</s> <i>file</i> <s>[</s> <i>file ...</i> <s>]</s>
+</p>
+
+<p>
+<s>gm import</s> <s>[</s> <i>options ...</i> <s>]</s> <i>file</i>
+</p>
+
+<p>
+<s>gm mogrify</s> <s>[</s> <i>options ...</i> <s>]</s> <i>file ...</i>
+</p>
+
+<p>
+<s>gm montage</s> <s>[</s> <i>options ...</i> <s>]</s> <i>file</i> <s>[ [</s>
+<i>options ...</i> <s>]</s> <i>file ...</i> <s>]</s> <i>output_file</i>
+</p>
+
+</sect>
+<sect NAME="desc">Description
+<p>
+GraphicsMagick's <s>gm</s> provides a suite of commandline utilities for
+creating,
+converting, editing, and displaying images:</p>
+
+<p>
+<format type=man,tex>
+<s>Gm display</s>
+</format>
+<format type=html>
+<a href="display.html"><s>Gm display</s></a>
+</format>
+is a machine architecture independent
+image processing and display program. It can display an image on any workstation
+display running an <i>X</i> server.</p>
+
+<p>
+<format type=man,tex>
+<s>Gm import</s>
+</format>
+<format type=html>
+<a href="import.html"><s>Gm import</s></a>
+</format>
+reads an image from any visible window
+on an <i>X</i> server and outputs it as an image file. You can capture
+a single window, the entire screen, or any rectangular portion of the screen.</p>
+
+<p>
+<format type=man,tex>
+<s>Gm montage</s>
+</format>
+<format type=html>
+<a href="montage.html"><s>Gm montage</s></a>
+</format>
+creates a composite by combining several
+separate images. The images are tiled on the composite image with the name
+of the image optionally appearing just below the individual tile.</p>
+
+<p>
+<format type=man,tex>
+<s>Gm convert</s>
+</format>
+<format type=html>
+<a href="convert.html"><s>Gm convert</s></a>
+</format>
+converts an input file using one image
+format to an output file with a differing image format.</p>
+
+<p>
+<format type=man,tex>
+<s>Gm mogrify</s>
+</format>
+<format type=html>
+<a href="mogrify.html"><s>Gm mogrify</s></a>
+</format>
+transforms an image or a sequence of
+images. These transforms include <s>image scaling</s>, <s>image rotation</s>,
+<s>color
+reduction</s>, and others. The transmogrified image
+<s>overwrites</s> the
+original image.</p>
+
+<p>
+<format type=man,tex>
+<s>Gm identify</s>
+</format>
+<format type=html>
+<a href="identify.html"><s>Gm identify</s></a>
+</format>
+describes the format and characteristics
+of one or more image files. It will also report if an image is incomplete
+or corrupt.</p>
+
+<p>
+<format type=man,tex>
+<s>Gm composite</s>
+</format>
+<format type=html>
+<a href="composite.html"><s>Gm composite</s></a>
+</format>
+composites images to create new images.</p>
+
+<p>
+<format type=man,tex>
+<s>Gm conjure</s>
+</format>
+<format type=html>
+<a href="conjure.html"><s>Gm conjure</s></a>
+</format>
+interprets and executes scripts in
+the Magick Scripting Language (MSL).</p>
+
+<p>
+The <s>GraphicsMagick</s> utilities recognize the following image formats:
+</p>
+<include file=format.imdoc>
+<p>
+<i>Support for some of these formats require additional programs or libraries.
+<a href="install.html">README</a>
+tells where to find this software</i>.</p>
+<p>
+Note, a format delineated with <tt>+</tt> means that if more than one
+image is specified, it is composited into a single multi-image file. Use
+<s>+adjoin</s>
+if you want a single image produced for each frame.</p>
+<p>
+Your installation might not support all of the formats in the list.  To get
+an up-to-date listing of the formats supported by your particular
+configuration, run <tt>"convert -list format"</tt>.
+<p>
+Raw images are expected to have one byte per pixel unless <s>gm</s>
+is compiled in 16-bit mode or in 32-bit mode. Here, the raw data
+is expected to be stored two or four
+bytes per pixel, respectively, in most-significant-byte-first order.
+You can tell if <s>gm</s> was compiled in 16-bit mode by typing
+"gm convert" without any options, and looking for "Q:16" in the first line of
+output.</p>
+</sect>
+<back>
+
+<sect NAME="files">Files and Formats
+<include file=filespec.imdoc>
+</sect>
+<back>
+
+<!-- --------------------- Options ---------------------------------- -->
+
+<sect NAME="opti">Options
+
+<p>
+Options are processed in command line order. Any option you specify on
+the command line remains in effect for the set of images that follows,
+until the set is terminated by the appearance of any option or <s>-noop</s>.
+Some options only affect the decoding of images and others only the encoding.
+The latter can appear after the final group of input images.</p>
+
+<include file=options.imdoc>
+</sect>
+<back>
+
+<im>
+<sect NAME="envi">Environment
+<opt>DISPLAY</opt>
+
+<abs>To get the default host, display number, and screen.</abs>
+</sect>
+<back>
+
+<format type=man>
+<sect NAME="also">SEE ALSO
+<p>
+ImageMagick(1),
+animate(1), display(1), animate(1), display(1), identify(1), import(1),
+montage(1), mogrify(1), composite(1)
+</p>
+</sect>
+</format>
+<include file=gm-copyright.imdoc>
+</im>
+</utils>
+</imdoc>

@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# imdoc2txt file.imdoc > file.txt
+
+cat <<!
+
+% Maintainer: please don't edit this file.  It was created from
+% Glenn Randers-Pehrson's "file.imdoc" using the imdoc2txt script.
+% Edit file.imdoc instead.
+
+Command-line Options
+!
+
+sed "
+     s/<imdoc>//
+     s/<\/imdoc>//
+     s/<sect [^>]*>//
+     s/<\/sect>//
+
+     s/>[^>]*<\/a>//
+     s/<a href=//
+
+     s/<lopt>//
+     s/<dopt>//
+     s/<opt>//
+     s/<\/opt>//
+
+     /<utils/s/>//
+     s/<utils/Utilities:/
+     /<\/utils>/d
+     /<!--/d
+
+     s/<i>//g
+     s/<\/i>//g
+
+     s/<s>//g
+     s/<\/s>//g
+
+     s/<tt>//g
+     s/<\/tt>//g
+
+     s/<abs>//g
+     s/<\/abs>//g
+
+     s/<o>//g
+     s/<tab>//g
+     s/<\/tab>//g
+
+     s/<pp>//g
+     s/<\/pp>//g
+
+     s/<pre>//g
+     s/<\/pre>//g
+
+     " $1

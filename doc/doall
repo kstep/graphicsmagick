@@ -1,0 +1,6 @@
+
+for x in animate conjure composite convert display identify import \
+         mogrify montage
+do
+$*
+done

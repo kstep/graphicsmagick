@@ -1,0 +1,66 @@
+<imdoc>
+<format man,html>
+<utils apps=conjure>
+</format>
+<format html>
+<sect NAME="auth">Authors
+<p>
+<i>
+John Cristy,
+<a href="mailto:magick-users@imagemagick.org">magick-users@imagemagick.org</a>,
+ImageMagick Studio LLC,<br>
+Glenn Randers-Pehrson,
+<a href="mailto:randeg@alum.rpi.edu">randeg@alum.rpi.edu</a>,
+ImageMagick Studio LLC,<br>
+Leonard Rosenthol,
+<a href="mailto:magick-users@imagemagick.org">leonardr@lazerware.com</a>,
+ImageMagick Studio LLC.
+</i>
+</p>
+</sect>
+<back>
+</format>
+<format man,html>
+<sect NAME="copy">Copyright
+<p>
+<s>Copyright (C) 2003 ImageMagick Studio</s></p>
+<p>
+<s>Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files ("ImageMagick"),
+to deal in ImageMagick without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
+is furnished to do so, subject to the following conditions:</s></p>
+<p>
+<s>The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of ImageMagick.</s></p>
+<p>
+<s>The software is provided "as is", without warranty of any kind, express
+or implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose and noninfringement.In no event shall
+ImageMagick Studio be liable for any claim, damages or other liability,
+whether in an action of contract, tort or otherwise, arising from, out
+of or in connection with ImageMagick or the use or other dealings in
+ImageMagick.</s></p>
+
+<p>
+<s>Except as contained in this notice, the name of the
+ImageMagick Studio LLC shall not be used in advertising or otherwise to
+promote the sale, use or other dealings in ImageMagick without prior written
+authorization from the ImageMagick Studio.</s></p>
+</sect>
+<back>
+</format>
+<format man,tex>
+<sect NAME="auth">Authors
+<p>
+<i>
+John Cristy, ImageMagick Studio LLC,<br>
+Glenn Randers-Pehrson, ImageMagick Studio LLC,<br>
+Leonard Rosenthol, ImageMagick Studio LLC.
+</i>
+</p>
+</sect>
+</format>
+<home>
+</imdoc>

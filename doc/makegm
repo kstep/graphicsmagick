@@ -1,0 +1,7 @@
+
+# for x in format
+ for x in animate composite conjure convert display identify import \
+   mogrify montage GraphicsMagick
+do
+make -f make-gm UTILITY=$x $*
+done

@@ -1,0 +1,144 @@
+<imdoc>
+<utils apps=identify>
+<title>Identify</title>
+<gm>
+<sect NAME="gm identify">gm identify
+</gm>
+<im>
+<sect NAME="ident-top">NAME
+identify - describe an image or image sequence.
+</sect>
+<format type=html>
+<sect NAME="ident-contents">Contents
+
+<dl>
+<dt>
+<a href="#ident-syno">Synopsis</a>
+</dt>
+
+<dt>
+<a href="#ident-desc">Description</a>
+</dt>
+
+<dt>
+<a href="#ident-opti">Options</a>
+</dt>
+
+<dt>
+<a href="#ident-auth">Authors</a>
+</dt>
+
+<dt>
+<a href="#ident-copy">Copyright</a>
+</dt>
+</dl>
+</sect>
+</format>
+
+<sect NAME="ident-syno">Synopsis
+
+<p>
+<s>identify</s> <i>file</i> [ <i>file</i> ... ]
+</p>
+</sect>
+<sect NAME="ident-desc">Description
+</im>
+
+<p>
+<s>Identify</s> describes the format and characteristics of one or more
+image files. It will also report if an image is incomplete or corrupt.
+The information displayed includes the scene number, the file name, the
+width and height of the image, whether the image is colormapped or not,
+the number of colors in the image, the number of bytes in the image, the
+format of the image (JPEG, PNM, etc.), and finally the number of seconds
+it took to read and process the image. An example line output
+from <s>identify</s> follows:</p>
+<pre>
+    images/aquarium.miff 640x480 PseudoClass 256c
+           308135b MIFF 1s
+</pre>
+<p>
+If <tt>-verbose</tt> is set, expect additional output including any image
+comment:
+</p>
+<pre>
+    Image: images/aquarium.miff
+    class: PseudoClass
+    colors: 256
+    signature: eb5dca81dd93ae7e6ffae99a527eb5dca8...
+    matte: False
+    geometry: 640x480
+       depth: 8
+    bytes: 308135
+    format: MIFF
+    comments:
+    Imported from MTV raster image: aquarium.mtv
+</pre>
+<p>
+For some formats, additional format-specific information about the file
+will be written if the <tt>-debug coder</tt> or <tt>-debug all</tt> option
+is used.</p>
+</sect>
+<back>
+
+<im>
+<sect NAME="ident-opti">Options
+</im>
+<gm>
+<sect NAME="ident-opti">Identify options
+</gm>
+<p>
+Options are processed in command line order. Any option you specify on
+the command line remains in effect for the set of images immediately
+following, until the set is terminated by the appearance of any option
+or <s>-noop</s>.</p>
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>ImageMagick(1)</i>.
+</format>
+<format type=html>
+<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+</format>
+</im>
+</p>
+</utils>
+
+<include file=brief_options.imdoc>
+
+<utils apps=identify>
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>ImageMagick(1)</i>.
+</format>
+<format type=html>
+<a href="ImageMagick.html"><i>ImageMagick(1)</i></a>.
+</format>
+</im>
+</p>
+</sect>
+<back>
+<format type=man>
+<im>
+<sect NAME="ident-also">SEE ALSO
+<p>
+display(1), animate(1), montage(1), mogrify(1),  convert(1), ImageMagick(1),
+composite(1)
+</p>
+</sect>
+</format>
+</im>
+</utils>
+<im>
+<include file=copyright.imdoc>
+</im>
+</imdoc>

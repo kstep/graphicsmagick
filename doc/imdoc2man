@@ -1,0 +1,99 @@
+#!/bin/sh
+
+# imdoc2man utility utility.imdoc > utility.1
+
+echo ".TH $1 1 \"Date: 2003/01/01 01:00:00\" \"ImageMagick\""
+
+sed  "
+   : begin
+     /<imdoc>/d
+     /<\/imdoc>/d
+     /<include file=/d
+
+     /<sect /y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/
+     /<SECT /s/^/.SH /
+     s/<SECT [^>]*>//
+     /<\/sect/d
+
+     /<title>/d
+     /<back>/d
+     /<home>/d
+
+     s/< >/    /
+     s/<|>/ /g
+
+     s/\\\\/\\\\\\\\/g
+     s/<lopt>/<opt>/
+     s/<dopt>/<opt>/
+     /opt>/s/\"/\\\\\"/g
+     /opt>.* .*</s/ / \\\\fI/
+     /opt>.* .*</s/<.opt>/\"\\\\fP/
+
+     /<opt>/i\\
+.TP
+
+     s/<opt>/.B \"/
+     s/<\/opt>/\"/
+
+     /<dt>/i\\
+.in 15
+     s/<dt>/.B \"/
+
+     /<\/dt>/a\\
+.in 20\\
+ \\\\fR
+     s/<\/dt>/\"/
+     s/<\/dl>//g
+     /<dl>/i\\
+.in 15
+     s/<dl>//g
+
+     /<\/dl>/a\\
+.in 10
+     /<\/dd>/a\\
+.in 15
+     s/<\/dd>//g
+     /<dd>/i\\
+.in 20
+     s/<dd>//g
+
+     s/<\/a>//
+     s/<a [^>]*>//
+
+     /<utils/d
+     /<\/utils>/d
+     /<!--/d
+     s/<pre>//
+     /<\/pre>/d
+     /<tab>/d
+     /<\/tab>/d
+
+     s/<abs>/\\\\fR/g
+     s/<\/abs>//g
+
+     s/<p>//g
+     s/<\/p>//g
+     s/<pp>//g
+     s/<\/pp>//g
+     /<br>/a\\
+.in 7
+     s/<br>//g
+     s/<\/br>//g
+     s/<\/sp>//g
+     s/<sp>//g
+     s/<\/li>//g
+     s/<li>/    /g
+     s/<\/ul>//g
+     s/<ul>//g
+     s/<o>/ o  /g
+     s/< >/    /g
+
+     s/<i>/\\\\fI/g
+     s/<\/i>/\\\\fP/g
+     s/<s>/\\\\fB/g
+     s/<\/s>/\\\\fP/g
+     s/<tt>//g
+     s/<\/tt>//g
+
+     " $2
+
