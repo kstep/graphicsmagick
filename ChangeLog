@@ -1,3 +1,7 @@
+2003-06-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/installer: Install Wand files.
+
 2003-06-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c (GetConfigureBlob): GetConfigureBlob should always

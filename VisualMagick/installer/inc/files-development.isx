@@ -22,6 +22,7 @@ Source: "..\lib\CORE_RL_magick_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel
 ;Source: "..\lib\CORE_RL_tiff_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
 ;Source: "..\lib\CORE_RL_ttf_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
 ;Source: "..\lib\CORE_RL_wmf_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\lib\CORE_RL_wand_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
 ;Source: "..\lib\CORE_RL_zlib_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
 Source: "..\lib\X11.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
 ;  Development headers
@@ -73,6 +74,10 @@ Source: "..\..\magick\utility.h"; DestDir: "{app}\include\magick"; Tasks: instal
 Source: "..\..\magick\version.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
 Source: "..\..\magick\widget.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
 Source: "..\..\magick\xwindow.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\wand\drawing_wand.h"; DestDir: "{app}\include\wand"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\wand\magick_wand.h"; DestDir: "{app}\include\wand"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\wand\pixel_wand.h"; DestDir: "{app}\include\wand"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\wand\wand_api.h"; DestDir: "{app}\include\wand"; Tasks: install_Devel; Flags: ignoreversion
 ; Magick++ headers
 Source: "..\..\Magick++\lib\Magick++.h"; DestDir: "{app}\include"; Tasks: install_Devel; Flags: ignoreversion
 Source: "..\..\Magick++\lib\Magick++\Blob.h"; DestDir: "{app}\include\Magick++"; Tasks: install_Devel; Flags: ignoreversion
