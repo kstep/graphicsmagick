@@ -3209,8 +3209,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert grayscale image to PseudoClass pixel packets.
         */
-        quantum_scanline=(Quantum *) AcquireMemory((ping_info->color_type == 4
-          ? 2 : 1) * image->columns*sizeof(Quantum));
+        image->matte=ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA;
+        quantum_scanline=(Quantum *) AcquireMemory((image->matte ?  2 : 1) *
+           image->columns*sizeof(Quantum));
         if (quantum_scanline == (Quantum *) NULL)
           ThrowReaderException((ExceptionType) ResourceLimitWarning,
             "Memory allocation failed",image);
