@@ -73,7 +73,7 @@ static char
   *DelegateMap =
     "<?xml version=\"1.0\"?>"
     "<delegatemap>"
-    "  <delgate />"
+    "  <delgate decode=\"Unknown\" command=\"unknown\" />"
     "</delegatemap>";
 
 /*
@@ -573,11 +573,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       FormatString(filename,"%.1024s",path);
       LiberateMemory((void **) &path);
     }
-if (exception->reason) puts(exception->reason);
-if (exception->description) puts(exception->description);
   xml=(char *) FileToBlob(filename,&length,exception);
-if (exception->reason) puts(exception->reason);
-if (exception->description) puts(exception->description);
   if (xml == (char *) NULL)
     xml=AllocateString(DelegateMap);
   token=AllocateString(xml);

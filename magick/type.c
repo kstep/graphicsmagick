@@ -66,7 +66,7 @@ static char
   *TypeMap =
     "<?xml version=\"1.0\"?>"
     "<typemap>"
-    "  <type />"
+    "  <type name=\"Unknown\" />"
     "</typemap>";
 
 /*
