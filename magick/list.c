@@ -277,7 +277,8 @@ MagickExport size_t GetImageListSize(const Image *images)
 */
 MagickExport Image *GetNextImage(Image *images)
 {
-  assert(images != (Image *) NULL);
+  if (images == (Image *) NULL)
+    return((Image *) NULL);
   assert(images->signature == MagickSignature);
   if (images->next == (Image *) NULL)
     return((Image *) NULL);
@@ -324,12 +325,16 @@ MagickExport Image **ImageListToGroup(const Image *images,
   register long
 	  i;
 
-  assert(images != (Image *) NULL);
+  if (images == (Image *) NULL)
+    return((Image **) NULL);
   assert(images->signature == MagickSignature);
   group=(Image **) AcquireMemory(GetImageListSize(images)*sizeof(Image *));
   if (group == (Image **) NULL)
-    MagickError(ResourceLimitWarning,"Unable to convert image list",
-      "Memory allocation failed");
+    {
+      ThrowException(exception,ResourceLimitWarning,
+        "Unable to freate image group","Memory allocation failed");
+      return((Image **) NULL);
+    }
   for (i=0; i < (long) GetImageListSize(images); i++)
     group[i]=GetImageList(images,i,exception);
   return(group);
@@ -411,7 +416,7 @@ MagickExport Image *PopImageList(Image **images)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PushImageList() adds the image to the end of the image list.
+%  PushImageList() add an image to the end of the list.
 %
 %  The format of the PushImageList method is:
 %
@@ -435,7 +440,8 @@ MagickExport unsigned int PushImageList(Image **images,const Image *image,
     *next;
 
   assert(images != (Image **) NULL);
-  assert(image != (Image *) NULL);
+  if (image == (Image *) NULL)
+    return(False);
   assert(image->signature == MagickSignature);
   if ((*images) == (Image *) NULL)
     {
@@ -486,7 +492,6 @@ MagickExport Image *ReverseImageList(const Image *images,
   register long
     i;
 
-  assert(images != (Image *) NULL);
   if (images == (Image *) NULL)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
@@ -552,7 +557,8 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
     i;
 
   assert(images != (Image **) NULL);
-  assert(image != (Image *) NULL);
+  if (image == (Image *) NULL)
+    return(False);
   assert(image->signature == MagickSignature);
   if ((*images) == (Image *) NULL)
     {
