@@ -60,7 +60,7 @@
   Include declarations.
 */
 #include "studio.h"
-#include "xp_feature.h"
+#include "nt_feature.h"
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <windows.h>

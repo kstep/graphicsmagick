@@ -338,7 +338,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   /*
     Initialize magnify image pixels.
   */
-  for (y=0; y < (double) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     pixels=AcquireImagePixels(image,0,y,image->columns,1,exception);
     q=SetImagePixels(magnify_image,0,y,magnify_image->columns,1);
@@ -351,14 +351,14 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   /*
     Magnify each row.
   */
-  for (y=0; y < (double) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(magnify_image,0,(double) (image->rows-y-1),
+    p=GetImagePixels(magnify_image,0,(long) (image->rows-y-1),
       magnify_image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     (void) memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
-    q=GetImagePixels(magnify_image,0,(double) (2*(image->rows-y-1)),
+    q=GetImagePixels(magnify_image,0,(long) (2*(image->rows-y-1)),
       magnify_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
@@ -366,7 +366,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     q+=2*(image->columns-1);
     *q=(*p);
     *(q+1)=(*(p));
-    for (x=1; x < (double) image->columns; x++)
+    for (x=1; x < (long) image->columns; x++)
     {
       p--;
       q-=2;
@@ -380,9 +380,9 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     if (!SyncImagePixels(magnify_image))
       break;
   }
-  for (y=0; y < (double) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
-    rows=(double) Min(image->rows-y,3);
+    rows=(long) Min(image->rows-y,3);
     p=GetImagePixels(magnify_image,0,2*y,magnify_image->columns,rows);
     if (p == (PixelPacket *) NULL)
       break;
@@ -392,7 +392,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     r=p;
     if (rows > 2)
       r=q+magnify_image->columns;
-    for (x=0; x < (double) (image->columns-1); x++)
+    for (x=0; x < (long) (image->columns-1); x++)
     {
       q->red=(Quantum) (((double) p->red+(double) r->red)/2+0.5);
       q->green=(Quantum) (((double) p->green+(double) r->green)/2+0.5);
@@ -426,11 +426,11 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     if (QuantumTick(y,image->rows))
       MagickMonitor(MagnifyImageText,y,image->rows);
   }
-  p=GetImagePixels(magnify_image,0,(double) (2*image->rows-2),
+  p=GetImagePixels(magnify_image,0,(long) (2*image->rows-2),
     magnify_image->columns,1);
   if (p != (PixelPacket *) NULL)
     (void) memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
-  q=GetImagePixels(magnify_image,0,(double) (2*image->rows-1),
+  q=GetImagePixels(magnify_image,0,(long) (2*image->rows-1),
     magnify_image->columns,1);
   if (q != (PixelPacket *) NULL)
     (void) memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
