@@ -813,9 +813,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
                jpeg_info.quant_tbl_ptrs[1]->quantval[DCTSIZE2-1]);
              for (i=0; i<100; i++)
              {
-               if (hashval>=hash[i] || sum>=sums[i])
+               if ((hashval >= hash[i]) || (sum >= sums[i]))
                  {
-                   if (hashval>hash[i] || sum>sums[i])
+                   if ((hashval > hash[i]) || (sum > sums[i]))
                      LogMagickEvent(CoderEvent,
                        "   JPEG Quality: %d (approximate)",i+1);
                    else

@@ -189,7 +189,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   assert(stream_info->signature == MagickSignature);
   if (stream_info->type == UndefinedCache)
     {
-      ThrowException(exception,CacheError,"Pixel cache is not open",
+      ThrowException(exception,StreamError,"Pixel cache is not open",
         image->filename);
       return((PixelPacket *) NULL);
     }

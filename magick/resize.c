@@ -1131,7 +1131,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if (status == False)
     {
       DestroyImage(resize_image);
-      ThrowImageException(CacheError,"Unable to resize image",(char *) NULL)
+      ThrowImageException(ResourceLimitError,"Unable to resize image",
+        (char *) NULL)
     }
   return(resize_image);
 }
