@@ -523,11 +523,7 @@ void CConfigureApp::process_library(ofstream &dsw,
 
 	includes_list.push_back("..\\..\\zlib");
 	includes_list.push_back("..\\..\\tiff\\libtiff");
-
-  //if (project_type == LIBRARY)
-  //{
-	//  defines_list.push_back("_MAGICKLIB_");
-  //}
+	includes_list.push_back("..\\..\\lcms\\source");
 
   std::string libpath;
   libpath = "..\\";
@@ -604,6 +600,7 @@ void CConfigureApp::process_library(ofstream &dsw,
 	        add_project_dependency(dsw, "LIBR_JPEG");
 	        add_project_dependency(dsw, "LIBR_ZLIB");
 	        add_project_dependency(dsw, "LIBR_TIFF");
+	        add_project_dependency(dsw, "CORE_lcms");
         }
         if (name.compare("Magick++") == 0)
         {
