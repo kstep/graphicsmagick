@@ -92,14 +92,8 @@ MagickExport void OpenStaticModules(void)
 #endif
 }
 
-#if !defined(HasMODULES)
-#endif
-
 MagickExport unsigned int ExecuteStaticModuleProcess(const char *tag,
   Image *image,const int argc,char **argv)
 {
-#if !defined(HasMODULES)
-#endif
   return(False);
 }
-
