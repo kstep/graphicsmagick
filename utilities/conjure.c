@@ -209,8 +209,7 @@ int main(int argc,char **argv)
         (void) SetImageAttribute(image_info->attributes,option+1,(char *) NULL);
         status&=SetImageAttribute(image_info->attributes,option+1,argv[i+1]);
         if (status == False)
-          MagickFatalError(ResourceLimitFatalError,"Unable to persist key",
-            option);
+          MagickFatalError(ImageFatalError,"UnableToPersistKey",option);
         i++;
         continue;
       }
@@ -220,7 +219,7 @@ int main(int argc,char **argv)
     (void) SetImageAttribute(image_info->attributes,"filename",(char *) NULL);
     status&=SetImageAttribute(image_info->attributes,"filename",argv[i]);
     if (status == False)
-      MagickFatalError(ResourceLimitFatalError,"Unable to persist key",argv[i]);
+      MagickFatalError(ImageFatalError,"UnableToPersistKey",argv[i]);
     (void) FormatString(image_info->filename,"msl:%.1024s",argv[i]);
     image=ReadImage(image_info,&exception);
     if (exception.severity != UndefinedException)

@@ -343,8 +343,7 @@ int main(int argc,char **argv)
       {
         (void) fprintf(stdout,"Version: %.1024s\n",
           GetMagickVersion((unsigned long *) NULL));
-        (void) fprintf(stdout,"Copyright: %.1024s\n\n",
-          GetMagickCopyright());
+        (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
         Exit(0);
       }
   }
@@ -353,7 +352,7 @@ int main(int argc,char **argv)
   */
   display=XOpenDisplay(server_name);
   if (display == (Display *) NULL)
-    MagickFatalError(XServerFatalError,"Unable to connect to X server",
+    MagickFatalError(XServerFatalError,"UnableToOpenXServer",
       XDisplayName(server_name));
   (void) XSetErrorHandler(XError);
   client_name=SetClientName((char *) NULL);

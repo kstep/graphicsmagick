@@ -308,8 +308,7 @@ int main(int argc,char **argv)
       {
         (void) fprintf(stdout,"Version: %.1024s\n",
           GetMagickVersion((unsigned long *) NULL));
-        (void) fprintf(stdout,"Copyright: %.1024s\n\n",
-          GetMagickCopyright());
+        (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
         Exit(0);
       }
   }

@@ -459,6 +459,11 @@
           Unrecognized compression method
         </Message>
       </Error>
+      <FatalError>
+        <Message name="UnableToPersistKey">
+          Unable to persist key
+        </Message>
+      </FatalError>
       <Warning>
         <Message name="SkipToSyncByte">
           Corrupt PCD image, skipping to sync byte
