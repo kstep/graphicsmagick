@@ -1455,6 +1455,9 @@
         <Message name="MemoryAllocationFailed">
           Memory allocation failed
         </Message>
+        <Message name="UnableToCreateColormap">
+          unable to create colormap
+        </Message>
         <Message name="UnableToDisplayImage">
           unable to display image
         </Message>
@@ -1526,6 +1529,9 @@
       </Message>
       <Message name="UnableToCreateBitmap">
         Unable to create bitmap
+      </Message>
+      <Message name="UnableToCreateColormap">
+        Unable to create colormap
       </Message>
       <Message name="UnableToCreatePixmap">
         Unable to create pixmap

@@ -7139,7 +7139,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       AllocAll : AllocNone);
   if (colormap == (Colormap) NULL)
     MagickFatalError(XServerFatalError,"MemoryAllocationFailed",
-      "unable to create colormap");
+      "UnableToCreateColormap");
   /*
     Initialize the map and pixel info structures.
   */
@@ -7161,7 +7161,7 @@ MagickExport void XMakeStandardColormap(Display *display,
         AcquireMemory(visual_info->colormap_size*sizeof(XColor));
       if (colors == (XColor *) NULL)
         MagickFatalError(XServerFatalError,"MemoryAllocationFailed",
-          "unable to create colormap");
+          "UnableToCreateColormap");
       p=colors;
       color.flags=DoRed | DoGreen | DoBlue;
       for (i=0; i < (long) image->colors; i++)
@@ -7201,7 +7201,7 @@ MagickExport void XMakeStandardColormap(Display *display,
         AcquireMemory(visual_info->colormap_size*sizeof(XColor));
       if (colors == (XColor *) NULL)
         MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-          "unable to create colormap");
+          "UnableToCreateColormap");
       /*
         Preallocate our GUI colors.
       */
@@ -7247,7 +7247,7 @@ MagickExport void XMakeStandardColormap(Display *display,
             AcquireMemory(image->colors*sizeof(DiversityPacket));
           if (diversity == (DiversityPacket *) NULL)
             MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-              "unable to create colormap");
+              "UnableToCreateColormap");
           for (i=0; i < (long) image->colors; i++)
           {
             diversity[i].red=image->colormap[i].red;
@@ -7309,7 +7309,7 @@ MagickExport void XMakeStandardColormap(Display *display,
             AcquireMemory(visual_info->colormap_size*sizeof(XColor));
           if (server_colors == (XColor *) NULL)
             MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-              "unable to create colormap");
+              "UnableToCreateColormap");
           for (x=0; x < visual_info->colormap_size; x++)
             server_colors[x].pixel=(unsigned long) x;
           (void) XQueryColors(display,colormap,server_colors,
@@ -7365,7 +7365,7 @@ MagickExport void XMakeStandardColormap(Display *display,
             AllocNone);
           if (colormap == (Colormap) NULL)
             MagickFatalError(XServerFatalError,"MemoryAllocationFailed",
-              "unable to create colormap");
+              "UnableToCreateColormap");
           map_info->colormap=colormap;
           if ((int) image->colors < visual_info->colormap_size)
             {
@@ -7449,7 +7449,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       colors=(XColor *) AcquireMemory(number_colors*sizeof(XColor));
       if (colors == (XColor *) NULL)
         MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-          "unable to create colormap");
+          "UnableToCreateColormap");
       /*
         Initialize linear color ramp.
       */
