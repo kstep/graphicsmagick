@@ -1274,7 +1274,6 @@ static unsigned int DrawAffineImage(Image *image,const Image *composite,
   assert(composite != (const Image *) NULL);
   assert(composite->signature == MagickSignature);
   assert(affine != (AffineMatrix *) NULL);
-  image->storage_class=DirectClass;
   edge.x1=0;
   edge.x2=image->columns;
   inverse_affine=InverseAffineMatrix(affine);
@@ -1293,8 +1292,8 @@ static unsigned int DrawAffineImage(Image *image,const Image *composite,
         inverse_affine.tx;
       point.y=(x+0.5)*inverse_affine.rx+(y+0.5)*inverse_affine.sy+
         inverse_affine.ty;
-      pixel=AcquireOnePixel(composite,(long) floor(point.x+0.5),
-        (long) floor(point.y+0.5),&image->exception);
+      pixel=AcquireOnePixel(composite,(long) floor(point.x),
+        (long) floor(point.y),&image->exception);
       *q=AlphaComposite(&pixel,pixel.opacity,q,q->opacity);
       q++;
     }
@@ -4060,6 +4059,8 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
             primitive_info[1].point.y);
           TransformImage(&composite_image,(char *) NULL,geometry);
         }
+      if (!composite_image->matte)
+        SetImageOpacity(composite_image,OpaqueOpacity);
       if (draw_info->opacity != OpaqueOpacity)
         SetImageOpacity(composite_image,draw_info->opacity);
       affine=draw_info->affine;
