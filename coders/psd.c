@@ -99,9 +99,6 @@ static unsigned int DecodeImage(Image *image,const int channel)
   long
     number_pixels;
 
-  Quantum
-    pixel;
-
   register IndexPacket
     *indexes;
 
@@ -111,6 +108,9 @@ static unsigned int DecodeImage(Image *image,const int channel)
 
   register PixelPacket
     *q;
+
+  unsigned long
+    pixel;
 
   x=0;
   number_pixels=(long) (image->columns*image->rows);
@@ -533,7 +533,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status;
 
   unsigned short
-    compression,
+    compression;
+
+  unsigned long
     pixel;
 
   /*
@@ -1167,7 +1169,7 @@ ModuleExport void UnregisterPSDImage(void)
 %
 */
 
-static void WriteOneChannel( Image* image, Image* tmp_image, 
+static void WriteOneChannel( Image* image, Image* tmp_image,
                unsigned char *pixels, QuantumType whichQuantum )
 {
   int
@@ -1216,7 +1218,7 @@ static void WriteImageChannels( Image* image, Image* tmp_image, unsigned char *p
 
     if (tmp_image->colorspace == CMYKColorspace)
     WriteOneChannel( image, tmp_image, pixels, BlackQuantum );
-  }    
+  }
 }
 
 /* Write white background, RLE-compressed */
@@ -1225,13 +1227,13 @@ static void WriteWhiteBackground( Image* image )
 {
   long       count,  w8, w;
   char       *d, scanline[256];
-  
+
   int numChannels = 3, i, bytecount, dim = (int) (image->rows*numChannels);
-  
+
   WriteBlobMSBShort( image, 1 ); /* RLE compressed */
 
   w8 = (long) image->columns;
-  
+
   d = scanline;
   /* Set up scanline */
   for(w=w8; w>128; w-=128)
@@ -1247,9 +1249,9 @@ static void WriteWhiteBackground( Image* image )
     default: *d++=(char) (1-w);     *d++ = (char)255;
         break;
   }
-  
+
   bytecount = d - scanline;
-  
+
   /* Scanline counts (rows*channels) */
   for(i=0; i < dim; i++)
   {
@@ -1262,7 +1264,7 @@ static void WriteWhiteBackground( Image* image )
   {
     WriteBlob( image, count, scanline );
   }
-  
+
 }
 
 static void WritePascalString (Image* inImage, const char *inString, int inPad)
@@ -1277,12 +1279,12 @@ static void WritePascalString (Image* inImage, const char *inString, int inPad)
   if ( strLength !=  0 )
   {
   (void) WriteBlobByte(inImage, strLength);
-  (void) WriteBlob(inImage, strLength, inString);      
+  (void) WriteBlob(inImage, strLength, inString);
   }
   else
   (void) WriteBlobByte(inImage, 0);
 
-  strLength ++;  
+  strLength ++;
 
   if ( (strLength % inPad) == 0 )
     return;
@@ -1314,7 +1316,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     packet_size,
     status;
 
-  ImageAttribute 
+  ImageAttribute
   *theAttr;
 
   Image
@@ -1344,11 +1346,11 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobByte(image, 0);  /* 6 bytes of reserved */
   if ( force_white_background )
     num_channels = 3;
-  else 
+  else
   {
     if (image->storage_class == PseudoClass)
      num_channels = (image->matte ? 2 : 1);
-    else 
+    else
     {
     if (image->colorspace != CMYKColorspace)
       num_channels = (image->matte ? 4 : 3);
@@ -1405,7 +1407,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   }
   else
     (void) WriteBlobMSBLong(image,0);
-  
+
 compute_layer_info:
   layer_count = 0;
   layer_info_size = 2;
@@ -1421,7 +1423,7 @@ compute_layer_info:
     else
       num_channels = (tmp_image->matte ? 5 : 4);
 
-  channelLength = (int) (tmp_image->columns * tmp_image->rows * packet_size + 2);  
+  channelLength = (int) (tmp_image->columns * tmp_image->rows * packet_size + 2);
   layer_info_size += (4*4 + 2 + num_channels * 6 + 4 + 4 + 4 * 1 + 4 + 12 + num_channels * channelLength);
 
   layer_count++;
@@ -1438,26 +1440,26 @@ compute_layer_info:
 
   if ( layer_count == 0 )
   WriteBlobMSBLong(image, 0);
-  else 
+  else
   {
-    (void) WriteBlobMSBLong(image,layer_info_size + 4 + 4);  
+    (void) WriteBlobMSBLong(image,layer_info_size + 4 + 4);
     if( layer_info_size/2 != (layer_info_size+1)/2 ) /* odd */
       rounded_layer_info_size = layer_info_size + 1;
     else
       rounded_layer_info_size = layer_info_size;
-    (void) WriteBlobMSBLong(image,rounded_layer_info_size);  
-    
+    (void) WriteBlobMSBLong(image,rounded_layer_info_size);
+
     if ( invert_layer_count )
       layer_count *= -1;  /* if we have a matte, then use negative count! */
-    (void) WriteBlobMSBShort(image, layer_count);  
-      
+    (void) WriteBlobMSBShort(image, layer_count);
+  
     layer_count = 1;
     tmp_image = base_image;
     while ( tmp_image != NULL ) {
-      (void) WriteBlobMSBLong(image,0);  
-      (void) WriteBlobMSBLong(image,0);  
-      (void) WriteBlobMSBLong(image,tmp_image->rows);  
-      (void) WriteBlobMSBLong(image,tmp_image->columns);  
+      (void) WriteBlobMSBLong(image,0);
+      (void) WriteBlobMSBLong(image,0);
+      (void) WriteBlobMSBLong(image,tmp_image->rows);
+      (void) WriteBlobMSBLong(image,tmp_image->columns);
 
       packet_size=tmp_image->depth > 8 ? 2 : 1;
       channel_size = (int) ((packet_size * tmp_image->rows * tmp_image->columns) + 2);
@@ -1500,7 +1502,7 @@ compute_layer_info:
        (void) WriteBlobMSBShort(image, 3);
        (void) WriteBlobMSBLong(image, channel_size);
       }
-      
+ 
       (void) WriteBlob(image, 4, "8BIM");
       (void) WriteBlob(image, 4, CompositeOperatorToPSDBlendMode(tmp_image->compose));
       (void) WriteBlobByte(image, 255);    /* BOGUS: layer opacity */
@@ -1519,7 +1521,7 @@ compute_layer_info:
         sprintf((char *) &(layer_name[1]), "%4s", theAttr->value );
         (void) WriteBlobByte(image, 3);
         (void) WriteBlob(image, 3, &layer_name[1]);
-        */      
+        */ 
       } else {
         sprintf((char *) layer_name, "L%02d", layer_count++ );
         WritePascalString( image, (char*)layer_name, 4 );
@@ -1531,7 +1533,7 @@ compute_layer_info:
     tmp_image = base_image;
     while ( tmp_image != NULL ) {
       WriteImageChannels( image, tmp_image, pixels );
-      
+
       /* add in the pad! */
        if ( rounded_layer_info_size != layer_info_size )
         WriteBlobByte(image, 0);
