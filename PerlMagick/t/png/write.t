@@ -59,3 +59,10 @@ testReadWrite( 'input_16.png',
                '7ffc115d68c1299b12c78772714af23f' );
 
 
+
+#
+# 6) Test Black-and-white, bit_depth=1 PNG
+# 
+++$test;
+testReadWrite( 'input_bw.png', output_bw.png, q/quality=>95/,
+               '8703ee7acfb2e12fea0ba8519b5f6d15', 'same' );

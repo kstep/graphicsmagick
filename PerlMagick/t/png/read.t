@@ -5,7 +5,7 @@
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
 
-BEGIN { $| = 1; $test=1; print "1..5\n"; }
+BEGIN { $| = 1; $test=1; print "1..6\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -45,3 +45,8 @@ testRead( 'input_16.png', '7a3e933e0130b1fff2b1884f6e65a50f',
                           '7ffc115d68c1299b12c78772714af23f');
 
 
+#
+# 6) Test Black-and-white, bit_depth=1 PNG
+# 
+++$test;
+testRead( 'input_bw.png', '8703ee7acfb2e12fea0ba8519b5f6d15', 'same' );
