@@ -1060,6 +1060,11 @@ Export Image *RotateImage(const Image *image,const double degrees,
   */
   border_info.width=x_offset;
   border_info.height=y_offset+1;
+  if (integral_image->matte)
+    {
+      integral_image->border_color.index=Transparent;
+      integral_image->background_color.index=Transparent;
+    }
   rotated_image=BorderImage(integral_image,&border_info);
   DestroyImage(integral_image);
   if (rotated_image == (Image *) NULL)
@@ -1218,6 +1223,11 @@ Export Image *ShearImage(const Image *image,const double x_shear,
   */
   border_info.width=x_offset;
   border_info.height=y_offset+1;
+  if (image->matte)
+    {
+      ((Image *) image)->border_color.index=Transparent;
+      ((Image *) image)->background_color.index=Transparent;
+    }
   sheared_image=BorderImage(image,&border_info);
   if (sheared_image == (Image *) NULL)
     {

@@ -1,5 +1,7 @@
 Revision history for Perl extension Image::Magick.
 
+4.24 Sat May 15 1999
+        - Added degrees to AnnotateImage() for text rotation.
 4.20 Fri Feb 15 1999
         - Change the ColorFloodfill() parameters.
 4.19 Fri Feb 01 1999

@@ -475,6 +475,9 @@ typedef struct _AnnotateInfo
     *primitive,
     *font_name;
 
+  double
+    degrees;
+
   Image
     *tile;
 

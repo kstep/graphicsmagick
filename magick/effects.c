@@ -1349,6 +1349,7 @@ Export Image *ImplodeImage(Image *image,const double factor)
   assert(image != (Image *) NULL);
   if (!UncondenseImage(image))
     return((Image *) NULL);
+  image->background_color.index=Transparent;
   /*
     Initialize imploded image attributes.
   */
@@ -2995,6 +2996,7 @@ Export Image *WaveImage(Image *image,const double amplitude,
   */
   if (!image->matte)
     MatteImage(image);
+  image->background_color.index=Transparent;
   waved_image=CloneImage(image,image->columns,image->rows+
     (int) (2*AbsoluteValue(amplitude)),False);
   if (waved_image == (Image *) NULL)

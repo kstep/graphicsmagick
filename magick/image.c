@@ -200,17 +200,17 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->background_color.red=XDownScale(color.red);
   allocated_image->background_color.green=XDownScale(color.green);
   allocated_image->background_color.blue=XDownScale(color.blue);
-  allocated_image->background_color.index=Transparent;
+  allocated_image->background_color.index=Opaque;
   (void) XQueryColorDatabase(BorderColor,&color);
   allocated_image->border_color.red=XDownScale(color.red);
   allocated_image->border_color.green=XDownScale(color.green);
   allocated_image->border_color.blue=XDownScale(color.blue);
-  allocated_image->border_color.index=Transparent;
+  allocated_image->border_color.index=Opaque;
   (void) XQueryColorDatabase(MatteColor,&color);
   allocated_image->matte_color.red=XDownScale(color.red);
   allocated_image->matte_color.green=XDownScale(color.green);
   allocated_image->matte_color.blue=XDownScale(color.blue);
-  allocated_image->matte_color.index=Transparent;
+  allocated_image->matte_color.index=Opaque;
   allocated_image->total_colors=0;
   allocated_image->normalized_mean_error=0.0;
   allocated_image->normalized_maximum_error=0.0;
@@ -621,6 +621,22 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
             CompositeImage(image,ReplaceCompositeOp,box_image,
               local_info->bounds.x,local_info->bounds.y);
             DestroyImage(box_image);
+          }
+      }
+    if (annotate_info->degrees != 0.0)
+      {
+        Image
+          *rotated_image;
+
+	/*
+	  Rotate text.
+	*/
+        rotated_image=
+          RotateImage(annotate_image,annotate_info->degrees,False,False);
+        if (rotated_image != (Image *) NULL)
+          {
+            DestroyImage(annotate_image);
+            annotate_image=rotated_image;
           }
       }
     CompositeImage(image,AnnotateCompositeOp,annotate_image,
@@ -5156,7 +5172,7 @@ Export Image *FrameImage(const Image *image,const FrameInfo *frame_info)
   matte.red=image->matte_color.red;
   matte.green=image->matte_color.green;
   matte.blue=image->matte_color.blue;
-  matte.index=Opaque;
+  matte.index=image->matte_color.index;
   matte.length=0;
   accentuate.red=(Quantum) ((unsigned long)
     (matte.red*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
@@ -5164,7 +5180,8 @@ Export Image *FrameImage(const Image *image,const FrameInfo *frame_info)
     (matte.green*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
   accentuate.blue=(Quantum) ((unsigned long)
     (matte.blue*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
-  accentuate.index=Opaque;
+  accentuate.index=(unsigned short) ((unsigned long)
+    (matte.index*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
   accentuate.length=0;
   highlight.red=(Quantum) ((unsigned long)
     (matte.red*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
@@ -5172,17 +5189,20 @@ Export Image *FrameImage(const Image *image,const FrameInfo *frame_info)
     (matte.green*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
   highlight.blue=(Quantum) ((unsigned long)
     (matte.blue*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
-  highlight.index=Opaque;
+  highlight.index=(unsigned short) ((unsigned long)
+    (matte.index*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
   highlight.length=0;
   shadow.red=(Quantum) ((unsigned long) (matte.red*ShadowModulate)/MaxRGB);
   shadow.green=(Quantum) ((unsigned long) (matte.green*ShadowModulate)/MaxRGB);
   shadow.blue=(Quantum) ((unsigned long) (matte.blue*ShadowModulate)/MaxRGB);
-  shadow.index=Opaque;
+  shadow.index=(unsigned short)
+    ((unsigned long) (matte.index*ShadowModulate)/MaxRGB);
   shadow.length=0;
   trough.red=(Quantum) ((unsigned long) (matte.red*TroughModulate)/MaxRGB);
   trough.green=(Quantum) ((unsigned long) (matte.green*TroughModulate)/MaxRGB);
   trough.blue=(Quantum) ((unsigned long) (matte.blue*TroughModulate)/MaxRGB);
-  trough.index=Opaque;
+  trough.index=(unsigned short)
+    ((unsigned long) (matte.index*TroughModulate)/MaxRGB);
   trough.length=0;
   /*
     Put an ornamental border around the image.
@@ -5479,6 +5499,7 @@ Export void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_info->text=(char *) NULL;
   annotate_info->primitive=(char *) NULL;
   annotate_info->font_name=(char *) NULL;
+  annotate_info->degrees=0.0;
   annotate_info->bounds.width=annotate_info->image_info->pointsize;
   annotate_info->bounds.height=annotate_info->image_info->pointsize;
   annotate_info->bounds.x=0;

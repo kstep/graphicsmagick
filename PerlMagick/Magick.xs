@@ -313,7 +313,7 @@ static struct
       {"box", StringReference}, {"pen", StringReference},
       {"geom", StringReference}, {"server", StringReference},
       {"x", IntegerReference}, {"y", IntegerReference},
-      {"grav", GravityTypes} } },
+      {"grav", GravityTypes}, {"degree", DoubleReference} } },
     { "ColorFloodfill", { {"geom", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"pen", StringReference},
       {"bordercolor", StringReference} } },
@@ -1024,12 +1024,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                     SvPV(sval,na));
                   return;
                 }
-              for ( ; image; image=image->next)
-                if ((ColorspaceType) sp == CMYKColorspace)
-                  RGBTransformImage(image,CMYKColorspace);
-                else
-                  if ((ColorspaceType) sp == CMYKColorspace)
-                    TransformRGBImage(image,RGBColorspace);
+              if (info)
+                info->image_info->colorspace=sp;
             }
         }
       if (strEQcase(attribute,"colors"))
@@ -4038,6 +4034,8 @@ Mogrify(ref,...)
                 }
               if (attribute_flag[10])
                 annotate_info.gravity=argument_list[10].int_reference;
+              if (attribute_flag[11])
+                annotate_info.degrees=argument_list[11].double_reference;
             }
           AnnotateImage(image,&annotate_info);
           break;
