@@ -15,6 +15,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
+%                           Glenn Randers-Pehrson                             %
 %                               November 1997                                 %
 %                                                                             %
 %                                                                             %
@@ -86,8 +87,8 @@
 #undef MNG_OBJECT_BUFFERS
 #undef MNG_BASI_SUPPORTED
 #undef MNG_INSERT_LAYERS /* This feature was broken in 5.4.3 */
-#define PNG_SORT_PALETTE
-
+#define PNG_BUILD_PALETTE /* This works as of 5.4.3 */
+#define PNG_SORT_PALETTE /* This works as of 5.4.0 */
 
 /*
   This is temporary until I set up malloc'ed object attributes array.
@@ -4481,6 +4482,53 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
   optimize=(image_info->type == OptimizeType || image_info->type ==
     UndefinedType);
+
+  /*
+    Sometimes we get PseudoClass images whose RGB values don't match
+    the colors in the colormap.  This code syncs the RGB values.
+  */
+  {
+    Image
+      *p;
+ 
+    for(p=image; p != (Image *) NULL; p=p->next)
+    {
+      if(p->storage_class == PseudoClass)
+         SyncImage(p);
+      if (!image_info->adjoin)
+        break;
+    }
+  }
+
+#ifdef PNG_BUILD_PALETTE
+  if (optimize)
+    {
+      /*
+        Sometimes we get DirectClass images that have 256 colors or fewer.
+        This code will convert them to PseudoClass and build a colormap.
+      */
+      Image
+        *p;
+ 
+      for(p=image; p != (Image *) NULL; p=p->next)
+      {
+        if(p->storage_class != PseudoClass)
+          {
+            p->colors=GetNumberColors(p,(FILE *) NULL,&p->exception);
+            if (p->colors <= 256)
+              {
+                p->colors=0;
+                if (p->matte)
+                    SetImageType(p,PaletteMatteType);
+                else
+                    SetImageType(p,PaletteType);
+              }
+          }
+        if (!image_info->adjoin)
+          break;
+      }
+    }
+#endif
 
   use_global_plte=False;
   page.width=0;
