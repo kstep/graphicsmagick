@@ -255,7 +255,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
         for (x=(long) image->columns; x > 0; x--)
           {
             q->red=q->green=q->blue=
-              GenerateNoise(PixelIntensityToQuantum(q),noise_type);
+              GenerateNoise(PixelIntensityToQuantum(p),noise_type);
             p++;
             q++;
           }

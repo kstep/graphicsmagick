@@ -1,5 +1,8 @@
 2003-05-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/effect.c (AddNoiseImage): For gray images, wrong
+	pointer was being used to evaluate intensity, leading to a
+	black image with noise.
 	* magick/image.c (ChannelImage): Return the channel
 	image in RGBColorspace. Also properly support extracting
 	the opacity channel for images which are not CMYK.
