@@ -649,7 +649,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
       LiberateMemory((void **) &sum);
       return((Image *) NULL);
     }
-  SetImageType(average_image,TrueColorType);
+  average_image->storage_class=DirectClass;
   /*
     Compute sum over each pixel color component.
   */
@@ -748,7 +748,6 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  SetImageType(image,TrueColorMatteType);
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
@@ -790,8 +789,8 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
               break;
             }
         }
-        case BlackChannel:
         case MatteChannel:
+        case BlackChannel:
         default:
         {
           q->red=q->opacity;
@@ -4719,7 +4718,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (shear_image == (Image *) NULL)
               break;
             DestroyImage(*image);
-            SetImageType(shear_image,TrueColorType);
             *image=shear_image;
             continue;
           }
@@ -5399,7 +5397,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       /*
         Convert RGB to CMYK colorspace.
       */
-      SetImageType(image,TrueColorType);
+      image->storage_class=DirectClass;
       image->colorspace=CMYKColorspace;
       for (y=0; y < (long) image->rows; y++)
       {

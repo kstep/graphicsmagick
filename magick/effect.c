@@ -126,7 +126,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   noise_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(noise_image,TrueColorType);
+  noise_image->storage_class=DirectClass;
   /*
     Add noise in each row.
   */
@@ -412,7 +412,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
       LiberateMemory((void **) &kernel);
       return((Image *) NULL);
     }
-  SetImageType(blur_image,TrueColorType);
+  blur_image->storage_class=DirectClass;
   scanline=(PixelPacket *) AcquireMemory(image->rows*sizeof(PixelPacket));
   if (scanline == (PixelPacket *) NULL)
     {
@@ -711,7 +711,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   convolve_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(convolve_image,TrueColorType);
+  convolve_image->storage_class=DirectClass;
   /*
     Convolve image.
   */
@@ -838,7 +838,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   despeckle_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (despeckle_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(despeckle_image,TrueColorType);
+  despeckle_image->storage_class=DirectClass;
   /*
     Allocate image buffers.
   */
@@ -1160,7 +1160,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   enhance_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (enhance_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(enhance_image,TrueColorType);
+  enhance_image->storage_class=DirectClass;
   /*
     Enhance image.
   */
@@ -1551,7 +1551,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   median_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (median_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(median_image,TrueColorType);
+  median_image->storage_class=DirectClass;
   /*
     Allocate window.
   */
@@ -1931,7 +1931,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
       LiberateMemory((void **) &offsets);
       return((Image *) NULL);
     }
-  SetImageType(blur_image,TrueColorType);
+  blur_image->storage_class=DirectClass;
   x=(int) (width*sin(DegreesToRadians(angle)));
   y=(int) (width*cos(DegreesToRadians(angle)));
   for (i=0; i < width; i++)
@@ -2048,7 +2048,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   paint_image=CloneImage(image,0,0,False,exception);
   if (paint_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(paint_image,TrueColorType);
+  paint_image->storage_class=DirectClass;
   /*
     Allocate histogram and scanline.
   */
@@ -2365,7 +2365,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   noise_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(noise_image,TrueColorType);
+  noise_image->storage_class=DirectClass;
   /*
     Allocate window.
   */
@@ -2559,7 +2559,7 @@ MagickExport Image *ShadeImage(const Image *image,
   shade_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (shade_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(shade_image,TrueColorType);
+  shade_image->storage_class=DirectClass;
   /*
     Compute the light vector.
   */
@@ -2867,7 +2867,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
   spread_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (spread_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(spread_image,TrueColorType);
+  spread_image->storage_class=DirectClass;
   /*
     Convolve each row.
   */
