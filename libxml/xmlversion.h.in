@@ -9,8 +9,18 @@
 #ifndef __XML_VERSION_H__
 #define __XML_VERSION_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/*
+ * use those to be sure nothing nasty will happen if
+ * your library and includes mismatch
+ */
+extern void xmlCheckVersion(int version);
 #define LIBXML_VERSION @LIBXML_VERSION_NUMBER@
 #define LIBXML_VERSION_STRING "@LIBXML_VERSION_NUMBER@"
+#define LIBXML_TEST_VERSION xmlCheckVersion(@LIBXML_VERSION_NUMBER@);
 
 /*
  * Whether the FTP support is configured in
@@ -38,6 +48,15 @@
 #else
 #define LIBXML_HTML_DISABLED
 #endif
+
+/*
+ * Whether the Docbook support is configured in
+#if @WITH_SGML@
+#define LIBXML_SGML_ENABLED
+#else
+#define LIBXML_SGML_DISABLED
+#endif
+ */
 
 /*
  * Whether XPath is configured in
@@ -73,6 +92,9 @@
 #define DEBUG_MEMORY_LOCATION
 #endif
 
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 #endif
 
 

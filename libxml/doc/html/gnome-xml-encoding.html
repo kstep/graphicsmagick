@@ -1,0 +1,1868 @@
+<HTML
+><HEAD
+><TITLE
+>encoding</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.33"><LINK
+REL="HOME"
+TITLE="Gnome XML Library Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Libxml Library Reference"
+HREF="libxml-lib.html"><LINK
+REL="PREVIOUS"
+TITLE="parserInternals"
+HREF="gnome-xml-parserinternals.html"><LINK
+REL="NEXT"
+TITLE="debugXML"
+HREF="gnome-xml-debugxml.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>Gnome XML Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-xml-parserinternals.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="libxml-lib.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-xml-debugxml.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+>encoding</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN14357"
+></A
+><H2
+>Name</H2
+>encoding &#8212; </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN14360"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+enum        <A
+HREF="gnome-xml-encoding.html#XMLCHARENCODING"
+>xmlCharEncoding</A
+>;
+int         (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGINPUTFUNC"
+>*xmlCharEncodingInputFunc</A
+>)     (unsigned char *out,
+                                             int *outlen,
+                                             unsigned char *in,
+                                             int *inlen);
+int         (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGOUTPUTFUNC"
+>*xmlCharEncodingOutputFunc</A
+>)    (unsigned char *out,
+                                             int *outlen,
+                                             unsigned char *in,
+                                             int *inlen);
+struct      <A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLER"
+>xmlCharEncodingHandler</A
+>;
+typedef     <A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLERPTR"
+>xmlCharEncodingHandlerPtr</A
+>;
+void        <A
+HREF="gnome-xml-encoding.html#XMLINITCHARENCODINGHANDLERS"
+>xmlInitCharEncodingHandlers</A
+>     (void);
+void        <A
+HREF="gnome-xml-encoding.html#XMLCLEANUPCHARENCODINGHANDLERS"
+>xmlCleanupCharEncodingHandlers</A
+>  (void);
+void        <A
+HREF="gnome-xml-encoding.html#XMLREGISTERCHARENCODINGHANDLER"
+>xmlRegisterCharEncodingHandler</A
+>  (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLERPTR"
+>xmlCharEncodingHandlerPtr</A
+> handler);
+<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODING"
+>xmlCharEncoding</A
+> <A
+HREF="gnome-xml-encoding.html#XMLDETECTCHARENCODING"
+>xmlDetectCharEncoding</A
+>       (unsigned char *in,
+                                             int len);
+<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODING"
+>xmlCharEncoding</A
+> <A
+HREF="gnome-xml-encoding.html#XMLPARSECHARENCODING"
+>xmlParseCharEncoding</A
+>        (const char *name);
+const char* <A
+HREF="gnome-xml-encoding.html#XMLGETCHARENCODINGNAME"
+>xmlGetCharEncodingName</A
+>          (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODING"
+>xmlCharEncoding</A
+> enc);
+<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLERPTR"
+>xmlCharEncodingHandlerPtr</A
+> <A
+HREF="gnome-xml-encoding.html#XMLGETCHARENCODINGHANDLER"
+>xmlGetCharEncodingHandler</A
+>
+                                            (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODING"
+>xmlCharEncoding</A
+> enc);
+<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLERPTR"
+>xmlCharEncodingHandlerPtr</A
+> <A
+HREF="gnome-xml-encoding.html#XMLFINDCHARENCODINGHANDLER"
+>xmlFindCharEncodingHandler</A
+>
+                                            (const char *name);
+int         <A
+HREF="gnome-xml-encoding.html#XMLCHECKUTF8"
+>xmlCheckUTF8</A
+>                    (unsigned char *utf);
+int         <A
+HREF="gnome-xml-encoding.html#XMLCHARENCOUTFUNC"
+>xmlCharEncOutFunc</A
+>               (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLER"
+>xmlCharEncodingHandler</A
+> *handler,
+                                             <A
+HREF="gnome-xml-tree.html#XMLBUFFERPTR"
+>xmlBufferPtr</A
+> out,
+                                             <A
+HREF="gnome-xml-tree.html#XMLBUFFERPTR"
+>xmlBufferPtr</A
+> in);
+int         <A
+HREF="gnome-xml-encoding.html#XMLCHARENCINFUNC"
+>xmlCharEncInFunc</A
+>                (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLER"
+>xmlCharEncodingHandler</A
+> *handler,
+                                             <A
+HREF="gnome-xml-tree.html#XMLBUFFERPTR"
+>xmlBufferPtr</A
+> out,
+                                             <A
+HREF="gnome-xml-tree.html#XMLBUFFERPTR"
+>xmlBufferPtr</A
+> in);
+int         <A
+HREF="gnome-xml-encoding.html#XMLCHARENCFIRSTLINE"
+>xmlCharEncFirstLine</A
+>             (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLER"
+>xmlCharEncodingHandler</A
+> *handler,
+                                             <A
+HREF="gnome-xml-tree.html#XMLBUFFERPTR"
+>xmlBufferPtr</A
+> out,
+                                             <A
+HREF="gnome-xml-tree.html#XMLBUFFERPTR"
+>xmlBufferPtr</A
+> in);
+int         <A
+HREF="gnome-xml-encoding.html#XMLCHARENCCLOSEFUNC"
+>xmlCharEncCloseFunc</A
+>             (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLER"
+>xmlCharEncodingHandler</A
+> *handler);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN14398"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN14401"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14403"
+></A
+><H3
+><A
+NAME="XMLCHARENCODING"
+></A
+>enum xmlCharEncoding</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+    XML_CHAR_ENCODING_ERROR=   -1, /* No char encoding detected */
+    XML_CHAR_ENCODING_NONE=	0, /* No char encoding detected */
+    XML_CHAR_ENCODING_UTF8=	1, /* UTF-8 */
+    XML_CHAR_ENCODING_UTF16LE=	2, /* UTF-16 little endian */
+    XML_CHAR_ENCODING_UTF16BE=	3, /* UTF-16 big endian */
+    XML_CHAR_ENCODING_UCS4LE=	4, /* UCS-4 little endian */
+    XML_CHAR_ENCODING_UCS4BE=	5, /* UCS-4 big endian */
+    XML_CHAR_ENCODING_EBCDIC=	6, /* EBCDIC uh! */
+    XML_CHAR_ENCODING_UCS4_2143=7, /* UCS-4 unusual ordering */
+    XML_CHAR_ENCODING_UCS4_3412=8, /* UCS-4 unusual ordering */
+    XML_CHAR_ENCODING_UCS2=	9, /* UCS-2 */
+    XML_CHAR_ENCODING_8859_1=	10,/* ISO-8859-1 ISO Latin 1 */
+    XML_CHAR_ENCODING_8859_2=	11,/* ISO-8859-2 ISO Latin 2 */
+    XML_CHAR_ENCODING_8859_3=	12,/* ISO-8859-3 */
+    XML_CHAR_ENCODING_8859_4=	13,/* ISO-8859-4 */
+    XML_CHAR_ENCODING_8859_5=	14,/* ISO-8859-5 */
+    XML_CHAR_ENCODING_8859_6=	15,/* ISO-8859-6 */
+    XML_CHAR_ENCODING_8859_7=	16,/* ISO-8859-7 */
+    XML_CHAR_ENCODING_8859_8=	17,/* ISO-8859-8 */
+    XML_CHAR_ENCODING_8859_9=	18,/* ISO-8859-9 */
+    XML_CHAR_ENCODING_2022_JP=  19,/* ISO-2022-JP */
+    XML_CHAR_ENCODING_SHIFT_JIS=20,/* Shift_JIS */
+    XML_CHAR_ENCODING_EUC_JP=   21,/* EUC-JP */
+    XML_CHAR_ENCODING_ASCII=    22 /* pure ASCII */
+} xmlCharEncoding;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14408"
+></A
+><H3
+><A
+NAME="XMLCHARENCODINGINPUTFUNC"
+></A
+>xmlCharEncodingInputFunc ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         (*xmlCharEncodingInputFunc)     (unsigned char *out,
+                                             int *outlen,
+                                             unsigned char *in,
+                                             int *inlen);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>outlen</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>inlen</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14438"
+></A
+><H3
+><A
+NAME="XMLCHARENCODINGOUTPUTFUNC"
+></A
+>xmlCharEncodingOutputFunc ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         (*xmlCharEncodingOutputFunc)    (unsigned char *out,
+                                             int *outlen,
+                                             unsigned char *in,
+                                             int *inlen);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>outlen</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>inlen</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14468"
+></A
+><H3
+><A
+NAME="XMLCHARENCODINGHANDLER"
+></A
+>struct xmlCharEncodingHandler</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct xmlCharEncodingHandler {
+    char                       *name;
+    xmlCharEncodingInputFunc   input;
+    xmlCharEncodingOutputFunc  output;
+#ifdef LIBXML_ICONV_ENABLED
+    iconv_t                    iconv_in;
+    iconv_t                    iconv_out;
+#endif /* LIBXML_ICONV_ENABLED */
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14473"
+></A
+><H3
+><A
+NAME="XMLCHARENCODINGHANDLERPTR"
+></A
+>xmlCharEncodingHandlerPtr</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef xmlCharEncodingHandler *xmlCharEncodingHandlerPtr;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14478"
+></A
+><H3
+><A
+NAME="XMLINITCHARENCODINGHANDLERS"
+></A
+>xmlInitCharEncodingHandlers ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        xmlInitCharEncodingHandlers     (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Initialize the char encoding support, it registers the default
+encoding supported.
+NOTE: while public, this function usually doesn't need to be called
+in normal processing.</P
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14484"
+></A
+><H3
+><A
+NAME="XMLCLEANUPCHARENCODINGHANDLERS"
+></A
+>xmlCleanupCharEncodingHandlers ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        xmlCleanupCharEncodingHandlers  (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Cleanup the memory allocated for the char encoding support, it
+unregisters all the encoding handlers.</P
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14490"
+></A
+><H3
+><A
+NAME="XMLREGISTERCHARENCODINGHANDLER"
+></A
+>xmlRegisterCharEncodingHandler ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        xmlRegisterCharEncodingHandler  (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLERPTR"
+>xmlCharEncodingHandlerPtr</A
+> handler);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Register the char encoding handler, surprizing, isn't it ?</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>handler</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the xmlCharEncodingHandlerPtr handler block</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14506"
+></A
+><H3
+><A
+NAME="XMLDETECTCHARENCODING"
+></A
+>xmlDetectCharEncoding ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-xml-encoding.html#XMLCHARENCODING"
+>xmlCharEncoding</A
+> xmlDetectCharEncoding       (unsigned char *in,
+                                             int len);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Guess the encoding of the entity using the first bytes of the entity content
+accordingly of the non-normative appendix F of the XML-1.0 recommendation.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a pointer to the first bytes of the XML entity, must be at least
+4 bytes long.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>len</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  pointer to the length of the buffer</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>one of the XML_CHAR_ENCODING_... values.</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14530"
+></A
+><H3
+><A
+NAME="XMLPARSECHARENCODING"
+></A
+>xmlParseCharEncoding ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-xml-encoding.html#XMLCHARENCODING"
+>xmlCharEncoding</A
+> xmlParseCharEncoding        (const char *name);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Conpare the string to the known encoding schemes already known. Note
+that the comparison is case insensitive accordingly to the section
+[XML] 4.3.3 Character Encoding in Entities.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the encoding name as parsed, in UTF-8 format (ASCII actually)</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>one of the XML_CHAR_ENCODING_... values or XML_CHAR_ENCODING_NONE
+if not recognized.</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14550"
+></A
+><H3
+><A
+NAME="XMLGETCHARENCODINGNAME"
+></A
+>xmlGetCharEncodingName ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const char* xmlGetCharEncodingName          (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODING"
+>xmlCharEncoding</A
+> enc);</PRE
+></TD
+></TR
+></TABLE
+><P
+>The "canonical" name for XML encoding.
+C.f. http://www.w3.org/TR/REC-xml<GTKDOCLINK
+HREF="CHARENCODING"
+>charencoding</GTKDOCLINK
+>
+Section 4.3.3  Character Encoding in Entities</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>enc</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the encoding</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the canonical name for the given encoding</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14571"
+></A
+><H3
+><A
+NAME="XMLGETCHARENCODINGHANDLER"
+></A
+>xmlGetCharEncodingHandler ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLERPTR"
+>xmlCharEncodingHandlerPtr</A
+> xmlGetCharEncodingHandler
+                                            (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODING"
+>xmlCharEncoding</A
+> enc);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Search in the registrered set the handler able to read/write that encoding.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>enc</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a string describing the char encoding.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the handler or NULL if not found</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14592"
+></A
+><H3
+><A
+NAME="XMLFINDCHARENCODINGHANDLER"
+></A
+>xmlFindCharEncodingHandler ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLERPTR"
+>xmlCharEncodingHandlerPtr</A
+> xmlFindCharEncodingHandler
+                                            (const char *name);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14611"
+></A
+><H3
+><A
+NAME="XMLCHECKUTF8"
+></A
+>xmlCheckUTF8 ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlCheckUTF8                    (unsigned char *utf);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Checks <TT
+CLASS="PARAMETER"
+><I
+>utf</I
+></TT
+> for being valid utf-8. <TT
+CLASS="PARAMETER"
+><I
+>utf</I
+></TT
+> is assumed to be
+null-terminated. This function is not super-strict, as it will
+allow longer utf-8 sequences than necessary. Note that Java is
+capable of producing these sequences if provoked. Also note, this
+routine checks for the 4-byte maxiumum size, but does not check for
+0x10ffff maximum value.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>utf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to putative utf-8 encoded string.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> true if <TT
+CLASS="PARAMETER"
+><I
+>utf</I
+></TT
+> is valid.</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14633"
+></A
+><H3
+><A
+NAME="XMLCHARENCOUTFUNC"
+></A
+>xmlCharEncOutFunc ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlCharEncOutFunc               (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLER"
+>xmlCharEncodingHandler</A
+> *handler,
+                                             <A
+HREF="gnome-xml-tree.html#XMLBUFFERPTR"
+>xmlBufferPtr</A
+> out,
+                                             <A
+HREF="gnome-xml-tree.html#XMLBUFFERPTR"
+>xmlBufferPtr</A
+> in);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Generic front-end for the encoding handler output function
+a first call with <TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+> == NULL has to be made firs to initiate the 
+output in case of non-stateless encoding needing to initiate their
+state or the output (like the BOM in UTF16).
+In case of UTF8 sequence conversion errors for the given encoder,
+the content will be automatically remapped to a CharRef sequence.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>handler</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>	char enconding transformation data structure</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an xmlBuffer for the output.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an xmlBuffer for the input</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the number of byte written if success, or 
+-1 general error
+-2 if the transcoding fails (for *in is not valid utf8 string or
+the result of transformation can't fit into the encoding we want), or</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14664"
+></A
+><H3
+><A
+NAME="XMLCHARENCINFUNC"
+></A
+>xmlCharEncInFunc ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlCharEncInFunc                (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLER"
+>xmlCharEncodingHandler</A
+> *handler,
+                                             <A
+HREF="gnome-xml-tree.html#XMLBUFFERPTR"
+>xmlBufferPtr</A
+> out,
+                                             <A
+HREF="gnome-xml-tree.html#XMLBUFFERPTR"
+>xmlBufferPtr</A
+> in);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Generic front-end for the encoding handler input function</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>handler</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>	char enconding transformation data structure</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an xmlBuffer for the output.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an xmlBuffer for the input</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the number of byte written if success, or 
+-1 general error
+-2 if the transcoding fails (for *in is not valid utf8 string or
+the result of transformation can't fit into the encoding we want), or</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14694"
+></A
+><H3
+><A
+NAME="XMLCHARENCFIRSTLINE"
+></A
+>xmlCharEncFirstLine ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlCharEncFirstLine             (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLER"
+>xmlCharEncodingHandler</A
+> *handler,
+                                             <A
+HREF="gnome-xml-tree.html#XMLBUFFERPTR"
+>xmlBufferPtr</A
+> out,
+                                             <A
+HREF="gnome-xml-tree.html#XMLBUFFERPTR"
+>xmlBufferPtr</A
+> in);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Front-end for the encoding handler input function, but handle only
+the very first line, i.e. limit itself to 45 chars.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>handler</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>	char enconding transformation data structure</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an xmlBuffer for the output.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an xmlBuffer for the input</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the number of byte written if success, or 
+-1 general error
+-2 if the transcoding fails (for *in is not valid utf8 string or
+the result of transformation can't fit into the encoding we want), or</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14724"
+></A
+><H3
+><A
+NAME="XMLCHARENCCLOSEFUNC"
+></A
+>xmlCharEncCloseFunc ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlCharEncCloseFunc             (<A
+HREF="gnome-xml-encoding.html#XMLCHARENCODINGHANDLER"
+>xmlCharEncodingHandler</A
+> *handler);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Generic front-end for hencoding handler close function</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>handler</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>	char enconding transformation data structure</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>0 if success, or -1 in case of error</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-xml-parserinternals.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="libxml-lib.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-xml-debugxml.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>parserInternals</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>debugXML</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
