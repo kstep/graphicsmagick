@@ -1044,13 +1044,13 @@ MagickExport unsigned int CompositeImage(Image *image,
     {
       image->storage_class=DirectClass;
       if (!image->matte)
-        MatteImage(image,OpaqueOpacity);
+        SetImageOpacity(image,OpaqueOpacity);
     }
   if (composite_image->colorspace == RGBColorspace)
     {
       composite_image->storage_class=DirectClass;
       if (!composite_image->matte)
-        MatteImage(composite_image,OpaqueOpacity);
+        SetImageOpacity(composite_image,OpaqueOpacity);
     }
   switch (compose)
   {
@@ -1271,7 +1271,7 @@ MagickExport unsigned int CompositeImage(Image *image,
   if (compose == DisplaceCompositeOp)
     DestroyImage(composite_image);
   if (compose != CopyOpacityCompositeOp)
-    (void) IsMatteImage(image);
+    (void) IsOpaqueImage(image);
   return(True);
 }
 
@@ -1513,10 +1513,10 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   x=0;
   p=(Image *) NULL;
   if (!image->matte)
-    (void) fprintf(file,"  Matte: False\n");
+    (void) fprintf(file,"  Opaque: False\n");
   else
     if ((strcmp(image->magick,"GIF") != 0) || image->taint)
-      (void) fprintf(file,"  Matte: True\n");
+      (void) fprintf(file,"  Opaque: True\n");
     else
       {
         PixelPacket
@@ -1540,10 +1540,10 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         if ((x < (int) image->columns) || (y < (int) image->rows))
           {
             if (image->depth == 8)
-              (void) fprintf(file,"  Matte: (%3d,%3d,%3d) #%02x%02x%02x\n",
+              (void) fprintf(file,"  Opacity: (%3d,%3d,%3d) #%02x%02x%02x\n",
                 p->red,p->green,p->blue,p->red,p->green,p->blue);
             else
-              (void) fprintf(file,"  Matte: (%5d,%5d,%5d) #%04x%04x%04x\n",
+              (void) fprintf(file,"  Opacity: (%5d,%5d,%5d) #%04x%04x%04x\n",
                 p->red,p->green,p->blue,p->red,p->green,p->blue);
           }
       }
@@ -2411,7 +2411,7 @@ MagickExport ImageType GetImageType(Image *image)
     return(PaletteMatteType);
   if (IsPseudoClass(image))
     return(PaletteType);
-  if (IsMatteImage(image))
+  if (!IsOpaqueImage(image))
     return(TrueColorMatteType);
   return(TrueColorType);
 }
@@ -2863,79 +2863,6 @@ MagickExport Image **ListToGroupImage(Image *image,unsigned int *number_images)
     next=next->next;
   }
   return(images);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%     M a t t e I m a g e                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method MatteImage initializes the matte channel of the reference image to
-%  the specified value.  If the image already has a matte channel it is
-%  attenuated with the opacity value.
-%
-%  The format of the MatteImage method is:
-%
-%      void MatteImage(Image *image,const unsigned int opacity)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
-%
-%    o opacity: The level of transparency.
-%
-%
-*/
-MagickExport void MatteImage(Image *image,const unsigned int opacity)
-{
-  int
-    y;
-
-  register int
-    x;
-
-  register PixelPacket
-    *q;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->matte)
-    {
-      for (y=0; y < (int) image->rows; y++)
-      {
-        q=GetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (int) image->columns; x++)
-        {
-          q->opacity=((unsigned long) (opacity*q->opacity)/MaxRGB);
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      return;
-    }
-  image->matte=True;
-  for (y=0; y < (int) image->rows; y++)
-  {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (int) image->columns; x++)
-    {
-      q->opacity=opacity;
-      q++;
-    }
-    if (!SyncImagePixels(image))
-      break;
-  }
 }
 
 /*
@@ -3792,7 +3719,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           {
             if (*option == '-')
               if (!(*image)->matte)
-                MatteImage(*image,OpaqueOpacity);
+                SetImageOpacity(*image,OpaqueOpacity);
             (*image)->matte=(*option == '-');
             continue;
           }
@@ -5603,6 +5530,79 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   if (SetImageMagic(magick,2*MaxTextExtent,magic) == True)
     (void) strcpy(image_info->magick,magic);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     S e t I m a g e O p a c i t y                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetImageOpacity initializes the opacity channel of the reference
+%  image to the specified value.  If the image already has a matte channel it
+%  is attenuated with the opacity value.
+%
+%  The format of the SetImageOpacity method is:
+%
+%      void SetImageOpacity(Image *image,const unsigned int opacity)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%    o opacity: The level of transparency.
+%
+%
+*/
+MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
+{
+  int
+    y;
+
+  register int
+    x;
+
+  register PixelPacket
+    *q;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->matte)
+    {
+      for (y=0; y < (int) image->rows; y++)
+      {
+        q=GetImagePixels(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          q->opacity=((unsigned long) (opacity*q->opacity)/MaxRGB);
+          q++;
+        }
+        if (!SyncImagePixels(image))
+          break;
+      }
+      return;
+    }
+  image->matte=True;
+  for (y=0; y < (int) image->rows; y++)
+  {
+    q=GetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      q->opacity=opacity;
+      q++;
+    }
+    if (!SyncImagePixels(image))
+      break;
+  }
 }
 
 /*

@@ -462,6 +462,19 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   *values == '{' ? values+1 : values);
                 break;
               }
+              case 'o':
+              case 'O':
+              {
+                if (LocaleCompare(keyword,"opaque") == 0)
+                  {
+                    image->matte=(LocaleCompare(values,"True") == 0) ||
+                      (LocaleCompare(values,"true") == 0);
+                    break;
+                  }
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
+                break;
+              }
               case 'p':
               case 'P':
               {
@@ -1201,11 +1214,11 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         RGBTransformImage(image,CMYKColorspace);
     (void) WriteBlobString(image,"id=ImageMagick\n");
     if (image->storage_class == PseudoClass)
-      FormatString(buffer,"class=PseudoClass  colors=%u  matte=%s\n",
+      FormatString(buffer,"class=PseudoClass  colors=%u  opaque=%s\n",
         image->colors,image->matte ? "True" : "False");
     else
       if (image->colorspace != CMYKColorspace)
-        FormatString(buffer,"class=DirectClass  matte=%s\n",
+        FormatString(buffer,"class=DirectClass  opaque=%s\n",
           image->matte ? "True" : "False");
       else
         (void) strcpy(buffer,"class=DirectClass  colorspace=CMYK\n");

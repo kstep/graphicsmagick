@@ -2468,7 +2468,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     ThrowBinaryException(OptionWarning,
       "Non-conforming drawing primitive definition",keyword);
   image->storage_class=DirectClass;
-  (void) IsMatteImage(image);
+  (void) IsOpaqueImage(image);
   return(status);
 }
 
@@ -2762,6 +2762,11 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
           if (draw_info->tile != (Image *) NULL)
             fill_color=GetOnePixel(draw_info->tile,x %
               draw_info->tile->columns,y % draw_info->tile->rows);
+          if (!draw_info->stroke_antialias)
+            {
+              fill_opacity=fill_opacity >= 0.25-MagickEpsilon ? 1.0 : 0.0;
+              stroke_opacity=stroke_opacity >= 0.25-MagickEpsilon ? 1.0 : 0.0;
+            }
           fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
           stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
           if (stroke_opacity != OpaqueOpacity)
@@ -3024,7 +3029,7 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
     case MattePrimitive:
     {
       if (!image->matte)
-        MatteImage(image,OpaqueOpacity);
+        SetImageOpacity(image,OpaqueOpacity);
       switch (primitive_info->method)
       {
         case PointMethod:
@@ -3122,7 +3127,7 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
       if (composite_image == (Image *) NULL)
         break;
       if (draw_info->opacity != OpaqueOpacity)
-        MatteImage(composite_image,draw_info->opacity);
+        SetImageOpacity(composite_image,draw_info->opacity);
       if ((primitive_info[1].point.x != 0) && (primitive_info[1].point.y != 0))
         {
           char
@@ -4005,7 +4010,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
   */
   image->storage_class=DirectClass;
   if (!image->matte)
-    MatteImage(image,OpaqueOpacity);
+    SetImageOpacity(image,OpaqueOpacity);
   x=x_offset;
   y=y_offset;
   start=0;
@@ -4961,7 +4966,7 @@ MagickExport unsigned int TransparentImage(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (!image->matte)
-    MatteImage(image,OpaqueOpacity);
+    SetImageOpacity(image,OpaqueOpacity);
   for (y=0; y < (int) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);

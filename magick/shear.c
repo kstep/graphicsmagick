@@ -869,7 +869,7 @@ MagickExport Image *RotateImage(Image *image,const double degrees,
     Surround image with a border.
   */
   if (!integral_image->matte)
-    MatteImage(integral_image,OpaqueOpacity);
+    SetImageOpacity(integral_image,OpaqueOpacity);
   integral_image->border_color.opacity=TransparentOpacity;
   border_info.width=x_offset;
   border_info.height=y_offset;
@@ -987,7 +987,7 @@ MagickExport Image *ShearImage(Image *image,const double x_shear,
     Surround image with border.
   */
   if (!integral_image->matte)
-    MatteImage(integral_image,OpaqueOpacity);
+    SetImageOpacity(integral_image,OpaqueOpacity);
   integral_image->border_color.opacity=TransparentOpacity;
   border_info.width=x_offset;
   border_info.height=y_offset;

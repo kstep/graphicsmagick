@@ -339,7 +339,8 @@ static struct
       {"y", IntegerReference}, {"grav", GravityTypes},
       {"translate", StringReference}, {"scale", StringReference},
       {"rotate", DoubleReference}, {"skewX", DoubleReference},
-      {"skewY", DoubleReference}, {"stroke_width", IntegerReference} } },
+      {"skewY", DoubleReference}, {"stroke_width", IntegerReference},
+      {"antialias", BooleanTypes} } },
     { "ColorFloodfill", { {"geom", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"fill", StringReference},
       {"bordercolor", StringReference} } },
@@ -357,7 +358,7 @@ static struct
       {"translate", StringReference}, {"scale", StringReference},
       {"rotate", DoubleReference}, {"skewX", DoubleReference},
       {"skewY", DoubleReference}, {"tile", ImageReference},
-      {"pen", StringReference} } },
+      {"pen", StringReference}, {"antialias", BooleanTypes} } },
     { "Equalize", },
     { "Gamma", { {"gamma", StringReference}, {"red", DoubleReference},
       {"green", DoubleReference}, {"blue", DoubleReference} } },
@@ -4448,6 +4449,7 @@ Mogrify(ref,...)
           }
           if (attribute_flag[17])
             draw_info->stroke_width=argument_list[17].int_reference;
+          draw_info->text_antialias=argument_list[18].int_reference;
           AnnotateImage(image,draw_info);
           DestroyDrawInfo(draw_info);
           break;
@@ -4777,6 +4779,8 @@ Mogrify(ref,...)
           if (attribute_flag[16])
             (void) QueryColorDatabase(argument_list[16].string_reference,
               &draw_info->fill);
+          draw_info->stroke_antialias=argument_list[17].int_reference;
+          draw_info->text_antialias=argument_list[17].int_reference;
           DrawImage(image,draw_info);
           DestroyDrawInfo(draw_info);
           break;
@@ -4849,7 +4853,7 @@ Mogrify(ref,...)
           if (attribute_flag[3])
             matte=argument_list[3].int_reference;
           if (!image->matte)
-            MatteImage(image,OpaqueOpacity);
+            SetImageOpacity(image,OpaqueOpacity);
           target=GetOnePixel(image,rectangle_info.x % image->columns,
             rectangle_info.y % image->rows);
           if (attribute_flag[4])

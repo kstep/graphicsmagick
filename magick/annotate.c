@@ -663,6 +663,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   (void) CloneString(&clone_info->page,geometry);
   if (draw_info->density != (char *) NULL)
     (void) CloneString(&clone_info->density,draw_info->density);
+  clone_info->antialias=draw_info->text_antialias;
   GetExceptionInfo(&exception);
   annotate_image=ReadImage(clone_info,&exception);
   DestroyImageInfo(clone_info);
@@ -913,6 +914,9 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       0
     };
 
+  unsigned int
+    active;
+
   unsigned short
     *unicode;
 
@@ -1064,28 +1068,39 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         p=bitmap->bitmap.buffer;
         for (y=0; y < bitmap->bitmap.rows; y++)
         {
-          if ((ceil(point.y+y-0.5) < 0) || (ceil(point.y+y-0.5) >= image->rows))
+          if (ceil(point.y+y-0.5) >= image->rows)
+            break;
+          if (ceil(point.y+y-0.5) < 0)
             {
               p+=bitmap->bitmap.width;
               continue;
             }
+          q=GetImagePixels(image,(int) ceil(point.x-0.5),
+            (int) ceil(point.y+y-0.5),bitmap->bitmap.width,1);
+          active=q != (PixelPacket *) NULL;
           for (x=0; x < bitmap->bitmap.width; x++)
           {
-            if ((ceil(point.x+x-0.5) < 0) ||
-                (ceil(point.x+x-0.5) >= image->columns) || (*p == 0))
+            if ((ceil(point.x+x-0.5) < 0) || (*p == 0) ||
+                (ceil(point.x+x-0.5) >= image->columns))
               {
                 p++;
+                q++;
                 continue;
               }
-            q=GetImagePixels(image,(int) ceil(point.x+x-0.5),
-              (int) ceil(point.y+y-0.5),1,1);
+            if (draw_info->text_antialias)
+              opacity=UpScale(*p);
+            else
+              opacity=(*p) >= 64 ? TransparentOpacity : OpaqueOpacity;
+            opacity=((unsigned long) ((MaxRGB-opacity)*
+              (MaxRGB-draw_info->fill.opacity))/MaxRGB);
+            if (!active)
+              q=GetImagePixels(image,(int) ceil(point.x+x-0.5),
+                (int) ceil(point.y+y-0.5),1,1);
             if (q == (PixelPacket *) NULL)
               {
                 p++;
-                continue;
+                break;
               }
-            opacity=draw_info->fill.opacity+((unsigned long)
-              (MaxRGB-UpScale(*p))*(MaxRGB-draw_info->fill.opacity))/MaxRGB;
             switch (opacity)
             {
               case TransparentOpacity:
@@ -1102,10 +1117,12 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                 break;
               }
             }
+            if (!active)
+              (void) SyncImagePixels(image);
             p++;
-            if (!SyncImagePixels(image))
-              continue;
+            q++;
           }
+          (void) SyncImagePixels(image);
         }
       }
     if (render && (draw_info->stroke.opacity != TransparentOpacity))

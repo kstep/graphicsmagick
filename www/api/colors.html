@@ -23,8 +23,8 @@
 		<LI><A HREF="#compresscolormap">CompressColormap</A></LI>
 		<LI><A HREF="#getnumbercolors">GetNumberColors</A></LI>
 		<LI><A HREF="#isgrayimage">IsGrayImage</A></LI>
-		<LI><A HREF="#ismatteimage">IsMatteImage</A></LI>
 		<LI><A HREF="#ismonochromeimage">IsMonochromeImage</A></LI>
+		<LI><A HREF="#isopaqueimage">IsOpaqueImage</A></LI>
 		<LI><A HREF="#ispseudoclass">IsPseudoClass</A></LI>
 		<LI><A HREF="#listcolors">ListColors</A></LI>
 		<LI><A HREF="#querycolordatabase">QueryColorDatabase</A></LI>
@@ -46,8 +46,8 @@
 <P>void  <STRONG>CompressColormap</STRONG>( Image *image );</P>
 <P>number_colors= <STRONG>GetNumberColors</STRONG>( image, file );</P>
 <P>unsigned int  <STRONG>IsGrayImage</STRONG>( Image *image );</P>
-<P>unsigned int  <STRONG>IsMatteImage</STRONG>( Image *image );</P>
 <P>status= <STRONG>IsMonochromeImage</STRONG>( image );</P>
+<P>unsigned int  <STRONG>IsOpaqueImage</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>IsPseudoClass</STRONG>( Image *image );</P>
 <P>filelist= <STRONG>ListColors</STRONG>( pattern, number_colors );</P>
 <P>unsigned int  <STRONG>QueryColorDatabase</STRONG>( const char *target, PixelPacket *color );</P>
@@ -104,21 +104,6 @@ Method IsGrayImage returns True if the image is grayscale otherwise False is ret
 The address of a structure of type Image; returned from ReadImage.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="ismatteimage">IsMatteImage</A></H2>
-<P>Method IsMatteImage returns True if the image has one or more pixels that are transparent otherwise False is returned.  to PseudoClass.</P>
-<P>The format of the IsMatteImage method is:</P>
-<blockquote>unsigned int IsMatteImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
-<DD>
-Method IsMatteImage returns True if the image has one or more pixels that are transparent otherwise False is returned.
-<P></P>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image; returned from ReadImage.
-<P></P></DL></DL>
-<P>
 <H2><A NAME="ismonochromeimage">IsMonochromeImage</A></H2>
 <P>Method IsMonochromeImage returns True if the image is monochrome otherwise False is returned.  If the image is DirectClass and monochrome, it is demoted to PseudoClass.</P>
 <P>The format of the IsMonochromeImage method is:</P>
@@ -128,6 +113,21 @@ The address of a structure of type Image; returned from ReadImage.
 <p><dt><STRONG>status:</STRONG><BR>
 <DD>
 Method IsMonochromeImage returns True if the image is monochrome otherwise False is returned.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image; returned from ReadImage.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="isopaqueimage">IsOpaqueImage</A></H2>
+<P>Method IsOpaqueImage returns False if the image has one or more pixels that are transparent otherwise True is returned.</P>
+<P>The format of the IsOpaqueImage method is:</P>
+<blockquote>unsigned int IsOpaqueImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>status:</STRONG><BR>
+<DD>
+Method IsOpaqueImage returns False if the image has one or more pixels that are transparent otherwise True is returned.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>

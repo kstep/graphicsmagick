@@ -1382,11 +1382,7 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   assert(image->signature == MagickSignature);
   if ((x < 0) || (y < 0) || ((x+columns) > (int) image->columns) ||
       ((y+rows) > (int) image->rows) || (columns == 0) || (rows == 0))
-    {
-      ThrowException(&image->exception,CacheWarning,"Unable to set pixel cache",
-        "image does not contain the cache geometry");
-      return((PixelPacket *) NULL);
-    }
+    return((PixelPacket *) NULL);
   if (image->storage_class != GetCacheClassType(image->cache))
     {
       /*
@@ -1643,14 +1639,14 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
   (void) fprintf(file,"id=MagickCache\n");
   (void) fprintf(file,"cache=%.1024s\n",cache_info->cache_filename);
   if (image->storage_class == PseudoClass)
-    (void) fprintf(file,"class=PseudoClass  Colors=%u  Matte=%s\n",
+    (void) fprintf(file,"class=PseudoClass  colors=%u  opaque=%s\n",
       image->colors,image->matte ? "True" : "False");
   else
     if (image->colorspace != CMYKColorspace)
-      (void) fprintf(file,"class=DirectClass  Matte=%s\n",
+      (void) fprintf(file,"class=DirectClass  opaque=%s\n",
         image->matte ? "True" : "False");
     else
-      (void) fprintf(file,"class=DirectClass  Colorspace=CMYK\n");
+      (void) fprintf(file,"class=DirectClass  colorspace=CMYK\n");
   (void) fprintf(file,"compression=");
   switch (image->compression)
   {

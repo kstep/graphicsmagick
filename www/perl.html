@@ -414,12 +414,12 @@ And here is a list of other image manipulation methods you can call:
 <td>Annotate</td>
 
 <td>text=><i>string</i>, font=><i>string</i>, pointsize=><i>integer</i>,
-density=><i>geometry</i>, stroke=><i><a href="color.html">color name</a></i>, 
+density=><i>geometry</i>, stroke=><i><a href="color.html">color name</a></i>,
 stroke_width=><i>integer</i>, fill=><i><a href="color.html">color name</a></i>,
-box=><i><a href="color.html">color name</a></i>, geometry=><i>geometry</i>, 
+box=><i><a href="color.html">color name</a></i>, geometry=><i>geometry</i>,
 gravity=>{NorthWest, North, NorthEast, West, Center, East,
-SouthWest, South, SouthEast}, x=><i>integer</i>, y=><i>integer</i>,
-translate=><i>float, float</i>, scale=><i>float, float</i>,
+SouthWest, South, SouthEast}, antialias=>{true, false}, x=><i>integer</i>,
+y=><i>integer</i>, translate=><i>float, float</i>, scale=><i>float, float</i>,
 rotate=><i>float</i>.  skewX=><i>float</i>, skewY=><i>float</i>
 </td>
 
@@ -569,7 +569,7 @@ x=><i>integer</i>, y=><i>integer</i></td>
 bezier, color, matte, text, @<i>filename</i>}, points=><i>string</i>,
 method=<i>{Point, Replace, Floodfill, FillToBorder, Reset}</i>,
 stroke=><i><a href="color.html">color name</a></i>, fill=><i><a href="color.html">color name</a></i>, tile=><i>image-handle</i>,
-stroke_width=><i>float</i>,
+stroke_width=><i>float</i>, antialias=>{true, false},
 bordercolor=><i><a href="color.html">color name</a></i>, x=><i>float</i>,
 y=><i>float</i>, translate=><i>float, float</i>, scale=><i>float, float</i>,
 rotate=><i>float</i>.  skewX=><i>float</i>, skewY=><i>float</i>

@@ -823,68 +823,6 @@ MagickExport unsigned int IsGrayImage(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     I s M a t t e I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method IsMatteImage returns True if the image has one or more pixels that
-%  are transparent otherwise False is returned.
-%  to PseudoClass.
-%
-%  The format of the IsMatteImage method is:
-%
-%      unsigned int IsMatteImage(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method IsMatteImage returns True if the image has one or more
-%      pixels that are transparent otherwise False is returned.
-%
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
-%
-%
-*/
-MagickExport unsigned int IsMatteImage(Image *image)
-{
-  int
-    y;
-
-  register int
-    x;
-
-  register PixelPacket
-    *p;
-
-  /*
-    Determine if image is grayscale.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (!image->matte)
-    return(False);
-  for (y=0; y < (int) image->rows; y++)
-  {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
-      return(False);
-    for (x=0; x < (int) image->columns; x++)
-    {
-      if (p->opacity != OpaqueOpacity)
-        return(True);
-      p++;
-    }
-  }
-  image->matte=False;
-  return(False);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
 %   I s M o n o c h r o m e I m a g e                                         %
 %                                                                             %
 %                                                                             %
@@ -927,6 +865,67 @@ MagickExport unsigned int IsMonochromeImage(Image *image)
     if (((int) Intensity(image->colormap[1]) != 0) &&
         ((int) Intensity(image->colormap[1]) != MaxRGB))
       return(False);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     I s O p a q u e I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsOpaqueImage returns False if the image has one or more pixels that
+%  are transparent otherwise True is returned.
+%
+%  The format of the IsOpaqueImage method is:
+%
+%      unsigned int IsOpaqueImage(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method IsOpaqueImage returns False if the image has one or more
+%      pixels that are transparent otherwise True is returned.
+%
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%
+*/
+MagickExport unsigned int IsOpaqueImage(Image *image)
+{
+  int
+    y;
+
+  register int
+    x;
+
+  register PixelPacket
+    *p;
+
+  /*
+    Determine if image is grayscale.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (!image->matte)
+    return(True);
+  for (y=0; y < (int) image->rows; y++)
+  {
+    p=GetImagePixels(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      return(True);
+    for (x=0; x < (int) image->columns; x++)
+    {
+      if (p->opacity != OpaqueOpacity)
+        return(False);
+      p++;
+    }
+  }
+  image->matte=False;
   return(True);
 }
 

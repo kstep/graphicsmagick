@@ -2604,7 +2604,7 @@ static unsigned int XCompositeImage(Display *display,
       /*
         Create mattes for blending.
       */
-      MatteImage(composite_image,OpaqueOpacity);
+      SetImageOpacity(composite_image,OpaqueOpacity);
       opacity=(Quantum) (DownScale(MaxRGB)-(DownScale(MaxRGB)*blend)/100);
       image->storage_class=DirectClass;
       image->matte=True;
@@ -3528,7 +3528,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   */
   image->storage_class=DirectClass;
   if (!image->matte)
-    MatteImage(image,OpaqueOpacity);
+    SetImageOpacity(image,OpaqueOpacity);
   for (y=0; y < (int) crop_info.height; y++)
   {
     q=GetImagePixels(image,crop_info.x,y+crop_info.y,crop_info.width,1);
@@ -7697,7 +7697,7 @@ static unsigned int XMatteEditImage(Display *display,
           continue;
         (*image)->storage_class=DirectClass;
         if (!(*image)->matte)
-          MatteImage(*image,OpaqueOpacity);
+          SetImageOpacity(*image,OpaqueOpacity);
         switch (method)
         {
           case PointMethod:

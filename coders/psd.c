@@ -751,7 +751,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       }
       if (image->matte && (number_layers != 0))
-        MatteImage(image,TransparentOpacity);
+        SetImageOpacity(image,TransparentOpacity);
       LiberateMemory((void **) &scanline);
     }
   if (image->colorspace == CMYKColorspace)
@@ -776,7 +776,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
     }
-  (void) IsMatteImage(image);
+  (void) IsSetImageOpacity(image);
   for (i=0; i < number_layers; i++)
   {
     /*

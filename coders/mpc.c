@@ -507,6 +507,19 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 *values == '{' ? values+1 : values);
               break;
             }
+            case 'o':
+            case 'O':
+            {
+              if (LocaleCompare(keyword,"opaque") == 0)
+                {
+                  image->matte=(LocaleCompare(values,"True") == 0) ||
+                    (LocaleCompare(values,"true") == 0);
+                  break;
+                 }
+              (void) SetImageAttribute(image,keyword,
+                *values == '{' ? values+1 : values);
+              break;
+            }
             case 'r':
             case 'R':
             {

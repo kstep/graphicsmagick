@@ -44,10 +44,9 @@
 		<LI><A HREF="#getpixelpacket">GetPixelPacket</A></LI>
 		<LI><A HREF="#isgeometry">IsGeometry</A></LI>
 		<LI><A HREF="#issubimage">IsSubimage</A></LI>
-		<LI><A HREF="#istainted">IsTainted</A></LI>
+		<LI><A HREF="#isimagetainted">IsImageTainted</A></LI>
 		<LI><A HREF="#layerimage">LayerImage</A></LI>
 		<LI><A HREF="#listtogroupimage">ListToGroupImage</A></LI>
-		<LI><A HREF="#matteimage">MatteImage</A></LI>
 		<LI><A HREF="#mogrifyimage">MogrifyImage</A></LI>
 		<LI><A HREF="#mogrifyimages">MogrifyImages</A></LI>
 		<LI><A HREF="#mosaicimages">MosaicImages</A></LI>
@@ -55,6 +54,7 @@
 		<LI><A HREF="#rgbtransformimage">RGBTransformImage</A></LI>
 		<LI><A HREF="#setimage">SetImage</A></LI>
 		<LI><A HREF="#setimageinfo">SetImageInfo</A></LI>
+		<LI><A HREF="#setimageopacity">SetImageOpacity</A></LI>
 		<LI><A HREF="#sortcolormapbyintentsity">SortColormapByIntentsity</A></LI>
 		<LI><A HREF="#syncimage">SyncImage</A></LI>
 		<LI><A HREF="#textureimage">TextureImage</A></LI>
@@ -98,11 +98,10 @@
 <P>void  <STRONG>GetPageInfo</STRONG>( RectangleInfo *page );</P>
 <P>void  <STRONG>GetPixelPacket</STRONG>( PixelPacket *pixel );</P>
 <P>unsigned int  <STRONG>IsGeometry</STRONG>( const char *geometry );</P>
+<P>unsigned int  <STRONG>IsImageTainted</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>IsSubimage</STRONG>( const char *geometry, const unsigned int pedantic );</P>
-<P>unsigned int  <STRONG>IsTainted</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>LayerImage</STRONG>( Image *image, const LayerType layer );</P>
 <P>Image **  <STRONG>ListToGroupImage</STRONG>( Image *image, unsigned int *number_images );</P>
-<P>void  <STRONG>MatteImage</STRONG>( Image *image, const unsigned int opacity );</P>
 <P>unsigned int  <STRONG>MogrifyImage</STRONG>( const ImageInfo *image_info, const int argc, char ** argv, Image ** image );</P>
 <P>unsigned int  <STRONG>MogrifyImages</STRONG>( const ImageInfo *next_info, const int argc, char ** argv, Image ** image );</P>
 <P>Image * <STRONG>MosaicImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
@@ -110,6 +109,7 @@
 <P>unsigned int  <STRONG>RGBTransformImage</STRONG>( Image *image, const ColorspaceType colorspace );</P>
 <P>void  <STRONG>SetImage</STRONG>( Image *image, opacity );</P>
 <P>unsigned int  <STRONG>SetImageInfo</STRONG>( ImageInfo *image_info, const unsigned int rectify );</P>
+<P>void  <STRONG>SetImageOpacity</STRONG>( Image *image, const unsigned int opacity );</P>
 <P>void  <STRONG>SyncImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>TextureImage</STRONG>( Image *image, Image *texture );</P>
 <P>unsigned int  <STRONG>TransformRGBImage</STRONG>( Image *image, const ColorspaceType colorspace );</P>
@@ -521,15 +521,15 @@ This string is the geometry specification.
 <FONT SIZE=-1>A</FONT> value other than 0 invokes a more restriction set of conditions for a valid specification (e.g.  [1], [1-4], [4-1]).
 <P></P></DL></DL>
 <P>
-<H2><A NAME="istainted">IsTainted</A></H2>
-<P>Method IsTainted returns True if the image has been altered since it was first read or if any image in the sequence has a difference magic or filename.</P>
-<P>The format of the IsTainted method is:</P>
-<blockquote>unsigned int IsTainted ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<H2><A NAME="isimagetainted">IsImageTainted</A></H2>
+<P>Method IsImageTainted returns True if the image has been altered since it was first read or if any image in the sequence has a difference magic or filename.</P>
+<P>The format of the IsImageTainted method is:</P>
+<blockquote>unsigned int IsImageTainted ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><BR>
 <DD>
-Method IsTainted returns True if the image has been altered since it was first read.
+Method IsImageTainted returns True if the image has been altered since it was first read.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
@@ -570,21 +570,6 @@ The address of a structure of type Image; returned from ReadImage.
 <DD>
 
 <FONT SIZE=-1>A</FONT> pointer to an unsigned integer.  The number of images in the image array is returned here.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="matteimage">MatteImage</A></H2>
-<P>Method MatteImage initializes the matte channel of the reference image to the specified value.  If the image already has a matte channel it is attenuated with the opacity value.</P>
-<P>The format of the MatteImage method is:</P>
-<blockquote>void MatteImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int opacity ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image; returned from ReadImage.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_opacity%3A">opacity:</A></STRONG><BR>
-<DD>
-The level of transparency.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="mogrifyimage">MogrifyImage</A></H2>
@@ -699,7 +684,7 @@ An unsigned integer value that indicates which colorspace to transform the image
 <DD>
 The address of a structure of type Image; returned from ReadImage.
 <P></P>
-<p><dt><STRONG>opacity:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_opacity%3A">opacity:</A></STRONG><BR>
 <DD>
 The transparency of the background color.
 <P></P></DL></DL>
@@ -720,6 +705,21 @@ Specifies a pointer to an ImageInfo structure.
 <p><dt><STRONG><A NAME="item_o_rectify%3A">rectify:</A></STRONG><BR>
 <DD>
 an unsigned value other than zero rectifies the attribute for multi-frame support (user may want multi-frame but image format may not support it).
+<P></P></DL></DL>
+<P>
+<H2><A NAME="setimageopacity">SetImageOpacity</A></H2>
+<P>Method SetImageOpacity initializes the opacity channel of the reference image to the specified value.  If the image already has a matte channel it is attenuated with the opacity value.</P>
+<P>The format of the SetImageOpacity method is:</P>
+<blockquote>void SetImageOpacity ( <A HREF="types/Image.html">Image</A> *image, const unsigned int opacity ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image; returned from ReadImage.
+<P></P>
+<p><dt><STRONG>opacity:</STRONG><BR>
+<DD>
+The level of transparency.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="sortcolormapbyintentsity">SortColormapByIntentsity</A></H2>

@@ -1407,7 +1407,7 @@ MagickExport Image *ImplodeImage(Image *image,const double factor,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (!image->matte)
-    MatteImage(image,OpaqueOpacity);
+    SetImageOpacity(image,OpaqueOpacity);
   implode_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (implode_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1471,7 +1471,7 @@ MagickExport Image *ImplodeImage(Image *image,const double factor,
     if (QuantumTick(y,image->rows))
       MagickMonitor(ImplodeImageText,y,image->rows);
   }
-  (void) IsMatteImage(implode_image);
+  (void) IsOpaqueImage(implode_image);
   return(implode_image);
 }
 
@@ -3116,7 +3116,7 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (!image->matte)
-    MatteImage(image,OpaqueOpacity);
+    SetImageOpacity(image,OpaqueOpacity);
   swirl_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (swirl_image == (Image *) NULL)
     return((Image *) NULL);
@@ -3173,7 +3173,7 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
     if (QuantumTick(y,image->rows))
       MagickMonitor(SwirlImageText,y,image->rows);
   }
-  (void) IsMatteImage(swirl_image);
+  (void) IsOpaqueImage(swirl_image);
   return(swirl_image);
 }
 
@@ -3424,7 +3424,7 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (!image->matte)
-    MatteImage(image,OpaqueOpacity);
+    SetImageOpacity(image,OpaqueOpacity);
   wave_image=CloneImage(image,image->columns,(int)
     (int) (image->rows+2.0*fabs(amplitude)),False,exception);
   if (wave_image == (Image *) NULL)
@@ -3461,6 +3461,6 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
       MagickMonitor(WaveImageText,y,wave_image->rows);
   }
   LiberateMemory((void **) &sine_map);
-  (void) IsMatteImage(wave_image);
+  (void) IsOpaqueImage(wave_image);
   return(wave_image);
 }
