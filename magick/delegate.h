@@ -16,7 +16,9 @@ typedef struct _DelegateInfo
   const char
     *filename,
     *decode,
-    *encode,
+    *encode;
+
+  char
     *commands;
 
   int

@@ -675,7 +675,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"command") == 0)
           {
-            delegate_list->commands=AcquireString(token);
+            delegate_list->commands=AllocateString(token);
 #if defined(WIN32)
             if (strchr(delegate_list->commands,'@') != (char *) NULL)
               {
@@ -683,8 +683,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
                   path[MaxTextExtent];
 
                 NTGhostscriptEXE(path,MaxTextExtent-1);
-                SubstituteString((char **) &delegate_list->commands,
-                  "@PSDelegate@",path);
+                SubstituteString(&delegate_list->commands,"@PSDelegate@",path);
               }
 #endif
             break;
