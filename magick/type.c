@@ -325,7 +325,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   */
   for (i=0; fontmap[i].name != (char *) NULL; i++)
   {
-    if (family == (char *) NULL)
+    if (family == (const char *) NULL)
       {
         if (LocaleCompare("helvetica",fontmap[i].name) != 0)
           continue;
@@ -338,8 +338,14 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
     break;
   }
   if (type_info != (TypeInfo *) NULL)
-    ThrowException(exception,TypeWarning,"Font substitution required",
-      type_info->family);
+    {
+      ThrowException(exception,TypeWarning,"Font substitution required",
+        type_info->family);
+      return(type_info);
+    }
+  if (family != (const char *) NULL)
+    type_info=GetTypeInfoByFamily((const char *) NULL,style,stretch,weight,
+      exception);
   return(type_info);
 }
 
