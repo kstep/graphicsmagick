@@ -2,7 +2,7 @@
 
 	* magick/effect.h, effect.c, command.c: Revised -random-dither
 	to require parameters: channel LOWxHIGH.  Channel can presently
-	be "intensity" or "opacity".
+	be "intensity", "opacity", or "all".
 
 2003-03-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

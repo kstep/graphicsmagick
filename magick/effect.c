@@ -1931,9 +1931,11 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
     (void) LogMagickEvent(TransformEvent,GetMagickModule(),
         "  channel type=%s",channel);
 
-  if (!AllocateImageColormap(image,2))
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToThresholdImage");
+  if (LocaleCompare(channel,"all") == 0 ||
+      LocaleCompare(channel,"intensity") == 0)
+    if (!AllocateImageColormap(image,2))
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        "UnableToThresholdImage");
 
   for (y=0; y < (long) image->rows; y++)
   {
@@ -1944,42 +1946,43 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
     if (LocaleCompare(channel,"all") == 0 ||
         LocaleCompare(channel,"intensity") == 0)
       {
-      if (image->is_grayscale)
-        {
-          for (x=(long) image->columns; x > 0; x--)
-            {
-              if (q->red < lower_threshold)
-                threshold=lower_threshold;
-              else if (q->red > upper_threshold)
-                threshold=upper_threshold;
-              else
-                threshold=(double) (MaxRGB*rand()/(double) RAND_MAX);
-              index=q->red <= threshold ? 0 : 1;
-              *indexes++=index;
-              q->red=q->green=q->blue=image->colormap[index].red;
-              q++;
-            }
-        }
-      else
-        {
-          for (x=(long) image->columns; x > 0; x--)
-            {
-              Quantum
-                intensity;
-
-              intensity=PixelIntensityToQuantum(q);
-              if (intensity < lower_threshold)
-                threshold=lower_threshold;
-              else if (intensity > upper_threshold)
-                threshold=upper_threshold;
-              else
-                threshold=(double) (MaxRGB*rand()/(double) RAND_MAX);
-              q->red=q->green=q->blue=intensity <= threshold ? 0 : MaxRGB;
-              q++;
-            }
-        }
+        if (image->is_grayscale)
+          {
+            for (x=(long) image->columns; x > 0; x--)
+              {
+                if (q->red < lower_threshold)
+                  threshold=lower_threshold;
+                else if (q->red > upper_threshold)
+                  threshold=upper_threshold;
+                else
+                  threshold=(double) (MaxRGB*rand()/(double) RAND_MAX);
+                index=q->red <= threshold ? 0 : 1;
+                *indexes++=index;
+                q->red=q->green=q->blue=image->colormap[index].red;
+                q++;
+              }
+          }
+        else
+          {
+            for (x=(long) image->columns; x > 0; x--)
+              {
+                Quantum
+                  intensity;
+  
+                intensity=PixelIntensityToQuantum(q);
+                if (intensity < lower_threshold)
+                  threshold=lower_threshold;
+                else if (intensity > upper_threshold)
+                  threshold=upper_threshold;
+                else
+                  threshold=(double) (MaxRGB*rand()/(double) RAND_MAX);
+                q->red=q->green=q->blue=intensity <= threshold ? 0 : MaxRGB;
+                q++;
+              }
+          }
       }
-    else if (LocaleCompare(channel,"opacity") == 0 ||
+    if (LocaleCompare(channel,"opacity") == 0 ||
+        LocaleCompare(channel,"all") == 0 ||
         LocaleCompare(channel,"matte") == 0)
       {
         for (x=(long) image->columns; x > 0; x--)
@@ -1997,8 +2000,9 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
     else
       {
         /* To Do: red, green, blue, cyan, magenta, yellow, black */
-        ThrowBinaryException(OptionError, "UnableToThresholdimage",
-            "UnrecognizedChannelType");
+        if (LocaleCompare(channel,"intensity") != 0)
+          ThrowBinaryException(OptionError, "UnableToThresholdimage",
+              "UnrecognizedChannelType");
       }
 
     if (!SyncImagePixels(image))
@@ -2008,8 +2012,12 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
           exception))
         break;
   }
-  image->is_monochrome=True;
-  image->is_grayscale=True;
+  if (LocaleCompare(channel,"all") == 0 ||
+      LocaleCompare(channel,"intensity") == 0)
+    {
+      image->is_monochrome=True;
+      image->is_grayscale=True;
+    }
   return(True);
 }
 
