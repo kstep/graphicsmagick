@@ -317,6 +317,6 @@ static unsigned int WriteAPP1Image(const ImageInfo *image_info,Image *image)
         return(True);
       }
   }
-  ThrowWriterException(FileOpenWarning,"No APP1 data is available",image);
+  ThrowWriterException(FileOpenWarning,"No APP1 data is available",image)
   return(True);
 }

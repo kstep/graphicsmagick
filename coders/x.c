@@ -238,7 +238,7 @@ static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   */
   state=DefaultState;
   (void) XDisplayImage(display,&resource_info,&client_name,1,&image,&state);
-  XCloseDisplay(display);
+  (void) XCloseDisplay(display);
   return(True);
 }
 #else

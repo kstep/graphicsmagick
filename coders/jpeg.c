@@ -228,7 +228,7 @@ static boolean FillInputBuffer(j_decompress_ptr cinfo)
 static unsigned int GetCharacter(j_decompress_ptr jpeg_info)
 {
   if (jpeg_info->src->bytes_in_buffer == 0)
-    (*jpeg_info->src->fill_input_buffer)(jpeg_info);
+    (void) (*jpeg_info->src->fill_input_buffer)(jpeg_info);
   jpeg_info->src->bytes_in_buffer--;
   return(GETJOCTET(*jpeg_info->src->next_input_byte++));
 }

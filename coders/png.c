@@ -2611,7 +2611,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           info,
           name;
 
-        png_get_iCCP(ping,ping_info,&name,(int *) &compression,&info,
+        (void) png_get_iCCP(ping,ping_info,&name,(int *) &compression,&info,
           (png_uint_32 *) &image->color_profile.length);
 
         if (image->color_profile.name)
@@ -2670,7 +2670,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->chromaticity=mng_info->global_chrm;
     if (ping_info->valid & PNG_INFO_cHRM)
       {
-        png_get_cHRM(ping,ping_info,
+        (void) png_get_cHRM(ping,ping_info,
           &image->chromaticity.white_point.x,
           &image->chromaticity.white_point.y,
           &image->chromaticity.red_primary.x,
@@ -2747,7 +2747,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         png_colorp
           palette;
 
-        png_get_PLTE(ping,ping_info,&palette,&number_colors);
+        (void) png_get_PLTE(ping,ping_info,&palette,&number_colors);
         if (number_colors == 0 && ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           {
             if (global_plte_length)
@@ -2895,7 +2895,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             png_colorp
               palette;
 
-            png_get_PLTE(ping,ping_info,&palette,&number_colors);
+            (void) png_get_PLTE(ping,ping_info,&palette,&number_colors);
             image->colors=number_colors;
           }
       }
@@ -2924,7 +2924,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             png_colorp
               palette;
 
-            png_get_PLTE(ping,ping_info,&palette,&number_colors);
+            (void) png_get_PLTE(ping,ping_info,&palette,&number_colors);
             for (i=0; i < (long) image->colors; i++)
             {
               image->colormap[i].red=UpScale(palette[i].red);
@@ -3277,14 +3277,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->depth > 8)
       image->depth = 8;
 #endif
-    if (png_get_text(ping,ping_info,&text,&num_text) > 0)
+    if (png_get_text(ping,ping_info,&text,&num_text) != 0)
       for (i=0; i < (long) num_text; i++)
       {
 
         /* Check for a profile */
 
         if (!memcmp(text[i].key, "Raw profile type ",17))
-            png_read_raw_profile(image,image_info,text,(int) i);
+            (void) png_read_raw_profile(image,image_info,text,(int) i);
         else
           {
             char
@@ -4208,15 +4208,15 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    text[0].text=(png_charp) png_malloc(ping,allocated_length);
    text[0].key=(png_charp) png_malloc(ping, (png_uint_32) 80);
    text[0].key[0]='\0';
-   strcat(text[0].key, "Raw profile type ");
-   strncat(text[0].key, (const char *) profile_type, 61);
+   (void) strcat(text[0].key, "Raw profile type ");
+   (void) strncat(text[0].key, (const char *) profile_type, 61);
    sp=profile_data;
    dp=text[0].text;
    *dp++='\n';
-   strcat(dp,(const char *) profile_description);
+   (void) strcat(dp,(const char *) profile_description);
    dp+=description_length;
    *dp++='\n';
-   sprintf(dp,"%8lu ",length);
+   (void) sprintf(dp,"%8lu ",length);
    dp+=8;
    for (i=0; i<(int) length; i++)
    {
@@ -4795,7 +4795,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate the PNG structures
     */
-    TransformRGBImage(image,(ColorspaceType) RGBColorspace);
+    (void) TransformRGBImage(image,(ColorspaceType) RGBColorspace);
 #ifdef PNG_USER_MEM_SUPPORTED
     ping = png_create_write_struct_2(PNG_LIBPNG_VER_STRING,image,
       PNGErrorHandler,PNGWarningHandler,(void *) NULL,
@@ -5104,7 +5104,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                    save_number_colors;
 
                 save_number_colors=image->colors;
-                CompressColormapTransFirst(image);
+                (void) CompressColormapTransFirst(image);
                 number_colors=image->colors;
                 image->colors=save_number_colors;
 #endif
@@ -5240,7 +5240,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         (unsigned char *) image->color_profile.info,
         (png_uint_32) image->color_profile.length);
 #endif
-    if (image->iptc_profile.length > 0)
+    if (image->iptc_profile.length != 0)
       png_write_raw_profile(image_info,ping,ping_info,
         (unsigned char *) "iptc",
         (unsigned char *) "IPTC profile",

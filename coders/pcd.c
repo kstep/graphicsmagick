@@ -129,11 +129,11 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       length,
       sequence;
 
-    unsigned char
-      key;
-
     unsigned int
       mask;
+
+    unsigned char
+      key;
   } PCDTable;
 
   int
