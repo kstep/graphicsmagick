@@ -80,6 +80,7 @@ static off_t
 
 static PixelPacket
   GetOnePixelFromCache(Image *,const int,const int),
+  *SetNexus(Image *,const RectangleInfo *,const unsigned int),
   *GetPixelsFromCache(const Image *),
   *GetPixelCache(Image *,const int,const int,const unsigned int,
     const unsigned int),
@@ -88,8 +89,14 @@ static PixelPacket
 
 static unsigned int
   CompressCache(Cache),
+  IsNexusInCore(const Cache,const unsigned int),
+  ReadCacheIndexes(Cache,const unsigned int),
+  ReadCachePixels(Cache,const unsigned int),
   SyncPixelCache(Image *),
-  UncompressCache(Cache);
+  UncompressCache(Cache),
+  WriteCacheInfo(Image *),
+  WriteCacheIndexes(Cache,const unsigned int),
+  WriteCachePixels(Cache,const unsigned int);
 
 static void
   ClosePixelCache(Image *),
@@ -965,7 +972,6 @@ MagickExport IndexPacket *GetNexusIndexes(const Cache cache,
 %    o id: specifies which cache nexus to return the pixels.
 %
 %
-%
 */
 MagickExport PixelPacket *GetNexusPixels(const Cache cache,
   const unsigned int id)
@@ -1192,7 +1198,7 @@ static PixelPacket *GetPixelsFromCache(const Image *image)
 %
 %
 */
-MagickExport unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
+static unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -1433,7 +1439,7 @@ else
 %
 %
 */
-MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
+static unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -1446,11 +1452,11 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
   register IndexPacket
     *indexes;
 
-  register NexusInfo
-    *nexus_info;
-
   register int
     y;
+
+  register NexusInfo
+    *nexus_info;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -1534,7 +1540,7 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 %
 %
 */
-MagickExport unsigned int ReadCachePixels(Cache cache,const unsigned int id)
+static unsigned int ReadCachePixels(Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -1717,7 +1723,7 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const int x,const int y,
   region.y=y;
   region.width=columns;
   region.height=rows;
-  return(SetNexus(image,id,&region));
+  return(SetNexus(image,&region,id));
 }
 
 /*
@@ -1814,8 +1820,8 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const int x,const int y,
 %
 %  The format of the SetNexus() method is:
 %
-%      PixelPacket SetNexus(Image *image,const unsigned int id,
-%        const RectangleInfo *region)
+%      PixelPacket SetNexus(Image *image,const RectangleInfo *region,
+%        const unsigned int id)
 %
 %  A description of each parameter follows:
 %
@@ -1831,8 +1837,8 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const int x,const int y,
 %
 %
 */
-MagickExport PixelPacket *SetNexus(Image *image,const unsigned int id,
-  const RectangleInfo *region)
+static PixelPacket *SetNexus(Image *image,const RectangleInfo *region,
+  const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -2285,7 +2291,7 @@ static unsigned int UncompressCache(Cache cache)
 %
 %
 */
-MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
+static unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -2384,7 +2390,7 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 %
 %
 */
-MagickExport unsigned int WriteCacheInfo(Image *image)
+static unsigned int WriteCacheInfo(Image *image)
 {
   CacheInfo
     *cache_info;
@@ -2637,7 +2643,7 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
 %
 %
 */
-MagickExport unsigned int WriteCachePixels(Cache cache,const unsigned int id)
+static unsigned int WriteCachePixels(Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
