@@ -518,11 +518,11 @@ static void wmf_magick_flood_exterior(wmfAPI * API, wmfFlood_t * flood)
 		    (int) rgb->r, (int) rgb->g, (int) rgb->b);
 
   if (flood->type == FLOODFILLSURFACE)
-    magick_mvg_printf(API, "color %.10g,%.10g floodfill\n", flood->pt.x,
-		      YC(flood->pt.y));
+    magick_mvg_printf(API, "color %.10g,%.10g floodfill\n",
+                      XC(flood->pt.x),YC(flood->pt.y));
   else
-    magick_mvg_printf(API, "color %.10g,%.10g filltoborder\n", flood->pt.x,
-		      YC(flood->pt.y));
+    magick_mvg_printf(API, "color %.10g,%.10g filltoborder\n",
+                      XC(flood->pt.x), YC(flood->pt.y));
 
   /* Restore graphic context */
   magick_mvg_printf(API, "pop graphic-context\n");
