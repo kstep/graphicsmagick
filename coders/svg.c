@@ -870,8 +870,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
             if (LocaleCompare(keyword,"stroke:") == 0)
               {
                 (void) CloneString(&q->stroke,value);
-                if (strchr(value,'%') == (char *) NULL)
-                  q->opacity*=100.0;
                 continue;
               }
             if (LocaleCompare(keyword,"stroke-antialiasing:") == 0)
@@ -882,6 +880,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
             if (LocaleCompare(keyword,"stroke-opacity:") == 0)
               {
                 q->opacity=atof(value);
+                if (strchr(value,'%') == (char *) NULL)
+                  q->opacity*=100.0;
                 continue;
               }
             if (LocaleCompare(keyword,"stroke-width:") == 0)
