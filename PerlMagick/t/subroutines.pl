@@ -84,19 +84,22 @@ sub testRead {
   # Test reading from blob
   #
   {
-    my($blob, $blob_length, $image, $signature, $status);
+    my(@blob, $blob_length, $image, $signature, $status);
 
-    if(open( FILE, "< $infile"))
+    $image = new Image::Magick;
+		$status=$image->Read( "$infile" );
+    $magick = $image->Get('magick');
+    @blob = $image->ImageToBlob();
+    undef $image;
+
+    if( !$status )
       {
         print( "  testing reading from BLOB ...\n");
-        binmode( FILE );
-        $blob_length = read( FILE, $blob, 10000000 );
-        close( FILE );
-        if( defined( $blob ) ) {
-          $image=Image::Magick->new(magick=>'MIFF');
+        if( 1 ) {
+          $image=Image::Magick->new(magick=>$magick);
           $image->Set(size=>'512x512');
-          $status=$image->BlobToImage($blob);
-          undef $blob;
+          $status=$image->BlobToImage(@blob);
+          undef @blob;
           if( "$status" ) {
             print "BlobToImage $infile: $status";
             ++$failure;
