@@ -313,7 +313,7 @@ int main(int argc,char **argv)
 
   Image
     *image,
-    *next_image;
+    *next;
 
   ImageInfo
     *image_info;
@@ -1366,46 +1366,45 @@ int main(int argc,char **argv)
               do
               {
                 Image
-                  *loaded_image;
+                  *nexus;
 
                 /*
                   Display image to X server.
                 */
-                loaded_image=
+                nexus=
                   XDisplayImage(display,&resource_info,argv,argc,&image,&state);
-                if (loaded_image == (Image *) NULL)
+                if (nexus == (Image *) NULL)
                   break;
-                while ((loaded_image != (Image *) NULL) &&
-                       (!(state & ExitState)))
+                while ((nexus != (Image *) NULL) && (!(state & ExitState)))
                 {
-                  if (loaded_image->montage != (char *) NULL)
+                  if (nexus->montage != (char *) NULL)
                     {
                       /*
                         User selected a visual directory image (montage).
                       */
                       DestroyImages(image);
-                      image=loaded_image;
+                      image=nexus;
                       break;
                     }
-                  status=MogrifyImage(image_info,i,argv,&loaded_image);
+                  status=MogrifyImage(image_info,i,argv,&nexus);
                   if (status == False)
-                    CatchImageException(loaded_image);
+                    CatchImageException(nexus);
                   if (first_scene != last_scene)
                     image->scene=scene;
-                  next_image=XDisplayImage(display,&resource_info,argv,argc,
-                    &loaded_image,&state);
-                  if ((next_image == (Image *) NULL) &&
-                      (loaded_image->next != (Image *) NULL))
+                  next=XDisplayImage(display,&resource_info,argv,argc,
+                    &nexus,&state);
+                  if ((next == (Image *) NULL) &&
+                      (nexus->next != (Image *) NULL))
                     {
                       DestroyImages(image);
-                      image=loaded_image->next;
-                      loaded_image=(Image *) NULL;
+                      image=nexus->next;
+                      nexus=(Image *) NULL;
                     }
                   else
                     {
-                      if (loaded_image != image)
-                        DestroyImages(loaded_image);
-                      loaded_image=next_image;
+                      if (nexus != image)
+                        DestroyImages(nexus);
+                      nexus=next;
                     }
                 }
               } while (!(state & ExitState));
@@ -1417,7 +1416,7 @@ int main(int argc,char **argv)
                 (void) strcpy(image->filename,resource_info.write_filename);
                 SetImageInfo(image_info,True);
                 status=WriteImage(image_info,image);
-                if (status != False)
+                if (status == False)
                   CatchImageException(image);
               }
             if (image_info->verbose)
@@ -1425,24 +1424,24 @@ int main(int argc,char **argv)
             /*
               Proceed to next/previous image.
             */
-            next_image=image;
+            next=image;
             if (state & FormerImageState)
               for (j=0; j < resource_info.quantum; j++)
               {
-                next_image=next_image->previous;
-                if (next_image == (Image *) NULL)
+                next=next->previous;
+                if (next == (Image *) NULL)
                   break;
               }
             else
               for (j=0; j < resource_info.quantum; j++)
               {
-                next_image=next_image->next;
-                if (next_image == (Image *) NULL)
+                next=next->next;
+                if (next == (Image *) NULL)
                   break;
               }
-            if (next_image != (Image *) NULL)
-              image=next_image;
-          } while ((next_image != (Image *) NULL) && !(state & ExitState));
+            if (next != (Image *) NULL)
+              image=next;
+          } while ((next != (Image *) NULL) && !(state & ExitState));
           /*
             Free image resources.
           */
