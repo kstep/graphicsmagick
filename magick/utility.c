@@ -3200,7 +3200,8 @@ MagickExport void TemporaryFilename(char *filename)
 #else
   (void) tmpnam(filename);
 #endif
-  (void) strcat(filename,".tmp");
+  while (strchr(filename,'.') != (char *) NULL)
+    TemporaryFilename(filename);
 }
 
 /*
