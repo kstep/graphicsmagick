@@ -7504,14 +7504,14 @@ MagickExport unsigned int TransformRGBImage(Image *image,
                 blue+0.5;
               if (colorspace == sRGBColorspace)
                 {
-                  q->red=Upscale(sRGBMap[Downscale(red)]);
-                  q->green=Upscale(sRGBMap[Downscale(green)]);
-                  q->blue=Upscale(sRGBMap[Downscale(blue)]);
+                  q->red=Upscale(sRGBMap[(long) Downscale(red)]);
+                  q->green=Upscale(sRGBMap[(long) Downscale(green)]);
+                  q->blue=Upscale(sRGBMap[(long) Downscale(blue)]);
                   break;
                 }
-              q->red=Upscale(YCCMap[Downscale(red)]);
-              q->green=Upscale(YCCMap[Downscale(green)]);
-              q->blue=Upscale(YCCMap[Downscale(blue)]);
+              q->red=Upscale(YCCMap[(long) Downscale(red)]);
+              q->green=Upscale(YCCMap[(long) Downscale(green)]);
+              q->blue=Upscale(YCCMap[(long) Downscale(blue)]);
               break;
             }
             default:

@@ -816,8 +816,8 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,int *current,
       return(image);
     }
   }
-  (void) fprintf(stderr,"GetList: Invalid reference type %d\n",
-    (int) SvTYPE(reference));
+  (void) fprintf(stderr,"GetList: Invalid reference type %ld\n",
+    (long) SvTYPE(reference));
   return((Image *) NULL);
 }
 
@@ -1215,7 +1215,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               continue;
             i=0;
             (void) sscanf(attribute,"%*[^[][%d",&i);
-            if (i > (int) image->colors)
+            if (i > (long) image->colors)
               i%=image->colors;
             if (strchr(SvPV(sval,na),',') == 0)
               QueryColorDatabase(SvPV(sval,na),image->colormap+i,
@@ -1485,7 +1485,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               break;
             indexes=GetIndexes(image);
             (void) sscanf(SvPV(sval,na),"%ld",&index);
-            if ((index >= 0) && (index < (int) image->colors))
+            if ((index >= 0) && (index < (long) image->colors))
               *indexes=(IndexPacket) index;
             (void) SyncImagePixels(image);
           }
@@ -3122,7 +3122,7 @@ Get(ref,...)
               j=image->storage_class;
 #endif
               s=newSViv(j);
-              if ((j >= 0) && (j < (int) NumberOf(ClassTypes)-1))
+              if ((j >= 0) && (j < (long) NumberOf(ClassTypes)-1))
                 {
                   (void) sv_setpv(s,ClassTypes[j]);
                   SvIOK_on(s);
@@ -3137,7 +3137,7 @@ Get(ref,...)
                 if (info->image_info->compression == UndefinedCompression)
                   j=image->compression;
               s=newSViv(j);
-              if ((j >= 0) && (j < (int) NumberOf(CompressionTypes)-1))
+              if ((j >= 0) && (j < (long) NumberOf(CompressionTypes)-1))
                 {
                   (void) sv_setpv(s,CompressionTypes[j]);
                   SvIOK_on(s);
@@ -3149,7 +3149,7 @@ Get(ref,...)
             {
               j=image ? image->colorspace : RGBColorspace;
               s=newSViv(j);
-              if ((j >= 0) && (j < (int) NumberOf(ColorspaceTypes)-1))
+              if ((j >= 0) && (j < (long) NumberOf(ColorspaceTypes)-1))
                 {
                   (void) sv_setpv(s,ColorspaceTypes[j]);
                   SvIOK_on(s);
@@ -3171,7 +3171,7 @@ Get(ref,...)
                 break;
               j=0;
               (void) sscanf(attribute,"%*[^[][%d",&j);
-              if (j > (int) image->colors)
+              if (j > (long) image->colors)
                 j%=image->colors;
               FormatString(color,"%u,%u,%u,%u",image->colormap[j].red,
                 image->colormap[j].green,image->colormap[j].blue,
@@ -3260,7 +3260,7 @@ Get(ref,...)
             {
               j=info ? info->image_info->endian : image->endian;
               s=newSViv(j);
-              if ((j >= 0) && (j < (int) NumberOf(EndianTypes)-1))
+              if ((j >= 0) && (j < (long) NumberOf(EndianTypes)-1))
                 {
                   (void) sv_setpv(s,EndianTypes[j]);
                   SvIOK_on(s);
@@ -3303,7 +3303,7 @@ Get(ref,...)
             {
               j=image->filter;
               s=newSViv(j);
-              if ((j >= 0) && (j < (int) NumberOf(FilterTypess)-1))
+              if ((j >= 0) && (j < (long) NumberOf(FilterTypess)-1))
                 {
                   (void) sv_setpv(s,FilterTypess[j]);
                   SvIOK_on(s);
@@ -3377,7 +3377,7 @@ Get(ref,...)
             {
               j=image->gravity;
               s=newSViv(j);
-              if ((j >= 0) && (j < (int) NumberOf(GravityTypes)-1))
+              if ((j >= 0) && (j < (long) NumberOf(GravityTypes)-1))
                 {
                   (void) sv_setpv(s,GravityTypes[j]);
                   SvIOK_on(s);
@@ -3476,7 +3476,7 @@ Get(ref,...)
             {
               j=info ? info->image_info->interlace : image->interlace;
               s=newSViv(j);
-              if ((j >= 0) && (j < (int) NumberOf(InterlaceTypes)-1))
+              if ((j >= 0) && (j < (long) NumberOf(InterlaceTypes)-1))
                 {
                   (void) sv_setpv(s,InterlaceTypes[j]);
                   SvIOK_on(s);
@@ -3634,7 +3634,7 @@ Get(ref,...)
             {
               s=newSViv(info->image_info->preview_type);
               if ((info->image_info->preview_type >= 0) &&
-                  (info->image_info->preview_type < (int) NumberOf(PreviewTypes)-1))
+                  (info->image_info->preview_type < (long) NumberOf(PreviewTypes)-1))
                 {
                   (void) sv_setpv(s,
                     PreviewTypes[info->image_info->preview_type]);
@@ -3666,7 +3666,7 @@ Get(ref,...)
             {
               j=image->rendering_intent;
               s=newSViv(j);
-              if ((j >= 0) && (j < (int) NumberOf(IntentTypes)-1))
+              if ((j >= 0) && (j < (long) NumberOf(IntentTypes)-1))
                 {
                   (void) sv_setpv(s,IntentTypes[j]);
                   SvIOK_on(s);
@@ -3784,9 +3784,9 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              j=(int) GetImageType(image,&image->exception);
+              j=(long) GetImageType(image,&image->exception);
               s=newSViv(j);
-              if ((j >= 0) && (j < (int) NumberOf(ImageTypes)-1))
+              if ((j >= 0) && (j < (long) NumberOf(ImageTypes)-1))
                 {
                   (void) sv_setpv(s,ImageTypes[j]);
                   SvIOK_on(s);
@@ -3993,7 +3993,7 @@ ImageToBlob(ref,...)
       next->scene=scene++;
     }
     SetImageInfo(package_info->image_info,True,&image->exception);
-    EXTEND(sp,(int) GetImageListSize(image));
+    EXTEND(sp,(long) GetImageListSize(image));
     GetExceptionInfo(&exception);
     for ( ; image; image=image->next)
     {
@@ -4411,7 +4411,7 @@ Mogrify(ref,...)
       {
         default:
         {
-          FormatString(message,"%d",(int) ix);
+          FormatString(message,"%d",(long) ix);
           MagickError(OptionError,"Routine value out of range",message);
           goto ReturnIt;
         }
@@ -4780,7 +4780,7 @@ Mogrify(ref,...)
           if (attribute_flag[2])
             geometry.height=argument_list[2].int_reference;
           if (!attribute_flag[3])
-            argument_list[3].int_reference=(int) LanczosFilter;
+            argument_list[3].int_reference=(long) LanczosFilter;
           if (!attribute_flag[4])
             argument_list[4].double_reference=1.0;
           image=ResizeImage(image,geometry.width,geometry.height,
@@ -5647,7 +5647,7 @@ Mogrify(ref,...)
           kernel=(double *) AcquireMemory(radius*radius*sizeof(double));
           for (j=0; j < (av_len(av)+1); j++)
             kernel[j]=(double) SvNV(*(av_fetch(av,j,0)));
-          for ( ; j < (int) (radius*radius); j++)
+          for ( ; j < (long) (radius*radius); j++)
             kernel[j]=0.0;
           image=ConvolveImage(image,radius,kernel,&exception);
           LiberateMemory((void **) &kernel);
@@ -6926,8 +6926,8 @@ QueryFont(ref,...)
         PUSHs(&sv_undef);
       else
         PUSHs(sv_2mortal(newSVpv(type_info->family,0)));
-      PUSHs(sv_2mortal(newSVpv(StyleTypes[(int) type_info->style],0)));
-      PUSHs(sv_2mortal(newSVpv(StretchTypes[(int) type_info->stretch],0)));
+      PUSHs(sv_2mortal(newSVpv(StyleTypes[(long) type_info->style],0)));
+      PUSHs(sv_2mortal(newSVpv(StretchTypes[(long) type_info->stretch],0)));
       FormatString(message,"%lu",type_info->weight);
       PUSHs(sv_2mortal(newSVpv(message,0)));
       if (type_info->encoding == (char *) NULL)
