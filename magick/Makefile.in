@@ -171,7 +171,7 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 
 # Library sources
 libMagick_la_SOURCES = PreRvIcccm.c X.c animate.c colors.c compress.c decode.c \
-  delegates.c display.c effects.c encode.c error.c gems.c image.c monitor.c \
+  delegates.c display.c effects.c encode.c error.c gems.c image.c magick.c monitor.c \
   quantize.c segment.c shear.c signature.c utility.c widget.c memory.c
 
 # Source files not used for Unix library but which are distributed
@@ -185,11 +185,11 @@ include_HEADERS = PreRvIcccm.h X.h compress.h config.h error.h gems.h image.h \
 	magick.h monitor.h utility.h widget.h memory.h delegates.h version.h
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = Colorlist.h animate.h dicom.h display.h formats.h logo.h \
-	mac.h nt.h pict.h proxy.h vms.h
+noinst_HEADERS = Colorlist.h animate.h dicom.h display.h logo.h mac.h \
+	nt.h pict.h proxy.h vms.h
 
 # Additional files to distribute
-EXTRA_DIST = Imakefile Magick-config.in Make.com
+EXTRA_DIST = magick.ph Imakefile Magick-config.in Make.com
 
 INCLUDES = #$(X_CFLAGS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -203,8 +203,8 @@ LIBS = @LIBS@
 libMagick_la_LIBADD = 
 libMagick_la_OBJECTS =  PreRvIcccm.lo X.lo animate.lo colors.lo \
 compress.lo decode.lo delegates.lo display.lo effects.lo encode.lo \
-error.lo gems.lo image.lo monitor.lo quantize.lo segment.lo shear.lo \
-signature.lo utility.lo widget.lo memory.lo
+error.lo gems.lo image.lo magick.lo monitor.lo quantize.lo segment.lo \
+shear.lo signature.lo utility.lo widget.lo memory.lo
 SCRIPTS =  $(bin_SCRIPTS)
 
 CFLAGS = @CFLAGS@

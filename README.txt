@@ -790,7 +790,8 @@ ACKNOWLEDGEMENT
   ImageMagick has been significantly enhanced due to the efforts of these
   individuals:
 
-      Bob Friesenhahn <bfriesen@simple.dallas.tx.us>:  Configure scripts
+      Bob Friesenhahn <bfriesen@simple.dallas.tx.us>:  Configure scripts,
+        and Gperf magic handling routine.
       Bill Radcliffe <BillR@corbis.com>:  FlashPix support
 
   And thanks to the hundreds of people that have sent e-mail with bug

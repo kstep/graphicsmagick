@@ -84,6 +84,7 @@ extern Export char
 
 extern Export int
   GlobExpression(char *,const char *),
+  Latin1Compare(const char *,const char *),
   MultilineCensus(const char *),
   ReadDataBlock(char *,FILE *),
   SystemCommand(unsigned int,char *);
@@ -108,6 +109,7 @@ extern Export void
   DestroyPostscriptGeometry(char *),
   ExpandFilename(char *),
   FormatString(char *,const char *,...),
+  Latin1Upper(char *),
   LocaleFilename(char *),
   LSBFirstWriteLong(const unsigned long,FILE *),
   LSBFirstWriteShort(const unsigned int,FILE *),

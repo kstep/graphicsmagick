@@ -84,7 +84,7 @@ sub testReadWrite {
 
   $image=Image::Magick->new;
   $status=$image->ReadImage("$infile");
-	$signature=$image->Get('signature');
+  $signature=$image->Get('signature');
   if( "$status" ) {
     print "ReadImage $infile: $status\n";
     print "not ok $test\n";
@@ -282,22 +282,6 @@ sub testSetAttribute {
     $expected = 1;
   } elsif ($attribute eq 'False' || $attribute eq 'false') {
     $expected = 0;
-  } elsif ( $attribute =~ '#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})?' ) {
-    $red = hex($1);
-    $green = hex($2);
-    $blue = hex($3);
-    if ( ! defined($4)) {
-      $alpha = 0;
-    } else {
-      $alpha = hex($4);
-    }
-    if ( $name =~ /^colormap/ ) {
-      # colormap only returns R,G,B
-      $expected = sprintf("%d,%d,%d", $red, $green, $blue);
-    } else {
-      # R,G,B,A
-      $expected = sprintf("%d,%d,%d,%d", $red, $green, $blue, $alpha);
-    }
   }
 
 

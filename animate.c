@@ -319,7 +319,7 @@ int main(int argc,char **argv)
   resource_info.delay=0;
   resource_info.pause=0;
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"delay","6");
+    XGetResourceInstance(resource_database,client_name,"delay","0");
   (void) XParseGeometry(resource_value,&x,&x,&resource_info.delay,
     &resource_info.pause);
   image_info=(&resource_info.image_info);

@@ -54,7 +54,6 @@
   Include declarations.
 */
 #include "magick.h"
-#include "formats.h"
 #include "Colorlist.h"
 
 /*
@@ -1285,7 +1284,6 @@ Export void CoalesceImages(Image *image)
           "Memory allocation failed");
         return;
       }
-    p->matte=False;
     p->columns=p->previous->columns;
     p->rows=p->previous->rows;
     p->packets=p->columns*p->rows;
@@ -1303,8 +1301,10 @@ Export void CoalesceImages(Image *image)
         p->page=(char *) NULL;
       }
     CompositeImage(p,ReplaceCompositeOp,p->previous,0,0);
-    CompositeImage(p,OverCompositeOp,cloned_image,x,y);
+    CompositeImage(p,cloned_image->matte ? OverCompositeOp : ReplaceCompositeOp,
+      cloned_image,x,y);
     DestroyImage(cloned_image);
+    p->matte=False;
     CondenseImage(p);
   }
 }
@@ -2548,6 +2548,19 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
           return((Image *) NULL);
         (void) strcpy(clone_image->directory,image->directory);
       }
+  clone_image->signature=(char *) NULL;
+  if ((image->columns == columns) && (image->rows == rows))
+    if (image->signature != (char *) NULL)
+      {
+        /*
+          Allocate and copy the image signature.
+        */
+        clone_image->signature=(char *)
+          AllocateMemory((unsigned int) Extent(image->signature)+1);
+        if (clone_image->signature == (char *) NULL)
+          return((Image *) NULL);
+        (void) strcpy(clone_image->signature,image->signature);
+      }
   if (image->colormap != (ColorPacket *) NULL)
     {
       /*
@@ -2571,17 +2584,6 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
         return((Image *) NULL);
       for (i=0; i < image->color_profile.length; i++)
         clone_image->color_profile.info[i]=image->color_profile.info[i];
-    }
-  if (image->signature != (char *) NULL)
-    {
-      /*
-        Allocate and copy the image signature.
-      */
-      clone_image->signature=(char *)
-        AllocateMemory((unsigned int) Extent(image->signature)+1);
-      if (clone_image->signature == (char *) NULL)
-        return((Image *) NULL);
-      (void) strcpy(clone_image->signature,image->signature);
     }
   clone_image->page=(char *) NULL;
   if ((image->columns == columns) && (image->rows == rows))
@@ -2991,7 +2993,11 @@ Export void CycleColormapImage(Image *image,int amount)
 Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
 {
   char
+    color[MaxTextExtent],
     **textlist;
+
+  const MagickInfo
+    *magick_info;
 
   Image
     *p;
@@ -3226,6 +3232,12 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     else
       if (image->interlace == PartitionInterlace)
         (void) fprintf(file,"  interlace: Partition\n");
+  (void) QueryColorName(&image->background_color,color);
+  (void) fprintf(file,"  background-color: %.128s\n",color);
+  (void) QueryColorName(&image->border_color,color);
+  (void) fprintf(file,"  border-color: %.128s\n",color);
+  (void) QueryColorName(&image->matte_color,color);
+  (void) fprintf(file,"  matte-color: %.128s\n",color);
   if (image->page != (char *) NULL)
     (void) fprintf(file,"  page geometry: %.128s\n",image->page);
   if (image->dispose != 0)
@@ -3234,7 +3246,13 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  delay: %d\n",image->delay);
   if (image->iterations != 1)
     (void) fprintf(file,"  iterations: %d\n",image->iterations);
-  (void) fprintf(file,"  format: %.128s\n",image->magick);
+  magick_info=(MagickInfo *) GetMagickInfo(image->magick,strlen(image->magick));
+  if ((magick_info == (const MagickInfo *) NULL) ||
+      (*magick_info->description == '\0'))
+    (void) fprintf(file,"  format: %.128s\n",image->magick);
+  else
+    (void) fprintf(file,"  format: %.128s (%s)\n",image->magick,
+      magick_info->description);
   p=image;
   while (p->previous != (Image *) NULL)
     p=p->previous;
@@ -9446,6 +9464,9 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
       char
         filename[MaxTextExtent];
 
+      const MagickInfo
+        *magick_info;
+
       /*
         Rectify multi-image file support.
       */
@@ -9453,9 +9474,10 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
       if ((Latin1Compare(filename,image_info->filename) != 0) &&
           (strchr(filename,'%') == (char *) NULL))
         image_info->adjoin=False;
-      for (i=0; ImageFormats[i][0] != (char *) NULL; i++)
-        if (Latin1Compare(image_info->magick,ImageFormats[i][0]) == 0)
-          image_info->adjoin&=IsTrue(ImageFormats[i][1]);
+      magick_info=(MagickInfo *)
+        GetMagickInfo(magick,strlen(magick));
+      if (magick_info != (const MagickInfo *) NULL)
+        image_info->adjoin&=magick_info->adjoin;
       return;
     }
   if (image_info->affirm)

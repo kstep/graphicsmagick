@@ -693,6 +693,22 @@ typedef struct _Image
     *list,
     *next;
 } Image;
+
+typedef struct _MagickInfo
+{
+  char
+    *magick;
+
+  Image
+    *(*decoder)(const ImageInfo *);
+
+  unsigned int
+    (*encoder)(const ImageInfo *,Image *),
+    adjoin;
+
+  const char
+    *description;
+} MagickInfo;  /* must match the structure definition in magick.gperf */
 
 /*
   Image utilities routines.
@@ -706,8 +722,8 @@ extern Export Image
   *AllocateImage(const ImageInfo *),
   *AppendImages(Image *,unsigned int),
   *AverageImages(Image *),
-  *BorderImage(Image *,RectangleInfo *),
   *BlurImage(Image *,double),
+  *BorderImage(Image *,RectangleInfo *),
   *ChopImage(Image *,RectangleInfo *),
   *CloneImage(Image *,const unsigned int,const unsigned int,const unsigned int),
   *CropImage(Image *,RectangleInfo *),
@@ -724,8 +740,64 @@ extern Export Image
   *MinifyImage(Image *),
   *MorphImages(Image *,unsigned int),
   *OilPaintImage(Image *,const unsigned int),
+  *ReadAVSImage(const ImageInfo *image_info),
+  *ReadBMPImage(const ImageInfo *image_info),
+  *ReadCMYKImage(const ImageInfo *image_info),
+  *ReadDCMImage(const ImageInfo *image_info),
+  *ReadDPSImage(const ImageInfo *image_info),
+  *ReadFAXImage(const ImageInfo *image_info),
+  *ReadFITSImage(const ImageInfo *image_info),
+  *ReadFPXImage(const ImageInfo *image_info),
+  *ReadGIFImage(const ImageInfo *image_info),
+  *ReadGRADATIONImage(const ImageInfo *image_info),
+  *ReadGRAYImage(const ImageInfo *image_info),
+  *ReadHDFImage(const ImageInfo *image_info),
+  *ReadHISTOGRAMImage(const ImageInfo *image_info),
+  *ReadICONImage(const ImageInfo *image_info),
   *ReadImage(ImageInfo *),
-  *ReadPICTImage(ImageInfo *),
+  *ReadJBIGImage(const ImageInfo *image_info),
+  *ReadJPEGImage(const ImageInfo *image_info),
+  *ReadLABELImage(const ImageInfo *image_info),
+  *ReadLOGOImage(const ImageInfo *image_info),
+  *ReadMAPImage(const ImageInfo *image_info),
+  *ReadMIFFImage(const ImageInfo *image_info),
+  *ReadMONOImage(const ImageInfo *image_info),
+  *ReadMTVImage(const ImageInfo *image_info),
+  *ReadNULLImage(const ImageInfo *image_info),
+  *ReadPCDImage(const ImageInfo *image_info),
+  *ReadPCLImage(const ImageInfo *image_info),
+  *ReadPCXImage(const ImageInfo *image_info),
+  *ReadPDFImage(const ImageInfo *image_info),
+  *ReadPICTImage(const ImageInfo *image_info),
+  *ReadPIXImage(const ImageInfo *image_info),
+  *ReadPLASMAImage(const ImageInfo *image_info),
+  *ReadPNGImage(const ImageInfo *image_info),
+  *ReadPNMImage(const ImageInfo *image_info),
+  *ReadPSDImage(const ImageInfo *image_info),
+  *ReadPSImage(const ImageInfo *image_info),
+  *ReadRGBImage(const ImageInfo *image_info),
+  *ReadRLAImage(const ImageInfo *image_info),
+  *ReadRLEImage(const ImageInfo *image_info),
+  *ReadSGIImage(const ImageInfo *image_info),
+  *ReadSTEGANOImage(const ImageInfo *image_info),
+  *ReadSUNImage(const ImageInfo *image_info),
+  *ReadTEXTImage(const ImageInfo *image_info),
+  *ReadTGAImage(const ImageInfo *image_info),
+  *ReadTIFFImage(const ImageInfo *image_info),
+  *ReadTILEImage(const ImageInfo *image_info),
+  *ReadTIMImage(const ImageInfo *image_info),
+  *ReadTTFImage(const ImageInfo *image_info),
+  *ReadUILImage(const ImageInfo *image_info),
+  *ReadUYVYImage(const ImageInfo *image_info),
+  *ReadVICARImage(const ImageInfo *image_info),
+  *ReadVIDImage(const ImageInfo *image_info),
+  *ReadVIFFImage(const ImageInfo *image_info),
+  *ReadXImage(const ImageInfo *image_info),
+  *ReadXBMImage(const ImageInfo *image_info),
+  *ReadXCImage(const ImageInfo *image_info),
+  *ReadXPMImage(const ImageInfo *image_info),
+  *ReadXWDImage(const ImageInfo *image_info),
+  *ReadYUVImage(const ImageInfo *image_info),
   *ReduceNoiseImage(Image *),
   *RollImage(Image *,int,int),
   *RotateImage(Image *,double,const unsigned int,const unsigned int),
@@ -759,11 +831,55 @@ extern Export unsigned int
   QuantizeImage(QuantizeInfo *,Image *),
   QuantizeImages(QuantizeInfo *,Image *),
   QueryColorName(ColorPacket *,char *),
-  SegmentImage(Image *,const unsigned int,const unsigned int,const double,
-    const double),
+  SegmentImage(Image *,const unsigned int,const unsigned int,const double, const double),
   UncondenseImage(Image *),
+  WriteAVSImage(const ImageInfo *image_info,Image *image),
+  WriteBMPImage(const ImageInfo *image_info,Image *image),
+  WriteCMYKImage(const ImageInfo *image_info,Image *image),
+  WriteEPTImage(const ImageInfo *image_info,Image *image),
+  WriteFAXImage(const ImageInfo *image_info,Image *image),
+  WriteFITSImage(const ImageInfo *image_info,Image *image),
+  WriteFPXImage(const ImageInfo *image_info,Image *image),
+  WriteGIFImage(const ImageInfo *image_info,Image *image),
+  WriteGRAYImage(const ImageInfo *image_info,Image *image),
+  WriteHDFImage(const ImageInfo *image_info,Image *image),
+  WriteHISTOGRAMImage(const ImageInfo *image_info, Image *image),
+  WriteHTMLImage(const ImageInfo *image_info,Image *image),
+  WriteICCImage(const ImageInfo *image_info,Image *image),
+  WriteImage(ImageInfo *,Image *),
+  WriteJBIGImage(const ImageInfo *image_info,Image *image),
+  WriteJPEGImage(const ImageInfo *image_info,Image *image),
+  WriteLOGOImage(const ImageInfo *image_info,Image *image),
+  WriteMAPImage(const ImageInfo *image_info,Image *image),
+  WriteMIFFImage(const ImageInfo *image_info,Image *image),
+  WriteMONOImage(const ImageInfo *image_info,Image *image),
+  WriteMTVImage(const ImageInfo *image_info,Image *image),
   WriteNTImage(const ImageInfo *,Image *),
-  WriteImage(ImageInfo *,Image *);
+  WritePCDImage(const ImageInfo *image_info,Image *image),
+  WritePCLImage(const ImageInfo *image_info,Image *image),
+  WritePCXImage(const ImageInfo *image_info,Image *image),
+  WritePDFImage(const ImageInfo *image_info,Image *image),
+  WritePICTImage(const ImageInfo *image_info,Image *image),
+  WritePNGImage(const ImageInfo *image_info,Image *image),
+  WritePNMImage(const ImageInfo *image_info,Image *image),
+  WritePREVIEWImage(const ImageInfo *image_info,Image *image),
+  WritePS2Image(const ImageInfo *image_info,Image *image),
+  WritePSDImage(const ImageInfo *image_info,Image *image),
+  WritePSImage(const ImageInfo *image_info,Image *image),
+  WriteRGBImage(const ImageInfo *image_info,Image *image),
+  WriteSGIImage(const ImageInfo *image_info,Image *image),
+  WriteSUNImage(const ImageInfo *image_info,Image *image),
+  WriteTGAImage(const ImageInfo *image_info,Image *image),
+  WriteTIFFImage(const ImageInfo *image_info,Image *image),
+  WriteUILImage(const ImageInfo *image_info,Image *image),
+  WriteUYVYImage(const ImageInfo *image_info,Image *image),
+  WriteVICARImage(const ImageInfo *image_info,Image *image),
+  WriteVIFFImage(const ImageInfo *image_info,Image *image),
+  WriteXBMImage(const ImageInfo *image_info,Image *image),
+  WriteXImage(const ImageInfo *image_info,Image *image),
+  WriteXPMImage(const ImageInfo *image_info,Image *image),
+  WriteXWDImage(const ImageInfo *image_info,Image *image),
+  WriteYUVImage(const ImageInfo *image_info,Image *image);
 
 extern Export void
   AllocateNextImage(const ImageInfo *,Image *),
@@ -816,3 +932,6 @@ extern Export void
   TransformImage(Image **,char *,char *),
   TransformRGBImage(Image *,const unsigned int),
   TransparentImage(Image *,char *);
+
+extern Export const struct MagickInfo *
+  GetMagickInfo (const char *str, int len);

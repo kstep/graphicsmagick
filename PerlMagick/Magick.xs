@@ -102,10 +102,10 @@ typedef void
 /*
   The data type for remembering options set by the user, which basically
   correspond to ImageMagick's command line options.  Each AV* type of
-  Image__Magick has a special variable created for it (see GetMagickInfo) that
+  Image__Magick has a special variable created for it (see GetPackageInfo) that
   holds one.
 */
-struct MagickInfo
+struct PackageInfo
 {
   ImageInfo
     image_info;
@@ -378,34 +378,34 @@ static int
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C l o n e M a g i c k I n f o                                             %
+%   C l o n e P a c k a g e I n f o                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloneMagickInfo makes a duplicate of the given info, or if info is
+%  Method ClonePackageInfo makes a duplicate of the given info, or if info is
 %  NULL, a new one.
 %
-%  The format of the CloneMagickInfo routine is:
+%  The format of the ClonePackageInfo routine is:
 %
-%      cloned_info=CloneMagickInfo(info)
+%      cloned_info=ClonePackageInfo(info)
 %
 %  A description of each parameter follows:
 %
-%    o cloned_info: Method CloneMagickInfo returns a duplicate of the given
+%    o cloned_info: Method ClonePackageInfo returns a duplicate of the given
 %      info, or if info is NULL, a new one.
 %
 %    o info: a structure of type info.
 %
 %
 */
-static struct MagickInfo *CloneMagickInfo(struct MagickInfo *info)
+static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
 {
-  struct MagickInfo
+  struct PackageInfo
     *cloned_info;
 
-  cloned_info=(struct MagickInfo *) safemalloc(sizeof(struct MagickInfo));
+  cloned_info=(struct PackageInfo *) safemalloc(sizeof(struct PackageInfo));
   if (!info)
     {
       (void) SetClientName(client_name);
@@ -633,17 +633,17 @@ static void CopyString(char **destination,char *source)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y M a g i c k I n f o                                         %
+%   D e s t r o y P a c k a g e I n f o                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyMagickInfo frees a previously created info structure.
+%  Method DestroyPackageInfo frees a previously created info structure.
 %
-%  The format of the DestroyMagickInfo routine is:
+%  The format of the DestroyPackageInfo routine is:
 %
-%      DestroyMagickInfo(info)
+%      DestroyPackageInfo(info)
 %
 %  A description of each parameter follows:
 %
@@ -651,7 +651,7 @@ static void CopyString(char **destination,char *source)
 %
 %
 */
-static void DestroyMagickInfo(struct MagickInfo *info)
+static void DestroyPackageInfo(struct PackageInfo *info)
 {
   if (info->image_info.server_name)
     safefree(info->image_info.server_name);
@@ -750,7 +750,7 @@ static void errorhandler(const char *message,const char *qualifier)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t M a g i c k I n f o                                                 %
+%   G e t L i s t                                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -761,9 +761,9 @@ static void errorhandler(const char *message,const char *qualifier)
 %  *current is the current position in *reference_vector and *last is the final
 %  entry in *reference_vector.
 %
-%  The format of the GetMagickInfo routine is:
+%  The format of the GetList routine is:
 %
-%      GetMagickInfo(info)
+%      GetList(info)
 %
 %  A description of each parameter follows:
 %
@@ -784,17 +784,17 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
     case SVt_PVAV:
     {
       AV
-	*av;
+        *av;
 
       Image
-	*head,
-	*previous;
+        *head,
+        *previous;
 
       int
-	n;
+        n;
 
       register int
-	i;
+        i;
 
       /*
         Array of images.
@@ -865,19 +865,19 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t M a g i c k I n f o                                                 %
+%   G e t P a c k a g e I n f o                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetMagickInfo looks up or create an info structure for the given
+%  Method GetPackageInfo looks up or create an info structure for the given
 %  Image__Magick reference.  If it does create a new one,the information in
 %  oldinfo is used to initialize it.
 %
-%  The format of the GetMagickInfo routine is:
+%  The format of the GetPackageInfo routine is:
 %
-%      GetMagickInfo(info)
+%      GetPackageInfo(info)
 %
 %  A description of each parameter follows:
 %
@@ -885,13 +885,13 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
 %
 %
 */
-static struct MagickInfo *GetMagickInfo(void *reference,
-  struct MagickInfo *oldinfo)
+static struct PackageInfo *GetPackageInfo(void *reference,
+  struct PackageInfo *oldinfo)
 {
   char
     message[MaxTextExtent];
 
-  struct MagickInfo
+  struct PackageInfo
     *info;
 
   SV
@@ -902,14 +902,14 @@ static struct MagickInfo *GetMagickInfo(void *reference,
   if (!sv)
     {
       MagickWarning(ResourceLimitWarning,"Unable to create info variable",
-	message);
+        message);
       return(oldinfo);
     }
   if (SvREFCNT(sv) == 0)
     SvREFCNT_inc(sv);
-  if (SvIOKp(sv) && (info=(struct MagickInfo *) SvIV(sv)))
+  if (SvIOKp(sv) && (info=(struct PackageInfo *) SvIV(sv)))
     return(info);
-  info=CloneMagickInfo(oldinfo);
+  info=ClonePackageInfo(oldinfo);
   sv_setiv(sv,(IV) info);
   return(info);
 }
@@ -992,7 +992,7 @@ static int LookupStr(char **list,const char *string)
 %
 %
 */
-static void SetAttribute(struct MagickInfo *info,Image *image,char *attribute,
+static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
   SV *sval)
 {
   ColorPacket
@@ -1001,10 +1001,12 @@ static void SetAttribute(struct MagickInfo *info,Image *image,char *attribute,
   int
     blue,
     green,
-    i,
     index,
     red,
     sp;
+
+  register int
+    i;
 
   XColor
     target_color;
@@ -1076,33 +1078,36 @@ static void SetAttribute(struct MagickInfo *info,Image *image,char *attribute,
         {
           for ( ; image; image=image->next)
           {
+            int
+              i;
+
             if (image->class == DirectClass)
               continue;
-           i=0;
-           (void) sscanf(attribute,"%*[^[][%d",&i);
-           if (i > image->colors)
-             i%=image->colors;
-           color=image->colormap+i;
-           if (strchr(SvPV(sval,na),',') == 0)
-             {
-               XQueryColorDatabase(SvPV(sval,na),&target_color);
-               color->red=XDownScale(target_color.red);
-               color->green=XDownScale(target_color.green);
-               color->blue=XDownScale(target_color.blue);
-             }
-           else
-             {
-               red=color->red;
-               green=color->green;
-               blue=color->blue;
-               (void) sscanf(SvPV(sval,na),"%d,%d,%d",&red,&green,&blue);
-               color->red=(Quantum)
-                 ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
-               color->green=(Quantum)
-                 ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green);
-               color->blue=(Quantum)
-                 ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue);
-             }
+            i=0;
+            (void) sscanf(attribute,"%*[^[][%d",&i);
+            if (i > image->colors)
+              i%=image->colors;
+            color=image->colormap+i;
+            if (strchr(SvPV(sval,na),',') == 0)
+              {
+                XQueryColorDatabase(SvPV(sval,na),&target_color);
+                color->red=XDownScale(target_color.red);
+                color->green=XDownScale(target_color.green);
+                color->blue=XDownScale(target_color.blue);
+              }
+            else
+              {
+                red=color->red;
+                green=color->green;
+                blue=color->blue;
+                (void) sscanf(SvPV(sval,na),"%d,%d,%d",&red,&green,&blue);
+                color->red=(Quantum)
+                  ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
+                color->green=(Quantum)
+                  ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green);
+                color->blue=(Quantum)
+                  ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue);
+              }
           }
           return;
         }
@@ -1248,25 +1253,12 @@ static void SetAttribute(struct MagickInfo *info,Image *image,char *attribute,
             CopyString(&info->image_info.font,SvPV(sval,na));
           return;
         }
-      if (strEQcase(attribute,"format"))
+      if (strEQcase(attribute,"fuzz"))
         {
-  format:
           if (info)
-            {
-              FormatString(info->image_info.filename,"%.70s:",SvPV(sval,na));
-              SetImageInfo((ImageInfo *) &info->image_info,1);
-              if (*info->image_info.magick == '\0')
-                MagickWarning(OptionWarning,"Unrecognized image format",
-                  info->image_info.filename);
-            }
-          if (strEQcase(attribute,"fuzz"))
-            {
-              if (info)
-                info->image_info.fuzz=SvIV(sval);
-              for ( ; image; image=image->next)
-                image->fuzz=SvIV(sval);
-              return;
-            }
+            info->image_info.fuzz=SvIV(sval);
+          for ( ; image; image=image->next)
+            image->fuzz=SvIV(sval);
           return;
         }
       break;
@@ -1334,7 +1326,20 @@ static void SetAttribute(struct MagickInfo *info,Image *image,char *attribute,
     case 'm':
     {
       if (strEQcase(attribute,"magick"))
-        goto format;
+        {
+          if (info)
+            {
+              FormatString(info->image_info.filename,"%.128s:",SvPV(sval,na));
+              SetImageInfo((ImageInfo *) &info->image_info,1);
+              if (*info->image_info.magick == '\0')
+                MagickWarning(OptionWarning,"Unrecognized image format",
+                  info->image_info.filename);
+              else
+                for ( ; image; image=image->next)
+                  FormatString(image->magick,info->image_info.magick);
+            }
+          return;
+        }
       if (strEQcase(attribute,"mattec") || strEQcase(attribute,"matte_color"))
         {
           if (info)
@@ -1396,7 +1401,7 @@ static void SetAttribute(struct MagickInfo *info,Image *image,char *attribute,
           char
             *p;
 
-	  p=PostscriptGeometry(SvPV(sval,na));
+          p=PostscriptGeometry(SvPV(sval,na));
           if (!p)
             return;
           for ( ; image; image=image->next)
@@ -1677,7 +1682,7 @@ static void SetAttribute(struct MagickInfo *info,Image *image,char *attribute,
 %
 %
 */
-static Image *SetupList(SV *reference,struct MagickInfo **info,
+static Image *SetupList(SV *reference,struct PackageInfo **info,
   SV ***reference_vector)
 {
   Image
@@ -1695,7 +1700,7 @@ static Image *SetupList(SV *reference,struct MagickInfo **info,
   last=0;
   image=GetList(reference,reference_vector,&current,&last);
   if (info && (SvTYPE(reference) == SVt_PVAV))
-    *info=GetMagickInfo((void *) reference,(struct MagickInfo *) NULL);
+    *info=GetPackageInfo((void *) reference,(struct PackageInfo *) NULL);
   return(image);
 }
 
@@ -1869,7 +1874,7 @@ Animate(ref,...)
     register int
       i;
 
-    struct MagickInfo
+    struct PackageInfo
       *info,
       *magick_info;
 
@@ -1885,7 +1890,7 @@ Animate(ref,...)
     XrmDatabase
       resource_database;
 
-    magick_info=(struct MagickInfo *) NULL;
+    magick_info=(struct PackageInfo *) NULL;
     error_list=newSVpv("",0);
     status=0;
     if (!sv_isobject(ST(0)))
@@ -1904,7 +1909,7 @@ Animate(ref,...)
         MagickWarning(OptionWarning,"No images to animate",NULL);
         goto MethodError;
       }
-    magick_info=CloneMagickInfo(info);
+    magick_info=ClonePackageInfo(info);
     if (items == 2)
       SetAttribute(magick_info,NULL,"server",ST(1));
     else
@@ -1925,7 +1930,7 @@ Animate(ref,...)
 
   MethodError:
     if (magick_info)
-      DestroyMagickInfo(magick_info);
+      DestroyPackageInfo(magick_info);
     sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);
@@ -1978,7 +1983,7 @@ Append(ref,...)
     register int
       i;
 
-    struct MagickInfo
+    struct PackageInfo
       *info;
 
     SV
@@ -2016,7 +2021,7 @@ Append(ref,...)
         MagickWarning(OptionWarning,"No images to montage",NULL);
         goto MethodError;
       }
-    info=GetMagickInfo((void *) av,info);
+    info=GetPackageInfo((void *) av,info);
     /*
       Get options.
     */
@@ -2107,7 +2112,7 @@ Average(ref)
     Image
       *image;
 
-    struct MagickInfo
+    struct PackageInfo
       *info;
 
     SV
@@ -2150,7 +2155,7 @@ Average(ref)
     rv=newRV(sv);
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
-    info=GetMagickInfo((void *) av,info);
+    info=GetPackageInfo((void *) av,info);
     FormatString(info->image_info.filename,"average-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) strcpy(image->filename,info->image_info.filename);
@@ -2209,7 +2214,7 @@ Copy(ref)
     jmp_buf
       error_jmp;
 
-    struct MagickInfo
+    struct PackageInfo
       *info;
 
     SV
@@ -2255,7 +2260,7 @@ Copy(ref)
       av_push(av,sv_bless(rv,hv));
       SvREFCNT_dec(sv);
     }
-    info=GetMagickInfo((void *) av,info);
+    info=GetPackageInfo((void *) av,info);
     SvREFCNT_dec(error_list);
     error_jump=NULL;
     XSRETURN(1);
@@ -2299,7 +2304,7 @@ DESTROY(ref)
         char
           message[MaxTextExtent];
 
-        struct MagickInfo
+        struct PackageInfo
           *info;
 
         SV
@@ -2313,9 +2318,9 @@ DESTROY(ref)
         if (sv)
           {
             if ((SvREFCNT(sv) == 1) && SvIOK(sv) &&
-                (info=(struct MagickInfo *) SvIV(sv)))
+                (info=(struct PackageInfo *) SvIV(sv)))
               {
-                DestroyMagickInfo(info);
+                DestroyPackageInfo(info);
                 sv_setiv(sv,0);
               }
           }
@@ -2380,7 +2385,7 @@ Display(ref,...)
     register int
       i;
 
-    struct MagickInfo
+    struct PackageInfo
       *info,
       *magick_info;
 
@@ -2400,7 +2405,7 @@ Display(ref,...)
       status;
 
     status=0;
-    magick_info=(struct MagickInfo *) NULL;
+    magick_info=(struct PackageInfo *) NULL;
     error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
@@ -2418,7 +2423,7 @@ Display(ref,...)
         MagickWarning(OptionWarning,"No images to display",NULL);
         goto MethodError;
       }
-    magick_info=CloneMagickInfo(info);
+    magick_info=ClonePackageInfo(info);
     if (items == 2)
       SetAttribute(magick_info,NULL,"server",ST(1));
     else
@@ -2450,7 +2455,7 @@ Display(ref,...)
 
   MethodError:
     if (magick_info)
-      DestroyMagickInfo(magick_info);
+      DestroyPackageInfo(magick_info);
     sv_setiv(error_list,(IV) status);
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);
@@ -2484,7 +2489,7 @@ Get(ref,...)
   {
     char
       *attribute,
-      message[MaxTextExtent];
+      color[MaxTextExtent];
 
     Image
       *image;
@@ -2498,7 +2503,7 @@ Get(ref,...)
     register int
       i;
 
-    struct MagickInfo
+    struct PackageInfo
       *info;
 
     SV
@@ -2544,14 +2549,14 @@ Get(ref,...)
         case 'B':
         case 'b':
         {
-          if (strEQcase(attribute,"background"))
+          if (strEQcase(attribute,"background") ||
+              strEQcase(attribute,"background_color") ||
+              strEQcase(attribute,"background-color"))
             {
               if (!image)
                 break;
-              FormatString(message,"%u,%u,%u,%u",image->background_color.red,
-                image->background_color.green,image->background_color.blue,
-                image->background_color.index);
-              s=newSVpv(message,0);
+              (void) QueryColorName(&image->background_color,color);
+              s=newSVpv(color,0);
               break;
             }
           if (strEQcase(attribute,"base_column"))
@@ -2588,19 +2593,19 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              FormatString(message,"%g,%g",image->chromaticity.blue_primary.x,
+              FormatString(color,"%g,%g",image->chromaticity.blue_primary.x,
                 image->chromaticity.blue_primary.y);
-              s=newSVpv(message,0);
+              s=newSVpv(color,0);
               break;
             }
-          if (strEQcase(attribute,"border"))
+          if (strEQcase(attribute,"bordercolor") ||
+              strEQcase(attribute,"border_color") ||
+              strEQcase(attribute,"border-color"))
             {
               if (!image)
                 break;
-              FormatString(message,"%u,%u,%u,%u",image->border_color.red,
-                image->border_color.green,image->border_color.blue,
-                image->border_color.index);
-              s=newSVpv(message,0);
+              (void) QueryColorName(&image->border_color,color);
+              s=newSVpv(color,0);
               break;
             }
           break;
@@ -2667,19 +2672,14 @@ Get(ref,...)
             }
           if (strEQcase(attribute,"colormap"))
             {
-              ColorPacket
-                *color;
-
               if (!image || !image->colormap)
                 break;
               j=0;
               (void) sscanf(attribute,"%*[^[][%d",&j);
               if (j > image->colors)
                 j%=image->colors;
-              color=image->colormap+j;
-              FormatString(message,"%u,%u,%u",color->red,color->green,
-                color->blue);
-              s=newSVpv(message,0);
+              (void) QueryColorName(image->colormap+j,color);
+              s=newSVpv(color,0);
               break;
             }
           if (strEQcase(attribute,"column"))
@@ -2782,13 +2782,21 @@ Get(ref,...)
                 s=newSVpv(info->image_info.font,0);
               break;
             }
-          if (strEQcase(attribute,"format"))  /* same as magick */
+          if (strEQcase(attribute,"format"))
             {
-              if (info && *info->image_info.magick)
-                s=newSVpv(info->image_info.magick,0);
+              const MagickInfo
+                *magick_info;
+
+              if (info && (*info->image_info.magick != '\0'))
+                magick_info=(MagickInfo *) GetMagickInfo(
+                  info->image_info.magick,strlen(info->image_info.magick));
               else
                 if (image)
-                  s=newSVpv(image->magick,0);
+                  magick_info=(MagickInfo *) GetMagickInfo(image->magick,
+                    strlen(image->magick));
+                if ((magick_info != (const MagickInfo *) NULL) &&
+                    (*magick_info->description != '\0'))
+                  s=newSVpv((char *) magick_info->description,0);
               break;
             }
           break;
@@ -2812,9 +2820,9 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              FormatString(message,"%g,%g",image->chromaticity.green_primary.x,
+              FormatString(color,"%g,%g",image->chromaticity.green_primary.x,
                 image->chromaticity.green_primary.y);
-              s=newSVpv(message,0);
+              s=newSVpv(color,0);
               break;
             }
           break;
@@ -2900,14 +2908,13 @@ Get(ref,...)
               break;
             }
           if (strEQcase(attribute,"mattecolor") ||
-              strEQcase(attribute,"matte_color"))
+              strEQcase(attribute,"matte_color") ||
+              strEQcase(attribute,"matte-color"))
             {
               if (!image)
                 break;
-              FormatString(message,"%u,%u,%u,%u",image->matte_color.red,
-                image->matte_color.green,image->matte_color.blue,
-                image->matte_color.index);
-              s=newSVpv(message,0);
+              (void) QueryColorName(&image->matte_color,color);
+              s=newSVpv(color,0);
               break;
             }
           if (strEQcase(attribute,"matte"))
@@ -3001,12 +3008,12 @@ Get(ref,...)
             }
           if (strEQcase(attribute,"pixel"))
             {
+              ColorPacket
+                pixel;
+
               int
                 x,
                 y;
-
-              RunlengthPacket
-                *color;
 
               if (!image || !image->pixels)
                 break;
@@ -3019,10 +3026,16 @@ Get(ref,...)
                 y%=image->rows;
               if (x > image->columns)
                 x%=image->columns;
-              color=image->pixels+(y*image->columns+x);
-              FormatString(message,"%u,%u,%u,%u",color->red,color->green,
-                color->blue,color->index);
-              s=newSVpv(message,0);
+              pixel.red=image->pixels[y*image->columns+x].red;
+              pixel.green=image->pixels[y*image->columns+x].green;
+              pixel.blue=image->pixels[y*image->columns+x].blue;
+              pixel.index=image->pixels[y*image->columns+x].index;
+              if (!image->matte)
+                (void) QueryColorName(&pixel,color);
+              else
+                FormatString(color,"%u,%u,%u,%u",pixel.red,pixel.green,
+                  pixel.blue,pixel.index);
+              s=newSVpv(color,0);
               break;
             }
           if (strEQcase(attribute,"points"))
@@ -3073,9 +3086,9 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              FormatString(message,"%g,%g",image->chromaticity.red_primary.x,
+              FormatString(color,"%g,%g",image->chromaticity.red_primary.x,
                 image->chromaticity.red_primary.y);
-              s=newSVpv(message,0);
+              s=newSVpv(color,0);
               break;
             }
           if (strEQcase(attribute,"row"))
@@ -3242,9 +3255,9 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              FormatString(message,"%g,%g",image->chromaticity.white_point.x,
+              FormatString(color,"%g,%g",image->chromaticity.white_point.x,
                 image->chromaticity.white_point.y);
-              s=newSVpv(message,0);
+              s=newSVpv(color,0);
               break;
             }
           if (strEQcase(attribute,"width"))
@@ -3466,7 +3479,7 @@ Mogrify(ref,...)
     register int
       i;
 
-    struct MagickInfo
+    struct PackageInfo
       *info,
       *magick_info;
 
@@ -3489,7 +3502,7 @@ Mogrify(ref,...)
       pen_color;
 
     reference_vector=NULL;
-    magick_info=(struct MagickInfo *) NULL;
+    magick_info=(struct PackageInfo *) NULL;
     region_image=NULL;
     number_images=0;
     base=2;
@@ -3553,14 +3566,14 @@ Mogrify(ref,...)
     for (i=base; (i < items) || (i == items) && (base == items); i+=2)
     {
       int
-	longest;
+        longest;
 
       struct arguments
-	*pp,
+        *pp,
         *qq;
 
       union ArgumentList
-	*al;
+        *al;
 
       SV
         *sv;
@@ -3592,14 +3605,14 @@ Mogrify(ref,...)
         if (pp->type == StringReference)
           al->string_reference=(char *) SvPV(sv,na);
         else
-	  if (pp->type == DoubleReference)
+          if (pp->type == DoubleReference)
             al->double_reference=SvNV(sv);
           else
             if (pp->type == ImageReference)
               {
                 if (!sv_isobject(sv) ||
                     !(al->image_reference=SetupList(SvRV(sv),
-                     (struct MagickInfo **) NULL,(SV ***) NULL)))
+                     (struct PackageInfo **) NULL,(SV ***) NULL)))
                   {
                     MagickWarning(OptionWarning,"Reference is not my type",
                       PackageName);
@@ -4010,7 +4023,7 @@ Mogrify(ref,...)
         {
           if (first)
             {
-              magick_info=CloneMagickInfo(info);
+              magick_info=ClonePackageInfo(info);
               if (attribute_flag[1])
                 CopyString(&magick_info->image_info.font,
                   argument_list[1].string_reference);
@@ -4210,7 +4223,7 @@ Mogrify(ref,...)
         {
           if (first)
             {
-              magick_info=CloneMagickInfo(info);
+              magick_info=ClonePackageInfo(info);
               if (attribute_flag[3])
                 CopyString(&magick_info->image_info.pen,
                   argument_list[3].string_reference);
@@ -4523,7 +4536,7 @@ Mogrify(ref,...)
         {
           if (first)
             {
-              magick_info=CloneMagickInfo(info);
+              magick_info=ClonePackageInfo(info);
               if (!attribute_flag[0])
                 argument_list[0].string_reference="50";
               GetQuantizeInfo(&magick_info->quantize_info);
@@ -4631,7 +4644,7 @@ Mogrify(ref,...)
         pv++;
     }
     if (magick_info)
-      DestroyMagickInfo(magick_info);
+      DestroyPackageInfo(magick_info);
 
   ReturnIt:
     if (reference_vector)
@@ -4694,7 +4707,7 @@ Montage(ref,...)
     register int
       i;
 
-    struct MagickInfo
+    struct PackageInfo
       *info;
 
     SV
@@ -4743,7 +4756,7 @@ Montage(ref,...)
         MagickWarning(OptionWarning,"No images to montage",NULL);
         goto MethodError;
       }
-    info=GetMagickInfo((void *) av,info);
+    info=GetPackageInfo((void *) av,info);
     /*
       Get user defaults from X resource database.
     */
@@ -4782,8 +4795,8 @@ Montage(ref,...)
       switch (*attribute)
       {
         case 'B':
-	case 'b':
-	{
+        case 'b':
+        {
           if (strEQcase(attribute,"background"))
             {
               resource.background_color=SvPV(ST(i),na);
@@ -5099,7 +5112,7 @@ Morph(ref,...)
     register int
       i;
 
-    struct MagickInfo
+    struct PackageInfo
       *info;
 
     SV
@@ -5137,7 +5150,7 @@ Morph(ref,...)
         MagickWarning(OptionWarning,"No images to montage",NULL);
         goto MethodError;
       }
-    info=GetMagickInfo((void *) av,info);
+    info=GetPackageInfo((void *) av,info);
     /*
       Get attribute.
     */
@@ -5148,8 +5161,8 @@ Morph(ref,...)
       switch (*attribute)
       {
         case 'F':
-	case 'f':
-	{
+        case 'f':
+        {
           if (strEQcase(attribute,"frame"))
             {
               number_frames=SvIV(ST(i));
@@ -5216,7 +5229,7 @@ Ping(ref,...)
     register int
       i;
 
-    struct MagickInfo
+    struct PackageInfo
       *info;
 
     SV
@@ -5232,7 +5245,7 @@ Ping(ref,...)
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
     av=(AV *) reference;
-    info=GetMagickInfo((void *) av,(struct MagickInfo *) NULL);
+    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     for (i=1; i < items; i++)
     {
       (void) strcpy(info->image_info.filename,(char *) SvPV(ST(i),na));
@@ -5356,7 +5369,7 @@ Read(ref,...)
     register int
       i;
 
-    struct MagickInfo
+    struct PackageInfo
       *info;
 
     SV
@@ -5384,7 +5397,7 @@ Read(ref,...)
         goto ReturnIt;
       }
     av=(AV *) reference;
-    info=GetMagickInfo((void *) av,(struct MagickInfo *) NULL);
+    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     n=1;
     if (items <= 1)
       *list=
@@ -5475,7 +5488,7 @@ Remote(ref,...)
     SV
       *reference;
 
-    struct MagickInfo
+    struct PackageInfo
       *info;
 
     SV
@@ -5485,7 +5498,7 @@ Remote(ref,...)
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
     av=(AV *) reference;
-    info=GetMagickInfo((void *) av,(struct MagickInfo *) NULL);
+    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     display=XOpenDisplay(info->image_info.server_name);
     for (i=1; i < items; i++)
       XRemoteCommand(display,(char *) NULL,(char *) SvPV(ST(i),na));
@@ -5522,7 +5535,7 @@ Set(ref,...)
     register int
       i;
 
-    struct MagickInfo
+    struct PackageInfo
       *info;
 
     SV
@@ -5584,7 +5597,7 @@ Write(ref,...)
     jmp_buf
       error_jmp;
 
-    struct MagickInfo
+    struct PackageInfo
       *info,
       *magick_info;
 
@@ -5595,7 +5608,7 @@ Write(ref,...)
       number_images;
 
     number_images=0;
-    magick_info=(struct MagickInfo *) NULL;
+    magick_info=(struct PackageInfo *) NULL;
     error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
@@ -5612,7 +5625,7 @@ Write(ref,...)
         MagickWarning(OptionWarning,"No images to write",NULL);
         goto MethodError;
       }
-    magick_info=CloneMagickInfo(info);
+    magick_info=ClonePackageInfo(info);
     if (items == 2)
       SetAttribute(magick_info,NULL,"filen",ST(1));
     else
@@ -5636,7 +5649,7 @@ Write(ref,...)
 
   MethodError:
     if (magick_info)
-      DestroyMagickInfo(magick_info);
+      DestroyPackageInfo(magick_info);
     sv_setiv(error_list,(IV) number_images);
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);

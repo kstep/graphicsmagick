@@ -121,134 +121,6 @@ Export unsigned int IsTrue(const char *message)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L a t i n 1 C o m p a r e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method Latin1Compare compares two null terminated Latin-1 strings,
-%  ignoring case differences, and returns an integer greater than, equal
-%  to, or less than 0, according to whether first is lexicographically
-%  greater than, equal to, or less than second.  The two strings are
-%  assumed to be encoded using ISO 8859-1.
-%
-%  The format of the Latin1Compare routine is:
-%
-%      Latin1Compare(first,second)
-%
-%  A description of each parameter follows:
-%
-%    o first: A pointer to the string to convert to Latin1 string.
-%
-%    o second: A pointer to the string to convert to Latin1 string.
-%
-%
-*/
-Export int Latin1Compare(const char *first,const char *second)
-{
-  register unsigned char
-   *p,
-   *q;
-
-  if (first == second)
-    return(0);
-  if (first == (char *) NULL)
-    return(-1);
-  if (second == (char *) NULL)
-    return(1);
-  p=(unsigned char *) first;
-  q=(unsigned char *) second;
-  while ((*p != '\0') && (*q != '\0'))
-  {
-    register unsigned char
-      c,
-      d;
-
-    c=(*p);
-    d=(*q);
-    if (c != d)
-      {
-        /*
-          Try lowercasing and try again.
-        */
-        if ((c >= XK_A) && (c <= XK_Z))
-          c+=(XK_a-XK_A);
-        else
-          if ((c >= XK_Agrave) && (c <= XK_Odiaeresis))
-            c+=(XK_agrave-XK_Agrave);
-          else
-            if ((c >= XK_Ooblique) && (c <= XK_Thorn))
-              c+=(XK_oslash-XK_Ooblique);
-        if ((d >= XK_A) && (d <= XK_Z))
-          d+=(XK_a-XK_A);
-        else
-          if ((d >= XK_Agrave) && (d <= XK_Odiaeresis))
-            d+=(XK_agrave-XK_Agrave);
-          else if ((d >= XK_Ooblique) && (d <= XK_Thorn))
-            d+=(XK_oslash-XK_Ooblique);
-        if (c != d)
-          return(((int) c)-((int) d));
-      }
-    p++;
-    q++;
-  }
-  return(((int) *p)-((int) *q));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   L a t i n 1 U p p e r                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method Latin1Upper copies a null terminated string from source to
-%  destination (including the null), changing all Latin-1 lowercase letters
-%  to uppercase.  The string is assumed to be encoded using ISO 8859-1.
-%
-%  The format of the Latin1Upper routine is:
-%
-%      Latin1Upper(string)
-%
-%  A description of each parameter follows:
-%
-%    o string: A pointer to the string to convert to upper-case Latin1.
-%
-%
-*/
-Export void Latin1Upper(char *string)
-{
-  unsigned char
-    c;
-
-  if (string == (char *) NULL)
-    return;
-  c=(*string);
-  while (c != '\0')
-  {
-    if ((c >= XK_a) && (c <= XK_z))
-      *string=c-(XK_a-XK_A);
-    else
-      if ((c >= XK_agrave) && (c <= XK_odiaeresis))
-        *string=c-(XK_agrave-XK_Agrave);
-      else
-        if ((c >= XK_oslash) && (c <= XK_thorn))
-          *string=c-(XK_oslash-XK_Ooblique);
-    string++;
-    c=(*string);
-  }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   X A n n o t a t e I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -1665,9 +1537,13 @@ Export void XDisplayImageInfo(Display *display,
   Image *image)
 {
   char
+    color[MaxTextExtent],
     *text,
     **textlist,
     title[MaxTextExtent];
+
+  const MagickInfo
+    *magick_info;
 
   int
     length;
@@ -1691,6 +1567,8 @@ Export void XDisplayImageInfo(Display *display,
   assert(windows != (XWindows *) NULL);
   assert(image != (Image *) NULL);
   length=50*MaxTextExtent;
+  if (image->class == PseudoClass)
+    length+=128*image->colors;
   if (image->directory != (char *) NULL)
     length+=Extent(image->directory);
   if (image->comments != (char *) NULL)
@@ -1706,28 +1584,28 @@ Export void XDisplayImageInfo(Display *display,
   /*
     Display info about the X server.
   */
-  FormatString(title," Image Info: %.128s",image->filename);
+  FormatString(title," Image Info: %s",image->filename);
   if (resource_info->gamma_correct)
     if (resource_info->display_gamma != (char *) NULL)
-      FormatString(text,"%.128sDisplay\n  gamma: %.128s\n\n",text,
+      FormatString(text,"%sDisplay\n  gamma: %.128s\n\n",text,
         resource_info->display_gamma);
   /*
     Display info about the X image.
   */
-  FormatString(text,"%.128sX\n  visual: %.128s\n",text,
+  FormatString(text,"%sX\n  visual: %.128s\n",text,
     XVisualClassName(windows->image.class));
-  FormatString(text,"%.128s  depth: %d\n",text,windows->image.ximage->depth);
+  FormatString(text,"%s  depth: %d\n",text,windows->image.ximage->depth);
   if (windows->visual_info->colormap_size != 0)
-    FormatString(text,"%.128s  colormap size: %d\n",text,
+    FormatString(text,"%s  colormap size: %d\n",text,
       windows->visual_info->colormap_size);
   if (resource_info->colormap== SharedColormap)
     (void) strcat(text,"  colormap type: Shared\n");
   else
     (void) strcat(text,"  colormap type: Private\n");
-  FormatString(text,"%.128s  geometry: %dx%d\n",text,
+  FormatString(text,"%s  geometry: %dx%d\n",text,
     windows->image.ximage->width,windows->image.ximage->height);
   if (windows->image.crop_geometry != (char *) NULL)
-    FormatString(text,"%.128s  crop geometry: %.128s\n",text,
+    FormatString(text,"%s  crop geometry: %.128s\n",text,
       windows->image.crop_geometry);
   if (windows->image.pixmap == (Pixmap) NULL)
     (void) strcat(text,"  type: X Image\n");
@@ -1751,13 +1629,13 @@ Export void XDisplayImageInfo(Display *display,
     bytes+=undo_image->list->packets*sizeof(RunlengthPacket);
     undo_image=undo_image->previous;
   }
-  FormatString(text,"%.128sUndo Edit Cache\n  levels: %u\n",text,levels);
-  FormatString(text,"%.128s  bytes: %umb\n",text,(bytes+(1 << 19)) >> 20);
-  FormatString(text,"%.128s  limit: %umb\n\n",text,resource_info->undo_cache);
+  FormatString(text,"%sUndo Edit Cache\n  levels: %u\n",text,levels);
+  FormatString(text,"%s  bytes: %umb\n",text,(bytes+(1 << 19)) >> 20);
+  FormatString(text,"%s  limit: %umb\n\n",text,resource_info->undo_cache);
   /*
     Display info about the image.
   */
-  FormatString(text,"%.128sImage\n  file: %.128s\n",text,image->filename);
+  FormatString(text,"%sImage\n  file: %.128s\n",text,image->filename);
   if (IsMonochromeImage(image))
     (void) strcat(text,"  type: bilevel\n");
   else
@@ -1790,32 +1668,32 @@ Export void XDisplayImageInfo(Display *display,
         Display image colormap.
       */
       if (image->total_colors <= image->colors)
-        FormatString(text,"%.128s  colors: %u\n",text,image->colors);
+        FormatString(text,"%s  colors: %u\n",text,image->colors);
       else
-        FormatString(text,"%.128s  colors: %lu=>%u\n",text,image->total_colors,
+        FormatString(text,"%s  colors: %lu=>%u\n",text,image->total_colors,
           image->colors);
       p=image->colormap;
       for (i=0; i < image->colors; i++)
       {
-        FormatString(text,"%.128s    %d: (%3d,%3d,%3d)  ",text,i,p->red,p->green,
-          p->blue);
+        FormatString(text,"%s    %d: (%3d,%3d,%3d)  ",text,i,p->red,
+          p->green,p->blue);
         (void) QueryColorName(p,name);
-        (void) FormatString(text,"%.128s  %.128s",text,name);
+        (void) FormatString(text,"%s  %.128s",text,name);
         (void) strcat(text,"\n");
         p++;
       }
     }
   if (image->mean_error_per_pixel != 0)
-    FormatString(text,"%.128s  mean error per pixel: %d\n",text,
+    FormatString(text,"%s  mean error per pixel: %d\n",text,
       image->mean_error_per_pixel);
   if (image->normalized_mean_error != 0)
-    FormatString(text,"%.128s  normalized mean error: %.6f\n",text,
+    FormatString(text,"%s  normalized mean error: %.6f\n",text,
       image->normalized_mean_error);
   if (image->normalized_maximum_error != 0)
-    FormatString(text,"%.128s  normalized maximum error: %.6f\n",text,
+    FormatString(text,"%s  normalized maximum error: %.6f\n",text,
       image->normalized_maximum_error);
   if (image->signature != (char *) NULL)
-    FormatString(text,"%.128s  signature: %.128s\n",text,image->signature);
+    FormatString(text,"%s  signature: %.128s\n",text,image->signature);
   if (image->matte)
     (void) strcat(text,"  matte: True\n");
   else
@@ -1832,38 +1710,38 @@ Export void XDisplayImageInfo(Display *display,
       if (image->rendering_intent == RelativeIntent)
         (void) strcat(text,"  rendering-intent: relative\n");
   if (image->gamma != 0.0)
-    FormatString(text,"%.128s  gamma: %g\n",text,image->gamma);
+    FormatString(text,"%s  gamma: %g\n",text,image->gamma);
   if (image->chromaticity.white_point.x != 0.0)
     {
       /*
         Display image chromaticity.
       */
       (void) strcat(text,"  chromaticity:\n");
-      FormatString(text,"%.128s    red primary: (%g,%g)\n",text,
+      FormatString(text,"%s    red primary: (%g,%g)\n",text,
         image->chromaticity.red_primary.x,image->chromaticity.red_primary.y);
-      FormatString(text,"%.128s    green primary: (%g,%g)\n",text,
+      FormatString(text,"%s    green primary: (%g,%g)\n",text,
         image->chromaticity.green_primary.x,
         image->chromaticity.green_primary.y);
-      FormatString(text,"%.128s    blue primary: (%g,%g)\n",text,
+      FormatString(text,"%s    blue primary: (%g,%g)\n",text,
         image->chromaticity.blue_primary.x,image->chromaticity.blue_primary.y);
-      FormatString(text,"%.128s    white point: (%g,%g)\n",text,
+      FormatString(text,"%s    white point: (%g,%g)\n",text,
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
     }
   if (image->color_profile.length > 0)
-    FormatString(text,"%.128s  color profile: %u bytes\n",text,
+    FormatString(text,"%s  color profile: %u bytes\n",text,
       image->color_profile.length);
   if (image->packets < (image->columns*image->rows))
-    FormatString(text,"%.128s  runlength packets: %lu of %u\n",text,
+    FormatString(text,"%s  runlength packets: %lu of %u\n",text,
       image->packets,image->columns*image->rows);
   if ((image->magick_columns != 0) || (image->magick_rows != 0))
     if ((image->magick_columns != image->columns) ||
         (image->magick_rows != image->rows))
-      FormatString(text,"%.128s  base geometry: %ux%u\n",text,
+      FormatString(text,"%s  base geometry: %ux%u\n",text,
         image->magick_columns,image->magick_rows);
-  FormatString(text,"%.128s  geometry: %ux%u\n",text,
+  FormatString(text,"%s  geometry: %ux%u\n",text,
     image->columns,image->rows);
   if ((image->tile_info.width*image->tile_info.height) != 0)
-      FormatString(text,"%.128s  tile geometry: %ux%u%+d%+d\n",text,
+      FormatString(text,"%s  tile geometry: %ux%u%+d%+d\n",text,
         image->tile_info.width,image->tile_info.height,image->tile_info.x,
         image->tile_info.y);
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
@@ -1871,29 +1749,30 @@ Export void XDisplayImageInfo(Display *display,
       /*
         Display image resolution.
       */
-      FormatString(text,"%.128s  resolution: %gx%g",text,
+      FormatString(text,"%s  resolution: %gx%g",text,
         image->x_resolution,image->y_resolution);
       if (image->units == UndefinedResolution)
-        FormatString(text,"%.128s pixels\n",text);
+        FormatString(text,"%s pixels\n",text);
       else
         if (image->units == PixelsPerInchResolution)
-          FormatString(text,"%.128s pixels/inch\n",text);
+          FormatString(text,"%s pixels/inch\n",text);
         else
           if (image->units == PixelsPerCentimeterResolution)
-            FormatString(text,"%.128s pixels/centimeter\n",text);
+            FormatString(text,"%s pixels/centimeter\n",text);
           else
-            FormatString(text,"%.128s\n",text);
+            FormatString(text,"%s\n",text);
     }
-  FormatString(text,"%.128s  depth: %u\n",text,image->depth);
+  FormatString(text,"%s  depth: %u\n",text,image->depth);
   if (image->filesize != 0)
     if (image->filesize >= (1 << 24))
-      FormatString(text,"%.128s  filesize: %ldmb\n",text,
+      FormatString(text,"%s  filesize: %ldmb\n",text,
         image->filesize/1024/1024);
     else
       if (image->filesize >= (1 << 14))
-        FormatString(text,"%.128s  filesize: %ldkb\n",text,image->filesize/1024);
+        FormatString(text,"%s  filesize: %ldkb\n",text,
+          image->filesize/1024);
       else
-        FormatString(text,"%.128s  filesize: %ldb\n",text,image->filesize);
+        FormatString(text,"%s  filesize: %ldb\n",text,image->filesize);
   if (image->interlace == NoInterlace)
     (void) strcat(text,"  interlace: None\n");
   else
@@ -1905,27 +1784,39 @@ Export void XDisplayImageInfo(Display *display,
     else
       if (image->interlace == PartitionInterlace)
         (void) strcat(text,"  interlace: Partition\n");
+  (void) QueryColorName(&image->background_color,color);
+  FormatString(text,"%s  background-color: %.128s\n",text,color);
+  (void) QueryColorName(&image->border_color,color);
+  FormatString(text,"%s  border-color: %.128s\n",text,color);
+  (void) QueryColorName(&image->matte_color,color);
+  FormatString(text,"%s  matte-color: %.128s\n",text,color);
   if (image->page != (char *) NULL)
-    FormatString(text,"%.128s  page geometry: %.128s\n",text,image->page);
+    FormatString(text,"%s  page geometry: %.128s\n",text,image->page);
   if (image->dispose != 0)
-    FormatString(text,"%.128s  dispose method: %d\n",text,image->dispose);
+    FormatString(text,"%s  dispose method: %d\n",text,image->dispose);
   if (image->delay != 0)
-    FormatString(text,"%.128s  delay: %d\n",text,image->delay);
+    FormatString(text,"%s  delay: %d\n",text,image->delay);
   if (image->iterations != 1)
-    FormatString(text,"%.128s  iterations: %d\n",text,image->iterations);
-  FormatString(text,"%.128s  format: %.128s\n",text,image->magick);
+    FormatString(text,"%s  iterations: %d\n",text,image->iterations);
+  magick_info=(MagickInfo *) GetMagickInfo(image->magick,strlen(image->magick));
+  if ((magick_info == (const MagickInfo *) NULL) ||
+      (*magick_info->description == '\0'))
+    FormatString(text,"%s  format: %.128s\n",text,image->magick);
+  else
+    FormatString(text,"%s  format: %.128s (%.128s)\n",text,image->magick,
+      magick_info->description);
   p=image;
   while (p->previous != (Image *) NULL)
     p=p->previous;
   for (count=1; p->next != (Image *) NULL; count++)
     p=p->next;
   if (count > 1)
-    FormatString(text,"%.128s  scene: %u of %u\n",text,image->scene,count);
+    FormatString(text,"%s  scene: %u of %u\n",text,image->scene,count);
   else
     if (image->scene != 0)
-      FormatString(text,"%.128s  scene: %u\n",text,image->scene);
+      FormatString(text,"%s  scene: %u\n",text,image->scene);
   if (image->label != (char *) NULL)
-    FormatString(text,"%.128s  label: %.128s\n",text,image->label);
+    FormatString(text,"%s  label: %.128s\n",text,image->label);
   (void) strcat(text,"  compression: ");
   if (image->compression == ZipCompression)
     (void) strcat(text,"Zip\n");
@@ -1951,32 +1842,32 @@ Export void XDisplayImageInfo(Display *display,
       /*
         Display image comment.
       */
-      FormatString(text,"%.128s  comments:\n",text);
+      FormatString(text,"%s  comments:\n",text);
       textlist=StringToList(image->comments);
       if (textlist != (char **) NULL)
         {
           for (i=0; textlist[i] != (char *) NULL; i++)
           {
-            FormatString(text,"%.128s  %.128s\n",text,textlist[i]);
+            FormatString(text,"%s  %.128s\n",text,textlist[i]);
             FreeMemory(textlist[i]);
           }
           FreeMemory((char *) textlist);
         }
     }
   if (image->montage != (char *) NULL)
-    FormatString(text,"%.128s  montage: %.128s\n",text,image->montage);
+    FormatString(text,"%s  montage: %.128s\n",text,image->montage);
   if (image->directory != (char *) NULL)
     {
       /*
         Display image directory.
       */
-      FormatString(text,"%.128s  directory:\n",text);
+      FormatString(text,"%s  directory:\n",text);
       textlist=StringToList(image->directory);
       if (textlist != (char **) NULL)
         {
           for (i=0; textlist[i] != (char *) NULL; i++)
           {
-            FormatString(text,"%.128s    %.128s\n",text,textlist[i]);
+            FormatString(text,"%s    %.128s\n",text,textlist[i]);
             FreeMemory(textlist[i]);
           }
           FreeMemory((char *) textlist);
@@ -4772,6 +4663,264 @@ Export void XHighlightRectangle(Display *display,Window window,
     highlight_info->y,highlight_info->width-1,highlight_info->height-1);
   XDrawRectangle(display,window,annotate_context,highlight_info->x+1,
     highlight_info->y+1,highlight_info->width-3,highlight_info->height-3);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   X I m p o r t I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Procedure XImportImage reads an image from an X window.
+%
+%  The format of the XImportImage routine is:
+%
+%      image=XImportImage(image_info,ximage_info);
+%
+%  A description of each parameter follows:
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o ximage_info: Specifies a pointer to an XImportInfo structure.
+%
+%
+*/
+Export Image *XImportImage(const ImageInfo *image_info,XImportInfo *ximage_info)
+{
+  Colormap
+    *colormaps;
+
+  Display
+    *display;
+
+  Image
+    *image;
+
+  int
+    number_colormaps,
+    number_windows,
+    status,
+    x;
+
+  RectangleInfo
+    crop_info;
+
+  Window
+    *children,
+    client,
+    prior_target,
+    root,
+    target;
+
+  XTextProperty
+    window_name;
+
+  /*
+    Open X server connection.
+  */
+  assert(image_info != (ImageInfo *) NULL);
+  assert(ximage_info != (XImportInfo *) NULL);
+  display=XOpenDisplay(image_info->server_name);
+  if (display == (Display *) NULL)
+    {
+      MagickWarning(XServerWarning,"Unable to connect to X server",
+        XDisplayName(image_info->server_name));
+      return((Image *) NULL);
+    }
+  /*
+    Set our forgiving error handler.
+  */
+  XSetErrorHandler(XError);
+  /*
+    Select target window.
+  */
+  crop_info.x=0;
+  crop_info.y=0;
+  crop_info.width=0;
+  crop_info.height=0;
+  root=XRootWindow(display,XDefaultScreen(display));
+  target=(Window) NULL;
+  if ((image_info->filename != (char *) NULL) &&
+      (*image_info->filename != '\0'))
+    if (Latin1Compare(image_info->filename,"root") == 0)
+      target=root;
+    else
+      {
+        /*
+          Select window by ID or name.
+        */
+        if (isdigit((int) (*image_info->filename)))
+          target=XWindowByID(display,root,(Window) strtol(image_info->filename,
+            (char **) NULL,0));
+        if (target == (Window) NULL)
+          target=XWindowByName(display,root,image_info->filename);
+        if (target == (Window) NULL)
+          MagickWarning(OptionWarning,"No window with specified id exists",
+            image_info->filename);
+      }
+
+  /*
+    If target window is not defined, interactively select one.
+  */
+  prior_target=target;
+  if (target == (Window) NULL)
+    target=XSelectWindow(display,&crop_info);
+  client=target;   /* obsolete */
+  if (target != root)
+    {
+      unsigned int
+        d;
+
+      status=XGetGeometry(display,target,&root,&x,&x,&d,&d,&d,&d);
+      if (status != 0)
+        {
+          for ( ; ; )
+          {
+            Window
+              parent;
+
+            /*
+              Find window manager frame.
+            */
+            status=XQueryTree(display,target,&root,&parent,&children,&d);
+            if (status && (children != (Window *) NULL))
+              XFree((char *) children);
+            if (!status || (parent == (Window) NULL) || (parent == root))
+              break;
+            target=parent;
+          }
+          /*
+            Get client window.
+          */
+          client=XClientWindow(display,target);
+          if (!ximage_info->frame)
+            target=client;
+          if (!ximage_info->frame && prior_target)
+            target=prior_target;
+          XRaiseWindow(display,target);
+          XDelay(display,SuspendTime << 4);
+        }
+    }
+  if (ximage_info->screen)
+    {
+      int
+        y;
+
+      Window
+        child;
+
+      XWindowAttributes
+        window_attributes;
+
+      /*
+        Obtain window image directly from screen.
+      */
+      status=XGetWindowAttributes(display,target,&window_attributes);
+      if (status == False)
+        {
+          MagickWarning(XServerWarning,"Unable to read X window attributes",
+            image_info->filename);
+          XCloseDisplay(display);
+          return((Image *) NULL);
+        }
+      XTranslateCoordinates(display,target,root,0,0,&x,&y,&child);
+      crop_info.x=x;
+      crop_info.y=y;
+      crop_info.width=window_attributes.width;
+      crop_info.height=window_attributes.height;
+      if (ximage_info->borders)
+        {
+          /*
+            Include border in image.
+          */
+          crop_info.x-=window_attributes.border_width;
+          crop_info.y-=window_attributes.border_width;
+          crop_info.width+=window_attributes.border_width << 1;
+          crop_info.height+=window_attributes.border_width << 1;
+        }
+      target=root;
+    }
+  /*
+    If WM_COLORMAP_WINDOWS property is set or multiple colormaps, descend.
+  */
+  number_windows=0;
+  status=XGetWMColormapWindows(display,target,&children,&number_windows);
+  if ((status == True) && (number_windows > 0))
+    {
+      ximage_info->descend=True;
+      XFree ((char *) children);
+    }
+  colormaps=XListInstalledColormaps(display,target,&number_colormaps);
+  if (number_colormaps > 0)
+    {
+      if (number_colormaps > 1)
+        ximage_info->descend=True;
+      XFree((char *) colormaps);
+    }
+  /*
+    Alert the user not to alter the screen.
+  */
+  if (!ximage_info->silent)
+    XBell(display,0);
+  /*
+    Get image by window id.
+  */
+  XGrabServer(display);
+  image=XGetWindowImage(display,target,ximage_info->borders,
+    ximage_info->descend ? 1 : 0);
+  XUngrabServer(display);
+  if (image == (Image *) NULL)
+    MagickWarning(XServerWarning,"Unable to read X window image",
+      image_info->filename);
+  else
+    {
+      (void) strcpy(image->filename,image_info->filename);
+      if ((crop_info.width != 0) && (crop_info.height != 0))
+        {
+          Image
+            *cropped_image;
+
+          /*
+            Crop image as defined by the cropping rectangle.
+          */
+          cropped_image=CropImage(image,&crop_info);
+          if (cropped_image != (Image *) NULL)
+            {
+              DestroyImage(image);
+              image=cropped_image;
+            }
+        }
+      status=XGetWMName(display,target,&window_name);
+      if (status == True)
+        {
+          if ((image_info->filename != (char *) NULL) &&
+              (*image_info->filename == '\0'))
+            {
+              /*
+                Initialize image filename.
+              */
+              (void) strncpy(image->filename,(char *) window_name.value,
+                (int) window_name.nitems);
+              image->filename[window_name.nitems]='\0';
+            }
+          XFree((void *) window_name.value);
+        }
+    }
+  if (!ximage_info->silent)
+    {
+      /*
+        Alert the user we're done.
+      */
+      XBell(display,0);
+      XBell(display,0);
+    }
+  XCloseDisplay(display);
+  return(image);
 }
 
 /*

@@ -16,7 +16,6 @@
 	<UL>
 
 		<LI><A HREF="#IsTrue">IsTrue</A>
-		<LI><A HREF="#Latin1Compare">Latin1Compare</A>
 		<LI><A HREF="#XAnnotateImage">XAnnotateImage</A>
 		<LI><A HREF="#XBestFont">XBestFont</A>
 		<LI><A HREF="#XBestIconSize">XBestIconSize</A>
@@ -51,6 +50,7 @@
 		<LI><A HREF="#XHighlightEllipse">XHighlightEllipse</A>
 		<LI><A HREF="#XHighlightLine">XHighlightLine</A>
 		<LI><A HREF="#XHighlightRectangle">XHighlightRectangle</A>
+		<LI><A HREF="#XImportImage">XImportImage</A>
 		<LI><A HREF="#XInitializeWindows">XInitializeWindows</A>
 		<LI><A HREF="#XMakeCursor">XMakeCursor</A>
 		<LI><A HREF="#XMakeImage">XMakeImage</A>
@@ -91,9 +91,6 @@ X - X11 Utility Routines for ImageMagick
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
 option=<STRONG>IsTrue</STRONG>(message)
-
-<P>
-<STRONG>Latin1Compare</STRONG>(first,second)
 
 <P>
 status=<STRONG>XAnnotateImage</STRONG>(display,pixel_info,annotate_info,image)
@@ -186,6 +183,9 @@ image=<STRONG>XGetWindowImage</STRONG>(display,window,borders,level)
 <STRONG>XHighlightRectangle</STRONG>(display,window,annotate_context,highlight_info)
 
 <P>
+image=<STRONG>XImportImage</STRONG>(image_info,ximage_info);
+
+<P>
 windows=<STRONG>XInitializeWindows</STRONG>(display,resource_info)
 
 <P>
@@ -272,35 +272,6 @@ either True or False depending on the message parameter.
 <DT><STRONG>message:</STRONG><DD>
 <P>
 Specifies a pointer to a character array.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="Latin1Compare">Latin1Compare</A></H2>
-<P>
-Method Latin1Compare compares two null terminated Latin-1 strings, ignoring
-case differences, and returns an integer greater than, equal to, or less
-than 0, according to whether first is lexicographically greater than, equal
-to, or less than second. The two strings are assumed to be encoded using
-ISO 8859-1.
-
-<P>
-The format of the Latin1Compare routine is:
-
-<P>
-<PRE>        Latin1Compare(first,second)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>first:</STRONG><DD>
-<P>
-A pointer to the string to convert to Latin1 string.
-
-<DT><STRONG>second:</STRONG><DD>
-<P>
-A pointer to the string to convert to Latin1 string.
 
 </DL></DL>
 <P>
@@ -1476,6 +1447,31 @@ Specifies a pointer to a GC structure.
 <P>
 Specifies a pointer to a RectangleInfo structure. It contains the extents
 of any highlighting rectangle.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="XImportImage">XImportImage</A></H2>
+<P>
+Procedure XImportImage reads an image from an X window.
+
+<P>
+The format of the XImportImage routine is:
+
+<P>
+<PRE>        image=XImportImage(image_info,ximage_info);
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+<DT><STRONG>ximage_info:</STRONG><DD>
+<P>
+Specifies a pointer to an XImportInfo structure.
 
 </DL></DL>
 <P>

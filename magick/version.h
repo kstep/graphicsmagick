@@ -7,6 +7,6 @@
 #define MagickCopyright  "Copyright 1998 E. I. du Pont de Nemours and Company" \
   "\n           portions copyright Eastman Kodak Company, 1996"
 #endif
-#define MagickLibVersion  0x0414
+#define MagickLibVersion  0x0415
 #define MagickVersion  \
-  "@(#)ImageMagick 4.1.4 98/11/24 cristy@mystic.es.dupont.com"
+  "@(#)ImageMagick 4.1.4 98/12/01 cristy@mystic.es.dupont.com"

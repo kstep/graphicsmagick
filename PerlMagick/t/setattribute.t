@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..111\n"; }
+BEGIN { $| = 1; $test=1, print "1..110)\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -18,13 +18,13 @@ testSetAttribute('input.miff','adjoin','True');
 testSetAttribute('input.miff','adjoin','False');
 
 ++$test;
-testSetAttribute('input.miff','background','#808080');
+testSetAttribute('input.miff','background','#807060');
 
 ++$test;
-testSetAttribute('input.miff','bordercolor','#808080');
+testSetAttribute('input.miff','bordercolor','#807060');
 
 ++$test;
-testSetAttribute('input.miff','colormap[20]','#808080');
+testSetAttribute('input.miff','colormap[20]','#807060');
 
 ++$test;
 testSetAttribute('input.miff','colorspace','RGB');
@@ -156,9 +156,6 @@ testSetAttribute('input.miff','filter','Sinc');
 testSetAttribute('input.miff','font',q/-*-helvetica-medium-r-*-*-12-*-*-*-*-*-iso8859-*/);
 
 ++$test;
-testSetAttribute('input.miff','format','JPEG');
-
-++$test;
 testSetAttribute('input.miff','iterations',10);
 
 ++$test;
@@ -180,7 +177,7 @@ testSetAttribute('input.miff','loop',100);
 testSetAttribute('input.miff','magick','TIFF');
 
 ++$test;
-testSetAttribute('input.miff','mattecolor','#808080');
+testSetAttribute('input.miff','mattecolor','#807060');
 
 ++$test;
 testSetAttribute('input.miff','monochrome','True');
@@ -193,7 +190,7 @@ testSetAttribute('input.miff','page','595x842>+0+0');
 
 ++$test;
 # The value must be equal to the value of the image at this pixel (currently #ccc)
-testSetAttribute('input.miff','pixel[20,23]','192,192,192,145');
+testSetAttribute('input.miff','pixel[20,23]','#807060');
 
 ++$test;
 testSetAttribute('input.miff','pointsize',12);

@@ -925,7 +925,7 @@ struct dirent *readdir(DIR *entry)
 %
 %
 */
-Image *ReadPICTImage(ImageInfo *image_info)
+Image *ReadPICTImage(const ImageInfo *image_info)
 {
 #define LoadImageText  "  Loading image...  "
 #define PICTHeaderSize    512

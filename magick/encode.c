@@ -71,22 +71,14 @@
   CloseImage(image); \
   return(False); \
 }
-
-/*
-  Method prototypes.
-*/
-static unsigned int
-  WriteMIFFImage(const ImageInfo *,Image *),
-  WritePSImage(const ImageInfo *,Image *),
-  WriteTIFFImage(const ImageInfo *,Image *),
-  WriteXImage(const ImageInfo *image_info,Image *image);
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e A V S I m a g e                                                 %
+%   W r i t e A V S I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -110,7 +102,7 @@ static unsigned int
 %
 %
 */
-static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
 {
   register int
     i,
@@ -169,7 +161,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e B M P I m a g e                                                 %
+%   W r i t e B M P I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -194,7 +186,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 {
   typedef struct _BMPHeader
   {
@@ -534,7 +526,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e C M Y K I m a g e                                               %
+%   W r i t e C M Y K I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -559,7 +551,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
 {
   float
     black_generation,
@@ -837,7 +829,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e E P T I m a g e                                                 %
+%   W r i t e E P T I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -862,7 +854,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
 {
   char
     filename[MaxTextExtent];
@@ -954,7 +946,7 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e F A X I m a g e                                                 %
+%   W r i t e F A X I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -979,7 +971,7 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
 {
   unsigned int
     scene,
@@ -1029,7 +1021,7 @@ static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e F I T S I m a g e                                               %
+%   W r i t e F I T S I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1054,7 +1046,7 @@ static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[81],
@@ -1130,7 +1122,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e F P X I m a g e                                                 %
+%   W r i t e F P X I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1337,7 +1329,7 @@ static void SetSaturation(float saturation,FPXColorTwistMatrix *color_twist)
   *color_twist=result;
 }
 
-static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 {
   FPXBackground
     background_color;
@@ -1737,7 +1729,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"FPX library is not available",
     image->filename);
@@ -1750,7 +1742,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e G I F I m a g e                                                 %
+%   W r i t e G I F I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1775,7 +1767,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
 {
   Image
     *next_image;
@@ -2122,7 +2114,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e G R A Y I m a g e                                               %
+%   W r i t e G R A Y I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2147,7 +2139,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
 {
   register int
     i,
@@ -2201,7 +2193,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e H D F I m a g e                                                 %
+%   W r i t e H D F I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2226,7 +2218,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
 #include "hdf.h"
 #undef BSD
@@ -2458,7 +2450,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
   return(status != -1);
 }
 #else
-static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"HDF library is not available",
     image->filename);
@@ -2471,7 +2463,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e H I S T O G R A M I m a g e                                     %
+%   W r i t e H I S T O G R A M I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2503,7 +2495,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
+unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   Image *image)
 {
 #define HistogramDensity  "256x200"
@@ -2680,7 +2672,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e H T M L I m a g e                                               %
+%   W r i t e H T M L I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2704,7 +2696,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
 %
 %
 */
-static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
 {
   char
     filename[MaxTextExtent],
@@ -2917,7 +2909,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e J B I G I m a g e                                               %
+%   W r i t e J B I G I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2948,7 +2940,7 @@ static void JBIGEncode(unsigned char  *start,size_t length,void *file)
   return;
 }
 
-static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 {
   int
     sans_offset;
@@ -3088,7 +3080,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"JBIG library is not available",
     image->filename);
@@ -3102,7 +3094,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  W r i t e J P E G I m a g e                                                %
+%  W r i t e J P E G I m a g e                                                %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3181,7 +3173,7 @@ static void EmitMessage(j_common_ptr jpeg_info,int level)
       MagickWarning(DelegateWarning,(char *) message,(char *) NULL);
 }
 
-static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
   float
     black_generation,
@@ -3461,7 +3453,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"JPEG library is not available",
     image->filename);
@@ -3474,7 +3466,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e I C C I m a g e                                                 %
+%   W r i t e I C C I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3498,7 +3490,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
 {
   register int
     i;
@@ -3522,7 +3514,7 @@ static unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e L O G O I m a g e                                               %
+%   W r i t e L O G O I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3548,7 +3540,7 @@ static unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
 {
   char
     filename[MaxTextExtent];
@@ -3617,7 +3609,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e M A P I m a g e                                                 %
+%   W r i t e M A P I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3642,7 +3634,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
 {
   register int
     i;
@@ -3717,7 +3709,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e M I F F I m a g e                                               %
+%   W r i t e M I F F I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3741,7 +3733,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 {
   char
     color[MaxTextExtent];
@@ -4050,7 +4042,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e M O N O I m a g e                                               %
+%   W r i t e M O N O I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4074,7 +4066,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
 {
   int
     x;
@@ -4159,7 +4151,7 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e M T V I m a g e                                                 %
+%   W r i t e M T V I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4184,7 +4176,7 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
 {
   register int
     i,
@@ -4241,7 +4233,7 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e P C D I m a g e                                                 %
+%   W r i t e P C D I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4267,7 +4259,7 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
 %
 */
 
-static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
+unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   char *geometry,char *tile_geometry)
 {
   Image
@@ -4368,7 +4360,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   return(True);
 }
 
-static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
+unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
 {
   Image
     *pcd_image;
@@ -4433,7 +4425,7 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e P C L I m a g e                                                 %
+%   W r i t e P C L I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -4458,7 +4450,7 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
+unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
 {
   char
     geometry[MaxTextExtent];
@@ -4694,7 +4686,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e P C X I m a g e                                                 %
+%   W r i t e P C X I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4719,7 +4711,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
+unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
 {
   typedef struct _PCXHeader
   {
@@ -5077,7 +5069,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e P D F I m a g e                                                 %
+%   W r i t e P D F I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5102,7 +5094,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
+unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 {
 #define ObjectsPerImage  12
 
@@ -6114,7 +6106,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e P I C T I m a g e                                               %
+%   W r i t e P I C T I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -6139,7 +6131,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
+unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 {
 #include "pict.h"
 
@@ -6433,7 +6425,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e P N G I m a g e                                                 %
+%   W r i t e P N G I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -6492,7 +6484,7 @@ static void PNGWarning(png_struct *ping,png_const_charp message)
 }
 #endif
 
-static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
+unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
   register int
     i,
@@ -6967,7 +6959,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
+unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"PNG library is not available",
     image->filename);
@@ -6980,7 +6972,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e P N M I m a g e                                                 %
+%   W r i t e P N M I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -7005,7 +6997,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
+unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 {
 #define MaxRawValue  255
 
@@ -7441,7 +7433,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e P R E V I E W I m a g e                                         %
+%   W r i t e P R E V I E W I m a g e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -7467,7 +7459,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
+unsigned int WritePREVIEWImage(const ImageInfo *image_info,
   Image *image)
 {
 #define NumberTiles  9
@@ -7928,7 +7920,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e P S I m a g e                                                   %
+%   W r i t e P S I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -7955,7 +7947,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
 %
 %
 */
-static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
+unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
 {
   static char
     *PostscriptProlog[]=
@@ -8766,7 +8758,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e P S D I m a g e                                                 %
+%   W r i t e P S D I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8791,7 +8783,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
+unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
 {
   register int
     i,
@@ -8892,7 +8884,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e P S 2 I m a g e                                                 %
+%   W r i t e P S 2 I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8919,7 +8911,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
+unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
 {
   static char
     *PostscriptProlog[]=
@@ -9540,7 +9532,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e R G B I m a g e                                                 %
+%   W r i t e R G B I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -9565,7 +9557,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
 {
   register int
     i,
@@ -9757,7 +9749,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e S G I I m a g e                                                 %
+%   W r i t e S G I I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -9833,7 +9825,7 @@ static int SGIEncode(unsigned char *pixels,int count,
   return((int) (q-packets));
 }
 
-static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
 {
   typedef struct _SGIHeader
   {
@@ -10058,7 +10050,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e S U N I m a g e                                                 %
+%   W r i t e S U N I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -10082,7 +10074,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
 {
 #define RMT_EQUAL_RGB  1
 #define RMT_NONE  0
@@ -10314,7 +10306,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e T G A I m a g e                                                 %
+%   W r i t e T G A I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -10339,7 +10331,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
 {
 #define TargaColormap 1
 #define TargaRGB 2
@@ -10710,7 +10702,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e T I F F I m a g e                                               %
+%   W r i t e T I F F I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -10734,7 +10726,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
 #if !defined(TIFFDefaultStripSize)
 #define TIFFDefaultStripSize(tiff,request)  ((8*1024)/TIFFScanlineSize(tiff))
@@ -11328,7 +11320,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"TIFF library is not available",
     image->filename);
@@ -11341,7 +11333,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e U I L I m a g e                                                 %
+%   W r i t e U I L I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -11366,7 +11358,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
 {
 #define MaxCixels  92
 
@@ -11567,7 +11559,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e U Y V Y I m a g e                                               %
+%   W r i t e U Y V Y I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -11593,7 +11585,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
 %      Implicit assumption: number of columns is even.
 %
 */
-static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
 {
   register int
     i,
@@ -11664,7 +11656,7 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e V I C A R I m a g e                                             %
+%   W r i t e V I C A R I m a g e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -11695,7 +11687,7 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
 {
   char
     header[MaxTextExtent],
@@ -11761,7 +11753,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e V I F F I m a g e                                               %
+%   W r i t e V I F F I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -11785,7 +11777,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
 {
 #define VFF_CM_genericRGB  15
 #define VFF_CM_NONE  0
@@ -12140,7 +12132,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e X I m a g e                                                     %
+%   W r i t e X I m a g e                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -12164,7 +12156,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 {
   Atom
     wm_delete_window,
@@ -12346,7 +12338,7 @@ static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e X B M I m a g e                                                 %
+%   W r i t e X B M I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -12370,7 +12362,7 @@ static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
 {
   char
     name[MaxTextExtent];
@@ -12497,7 +12489,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e X P M I m a g e                                                 %
+%   W r i t e X P M I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -12521,7 +12513,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
 {
 #define MaxCixels  92
 
@@ -12721,7 +12713,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e Y U V I m a g e                                                 %
+%   W r i t e Y U V I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -12746,7 +12738,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
 {
   Image
     *downsampled_image;
@@ -12861,7 +12853,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e X W D I m a g e                                                 %
+%   W r i t e X W D I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -12886,7 +12878,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
+unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 {
   int
     x;
@@ -13067,6 +13059,9 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 */
 Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
 {
+  const MagickInfo
+    *magick_info;
+
   DelegateInfo
     delegate_info;
 
@@ -13111,466 +13106,14 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
     Call appropriate image writer based on image type.
   */
   status=False;
-  switch (*image_info->magick)
-  {
-    case 'A':
-    {
-      if (Latin1Compare(image_info->magick,"AVS") == 0)
-        {
-          status=WriteAVSImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'B':
-    {
-      if (Latin1Compare(image_info->magick,"BIE") == 0)
-        {
-          status=WriteJBIGImage(image_info,image);
-          break;
-        }
-      if ((Latin1Compare(image_info->magick,"BMP") == 0) ||
-          (Latin1Compare(image_info->magick,"BMP24") == 0))
-        {
-          status=WriteBMPImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'C':
-    {
-      if (Latin1Compare(image_info->magick,"CMYK") == 0)
-        {
-          status=WriteCMYKImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'D':
-    {
-      if (Latin1Compare(image_info->magick,"DCX") == 0)
-        {
-          status=WritePCXImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"DIB") == 0)
-        {
-          status=WriteBMPImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'E':
-    {
-      if (Latin1Compare(image_info->magick,"EPDF") == 0)
-        {
-          status=WritePDFImage(image_info,image);
-          break;
-        }
-      if ((Latin1Compare(image_info->magick,"EPS") == 0) ||
-          (Latin1Compare(image_info->magick,"EPSF") == 0) ||
-          (Latin1Compare(image_info->magick,"EPSI") == 0))
-        {
-          status=WritePSImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"EPS2") == 0)
-        {
-          status=WritePS2Image(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"EPT") == 0)
-        {
-          status=WriteEPTImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'F':
-    {
-      if (Latin1Compare(image_info->magick,"FAX") == 0)
-        {
-          status=WriteFAXImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"FITS") == 0)
-        {
-          status=WriteFITSImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"FPX") == 0)
-        {
-          status=WriteFPXImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'G':
-    {
-      if ((Latin1Compare(image_info->magick,"GIF") == 0) ||
-          (Latin1Compare(image_info->magick,"GIF87") == 0))
-        {
-          status=WriteGIFImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"GRANITE") == 0)
-        {
-          status=WriteLOGOImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"GRAY") == 0)
-        {
-          status=WriteGRAYImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'H':
-    {
-      if (Latin1Compare(image_info->magick,"H") == 0)
-        {
-          status=WriteLOGOImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"HDF") == 0)
-        {
-          status=WriteHDFImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"HISTOGRAM") == 0)
-        {
-          status=WriteHISTOGRAMImage(image_info,image);
-          break;
-        }
-      if ((Latin1Compare(image_info->magick,"HTM") == 0) ||
-          (Latin1Compare(image_info->magick,"HTML") == 0))
-        {
-          status=WriteHTMLImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'I':
-    {
-      if (Latin1Compare(image_info->magick,"ICB") == 0)
-        {
-          status=WriteTGAImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"ICC") == 0)
-        {
-          status=WriteICCImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'J':
-    {
-      if ((Latin1Compare(image_info->magick,"JBG") == 0) ||
-          (Latin1Compare(image_info->magick,"JBIG") == 0))
-        {
-          status=WriteJBIGImage(image_info,image);
-          break;
-        }
-      if ((Latin1Compare(image_info->magick,"JPG") == 0) ||
-          (Latin1Compare(image_info->magick,"JPEG") == 0) ||
-          (Latin1Compare(image_info->magick,"JPEG24") == 0))
-        {
-          status=WriteJPEGImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'L':
-    {
-      if (Latin1Compare(image_info->magick,"LOGO") == 0)
-        {
-          status=WriteLOGOImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'M':
-    {
-      if (Latin1Compare(image_info->magick,"MAP") == 0)
-        {
-          status=WriteMAPImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"MIFF") == 0)
-        {
-          status=WriteMIFFImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"MNG") == 0)
-        {
-          status=WritePNGImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"MONO") == 0)
-        {
-          status=WriteMONOImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"MTV") == 0)
-        {
-          status=WriteMTVImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'N':
-    {
-      if (Latin1Compare(image_info->magick,"NETSCAPE") == 0)
-        {
-          status=WriteLOGOImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'P':
-    {
-      if ((Latin1Compare(image_info->magick,"PBM") == 0) ||
-          (Latin1Compare(image_info->magick,"PGM") == 0) ||
-          (Latin1Compare(image_info->magick,"PPM") == 0) ||
-          (Latin1Compare(image_info->magick,"PNM") == 0) ||
-          (Latin1Compare(image_info->magick,"P7") == 0))
-        {
-          status=WritePNMImage(image_info,image);
-          break;
-        }
-      if ((Latin1Compare(image_info->magick,"PCD") == 0) ||
-          (Latin1Compare(image_info->magick,"PCDS") == 0))
-        {
-          status=WritePCDImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PCL") == 0)
-        {
-          status=WritePCLImage(image_info,image);
-          break;
-        }
-      if ((Latin1Compare(image_info->magick,"PCT") == 0) ||
-          (Latin1Compare(image_info->magick,"PIC") == 0) ||
-          (Latin1Compare(image_info->magick,"PICT") == 0))
-        {
-          status=WritePICTImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PCX") == 0)
-        {
-          status=WritePCXImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PDF") == 0)
-        {
-          status=WritePDFImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PM") == 0)
-        {
-          status=WriteXPMImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PNG") == 0)
-        {
-          status=WritePNGImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PREVIEW") == 0)
-        {
-          status=WritePREVIEWImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PS") == 0)
-        {
-          status=WritePSImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PSD") == 0)
-        {
-          status=WritePSDImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PS2") == 0)
-        {
-          status=WritePS2Image(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'R':
-    {
-      if (Latin1Compare(image_info->magick,"RAS") == 0)
-        {
-          status=WriteSUNImage(image_info,image);
-          break;
-        }
-      if (strncmp(image_info->magick,"RGB",3) == 0)
-        {
-          status=WriteRGBImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'S':
-    {
-      if (Latin1Compare(image_info->magick,"SGI") == 0)
-        {
-          status=WriteSGIImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"SHTML") == 0)
-        {
-          status=WriteHTMLImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"SUN") == 0)
-        {
-          status=WriteSUNImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'T':
-    {
-      if (Latin1Compare(image_info->magick,"TGA") == 0)
-        {
-          status=WriteTGAImage(image_info,image);
-          break;
-        }
-      if ((Latin1Compare(image_info->magick,"TIF") == 0) ||
-          (Latin1Compare(image_info->magick,"TIFF") == 0) ||
-          (Latin1Compare(image_info->magick,"TIFF24") == 0))
-        {
-          status=WriteTIFFImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'U':
-    {
-      if (Latin1Compare(image_info->magick,"UIL") == 0)
-        {
-          status=WriteUILImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"UYVY") == 0)
-        {
-          status=WriteUYVYImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'V':
-    {
-      if ((Latin1Compare(image_info->magick,"VDA") == 0) ||
-          (Latin1Compare(image_info->magick,"VST") == 0))
-        {
-          status=WriteTGAImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"VICAR") == 0)
-        {
-          status=WriteVICARImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"VID") == 0)
-        {
-          status=WriteMIFFImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"VIFF") == 0)
-        {
-          status=WriteVIFFImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'X':
-    {
-      if (Latin1Compare(image_info->magick,"X") == 0)
-        {
-          status=WriteXImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"XBM") == 0)
-        {
-          status=WriteXBMImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"XPM") == 0)
-        {
-          status=WriteXPMImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"XV") == 0)
-        {
-          status=WriteVIFFImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"XWD") == 0)
-        {
-          status=WriteXWDImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    case 'Y':
-    {
-      if (Latin1Compare(image_info->magick,"YUV") == 0)
-        {
-          status=WriteYUVImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
-    default:
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-  }
+  magick_info=(MagickInfo *)
+    GetMagickInfo(image_info->magick,strlen(image_info->magick));
+  if((magick_info != (const MagickInfo *) NULL) &&
+     (magick_info->encoder != (unsigned int (*)(const ImageInfo *,Image *)) NULL))
+    status=(magick_info->encoder)(image_info,image);
+  else
+    MagickWarning(MissingDelegateWarning,
+      "no encode delegate for this image format",image_info->magick);
   if (image->status)
     {
       MagickWarning(CorruptImageWarning,"An error has occurred writing to file",

@@ -145,6 +145,7 @@ else
 # Satisfy makefile requirements if not building PERL
 all-perl:
 install-exec-perl:
+check-perl:
 clean-perl:
 distclean-perl:
 endif # WITH_PERL

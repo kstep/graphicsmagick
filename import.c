@@ -801,7 +801,7 @@ int main(int argc,char **argv)
   image=(Image *) NULL;
   for (i=0; i < Max(number_scenes,1); i++)
   {
-    next_image=ReadXImage(&image_info,&ximage_info);
+    next_image=XImportImage(&image_info,&ximage_info);
     if (next_image == (Image *) NULL)
       continue;
     (void) strcpy(next_image->filename,filename);

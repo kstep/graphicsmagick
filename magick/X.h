@@ -560,13 +560,12 @@ extern Export Image
   *XAnimateImages(Display *,XResourceInfo *,char **,const int,Image *),
   *XDisplayImage(Display *,XResourceInfo *,char **,int,Image **,
     unsigned long *),
+  *XImportImage(const ImageInfo *,XImportInfo *),
   *XMontageImages(const XResourceInfo *,XMontageInfo *,Image *),
-  *ReadXImage(ImageInfo *,XImportInfo *),
   *XGetWindowImage(Display *,const Window,const unsigned int,
     const unsigned int);
 
 extern Export int
-  Latin1Compare(const char *,const char *),
   XError(Display *,XErrorEvent *);
 
 extern Export unsigned int
@@ -581,7 +580,6 @@ extern Export unsigned int
   XQueryColorDatabase(char *,XColor *);
 
 extern Export void
-  Latin1Upper(char *),
   XAnimateBackgroundImage(Display *,XResourceInfo *,Image *),
   XBestIconSize(Display *,XWindowInfo *,Image *),
   XBestPixel(Display *,const Colormap,XColor *,unsigned int,XColor *),

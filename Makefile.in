@@ -752,6 +752,7 @@ dist-hook:
 # Satisfy makefile requirements if not building PERL
 @WITH_PERL_FALSE@all-perl:
 @WITH_PERL_FALSE@install-exec-perl:
+@WITH_PERL_FALSE@check-perl:
 @WITH_PERL_FALSE@clean-perl:
 @WITH_PERL_FALSE@distclean-perl:
 

@@ -181,7 +181,7 @@ framed_image=<STRONG>FrameImage</STRONG>(image,frame_info)
 <STRONG>GammaImage</STRONG>(image,gamma)
 
 <P>
-<STRONG>GetAnnotateInfo</STRONG>(annotate_info)
+<STRONG>GetAnnotateInfo</STRONG>(image_info,annotate_info)
 
 <P>
 <STRONG>GetImageInfo</STRONG>(image_info)
@@ -434,7 +434,7 @@ The address of a structure of type Image; returned from ReadImage.
 <HR>
 <H2><A NAME="BlackImage">BlackImage</A></H2>
 <P>
-Method BlackImage initializes the reference image to all black pixels.
+Method BlackImage initializes the reference image to the background color.
 
 <P>
 The format of the BlackImage routine is:
@@ -1128,7 +1128,7 @@ Method GetAnnotateInfo initializes the AnnotateInfo structure.
 The format of the GetAnnotateInfo routine is:
 
 <P>
-<PRE>        GetAnnotateInfo(annotate_info)
+<PRE>        GetAnnotateInfo(image_info,annotate_info)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -2084,8 +2084,8 @@ The address of a structure of type Image.
 <P>
 Method StereoImage combines two images and produces a single image that is
 the composite of a left and right image of a stereo pair. The left image is
-converted to gray_scale and written to the red channel of the stereo image.
-The right image is converted to gray_scale and written to the blue channel
+converted to gray scale and written to the red channel of the stereo image.
+The right image is converted to gray scale and written to the blue channel
 of the stereo image. View the composite image with red-blue glasses to
 create a stereo effect.
 

@@ -637,7 +637,8 @@ Export int GlobExpression(char *expression,const char *pattern)
   (void) strcpy(image_info.filename,pattern);
   SetImageInfo(&image_info,True);
   exempt=(Latin1Compare(image_info.magick,"VID") == 0) ||
-    (image_info.subimage && (Latin1Compare(expression,image_info.filename) == 0));
+    (image_info.subimage &&
+    (Latin1Compare(expression,image_info.filename) == 0));
   DestroyImageInfo(&image_info);
   if (exempt)
     return(False);
@@ -931,6 +932,104 @@ Export unsigned int IsDirectory(const char *filename)
     (void) chdir(current_directory);
   return(status == 0);
 #endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L a t i n 1 C o m p a r e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method Latin1Compare compares two null terminated Latin-1 strings,
+%  ignoring case differences, and returns an integer greater than, equal
+%  to, or less than 0, according to whether first is lexicographically
+%  greater than, equal to, or less than second.  The two strings are
+%  assumed to be encoded using ISO 8859-1.
+%
+%  The format of the Latin1Compare routine is:
+%
+%      Latin1Compare(p,q)
+%
+%  A description of each parameter follows:
+%
+%    o p: A pointer to the string to convert to Latin1 string.
+%
+%    o q: A pointer to the string to convert to Latin1 string.
+%
+%
+*/
+Export int Latin1Compare(const char *p,const char *q)
+{
+  register char
+    i,
+    j;
+
+  if (p == q)
+    return(0);
+  if (p == (char *) NULL)
+    return(-1);
+  if (q == (char *) NULL)
+    return(1);
+  while ((*p != '\0') && (*q != '\0'))
+  {
+    i=(*p);
+    if (islower(i))
+      i=toupper(i);
+    j=(*q);
+    if (islower(j))
+      j=toupper(j);
+    if (i != j)
+      break;
+    p++;
+    q++;
+  }
+  return(*p-(*q));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   L a t i n 1 U p p e r                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method Latin1Upper copies a null terminated string from source to
+%  destination (including the null), changing all Latin-1 lowercase letters
+%  to uppercase.  The string is assumed to be encoded using ISO 8859-1.
+%
+%  The format of the Latin1Upper routine is:
+%
+%      Latin1Upper(string)
+%
+%  A description of each parameter follows:
+%
+%    o string: A pointer to the string to convert to upper-case Latin1.
+%
+%
+*/
+Export void Latin1Upper(char *string)
+{
+  register char
+    c;
+
+  assert(string != (char *) NULL);
+  for ( ; *string != '\0'; string++)
+  {
+    c=(*string);
+    if (isupper(c))
+      continue;
+    c=toupper(c);
+    *string=c;
+  }
 }
 
 /*
@@ -2413,12 +2512,23 @@ Export void TemporaryFilename(char *filename)
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
     register char
       *p;
-
-    p=(char *) tempnam((char *) NULL,TemporaryTemplate);
-    if (p != (char *) NULL)
+    
+    while( *filename =='\0' )
       {
-        (void) strcpy(filename,p);
-        FreeMemory((char *) p);
+	p=(char *) tempnam((char *) NULL,TemporaryTemplate);
+	if (p != (char *) NULL)
+	  {
+	    /* Some delegates (e.g. ralcgm do not accept file names with multiple '.'s */
+	    if(strchr(p, '.') != (char*) NULL)
+	      {
+		FreeMemory((char *) p);
+	      }
+	    else
+	      {
+		(void) strcpy(filename,p);
+		FreeMemory((char *) p);
+	      }
+	  }
       }
 #else
 #if defined(WIN32)

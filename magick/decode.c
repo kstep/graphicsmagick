@@ -69,22 +69,14 @@
   return((Image *) NULL); \
 }
 #define RenderPostscriptText  "  Rendering postscript...  "
-
-/*
-  Method prototypes.
-*/
-static Image
-  *ReadMIFFImage(const ImageInfo *),
-  *ReadPNMImage(const ImageInfo *),
-  *ReadPSImage(const ImageInfo *),
-  *ReadXCImage(const ImageInfo *);
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d A V S I m a g e                                                   %
+%   R e a d A V S I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -108,7 +100,7 @@ static Image
 %
 %
 */
-static Image *ReadAVSImage(const ImageInfo *image_info)
+Image *ReadAVSImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -252,7 +244,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d B M P I m a g e                                                   %
+%   R e a d B M P I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -276,7 +268,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadBMPImage(const ImageInfo *image_info)
+Image *ReadBMPImage(const ImageInfo *image_info)
 {
   typedef struct _BMPHeader
   {
@@ -743,7 +735,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d C M Y K I m a g e                                                 %
+%   R e a d C M Y K I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -767,7 +759,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadCMYKImage(const ImageInfo *image_info)
+Image *ReadCMYKImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -1121,7 +1113,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d D C M I m a g e                                                   %
+%   R e a d D C M I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1145,7 +1137,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadDCMImage(const ImageInfo *image_info)
+Image *ReadDCMImage(const ImageInfo *image_info)
 {
 #include "dicom.h"
 
@@ -1719,7 +1711,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d D P S I m a g e                                                   %
+%   R e a d D P S I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1743,7 +1735,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadDPSImage(const ImageInfo *image_info)
+Image *ReadDPSImage(const ImageInfo *image_info)
 {
   char
     *client_name;
@@ -2148,7 +2140,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-static Image *ReadDPSImage(const ImageInfo *image_info)
+Image *ReadDPSImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"Cannot read DPS images",
     image_info->filename);
@@ -2161,7 +2153,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d F A X I m a g e                                                   %
+%   R e a d F A X I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2185,7 +2177,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadFAXImage(const ImageInfo *image_info)
+Image *ReadFAXImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -2267,7 +2259,7 @@ static Image *ReadFAXImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadFITSImage(const ImageInfo *image_info)
+Image *ReadFITSImage(const ImageInfo *image_info)
 {
   typedef struct _FITSHeader
   {
@@ -2600,7 +2592,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d F P X I m a g e                                                   %
+%   R e a d F P X I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2624,7 +2616,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadFPXImage(const ImageInfo *image_info)
+Image *ReadFPXImage(const ImageInfo *image_info)
 {
   FPXColorspace
     colorspace;
@@ -3022,7 +3014,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-static Image *ReadFPXImage(const ImageInfo *image_info)
+Image *ReadFPXImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"FPX library is not available",
     image_info->filename);
@@ -3035,7 +3027,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d G I F I m a g e                                                   %
+%   R e a d G I F I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3059,7 +3051,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadGIFImage(ImageInfo *image_info)
+Image *ReadGIFImage(const ImageInfo *image_info)
 {
 #define BitSet(byte,bit)  (((byte) & (bit)) == (bit))
 #define LSBFirstOrder(x,y)  (((y) << 8) | (x))
@@ -3391,7 +3383,7 @@ static Image *ReadGIFImage(ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d G R A D A T I O N I m a g e                                       %
+%   R e a d G R A D A T I O N I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3416,7 +3408,7 @@ static Image *ReadGIFImage(ImageInfo *image_info)
 %
 %
 */
-static Image *ReadGRADATIONImage(const ImageInfo *image_info)
+Image *ReadGRADATIONImage(const ImageInfo *image_info)
 {
   char
     colorname[MaxTextExtent];
@@ -3510,7 +3502,7 @@ static Image *ReadGRADATIONImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d G R A Y I m a g e                                                 %
+%   R e a d G R A Y I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3534,7 +3526,7 @@ static Image *ReadGRADATIONImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadGRAYImage(const ImageInfo *image_info)
+Image *ReadGRAYImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -3720,7 +3712,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d H D F I m a g e                                                   %
+%   R e a d H D F I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3744,7 +3736,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadHDFImage(ImageInfo *image_info)
+Image *ReadHDFImage(const ImageInfo *image_info)
 {
 #include "hdf.h"
 #undef BSD
@@ -3981,7 +3973,7 @@ static Image *ReadHDFImage(ImageInfo *image_info)
   return(image);
 }
 #else
-static Image *ReadHDFImage(const ImageInfo *image_info)
+Image *ReadHDFImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"HDF library is not available",
     image_info->filename);
@@ -3994,7 +3986,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d H I S T O G R A M I m a g e                                       %
+%   R e a d H I S T O G R A M I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4018,7 +4010,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadHISTOGRAMImage(const ImageInfo *image_info)
+Image *ReadHISTOGRAMImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -4033,7 +4025,7 @@ static Image *ReadHISTOGRAMImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d J B I G I m a g e                                                 %
+%   R e a d J B I G I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4057,7 +4049,7 @@ static Image *ReadHISTOGRAMImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadJBIGImage(const ImageInfo *image_info)
+Image *ReadJBIGImage(const ImageInfo *image_info)
 {
 #define MaxBufferSize  8192
 
@@ -4240,7 +4232,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-static Image *ReadJBIGImage(const ImageInfo *image_info)
+Image *ReadJBIGImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"JBIG library is not available",
     image_info->filename);
@@ -4260,7 +4252,7 @@ static jmp_buf
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d J P E G I m a g e                                                 %
+%   R e a d J P E G I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4422,7 +4414,7 @@ static void ErrorExit(j_common_ptr jpeg_info)
   longjmp(error_recovery,1);
 }
 
-static Image *ReadJPEGImage(const ImageInfo *image_info)
+Image *ReadJPEGImage(const ImageInfo *image_info)
 {
   int
     x,
@@ -4661,7 +4653,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-static Image *ReadJPEGImage(const ImageInfo *image_info)
+Image *ReadJPEGImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"JPEG library is not available",
     image_info->filename);
@@ -4674,7 +4666,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d I C O N I m a g e                                                 %
+%   R e a d I C O N I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4698,7 +4690,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadICONImage(const ImageInfo *image_info)
+Image *ReadICONImage(const ImageInfo *image_info)
 {
 #define MaxIcons  256
 
@@ -5070,7 +5062,7 @@ static Image *ReadICONImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d L A B E L I m a g e                                               %
+%   R e a d L A B E L I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5222,7 +5214,7 @@ static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
 }
 #endif
 
-static Image *ReadLABELImage(const ImageInfo *image_info)
+Image *ReadLABELImage(const ImageInfo *image_info)
 {
 #define MaxGlyphs  65535
 
@@ -5762,7 +5754,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d L O G O I m a g e                                                 %
+%   R e a d L O G O I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5786,7 +5778,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadLOGOImage(ImageInfo *image_info)
+Image *ReadLOGOImage(const ImageInfo *image_info)
 {
 #include "logo.h"
 
@@ -5798,6 +5790,9 @@ static Image *ReadLOGOImage(ImageInfo *image_info)
 
   Image
     *image;
+
+  ImageInfo
+    local_info;
 
   register int
     i;
@@ -5811,23 +5806,24 @@ static Image *ReadLOGOImage(ImageInfo *image_info)
   /*
     Open temporary output file.
   */
-  (void) strcpy(filename,image_info->filename);
-  TemporaryFilename(image_info->filename);
-  file=fopen(image_info->filename,WriteBinaryType);
+  local_info=(*image_info);
+  (void) strcpy(filename,local_info.filename);
+  TemporaryFilename(local_info.filename);
+  file=fopen(local_info.filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     {
       MagickWarning(FileOpenWarning,"Unable to write file",
-        image_info->filename);
+        local_info.filename);
       return(ReadXCImage(image_info));
     }
   p=LogoImage;
   extent=LogoImageExtent;
-  if (Latin1Compare(image_info->magick,"GRANITE") == 0)
+  if (Latin1Compare(local_info.magick,"GRANITE") == 0)
     {
       p=GraniteImage;
       extent=GraniteImageExtent;
     }
-  if (Latin1Compare(image_info->magick,"NETSCAPE") == 0)
+  if (Latin1Compare(local_info.magick,"NETSCAPE") == 0)
     {
       p=NetscapeImage;
       extent=NetscapeImageExtent;
@@ -5843,11 +5839,11 @@ static Image *ReadLOGOImage(ImageInfo *image_info)
         filename);
       (void) fclose(file);
       (void) remove(filename);
-      return(ReadXCImage(image_info));
+      return(ReadXCImage(&local_info));
     }
   (void) fclose(file);
-  image=ReadGIFImage(image_info);
-  (void) remove(image_info->filename);
+  image=ReadGIFImage(&local_info);
+  (void) remove(local_info.filename);
   if (image != (Image *) NULL)
     (void) strcpy(image->filename,filename);
   return(image);
@@ -5858,7 +5854,7 @@ static Image *ReadLOGOImage(ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d M A P I m a g e                                                   %
+%   R e a d M A P I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5882,7 +5878,7 @@ static Image *ReadLOGOImage(ImageInfo *image_info)
 %
 %
 */
-static Image *ReadMAPImage(const ImageInfo *image_info)
+Image *ReadMAPImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -5997,7 +5993,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadMIFFImage(const ImageInfo *image_info)
+Image *ReadMIFFImage(const ImageInfo *image_info)
 {
   char
     keyword[MaxTextExtent],
@@ -6569,7 +6565,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d M O N O I m a g e                                                 %
+%   R e a d M O N O I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -6593,7 +6589,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadMONOImage(const ImageInfo *image_info)
+Image *ReadMONOImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -6712,7 +6708,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d M T V I m a g e                                                   %
+%   R e a d M T V I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -6736,7 +6732,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadMTVImage(const ImageInfo *image_info)
+Image *ReadMTVImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -6878,7 +6874,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d N U L L I m a g e                                                 %
+%   R e a d N U L L I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -6902,7 +6898,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadNULLImage(const ImageInfo *image_info)
+Image *ReadNULLImage(const ImageInfo *image_info)
 {
   return(ReadXCImage(image_info));
 }
@@ -6912,7 +6908,7 @@ static Image *ReadNULLImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d P C D I m a g e                                                   %
+%   R e a d P C D I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -7013,7 +7009,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
   return(montage_image);
 }
 
-static Image *ReadPCDImage(const ImageInfo *image_info)
+Image *ReadPCDImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -7365,7 +7361,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d P C L I m a g e                                                   %
+%   R e a d P C L I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -7389,7 +7385,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadPCLImage(const ImageInfo *image_info)
+Image *ReadPCLImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"Cannot read PCL images",
     image_info->filename);
@@ -7401,7 +7397,7 @@ static Image *ReadPCLImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d P C X I m a g e                                                   %
+%   R e a d P C X I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -7425,7 +7421,7 @@ static Image *ReadPCLImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadPCXImage(const ImageInfo *image_info)
+Image *ReadPCXImage(const ImageInfo *image_info)
 {
   typedef struct _PCXHeader
   {
@@ -7918,7 +7914,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d P D F I m a g e                                                   %
+%   R e a d P D F I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -7942,7 +7938,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadPDFImage(const ImageInfo *image_info)
+Image *ReadPDFImage(const ImageInfo *image_info)
 {
 #define MediaBox  "/MediaBox ["
 
@@ -8200,7 +8196,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
 %
 %
 */
-Export Image *ReadPICTImage(ImageInfo *image_info)
+Export Image *ReadPICTImage(const ImageInfo *image_info)
 {
 #include "pict.h"
 
@@ -8753,7 +8749,7 @@ Export Image *ReadPICTImage(ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d P I X I m a g e                                                   %
+%   R e a d P I X I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8777,7 +8773,7 @@ Export Image *ReadPICTImage(ImageInfo *image_info)
 %
 %
 */
-static Image *ReadPIXImage(const ImageInfo *image_info)
+Image *ReadPIXImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -8938,7 +8934,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d P L A S M A I m a g e                                             %
+%   R e a d P L A S M A I m a g e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8961,7 +8957,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadPLASMAImage(const ImageInfo *image_info)
+Image *ReadPLASMAImage(const ImageInfo *image_info)
 {
 #define PlasmaImageText  "  Applying image plasma...  "
 #define PlasmaPixel(x,y) \
@@ -9038,7 +9034,7 @@ static Image *ReadPLASMAImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d P N G I m a g e                                                   %
+%   R e a d P N G I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -9106,7 +9102,7 @@ static void PNGWarning(png_struct *ping,png_const_charp message)
 }
 #endif
 
-static Image *ReadPNGImage(const ImageInfo *image_info)
+Image *ReadPNGImage(const ImageInfo *image_info)
 {
   ColorPacket
     transparent_color;
@@ -9682,7 +9678,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-static Image *ReadPNGImage(const ImageInfo *image_info)
+Image *ReadPNGImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"PNG library is not available",
     image_info->filename);
@@ -9695,7 +9691,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d P N M I m a g e                                                   %
+%   R e a d P N M I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -9807,7 +9803,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
   return(value);
 }
 
-static Image *ReadPNMImage(const ImageInfo *image_info)
+Image *ReadPNMImage(const ImageInfo *image_info)
 {
 #define MaxRawValue  255
 
@@ -10308,7 +10304,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d P S I m a g e                                                     %
+%   R e a d P S I m a g e                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -10332,7 +10328,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadPSImage(const ImageInfo *image_info)
+Image *ReadPSImage(const ImageInfo *image_info)
 {
 #define BoundingBox  "%%BoundingBox:"
 #define DocumentMedia  "%%DocumentMedia:"
@@ -10604,7 +10600,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d P S D I m a g e                                                   %
+%   R e a d P S D I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -10628,7 +10624,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadPSDImage(const ImageInfo *image_info)
+Image *ReadPSDImage(const ImageInfo *image_info)
 {
 #define BitmapMode  0
 #define GrayscaleMode  1
@@ -11087,7 +11083,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d R G B I m a g e                                                   %
+%   R e a d R G B I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -11111,7 +11107,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadRGBImage(const ImageInfo *image_info)
+Image *ReadRGBImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -11485,7 +11481,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d R L A I m a g e                                                   %
+%   R e a d R L A I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -11511,7 +11507,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadRLAImage(const ImageInfo *image_info)
+Image *ReadRLAImage(const ImageInfo *image_info)
 {
   typedef struct _WindowFrame
   {
@@ -11810,7 +11806,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d R L E I m a g e                                                   %
+%   R e a d R L E I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -11834,7 +11830,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadRLEImage(const ImageInfo *image_info)
+Image *ReadRLEImage(const ImageInfo *image_info)
 {
 #define SkipLinesOp  0x01
 #define SetColorOp  0x02
@@ -12269,7 +12265,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d S G I I m a g e                                                   %
+%   R e a d S G I I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -12324,7 +12320,7 @@ static void SGIDecode(unsigned char *max_packets,unsigned char *pixels)
   }
 }
 
-static Image *ReadSGIImage(const ImageInfo *image_info)
+Image *ReadSGIImage(const ImageInfo *image_info)
 {
   typedef struct _SGIHeader
   {
@@ -12653,7 +12649,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d S T E G A N O I m a g e                                           %
+%   R e a d S T E G A N O I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -12677,7 +12673,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadSTEGANOImage(ImageInfo *image_info)
+Image *ReadSTEGANOImage(const ImageInfo *image_info)
 {
 #define UnembedBit(byte) \
 { \
@@ -12691,6 +12687,9 @@ static Image *ReadSTEGANOImage(ImageInfo *image_info)
         break; \
     } \
 }
+
+  ImageInfo
+    local_info;
 
   int
     shift;
@@ -12718,8 +12717,9 @@ static Image *ReadSTEGANOImage(ImageInfo *image_info)
   /*
     Initialize Image structure.
   */
-  *image_info->magick='\0';
-  stegano_image=ReadImage(image_info);
+  local_info=(*image_info);
+  *local_info.magick='\0';
+  stegano_image=ReadImage(&local_info);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
   if (!UncondenseImage(stegano_image))
@@ -12778,7 +12778,7 @@ static Image *ReadSTEGANOImage(ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d S U N I m a g e                                                   %
+%   R e a d S U N I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -12802,7 +12802,7 @@ static Image *ReadSTEGANOImage(ImageInfo *image_info)
 %
 %
 */
-static Image *ReadSUNImage(const ImageInfo *image_info)
+Image *ReadSUNImage(const ImageInfo *image_info)
 {
 #define RMT_EQUAL_RGB  1
 #define RMT_NONE  0
@@ -13136,7 +13136,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d T G A I m a g e                                                   %
+%   R e a d T G A I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -13160,7 +13160,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadTGAImage(const ImageInfo *image_info)
+Image *ReadTGAImage(const ImageInfo *image_info)
 {
 #define TGAColormap 1
 #define TGARGB 2
@@ -13523,7 +13523,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d T E X T I m a g e                                                 %
+%   R e a d T E X T I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -13547,7 +13547,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadTEXTImage(const ImageInfo *image_info)
+Image *ReadTEXTImage(const ImageInfo *image_info)
 {
   AnnotateInfo
     annotate_info;
@@ -13743,7 +13743,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d T I F F I m a g e                                                 %
+%   R e a d T I F F I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -13796,7 +13796,7 @@ static void TIFFWarningMessage(const char *module,const char *format,
 }
 #endif
 
-static Image *ReadTIFFImage(const ImageInfo *image_info)
+Image *ReadTIFFImage(const ImageInfo *image_info)
 {
   char
     *text;
@@ -14454,7 +14454,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-static Image *ReadTIFFImage(const ImageInfo *image_info)
+Image *ReadTIFFImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"TIFF library is not available",
     image_info->filename);
@@ -14467,7 +14467,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d T I L E I m a g e                                                 %
+%   R e a d T I L E I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -14491,18 +14491,21 @@ static Image *ReadTIFFImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadTILEImage(ImageInfo *image_info)
+Image *ReadTILEImage(const ImageInfo *image_info)
 {
+  Image
+    *cloned_image,
+    *image,
+    *tiled_image;
+
+  ImageInfo
+    local_info;
+
   int
     y;
 
   register int
     x;
-
-  Image
-    *cloned_image,
-    *image,
-    *tiled_image;
 
   /*
     Allocate image structure.
@@ -14517,8 +14520,9 @@ static Image *ReadTILEImage(ImageInfo *image_info)
   /*
     Initialize Image structure.
   */
-  *image_info->magick='\0';
-  tiled_image=ReadImage(image_info);
+  local_info=(*image_info);
+  *local_info.magick='\0';
+  tiled_image=ReadImage(&local_info);
   if (tiled_image == (Image *) NULL)
     return((Image *) NULL);
   tiled_image->orphan=True;
@@ -14528,7 +14532,7 @@ static Image *ReadTILEImage(ImageInfo *image_info)
   if (cloned_image == (Image *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",tiled_image);
   image=cloned_image;
-  (void) strcpy(image->filename,image_info->filename);
+  (void) strcpy(image->filename,local_info.filename);
   /*
     Tile texture onto image.
   */
@@ -14574,7 +14578,7 @@ static Image *ReadTILEImage(ImageInfo *image_info)
 %
 %
 */
-static Image *ReadTIMImage(const ImageInfo *image_info)
+Image *ReadTIMImage(const ImageInfo *image_info)
 {
 #define ScaleColor5to8(x)  ((x) << 3)
 
@@ -14857,7 +14861,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d T T F I m a g e                                                   %
+%   R e a d T T F I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -14881,7 +14885,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadTTFImage(const ImageInfo *image_info)
+Image *ReadTTFImage(const ImageInfo *image_info)
 {
   AnnotateInfo
     annotate_info;
@@ -14982,7 +14986,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-static Image *ReadTTFImage(const ImageInfo *image_info)
+Image *ReadTTFImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"Cannot read TTF images",
     image_info->filename);
@@ -14995,7 +14999,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d U I L I m a g e                                                   %
+%   R e a d U I L I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -15019,7 +15023,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadUILImage(const ImageInfo *image_info)
+Image *ReadUILImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingDelegateWarning,"Cannot read UIL images",
     image_info->filename);
@@ -15032,7 +15036,7 @@ static Image *ReadUILImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d U Y V Y I m a g e                                                 %
+%   R e a d U Y V Y I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -15056,7 +15060,7 @@ static Image *ReadUILImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadUYVYImage(const ImageInfo *image_info)
+Image *ReadUYVYImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -15138,7 +15142,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d V I C A R I m a g e                                               %
+%   R e a d V I C A R I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -15162,7 +15166,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadVICARImage(const ImageInfo *image_info)
+Image *ReadVICARImage(const ImageInfo *image_info)
 {
   char
     keyword[MaxTextExtent],
@@ -15364,7 +15368,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d V I D I m a g e                                                   %
+%   R e a d V I D I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -15388,7 +15392,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadVIDImage(const ImageInfo *image_info)
+Image *ReadVIDImage(const ImageInfo *image_info)
 {
 #define ClientName  "montage"
 
@@ -15550,7 +15554,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d V I F F I m a g e                                                 %
+%   R e a d V I F F I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -15574,7 +15578,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadVIFFImage(const ImageInfo *image_info)
+Image *ReadVIFFImage(const ImageInfo *image_info)
 {
 #define VFF_CM_genericRGB  15
 #define VFF_CM_ntscRGB  1
@@ -15880,8 +15884,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info)
       AllocateMemory(bytes_per_pixel*max_packets*sizeof(Quantum));
     if (viff_pixels == (unsigned char *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    (void) ReadData((char *) viff_pixels,bytes_per_pixel,(unsigned int) max_packets,
-      image->file);
+    (void) ReadData((char *) viff_pixels,bytes_per_pixel,(unsigned int)
+      max_packets,image->file);
     switch (viff_header.data_storage_type)
     {
       int
@@ -16194,247 +16198,20 @@ static Image *ReadVIFFImage(const ImageInfo *image_info)
 %
 %  The format of the ReadXImage routine is:
 %
-%      image=ReadXImage(image_info,ximage_info);
+%      image=ReadXImage(image_info)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o ximage_info: Specifies a pointer to an XImportInfo structure.
-%
-%
 */
-Export Image *ReadXImage(ImageInfo *image_info,XImportInfo *ximage_info)
+Image *ReadXImage(const ImageInfo *image_info)
 {
-  Colormap
-    *colormaps;
-
-  Display
-    *display;
-
-  Image
-    *image;
-
-  int
-    number_colormaps,
-    number_windows,
-    status,
-    x;
-
-  RectangleInfo
-    crop_info;
-
-  Window
-    *children,
-    client,
-    prior_target,
-    root,
-    target;
-
-  XTextProperty
-    window_name;
-
-  /*
-    Open X server connection.
-  */
-  assert(image_info != (ImageInfo *) NULL);
-  assert(ximage_info != (XImportInfo *) NULL);
-  display=XOpenDisplay(image_info->server_name);
-  if (display == (Display *) NULL)
-    {
-      MagickWarning(XServerWarning,"Unable to connect to X server",
-        XDisplayName(image_info->server_name));
-      return((Image *) NULL);
-    }
-  /*
-    Set our forgiving error handler.
-  */
-  XSetErrorHandler(XError);
-  /*
-    Select target window.
-  */
-  crop_info.x=0;
-  crop_info.y=0;
-  crop_info.width=0;
-  crop_info.height=0;
-  root=XRootWindow(display,XDefaultScreen(display));
-  target=(Window) NULL;
-  if ((image_info->filename != (char *) NULL) &&
-      (*image_info->filename != '\0'))
-    if (Latin1Compare(image_info->filename,"root") == 0)
-      target=root;
-    else
-      {
-        /*
-          Select window by ID or name.
-        */
-        if (isdigit((int) (*image_info->filename)))
-          target=XWindowByID(display,root,(Window) strtol(image_info->filename,
-            (char **) NULL,0));
-        if (target == (Window) NULL)
-          target=XWindowByName(display,root,image_info->filename);
-        if (target == (Window) NULL)
-          MagickWarning(OptionWarning,"No window with specified id exists",
-            image_info->filename);
-      }
-
-  /*
-    If target window is not defined, interactively select one.
-  */
-  prior_target=target;
-  if (target == (Window) NULL)
-    target=XSelectWindow(display,&crop_info);
-  client=target;   /* obsolete */
-  if (target != root)
-    {
-      unsigned int
-        d;
-
-      status=XGetGeometry(display,target,&root,&x,&x,&d,&d,&d,&d);
-      if (status != 0)
-        {
-          for ( ; ; )
-          {
-            Window
-              parent;
-
-            /*
-              Find window manager frame.
-            */
-            status=XQueryTree(display,target,&root,&parent,&children,&d);
-            if (status && (children != (Window *) NULL))
-              XFree((char *) children);
-            if (!status || (parent == (Window) NULL) || (parent == root))
-              break;
-            target=parent;
-          }
-          /*
-            Get client window.
-          */
-          client=XClientWindow(display,target);
-          if (!ximage_info->frame)
-            target=client;
-          if (!ximage_info->frame && prior_target)
-            target=prior_target;
-          XRaiseWindow(display,target);
-          XDelay(display,SuspendTime << 4);
-        }
-    }
-  if (ximage_info->screen)
-    {
-      int
-        y;
-
-      Window
-        child;
-
-      XWindowAttributes
-        window_attributes;
-
-      /*
-        Obtain window image directly from screen.
-      */
-      status=XGetWindowAttributes(display,target,&window_attributes);
-      if (status == False)
-        {
-          MagickWarning(XServerWarning,"Unable to read X window attributes",
-            image_info->filename);
-          XCloseDisplay(display);
-          return((Image *) NULL);
-        }
-      XTranslateCoordinates(display,target,root,0,0,&x,&y,&child);
-      crop_info.x=x;
-      crop_info.y=y;
-      crop_info.width=window_attributes.width;
-      crop_info.height=window_attributes.height;
-      if (ximage_info->borders)
-        {
-          /*
-            Include border in image.
-          */
-          crop_info.x-=window_attributes.border_width;
-          crop_info.y-=window_attributes.border_width;
-          crop_info.width+=window_attributes.border_width << 1;
-          crop_info.height+=window_attributes.border_width << 1;
-        }
-      target=root;
-    }
-  /*
-    If WM_COLORMAP_WINDOWS property is set or multiple colormaps, descend.
-  */
-  number_windows=0;
-  status=XGetWMColormapWindows(display,target,&children,&number_windows);
-  if ((status == True) && (number_windows > 0))
-    {
-      ximage_info->descend=True;
-      XFree ((char *) children);
-    }
-  colormaps=XListInstalledColormaps(display,target,&number_colormaps);
-  if (number_colormaps > 0)
-    {
-      if (number_colormaps > 1)
-        ximage_info->descend=True;
-      XFree((char *) colormaps);
-    }
-  /*
-    Alert the user not to alter the screen.
-  */
-  if (!ximage_info->silent)
-    XBell(display,0);
-  /*
-    Get image by window id.
-  */
-  XGrabServer(display);
-  image=XGetWindowImage(display,target,ximage_info->borders,
-    ximage_info->descend ? 1 : 0);
-  XUngrabServer(display);
-  if (image == (Image *) NULL)
-    MagickWarning(XServerWarning,"Unable to read X window image",
-      image_info->filename);
-  else
-    {
-      (void) strcpy(image->filename,image_info->filename);
-      if ((crop_info.width != 0) && (crop_info.height != 0))
-        {
-          Image
-            *cropped_image;
-
-          /*
-            Crop image as defined by the cropping rectangle.
-          */
-          cropped_image=CropImage(image,&crop_info);
-          if (cropped_image != (Image *) NULL)
-            {
-              DestroyImage(image);
-              image=cropped_image;
-            }
-        }
-      status=XGetWMName(display,target,&window_name);
-      if (status == True)
-        {
-          if ((image_info->filename != (char *) NULL) &&
-              (*image_info->filename == '\0'))
-            {
-              /*
-                Initialize image filename.
-              */
-              (void) strncpy(image->filename,(char *) window_name.value,
-                (int) window_name.nitems);
-              image->filename[window_name.nitems]='\0';
-            }
-          XFree((void *) window_name.value);
-        }
-    }
-  if (!ximage_info->silent)
-    {
-      /*
-        Alert the user we're done.
-      */
-      XBell(display,0);
-      XBell(display,0);
-    }
-  XCloseDisplay(display);
-  return(image);
+  XImportInfo
+    ximage_info;
+		
+  XGetImportInfo(&ximage_info);
+  return(XImportImage(image_info,&ximage_info));
 }
 
 /*
@@ -16442,7 +16219,7 @@ Export Image *ReadXImage(ImageInfo *image_info,XImportInfo *ximage_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d X B M I m a g e                                                   %
+%   R e a d X B M I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -16496,7 +16273,7 @@ static int XBMInteger(FILE *file,short int *hex_digits)
   return(value);
 }
 
-static Image *ReadXBMImage(const ImageInfo *image_info)
+Image *ReadXBMImage(const ImageInfo *image_info)
 {
   char
     buffer[MaxTextExtent],
@@ -16702,7 +16479,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d X C I m a g e                                                     %
+%   R e a d X C I m a g e                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -16727,7 +16504,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadXCImage(const ImageInfo *image_info)
+Image *ReadXCImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -16790,7 +16567,7 @@ static Image *ReadXCImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d X P M I m a g e                                                   %
+%   R e a d X P M I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -16853,7 +16630,7 @@ static char *ParseColor(char *data)
   return((char *) NULL);
 }
 
-static Image *ReadXPMImage(const ImageInfo *image_info)
+Image *ReadXPMImage(const ImageInfo *image_info)
 {
   char
     key[MaxTextExtent],
@@ -17101,7 +16878,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d X W D I m a g e                                                   %
+%   R e a d X W D I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -17125,7 +16902,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadXWDImage(const ImageInfo *image_info)
+Image *ReadXWDImage(const ImageInfo *image_info)
 {
   Image
     *image;
@@ -17501,7 +17278,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d Y U V I m a g e                                                   %
+%   R e a d Y U V I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -17525,7 +17302,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info)
 %
 %
 */
-static Image *ReadYUVImage(const ImageInfo *image_info)
+Image *ReadYUVImage(const ImageInfo *image_info)
 {
   Image
     *image,
@@ -17752,6 +17529,9 @@ Export Image *ReadImage(ImageInfo *image_info)
   char
     filename[MaxTextExtent];
 
+  const MagickInfo
+    *magick_info;
+
   DelegateInfo
     delegate_info;
 
@@ -17796,521 +17576,14 @@ Export Image *ReadImage(ImageInfo *image_info)
     Call appropriate image reader based on image type.
   */
   image=(Image *) NULL;
-  switch (*image_info->magick)
-  {
-    case 'A':
-    {
-      if (Latin1Compare(image_info->magick,"AVS") == 0)
-        {
-          image=ReadAVSImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'B':
-    {
-      if (Latin1Compare(image_info->magick,"BIE") == 0)
-        {
-          image=ReadJBIGImage(image_info);
-          break;
-        }
-      if ((Latin1Compare(image_info->magick,"BMP") == 0) ||
-          (Latin1Compare(image_info->magick,"BMP24") == 0))
-        {
-          image=ReadBMPImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'C':
-    {
-      if (Latin1Compare(image_info->magick,"CMYK") == 0)
-        {
-          image=ReadCMYKImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'D':
-    {
-      if (Latin1Compare(image_info->magick,"DCM") == 0)
-        {
-          image=ReadDCMImage(image_info);
-          break;
-        }
-      if (strncmp(image_info->magick,"DCX",3) == 0)
-        {
-          image=ReadPCXImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"DIB") == 0)
-        {
-          image=ReadBMPImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'E':
-    {
-      if (strncmp(image_info->magick,"EPDF",4) == 0)
-        {
-          image=ReadPDFImage(image_info);
-          break;
-        }
-      if ((Latin1Compare(image_info->magick,"EPI") == 0) ||
-          (Latin1Compare(image_info->magick,"EPT") == 0) ||
-          (strncmp(image_info->magick,"EPS",3) == 0))
-        {
-          image=ReadPSImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'F':
-    {
-      if (Latin1Compare(image_info->magick,"FAX") == 0)
-        {
-          image=ReadFAXImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"FITS") == 0)
-        {
-          image=ReadFITSImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"FPX") == 0)
-        {
-          image=ReadFPXImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'G':
-    {
-      if (strncmp(image_info->magick,"GIF",3) == 0)
-        {
-          image=ReadGIFImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"GRADATION") == 0)
-        {
-          image=ReadGRADATIONImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"GRANITE") == 0)
-        {
-          image=ReadLOGOImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"GRAY") == 0)
-        {
-          image=ReadGRAYImage(image_info);
-          break;
-        }
-      if (strncmp(image_info->magick,"G3",2) == 0)
-        {
-          image=ReadFAXImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'H':
-    {
-      if (Latin1Compare(image_info->magick,"H") == 0)
-        {
-          image=ReadLOGOImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"HDF") == 0)
-        {
-          image=ReadHDFImage(image_info);
-          break;
-        }
-      if (strncmp(image_info->magick,"HISTOGRAM",4) == 0)
-        {
-          image=ReadHISTOGRAMImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'J':
-    {
-      if ((Latin1Compare(image_info->magick,"JBG") == 0) ||
-          (Latin1Compare(image_info->magick,"JBIG") == 0))
-        {
-          image=ReadJBIGImage(image_info);
-          break;
-        }
-      if ((Latin1Compare(image_info->magick,"JPG") == 0) ||
-          (Latin1Compare(image_info->magick,"JPEG") == 0))
-        {
-          image=ReadJPEGImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'I':
-    {
-      if (Latin1Compare(image_info->magick,"ICB") == 0)
-        {
-          image=ReadTGAImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"ICO") == 0)
-        {
-          image=ReadICONImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'L':
-    {
-      if (Latin1Compare(image_info->magick,"LABEL") == 0)
-        {
-          image=ReadLABELImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"LOGO") == 0)
-        {
-          image=ReadLOGOImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'M':
-    {
-      if (Latin1Compare(image_info->magick,"MAP") == 0)
-        {
-          image=ReadMAPImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"MIFF") == 0)
-        {
-          image=ReadMIFFImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"MNG") == 0)
-        {
-          image=ReadPNGImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"MONO") == 0)
-        {
-          image=ReadMONOImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"MTV") == 0)
-        {
-          image=ReadMTVImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'N':
-    {
-      if (Latin1Compare(image_info->magick,"NETSCAPE") == 0)
-        {
-          image=ReadLOGOImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"NULL") == 0)
-        {
-          image=ReadNULLImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'P':
-    {
-      if ((Latin1Compare(image_info->magick,"P7") == 0) ||
-          (Latin1Compare(image_info->magick,"PBM") == 0) ||
-          (Latin1Compare(image_info->magick,"PGM") == 0) ||
-          (Latin1Compare(image_info->magick,"PNM") == 0) ||
-          (Latin1Compare(image_info->magick,"PPM") == 0))
-        {
-          image=ReadPNMImage(image_info);
-          break;
-        }
-      if ((Latin1Compare(image_info->magick,"PCD") == 0) ||
-          (Latin1Compare(image_info->magick,"PCDS") == 0))
-        {
-          image=ReadPCDImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PCL") == 0)
-        {
-          image=ReadPCLImage(image_info);
-          break;
-        }
-      if ((Latin1Compare(image_info->magick,"PCT") == 0) ||
-          (Latin1Compare(image_info->magick,"PIC") == 0) ||
-          (Latin1Compare(image_info->magick,"PICT") == 0))
-        {
-          image=ReadPICTImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PCX") == 0)
-        {
-          image=ReadPCXImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PDF") == 0)
-        {
-          image=ReadPDFImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PIX") == 0)
-        {
-          image=ReadPIXImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PLASMA") == 0)
-        {
-          image=ReadPLASMAImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PM") == 0)
-        {
-          image=ReadXPMImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PNG") == 0)
-        {
-          image=ReadPNGImage(image_info);
-          break;
-        }
-      if (strncmp(image_info->magick,"PSD",3) == 0)
-        {
-          image=ReadPSDImage(image_info);
-          break;
-        }
-      if (strncmp(image_info->magick,"PS",2) == 0)
-        {
-          image=ReadPSImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'R':
-    {
-      if (Latin1Compare(image_info->magick,"RAS") == 0)
-        {
-          image=ReadSUNImage(image_info);
-          break;
-        }
-      if (strncmp(image_info->magick,"RGB",3) == 0)
-        {
-          image=ReadRGBImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"RLA") == 0)
-        {
-          image=ReadRLAImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"RLE") == 0)
-        {
-          image=ReadRLEImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'S':
-    {
-      if (Latin1Compare(image_info->magick,"SGI") == 0)
-        {
-          image=ReadSGIImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"STEGANO") == 0)
-        {
-          image=ReadSTEGANOImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"SUN") == 0)
-        {
-          image=ReadSUNImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'T':
-    {
-      if (Latin1Compare(image_info->magick,"TEXT") == 0)
-        {
-          image=ReadTEXTImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"TGA") == 0)
-        {
-          image=ReadTGAImage(image_info);
-          break;
-        }
-      if (strncmp(image_info->magick,"TIF",3) == 0)
-        {
-          image=ReadTIFFImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"TILE") == 0)
-        {
-          image=ReadTILEImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"TIM") == 0)
-        {
-          image=ReadTIMImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"TTF") == 0)
-        {
-          image=ReadTTFImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"TXT") == 0)
-        {
-          image=ReadTEXTImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'U':
-    {
-      if (Latin1Compare(image_info->magick,"UIL") == 0)
-        {
-          image=ReadUILImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"UYVY") == 0)
-        {
-          image=ReadUYVYImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'V':
-    {
-      if ((Latin1Compare(image_info->magick,"VDA") == 0) ||
-          (Latin1Compare(image_info->magick,"VST") == 0))
-        {
-          image=ReadTGAImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"VICAR") == 0)
-        {
-          image=ReadVICARImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"VID") == 0)
-        {
-          if (image_info->affirm)
-            image=ReadVIDImage(image_info);
-          else
-            image=ReadMIFFImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"VIFF") == 0)
-        {
-          image=ReadVIFFImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'X':
-    {
-      if (Latin1Compare(image_info->magick,"X") == 0)
-        {
-          XImportInfo
-            ximage_info;
-
-          XGetImportInfo(&ximage_info);
-          image=ReadXImage(image_info,&ximage_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"XC") == 0)
-        {
-          image=ReadXCImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"XBM") == 0)
-        {
-          image=ReadXBMImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"XPM") == 0)
-        {
-          image=ReadXPMImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"XV") == 0)
-        {
-          image=ReadVIFFImage(image_info);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"XWD") == 0)
-        {
-          image=ReadXWDImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    case 'Y':
-    {
-      if (Latin1Compare(image_info->magick,"YUV") == 0)
-        {
-          image=ReadYUVImage(image_info);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-    default:
-    {
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
-      break;
-    }
-  }
+  magick_info=(MagickInfo *)
+    GetMagickInfo(image_info->magick,strlen(image_info->magick));
+  if ((magick_info != (const MagickInfo *) NULL) &&
+      (magick_info->decoder != (Image *(*)(const ImageInfo *)) NULL))
+    image=(magick_info->decoder)(image_info);
+  else
+    MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+      image_info->magick);
   if (temporary)
     {
       (void) remove(image_info->filename);

@@ -55,10 +55,10 @@ HEADERS = magick.h image.h gems.h compress.h monitor.h error.h utility.h \
 
 SRCS = image.c effects.c shear.c segment.c quantize.c colors.c gems.c \
   signature.c decode.c encode.c compress.c utility.c monitor.c error.c \
-  delegates.c X.c display.c animate.c widget.c PreRvIcccm.c memory.c
+  delegates.c magick.c X.c display.c animate.c widget.c PreRvIcccm.c memory.c
 OBJS = image.o effects.o shear.o segment.o quantize.o colors.o gems.o \
   signature.o decode.o encode.o compress.o utility.o monitor.o error.o \
-  delegates.o X.o display.o animate.o widget.o PreRvIcccm.o memory.o
+  delegates.o magick.o X.o display.o animate.o widget.o PreRvIcccm.o memory.o
 
 #ifdef HPArchitecture
 

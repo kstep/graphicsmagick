@@ -33,6 +33,7 @@ $call Make utility
 $call Make monitor
 $call Make error
 $call Make delegates
+$call Make magick
 $call Make display
 $call Make animate
 $call Make widget
@@ -42,8 +43,8 @@ $call Make memory
 $call Make vms
 $library/create libmagick.olb image.obj,effects.obj,shear.obj,segment.obj, -
   quantize.obj,colors.obj,gems.obj,signature.obj,decode.obj,encode.obj, -
-  compress.obj,utility.obj,monitor.obj,error.obj,delegates.obj,display.obj, -
-  animate.obj,widget.obj,X.obj,PreRvIcccm.obj,memory.obj,vms.obj
+  compress.obj,utility.obj,monitor.obj,error.obj,delegates.obj,magick.obj, -
+  display.obj,animate.obj,widget.obj,X.obj,PreRvIcccm.obj,memory.obj,vms.obj
 $exit
 $
 $Make: subroutine
