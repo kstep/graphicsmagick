@@ -11549,7 +11549,8 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   /*
     Display pixmap on the window.
   */
-  if ((width > window_info.width) || (height > window_info.height))
+  if (((unsigned int) width > window_info.width) ||
+      ((unsigned int) height > window_info.height))
     (void) XFillRectangle(display,window_info.pixmap,
       window_info.annotate_context,0,0,(unsigned int) width,
       (unsigned int) height);

@@ -295,7 +295,6 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   register SegmentInfo
