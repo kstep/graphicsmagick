@@ -1766,12 +1766,14 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       if (image->filesize != 0)
         {
           if (image->filesize >= (1 << 24))
-            (void) fprintf(file,"%gmb ",image->filesize/1024/1024);
+            (void) fprintf(file,"%lumb ",
+              (unsigned long) (image->filesize/1024/1024));
           else
             if (image->filesize >= (1 << 16))
-              (void) fprintf(file,"%gkb ",image->filesize/1024);
+              (void) fprintf(file,"%lukb ",
+                (unsigned long) (image->filesize/1024));
             else
-              (void) fprintf(file,"%gb ",image->filesize);
+              (void) fprintf(file,"%lub ",(unsigned long) image->filesize);
         }
       (void) fprintf(file,"%.1fu %d:%02d\n",user_time,(int) (elapsed_time/60.0),
         (int) ceil(fmod(elapsed_time,60.0)));
@@ -2061,7 +2063,15 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           else
             (void) fprintf(file,"\n");
     }
-  (void) fprintf(file,"  Filesize: %g\n",image->filesize);
+  if (image->filesize >= (1 << 24))
+    (void) fprintf(file,"Filesize: %lumb ",
+      (unsigned long) (image->filesize/1024/1024));
+  else
+    if (image->filesize >= (1 << 16))
+      (void) fprintf(file,"Filesize: %lukb ",
+        (unsigned long) (image->filesize/1024));
+    else
+      (void) fprintf(file,"Filesize: %lub ",(unsigned long) image->filesize);
   if (image->interlace == NoInterlace)
     (void) fprintf(file,"  Interlace: None\n");
   else

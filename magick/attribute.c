@@ -589,7 +589,7 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,
     {
       if (LocaleNCompare("size",key,2) == 0)
         {
-          FormatString(attribute,"%g",image->filesize);
+          FormatString(attribute,"%lu",(unsigned long) image->filesize);
           break;
         }
       if (LocaleNCompare("scene",key,2) == 0)

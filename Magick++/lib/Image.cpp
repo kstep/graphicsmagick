@@ -2155,7 +2155,7 @@ std::string Magick::Image::fileName ( void ) const
   //  return std::string( constImage()->filename );
 }
 
-double Magick::Image::fileSize ( void ) const
+off_t Magick::Image::fileSize ( void ) const
 {
   return constImage()->filesize;
 }

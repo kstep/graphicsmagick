@@ -279,9 +279,6 @@ typedef struct _Image
   FILE
     *file;
 
-  double
-    filesize;
-
   int
     pipet;
 
@@ -440,6 +437,9 @@ typedef struct _Image
 
   unsigned long
     signature;
+
+  off_t
+    filesize;
 } Image;
 
 typedef struct _ImageInfo

@@ -12,7 +12,7 @@ extern "C" {
   Monitor typedef declarations.
 */
 typedef void
-  (*MonitorHandler)(const char *,const unsigned long,const unsigned long);
+  (*MonitorHandler)(const char *,const off_t,const off_t);
 
 /*
   Monitor declarations.
@@ -21,7 +21,7 @@ extern MagickExport MonitorHandler
   SetMonitorHandler(MonitorHandler);
 
 extern MagickExport void
-  MagickMonitor(const char *,const unsigned long,const unsigned long);
+  MagickMonitor(const char *,const off_t,const off_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
