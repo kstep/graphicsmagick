@@ -1263,7 +1263,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
                   else
                     return(False);
             }
-          } while (isxdigit(int) (*name));
+          } while (isxdigit((int) *name));
         }
       else
         if ((n != 4) && (n != 8) && (n != 16))
