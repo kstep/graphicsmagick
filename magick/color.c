@@ -1485,7 +1485,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
 %
 %    o color: The color intensities.
 %
-%    o Compliance: Adhere to this color standard: SVG or X11.
+%    o Compliance: Adhere to this color standard: SVG, X11, or XPM.
 %
 %    o name: Return the color name or hex value.
 %

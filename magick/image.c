@@ -2179,7 +2179,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       {
         (void) fprintf(file,"    %lu: (%5d,%5d,%5d)",i,p->red,p->green,p->blue);
         (void) fprintf(file,"\t");
-        (void) QueryColorname(image,p,AllCompliance,name,&image->exception);
+        (void) QueryColorname(image,p,SVGCompliance,name,&image->exception);
         (void) fprintf(file,"  %.1024s",name);
         (void) fprintf(file,"\n");
         p++;
@@ -2387,13 +2387,13 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     else
       if (image->interlace == PartitionInterlace)
         (void) fprintf(file,"  Interlace: Partition\n");
-  (void) QueryColorname(image,&image->background_color,AllCompliance,color,
+  (void) QueryColorname(image,&image->background_color,SVGCompliance,color,
     &image->exception);
   (void) fprintf(file,"  Background Color: %.1024s\n",color);
-  (void) QueryColorname(image,&image->border_color,AllCompliance,color,
+  (void) QueryColorname(image,&image->border_color,SVGCompliance,color,
     &image->exception);
   (void) fprintf(file,"  Border Color: %.1024s\n",color);
-  (void) QueryColorname(image,&image->matte_color,AllCompliance,color,
+  (void) QueryColorname(image,&image->matte_color,SVGCompliance,color,
     &image->exception);
   (void) fprintf(file,"  Matte Color: %.1024s\n",color);
   if ((image->page.width != 0) && (image->page.height != 0))
