@@ -598,7 +598,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 
 static double Box(const double x)
 {
-  if (AbsoluteValue(x-MagickEpsilon) <= 0.5)
+  if (AbsoluteValue(x) <= 0.5)
     return(1.0);
   return(0.0);
 }
@@ -793,7 +793,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       /*
         Reduce to point sampling.
       */
-      support=0.5;
+      support=0.5+MagickEpsilon;
       scale=1.0;
     }
   scale=1.0/scale;
@@ -917,7 +917,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       /*
         Reduce to point sampling.
       */
-      support=0.5;
+      support=0.5+MagickEpsilon;
       scale=1.0;
     }
   scale=1.0/scale;
