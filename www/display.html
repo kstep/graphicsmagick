@@ -482,6 +482,7 @@ special format characters:
      %d   directory
      %e   filename extention
      %f   filename
+     %g   group number
      %h   height
      %i   input filename
      %k   number of unique colors
@@ -497,6 +498,7 @@ special format characters:
      %w   width
      %x   x resolution
      %y   y resolution
+     %#   signature
      \n   newline
      \r   carriage return
 </pre>
@@ -1564,28 +1566,30 @@ to the image window and is typically displayed in the window title bar.
 Optionally you can include the image filename, type, width, height, or
 other image attribute by embedding special format characters:</font></td></tr></table>
 <pre>
-     %b file size
-     %c comment
-     %d directory
-     %e filename extention
-     %f filename
-     %h height
-     %i input filename
-     %k number of unique colors
-     %l label
-     %m magick
-     %n number of scenes
-     %o output filename
-     %p page number
-     %q quantum depth
-     %s scene number
-     %t top of filename
-     %u unique temporary filename
-     %w width
-     %x x resolution
-     %y y resolution
-     \n newline
-     \r carriage return
+     %b   file size
+     %c   comment
+     %d   directory
+     %e   filename extention
+     %f   filename
+     %g   group number
+     %h   height
+     %i   input filename
+     %k   number of unique colors
+     %l   label
+     %m   magick
+     %n   number of scenes
+     %o   output filename
+     %p   page number
+     %q   quantum depth
+     %s   scene number
+     %t   top of filename
+     %u   unique temporary filename
+     %w   width
+     %x   x resolution
+     %y   y resolution
+     %#   signature
+     \n   newline
+     \r   carriage return
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example,

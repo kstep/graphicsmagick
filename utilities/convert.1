@@ -383,7 +383,7 @@ If a clipping path is present, it will be applied to subsequent operations.
 
 For example, if you type the following command:
 
-    convert -clip -negate cockatoo.tif negated_cockatoo.tif
+     convert -clip -negate cockatoo.tif negated_cockatoo.tif
 
 only the pixels within the clipping path are negated.
 
@@ -453,6 +453,7 @@ special format characters:
      %d   directory
      %e   filename extention
      %f   filename
+     %g   group number
      %h   height
      %i   input filename
      %k   number of unique colors
@@ -468,6 +469,7 @@ special format characters:
      %w   width
      %x   x resolution
      %y   y resolution
+     %#   signature
      \\n   newline
      \\r   carriage return
 
