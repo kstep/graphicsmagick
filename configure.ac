@@ -1328,7 +1328,7 @@ then
           freetype_prefix=`freetype-config --prefix`
           freetype_exec_prefix=`freetype-config --exec-prefix`
           LDFLAGS="$LDFLAGS -L${freetype_exec_prefix}/lib"
-          CPPFLAGS="$CPPFLAGS -I${freetype_prefix}/include/freetype2"
+          CPPFLAGS="-I${freetype_prefix}/include/freetype2 $CPPFLAGS"
        fi
     fi
 
