@@ -1924,7 +1924,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
               image);
           }
         q=bmp_colormap;
-        for (i=0; i < (long) image->colors; i++)
+        for (i=0; i < (long) Min(image->colors,bmp_info.number_colors); i++)
         {
           *q++=ScaleQuantumToChar(image->colormap[i].blue);
           *q++=ScaleQuantumToChar(image->colormap[i].green);
