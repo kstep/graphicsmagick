@@ -535,6 +535,7 @@ Source: "..\PerlMagick\demo\*"; DestDir: "{app}\PerlMagick\demo"; CopyMode: alwa
 Source: "PerlMagick-PPM.txt"; DestDir: "{app}\PerlMagick"; CopyMode: alwaysoverwrite; DestName: "README.txt"
 ; ImageMagickObject DLL (usable from Visual Basic and WSH)
 Source: "bin\ImageMagickObject.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
+Source: "..\contrib\win32\ATL\ImageMagickObject\README.txt"; DestDir: "{app}\ImageMagickObject"; CopyMode: alwaysoverwrite
 Source: "..\contrib\win32\ATL\ImageMagickObject\Tests\VBTest\*"; DestDir: "{app}\ImageMagickObject\VBExample"; CopyMode: alwaysoverwrite
 Source: "..\contrib\win32\ATL\ImageMagickObject\Tests\WSHTest\*"; DestDir: "{app}\ImageMagickObject\WSHExample"; CopyMode: alwaysoverwrite
 
