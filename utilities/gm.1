@@ -284,8 +284,8 @@ configuration, run "convert -list format".
 
 Raw images are expected to have one byte per pixel unless \fBgm\fP
 is compiled in 16-bit mode or in 32-bit mode. Here, the raw data
-is expected to be stored
-two bytes per pixel in most-significant-byte-first order.
+is expected to be stored two or four
+bytes per pixel, respectively, in most-significant-byte-first order.
 You can tell if \fBgm\fP was compiled in 16-bit mode by typing
 "gm convert" without any options, and looking for "Q:16" in the first line of
 output.
@@ -7787,7 +7787,8 @@ as useful as it is today.
 \fIRod Bogart\fP and \fIJohn W. Peterson\fP, \fBUniversity of Utah\fP.
 Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.
 
-\fIPaul Heckbert\fP. Image resizing is based on his Zoom program.
+\fIPaul Heckbert\fP, \fBCarnegie Mellon University\fP. Image resizing is
+based on his Zoom program.
 
 \fIPaul Raveling\fP, \fBUSC Information Sciences Institute\fP. The
 spatial subdivision color reduction algorithm is based on his Img software.

@@ -351,8 +351,8 @@ configuration, run <tt>"convert -list format"</tt>.
 <p>
 Raw images are expected to have one byte per pixel unless <strong>gm</strong>
 is compiled in 16-bit mode or in 32-bit mode. Here, the raw data
-is expected to be stored
-two bytes per pixel in most-significant-byte-first order.
+is expected to be stored two or four
+bytes per pixel, respectively, in most-significant-byte-first order.
 You can tell if <strong>gm</strong> was compiled in 16-bit mode by typing
 "gm convert" without any options, and looking for "Q:16" in the first line of
 output.
@@ -5197,6 +5197,7 @@ of header identifying the window. The default is the image file name.</dd>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
 &nbsp;</p>
+<br>&nbsp;<br>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
 <td ALIGN=LEFT bgcolor="#003399" background="../images/background.gif"><img 
@@ -5905,6 +5906,7 @@ For a more detailed description of each option, see
 Options, above.
 <br>&nbsp;<br>
 </td></tr></table>
+<br>&nbsp;<br>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
 <td ALIGN=LEFT bgcolor="#003399" background="../images/background.gif"><img 
@@ -6234,6 +6236,7 @@ PerlMagick's GetAttribute().</dd>
 <dt>&lt;trim&gt;</dt>
 </dl>
 </td></tr></table>
+<br>&nbsp;<br>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
 <td ALIGN=LEFT bgcolor="#003399" background="../images/background.gif"><img 
@@ -7831,6 +7834,7 @@ width=15><b><font face="Helvetica, Arial"
 <p>
 For a more detailed description of each option, see
 Options, above.
+<br>&nbsp;<br>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
 <td ALIGN=LEFT bgcolor="#003399" background="../images/background.gif"><img 
@@ -11288,6 +11292,7 @@ are considered a precious resource, use them with discretion.</dd>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
 &nbsp;</p>
+<br>&nbsp;<br>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
 <td ALIGN=LEFT bgcolor="#003399" background="../images/background.gif"><img 
@@ -14573,7 +14578,8 @@ as useful as it is today.
 <em>Rod Bogart</em> and <em>John W. Peterson</em>, <strong>University of Utah</strong>.
 Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.
 <p>
-<em>Paul Heckbert</em>. Image resizing is based on his Zoom program.
+<em>Paul Heckbert</em>, <strong>Carnegie Mellon University</strong>. Image resizing is
+based on his Zoom program.
 <p>
 <em>Paul Raveling</em>, <strong>USC Information Sciences Institute</strong>. The
 spatial subdivision color reduction algorithm is based on his Img software.
