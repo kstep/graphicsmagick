@@ -81,7 +81,7 @@
 	|gzip -cf > %o
 
 browse=>
-	netscape http://www.wizards.dupont.com/cristy/ImageMagick.html &
+	netscape http://www.simplesystems.org/ImageMagick/ &
 
 bzip=>
 	|bzip2 -cd %i

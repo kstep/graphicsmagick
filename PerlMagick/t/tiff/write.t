@@ -44,4 +44,4 @@ testReadWrite(  'input_mono.tiff',
 		'output_mono.tiff',
 		q//,
 		'782b370d660dff407e883221b20ffbcc',
-		'ae8254aa2869a317f789629aa4276f0a' );
+		'9b81bd04e4bb7e0f33c506f174f4705e' );

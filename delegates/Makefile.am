@@ -35,7 +35,7 @@ pkgdata_DATA = delegates.mgk magic.mgk
 
 # Additional files to distribute
 EXTRA_DIST = delegates.mgk.in mac.mgk magic.mgk nt.mgk \
-             unix.mgk vms.mgk win95.mgk
+             unix.mgk vms.mgk win98.mgk win2k.mgk
 
 # Ensure that processed delegates file is not distributed
 #dist-hook:
