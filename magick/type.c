@@ -266,6 +266,8 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
     Check for an exact type match.
   */
   (void) GetTypeInfo("*",exception);
+  if (type_list == (TypeInfo *) NULL)
+    return((TypeInfo *) NULL);
   for (p=type_list; p != (TypeInfo *) NULL; p=p->next)
   {
     if (p->family == (char *) NULL)
