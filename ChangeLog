@@ -1,4 +1,10 @@
 2002-12-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* Updated coders to use VerifyColormapIndex macro rather
+	than slow ConstrainColormapIndex() function.
+	* magick/constitute.c: Trial use of VerifyColormapIndex
+	in PushImagePixels() IndexQuantum case.
+
+2002-12-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/color.c: Added VerifyColormapIndex macro to
 	verify range of color index without a function call.
 	* coders/bmp.c: Updated to use VerifyColormapIndex macro.

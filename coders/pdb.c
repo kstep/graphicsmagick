@@ -463,16 +463,20 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x+=4)
         {
-          index=ConstrainColormapIndex(image,3-((*p >> 6) & 0x03));
+          index=(IndexPacket) (3-((*p >> 6) & 0x03));
+          VerifyColormapIndex(image,index);
           indexes[x]=index;
           *q++=image->colormap[index];
-          index=ConstrainColormapIndex(image,3-((*p >> 4) & 0x03));
+          index=(IndexPacket) (3-((*p >> 4) & 0x03));
+          VerifyColormapIndex(image,index);
           indexes[x+1]=index;
           *q++=image->colormap[index];
-          index=ConstrainColormapIndex(image,3-((*p >> 2) & 0x03));
+          index=(IndexPacket) (3-((*p >> 2) & 0x03));
+          VerifyColormapIndex(image,index);
           indexes[x+2]=index;
           *q++=image->colormap[index];
-          index=ConstrainColormapIndex(image,3-((*p) & 0x03));
+          index=(IndexPacket) (3-((*p) & 0x03));
+          VerifyColormapIndex(image,index);
           indexes[x+3]=index;
           *q++=image->colormap[index];
           p++;
@@ -498,10 +502,12 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x+=2)
         {
-          index=ConstrainColormapIndex(image,15-((*p >> 4) & 0x0f));
+          index=(IndexPacket) (15-((*p >> 4) & 0x0f));
+          VerifyColormapIndex(image,index);
           indexes[x]=index;
           *q++=image->colormap[index];
-          index=ConstrainColormapIndex(image,15-((*p) & 0x0f));
+          index=(IndexPacket) (15-((*p) & 0x0f));
+          VerifyColormapIndex(image,index);
           indexes[x+1]=index;
           *q++=image->colormap[index];
           p++;

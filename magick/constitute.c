@@ -55,6 +55,7 @@
 #include "studio.h"
 #include "blob.h"
 #include "cache.h"
+#include "color.h"
 #include "constitute.h"
 #include "delegate.h"
 #include "magick.h"
@@ -1959,6 +1960,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
     *p;
 
   register IndexPacket
+    index,
     *indexes;
 
   register long
@@ -1984,31 +1986,34 @@ MagickExport unsigned int PushImagePixels(Image *image,
     {
       if (image->colors <= 256)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x = (long) number_pixels; x > 0; --x)
           {
-            pixel=(*p++);
-            indexes[x]=PushColormapIndex(image,pixel);
-            *q++=image->colormap[indexes[x]];
+            index=(IndexPacket) (*p++);
+            VerifyColormapIndex(image,index);
+            *indexes++=index;
+            *q++=image->colormap[index];
           }
           break;
         }
       if (image->colors <= 65536L)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for ( x= (long) number_pixels; x > 0; --x)
           {
-            pixel=(*p << 8) | *(p+1);
+            index=(*p << 8) | *(p+1);
             p+=2;
-            indexes[x]=PushColormapIndex(image,pixel);
-            *q++=image->colormap[indexes[x]];
+            VerifyColormapIndex(image,index);
+            *indexes++=index;
+            *q++=image->colormap[index];
           }
           break;
         }
-      for (x=0; x < (long) number_pixels; x++)
+      for (x = (long) number_pixels; x > 0; --x)
       {
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        index=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
         p+=4;
-        indexes[x]=PushColormapIndex(image,pixel);
-        *q++=image->colormap[indexes[x]];
+        VerifyColormapIndex(image,index);
+        *indexes++=index;
+        *q++=image->colormap[index];
       }
       break;
     }

@@ -3372,7 +3372,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   index=(unsigned short) max_value;
                 if (graymap != (unsigned short *) NULL)
                   index=graymap[index];
-                index=ConstrainColormapIndex(image,index);
+                index=(IndexPacket) (index);
+                VerifyColormapIndex(image,index);
                 indexes[x]=index;
                 red=image->colormap[index].red;
                 green=image->colormap[index].green;
