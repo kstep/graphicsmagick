@@ -620,7 +620,7 @@ static void DestroyPackageInfo(struct PackageInfo *info)
 %
 %
 */
-static void errorhandler(const unsigned int error,const char *message,
+static void errorhandler(const ErrorType error,const char *message,
   const char *qualifier)
 {
   char
@@ -643,7 +643,7 @@ static void errorhandler(const unsigned int error,const char *message,
       */
       warn("%s",text);
       if (error_jump == NULL)
-        exit(error % 100);
+        exit((int) error % 100);
     }
   if (error_list)
     {
@@ -651,7 +651,7 @@ static void errorhandler(const unsigned int error,const char *message,
         sv_catpv(error_list,"\n");
       sv_catpv(error_list,text);
     }
-  longjmp(*error_jump,error);
+  longjmp(*error_jump,(int) error);
 }
 
 /*
@@ -1659,7 +1659,7 @@ static int strEQcase(const char *p,const char *q)
 %
 %
 */
-static void warninghandler(const unsigned int warning,const char *message,
+static void warninghandler(const WarningType warning,const char *message,
   const char *qualifier)
 {
   char
