@@ -456,6 +456,7 @@ typedef struct _ImageInfo
   unsigned int
     temporary,
     adjoin,
+    flatten,
     antialias;
 
   unsigned long
@@ -513,7 +514,6 @@ typedef struct _ImageInfo
 
   unsigned int
     ping,
-	flatten,
     verbose,
     debug;
 

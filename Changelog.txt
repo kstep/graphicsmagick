@@ -1,21 +1,18 @@
 2001-12-09  Leonard Rosenthol  <leonardr@lazerware.com>
-	* Added new "flatten" member to _ImageInfo
-		default value is false
-		used by PSD and XCF to determine whether to flatten on read
-	* PSD and XCF now respect image_info->flatten
-	* Fixed bug in XCF loader when loading layered image as layers
-	* Modified the Convert utility to set image_info->flatten 
-		if -flatten is specified
-		NOTE: we still call FlattenImages for other formats 
-			  that don't respect image_info->flatten
+	* Added new member to ImageInfo: flatten.   Used by
+	  PSD and XCF to determine whether to flatten an image when read.
+	* PSD and XCF now respect image_info->flatten.
+	* Fixed bug in XCF loader when loading layered image as layers.
+	* Modified the convert program to set image_info->flatten
+	  if -flatten is specified; we still call FlattenImages for
+	  other formats that don't respect image_info->flatten.
 	* Modified Magick++'s Image class to support image_info->flatten
 
 2001-12-08  Leonard Rosenthol  <leonardr@lazerware.com>
-	* Improvements to the Photoshop (PSD) coder.
-		Added support for Duotone images
-			loaded as grayscale as per PSD docs
-		Added option to composite layers when reading
-			respects layer visibility setting
+	* Improvements to the Photoshop (PSD) coder:  1) added support
+	  for Duotone images loaded as grayscale as per PSD docs;  and
+	  2) added option to composite layers when reading respects layer
+	  visibility setting
 		
 2001-12-07  Cristy  <cristy@mystic.es.dupont.com>
 	* -dissolve wasn't working for the composite program (thanks to

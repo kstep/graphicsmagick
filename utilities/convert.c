@@ -370,7 +370,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
           *image=deconstruct_image;
         }
     }
-  if (option_info->flatten)
+  if (option_info->flatten && ((*image)->next != (Image *) NULL))
     {
       Image
         *flatten_image;
@@ -378,15 +378,12 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
       /*
         Flatten an image sequence - IF we have a sequence!
       */
-	  if ((*image)->next != (Image *) NULL)
-	  {
-		  flatten_image=FlattenImages(*image,&(*image)->exception);
-		  if (flatten_image != (Image *) NULL)
-			{
-			  DestroyImages(*image);
-			  *image=flatten_image;
-			}
-	  }
+      flatten_image=FlattenImages(*image,&(*image)->exception);
+      if (flatten_image != (Image *) NULL)
+        {
+          DestroyImages(*image);
+          *image=flatten_image;
+        }
     }
   if (option_info->morph != 0)
     {
