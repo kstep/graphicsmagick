@@ -83,6 +83,8 @@
 #define ERR(API)  ((API)->err != wmf_E_None)
 #define DIAG(API) ((API)->flags & WMF_OPT_DIAGNOSTICS)
 
+#define TWIPS_INCH 1440
+#define CENTIMETERS_INCH 2.54
 
 #include "libwmf/fund.h"
 #include "libwmf/types.h"
@@ -104,6 +106,8 @@ struct _wmf_magick_t
 
   unsigned int width;
   unsigned int height;
+  double x_resolution; /* horizontal resolution in DPI */
+  double y_resolution; /* vertical resolution in DPI */
 
   /* Magick device layer writes raster images as PNG */
   struct _wmf_magick_image
@@ -828,16 +832,8 @@ static void wmf_magick_draw_text (wmfAPI* API,
   double
     angle = 0;
 
-  magickPoint
-    pt;
-
   wmfFont
     *font;
-
-  wmfRGB
-    *box,
-    *fill,
-    *stroke;
 
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData (API);
@@ -856,25 +852,21 @@ static void wmf_magick_draw_text (wmfAPI* API,
 
   /* Set stroke color */
   wmf_stream_printf (API,out,"stroke none\n");
-/*   wmfRGB* stroke = WMF_DC_TEXTCOLOR (draw_text->dc); */
-/*   wmf_stream_printf (API,out,"stroke #%02x%02x%02x\n", */
-/*                      (int)stroke->r,(int)stroke->g,(int)stroke->b); */
 
   /* Set fill color */
-  if(WMF_DC_OPAQUE(draw_text->dc))
-     {
-       wmfRGB* fill = WMF_DC_TEXTCOLOR (draw_text->dc);
-       wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
-                          (int)fill->r,(int)fill->g,(int)fill->b);
-     }
+  {
+    wmfRGB* fill = WMF_DC_TEXTCOLOR (draw_text->dc);
+    wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
+                       (int)fill->r,(int)fill->g,(int)fill->b);
+  }
 
   /* Set box color */
-  if(!WMF_DC_TRANSPARENT(draw_text->dc))
-    {
-      wmfRGB* box = WMF_DC_BACKGROUND (draw_text->dc);
-      wmf_stream_printf (API,out,"box #%02x%02x%02x\n",
-                         (int)box->r,(int)box->g,(int)box->b);
-     }
+/*   if(!WMF_DC_TRANSPARENT(draw_text->dc)) */
+/*     { */
+/*       wmfRGB* box = WMF_DC_BACKGROUND (draw_text->dc); */
+/*       wmf_stream_printf (API,out,"box #%02x%02x%02x\n", */
+/*                          (int)box->r,(int)box->g,(int)box->b); */
+/*      } */
 
   /* Output font file name */
   font_name = WMF_FONT_PSNAME (font);
@@ -891,16 +883,26 @@ static void wmf_magick_draw_text (wmfAPI* API,
     wmf_stream_printf (API,out,"decorate line-through\n");
 
   /* Set font size */
-  pointsize = WMF_FONT_HEIGHT(font) / 25.4 ;
+/*   printf("========= Font Height  : %i\n", (int)WMF_FONT_HEIGHT(font)); */
+/*   printf("========= Font Width   : %i\n", (int)WMF_FONT_WIDTH(font)); */
+    pointsize = ceil((((double)2.54*ddata->y_resolution*WMF_FONT_HEIGHT(font)))/TWIPS_INCH);
+/*   printf("========= Pointsize    : %i\n", (int)pointsize); */
   wmf_stream_printf (API,out,"font-size %i\n", pointsize);
 
   /* Translate coordinates so target is 0,0 */
-  pt = magick_translate(API,draw_text->pt);
-  wmf_stream_printf (API,out,"translate %f,%f\n",pt.x,pt.y);
+  {
+    magickPoint
+      pt;
+
+    pt = magick_translate (API,draw_text->pt);
+    wmf_stream_printf (API,out,"translate %f,%f\n",pt.x,pt.y);
+  }
 
   /* Apply rotation */
-  angle = WMF_TEXT_ANGLE(font);
-  wmf_stream_printf (API,out,"rotate %d\n",angle);
+  /* FIXME: rotation is backwards */
+  angle = RadiansToDegrees(WMF_TEXT_ANGLE(font));
+  if (angle != 0)
+    wmf_stream_printf (API,out,"rotate %d\n",angle);
           
   /*
    * Render text
@@ -1283,7 +1285,7 @@ static void ScribbleMVG(Image* image, const char* mvg)
   draw_info = (DrawInfo*)AcquireMemory(sizeof(DrawInfo));
   GetDrawInfo( image_info, draw_info );
   draw_info->primitive=(char*)mvg;
-  puts(draw_info->primitive);
+/*   puts(draw_info->primitive); */
   DrawImage(image,draw_info);
   draw_info->primitive = (char*)NULL;
   DestroyDrawInfo(draw_info);
@@ -1380,10 +1382,8 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,"Failed to compute output size",
                          image);
   }
-/*   printf("twips: %fx%f\n", wmf_width, wmf_height); */
+  printf("wmf_size: %fx%f\n", wmf_width, wmf_height);
 
-#define TWIPS_INCH 1440
-#define CENTIMETERS_INCH 2.54
   if(image->y_resolution > 0)
     {
       y_resolution = image->y_resolution;
@@ -1401,12 +1401,14 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   wmf_width  = ceil(( wmf_width*CENTIMETERS_INCH)/TWIPS_INCH*x_resolution);
   wmf_height = ceil((wmf_height*CENTIMETERS_INCH)/TWIPS_INCH*y_resolution);
 
-/*   printf("Size: %fx%f\n", wmf_width, wmf_height); */
+  printf("Size: %fx%f\n", wmf_width, wmf_height);
 
   ddata = WMF_MAGICK_GetData (API);
   ddata->bbox = bounding_box;
   ddata->width  = (unsigned int) wmf_width;
   ddata->height = (unsigned int) wmf_height;
+  ddata->x_resolution = x_resolution;
+  ddata->y_resolution = y_resolution;
 
   /* Create canvas image */
   clone_info = (ImageInfo*)AcquireMemory(sizeof(ImageInfo));
