@@ -32,7 +32,9 @@ typedef enum
   RGBQuantum,
   RGBAQuantum,
   CMYKQuantum,
-  CMYKAQuantum
+  CMYKAQuantum,
+  GrayInvertedQuantum,
+  GrayInvertedAlphaQuantum
 } QuantumType;
 
 typedef enum

@@ -888,15 +888,17 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         */
         {
           QuantumType
-            push_method;
+            quantum_type;
 
           if (image->matte)
-            push_method=GrayAlphaQuantum;
+            quantum_type=GrayAlphaQuantum;
           else
-            if (photometric != PHOTOMETRIC_PALETTE)
-              push_method=GrayQuantum;
-            else
-              push_method=IndexQuantum;
+            {
+              if (photometric != PHOTOMETRIC_PALETTE)
+                quantum_type=GrayQuantum;
+              else
+                quantum_type=IndexQuantum;
+            }
 
           for (y=0; y < image->rows; y++)
             {
@@ -918,7 +920,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                                                 packet_size*width));
                 }
 
-              (void) ImportImagePixelArea(image,push_method,bits_per_sample,scanline);
+              (void) ImportImagePixelArea(image,quantum_type,bits_per_sample,scanline);
               if (!SyncImagePixels(image))
                 break;
               if (image->previous == (Image *) NULL)
@@ -932,6 +934,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
       case DirectClassScanLineMethod:
       {
+        QuantumType
+          quantum_type;
+
         /*
           Convert TIFF image to DirectClass MIFF image.
         */
@@ -953,6 +958,21 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               image)
           }
 
+        if (image->colorspace == CMYKColorspace)
+          {
+            if (image->matte)
+              quantum_type=CMYKAQuantum;
+            else
+              quantum_type=CMYKQuantum;
+          }
+        else
+          {
+            if (image->matte)
+              quantum_type=RGBAQuantum;
+            else
+              quantum_type=RGBQuantum;
+          }
+
         for (y=0; y < image->rows; y++)
         {
           register IndexPacket
@@ -970,10 +990,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           */
           if (bits_per_sample >= 16)
             {
-              unsigned long
-                lsb_first;
-              
-              lsb_first=1;
+              unsigned long lsb_first=1;
               if (*(char *) &lsb_first)
                 MSBOrderShort(scanline,8*TIFFScanlineSize(tiff));
             }
@@ -981,21 +998,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           /*
             Import scanline into image.
           */
-          if (image->colorspace == CMYKColorspace)
-            {
-              if (!image->matte)
-                (void) ImportImagePixelArea(image,CMYKQuantum,bits_per_sample,scanline);
-              else
-                (void) ImportImagePixelArea(image,CMYKAQuantum,bits_per_sample,scanline);
-            }
-          else
-            {
-              if (!image->matte)
-                (void) ImportImagePixelArea(image,RGBQuantum,bits_per_sample,scanline);
-              else
-                (void) ImportImagePixelArea(image,RGBAQuantum,bits_per_sample,scanline);
-            }
-          
+          if(ImportImagePixelArea(image,quantum_type,bits_per_sample,scanline)
+             == MagickFail)
+            break;
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -1684,12 +1689,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
-    *indexes;
-
   register unsigned int
-    i,
-    x;
+    i;
 
   TIFF
     *tiff;
@@ -2341,71 +2342,54 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       }
       default:
       {
+        QuantumType
+          quantum_type;
+        
         /*
           Convert PseudoClass packets to contiguous scanlines.
         */
+        if (photometric != PHOTOMETRIC_PALETTE)
+          {
+            /* Grayscale DirectClass */
+            if (photometric == PHOTOMETRIC_MINISWHITE)
+              /* PHOTOMETRIC_MINISWHITE */
+              if (2 == samples_per_pixel)
+                /* With alpha channel */
+                quantum_type=GrayInvertedAlphaQuantum;
+              else
+                quantum_type=GrayInvertedQuantum;
+            else
+              /* PHOTOMETRIC_MINISBLACK */
+              if (2 == samples_per_pixel)
+                /* With alpha channel */
+                quantum_type=GrayAlphaQuantum;
+              else
+                quantum_type=GrayQuantum;
+          }
+        else
+          {
+            /* Color/Gray PseudoClass */
+            if (2 == samples_per_pixel)
+              /* With alpha channel */
+              quantum_type=IndexAlphaQuantum;
+            else
+              quantum_type=IndexQuantum;
+          }
+        
         for (y=0; y < image->rows; y++)
           {
-            BitStreamWriteHandle
-              bit_stream;
-            
-            register unsigned long
-              scale;
-            
-            register unsigned int
-              quantum;
-            
-            scale=MaxRGB / (MaxRGB >> (QuantumDepth-bits_per_sample));
-            p=AcquireImagePixels(image,0,y,image->columns,1,
-                                 &image->exception);
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            BitStreamInitializeWrite(&bit_stream,scanline);
-            if (photometric != PHOTOMETRIC_PALETTE)
-              {
-                /* Grayscale DirectClass */
-                for (x= image->columns; x > 0; --x)
-                  {
-                    if (photometric == PHOTOMETRIC_MINISWHITE)
-                      /* PHOTOMETRIC_MINISWHITE */
-                      quantum=(MaxRGB - p->red)/scale;
-                    else
-                      /* PHOTOMETRIC_MINISBLACK */
-                      quantum=p->red/scale;
-
-                    BitStreamMSBWrite(&bit_stream,bits_per_sample,quantum);
-                    if (samples_per_pixel == 2)
-                      /* with opacity sample */
-                      {
-                        quantum=(MaxRGB - p->opacity)/scale;
-                        BitStreamMSBWrite(&bit_stream,bits_per_sample,quantum);
-                      }
-                    p++;
-                  }
-              }
-            else
-              {
-                /* Color/Gray PseudoClass */
-                indexes=GetIndexes(image);
-                for (x= image->columns; x > 0; --x)
-                  {
-                    BitStreamMSBWrite(&bit_stream,bits_per_sample,*indexes++);
-                    if (samples_per_pixel == 2)
-                      /* with opacity sample */
-                      {
-                        quantum=(MaxRGB - p->opacity)/scale;
-                        BitStreamMSBWrite(&bit_stream,bits_per_sample,quantum);
-                        p++;
-                      }
-                  }
-              }
+            if (ExportImagePixelArea(image,quantum_type,bits_per_sample,
+                                     scanline) == MagickFail)
+              break;
             if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
               break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 {
-                  status=MagickMonitor(SaveImageText,y,image->rows,
-                                       &image->exception);
+                  status=MagickMonitor(SaveImageText,y,image->rows,&image->exception);
                   if (status == False)
                     break;
                 }

@@ -1170,6 +1170,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
           }
         break;
       }
+    case GrayInvertedQuantum:
     case GrayQuantum:
       {
         if ( (quantum_size >= 8) && (quantum_size % 8U == 0U) )
@@ -1177,69 +1178,51 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
             /*
               Modulo-8 sample sizes
             */
-            if (image->is_grayscale)
+            if( QuantumDepth == quantum_size)
               {
-                if( QuantumDepth == quantum_size)
+                /* Unity scale */
+                for (x = number_pixels; x > 0; --x)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        ExportModulo8Quantum(q,quantum_size,p->red);
-                        p++;
-                      }
+                    if (image->is_grayscale)
+                      pixel=p->red;
+                    else
+                      pixel=PixelIntensityToQuantum(p);
+                    if (GrayInvertedQuantum == quantum_type)
+                      pixel=MaxRGB-pixel;
+                    ExportModulo8Quantum(q,quantum_size,pixel);
+                    p++;
                   }
-                else if (QuantumDepth >  quantum_size)
+              }
+            else if (QuantumDepth >  quantum_size)
+              {
+                /* Scale down */
+                for (x = number_pixels; x > 0; --x)
                   {
-                    /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        pixel=p->red/sample_scale;
-                        ExportModulo8Quantum(q,quantum_size,pixel);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        pixel=p->red*sample_scale;
-                        ExportModulo8Quantum(q,quantum_size,pixel);
-                        p++;
-                      }
+                    if (image->is_grayscale)
+                      pixel=p->red;
+                    else
+                      pixel=PixelIntensityToQuantum(p);
+                    if (GrayInvertedQuantum == quantum_type)
+                      pixel=MaxRGB-pixel;
+                    pixel /= sample_scale;
+                    ExportModulo8Quantum(q,quantum_size,pixel);
+                    p++;
                   }
               }
             else
               {
-                if( QuantumDepth == quantum_size)
+                /* Scale up */
+                for (x = number_pixels; x > 0; --x)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        pixel=PixelIntensityToQuantum(p);
-                        ExportModulo8Quantum(q,quantum_size,pixel); 
-                        p++;
-                      }
-                  }
-                else if (QuantumDepth >  quantum_size)
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        pixel=PixelIntensityToQuantum(p)/sample_scale;
-                        ExportModulo8Quantum(q,quantum_size,pixel);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        pixel=PixelIntensityToQuantum(p)*sample_scale;
-                        ExportModulo8Quantum(q,quantum_size,pixel);
-                        p++;
-                      }
+                    if (image->is_grayscale)
+                      pixel=p->red;
+                    else
+                      pixel=PixelIntensityToQuantum(p);
+                    if (GrayInvertedQuantum == quantum_type)
+                      pixel=MaxRGB-pixel;
+                    pixel *= sample_scale;
+                    ExportModulo8Quantum(q,quantum_size,pixel);
+                    p++;
                   }
               }
           }
@@ -1252,157 +1235,113 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
               stream;
 
             BitStreamInitializeWrite(&stream,q);
-            if (image->is_grayscale)
+            if( QuantumDepth == quantum_size)
               {
-                if( QuantumDepth == quantum_size)
+                /* Unity scale */
+                for (x = number_pixels; x > 0; --x)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        BitStreamMSBWrite(&stream,quantum_size,
-                                          p->red);
-                        p++;
-                      }
+                    if (image->is_grayscale)
+                      pixel=p->red;
+                    else
+                      pixel=PixelIntensityToQuantum(p);
+                    BitStreamMSBWrite(&stream,quantum_size,pixel);
+                    p++;
                   }
-                else if (QuantumDepth >  quantum_size)
+              }
+            else if (QuantumDepth >  quantum_size)
+              {
+                /* Scale down */
+                for (x = number_pixels; x > 0; --x)
                   {
-                    /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        BitStreamMSBWrite(&stream,quantum_size,
-                                          p->red/sample_scale);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        BitStreamMSBWrite(&stream,quantum_size,
-                                          p->red*sample_scale);
-                        p++;
-                      }
+                    if (image->is_grayscale)
+                      pixel=p->red;
+                    else
+                      pixel=PixelIntensityToQuantum(p);
+                    if (GrayInvertedQuantum == quantum_type)
+                      pixel=MaxRGB-pixel;
+                    pixel /= sample_scale;
+                    BitStreamMSBWrite(&stream,quantum_size,pixel);
+                    p++;
                   }
               }
             else
               {
-                if( QuantumDepth == quantum_size)
+                /* Scale up */
+                for (x = number_pixels; x > 0; --x)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        BitStreamMSBWrite(&stream,quantum_size,
-                                          PixelIntensityToQuantum(p));
-                        p++;
-                      }
-                  }
-                else if (QuantumDepth >  quantum_size)
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        BitStreamMSBWrite(&stream,quantum_size,
-                                          PixelIntensityToQuantum(p)/sample_scale);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        BitStreamMSBWrite(&stream,quantum_size,
-                                          PixelIntensityToQuantum(p)*sample_scale);
-                        p++;
-                      }
+                    if (image->is_grayscale)
+                      pixel=p->red;
+                    else
+                      pixel=PixelIntensityToQuantum(p);
+                    if (GrayInvertedQuantum == quantum_type)
+                      pixel=MaxRGB-pixel;
+                    pixel *= sample_scale;
+                    BitStreamMSBWrite(&stream,quantum_size,pixel);
+                    p++;
                   }
               }
           }
         break;
       }
     case GrayAlphaQuantum:
+    case GrayInvertedAlphaQuantum:
       {
         if ( (quantum_size >= 8) && (quantum_size % 8U == 0U) )
           {
             /*
               Modulo-8 sample sizes
             */
-            if (image->is_grayscale)
+            if( QuantumDepth == quantum_size)
               {
-                if( QuantumDepth == quantum_size)
+                /* Unity scale */
+                for (x = number_pixels; x > 0; --x)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        ExportModulo8Quantum(q,quantum_size,p->red);
-                        pixel=MaxRGB-p->opacity;
-                        ExportModulo8Quantum(q,quantum_size,pixel);
-                        p++;
-                      }
+                    if (image->is_grayscale)
+                      pixel=p->red;
+                    else
+                      pixel=PixelIntensityToQuantum(p);
+                    if (GrayInvertedAlphaQuantum == quantum_type)
+                      pixel=MaxRGB-pixel;
+                    ExportModulo8Quantum(q,quantum_size,pixel);
+                    pixel=MaxRGB-p->opacity;
+                    ExportModulo8Quantum(q,quantum_size,pixel);
+                    p++;
                   }
-                else if (QuantumDepth >  quantum_size)
+              }
+            else if (QuantumDepth >  quantum_size)
+              {
+                /* Scale down */
+                for (x = number_pixels; x > 0; --x)
                   {
-                    /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        pixel=p->red/sample_scale;
-                        ExportModulo8Quantum(q,quantum_size,pixel);
-                        pixel=(MaxRGB-p->opacity)/sample_scale;
-                        ExportModulo8Quantum(q,quantum_size,pixel);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        pixel=p->red*sample_scale;
-                        ExportModulo8Quantum(q,quantum_size,pixel);
-                        pixel=(MaxRGB-p->opacity)*sample_scale;
-                        ExportModulo8Quantum(q,quantum_size,pixel);
-                        p++;
-                      }
+                    if (image->is_grayscale)
+                      pixel=p->red;
+                    else
+                      pixel=PixelIntensityToQuantum(p);
+                    if (GrayInvertedAlphaQuantum == quantum_type)
+                      pixel=MaxRGB-pixel;
+                    pixel /= sample_scale;
+                    ExportModulo8Quantum(q,quantum_size,pixel);
+                    pixel=(MaxRGB-p->opacity)/sample_scale;
+                    ExportModulo8Quantum(q,quantum_size,pixel);
+                    p++;
                   }
               }
             else
               {
-                if( QuantumDepth == quantum_size)
+                /* Scale up */
+                for (x = number_pixels; x > 0; --x)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        pixel=PixelIntensityToQuantum(p);
-                        ExportModulo8Quantum(q,quantum_size,pixel);
-                        pixel=(MaxRGB-p->opacity);
-                        ExportModulo8Quantum(q,quantum_size,pixel);
-                        p++;
-                      }
-                  }
-                else if (QuantumDepth >  quantum_size)
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        pixel=PixelIntensityToQuantum(p)/sample_scale;
-                        ExportModulo8Quantum(q,quantum_size,pixel);
-                        pixel=(MaxRGB-p->opacity)/sample_scale;
-                        ExportModulo8Quantum(q,quantum_size,pixel);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        pixel=PixelIntensityToQuantum(p)*sample_scale;
-                        ExportModulo8Quantum(q,quantum_size,pixel);
-                        pixel=(MaxRGB-p->opacity)*sample_scale;
-                        ExportModulo8Quantum(q,quantum_size,pixel);
-                        p++;
-                      }
+                    if (image->is_grayscale)
+                      pixel=p->red;
+                    else
+                      pixel=PixelIntensityToQuantum(p);
+                    if (GrayInvertedAlphaQuantum == quantum_type)
+                      pixel=MaxRGB-pixel;
+                    pixel *= sample_scale;
+                    ExportModulo8Quantum(q,quantum_size,pixel);
+                    pixel=(MaxRGB-p->opacity)*sample_scale;
+                    ExportModulo8Quantum(q,quantum_size,pixel);
+                    p++;
                   }
               }
           }
@@ -1413,83 +1352,61 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
             */
             BitStreamWriteHandle
               stream;
-
+            
             BitStreamInitializeWrite(&stream,q);
-            if (image->is_grayscale)
+            if( QuantumDepth == quantum_size)
               {
-                if( QuantumDepth == quantum_size)
+                /* Unity scale */
+                for (x = number_pixels; x > 0; --x)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        BitStreamMSBWrite(&stream,quantum_size,p->red);
-                        BitStreamMSBWrite(&stream,quantum_size,MaxRGB-p->opacity);
-                        p++;
-                      }
+                    if (image->is_grayscale)
+                      pixel=p->red;
+                    else
+                      pixel=PixelIntensityToQuantum(p);
+                    if (GrayInvertedAlphaQuantum == quantum_type)
+                      pixel=MaxRGB-pixel;
+                    BitStreamMSBWrite(&stream,quantum_size,pixel);
+                    BitStreamMSBWrite(&stream,quantum_size,MaxRGB-p->opacity);
+                    p++;
                   }
-                else if (QuantumDepth >  quantum_size)
+              }
+            else if (QuantumDepth >  quantum_size)
+              {
+                /* Scale down */
+                for (x = number_pixels; x > 0; --x)
                   {
-                    /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        BitStreamMSBWrite(&stream,quantum_size,
-                                          p->red/sample_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,
-                                          (MaxRGB-p->opacity)/sample_scale);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        BitStreamMSBWrite(&stream,quantum_size,
-                                          p->red*sample_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,
-                                          (MaxRGB-p->opacity)*sample_scale);
-                        p++;
-                      }
+                    if (image->is_grayscale)
+                      pixel=p->red;
+                    else
+                      pixel=PixelIntensityToQuantum(p);
+                    if (GrayInvertedAlphaQuantum == quantum_type)
+                      pixel=MaxRGB-pixel;
+                    pixel /= sample_scale;
+                    BitStreamMSBWrite(&stream,quantum_size,pixel);
+                    BitStreamMSBWrite(&stream,quantum_size,
+                                      (MaxRGB-p->opacity)/sample_scale);
+                    p++;
                   }
               }
             else
               {
-                if( QuantumDepth == quantum_size)
+                /* Scale up */
+                for (x = number_pixels; x > 0; --x)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        BitStreamMSBWrite(&stream,quantum_size,
-                                          PixelIntensityToQuantum(p));
-                        BitStreamMSBWrite(&stream,quantum_size,MaxRGB-p->opacity);
-                        p++;
-                      }
-                  }
-                else if (QuantumDepth >  quantum_size)
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        BitStreamMSBWrite(&stream,quantum_size,
-                                          PixelIntensityToQuantum(p)/sample_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,
-                                          (MaxRGB-p->opacity)/sample_scale);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
-                      {
-                        BitStreamMSBWrite(&stream,quantum_size,
-                                          PixelIntensityToQuantum(p)*sample_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,
-                                          (MaxRGB-p->opacity)*sample_scale);
-                        p++;
-                      }
+                    if (image->is_grayscale)
+                      pixel=p->red;
+                    else
+                      pixel=PixelIntensityToQuantum(p);
+                    if (GrayInvertedAlphaQuantum == quantum_type)
+                      pixel=MaxRGB-pixel;
+                    pixel *= sample_scale;
+                    BitStreamMSBWrite(&stream,quantum_size,pixel);
+                    BitStreamMSBWrite(&stream,quantum_size,
+                                      (MaxRGB-p->opacity)*sample_scale);
+                    p++;
                   }
               }
+            
           }
         break;
       }
@@ -2580,6 +2497,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
           }
         break;
       }
+    case GrayInvertedQuantum:
     case GrayQuantum:
       {
         register unsigned int
@@ -2601,6 +2519,8 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                   {
                     ImportModulo8Quantum(index,quantum_size,p);
                     VerifyColormapIndex(image,index);
+                    if (GrayInvertedQuantum == quantum_type)
+                      index=(image->colors-1)-index;
                     *indexes++=index;
                     *q++=image->colormap[index];
                   }
@@ -2612,6 +2532,8 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     ImportModulo8Quantum(index,quantum_size,p);
                     index /= indexes_scale;
                     VerifyColormapIndex(image,index);
+                    if (GrayInvertedQuantum == quantum_type)
+                      index=(image->colors-1)-index;
                     *indexes++=index;
                     *q++=image->colormap[index];
                   }
@@ -2631,12 +2553,15 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 index=BitStreamMSBRead(&stream,quantum_size);
                 index /= indexes_scale;
                 VerifyColormapIndex(image,index);
+                if (GrayInvertedQuantum == quantum_type)
+                  index=(image->colors-1)-index;
                 *indexes++=index;
                 *q++=image->colormap[index];
               }
           }
         break;
       }
+    case GrayInvertedAlphaQuantum:
     case GrayAlphaQuantum:
       {
         /*
@@ -2663,6 +2588,8 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                   {
                     ImportModulo8Quantum(index,quantum_size,p);
                     VerifyColormapIndex(image,index);
+                    if (GrayInvertedAlphaQuantum == quantum_type)
+                      index=(image->colors-1)-index;
                     *indexes++=index;
                     *q=image->colormap[index];
                     
@@ -2682,6 +2609,8 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     ImportModulo8Quantum(index,quantum_size,p);
                     index /= indexes_scale;
                     VerifyColormapIndex(image,index);
+                    if (GrayInvertedAlphaQuantum == quantum_type)
+                      index=(image->colors-1)-index;
                     *indexes++=index;
                     *q=image->colormap[index];
                     
@@ -2709,6 +2638,8 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 index=BitStreamMSBRead(&stream,quantum_size);
                 index /= indexes_scale;
                 VerifyColormapIndex(image,index);
+                if (GrayInvertedAlphaQuantum == quantum_type)
+                  index=(image->colors-1)-index;
                 *indexes++=index;
                 *q=image->colormap[index];
 

@@ -21,7 +21,22 @@
 </tr>
 </table>
 <p>
-2004-08-22  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+2004-08-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (WriteTIFFImage): Use ExportImagePixelArea to
+        write grayscale and colormapped output.
+  <LI> magick/constitute.c (ImportImagePixelArea): Implemented support
+        for GrayInvertedQuantum &amp; GrayInvertedAlphaQuantum.
+        (ExportImagePixelArea): Implemented support for
+        GrayInvertedQuantum &amp; GrayInvertedAlphaQuantum.
+  <LI> magick/constitute.h (enum QuantumType): Added
+        GrayInvertedQuantum &amp; GrayInvertedAlphaQuantum to support
+        min-is-white gray images.
+
+</UL>
+<p>
+2004-08-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> PerlMagick/t/tiff/write.t: Adjusted file naming.
@@ -48,7 +63,7 @@
 
 </UL>
 <p>
-2004-08-14  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+2004-08-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> magick/cache.c (ClonePixelCache): It appeared that cloning a
