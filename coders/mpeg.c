@@ -54,6 +54,7 @@
 #include "studio.h"
 #include "blob.h"
 #include "delegate.h"
+#include "log.h"
 #include "magick.h"
 #include "utility.h"
 
@@ -529,7 +530,6 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
 {
   char
     basename[MaxTextExtent],
-    *blob,
     filename[MaxTextExtent];
 
 
@@ -540,9 +540,6 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   ImageInfo
     *clone_info;
 
-  int
-    file;
-
   register Image
     *p;
 
@@ -552,11 +549,15 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   size_t
     length;
 
+  unsigned char
+    *blob;
+
   unsigned int
     status;
 
   unsigned long
     count,
+    logging,
     scene;
 
   /*
@@ -566,6 +567,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  logging=LogMagickEvent(CoderEvent," Begin WriteMPEGImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
@@ -617,37 +619,66 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   clone_info->interlace=PlaneInterlace;
   for (p=coalesce_image; p != (Image *) NULL; p=p->next)
   {
-    blob=(char *) NULL;
+    char
+      savename[MaxTextExtent];
+
+    blob=(unsigned char *) NULL;
     length=0;
     scene=p->scene;
     for (i=0; i < (long) Max((p->delay+1)/3,1); i++)
     {
-      p->scene=count++;
-      FormatString(p->filename,"%.1024s.%%d.yuv",basename);
+      p->scene=count;
+      count++;
       switch ((int) i)
       {
         case 0:
         {
-          status=WriteImage(clone_info,p);
+          Image
+            *next,
+            *previous;
+
+          FormatString(p->filename,"%.1024s.%lu.yuv",basename,p->scene);
           FormatString(filename,"%.1024s.%lu.yuv",basename,p->scene);
+          FormatString(savename,"%.1024s.%lu.yuv",basename,p->scene);
+       
+          /* defeat suffix numbering by OpenBlob */
+          previous=p->previous;
+          next=p->next;
+          p->previous=(Image *) NULL;
+          p->next=(Image *) NULL;
+
+          status=WriteImage(clone_info,p);
+
+          p->previous=previous;
+          p->next=next;
+
           break;
         }
         case 1:
-          blob=(char *) FileToBlob(filename,&length,&image->exception);
+          blob=FileToBlob(savename,&length,&image->exception);
         default:
         {
           FormatString(filename,"%.1024s.%lu.yuv",basename,p->scene);
-          file=open(filename,O_WRONLY | O_CREAT | O_BINARY,0777);
-          if (file == -1)
-            break;
-          (void) write(file,blob,length);
-          (void) close(file);
+          if (length > 0)
+            status=BlobToFile(filename,blob,length,&image->exception);
+          else
+            status=False;
           break;
         }
       }
+      if (logging)
+        {
+          if (status)
+            LogMagickEvent(CoderEvent,"  %lu. Wrote YUV file for scene %lu:",
+              i,p->scene);
+          else
+            LogMagickEvent(CoderEvent,
+              "  %lu. Failed to write YUV file for scene %lu:",i,p->scene);
+          LogMagickEvent(CoderEvent,"  %.1024s",filename);
+        }
     }
     p->scene=scene;
-    if (blob != (char *) NULL)
+    if (blob != (unsigned char *) NULL)
       LiberateMemory((void **) &blob);
     if (status == False)
       break;
@@ -663,6 +694,8 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     Free resources.
   */
   count=0;
+  if (!logging)
+  {
   for (p=coalesce_image; p != (Image *) NULL; p=p->next)
   {
     for (i=0; i < (long) Max((p->delay+1)/3,1); i++)
@@ -679,7 +712,10 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   (void) remove(filename);
   FormatString(filename,"%.1024s.log",basename);
   (void) remove(filename);
+  }
   if (coalesce_image != image)
     DestroyImage(coalesce_image);
+  if (logging)
+    LogMagickEvent(CoderEvent," End WriteMPEGImage()");
   return(status);
 }
