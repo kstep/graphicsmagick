@@ -1464,6 +1464,12 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     case 'G':
     case 'g':
     {
+      if (LocaleCompare(attribute,"gamma") == 0)
+        {
+          for ( ; image; image=image->next)
+            image->gamma=SvNV(sval);
+          return;
+        }
       if (LocaleCompare(attribute,"gravity") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(GravityTypes,SvPV(sval,na)) :
