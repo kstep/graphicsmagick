@@ -569,13 +569,15 @@ static unsigned int ClipCacheNexus(Image *image,const unsigned long nexus)
   NexusInfo
     *nexus_info;
 
+  register const PixelPacket
+    *r;
+
   register long
     x;
 
   register PixelPacket
     *p,
-    *q,
-    *r;
+    *q;
 
   unsigned long
     image_nexus,
@@ -594,22 +596,22 @@ static unsigned int ClipCacheNexus(Image *image,const unsigned long nexus)
   nexus_info=cache_info->nexus_info+nexus;
   p=GetCacheNexus(image,nexus_info->x,nexus_info->y,nexus_info->columns,
     nexus_info->rows,image_nexus);
-  q=GetCacheNexus(image->clip_mask,nexus_info->x,nexus_info->y,
-    nexus_info->columns,nexus_info->rows,mask_nexus);
-  r=nexus_info->pixels;
-  if ((p != (PixelPacket *) NULL) && (q != (PixelPacket *) NULL))
+  q=nexus_info->pixels;
+  r=AcquireCacheNexus(image->clip_mask,nexus_info->x,nexus_info->y,
+    nexus_info->columns,nexus_info->rows,mask_nexus,&image->exception);
+  if ((p != (PixelPacket *) NULL) && (r != (const PixelPacket *) NULL))
     for (y=0; y < (long) nexus_info->rows; y++)
     {
       for (x=0; x < (long) nexus_info->columns; x++)
       {
-        if (q->red == TransparentOpacity)
-          r->red=p->red;
-        if (q->green == TransparentOpacity)
-          r->green=p->green;
-        if (q->blue == TransparentOpacity)
-          r->blue=p->blue;
-        if (q->opacity == TransparentOpacity)
-          r->opacity=p->opacity;
+        if (r->red == TransparentOpacity)
+          q->red=p->red;
+        if (r->green == TransparentOpacity)
+          q->green=p->green;
+        if (r->blue == TransparentOpacity)
+          q->blue=p->blue;
+        if (r->opacity == TransparentOpacity)
+          q->opacity=p->opacity;
         p++;
         q++;
         r++;
@@ -1782,6 +1784,7 @@ static unsigned int ModifyCache(Image *image)
   GetCacheInfo(&image->cache);
   length=clone_image->columns*sizeof(PixelPacket);
   p=AcquireImagePixels(clone_image,0,0,image->columns,1,&image->exception);
+  image->clip_mask=(Image *) NULL;
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(clone_image,0,y,image->columns,1,&image->exception);
@@ -1798,6 +1801,7 @@ static unsigned int ModifyCache(Image *image)
     if (!SyncImagePixels(image))
       break;
   }
+  image->clip_mask=clone_image->clip_mask;
   /*
     Restore nexus.
   */
