@@ -123,7 +123,7 @@ static unsigned int DecodeImage(Image *image,const long opacity)
   register unsigned char
     *c;
 
-  register unsigned int
+  register unsigned long
     datum;
 
   size_t
@@ -209,7 +209,7 @@ static unsigned int DecodeImage(Image *image,const long opacity)
                     break;
                   c=packet;
                 }
-              datum+=(*c) << bits;
+              datum+=(unsigned long) (*c) << bits;
               bits+=8;
               c++;
               count--;
