@@ -28,6 +28,10 @@ const std::string Magick::frameGeometryDefault  = "25x25+6+6";
 const std::string Magick::raiseGeometryDefault  = "6x6+0+0";
 
 //
+// Explicit template instantiations
+//
+
+//
 // Friend functions to compare Image objects
 //
 

@@ -17,6 +17,45 @@
 
 using namespace std;
 
+//
+// Explicit template instantiations
+//
+#if 1
+template class std::list <Magick::Coordinate>;
+// template class std::list<const Magick::Drawable>;
+// template class std::list<const Magick::PathArcArgs>;
+// template class std::list<const Magick::PathCurvetoArgs>;
+// template class std::list<const Magick::PathQuadraticCurvetoArgs>;
+// template class std::list<const Magick::VPath>;
+#endif
+
+int Magick::operator == ( const Magick::Coordinate& left_, const Magick::Coordinate& right_ )
+{
+  return ( ( left_.x() == right_.x() ) && ( left_.y() == right_.y() ) );
+}
+int Magick::operator != ( const Magick::Coordinate& left_, const Magick::Coordinate& right_ )
+{
+  return ( ! (left_ == right_) );
+}
+int Magick::operator >  ( const Magick::Coordinate& left_, const Magick::Coordinate& right_ )
+{
+  return ( !( left_ < right_ ) && ( left_ != right_ ) );
+}
+int Magick::operator <  ( const Magick::Coordinate& left_, const Magick::Coordinate& right_ )
+{
+  // Based on distance from origin
+  return  ( (sqrt(left_.x()*left_.x() + left_.y()*left_.y())) <
+            (sqrt(right_.x()*right_.x() + right_.y()*right_.y())) );
+}
+int Magick::operator >= ( const Magick::Coordinate& left_, const Magick::Coordinate& right_ )
+{
+  return ( ( left_ > right_ ) || ( left_ == right_ ) );
+}
+int Magick::operator <= ( const Magick::Coordinate& left_, const Magick::Coordinate& right_ )
+{
+  return ( ( left_ < right_ ) || ( left_ == right_ ) );
+}
+
 //Write Coordinate to stream
 std::ostream& Magick::operator<<( std::ostream& stream_,
                                   const Magick::Coordinate& coordinate_)

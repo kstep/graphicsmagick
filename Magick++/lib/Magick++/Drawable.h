@@ -61,6 +61,14 @@ namespace Magick
     double _y;
   };
 
+  // Compare two Coordinate objects regardless of LHS/RHS
+  int operator == ( const Coordinate& left_, const Coordinate& right_ );
+  int operator != ( const Coordinate& left_, const Coordinate& right_ );
+  int operator >  ( const Coordinate& left_, const Coordinate& right_ );
+  int operator <  ( const Coordinate& left_, const Coordinate& right_ );
+  int operator >= ( const Coordinate& left_, const Coordinate& right_ );
+  int operator <= ( const Coordinate& left_, const Coordinate& right_ );
+
   //
   // Base class for all drawable objects
   //
