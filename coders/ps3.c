@@ -1304,7 +1304,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     dy_resolution=72.0;
     x_resolution=72.0;
     (void) strcpy(density,PSDensityGeometry);
-    count=sscanf(density,"%lfx%lf",&x_resolution,&y_resolution);
+    count=GetMagickDimension(density,&x_resolution,&y_resolution);
     if (count != 2)
       y_resolution=x_resolution;
     if (image_info->density != (char *) NULL)
@@ -1314,7 +1314,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 
         unit_conversion=
           image_info->units == PixelsPerCentimeterResolution ? 2.54 : 1.0;
-        count=sscanf(image_info->density,"%lfx%lf",&x_resolution,
+        count=GetMagickDimension(image_info->density,&x_resolution,
           &y_resolution);
         x_resolution*=unit_conversion;
         if (count != 2)

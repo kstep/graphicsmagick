@@ -39,6 +39,7 @@
 #include "magick/cache.h"
 #include "magick/composite.h"
 #include "magick/gem.h"
+#include "magick/utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -189,7 +190,7 @@ MagickExport unsigned int CompositeImage(Image *canvas_image,
           /*
             Determine the horizontal and vertical displacement scale.
           */
-          count=sscanf(composite_image->geometry,"%lfx%lf\n",
+          count=GetMagickDimension(composite_image->geometry,
             &horizontal_scale,&vertical_scale);
           if (count == 1)
             vertical_scale=horizontal_scale;
@@ -247,7 +248,7 @@ MagickExport unsigned int CompositeImage(Image *canvas_image,
           /*
             Determine the brightness and saturation scale.
           */
-          count=sscanf(composite_image->geometry,"%lfx%lf\n",
+          count=GetMagickDimension(composite_image->geometry,
             &percent_brightness,&percent_saturation);
           if (count == 1)
             percent_saturation=percent_brightness;
@@ -264,7 +265,7 @@ MagickExport unsigned int CompositeImage(Image *canvas_image,
       amount=0.5;
       threshold=0.05;
       if (composite_image->geometry != (char *) NULL)
-        (void) sscanf(composite_image->geometry,"%lfx%lf\n",&amount,&threshold);
+        (void) GetMagickDimension(composite_image->geometry,&amount,&threshold);
       threshold*=MaxRGB;
       break;
     }

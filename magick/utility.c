@@ -1465,6 +1465,88 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t M a g i c k D i m e n s i o n                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickDimension() parses a string in the scanf form %lfx%lf to obtain
+%  WIDTHxHEIGHT values and returns the number of values successfully parsed.
+%  This function exists to overcome a Linux GNU libc "feature" in which scanf
+%  treats strings in the form "0x5" as a single hexadecimal value regardless
+%  of the scanf specification. No other scanf has been encountered which
+%  behaves this way. Linux strtod() has the same problem.
+%
+%  The format of the GetMagickDimension method is:
+%
+%      int GetMagickDimension(const char *str,double *width,double *height)
+%
+%  A description of each parameter follows:
+%
+%    o str:    String to parse
+%
+%    o width:  First double value
+%
+%    o height: Second double value
+%
+*/
+static int SlurpDouble(const char *start,const char **end,double *value)
+{
+  const char
+    *p;
+
+  char
+    buff[MaxTextExtent],
+    *endptr;
+
+  int
+    i,
+    n=0;
+  
+  p=start;
+  
+  for (i=0; (*p != 0) && (*p != 'x') && (*p != ',') && (i < MaxTextExtent-2); i++)
+    buff[i]=*p++;
+  buff[i]=0;
+  errno=0;
+  *value=strtod(buff,&endptr);
+  if ((errno == 0) && (buff != endptr))
+    n++;
+  *end=p;
+
+  return (n);
+}
+MagickExport int GetMagickDimension(const char *str,double *width,
+  double *height)
+{
+  int
+    n;
+
+  const char
+    *start=str;
+
+  const char
+    *end;
+
+  n=SlurpDouble(start,&end,width);
+  if (n == 0)
+    return n;
+  start=end;
+  if (*start == '%')
+    start++;
+  if ((*start != 'x') && (*start != 'X'))
+    return n;
+  start++;
+  n += SlurpDouble(start,&end,height);
+  return (n);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t M a g i c k G e o m e t r y                                         %
 %                                                                             %
 %                                                                             %
@@ -1557,9 +1639,7 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
       */
       x_scale=(*width);
       y_scale=(*height);
-      count=sscanf(geometry,"%lf%%x%lf",&x_scale,&y_scale);
-      if (count != 2)
-        count=sscanf(geometry,"%lfx%lf",&x_scale,&y_scale);
+        count=GetMagickDimension(geometry,&x_scale,&y_scale);
       if (count == 1)
         y_scale=x_scale;
       *width=(unsigned long) floor((x_scale*former_width/100.0)+0.5);
@@ -1582,9 +1662,7 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
       target_width=(*width);
       target_height=(*height);
       target_area=target_width*target_height;
-      count=sscanf(geometry,"%lf%%x%lf",&target_width,&target_height);
-      if (count != 2)
-        count=sscanf(geometry,"%lfx%lf",&target_width,&target_height);
+        count=GetMagickDimension(geometry,&target_width,&target_height);
       if (count == 2)
         target_area=target_width*target_height;
       if (count == 1)

@@ -7400,7 +7400,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             radius=0.0;
             sigma=1.0;
-            (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
+            (void) GetMagickDimension(argv[++i],&radius,&sigma);
             blur_image=BlurImage(*image,radius,sigma,&(*image)->exception);
             if (blur_image == (Image *) NULL)
               break;
@@ -7486,7 +7486,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             radius=0.0;
             sigma=1.0;
-            (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
+            (void) GetMagickDimension(argv[++i],&radius,&sigma);
             charcoal_image=
               CharcoalImage(*image,radius,sigma,&(*image)->exception);
             if (charcoal_image == (Image *) NULL)
@@ -7791,7 +7791,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             (void) CloneString(&clone_info->density,argv[++i]);
             (void) CloneString(&draw_info->density,clone_info->density);
-            count=sscanf(clone_info->density,"%lfx%lf",
+            count=GetMagickDimension(clone_info->density,
               &(*image)->x_resolution,&(*image)->y_resolution);
             if (count != 2)
               (*image)->y_resolution=(*image)->x_resolution;
@@ -7906,7 +7906,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             radius=0.0;
             sigma=1.0;
-            (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
+            (void) GetMagickDimension(argv[++i],&radius,&sigma);
             emboss_image=EmbossImage(*image,radius,sigma,&(*image)->exception);
             if (emboss_image == (Image *) NULL)
               break;
@@ -8110,7 +8110,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             radius=0.0;
             sigma=1.0;
-            (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
+            (void) GetMagickDimension(argv[++i],&radius,&sigma);
             blur_image=
               GaussianBlurImage(*image,radius,sigma,&(*image)->exception);
             if (blur_image == (Image *) NULL)
@@ -8946,7 +8946,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             cluster_threshold=1.0;
             smoothing_threshold=1.5;
-            (void) sscanf(argv[++i],"%lfx%lf",&cluster_threshold,
+            (void) GetMagickDimension(argv[++i],&cluster_threshold,
               &smoothing_threshold);
             (void) SegmentImage(*image,quantize_info.colorspace,
               clone_info->verbose,cluster_threshold,smoothing_threshold);
@@ -8966,7 +8966,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             azimuth=30.0;
             elevation=30.0;
-            (void) sscanf(argv[++i],"%lfx%lf",&azimuth,&elevation);
+            (void) GetMagickDimension(argv[++i],&azimuth,&elevation);
             shade_image=ShadeImage(*image,*option == '-',azimuth,elevation,
               &(*image)->exception);
             if (shade_image == (Image *) NULL)
@@ -8989,7 +8989,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             radius=0.0;
             sigma=1.0;
-            (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
+            (void) GetMagickDimension(argv[++i],&radius,&sigma);
             sharp_image=SharpenImage(*image,radius,sigma,&(*image)->exception);
             if (sharp_image == (Image *) NULL)
               break;
@@ -9027,7 +9027,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             x_shear=0.0;
             y_shear=0.0;
-            (void) sscanf(argv[++i],"%lfx%lf",&x_shear,&y_shear);
+            (void) GetMagickDimension(argv[++i],&x_shear,&y_shear);
             shear_image=ShearImage(*image,x_shear,y_shear,&(*image)->exception);
             if (shear_image == (Image *) NULL)
               break;
@@ -9294,7 +9294,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             amplitude=25.0;
             wavelength=150.0;
-            (void) sscanf(argv[++i],"%lfx%lf",&amplitude,&wavelength);
+            (void) GetMagickDimension(argv[++i],&amplitude,&wavelength);
             wave_image=WaveImage(*image,amplitude,wavelength,
               &(*image)->exception);
             if (wave_image == (Image *) NULL)

@@ -313,7 +313,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
       int
         count;
 
-      count=sscanf(image_info->density,"%lfx%lf",&allocate_image->x_resolution,
+      count=GetMagickDimension(image_info->density,&allocate_image->x_resolution,
         &allocate_image->y_resolution);
       if (count != 2)
         allocate_image->y_resolution=allocate_image->x_resolution;

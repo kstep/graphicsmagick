@@ -1101,7 +1101,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   resolution.y=72.0;
   if (draw_info->density != (char *) NULL)
     {
-      i=sscanf(draw_info->density,"%lfx%lf",&resolution.x,&resolution.y);
+      i=GetMagickDimension(draw_info->density,&resolution.x,&resolution.y);
       if (i != 2)
         resolution.y=resolution.x;
     }
@@ -1533,7 +1533,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
       int
         count;
 
-      count=sscanf(draw_info->density,"%lfx%lf",&resolution.x,&resolution.y);
+      count=GetMagickDimension(draw_info->density,&resolution.x,&resolution.y);
       if (count != 2)
         resolution.y=resolution.x;
     }

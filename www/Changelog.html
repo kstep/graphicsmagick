@@ -56,6 +56,12 @@
 2004-04-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/utility.c (GetMagickDimension): New function to replace
+        occurances of scanf(geometry,"%lfx%lf",&amp;w,&amp;h) since Linux scanf()
+        and strtod() misbehave for strings that start with "0x". The Linux
+        versions always treat 0x as the start of a value expressed in hex
+        and can't be forced to read the leading value as a double.  This
+        function has been applied globally to replace the problem scanf's.
   <LI> magick/version.h.in: Make it clear in the -version output that a
         mutitude of copyrights and licenses apply to this software.
   <LI> magick/utility.c (GetPathComponent): Avoid strncpy() of

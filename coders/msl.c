@@ -2799,7 +2799,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 (void) CloneString(&msl_info->image_info[n]->density,value);
                 (void) CloneString(&msl_info->draw_info[n]->density,
                           msl_info->image_info[n]->density);
-                j=sscanf(msl_info->image_info[n]->density,"%lfx%lf",
+                j=GetMagickDimension(msl_info->image_info[n]->density,
                       &msl_info->image[n]->x_resolution,
                       &msl_info->image[n]->y_resolution);
                 if (j != 2)
