@@ -74,7 +74,7 @@
 %
 %  The format of the ReadTIMImage method is:
 %
-%      Image *ReadTIMImage(const ImageInfo *image_info)
+%      Image *ReadTIMImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -86,7 +86,7 @@
 %
 %
 */
-Export Image *ReadTIMImage(const ImageInfo *image_info)
+static Image *ReadTIMImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #define ScaleColor5to8(x)  ((x) << 3)
 
@@ -354,4 +354,38 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
     image=image->previous;
   CloseBlob(image);
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r T I M I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterTIMImage adds attributes for the TIM image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterTIMImage method is:
+%
+%      RegisterTIMImage(void)
+%
+*/
+Export void RegisterTIMImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("TIM");
+  entry->decoder=ReadTIMImage;
+  entry->description=AllocateString("PSX TIM");
+  RegisterMagickInfo(entry);
 }

@@ -54,6 +54,12 @@
 */
 #include "magick.h"
 #include "defines.h"
+
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WritePNMImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -69,7 +75,7 @@
 %  Method IsPNM returns True if the image format type, identified by the
 %  magick string, is PNM.
 %
-%  The format of the ReadPNMImage method is:
+%  The format of the IsPNM method is:
 %
 %      unsigned int IsPNM(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,7 +91,7 @@
 %
 %
 */
-Export unsigned int IsPNM(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPNM(const unsigned char *magick,const unsigned int length)
 {
   if (length < 2)
     return(False);
@@ -111,7 +117,7 @@ Export unsigned int IsPNM(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadPNMImage method is:
 %
-%      Image *ReadPNMImage(const ImageInfo *image_info)
+%      Image *ReadPNMImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -211,7 +217,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
   return(value);
 }
 
-Export Image *ReadPNMImage(const ImageInfo *image_info)
+static Image *ReadPNMImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   char
     format;
@@ -623,6 +629,62 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r P N M I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPNMImage adds attributes for the PNM image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPNMImage method is:
+%
+%      RegisterPNMImage(void)
+%
+*/
+Export void RegisterPNMImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("P7");
+  entry->decoder=ReadPNMImage;
+  entry->encoder=WritePNMImage;
+  entry->description=AllocateString("Xv thumbnail format");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("PBM");
+  entry->decoder=ReadPNMImage;
+  entry->encoder=WritePNMImage;
+  entry->description=AllocateString("Portable bitmap format (black and white)");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("PGM");
+  entry->decoder=ReadPNMImage;
+  entry->encoder=WritePNMImage;
+  entry->description=AllocateString("Portable graymap format (gray scale)");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("PNM");
+  entry->decoder=ReadPNMImage;
+  entry->encoder=WritePNMImage;
+  entry->magick=IsPNM;
+  entry->description=AllocateString("Portable anymap");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("PPM");
+  entry->decoder=ReadPNMImage;
+  entry->encoder=WritePNMImage;
+  entry->description=AllocateString("Portable pixmap format (color)");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e P N M I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -648,7 +710,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
+static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[MaxTextExtent],

@@ -293,6 +293,11 @@ const PICTCode
     /* 0xa1 */  { "LongComment",    0, "kind (word), size (word), data" }
   };
 
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WritePICTImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -685,7 +690,7 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
 %
 %  The format of the ReadPICTImage method is:
 %
-%      Image *ReadPICTImage(const ImageInfo *image_info)
+%      Image *ReadPICTImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -697,7 +702,7 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
 %
 %
 */
-Export Image *ReadPICTImage(const ImageInfo *image_info)
+static Image *ReadPICTImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   char
     geometry[MaxTextExtent];
@@ -810,7 +815,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
             break;
           image->columns=frame.right-frame.left;
           image->rows=frame.bottom-frame.top;
-          SetImage(image);
+          SetImage(image,Opaque);
           break;
         }
         case 0x12:
@@ -1125,17 +1130,17 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           *file;
 
         ImageInfo
-          *local_info;
+          *clone_info;
 
         /*
           Embedded JPEG.
         */
-        local_info=CloneImageInfo(image_info);
-        if (local_info == (ImageInfo *) NULL)
+        clone_info=CloneImageInfo(image_info);
+        if (clone_info == (ImageInfo *) NULL)
           ReaderExit(FileOpenWarning,"Unable to write file",image);
-        GetBlobInfo(&(local_info->blob));
-        TemporaryFilename(local_info->filename);
-        file=fopen(local_info->filename,WriteBinaryType);
+        GetBlobInfo(&(clone_info->blob));
+        TemporaryFilename(clone_info->filename);
+        file=fopen(clone_info->filename,WriteBinaryType);
         if (file == (FILE *) NULL)
           ReaderExit(FileOpenWarning,"Unable to write file",image);
         length=MSBFirstReadLong(image);
@@ -1150,9 +1155,9 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           (void) fputc(c,file);
         }
         (void) fclose(file);
-        tile_image=ReadJPEGImage(local_info);
-        DestroyImageInfo(local_info);
-        (void) remove(local_info->filename);
+        tile_image=ReadImage(clone_info,error);
+        DestroyImageInfo(clone_info);
+        (void) remove(clone_info->filename);
         if (tile_image == (Image *) NULL)
           continue;
         FormatString(geometry,"%ux%u",Max(image->columns,tile_image->columns),
@@ -1195,6 +1200,54 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r P I C T I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPICTImage adds attributes for the PICT image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPICTImage method is:
+%
+%      RegisterPICTImage(void)
+%
+*/
+Export void RegisterPICTImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("PCT");
+  entry->decoder=ReadPICTImage;
+  entry->encoder=WritePICTImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("Apple Macintosh QuickDraw/PICT");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("PICT");
+  entry->decoder=ReadPICTImage;
+  entry->encoder=WritePICTImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("Apple Macintosh QuickDraw/PICT");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("PICT24");
+  entry->decoder=ReadPICTImage;
+  entry->encoder=WritePICTImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("24-bit Apple Macintosh QuickDraw/PICT");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e P I C T I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -1220,7 +1273,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
+static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 {
 #define MaxCount  128
 #define PictCropRegionOp  0x01

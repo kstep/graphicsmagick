@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteSGIImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -69,7 +75,7 @@
 %  Method IsSGI returns True if the image format type, identified by the
 %  magick string, is SGI.
 %
-%  The format of the ReadSGIImage method is:
+%  The format of the IsSGI method is:
 %
 %      unsigned int IsSGI(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,7 +91,7 @@
 %
 %
 */
-Export unsigned int IsSGI(const unsigned char *magick,const unsigned int length)
+static unsigned int IsSGI(const unsigned char *magick,const unsigned int length)
 {
   if (length < 2)
     return(False);
@@ -111,7 +117,7 @@ Export unsigned int IsSGI(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadSGIImage method is:
 %
-%      Image *ReadSGIImage(const ImageInfo *image_info)
+%      Image *ReadSGIImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -154,7 +160,7 @@ static void SGIDecode(unsigned char *max_packets,unsigned char *pixels)
   }
 }
 
-Export Image *ReadSGIImage(const ImageInfo *image_info)
+static Image *ReadSGIImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   typedef struct _SGIHeader
   {
@@ -482,6 +488,42 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r S G I I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterSGIImage adds attributes for the SGI image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterSGIImage method is:
+%
+%      RegisterSGIImage(void)
+%
+*/
+Export void RegisterSGIImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("SGI");
+  entry->decoder=ReadSGIImage;
+  entry->encoder=WriteSGIImage;
+  entry->magick=IsSGI;
+  entry->description=AllocateString("Irix RGB image");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e S G I I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -558,7 +600,7 @@ static int SGIEncode(unsigned char *pixels,int count,
   return((int) (q-packets));
 }
 
-Export unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
 {
   typedef struct _SGIHeader
   {

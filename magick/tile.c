@@ -72,7 +72,7 @@
 %
 %  The format of the ReadTILEImage method is:
 %
-%      Image *ReadTILEImage(const ImageInfo *image_info)
+%      Image *ReadTILEImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -84,7 +84,7 @@
 %
 %
 */
-Export Image *ReadTILEImage(const ImageInfo *image_info)
+static Image *ReadTILEImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   Image
     *cloned_image,
@@ -92,7 +92,7 @@ Export Image *ReadTILEImage(const ImageInfo *image_info)
     *tiled_image;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   int
     y;
@@ -113,12 +113,12 @@ Export Image *ReadTILEImage(const ImageInfo *image_info)
   /*
     Initialize Image structure.
   */
-  local_info=CloneImageInfo(image_info);
-  if (local_info == (ImageInfo *) NULL)
+  clone_info=CloneImageInfo(image_info);
+  if (clone_info == (ImageInfo *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  *local_info->magick='\0';
-  tiled_image=ReadImage(local_info);
-  DestroyImageInfo(local_info);
+  *clone_info->magick='\0';
+  tiled_image=ReadImage(clone_info,error);
+  DestroyImageInfo(clone_info);
   if (tiled_image == (Image *) NULL)
     return((Image *) NULL);
   cloned_image=CloneImage(tiled_image,image->columns,image->rows,True);
@@ -138,4 +138,39 @@ Export Image *ReadTILEImage(const ImageInfo *image_info)
   }
   DestroyImage(tiled_image);
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r T I L E I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterTILEImage adds attributes for the TILE image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterTILEImage method is:
+%
+%      RegisterTILEImage(void)
+%
+*/
+Export void RegisterTILEImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("TILE");
+  entry->decoder=ReadTILEImage;
+  entry->raw=True;
+  entry->description=AllocateString("Tile image with a texture");
+  RegisterMagickInfo(entry);
 }

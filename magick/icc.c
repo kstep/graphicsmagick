@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteICCImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -74,7 +80,7 @@
 %
 %  The format of the ReadICCImage method is:
 %
-%      Image *ReadICCImage(const ImageInfo *image_info)
+%      Image *ReadICCImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -86,7 +92,7 @@
 %
 %
 */
-Export Image *ReadICCImage(const ImageInfo *image_info)
+static Image *ReadICCImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   Image
     *image;
@@ -147,6 +153,42 @@ Export Image *ReadICCImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r I C C I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterICCImage adds attributes for the ICC image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterICCImage method is:
+%
+%      RegisterICCImage(void)
+%
+*/
+Export void RegisterICCImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("ICC");
+  entry->decoder=ReadICCImage;
+  entry->encoder=WriteICCImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("ICC Color Profile");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e I C C I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -171,7 +213,7 @@ Export Image *ReadICCImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
 {
   unsigned int
     status;

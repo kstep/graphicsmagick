@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteXBMImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -69,7 +75,7 @@
 %  Method IsXBM returns True if the image format type, identified by the
 %  magick string, is XBM.
 %
-%  The format of the ReadXBMImage method is:
+%  The format of the IsXBM method is:
 %
 %      unsigned int IsXBM(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,7 +91,7 @@
 %
 %
 */
-Export unsigned int IsXBM(const unsigned char *magick,const unsigned int length)
+static unsigned int IsXBM(const unsigned char *magick,const unsigned int length)
 {
   if (length < 7)
     return(False);
@@ -111,7 +117,7 @@ Export unsigned int IsXBM(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadXBMImage method is:
 %
-%      Image *ReadXBMImage(const ImageInfo *image_info)
+%      Image *ReadXBMImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -154,7 +160,7 @@ static int XBMInteger(Image *image,short int *hex_digits)
   return(value);
 }
 
-Export Image *ReadXBMImage(const ImageInfo *image_info)
+static Image *ReadXBMImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   char
     buffer[MaxTextExtent],
@@ -356,6 +362,44 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r X B M I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterXBMImage adds attributes for the XBM image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterXBMImage method is:
+%
+%      RegisterXBMImage(void)
+%
+*/
+Export void RegisterXBMImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("XBM");
+  entry->decoder=ReadXBMImage;
+  entry->encoder=WriteXBMImage;
+  entry->magick=IsXBM;
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("X Windows system bitmap (black and white)");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e X B M I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -380,7 +424,7 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[MaxTextExtent],

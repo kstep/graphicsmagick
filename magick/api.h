@@ -52,7 +52,6 @@
 #include "magick/version.h"
 #else
 #include "classify.h"
-#include "error.h"
 #include "image.h"
 #include "gems.h"
 #include "quantize.h"

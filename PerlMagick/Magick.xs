@@ -5287,6 +5287,9 @@ Ping(ref,...)
     char
       message[MaxTextExtent];
 
+    ErrorInfo
+      error;
+
     Image
       *image;
 
@@ -5315,7 +5318,7 @@ Ping(ref,...)
           info->image_info->file=IoIFP(sv_2io(ST(i)));
           continue;
         }
-      image=PingImage(info->image_info);
+      image=PingImage(info->image_info,&error);
       if (image == (Image *) NULL)
         s=(&sv_undef);
       else
@@ -5410,6 +5413,9 @@ Read(ref,...)
       **keep,
       **list;
 
+    ErrorInfo
+      error;
+
     HV
       *hv;
 
@@ -5436,6 +5442,9 @@ Read(ref,...)
       *reference,
       *rv,
       *sv;
+
+    unsigned int
+      status;
 
     volatile int
       number_images;
@@ -5480,11 +5489,16 @@ Read(ref,...)
     error_jump=(&error_jmp);
     if (setjmp(error_jmp))
       goto ReturnIt;
-    ExpandFilenames(&n,&list);
+    status=ExpandFilenames(&n,&list);
+    if (status == False)
+      {
+        MagickWarning(ResourceLimitWarning,"Memory allocation failed",NULL);
+        goto ReturnIt;
+      }
     for (i=number_images=0; i < n; i++)
     {
       (void) strncpy(info->image_info->filename,list[i],MaxTextExtent-1);
-      for (image=ReadImage(info->image_info); image; image=image->next)
+      for (image=ReadImage(info->image_info,&error); image; image=image->next)
       {
         sv=newSViv((IV) image);
         rv=newRV(sv);

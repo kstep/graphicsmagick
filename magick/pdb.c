@@ -94,6 +94,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *pixels,
     pixel;
 
   register int
+    i,
     j;
 
   register unsigned char
@@ -148,7 +149,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *pixels,
 %
 %
 */
-Export unsigned int IsPDB(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPDB(const unsigned char *magick,const unsigned int length)
 {
   if (length < 68)
     return(False);
@@ -174,7 +175,7 @@ Export unsigned int IsPDB(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadPDBImage method is:
 %
-%      Image *ReadPDBImage(const ImageInfo *image_info)
+%      Image *ReadPDBImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -186,7 +187,7 @@ Export unsigned int IsPDB(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export Image *ReadPDBImage(const ImageInfo *image_info)
+static Image *ReadPDBImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   typedef struct _PDBHeader
   {
@@ -430,16 +431,16 @@ Export Image *ReadPDBImage(const ImageInfo *image_info)
           break;
         for (x=0; x < image->columns; x+=4)
         {
-          index=3-(*p >> 6) & 0x03;
+          index=3-((*p >> 6) & 0x03);
           image->indexes[x]=index;
           *q++=image->colormap[index];
-          index=3-(*p >> 4) & 0x03;
+          index=3-((*p >> 4) & 0x03);
           image->indexes[x+1]=index;
           *q++=image->colormap[index];
-          index=3-(*p >> 2) & 0x03;
+          index=3-((*p >> 2) & 0x03);
           image->indexes[x+2]=index;
           *q++=image->colormap[index];
-          index=3-(*p) & 0x03;
+          index=3-((*p) & 0x03);
           image->indexes[x+3]=index;
           *q++=image->colormap[index];
           p++;
@@ -463,10 +464,10 @@ Export Image *ReadPDBImage(const ImageInfo *image_info)
           break;
         for (x=0; x < image->columns; x+=2)
         {
-          index=15-(*p >> 4) & 0x0f;
+          index=15-((*p >> 4) & 0x0f);
           image->indexes[x]=index;
           *q++=image->colormap[index];
-          index=15-(*p) & 0x0f;
+          index=15-((*p) & 0x0f);
           image->indexes[x+1]=index;
           *q++=image->colormap[index];
           p++;
@@ -525,4 +526,39 @@ Export Image *ReadPDBImage(const ImageInfo *image_info)
     }
   CloseBlob(image);
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r P D B I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPDBImage adds attributes for the PDB image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPDBImage method is:
+%
+%      RegisterPDBImage(void)
+%
+*/
+Export void RegisterPDBImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("PDB");
+  entry->decoder=ReadPDBImage;
+  entry->magick=IsPDB;
+  entry->description=AllocateString("Pilot Image Format");
+  RegisterMagickInfo(entry);
 }

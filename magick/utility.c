@@ -2443,7 +2443,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
     *q;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   unsigned int
     length;
@@ -2507,8 +2507,8 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
         FreeMemory(text);
       return((char *) NULL);
     }
-  local_info=CloneImageInfo(image_info);
-  if ((local_info == (ImageInfo *) NULL))
+  clone_info=CloneImageInfo(image_info);
+  if ((clone_info == (ImageInfo *) NULL))
     {
       MagickWarning(ResourceLimitWarning,"Unable to translate text",
         "Memory allocation failed");
@@ -2626,7 +2626,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'g':
       {
-        FormatString(q,"0x%lx",local_info->group);
+        FormatString(q,"0x%lx",clone_info->group);
         q=translated_text+Extent(translated_text);
         break;
       }
@@ -2668,8 +2668,8 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'o':
       {
-        (void) strcpy(q,local_info->filename);
-        q+=Extent(local_info->filename);
+        (void) strcpy(q,clone_info->filename);
+        q+=Extent(clone_info->filename);
         break;
       }
       case 'p':
@@ -2696,15 +2696,15 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
       case 's':
       {
         FormatString(q,"%u",image->scene);
-        if (local_info->subrange != 0)
-          FormatString(q,"%u",local_info->subimage);
+        if (clone_info->subrange != 0)
+          FormatString(q,"%u",clone_info->subimage);
         q=translated_text+Extent(translated_text);
         break;
       }
       case 'u':
       {
-        (void) strcpy(q,local_info->unique);
-        q+=Extent(local_info->unique);
+        (void) strcpy(q,clone_info->unique);
+        q+=Extent(clone_info->unique);
         break;
       }
       case 'w':
@@ -2728,8 +2728,8 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'z':
       {
-        (void) strcpy(q,local_info->zero);
-        q+=Extent(local_info->zero);
+        (void) strcpy(q,clone_info->zero);
+        q+=Extent(clone_info->zero);
         break;
       }
       case '%':
@@ -2746,7 +2746,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
     }
   }
   *q='\0';
-  DestroyImageInfo(local_info);
+  DestroyImageInfo(clone_info);
   if (text != (char *) formatted_text)
     FreeMemory(text);
   return(translated_text);

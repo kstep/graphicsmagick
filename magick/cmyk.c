@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteCMYKImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -72,7 +78,7 @@
 %
 %  The format of the ReadCMYKImage method is:
 %
-%      Image *ReadCMYKImage(const ImageInfo *image_info)
+%      Image *ReadCMYKImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -84,7 +90,7 @@
 %
 %
 */
-Export Image *ReadCMYKImage(const ImageInfo *image_info)
+static Image *ReadCMYKImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   Image
     *image;
@@ -363,6 +369,44 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r C M Y K I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterCMYKImage adds attributes for the CMYK image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterCMYKImage method is:
+%
+%      RegisterCMYKImage(void)
+%
+*/
+Export void RegisterCMYKImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("CMYK");
+  entry->decoder=ReadCMYKImage;
+  entry->encoder=WriteCMYKImage;
+  entry->adjoin=False;
+  entry->raw=True;
+  entry->description=
+    AllocateString("Raw cyan, magenta, yellow, and black bytes");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e C M Y K I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -388,7 +432,7 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
 {
   int
     y;

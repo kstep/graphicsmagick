@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteIPTCImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -69,7 +75,7 @@
 %  Method IsIPTC returns True if the image format type, identified by the
 %  magick string, is IPTC.
 %
-%  The format of the ReadIPTCImage method is:
+%  The format of the IsIPTC method is:
 %
 %      unsigned int IsIPTC(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,7 +91,7 @@
 %
 %
 */
-Export unsigned int IsIPTC(const unsigned char *magick,
+static unsigned int IsIPTC(const unsigned char *magick,
   const unsigned int length)
 {
   if (length < 2)
@@ -114,7 +120,7 @@ Export unsigned int IsIPTC(const unsigned char *magick,
 %
 %  The format of the ReadIPTCImage method is:
 %
-%      Image *ReadIPTCImage(const ImageInfo *image_info)
+%      Image *ReadIPTCImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -126,7 +132,7 @@ Export unsigned int IsIPTC(const unsigned char *magick,
 %
 %
 */
-Export Image *ReadIPTCImage(const ImageInfo *image_info)
+static Image *ReadIPTCImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   Image
     *image;
@@ -195,6 +201,43 @@ Export Image *ReadIPTCImage(const ImageInfo *image_info)
     }
   CloseBlob(image);
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r I P T C I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterIPTCImage adds attributes for the IPTC image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterIPTCImage method is:
+%
+%      RegisterIPTCImage(void)
+%
+*/
+Export void RegisterIPTCImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("IPTC");
+  entry->decoder=ReadIPTCImage;
+  entry->encoder=WriteIPTCImage;
+  entry->magick=IsIPTC;
+  entry->adjoin=False;
+  entry->description=AllocateString("IPTC Newsphoto");
+  RegisterMagickInfo(entry);
 }
 
 /*
@@ -336,7 +379,7 @@ static long GetIPTCStream(unsigned char **info,long length)
   return(info_length);
 }
 
-Export unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
 {
   unsigned int
     status;

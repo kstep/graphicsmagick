@@ -231,7 +231,6 @@ int main(int argc,char **argv)
 
   int
     i,
-    status,
     x;
 
   QuantizeInfo
@@ -241,7 +240,8 @@ int main(int argc,char **argv)
     *p;
 
   unsigned int
-    number_scenes;
+    number_scenes,
+    status;
 
   XImportInfo
     ximage_info;
@@ -258,7 +258,9 @@ int main(int argc,char **argv)
   SetNotifyHandlers;
   client_name=SetClientName(*argv);
   ReadCommandlLine(argc,&argv);
-  (void) ExpandFilenames(&argc,&argv);
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
   /*
     Check for server name specified on the command line.
   */

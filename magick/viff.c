@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteVIFFImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -69,7 +75,7 @@
 %  Method IsVIFF returns True if the image format type, identified by the
 %  magick string, is VIFF.
 %
-%  The format of the ReadVIFFImage method is:
+%  The format of the IsVIFF method is:
 %
 %      unsigned int IsVIFF(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,7 +91,7 @@
 %
 %
 */
-Export unsigned int IsVIFF(const unsigned char *magick,
+static unsigned int IsVIFF(const unsigned char *magick,
   const unsigned int length)
 {
   if (length < 2)
@@ -112,7 +118,7 @@ Export unsigned int IsVIFF(const unsigned char *magick,
 %
 %  The format of the ReadVIFFImage method is:
 %
-%      Image *ReadVIFFImage(const ImageInfo *image_info)
+%      Image *ReadVIFFImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -124,7 +130,7 @@ Export unsigned int IsVIFF(const unsigned char *magick,
 %
 %
 */
-Export Image *ReadVIFFImage(const ImageInfo *image_info)
+static Image *ReadVIFFImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #define VFF_CM_genericRGB  15
 #define VFF_CM_ntscRGB  1
@@ -716,6 +722,47 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r V I F F I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterVIFFImage adds attributes for the VIFF image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterVIFFImage method is:
+%
+%      RegisterVIFFImage(void)
+%
+*/
+Export void RegisterVIFFImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("VIFF");
+  entry->decoder=ReadVIFFImage;
+  entry->encoder=WriteVIFFImage;
+  entry->magick=IsVIFF;
+  entry->description=AllocateString("Khoros Visualization image");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("XV");
+  entry->decoder=ReadVIFFImage;
+  entry->encoder=WriteVIFFImage;
+  entry->description=AllocateString("Khoros Visualization image");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e V I F F I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -740,7 +787,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
 {
 #define VFF_CM_genericRGB  15
 #define VFF_CM_NONE  0

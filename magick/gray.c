@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteGRAYImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -72,7 +78,7 @@
 %
 %  The format of the ReadGRAYImage method is:
 %
-%      Image *ReadGRAYImage(const ImageInfo *image_info)
+%      Image *ReadGRAYImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -84,7 +90,7 @@
 %
 %
 */
-Export Image *ReadGRAYImage(const ImageInfo *image_info)
+static Image *ReadGRAYImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   Image
     *image;
@@ -213,6 +219,42 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r G R A Y I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterGRAYImage adds attributes for the GRAY image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterGRAYImage method is:
+%
+%      RegisterGRAYImage(void)
+%
+*/
+Export void RegisterGRAYImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("GRAY");
+  entry->decoder=ReadGRAYImage;
+  entry->encoder=WriteGRAYImage;
+  entry->raw=True;
+  entry->description=AllocateString("Raw gray bytes");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e G R A Y I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -238,7 +280,7 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
 {
   int
     y;

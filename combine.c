@@ -196,6 +196,9 @@ int main(int argc,char **argv)
     blend,
     sans;
 
+  ErrorInfo
+    error;
+
   Image
     *combined_image,
     *composite_image,
@@ -207,7 +210,6 @@ int main(int argc,char **argv)
 
   int
     gravity,
-    status,
     x,
     y;
 
@@ -215,6 +217,7 @@ int main(int argc,char **argv)
     i;
 
   unsigned int
+    status,
     stegano,
     stereo,
     tile;
@@ -224,7 +227,9 @@ int main(int argc,char **argv)
   */
   ReadCommandlLine(argc,&argv);
   client_name=SetClientName(*argv);
-  (void) ExpandFilenames(&argc,&argv);
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
   if (argc < 4)
     Usage(client_name);
   /*
@@ -260,7 +265,7 @@ int main(int argc,char **argv)
         (void) strcpy(image_info->filename,filename);
         if (image == (Image *) NULL)
           {
-            image=ReadImage(image_info);
+            image=ReadImage(image_info,&error);
             if (image == (Image *) NULL)
               MagickError(OptionError,"Missing an image file name",
                 (char *) NULL);
@@ -270,13 +275,13 @@ int main(int argc,char **argv)
           MagickError(OptionError,"input images already specified",filename);
         if (composite_image == (Image *) NULL)
           {
-            composite_image=ReadImage(image_info);
+            composite_image=ReadImage(image_info,&error);
             if (composite_image == (Image *) NULL)
               MagickError(OptionError,"Missing an image file name",
                 (char *) NULL);
             continue;
           }
-        mask_image=ReadImage(image_info);
+        mask_image=ReadImage(image_info,&error);
         if (mask_image == (Image *) NULL)
           MagickError(OptionError,"Missing an image file name",(char *) NULL);
       }

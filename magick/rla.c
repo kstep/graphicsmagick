@@ -74,7 +74,7 @@
 %
 %  The format of the ReadRLAImage method is:
 %
-%      Image *ReadRLAImage(const ImageInfo *image_info)
+%      Image *ReadRLAImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -86,7 +86,7 @@
 %
 %
 */
-Export Image *ReadRLAImage(const ImageInfo *image_info)
+static Image *ReadRLAImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   typedef struct _WindowFrame
   {
@@ -364,4 +364,39 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
   }
   CloseBlob(image);
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r R L A I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterRLAImage adds attributes for the RLA image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterRLAImage method is:
+%
+%      RegisterRLAImage(void)
+%
+*/
+Export void RegisterRLAImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("RLA");
+  entry->decoder=ReadRLAImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("Alias/Wavefront image");
+  RegisterMagickInfo(entry);
 }

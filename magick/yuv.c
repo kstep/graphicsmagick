@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteYUVImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -72,7 +78,7 @@
 %
 %  The format of the ReadYUVImage method is:
 %
-%      Image *ReadYUVImage(const ImageInfo *image_info)
+%      Image *ReadYUVImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -84,7 +90,7 @@
 %
 %
 */
-Export Image *ReadYUVImage(const ImageInfo *image_info)
+static Image *ReadYUVImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   Image
     *chroma_image,
@@ -283,6 +289,43 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r Y U V I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterYUVImage adds attributes for the YUV image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterYUVImage method is:
+%
+%      RegisterYUVImage(void)
+%
+*/
+Export void RegisterYUVImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("YUV");
+  entry->decoder=ReadYUVImage;
+  entry->encoder=WriteYUVImage;
+  entry->adjoin=False;
+  entry->raw=True;
+  entry->description=AllocateString("CCIR 601 4:1:1");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e Y U V I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -308,7 +351,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
 {
   Image
     *chroma_image,

@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteUYVYImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -72,7 +78,7 @@
 %
 %  The format of the ReadUYVYImage method is:
 %
-%      Image *ReadUYVYImage(const ImageInfo *image_info)
+%      Image *ReadUYVYImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -84,7 +90,7 @@
 %
 %
 */
-Export Image *ReadUYVYImage(const ImageInfo *image_info)
+static Image *ReadUYVYImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   Image
     *image;
@@ -164,6 +170,43 @@ Export Image *ReadUYVYImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r U Y V Y I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterUYVYImage adds attributes for the UYVY image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterUYVYImage method is:
+%
+%      RegisterUYVYImage(void)
+%
+*/
+Export void RegisterUYVYImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("UYVY");
+  entry->decoder=ReadUYVYImage;
+  entry->encoder=WriteUYVYImage;
+  entry->adjoin=False;
+  entry->raw=True;
+  entry->description=AllocateString("16bit/pixel interleaved YUV");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e U Y V Y I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -190,7 +233,7 @@ Export Image *ReadUYVYImage(const ImageInfo *image_info)
 %      Implicit assumption: number of columns is even.
 %
 */
-Export unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
 {
   int
     y;

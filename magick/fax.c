@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteFAXImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -69,7 +75,7 @@
 %  Method IsFAX returns True if the image format type, identified by the
 %  magick string, is FAX.
 %
-%  The format of the ReadFAXImage method is:
+%  The format of the IsFAX method is:
 %
 %      unsigned int IsFAX(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,7 +91,7 @@
 %
 %
 */
-Export unsigned int IsFAX(const unsigned char *magick,const unsigned int length)
+static unsigned int IsFAX(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
@@ -111,7 +117,7 @@ Export unsigned int IsFAX(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadFAXImage method is:
 %
-%      Image *ReadFAXImage(const ImageInfo *image_info)
+%      Image *ReadFAXImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -123,7 +129,7 @@ Export unsigned int IsFAX(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export Image *ReadFAXImage(const ImageInfo *image_info)
+static Image *ReadFAXImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   Image
     *image;
@@ -178,6 +184,49 @@ Export Image *ReadFAXImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r F A X I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterFAXImage adds attributes for the FAX image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterFAXImage method is:
+%
+%      RegisterFAXImage(void)
+%
+*/
+Export void RegisterFAXImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("FAX");
+  entry->decoder=ReadFAXImage;
+  entry->encoder=WriteFAXImage;
+  entry->magick=IsFAX;
+  entry->description=AllocateString("Group 3 FAX");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("G3");
+  entry->decoder=ReadFAXImage;
+  entry->encoder=WriteFAXImage;
+  entry->magick=IsFAX;
+  entry->adjoin=False;
+  entry->description=AllocateString("Group 3 FAX");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e F A X I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -203,7 +252,7 @@ Export Image *ReadFAXImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
 {
   unsigned int
     scene,

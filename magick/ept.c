@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteEPTImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -69,7 +75,7 @@
 %  Method IsEPT returns True if the image format type, identified by the
 %  magick string, is EPT.
 %
-%  The format of the ReadEPTImage method is:
+%  The format of the IsEPT method is:
 %
 %      unsigned int IsEPT(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,13 +91,50 @@
 %
 %
 */
-Export unsigned int IsEPT(const unsigned char *magick,const unsigned int length)
+static unsigned int IsEPT(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
   if (strncmp((char *) magick,"\305\320\323\306",4) == 0)
     return(True);
   return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r E P T I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterEPTImage adds attributes for the EPT image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterEPTImage method is:
+%
+%      RegisterEPTImage(void)
+%
+*/
+Export void RegisterEPTImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("EPT");
+  entry->encoder=WriteEPTImage;
+  entry->magick=IsEPT;
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("Adobe Encapsulated PostScript with TIFF preview");
+  RegisterMagickInfo(entry);
 }
 
 /*
@@ -124,7 +167,7 @@ Export unsigned int IsEPT(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
 {
   char
     filename[MaxTextExtent];
@@ -163,8 +206,9 @@ Export unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
         Write image as Encapsulated Postscript to a temporary file.
       */
       (void) strcpy(filename,image->filename);
-      TemporaryFilename(image->filename);
-      status=WritePSImage(image_info,image);
+      (void) strcpy(image->filename,"ps:");
+      TemporaryFilename(image->filename+3);
+      status=WriteImage(image_info,image);
       if (status == False)
         return(status);
       status=OpenBlob(image_info,image,ReadBinaryType);
@@ -178,8 +222,9 @@ Export unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
   /*
     Write image as TIFF to a temporary file.
   */
-  TemporaryFilename(image->filename);
-  status=WriteTIFFImage(image_info,image);
+  (void) strcpy(image->filename,"tiff:");
+  TemporaryFilename(image->filename+5);
+  status=WriteImage(image_info,image);
   if (status == False)
     return(status);
   status=OpenBlob(image_info,image,ReadBinaryType);

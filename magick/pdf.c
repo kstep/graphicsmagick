@@ -59,6 +59,12 @@
 #else
 #define CCITTParam  "0"
 #endif
+
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WritePDFImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,7 +80,7 @@
 %  Method IsPDF returns True if the image format type, identified by the
 %  magick string, is PDF.
 %
-%  The format of the ReadPDFImage method is:
+%  The format of the IsPDF method is:
 %
 %      unsigned int IsPDF(const unsigned char *magick,
 %        const unsigned int length)
@@ -90,7 +96,7 @@
 %
 %
 */
-Export unsigned int IsPDF(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPDF(const unsigned char *magick,const unsigned int length)
 {
   if (length < 5)
     return(False);
@@ -116,7 +122,7 @@ Export unsigned int IsPDF(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadPDFImage method is:
 %
-%      Image *ReadPDFImage(const ImageInfo *image_info)
+%      Image *ReadPDFImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -128,7 +134,7 @@ Export unsigned int IsPDF(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export Image *ReadPDFImage(const ImageInfo *image_info)
+static Image *ReadPDFImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #define MediaBox  "/MediaBox ["
 
@@ -155,7 +161,7 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
     *next_image;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   int
     count,
@@ -313,10 +319,10 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
       (void) remove(postscript_filename);
       return((Image *) NULL);
     }
-  local_info=CloneImageInfo(image_info);
-  GetBlobInfo(&local_info->blob);
-  image=ReadPNMImage(local_info);
-  DestroyImageInfo(local_info);
+  clone_info=CloneImageInfo(image_info);
+  GetBlobInfo(&clone_info->blob);
+  image=ReadImage(clone_info,error);
+  DestroyImageInfo(clone_info);
   (void) remove(postscript_filename);
   (void) remove(image_info->filename);
   if (image == (Image *) NULL)
@@ -361,6 +367,49 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r P D F I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPDFImage adds attributes for the PDF image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPDFImage method is:
+%
+%      RegisterPDFImage(void)
+%
+*/
+Export void RegisterPDFImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("EPDF");
+  entry->decoder=ReadPDFImage;
+  entry->encoder=WritePDFImage;
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("Encapsulated Portable Document Format");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("PDF");
+  entry->decoder=ReadPDFImage;
+  entry->encoder=WritePDFImage;
+  entry->magick=IsPDF;
+  entry->description=AllocateString("Portable Document Format");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e P D F I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -386,7 +435,7 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
+static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 {
 #define CFormat  "/Filter [ /ASCII85Decode /%.1024s ]\n"
 #define ObjectsPerImage  12
@@ -825,8 +874,8 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           jpeg_image=CloneImage(image,image->columns,image->rows,True);
           if (jpeg_image == (Image *) NULL)
             WriterExit(DelegateWarning,"Unable to clone image",image);
-          (void) strcpy(jpeg_image->filename,filename);
-          status=WriteJPEGImage(image_info,jpeg_image);
+          (void) FormatString(jpeg_image->filename,"jpeg:%s",filename);
+          status=WriteImage(image_info,jpeg_image);
           DestroyImage(jpeg_image);
           if (status == False)
             WriterExit(DelegateWarning,"Unable to write image",image);

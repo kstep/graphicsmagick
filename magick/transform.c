@@ -100,7 +100,7 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
     y;
 
   RectangleInfo
-    local_info;
+    clone_info;
 
   register IndexPacket
     *r;
@@ -127,26 +127,26 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
         "geometry does not contain image");
       return((Image *) NULL);
     }
-  local_info=(*chop_info);
-  if ((local_info.x+(int) local_info.width) > (int) image->columns)
-    local_info.width=(unsigned int) ((int) image->columns-local_info.x);
-  if ((local_info.y+(int) local_info.height) > (int) image->rows)
-    local_info.height=(unsigned int) ((int) image->rows-local_info.y);
-  if (local_info.x < 0)
+  clone_info=(*chop_info);
+  if ((clone_info.x+(int) clone_info.width) > (int) image->columns)
+    clone_info.width=(unsigned int) ((int) image->columns-clone_info.x);
+  if ((clone_info.y+(int) clone_info.height) > (int) image->rows)
+    clone_info.height=(unsigned int) ((int) image->rows-clone_info.y);
+  if (clone_info.x < 0)
     {
-      local_info.width-=(unsigned int) (-local_info.x);
-      local_info.x=0;
+      clone_info.width-=(unsigned int) (-clone_info.x);
+      clone_info.x=0;
     }
-  if (local_info.y < 0)
+  if (clone_info.y < 0)
     {
-      local_info.height-=(unsigned int) (-local_info.y);
-      local_info.y=0;
+      clone_info.height-=(unsigned int) (-clone_info.y);
+      clone_info.y=0;
     }
   /*
     Initialize chop image attributes.
   */
-  chop_image=CloneImage(image,image->columns-local_info.width,
-    image->rows-local_info.height,False);
+  chop_image=CloneImage(image,image->columns-clone_info.width,
+    image->rows-clone_info.height,False);
   if (chop_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to chop image",
@@ -158,7 +158,7 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
   */
   i=0;
   j=0;
-  for (y=0; y < local_info.y; y++)
+  for (y=0; y < clone_info.y; y++)
   {
     p=GetPixelCache(image,0,i++,image->columns,1);
     q=SetPixelCache(chop_image,0,j++,chop_image->columns,1);
@@ -167,7 +167,7 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
     r=chop_image->indexes;
     for (x=0; x < (int) image->columns; x++)
     {
-      if ((x < local_info.x) || (x >= (int) (local_info.x+local_info.width)))
+      if ((x < clone_info.x) || (x >= (int) (clone_info.x+clone_info.width)))
         {
           if (image->class == PseudoClass)
             *r++=image->indexes[x];
@@ -184,8 +184,8 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
   /*
     Extract chop image.
   */
-  i+=local_info.height;
-  for (y=0; y < (int) (image->rows-(local_info.y+local_info.height)); y++)
+  i+=clone_info.height;
+  for (y=0; y < (int) (image->rows-(clone_info.y+clone_info.height)); y++)
   {
     p=GetPixelCache(image,0,i++,image->columns,1);
     q=SetPixelCache(chop_image,0,j++,chop_image->columns,1);
@@ -194,7 +194,7 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
     r=chop_image->indexes;
     for (x=0; x < (int) image->columns; x++)
     {
-      if ((x < local_info.x) || (x >= (int) (local_info.x+local_info.width)))
+      if ((x < clone_info.x) || (x >= (int) (clone_info.x+clone_info.width)))
         {
           if (image->class == PseudoClass)
             *r++=image->indexes[x];

@@ -54,6 +54,12 @@
 */
 #include "magick.h"
 #include "defines.h"
+
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WritePCDImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -340,7 +346,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
 %  Method IsPCD returns True if the image format type, identified by the
 %  magick string, is PCD.
 %
-%  The format of the ReadPCDImage method is:
+%  The format of the IsPCD method is:
 %
 %      unsigned int IsPCD(const unsigned char *magick,
 %        const unsigned int length)
@@ -356,7 +362,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
 %
 %
 */
-Export unsigned int IsPCD(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPCD(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
@@ -404,7 +410,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
     *montage_image;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   MontageInfo
     montage_info;
@@ -412,14 +418,14 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
   /*
     Create image tiles.
   */
-  local_info=CloneImageInfo(image_info);
-  if (local_info == (ImageInfo *) NULL)
+  clone_info=CloneImageInfo(image_info);
+  if (clone_info == (ImageInfo *) NULL)
     return((Image *) NULL);
   commands[0]=SetClientName((char *) NULL);
   commands[1]="-label";
   commands[2]=(char *) DefaultTileLabel;
-  MogrifyImages(local_info,3,commands,&image);
-  DestroyImageInfo(local_info);
+  MogrifyImages(clone_info,3,commands,&image);
+  DestroyImageInfo(clone_info);
   /*
     Create the PCD Overview image.
   */
@@ -435,7 +441,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
   return(montage_image);
 }
 
-Export Image *ReadPCDImage(const ImageInfo *image_info)
+static Image *ReadPCDImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   Image
     *image;
@@ -782,6 +788,49 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r P C D I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPCDImage adds attributes for the PCD image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPCDImage method is:
+%
+%      RegisterPCDImage(void)
+%
+*/
+Export void RegisterPCDImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("PCD");
+  entry->decoder=ReadPCDImage;
+  entry->encoder=WritePCDImage;
+  entry->magick=IsPCD;
+  entry->adjoin=False;
+  entry->description=AllocateString("Photo CD");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("PCDS");
+  entry->decoder=ReadPCDImage;
+  entry->encoder=WritePCDImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("Photo CD");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e P C D I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -911,7 +960,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   return(True);
 }
 
-Export unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
+static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
 {
   Image
     *pcd_image;

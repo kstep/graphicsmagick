@@ -6,7 +6,7 @@ $if (f$trnlnm("X11") .eqs. "") then define/nolog X11 decw$include:
 $compile_options="/nodebug/optimize"
 $if (f$search("sys$system:decc$compiler.exe") .nes. "") 
 $then     ! VAX with DEC C
-$  compile_options="/decc/nodebug/optimize"
+$  compile_options="/decc/nodebug/optimize/warning=(disable=rightshiftovr)"
 $else     ! VAX with VAX C
 $define/nolog lnk$library sys$library:vaxcrtl
 $define/nolog sys sys$share
@@ -134,7 +134,7 @@ $library/create libmagick.olb PreRvIcccm.obj,animate.obj,annotate.obj, -
   rgb.obj,rla.obj,rle.obj,segment.obj,sct.obj,sfw.obj,sgi.obj,shear.obj, -
   signature.obj,stegano.obj,sun.obj,tga.obj,tiff.obj,tile.obj, -
   tim.obj,timer.obj,transform.obj,ttf.obj,txt.obj,uil.obj,utility.obj, -
-  uyvy.obj,vicar.obj,vid.obj,viff.obj,vms.obj,wbmp.obj,widget.obj,x.obj, -
+  uyvy.obj,vicar.obj,vid.obj,viff.obj,vms.obj,widget.obj,wbmp.obj,x.obj, -
   xbm.obj,xc.obj,xpm.obj,xwd.obj,xwindows.obj,yuv.obj,zoom.obj,8bim.obj
 $exit
 $

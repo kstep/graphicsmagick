@@ -54,6 +54,12 @@
 */
 #include "magick.h"
 #include "defines.h"
+
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WritePCLImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -69,7 +75,7 @@
 %  Method IsPCL returns True if the image format type, identified by the
 %  magick string, is PCL.
 %
-%  The format of the ReadPCLImage method is:
+%  The format of the IsPCL method is:
 %
 %      unsigned int IsPCL(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,7 +91,7 @@
 %
 %
 */
-Export unsigned int IsPCL(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPCL(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
@@ -113,7 +119,7 @@ Export unsigned int IsPCL(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadPCLImage method is:
 %
-%      Image *ReadPCLImage(const ImageInfo *image_info)
+%      Image *ReadPCLImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -125,11 +131,48 @@ Export unsigned int IsPCL(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export Image *ReadPCLImage(const ImageInfo *image_info)
+static Image *ReadPCLImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   MagickWarning(MissingDelegateWarning,"Cannot read PCL images",
     image_info->filename);
   return((Image *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r P C L I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPCLImage adds attributes for the PCL image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPCLImage method is:
+%
+%      RegisterPCLImage(void)
+%
+*/
+Export void RegisterPCLImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("PCL");
+  entry->decoder=ReadPCLImage;
+  entry->encoder=WritePCLImage;
+  entry->magick=IsPCL;
+  entry->adjoin=False;
+  entry->description=AllocateString("Page Control Language");
+  RegisterMagickInfo(entry);
 }
 
 /*
@@ -162,7 +205,7 @@ Export Image *ReadPCLImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
+static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[MaxTextExtent],

@@ -2629,7 +2629,7 @@ static const DicomInfo
 %
 %
 */
-Export unsigned int IsDCM(const unsigned char *magick,const unsigned int length)
+static unsigned int IsDCM(const unsigned char *magick,const unsigned int length)
 {
   if (length < 132)
     return(False);
@@ -2655,7 +2655,7 @@ Export unsigned int IsDCM(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadDCMImage method is:
 %
-%      Image *ReadDCMImage(const ImageInfo *image_info)
+%      Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -2667,7 +2667,7 @@ Export unsigned int IsDCM(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export Image *ReadDCMImage(const ImageInfo *image_info)
+static Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   char
     explicit_vr[3],
@@ -3119,6 +3119,9 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
   if ((strcmp(transfer_syntax,"1.2.840.10008.1.2.4.50") == 0) ||
       (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0))
     {
+      ErrorInfo
+        error;
+
       FILE
         *file;
 
@@ -3126,14 +3129,14 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
         c;
 
       ImageInfo
-        *local_info;
+        *clone_info;
 
       /*
         Handle 2.4.50 lossy JPEG and 2.4.70 lossless JPEG.
       */
-      local_info=CloneImageInfo(image_info);
-      TemporaryFilename((char *) local_info->filename);
-      file=fopen(local_info->filename,WriteBinaryType);
+      clone_info=CloneImageInfo(image_info);
+      TemporaryFilename((char *) clone_info->filename);
+      file=fopen(clone_info->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         ReaderExit(FileOpenWarning,"Unable to write file",image);
       c=16;
@@ -3149,9 +3152,9 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
       }
       (void) fclose(file);
       DestroyImage(image);
-      image=ReadJPEGImage(local_info);
-      (void) remove(local_info->filename);
-      DestroyImageInfo(local_info);
+      image=ReadImage(clone_info,&error);
+      (void) remove(clone_info->filename);
+      DestroyImageInfo(clone_info);
       return(image);
     }
   max_value=(1 << (8*bytes_per_pixel))-1;
@@ -3342,4 +3345,41 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
     image=image->previous;
   CloseBlob(image);
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r D C M I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterDCMImage adds attributes for the DCM image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterDCMImage method is:
+%
+%      RegisterDCMImage(void)
+%
+*/
+Export void RegisterDCMImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("DCM");
+  entry->decoder=ReadDCMImage;
+  entry->magick=IsDCM;
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("Digital Imaging and Communications in Medicine image");
+  RegisterMagickInfo(entry);
 }

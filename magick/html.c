@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteHTMLImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -69,7 +75,7 @@
 %  Method IsHTML returns True if the image format type, identified by the
 %  magick string, is HTML.
 %
-%  The format of the ReadHTMLImage method is:
+%  The format of the IsHTML method is:
 %
 %      unsigned int IsHTML(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,7 +91,7 @@
 %
 %
 */
-Export unsigned int IsHTML(const unsigned char *magick,
+static unsigned int IsHTML(const unsigned char *magick,
   const unsigned int length)
 {
   if (length < 5)
@@ -95,6 +101,53 @@ Export unsigned int IsHTML(const unsigned char *magick,
   if (strncmp((char *) magick,"<html",5) == 0)
     return(True);
   return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r H T M L I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterHTMLImage adds attributes for the HTML image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterHTMLImage method is:
+%
+%      RegisterHTMLImage(void)
+%
+*/
+Export void RegisterHTMLImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("HTM");
+  entry->magick=IsHTML;
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("Hypertext Markup Language and a client-side image map");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("HTML");
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("Hypertext Markup Language and a client-side image map");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("SHTML");
+  entry->encoder=WriteHTMLImage;
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("Hypertext Markup Language and a client-side image map");
+  RegisterMagickInfo(entry);
 }
 
 /*
@@ -126,7 +179,7 @@ Export unsigned int IsHTML(const unsigned char *magick,
 %
 %
 */
-Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[MaxTextExtent],
@@ -138,7 +191,7 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
     *next;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   int
     x,
@@ -189,10 +242,10 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(mapname,BaseFilename(filename));
   (void) strcpy(image->filename,image_info->filename);
   (void) strcpy(filename,image->filename);
-  local_info=CloneImageInfo(image_info);
-  if (local_info == (ImageInfo *) NULL)
+  clone_info=CloneImageInfo(image_info);
+  if (clone_info == (ImageInfo *) NULL)
     WriterExit(FileOpenWarning,"Unable to allocate memory",image);
-  local_info->adjoin=True;
+  clone_info->adjoin=True;
   status=True;
   if (Latin1Compare(image_info->magick,"SHTML") != 0)
     {
@@ -309,7 +362,7 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       next=image->next;
       image->next=(Image *) NULL;
       (void) strcpy(image->magick,"GIF");
-      status|=WriteImage(local_info,image);
+      status|=WriteImage(clone_info,image);
       image->next=next;
       /*
         Determine image map filename.
@@ -327,10 +380,10 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   /*
     Open image map.
   */
-  status=OpenBlob(local_info,image,WriteBinaryType);
+  status=OpenBlob(clone_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  DestroyImageInfo(local_info);
+  DestroyImageInfo(clone_info);
   /*
     Determine the size and location of each image tile.
   */

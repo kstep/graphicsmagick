@@ -71,7 +71,7 @@
 %
 %  The format of the ReadPLASMAImage method is:
 %
-%      Image *ReadPLASMAImage(const ImageInfo *image_info)
+%      Image *ReadPLASMAImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -83,7 +83,7 @@
 %
 %
 */
-Export Image *ReadPLASMAImage(const ImageInfo *image_info)
+static Image *ReadPLASMAImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #define PlasmaImageText  "  Applying image plasma...  "
 #define PlasmaPixel(x,y) \
@@ -100,6 +100,9 @@ Export Image *ReadPLASMAImage(const ImageInfo *image_info)
 
   Image
     *image;
+
+  ImageInfo
+    *clone_info;
 
   int
     y;
@@ -121,7 +124,10 @@ Export Image *ReadPLASMAImage(const ImageInfo *image_info)
   /*
     Recursively apply plasma to the image.
   */
-  image=ReadGRADATIONImage(image_info);
+  clone_info=CloneImageInfo(image_info);
+  (void) FormatString(clone_info->filename,"gradation:%s",image_info->filename);
+  image=ReadImage(clone_info,error);
+  DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
     return(image);
   image->class=DirectClass;
@@ -169,4 +175,39 @@ Export Image *ReadPLASMAImage(const ImageInfo *image_info)
       break;
   }
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r P L A S M A I m a g e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPLASMAImage adds attributes for the PLASMA image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPLASMAImage method is:
+%
+%      RegisterPLASMAImage(void)
+%
+*/
+Export void RegisterPLASMAImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("PLASMA");
+  entry->decoder=ReadPLASMAImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("Plasma fractal image");
+  RegisterMagickInfo(entry);
 }

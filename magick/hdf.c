@@ -61,6 +61,12 @@
 #endif
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteHDFImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -74,7 +80,7 @@
 %  Method IsHDF returns True if the image format type, identified by the
 %  magick string, is HDF.
 %
-%  The format of the ReadHDFImage method is:
+%  The format of the IsHDF method is:
 %
 %      unsigned int IsHDF(const unsigned char *magick,
 %        const unsigned int length)
@@ -90,7 +96,7 @@
 %
 %
 */
-Export unsigned int IsHDF(const unsigned char *magick,const unsigned int length)
+static unsigned int IsHDF(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
@@ -117,7 +123,7 @@ Export unsigned int IsHDF(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadHDFImage method is:
 %
-%      Image *ReadHDFImage(const ImageInfo *image_info)
+%      Image *ReadHDFImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -129,7 +135,7 @@ Export unsigned int IsHDF(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export Image *ReadHDFImage(const ImageInfo *image_info)
+static Image *ReadHDFImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   ClassType
     class;
@@ -365,13 +371,52 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Export Image *ReadHDFImage(const ImageInfo *image_info)
+static Image *ReadHDFImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   MagickWarning(MissingDelegateWarning,"HDF library is not available",
     image_info->filename);
   return((Image *) NULL);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r H D F I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterHDFImage adds attributes for the HDF image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterHDFImage method is:
+%
+%      RegisterHDFImage(void)
+%
+*/
+Export void RegisterHDFImage(void)
+{
+  MagickInfo
+    *entry;
+
+#if defined(HasHDF)
+  entry=SetMagickInfo("HDF");
+  entry->decoder=ReadHDFImage;
+  entry->encoder=WriteHDFImage;
+  entry->magick=IsHDF;
+  entry->blob_support=False;
+  entry->description=AllocateString("Hierarchical Data Format");
+  RegisterMagickInfo(entry);
+#endif
+}
 
 #if defined(HasHDF)
 /*
@@ -404,7 +449,7 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
   ImageAttribute
     *attribute;
@@ -660,7 +705,7 @@ Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
   return(status != -1);
 }
 #else
-Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"HDF library is not available",
     image->filename);

@@ -56,6 +56,47 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteHISTOGRAMImage(const ImageInfo *,Image *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r H I S T O G R A M I m a g e                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterHISTOGRAMImage adds attributes for the HISTOGRAM image format
+%  to the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterHISTOGRAMImage method is:
+%
+%      RegisterHISTOGRAMImage(void)
+%
+*/
+Export void RegisterHISTOGRAMImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("HISTOGRAM");
+  entry->encoder=WriteHISTOGRAMImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("Histogram of the image");
+  RegisterMagickInfo(entry);
+}
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -93,7 +134,7 @@
 %
 %
 */
-Export unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
+static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   Image *image)
 {
 #define HistogramDensity  "256x200"
@@ -203,7 +244,7 @@ Export unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     Initialize histogram image.
   */
   (void) QueryColorDatabase("black",&histogram_image->background_color);
-  SetImage(histogram_image);
+  SetImage(histogram_image,Opaque);
   for (x=0; x < (int) histogram_image->columns; x++)
   {
     q=GetPixelCache(histogram_image,x,0,1,histogram_image->rows);

@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteTXTImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -72,7 +78,7 @@
 %
 %  The format of the ReadTXTImage method is:
 %
-%      Image *ReadTXTImage(const ImageInfo *image_info)
+%      Image *ReadTXTImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -84,7 +90,7 @@
 %
 %
 */
-Export Image *ReadTXTImage(const ImageInfo *image_info)
+static Image *ReadTXTImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   AnnotateInfo
     *annotate_info;
@@ -163,21 +169,21 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
   if (image_info->texture != (char *) NULL)
     {
       ImageInfo
-        *local_info;
+        *clone_info;
 
-      local_info=CloneImageInfo(image_info);
-      if (local_info == (ImageInfo *) NULL)
+      clone_info=CloneImageInfo(image_info);
+      if (clone_info == (ImageInfo *) NULL)
         return((Image *) NULL);
-      (void) strcpy(local_info->filename,image_info->texture);
-      texture=ReadImage(local_info);
+      (void) strcpy(clone_info->filename,image_info->texture);
+      texture=ReadImage(clone_info,error);
       if (texture != (Image *) NULL)
         TextureImage(image,texture);
-      DestroyImageInfo(local_info);
+      DestroyImageInfo(clone_info);
     }
   /*
     Annotate the text image.
   */
-  SetImage(image);
+  SetImage(image,Opaque);
   annotate_info=
     CloneAnnotateInfo((ImageInfo *) image_info,(AnnotateInfo *) NULL);
   (void) strcpy(filename,image_info->filename);
@@ -249,6 +255,47 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r T X T I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterTXTImage adds attributes for the TXT image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterTXTImage method is:
+%
+%      RegisterTXTImage(void)
+%
+*/
+Export void RegisterTXTImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("TEXT");
+  entry->decoder=ReadTXTImage;
+  entry->encoder=WriteTXTImage;
+  entry->raw=True;
+  entry->description=AllocateString("Raw text");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("TXT");
+  entry->decoder=ReadTXTImage;
+  entry->encoder=WriteTXTImage;
+  entry->description=AllocateString("Raw text");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e T X T I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -273,7 +320,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[MaxTextExtent];

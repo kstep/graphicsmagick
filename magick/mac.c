@@ -1004,7 +1004,7 @@ Export struct dirent *readdir(DIR *entry)
 %
 %
 */
-Export Image *ReadPICTImage(const ImageInfo *image_info)
+static Image *ReadPICTImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #define LoadImageText  "  Loading image...  "
 #define PICTHeaderSize    512

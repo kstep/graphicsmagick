@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteBMPImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -320,7 +326,7 @@ static unsigned int EncodeImage(const unsigned char *pixels,
 %  Method IsBMP returns True if the image format type, identified by the
 %  magick string, is BMP.
 %
-%  The format of the ReadBMPImage method is:
+%  The format of the IsBMP method is:
 %
 %      unsigned int IsBMP(const unsigned char *magick,
 %        const unsigned int length)
@@ -336,7 +342,7 @@ static unsigned int EncodeImage(const unsigned char *pixels,
 %
 %
 */
-Export unsigned int IsBMP(const unsigned char *magick,const unsigned int length)
+static unsigned int IsBMP(const unsigned char *magick,const unsigned int length)
 {
   if (length < 2)
     return(False);
@@ -382,7 +388,7 @@ Export unsigned int IsBMP(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export Image *ReadBMPImage(const ImageInfo *image_info)
+static Image *ReadBMPImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   typedef struct _BMPHeader
   {
@@ -864,6 +870,52 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r B M P I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterBMPImage adds attributes for the BMP image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterBMPImage method is:
+%
+%      RegisterBMPImage(void)
+%
+*/
+Export void RegisterBMPImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("BMP");
+  entry->decoder=ReadBMPImage;
+  entry->encoder=WriteBMPImage;
+  entry->magick=IsBMP;
+  entry->description=AllocateString("Microsoft Windows bitmap image");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("BMP24");
+  entry->decoder=ReadBMPImage;
+  entry->encoder=WriteBMPImage;
+  entry->description=AllocateString("Microsoft Windows 24-bit bitmap image");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("DIB");
+  entry->decoder=ReadBMPImage;
+  entry->encoder=WriteBMPImage;
+  entry->description=AllocateString("Microsoft Windows bitmap image");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e B M P I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -889,7 +941,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 {
   typedef struct _BMPHeader
   {

@@ -59,49 +59,12 @@
 #include "tiffconf.h"
 #endif
 #include "tiffio.h"
-
+
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I s T I F F                                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method IsTIFF returns True if the image format type, identified by the
-%  magick string, is TIFF.
-%
-%  The format of the ReadTIFFImage method is:
-%
-%      unsigned int IsTIFF(const unsigned char *magick,
-%        const unsigned int length)
-%
-%  A description of each parameter follows:
-%
-%    o status:  Method IsTIFF returns True if the image format type is TIFF.
-%
-%    o magick: This string is generally the first few bytes of an image file
-%      or blob.
-%
-%    o length: Specifies the length of the magick string.
-%
-%
+  Forward declarations.
 */
-Export unsigned int IsTIFF(const unsigned char *magick,
-  const unsigned int length)
-{
-  if (length < 4)
-    return(False);
-  if ((magick[0] == 0x4D) && (magick[1] == 0x4D))
-    if ((magick[2] == 0x00) && (magick[3] == 0x2A))
-      return(True);
-  if (strncmp((char *) magick,"\111\111\052\000",4) == 0)
-    return(True);
-  return(False);
-}
+static unsigned int
+  WriteTIFFImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -140,7 +103,7 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
     *huffman_image;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   int
     count;
@@ -188,10 +151,10 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   TemporaryFilename(filename);
   (void) strcpy(huffman_image->filename,filename);
   (void) strcpy(huffman_image->magick,"TIFF");
-  local_info=CloneImageInfo(image_info);
-  local_info->compression=Group4Compression;
-  status=WriteImage(local_info,huffman_image);
-  DestroyImageInfo(local_info);
+  clone_info=CloneImageInfo(image_info);
+  clone_info->compression=Group4Compression;
+  status=WriteImage(clone_info,huffman_image);
+  DestroyImageInfo(clone_info);
   DestroyImage(huffman_image);
   if (status == False)
     return(False);
@@ -244,6 +207,49 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s T I F F                                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsTIFF returns True if the image format type, identified by the
+%  magick string, is TIFF.
+%
+%  The format of the IsTIFF method is:
+%
+%      unsigned int IsTIFF(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsTIFF returns True if the image format type is TIFF.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+static unsigned int IsTIFF(const unsigned char *magick,
+  const unsigned int length)
+{
+  if (length < 4)
+    return(False);
+  if ((magick[0] == 0x4D) && (magick[1] == 0x4D))
+    if ((magick[2] == 0x00) && (magick[3] == 0x2A))
+      return(True);
+  if (strncmp((char *) magick,"\111\111\052\000",4) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d T I F F I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -256,7 +262,7 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 %
 %  The format of the ReadTIFFImage method is:
 %
-%      Image *ReadTIFFImage(const ImageInfo *image_info)
+%      Image *ReadTIFFImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -404,7 +410,7 @@ static void TIFFWarningHandler(const char *module,const char *format,
 }
 #endif
 
-Export Image *ReadTIFFImage(const ImageInfo *image_info)
+static Image *ReadTIFFImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   char
     *text;
@@ -650,9 +656,6 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
     {
       case 0:
       {
-        IndexPacket
-          index;
-
         register unsigned char
           *r;
 
@@ -1002,13 +1005,70 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Export Image *ReadTIFFImage(const ImageInfo *image_info)
+static Image *ReadTIFFImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   MagickWarning(MissingDelegateWarning,"TIFF library is not available",
     image_info->filename);
   return((Image *) NULL);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r T I F F I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterTIFFImage adds attributes for the TIFF image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterTIFFImage method is:
+%
+%      RegisterTIFFImage(void)
+%
+*/
+Export void RegisterTIFFImage(void)
+{
+  MagickInfo
+    *entry;
+
+#if defined(HasTIFF)
+  entry=SetMagickInfo("PTIF");
+  entry->decoder=ReadTIFFImage;
+  entry->encoder=WriteTIFFImage;
+  entry->blob_support=False;
+  entry->description=AllocateString("Pyramid encoded TIFF");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("TIF");
+  entry->decoder=ReadTIFFImage;
+  entry->encoder=WriteTIFFImage;
+  entry->blob_support=False;
+  entry->description=AllocateString("Tagged Image File Format");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("TIFF");
+  entry->decoder=ReadTIFFImage;
+  entry->encoder=WriteTIFFImage;
+  entry->magick=IsTIFF;
+  entry->blob_support=False;
+  entry->description=AllocateString("Tagged Image File Format");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("TIFF24");
+  entry->decoder=ReadTIFFImage;
+  entry->encoder=WriteTIFFImage;
+  entry->blob_support=False;
+  entry->description=AllocateString("24-bit Tagged Image File Format");
+  RegisterMagickInfo(entry);
+#endif
+}
 
 #if defined(HasTIFF)
 /*
@@ -1189,7 +1249,7 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
   return(status);
 }
 
-Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
 #if !defined(TIFFDefaultStripSize)
 #define TIFFDefaultStripSize(tiff,request)  ((8*1024)/TIFFScanlineSize(tiff))
@@ -1755,7 +1815,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"TIFF library is not available",
     image->filename);

@@ -60,6 +60,12 @@
 #if defined(HasZLIB)
 #include "zlib.h"
 #endif
+
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WriteMIFFImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -75,7 +81,7 @@
 %  Method IsMIFF returns True if the image format type, identified by the
 %  magick string, is MIFF.
 %
-%  The format of the ReadMIFFImage method is:
+%  The format of the IsMIFF method is:
 %
 %      unsigned int IsMIFF(const unsigned char *magick,
 %        const unsigned int length)
@@ -91,7 +97,7 @@
 %
 %
 */
-Export unsigned int IsMIFF(const unsigned char *magick,
+static unsigned int IsMIFF(const unsigned char *magick,
   const unsigned int length)
 {
   if (length < 14)
@@ -120,7 +126,7 @@ Export unsigned int IsMIFF(const unsigned char *magick,
 %
 %  The format of the ReadMIFFImage method is:
 %
-%      Image *ReadMIFFImage(const ImageInfo *image_info)
+%      Image *ReadMIFFImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  Decompression code contributed by Kyle Shorter.
 %
@@ -134,7 +140,7 @@ Export unsigned int IsMIFF(const unsigned char *magick,
 %
 %
 */
-Export Image *ReadMIFFImage(const ImageInfo *image_info)
+static Image *ReadMIFFImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #if defined(HasBZLIB)
   bz_stream
@@ -771,6 +777,44 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r M I F F I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterMIFFImage adds attributes for the MIFF image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterMIFFImage method is:
+%
+%      RegisterMIFFImage(void)
+%
+*/
+Export void RegisterMIFFImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("IMPLICIT");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("MIFF");
+  entry->decoder=ReadMIFFImage;
+  entry->encoder=WriteMIFFImage;
+  entry->magick=IsMIFF;
+  entry->description=AllocateString("Magick image format");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e M I F F I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -797,7 +841,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 {
 #if defined(HasBZLIB)
   bz_stream

@@ -92,11 +92,14 @@
 Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
   const size_t length)
 {
+  ErrorInfo
+    error;
+
   Image
     *image;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   int
     file;
@@ -107,32 +110,32 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
   off_t
     count;
 
-  local_info=CloneImageInfo(image_info);
-  local_info->blob.data=(char *) blob;
-  local_info->blob.offset=0;
-  local_info->blob.length=length;
-  local_info->blob.extent=length;
-  SetImageInfo(local_info,False);
-  magick_info=(MagickInfo *) GetMagickInfo(local_info->magick);
+  clone_info=CloneImageInfo(image_info);
+  clone_info->blob.data=(char *) blob;
+  clone_info->blob.offset=0;
+  clone_info->blob.length=length;
+  clone_info->blob.extent=length;
+  SetImageInfo(clone_info,False);
+  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
   if (magick_info == (MagickInfo *) NULL)
     {
       MagickWarning(BlobWarning,"Unrecognized image format",
-        local_info->magick);
-      DestroyImageInfo(local_info);
+        clone_info->magick);
+      DestroyImageInfo(clone_info);
       return((Image *) NULL);
     }
-  GetBlobInfo(&(local_info->blob));
+  GetBlobInfo(&(clone_info->blob));
   if (magick_info->blob_support)
     {
       /*
         Native blob support for this image format.
       */
-      *local_info->filename='\0';
-      local_info->blob.data=(char *) blob;
-      local_info->blob.length=length;
-      local_info->blob.extent=length;
-      image=ReadImage(local_info);
-      DestroyImageInfo(local_info);
+      *clone_info->filename='\0';
+      clone_info->blob.data=(char *) blob;
+      clone_info->blob.length=length;
+      clone_info->blob.extent=length;
+      image=ReadImage(clone_info,&error);
+      DestroyImageInfo(clone_info);
       if (image != (Image *) NULL)
         GetBlobInfo(&(image->blob));
       return(image);
@@ -140,13 +143,13 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
   /*
     Write blob to a temporary file on disk.
   */
-  TemporaryFilename(local_info->filename);
-  file=open(local_info->filename,O_WRONLY | O_CREAT | O_EXCL | O_BINARY,0777);
+  TemporaryFilename(clone_info->filename);
+  file=open(clone_info->filename,O_WRONLY | O_CREAT | O_EXCL | O_BINARY,0777);
   if (file == -1)
     {
       MagickWarning(BlobWarning,"Unable to convert blob to an image",
-        local_info->filename);
-      DestroyImageInfo(local_info);
+        clone_info->filename);
+      DestroyImageInfo(clone_info);
       return((Image *) NULL);
     }
   count=write(file,blob,length);
@@ -154,13 +157,13 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
   if (count != length)
     {
       MagickWarning(BlobWarning,"Unable to convert blob to an image",
-        local_info->filename);
-      DestroyImageInfo(local_info);
+        clone_info->filename);
+      DestroyImageInfo(clone_info);
       return((Image *) NULL);
     }
-  image=ReadImage(local_info);
-  (void) remove(local_info->filename);
-  DestroyImageInfo(local_info);
+  image=ReadImage(clone_info,&error);
+  (void) remove(clone_info->filename);
+  DestroyImageInfo(clone_info);
   return(image);
 }
 
@@ -420,7 +423,7 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
     filename[MaxTextExtent];
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   int
     file;
@@ -437,13 +440,13 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
   unsigned int
     status;
 
-  local_info=CloneImageInfo(image_info);
-  (void) strcpy(local_info->magick,image->magick);
-  magick_info=(MagickInfo *) GetMagickInfo(local_info->magick);
+  clone_info=CloneImageInfo(image_info);
+  (void) strcpy(clone_info->magick,image->magick);
+  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
   if (magick_info == (MagickInfo *) NULL)
      {
        MagickWarning(BlobWarning,"No delegate for this image format",
-         local_info->magick);
+         clone_info->magick);
        return((char *) NULL);
      }
   if (magick_info->blob_support)
@@ -452,25 +455,25 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
         Native blob support for this image format.
       */
       *image->filename='\0';
-      local_info->blob.extent=Max((int) *length,image->blob.quantum);
-      local_info->blob.data=(char *)
-        AllocateMemory(local_info->blob.extent);
-      if (local_info->blob.data == (char *) NULL)
+      clone_info->blob.extent=Max((int) *length,image->blob.quantum);
+      clone_info->blob.data=(char *)
+        AllocateMemory(clone_info->blob.extent);
+      if (clone_info->blob.data == (char *) NULL)
         {
           MagickWarning(BlobWarning,"Unable to create blob",
             "Memory allocation failed");
           return((char *) NULL);
         }
-      local_info->blob.offset=0;
-      local_info->blob.length=0;
-      status=WriteImage(local_info,image);
+      clone_info->blob.offset=0;
+      clone_info->blob.length=0;
+      status=WriteImage(clone_info,image);
       if (status == False)
         {
-          MagickWarning(BlobWarning,"Unable to create blob",local_info->magick);
-          DestroyImageInfo(local_info);
+          MagickWarning(BlobWarning,"Unable to create blob",clone_info->magick);
+          DestroyImageInfo(clone_info);
           return((char *) NULL);
         }
-      DestroyImageInfo(local_info);
+      DestroyImageInfo(clone_info);
       *length=image->blob.length;
       blob=image->blob.data;
       GetBlobInfo(&(image->blob));
@@ -480,11 +483,11 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
     Write file to disk in blob image format.
   */
   *length=0;
-  local_info=CloneImageInfo(image_info);
+  clone_info=CloneImageInfo(image_info);
   (void) strcpy(filename,image->filename);
   FormatString(image->filename,"%.1024s:%.1024s",image->magick,
-    local_info->unique);
-  status=WriteImage(local_info,image);
+    clone_info->unique);
+  status=WriteImage(clone_info,image);
   if (status == False)
     {
       MagickWarning(BlobWarning,"Unable to create blob",image->filename);
@@ -494,7 +497,7 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
     Read image from disk as blob.
   */
   file=open(image->filename,O_RDONLY | O_BINARY,0777);
-  DestroyImageInfo(local_info);
+  DestroyImageInfo(clone_info);
   if (file == -1)
     {
       (void) remove(image->filename);

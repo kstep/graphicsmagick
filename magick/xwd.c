@@ -56,7 +56,15 @@
 #include "defines.h"
 #if defined(HasX11)
 #include "xwindows.h"
+#endif
 
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WriteXWDImage(const ImageInfo *,Image *);
+
+#if defined(HasX11)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -71,7 +79,7 @@
 %  Method IsXWD returns True if the image format type, identified by the
 %  magick string, is XWD.
 %
-%  The format of the ReadXWDImage method is:
+%  The format of the IsXWD method is:
 %
 %      unsigned int IsXWD(const unsigned char *magick,
 %        const unsigned int length)
@@ -87,7 +95,7 @@
 %
 %
 */
-Export unsigned int IsXWD(const unsigned char *magick,const unsigned int length)
+static unsigned int IsXWD(const unsigned char *magick,const unsigned int length)
 {
   if (length < 8)
     return(False);
@@ -115,7 +123,7 @@ Export unsigned int IsXWD(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadXWDImage method is:
 %
-%      Image *ReadXWDImage(const ImageInfo *image_info)
+%      Image *ReadXWDImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -127,7 +135,7 @@ Export unsigned int IsXWD(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export Image *ReadXWDImage(const ImageInfo *image_info)
+static Image *ReadXWDImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   char
     *comment;
@@ -437,13 +445,52 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Export Image *ReadXWDImage(const ImageInfo *image_info)
+static Image *ReadXWDImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   MagickWarning(MissingDelegateWarning,"X11 library is not available",
     image_info->filename);
   return((Image *) NULL);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r X W D I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterXWDImage adds attributes for the XWD image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterXWDImage method is:
+%
+%      RegisterXWDImage(void)
+%
+*/
+Export void RegisterXWDImage(void)
+{
+  MagickInfo
+    *entry;
+
+#if defined(HasX11)
+  entry=SetMagickInfo("XWD");
+  entry->decoder=ReadXWDImage;
+  entry->encoder=WriteXWDImage;
+  entry->magick=IsXWD;
+  entry->adjoin=False;
+  entry->description=AllocateString("X Windows system window dump (color)");
+  RegisterMagickInfo(entry);
+#endif
+}
 
 #if defined(HasX11)
 /*
@@ -476,7 +523,7 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 {
   int
     y;
@@ -636,7 +683,7 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"X11 library is not available",
     image->filename);

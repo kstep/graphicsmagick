@@ -54,9 +54,17 @@
 */
 #include "magick.h"
 #include "defines.h"
-
 #if defined(HasFPX)
 #include "Fpxlib.h"
+#endif
+
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WriteFPXImage(const ImageInfo *,Image *);
+
+#if defined(HasFPX)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -74,7 +82,7 @@
 %
 %  The format of the ReadFPXImage method is:
 %
-%      Image *ReadFPXImage(const ImageInfo *image_info)
+%      Image *ReadFPXImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -86,7 +94,7 @@
 %
 %
 */
-Export Image *ReadFPXImage(const ImageInfo *image_info)
+static Image *ReadFPXImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   FPXColorspace
     colorspace;
@@ -441,13 +449,50 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Export Image *ReadFPXImage(const ImageInfo *image_info)
+static Image *ReadFPXImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   MagickWarning(MissingDelegateWarning,"FPX library is not available",
     image_info->filename);
   return((Image *) NULL);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r F P X I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterFPXImage adds attributes for the FPX image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterFPXImage method is:
+%
+%      RegisterFPXImage(void)
+%
+*/
+Export void RegisterFPXImage(void)
+{
+  MagickInfo
+    *entry;
+
+#if defined(HasFPX)
+  entry=SetMagickInfo("FPX");
+  entry->encoder=WriteFPXImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("FlashPix Format");
+  RegisterMagickInfo(entry);
+#endif
+}
 
 #if defined(HasFPX)
 /*
@@ -662,7 +707,7 @@ static void SetSaturation(double saturation,FPXColorTwistMatrix *color_twist)
   *color_twist=result;
 }
 
-Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 {
   FPXBackground
     background_color;
@@ -1040,7 +1085,7 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"FPX library is not available",
     image->filename);

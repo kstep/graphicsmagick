@@ -61,6 +61,51 @@
 #endif
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WritePS2Image(const ImageInfo *,Image *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r P S 2 I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPS2Image adds attributes for the PS2 image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPS2Image method is:
+%
+%      RegisterPS2Image(void)
+%
+*/
+Export void RegisterPS2Image(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("EPS2");
+  entry->encoder=WritePS2Image;
+  entry->adjoin=False;
+  entry->description=AllocateString("Adobe Level II Encapsulated PostScript");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("PS2");
+  entry->encoder=WritePS2Image;
+  entry->description=AllocateString("Adobe Level II PostScript");
+  RegisterMagickInfo(entry);
+}
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -92,7 +137,7 @@
 %
 %
 */
-Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
+static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
 {
   static const char
     *PostscriptProlog[]=
@@ -537,8 +582,8 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           jpeg_image=CloneImage(image,image->columns,image->rows,True);
           if (jpeg_image == (Image *) NULL)
             WriterExit(DelegateWarning,"Unable to clone image",image);
-          (void) strcpy(jpeg_image->filename,filename);
-          status=WriteJPEGImage(image_info,jpeg_image);
+          (void) FormatString(jpeg_image->filename,"jpeg:%s",filename);
+          status=WriteImage(image_info,jpeg_image);
           DestroyImage(jpeg_image);
           if (status == False)
             WriterExit(DelegateWarning,"Unable to write image",image);

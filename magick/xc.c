@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteXCImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -73,7 +79,7 @@
 %
 %  The format of the ReadXCImage method is:
 %
-%      Image *ReadXCImage(const ImageInfo *image_info)
+%      Image *ReadXCImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -85,7 +91,7 @@
 %
 %
 */
-Export Image *ReadXCImage(const ImageInfo *image_info)
+static Image *ReadXCImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   Image
     *image;
@@ -139,4 +145,45 @@ Export Image *ReadXCImage(const ImageInfo *image_info)
       break;
   }
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r X C I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterXCImage adds attributes for the XC image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterXCImage method is:
+%
+%      RegisterXCImage(void)
+%
+*/
+Export void RegisterXCImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("NULL");
+  entry->decoder=ReadXCImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("NULL image");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("XC");
+  entry->decoder=ReadXCImage;
+  entry->adjoin=False;
+  entry->raw=True;
+  entry->description=AllocateString("Constant image of X server color");
+  RegisterMagickInfo(entry);
 }

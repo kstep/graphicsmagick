@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteFITSImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -69,7 +75,7 @@
 %  Method IsFITS returns True if the image format type, identified by the
 %  magick string, is FITS.
 %
-%  The format of the ReadFITSImage method is:
+%  The format of the IsFITS method is:
 %
 %      unsigned int IsFITS(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,7 +91,7 @@
 %
 %
 */
-Export unsigned int IsFITS(const unsigned char *magick,
+static unsigned int IsFITS(const unsigned char *magick,
   const unsigned int length)
 {
   if (length < 6)
@@ -114,7 +120,7 @@ Export unsigned int IsFITS(const unsigned char *magick,
 %
 %  The format of the ReadFITSImage method is:
 %
-%      Image *ReadFITSImage(const ImageInfo *image_info)
+%      Image *ReadFITSImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -126,7 +132,7 @@ Export unsigned int IsFITS(const unsigned char *magick,
 %
 %
 */
-Export Image *ReadFITSImage(const ImageInfo *image_info)
+static Image *ReadFITSImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   typedef struct _FITSHeader
   {
@@ -486,6 +492,43 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r F I T S I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterFITSImage adds attributes for the FITS image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterFITSImage method is:
+%
+%      RegisterFITSImage(void)
+%
+*/
+Export void RegisterFITSImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("FITS");
+  entry->decoder=ReadFITSImage;
+  entry->encoder=WriteFITSImage;
+  entry->magick=IsFITS;
+  entry->adjoin=False;
+  entry->description=AllocateString("Flexible Image Transport System");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e F I T S I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -511,7 +554,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[81],

@@ -121,12 +121,15 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       char
         **filelist;
 
+      ErrorInfo
+        error;
+
       Image
         *image,
         *next_image;
 
       ImageInfo
-        *local_info;
+        *clone_info;
 
       int
         number_files;
@@ -166,11 +169,15 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=ExpandFilenames(&number_files,&filelist);
       if ((status == False) || (number_files == 0))
         {
-          MagickWarning(OptionWarning,"No image files were found",filenames);
+          if (number_files == 0)
+            MagickWarning(OptionWarning,"no images were found",filenames);
+          else
+            MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+              filenames);
           return((Image *) NULL);
         }
-      local_info=CloneImageInfo(resource_info->image_info);
-      if (local_info == (ImageInfo *) NULL)
+      clone_info=CloneImageInfo(resource_info->image_info);
+      if (clone_info == (ImageInfo *) NULL)
         break;
       image=(Image *) NULL;
       handler=(MonitorHandler) NULL;
@@ -180,9 +187,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       {
         if (number_files > 5)
           handler=SetMonitorHandler((MonitorHandler) NULL);
-        (void) strcpy(local_info->filename,filelist[i]);
-        *local_info->magick='\0';
-        next_image=ReadImage(local_info);
+        (void) strcpy(clone_info->filename,filelist[i]);
+        *clone_info->magick='\0';
+        next_image=ReadImage(clone_info,&error);
         if (next_image != (Image *) NULL)
           {
             if (image == (Image *) NULL)
@@ -199,7 +206,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         (void) SetMonitorHandler(handler);
         ProgressMonitor(LoadImageText,i,number_files);
       }
-      DestroyImageInfo(local_info);
+      DestroyImageInfo(clone_info);
       if (image == (Image *) NULL)
         {
           XSetCursorState(display,windows,False);
@@ -1879,6 +1886,9 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
               selection,
               type;
 
+            ErrorInfo
+              error;
+
             int
               format;
 
@@ -1921,7 +1931,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
                 (void) strcpy(resource_info->image_info->filename,
                   ((char *) data)+5);
               }
-            loaded_image=ReadImage(resource_info->image_info);
+            loaded_image=ReadImage(resource_info->image_info,&error);
             if (loaded_image != (Image *) NULL)
               state|=ExitState;
             XFree((void *) data);
@@ -2229,6 +2239,9 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
         Atom
           type;
 
+        ErrorInfo
+          error;
+
         int
           format;
 
@@ -2253,7 +2266,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
         if ((status != Success) || (length == 0))
           break;
         (void) strcpy(resource_info->image_info->filename,(char *) data);
-        loaded_image=ReadImage(resource_info->image_info);
+        loaded_image=ReadImage(resource_info->image_info,&error);
         if (loaded_image != (Image *) NULL)
           state|=ExitState;
         XFree((void *) data);

@@ -72,7 +72,7 @@
 %
 %  The format of the ReadVIDImage method is:
 %
-%      Image *ReadVIDImage(const ImageInfo *image_info)
+%      Image *ReadVIDImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -84,7 +84,7 @@
 %
 %
 */
-Export Image *ReadVIDImage(const ImageInfo *image_info)
+static Image *ReadVIDImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #define ClientName  "montage"
 
@@ -99,7 +99,7 @@ Export Image *ReadVIDImage(const ImageInfo *image_info)
     *next_image;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   int
     number_files;
@@ -139,7 +139,7 @@ Export Image *ReadVIDImage(const ImageInfo *image_info)
   status=ExpandFilenames(&number_files,&filelist);
   if ((status == False) || (number_files == 0))
     {
-      MagickWarning(CorruptImageWarning,"unable to read VID image",
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
         image_info->filename);
       return((Image *) NULL);
     }
@@ -147,10 +147,10 @@ Export Image *ReadVIDImage(const ImageInfo *image_info)
     Read each image and convert them to a tile.
   */
   image=(Image *) NULL;
-  local_info=CloneImageInfo(image_info);
-  if (local_info == (ImageInfo *) NULL)
+  clone_info=CloneImageInfo(image_info);
+  if (clone_info == (ImageInfo *) NULL)
     return((Image *) NULL);
-  (void) CloneString(&local_info->size,DefaultTileGeometry);
+  (void) CloneString(&clone_info->size,DefaultTileGeometry);
   commands[0]=SetClientName((char *) NULL);
   commands[1]="-label";
   commands[2]=(char *) DefaultTileLabel;
@@ -159,13 +159,13 @@ Export Image *ReadVIDImage(const ImageInfo *image_info)
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    (void) strcpy(local_info->filename,filelist[i]);
-    *local_info->magick='\0';
-    next_image=ReadImage(local_info);
+    (void) strcpy(clone_info->filename,filelist[i]);
+    *clone_info->magick='\0';
+    next_image=ReadImage(clone_info,error);
     FreeMemory(filelist[i]);
     if (next_image != (Image *) NULL)
       {
-        MogrifyImages(local_info,5,commands,&next_image);
+        MogrifyImages(clone_info,5,commands,&next_image);
         if (image == (Image *) NULL)
           image=next_image;
         else
@@ -178,7 +178,7 @@ Export Image *ReadVIDImage(const ImageInfo *image_info)
     (void) SetMonitorHandler(handler);
     ProgressMonitor(LoadImageText,i,number_files);
   }
-  DestroyImageInfo(local_info);
+  DestroyImageInfo(clone_info);
   FreeMemory(filelist);
   if (image == (Image *) NULL)
     {
@@ -207,4 +207,38 @@ Export Image *ReadVIDImage(const ImageInfo *image_info)
   FreeMemory(list[0]);
   FreeMemory(list);
   return(montage_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r V I D I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterVIDImage adds attributes for the VID image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterVIDImage method is:
+%
+%      RegisterVIDImage(void)
+%
+*/
+Export void RegisterVIDImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("VID");
+  entry->decoder=ReadVIDImage;
+  entry->description=AllocateString("Visual Image Directory");
+  RegisterMagickInfo(entry);
 }

@@ -61,6 +61,46 @@
 #endif
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WritePS3Image(const ImageInfo *,Image *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r P S 3 I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPS3Image adds attributes for the PS3 image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPS3Image method is:
+%
+%      RegisterPS3Image(void)
+%
+*/
+Export void RegisterPS3Image(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("PS3");
+  entry->encoder=WritePS3Image;
+  entry->description=AllocateString("Adobe Level III PostScript");
+  RegisterMagickInfo(entry);
+}
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -92,7 +132,7 @@
 %
 %
 */
-Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
+static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 {
 #define CFormat  "/%s filter "
 
@@ -144,8 +184,6 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   unsigned long
     number_packets;
 
-  if (!image->matte)
-    WritePS2Image(image_info,image);
   /*
     Open output image file.
   */
@@ -306,8 +344,8 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         jpeg_image=CloneImage(image,image->columns,image->rows,True);
         if (jpeg_image == (Image *) NULL)
           WriterExit(DelegateWarning,"Unable to clone image",image);
-        (void) strcpy(jpeg_image->filename,filename);
-        status=WriteJPEGImage(image_info,jpeg_image);
+        (void) FormatString(jpeg_image->filename,"jpeg:%s",filename);
+        status=WriteImage(image_info,jpeg_image);
         DestroyImage(jpeg_image);
         if (status == False)
           WriterExit(DelegateWarning,"Unable to write image",image);

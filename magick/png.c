@@ -54,6 +54,13 @@
 */
 #include "magick.h"
 #include "defines.h"
+
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WritePNGImage(const ImageInfo *,Image *);
+
 #if defined(HasPNG)
 #include "png.h"
 #include "zlib.h"
@@ -313,7 +320,7 @@ Export void CompressColormapTransFirst(Image *image)
 %  Method IsMNG returns True if the image format type, identified by the
 %  magick string, is MNG.
 %
-%  The format of the ReadMNGImage method is:
+%  The format of the IsMNG method is:
 %
 %      unsigned int IsMNG(const unsigned char *magick,
 %        const unsigned int length)
@@ -329,7 +336,7 @@ Export void CompressColormapTransFirst(Image *image)
 %
 %
 */
-Export unsigned int IsMNG(const unsigned char *magick,const unsigned int length)
+static unsigned int IsMNG(const unsigned char *magick,const unsigned int length)
 {
   if (length < 8)
     return(False);
@@ -368,70 +375,13 @@ Export unsigned int IsMNG(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
 {
   if (length < 8)
     return(False);
   if (strncmp((char *) magick,"\211PNG\r\n\032\n",8) == 0)
     return(True);
   return(False);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%   S e t T r a n s p a r e n t I m a g e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method SetTransparentImage initializes the reference image to the background
-%  color and the matte channel to transparent.
-%
-%  The format of the SetTransparentImage method is:
-%
-%      void SetTransparentImage(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
-%
-%
-*/
-Export void SetTransparentImage(Image *image)
-{
-  int
-    y;
-
-  PixelPacket
-    background_color;
-
-  register int
-    x;
-
-  register PixelPacket
-    *q;
-
-  assert(image != (Image *) NULL);
-  background_color=image->background_color;
-  background_color.opacity=Transparent;
-  for (y=0; y < (int) image->rows; y++)
-  {
-    q=SetPixelCache(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (int) image->columns; x++)
-    {
-      if (image->class == PseudoClass)
-        image->indexes[x]=0;
-      *q++=background_color;
-    }
-    if (!SyncPixelCache(image))
-      break;
-  }
 }
 
 /*
@@ -454,7 +404,7 @@ Export void SetTransparentImage(Image *image)
 %
 %  The format of the ReadPNGImage method is:
 %
-%      Image *ReadPNGImage(const ImageInfo *image_info)
+%      Image *ReadPNGImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -854,7 +804,7 @@ static png_free_ptr png_IM_free(png_structp png_ptr,png_voidp ptr)
 }
 #endif
 
-Export Image *ReadPNGImage(const ImageInfo *image_info)
+static Image *ReadPNGImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   char
     page_geometry[MaxTextExtent];
@@ -1830,7 +1780,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 image->page.y=clip.top;
                 image->background_color=mng_background_color;
                 image->matte=False;
-                SetImage(image);
+                SetImage(image,Transparent);
                 image->delay=delay;
               }
           }
@@ -1861,7 +1811,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 image->background_color=mng_background_color;
                 image->matte=False;
                 image->delay=delay;
-                SetImage(image);
+                SetImage(image,Transparent);
               }
           }
         first_mng_object=0;
@@ -2695,7 +2645,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 image->rows=(unsigned int) 1;
                 image->matte=True;
                 image->colors=2;
-                SetTransparentImage(image);
+                SetImage(image,Transparent);
                 image->page.width=1;
                 image->page.height=1;
                 image->page.x=0;
@@ -2741,7 +2691,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       image->page.y=0;
       image->background_color=mng_background_color;
       image->matte=False;
-      SetImage(image);
+      SetImage(image,Transparent);
       image_found++;
     }
   if (ticks_per_second)
@@ -2782,13 +2732,58 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Export Image *ReadPNGImage(const ImageInfo *image_info)
+static Image *ReadPNGImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   MagickWarning(MissingDelegateWarning,"PNG library is not available",
     image_info->filename);
   return((Image *) NULL);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r P N G I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPNGImage adds attributes for the PNG image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPNGImage method is:
+%
+%      RegisterPNGImage(void)
+%
+*/
+Export void RegisterPNGImage(void)
+{
+  MagickInfo
+    *entry;
+
+#if defined(HasPNG)
+  entry=SetMagickInfo("MNG");
+  entry->decoder=ReadPNGImage;
+  entry->encoder=WritePNGImage;
+  entry->magick=IsMNG;
+  entry->description=AllocateString("Multiple-image Network Graphics");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("PNG");
+  entry->decoder=ReadPNGImage;
+  entry->encoder=WritePNGImage;
+  entry->magick=IsPNG;
+  entry->adjoin=False;
+  entry->description=AllocateString("Portable Network Graphics");
+  RegisterMagickInfo(entry);
+#endif
+}
 
 #if defined(HasPNG)
 /*
@@ -2899,7 +2894,7 @@ static void PNGType(png_bytep p,png_bytep type)
 }
 #endif
 
-Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
+static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
   ImageAttribute
     *attribute;
@@ -4091,7 +4086,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
+static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"PNG library is not available",
     image->filename);

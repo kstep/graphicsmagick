@@ -69,7 +69,7 @@
 %  Method IsPWP returns True if the image format type, identified by the
 %  magick string, is PWP.
 %
-%  The format of the ReadPWPImage method is:
+%  The format of the IsPWP method is:
 %
 %      unsigned int IsPWP(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,7 +85,7 @@
 %
 %
 */
-Export unsigned int IsPWP(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPWP(const unsigned char *magick,const unsigned int length)
 {
   if (length < 5)
     return(False);
@@ -111,7 +111,7 @@ Export unsigned int IsPWP(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadPWPImage method is:
 %
-%      Image *ReadPWPImage(const ImageInfo *image_info)
+%      Image *ReadPWPImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -123,7 +123,7 @@ Export unsigned int IsPWP(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export Image *ReadPWPImage(const ImageInfo *image_info)
+static Image *ReadPWPImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   FILE
     *file;
@@ -134,7 +134,7 @@ Export Image *ReadPWPImage(const ImageInfo *image_info)
     *pwp_image;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   int
     c;
@@ -172,8 +172,8 @@ Export Image *ReadPWPImage(const ImageInfo *image_info)
   status=ReadBlob(pwp_image,5,(char *) magick);
   if ((status == False) || (strncmp((char *) magick,"SFW95",5) != 0))
     ReaderExit(CorruptImageWarning,"Not a PWP image file",pwp_image);
-  local_info=CloneImageInfo(image_info);
-  TemporaryFilename(local_info->filename);
+  clone_info=CloneImageInfo(image_info);
+  TemporaryFilename(clone_info->filename);
   image=(Image *) NULL;
   for ( ; ; )
   {
@@ -192,7 +192,7 @@ Export Image *ReadPWPImage(const ImageInfo *image_info)
     /*
       Dump SFW image to a temporary file.
     */
-    file=fopen(local_info->filename,WriteBinaryType);
+    file=fopen(clone_info->filename,WriteBinaryType);
     if (file == (FILE *) NULL)
       ReaderExit(FileOpenWarning,"Unable to write file",image);
     (void) fwrite("SFW94A",1,6,file);
@@ -204,7 +204,7 @@ Export Image *ReadPWPImage(const ImageInfo *image_info)
     }
     (void) fclose(file);
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    next_image=ReadSFWImage(local_info);
+    next_image=ReadImage(clone_info,error);
     (void) SetMonitorHandler(handler);
     if (next_image == (Image *) NULL)
       break;
@@ -226,9 +226,44 @@ Export Image *ReadPWPImage(const ImageInfo *image_info)
         break;
     ProgressMonitor(LoadImagesText,TellBlob(pwp_image),pwp_image->filesize);
   }
-  (void) remove(local_info->filename);
-  DestroyImageInfo(local_info);
+  (void) remove(clone_info->filename);
+  DestroyImageInfo(clone_info);
   CloseBlob(pwp_image);
   DestroyImage(pwp_image);
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r P W P I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPWPImage adds attributes for the PWP image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPWPImage method is:
+%
+%      RegisterPWPImage(void)
+%
+*/
+Export void RegisterPWPImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("PWP");
+  entry->decoder=ReadPWPImage;
+  entry->magick=IsPWP;
+  entry->description=AllocateString("Seattle Film Works");
+  RegisterMagickInfo(entry);
 }

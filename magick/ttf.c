@@ -73,7 +73,7 @@
 %
 %  The format of the ReadTTFImage method is:
 %
-%      Image *ReadTTFImage(const ImageInfo *image_info)
+%      Image *ReadTTFImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -85,7 +85,7 @@
 %
 %
 */
-Export Image *ReadTTFImage(const ImageInfo *image_info)
+static Image *ReadTTFImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   AnnotateInfo
     *annotate_info;
@@ -108,7 +108,7 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
     i;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   unsigned int
     status;
@@ -132,29 +132,29 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
     Start with a white canvas.
   */
   y=0;
-  local_info=CloneImageInfo(image_info);
-  if (local_info == (ImageInfo *) NULL)
+  clone_info=CloneImageInfo(image_info);
+  if (clone_info == (ImageInfo *) NULL)
     return((Image *) NULL);
-  (void) CloneString(&local_info->size,"800x520");
-  (void) CloneString(&local_info->pen,"black");
+  (void) CloneString(&clone_info->size,"800x520");
+  (void) CloneString(&clone_info->pen,"black");
   *font='\0';
-  (void) CloneString(&local_info->font,font);
-  local_info->pointsize=18;
-  FormatString(local_info->font,"@%.1024s",image_info->filename);
-  annotate_info=CloneAnnotateInfo(local_info,(AnnotateInfo *) NULL);
+  (void) CloneString(&clone_info->font,font);
+  clone_info->pointsize=18;
+  FormatString(clone_info->font,"@%.1024s",image_info->filename);
+  annotate_info=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
   image->columns=annotate_info->bounds.width;
   image->rows=annotate_info->bounds.height;
   if (image_info->ping)
     {
       DestroyAnnotateInfo(annotate_info);
-      DestroyImageInfo(local_info);
+      DestroyImageInfo(clone_info);
       CloseBlob(image);
       return(image);
     }
   DestroyImage(image);
-  (void) strcpy(local_info->filename,"xc:white");
-  image=ReadImage(local_info);
-  DestroyImageInfo(local_info);
+  (void) strcpy(clone_info->filename,"xc:white");
+  image=ReadImage(clone_info,error);
+  DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
     {
       DestroyAnnotateInfo(annotate_info);
@@ -214,10 +214,47 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Export Image *ReadTTFImage(const ImageInfo *image_info)
+static Image *ReadTTFImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   MagickWarning(MissingDelegateWarning,"Cannot read TTF images",
     image_info->filename);
   return((Image *) NULL);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r T T F I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterTTFImage adds attributes for the TTF image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterTTFImage method is:
+%
+%      RegisterTTFImage(void)
+%
+*/
+Export void RegisterTTFImage(void)
+{
+  MagickInfo
+    *entry;
+
+#if defined(HasTTF)
+  entry=SetMagickInfo("TTF");
+  entry->decoder=ReadTTFImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("TrueType font");
+  RegisterMagickInfo(entry);
+#endif
+}

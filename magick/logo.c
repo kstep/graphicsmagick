@@ -3788,8 +3788,13 @@ static const unsigned char
     0x53, 0x73, 0xbd, 0x53, 0x74, 0xd5, 0x53, 0x75, 0xed, 0x53, 0x76, 0x05, 
     0x54, 0x77, 0xbd, 0x86, 0x80, 0x00, 0x00, 0x3b, 
   };
-
 #endif
+
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WriteLOGOImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3808,7 +3813,7 @@ static const unsigned char
 %
 %  The format of the ReadLOGOImage method is:
 %
-%      Image *ReadLOGOImage(const ImageInfo *image_info)
+%      Image *ReadLOGOImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -3820,13 +3825,67 @@ static const unsigned char
 %
 %
 */
-Export Image *ReadLOGOImage(const ImageInfo *image_info)
+static Image *ReadLOGOImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   if (Latin1Compare(image_info->magick,"GRANITE") == 0)
     return(BlobToImage(image_info,(char *) GraniteImage,GraniteImageExtent));
   if (Latin1Compare(image_info->magick,"NETSCAPE") == 0)
     return(BlobToImage(image_info,(char *) NetscapeImage,NetscapeImageExtent));
   return(BlobToImage(image_info,(char *) LogoImage,LogoImageExtent));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r L O G O I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterLOGOImage adds attributes for the LOGO image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterLOGOImage method is:
+%
+%      RegisterLOGOImage(void)
+%
+*/
+Export void RegisterLOGOImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("GRANITE");
+  entry->decoder=ReadLOGOImage;
+  entry->encoder=WriteLOGOImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("Granite texture");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("H");
+  entry->decoder=ReadLOGOImage;
+  entry->encoder=WriteLOGOImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("Internal format");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("LOGO");
+  entry->decoder=ReadLOGOImage;
+  entry->encoder=WriteLOGOImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("ImageMagick Logo");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("NETSCAPE");
+  entry->decoder=ReadLOGOImage;
+  entry->encoder=WriteLOGOImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("Netscape 216 color cube");
+  RegisterMagickInfo(entry);
 }
 
 /*
@@ -3860,7 +3919,7 @@ Export Image *ReadLOGOImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[MaxTextExtent],

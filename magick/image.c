@@ -2472,8 +2472,8 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  Montage: %.1024s\n",image->montage);
   if (image->directory != (char *) NULL)
     {
-      WarningHandler
-        handler;
+      ErrorInfo
+        error;
 
       Image
         *tile;
@@ -2484,6 +2484,9 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       register char
         *p,
         *q;
+
+      WarningHandler
+        handler;
 
       /*
         Display visual image directory.
@@ -2501,7 +2504,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         p=q;
         (void) fprintf(file,"    %.1024s",image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
-        tile=ReadImage(image_info);
+        tile=ReadImage(image_info,&error);
         (void) SetWarningHandler(handler);
         if (tile == (Image *) NULL)
           {
@@ -2931,7 +2934,6 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->preview_type=JPEGPreview;
   image_info->view=(char *) NULL;
   image_info->group=0L;
-  GetErrorInfo(&image_info->error);
 }
 
 /*
@@ -3904,20 +3906,23 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     *geometry,
     *option;
 
-  PixelPacket
-    target_color;
+  ErrorInfo
+    error;
 
   Image
     *map_image,
     *region_image;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   int
     flags,
     x,
     y;
+
+  PixelPacket
+    target_color;
 
   QuantizeInfo
     quantize_info;
@@ -3949,7 +3954,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
   /*
     Initialize method variables.
   */
-  local_info=CloneImageInfo(image_info);
+  clone_info=CloneImageInfo(image_info);
   GetQuantizeInfo(&quantize_info);
   geometry=(char *) NULL;
   gravity=ForgetGravity;
@@ -3957,7 +3962,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
   quantize_info.number_colors=0;
   quantize_info.tree_depth=0;
   quantize_info.dither=True;
-  if (local_info->monochrome)
+  if (clone_info->monochrome)
     if (!IsMonochromeImage(*image))
       {
         quantize_info.number_colors=2;
@@ -3979,13 +3984,13 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       continue;
     if (strncmp("antialias",option+1,3) == 0)
       {
-        local_info->antialias=(*option == '-');
+        clone_info->antialias=(*option == '-');
         continue;
       }
     if (strncmp("-background",option,6) == 0)
       {
         (void) QueryColorDatabase(argv[++i],&target_color);
-        local_info->background_color=target_color;
+        clone_info->background_color=target_color;
         (*image)->background_color=target_color;
         continue;
       }
@@ -4040,13 +4045,13 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-bordercolor",option,8) == 0)
       {
         (void) QueryColorDatabase(argv[++i],&target_color);
-        local_info->border_color=target_color;
+        clone_info->border_color=target_color;
         (*image)->border_color=target_color;
         continue;
       }
     if (Latin1Compare("-box",option) == 0)
       {
-        (void) CloneString(&local_info->box,argv[++i]);
+        (void) CloneString(&clone_info->box,argv[++i]);
         continue;
       }
     if (strncmp("-charcoal",option,3) == 0)
@@ -4072,7 +4077,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         commands[4]=argv[i];
         commands[5]="-normalize";
         commands[6]="-negate";
-        MogrifyImage(local_info,7,commands,image);
+        MogrifyImage(clone_info,7,commands,image);
         (void) QuantizeImage(&quantize_info,*image);
         continue;
       }
@@ -4084,7 +4089,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         /*
           Colorize the image.
         */
-        colorized_image=ColorizeImage(*image,argv[++i],local_info->pen);
+        colorized_image=ColorizeImage(*image,argv[++i],clone_info->pen);
         if (colorized_image != (Image *) NULL)
           {
             DestroyImage(*image);
@@ -4166,7 +4171,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
           quantize_info.colorspace=YPbPrColorspace;
         if (Latin1Compare("yuv",option) == 0)
           quantize_info.colorspace=YUVColorspace;
-        local_info->colorspace=quantize_info.colorspace;
+        clone_info->colorspace=quantize_info.colorspace;
         continue;
       }
     if (strncmp("comment",option+1,4) == 0)
@@ -4203,8 +4208,8 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         /*
           Set image density.
         */
-        (void) CloneString(&local_info->density,argv[++i]);
-        count=sscanf(local_info->density,"%lfx%lf",
+        (void) CloneString(&clone_info->density,argv[++i]);
+        count=sscanf(clone_info->density,"%lfx%lf",
           &(*image)->x_resolution,&(*image)->y_resolution);
         if (count != 2)
           (*image)->y_resolution=(*image)->x_resolution;
@@ -4232,12 +4237,12 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-display",option,6) == 0)
       {
-        (void) CloneString(&local_info->server_name,argv[++i]);
+        (void) CloneString(&clone_info->server_name,argv[++i]);
         continue;
       }
     if (strncmp("dither",option+1,3) == 0)
       {
-        local_info->dither=(*option == '-');
+        clone_info->dither=(*option == '-');
         quantize_info.dither=(*option == '-');
         continue;
       }
@@ -4249,7 +4254,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         /*
           Draw image.
         */
-        annotate_info=CloneAnnotateInfo(local_info,(AnnotateInfo *) NULL);
+        annotate_info=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
         (void) CloneString(&annotate_info->primitive,argv[++i]);
         if (geometry != (char *) NULL)
           (void) CloneString(&annotate_info->geometry,geometry);
@@ -4437,7 +4442,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (Latin1Compare("-font",option) == 0)
       {
-        (void) CloneString(&local_info->font,argv[++i]);
+        (void) CloneString(&clone_info->font,argv[++i]);
         continue;
       }
     if (strncmp("gamma",option+1,2) == 0)
@@ -4548,7 +4553,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-linewidth",option,3) == 0)
       {
-        local_info->linewidth=atoi(argv[++i]);
+        clone_info->linewidth=atoi(argv[++i]);
         continue;
       }
     if (Latin1Compare("-map",option) == 0)
@@ -4556,8 +4561,8 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         /*
           Transform image colors to match this set of colors.
         */
-        (void) strcpy(local_info->filename,argv[++i]);
-        map_image=ReadImage(local_info);
+        (void) strcpy(clone_info->filename,argv[++i]);
+        map_image=ReadImage(clone_info,&error);
         continue;
       }
     if (Latin1Compare("matte",option+1) == 0)
@@ -4571,7 +4576,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-mattecolor",option,7) == 0)
       {
         (void) QueryColorDatabase(argv[++i],&target_color);
-        local_info->matte_color=target_color;
+        clone_info->matte_color=target_color;
         (*image)->matte_color=target_color;
         continue;
       }
@@ -4598,7 +4603,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-monochrome",option,4) == 0)
       {
-        local_info->monochrome=True;
+        clone_info->monochrome=True;
         quantize_info.number_colors=2;
         quantize_info.tree_depth=8;
         quantize_info.colorspace=GRAYColorspace;
@@ -4652,7 +4657,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-opaque",option,3) == 0)
       {
-        OpaqueImage(*image,argv[++i],local_info->pen);
+        OpaqueImage(*image,argv[++i],clone_info->pen);
         continue;
       }
     if (strncmp("-paint",option,4) == 0)
@@ -4673,12 +4678,12 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (Latin1Compare("-pen",option) == 0)
       {
-        (void) CloneString(&local_info->pen,argv[++i]);
+        (void) CloneString(&clone_info->pen,argv[++i]);
         continue;
       }
     if (strncmp("pointsize",option+1,2) == 0)
       {
-        local_info->pointsize=atof(argv[++i]);
+        clone_info->pointsize=atof(argv[++i]);
         continue;
       }
     if (strncmp("profile",option+1,4) == 0)
@@ -4718,8 +4723,8 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         /*
           Add a ICC or IPTC profile to the image.
         */
-        (void) strcpy(local_info->filename,argv[++i]);
-        profile=ReadImage(local_info);
+        (void) strcpy(clone_info->filename,argv[++i]);
+        profile=ReadImage(clone_info,&error);
         if (profile == (Image *) NULL)
           continue;
         if (Latin1Compare("icc",profile->magick) == 0)
@@ -4920,7 +4925,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         smoothing_threshold=1.5;
         (void) sscanf(argv[++i],"%lfx%lf",&cluster_threshold,
           &smoothing_threshold);
-        (void) SegmentImage(*image,quantize_info.colorspace,local_info->verbose,
+        (void) SegmentImage(*image,quantize_info.colorspace,clone_info->verbose,
           (double) cluster_threshold,(double) smoothing_threshold);
         continue;
       }
@@ -5074,7 +5079,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("verbose",option+1,3) == 0)
       {
-        local_info->verbose=(*option == '-');
+        clone_info->verbose=(*option == '-');
         quantize_info.measure_error=(*option == '-');
         continue;
       }
@@ -5139,7 +5144,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
   */
   if (geometry != (char *) NULL)
     FreeMemory(geometry);
-  DestroyImageInfo(local_info);
+  DestroyImageInfo(clone_info);
   CloseCache((*image)->cache);
 }
 
@@ -5529,7 +5534,7 @@ Export int ParseImageGeometry(const char *geometry,int *x,int *y,
 %
 %  The format of the PingImage method is:
 %
-%      Image *PingImage(const ImageInfo *image_info)
+%      Image *PingImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -5540,7 +5545,7 @@ Export int ParseImageGeometry(const char *geometry,int *x,int *y,
 %
 %
 */
-Export Image *PingImage(const ImageInfo *image_info)
+Export Image *PingImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   Image
     *image;
@@ -5553,7 +5558,7 @@ Export Image *PingImage(const ImageInfo *image_info)
   ping_info->verbose=False;
   ping_info->subimage=0;
   ping_info->subrange=0;
-  image=ReadImage(ping_info);
+  image=ReadImage(ping_info,error);
   DestroyImageInfo(ping_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
@@ -5582,7 +5587,7 @@ Export Image *PingImage(const ImageInfo *image_info)
 %
 %  The format of the ReadImage method is:
 %
-%      Image *ReadImage(ImageInfo *image_info)
+%      Image *ReadImage(ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -5592,9 +5597,11 @@ Export Image *PingImage(const ImageInfo *image_info)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
+%    o error: Specifies a pointer to an ErrorInfo structure.
+%
 %
 */
-Export Image *ReadImage(ImageInfo *image_info)
+Export Image *ReadImage(ImageInfo *image_info,ErrorInfo *error)
 {
   char
     filename[MaxTextExtent];
@@ -5617,8 +5624,9 @@ Export Image *ReadImage(ImageInfo *image_info)
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->filename != (char *) NULL);
+  GetErrorInfo(error);
   if (*image_info->filename == '@')
-    return(ReadImages(image_info));
+    return(ReadImages(image_info,error));
   SetImageInfo(image_info,False);
   (void) strcpy(filename,image_info->filename);
   /*
@@ -5627,8 +5635,8 @@ Export Image *ReadImage(ImageInfo *image_info)
   image=(Image *) NULL;
   magick_info=(MagickInfo *) GetMagickInfo(image_info->magick);
   if ((magick_info != (MagickInfo *) NULL) &&
-      (magick_info->decoder != (Image *(*)(const ImageInfo *)) NULL))
-    image=(magick_info->decoder)(image_info);
+      (magick_info->decoder != (Image *(*)(const ImageInfo *,ErrorInfo *)) NULL))
+    image=(magick_info->decoder)(image_info,error);
   else
     if (!GetDelegateInfo(image_info->magick,(char *) NULL,&delegate_info))
       MagickWarning(MissingDelegateWarning,"no delegate for this image format",
@@ -5655,8 +5663,8 @@ Export Image *ReadImage(ImageInfo *image_info)
         SetImageInfo(image_info,False);
         magick_info=(MagickInfo *) GetMagickInfo(image_info->magick);
         if ((magick_info != (MagickInfo *) NULL) &&
-            (magick_info->decoder != (Image *(*)(const ImageInfo *)) NULL))
-          image=(magick_info->decoder)(image_info);
+            (magick_info->decoder != (Image *(*)(const ImageInfo *,ErrorInfo *)) NULL))
+          image=(magick_info->decoder)(image_info,error);
         else
           MagickWarning(MissingDelegateWarning,
             "no delegate for this image format",image_info->filename);
@@ -5821,7 +5829,7 @@ Export Image *ReadImage(ImageInfo *image_info)
 %
 %  The format of the ReadImage method is:
 %
-%      Image *ReadImages(ImageInfo *image_info)
+%      Image *ReadImages(ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -5833,7 +5841,7 @@ Export Image *ReadImage(ImageInfo *image_info)
 %
 %
 */
-Export Image *ReadImages(ImageInfo *image_info)
+Export Image *ReadImages(ImageInfo *image_info,ErrorInfo *error)
 {
   char
     *command,
@@ -5903,7 +5911,7 @@ Export Image *ReadImages(ImageInfo *image_info)
   for (i=1; i < number_images; i++)
   {
     (void) strcpy(image_info->filename,images[i]);
-    next_image=ReadImage(image_info);
+    next_image=ReadImage(image_info,error);
     if (next_image == (Image *) NULL)
       continue;
     if (image == (Image *) NULL)
@@ -6407,16 +6415,18 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
 %
 %  The format of the SetImage method is:
 %
-%      void SetImage(Image *image)
+%      void SetImage(Image *image,opacity)
 %
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
+%    o opacity: The transparency of the background color.
+%
 %
 */
-Export void SetImage(Image *image)
+Export void SetImage(Image *image,Quantum opacity)
 {
   int
     y;
@@ -6432,7 +6442,7 @@ Export void SetImage(Image *image)
 
   assert(image != (Image *) NULL);
   background_color=image->background_color;
-  background_color.opacity=Opaque;
+  background_color.opacity=opacity;
   for (y=0; y < (int) image->rows; y++)
   {
     q=SetPixelCache(image,0,y,image->columns,1);
@@ -7440,7 +7450,7 @@ Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     delegate_info;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   MagickInfo
     *magick_info;
@@ -7454,45 +7464,46 @@ Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->filename != (char *) NULL);
   assert(image != (Image *) NULL);
-  local_info=CloneImageInfo(image_info);
-  (void) strcpy(local_info->filename,image->filename);
-  (void) strcpy(local_info->magick,image->magick);
-  SetImageInfo(local_info,True);
-  (void) strcpy(image->filename,local_info->filename);
-  if ((image->next == (Image *) NULL) || local_info->adjoin)
+  GetErrorInfo(&image->error);
+  clone_info=CloneImageInfo(image_info);
+  (void) strcpy(clone_info->filename,image->filename);
+  (void) strcpy(clone_info->magick,image->magick);
+  SetImageInfo(clone_info,True);
+  (void) strcpy(image->filename,clone_info->filename);
+  if ((image->next == (Image *) NULL) || clone_info->adjoin)
     if ((image->previous == (Image *) NULL) && !IsTainted(image))
       if (IsAccessible(image->magick_filename))
-        if (GetDelegateInfo(image->magick,local_info->magick,&delegate_info))
+        if (GetDelegateInfo(image->magick,clone_info->magick,&delegate_info))
           if (delegate_info.direction == 0)
             {
               /*
                 Let our bi-directional delegate process the image.
               */
               (void) strcpy(image->filename,image->magick_filename);
-              status=InvokeDelegate(local_info,image,image->magick,
-                local_info->magick);
-              DestroyImageInfo(local_info);
+              status=InvokeDelegate(clone_info,image,image->magick,
+                clone_info->magick);
+              DestroyImageInfo(clone_info);
               return(status);
             }
   /*
     Call appropriate image writer based on image type.
   */
   status=False;
-  magick_info=(MagickInfo *) GetMagickInfo(local_info->magick);
+  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
   if ((magick_info != (MagickInfo *) NULL) &&
       (magick_info->encoder !=
       (unsigned int (*)(const ImageInfo *,Image *)) NULL))
-    status=(magick_info->encoder)(local_info,image);
+    status=(magick_info->encoder)(clone_info,image);
   else
-    if (!GetDelegateInfo((char *) NULL,local_info->magick,&delegate_info))
+    if (!GetDelegateInfo((char *) NULL,clone_info->magick,&delegate_info))
       {
         MagickWarning(MissingDelegateWarning,
-          "no encode delegate for this image format",local_info->magick);
+          "no encode delegate for this image format",clone_info->magick);
         magick_info=(MagickInfo *) GetMagickInfo(image->magick);
         if ((magick_info != (MagickInfo *) NULL) &&
             (magick_info->encoder !=
             (unsigned int (*)(const ImageInfo *,Image *)) NULL))
-          status=(magick_info->encoder)(local_info,image);
+          status=(magick_info->encoder)(clone_info,image);
         else
           MagickWarning(MissingDelegateWarning,
             "no encode delegate for this image format",image->magick);
@@ -7504,19 +7515,19 @@ Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
         */
         TemporaryFilename(image->filename);
         status=
-          InvokeDelegate(local_info,image,(char *) NULL,local_info->magick);
+          InvokeDelegate(clone_info,image,(char *) NULL,clone_info->magick);
         (void) remove(image->filename);
-        DestroyImageInfo(local_info);
+        DestroyImageInfo(clone_info);
         return(status);
       }
   if (image->status)
     {
       MagickWarning(CorruptImageWarning,"An error has occurred writing to file",
         image->filename);
-      DestroyImageInfo(local_info);
+      DestroyImageInfo(clone_info);
       return(False);
     }
-  (void) strcpy(image->magick,local_info->magick);
-  DestroyImageInfo(local_info);
+  (void) strcpy(image->magick,clone_info->magick);
+  DestroyImageInfo(clone_info);
   return(status);
 }

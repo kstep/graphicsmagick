@@ -88,7 +88,7 @@ Export const char
 %
 %  The format of the ReadLABELImage method is:
 %
-%      Image *ReadLABELImage(const ImageInfo *image_info)
+%      Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -233,7 +233,7 @@ static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
 }
 #endif
 
-Export Image *ReadLABELImage(const ImageInfo *image_info)
+static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #define MaxGlyphs  65535
 
@@ -253,7 +253,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
     *image;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   int
     y;
@@ -280,14 +280,14 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
   /*
     Create image label.
   */
-  local_info=CloneImageInfo(image_info);
-  if (local_info->font == (char *) NULL)
-    (void) CloneString(&local_info->font,DefaultXFont);
-  (void) strcpy(text,local_info->filename);
+  clone_info=CloneImageInfo(image_info);
+  if (clone_info->font == (char *) NULL)
+    (void) CloneString(&clone_info->font,DefaultXFont);
+  (void) strcpy(text,clone_info->filename);
   (void) QueryColorDatabase("black",&pen_color);
-  if (local_info->pen != (char *) NULL)
-    (void) QueryColorDatabase(local_info->pen,&pen_color);
-  if (*local_info->font == '@')
+  if (clone_info->pen != (char *) NULL)
+    (void) QueryColorDatabase(clone_info->pen,&pen_color);
+  if (*clone_info->font == '@')
     {
 #if defined(HasTTF)
       char
@@ -312,7 +312,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
         engine;
 
       TT_Error
-        error;
+        status;
 
       TT_Face
         face;
@@ -347,13 +347,13 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       /*
         Initialize font engine.
       */
-      error=TT_Init_FreeType(&engine);
-      if (error)
+      status=TT_Init_FreeType(&engine);
+      if (status)
         ReaderExit(DelegateWarning,"Cannot initialize TTF engine",image);
       /*
         Search for Truetype font filename.
       */
-      error=True;
+      status=True;
       path=getenv("TT_FONT_PATH");
       if (path != (char *) NULL)
         {
@@ -374,15 +374,15 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
             i=strlen(filename);
             if ((i > 0) && (!IsBasenameSeparator(filename[i-1])))
               (void) strcat(filename,DirectorySeparator);
-            (void) strcat(filename,local_info->font+1);
-            error=TT_Open_Face(engine,filename,&face);
-            if (!error || (path_end == (char *) NULL) || (*path_end == '\0'))
+            (void) strcat(filename,clone_info->font+1);
+            status=TT_Open_Face(engine,filename,&face);
+            if (!status || (path_end == (char *) NULL) || (*path_end == '\0'))
               break;
             path=path_end+1;
           }
        }
 #if defined(TT_FONT_PATH)
-      if (error)
+      if (status)
         {
           /*
             Configured Truetype font path.
@@ -402,43 +402,43 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
             i=strlen(filename);
             if ((i > 0) && (!IsBasenameSeparator(filename[i-1])))
               (void) strcat(filename,DirectorySeparator);
-            (void) strcat(filename,local_info->font+1);
-            error=TT_Open_Face(engine,filename,&face);
-            if (!error || (path_end == (char *) NULL) || (*path_end == '\0'))
+            (void) strcat(filename,clone_info->font+1);
+            status=TT_Open_Face(engine,filename,&face);
+            if (!status || (path_end == (char *) NULL) || (*path_end == '\0'))
               break;
             path=path_end+1;
           }
         }
 #endif
-      if (error)
-        error=TT_Open_Face(engine,local_info->font+1,&face);
-      if (error)
+      if (status)
+        status=TT_Open_Face(engine,clone_info->font+1,&face);
+      if (status)
         {
           /*
             Use default font.
           */
           MagickWarning(DelegateWarning,"Unable to open TTF font",
-            local_info->font+1);
+            clone_info->font+1);
           DestroyImage(image);
-          (void) CloneString(&local_info->font,DefaultXFont);
-          image=ReadLABELImage(local_info);
-          DestroyImageInfo(local_info);
+          (void) CloneString(&clone_info->font,DefaultXFont);
+          image=ReadLABELImage(clone_info,error);
+          DestroyImageInfo(clone_info);
           return(image);
         }
       TT_Get_Face_Properties(face,&face_properties);
       if (strcmp(text,Alphabet) == 0)
         GetFontInfo(face,&face_properties,image);
-      error=TT_New_Instance(face,&instance);
+      status=TT_New_Instance(face,&instance);
       if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
         {
           image->x_resolution=96.0;
           image->y_resolution=96.0;
         }
-      error|=TT_Set_Instance_Resolutions(instance,(unsigned short)
+      status|=TT_Set_Instance_Resolutions(instance,(unsigned short)
         image->x_resolution,(unsigned short) image->y_resolution);
-      error|=
-        TT_Set_Instance_CharSize(instance,(int) (64.0*local_info->pointsize));
-      if (error)
+      status|=
+        TT_Set_Instance_CharSize(instance,(int) (64.0*clone_info->pointsize));
+      if (status)
         ReaderExit(DelegateWarning,"Cannot initialize TTF instance",image);
       for (code=0; (int) code < (int) face_properties.num_CharMaps; code++)
       {
@@ -478,10 +478,10 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
             if ((int) code >= number_glyphs)
               code=0;
           }
-        error=TT_New_Glyph(face,&glyphs[unicode[i]]);
-        error|=TT_Load_Glyph(instance,glyphs[unicode[i]],code,
+        status=TT_New_Glyph(face,&glyphs[unicode[i]]);
+        status|=TT_Load_Glyph(instance,glyphs[unicode[i]],code,
           TTLOAD_SCALE_GLYPH | TTLOAD_HINT_GLYPH);
-        if (error)
+        if (status)
           ReaderExit(DelegateWarning,"Cannot initialize TTF glyph",image);
       }
       TT_Get_Face_Properties(face,&face_properties);
@@ -551,7 +551,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
           q->red=pen_color.red;
           q->green=pen_color.green;
           q->blue=pen_color.blue;
-          if (local_info->antialias)
+          if (clone_info->antialias)
             q->opacity=(int) (Opaque*Min(*p,4))/4;
           else
             q->opacity=(*p) > 1 ? Opaque : Transparent;
@@ -588,14 +588,14 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       TT_Done_Instance(instance);
       TT_Close_Face(face);
       TT_Done_FreeType(engine);
-      DestroyImageInfo(local_info);
+      DestroyImageInfo(clone_info);
       return(image);
 #else
       MagickWarning(MissingDelegateWarning,"FreeType library is not available",
         (char *) NULL);
 #endif
     }
-  if (*local_info->font == '-')
+  if (*clone_info->font == '-')
     {
 #if defined(HasX11)
       int
@@ -636,7 +636,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
           /*
             Open X server connection.
           */
-          display=XOpenDisplay(local_info->server_name);
+          display=XOpenDisplay(clone_info->server_name);
           if (display != (Display *) NULL)
             {
               char
@@ -651,7 +651,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
               XGetResourceInfo(resource_database,client_name,&resource_info);
               resource_info.close_server=False;
               resource_info.colormap=PrivateColormap;
-              resource_info.font=AllocateString(local_info->font);
+              resource_info.font=AllocateString(clone_info->font);
               resource_info.background_color=AllocateString("black");
               resource_info.foreground_color=AllocateString("white");
               map_info=XAllocStandardColormap();
@@ -690,7 +690,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
                     font_info,&resource_info,(XWindowInfo *) NULL);
                   display=(Display *) NULL;
                 }
-              cache_info=(*local_info);
+              cache_info=(*clone_info);
             }
         }
       if (display == (Display *) NULL)
@@ -699,11 +699,11 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
             Use default font.
           */
           MagickWarning(XServerWarning,"Unable to open X server",
-            local_info->server_name);
+            clone_info->server_name);
           DestroyImage(image);
-          (void) CloneString(&local_info->font,"Helvetica");
-          image=ReadLABELImage(local_info);
-          DestroyImageInfo(local_info);
+          (void) CloneString(&clone_info->font,"Helvetica");
+          image=ReadLABELImage(clone_info,error);
+          DestroyImageInfo(clone_info);
           return(image);
         }
       /*
@@ -711,13 +711,13 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       */
       XGetAnnotateInfo(&annotate_info);
       annotate_info.stencil=OpaqueStencil;
-      if (cache_info.font != local_info->font)
+      if (cache_info.font != clone_info->font)
         {
           /*
             Font name has changed.
           */
           XFreeFont(display,font_info);
-          (void) CloneString(&resource_info.font,local_info->font);
+          (void) CloneString(&resource_info.font,clone_info->font);
           font_info=XBestFont(display,&resource_info,False);
           if (font_info == (XFontStruct *) NULL)
             ReaderExit(ResourceLimitWarning,"Unable to load font",image);
@@ -728,7 +728,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       annotate_info.height=font_info->ascent+font_info->descent;
       (void) sprintf(annotate_info.geometry,"%ux%u+0+0",annotate_info.width,
         annotate_info.height);
-      cache_info=(*local_info);
+      cache_info=(*clone_info);
       /*
         Render label with a X11 server font.
       */
@@ -761,7 +761,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
         if (!SyncPixelCache(image))
           break;
       }
-      DestroyImageInfo(local_info);
+      DestroyImageInfo(clone_info);
       return(image);
 #else
       MagickWarning(MissingDelegateWarning,"X11 library is not available",
@@ -771,11 +771,11 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
   /*
     Render label with a Postscript font.
   */
-  local_info->density=(char *) NULL;
+  clone_info->density=(char *) NULL;
   (void) sprintf(page,"%ux%u+0+0!",
-    (unsigned int) ceil(local_info->pointsize*Extent(text)),
-    (unsigned int) ceil(2*local_info->pointsize));
-  (void) CloneString(&local_info->page,page);
+    (unsigned int) ceil(clone_info->pointsize*Extent(text)),
+    (unsigned int) ceil(2*clone_info->pointsize));
+  (void) CloneString(&clone_info->page,page);
   TemporaryFilename(filename);
   file=fopen(filename,WriteBinaryType);
   if (file == (FILE *) NULL)
@@ -791,28 +791,28 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
   (void) fprintf(file,"} bind def\n");
   (void) fprintf(file,
     "/%.1024s-ISO dup /%.1024s ReencodeFont findfont %f scalefont setfont\n",
-    local_info->font,local_info->font,local_info->pointsize);
+    clone_info->font,clone_info->font,clone_info->pointsize);
   (void) fprintf(file,"0.0 0.0 0.0 setrgbcolor\n");
   (void) fprintf(file,"0 0 %u %u rectfill\n",
-    (unsigned int) ceil(local_info->pointsize*Extent(text)),
-    (unsigned int) ceil(2*local_info->pointsize));
+    (unsigned int) ceil(clone_info->pointsize*Extent(text)),
+    (unsigned int) ceil(2*clone_info->pointsize));
   (void) fprintf(file,"1.0 1.0 1.0 setrgbcolor\n");
-  (void) fprintf(file,"0 %f moveto (%.1024s) show\n",local_info->pointsize,
+  (void) fprintf(file,"0 %f moveto (%.1024s) show\n",clone_info->pointsize,
     EscapeParenthesis(text));
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
-  (void) FormatString(local_info->filename,"ps:%.1024s",filename);
+  (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
   DestroyImage(image);
-  image=ReadImage(local_info);
+  image=ReadImage(clone_info,error);
   (void) remove(filename);
   /*
     Set bounding box to the image dimensions.
   */
   crop_info.width=0;
-  crop_info.height=ceil(local_info->pointsize);
+  crop_info.height=ceil(clone_info->pointsize);
   crop_info.x=0;
-  crop_info.y=local_info->pointsize/4;
-  DestroyImageInfo(local_info);
+  crop_info.y=clone_info->pointsize/4;
+  DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
     return(image);
   corner.red=0;
@@ -858,4 +858,39 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       break;
   }
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r L A B E L I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterLABELImage adds attributes for the LABEL image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterLABELImage method is:
+%
+%      RegisterLABELImage(void)
+%
+*/
+Export void RegisterLABELImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("LABEL");
+  entry->decoder=ReadLABELImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("Text image format");
+  RegisterMagickInfo(entry);
 }

@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteTGAImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -72,7 +78,7 @@
 %
 %  The format of the ReadTGAImage method is:
 %
-%      Image *ReadTGAImage(const ImageInfo *image_info)
+%      Image *ReadTGAImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -84,7 +90,7 @@
 %
 %
 */
-Export Image *ReadTGAImage(const ImageInfo *image_info)
+static Image *ReadTGAImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #define TGAColormap 1
 #define TGARGB 2
@@ -427,6 +433,56 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r T G A I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterTGAImage adds attributes for the TGA image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterTGAImage method is:
+%
+%      RegisterTGAImage(void)
+%
+*/
+Export void RegisterTGAImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("ICB");
+  entry->decoder=ReadTGAImage;
+  entry->encoder=WriteTGAImage;
+  entry->description=AllocateString("Truevision Targa image");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("TGA");
+  entry->decoder=ReadTGAImage;
+  entry->encoder=WriteTGAImage;
+  entry->description=AllocateString("Truevision Targa image");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("VDA");
+  entry->decoder=ReadTGAImage;
+  entry->encoder=WriteTGAImage;
+  entry->description=AllocateString("Truevision Targa image");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("VST");
+  entry->decoder=ReadTGAImage;
+  entry->encoder=WriteTGAImage;
+  entry->description=AllocateString("Truevision Targa image");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e T G A I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -452,7 +508,7 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
 {
 #define TargaColormap 1
 #define TargaRGB 2

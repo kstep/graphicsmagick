@@ -265,6 +265,9 @@ int main(int argc,char **argv)
   double
     sans;
 
+  ErrorInfo
+    error;
+
   Image
     *image,
     *montage_image,
@@ -275,7 +278,6 @@ int main(int argc,char **argv)
     *image_info;
 
   int
-    status,
     x;
 
   MontageInfo
@@ -290,14 +292,17 @@ int main(int argc,char **argv)
   unsigned int
     first_scene,
     last_scene,
-    scene;
+    scene,
+    status;
 
   /*
     Initialize command line arguments.
   */
   ReadCommandlLine(argc,&argv);
   client_name=SetClientName(*argv);
-  (void) ExpandFilenames(&argc,&argv);
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
   if (argc < 3)
     Usage(client_name);
   /*
@@ -1118,7 +1123,7 @@ int main(int argc,char **argv)
         image_info->dither=quantize_info.dither;
         if (image_info->size == (char *) NULL)
           image_info->size=montage_info.geometry;
-        next_image=ReadImage(image_info);
+        next_image=ReadImage(image_info,&error);
         if (next_image == (Image *) NULL)
           {
             if (*option == '-')

@@ -105,6 +105,12 @@ static jmp_buf
   error_recovery;
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteJPEGImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -118,7 +124,7 @@ static jmp_buf
 %  Method IsJPEG returns True if the image format type, identified by the
 %  magick string, is JPEG.
 %
-%  The format of the ReadJPEGImage method is:
+%  The format of the IsJPEG  method is:
 %
 %      unsigned int IsJPEG(const unsigned char *magick,
 %        const unsigned int length)
@@ -134,7 +140,7 @@ static jmp_buf
 %
 %
 */
-Export unsigned int IsJPEG(const unsigned char *magick,
+static unsigned int IsJPEG(const unsigned char *magick,
   const unsigned int length)
 {
   if (length < 3)
@@ -161,7 +167,7 @@ Export unsigned int IsJPEG(const unsigned char *magick,
 %
 %  The format of the ReadJPEGImage method is:
 %
-%      Image *ReadJPEGImage(const ImageInfo *image_info)
+%      Image *ReadJPEGImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -471,7 +477,7 @@ static void JPEGSourceManager(j_decompress_ptr cinfo,Image *image)
   source->image=image;
 }
 
-Export Image *ReadJPEGImage(const ImageInfo *image_info)
+static Image *ReadJPEGImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   IndexPacket
     index;
@@ -703,13 +709,67 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Export Image *ReadJPEGImage(const ImageInfo *image_info)
+static Image *ReadJPEGImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   MagickWarning(MissingDelegateWarning,"JPEG library is not available",
     image_info->filename);
   return((Image *) NULL);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r J P E G I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterJPEGImage adds attributes for the JPEG image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterJPEGImage method is:
+%
+%      RegisterJPEGImage(void)
+%
+*/
+Export void RegisterJPEGImage(void)
+{
+  MagickInfo
+    *entry;
+
+#if defined(HasJPEG)
+  entry=SetMagickInfo("JPEG24");
+  entry->decoder=ReadJPEGImage;
+  entry->encoder=WriteJPEGImage;
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("Joint Photographic Experts Group JFIF format");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("JPEG");
+  entry->decoder=ReadJPEGImage;
+  entry->encoder=WriteJPEGImage;
+  entry->magick=IsJPEG;
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("Joint Photographic Experts Group JFIF format");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("JPG");
+  entry->decoder=ReadJPEGImage;
+  entry->encoder=WriteJPEGImage;
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("Joint Photographic Experts Group JFIF format");
+  RegisterMagickInfo(entry);
+#endif
+}
 
 #if defined(HasJPEG)
 /*
@@ -903,7 +963,7 @@ static void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
   destination->image=image;
 }
 
-Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
   ImageAttribute
     *attribute;
@@ -1160,11 +1220,10 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"JPEG library is not available",
     image->filename);
   return(False);
 }
 #endif
-

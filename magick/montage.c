@@ -180,6 +180,9 @@ Export void GetMontageInfo(MontageInfo *montage_info)
 static void FormatLabel(ImageInfo *image_info,char *label,
   const unsigned int width,unsigned int *font_height)
 {
+  ErrorInfo
+    error;
+
   Image
     *image;
 
@@ -205,7 +208,7 @@ static void FormatLabel(ImageInfo *image_info,char *label,
   {
     (void) strcpy(image_info->filename,"label:");
     (void) strncat(image_info->filename+6,p,(int) (q-p+1));
-    image=ReadImage(image_info);
+    image=ReadImage(image_info,&error);
     if (image == (Image *) NULL)
       break;
     if (image->columns > width)
@@ -246,6 +249,9 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
   char
     geometry[MaxTextExtent];
 
+  ErrorInfo
+    error;
+
   FrameInfo
     frame_info;
 
@@ -261,7 +267,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     *attribute;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   int
     x,
@@ -432,25 +438,25 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
   /*
     Initialize annotate info.
   */
-  local_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) CloneString(&local_info->pen,montage_info->pen);
-  (void) CloneString(&local_info->font,montage_info->font);
-  local_info->pointsize=montage_info->pointsize;
-  local_info->background_color=montage_info->background_color;
-  local_info->border_color=montage_info->border_color;
-  annotate_info=CloneAnnotateInfo(local_info,(AnnotateInfo *) NULL);
+  clone_info=CloneImageInfo((ImageInfo *) NULL);
+  (void) CloneString(&clone_info->pen,montage_info->pen);
+  (void) CloneString(&clone_info->font,montage_info->font);
+  clone_info->pointsize=montage_info->pointsize;
+  clone_info->background_color=montage_info->background_color;
+  clone_info->border_color=montage_info->border_color;
+  annotate_info=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
   annotate_info->gravity=NorthGravity;
   texture=(Image *) NULL;
   if (montage_info->texture != (char *) NULL)
     {
-      (void) strcpy(local_info->filename,montage_info->texture);
-      texture=ReadImage(local_info);
+      (void) strcpy(clone_info->filename,montage_info->texture);
+      texture=ReadImage(clone_info,&error);
     }
   /*
     Initialize font info.
   */
   font_height=annotate_info->bounds.height;
-  FormatLabel(local_info,montage_info->title,((tile_info.width+
+  FormatLabel(clone_info,montage_info->title,((tile_info.width+
     (border_width << 1))*Min(number_images,tiles_per_column)) >> 1,
     &font_height);
   for (tile=0; tile < number_images; tile++)
@@ -458,7 +464,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     attribute=GetImageAttribute(image_list[tile],"Label");
     if (attribute == (ImageAttribute *) NULL)
       continue;
-    FormatLabel(local_info,attribute->value,tile_info.width+(border_width << 1),
+    FormatLabel(clone_info,attribute->value,tile_info.width+(border_width << 1),
       &font_height);
   }
   /*
@@ -480,7 +486,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
   /*
     Allocate image structure.
   */
-  montage_image=AllocateImage(local_info);
+  montage_image=AllocateImage(clone_info);
   if (montage_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to montage image_list",
@@ -527,7 +533,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     (void) strcpy(montage_image->filename,montage_info->filename);
     montage_image->columns=bounding_box.width;
     montage_image->rows=bounding_box.height;
-    SetImage(montage_image);
+    SetImage(montage_image,Opaque);
     /*
       Set montage geometry.
     */
@@ -789,7 +795,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
         /*
           Allocate next image structure.
         */
-        AllocateNextImage(local_info,montage_image);
+        AllocateNextImage(clone_info,montage_image);
         if (montage_image->next == (Image *) NULL)
           {
             DestroyImages(montage_image);
@@ -804,7 +810,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     FreeMemory(texture);
   FreeMemory(master_list);
   DestroyAnnotateInfo(annotate_info);
-  DestroyImageInfo(local_info);
+  DestroyImageInfo(clone_info);
   while (montage_image->previous != (Image *) NULL)
     montage_image=montage_image->previous;
   return(montage_image);

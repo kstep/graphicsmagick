@@ -1721,7 +1721,7 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
   if (depth != 0)
     {
       SegmentInfo
-        local_info;
+        clone_info;
 
       /*
         Divide the area into quadrants and recurse.
@@ -1730,22 +1730,22 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       attenuate++;
       x_mid=(segment->x1+segment->x2)/2;
       y_mid=(segment->y1+segment->y2)/2;
-      local_info=(*segment);
-      local_info.x2=x_mid;
-      local_info.y2=y_mid;
-      (void) PlasmaImage(image,&local_info,attenuate,depth);
-      local_info=(*segment);
-      local_info.y1=y_mid;
-      local_info.x2=x_mid;
-      (void) PlasmaImage(image,&local_info,attenuate,depth);
-      local_info=(*segment);
-      local_info.x1=x_mid;
-      local_info.y2=y_mid;
-      (void) PlasmaImage(image,&local_info,attenuate,depth);
-      local_info=(*segment);
-      local_info.x1=x_mid;
-      local_info.y1=y_mid;
-      return(PlasmaImage(image,&local_info,attenuate,depth));
+      clone_info=(*segment);
+      clone_info.x2=x_mid;
+      clone_info.y2=y_mid;
+      (void) PlasmaImage(image,&clone_info,attenuate,depth);
+      clone_info=(*segment);
+      clone_info.y1=y_mid;
+      clone_info.x2=x_mid;
+      (void) PlasmaImage(image,&clone_info,attenuate,depth);
+      clone_info=(*segment);
+      clone_info.x1=x_mid;
+      clone_info.y2=y_mid;
+      (void) PlasmaImage(image,&clone_info,attenuate,depth);
+      clone_info=(*segment);
+      clone_info.x1=x_mid;
+      clone_info.y1=y_mid;
+      return(PlasmaImage(image,&clone_info,attenuate,depth));
     }
   x_mid=(segment->x1+segment->x2)/2;
   y_mid=(segment->y1+segment->y2)/2;

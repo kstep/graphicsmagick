@@ -310,6 +310,9 @@ int main(int argc,char **argv)
   double
     sans;
 
+  ErrorInfo
+    error;
+
   ImageInfo
     *image_info;
 
@@ -336,7 +339,9 @@ int main(int argc,char **argv)
   */
   ReadCommandlLine(argc,&argv);
   client_name=SetClientName(*argv);
-  (void) ExpandFilenames(&argc,&argv);
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
   if (argc < 2)
     Usage(client_name);
   /*
@@ -1393,7 +1398,7 @@ int main(int argc,char **argv)
           Option is a file name: begin by reading image from specified file.
         */
         (void) strcpy(image_info->filename,argv[i]);
-        image=ReadImage(image_info);
+        image=ReadImage(image_info,&error);
         if (image == (Image *) NULL)
           {
             if (*option == '-')

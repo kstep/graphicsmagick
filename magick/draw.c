@@ -381,7 +381,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
 #define DrawImageText  "  Drawing on image...  "
 
   AnnotateInfo
-    *local_info;
+    *clone_info;
 
   char
     keyword[MaxTextExtent],
@@ -435,8 +435,8 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
   assert(annotate_info->tile != (Image *) NULL);
   if (*annotate_info->primitive == '\0')
     return;
-  local_info=CloneAnnotateInfo(annotate_info->image_info,annotate_info);
-  primitive=local_info->primitive;
+  clone_info=CloneAnnotateInfo(annotate_info->image_info,annotate_info);
+  primitive=clone_info->primitive;
   indirection=(*primitive == '@');
   if (indirection)
     {
@@ -457,7 +457,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
         {
           MagickWarning(FileOpenWarning,"Unable to read primitive file",
             primitive+1);
-          DestroyAnnotateInfo(local_info);
+          DestroyAnnotateInfo(clone_info);
           return;
         }
       length=MaxTextExtent;
@@ -494,7 +494,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
         {
           MagickWarning(ResourceLimitWarning,"Unable to draw image",
             "Memory allocation failed");
-          DestroyAnnotateInfo(local_info);
+          DestroyAnnotateInfo(clone_info);
           return;
         }
       *q='\0';
@@ -505,17 +505,17 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
   number_coordinates=2048;
   primitive_info=(PrimitiveInfo *)
     AllocateMemory(number_coordinates*sizeof(PrimitiveInfo));
-  local_info->geometry=(char *) AllocateMemory(MaxTextExtent);
-  local_info->text=(char *) AllocateMemory(Extent(primitive));
+  clone_info->geometry=(char *) AllocateMemory(MaxTextExtent);
+  clone_info->text=(char *) AllocateMemory(Extent(primitive));
   if ((primitive_info == (PrimitiveInfo *) NULL) ||
-      (local_info->geometry == (char *) NULL) ||
-      (local_info->text == (char *) NULL))
+      (clone_info->geometry == (char *) NULL) ||
+      (clone_info->text == (char *) NULL))
     {
       MagickWarning(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
       if (indirection)
         FreeMemory(primitive);
-      DestroyAnnotateInfo(local_info);
+      DestroyAnnotateInfo(clone_info);
       return;
     }
   /*
@@ -624,7 +624,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
         "Memory allocation failed");
       if (indirection)
         FreeMemory(primitive);
-      DestroyAnnotateInfo(local_info);
+      DestroyAnnotateInfo(clone_info);
       return;
     }
     primitive_info[j].coordinates=x;
@@ -664,7 +664,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
         x=(int) (primitive_info[j+1].x-primitive_info[j].x);
         y=(int) (primitive_info[j+1].y-primitive_info[j].y);
         radius=
-          sqrt((double) (x*x+y*y))+local_info->image_info->linewidth/2.0+0.5;
+          sqrt((double) (x*x+y*y))+clone_info->image_info->linewidth/2.0+0.5;
         point.x=Max(primitive_info[j].x-radius,0);
         point.y=Max(primitive_info[j].y-radius,0);
         if (point.x < bounds.x1)
@@ -823,6 +823,9 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
       }
       case ImagePrimitive:
       {
+        ErrorInfo
+          error;
+
         Image
           *composite_image;
 
@@ -859,7 +862,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
           }
         composite_info=CloneImageInfo((ImageInfo *) NULL);
         (void) strcpy(composite_info->filename,primitive_info[j].text);
-        composite_image=ReadImage(composite_info);
+        composite_image=ReadImage(composite_info,&error);
         if (composite_image == (Image *) NULL)
           break;
         CompositeImage(image,ReplaceCompositeOp,composite_image,
@@ -880,7 +883,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
       FreeMemory(primitive_info);
       if (indirection)
         FreeMemory(primitive);
-      DestroyAnnotateInfo(local_info);
+      DestroyAnnotateInfo(clone_info);
       return;
     }
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
@@ -898,7 +901,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
   /*
     Account for linewidth.
   */
-  mid=local_info->image_info->linewidth/2.0;
+  mid=clone_info->image_info->linewidth/2.0;
   if ((bounds.x1 != bounds.x2) || (bounds.y1 != bounds.y2))
     {
       bounds.x1=Max(bounds.x1-mid,0);
@@ -919,8 +922,8 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
     for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
     {
       target.x=x;
-      opacity=InsidePrimitive(primitive_info,local_info,&target,image);
-      if (!local_info->image_info->antialias)
+      opacity=InsidePrimitive(primitive_info,clone_info,&target,image);
+      if (!clone_info->image_info->antialias)
         if (opacity != Transparent)
           opacity=Opaque;
       if (opacity != Transparent)
@@ -928,11 +931,11 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
           register PixelPacket
             *p;
 
-          p=GetPixelCache(local_info->tile,x % local_info->tile->columns,
-            y % local_info->tile->rows,1,1);
+          p=GetPixelCache(clone_info->tile,x % clone_info->tile->columns,
+            y % clone_info->tile->rows,1,1);
           if (p == (PixelPacket *) NULL)
             break;
-          if (!local_info->tile->matte)
+          if (!clone_info->tile->matte)
             {
               q->red=((unsigned long)
                 (p->red*opacity+q->red*(Opaque-opacity))/Opaque);
@@ -970,7 +973,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
   FreeMemory(primitive_info);
   if (indirection)
     FreeMemory(primitive);
-  DestroyAnnotateInfo(local_info);
+  DestroyAnnotateInfo(clone_info);
 }
 
 /*

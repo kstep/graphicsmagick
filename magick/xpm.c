@@ -299,6 +299,12 @@ const ColorlistInfo
   };
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteXPMImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -312,7 +318,7 @@ const ColorlistInfo
 %  Method IsXPM returns True if the image format type, identified by the
 %  magick string, is XPM.
 %
-%  The format of the ReadXPMImage method is:
+%  The format of the IsXPM method is:
 %
 %      unsigned int IsXPM(const unsigned char *magick,
 %        const unsigned int length)
@@ -328,7 +334,7 @@ const ColorlistInfo
 %
 %
 */
-Export unsigned int IsXPM(const unsigned char *magick,const unsigned int length)
+static unsigned int IsXPM(const unsigned char *magick,const unsigned int length)
 {
   if (length < 9)
     return(False);
@@ -354,7 +360,7 @@ Export unsigned int IsXPM(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadXPMImage method is:
 %
-%      Image *ReadXPMImage(const ImageInfo *image_info)
+%      Image *ReadXPMImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -407,7 +413,7 @@ static char *ParseColor(char *data)
   return((char *) NULL);
 }
 
-Export Image *ReadXPMImage(const ImageInfo *image_info)
+static Image *ReadXPMImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   char
     key[MaxTextExtent],
@@ -660,6 +666,49 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r X P M I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterXPMImage adds attributes for the XPM image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterXPMImage method is:
+%
+%      RegisterXPMImage(void)
+%
+*/
+Export void RegisterXPMImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("PM");
+  entry->decoder=ReadXPMImage;
+  entry->encoder=WriteXPMImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("X Windows system pixmap (color)");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("XPM");
+  entry->decoder=ReadXPMImage;
+  entry->encoder=WriteXPMImage;
+  entry->magick=IsXPM;
+  entry->adjoin=False;
+  entry->description=AllocateString("X Windows system pixmap (color)");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e X P M I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -684,7 +733,7 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
 {
 #define MaxCixels  92
 

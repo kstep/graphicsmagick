@@ -62,6 +62,48 @@ const char
   *DefaultPreviewGeometry = "204x204+10+10";
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WritePREVIEWImage(const ImageInfo *,Image *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r P R E V I E W I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPREVIEWImage adds attributes for the PREVIEW image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPREVIEWImage method is:
+%
+%      RegisterPREVIEWImage(void)
+%
+*/
+Export void RegisterPREVIEWImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("PREVIEW");
+  entry->encoder=WritePREVIEWImage;
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("Show a preview an image enhancement, effect, or f/x");
+  RegisterMagickInfo(entry);
+}
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -92,7 +134,7 @@ const char
 %
 %
 */
-Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
+static unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
 {
 #define NumberTiles  9
 #define PreviewImageText  "  Creating image preview...  "
@@ -114,7 +156,7 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
     *preview_image;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   int
     argc,
@@ -154,10 +196,10 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   /*
     Apply enhancement at varying strengths.
   */
-  local_info=CloneImageInfo(image_info);
-  if (local_info == (ImageInfo *) NULL)
+  clone_info=CloneImageInfo(image_info);
+  if (clone_info == (ImageInfo *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
-  local_info->quality=0;
+  clone_info->quality=0;
   degrees=0;
   gamma=(-0.2f);
   colors=2;
@@ -181,7 +223,7 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       {
         commands[argc++]="-mattecolor";
         commands[argc++]="#dfdfdf";
-        MogrifyImage(local_info,argc,commands,&images[i]);
+        MogrifyImage(clone_info,argc,commands,&images[i]);
         continue;
       }
     handler=SetMonitorHandler((MonitorHandler) NULL);
@@ -437,17 +479,21 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       case JPEGPreview:
       default:
       {
-        local_info->quality=(unsigned int) (percentage+13.0);
-        FormatString(factor,"%u",local_info->quality);
-        TemporaryFilename(images[i]->filename);
-        status=WriteJPEGImage(local_info,images[i]);
+        clone_info->quality=(unsigned int) (percentage+13.0);
+        FormatString(factor,"%u",clone_info->quality);
+        (void) strcpy(images[i]->filename,"jpeg:");
+        TemporaryFilename(images[i]->filename+5);
+        status=WriteImage(clone_info,images[i]);
         if (status != False)
           {
+            ErrorInfo
+              error;
+
             Image
               *quality_image;
 
-            (void) strcpy(local_info->filename,images[i]->filename);
-            quality_image=ReadImage(local_info);
+            (void) strcpy(clone_info->filename,images[i]->filename);
+            quality_image=ReadImage(clone_info,&error);
             (void) remove(images[i]->filename);
             if (quality_image != (Image *) NULL)
               {
@@ -469,11 +515,11 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
     percentage+=12.5;
     commands[argc++]="-label";
     commands[argc++]=label;
-    MogrifyImage(local_info,argc,commands,&images[i]);
+    MogrifyImage(clone_info,argc,commands,&images[i]);
     (void) SetMonitorHandler(handler);
     ProgressMonitor(PreviewImageText,i,NumberTiles);
   }
-  DestroyImageInfo(local_info);
+  DestroyImageInfo(clone_info);
   DestroyImage(preview_image);
   /*
     Create the PCD Overview image.

@@ -69,7 +69,7 @@
 %  Method IsSCT returns True if the image format type, identified by the
 %  magick string, is SCT.
 %
-%  The format of the ReadSCTImage method is:
+%  The format of the IsSCT method is:
 %
 %      unsigned int IsSCT(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,7 +85,7 @@
 %
 %
 */
-Export unsigned int IsSCT(const unsigned char *magick,const unsigned int length)
+static unsigned int IsSCT(const unsigned char *magick,const unsigned int length)
 {
   if (length < 2)
     return(False);
@@ -111,7 +111,7 @@ Export unsigned int IsSCT(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadSCTImage method is:
 %
-%      Image *ReadSCTImage(const ImageInfo *image_info)
+%      Image *ReadSCTImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -123,7 +123,7 @@ Export unsigned int IsSCT(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export Image *ReadSCTImage(const ImageInfo *image_info)
+static Image *ReadSCTImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   char
     buffer[768],
@@ -242,4 +242,40 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
       ProgressMonitor(LoadImageText,y,image->rows);
   }
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r S C T I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterSCTImage adds attributes for the SCT image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterSCTImage method is:
+%
+%      RegisterSCTImage(void)
+%
+*/
+Export void RegisterSCTImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("SCT");
+  entry->decoder=ReadSCTImage;
+  entry->magick=IsSCT;
+  entry->adjoin=False;
+  entry->description=AllocateString("Scitex HandShake");
+  RegisterMagickInfo(entry);
 }

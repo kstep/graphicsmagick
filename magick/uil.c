@@ -56,39 +56,44 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteUILImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d U I L I m a g e                                                   %
+%   R e g i s t e r U I L I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadUILImage reads a X-Motif UIL table and returns it.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
+%  Method RegisterUILImage adds attributes for the UIL image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
 %
-%  The format of the ReadUILImage method is:
+%  The format of the RegisterUILImage method is:
 %
-%      Image *ReadUILImage(const ImageInfo *image_info)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method ReadUILImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a memory shortage or
-%      if the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
+%      RegisterUILImage(void)
 %
 */
-Export Image *ReadUILImage(const ImageInfo *image_info)
+Export void RegisterUILImage(void)
 {
-  MagickWarning(MissingDelegateWarning,"Cannot read UIL images",
-    image_info->filename);
-  return((Image *) NULL);
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("UIL");
+  entry->encoder=WriteUILImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("X-Motif UIL table");
+  RegisterMagickInfo(entry);
 }
 
 /*
@@ -121,7 +126,7 @@ Export Image *ReadUILImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
 {
 #define MaxCixels  92
 

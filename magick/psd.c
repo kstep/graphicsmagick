@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WritePSDImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -229,7 +235,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
 %  Method IsPSD returns True if the image format type, identified by the
 %  magick string, is PSD.
 %
-%  The format of the ReadPSDImage method is:
+%  The format of the IsPSD method is:
 %
 %      unsigned int IsPSD(const unsigned char *magick,
 %        const unsigned int length)
@@ -245,7 +251,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
 %
 %
 */
-Export unsigned int IsPSD(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPSD(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
@@ -283,7 +289,7 @@ Export unsigned int IsPSD(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export Image *ReadPSDImage(const ImageInfo *image_info)
+static Image *ReadPSDImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #define BitmapMode  0
 #define GrayscaleMode  1
@@ -670,7 +676,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
     Convert pixels to Runlength encoded.
   */
   compression=MSBFirstReadShort(image);
-  SetImage(image);
+  SetImage(image,Opaque);
   if (compression != 0)
     {
       /*
@@ -790,6 +796,43 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r P S D I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPSDImage adds attributes for the PSD image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPSDImage method is:
+%
+%      RegisterPSDImage(void)
+%
+*/
+Export void RegisterPSDImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("PSD");
+  entry->decoder=ReadPSDImage;
+  entry->encoder=WritePSDImage;
+  entry->magick=IsPSD;
+  entry->adjoin=False;
+  entry->description=AllocateString("Adobe Photoshop bitmap");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e P S D I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -815,7 +858,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
+static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
 {
   int
     y;

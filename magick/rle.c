@@ -85,7 +85,7 @@
 %
 %
 */
-Export unsigned int IsRLE(const unsigned char *magick,const unsigned int length)
+static unsigned int IsRLE(const unsigned char *magick,const unsigned int length)
 {
   if (length < 2)
     return(False);
@@ -111,7 +111,7 @@ Export unsigned int IsRLE(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadRLEImage method is:
 %
-%      Image *ReadRLEImage(const ImageInfo *image_info)
+%      Image *ReadRLEImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -123,7 +123,7 @@ Export unsigned int IsRLE(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export Image *ReadRLEImage(const ImageInfo *image_info)
+static Image *ReadRLEImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #define SkipLinesOp  0x01
 #define SetColorOp  0x02
@@ -552,4 +552,40 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
     image=image->previous;
   CloseBlob(image);
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r R L E I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterRLEImage adds attributes for the RLE image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterRLEImage method is:
+%
+%      RegisterRLEImage(void)
+%
+*/
+Export void RegisterRLEImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("RLE");
+  entry->decoder=ReadRLEImage;
+  entry->magick=IsRLE;
+  entry->adjoin=False;
+  entry->description=AllocateString("Utah Run length encoded image");
+  RegisterMagickInfo(entry);
 }

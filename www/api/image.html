@@ -201,7 +201,7 @@ int  <STRONG>ParseImageGeometry</STRONG>( const char *geometry, int *x, int *y, 
 
 </P>
 <P>
-Image * <STRONG>PingImage</STRONG>( const ImageInfo <CODE>*image_info</CODE> );
+Image * <STRONG>PingImage</STRONG>( const ImageInfo *image_info, ErrorInfo <CODE>*error</CODE> );
 
 </P>
 <P>
@@ -209,15 +209,15 @@ void  <STRONG>RGBTransformImage</STRONG>( Image *image, const ColorspaceType col
 
 </P>
 <P>
-Image * <STRONG>ReadImage</STRONG>( ImageInfo <CODE>*image_info</CODE> );
+Image * <STRONG>ReadImage</STRONG>( ImageInfo *image_info, ErrorInfo <CODE>*error</CODE> );
 
 </P>
 <P>
-Image * <STRONG>ReadImages</STRONG>( ImageInfo <CODE>*image_info</CODE> );
+Image * <STRONG>ReadImages</STRONG>( ImageInfo *image_info, ErrorInfo <CODE>*error</CODE> );
 
 </P>
 <P>
-void  <STRONG>SetImage</STRONG>( Image <CODE>*image</CODE> );
+void  <STRONG>SetImage</STRONG>( Image *image, opacity );
 
 </P>
 <P>
@@ -1339,7 +1339,7 @@ image file is pinged.
 The format of the PingImage method is:
 
 </P>
-<blockquote><A HREF="types/Image.html">Image</A> *PingImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *PingImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, ErrorInfo *error ); </blockquote>
 
 <P>
 
@@ -1375,7 +1375,7 @@ image format name and a colon (i.e. ps:image) or as the filename suffix
 The format of the ReadImage method is:
 
 </P>
-<blockquote><A HREF="types/Image.html">Image</A> *ReadImage ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *ReadImage ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, ErrorInfo *error ); </blockquote>
 
 <P>
 
@@ -1395,6 +1395,11 @@ or if the image cannot be read.
 Specifies a pointer to an ImageInfo structure.
 
 </P>
+<p><dt><STRONG>error:</STRONG><DD>
+<P>
+Specifies a pointer to an ErrorInfo structure.
+
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -1408,7 +1413,7 @@ the images as a linked list.
 The format of the ReadImage method is:
 
 </P>
-<blockquote><A HREF="types/Image.html">Image</A> *ReadImages ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *ReadImages ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, ErrorInfo *error ); </blockquote>
 
 <P>
 
@@ -1474,7 +1479,7 @@ Method SetImage initializes the reference image to the background color.
 The format of the SetImage method is:
 
 </P>
-<blockquote>void SetImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
+<blockquote>void SetImage ( <A HREF="types/Image.html">Image</A> *image, opacity ); </blockquote>
 
 <P>
 
@@ -1485,6 +1490,11 @@ The format of the SetImage method is:
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
+
+</P>
+<p><dt><STRONG>opacity:</STRONG><DD>
+<P>
+The transparency of the background color.
 
 </P>
 </DL></DL>

@@ -73,7 +73,7 @@
 %
 %  The format of the ReadGRADATIONImage method is:
 %
-%      Image *ReadGRADATIONImage(const ImageInfo *image_info)
+%      Image *ReadGRADATIONImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -85,7 +85,7 @@
 %
 %
 */
-Export Image *ReadGRADATIONImage(const ImageInfo *image_info)
+static Image *ReadGRADATIONImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   char
     colorname[MaxTextExtent];
@@ -168,4 +168,40 @@ Export Image *ReadGRADATIONImage(const ImageInfo *image_info)
       ProgressMonitor(LoadImageText,y,image->rows);
   }
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r G R A D A T I O N I m a g e                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterGRADATIONImage adds attributes for the GRADATION image format
+%  to the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterGRADATIONImage method is:
+%
+%      RegisterGRADATIONImage(void)
+%
+*/
+Export void RegisterGRADATIONImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("GRADATION");
+  entry->decoder=ReadGRADATIONImage;
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("Gradual passing from one shade to another");
+  RegisterMagickInfo(entry);
 }

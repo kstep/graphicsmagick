@@ -72,7 +72,7 @@
 %
 %  The format of the ReadICONImage method is:
 %
-%      Image *ReadICONImage(const ImageInfo *image_info)
+%      Image *ReadICONImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -84,7 +84,7 @@
 %
 %
 */
-Export Image *ReadICONImage(const ImageInfo *image_info)
+static Image *ReadICONImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #define MaxIcons  256
 
@@ -411,4 +411,44 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
     image=image->previous;
   CloseBlob(image);
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r I C O N I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterICONImage adds attributes for the ICON image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterICONImage method is:
+%
+%      RegisterICONImage(void)
+%
+*/
+Export void RegisterICONImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("ICO");
+  entry->decoder=ReadICONImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("Microsoft icon");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("ICON");
+  entry->decoder=ReadICONImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("Microsoft icon");
+  RegisterMagickInfo(entry);
 }

@@ -308,6 +308,9 @@ int main(int argc,char **argv)
   double
     sans;
 
+  ErrorInfo
+    error;
+
   Image
     *image,
     *next_image;
@@ -317,7 +320,6 @@ int main(int argc,char **argv)
 
   int
     image_number,
-    status,
     x;
 
   QuantizeInfo
@@ -332,7 +334,8 @@ int main(int argc,char **argv)
     *image_marker,
     last_image,
     last_scene,
-    scene;
+    scene,
+    status;
 
   unsigned long
     state;
@@ -349,7 +352,9 @@ int main(int argc,char **argv)
   SetNotifyHandlers;
   ReadCommandlLine(argc,&argv);
   client_name=SetClientName(*argv);
-  (void) ExpandFilenames(&argc,&argv);
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
   /*
     Set defaults.
   */
@@ -1328,7 +1333,7 @@ int main(int argc,char **argv)
           (void) strcpy(image_info->magick,"MIFF");
           image_info->colorspace=quantize_info->colorspace;
           image_info->dither=quantize_info->dither;
-          image=ReadImage(image_info);
+          image=ReadImage(image_info,&error);
           if (image == (Image *) NULL)
             {
               if ((i < (argc-1)) || (scene < last_scene))

@@ -392,6 +392,9 @@ int main(int argc,char **argv)
   double
     sans;
 
+  ErrorInfo
+    error;
+
   Image
     *image,
     *next_image;
@@ -402,7 +405,6 @@ int main(int argc,char **argv)
   int
     append,
     gravity,
-    status,
     x;
 
   register Image
@@ -418,14 +420,17 @@ int main(int argc,char **argv)
     morph,
     mosaic,
     global_colormap,
-    scene;
+    scene,
+    status;
 
   /*
     Initialize command line arguments.
   */
   ReadCommandlLine(argc,&argv);
   client_name=SetClientName(*argv);
-  (void) ExpandFilenames(&argc,&argv);
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
   if (argc < 3)
     Usage(client_name);
   /*
@@ -458,7 +463,7 @@ int main(int argc,char **argv)
         */
         filename=argv[i];
         (void) strcpy(image_info->filename,filename);
-        next_image=ReadImage(image_info);
+        next_image=ReadImage(image_info,&error);
         if (next_image == (Image *) NULL)
           continue;
         MogrifyImages(image_info,i,argv,&next_image);

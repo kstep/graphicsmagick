@@ -93,13 +93,16 @@ const char
 Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
 {
   AnnotateInfo
-    *local_info;
+    *clone_info;
 
   char
     label[MaxTextExtent],
     size[MaxTextExtent],
     *text,
     **textlist;
+
+  ErrorInfo
+    error;
 
   Image
     *box_image,
@@ -131,18 +134,18 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
   /*
     Translate any embedded format characters (e.g. %f).
   */
-  local_info=CloneAnnotateInfo(annotate_info->image_info,annotate_info);
-  text=TranslateText((ImageInfo *) NULL,image,local_info->text);
+  clone_info=CloneAnnotateInfo(annotate_info->image_info,annotate_info);
+  text=TranslateText((ImageInfo *) NULL,image,clone_info->text);
   if (text == (char *) NULL)
     {
-      DestroyAnnotateInfo(local_info);
+      DestroyAnnotateInfo(clone_info);
       return;
     }
   textlist=StringToList(text);
   FreeMemory(text);
   if (textlist == (char **) NULL)
     {
-      DestroyAnnotateInfo(local_info);
+      DestroyAnnotateInfo(clone_info);
       return;
     }
   length=Extent(textlist[0]);
@@ -155,14 +158,14 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
     {
       MagickWarning(ResourceLimitWarning,"Unable to annotate image",
         "Memory allocation failed");
-      DestroyAnnotateInfo(local_info);
+      DestroyAnnotateInfo(clone_info);
       return;
     }
   width=image->columns;
   height=image->rows;
   x=0;
   y=0;
-  if (local_info->geometry != (char *) NULL)
+  if (clone_info->geometry != (char *) NULL)
     {
       int
         flags;
@@ -170,7 +173,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
       /*
         User specified annotation geometry.
       */
-      flags=ParseGeometry(local_info->geometry,&x,&y,&width,&height);
+      flags=ParseGeometry(clone_info->geometry,&x,&y,&width,&height);
       if ((flags & XNegative) != 0)
         x+=image->columns;
       if ((flags & WidthValue) == 0)
@@ -194,10 +197,10 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
     /*
       Convert text to image.
     */
-    FormatString(label,"%.1024s",textlist[i]);
+    FormatString(label,"label:%.1024s",textlist[i]);
     FreeMemory(textlist[i]);
-    (void) strcpy(local_info->image_info->filename,label);
-    annotate_image=ReadLABELImage(local_info->image_info);
+    (void) strcpy(clone_info->image_info->filename,label);
+    annotate_image=ReadImage(clone_info->image_info,&error);
     if (annotate_image == (Image *) NULL)
       {
         MagickWarning(ResourceLimitWarning,"Unable to annotate image",
@@ -205,7 +208,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
         for (i++ ; textlist[i] != (char *) NULL; i++)
           FreeMemory(textlist[i]);
         FreeMemory(textlist);
-        DestroyAnnotateInfo(local_info);
+        DestroyAnnotateInfo(clone_info);
         return;
       }
     if (annotate_info->degrees != 0.0)
@@ -222,36 +225,36 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
             DestroyImage(annotate_image);
             annotate_image=rotated_image;
           }
-        local_info->bounds.height=annotate_image->rows;
+        clone_info->bounds.height=annotate_image->rows;
       }
     /*
       Composite text onto the image.
     */
-    switch (local_info->gravity)
+    switch (clone_info->gravity)
     {
       case NorthWestGravity:
       {
-        local_info->bounds.x=x;
-        local_info->bounds.y=i*local_info->bounds.height+y;
+        clone_info->bounds.x=x;
+        clone_info->bounds.y=i*clone_info->bounds.height+y;
         break;
       }
       case NorthGravity:
       {
-        local_info->bounds.x=(width/2)-(annotate_image->columns/2)+x;
-        local_info->bounds.y=i*local_info->bounds.height+y;
+        clone_info->bounds.x=(width/2)-(annotate_image->columns/2)+x;
+        clone_info->bounds.y=i*clone_info->bounds.height+y;
         break;
       }
       case NorthEastGravity:
       {
-        local_info->bounds.x=width-annotate_image->columns+x;
-        local_info->bounds.y=i*local_info->bounds.height+y;
+        clone_info->bounds.x=width-annotate_image->columns+x;
+        clone_info->bounds.y=i*clone_info->bounds.height+y;
         break;
       }
       case WestGravity:
       {
-        local_info->bounds.x=x;
-        local_info->bounds.y=(height/2)-(number_lines*
-          local_info->bounds.height/2)+i*local_info->bounds.height+y;
+        clone_info->bounds.x=x;
+        clone_info->bounds.y=(height/2)-(number_lines*
+          clone_info->bounds.height/2)+i*clone_info->bounds.height+y;
         break;
       }
       case ForgetGravity:
@@ -259,60 +262,60 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
       case CenterGravity:
       default:
       {
-        local_info->bounds.x=(width/2)-(annotate_image->columns/2)+x;
-        local_info->bounds.y=(height/2)-(number_lines*
-          local_info->bounds.height/2)+i*local_info->bounds.height+y;
+        clone_info->bounds.x=(width/2)-(annotate_image->columns/2)+x;
+        clone_info->bounds.y=(height/2)-(number_lines*
+          clone_info->bounds.height/2)+i*clone_info->bounds.height+y;
         break;
       }
       case EastGravity:
       {
-        local_info->bounds.x=width-annotate_image->columns-x;
-        local_info->bounds.y=(height/2)-(number_lines*
-          local_info->bounds.height/2)+i*local_info->bounds.height-y;
+        clone_info->bounds.x=width-annotate_image->columns-x;
+        clone_info->bounds.y=(height/2)-(number_lines*
+          clone_info->bounds.height/2)+i*clone_info->bounds.height-y;
         break;
       }
       case SouthWestGravity:
       {
-        local_info->bounds.x=x;
-        local_info->bounds.y=height-(i+1)*local_info->bounds.height-y;
+        clone_info->bounds.x=x;
+        clone_info->bounds.y=height-(i+1)*clone_info->bounds.height-y;
         break;
       }
       case SouthGravity:
       {
-        local_info->bounds.x=(width/2)-(annotate_image->columns/2)-x;
-        local_info->bounds.y=height-(i+1)*local_info->bounds.height-y;
+        clone_info->bounds.x=(width/2)-(annotate_image->columns/2)-x;
+        clone_info->bounds.y=height-(i+1)*clone_info->bounds.height-y;
         break;
       }
       case SouthEastGravity:
       {
-        local_info->bounds.x=width-annotate_image->columns-x;
-        local_info->bounds.y=height-(i+1)*local_info->bounds.height-y;
+        clone_info->bounds.x=width-annotate_image->columns-x;
+        clone_info->bounds.y=height-(i+1)*clone_info->bounds.height-y;
         break;
       }
     }
-    if (local_info->image_info->box != (char *) NULL)
+    if (clone_info->image_info->box != (char *) NULL)
       {
         /*
           Surround text with a bounding box.
         */
-        FormatString(local_info->image_info->filename,"xc:%.1024s",
-          local_info->image_info->box);
+        FormatString(clone_info->image_info->filename,"xc:%.1024s",
+          clone_info->image_info->box);
         FormatString(size,"%ux%u",annotate_image->columns,annotate_image->rows);
-        (void) CloneString(&local_info->image_info->size,size);
-        box_image=ReadImage(local_info->image_info);
+        (void) CloneString(&clone_info->image_info->size,size);
+        box_image=ReadImage(clone_info->image_info,&error);
         if (box_image != (Image *) NULL)
           {
             CompositeImage(image,ReplaceCompositeOp,box_image,
-              local_info->bounds.x,local_info->bounds.y);
+              clone_info->bounds.x,clone_info->bounds.y);
             DestroyImage(box_image);
           }
       }
     CompositeImage(image,AnnotateCompositeOp,annotate_image,
-      local_info->bounds.x,local_info->bounds.y);
+      clone_info->bounds.x,clone_info->bounds.y);
     DestroyImage(annotate_image);
   }
   image->matte=matte;
-  DestroyAnnotateInfo(local_info);
+  DestroyAnnotateInfo(clone_info);
   FreeMemory(text);
   for ( ; textlist[i] != (char *) NULL; i++)
     FreeMemory(textlist[i]);
@@ -456,6 +459,9 @@ Export void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
 Export void GetAnnotateInfo(const ImageInfo *image_info,
   AnnotateInfo *annotate_info)
 {
+  ErrorInfo
+    error;
+
   ImageAttribute
     *attribute;
 
@@ -487,14 +493,14 @@ Export void GetAnnotateInfo(const ImageInfo *image_info,
     else
       (void) FormatString(annotate_info->image_info->filename,"xc:%.1024s",
         annotate_info->image_info->pen);
-  annotate_info->tile=ReadImage(annotate_info->image_info);
+  annotate_info->tile=ReadImage(annotate_info->image_info,&error);
   if (annotate_info->image_info->font == (char *) NULL)
     return;
   /*
     Get font bounds.
   */
-  FormatString(annotate_info->image_info->filename,"%.1024s",Alphabet);
-  annotate_image=ReadLABELImage(annotate_info->image_info);
+  FormatString(annotate_info->image_info->filename,"label:%.1024s",Alphabet);
+  annotate_image=ReadImage(annotate_info->image_info,&error);
   if (annotate_image == (Image *) NULL)
     return;
   attribute=GetImageAttribute(annotate_image,"label");

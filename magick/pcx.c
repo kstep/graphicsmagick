@@ -54,6 +54,12 @@
 */
 #include "magick.h"
 #include "defines.h"
+
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WritePCXImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -69,7 +75,7 @@
 %  Method IsDCX returns True if the image format type, identified by the
 %  magick string, is DCX.
 %
-%  The format of the ReadDCXImage method is:
+%  The format of the IsDCX method is:
 %
 %      unsigned int IsDCX(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,7 +91,7 @@
 %
 %
 */
-Export unsigned int IsDCX(const unsigned char *magick,const unsigned int length)
+static unsigned int IsDCX(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
@@ -108,7 +114,7 @@ Export unsigned int IsDCX(const unsigned char *magick,const unsigned int length)
 %  Method IsPCX returns True if the image format type, identified by the
 %  magick string, is PCX.
 %
-%  The format of the ReadPCXImage method is:
+%  The format of the IsPCX method is:
 %
 %      unsigned int IsPCX(const unsigned char *magick,
 %        const unsigned int length)
@@ -124,7 +130,7 @@ Export unsigned int IsDCX(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export unsigned int IsPCX(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPCX(const unsigned char *magick,const unsigned int length)
 {
   if (length < 2)
     return(False);
@@ -152,7 +158,7 @@ Export unsigned int IsPCX(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadPCXImage method is:
 %
-%      Image *ReadPCXImage(const ImageInfo *image_info)
+%      Image *ReadPCXImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -164,7 +170,7 @@ Export unsigned int IsPCX(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export Image *ReadPCXImage(const ImageInfo *image_info)
+static Image *ReadPCXImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   typedef struct _PCXHeader
   {
@@ -604,6 +610,49 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r P C X I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPCXImage adds attributes for the PCX image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPCXImage method is:
+%
+%      RegisterPCXImage(void)
+%
+*/
+Export void RegisterPCXImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("DCX");
+  entry->decoder=ReadPCXImage;
+  entry->encoder=WritePCXImage;
+  entry->magick=IsDCX;
+  entry->description=AllocateString("ZSoft IBM PC multi-page Paintbrush");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("PCX");
+  entry->decoder=ReadPCXImage;
+  entry->encoder=WritePCXImage;
+  entry->magick=IsPCX;
+  entry->adjoin=False;
+  entry->description=AllocateString("ZSoft IBM PC Paintbrush");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e P C X I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -629,7 +678,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
+static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
 {
   typedef struct _PCXHeader
   {

@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteGIFImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -599,7 +605,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
 %  Method IsGIF returns True if the image format type, identified by the
 %  magick string, is GIF.
 %
-%  The format of the ReadGIFImage method is:
+%  The format of the IsGIF method is:
 %
 %      unsigned int IsGIF(const unsigned char *magick,
 %        const unsigned int length)
@@ -615,7 +621,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
 %
 %
 */
-Export unsigned int IsGIF(const unsigned char *magick,const unsigned int length)
+static unsigned int IsGIF(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
@@ -641,7 +647,7 @@ Export unsigned int IsGIF(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadGIFImage method is:
 %
-%      Image *ReadGIFImage(const ImageInfo *image_info)
+%      Image *ReadGIFImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -653,7 +659,7 @@ Export unsigned int IsGIF(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export Image *ReadGIFImage(const ImageInfo *image_info)
+static Image *ReadGIFImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #define BitSet(byte,bit)  (((byte) & (bit)) == (bit))
 #define LSBFirstOrder(x,y)  (((y) << 8) | (x))
@@ -963,6 +969,50 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r G I F I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterGIFImage adds attributes for the GIF image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterGIFImage method is:
+%
+%      RegisterGIFImage(void)
+%
+*/
+Export void RegisterGIFImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("GIF");
+  entry->decoder=ReadGIFImage;
+  entry->encoder=WriteGIFImage;
+  entry->magick=IsGIF;
+  entry->description=AllocateString("CompuServe graphics interchange format");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("GIF87");
+  entry->decoder=ReadGIFImage;
+  entry->encoder=WriteGIFImage;
+  entry->magick=IsGIF;
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("CompuServe graphics interchange format (version 87a)");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e G I F I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -988,7 +1038,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
 {
   Image
     *next_image;

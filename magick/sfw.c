@@ -69,7 +69,7 @@
 %  Method IsSFW returns True if the image format type, identified by the
 %  magick string, is SFW.
 %
-%  The format of the ReadSFWImage method is:
+%  The format of the IsSFW method is:
 %
 %      unsigned int IsSFW(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,7 +85,7 @@
 %
 %
 */
-Export unsigned int IsSFW(const unsigned char *magick,const unsigned int length)
+static unsigned int IsSFW(const unsigned char *magick,const unsigned int length)
 {
   if (length < 5)
     return(False);
@@ -111,7 +111,7 @@ Export unsigned int IsSFW(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadSFWImage method is:
 %
-%      Image *ReadSFWImage(const ImageInfo *image_info)
+%      Image *ReadSFWImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -160,7 +160,7 @@ static void TranslateSFWMarker(unsigned char *marker)
   }
 }
 
-Export Image *ReadSFWImage(const ImageInfo *image_info)
+static Image *ReadSFWImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   static unsigned char
     HuffmanTable[] =
@@ -214,7 +214,7 @@ Export Image *ReadSFWImage(const ImageInfo *image_info)
     *image;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   register unsigned char
     *header,
@@ -286,13 +286,13 @@ Export Image *ReadSFWImage(const ImageInfo *image_info)
   /*
     Write JFIF file.
   */
-  local_info=CloneImageInfo(image_info);
-  TemporaryFilename(local_info->filename);
-  file=fopen(local_info->filename,WriteBinaryType);
+  clone_info=CloneImageInfo(image_info);
+  TemporaryFilename(clone_info->filename);
+  file=fopen(clone_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     {
       FreeMemory(buffer);
-      DestroyImageInfo(local_info);
+      DestroyImageInfo(clone_info);
       ReaderExit(FileOpenWarning,"Unable to write file",image);
     }
   (void) fwrite(header,offset-header+1,1,file);
@@ -303,16 +303,16 @@ Export Image *ReadSFWImage(const ImageInfo *image_info)
   FreeMemory(buffer);
   if (status)
     {
-      (void) remove(local_info->filename);
-      DestroyImageInfo(local_info);
+      (void) remove(clone_info->filename);
+      DestroyImageInfo(clone_info);
       ReaderExit(FileOpenWarning,"Unable to write file",image);
     }
   /*
     Read JPEG image.
   */
-  image=ReadImage(local_info);
-  (void) remove(local_info->filename);
-  DestroyImageInfo(local_info);
+  image=ReadImage(clone_info,error);
+  (void) remove(clone_info->filename);
+  DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
     return(image);
   /*
@@ -323,4 +323,40 @@ Export Image *ReadSFWImage(const ImageInfo *image_info)
     return(image);
   DestroyImage(image);
   return(flipped_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r S F W I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterSFWImage adds attributes for the SFW image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterSFWImage method is:
+%
+%      RegisterSFWImage(void)
+%
+*/
+Export void RegisterSFWImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("SFW");
+  entry->decoder=ReadSFWImage;
+  entry->magick=IsSFW;
+  entry->adjoin=False;
+  entry->description=AllocateString("Seattle Film Works");
+  RegisterMagickInfo(entry);
 }

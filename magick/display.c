@@ -2196,6 +2196,9 @@ static unsigned int XCompositeImage(Display *display,
     blend,
     scale_factor;
 
+  ErrorInfo
+    error;
+
   Image
     *composite_image;
 
@@ -2230,7 +2233,7 @@ static unsigned int XCompositeImage(Display *display,
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   (void) strcpy(resource_info->image_info->filename,filename);
-  composite_image=ReadImage(resource_info->image_info);
+  composite_image=ReadImage(resource_info->image_info,&error);
   XSetCursorState(display,windows,False);
   if (composite_image == (Image *) NULL)
     {
@@ -2267,7 +2270,7 @@ static unsigned int XCompositeImage(Display *display,
           (void) CloneString(&image_info->size,size);
           FormatString(image_info->size,"%ux%u",composite_image->columns,
             composite_image->rows);
-          mask_image=ReadImage(image_info);
+          mask_image=ReadImage(image_info,&error);
           XSetCursorState(display,windows,False);
           if (mask_image == (Image *) NULL)
             {
@@ -3827,6 +3830,9 @@ static unsigned int XDrawEditImage(Display *display,
             }
             case DrawStippleCommand:
             {
+              ErrorInfo
+                error;
+
               Image
                 *stipple_image;
 
@@ -3918,7 +3924,7 @@ static unsigned int XDrawEditImage(Display *display,
               XCheckRefreshWindows(display,windows);
               image_info=CloneImageInfo((ImageInfo *) NULL);
               (void) strcpy(image_info->filename,filename);
-              stipple_image=ReadImage(image_info);
+              stipple_image=ReadImage(image_info,&error);
               XSetCursorState(display,windows,False);
               if (stipple_image == (Image *) NULL)
                 {
@@ -5269,6 +5275,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     geometry[MaxTextExtent],
     modulate_factors[MaxTextExtent];
 
+  ErrorInfo
+    error;
+
   Image
     *loaded_image;
 
@@ -5402,7 +5411,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       FormatString(image_info->filename,"%.1024s:%.1024s",format,color);
       (void) CloneString(&image_info->size,geometry);
-      loaded_image=ReadImage(image_info);
+      loaded_image=ReadImage(image_info,&error);
       XClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
       break;
@@ -6710,7 +6719,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           (char *) NULL);
       else
         {
-          loaded_image=ReadImage(resource_info->image_info);
+          loaded_image=ReadImage(resource_info->image_info,&error);
           XClientMessage(display,windows->image.id,windows->im_protocols,
             windows->im_next_image,CurrentTime);
         }
@@ -6799,7 +6808,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"Label","Histogram");
       TemporaryFilename((*image)->filename);
-      status=WriteHISTOGRAMImage(image_info,*image);
+      (void) strcpy((*image)->magick,"HISTOGRAM");
+      status=WriteImage(image_info,*image);
       (void) strcpy((*image)->magick,"SHOW");
       status=WriteImage(image_info,*image);
       if (status)
@@ -6825,7 +6835,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"Label","Matte");
       TemporaryFilename((*image)->filename);
-      status=WriteMATTEImage(image_info,*image);
+      (void) strcpy((*image)->magick,"MATTE");
+      status=WriteImage(image_info,*image);
       (void) strcpy((*image)->magick,"SHOW");
       status=WriteImage(image_info,*image);
       if (status)
@@ -7824,6 +7835,9 @@ static unsigned int XMatteEditImage(Display *display,
 static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   XWindows *windows,const unsigned int command)
 {
+  ErrorInfo
+    error;
+
   Image
     *loaded_image;
 
@@ -7937,7 +7951,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   handler=(MonitorHandler) NULL;
   if (Latin1Compare(image_info->magick,"X") == 0)
     handler=SetMonitorHandler((MonitorHandler) NULL);
-  loaded_image=ReadImage(image_info);
+  loaded_image=ReadImage(image_info,&error);
   if (Latin1Compare(image_info->magick,"X") == 0)
     (void) SetMonitorHandler(handler);
   XSetCursorState(display,windows,False);
@@ -10607,6 +10621,9 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   double
     scale_factor;
 
+  ErrorInfo
+    error;
+
   Image
     *tiled_image;
 
@@ -10706,7 +10723,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       (void) strcpy(resource_info->image_info->magick,"MIFF");
       (void) strcpy(resource_info->image_info->filename,filename);
-      tiled_image=ReadImage(resource_info->image_info);
+      tiled_image=ReadImage(resource_info->image_info,&error);
       XWithdrawWindow(display,windows->info.id,windows->info.screen);
       break;
     }
@@ -11123,13 +11140,16 @@ static Image *XVisualDirectoryImage(Display *display,
     **filelist,
     window_id[MaxTextExtent];
 
+  ErrorInfo
+    error;
+
   Image
     *image,
     *montage_image,
     *next_image;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   int
     number_files;
@@ -11175,7 +11195,11 @@ static Image *XVisualDirectoryImage(Display *display,
   status=ExpandFilenames(&number_files,&filelist);
   if ((status == False) || (number_files == 0))
     {
-      MagickWarning(OptionWarning,"No image files were found",filenames);
+      if (number_files == 0)
+        MagickWarning(OptionWarning,"No image files were found",filenames);
+      else
+        MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+          filenames);
       return((Image *) NULL);
     }
   /*
@@ -11190,8 +11214,8 @@ static Image *XVisualDirectoryImage(Display *display,
   */
   backdrop=(windows->visual_info->class == TrueColor) ||
    (windows->visual_info->class == DirectColor);
-  local_info=CloneImageInfo(resource_info->image_info);
-  if (local_info == (ImageInfo *) NULL)
+  clone_info=CloneImageInfo(resource_info->image_info);
+  if (clone_info == (ImageInfo *) NULL)
     return((Image *) NULL);
   image=(Image *) NULL;
   commands[0]=resource_info->client_name;
@@ -11204,15 +11228,15 @@ static Image *XVisualDirectoryImage(Display *display,
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    (void) strcpy(local_info->filename,filelist[i]);
-    *local_info->magick='\0';
-    (void) CloneString(&local_info->size,DefaultTileGeometry);
-    next_image=ReadImage(local_info);
+    (void) strcpy(clone_info->filename,filelist[i]);
+    *clone_info->magick='\0';
+    (void) CloneString(&clone_info->size,DefaultTileGeometry);
+    next_image=ReadImage(clone_info,&error);
     if (filelist[i] != filenames)
       FreeMemory(filelist[i]);
     if (next_image != (Image *) NULL)
       {
-        MogrifyImages(local_info,5,commands,&next_image);
+        MogrifyImages(clone_info,5,commands,&next_image);
         next_image->matte=False;
         if (backdrop)
           {
@@ -11232,7 +11256,7 @@ static Image *XVisualDirectoryImage(Display *display,
     (void) SetMonitorHandler(handler);
     ProgressMonitor(LoadImageText,i,number_files);
   }
-  DestroyImageInfo(local_info);
+  DestroyImageInfo(clone_info);
   FreeMemory(filelist);
   if (image == (Image *) NULL)
     {
@@ -12560,13 +12584,16 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 if (status == 0)
                   if (update_time != file_info.st_mtime)
                     {
+                      ErrorInfo
+                        error;
+
                       /*
                         Redisplay image.
                       */
                       FormatString(resource_info->image_info->filename,
                         "%.1024s:%.1024s",displayed_image->magick,
                         displayed_image->filename);
-                      loaded_image=ReadImage(resource_info->image_info);
+                      loaded_image=ReadImage(resource_info->image_info,&error);
                       if (loaded_image != (Image *) NULL)
                         *state|=NextImageState | ExitState;
                     }
@@ -12860,6 +12887,9 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               selection,
               type;
 
+            ErrorInfo
+              error;
+
             int
               format;
 
@@ -12903,7 +12933,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 (void) strcpy(resource_info->image_info->filename,
                   ((char *) data)+5);
               }
-            loaded_image=ReadImage(resource_info->image_info);
+            loaded_image=ReadImage(resource_info->image_info,&error);
             if (loaded_image != (Image *) NULL)
               *state|=NextImageState | ExitState;
             XFree((void *) data);
@@ -13319,6 +13349,9 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         Atom
           type;
 
+        ErrorInfo
+          error;
+
         int
           format;
 
@@ -13343,7 +13376,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         if ((status != Success) || (length == 0))
           break;
         (void) strcpy(resource_info->image_info->filename,(char *) data);
-        loaded_image=ReadImage(resource_info->image_info);
+        loaded_image=ReadImage(resource_info->image_info,&error);
         if (loaded_image != (Image *) NULL)
           *state|=NextImageState | ExitState;
         XFree((void *) data);

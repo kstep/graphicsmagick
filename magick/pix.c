@@ -72,7 +72,7 @@
 %
 %  The format of the ReadPIXImage method is:
 %
-%      Image *ReadPIXImage(const ImageInfo *image_info)
+%      Image *ReadPIXImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -84,7 +84,7 @@
 %
 %
 */
-Export Image *ReadPIXImage(const ImageInfo *image_info)
+static Image *ReadPIXImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   Image
     *image;
@@ -244,4 +244,38 @@ Export Image *ReadPIXImage(const ImageInfo *image_info)
     image=image->previous;
   CloseBlob(image);
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r P I X I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPIXImage adds attributes for the PIX image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPIXImage method is:
+%
+%      RegisterPIXImage(void)
+%
+*/
+Export void RegisterPIXImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("PIX");
+  entry->decoder=ReadPIXImage;
+  entry->description=AllocateString("Alias/Wavefront RLE image format");
+  RegisterMagickInfo(entry);
 }

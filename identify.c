@@ -137,6 +137,9 @@ int main(int argc,char **argv)
   double
     sans;
 
+  ErrorInfo
+    error;
+
   Image
     *image,
     *p;
@@ -151,14 +154,17 @@ int main(int argc,char **argv)
     i;
 
   unsigned int
-    count;
+    count,
+    status;
 
   /*
     Initialize command line arguments.
   */
   ReadCommandlLine(argc,&argv);
   client_name=SetClientName(*argv);
-  (void) ExpandFilenames(&argc,&argv);
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
   if (argc < 2)
     Usage(client_name);
   /*
@@ -260,11 +266,11 @@ int main(int argc,char **argv)
     if (image_info->ping)
       {
         image_info->verbose=True;
-        image=PingImage(image_info);
+        image=PingImage(image_info,&error);
         number_images++;
         continue;
       }
-    image=ReadImage(image_info);
+    image=ReadImage(image_info,&error);
     if (image == (Image *) NULL)
       continue;
     for (p=image; p != (Image *) NULL; p=p->next)

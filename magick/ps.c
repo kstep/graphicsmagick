@@ -54,6 +54,12 @@
 */
 #include "magick.h"
 #include "defines.h"
+
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WritePSImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -69,7 +75,7 @@
 %  Method IsPS returns True if the image format type, identified by the
 %  magick string, is PS.
 %
-%  The format of the ReadPSImage method is:
+%  The format of the IsPS method is:
 %
 %      unsigned int IsPS(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,7 +91,7 @@
 %
 %
 */
-Export unsigned int IsPS(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPS(const unsigned char *magick,const unsigned int length)
 {
   if (length < 3)
     return(False);
@@ -113,7 +119,7 @@ Export unsigned int IsPS(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadPSImage method is:
 %
-%      Image *ReadPSImage(const ImageInfo *image_info)
+%      Image *ReadPSImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -125,7 +131,7 @@ Export unsigned int IsPS(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-Export Image *ReadPSImage(const ImageInfo *image_info)
+static Image *ReadPSImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #define BoundingBox  "%%BoundingBox:"
 #define DocumentMedia  "%%DocumentMedia:"
@@ -157,7 +163,7 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
     *next_image;
 
   ImageInfo
-    *local_info;
+    *clone_info;
 
   int
     c,
@@ -361,18 +367,18 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
       /*
         Ghostscript has failed-- try the Display Postscript Extension.
       */
-      (void) strcpy((char *) image_info->filename,filename);
-      image=ReadDPSImage(image_info);
+      (void) FormatString((char *) image_info->filename,"dps:%s",filename);
+      image=ReadImage((ImageInfo *) image_info,error);
       if (image != (Image *) NULL)
         return(image);
       MagickWarning(CorruptImageWarning,"Postscript delegation failed",
         image_info->filename);
       return((Image *) NULL);
     }
-  local_info=CloneImageInfo(image_info);
-  GetBlobInfo(&(local_info->blob));
-  image=ReadPNMImage(local_info);
-  DestroyImageInfo(local_info);
+  clone_info=CloneImageInfo(image_info);
+  GetBlobInfo(&(clone_info->blob));
+  image=ReadImage(clone_info,error);
+  DestroyImageInfo(clone_info);
   (void) remove(image_info->filename);
   if (image == (Image *) NULL)
     {
@@ -393,6 +399,72 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r P S I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterPSImage adds attributes for the PS image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterPSImage method is:
+%
+%      RegisterPSImage(void)
+%
+*/
+Export void RegisterPSImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("EPI");
+  entry->decoder=ReadPSImage;
+  entry->encoder=WritePSImage;
+  entry->magick=IsPS;
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("Adobe Encapsulated PostScript Interchange format");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("EPS");
+  entry->decoder=ReadPSImage;
+  entry->encoder=WritePSImage;
+  entry->magick=IsPS;
+  entry->adjoin=False;
+  entry->description=AllocateString("Adobe Encapsulated PostScript");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("EPSF");
+  entry->decoder=ReadPSImage;
+  entry->encoder=WritePSImage;
+  entry->magick=IsPS;
+  entry->adjoin=False;
+  entry->description=AllocateString("Adobe Encapsulated PostScript");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("EPSI");
+  entry->decoder=ReadPSImage;
+  entry->encoder=WritePSImage;
+  entry->magick=IsPS;
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("Adobe Encapsulated PostScript Interchange format");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("PS");
+  entry->decoder=ReadPSImage;
+  entry->encoder=WritePSImage;
+  entry->magick=IsPS;
+  entry->description=AllocateString("Adobe PostScript");
+  RegisterMagickInfo(entry);
 }
 
 /*
@@ -427,7 +499,7 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
+static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
 {
   static const char
     *PostscriptProlog[]=

@@ -55,6 +55,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteWBMPImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -73,7 +79,7 @@
 %
 %  The format of the ReadWBMPImage method is:
 %
-%      Image *ReadWBMPImage(const ImageInfo *image_info)
+%      Image *ReadWBMPImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -103,7 +109,7 @@ static unsigned int WBMPReadInteger(Image *image,unsigned int *value)
   return(True);
 }
 
-Export Image *ReadWBMPImage(const ImageInfo *image_info)
+static Image *ReadWBMPImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   Image
     *image;
@@ -202,6 +208,42 @@ Export Image *ReadWBMPImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r W B M P I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterWBMPImage adds attributes for the WBMP image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterWBMPImage method is:
+%
+%      RegisterWBMPImage(void)
+%
+*/
+Export void RegisterWBMPImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("WBMP");
+  entry->decoder=ReadWBMPImage;
+  entry->encoder=WriteWBMPImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("Wireless Bitmap (level 0) image");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e W B M P I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -261,7 +303,7 @@ static void WBMPWriteInteger(Image *image,const unsigned int value)
   (void) WriteBlob(image,n,(char *) buffer+5-n);
 }
 
-Export unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
 {
   int
     y;

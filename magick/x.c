@@ -56,7 +56,15 @@
 #include "defines.h"
 #if defined(HasX11)
 #include "xwindows.h"
+#endif
 
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WriteXImage(const ImageInfo *,Image *);
+
+#if defined(HasX11)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -72,14 +80,14 @@
 %
 %  The format of the ReadXImage method is:
 %
-%      Image *ReadXImage(const ImageInfo *image_info)
+%      Image *ReadXImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 */
-Export Image *ReadXImage(const ImageInfo *image_info)
+static Image *ReadXImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   XImportInfo
     ximage_info;
@@ -88,13 +96,51 @@ Export Image *ReadXImage(const ImageInfo *image_info)
   return(XImportImage(image_info,&ximage_info));
 }
 #else
-Export Image *ReadXImage(const ImageInfo *image_info)
+static Image *ReadXImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   MagickWarning(MissingDelegateWarning,"X11 library is not available",
     image_info->filename);
   return((Image *) NULL);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r X I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterXImage adds attributes for the X image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterXImage method is:
+%
+%      RegisterXImage(void)
+%
+*/
+Export void RegisterXImage(void)
+{
+  MagickInfo
+    *entry;
+
+#if defined(HasX11)
+  entry=SetMagickInfo("X");
+  entry->decoder=ReadXImage;
+  entry->encoder=WriteXImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("X Image");
+  RegisterMagickInfo(entry);
+#endif
+}
 
 #if defined(HasX11)
 /*
@@ -126,7 +172,7 @@ Export Image *ReadXImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 {
   char
     *client_name;
@@ -171,7 +217,7 @@ Export unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-Export unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"X11 library is not available",
     image->filename);

@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteSUNImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -69,7 +75,7 @@
 %  Method IsSUN returns True if the image format type, identified by the
 %  magick string, is SUN.
 %
-%  The format of the ReadSUNImage method is:
+%  The format of the IsSUN method is:
 %
 %      unsigned int IsSUN(const unsigned char *magick,
 %        const unsigned int length)
@@ -85,7 +91,7 @@
 %
 %
 */
-Export unsigned int IsSUN(const unsigned char *magick,const unsigned int length)
+static unsigned int IsSUN(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
@@ -195,7 +201,7 @@ static unsigned int DecodeImage(const unsigned char *compressed_pixels,
 %
 %  The format of the ReadSUNImage method is:
 %
-%      Image *ReadSUNImage(const ImageInfo *image_info)
+%      Image *ReadSUNImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -207,7 +213,7 @@ static unsigned int DecodeImage(const unsigned char *compressed_pixels,
 %
 %
 */
-Export Image *ReadSUNImage(const ImageInfo *image_info)
+static Image *ReadSUNImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #define RMT_EQUAL_RGB  1
 #define RMT_NONE  0
@@ -519,6 +525,47 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e g i s t e r S U N I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterSUNImage adds attributes for the SUN image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterSUNImage method is:
+%
+%      RegisterSUNImage(void)
+%
+*/
+Export void RegisterSUNImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("RAS");
+  entry->decoder=ReadSUNImage;
+  entry->encoder=WriteSUNImage;
+  entry->magick=IsSUN;
+  entry->description=AllocateString("SUN Rasterfile");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("SUN");
+  entry->decoder=ReadSUNImage;
+  entry->encoder=WriteSUNImage;
+  entry->description=AllocateString("SUN Rasterfile");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e S U N I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -543,7 +590,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
 {
 #define RMT_EQUAL_RGB  1
 #define RMT_NONE  0

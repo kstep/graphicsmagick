@@ -57,6 +57,12 @@
 
 #if defined(HasJBIG)
 #include "jbig.h"
+
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WriteJBIGImage(const ImageInfo *,Image *);
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -74,7 +80,7 @@
 %
 %  The format of the ReadJBIGImage method is:
 %
-%      Image *ReadJBIGImage(const ImageInfo *image_info)
+%      Image *ReadJBIGImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  A description of each parameter follows:
 %
@@ -86,7 +92,7 @@
 %
 %
 */
-Export Image *ReadJBIGImage(const ImageInfo *image_info)
+static Image *ReadJBIGImage(const ImageInfo *image_info,ErrorInfo *error)
 {
 #define MaxBufferSize  8192
 
@@ -233,13 +239,64 @@ Export Image *ReadJBIGImage(const ImageInfo *image_info)
   return(image);
 }
 #else
-Export Image *ReadJBIGImage(const ImageInfo *image_info)
+static Image *ReadJBIGImage(const ImageInfo *image_info,ErrorInfo *error)
 {
   MagickWarning(MissingDelegateWarning,"JBIG library is not available",
     image_info->filename);
   return((Image *) NULL);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r J B I G I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterJBIGImage adds attributes for the JBIG image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterJBIGImage method is:
+%
+%      RegisterJBIGImage(void)
+%
+*/
+Export void RegisterJBIGImage(void)
+{
+  MagickInfo
+    *entry;
+
+#if defined(HasJBIG)
+  entry=SetMagickInfo("BIE");
+  entry->decoder=ReadJBIGImage;
+  entry->encoder=WriteJBIGImage;
+  entry->adjoin=False;
+  entry->description=
+    AllocateString("Joint Bi-level Image experts Group interchange format");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("JBG");
+  entry->decoder=ReadJBIGImage;
+  entry->encoder=WriteJBIGImage;
+  entry->description=
+    AllocateString("Joint Bi-level Image experts Group interchange format");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("JBIG");
+  entry->decoder=ReadJBIGImage;
+  entry->encoder=WriteJBIGImage;
+  entry->description=
+    AllocateString("Joint Bi-level Image experts Group interchange format");
+  RegisterMagickInfo(entry);
+#endif
+}
 
 #if defined(HasJBIG)
 /*
@@ -281,7 +338,7 @@ static void JBIGEncode(unsigned char *pixels,size_t length,void *data)
   (void) WriteBlob(image,length,pixels);
 }
 
-Export unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 {
   int
     sans_offset,
@@ -409,7 +466,7 @@ Export unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-Export unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"JBIG library is not available",
     image->filename);
