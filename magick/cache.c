@@ -1598,7 +1598,7 @@ static unsigned int ExtendCache(int file,off_t length)
     return(True);
   if (lseek(file,length-1,SEEK_SET) < 0)
     return(False);
-  if (write(file,"",1) != 1)
+  if (write(file,(void *) "",1) != 1)
     return(False);
   return(True);
 }
