@@ -8,10 +8,14 @@
 extern "C" {
 #endif
 
+/*
+  Typedef declarations.
+*/
 typedef enum
 {
   UndefinedResource,
   MemoryResource,
+  CacheResource,
   DiskResource,
   MemoryMappedResource
 } ResourceType;
@@ -20,6 +24,7 @@ typedef struct _ResourceInfo
 {
   off_t
     memory,
+    cache,
     disk,
     memory_map;
 } ResourceInfo;
@@ -27,13 +32,16 @@ typedef struct _ResourceInfo
 /*
   Method declarations.
 */
-extern MagickExport ResourceInfo
-  GetResourceLimits(const ResourceInfo *);
+extern MagickExport off_t
+  GetMagickResources(const ResourceType);
+
+extern MagickExport unsigned int
+  AcquireMagickResources(const ResourceType,const off_t);
 
 extern MagickExport void
-  AcquireResources(const ResourceType,const off_t),
-  LiberateResources(const ResourceType,const off_t),
-  SetResourceLimits(const ResourceInfo *);
+  DestroyMagickResources(void),
+  LiberateMagickResources(const ResourceType,const off_t),
+  SetMagickResources(const ResourceType,const off_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

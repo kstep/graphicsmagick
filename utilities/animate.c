@@ -496,17 +496,10 @@ int main(int argc,char **argv)
           {
             if (*option == '-')
               {
-                unsigned long
-                  maximum,
-                  minimum;
-
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   MagickFatalError(OptionFatalError,"Missing threshold",option);
-                minimum=(~0);
-                maximum=(~0);
-                (void) sscanf(argv[i],"%lux%lu",&minimum,&maximum);
-                SetCacheThreshold(minimum,maximum);
+                SetCacheThreshold(atol(argv[i]));
 							}
             break;
           }

@@ -15,7 +15,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
-%                                October 2002                                 %
+%                               September 2002                                %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
@@ -56,3 +56,228 @@
 #include "list.h"
 #include "resource.h"
 #include "utility.h"
+
+/*
+  Global declarations.
+*/
+static ResourceInfo
+  resource_info = { ~0, ~0, ~0, ~0};
+
+static SemaphoreInfo
+  *resource_semaphore = (SemaphoreInfo *) NULL;
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A c q u i r e M a g i c k R e s o u r c e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireMagickResource() acquires resources for the specified type.  True
+%  is returned if the resource is available otherwise False.
+%
+%  The format of the AcquireMagickResource() method is:
+%
+%      unsigned int AcquireMagickResource(const ResourceType type,
+%        const off_t size)
+%
+%  A description of each parameter follows:
+%
+%    o type: The type of resource.
+%
+%    o size: The number of bytes needed from for this resource.
+%
+%
+*/
+MagickExport unsigned int AcquireMagickResources(const ResourceType type,
+  const off_t size)
+{
+  unsigned int
+    status;
+
+  AcquireSemaphoreInfo(&resource_semaphore);
+  switch (type)
+  {
+    case MemoryResource:
+    {
+      resource_info.memory-=size;
+      status=resource_info.memory > 0;
+      break;
+    }
+    case CacheResource:
+    {
+      resource_info.cache-=size;
+      status=resource_info.cache > 0;
+      break;
+    }
+    case DiskResource:
+    {
+      resource_info.disk-=size;
+      status=resource_info.disk > 0;
+      break;
+    }
+    case MemoryMappedResource:
+    {
+      resource_info.memory_map-=size;
+      status=resource_info.memory_map > 0;
+      break;
+    }
+		default:
+		{
+		  status=False;
+		  break;
+		}
+  }
+  LiberateSemaphoreInfo(&resource_semaphore);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   D e s t r o y M a g i c k R e s o u r c e s                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyMagickResources() destroys the resource environment.
+%
+%  The format of the DestroyMagickResources() method is:
+%
+%      DestroyMagickResources(void)
+%
+%
+*/
+MagickExport void DestroyMagickResources(void)
+{
+  AcquireSemaphoreInfo(&resource_semaphore);
+  DestroySemaphoreInfo(&resource_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t M a g i c k R e s o u r c e s                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickResources() returns the available size of the specified resource.
+%
+%  The format of the GetMagickResources() method is:
+%
+%      ResourceInfo GetMagickResources(const ResourceType type)
+%
+%  A description of each parameter follows:
+%
+%    o type: The type of resource.
+%
+%
+%
+*/
+MagickExport off_t GetMagickResources(const ResourceType type)
+{
+  off_t
+    size;
+
+  AcquireSemaphoreInfo(&resource_semaphore);
+  switch (type)
+  {
+    case MemoryResource: size=resource_info.memory; break;
+    case CacheResource: size=resource_info.cache; break;
+    case DiskResource: size=resource_info.disk; break;
+    case MemoryMappedResource: size=resource_info.memory_map; break;
+		default: break;
+  }
+  LiberateSemaphoreInfo(&resource_semaphore);
+  return(size);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L i b e r a t e M a g i c k R e s o u r c e                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  LiberateMagickResource() returns resources for the specified type.
+%
+%  The format of the LiberateMagickResource() method is:
+%
+%      void LiberateMagickResource(const ResourceType type,const off_t size)
+%
+%  A description of each parameter follows:
+%
+%    o type: The type of resource.
+%
+%    o size: The size of the resource.
+%
+%
+*/
+MagickExport void LiberateMagickResources(const ResourceType type,
+  const off_t size)
+{
+  LiberateSemaphoreInfo(&resource_semaphore);
+  switch (type)
+  {
+    case MemoryResource: resource_info.memory+=size; break;
+    case CacheResource: resource_info.cache+=size; break;
+    case DiskResource: resource_info.disk+=size; break;
+    case MemoryMappedResource: resource_info.memory_map+=size; break;
+		default: break;
+  }
+  LiberateSemaphoreInfo(&resource_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t M a g i c k R e s o u r c e s                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetMagickResources() sets the limit for a particular resource.
+%
+%  The format of the SetMagickResources() method is:
+%
+%      void SetMagickResources(const ResourceType type,const off_t limit)
+%
+%  A description of each parameter follows:
+%
+%    o type: The type of resource.
+%
+%    o limit: The maximum limit for the resource (in megabytes).
+%
+%
+*/
+MagickExport void SetMagickResources(const ResourceType type,const off_t limit)
+{
+  AcquireSemaphoreInfo(&resource_semaphore);
+  switch (type)
+  {
+    case MemoryResource: resource_info.memory=1024*1024*limit; break;
+    case CacheResource: resource_info.cache=1024*1024*limit; break;
+    case DiskResource: resource_info.disk=1024*1024*limit; break;
+    case MemoryMappedResource: resource_info.memory_map=1024*1024*limit; break;
+		default: break;
+  }
+  LiberateSemaphoreInfo(&resource_semaphore);
+}

@@ -455,18 +455,11 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           {
             if (*option == '-')
               {
-                unsigned long
-                  maximum,
-                  minimum;
-
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowCompositeException(OptionError,"Missing threshold",
                     option);
-                minimum=(~0);
-                maximum=(~0);
-                (void) sscanf(argv[i],"%lux%lu",&minimum,&maximum);
-                SetCacheThreshold(minimum,maximum);
+                SetCacheThreshold(atol(argv[i]));
               }
             break;
           }
@@ -1630,17 +1623,10 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           {
             if (*option == '-')
               {
-                unsigned long
-                  maximum,
-                  minimum;
-
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowConvertException(OptionError,"Missing threshold",option);
-                minimum=(~0);
-                maximum=(~0);
-                (void) sscanf(argv[i],"%lux%lu",&minimum,&maximum);
-                SetCacheThreshold(minimum,maximum);
+                SetCacheThreshold(atol(argv[i]));
               }
             break;
           }
@@ -3290,18 +3276,11 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
           {
             if (*option == '-')
               {
-                unsigned long
-                  maximum,
-                  minimum;
-
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowIdentifyException(OptionError,"Missing threshold",
                     option);
-                minimum=(~0);
-                maximum=(~0);
-                (void) sscanf(argv[i],"%lux%lu",&minimum,&maximum);
-                SetCacheThreshold(minimum,maximum);
+                SetCacheThreshold(atol(argv[i]));
               }
             break;
           }
@@ -3746,17 +3725,10 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           {
             if (*option == '-')
               {
-                unsigned long
-                  maximum,
-                  minimum;
-
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowMogrifyException(OptionError,"Missing threshold",option);
-                minimum=(~0);
-                maximum=(~0);
-                (void) sscanf(argv[i],"%lux%lu",&minimum,&maximum);
-                SetCacheThreshold(minimum,maximum);
+                SetCacheThreshold(atol(argv[i]));
               }
             break;
           }
@@ -5369,17 +5341,10 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
           {
             if (*option == '-')
               {
-                unsigned long
-                  maximum,
-                  minimum;
-
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowMontageException(OptionError,"Missing threshold",option);
-                minimum=(~0);
-                maximum=(~0);
-                (void) sscanf(argv[i],"%lux%lu",&minimum,&maximum);
-                SetCacheThreshold(minimum,maximum);
+                SetCacheThreshold(atol(argv[i]));
               }
             break;
           }

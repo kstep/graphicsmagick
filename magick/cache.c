@@ -58,19 +58,11 @@
 #include "cache.h"
 #include "list.h"
 #include "log.h"
+#include "resource.h"
 #include "utility.h"
 #if defined(HasZLIB)
 #include "zlib.h"
 #endif
-
-/*
-  Global declarations.
-*/
-static CacheThreshold
-  cache_threshold = { ~0, ~0} ;
-
-static SemaphoreInfo
-  *cache_semaphore = (SemaphoreInfo *) NULL;
 
 /*
   Declare pixel cache interfaces.
@@ -659,31 +651,6 @@ MagickExport void ClonePixelCacheMethods(Cache clone,const Cache cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y C a c h e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method DestroyCache() destroys the cache environment.
-%
-%  The format of the DestroyCache() method is:
-%
-%      DestroyCache(void)
-%
-%
-*/
-MagickExport void DestroyCache(void)
-{
-  AcquireSemaphoreInfo(&cache_semaphore);
-  DestroySemaphoreInfo(&cache_semaphore);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   D e s t r o y C a c h e I n f o                                           %
 %                                                                             %
 %                                                                             %
@@ -754,7 +721,6 @@ MagickExport void DestroyCacheInfo(Cache cache)
     }
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&cache_info->semaphore);
-  (void) GetCacheThreshold(-cache_info->length);
   FormatString(message,"destroy %.1024s",cache_info->filename);
   LogMagickEvent(CacheEvent,message);
   LiberateMemory((void **) &cache_info);
@@ -1056,43 +1022,6 @@ MagickExport PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
       return((PixelPacket *) NULL);
     }
   return(pixels);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t C a c h e T h r e s h o l d                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetCacheThreshold() acquires memory from, or returns memory to, the
-%  cache memory pool.  The method returns the available memory in the cache
-%  pool.
-%
-%  The format of the GetCacheThreshold() method is:
-%
-%      CacheThreshold GetCacheThreshold(const off_t memory)
-%
-%  A description of each parameter follows:
-%
-%    o memory: Specifies how much memory to acquire from, or return to,
-%      the cache memory pool.
-%
-%
-*/
-MagickExport CacheThreshold GetCacheThreshold(const off_t memory)
-{
-  AcquireSemaphoreInfo(&cache_semaphore);
-  if (cache_threshold.minimum != ~0)
-    cache_threshold.minimum-=memory;
-  if (cache_threshold.maximum != ~0)
-    cache_threshold.maximum-=memory;
-  LiberateSemaphoreInfo(&cache_semaphore);
-  return(cache_threshold);
 }
 
 /*
@@ -1870,6 +1799,11 @@ static void CacheSignalHandler(int status)
 }
 #endif
 
+MagickExport void SetCacheThreshold(const off_t size)
+{
+  SetMagickResources(CacheResource,size);
+}
+
 MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
 {
   char
@@ -1898,38 +1832,12 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   if ((image->columns == 0) || (image->rows == 0))
     ThrowBinaryException(ResourceLimitError,"No pixels defined in cache",
       image->filename);
-  if ((GetCacheThreshold(0).minimum == ~0) &&
-      (GetCacheThreshold(0).maximum == ~0))
-    {
-      char
-        *threshold;
-
-      /*
-        Set cache memory threshold.
-      */
-#if defined(PixelCacheThreshold)
-      SetCacheThreshold(PixelCacheThreshold,~0);
-#endif
-      threshold=getenv("MAGICK_CACHE_THRESHOLD");
-      if (threshold != (char *) NULL)
-        {
-          unsigned long
-            maximum,
-            minimum;
-
-          minimum=(~0);
-          maximum=(~0);
-          (void) sscanf(threshold,"%lux%lu",&minimum,&maximum);
-          SetCacheThreshold(minimum,maximum);
-        }
-    }
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class != UndefinedClass)
     {
       if (cache_info->type == MemoryMappedCache)
         (void) UnmapBlob(cache_info->pixels,cache_info->length);
-      (void) GetCacheThreshold(-cache_info->length);
     }
   FormatString(cache_info->filename,"%.1024s[%ld]",image->filename,
     GetImageListIndex(image));
@@ -1965,9 +1873,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   cache_info->length=offset;
   if (cache_info->length == (size_t) cache_info->length)
     if ((cache_info->type == MemoryCache) ||
-        ((cache_info->type == UndefinedCache) &&
-         ((GetCacheThreshold(0).minimum == ~0) ||
-          (cache_info->length <= GetCacheThreshold(0).minimum))))
+        (cache_info->type == UndefinedCache))
       {
         if (cache_info->storage_class == UndefinedClass)
           pixels=(PixelPacket *) AcquireMemory(cache_info->length);
@@ -1992,7 +1898,6 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
             if ((cache_info->storage_class == PseudoClass) ||
                 (cache_info->colorspace == CMYKColorspace))
               cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
-            (void) GetCacheThreshold(cache_info->length);
             FormatSize(cache_info->length,format);
             FormatString(message,"open %.1024s (%.1024s)",cache_info->filename,
               format);
@@ -2003,10 +1908,6 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   /*
     Create pixel cache on disk.
   */
-  if ((GetCacheThreshold(0).maximum != ~0) &&
-      (cache_info->length > GetCacheThreshold(0).maximum))
-    ThrowBinaryException(ResourceLimitError,"Cache resources exhausted",
-      image->filename);
   if (*cache_info->cache_filename == '\0')
     TemporaryFilename(cache_info->cache_filename);
   switch (mode)
@@ -2063,7 +1964,6 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
         }
     }
   (void) close(file);
-  (void) GetCacheThreshold(cache_info->length);
 #if defined(SIGBUS)
   (void) signal(SIGBUS,CacheSignalHandler);
 #endif
@@ -2533,42 +2433,6 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
   region.width=columns;
   region.height=rows;
   return(SetNexus(image,&region,nexus));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   S e t C a c h e T h e s h o l d                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method SetCacheThreshold() sets the amount of free memory allocated for the
-%  pixel cache.  Once this threshold is exceeded, all subsequent pixels cache
-%  operations are to/from disk.
-%
-%  The format of the SetCacheThreshold() method is:
-%
-%      void SetCacheThreshold(const size_t minimum,const size_t maximum)
-%
-%  A description of each parameter follows:
-%
-%      cache.  Once this threshold is exceeded the pixels are cached to disk.
-%
-%    o threshold: The number of megabytes of memory available to the pixel
-%      cache.
-%
-%
-*/
-MagickExport void SetCacheThreshold(const size_t minimum,const size_t maximum)
-{
-  AcquireSemaphoreInfo(&cache_semaphore);
-  cache_threshold.minimum=(off_t) ((double) minimum*1024*1024-1);
-  cache_threshold.maximum=(off_t) ((double) maximum*1024*1024-1);
-  LiberateSemaphoreInfo(&cache_semaphore);
 }
 
 /*

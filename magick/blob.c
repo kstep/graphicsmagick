@@ -1271,9 +1271,6 @@ MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
   */
   if (file == -1)
     return((void *) NULL);
-  if ((GetCacheThreshold(0).minimum != ~0) &&
-      (length > (2*GetCacheThreshold(0).minimum)))
-    return((void *) NULL);
   switch (mode)
   {
     case ReadMode:
@@ -1296,7 +1293,6 @@ MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
   }
   if (map == (void *) MAP_FAILED)
     return((void *) NULL);
-  (void) GetCacheThreshold(length);
   return((void *) map);
 #else
   return((void *) NULL);
@@ -2317,7 +2313,6 @@ MagickExport unsigned int UnmapBlob(void *map,const size_t length)
     status;
 
   status=munmap(map,length);
-  (void) GetCacheThreshold((off_t) -length);
   return(status == 0);
 #else
   return(False);

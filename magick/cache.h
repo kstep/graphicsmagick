@@ -174,22 +174,12 @@ typedef struct _CacheInfo
   unsigned long
     signature;
 } CacheInfo;
-
-typedef struct _CacheThreshold
-{
-  off_t
-    minimum,
-    maximum;
-} CacheThreshold;
 
 /*
   MagickExported interfaces.
 */
 extern MagickExport Cache
   ReferenceCache(Cache);
-
-extern MagickExport CacheThreshold
-  GetCacheThreshold(const off_t);
 
 extern MagickExport ClassType
   GetCacheClass(const Cache);
@@ -230,7 +220,7 @@ extern MagickExport void
   DestroyCacheInfo(Cache),
   DestroyCacheNexus(Cache,const unsigned long),
   GetCacheInfo(Cache *),
-  SetCacheThreshold(const size_t,const size_t),
+  SetCacheThreshold(const off_t),
   SetImageVirtualPixelMethod(const Image *,const VirtualPixelMethod),
   SetPixelCacheMethods(Cache,AcquirePixelHandler,GetPixelHandler,
     SetPixelHandler,SyncPixelHandler,GetPixelsFromHandler,GetIndexesFromHandler,
