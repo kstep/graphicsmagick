@@ -50,6 +50,17 @@ typedef unsigned char Quantum;
 /*
   Typedef declarations.
 */
+typedef struct _AffineInfo
+{
+  double
+    sx,
+    rx,
+    ry,
+    sy,
+    tx,
+    ty;
+} AffineInfo;
+
 typedef struct _Ascii85Info
 {
   int
@@ -112,8 +123,10 @@ typedef struct _AnnotateInfo
 
   double
     pointsize,
-    degrees,
-    affine[6];
+    degrees;
+
+  AffineInfo
+    affine;
 
   PixelPacket
     fill,
@@ -482,56 +495,6 @@ typedef struct _Image
     signature;
 } Image;
 
-typedef struct _DrawInfo
-{
-  char
-    *primitive;
-
-  double
-    affine[6],
-    angle;
-
-  GravityType
-    gravity;
-
-  PixelPacket
-    fill;
-
-  Image
-    *tile;
-
-  PixelPacket
-    stroke;
-
-  double
-    linewidth;
-
-  unsigned int
-    stroke_antialias;
-
-  DecorationType
-    decorate;
-
-  char
-    *font;
-
-  unsigned int
-    text_antialias;
-
-  double
-    pointsize;
-
-  PixelPacket
-    box,
-    border_color;
-
-  unsigned int
-    verbose;
-
-  unsigned long
-    signature;
-} DrawInfo;
-
 typedef struct _ImageInfo
 {
   /*
@@ -592,8 +555,10 @@ typedef struct _ImageInfo
     antialias;
 
   double
-    pointsize,
-    affine[6];
+    pointsize;
+
+  AffineInfo
+    affine;
 
   double
     fuzz;
@@ -719,9 +684,6 @@ extern MagickExport char
   *GetImageMagick(const unsigned char *),
   *GetMagickConfigurePath(const char *);
 
-extern MagickExport DrawInfo
-  *CloneDrawInfo(const ImageInfo *,const DrawInfo *);
-
 extern MagickExport Image
   *AddNoiseImage(Image *,const NoiseType,ExceptionInfo *),
   *AllocateImage(const ImageInfo *),
@@ -812,14 +774,11 @@ extern MagickExport unsigned int
   AllocateImageColormap(Image *,const unsigned int),
   AnimateImages(const ImageInfo *image_info,Image *image),
   AnnotateImage(Image *,const AnnotateInfo *),
-  ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const int x,
-    const int y,const PaintMethod),
   CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),
   ContrastImage(Image *,const unsigned int),
   DispatchImage(Image *,const int,const int,const unsigned int,
     const unsigned int,const char *,const StorageType,void *),
   DisplayImages(const ImageInfo *image_info,Image *image),
-  DrawImage(Image *,const DrawInfo *),
   EqualizeImage(Image *),
   GammaImage(Image *,const char *),
   GetNumberScenes(const Image *),
@@ -831,8 +790,6 @@ extern MagickExport unsigned int
   IsSubimage(const char *,const unsigned int),
   IsTainted(const Image *),
   LayerImage(Image *,const LayerType),
-  MatteFloodfillImage(Image *,const PixelPacket,const unsigned int,const int x,
-    const int y,const PaintMethod),
   ModulateImage(Image *,const char *),
   MogrifyImage(const ImageInfo *,const int,char **,Image **),
   MogrifyImages(const ImageInfo *,const int,char **,Image **),
@@ -868,7 +825,6 @@ extern MagickExport void
   CycleColormapImage(Image *,const int),
   DescribeImage(Image *,FILE *,const unsigned int),
   DestroyAnnotateInfo(AnnotateInfo *),
-  DestroyDrawInfo(DrawInfo *),
   DestroyImage(Image *),
   DestroyImageInfo(ImageInfo *),
   (*DestroyImagePixels)(Image *),
@@ -876,7 +832,6 @@ extern MagickExport void
   DestroyMagickInfo(void),
   DestroyMontageInfo(MontageInfo *),
   GetAnnotateInfo(const ImageInfo *,AnnotateInfo *),
-  GetDrawInfo(const ImageInfo *,DrawInfo *),
   GetImageInfo(ImageInfo *),
   GetMontageInfo(const ImageInfo *,MontageInfo *),
   GetPageInfo(RectangleInfo *),

@@ -737,6 +737,24 @@ namespace Magick
     // Number of colors in the image
     unsigned long   totalColors ( void );
 
+    // Origin of coordinate system to use when annotating with text or drawing
+    void            transformOrigin ( double x_, double y_ );
+
+    // Rotation to use when annotating with text or drawing
+    void            transformRotation ( double angle_ );
+
+    // Reset transformation parameters to default
+    void            transformReset ( void );
+
+    // Scale to use when annotating with text or drawing
+    void            transformScale ( double sx_, double sy_ );
+
+    // Skew to use in X axis when annotating with text or drawing
+    void            transformSkewX ( double skewx_ );
+
+    // Skew to use in Y axis when annotating with text or drawing
+    void            transformSkewY ( double skewy_ );
+
     // Image type
     ImageType       type ( void ) const;
 

@@ -1029,6 +1029,16 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleNCompare("median",option+1,3) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing radius",option);
+                }
+              break;
+            }
           if (LocaleNCompare("monochrome",option+1,4) == 0)
             {
               image_info->monochrome=(*option == '-');

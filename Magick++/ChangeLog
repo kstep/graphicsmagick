@@ -1,3 +1,64 @@
+2000-10-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Drawable.h (DrawablePopGraphicContext): New class
+ 	to pop graphic context.
+	(DrawablePushGraphicContext): New class to push graphic context.
+
+	* lib/Drawable.cpp (DrawableStrokeAntialias): New class to set
+ 	stroke antialiasing.
+	(DrawableTextAntialias): New class to set text antialiasing.
+
+2000-10-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (transformOrigin): New method to set origin of
+ 	coordinate system for use when annotating with text or drawing
+	(transformRotation): New method to set rotation for use when
+ 	annotating with text or drawing
+	(transformScale): New method to set scale for use when annotating
+ 	with text or drawing.
+	(transformSkewX): New method to set skew for use in X axis when
+ 	annotating with text or drawing.
+	(transformSkewY): New method to set skew for use in Y axis when
+ 	annotating with text or drawing.
+	(transformReset): New method to reset transformation to default.
+
+	* lib/Drawable.cpp (DrawablePath): New class for drawing SVG-style
+ 	vector paths.
+	(PathArcArgs): New class. Argument for PathArcArgs & PathArcAbs.
+	(PathArcAbs): New class. Draw arc using absolute coordinates.
+	(PathArcRel): New class. Draw arc using relative coordinates.
+	(PathClosePath): New class. Close drawing path.
+	(PathCurvetoArgs): New class. Argument class for PathCurvetoAbs &
+ 	PathCurvetoRel.
+	(PathCurvetoAbs): New class. Cubic bezier, absolute coordinates
+	(PathCurvetoRel): New class. Cubic bezier, relative coordinates
+	(PathSmoothCurvetoAbs): New class. Cubic bezier, absolute
+ 	coordinates
+	(PathSmoothCurvetoRel): New class. Cubic bezier, relative
+ 	coordinates
+	(PathQuadraticCurvetoArgs): New class. Argument class for
+ 	PathQuadraticCurvetoAbs and PathQuadraticCurvetoRel.
+	(PathQuadraticCurvetoAbs): New class. Quadratic bezier, absolute
+ 	coordinates
+	(PathQuadraticCurvetoRel): New class. Quadratic bezier, relative
+ 	coordinates
+	(PathSmoothQuadraticCurvetoAbs): New class. Quadratic bezier,
+ 	absolute coordinates
+	(PathSmoothQuadraticCurvetoRel): New class. Quadratic bezier,
+ 	relative coordinates
+	(PathLinetoAbs): New class. Line to, absolute coordinates
+	(PathLinetoRel): New class. Line to, relative coordinates
+	(PathLinetoHorizontalAbs): New class. Horizontal lineto, absolute
+ 	coordinates
+	(PathLinetoHorizontalRel): New class. Horizontal lineto, relative
+ 	coordinates
+	(PathLinetoVerticalAbs): New class. Veritical lineto, absolute
+ 	coordinates.
+	(PathLinetoVerticalRel): New class. Vertical lineto, relative
+ 	coordinates.
+	(PathMovetoAbs): New class. Moveto, absolute coordinates
+	(PathMovetoRel): New class. Moveto, relative coordinates
+	
 2000-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableSkewX): New object to apply skew in X direction.

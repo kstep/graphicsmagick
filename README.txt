@@ -1,6 +1,5 @@
   "I swear by my life and my love of it that I will never live
-   for the sake of another man, nor ask another man to live for
-   mine"
+   for the sake of another man, nor ask another man to live for mine"
 
                     John Galt in "Atlas Shrugged", by Ayn Rand
 
@@ -17,15 +16,15 @@ AUTHOR
     Landenberg, PA  19350
     USA
 
-  I'm also interested in receiving coins or stamps from around the world for
-  my collection.
+  I'm also interested in receiving coins or stamps from around the
+  world for my collection.
 
 
 AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.2.4.tar.gz
+    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.2.5.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -38,8 +37,8 @@ AVAILABILITY
   I want ImageMagick to be of high quality, so if you encounter a
   problem I will investigate.  However, be sure you are using the most
   recent version from ftp://ftp.wizards.dupont.com/pub/ImageMagick
-  before submitting any bug reports or suggestions.  Report any problems
-  via the web-based reporting facility at
+  before submitting any bug reports or suggestions.  Report any
+  problems via the web-based reporting facility at
   http://www.simplesystems.org/ImageMagick/bugs.html.
 
 
@@ -72,8 +71,8 @@ UNIX/Cygwin COMPILATION
 
   Type:
 
-    gzip -dc ImageMagick-5.2.4.tar.gz | tar xvf -
-    cd ImageMagick-5.2.4
+    gzip -dc ImageMagick-5.2.5.tar.gz | tar xvf -
+    cd ImageMagick-5.2.5
 
   If you do not have gunzip(1), it is available as
   ftp.gnu.org:pub/gnu/gzip-1.2.4.shar.
@@ -86,13 +85,12 @@ UNIX/Cygwin COMPILATION
       ./configure
 
   and watch the configure script output to verify that it finds
-  everything that you think it should. If it does not, then adjust
-  your environment so that it does.
+  everything that you think it should. If it does not, then adjust your
+  environment so that it does.
 
-  If you are not happy with configure's choice of compiler,
-  compilation flags, or libraries, you can give `configure' initial
-  values for variables by specifying them on the configure command
-  line, e.g.:
+  If you are not happy with configure's choice of compiler, compilation
+  flags, or libraries, you can give `configure' initial values for
+  variables by specifying them on the configure command line, e.g.:
 
       ./configure CC=c89 CFLAGS=-O2 LIBS=-lposix
 
@@ -115,12 +113,12 @@ UNIX/Cygwin COMPILATION
 
   By default, `make install' will install the package's files in
   `/usr/local/bin', `/usr/local/man', etc.  You can specify an
-  installation prefix other than `/usr/local' by giving `configure'
-  the option `--prefix=PATH'.
+  installation prefix other than `/usr/local' by giving `configure' the
+  option `--prefix=PATH'.
 
   Configure can usually find the X include and library files
-  automatically, but if it doesn't, you can use the `configure'
-  options `--x-includes=DIR' and `--x-libraries=DIR' to specify their
+  automatically, but if it doesn't, you can use the `configure' options
+  `--x-includes=DIR' and `--x-libraries=DIR' to specify their
   locations.
 
   The configure script provides a number of ImageMagick specific
@@ -153,23 +151,23 @@ UNIX/Cygwin COMPILATION
     --without-zlib          disable ZLIB support
     --with-x                use the X Window System
 
-  ImageMagick options represent either features to be enabled, disabled,
-  or packages to be included in the build.  When a feature is enabled
-  (via --enable-something), it enables code already present in
+  ImageMagick options represent either features to be enabled,
+  disabled, or packages to be included in the build.  When a feature is
+  enabled (via --enable-something), it enables code already present in
   ImageMagick.  When a package is enabled (via --with-something), the
-  configure script will search for it, and if is is properly
-  installed and ready to use (headers and built libraries are found
-  by compiler) it will be included in the build.  The configure script
-  is delivered with all features disabled and all packages enabled. In
-  general, the only reason to disable a package is if a package exists
-  but it is unsuitable for the build (perhaps an old version or not
-  compiled with the right compilation flags).
+  configure script will search for it, and if is is properly installed
+  and ready to use (headers and built libraries are found by compiler)
+  it will be included in the build.  The configure script is delivered
+  with all features disabled and all packages enabled. In general, the
+  only reason to disable a package is if a package exists but it is
+  unsuitable for the build (perhaps an old version or not compiled with
+  the right compilation flags).
 
   Several configure options require special note:
 
     o --enable-shared: the shared libraries are built. Shared
-      libraries are valuable because they are *shared* across more
-      than one invocation of an ImageMagick or PerlMagick client. In
+      libraries are valuable because they are *shared* across more than
+      one invocation of an ImageMagick or PerlMagick client. In
       addition, the clients take much less disk space and shared
       libraries are required in order for PERL to dynamically load the
       PerlMagick extension.
@@ -188,8 +186,8 @@ UNIX/Cygwin COMPILATION
       are not built.  If you are building shared libraries, there is
       little value to building static libraries. Reasons to build
       static libraries include: 1) they can be easier to debug; 2) the
-      clients do not have external dependencies (i.e. libMagick.so);
-      3) building PIC versions of the delegate libraries may take
+      clients do not have external dependencies (i.e. libMagick.so); 3)
+      building PIC versions of the delegate libraries may take
       additional expertise and effort; 4) you are unable to build
       shared libraries.
 
@@ -208,35 +206,34 @@ UNIX/Cygwin COMPILATION
       will be much larger than expected.
 
     o --enable-16bit-pixel: By default ImageMagick represents images
-      internally using an eight-bit pixel quantum (red, green, blue, and
-      alpha component).  Scientific applications, or other specialized
-      applications, which must ensure that the full dynamic range of
-      the image pixels is preserved across operations, or which must
-      process an image format that can represent deep pixels, may want
-      to enable support for sixteen-bit pixel quantums. When this option
-      is specified, the definition QuantumLeap is applied when
-      ImageMagick is built, allowing RGBA values to range from 0 to
-      65535 rather than 0 to 255.  Enabling this option will cause
-      ImageMagick to run about 30% slower.
+      internally using an eight-bit pixel quantum (red, green, blue,
+      and alpha component).  Scientific applications, or other
+      specialized applications, which must ensure that the full dynamic
+      range of the image pixels is preserved across operations, or
+      which must process an image format that can represent deep
+      pixels, may want to enable support for sixteen-bit pixel
+      quantums. When this option is specified, the definition
+      QuantumLeap is applied when ImageMagick is built, allowing RGBA
+      values to range from 0 to 65535 rather than 0 to 255.  Enabling
+      this option will cause ImageMagick to run about 30% slower.
 
     o --with-magick_plus_plus: Enable building Magick++, the C++
-      application programming interface to ImageMagick.  A suitable
-      C++ compiler is required. Specify the CXX configure variable to
+      application programming interface to ImageMagick.  A suitable C++
+      compiler is required. Specify the CXX configure variable to
       select the C++ compiler to use, and CXXFLAGS to select the
       desired compiler opimization and debug flags.
 
     o --without-frozenpaths: By default, the configure script will
       determine the location of all delegates (external programs) and
-      incorporate the full paths within the delegates.mgk file. This
-      is the default because it is assumed that the installer's
-      environment is appropriately configured and that the operation
-      of ImageMagick should not be subject to the end-user's
-      environment. However, if it is desireable to allow the end user
-      to define their own environment or possible that the end user's
-      environment does not match the installer's environment (e.g. for
-      binary distributions), --without-frozenpaths may be specified so
-      that only the delegate's name is included in the delegates.mgk
-      file.
+      incorporate the full paths within the delegates.mgk file. This is
+      the default because it is assumed that the installer's
+      environment is appropriately configured and that the operation of
+      ImageMagick should not be subject to the end-user's environment.
+      However, if it is desirable to allow the end user to define
+      their own environment or possible that the end user's environment
+      does not match the installer's environment (e.g. for binary
+      distributions), --without-frozenpaths may be specified so that
+      only the delegate's name is included in the delegates.mgk file.
 
     o --with-threads: By default, the ImageMagick library is compiled
       without multi-thread support.  This is fine for the utilities,
@@ -252,9 +249,9 @@ UNIX/Cygwin COMPILATION
       image pixel data in memory than the cache threshold setting,
       additional images are cached on disk. Since memory is much faster
       than disk, it is usually better to use memory rather than disk
-      for the pixel cache. On large memory machines, the cache threshold
-      may be increased to a larger size than the default of 80MB. Small
-      memory machines may want to decrease the threshold.
+      for the pixel cache. On large memory machines, the cache
+      threshold may be increased to a larger size than the default of
+      80MB. Small memory machines may want to decrease the threshold.
 
     o --without-largefiles: By default, ImageMagick is compiled with
       support for large (> 2GB on a 32-bit CPU) files if the operating
@@ -262,8 +259,8 @@ UNIX/Cygwin COMPILATION
       ImageMagick library must then also include support for large
       files. By disabling support for large files via
       --without-largefiles, dependent applications do not require
-      special compilation options for large files in order to use
-      the library.
+      special compilation options for large files in order to use the
+      library.
 
     o --without-perl: By default, PerlMagick is conveniently compiled
       and installed in one step. When --without-perl is specified, you
@@ -272,22 +269,22 @@ UNIX/Cygwin COMPILATION
       PerlMagick is configured even if --without-perl is specified. If
       --enable-shared is not specified, a new PERL interpreter
       (PerlMagick) is built which is statically linked against the
-      PerlMagick extension. This new interpreter is installed
-      alongside your existing PERL interpreter. If --enable-shared is
-      specified, the PerlMagick extension is built as a dynamically
-      loadable object which is loaded into your current PERL
-      interpreter at run-time. Use of dynamically-loaded extensions is
-      preferable over statically linked extensions so --enable-shared
-      should be specified if possible. If the argument
-      --with-perl=/path/to/perl is supplied, then /path/to/perl will
-      be taken as the PERL interpreter to use.
+      PerlMagick extension. This new interpreter is installed alongside
+      your existing PERL interpreter. If --enable-shared is specified,
+      the PerlMagick extension is built as a dynamically loadable
+      object which is loaded into your current PERL interpreter at
+      run-time. Use of dynamically-loaded extensions is preferable over
+      statically linked extensions so --enable-shared should be
+      specified if possible. If the argument --with-perl=/path/to/perl
+      is supplied, then /path/to/perl will be taken as the PERL
+      interpreter to use.
 
     o --without-x: By default, ImageMagick will use X11 libraries if
       they are available. When --without-x is specified, use of X11 is
-      disabled. The display, animate, and import programs are not
-      built or installed. The remaining programs have reduced
-      functionality such as no access to X11 fonts (consider using
-      Postscript or TrueType fonts instead).
+      disabled. The display, animate, and import programs are not built
+      or installed. The remaining programs have reduced functionality
+      such as no access to X11 fonts (consider using Postscript or
+      TrueType fonts instead).
 
   Building under Cygwin
 
@@ -302,48 +299,47 @@ UNIX/Cygwin COMPILATION
 
   Dealing with configuration failures:
 
-    While configure is designed to ease installation of ImageMagick,
-    it often discovers problems that would otherwise be encountered
-    later when compiling ImageMagick. The configure script tests for
-    headers and libraries by executing the compiler (CC) with the
-    specified compilation flags (CFLAGS), pre-processor flags
-    (CPPFLAGS), and linker flags (LDFLAGS). Any errors are logged to
-    the file 'config.log'. If configure fails to discover a header or
-    library please review this log file to determine why, however,
-    please be aware that *errors in the config.log are normal* because
-    configure works by trying something and seeing if it fails. An
-    error in config.log is only a problem if the test should have
-    worked on your system.. After taking corrective action, be sure to
-    remove the 'config.cache' file before running configure so that
-    configure will re-inspect the environment rather than using cached
-    values.
+    While configure is designed to ease installation of ImageMagick, it
+    often discovers problems that would otherwise be encountered later
+    when compiling ImageMagick. The configure script tests for headers
+    and libraries by executing the compiler (CC) with the specified
+    compilation flags (CFLAGS), pre-processor flags (CPPFLAGS), and
+    linker flags (LDFLAGS). Any errors are logged to the file
+    'config.log'. If configure fails to discover a header or library
+    please review this log file to determine why, however, please be
+    aware that *errors in the config.log are normal* because configure
+    works by trying something and seeing if it fails. An error in
+    config.log is only a problem if the test should have worked on your
+    system.. After taking corrective action, be sure to remove the
+    'config.cache' file before running configure so that configure will
+    re-inspect the environment rather than using cached values.
 
-    Common causes of configure falures are: 1) a delegate header is not
+    Common causes of configure failures are: 1) a delegate header is not
     in the header include path (CPPFLAGS -I option); 2) a delegate
     library is not in the linker search/run path (LDFLAGS -L/-R
     option); 3) a delegate library is missing a function (old
     version?); 4) compilation environment is faulty.
 
     If all reasonable corrective actions have been tried and the
-    problem appears to be due to a flaw in the configure script,
-    please send a bug report to the configure script maintainer
-    (currently bfriesen@simple.dallas.tx.us). All bug reports should
-    contain the operating system type (as reported by 'uname -a') and
-    the compiler/compiler-version. A copy of the configure script
-    output and/or the config.log file may be valuable in order to find
-    the problem. If you send a config.log, please also send a script
-    of the configure output and a description of what you expected to
-    see (and why) so the failure you are observing can be identified
-    and resolved.
+    problem appears to be due to a flaw in the configure script, please
+    send a bug report to the configure script maintainer (currently
+    bfriesen@simple.dallas.tx.us). All bug reports should contain the
+    operating system type (as reported by 'uname -a') and the
+    compiler/compiler-version. A copy of the configure script output
+    and/or the config.log file may be valuable in order to find the
+    problem. If you send a config.log, please also send a script of the
+    configure output and a description of what you expected to see (and
+    why) so the failure you are observing can be identified and
+    resolved.
 
-  To confirm your build of the ImageMagick distribution was
-  successful, type:
+  To confirm your build of the ImageMagick distribution was successful,
+  type:
 
       display
 
-  If the program faults, ensure that you have not inadvertingly linked to
-  an older version of the libMagick library or used header files from
-  a different release. To ensure this is not the case type
+  If the program faults, ensure that you have not inadvertently linked
+  to an older version of the libMagick library or used header files
+  from a different release. To ensure this is not the case type
 
       cd ImageMagick/magick
       make install
@@ -363,8 +359,8 @@ UNIX/Cygwin COMPILATION
   document.
 
   Place display(1) X application defaults in
-  /usr/lib/X11/app-defaults/Display.  Use the appropriate name
-  for other clients (e.g. Animate, Montage, etc).  To execute display(1)
+  /usr/lib/X11/app-defaults/Display.  Use the appropriate name for
+  other clients (e.g. Animate, Montage, etc).  To execute display(1)
   from as a menu item of any window manager (olwm, mwm, twm, etc), use
 
       logo:Untitled
@@ -372,98 +368,101 @@ UNIX/Cygwin COMPILATION
 
 MAGICK DELEGATES
 
-  To further enhance the capabilities of ImageMagick, you may
-  want to get these programs or libraries:
+  To further enhance the capabilities of ImageMagick, you may want to
+  get these programs or libraries:
 
     o ImageMagick requires the BZLIB library from
 
-          http://sourceware.cygnus.com/bzip2/index.html
+	  http://sourceware.cygnus.com/bzip2/index.html
 
       to read and write BZip compressed MIFF images.
 
     o ImageMagick requires ralcgm from
 
-          http://www.agocg.ac.uk/train/cgm/ralcgm.htm
+	  http://www.agocg.ac.uk/train/cgm/ralcgm.htm
 
-      to read the Computer Graphics Metafile image format (may not compile
-      under linux).  You also need Ghostscript (see below).
+      to read the Computer Graphics Metafile image format (may not
+      compile under linux).  You also need Ghostscript (see below).
 
     o ImageMagick requires fig2dev from
 
-          ftp://ftp.x.org/contrib/applications/drawing_tools/transfig
+	  ftp://ftp.x.org/contrib/applications/drawing_tools/transfig
 
       to read the TransFig image format.
 
     o ImageMagick requires the FreeType software, version 1.1 or above,
       available as
 
-         http://www.freetype.org/
+	 http://www.freetype.org/
 
       to annotate with TrueType fonts.
 
     o ImageMagick requires Ghostscript software available from
 
-         http://www.cs.wisc.edu/~ghost/
+	 http://www.cs.wisc.edu/~ghost/
 
-      to read the Postscript or the Portable Document format.  It is used
-      to annotate an image when an X server is not available.  See the
-      FreeType library above for another means to annotate an image.  Note,
-      Ghostscript must support the ppmraw device (type gs -h to verify).
-      If Ghostscript is unavailable, the Display Postscript extension is
-      used to rasterize a Postscript document (assuming you define HasDPS).
-      The DPS extension is less robust than Ghostscript in that it will only
-      rasterize one page of a multi-page document.
+      to read the Postscript or the Portable Document format.  It is
+      used to annotate an image when an X server is not available.  See
+      the FreeType library above for another means to annotate an
+      image.  Note, Ghostscript must support the ppmraw device (type gs
+      -h to verify).  If Ghostscript is unavailable, the Display
+      Postscript extension is used to rasterize a Postscript document
+      (assuming you define HasDPS).  The DPS extension is less robust
+      than Ghostscript in that it will only rasterize one page of a
+      multi-page document.
 
-    o ImageMagick requires the NCSA HDF library available via anonymous FTP
+    o ImageMagick requires the NCSA HDF library available via anonymous
+    FTP
       as
 
-          ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current
+	  ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current
 
       to read and write the HDF image format.
 
     o ImageMagick requires hp2xx available from
 
-          http://www.gnu.org/software/hp2xx/hp2xx.html
+	  http://www.gnu.org/software/hp2xx/hp2xx.html
 
       to read the HP-GL image format.
 
     o ImageMagick requires the LCMS library available from
 
-          http://www.abaforum.es/martim/lcms.htm
+	  http://www.abaforum.es/martim/lcms.htm
 
       to perform color management.
 
     o ImageMagick requires gnuplot available via anonymous FTP as
 
-          ftp://ftp.dartmouth.edu/pub/gnuplot/gnuplot3.5.tar.Z
+	  ftp://ftp.dartmouth.edu/pub/gnuplot/gnuplot3.5.tar.Z
 
       to read GNUPLOT plot files (with extension gplt).
 
     o ImageMagick requires html2ps available from
 
-          http://www.tdb.uu.se/~jan/html2ps-1.0b1.zip
+	  http://www.tdb.uu.se/~jan/html2ps-1.0b1.zip
 
       to read the HTML image format.
 
-    o ImageMagick requires the JBIG-Kit software available via anonymous
+    o ImageMagick requires the JBIG-Kit software available via
+    anonymous
       FTP as
 
-          ftp://ftp.informatik.uni-erlangen.de/pub/doc/ISO/JBIG/
+	  ftp://ftp.informatik.uni-erlangen.de/pub/doc/ISO/JBIG/
 
       to read the JBIG image format.
 
     o ImageMagick requires the Independent JPEG Group's software
       available via anonymous FTP as
 
-          ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
+	  ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
 
       to read the JPEG image format.
 
-      Apply this JPEG patch to Independent JPEG Group's source distribution to
-      read lossless jpeg-encoded DICOM images:
+      Apply this JPEG patch to Independent JPEG Group's source
+      distribution to read lossless jpeg-encoded DICOM images:
 
-          ftp://ftp.wizards.dupont.com/pub/ImageMagick/delegates/
-            ljpeg-6b.tar.gz
+	  ftp://ftp.wizards.dupont.com/pub/ImageMagick/delegates/
+	    ljpeg-6b.tar.gz
 
       Concerning iterative JPEG compression:  see Kinoshita and
       Yamamuro, Journal of Imaging Science and Technology, "Image
@@ -475,78 +474,78 @@ MAGICK DELEGATES
     o ImageMagick requires the MPEG utilities from the MPEG Software
       Simulation Group, which are available via anonymous FTP as
 
-          ftp://ftp.mpeg.org/pub/mpeg/mssg/mpeg2vidcodec_v12.tar.gz
+	  ftp://ftp.mpeg.org/pub/mpeg/mssg/mpeg2vidcodec_v12.tar.gz
 
       to read or write the MPEG image format.
 
     o ImageMagick requires the PNG library, version 1.0 or above, from
 
-          http://www.libpng.org/pub/png/pngcode.html
+	  http://www.libpng.org/pub/png/pngcode.html
 
       to read the PNG image format.
 
     o ImageMagick requires ra_ppm from Greg Ward's Radiance
       software available via anonymous FTP as
 
-          http://radsite.lbl.gov/radiance/HOME.html
+	  http://radsite.lbl.gov/radiance/HOME.html
 
       to read the Radiance image format (may not compile under linux).
 
     o ImageMagick requires rawtorle from the Utah Raster Toolkit
       available via anonymous FTP as
 
-          ftp://ftp.cs.utah.edu/pub/dept/OLD/pub/urt-3.1b.tar.Z
+	  ftp://ftp.cs.utah.edu/pub/dept/OLD/pub/urt-3.1b.tar.Z
 
       to write the RLE image format (may not compile under linux).
 
     o ImageMagick requires scanimage from
 
-          http://www.mostang.com/sane/
+	  http://www.mostang.com/sane/
 
       to import image from a scanner device.
 
     o ImageMagick requires Sam Leffler's TIFF software available
       via anonymous FTP as
 
-          http://www.libtiff.org/
+	  http://www.libtiff.org/
 
       to read the TIFF image format.  It in turn optionally requires
       the JPEG and ZLIB libraries.
 
     o ImageMagick requires wmftogif available from
 
-          http://www.csn.ul.ie/~caolan/docs/libwmf.html
+	  http://www.csn.ul.ie/~caolan/docs/libwmf.html
 
       to read the Windows Meta File image format.
 
     o ImageMagick requires wget available via the Web as
 
-          http://www.gnu.org/software/wget/wget.html
+	  http://www.gnu.org/software/wget/wget.html
 
       to read images specified with a World Wide Web (WWW) uniform
-      resource locator (URL). 
+      resource locator (URL).
 
     o ImageMagick requires an X server for display and animate to work
-      properly.  There is a nearly free X server available for Windows and
-      Macintosh at
+      properly.  There is a nearly free X server available for Windows
+      and Macintosh at
 
-        http://www.microimages.com/freestuf/mix/
+	http://www.microimages.com/freestuf/mix/
 
     o ImageMagick requires libxml available from
 
-          http://xmlsoft.org/
+	  http://xmlsoft.org/
 
       to read the SVG image format.
 
     o ImageMagick requires the ZLIB library from
 
-          http://ftp.freesoftware.com/pub/infozip/zlib/
+	  http://ftp.freesoftware.com/pub/infozip/zlib/
 
       to read or write the PNG or Zip compressed MIFF images.
 
     o ImageMagick requires SOCKS version 5 available via the Web at
 
-          http://www.socks.nec.com/
+	  http://www.socks.nec.com/
 
       in order for 'xtp' to work across a SOCKS5-based firewall. In
       particular, 'xtp' makes use of SOCKS5 'rftp' as an external
@@ -554,8 +553,8 @@ MAGICK DELEGATES
       lookups via the firewall rather than the internal DNS server.
 
     o ImageMagick requires a background texture for the TILE
-      format and for the -texture option of montage(1).  You can
-      use your own or get samples from
+      format and for the -texture option of montage(1).  You can use
+      your own or get samples from
 
           http://the-tech.mit.edu/KPT/
 
@@ -568,10 +567,8 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-5.2.4.zip
-      set default [.imagemagick]
-      @make
-      set display/create/node=node_name::
+      unzip ImageMagick-5.2.5.zip set default [.imagemagick] @make set
+      display/create/node=node_name::
 
   where node_name is the DECNET X server to contact.
 
@@ -579,16 +576,17 @@ VMS COMPILATION
 
       display
 
-  Alternatively, get a zipped distribution (with JPEG, PNG, TIFF, TTF) from
+  Alternatively, get a zipped distribution (with JPEG, PNG, TIFF, TTF)
+  from
 
-      ftp://ftp.wizards.dupont.com/pub/ImageMagick/vms/ImageMagick-5.2.4.zip
+      ftp://ftp.wizards.dupont.com/pub/ImageMagick/vms/ImageMagick-5.2.5.zip
 
   The VMS JPEG, PNG, TIFF, and TTF  source libraries are available on
   axp.psl.ku.dk in [anonymous.decwindows.lib].
 
-  Thanks to pmoreau@cenaath.cena.dgac.fr for supplying
-  invaluable help as well as the VMS versions of the JPEG, PNG, TTF, and
-  TIFF libraries.
+  Thanks to pmoreau@cenaath.cena.dgac.fr for supplying invaluable help
+  as well as the VMS versions of the JPEG, PNG, TTF, and TIFF
+  libraries.
 
 
 Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
@@ -599,7 +597,7 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
   is a "configure" program that must be built and run that creates an
   environment that meets your particular needs.
 
-  The issue with the Visual C++ working environement is that there are
+  The issue with the Visual C++ working environment is that there are
   a fairly large number of mutually exclusive options that must all be
   used in a coherent manner, or problems result.
 
@@ -615,7 +613,7 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
     3) Static Multi-threaded runtimes
     4) Static Multi-threaded DLL runtimes
 
-  In addition to these runtimes, the VisualMagick build environement
+  In addition to these runtimes, the VisualMagick build environment
   allows you to select whether to include the X11 libraries in the
   build or use the X11 "stubs". The assumption is that most Win32 user
   could care less about X11 support, so we stub out all the X11
@@ -681,7 +679,7 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
     "Include all demo and test programs"
 
   In addition, there is another related checkbox (checked by default)
-  that causes all generate project files to be creatted standalone so
+  that causes all generate project files to be created standalone so
   that they can be copied to other areas of you system.
 
   This is the checkbox:

@@ -2553,6 +2553,9 @@ static const DicomInfo
     { 0x6000, 0x3000, "OW", "Overlay Data" },
     { 0x6000, 0x4000, "LT", "Overlay Comments" },
     { 0x6001, 0x0000, "UN", "?" },
+    { 0x6001, 0x0010, "LO", "?" },
+    { 0x6001, 0x1010, "xs", "?" },
+    { 0x6001, 0x1030, "xs", "?" },
     { 0x6021, 0x0000, "xs", "?" },
     { 0x6021, 0x0010, "xs", "?" },
     { 0x7001, 0x0010, "LT", "Dummy" },
@@ -2798,7 +2801,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     else
       {
         if (strcmp(implicit_vr,"xs") != 0)
-          (void) SeekBlob(image,(off_t) -2,SEEK_CUR);
+          {
+            (void) SeekBlob(image,(off_t) -2,SEEK_CUR);
+            quantum=4;
+          }
         else
           if ((strcmp(explicit_vr,"SS") == 0) ||
               (strcmp(explicit_vr,"US") == 0))
@@ -2845,8 +2851,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         else
           if ((strcmp(implicit_vr,"UL") == 0) ||
               (strcmp(implicit_vr,"FD") == 0) ||
-              (strcmp(implicit_vr,"SL") == 0) ||
-              (strcmp(implicit_vr,"FL") == 0))
+              (strcmp(implicit_vr,"SL") == 0))
             quantum=4;
           else
             if (strcmp(implicit_vr,"xs") != 0)
@@ -2855,7 +2860,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 length=datum;
               }
             else
-              if ((strcmp(explicit_vr,"SS") == 0) ||
+              if ((strcmp(implicit_vr,"FL") == 0) ||
+                  (strcmp(explicit_vr,"SS") == 0) ||
                   (strcmp(explicit_vr,"US") == 0))
                 quantum=2;
               else

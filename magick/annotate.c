@@ -191,8 +191,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
   image_info->font=AllocateString(annotate_info->font);
   image_info->density=AllocateString(annotate_info->density);
   image_info->pointsize=annotate_info->pointsize;
-  for (i=0; i < 6; i++)
-    image_info->affine[i]=annotate_info->affine[i];
+  image_info->affine=annotate_info->affine;
   image_info->antialias=annotate_info->antialias;
   image_info->fill=annotate_info->fill;
   image_info->stroke=annotate_info->stroke;
@@ -258,10 +257,10 @@ MagickExport unsigned int AnnotateImage(Image *image,
     /*
       Composite text onto the image.
     */
-    font_height=(int) (clone_info->affine[0]*annotate_info->pointsize+
-      clone_info->affine[2]*annotate_info->pointsize);
-    point.x=clone_info->affine[2]*annotate_info->pointsize;
-    point.y=clone_info->affine[3]*annotate_info->pointsize;
+    font_height=(int) (clone_info->affine.sx*annotate_info->pointsize+
+      clone_info->affine.sy*annotate_info->pointsize);
+    point.x=clone_info->affine.sx*annotate_info->pointsize;
+    point.y=clone_info->affine.sy*annotate_info->pointsize;
     switch (clone_info->gravity)
     {
       case NorthWestGravity:
@@ -498,8 +497,7 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_info->antialias=image_info->antialias;
   annotate_info->gravity=NorthWestGravity;
   annotate_info->pointsize=image_info->pointsize;
-  for (i=0; i < 6; i++)
-    annotate_info->affine[i]=image_info->affine[i];
+  annotate_info->affine=image_info->affine;
   annotate_info->fill=image_info->fill;
   annotate_info->stroke=image_info->stroke;
   (void) QueryColorDatabase("none",&annotate_info->box);

@@ -49,7 +49,7 @@
 <P>Image * <STRONG>DeconstructImages</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>FlipImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>FlopImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
-<P>unsigned int  <STRONG>ProfileImage</STRONG>( Image *image, const ProfileType type, const char *filename );</P>
+<P>unsigned int  <STRONG>ProfileImage</STRONG>( Image *image, const char *profile_name, const char *filename );</P>
 <P>Image * <STRONG>RollImage</STRONG>( Image *image, const int x_offset, const int y_offset, ExceptionInfo *exception );</P>
 <P>void  <STRONG>TransformImage</STRONG>( Image ** image, const char *crop_geometry, const char *image_geometry );</P>
 <P>
@@ -184,10 +184,10 @@ return any errors or warnings in this structure.
 <P>
 <H2><A NAME="profileimage">ProfileImage</A></H2>
 <P>Method ProfileImage removes or adds a 
-<FONT SIZE=-1>ICC</FONT> or 
-<FONT SIZE=-1>IPTC</FONT> profile to an image.</P>
+<FONT SIZE=-1>ICC,</FONT> 
+<FONT SIZE=-1>IPTC,</FONT> or generic profile to an image.  If the profile name is specified it is deleted from the image.  If a filename is specified, one or more profiles are read and added to the image.</P>
 <P>The format of the ProfileImage method is:</P>
-<blockquote>unsigned int ProfileImage ( <A HREF="types/Image.html">Image</A> *image, const ProfileType type, const char *filename ); </blockquote><P>
+<blockquote>unsigned int ProfileImage ( <A HREF="types/Image.html">Image</A> *image, const char *profile_name, const char *filename ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
@@ -198,7 +198,7 @@ Method ProfileImage returns True if the profile is successfully added or removed
 <DD>
 The address of a structure of type Image.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_profile_name%3A">profile_name:</A></STRONG><BR>
 <DD>
 Specifies the type of profile to add or remove.
 <P></P>

@@ -47,7 +47,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-%
 */
 
 /*
@@ -74,11 +73,67 @@
       s++; \
     }
 
+/*
+  Typedef declarations.
+*/
+typedef struct _EdgeInfo
+{
+  SegmentInfo
+    bounds;
+
+  int
+    number_points;
+
+  PointInfo
+    *points;
+
+  int
+    direction,
+    hidden,
+    highwater;
+
+  double
+    scanline;
+} EdgeInfo;
+
+typedef enum
+{
+  MoveToCode,
+  OpenCode,
+  HiddenCode,
+  LineToCode,
+  EndCode
+} PathInfoCode;
+
+typedef struct _PathInfo
+{
+  PointInfo
+    point;
+
+  PathInfoCode
+    code;
+} PathInfo;
+
+typedef struct _PolygonInfo
+{
+  int
+    number_edges;
+
+  EdgeInfo
+    *edges;
+} PolygonInfo;
+
+/*
+  Forward declarations.
+*/
+static inline int
+  GetWindingNumber(const PolygonInfo *,const double,const double);
+
 static unsigned int
   GeneratePath(PrimitiveInfo *,const char *);
 
 static void
-  DrawPrimitive(Image *,const DrawInfo *,PrimitiveInfo *),
+  DrawPrimitive(const DrawInfo *,PrimitiveInfo *,Image *),
   GenerateArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
     const double,const unsigned int,const unsigned int),
   GenerateBezier(PrimitiveInfo *),
@@ -89,7 +144,8 @@ static void
   GeneratePoint(PrimitiveInfo *,const PointInfo),
   GenerateRectangle(PrimitiveInfo *,const PointInfo,const PointInfo),
   GenerateRoundRectangle(PrimitiveInfo *,const PointInfo,const PointInfo,
-    PointInfo);
+    PointInfo),
+  ReversePoints(PointInfo *,const int);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -489,14 +545,18 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
 */
 MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 {
+  AffineInfo
+    affine,
+    current;
+
   char
     keyword[MaxTextExtent],
     *primitive,
-    *q;
+    *q,
+    value[MaxTextExtent];
 
   double
-    alpha,
-    beta;
+    angle;
 
   DrawInfo
     **graphic_context;
@@ -525,7 +585,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
   unsigned int
     indirection,
-    length;
+    length,
+    status;
 
   /*
     Ensure the annotation info is valid.
@@ -601,7 +662,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   /*
     Allocate primitive info memory.
   */
-  number_points=2048;
+  number_points=2047;
   primitive_info=(PrimitiveInfo *)
     AcquireMemory(number_points*sizeof(PrimitiveInfo));
   if (primitive_info == (PrimitiveInfo *) NULL)
@@ -614,6 +675,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
+  status=False;
   (void) SetImageAttribute(image,"[MVG]",primitive);
   for (q=primitive; *q != '\0'; )
   {
@@ -630,219 +692,423 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       break;
     while (isspace((int) (*q)) && (*q != '\0'))
       q++;
-    if (LocaleCompare(";",keyword) == 0)
-      continue;
-    if (LocaleCompare("affine",keyword) == 0)
-      {
-        double
-          affine[6],
-          current[6];
-
-        for (k=0; k < 6; k++)
-        {
-          current[k]=graphic_context[n]->affine[k];
-          affine[k]=strtod(q,&q);
-          if (*q == ',')
-            q++;
-        }
-        graphic_context[n]->affine[0]=current[0]*affine[0]+current[2]*affine[1];
-        graphic_context[n]->affine[1]=current[1]*affine[0]+current[3]*affine[1];
-        graphic_context[n]->affine[2]=current[0]*affine[2]+current[2]*affine[3];
-        graphic_context[n]->affine[3]=current[1]*affine[2]+current[3]*affine[3];
-        graphic_context[n]->affine[4]=
-          current[0]*affine[4]+current[2]*affine[5]+current[4];
-        graphic_context[n]->affine[5]=
-          current[1]*affine[4]+current[3]*affine[5]+current[5];
-        continue;
-      }
-    if (LocaleCompare("angle",keyword) == 0)
-      {
-        graphic_context[n]->angle=strtod(q,&q);
-        continue;
-      }
-    if (LocaleCompare("decorate",keyword) == 0)
-      {
-        for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-          keyword[x]=(*q++);
-        keyword[x]='\0';
-        if (LocaleCompare("none",keyword) == 0)
-          graphic_context[n]->decorate=NoDecoration;
-        if (LocaleCompare("underline",keyword) == 0)
-          graphic_context[n]->decorate=UnderlineDecoration;
-        if (LocaleCompare("overline",keyword) == 0)
-          graphic_context[n]->decorate=OverlineDecoration;
-        if (LocaleCompare("line-through",keyword) == 0)
-          graphic_context[n]->decorate=LineThroughDecoration;
-        continue;
-      }
-    if (LocaleCompare("fill",keyword) == 0)
-      {
-        if ((LocaleNCompare(q,"rgb(",4) == 0))
-          for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
-            keyword[x]=(*q++);
-        else
-          for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-            keyword[x]=(*q++);
-        keyword[x]='\0';
-        (void) QueryColorDatabase(keyword,&graphic_context[n]->fill);
-        continue;
-      }
-    if (LocaleCompare("fill-opacity",keyword) == 0)
-      {
-        graphic_context[n]->fill.opacity=MaxRGB*strtod(q,&q);
-        continue;
-      }
-    if (LocaleCompare("font",keyword) == 0)
-      {
-        for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-          keyword[x]=(*q++);
-        keyword[x]='\0';
-        CloneString(&graphic_context[n]->font,keyword);
-        continue;
-      }
-    if (LocaleCompare("gravity",keyword) == 0)
-      {
-        for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-          keyword[x]=(*q++);
-        keyword[x]='\0';
-        if (LocaleCompare("NorthWest",keyword) == 0)
-          graphic_context[n]->gravity=NorthWestGravity;
-        if (LocaleCompare("North",keyword) == 0)
-          graphic_context[n]->gravity=NorthGravity;
-        if (LocaleCompare("NorthEast",keyword) == 0)
-          graphic_context[n]->gravity=NorthEastGravity;
-        if (LocaleCompare("West",keyword) == 0)
-          graphic_context[n]->gravity=WestGravity;
-        if (LocaleCompare("Center",keyword) == 0)
-          graphic_context[n]->gravity=CenterGravity;
-        if (LocaleCompare("East",keyword) == 0)
-          graphic_context[n]->gravity=EastGravity;
-        if (LocaleCompare("SouthWest",keyword) == 0)
-          graphic_context[n]->gravity=SouthWestGravity;
-        if (LocaleCompare("South",keyword) == 0)
-          graphic_context[n]->gravity=SouthGravity;
-        if (LocaleCompare("SouthEast",keyword) == 0)
-          graphic_context[n]->gravity=SouthEastGravity;
-        continue;
-      }
-    if (LocaleCompare("opacity",keyword) == 0)
-      {
-        graphic_context[n]->fill.opacity=MaxRGB*strtod(q,&q);
-        graphic_context[n]->stroke.opacity=MaxRGB*strtod(q,&q);
-        continue;
-      }
-    if (LocaleCompare("pop",keyword) == 0)
-      {
-        for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-          keyword[x]=(*q++);
-        keyword[x]='\0';
-        DestroyDrawInfo(graphic_context[n]);
-        n--;
-        if (n < 0)
-          ThrowBinaryException(CorruptImageWarning,
-            "unbalanced graphic context push/pop",keyword);
-        continue;
-      }
-    if (LocaleCompare("push",keyword) == 0)
-      {
-        for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-          keyword[x]=(*q++);
-        keyword[x]='\0';
-        n++;
-        ReacquireMemory((void **) &graphic_context,(n+1)*sizeof(DrawInfo *));
-        if (graphic_context == (DrawInfo **) NULL)
-          MagickError(ResourceLimitWarning,"Unable to draw image",
-            "Memory allocation failed");
-        graphic_context[n]=
-          CloneDrawInfo((ImageInfo *) NULL,graphic_context[n-1]);
-        continue;
-      }
-    if (LocaleCompare("pointsize",keyword) == 0)
-      {
-        graphic_context[n]->pointsize=strtod(q,&q);
-        continue;
-      }
-    if (LocaleCompare("stroke",keyword) == 0)
-      {
-        if ((LocaleNCompare(q,"rgb(",4) == 0))
-          for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
-            keyword[x]=(*q++);
-        else
-          for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-            keyword[x]=(*q++);
-        keyword[x]='\0';
-        (void) QueryColorDatabase(keyword,&graphic_context[n]->stroke);
-        continue;
-      }
-    if (LocaleCompare("stroke-antialias",keyword) == 0)
-      {
-        graphic_context[n]->stroke_antialias=(unsigned int) strtod(q,&q);
-        continue;
-      }
-    if (LocaleCompare("stroke-dash",keyword) == 0)
-      {
-        for ( ; ; )
-        {
-          while (isspace((int) (*q)) && (*q != '\0'))
-            q++;
-          if (!IsGeometry(q))
-            break;
-          (void) strtod(q,&q);
-          if (*q == ',')
-            q++;
-        }
-        continue;
-      }
-    if (LocaleCompare("stroke-opacity",keyword) == 0)
-      {
-        graphic_context[n]->stroke.opacity=MaxRGB*strtod(q,&q);
-        continue;
-      }
-    if (LocaleCompare("stroke-width",keyword) == 0)
-      {
-        graphic_context[n]->linewidth=strtod(q,&q);
-        continue;
-      }
-    if (LocaleCompare("text-antialias",keyword) == 0)
-      {
-        graphic_context[n]->text_antialias=(unsigned int) strtod(q,&q);
-        continue;
-      }
     primitive_type=UndefinedPrimitive;
-    if (LocaleNCompare("fill",keyword,4) == 0)
-      (void) strcpy(keyword,keyword+4);
-    if (LocaleCompare("Point",keyword) == 0)
-      primitive_type=PointPrimitive;
-    if (LocaleCompare("Line",keyword) == 0)
-      primitive_type=LinePrimitive;
-    if (LocaleNCompare("Rect",keyword,4) == 0)
-      primitive_type=RectanglePrimitive;
-    if (LocaleCompare("RoundRectangle",keyword) == 0)
-      primitive_type=RoundRectanglePrimitive;
-    if (LocaleCompare("Arc",keyword) == 0)
-      primitive_type=ArcPrimitive;
-    if (LocaleCompare("Ellipse",keyword) == 0)
-      primitive_type=EllipsePrimitive;
-    if (LocaleCompare("Circle",keyword) == 0)
-      primitive_type=CirclePrimitive;
-    if (LocaleCompare("Polyline",keyword) == 0)
-      primitive_type=PolylinePrimitive;
-    if (LocaleCompare("Polygon",keyword) == 0)
-      primitive_type=PolygonPrimitive;
-    if (LocaleCompare("Bezier",keyword) == 0)
-      primitive_type=BezierPrimitive;
-    if (LocaleCompare("Path",keyword) == 0)
-      primitive_type=PathPrimitive;
-    if (LocaleCompare("Color",keyword) == 0)
-      primitive_type=ColorPrimitive;
-    if (LocaleCompare("Matte",keyword) == 0)
-      primitive_type=MattePrimitive;
-    if (LocaleCompare("Text",keyword) == 0)
-      primitive_type=TextPrimitive;
-    if (LocaleCompare("Image",keyword) == 0)
-      primitive_type=ImagePrimitive;
-    if (primitive_type == UndefinedPrimitive)
+    current=graphic_context[n]->affine;
+    affine.sx=1.0;
+    affine.rx=0.0;
+    affine.ry=0.0;
+    affine.sy=1.0;
+    affine.tx=0.0;
+    affine.ty=0.0;
+    switch (*keyword)
+    {
+      case ';':
+        break;
+      case 'a':
+      case 'A':
+      {
+        if (LocaleCompare("affine",keyword) == 0)
+          {
+            affine.sx=strtod(q,&q);
+            if (*q == ',')
+              q++;
+            affine.rx=strtod(q,&q);
+            if (*q == ',')
+              q++;
+            affine.ry=strtod(q,&q);
+            if (*q == ',')
+              q++;
+            affine.sy=strtod(q,&q);
+            if (*q == ',')
+              q++;
+            affine.tx=strtod(q,&q);
+            if (*q == ',')
+              q++;
+            affine.ty=strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("angle",keyword) == 0)
+          {
+            graphic_context[n]->angle=strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("arc",keyword) == 0)
+          {
+            primitive_type=ArcPrimitive;
+            break;
+          }
+        status=True;
+        break;
+      }
+      case 'b':
+      case 'B':
+      {
+        if (LocaleCompare("bezier",keyword) == 0)
+          {
+            primitive_type=BezierPrimitive;
+            break;
+          }
+        status=True;
+        break;
+      }
+      case 'c':
+      case 'C':
+      {
+        if (LocaleCompare("circle",keyword) == 0)
+          {
+            primitive_type=CirclePrimitive;
+            break;
+          }
+        if (LocaleCompare("color",keyword) == 0)
+          {
+            primitive_type=ColorPrimitive;
+            break;
+          }
+        status=True;
+        break;
+      }
+      case 'd':
+      case 'D':
+      {
+        if (LocaleCompare("decorate",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleCompare("none",value) == 0)
+              graphic_context[n]->decorate=NoDecoration;
+            if (LocaleCompare("underline",value) == 0)
+              graphic_context[n]->decorate=UnderlineDecoration;
+            if (LocaleCompare("overline",value) == 0)
+              graphic_context[n]->decorate=OverlineDecoration;
+            if (LocaleCompare("line-through",value) == 0)
+              graphic_context[n]->decorate=LineThroughDecoration;
+            break;
+          }
+        status=True;
+        break;
+      }
+      case 'e':
+      case 'E':
+      {
+        if (LocaleCompare("ellipse",keyword) == 0)
+          {
+            primitive_type=EllipsePrimitive;
+            break;
+          }
+        status=True;
+        break;
+      }
+      case 'f':
+      case 'F':
+      {
+        if (LocaleCompare("fill",keyword) == 0)
+          {
+            if ((LocaleNCompare(q,"rgb(",4) == 0))
+              for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
+                value[x]=(*q++);
+            else
+              for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+                value[x]=(*q++);
+            value[x]='\0';
+            (void) QueryColorDatabase(value,&graphic_context[n]->fill);
+            break;
+          }
+        if (LocaleCompare("fill-opacity",keyword) == 0)
+          {
+            graphic_context[n]->fill.opacity=MaxRGB*strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("font",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            CloneString(&graphic_context[n]->font,value);
+            break;
+          }
+        status=True;
+        break;
+      }
+      case 'g':
+      case 'G':
+      {
+        if (LocaleCompare("gravity",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleCompare("NorthWest",value) == 0)
+              graphic_context[n]->gravity=NorthWestGravity;
+            if (LocaleCompare("North",value) == 0)
+              graphic_context[n]->gravity=NorthGravity;
+            if (LocaleCompare("NorthEast",value) == 0)
+              graphic_context[n]->gravity=NorthEastGravity;
+            if (LocaleCompare("West",value) == 0)
+              graphic_context[n]->gravity=WestGravity;
+            if (LocaleCompare("Center",value) == 0)
+              graphic_context[n]->gravity=CenterGravity;
+            if (LocaleCompare("East",value) == 0)
+              graphic_context[n]->gravity=EastGravity;
+            if (LocaleCompare("SouthWest",value) == 0)
+              graphic_context[n]->gravity=SouthWestGravity;
+            if (LocaleCompare("South",value) == 0)
+              graphic_context[n]->gravity=SouthGravity;
+            if (LocaleCompare("SouthEast",value) == 0)
+              graphic_context[n]->gravity=SouthEastGravity;
+            break;
+          }
+        status=True;
+        break;
+      }
+      case 'i':
+      case 'I':
+      {
+        if (LocaleCompare("image",keyword) == 0)
+          {
+            primitive_type=ImagePrimitive;
+            break;
+          }
+        status=True;
+        break;
+      }
+      case 'l':
+      case 'L':
+      {
+        if (LocaleCompare("line",keyword) == 0)
+          {
+            primitive_type=LinePrimitive;
+            break;
+          }
+        status=True;
+        break;
+      }
+      case 'm':
+      case 'M':
+      {
+        if (LocaleCompare("matte",keyword) == 0)
+          {
+            primitive_type=MattePrimitive;
+            break;
+          }
+        status=True;
+        break;
+      }
+      case 'o':
+      case 'O':
+      {
+        if (LocaleCompare("opacity",keyword) == 0)
+          {
+            graphic_context[n]->fill.opacity=MaxRGB*strtod(q,&q);
+            graphic_context[n]->stroke.opacity=MaxRGB*strtod(q,&q);
+            break;
+          }
+        status=True;
+        break;
+      }
+      case 'p':
+      case 'P':
+      {
+        if (LocaleCompare("path",keyword) == 0)
+          {
+            primitive_type=PathPrimitive;
+            break;
+          }
+        if (LocaleCompare("point",keyword) == 0)
+          {
+            primitive_type=PointPrimitive;
+            break;
+          }
+        if (LocaleCompare("pointsize",keyword) == 0)
+          {
+            graphic_context[n]->pointsize=strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("polyline",keyword) == 0)
+          {
+            primitive_type=PolylinePrimitive;
+            break;
+          }
+        if (LocaleCompare("polygon",keyword) == 0)
+          {
+            primitive_type=PolygonPrimitive;
+            break;
+          }
+        if (LocaleCompare("pop",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            DestroyDrawInfo(graphic_context[n]);
+            n--;
+            if (n < 0)
+              ThrowBinaryException(CorruptImageWarning,
+                "unbalanced graphic context push/pop",value);
+            break;
+          }
+        if (LocaleCompare("push",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            n++;
+            ReacquireMemory((void **) &graphic_context,
+              (n+1)*sizeof(DrawInfo *));
+            if (graphic_context == (DrawInfo **) NULL)
+              MagickError(ResourceLimitWarning,"Unable to draw image",
+                "Memory allocation failed");
+            graphic_context[n]=
+              CloneDrawInfo((ImageInfo *) NULL,graphic_context[n-1]);
+            break;
+          }
+        status=True;
+        break;
+      }
+      case 'r':
+      case 'R':
+      {
+        if (LocaleNCompare("rect",keyword,4) == 0)
+          {
+            primitive_type=RectanglePrimitive;
+            break;
+          }
+        if (LocaleCompare("roundRectangle",keyword) == 0)
+          {
+            primitive_type=RoundRectanglePrimitive;
+            break;
+          }
+        if (LocaleCompare("rotate",keyword) == 0)
+          {
+            angle=strtod(q,&q);
+            affine.sx=(-cos(DegreesToRadians(fmod(angle,360.0))));
+            affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
+            affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
+            affine.sy=(-cos(DegreesToRadians(fmod(angle,360.0))));
+            break;
+          }
+        status=True;
+        break;
+      }
+      case 's':
+      case 'S':
+      {
+        if (LocaleCompare("scale",keyword) == 0)
+          {
+            affine.sx=strtod(q,&q);
+            if (*q == ',')
+              q++;
+            affine.sy=strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("skewX",keyword) == 0)
+          {
+            angle=strtod(q,&q);
+            affine.ry=tan(DegreesToRadians(fmod(angle,360.0)));
+            break;
+          }
+        if (LocaleCompare("skewY",keyword) == 0)
+          {
+            angle=strtod(q,&q);
+            affine.rx=tan(DegreesToRadians(fmod(angle,360.0)));
+            break;
+          }
+        if (LocaleCompare("stroke",keyword) == 0)
+          {
+            if ((LocaleNCompare(q,"rgb(",4) == 0))
+              for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
+                value[x]=(*q++);
+            else
+              for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+                value[x]=(*q++);
+            value[x]='\0';
+            (void) QueryColorDatabase(value,&graphic_context[n]->stroke);
+            break;
+          }
+        if (LocaleCompare("stroke-antialias",keyword) == 0)
+          {
+            graphic_context[n]->stroke_antialias=(unsigned int) strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("stroke-dash",keyword) == 0)
+          {
+            for ( ; ; )
+            {
+              while (isspace((int) (*q)) && (*q != '\0'))
+                q++;
+              if (!IsGeometry(q))
+                break;
+              (void) strtod(q,&q);
+              if (*q == ',')
+                q++;
+              for (x=0; (*q != ';') && (*q != '\0'); x++)
+                value[x]=(*q++);
+              value[x]='\0';
+            }
+            break;
+          }
+        if (LocaleCompare("stroke-opacity",keyword) == 0)
+          {
+            graphic_context[n]->stroke.opacity=MaxRGB*strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("stroke-width",keyword) == 0)
+          {
+            graphic_context[n]->linewidth=strtod(q,&q);
+            continue;
+          }
+        status=True;
+        break;
+      }
+      case 't':
+      case 'T':
+      {
+        if (LocaleCompare("text",keyword) == 0)
+          {
+            primitive_type=TextPrimitive;
+            break;
+          }
+        if (LocaleCompare("text-antialias",keyword) == 0)
+          {
+            graphic_context[n]->text_antialias=(unsigned int) strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("translate",keyword) == 0)
+          {
+            affine.tx=strtod(q,&q);
+            if (*q == ',')
+              q++;
+            affine.ty=strtod(q,&q);
+            break;
+          }
+        status=True;
+        break;
+      }
+      default:
+      {
+        status=True;
+        break;
+      }
+    }
+    if (status)
       break;
+    if ((affine.sx != 1.0) || (affine.rx != 0.0) || (affine.ry != 0.0) ||
+        (affine.sy != 1.0) || (affine.tx != 0.0) || (affine.ty != 0.0))
+      {
+        graphic_context[n]->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+        graphic_context[n]->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+        graphic_context[n]->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+        graphic_context[n]->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+        graphic_context[n]->affine.tx=
+          current.sx*affine.tx+current.ry*affine.ty+current.tx;
+        graphic_context[n]->affine.ty=
+          current.rx*affine.tx+current.sy*affine.ty+current.ty;
+      }
+    if (primitive_type == UndefinedPrimitive)
+      {
+        if (graphic_context[n]->verbose)
+          (void) fprintf(stdout,"%.*s\n",q-p,p);
+        continue;
+      }
     /*
       Parse the primitive attributes.
     */
@@ -875,15 +1141,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       number_points+=6*BezierQuantum+360;
       ReacquireMemory((void **) &primitive_info,
         number_points*sizeof(PrimitiveInfo));
-      if (primitive_info != (PrimitiveInfo *) NULL)
-        continue;
-      if (indirection)
-        LiberateMemory((void **) &primitive);
-      for ( ; n >= 0; n--)
-        DestroyDrawInfo(graphic_context[n]);
-      LiberateMemory((void **) &graphic_context);
-      ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
-        "Memory allocation failed");
+      if (primitive_info == (PrimitiveInfo *) NULL)
+        {
+          ThrowException(&image->exception,ResourceLimitWarning,
+            "Unable to draw image","Memory allocation failed");
+          break;
+        }
     }
     while (isspace((int) (*q)) && (*q != '\0'))
       q++;
@@ -898,7 +1161,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 1)
           {
-            primitive_type=UndefinedPrimitive;
+            status=True;
             break;
           }
         GeneratePoint(primitive_info+j,primitive_info[j].point);
@@ -909,7 +1172,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 2)
           {
-            primitive_type=UndefinedPrimitive;
+            status=True;
             break;
           }
         GenerateLine(primitive_info+j,primitive_info[j].point,
@@ -921,7 +1184,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 2)
           {
-            primitive_type=UndefinedPrimitive;
+            status=True;
             break;
           }
         GenerateRectangle(primitive_info+j,primitive_info[j].point,
@@ -933,7 +1196,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 3)
           {
-            primitive_type=UndefinedPrimitive;
+            status=True;
             break;
           }
         GenerateRoundRectangle(primitive_info+j,primitive_info[j].point,
@@ -945,7 +1208,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 3)
           {
-            primitive_type=UndefinedPrimitive;
+            status=True;
             break;
           }
         GenerateArc(primitive_info+j,primitive_info[j].point,
@@ -957,7 +1220,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 3)
           {
-            primitive_type=UndefinedPrimitive;
+            status=True;
             break;
           }
         GenerateEllipse(primitive_info+j,primitive_info[j].point,
@@ -969,7 +1232,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 2)
           {
-            primitive_type=UndefinedPrimitive;
+            status=True;
             break;
           }
         GenerateCircle(primitive_info+j,primitive_info[j].point,
@@ -981,7 +1244,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates < 2)
           {
-            primitive_type=UndefinedPrimitive;
+            status=True;
             break;
           }
         break;
@@ -990,7 +1253,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates < 3)
           {
-            primitive_type=UndefinedPrimitive;
+            status=True;
             break;
           }
         primitive_info[i]=primitive_info[j];
@@ -1003,7 +1266,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates < 3)
           {
-            primitive_type=UndefinedPrimitive;
+            status=True;
             break;
           }
         GenerateBezier(primitive_info+j);
@@ -1018,10 +1281,13 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         int
           number_attributes;
 
-        number_attributes=0;
-        path=q;
+        if (*q == '\0')
+          break;
+        number_attributes=1;
+        p=q;
         if (*q == '"')
           {
+            p++;
             for (q++; *q != '\0'; q++)
             {
               if (isalpha((int) *q))
@@ -1033,6 +1299,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         else
           if (*q == '\'')
             {
+              p++;
               for (q++; *q != '\0'; q++)
               {
                 if (isalpha((int) *q))
@@ -1049,26 +1316,24 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               if (isspace((int) *q) && (*(q-1) != '\\') && (*q != '\0'))
                 break;
             }
-        if (*q != '\0')
-          q++;
-        *q++='\0';
+        path=(char *) AcquireMemory(q-p+1);
         if (i > (number_points-6*BezierQuantum*number_attributes-1))
           {
             number_points+=6*BezierQuantum*number_attributes;
             ReacquireMemory((void **) &primitive_info,
               number_points*sizeof(PrimitiveInfo));
-            if (primitive_info == (PrimitiveInfo *) NULL)
-              {
-                if (indirection)
-                  LiberateMemory((void **) &primitive);
-                for ( ; n >= 0; n--)
-                  DestroyDrawInfo(graphic_context[n]);
-                LiberateMemory((void **) &graphic_context);
-                ThrowBinaryException(ResourceLimitWarning,
-                  "Unable to draw image","Memory allocation failed");
-              }
           }
+        if ((path == (char *) NULL) ||
+            (primitive_info == (PrimitiveInfo *) NULL))
+          {
+            ThrowException(&image->exception,ResourceLimitWarning,
+              "Unable to draw image","Memory allocation failed");
+            break;
+          }
+        (void) strncpy(path,p,q-p+1);
+        path[q-p]='\0';
         i=j+GeneratePath(primitive_info+j,path);
+        LiberateMemory((void **) &path);
         break;
       }
       case ColorPrimitive:
@@ -1076,7 +1341,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 1)
           {
-            primitive_type=UndefinedPrimitive;
+            status=True;
             break;
           }
         /*
@@ -1102,9 +1367,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 if (LocaleCompare("reset",keyword) == 0)
                   primitive_info[j].method=ResetMethod;
                 else
-                  primitive_type=UndefinedPrimitive;
-        while (isspace((int) (*q)) && (*q != '\0'))
-          q++;
+                  status=True;
         break;
       }
       case TextPrimitive:
@@ -1114,7 +1377,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
         if (primitive_info[j].coordinates != 1)
           {
-            primitive_type=UndefinedPrimitive;
+            status=True;
             break;
           }
         if (*q == '\0')
@@ -1145,8 +1408,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             (void) strncpy(primitive_info[j].text,p,q-p+1);
             primitive_info[j].text[q-p]='\0';
           }
-        if ((*q == '"') || (*q == '\''))
-          q++;
         break;
       }
       case ImagePrimitive:
@@ -1156,7 +1417,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
         if (primitive_info[j].coordinates != 2)
           {
-            primitive_type=UndefinedPrimitive;
+            status=True;
             break;
           }
         if (*q == '\0')
@@ -1187,25 +1448,19 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             (void) strncpy(primitive_info[j].text,p,q-p);
             primitive_info[j].text[q-p]='\0';
           }
-        if ((*q == '"') || (*q == '\''))
-          q++;
         break;
       }
     }
+    if (primitive_info == (PrimitiveInfo *) NULL)
+      break;
+    if (graphic_context[n]->verbose)
+      (void) fprintf(stdout,"%.*s\n",q-p,p);
+    if (status)
+      break;
+    if ((*q == '"') || (*q == '\''))
+      q++;
     while (isspace((int) (*q)) && (*q != '\0'))
       q++;
-    if (graphic_context[n]->verbose)
-      {
-        char
-          *element;
-
-        element=AllocateString(p);
-        element[q-p]='\0';
-        (void) fprintf(stdout,"%.1024s\n",element);
-        LiberateMemory((void **) &element);
-      }
-    if (primitive_type == UndefinedPrimitive)
-      break;
     primitive_info[i].primitive=UndefinedPrimitive;
     /*
       Transform points.
@@ -1213,25 +1468,26 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
     {
       point=primitive_info[i].point;
-      primitive_info[i].point.x=graphic_context[n]->affine[0]*point.x+
-        graphic_context[n]->affine[2]*point.y+graphic_context[n]->affine[4];
-      primitive_info[i].point.y=graphic_context[n]->affine[1]*point.x+
-        graphic_context[n]->affine[3]*point.y+graphic_context[n]->affine[5];
+      primitive_info[i].point.x=graphic_context[n]->affine.sx*point.x+
+        graphic_context[n]->affine.ry*point.y+graphic_context[n]->affine.tx;
+      primitive_info[i].point.y=graphic_context[n]->affine.rx*point.x+
+        graphic_context[n]->affine.sy*point.y+graphic_context[n]->affine.ty;
     }
-    DrawPrimitive(image,graphic_context[n],primitive_info);
+    DrawPrimitive(graphic_context[n],primitive_info,image);
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
   }
   /*
     Free resources.
   */
-  LiberateMemory((void **) &primitive_info);
+  if (primitive_info != (PrimitiveInfo *) NULL)
+    LiberateMemory((void **) &primitive_info);
   if (indirection)
     LiberateMemory((void **) &primitive);
   for ( ; n >= 0; n--)
     DestroyDrawInfo(graphic_context[n]);
   LiberateMemory((void **) &graphic_context);
-  if (primitive_type == UndefinedPrimitive)
+  if (status)
     ThrowBinaryException(OptionWarning,
       "Non-conforming drawing primitive definition",keyword);
   image->storage_class=DirectClass;
@@ -1252,105 +1508,696 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 %
 %  Method DrawPolygonPrimitive draws a polygon on the image.
 %
-%  Rick Mabry provided the algorithm for anti-aliased polygons.
+%  Bill Radcliffe contributed the polygon rendering code.  Parts of the fast
+%  rendering algorithm was inspired by libart.
 %
 %  The format of the DrawPolygonPrimitive method is:
 %
-%      DrawPolygonPrimitive(PrimitiveInfo *primitive_info,
-%        const DrawInfo *draw_info,Image *image)
+%      DrawPolygonPrimitive(const DrawInfo *draw_info,
+%        const PrimitiveInfo *primitive_info,PolygonInfo *polygon_info,
+%        Image *image)
 %
 %  A description of each parameter follows:
 %
+%    o draw_info: Specifies a pointer to a DrawInfo structure.
+%
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
 %
-%    o draw_info: Specifies a pointer to a DrawInfo structure.
+%    o polygon_info: Specifies a pointer to a PolygonInfo structure.
 %
 %    o image: The address of a structure of type Image.
 %
 %
 */
 
-static inline double DistanceToLine(const PointInfo *point,const PointInfo *p,
-  const PointInfo *q)
+static int CompareEdges(const void *x,const void *y)
 {
-  double
-    dot_product,
-    gamma,
-    phi;
+  const EdgeInfo
+    *p,
+    *q;
 
-  register double
-    alpha,
-    beta;
-
-  alpha=point->x-p->x;
-  beta=point->y-p->y;
-  dot_product=alpha*(q->x-p->x)+beta*(q->y-p->y);
-  if (dot_product <= 0)
-    return(alpha*alpha+beta*beta);
-  phi=(q->x-p->x)*(q->x-p->x)+(q->y-p->y)*(q->y-p->y);
-  gamma=dot_product*dot_product/phi;
-  if (gamma <= phi)
-    return(alpha*alpha+beta*beta-gamma+MagickEpsilon);
-  alpha=point->x-q->x;
-  beta=point->y-q->y;
-  return(alpha*alpha+beta*beta);
+  /*
+    Compare two edges.
+  */
+  p=(EdgeInfo *) x;
+  q=(EdgeInfo *) y;
+  if ((p->points[0].y-MagickEpsilon) > q->points[0].y)
+    return(1);
+  if ((p->points[0].y+MagickEpsilon) < q->points[0].y)
+    return(-1);
+  if ((p->points[0].x-MagickEpsilon) > q->points[0].x)
+    return(1);
+  if ((p->points[0].x+MagickEpsilon) < q->points[0].x)
+    return(-1);
+  if (((p->points[1].x-p->points[0].x)*(q->points[1].y-q->points[0].y)-
+       (p->points[1].y-p->points[0].y)*(q->points[1].x-q->points[0].x)) > 0.0)
+    return(1);
+  return(-1);
 }
 
-static inline double PixelOnLine(const PointInfo *point,const PointInfo *p,
-  const PointInfo *q,const double mid,const double opacity,double *distance)
+static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
 {
-  register double
-    alpha;
+  int
+    direction,
+    edge,
+    hidden,
+    next_direction,
+    number_edges,
+    number_points;
 
-  *distance=DistanceToLine(point,p,q);
-  if ((mid == 0.0) || (opacity == 1.0))
-    return(opacity);
-  if ((p->x == q->x) && (p->y == q->y))
-    return((point->x == p->x) && (point->y == p->y) ? 1.0 : opacity);
-  alpha=mid-0.5;
-  if (*distance <= (alpha*alpha))
-    return(1.0);
-  alpha=mid+0.5;
-  if (*distance <= (alpha*alpha))
+  PointInfo
+    point,
+    *points;
+
+  PolygonInfo
+    *polygon_info;
+
+  SegmentInfo
+    bounds;
+
+  register int
+    i,
+    n;
+
+  /*
+    Convert a path to the more efficient sorted rendering form.
+  */
+  polygon_info=(PolygonInfo *) AcquireMemory(sizeof(PolygonInfo));
+  if (polygon_info == (PolygonInfo *) NULL)
+    return((PolygonInfo *) NULL);
+  number_edges=16;
+  polygon_info->edges=AcquireMemory(number_edges*sizeof(EdgeInfo));
+  if (polygon_info->edges == (EdgeInfo *) NULL)
+    return((PolygonInfo *) NULL);
+  direction=0;
+  edge=0;
+  hidden=False;
+  n=0;
+  number_points=0;
+  points=(PointInfo *) NULL;
+  memset(&point,0,sizeof(PointInfo));
+  memset(&bounds,0,sizeof(SegmentInfo));
+  for (i=0; path_info[i].code != EndCode; i++)
+  {
+    if ((path_info[i].code == MoveToCode) || (path_info[i].code == OpenCode) ||
+        (path_info[i].code == HiddenCode))
+      {
+        /*
+          Move to.
+        */
+        if ((points != (PointInfo *) NULL) && (n >= 2))
+          {
+            if (edge == number_edges)
+              {
+                number_edges<<=1;
+                ReacquireMemory((void **) &polygon_info->edges,
+                  number_edges*sizeof(EdgeInfo));
+                if (polygon_info->edges == (EdgeInfo *) NULL)
+                  return((PolygonInfo *) NULL);
+              }
+            polygon_info->edges[edge].number_points=n;
+            polygon_info->edges[edge].scanline=(-1.0);
+            polygon_info->edges[edge].highwater=0;
+            polygon_info->edges[edge].hidden=hidden;
+            polygon_info->edges[edge].direction=direction > 0;
+            if (direction < 0)
+              ReversePoints(points,n);
+            polygon_info->edges[edge].points=points;
+            polygon_info->edges[edge].bounds=bounds;
+            polygon_info->edges[edge].bounds.y1=points[0].y;
+            polygon_info->edges[edge].bounds.y2=points[n-1].y;
+            points=(PointInfo *) NULL;
+            hidden=False;
+            edge++;
+          }
+        if (points == (PointInfo *) NULL)
+          {
+            number_points=16;
+            points=(PointInfo *) AcquireMemory(number_points*sizeof(PointInfo));
+            if (points == (PointInfo *) NULL)
+              return((PolygonInfo *) NULL);
+          }
+        hidden=path_info[i].code == HiddenCode;
+        point=path_info[i].point;
+        points[0]=point;
+        bounds.x1=point.x;
+        bounds.x2=point.x;
+        direction=0;
+        n=1;
+        continue;
+      }
+    /*
+      Line to.
+    */
+    next_direction=((path_info[i].point.y > point.y) ||
+       ((path_info[i].point.y == point.y) &&
+        (path_info[i].point.x > point.x))) ? 1 : -1;
+    if (direction && (direction != next_direction))
+      {
+        /*
+          New edge.
+        */
+        point=points[n-1];
+        if (edge == number_edges)
+          {
+            number_edges<<=1;
+            ReacquireMemory((void **) &polygon_info->edges,
+              number_edges*sizeof(EdgeInfo));
+            if (polygon_info->edges == (EdgeInfo *) NULL)
+              return((PolygonInfo *) NULL);
+          }
+        polygon_info->edges[edge].number_points=n;
+        polygon_info->edges[edge].scanline=(-1.0);
+        polygon_info->edges[edge].highwater=0;
+        polygon_info->edges[edge].hidden=hidden;
+        polygon_info->edges[edge].direction=direction > 0;
+        if (direction < 0)
+          ReversePoints(points,n);
+        polygon_info->edges[edge].points=points;
+        polygon_info->edges[edge].bounds=bounds;
+        polygon_info->edges[edge].bounds.y1=points[0].y;
+        polygon_info->edges[edge].bounds.y2=points[n-1].y;
+        number_points=16;
+        points=(PointInfo *) AcquireMemory(number_points*sizeof(PointInfo));
+        if (points == (PointInfo *) NULL)
+          return((PolygonInfo *) NULL);
+        n=1;
+        hidden=False;
+        points[0]=point;
+        bounds.x1=point.x;
+        bounds.x2=point.x;
+        edge++;
+      }
+    direction=next_direction;
+    if (points == (PointInfo *) NULL)
+      continue;
+    if (n == number_points)
+      {
+        number_points<<=1;
+        ReacquireMemory((void **) &points,number_points*sizeof(PointInfo));
+        if (points == (PointInfo *) NULL)
+          return((PolygonInfo *) NULL);
+      }
+    point=path_info[i].point;
+    points[n]=point;
+    if (point.x < bounds.x1)
+      bounds.x1=point.x;
+    if (point.x > bounds.x2)
+      bounds.x2=point.x;
+    n++;
+  }
+  if (points != (PointInfo *) NULL)
     {
-      alpha=sqrt(*distance)-mid-0.5;
-      return(Max(opacity,alpha*alpha));
+      if (n < 2)
+        LiberateMemory((void **) &points);
+      else
+        {
+          if (edge == number_edges)
+            {
+              number_edges<<=1;
+              ReacquireMemory((void **) &polygon_info->edges,
+                number_edges*sizeof(EdgeInfo));
+              if (polygon_info->edges == (EdgeInfo *) NULL)
+                return((PolygonInfo *) NULL);
+            }
+          polygon_info->edges[edge].number_points=n;
+          polygon_info->edges[edge].scanline=(-1.0);
+          polygon_info->edges[edge].highwater=0;
+          polygon_info->edges[edge].hidden=hidden;
+          polygon_info->edges[edge].direction=direction > 0;
+          if (direction < 0)
+            ReversePoints(points,n);
+          polygon_info->edges[edge].points=points;
+          polygon_info->edges[edge].bounds=bounds;
+          polygon_info->edges[edge].bounds.y1=points[0].y;
+          polygon_info->edges[edge].bounds.y2=points[n-1].y;
+          hidden=False;
+          edge++;
+        }
     }
-  return(opacity);
+  polygon_info->number_edges=edge;
+  qsort(polygon_info->edges,polygon_info->number_edges,sizeof(EdgeInfo),
+    CompareEdges);
+  return(polygon_info);
 }
 
-static void DrawPolygonPrimitive(PrimitiveInfo *primitive_info,
-  const DrawInfo *draw_info,Image *image)
+static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
+{
+  int
+    code,
+    coordinates,
+    path_length,
+    start;
+
+  PathInfo
+    *path_info;
+
+  PointInfo
+    first,
+    last,
+    point;
+
+  register int
+    i,
+    n;
+
+  /*
+    Converts a PrimitiveInfo structure into a vector path structure.
+  */
+  switch (primitive_info->primitive)
+  {
+    case PointPrimitive:
+    case ColorPrimitive:
+    case MattePrimitive:
+    case TextPrimitive:
+    case ImagePrimitive:
+      return((PathInfo *) NULL);
+    default:
+      break;
+  }
+  coordinates=0;
+  n=0;
+  last.x=(-1.0);
+  last.y=(-1.0);
+  path_length=0;
+  path_info=(PathInfo *) NULL;
+  for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
+  {
+    point=primitive_info[i].point;
+    code=LineToCode;
+    if (coordinates <= 0)
+      {
+        coordinates=primitive_info[i].coordinates;
+        path_length+=coordinates+3;
+        if (path_info == (PathInfo *) NULL)
+          path_info=(PathInfo *) AcquireMemory(path_length*sizeof(PathInfo));
+        else
+          ReacquireMemory((void **) &path_info,path_length*sizeof(PathInfo));
+        if (path_info == (PathInfo *) NULL)
+          return((PathInfo *) NULL);
+        start=n;
+        first=point;
+        code=MoveToCode;
+      }
+    coordinates--;
+    /*
+      Reject duplicate points.
+    */
+    if ((fabs(last.x-point.x) > MagickEpsilon) ||
+        (fabs(last.y-point.y) > MagickEpsilon))
+      {
+        path_info[n].code=code;
+        path_info[n].point=point;
+        last=point;
+        n++;
+      }
+    if (coordinates > 0)
+      continue;
+    if ((fabs(first.x-point.x) <= MagickEpsilon) &&
+        (fabs(first.y-point.y) <= MagickEpsilon))
+      continue;
+    /*
+      Mark the first point as open if it does not match the last.
+    */
+    path_info[start].code=OpenCode;
+    path_info[n].code=HiddenCode;
+    path_info[n].point=point;
+    n++;
+    path_info[n].code=LineToCode;
+    path_info[n].point=first;
+    n++;
+  }
+  path_info[n].code=EndCode;
+  path_info[n].point.x=0.0;
+  path_info[n].point.y=0.0;
+  return(path_info);
+}
+
+static int DestroyEdge(PolygonInfo *polygon_info,const int edge)
+{
+  register int
+    i;
+
+  if (edge >= polygon_info->number_edges)
+    return(polygon_info->number_edges);
+  LiberateMemory((void **) &polygon_info->edges[edge].points);
+  for (i=edge; i < polygon_info->number_edges; i++)
+    polygon_info->edges[i]=polygon_info->edges[i+1];
+  polygon_info->number_edges--;
+  return(polygon_info->number_edges);
+}
+
+static void DestroyPolygonInfo(PolygonInfo *polygon_info)
+{
+  register int
+    i;
+
+  for (i=0; i < polygon_info->number_edges; i++)
+    LiberateMemory((void **) &polygon_info->edges[i].points);
+  LiberateMemory((void **) &polygon_info->edges);
+  LiberateMemory((void **) &polygon_info);
+}
+
+static inline double DistanceToLine(const PointInfo *p,const double x,
+  const double y)
 {
   double
     alpha,
     beta,
+    dot_product;
+
+  register const PointInfo
+    *q;
+
+  register double
+    dx,
+    dy;
+
+  /*
+    Determine distance between a point and a specific edge.
+  */
+  q=p+1;
+  dx=q->x-p->x,
+  dy=q->y-p->y;
+  dot_product=dx*(x-p->x)+dy*(y-p->y);
+  if (dot_product < 0.0)
+    return((x-p->x)*(x-p->x)+(y-p->y)*(y-p->y));
+  alpha=dx*dx+dy*dy;
+  if (dot_product > alpha)
+    return((x-q->x)*(x-q->x)+(y-q->y)*(y-q->y));
+  beta=dx*(y-p->y)-dy*(x-p->x);
+  return(beta*beta/alpha+MagickEpsilon);
+}
+
+static void DrawBoundingRectangles(Image *image,const PolygonInfo *polygon_info)
+{
+  double
+    mid;
+
+  DrawInfo
+    *draw_info;
+
+  int
+    coordinates;
+
+  PointInfo
+    end,
+    start;
+
+  PrimitiveInfo
+    primitive_info[6];
+
+  register int
+    i;
+
+  SegmentInfo
+    bounds;
+
+  draw_info=CloneDrawInfo((const ImageInfo *) NULL,(const DrawInfo *) NULL);
+  QueryColorDatabase("none",&draw_info->fill);
+  mid=(image->x_resolution/72.0)*draw_info->linewidth/2.0;
+  if (polygon_info != (PolygonInfo *) NULL)
+    {
+      bounds=polygon_info->edges[0].bounds;
+      for (i=1; i < polygon_info->number_edges; i++)
+      {
+        if (polygon_info->edges[i].bounds.x1 < bounds.x1)
+          bounds.x1=polygon_info->edges[i].bounds.x1;
+        if (polygon_info->edges[i].bounds.y1 < bounds.y1)
+          bounds.y1=polygon_info->edges[i].bounds.y1;
+        if (polygon_info->edges[i].bounds.x2 > bounds.x2)
+          bounds.x2=polygon_info->edges[i].bounds.x2;
+        if (polygon_info->edges[i].bounds.y2 > bounds.y2)
+          bounds.y2=polygon_info->edges[i].bounds.y2;
+      }
+      bounds.x1-=(mid-0.5);
+      if (bounds.x1 < 0.0)
+        bounds.x1=0.0;
+      bounds.y1-=(mid-0.5);
+      if (bounds.y1 < 0.0)
+        bounds.y1=0.0;
+      bounds.x2+=(mid-0.5);
+      if (bounds.x2 >= image->columns)
+        bounds.x2=image->columns-1.0;
+      bounds.y2+=(mid-0.5);
+      if (bounds.y2 >= image->rows)
+        bounds.y2=image->rows-1.0;
+      for (i=0; i < polygon_info->number_edges; i++)
+      {
+        if (polygon_info->edges[i].direction)
+          QueryColorDatabase("red",&draw_info->stroke);
+        else
+          QueryColorDatabase("green",&draw_info->stroke);
+        start.x=floor(polygon_info->edges[i].bounds.x1-mid);
+        start.y=floor(polygon_info->edges[i].bounds.y1-mid);
+        end.x=ceil(polygon_info->edges[i].bounds.x2+mid);
+        end.y=ceil(polygon_info->edges[i].bounds.y2+mid);
+        primitive_info[0].primitive=RectanglePrimitive;
+        GenerateRectangle(primitive_info,start,end);
+        primitive_info[0].method=ReplaceMethod;
+        coordinates=primitive_info[0].coordinates;
+        primitive_info[coordinates].primitive=UndefinedPrimitive;
+        DrawPrimitive(draw_info,primitive_info,image);
+      }
+    }
+  QueryColorDatabase("blue",&draw_info->stroke);
+  start.x=floor(bounds.x1-mid);
+  start.y=floor(bounds.y1-mid);
+  end.x=ceil(bounds.x2+mid);
+  end.y=ceil(bounds.y2+mid);
+  primitive_info[0].primitive=RectanglePrimitive;
+  GenerateRectangle(primitive_info,start,end);
+  primitive_info[0].method=ReplaceMethod;
+  coordinates=primitive_info[0].coordinates;
+  primitive_info[coordinates].primitive=UndefinedPrimitive;
+  DrawPrimitive(draw_info,primitive_info,image);
+  DestroyDrawInfo(draw_info);
+}
+
+static inline int GetWindingNumber(const PolygonInfo *polygon_info,
+  const double x,const double y)
+{
+  int
+    j,
+    winding_number;
+
+  register double
+    dx,
+    dy;
+
+  register int
+    i;
+
+  register PointInfo
+    *p,
+    *q;
+
+  winding_number=0;
+  for (i=0; i < polygon_info->number_edges; i++)
+  {
+    if (polygon_info->edges[i].bounds.y1 > y)
+      break;
+    if (polygon_info->edges[i].bounds.y2 <= y)
+      continue;
+    if (polygon_info->edges[i].bounds.x2 < x)
+      {
+        winding_number+=polygon_info->edges[i].direction ? 1 : -1;
+        continue;
+      }
+    if (polygon_info->edges[i].bounds.x1 > x)
+      continue;
+    j=1;
+    if (polygon_info->edges[i].highwater > 0)
+      j=polygon_info->edges[i].highwater;
+    for ( ; j < polygon_info->edges[i].number_points; j++)
+      if (polygon_info->edges[i].points[j].y > y)
+        break;
+    p=polygon_info->edges[i].points+j-1;
+    q=p+1;
+    dx=q->x-p->x;
+    dy=q->y-p->y;
+    if ((dy*(x-p->x)) <= (dx*(y-p->y)))
+      continue;
+    winding_number+=polygon_info->edges[i].direction ? 1 : -1;
+  }
+  return(winding_number);
+}
+
+static void PrintPathInfo(const PathInfo *path_info)
+{
+  register int
+    i;
+
+  (void) fprintf(stdout,"begin vector-path\n");
+  for (i=0; path_info[i].code != EndCode; i++)
+    fprintf(stdout,"  %g %g %s\n",path_info[i].point.x,path_info[i].point.y,
+      path_info[i].code == HiddenCode ? "moveto hidden" :
+      path_info[i].code == OpenCode ? "moveto open" :
+      path_info[i].code == MoveToCode ? "moveto" :
+      path_info[i].code == LineToCode ? "lineto" : "?");
+  (void) fprintf(stdout,"end vector-path\n");
+}
+
+static void PrintPolygonInfo(const PolygonInfo *polygon_info)
+{
+  register int
+    i,
+    j;
+
+  (void) fprintf(stdout,"begin active-edge\n");
+  for (i=0; i < polygon_info->number_edges; i++)
+  {
+    (void) fprintf(stdout,
+      "  edge %d, direction = %s hidden = %s (%f, %f) - (%f, %f)\n",i,
+      polygon_info->edges[i].direction ? "down" : "up",
+      polygon_info->edges[i].hidden ? "hide" : "show",
+      polygon_info->edges[i].bounds.x1,polygon_info->edges[i].bounds.y1,
+      polygon_info->edges[i].bounds.x2,polygon_info->edges[i].bounds.y2);
+    for (j=0; j < polygon_info->edges[i].number_points; j++)
+      (void) fprintf(stdout,"  (%g, %g)\n",polygon_info->edges[i].points[j].x,
+        polygon_info->edges[i].points[j].y);
+  }
+  (void) fprintf(stdout,"end active-edge\n");
+}
+
+static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
+{
+  char
+    *methods[] =
+    {
+      "point",
+      "replace",
+      "floodfill",
+      "filltoborder",
+      "reset",
+      "?"
+    };
+
+  int
+    coordinates,
+    y;
+
+  PointInfo
+    first,
+    last,
+    point;
+
+  register int
+    i,
+    x;
+
+  x=(int) ceil(primitive_info->point.x-0.5);
+  y=(int) ceil(primitive_info->point.y-0.5);
+  switch (primitive_info->primitive)
+  {
+    case PointPrimitive:
+    {
+      (void) fprintf(stdout,"PointPrimitive %d,%d %s\n",x,y,
+        methods[primitive_info->method]);
+      return;
+    }
+    case ColorPrimitive:
+    {
+      (void) fprintf(stdout,"ColorPrimitive %d,%d %s\n",x,y,
+        methods[primitive_info->method]);
+      return;
+    }
+    case MattePrimitive:
+    {
+      (void) fprintf(stdout,"MattePrimitive %d,%d %s\n",x,y,
+        methods[primitive_info->method]);
+      return;
+    }
+    case TextPrimitive:
+    {
+      (void) fprintf(stdout,"TextPrimitive %d,%d\n",x,y);
+      return;
+    }
+    case ImagePrimitive:
+    {
+      (void) fprintf(stdout,"ImagePrimitive %d,%d\n",x,y);
+      return;
+    }
+    default:
+      break;
+  }
+  coordinates=0;
+  last.x=(-1.0);
+  last.y=(-1.0);
+  for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
+  {
+    point=primitive_info[i].point;
+    if (coordinates <= 0)
+      {
+        coordinates=primitive_info[i].coordinates;
+        (void) fprintf(stdout,"Opened (%d)\n",coordinates);
+        first=point;
+      }
+    point=primitive_info[i].point;
+    if ((fabs(last.x-point.x) <= MagickEpsilon) &&
+        (fabs(last.y-point.y) <= MagickEpsilon))
+      (void) fprintf(stdout,"%d) duplicate %f,%f\n",coordinates,point.x,
+        point.y);
+    else
+      (void) fprintf(stdout,"%d) %f,%f\n",coordinates,point.x,point.y);
+    last=point;
+    coordinates--;
+    if (coordinates > 0)
+      continue;
+    if ((fabs(first.x-point.x) <= MagickEpsilon) &&
+        (fabs(first.y-point.y) <= MagickEpsilon))
+      (void) fprintf(stdout,"Closed (%d)\n",coordinates);
+    else
+      (void) fprintf(stdout,"LastPoint (%d)\n",coordinates);
+  }
+}
+
+static void ReversePoints(PointInfo *points,const int number_points)
+{
+  PointInfo
+    point;
+
+  register int
+    i;
+
+  for (i=0; i < (number_points >> 1); i++)
+  {
+    point=points[i];
+    points[i]=points[number_points-(i+1)];
+    points[number_points-(i+1)]=point;
+  }
+}
+
+static void DrawPolygonPrimitive(const DrawInfo *draw_info,
+  const PrimitiveInfo *primitive_info,PolygonInfo *polygon_info,Image *image)
+{
+  double
+    alpha,
     distance,
     fill_opacity,
     mid,
-    minimum_distance,
     stroke_opacity,
     subpath_opacity;
 
   int
-    crossing,
-    crossings,
+    fill,
+    j,
+    number_edges,
+    winding_number,
     y;
 
   PixelPacket
     color;
 
-  PointInfo
-    point;
+  register EdgeInfo
+    *p;
 
   register int
+    i,
     x;
 
   register PixelPacket
     *q;
-
-  register PrimitiveInfo
-    *p;
 
   SegmentInfo
     bounds;
@@ -1363,23 +2210,24 @@ static void DrawPolygonPrimitive(PrimitiveInfo *primitive_info,
   assert(draw_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  p=primitive_info;
-  bounds.x1=p->point.x;
-  bounds.x2=p->point.x;
-  bounds.y1=p->point.y;
-  bounds.y2=p->point.y;
-  for (p++ ; p->primitive != UndefinedPrimitive; p++)
-  {
-    if (p->point.x < bounds.x1)
-      bounds.x1=p->point.x;
-    if (p->point.y < bounds.y1)
-      bounds.y1=p->point.y;
-    if (p->point.x > bounds.x2)
-      bounds.x2=p->point.x;
-    if (p->point.y > bounds.y2)
-      bounds.y2=p->point.y;
-  }
+  bounds=polygon_info->edges[0].bounds;
+  fill=False;
+  if ((primitive_info->method == FillToBorderMethod) ||
+      (primitive_info->method == FloodfillMethod))
+    fill=True;
   mid=draw_info->linewidth/2.0;
+  for (i=1; i < polygon_info->number_edges; i++)
+  {
+    p=polygon_info->edges+i;
+    if (p->bounds.x1 < bounds.x1)
+      bounds.x1=p->bounds.x1;
+    if (p->bounds.y1 < bounds.y1)
+      bounds.y1=p->bounds.y1;
+    if (p->bounds.x2 > bounds.x2)
+      bounds.x2=p->bounds.x2;
+    if (p->bounds.y2 > bounds.y2)
+      bounds.y2=p->bounds.y2;
+  }
   bounds.x1-=(mid+1.0);
   if (bounds.x1 < 0.0)
     bounds.x1=0.0;
@@ -1394,7 +2242,6 @@ static void DrawPolygonPrimitive(PrimitiveInfo *primitive_info,
     bounds.y2=image->rows-1.0;
   for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
   {
-    point.y=y;
     x=(int) ceil(bounds.x1-0.5);
     q=GetImagePixels(image,x,y,(int) floor(bounds.x2-0.5)-x+1,1);
     if (q == (PixelPacket *) NULL)
@@ -1404,99 +2251,90 @@ static void DrawPolygonPrimitive(PrimitiveInfo *primitive_info,
       /*
         Compute the stroke and fill opacity values.
       */
-      p=primitive_info;
-      point.x=x;
       fill_opacity=0.0;
       stroke_opacity=0.0;
+      subpath_opacity=0.0;
       switch (primitive_info->coordinates)
       {
         case 0:
           break;
         case 1:
         {
-          if ((point.x == (int) ceil(p->point.x-0.5)) &&
-              (point.y == (int) ceil(p->point.y-0.5)))
+          if ((x == (int) ceil(primitive_info->point.x-0.5)) &&
+              (y == (int) ceil(primitive_info->point.y-0.5)))
             stroke_opacity=1.0;
-          break;
-        }
-        case 2:
-        {
-          stroke_opacity=PixelOnLine(&point,&p->point,&(p+1)->point,mid,0.0,
-            &distance);
           break;
         }
         default:
         {
-          register PrimitiveInfo
-            *q;
-
-          while (p->primitive != UndefinedPrimitive)
+          winding_number=fill ? GetWindingNumber(polygon_info,x,y) : 0;
+          number_edges=polygon_info->number_edges;
+          for (i=0; i < number_edges; i++)
           {
-            q=p+p->coordinates-1;
-            subpath_opacity=PixelOnLine(&point,&p->point,&q->point,1.0,0.0,
-              &minimum_distance);
-            crossings=0;
-            if ((point.y < q->point.y) != (point.y < p->point.y))
+            p=polygon_info->edges+i;
+            if ((p->bounds.y1-mid-0.5) > y)
+              break;
+            if ((p->bounds.y2+mid+0.5) < y)
               {
-                crossing=point.x < q->point.x;
-                if (crossing != (point.x < p->point.x))
-                  crossings+=point.x < (q->point.x-(q->point.y-point.y)*
-                    (p->point.x-q->point.x)/(p->point.y-q->point.y));
-                else
-                  if (crossing)
-                    crossings++;
+                number_edges=DestroyEdge(polygon_info,i);
+                continue;
               }
-            for (p++; (p <= q); p++)
+            if (x > (p->bounds.x2+mid+0.5))
+              continue;
+            if (x < (p->bounds.x1-mid-0.5))
+              continue;
+            j=p->highwater > 0 ? p->highwater : 1;
+            for ( ; j < p->number_points; j++)
             {
-              stroke_opacity=PixelOnLine(&point,&(p-1)->point,&p->point,mid,
-                stroke_opacity,&distance);
-              if (distance < minimum_distance)
-                minimum_distance=distance;
-              if ((primitive_info->method == FillToBorderMethod) &&
-                  (fill_opacity != 0.0) && (subpath_opacity != 1.0))
-                subpath_opacity=PixelOnLine(&point,&(p-1)->point,&p->point,1.0,
-                  subpath_opacity,&distance);
-              if (point.y < (p-1)->point.y)
+              if ((p->points[j-1].y-mid-0.5) > y)
+                break;
+              if ((p->points[j].y+mid+0.5) <= y)
+                continue;
+              if (p->scanline != y)
                 {
-                  if (point.y < p->point.y)
-                    continue;
-                  crossing=point.x < (p-1)->point.x;
-                  if (crossing != (point.x < p->point.x))
-                    crossings+=x < ((p-1)->point.x-((p-1)->point.y-point.y)*
-                      (p->point.x-(p-1)->point.x)/(p->point.y-(p-1)->point.y));
-                  else
-                    if (crossing)
-                      crossings++;
+                  p->scanline=y;
+                  p->highwater=j;
+                }
+              distance=DistanceToLine(p->points+j-1,x,y);
+              if (!p->hidden)
+                {
+                  if ((distance <= ((mid+0.5)*(mid+0.5))) &&
+                      (stroke_opacity < 1.0))
+                    {
+                      if (distance <= ((mid-0.5)*(mid-0.5)))
+                        stroke_opacity=1.0;
+                      else
+                        {
+                          alpha=sqrt(distance)-(mid+0.5);
+                          stroke_opacity=Max(stroke_opacity,alpha*alpha);
+                        }
+                    }
+                }
+              if (!fill)
+                continue;
+              if ((distance > 1.0) || (subpath_opacity >= 1.0))
+                continue;
+              if (distance <= 0.0)
+                {
+                  subpath_opacity=1.0;
                   continue;
                 }
-              if (point.y >= p->point.y)
+              if (distance > 1.0)
                 continue;
-              crossing=point.x < (p-1)->point.x;
-              if (crossing != (point.x < p->point.x))
-                crossings+=point.x < ((p-1)->point.x-((p-1)->point.y-point.y)*
-                  (p->point.x-(p-1)->point.x)/(p->point.y-(p-1)->point.y));
-              else
-                if (crossing)
-                  crossings++;
+              alpha=sqrt(distance)-1.0;
+              subpath_opacity=Max(subpath_opacity,alpha*alpha);
             }
-            if ((primitive_info->method == FillToBorderMethod) &&
-                (fill_opacity != 0.0))
-              if ((crossings & 0x01)|| (minimum_distance <= (0.5*0.5)))
-                {
-                  fill_opacity=subpath_opacity;
-                  continue;
-                }
-            if (!draw_info->stroke_antialias || (minimum_distance > (0.5*0.5)))
-              {
-                if (crossings & 0x01)
-                  fill_opacity=1.0;
-                continue;
-              }
-            alpha=0.5+(crossings & 0x01 ? 1.0 : -1.0)*sqrt(minimum_distance);
-            beta=alpha*alpha;
-            if (beta > fill_opacity)
-              fill_opacity=beta;
           }
+          if (!fill)
+            break;
+          if (subpath_opacity > 0.0)
+            fill_opacity=subpath_opacity;
+          if (winding_number < 0)
+            if ((-winding_number) & 0x01)
+              fill_opacity=1.0;
+          if (winding_number > 0)
+            if (winding_number & 0x01)
+              fill_opacity=1.0;
           break;
         }
       }
@@ -1559,21 +2397,21 @@ static void DrawPolygonPrimitive(PrimitiveInfo *primitive_info,
 %
 %  The format of the DrawPrimitive method is:
 %
-%      void DrawPrimitive(Image *image,const DrawInfo *draw_info,
-%        PrimitiveInfo *primitive_info))
+%      void DrawPrimitive(const DrawInfo *draw_info,
+%        PrimitiveInfo *primitive_info,Image *image)
 %
 %  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image.
 %
 %    o draw_info: The address of a DrawInfo structure.
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
 %
+%    o image: The address of a structure of type Image.
+%
 %
 */
-static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
-  PrimitiveInfo *primitive_info)
+static void DrawPrimitive(const DrawInfo *draw_info,
+  PrimitiveInfo *primitive_info,Image *image)
 {
   int
     y;
@@ -1733,8 +2571,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
       clone_info->font=AllocateString(draw_info->font);
       clone_info->antialias=draw_info->text_antialias;
       clone_info->pointsize=draw_info->pointsize;
-      for (i=0; i < 6; i++)
-        clone_info->affine[i]=draw_info->affine[i];
+      clone_info->affine=draw_info->affine;
       annotate=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
       DestroyImageInfo(clone_info);
       annotate->degrees=draw_info->angle;
@@ -1778,9 +2615,9 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
             primitive_info[1].point.y);
           TransformImage(&composite_image,(char *) NULL,geometry);
         }
-      if ((draw_info->affine[1] == 0.0) && (draw_info->affine[2] == 0.0))
+      if ((draw_info->affine.rx == 0.0) && (draw_info->affine.ry == 0.0))
         {
-          if ((draw_info->affine[0] != 1.0) || (draw_info->affine[0] != 1.0))
+          if ((draw_info->affine.sx != 1.0) || (draw_info->affine.sx != 1.0))
             {
               Image
                 *scale_image;
@@ -1790,9 +2627,9 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
                 width;
 
               width=(unsigned int)
-                (draw_info->affine[0]*composite_image->columns);
+                (draw_info->affine.sx*composite_image->columns);
               height=(unsigned int)
-                (draw_info->affine[3]*composite_image->rows);
+                (draw_info->affine.sy*composite_image->rows);
               scale_image=ZoomImage(composite_image,width,height,
                 &image->exception);
               if (scale_image != (Image *) NULL)
@@ -1804,8 +2641,8 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
         }
       else
         {
-          if (((draw_info->affine[0]-draw_info->affine[3]) == 0.0) &&
-              ((draw_info->affine[1]+draw_info->affine[2]) == 0.0))
+          if (((draw_info->affine.sx-draw_info->affine.sy) == 0.0) &&
+              ((draw_info->affine.rx+draw_info->affine.ry) == 0.0))
             {
               double
                 theta;
@@ -1814,7 +2651,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
                 *rotate_image;
 
               theta=(180.0/M_PI)*
-                atan2(draw_info->affine[1],draw_info->affine[0]);
+                atan2(draw_info->affine.rx,draw_info->affine.sx);
               rotate_image=
                 RotateImage(composite_image,theta,&image->exception);
               if (rotate_image != (Image *) NULL)
@@ -1831,7 +2668,30 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
     }
     default:
     {
-      DrawPolygonPrimitive(primitive_info,draw_info,image);
+      PathInfo
+        *path_info;
+
+      PolygonInfo
+        *polygon_info;
+
+      if (draw_info->verbose)
+        PrintPrimitiveInfo(primitive_info);
+      path_info=ConvertPrimitiveToPath(primitive_info);
+      if (path_info == (PathInfo *) NULL)
+        return;
+      if (draw_info->verbose)
+        PrintPathInfo(path_info);
+      polygon_info=ConvertPathToPolygon(path_info);
+      LiberateMemory((void **) &path_info);
+      if (polygon_info == (PolygonInfo *) NULL)
+        return;
+      if (draw_info->verbose)
+        PrintPolygonInfo(polygon_info);
+#ifdef DEBUG_BOUND_BOXES
+      DrawBoundingRectangles(image,polygon_info);
+#endif
+      DrawPolygonPrimitive(draw_info,primitive_info,polygon_info,image);
+      DestroyPolygonInfo(polygon_info);
       break;
     }
   }
@@ -2035,20 +2895,26 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
   LiberateMemory((void **) &coefficients);
 }
 
-static void GenerateCircle(PrimitiveInfo *primitive_info,PointInfo start,
-  PointInfo end)
+static void GenerateCircle(PrimitiveInfo *primitive_info,const PointInfo start,
+  const PointInfo end)
 {
-  PointInfo
-    arc;
+  double
+    alpha,
+    beta,
+    radius;
 
-  arc.x=end.x-start.x;
-  arc.y=end.y-start.y;
-  arc.x=sqrt(arc.x*arc.x+arc.y*arc.y);
-  arc.y=arc.x;
-  start.x-=arc.x;
-  end.x=start.x;
-  end.y=start.y-MagickEpsilon;
-  GenerateArc(primitive_info,start,end,arc,0,True,False);
+  PointInfo
+    offset,
+    degrees;
+
+  alpha=end.x-start.x;
+  beta=end.y-start.y;
+  radius=sqrt(alpha*alpha+beta*beta);
+  offset.x=radius;
+  offset.y=radius;
+  degrees.x=0.0;
+  degrees.y=360.0;
+  GenerateEllipse(primitive_info,start,offset,degrees);
 }
 
 static void GenerateEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
@@ -2139,11 +3005,12 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
   z_count=0;
   primitive_type=primitive_info->primitive;
   q=primitive_info;
-  p=(char *) path;
-  while (*p != '\0')
+  for (p=(char *) path; *p != '\0'; )
   {
     while (isspace((int) *p))
       p++;
+    if (*p == '\0')
+      break;
     attribute=(*p++);
     switch (attribute)
     {
@@ -2224,10 +3091,13 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       case 'H':
       case 'h':
       {
-        x=strtod(p,&p);
-        point.x=attribute == 'H' ? x: point.x+x;
-        GeneratePoint(q,point);
-        q+=q->coordinates;
+        do
+        {
+          x=strtod(p,&p);
+          point.x=attribute == 'H' ? x: point.x+x;
+          GeneratePoint(q,point);
+          q+=q->coordinates;
+        } while (IsGeometry(p));
         break;
       }
       case 'l':
@@ -2371,10 +3241,13 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       case 'v':
       case 'V':
       {
-        y=strtod(p,&p);
-        point.y=attribute == 'V' ? y : point.y+y;
-        GeneratePoint(q,point);
-        q+=q->coordinates;
+        do
+        {
+          y=strtod(p,&p);
+          point.y=attribute == 'V' ? y : point.y+y;
+          GeneratePoint(q,point);
+          q+=q->coordinates;
+        } while (IsGeometry(p));
         break;
       }
       case 'z':
@@ -2547,8 +3420,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   assert(image_info->signature == MagickSignature);
   assert(draw_info != (DrawInfo *) NULL);
   memset(draw_info,0,sizeof(DrawInfo));
-  for (i=0; i < 6; i++)
-    draw_info->affine[i]=image_info->affine[i];
+  draw_info->affine=image_info->affine;
   draw_info->gravity=NorthWestGravity;
   draw_info->fill=image_info->fill;
   draw_info->stroke=image_info->stroke;

@@ -380,8 +380,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           pixel=(double) (*((float *) &quantum));
         if (fits_info.bits_per_pixel == -64)
           pixel=(double) (*((double *) long_quantum));
-        fits_info.min_data=pixel*fits_info.scale+fits_info.zero;
-        fits_info.max_data=pixel*fits_info.scale+fits_info.zero;
+        fits_info.min_data=pixel*fits_info.scale-fits_info.zero;
+        fits_info.max_data=pixel*fits_info.scale-fits_info.zero;
         for (i=1; i < (int) (image->columns*image->rows); i++)
         {
           long_quantum[0]=(*p);
@@ -399,7 +399,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
             pixel=(double) (*((float *) &quantum));
           if (fits_info.bits_per_pixel == -64)
             pixel=(double) (*((double *) long_quantum));
-          scaled_pixel=pixel*fits_info.scale+fits_info.zero;
+          scaled_pixel=pixel*fits_info.scale-fits_info.zero;
           if (scaled_pixel < fits_info.min_data)
             fits_info.min_data=scaled_pixel;
           if (scaled_pixel > fits_info.max_data)
@@ -439,12 +439,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           pixel=(double) (*((double *) long_quantum));
         scaled_pixel=scale*
           (pixel*fits_info.scale-fits_info.min_data-fits_info.zero);
-        if (scaled_pixel < 0)
-          scaled_pixel=0;
-        else
-          if (scaled_pixel > MaxRGB)
-            scaled_pixel=MaxRGB;
-        index=(IndexPacket) (scaled_pixel+0.5);
+        index=(IndexPacket) ((scaled_pixel < 0) ? 0 :
+          (scaled_pixel > MaxRGB) ? MaxRGB : scaled_pixel+0.5);
         indexes[x]=index;
         *q++=image->colormap[index];
       }

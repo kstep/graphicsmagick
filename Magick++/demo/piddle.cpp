@@ -87,9 +87,21 @@ int main( int /*argc*/, char ** argv)
     // Draw arc within a circle.
     //
     drawList.push_back(DrawableStrokeColor("black"));
-    drawList.push_back(DrawableFillColor("blue"));
+    drawList.push_back(DrawableFillColor("yellow"));
     drawList.push_back(DrawableStrokeWidth(4));
     drawList.push_back(DrawableCircle(160,70, 200,70));
+
+    drawList.push_back(DrawableStrokeColor("black"));
+    drawList.push_back(DrawableFillColor("blue"));
+    drawList.push_back(DrawableStrokeWidth(4));
+    {
+      std::list<Path> path;
+      path.push_back(PathMovetoAbs(Coordinate(160,70)));
+      path.push_back(PathLinetoVerticalRel(-40));
+      path.push_back(PathArcRel(PathArcArgs(40,40, 0, 0, 0, -40,40)));
+      path.push_back(PathClosePath());
+      drawList.push_back(DrawablePath(path));
+    }
 
     //
     // Draw pentogram.
@@ -128,16 +140,28 @@ int main( int /*argc*/, char ** argv)
     drawList.push_back(DrawableFillColor("green"));
     drawList.push_back(DrawableStrokeColor("green"));
     drawList.push_back(DrawablePointSize(24));
-    drawList.push_back(DrawableRotation(-45.0));
-    drawList.push_back(DrawableText(30,140,"This is a test!"));
+//     drawList.push_back(DrawableRotation(-45.0));
+//     drawList.push_back(DrawableTranslation(30,40));
+    drawList.push_back(DrawableAffine(0.707107,0.707107,0.707107,-0.707107,30.000000,140.000000));
+    drawList.push_back(DrawableText(0,0,"This is a test!"));
     
     image.draw(drawList);
+
+//     image.font(font);
+//     image.fillColor("green");
+//     image.strokeColor("green");
+//     image.fontPointsize(24);
+//     image.transformRotation(-45.0);
+//     image.annotate( "This is a test!", "+30+140");
+
+
+//     image.write( "piddle.mvg" );
 
     cout << "Writing image \"piddle.miff\" ..." << endl;
     image.write( "piddle.miff" );
 
-    cout << "Display image..." << endl;
-    image.display( );
+//     cout << "Display image..." << endl;
+//     image.display( );
 
   }
   catch( Exception error_ )

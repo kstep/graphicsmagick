@@ -412,10 +412,10 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   bounds.x2=(-32000);
   bounds.y1=32000;
   bounds.y2=(-32000);
-  affine.xx=(FT_Fixed) (65536.0*image_info->affine[0]);
-  affine.yx=(FT_Fixed) (-65536.0*image_info->affine[1]);
-  affine.xy=(FT_Fixed) (-65536.0*image_info->affine[2]);
-  affine.yy=(FT_Fixed) (65536.0*image_info->affine[3]);
+  affine.xx=(FT_Fixed) (65536.0*image_info->affine.sx);
+  affine.yx=(FT_Fixed) (-65536.0*image_info->affine.rx);
+  affine.xy=(FT_Fixed) (-65536.0*image_info->affine.ry);
+  affine.yy=(FT_Fixed) (65536.0*image_info->affine.sy);
   glyph=glyphs;
   for (i=0; i < length; i++)
   {
@@ -453,8 +453,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   glyph->id=0;
   image->columns=(unsigned int) (bounds.x2-bounds.x1+1.0);
   image->rows=(unsigned int) (bounds.y2-bounds.y1+1.0);
-  if (((image_info->affine[0] != 0.0) && (image_info->affine[4] != 0.0)) ||
-      ((image_info->affine[1] != 0.0) && (image_info->affine[2] != 0.0)))
+  if (((image_info->affine.sx != 0.0) && (image_info->affine.tx != 0.0)) ||
+      ((image_info->affine.rx != 0.0) && (image_info->affine.ry != 0.0)))
     {
       image->columns+=3;
       image->rows+=3;
@@ -484,6 +484,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     for (y=0; y < bitmap->bitmap.rows; y++)
     {
       x=(int) (bitmap->left-bounds.x1+0.5);
+      i=(int) (bitmap->left-bounds.x1+0.5);
       q=GetImagePixels(image,x,(int) (image->rows-bitmap->top+bounds.y1+y+0.5),
         bitmap->bitmap.width,1);
       if (q == (PixelPacket *) NULL)
@@ -699,8 +700,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   status|=TT_Set_Instance_Resolutions(instance,(unsigned short)
     image->x_resolution,(unsigned short) image->y_resolution);
   pointsize=image_info->pointsize;
-  if (image_info->affine[1] == 0.0)
-    pointsize*=image_info->affine[0];
+  if (image_info->affine.rx == 0.0)
+    pointsize*=image_info->affine.sx;
   status|=TT_Set_Instance_CharSize(instance,(int) (64.0*pointsize));
   if (status)
     ThrowReaderException(DelegateWarning,"Cannot initialize TTF instance",
@@ -826,9 +827,9 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     if ((image->columns % 2) != 0)
       p++;
   }
-  if ((image_info->affine[1] == 0.0) && (image_info->affine[2] == 0.0))
+  if ((image_info->affine.rx == 0.0) && (image_info->affine.ry == 0.0))
     {
-      if ((image_info->affine[0] != 1.0) || (image_info->affine[0] != 1.0))
+      if ((image_info->affine.sx != 1.0) || (image_info->affine.sx != 1.0))
         {
           Image
             *scale_image;
@@ -837,8 +838,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
             height,
             width;
 
-          width=image_info->affine[0]*image->columns;
-          height=image_info->affine[3]*image->rows;
+          width=image_info->affine.sx*image->columns;
+          height=image_info->affine.sy*image->rows;
           scale_image=ZoomImage(image,width,height,exception);
           if (scale_image != (Image *) NULL)
             {
@@ -849,8 +850,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     }
   else
     {
-      if (((image_info->affine[0]-image_info->affine[3]) == 0.0) &&
-          ((image_info->affine[1]+image_info->affine[2]) == 0.0))
+      if (((image_info->affine.sx-image_info->affine.sy) == 0.0) &&
+          ((image_info->affine.rx+image_info->affine.ry) == 0.0))
         {
           double
             theta;
@@ -858,7 +859,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
           Image
             *rotate_image;
 
-          theta=(180.0/M_PI)*atan2(image_info->affine[1],image_info->affine[0]);
+          theta=(180.0/M_PI)*atan2(image_info->affine.rx,image_info->affine.sx);
           rotate_image=RotateImage(image,theta,exception);
           if (rotate_image != (Image *) NULL)
             {
@@ -947,16 +948,16 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   /*
     Sample to compute bounding box.
   */
-  identity=(image_info->affine[0] == image_info->affine[3]) &&
-    (image_info->affine[1] == 0.0) && (image_info->affine[2] == 0.0);
+  identity=(image_info->affine.sx == image_info->affine.sy) &&
+    (image_info->affine.rx == 0.0) && (image_info->affine.ry == 0.0);
   extent.x=0;
   extent.y=0;
   for (x=0; x <= (Extent(text)+2); x++)
   {
-    point.x=fabs(image_info->affine[0]*x*image_info->pointsize+
-      image_info->affine[2]*2.0*image_info->pointsize);
-    point.y=fabs(image_info->affine[1]*x*image_info->pointsize+
-      image_info->affine[3]*2.0*image_info->pointsize);
+    point.x=fabs(image_info->affine.sx*x*image_info->pointsize+
+      image_info->affine.ry*2.0*image_info->pointsize);
+    point.y=fabs(image_info->affine.rx*x*image_info->pointsize+
+      image_info->affine.sy*2.0*image_info->pointsize);
     if (point.x > extent.x)
       extent.x=point.x;
     if (point.y > extent.y)
@@ -968,9 +969,9 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
     image_info->pointsize);
   (void) fprintf(file,
     "/%.1024s-ISO dup /%.1024s ReencodeFont findfont setfont\n",font,font);
-  (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",image_info->affine[0],
-    -image_info->affine[1],-image_info->affine[2],
-    image_info->affine[3]);
+  (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",image_info->affine.sx,
+    -image_info->affine.rx,-image_info->affine.ry,
+    image_info->affine.sy);
   if (!identity)
     (void) fprintf(file,"(%.1024s) stringwidth pop -0.5 mul -0.5 rmoveto\n",
       EscapeParenthesis(text));
@@ -1004,7 +1005,7 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
         *p;
 
       crop_info.width=0;
-      crop_info.height=(unsigned int) ceil(extent.y/2.0);
+      crop_info.height=(unsigned int) ceil(extent.y/1.75);
       crop_info.x=0;
       crop_info.y=(int) floor(extent.y/8.0);
       if (image == (Image *) NULL)
@@ -1023,7 +1024,8 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
           p++;
         }
       }
-      (void) FormatString(geometry,"%ux%u%+d%+d",crop_info.width+1,
+      crop_info.width++;
+      (void) FormatString(geometry,"%ux%u%+d%+d",crop_info.width,
         crop_info.height,crop_info.x,crop_info.y);
       TransformImage(&image,geometry,(char *) NULL);
     }
@@ -1220,9 +1222,9 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
     if (!SyncImagePixels(image))
       break;
   }
-  if ((image_info->affine[1] == 0.0) && (image_info->affine[2] == 0.0))
+  if ((image_info->affine.rx == 0.0) && (image_info->affine.ry == 0.0))
     {
-      if ((image_info->affine[0] != 1.0) || (image_info->affine[0] != 1.0))
+      if ((image_info->affine.sx != 1.0) || (image_info->affine.sx != 1.0))
         {
           Image
             *scale_image;
@@ -1231,8 +1233,8 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
             height,
             width;
 
-          width=(unsigned int) (image_info->affine[0]*image->columns);
-          height=(unsigned int) (image_info->affine[3]*image->rows);
+          width=(unsigned int) (image_info->affine.sx*image->columns);
+          height=(unsigned int) (image_info->affine.sy*image->rows);
           scale_image=ZoomImage(image,width,height,exception);
           if (scale_image != (Image *) NULL)
             {
@@ -1243,8 +1245,8 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
     }
   else
     {
-      if (((image_info->affine[0]-image_info->affine[3]) == 0.0) &&
-          ((image_info->affine[1]+image_info->affine[2]) == 0.0))
+      if (((image_info->affine.sx-image_info->affine.sy) == 0.0) &&
+          ((image_info->affine.rx+image_info->affine.ry) == 0.0))
         {
           double
             theta;
@@ -1252,7 +1254,7 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
           Image
             *rotate_image;
 
-          theta=(180.0/M_PI)*atan2(image_info->affine[1],image_info->affine[0]);
+          theta=(180.0/M_PI)*atan2(image_info->affine.rx,image_info->affine.sx);
           rotate_image=RotateImage(image,theta,exception);
           if (rotate_image != (Image *) NULL)
             {

@@ -41,24 +41,8 @@ Magick::DrawableBase::~DrawableBase( void )
   // Nothing to do
 }
 
-// Copy constructor
-// Magick::DrawableBase::DrawableBase ( const DrawableBase & drawable_ )
-// {
-// }
-
-// Assignment operator
-// const Magick::DrawableBase& Magick::DrawableBase::operator = ( const Magick::DrawableBase& original_ )
-// {
-//   // If not being set to ourself
-//   if ( this != &original_ )
-//     {
-      
-//     }
-//   return *this;
-// }
-
-ostream& Magick::operator<< (ostream& stream_,
-                             const Magick::DrawableBase& drawable_)
+std::ostream& Magick::operator<< (std::ostream& stream_,
+                                  const Magick::DrawableBase& drawable_)
 {
   drawable_.print (stream_);
   return stream_;
@@ -103,8 +87,78 @@ Magick::Drawable& Magick::Drawable::operator= (const Magick::Drawable& original_
 }
 
 // Print object to stream
-ostream& Magick::operator<< (ostream& stream_,
-                             const Magick::Drawable& drawable_)
+std::ostream& Magick::operator<< (std::ostream& stream_,
+                                  const Magick::Drawable& drawable_)
+
+{
+  if (drawable_.dp != 0)
+    stream_ << *drawable_.dp;
+  return stream_;
+}
+
+//
+// PathBase implementation
+//
+// Constructor
+Magick::PathBase::PathBase( void )
+{
+  // All components are self-initializing
+}
+
+// Destructor
+Magick::PathBase::~PathBase( void )
+{
+  // Nothing to do
+}
+
+std::ostream& Magick::operator<< (std::ostream& stream_,
+                                  const Magick::PathBase& drawable_)
+{
+  drawable_.print (stream_);
+  return stream_;
+}
+
+//
+// Path surrogate implementation
+//
+// Constructor
+Magick::Path::Path ( void )
+  : dp(0)
+{
+}
+
+// Construct from PathBase
+Magick::Path::Path ( const Magick::PathBase& original_ )
+  : dp(original_.copy())
+{
+}
+
+// Destructor
+Magick::Path::~Path ( void )
+{
+  delete dp;
+}
+
+// Copy constructor
+Magick::Path::Path ( const Magick::Path& original_ )
+  : dp(original_.dp? original_.dp->copy(): 0)
+{
+}
+
+// Assignment operator
+Magick::Path& Magick::Path::operator= (const Magick::Path& original_ )
+{
+  if (this != &original_)
+    {
+      delete dp;
+      dp = (original_.dp ? original_.dp->copy() : 0);
+    }
+  return *this;
+}
+
+// Print object to stream
+std::ostream& Magick::operator<< (std::ostream& stream_,
+                                  const Magick::Path& drawable_)
 
 {
   if (drawable_.dp != 0)
@@ -117,37 +171,20 @@ ostream& Magick::operator<< (ostream& stream_,
 //
 
 // Affine (scaling, rotation, and translation)
-Magick::DrawableAffine::DrawableAffine ( double scaleX_, double scaleY_,
-                                         double rotationX_, double rotationY_,
-                                         double translationX_, double translationY_ )
-  : _scaleX(scaleX_),
-    _scaleY(scaleY_),
-    _rotationX(rotationX_),
-    _rotationY(rotationY_),
-    _translationX(translationX_),
-    _translationY(translationY_)
-{
-}
-// Support a polymorphic print-to-stream operator
-void Magick::DrawableAffine::print (ostream& stream_) const
+void Magick::DrawableAffine::print (std::ostream& stream_) const
 {
   stream_ << "affine "
-          << _scaleX
+          << _sx
           << ","
-          << _rotationX
+          << _rx
           << ","
-          << _rotationY
+          << _ry
           << ","
-          << _scaleY
+          << _sy
           << ","
-          << _translationX
+          << _tx
           << ","
-          << _translationY;
-}
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableAffine::copy() const
-{
-  return new DrawableAffine(*this);
+          << _ty;
 }
 
 // Angle (text drawing angle)
@@ -156,7 +193,7 @@ Magick::DrawableAngle::DrawableAngle ( double angle_ )
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableAngle::print (ostream& stream_) const
+void Magick::DrawableAngle::print (std::ostream& stream_) const
 {
   stream_ << "angle "
           << _angle;
@@ -180,7 +217,7 @@ Magick::DrawableArc::DrawableArc ( double startX_, double startY_,
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableArc::print (ostream& stream_) const
+void Magick::DrawableArc::print (std::ostream& stream_) const
 {
   stream_ << "arc"
           << " " << Coordinate(_startX,_startY)
@@ -199,7 +236,7 @@ Magick::DrawableBezier::DrawableBezier ( const std::list<Magick::Coordinate> &co
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableBezier::print (ostream& stream_) const
+void Magick::DrawableBezier::print (std::ostream& stream_) const
 {
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
 
@@ -229,7 +266,7 @@ Magick::DrawableCircle::DrawableCircle ( double originX_,
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableCircle::print (ostream& stream_) const
+void Magick::DrawableCircle::print (std::ostream& stream_) const
 {
   stream_ << "circle "
           << Coordinate( _originX, _originY )
@@ -251,7 +288,7 @@ Magick::DrawableColor::DrawableColor ( double x_, double y_,
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableColor::print (ostream& stream_) const
+void Magick::DrawableColor::print (std::ostream& stream_) const
 {
   stream_ << "color "
           << Coordinate(_x,_y)
@@ -286,13 +323,37 @@ Magick::DrawableBase* Magick::DrawableColor::copy() const
   return new DrawableColor(*this);
 }
 
+// Drawable Path
+Magick::DrawablePath::DrawablePath ( const std::list<Magick::Path> &path_ )
+  : _path(path_)
+{
+}
+// Support a polymorphic print-to-stream operator
+void Magick::DrawablePath::print (std::ostream& stream_) const
+{
+  std::list<Magick::Path>::const_iterator p = _path.begin();
+
+  stream_ << "path '";
+  while ( p != _path.end() )
+    {
+      stream_ << *p;
+      p++;
+    }
+  stream_ << "'";
+}
+// Return polymorphic copy of object
+Magick::DrawableBase* Magick::DrawablePath::copy() const
+{
+  return new DrawablePath(*this);
+}
+
 // Decoration (text decoration)
 Magick::DrawableTextDecoration::DrawableTextDecoration ( Magick::DecorationType decoration_ )
   : _decoration(decoration_)
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableTextDecoration::print (ostream& stream_) const
+void Magick::DrawableTextDecoration::print (std::ostream& stream_) const
 {
   stream_ << "decorate ";
 
@@ -338,7 +399,7 @@ Magick::DrawableEllipse::DrawableEllipse ( double originX_,
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableEllipse::print (ostream& stream_) const
+void Magick::DrawableEllipse::print (std::ostream& stream_) const
 {
   stream_ << "ellipse "
           << Coordinate(_originX,_originY)
@@ -357,7 +418,7 @@ Magick::DrawableFillColor::DrawableFillColor ( const Magick::Color &color_ )
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableFillColor::print (ostream& stream_) const
+void Magick::DrawableFillColor::print (std::ostream& stream_) const
 {
   stream_ << "fill "
           << string(_color);
@@ -374,7 +435,7 @@ Magick::DrawableFillOpacity::DrawableFillOpacity ( double opacity_ )
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableFillOpacity::print (ostream& stream_) const
+void Magick::DrawableFillOpacity::print (std::ostream& stream_) const
 {
   stream_ << "fill-opacity "
           << _opacity;
@@ -391,7 +452,7 @@ Magick::DrawableFont::DrawableFont ( const std::string &font_ )
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableFont::print (ostream& stream_) const
+void Magick::DrawableFont::print (std::ostream& stream_) const
 {
   stream_ << "font "
           << _font;
@@ -408,7 +469,7 @@ Magick::DrawableGravity::DrawableGravity ( Magick::GravityType gravity_ )
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableGravity::print (ostream& stream_) const
+void Magick::DrawableGravity::print (std::ostream& stream_) const
 {
   stream_ << "gravity ";
 
@@ -496,7 +557,7 @@ Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_,
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableCompositeImage::print (ostream& stream_) const
+void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
 {
   stream_ << "image "
           << Coordinate( _x, _y)
@@ -528,7 +589,7 @@ Magick::DrawableLine::DrawableLine ( double startX_,
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableLine::print (ostream& stream_) const
+void Magick::DrawableLine::print (std::ostream& stream_) const
 {
   stream_ << "line "
           << Coordinate( _startX, _startY )
@@ -550,7 +611,7 @@ Magick::DrawableMatte::DrawableMatte ( double x_, double y_,
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableMatte::print (ostream& stream_) const
+void Magick::DrawableMatte::print (std::ostream& stream_) const
 {
   stream_ << "matte "
           << Coordinate( _x, _y )
@@ -593,7 +654,7 @@ Magick::DrawablePoint::DrawablePoint ( double x_,
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawablePoint::print (ostream& stream_) const
+void Magick::DrawablePoint::print (std::ostream& stream_) const
 {
   stream_ << "point "
           << Coordinate( _x, _y );
@@ -610,7 +671,7 @@ Magick::DrawablePointSize::DrawablePointSize( double pointSize_ )
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawablePointSize::print (ostream& stream_) const
+void Magick::DrawablePointSize::print (std::ostream& stream_) const
 {
   stream_ << "pointsize "
           << _pointSize;
@@ -627,7 +688,7 @@ Magick::DrawablePolygon::DrawablePolygon ( const std::list<Magick::Coordinate> &
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawablePolygon::print (ostream& stream_) const
+void Magick::DrawablePolygon::print (std::ostream& stream_) const
 {
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
 
@@ -651,7 +712,7 @@ Magick::DrawablePolyline::DrawablePolyline ( const std::list<Magick::Coordinate>
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawablePolyline::print (ostream& stream_) const
+void Magick::DrawablePolyline::print (std::ostream& stream_) const
 {
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
 
@@ -669,6 +730,18 @@ Magick::DrawableBase* Magick::DrawablePolyline::copy() const
   return new DrawablePolyline(*this);
 }
 
+// Pop Graphic Context
+void Magick::DrawablePopGraphicContext::print (std::ostream& stream_) const
+{
+  stream_ << "pop graphic-context";
+}
+
+// Push Graphic Context
+void Magick::DrawablePushGraphicContext::print (std::ostream& stream_) const
+{
+  stream_ << "push graphic-context";
+}
+
 // Rectangle
 Magick::DrawableRectangle::DrawableRectangle ( double upperLeftX_,
                                                double upperLeftY_,
@@ -681,7 +754,7 @@ Magick::DrawableRectangle::DrawableRectangle ( double upperLeftX_,
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableRectangle::print (ostream& stream_) const
+void Magick::DrawableRectangle::print (std::ostream& stream_) const
 {
   stream_ << "rectangle "
           << Coordinate( _upperLeftX, _upperLeftY )
@@ -695,33 +768,11 @@ Magick::DrawableBase* Magick::DrawableRectangle::copy() const
 }
 
 // Apply Rotation
-Magick::DrawableRotation::DrawableRotation ( double angle_ )
-//   : DrawableAffine( -cos(DegreesToRadians(fmod(angle_,360.0))), // affine[0]
-//                     -cos(DegreesToRadians(fmod(angle_,360.0))), // affine[3]
-//                     sin(DegreesToRadians(fmod(angle_,360.0))),  // affine[1]
-//                     -sin(DegreesToRadians(fmod(angle_,360.0))), // affine[2]
-//                     0,
-//                     0
-//                     )
-  : DrawableAffine( cos(DegreesToRadians(fmod(angle_,360.0))), // affine[0]
-                    cos(DegreesToRadians(fmod(angle_,360.0))), // affine[3]
-                    -sin(DegreesToRadians(fmod(angle_,360.0))),  // affine[1]
-                    sin(DegreesToRadians(fmod(angle_,360.0))), // affine[2]
-                    0,
-                    0
-                    )
-{
-  // FIXME, should be based on defaults from ImageInfo?
-}
+
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableRotation::print (ostream& stream_) const
+void Magick::DrawableRotation::print (std::ostream& stream_) const
 {
-  DrawableAffine::print( stream_ );
-}
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableRotation::copy() const
-{
-  return new DrawableRotation(*this);
+  stream_ << "rotate " << _angle;
 }
 
 // Round Rectangle
@@ -738,7 +789,7 @@ Magick::DrawableRoundRectangle::DrawableRoundRectangle
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableRoundRectangle::print (ostream& stream_) const
+void Magick::DrawableRoundRectangle::print (std::ostream& stream_) const
 {
   stream_ << "roundRectangle"
           << " " << Coordinate(_centerX,_centerY)
@@ -752,58 +803,21 @@ Magick::DrawableBase* Magick::DrawableRoundRectangle::copy() const
 }
 
 // Apply Scaling
-Magick::DrawableScaling::DrawableScaling ( double x_, double y_ )
-  : DrawableAffine( x_, y_, 0, 0, 0, 0 )
+void Magick::DrawableScaling::print (std::ostream& stream_) const
 {
-  // FIXME, should be based on defaults from ImageInfo?
-}
-// Support a polymorphic print-to-stream operator
-void Magick::DrawableScaling::print (ostream& stream_) const
-{
-  DrawableAffine::print( stream_ );
-}
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableScaling::copy() const
-{
-  return new DrawableScaling(*this);
+  stream_ << "scale "  << _x << " " << _y;
 }
 
 // Apply Skew in the X direction
-Magick::DrawableSkewX::DrawableSkewX ( double angle_ )
-  : DrawableAffine( 1.0, 1.0,
-                    0, tan(DegreesToRadians(fmod(angle_,360.0))),
-                    0, 0 )
+void Magick::DrawableSkewX::print (std::ostream& stream_) const
 {
-  // FIXME, should be based on defaults from ImageInfo?
-}
-// Support a polymorphic print-to-stream operator
-void Magick::DrawableSkewX::print (ostream& stream_) const
-{
-  DrawableAffine::print( stream_ );
-}
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableSkewX::copy() const
-{
-  return new DrawableSkewX(*this);
+  stream_ << "skewX " << _angle;
 }
 
 // Apply Skew in the Y direction
-Magick::DrawableSkewY::DrawableSkewY ( double angle_ )
-  : DrawableAffine( 1.0, 1.0,
-                    tan(DegreesToRadians(fmod(angle_,360.0))),0,
-                    0, 0 )
+void Magick::DrawableSkewY::print (std::ostream& stream_) const
 {
-  // FIXME, should be based on defaults from ImageInfo?
-}
-// Support a polymorphic print-to-stream operator
-void Magick::DrawableSkewY::print (ostream& stream_) const
-{
-  DrawableAffine::print( stream_ );
-}
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableSkewY::copy() const
-{
-  return new DrawableSkewY(*this);
+  stream_ << "skewY " << _angle;
 }
 
 // Stroke color
@@ -812,7 +826,7 @@ Magick::DrawableStrokeColor::DrawableStrokeColor ( const Magick::Color &color_ )
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableStrokeColor::print (ostream& stream_) const
+void Magick::DrawableStrokeColor::print (std::ostream& stream_) const
 {
   stream_ << "stroke "
           << string(_color);
@@ -823,21 +837,21 @@ Magick::DrawableBase* Magick::DrawableStrokeColor::copy() const
   return new DrawableStrokeColor(*this);
 }
 
-// Stroke opacity
-Magick::DrawableStrokeOpacity::DrawableStrokeOpacity ( double opacity_ )
-  : _opacity(opacity_)
+// Stroke antialias
+void Magick::DrawableStrokeAntialias::print (std::ostream& stream_) const
 {
+  stream_ << "stroke-antialias ";
+  if ( _flag )
+    stream_ << "1";
+  else
+    stream_ << "0";
 }
-// Support a polymorphic print-to-stream operator
-void Magick::DrawableStrokeOpacity::print (ostream& stream_) const
+
+// Stroke opacity
+void Magick::DrawableStrokeOpacity::print (std::ostream& stream_) const
 {
   stream_ << "stroke-opacity "
           << _opacity;
-}
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableStrokeOpacity::copy() const
-{
-  return new DrawableStrokeOpacity(*this);
 }
 
 // Stroke width
@@ -846,7 +860,7 @@ Magick::DrawableStrokeWidth::DrawableStrokeWidth ( double width_ )
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableStrokeWidth::print (ostream& stream_) const
+void Magick::DrawableStrokeWidth::print (std::ostream& stream_) const
 {
   stream_ << "stroke-width "
           << _width;
@@ -867,7 +881,7 @@ Magick::DrawableText::DrawableText ( double x_,
 {
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableText::print (ostream& stream_) const
+void Magick::DrawableText::print (std::ostream& stream_) const
 {
   stream_ << "text "
           << Coordinate( _x, _y)
@@ -887,18 +901,299 @@ Magick::DrawableBase* Magick::DrawableText::copy() const
 }
 
 // Apply Translation
-Magick::DrawableTranslation::DrawableTranslation ( double x_, double y_ )
-  : DrawableAffine( 1.0, 1.0, 0, 0, x_, y_ )
+void Magick::DrawableTranslation::print (std::ostream& stream_) const
 {
-  // FIXME, should be based on defaults from ImageInfo?
+  stream_ << "translate " << _x << "," << _y;
+}
+
+// Text antialias
+void Magick::DrawableTextAntialias::print (std::ostream& stream_) const
+{
+  stream_ << "text-antialias ";
+  if ( _flag )
+    stream_ << "1";
+  else
+    stream_ << "0";
+}
+
+//
+// Path Classes
+//
+
+//
+// PathArcAbs
+//
+
+// Print coordinate to stream.
+std::ostream& Magick::operator<<( std::ostream& stream_, const Magick::PathArcArgs& args_
+)
+{
+  stream_ << args_._radiusX
+          << ","
+          << args_._radiusY
+          << " "
+          << args_._xAxisRotation
+          << " ";
+
+  if ( args_._largeArcFlag )
+    stream_ << "1 ";
+  else
+    stream_ << "0 ";
+
+  if ( args_._sweepFlag )
+    stream_ << "1 ";
+  else
+    stream_ << "0 ";
+
+  stream_ << args_._x
+          << ","
+          << args_._y;
+
+  return stream_;
 }
 // Support a polymorphic print-to-stream operator
-void Magick::DrawableTranslation::print (ostream& stream_) const
+void Magick::PathArcAbs::print (std::ostream& stream_) const
 {
-  DrawableAffine::print( stream_ );
+  std::list<Magick::PathArcArgs>::const_iterator p = _coordinates.begin();
+
+  stream_ << "A";
+  while ( p != _coordinates.end() )
+    {
+      stream_ << *p << " ";
+      p++;
+    }
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableTranslation::copy() const
+void Magick::PathArcRel::print (std::ostream& stream_) const
 {
-  return new DrawableTranslation(*this);
+  std::list<Magick::PathArcArgs>::const_iterator p = _coordinates.begin();
+
+  stream_ << "a";
+  while ( p != _coordinates.end() )
+    {
+      stream_ << *p << " ";
+      p++;
+    }
+}
+
+//
+// Path Closepath
+//
+// Support a polymorphic print-to-stream operator
+void Magick::PathClosePath::print (std::ostream& stream_) const
+{
+  stream_ << "z ";
+}
+
+//
+// Path Curveto (Cubic Bezier)
+//
+std::ostream& Magick::operator<<( std::ostream& stream_, const Magick::PathCurvetoArgs& args_
+)
+{
+  stream_ 
+    << args_._x1
+    << " "
+    << args_._y1
+    << " "
+    << args_._x2
+    << " "
+    << args_._y2
+    << " "
+    << args_._x
+    << " "
+    << args_._y;
+  return stream_;
+}
+// Support a polymorphic print-to-stream operator
+void Magick::PathCurvetoAbs::print (std::ostream& stream_) const
+{
+  std::list<Magick::PathCurvetoArgs>::const_iterator p = _args.begin();
+
+  stream_ << "C";
+  while ( p != _args.end() )
+    {
+      stream_ << *p << " ";
+      p++;
+    }
+}
+void Magick::PathCurvetoRel::print (std::ostream& stream_) const
+{
+  std::list<Magick::PathCurvetoArgs>::const_iterator p = _args.begin();
+
+  stream_ << "c";
+  while ( p != _args.end() )
+    {
+      stream_ << *p << " ";
+      p++;
+    }
+}
+// Support a polymorphic print-to-stream operator
+void Magick::PathSmoothCurvetoAbs::print (std::ostream& stream_) const
+{
+  std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+  
+  stream_ << "S";
+  while ( p != _coordinates.end() )
+    {
+      stream_ << *p << " ";
+      p++;
+    }
+}
+void Magick::PathSmoothCurvetoRel::print (std::ostream& stream_) const
+{
+  std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+  
+  stream_ << "s";
+  while ( p != _coordinates.end() )
+    {
+      stream_ << *p << " ";
+      p++;
+    }
+}
+
+
+//
+// Quadratic Curveto (Quadratic Bezier)
+//
+std::ostream& Magick::operator<<( std::ostream& stream_, const Magick::PathQuadraticCurvetoArgs& args_
+)
+{
+  stream_ 
+    << args_._x1
+    << " "
+    << args_._y1
+    << " "
+    << args_._x
+    << " "
+    << args_._y;
+  return stream_;
+}
+// Support a polymorphic print-to-stream operator
+void Magick::PathQuadraticCurvetoAbs::print (std::ostream& stream_) const
+{
+  std::list<Magick::PathQuadraticCurvetoArgs>::const_iterator p = _args.begin();
+
+  stream_ << "Q";
+  while ( p != _args.end() )
+    {
+      stream_ << *p << " ";
+      p++;
+    }
+}
+void Magick::PathQuadraticCurvetoRel::print (std::ostream& stream_) const
+{
+  std::list<Magick::PathQuadraticCurvetoArgs>::const_iterator p = _args.begin();
+
+  stream_ << "q";
+  while ( p != _args.end() )
+    {
+      stream_ << *p << " ";
+      p++;
+    }
+}
+void Magick::PathSmoothQuadraticCurvetoAbs::print (std::ostream& stream_) const
+{
+  std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+  
+  stream_ << "T";
+  while ( p != _coordinates.end() )
+    {
+      stream_ << *p << " ";
+      p++;
+    }
+}
+void Magick::PathSmoothQuadraticCurvetoRel::print (std::ostream& stream_) const
+{
+  std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+  
+  stream_ << "t";
+  while ( p != _coordinates.end() )
+    {
+      stream_ << *p << " ";
+      p++;
+    }
+}
+
+//
+// Path Lineto
+//
+
+// Support a polymorphic print-to-stream operator
+void Magick::PathLinetoAbs::print (std::ostream& stream_) const
+{
+  std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+
+  stream_ << "L";
+  while ( p != _coordinates.end() )
+    {
+      stream_ << *p << " ";
+      p++;
+    }
+}
+void Magick::PathLinetoRel::print (std::ostream& stream_) const
+{
+  std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+
+  stream_ << "l";
+  while ( p != _coordinates.end() )
+    {
+      stream_ << *p << " ";
+      p++;
+    }
+}
+
+//
+// Path Horizontal Lineto
+//
+
+// Support a polymorphic print-to-stream operator
+void Magick::PathLinetoHorizontalAbs::print (std::ostream& stream_) const
+{
+  stream_ << "H" << _x << " ";
+}
+void Magick::PathLinetoHorizontalRel::print (std::ostream& stream_) const
+{
+  stream_ << "h" << _x << " ";
+}
+
+//
+// Path Vertical Lineto
+//
+
+// Support a polymorphic print-to-stream operator
+void Magick::PathLinetoVerticalAbs::print (std::ostream& stream_) const
+{
+  stream_ << "V" << _y << " ";
+}
+void Magick::PathLinetoVerticalRel::print (std::ostream& stream_) const
+{
+  stream_ << "v" << _y << " ";
+}
+
+//
+// Path Moveto
+//
+
+// Support a polymorphic print-to-stream operator
+void Magick::PathMovetoAbs::print (std::ostream& stream_) const
+{
+  std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+
+  stream_ << "M";
+  while ( p != _coordinates.end() )
+    {
+      stream_ << *p << " ";
+      p++;
+    }
+}
+void Magick::PathMovetoRel::print (std::ostream& stream_) const
+{
+  std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+
+  stream_ << "m";
+  while ( p != _coordinates.end() )
+    {
+      stream_ << *p << " ";
+      p++;
+    }
 }

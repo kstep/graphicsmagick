@@ -101,6 +101,7 @@ ILBMEncodeDelegate = @ILBMEncodeDelegate@
 INCLTDL = @INCLTDL@
 LD = @LD@
 LIBLTDL = @LIBLTDL@
+LIBSTDC_LDFLAGS = @LIBSTDC_LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LIB_BZLIB = @LIB_BZLIB@
 LIB_DL = @LIB_DL@
@@ -236,9 +237,9 @@ bin_SCRIPTS = Magick-config
 
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attributes.h blob.h cache.h cache_view.h \
-  classify.h compress.h config.h delegates.h error.h gems.h image.h magick.h \
-  monitor.h quantize.h semaphore.h timer.h utility.h version.h widget.h \
-  xwindows.h
+  classify.h compress.h config.h delegates.h draw.h error.h gems.h image.h \
+  magick.h monitor.h quantize.h semaphore.h timer.h utility.h version.h \
+  widget.h xwindows.h
 
 
 # Headers which are not installed but which are distributed
@@ -324,7 +325,7 @@ $(DEPDIR)/signature.Plo $(DEPDIR)/stream.Plo $(DEPDIR)/timer.Plo \
 $(DEPDIR)/transform.Plo $(DEPDIR)/utility.Plo $(DEPDIR)/widget.Plo \
 $(DEPDIR)/xwindows.Plo $(DEPDIR)/zoom.Plo
 DIST_COMMON =  $(include_HEADERS) $(noinst_HEADERS) ./stamp-h.in \
-Magick-config.in Makefile.am Makefile.in config.h.in
+Magick-config.in Makefile.am Makefile.in config.h.in depcomp
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)

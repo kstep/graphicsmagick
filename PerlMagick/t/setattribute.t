@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..75)\n"; }
+BEGIN { $| = 1; $test=1, print "1..74)\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -126,14 +126,6 @@ testSetAttribute('input.miff','monochrome','False');
 
 ++$test;
 testSetAttribute('input.miff','page','595x842>+0+0');
-
-++$test;
-# The value must be equal to the value of the image at this pixel (currently #ccc)
-if ($depth eq 16) {
-   testSetAttribute('input.miff','pixel[20,23]','#808070706060');
-} else {
-   testSetAttribute('input.miff','pixel[20,23]','#807060');
-}
 
 ++$test;
 testSetAttribute('input.miff','pointsize',12);

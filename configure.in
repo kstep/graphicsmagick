@@ -12,7 +12,7 @@ AC_INIT(magick/magick.h)
 # Set version
 MAJOR_VERSION=5
 MINOR_VERSION=2
-MICRO_VERSION=4
+MICRO_VERSION=5
 echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 AC_CANONICAL_SYSTEM
 AC_SUBST(MAJOR_VERSION)dnl
@@ -1051,6 +1051,9 @@ then
 	AC_DEFINE(HasXML,,Define if you have XML library)
 	AC_MSG_RESULT(yes)
         have_xml='yes'
+
+	# check which xml error header file to use
+        AC_CHECK_HEADERS(libxml/xml-error.h libxml/xmlerror.h)
     fi
     else
         AC_MSG_RESULT(no)
@@ -1065,7 +1068,7 @@ AC_HEADER_STAT
 AC_HEADER_TIME
 AC_HEADER_DIRENT
 AC_CHECK_HEADERS(sys/select.h sys/time.h sys/stat.h sys/types.h)
-AC_CHECK_HEADERS(math.h string.h stdarg.h pwd.h malloc.h)
+AC_CHECK_HEADERS(math.h string.h stdarg.h varargs.h pwd.h malloc.h)
 AC_CHECK_HEADERS(memory.h errno.h fcntl.h)
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -1422,6 +1425,18 @@ then
   CFLAGS="-ftest-coverage -fprofile-arcs  $CFLAGS"
   LDFLAGS="-ftest-coverage -fprofile-arcs $LDFLAGS"
 fi
+
+#
+# Specify path to shared libstdc++ if not in normal location
+#
+AC_ARG_WITH(libstdc,
+  [  --with-libstdc=DIR      use libstdc++ in DIR],
+  [if test "$withval" != no -a "$withval" != yes; then
+    if test -d "$withval"; then
+      LIBSTDC_LDFLAGS="-L$withval"
+    fi
+  fi])
+AC_SUBST(LIBSTDC_LDFLAGS)
 
 #
 # C++ Support Tests (For Magick++)

@@ -35,7 +35,7 @@ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 MAGICK_CODER_SRCS = avi.c avs.c 8bim.c bmp.c cache.c cmyk.c dcm.c dps.c ept.c \
   fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c histogram.c html.c icm.c \
   icon.c iptc.c jbig.c jpeg.c label.c logo.c map.c matte.c miff.c mono.c mtv.c \
-  mvg.c null.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c plasma.c pnm.c \
+  mvg.c null.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c plasma.c png.c pnm.c \
   preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c \
   stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c uyvy.c \
   vicar.c vid.c viff.c wbmp.c wpg.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
@@ -71,8 +71,8 @@ pkg_LTLIBRARIES   = 8bim.la avi.la avs.la bmp.la cache.la cmyk.la dcm.la \
   dps.la ept.la fax.la fpx.la fits.la gif.la gray.la gradient.la \
   hdf.la histogram.la html.la icm.la icon.la iptc.la jbig.la \
   jpeg.la label.la logo.la map.la matte.la miff.la mono.la mtv.la mvg.la \
-  null.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la png.la pix.la \
-  plasma.la pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la rla.la \
+  null.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la pix.la plasma.la \
+  png.la pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la rla.la \
   rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la tga.la tiff.la \
   tile.la tim.la ttf.la txt.la uil.la uyvy.la vicar.la vid.la viff.la \
   wbmp.la wpg.la x.la xbm.la xc.la xpm.la xwd.la yuv.la

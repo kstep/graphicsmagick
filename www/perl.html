@@ -49,13 +49,13 @@
 <a href="#mont">Create an Image Montage</a></li>
 
 <li>
+<a href="#blobs">Working with Blobs</a></li>
+
+<li>
 <a href="#misc">Miscellaneous Methods</a></li>
 
 <li>
 <a href="#erro">Handling Errors</a></li>
-
-<li>
-<a href="#blobs">Working with Blobs</a></li>
 
 <li>
 <a href="#copy">Copyright</a></li>
@@ -246,7 +246,7 @@ images of a sequence. The next example illustrates how this is done:
 &nbsp;&nbsp;&nbsp; $image->Read('x1.png');
 &nbsp;&nbsp;&nbsp; $image->Read('j*.jpg');
 &nbsp;&nbsp;&nbsp; $image->Read('k.miff[1, 5, 3]');
-&nbsp;&nbsp;&nbsp; $image->Contrast;
+&nbsp;&nbsp;&nbsp; $image->Contrast();
 &nbsp;&nbsp;&nbsp; for ($x = 0; $image->[x]; $x++)
 &nbsp;&nbsp;&nbsp; {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $image->[x]->Frame('100x200') if $image->[x]->Get('magick') eq 'GIF';
@@ -268,10 +268,10 @@ Or suppose you want to convert your color image to grayscale:
 Here we annotate an image with a Taipai TrueType font:
 <pre>&nbsp;&nbsp;&nbsp; $text = '\0x17ef\0x30ec\0x25ec\0x23ef\0x17ec';
 &nbsp;&nbsp;&nbsp; $image->Annotate(font=>'@kai.ttf', pointsize=>40, stroke=>'green', text=>$text);</pre>
-Other clever things you can do with <b>PerlMagick</b> objects include
+Other clever things you can do with a <b>PerlMagick</b> objects include
 <pre>&nbsp;&nbsp;&nbsp; $i = $#$p"+1";&nbsp;&nbsp; # return the number of images associated with object p
 &nbsp;&nbsp;&nbsp; push(@$q, @$p);&nbsp; # push the images from object p onto object q
-&nbsp;&nbsp;&nbsp; @$p = ();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # delete the images but not the object p
+&nbsp;&nbsp;&nbsp; @$p = ();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  # delete the images but not the object p
 &nbsp;&nbsp;&nbsp; p->Convolve([1, 2, 1, 2, 4, 2, 1, 2, 1]);&nbsp;&nbsp; # 3x3 Gaussian kernel</pre>
 </dl>
 <i><a href="#contents">Back to Contents</a></i>
@@ -415,7 +415,7 @@ And here is a list of other image manipulation methods you can call:
 
 <td>text=><i>string</i>, font=><i>string</i>, pointsize=><i>integer</i>,
 density=><i>geometry</i>, stroke=><i>colorname</i>, fill=><i>colorname</i>,
-box=><i>colorname</i>, geometry=><i>geometry</i>, server=>{<i>string</i>,
+box=><i>colorname</i>, geometry=><i>geometry</i>, 
 gravity=>{NorthWest, North, NorthEast, West, Center, East,
 SouthWest, South, SouthEast}, x=><i>integer</i>, y=><i>integer</i>,
 translate=><i>float, float</i>, scale=><i>float, float</i>,
@@ -567,7 +567,7 @@ x=><i>integer</i>, y=><i>integer</i></td>
 bezier, color, matte, text, image, @<i>filename</i>}, points=><i>string</i>,
 method=<i>{Point, Replace, Floodfill, FillToBorder, Reset}</i>,
 stroke=><i>colorname</i>, fill=><i>colorname</i>, tile=><i>image-handle</i>,
-linewidth=><i>float</i>, bordercolor=><i>colorname</i>, server=><i>string</i>,
+linewidth=><i>float</i>, bordercolor=><i>colorname</i>, 
 x=><i>float</i>, y=><i>float</i>, translate=><i>float, float</i>,
 scale=><i>float, float</i>, rotate=><i>float</i>.  skewX=><i>float</i>,
 skewY=><i>float</i>
@@ -1012,7 +1012,7 @@ produces an annotation of <b>MIFF:bird.miff 512x480</b> for an image titled
 <b>bird.miff</b>
 and whose width is 512 and height is 480.</dd>
 
-<p><br>You can optionally add <tt>Image</tt> to any method name. For example,
+<p>You can optionally add <tt>Image</tt> to any method name. For example,
 <tt>TrimImage</tt>
 is an alias for method <tt>Trim</tt>.
 <p>Most of the attributes listed above have an analog in
@@ -1861,6 +1861,71 @@ See the documentation for a more detailed description of these attributes.</dl>
 <i><a href="#contents">Back to Contents</a></i>
 <br>&nbsp;
 <br>&nbsp;
+<dl><a NAME="blobs"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Working
+with Blobs</font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+A blob contains data that directly represent a particular image format
+in memory instead of on disk. <b>PerlMagick</b> supports blobs in any of
+these image <a href="formats.html">formats</a> and provides methods to
+convert a blob to or from a particular image format.</dd>
+<p>
+<table BORDER >
+<caption>Blob Methods</caption>
+
+<tr>
+<th>Method</th>
+
+<th>Parameters</th>
+
+<th>Return Value</th>
+
+<th>Description</th>
+</tr>
+
+<tr>
+<td>ImageToBlob</td>
+
+<td>any image <a href="#seta">attribute</a></td>
+
+<td>an array of image data in the respective image format</td>
+
+<td>convert an image or image sequence to an array of blobs</td>
+</tr>
+
+<tr>
+<td>BlobToImage</td>
+
+<td>one or more blobs</td>
+
+<td>the number of blobs converted to an image</td>
+
+<td>convert one or more blobs to an image</td>
+</tr>
+</table>
+
+<p><tt>ImageToBlob</tt> returns the image data in their respective formats.
+You can then print it, save it to an ODBC database, write it to a file,
+or pipe it to a display program:
+<pre>&nbsp;&nbsp;&nbsp; @blobs = $image->ImageToBlob();
+&nbsp;&nbsp;&nbsp; open(DISPLAY,"| display -") || die;
+&nbsp;&nbsp;&nbsp; binmode DISPLAY;
+&nbsp;&nbsp;&nbsp; print DISPLAY $blobs[0];
+&nbsp;&nbsp;&nbsp; close DISPLAY;</pre>
+Method <tt>BlobToImage</tt> returns an image or image sequence converted
+from the supplied blob:
+<pre>&nbsp;&nbsp;&nbsp; $blob=$db->GetImage();
+&nbsp;&nbsp;&nbsp; $image=Image::Magick->new(magick=>'jpg');
+&nbsp;&nbsp;&nbsp; $image->BlobToImage($blob);</pre>
+</dl>
+<a href="#contents">Back to Contents</a>
+<br>&nbsp;
+<br>&nbsp;
 <dl><a NAME="misc"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
@@ -2160,71 +2225,6 @@ is missing</td>
 <pre>&nbsp;&nbsp;&nbsp; $x = $image->Read('rose.png');
 &nbsp;&nbsp;&nbsp; $x =~ /(\d+)/;
 &nbsp;&nbsp;&nbsp; die "unable to continue" if ($1 == ResourceLimitError);</pre>
-</dl>
-<a href="#contents">Back to Contents</a>
-<br>&nbsp;
-<br>&nbsp;
-<dl><a NAME="blobs"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Working
-with Blobs</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-A blob contains data that directly represent a particular image format
-in memory instead of on disk. <b>PerlMagick</b> supports blobs in any of
-these image <a href="formats.html">formats</a> and provides methods to
-convert a blob to or from a particular image format.</dd>
-
-<table BORDER >
-<caption>Blob Methods</caption>
-
-<tr>
-<th>Method</th>
-
-<th>Parameters</th>
-
-<th>Return Value</th>
-
-<th>Description</th>
-</tr>
-
-<tr>
-<td>ImageToBlob</td>
-
-<td>any image <a href="#seta">attribute</a></td>
-
-<td>an array of image data in the respective image format</td>
-
-<td>convert an image or image sequence to an array of blobs</td>
-</tr>
-
-<tr>
-<td>BlobToImage</td>
-
-<td>one or more blobs</td>
-
-<td>the number of blobs converted to an image</td>
-
-<td>convert one or more blobs to an image</td>
-</tr>
-</table>
-
-<p><tt>ImageToBlob</tt> returns the image data in their respective formats.
-You can then print it, save it to an ODBC database, write it to a file,
-or pipe it to a display program:
-<pre>&nbsp;&nbsp;&nbsp; @blobs = $image->ImageToBlob();
-&nbsp;&nbsp;&nbsp; open(DISPLAY,"| display -") || die;
-&nbsp;&nbsp;&nbsp; binmode DISPLAY;
-&nbsp;&nbsp;&nbsp; print DISPLAY $blobs[0];
-&nbsp;&nbsp;&nbsp; close DISPLAY;</pre>
-Method <tt>BlobToImage</tt> returns an image or image sequence converted
-from the supplied blob:
-<pre>&nbsp;&nbsp;&nbsp; $blob=$db->GetImage();
-&nbsp;&nbsp;&nbsp; $image=Image::Magick->new(magick=>'jpg');
-&nbsp;&nbsp;&nbsp; $image->BlobToImage($blob);</pre>
 </dl>
 <a href="#contents">Back to Contents</a>
 <br>&nbsp;

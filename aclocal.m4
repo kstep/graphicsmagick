@@ -168,7 +168,7 @@ fi
 dnl @synopsis AC_CXX_HAVE_STD
 dnl
 dnl If the compiler supports ISO C++ standard library (i.e., can include the
-dnl files iostream, map, iomanip and cmath}), define HAVE_STD.
+dnl files iostream, map, and iomanip), define HAVE_STD.
 dnl
 dnl @author Luc Maisonobe
 dnl
@@ -181,7 +181,6 @@ ac_cv_cxx_have_std,
  AC_TRY_COMPILE([#include <iostream>
 #include <map>
 #include <iomanip>
-#include <cmath>
 #ifdef HAVE_NAMESPACES
 using namespace std;
 #endif],[return 0;],

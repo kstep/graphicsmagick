@@ -12,10 +12,13 @@
 #include <string>
 #include <stdlib.h>
 #include <iostream>
+#include <math.h>
 #include "Magick++/Options.h"
 #include "Magick++/Functions.h"
 #include "Magick++/Exception.h"
 #include "Magick++/Include.h"
+
+#define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
 
 // Constructor
 Magick::Options::Options( void )
@@ -345,6 +348,151 @@ std::string Magick::Options::tileName ( void ) const
   if ( _imageInfo->tile )
     return std::string( _imageInfo->tile );
   return std::string();
+}
+
+// Origin of coordinate system to use when annotating with text or drawing
+void Magick::Options::transformOrigin ( double tx_, double ty_ )
+{
+  AffineInfo current = _imageInfo->affine;
+  AffineInfo affine;
+  affine.sx=1.0;
+  affine.rx=0.0;
+  affine.ry=0.0;
+  affine.sy=1.0;
+  affine.tx=0.0;
+  affine.ty=0.0;
+
+  affine.tx = tx_;
+  affine.ty = ty_;
+
+  _imageInfo->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+  _imageInfo->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+  _imageInfo->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+  _imageInfo->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+  _imageInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
+  _imageInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
+
+  _annotateInfo->affine = _imageInfo->affine;
+  _drawInfo->affine     = _imageInfo->affine;
+}
+
+// Reset transformation parameters to default
+void Magick::Options::transformReset ( void )
+{
+  _imageInfo->affine.sx=1.0;
+  _imageInfo->affine.rx=0.0;
+  _imageInfo->affine.ry=0.0;
+  _imageInfo->affine.sy=1.0;
+  _imageInfo->affine.tx=0.0;
+  _imageInfo->affine.ty=0.0;
+}
+
+// Rotation to use when annotating with text or drawing
+void Magick::Options::transformRotation ( double angle_ )
+{
+  AffineInfo current = _imageInfo->affine;
+  AffineInfo affine;
+  affine.sx=1.0;
+  affine.rx=0.0;
+  affine.ry=0.0;
+  affine.sy=1.0;
+  affine.tx=0.0;
+  affine.ty=0.0;
+
+  affine.sx=cos(DegreesToRadians(fmod(angle_,360.0)));
+  affine.rx=(-sin(DegreesToRadians(fmod(angle_,360.0))));
+  affine.ry=sin(DegreesToRadians(fmod(angle_,360.0)));
+  affine.sy=cos(DegreesToRadians(fmod(angle_,360.0)));
+
+  _imageInfo->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+  _imageInfo->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+  _imageInfo->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+  _imageInfo->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+  _imageInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
+  _imageInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
+
+  _annotateInfo->affine = _imageInfo->affine;
+  _drawInfo->affine     = _imageInfo->affine;
+}
+
+// Scale to use when annotating with text or drawing
+void Magick::Options::transformScale ( double sx_, double sy_ )
+{
+  AffineInfo current = _imageInfo->affine;
+  AffineInfo affine;
+  affine.sx=1.0;
+  affine.rx=0.0;
+  affine.ry=0.0;
+  affine.sy=1.0;
+  affine.tx=0.0;
+  affine.ty=0.0;
+
+  affine.sx = sx_;
+  affine.sy = sy_;
+
+  _imageInfo->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+  _imageInfo->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+  _imageInfo->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+  _imageInfo->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+  _imageInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
+  _imageInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
+
+  _annotateInfo->affine = _imageInfo->affine;
+  _drawInfo->affine     = _imageInfo->affine;
+}
+
+// Skew to use in X axis when annotating with text or drawing
+void Magick::Options::transformSkewX ( double skewx_ )
+{
+  AffineInfo current = _imageInfo->affine;
+  AffineInfo affine;
+  affine.sx=1.0;
+  affine.rx=0.0;
+  affine.ry=0.0;
+  affine.sy=1.0;
+  affine.tx=0.0;
+  affine.ty=0.0;
+
+  affine.sx=1.0;
+  affine.ry=tan(DegreesToRadians(fmod(skewx_,360.0)));
+  affine.sy=1.0;
+
+  _imageInfo->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+  _imageInfo->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+  _imageInfo->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+  _imageInfo->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+  _imageInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
+  _imageInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
+
+  _annotateInfo->affine = _imageInfo->affine;
+  _drawInfo->affine = _imageInfo->affine;
+}
+
+// Skew to use in Y axis when annotating with text or drawing
+void Magick::Options::transformSkewY ( double skewy_ )
+{
+  AffineInfo current = _imageInfo->affine;
+  AffineInfo affine;
+  affine.sx=1.0;
+  affine.rx=0.0;
+  affine.ry=0.0;
+  affine.sy=1.0;
+  affine.tx=0.0;
+  affine.ty=0.0;
+
+  affine.sx=1.0;
+  affine.rx=tan(DegreesToRadians(fmod(skewy_,360.0)));
+  affine.sy=1.0;
+
+  _imageInfo->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+  _imageInfo->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+  _imageInfo->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+  _imageInfo->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+  _imageInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
+  _imageInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
+
+  _annotateInfo->affine = _imageInfo->affine;
+  _drawInfo->affine = _imageInfo->affine;
 }
 
 void Magick::Options::view ( const std::string &view_ )

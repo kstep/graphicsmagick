@@ -308,6 +308,7 @@ namespace Magick
   // ImageMagick symbols used in implementation code
   //
   using MagickLib::AddNoiseImage;
+  using MagickLib::AffineInfo;
   using MagickLib::AllocateImage;
   using MagickLib::AcquireMemory;
   using MagickLib::AnnotateImage;

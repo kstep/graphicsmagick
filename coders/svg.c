@@ -59,7 +59,11 @@
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parserInternals.h>
+#if defined(HAVE_LIBXML_XML_ERROR_H)
 #include <libxml/xml-error.h>
+#elif defined(HAVE_LIBXML_XMLERROR_H)
+#include <libxml/xmlerror.h>
+#endif
 #endif
 
 /*
@@ -1029,13 +1033,17 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"transform") == 0)
             {
-              double
-                affine[6],
-                current[6],
-                transform[6];
+              AffineInfo
+                affine,
+                current,
+                transform;
 
-              for (k=0; k < 6; k++)
-                transform[k]=(k == 0) || (k == 3) ? 1.0 : 0.0;
+              transform.sx=1.0;
+              transform.rx=0.0;
+              transform.ry=0.0;
+              transform.sy=1.0;
+              transform.tx=0.0;
+              transform.ty=0.0;
               if (svg_info->verbose)
                 (void) fprintf(stdout,"\n");
               tokens=StringToTokens(value,&number_tokens);
@@ -1045,11 +1053,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 value=(char *) tokens[j+1];
                 if (svg_info->verbose)
                   (void) fprintf(stdout,"  %s %s\n",keyword,value);
-                for (k=0; k < 6; k++)
-                {
-                  current[k]=transform[k];
-                  affine[k]=(k == 0) || (k == 3) ? 1.0 : 0.0;
-                }
+                current=transform;
+                affine.sx=1.0;
+                affine.rx=0.0;
+                affine.ry=0.0;
+                affine.sy=1.0;
+                affine.tx=0.0;
+                affine.ty=0.0;
                 switch (*keyword)
                 {
                   case 'M':
@@ -1058,12 +1068,22 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     if (LocaleCompare(keyword,"matrix") == 0)
                       {
                         p=(char *) (value+1);
-                        for (k=0; k < 6; k++)
-                        {
-                          affine[k]=strtod(p,&p);
-                          if (*p ==',')
-                            p++;
-                        }
+                        affine.sx=strtod(p,&p);
+                        if (*p ==',')
+                          p++;
+                        affine.rx=strtod(p,&p);
+                        if (*p ==',')
+                          p++;
+                        affine.ry=strtod(p,&p);
+                        if (*p ==',')
+                          p++;
+                        affine.sy=strtod(p,&p);
+                        if (*p ==',')
+                          p++;
+                        affine.tx=strtod(p,&p);
+                        if (*p ==',')
+                          p++;
+                        affine.ty=strtod(p,&p);
                         break;
                       }
                     break;
@@ -1077,10 +1097,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
                           angle;
 
                         angle=GetUserSpaceCoordinateValue(svg_info,value+1);
-                        affine[0]=(-cos(DegreesToRadians(fmod(angle,360.0))));
-                        affine[1]=sin(DegreesToRadians(fmod(angle,360.0)));
-                        affine[2]=(-sin(DegreesToRadians(fmod(angle,360.0))));
-                        affine[3]=(-cos(DegreesToRadians(fmod(angle,360.0))));
+                        affine.sx=(-cos(DegreesToRadians(fmod(angle,360.0))));
+                        affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
+                        affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
+                        affine.sy=(-cos(DegreesToRadians(fmod(angle,360.0))));
                         break;
                       }
                     break;
@@ -1093,29 +1113,29 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         for (p=(char *) value+1; *p != '\0'; p++)
                           if (isspace((int) (*p)) || (*p == ','))
                             break;
-                        affine[0]=GetUserSpaceCoordinateValue(svg_info,value+1);
-                        affine[3]=affine[0];
+                        affine.sx=GetUserSpaceCoordinateValue(svg_info,value+1);
+                        affine.sy=affine.sx;
                         if (*p != '\0')
-                          affine[3]=GetUserSpaceCoordinateValue(svg_info,p+1);
-                        svg_info->scale[svg_info->n]=affine[0];
+                          affine.sy=GetUserSpaceCoordinateValue(svg_info,p+1);
+                        svg_info->scale[svg_info->n]=affine.sx;
                         break;
                       }
                     if (LocaleCompare(keyword,"skewX") == 0)
                       {
-                        affine[0]=svg_info->x_resolution/72.0;
-                        affine[2]=tan(DegreesToRadians(fmod(
+                        affine.sx=svg_info->x_resolution/72.0;
+                        affine.ry=tan(DegreesToRadians(fmod(
                           GetUserSpaceCoordinateValue(svg_info,value+1),
                           360.0)));
-                        affine[3]=svg_info->y_resolution/72.0;
+                        affine.sy=svg_info->y_resolution/72.0;
                         break;
                       }
                     if (LocaleCompare(keyword,"skewY") == 0)
                       {
-                        affine[0]=svg_info->x_resolution/72.0;
-                        affine[1]=tan(DegreesToRadians(fmod(
+                        affine.sx=svg_info->x_resolution/72.0;
+                        affine.rx=tan(DegreesToRadians(fmod(
                           GetUserSpaceCoordinateValue(svg_info,value+1),
                           360.0)));
-                        affine[3]=svg_info->y_resolution/72.0;
+                        affine.sy=svg_info->y_resolution/72.0;
                         break;
                       }
                     break;
@@ -1128,10 +1148,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         for (p=(char *) value+1; *p != '\0'; p++)
                           if (isspace((int) (*p)) || (*p == ','))
                             break;
-                        affine[4]=GetUserSpaceCoordinateValue(svg_info,value+1);
-                        affine[5]=affine[4];
+                        affine.tx=GetUserSpaceCoordinateValue(svg_info,value+1);
+                        affine.ty=affine.tx;
                         if (*p != '\0')
-                          affine[5]=GetUserSpaceCoordinateValue(svg_info,p+1);
+                          affine.ty=GetUserSpaceCoordinateValue(svg_info,p+1);
                         break;
                       }
                     break;
@@ -1139,22 +1159,21 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   default:
                     break;
                 }
-                transform[0]=current[0]*affine[0]+current[2]*affine[1];
-                transform[1]=current[1]*affine[0]+current[3]*affine[1];
-                transform[2]=current[0]*affine[2]+current[2]*affine[3];
-                transform[3]=current[1]*affine[2]+current[3]*affine[3];
-                transform[4]=current[0]*affine[4]+current[2]*affine[5]+
-                  current[4];
-                transform[5]=current[1]*affine[4]+current[3]*affine[5]+
-                  current[5];
+                transform.sx=current.sx*affine.sx+current.ry*affine.rx;
+                transform.rx=current.rx*affine.sx+current.sy*affine.rx;
+                transform.ry=current.sx*affine.ry+current.ry*affine.sy;
+                transform.sy=current.rx*affine.ry+current.sy*affine.sy;
+                transform.tx=current.sx*affine.tx+current.ry*affine.ty+
+                  current.tx;
+                transform.ty=current.rx*affine.tx+current.sy*affine.ty+
+                  current.ty;
               }
               for (j=0; j < number_tokens; j++)
                 LiberateMemory((void **) &tokens[j]);
               LiberateMemory((void **) &tokens);
-              (void) fprintf(svg_info->file,"affine ");
-              for (k=0; k < 6; k++)
-                (void) fprintf(svg_info->file,"%g ",transform[k]);
-              (void) fprintf(svg_info->file,"\n");
+              (void) fprintf(svg_info->file,"affine %g %g %g %g %g %g\n",
+                transform.sx,transform.rx,transform.ry,transform.sy,
+                transform.tx,transform.ty);
               break;
             }
           break;

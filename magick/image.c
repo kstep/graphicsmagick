@@ -1539,7 +1539,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           red=q->red;
           green=q->green;
           blue=q->blue;
-          opacity=MaxRGB-DownScale(Intensity(*p));
+          opacity=DownScale(Intensity(*p));
           break;
         }
         case BlendCompositeOp:
@@ -2615,8 +2615,12 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->font=AllocateString("Times-Roman");
   image_info->antialias=True;
   image_info->pointsize=13;
-  for (i=0; i < 6; i++)
-    image_info->affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
+  image_info->affine.sx=1.0;
+  image_info->affine.rx=0.0;
+  image_info->affine.ry=0.0;
+  image_info->affine.sy=1.0;
+  image_info->affine.tx=0.0;
+  image_info->affine.ty=0.0;
   (void) QueryColorDatabase("none",&image_info->stroke);
   (void) QueryColorDatabase("none",&image_info->fill);
   (void) QueryColorDatabase("#ffffff",&image_info->background_color);
@@ -2865,7 +2869,7 @@ MagickExport unsigned int IsGeometry(const char *geometry)
   if (geometry == (const char *) NULL)
     return(False);
   flags=ParseGeometry((char *) geometry,&x,&y,&width,&height);
-  return((flags != NoValue) || sscanf(geometry,"%lf",&value));
+  return((flags != NoValue) || (sscanf(geometry,"%lf",&value) > 0));
 }
 
 /*
@@ -3308,12 +3312,22 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               Draw affine matrix.
             */
             p=argv[++i];
-            for (x=0; x < 6; x++)
-            {
-              draw_info->affine[x]=strtod(p,&p);
-              if (*p ==',')
-                p++;
-            }
+            draw_info->affine.sx=strtod(p,&p);
+            if (*p ==',')
+              p++;
+            draw_info->affine.rx=strtod(p,&p);
+            if (*p ==',')
+              p++;
+            draw_info->affine.ry=strtod(p,&p);
+            if (*p ==',')
+              p++;
+            draw_info->affine.sy=strtod(p,&p);
+            if (*p ==',')
+              p++;
+            draw_info->affine.tx=strtod(p,&p);
+            if (*p ==',')
+              p++;
+            draw_info->affine.ty=strtod(p,&p);
             break;
           }
         if (LocaleNCompare("antialias",option+1,3) == 0)

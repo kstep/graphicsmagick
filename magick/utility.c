@@ -1828,11 +1828,13 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
     bounds;
 
   mask=NoValue;
-  if ((geometry == (const char *) NULL) || (*geometry == '\0'))
+  if (geometry == (const char *) NULL)
     return(mask);
   p=(char *) geometry;
   while (isspace((int) *p))
     p++;
+  if (*p == '\0')
+    return(mask);
   if (*p == '=')
     p++;
   if (LocaleCompare(p,"0x0") == 0)

@@ -1,11 +1,11 @@
 Introduction 
 
-    PerlMagick, version 5.21, is an objected-oriented Perl interface to
-    ImageMagick.  Use the module to read, manipulate, or write an image
-    or image sequence from within a Perl script. This makes it suitable
-    for Web CGI scripts. You must have ImageMagick 4.2.9 above and Perl
-    version 5.002 or greater installed on your system.  Perl version
-    5.005_02 or greater is required for PerlMagick to work under NT.
+    PerlMagick, is an objected-oriented Perl interface to ImageMagick.
+    Use the module to read, manipulate, or write an image or image
+    sequence from within a Perl script. This makes it suitable for Web
+    CGI scripts. You must have ImageMagick 5.2.4 above and Perl version
+    5.002 or greater installed on your system.  Perl version 5.005_02
+    or greater is required for PerlMagick to work under NT.
 
     See
 
@@ -22,8 +22,8 @@ Installation
 
     Get the PerlMagick distribution and type the following: 
 
-        gunzip PerlMagick-5.21.tar.gz
-        tar xvf PerlMagick-5.21.tar
+        gunzip PerlMagick-5.25.tar.gz
+        tar xvf PerlMagick-5.25.tar
         cd Magick
 
     Next, edit Makefile.PL and change LIBS and INC to include the

@@ -71,6 +71,7 @@
 #endif
 #include "magick/classify.h"
 #include "magick/image.h"
+#include "magick/draw.h"
 #include "magick/gems.h"
 #include "magick/quantize.h"
 #include "magick/compress.h"
@@ -88,6 +89,7 @@
 #else
 #include "classify.h"
 #include "image.h"
+#include "draw.h"
 #include "gems.h"
 #include "quantize.h"
 #include "compress.h"

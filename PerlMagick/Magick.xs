@@ -204,8 +204,9 @@ static char
   },
   *ImageTypes[] =
   {
-    "Undefined", "Bilevel", "Grayscale", "Palette", "TrueColor", "Matte",
-    "ColorSeparation", (char *) NULL
+    "Undefined", "bilevel", "grayscale", "palette", "palette with transparency",
+    "true color", "true color with transparency", "color separated",
+    (char *) NULL
   },
   *IntentTypes[] =
   {
@@ -336,7 +337,7 @@ static struct
       {"point", DoubleReference}, {"density", StringReference},
       {"box", StringReference}, {"stroke", StringReference},
       {"fill", StringReference}, {"geom", StringReference},
-      {"server", StringReference}, {"x", IntegerReference},
+      {"sans", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"grav", GravityTypes},
       {"translate", StringReference}, {"scale", StringReference},
       {"rotate", DoubleReference}, {"skewX", DoubleReference},
@@ -353,7 +354,7 @@ static struct
     { "Draw", { {"prim", PrimitiveTypes}, {"points", StringReference},
       {"meth", MethodTypes}, {"stroke", StringReference},
       {"fill", StringReference}, {"linew", DoubleReference},
-      {"server", StringReference}, {"borderc", StringReference},
+      {"sans", StringReference}, {"borderc", StringReference},
       {"x", DoubleReference}, {"y", DoubleReference},
       {"translate", StringReference}, {"scale", StringReference},
       {"rotate", DoubleReference}, {"skewX", DoubleReference},
@@ -3695,6 +3696,10 @@ Mogrify(ref,...)
     MogrifyRegion      = 666
   PPCODE:
   {
+    AffineInfo
+      affine,
+      current;
+
     char
       *attribute,
       attribute_flag[MaxArguments],
@@ -3703,9 +3708,7 @@ Mogrify(ref,...)
       *value;
 
     double
-      affine[6],
-      angle,
-      current[6];
+      angle;
 
     ExceptionInfo
       exception;
@@ -4341,105 +4344,16 @@ Mogrify(ref,...)
           AnnotateInfo
             *annotate_info;
 
-          ImageInfo
-            *image_info;
-
-          image_info=
-            CloneImageInfo(info ? info->image_info : (ImageInfo *) NULL);
+          annotate_info=CloneAnnotateInfo(info ? info->image_info :
+            (ImageInfo *) NULL,(AnnotateInfo *) NULL);
           if (attribute_flag[1])
-            (void) CloneString(&image_info->font,
+            (void) CloneString(&annotate_info->font,
               argument_list[1].string_reference);
           if (attribute_flag[2])
-            image_info->pointsize=argument_list[2].double_reference;
+            annotate_info->pointsize=argument_list[2].double_reference;
           if (attribute_flag[3])
-            (void) CloneString(&image_info->density,
+            (void) CloneString(&annotate_info->density,
               argument_list[3].string_reference);
-          if (attribute_flag[8])
-            (void) CloneString(&image_info->server_name,
-              argument_list[8].string_reference);
-          for (j=12; j < 17; j++)
-          {
-            if (!attribute_flag[j])
-              continue;
-            value=argument_list[j].string_reference;
-            angle=argument_list[j].double_reference;
-            for (k=0; k < 6; k++)
-            {
-              current[k]=image_info->affine[k];
-              affine[k]=0.0;
-            }
-            affine[0]=1.0;
-            affine[3]=1.0;
-            switch (j)
-            {
-              case 12:
-              {
-                /*
-                  Translate.
-                */
-                affine[0]=1.0;
-                affine[3]=1.0;
-                k=sscanf(value,"%lf%lf",&affine[4],&affine[5]);
-                if (k == 1)
-                  k=sscanf(value,"%lf,%lf",&affine[4],&affine[5]);
-                if (k == 1)
-                  affine[5]=affine[4];
-                break;
-              }
-              case 13:
-              {
-                /*
-                  Scale.
-                */
-                k=sscanf(value,"%lf%lf",&affine[0],&affine[3]);
-                if (k == 1)
-                  k=sscanf(value,"%lf,%lf",&affine[0],&affine[3]);
-                if (k == 1)
-                  affine[3]=affine[0];
-                break;
-              }
-              case 14:
-              {
-                /*
-                  Rotate.
-                */
-                affine[0]=cos(DegreesToRadians(fmod(angle,360.0)));
-                affine[1]=(-sin(DegreesToRadians(fmod(angle,360.0))));
-                affine[2]=sin(DegreesToRadians(fmod(angle,360.0)));
-                affine[3]=cos(DegreesToRadians(fmod(angle,360.0)));
-                break;
-              }
-              case 15:
-              {
-                /*
-                  SkewX.
-                */
-                affine[0]=1.0;
-                affine[2]=tan(DegreesToRadians(fmod(angle,360.0)));
-                affine[3]=1.0;
-                break;
-              }
-              case 16:
-              {
-                /*
-                  SkewY.
-                */
-                affine[0]=1.0;
-                affine[1]=tan(DegreesToRadians(fmod(angle,360.0)));
-                affine[3]=1.0;
-                break;
-              }
-            }
-            image_info->affine[0]=current[0]*affine[0]+current[2]*affine[1];
-            image_info->affine[1]=current[1]*affine[0]+current[3]*affine[1];
-            image_info->affine[2]=current[0]*affine[2]+current[2]*affine[3];
-            image_info->affine[3]=current[1]*affine[2]+current[3]*affine[3];
-            image_info->affine[4]=
-              current[0]*affine[4]+current[2]*affine[5]+current[4];
-            image_info->affine[5]=
-              current[1]*affine[4]+current[3]*affine[5]+current[5];
-          }
-          annotate_info=CloneAnnotateInfo(image_info,(AnnotateInfo *) NULL);
           if (attribute_flag[0])
             (void) CloneString(&annotate_info->text,
               argument_list[0].string_reference);
@@ -4468,12 +4382,93 @@ Mogrify(ref,...)
           if (attribute_flag[11])
             annotate_info->gravity=(GravityType)
               argument_list[11].int_reference;
+          for (j=12; j < 17; j++)
+          {
+            if (!attribute_flag[j])
+              continue;
+            value=argument_list[j].string_reference;
+            angle=argument_list[j].double_reference;
+            current=annotate_info->affine;
+            affine.sx=1.0;
+            affine.rx=0.0;
+            affine.ry=0.0;
+            affine.sy=1.0;
+            affine.tx=0.0;
+            affine.ty=0.0;
+            switch (j)
+            {
+              case 12:
+              {
+                /*
+                  Translate.
+                */
+                affine.sx=1.0;
+                affine.sy=1.0;
+                k=sscanf(value,"%lf%lf",&affine.tx,&affine.ty);
+                if (k == 1)
+                  k=sscanf(value,"%lf,%lf",&affine.tx,&affine.ty);
+                if (k == 1)
+                  affine.ty=affine.tx;
+                break;
+              }
+              case 13:
+              {
+                /*
+                  Scale.
+                */
+                k=sscanf(value,"%lf%lf",&affine.sx,&affine.sy);
+                if (k == 1)
+                  k=sscanf(value,"%lf,%lf",&affine.sx,&affine.sy);
+                if (k == 1)
+                  affine.sy=affine.sx;
+                break;
+              }
+              case 14:
+              {
+                /*
+                  Rotate.
+                */
+                affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
+                affine.rx=(-sin(DegreesToRadians(fmod(angle,360.0))));
+                affine.ry=sin(DegreesToRadians(fmod(angle,360.0)));
+                affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
+                break;
+              }
+              case 15:
+              {
+                /*
+                  SkewX.
+                */
+                affine.sx=1.0;
+                affine.ry=tan(DegreesToRadians(fmod(angle,360.0)));
+                affine.sy=1.0;
+                break;
+              }
+              case 16:
+              {
+                /*
+                  SkewY.
+                */
+                affine.sx=1.0;
+                affine.rx=tan(DegreesToRadians(fmod(angle,360.0)));
+                affine.sy=1.0;
+                break;
+              }
+            }
+            annotate_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+            annotate_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+            annotate_info->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+            annotate_info->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+            annotate_info->affine.tx=
+              current.sx*affine.tx+current.ry*affine.ty+current.tx;
+            annotate_info->affine.ty=
+              current.rx*affine.tx+current.sy*affine.ty+current.ty;
+          }
           if (attribute_flag[17])
             (void) QueryColorDatabase(argument_list[17].string_reference,
               &annotate_info->fill);
           AnnotateImage(image,annotate_info);
           DestroyAnnotateInfo(annotate_info);
-          DestroyImageInfo(image_info);
           break;
         }
         case 34:  /* ColorFloodfill */
@@ -4484,7 +4479,8 @@ Mogrify(ref,...)
           PixelPacket
             target;
 
-          draw_info=CloneDrawInfo(info->image_info,(DrawInfo *) NULL);
+          draw_info=CloneDrawInfo(info ? info->image_info : (ImageInfo *) NULL,
+            (DrawInfo *) NULL);
           if (attribute_flag[0])
             (void) ParseGeometry(argument_list[0].string_reference,
               &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
@@ -4688,100 +4684,8 @@ Mogrify(ref,...)
           DrawInfo
             *draw_info;
 
-          ImageInfo
-            *image_info;
-
-          image_info=
-            CloneImageInfo(info ? info->image_info : (ImageInfo *) NULL);
-          if (attribute_flag[6])
-            (void) CloneString(&image_info->server_name,
-              argument_list[6].string_reference);
-          if (attribute_flag[7])
-            (void) QueryColorDatabase(argument_list[7].string_reference,
-              &image_info->border_color);
-          for (j=10; j < 15; j++)
-          {
-            if (!attribute_flag[j])
-              continue;
-            value=argument_list[j].string_reference;
-            angle=argument_list[j].double_reference;
-            for (k=0; k < 6; k++)
-            {
-              current[k]=image_info->affine[k];
-              affine[k]=(k == 0) || (k == 3) ? 1.0 : 0.0;
-            }
-            switch (j)
-            {
-              case 10:
-              {
-                /*
-                  Translate.
-                */
-                affine[0]=1.0;
-                affine[3]=1.0;
-                k=sscanf(value,"%lf%lf",&affine[4],&affine[5]);
-                if (k == 1)
-                  k=sscanf(value,"%lf,%lf",&affine[4],&affine[5]);
-                if (k == 1)
-                  affine[5]=affine[4];
-                break;
-              }
-              case 11:
-              {
-                /*
-                  Scale.
-                */
-                k=sscanf(value,"%lf%lf",&affine[0],&affine[3]);
-                if (k == 1)
-                  k=sscanf(value,"%lf,%lf",&affine[0],&affine[3]);
-                if (k == 1)
-                  affine[3]=affine[0];
-                break;
-              }
-              case 12:
-              {
-                /*
-                  Rotate.
-                */
-                if (angle == 0.0)
-                  break;
-                affine[0]=(-cos(DegreesToRadians(fmod(angle,360.0))));
-                affine[1]=sin(DegreesToRadians(fmod(angle,360.0)));
-                affine[2]=(-sin(DegreesToRadians(fmod(angle,360.0))));
-                affine[3]=(-cos(DegreesToRadians(fmod(angle,360.0))));
-                break;
-              }
-              case 13:
-              {
-                /*
-                  SkewX.
-                */
-                affine[0]=1.0;
-                affine[2]=tan(DegreesToRadians(fmod(angle,360.0)));
-                affine[3]=1.0;
-                break;
-              }
-              case 14:
-              {
-                /*
-                  SkewY.
-                */
-                affine[0]=1.0;
-                affine[1]=tan(DegreesToRadians(fmod(angle,360.0)));
-                affine[3]=1.0;
-                break;
-              }
-            }
-            image_info->affine[0]=current[0]*affine[0]+current[2]*affine[1];
-            image_info->affine[1]=current[1]*affine[0]+current[3]*affine[1];
-            image_info->affine[2]=current[0]*affine[2]+current[2]*affine[3];
-            image_info->affine[3]=current[1]*affine[2]+current[3]*affine[3];
-            image_info->affine[4]=
-              current[0]*affine[4]+current[2]*affine[5]+current[4];
-            image_info->affine[5]=
-              current[1]*affine[4]+current[3]*affine[5]+current[5];
-          }
-          draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+          draw_info=CloneDrawInfo(info ? info->image_info : (ImageInfo *) NULL,
+            (DrawInfo *) NULL);
           (void) CloneString(&draw_info->primitive,"Point");
           if (attribute_flag[0] && (argument_list[0].int_reference > 0))
             (void) CloneString(&draw_info->primitive,
@@ -4810,6 +4714,93 @@ Mogrify(ref,...)
               &draw_info->fill);
           if (attribute_flag[5])
             draw_info->linewidth=argument_list[5].double_reference;
+          if (attribute_flag[7])
+            (void) QueryColorDatabase(argument_list[7].string_reference,
+              &draw_info->border_color);
+          for (j=10; j < 15; j++)
+          {
+            if (!attribute_flag[j])
+              continue;
+            value=argument_list[j].string_reference;
+            angle=argument_list[j].double_reference;
+            current=draw_info->affine;
+            affine.sx=1.0;
+            affine.rx=0.0;
+            affine.ry=0.0;
+            affine.sy=1.0;
+            affine.tx=0.0;
+            affine.ty=0.0;
+            switch (j)
+            {
+              case 10:
+              {
+                /*
+                  Translate.
+                */
+                affine.sx=1.0;
+                affine.sy=1.0;
+                k=sscanf(value,"%lf%lf",&affine.tx,&affine.ty);
+                if (k == 1)
+                  k=sscanf(value,"%lf,%lf",&affine.tx,&affine.ty);
+                if (k == 1)
+                  affine.ty=affine.tx;
+                break;
+              }
+              case 11:
+              {
+                /*
+                  Scale.
+                */
+                k=sscanf(value,"%lf%lf",&affine.sx,&affine.sy);
+                if (k == 1)
+                  k=sscanf(value,"%lf,%lf",&affine.sx,&affine.sy);
+                if (k == 1)
+                  affine.sy=affine.sx;
+                break;
+              }
+              case 12:
+              {
+                /*
+                  Rotate.
+                */
+                if (angle == 0.0)
+                  break;
+                affine.sx=(-cos(DegreesToRadians(fmod(angle,360.0))));
+                affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
+                affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
+                affine.sy=(-cos(DegreesToRadians(fmod(angle,360.0))));
+                break;
+              }
+              case 13:
+              {
+                /*
+                  SkewX.
+                */
+                affine.sx=1.0;
+                affine.ry=tan(DegreesToRadians(fmod(angle,360.0)));
+                affine.sy=1.0;
+                break;
+              }
+              case 14:
+              {
+                /*
+                  SkewY.
+                */
+                affine.sx=1.0;
+                affine.rx=tan(DegreesToRadians(fmod(angle,360.0)));
+                affine.sy=1.0;
+                break;
+              }
+            }
+            draw_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+            draw_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+            draw_info->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+            draw_info->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+            draw_info->affine.tx=
+              current.sx*affine.tx+current.ry*affine.ty+current.tx;
+            draw_info->affine.ty=
+              current.rx*affine.tx+current.sy*affine.ty+current.ty;
+          }
           if (attribute_flag[15])
             draw_info->tile=
               CloneImage(argument_list[15].image_reference,0,0,True,&exception);
@@ -4818,7 +4809,6 @@ Mogrify(ref,...)
               &draw_info->fill);
           DrawImage(image,draw_info);
           DestroyDrawInfo(draw_info);
-          DestroyImageInfo(image_info);
           break;
         }
         case 39:  /* Equalize */

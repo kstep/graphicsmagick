@@ -199,7 +199,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) CloneString(&annotate_info->geometry,geometry);
     AnnotateImage(image,annotate_info);
     height=(unsigned int) (annotate_info->pointsize*
-      AbsoluteValue(Max(annotate_info->affine[0],annotate_info->affine[1])));
+      AbsoluteValue(Max(annotate_info->affine.sx,annotate_info->affine.rx)));
     offset+=height;
     if (image->previous == (Image *) NULL)
       if (QuantumTick(page.y+offset,image->rows))

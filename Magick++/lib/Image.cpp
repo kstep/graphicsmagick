@@ -542,7 +542,7 @@ void Magick::Image::draw ( const Magick::Drawable &drawable_ )
   buffstr << drawable_ << ends;
 
   drawInfo->primitive = buffer;
-  //cout << "Primitive:" << drawInfo->primitive << endl;
+  // cout << "Primitive:" << drawInfo->primitive << endl;
   DrawImage( image(), drawInfo );
   drawInfo->primitive = 0;
 
@@ -563,9 +563,9 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
   std::list<Magick::Drawable>::const_iterator p = drawable_.begin();
   while ( p != drawable_.end() )
     {
-      //cout << *p << endl;
+//       cout << "\"" << *p << "\"" << endl;
       if (buffer[0] != '\0' )
-	buffstr << " ";
+	buffstr << endl;
       buffstr << *p;
       ++p;
     }
@@ -2527,6 +2527,48 @@ std::string Magick::Image::tileName ( void ) const
 unsigned long Magick::Image::totalColors ( void )
 {
   return GetNumberColors( image(), (FILE *) NULL);
+}
+
+// Origin of coordinate system to use when annotating with text or drawing
+void Magick::Image::transformOrigin ( double x_, double y_ )
+{
+  modifyImage();
+  options()->transformOrigin( x_, y_ );
+}
+
+// Rotation to use when annotating with text or drawing
+void Magick::Image::transformRotation ( double angle_ )
+{
+  modifyImage();
+  options()->transformRotation( angle_ );
+}
+
+// Reset transformation parameters to default
+void Magick::Image::transformReset ( void )
+{
+  modifyImage();
+  options()->transformReset();
+}
+
+// Scale to use when annotating with text or drawing
+void Magick::Image::transformScale ( double sx_, double sy_ )
+{
+  modifyImage();
+  options()->transformScale( sx_, sy_ );
+}
+
+// Skew to use in X axis when annotating with text or drawing
+void Magick::Image::transformSkewX ( double skewx_ )
+{
+  modifyImage();
+  options()->transformSkewX( skewx_ );
+}
+
+// Skew to use in Y axis when annotating with text or drawing
+void Magick::Image::transformSkewY ( double skewy_ )
+{
+  modifyImage();
+  options()->transformSkewY( skewy_ );
 }
 
 Magick::ImageType Magick::Image::type ( void ) const

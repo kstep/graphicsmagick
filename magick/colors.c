@@ -2033,7 +2033,7 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
       color->opacity=TransparentOpacity;
       return(True);
     }
-  if (LocaleNCompare(target,"rgb",3) == 0)
+  if (LocaleNCompare(target,"rgb(",4) == 0)
     {
       (void) sscanf(target,"%*[^(](%d%*[ ,]%d%*[ ,]%d",&red,&green,&blue);
       color->red=UpScale(red);
