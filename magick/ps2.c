@@ -751,7 +751,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           if (image->colors == 2)
             polarity=
               Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
-          (void) WriteByte(image,'\0');
+          (void) WriteByte(image,'0');
           (void) WriteByte(image,'\n');
           switch (compression)
           {

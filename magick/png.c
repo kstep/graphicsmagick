@@ -99,7 +99,7 @@ static unsigned int
 %
 %
 */
-unsigned int CompressColormapTransFirst(Image *image)
+static unsigned int CompressColormapTransFirst(Image *image)
 {
   IndexPacket
     index;
@@ -1992,11 +1992,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Set image resolution.
         */
         png_uint_32
-           res_x,
-           res_y;
+          res_x,
+          res_y;
 
         int
-           unit_type;
+          unit_type;
 
         png_get_pHYs(ping, ping_info, &res_x, &res_y, &unit_type);
         image->x_resolution=(float) res_x;

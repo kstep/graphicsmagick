@@ -380,6 +380,8 @@ Export unsigned int HuffmanDecodeImage(Image *image)
   if ((mask & 0xff) == 0)  \
     {  \
       byte=ReadByte(image);  \
+      if (byte == EOF)  \
+        break;  \
       mask=0x80;  \
     }  \
   runlength++;  \
@@ -387,8 +389,6 @@ Export unsigned int HuffmanDecodeImage(Image *image)
   mask>>=1;  \
   if (bit)  \
     runlength=0;  \
-  if (EOFBlob(image))  \
-    break;  \
 }
 
   const HuffmanTable
@@ -403,6 +403,7 @@ Export unsigned int HuffmanDecodeImage(Image *image)
 
   int
     bail,
+    byte,
     code,
     color,
     count,
@@ -426,7 +427,6 @@ Export unsigned int HuffmanDecodeImage(Image *image)
 
   unsigned char
     bit,
-    byte,
     mask,
     *scanline;
 
@@ -488,10 +488,12 @@ Export unsigned int HuffmanDecodeImage(Image *image)
     x=0;
     for ( ; ; )
     {
+      if (byte == EOF)
+        break;
       if (x >= (int) image->columns)
         {
           while (runlength < 11)
-           InputBit(bit);
+            InputBit(bit);
           do { InputBit(bit); } while (bit == 0);
           break;
         }
