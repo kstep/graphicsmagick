@@ -685,14 +685,15 @@ static void errorhandler(const ExceptionType error,const char *message,
   const char *qualifier)
 {
   char
-    text[MaxTextExtent];
+    *text;
 
   int
     error_number;
 
   error_number=errno;
   errno=0;
-  FormatString(text,"Exception %d: %.1024s%s%.1024s%s%s%.64s%s",error,
+  text=AllocateString(message);
+  FormatString(text,"Exception %d: %.1024s%s%.1024s%s%s%.1024s%s",error,
     (message ? message : "ERROR"),
     qualifier ? " (" : "",qualifier ? qualifier : "",qualifier ? ")" : "",
     error_number ? " [" : "",error_number ? strerror(error_number) : "",
@@ -702,9 +703,12 @@ static void errorhandler(const ExceptionType error,const char *message,
       /*
         Set up message buffer.
       */
-      warn("%s",text);
+      warn("%.1024s",text);
       if (error_jump == NULL)
-        exit((int) error % 100);
+        {
+          LiberateMemory((void **) text);
+          exit((int) error % 100);
+        }
     }
   if (error_list)
     {
@@ -712,6 +716,7 @@ static void errorhandler(const ExceptionType error,const char *message,
         sv_catpv(error_list,"\n");
       sv_catpv(error_list,text);
     }
+  LiberateMemory((void **) text);
   longjmp(*error_jump,(int) error);
 }
 
@@ -867,7 +872,7 @@ static struct PackageInfo *GetPackageInfo(void *reference,
   struct PackageInfo *oldinfo)
 {
   char
-    message[MaxTextExtent];
+    *message;
 
   struct PackageInfo
     *info;
@@ -875,14 +880,17 @@ static struct PackageInfo *GetPackageInfo(void *reference,
   SV
     *sv;
 
-  FormatString(message,"%s::A_%lx_Z",PackageName,(long) reference);
+  message=AllocateString(PackageName);
+  FormatString(message,"%.1024s::A_%lx_Z",PackageName,(long) reference);
   sv=perl_get_sv(message,(TRUE | 0x02));
   if (!sv)
     {
       MagickWarning(ResourceLimitWarning,"Unable to create info variable",
         message);
+      LiberateMemory((void **) &message);
       return(oldinfo);
     }
+  LiberateMemory((void **) &message);
   if (SvREFCNT(sv) == 0)
     (void) SvREFCNT_inc(sv);
   if (SvIOKp(sv) && (info=(struct PackageInfo *) SvIV(sv)))
@@ -1229,10 +1237,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"filen"))
         {
           if (info)
-            (void) strncpy(info->image_info->filename,SvPV(sval,na),
-              MaxTextExtent-1);
+            (void) FormatString(info->image_info->filename,"%.1024s",
+              SvPV(sval,na));
           for ( ; image; image=image->next)
-            (void) strncpy(image->filename,SvPV(sval,na),MaxTextExtent-1);
+            (void) FormatString(image->filename,"%.1024s",SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"file"))
@@ -1820,7 +1828,7 @@ static void warninghandler(const ExceptionType warning,const char *message,
   const char *qualifier)
 {
   char
-    text[MaxTextExtent];
+    *text;
 
   int
     error_number;
@@ -1829,6 +1837,7 @@ static void warninghandler(const ExceptionType warning,const char *message,
   errno=0;
   if (!message)
     return;
+  text=AllocateString(message);
   FormatString(text,"Warning %d: %.1024s%s%.1024s%s%s%.64s%s",warning,
     message,qualifier ? " (" : "",qualifier ? qualifier : "",
     qualifier? ")" : "",error_number ? " [" : "",
@@ -1838,13 +1847,17 @@ static void warninghandler(const ExceptionType warning,const char *message,
       /*
         Set up message buffer.
       */
-      warn("%s",text);
+      warn("%.1024s",text);
       if (error_list == NULL)
-        return;
+        {
+          LiberateMemory((void **) text);
+          return;
+        }
     }
   if (SvCUR(error_list))
     sv_catpv(error_list,"\n");  /* add \n separator between messages */
   sv_catpv(error_list,text);
+  LiberateMemory((void **) text);
 }
 
 /*
@@ -2179,7 +2192,7 @@ Average(ref)
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
     info=GetPackageInfo((void *) av,info);
-    FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
+    FormatString(info->image_info->filename,"average-%.1024s",
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) strcpy(image->filename,info->image_info->filename);
     SetImageInfo(info->image_info,False,&image->exception);
@@ -2424,7 +2437,7 @@ Coalesce(ref)
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
     info=GetPackageInfo((void *) av,info);
-    FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
+    FormatString(info->image_info->filename,"average-%.1024s",
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) strcpy(image->filename,info->image_info->filename);
     SetImageInfo(info->image_info,False,&image->exception);
@@ -2571,7 +2584,7 @@ DESTROY(ref)
       case SVt_PVAV:
       {
         char
-          message[MaxTextExtent];
+          *message;
 
         struct PackageInfo
           *info;
@@ -2582,8 +2595,10 @@ DESTROY(ref)
         /*
           Array (AV *) reference
         */
-        FormatString(message,"%s::A_%lx_Z",PackageName,(long) reference);
+        message=AllocateString(PackageName);
+        FormatString(message,"%.1024s::A_%lx_Z",PackageName,(long) reference);
         sv=perl_get_sv(message,FALSE);
+        LiberateMemory((void **) &message);
         if (sv)
           {
             if ((SvREFCNT(sv) == 1) && SvIOK(sv) &&
@@ -2784,7 +2799,7 @@ Flatten(ref)
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
     info=GetPackageInfo((void *) av,info);
-    FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
+    FormatString(info->image_info->filename,"average-%.1024s",
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) strcpy(image->filename,info->image_info->filename);
     SetImageInfo(info->image_info,False,&image->exception);
@@ -4083,7 +4098,8 @@ Mogrify(ref,...)
                     if ((al->int_reference < 0) &&
                         ((al->int_reference=SvIV(sv)) <= 0))
                       {
-                        FormatString(message,"invalid %.60s value",pp->method);
+                        FormatString(message,"invalid %.1024s value",
+                          pp->method);
                         MagickWarning(OptionWarning,message,attribute);
                         goto continue_outer_loop;
                       }
