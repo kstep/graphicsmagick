@@ -1,5 +1,8 @@
 2002-03-06  Cristy  <cristy@mystic.es.dupont.com>
   * Inlined AlphaComposite() and ValidateColormapIndex().
+  * Corrected compositing algorithm for the case where both source and
+    destination pixels had opacity values that were neither fully transparent
+    nor fully opaque.
 
 2002-03-05  Cristy  <cristy@mystic.es.dupont.com>
   * Memory overrun when drawing large circles.
