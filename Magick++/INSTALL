@@ -13,8 +13,14 @@ also work fine. Most modern C++ compilers for PCs should also work (project
 files are provided in the VisualMagick package for Microsoft Visual C++
 6.0).
 
-The compiler must support the following recent C++ standard features:
+It was decided that Magick++ will be around for the long-haul, so its API
+definition depends on valuable C++ features which should be common in all
+current and future C++ compilers. The compiler must support the following
+C++ standard features:
 
+   * templates
+   * static constructors
+   * C++-style casts (e.g. static_cast)
    * bool type
    * string class (<string>)
    * exceptions (<exception>)
@@ -27,10 +33,11 @@ following compiler/platform combinations:
                             Tested Configurations
 
    Operating System      Architecture                 Compiler
- Solaris 2.6          SPARC              egcs 1.1.2
- Solaris 2.6, 2.7     SPARC              gcc-2.95.2
- Solaris 2.7          SPARC              Sun Workshop 5.0 C++
- Solaris 8            SPARC              Sun Forte 6.0 C++
+ SunOS 5.6            SPARC              egcs 1.1.2
+ SunOS 5.6, 5.7, 5.8  SPARC              gcc-2.95.2
+ SunOS 5.7            SPARC              Sun Workshop 5.0 C++
+ SunOS 5.7            SPARC              gcc-3.X snapshot (20001023)
+ SunOS 5.8            SPARC              Sun Forte 6.0 C++
  FreeBSD 2.2.7        Intel Pentium II   egcs 1.1.2
  Windows NT 4.0 SP6a  Intel Pentium II   Visual C++ 6.0 Standard Edition
 
@@ -49,6 +56,8 @@ Magick++:
                        SRPM)
  Red Hat                             Dr. Alexander Zimmermann
  Linux 7.0i386         gcc 2.95.2    <Alexander.Zimmermann@fmi.uni-passau.de>
+ Red Hat               gcc "2.96"
+ Linux 7.0i386         snapshot      ???
 
  Red Hat               egcs 1.1.2    Dr. Alexander Zimmermann
  Linux 5.2Alpha        (updated from <Alexander.Zimmermann@fmi.uni-passau.de>
@@ -58,7 +67,7 @@ Magick++:
                        7.3.1.1m      <china@thewrittenword.com>
                        CodeWarrior
  Mac OS 9 PowerPC      Professional  Leonard Rosenthol <leonardr@digapp.com>
-                       Release 5
+                       Release 6
 
 Please let me know if you have successfully built and executed Magick++
 using a different configuration so that I can add to the table of verified
@@ -77,12 +86,12 @@ and build options.
 
 To install Magick++ under Unix, installation should be similar to
 
-./configure --with-magick_plus_plus [ --prefix=/prefix ]
+./configure --with-magick-plus-plus [ --prefix=/prefix ]
 make
 make install
 
 The library is currently named similar to 'libMagick++.a' (and/or
-libMagick++.so.5.0.24) and is installed under prefix/lib while the headers
+libMagick++.so.5.0.26) and is installed under prefix/lib while the headers
 are installed with Magick++.h being installed in prefix/include and the
 remaining headers in prefix/include/Magick++.
 
@@ -143,9 +152,10 @@ Available demos are:
 
      button
         program to create a simple rectangular button with an
-        annotation
+     annotation
      flip
         program to invert and morph images in an existing GIF animation
+
      demo
         program to demonstrate the image manipulation primitives
      piddle
