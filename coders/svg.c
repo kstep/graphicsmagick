@@ -1716,10 +1716,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
               ceil(ExpandAffine(&svg_info->affine)*page.height-0.5);
           (void) fprintf(svg_info->file,"viewbox 0 0 %g %g\n",
             svg_info->view_box.width,svg_info->view_box.height);
-          (void) fprintf(svg_info->file,"affine %g 0.0 0.0 %g %g %g\n",
+          (void) fprintf(svg_info->file,"affine %g 0 0 %g %g %g\n",
             (double) page.width/svg_info->view_box.width,
             (double) page.height/svg_info->view_box.height,
-	    -svg_info->view_box.x,-svg_info->view_box.y);
+	    0.0-svg_info->view_box.x,0.0-svg_info->view_box.y);
           svg_info->width=page.width;
           svg_info->height=page.height;
         }
