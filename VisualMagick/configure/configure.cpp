@@ -956,6 +956,8 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
           return;
         if (strTest.FindNoCase("\\demo") >= 0)
           return;
+        if (strTest.FindNoCase("\\contrib") >= 0)
+          return;
       }
       subpath = "..\\";
 	    subpath += root;
@@ -997,6 +999,8 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
         if (strTest.FindNoCase("\\test") >= 0)
           return;
         if (strTest.FindNoCase("\\demo") >= 0)
+          return;
+        if (strTest.FindNoCase("\\contrib") >= 0)
           return;
       }
       subpath = "..\\";
@@ -1993,31 +1997,24 @@ void CConfigureApp::write_exe_dsp(
   std::string lib_path;
   std::string debug_path;
   std::string release_path;
+  std::string extra_path;
   CStringEx getcount = directory.c_str();
   int levels = getcount.GetFieldCount('\\');
-  if (bin_loc[0]=='.')
   {
     for (int j=0; j<(levels-2); j++)
-      bin_path += "..\\";
+      extra_path += "..\\";
   }
+  if (bin_loc[0]=='.')
+    bin_path += extra_path;
   bin_path += bin_loc;
   if (lib_loc[0]=='.')
-  {
-    for (int j=0; j<(levels-2); j++)
-      lib_path += "..\\";
-  }
+    lib_path += extra_path;
   lib_path += lib_loc;
   if (debug_loc[0]=='.')
-  {
-    for (int j=0; j<(levels-2); j++)
-      debug_path += "..\\";
-  }
+    debug_path += extra_path;
   debug_path += debug_loc;
   if (release_loc[0]=='.')
-  {
-    for (int j=0; j<(levels-2); j++)
-      release_path += "..\\";
-  }
+    release_path += extra_path;
   release_path += release_loc;
 
 	dsp << "# Microsoft Developer Studio Project File - Name=\"" << libname << "\" - Package Owner=<4>" << endl;
@@ -2084,7 +2081,11 @@ void CConfigureApp::write_exe_dsp(
 			it != standard_include.end();
 			it++)
 		{
-			dsp << " /I \"" << get_full_path("",*it).c_str() << "\"";
+      std::string relpath;
+      if (!standaloneMode)
+        relpath = extra_path;
+      relpath += *it;
+			dsp << " /I \"" << get_full_path("",relpath).c_str() << "\"";
 		}
 	}
 	{
@@ -2248,7 +2249,11 @@ void CConfigureApp::write_exe_dsp(
 			it != standard_include.end();
 			it++)
 		{
-			dsp << " /I \"" << get_full_path("",*it).c_str() << "\"";
+      std::string relpath;
+      if (!standaloneMode)
+        relpath = extra_path;
+      relpath += *it;
+			dsp << " /I \"" << get_full_path("",relpath).c_str() << "\"";
 		}
 	}
 	{

@@ -117,9 +117,9 @@ BEGIN
                     "Button",BS_AUTORADIOBUTTON,15,95,124,10
     LTEXT           "Static Builds",IDC_STATIC,13,50,40,8
     LTEXT           "Dynamic (DLL) Builds",IDC_STATIC,13,19,68,8
-    CONTROL         "Include all demo and test programs",
+    CONTROL         "Include all demo, test, and contrib programs",
                     IDC_INCLUDE_OPTIONAL,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,15,151,134,10
+                    WS_TABSTOP,15,151,158,10
     CONTROL         "Generate all utility projects with full paths rather then relative paths.",
                     IDC_STANDALONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
                     167,236,10

@@ -17,10 +17,10 @@ Class5=CTargetPage
 Class6=CWelcomePage
 
 ResourceCount=5
-Resource1=IDD_FINISHED_PAGE
-Resource2=IDD_SYSTEM_PAGE
-Resource3=IDD_WELCOME_PAGE
-Resource4=IDD_TARGET_PAGE
+Resource1=IDD_SYSTEM_PAGE
+Resource2=IDD_FINISHED_PAGE
+Resource3=IDD_TARGET_PAGE
+Resource4=IDD_WELCOME_PAGE
 Resource5=IDD_WAITDIALOG
 
 [CLS:CConfigureApp]
