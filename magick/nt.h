@@ -44,7 +44,7 @@ typedef struct _DIR
 {
   HANDLE
     hSearch;
- 
+
   WIN32_FIND_DATA
     Win32FindData;
 
@@ -56,7 +56,7 @@ struct dirent
 {
   char
      d_name[2048];
- 
+
   int
     d_namlen;
 };
@@ -68,8 +68,7 @@ struct dirent
 extern MagickExport char
   *NTGetExecutionPath(void),
   *SetClientName(const char *),
-  *NTGetLastError(void),
-  *NTResourceToBlob(const char *);
+  *NTGetLastError(void);
 
 extern MagickExport int
   Exit(int),
@@ -79,7 +78,7 @@ extern MagickExport int
 #if !defined(XS_VERSION)
 extern MagickExport DIR
   *opendir(char *);
- 
+
 extern MagickExport double
   NTElapsedTime(void),
   NTUserTime(void);
@@ -93,9 +92,12 @@ extern MagickExport long
 
 extern MagickExport struct dirent
   *readdir(DIR *);
- 
+
 extern MagickExport int
   NTIsMagickConflict(const char *);
+
+extern MagickExport char
+  *NTResourceToBlob(const char *);
 
 extern MagickExport void
   closedir(DIR *),

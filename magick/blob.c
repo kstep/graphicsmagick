@@ -364,6 +364,11 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
   file=open(filename,O_RDONLY | O_BINARY,0777);
   if (file == -1)
     {
+#if defined(WIN32)
+      blob=NTResourceToBlob(filename);
+      if (blob != (unsigned char *) NULL)
+        return(blob);
+#endif
       ThrowException(exception,BlobWarning,"Unable to create blob",filename);
       return((void *) NULL);
     }

@@ -306,7 +306,7 @@ void *lt_dlopen(char *filename)
 
   register int
     i;
-  
+
   void
     *handle;
 
@@ -694,14 +694,14 @@ char *NTGetLastError(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method NTResourceToBlob returns a blob containing the contents of the
-%   resource in the current executable specified by the id parameter. This
-%   is currently used to retrieve MGK files tha have been embedded into
-%   the various command line utilities.
+%  Method NTResourceToBlob returns a blob containing the contents of the
+%  resource in the current executable specified by the id parameter. This
+%  is currently used to retrieve MGK files tha have been embedded into
+%  the various command line utilities.
 %
 %  The format of the telldir method is:
 %
-%      char *NTResourceToBlob(const char *id)
+%      unsigned char *NTResourceToBlob(const char *id)
 %
 %  A description of each parameter follows:
 %
@@ -709,45 +709,49 @@ char *NTGetLastError(void)
 %
 %
 */
-MagickExport char *NTResourceToBlob(const char *id)
+MagickExport unsigned char *NTResourceToBlob(const char *id)
 {
-  char
-    *blob;
+  DWORD
+    length;
 
-  HRSRC
-    hRsrc;
+  HGLOBAL
+    global;
 
   HMODULE
-    hModule;
+    handle;
 
-  blob=(char *) NULL;
-  if (id && (hModule = GetModuleHandle(0)) &&
-    (hRsrc = FindResource(hModule, id, "IMAGEMAGICK")))
+  HRSRC
+    resource;
+
+  unsigned char
+    *blob,
+    *value;
+
+  assert(id != (const char *) NULL);
+  handle=GetModuleHandle(0);
+  if (!handle)
+    return((char *) NULL);
+  resource=FindResource(handle,id,"IMAGEMAGICK");
+  if (!resource)
+    return((char *) NULL);
+  global=LoadResource(handle,resource);
+  if (!global)
+    return((char *) NULL);
+  length=SizeofResource(handle,resource);
+  value=(unsigned char *) LockResource(global);
+  if (!value)
     {
-      HGLOBAL hGlobal = LoadResource(hModule, hRsrc);
-      if (hGlobal)
-        {
-          char
-            *resource;
-
-          DWORD
-            length;
-
-          length = SizeofResource(hModule, hRsrc);
-          resource = (char *)LockResource(hGlobal);    
-          if (resource && (length > 0))
-            {
-              blob = (char *) AcquireMemory(length+1);
-              if (blob)
-                {
-                  (void) memcpy((char *) blob,(char *) resource,length);
-                  blob[length]='\0';
-                }
-              UnlockResource(hGlobal);
-            }
-          FreeResource(hGlobal);
-        }
+      FreeResource(global);
+      return((char *) NULL);
     }
+  blob=(unsigned char *) AcquireMemory(length+1);
+  if (blob != (unsigned char *) NULL)
+    {
+      (void) memcpy(blob,value,length);
+      blob[length]='\0';
+    }
+  UnlockResource(global);
+  FreeResource(global);
   return(blob);
 }
 
@@ -972,7 +976,7 @@ MagickExport DIR *opendir(char *path)
   (void) strcat(file_specification,DirectorySeparator);
   entry=(DIR *) AcquireMemory(sizeof(DIR));
   if (entry != (DIR *) NULL)
-    { 
+    {
       entry->firsttime=TRUE;
       entry->hSearch=FindFirstFile(file_specification,&entry->Win32FindData);
     }

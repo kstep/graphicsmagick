@@ -277,25 +277,16 @@ static unsigned int ReadConfigurationFile(const char *basename,
   /*
     Read the magic configuration file.
   */
-  path=GetMagickConfigurePath(basename);
-  if (path)
+  FormatString(filename,"%.1024s",basename);
+  path=GetMagickConfigurePath(filename);
+  if (path != (char *) NULL)
     {
       FormatString(filename,"%.1024s",path);
       LiberateMemory((void **) &path);
-      xml=(char *) FileToBlob(filename,&length,exception);
-      if (xml == (char *) NULL)
-        return(False);
     }
-  else
-#if !defined(_VISUALC_)
+  xml=(char *) FileToBlob(filename,&length,exception);
+  if (xml == (char *) NULL)
     return(False);
-#else
-    {
-      xml=NTResourceToBlob(basename);
-      if (xml == (char *) NULL)
-        return(False);
-    }
-#endif
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
