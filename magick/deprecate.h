@@ -19,6 +19,7 @@ extern MagickExport unsigned int
   GetNumberScenes(const Image *);
 
 extern MagickExport void
+  DestroyImages(Image *),
   SetCacheThreshold(const unsigned long);
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -1073,7 +1073,6 @@ extern MagickExport void
   DestroyImage(Image *),
   DestroyImageInfo(ImageInfo *),
   DestroyImagePixels(Image *),
-  DestroyImages(Image *),
   DestroyMagick(void),
   DestroyMagickInfo(void),
   DestroyMontageInfo(MontageInfo *),

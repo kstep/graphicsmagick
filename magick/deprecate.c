@@ -63,6 +63,34 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e s t r o y I m a g e s                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyImages() destroys an image list.
+%
+%  The format of the DestroyImages method is:
+%
+%      void DestroyImages(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image sequence.
+%
+%
+*/
+MagickExport void DestroyImages(Image *image)
+{
+  DestroyImages(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t N u m b e r S c e n e s                                             %
 %                                                                             %
 %                                                                             %

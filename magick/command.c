@@ -208,7 +208,7 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
           stegano_image=SteganoImage(*image,composite_image,exception);
           if (stegano_image != (Image *) NULL)
             {
-              DestroyImages(*image);
+              DestroyImageList(*image);
               *image=stegano_image;
             }
         }
@@ -221,7 +221,7 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
             stereo_image=StereoImage(*image,composite_image,exception);
             if (stereo_image != (Image *) NULL)
               {
-                DestroyImages(*image);
+                DestroyImageList(*image);
                 *image=stereo_image;
               }
           }
@@ -993,12 +993,12 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               mask_image,&option_info,exception);
             if (composite_image != (Image *) NULL)
               {
-                DestroyImages(composite_image);
+                DestroyImageList(composite_image);
                 composite_image=(Image *) NULL;
               }
             if (mask_image != (Image *) NULL)
               {
-                DestroyImages(mask_image);
+                DestroyImageList(mask_image);
                 mask_image=(Image *) NULL;
               }
             (void) CatchImageException(image);
