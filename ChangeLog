@@ -1,3 +1,11 @@
+2003-12-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Don't override includedir.
+	* Makefile.am: Guide subdirectory is no longer distributed.
+	Improve header installation logic.
+	* configure.ac: Append user-specified LIBS when linking
+	libGraphicsMagick.
+
 2003-12-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: GraphicsMagick 1.0.4 released.  Bump CVS package

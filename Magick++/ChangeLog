@@ -1,3 +1,8 @@
+2003-12-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Makefile.am (pkgincludedir): Improve header install
+	logic.
+
 2003-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/CoderInfo.cpp (CoderInfo): Apply Borland C++ compilation fix

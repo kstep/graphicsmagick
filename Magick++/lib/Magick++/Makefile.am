@@ -1,14 +1,14 @@
 #
 # Makefile to install Magick++ headers
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+# Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 #
 AUTOMAKE_OPTIONS = 1.7
 
-includedir = ${prefix}/include
+includedir = @includedir@/GraphicsMagick
 pkgdatadir = $(datadir)/Magick++
 pkglibdir = $(libdir)/Magick++
-pkgincludedir = $(includedir)/GraphicsMagick/Magick++
+pkgincludedir = $(includedir)/Magick++
 
 pkginclude_HEADERS = Blob.h CoderInfo.h Color.h Drawable.h \
 	Exception.h Geometry.h Image.h Include.h Montage.h \
