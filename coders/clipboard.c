@@ -9,8 +9,8 @@
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
-%                                 July 1992                                   %
+%                             Leonard Rosenthol                               %
+%                                 May 2002                                    %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
@@ -95,18 +95,10 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
     y;
 
   register long
-    i,
     x;
 
   register PixelPacket
     *q;
-
-  size_t
-    count;
-
-  unsigned int
-    packet_size,
-    status;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -115,102 +107,103 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
   image=AllocateImage(image_info);
 
 #if defined(WIN32)
-{
-	HBITMAP	bitmapH;
+  {
+    HBITMAP
+      bitmapH;
 
-	OpenClipboard( NULL );
-	bitmapH = GetClipboardData( CF_BITMAP );
-	CloseClipboard();
+    OpenClipboard( NULL );
+    bitmapH = GetClipboardData( CF_BITMAP );
+    CloseClipboard();
 
-	if ( bitmapH != NULL )
-	{
-		BITMAPINFO
-			DIBinfo;
+    if ( bitmapH != NULL )
+      {
+        BITMAPINFO
+          DIBinfo;
 
-		BITMAP
-			bitmap;
+        BITMAP
+          bitmap;
 
-		HBITMAP
-			hBitmap,
-			hOldBitmap;
+        HBITMAP
+          hBitmap,
+          hOldBitmap;
 
-		HDC
-			hDC,
-			hMemDC;
+        HDC
+          hDC,
+          hMemDC;
 
-		RGBQUAD
-			*pBits,
-			*ppBits;
+        RGBQUAD
+          *pBits,
+          *ppBits;
 
-		// create an offscreen DC for the source
-		hMemDC = CreateCompatibleDC( NULL );
-		hOldBitmap = SelectObject( hMemDC, bitmapH );
-		GetObject( bitmapH, sizeof( BITMAP ), (LPSTR) &bitmap );
-		if ((image->columns == 0) || (image->rows == 0))
-		{
-			image->rows=bitmap.bmHeight;
-			image->columns=bitmap.bmWidth;
-		}
+        // create an offscreen DC for the source
+        hMemDC = CreateCompatibleDC( NULL );
+        hOldBitmap = SelectObject( hMemDC, bitmapH );
+        GetObject( bitmapH, sizeof( BITMAP ), (LPSTR) &bitmap );
+        if ((image->columns == 0) || (image->rows == 0))
+          {
+            image->rows=bitmap.bmHeight;
+            image->columns=bitmap.bmWidth;
+          }
 
-		/*
-			Initialize the bitmap header info.
-			Create a temp DC for the DIB to go into
-		*/
-		(void) memset(&DIBinfo,0,sizeof(BITMAPINFO));
-		DIBinfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
-		DIBinfo.bmiHeader.biWidth=image->columns;
-		DIBinfo.bmiHeader.biHeight=(-1)*image->rows;
-		DIBinfo.bmiHeader.biPlanes=1;
-		DIBinfo.bmiHeader.biBitCount=32;
-		DIBinfo.bmiHeader.biCompression=BI_RGB;
-		hDC=GetDC(NULL);
-		if (!hDC)
-			ThrowReaderException(ResourceLimitError,"failed to create a DC",image);
-		hBitmap= CreateDIBSection(hDC,&DIBinfo,DIB_RGB_COLORS,(void **) &ppBits,NULL,0);
-		ReleaseDC(NULL,hDC);
-		if (!hBitmap)
-			ThrowReaderException(ResourceLimitError,"failed to create bitmap",image);
+        /*
+          Initialize the bitmap header info.
+          Create a temp DC for the DIB to go into
+        */
+        (void) memset(&DIBinfo,0,sizeof(BITMAPINFO));
+        DIBinfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
+        DIBinfo.bmiHeader.biWidth=image->columns;
+        DIBinfo.bmiHeader.biHeight=(-1)*image->rows;
+        DIBinfo.bmiHeader.biPlanes=1;
+        DIBinfo.bmiHeader.biBitCount=32;
+        DIBinfo.bmiHeader.biCompression=BI_RGB;
+        hDC=GetDC(NULL);
+        if (!hDC)
+          ThrowReaderException(ResourceLimitError,"failed to create a DC",image);
+        hBitmap= CreateDIBSection(hDC,&DIBinfo,DIB_RGB_COLORS,(void **) &ppBits,NULL,0);
+        ReleaseDC(NULL,hDC);
+        if (!hBitmap)
+          ThrowReaderException(ResourceLimitError,"failed to create bitmap",image);
 
-		// create an offscreen DC
-		hDC=CreateCompatibleDC(NULL);
-		if (!hDC)
-		{
-			DeleteObject(hBitmap);
-			ThrowReaderException(ResourceLimitError,"failed to create a memory DC",image);
-		}
-		hOldBitmap=(HBITMAP) SelectObject(hDC,hBitmap);
-		if (!hOldBitmap)
-		{
-			DeleteDC(hDC);
-			DeleteObject(hBitmap);
-			ThrowReaderException(ResourceLimitError,"failed to create bitmap",image);
-		}
+        // create an offscreen DC
+        hDC=CreateCompatibleDC(NULL);
+        if (!hDC)
+          {
+            DeleteObject(hBitmap);
+            ThrowReaderException(ResourceLimitError,"failed to create a memory DC",image);
+          }
+        hOldBitmap=(HBITMAP) SelectObject(hDC,hBitmap);
+        if (!hOldBitmap)
+          {
+            DeleteDC(hDC);
+            DeleteObject(hBitmap);
+            ThrowReaderException(ResourceLimitError,"failed to create bitmap",image);
+          }
 
-		// bitblt from the memory to the DIB-based one
-		BitBlt( hDC, 0, 0, image->columns, image->rows, hMemDC, 0, 0, SRCCOPY );
+        // bitblt from the memory to the DIB-based one
+        BitBlt( hDC, 0, 0, image->columns, image->rows, hMemDC, 0, 0, SRCCOPY );
 
-		// finally copy the pixels!
-		pBits=ppBits;
-		for (y=0; y < (long) image->rows; y++)
-		{
-			q=SetImagePixels(image,0,y,image->columns,1);
-			if (q == (PixelPacket *) NULL)
-				break;
-			for (x=0; x < (long) image->columns; x++)
-			{
-				q->red=Upscale(pBits->rgbRed);
-				q->green=Upscale(pBits->rgbGreen);
-				q->blue=Upscale(pBits->rgbBlue);
-				q->opacity=OpaqueOpacity;
-				pBits++;
-				q++;
-			}
-			if (!SyncImagePixels(image))
-			break;
-		}
-	} else
-		ThrowReaderException(FileOpenError,"no bitmap on clipboard",image);
-}
+        // finally copy the pixels!
+        pBits=ppBits;
+        for (y=0; y < (long) image->rows; y++)
+          {
+            q=SetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (long) image->columns; x++)
+              {
+                q->red=Upscale(pBits->rgbRed);
+                q->green=Upscale(pBits->rgbGreen);
+                q->blue=Upscale(pBits->rgbBlue);
+                q->opacity=OpaqueOpacity;
+                pBits++;
+                q++;
+              }
+            if (!SyncImagePixels(image))
+              break;
+          }
+      } else
+        ThrowReaderException(FileOpenError,"no bitmap on clipboard",image);
+  }
 #endif
 
   CloseBlob(image);
@@ -248,20 +241,6 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
 */
 static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image)
 {
-  int
-    y;
-
-  register const PixelPacket
-    *p;
-
-  unsigned char
-    *pixels;
-
-  unsigned int
-    packet_size,
-    scene,
-    status;
-
   /*
     Allocate memory for pixels.
   */
@@ -273,16 +252,25 @@ static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image
 #if defined(WIN32)
   {
     unsigned long 
-		nPixels,
-		nPixelCount;
-	long
-		memSize;
-	PixelPacket *pPixels;
-    BITMAP  bitmap;
-	HBITMAP	bitmapH;
-	HANDLE  theBitsH;
+      nPixels,
+      nPixelCount;
 
-	OpenClipboard( NULL );
+    long
+      memSize;
+
+    const PixelPacket
+      *pPixels;
+
+    BITMAP
+      bitmap;
+
+    HBITMAP
+      bitmapH;
+
+    HANDLE
+      theBitsH;
+
+    OpenClipboard( NULL );
     EmptyClipboard();
 
     nPixels = image->columns * image->rows;
@@ -298,34 +286,34 @@ static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image
     memSize = nPixels * bitmap.bmBitsPixel;
     theBitsH = (HANDLE) GlobalAlloc (GMEM_MOVEABLE | GMEM_DDESHARE, memSize);
     if (theBitsH == NULL)
-	 return( False );	/* DoDisplayError( "OnEditCopy", GetLastError() ); */
+      return( False );	/* DoDisplayError( "OnEditCopy", GetLastError() ); */
     else {
-		RGBQUAD * theBits = (RGBQUAD *) GlobalLock((HGLOBAL) theBitsH);
-		RGBQUAD *pDestPixel = theBits;
-		if ( bitmap.bmBits == NULL )
-			bitmap.bmBits = theBits;
+      RGBQUAD * theBits = (RGBQUAD *) GlobalLock((HGLOBAL) theBitsH);
+      RGBQUAD *pDestPixel = theBits;
+      if ( bitmap.bmBits == NULL )
+        bitmap.bmBits = theBits;
 
-		pPixels = AcquireImagePixels(image,0,0,image->columns,image->rows,&image->exception);
-		for( nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
-		{
-			pDestPixel->rgbRed	    = Downscale(pPixels->red);
-			pDestPixel->rgbGreen    = Downscale(pPixels->green);
-			pDestPixel->rgbBlue	    = Downscale(pPixels->blue);
-			pDestPixel->rgbReserved = 0;
-			++pDestPixel;
-			++pPixels;
-		}
+      pPixels = AcquireImagePixels(image,0,0,image->columns,image->rows,&image->exception);
+      for( nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
+        {
+          pDestPixel->rgbRed	    = Downscale(pPixels->red);
+          pDestPixel->rgbGreen    = Downscale(pPixels->green);
+          pDestPixel->rgbBlue	    = Downscale(pPixels->blue);
+          pDestPixel->rgbReserved = 0;
+          ++pDestPixel;
+          ++pPixels;
+        }
 
-		bitmap.bmBits = theBits;
-		bitmapH = CreateBitmapIndirect( &bitmap );
+      bitmap.bmBits = theBits;
+      bitmapH = CreateBitmapIndirect( &bitmap );
 
-		GlobalUnlock((HGLOBAL) theBitsH);
+      GlobalUnlock((HGLOBAL) theBitsH);
 
-		SetClipboardData(CF_BITMAP, bitmapH);
-		CloseClipboard();
+      SetClipboardData(CF_BITMAP, bitmapH);
+      CloseClipboard();
     }
 
-	return(True);
+    return(True);
   }
 #endif
 
