@@ -2228,7 +2228,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   FILE
     *output_file;
 
-  fit_info_type
+  fitting_opts_type
     fit_info;
 
   image_header_type
@@ -2272,7 +2272,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   thin=False;
   quantize_info=(QuantizeObj *) NULL;
   pixel=(&p);
-  fit_info=new_fit_info();
+  fit_info=new_fitting_opts();
   output_writer=output_get_handler("svg");
   if (output_writer == NULL)
     ThrowWriterException(FileOpenWarning,"Unable to write svg format",image);
