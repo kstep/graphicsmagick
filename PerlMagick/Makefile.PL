@@ -60,13 +60,13 @@ WriteMakefile
    'DEFINE'	=> '-DHAVE_CONFIG_H',     # e.g., '-DHAVE_SOMETHING' 
 
    # Header search specfication and preprocessor flags
-   'INC'	=> '-I../ -I.. -D_REENTRANT -D_FILE_OFFSET_BITS=64 -I/usr/X11R6/include -I/usr/include/freetype2 -I/usr/include/libxml2',
+   'INC'	=> '-I../ -I.. -I/usr/include/freetype2 -D_REENTRANT -D_FILE_OFFSET_BITS=64 -I/usr/X11R6/include -I/usr/include/libxml2',
 
    # Install PerlMagick binary into ImageMagick bin directory
    'INSTALLBIN'	=> '/usr/local/bin',
 
    # Library specification
-   'LIBS'	=> ['-L/usr/X11R6/lib -L/usr/lib -L/usr/lib -L/usr/local/lib -lMagick -llcms -lfreetype -lXext -lSM -lICE -lX11 -lz -lpthread -lm'],
+   'LIBS'	=> ['-L/usr/X11R6/lib -L/usr/lib -L/usr/lib -L/home/cristy/ImageMagick/magick -lMagick -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -lXext -lSM -lICE -lX11 -lbz2 -lxml2 -lz -lpthread -lm'],
 
    # Perl binary name (if a Perl binary is built)
    'MAP_TARGET'	=> 'PerlMagick',
