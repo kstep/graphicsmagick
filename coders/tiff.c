@@ -1281,6 +1281,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     compress_tag=COMPRESSION_NONE;
     switch (image->compression)
     {
+#ifdef CCITT_SUPPORT
       case FaxCompression:
       {
         if ((image->storage_class == PseudoClass) &&
@@ -1295,6 +1296,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           compress_tag=COMPRESSION_CCITTFAX4;
         break;
       }
+#endif
+#ifdef JPEG_SUPPORT
       case JPEGCompression:
       {
         compress_tag=COMPRESSION_JPEG;
@@ -1302,11 +1305,31 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         image->depth=8;
         break;
       }
-      case LZWCompression: compress_tag=COMPRESSION_LZW; break;
+#endif
+#ifdef HasLZW
+      case LZWCompression:
+      {
+        compress_tag=COMPRESSION_LZW;
+        break;
+      }
+#endif
       case RunlengthEncodedCompression:
-        compress_tag=COMPRESSION_PACKBITS; break;
-      case ZipCompression: compress_tag=COMPRESSION_ADOBE_DEFLATE; break;
-      default: compress_tag=COMPRESSION_NONE; break;
+      {
+        compress_tag=COMPRESSION_PACKBITS;
+        break;
+      }
+#ifdef ZIP_SUPPORT
+      case ZipCompression:
+      {
+        compress_tag=COMPRESSION_ADOBE_DEFLATE;
+        break;
+      }
+#endif
+      default:
+      {
+        compress_tag=COMPRESSION_NONE;
+        break;
+      }
     }
     if ((image_info->compression == FaxCompression) ||
         (image_info->compression == Group4Compression))
@@ -1380,13 +1403,23 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     switch (image_info->compression)
     {
       case NoCompression: compress_tag=COMPRESSION_NONE; break;
+#ifdef CCITT_SUPPORT
       case FaxCompression: compress_tag=COMPRESSION_CCITTFAX3; break;
       case Group4Compression: compress_tag=COMPRESSION_CCITTFAX4; break;
+#endif
+#ifdef JPEG_SUPPORT
       case JPEGCompression: compress_tag=COMPRESSION_JPEG; break;
+#endif
+#ifdef HasLZW
       case LZWCompression: compress_tag=COMPRESSION_LZW; break;
+#endif
+#ifdef PACKBITS_SUPPORT
       case RunlengthEncodedCompression:
         compress_tag=COMPRESSION_PACKBITS; break;
+#endif
+#ifdef ZIP_SUPPORT
       case ZipCompression: compress_tag=COMPRESSION_ADOBE_DEFLATE; break;
+#endif
       default: break;
     }
     (void) TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
