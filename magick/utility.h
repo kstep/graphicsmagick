@@ -58,9 +58,6 @@ extern MagickExport unsigned int
   ExpandFilenames(int *,char ***),
   IsAccessible(const char *);
 
-extern MagickExport unsigned short
-  *ConvertTextToUnicode(const char *,int *);
-
 extern MagickExport void
   *AcquireMemory(const size_t),
   AppendImageFormat(const char *,char *),
