@@ -107,13 +107,13 @@
 */
 typedef struct _ExtentPacket
 {
+  long
+    center;
+
   int
     index,
     left,
     right;
-
-  long
-    center;
 } ExtentPacket;
 
 typedef struct _IntervalTree
@@ -214,8 +214,8 @@ static unsigned int Classify(Image *image,short **extrema,
 
   typedef struct _Cluster
   {
-    short
-      id;
+    struct _Cluster
+      *next;
 
     ExtentPacket
       red,
@@ -225,8 +225,8 @@ static unsigned int Classify(Image *image,short **extrema,
     long
       count;
 
-    struct _Cluster
-      *next;
+    short
+      id;
   } Cluster;
 
   Cluster

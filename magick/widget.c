@@ -84,18 +84,18 @@
 static XWidgetInfo
   monitor_info =
   {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    (char *) NULL, (char *) NULL, (char *) NULL
+    (char *) NULL, (char *) NULL, (char *) NULL,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   submenu_info =
   {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    (char *) NULL, (char *) NULL, (char *) NULL
+    (char *) NULL, (char *) NULL, (char *) NULL,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   toggle_info =
   {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    (char *) NULL, (char *) NULL, (char *) NULL
+    (char *) NULL, (char *) NULL, (char *) NULL,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   };
 
 /*

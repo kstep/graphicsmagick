@@ -61,11 +61,11 @@
 */
 typedef struct _ContributionInfo
 {
-  int
-    pixel;
-
   double
     weight;
+
+  int
+    pixel;
 } ContributionInfo;
 
 typedef struct _FilterInfo

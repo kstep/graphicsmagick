@@ -245,9 +245,6 @@ typedef struct _CubeInfo
   NodeInfo
     *root;
 
-  unsigned int
-    depth;
-
   unsigned long
     colors;
 
@@ -271,10 +268,6 @@ typedef struct _CubeInfo
   Nodes
     *node_queue;
 
-  int
-    x,
-    y;
-
   long
     *cache;
 
@@ -286,6 +279,13 @@ typedef struct _CubeInfo
 
   const QuantizeInfo
     *quantize_info;
+
+  int
+    x,
+    y;
+
+  unsigned int
+    depth;
 } CubeInfo;
 
 /*
