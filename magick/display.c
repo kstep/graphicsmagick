@@ -12256,7 +12256,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     XDisplayWidth(display,visual_info->screen),
     XDisplayHeight(display,visual_info->screen));
   width=display_image->columns;
-  height=display_image->rows
+  height=display_image->rows;
+  x=0;
+  y=0;
   (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
   windows->image.width=(unsigned int) width;
   windows->image.height=(unsigned int) height;
