@@ -287,7 +287,7 @@ static struct
     { "Roll", { {"geometry", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
     { "Rotate", { {"degree", DoubleReference},
-      {"color", StringReference} } },
+      {"color", StringReference}, {"crop", BooleanTypes} } },
     { "Sample", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference} } },
     { "Scale", { {"geometry", StringReference}, {"width", IntegerReference},
@@ -296,8 +296,9 @@ static struct
       {"elevatation", DoubleReference}, {"color", BooleanTypes} } },
     { "Sharpen", { {"geometry", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference} } },
-    { "Shear", { {"geometry", StringReference}, {"x", DoubleReference},
-      {"y", DoubleReference}, {"color", StringReference} } },
+    { "Shear", { {"geometry", StringReference}, {"x", IntegerReference},
+      {"y", DoubleReference}, {"color", StringReference},
+			{"crop", BooleanTypes} } },
     { "Spread", { {"radius", IntegerReference} } },
     { "Swirl", { {"degree", DoubleReference} } },
     { "Resize", { {"geometry", StringReference}, {"width", IntegerReference},
@@ -4458,6 +4459,9 @@ Mogrify(ref,...)
              QueryColorDatabase(argument_list[1].string_reference,
                &image->background_color);
           image=RotateImage(image,argument_list[0].double_reference,&exception);
+          if (image)
+            if (!attribute_flag[2] || (argument_list[2].int_reference != 0))
+              TransformImage(&image,"0x0",(char *) NULL);
           break;
         }
         case 24:  /* Sample */
@@ -4544,6 +4548,9 @@ Mogrify(ref,...)
              QueryColorDatabase(argument_list[3].string_reference,
                &image->background_color);
           image=ShearImage(image,x_shear,y_shear,&exception);
+          if (image)
+            if (!attribute_flag[4] || (argument_list[4].int_reference != 0))
+              TransformImage(&image,"0x0",(char *) NULL);
           break;
         }
         case 29:  /* Spread */

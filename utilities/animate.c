@@ -804,12 +804,9 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("rotate",option+1) == 0)
             {
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !IsGeometry(argv[i]))
-                    MagickError(OptionError,"Missing degrees",option);
-                }
+              i++;
+              if ((i == argc) || !IsGeometry(argv[i]))
+                MagickError(OptionError,"Missing degrees",option);
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
