@@ -35,9 +35,11 @@ extern "C" {
 #if !defined(vms) && !defined(macintosh)
 #  include <sys/types.h>
 #  include <sys/stat.h>
+#  include "magick/config.h"
 #else
 #  include <types.h>
 #  include <stat.h>
+#  include "config.h"
 #endif
 
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
