@@ -66,12 +66,11 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ConstituteImage is a convenience routine that creates an image from
-%  the pixel data you supply and returns it. The pixel data must be in
-%  scanline order top-to-bottom.  The data can be char, short int,
-%  int, float, or double.  Float and double require the pixels to
-%  be normalized [0..1], otherwise [0..MaxRGB].  For example, to create a
-%  640x480 image from unsigned red-green-blue character data, use
+%  ConstituteImage() returns an image from the the pixel data you supply.
+%  The pixel data must be in scanline order top-to-bottom.  The data can be
+%  char, short int, int, float, or double.  Float and double require the
+%  pixels to be normalized [0..1], otherwise [0..MaxRGB].  For example, to
+%  create a 640x480 image from unsigned red-green-blue character data, use
 %
 %      image=ConstituteImage(640,480,"RGB",CharPixel,pixels,&exception);
 %
@@ -83,27 +82,29 @@
 %
 %  A description of each parameter follows:
 %
-%    o image:  ConstituteImage() returns a pointer to the image.  A null image
-%      is returned if there is a memory shortage or if the image cannot be read.
+%    o image: ConstituteImage() returns a pointer to the image.  A null image
+%      is returned if there is a memory shortage or if the image cannot be
+%      read.
 %
 %    o width: width in pixels of the image.
 %
 %    o height: height in pixels of the image.
 %
-%    o map:  This string reflects the expected ordering of the pixel array.
+%    o map: This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
 %      A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or
 %      I = intensity (for grayscale).
 %
-%    o type: pixel type where 0 = unsigned char, 1 = short int, 2 = int,
-%      3 = float, and 4 = double.  Float and double types are expected to be
-%      normalized [0..1] otherwise [0..MaxRGB].
+%    o type: Define the data type of the pixels.  Float and double types are
+%      expected to be normalized [0..1] otherwise [0..MaxRGB].  Choose from
+%      these types: CharPixel, ShortPixel, IntegerPixel, FloatPixel, or
+%      DoublePixel.
 %
-%    o pixels: this array of values contain the pixel components as defined by
-%      map and type.  The expected length of this array varies depending on the
-%      values of width, height, and type.
+%    o pixels: This array of values contain the pixel components as defined by
+%      map and type.  You must preallocate this array where the expected
+%      length varies depending on the values of width, height, and type.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -546,41 +547,39 @@ MagickExport Image *ConstituteImage(const unsigned int width,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DispatchImage is a convenience routine.  Use it to extract pixel
-%  data from an image and place it in a buffer you supply.  The data is saved
-%  either as char, short int, integer, float or double format in the order
-%  specified by the type parameter.  For example, we want to extract
-%  scanline 1 of a 640x480 image as character data in red-green-blue order:
+%  DispatchImage() extracts pixel data from an image and returns it to you.
+%  The method returns False on success otherwise True if an error is
+%  encountered.  The data is returned as char, short int, int, float, or double
+%  in the order specified by map.  Suppose we want want to extract the first
+%  scanline of a 640x480 image as character data in red-green-blue order:
 %
 %      DispatchImage(image,0,0,640,1,"RGB",0,pixels);
 %
 %  The format of the DispatchImage method is:
 %
 %      unsigned int DispatchImage(Image *image,const int x,const int y,
-%        const unsigned int columns,const unsigned int rows,
-%        const char *map,const StorageType type,void *pixels)
+%        const unsigned int columns,const unsigned int rows,const char *map,
+%        const StorageType type,void *pixels)
 %
 %  A description of each parameter follows:
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
-%      ReadImage.
+%    o image: The image.
 %
-%    o x,y,columns,rows:  These values define the perimeter of a region of
+%    o x, y, columns, rows:  These values define the perimeter of a region of
 %      pixels you want to extract.
 %
-%    o map:  This character string can be any combination or order of
-%      R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
-%      M = magenta, and K = black.  The ordering reflects the order of the
-%      pixels in the supplied pixel array.
+%    o map:  This string reflects the expected ordering of the pixel array.
+%      It can be any combination or order of R = red, G = green, B = blue,
+%      A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or
+%      I = intensity (for grayscale).
 %
-%    o type: pixel type where 0 = unsigned char, 1 = short int, 2 = int,
-%      3 = float, and 4 = double.  Float and double types are expected to
-%      be normalized [0..1] otherwise [0..MaxRGB].
+%    o type: Define the data type of the pixels.  Float and double types are
+%      normalized to [0..1] otherwise [0..MaxRGB].  Choose from these types:
+%      CharPixel, ShortPixel, IntegerPixel, FloatPixel, or DoublePixel.
 %
-%    o pixels: This array of values contain the pixel components as defined
-%      by the map and type parameters.  The length of the arrays must
-%      equal the area specified by the width and height values and type
-%      parameters.
+%    o pixels: This array of values contain the pixel components as defined by
+%      map and type.  You must preallocate this array where the expected
+%      length varies depending on the values of width, height, and type.
 %
 %
 */
