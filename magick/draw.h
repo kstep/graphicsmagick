@@ -3,6 +3,18 @@
 
   For internal use only!  Subject to change!
 
+  Usage synopsis:
+
+  DrawContext context;
+  context = DrawAllocateContext((DrawInfo*)NULL, image);
+    [ any number of drawing commands ]
+    DrawSetStrokeColorString(context,"black");
+    DrawSetFillColorString(context,"#ff00ff");
+    DrawSetStrokeWidth(context,4);
+    DrawRectangle(context,72,72,144,144);
+  DrawRender(context);
+  DrawDestroyContext(context);
+
 */
 #ifndef _MAGICK_DRAW_H
 #define _MAGICK_DRAW_H
