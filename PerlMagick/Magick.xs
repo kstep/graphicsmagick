@@ -3180,8 +3180,6 @@ Get(ref,...)
               pixel=GetOnePixel(image,x % image->columns,y % image->rows);
               FormatString(name,"%u,%u,%u,%u",pixel.red,pixel.green,pixel.blue,
                 pixel.opacity);
-              if (!image->matte)
-                (void) QueryColorName(&pixel,name);
               s=newSVpv(name,0);
               break;
             }
