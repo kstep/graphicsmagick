@@ -6,7 +6,7 @@ use Config;
 WriteMakefile(
     'NAME'	=> 'Image::Magick',
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
-    'LIBS'	=> ['@LDFLAGS@ @MAGICKLIB@ @LIB_JBIG@ @LIB_HDF@ @LIB_LCMS@ @LIB_TIFF@ @LIB_TTF@ @LIB_JPEG@ @LIB_GS@ @LIB_PNG@ @LIB_FPX@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@ @LIB_BZLIB@ @LIB_XML@ @LIB_ZLIB@ @LIB_THREAD@ @LIB_LF@ @LIB_MATH@'],
+    'LIBS'	=> ['@LDFLAGS@ @MAGICKLIB@ @LIB_JBIG@ @LIB_HDF@ @LIB_LCMS@ @LIB_TIFF@ @LIB_TTF@ @LIB_JPEG@ @LIB_JP2@ @LIB_GS@ @LIB_PNG@ @LIB_FPX@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@ @LIB_BZLIB@ @LIB_XML@ @LIB_ZLIB@ @LIB_THREAD@ @LIB_LF@ @LIB_MATH@'],
     'DEFINE'	=> '@DEFS@',     # e.g., '-DHAVE_SOMETHING' 
     'INC'	=> '-I../ -I@top_srcdir@ @CPPFLAGS@',
     ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
@@ -30,7 +30,8 @@ sub MY::test
    #   fpx      FlashPix format         FlashPix library
    #   hdf	HDF format		HDF library
    #   jbig	JBIG format		JBIG library
-   #   jpeg 	JPEG format		JPEG library
+   #   jpeg 	JPEG v1 format		libjpeg
+   #   jp2 	JPEG v2 format		libjasper
    #   mpeg	MPEG format		'mpeg2decode' & 'mpeg2encode' programs
    #   png	PNG format		PNG and Zlib libraries
    #   ps	Postscript format	'gs' program and/or DPS library

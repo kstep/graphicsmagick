@@ -274,6 +274,12 @@ AC_ARG_WITH(jpeg,
 	      [with_jpeg=$withval],
 	      [with_jpeg='yes'])
 
+# Disable JPEG Version 2.
+AC_ARG_WITH(jp2,
+	      [  --without-jp2           disable JPEG v2 support],
+	      [with_jp2=$withval],
+	      [with_jp2='yes'])
+
 # Disable LCMS.
 AC_ARG_WITH(lcms,
 	      [  --without-lcms          disable LCMS support],
@@ -829,6 +835,41 @@ fi
 fi
 AM_CONDITIONAL(HasJPEG, test "$have_jpeg" != 'no')
 AC_SUBST(LIB_JPEG)
+
+#
+# Check for JPEG Version 2
+#
+have_jp2='no'
+LIB_JP2=''
+if test "$with_jp2" != 'no'
+then
+    AC_MSG_CHECKING(for JPEG version 2 support )
+    AC_MSG_RESULT()
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(jasper/jasper.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(jasper,image_load_jp2,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if JPEG version 2 support package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+	have_jp2='no (failed tests)'
+    else
+	LIB_JP2='-ljp2'
+	LIBS="$LIB_JP2 $LIBS"
+	AC_DEFINE(HasJP2,,Define if you have JPEG version 2 "Jasper" library)
+	AC_MSG_RESULT(yes)
+	have_jp2='yes'
+	AC_CHECK_HEADERS(jp2conf.h)
+    fi
+    else
+    AC_MSG_RESULT(no)
+    fi
+fi
+AM_CONDITIONAL(HasJP2, test "$have_jp2" != 'no')
+AC_SUBST(LIB_JP2)
 
 #
 # Check for Ghostscript library
@@ -1453,6 +1494,7 @@ if test "$have_fpx"    = 'yes' ; then DELEGATES="$DELEGATES fpx"  ; fi
 if test "$have_hp2xx"  = 'yes' ; then DELEGATES="$DELEGATES hpgl"  ; fi
 if test "$have_hdf"    = 'yes' ; then DELEGATES="$DELEGATES hdf"  ; fi
 if test "$have_jbig"   = 'yes' ; then DELEGATES="$DELEGATES jbig" ; fi
+if test "$have_jp2"   = 'yes' ; then DELEGATES="$DELEGATES jp2" ; fi
 if test "$have_jpeg"   = 'yes' ; then DELEGATES="$DELEGATES jpeg" ; fi
 if test "$have_lcms"    = 'yes' ; then DELEGATES="$DELEGATES lcms"  ; fi
 if test "$have_mpeg2decode" = 'yes' && test "$have_mpeg2encode"  = 'yes' ; then DELEGATES="$DELEGATES mpeg" ; fi
@@ -1614,7 +1656,8 @@ echo "FlashPIX          --with-fpx=$with_fpx		$have_fpx"
 echo "Ghostscript lib   --with-gslib=$with_gslib		$have_gslib"
 echo "HDF               --with-hdf=$with_hdf		$have_hdf"
 echo "JBIG              --with-jbig=$with_jbig		$have_jbig"
-echo "JPEG              --with-jpeg=$with_jpeg		$have_jpeg"
+echo "JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg"
+echo "JPEG v2           --with-jp2=$with_jp2		$have_jp2"
 echo "LCMS              --with-lcms=$with_lcms		$have_lcms"
 echo "PNG               --with-png=$with_png		$have_png"
 echo "TIFF              --with-tiff=$with_tiff		$have_tiff"
