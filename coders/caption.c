@@ -105,7 +105,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     *q;
 
   register int
-	  i;
+    i;
 
   TypeMetric
     metrics;
