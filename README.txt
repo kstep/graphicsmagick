@@ -595,7 +595,7 @@ MAGICK DELEGATES
       recommended that the options '--without-expat --with-xml' be
       supplied to libwmf's configure script.
 
-      ImageMagick's WMF render provides some of the finest WMF rendering
+      ImageMagick's WMF renderer provides some of the finest WMF rendering
       available due its use of antialiased drawing algorithms. You may
       select a background color or texture image to render on. For
       example, "-background '#ffffffff'" renders on a transparent
