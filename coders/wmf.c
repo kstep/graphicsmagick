@@ -214,17 +214,15 @@ static int WmfPixelWidth(CSTRUCT *cstruct)
 }
 
 /* Return initialized drawing context */
-#if 0
-static void *WmfInitialUserData(CSTRUCT *cstruct)
-{
-  return (void*)NULL;
-}
-#endif
+/* static void *WmfInitialUserData(CSTRUCT *cstruct) */
+/* { */
+/*   return (void*)NULL; */
+/* } */
 
 /* Set rectangular clipping region */
 static void WmfClipRect(CSTRUCT *cstruct)
 {
-  puts("WmfClipRect()");
+  puts("WmfClipRect() not implemented");
 }
 
 /* Copy drawing context */
@@ -233,13 +231,30 @@ static void WmfClipRect(CSTRUCT *cstruct)
 /*   puts("WmfCopyUserData()"); */
 /* } */
 
+/* Copy Xpm onto image. (supports DIBBITBLT) */
 static void WmfCopyXpm(CSTRUCT *cstruct,
                        unsigned short src_x, unsigned short src_y,
                        unsigned short dest_x, unsigned short dest_y,
                        unsigned short dest_w, unsigned short dest_h,
                        char *filename, unsigned int dwROP)
 {
-  puts("WmfCopyXpm()");
+  /* FIXME: this trivial implementation only implements pixel
+     replacement and ignores ROP entirely.  More support is needed in
+     ImageMagick to support setting the fill style.
+
+     Also, if this is based on a temporary file, how is this temporary
+     file cleaned up, and who creates it?  */
+  char
+    buff[MaxTextExtent];
+
+  /* image x,y width,height filename */
+  sprintf(buff, "image %i,%i %i,%i %s\n",
+          (int)dest_x,
+          (int)dest_y,
+          (int)dest_w,
+          (int)dest_h,
+          filename);
+  ExtendMVG(cstruct, buff);
 }
 
 /*
@@ -274,6 +289,7 @@ static void WmfCopyXpm(CSTRUCT *cstruct,
 static void WmfDrawArc(CSTRUCT *cstruct, WMFRECORD *wmfrecord,
                        int finishtype)
 {
+  /* FIXME: Implementation not completed */
   char
     buff[MaxTextExtent];
 
@@ -420,7 +436,6 @@ static void WmfDrawArc(CSTRUCT *cstruct, WMFRECORD *wmfrecord,
 /* Draw closed (and optionally filled) arc */
 static void WmfDrawChord(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
-  puts("WmfDrawChord()");
   WmfDrawArc(cstruct,wmfrecord,1);
 }
 
@@ -524,7 +539,6 @@ static void WmfDrawLine(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 /* Draw pie chart (open arc with endpoints connected to center) */
 static void WmfDrawPie(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
-  puts("WmfDrawPie()");
   WmfDrawArc(cstruct,wmfrecord,2);
 }
 
@@ -672,8 +686,14 @@ static void WmfDrawPolyPolygon(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 /* Draw a rectangle */
 static void WmfDrawRectangle(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
-  char buff[MaxTextExtent];
-  double x1, y1, x2, y2;
+  char
+    buff[MaxTextExtent];
+
+  double
+    x1,
+    y1,
+    x2,
+    y2;
 
   ExtendMVG(cstruct, "push graphic-context\n");
   if (cstruct->dc->brush->lbStyle != BS_NULL)
@@ -715,13 +735,12 @@ static void WmfDrawRectangle(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 /* Draw a rectangle with rounded corners */
 static void WmfDrawRoundRectangle(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
-  puts("WmfDrawRoundRectangle()");
+  puts("WmfDrawRoundRectangle() not implemented");
 }
 
 /* Draw a simple arc */
 static void WmfDrawSimpleArc(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
-  puts("WmfDrawSimpleArc()");
   WmfDrawArc(cstruct,wmfrecord,0);
 }
 
@@ -729,7 +748,7 @@ static void WmfDrawSimpleArc(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
                  U16 flags, U16 *lpDx, int x, int y)
 {
-  puts("WmfDrawText()");
+  puts("WmfDrawText() not implemented");
 }
 
 /* static void WmfFrameRgn(CSTRUCT *cstruct,WINEREGION *rgn,U16 width,U16 height) */
@@ -740,12 +759,48 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
 /* Extended floodfill. Fill to border color, or fill color at point. */
 static void WmfExtFloodFill(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
-  puts("WmfExtFloodFill()");
+  char
+    buff[MaxTextExtent];
+  ExtendMVG(cstruct, "push graphic-context\n");
+
+  if(wmfrecord->Parameters[0] == FLOODFILLSURFACE)
+    {
+      /* Fill color at point */
+      sprintf(buff, "fill #%02x%02x%02x\n",
+              (wmfrecord->Parameters[1]& 0x00FF),
+              (wmfrecord->Parameters[1]& 0xFF00)>>8,
+              (wmfrecord->Parameters[2]& 0x00FF)
+              );
+      ExtendMVG(cstruct, buff);
+
+      sprintf(buff,"color %i,%i floodfill\n",
+              (int)NormX(wmfrecord->Parameters[4],cstruct),
+              (int)NormY(wmfrecord->Parameters[3],cstruct));
+      ExtendMVG(cstruct, buff);
+    }
+  else
+    {
+      /* Fill to border color */
+      sprintf(buff, "fill #%02x%02x%02x\n",
+              (wmfrecord->Parameters[1]& 0x00FF),
+              (wmfrecord->Parameters[1]& 0xFF00)>>8,
+              (wmfrecord->Parameters[2]& 0x00FF)
+              );
+      ExtendMVG(cstruct, buff);
+
+      /* color x,y (point|replace|floodfill|filltoborder|reset) */
+      sprintf(buff,"color %i,%i filltoborder\n",
+              (int)NormX(wmfrecord->Parameters[4],cstruct),
+              (int)NormY(wmfrecord->Parameters[3],cstruct));
+      ExtendMVG(cstruct, buff);
+    }
+
+  ExtendMVG(cstruct, "pop graphic-context\n");
 }
 
 static void WmfFillOpaque(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
-  puts("WmfFillOpaque()");
+  puts("WmfFillOpaque() not implemented");
 }
 
 /* Perform finishing steps */
@@ -756,25 +811,44 @@ static void WmfFillOpaque(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 /* Fill with color until border color */
 static void WmfFloodFill(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
-  puts("WmfFloodFill()");
+  char
+    buff[MaxTextExtent];
+
+  ExtendMVG(cstruct, "push graphic-context\n");
+
+  /* Set stroke (border) color */
+  sprintf(buff, "fill #%02x%02x%02x\n",
+          (wmfrecord->Parameters[0]& 0x00FF),
+          (wmfrecord->Parameters[0]& 0xFF00)>>8,
+          (wmfrecord->Parameters[1]& 0x00FF)
+          );
+  ExtendMVG(cstruct, buff);
+
+  /* color x,y (point|replace|floodfill|filltoborder|reset) */
+  sprintf(buff,"color %i,%i filltoborder\n",
+          (int)NormX(wmfrecord->Parameters[3],cstruct),
+          (int)NormY(wmfrecord->Parameters[2],cstruct));
+  ExtendMVG(cstruct, buff);
+
+  ExtendMVG(cstruct, "pop graphic-context\n");
 }
 
 static void WmfNoClipRect(CSTRUCT *cstruct)
 {
-  puts("WmfNoClipRect()");
+  puts("WmfNoClipRect() not implemented");
 }
 
 /* Paint rectangular region using brush color */
 static void WmfPaintRgn(CSTRUCT *cstruct, WINEREGION *rgn)
 {
-  puts("WmfPaintRgn()");
+  puts("WmfPaintRgn() not implemented");
 }
 
 static void WmfParseROP(CSTRUCT *cstruct, unsigned int dwROP,
                  unsigned short x, unsigned short y,
                  unsigned short width, unsigned short height)
 {
-  puts("WmfParseROP()");
+  puts("WmfParseROP() not implemented");
 }
 
 /* Restore drawing context */
@@ -786,7 +860,26 @@ static void WmfParseROP(CSTRUCT *cstruct, unsigned int dwROP,
 /* Set pixel to specified color */
 static void WmfSetPixel(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
-  puts("WmfSetPixel()");
+  char
+    buff[MaxTextExtent];
+
+  ExtendMVG(cstruct, "push graphic-context\n");
+
+  /* Set stroke color */
+  sprintf(buff, "stroke #%02x%02x%02x\n",
+          (wmfrecord->Parameters[0]& 0x00FF),
+          ((wmfrecord->Parameters[0]& 0xFF00)>>8),
+          (wmfrecord->Parameters[1]& 0x00FF)
+          );
+  ExtendMVG(cstruct, buff);
+
+  /* Draw point */
+  sprintf(buff, "point %f,%f\n",
+          (float)NormX(wmfrecord->Parameters[3],cstruct),
+          (float)NormY(wmfrecord->Parameters[2],cstruct));
+  ExtendMVG(cstruct, buff);
+
+  ExtendMVG(cstruct, "pop graphic-context\n");
 }
 
 /* Set scaled output size */
@@ -804,12 +897,12 @@ static void WmfSetPmfSize(CSTRUCT *cstruct, HMETAFILE file)
 
 static void WmfSetFillStyle(CSTRUCT *cstruct, LOGBRUSH *brush, DC *currentDC)
 {
-  puts("WmfSetFillStyle()");
+  puts("WmfSetFillStyle() not implemented");
 }
 
 static void WmfSetPenStyle(CSTRUCT *cstruct, LOGPEN *pen, DC *currentDC)
 {
-  puts("WmfSetPenStyle()");
+  puts("WmfSetPenStyle() not implemented");
 }
 
 static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -951,7 +1044,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=cstruct->realwidth;
 
 
-  /* Destroy metafile handle (lacks a convenient Destroy function */
+  /* Destroy metafile handle (lacks a convenient Destroy function) */
   LiberateMemory((void**)&(metafile->wmfheader));
   LiberateMemory((void**)&(metafile->pmh));
   fclose(metafile->filein);
