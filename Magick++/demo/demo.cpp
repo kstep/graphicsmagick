@@ -142,7 +142,7 @@ int main( int /*argc*/, char ** argv)
     cout << "  explode ..." << endl;
     example = model;
     example.label( "Explode" );
-    example.implode( -10 );
+    example.implode( -1 );
     images.push_back( example );
 
     cout << "  flip ..." << endl;
@@ -186,7 +186,7 @@ int main( int /*argc*/, char ** argv)
     cout << "  implode ..." << endl;
     example = model;
     example.label( "Implode" );
-    example.implode( 30 );
+    example.implode( 0.5 );
     images.push_back( example );
 
     cout << "  modulate ..." << endl;
