@@ -1,5 +1,7 @@
 Significant changes associated with GraphicsMagick 1.1 (Under development)
 
+This file was last updated on March 20, 2004.
+
   We sincerly apologize for such an absurdly long list of fixes and
   enhancements.
 
@@ -52,6 +54,8 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     of EXIF data.
     * The -sampling-factor option now accepts as many HxV pairs as
     there are JPEG components.  Omitted ones default to 1x1.
+    * The convert and montage commands now support an -operator command to
+    perform arithmetic and bitwise operations on specified image channels.
 
   Coder additions/improvments
     * The META coder supports wide characters for the IPTC and 8BIM
@@ -66,6 +70,12 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     * The CINEON coder now supports reading and writing images in CINEON
     "CIN" linear gray and RGB formats. The read support is still very
     weak, but it works for common images.
+    * The JPEG coder now estimates the original JPEG quality and sampling
+    factors and will reuse these options when writing JPEG if the image
+    is of the same type and the option "-define JPEG:preserve-settings"
+    is supplied.
+    * The JPEG-2000 coder now supports all Jasper library arguments using
+    command line syntax similar to '-define jp2:rate=0.5'.
     * Reading and writting compressed SVG (SVGZ) is now supported.
     * The TXT coder now observes depth when writing.
     * The TIFF coder now outputs colormapped images with 1, 2, 4, and 8
@@ -78,8 +88,10 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     other grayscale image unless CCITT FAX3/FAX4 compression is
     requested. Now allows the user to specify an arbitrary
     bits-per-sample value for grayscale images (even odd values) using
-    "-define tiff:samples-per-pixel=value". Now automatically stores the
+    "-define tiff:bits-per-sample=value". Now automatically stores the
     image as TrueColor RGB pixels if the image compression is set to JPEG.
+    TIFF files are now written in using the TIFF library's default endian
+    order rather than always big endian.
     * The WPG coder now renders embedded WMFs.
     * The PS3 coder is completely re-written to work much better and
     support more features (see ChangeLog).
@@ -136,10 +148,18 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     specified channel.
     * ProfileImage is updated to handle alpha channels and grayscale
     images.
+    * Added GetImageProfile() to retrieve a CMS profile from an image.
+    * Added SetImageProfile() to attach a CMS profile to an image without
+    adjusting the image pixels.
+    * Added DeleteImageProfile() to remove a CMS profile from an image.
+    * ConstituteImage() and DispatchImage() now support 'T' (transparency),
+    'O' (opacity), and 'P' (pad) options.
     * CompositeImage() now supports CopyCyanCompositeOp,
     CopyMagentaCompositeOp, CopyYellowCompositeOp, and
     CopyBlackCompositeOp, composition operators.
     * GetColorHistogram() obtains a color histogram for the image.
+    * QuantumOperatorImage() and QuantumOperatorRegionImage() support
+    arithmetic and bitwise operations on specified image channels.
     * The semaphore.h header is no longer installed or included in the
     API headers since these functions are private interfaces.
     * Configure using --enable-symbol-prefix or define
@@ -190,6 +210,7 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     * Updated libpng to version 1.2.5.
     * Updated libwmf to version 0.2.8.2.
     * Updates zlib to version 1.2.1.
+    * ActivePerl 5.8.1 Build 807 now supported.
     * GraphicsMagick now compiles using Visual Studio .NET 2003.
 
 ---------------------------------------------------------------------------

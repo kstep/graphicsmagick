@@ -1,5 +1,6 @@
 2004-03-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* NEWS: Updated with changes up to today's date.
 	* tests/constitute.c (main): Float type seems to require allowing
 	a bit of error for Q:32.
 	* magick/constitute.c (DispatchImage): Be more careful when
