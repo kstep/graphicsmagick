@@ -4431,7 +4431,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 
             target=GetOnePixel(*image,0,0);
             (void) QueryColorDatabase(argv[++i],&target);
-            TransparentImage(*image,target);
+            TransparentImage(*image,target,TransparentOpacity);
             continue;
           }
         if (LocaleNCompare("-treedepth",option,4) == 0)

@@ -1442,7 +1442,7 @@ void Magick::Image::transparent ( const Color &color_ )
   std::string color = color_;
 
   modifyImage();
-  TransparentImage ( image(), color_ );
+  TransparentImage ( image(), color_, TransparentOpacity );
   throwImageException();
 }
 

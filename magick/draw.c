@@ -3050,7 +3050,7 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
             target;
 
           target=GetOnePixel(image,x,y);
-          (void) TransparentImage(image,target);
+          (void) TransparentImage(image,target,TransparentOpacity);
           break;
         }
         case FloodfillMethod:
@@ -4933,11 +4933,12 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
 %
 %  Method TransparentImage creates a matte image associated with the
 %  image.  All pixel locations are initially set to opaque.  Any pixel
-%  that matches the specified color are set to transparent.
+%  that matches the specified color are set to supplied opacity value.
 %
 %  The format of the TransparentImage method is:
 %
-%      unsigned int TransparentImage(Image *image,const PixelPacket target)
+%      unsigned int TransparentImage(Image *image,const PixelPacket target,
+%        const unsigned int opacity)
 %
 %  A description of each parameter follows:
 %
@@ -4949,7 +4950,7 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
 %
 */
 MagickExport unsigned int TransparentImage(Image *image,
-  const PixelPacket target)
+  const PixelPacket target,const unsigned int opacity)
 {
 #define TransparentImageText  "  Setting transparent color in the image...  "
 
@@ -4977,7 +4978,7 @@ MagickExport unsigned int TransparentImage(Image *image,
     for (x=0; x < (int) image->columns; x++)
     {
       if (ColorMatch(*q,target,image->fuzz))
-        q->opacity=TransparentOpacity;
+        q->opacity=opacity;
       q++;
     }
     if (!SyncImagePixels(image))

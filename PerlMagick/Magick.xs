@@ -389,11 +389,12 @@ static struct
     { "Texture", { {"texture", ImageReference} } },
     { "Sans", { {"geom", StringReference}, {"crop", StringReference},
       {"filter", FilterTypess} } },
-    { "Transparent", { {"color", StringReference} } },
+    { "Transparent", { {"color", StringReference},
+      {"opacity", IntegerReference}, {"fuzz", DoubleReference} } },
     { "Threshold", { {"threshold", DoubleReference} } },
     { "Charcoal", { {"geom", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference} } },
-    { "Trim", },
+    { "Trim", { {"fuzz", DoubleReference} } },
     { "Wave", { {"geom", StringReference}, {"ampli", DoubleReference},
       {"wave", DoubleReference} } },
     { "Channel", { {"radius", ChannelTypes} } },
@@ -4101,6 +4102,8 @@ Mogrify(ref,...)
         }
         case 59:  /* Trim */
         {
+          if (attribute_flag[0])
+            image->fuzz=argument_list[0].double_reference;
           attribute_flag[0]++;
           argument_list[0].string_reference="0x0";
         }
@@ -5141,11 +5144,19 @@ Mogrify(ref,...)
           PixelPacket
             target;
 
+          unsigned int
+            opacity;
+
           target=GetOnePixel(image,0,0);
           if (attribute_flag[0])
             (void) QueryColorDatabase(argument_list[0].string_reference,
               &target);
-          TransparentImage(image,target);
+          opacity=TransparentOpacity;
+          if (attribute_flag[1])
+            opacity=argument_list[1].int_reference;
+          if (attribute_flag[2])
+            image->fuzz=argument_list[2].double_reference;
+          TransparentImage(image,target,opacity);
           break;
         }
         case 57:  /* Threshold */
