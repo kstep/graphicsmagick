@@ -211,7 +211,7 @@ freetype_config = @freetype_config@
 install_sh = @install_sh@
 xml2_config = @xml2_config@
 
-AUTOMAKE_OPTIONS = 1.4 dist-zip dist-bzip2 foreign
+AUTOMAKE_OPTIONS = 1.5 dist-zip dist-bzip2 foreign
 
 # Subdirectories to build
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICK_PLUS_PLUS = Magick++
@@ -259,7 +259,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-info-recursive all-recursive install-data-recursive \
 	install-exec-recursive installdirs-recursive install-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
-DIST_COMMON = ChangeLog Makefile.am Makefile.in acinclude.m4 aclocal.m4 \
+DIST_COMMON = Makefile.am Makefile.in acinclude.m4 aclocal.m4 \
 	config.guess config.sub configure configure.ac depcomp \
 	install-sh ltmain.sh missing mkinstalldirs
 all: all-recursive
