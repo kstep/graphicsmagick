@@ -2595,12 +2595,12 @@ MagickExport unsigned int GradientImage(Image *image,
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
-		{
+    {
       *q=BlendComposite(start_color,stop_color,(double)
         MaxRGB*i/(image->columns*image->rows));
       q++;
       i++;
-		}
+    }
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
@@ -6639,8 +6639,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
         {
           if (image->colorspace != RGBColorspace)
             (void) TransformRGBImage(image,RGBColorspace);
-          if (image->colorspace != CMYKColorspace)
-            (void) RGBTransformImage(image,CMYKColorspace);
+          (void) RGBTransformImage(image,CMYKColorspace);
         }
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
