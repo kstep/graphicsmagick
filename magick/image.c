@@ -5070,7 +5070,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     (void) SetMonitorHandler(handler);
     if (image_info->verbose)
       DescribeImage(image,stdout,False);
-    PushImageList(&mogrify_images,image,&image->exception);
+    UnshiftImageList(&mogrify_images,image,&image->exception);
     DestroyImage(image);
     MagickMonitor(MogrifyImageText,i,number_images);
   }
