@@ -1603,6 +1603,22 @@ static unsigned int ExtendCache(int file,off_t length)
   return(True);
 }
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+static void CacheSignalHandler(int status)
+{
+  MagickError(ResourceLimitError,"Unable to extend pixel cache",
+    "Disk allocation failed");
+  DestroyMagick();
+  Exit(status);
+}
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
 MagickExport unsigned int OpenCache(Image *image)
 {
   CacheInfo
@@ -1757,6 +1773,7 @@ MagickExport unsigned int OpenCache(Image *image)
         }
     }
   (void) close(file);
+  (void) signal(SIGBUS,CacheSignalHandler);
   return(True);
 }
 
