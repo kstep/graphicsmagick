@@ -89,6 +89,7 @@ extern MagickExport int
     char,char *,int *,char *);
 
 extern MagickExport unsigned int
+  CGIToArgv(const char *,int *,char ***),
   CloneString(char **,const char *),
   ConcatenateString(char **,const char *),
   ExpandFilenames(int *,char ***),

@@ -227,6 +227,175 @@ MagickExport char *BaseFilename(const char *name)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  C G I T o A r g v                                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CGIToArgv converts a text string passed as part of a CGI request
+%  into command line arguments.
+%
+%  The format of the CGIToArgv method is:
+%
+%      char **CGIToArgv(const char *text,int *argc)
+%
+%  A description of each parameter follows:
+%
+%    o argv:  Method CGIToArgv returns the string list unless an error
+%      occurs, otherwise NULL.
+%
+%    o text:  Specifies the string to segment into a list.
+%
+%    o argc:  This integer pointer returns the number of arguments in the
+%      list.
+%
+%
+*/
+
+typedef struct _html_code
+{
+  short
+    len;
+  const char
+    *code,
+    val;
+} html_code;
+
+static html_code html_codes[] = {
+  4,"&lt;",'<',
+  4,"&gt;",'>',
+  5,"&amp;",'&',
+  6,"&quot;",'"'
+};
+
+/*
+  This routine converts HTML escape sequences back to the
+  original ASCII representation and returns the number of
+  characters dropped.
+*/
+static int convertHTMLcodes(char *s, int len)
+{
+  if (len <=0 || s==(char*)NULL || *s=='\0')
+    return 0;
+
+  if (s[1] == '#')
+    {
+      int val, o;
+
+      if (sscanf(s,"&#%d;",&val) == 1)
+      {
+        o = 3;
+        while (s[o] != ';')
+        {
+          o++;
+          if (o > 5)
+            break;
+        }
+        if (o < 6)
+          strcpy(s+1, s+1+o);
+        *s = val;
+        return o;
+      }
+    }
+  else
+    {
+      int
+        i,
+        codes = sizeof(html_codes) / sizeof(html_code);
+
+      for (i=0; i < codes; i++)
+      {
+        if (html_codes[i].len <= len)
+          if (strnicmp(s, html_codes[i].code, html_codes[i].len) == 0)
+            {
+              strcpy(s+1, s+html_codes[i].len);
+              *s = html_codes[i].val;
+              return html_codes[i].len-1;
+            }
+      }
+    }
+  return 0;
+}
+
+#define IsCGIDelimiter(c)  ((c) == '&')
+
+MagickExport unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
+{
+  char
+    **vector;
+
+  const char
+    *p,
+    *q;
+
+  register int
+    i;
+
+  int
+    count;
+
+  assert(argc != (int *) NULL);
+  assert(argv != (char ***) NULL);
+  if (text == (char *) NULL)
+    return(False);
+  if (argc == (int *) NULL)
+    return(False);
+  if (argv == (char ***) NULL)
+    return(False);
+  count=0;
+  /*
+    Determine the number of arguments by scanning for delimiters
+  */
+  for (p=text; *p != '\0'; p++)
+  {
+    if (IsCGIDelimiter(*p))
+      count++;
+  }
+  count++;
+  vector=(char **) AllocateMemory((count+2)*sizeof(char *));
+  if (vector == (char **) NULL)
+    {
+      MagickError(ResourceLimitError,"Unable to convert string to argv",
+        "Memory allocation failed");
+      return(False);
+    }
+  /*
+    Convert string to an ASCII list.
+  */
+  vector[0]=AllocateString("magick");
+  q=text;
+  for (i=1; i < count+1; i++)
+  {
+    p=q;
+    while (!IsCGIDelimiter(*q))
+      q++;
+    vector[i]=(char *) AllocateMemory(q-p+1);
+    if (vector[i] == (char *) NULL)
+      {
+        MagickError(ResourceLimitError,"Unable to convert string to argv",
+          "Memory allocation failed");
+        return(False);
+      }
+    (void) strncpy(vector[i],p,q-p);
+    vector[i][q-p]='\0';
+    /*
+      Convert any special HTML codes in place back to ASCII
+    */
+    convertHTMLcodes(vector[i], q-p);
+    q++;
+  }
+  vector[i]=(char *) NULL;
+  *argc=count+1;
+  *argv=vector;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C l o n e S t r i n g                                                     %
 %                                                                             %
 %                                                                             %
