@@ -67,5 +67,5 @@
 
 #ifndef lint
 static char
-  Version[]="@(#)ImageMagick 4.2.8 99/08/01 cristy@mystic.es.dupont.com";
+  Version[]="@(#)ImageMagick 4.2.9 99/09/01 cristy@mystic.es.dupont.com";
 #endif

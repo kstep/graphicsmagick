@@ -5875,6 +5875,9 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
     (void) strcpy(image_info->magick,"CGM");
   if (strncmp(magick,"digraph",7) == 0)
     (void) strcpy(image_info->magick,"DOT");
+  if ((magick[0] == 0x00) && (magick[1] == 0x00))
+    if ((magick[2] == 0x00) && (magick[3] == 0x1h))
+      (void) strcpy(image_info->magick,"EMF");
   if (strncmp(magick,"#FIG",4) == 0)
     (void) strcpy(image_info->magick,"FIG");
   if (strncmp(magick,"#!/usr/local/bin/gnuplot",24) == 0)
@@ -5888,6 +5891,8 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
       (void) strcpy(image_info->magick,"M2V");
   if (strncmp(magick,"#?RADIANCE",10) == 0)
     (void) strcpy(image_info->magick,"RAD");
+  if (strncmp(magick,"gimp xcf file",13) == 0)
+    (void) strcpy(image_info->magick,"XCF");
   for (r=GetMagickInfo((char *) NULL); r != (MagickInfo *) NULL; r=r->next)
     if (r->magick)
       if (r->magick((unsigned char *) magick,MaxTextExtent))

@@ -102,6 +102,9 @@ dvi=>
 edit=>
 	@EditorDelegate@ -title "Edit Image Comment" -e vi %o
 
+emf=>
+	@WMFDecodeDelegate@ %i %o
+
 eps<=>pdf
 	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSPDFDevice@ -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit

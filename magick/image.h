@@ -362,7 +362,8 @@ typedef struct _Image
   char
     magick[MaxTextExtent],
     *comments,
-    *label;
+    *label,
+    *text;
 
   ClassType
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -25,7 +25,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.2.8.tar.gz
+    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.2.9.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -83,8 +83,8 @@ UNIX/Cygwin COMPILATION
 
   Type:
 
-    gzip -dc ImageMagick-4.2.8.tar.gz | tar xvf -
-    cd ImageMagick-4.2.8
+    gzip -dc ImageMagick-4.2.9.tar.gz | tar xvf -
+    cd ImageMagick-4.2.9
 
   If you do not have gunzip(1), it is available as
   prep.ai.mit.edu:pub/gnu/gzip-1.2.4.shar.
@@ -363,7 +363,7 @@ MAGICK DELEGATES
 
     o ImageMagick requires the BZLIB library from
 
-          http://www.muraroa.demon.co.uk
+          http://www.bzip2.org/
 
       to read and write BZip compressed MIFF images.
 
@@ -564,8 +564,8 @@ HOW TO COMPILE
 
     BZLIB:
       cd ImageMagick
-      gunzip -c bzip2-0.9.0c.tar.gz | tar xvof -
-      mv bzip2-0.9.0c bzlib
+      gunzip -c bzip2-0.9.5b.tar.gz | tar xvof -
+      mv bzip2-0.9.5b bzlib
       cd bzlib
       make
       cd ..
@@ -662,7 +662,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-4.2.8.zip
+      unzip ImageMagick-4.2.9.zip
       set default [.imagemagick]
       @make
       set display/create/node=node_name::

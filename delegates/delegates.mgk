@@ -102,6 +102,9 @@ dvi=>
 edit=>
 	xterm -title "Edit Image Comment" -e vi %o
 
+emf=>
+	wmftogif %i %o
+
 eps<=>pdf
 	gs -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
