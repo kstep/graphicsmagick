@@ -1929,13 +1929,7 @@ fi
 #
 if test "x$prefix" = xNONE
 then
-  if test "$native_win32_build" = 'yes'
-  then
-    # Use Unix prefix convention, but default to drive C:
-    prefix="/c${ac_default_prefix}"
-  else
-    prefix=$ac_default_prefix
-  fi
+  prefix=$ac_default_prefix
 fi
 # Let make expand exec_prefix.
 if test "x$exec_prefix" = xNONE
@@ -3770,7 +3764,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3773 "configure"' > conftest.$ac_ext
+  echo '#line 3767 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7674,7 +7668,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7677 "configure"
+#line 7671 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7772,7 +7766,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7775 "configure"
+#line 7769 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10921,7 +10915,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10924 "configure"
+#line 10918 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11019,7 +11013,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 11022 "configure"
+#line 11016 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13679,7 +13673,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13682 "configure"
+#line 13676 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13777,7 +13771,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13780 "configure"
+#line 13774 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14775,7 +14769,7 @@ _ACEOF
   MagickModulesPath="${im_cv_x_coder_modules}"
   if test "$native_win32_build" = 'yes'
   then
-    MagickModulesPath=`$WinPathScript "$MagickModulesPath" 2`
+    MagickModulesPath=`$WinPathScript "$MagickModulesPath" 1`
   fi
 
 cat >>confdefs.h <<_ACEOF
@@ -20316,7 +20310,7 @@ echo "${ECHO_T}$im_cv_x_configure" >&6
 X11ConfigurePath="$im_cv_x_configure"
 if test "$native_win32_build" = 'yes'
 then
-  X11ConfigurePath=`$WinPathScript "$X11ConfigurePath=" 2`
+  X11ConfigurePath=`$WinPathScript "$X11ConfigurePath=" 1`
 fi
 
 cat >>confdefs.h <<_ACEOF
@@ -27333,7 +27327,7 @@ fi
 MagickLibPath="${LIB_DIR}/ImageMagick/"
 if test "$native_win32_build" = 'yes'
 then
-  MagickLibPath=`$WinPathScript "$MagickLibPath" 2`
+  MagickLibPath=`$WinPathScript "$MagickLibPath" 1`
 fi
 
 cat >>confdefs.h <<_ACEOF
@@ -27352,7 +27346,7 @@ else
    MagickSharePathDefine="$MagickSharePath"
  if test "$native_win32_build" = 'yes'
  then
-   MagickSharePathDefine=`$WinPathScript "$MagickSharePathDefine" 2`
+   MagickSharePathDefine=`$WinPathScript "$MagickSharePathDefine" 1`
  fi
 fi;
 
@@ -28687,8 +28681,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "wmf2magick", so it can be a program name with args.
-set dummy wmf2magick; ac_word=$2
+# Extract the first word of "wmf2eps", so it can be a program name with args.
+set dummy wmf2eps; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_WMFDecodeDelegate+set}" = set; then
@@ -28713,7 +28707,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_WMFDecodeDelegate" && ac_cv_path_WMFDecodeDelegate="wmf2magick"
+  test -z "$ac_cv_path_WMFDecodeDelegate" && ac_cv_path_WMFDecodeDelegate="wmf2eps"
   ;;
 esac
 fi
@@ -28916,7 +28910,7 @@ else
 	  windows_font_dir="/${drive}/${sysdir}/fonts/"
           if test -f "${windows_font_dir}times.ttf"
           then
-            windows_font_dir=`$WinPathScript "$windows_font_dir" 2`
+            windows_font_dir=`$WinPathScript "$windows_font_dir" 0`
             break 2
           fi
         done
