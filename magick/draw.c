@@ -396,7 +396,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
         {
           if (x < (int) image->columns)
             {
-              q=GetImagePixels(image,x,y,image->columns-x,1);
+              q=GetImagePixels(image,x,y,image->columns-x+1,1);
               if (q == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
@@ -2977,7 +2977,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
       for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
       {
         x=(int) ceil(bounds.x1-0.5);
-        q=GetImagePixels(image,x,y,(int) floor(bounds.x2-0.5)-x,1);
+        q=GetImagePixels(image,x,y,(int) floor(bounds.x2-0.5)-x+1,1);
         if (q == (PixelPacket *) NULL)
           break;
         for ( ; x <= (int) floor(bounds.x2-0.5); x++)
