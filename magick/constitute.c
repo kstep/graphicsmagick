@@ -989,7 +989,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
 %    o status: Method PopImagePixels returns True if the pixels are
 %      successfully transferred, otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o quantum: Declare which pixel components to transfer (red, green, blue,
 %      opacity, RGB, or RGBA).
@@ -1358,7 +1358,7 @@ MagickExport unsigned int PopImagePixels(Image *image,
 %    o status: Method PushImagePixels returns True if the pixels are
 %      successfully transferred, otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o quantum: Declare which pixel components to transfer (red, green, blue,
 %      opacity, RGB, or RGBA).

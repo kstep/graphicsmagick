@@ -350,7 +350,7 @@ MagickExport void Ascii85Encode(Image *image,const unsigned int code)
 %    o status:  Method HuffmanDecodeImage returns True if all the pixels are
 %      compressed without error, otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -630,7 +630,7 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 */
 MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
@@ -878,7 +878,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 */
 MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
@@ -1026,7 +1026,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
 %    o status:  Method LZWEncodeImage returns True if all the pixels are
 %      compressed without error, otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o number_pixels:  An unsigned interger that specifies the number of
 %      pixels to compress.
@@ -1203,7 +1203,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
 %    o status:  Method PackbitsEncodeImage returns True if all the pixels are
 %      compressed without error, otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o number_pixels:  An unsigned integer that specifies the number of
 %      pixels to compress.

@@ -166,7 +166,7 @@ static void DestroyDelegateInfo(void)
 %    o encode: Specifies the encode delegate we are searching for as a
 %      character string.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -248,9 +248,9 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode,
 %    o command: Method GetDelegateCommand returns the command associated
 %      with specified delegate tag.
 %
-%    o image_info: The address of a structure of type ImageInfo.
+%    o image_info: The imageInfo.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o decode: Specifies the decode delegate we are searching for as a
 %      character string.
@@ -327,9 +327,9 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o image_info: The address of a structure of type ImageInfo.
+%    o image_info: The imageInfo.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -542,7 +542,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
 %
 %    o file:  An pointer to a FILE.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */

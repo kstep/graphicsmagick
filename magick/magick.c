@@ -275,7 +275,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
 %    o tag: a character string that represents the image format we are
 %      looking for.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -504,7 +504,7 @@ MagickExport int unsigned IsMagickConflict(const char *magick)
 %
 %    o file: A pointer to a FILE structure.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -671,7 +671,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t I m a g e I n f o                                                   %
++   S e t I m a g e I n f o                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -698,7 +698,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
 %      multi-frame support (user may want multi-frame but image format may not
 %      support it).
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */

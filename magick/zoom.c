@@ -272,29 +272,19 @@ static double BesselOrderOne(double x)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MagnifyImage creates a new image that is a integral size greater
-%  than an existing one.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.
-%
-%  MagnifyImage scans the reference image to create a magnify image by
-%  bilinear interpolation.  The magnify image columns and rows become:
-%
-%    number_columns << 1
-%    number_rows << 1
+%  MagnifyImage() is a convenience method that scales an image proportionally
+%  to twice its size.  If a NULL image is returned, check the exception member
+%  of image to determine why the image failed to magnify.
 %
 %  The format of the MagnifyImage method is:
 %
-%      magnify_image=MagnifyImage(image,ExceptionInfo *exception)
+%      Image *MagnifyImage(image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o magnify_image: Method MagnifyImage returns a pointer to the image
-%      after magnification.  A null image is returned if there is a memory
-%      shortage.
+%    o image: The image.
 %
-%    o image: The address of a structure of type Image.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -454,24 +444,9 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MinifyImage creates a new image that is a integral size less than
-%  an existing one.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.
-%
-%  MinifyImage scans the reference image to create a minified image by
-%  computing the weighted average of a 4x4 cell centered at each reference
-%  pixel.  The target pixel requires two columns and two rows of the reference
-%  pixels.  Therefore the minified image columns and rows become:
-%
-%    number_columns/2
-%    number_rows/2
-%
-%  Weights assume that the importance of neighboring pixels is negately
-%  proportional to the square of their distance from the target pixel.
-%
-%  The scan only processes pixels that have a full set of neighbors.  Pixels
-%  in the top, bottom, left, and right pairs of rows and columns are omitted
-%  from the scan.
+%  MinifyImage() is a convenience method that scales an image proportionally
+%  to half its size.  If a NULL image is returned, check the exception member
+%  of image to determine why the image failed to minify.
 %
 %  The format of the MinifyImage method is:
 %
@@ -479,13 +454,9 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o minify_image: Method MinifyImage returns a pointer to the image
-%      after reducing.  A null image is returned if there is a memory
-%      shortage or if the image size is less than IconSize*2.
+%    o image: The image.
 %
-%    o image: The address of a structur  of type Image.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -587,12 +558,17 @@ MagickExport Image *MinifyImage(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ResizeImage creates a new image that is a scaled size of an
-%  existing one.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.  The Point filter gives
-%  fast pixel replication, Triangle is equivalent to bi-linear interpolation,
-%  and Mitchel giver slower, very high-quality results.  See Graphic Gems III
-%  for details on this algorithm.
+%  ResizeImage() scales an image to the desired dimensions with one of these
+%  filters:
+%
+%    Bessel   Blackman   Box
+%    Catrom   Cubic      Gaussian
+%    Hanning  Hermite    Lanczos
+%    Mitchell Point      Quandratic
+%    Sinc     Triangle
+%
+%  If a NULL image is returned, check exception to determine why the image
+%  failed to scale.
 %
 %  The format of the ResizeImage method is:
 %
@@ -602,22 +578,17 @@ MagickExport Image *MinifyImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o resize_image: Method ResizeImage returns a pointer to the image after
-%      scaling.  A null image is returned if there is a memory shortage.
+%    o image: The image.
 %
-%    o image: the address of a structure of type Image.
+%    o columns: The number of columns in the scaled image.
 %
-%    o columns: an integer that specifies the number of columns in the resize
-%      image.
+%    o rows: The number of rows in the scaled image.
 %
-%    o rows: an integer that specifies the number of rows in the scaled
-%      image.
+%    o filter: Image filter to use.
 %
-%    o filter: specifies which image filter to use.
+%    o blur: The blur factor where > 1 is blurry, < 1 is sharp.
 %
-%    o blur: specifies the blur factor where > 1 is blurry, < 1 is sharp.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -1176,9 +1147,10 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SampleImage creates a new image that is a scaled size of an
-%  existing one using pixel sampling.  It allocates the memory necessary
-%  for the new Image structure and returns a pointer to the new image.
+%  SampleImage() scales an image to the desired dimensions with pixel
+%  sampling.  Unlike other scaling methods, this method does not introduce
+%  any additional color into the scaled image.  If a NULL image is
+%  returned, check exception to determine why the image failed to scale.
 %
 %  The format of the SampleImage method is:
 %
@@ -1187,18 +1159,13 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
 %
 %  A description of each parameter follows:
 %
-%    o sample_image: Method SampleImage returns a pointer to the image after
-%      scaling.  A null image is returned if there is a memory shortage.
+%    o image: The image.
 %
-%    o image: The address of a structure of type Image.
+%    o columns: The number of columns in the sampled image.
 %
-%    o columns: An integer that specifies the number of columns in the sampled
-%      image.
+%    o rows: The number of rows in the sampled image.
 %
-%    o rows: An integer that specifies the number of rows in the sampled
-%      image.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -1330,16 +1297,9 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ScaleImage creates a new image that is a scaled size of an
-%  existing one.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.  To scale a scanline
-%  from x pixels to y pixels, each new pixel represents x/y old pixels.  To
-%  read x/y pixels, read (x/y rounded up) pixels but only count the required
-%  fraction of the last old pixel read in your new pixel.  The remainder
-%  of the old pixel will be counted in the next new pixel.
-%
-%  The scaling algorithm was suggested by rjohnson@shell.com and is adapted
-%  from pnmscale(1) of PBMPLUS by Jef Poskanzer.
+%  ScaleImage() changes the size of an image to the given dimensions.  If
+%  a NULL image is returned, check exception to determine why the image failed
+%  to scale.
 %
 %  The format of the ScaleImage method is:
 %
@@ -1348,18 +1308,13 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
 %
 %  A description of each parameter follows:
 %
-%    o scale_image: Method ScaleImage returns a pointer to the image after
-%      scaling.  A null image is returned if there is a memory shortage.
+%    o image: The image.
 %
-%    o image: The address of a structure of type Image.
+%    o columns: The number of columns in the scaled image.
 %
-%    o columns: An integer that specifies the number of columns in the scaled
-%      image.
+%    o rows: The number of rows in the scaled image.
 %
-%    o rows: An integer that specifies the number of rows in the scaled
-%      image.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -1688,7 +1643,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   Z o o m I m a g e                                                         %
++   Z o o m I m a g e                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1714,7 +1669,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
 %    o zoom_image: Method ZoomImage returns a pointer to the image after
 %      scaling.  A null image is returned if there is a memory shortage.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o columns: An integer that specifies the number of columns in the zoom
 %      image.
@@ -1722,7 +1677,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
 %    o rows: An integer that specifies the number of rows in the scaled
 %      image.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */

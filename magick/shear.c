@@ -86,7 +86,7 @@
 %    o rotate_image: Method IntegralRotateImage returns a pointer to the
 %      rotated image.  A null image is returned if there is a a memory shortage.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o rotations: Specifies the number of 90 degree rotations.
 %
@@ -270,7 +270,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
 %
 %  A description of each parameter follows.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o degrees: A double representing the shearing angle along the X axis.
 %
@@ -529,7 +529,7 @@ static void XShearImage(Image *image,const double degrees,
 %
 %  A description of each parameter follows.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o degrees: A double representing the shearing angle along the Y axis.
 %
@@ -793,12 +793,12 @@ static void YShearImage(Image *image,const double degrees,
 %    o status: Method RotateImage returns a pointer to the image after
 %      rotating.  A null image is returned if there is a memory shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o degrees: Specifies the number of degrees to rotate the image.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -929,12 +929,12 @@ MagickExport Image *RotateImage(Image *image,const double degrees,
 %    o status: Method ShearImage returns a pointer to the image after
 %      rotating.  A null image is returned if there is a memory shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o x_shear, y_shear: Specifies the number of degrees to shear the image.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */

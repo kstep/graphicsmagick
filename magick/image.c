@@ -59,6 +59,13 @@
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
 #include "modules.h"
 #endif
+#if defined(HasLCMS)
+# if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#  include <lcms/lcms.h>
+# else
+#  include "lcms.h"
+# endif
+#endif
 
 /*
   Constant declaration.
@@ -2530,7 +2537,7 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 %    o bounds: Method GetImageBoundingBox returns the bounding box of an
 %      image canvas.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -2947,25 +2954,29 @@ MagickExport unsigned int IsGeometry(const char *geometry)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsImagesEqual measures the difference between two images.  The error
-%  is computed by summing over all pixels in an image the distance squared
-%  in RGB space between each image pixel and its corresponding pixel in the
-%  reference image.
-%  These values are computed:
+%  IsImagesEqual() measures the difference between colors at each pixel
+%  location of two images.  A value other than 0 means the colors match
+%  exactly.  Otherwise an error measure is computed by summing over all
+%  pixels in an image the distance squared in RGB space between each image
+%  pixel and its corresponding pixel in the reference image.  The error
+%  measure is assigned to these image members:
 %
 %    o mean_error_per_pixel:  This value is the mean error for any single
 %      pixel in the image.
 %
-%    o normalized_mean_square_error:  This value is the normalized mean
+%    o normalized_mean_error:  This value is the normalized mean
 %      quantization error for any single pixel in the image.  This distance
 %      measure is normalized to a range between 0 and 1.  It is independent
 %      of the range of red, green, and blue values in the image.
 %
-%    o normalized_maximum_square_error:  Thsi value is the normalized
+%    o normalized_maximum_error:  Thsi value is the normalized
 %      maximum quantization error for any single pixel in the image.  This
 %      distance measure is normalized to a range between 0 and 1.  It is
 %      independent of the range of red, green, and blue values in your image.
 %
+%  A small normalized mean square error, accessed as
+%  image->normalized_mean_error, suggests the images are very similiar in
+%  spatial layout and color.
 %
 %  The format of the IsImagesEqual method is:
 %
@@ -2973,9 +2984,9 @@ MagickExport unsigned int IsGeometry(const char *geometry)
 %
 %  A description of each parameter follows.
 %
-%    o image: Specifies a pointer to an Image structure.
+%    o image: The image.
 %
-%    o reference: Specifies a pointer to an Image structure.
+%    o reference: The reference image.
 %
 %
 */
@@ -3070,9 +3081,8 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsImageTainted returns True if the image has been altered since it
-%  was first read or if any image in the sequence has a difference magic or
-%  filename.
+%  IsImageTainted() returns a value other than 0 if any pixel in an image
+%  has been altered since it was first constituted.
 %
 %  The format of the IsImageTainted method is:
 %
@@ -3080,10 +3090,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method IsImageTainted returns True if the image has been altered
-%      since it was first read.
-%
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -3116,7 +3123,7 @@ MagickExport unsigned int IsImageTainted(const Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     I s S u b i m a g e                                                     %
++     I s S u b i m a g e                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3171,8 +3178,12 @@ MagickExport unsigned int IsSubimage(const char *geometry,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ListToGroupImage converts a linked list of images to a sequential
-%  array.
+%  ListToGroupImage() is a convenience method that converts a linked list of
+%  images to a sequential array.  For example,
+%
+%    images = ListToGroupImage(image_list, \&n);
+%    for (i=0; i < n; i++)
+%      puts(images[i]->filename);
 %
 %  The format of the ListToGroupImage method is:
 %
@@ -3180,14 +3191,9 @@ MagickExport unsigned int IsSubimage(const char *geometry,
 %
 %  A description of each parameter follows:
 %
-%    o images: Method ListToGroupImage converts a linked list of images to
-%      a sequential array and returns the array..
+%    o image: The image list.
 %
-%    o images: The address of a structure of type Image;  returned from
-%      ReadImage.
-%
-%    o number_images:  A pointer to an unsigned integer.  The number of images
-%      in the image array is returned here.
+%    o number_images:  The length of the image array is returned here.
 %
 %
 */
@@ -3230,7 +3236,7 @@ MagickExport Image **ListToGroupImage(Image *image,unsigned int *number_images)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     M o g r i f y I m a g e                                                 %
++     M o g r i f y I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3254,7 +3260,7 @@ MagickExport Image **ListToGroupImage(Image *image,unsigned int *number_images)
 %    o argv: Specifies a pointer to a text array containing the command line
 %      arguments.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %
@@ -4808,7 +4814,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     M o g r i f y I m a g e s                                               %
++     M o g r i f y I m a g e s                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4832,7 +4838,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 %    o argv: Specifies a pointer to a text array containing the command line
 %      arguments.
 %
-%    o images: The address of a structure of type Image;  returned from
+%    o images: The image;  returned from
 %      ReadImage.
 %
 %
@@ -4895,116 +4901,8 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     M o s a i c I m a g e s                                                 %
 %                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method MosaicImages inlays a number of image to form a single coherent
-%  picture.
-%
-%  The format of the MosaicImage method is:
-%
-%      Image *MosaicImages(const Image *image,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-%
-*/
-MagickExport Image *MosaicImages(Image *image,ExceptionInfo *exception)
-{
-#define MosaicImageText  "  Create an image mosaic...  "
-
-  Image
-    *mosaic_image;
-
-  int
-    y;
-
-  RectangleInfo
-    page;
-
-  register Image
-    *next;
-
-  register int
-    x;
-
-  register PixelPacket
-    *q;
-
-  unsigned int
-    scene;
-
-  /*
-    Determine next bounding box.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  if (image->next == (Image *) NULL)
-    ThrowImageException(OptionWarning,"Unable to create image mosaic",
-      "image sequence required");
-  page.width=image->columns;
-  page.height=image->rows;
-  page.x=0;
-  page.y=0;
-  for (next=image; next != (Image *) NULL; next=next->next)
-  {
-    page.x=next->page.x;
-    page.y=next->page.y;
-    if ((next->columns+page.x) > page.width)
-      page.width=next->columns+page.x;
-    if ((next->rows+page.y) > page.height)
-      page.height=next->rows+page.y;
-  }
-  /*
-    Allocate next structure.
-  */
-  mosaic_image=AllocateImage((ImageInfo *) NULL);
-  if (mosaic_image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
-    Initialize colormap.
-  */
-  mosaic_image->columns=page.width;
-  mosaic_image->rows=page.height;
-  for (y=0; y < (int) mosaic_image->rows; y++)
-  {
-    q=SetImagePixels(mosaic_image,0,y,mosaic_image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (int) mosaic_image->columns; x++)
-    {
-      *q=mosaic_image->background_color;
-      q++;
-    }
-    if (!SyncImagePixels(mosaic_image))
-      break;
-  }
-  scene=0;
-  for (next=image; next != (Image *) NULL; next=next->next)
-  {
-    CompositeImage(mosaic_image,CopyCompositeOp,next,next->page.x,
-      next->page.y);
-    MagickMonitor(MosaicImageText,scene++,GetNumberScenes(image));
-  }
-  return(mosaic_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P a r s e I m a g e G e o m e t r y                                       %
++   P a r s e I m a g e G e o m e t r y                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5188,7 +5086,273 @@ MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     R G B T r a n s f o r m I m a g e                                       %
+%                                                                             %
+%   P r o f i l e I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ProfileImage() adds or removes a ICM, IPTC, or generic profile to an
+%  image.  If the profile name is defined it is deleted from the image.
+%  If a filename is given, one or more profiles are read and added to the
+%  image.  ProfileImage() returns a value other than 0 if the profile is
+%  successfully added or removed from the image.
+%
+%  The format of the ProfileImage method is:
+%
+%      unsigned int ProfileImage(Image *image,const char *profile_name,
+%        const char *filename)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o profile_name: Type of profile to add or remove.
+%
+%    o filename: Filename of the ICM, IPTC, or generic profile.
+%
+%
+*/
+MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
+  const char *filename)
+{
+  ExceptionInfo
+    exception;
+
+  Image
+    *profile_image;
+
+  ImageInfo
+    *image_info;
+
+  register int
+    i,
+    j;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (filename == (const char *) NULL)
+    {
+      /*
+        Remove an ICM, IPTC, or generic profile from the image.
+      */
+      if ((LocaleCompare("icm",profile_name) == 0) || (*profile_name == '*'))
+        {
+          if (image->color_profile.length != 0)
+            LiberateMemory((void **) &image->color_profile.info);
+          image->color_profile.length=0;
+          image->color_profile.info=(unsigned char *) NULL;
+        }
+      if ((LocaleCompare("8bim",profile_name) == 0) ||
+          (LocaleCompare("iptc",profile_name) == 0) || (*profile_name == '*'))
+        {
+          if (image->iptc_profile.length != 0)
+            LiberateMemory((void **) &image->iptc_profile.info);
+          image->iptc_profile.length=0;
+          image->iptc_profile.info=(unsigned char *) NULL;
+        }
+      for (i=0; i < (int) image->generic_profiles; i++)
+      {
+        if ((LocaleCompare(image->generic_profile[i].name,profile_name) != 0) &&
+            (*profile_name != '*'))
+          continue;
+        if (image->generic_profile[i].name != (char *) NULL)
+          LiberateMemory((void **) &image->generic_profile[i].name);
+        if (image->iptc_profile.length != 0)
+          LiberateMemory((void **) &image->generic_profile[i].info);
+        image->generic_profiles--;
+        for (j=i; j < (int) image->generic_profiles; j++)
+          image->generic_profile[j]=image->generic_profile[j+1];
+        i--;
+      }
+      return(True);
+    }
+  /*
+    Add a ICM, IPTC, or generic profile to the image.
+  */
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  (void) strcpy(image_info->filename,filename);
+  profile_image=ReadImage(image_info,&exception);
+  if (exception.severity != UndefinedException)
+    MagickWarning(exception.severity,exception.reason,exception.description);
+  DestroyImageInfo(image_info);
+  if (profile_image == (Image *) NULL)
+    return(False);
+  if (profile_image->iptc_profile.length != 0)
+    {
+      if (image->iptc_profile.length != 0)
+        LiberateMemory((void **) &image->iptc_profile.info);
+      image->iptc_profile.length=profile_image->iptc_profile.length;
+      image->iptc_profile.info=profile_image->iptc_profile.info;
+      profile_image->iptc_profile.length=0;
+      profile_image->iptc_profile.info=(unsigned char *) NULL;
+    }
+  if (profile_image->color_profile.length != 0)
+    {
+      if (image->color_profile.length != 0)
+        {
+#if defined(HasLCMS)
+          typedef struct _ProfilePacket
+          {
+            unsigned short
+              red,
+              green,
+              blue,
+              opacity;
+          } ProfilePacket;
+
+          cmsHPROFILE
+            image_profile,
+            transform_profile;
+
+          cmsHTRANSFORM
+            transform;
+
+          int
+            intent,
+            y;
+
+          ProfilePacket
+            alpha,
+            beta;
+
+          register int
+            x;
+
+          register PixelPacket
+            *q;
+
+          /*
+            Transform pixel colors as defined by the color profiles.
+          */
+          image_profile=cmsOpenProfileFromMem(image->color_profile.info,
+            image->color_profile.length);
+          transform_profile=cmsOpenProfileFromMem(
+            profile_image->color_profile.info,
+            profile_image->color_profile.length);
+          if ((image_profile == (cmsHPROFILE) NULL) ||
+              (transform_profile == (cmsHPROFILE) NULL))
+            ThrowBinaryException(ResourceLimitWarning,"Unable to manage color",
+              "failed to open color profiles");
+          switch (cmsGetColorSpace(transform_profile))
+          {
+            case icSigCmykData: profile_image->colorspace=CMYKColorspace; break;
+            case icSigYCbCrData:
+              profile_image->colorspace=YCbCrColorspace; break;
+            case icSigLuvData: profile_image->colorspace=YUVColorspace; break;
+            case icSigGrayData: profile_image->colorspace=GRAYColorspace; break;
+            case icSigRgbData: profile_image->colorspace=RGBColorspace; break;
+            default: profile_image->colorspace=RGBColorspace; break;
+          }
+          switch (image->rendering_intent)
+          {
+            case AbsoluteIntent: intent=INTENT_ABSOLUTE_COLORIMETRIC; break;
+            case PerceptualIntent: intent=INTENT_PERCEPTUAL; break;
+            case RelativeIntent: intent=INTENT_RELATIVE_COLORIMETRIC; break;
+            case SaturationIntent: intent=INTENT_SATURATION; break;
+            default: intent=INTENT_PERCEPTUAL; break;
+          }
+          if (image->colorspace == CMYKColorspace)
+            {
+              if (profile_image->colorspace == CMYKColorspace)
+                transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
+                  transform_profile,TYPE_CMYK_16,intent,0);
+              else
+                transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
+                  transform_profile,TYPE_RGBA_16,intent,0);
+            }
+          else
+            {
+              if (profile_image->colorspace == CMYKColorspace)
+                transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
+                  transform_profile,TYPE_CMYK_16,intent,0);
+              else
+                transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
+                  transform_profile,TYPE_RGBA_16,intent,0);
+            }
+          if (transform == (cmsHTRANSFORM) NULL)
+            ThrowBinaryException(ResourceLimitWarning,"Unable to manage color",
+              "failed to create color transform");
+          if (image->colorspace == CMYKColorspace)
+            image->matte=True;
+          for (y=0; y < (int) image->rows; y++)
+          {
+            q=GetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
+            {
+              alpha.red=XUpScale(q->red);
+              alpha.green=XUpScale(q->green);
+              alpha.blue=XUpScale(q->blue);
+              alpha.opacity=XUpScale(q->opacity);
+              cmsDoTransform(transform,&alpha,&beta,1);
+              q->red=XDownScale(beta.red);
+              q->green=XDownScale(beta.green);
+              q->blue=XDownScale(beta.blue);
+              q->opacity=XDownScale(beta.opacity);
+              q++;
+            }
+            if (!SyncImagePixels(image))
+              break;
+          }
+          if (image->colorspace == CMYKColorspace)
+            image->matte=False;
+          image->colorspace=profile_image->colorspace;
+          cmsDeleteTransform(transform);
+          cmsCloseProfile(image_profile);
+          cmsCloseProfile(transform_profile);     
+#endif
+          LiberateMemory((void **) &image->color_profile.info);
+        }
+      image->color_profile.length=profile_image->color_profile.length;
+      image->color_profile.info=profile_image->color_profile.info;
+      profile_image->color_profile.length=0;
+      profile_image->color_profile.info=(unsigned char *) NULL;
+    }
+  if (profile_image->generic_profiles != 0)
+    {
+      unsigned int
+        number_profiles;
+
+      number_profiles=image->generic_profiles+profile_image->generic_profiles;
+      if (image->generic_profile == (ProfileInfo *) NULL)
+        image->generic_profile=(ProfileInfo *)
+          AcquireMemory(number_profiles*sizeof(ProfileInfo));
+      else
+        ReacquireMemory((void **) &image->generic_profile,
+          number_profiles*sizeof(ProfileInfo));
+      if (image->generic_profile == (ProfileInfo *) NULL)
+        {
+          image->generic_profiles=0;
+          DestroyImage(profile_image);
+          ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+            (char *) NULL);
+        }
+      j=image->generic_profiles;
+      for (i=0; i < (int) profile_image->generic_profiles; i++)
+      {
+        image->generic_profile[j].name=profile_image->generic_profile[i].name;
+        image->generic_profile[j].length=
+          profile_image->generic_profile[i].length;
+        image->generic_profile[j].info=profile_image->generic_profile[i].info;
+        profile_image->generic_profile[i].name=(char *) NULL;
+        profile_image->generic_profile[i].length=0;
+        profile_image->generic_profile[i].info=(unsigned char *) NULL;
+        j++;
+      }
+      image->generic_profiles=number_profiles;
+    }
+  DestroyImage(profile_image);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
++     R G B T r a n s f o r m I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5206,7 +5370,7 @@ MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o colorspace: An unsigned integer value that indicates which colorspace
@@ -5671,22 +5835,24 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetImage initializes the reference image to the background color.
+%  SetImage() sets the red, green, and blue components of each pixel to
+%  the image background color and the opacity component to the specified
+%  level of transparency.  The background color is defined by the
+%  background_color member of the image.
 %
 %  The format of the SetImage method is:
 %
-%      void SetImage(Image *image,opacity)
+%      void SetImage(Image *image,const Quantum opacity)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
-%    o opacity: The transparency of the background color.
+%    o opacity: Set each pixel to this level of transparency.
 %
 %
 */
-MagickExport void SetImage(Image *image,Quantum opacity)
+MagickExport void SetImage(Image *image,const Quantum opacity)
 {
   int
     y;
@@ -5737,19 +5903,20 @@ MagickExport void SetImage(Image *image,Quantum opacity)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetImageDepth sets the depth of the image.
+%  SetImageDepth() sets the depth of the image, either 8 or 16.  Some image
+%  formats support both 8 and 16-bits per color component (e.g. PNG).  Use
+%  SetImageDepth() to specify your preference.  A value other than 0 is
+%  returned if the depth is set.
 %
 %  The format of the SetImageDepth method is:
 %
-%      unsigned int SetImageDepth(Image *image,const unsigned int)
+%      unsigned int SetImageDepth(Image *image,const unsigned int depth)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method SetImageDepth returns True if the image depth is set.
+%    o image: The image.
 %
-%    o image: The address of a structure of type Image.
-%
-%    o depth: specified the image depth.
+%    o depth: The image depth.
 %
 %
 */
@@ -5816,9 +5983,10 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned int depth)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetImageOpacity initializes the opacity channel of the reference
-%  image to the specified value.  If the image already has a matte channel it
-%  is attenuated with the opacity value.
+%  SetImageOpacity() attenuates the opacity channel of an image.  If the
+%  image pixels are opaque, they are set to the specified opacity level.
+%  Otherwise, the pixel oapcity values are blended with the supplied
+%  transparency value.
 %
 %  The format of the SetImageOpacity method is:
 %
@@ -5826,10 +5994,10 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned int depth)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
-%    o opacity: The level of transparency.
+%    o opacity: The level of transparency: 0 is fully opaque and MaxRGB is
+%      fully transparent.
 %
 %
 */
@@ -5890,7 +6058,11 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetImageType sets the type of the image.
+%  SetImageType() sets the type of image.  Choose from these types:
+%
+%        Bilevel        Grayscale       GrayscaleMatte
+%        Palette        PaletteMatte    TrueColor
+%        TrueColorMatte ColorSeparation ColorSeparationMatte
 %
 %  The format of the SetImageType method is:
 %
@@ -5898,11 +6070,9 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method SetImageDepth returns True if the image depth is set.
+%    o image: The image.
 %
-%    o image: The address of a structure of type Image.
-%
-%    o image_type: specified the image type.
+%    o image_type: Image type.
 %
 %
 */
@@ -6002,14 +6172,14 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S o r t C o l o r m a p B y I n t e n t s i t y                           %
++   S o r t C o l o r m a p B y I n t e n t s i t y                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SortColormapByIntensity sorts the colormap of a PseudoClass image
-%  by decreasing color intensity.
+%  SortColormapByIntensity() sorts the colormap of a PseudoClass image by
+%  decreasing color intensity.
 %
 %  The format of the SortColormapByIntensity method is:
 %
@@ -6110,7 +6280,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S y n c I m a g e                                                         %
++   S y n c I m a g e                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -6125,7 +6295,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -6179,7 +6349,8 @@ MagickExport void SyncImage(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method TextureImage layers a texture onto the background of an image.
+%  TextureImage() repeatedly tiles the texture image across and down the image
+%  canvas.
 %
 %  The format of the TextureImage method is:
 %
@@ -6187,10 +6358,9 @@ MagickExport void SyncImage(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
-%    o texture: This image contains the texture to layer on the background.
+%    o texture: This image is the texture to layer on the background.
 %
 %
 */
@@ -6222,7 +6392,8 @@ MagickExport void TextureImage(Image *image,Image *texture)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     T r a n s f o r m R G B I m a g e                                       %
+%                                                                             %
++     T r a n s f o r m R G B I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -6240,7 +6411,7 @@ MagickExport void TextureImage(Image *image,Image *texture)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o colorspace: An unsigned integer value defines which colorspace to
@@ -6807,7 +6978,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     T r a n s m i t I m a g e                                               %
+%                                                                             %
++     T r a n s m i t I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -6825,7 +6997,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image; returned from
+%    o image: The image; returned from
 %      ReadImage.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.

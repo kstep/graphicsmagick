@@ -164,7 +164,7 @@ MagickExport void DestroyFontInfo(void)
 %
 %    o name: The font name.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -221,7 +221,7 @@ MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
 %
 %    o file:  An pointer to a FILE.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */

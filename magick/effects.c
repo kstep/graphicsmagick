@@ -81,13 +81,13 @@
 %      the noise is minified.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o noise_type:  The type of noise: Gaussian, multiplicative Gaussian,
 %      impulse, laplacian, or Poisson.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -221,7 +221,7 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 %
 %    o sigma: The standard deviation of the Gaussian, in pixels.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -524,7 +524,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o opacity:  A character string indicating the level of opacity as a
@@ -532,7 +532,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
 %
 %    o target: A color value.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -638,14 +638,14 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
 %      after it is convolved.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o order:  The number of columns and rows in the filter kernel.
 %
 %    o kernel:  An array of double representing the convolution kernel.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -815,10 +815,10 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
 %      after it is despeckled.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -976,7 +976,7 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
 %
 %    o radius: the radius of the pixel neighborhood.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -1040,14 +1040,14 @@ MagickExport Image *EdgeImage(Image *image,const double radius,
 %      after it is embossed.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o radius: the radius of the pixel neighborhood.
 %
 %    o sigma: The standard deviation of the Gaussian, in pixels.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -1134,10 +1134,10 @@ MagickExport Image *EmbossImage(Image *image,const double radius,
 %      after it is enhanced.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -1296,7 +1296,7 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -1369,12 +1369,12 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
 %      after it is implode.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o amount:  A double value that defines the extent of the implosion.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -1507,7 +1507,7 @@ MagickExport Image *ImplodeImage(Image *image,const double amount,
 %
 %    o radius: the radius of the pixel neighborhood.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -1679,14 +1679,14 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
 %    o morph_images: Method MorphImages returns an next sequence that
 %      has linearly interpolated pixels and size between two input image.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o number_frames:  This unsigned integer reflects the number of in-between
 %      image to generate.  The more in-between frames, the smoother
 %      the morph.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -1845,7 +1845,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
 %
 %    o angle: Apply the effect along this angle.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -2039,12 +2039,12 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
 %      after it is `painted'.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o radius: The radius of the circular neighborhood.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -2195,7 +2195,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
 %    o status: Method PlasmaImage returns True when the fractal process
 %      is complete.  Otherwise False is returned.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o segment:  specifies a structure of type SegmentInfo that defines
@@ -2404,7 +2404,7 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %
 %    o radius: the radius of the pixel neighborhood.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -2591,7 +2591,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
 %      after it is shaded.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o color_shading: A value other than zero shades the red, green, and blue
@@ -2600,7 +2600,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
 %    o azimuth, elevation:  A double value that indicates the light source
 %      direction.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -2752,7 +2752,7 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
 %
 %    o sigma: The standard deviation of the Laplacian, in pixels.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -2822,7 +2822,7 @@ MagickExport Image *SharpenImage(Image *image,const double radius,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o threshold:  An double value that defines the extent of the
@@ -2919,13 +2919,13 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
 %      after it is spread.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o amount:  An unsigned value constraining the "vicinity" for choosing
 %      a random pixel to swap.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -3015,11 +3015,11 @@ MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
 %      steganographic image with the watermark hidden.  A null image is
 %      returned if there is a memory shortage.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
-%    o watermark: The address of a structure of type Image.
+%    o watermark: The image.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -3178,11 +3178,11 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
 %    o stereo_image: Method StereoImage returns a pointer to the stereo
 %      image.  A null image is returned if there is a memory shortage.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
-%    o offset_image: The address of a structure of type Image.
+%    o offset_image: The image.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -3275,12 +3275,12 @@ MagickExport Image *StereoImage(Image *image,Image *offset_image,
 %      after it is swirl.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o degrees:  An double value that defines the tightness of the swirling.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -3400,7 +3400,7 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o threshold: A double indicating the threshold value.
@@ -3489,7 +3489,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 %
 %    o threshold: The threshold in pixels needed to apply the diffence amount.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -3594,13 +3594,13 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
 %    o wave_image: Method WaveImage returns a pointer to the image after
 %      it is waved.  A null image is returned if there is a memory shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o amplitude, frequency:  A double value that indicates the amplitude
 %      and wave_length of the sine wave.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */

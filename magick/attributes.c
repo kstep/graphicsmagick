@@ -78,7 +78,7 @@
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -128,7 +128,7 @@ MagickExport void DestroyImageAttributes(Image *image)
 %    o attribute:  Method GetImageAttribute returns the attribute if it
 %      exists otherwise NULL.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o key:  These character strings are the name of an image attribute to
 %      return.
@@ -486,9 +486,9 @@ MagickExport ImageAttribute *GetImageAttribute(const Image *image,
 %    o attribute:  Method GetImageInfoAttribute returns the attribute if it
 %      exists otherwise NULL.
 %
-%    o image_info: The address of a structure of type ImageInfo.
+%    o image_info: The imageInfo.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o key:  These character strings are the name of an image attribute to
 %      return.
@@ -723,7 +723,7 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,
 %    o status:  Method SetImageAttribute returns True if the attribute is
 %      successfully replaced or added to the list, otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o key,value:  These character strings are the name and value of an image
 %      attribute to replace or add to the list.
@@ -833,7 +833,7 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o text: The text string that is parsed and used to determine the name
 %      and value of the new attribute.

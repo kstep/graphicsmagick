@@ -780,7 +780,7 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */

@@ -102,7 +102,7 @@ static void
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -132,7 +132,7 @@ static void ClosePixelStream(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -175,7 +175,7 @@ static void DestroyPixelStream(Image *image)
 %      associated with the last call to the SetPixelStream() or GetPixelStream()
 %      methods.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -216,7 +216,7 @@ static IndexPacket *GetIndexesFromStream(const Image *image)
 %    o pixels: Method GetOnePixelFromStream returns a pixel at the specified
 %      (x,y) location.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o x,y:  These values define the location of the pixel to return.
 %
@@ -260,7 +260,7 @@ static PixelPacket GetOnePixelFromStream(Image *image,const int x,const int y)
 %    o status: Method GetPixelStream returns a pointer to the pixels is
 %      returned if the pixels are transferred, otherwise a NULL is returned.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o x,y,columns,rows:  These values define the perimeter of a region of
 %      pixels.
@@ -302,7 +302,7 @@ static PixelPacket *GetPixelStream(Image *image,const int x,const int y,
 %    o pixels: Method GetPixelsFromStream returns the pixels associated with
 %      the last call to the SetPixelStream() or GetPixelStream() methods.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -348,7 +348,7 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 %
 %    o stream: a callback method.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -419,7 +419,7 @@ MagickExport unsigned int ReadStream(const ImageInfo *image_info,
 %    o pixels: Method SetPixelStream returns a pointer to the pixels is
 %      returned if the pixels are transferred, otherwise a NULL is returned.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o x,y,columns,rows:  These values define the perimeter of a region of
 %      pixels.
@@ -505,7 +505,7 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
 %    o status: Method SyncPixelStream returns True if the image pixels are
 %      transferred to the in-memory or disk cache otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */

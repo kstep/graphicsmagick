@@ -2830,9 +2830,9 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %    o translated_text:  Method TranslateText returns the translated
 %      text string.
 %
-%    o image_info: The address of a structure of type ImageInfo.
+%    o image_info: The imageInfo.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o formatted_text: The address of a character string containing the embedded
 %      formatting characters.

@@ -156,7 +156,7 @@ MagickExport void DestroyMagicInfo(void)
 %
 %    o length: The length of the binary signature.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -214,7 +214,7 @@ MagickExport MagicInfo *GetMagicInfo(const unsigned char *magic,
 %
 %    o file:  An pointer to a FILE.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */

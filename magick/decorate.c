@@ -81,12 +81,12 @@
 %    o border_image: Method BorderImage returns a pointer to the border
 %      image.  A null image is returned if there is a memory shortage.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o border_info: Specifies a pointer to a structure of type Rectangle which
 %      defines the border region.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -144,12 +144,12 @@ MagickExport Image *BorderImage(Image *image,const RectangleInfo *border_info,
 %    o frame_image: Method FrameImage returns a pointer to the framed
 %      image.  A null image is returned if there is a memory shortage.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o frame_info: Specifies a pointer to a FrameInfo structure which
 %      defines the framed region.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -391,7 +391,7 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o raise_info: Specifies a pointer to a XRectangle which defines the
 %      raised region.

@@ -298,7 +298,7 @@ static void DestroyColorList(const NodeInfo *node_info)
 %
 %    o compliance: Define the required color standard.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -762,7 +762,7 @@ static void Histogram(Image *image,CubeInfo *cube_info,
 %    o status: Method IsGrayImage returns True if the image is grayscale
 %      otherwise False is returned.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %
@@ -809,7 +809,7 @@ MagickExport unsigned int IsGrayImage(Image *image)
 %    o status: Method IsMonochromeImage returns True if the image is
 %      monochrome otherwise False is returned.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %
@@ -857,7 +857,7 @@ MagickExport unsigned int IsMonochromeImage(Image *image)
 %    o status: Method IsOpaqueImage returns False if the image has one or more
 %      pixels that are transparent otherwise True is returned.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %
@@ -920,7 +920,7 @@ MagickExport unsigned int IsOpaqueImage(Image *image)
 %    o status:  Method IsPseudoClass returns True is the image is
 %      PseudoClass or has 256 color or less.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -1097,7 +1097,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
 %
 %    o file:  An pointer to a FILE.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -1335,7 +1335,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
 %    o status: Method QueryColorname returns True if the color is matched
 %      exactly, otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o color: This is a pointer to a PixelPacket structure that contains the
 %      color we are searching for.
@@ -1632,7 +1632,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
 %    o index: Method ValidateColormapIndex returns colormap index if it is
 %      valid other an exception is issued and 0 is returned.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o index: This integer is the colormap index.
 %

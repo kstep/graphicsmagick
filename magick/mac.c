@@ -1033,7 +1033,7 @@ MagickExport struct dirent *readdir(DIR *entry)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */

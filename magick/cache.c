@@ -173,7 +173,7 @@ static void CloseCache(Cache cache)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -429,7 +429,7 @@ MagickExport void DestroyCacheNexus(Cache cache,const unsigned int id)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -668,7 +668,7 @@ MagickExport unsigned int GetCacheNexus(Cache cache)
 %      associated with the last call to the SetPixelCache() or GetPixelCache()
 %      methods.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -798,7 +798,7 @@ MagickExport PixelPacket *GetNexusPixels(const Cache cache,
 %    o pixels: Method GetOnePixelFromCache returns a pixel at the
 %      specified (x,y) location.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o x,y:  These values define the location of the pixel to return.
 %
@@ -841,7 +841,7 @@ static PixelPacket GetOnePixelFromCache(Image *image,const int x,const int y)
 %    o status: Method GetPixelCache returns a pointer to the pixels is
 %      returned if the pixels are transferred, otherwise a NULL is returned.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o x,y,columns,rows:  These values define the perimeter of a region of
 %      pixels.
@@ -903,7 +903,7 @@ static PixelPacket *GetPixelCache(Image *image,const int x,const int y,
 %    o pixels: Method GetPixelsFromCache returns the pixels associated with
 %      the last call to the SetPixelCache() or GetPixelCache() methods.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -992,7 +992,7 @@ MagickExport unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
 %    o status: Method OpenCache returns True if the pixel cache is
 %      initialized successfully otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -1515,7 +1515,7 @@ MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
 %    o pixels: Method SetPixelCache returns a pointer to the pixels is
 %      returned if the pixels are transferred, otherwise a NULL is returned.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o x,y,columns,rows:  These values define the perimeter of a region of
 %      pixels.
@@ -1628,7 +1628,7 @@ MagickExport void SetPixelCacheMethods(void)
 %    o status: Method SyncPixelCache returns True if the image pixels are
 %      transferred to the in-memory or disk cache otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -1872,7 +1872,7 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 %    o status: Method WriteCacheInfo returns True if the cache meta
 %      information is written to the specified file, otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */

@@ -55,13 +55,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#if defined(HasLCMS)
-# if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#  include <lcms/lcms.h>
-# else
-#  include "lcms.h"
-# endif
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,9 +67,9 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ChopImage creates a new image that is a subregion of an existing
-%  one.  It allocates the memory necessary for the new Image structure and
-%  returns a pointer to the new image.
+%  Chop() removes a region of an image and collapses the image to occupy the
+%  removed portion. If a NULL image is returned, check exception to determine
+%  why the operation failed.
 %
 %  The format of the ChopImage method is:
 %
@@ -85,16 +78,11 @@
 %
 %  A description of each parameter follows:
 %
-%    o chop_image: Method ChopImage returns a pointer to the chop
-%      image.  A null image is returned if there is a memory shortage or
-%      if the image width or height is zero.
+%    o image: The image.
 %
-%    o image: The address of a structure of type Image.
+%    o chop_info: Defines the region of the image to chop.
 %
-%    o chop_info: Specifies a pointer to a RectangleInfo which defines the
-%      region of the image to crop.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -231,8 +219,13 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CoalesceImages merges a sequence of images.  This is useful for GIF
-%  and MNG animation sequences that have page offsets and disposal methods.
+%  This method composites a set of images while respecting any page
+%  offsets and disposal methods.  GIF, MIFF, and MNG animation sequences
+%  typically start with an image background and each subsequent image
+%  varies in size and offset.  Coalesce() returns a new sequence
+%  where each image in the sequence is the same size as the first and
+%  composited with the next image in the sequence.  On failure, check
+%  exception to determine the reason why the operation failed.
 %
 %  The format of the CoalesceImages method is:
 %
@@ -240,11 +233,9 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.  It points to the first image in the group to be
-%      coalesced.
+%    o image: The image sequence.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 */
 MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
@@ -307,9 +298,9 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CropImage creates a new image that is a subregion of an existing
-%  one.  It allocates the memory necessary for the new Image structure and
-%  returns a pointer to the new image.
+%  CropImage() extracts a region of the image starting at the offset defined by
+%  crop_info.  If a NULL image is returned, check exception to determine the
+%  reason why the operation failed.
 %
 %  The format of the CropImage method is:
 %
@@ -318,16 +309,12 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o crop_image: Method CropImage returns a pointer to the cropped
-%      image.  A null image is returned if there is a memory shortage or
-%      if the image width or height is zero.
+%    o image: The image.
 %
-%    o image: The address of a structure of type Image.
+%    o crop_info: Defines the region of the image to crop with members
+%      x, y, width, and height.
 %
-%    o crop_info: Specifies a pointer to a RectangleInfo which defines the
-%      region of the image to crop.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -457,8 +444,10 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DeconstructImages breaks down an image sequence into constituent
-%  parts.  This is useful for creating GIF or MNG animation sequences.
+%  DeconstructImages() returns a new sequence that consists of the first image
+%  in the sequence followed by the maximum bounding region of any differences
+%  in subsequent images.  This method can undo a coalesced sequence returned
+%  by CoalesceImages().
 %
 %  The format of the DeconstructImages method is:
 %
@@ -466,11 +455,9 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.  It points to the first image in the group to be
-%      deconstructed.
+%    o image: The image.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -648,11 +635,11 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.  It points to the first image in the group to be
 %      coalesced.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 */
 MagickExport Image *FlattenImages(Image *image,ExceptionInfo *exception)
@@ -700,9 +687,9 @@ MagickExport Image *FlattenImages(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method FlipImage creates a new image that reflects each scanline in the
-%  vertical direction It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.
+%  FlipImage() creates a vertical mirror image by reflecting the pixels
+%  around the central x-axis.  If a NULL image is returned, check
+%  exception to determine the reason why the operation failed.
 %
 %  The format of the FlipImage method is:
 %
@@ -710,13 +697,9 @@ MagickExport Image *FlattenImages(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o flip_image: Method FlipImage returns a pointer to the image
-%      after reflecting.  A null image is returned if there is a memory
-%      shortage.
+%    o image: The image.
 %
-%    o image: The address of a structure of type Image.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -793,9 +776,10 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method FlopImage creates a new image that reflects each scanline in the
-%  horizontal direction It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.
+%  FlopImage() creates a horizontal mirror image by reflecting the pixels
+%  around the central y-axis.  If a NULL image is returned, check
+%  exception to determine the reason why the operation failed.
+%
 %
 %  The format of the FlopImage method is:
 %
@@ -803,13 +787,9 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o flop_image: Method FlopImage returns a pointer to the image
-%      after reflecting.  A null image is returned if there is a memory
-%      shortage.
+%    o image: The image.
 %
-%    o image: The address of a structure of type Image.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -880,269 +860,110 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%                                                                             %
-%   P r o f i l e I m a g e                                                   %
+%     M o s a i c I m a g e s                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ProfileImage removes or adds a ICM, IPTC, or generic profile to an
-%  image.  If the profile name is specified it is deleted from the image.  If
-%  a filename is specified, one or more profiles are read and added to the
-%  image.  If the profile name is "*" then all profiles are deleted from
-%  the image.
+%  The MosaicImages() method takes a set of images and inlays them to form
+%  a single coherent pictiure.  MosaicImages() returns a single image with
+%  each image in the sequence inlayed in the image canvas at an offset as
+%  defined in the image.  If a NULL image is returned, check
+%  exception to determine the reason why the operation failed.
 %
-%  The format of the ProfileImage method is:
+%  The format of the MosaicImage method is:
 %
-%      unsigned int ProfileImage(Image *image,const char *profile_name,
-%        const char *filename)
+%      Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ProfileImage returns True if the profile is successfully
-%      added or removed from the image, otherwise False.
+%    o image: The image.
 %
-%    o image: The address of a structure of type Image.
-%
-%    o profile_name: Specifies the type of profile to add or remove.
-%
-%    o filename: Specifies the filename of the ICM or IPTC profile.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
-  const char *filename)
+MagickExport Image *MosaicImages(Image *image,ExceptionInfo *exception)
 {
-  ExceptionInfo
-    exception;
+#define MosaicImageText  "  Create an image mosaic...  "
 
   Image
-    *profile_image;
+    *mosaic_image;
 
-  ImageInfo
-    *image_info;
+  int
+    y;
+
+  RectangleInfo
+    page;
+
+  register Image
+    *next;
 
   register int
-    i,
-    j;
+    x;
 
+  register PixelPacket
+    *q;
+
+  unsigned int
+    scene;
+
+  /*
+    Determine next bounding box.
+  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (filename == (const char *) NULL)
-    {
-      /*
-        Remove an ICM, IPTC, or generic profile from the image.
-      */
-      if ((LocaleCompare("icm",profile_name) == 0) || (*profile_name == '*'))
-        {
-          if (image->color_profile.length != 0)
-            LiberateMemory((void **) &image->color_profile.info);
-          image->color_profile.length=0;
-          image->color_profile.info=(unsigned char *) NULL;
-        }
-      if ((LocaleCompare("8bim",profile_name) == 0) ||
-          (LocaleCompare("iptc",profile_name) == 0) || (*profile_name == '*'))
-        {
-          if (image->iptc_profile.length != 0)
-            LiberateMemory((void **) &image->iptc_profile.info);
-          image->iptc_profile.length=0;
-          image->iptc_profile.info=(unsigned char *) NULL;
-        }
-      for (i=0; i < (int) image->generic_profiles; i++)
-      {
-        if ((LocaleCompare(image->generic_profile[i].name,profile_name) != 0) &&
-            (*profile_name != '*'))
-          continue;
-        if (image->generic_profile[i].name != (char *) NULL)
-          LiberateMemory((void **) &image->generic_profile[i].name);
-        if (image->iptc_profile.length != 0)
-          LiberateMemory((void **) &image->generic_profile[i].info);
-        image->generic_profiles--;
-        for (j=i; j < (int) image->generic_profiles; j++)
-          image->generic_profile[j]=image->generic_profile[j+1];
-        i--;
-      }
-      return(True);
-    }
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  if (image->next == (Image *) NULL)
+    ThrowImageException(OptionWarning,"Unable to create image mosaic",
+      "image sequence required");
+  page.width=image->columns;
+  page.height=image->rows;
+  page.x=0;
+  page.y=0;
+  for (next=image; next != (Image *) NULL; next=next->next)
+  {
+    page.x=next->page.x;
+    page.y=next->page.y;
+    if ((next->columns+page.x) > page.width)
+      page.width=next->columns+page.x;
+    if ((next->rows+page.y) > page.height)
+      page.height=next->rows+page.y;
+  }
   /*
-    Add a ICM, IPTC, or generic profile to the image.
+    Allocate next structure.
   */
-  image_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) strcpy(image_info->filename,filename);
-  profile_image=ReadImage(image_info,&exception);
-  if (exception.severity != UndefinedException)
-    MagickWarning(exception.severity,exception.reason,exception.description);
-  DestroyImageInfo(image_info);
-  if (profile_image == (Image *) NULL)
-    return(False);
-  if (profile_image->iptc_profile.length != 0)
+  mosaic_image=AllocateImage((ImageInfo *) NULL);
+  if (mosaic_image == (Image *) NULL)
+    return((Image *) NULL);
+  /*
+    Initialize colormap.
+  */
+  mosaic_image->columns=page.width;
+  mosaic_image->rows=page.height;
+  for (y=0; y < (int) mosaic_image->rows; y++)
+  {
+    q=SetImagePixels(mosaic_image,0,y,mosaic_image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) mosaic_image->columns; x++)
     {
-      if (image->iptc_profile.length != 0)
-        LiberateMemory((void **) &image->iptc_profile.info);
-      image->iptc_profile.length=profile_image->iptc_profile.length;
-      image->iptc_profile.info=profile_image->iptc_profile.info;
-      profile_image->iptc_profile.length=0;
-      profile_image->iptc_profile.info=(unsigned char *) NULL;
+      *q=mosaic_image->background_color;
+      q++;
     }
-  if (profile_image->color_profile.length != 0)
-    {
-      if (image->color_profile.length != 0)
-        {
-#if defined(HasLCMS)
-          typedef struct _ProfilePacket
-          {
-            unsigned short
-              red,
-              green,
-              blue,
-              opacity;
-          } ProfilePacket;
-
-          cmsHPROFILE
-            image_profile,
-            transform_profile;
-
-          cmsHTRANSFORM
-            transform;
-
-          int
-            intent,
-            y;
-
-          ProfilePacket
-            alpha,
-            beta;
-
-          register int
-            x;
-
-          register PixelPacket
-            *q;
-
-          /*
-            Transform pixel colors as defined by the color profiles.
-          */
-          image_profile=cmsOpenProfileFromMem(image->color_profile.info,
-            image->color_profile.length);
-          transform_profile=cmsOpenProfileFromMem(
-            profile_image->color_profile.info,
-            profile_image->color_profile.length);
-          if ((image_profile == (cmsHPROFILE) NULL) ||
-              (transform_profile == (cmsHPROFILE) NULL))
-            ThrowBinaryException(ResourceLimitWarning,"Unable to manage color",
-              "failed to open color profiles");
-          switch (cmsGetColorSpace(transform_profile))
-          {
-            case icSigCmykData: profile_image->colorspace=CMYKColorspace; break;
-            case icSigYCbCrData:
-              profile_image->colorspace=YCbCrColorspace; break;
-            case icSigLuvData: profile_image->colorspace=YUVColorspace; break;
-            case icSigGrayData: profile_image->colorspace=GRAYColorspace; break;
-            case icSigRgbData: profile_image->colorspace=RGBColorspace; break;
-            default: profile_image->colorspace=RGBColorspace; break;
-          }
-          switch (image->rendering_intent)
-          {
-            case AbsoluteIntent: intent=INTENT_ABSOLUTE_COLORIMETRIC; break;
-            case PerceptualIntent: intent=INTENT_PERCEPTUAL; break;
-            case RelativeIntent: intent=INTENT_RELATIVE_COLORIMETRIC; break;
-            case SaturationIntent: intent=INTENT_SATURATION; break;
-            default: intent=INTENT_PERCEPTUAL; break;
-          }
-          if (image->colorspace == CMYKColorspace)
-            {
-              if (profile_image->colorspace == CMYKColorspace)
-                transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
-                  transform_profile,TYPE_CMYK_16,intent,0);
-              else
-                transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
-                  transform_profile,TYPE_RGBA_16,intent,0);
-            }
-          else
-            {
-              if (profile_image->colorspace == CMYKColorspace)
-                transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
-                  transform_profile,TYPE_CMYK_16,intent,0);
-              else
-                transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
-                  transform_profile,TYPE_RGBA_16,intent,0);
-            }
-          if (transform == (cmsHTRANSFORM) NULL)
-            ThrowBinaryException(ResourceLimitWarning,"Unable to manage color",
-              "failed to create color transform");
-          if (image->colorspace == CMYKColorspace)
-            image->matte=True;
-          for (y=0; y < (int) image->rows; y++)
-          {
-            q=GetImagePixels(image,0,y,image->columns,1);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (int) image->columns; x++)
-            {
-              alpha.red=XUpScale(q->red);
-              alpha.green=XUpScale(q->green);
-              alpha.blue=XUpScale(q->blue);
-              alpha.opacity=XUpScale(q->opacity);
-              cmsDoTransform(transform,&alpha,&beta,1);
-              q->red=XDownScale(beta.red);
-              q->green=XDownScale(beta.green);
-              q->blue=XDownScale(beta.blue);
-              q->opacity=XDownScale(beta.opacity);
-              q++;
-            }
-            if (!SyncImagePixels(image))
-              break;
-          }
-          if (image->colorspace == CMYKColorspace)
-            image->matte=False;
-          image->colorspace=profile_image->colorspace;
-          cmsDeleteTransform(transform);
-          cmsCloseProfile(image_profile);
-          cmsCloseProfile(transform_profile);     
-#endif
-          LiberateMemory((void **) &image->color_profile.info);
-        }
-      image->color_profile.length=profile_image->color_profile.length;
-      image->color_profile.info=profile_image->color_profile.info;
-      profile_image->color_profile.length=0;
-      profile_image->color_profile.info=(unsigned char *) NULL;
-    }
-  if (profile_image->generic_profiles != 0)
-    {
-      unsigned int
-        number_profiles;
-
-      number_profiles=image->generic_profiles+profile_image->generic_profiles;
-      if (image->generic_profile == (ProfileInfo *) NULL)
-        image->generic_profile=(ProfileInfo *)
-          AcquireMemory(number_profiles*sizeof(ProfileInfo));
-      else
-        ReacquireMemory((void **) &image->generic_profile,
-          number_profiles*sizeof(ProfileInfo));
-      if (image->generic_profile == (ProfileInfo *) NULL)
-        {
-          image->generic_profiles=0;
-          DestroyImage(profile_image);
-          ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-            (char *) NULL);
-        }
-      j=image->generic_profiles;
-      for (i=0; i < (int) profile_image->generic_profiles; i++)
-      {
-        image->generic_profile[j].name=profile_image->generic_profile[i].name;
-        image->generic_profile[j].length=
-          profile_image->generic_profile[i].length;
-        image->generic_profile[j].info=profile_image->generic_profile[i].info;
-        profile_image->generic_profile[i].name=(char *) NULL;
-        profile_image->generic_profile[i].length=0;
-        profile_image->generic_profile[i].info=(unsigned char *) NULL;
-        j++;
-      }
-      image->generic_profiles=number_profiles;
-    }
-  DestroyImage(profile_image);
-  return(True);
+    if (!SyncImagePixels(mosaic_image))
+      break;
+  }
+  scene=0;
+  for (next=image; next != (Image *) NULL; next=next->next)
+  {
+    CompositeImage(mosaic_image,CopyCompositeOp,next,next->page.x,
+      next->page.y);
+    MagickMonitor(MosaicImageText,scene++,GetNumberScenes(image));
+  }
+  return(mosaic_image);
 }
 
 /*
@@ -1156,9 +977,8 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RollImage rolls an image vertically and horizontally.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
+%  RollImage() offsets an image as defined by x and y.  If a NULL image is
+%  returned, check exception to determine the reason why the operation failed.
 %
 %  The format of the RollImage method is:
 %
@@ -1167,18 +987,13 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
 %
 %  A description of each parameter follows:
 %
-%    o roll_image: Method RollImage returns a pointer to the image after
-%      rolling.  A null image is returned if there is a memory shortage.
+%    o image: The image.
 %
-%    o image: The address of a structure of type Image.
+%    o x_offset: The number of columns to roll in the horizontal direction.
 %
-%    o x_offset: An integer that specifies the number of columns to roll
-%      in the horizontal direction.
+%    o y_offset: The number of rows to roll in the vertical direction.
 %
-%    o y_offset: An integer that specifies the number of rows to roll in the
-%      vertical direction.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -1281,12 +1096,12 @@ MagickExport Image *RollImage(Image *image,const int x_offset,
 %      image.  A null image is returned if there is a memory shortage or
 %      if the image width or height is zero.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o shave_info: Specifies a pointer to a RectangleInfo which defines the
 %      region of the image to crop.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -1311,23 +1126,12 @@ MagickExport Image *ShaveImage(Image *image,const RectangleInfo *shave_info,
 %   T r a n s f o r m I m a g e                                               %
 %                                                                             %
 %                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method TransformImage creates a new image that is a transformed size of
-%  of existing one as specified by the crop and image geometries.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
-%
-%  If a crop geometry is specified a subregion of the image is obtained.
-%  If the specified image size, as defined by the image and scale geometries,
-%  is smaller than the actual image size, the image is first minified to an
-%  integral of the specified image size with an antialias digital filter.  The
-%  image is then scaled to the exact specified image size with pixel
-%  replication.  If the specified image size is greater than the actual image
-%  size, the image is first enlarged to an integral of the specified image
-%  size with bilinear interpolation.  The image is then scaled to the exact
-%  specified image size with pixel replication.
+%  TransformImage() is a convenience method that behaves like ResizeImage() or
+%  CropImage() but accepts scaling and/or cropping information as a region
+%  geometry specification.  If the operation fails, the original image handle
+%  is returned.
 %
 %  The format of the TransformImage method is:
 %
@@ -1336,14 +1140,13 @@ MagickExport Image *ShaveImage(Image *image,const RectangleInfo *shave_info,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of an address of a structure of type Image.  The
-%      transformed image is returned as this parameter.
+%    o image: The image The transformed image is returned as this parameter.
 %
-%    o crop_geometry: Specifies a pointer to a crop geometry string.
-%      This geometry defines a subregion of the image.
+%    o crop_geometry: A crop geometry string.  This geometry defines a
+%      subregion of the image to crop.
 %
-%    o image_geometry: Specifies a pointer to a image geometry string.
-%      The specified width and height of this geometry string are absolute.
+%    o image_geometry: An image geometry string.  This geometry defines the
+%      final size if the image.
 %
 %
 */

@@ -103,7 +103,7 @@ static unsigned int
 %    o status: Method AnnotateImage returns True if the image is annotated
 %      otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o draw_info: The address of a DrawInfo structure.
 %
@@ -390,7 +390,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %    o status: Method GetFontMetrics returns True if the metrics are
 %      available otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o draw_info: Specifies a pointer to a DrawInfo structure.
 %
@@ -440,7 +440,7 @@ MagickExport unsigned int GetFontMetrics(Image *image,
 %    o status: Method RenderFont returns True if the text is rendered on the
 %      image, otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o draw_info: The address of a DrawInfo structure.
 %
@@ -529,7 +529,7 @@ static unsigned int RenderFont(Image *image,const DrawInfo *draw_info,
 %    o status: Method RenderPostscript returns True if the text is rendered on
 %      the image, otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o draw_info: The address of a DrawInfo structure.
 %
@@ -780,7 +780,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
 %    o status: Method RenderTruetype returns True if the text is rendered on the
 %      image, otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o draw_info: The address of a DrawInfo structure.
 %
@@ -1194,7 +1194,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
 %    o status: Method RenderX11 returns True if the text is rendered on the
 %      image, otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o draw_info: The address of a DrawInfo structure.
 %

@@ -221,7 +221,7 @@ static void DestroyModuleInfo(void)
 %    o tag: a character string that represents the name of the particular
 %      module.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o argc: Specifies a pointer to an integer describing the number of
 %      elements in the argument vector.
@@ -297,7 +297,7 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
 %    o tag: a character string that represents the image format we are
 %      looking for.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -489,7 +489,7 @@ void ModuleToTag(const char *filename,const char *format,char *module)
 %
 %    o module: a character string that indicates the module to load.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -598,7 +598,7 @@ MagickExport unsigned int OpenModule(const char *module,
 %    o status: Method OpenModules returns True if the modules are loaded,
 %      otherwise False.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 */
 MagickExport unsigned int OpenModules(ExceptionInfo *exception)

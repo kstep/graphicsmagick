@@ -230,7 +230,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o draw_info: a structure of type DrawInfo.
 %
@@ -1067,7 +1067,7 @@ static void DestroyPolygonInfo(PolygonInfo *polygon_info)
 %
 %    o polygon_info: Specifies a pointer to a PolygonInfo structure.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -1208,7 +1208,7 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -1356,7 +1356,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o draw_info: The address of a DrawInfo structure.
 %
@@ -2512,7 +2512,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 %
 %    o polygon_info: Specifies a pointer to a PolygonInfo structure.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -2863,7 +2863,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -3344,7 +3344,7 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -4013,7 +4013,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o target: A PixelPacket structure.  This is the RGB value of the target
 %      color.
@@ -4196,7 +4196,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o target: the color to search for in the image.
@@ -5020,7 +5020,7 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o target: The color to search for in the image.

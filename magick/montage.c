@@ -231,7 +231,7 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
 %
 %    o montage_info: Specifies a pointer to a MontageInfo structure.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */

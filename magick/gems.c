@@ -632,7 +632,7 @@ MagickExport void IdentityAffine(AffineMatrix *affine)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o x_offset,y_offset: A double representing the current (x,y) position of
 %      the pixel.

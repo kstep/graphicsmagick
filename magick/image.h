@@ -888,7 +888,7 @@ extern MagickExport void
   RegisterXVImage(void),
   RegisterXWDImage(void),
   RegisterYUVImage(void),
-  SetImage(Image *,Quantum),
+  SetImage(Image *,const Quantum),
   SetImageOpacity(Image *,const unsigned int),
   SetImageType(Image *,const ImageType),
   SolarizeImage(Image *,const double),

@@ -75,7 +75,7 @@
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o sharpen: If True, the intensity is increased otherwise it is
@@ -166,7 +166,7 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %
@@ -316,7 +316,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o gamma: A character string indicating the level of gamma correction.
@@ -466,7 +466,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %    o modulate: A character string indicating the percent change in brightness,
@@ -570,7 +570,7 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %
@@ -666,7 +666,7 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: The image;  returned from
 %      ReadImage.
 %
 %

@@ -92,7 +92,7 @@
 %
 %    o length: This size_t integer reflects the length in bytes of the blob.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -195,7 +195,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -298,7 +298,7 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
 %    o status:  Method EOFBlob returns 0 on success; otherwise,  it
 %      returns -1 and set errno to indicate the error.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -370,12 +370,12 @@ MagickExport void GetBlobInfo(BlobInfo *blob)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o length: This pointer to a size_t integer sets the initial length of the
 %      blob.  On return, it reflects the actual length of the blob.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -717,7 +717,7 @@ MagickExport void MSBOrderShort(register char *p,const size_t length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o type: 'r' for reading; 'w' for writing.
 %
@@ -940,7 +940,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %
 %    o count:  Method ReadBlob returns the number of bytes read.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o length:  Specifies an integer representing the number of bytes
 %      to read from the file.
@@ -999,7 +999,7 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
 %
 %    o count:  Method ReadBlobBlock returns the number of bytes read.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o data:  Specifies an area to place the information requested from
 %      the file.
@@ -1045,7 +1045,7 @@ MagickExport size_t ReadBlobBlock(Image *image,unsigned char *data)
 %
 %    o value: Method ReadBlobByte returns an integer read from the file.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -1088,7 +1088,7 @@ MagickExport int ReadBlobByte(Image *image)
 %    o value:  Method ReadBlobLSBLong returns an unsigned long read from
 %      the file.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -1135,7 +1135,7 @@ MagickExport unsigned long ReadBlobLSBLong(Image *image)
 %    o value:  Method ReadBlobLSBShort returns an unsigned short read from
 %      the file.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -1180,7 +1180,7 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
 %    o value:  Method ReadBlobMSBLong returns an unsigned long read from
 %      the file.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 %
@@ -1228,7 +1228,7 @@ MagickExport unsigned long ReadBlobMSBLong(Image *image)
 %    o value:  Method ReadBlobMSBShort returns an unsigned short read from
 %      the file.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -1273,7 +1273,7 @@ MagickExport unsigned short ReadBlobMSBShort(Image *image)
 %    o status:  Method ReadBlobString returns the string on success, otherwise,
 %      a null is returned.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o string: The address of a character buffer.
 %
@@ -1325,7 +1325,7 @@ MagickExport char *ReadBlobString(Image *image,char *string)
 %    o offset:  Method SeekBlob returns the offset from the beginning
 %      of the file or blob.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o offset:  Specifies an integer representing the offset in bytes.
 %
@@ -1446,7 +1446,7 @@ MagickExport void SetBlobQuantum(BlobInfo *blob,const size_t quantum)
 %    o size:  Method SizeBlob returns the current length of the image file
 %      or blob.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -1485,7 +1485,7 @@ MagickExport off_t SizeBlob(Image *image)
 %    o status:  Method SyncBlob returns 0 on success; otherwise,  it
 %      returns -1 and set errno to indicate the error.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -1521,7 +1521,7 @@ MagickExport int SyncBlob(const Image *image)
 %      file position success; otherwise, it returns -1 and sets errno to
 %      indicate the error.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -1599,7 +1599,7 @@ MagickExport unsigned int UnmapBlob(void *map,const size_t length)
 %    o count:  Method WriteBlob returns the number of bytes written to the
 %      blob.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o length:  Specifies an integer representing the number of bytes to
 %      write to the file.
@@ -1662,7 +1662,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 %
 %    o count:  Method WriteBlobByte returns the number of bytes written.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o value: Specifies the value to write.
 %
@@ -1706,7 +1706,7 @@ MagickExport size_t WriteBlobByte(Image *image,const int value)
 %    o count: Method WriteBlobLSBLong returns the number of unsigned longs
 %      written.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o value: Specifies the value to write.
 %
@@ -1749,7 +1749,7 @@ MagickExport size_t WriteBlobLSBLong(Image *image,const unsigned long value)
 %    o count: Method WriteBlobLSBShort returns the number of unsigned longs
 %      written.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o value:  Specifies the value to write.
 %
@@ -1792,7 +1792,7 @@ MagickExport size_t WriteBlobLSBShort(Image *image,const unsigned int value)
 %
 %    o value:  Specifies the value to write.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -1870,7 +1870,7 @@ MagickExport size_t WriteBlobMSBShort(Image *image,const unsigned int value)
 %
 %    o count:  Method WriteBlobString returns the number of characters written.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o string: Specifies the string to write.
 %
