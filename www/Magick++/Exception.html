@@ -1,274 +1,289 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
 <HEAD>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
-   <meta name="Author" content="Bob Friesenhahn">
-   <meta name="Description" content="Documentation for Magick::Exception class">
-   <title>Magick::Exception</title>
-</head>
-<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
-
-<center>
-<h1>
-Magick::Exception Classes</h1></center>
-
-<p><br><i>Exception</i> represents the base class of objects thrown when
-ImageMagick reports an error.&nbsp; Magick++ throws C++ exceptions synchronous
-with the operation when an error is detected. This allows errors to be
-trapped within the enclosing code (perhaps the code to process a single
-image)&nbsp; while allowing the code to be written simply.
-<p>A try/catch block should be placed around any sequence of operations
-which can be considered a unit of work. For example, if your program processes
-lists of images and some of these images may be defective, by placing the
-try/catch block around the entire sequence of code that processes one image
-(including instantiating the image object), you can minimize the overhead
-of error checking while ensuring that all objects created to deal with
-that object are safely destroyed (C++ exceptions unroll the stack until
-the enclosing try block, destroying any created objects).
-<p>The pseudocode for the main loop of your program may look like:
-<p><tt><font color="#000066">for each image in list</font></tt>
-<br><tt><font color="#000066">&nbsp; try {</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; create image object</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; read image</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; process image</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; save result</font></tt>
-<br><tt><font color="#000066">&nbsp; }</font></tt>
-<br><tt><font color="#000066">&nbsp; catch( ErrorFileOpen &amp;error )</font></tt>
-<br><tt><font color="#000066">&nbsp; {</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; process Magick++ file
-open error</font></tt>
-<br><tt><font color="#000066">&nbsp; }</font></tt>
-<br><tt><font color="#000066">&nbsp; catch( Exception &amp;error )</font></tt>
-<br><tt><font color="#000066">&nbsp; {</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; process any Magick++ error</font></tt>
-<br><tt><font color="#000066">&nbsp; }</font></tt>
-<br><tt><font color="#000066">&nbsp; catch( exception &amp;error )</font></tt>
-<br><tt><font color="#000066">&nbsp; {</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; process any other exceptions
-derived from standard C++ exception</font></tt>
-<br><tt><font color="#000066">&nbsp; }</font></tt>
-<br><tt><font color="#000066">&nbsp; catch( ... )</font></tt>
-<br><tt><font color="#000066">&nbsp; {</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; process *any* exception
-(last-ditch effort)</font></tt>
-<br><tt><font color="#000066">&nbsp; }</font></tt>
-<p>This catches errors opening a file first, followed by any Magick++ exception
-if the exception was not caught previously.
-<p>The <i>Exception</i> class is derived from the C++ standard exception
-class. This means that it contains a C++ string containing additional information
-about the error (e.g to display to the user). Obtain access to this string
-via the what() method.&nbsp; For example:
-<p><tt><font color="#000066">&nbsp;catch( Exception &amp;error_ )</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; {</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
-"Caught exception: " &lt;&lt; error_.what() &lt;&lt; endl;</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; }</font></tt>
-<p>The classes <i>Warning</i> and <i>Error</i> derive from the <i>Exception</i>
-class. Exceptions derived from <i>Warning</i> are thrown to represent non-fatal
-errors which may effect the completeness or quality of the result (e.g.
-one image provided as an argument to montage is defective). In most cases,
-a <i>Warning</i> exception may be ignored by catching it immediately, processing
-it (e.g. printing a diagnostic) and continuing on. Exceptions derived from
-<i>Error</i>
-are thrown to represent fatal errors that can not produce a valid result
-(e.g. attempting to read a file which does not exist).
-<p>The specific derived exception classes are shown in the following tables:
-<br>&nbsp;
-<table BORDER WIDTH="100%" >
-<caption><b>Warning Sub-Classes</b></caption>
-
-<tr>
-<td WIDTH="25%">
-<center><b><font size=-1>Warning</font></b></center>
-</td>
-
-<td>
-<center><b><font size=-1>Warning Description</font></b></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>WarningUndefined</font></center>
-</td>
-
-<td><font size=-1>Unspecified warning type.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>WarningResourceLimit</font></center>
-</td>
-
-<td><font size=-1>A program resource is exhausted (e.g. not enough memory).</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>WarningXServer</font></center>
-</td>
-
-<td><font size=-1>An X resource is unavailable.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>WarningOption</font></center>
-</td>
-
-<td><font size=-1>An option was malformed or out of range.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>WarningDelegate</font></center>
-</td>
-
-<td><font size=-1>An ImageMagick delegate returned an error.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>WarningMissingDelegate</font></center>
-</td>
-
-<td><font size=-1>The image type can not be read or written because the
-appropriate Delegate is missing.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>WarningCorruptImage</font></center>
-</td>
-
-<td><font size=-1>The image file is corrupt (or otherwise can't be read).</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>WarningFileOpen</font></center>
-</td>
-
-<td><font size=-1>The image file could not be opened (permission problem,
-wrong file type, or does not exist).</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>WarningBlob</font></center>
-</td>
-
-<td><font size=-1>A binary large object could not be allocated.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>WarningCache</font></center>
-</td>
-
-<td><font size=-1>Pixels could not be saved to the pixel cache.</font></td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER WIDTH="100%" >
-<caption><b>Error Sub-Classes</b></caption>
-
-<tr>
-<td WIDTH="25%">
-<center><b><font size=-1>Error</font></b></center>
-</td>
-
-<td>
-<center><b><font size=-1>Error Description</font></b></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ErrorUndefined</font></center>
-</td>
-
-<td><font size=-1>Unspecified error type.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ErrorResourceLimit</font></center>
-</td>
-
-<td><font size=-1>A program resource is exhausted (e.g. not enough memory).</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ErrorXServer</font></center>
-</td>
-
-<td><font size=-1>An X resource is unavailable.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ErrorOption</font></center>
-</td>
-
-<td><font size=-1>An option was malformed or out of range.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ErrorDelegate</font></center>
-</td>
-
-<td><font size=-1>An ImageMagick delegate returned an error.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ErrorMissingDelegate</font></center>
-</td>
-
-<td><font size=-1>The image type can not be read or written because the
-appropriate Delegate is missing.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ErrorCorruptImage</font></center>
-</td>
-
-<td><font size=-1>The image file is corrupt (or otherwise can't be read).</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ErrorFileOpen</font></center>
-</td>
-
-<td><font size=-1>The image file could not be opened (permission problem,
-wrong file type, or does not exist).</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ErrorBlob</font></center>
-</td>
-
-<td><font size=-1>A binary large object could not be allocated.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ErrorCache</font></center>
-</td>
-
-<td><font size=-1>Pixels could not be saved to the pixel cache.</font></td>
-</tr>
-</table>
-
-<br>&nbsp;
-</body>
-</html>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<TITLE>Magick::Exception</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
+	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
+	<META NAME="CREATED" CONTENT="20020805;15113101">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20020805;15170156">
+	<META NAME="DESCRIPTION" CONTENT="Documentation for Magick::Exception class">
+	<STYLE>
+	<!--
+		TD P { color: #000000 }
+		H1 { color: #000000 }
+		P { color: #000000 }
+		A:link { color: #0000ee }
+		A:visited { color: #551a8b }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0000ee" VLINK="#551a8b" BGCOLOR="#ffffff">
+<H1 ALIGN=CENTER>Magick::Exception Classes</H1>
+<P><I>Exception</I> represents the base class of objects thrown when
+ImageMagick reports an error. Magick++ throws C++ exceptions
+synchronous with the operation where the error occurred. This allows
+errors to be trapped within the enclosing code (perhaps the code to
+process a single image) while allowing the code to be written with a
+simple coding style.</P>
+<P>A try/catch block should be placed around any sequence of
+operations which can be considered a unit of work. For example, if
+your program processes lists of images and some of these images may
+be defective, by placing the try/catch block around the entire
+sequence of code that processes one image (including instantiating
+the image object), you can minimize the overhead of error checking
+while ensuring that all objects created to deal with that object are
+safely destroyed (C++ exceptions unroll the stack until the enclosing
+try block, destroying any created objects). 
+</P>
+<P>The<SPAN LANG="en-US"> pseudo code </SPAN>for the main loop of
+your program may look like: 
+</P>
+<P><TT><FONT COLOR="#000066">for each image in list</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;
+try {</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
+create image object</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
+read image</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
+process image</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
+save result</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp; }</FONT></TT>
+<BR><TT><FONT COLOR="#000066">&nbsp; catch( ErrorFileOpen &amp;error
+)</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp; {</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
+process Magick++ file open error</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;
+}</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp; catch( Exception
+&amp;error )</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp; {</FONT></TT>
+<BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; process any Magick++
+error</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp; }</FONT></TT>
+<BR><TT><FONT COLOR="#000066">&nbsp; catch( exception &amp;error )</FONT></TT>
+<BR><TT><FONT COLOR="#000066">&nbsp; {</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
+process any other exceptions derived from standard C++ exception</FONT></TT>
+<BR><TT><FONT COLOR="#000066">&nbsp; }</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;
+catch( ... )</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp; {</FONT></TT>
+<BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; process *any*
+exception (last-ditch effort)</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;
+}</FONT></TT> 
+</P>
+<P>This catches errors opening a file first, followed by any Magick++
+exception if the exception was not caught previously. 
+</P>
+<P>The <I>Exception</I> class is derived from the C++ standard
+exception class. This means that it contains a C++ string containing
+additional information about the error (e.g to display to the user).
+Obtain access to this string via the what() method.&nbsp; For
+example: 
+</P>
+<P><TT><FONT COLOR="#000066">&nbsp;catch( Exception &amp;error_ )</FONT></TT>
+<BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; {</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cout &lt;&lt; &quot;Caught exception: &quot; &lt;&lt; error_.what()
+&lt;&lt; endl;</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
+}</FONT></TT> 
+</P>
+<P>The classes <I>Warning</I> and <I>Error</I> derive from the
+<I>Exception</I> class. Exceptions derived from <I>Warning</I> are
+thrown to represent non-fatal errors which may effect the
+completeness or quality of the result (e.g. one image provided as an
+argument to montage is defective). In most cases, a <I>Warning</I>
+exception may be ignored by catching it immediately, processing it
+(e.g. printing a diagnostic) and continuing on. Exceptions derived
+from <I>Error</I> are thrown to represent fatal errors that can not
+produce a valid result (e.g. attempting to read a file which does not
+exist). 
+</P>
+<P STYLE="margin-bottom: 0cm">The specific derived exception classes
+are shown in the following tables: 
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Warning Sub-Classes</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD WIDTH=25%>
+			<P ALIGN=CENTER><FONT SIZE=2><B>Warning</B></FONT></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2><B>Warning Description</B></FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>WarningUndefined</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>Unspecified warning type.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>WarningResourceLimit</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>A program resource is exhausted (e.g. not enough
+			memory).</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>WarningXServer</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>An X resource is unavailable.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>WarningOption</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>An option was malformed or out of range.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>WarningDelegate</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>An ImageMagick delegate returned an error.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>WarningMissingDelegate</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>The image type can not be read or written because
+			the appropriate Delegate is missing.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>WarningCorruptImage</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>The image file is corrupt (or otherwise can't be
+			read).</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>WarningFileOpen</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>The image file could not be opened (permission
+			problem, wrong file type, or does not exist).</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>WarningBlob</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>A binary large object could not be allocated.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>WarningCache</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>Pixels could not be saved to the pixel cache.</FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Error Sub-Classes</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD WIDTH=25%>
+			<P ALIGN=CENTER><FONT SIZE=2><B>Error</B></FONT></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2><B>Error Description</B></FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>ErrorUndefined</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>Unspecified error type.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>ErrorResourceLimit</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>A program resource is exhausted (e.g. not enough
+			memory).</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>ErrorXServer</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>An X resource is unavailable.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>ErrorOption</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>An option was malformed or out of range.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>ErrorDelegate</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>An ImageMagick delegate returned an error.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>ErrorMissingDelegate</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>The image type can not be read or written because
+			the appropriate Delegate is missing.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>ErrorCorruptImage</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>The image file is corrupt (or otherwise can't be
+			read).</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>ErrorFileOpen</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>The image file could not be opened (permission
+			problem, wrong file type, or does not exist).</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>ErrorBlob</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>A binary large object could not be allocated.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><FONT SIZE=2>ErrorCache</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>Pixels could not be saved to the pixel cache.</FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P><BR><BR>
+</P>
+</BODY>
+</HTML>

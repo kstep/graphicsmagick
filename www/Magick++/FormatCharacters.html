@@ -1,152 +1,163 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
 <HEAD>
-   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-   <META NAME="GENERATOR" CONTENT="Mozilla/4.07 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
-   <META NAME="Author" CONTENT="Bob Friesenhahn">
-   <META NAME="Description" CONTENT="Annotation format character description.">
-   <TITLE>Special Format Characters</TITLE>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<TITLE>Special Format Characters</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
+	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
+	<META NAME="CREATED" CONTENT="20020805;18011737">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20020805;18014044">
+	<META NAME="DESCRIPTION" CONTENT="Annotation format character description.">
+	<STYLE>
+	<!--
+		TD P { color: #000000 }
+		H1 { color: #000000 }
+		P { color: #000000 }
+		A:link { color: #0000ee }
+		A:visited { color: #551a8b }
+	-->
+	</STYLE>
 </HEAD>
-<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
-
+<BODY LANG="en-US" TEXT="#000000" LINK="#0000ee" VLINK="#551a8b" BGCOLOR="#ffffff">
+<H1 ALIGN=CENTER>Special Format Characters</H1>
+<P STYLE="margin-bottom: 0cm">The Magick::Image methods <A HREF="Image.html#annotate"><I>annotate</I></A>,
+<A HREF="Image.html#draw"><I>draw</I></A>, <A HREF="Image.html#label"><I>label</I></A>,
+and the template function <I>montageImages</I> support special format
+characters contained in the argument text. These format characters
+work similar to C's <I>printf</I>. Whenever a format character
+appears in the text, it is replaced with the equivalent attribute
+text. The available format characters are shown in the following
+table. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Format Characters</B></P>
 <CENTER>
-<H1>
-Special Format Characters</H1></CENTER>
-The Magick::Image methods <I><A HREF="Image.html#annotate">annotate</A></I>,
-<I><A HREF="Image.html#draw">draw</A></I>, <I><A HREF="Image.html#label">label</A></I>,
-and the template function <I>montageImages</I> support special format characters
-contained in the argument text. These format characters work similar to
-C's <I>printf</I>. Whenever a format character appears in the text, it
-is replaced with the equivalent attribute text. The available format characters
-are shown in the following table.
-<BR>&nbsp;
-<TABLE BORDER WIDTH="50%" >
-<CAPTION><B>Format Characters</B></CAPTION>
-
-<TR>
-<TD>
-<CENTER><B>Format Character</B></CENTER>
-</TD>
-
-<TD>
-<CENTER><B>Description</B></CENTER>
-</TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER>%b</CENTER>
-</TD>
-
-<TD>file size</TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER>%d</CENTER>
-</TD>
-
-<TD>directory</TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER>%e</CENTER>
-</TD>
-
-<TD>filename extension</TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER>%f</CENTER>
-</TD>
-
-<TD>filename</TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER>%h</CENTER>
-</TD>
-
-<TD>height</TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER>%m</CENTER>
-</TD>
-
-<TD>magick (e.g GIF)</TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER>%p</CENTER>
-</TD>
-
-<TD>page number</TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER>%s</CENTER>
-</TD>
-
-<TD>scene number</TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER>%t</CENTER>
-</TD>
-
-<TD>top of filename</TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER>%w</CENTER>
-</TD>
-
-<TD>width</TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER>%x</CENTER>
-</TD>
-
-<TD>x resolution</TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER>%y</CENTER>
-</TD>
-
-<TD>y resolution</TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER>\n</CENTER>
-</TD>
-
-<TD>newline</TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER>\r</CENTER>
-</TD>
-
-<TD>carriage return</TD>
-</TR>
-</TABLE>
-
-<BR>&nbsp;
+	<TABLE WIDTH=50% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+		<COL WIDTH=131*>
+		<COL WIDTH=125*>
+		<TR>
+			<TD WIDTH=51%>
+				<P ALIGN=CENTER><B>Format Character</B></P>
+			</TD>
+			<TD WIDTH=49%>
+				<P ALIGN=CENTER><B>Description</B></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=51%>
+				<P ALIGN=CENTER>%b</P>
+			</TD>
+			<TD WIDTH=49%>
+				<P>file size</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=51%>
+				<P ALIGN=CENTER>%d</P>
+			</TD>
+			<TD WIDTH=49%>
+				<P>directory</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=51%>
+				<P ALIGN=CENTER>%e</P>
+			</TD>
+			<TD WIDTH=49%>
+				<P>filename extension</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=51%>
+				<P ALIGN=CENTER>%f</P>
+			</TD>
+			<TD WIDTH=49%>
+				<P>filename</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=51%>
+				<P ALIGN=CENTER>%h</P>
+			</TD>
+			<TD WIDTH=49%>
+				<P>height</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=51%>
+				<P ALIGN=CENTER>%m</P>
+			</TD>
+			<TD WIDTH=49%>
+				<P>magick (e.g GIF)</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=51%>
+				<P ALIGN=CENTER>%p</P>
+			</TD>
+			<TD WIDTH=49%>
+				<P>page number</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=51%>
+				<P ALIGN=CENTER>%s</P>
+			</TD>
+			<TD WIDTH=49%>
+				<P>scene number</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=51%>
+				<P ALIGN=CENTER>%t</P>
+			</TD>
+			<TD WIDTH=49%>
+				<P>top of filename</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=51%>
+				<P ALIGN=CENTER>%w</P>
+			</TD>
+			<TD WIDTH=49%>
+				<P>width</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=51%>
+				<P ALIGN=CENTER>%x</P>
+			</TD>
+			<TD WIDTH=49%>
+				<P>x resolution</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=51%>
+				<P ALIGN=CENTER>%y</P>
+			</TD>
+			<TD WIDTH=49%>
+				<P>y resolution</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=51%>
+				<P ALIGN=CENTER>\n</P>
+			</TD>
+			<TD WIDTH=49%>
+				<P>newline</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=51%>
+				<P ALIGN=CENTER>\r</P>
+			</TD>
+			<TD WIDTH=49%>
+				<P>carriage return</P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P><BR>&nbsp; 
+</P>
 </BODY>
 </HTML>

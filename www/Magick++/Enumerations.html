@@ -1,1803 +1,2119 @@
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<html>
-<head>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
-   <meta name="Author" content="Bob Friesenhahn">
-   <meta name="Description" content="Documentation for ImageMagick enumerations">
-   <title>Enumerations</title>
-</head>
-<body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
-
-<center>
-<h1>
-Enumerations</h1></center>
-
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Contents</font></font></font></b></td>
-</tr>
-</table>
-
-<ul>
-<li>
-<a href="#ChannelType">ChannelType</a></li>
-
-<li>
-<a href="#ClassType">ClassType</a></li>
-
-<li>
-<a href="#ColorspaceType">ColorspaceType</a></li>
-
-<li>
-<a href="#CompositeOperator">CompositeOperator</a></li>
-
-<li>
-<a href="#CompressionType">CompressionType</a></li>
-
-<li>
-<a href="#DecorationType">DecorationType</a></li>
-
-<li>
-<a href="#FillRule">FillRule</a></li>
-
-<li>
-<a href="#FilterTypes">FilterTypes</a></li>
-
-<li>
-<a href="#GravityType">GravityType</a></li>
-
-<li>
-<a href="#ImageType">ImageType</a></li>
-
-<li>
-<a href="#InterlaceType">InterlaceType</a></li>
-
-<li>
-<a href="#LayerType">LayerType</a></li>
-
-<li>
-<a href="#LineCap">LineCap</a></li>
-
-<li>
-<a href="#LineJoin">LineJoin</a></li>
-
-<li>
-<a href="#NoiseType">NoiseType</a></li>
-
-<li>
-<a href="#PaintMethod">PaintMethod</a></li>
-
-<li>
-<a href="#QuantumTypes">QuantumTypes</a></li>
-
-<li>
-<a href="#RenderingIntent">RenderingIntent</a></li>
-
-<li>
-<a href="#ResolutionType">ResolutionType</a></li>
-
-<li>
-<a href="#StorageType">StorageType</a></li>
-
-<li>
-<a href="#StretchType">StretchType</a></li>
-
-<li>
-<a href="#StyleType">StyleType</a></li>
-</ul>
-
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="ChannelType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>ChannelType</font></font></font></b></td>
-</tr>
-</table>
-
-<p><i>ChannelType</i> is used as an argument when doing color separations.
-Use
-<i>ChannelType </i>when extracting a layer from an image. <i>MatteChannel</i>
-is useful for extracting the opacity values from an image.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>ChannelType</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>UndefinedChannel</td>
-
-<td>Unset value.</td>
-</tr>
-
-<tr>
-<td>RedChannel</td>
-
-<td>Select red channel</td>
-</tr>
-
-<tr>
-<td>GreenChannel</td>
-
-<td>Select green channel</td>
-</tr>
-
-<tr>
-<td>BlueChannel</td>
-
-<td>Select blue channel</td>
-</tr>
-
-<tr>
-<td>MatteChannel</td>
-
-<td>Select matte (opacity values) channel</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="ClassType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>ClassType</font></font></font></b></td>
-</tr>
-</table>
-
-<p><i>ClassType</i> specifies the image storage class.
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption>
-<center><b>ClassType</b></center>
-</caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>UndefinedClass</td>
-
-<td>Unset value.</td>
-</tr>
-
-<tr>
-<td>DirectClass</td>
-
-<td>Image is composed of pixels which represent literal color values.</td>
-</tr>
-
-<tr>
-<td>PseudoClass</td>
-
-<td>Image is composed of pixels which specify an index in a color palette.</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="ColorspaceType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>ColorspaceType</font></font></font></b></td>
-</tr>
-</table>
-
-<p>The ColorspaceType enumeration is used to specify the colorspace that
-quantization (color reduction and mapping) is done under or to specify
-the colorspace when encoding an output image. Colorspaces are ways of describing
-colors to fit the requirements of a particular application (e.g. Television,
-offset printing, color monitors).&nbsp; Color reduction, by default, takes
-place in the <i>RGBColorspace</i>. Empirical evidence suggests that distances
-in color spaces such as <i>YUVColorspace</i> or <i>YIQColorspace</i> correspond
-to perceptual color differences more closely han do distances in RGB space.
-These color spaces may give better results when color reducing an image.
-Refer to <i>quantize</i> for more details.
-<p>When encoding an output image, the colorspaces <i>RGBColorspace</i>,
-<i>CMYKColorspace</i>,
-and <i>GRAYColorspace</i> may be specified. The
-<i>CMYKColorspace</i> option
-is only applicable when writing TIFF, JPEG, and Adobe Photoshop bitmap
-(PSD) files.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>ColorspaceType</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>UndefinedColorspace</td>
-
-<td>Unset value.</td>
-</tr>
-
-<tr>
-<td>RGBColorspace</td>
-
-<td>Red-Green-Blue colorspace.</td>
-</tr>
-
-<tr>
-<td>GRAYColorspace</td>
-
-<td>&nbsp;Grayscale colorspace</td>
-</tr>
-
-<tr>
-<td>TransparentColorspace</td>
-
-<td>The Transparent color space behaves uniquely in that it preserves the
-matte channel of the image if it exists.</td>
-</tr>
-
-<tr>
-<td>OHTAColorspace</td>
-
-<td>&nbsp;</td>
-</tr>
-
-<tr>
-<td>XYZColorspace</td>
-
-<td>&nbsp;</td>
-</tr>
-
-<tr>
-<td>YCbCrColorspace</td>
-
-<td>&nbsp;</td>
-</tr>
-
-<tr>
-<td>YCCColorspace</td>
-
-<td>&nbsp;</td>
-</tr>
-
-<tr>
-<td>YIQColorspace</td>
-
-<td>&nbsp;</td>
-</tr>
-
-<tr>
-<td>YPbPrColorspace</td>
-
-<td>&nbsp;</td>
-</tr>
-
-<tr>
-<td>YUVColorspace</td>
-
-<td>Y-signal, U-signal, and V-signal colorspace. YUV is most widely used
-to encode color for use in television transmission.</td>
-</tr>
-
-<tr>
-<td>CMYKColorspace</td>
-
-<td>Cyan-Magenta-Yellow-Black colorspace. CYMK is a subtractive color system
-used by printers and photographers for the rendering of colors with ink
-or emulsion, normally on a white surface.</td>
-</tr>
-
-<tr>
-<td>sRGBColorspace</td>
-
-<td>&nbsp;</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="CompositeOperator"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>CompositeOperator</font></font></font></b></td>
-</tr>
-</table>
-
-<p><i>CompositeOperator</i> is used to select the image composition algorithm
-used to compose a <i>composite image</i> with an <i>image</i>. By default,
-each of the composite image pixels are replaced by the corresponding image
-tile pixel. Specify <i>CompositeOperator</i> to select a different algorithm.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>CompositeOperator</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>UndefinedCompositeOp</td>
-
-<td>Unset value.</td>
-</tr>
-
-<tr>
-<td>OverCompositeOp</td>
-
-<td>The result is the union of the the two image shapes with the
-<i>composite
-image</i> obscuring <i>image</i> in the region of overlap.</td>
-</tr>
-
-<tr>
-<td>InCompositeOp</td>
-
-<td>The result is a simply <i>composite image </i>cut by the shape of image.
-None of the image data of <i>image</i> is included in the result.</td>
-</tr>
-
-<tr>
-<td>OutCompositeOp</td>
-
-<td>The resulting image is <i>composite image</i> with the shape of <i>image</i>
-cut out.</td>
-</tr>
-
-<tr>
-<td>AtopCompositeOp</td>
-
-<td>The result is the same shape as image <i>image</i>, with <i>composite
-image</i> obscuring <i>image</i> there the image shapes overlap. Note that
-this differs from <i>OverCompositeOp</i> because the portion of <i>composite
-image</i> outside of <i>image</i>'s shape does not appear in the result.</td>
-</tr>
-
-<tr>
-<td>XorCompositeOp</td>
-
-<td>The result is the image data from both c<i>omposite image</i> and <i>image</i>
-that is outside the overlap region. The overlap region will be blank.</td>
-</tr>
-
-<tr>
-<td>PlusCompositeOp</td>
-
-<td>The result is just the sum of the&nbsp; image data. Output values are
-cropped to 255 (no overflow). This operation is independent of the matte
-channels.</td>
-</tr>
-
-<tr>
-<td>MinusCompositeOp</td>
-
-<td>The result of <i>composite image </i>- <i>image</i>, with overflow
-cropped to zero. The matte chanel is ignored (set to 255, full coverage).</td>
-</tr>
-
-<tr>
-<td>AddCompositeOp</td>
-
-<td>The result of <i>composite image</i> + <i>image</i>, with overflow
-wrapping around (mod 256).</td>
-</tr>
-
-<tr>
-<td>SubtractCompositeOp</td>
-
-<td>The result of <i>composite image </i>- <i>image</i>, with underflow
-wrapping around (mod 256). The add and subtract operators can be used to
-perform reverible transformations.</td>
-</tr>
-
-<tr>
-<td>DifferenceCompositeOp</td>
-
-<td>The result of abs(c<i>omposite image </i>- <i>image</i>). This is useful
-for comparing two very similar images.</td>
-</tr>
-
-<tr>
-<td>MultiplyCompositeOp</td>
-
-<td>&nbsp;</td>
-</tr>
-
-<tr>
-<td>BumpmapCompositeOp</td>
-
-<td>The result <i>image</i> shaded by <i>composite image.</i></td>
-</tr>
-
-<tr>
-<td>CopyCompositeOp</td>
-
-<td>The resulting <i>image</i> is image replaced with c<i>omposite image</i>.
-Here the matte information is ignored.</td>
-</tr>
-
-<tr>
-<td>CopyRedCompositeOp</td>
-
-<td>The resulting image is the red layer in <i>image</i> replaced with
-the red layer in <i>composite image</i>. The other layers are copied untouched.</td>
-</tr>
-
-<tr>
-<td>CopyGreenCompositeOp</td>
-
-<td>The resulting image is the green layer in <i>image</i> replaced with
-the green layer in <i>composite image</i>. The other layers are copied
-untouched.</td>
-</tr>
-
-<tr>
-<td>CopyBlueCompositeOp</td>
-
-<td>The resulting image is the blue layer in <i>image</i> replaced with
-the blue layer in <i>composite image</i>. The other layers are copied untouched.</td>
-</tr>
-
-<tr>
-<td>CopyOpacityCompositeOp</td>
-
-<td>The resulting image is the matte layer in <i>image</i> replaced with
-the matte layer in <i>composite image</i>. The other layers are copied
-untouched.
-<p>The image compositor requires a matte, or alpha channel in the image
-for some operations. This extra channel usually defines a mask which represents
-a sort of a cookie-cutter for the image. This is the case when matte is
-255 (full coverage) for pixels inside the shape, zero outside, and between
-zero and 255 on the boundary.&nbsp; For certain operations, if <i>image</i>
-does not have a matte channel, it is initialized with 0 for any pixel matching
-in color to pixel location (0,0), otherwise 255 (to work properly <i>borderWidth</i>
-must be 0).</td>
-</tr>
-
-<tr>
-<td>ClearCompositeOp</td>
-
-<td>&nbsp;</td>
-</tr>
-
-<tr>
-<td>DissolveCompositeOp</td>
-
-<td>&nbsp;</td>
-</tr>
-
-<tr>
-<td>DisplaceCompositeOp</td>
-
-<td>&nbsp;</td>
-</tr>
-
-<tr>
-<td>ModulateCompositeOp</td>
-
-<td>&nbsp;</td>
-</tr>
-
-<tr>
-<td>ThresholdCompositeOp</td>
-
-<td>&nbsp;</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="CompressionType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>CompressionType</font></font></font></b></td>
-</tr>
-</table>
-
-<p><i>CompressionType</i> is used to express the desired compression type
-when encoding an image. Be aware that most image types only support a sub-set
-of the available compression types. If the compression type specified is
-incompatable with the image, ImageMagick selects a compression type compatable
-with the image type.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>CompressionType</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>UndefinedCompression</td>
-
-<td>Unset value.</td>
-</tr>
-
-<tr>
-<td>NoCompression</td>
-
-<td>No compression</td>
-</tr>
-
-<tr>
-<td>BZipCompression</td>
-
-<td>BZip (Burrows-Wheeler block-sorting text compression algorithm and
-Huffman coding)&nbsp; as used by bzip2 utilities</td>
-</tr>
-
-<tr>
-<td>FaxCompression</td>
-
-<td>CCITT Group 3 FAX compression</td>
-</tr>
-
-<tr>
-<td>Group4Compression</td>
-
-<td>CCITT Group 4 FAX compression (used only for TIFF)</td>
-</tr>
-
-<tr>
-<td>JPEGCompression</td>
-
-<td>JPEG compression</td>
-</tr>
-
-<tr>
-<td>LZWCompression</td>
-
-<td>Lempel-Ziv-Welch (LZW) compression (caution, patented by Unisys)</td>
-</tr>
-
-<tr>
-<td>RunlengthEncodedCompression</td>
-
-<td>Run-Length encoded (RLE) compression</td>
-</tr>
-
-<tr>
-<td>ZipCompression</td>
-
-<td>Lempel-Ziv compression (LZ77) as used in PKZIP and GNU gzip.</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="DecorationType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>DecorationType</font></font></font></b></td>
-</tr>
-</table>
-
-<p>The <i>DecorationType </i>enumerations are used to specify line decorations
-of rendered text.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption>
-<center><b>DecorationType</b></center>
-</caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>NoDecoration</td>
-
-<td>No decoration</td>
-</tr>
-
-<tr>
-<td>UnderlineDecoration</td>
-
-<td>Underlined text</td>
-</tr>
-
-<tr>
-<td>OverlineDecoration</td>
-
-<td>Overlined text</td>
-</tr>
-
-<tr>
-<td>LineThroughDecoration</td>
-
-<td>Strike-through text</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="EndianType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>EndianType</font></font></font></b></td>
-</tr>
-</table>
-
-<p>The <i>EndianType </i>enumerations are used to specify the endian option
-for formats which support it (e.g. TIFF).
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption>
-<center><b>EndianType</b></center>
-</caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>UndefinedEndian</td>
-
-<td>Not defined (default)</td>
-</tr>
-
-<tr>
-<td>LSBEndian</td>
-
-<td>Little endian (like Intel X86 and DEC Alpha)</td>
-</tr>
-
-<tr>
-<td>MSBEndian</td>
-
-<td>Big endian (like Motorola 68K, Mac PowerPC, &amp; SPARC)</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="FillRule"></a><b><font color="#FFFFFF"><font size=+1>FillRule</font></font></b></td>
-</tr>
-</table>
-
-<p><i>FillRule</i> specifies the algorithm which is to be used to determine
-what parts of the canvas are included inside the shape. See the documentation
-on SVG's <a href="http://www.w3.org/TR/SVG/painting.html#FillRuleProperty">fill-rule</a>&nbsp;
-property for usage details.
-<br>&nbsp;
-<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>FillRule</b></caption>
-
-<tr>
-<td>UndefinedRule</td>
-
-<td>Fill rule not specified</td>
-</tr>
-
-<tr>
-<td>EvenOddRule</td>
-
-<td>See SVG fill-rule <i>evenodd</i> rule.</td>
-</tr>
-
-<tr>
-<td>NonZeroRule</td>
-
-<td>See SVG fill-rule <i>nonzero</i> rule.</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="FilterTypes"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>FilterTypes</font></font></font></b></td>
-</tr>
-</table>
-
-<p><i>FilterTypes</i> is used to adjust the filter algorithm used when
-resizing images. Different filters experience varying degrees of success
-with various images and can take sipngicantly different amounts of processing
-time. ImageMagick uses the <i>LanczosFilter</i> by default since this filter
-has been shown to provide the best results for most images in a reasonable
-amount of time. Other filter types (e.g. <i>TriangleFilter</i>) may execute
-much faster but may show artifacts when the image is re-sized or around
-diagonal lines. The only way to be sure is to test the filter with sample
-images.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>FilterTypes</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>UndefinedFilter</td>
-
-<td>Unset value.</td>
-</tr>
-
-<tr>
-<td>PointFilter</td>
-
-<td>Point Filter</td>
-</tr>
-
-<tr>
-<td>BoxFilter</td>
-
-<td>Box Filter</td>
-</tr>
-
-<tr>
-<td>TriangleFilter</td>
-
-<td>Triangle Filter</td>
-</tr>
-
-<tr>
-<td>HermiteFilter</td>
-
-<td>Hermite Filter</td>
-</tr>
-
-<tr>
-<td>HanningFilter</td>
-
-<td>Hanning Filter</td>
-</tr>
-
-<tr>
-<td>HammingFilter</td>
-
-<td>Hamming Filter</td>
-</tr>
-
-<tr>
-<td>BlackmanFilter</td>
-
-<td>Blackman Filter</td>
-</tr>
-
-<tr>
-<td>GaussianFilter</td>
-
-<td>Gaussian Filter</td>
-</tr>
-
-<tr>
-<td>QuadraticFilter</td>
-
-<td>Quadratic Filter</td>
-</tr>
-
-<tr>
-<td>CubicFilter</td>
-
-<td>Cubic Filter</td>
-</tr>
-
-<tr>
-<td>CatromFilter</td>
-
-<td>Catrom Filter</td>
-</tr>
-
-<tr>
-<td>MitchellFilter</td>
-
-<td>Mitchell Filter</td>
-</tr>
-
-<tr>
-<td>LanczosFilter</td>
-
-<td>Lanczos Filter</td>
-</tr>
-
-<tr>
-<td>BesselFilter</td>
-
-<td>Bessel Filter</td>
-</tr>
-
-<tr>
-<td>SincFilter</td>
-
-<td>Sinc Filter</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="GravityType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>GravityType</font></font></font></b></td>
-</tr>
-</table>
-
-<p><i>GravityType</i> specifies positioning of an object (e.g. text, image)
-within a bounding region (e.g. an image). Gravity provides a convenient
-way to locate objects irrespective of the size of the bounding region,
-in other words, you don't need to provide absolute coordinates in order
-to position an object. A common default for gravity is <i>NorthWestGravity</i>.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>GravityType</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>ForgetGravity</td>
-
-<td>Don't use gravity.</td>
-</tr>
-
-<tr>
-<td>NorthWestGravity</td>
-
-<td>Position object at top-left of region.</td>
-</tr>
-
-<tr>
-<td>NorthGravity</td>
-
-<td>Postiion object at top-center of region</td>
-</tr>
-
-<tr>
-<td>NorthEastGravity</td>
-
-<td>Position object at top-right of region</td>
-</tr>
-
-<tr>
-<td>WestGravity</td>
-
-<td>Position object at left-center of region</td>
-</tr>
-
-<tr>
-<td>CenterGravity</td>
-
-<td>Position object at center of region</td>
-</tr>
-
-<tr>
-<td>EastGravity</td>
-
-<td>Position object at right-center of region</td>
-</tr>
-
-<tr>
-<td>SouthWestGravity</td>
-
-<td>Position object at left-bottom of region</td>
-</tr>
-
-<tr>
-<td>SouthGravity</td>
-
-<td>Position object at bottom-center of region</td>
-</tr>
-
-<tr>
-<td>SouthEastGravity</td>
-
-<td>Position object at bottom-right of region</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="ImageType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>ImageType</font></font></font></b></td>
-</tr>
-</table>
-
-<p><i>ImageType</i> indicates the type classification of the image.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>ImageType</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>UndefinedType</td>
-
-<td>Unset value.</td>
-</tr>
-
-<tr>
-<td>BilevelType</td>
-
-<td>Monochrome image</td>
-</tr>
-
-<tr>
-<td>GrayscaleType</td>
-
-<td>Grayscale image</td>
-</tr>
-
-<tr>
-<td>GrayscaleMatteType</td>
-
-<td>Grayscale image with opacity</td>
-</tr>
-
-<tr>
-<td>PaletteType</td>
-
-<td>Indexed color (palette) image</td>
-</tr>
-
-<tr>
-<td>PaletteMatteType</td>
-
-<td>Indexed color (palette) image with opacity</td>
-</tr>
-
-<tr>
-<td>TrueColorType</td>
-
-<td>Truecolor image</td>
-</tr>
-
-<tr>
-<td>TrueColorMatteType</td>
-
-<td>Truecolor image with opacity</td>
-</tr>
-
-<tr>
-<td>ColorSeparationType</td>
-
-<td>Cyan/Yellow/Magenta/Black (CYMK) image</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="InterlaceType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>InterlaceType</font></font></font></b></td>
-</tr>
-</table>
-
-<p><i>InterlaceType</i> specifies the ordering of the red, green, and blue
-pixel information in the image. Interlacing is usually used to make image
-information available to the user faster by taking advantage of the space
-vs time tradeoff. For example, interlacing allows images on the Web to
-be recognizable sooner and satellite images to accumulate/render with image
-resolution increasing over time.
-<p>Use <i>LineInterlace</i> or <i>PlaneInterlace</i> to create an interlaced
-GIF or progressive JPEG image.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>InterlaceType</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>UndefinedInterlace</td>
-
-<td>Unset value.</td>
-</tr>
-
-<tr>
-<td>NoInterlace</td>
-
-<td>Don't interlace image (RGBRGBRGBRGBRGBRGB...)</td>
-</tr>
-
-<tr>
-<td>LineInterlace</td>
-
-<td>Use scanline interlacing (RRR...GGG...BBB...RRR...GGG...BBB...)</td>
-</tr>
-
-<tr>
-<td>PlaneInterlace</td>
-
-<td>Use plane interlacing (RRRRRR...GGGGGG...BBBBBB...)</td>
-</tr>
-
-<tr>
-<td>PartitionInterlace</td>
-
-<td>Similar to plane interlaing except that the different planes are saved
-to individual files (e.g. image.R, image.G, and image.B)</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="LayerType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>LayerType</font></font></font></b></td>
-</tr>
-</table>
-
-<p><i>LayerType</i> is used as an argument when doing color separations.
-Use
-<i>LayerType</i> when extracting a layer from an image. <i>MatteLayer</i>
-is useful for extracting the opacity values from an image.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>LayerType</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>UndefinedLayer</td>
-
-<td>Unset value.</td>
-</tr>
-
-<tr>
-<td>RedLayer</td>
-
-<td>Select red layer</td>
-</tr>
-
-<tr>
-<td>GreenLayer</td>
-
-<td>Select green layer</td>
-</tr>
-
-<tr>
-<td>BlueLayer</td>
-
-<td>Select blue layer</td>
-</tr>
-
-<tr>
-<td>MatteLayer</td>
-
-<td>Select matte (opacity values) layer</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="LineCap"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>LineCap</font></font></font></b></td>
-</tr>
-</table>
-
-<p>The <i>LineCap</i> enumerations specify shape to be used at the end
-of open subpaths when they are stroked. See SVG's '<a href="http://www.w3.org/TR/SVG/painting.html#StrokeLinecapProperty">stroke-linecap'</a>
-for examples.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>LineCap</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>UndefinedCap</td>
-
-<td>Unset value.</td>
-</tr>
-
-<tr>
-<td>ButtCap</td>
-
-<td>Square ending.</td>
-</tr>
-
-<tr>
-<td>RoundCap</td>
-
-<td>Rounded ending (half-circle end with radius of 1/2 stroke width).</td>
-</tr>
-
-<tr>
-<td>SquareCap</td>
-
-<td>Square ending, extended by 1/2 the stroke width at end.</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="LineJoin"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>LineJoin</font></font></font></b></td>
-</tr>
-</table>
-
-<p>The <i>LineJoin</i> enumerations specify the shape to be used at the
-corners of paths or basic shapes when they are stroked. See SVG's '<a href="http://www.w3.org/TR/SVG/painting.html#StrokeLinejoinProperty">stroke-linejoin'</a>
-for examples.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>ChannelType</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>UndefinedJoin</td>
-
-<td>Unset value.</td>
-</tr>
-
-<tr>
-<td>MiterJoin</td>
-
-<td>Sharp-edged join</td>
-</tr>
-
-<tr>
-<td>RoundJoin</td>
-
-<td>Rounded-edged join</td>
-</tr>
-
-<tr>
-<td>BevelJoin</td>
-
-<td>Beveled-edged join</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="NoiseType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>NoiseType</font></font></font></b></td>
-</tr>
-</table>
-
-<p><i>NoiseType</i> is used as an argument to select the type of noise
-to be added to the image.
-<br>&nbsp;
-<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>NoiseType</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>UniformNoise</td>
-
-<td>Uniform noise</td>
-</tr>
-
-<tr>
-<td>GaussianNoise</td>
-
-<td>Gaussian noise</td>
-</tr>
-
-<tr>
-<td>MultiplicativeGaussianNoise</td>
-
-<td>Multiplicative Gaussian noise</td>
-</tr>
-
-<tr>
-<td>ImpulseNoise</td>
-
-<td>Impulse noise</td>
-</tr>
-
-<tr>
-<td>LaplacianNoise</td>
-
-<td>Laplacian noise</td>
-</tr>
-
-<tr>
-<td>PoissonNoise</td>
-
-<td>Poisson noise</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="PaintMethod"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>PaintMethod</font></font></font></b></td>
-</tr>
-</table>
-
-<p><i>PaintMethod</i> specifies how pixel colors are to be replaced in
-the image. It is used to select the pixel-filling algorithm employed.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>PaintMethod</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>PointMethod</td>
-
-<td>Replace pixel color at point.</td>
-</tr>
-
-<tr>
-<td>ReplaceMethod</td>
-
-<td>Replace color for all image pixels matching color at point.</td>
-</tr>
-
-<tr>
-<td>FloodfillMethod</td>
-
-<td>Replace color for pixels surrounding point until encountering pixel
-that fails to match color at point.</td>
-</tr>
-
-<tr>
-<td>FillToBorderMethod</td>
-
-<td>Replace color for pixels surrounding point until encountering pixels
-matching border color.</td>
-</tr>
-
-<tr>
-<td>ResetMethod</td>
-
-<td>Replace colors for <b>all</b> pixels in image with pen color.</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="QuantumTypes"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>QuantumTypes</font></font></font></b></td>
-</tr>
-</table>
-
-<p><i>QuantumTypes</i> is used to indicate the source or destination format
-of entire pixels, or components of pixels ("Quantums") while they are being
-read, or written to, a pixel cache. The validity of these format specifications
-depends on whether the Image pixels are in RGB format, RGBA format, or
-CMYK format. The pixel Quantum size is determined by the Image depth (eight
-or sixteen bits).
-<br>&nbsp;
-<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>RGB(A) Image Quantums</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>IndexQuantum</td>
-
-<td>PseudoColor colormap indices (valid only for image with colormap)</td>
-</tr>
-
-<tr>
-<td>RedQuantum</td>
-
-<td>Red pixel Quantum</td>
-</tr>
-
-<tr>
-<td>GreenQuantum</td>
-
-<td>Green pixel Quantum</td>
-</tr>
-
-<tr>
-<td>BlueQuantum</td>
-
-<td>Blue pixel Quantum</td>
-</tr>
-
-<tr>
-<td>OpacityQuantum</td>
-
-<td>Opacity (Alpha) Quantum</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<br>&nbsp;
-<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>CMY(K) Image Quantum</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>CyanQuantum</td>
-
-<td>Cyan pixel Quantum</td>
-</tr>
-
-<tr>
-<td>MagentaQuantum</td>
-
-<td>Magenta pixel Quantum</td>
-</tr>
-
-<tr>
-<td>YellowQuantum</td>
-
-<td>Yellow pixel Quantum</td>
-</tr>
-
-<tr>
-<td>BlackQuantum</td>
-
-<td>Black pixel Quantum</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>Grayscale Image Quantums</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>GrayQuantum</td>
-
-<td>Gray pixel</td>
-</tr>
-
-<tr>
-<td>GrayOpacityQuantum</td>
-
-<td>Pixel opacity</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>Entire Pixels (Expressed in Byte Order)</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>RGBQuantum</td>
-
-<td>RGB pixel (24 or 48 bits)</td>
-</tr>
-
-<tr>
-<td>RGBAQuantum</td>
-
-<td>RGBA pixel (32 or 64 bits)</td>
-</tr>
-
-<tr>
-<td>CMYKQuantum</td>
-
-<td>CMYK pixel (32 or 64 bits)</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="RenderingIntent"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>RenderingIntent</font></font></font></b></td>
-</tr>
-</table>
-
-<p>Rendering intent is a concept defined by <a href="http://www.color.org/">ICC</a>
-Spec ICC.1:1998-09, "File Format for Color Profiles". ImageMagick uses
-<i>RenderingIntent</i>
-in order to support ICC Color Profiles.
-<p>From the specification: "Rendering intent specifies the style of reproduction
-to be used during the evaluation of this profile in a sequence of profiles.
-It applies specifically to that profile in the sequence and not to the
-entire sequence. Typically, the user or application will set the rendering
-intent dynamically at runtime or embedding time."
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption><b>RenderingIntent</b></caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>UndefinedIntent</td>
-
-<td>Unset value.</td>
-</tr>
-
-<tr>
-<td>SaturationIntent</td>
-
-<td>A rendering intent that specifies the saturation of the pixels in the
-image is preserved perhaps at the expense of accuracy in hue and lightness.</td>
-</tr>
-
-<tr>
-<td>PerceptualIntent</td>
-
-<td>A rendering intent that specifies the full gamut of the image is compressed
-or expanded to fill the gamut of the destination device. Gray balance is
-preserved but colorimetric accuracy might not be preserved.</td>
-</tr>
-
-<tr>
-<td>AbsoluteIntent</td>
-
-<td>Absolute colorimetric</td>
-</tr>
-
-<tr>
-<td>RelativeIntent</td>
-
-<td>Relative colorimetric</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="ResolutionType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>ResolutionType</font></font></font></b></td>
-</tr>
-</table>
-
-<p>By default, ImageMagick defines resolutions in pixels per inch. <i>ResolutionType</i>
-provides a means to adjust this.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption>
-<center><b>ResolutionType</b></center>
-</caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>UndefinedResolution</td>
-
-<td>Unset value.</td>
-</tr>
-
-<tr>
-<td>PixelsPerInchResolution</td>
-
-<td>Density specifications are specified in units of pixels per inch (english
-units).</td>
-</tr>
-
-<tr>
-<td>PixelsPerCentimeterResolution</td>
-
-<td>Density specifications are specified in units of pixels per centimeter
-(metric units).</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="StorageType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>StorageType</font></font></font></b></td>
-</tr>
-</table>
-
-<p>The <i>StorageType</i> enumerations are used to specify the storage
-format of pixels in the source or destination pixel array.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption>
-<center><b>StorageType</b></center>
-</caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>CharPixel</td>
-
-<td>Character type</td>
-</tr>
-
-<tr>
-<td>ShortPixel</td>
-
-<td>Short type</td>
-</tr>
-
-<tr>
-<td>IntegerPixel</td>
-
-<td>Integer type</td>
-</tr>
-
-<tr>
-<td>FloatPixel</td>
-
-<td>Float type</td>
-</tr>
-
-<tr>
-<td>DoublePixel</td>
-
-<td>Double type</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="StretchType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>StretchType</font></font></font></b></td>
-</tr>
-</table>
-
-<p>The <i>StretchType</i> enumerations are used to specify the relative
-width of a font to the regular width for the font family. If the width
-is not important, the <i>AnyStretch</i> enumeration may be specified for
-a wildcard match.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption>
-<center><b>StretchType</b></center>
-</caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>AnyStretch</td>
-
-<td>Wildcard match for font stretch</td>
-</tr>
-
-<tr>
-<td>NormalStretch</td>
-
-<td>Normal width font</td>
-</tr>
-
-<tr>
-<td>UltraCondensedStretch</td>
-
-<td>Ultra-condensed (narrowest) font</td>
-</tr>
-
-<tr>
-<td>ExtraCondensedStretch</td>
-
-<td>Extra-condensed font</td>
-</tr>
-
-<tr>
-<td>CondensedStretch</td>
-
-<td>Condensed font</td>
-</tr>
-
-<tr>
-<td>SemiCondensedStretch</td>
-
-<td>Semi-Condensed font</td>
-</tr>
-
-<tr>
-<td>SemiExpandedStretch</td>
-
-<td>Semi-Expanded font</td>
-</tr>
-
-<tr>
-<td>ExpandedStretch</td>
-
-<td>Expanded font</td>
-</tr>
-
-<tr>
-<td>ExtraExpandedStretch</td>
-
-<td>Extra-Expanded font</td>
-</tr>
-
-<tr>
-<td>UltraExpandedStretch</td>
-
-<td>Ultra-expanded (widest) font</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="StyleType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>StyleType</font></font></font></b></td>
-</tr>
-</table>
-
-<p>The <i>StyleType</i> enumerations are used to specify the style (e.g.
-Italic) of a font. If the style is not important, the <i>AnyStyle</i> enumeration
-may be specified for a wildcard match.
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
-<caption>
-<center><b>StyleType</b></center>
-</caption>
-
-<tr>
-<td>
-<center><b>Enumeration</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>AnyStyle</td>
-
-<td>Wildcard match for font style</td>
-</tr>
-
-<tr>
-<td>NormalStyle</td>
-
-<td>Normal font style</td>
-</tr>
-
-<tr>
-<td>ItalicStyle</td>
-
-<td>Italic font style</td>
-</tr>
-
-<tr>
-<td>ObliqueStyle</td>
-
-<td>Oblique font style</td>
-</tr>
-</table>
-
-<br>&nbsp;
-<br>&nbsp;
-<br>&nbsp;
-<br>&nbsp;
-</body>
-</html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<TITLE>Enumerations</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
+	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
+	<META NAME="CREATED" CONTENT="20020805;17491620">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20020805;17535476">
+	<META NAME="DESCRIPTION" CONTENT="Documentation for ImageMagick enumerations">
+	<STYLE>
+	<!--
+		TD P { color: #000000 }
+		H1 { color: #000000 }
+		P { color: #000000 }
+		A:link { color: #1f00ff }
+		A:visited { color: #9900dd }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" LINK="#1f00ff" VLINK="#9900dd" BGCOLOR="#ffffff">
+<H1 ALIGN=CENTER>Enumerations</H1>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="right_triangle.png" NAME="Graphic1" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Contents</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<UL>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#ChannelType">ChannelType</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#ClassType">ClassType</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#ColorspaceType">ColorspaceType</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#CompositeOperator">CompositeOperator</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#CompressionType">CompressionType</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#DecorationType">DecorationType</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#FillRule">FillRule</A> 
+	</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#FilterTypes">FilterTypes</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#GravityType">GravityType</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#ImageType">ImageType</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#InterlaceType">InterlaceType</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#LayerType">LayerType</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#LineCap">LineCap</A> 
+	</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#LineJoin">LineJoin</A> 
+	</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#NoiseType">NoiseType</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#PaintMethod">PaintMethod</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#QuantumTypes">QuantumTypes</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#RenderingIntent">RenderingIntent</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#ResolutionType">ResolutionType</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#StorageType">StorageType</A>
+		</P>
+	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#StretchType">StretchType</A>
+		</P>
+	<LI><P><A HREF="#StyleType">StyleType</A> 
+	</P>
+</UL>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="ChannelType"></A><IMG SRC="right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ChannelType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><I>ChannelType</I> is used as an
+argument when doing color separations. Use <I>ChannelType </I>when
+extracting a layer from an image. <I>MatteChannel</I> is useful for
+extracting the opacity values from an image. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>ChannelType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UndefinedChannel</P>
+		</TD>
+		<TD>
+			<P>Unset value.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>RedChannel</P>
+		</TD>
+		<TD>
+			<P>Select red channel</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>GreenChannel</P>
+		</TD>
+		<TD>
+			<P>Select green channel</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>BlueChannel</P>
+		</TD>
+		<TD>
+			<P>Select blue channel</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>MatteChannel</P>
+		</TD>
+		<TD>
+			<P>Select matte (opacity values) channel</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="ClassType"></A><IMG SRC="right_triangle.png" NAME="Graphic3" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ClassType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><I>ClassType</I> specifies the image
+storage class. 
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>ClassType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UndefinedClass</P>
+		</TD>
+		<TD>
+			<P>Unset value.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>DirectClass</P>
+		</TD>
+		<TD>
+			<P>Image is composed of pixels which represent literal color
+			values.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>PseudoClass</P>
+		</TD>
+		<TD>
+			<P>Image is composed of pixels which specify an index in a color
+			palette.</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="ColorspaceType"></A><IMG SRC="right_triangle.png" NAME="Graphic4" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ColorspaceType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P>The ColorspaceType enumeration is used to specify the colorspace
+that quantization (color reduction and mapping) is done under or to
+specify the colorspace when encoding an output image. Colorspaces are
+ways of describing colors to fit the requirements of a particular
+application (e.g. Television, offset printing, color monitors).&nbsp;
+Color reduction, by default, takes place in the <I>RGBColorspace</I>.
+Empirical evidence suggests that distances in color spaces such as
+<I>YUVColorspace</I> or <I>YIQColorspace</I> correspond to perceptual
+color differences more closely han do distances in RGB space. These
+color spaces may give better results when color reducing an image.
+Refer to <I>quantize</I> for more details. 
+</P>
+<P STYLE="margin-bottom: 0cm">When encoding an output image, the
+colorspaces <I>RGBColorspace</I>, <I>CMYKColorspace</I>, and
+<I>GRAYColorspace</I> may be specified. The <I>CMYKColorspace</I>
+option is only applicable when writing TIFF, JPEG, and Adobe
+Photoshop bitmap (PSD) files. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>ColorspaceType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UndefinedColorspace</P>
+		</TD>
+		<TD>
+			<P>Unset value.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>RGBColorspace</P>
+		</TD>
+		<TD>
+			<P>Red-Green-Blue colorspace.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>GRAYColorspace</P>
+		</TD>
+		<TD>
+			<P>&nbsp;Grayscale colorspace</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>TransparentColorspace</P>
+		</TD>
+		<TD>
+			<P>The Transparent color space behaves uniquely in that it
+			preserves the matte channel of the image if it exists.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>OHTAColorspace</P>
+		</TD>
+		<TD>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>XYZColorspace</P>
+		</TD>
+		<TD>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>YCbCrColorspace</P>
+		</TD>
+		<TD>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>YCCColorspace</P>
+		</TD>
+		<TD>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>YIQColorspace</P>
+		</TD>
+		<TD>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>YPbPrColorspace</P>
+		</TD>
+		<TD>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>YUVColorspace</P>
+		</TD>
+		<TD>
+			<P>Y-signal, U-signal, and V-signal colorspace. YUV is most widely
+			used to encode color for use in television transmission.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>CMYKColorspace</P>
+		</TD>
+		<TD>
+			<P>Cyan-Magenta-Yellow-Black colorspace. CYMK is a subtractive
+			color system used by printers and photographers for the rendering
+			of colors with ink or emulsion, normally on a white surface.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>sRGBColorspace</P>
+		</TD>
+		<TD>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="CompositeOperator"></A><IMG SRC="right_triangle.png" NAME="Graphic5" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">CompositeOperator</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><I>CompositeOperator</I> is used to
+select the image composition algorithm used to compose a <I>composite
+image</I> with an <I>image</I>. By default, each of the composite
+image pixels are replaced by the corresponding image tile pixel.
+Specify <I>CompositeOperator</I> to select a different algorithm. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>CompositeOperator</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UndefinedCompositeOp</P>
+		</TD>
+		<TD>
+			<P>Unset value.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>OverCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The result is the union of the the two image shapes with the
+			<I>composite image</I> obscuring <I>image</I> in the region of
+			overlap.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>InCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The result is a simply <I>composite image </I>cut by the shape
+			of image. None of the image data of <I>image</I> is included in
+			the result.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>OutCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The resulting image is <I>composite image</I> with the shape of
+			<I>image</I> cut out.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>AtopCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The result is the same shape as image <I>image</I>, with
+			<I>composite image</I> obscuring <I>image</I> there the image
+			shapes overlap. Note that this differs from <I>OverCompositeOp</I>
+			because the portion of <I>composite image</I> outside of <I>image</I>'s
+			shape does not appear in the result.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>XorCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The result is the image data from both c<I>omposite image</I>
+			and <I>image</I> that is outside the overlap region. The overlap
+			region will be blank.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>PlusCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The result is just the sum of the&nbsp; image data. Output
+			values are cropped to 255 (no overflow). This operation is
+			independent of the matte channels.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>MinusCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The result of <I>composite image </I>- <I>image</I>, with
+			overflow cropped to zero. The matte chanel is ignored (set to 255,
+			full coverage).</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>AddCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The result of <I>composite image</I> + <I>image</I>, with
+			overflow wrapping around (mod 256).</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>SubtractCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The result of <I>composite image </I>- <I>image</I>, with
+			underflow wrapping around (mod 256). The add and subtract
+			operators can be used to perform reverible transformations.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>DifferenceCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The result of abs(c<I>omposite image </I>- <I>image</I>). This
+			is useful for comparing two very similar images.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>MultiplyCompositeOp</P>
+		</TD>
+		<TD>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>BumpmapCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The result <I>image</I> shaded by <I>composite image.</I></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>CopyCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The resulting <I>image</I> is image replaced with c<I>omposite
+			image</I>. Here the matte information is ignored.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>CopyRedCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The resulting image is the red layer in <I>image</I> replaced
+			with the red layer in <I>composite image</I>. The other layers are
+			copied untouched.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>CopyGreenCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The resulting image is the green layer in <I>image</I> replaced
+			with the green layer in <I>composite image</I>. The other layers
+			are copied untouched.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>CopyBlueCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The resulting image is the blue layer in <I>image</I> replaced
+			with the blue layer in <I>composite image</I>. The other layers
+			are copied untouched.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>CopyOpacityCompositeOp</P>
+		</TD>
+		<TD>
+			<P>The resulting image is the matte layer in <I>image</I> replaced
+			with the matte layer in <I>composite image</I>. The other layers
+			are copied untouched. 
+			</P>
+			<P>The image compositor requires a matte, or alpha channel in the
+			image for some operations. This extra channel usually defines a
+			mask which represents a sort of a cookie-cutter for the image.
+			This is the case when matte is 255 (full coverage) for pixels
+			inside the shape, zero outside, and between zero and 255 on the
+			boundary.&nbsp; For certain operations, if <I>image</I> does not
+			have a matte channel, it is initialized with 0 for any pixel
+			matching in color to pixel location (0,0), otherwise 255 (to work
+			properly <I>borderWidth</I> must be 0).</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ClearCompositeOp</P>
+		</TD>
+		<TD>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>DissolveCompositeOp</P>
+		</TD>
+		<TD>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>DisplaceCompositeOp</P>
+		</TD>
+		<TD>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ModulateCompositeOp</P>
+		</TD>
+		<TD>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ThresholdCompositeOp</P>
+		</TD>
+		<TD>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="CompressionType"></A><IMG SRC="right_triangle.png" NAME="Graphic6" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">CompressionType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><I>CompressionType</I> is used to
+express the desired compression type when encoding an image. Be aware
+that most image types only support a sub-set of the available
+compression types. If the compression type specified is incompatable
+with the image, ImageMagick selects a compression type compatable
+with the image type. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>CompressionType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UndefinedCompression</P>
+		</TD>
+		<TD>
+			<P>Unset value.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>NoCompression</P>
+		</TD>
+		<TD>
+			<P>No compression</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>BZipCompression</P>
+		</TD>
+		<TD>
+			<P>BZip (Burrows-Wheeler block-sorting text compression algorithm
+			and Huffman coding)&nbsp; as used by bzip2 utilities</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>FaxCompression</P>
+		</TD>
+		<TD>
+			<P>CCITT Group 3 FAX compression</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>Group4Compression</P>
+		</TD>
+		<TD>
+			<P>CCITT Group 4 FAX compression (used only for TIFF)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>JPEGCompression</P>
+		</TD>
+		<TD>
+			<P>JPEG compression</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>LZWCompression</P>
+		</TD>
+		<TD>
+			<P>Lempel-Ziv-Welch (LZW) compression (caution, patented by
+			Unisys)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>RunlengthEncodedCompression</P>
+		</TD>
+		<TD>
+			<P>Run-Length encoded (RLE) compression</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ZipCompression</P>
+		</TD>
+		<TD>
+			<P>Lempel-Ziv compression (LZ77) as used in PKZIP and GNU gzip.</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="DecorationType"></A><IMG SRC="right_triangle.png" NAME="Graphic7" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">DecorationType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm">The <I>DecorationType </I>enumerations
+are used to specify line decorations of rendered text. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>DecorationType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>NoDecoration</P>
+		</TD>
+		<TD>
+			<P>No decoration</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UnderlineDecoration</P>
+		</TD>
+		<TD>
+			<P>Underlined text</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>OverlineDecoration</P>
+		</TD>
+		<TD>
+			<P>Overlined text</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>LineThroughDecoration</P>
+		</TD>
+		<TD>
+			<P>Strike-through text</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="EndianType"></A><IMG SRC="right_triangle.png" NAME="Graphic8" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">EndianType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm">The <I>EndianType </I>enumerations are
+used to specify the endian option for formats which support it (e.g.
+TIFF). 
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>EndianType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UndefinedEndian</P>
+		</TD>
+		<TD>
+			<P>Not defined (default)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>LSBEndian</P>
+		</TD>
+		<TD>
+			<P>Little endian (like Intel X86 and DEC Alpha)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>MSBEndian</P>
+		</TD>
+		<TD>
+			<P>Big endian (like Motorola 68K, Mac PowerPC, &amp; SPARC)</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="FillRule"></A><IMG SRC="right_triangle.png" NAME="Graphic9" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT COLOR="#ffffff">FillRule</FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><I>FillRule</I> specifies the algorithm
+which is to be used to determine what parts of the canvas are
+included inside the shape. See the documentation on SVG's <A HREF="http://www.w3.org/TR/SVG/painting.html#FillRuleProperty">fill-rule</A>&nbsp;
+property for usage details. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>FillRule</B></P>
+<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P>UndefinedRule</P>
+		</TD>
+		<TD>
+			<P>Fill rule not specified</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>EvenOddRule</P>
+		</TD>
+		<TD>
+			<P>See SVG fill-rule <I>evenodd</I> rule.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>NonZeroRule</P>
+		</TD>
+		<TD>
+			<P>See SVG fill-rule <I>nonzero</I> rule.</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="FilterTypes"></A><IMG SRC="right_triangle.png" NAME="Graphic10" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">FilterTypes</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><I>FilterTypes</I> is used to adjust
+the filter algorithm used when resizing images. Different filters
+experience varying degrees of success with various images and can
+take sipngicantly different amounts of processing time. ImageMagick
+uses the <I>LanczosFilter</I> by default since this filter has been
+shown to provide the best results for most images in a reasonable
+amount of time. Other filter types (e.g. <I>TriangleFilter</I>) may
+execute much faster but may show artifacts when the image is re-sized
+or around diagonal lines. The only way to be sure is to test the
+filter with sample images. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>FilterTypes</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UndefinedFilter</P>
+		</TD>
+		<TD>
+			<P>Unset value.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>PointFilter</P>
+		</TD>
+		<TD>
+			<P>Point Filter</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>BoxFilter</P>
+		</TD>
+		<TD>
+			<P>Box Filter</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>TriangleFilter</P>
+		</TD>
+		<TD>
+			<P>Triangle Filter</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>HermiteFilter</P>
+		</TD>
+		<TD>
+			<P>Hermite Filter</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>HanningFilter</P>
+		</TD>
+		<TD>
+			<P>Hanning Filter</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>HammingFilter</P>
+		</TD>
+		<TD>
+			<P>Hamming Filter</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>BlackmanFilter</P>
+		</TD>
+		<TD>
+			<P>Blackman Filter</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>GaussianFilter</P>
+		</TD>
+		<TD>
+			<P>Gaussian Filter</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>QuadraticFilter</P>
+		</TD>
+		<TD>
+			<P>Quadratic Filter</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>CubicFilter</P>
+		</TD>
+		<TD>
+			<P>Cubic Filter</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>CatromFilter</P>
+		</TD>
+		<TD>
+			<P>Catrom Filter</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>MitchellFilter</P>
+		</TD>
+		<TD>
+			<P>Mitchell Filter</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>LanczosFilter</P>
+		</TD>
+		<TD>
+			<P>Lanczos Filter</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>BesselFilter</P>
+		</TD>
+		<TD>
+			<P>Bessel Filter</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>SincFilter</P>
+		</TD>
+		<TD>
+			<P>Sinc Filter</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="GravityType"></A><IMG SRC="right_triangle.png" NAME="Graphic11" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">GravityType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><I>GravityType</I> specifies
+positioning of an object (e.g. text, image) within a bounding region
+(e.g. an image). Gravity provides a convenient way to locate objects
+irrespective of the size of the bounding region, in other words, you
+don't need to provide absolute coordinates in order to position an
+object. A common default for gravity is <I>NorthWestGravity</I>. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>GravityType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ForgetGravity</P>
+		</TD>
+		<TD>
+			<P>Don't use gravity.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>NorthWestGravity</P>
+		</TD>
+		<TD>
+			<P>Position object at top-left of region.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>NorthGravity</P>
+		</TD>
+		<TD>
+			<P>Postiion object at top-center of region</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>NorthEastGravity</P>
+		</TD>
+		<TD>
+			<P>Position object at top-right of region</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>WestGravity</P>
+		</TD>
+		<TD>
+			<P>Position object at left-center of region</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>CenterGravity</P>
+		</TD>
+		<TD>
+			<P>Position object at center of region</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>EastGravity</P>
+		</TD>
+		<TD>
+			<P>Position object at right-center of region</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>SouthWestGravity</P>
+		</TD>
+		<TD>
+			<P>Position object at left-bottom of region</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>SouthGravity</P>
+		</TD>
+		<TD>
+			<P>Position object at bottom-center of region</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>SouthEastGravity</P>
+		</TD>
+		<TD>
+			<P>Position object at bottom-right of region</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="ImageType"></A><IMG SRC="right_triangle.png" NAME="Graphic12" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ImageType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><I>ImageType</I> indicates the type
+classification of the image. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>ImageType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UndefinedType</P>
+		</TD>
+		<TD>
+			<P>Unset value.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>BilevelType</P>
+		</TD>
+		<TD>
+			<P>Monochrome image</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>GrayscaleType</P>
+		</TD>
+		<TD>
+			<P>Grayscale image</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>GrayscaleMatteType</P>
+		</TD>
+		<TD>
+			<P>Grayscale image with opacity</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>PaletteType</P>
+		</TD>
+		<TD>
+			<P>Indexed color (palette) image</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>PaletteMatteType</P>
+		</TD>
+		<TD>
+			<P>Indexed color (palette) image with opacity</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>TrueColorType</P>
+		</TD>
+		<TD>
+			<P>Truecolor image</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>TrueColorMatteType</P>
+		</TD>
+		<TD>
+			<P>Truecolor image with opacity</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ColorSeparationType</P>
+		</TD>
+		<TD>
+			<P>Cyan/Yellow/Magenta/Black (CYMK) image</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="InterlaceType"></A><IMG SRC="right_triangle.png" NAME="Graphic13" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">InterlaceType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P><I>InterlaceType</I> specifies the ordering of the red, green, and
+blue pixel information in the image. Interlacing is usually used to
+make image information available to the user faster by taking
+advantage of the space vs time tradeoff. For example, interlacing
+allows images on the Web to be recognizable sooner and satellite
+images to accumulate/render with image resolution increasing over
+time. 
+</P>
+<P STYLE="margin-bottom: 0cm">Use <I>LineInterlace</I> or
+<I>PlaneInterlace</I> to create an interlaced GIF or progressive JPEG
+image. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>InterlaceType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UndefinedInterlace</P>
+		</TD>
+		<TD>
+			<P>Unset value.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>NoInterlace</P>
+		</TD>
+		<TD>
+			<P>Don't interlace image (RGBRGBRGBRGBRGBRGB...)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>LineInterlace</P>
+		</TD>
+		<TD>
+			<P>Use scanline interlacing (RRR...GGG...BBB...RRR...GGG...BBB...)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>PlaneInterlace</P>
+		</TD>
+		<TD>
+			<P>Use plane interlacing (RRRRRR...GGGGGG...BBBBBB...)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>PartitionInterlace</P>
+		</TD>
+		<TD>
+			<P>Similar to plane interlaing except that the different planes
+			are saved to individual files (e.g. image.R, image.G, and image.B)</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="LayerType"></A><IMG SRC="right_triangle.png" NAME="Graphic14" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">LayerType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><I>LayerType</I> is used as an argument
+when doing color separations. Use <I>LayerType</I> when extracting a
+layer from an image. <I>MatteLayer</I> is useful for extracting the
+opacity values from an image. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>LayerType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UndefinedLayer</P>
+		</TD>
+		<TD>
+			<P>Unset value.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>RedLayer</P>
+		</TD>
+		<TD>
+			<P>Select red layer</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>GreenLayer</P>
+		</TD>
+		<TD>
+			<P>Select green layer</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>BlueLayer</P>
+		</TD>
+		<TD>
+			<P>Select blue layer</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>MatteLayer</P>
+		</TD>
+		<TD>
+			<P>Select matte (opacity values) layer</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="LineCap"></A><IMG SRC="right_triangle.png" NAME="Graphic15" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">LineCap</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm">The <I>LineCap</I> enumerations specify
+shape to be used at the end of open subpaths when they are stroked.
+See SVG's '<A HREF="http://www.w3.org/TR/SVG/painting.html#StrokeLinecapProperty">stroke-linecap'</A>
+for examples. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>LineCap</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UndefinedCap</P>
+		</TD>
+		<TD>
+			<P>Unset value.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ButtCap</P>
+		</TD>
+		<TD>
+			<P>Square ending.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>RoundCap</P>
+		</TD>
+		<TD>
+			<P>Rounded ending (half-circle end with radius of 1/2 stroke
+			width).</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>SquareCap</P>
+		</TD>
+		<TD>
+			<P>Square ending, extended by 1/2 the stroke width at end.</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="LineJoin"></A><IMG SRC="right_triangle.png" NAME="Graphic16" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">LineJoin</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm">The <I>LineJoin</I> enumerations
+specify the shape to be used at the corners of paths or basic shapes
+when they are stroked. See SVG's '<A HREF="http://www.w3.org/TR/SVG/painting.html#StrokeLinejoinProperty">stroke-linejoin'</A>
+for examples. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>ChannelType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UndefinedJoin</P>
+		</TD>
+		<TD>
+			<P>Unset value.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>MiterJoin</P>
+		</TD>
+		<TD>
+			<P>Sharp-edged join</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>RoundJoin</P>
+		</TD>
+		<TD>
+			<P>Rounded-edged join</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>BevelJoin</P>
+		</TD>
+		<TD>
+			<P>Beveled-edged join</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="NoiseType"></A><IMG SRC="right_triangle.png" NAME="Graphic17" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">NoiseType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><I>NoiseType</I> is used as an argument
+to select the type of noise to be added to the image. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>NoiseType</B></P>
+<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UniformNoise</P>
+		</TD>
+		<TD>
+			<P>Uniform noise</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>GaussianNoise</P>
+		</TD>
+		<TD>
+			<P>Gaussian noise</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>MultiplicativeGaussianNoise</P>
+		</TD>
+		<TD>
+			<P>Multiplicative Gaussian noise</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ImpulseNoise</P>
+		</TD>
+		<TD>
+			<P>Impulse noise</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>LaplacianNoise</P>
+		</TD>
+		<TD>
+			<P>Laplacian noise</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>PoissonNoise</P>
+		</TD>
+		<TD>
+			<P>Poisson noise</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="PaintMethod"></A><IMG SRC="right_triangle.png" NAME="Graphic18" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">PaintMethod</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><I>PaintMethod</I> specifies how pixel
+colors are to be replaced in the image. It is used to select the
+pixel-filling algorithm employed. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>PaintMethod</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>PointMethod</P>
+		</TD>
+		<TD>
+			<P>Replace pixel color at point.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ReplaceMethod</P>
+		</TD>
+		<TD>
+			<P>Replace color for all image pixels matching color at point.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>FloodfillMethod</P>
+		</TD>
+		<TD>
+			<P>Replace color for pixels surrounding point until encountering
+			pixel that fails to match color at point.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>FillToBorderMethod</P>
+		</TD>
+		<TD>
+			<P>Replace color for pixels surrounding point until encountering
+			pixels matching border color.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ResetMethod</P>
+		</TD>
+		<TD>
+			<P>Replace colors for <B>all</B> pixels in image with pen color.</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="QuantumTypes"></A><IMG SRC="right_triangle.png" NAME="Graphic19" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">QuantumTypes</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><I>QuantumTypes</I> is used to indicate
+the source or destination format of entire pixels, or components of
+pixels (&quot;Quantums&quot;) while they are being read, or written
+to, a pixel cache. The validity of these format specifications
+depends on whether the Image pixels are in RGB format, RGBA format,
+or CMYK format. The pixel Quantum size is determined by the Image
+depth (eight or sixteen bits). <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>RGB(A) Image Quantums</B></P>
+<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>IndexQuantum</P>
+		</TD>
+		<TD>
+			<P>PseudoColor colormap indices (valid only for image with
+			colormap)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>RedQuantum</P>
+		</TD>
+		<TD>
+			<P>Red pixel Quantum</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>GreenQuantum</P>
+		</TD>
+		<TD>
+			<P>Green pixel Quantum</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>BlueQuantum</P>
+		</TD>
+		<TD>
+			<P>Blue pixel Quantum</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>OpacityQuantum</P>
+		</TD>
+		<TD>
+			<P>Opacity (Alpha) Quantum</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>CMY(K) Image Quantum</B></P>
+<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>CyanQuantum</P>
+		</TD>
+		<TD>
+			<P>Cyan pixel Quantum</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>MagentaQuantum</P>
+		</TD>
+		<TD>
+			<P>Magenta pixel Quantum</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>YellowQuantum</P>
+		</TD>
+		<TD>
+			<P>Yellow pixel Quantum</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>BlackQuantum</P>
+		</TD>
+		<TD>
+			<P>Black pixel Quantum</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Grayscale Image
+Quantums</B></P>
+<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>GrayQuantum</P>
+		</TD>
+		<TD>
+			<P>Gray pixel</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>GrayOpacityQuantum</P>
+		</TD>
+		<TD>
+			<P>Pixel opacity</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Entire Pixels
+(Expressed in Byte Order)</B></P>
+<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>RGBQuantum</P>
+		</TD>
+		<TD>
+			<P>RGB pixel (24 or 48 bits)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>RGBAQuantum</P>
+		</TD>
+		<TD>
+			<P>RGBA pixel (32 or 64 bits)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>CMYKQuantum</P>
+		</TD>
+		<TD>
+			<P>CMYK pixel (32 or 64 bits)</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>&nbsp; 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="RenderingIntent"></A><IMG SRC="right_triangle.png" NAME="Graphic20" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">RenderingIntent</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P>Rendering intent is a concept defined by <A HREF="http://www.color.org/">ICC</A>
+Spec ICC.1:1998-09, &quot;File Format for Color Profiles&quot;.
+ImageMagick uses <I>RenderingIntent</I> in order to support ICC Color
+Profiles. 
+</P>
+<P STYLE="margin-bottom: 0cm">From the specification: &quot;Rendering
+intent specifies the style of reproduction to be used during the
+evaluation of this profile in a sequence of profiles. It applies
+specifically to that profile in the sequence and not to the entire
+sequence. Typically, the user or application will set the rendering
+intent dynamically at runtime or embedding time.&quot; 
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>RenderingIntent</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UndefinedIntent</P>
+		</TD>
+		<TD>
+			<P>Unset value.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>SaturationIntent</P>
+		</TD>
+		<TD>
+			<P>A rendering intent that specifies the saturation of the pixels
+			in the image is preserved perhaps at the expense of accuracy in
+			hue and lightness.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>PerceptualIntent</P>
+		</TD>
+		<TD>
+			<P>A rendering intent that specifies the full gamut of the image
+			is compressed or expanded to fill the gamut of the destination
+			device. Gray balance is preserved but colorimetric accuracy might
+			not be preserved.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>AbsoluteIntent</P>
+		</TD>
+		<TD>
+			<P>Absolute colorimetric</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>RelativeIntent</P>
+		</TD>
+		<TD>
+			<P>Relative colorimetric</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="ResolutionType"></A><IMG SRC="right_triangle.png" NAME="Graphic21" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ResolutionType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm">By default, ImageMagick defines
+resolutions in pixels per inch. <I>ResolutionType</I> provides a
+means to adjust this. 
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>ResolutionType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UndefinedResolution</P>
+		</TD>
+		<TD>
+			<P>Unset value.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>PixelsPerInchResolution</P>
+		</TD>
+		<TD>
+			<P>Density specifications are specified in units of pixels per
+			inch (english units).</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>PixelsPerCentimeterResolution</P>
+		</TD>
+		<TD>
+			<P>Density specifications are specified in units of pixels per
+			centimeter (metric units).</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="StorageType"></A><IMG SRC="right_triangle.png" NAME="Graphic22" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">StorageType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm">The <I>StorageType</I> enumerations are
+used to specify the storage format of pixels in the source or
+destination pixel array. 
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>StorageType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>CharPixel</P>
+		</TD>
+		<TD>
+			<P>Character type</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ShortPixel</P>
+		</TD>
+		<TD>
+			<P>Short type</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>IntegerPixel</P>
+		</TD>
+		<TD>
+			<P>Integer type</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>FloatPixel</P>
+		</TD>
+		<TD>
+			<P>Float type</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>DoublePixel</P>
+		</TD>
+		<TD>
+			<P>Double type</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="StretchType"></A><IMG SRC="right_triangle.png" NAME="Graphic23" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">StretchType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm">The <I>StretchType</I> enumerations are
+used to specify the relative width of a font to the regular width for
+the font family. If the width is not important, the <I>AnyStretch</I>
+enumeration may be specified for a wildcard match. 
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>StretchType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>AnyStretch</P>
+		</TD>
+		<TD>
+			<P>Wildcard match for font stretch</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>NormalStretch</P>
+		</TD>
+		<TD>
+			<P>Normal width font</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UltraCondensedStretch</P>
+		</TD>
+		<TD>
+			<P>Ultra-condensed (narrowest) font</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ExtraCondensedStretch</P>
+		</TD>
+		<TD>
+			<P>Extra-condensed font</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>CondensedStretch</P>
+		</TD>
+		<TD>
+			<P>Condensed font</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>SemiCondensedStretch</P>
+		</TD>
+		<TD>
+			<P>Semi-Condensed font</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>SemiExpandedStretch</P>
+		</TD>
+		<TD>
+			<P>Semi-Expanded font</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ExpandedStretch</P>
+		</TD>
+		<TD>
+			<P>Expanded font</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ExtraExpandedStretch</P>
+		</TD>
+		<TD>
+			<P>Extra-Expanded font</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UltraExpandedStretch</P>
+		</TD>
+		<TD>
+			<P>Ultra-expanded (widest) font</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="StyleType"></A><IMG SRC="right_triangle.png" NAME="Graphic24" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">StyleType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0cm">The <I>StyleType</I> enumerations are
+used to specify the style (e.g. Italic) of a font. If the style is
+not important, the <I>AnyStyle</I> enumeration may be specified for a
+wildcard match. 
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>StyleType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>AnyStyle</P>
+		</TD>
+		<TD>
+			<P>Wildcard match for font style</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>NormalStyle</P>
+		</TD>
+		<TD>
+			<P>Normal font style</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ItalicStyle</P>
+		</TD>
+		<TD>
+			<P>Italic font style</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>ObliqueStyle</P>
+		</TD>
+		<TD>
+			<P>Oblique font style</P>
+		</TD>
+	</TR>
+</TABLE>
+<P><BR><BR>
+</P>
+</BODY>
+</HTML>

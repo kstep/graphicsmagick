@@ -1,159 +1,185 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
 <HEAD>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
-   <meta name="Author" content="Bob Friesenhahn">
-   <meta name="Description" content="Description of PixelPacket structure members.">
-   <title>PixelPacket Structure</title>
-</head>
-<body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
-
-<center>
-<h1>
-PixelPacket Structure</h1></center>
-The <i>PixelPacket</i> structure is used to represent pixels in ImageMagick.
-ImageMagick may be compiled to support 32 or 64 bit pixels. The size of
-PixelPacket is controlled by the value of the <i>QuantumDepth</i> define.
-The default is 64 bit pixels, which provide the best accuracy. If memory
-consumption must be minimized, or processing time must be minimized, then
-ImageMagick may be compiled with QuantumDepth=8. The following table shows
-the relationship between <i>QuantumDepth</i>, the type of <i>Quantum</i>,
-and the overall <i>PixelPacket</i> size.
-<br>&nbsp;
-<table BORDER BGCOLOR="#CCCCCC" >
-<caption>
-<center><b>Effect Of QuantumDepth Values</b></center>
-</caption>
-
-<tr>
-<td>
-<center><b>QuantumDepth</b></center>
-</td>
-
-<td>
-<center><b>Quantum Type</b></center>
-</td>
-
-<td>
-<center><b>PixelPacket Size</b></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center>8</center>
-</td>
-
-<td>
-<center>unsigned char</center>
-</td>
-
-<td>
-<center>32 bits</center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center>16</center>
-</td>
-
-<td>
-<center>unsigned short</center>
-</td>
-
-<td>
-<center>64 bits</center>
-</td>
-</tr>
-</table>
-
-<p>The members of the <i>PixelPacket</i> structure, and their interpretation,
-are shown in the following table:
-<br>&nbsp;
-<table BORDER BGCOLOR="#CCCCCC" >
-<caption><b>PixelPacket Structure Members</b></caption>
-
-<tr>
-<td ROWSPAN="2">
-<center><b>Member</b></center>
-</td>
-
-<td ROWSPAN="2">
-<center><b>Type</b></center>
-</td>
-
-<td COLSPAN="3">
-<center><b>Interpretation</b></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><a href="Enumerations.html#ColorspaceType">RGBColorspace</a></center>
-</td>
-
-<td>
-<center><a href="Enumerations.html#ColorspaceType">RGBColorspace</a> +
-<a href="Image.html#matte">matte</a></center>
-</td>
-
-<td>
-<center><a href="Enumerations.html#ColorspaceType">CMYKColorspace</a></center>
-</td>
-</tr>
-
-<tr>
-<td><font size=-1>red</font></td>
-
-<td><font size=-1>Quantum</font></td>
-
-<td><font size=-1>Red</font></td>
-
-<td><font size=-1>Red</font></td>
-
-<td><font size=-1>Cyan</font></td>
-</tr>
-
-<tr>
-<td><font size=-1>green</font></td>
-
-<td><font size=-1>Quantum</font></td>
-
-<td><font size=-1>Green</font></td>
-
-<td><font size=-1>Green</font></td>
-
-<td><font size=-1>Magenta</font></td>
-</tr>
-
-<tr>
-<td><font size=-1>blue</font></td>
-
-<td><font size=-1>Quantum</font></td>
-
-<td><font size=-1>Blue</font></td>
-
-<td><font size=-1>Blue</font></td>
-
-<td><font size=-1>Yellow</font></td>
-</tr>
-
-<tr>
-<td><font size=-1>opacity</font></td>
-
-<td><font size=-1>Quantum</font></td>
-
-<td><font size=-1>Ignored</font></td>
-
-<td><font size=-1>Opacity</font></td>
-
-<td><font size=-1>Black</font></td>
-</tr>
-</table>
-
-<br>&nbsp;
-</body>
-</html>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<TITLE>PixelPacket Structure</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
+	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
+	<META NAME="CREATED" CONTENT="20020805;18015392">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20020805;18024233">
+	<META NAME="DESCRIPTION" CONTENT="Description of PixelPacket structure members.">
+	<STYLE>
+	<!--
+		TD P { color: #000000 }
+		H1 { color: #000000 }
+		P { color: #000000 }
+		A:link { color: #1f00ff }
+		A:visited { color: #9900dd }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" LINK="#1f00ff" VLINK="#9900dd" BGCOLOR="#ffffff">
+<H1 ALIGN=CENTER>PixelPacket Structure</H1>
+<P STYLE="margin-bottom: 0cm">The <I>PixelPacket</I> structure is
+used to represent pixels in ImageMagick. ImageMagick may be compiled
+to support 32 or 64 bit pixels. The size of PixelPacket is controlled
+by the value of the <I>QuantumDepth</I> define. The default is 64 bit
+pixels, which provide the best accuracy. If memory consumption must
+be minimized, or processing time must be minimized, then ImageMagick
+may be compiled with QuantumDepth=8. The following table shows the
+relationship between <I>QuantumDepth</I>, the type of <I>Quantum</I>,
+and the overall <I>PixelPacket</I> size. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Effect Of QuantumDepth
+Values</B></P>
+<CENTER>
+	<TABLE WIDTH=336 BORDER=1 CELLPADDING=2 CELLSPACING=3 BGCOLOR="#cccccc">
+		<COL WIDTH=101>
+		<COL WIDTH=99>
+		<COL WIDTH=110>
+		<TR>
+			<TD WIDTH=101>
+				<P ALIGN=CENTER><B>QuantumDepth</B></P>
+			</TD>
+			<TD WIDTH=99>
+				<P ALIGN=CENTER><B>Quantum Type</B></P>
+			</TD>
+			<TD WIDTH=110>
+				<P ALIGN=CENTER><B>PixelPacket Size</B></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=101>
+				<P ALIGN=CENTER>8</P>
+			</TD>
+			<TD WIDTH=99>
+				<P ALIGN=CENTER>unsigned char</P>
+			</TD>
+			<TD WIDTH=110>
+				<P ALIGN=CENTER>32 bits</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=101>
+				<P ALIGN=CENTER>16</P>
+			</TD>
+			<TD WIDTH=99>
+				<P ALIGN=CENTER>unsigned short</P>
+			</TD>
+			<TD WIDTH=110>
+				<P ALIGN=CENTER>64 bits</P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P STYLE="margin-bottom: 0cm">The members of the <I>PixelPacket</I>
+structure, and their interpretation, are shown in the following
+table: <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>PixelPacket Structure
+Members</B></P>
+<CENTER>
+	<TABLE WIDTH=523 BORDER=1 CELLPADDING=2 CELLSPACING=3 BGCOLOR="#cccccc">
+		<COL WIDTH=58>
+		<COL WIDTH=50>
+		<COL WIDTH=102>
+		<COL WIDTH=152>
+		<COL WIDTH=119>
+		<TR>
+			<TD ROWSPAN=2 WIDTH=58>
+				<P ALIGN=CENTER><B>Member</B></P>
+			</TD>
+			<TD ROWSPAN=2 WIDTH=50>
+				<P ALIGN=CENTER><B>Type</B></P>
+			</TD>
+			<TD COLSPAN=3 WIDTH=388>
+				<P ALIGN=CENTER><B>Interpretation</B></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=102>
+				<P ALIGN=CENTER><A HREF="Enumerations.html#ColorspaceType">RGBColorspace</A></P>
+			</TD>
+			<TD WIDTH=152>
+				<P ALIGN=CENTER><A HREF="Enumerations.html#ColorspaceType">RGBColorspace</A>
+				+ <A HREF="Image.html#matte">matte</A></P>
+			</TD>
+			<TD WIDTH=119>
+				<P ALIGN=CENTER><A HREF="Enumerations.html#ColorspaceType">CMYKColorspace</A></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=58>
+				<P><FONT SIZE=2>red</FONT></P>
+			</TD>
+			<TD WIDTH=50>
+				<P><FONT SIZE=2>Quantum</FONT></P>
+			</TD>
+			<TD WIDTH=102>
+				<P><FONT SIZE=2>Red</FONT></P>
+			</TD>
+			<TD WIDTH=152>
+				<P><FONT SIZE=2>Red</FONT></P>
+			</TD>
+			<TD WIDTH=119>
+				<P><FONT SIZE=2>Cyan</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=58>
+				<P><FONT SIZE=2>green</FONT></P>
+			</TD>
+			<TD WIDTH=50>
+				<P><FONT SIZE=2>Quantum</FONT></P>
+			</TD>
+			<TD WIDTH=102>
+				<P><FONT SIZE=2>Green</FONT></P>
+			</TD>
+			<TD WIDTH=152>
+				<P><FONT SIZE=2>Green</FONT></P>
+			</TD>
+			<TD WIDTH=119>
+				<P><FONT SIZE=2>Magenta</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=58>
+				<P><FONT SIZE=2>blue</FONT></P>
+			</TD>
+			<TD WIDTH=50>
+				<P><FONT SIZE=2>Quantum</FONT></P>
+			</TD>
+			<TD WIDTH=102>
+				<P><FONT SIZE=2>Blue</FONT></P>
+			</TD>
+			<TD WIDTH=152>
+				<P><FONT SIZE=2>Blue</FONT></P>
+			</TD>
+			<TD WIDTH=119>
+				<P><FONT SIZE=2>Yellow</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=58>
+				<P><FONT SIZE=2>opacity</FONT></P>
+			</TD>
+			<TD WIDTH=50>
+				<P><FONT SIZE=2>Quantum</FONT></P>
+			</TD>
+			<TD WIDTH=102>
+				<P><FONT SIZE=2>Ignored</FONT></P>
+			</TD>
+			<TD WIDTH=152>
+				<P><FONT SIZE=2>Opacity</FONT></P>
+			</TD>
+			<TD WIDTH=119>
+				<P><FONT SIZE=2>Black</FONT></P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P><BR><BR><BR>
+</P>
+</BODY>
+</HTML>

@@ -1,799 +1,850 @@
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<html>
-<head>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
-   <meta name="Author" content="Bob Friesenhahn">
-   <meta name="Description" content="Documentation for Magick::Geometry class">
-   <title>Magick::Geometry</title>
-</head>
-<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
-
-<center>
-<h1>
-Magick::Geometry</h1></center>
-Geometry provides a convenient means to specify a geometry argument. The
-object may be initialized from a C string or C++ string containing a geometry
-specification.&nbsp; It may also be initialized by more efficient parameterized
-constructors.
-<h3>
-<a NAME="X11GeometrySpecifications"></a>X11 Geometry Specifications</h3>
-X11 geometry specifications are in the form&nbsp; <tt>"&lt;width>x&lt;height>{+-}&lt;xoffset>{+-}&lt;yoffset>"</tt>
-(where <i>width</i>, <i>height</i>, <i>xoffset</i>, and <i>yoffset</i>
-are numbers) for specifying the size and placement location for an object.
-<p>The <i>width</i> and <i>height</i> parts of the geometry specification
-are measured in pixels. The <i>xoffset</i> and <i>yoffset</i> parts are
-also measured in pixels and are used to specify the distance of the placement
-coordinate from the left and top and edges of the image,
-respectively. Both types of offsets are measured from the indicated edge
-of the object to the corresponding edge of the image. The X offset may
-be specified in the following ways:
-<br>&nbsp;
-<table BORDER CELLSPACING=3 WIDTH="100%" >
-<tr>
-<td>+<i>xoffset</i></td>
-
-<td>The left edge of the object is to be placed <i>xoffset</i> pixels
-in from the <b>left edge </b>of the image.</td>
-</tr>
-
-<tr>
-<td>-<i>xoffset</i></td>
-
-<td>The left edge of the object is to be placed outside the image,
-<i>xoffset</i>
-pixels out from the <b>left edge </b>of the image.</td>
-</tr>
-</table>
-
-<p>The Y offset has similar meanings:
-<br>&nbsp;
-<table BORDER WIDTH="100%" >
-<tr>
-<td>+<i>yoffset</i></td>
-
-<td>The top edge of the object is to be <i>yoffset</i> pixels <b>below</b>
-the <b>top edge </b>of the image.</td>
-</tr>
-
-<tr>
-<td>-<i>yoffset</i></td>
-
-<td>The top edge of the object is to be <i>yoffset</i> pixels <b>above</b>
-the <b>top edge</b> of the image.</td>
-</tr>
-</table>
-
-<p>Offsets must be given as pairs; in other words, in order to specify
-either <i>xoffset</i> or <i>yoffset</i> both must be present.
-
-<h3>
-<a NAME="ExtendedX11GeometrySpecifications"></a>ImageMagick Extensions
-To X11 Geometry Specifications</h3>
-ImageMagick has added a number of qualifiers to the standard geometry string
-for use when resizing images. The form of an extended geometry string is
-"<tt>&lt;width>x&lt;height>{+-}&lt;xoffset>{+-}&lt;yoffset>{%}{!}{&lt;}{>}".
-Extended geometry strings should <b>only</b> be used <b>when resizing an
-image</b>. Using an extended geometry string for other applications may
-cause the API call to fail. </tt>The available qualifiers are shown in
-the following table:
-<br>&nbsp;
-<br>&nbsp;
-<table BORDER WIDTH="100%" >
-<caption><b>ImageMagick Geometry Qualifiers</b></caption>
-
-<tr>
-<td>
-<center><b>Qualifier</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><b>%</b></center>
-</td>
-
-<td>Interpret width and height as a <b>percentage</b> of the current size.</td>
-</tr>
-
-<tr>
-<td>
-<center><b>!</b></center>
-</td>
-
-<td>Resize to width and height <b>exactly</b>, loosing original aspect
-ratio.</td>
-</tr>
-
-<tr>
-<td>
-<center><b>&lt;</b></center>
-</td>
-
-<td>Resize only if the image is <b>smaller</b> than the geometry specification.</td>
-</tr>
-
-<tr>
-<td>
-<center><b>></b></center>
-</td>
-
-<td>Resize only if the image is <b>greater</b> than the geometry specification.</td>
-</tr>
-</table>
-
-<h3>
-<a NAME="PostscriptPageSize"></a>Postscript Page Size Extension To Geometry
-Specifications</h3>
-Any geometry string specification supplied to the Geometry contructor is
-considered to be a Postscript page size nickname if the first character
-is not numeric. The Geometry constructor converts these page size specifications
-into the equivalent numeric geometry string specification (preserving any
-offset component) prior to conversion to the internal object format. Postscript
-page size specifications are short-hand for the pixel geometry required
-to fill a page of that size. Since the 11x17 inch page size used in the
-US starts with a digit, it is not supported as a Postscript page size nickname.
-Instead, substitute the geometry specification "<tt>792x1224>"</tt> when
-11x17 output is desired.
-<p>An example of a Postscript page size specification is <tt>"letter+43+43>"</tt>.
-<br>&nbsp;
-<table BORDER >
-<caption>
-<center><b>Postscript Page Size Nicknames</b></center>
-</caption>
-
-<tr>
-<td>
-<center><b>Postscript Page Size Nickname</b></center>
-</td>
-
-<td>
-<center><b>Equivalent Extended Geometry Specification</b></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>Ledger</font></center>
-</td>
-
-<td>
-<center><font size=-1>1224x792></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>Legal</font></center>
-</td>
-
-<td>
-<center><font size=-1>612x1008></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>Letter</font></center>
-</td>
-
-<td>
-<center><font size=-1>612x792></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>LetterSmall</font></center>
-</td>
-
-<td>
-<center><font size=-1>612x792></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ArchE</font></center>
-</td>
-
-<td>
-<center><font size=-1>2592x3456></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ArchD</font></center>
-</td>
-
-<td>
-<center><font size=-1>1728x2592></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ArchC</font></center>
-</td>
-
-<td>
-<center><font size=-1>1296x1728></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ArchB</font></center>
-</td>
-
-<td>
-<center><font size=-1>864x1296></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>ArchA</font></center>
-</td>
-
-<td>
-<center><font size=-1>648x864></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>A0</font></center>
-</td>
-
-<td>
-<center><font size=-1>2380x3368></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>A1</font></center>
-</td>
-
-<td>
-<center><font size=-1>1684x2380></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>A2</font></center>
-</td>
-
-<td>
-<center><font size=-1>1190x1684></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>A3</font></center>
-</td>
-
-<td>
-<center><font size=-1>842x1190></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>A4</font></center>
-</td>
-
-<td>
-<center><font size=-1>595x842></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>A4Small</font></center>
-</td>
-
-<td>
-<center><font size=-1>595x842></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>A5</font></center>
-</td>
-
-<td>
-<center><font size=-1>421x595></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>A6</font></center>
-</td>
-
-<td>
-<center><font size=-1>297x421></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>A7</font></center>
-</td>
-
-<td>
-<center><font size=-1>210x297></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>A8</font></center>
-</td>
-
-<td>
-<center><font size=-1>148x210></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>A9</font></center>
-</td>
-
-<td>
-<center><font size=-1>105x148></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>A10</font></center>
-</td>
-
-<td>
-<center><font size=-1>74x105></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>B0</font></center>
-</td>
-
-<td>
-<center><font size=-1>2836x4008></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>B1</font></center>
-</td>
-
-<td>
-<center><font size=-1>2004x2836></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>B2</font></center>
-</td>
-
-<td>
-<center><font size=-1>1418x2004></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>B3</font></center>
-</td>
-
-<td>
-<center><font size=-1>1002x1418></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>B4</font></center>
-</td>
-
-<td>
-<center><font size=-1>709x1002></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>B5</font></center>
-</td>
-
-<td>
-<center><font size=-1>501x709></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>C0</font></center>
-</td>
-
-<td>
-<center><font size=-1>2600x3677></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>C1</font></center>
-</td>
-
-<td>
-<center><font size=-1>1837x2600></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>C2</font></center>
-</td>
-
-<td>
-<center><font size=-1>1298x1837></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>C3</font></center>
-</td>
-
-<td>
-<center><font size=-1>918x1298></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>C4</font></center>
-</td>
-
-<td>
-<center><font size=-1>649x918></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>C5</font></center>
-</td>
-
-<td>
-<center><font size=-1>459x649></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>C6</font></center>
-</td>
-
-<td>
-<center><font size=-1>323x459></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>Flsa</font></center>
-</td>
-
-<td>
-<center><font size=-1>612x936></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>Flse</font></center>
-</td>
-
-<td>
-<center><font size=-1>612x936></font></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><font size=-1>HalfLetter</font></center>
-</td>
-
-<td>
-<center><font size=-1>396x612></font></center>
-</td>
-</tr>
-</table>
-
-<center>
-<h3>
-Geometry Methods</h3></center>
-Geometry provides methods to initialize its value from strings, from a
-set of parameters, or via attributes. The methods available for use in
-Geometry are shown in the following table:
-<br>&nbsp;
-<table BORDER WIDTH="100%" >
-<caption><b>Geometry Methods</b></caption>
-
-<tr>
-<td>
-<center><b>Method</b></center>
-</td>
-
-<td>
-<center><b>Return Type</b></center>
-</td>
-
-<td>
-<center><b>Signature(s)</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td ROWSPAN="3">Geometry</td>
-
-<td ROWSPAN="3" BGCOLOR="#666666">&nbsp;</td>
-
-<td>unsigned int width_, unsigned int height_, unsigned int xOff_ = 0,
-unsigned int yOff_ = 0, bool xNegative_ = false, bool yNegative_ = false</td>
-
-<td>Construct X11 geometry via explicit parameters.</td>
-</tr>
-
-<tr>
-<td>const string geometry_</td>
-
-<td>Construct geometry from C++ string</td>
-</tr>
-
-<tr>
-<td>const char * geometry_</td>
-
-<td>Construct geometry from C string</td>
-</tr>
-
-<tr>
-<td ROWSPAN="2">width</td>
-
-<td>void</td>
-
-<td>unsigned int width_</td>
-
-<td ROWSPAN="2">Width</td>
-</tr>
-
-<tr>
-<td>unsigned int</td>
-
-<td>void</td>
-</tr>
-
-<tr>
-<td ROWSPAN="2">height</td>
-
-<td>void</td>
-
-<td>unsigned int height_</td>
-
-<td ROWSPAN="2">Height</td>
-</tr>
-
-<tr>
-<td>unsigned int</td>
-
-<td>void</td>
-</tr>
-
-<tr>
-<td ROWSPAN="2">xOff</td>
-
-<td>void</td>
-
-<td>unsigned int xOff_</td>
-
-<td ROWSPAN="2">X offset from origin</td>
-</tr>
-
-<tr>
-<td>int</td>
-
-<td>void</td>
-</tr>
-
-<tr>
-<td ROWSPAN="2">yOff</td>
-
-<td>void</td>
-
-<td>unsigned int yOff_</td>
-
-<td ROWSPAN="2">Y offset from origin</td>
-</tr>
-
-<tr>
-<td>int</td>
-
-<td>void</td>
-</tr>
-
-<tr>
-<td ROWSPAN="2">xNegative</td>
-
-<td>void</td>
-
-<td>bool xNegative_</td>
-
-<td ROWSPAN="2">Sign of X offset negative? (X origin at right)</td>
-</tr>
-
-<tr>
-<td>bool</td>
-
-<td>void</td>
-</tr>
-
-<tr>
-<td ROWSPAN="2">yNegative</td>
-
-<td>void</td>
-
-<td>bool yNegative_</td>
-
-<td ROWSPAN="2">Sign of Y offset negative? (Y origin at bottom)</td>
-</tr>
-
-<tr>
-<td>bool</td>
-
-<td>void</td>
-</tr>
-
-<tr>
-<td ROWSPAN="2">percent</td>
-
-<td>void</td>
-
-<td>bool percent_</td>
-
-<td ROWSPAN="2">Width and height are expressed as percentages</td>
-</tr>
-
-<tr>
-<td>bool</td>
-
-<td>void</td>
-</tr>
-
-<tr>
-<td ROWSPAN="2">aspect</td>
-
-<td>void</td>
-
-<td>bool aspect_</td>
-
-<td ROWSPAN="2">Resize without preserving aspect ratio (!)</td>
-</tr>
-
-<tr>
-<td>bool</td>
-
-<td>void</td>
-</tr>
-
-<tr>
-<td ROWSPAN="2">greater</td>
-
-<td>void</td>
-
-<td>bool greater_</td>
-
-<td ROWSPAN="2">Resize if image is greater than size (>)</td>
-</tr>
-
-<tr>
-<td>bool</td>
-
-<td>void</td>
-</tr>
-
-<tr>
-<td ROWSPAN="2">less</td>
-
-<td>void</td>
-
-<td>bool less_</td>
-
-<td ROWSPAN="2">Resize if image is less than size (&lt;)</td>
-</tr>
-
-<tr>
-<td>bool</td>
-
-<td>void</td>
-</tr>
-
-<tr>
-<td ROWSPAN="2">isValid</td>
-
-<td>void</td>
-
-<td>bool isValid_</td>
-
-<td ROWSPAN="2">Does object contain valid geometry?</td>
-</tr>
-
-<tr>
-<td>bool</td>
-
-<td>void</td>
-</tr>
-
-<tr>
-<td>operator =</td>
-
-<td>const Geometry&amp;</td>
-
-<td>const string geometry_</td>
-
-<td>Set geometry via C++ string</td>
-</tr>
-
-<tr>
-<td>operator =</td>
-
-<td>const Geometry&amp;</td>
-
-<td>const char * geometry_</td>
-
-<td>Set geometry via C string</td>
-</tr>
-
-<tr>
-<td>operator string</td>
-
-<td>string</td>
-
-<td>Geometry&amp;</td>
-
-<td>Obtain C++ string representation of geometry</td>
-</tr>
-
-<tr>
-<td>operator&lt;&lt;</td>
-
-<td>ostream&amp;</td>
-
-<td>ostream&amp; stream_, const Geometry&amp; geometry_</td>
-
-<td>Stream onto ostream</td>
-</tr>
-</table>
-
-</body>
-</html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<TITLE>Magick::Geometry</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
+	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
+	<META NAME="CREATED" CONTENT="20020805;15172876">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20020805;15234330">
+	<META NAME="DESCRIPTION" CONTENT="Documentation for Magick::Geometry class">
+	<STYLE>
+	<!--
+		TD P { color: #000000 }
+		H1 { color: #000000 }
+		P { color: #000000 }
+		H3 { color: #000000 }
+		A:link { color: #0000ee }
+		A:visited { color: #551a8b }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0000ee" VLINK="#551a8b" BGCOLOR="#ffffff">
+<H1 ALIGN=CENTER>Magick::Geometry</H1>
+<P>Geometry provides a convenient means to specify a geometry
+argument. The object may be initialized from a C string or C++ string
+containing a geometry specification. It may also be initialized by
+more efficient parameterized constructors. 
+</P>
+<H3><A NAME="X11GeometrySpecifications"></A>X11 Geometry
+Specifications</H3>
+<P>X11 geometry specifications are in the form
+<TT>&quot;&lt;width&gt;x&lt;height&gt;{+-}&lt;xoffset&gt;{+-}&lt;yoffset&gt;&quot;</TT>
+(where <I>width</I>, <I>height</I>, <I>xoffset</I>, and <I>yoffset</I>
+are numbers) for specifying the size and placement location for an
+object. 
+</P>
+<P STYLE="margin-bottom: 0cm">The <I>width</I> and <I>height</I>
+parts of the geometry specification are measured in pixels. The
+<I>xoffset</I> and <I>yoffset</I> parts are also measured in pixels
+and are used to specify the distance of the placement coordinate from
+the left and top and edges of the image, respectively. Both types of
+offsets are measured from the indicated edge of the object to the
+corresponding edge of the image. The X offset may be specified in the
+following ways: 
+</P>
+<CENTER>
+	<TABLE WIDTH=90% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+		<COL WIDTH=21*>
+		<COL WIDTH=235*>
+		<TR>
+			<TD WIDTH=8%>
+				<P>+<I>xoffset</I></P>
+			</TD>
+			<TD WIDTH=92%>
+				<P>The left edge of the object is to be placed <I>xoffset</I>
+				pixels in from the <B>left edge </B>of the image.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=8%>
+				<P>-<I>xoffset</I></P>
+			</TD>
+			<TD WIDTH=92%>
+				<P>The left edge of the object is to be placed outside the image,
+				<I>xoffset</I> pixels out from the <B>left edge </B>of the image.</P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P STYLE="margin-bottom: 0cm">The Y offset has similar meanings: 
+</P>
+<CENTER>
+	<TABLE WIDTH=90% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+		<COL WIDTH=27*>
+		<COL WIDTH=229*>
+		<TR>
+			<TD WIDTH=11%>
+				<P>+<I>yoffset</I></P>
+			</TD>
+			<TD WIDTH=89%>
+				<P>The top edge of the object is to be <I>yoffset</I> pixels
+				<B>below</B> the <B>top edge </B>of the image.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=11%>
+				<P>-<I>yoffset</I></P>
+			</TD>
+			<TD WIDTH=89%>
+				<P>The top edge of the object is to be <I>yoffset</I> pixels
+				<B>above</B> the <B>top edge</B> of the image.</P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P>Offsets must be given as pairs; in other words, in order to
+specify either <I>xoffset</I> or <I>yoffset</I> both must be present.
+</P>
+<H3><A NAME="ExtendedX11GeometrySpecifications"></A>ImageMagick
+Extensions To X11 Geometry Specifications</H3>
+<P STYLE="margin-bottom: 0cm">ImageMagick has added a number of
+qualifiers to the standard geometry string for use when resizing
+images. The form of an extended geometry string is
+&quot;<TT>&lt;width&gt;x&lt;height&gt;{+-}&lt;xoffset&gt;{+-}&lt;yoffset&gt;{%}{!}{&lt;}{&gt;}&quot;.
+Extended geometry strings should <B>only</B> be used <B>when resizing
+an image</B>. Using an extended geometry string for other
+applications may cause the API call to fail. </TT>The available
+qualifiers are shown in the following table: <BR> 
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>ImageMagick Geometry
+Qualifiers</B></P>
+<CENTER>
+	<TABLE WIDTH=90% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+		<COL WIDTH=36*>
+		<COL WIDTH=220*>
+		<TR>
+			<TD WIDTH=14%>
+				<P ALIGN=CENTER><B>Qualifier</B></P>
+			</TD>
+			<TD WIDTH=86%>
+				<P ALIGN=CENTER><B>Description</B></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=14%>
+				<P ALIGN=CENTER><B>%</B></P>
+			</TD>
+			<TD WIDTH=86%>
+				<P>Interpret width and height as a <B>percentage</B> of the
+				current size.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=14%>
+				<P ALIGN=CENTER><B>!</B></P>
+			</TD>
+			<TD WIDTH=86%>
+				<P>Resize to width and height <B>exactly</B>, loosing original
+				aspect ratio.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=14%>
+				<P ALIGN=CENTER><B>&lt;</B></P>
+			</TD>
+			<TD WIDTH=86%>
+				<P>Resize only if the image is <B>smaller</B> than the geometry
+				specification.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=14%>
+				<P ALIGN=CENTER><B>&gt;</B></P>
+			</TD>
+			<TD WIDTH=86%>
+				<P>Resize only if the image is <B>greater</B> than the geometry
+				specification.</P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<H3><A NAME="PostscriptPageSize"></A>Postscript Page Size Extension
+To Geometry Specifications</H3>
+<P>Any geometry string specification supplied to the Geometry<SPAN LANG="en-US">
+constructor </SPAN>is considered to be a Postscript page size
+nickname if the first character is not numeric. The Geometry
+constructor converts these page size specifications into the
+equivalent numeric geometry string specification (preserving any
+offset component) prior to conversion to the internal object format.
+Postscript page size specifications are short-hand for the pixel
+geometry required to fill a page of that size. Since the 11x17 inch
+page size used in the US starts with a digit, it is not supported as
+a Postscript page size nickname. Instead, substitute the geometry
+specification &quot;<TT>792x1224&gt;&quot;</TT> when 11x17 output is
+desired. 
+</P>
+<P STYLE="margin-bottom: 0cm">An example of a Postscript page size
+specification is <TT>&quot;letter+43+43&gt;&quot;</TT>. <BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Postscript Page Size
+Nicknames</B></P>
+<CENTER>
+	<TABLE WIDTH=70% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+		<COL WIDTH=105*>
+		<COL WIDTH=151*>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><B>Postscript Page Size Nickname</B></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><B>Equivalent Extended Geometry Specification</B></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>Ledger</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>1224x792&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>Legal</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>612x1008&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>Letter</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>612x792&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>LetterSmall</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>612x792&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>ArchE</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>2592x3456&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>ArchD</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>1728x2592&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>ArchC</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>1296x1728&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>ArchB</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>864x1296&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>ArchA</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>648x864&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>A0</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>2380x3368&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>A1</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>1684x2380&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>A2</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>1190x1684&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>A3</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>842x1190&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>A4</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>595x842&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>A4Small</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>595x842&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>A5</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>421x595&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>A6</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>297x421&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>A7</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>210x297&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>A8</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>148x210&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>A9</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>105x148&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>A10</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>74x105&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>B0</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>2836x4008&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>B1</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>2004x2836&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>B2</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>1418x2004&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>B3</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>1002x1418&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>B4</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>709x1002&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>B5</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>501x709&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>C0</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>2600x3677&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>C1</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>1837x2600&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>C2</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>1298x1837&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>C3</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>918x1298&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>C4</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>649x918&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>C5</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>459x649&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>C6</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>323x459&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>Flsa</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>612x936&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>Flse</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>612x936&gt;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=41%>
+				<P ALIGN=CENTER><FONT SIZE=2>HalfLetter</FONT></P>
+			</TD>
+			<TD WIDTH=59%>
+				<P ALIGN=CENTER><FONT SIZE=2>396x612&gt;</FONT></P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<H3 ALIGN=CENTER>Geometry Methods</H3>
+<P STYLE="margin-bottom: 0cm">Geometry provides methods to initialize
+its value from strings, from a set of parameters, or via attributes.
+The methods available for use in Geometry are shown in the following
+table: 
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Geometry Methods</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Method</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Return Type</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Signature(s)</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=3>
+			<P>Geometry</P>
+		</TD>
+		<TD ROWSPAN=3 BGCOLOR="#666666">
+			<P>&nbsp;</P>
+		</TD>
+		<TD>
+			<P>unsigned int width_, unsigned int height_, unsigned int xOff_ =
+			0, unsigned int yOff_ = 0, bool xNegative_ = false, bool
+			yNegative_ = false</P>
+		</TD>
+		<TD>
+			<P>Construct X11 geometry via explicit parameters.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>const string geometry_</P>
+		</TD>
+		<TD>
+			<P>Construct geometry from C++ string</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>const char * geometry_</P>
+		</TD>
+		<TD>
+			<P>Construct geometry from C string</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=2>
+			<P>width</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+		<TD>
+			<P>unsigned int width_</P>
+		</TD>
+		<TD ROWSPAN=2>
+			<P>Width</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>unsigned int</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=2>
+			<P>height</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+		<TD>
+			<P>unsigned int height_</P>
+		</TD>
+		<TD ROWSPAN=2>
+			<P>Height</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>unsigned int</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=2>
+			<P>xOff</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+		<TD>
+			<P>unsigned int xOff_</P>
+		</TD>
+		<TD ROWSPAN=2>
+			<P>X offset from origin</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>int</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=2>
+			<P>yOff</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+		<TD>
+			<P>unsigned int yOff_</P>
+		</TD>
+		<TD ROWSPAN=2>
+			<P>Y offset from origin</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>int</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=2>
+			<P>xNegative</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+		<TD>
+			<P>bool xNegative_</P>
+		</TD>
+		<TD ROWSPAN=2>
+			<P>Sign of X offset negative? (X origin at right)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>bool</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=2>
+			<P>yNegative</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+		<TD>
+			<P>bool yNegative_</P>
+		</TD>
+		<TD ROWSPAN=2>
+			<P>Sign of Y offset negative? (Y origin at bottom)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>bool</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=2>
+			<P>percent</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+		<TD>
+			<P>bool percent_</P>
+		</TD>
+		<TD ROWSPAN=2>
+			<P>Width and height are expressed as percentages</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>bool</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=2>
+			<P>aspect</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+		<TD>
+			<P>bool aspect_</P>
+		</TD>
+		<TD ROWSPAN=2>
+			<P>Resize without preserving aspect ratio (!)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>bool</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=2>
+			<P>greater</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+		<TD>
+			<P>bool greater_</P>
+		</TD>
+		<TD ROWSPAN=2>
+			<P>Resize if image is greater than size (&gt;)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>bool</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=2>
+			<P>less</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+		<TD>
+			<P>bool less_</P>
+		</TD>
+		<TD ROWSPAN=2>
+			<P>Resize if image is less than size (&lt;)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>bool</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=2>
+			<P>isValid</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+		<TD>
+			<P>bool isValid_</P>
+		</TD>
+		<TD ROWSPAN=2>
+			<P>Does object contain a valid geometry? May be set to <I>false</I>
+			in order to invalidate an existing geometry object.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>bool</P>
+		</TD>
+		<TD>
+			<P>void</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>operator =</P>
+		</TD>
+		<TD>
+			<P>const Geometry&amp;</P>
+		</TD>
+		<TD>
+			<P>const string geometry_</P>
+		</TD>
+		<TD>
+			<P>Set geometry via C++ string</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>operator =</P>
+		</TD>
+		<TD>
+			<P>const Geometry&amp;</P>
+		</TD>
+		<TD>
+			<P>const char * geometry_</P>
+		</TD>
+		<TD>
+			<P>Set geometry via C string</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>operator string</P>
+		</TD>
+		<TD>
+			<P>string</P>
+		</TD>
+		<TD>
+			<P>Geometry&amp;</P>
+		</TD>
+		<TD>
+			<P>Obtain C++ string representation of geometry</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>operator&lt;&lt;</P>
+		</TD>
+		<TD>
+			<P><SPAN LANG="en-US">ostream</SPAN>&amp;</P>
+		</TD>
+		<TD>
+			<P>ostream&amp; stream_, const Geometry&amp; geometry_</P>
+		</TD>
+		<TD>
+			<P>Stream onto ostream</P>
+		</TD>
+	</TR>
+</TABLE>
+<P><BR><BR>
+</P>
+</BODY>
+</HTML>

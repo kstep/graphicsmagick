@@ -1,141 +1,169 @@
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<html>
-<head>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="Author" content="Bob Friesenhahn">
-   <meta name="GENERATOR" content="Mozilla/4.76 [en] (X11; U; SunOS 5.7 sun4u) [Netscape]">
-   <meta name="Description" content="Class to access raw image pixels.">
-   <meta name="Keywords" content="ImageMagick,Pixel,Magick++">
-   <title>Magick::TypeMetric Class</title>
-</head>
-<body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#FF0000" alink="#000088">
-
-<center>
-<h3>
-Magick::TypeMetric</h3></center>
-The <i>TypeMetric</i> class provides the means to pass data from the Image
-class's TypeMetric method to the user. It provides information regarding
-font metrics such as ascent, descent, text width, text height, and maximum
-horizontal advance. The units of these font metrics are in pixels, and
-that the metrics are dependent on the current Image font (default Ghostscript's
-"Helvetica"), pointsize (default 12 points), and x/y resolution (default
-72 DPI) settings.
-<p>The pixel units may be converted to points (the standard resolution-independent
-measure used by the typesetting industry) via the following equation:
-<blockquote>size_points = (size_pixels * 72)/resolution</blockquote>
-where resolution is in dots-per-inch (DPI). This means that at the default
-image resolution, there is one pixel per point.
-<p>Note that a font's pointsize is only a first-order approximation of
-the font height (ascender + descender) in points. The relationship between
-the specified pointsize and the rendered font height is determined by the
-font designer.
-<p>&nbsp;See <a href="http://freetype.sourceforge.net/freetype2/docs/glyphs/index.html">FreeType
-Glyph Conventions</a> for a detailed description of font metrics related
-issues.
-<p>The methods available in the <i>TypeMetric</i> class are shown in the
-following table:
-<br>&nbsp;
-<table BORDER WIDTH="100%" >
-<caption><b>TypeMetric Methods</b></caption>
-
-<tr>
-<td>
-<center><b>Method</b></center>
-</td>
-
-<td>
-<center><b>Returns</b></center>
-</td>
-
-<td><b>Units</b></td>
-
-<td>
-<center><b>Signature</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>
-<center><a NAME="ascent"></a><font size=-1>ascent</font></center>
-</td>
-
-<td><font size=-1>double</font></td>
-
-<td><font size=-1>Pixels</font></td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1>Returns the distance in pixels from the text baseline
-to the highest/upper grid coordinate used to place an outline point. Always
-a positive value.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><a NAME="descent"></a><font size=-1>descent</font></center>
-</td>
-
-<td><font size=-1>double</font></td>
-
-<td><font size=-1>Pixels</font></td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1>Returns the the distance in pixels from the baseline
-to the lowest grid coordinate used to place an outline point. Always a
-negative value.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><a NAME="textWidth"></a><font size=-1>textWidth</font></center>
-</td>
-
-<td><font size=-1>double</font></td>
-
-<td><font size=-1>Pixels</font></td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1>Returns text width in pixels.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><a NAME="textHeight"></a><font size=-1>textHeight</font></center>
-</td>
-
-<td><font size=-1>double</font></td>
-
-<td><font size=-1>Pixels</font></td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1>Returns text height in pixels.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><a NAME="maxHorizontalAdvance"></a><font size=-1>maxHorizontalAdvance</font></center>
-</td>
-
-<td><font size=-1>double</font></td>
-
-<td><font size=-1>Pixels</font></td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1>Returns the maximum horizontal advance (advance from
-the beginning of a character to the beginning of the next character) in
-pixels.</font></td>
-</tr>
-</table>
-
-<br>&nbsp;
-<br>&nbsp;
-</body>
-</html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<TITLE>Magick::TypeMetric Class</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
+	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
+	<META NAME="CREATED" CONTENT="20020805;17544901">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20020805;17560733">
+	<META NAME="DESCRIPTION" CONTENT="Class to access raw image pixels.">
+	<META NAME="KEYWORDS" CONTENT="ImageMagick,Pixel,Magick++">
+	<STYLE>
+	<!--
+		TD P { color: #000000 }
+		H1 { color: #000000 }
+		P { color: #000000 }
+		BLOCKQUOTE { color: #000000 }
+		A:link { color: #0000ff }
+		A:visited { color: #ff0000 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0000ff" VLINK="#ff0000" BGCOLOR="#ffffff">
+<H1 ALIGN=CENTER>Magick::TypeMetric</H1>
+<P>The <I>TypeMetric</I> class provides the means to pass data from
+the Image class's TypeMetric method to the user. It provides
+information regarding font metrics such as ascent, descent, text
+width, text height, and maximum horizontal advance. The units of
+these font metrics are in pixels, and that the metrics are dependent
+on the current Image font (default Ghostscript's &quot;Helvetica&quot;),
+pointsize (default 12 points), and x/y resolution (default 72 DPI)
+settings. 
+</P>
+<P>The pixel units may be converted to points (the standard
+resolution-independent measure used by the typesetting industry) via
+the following equation: 
+</P>
+<BLOCKQUOTE>size_points = (size_pixels * 72)/resolution</BLOCKQUOTE>
+<P>where resolution is in dots-per-inch (DPI). This means that at the
+default image resolution, there is one pixel per point. 
+</P>
+<P>Note that a font's pointsize is only a first-order approximation
+of the font height (ascender + descender) in points. The relationship
+between the specified pointsize and the rendered font height is
+determined by the font designer. 
+</P>
+<P>See <A HREF="http://freetype.sourceforge.net/freetype2/docs/glyphs/index.html">FreeType
+Glyph Conventions</A> for a detailed description of font metrics
+related issues. 
+</P>
+<P STYLE="margin-bottom: 0cm">The methods available in the <I>TypeMetric</I>
+class are shown in the following table: 
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>TypeMetric Methods</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Method</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Returns</B></P>
+		</TD>
+		<TD>
+			<P><B>Units</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Signature</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><A NAME="ascent"></A><FONT SIZE=2>ascent</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>double</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>Pixels</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>void</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>Returns the distance in pixels from the text
+			baseline to the highest/upper grid coordinate used to place an
+			outline point. Always a positive value.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><A NAME="descent"></A><FONT SIZE=2>descent</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>double</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>Pixels</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>void</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>Returns the the distance in pixels from the
+			baseline to the lowest grid coordinate used to place an outline
+			point. Always a negative value.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><A NAME="textWidth"></A><FONT SIZE=2>textWidth</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>double</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>Pixels</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>void</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>Returns text width in pixels.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><A NAME="textHeight"></A><FONT SIZE=2>textHeight</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>double</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>Pixels</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>void</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>Returns text height in pixels.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><A NAME="maxHorizontalAdvance"></A><FONT SIZE=2>maxHorizontalAdvance</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>double</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>Pixels</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>void</FONT></P>
+		</TD>
+		<TD>
+			<P><FONT SIZE=2>Returns the maximum horizontal advance (advance
+			from the beginning of a character to the beginning of the next
+			character) in pixels.</FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P><BR><BR>
+</P>
+</BODY>
+</HTML>
