@@ -469,7 +469,7 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
     AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (encoding == (unsigned short *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to convert text to Textcode");
+      "UnableToConvertText");
   q=encoding;
   for (p=text; *p != '\0'; p+=length)
   {
@@ -536,7 +536,7 @@ static unsigned short *EncodeText(const char *text,size_t *count)
     AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (encoding == (unsigned short *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to convert text to Text");
+      "UnableToConvertText");
   q=encoding;
   for (p=text; *p != '\0'; p++)
     *q++=(unsigned char) *p;
@@ -650,7 +650,7 @@ static unsigned short *EncodeUnicode(const char *text,size_t *count)
     AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (unicode == (unsigned short *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to convert text to Unicode");
+      "UnableToConvertText");
   q=unicode;
   for (p=text; *p != '\0'; p+=length)
   {

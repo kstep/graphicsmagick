@@ -2151,7 +2151,8 @@ Animate(ref,...)
   MethodException:
     if (package_info)
       DestroyPackageInfo(package_info);
-    sv_setiv(MY_CXT.error_list,(IV) (status ? status : SvCUR(MY_CXT.error_list) != 0));
+    sv_setiv(MY_CXT.error_list,(IV)
+      (status ? status : SvCUR(MY_CXT.error_list) != 0));
     SvPOK_on(MY_CXT.error_list);
     ST(0)=sv_2mortal(MY_CXT.error_list);
     MY_CXT.error_list=NULL;

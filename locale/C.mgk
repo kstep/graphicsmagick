@@ -1485,17 +1485,101 @@
         </Message>
       </Error>
       <FatalError>
+        <Message name="UnableToAllocateAscii85Info">
+          unable to allocate ascii85 info
+        </Message>
+        <Message name="UnableToAllocateCacheView">
+          unable to allocate cache view
+        </Message>
+        <Message name="UnableToAllocateColorInfo">
+          unable to allocate color info
+        </Message>
+        <Message name="UnableToAllocateDashPattern">
+          unable to allocate dash pattern
+        </Message>
+        <Message name="UnableToAllocateDelegateInfo">
+          unable to allocate delegate info
+        </Message>
+        <Message name="UnableToAllocateDerivatives">
+          unable to allocate derivates
+        </Message>
+        <Message name="UnableToAllocateDrawContext">
+          unable to allocate draw context
+        </Message>
+        <Message name="UnableToAllocateDrawInfo">
+          unable to allocate draw info
+        </Message>
+        <Message name="UnableToAllocateGammaMap">
+          unable to allocate gamma map
+        </Message>
         <Message name="UnableToAllocateImage">
           unable to allocate image
+        </Message>
+        <Message name="UnableToAllocateImagePixels">
+          unable to allocate image pixels
+        </Message>
+        <Message name="UnableToAllocateLogInfo">
+          unable to allocate log info
+        </Message>
+        <Message name="UnableToAllocateMagicInfo">
+          unable to allocate magic info
+        </Message>
+        <Message name="UnableToAllocateMagickInfo">
+          unable to allocate magick info
+        </Message>
+        <Message name="UnableToAllocateModuleInfo">
+          unable to allocate module info
+        </Message>
+        <Message name="UnableToAllocateMontageInfo">
+          unable to allocate montage info
+        </Message>
+        <Message name="UnableToAllocateQuantizeInfo">
+          unable to allocate quantize info
+        </Message>
+        <Message name="UnableToAllocateSemaphoreInfo">
+          unable to allocate semaphore info
+        </Message>
+        <Message name="UnableToAllocateString">
+          unable to allocate string
+        </Message>
+        <Message name="UnableToAllocateTypeInfo">
+          unable to allocate type info
+        </Message>
+        <Message name="UnableToAllocateRegistryInfo">
+          unable to allocate registry info
         </Message>
         <Message name="MemoryAllocationFailed">
           Memory allocation failed
         </Message>
+        <Message name="UnableToAnimateImageSequence">
+          unable to animate image sequence
+        </Message>
+        <Message name="UnableToCloneBlobInfo">
+          unable to clone blob info
+        </Message>
+        <Message name="UnableToConcatenateString">
+          unable to concatenate string
+        </Message>
+        <Message name="UnableToConvertText">
+          unable to convert text
+        </Message>
         <Message name="UnableToCreateColormap">
           unable to create colormap
         </Message>
+        <Message name="UnableToCloneCacheInfo">
+          unable to clone cache info
+        </Message>
+        <Message name="UnableToCloneImage">
+          unable to clone image
+        </Message>
+        <Message name="UnableToCloneImageInfo">
+          unable to clone image info
+        </Message>
         <Message name="UnableToDisplayImage">
           unable to display image
+        </Message>
+        <Message name="UnableToEscapeString">
+          unable to escape string
         </Message>
         <Message name="UnableToInterpretMSLImage">
           unable to interpret MSL image
@@ -1581,6 +1665,9 @@
       <Message name="UnableToCreateStandardColormap">
         Unable to create standard colormap
       </Message>
+      <Message name="UnableToDisplayImageInfo">
+        Unable to display image info
+      </Message>
       <Message name="UnableToGetProperty">
         Unable to get property
       </Message>
@@ -1619,11 +1706,17 @@
       </Message>
     </Error>
     <FatalError>
+      <Message name="UnableToAllocateXHints">
+        Unable to allocate X hints
+      </Message>
       <Message name="UnableToCreateCursor">
         Unable to create X cursor
       </Message>
       <Message name="UnableToCreateGraphicContext">
         Unable to create graphic context
+      </Message>
+      <Message name="UnableToCreateStandardColormap">
+        unable to create standard colormap
       </Message>
       <Message name="UnableToCreateTextProperty">
         Unable to create text property
@@ -1637,14 +1730,29 @@
       <Message name="UnableToCreateXPixmap">
         Unable to create X pixmap
       </Message>
+      <Message name="UnableToDisplayImage">
+        unable to display image
+      </Message>
+      <Message name="UnableToDitherImage">
+        unable to dither image
+      </Message>
       <Message name="UnableToGetVisual">
         Unable to get visual
+      </Message>
+      <Message name="UnableToGetPixelInfo">
+        Unable to get pixel info
       </Message>
       <Message name="UnableToLoadFont">
         Unable to load font
       </Message>
+      <Message name="UnableToMakeXWindow">
+        Unable to make X window
+      </Message>
       <Message name="UnableToOpenXServer">
         Unable to open X server
+      </Message>
+      <Message name="UnableToViewFonts">
+        Unable to view fonts
       </Message>
     </FatalError>
     <Warning>

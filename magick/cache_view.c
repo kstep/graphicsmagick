@@ -275,7 +275,7 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
   view=(ViewInfo *) AcquireMemory(sizeof(ViewInfo));
   if (view == (ViewInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to allocate cache view");
+      "UnableToAllocateCacheView");
   (void) memset(view,0,sizeof(ViewInfo));
   view->id=GetNexus(image->cache);
   view->image=image;

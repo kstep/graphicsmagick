@@ -5440,7 +5440,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
   if (fontlist == (char **) NULL)
     {
       XNoticeWidget(display,windows,"MemoryAllocationFailed",
-        "unable to view fonts");
+        "UnableToViewFonts");
       return;
     }
   for (i=0; i < fonts; i++)
@@ -5718,7 +5718,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         if (fontlist == (char **) NULL)
           {
             XNoticeWidget(display,windows,"MemoryAllocationFailed",
-              "unable to view fonts");
+              "UnableToViewFonts");
             return;
           }
         for (i=0; i < fonts; i++)
@@ -8012,6 +8012,9 @@ MagickExport void XNoticeWidget(Display *display,XWindows *windows,
 #define DismissButtonText  "Dismiss"
 #define Timeout  8
 
+  const char
+    *text;
+
   int
     status,
     x,
@@ -8053,13 +8056,15 @@ MagickExport void XNoticeWidget(Display *display,XWindows *windows,
   XCheckRefreshWindows(display,windows);
   font_info=windows->widget.font_info;
   width=XTextWidth(font_info,DismissButtonText,Extent(DismissButtonText));
-  if (reason != (char *) NULL)
-    if (XTextWidth(font_info,(char *) reason,Extent(reason)) > (int) width)
-      width=XTextWidth(font_info,(char *) reason,Extent(reason));
-  if (description != (char *) NULL)
-    if (XTextWidth(font_info,(char *) description,Extent(description)) >
+  text=GetLocaleExceptionMessage(XServerError,reason);
+  if (text != (char *) NULL)
+    if (XTextWidth(font_info,(char *) text,Extent(text)) > (int) width)
+      width=XTextWidth(font_info,(char *) text,Extent(text));
+  text=GetLocaleExceptionMessage(XServerError,description);
+  if (text != (char *) NULL)
+    if (XTextWidth(font_info,(char *) text,Extent(text)) >
         (int) width)
-      width=XTextWidth(font_info,(char *) description,Extent(description));
+      width=XTextWidth(font_info,(char *) text,Extent(text));
   height=(font_info->ascent+font_info->descent);
   /*
     Position Notice widget.

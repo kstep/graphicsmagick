@@ -851,7 +851,7 @@ static unsigned int ReadConfigureFile(const char *basename,
         log_info=(LogInfo *) AcquireMemory(sizeof(LogInfo));
         if (log_info == (LogInfo *) NULL)
           MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "unable to allocate log");
+            "UnableToAllocateLogInfo");
         (void) memset((void *) log_info,0,sizeof(LogInfo));
         log_info->path=AcquireString(path);
         GetTimerInfo((TimerInfo *) &log_info->timer);

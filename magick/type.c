@@ -717,7 +717,7 @@ static unsigned int ReadConfigureFile(const char *basename,
         type_info=(TypeInfo *) AcquireMemory(sizeof(TypeInfo));
         if (type_info == (TypeInfo *) NULL)
           MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "unable to allocate fonts");
+            "UnableToAllocateTypeInfo");
         (void) memset(type_info,0,sizeof(TypeInfo));
         type_info->path=AcquireString(path);
         type_info->signature=MagickSignature;

@@ -1981,14 +1981,98 @@ const char *GetLocaleMessage(const char *tag)
                   return tag;
 
               case 'u':  case 'U':
+                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToAllocateAscii85Info", 27))
+                  return *np ? tag : "unable to allocate ascii85 info";
+                else
+                if (p - tp == 25 && !LocaleNCompare(tp, "UnableToAllocateCacheView", 25))
+                  return *np ? tag : "unable to allocate cache view";
+                else
+                if (p - tp == 25 && !LocaleNCompare(tp, "UnableToAllocateColorInfo", 25))
+                  return *np ? tag : "unable to allocate color info";
+                else
+                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToAllocateDashPattern", 27))
+                  return *np ? tag : "unable to allocate dash pattern";
+                else
+                if (p - tp == 28 && !LocaleNCompare(tp, "UnableToAllocateDelegateInfo", 28))
+                  return *np ? tag : "unable to allocate delegate info";
+                else
+                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToAllocateDerivatives", 27))
+                  return *np ? tag : "unable to allocate derivates";
+                else
+                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToAllocateDrawContext", 27))
+                  return *np ? tag : "unable to allocate draw context";
+                else
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnableToAllocateDrawInfo", 24))
+                  return *np ? tag : "unable to allocate draw info";
+                else
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnableToAllocateGammaMap", 24))
+                  return *np ? tag : "unable to allocate gamma map";
+                else
                 if (p - tp == 21 && !LocaleNCompare(tp, "UnableToAllocateImage", 21))
                   return *np ? tag : "unable to allocate image";
+                else
+                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToAllocateImagePixels", 27))
+                  return *np ? tag : "unable to allocate image pixels";
+                else
+                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToAllocateLogInfo", 23))
+                  return *np ? tag : "unable to allocate log info";
+                else
+                if (p - tp == 25 && !LocaleNCompare(tp, "UnableToAllocateMagicInfo", 25))
+                  return *np ? tag : "unable to allocate magic info";
+                else
+                if (p - tp == 26 && !LocaleNCompare(tp, "UnableToAllocateMagickInfo", 26))
+                  return *np ? tag : "unable to allocate magick info";
+                else
+                if (p - tp == 26 && !LocaleNCompare(tp, "UnableToAllocateModuleInfo", 26))
+                  return *np ? tag : "unable to allocate module info";
+                else
+                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToAllocateMontageInfo", 27))
+                  return *np ? tag : "unable to allocate montage info";
+                else
+                if (p - tp == 28 && !LocaleNCompare(tp, "UnableToAllocateQuantizeInfo", 28))
+                  return *np ? tag : "unable to allocate quantize info";
+                else
+                if (p - tp == 28 && !LocaleNCompare(tp, "UnableToAllocateRegistryInfo", 28))
+                  return *np ? tag : "unable to allocate registry info";
+                else
+                if (p - tp == 29 && !LocaleNCompare(tp, "UnableToAllocateSemaphoreInfo", 29))
+                  return *np ? tag : "unable to allocate semaphore info";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToAllocateString", 22))
+                  return *np ? tag : "unable to allocate string";
+                else
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnableToAllocateTypeInfo", 24))
+                  return *np ? tag : "unable to allocate type info";
+                else
+                if (p - tp == 28 && !LocaleNCompare(tp, "UnableToAnimateImageSequence", 28))
+                  return *np ? tag : "unable to animate image sequence";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToCloneBlobInfo", 21))
+                  return *np ? tag : "unable to clone blob info";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCloneCacheInfo", 22))
+                  return *np ? tag : "unable to clone cache info";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneImage", 18))
+                  return *np ? tag : "unable to clone image";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCloneImageInfo", 22))
+                  return *np ? tag : "unable to clone image info";
+                else
+                if (p - tp == 25 && !LocaleNCompare(tp, "UnableToConcatenateString", 25))
+                  return *np ? tag : "unable to concatenate string";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToConvertText", 19))
+                  return *np ? tag : "unable to convert text";
                 else
                 if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateColormap", 22))
                   return *np ? tag : "unable to create colormap";
                 else
                 if (p - tp == 20 && !LocaleNCompare(tp, "UnableToDisplayImage", 20))
                   return *np ? tag : "unable to display image";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToEscapeString", 20))
+                  return *np ? tag : "unable to escape string";
                 else
                 if (p - tp == 25 && !LocaleNCompare(tp, "UnableToInterpretMSLImage", 25))
                   return *np ? tag : "unable to interpret MSL image";
@@ -2177,6 +2261,9 @@ const char *GetLocaleMessage(const char *tag)
               if (p - tp == 30 && !LocaleNCompare(tp, "UnableToCreateStandardColormap", 30))
                 return *np ? tag : "Unable to create standard colormap";
               else
+              if (p - tp == 24 && !LocaleNCompare(tp, "UnableToDisplayImageInfo", 24))
+                return *np ? tag : "Unable to display image info";
+              else
               if (p - tp == 19 && !LocaleNCompare(tp, "UnableToGetProperty", 19))
                 return *np ? tag : "Unable to get property";
               else
@@ -2226,11 +2313,17 @@ const char *GetLocaleMessage(const char *tag)
               return tag;
 
             case 'u':  case 'U':
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnableToAllocateXHints", 22))
+                return *np ? tag : "Unable to allocate X hints";
+              else
               if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreateCursor", 20))
                 return *np ? tag : "Unable to create X cursor";
               else
               if (p - tp == 28 && !LocaleNCompare(tp, "UnableToCreateGraphicContext", 28))
                 return *np ? tag : "Unable to create graphic context";
+              else
+              if (p - tp == 30 && !LocaleNCompare(tp, "UnableToCreateStandardColormap", 30))
+                return *np ? tag : "unable to create standard colormap";
               else
               if (p - tp == 26 && !LocaleNCompare(tp, "UnableToCreateTextProperty", 26))
                 return *np ? tag : "Unable to create text property";
@@ -2244,14 +2337,29 @@ const char *GetLocaleMessage(const char *tag)
               if (p - tp == 21 && !LocaleNCompare(tp, "UnableToCreateXWindow", 21))
                 return *np ? tag : "Unable to create X window";
               else
+              if (p - tp == 20 && !LocaleNCompare(tp, "UnableToDisplayImage", 20))
+                return *np ? tag : "unable to display image";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToDitherImage", 19))
+                return *np ? tag : "unable to dither image";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "UnableToGetPixelInfo", 20))
+                return *np ? tag : "Unable to get pixel info";
+              else
               if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
                 return *np ? tag : "Unable to get visual";
               else
               if (p - tp == 16 && !LocaleNCompare(tp, "UnableToLoadFont", 16))
                 return *np ? tag : "Unable to load font";
               else
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToMakeXWindow", 19))
+                return *np ? tag : "Unable to make X window";
+              else
               if (p - tp == 19 && !LocaleNCompare(tp, "UnableToOpenXServer", 19))
                 return *np ? tag : "Unable to open X server";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToViewFonts", 17))
+                return *np ? tag : "Unable to view fonts";
               else
                 return tag;
             }

@@ -1155,7 +1155,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
     AcquireMemory(256*sizeof(double));
   if ((derivative == (double *) NULL) || (second_derivative == (double *) NULL))
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to allocate derivatives");
+      "UnableToAllocateDerivatives");
   i=0;
   for (tau=max_tau; tau >= min_tau; tau-=delta_tau)
   {
@@ -1317,7 +1317,7 @@ static void ScaleSpace(const long *histogram,const double tau,
   gamma=(double *) AcquireMemory(256*sizeof(double));
   if (gamma == (double *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to allocate gamma map");
+      "UnableToAllocateGammaMap");
   alpha=1.0/(tau*sqrt(2.0*MagickPI));
   beta=(-1.0/(2.0*tau*tau));
   for (x=0; x <= 255; x++)

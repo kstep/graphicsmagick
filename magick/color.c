@@ -1726,7 +1726,7 @@ static unsigned int ReadConfigureFile(const char *basename,
         color_info=(ColorInfo *) AcquireMemory(sizeof(ColorInfo));
         if (color_info == (ColorInfo *) NULL)
           MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "unable to allocate colors");
+            "UnableToAllocateColorInfo");
         (void) memset(color_info,0,sizeof(ColorInfo));
         color_info->path=AcquireString(path);
         color_info->signature=MagickSignature;

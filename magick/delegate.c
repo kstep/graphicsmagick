@@ -768,7 +768,7 @@ static unsigned int ReadConfigureFile(const char *basename,
         delegate_info=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
         if (delegate_info == (DelegateInfo *) NULL)
           MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "unable to allocate delegate");
+            "UnableToAllocateDelegateInfo");
         (void) memset(delegate_info,0,sizeof(DelegateInfo));
         delegate_info->path=AcquireString(path);
         delegate_info->signature=MagickSignature;

@@ -963,7 +963,7 @@ MagickExport void GetCacheInfo(Cache *cache)
   cache_info=(CacheInfo *) AcquireMemory(sizeof(CacheInfo));
   if (cache_info == (CacheInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to allocate cache info");
+      "UnableToAllocateCacheInfo");
   (void) memset(cache_info,0,sizeof(CacheInfo));
   cache_info->colorspace=RGBColorspace;
   cache_info->reference_count=1;
@@ -1715,7 +1715,7 @@ static unsigned int ModifyCache(Image *image)
   clone_image=(Image *) AcquireMemory(sizeof(Image));
   if (clone_image == (Image *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to clone image");
+      "UnableToCloneImage");
   *clone_image=(*image);
   GetCacheInfo(&image->cache);
   length=clone_image->columns*sizeof(PixelPacket);
@@ -1869,7 +1869,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
         AcquireMemory((cache_info->rows+3)*sizeof(NexusInfo));
       if (cache_info->nexus_info == (NexusInfo *) NULL)
         MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-          "unable to allocate cache nexus_info");
+          "UnableToAllocateCacheInfo");
       (void) memset(cache_info->nexus_info,0,
         (cache_info->rows+3)*sizeof(NexusInfo));
       for (id=1; id < (cache_info->rows+3); id++)
@@ -2700,7 +2700,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
       }
   if (nexus_info->staging == (PixelPacket *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to allocate cache nexus_info");
+      "UnableToAllocateCacheInfo");
   nexus_info->pixels=nexus_info->staging;
   nexus_info->indexes=(IndexPacket *) NULL;
   if ((cache_info->storage_class == PseudoClass) ||

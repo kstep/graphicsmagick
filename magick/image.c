@@ -127,7 +127,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image=(Image *) AcquireMemory(sizeof(Image));
   if (allocate_image == (Image *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to allocate image");
+      "UnableToAllocateImage");
   (void) memset(allocate_image,0,sizeof(Image));
   /*
     Initialize Image structure.
@@ -1133,7 +1133,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info=(ImageInfo *) AcquireMemory(sizeof(ImageInfo));
   if (clone_info == (ImageInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to clone image info");
+      "UnableToCloneImageInfo");
   GetImageInfo(clone_info);
   if (image_info == (ImageInfo *) NULL)
     return(clone_info);

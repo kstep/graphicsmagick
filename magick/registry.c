@@ -455,7 +455,7 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
   registry_info=(RegistryInfo *) AcquireMemory(sizeof(RegistryInfo));
   if (registry_info == (RegistryInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to allocate registry");
+      "UnableToAllocateRegistryInfo");
   (void) memset(registry_info,0,sizeof(RegistryInfo));
   registry_info->type=type;
   registry_info->blob=clone_blob;
