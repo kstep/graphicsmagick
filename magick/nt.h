@@ -70,7 +70,6 @@ struct dirent
 */
 extern MagickExport char
   *NTGetExecutionPath(void),
-  *SetClientName(const char *),
   *NTGetLastError(void);
 
 MagickExport Image

@@ -69,9 +69,6 @@ static char
 extern "C" BOOL WINAPI
   DllMain(HINSTANCE instance,DWORD data_segment,LPVOID reserved);
 #endif
-
-extern char
-  *SetClientName(const char *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

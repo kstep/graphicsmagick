@@ -161,7 +161,6 @@ extern "C" {
    (strchr(text,'?') != (char *) NULL) || \
    (strchr(text,'{') != (char *) NULL) || \
    (strchr(text,'}') != (char *) NULL))
-#define j1(x)  x
 #define MagickLibPath  "sys$login:"
 #define MagickModulesPath  "sys$login:"
 #define MagickSharePath  "sys$login:"
@@ -184,7 +183,6 @@ extern "C" {
    (strchr(text,'}') != (char *) NULL) || \
    (strchr(text,'[') != (char *) NULL) || \
    (strchr(text,']') != (char *) NULL))
-#define j1(x)  x
 #define MagickLibPath  ""
 #define MagickModulesPath  ""
 #define MagickSharePath  ""
@@ -200,8 +198,6 @@ extern "C" {
 #define DirectorySeparator  "\\"
 #define DirectoryListSeparator  ';'
 #define EditorOptions ""
-#undef isatty
-#define isatty(filedes)  1
 #define IsBasenameSeparator(c)  (((c) == '/') || ((c) == '\\'))
 #define IsGlob(text) \
   ((strchr(text,'*') != (char *) NULL) || \
@@ -210,7 +206,6 @@ extern "C" {
    (strchr(text,'}') != (char *) NULL) || \
    (strchr(text,'[') != (char *) NULL) || \
    (strchr(text,']') != (char *) NULL))
-#define j1(x)  x
 #define MagickLibPath  "c:\\ImageMagick\\"
 #define MagickModulesPath  "c:\\ImageMagick\\"
 #define MagickSharePath  "c:\\ImageMagick\\"
