@@ -10,19 +10,26 @@
 #include "Magick++/Thread.h"
 #include "Magick++/Exception.h"
 
+#if defined(HasPTHREADS)
 // Default constructor
 Magick::MutexLock::MutexLock(void)
   : _mutex()
 {
-#if defined(HasPTHREADS)
   ::pthread_mutexattr_t attr;
   int sysError;
   if ( (sysError = ::pthread_mutexattr_init( &attr )) == 0 )
     if ( (sysError = ::pthread_mutex_init( &_mutex, &attr )) == 0 )
       return;
   throw Magick::ErrorOption( "mutex initialization failed" );
+}
 #endif
-#if defined(_MT) && defined(_VISUALC_)
+
+#if defined(_VISUALC_)
+#if defined(_MT)
+// Default constructor
+Magick::MutexLock::MutexLock(void)
+  : _mutex()
+{
 	SECURITY_ATTRIBUTES security;
 
 	/* Allow the semaphore to be inherited */
@@ -35,8 +42,14 @@ Magick::MutexLock::MutexLock(void)
 	if ( _mutex.id != NULL )
         return;
   throw Magick::ErrorOption( "mutex initialization failed" );
-#endif
 }
+#else
+// Default constructor
+Magick::MutexLock::MutexLock(void)
+{
+}
+#endif
+#endif
 
 // Destructor
 Magick::MutexLock::~MutexLock(void)
