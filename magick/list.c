@@ -143,8 +143,7 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
   assert(images->signature == MagickSignature);
   while (images->previous != (Image *) NULL)
     images=images->previous;
-  image=(Image *) NULL;
-  for (p=(Image *) NULL; images != (Image *) NULL; images=images->next)
+  for (image=(Image *) NULL; images != (Image *) NULL; images=images->next)
   {
     clone=CloneImage(images,0,0,True,exception);
     if (clone == (Image *) NULL)
@@ -177,28 +176,39 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DeleteImageFromList() deletes the image from the list.
+%  DeleteImageFromList() deletes an image at the specified offset from the
+%  list.
 %
 %  The format of the DeleteImageFromList method is:
 %
-%      unsigned int DeleteImageFromList(Image **images)
+%      unsigned int DeleteImageFromList(Image **images,const long offset)
 %
 %  A description of each parameter follows:
 %
 %    o images: The image list.
 %
+%    o offset: The position within the list.
+%
 %
 */
-MagickExport unsigned int DeleteImageFromList(Image **images)
+MagickExport unsigned int DeleteImageFromList(Image **images,const long offset)
 {
   register Image
     *p;
+
+  register long
+    i;
 
   assert(images != (Image **) NULL);
   if ((*images) == (Image *) NULL)
     return(False);
   assert((*images)->signature == MagickSignature);
-  p=(*images);
+  for (p=(*images); p->previous != (Image *) NULL; p=p->previous);
+  for (i=0; p != (Image *) NULL; p=p->next)
+    if (i++ == offset)
+      break;
+  if (p == (Image *) NULL)
+    return(False);
   if ((p->previous == (Image *) NULL) && (p->next == (Image *) NULL))
     *images=(Image *) NULL;
   else
@@ -206,12 +216,14 @@ MagickExport unsigned int DeleteImageFromList(Image **images)
       if (p->previous != (Image *) NULL)
         {
           p->previous->next=p->next;
-          *images=p->previous;
+          if (p == *images)
+            *images=p->previous;
         }
       if (p->next != (Image *) NULL)
         {
           p->next->previous=p->previous;
-          *images=p->next;
+          if (p == *images)
+            *images=p->next;
         }
     }
   DestroyImage(p);
@@ -282,7 +294,7 @@ MagickExport void DestroyImageList(Image *images)
 %
 %
 */
-MagickExport Image *GetImageFromList(const Image *images,const long offset)
+MagickExport Image *GetImageFromList(Image *images,const long offset)
 {
   register Image
     *p;
@@ -293,7 +305,7 @@ MagickExport Image *GetImageFromList(const Image *images,const long offset)
   if (images == (Image *) NULL)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
-  for (p=(Image *) images; p->previous != (Image *) NULL; p=p->previous);
+  for (p=images; p->previous != (Image *) NULL; p=p->previous);
   for (i=0; p != (Image *) NULL; p=p->next)
     if (i++ == offset)
       break;
@@ -527,7 +539,8 @@ MagickExport Image **ImageListToArray(const Image *images,
 %
 %  The format of the InsertImageInList method is:
 %
-%      unsigned int InsertImageInList(Image **images,Image *image)
+%      unsigned int InsertImageInList(Image **images,const long offset,
+%        Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -539,10 +552,14 @@ MagickExport Image **ImageListToArray(const Image *images,
 %
 %
 */
-MagickExport unsigned int InsertImageInList(Image **images,Image *image)
+MagickExport unsigned int InsertImageInList(Image **images,const long offset,
+  Image *image)
 {
   register Image
     *p;
+
+  register long
+    i;
 
   assert(images != (Image **) NULL);
   if (image == (Image *) NULL)
@@ -550,11 +567,16 @@ MagickExport unsigned int InsertImageInList(Image **images,Image *image)
   assert(image->signature == MagickSignature);
   if ((*images) == (Image *) NULL)
     {
+      if (offset > 0)
+        return(False);
       *images=image;
       return(True);
     }
   assert((*images)->signature == MagickSignature);
-  p=(*images);
+  for (p=(*images); p->previous != (Image *) NULL; p=p->previous);
+  for (i=0; p != (Image *) NULL; p=p->next)
+    if (i++ == offset)
+      break;
   if (p == (Image *) NULL)
     return(False);
   p->next=image;
@@ -761,8 +783,7 @@ MagickExport Image *ReverseImageList(const Image *images,
   assert(images->signature == MagickSignature);
   while (images->next != (Image *) NULL)
     images=images->next;
-  image=(Image *) NULL;
-  for (p=(Image *) NULL; images != (Image *) NULL; images=images->previous)
+  for (image=(Image *) NULL; images != (Image *) NULL; images=images->previous)
   {
     clone=CloneImage(images,0,0,True,exception);
     if (clone == (Image *) NULL)
@@ -795,17 +816,19 @@ MagickExport Image *ReverseImageList(const Image *images,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SpliceImageIntoList() removes the images from the list and replaces them
-%  with the specified list.
+%  SpliceImageIntoList() removes the images designated by offset and length
+%  from the list and replaces them with the specified list.
 %
 %  The format of the SpliceImageIntoList method is:
 %
-%      unsigned int SpliceImageIntoList(Image **images,
+%      unsigned int SpliceImageIntoList(Image **images,const long offset,
 %        const unsigned long length,Image *splices)
 %
 %  A description of each parameter follows:
 %
 %    o images: The image list.
+%
+%    o offset: The position within the list.
 %
 %    o length: The length of the image list to remove.
 %
@@ -815,7 +838,7 @@ MagickExport Image *ReverseImageList(const Image *images,
 %
 %
 */
-MagickExport unsigned int SpliceImageIntoList(Image **images,
+MagickExport unsigned int SpliceImageIntoList(Image **images,const long offset,
   const unsigned long length,Image *splices)
 {
   Image
@@ -833,13 +856,13 @@ MagickExport unsigned int SpliceImageIntoList(Image **images,
   if ((*images) == (Image *) NULL)
     return(False);
   assert((*images)->signature == MagickSignature);
-  split=(Image *) SplitImageList(*images);
+  split=SplitImageList(*images,offset);
   if (split == False)
     return(False);
   AppendImageToList(images,splices);
   status=True;
   for (i=0; i < length; i++)
-    status|=DeleteImageFromList(&split);
+    status|=DeleteImageFromList(&split,0);
   AppendImageToList(images,split);
   return(status);
 }
@@ -869,15 +892,21 @@ MagickExport unsigned int SpliceImageIntoList(Image **images,
 %
 %
 */
-MagickExport Image *SplitImageList(Image *images)
+MagickExport Image *SplitImageList(Image *images,const long offset)
 {
   register Image
     *p;
 
+  register long
+    i;
+
   if (images == (Image *) NULL)
     return((Image *) NULL);
-  p=images;
-  if (p->next == (Image *) NULL)
+  for (p=images; p->previous != (Image *) NULL; p=p->previous);
+  for (i=0; p != (Image *) NULL; p=p->next)
+    if (i++ == offset)
+      break;
+  if ((p == (Image *) NULL) || (p->next == (Image *) NULL))
     return((Image *) NULL);
   p=p->next;
   p->previous->next=(Image *) NULL;

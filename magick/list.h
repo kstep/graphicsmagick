@@ -10,7 +10,7 @@ extern "C" {
 
 extern MagickExport Image
   *CloneImageList(const Image *,ExceptionInfo *),
-  *GetImageFromList(const Image *,const long),
+  *GetImageFromList(Image *,const long),
   *GetNextImageInList(const Image *),
   *GetPreviousImageInList(const Image *),
   **ImageListToArray(const Image *,ExceptionInfo *),
@@ -18,17 +18,17 @@ extern MagickExport Image
   *RemoveLastImageFromList(Image **),
   *ReverseImageList(const Image *,ExceptionInfo *),
   *RemoveFirstImageFromList(Image **),
-  *SplitImageList(Image *);
+  *SplitImageList(Image *,const long);
 
 extern MagickExport long
   GetImageIndexInList(const Image *);
 
 extern MagickExport unsigned int
   AppendImageToList(Image **,Image *),
-  DeleteImageFromList(Image **),
-  InsertImageInList(Image **,Image *),
+  DeleteImageFromList(Image **,const long),
+  InsertImageInList(Image **,const long,Image *),
   PrependImageToList(Image **,Image *),
-  SpliceImageIntoList(Image **,const unsigned long,Image *);
+  SpliceImageIntoList(Image **,const long,const unsigned long,Image *);
 
 extern MagickExport unsigned long
   GetImageListLength(const Image *);
