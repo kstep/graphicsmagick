@@ -805,7 +805,7 @@ MagickExport double Permutate(const long n,const long k)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P i x e l M a g i c k                                                     %
++   P i x e l M a g i c k                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %

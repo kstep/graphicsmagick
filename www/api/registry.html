@@ -39,7 +39,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>unsigned int  <STRONG>DeleteMagickRegistry</STRONG>( const long id );</P>
 <P>const void * <STRONG>GetMagickRegistry</STRONG>( const long id, RegistryType *type, size_t *length );</P>
-<P>long  <STRONG>SetMagickRegistry</STRONG>( const void *blob, const size_t length, ExceptionInfo *exception );</P>
+<P>long  <STRONG>SetMagickRegistry</STRONG>( const RegistryType type, const void *blob, const size_t length, ExceptionInfo *exception );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -76,7 +76,7 @@ The blob length in number of bytes.
 <P>
 <H2><A NAME="setmagickregistry">SetMagickRegistry</A></H2>
 <blockquote>SetMagickRegistry ( ) sets a blob into the registry and returns a unique ID.If an error occurs, -1 is returned.; </blockquote><P>The format of the SetMagickRegistry method is:</P>
-<blockquote>long SetMagickRegistry ( const void *blob, const size_t length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>long SetMagickRegistry ( const RegistryType type, const void *blob, const size_t length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>type:</STRONG><BR>
