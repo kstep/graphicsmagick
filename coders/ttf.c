@@ -138,8 +138,7 @@ static unsigned int IsTTF(const unsigned char *magick,const size_t length)
 static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
-    magick[MaxTextExtent];
+    buffer[MaxTextExtent];
 
   const char
     *Text =
@@ -147,14 +146,14 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       "\342\352\356\373\364\344\353\357\366\374\377\340\371\351\350\347\n"
       "&#~\\\"\'(-`_^@)=+\260 $\243^\250*\265\371%!\247:/;.,?<>";
 
-  FILE
-    *file;
+  DrawContext
+    context;
+
+  DrawInfo
+    *draw_info;
 
   Image
     *image;
-
-  ImageInfo
-    *clone_info;
 
   long
     y;
@@ -165,6 +164,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int
     status;
 
+
   /*
     Open image file.
   */
@@ -172,56 +172,84 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+
   image=AllocateImage(image_info);
+  if (image == (Image *) NULL)
+    ThrowReaderException(ResourceLimitError,"Unable to allocate image",image);
+  image->columns = 800;
+  image->rows = 480;
+  draw_info=CloneDrawInfo(image_info, (DrawInfo *) NULL);
+  if (draw_info == (DrawInfo *) NULL)
+    ThrowReaderException(ResourceLimitError,"Unable to allocate image",image);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
-  (void) strncpy(magick,image->magick,MaxTextExtent-1);
+
   /*
-    Open draw file.
+    Color canvas with background color
   */
-  TemporaryFilename(filename);
-  file=fopen(filename,"w");
-  if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+  {
+    unsigned long
+      column,
+      row;
+
+    PixelPacket
+      *pixel,
+      background_color;
+    
+    background_color = image_info->background_color;
+    for (row=0; row < image->rows; row++)
+      {
+        pixel=SetImagePixels(image,0,row,image->columns,1);
+        if (pixel == (PixelPacket *) NULL)
+          break;
+        for (column=image->columns; column; column--)
+          *pixel++ = background_color;
+        if (!SyncImagePixels(image))
+          break;
+      }
+  }
+
+  (void) strncpy(image->magick,image_info->magick,MaxTextExtent-1);
+  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+
+  /*
+    Prepare drawing commands
+  */
+  context = DrawAllocateContext(draw_info, image);
   y=20;
-  (void) fprintf(file,"push graphic-context\n");
-  (void) fprintf(file,"viewbox 0 0 800 480\n");
-  (void) fprintf(file,"font '%.1024s'\n",image_info->filename);
-  (void) fprintf(file,"font-size 18\n");
-  (void) fprintf(file,"text +10%+ld \"%s\"\n",y,Text);
+  (void) DrawPushGraphicContext(context);
+  (void) DrawSetViewbox(context,0,0,image->columns,image->rows);
+  (void) DrawSetFont(context, image_info->filename);
+  (void) DrawSetFontSize(context, 18);
+  (void) DrawAnnotation(context,10,y,Text);
   y+=20*MultilineCensus(Text)+20;
   for (i=12; i <= 72; i+=6)
   {
     y+=i+12;
-    (void) fprintf(file,"font-size 18\n");
-    (void) fprintf(file,"text +10+%ld '%ld'\n",y,i);
-    (void) fprintf(file,"font-size %ld\n",i);
-    (void) fprintf(file,
-      "text +50+%ld 'That which does not destroy me, only makes me stronger.'\n",
-      y);
+    (void) DrawSetFontSize(context, 18);
+    (void) FormatString(buffer,"'%ld'", i);
+    (void) DrawAnnotation(context,10,y,buffer);
+    (void) DrawSetFontSize(context, i);
+    (void) DrawAnnotation(context,50,y,
+                          "That which does not destroy me, only makes me stronger.");
     if (i >= 24)
       i+=6;
   }
-  (void) fprintf(file,"pop graphic-context\n");
-  (void) fclose(file);
-  CloseBlob(image);
-  DestroyImage(image);
+  (void) DrawPopGraphicContext(context);
+
   /*
-    Draw image.
+    Draw on image
   */
-  clone_info=CloneImageInfo(image_info);
-  clone_info->blob=(void *) NULL;
-  clone_info->length=0;
-  FormatString(clone_info->filename,"mvg:%.1024s",filename);
-  image=ReadImage(clone_info,exception);
-  if (image != (Image *) NULL)
-    {
-      (void) strncpy(image->magick,magick,MaxTextExtent-1);
-      (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
-    }
-  (void) remove(filename);
-  DestroyImageInfo(clone_info);
+  DrawRender(context);
+
+  /*
+    Cleanup
+  */
+  DestroyDrawInfo(draw_info);
+  DrawDestroyContext(context);
+  CloseBlob(image);
+
   return(image);
 }
 
