@@ -97,23 +97,23 @@ void Magick::Drawable::operator()( MagickLib::DrawContext context_ ) const
     dp->operator()( context_ );
 }
 
-MagickDLLDecl int Magick::operator == ( const Magick::Drawable& left_,
-                                        const Magick::Drawable& right_ )
+MagickDLLDecl int Magick::operator == ( const Magick::Drawable& /*left_*/,
+                                        const Magick::Drawable& /*right_*/ )
 {
   return ( 1 );
 }
-MagickDLLDecl int Magick::operator != ( const Magick::Drawable& left_,
-                                        const Magick::Drawable& right_ )
+MagickDLLDecl int Magick::operator != ( const Magick::Drawable& /*left_*/,
+                                        const Magick::Drawable& /*right_*/ )
 {
   return ( 0 );
 }
-MagickDLLDecl int Magick::operator > ( const Magick::Drawable& left_,
-                                       const Magick::Drawable& right_ )
+MagickDLLDecl int Magick::operator > ( const Magick::Drawable& /*left_*/,
+                                       const Magick::Drawable& /*right_*/ )
 {
   return ( 0 );
 }
-MagickDLLDecl int Magick::operator <  ( const Magick::Drawable& left_,
-                                        const Magick::Drawable& right_ )
+MagickDLLDecl int Magick::operator <  ( const Magick::Drawable& /*left_*/,
+                                        const Magick::Drawable& /*right_*/ )
 {
   return  ( 0 );
 }
@@ -176,25 +176,25 @@ void Magick::VPath::operator()( MagickLib::DrawContext context_ ) const
     dp->operator()( context_ );
 }
 
-MagickDLLDecl int Magick::operator == ( const Magick::VPath& left_,
-                                        const Magick::VPath& right_ )
+MagickDLLDecl int Magick::operator == ( const Magick::VPath& /*left_*/,
+                                        const Magick::VPath& /*right_*/ )
 {
   return ( 1 );
 }
-MagickDLLDecl int Magick::operator != ( const Magick::VPath& left_,
-                                        const Magick::VPath& right_ )
+MagickDLLDecl int Magick::operator != ( const Magick::VPath& /*left_*/,
+                                        const Magick::VPath& /*right_*/ )
 {
   return ( 0 );
 }
-MagickDLLDecl int Magick::operator > ( const Magick::VPath& left_,
-                                       const Magick::VPath& right_ )
+MagickDLLDecl int Magick::operator > ( const Magick::VPath& /*left_*/,
+                                       const Magick::VPath& /*right_*/ )
 {
   return ( 0 );
 }
-MagickDLLDecl int Magick::operator <  ( const Magick::VPath& left_,
-                                        const Magick::VPath& right_ )
+MagickDLLDecl int Magick::operator <  ( const Magick::VPath& /*left_*/,
+                                        const Magick::VPath& /*right_*/ )
 {
-  return  ( false );
+  return  ( 0 );
 }
 MagickDLLDecl int Magick::operator >= ( const Magick::VPath& left_,
                                         const Magick::VPath& right_ )
@@ -1261,23 +1261,23 @@ Magick::DrawableBase* Magick::DrawableViewbox::copy() const
 // Path Classes
 //
 
-MagickDLLDecl int Magick::operator == ( const Magick::PathArcArgs& left_,
-                                        const Magick::PathArcArgs& right_ )
+MagickDLLDecl int Magick::operator == ( const Magick::PathArcArgs& /*left_*/,
+                                        const Magick::PathArcArgs& /*right_*/ )
 {
   return ( 1 );
 }
-MagickDLLDecl int Magick::operator != ( const Magick::PathArcArgs& left_,
-                                        const Magick::PathArcArgs& right_ )
+MagickDLLDecl int Magick::operator != ( const Magick::PathArcArgs& /*left_*/,
+                                        const Magick::PathArcArgs& /*right_*/ )
 {
   return ( 0 );
 }
-MagickDLLDecl int Magick::operator > ( const Magick::PathArcArgs& left_,
-                                       const Magick::PathArcArgs& right_ )
+MagickDLLDecl int Magick::operator > ( const Magick::PathArcArgs& /*left_*/,
+                                       const Magick::PathArcArgs& /*right_*/ )
 {
   return ( 0 );
 }
-MagickDLLDecl int Magick::operator <  ( const Magick::PathArcArgs& left_,
-                                        const Magick::PathArcArgs& right_ )
+MagickDLLDecl int Magick::operator <  ( const Magick::PathArcArgs& /*left_*/,
+                                        const Magick::PathArcArgs& /*right_*/ )
 {
   return  ( false );
 }
@@ -1372,23 +1372,23 @@ Magick::VPathBase* Magick::PathClosePath::copy() const
 //
 // Path Curveto (Cubic Bezier)
 //
-MagickDLLDecl int Magick::operator == ( const Magick::PathCurvetoArgs& left_,
-                                        const Magick::PathCurvetoArgs& right_ )
+MagickDLLDecl int Magick::operator == ( const Magick::PathCurvetoArgs& /*left_*/,
+                                        const Magick::PathCurvetoArgs& /*right_*/ )
 {
   return ( 1 );
 }
-MagickDLLDecl int Magick::operator != ( const Magick::PathCurvetoArgs& left_,
-                                        const Magick::PathCurvetoArgs& right_ )
+MagickDLLDecl int Magick::operator != ( const Magick::PathCurvetoArgs& /*left_*/,
+                                        const Magick::PathCurvetoArgs& /*right_*/ )
 {
   return ( 0 );
 }
-MagickDLLDecl int Magick::operator > ( const Magick::PathCurvetoArgs& left_,
-                                       const Magick::PathCurvetoArgs& right_ )
+MagickDLLDecl int Magick::operator > ( const Magick::PathCurvetoArgs& /*left_*/,
+                                       const Magick::PathCurvetoArgs& /*right_*/ )
 {
   return ( 0 );
 }
-MagickDLLDecl int Magick::operator <  ( const Magick::PathCurvetoArgs& left_,
-                                        const Magick::PathCurvetoArgs& right_ )
+MagickDLLDecl int Magick::operator <  ( const Magick::PathCurvetoArgs& /*left_*/,
+                                        const Magick::PathCurvetoArgs& /*right_*/ )
 {
   return  ( false );
 }
@@ -1539,26 +1539,26 @@ Magick::VPathBase* Magick::PathSmoothCurvetoRel::copy() const
 // Quadratic Curveto (Quadratic Bezier)
 //
 MagickDLLDecl int Magick::operator ==
-( const Magick::PathQuadraticCurvetoArgs& left_,
-  const Magick::PathQuadraticCurvetoArgs& right_ )
+( const Magick::PathQuadraticCurvetoArgs& /*left_*/,
+  const Magick::PathQuadraticCurvetoArgs& /*right_*/ )
 {
   return ( 1 );
 }
 MagickDLLDecl int Magick::operator !=
-( const Magick::PathQuadraticCurvetoArgs& left_,
-  const Magick::PathQuadraticCurvetoArgs& right_ )
+( const Magick::PathQuadraticCurvetoArgs& /*left_*/,
+  const Magick::PathQuadraticCurvetoArgs& /*right_*/ )
 {
   return ( 0 );
 }
 MagickDLLDecl int Magick::operator >
-( const Magick::PathQuadraticCurvetoArgs& left_,
-  const Magick::PathQuadraticCurvetoArgs& right_ )
+( const Magick::PathQuadraticCurvetoArgs& /*left_*/,
+  const Magick::PathQuadraticCurvetoArgs& /*right_*/ )
 {
   return ( 0 );
 }
 MagickDLLDecl int Magick::operator < 
-( const Magick::PathQuadraticCurvetoArgs& left_,
-  const Magick::PathQuadraticCurvetoArgs& right_ )
+( const Magick::PathQuadraticCurvetoArgs& /*left_*/,
+  const Magick::PathQuadraticCurvetoArgs& /*right_*/ )
 {
   return  ( 0 );
 }

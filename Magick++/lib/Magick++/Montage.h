@@ -149,11 +149,6 @@ namespace Magick
 // Implementation of Montage
 //
 
-inline Magick::Montage::~Montage( void )
-{
-  // Nothing to do
-}
-
 inline void Magick::Montage::backgroundColor ( const Magick::Color &backgroundColor_ )
 {
   _backgroundColor = backgroundColor_;
@@ -304,11 +299,6 @@ inline Magick::Color Magick::Montage::transparentColor ( void ) const
 //
 // Implementation of MontageFramed
 //
-
-inline /* virtual */ Magick::MontageFramed::~MontageFramed ( void )
-{
-  // Nothing to do
-}
 
 inline void Magick::MontageFramed::borderColor ( const Magick::Color &borderColor_ )
 {

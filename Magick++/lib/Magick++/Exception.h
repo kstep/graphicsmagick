@@ -26,7 +26,7 @@ namespace Magick
     Exception( const Exception& original_ );
     Exception& operator= (const Exception& original_ );
     virtual const char* what () const throw();
-    virtual ~Exception ( ) throw () { };
+    virtual ~Exception ( ) throw ();
 
   private:
     std::string _what;

@@ -20,9 +20,9 @@ using namespace std;
 
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 
-MagickDLLDecl const std::string Magick::borderGeometryDefault = "6x6+0+0";
-MagickDLLDecl const std::string Magick::frameGeometryDefault  = "25x25+6+6";
-MagickDLLDecl const std::string Magick::raiseGeometryDefault  = "6x6+0+0";
+extern MagickDLLDecl const std::string Magick::borderGeometryDefault = "6x6+0+0";
+extern MagickDLLDecl const std::string Magick::frameGeometryDefault  = "25x25+6+6";
+extern MagickDLLDecl const std::string Magick::raiseGeometryDefault  = "6x6+0+0";
 
 //
 // Explicit template instantiations
@@ -2792,12 +2792,13 @@ unsigned int Magick::Image::scene ( void ) const
 
 std::string Magick::Image::signature ( const bool force_ ) const
 {
+  Lock( &_imgRef->_mutexLock );
+
   // Re-calculate image signature if necessary
   if ( force_ ||
        !GetImageAttribute(constImage(), "Signature") ||
        constImage()->taint )
     {
-      modifyImage();
       SignatureImage( const_cast<MagickLib::Image *>(constImage()) );
     }
 

@@ -43,6 +43,11 @@ Magick::Exception& Magick::Exception::operator= (const Magick::Exception& origin
   return _what.c_str();
 }
 
+/* Destructor */
+/*virtual*/ Magick::Exception::~Exception ( ) throw ()
+{
+};
+
 //
 // Warnings
 //

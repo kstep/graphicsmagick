@@ -31,12 +31,22 @@ Magick::Montage::Montage ( void )
 {
 }
 
+Magick::Montage::~Montage( void )
+{
+  // Nothing to do
+}
+
 Magick::MontageFramed::MontageFramed ( void )
   : _borderColor("#dfdfdf"),
     _borderWidth(0),
     _frame(),
     _matteColor("#bdbdbd")
 {
+}
+
+/* virtual */ Magick::MontageFramed::~MontageFramed ( void )
+{
+  // Nothing to do
 }
 
 void Magick::Montage::updateMontageInfo ( MontageInfo &montageInfo_ ) const
