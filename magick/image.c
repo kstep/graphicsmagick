@@ -1534,6 +1534,11 @@ MagickExport unsigned int CompositeImage(Image *image,
             }
             case CopyOpacityCompositeOp:
             {
+              if (!composite_image->matte)
+                {
+                  q->opacity=Intensity(pixel);
+                  break;
+                }
               q->opacity=pixel.opacity;
               break;
             }
