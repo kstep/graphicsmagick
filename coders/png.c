@@ -6534,50 +6534,55 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
             ping_info->bit_depth=1;
             while ((1UL << ping_info->bit_depth) < number_colors)
               ping_info->bit_depth <<= 1;
-            /*
-              Identify which colormap entry is transparent.
-            */
-            ping_info->trans=MagickAllocateMemory(unsigned char *,number_colors);
-            if (ping_info->trans == (unsigned char *) NULL)
-              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
-            assert(number_colors <= 256);
-            for (i=0; i < (long) number_colors; i++)
-               ping_info->trans[i]=255;
-            for (y=0; y < (long) image->rows; y++)
-            {
-              register const PixelPacket
-                *p=NULL;
-
-              p=AcquireImagePixels(image,0,y,image->columns,1,
-                  &image->exception);
-              if (p == (const PixelPacket *) NULL)
-                break;
-              indexes=GetIndexes(image);
-              for (x=0; x < (long) image->columns; x++)
-              {
-                if (p->opacity != OpaqueOpacity)
-                  {
-                    IndexPacket
-                      index;
-
-                    index=indexes[x];
-                    assert((unsigned long) index < number_colors);
-                    ping_info->trans[index]=(png_byte) (255-
-                      ScaleQuantumToChar(p->opacity));
-                  }
-                p++;
-              }
-            }
             ping_info->num_trans=0;
-            for (i=0; i < (long) number_colors; i++)
-              if (ping_info->trans[i] != 255)
-                ping_info->num_trans=(unsigned short) (i+1);
-            if (ping_info->num_trans == 0)
-              ping_info->valid&=(~PNG_INFO_tRNS);
-            if (!(ping_info->valid & PNG_INFO_tRNS))
-              ping_info->num_trans=0;
-            if (ping_info->num_trans == 0)
-              MagickFreeMemory(ping_info->trans);
+            if (matte)
+            {
+              /*
+                Identify which colormap entry is transparent.
+              */
+              ping_info->trans=MagickAllocateMemory(unsigned char *,
+                  number_colors);
+              if (ping_info->trans == (unsigned char *) NULL)
+                ThrowWriterException(ResourceLimitError,
+                    MemoryAllocationFailed,image);
+              assert(number_colors <= 256);
+              for (i=0; i < (long) number_colors; i++)
+                 ping_info->trans[i]=255;
+              for (y=0; y < (long) image->rows; y++)
+              {
+                register const PixelPacket
+                  *p=NULL;
+
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                    &image->exception);
+                if (p == (const PixelPacket *) NULL)
+                  break;
+                indexes=GetIndexes(image);
+                for (x=0; x < (long) image->columns; x++)
+                {
+                  if (p->opacity != OpaqueOpacity)
+                    {
+                      IndexPacket
+                        index;
+
+                      index=indexes[x];
+                      assert((unsigned long) index < number_colors);
+                      ping_info->trans[index]=(png_byte) (255-
+                        ScaleQuantumToChar(p->opacity));
+                    }
+                  p++;
+                }
+              }
+              for (i=0; i < (long) number_colors; i++)
+                if (ping_info->trans[i] != 255)
+                  ping_info->num_trans=(unsigned short) (i+1);
+              if (ping_info->num_trans == 0)
+                ping_info->valid&=(~PNG_INFO_tRNS);
+              if (!(ping_info->valid & PNG_INFO_tRNS))
+                ping_info->num_trans=0;
+              if (ping_info->num_trans == 0)
+                MagickFreeMemory(ping_info->trans);
+            }
 
             /*
               Identify which colormap entry is the background color.

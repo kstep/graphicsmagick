@@ -1,3 +1,8 @@
+2004-02-02  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/bmp.c: fix potential use of unitialized data.
+	* coders/png.c: fix potential use of unitialized data.
+
 2004-01-31  Mike Chiarappa  <mikechiarappa@libero.it>
 
 	* magick/studio.h: Fixed problem related to DLL version of BCBMagick.
