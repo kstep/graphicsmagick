@@ -21,6 +21,20 @@
 </tr>
 </table>
 <p>
+2004-05-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/module.c (InitializeModuleSearchPath): Evaluate and cache
+        module search path.<BR>
+        (FindMagickModule): Use cached module search path.
+        (OpenModules): Load all modules rather than just the modules in
+        the directory where the LOGO module is found.  Besides allowing
+        user-provided modules in non-GraphicsMagick directories to be
+        loaded, this allows the "moby" shared build to load additional
+        modules via OpenModules.
+
+</UL>
+<p>
 2004-05-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

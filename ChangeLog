@@ -1,3 +1,14 @@
+2004-05-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/module.c (InitializeModuleSearchPath): Evaluate and cache
+	module search path.
+	(FindMagickModule): Use cached module search path.
+	(OpenModules): Load all modules rather than just the modules in
+	the directory where the LOGO module is found.  Besides allowing
+	user-provided modules in non-GraphicsMagick directories to be
+	loaded, this allows the "moby" shared build to load additional
+	modules via OpenModules.
+
 2004-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* utilities/Makefile.am (check): Add convert -list tests.
