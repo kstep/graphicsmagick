@@ -4,8 +4,6 @@ For POSIX-compliant systems this is determined by the LC_MESSAGES
 environment variable, and/or the value set or retrieved by
 setlocale(3C).  It is worth reading the description of setlocale(3C).
 
-message.mgk:
-
 <?xml version="1.0"?>
 <typemap>
   <include language="english" file="english.mgk" />
