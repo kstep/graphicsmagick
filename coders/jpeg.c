@@ -190,11 +190,15 @@ static unsigned int EmitMessage(j_common_ptr jpeg_info,int level)
   char
     message[JMSG_LENGTH_MAX];
 
+  ErrorManager
+	  error_manager;
+
   Image
     *image;
 
   (jpeg_info->err->format_message)(jpeg_info,message);
-  image=(Image *) jpeg_info->client_data;
+  error_manager=(ErrorManager *) jpeg_info->client_data;
+  image=error_manager->image;
   if (level < 0)
     {
       if ((jpeg_info->err->num_warnings == 0) ||
@@ -263,6 +267,9 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   char
     *comment;
 
+  ErrorManager
+	  error_manager;
+
   Image
     *image;
 
@@ -275,7 +282,8 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   /*
     Determine length of comment.
   */
-  image=(Image *) jpeg_info->client_data;
+  error_manager=(ErrorManager *) jpeg_info->client_data;
+  image=error_manager->image;
   length=(long) GetCharacter(jpeg_info) << 8;
   length+=(long) GetCharacter(jpeg_info);
   length-=2;
@@ -298,6 +306,9 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
 
 static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
 {
+  ErrorManager
+	  error_manager;
+
   Image
     *image;
 
@@ -321,7 +332,8 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   /*
     Allocate generic profile.
   */
-  image=(Image *) jpeg_info->client_data;
+  error_manager=(ErrorManager *) jpeg_info->client_data;
+  image=error_manager->image;
   i=(long) image->generic_profiles;
   if (image->generic_profile == (ProfileInfo *) NULL)
     image->generic_profile=(ProfileInfo *) AcquireMemory(sizeof(ProfileInfo));
@@ -355,6 +367,9 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
 {
   char
     magick[12];
+
+  ErrorManager
+	  error_manager;
 
   Image
     *image;
@@ -390,7 +405,8 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   (void) GetCharacter(jpeg_info);  /* id */
   (void) GetCharacter(jpeg_info);  /* markers */
   length-=14;
-  image=(Image *) jpeg_info->client_data;
+  error_manager=(ErrorManager *) jpeg_info->client_data;
+  image=error_manager->image;
   if (image->color_profile.length == 0)
     image->color_profile.info=(unsigned char *) AcquireMemory(length);
   else
@@ -412,6 +428,9 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
 {
   char
     magick[MaxTextExtent];
+
+  ErrorManager
+	  error_manager;
 
   Image
     *image;
@@ -443,7 +462,8 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
 #ifdef GET_ONLY_IPTC_DATA
   *tag='\0';
 #endif
-  image=(Image *) jpeg_info->client_data;
+  error_manager=(ErrorManager *) jpeg_info->client_data;
+  image=error_manager->image;
   if (image->iptc_profile.length == 0)
     {
 #ifdef GET_ONLY_IPTC_DATA
