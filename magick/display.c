@@ -12562,7 +12562,10 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     MagickFatalError(XServerFatalError,"Unable to create X magnify image",
       (char *) NULL);
   if (windows->magnify.mapped)
-    (void) XMapRaised(display,windows->magnify.id);
+    {
+      (void) XMapRaised(display,windows->magnify.id);
+      XMakeMagnifyImage(display,windows);
+    }
   if (windows->image.mapped)
     if (((int) windows->image.width < windows->image.ximage->width) ||
         ((int) windows->image.height < windows->image.ximage->height))
