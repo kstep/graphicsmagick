@@ -1,5 +1,10 @@
+2001-10-07  Cristy  <cristy@mystic.es.dupont.com>
+	* CloneImage() now uses a referenced counted pixel cache.
+
 2001-10-05  Cristy  <cristy@mystic.es.dupont.com>
 	* Added AcquireImagePixels() method.
+	* Changed the formal parameter from Image * to const Image *
+	  for a number of methods (e.g. ZoomImage()).
 	* Added ExceptionInfo parameter to DispatchImage().
 
 2001-10-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
