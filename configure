@@ -9775,8 +9775,8 @@ else
 echo "$ECHO_T""no" >&6
 fi
 
-# Extract the first word of "wmftogif", so it can be a program name with args.
-set dummy wmftogif; ac_word=$2
+# Extract the first word of "wmftopng", so it can be a program name with args.
+set dummy wmftopng; ac_word=$2
 echo "configure:8962: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_WMFDecodeDelegate+set}" = set; then
@@ -9797,7 +9797,7 @@ else
     fi
   done
   IFS=$ac_save_ifs
-  test -z "$ac_cv_path_WMFDecodeDelegate" && ac_cv_path_WMFDecodeDelegate="wmftogif"
+  test -z "$ac_cv_path_WMFDecodeDelegate" && ac_cv_path_WMFDecodeDelegate="wmftopng"
   ;;
 esac
 fi
@@ -9974,7 +9974,7 @@ then
   SCANDecodeDelegate='scanimage'
   ShowImageDelegate='display'
   TXTDelegate='enscript'
-  WMFDecodeDelegate='wmftogif'
+  WMFDecodeDelegate='wmftopng'
   WWWDecodeDelegate='wget'
   XCFDecodeDelegate='xcftopnm'
   ZipDelegate='gzip'

@@ -905,33 +905,12 @@ int main(int argc,char **argv)
     }
   if (compose == BlendCompositeOp)
     {
-      Quantum
-        opacity;
-
       register PixelPacket
         *q;
 
       /*
         Create mattes for blending.
       */
-      opacity=OpaqueOpacity-(OpaqueOpacity*blend)/100;
-      image->storage_class=DirectClass;
-      image->matte=True;
-      for (y=0; y < (int) image->rows; y++)
-      {
-        q=GetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (int) image->columns; x++)
-        {
-          q->opacity=opacity;
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      composite_image->storage_class=DirectClass;
-      composite_image->matte=True;
       for (y=0; y < (int) composite_image->rows; y++)
       {
         q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
@@ -939,12 +918,17 @@ int main(int argc,char **argv)
           break;
         for (x=0; x < (int) composite_image->columns; x++)
         {
-          q->opacity=OpaqueOpacity-opacity;
+          if (composite_image->matte)
+            q->opacity=((MaxRGB-q->opacity)*blend)/100;
+          else
+            q->opacity=(MaxRGB*blend)/100;
           q++;
         }
         if (!SyncImagePixels(composite_image))
           break;
       }
+      composite_image->storage_class=DirectClass;
+      composite_image->matte=True;
     }
   if (compose == DisplaceCompositeOp)
     CloneString(&composite_image->geometry,displacement_geometry);

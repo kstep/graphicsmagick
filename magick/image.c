@@ -1504,9 +1504,9 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case BlendCompositeOp:
         {
-          red=alpha*(p->red*p->opacity+q->red*q->opacity);
-          green=alpha*(p->green*p->opacity+q->green*q->opacity);
-          blue=alpha*(p->blue*p->opacity+q->blue*q->opacity);
+          red=alpha*(p->red*p->opacity+q->red*(MaxRGB-p->opacity));
+          green=alpha*(p->green*p->opacity+q->green*(MaxRGB-p->opacity));
+          blue=alpha*(p->blue*p->opacity+q->blue*(MaxRGB-p->opacity));
           opacity=OpaqueOpacity;
           break;
         }

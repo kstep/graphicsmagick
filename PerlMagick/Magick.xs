@@ -4450,14 +4450,10 @@ Mogrify(ref,...)
           /* blend opacity */
           if (!attribute_flag[6])
             argument_list[6].string_reference="0.0";
-          /* Maybe I should remove this test... */
           if (argument_list[0].int_reference == BlendCompositeOp)
             {
               Image
                 *composite_image;
-
-              Quantum 
-                opacity;
 
               register PixelPacket 
                 *q;
@@ -4471,38 +4467,24 @@ Mogrify(ref,...)
               
               composite_image=argument_list[1].image_reference;
               blend=atof(argument_list[6].string_reference);
-              opacity=(blend*TransparentOpacity)/100;
-              image->storage_class=DirectClass;
-              image->matte=True;
-              for (y=0; y < (int) image->rows; y++)
-              {
-                q=GetImagePixels(image,0,y,image->columns,1);
-                if (q == (PixelPacket *) NULL)
-                  break;
-                for (x=0; x < (int) image->columns; x++)
-                {
-                  q->opacity=opacity;
-                  q++;
-                }
-                if (!SyncImagePixels(image))
-                  break;
-              }
-              composite_image->storage_class=DirectClass;
-              composite_image->matte=True;
               for (y=0; y < (int) composite_image->rows; y++)
               {
-                q=GetImagePixels(composite_image,0,y,
-                        composite_image->columns,1);
+                q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
                 for (x=0; x < (int) composite_image->columns; x++)
                 {
-                  q->opacity=TransparentOpacity-opacity;
+                  if (composite_image->matte)
+                    q->opacity=((MaxRGB-q->opacity)*blend)/100;
+                  else
+                    q->opacity=(MaxRGB*blend)/100;
                   q++;
                 }
                 if (!SyncImagePixels(composite_image))
                   break;
               }
+              composite_image->storage_class=DirectClass;
+              composite_image->matte=True;
             }
           CompositeImage(image,(CompositeOperator)
             argument_list[0].int_reference,argument_list[1].image_reference,
