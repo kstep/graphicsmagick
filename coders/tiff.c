@@ -476,6 +476,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       case COMPRESSION_OJPEG: image->compression=JPEGCompression; break;
       case COMPRESSION_LZW: image->compression=LZWCompression; break;
       case COMPRESSION_DEFLATE: image->compression=ZipCompression; break;
+      case COMPRESSION_ADOBE_DEFLATE: image->compression=ZipCompression; break;
       default: image->compression=RunlengthEncodedCompression; break;
     }
     image->columns=width;
@@ -1370,7 +1371,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       case LZWCompression: compress_tag=COMPRESSION_LZW; break;
       case RunlengthEncodedCompression:
         compress_tag=COMPRESSION_PACKBITS; break;
-      case ZipCompression: compress_tag=COMPRESSION_DEFLATE; break;
+      case ZipCompression: compress_tag=COMPRESSION_ADOBE_DEFLATE; break;
+      /* case ZipCompression: compress_tag=COMPRESSION_DEFLATE; break; */
       default: compress_tag=COMPRESSION_NONE; break;
     }
     if (((image_info->colorspace == UndefinedColorspace) &&
@@ -1445,7 +1447,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       case LZWCompression: compress_tag=COMPRESSION_LZW; break;
       case RunlengthEncodedCompression:
         compress_tag=COMPRESSION_PACKBITS; break;
-      case ZipCompression: compress_tag=COMPRESSION_DEFLATE; break;
+      /* case ZipCompression: compress_tag=COMPRESSION_DEFLATE; break; */
+      case ZipCompression: compress_tag=COMPRESSION_ADOBE_DEFLATE; break;
       default: break;
     }
     TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
