@@ -474,6 +474,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   append_image=CloneImage(image,width,height,True,exception);
   if (append_image == (Image *) NULL)
     return((Image *) NULL);
+  SetImage(append_image,OpaqueOpacity);
   scene=0;
   if (stack)
     {
@@ -6441,6 +6442,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
       if (image->colorspace != RGBColorspace)
         (void) RGBTransformImage(image,RGBColorspace);
       (void) RGBTransformImage(image,GRAYColorspace);
+      image->matte=False;
       break;
     }
     case GrayscaleMatteType:
@@ -6464,6 +6466,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
         (void) RGBTransformImage(image,RGBColorspace);
       GetQuantizeInfo(&quantize_info);
       (void) QuantizeImage(&quantize_info,image);
+      image->matte=False;
       break;
     }
     case PaletteMatteType:
@@ -6488,6 +6491,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
       if (image->colorspace != RGBColorspace)
         (void) RGBTransformImage(image,RGBColorspace);
       image->storage_class=DirectClass;
+      image->matte=False;
       break;
     }
     case TrueColorMatteType:
@@ -6507,6 +6511,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
       if (image->colorspace == CMYKColorspace)
         break;
       (void) RGBTransformImage(image,CMYKColorspace);
+      image->matte=False;
       break;
     }
     case ColorSeparationMatteType:
