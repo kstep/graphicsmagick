@@ -1,16 +1,20 @@
+2002-06-14  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+  * The wbmp writer would dump core if it received a DirectClass image
+    that contained only black and white pixels, because no colormap exists.
+
 2002-06-09  Cristy  <cristy@mystic.es.dupont.com>
-	* Label color could not be set (bug report by Ron Savage).
-	* Added CatchException() method to magick/error.c.
-	* Added SetVirtualPixelMethod() method to magick/cache.c.
+  * Label color could not be set (bug report by Ron Savage).
+  * Added CatchException() method to magick/error.c.
+  * Added SetVirtualPixelMethod() method to magick/cache.c.
 
 2002-06-06  Cristy  <cristy@mystic.es.dupont.com>
-	* ImageMagick, version 5.4.6-1 released.
+  * ImageMagick, version 5.4.6-1 released.
 
 2002-06-05  Cristy  <cristy@mystic.es.dupont.com>
-	* Added -encoding option to command line utilities.
+  * Added -encoding option to command line utilities.
 
 2002-06-02  Cristy  <cristy@mystic.es.dupont.com>
-	* ImageMagick, version 5.4.6 released.
+  * ImageMagick, version 5.4.6 released.
 
 2002-05-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * ImageMagick may now be built (static build only) using the
