@@ -1,5 +1,6 @@
 2003-12-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* Makefile.am: Updated to Automake 1.8.
 	* configure.ac: Set scripts to executable.
 
 2003-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

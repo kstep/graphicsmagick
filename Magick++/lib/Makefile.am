@@ -3,7 +3,7 @@
 #
 # Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 #
-AUTOMAKE_OPTIONS = 1.7 nostdinc
+AUTOMAKE_OPTIONS = 1.8 nostdinc
 
 SUBDIRS = Magick++
 
