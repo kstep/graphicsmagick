@@ -510,9 +510,11 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       flags=GetGeometry(image_info->size,&geometry.x,&geometry.y,
         &geometry.width,&geometry.height);
-      if ((flags & WidthValue) && (geometry.width < image->columns))
+      if ((flags & WidthValue) && (geometry.width != 0)
+          && (geometry.width < image->columns))
         image->columns=geometry.width;
-      if ((flags & HeightValue) && (geometry.height < image->rows))
+      if ((flags & HeightValue) && (geometry.height != 0)
+          && (geometry.height < image->rows))
         image->rows=geometry.height;
     }
   if (image->storage_class == PseudoClass)
