@@ -2725,24 +2725,24 @@ static inline int GetWindingNumber(const PolygonInfo *polygon_info,
   for (i=0; i < polygon_info->number_edges; i++)
   {
     p=polygon_info->edges+i;
-    if (p->bounds.y1 > y)
+    if (y < p->bounds.y1)
       break;
-    if (p->bounds.y2 <= y)
+    if (y >= p->bounds.y2)
       continue;
-    if (p->bounds.x2 < x)
+    if (x < p->bounds.x1)
+      continue;
+    if (x >= p->bounds.x2)
       {
         winding_number+=p->direction ? 1 : -1;
         continue;
       }
-    if (p->bounds.x1 > x)
-      continue;
     for (j=Max(p->highwater,1); j < p->number_points; j++)
-      if (p->points[j].y > y)
+      if (y <= p->points[j].y)
         break;
     q=p->points+j-1;
     dx=(q+1)->x-q->x;
     dy=(q+1)->y-q->y;
-    if ((dy*(x-q->x)) > (dx*(y-q->y)))
+    if ((dx*(y-q->y)) <= (dy*(x-q->x)))
       winding_number+=p->direction ? 1 : -1;
   }
   return(winding_number);
@@ -2880,7 +2880,9 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
             (void) DestroyEdge(polygon_info,i);
             continue;
           }
-        if ((x < (p->bounds.x1-mid-0.5)) || (x >= (p->bounds.x2+mid+0.5)))
+        if (x < (p->bounds.x1-mid-0.5))
+          continue;
+	if (x >= (p->bounds.x2+mid+0.5))
           continue;
         for (j=Max(p->highwater,1); j < p->number_points; j++)
         {
