@@ -271,9 +271,11 @@ static void         util_set_pen(wmfAPI * API, wmfDC * dc);
 /* Progress callback */
 int magick_progress_callback (void* context,float quantum)
 {
-  if (!MagickMonitor((char*)context,(off_t)floor(quantum*100),100,&image->exception))
-    break;
-  return 0;
+  Image
+    *image;
+
+  image=(Image *) context;
+  return(MagickMonitor((char*)context,(off_t)floor(quantum*100),100,&image->exception));
 }
 
 /* Set fill color */
