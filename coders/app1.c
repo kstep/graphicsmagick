@@ -303,7 +303,7 @@ static unsigned int WriteAPP1Image(const ImageInfo *image_info,Image *image)
   for (i=0; i < (int) image->generic_profiles; i++)
   {
     if ((LocaleCompare(image->generic_profile[i].name,"APP1") == 0) &&
-      (image->generic_profile[i].length > 0))
+      (image->generic_profile[i].length != 0))
       {
         /*
           Open image file.
