@@ -13,7 +13,7 @@
 # Don't require all the GNU mandated files
 AUTOMAKE_OPTIONS = 1.7 foreign
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) @MODULE_EXTRA_CPPFLAGS@
 
 if HasWINGDI32
 MAGICK_GDI32_MODULES = clipboard.la emf.la
@@ -48,7 +48,7 @@ EXTRA_DIST = modules.mgk delegates.mgk.in type.mgk.in
 noinst_HEADERS = 
 
 # Location of libGraphicsMagick.la
-LIBMAGICK = ../magick/libGraphicsMagick.la
+LIBMAGICK = $(top_builddir)/magick/libGraphicsMagick.la
 
 # Where coder modules are installed
 pkgdir = @MagickCoderModulesPath@
@@ -81,9 +81,6 @@ else
 pkg_LTLIBRARIES =
 MODULECOMMONFLAGS     =
 endif # WITH_MODULES
-
-#AM_CFLAGS = @MODULE_EXTRA_CPPFLAGS@
-AM_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
 
 # ART module
 art_la_SOURCES      = art.c
@@ -540,7 +537,7 @@ yuv_la_SOURCES      = yuv.c
 yuv_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 yuv_la_LIBADD       = $(LIBMAGICK)
 
-DEFS = @DEFS@ -I../
+#DEFS = @DEFS@ -I../
 
 # Install delegates files
 DATADELEGATES = \

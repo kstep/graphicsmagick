@@ -1,3 +1,36 @@
+2003-06-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand: Added Magick Wand library available via
+	-lGraphicsMagickWand and <wand/wand_api.h>. Use
+	GraphicsMagickWand-config or GraphicsMagickWand.pc to obtain the
+	compilation options required to use the library. Magick Wand is
+	authored by John Cristy. Magick Wand is provided as a separate
+	library from -lGraphicsMagick in order to assure the stability of
+	the core GraphicsMagick library while allowing Magick Wand to
+	to evolve.
+	* images: Replace existing logo images with cleaner ones.
+	* www: Update links to point to updated logo images.
+	* logos: New CVS directory to contain master logos.
+	* scripts/txt2html: Updated inline logo image link.
+	* scripts/format_c_api_docs: Updated inline logo image link.
+	* version.sh: Support versioning all libraries independently.
+	* coders/meta.c: Prefix include paths for safety.
+	* magick/image.h: (TransmitType) Removed unused enumeration.
+	(ProfileType) Removed unused enumeration.
+	(QuantumType) Moved enumeration to constitute.h
+	(StorageType) Moved enumeration to constitute.h
+	* magick/draw.c (DrawPeekGraphicContext): Added function to peek
+	at head of drawing context stack (function added for ImageMagick
+	compatability).
+	* magick/image.c (CycleColormapImage): Change return type from
+	'void' to 'unsigned int' so that error status is returned to user.
+	(DescribeImage): Change return type from
+	'void' to 'unsigned int' so that error status is returned to user.
+	* magick/list.c (ReplaceImageInList): Incorporated function from
+	John Cristy's ImageMagick to replace current image in the list.
+	* coders/sgi.c (ReadSGIImage): Applied patch from John Cristy's
+	ImageMagick to save the compression type for SGI images.
+
 2003-06-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/txt.c (WriteTXTImage): Apply patch from John Cristy's

@@ -271,6 +271,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (iris_info.magic != 0x01DA)
       ThrowReaderException(CorruptImageError,"NotASGIImage",image);
     iris_info.storage=ReadBlobByte(image);
+    if (iris_info.storage == 0x01)
+      image->compression=RLECompression;
     iris_info.bytes_per_pixel=ReadBlobByte(image);
     iris_info.dimension=ReadBlobMSBShort(image);
     iris_info.columns=ReadBlobMSBShort(image);

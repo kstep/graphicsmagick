@@ -168,10 +168,7 @@ LIBADD_DL = @LIBADD_DL@
 LIBEXEC_DIR = @LIBEXEC_DIR@
 LIBLTDL = @LIBLTDL@
 LIBOBJS = @LIBOBJS@
-LIBRARY_AGE = @LIBRARY_AGE@
-LIBRARY_CURRENT = @LIBRARY_CURRENT@
 LIBRARY_EXTRA_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
-LIBRARY_REVISION = @LIBRARY_REVISION@
 LIBS = @LIBS@
 LIBSTDCLDFLAGS = @LIBSTDCLDFLAGS@
 LIBTOOL = @LIBTOOL@
@@ -212,9 +209,18 @@ LaunchDelegate = @LaunchDelegate@
 MAGICKLIB = @MAGICKLIB@
 MAGICKLIBDIR = @MAGICKLIBDIR@
 MAGICK_DEP_LIBS = @MAGICK_DEP_LIBS@
+MAGICK_LIBRARY_AGE = @MAGICK_LIBRARY_AGE@
+MAGICK_LIBRARY_CURRENT = @MAGICK_LIBRARY_CURRENT@
+MAGICK_LIBRARY_REVISION = @MAGICK_LIBRARY_REVISION@
 MAGICK_LIB_VERSION = @MAGICK_LIB_VERSION@
 MAGICK_LIB_VERSION_NUMBER = @MAGICK_LIB_VERSION_NUMBER@
 MAGICK_LIB_VERSION_TEXT = @MAGICK_LIB_VERSION_TEXT@
+MAGICK_PLUS_PLUS_LIBRARY_AGE = @MAGICK_PLUS_PLUS_LIBRARY_AGE@
+MAGICK_PLUS_PLUS_LIBRARY_CURRENT = @MAGICK_PLUS_PLUS_LIBRARY_CURRENT@
+MAGICK_PLUS_PLUS_LIBRARY_REVISION = @MAGICK_PLUS_PLUS_LIBRARY_REVISION@
+MAGICK_WAND_LIBRARY_AGE = @MAGICK_WAND_LIBRARY_AGE@
+MAGICK_WAND_LIBRARY_CURRENT = @MAGICK_WAND_LIBRARY_CURRENT@
+MAGICK_WAND_LIBRARY_REVISION = @MAGICK_WAND_LIBRARY_REVISION@
 MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
@@ -354,9 +360,9 @@ DIST_SUBDIRS = ltdl coders filters magick utilities tests Magick++
 
 @WITH_LTDL_TRUE@LTDL = ltdl
 @WITH_LTDL_FALSE@LTDL = 
-@WITH_MODULES_FALSE@SUBDIRS = $(LTDL) coders filters magick $(MAGICK_PLUS_PLUS) utilities tests
+@WITH_MODULES_FALSE@SUBDIRS = $(LTDL) coders filters magick wand $(MAGICK_PLUS_PLUS) utilities tests
 
-@WITH_MODULES_TRUE@SUBDIRS = $(LTDL) magick coders filters $(MAGICK_PLUS_PLUS) utilities tests
+@WITH_MODULES_TRUE@SUBDIRS = $(LTDL) magick coders filters wand $(MAGICK_PLUS_PLUS) utilities tests
 pkgdata_DATA = Copyright.txt
 
 # Additional files to distribute
@@ -597,7 +603,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/Magick++/bin $(distdir)/Magick++/lib $(distdir)/PerlMagick $(distdir)/coders $(distdir)/magick
+	$(mkinstalldirs) $(distdir)/Magick++/bin $(distdir)/Magick++/lib $(distdir)/PerlMagick $(distdir)/coders $(distdir)/magick $(distdir)/wand
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

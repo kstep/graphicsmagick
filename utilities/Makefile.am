@@ -12,8 +12,8 @@
 # Don't require all the GNU mandated files
 AUTOMAKE_OPTIONS = 1.7 foreign
 
-MAGICK_LIB	= ../magick/libGraphicsMagick.la # libtool library name
-INCLUDES	=  -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
+MAGICK_LIB	= $(top_builddir)/magick/libGraphicsMagick.la # libtool library name
+AM_CPPFLAGS	=  -I$(top_builddir) -I$(top_srcdir)
 
 STDMANPAGES = gm.1 miff.4 quantize.5
 X11MANPAGES = 

@@ -1271,7 +1271,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %
 */
-MagickExport void CycleColormapImage(Image *image,const int amount)
+MagickExport unsigned int  CycleColormapImage(Image *image,const int amount)
 {
   long
     index,
@@ -1288,7 +1288,8 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
 
   unsigned int
     is_grayscale,
-    is_monochrome;
+    is_monochrome,
+    status = True;
 
 
   assert(image != (Image *) NULL);
@@ -1301,7 +1302,10 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
-      break;
+      {
+        status=False;
+        break;
+      }
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
@@ -1315,10 +1319,14 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
       q++;
     }
     if (!SyncImagePixels(image))
-      break;
+      {
+        status=False;
+        break;
+      }
   }
   image->is_grayscale=is_grayscale;
   image->is_monochrome=is_monochrome;
+  return(status);
 }
 
 /*
@@ -1350,7 +1358,7 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
 %
 %
 */
-MagickExport void DescribeImage(Image *image,FILE *file,
+MagickExport unsigned int DescribeImage(Image *image,FILE *file,
   const unsigned int verbose)
 {
   char
@@ -1372,6 +1380,9 @@ MagickExport void DescribeImage(Image *image,FILE *file,
 
   long
     y;
+
+  unsigned int
+    status=True;
 
   register long
     i,
@@ -1436,7 +1447,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         }
       (void) fprintf(file,"%0.3fu %ld:%02ld\n",user_time,
         (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)));
-      return;
+      return (ferror(file) ? False : True);
     }
   /*
     Display verbose info about the image.
@@ -1921,6 +1932,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     (void) fprintf(file,"  Elapsed Time: %ld:%02ld\n",
       (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)));
   (void) fflush(file);
+  return (ferror(file) ? False : True);
 }
 
 /*

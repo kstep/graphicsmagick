@@ -31,9 +31,9 @@ LTDL=
 endif
 
 if WITH_MODULES
-SUBDIRS = $(LTDL) magick coders filters $(MAGICK_PLUS_PLUS) utilities tests
+SUBDIRS = $(LTDL) magick coders filters wand $(MAGICK_PLUS_PLUS) utilities tests
 else
-SUBDIRS = $(LTDL) coders filters magick $(MAGICK_PLUS_PLUS) utilities tests
+SUBDIRS = $(LTDL) coders filters magick wand $(MAGICK_PLUS_PLUS) utilities tests
 endif # WITH_MODULES
 
 # Architecture independent data files installed in the package's data directory

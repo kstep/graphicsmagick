@@ -46,7 +46,24 @@ PACKAGE_VERSION_ADDENDUM="-${CHANGE_DATE}"
 #     increment age.
 #  6. If any interfaces have been removed since the last public release,
 #     then set age to 0.
-LIBRARY_CURRENT=1
-LIBRARY_REVISION=0
-LIBRARY_AGE=0
 
+#
+# Magick library versioning
+#
+MAGICK_LIBRARY_CURRENT=1
+MAGICK_LIBRARY_REVISION=0
+MAGICK_LIBRARY_AGE=0
+
+#
+# Magick++ library versioning
+#
+MAGICK_PLUS_PLUS_LIBRARY_CURRENT=1
+MAGICK_PLUS_PLUS_LIBRARY_REVISION=0
+MAGICK_PLUS_PLUS_LIBRARY_AGE=0
+
+#
+# Magick Wand library versioning
+#
+MAGICK_WAND_LIBRARY_CURRENT=0
+MAGICK_WAND_LIBRARY_REVISION=0
+MAGICK_WAND_LIBRARY_AGE=0

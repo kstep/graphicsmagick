@@ -1,10 +1,10 @@
 .ad l
 .nh
-.TH GraphicsMagick-Config 1 "4 December 2002" "GraphicsMagick"
+.TH GraphicsMagick-Config 1 "15 June 2003" "GraphicsMagick"
 .SH NAME
-GraphicsMagick-config \- get information about the installed version of GraphicsMagick
+GraphicsMagickWand-config \- get information about the installed version of GraphicsMagick
 .SH SYNOPSIS
-.B GraphicsMagick-config 
+.B GraphicsMagickWand-config 
 .B [--cflags]
 .B [--cppflags]
 .B [--exec-prefix]
@@ -13,10 +13,10 @@ GraphicsMagick-config \- get information about the installed version of Graphics
 .B [--prefix]
 .B [--version]
 .SH DESCRIPTION
-.B GraphicsMagick-config
+.B GraphicsMagickWand-config
 prints the compiler and linker flags required to compile and link programs
 that use the
-.BR GraphicsMagick
+.B GraphicsMagick Wand
 Application Programmer Interface.
 .SH EXAMPLES
 To print the version of the installed distribution of
@@ -24,22 +24,22 @@ To print the version of the installed distribution of
 use:
 
 .nf
-  GraphicsMagick-config --version
+  GraphicsMagickWand-config --version
 .fi
   
 To compile a program that calls the 
-.BR GraphicsMagick
+.B GraphicsMagick Wand
 Application Programmer Interface, use:
 
 .nf
-  cc `GraphicsMagick-config --cflags --cppflags --ldflags --libs` program.c
+  cc `GraphicsMagickWand-config --cflags --cppflags --ldflags --libs` program.c
 .fi
 
 .SH OPTIONS
 .TP
 .B --cflags
 Print the compiler flags that were used to compile 
-.BR libMagick .
+.BR libGraphicsMagick .
 .TP
 .B --cppflags
 Print the preprocessor flags that are needed to find the
@@ -52,19 +52,19 @@ Print the directory under which target specific binaries and executables are ins
 .TP
 .B --ldflags
 Print the linker flags that are needed to link with the
-.B GraphicsMagick
+.B GraphicsMagickWand
 library.
 .TP
 .B --libs
 Print the linker flags that are needed to link a program with
-.BR libGraphicsMagick .
+.BR libMagick .
 .TP
 .B --version
 Print the version of the
 .B GraphicsMagick
 distribution to standard output.
 .SH COPYRIGHT
-Copyright (C) 2002 GraphicsMagick Group
+Copyright (C) 2003 GraphicsMagick Group
 
 Copyright (C) 2002 ImageMagick Studio
 .SH AUTHORS

@@ -1,6 +1,6 @@
 /*
 % Copyright (C) 2003 GraphicsMagick Group
-% Copyright (C) 2002 ImageMagick Studio
+% Copyright (C) 2002, 2003 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -729,6 +729,49 @@ MagickExport Image *RemoveLastImageFromList(Image **images)
       image->previous=(Image *) NULL;
     }
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e p l a c e I m a g e I n L i s t                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReplaceImageInList() replaces an image in the list.
+%
+%  The format of the ReplaceImageInList method is:
+%
+%      ReplaceImageInList(Image **images,Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport void ReplaceImageInList(Image **images,Image *image)
+{
+  assert(images != (Image **) NULL);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if ((*images) == (Image *) NULL)
+    return;
+  assert((*images)->signature == MagickSignature);
+  image->next=(*images)->next;
+  if (image->next != (Image *) NULL)
+    image->next->previous=image;
+  image->previous=(*images)->previous;
+  if (image->previous != (Image *) NULL)
+    image->previous->next=image;
+  DestroyImage(*images);
+  (*images)=image;
 }
 
 /*

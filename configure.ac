@@ -17,9 +17,22 @@ AC_INIT(magick/magick.h)
 
 echo "configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
 AC_CANONICAL_SYSTEM
-AC_SUBST(LIBRARY_CURRENT)dnl
-AC_SUBST(LIBRARY_REVISION)dnl
-AC_SUBST(LIBRARY_AGE)dnl
+
+# Substitute Magick library versioning
+AC_SUBST(MAGICK_LIBRARY_CURRENT)dnl
+AC_SUBST(MAGICK_LIBRARY_REVISION)dnl
+AC_SUBST(MAGICK_LIBRARY_AGE)dnl
+
+# Substitute Magick++ library versioning
+AC_SUBST(MAGICK_PLUS_PLUS_LIBRARY_CURRENT)
+AC_SUBST(MAGICK_PLUS_PLUS_LIBRARY_REVISION)
+AC_SUBST(MAGICK_PLUS_PLUS_LIBRARY_AGE)
+
+# Substitute Magick Wand library versioning
+AC_SUBST(MAGICK_WAND_LIBRARY_CURRENT)
+AC_SUBST(MAGICK_WAND_LIBRARY_REVISION)
+AC_SUBST(MAGICK_WAND_LIBRARY_AGE)
+
 AC_SUBST(PACKAGE_NAME)dnl
 AC_SUBST(PACKAGE_VERSION)dnl
 AC_SUBST(PACKAGE_VERSION_ADDENDUM)dnl
@@ -28,7 +41,7 @@ AC_SUBST(PACKAGE_RELEASE_DATE)dnl
 # Definition used to define MagickLibVersion in version.h
 # As soon as any of these values exceeds 9, a more sophisticated formatting
 # scheme must be invented for this string.
-MAGICK_LIB_VERSION="0x0${LIBRARY_CURRENT}0${LIBRARY_AGE}0${LIBRARY_REVISION}"
+MAGICK_LIB_VERSION="0x0${MAGICK_LIBRARY_CURRENT}0${MAGICK_LIBRARY_AGE}0${MAGICK_LIBRARY_REVISION}"
 AC_SUBST(MAGICK_LIB_VERSION)
 
 # Definition used to define MagickLibVersionText in version.h
@@ -36,7 +49,7 @@ MAGICK_LIB_VERSION_TEXT="${PACKAGE_VERSION}"
 AC_SUBST(MAGICK_LIB_VERSION_TEXT)
 
 # Definition used to define MagickLibVersionNumber in version.h
-MAGICK_LIB_VERSION_NUMBER="${LIBRARY_CURRENT},${LIBRARY_AGE},${LIBRARY_REVISION}"
+MAGICK_LIB_VERSION_NUMBER="${MAGICK_LIBRARY_CURRENT},${MAGICK_LIBRARY_AGE},${MAGICK_LIBRARY_REVISION}"
 AC_SUBST(MAGICK_LIB_VERSION_NUMBER)
 
 # Ensure that make can run correctly
@@ -2349,6 +2362,9 @@ AC_OUTPUT( \
         magick/GraphicsMagick-config \
         magick/GraphicsMagick.pc \
         magick/version.h \
+        wand/Makefile \
+        wand/GraphicsMagickWand.pc \
+        wand/GraphicsMagickWand-config \
         Magick++/Makefile \
         Magick++/bin/GraphicsMagick++-config \
         Magick++/bin/Makefile \

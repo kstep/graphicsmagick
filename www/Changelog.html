@@ -56,6 +56,14 @@
 2003-06-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> wand: Added Magick Wand library available via
+        -lGraphicsMagickWand and &lt;wand/wand_api.h&gt;. Use
+        GraphicsMagickWand-config or GraphicsMagickWand.pc to obtain the
+        compilation options required to use the library. Magick Wand is
+        authored by John Cristy. Magick Wand is provided as a separate
+        library from -lGraphicsMagick in order to assure the stability of
+        the core GraphicsMagick library while allowing Magick Wand to
+        to evolve.<BR>
   <LI> images: Replace existing logo images with cleaner ones.
   <LI> www: Update links to point to updated logo images.
   <LI> logos: New CVS directory to contain master logos.

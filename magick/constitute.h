@@ -15,6 +15,36 @@
 extern "C" {
 #endif /* defined(__cplusplus) || defined(c_plusplus) */
 
+typedef enum
+{
+  IndexQuantum,
+  GrayQuantum,
+  IndexAlphaQuantum,
+  GrayAlphaQuantum,
+  RedQuantum,
+  CyanQuantum,
+  GreenQuantum,
+  YellowQuantum,
+  BlueQuantum,
+  MagentaQuantum,
+  AlphaQuantum,
+  BlackQuantum,
+  RGBQuantum,
+  RGBAQuantum,
+  CMYKQuantum,
+  CMYKAQuantum
+} QuantumType;
+
+typedef enum
+{
+  CharPixel,
+  ShortPixel,
+  IntegerPixel,
+  LongPixel,
+  FloatPixel,
+  DoublePixel
+} StorageType;
+
 extern MagickExport Image
   *ConstituteImage(const unsigned long,const unsigned long,const char *,
    const StorageType,const void *,ExceptionInfo *),

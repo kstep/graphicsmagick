@@ -36,6 +36,9 @@ typedef struct _DrawContext *DrawContext;
 extern MagickExport ClipPathUnits
   DrawGetClipUnits(DrawContext context);
 
+extern MagickExport const DrawInfo
+  *DrawPeekGraphicContext(const DrawContext context);
+
 extern MagickExport DecorationType
   DrawGetTextDecoration(DrawContext context);
 

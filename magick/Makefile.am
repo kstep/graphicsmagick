@@ -6,7 +6,7 @@
 # Copyright.txt. You should have received a copy of Copyright.txt with this
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 #
-#  Makefile for building ImageMagick library
+# Makefile for building GraphicsMagick library
 #
 #
 
@@ -19,21 +19,18 @@ pkgincludedir = $(includedir)/GraphicsMagick/magick
 # Shared libraries built in this directory
 lib_LTLIBRARIES = libGraphicsMagick.la
 
-LIBRARY_CURRENT    = @LIBRARY_CURRENT@
-LIBRARY_REVISION   = @LIBRARY_REVISION@
-LIBRARY_AGE        = @LIBRARY_AGE@
+LIBRARY_CURRENT    = @MAGICK_LIBRARY_CURRENT@
+LIBRARY_REVISION   = @MAGICK_LIBRARY_REVISION@
+LIBRARY_AGE        = @MAGICK_LIBRARY_AGE@
 
 BUILT_SOURCES = magick_config.h magick_config_api.h
-
-INCLUDES = -I$(top_srcdir) $(INCLTDL)
 
 ALLMANPAGES = GraphicsMagick-config.1
 
 libGraphicsMagick_la_LDFLAGS = -no-undefined \
 	-version-info $(LIBRARY_CURRENT):$(LIBRARY_REVISION):$(LIBRARY_AGE)
 
-#AM_CFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
-AM_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
+AM_CPPFLAGS = -I$(top_srcdir) $(INCLTDL) @LIBRARY_EXTRA_CPPFLAGS@
 
 # Library base sources
 MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \

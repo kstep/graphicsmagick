@@ -14,10 +14,22 @@
 
 @SET_MAKE@
 
+# Copyright (C) 2003 GraphicsMagick Group
+#
+# This program is covered by multiple licenses, which are described in
+# Copyright.txt. You should have received a copy of Copyright.txt with this
+# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+#
+# Makefile for building Magick Wand library
+#
+#
+
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
-top_builddir = ../..
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+top_builddir = ..
 
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 INSTALL = @INSTALL@
@@ -35,9 +47,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-pkgdatadir = $(datadir)/Magick++
-pkglibdir = $(libdir)/Magick++
-pkgincludedir = $(includedir)/Magick++
+pkgincludedir = $(includedir)/wand
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -311,7 +321,7 @@ host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
 
-includedir = $(prefix)/include/GraphicsMagick
+includedir = ${prefix}/include/GraphicsMagick
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
@@ -333,107 +343,115 @@ type_include_files = @type_include_files@
 windows_font_dir = @windows_font_dir@
 xml2_config = @xml2_config@
 
-#
-# Makefile for Magick++ library
-#
-# Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-#
-AUTOMAKE_OPTIONS = 1.7 nostdinc
+lib_LTLIBRARIES = libGraphicsMagickWand.la
 
-SUBDIRS = Magick++
+LIBRARY_CURRENT = @MAGICK_WAND_LIBRARY_CURRENT@
+LIBRARY_REVISION = @MAGICK_WAND_LIBRARY_REVISION@
+LIBRARY_AGE = @MAGICK_WAND_LIBRARY_AGE@
 
-AM_CPPFLAGS = -I$(srcdir) -I../.. -I$(top_srcdir)
+AM_CPPFLAGS = -I$(top_srcdir)
 
-lib_LTLIBRARIES = libGraphicsMagick++.la
+libGraphicsMagickWand_la_SOURCES = magick_wand.c pixel_wand.c magick_compat.c
 
-LIBRARY_CURRENT = @MAGICK_PLUS_PLUS_LIBRARY_CURRENT@
-LIBRARY_REVISION = @MAGICK_PLUS_PLUS_LIBRARY_REVISION@
-LIBRARY_AGE = @MAGICK_PLUS_PLUS_LIBRARY_AGE@
-
-libGraphicsMagick___la_SOURCES = \
-	Blob.cpp BlobRef.cpp CoderInfo.cpp Color.cpp Drawable.cpp \
-	Exception.cpp Functions.cpp Geometry.cpp Image.cpp ImageRef.cpp \
-	Montage.cpp Options.cpp Pixels.cpp STL.cpp Thread.cpp TypeMetric.cpp
-
-
-# Add -no-undefined once Cygwin supports throwing C++ exceptions from DLLs.
-libGraphicsMagick___la_LDFLAGS = \
+libGraphicsMagickWand_la_LDFLAGS = -no-undefined \
 	-version-info $(LIBRARY_CURRENT):$(LIBRARY_REVISION):$(LIBRARY_AGE)
 
 
-libGraphicsMagick___la_LIBADD = $(top_builddir)/magick/libGraphicsMagick.la
+libGraphicsMagickWand_la_LIBADD = $(top_builddir)/magick/libGraphicsMagick.la
 
-include_HEADERS = Magick++.h
+check_PROGRAMS = drawtest wandtest
 
-EXTRA_DIST = GraphicsMagick++.pc.in
+drawtest_LDADD = libGraphicsMagickWand.la
+drawtest_LDFLAGS = @LDFLAGS@
+drawtest_SOURCES = drawtest.c
 
-AM_LDFLAGS = @LDFLAGS@ $(LIBSTDCLDFLAGS)
+wandtest_LDADD = libGraphicsMagickWand.la
+wandtest_LDFLAGS = @LDFLAGS@
+wandtest_SOURCES = wandtest.c
+
+# Binary scripts
+bin_SCRIPTS = GraphicsMagickWand-config
+
+# Headers which are installed
+pkginclude_HEADERS = drawing_wand.h magick_wand.h pixel_wand.h wand_api.h
 
 # Pkgconfig directory
 pkgconfigdir = $(libdir)/pkgconfig
 
 # Files to install in Pkgconfig directory
-pkgconfig_DATA = GraphicsMagick++.pc
-subdir = Magick++/lib
+pkgconfig_DATA = GraphicsMagickWand.pc
+
+EXTRA_DIST = input_256c.miff input_bilevel.miff input_gray.miff \
+	input_truecolor.miff sequence.miff
+
+
+# Manual pages to install
+man_MANS = GraphicsMagickWand-config.1
+
+@WIN32_NATIVE_BUILD_TRUE@SRCDIR = '$(shell @WinPathScript@ $(srcdir)/)'
+@WIN32_NATIVE_BUILD_FALSE@SRCDIR = '$(srcdir)/'
+subdir = wand
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
 	$(top_builddir)/magick/magick_config_api.h
-CONFIG_CLEAN_FILES = GraphicsMagick++.pc
+CONFIG_CLEAN_FILES = GraphicsMagickWand.pc GraphicsMagickWand-config
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
-libGraphicsMagick___la_DEPENDENCIES = \
+libGraphicsMagickWand_la_DEPENDENCIES = \
 	$(top_builddir)/magick/libGraphicsMagick.la
-am_libGraphicsMagick___la_OBJECTS = Blob.lo BlobRef.lo CoderInfo.lo \
-	Color.lo Drawable.lo Exception.lo Functions.lo Geometry.lo \
-	Image.lo ImageRef.lo Montage.lo Options.lo Pixels.lo STL.lo \
-	Thread.lo TypeMetric.lo
-libGraphicsMagick___la_OBJECTS = $(am_libGraphicsMagick___la_OBJECTS)
+am_libGraphicsMagickWand_la_OBJECTS = magick_wand.lo pixel_wand.lo \
+	magick_compat.lo
+libGraphicsMagickWand_la_OBJECTS = \
+	$(am_libGraphicsMagickWand_la_OBJECTS)
+check_PROGRAMS = drawtest$(EXEEXT) wandtest$(EXEEXT)
+am_drawtest_OBJECTS = drawtest.$(OBJEXT)
+drawtest_OBJECTS = $(am_drawtest_OBJECTS)
+drawtest_DEPENDENCIES = libGraphicsMagickWand.la
+am_wandtest_OBJECTS = wandtest.$(OBJEXT)
+wandtest_OBJECTS = $(am_wandtest_OBJECTS)
+wandtest_DEPENDENCIES = libGraphicsMagickWand.la
+SCRIPTS = $(bin_SCRIPTS)
 
-DEFAULT_INCLUDES = 
+
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick -I$(top_builddir)/magick
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Blob.Plo ./$(DEPDIR)/BlobRef.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/CoderInfo.Plo ./$(DEPDIR)/Color.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Drawable.Plo ./$(DEPDIR)/Exception.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Functions.Plo ./$(DEPDIR)/Geometry.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Image.Plo ./$(DEPDIR)/ImageRef.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Montage.Plo ./$(DEPDIR)/Options.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Pixels.Plo ./$(DEPDIR)/STL.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Thread.Plo ./$(DEPDIR)/TypeMetric.Plo
-CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
-LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
-	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-	$(AM_CXXFLAGS) $(CXXFLAGS)
-CXXLD = $(CXX)
-CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/drawtest.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/magick_compat.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/magick_wand.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/pixel_wand.Plo ./$(DEPDIR)/wandtest.Po
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
+	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libGraphicsMagick___la_SOURCES)
+DIST_SOURCES = $(libGraphicsMagickWand_la_SOURCES) $(drawtest_SOURCES) \
+	$(wandtest_SOURCES)
+
+NROFF = nroff
+MANS = $(man_MANS)
 DATA = $(pkgconfig_DATA)
 
-HEADERS = $(include_HEADERS)
+HEADERS = $(pkginclude_HEADERS)
 
+DIST_COMMON = $(pkginclude_HEADERS) GraphicsMagickWand-config.in \
+	GraphicsMagickWand.pc.in Makefile.am Makefile.in
+SOURCES = $(libGraphicsMagickWand_la_SOURCES) $(drawtest_SOURCES) $(wandtest_SOURCES)
 
-RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
-	ps-recursive install-info-recursive uninstall-info-recursive \
-	all-recursive install-data-recursive install-exec-recursive \
-	installdirs-recursive install-recursive uninstall-recursive \
-	check-recursive installcheck-recursive
-DIST_COMMON = $(include_HEADERS) GraphicsMagick++.pc.in Makefile.am \
-	Makefile.in
-DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(libGraphicsMagick___la_SOURCES)
-
-all: all-recursive
+all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .cpp .lo .o .obj
+.SUFFIXES: .c .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  Magick++/lib/Makefile
+	  $(AUTOMAKE) --gnu  wand/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-GraphicsMagick++.pc: $(top_builddir)/config.status GraphicsMagick++.pc.in
+GraphicsMagickWand.pc: $(top_builddir)/config.status GraphicsMagickWand.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+GraphicsMagickWand-config: $(top_builddir)/config.status GraphicsMagickWand-config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 libLTLIBRARIES_INSTALL = $(INSTALL)
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
@@ -463,8 +481,41 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libGraphicsMagick++.la: $(libGraphicsMagick___la_OBJECTS) $(libGraphicsMagick___la_DEPENDENCIES) 
-	$(CXXLINK) -rpath $(libdir) $(libGraphicsMagick___la_LDFLAGS) $(libGraphicsMagick___la_OBJECTS) $(libGraphicsMagick___la_LIBADD) $(LIBS)
+libGraphicsMagickWand.la: $(libGraphicsMagickWand_la_OBJECTS) $(libGraphicsMagickWand_la_DEPENDENCIES) 
+	$(LINK) -rpath $(libdir) $(libGraphicsMagickWand_la_LDFLAGS) $(libGraphicsMagickWand_la_OBJECTS) $(libGraphicsMagickWand_la_LIBADD) $(LIBS)
+
+clean-checkPROGRAMS:
+	@list='$(check_PROGRAMS)'; for p in $$list; do \
+	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	  echo " rm -f $$p $$f"; \
+	  rm -f $$p $$f ; \
+	done
+drawtest$(EXEEXT): $(drawtest_OBJECTS) $(drawtest_DEPENDENCIES) 
+	@rm -f drawtest$(EXEEXT)
+	$(LINK) $(drawtest_LDFLAGS) $(drawtest_OBJECTS) $(drawtest_LDADD) $(LIBS)
+wandtest$(EXEEXT): $(wandtest_OBJECTS) $(wandtest_DEPENDENCIES) 
+	@rm -f wandtest$(EXEEXT)
+	$(LINK) $(wandtest_LDFLAGS) $(wandtest_OBJECTS) $(wandtest_LDADD) $(LIBS)
+binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
+install-binSCRIPTS: $(bin_SCRIPTS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_SCRIPTS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  if test -f $$d$$p; then \
+	    f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
+	    echo " $(binSCRIPT_INSTALL) $$d$$p $(DESTDIR)$(bindir)/$$f"; \
+	    $(binSCRIPT_INSTALL) $$d$$p $(DESTDIR)$(bindir)/$$f; \
+	  else :; fi; \
+	done
+
+uninstall-binSCRIPTS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(bin_SCRIPTS)'; for p in $$list; do \
+	  f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
+	  echo " rm -f $(DESTDIR)$(bindir)/$$f"; \
+	  rm -f $(DESTDIR)$(bindir)/$$f; \
+	done
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -472,58 +523,47 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Blob.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BlobRef.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CoderInfo.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Color.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Drawable.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Exception.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Functions.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Geometry.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Image.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ImageRef.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Montage.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Options.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Pixels.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/STL.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thread.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TypeMetric.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drawtest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/magick_compat.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/magick_wand.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pixel_wand.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wandtest.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
 
-.cpp.o:
-@am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
+.c.o:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<; \
+@am__fastdepCC_TRUE@	then mv "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c `test -f '$<' || echo '$(srcdir)/'`$<
 
-.cpp.obj:
-@am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o $@ `if test -f '$<'; then $(CYGPATH_W) '$<'; else $(CYGPATH_W) '$(srcdir)/$<'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `if test -f '$<'; then $(CYGPATH_W) '$<'; else $(CYGPATH_W) '$(srcdir)/$<'; fi`
+.c.obj:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o $@ `if test -f '$<'; then $(CYGPATH_W) '$<'; else $(CYGPATH_W) '$(srcdir)/$<'; fi`; \
+@am__fastdepCC_TRUE@	then mv "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c `if test -f '$<'; then $(CYGPATH_W) '$<'; else $(CYGPATH_W) '$(srcdir)/$<'; fi`
 
-.cpp.lo:
-@am__fastdepCXX_TRUE@	if $(LTCXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
+.c.lo:
+@am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<; \
+@am__fastdepCC_TRUE@	then mv "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -534,6 +574,53 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+
+man1dir = $(mandir)/man1
+install-man1: $(man1_MANS) $(man_MANS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(man1dir)
+	@list='$(man1_MANS) $(dist_man1_MANS) $(nodist_man1_MANS)'; \
+	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
+	for i in $$l2; do \
+	  case "$$i" in \
+	    *.1*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
+	  else file=$$i; fi; \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  case "$$ext" in \
+	    1*) ;; \
+	    *) ext='1' ;; \
+	  esac; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst"; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst; \
+	done
+uninstall-man1:
+	@$(NORMAL_UNINSTALL)
+	@list='$(man1_MANS) $(dist_man1_MANS) $(nodist_man1_MANS)'; \
+	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
+	for i in $$l2; do \
+	  case "$$i" in \
+	    *.1*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  case "$$ext" in \
+	    1*) ;; \
+	    *) ext='1' ;; \
+	  esac; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " rm -f $(DESTDIR)$(man1dir)/$$inst"; \
+	  rm -f $(DESTDIR)$(man1dir)/$$inst; \
+	done
 pkgconfigDATA_INSTALL = $(INSTALL_DATA)
 install-pkgconfigDATA: $(pkgconfig_DATA)
 	@$(NORMAL_INSTALL)
@@ -552,82 +639,23 @@ uninstall-pkgconfigDATA:
 	  echo " rm -f $(DESTDIR)$(pkgconfigdir)/$$f"; \
 	  rm -f $(DESTDIR)$(pkgconfigdir)/$$f; \
 	done
-includeHEADERS_INSTALL = $(INSTALL_HEADER)
-install-includeHEADERS: $(include_HEADERS)
+pkgincludeHEADERS_INSTALL = $(INSTALL_HEADER)
+install-pkgincludeHEADERS: $(pkginclude_HEADERS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(includedir)
-	@list='$(include_HEADERS)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(pkgincludedir)
+	@list='$(pkginclude_HEADERS)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(includeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(includedir)/$$f"; \
-	  $(includeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(includedir)/$$f; \
+	  echo " $(pkgincludeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(pkgincludedir)/$$f"; \
+	  $(pkgincludeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(pkgincludedir)/$$f; \
 	done
 
-uninstall-includeHEADERS:
+uninstall-pkgincludeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(include_HEADERS)'; for p in $$list; do \
+	@list='$(pkginclude_HEADERS)'; for p in $$list; do \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " rm -f $(DESTDIR)$(includedir)/$$f"; \
-	  rm -f $(DESTDIR)$(includedir)/$$f; \
-	done
-
-# This directory's subdirectories are mostly independent; you can cd
-# into them and run `make' without going through this Makefile.
-# To change the values of `make' variables: instead of editing Makefiles,
-# (1) if the variable is set in `config.status', edit `config.status'
-#     (which will cause the Makefiles to be regenerated when you run `make');
-# (2) otherwise, pass the desired values on the `make' command line.
-$(RECURSIVE_TARGETS):
-	@set fnord $$MAKEFLAGS; amf=$$2; \
-	dot_seen=no; \
-	target=`echo $@ | sed s/-recursive//`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    dot_seen=yes; \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
-	done; \
-	if test "$$dot_seen" = "no"; then \
-	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
-	fi; test -z "$$fail"
-
-mostlyclean-recursive clean-recursive distclean-recursive \
-maintainer-clean-recursive:
-	@set fnord $$MAKEFLAGS; amf=$$2; \
-	dot_seen=no; \
-	case "$@" in \
-	  distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
-	  *) list='$(SUBDIRS)' ;; \
-	esac; \
-	rev=''; for subdir in $$list; do \
-	  if test "$$subdir" = "."; then :; else \
-	    rev="$$subdir $$rev"; \
-	  fi; \
-	done; \
-	rev="$$rev ."; \
-	target=`echo $@ | sed s/-recursive//`; \
-	for subdir in $$rev; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
-	done && test -z "$$fail"
-tags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
-	done
-ctags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) ctags); \
+	  echo " rm -f $(DESTDIR)$(pkgincludedir)/$$f"; \
+	  rm -f $(DESTDIR)$(pkgincludedir)/$$f; \
 	done
 
 ETAGS = etags
@@ -647,15 +675,10 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	       END { for (i in files) print i; }'`; \
 	mkid -fID $$unique
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
-	  fi; \
-	done; \
 	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
@@ -667,7 +690,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 	     $$tags $$unique
 
 ctags: CTAGS
-CTAGS: ctags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+CTAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
@@ -690,7 +713,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
-top_distdir = ../..
+top_distdir = ..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
@@ -720,35 +743,23 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    test -d $(distdir)/$$subdir \
-	    || mkdir $(distdir)/$$subdir \
-	    || exit 1; \
-	    (cd $$subdir && \
-	      $(MAKE) $(AM_MAKEFLAGS) \
-	        top_distdir="$(top_distdir)" \
-	        distdir=../$(distdir)/$$subdir \
-	        distdir) \
-	      || exit 1; \
-	  fi; \
-	done
 check-am: all-am
-check: check-recursive
-all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
-installdirs: installdirs-recursive
-installdirs-am:
-	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(pkgconfigdir) $(DESTDIR)$(includedir)
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
+check: check-am
+all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(MANS) $(DATA) $(HEADERS)
 
-install: install-recursive
-install-exec: install-exec-recursive
-install-data: install-data-recursive
-uninstall: uninstall-recursive
+installdirs:
+	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir) $(DESTDIR)$(pkgconfigdir) $(DESTDIR)$(pkgincludedir)
+
+install: install-am
+install-exec: install-exec-am
+install-data: install-data-am
+uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 
-installcheck: installcheck-recursive
+installcheck: installcheck-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
 	  INSTALL_STRIP_FLAG=-s \
@@ -764,77 +775,78 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-clean: clean-recursive
+clean: clean-am
 
-clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
-	mostlyclean-am
+clean-am: clean-checkPROGRAMS clean-generic clean-libLTLIBRARIES \
+	clean-libtool mostlyclean-am
 
-distclean: distclean-recursive
+distclean: distclean-am
 
 distclean-am: clean-am distclean-compile distclean-depend \
 	distclean-generic distclean-libtool distclean-tags
 
-dvi: dvi-recursive
+dvi: dvi-am
 
 dvi-am:
 
-info: info-recursive
+info: info-am
 
 info-am:
 
-install-data-am: install-includeHEADERS install-pkgconfigDATA
+install-data-am: install-man install-pkgconfigDATA \
+	install-pkgincludeHEADERS
 
-install-exec-am: install-libLTLIBRARIES
+install-exec-am: install-binSCRIPTS install-libLTLIBRARIES
 
-install-info: install-info-recursive
+install-info: install-info-am
 
-install-man:
+install-man: install-man1
 
 installcheck-am:
 
-maintainer-clean: maintainer-clean-recursive
+maintainer-clean: maintainer-clean-am
 
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
-mostlyclean: mostlyclean-recursive
+mostlyclean: mostlyclean-am
 
 mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool
 
-pdf: pdf-recursive
+pdf: pdf-am
 
 pdf-am:
 
-ps: ps-recursive
+ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-includeHEADERS uninstall-info-am \
-	uninstall-libLTLIBRARIES uninstall-pkgconfigDATA
+uninstall-am: uninstall-binSCRIPTS uninstall-info-am \
+	uninstall-libLTLIBRARIES uninstall-man uninstall-pkgconfigDATA \
+	uninstall-pkgincludeHEADERS
 
-uninstall-info: uninstall-info-recursive
+uninstall-man: uninstall-man1
 
-.PHONY: $(RECURSIVE_TARGETS) CTAGS GTAGS all all-am check check-am clean \
-	clean-generic clean-libLTLIBRARIES clean-libtool \
-	clean-recursive ctags ctags-recursive distclean \
-	distclean-compile distclean-depend distclean-generic \
-	distclean-libtool distclean-recursive distclean-tags distdir \
-	dvi dvi-am dvi-recursive info info-am info-recursive install \
-	install-am install-data install-data-am install-data-recursive \
-	install-exec install-exec-am install-exec-recursive \
-	install-includeHEADERS install-info install-info-am \
-	install-info-recursive install-libLTLIBRARIES install-man \
-	install-pkgconfigDATA install-recursive install-strip \
-	installcheck installcheck-am installdirs installdirs-am \
-	installdirs-recursive maintainer-clean maintainer-clean-generic \
-	maintainer-clean-recursive mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool mostlyclean-recursive \
-	pdf pdf-am pdf-recursive ps ps-am ps-recursive tags \
-	tags-recursive uninstall uninstall-am uninstall-includeHEADERS \
-	uninstall-info-am uninstall-info-recursive \
-	uninstall-libLTLIBRARIES uninstall-pkgconfigDATA \
-	uninstall-recursive
+.PHONY: CTAGS GTAGS all all-am check check-am clean clean-checkPROGRAMS \
+	clean-generic clean-libLTLIBRARIES clean-libtool ctags \
+	distclean distclean-compile distclean-depend distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am info \
+	info-am install install-am install-binSCRIPTS install-data \
+	install-data-am install-exec install-exec-am install-info \
+	install-info-am install-libLTLIBRARIES install-man install-man1 \
+	install-pkgconfigDATA install-pkgincludeHEADERS install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-binSCRIPTS \
+	uninstall-info-am uninstall-libLTLIBRARIES uninstall-man \
+	uninstall-man1 uninstall-pkgconfigDATA \
+	uninstall-pkgincludeHEADERS
 
+
+check:
+	./drawtest drawtest_out.miff
+	env SRCDIR=$(SRCDIR) ./wandtest
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

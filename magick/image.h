@@ -372,13 +372,6 @@ typedef enum
 
 typedef enum
 {
-  UndefinedProfile,
-  ICMProfile,
-  IPTCProfile
-} ProfileType;
-
-typedef enum
-{
   UndefinedPreview = 0,
   RotatePreview,
   ShearPreview,
@@ -413,26 +406,6 @@ typedef enum
 
 typedef enum
 {
-  IndexQuantum,
-  GrayQuantum,
-  IndexAlphaQuantum,
-  GrayAlphaQuantum,
-  RedQuantum,
-  CyanQuantum,
-  GreenQuantum,
-  YellowQuantum,
-  BlueQuantum,
-  MagentaQuantum,
-  AlphaQuantum,
-  BlackQuantum,
-  RGBQuantum,
-  RGBAQuantum,
-  CMYKQuantum,
-  CMYKAQuantum
-} QuantumType;
-
-typedef enum
-{
   UndefinedIntent,
   SaturationIntent,
   PerceptualIntent,
@@ -446,25 +419,6 @@ typedef enum
   PixelsPerInchResolution,
   PixelsPerCentimeterResolution
 } ResolutionType;
-
-typedef enum
-{
-  CharPixel,
-  ShortPixel,
-  IntegerPixel,
-  LongPixel,
-  FloatPixel,
-  DoublePixel
-} StorageType;
-
-typedef enum
-{
-  UndefinedTransmitType,
-  FileTransmitType,
-  BlobTransmitType,
-  StreamTransmitType,
-  ImageTransmitType
-} TransmitType;
 
 /*
   Typedef declarations.
@@ -985,6 +939,8 @@ extern MagickExport unsigned int
   AnimateImages(const ImageInfo *image_info,Image *image),
   ChannelImage(Image *,const ChannelType),
   ClipImage(Image *),
+  CycleColormapImage(Image *image,const int amount),
+  DescribeImage(Image *image,FILE *file,const unsigned int verbose),
   DisplayImages(const ImageInfo *image_info,Image *image),
   GradientImage(Image *,const PixelPacket *,const PixelPacket *),
   IsImagesEqual(Image *,const Image *),
@@ -1003,8 +959,6 @@ extern MagickExport unsigned long
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),
-  CycleColormapImage(Image *,const int),
-  DescribeImage(Image *,FILE *,const unsigned int),
   DestroyImage(Image *),
   DestroyImageInfo(ImageInfo *),
   GetImageException(Image *,ExceptionInfo *),
