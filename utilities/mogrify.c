@@ -1527,7 +1527,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("type",option+1,4) == 0)
             {
-              image_info->typee=UndefinedType;
+              image_info->type=UndefinedType;
               if (*option == '-')
                 {
                   i++;
@@ -1535,26 +1535,26 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
                   if (LocaleCompare("Bilevel",option) == 0)
-                    image_info->typee=BilevelType;
+                    image_info->type=BilevelType;
                   if (LocaleCompare("Grayscale",option) == 0)
-                    image_info->typee=GrayscaleType;
+                    image_info->type=GrayscaleType;
                   if (LocaleCompare("GrayscaleMatte",option) == 0)
-                    image_info->typee=GrayscaleMatteType;
+                    image_info->type=GrayscaleMatteType;
                   if (LocaleCompare("Palette",option) == 0)
-                    image_info->typee=PaletteType;
+                    image_info->type=PaletteType;
                   if (LocaleCompare("PaletteMatte",option) == 0)
-                    image_info->typee=PaletteMatteType;
+                    image_info->type=PaletteMatteType;
                   if (LocaleCompare("TrueColor",option) == 0)
-                    image_info->typee=TrueColorType;
+                    image_info->type=TrueColorType;
                   if (LocaleCompare("TrueColorMatte",option) == 0)
-                    image_info->typee=TrueColorMatteType;
+                    image_info->type=TrueColorMatteType;
                   if (LocaleCompare("ColorSeparation",option) == 0)
-                    image_info->typee=ColorSeparationType;
+                    image_info->type=ColorSeparationType;
                   if (LocaleCompare("ColorSeparationMatte",option) == 0)
-                    image_info->typee=ColorSeparationMatteType;
+                    image_info->type=ColorSeparationMatteType;
                   if (LocaleCompare("Optimize",option) == 0)
-                    image_info->typee=OptimizeType;
-                  if (image_info->typee == UndefinedType)
+                    image_info->type=OptimizeType;
+                  if (image_info->type == UndefinedType)
                     MagickError(OptionError,"Invalid image type",option);
                 }
               break;
