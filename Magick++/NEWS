@@ -1,11 +1,13 @@
 This file records noteworthy changes.
 
 (0.9.1)
+  * Added the medianFilter() method to Image.
   * Renamed transformColorSpace() to colorSpace() and added a
     colorSpace() accessor method.
   * Renamed psPageSize() to page(), which now properly returns the
     actual attribute from the image, rather than the image options.
     This is important in order to manipulate GIF animations.
+  * Bug fixes.
 
 (0.9)
   * Ported to ImageMagick 5.0.
