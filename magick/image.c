@@ -1117,6 +1117,10 @@ MagickExport unsigned int CompositeImage(Image *image,
     saturation,
     threshold;
 
+  IndexPacket
+    *composite_indexes,
+    *indexes;
+
   int
     y;
 
@@ -1135,12 +1139,8 @@ MagickExport unsigned int CompositeImage(Image *image,
   assert(composite_image != (Image *) NULL);
   assert(composite_image->signature == MagickSignature);
   image->storage_class=DirectClass;
-  if (image->colorspace != RGBColorspace)
-    TransformRGBImage(image,RGBColorspace);
   if (!image->matte)
     SetImageOpacity(image,OpaqueOpacity);
-  if (composite_image->colorspace != RGBColorspace)
-    TransformRGBImage(composite_image,RGBColorspace);
   composite_image->storage_class=DirectClass;
   if (!composite_image->matte)
     SetImageOpacity(composite_image,OpaqueOpacity);
@@ -1273,6 +1273,7 @@ MagickExport unsigned int CompositeImage(Image *image,
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexes(image);
     for (x=0; x < image->columns; x++)
     {
       if (x < x_offset)
@@ -1285,6 +1286,7 @@ MagickExport unsigned int CompositeImage(Image *image,
       p=GetImagePixels(composite_image,x-x_offset,y-y_offset,1,1);
       if (p == (PixelPacket *) NULL)
         break;
+      composite_indexes=GetIndexes(composite_images);
       switch (compose)
       {
         case ThresholdCompositeOp:
@@ -1350,6 +1352,9 @@ MagickExport unsigned int CompositeImage(Image *image,
           break;
         }
       }
+      if (image->colorspace == composite_image->colorspace)
+        if (image->colorspace == CMYKColorspace)
+          indexes[x]=(*composite_indexes);
       q++;
     }
     if (!SyncImagePixels(image))

@@ -474,7 +474,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     image->rows=height;
     range=max_sample_value-min_sample_value;
     image->depth=range <= 255 ? 8 : QuantumDepth;
-    if ((samples_per_pixel == 1) && !TIFFIsTiled(tiff))
+    if ((samples_per_pixel == 1) && !TIFFIsTiled(tiff) &&
+        ((photometric == PHOTOMETRIC_MINISBLACK) ||
+         (photometric == PHOTOMETRIC_MINISWHITE) ||
+         (photometric == PHOTOMETRIC_PALETTE)))
       {
         image->colors=1 << bits_per_sample;
         if ((range != 0) && (range <= (int) image->colors))
@@ -526,7 +529,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (range < 0)
       range=max_sample_value;
     method=0;
-    if (samples_per_pixel > 1)
+    if (image->storage_class == DirectClass)
       {
         method=2;
         if ((samples_per_pixel > 2) && (photometric == PHOTOMETRIC_RGB) &&
