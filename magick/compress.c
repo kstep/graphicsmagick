@@ -221,33 +221,32 @@ static char *Ascii85Tuple(unsigned char *data)
   static char
     tuple[6];
 
-  register unsigned int
+  register long
+    i,
     x;
 
-  register unsigned short
-    y;
-
   unsigned int
-		word;
+		code;
 
-  word=(((data[0] << 8) | data[1]) << 16) | (data[2] << 8) | data[3];
-  if (word == 0L)
+  unsigned long
+		quantum;
+
+  code=(((data[0] << 8) | data[1]) << 16) | (data[2] << 8) | data[3];
+  if (code == 0L)
     {
       tuple[0]='z';
       tuple[1]='\0';
       return(tuple);
     }
-  x=(unsigned int) (word/(85L*85*85*85));
-  tuple[0]=(char) (x+'!');
-  word-=x*(85L*85*85*85);
-  x=(unsigned int) (word/(85L*85*85));
-  tuple[1]=x+'!';
-  word-=x*(85L*85*85);
-  x=(unsigned int) (word/(85*85));
-  tuple[2]=x+'!';
-  y=(unsigned short) (word-x*(85L*85));
-  tuple[3]=(y/85)+'!';
-  tuple[4]=(y % 85)+'!';
+  quantum=85L*85L*85L*85L;
+  for (i=0; i < 4; i++)
+  {
+    x=code/quantum;
+    code-=quantum*x;
+    tuple[i]='!'+x;
+    quantum/=85L;
+	}
+  tuple[4]='!'+(code % 85L);
   tuple[5]='\0';
   return(tuple);
 }
