@@ -37,7 +37,7 @@ extern "C" {
 /*
   Typedef declarations.
 */
-typedef UINT (CALLBACK* LPFNDLLFUNC1)(DWORD,UINT);
+typedef UINT (CALLBACK *LPFNDLLFUNC1)(DWORD,UINT);
 
 #if !defined(XS_VERSION)
 typedef struct _DIR
@@ -71,8 +71,7 @@ extern MagickExport char
   *NTGetLastError(void);
 
 MagickExport Image
-  *ReadWMFImage(const ImageInfo *,
-  ExceptionInfo *);
+  *ReadWMFImage(const ImageInfo *,ExceptionInfo *);
 
 extern MagickExport int
   Exit(int),
