@@ -154,7 +154,7 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
       break;
   }
   (void) close(file);
-  return(i != length);
+  return(i == length);
 }
 
 /*
