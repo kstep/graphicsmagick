@@ -4805,6 +4805,9 @@ Mogrify(ref,...)
           if ((flags & WidthValue) == 0)
             geometry.width-=2*geometry.x > (long) geometry.width ?
               geometry.width : 2*geometry.x;
+          if ((flags & HeightValue) == 0)
+            geometry.height-=2*geometry.y > (long) geometry.height ?
+              geometry.height : 2*geometry.y;
           if (attribute_flag[5])
             switch (argument_list[5].int_reference)
             {
