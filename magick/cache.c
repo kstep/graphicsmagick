@@ -1868,9 +1868,6 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
   CacheInfo
     *cache_info;
 
-  char
-    color[MaxTextExtent];
-
   ImageAttribute
     *attribute;
 
