@@ -1,3 +1,6 @@
+2002-05-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Added progress monitor support to wmf.c.
+
 2002-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Added EscapeText() to utility.c to support escaping text.
 

@@ -1218,6 +1218,9 @@ MagickExport void DrawComposite(DrawContext context,
     blob_length = 2048,
     encoded_length = 0;
 
+  MonitorHandler
+    handler;
+
   assert(context != (DrawContext)NULL);
   assert(image != (Image *) NULL);
   assert(width != 0);
@@ -1232,8 +1235,10 @@ MagickExport void DrawComposite(DrawContext context,
   if(!image_info)
     ThrowDrawException(ResourceLimitError, "Unable to draw image",
                        "Memory allocation failed");
+  handler=SetMonitorHandler((MonitorHandler) NULL);
   blob = (unsigned char*)ImageToBlob( image_info, clone_image, &blob_length,
                                       &context->image->exception );
+  (void) SetMonitorHandler(handler);
   DestroyImageInfo(image_info);
   DestroyImageList(clone_image);
   if(!blob)

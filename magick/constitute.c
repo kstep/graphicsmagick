@@ -2348,6 +2348,9 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   register const char
     *p;
 
+  MonitorHandler
+    handler;
+
   SetExceptionInfo(exception,UndefinedException);
   image=(Image *) NULL;
   for (p=content; (*p != ',') && (*p != '\0'); p++);
@@ -2357,7 +2360,9 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   blob=Base64Decode(p,&length);
   if (length == 0)
     ThrowReaderException(CorruptImageWarning,"data URL: data corrupt",image);
+  handler=SetMonitorHandler((MonitorHandler) NULL);
   image=BlobToImage(image_info,blob,length,exception);
+  (void) SetMonitorHandler(handler);
   LiberateMemory((void **) &blob);
   return(image);
 }

@@ -230,6 +230,7 @@ static void         ipa_udata_copy(wmfAPI * API, wmfUserData_t * userdata);
 static void         ipa_udata_free(wmfAPI * API, wmfUserData_t * userdata);
 static void         ipa_udata_init(wmfAPI * API, wmfUserData_t * userdata);
 static void         ipa_udata_set(wmfAPI * API, wmfUserData_t * userdata);
+static int          magick_progress_callback(void* context,float quantum);
 static void         util_draw_arc(wmfAPI * API, wmfDrawArc_t * draw_arc,magick_arc_t finish);
 #if defined(HasWMFlite)
 static int          util_font_weight( const char* font );
@@ -237,6 +238,13 @@ static int          util_font_weight( const char* font );
 static double       util_pointsize( wmfAPI* API, wmfFont* font, char* str, double font_height);
 static void         util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_apply);
 static void         util_set_pen(wmfAPI * API, wmfDC * dc);
+
+/* Progress callback */
+int magick_progress_callback (void* context,float quantum)
+{
+  MagickMonitor((char*)context,quantum,1.0);
+  return 0;
+}
 
 /* Set fill color */
 static void draw_color_fill_rgb( wmfAPI* API, const wmfRGB* rgb )
@@ -365,6 +373,9 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
     height,
     width;
 
+  MonitorHandler
+    handler;
+
   if (bmp_draw->bmp.data == 0)
     return;
 
@@ -393,7 +404,9 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
       crop_info.width = bmp_draw->crop.w;
       crop_info.height = bmp_draw->crop.h;
 
+      handler=SetMonitorHandler((MonitorHandler) NULL);
       crop_image = CropImage( image, &crop_info, &exception );
+      (void) SetMonitorHandler(handler);
       if(crop_image)
         {
           DestroyImageList(image);
@@ -436,6 +449,9 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
   Image
     *image;
 
+  MonitorHandler
+    handler;
+
   bmp_read->bmp.data = 0;
 
   GetExceptionInfo(&exception);
@@ -455,8 +471,10 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
    (long) bmp_read->buffer, bmp_read->length,
    bmp_read->width, bmp_read->height);
 #endif
+  handler=SetMonitorHandler((MonitorHandler) NULL);
   image = BlobToImage(image_info, (const void *) bmp_read->buffer,
           bmp_read->length, &exception);
+  (void) SetMonitorHandler(handler);
   DestroyImageInfo(image_info);
   if (!image)
     {
@@ -2257,13 +2275,15 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
       ThrowReaderException(DelegateFatalError, "Failed to intialize libwmf", image);
     }
 
+  /* Setup progress monitor */
+  wmf_status_function(API,(void*)LoadImageText, magick_progress_callback);
+
   ddata = WMF_MAGICK_GetData(API);
   ddata->image = image;
   ddata->image_info = image_info;
 
 #if defined(HasWMFlite)
   /* Must initialize font subystem for WMFlite interface */
-
   lite_font_init (API,&wmf_api_options); /* similar to wmf_ipa_font_init in src/font.c */
   /* wmf_arg_fontdirs (API,options); */ /* similar to wmf_arg_fontdirs in src/wmf.c */
 
