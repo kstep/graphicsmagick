@@ -506,7 +506,7 @@ Export void SignatureImage(Image *image)
   InitializeMessageDigest(&message_digest);
   for (y=0; y < (int) image->rows; y++)
   {
-    pGetPixelCache(image,0,y,image->columns,1);
+    p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     q=message;
