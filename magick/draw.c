@@ -490,9 +490,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 {
   char
     keyword[MaxTextExtent],
-    *marker,
-    *p,
-    *primitive;
+    *primitive,
+    *q;
 
   double
     alpha,
@@ -515,6 +514,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
   PrimitiveType
     primitive_type;
+
+  register char
+    *p;
 
   register int
     i,
@@ -611,21 +613,21 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
-  for (p=primitive; *p != '\0'; )
+  for (q=primitive; *q != '\0'; )
   {
     /*
       Define primitive.
     */
-    while (isspace((int) (*p)) && (*p != '\0'))
-      p++;
-    marker=p;
-    for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
-      keyword[x]=(*p++);
+    while (isspace((int) (*q)) && (*q != '\0'))
+      q++;
+    p=q;
+    for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+      keyword[x]=(*q++);
     keyword[x]='\0';
     if (*keyword == '\0')
       break;
-    while (isspace((int) (*p)) && (*p != '\0'))
-      p++;
+    while (isspace((int) (*q)) && (*q != '\0'))
+      q++;
     if (LocaleCompare(";",keyword) == 0)
       continue;
     if (LocaleCompare("affine",keyword) == 0)
@@ -637,9 +639,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         for (k=0; k < 6; k++)
         {
           current[k]=graphic_context[n]->affine[k];
-          affine[k]=strtod(p,&p);
-          if (*p == ',')
-            p++;
+          affine[k]=strtod(q,&q);
+          if (*q == ',')
+            q++;
         }
         graphic_context[n]->affine[0]=current[0]*affine[0]+current[2]*affine[1];
         graphic_context[n]->affine[1]=current[1]*affine[0]+current[3]*affine[1];
@@ -653,13 +655,13 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (LocaleCompare("angle",keyword) == 0)
       {
-        graphic_context[n]->angle=strtod(p,&p);
+        graphic_context[n]->angle=strtod(q,&q);
         continue;
       }
     if (LocaleCompare("decorate",keyword) == 0)
       {
-        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
-          keyword[x]=(*p++);
+        for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+          keyword[x]=(*q++);
         keyword[x]='\0';
         if (LocaleCompare("none",keyword) == 0)
           graphic_context[n]->decorate=NoDecoration;
@@ -673,33 +675,33 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (LocaleCompare("fill",keyword) == 0)
       {
-        if ((LocaleNCompare(p,"rgb(",4) == 0))
-          for (x=0; (*(p-1) != ')') && (*p != '\0'); x++)
-            keyword[x]=(*p++);
+        if ((LocaleNCompare(q,"rgb(",4) == 0))
+          for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
+            keyword[x]=(*q++);
         else
-          for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
-            keyword[x]=(*p++);
+          for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+            keyword[x]=(*q++);
         keyword[x]='\0';
         (void) QueryColorDatabase(keyword,&graphic_context[n]->fill);
         continue;
       }
     if (LocaleCompare("fill-opacity",keyword) == 0)
       {
-        graphic_context[n]->fill.opacity=MaxRGB*strtod(p,&p);
+        graphic_context[n]->fill.opacity=MaxRGB*strtod(q,&q);
         continue;
       }
     if (LocaleCompare("font",keyword) == 0)
       {
-        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
-          keyword[x]=(*p++);
+        for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+          keyword[x]=(*q++);
         keyword[x]='\0';
         CloneString(&graphic_context[n]->font,keyword);
         continue;
       }
     if (LocaleCompare("gravity",keyword) == 0)
       {
-        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
-          keyword[x]=(*p++);
+        for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+          keyword[x]=(*q++);
         keyword[x]='\0';
         if (LocaleCompare("NorthWest",keyword) == 0)
           graphic_context[n]->gravity=NorthWestGravity;
@@ -723,14 +725,14 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (LocaleCompare("opacity",keyword) == 0)
       {
-        graphic_context[n]->fill.opacity=MaxRGB*strtod(p,&p);
-        graphic_context[n]->stroke.opacity=MaxRGB*strtod(p,&p);
+        graphic_context[n]->fill.opacity=MaxRGB*strtod(q,&q);
+        graphic_context[n]->stroke.opacity=MaxRGB*strtod(q,&q);
         continue;
       }
     if (LocaleCompare("pop",keyword) == 0)
       {
-        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
-          keyword[x]=(*p++);
+        for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+          keyword[x]=(*q++);
         keyword[x]='\0';
         DestroyDrawInfo(graphic_context[n]);
         n--;
@@ -741,8 +743,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (LocaleCompare("push",keyword) == 0)
       {
-        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
-          keyword[x]=(*p++);
+        for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+          keyword[x]=(*q++);
         keyword[x]='\0';
         n++;
         ReacquireMemory((void **) &graphic_context,(n+1)*sizeof(DrawInfo *));
@@ -755,53 +757,53 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (LocaleCompare("pointsize",keyword) == 0)
       {
-        graphic_context[n]->pointsize=strtod(p,&p);
+        graphic_context[n]->pointsize=strtod(q,&q);
         continue;
       }
     if (LocaleCompare("stroke",keyword) == 0)
       {
-        if ((LocaleNCompare(p,"rgb(",4) == 0))
-          for (x=0; (*(p-1) != ')') && (*p != '\0'); x++)
-            keyword[x]=(*p++);
+        if ((LocaleNCompare(q,"rgb(",4) == 0))
+          for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
+            keyword[x]=(*q++);
         else
-          for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
-            keyword[x]=(*p++);
+          for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+            keyword[x]=(*q++);
         keyword[x]='\0';
         (void) QueryColorDatabase(keyword,&graphic_context[n]->stroke);
         continue;
       }
     if (LocaleCompare("stroke-antialias",keyword) == 0)
       {
-        graphic_context[n]->stroke_antialias=(unsigned int) strtod(p,&p);
+        graphic_context[n]->stroke_antialias=(unsigned int) strtod(q,&q);
         continue;
       }
     if (LocaleCompare("stroke-dash",keyword) == 0)
       {
         for ( ; ; )
         {
-          while (isspace((int) (*p)) && (*p != '\0'))
-            p++;
-          if (!IsGeometry(p))
+          while (isspace((int) (*q)) && (*q != '\0'))
+            q++;
+          if (!IsGeometry(q))
             break;
-          (void) strtod(p,&p);
-          if (*p == ',')
-            p++;
+          (void) strtod(q,&q);
+          if (*q == ',')
+            q++;
         }
         continue;
       }
     if (LocaleCompare("stroke-opacity",keyword) == 0)
       {
-        graphic_context[n]->stroke.opacity=MaxRGB*strtod(p,&p);
+        graphic_context[n]->stroke.opacity=MaxRGB*strtod(q,&q);
         continue;
       }
     if (LocaleCompare("stroke-width",keyword) == 0)
       {
-        graphic_context[n]->linewidth=strtod(p,&p);
+        graphic_context[n]->linewidth=strtod(q,&q);
         continue;
       }
     if (LocaleCompare("text-antialias",keyword) == 0)
       {
-        graphic_context[n]->text_antialias=(unsigned int) strtod(p,&p);
+        graphic_context[n]->text_antialias=(unsigned int) strtod(q,&q);
         continue;
       }
     primitive_type=UndefinedPrimitive;
@@ -844,27 +846,27 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     */
     i=0;
     j=0;
-    for (x=0; *p != '\0'; x++)
+    for (x=0; *q != '\0'; x++)
     {
       /*
         Define points.
       */
-      while (isspace((int) (*p)) && (*p != '\0'))
-        p++;
-      if (!IsGeometry(p))
+      while (isspace((int) (*q)) && (*q != '\0'))
+        q++;
+      if (!IsGeometry(q))
         break;
-      point.x=strtod(p,&p);
-      if (*p == ',')
-        p++;
-      point.y=strtod(p,&p);
-      if (*p == ',')
-        p++;
+      point.x=strtod(q,&q);
+      if (*q == ',')
+        q++;
+      point.y=strtod(q,&q);
+      if (*q == ',')
+        q++;
       primitive_info[i].primitive=primitive_type;
       primitive_info[i].point=point;
       primitive_info[i].coordinates=0;
       primitive_info[i].method=FloodfillMethod;
-      while ((isspace((int) (*p)) || (*p == ',')) && (*p != '\0'))
-        p++;
+      while ((isspace((int) (*q)) || (*q == ',')) && (*q != '\0'))
+        q++;
       i++;
       if (i < (int) (number_points-6*BezierQuantum-360))
         continue;
@@ -881,8 +883,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
-    while (isspace((int) (*p)) && (*p != '\0'))
-      p++;
+    while (isspace((int) (*q)) && (*q != '\0'))
+      q++;
     primitive_info[j].primitive=primitive_type;
     primitive_info[j].coordinates=x;
     primitive_info[j].method=FloodfillMethod;
@@ -1031,39 +1033,39 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           number_attributes;
 
         number_attributes=0;
-        path=p;
-        if (*p == '"')
+        path=q;
+        if (*q == '"')
           {
-            for (p++; *p != '\0'; p++)
+            for (q++; *q != '\0'; q++)
             {
-              if (isalpha((int) *p))
+              if (isalpha((int) *q))
                 number_attributes++;
-              if ((*p == '"') && (*(p-1) != '\\'))
+              if ((*q == '"') && (*(q-1) != '\\'))
                 break;
             }
           }
         else
-          if (*p == '\'')
+          if (*q == '\'')
             {
-              for (p++; *p != '\0'; p++)
+              for (q++; *q != '\0'; q++)
               {
-                if (isalpha((int) *p))
+                if (isalpha((int) *q))
                   number_attributes++;
-                if ((*p == '\'') && (*(p-1) != '\\'))
+                if ((*q == '\'') && (*(q-1) != '\\'))
                   break;
               }
             }
           else
-            for (p++;  *p != '\0'; p++)
+            for (q++;  *q != '\0'; q++)
             {
-              if (isalpha((int) *p))
+              if (isalpha((int) *q))
                 number_attributes++;
-              if (isspace((int) *p) && (*(p-1) != '\\') && (*p != '\0'))
+              if (isspace((int) *q) && (*(q-1) != '\\') && (*q != '\0'))
                 break;
             }
-        if (*p != '\0')
-          p++;
-        *p++='\0';
+        if (*q != '\0')
+          q++;
+        *q++='\0';
         if (i > (number_points-6*BezierQuantum*number_attributes-1))
           {
             number_points+=6*BezierQuantum*number_attributes;
@@ -1094,8 +1096,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         /*
           Define method.
         */
-        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
-          keyword[x]=(*p++);
+        for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+          keyword[x]=(*q++);
         keyword[x]='\0';
         if (*keyword == '\0')
           break;
@@ -1115,82 +1117,104 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                   primitive_info[j].method=ResetMethod;
                 else
                   primitive_type=UndefinedPrimitive;
-        while (isspace((int) (*p)) && (*p != '\0'))
-          p++;
+        while (isspace((int) (*q)) && (*q != '\0'))
+          q++;
         break;
       }
       case TextPrimitive:
       {
+        register char
+          *p;
+
         if (primitive_info[j].coordinates != 1)
           {
             primitive_type=UndefinedPrimitive;
             break;
           }
-        if (*p == '\0')
+        if (*q == '\0')
           break;
-        primitive_info[j].text=p;
-        if (*p == '"')
+        p=q;
+        if (*q == '"')
           {
-            for (p++; *p != '\0'; p++)
-              if ((*p == '"') && (*(p-1) != '\\'))
+            p++;
+            for (q++; *q != '\0'; q++)
+              if ((*q == '"') && (*(q-1) != '\\'))
                 break;
           }
         else
-          if (*p == '\'')
+          if (*q == '\'')
             {
-              for (p++; *p != '\0'; p++)
-                if ((*p == '\'') && (*(p-1) != '\\'))
+              p++;
+              for (q++; *q != '\0'; q++)
+                if ((*q == '\'') && (*(q-1) != '\\'))
                   break;
             }
           else
-            for (p++;  *p != '\0'; p++)
-              if (isspace((int) *p) && (*(p-1) != '\\') && (*p != '\0'))
+            for (q++;  *q != '\0'; q++)
+              if (isspace((int) *q) && (*(q-1) != '\\') && (*q != '\0'))
                 break;
-        if (*p != '\0')
-          p++;
+        primitive_info[j].text=(char *) AcquireMemory(q-p+1);
+        if (primitive_info[j].text != (char *) NULL)
+          {
+            (void) strncpy(primitive_info[j].text,p,q-p+1);
+            primitive_info[j].text[q-p]='\0';
+          }
+        if ((*q == '"') || (*q == '\''))
+          q++;
         break;
       }
       case ImagePrimitive:
       {
+        register char
+          *p;
+
         if (primitive_info[j].coordinates != 2)
           {
             primitive_type=UndefinedPrimitive;
             break;
           }
-        if (*p == '\0')
+        if (*q == '\0')
           break;
-        primitive_info[j].text=p;
+        p=q;
         if (*p == '"')
           {
-            for (p++; *p != '\0'; p++)
-              if ((*p == '"') && (*(p-1) != '\\'))
+            p++;
+            for (q++; *q != '\0'; q++)
+              if ((*q == '"') && (*(q-1) != '\\'))
                 break;
           }
         else
           if (*p == '\'')
             {
-              for (p++; *p != '\0'; p++)
-                if ((*p == '\'') && (*(p-1) != '\\'))
+              p++;
+              for (q++; *q != '\0'; q++)
+                if ((*q == '\'') && (*(q-1) != '\\'))
                   break;
             }
           else
-            for (p++;  *p != '\0'; p++)
-              if (isspace((int) *p) && (*(p-1) != '\\') && (*p != '\0'))
+            for (q++;  *q != '\0'; q++)
+              if (isspace((int) *q) && (*(q-1) != '\\') && (*q != '\0'))
                 break;
-        if (*p != '\0')
-          p++;
+        primitive_info[j].text=(char *) AcquireMemory(q-p+1);
+        if (primitive_info[j].text != (char *) NULL)
+          {
+            (void) strncpy(primitive_info[j].text,p,q-p);
+            primitive_info[j].text[q-p]='\0';
+          }
+        if ((*q == '"') || (*q == '\''))
+          q++;
         break;
       }
     }
-    while (isspace((int) (*p)) && (*p != '\0'))
-      p++;
+    while (isspace((int) (*q)) && (*q != '\0'))
+      q++;
     if (graphic_context[n]->verbose)
       {
         char
           *element;
 
-        element=AllocateString(marker);
-        element[p-marker]='\0';
+        element=AllocateString(p);
+        element[q-p]='\0';
         (void) fprintf(stdout,"%s\n",element);
         LiberateMemory((void **) &element);
       }
@@ -1209,6 +1233,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         graphic_context[n]->affine[3]*point.y+graphic_context[n]->affine[5];
     }
     DrawPrimitive(image,graphic_context[n],primitive_info);
+    if (primitive_info->text != (char *) NULL)
+      LiberateMemory((void **) &primitive_info->text);
   }
   /*
     Free resources.
@@ -1343,9 +1369,6 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
     }
     case MattePrimitive:
     {
-      register PixelPacket
-        *q;
-
       if (!image->matte)
         MatteImage(image,OpaqueOpacity);
       switch (primitive_info->method)
@@ -1414,33 +1437,8 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
       ImageInfo
         *clone_info;
 
-      register char
-        *p,
-        *q;
-
       if (primitive_info->text == (char *) NULL)
         break;
-      p=primitive_info->text;
-      q=primitive_info->text;
-      if (*q == '"')
-        {
-          p++;
-          for (q++; *q != '\0'; q++)
-            if ((*q == '"') && (*(q-1) != '\\'))
-              break;
-        }
-      else
-        if (*q == '\'')
-          {
-            p++;
-            for (q++; *q != '\0'; q++)
-              if ((*q == '\'') && (*(q-1) != '\\'))
-                break;
-          }
-        else
-          for (q++;  *q != '\0'; q++)
-            if (isspace((int) *q) && (*(q-1) != '\\') && (*q != '\0'))
-              break;
       clone_info=CloneImageInfo((ImageInfo *) NULL);
       clone_info->font=AllocateString(draw_info->font);
       clone_info->antialias=draw_info->text_antialias;
@@ -1456,12 +1454,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
       annotate->fill=draw_info->fill;
       annotate->stroke=draw_info->stroke;
       annotate->box=draw_info->box;
-      annotate->text=(char *) AcquireMemory(q-p+1);
-      if (annotate->text == (char *) NULL)
-        MagickError(ResourceLimitError,"Unable to annotate image",
-          "Memory allocation failed");
-      (void) strncpy(annotate->text,p,q-p);
-      annotate->text[q-p]='\0';
+      annotate->text=AllocateString(primitive_info->text);
       FormatString(annotate->geometry,"%+d%+d",x,y);
       AnnotateImage(image,annotate);
       DestroyAnnotateInfo(annotate);
@@ -1473,11 +1466,14 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
         *composite_image;
 
       ImageInfo
-        *composite_info;
+        *clone_info;
 
-      composite_info=CloneImageInfo((ImageInfo *) NULL);
-      (void) strcpy(composite_info->filename,primitive_info->text);
-      composite_image=ReadImage(composite_info,&image->exception);
+      if (primitive_info->text == (char *) NULL)
+        break;
+      clone_info=CloneImageInfo((ImageInfo *) NULL);
+      (void) strcpy(clone_info->filename,primitive_info->text);
+      composite_image=ReadImage(clone_info,&image->exception);
+      DestroyImageInfo(clone_info);
       if (composite_image == (Image *) NULL)
         break;
       if ((primitive_info[1].point.x != 0) && (primitive_info[1].point.y != 0))
@@ -1541,7 +1537,6 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
       CompositeImage(image,image->matte ? OverCompositeOp : ReplaceCompositeOp,
         composite_image,x,y);
       DestroyImage(composite_image);
-      DestroyImageInfo(composite_info);
       break;
     }
     default:
@@ -1583,7 +1578,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
         if (point.y > bounds.y2)
           bounds.y2=point.y;
       }
-      mid=draw_info->affine[0]*draw_info->linewidth/2.0+1.0;
+      mid=draw_info->linewidth/2.0+1.0;
       bounds.x1-=mid;
       if (bounds.x1 < 0.0)
         bounds.x1=0.0;

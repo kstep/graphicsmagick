@@ -2624,9 +2624,9 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   /*
     Annotation members.
   */
-  image_info->font=AllocateString("Robson-Celtic");
+  image_info->font=AllocateString("Times-Narrow");
   image_info->antialias=True;
-  image_info->pointsize=12;
+  image_info->pointsize=13;
   for (i=0; i < 6; i++)
     image_info->affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
   (void) QueryColorDatabase("none",&image_info->stroke);
