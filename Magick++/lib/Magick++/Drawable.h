@@ -152,7 +152,7 @@ namespace Magick
     virtual void print (std::ostream& stream_) const = 0;
 
     // Operator to invoke equivalent draw API call
-    virtual void operator()( MagickLib::DrawContext context_ ) const;
+    virtual void operator()( MagickLib::DrawContext context_ ) const = 0;
 
     // Return polymorphic copy of object
     virtual VPathBase* copy() const = 0;
