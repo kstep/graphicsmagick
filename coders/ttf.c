@@ -206,7 +206,8 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Prepare drawing commands
   */
   y=20;
-  draw_info=CloneDrawInfo(image_info, (DrawInfo *) NULL);
+  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  draw_info->font=AllocateString(image->filename);
   draw_info->fill=image_info->pen;
   context=DrawAllocateContext(draw_info,image);
   (void) DrawPushGraphicContext(context);
