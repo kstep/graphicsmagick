@@ -1,4 +1,4 @@
-AC_INIT([libwmf],[0.2.4],[wvware-devel@sourceforge.net])
+AC_INIT([libwmf],[0.2.5],[wvware-devel@sourceforge.net])
 AC_CONFIG_SRCDIR([src/player.c])
 
 WMF_PACKAGE=libwmf
@@ -15,7 +15,7 @@ dnl
 #
 WMF_MAJOR_VERSION=0
 WMF_MINOR_VERSION=2
-WMF_MICRO_VERSION=4
+WMF_MICRO_VERSION=5
 WMF_INTERFACE_AGE=0
 WMF_BINARY_AGE=0
 WMF_VERSION=$WMF_MAJOR_VERSION.$WMF_MINOR_VERSION.$WMF_MICRO_VERSION

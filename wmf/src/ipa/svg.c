@@ -45,6 +45,7 @@ static void wmf_svg_draw_ellipse (wmfAPI*,wmfDrawArc_t*);
 static void wmf_svg_draw_line (wmfAPI*,wmfDrawLine_t*);
 static void wmf_svg_poly_line (wmfAPI*,wmfPolyLine_t*);
 static void wmf_svg_draw_polygon (wmfAPI*,wmfPolyLine_t*);
+static void wmf_svg_draw_polypolygon(wmfAPI * API, wmfPolyPoly_t* polypolygon);
 static void wmf_svg_draw_rectangle (wmfAPI*,wmfDrawRectangle_t*);
 static void wmf_svg_rop_draw (wmfAPI*,wmfROP_Draw_t*);
 static void wmf_svg_bmp_draw (wmfAPI*,wmfBMP_Draw_t*);
@@ -96,6 +97,7 @@ void wmf_svg_function (wmfAPI* API)
 	FR->draw_line      = wmf_svg_draw_line;
 	FR->poly_line      = wmf_svg_poly_line;
 	FR->draw_polygon   = wmf_svg_draw_polygon;
+        FR->draw_polypolygon = wmf_svg_draw_polypolygon;
 	FR->draw_rectangle = wmf_svg_draw_rectangle;
 	FR->rop_draw       = wmf_svg_rop_draw;
 	FR->bmp_draw       = wmf_svg_bmp_draw;

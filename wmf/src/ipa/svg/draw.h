@@ -300,6 +300,58 @@ static void wmf_svg_draw_polygon (wmfAPI* API,wmfPolyLine_t* poly_line)
 	}
 }
 
+static void wmf_svg_draw_polypolygon(wmfAPI * API, wmfPolyPoly_t* polypolygon)
+{
+  wmf_svg_t* ddata = WMF_SVG_GetData (API);
+
+  wmfStream* out = ddata->out;
+
+  WMF_DEBUG (API,"~~~~~~~~wmf_[svg_]draw_polypolygon");
+
+  if (out == 0) return;
+
+  if (TO_FILL(polypolygon) || TO_DRAW(polypolygon))
+    {
+      int
+        polygon,
+        point;
+
+      wmfPolyLine_t
+        poly_line;
+
+      svgPoint pt;
+
+      wmf_stream_printf (API,out,"<path d=\"");
+      for (polygon = 0; polygon < polypolygon->npoly; polygon++)
+        {
+          poly_line.dc = polypolygon->dc;
+          poly_line.pt = polypolygon->pt[polygon];
+          poly_line.count = polypolygon->count[polygon];
+          if ((poly_line.count > 2) && poly_line.pt)
+            {
+              pt = svg_translate (API,poly_line.pt[0]);
+              wmf_stream_printf (API,out,"M%f,%fL",pt.x,pt.y);
+              for (point = 1; point < poly_line.count; point++)
+                {
+                  if ((point & 3) == 1) wmf_stream_printf (API,out,"\n\t");
+                  pt = svg_translate (API,poly_line.pt[point]);
+                  wmf_stream_printf (API,out,"%f,%f ",pt.x,pt.y);
+                }
+              wmf_stream_printf (API,out,"Z");
+            }
+        }
+      wmf_stream_printf (API,out,"\"\n\t");
+
+      wmf_stream_printf (API,out,"style=\"");
+      svg_style_fill (API,polypolygon->dc);
+      wmf_stream_printf (API,out,"; ");
+      svg_style_stroke (API,polypolygon->dc);
+      wmf_stream_printf (API,out,"\" ");
+
+      wmf_stream_printf (API,out,"/>\n");
+    }
+}
+
 static void wmf_svg_draw_rectangle (wmfAPI* API,wmfDrawRectangle_t* draw_rect)
 {	wmf_svg_t* ddata = WMF_SVG_GetData (API);
 

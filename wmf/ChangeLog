@@ -1,3 +1,7 @@
+v. 0.2.5
+	* use memset to handle varying size of libxml2's SAX struct (fjf)
+v. 0.2.4 (this is not a release)
+	* fake polypolygon for devices that can't handle it (fjf)
 	* docs update
 	* add draw_polypolygon () callback to IPA - will default to
 	  old behaviour; initialize function reference entries to 0 (fjf)

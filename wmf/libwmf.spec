@@ -1,5 +1,5 @@
 %define name libwmf
-%define version 0.2.4
+%define version 0.2.5
 %define release 1
 %define prefix /usr
 %define bindir %{prefix}/bin
