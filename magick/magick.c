@@ -579,6 +579,7 @@ MagickExport void InitializeMagick(const char *path)
     debug|=_CRTDBG_DELAY_FREE_MEM_DF;
     debug|=_CRTDBG_LEAK_CHECK_DF;
     // debug=_CrtSetDbgFlag(debug);
+    // _ASSERTE(_CrtCheckMemory(  )); // use this to check condition of memory
 #endif
     execution_path=NTGetExecutionPath();
     GetPathComponent(execution_path,HeadPath,filename);
