@@ -1035,7 +1035,8 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
 %
 */
 
-int StreamHandler(const Image *image,const void *pixels,const size_t columns)
+static int StreamHandler(const Image *image,const void *pixels,
+  const size_t columns)
 {
   return(True);
 }
