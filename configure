@@ -1039,7 +1039,7 @@ Optional Features:
   --enable-prof           enable 'prof' profiling support (default disabled)
   --enable-gprof          enable 'gprof' profiling support (default disabled)
   --enable-gcov           enable 'gcov' profiling support (default disabled)
-  --enable-lzw            enable LZW support (default disabled)
+  --disable-lzw           disable LZW support (default enabled)
   --enable-symbol-prefix  enable prefixing library symbols with "Gm"
   --enable-magick-compat  install ImageMagick utility shortcuts (default disabled)
 
@@ -17034,7 +17034,7 @@ if test "${enable_lzw+set}" = set; then
   enableval="$enable_lzw"
   with_lzw=$enableval
 else
-  with_lzw='no'
+  with_lzw='yes'
 fi;
 test "$with_lzw" = 'yes' &&
 cat >>confdefs.h <<\_ACEOF

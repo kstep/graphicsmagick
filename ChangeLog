@@ -1,4 +1,8 @@
-2004-07-05  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+2004-07-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Enable LZW compression by default.
+
+2004-07-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jpeg.c (WriteJPEGImage): Don't enable Huffman compression
 	for large images (> 16 Mpixels for the moment) in order to
@@ -13,7 +17,7 @@
 	Ensure that all unimplemented functions return a proper error
 	report.
 
-2004-07-01  Mike Chiarappa <mikechiarappa@libero.it>
+2004-07-01  Mike Chiarappa  <mikechiarappa@libero.it>
 
 	* BCBMagick: updated to GraphicsMagick v.1.2
 	* BCBMagick\All: project GMlib-1.1.bpr has been replaced with

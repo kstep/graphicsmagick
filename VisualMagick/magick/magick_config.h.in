@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright (C) 2003 GraphicsMagick Group
+// Copyright (C) 2003, 2004 GraphicsMagick Group
 // Copyright (C) 2002 ImageMagick Studio
 // Copyright 1991-1999 E. I. du Pont de Nemours and Company
 //
@@ -22,7 +22,7 @@
 // be lost.
 //
 // Note that by default GraphicsMagick is configured with a
-// QuantumDepth of eight, has LZW compression disabled, and looks for
+// QuantumDepth of eight, has LZW compression enabled, and looks for
 // all files in the directory where the executable is located.  The
 // installed configuration (i.e.  the setup.exe-style installer) is
 // modifying by defining "UseInstalledMagick".  If you would like to
@@ -77,19 +77,8 @@
 // HasLZW
 //
 // Define to support UNISYS patented LZW compression as used by GIF.
-// The U.S. patent expired on June 20, 2003, the counterpart Canadian
-// patent expires on July 7, 2004, the counterpart patents in the
-// United Kingdom, France, Germany and Italy expire on June 18, 2004,
-// and the Japanese counterpart patents expire on June 20,
-// 2004. Please be advised that if the software is to be built or used
-// in a country where the patent is in effect, that IT MAY BE ILLEGAL
-// TO ENABLE THIS OPTION without a license from UNISYS. The
-// GraphicsMagick Group DOES NOT RECOMMEND OR ENCOURAGE THE UNLICENSED
-// USE OF LZW in a country where the UNISYS patent applies. The
-// GraphicsMagick Group does not support the illegal import of
-// LZW-enabled software into a country where the UNISYS LZW patent
-// applies.
-#undef HasLZW
+// The UNISYS patent on LZW expired on July 7, 2004 worldwide.
+#define HasLZW 1
 
 /////////////
 //

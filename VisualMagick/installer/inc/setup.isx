@@ -1,6 +1,6 @@
 #ifdef COPYRIGHT
 ;
-; Copyright (C) 2003 GraphicsMagick Group
+; Copyright (C) 2003, 2004 GraphicsMagick Group
 ;
 ; This program is covered by multiple licenses, which are described in
 ; Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -24,13 +24,7 @@ DefaultGroupName={#MagickPackageName} {#MagickPackageVersion} Q{#QuantumDepth}
 Compression=bzip/9
 ChangesAssociations=1
 AllowRootDirectory=no
-
-#ifdef MagickLZWCompression
-LicenseFile=txt\license-lzw.rtf
-#else
 LicenseFile=txt\license.rtf
-#endif
-
 InfoBeforeFile=txt\before.rtf
 InfoAfterFile=txt\after.rtf
 UninstallDisplayIcon={#MagickAppDirectory}\ImageMagick.ico

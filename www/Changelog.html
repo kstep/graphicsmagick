@@ -21,7 +21,14 @@
 </tr>
 </table>
 <p>
-2004-07-05  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+2004-07-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> Enable LZW compression by default.
+
+</UL>
+<p>
+2004-07-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> coders/jpeg.c (WriteJPEGImage): Don't enable Huffman compression
@@ -29,8 +36,8 @@
         conserve memory.  When Huffman compression is enabled the entire
         image is buffered in memory prior to encoding and writing
         anything.  Huffman compression is a method of eliminating
-        redundant data so the Huffman compression is disabled, files sizes
-        will be larger, but otherwise the image is the same.
+        redundant data so when the Huffman compression is disabled, files
+        sizes will be larger, but otherwise the image is the same.
   <LI> wand/magick_wand.c (MagickSetPassphrase): String was being
         copied to a null pointer.  Now memory is allocated as required
         prior to a copy.<BR>
@@ -39,7 +46,7 @@
 
 </UL>
 <p>
-2004-07-01  Mike Chiarappa &lt;mikechiarappa@libero.it&gt;
+2004-07-01  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
 
 <UL>
   <LI> BCBMagick: updated to GraphicsMagick v.1.2
