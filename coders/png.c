@@ -472,7 +472,6 @@ static unsigned int CompressColormapTransFirst(Image *image)
 {
   int
     remap_needed,
-    transparent_pixels,
     k;
 
   long
@@ -531,7 +530,6 @@ static unsigned int CompressColormapTransFirst(Image *image)
     marker[i]=False;
     opacity[i]=OpaqueOpacity;
   }
-  transparent_pixels=0;
   top_used=0;
   for (y=0; y < (long) image->rows; y++)
   {
@@ -546,8 +544,6 @@ static unsigned int CompressColormapTransFirst(Image *image)
         opacity[(int) indexes[x]]=p->opacity;
         if (indexes[x] > top_used)
            top_used=indexes[x];
-        if (p->opacity != OpaqueOpacity)
-           transparent_pixels++;
         p++;
       }
     else
@@ -3044,7 +3040,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               {
                 DestroyImage(alpha_image);
                 ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-                    alpha_image);
+                    alpha_image)
               }
             if (logging)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -3301,7 +3297,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
   FormatString(color_image_info->filename,"%.1024s",color_image->filename);
 
-  color_image_info->ping=False;
+  color_image_info->ping=False;   /* To do: avoid this */
   jng_image=ReadImage(color_image_info,exception);
 
   (void) remove(color_image->filename);
