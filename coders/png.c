@@ -4937,7 +4937,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,IndexQuantum,scanlines[y]);
+          if (image->storage_class == PseudoClass)
+            (void) PopImagePixels(image,IndexQuantum,scanlines[y]);
+          else
+            (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               MagickMonitor(SaveImageText,y,image->rows);

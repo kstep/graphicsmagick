@@ -547,7 +547,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
-    fax,
     height,
     info_id,
     object,
@@ -583,6 +582,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
+  if ((compression == JPEGCompression) && IsGrayImage(image))
+    compression=ZipCompression;
   /*
     Allocate X ref memory.
   */
@@ -794,19 +795,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%u 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
-    fax=IsFaxImage(image);
-    if (compression == JPEGCompression)
-      {
-        image->storage_class=DirectClass;
-        fax=False;
-      }
-    if (image->storage_class == DirectClass)
+    if (!IsPseudoClass(image) && !IsGrayImage(image))
       (void) strcpy(buffer,"[ /PDF /Text /ImageC");
     else
-      if (!fax)
-        (void) strcpy(buffer,"[ /PDF /Text /ImageI");
-      else
+      if (IsFaxImage(image))
         (void) strcpy(buffer,"[ /PDF /Text /ImageB");
+      else
+        (void) strcpy(buffer,"[ /PDF /Text /ImageI");
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image," ]\n");
     (void) WriteBlobString(image,"endobj\n");
@@ -839,7 +834,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     if (compression == NoCompression)
       (void) WriteBlobString(image,"/Filter /ASCII85Decode \n");
     else
-      if (!fax)
+      if (!IsFaxImage(image))
         {
           switch (compression)
           {
@@ -868,14 +863,15 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/ColorSpace %u 0 R\n",object+2);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/BitsPerComponent %d\n",fax ? 1 : 8);
+    FormatString(buffer,"/BitsPerComponent %d\n",
+      IsFaxImage(image) ? 1 : 8);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/Length %u 0 R\n",object+1);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"stream\n");
     length=TellBlob(image);
-    if (image->storage_class == DirectClass)
+    if (!IsPseudoClass(image) && !IsGrayImage(image))
       switch (compression)
       {
         case JPEGCompression:
@@ -899,7 +895,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           jpeg_image=CloneImage(image,0,0,True,&image->exception);
           if (jpeg_image == (Image *) NULL)
             ThrowWriterException(DelegateWarning,"Unable to clone image",image);
-          (void) FormatString(jpeg_image->filename,"jpeg24:%.1024s",filename);
+          (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
+          jpeg_image->depth=8;
           status=WriteImage(image_info,jpeg_image);
           DestroyImage(jpeg_image);
           if (status == False)
@@ -1010,7 +1007,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         }
       }
     else
-      if (fax)
+      if (IsFaxImage(image))
         {
           unsigned char
             bit,
@@ -1171,14 +1168,14 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     if (image->colorspace == CMYKColorspace)
       (void) strcpy(buffer,"/DeviceCMYK\n");
     else
-      if (image->storage_class == DirectClass)
+      if (!IsPseudoClass(image) && !IsGrayImage(image))
         (void) strcpy(buffer,"/DeviceRGB\n");
       else
-        if (!fax)
+        if (IsFaxImage(image))
+          (void) strcpy(buffer,"/DeviceGray\n");
+        else
           FormatString(buffer,"[ /Indexed /DeviceRGB %u %u 0 R ]\n",
             image->colors-1,object+3);
-        else
-          (void) strcpy(buffer,"/DeviceGray\n");
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     /*
@@ -1201,11 +1198,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"%u 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
-    fax=IsFaxImage(tile_image);
     if (compression == NoCompression)
       (void) strcpy(buffer,"/Filter /ASCII85Decode\n");
     else
-      if (!fax)
+      if (!IsFaxImage(image))
         {
           FormatString(buffer,"/Filter [ /ASCII85Decode /%.1024s ]\n",
             compression == ZipCompression ? "FlateDecode" :
@@ -1228,14 +1224,15 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/ColorSpace %u 0 R\n",object-1);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/BitsPerComponent %d\n",fax ? 1 : 8);
+    FormatString(buffer,"/BitsPerComponent %d\n",
+      IsFaxImage(tile_image) ? 1 : 8);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/Length %u 0 R\n",object+1);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"stream\n");
     length=TellBlob(image);
-    if (tile_image->storage_class == DirectClass)
+    if (!IsPseudoClass(tile_image) && !IsGrayImage(tile_image))
       switch (compression)
       {
         case RunlengthEncodedCompression:
@@ -1330,7 +1327,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         }
       }
     else
-      if (fax)
+      if (IsFaxImage(tile_image))
         {
           register unsigned char
             bit,
@@ -1530,7 +1527,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"%lu\n",length);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
-    if ((image->storage_class == DirectClass) || fax)
+    if ((image->storage_class == DirectClass) || IsFaxImage(image))
       {
         xref[object++]=0;
         xref[object++]=0;
