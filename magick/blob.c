@@ -254,10 +254,18 @@ MagickExport void CloseBlob(Image *image)
   CloseImagePixels(image);
   image->taint=False;
   image->blob->maximum_extent=SizeBlob(image);
-  if (image->blob->data != (unsigned char *) NULL)
+  if (image->blob->mapped)
     {
-      image->blob->extent=image->blob->length;
       image->blob->eof=False;
+      (void) UnmapBlob(image->blob->data,image->blob->length);
+      image->blob->mapped=False;
+      if (!image->orphan)
+        {
+          while (image->previous != (Image *) NULL)
+            image=image->previous;
+          for ( ; image != (Image *) NULL; image=image->next)
+            image->blob->mapped=False;
+        }
       return;
     }
   if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
@@ -316,8 +324,6 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
   assert(blob->signature == MagickSignature);
-  if (blob->mapped)
-    (void) UnmapBlob(blob->data,blob->length);
   LiberateMemory((void **) &blob);
 }
 
@@ -1049,10 +1055,10 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                       Format supports blobs-- try memory-mapped I/O.
                     */
                     image->blob->length=0;
-                    image->blob->data=(unsigned char *)
-                      MapBlob(fileno(image->file),ReadMode,&image->blob->length);
+                    image->blob->data=(unsigned char *) MapBlob(
+                      fileno(image->file),ReadMode,&image->blob->length);
                     image->blob->mapped=
-                      image->blob->data != (void *) NULL;
+                      image->blob->data != (unsigned char *) NULL;
                     if (image->blob->mapped)
                       {
                         (void) fclose(image->file);
