@@ -20,16 +20,18 @@ typedef struct SemaphoreInfo SemaphoreInfo;
 /*
   Semaphore methods.
 */
-extern MagickExport int
-  LockSemaphore(SemaphoreInfo *),
-  UnlockSemaphore(SemaphoreInfo *);
 
 extern MagickExport SemaphoreInfo
   *AllocateSemaphoreInfo(void);
 
+extern MagickExport unsigned int
+  LockSemaphore(SemaphoreInfo *),
+  UnlockSemaphore(SemaphoreInfo *);
+
 extern MagickExport void
   AcquireSemaphore(SemaphoreInfo **,void (*)(void)),
   DestroySemaphore(SemaphoreInfo *),
+  InitializeSemaphore(void),
   LiberateSemaphore(SemaphoreInfo **);
 
 #if defined(__cplusplus) || defined(c_plusplus)

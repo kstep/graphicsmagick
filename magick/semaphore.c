@@ -127,7 +127,7 @@ MagickExport void AcquireSemaphore(SemaphoreInfo **semaphore_info,
   assert(semaphore_info != (SemaphoreInfo **) NULL);
   assert((*semaphore_info)->signature == MagickSignature);
 #if defined(HasPTHREADS)
-  (Void) pthread_mutex_lock(&semaphore_mutex);
+  (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
   EnterCriticalSection(&critical_section);
@@ -140,7 +140,7 @@ MagickExport void AcquireSemaphore(SemaphoreInfo **semaphore_info,
     }
   (void) LockSemaphore(*semaphore_info);
 #if defined(HasPTHREADS)
-  (Void) pthread_mutex_unlock(&semaphore_mutex);
+  (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
   LeaveCriticalSection(&critical_section);
