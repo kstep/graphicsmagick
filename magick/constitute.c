@@ -696,9 +696,6 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
   long
     y;
 
-  register IndexPacket
-    *indexes;
-
   register long
     i,
     x;
@@ -742,7 +739,6 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
         p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
         for (x=0; x < (long) columns; x++)
         {
           for (i=0; i < (long) strlen(map); i++)
@@ -810,7 +806,6 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
         p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
         for (x=0; x < (long) columns; x++)
         {
           for (i=0; i < (long) strlen(map); i++)
@@ -878,7 +873,6 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
         p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
         for (x=0; x < (long) columns; x++)
         {
           for (i=0; i < (long) strlen(map); i++)
@@ -946,7 +940,6 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
         p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
         for (x=0; x < (long) columns; x++)
         {
           for (i=0; i < (long) strlen(map); i++)
@@ -1014,7 +1007,6 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
         p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
         for (x=0; x < (long) columns; x++)
         {
           for (i=0; i < (long) strlen(map); i++)
@@ -1082,7 +1074,6 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
         p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
         for (x=0; x < (long) columns; x++)
         {
           for (i=0; i < (long) strlen(map); i++)

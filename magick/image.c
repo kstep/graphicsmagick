@@ -112,9 +112,6 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   Image
     *allocate_image;
 
-  int
-    flags;
-
   /*
     Allocate image structure.
   */
@@ -154,7 +151,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   (void) strncpy(allocate_image->magick,image_info->magick,MaxTextExtent-1);
   if (image_info->size != (char *) NULL)
     {
-      flags=GetGeometry(image_info->size,&allocate_image->tile_info.x,
+      (void) GetGeometry(image_info->size,&allocate_image->tile_info.x,
         &allocate_image->tile_info.y,&allocate_image->columns,
         &allocate_image->rows);
       allocate_image->offset=allocate_image->tile_info.x;
@@ -163,7 +160,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
     }
   if (image_info->tile != (char *) NULL)
     if (!IsSubimage(image_info->tile,False))
-      flags=GetGeometry(image_info->tile,&allocate_image->tile_info.x,
+      (void) GetGeometry(image_info->tile,&allocate_image->tile_info.x,
         &allocate_image->tile_info.y,&allocate_image->columns,
         &allocate_image->rows);
   allocate_image->compression=image_info->compression;
@@ -186,7 +183,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
 
       allocate_image->page=allocate_image->tile_info;
       geometry=GetPageGeometry(image_info->page);
-      flags=GetGeometry(geometry,&allocate_image->page.x,
+      (void) GetGeometry(geometry,&allocate_image->page.x,
         &allocate_image->page.y,&allocate_image->page.width,
         &allocate_image->page.height);
       LiberateMemory((void **) &geometry);
@@ -3362,8 +3359,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     *clone_info;
 
   int
-    count,
-    flags;
+    count;
 
   QuantizeInfo
     quantize_info;
@@ -3497,7 +3493,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with a border of solid color.
             */
-            flags=GetImageGeometry(*image,argv[++i],False,&geometry);
+            (void) GetImageGeometry(*image,argv[++i],False,&geometry);
             border_image=BorderImage(*image,&geometry,&(*image)->exception);
             if (border_image == (Image *) NULL)
               break;
@@ -3582,7 +3578,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Chop the image.
             */
-            flags=GetImageGeometry(*image,argv[++i],False,&geometry);
+            (void) GetImageGeometry(*image,argv[++i],False,&geometry);
             chop_image=ChopImage(*image,&geometry,&(*image)->exception);
             if (chop_image == (Image *) NULL)
               break;
@@ -4031,7 +4027,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with an ornamental border.
             */
-            flags=GetImageGeometry(*image,argv[++i],False,&geometry);
+            (void) GetImageGeometry(*image,argv[++i],False,&geometry);
             frame_info.width=geometry.width;
             frame_info.height=geometry.height;
             frame_info.outer_bevel=geometry.x;
@@ -4101,7 +4097,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Resize image.
             */
-            flags=GetImageGeometry(*image,argv[++i],True,&geometry);
+            (void) GetImageGeometry(*image,argv[++i],True,&geometry);
             if ((geometry.width == (*image)->columns) &&
                 (geometry.height == (*image)->rows))
               break;
@@ -4521,7 +4517,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with a raise of solid color.
             */
-            flags=GetImageGeometry(*image,argv[++i],False,&geometry);
+            (void) GetImageGeometry(*image,argv[++i],False,&geometry);
             (void) RaiseImage(*image,&geometry,*option == '-');
             continue;
           }
@@ -4546,7 +4542,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Apply transformations to a selected region of the image.
             */
-            flags=GetImageGeometry(*image,argv[++i],False,&region_geometry);
+            (void) GetImageGeometry(*image,argv[++i],False,&region_geometry);
             crop_image=CropImage(*image,&region_geometry,&(*image)->exception);
             if (crop_image == (Image *) NULL)
               break;
@@ -4562,7 +4558,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Resize image.
             */
-            flags=GetImageGeometry(*image,argv[++i],True,&geometry);
+            (void) GetImageGeometry(*image,argv[++i],True,&geometry);
             if ((geometry.width == (*image)->columns) &&
                 (geometry.height == (*image)->rows))
               break;
@@ -4582,7 +4578,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Roll image.
             */
-            flags=GetImageGeometry(*image,argv[++i],False,&geometry);
+            (void) GetImageGeometry(*image,argv[++i],False,&geometry);
             roll_image=RollImage(*image,geometry.x,geometry.y,
               &(*image)->exception);
             if (roll_image == (Image *) NULL)
@@ -4632,7 +4628,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Sample image with pixel replication.
             */
-            flags=GetImageGeometry(*image,argv[++i],True,&geometry);
+            (void) GetImageGeometry(*image,argv[++i],True,&geometry);
             if ((geometry.width == (*image)->columns) &&
                 (geometry.height == (*image)->rows))
               break;
@@ -4655,7 +4651,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Resize image.
             */
-            flags=GetImageGeometry(*image,argv[++i],True,&geometry);
+            (void) GetImageGeometry(*image,argv[++i],True,&geometry);
             if ((geometry.width == (*image)->columns) &&
                 (geometry.height == (*image)->rows))
               break;
@@ -4742,7 +4738,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Shave the image edges.
             */
-            flags=GetImageGeometry(*image,argv[++i],False,&geometry);
+            (void) GetImageGeometry(*image,argv[++i],False,&geometry);
             shave_image=ShaveImage(*image,&geometry,&(*image)->exception);
             if (shave_image == (Image *) NULL)
               break;

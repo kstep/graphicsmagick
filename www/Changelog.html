@@ -23,6 +23,14 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-01-28  Cristy  &lt;cristy@mystic.es.dupont.com&gt;,
+            Glenn Randers-Pehrson  &lt;randeg@alum.rpi.edu&gt;
+  * Geometry strings respect -gravity (e.g. -gravity SouthWest -crop
+    100x100).
+  * Postive offsets in geometry strings move within the image canvas
+    with respect to the gravity (SouthWest gravity is similar to Postscript
+    page offsets).
+
 2002-01-24  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Use -trim to trim the edges of an image.
   * Palm pixmap supported contributed by Christopher R. Hawks.
