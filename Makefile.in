@@ -357,12 +357,12 @@ DIST_SUBDIRS = ltdl coders filters magick utilities tests Magick++
 @WITH_MODULES_FALSE@SUBDIRS = $(LTDL) coders filters magick $(MAGICK_PLUS_PLUS) utilities tests
 
 @WITH_MODULES_TRUE@SUBDIRS = $(LTDL) magick coders filters $(MAGICK_PLUS_PLUS) utilities tests
-pkgdata_DATA = Copyright.txt QuickStart.txt
+pkgdata_DATA = Copyright.txt
 
 # Additional files to distribute
 EXTRA_DIST = ChangeLog Copyright.txt INSTALL-mac.txt INSTALL-unix.txt \
 	INSTALL-vms.txt INSTALL-windows.txt TODO.txt index.html \
-	Magickshr.opt Make.com NEWS PLATFORMS.txt QuickStart.txt \
+	Magickshr.opt Make.com NEWS PLATFORMS.txt \
 	README.txt lndir.sh version.sh winpath.sh
 
 

@@ -1,3 +1,9 @@
+2003-05-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* QuickStart.txt, www/QuickStart.html: Don't distribute QuickStart.txt or
+	www/QuickStart.html since the content doesn't currently apply to
+	GraphicsMagick.
+
 2003-05-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* README.txt: Added text regarding where to obtain dcraw, a simple

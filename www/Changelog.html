@@ -53,9 +53,24 @@
 </tr>
 </table>
 <p>
+2003-05-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> QuickStart.txt, www/QuickStart.html: Don't distribute QuickStart.txt or
+        www/QuickStart.html since the content doesn't currently apply to
+        GraphicsMagick.
+
+</UL>
+<p>
 2003-05-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> README.txt: Added text regarding where to obtain dcraw, a simple
+        but useful decoder for the proprietary raw file formats produced
+        by digital cameras (58 supported cameras!).
+  <LI> configure.ac: Added support for finding dcraw.
+  <LI> VisualMagick/bin/delegates.mgk: Added support for dcraw.
+  <LI> coders/delegates.mgk.in: Added support for dcraw.
   <LI> version.sh (PACKAGE_RELEASE_DATE): Extract the most recent
         update date from the ChangeLog file using awk.
 

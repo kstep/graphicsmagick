@@ -38,12 +38,12 @@ endif # WITH_MODULES
 
 # Architecture independent data files installed in the package's data directory
 pkgdatadir = @MagickSharePath@
-pkgdata_DATA = Copyright.txt QuickStart.txt
+pkgdata_DATA = Copyright.txt
 
 # Additional files to distribute
 EXTRA_DIST = ChangeLog Copyright.txt INSTALL-mac.txt INSTALL-unix.txt \
 	INSTALL-vms.txt INSTALL-windows.txt TODO.txt index.html \
-	Magickshr.opt Make.com NEWS PLATFORMS.txt QuickStart.txt \
+	Magickshr.opt Make.com NEWS PLATFORMS.txt \
 	README.txt lndir.sh version.sh winpath.sh
 
 # Non-Automake subdirectories to distribute
