@@ -59,14 +59,8 @@
 #include "xwindows.h"
 #endif
 #if defined(HasTTF)
-#if defined(HAVE_FREETYPE_FREETYPE_H)
 #include "freetype/freetype.h"
-#else
-#include "freetype.h"
-#endif
-#if FREETYPE_MAJOR > 1
 #include "freetype/ftglyph.h"
-#endif
 #endif
 
 /*
@@ -307,14 +301,14 @@ MagickExport unsigned int AnnotateImage(Image *image,
     */
     if (clone_info->decorate == OverlineDecoration)
       q=GetImagePixels(image,(int) ceil(offset.x-0.5),(int)
-        ceil(offset.y-3.0*font_height/4.0+1.5),(int) font_width,1);
+        ceil(offset.y-3.0*font_height/4.0-1.5),(int) font_width,1);
     else
       if (clone_info->decorate == UnderlineDecoration)
         q=GetImagePixels(image,(int) ceil(offset.x+0.5),
           (int) ceil(offset.y+0.5),font_width,1);
       else
         q=GetImagePixels(image,(int) (offset.x-0.5),(int)
-          ceil(offset.y-font_height/4.0-0.5),(int) font_width,1);
+          ceil(offset.y-3.0*font_height/8.0-0.5),(int) font_width,1);
     if (q == (PixelPacket *) NULL)
       continue;
     for (j=0; j < (int) font_width; j++)
