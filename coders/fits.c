@@ -336,11 +336,6 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     image->scene=scene;
     if (!AllocateImageColormap(image,1 << image->depth))
       ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-    if (image_info->ping)
-      {
-        CloseBlob(image);
-        return(image);
-      }
     /*
       Initialize image structure.
     */

@@ -300,11 +300,6 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (sun_info.maptype == RMT_EQUAL_RGB)
           image->colors=(unsigned int) sun_info.maplength/3;
       }
-    if (image_info->ping)
-      {
-        CloseBlob(image);
-        return(image);
-      }
     switch (sun_info.maptype)
     {
       case RMT_NONE:

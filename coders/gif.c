@@ -920,11 +920,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     delay=0;
     dispose=0;
     iterations=1;
-    if (image_info->ping)
-      {
-        CloseBlob(image);
-        return(image);
-      }
     if ((image->columns == 0) || (image->rows == 0))
       ThrowReaderException(CorruptImageWarning,"image size is 0",image);
     /*

@@ -330,11 +330,6 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         }
     }
-  if (image_info->ping)
-    {
-      CloseBlob(image);
-      return(image);
-    }
   /*
     Allocate memory for the image and pixel buffer.
   */

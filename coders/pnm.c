@@ -294,11 +294,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->storage_class=PseudoClass;
         image->colors=max_value+1;
       }
-    if (image_info->ping)
-      {
-        CloseBlob(image);
-        return(image);
-      }
     if ((size_t) (image->columns*image->rows) == 0)
       ThrowReaderException(CorruptImageWarning,
         "Unable to read image: image dimensions are zero",image);

@@ -308,13 +308,6 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     image->storage_class=PseudoClass;
   image->colors=header.ncolors;
-  if (image_info->ping)
-    {
-      if (header.ncolors != 0)
-        LiberateMemory((void **) &colors);
-      CloseBlob(image);
-      return(image);
-    }
   switch (image->storage_class)
   {
     case DirectClass:

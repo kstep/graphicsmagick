@@ -1692,7 +1692,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   cstruct->preparse = 1;
   PlayMetaFile((void *)cstruct,metafile,1,NULL);
 
-  if(!image_info->ping)
     {
       /* Add viewbox primitive to support a stand-alone mvg file */
       sprintf( buff, "viewbox 0 0 %i %i\n",

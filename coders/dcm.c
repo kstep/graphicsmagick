@@ -3201,11 +3201,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!AllocateImageColormap(image,Min(max_value,MaxRGB)+1))
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
-    if (image_info->ping)
-      {
-        CloseBlob(image);
-        return(image);
-      }
     if ((samples_per_pixel > 1) && (image->interlace == PlaneInterlace))
       {
         /*

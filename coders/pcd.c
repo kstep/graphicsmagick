@@ -521,13 +521,6 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns<<=1;
     image->rows<<=1;
   }
-  if (image_info->ping)
-    {
-      if ((rotate == 1) || (rotate == 3))
-        Swap(image->columns,image->rows);
-      CloseBlob(image);
-      return(image);
-    }
   /*
     Allocate luma and chroma memory.
   */

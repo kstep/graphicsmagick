@@ -468,12 +468,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               "Memory allocation failed",image);
           }
       }
-    if (image_info->ping)
-      {
-        TIFFClose(tiff);
-        CloseBlob(image);
-        return(image);
-      }
     if (units == RESUNIT_INCH)
       image->units=PixelsPerInchResolution;
     if (units == RESUNIT_CENTIMETER)

@@ -540,7 +540,7 @@ static unsigned int SyncPixelStream(Image *image)
 %
 %
 */
-MagickExport unsigned int WriteStream(ImageInfo *image_info,Image *image,
+MagickExport unsigned int WriteStream(const ImageInfo *image_info,Image *image,
   int (*fifo)(const Image *,const void *,const size_t))
 {
   unsigned int

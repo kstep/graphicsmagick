@@ -156,11 +156,6 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   image->depth=8;
   image->storage_class=PseudoClass;
   image->colors=2;
-  if (image_info->ping)
-    {
-      CloseBlob(image);
-      return(image);
-    }
   /*
     Read JBIG file.
   */

@@ -683,14 +683,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image->columns=jpeg_info.output_width;
   image->rows=jpeg_info.output_height;
   image->depth=jpeg_info.data_precision <= 8 ? 8 : QuantumDepth;
-  if (image_info->ping)
-    {
-      jpeg_destroy_decompress(&jpeg_info);
-      CloseBlob(image);
-      *exception=image->exception;
-      GetExceptionInfo(&image->exception);
-      return(image);
-    }
   if (jpeg_info.out_color_space == JCS_GRAYSCALE)
     if (!AllocateImageColormap(image,1 << jpeg_info.data_precision))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",

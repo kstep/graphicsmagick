@@ -596,11 +596,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       (viff_info.number_data_bands < 3 ? PseudoClass : DirectClass);
     image->columns=viff_info.rows;
     image->rows=viff_info.columns;
-    if (image_info->ping)
-      {
-        CloseBlob(image);
-        return(image);
-      }
     /*
       Convert VIFF raster image to pixel packets.
     */

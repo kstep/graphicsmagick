@@ -198,11 +198,6 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ReadBlobLSBShort(image);
     image->columns=ReadBlobLSBShort(image);
     image->rows=ReadBlobLSBShort(image);
-    if (image_info->ping)
-      {
-        CloseBlob(image);
-        return(image);
-      }
     flags=ReadBlobByte(image);
     image->matte=flags & 0x04;
     number_planes=ReadBlobByte(image);

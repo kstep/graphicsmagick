@@ -136,19 +136,11 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   do
   {
     /*
-      Initialize image structure.
+      Convert AVS raster image to pixel packets.
     */
     image->columns=width;
     image->rows=height;
     image->depth=8;
-    if (image_info->ping)
-      {
-        CloseBlob(image);
-        return(image);
-      }
-    /*
-      Convert AVS raster image to pixel packets.
-    */
     pixels=(unsigned char *) AcquireMemory(4*image->columns);
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",

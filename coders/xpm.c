@@ -371,11 +371,6 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       LiberateMemory((void **) &textlist);
       ThrowReaderException(CorruptImageWarning,"Corrupt XPM image file",image);
     }
-  if (image_info->ping)
-    {
-      CloseBlob(image);
-      return(image);
-    }
   /*
     Read image pixels.
   */

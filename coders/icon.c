@@ -222,11 +222,6 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         if (image->colors == 0)
           image->colors=1 << icon_info.bits_per_pixel;
       }
-    if (image_info->ping)
-      {
-        CloseBlob(image);
-        return(image);
-      }
   if (image->storage_class == PseudoClass)
     {
       unsigned char

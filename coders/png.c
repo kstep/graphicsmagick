@@ -2878,13 +2878,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->colors=number_colors;
           }
       }
-    if (image_info->ping)
-      {
-        png_destroy_read_struct(&ping,&ping_info,&end_info);
-        CloseBlob(image);
-        MngInfoFreeStruct(mng_info,&have_mng_structure);
-        return(image);
-      }
     png_pixels=(unsigned char *)
       AcquireMemory(ping_info->rowbytes*image->rows*sizeof(Quantum));
     scanlines=(unsigned char **)

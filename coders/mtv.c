@@ -143,11 +143,6 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=columns;
     image->rows=rows;
     image->depth=8;
-    if (image_info->ping)
-      {
-        CloseBlob(image);
-        return(image);
-      }
     /*
       Convert MTV raster image to pixel packets.
     */

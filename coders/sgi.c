@@ -293,11 +293,6 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->storage_class=PseudoClass;
         image->colors=256;
       }
-    if (image_info->ping)
-      {
-        CloseBlob(image);
-        return(image);
-      }
     iris_info.minimum_value=ReadBlobMSBLong(image);
     iris_info.maximum_value=ReadBlobMSBLong(image);
     (void) ReadBlob(image,(unsigned int) sizeof(iris_info.filler),

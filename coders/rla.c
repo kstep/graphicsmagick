@@ -243,11 +243,6 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->matte=rla_info.number_matte_channels != 0;
   image->columns=rla_info.active_window.right-rla_info.active_window.left;
   image->rows=rla_info.active_window.top-rla_info.active_window.bottom;
-  if (image_info->ping)
-    {
-      CloseBlob(image);
-      return(image);
-    }
   scanlines=(long *) AcquireMemory(image->rows*sizeof(long));
   if (scanlines == (long *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);

@@ -323,14 +323,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image);
     if ((pcx_info.bits_per_pixel >= 8) && (pcx_info.planes != 1))
       image->storage_class=DirectClass;
-    if (image_info->ping)
-      {
-        LiberateMemory((void **) &pcx_colormap);
-        if (page_table != (unsigned long *) NULL)
-          LiberateMemory((void **) &page_table);
-        CloseBlob(image);
-        return(image);
-      }
     p=pcx_colormap;
     for (i=0; i < (int) image->colors; i++)
     {

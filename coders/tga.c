@@ -205,11 +205,6 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->storage_class=PseudoClass;
         image->colors=tga_info.colormap_length;
       }
-    if (image_info->ping)
-      {
-        CloseBlob(image);
-        return(image);
-      }
     if (tga_info.id_length != 0)
       {
         char

@@ -635,11 +635,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         (image->rows == 0))
       ThrowReaderException(CorruptImageWarning,
         "Incorrect image header in file",image);
-    if (image_info->ping)
-      {
-        CloseBlob(image);
-        return(image);
-      }
     if (image->montage != (char *) NULL)
       {
         register char

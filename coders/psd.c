@@ -512,11 +512,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->iptc_profile.info=data;
       image->iptc_profile.length=length;
     }
-  if (image_info->ping)
-    {
-      CloseBlob(image);
-      return(image);
-    }
   layer_info=(LayerInfo *) NULL;
   number_layers=0;
   length=ReadBlobMSBLong(image);

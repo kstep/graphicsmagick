@@ -225,11 +225,6 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=8;
   image->storage_class=PseudoClass;
   image->colors=2;
-  if (image_info->ping)
-    {
-      CloseBlob(image);
-      return(image);
-    }
   /*
     Scan until hex digits.
   */

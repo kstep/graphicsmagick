@@ -149,11 +149,6 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!AllocateImageColormap(image,MaxRGB+1))
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
-    if (image_info->ping)
-      {
-        CloseBlob(image);
-        return(image);
-      }
     /*
       Convert PIX raster image to pixel packets.
     */

@@ -781,11 +781,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   flags=0;
   image->columns=frame.right-frame.left;
   image->rows=frame.bottom-frame.top;
-  if (image_info->ping)
-    {
-      CloseBlob(image);
-      return(image);
-    }
   /*
     Interpret PICT opcodes.
   */

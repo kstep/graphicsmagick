@@ -182,11 +182,6 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=atoi(buffer);
   (void) ReadBlob(image,196,(char *) buffer);
   (void) ReadBlob(image,768,(char *) buffer);
-  if (image_info->ping)
-    {
-      CloseBlob(image);
-      return(image);
-    }
   /*
     Convert SCT raster image to pixel packets.
   */

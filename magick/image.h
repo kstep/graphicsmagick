@@ -738,7 +738,7 @@ extern MagickExport unsigned int
   TransparentImage(Image *,const PixelPacket,const unsigned int),
   UnregisterMagickInfo(const char *),
   WriteImage(const ImageInfo *,Image *),
-  WriteStream(ImageInfo *,Image *,
+  WriteStream(const ImageInfo *,Image *,
     int (*)(const Image *,const void *,const size_t));
 
 extern MagickExport unsigned long

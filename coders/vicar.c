@@ -255,11 +255,6 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   image->depth=8;
   if (!AllocateImageColormap(image,256))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  if (image_info->ping)
-    {
-      CloseBlob(image);
-      return(image);
-    }
   /*
     Initialize image structure.
   */
