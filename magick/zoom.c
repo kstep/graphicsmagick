@@ -542,7 +542,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
     if (!SyncImagePixels(minify_image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(MinifyImageText,y,image->rows);
+      MagickMonitor(MinifyImageText,y,minify_image->rows);
   }
   return(minify_image);
 }
