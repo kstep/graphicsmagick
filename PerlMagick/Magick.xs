@@ -5839,7 +5839,7 @@ Morph(ref,...)
     /*
       Get attribute.
     */
-    number_frames=1;
+    number_frames=30;
     for (i=2; i < items; i+=2)
     {
       attribute=(char *) SvPV(ST(i-1),na);
