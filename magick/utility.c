@@ -1075,7 +1075,8 @@ Export unsigned int IsAccessible(const char *filename)
   /*
     Return False if the file cannot be opened.
   */
-  assert(filename != (char *) NULL);
+  if ((filename == (const char *) NULL) || (*filename == '\0'))
+    return(False);
   file=fopen(filename,ReadBinaryType);
   if (file == (FILE *) NULL)
     return(False);

@@ -380,7 +380,8 @@ Export char *GetStringBlob(Image *image,char *string)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method ImageToBlob implements direct to memory image formats.  It returns
-%  the image as a blob and its length.
+%  the image as a blob and its length.  The magick member of the Image
+%  structure determines the format of the returned blob (GIG, JPEG, PNG, etc.).
 %
 %  The format of the ImageToBlob method is:
 %
