@@ -1752,7 +1752,12 @@ then
   MogrifyDelegate='mogrify'
   PGPDecodeDelegate='pgpv'
   POVDelegate='povray'
+if test "$native_win32_build" = 'yes'
+then
+  PSDelegate='gswin32c'
+else
   PSDelegate='gs'
+fi
   RADDecodeDelegate='ra_ppm'
   RLEEncodeDelegate='rawtorle'
   RMDelegate='rm'
