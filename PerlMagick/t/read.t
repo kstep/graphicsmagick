@@ -104,19 +104,19 @@ testRead( 'input_p7.p7', '3d772946085f47ed244c548d08e36579' );
 # This is an internal generated format
 #
 ++$test;
-testRead( 'NULL:white', 'eff9598f9f61c1dc78d842f1798c2ab8' );
+testRead( 'NULL:white', 'ab0b2d4302f691199ab052eeb9de155b' );
 
 #
 # NULL (black image)
 #
 ++$test;
-testRead( 'NULL:black', '33c250bf306b7cbbd3dd71b6029b8784' );
+testRead( 'NULL:black', 'cb18a5d28e77522dfec6a6255bc3847e' );
 
 #
 # NULL (DarkOrange image)
 #
 ++$test;
-testRead( 'NULL:DarkOrange', '43e3f8bc3a2e2c05de8a5b569aeb8a94' );
+testRead( 'NULL:DarkOrange', 'cbcd8c4b1122863d2e89149074881e15' );
 
 #
 # Portable bitmap format (black and white), ASCII format
@@ -229,13 +229,13 @@ testRead( 'input.xbm', '61ed9c1e08dac993e5f020de8195e009' );
 # XC: Constant image of X server color
 #
 ++$test;
-testRead( 'xc:black', '33c250bf306b7cbbd3dd71b6029b8784' );
+testRead( 'xc:black', 'cb18a5d28e77522dfec6a6255bc3847e' );
 
 #
 # X Windows system pixmap file (color)
 #
 ++$test;
-testRead( 'input.xpm', '948df732ca8abbd1f7348a029f056c94' );
+testRead( 'input.xpm', 'd5a97a3cec301d8848102f513ceb3f3c' );
 
 #
 # X Windows system window dump file (color)

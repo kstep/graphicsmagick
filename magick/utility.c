@@ -2333,3 +2333,300 @@ Export void TemporaryFilename(char *filename)
 #endif
 #endif
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   T r a n s l a t e T e x t                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method TranslateText replaces any embedded formating characters with
+%  the appropriate image attribute and returns the translated text.
+%
+%  The format of the TranslateText routine is:
+%
+%      TranslateText(image,text)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image.
+%
+%    o text: The address of a character string containing the embedded
+%      formatting characters.
+%
+%
+*/
+Export char *TranslateText(Image *image,char *text)
+{
+  char
+    *translated_text;
+
+  register char
+    *p,
+    *q;
+
+  unsigned int
+    indirection,
+    length;
+
+  assert(image != (Image *) NULL);
+  if ((text == (char *) NULL) || (*text == '\0'))
+    return((char *) NULL);
+  indirection=(*text == '@');
+  if (indirection)
+    {
+      FILE
+        *file;
+
+      int
+        c;
+
+      /*
+        Read text from a file.
+      */
+      file=(FILE *) fopen(text+1,"r");
+      if (file == (FILE *) NULL)
+        {
+          MagickWarning(FileOpenWarning,"Unable to read text file",text+1);
+          return((char *) NULL);
+        }
+      length=MaxTextExtent;
+      text=(char *) AllocateMemory(length);
+      for (q=text; text != (char *) NULL; q++)
+      {
+        c=fgetc(file);
+        if (c == EOF)
+          break;
+        if ((q-text+1) >= length)
+          {
+            *q='\0';
+            length<<=1;
+            text=(char *) ReallocateMemory((char *) text,length);
+            if (text == (char *) NULL)
+              break;
+            q=text+Extent(text);
+          }
+        *q=(unsigned char) c;
+      }
+      (void) fclose(file);
+      if (text == (char *) NULL)
+        {
+          MagickWarning(ResourceLimitWarning,"Unable to text image",
+            "Memory allocation failed");
+          return((char *) NULL);
+        }
+      *q='\0';
+    }
+  /*
+    Allocate and initialize image text.
+  */
+  p=text;
+  length=Extent(text)+MaxTextExtent;
+  translated_text=(char *) AllocateMemory(length);
+  if (translated_text == (char *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to translated text",
+        "Memory allocation failed");
+      if (indirection)
+        FreeMemory((char *) text);
+      return((char *) NULL);
+    }
+  /*
+    Translate any embedded format characters.
+  */
+  for (q=translated_text; *p != '\0'; p++)
+  {
+    *q='\0';
+    if ((q-translated_text+MaxTextExtent) >= length)
+      {
+        length<<=1;
+        translated_text=(char *)
+          ReallocateMemory((char *) translated_text,length);
+        if (translated_text == (char *) NULL)
+          break;
+        q=translated_text+Extent(translated_text);
+      }
+    /*
+      Process formatting characters in text.
+    */
+    if ((*p == '\\') && (*(p+1) == 'r'))
+      {
+        *q++='\r';
+        p++;
+        continue;
+      }
+    if ((*p == '\\') && (*(p+1) == 'n'))
+      {
+        *q++='\n';
+        p++;
+        continue;
+      }
+    if (*p != '%')
+      {
+        *q++=(*p);
+        continue;
+      }
+    p++;
+    switch (*p)
+    {
+      case 'b':
+      {
+        if (image->filesize >= (1 << 24))
+          (void) sprintf(q,"%ldmb",image->filesize/1024/1024);
+        else
+          if (image->filesize >= (1 << 14))
+            (void) sprintf(q,"%ldkb",image->filesize/1024);
+          else
+            (void) sprintf(q,"%ldb",image->filesize);
+        q=translated_text+Extent(translated_text);
+        break;
+      }
+      case 'd':
+      case 'e':
+      case 'f':
+      case 't':
+      {
+        char
+          directory[MaxTextExtent],
+          *extension,
+          *filename;
+
+        /*
+          Label segment is the base of the filename.
+        */
+        if (Extent(image->magick_filename) == 0)
+          break;
+        (void) strcpy(directory,image->magick_filename);
+        extension=directory+Extent(directory);
+        filename=extension;
+        while ((filename > directory) &&
+               (*(filename-1) != *BasenameSeparator))
+        {
+          if (*filename == '.')
+            if (*extension == '\0')
+              extension=filename+1;
+          filename--;
+        }
+        switch (*p)
+        {
+          case 'd':
+          {
+             *filename='\0';
+            (void) strcpy(q,directory);
+            q+=Extent(directory);
+            break;
+          }
+          case 'e':
+          {
+            (void) strcpy(q,extension);
+            q+=Extent(extension);
+            break;
+          }
+          case 'f':
+          {
+            (void) strcpy(q,filename);
+            q+=Extent(filename);
+            break;
+          }
+          case 't':
+          {
+             *(extension-1)='\0';
+            (void) strcpy(q,filename);
+            q+=Extent(filename);
+            break;
+          }
+        }
+        break;
+      }
+      case 'h':
+      {
+        (void) sprintf(q,"%u",image->magick_rows);
+        q=translated_text+Extent(translated_text);
+        break;
+      }
+      case 'i':
+      {
+        (void) strcpy(q,image->filename);
+        q+=Extent(image->filename);
+        break;
+      }
+      case 'm':
+      {
+        (void) strcpy(q,image->magick);
+        q+=Extent(image->magick);
+        break;
+      }
+      case 'o':
+      {
+        (void) strcpy(q,image->filename);
+        q+=Extent(image->filename);
+        break;
+      }
+      case 'p':
+      {
+        register Image
+          *p;
+
+        unsigned int
+          page;
+
+        p=image;
+        for (page=1; p->previous != (Image *) NULL; page++)
+          p=p->previous;
+        (void) sprintf(q,"%u",page);
+        q=translated_text+Extent(translated_text);
+        break;
+      }
+      case 's':
+      {
+        (void) sprintf(q,"%u",image->scene);
+        q=translated_text+Extent(translated_text);
+        break;
+      }
+      case 'u':
+      {
+        (void) strcpy(q,image->unique);
+        q+=Extent(image->unique);
+        break;
+      }
+      case 'w':
+      {
+        (void) sprintf(q,"%u",image->magick_columns);
+        q=translated_text+Extent(translated_text);
+        break;
+      }
+      case 'x':
+      {
+        (void) sprintf(q,"%u",(unsigned int) image->x_resolution);
+        q=translated_text+Extent(translated_text);
+        break;
+      }
+      case 'y':
+      {
+        (void) sprintf(q,"%u",(unsigned int) image->y_resolution);
+        q=translated_text+Extent(translated_text);
+        break;
+      }
+      case '%':
+      {
+        *q++=(*p);
+        break;
+      }
+      default:
+      {
+        *q++='%';
+        *q++=(*p);
+        break;
+      }
+    }
+  }
+  *q='\0';
+  if (indirection)
+    FreeMemory((char *) text);
+  return(translated_text);
+}

@@ -367,6 +367,18 @@ int main(int argc,char **argv)
         }
         case 'b':
         {
+          if (strncmp("background",option+1,5) == 0)
+            {
+              image_info.background_color=(char *) NULL;
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing background color",option);
+                  image_info.background_color=argv[i];
+                }
+              break;
+            }
           if (strncmp("blur",option+1,3) == 0)
             {
               if (*option == '-')
@@ -389,11 +401,13 @@ int main(int argc,char **argv)
             }
           if (strncmp("bordercolor",option+1,7) == 0)
             {
+              image_info.border_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing border color",option);
+                  image_info.border_color=argv[i];
                 }
               break;
             }
@@ -877,11 +891,13 @@ int main(int argc,char **argv)
             break;
           if (strncmp("mattecolor",option+1,6) == 0)
             {
+              image_info.matte_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing matte color",option);
+                  image_info.matte_color=argv[i];
                 }
               break;
             }

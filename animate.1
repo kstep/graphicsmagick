@@ -276,11 +276,26 @@ assign a title to the displayed image.
 Use this option to assign a specific title to the image.  This is
 assigned to the image window and is typically displayed in the window
 title bar.  Optionally you can include the image filename, type, width,
-height, or scene number in the label by embedding special format
-characters.   Embed \fB%f\fP for filename, \fB%d\fP for directory,
-\fB%e\fP for filename extention, \fB%t\fP for top of filename, \fB%m\fP
-for magick, \fB%w\fP for width, \fB%h\fP for height, \fB%p\fP for page number, 
-\fB%s\fP for scene number, or \fB%b\fP for file size in kilobytes.  For example,
+height, or other image attributes by embedding special format characters:
+
+.nf
+    %b   file size
+    %d   directory
+    %e   filename extention
+    %f   filename
+    %h   height
+    %m   magick
+    %p   page number
+    %s   scene number
+    %t   top of filename
+    %w   width
+    %x   x resolution
+    %y   y resolution
+    \\n   newline
+    \\r   carriage return
+.fi
+
+For example,
 
 .nf
      -title "%m:%f %wx%h"
@@ -288,6 +303,9 @@ for magick, \fB%w\fP for width, \fB%h\fP for height, \fB%p\fP for page number,
 
 produces an image title of \fBMIFF:bird.miff 512x480\fP for an image
 titled \fBbird.miff\fP and whose width is 512 and height is 480.
+
+If the first character of \fIstring\fP is \fB@\fP, the image title is read
+from a file titled by the remaining characters in the string.
 .TP
 .B "-treedepth \fIvalue\fP"
 Normally, this integer value is zero or one.  A zero or one tells

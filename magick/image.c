@@ -114,6 +114,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->status=False;
   allocated_image->temporary=False;
   *allocated_image->filename='\0';
+  TemporaryFilename(allocated_image->unique);
   allocated_image->filesize=0;
   allocated_image->pipe=False;
   (void) strcpy(allocated_image->magick,"MIFF");
@@ -240,6 +241,27 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   if (image_info->iterations != (char *) NULL)
     allocated_image->iterations=atoi(image_info->iterations);
   allocated_image->filter=image_info->filter;
+  if (image_info->background_color != (char *) NULL)
+    {
+      (void) XQueryColorDatabase(image_info->background_color,&color);
+      allocated_image->background_color.red=XDownScale(color.red);
+      allocated_image->background_color.green=XDownScale(color.green);
+      allocated_image->background_color.blue=XDownScale(color.blue);
+    }
+  if (image_info->border_color != (char *) NULL)
+    {
+      (void) XQueryColorDatabase(image_info->border_color,&color);
+      allocated_image->border_color.red=XDownScale(color.red);
+      allocated_image->border_color.green=XDownScale(color.green);
+      allocated_image->border_color.blue=XDownScale(color.blue);
+    }
+  if (image_info->matte_color != (char *) NULL)
+    {
+      (void) XQueryColorDatabase(image_info->matte_color,&color);
+      allocated_image->matte_color.red=XDownScale(color.red);
+      allocated_image->matte_color.green=XDownScale(color.green);
+      allocated_image->matte_color.blue=XDownScale(color.blue);
+    }
   return(allocated_image);
 }
 
@@ -351,231 +373,11 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   assert(image != (Image *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
   assert(annotate_info->image_info != (ImageInfo *) NULL);
-  text=annotate_info->text;
-  if ((text == (char *) NULL) || (*text == '\0'))
-    return;
-  indirection=(*text == '@');
-  if (indirection)
-    {
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Read text from a file.
-      */
-      file=(FILE *) fopen(text+1,"r");
-      if (file == (FILE *) NULL)
-        {
-          MagickWarning(FileOpenWarning,"Unable to read text file",text+1);
-          return;
-        }
-      length=MaxTextExtent;
-      text=(char *) AllocateMemory(length);
-      for (q=text; text != (char *) NULL; q++)
-      {
-        c=fgetc(file);
-        if (c == EOF)
-          break;
-        if ((q-text+1) >= length)
-          {
-            *q='\0';
-            length<<=1;
-            text=(char *) ReallocateMemory(text,length);
-            if (text == (char *) NULL)
-              break;
-            q=text+Extent(text);
-          }
-        *q=(unsigned char) c;
-      }
-      (void) fclose(file);
-      if (text == (char *) NULL)
-        {
-          MagickWarning(ResourceLimitWarning,"Unable to annotate image",
-            "Memory allocation failed");
-          return;
-        }
-      *q='\0';
-    }
-  /*
-    Allocate and initialize image text.
-  */
-  p=text;
-  length=Extent(text)+MaxTextExtent;
-  image->text=(char *) AllocateMemory(length);
+  if (image->text != (char *) NULL)
+    FreeMemory((char *) image->text);
+  image->text=TranslateText(image,annotate_info->text);
   if (image->text == (char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to annotate image",
-        "Memory allocation failed");
-      if (indirection)
-        FreeMemory((char *) text);
-      return;
-    }
-  /*
-    Translate any embedded format characters.
-  */
-  for (q=image->text; *p != '\0'; p++)
-  {
-    *q='\0';
-    if ((q-image->text+MaxTextExtent) >= length)
-      {
-        length<<=1;
-        image->text=(char *) ReallocateMemory((char *) image->text,length);
-        if (image->text == (char *) NULL)
-          break;
-        q=image->text+Extent(image->text);
-      }
-    /*
-      Process formatting characters in text.
-    */
-    if ((*p == '\\') && (*(p+1) == 'r'))
-      {
-        *q++='\r';
-        p++;
-        continue;
-      }
-    if ((*p == '\\') && (*(p+1) == 'n'))
-      {
-        *q++='\n';
-        p++;
-        continue;
-      }
-    if (*p == '\\')
-      p++;
-    if (*p != '%')
-      {
-        *q++=(*p);
-        continue;
-      }
-    p++;
-    switch (*p)
-    {
-      case 'b':
-      {
-        if (image->filesize >= (1 << 24))
-          (void) sprintf(q,"%ldmb",image->filesize/1024/1024);
-        else
-          if (image->filesize >= (1 << 14))
-            (void) sprintf(q,"%ldkb",image->filesize/1024);
-          else
-            (void) sprintf(q,"%ldb",image->filesize);
-        q=image->text+Extent(image->text);
-        break;
-      }
-      case 'd':
-      case 'e':
-      case 'f':
-      case 't':
-      {
-        char
-          directory[MaxTextExtent],
-          *extension,
-          *filename;
-
-        /*
-          Label segment is the base of the filename.
-        */
-        if (Extent(image->magick_filename) == 0)
-          break;
-        (void) strcpy(directory,image->magick_filename);
-        extension=directory+Extent(directory);
-        filename=extension;
-        while ((filename > directory) &&
-               (*(filename-1) != *BasenameSeparator))
-        {
-          if (*filename == '.')
-            if (*extension == '\0')
-              extension=filename+1;
-          filename--;
-        }
-        switch (*p)
-        {
-          case 'd':
-          {
-             *filename='\0';
-            (void) strcpy(q,directory);
-            q+=Extent(directory);
-            break;
-          }
-          case 'e':
-          {
-            (void) strcpy(q,extension);
-            q+=Extent(extension);
-            break;
-          }
-          case 'f':
-          {
-            (void) strcpy(q,filename);
-            q+=Extent(filename);
-            break;
-          }
-          case 't':
-          {
-             *(extension-1)='\0';
-            (void) strcpy(q,filename);
-            q+=Extent(filename);
-            break;
-          }
-        }
-        break;
-      }
-      case 'h':
-      {
-        (void) sprintf(q,"%u",image->magick_rows);
-        q=image->text+Extent(image->text);
-        break;
-      }
-      case 'm':
-      {
-        (void) strcpy(q,image->magick);
-        q+=Extent(image->magick);
-        break;
-      }
-      case 'p':
-      {
-        register Image
-          *p;
-
-        unsigned int
-          page;
-
-        p=image;
-        for (page=1; p->previous != (Image *) NULL; page++)
-          p=p->previous;
-        (void) sprintf(q,"%u",page);
-        q=image->text+Extent(image->text);
-        break;
-      }
-      case 's':
-      {
-        (void) sprintf(q,"%u",image->scene);
-        q=image->text+Extent(image->text);
-        break;
-      }
-      case 'w':
-      {
-        (void) sprintf(q,"%u",image->magick_columns);
-        q=image->text+Extent(image->text);
-        break;
-      }
-      case '%':
-      {
-        *q++=(*p);
-        break;
-      }
-      default:
-      {
-        *q++='%';
-        *q++=(*p);
-        break;
-      }
-    }
-  }
-  *q++='\0';
-  if (indirection)
-    FreeMemory((char *) text);
+    return;
   textlist=StringToList(image->text);
   FreeMemory(image->text);
   image->text=(char *) NULL;
@@ -1319,22 +1121,27 @@ Export void CloseImage(Image *image)
 %
 %  The format of the ColorFloodfillImage routine is:
 %
-%      ColorFloodfillImage(image,x,y,xcolor,delta)
+%      ColorFloodfillImage(image,target,color,x,y,method)
 %
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image.
 %
+%    o target: A RunlengthPacket structure.  This is the RGB value of the target
+%      color.
+%
+%    o color: A ColorPacket structure.  This is the RGB value of the replacement
+%      color.
+%
 %    o x,y: Unsigned integers representing the current location of the pen.
 %
-%    o xcolor: A XColor structure.  This is the RGB value of the target color.
-%
-%    o delta: This is the allowed variance in color (fuzzy color).
+%    o method: drawing method of type PrimitiveType: floodfill or fill to
+%      border.
 %
 %
 */
-Export void ColorFloodfillImage(Image *image,int x,int y,
-  const ColorPacket *color,const int delta)
+Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
+  const ColorPacket *color,int x,int y,const PaintMethod method)
 {
   int
     offset,
@@ -1349,9 +1156,6 @@ Export void ColorFloodfillImage(Image *image,int x,int y,
   register XSegment
     *p;
 
-  RunlengthPacket
-    target;
-
   XSegment
     *segment_stack;
 
@@ -1364,8 +1168,9 @@ Export void ColorFloodfillImage(Image *image,int x,int y,
     return;
   if ((x < 0) || (x >= image->columns))
     return;
-  target=image->pixels[y*image->columns+x];
-  if (ColorMatch(*color,target,delta))
+  if (ColorMatch(*color,*target,0))
+    return;
+  if (!UncondenseImage(image))
     return;
   /*
     Allocate segment stack.
@@ -1380,6 +1185,7 @@ Export void ColorFloodfillImage(Image *image,int x,int y,
   /*
     Push initial segment on stack.
   */
+  image->class=DirectClass;
   start=0;
   p=segment_stack;
   Push(y,x,x,1);
@@ -1397,14 +1203,21 @@ Export void ColorFloodfillImage(Image *image,int x,int y,
     /*
       Recolor neighboring pixels.
     */
+    pixel=image->pixels+(y*image->columns+x1);
     for (x=x1; x >= 0 ; x--)
     {
-      pixel=image->pixels+(y*image->columns+x);
-      if (!ColorMatch(*pixel,target,delta))
-        break;
+      if (method == FloodfillMethod)
+        {
+          if (!ColorMatch(*pixel,*target,0))
+            break;
+        }
+      else
+        if (ColorMatch(*pixel,*target,0) || ColorMatch(*pixel,*color,0))
+          break;
       pixel->red=color->red;
       pixel->green=color->green;
       pixel->blue=color->blue;
+      pixel--;
     }
     skip=x >= x1;
     if (!skip)
@@ -1418,25 +1231,39 @@ Export void ColorFloodfillImage(Image *image,int x,int y,
     {
       if (!skip)
         {
+          pixel=image->pixels+(y*image->columns+x);
           for ( ; x < image->columns; x++)
           {
-            pixel=image->pixels+(y*image->columns+x);
-            if (!ColorMatch(*pixel,target,delta))
-              break;
+            if (method == FloodfillMethod)
+              {
+                if (!ColorMatch(*pixel,*target,0))
+                  break;
+              }
+            else
+              if (ColorMatch(*pixel,*target,0) || ColorMatch(*pixel,*color,0))
+                break;
             pixel->red=color->red;
             pixel->green=color->green;
             pixel->blue=color->blue;
+            pixel++;
           }
           Push(y,start,x-1,offset);
           if (x > (x2+1))
             Push(y,x2+1,x-1,-offset);
         }
       skip=False;
+      pixel=image->pixels+(y*image->columns+x);
       for (x++; x <= x2 ; x++)
       {
-        pixel=image->pixels+(y*image->columns+x);
-        if (ColorMatch(*pixel,target,delta))
-          break;
+        pixel++;
+        if (method == FloodfillMethod)
+          {
+            if (ColorMatch(*pixel,*target,0))
+              break;
+          }
+        else
+          if (!ColorMatch(*pixel,*target,0) && !ColorMatch(*pixel,*color,0))
+            break;
       }
       start=x;
     } while (x <= x2);
@@ -1606,242 +1433,9 @@ Export void ColorizeImage(Image *image,char *opacity,char *pen_color)
 */
 Export void CommentImage(Image *image,char *comments)
 {
-  register char
-    *p,
-    *q;
-
-  unsigned int
-    indirection,
-    length;
-
-  assert(image != (Image *) NULL);
   if (image->comments != (char *) NULL)
     FreeMemory((char *) image->comments);
-  image->comments=(char *) NULL;
-  if ((comments == (char *) NULL) || (*comments == '\0'))
-    return;
-  indirection=(*comments == '@');
-  if (indirection)
-    {
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Read comments from a file.
-      */
-      file=(FILE *) fopen(comments+1,"r");
-      if (file == (FILE *) NULL)
-        {
-          MagickWarning(FileOpenWarning,"Unable to read comments file",
-            comments+1);
-          return;
-        }
-      length=MaxTextExtent;
-      comments=(char *) AllocateMemory(length);
-      for (q=comments; comments != (char *) NULL; q++)
-      {
-        c=fgetc(file);
-        if (c == EOF)
-          break;
-        if ((q-comments+1) >= length)
-          {
-            *q='\0';
-            length<<=1;
-            comments=(char *) ReallocateMemory((char *) comments,length);
-            if (comments == (char *) NULL)
-              break;
-            q=comments+Extent(comments);
-          }
-        *q=(unsigned char) c;
-      }
-      (void) fclose(file);
-      if (comments == (char *) NULL)
-        {
-          MagickWarning(ResourceLimitWarning,"Unable to comments image",
-            "Memory allocation failed");
-          return;
-        }
-      *q='\0';
-    }
-  /*
-    Allocate and initialize image comments.
-  */
-  p=comments;
-  length=Extent(comments)+MaxTextExtent;
-  image->comments=(char *) AllocateMemory(length);
-  if (image->comments == (char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to comment image",
-        "Memory allocation failed");
-      if (indirection)
-        FreeMemory((char *) comments);
-      return;
-    }
-  /*
-    Translate any embedded format characters.
-  */
-  for (q=image->comments; *p != '\0'; p++)
-  {
-    *q='\0';
-    if ((q-image->comments+MaxTextExtent) >= length)
-      {
-        length<<=1;
-        image->comments=(char *)
-          ReallocateMemory((char *) image->comments,length);
-        if (image->comments == (char *) NULL)
-          break;
-        q=image->comments+Extent(image->comments);
-      }
-    /*
-      Process formatting characters in comments.
-    */
-    if ((*p == '\\') && (*(p+1) == 'r'))
-      {
-        *q++='\r';
-        p++;
-        continue;
-      }
-    if ((*p == '\\') && (*(p+1) == 'n'))
-      {
-        *q++='\n';
-        p++;
-        continue;
-      }
-    if (*p != '%')
-      {
-        *q++=(*p);
-        continue;
-      }
-    p++;
-    switch (*p)
-    {
-      case 'b':
-      {
-        if (image->filesize >= (1 << 24))
-          (void) sprintf(q,"%ldmb",image->filesize/1024/1024);
-        else
-          if (image->filesize >= (1 << 14))
-            (void) sprintf(q,"%ldkb",image->filesize/1024);
-          else
-            (void) sprintf(q,"%ldb",image->filesize);
-        q=image->comments+Extent(image->comments);
-        break;
-      }
-      case 'd':
-      case 'e':
-      case 'f':
-      case 't':
-      {
-        char
-          directory[MaxTextExtent],
-          *extension,
-          *filename;
-
-        /*
-          Label segment is the base of the filename.
-        */
-        if (Extent(image->magick_filename) == 0)
-          break;
-        (void) strcpy(directory,image->magick_filename);
-        extension=directory+Extent(directory);
-        filename=extension;
-        while ((filename > directory) &&
-               (*(filename-1) != *BasenameSeparator))
-        {
-          if (*filename == '.')
-            if (*extension == '\0')
-              extension=filename+1;
-          filename--;
-        }
-        switch (*p)
-        {
-          case 'd':
-          {
-             *filename='\0';
-            (void) strcpy(q,directory);
-            q+=Extent(directory);
-            break;
-          }
-          case 'e':
-          {
-            (void) strcpy(q,extension);
-            q+=Extent(extension);
-            break;
-          }
-          case 'f':
-          {
-            (void) strcpy(q,filename);
-            q+=Extent(filename);
-            break;
-          }
-          case 't':
-          {
-             *(extension-1)='\0';
-            (void) strcpy(q,filename);
-            q+=Extent(filename);
-            break;
-          }
-        }
-        break;
-      }
-      case 'h':
-      {
-        (void) sprintf(q,"%u",image->magick_rows);
-        q=image->comments+Extent(image->comments);
-        break;
-      }
-      case 'm':
-      {
-        (void) strcpy(q,image->magick);
-        q+=Extent(image->magick);
-        break;
-      }
-      case 'p':
-      {
-        register Image
-          *p;
-
-        unsigned int
-          page;
-
-        p=image;
-        for (page=1; p->previous != (Image *) NULL; page++)
-          p=p->previous;
-        (void) sprintf(q,"%u",page);
-        q=image->text+Extent(image->text);
-        break;
-      }
-      case 's':
-      {
-        (void) sprintf(q,"%u",image->scene);
-        q=image->comments+Extent(image->comments);
-        break;
-      }
-      case 'w':
-      {
-        (void) sprintf(q,"%u",image->magick_columns);
-        q=image->comments+Extent(image->comments);
-        break;
-      }
-      case '%':
-      {
-        *q++=(*p);
-        break;
-      }
-      default:
-      {
-        *q++='%';
-        *q++=(*p);
-        break;
-      }
-    }
-  }
-  *q='\0';
-  if (indirection)
-    FreeMemory((char *) comments);
+  image->comments=TranslateText(image,comments);
 }
 
 /*
@@ -3460,9 +3054,9 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         (void) fprintf(file,"  interlace: Partition\n");
   if (image->page != (char *) NULL)
     (void) fprintf(file,"  page geometry: %s\n",image->page);
-  if (image->dispose)
+  if (image->dispose != 0)
     (void) fprintf(file,"  dispose method: %d\n",image->dispose);
-  if (image->delay)
+  if (image->delay != 0)
     (void) fprintf(file,"  delay: %d\n",image->delay);
   if (image->iterations != 1)
     (void) fprintf(file,"  iterations: %d\n",image->iterations);
@@ -3939,8 +3533,12 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     if (Latin1Compare("FillRectangle",keyword) == 0)
       primitive_type=FillRectanglePrimitive;
     if (Latin1Compare("Circle",keyword) == 0)
-      primitive_type=EllipsePrimitive;
+      primitive_type=CirclePrimitive;
     if (Latin1Compare("FillCircle",keyword) == 0)
+      primitive_type=FillCirclePrimitive;
+    if (Latin1Compare("Ellipse",keyword) == 0)
+      primitive_type=EllipsePrimitive;
+    if (Latin1Compare("FillEllipse",keyword) == 0)
       primitive_type=FillEllipsePrimitive;
     if (Latin1Compare("Polygon",keyword) == 0)
       primitive_type=PolygonPrimitive;
@@ -3986,7 +3584,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
       while (isspace((int) (*p)) || (*p == ','))
         p++;
       i++;
-      if (i < (number_coordinates-1))
+      if (i < (number_coordinates-360-1))
         continue;
       number_coordinates<<=1;
       primitive_info=(PrimitiveInfo *) ReallocateMemory(primitive_info,
@@ -4025,10 +3623,13 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
             if (Latin1Compare("floodfill",keyword) == 0)
               primitive_info[j].method=FloodfillMethod;
             else
-              if (Latin1Compare("reset",keyword) == 0)
-                primitive_info[j].method=ResetMethod;
+              if (Latin1Compare("filltoborder",keyword) == 0)
+                primitive_info[j].method=FillToBorderMethod;
               else
-                primitive_type=UndefinedPrimitive;
+                if (Latin1Compare("reset",keyword) == 0)
+                  primitive_info[j].method=ResetMethod;
+                else
+                  primitive_type=UndefinedPrimitive;
         while (isspace((int) (*p)))
           p++;
       }
@@ -4053,8 +3654,8 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
           if (*p != '\0')
             p++;
         }
-    if ((primitive_type == EllipsePrimitive) ||
-        (primitive_type == FillEllipsePrimitive))
+    if ((primitive_type == CirclePrimitive) ||
+        (primitive_type == FillCirclePrimitive))
       {
         double
           radius;
@@ -4062,21 +3663,64 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         /*
           Determine circle bounding box.
         */
-        x=primitive_info[1].x-primitive_info[0].x;
-        y=primitive_info[1].y-primitive_info[0].y;
+        x=primitive_info[j+1].x-primitive_info[j].x;
+        y=primitive_info[j+1].y-primitive_info[j].y;
         radius=sqrt((double) (x*x+y*y))+annotate_info->linewidth/2.0+0.5;
-        point.x=Max(primitive_info[0].x-radius,0);
-        point.y=Max(primitive_info[0].y-radius,0);
+        point.x=Max(primitive_info[j].x-radius,0);
+        point.y=Max(primitive_info[j].y-radius,0);
         if (point.x < bounds.x1)
           bounds.x1=point.x;
         if (point.y < bounds.y1)
           bounds.y1=point.y;
-        point.x=Min(primitive_info[0].x+radius,image->columns-1);
-        point.y=Min(primitive_info[0].y+radius,image->rows-1);
+        point.x=Min(primitive_info[j].x+radius,image->columns-1);
+        point.y=Min(primitive_info[j].y+radius,image->rows-1);
         if (point.x > bounds.x2)
           bounds.x2=point.x;
         if (point.y > bounds.y2)
           bounds.y2=point.y;
+      }
+    if ((primitive_type == EllipsePrimitive) ||
+        (primitive_type == FillEllipsePrimitive))
+      {
+        RectangleInfo
+          arc;
+
+        PointInfo
+          degrees;
+
+        /*
+          Arc's are just short segmented polygons.
+        */
+        i=j;
+        arc.x=primitive_info[i].x;
+        arc.y=primitive_info[i].y;
+        arc.width=primitive_info[i+1].x/2;
+        arc.height=primitive_info[i+1].y/2;
+        degrees.x=primitive_info[i+2].x;
+        degrees.y=primitive_info[i+2].y;
+        while (degrees.y < degrees.x)
+          degrees.y+=360;
+        for (n=degrees.x+1; n <= degrees.y; n++)
+        {
+          point.x=cos(DegreesToRadians(i % 360))*arc.width+arc.x;
+          point.y=sin(DegreesToRadians(i % 360))*arc.height+arc.y;
+          if (point.x < bounds.x1)
+            bounds.x1=point.x;
+          if (point.y < bounds.y1)
+            bounds.y1=point.y;
+          if (point.x > bounds.x2)
+            bounds.x2=point.x;
+          if (point.y > bounds.y2)
+            bounds.y2=point.y;
+          primitive_info[i].primitive=PolygonPrimitive;
+          if (primitive_type == FillEllipsePrimitive)
+            primitive_info[i].primitive=FillPolygonPrimitive;
+          primitive_info[i].coordinates=0;
+          primitive_info[i].x=point.x;
+          primitive_info[i].y=point.y;
+          i++;
+          primitive_info[j].coordinates++;
+        }
       }
   }
   primitive_info[i].primitive=UndefinedPrimitive;
@@ -4974,6 +4618,9 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->verbose=False;
   image_info->preview_type=JPEGPreview;
   image_info->filter=MitchellFilter;
+  image_info->background_color=(char *) NULL;
+  image_info->border_color=(char *) NULL;
+  image_info->matte_color=(char *) NULL;
   image_info->undercolor=(char *) NULL;
   image_info->ping=False;
 }
@@ -5238,241 +4885,9 @@ Export unsigned int IsSubimage(char *geometry,unsigned int pedantic)
 */
 Export void LabelImage(Image *image,char *label)
 {
-  register char
-    *p,
-    *q;
-
-  unsigned int
-    indirection,
-    length;
-
-  assert(image != (Image *) NULL);
   if (image->label != (char *) NULL)
     FreeMemory((char *) image->label);
-  image->label=(char *) NULL;
-  if ((label == (char *) NULL) || (*label == '\0'))
-    return;
-  indirection=(*label == '@');
-  if (indirection)
-    {
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Read label from a file.
-      */
-      file=(FILE *) fopen(label+1,"r");
-      if (file == (FILE *) NULL)
-        {
-          MagickWarning(FileOpenWarning,"Unable to read label file",label+1);
-          return;
-        }
-      length=MaxTextExtent;
-      label=(char *) AllocateMemory(length);
-      for (q=label; label != (char *) NULL; q++)
-      {
-        c=fgetc(file);
-        if (c == EOF)
-          break;
-        if ((q-label+1) >= length)
-          {
-            *q='\0';
-            length<<=1;
-            label=(char *) ReallocateMemory((char *) label,length);
-            if (label == (char *) NULL)
-              break;
-            q=label+Extent(label);
-          }
-        *q=(unsigned char) c;
-      }
-      (void) fclose(file);
-      if (label == (char *) NULL)
-        {
-          MagickWarning(ResourceLimitWarning,"Unable to label image",
-            "Memory allocation failed");
-          return;
-        }
-      *q='\0';
-    }
-  /*
-    Allocate and initialize image label.
-  */
-  p=label;
-  length=Extent(label)+MaxTextExtent;
-  image->label=(char *) AllocateMemory(length);
-  if (image->label == (char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to label image",
-        "Memory allocation failed");
-      if (indirection)
-        FreeMemory((char *) label);
-      return;
-    }
-  /*
-    Translate any embedded format characters.
-  */
-  for (q=image->label; *p != '\0'; p++)
-  {
-    *q='\0';
-    if ((q-image->label+MaxTextExtent) >= length)
-      {
-        length<<=1;
-        image->label=(char *)
-          ReallocateMemory((char *) image->label,length);
-        if (image->label == (char *) NULL)
-          break;
-        q=image->label+Extent(image->label);
-      }
-    /*
-      Process formatting characters in label.
-    */
-    if ((*p == '\\') && (*(p+1) == 'r'))
-      {
-        *q++='\r';
-        p++;
-        continue;
-      }
-    if ((*p == '\\') && (*(p+1) == 'n'))
-      {
-        *q++='\n';
-        p++;
-        continue;
-      }
-    if (*p != '%')
-      {
-        *q++=(*p);
-        continue;
-      }
-    p++;
-    switch (*p)
-    {
-      case 'b':
-      {
-        if (image->filesize >= (1 << 24))
-          (void) sprintf(q,"%ldmb",image->filesize/1024/1024);
-        else
-          if (image->filesize >= (1 << 14))
-            (void) sprintf(q,"%ldkb",image->filesize/1024);
-          else
-            (void) sprintf(q,"%ldb",image->filesize);
-        q=image->label+Extent(image->label);
-        break;
-      }
-      case 'd':
-      case 'e':
-      case 'f':
-      case 't':
-      {
-        char
-          directory[MaxTextExtent],
-          *extension,
-          *filename;
-
-        /*
-          Label segment is the base of the filename.
-        */
-        if (Extent(image->magick_filename) == 0)
-          break;
-        (void) strcpy(directory,image->magick_filename);
-        extension=directory+Extent(directory);
-        filename=extension;
-        while ((filename > directory) &&
-               (*(filename-1) != *BasenameSeparator))
-        {
-          if (*filename == '.')
-            if (*extension == '\0')
-              extension=filename+1;
-          filename--;
-        }
-        switch (*p)
-        {
-          case 'd':
-          {
-             *filename='\0';
-            (void) strcpy(q,directory);
-            q+=Extent(directory);
-            break;
-          }
-          case 'e':
-          {
-            (void) strcpy(q,extension);
-            q+=Extent(extension);
-            break;
-          }
-          case 'f':
-          {
-            (void) strcpy(q,filename);
-            q+=Extent(filename);
-            break;
-          }
-          case 't':
-          {
-             *(extension-1)='\0';
-            (void) strcpy(q,filename);
-            q+=Extent(filename);
-            break;
-          }
-        }
-        break;
-      }
-      case 'h':
-      {
-        (void) sprintf(q,"%u",image->magick_rows);
-        q=image->label+Extent(image->label);
-        break;
-      }
-      case 'm':
-      {
-        (void) strcpy(q,image->magick);
-        q+=Extent(image->magick);
-        break;
-      }
-      case 'p':
-      {
-        register Image
-          *p;
-
-        unsigned int
-          page;
-
-        p=image;
-        for (page=1; p->previous != (Image *) NULL; page++)
-          p=p->previous;
-        (void) sprintf(q,"%u",page);
-        q=image->text+Extent(image->text);
-        break;
-      }
-      case 's':
-      {
-        (void) sprintf(q,"%u",image->scene);
-        q=image->label+Extent(image->label);
-        break;
-      }
-      case 'w':
-      {
-        (void) sprintf(q,"%u",image->magick_columns);
-        q=image->label+Extent(image->label);
-        break;
-      }
-      case '%':
-      {
-        *q++=(*p);
-        break;
-      }
-      default:
-      {
-        *q++='%';
-        *q++=(*p);
-        break;
-      }
-    }
-  }
-  *q='\0';
-  if (indirection)
-    FreeMemory((char *) label);
+  image->label=TranslateText(image,label);
 }
 
 /*
@@ -5818,22 +5233,26 @@ Export Image *MagnifyImage(Image *image)
 %
 %  The format of the MatteFloodfillImage routine is:
 %
-%      MatteFloodfillImage(image,x,y,matte,delta)
+%      MatteFloodfillImage(image,target,matte,x,y,method)
 %
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image.
 %
-%    o x,y: Unsigned integers representing the current location of the pen.
+%    o target: A RunlengthPacket structure.  This is the RGB value of the target
+%      color.
 %
 %    o matte: A integer value representing the amount of transparency.
 %
-%    o delta: This is the allowed variance in color (fuzzy color).
+%    o x,y: Unsigned integers representing the current location of the pen.
+%
+%    o method: drawing method of type PrimitiveType: floodfill or fill to
+%      border.
 %
 %
 */
-Export void MatteFloodfillImage(Image *image,int x,int y,
-  const unsigned int matte,const int delta)
+Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
+  const unsigned int matte,int x,int y,const PaintMethod method)
 {
   int
     offset,
@@ -5848,9 +5267,6 @@ Export void MatteFloodfillImage(Image *image,int x,int y,
   register XSegment
     *p;
 
-  RunlengthPacket
-    target;
-
   XSegment
     *segment_stack;
 
@@ -5862,8 +5278,9 @@ Export void MatteFloodfillImage(Image *image,int x,int y,
     return;
   if ((x < 0) || (x >= image->columns))
     return;
-  target=image->pixels[y*image->columns+x];
-  if (target.index == (unsigned short) matte)
+  if (target->index == (unsigned short) matte)
+    return;
+  if (!UncondenseImage(image))
     return;
   /*
     Allocate segment stack.
@@ -5871,13 +5288,26 @@ Export void MatteFloodfillImage(Image *image,int x,int y,
   segment_stack=(XSegment *) AllocateMemory(MaxStacksize*sizeof(XSegment));
   if (segment_stack == (XSegment *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to floodfill",
+      MagickWarning(ResourceLimitWarning,"Unable to recolor image",
         "Memory allocation failed");
       return;
     }
   /*
     Push initial segment on stack.
   */
+  image->class=DirectClass;
+  if (!image->matte)
+    {
+      register int
+        i;
+
+      /*
+        Initialize matte image.
+      */
+      image->matte=True;
+      for (i=0; i < image->packets; i++)
+        image->pixels[i].index=Opaque;
+    }
   start=0;
   p=segment_stack;
   Push(y,x,x,1);
@@ -5893,14 +5323,22 @@ Export void MatteFloodfillImage(Image *image,int x,int y,
     offset=p->y2;
     y=p->y1+offset;
     /*
-      Update matte information in neighboring pixels.
+      Recolor neighboring pixels.
     */
+    pixel=image->pixels+(y*image->columns+x1);
     for (x=x1; x >= 0 ; x--)
     {
-      pixel=image->pixels+(y*image->columns+x);
-      if (!MatteMatch(*pixel,target,delta))
-        break;
+      if (method == FloodfillMethod)
+        {
+          if (!MatteMatch(*pixel,*target,0))
+            break;
+        }
+      else
+        if (MatteMatch(*pixel,*target,0) ||
+            (pixel->index == (unsigned short) matte))
+          break;
       pixel->index=(unsigned short) matte;
+      pixel--;
     }
     skip=x >= x1;
     if (!skip)
@@ -5914,23 +5352,39 @@ Export void MatteFloodfillImage(Image *image,int x,int y,
     {
       if (!skip)
         {
+          pixel=image->pixels+(y*image->columns+x);
           for ( ; x < image->columns; x++)
           {
-            pixel=image->pixels+(y*image->columns+x);
-            if (!MatteMatch(*pixel,target,delta))
-              break;
+            if (method == FloodfillMethod)
+              {
+                if (!MatteMatch(*pixel,*target,0))
+                  break;
+              }
+            else
+              if (MatteMatch(*pixel,*target,0) ||
+                  (pixel->index == (unsigned short) matte))
+                break;
             pixel->index=(unsigned short) matte;
+            pixel++;
           }
           Push(y,start,x-1,offset);
           if (x > (x2+1))
             Push(y,x2+1,x-1,-offset);
         }
       skip=False;
+      pixel=image->pixels+(y*image->columns+x);
       for (x++; x <= x2 ; x++)
       {
-        pixel=image->pixels+(y*image->columns+x);
-        if (MatteMatch(*pixel,target,delta))
-          break;
+        pixel++;
+        if (method == FloodfillMethod)
+          {
+            if (MatteMatch(*pixel,*target,0))
+              break;
+          }
+        else
+          if (!MatteMatch(*pixel,*target,0) &&
+              (pixel->index != (unsigned short) matte))
+            break;
       }
       start=x;
     } while (x <= x2);
@@ -6350,9 +5804,6 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
     height,
     width;
 
-  XColor
-    target_color;
-
   /*
     Initialize routine variables.
   */
@@ -6453,17 +5904,6 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
             bordered_image->class=DirectClass;
             *image=bordered_image;
           }
-        continue;
-      }
-    if (strncmp("-bordercolor",option,8) == 0)
-      {
-        /*
-          Determine RGB values of the border color.
-        */
-        (void) XQueryColorDatabase(argv[++i],&target_color);
-        (*image)->border_color.red=XDownScale(target_color.red);
-        (*image)->border_color.green=XDownScale(target_color.green);
-        (*image)->border_color.blue=XDownScale(target_color.blue);
         continue;
       }
     if (Latin1Compare("-box",option) == 0)
@@ -6895,17 +6335,6 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
         (*image)->matte=(*option == '-');
         continue;
       }
-    if (strncmp("-mattecolor",option,7) == 0)
-      {
-        /*
-          Determine RGB values of the border color.
-        */
-        (void) XQueryColorDatabase(argv[++i],&target_color);
-        (*image)->matte_color.red=XDownScale(target_color.red);
-        (*image)->matte_color.green=XDownScale(target_color.green);
-        (*image)->matte_color.blue=XDownScale(target_color.blue);
-        continue;
-      }
     if (strncmp("-modulate",option,4) == 0)
       {
         ModulateImage(*image,argv[++i]);
@@ -6983,16 +6412,6 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
             DestroyImage(*image);
             *image=painted_image;
           }
-        continue;
-      }
-    if (Latin1Compare("-pen",option) == 0)
-      {
-        image_info->pen=argv[++i];
-        continue;
-      }
-    if (strncmp("-pointsize",option,3) == 0)
-      {
-        image_info->pointsize=atoi(argv[++i]);
         continue;
       }
     if (strncmp("-normalize",option,4) == 0)

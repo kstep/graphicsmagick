@@ -2,7 +2,7 @@
 <HEAD>
 <TITLE>ImageMagick Display and Editor for the X Window System</TITLE>
 <LINK rev="made" href="mailto:cristy@mystic.es.dupont.com">
-<meta name="description" content="ImageMagick, version 4.1.1, is a package for
+<meta name="description" content="ImageMagick, version 4.1.2, is a package for
   display and interactive manipulation of images for the X Window System. It
   is written in C and interfaces to the X library, and therefore does not
   require any proprietary toolkit in order to compile.  Although the software
@@ -287,12 +287,27 @@ this option to take effect.
 <DD>By default, each image is commented with its file
 name.  Use this option to assign a specific comment
 to the image.  Optionally you can include the image
-filename, type, width, height, or scene number by
-embedding special format characters.  Embed <tt>%f</tt> for filename,
-<tt>%d</tt> for directory, <tt>%e</tt> for filename extention, <tt>%t</tt> for
-top of filename, <tt>%m</tt> for magick, <tt>%w</tt> for width, <tt>%h</tt> for 
-height, <tt>%p</tt> for page number, <tt>%s</tt> for scene number, or 
-<tt>\n</tt> for newline.  For example,
+filename, type, width, height, or other image attribute by
+embedding special format characters:
+<p>
+<dd><pre>
+    %b   file size
+    %d   directory
+    %e   filename extention
+    %f   filename
+    %h   height
+    %m   magick
+    %p   page number
+    %s   scene number
+    %t   top of filename
+    %w   width
+    %x   x resolution
+    %y   y resolution
+    \n   newline
+    \r   carriage return
+</pre>
+<p>
+For example,
 <P>
 <pre>
       -comment "%m:%f %wx%h"
@@ -521,13 +536,11 @@ or <B>progressive JPEG</b> image.
 <DD>assign a label to an image.
 <P>
 <DD>Use this option to assign a specific label to the
-image.  Optionally you can include the image
-filename, type, width, height, or scene number in the
-label by embedding special format characters. Embed <tt>%f</tt> for filename,
-<tt>%d</tt> for directory, <tt>%e</tt> for filename extention, <tt>%t</tt> for
-top of filename, <tt>%m</tt> for magick, <tt>%w</tt> for width, <tt>%h</tt> for 
-height, <tt>%p</tt> for page number, <tt>%s</tt> for scene number, or
-<tt>\n</tt> for newline.  For example,
+image. Optionally you can include the image
+filename, type, width, height, or other image attribute by
+embedding special format character.  See <b>-comment</b> for details.
+<p>
+<dd>For example,
 <P>
 <PRE>
       -label "%m:%f %wx%h"
@@ -584,20 +597,20 @@ offset&gt;{+-}&lt;y offset&gt;{!}{&lt;}{&gt;}</I>
 <I>PostScript</I> page in dots per inch or a TEXT page in
 pixels.  The choices for a Postscript page are:
 <PRE>
-   Letter      612x 792
-   Tabloid     792x1224
-   Ledger     1224x 792
-   Legal       612x1008
-   Statement   396x 612
-   Executive   540x 720
-   A3          842x1190
-   A4          595x 842
-   A5          420x 595
-   B4          729x1032
-   B5          516x 729
-   Folio       612x 936
-   Quarto      610x 780
-   10x14       720x1008
+      Letter      612x 792
+      Tabloid     792x1224
+      Ledger     1224x 792
+      Legal       612x1008
+      Statement   396x 612
+      Executive   540x 720
+      A3          842x1190
+      A4          595x 842
+      A5          420x 595
+      B4          729x1032
+      B5          516x 729
+      Folio       612x 936
+      Quarto      610x 780
+      10x14       720x1008
 </PRE>
 <DD>For convenience you can specify the page size by media
 (e.g. A4, Ledger, etc.).  Otherwise, <b>-page</b> behaves much like
@@ -731,13 +744,11 @@ or JPEG image (e.g. -size 1024x768).
 <P>
 <DD>Use this option to assign a specific title to the image.  This is
 assigned to the image window and is typically displayed in the window
-title bar.  Optionally you can include the image filename, type, width,
-height, or scene number in the label by embedding special format
-characters.   Embed <tt>%f</tt> for filename, <tt>%d</tt> for directory,
-<tt>%e</tt> for filename extention, <tt>%t</tt> for top of filename,
-<tt>%m</tt> for magick, <tt>%w</tt> for width, <tt>%h</tt> for height,
-<tt>%p</tt> for page number, <tt>%s</tt> for scene number, or <tt>%b</tt> for
-file size in kilobytes.  For example,
+title bar.  Optionally you can include the image
+filename, type, width, height, or other image attribute by
+embedding special format character.  See <b>-comment</b> for details.
+<p>
+For example,
 <P>
 <PRE>
       -title "%m:%f %wx%h"
@@ -2305,6 +2316,13 @@ exit immediately, press <B>Dismiss</B>.  In color edit mode, the
 <B>Command widget</B> has these options:
 <P>
 <UL>
+<LI><B>Method</B>
+    <UL>
+        <LI>point
+        <LI>replace
+        <LI>floodfill
+        <LI>reset
+    </UL>
 <LI><B>Pixel Color</B>
     <UL>
          <LI>black
@@ -2318,22 +2336,17 @@ exit immediately, press <B>Dismiss</B>.  In color edit mode, the
          <LI>white
          <LI>Browser...
     </UL>
-<LI><B>Method</B>
+<LI><B>Border Color</B>
     <UL>
-        <LI>point
-        <LI>replace
-        <LI>floodfill
-        <LI>reset
-    </UL>
-<LI><B>Delta</B>
-    <UL>
-         <LI>0
-         <LI>1
-         <LI>2
-         <LI>4
-         <LI>8
-         <LI>16
-         <LI>32
+         <LI>black
+         <LI>blue
+         <LI>cyan
+         <LI>green
+         <LI>gray
+         <LI>red
+         <LI>magenta
+         <LI>yellow
+         <LI>white
          <LI>Browser...
     </UL>
 <LI><B>Undo</B>
@@ -2341,12 +2354,7 @@ exit immediately, press <B>Dismiss</B>.  In color edit mode, the
 <LI><B>Dismiss</B>
 </UL>
 <P>
-Choose a pixel color from the <B>Pixel Color</B> sub-menu.
-Additional pixel colors can be specified with the color
-browser.  You can change the menu colors by setting the <A HREF="#xres">X
-resources</A> pen1 through pen9.  
-<P>
-Next, choose a color editing method from the <B>Method</B> sub-
+Choose a color editing method from the <B>Method</B> sub-
 menu of the <A HREF="#comm">Command widget</A>.  The <B>point method</B>
 recolors any
 pixel selected with the pointer unless the button is
@@ -2354,15 +2362,19 @@ released.  The <B>replace method</B> recolors any pixel that
 matches the color of the pixel you select with a button
 press.  <B>Floodfill</B> recolors any pixel that matches the
 color of the pixel you select with a button press and is a
-neighbor.  Finally <B>reset</B> changes the entire image to the
-designated color.
+neighbor.  Whereas <b>filltoborder</b> changes the matte value any
+neighbor pixel that is not the border color.  Finally <B>reset</B>
+changes the entire image to the designated color.
+<P>
+Next, choose a pixel color from the <B>Pixel Color</B> sub-menu.
+Additional pixel colors can be specified with the color
+browser.  You can change the menu colors by setting the <A HREF="#xres">X
+resources</A> pen1 through pen9.  
 <P>
 Now press button 1 to select a pixel within the Image
 window to change its color.  Additional pixels may be
-recolored as prescribed by the method you choose.  You can recolor
-additional pixels by increasing the Delta value.  The Delta value
-is first added then subtracted from the red, green, and blue of the
-target color.  Any pixels within the range is also recolored.
+recolored as prescribed by the method you choose.
+additional pixels by increasing the Delta value.  
 <P>
 If the <b>Magnify widget</b> is mapped, it can be helpful in positioning
 your pointer within the image (refer to button 2).  Alternatively you
@@ -2419,15 +2431,17 @@ Command widget has these options:
         <LI>floodfill
         <LI>reset
     </UL>
-<LI><B>Delta</B>
+<LI><B>Border Color</B>
     <UL>
-         <LI>0
-         <LI>1
-         <LI>2
-         <LI>4
-         <LI>8
-         <LI>16
-         <LI>32
+         <LI>black
+         <LI>blue
+         <LI>cyan
+         <LI>green
+         <LI>gray
+         <LI>red
+         <LI>magenta
+         <LI>yellow
+         <LI>white
          <LI>Browser...
     </UL>
 <LI><B>Matte</B>
@@ -2444,7 +2458,9 @@ button is released.  The <B>replace method</B> changes the matte
 value of any pixel that matches the color of the pixel you
 select with a button press.  <B>Floodfill</B> changes the matte
 value of any pixel that matches the color of the pixel you
-select with a button press and is a neighbor. Finally <B>reset</B>
+select with a button press and is a neighbor. Whereas
+<b>filltoborder</b> recolors any neighbor pixel
+that is not the border color.  Finally <B>reset</B>
 changes the entire image to the designated matte value.
 <P>
 Choose <B>Matte Value</B> and a dialog appears requesting a matte
@@ -2501,6 +2517,8 @@ mode, the Command widget has these options:
         <LI>line
         <LI>rectangle
         <LI>fill rectangle
+        <LI>circle
+        <LI>fill circle
         <LI>ellipse
         <LI>fill ellipse
         <LI>polygon

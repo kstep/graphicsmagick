@@ -31,6 +31,7 @@ XCOMM promote the sale, use or other dealings in ImageMagick without prior
 XCOMM written authorization from the E. I. du Pont de Nemours and Company.
 XCOMM
 MANSUFFIX = 1
+
 #include "Magick.tmpl"
 
 #ifndef ForceSubdirs
@@ -101,3 +102,7 @@ InstallMultipleMan(combine.1,$(LOCALMAN1))
 InstallMultipleMan(ImageMagick.1,$(LOCALMAN1))
 InstallMultipleMan(miff.4,$(LOCALMAN4))
 InstallMultipleMan(quantize.5,$(LOCALMAN5))
+
+strip:
+	strip display animate montage convert combine mogrify import identify
+	strip magick/libMagick*

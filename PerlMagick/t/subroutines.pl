@@ -15,6 +15,7 @@ sub testRead {
   my($image);
   
   $image=Image::Magick->new;
+  $image->Set(size=>'512x512');
   $status=$image->ReadImage("$infile");
   if( "$status" ) {
     print "ReadImage $infile: $status";

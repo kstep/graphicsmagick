@@ -478,6 +478,9 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
     trix,
     triy;
 
+  ImageInfo
+    *image_info;
+
   register int
     i;
 
@@ -488,9 +491,16 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
   register unsigned int
     inside;
 
+  RunlengthPacket
+    target;
+
+  XColor
+    border_color;
+
   assert(primitive_info != (PrimitiveInfo *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
   assert(image != (Image *) NULL);
+  image_info=annotate_info->image_info;
   inside=False;
   mid=annotate_info->linewidth/2.0;
   p=primitive_info;
@@ -555,7 +565,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
         }
         break;
       }
-      case EllipsePrimitive:
+      case CirclePrimitive:
       {
         for ( ; (p < q) && !inside; p++)
         {
@@ -569,7 +579,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
         }
         break;
       }
-      case FillEllipsePrimitive:
+      case FillCirclePrimitive:
       {
         for ( ; (p < q) && !inside; p++)
         {
@@ -691,9 +701,6 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               RunlengthPacket
                 color;
 
-              static RunlengthPacket
-                target;
-
               if ((x == 0) && (y == 0))
                 target=image->pixels[p->y*image->columns+p->x];
               color=image->pixels[y*image->columns+x];
@@ -701,6 +708,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               break;
             }
             case FloodfillMethod:
+            case FillToBorderMethod:
             {
               ColorPacket
                 color;
@@ -710,12 +718,20 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
 
               if ((p->x != x) || (p->y != y))
                 break;
-              (void) XQueryColorDatabase(annotate_info->image_info->pen,
-                &pen_color);
+              (void) XQueryColorDatabase(image_info->pen,&pen_color);
               color.red=XDownScale(pen_color.red);
               color.green=XDownScale(pen_color.green);
               color.blue=XDownScale(pen_color.blue);
-              ColorFloodfillImage(image,x,y,&color,0);
+              target=image->pixels[y*image->columns+x];
+              if (p->method == FillToBorderMethod)
+                {
+                  (void) XQueryColorDatabase(image_info->border_color,
+                    &border_color);
+                  target.red=XDownScale(border_color.red);
+                  target.green=XDownScale(border_color.green);
+                  target.blue=XDownScale(border_color.blue);
+                }
+              ColorFloodfillImage(image,&target,&color,x,y,p->method);
               break;
             }
             case ResetMethod:
@@ -733,6 +749,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
             /*
               Initialize matte image.
             */
+            image->class=DirectClass;
             image->matte=True;
             for (i=0; i < image->packets; i++)
               image->pixels[i].index=Opaque;
@@ -764,10 +781,20 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               break;
             }
             case FloodfillMethod:
+            case FillToBorderMethod:
             {
               if ((p->x != x) || (p->y != y))
                 break;
-              MatteFloodfillImage(image,x,y,Transparent,0);
+              target=image->pixels[y*image->columns+x];
+              if (p->method == FillToBorderMethod)
+                {
+                  (void) XQueryColorDatabase(image_info->border_color,
+                    &border_color);
+                  target.red=XDownScale(border_color.red);
+                  target.green=XDownScale(border_color.green);
+                  target.blue=XDownScale(border_color.blue);
+                }
+              MatteFloodfillImage(image,&target,Transparent,x,y,p->method);
               break;
             }
             case ResetMethod:

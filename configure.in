@@ -9,7 +9,7 @@ AC_INIT(magick/magick.h)
 # Set version
 MAJOR_VERSION=4
 MINOR_VERSION=1
-MICRO_VERSION=1
+MICRO_VERSION=2
 echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 AC_SUBST(MAJOR_VERSION)dnl
 AC_SUBST(MINOR_VERSION)dnl
@@ -115,9 +115,9 @@ AC_ARG_ENABLE(socks,
 
 # Enable build/install of PerlMagick.
 AC_ARG_WITH(perl,
-	      [  --with-perl             enable build/install of PerlMagick (default is no)],
+	      [  --with-perl             enable build/install of PerlMagick (default is yes)],
 	      [with_perl=$withval],
-	      [with_perl='no'])
+	      [with_perl='yes'])
 
 
 AM_CONDITIONAL(WITH_PERL, test "$with_perl" != 'no')

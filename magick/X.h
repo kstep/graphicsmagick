@@ -347,8 +347,8 @@ typedef struct _XResourceInfo
     magnify;
 
   char
-    *map_type,
-    *matte_color;
+    *matte_color,
+    *map_type;
 
   char
     *name;

@@ -2,7 +2,7 @@
 <HEAD>
 <TITLE>ImageMagick Animation Program for X Window System</TITLE>
 <LINK rev="made" href="mailto:cristy@mystic.es.dupont.com">
-<meta name="description" content="ImageMagick, version 4.1.1, is a package for
+<meta name="description" content="ImageMagick, version 4.1.2, is a package for
   display and interactive manipulation of images for the X Window System. It
   is written in C and interfaces to the X library, and therefore does not
   require any proprietary toolkit in order to compile.  Although the software
@@ -367,13 +367,28 @@ number of colors in a <B>MAP</B> image file, (e.g. -size 640x512+256).
 <P>
 <DD>Use this option to assign a specific title to the image.  This is
 assigned to the image window and is typically displayed in the window
-title bar.  Optionally you can include the image filename, type, width,
-height, or scene number in the label by embedding special format
-characters.   Embed <tt>%f</tt> for filename, <tt>%d</tt> for directory,
-<tt>%e</tt> for filename extention, <tt>%t</tt> for top of filename,
-<tt>%m</tt> for magick, <tt>%w</tt> for width, <tt>%h</tt> for height,
-<tt>%p</tt> for page number, <tt>%s</tt> for scene number, or <tt>%b</tt> for
-file size in kilobytes.  For example,
+title bar.  Optionally you can include the image
+filename, type, width, height, or other image attribute by
+embedding special format characters:
+<p>
+<dd><pre>
+    %b   file size
+    %d   directory
+    %e   filename extention
+    %f   filename
+    %h   height
+    %m   magick
+    %p   page number
+    %s   scene number
+    %t   top of filename
+    %w   width
+    %x   x resolution
+    %y   y resolution
+    \n   newline
+    \r   carriage return
+</pre>
+<p>
+For example,
 <P>
 <PRE>
       -title "%m:%f %wx%h"

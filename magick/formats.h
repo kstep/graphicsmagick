@@ -47,6 +47,7 @@ static char
     { "JBG", "False" },
     { "JBIG", "True" },
     { "JPEG", "False" },
+    { "JPEG24", "False" },
     { "JPG", "False" },
     { "LABEL", "False" },
     { "LOGO", "False" },

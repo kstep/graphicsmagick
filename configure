@@ -32,7 +32,7 @@ ac_help="$ac_help
 ac_help="$ac_help
   --enable-socks          enable SOCKS v5 proxy support (default is no)"
 ac_help="$ac_help
-  --with-perl             enable build/install of PerlMagick (default is no)"
+  --with-perl             enable build/install of PerlMagick (default is yes)"
 ac_help="$ac_help
   --with-bzlib            enable BZLIB (default is yes)"
 ac_help="$ac_help
@@ -566,7 +566,7 @@ fi
 # Set version
 MAJOR_VERSION=4
 MINOR_VERSION=1
-MICRO_VERSION=1
+MICRO_VERSION=2
 echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 ac_aux_dir=
 for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
@@ -2927,7 +2927,7 @@ if test "${with_perl+set}" = set; then
   withval="$with_perl"
   with_perl=$withval
 else
-  with_perl='no'
+  with_perl='yes'
 fi
 
 

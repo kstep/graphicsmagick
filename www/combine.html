@@ -2,7 +2,7 @@
 <HEAD>
 <TITLE>ImageMagick Image Compositing Utility</TITLE>
 <LINK rev="made" href="mailto:cristy@mystic.es.dupont.com">
-<meta name="description" content="ImageMagick, version 4.1.1, is a package for
+<meta name="description" content="ImageMagick, version 4.1.2, is a package for
   display and interactive manipulation of images for the X Window System. It
   is written in C and interfaces to the X library, and therefore does not
   require any proprietary toolkit in order to compile.  Although the software
@@ -136,15 +136,31 @@ option to take effect.
 <DT><B>-comment</B> <EM>string</EM>
 <DD>annotate an image with a comment.
 <P>
-<DD>By default, each image is commented with its file name.
-Use this option to assign a specific comment to the
-image.  Optionally you can include the image filename,
-type, width, height, or scene number by embedding
-special format characters.  Embed <tt>%f</tt> for filename,
-<tt>%d</tt> for directory, <tt>%e</tt> for filename extention, <tt>%t</tt> for
-top of filename, <tt>%m</tt> for magick, <tt>%w</tt> for width, <tt>%h</tt> for
-height, <tt>%p</tt> for page number, <tt>%s</tt> for scene number, or
-<tt>\n</tt> for newline.  For example,
+<DD>By default, each image is commented with its file
+name.  Use this option to assign a specific comment
+to the image.  Optionally you can include the image
+filename, type, width, height, or other image attribute by
+embedding special format characters:
+<p>
+<dd><pre>
+    %b   file size
+    %d   directory
+    %e   filename extention
+    %f   filename
+    %h   height
+    %m   magick
+    %p   page number
+    %s   scene number
+    %t   top of filename
+    %w   width
+    %x   x resolution
+    %y   y resolution
+    \n   newline
+    \r   carriage return
+</pre>
+<p>
+For example,
+<p>
 <PRE>
     -comment "%m:%f %wx%h"
 </PRE>
@@ -364,13 +380,12 @@ or <B>progressive JPEG</b> image.
 <DD>assign a label to an image.
 <P>
 <DD>Use this option to assign a specific label to the
-image.  Optionally you can include the image filename,
-type, width, height, or scene number in the label by
-embedding special format characters.   Embed <tt>%f</tt> for filename,
-<tt>%d</tt> for directory, <tt>%e</tt> for filename extention, <tt>%t</tt> for
-top of filename, <tt>%m</tt> for magick, <tt>%w</tt> for width, <tt>%h</tt> for 
-height, <tt>%p</tt> for page number, <tt>%s</tt> for scene number, or
-<tt>\n</tt> for newline.  For example,
+image.  Optionally you can include the image
+filename, type, width, height, or other image attribute by
+embedding special format character.  See <b>-comment</b> for details.
+<p>
+<p>
+<dd>For example,
 <PRE>
     -label "%m:%f %wx%h"
 </PRE>
@@ -406,20 +421,44 @@ offset&gt;{+-}&lt;y offset&gt;{!}{&lt;}{&gt;}</I>
 <I>PostScript</I> page in dots per inch or a TEXT page in
 pixels.  The choices for a Postscript page are:
 <PRE>
-   Letter      612x 792
-   Tabloid     792x1224
-   Ledger     1224x 792
-   Legal       612x1008
-   Statement   396x 612
-   Executive   540x 720
-   A3          842x1190
-   A4          595x 842
-   A5          420x 595
-   B4          729x1032
-   B5          516x 729
-   Folio       612x 936
-   Quarto      610x 780
-   10x14       720x1008
+       11x17         792  1224 
+       Ledger       1224   792    
+       Legal         612  1008
+       Letter        612   792
+       LetterSmall   612   792
+       ArchE        2592  3456
+       ArchD        1728  2592
+       ArchC        1296  1728
+       ArchB         864  1296
+       ArchA         648   864
+       A0           2380  3368
+       A1           1684  2380
+       A2           1190  1684
+       A3            842  1190
+       A4            595   842
+       A4Small       595   842
+       A5            421   595
+       A6            297   421
+       A7            210   297
+       A8            148   210
+       A9            105   148
+       A10            74   105
+       B0           2836  4008
+       B1           2004  2836
+       B2           1418  2004
+       B3           1002  1418
+       B4            709  1002
+       B5            501   709
+       C0           2600  3677
+       C1           1837  2600
+       C2           1298  1837
+       C3            918  1298
+       C4            649   918
+       C5            459   649
+       C6            323   459
+       Flsa          612   936 
+       Flse          612   936
+       HalfLetter    396   612
 </PRE>
 <DD>For convenience you can specify the page size by media
 (e.g. A4, Ledger, etc.).  Otherwise, <b>-page</b> behaves much like

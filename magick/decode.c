@@ -5303,7 +5303,7 @@ static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
       continue;
     TT_Get_Name_String(face,(unsigned short) i,&name,&length);
     p=image->comments+strlen(image->comments);
-    for (j=1; j < Min(length,MaxTextExtent); j+=2)
+    for (j=1; j < (int) Min(length,MaxTextExtent); j+=2)
       *p++=name[j];
     *p++='\n';
     *p='\0';
@@ -6280,6 +6280,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info)
               image->delay=atoi(value);
             if (Latin1Compare(keyword,"depth") == 0)
               image->depth=atoi(value) <= 8 ? 8 : 16;
+            if (Latin1Compare(keyword,"dispose") == 0)
+              image->dispose=atoi(value);
             if (Latin1Compare(keyword,"gamma") == 0)
               image->gamma=atof(value);
             if (Latin1Compare(keyword,"green-primary") == 0)
@@ -7152,12 +7154,12 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
     client_name,"background",DefaultTileBackground);
   resource_info.foreground_color=XGetResourceInstance(resource_database,
     client_name,"foreground",DefaultTileForeground);
+  resource_info.matte_color=XGetResourceInstance(resource_database,client_name,
+    "mattecolor",DefaultTileMatte);
   montage_info.frame=XGetResourceClass(resource_database,client_name,"frame",
     (char *) NULL);
   resource_info.image_geometry=XGetResourceInstance(resource_database,
     client_name,"imageGeometry",DefaultTileGeometry);
-  resource_info.matte_color=XGetResourceInstance(resource_database,client_name,
-    "mattecolor",DefaultTileMatte);
   resource_value=XGetResourceClass(resource_database,client_name,"pointsize",
     DefaultPointSize);
   montage_info.pointsize=atoi(resource_value);
@@ -15575,12 +15577,12 @@ static Image *ReadVIDImage(const ImageInfo *image_info)
     client_name,"background",DefaultTileBackground);
   resource_info.foreground_color=XGetResourceInstance(resource_database,
     client_name,"foreground",DefaultTileForeground);
+  resource_info.matte_color=XGetResourceInstance(resource_database,client_name,
+    "mattecolor",DefaultTileMatte);
   montage_info.frame=
     XGetResourceInstance(resource_database,client_name,"frame",(char *) NULL);
   resource_info.image_geometry=XGetResourceInstance(resource_database,
     client_name,"imageGeometry",DefaultTileGeometry);
-  resource_info.matte_color=XGetResourceInstance(resource_database,
-    client_name,"mattecolor",DefaultTileMatte);
   resource_value=XGetResourceClass(resource_database,client_name,
     "pointsize",DefaultPointSize);
   montage_info.pointsize=atoi(resource_value);
@@ -16887,6 +16889,8 @@ static Image *ReadXCImage(const ImageInfo *image_info)
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
+  if ((image->columns == 0) || (image->rows == 0))
+    PrematureExit(OptionWarning,"must specify image size",image);
   /*
     Initialize Image structure.
   */
@@ -17197,9 +17201,9 @@ static Image *ReadXPMImage(const ImageInfo *image_info)
     for (x=0; x < image->columns; x++)
     {
       (void) strncpy(key,p,width);
-      if (Latin1Compare(key,image->colormap[j].key) != 0)
+      if (strcmp(key,image->colormap[j].key) != 0)
         for (j=0; j < (image->colors-1); j++)
-          if (Latin1Compare(key,image->colormap[j].key) == 0)
+          if (strcmp(key,image->colormap[j].key) == 0)
             break;
       r->red=image->colormap[j].red;
       r->green=image->colormap[j].green;

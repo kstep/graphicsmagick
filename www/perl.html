@@ -2,7 +2,7 @@
 <HEAD>
 <TITLE>Perl Magick</TITLE>
 <LINK rev="made" href="mailto:cristy@mystic.es.dupont.com">
-<meta name="description" content="ImageMagick, version 4.1.1, is a package for
+<meta name="description" content="ImageMagick, version 4.1.2, is a package for
   display and interactive manipulation of images for the X Window System. It
   is written in C and interfaces to the X library, and therefore does not
   require any proprietary toolkit in order to compile.  Although the software
@@ -441,15 +441,23 @@ Image Manipulation Methods
   <td>enhance or reduce the image contrast</td>
 </tr>
 <tr>
-  <td>Crop</td>
-  <td>geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, 
-    x=&gt;<i>integer</i>, y=&gt;<i>integer</i></td>
-  <td>crop an image</td>
+  <td>ColorFloodfill</td>
+  <td>geometry=&gt;<i>geometry</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, 
+    pen=<i>colorname</i>, bordercolor=<i>colorname</i></td>
+  <td>changes the color value of any pixel that matches the color of the
+    target pixel and is a neighbor. If you specify a border color, the color
+    value is changed for any neighbor pixel that is not that color.</td>
 </tr>
 <tr>
   <td>Colorize</td>
   <td>color=&gt;<i>colorname</i>, pen=&gt;<i>colorname</i></td>
   <td>colorize the image with the pen color</td>
+</tr>
+<tr>
+  <td>Crop</td>
+  <td>geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, 
+    x=&gt;<i>integer</i>, y=&gt;<i>integer</i></td>
+  <td>crop an image</td>
 </tr>
 <tr>
   <td>Comment</td>
@@ -475,9 +483,11 @@ Image Manipulation Methods
   <td>Draw</td>
   <td>
     primitive={Point, Line, Rectangle, FillRectangle, Circle, FillCircle, 
-      Polygon, FillPolygon, Color, Matte, Text, Image, @<i>filename</i>}, 
-    points=&gt;<i>string</i>, method=<i>{Point, Replace, Floodfill, Reset}</i>, 
-    pen=&gt;<i>colorname</i>, linewidth=&gt;<i>integer</i>, server=&gt;<i>string</i>, 
+      Ellipse, FillEllipse, Polygon, FillPolygon, Color, Matte, Text, Image,
+      @<i>filename</i>}, points=&gt;<i>string</i>,
+      method=<i>{Point, Replace, Floodfill, FillToBorder, Reset}</i>, 
+    pen=&gt;<i>colorname</i>, bordercolor=&gt;<i>colorname</i>,
+    linewidth=&gt;<i>integer</i>, server=&gt;<i>string</i>, 
   </td>
   <td>annotate an image with one or more graphic primitives</td>
 </tr>
@@ -549,6 +559,14 @@ Image Manipulation Methods
   <td>Map</td>
   <td>image=&gt;<i>image-handle</i>, dither={True, False}</td>
   <td>choose a particular set of colors from this image</td>
+</tr>
+<tr>
+  <td>MatteFloodfill</td>
+  <td>geometry=&gt;<i>geometry</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, 
+    matte=<i>integer</i>, bordercolor=<i>colorname</i></td>
+  <td>changes the matte value of any pixel that matches the color of the
+    target pixel and is a neighbor. If you specify a border color, the matte
+    value is changed for any neighbor pixel that is not that color.</td>
 </tr>
 <tr>
   <td>Minify</td>
@@ -734,6 +752,37 @@ Where <tt>draw.txt</tt> is a file on disk that contains this:
   rectangle 40, 40 200, 200
   rectangle 60, 60 300, 300
 </pre>
+<p>
+The <i>text</i> parameter for methods, <tt>Annotate</tt>, <tt>Comment</tt>,
+<tt>Draw</tt>, and <tt>Label</tt> can include the image filename, type, width,
+height, or other image attribute by embedding these special format characters:
+<p>
+<dd><pre>
+    %b   file size
+    %d   directory
+    %e   filename extention
+    %f   filename
+    %h   height
+    %m   magick
+    %p   page number
+    %s   scene number
+    %t   top of filename
+    %w   width
+    %x   x resolution
+    %y   y resolution
+    \n   newline
+    \r   carriage return
+</pre>
+<p>
+For example,
+<P>
+<pre>
+  text=>"%m:%f %wx%h"
+</pre>
+<P>
+<DD>produces an annotation of <B>MIFF:bird.miff 512x480</B> for an
+image titled <B>bird.miff</B> and whose width is 512 and height
+is 480.
 <p>
 You can optionally add <tt>Image</tt> to any method name.  For example, 
 <tt>TrimImage</tt> is an alias for method <tt>Trim</tt>.
@@ -1399,7 +1448,7 @@ respective width, height,  size in bytes, and format (e.g. GIF, JPEG, etc.).
 For example, 
 <p>
 <pre>
-    ($width, $height, $size, $format) = split(', ', $image-&gt;Ping('logo.gif'));
+    ($width, $height, $size, $format) = split(',', $image-&gt;Ping('logo.gif'));
 </pre>
 <p>
 This is a more efficient and less memory intensive way to query if an image

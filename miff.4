@@ -67,6 +67,18 @@ the depth of a single color value representing values from 0 to 255
 (depth 8) or 65535 (depth 16).  If this keyword is absent, a depth of 8 is
 assumed.
 .TP
+.B "dispose \fIvalue\fP"
+GIF disposal method.
+
+Here are the valid methods:
+
+.nf
+     0  No disposal specified.
+     1  Do not dispose.
+     2  Restore to background color.
+     3  Restore to previous.
+.fi
+.TP
 .B "gamma=\fIvalue\fP"
 the gamma of the image.  If it is not specified, a gamma of 1.0
 (linear brightness response) is assumed,

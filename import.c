@@ -107,11 +107,6 @@
 #include "version.h"
 
 /*
-  Define declarations.
-*/
-#define DefaultImportName  "magick.ps"
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -182,7 +177,7 @@ static void Usage(const char *client_name)
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %s\n",*p);
   (void) printf(
-  "\nBy default, 'file' is written in the Postscript image format.  To\n");
+  "\nBy default, 'file' is written in the MIFF image format.  To\n");
   (void) printf(
     "specify a particular image format, precede the filename with an image\n");
   (void) printf(
@@ -369,11 +364,13 @@ int main(int argc,char **argv)
             }
           if (strncmp("bordercolor",option+1,7) == 0)
             {
-              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+              image_info.border_color=(char *) NULL;
+              if (*option == '-')
                 {
                   i++;
                   if (i == argc)
-                    MagickError(OptionError,"Missing color",option);
+                    MagickError(OptionError,"Missing border color",option);
+                  image_info.border_color=argv[i];
                 }
               break;
             }

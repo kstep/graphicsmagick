@@ -237,6 +237,7 @@ typedef enum
   PointMethod = 0,
   ReplaceMethod,
   FloodfillMethod,
+  FillToBorderMethod,
   ResetMethod
 } PaintMethod;
 
@@ -281,6 +282,8 @@ typedef enum
   LinePrimitive,
   RectanglePrimitive,
   FillRectanglePrimitive,
+  CirclePrimitive,
+  FillCirclePrimitive,
   EllipsePrimitive,
   FillEllipsePrimitive,
   PolygonPrimitive,
@@ -415,6 +418,9 @@ typedef struct _ImageInfo
     preview_type;
 
   char
+    *background_color,
+    *border_color,
+    *matte_color,
     *undercolor;
 
   unsigned int
@@ -539,7 +545,8 @@ typedef struct _Image
     temporary;
 
   char
-    filename[MaxTextExtent];
+    filename[MaxTextExtent],
+    unique[MaxTextExtent];
 
   long int
     filesize;
@@ -750,7 +757,8 @@ extern Export void
   AnnotateImage(Image *,AnnotateInfo *),
   BlackImage(Image *),
   CloseImage(Image *),
-  ColorFloodfillImage(Image *,int,int,const ColorPacket *,const int),
+  ColorFloodfillImage(Image *,const RunlengthPacket *,const ColorPacket *,int x,
+    int y,const PaintMethod),
   ColorizeImage(Image *,char *,char *),
   CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),
   CompressColormap(Image *),
@@ -769,7 +777,8 @@ extern Export void
   GetQuantizeInfo(QuantizeInfo *),
   HSLTransform(double,const double,const double,Quantum *,Quantum *,Quantum *),
   LayerImage(Image *,LayerType),
-  MatteFloodfillImage(Image *,int,int,const unsigned int,const int),
+  MatteFloodfillImage(Image *,const RunlengthPacket *,const unsigned int,int x,
+    int y,const PaintMethod),
   ModulateImage(Image *,char *),
   MogrifyImage(ImageInfo *,int,char **,Image **),
   MogrifyImages(ImageInfo *,int,char **,Image **),

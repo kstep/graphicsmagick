@@ -593,7 +593,8 @@ static unsigned int Classification(CubeInfo *color_cube,Image *image)
           distance_squared+=color_cube->squares[(int) distance]+distance-0.25;
           distance=AbsoluteValue(DownScale(p->blue)-mid_blue);
           distance_squared+=color_cube->squares[(int) distance]+distance-0.25;
-          node_info->quantization_error+=distance_squared*(p->length+1);
+          node_info->quantization_error+=
+            distance_squared*((double) p->length+1);
         }
       index--;
     }
@@ -601,9 +602,9 @@ static unsigned int Classification(CubeInfo *color_cube,Image *image)
       Sum RGB values for this leaf for later derivation of the mean cube color.
     */
     node_info->number_unique+=(p->length+1);
-    node_info->total_red+=p->red*(p->length+1);
-    node_info->total_green+=p->green*(p->length+1);
-    node_info->total_blue+=p->blue*(p->length+1);
+    node_info->total_red+=p->red*((double) p->length+1);
+    node_info->total_green+=p->green*((double) p->length+1);
+    node_info->total_blue+=p->blue*((double) p->length+1);
     p++;
     if (QuantumTick(i,image))
       ProgressMonitor(ClassifyImageText,i,image->packets);

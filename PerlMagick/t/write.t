@@ -266,7 +266,7 @@ testReadWrite( 'XBM:input.xbm',
 testReadWrite( 'XPM:input.xpm',
                'XPM:output.xpm',
                q//,
-               '948df732ca8abbd1f7348a029f056c94' );
+               'd5a97a3cec301d8848102f513ceb3f3c' );
 
 #
 # X Windows system window dump file (color)

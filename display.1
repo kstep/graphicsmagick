@@ -179,12 +179,27 @@ annotate an image with a comment.
 
 By default, each image is commented with its file name.  Use this
 option to assign a specific comment to the image.  Optionally you can
-include the image filename, type, width, height, or scene number by
-embedding special format characters.  Embed \fB%f\fP for filename,
-\fB%d\fP for directory, \fB%e\fP for filename extention, \fB%t\fP for
-top of filename, \fB%m\fP for magick, \fB%w\fP for width, \fB%h\fP for
-height, \fB%p\fP for page number, \fB%s\fP for scene number,
-\fB%b\fP for file size, or \fB\\n\fP for newline.  For example,
+include the image filename, type, width, height, or other image
+attributes by embedding special format characters:
+
+.nf
+    %b   file size
+    %d   directory
+    %e   filename extention
+    %f   filename
+    %h   height
+    %m   magick
+    %p   page number
+    %s   scene number
+    %t   top of filename
+    %w   width
+    %x   x resolution
+    %y   y resolution
+    \\n   newline
+    \\r   carriage return
+.fi
+
+For example,
 
 .nf
      -comment "%m:%f %wx%h"
@@ -397,13 +412,11 @@ displayed image cannot be modified",
 assign a label to an image.
 
 Use this option to assign a specific label to the image.  Optionally
-you can include the image filename, type, width, height, or scene
-number in the label by embedding special format characters.   Embed
-\fB%f\fP for filename, \fB%d\fP for directory, \fB%e\fP for filename
-extention, \fB%t\fP for top of filename, \fB%m\fP for magick, \fB%w\fP
-for width, \fB%h\fP for height, \fB%p\fP for page number, 
-\fB%s\fP for scene number, \fB%b\fP for file size in kilobytes, or 
-\fB\\n\fP for newline.  For example,
+you can include the image filename, type, width, height, or other image
+attribute in the label by embedding special format characters. 
+See \fB-comment\fP for details.
+
+For example,
 
 .nf
      -label "%m:%f %wx%h"
@@ -602,12 +615,11 @@ assign a title to the displayed image.
 
 Use this option to assign a specific title to the image.  This is
 assigned to the image window and is typically displayed in the window
-title bar.  Optionally you can include the image filename, type, width,
-height, or scene number in the label by embedding special format
-characters.   Embed \fB%f\fP for filename, \fB%d\fP for directory,
-\fB%e\fP for filename extention, \fB%t\fP for top of filename, \fB%m\fP
-for magick, \fB%w\fP for width, \fB%h\fP for height, \fB%p\fP for page number, 
-\fB%s\fP for scene number, or \fB%b\fP for file size in kilobytes.  For example,
+title bar.   Optionally you can include the image filename, type, width,
+height, or other image attributes by embedding special format characters.
+See \fB-comment\fP for details.
+
+For example,
 
 .nf
      -title "%m:%f %wx%h"
@@ -1934,6 +1946,12 @@ press \fBDismiss\fP.  In \fIcolor edit\fP mode, the Command widget has these
 options:
 
 .nf
+    Method
+      point
+      replace
+      floodfill
+      filltoborder
+      reset
     Pixel Color
       black
       blue
@@ -1945,45 +1963,40 @@ options:
       yellow
       white
       Browser...
-    Method
-      point
-      replace
-      floodfill
-      reset
-    Delta
-      0
-      1
-      2
-      4
-      8
-      16
-      32
+    Border Color
+      black
+      blue
+      cyan
+      green
+      gray
+      red
+      magenta
+      yellow
+      white
       Browser...
     Undo
     Help
     Dismiss
 .fi
 
-Choose a pixel color from the \fBPixel Color\fP sub-menu.
-Additional pixel colors can be specified with the color browser.
-You can change the menu colors by setting the X resources \fBpen1\fP
-through \fBpen9\fP.  Refer to \fBX RESOURCES\fP for more details.
-
-Next, choose a color editing method from the \fBMethod\fP sub-menu of
+Choose a color editing method from the \fBMethod\fP sub-menu of
 the Command widget.  The \fBpoint\fP method recolors any pixel selected
 with the pointer unless the button is released.  The \fBreplace\fP
 method recolors any pixel that matches the color of the pixel you
 select with a button press.  \fBFloodfill\fP recolors any pixel that
 matches the color of the pixel you select with a button press and is a
-neighbor.  Finally \fBreset\fP changes the entire image to the designated
-color.
+neighbor.  Whereas \fBfilltoborder\fP recolors any neighbor
+pixel that is not the border color.  Finally \fBreset\fP changes the
+entire image to the designated color.
+
+Next, choose a pixel color from the \fBPixel Color\fP sub-menu.
+Additional pixel colors can be specified with the color browser.
+You can change the menu colors by setting the X resources \fBpen1\fP
+through \fBpen9\fP.  Refer to \fBX RESOURCES\fP for more details.
 
 Now press button 1 to select a pixel within the image window to change its
 color.  Additional pixels may be recolored as prescribed by the method you
-choose.  You can recolor additional pixels by increasing the Delta
-value.  The Delta value is first added then subtracted from the red, green,
-and blue of the target color.  Any pixels within the range is also
-recolored.
+choose.  
 
 If the Magnify widget is mapped, it can be helpful in positioning
 your pointer within the image (refer to button 2).  Alternatively you
@@ -2024,15 +2037,18 @@ options:
       point
       replace
       floodfill
+      filltoborder
       reset
-    Delta
-      0
-      1
-      2
-      4
-      8
-      16
-      32
+    Border Color
+      black
+      blue
+      cyan
+      green
+      gray
+      red
+      magenta
+      yellow
+      white
       Browser...
     Matte
     Undo
@@ -2046,18 +2062,17 @@ any pixel selected with the pointer until the button is released.  The
 \fBreplace\fP method changes the matte value of any pixel that matches
 the color of the pixel you select with a button press.  \fBFloodfill\fP
 changes the matte value of any pixel that matches the color of the pixel
-you select with a button press and is a neighbor. Finally \fBreset\fP
-changes the entire image to the designated matte value.
+you select with a button press and is a neighbor. Whereas
+\fBfilltoborder\fP changes the matte value any neighbor pixel that is not the
+border color.  Finally \fBreset\fP changes the entire image to the designated
+matte value.
 
 Choose \fBMatte Value\fP and a dialog appears requesting a matte value.  Enter
 a value between 0 and 255.  This value is assigned as the matte value of the
 selected pixel or pixels.
 
 Now, press any button to select a pixel within the image window to change
-its matte value.  You can change the matte value of additional pixels by
-increasing the Delta value.  The Delta value is first added then subtracted
-from the red, green, and blue of the target color.  Any pixels within the
-range also have their matte value updated.
+its matte value.  
 
 If the Magnify widget is mapped, it can be helpful
 in positioning your pointer within the image (refer to button 2).
@@ -2091,6 +2106,8 @@ widget has these options:
       line
       rectangle
       fill rectangle
+      circle
+      fill circle
       ellipse
       fill ellipse
       polygon

@@ -83,7 +83,8 @@ extern Export char
   *PostscriptGeometry(const char *),
   *SetClientName(const char *),
   **StringToArgv(const char *,int *),
-  **StringToList(char *);
+  **StringToList(char *),
+  *TranslateText(Image *,char *);
 
 extern Export int
   GlobExpression(char *,const char *),

@@ -25,7 +25,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.1.1.tar.gz
+    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.1.2.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -83,8 +83,8 @@ UNIX COMPILATION
 
   Type:
 
-    gunzip ImageMagick-4.1.1.tar.gz
-    tar xvf ImageMagick-4.1.1.tar
+    gunzip ImageMagick-4.1.2.tar.gz
+    tar xvf ImageMagick-4.1.2.tar
     cd ImageMagick
 
   If you do not have gunzip(1), it is available as
@@ -159,7 +159,7 @@ UNIX COMPILATION
       --enable-lzw         enable LZW support (default is no)
       --enable-16bit-pixel enable 16 bit pixels (default is no)
       --enable-socks       enable use of SOCKS 5 library and 'rftp'
-      --with-perl          enable build/install of PerlMagick (default is no)
+      --with-perl          enable build/install of PerlMagick (default is yes)
       --with-bzlib         enable BZlib (default is yes)
       --with-dps           enable Display Postscript (default is yes)
       --with-fpx           enable FlashPIX (default is yes)
@@ -216,7 +216,7 @@ UNIX COMPILATION
         one step.  Without this option you first install ImageMagick,
         change to the PerlMagick subdirectory, build, and finally
         install PerlMagick.  Note, PerlMagick is configured even if
-        --with-perl is not supplied.  If --enable-shared is not
+        --with-perl is disabled.  If --enable-shared is not
         specified, a new PERL interpreter (PerlMagick) is built
         which is statically linked against the PerlMagick extension.
         This new interpreter is installed alongside your existing PERL
@@ -332,7 +332,7 @@ MAGICK DELEGATES
 
     o ImageMagick requires the BZLIB library from
 
-          (http://www.muraroa.demon.co.uk
+          http://www.muraroa.demon.co.uk
 
       to read and write BZip compressed MIFF images.
 
@@ -509,6 +509,14 @@ HOW TO COMPILE
   
   To display images in the HDF, JBIG, JPEG, PNG, TIFF, or TTF
   format, get the respective archives and build ImageMagick as follows:
+
+    BZLIB:
+      cd ImageMagick
+      gunzip -c bzip2-0.9.0.tar.gz | tar xvof -
+      mv bzip2-0.9.0 bzlib
+      cd bzlib
+      make
+      cd ..
 
     HDF:
       cd ImageMagick

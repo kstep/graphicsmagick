@@ -46,6 +46,8 @@ constant(char *name, int arg)
 	break;
 
     case 'O':
+	if (strEQ(name, "Opaque"))
+	    return Opaque;
 	if (strEQ(name, "OptionError"))
 	    return OptionError;
 	if (strEQ(name, "OptionWarning"))
@@ -84,6 +86,10 @@ constant(char *name, int arg)
     case 'F':
 	if (strEQ(name, "FileOpenWarning"))
 	    return FileOpenWarning;
+	break;
+    case 'T':
+	if (strEQ(name, "Transparent"))
+	    return Transparent;
 	break;
     }
 
@@ -150,7 +156,7 @@ static char *p_layers[] = {
     "Undefined", "Red", "Green", "Blue", "Matte", 0 };
 
 static char *p_methods[] = {
-    "Point", "Replace", "Floodfill", "Reset", 0 };
+    "Point", "Replace", "Floodfill", "FillToBorder", "Reset", 0 };
 
 static char *p_modes[] = {
     "Undefined", "Frame", "Unframe", "Concatenate", 0 };
@@ -165,8 +171,8 @@ static char *p_previews[] = {
 
 static char *p_primitives[] = {
     "Undefined", "Point", "Line", "Rectangle", "FillRectangle", "Circle",
-    "FillCircle", "Polygon", "FillPolygon", "Color", "Matte", "Text", "Image",
-0 };
+    "FillCircle", "Ellipse", "FillEllipse", "Polygon", "FillPolygon", "Color",
+    "Matte", "Text", "Image", 0 };
 
 static char *p_units[] = {
     "undefined units", "pixels / inch", "pixels / centimeter", 0 };
@@ -251,7 +257,8 @@ static struct routines {
 		    {"density", P_STR}, {"box", P_STR}, {"pen", P_STR},
 		    {"geom", P_STR}, {"text", P_STR}, {"x", P_INT},
 		    {"y", P_INT}, {"align", p_alignments} } },
-    {	"ColorFloodfill", },
+    {	"ColorFloodfill", { {"geom", P_STR}, {"x", P_INT}, {"y", P_INT},
+			    {"pen", P_STR}, {"bordercolor", P_STR} } },
     {	"Composite", { {"compos", p_composites}, {"image", P_IMG},
 		    {"geom", P_STR}, {"x", P_INT}, {"y", P_INT},
 		    {"grav", p_gravities} } },
@@ -259,12 +266,13 @@ static struct routines {
     {	"CycleColormap", { {"amount", P_INT} } },
     {	"Draw", { {"prim", p_primitives}, {"points", P_STR},
 		  {"meth", p_methods}, {"pen", P_STR}, {"linew", P_INT},
-		  {"server", P_STR}, } },
+		  {"server", P_STR}, {"borderc", P_STR} } },
     {	"Equalize", },
     {	"Gamma", { {"gamma", P_STR}, {"red", P_DBL}, {"green", P_DBL},
 		    {"blue", P_DBL} } },
     {	"Map", { {"image", P_IMG}, {"dither", p_boolean} } },
-    {	"MatteFloodfill", },
+    {	"MatteFloodfill", { {"geom", P_STR}, {"x", P_INT}, {"y", P_INT},
+			    {"matte", P_INT}, {"bordercolor", P_STR} } },
     {	"Modulate", { {"factor", P_STR}, {"bright", P_DBL}, {"satur", P_DBL},
 		    {"hue", P_DBL} } },
     {	"Negate", { {"gray", p_boolean} } },
@@ -295,7 +303,7 @@ static struct routines {
 static SV *im_er_mes;		/* Perl variable for storing messages */
 static jmp_buf *im_er_jmp;	/* long jump return for FATAL errors */
 
-/* something like a Perl-like ignore case string compare; 
+/* something like a Perl-like ignore case string compare;
  * the strings are equal if the second string runs out first.
  */
 static int
@@ -318,7 +326,7 @@ LookupStr(char **list, const char *str)
     char **p;
     int offset = (-1);
     int longest = 0;
- 
+
     for (p = list; *p; p++)
 	if (strEQcase(str, *p) > longest)
     	{
@@ -385,6 +393,13 @@ copy_info(struct info *info)
 	newinfo->info.iterations = copy_string(info->info.iterations);
     if (info->info.texture)
 	newinfo->info.texture = copy_string(info->info.texture);
+    if (info->info.background_color)
+	newinfo->info.background_color =
+	    copy_string(info->info.background_color);
+    if (info->info.border_color)
+	newinfo->info.border_color = copy_string(info->info.border_color);
+    if (info->info.matte_color)
+	newinfo->info.matte_color = copy_string(info->info.matte_color);
     if (info->info.undercolor)
 	newinfo->info.undercolor = copy_string(info->info.undercolor);
 
@@ -570,6 +585,9 @@ SetAttribute(struct info *info, Image *image, char *attr, SV *sval)
 	{
 	    XColor target_color;
 
+	    if (info)
+		newval(&info->info.background_color, SvPV(sval, na));
+
 	    (void) XQueryColorDatabase(SvPV(sval, na), &target_color);
 	    for ( ; image; image = image->next) {
 		image->background_color.red = XDownScale(target_color.red);
@@ -591,6 +609,9 @@ SetAttribute(struct info *info, Image *image, char *attr, SV *sval)
 	if (strEQcase(attr, "bordercolor"))
 	{
 	    XColor target_color;
+
+	    if (info)
+		newval(&info->info.border_color, SvPV(sval, na));
 
 	    (void) XQueryColorDatabase(SvPV(sval, na), &target_color);
 	    for ( ; image; image = image->next) {
@@ -774,7 +795,7 @@ SetAttribute(struct info *info, Image *image, char *attr, SV *sval)
 	    if (info)
 		{
 		    info->info.filter = (FilterType) sp;
-		    for ( ; image; image = image->next) 
+		    for ( ; image; image = image->next)
 			image->filter = (FilterType) sp;
 		}
 	    return;
@@ -845,9 +866,12 @@ SetAttribute(struct info *info, Image *image, char *attr, SV *sval)
     case 'M': case 'm':
 	if (strEQcase(attr, "magick"))	/* same as format */
 	    goto format;
-	if (strEQcase(attr, "mattecolor") || strEQcase(attr, "matte_color"))
+	if (strEQcase(attr, "mattec") || strEQcase(attr, "matte_color"))
 	{
 	    XColor target_color;
+
+	    if (info)
+		newval(&info->info.matte_color, SvPV(sval, na));
 
 	    (void) XQueryColorDatabase(SvPV(sval, na), &target_color);
 	    for ( ; image; image = image->next) {
@@ -1172,7 +1196,7 @@ get_list(SV *rref, SV ***svarr, int *cur, int *last)
 		if (*cur == *last)
 		{
 		    *last += 256;
-		    if (*svarr) 
+		    if (*svarr)
 			*svarr = (SV **)saferealloc((char *) *svarr, *last * sizeof *svarr);
 		    else
 			*svarr = (SV **)safemalloc(*last * sizeof *svarr);
@@ -1719,10 +1743,10 @@ Montage(ref, ...)
 		client_name, "background", DefaultTileBackground);
 	    resource.foreground_color = XGetResourceInstance(resource_database,
 		client_name, "foreground", DefaultTileForeground);
-	    resource.image_geometry = XGetResourceInstance(resource_database,
-		client_name, "imageGeometry", DefaultTileGeometry);
 	    resource.matte_color = XGetResourceInstance(resource_database,
 		client_name, "mattecolor", DefaultTileMatte);
+	    resource.image_geometry = XGetResourceInstance(resource_database,
+		client_name, "imageGeometry", DefaultTileGeometry);
 	    resource_value = XGetResourceClass(resource_database, client_name,
 		"pointsize", DefaultPointSize);
 	    montage.pointsize = atoi(resource_value);
@@ -2288,7 +2312,7 @@ Mogrify(ref, ...)
 	    RectangleInfo br, rg;
 	    AnnotateInfo annotate;
 	    FrameInfo fr;
-	    XColor xc;
+	    XColor bc, xc;
 	    char *arg;
 	    Image *image, *next, *region_image = NULL;
 	    struct info *info, *temp = NULL;
@@ -2427,6 +2451,13 @@ Mogrify(ref, ...)
 	    if (setjmp(error_jmp))
 		goto return_it;
 
+	    xc.red = 0;
+	    xc.green = 0;
+	    xc.blue = 0;
+	    br.width = image->columns;
+	    br.height = image->rows;
+	    br.x = br.y = 0;
+
 	    first = 1;
 	    for (next = image, pv = svarr; next; first = 0, next = next->next)
 	    {
@@ -2441,10 +2472,6 @@ Mogrify(ref, ...)
 		    if (!image)
 			continue;
 		}
-
-		br.width = image->columns;
-		br.height = image->rows;
-		br.x = br.y = 0;
 
 		switch (ix)
 		{
@@ -2776,7 +2803,48 @@ Mogrify(ref, ...)
 		    AnnotateImage(image, &annotate);
 		    break;
 		case 34:	/* ColorFloodfill */
+		{
+		    ColorPacket color;
+		    RunlengthPacket target;
+
+		    if (first)
+		    {
+			if (aflag[0])
+			{
+			    int f = XParseGeometry(alist[0].t_str, &br.x,
+					&br.y, &br.width, &br.height);
+			}
+
+			if (aflag[1])
+			    br.x = alist[1].t_int;
+			if (aflag[2])
+			    br.y = alist[2].t_int;
+			if (aflag[3])
+			    XQueryColorDatabase(alist[3].t_str, &xc);
+			if (aflag[4])
+			    XQueryColorDatabase(alist[4].t_str, &bc);
+		    }
+
+		    if (!UncondenseImage(image))
+			break;
+
+		    target = image->pixels[(br.y % image->rows)*image->columns+
+			(br.x % image->columns)];
+		    if (aflag[4])
+		    {
+			target.red = XDownScale(bc.red);
+			target.green = XDownScale(bc.green);
+			target.blue = XDownScale(bc.blue);
+		    }
+
+		    color.red = XDownScale(xc.red);
+		    color.green = XDownScale(xc.green);
+		    color.blue = XDownScale(xc.blue);
+
+		    ColorFloodfillImage(image, &target, &color, br.x,
+			br.y, aflag[4] ? FillToBorderMethod : FloodfillMethod);
 		    break;
+		}
 		case 35:	/* Composite */
 		    if (!aflag[0])
 			alist[0].t_int = 2;
@@ -2892,6 +2960,8 @@ Mogrify(ref, ...)
 			if (aflag[5])
 			    newval(&temp->info.server_name,
 				alist[5].t_str);
+			if (aflag[6])
+			    newval(&temp->info.border_color, alist[6].t_str);
 		    }
 		    n = MaxTextExtent;
 		    if (aflag[1])
@@ -2947,7 +3017,60 @@ Mogrify(ref, ...)
 		    (void) MapImages(image, alist[0].t_img, alist[1].t_int);
 		    break;
 		case 42:	/* MatteFloodfill */
+		{
+		    unsigned int matte;
+		    RunlengthPacket target;
+
+		    if (first)
+		    {
+			if (aflag[0])
+			{
+			    int f = XParseGeometry(alist[0].t_str, &br.x,
+					&br.y, &br.width, &br.height);
+			}
+
+			if (aflag[1])
+			    br.x = alist[1].t_int;
+			if (aflag[2])
+			    br.y = alist[2].t_int;
+			if (aflag[4])
+			    XQueryColorDatabase(alist[4].t_str, &bc);
+		    }
+
+		    if (!UncondenseImage(image))
+			break;
+
+		    matte = Transparent;
+		    if (aflag[3])
+			matte = alist[3].t_int;
+
+		    if (!image->matte)
+		    {
+			register int i;
+
+			/*
+			  Initialize matte image.
+			*/
+			image->class = DirectClass;
+			image->matte = True;
+			for (i=0; i < image->packets; i++)
+			    image->pixels[i].index=Opaque;
+		    }
+
+		    target = image->pixels[(br.y % image->rows)*image->columns+
+			(br.x % image->columns)];
+
+		    if (aflag[4])
+		    {
+			target.red = XDownScale(bc.red);
+			target.green = XDownScale(bc.green);
+			target.blue = XDownScale(bc.blue);
+		    }
+
+		    MatteFloodfillImage(image, &target, matte, br.x,
+			br.y, aflag[4] ? FillToBorderMethod : FloodfillMethod);
 		    break;
+		}
 		case 43:	/* Modulate */
 		    if (first)
 		    {

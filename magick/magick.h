@@ -113,6 +113,7 @@ extern "C" {
 #define DefaultDisplayGamma  "2.2"
 #define DefaultFont  "-adobe-helvetica-medium-r-*-*-14-*-*-*-*-*-iso8859-*"
 #define DefaultImageQuality  "75"
+#define DefaultImportName  "magick.miff"
 #define DefaultInterlace  NoInterlace
 #define DefaultPointSize  "12"
 #define DefaultPreviewGeometry  "204x204+10+10"

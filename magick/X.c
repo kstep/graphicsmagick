@@ -1913,9 +1913,9 @@ Export void XDisplayImageInfo(Display *display,
         (void) strcat(text,"  interlace: Partition\n");
   if (image->page != (char *) NULL)
     (void) sprintf(text,"%s  page geometry: %s\n",text,image->page);
-  if (image->dispose)
+  if (image->dispose != 0)
     (void) sprintf(text,"%s  dispose method: %d\n",text,image->dispose);
-  if (image->delay)
+  if (image->delay != 0)
     (void) sprintf(text,"%s  delay: %d\n",text,image->delay);
   if (image->iterations != 1)
     (void) sprintf(text,"%s  iterations: %d\n",text,image->iterations);
@@ -2311,6 +2311,7 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel_info,
         draw_info->rectangle_info.width,draw_info->rectangle_info.height);
       break;
     }
+    case CirclePrimitive:
     case EllipsePrimitive:
     {
       XDrawArc(display,draw_pixmap,draw_context,
@@ -2319,6 +2320,7 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel_info,
         0,360*64);
       break;
     }
+    case FillCirclePrimitive:
     case FillEllipsePrimitive:
     {
       XFillArc(display,draw_pixmap,draw_context,

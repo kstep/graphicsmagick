@@ -408,7 +408,6 @@ the color reduction algorithm.
 the type of colorspace: \fBGRAY\fP, \fBOHTA\fP, \fBRGB\fP,
 \fBTransparent\fP, \fBXYZ\fP, \fBYCbCr\fP, \fBYIQ\fP, \fBYPbPr\fP, \fBYUV\fP,
 or \fBCMYK\fP.
-
 Color reduction, by default, takes place in the RGB color space.
 Empirical evidence suggests that distances in color spaces such as YUV
 or YIQ correspond to perceptual color differences more closely
@@ -427,12 +426,27 @@ annotate an image with a comment.
 
 By default, each image is commented with its file name.  Use this
 option to assign a specific comment to the image.  Optionally you can
-include the image filename, type, width, height, or scene number by
-embedding special format characters.  Embed \fB%f\fP for filename,
-\fB%d\fP for directory, \fB%e\fP for filename extention, \fB%t\fP for
-top of filename, \fB%m\fP for magick, \fB%w\fP for width, \fB%h\fP for
-height, \fB%p\fP for page number, \fB%s\fP for scene number,
-\fB%b\fP for file size, or \fB\\n\fP for newline.  For example,
+include the image filename, type, width, height, or other image
+attributes by embedding special format characters:
+
+.nf
+    %b   file size
+    %d   directory
+    %e   filename extention
+    %f   filename
+    %h   height
+    %m   magick
+    %p   page number
+    %s   scene number
+    %t   top of filename
+    %w   width
+    %x   x resolution
+    %y   y resolution
+    \\n   newline
+    \\r   carriage return
+.fi
+
+For example,
 
 .nf
      -comment "%m:%f %wx%h"
@@ -536,6 +550,8 @@ The primitives include
      fillRectangle
      circle
      fillCircle
+     ellipse
+     fillEllipse
      polygon
      fillPolygon
      color
@@ -548,9 +564,11 @@ The primitives include
 \fBimage\fP each require a single coordinate.  \fBLine\fP requires a
 start and end coordinate, while \fBrectangle\fP expects an upper left
 and lower right coordinate.  \fBCircle\fP has a center coordinate and a
-coordinate on the outer edge.  Finally, \fBpolygon\fP requires three or
-more coordinates defining its boundaries.  Coordinates are integers
-separated by an optional comma.  For example, to define a circle
+coordinate on the outer edge.  Use \fBEllipse\fP to draw a partial ellipse
+centered at the given point, specified width and height, and start and
+end of arc in degrees (e.g. 100,100 100,150 0,360).  Finally, \fBpolygon\fP
+requires three or more coordinates defining its boundaries.  Coordinates are
+integers separated by an optional comma.  For example, to define a circle
 centered at 100,100 that extends to 150,150 use:
 
 .nf
@@ -564,6 +582,7 @@ pixel coordinate with a method:
      point
      replace
      floodfill
+     filltoborder
      reset
 .fi
 
@@ -571,7 +590,8 @@ Consider the target pixel as that specified by your coordinate.  The
 \fBpoint\fP method recolors the target pixel.  The \fBreplace\fP method
 recolors any pixel that matches the color of the target pixel.
 \fBFloodfill\fP recolors any pixel that matches the color of the target
-pixel and is a neighbor.  Finally, \fBreset\fP recolors all pixels.
+pixel and is a neighbor.  Whereas \fBfilltoborder\fP recolors any neighbor
+pixel that is not the border color. Finally, \fBreset\fP recolors all pixels.
 
 Use \fBmatte\fP to the change the pixel matte value to transparent.
 Follow the pixel coordinate with a method (see the \fBcolor\fP
@@ -579,17 +599,16 @@ primitive for a description of methods).  The \fBpoint\fP method
 changes the matte value of the target pixel.  The \fBreplace\fP method
 changes the matte value of any pixel that matches the color of the
 target pixel.  \fBFloodfill\fP changes the matte value of any pixel
-that matches the color of the target pixel and is a neighbor. Finally
-\fBreset\fP changes the matte value of all pixels.
+that matches the color of the target pixel and is a neighbor. Whereas
+\fBfilltoborder\fP changes the matte value any neighbor pixel that is not the
+border color.  Finally \fBreset\fP changes the matte value of all pixels.
 
 Use \fBtext\fP to annotate an image with text.  Follow the text
 coordinates with a string.  If the string has embedded spaces, enclose
 it in double quotes.  Optionally you can include the image filename,
-type, width, height, or scene number by embedding special format
-characters.  Embed \fB%f\fP for filename, \fB%d\fP for directory,
-\fB%e\fP for filename extention, \fB%t\fP for top of filename, \fB%m\fP
-for magick, \fB%w\fP for width, \fB%h\fP for height, \fB%p\fP for page number, 
-\fB%s\fP for scene number, \fB%b\fP for file size, or \fB\\n\fP for newline.
+type, width, height, or other image attribute by embedding special format
+characters.  See \fB-comment\fP for details.
+
 For example,
 
 .nf
@@ -741,12 +760,10 @@ assign a label to an image.
 
 Use this option to assign a specific label to the image.  Optionally
 you can include the image filename, type, width, height, or scene
-number in the label by embedding special format characters.   Embed
-\fB%f\fP for filename, \fB%d\fP for directory, \fB%e\fP for filename
-extention, \fB%t\fP for top of filename, \fB%m\fP for magick, \fB%w\fP
-for width, \fB%h\fP for height, \fB%p\fP for page number, 
-\fB%s\fP for scene number, \fB%b\fP for file size in kilobytes, or 
-\fB\\n\fP for newline.  For example,
+number in the label by embedding special format characters.   
+See \fB-comment\fP for details.
+
+For example,
 
 .nf
      -label "%m:%f %wx%h"
@@ -845,44 +862,44 @@ Use this option to specify the dimensions of the Postscript page in
 dots per inch or a TEXT page in pixels.  The choices for a Postscript page are:
 
 .nf
-    11x17         792  1224 
-    Ledger       1224   792    
-    Legal         612  1008
-    Letter        612   792
-    LetterSmall   612   792
-    ArchE        2592  3456
-    ArchD        1728  2592
-    ArchC        1296  1728
-    ArchB         864  1296
-    ArchA         648   864
-    A0           2380  3368
-    A1           1684  2380
-    A2           1190  1684
-    A3            842  1190
-    A4            595   842
-    A4Small       595   842
-    A5            421   595
-    A6            297   421
-    A7            210   297
-    A8            148   210
-    A9            105   148
-    A10            74   105
-    B0           2836  4008
-    B1           2004  2836
-    B2           1418  2004
-    B3           1002  1418
-    B4            709  1002
-    B5            501   709
-    C0           2600  3677
-    C1           1837  2600
-    C2           1298  1837
-    C3            918  1298
-    C4            649   918
-    C5            459   649
-    C6            323   459
-    Flsa          612   936 
-    Flse          612   936
-    HalfLetter    396   612
+       11x17         792  1224 
+       Ledger       1224   792    
+       Legal         612  1008
+       Letter        612   792
+       LetterSmall   612   792
+       ArchE        2592  3456
+       ArchD        1728  2592
+       ArchC        1296  1728
+       ArchB         864  1296
+       ArchA         648   864
+       A0           2380  3368
+       A1           1684  2380
+       A2           1190  1684
+       A3            842  1190
+       A4            595   842
+       A4Small       595   842
+       A5            421   595
+       A6            297   421
+       A7            210   297
+       A8            148   210
+       A9            105   148
+       A10            74   105
+       B0           2836  4008
+       B1           2004  2836
+       B2           1418  2004
+       B3           1002  1418
+       B4            709  1002
+       B5            501   709
+       C0           2600  3677
+       C1           1837  2600
+       C2           1298  1837
+       C3            918  1298
+       C4            649   918
+       C5            459   649
+       C6            323   459
+       Flsa          612   936 
+       Flse          612   936
+       HalfLetter    396   612
 .fi
 
 For convenience you can specify the page size by media (e.g.

@@ -1535,9 +1535,9 @@ static unsigned int XColorEditImage(Display *display,
   static char
     *ColorEditMenu[]=
     {
-      "Pixel Color",
       "Method",
-      "Delta",
+      "Pixel Color",
+      "Border Color",
       "Undo",
       "Help",
       "Dismiss",
@@ -1547,9 +1547,9 @@ static unsigned int XColorEditImage(Display *display,
   static ModeType
     ColorEditCommands[]=
     {
-      ColorEditColorCommand,
       ColorEditMethodCommand,
-      ColorEditDeltaCommand,
+      ColorEditColorCommand,
+      ColorEditBorderCommand,
       ColorEditUndoCommand,
       ColorEditHelpCommand,
       ColorEditDismissCommand
@@ -1559,8 +1559,10 @@ static unsigned int XColorEditImage(Display *display,
     method = PointMethod;
 
   static unsigned int
-    delta = 0,
     pen_id = 0;
+
+  static XColor
+    border_color = { 0, 0, 0, 0, 0 };
 
   char
     command[MaxTextExtent],
@@ -1645,6 +1647,28 @@ static unsigned int XColorEditImage(Display *display,
           }
         switch (ColorEditCommands[id])
         {
+          case ColorEditMethodCommand:
+          {
+            static char
+              *MethodMenu[]=
+              {
+                "point",
+                "replace",
+                "floodfill",
+                "filltoborder",
+                "reset",
+                (char *) NULL,
+              };
+
+            /*
+              Select a method from the pop-up menu.
+            */
+            entry=
+              XMenuWidget(display,windows,ColorEditMenu[id],MethodMenu,command);
+            if (entry >= 0)
+              method=(PaintMethod) entry;
+            break;
+          }
           case ColorEditColorCommand:
           {
             char
@@ -1691,62 +1715,46 @@ static unsigned int XColorEditImage(Display *display,
             pen_id=pen_number;
             break;
           }
-          case ColorEditMethodCommand:
+          case ColorEditBorderCommand:
           {
-            static char
-              *MethodMenu[]=
-              {
-                "point",
-                "replace",
-                "floodfill",
-                "reset",
-                (char *) NULL,
-              };
+            char
+              *ColorMenu[MaxNumberPens];
+
+            int
+              pen_number;
 
             /*
-              Select a method from the pop-up menu.
+              Initialize menu selections.
             */
-            entry=
-              XMenuWidget(display,windows,ColorEditMenu[id],MethodMenu,command);
-            if (entry >= 0)
-              method=(PaintMethod) entry;
-            break;
-          }
-          case ColorEditDeltaCommand:
-          {
-            static char
-              *DeltaMenu[]=
-              {
-                "0",
-                "1",
-                "2",
-                "4",
-                "8",
-                "16",
-                "32",
-                (char *) NULL,
-                (char *) NULL,
-              },
-              value[MaxTextExtent] = "3";
-
+            for (i=0; i < (int) (MaxNumberPens-2); i++)
+              ColorMenu[i]=resource_info->pen_colors[i];
+            ColorMenu[MaxNumberPens-2]="Browser...";
+            ColorMenu[MaxNumberPens-1]=(char *) NULL;
             /*
-              Select a delta value from the pop-up menu.
+              Select a pen color from the pop-up menu.
             */
-            DeltaMenu[7]="Dialog...";
-            entry=XMenuWidget(display,windows,ColorEditMenu[id],DeltaMenu,
+            pen_number=XMenuWidget(display,windows,ColorEditMenu[id],ColorMenu,
               command);
-            if (entry < 0)
+            if (pen_number < 0)
               break;
-            if (entry != 7)
+            if (pen_number == (MaxNumberPens-2))
               {
-                delta=atoi(DeltaMenu[entry]);
-                break;
+                static char
+                  color_name[MaxTextExtent] = "gray";
+
+                /*
+                  Select a pen color from a dialog.
+                */
+                resource_info->pen_colors[pen_number]=color_name;
+                XColorBrowserWidget(display,windows,"Select",color_name);
+                if (*color_name == '\0')
+                  break;
               }
-            (void) XDialogWidget(display,windows,"Ok","Enter delta value:",
-              value);
-            if (*value == '\0')
-              break;
-            delta=atoi(value);
+            /*
+              Set border color.
+            */
+            (void) XParseColor(display,windows->map_info->colormap,
+              resource_info->pen_colors[pen_number],&border_color);
             break;
           }
           case ColorEditUndoCommand:
@@ -1960,7 +1968,7 @@ static unsigned int XColorEditImage(Display *display,
                 p=(*image)->pixels;
                 for (i=0; i < (*image)->packets; i++)
                 {
-                  if (ColorMatch(*p,target,delta))
+                  if (ColorMatch(*p,target,0))
                     {
                       p->red=XDownScale(color.red);
                       p->green=XDownScale(color.green);
@@ -1972,7 +1980,7 @@ static unsigned int XColorEditImage(Display *display,
             else
               {
                 for (i=0; i < (*image)->colors; i++)
-                  if (ColorMatch((*image)->colormap[i],target,delta))
+                  if (ColorMatch((*image)->colormap[i],target,0))
                     {
                       (*image)->colormap[i].red=XDownScale(color.red);
                       (*image)->colormap[i].green=XDownScale(color.green);
@@ -1983,9 +1991,13 @@ static unsigned int XColorEditImage(Display *display,
             break;
           }
           case FloodfillMethod:
+          case FillToBorderMethod:
           {
             ColorPacket
               pen_color;
+
+            RunlengthPacket
+              target;
 
             /*
               Update color information using floodfill algorithm.
@@ -1993,10 +2005,18 @@ static unsigned int XColorEditImage(Display *display,
             (*image)->class=DirectClass;
             if (!UncondenseImage(*image))
               break;
+            target=(*image)->pixels[y_offset*(*image)->columns+x_offset];
             pen_color.red=XDownScale(color.red);
             pen_color.green=XDownScale(color.green);
             pen_color.blue=XDownScale(color.blue);
-            ColorFloodfillImage(*image,x_offset,y_offset,&pen_color,delta);
+            if (method == FillToBorderMethod)
+              {
+                target.red=XDownScale(border_color.red);
+                target.green=XDownScale(border_color.green);
+                target.blue=XDownScale(border_color.blue);
+              }
+            ColorFloodfillImage(*image,&target,&pen_color,x_offset,y_offset,
+              method);
             break;
           }
           case ResetMethod:
@@ -3648,6 +3668,8 @@ static unsigned int XDrawEditImage(Display *display,
                   "line",
                   "rectangle",
                   "fill rectangle",
+                  "circle",
+                  "fill circle",
                   "ellipse",
                   "fill ellipse",
                   "polygon",
@@ -4033,6 +4055,8 @@ static unsigned int XDrawEditImage(Display *display,
               XWithdrawWindow(display,windows->info.id,windows->info.screen);
           break;
         }
+        case CirclePrimitive:
+        case FillCirclePrimitive:
         case EllipsePrimitive:
         case FillEllipsePrimitive:
         {
@@ -4107,6 +4131,8 @@ static unsigned int XDrawEditImage(Display *display,
               windows->image.highlight_context,&rectangle_info);
           break;
         }
+        case CirclePrimitive:
+        case FillCirclePrimitive:
         case EllipsePrimitive:
         case FillEllipsePrimitive:
         {
@@ -4274,7 +4300,7 @@ static unsigned int XDrawEditImage(Display *display,
         continue;
       else
         if ((primitive == RectanglePrimitive) ||
-            (primitive == EllipsePrimitive))
+            (primitive == CirclePrimitive) || (primitive == EllipsePrimitive))
           {
             rectangle_info.width--;
             rectangle_info.height--;
@@ -7214,7 +7240,7 @@ static unsigned int XMatteEditImage(Display *display,
     *MatteEditMenu[]=
     {
       "Method",
-      "Delta",
+      "Border Color",
       "Matte Value",
       "Undo",
       "Help",
@@ -7226,7 +7252,7 @@ static unsigned int XMatteEditImage(Display *display,
     MatteEditCommands[]=
     {
       MatteEditMethod,
-      MatteEditDeltaCommand,
+      MatteEditBorderCommand,
       MatteEditValueCommand,
       MatteEditUndoCommand,
       MatteEditHelpCommand,
@@ -7236,8 +7262,8 @@ static unsigned int XMatteEditImage(Display *display,
   static PaintMethod
     method = PointMethod;
 
-  static unsigned int
-    delta = 0;
+  static XColor
+    border_color = { 0, 0, 0, 0, 0 };
 
   char
     command[MaxTextExtent],
@@ -7327,6 +7353,7 @@ static unsigned int XMatteEditImage(Display *display,
                 "point",
                 "replace",
                 "floodfill",
+                "filltoborder",
                 "reset",
                 (char *) NULL,
               };
@@ -7340,41 +7367,46 @@ static unsigned int XMatteEditImage(Display *display,
               method=(PaintMethod) entry;
             break;
           }
-          case MatteEditDeltaCommand:
+          case MatteEditBorderCommand:
           {
-            static char
-              *DeltaMenu[]=
-              {
-                "0",
-                "1",
-                "2",
-                "4",
-                "8",
-                "16",
-                "32",
-                (char *) NULL,
-                (char *) NULL,
-              },
-              value[MaxTextExtent] = "3";
+            char
+              *ColorMenu[MaxNumberPens];
+
+            int
+              pen_number;
 
             /*
-              Select a delta value from the pop-up menu.
+              Initialize menu selections.
             */
-            DeltaMenu[7]="Dialog...";
-            entry=XMenuWidget(display,windows,MatteEditMenu[id],DeltaMenu,
+            for (i=0; i < (int) (MaxNumberPens-2); i++)
+              ColorMenu[i]=resource_info->pen_colors[i];
+            ColorMenu[MaxNumberPens-2]="Browser...";
+            ColorMenu[MaxNumberPens-1]=(char *) NULL;
+            /*
+              Select a pen color from the pop-up menu.
+            */
+            pen_number=XMenuWidget(display,windows,MatteEditMenu[id],ColorMenu,
               command);
-            if (entry < 0)
+            if (pen_number < 0)
               break;
-            if (entry != 7)
+            if (pen_number == (MaxNumberPens-2))
               {
-                delta=atoi(DeltaMenu[entry]);
-                break;
+                static char
+                  color_name[MaxTextExtent] = "gray";
+
+                /*
+                  Select a pen color from a dialog.
+                */
+                resource_info->pen_colors[pen_number]=color_name;
+                XColorBrowserWidget(display,windows,"Select",color_name);
+                if (*color_name == '\0')
+                  break;
               }
-            (void) XDialogWidget(display,windows,"Ok","Enter delta value:",
-              value);
-            if (*value == '\0')
-              break;
-            delta=atoi(value);
+            /*
+              Set border color.
+            */
+            (void) XParseColor(display,windows->map_info->colormap,
+              resource_info->pen_colors[pen_number],&border_color);
             break;
           }
           case MatteEditValueCommand:
@@ -7607,21 +7639,32 @@ static unsigned int XMatteEditImage(Display *display,
             p=(*image)->pixels;
             for (i=0; i < (*image)->packets; i++)
             {
-              if (ColorMatch(*p,target,delta))
+              if (ColorMatch(*p,target,0))
                 p->index=atoi(matte) & 0xff;
               p++;
             }
             break;
           }
           case FloodfillMethod:
+          case FillToBorderMethod:
           {
+            RunlengthPacket
+              target;
+
             /*
               Update matte information using floodfill algorithm.
             */
             if (!UncondenseImage(*image))
               break;
-            MatteFloodfillImage(*image,x_offset,y_offset,atoi(matte) & 0xff,
-              delta);
+            target=(*image)->pixels[y_offset*(*image)->columns+x_offset];
+            if (method == FillToBorderMethod)
+              {
+                target.red=XDownScale(border_color.red);
+                target.green=XDownScale(border_color.green);
+                target.blue=XDownScale(border_color.blue);
+              }
+            MatteFloodfillImage(*image,&target,atoi(matte) & 0xff,x_offset,
+              y_offset,method);
             break;
           }
           case ResetMethod:
@@ -11076,10 +11119,10 @@ static Image *XVisualDirectoryImage(Display *display,
     XClientName,"foreground",DefaultTileForeground);
   vid_info.frame=XGetResourceClass(resource_database,XClientName,"frame",
     (char *) NULL);
-  vid_resources.image_geometry=XGetResourceInstance(resource_database,
-    XClientName,"imageGeometry",DefaultTileGeometry);
   vid_resources.matte_color=XGetResourceInstance(resource_database,XClientName,
     "mattecolor",DefaultTileMatte);
+  vid_resources.image_geometry=XGetResourceInstance(resource_database,
+    XClientName,"imageGeometry",DefaultTileGeometry);
   resource_value=XGetResourceClass(resource_database,XClientName,"pointsize",
     DefaultPointSize);
   vid_info.pointsize=atoi(resource_value);

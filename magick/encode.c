@@ -3429,11 +3429,12 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_info.image_height=image->rows;
   jpeg_info.input_components=3;
   jpeg_info.in_color_space=JCS_RGB;
-  if (IsGrayImage(image))
-    {
-      jpeg_info.input_components=1;
-      jpeg_info.in_color_space=JCS_GRAYSCALE;
-    }
+  if (Latin1Compare(image_info->magick,"JPEG24") != 0)
+    if (IsGrayImage(image))
+      {
+        jpeg_info.input_components=1;
+        jpeg_info.in_color_space=JCS_GRAYSCALE;
+      }
   if (image_info->colorspace == CMYKColorspace)
     {
       jpeg_info.input_components=4;
@@ -4122,8 +4123,21 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       (void) fprintf(image->file,"signature=%s\n",image->signature);
     if (image->page != (char *) NULL)
       (void) fprintf(image->file,"page=%s\n",image->page);
-    if (image->scene != 0)
-      (void) fprintf(image->file,"scene=%u\n",image->scene);
+    if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
+      (void) fprintf(image->file,
+        "scene=%u  iterations=%u  delay=%u  dispose=%u\n",
+        image->scene,image->iterations,image->delay,image->dispose);
+    else
+      {
+        if (image->scene != 0)
+          (void) fprintf(image->file,"scene=%u\n",image->scene);
+        if (image->iterations != 1)
+          (void) fprintf(image->file,"iterations=%u\n",image->iterations);
+        if (image->delay != 0)
+          (void) fprintf(image->file,"delay=%u\n",image->delay);
+        if (image->dispose != 0)
+          (void) fprintf(image->file,"dispose=%u\n",image->dispose);
+      }
     if (image->rendering_intent != UndefinedIntent)
       if (image->rendering_intent == SaturationIntent)
         (void) fprintf(image->file,"rendering-intent=saturation\n");
@@ -4155,16 +4169,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     if (image->color_profile.length > 0)
       (void) fprintf(image->file,"color-profile=%u\n",
         image->color_profile.length);
-    if ((image->iterations != 0) && (image->delay != 0))
-      (void) fprintf(image->file,"iterations=%u  delay=%u\n",image->iterations,
-        image->delay);
-    else
-      {
-        if (image->iterations != 0)
-          (void) fprintf(image->file,"iterations=%u\n",image->iterations);
-        if (image->delay != 0)
-          (void) fprintf(image->file,"delay=%u\n",image->delay);
-      }
     if (image->montage != (char *) NULL)
       (void) fprintf(image->file,"montage=%s\n",image->montage);
     if (image->label != (char *) NULL)
@@ -8296,12 +8300,12 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
     client_name,"background",DefaultTileBackground);
   resource_info.foreground_color=XGetResourceInstance(resource_database,
     client_name,"foreground",DefaultTileForeground);
+  resource_info.matte_color=XGetResourceInstance(resource_database,client_name,
+    "mattecolor",DefaultTileMatte);
   montage_info.frame=XGetResourceClass(resource_database,client_name,"frame",
     DefaultTileFrame);
   resource_info.image_geometry=XGetResourceInstance(resource_database,
     client_name,"imageGeometry",DefaultPreviewGeometry);
-  resource_info.matte_color=XGetResourceInstance(resource_database,client_name,
-    "mattecolor",DefaultTileMatte);
   resource_value=
     XGetResourceClass(resource_database,client_name,"shadow","True");
   montage_info.shadow=IsTrue(resource_value);
