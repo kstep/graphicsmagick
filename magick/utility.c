@@ -2506,28 +2506,17 @@ Export void TemporaryFilename(char *filename)
 
   assert(filename != (char *) NULL);
   *filename='\0';
-  for (i=0; i < 50; i++)
+  for (i=0; i < 256; i++)
   {
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
     register char
       *p;
-    
-    while( *filename =='\0' )
+
+    p=(char *) tempnam((char *) NULL,TemporaryTemplate);
+    if (p != (char *) NULL)
       {
-	p=(char *) tempnam((char *) NULL,TemporaryTemplate);
-	if (p != (char *) NULL)
-	  {
-	    /* Some delegates (e.g. ralcgm do not accept file names with multiple '.'s */
-	    if(strchr(p, '.') != (char*) NULL)
-	      {
-		FreeMemory((char *) p);
-	      }
-	    else
-	      {
-		(void) strcpy(filename,p);
-		FreeMemory((char *) p);
-	      }
-	  }
+        (void) strcpy(filename,p);
+        FreeMemory((char *) p);
       }
 #else
 #if defined(WIN32)

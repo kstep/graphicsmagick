@@ -73,19 +73,21 @@ see <a href="http://starship.skyport.net/crew/zack/pymagick/">PythonMagick</a>.
 <a name="inst">
 <dt>Installation
 </h2>
-<dd>Get the <a href="ftp://204.183.81.131/pub/ImageMagick/perl">
-PerlMagick</a> distribution and type the following:
+<dd><strong>UNIX</strong><p>
+ImageMagick must already be installed on your system.  Next, get the
+<a href="ftp://204.183.81.131/pub/ImageMagick/perl">PerlMagick</a>
+distribution and unpack it as shown below:
 <p>
 <pre>
-    gunzip -c PerlMagick-1.52.tar.gz
-    tar xvf PerlMagick-1.52.tar
+    gunzip -c PerlMagick-1.52.tar.gz | tar -xvf -
     cd PerlMagick
 </pre>
 <p>
 Next, edit <tt>Makefile.PL</tt> and change LIBS and INC to include the
 appropriate path information to the required <tt>libMagick</tt> library.
 You will also need paths to JPEG, PNG, TIFF, etc. delegates if they were
-included with your installed version of <b>ImageMagick</b>.  Now type
+included with your installed version of <b>ImageMagick</b>.  Build and
+install it like this:
 <p>
 <pre>
     perl Makefile.PL
@@ -93,11 +95,18 @@ included with your installed version of <b>ImageMagick</b>.  Now type
     make install
 </pre>
 <p>
-Use <tt>nmake</tt> instead of <tt>make</tt> on an NT system.  Download
-the <a href=ftp://204.183.81.131/pub/ImageMagick/nt>NT source</a>
-distribution and build out of the PerlMagick directory.
-Copy <tt>..\bin\IMagick.dll</tt> and <tt>..\bin\X11.dll</tt> to a directory
-in your dynamic load path such as <tt>c:\perl\site\5.00502</tt>.  Next, type
+For Unix, you typically need to be <tt>root</tt> to install the software.
+There are ways around this.  Consult the Perl manual pages for more
+information.  
+<p>
+<strong>Windows NT / Windows 95</strong><p>
+ImageMagick must already be installed on your system.  Also, the ImageMagick
+source distribution for
+<a href=ftp://204.183.81.131/pub/ImageMagick/nt>Windows NT</a> is required.
+You must also have the <tt>nmake</tt> from the Visual C++ or J++ development
+environment.  Copy <tt>\bin\IMagick.dll</tt> and <tt>\bin\X11.dll</tt> to
+a directory in your dynamic load path such as <tt>c:\perl\site\5.00502</tt>.
+Next, type
 <p>
 <pre>
     cd PerlMagick
@@ -107,22 +116,20 @@ in your dynamic load path such as <tt>c:\perl\site\5.00502</tt>.  Next, type
     nmake install
 </pre>
 <p>
-For Unix, you typically need to be <tt>root</tt> to install the software.
-There are ways around this.  Consult the Perl manual pages for more
-information.  
-<p>
+<strong>Running the Regression Tests</strong><p>
 To verify a correct installation, type
 <p>
 <pre>
     make test
 </pre>
 <p>
-There is also a two scripts available to demo many of the functions
-<b>PerlMagick</b> can perform.  Type
+Use <tt>nmake test</tt> under Windows.
+There are afew demonstration scripts available to exercise many of the
+functions <b>PerlMagick</b> can perform.  Type
 <p>
 <pre>
-    perl t.pl
-    perl demo.pl
+    cd demo
+    make
 </pre>
 <p>
 You are now ready to utilize the <b>PerlMagick</b> methods from
@@ -1512,7 +1519,7 @@ application.  The only parameter is the name of the image file to display or
 animate.
 <p>
 Finally, for convenience, method <tt>QueryColor</tt> accepts one or more
-color names or hex value and returns the respective red, green, and blue
+color names or hex value and returns their respective red, green, and blue
 color values:
 <p>
 <pre>

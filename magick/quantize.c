@@ -505,22 +505,22 @@ static unsigned int Classification(CubeInfo *color_cube,Image *image)
 {
 #define ClassifyImageText  "  Classifying image colors...  "
 
-  double
-    distance_squared;
-
   float
     mid_red,
     mid_green,
     mid_blue;
+
+  NodeInfo
+    *node_info;
+
+  register double
+    distance_squared;
 
   register float
     distance;
 
   register int
     i;
-
-  NodeInfo
-    *node_info;
 
   register RunlengthPacket
     *p;
@@ -537,6 +537,8 @@ static unsigned int Classification(CubeInfo *color_cube,Image *image)
 
   color_cube->root->quantization_error=
     3.0*(MaxRGB/2.0)*(MaxRGB/2.0)*image->columns*image->rows;
+  if (image->packets == (image->columns*image->rows))
+    CondenseImage(image);
   p=image->pixels;
   for (i=0; i < image->packets; i++)
   {

@@ -871,8 +871,8 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetPackageInfo looks up or create an info structure for the given
-%  Image__Magick reference.  If it does create a new one,the information in
+%  Method GetPackageInfo looks up or creates an info structure for the given
+%  Image__Magick reference.  If it does create a new one, the information in
 %  oldinfo is used to initialize it.
 %
 %  The format of the GetPackageInfo routine is:

@@ -363,7 +363,6 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   unsigned int
     height,
     length,
-    matte,
     number_lines,
     width;
 
@@ -520,7 +519,6 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
         break;
       }
     }
-    matte=image->matte;
     if (annotate_info->box != (char *) NULL)
       {
         /*
@@ -537,9 +535,8 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
             DestroyImage(box_image);
           }
       }
-    CompositeImage(image,OverCompositeOp,annotate_image,annotate_info->bounds.x,
-      annotate_info->bounds.y);
-    image->matte=matte;
+    CompositeImage(image,AnnotateCompositeOp,annotate_image,
+      annotate_info->bounds.x,annotate_info->bounds.y);
     DestroyImage(annotate_image);
   }
   FreeMemory(text);
@@ -1970,7 +1967,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
       /*
         Initialize image matte data.
       */
-      if (!image->matte)
+      if (!image->matte && (compose != AnnotateCompositeOp))
         {
           q=image->pixels;
           for (i=0; i < image->packets; i++)
@@ -2033,6 +2030,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
         }
       switch (compose)
       {
+        case AnnotateCompositeOp:
         case OverCompositeOp:
         default:
         {

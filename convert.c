@@ -340,8 +340,8 @@ static void Usage(const char *client_name)
   (void) printf(
     "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
   (void) printf("'-' for standard input or output.\n");
-  (void) printf("\nThe following image formats are recognized: \n\n");
   ListMagickInfo(stdout);
+  ListDelegateInfo(stdout);
   Exit(0);
 }
 

@@ -56,5 +56,6 @@ Export unsigned int
   InvokeDelegate(const ImageInfo *,Image *,const char *,const char *);
 
 Export void
-  DestroyDelegates(void);
+  DestroyDelegates(void),
+  ListDelegateInfo(FILE *);
 #endif

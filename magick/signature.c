@@ -485,7 +485,7 @@ Export void SignatureImage(Image *image)
   if (image->signature != (char *) NULL)
     FreeMemory((char *) image->signature);
   image->signature=(char *) AllocateMemory(33*sizeof(char));
-  message=(unsigned char *) AllocateMemory(sizeof(RunlengthPacket));
+  message=(unsigned char *) AllocateMemory((MaxRGB+1)*sizeof(RunlengthPacket));
   if ((image->signature == (char *) NULL) ||
       (message == (unsigned char *) NULL))
     {
@@ -501,13 +501,15 @@ Export void SignatureImage(Image *image)
   for (i=0; i < image->packets; i++)
   {
     q=message;
-    WriteQuantum(p->red,q);
-    WriteQuantum(p->green,q);
-    WriteQuantum(p->blue,q);
-    if (image->matte)
-      WriteQuantum(p->index,q);
     for (j=0; j <= ((int) p->length); j++)
-      UpdateMessageDigest(&message_digest,message,q-message);
+    {
+      WriteQuantum(p->red,q);
+      WriteQuantum(p->green,q);
+      WriteQuantum(p->blue,q);
+      if (image->matte)
+        WriteQuantum(p->index,q);
+    }
+    UpdateMessageDigest(&message_digest,message,q-message);
     p++;
   }
   ComputeMessageDigest(&message_digest);

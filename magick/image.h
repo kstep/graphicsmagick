@@ -156,7 +156,8 @@ typedef enum
   ReplaceBlueCompositeOp,
   ReplaceMatteCompositeOp,
   BlendCompositeOp,
-  DisplaceCompositeOp
+  DisplaceCompositeOp,
+  AnnotateCompositeOp
 } CompositeOperator;
 
 typedef enum

@@ -88,9 +88,12 @@ static MagickInfo
     { "XPM", ReadXPMImage, WriteXPMImage, False,
       "X Windows system pixmap file (color)" },
     { "PCD", ReadPCDImage, WritePCDImage, False, "Photo CD" },
+    { "XBM", ReadXBMImage, WriteXBMImage, False,
+      "X Windows system bitmap (black and white)" },
     { "MIFF", ReadMIFFImage, WriteMIFFImage, True, "Magick image file format" },
     { "AVS", ReadAVSImage, WriteAVSImage, True, "AVS X image file" },
-    { "BIE", ReadJBIGImage, WriteJBIGImage, False, "JBIG image" },
+    { "BIE", ReadJBIGImage, WriteJBIGImage, False,
+      "Joint Bi-level Image experts Group file interchange format" },
     { "BMP24", ReadBMPImage, WriteBMPImage, True,
       "Microsoft Windows 24-bit bitmap image file" },
     { "CMYK", ReadCMYKImage, WriteCMYKImage, False,
@@ -120,9 +123,10 @@ static MagickInfo
     { "G3", ReadFAXImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
       False, "Group 3 FAX" },
     { "GIF87", ReadGIFImage, WriteGIFImage, False,
-      "CompuServe graphics interchange format" },
-    { "GRADATION", ReadGRADATIONImage, (unsigned int (*)(const ImageInfo *,
-      Image *)) NULL, False, "Gradual passing from one shade to another" },
+      "CompuServe graphics interchange format (version 87a)" },
+    { "GRADATION", ReadGRADATIONImage,
+      (unsigned int (*)(const ImageInfo *,Image *)) NULL, False,
+      "Gradual passing from one shade to another" },
     { "GRANITE", ReadLOGOImage, WriteLOGOImage, False, "Granite texture" },
     { "GRAY", ReadGRAYImage, WriteGRAYImage, True, "Raw gray bytes" },
     { "H", ReadLOGOImage, WriteLOGOImage, False, "Internal format" },
@@ -224,8 +228,6 @@ static MagickInfo
     { "VIFF", ReadVIFFImage, WriteVIFFImage, True,
       "Khoros Visualization image file" },
     { "VST", ReadTGAImage, WriteTGAImage, True, "Truevision Targa image file" },
-    { "XBM", ReadXBMImage, WriteXBMImage, False,
-      "X Windows system bitmap (black and white)" },
     { "XV", ReadVIFFImage, WriteVIFFImage, True,
       "Khoros Visualization image file" },
     { "XWD", ReadXWDImage, WriteXWDImage, False,
@@ -305,10 +307,15 @@ Export void ListMagickInfo(FILE *file)
 
   if (file == (FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"     Format   Description\n");
-  (void) fprintf(file,"  ------------------------------------------------------"
-    "------------------------\n");
+  (void) fprintf(file,"\nHere is a list of image formats recognized by "
+    "ImageMagick.  Mode 'rw+'\nmeans ImageMagick can read, write, and "
+    "save more than one image of a\nsequence to the same file.\n\n");
+  (void) fprintf(file,"    Format  Mode  Description\n");
+  (void) fprintf(file,"--------------------------------------------------------"
+    "-----------------\n");
   for (i=0; ImageFormats[i].magick != (char *) NULL; i++)
-    (void) fprintf(file,"  %9s%c  %s\n",ImageFormats[i].magick,
-      ImageFormats[i].adjoin ? '+' : ' ',ImageFormats[i].description);
+    (void) fprintf(file,"%10s  %c%c%c   %s\n",ImageFormats[i].magick,
+      ImageFormats[i].decoder ? 'r' : '-',ImageFormats[i].encoder ? 'w' : '-',
+      ImageFormats[i].encoder && ImageFormats[i].adjoin ? '+' : '-',
+      ImageFormats[i].description);
 }

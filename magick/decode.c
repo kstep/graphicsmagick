@@ -13569,9 +13569,6 @@ Image *ReadTEXTImage(const ImageInfo *image_info)
     count,
     offset;
 
-  MonitorHandler
-    handler;
-
   RectangleInfo
     bounding_box;
 
@@ -13672,19 +13669,9 @@ Image *ReadTEXTImage(const ImageInfo *image_info)
     /*
       Page is full-- allocate next image structure.
     */
-    handler=SetMonitorHandler((MonitorHandler) NULL);
-    if (image_info->texture == (char *) NULL)
-      {
-        QuantizeInfo
-          quantize_info;
-
-        GetQuantizeInfo(&quantize_info);
-        (void) QuantizeImage(&quantize_info,image);
-      }
     image->orphan=True;
     image->next=CloneImage(image,image->columns,image->rows,False);
     image->orphan=False;
-    (void) SetMonitorHandler(handler);
     if (image->next == (Image *) NULL)
       {
         MagickWarning(ResourceLimitWarning,"Unable to annotate image",
@@ -13696,6 +13683,7 @@ Image *ReadTEXTImage(const ImageInfo *image_info)
     image->next->filesize=image->filesize;
     image->next->scene=image->scene+1;
     image->next->previous=image;
+    (void) IsPseudoClass(image);
     image=image->next;
     ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
       (unsigned int) image->filesize);
@@ -13714,21 +13702,16 @@ Image *ReadTEXTImage(const ImageInfo *image_info)
     }
     if (image_info->texture != (char *) NULL)
       {
+        MonitorHandler
+          handler;
+
         handler=SetMonitorHandler((MonitorHandler) NULL);
         TextureImage(image,image_info->texture);
         (void) SetMonitorHandler(handler);
       }
     offset=0;
   }
-  if (image_info->texture == (char *) NULL)
-    {
-      QuantizeInfo
-        quantize_info;
-
-     GetQuantizeInfo(&quantize_info);
-     (void) QuantizeImage(&quantize_info,image);
-   }
-  CondenseImage(image);
+  (void) IsPseudoClass(image);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseImage(image);
@@ -16290,6 +16273,9 @@ Image *ReadXBMImage(const ImageInfo *image_info)
   register unsigned char
     *p;
 
+  register long
+    packets;
+
   short int
     hex_digits[256];
 
@@ -16300,10 +16286,15 @@ Image *ReadXBMImage(const ImageInfo *image_info)
   unsigned int
     byte,
     bytes_per_line,
-    max_packets,
     padding,
     value,
     version;
+
+  unsigned long
+    max_packets;
+
+  unsigned short
+    index;
 
   /*
     Allocate image structure.
@@ -16367,22 +16358,22 @@ Image *ReadXBMImage(const ImageInfo *image_info)
   /*
     Initialize image structure.
   */
-  image->packets=image->columns*image->rows;
   image->colormap=(ColorPacket *)
     AllocateMemory(image->colors*sizeof(ColorPacket));
+  packets=0;
+  max_packets=Max((image->columns*image->rows+4) >> 3,1);
   image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
+    AllocateMemory(max_packets*sizeof(RunlengthPacket));
   padding=0;
   if ((image->columns % 16) && ((image->columns % 16) < 9)  && (version == 10))
     padding=1;
   bytes_per_line=(image->columns+7)/8+padding;
-  max_packets=bytes_per_line*image->rows;
-  data=(unsigned char *) AllocateMemory(max_packets*sizeof(unsigned char *));
+  data=(unsigned char *)
+    AllocateMemory(bytes_per_line*image->rows*sizeof(unsigned char *));
   if ((image->colormap == (ColorPacket *) NULL) ||
       (image->pixels == (RunlengthPacket *) NULL) ||
       (data == (unsigned char *) NULL))
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-  BlackImage(image);
   /*
     Initialize colormap.
   */
@@ -16428,7 +16419,7 @@ Image *ReadXBMImage(const ImageInfo *image_info)
   */
   p=data;
   if (version == 10)
-    for (x=0; x < max_packets; (x+=2))
+    for (x=0; x < (bytes_per_line*image->rows); (x+=2))
     {
       value=XBMInteger(image->file,hex_digits);
       *p++=value;
@@ -16436,7 +16427,7 @@ Image *ReadXBMImage(const ImageInfo *image_info)
         *p++=value >> 8;
     }
   else
-    for (x=0; x < max_packets; x++)
+    for (x=0; x < (bytes_per_line*image->rows); x++)
     {
       value=XBMInteger(image->file,hex_digits);
       *p++=value;
@@ -16447,6 +16438,7 @@ Image *ReadXBMImage(const ImageInfo *image_info)
   byte=0;
   p=data;
   q=image->pixels;
+  SetRunlengthEncoder(q);
   for (y=0; y < image->rows; y++)
   {
     bit=0;
@@ -16454,9 +16446,30 @@ Image *ReadXBMImage(const ImageInfo *image_info)
     {
       if (bit == 0)
         byte=(*p++);
-      q->index=byte & 0x01 ? 0 : 1;
-      q->length=0;
-      q++;
+      index=byte & 0x01 ? 0 : 1;
+      if ((index == q->index) && ((int) q->length < MaxRunlength))
+        q->length++;
+      else
+        {
+          if (packets != 0)
+            q++;
+          packets++;
+          if (packets == max_packets)
+            {
+              max_packets<<=1;
+              image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
+                image->pixels,max_packets*sizeof(RunlengthPacket));
+              if (image->pixels == (RunlengthPacket *) NULL)
+                {
+                  FreeMemory((char *) data);
+                  PrematureExit(ResourceLimitWarning,"Memory allocation failed",
+                    image);
+                }
+              q=image->pixels+packets-1;
+            }
+          q->index=index;
+          q->length=0;
+        }
       bit++;
       byte>>=1;
       if (bit == 8)
@@ -16466,8 +16479,8 @@ Image *ReadXBMImage(const ImageInfo *image_info)
       ProgressMonitor(LoadImageText,y,image->rows);
   }
   FreeMemory((char *) data);
+  SetRunlengthPackets(image,packets);
   SyncImage(image);
-  CondenseImage(image);
   CloseImage(image);
   return(image);
 }

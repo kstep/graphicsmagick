@@ -200,18 +200,18 @@ static unsigned int ReadDelegates(char *path,char *directory)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y D e l e g a t e s                                           %
+%   D e s t r o y D e l e g a t e I n f o                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyDelegates deallocates memory associated with the delegates
+%  Method DestroyDelegateInfo deallocates memory associated with the delegates
 %  list.
 %
-%  The format of the DestroyDelegates routine is:
+%  The format of the DestroyDelegateInfo routine is:
 %
-%      DestroyDelegates(image_info)
+%      DestroyDelegateInfo(image_info)
 %
 %  A description of each parameter follows:
 %
@@ -219,7 +219,7 @@ static unsigned int ReadDelegates(char *path,char *directory)
 %
 %
 */
-Export void DestroyDelegates(void)
+Export void DestroyDelegateInfo(void)
 {
   DelegateInfo
     *delegate,
@@ -624,6 +624,94 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,Image *image,
     FreeMemory((char *) commands[i]);
   FreeMemory((char *) commands);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  L i s t D e l e g a t e I n f o                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ListDelegateInfo lists the image formats to a file.
+%
+%  The format of the ListDelegateInfo routine is:
+%
+%      ListDelegateInfo(file)
+%
+%  A description of each parameter follows.
+%
+%    o file:  An pointer to a FILE.
+%
+%
+*/
+Export void ListDelegateInfo(FILE *file)
+{
+  char
+    delegate[MaxTextExtent],
+    tag[MaxTextExtent];
+
+  DelegateInfo
+    *delegates;
+
+  register DelegateInfo
+    *p;
+
+  register int
+    i;
+
+  if (file == (FILE *) NULL)
+    file=stdout;
+  delegates=SetDelegateInfo((DelegateInfo *) NULL);
+  if (delegates == (DelegateInfo *) NULL)
+    {
+      DelegateInfo
+        delegate_info;
+
+      /*
+        The delegate list is empty, read delegates from the configuration file.
+      */
+      *delegate_info.decode_tag='\0';
+      delegate_info.direction=0;
+      *delegate_info.encode_tag='\0';
+      delegate_info.commands=(char *) NULL;
+      (void) SetDelegateInfo(&delegate_info);
+      (void) ReadDelegates(DelegatePath,(char *) NULL);
+      (void) ReadDelegates((char *) getenv("DELEGATE_PATH"),"/");
+      (void) ReadDelegates((char *) getenv("HOME"),"/.magick/");
+      (void) ReadDelegates((char *) NULL,(char *) NULL);
+      delegates=SetDelegateInfo((DelegateInfo *) NULL);
+      if (delegates->next == (DelegateInfo *) NULL)
+        MagickWarning(DelegateWarning,"no delegates configuration file found",
+          DelegateFilename);
+    }
+  if (delegates == (DelegateInfo *) NULL)
+    return;
+  (void) fprintf(file,"\nImageMagick uses delegates to read or write image "
+    "formats it does not\ndirectly support:\n\n");
+  (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");
+  (void) fprintf(file,"--------------------------------------------------------"
+	"-----------------\n");
+  for (p=delegates->next; p != (DelegateInfo *) NULL; p=p->next)
+  {
+    i=0;
+    if (p->commands != (char *) NULL)
+      for (i=0; !isspace(p->commands[i]); i++)
+        delegate[i]=p->commands[i];
+    delegate[i]='\0';
+    for (i=0; i < 10; i++)
+      tag[i]=' ';
+    tag[i]='\0';
+    if (p->encode_tag != (char *) NULL)
+      (void) strncpy(tag,p->encode_tag,strlen(p->encode_tag));
+    (void) fprintf(file,"%10s%s=%s%s  %s\n",
+      p->decode_tag ? p->decode_tag : "",p->direction <= 0 ? "<" : " ",
+      p->direction >= 0 ? ">" : " ",tag,delegate);
+  }
 }
 
 /*
