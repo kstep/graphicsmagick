@@ -371,11 +371,6 @@ int main( int /*argc*/, char ** argv)
 //    final.display();
 
   }
-  catch( Magick::Exception error_ )
-    {
-      cout << "Caught exception: " << error_.what() << endl;
-      return 1;
-    }
   catch( exception error_ )
     {
       cout << "Caught exception: " << error_.what() << endl;

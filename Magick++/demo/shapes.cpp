@@ -101,7 +101,7 @@ int main( int /*argc*/, char ** argv)
     image.font( font );
     image.fontPointsize( 14 );
     image.annotate( "I'm climbing the wall!", "+280+120",
-                    NorthWestGravity, 90.0);
+                    NorthWestGravity, 90.0 );
     //image.display();
     //
     // Write image.
@@ -114,11 +114,6 @@ int main( int /*argc*/, char ** argv)
     // image.display( );
 
   }
-  catch( Exception error_ )
-    {
-      cout << "Caught exception: " << error_.what() << endl;
-      return 1;
-    }
   catch( exception error_ )
     {
       cout << "Caught exception: " << error_.what() << endl;

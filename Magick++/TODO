@@ -9,6 +9,8 @@ Items large and small which remain to be completed
 
 * Add support for UnsharpMaskImage().
 
+* Add suppport for viewbox (e.g. "viewbox 0 0 640 480") primitive.
+
 * Support manipulating IPTC profiles directly. Bill Radcliffe
   <BillR@corbis.com> has agreed to write a container class to support
   this.

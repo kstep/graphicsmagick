@@ -156,11 +156,6 @@ int main( int /*argc*/, char ** argv)
 //     image.display( );
 
   }
-  catch( Exception error_ )
-    {
-      cout << "Caught exception: " << error_.what() << endl;
-      return 1;
-    }
   catch( exception error_ )
     {
       cout << "Caught exception: " << error_.what() << endl;
