@@ -425,6 +425,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                 &image->chromaticity.white_point.y);
             if (*values == '{')
               (void) SetImageAttribute(image,keyword,values+1);
+            else
+              (void) SetImageAttribute(image,keyword,values);
           }
         else
           c=ReadByte(image);
