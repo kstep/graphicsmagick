@@ -11,10 +11,10 @@ extern "C" {
 /*
   Define declarations.
 */
-#define CoderModuleDirectory  "."
 #if !defined(_VISUALC_)
 #define ModuleGlobExpression "*.so"
 #else
+#define CoderModuleDirectory  "."
 #if defined(_DEBUG)
 #define ModuleGlobExpression "IM_MOD_DB_*.dll"
 #else
