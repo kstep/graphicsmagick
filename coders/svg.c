@@ -56,17 +56,10 @@
 #include "magick.h"
 #include "defines.h"
 #if defined(HasXML)
-#if !defined(_VISUALC_)
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parserInternals.h>
 #include <libxml/xml-error.h>
-#else
-#include <parser.h>
-#include <xmlmemory.h>
-#include <parserInternals.h>
-#include <xml-error.h>
-#endif
 #endif
 
 /*
@@ -1375,7 +1368,7 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
     *svg_info;
 
   xmlParserCtxt
-    wenus;
+    parser_context;
 
   xmlParserCtxtPtr
     parser;
@@ -1404,16 +1397,15 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
   if (input == NULL)
     return;
   xmlNewDtd(svg_info->document,name,external_id,system_id);
-  wenus=(*parser);
+  parser_context=(*parser);
   parser->inputTab=(xmlParserInputPtr *) xmlMalloc(5*sizeof(xmlParserInputPtr));
   if (parser->inputTab == NULL)
     {
       parser->errNo=XML_ERR_NO_MEMORY;
-      parser->input=wenus.input;
-      parser->inputNr=wenus.inputNr;
-      parser->inputMax=wenus.inputMax;
-      parser->inputTab=wenus.inputTab;
-      parser->charset=wenus.charset;
+      parser->input=parser_context.input;
+      parser->inputNr=parser_context.inputNr;
+      parser->inputMax=parser_context.inputMax;
+      parser->inputTab=parser_context.inputTab;
       return;
   }
   parser->inputNr=0;
@@ -1433,11 +1425,10 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
     xmlPopInput(parser);
   xmlFreeInputStream(parser->input);
   xmlFree(parser->inputTab);
-  parser->input=wenus.input;
-  parser->inputNr=wenus.inputNr;
-  parser->inputMax=wenus.inputMax;
-  parser->inputTab=wenus.inputTab;
-  parser->charset=wenus.charset;
+  parser->input=parser_context.input;
+  parser->inputNr=parser_context.inputNr;
+  parser->inputMax=parser_context.inputMax;
+  parser->inputTab=parser_context.inputTab;
 }
 
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
