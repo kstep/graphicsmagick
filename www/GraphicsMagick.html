@@ -2782,14 +2782,20 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="details-modulate"></a>-modulate <i>&lt;value&gt;</i>
+    <a name="details-modulate"></a>-modulate <i>brightness[,saturation[,hue]]</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>vary the brightness, saturation, and hue of an image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Specify the percent change in brightness, the color saturation, and the
-hue separated by commas. For example, to increase the color brightness
-by 20% and decrease the color saturation by 10% and leave the hue unchanged,
-use: <strong>-modulate 120,90</strong>.</font></td></tr></table>
+Specify the percent change in brightness, color saturation, and
+hue separated by commas. Default argument values are 100 percent,
+resulting in no change. For example, to increase the color brightness
+by 20% and decrease the color saturation by 10% and leave the hue
+unchanged, use: <strong>-modulate 120,90</strong>.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Hue is the percentage of absolute rotation from the current
+position. For example 50 results in a counter-clockwise rotation of 90
+degrees, 150 results in a clockwise rotation of 90 degrees, with 0 and
+200 both resulting in a rotation of 180 degrees.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

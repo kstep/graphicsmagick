@@ -1983,13 +1983,19 @@ option.
 .B "-mode \fI<value>"\fP
 \fRmode of operation
 .TP
-.B "-modulate \fI<value>"\fP
+.B "-modulate \fIbrightness[,saturation[,hue]]"\fP
 \fRvary the brightness, saturation, and hue of an image
 
-Specify the percent change in brightness, the color saturation, and the
-hue separated by commas. For example, to increase the color brightness
-by 20% and decrease the color saturation by 10% and leave the hue unchanged,
-use: \fB-modulate 120,90\fP.
+Specify the percent change in brightness, color saturation, and
+hue separated by commas. Default argument values are 100 percent,
+resulting in no change. For example, to increase the color brightness
+by 20% and decrease the color saturation by 10% and leave the hue
+unchanged, use: \fB-modulate 120,90\fP.
+
+Hue is the percentage of absolute rotation from the current
+position. For example 50 results in a counter-clockwise rotation of 90
+degrees, 150 results in a clockwise rotation of 90 degrees, with 0 and
+200 both resulting in a rotation of 180 degrees.
 .TP
 .B "-monochrome"
 \fRtransform the image to black and white
@@ -4493,7 +4499,7 @@ Options, above.
 .B "-median \fI<radius>"\fP
 \fRapply a median filter to the image
 .TP
-.B "-modulate \fI<value>"\fP
+.B "-modulate \fIbrightness[,saturation[,hue]]"\fP
 \fRvary the brightness, saturation, and hue of an image
 .TP
 .B "-monochrome"
@@ -7364,7 +7370,7 @@ Options, above.
 .B "-median \fI<radius>"\fP
 \fRapply a median filter to the image
 .TP
-.B "-modulate \fI<value>"\fP
+.B "-modulate \fIbrightness[,saturation[,hue]]"\fP
 \fRvary the brightness, saturation, and hue of an image
 .TP
 .B "-monochrome"

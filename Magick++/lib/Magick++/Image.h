@@ -367,7 +367,12 @@ namespace Magick
     // Reduce image by integral size
     void            minify ( void );
     
-    // Modulate percent hue, saturation, and brightness of an image
+    // Modulate percent hue, saturation, and brightness of an image.
+    // Modulation of saturation and brightness is as a ratio of the
+    // current value (1.0 for no change). Modulation of hue is an
+    // absolute rotation of -180 degrees to +180 degrees from the
+    // current position corresponding to an argument range of 0 to 2.0
+    // (1.0 for no change).
     void            modulate ( const double brightness_,
 			       const double saturation_,
 			       const double hue_ );

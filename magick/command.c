@@ -14322,7 +14322,7 @@ static unsigned int VersionCommand(ImageInfo *image_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  RegisterCommand() registers this appplication as the source for messages
-%  compatible with the windows even logging system. All this does is to set
+%  compatible with the windows event logging system. All this does is to set
 %  a registry value to point to either an EXE or DLL that contains a special
 %  binary resource containing all the messages that can be used.
 %
