@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = 1.4
 
 INCLUDES = -I$(srcdir)/../lib -I../.. -I$(top_srcdir)
 
-noinst_PROGRAMS = button demo detrans flip shapes
+check_PROGRAMS = button demo detrans flip shapes
 
 LDADD = ../lib/libMagick++.la ../../magick/libMagick.la
 
