@@ -1107,50 +1107,11 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   if (status)
     ThrowBinaryException(DelegateWarning,"Unable to open freetype library",
       draw_info->font);
-  {
-    register char
-      *p,
-      *q;
-
-    /*
-      Search for Truetype font filename.
-    */
-    status=True;
-    p=getenv("TT_FONT_PATH");
-#if defined(TT_FONT_PATH)
-    if (p == (char *) NULL)
-      p=TT_FONT_PATH;
-#endif
-    if (p != (char *) NULL)
-      for ( ; ; )
-      {
-        /*
-          Environment variable TT_FONT_PATH.
-        */
-        q=strchr(p,DirectoryListSeparator);
-        if (q == (char *) NULL)
-          (void) strncpy(filename,p,MaxTextExtent-1);
-        else
-          {
-            (void) strncpy(filename,p,q-p);
-            filename[q-p]='\0';
-          }
-        i=(long) strlen(filename);
-        if ((i > 0) && (filename[i-1] != *DirectorySeparator))
-          (void) strcat(filename,DirectorySeparator);
-        (void) strncat(filename,draw_info->font,MaxTextExtent-i-1);
-        status=FT_New_Face(library,filename,0,&face);
-        if (!status || (q == (char *) NULL) || (*q == '\0'))
-          break;
-        p=q+1;
-      }
-    if (status)
-      status=FT_New_Face(library,draw_info->font,0,&face);
-    if (status)
-      ThrowBinaryException(DelegateWarning,"Unable to read font",
-        draw_info->font);
-    (void) strncpy(font,draw_info->font,MaxTextExtent-1);
-  }
+  status=FT_New_Face(library,draw_info->font,0,&face);
+  if (status)
+    ThrowBinaryException(DelegateWarning,"Unable to read font",
+      draw_info->font);
+  (void) strncpy(font,draw_info->font,MaxTextExtent-1);
   if (draw_info->encoding != (char *) NULL)
     {
       if (LocaleCompare(draw_info->encoding,"AdobeCustom") == 0)
