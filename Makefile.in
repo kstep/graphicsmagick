@@ -860,7 +860,7 @@ install-data-html:
 uninstall-data-html:
 	rm -f $(DESTDIR)$(pkgdocdir)/index.html
 	for dir in $(DOCDIRS) ; do \
-	  rm -rf $(DESTDIR)$(pkgdocdir)$$dir ; \
+	  rm -rf $(DESTDIR)$(pkgdocdir)/$$dir ; \
 	done
 
 # Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.
