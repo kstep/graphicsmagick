@@ -200,6 +200,9 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   unsigned int
     status;
 
+	unsigned long
+    length;
+
   /*
     Allocate histogram image.
   */
@@ -223,25 +226,22 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Allocate histogram count arrays.
   */
-  red=(long *) AcquireMemory (histogram_image->columns*sizeof(long));
-  green=(long *) AcquireMemory (histogram_image->columns*sizeof(long));
-  blue=(long *) AcquireMemory (histogram_image->columns*sizeof(long));
+  length=Max(MaxRGB+1,histogram_image->columns);
+  red=(long *) AcquireMemory(length*sizeof(long));
+  green=(long *) AcquireMemory(length*sizeof(long));
+  blue=(long *) AcquireMemory(length*sizeof(long));
   if ((red == (long *) NULL) || (green == (long *) NULL) ||
       (blue == (long *) NULL))
     {
       DestroyImage(histogram_image);
-      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
-        image)
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",image)
     }
+  memset(red,0,length*sizeof(long));
+  memset(green,0,length*sizeof(long));
+  memset(blue,0,length*sizeof(long));
   /*
     Initialize histogram count arrays.
   */
-  for (x=0; x < (long) histogram_image->columns; x++)
-  {
-    red[x]=0;
-    green[x]=0;
-    blue[x]=0;
-  }
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -249,9 +249,9 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      red[(int) Downscale(p->red)]++;
-      green[(int) Downscale(p->green)]++;
-      blue[(int) Downscale(p->blue)]++;
+      red[(long) Downscale(p->red)]++;
+      green[(long) Downscale(p->green)]++;
+      blue[(long) Downscale(p->blue)]++;
       p++;
     }
   }
