@@ -119,7 +119,7 @@ Export void DestroyImageAttributes(Image *image)
 %
 %  The format of the GetImageAttribute method is:
 %
-%      ImageAttribute *GetImageAttribute(Image *image,const char *key)
+%      ImageAttribute *GetImageAttribute(const Image *image,const char *key)
 %
 %  A description of each parameter follows:
 %
@@ -133,7 +133,7 @@ Export void DestroyImageAttributes(Image *image)
 %
 %
 */
-Export ImageAttribute *GetImageAttribute(Image *image,const char *key)
+Export ImageAttribute *GetImageAttribute(const Image *image,const char *key)
 {
   register ImageAttribute
     *p;
