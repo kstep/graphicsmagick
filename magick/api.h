@@ -88,7 +88,7 @@ extern "C" {
 #endif
 
 #define MaxTextExtent  2053
-#define MagickSignature  0xabacadab
+#define MagickSignature  0xabacadabUL
 
 #if !defined(vms) && !defined(macintosh)
 # include "magick/classify.h"
