@@ -2534,21 +2534,6 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->group=0L;
   image_info->ping=False;
   image_info->fifo=(void (*)(const Image *)) NULL;
-  if (GetCacheMemory(0) == (PixelCacheThreshold*1024*1024))
-    {
-      /*
-        Set cache memory threshold.
-      */
-#if defined(_SC_PAGESIZE) && defined(_SC_PHYS_PAGES)
-      off_t
-        threshold;
-
-      threshold=sysconf(_SC_PAGESIZE)*sysconf(_SC_PHYS_PAGES);
-      SetCacheThreshold(threshold/1024/1024);
-#endif
-      if (getenv("MAGIGK_CACHE_THRESHOLD") != (char *) NULL)
-        SetCacheThreshold(atoi(getenv("MAGIGK_CACHE_THRESHOLD")));
-    }
 }
 
 /*

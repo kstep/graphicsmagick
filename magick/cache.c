@@ -867,7 +867,7 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType class_type,
     *allocation;
 
   assert(cache != (Cache) NULL);
-  if (GetCacheMemory(0) == 0)
+  if (cache_threshold == 0)
     {
       off_t
         threshold;
