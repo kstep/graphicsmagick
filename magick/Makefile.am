@@ -75,7 +75,7 @@ include_HEADERS = PreRvIcccm.h api.h attributes.h blob.h cache.h cache_view.h \
   xwindows.h
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h defines.h display.h mac.h magic.h \
+noinst_HEADERS = animate.h defines.h display.h lock.h mac.h magic.h \
   modules.h nt.h vms.h
 
 # Additional files to distribute
