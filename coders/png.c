@@ -15,6 +15,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
+%                           Glenn Randers-Pehrson                             %
 %                               November 1997                                 %
 %                                                                             %
 %                                                                             %
