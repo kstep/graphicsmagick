@@ -202,7 +202,7 @@ register PixelPacket *q;
 
 
 /*This function reads one block of unsigned shortS*/
-void ReadBlobWordLSB(Image *I,size_t len,unsigned short *data)
+static void ReadBlobWordLSB(Image *I,size_t len,unsigned short *data)
 {
 while(len>=2)
    {
@@ -239,7 +239,7 @@ static double ReadBlobLSBdouble(Image *image)
 }
 
 
-void ReadBlobDoublesLSB(Image *I,size_t len,double *data)
+static void ReadBlobDoublesLSB(Image *I,size_t len,double *data)
 {
 while(len>=8)
    {

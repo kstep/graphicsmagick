@@ -1227,7 +1227,7 @@ MagickExport void XClientMessage(Display *display,const Window window,
 %
 %
 */
-MagickExport Window XClientWindow(Display *display,Window target_window)
+static Window XClientWindow(Display *display,Window target_window)
 {
   Atom
     state,
@@ -3406,7 +3406,7 @@ MagickExport char *XGetScreenDensity(Display *display)
 %
 %
 */
-MagickExport Window XGetSubwindow(Display *display,Window window,int x,int y)
+static Window XGetSubwindow(Display *display,Window window,int x,int y)
 {
   Window
     source_window,
@@ -3626,7 +3626,7 @@ MagickExport unsigned int XGetWindowColor(Display *display,char *name)
 %
 %
 */
-MagickExport Image *XGetWindowImage(Display *display,const Window window,
+static Image *XGetWindowImage(Display *display,const Window window,
   const unsigned int borders,const unsigned int level)
 {
   typedef struct _ColormapInfo
