@@ -269,7 +269,8 @@ MagickExport const void *GetMagickRegistry(const long id,RegistryType *type,
 %
 %    o blob: The address of a Binary Large OBject.
 %
-%    o length: The blob length in number of bytes.
+%    o length: For a registry type of ImageRegistryType use sizeof(Image)
+%      otherise the blob length in number of bytes.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -292,6 +293,12 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
         *image;
 
       image=(Image *) blob;
+      if (length != sizeof(Image))
+        {
+          ThrowException(exception,RegistryWarning,"Unable to set registry",
+            "Structure size mismatch");
+          return(-1);
+        }
       if (image->signature != MagickSignature)
         {
           ThrowException(exception,RegistryWarning,"Unable to set registry",
