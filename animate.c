@@ -964,16 +964,13 @@ int main(int argc,char **argv)
         Animate image to X server.
       */
       loaded_image=XAnimateImages(display,&resource_info,argv,argc,image);
-      DestroyImages(image);
       while (loaded_image != (Image *) NULL)
       {
         image=loaded_image;
         MogrifyImage(image_info,argc-1,argv,&image);
         loaded_image=XAnimateImages(display,&resource_info,argv,argc,image);
-        DestroyImages(image);
       }
     }
-  DestroyImages(image);
   DestroyDelegateInfo();
   FreeMemory(argv);
   Exit(0);
