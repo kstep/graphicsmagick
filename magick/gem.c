@@ -63,6 +63,59 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o n s t r a s t                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method Contrast enhances the intensity differences between the lighter
+%  and darker elements of the image.
+%
+%  The format of the Contrast method is:
+%
+%      void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
+%
+%  A description of each parameter follows:
+%
+%    o sign: A positive value enhances the contrast otherwise it is reduced.
+%
+%    o red, green, blue: A pointer to a pixel component of type Quantum.
+%
+%
+*/
+MagickExport void Contrast(const int sign,Quantum *red,Quantum *green,
+  Quantum *blue)
+{
+  const static double
+    alpha=0.5+MagickEpsilon;
+
+  double
+    brightness,
+    hue,
+    saturation;
+
+  /*
+    Enhance contrast: dark color become darker, light color become lighter.
+  */
+  assert(red != (Quantum *) NULL);
+  assert(green != (Quantum *) NULL);
+  assert(blue != (Quantum *) NULL);
+  TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
+  brightness+=
+    alpha*sign*(alpha*(sin(MagickPI*(brightness-alpha))+1.0)-brightness);
+  if (brightness > 1.0)
+    brightness=1.0;
+  if (brightness < 0.0)
+    brightness=0.0;
+  HSLTransform(hue,saturation,brightness,red,green,blue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   E x p a n d A f f i n e                                                   %
 %                                                                             %
 %                                                                             %
@@ -354,7 +407,7 @@ MagickExport int GetOptimalKernelWidth(const double radius,const double sigma)
 %
 %
 */
-inline MagickExport void HSLTransform(const double hue,const double saturation,
+MagickExport void HSLTransform(const double hue,const double saturation,
   const double luminosity,Quantum *red,Quantum *green,Quantum *blue)
 {
   /*
@@ -722,6 +775,63 @@ MagickExport PixelPacket InterpolateColor(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M o d u l a t e                                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method Modulate modulates the hue, saturation, and brightness of an
+%  image.
+%
+%  The format of the Modulate method is:
+%
+%      void Modulate(const double percent_hue,const double percent_saturation,
+%        const double percent_brightness,Quantum *red,Quantum *green,
+%        Quantum *blue)
+%
+%  A description of each parameter follows:
+%
+%    o percent_hue, percent_saturation, percent_brightness: A double value
+%      representing the percent change in a component of the HSL color space.
+%
+%    o red, green, blue: A pointer to a pixel component of type Quantum.
+%
+%
+*/
+MagickExport void Modulate(const double percent_hue,
+  const double percent_saturation,const double percent_brightness,
+  Quantum *red,Quantum *green,Quantum *blue)
+{
+  double
+    brightness,
+    hue,
+    saturation;
+
+  /*
+    Increase or decrease color brightness, saturation, or hue.
+  */
+  assert(red != (Quantum *) NULL);
+  assert(green != (Quantum *) NULL);
+  assert(blue != (Quantum *) NULL);
+  TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
+  brightness*=(0.01+MagickEpsilon)*percent_brightness;
+  if (brightness > 1.0)
+    brightness=1.0;
+  saturation*=(0.01+MagickEpsilon)*percent_saturation;
+  if (saturation > 1.0)
+    saturation=1.0;
+  hue*=(0.01+MagickEpsilon)*percent_hue;
+  if (hue > 1.0)
+    hue-=1.0;
+  HSLTransform(hue,saturation,brightness,red,green,blue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   T r a n s f o r m H S L                                                   %
 %                                                                             %
 %                                                                             %
@@ -746,7 +856,7 @@ MagickExport PixelPacket InterpolateColor(const Image *image,
 %
 %
 */
-inline MagickExport void TransformHSL(const Quantum red,const Quantum green,
+MagickExport void TransformHSL(const Quantum red,const Quantum green,
   const Quantum blue,double *hue,double *saturation,double *luminosity)
 {
   double
@@ -933,114 +1043,4 @@ MagickExport void Upsample(const unsigned long width,const unsigned long height,
   p=pixels+(2*height-2)*scaled_width;
   q=pixels+(2*height-1)*scaled_width;
   (void) memcpy(q,p,2*width);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C o n s t r a s t                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method Contrast enhances the intensity differences between the lighter
-%  and darker elements of the image.
-%
-%  The format of the Contrast method is:
-%
-%      void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
-%
-%  A description of each parameter follows:
-%
-%    o sign: A positive value enhances the contrast otherwise it is reduced.
-%
-%    o red, green, blue: A pointer to a pixel component of type Quantum.
-%
-%
-*/
-MagickExport void Contrast(const int sign,Quantum *red,Quantum *green,
-  Quantum *blue)
-{
-  const static double
-    alpha=0.5+MagickEpsilon;
-
-  double
-    brightness,
-    hue,
-    saturation;
-
-  /*
-    Enhance contrast: dark color become darker, light color become lighter.
-  */
-  assert(red != (Quantum *) NULL);
-  assert(green != (Quantum *) NULL);
-  assert(blue != (Quantum *) NULL);
-  TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
-  brightness+=
-    alpha*sign*(alpha*(sin(MagickPI*(brightness-alpha))+1.0)-brightness);
-  if (brightness > 1.0)
-    brightness=1.0;
-  if (brightness < 0.0)
-    brightness=0.0;
-  HSLTransform(hue,saturation,brightness,red,green,blue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M o d u l a t e                                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method Modulate modulates the hue, saturation, and brightness of an
-%  image.
-%
-%  The format of the Modulate method is:
-%
-%      void Modulate(const double percent_hue,const double percent_saturation,
-%        const double percent_brightness,Quantum *red,Quantum *green,
-%        Quantum *blue)
-%
-%  A description of each parameter follows:
-%
-%    o percent_hue, percent_saturation, percent_brightness: A double value
-%      representing the percent change in a component of the HSL color space.
-%
-%    o red, green, blue: A pointer to a pixel component of type Quantum.
-%
-%
-*/
-MagickExport void Modulate(const double percent_hue,
-  const double percent_saturation,const double percent_brightness,
-  Quantum *red,Quantum *green,Quantum *blue)
-{
-  double
-    brightness,
-    hue,
-    saturation;
-
-  /*
-    Increase or decrease color brightness, saturation, or hue.
-  */
-  assert(red != (Quantum *) NULL);
-  assert(green != (Quantum *) NULL);
-  assert(blue != (Quantum *) NULL);
-  TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
-  brightness*=(0.01+MagickEpsilon)*percent_brightness;
-  if (brightness > 1.0)
-    brightness=1.0;
-  saturation*=(0.01+MagickEpsilon)*percent_saturation;
-  if (saturation > 1.0)
-    saturation=1.0;
-  hue*=(0.01+MagickEpsilon)*percent_hue;
-  if (hue > 1.0)
-    hue-=1.0;
-  HSLTransform(hue,saturation,brightness,red,green,blue);
 }

@@ -1,5 +1,10 @@
 2003-03-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/blob.c (WriteBlob): Move pointer increment into
+	paranthesis.
+	(ReadBlob): Move pointer increment into paranthesis.
+	* magick/gem.c (HSLTransform): Removed inline statement.
+	(TransformHSL): Removed inline statement.
 	* magick/random.[c|h]: Removed files from CVS.
 	* magick/command.c: Don't include random.h.
 
