@@ -20,6 +20,12 @@ extern "C" {
 #endif
 
 /*
+  Private functions and types should only be exposed by the
+  headers when MAGICK_IMPLEMENTATION is defined.
+*/
+#define MAGICK_IMPLEMENTATION 1
+
+/*
   System include declarations.
 */
 #define __EXTENSIONS__  1

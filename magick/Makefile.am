@@ -102,14 +102,12 @@ pkginclude_HEADERS = \
 	error.h \
 	fx.h \
 	gem.h \
-	integral_types.h \
 	image.h \
 	list.h \
 	log.h \
 	magic.h \
 	magick.h \
 	magick.h \
-	magick_config.h \
 	module.h \
 	monitor.h \
 	montage.h \
@@ -142,6 +140,14 @@ noinst_HEADERS = \
 	studio.h \
 	tempfile.h \
 	vms.h
+
+# Install magick_config_api.h as magick_config.h
+install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(pkgincludedir)
+	$(INSTALL_HEADER) magick_config_api.h $(DESTDIR)$(pkgincludedir)/magick_config.h
+
+uninstall-hook:
+	rm -f $(DESTDIR)$(pkgincludedir)/magick_config.h
 
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk GraphicsMagick-config.in \

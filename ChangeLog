@@ -1,11 +1,18 @@
-2003-04-30  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
-
-	* utilities/Makefile.am (check) Change % to %% in -label parameter.
-	* www/gm.html, utilities/gm.1, etc. Documented use of %% to convey
-	the % sign in -format, -comment, -label strings.
-
 2003-04-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/Makefile.am (install-data-local): Install
+	magick_config_api.h rather than magick_config.h.
+	* magick/api.h: Removed inclusion of integral_types.h from
+	magick/api.h.  It is included by magick/studio.h.
+	* magick/delegate.h: Mapped out a block of private implementation
+	code.
+	* configure.ac: Perform substitutions on magick_config_api.h.
+	* magick/magick_config_api.h.in: New header file template to
+	use for installed magick_config.h.
+	* magick/studio.h (MAGICK_IMPLEMENTATION): Added the define
+	MAGICK_IMPLEMENTATION used to enable private types, includes, and
+	defines in the headers. This supports hiding implementation stuff
+	that API users shouldn't see in the headers.
 	* utilities/Makefile.am (check): Cleaned up the utilities
 	test/demo a bit as well as using the undocumented "tmp:" prefix to
 	cause GraphicsMagick to remove temporary input files once they
@@ -22,6 +29,12 @@
 	for Visual C++ 6.0 so that configure links.  The code which
 	needs these interfaces is to support Visual C++ 7.0 XML-style
 	project files.
+
+2003-04-30  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* utilities/Makefile.am (check) Change % to %% in -label parameter.
+	* www/gm.html, utilities/gm.1, etc. Documented use of %% to convey
+	the % sign in -format, -comment, -label strings.
 
 2003-04-30  William Radcliffe <billr@corbis.com>
 

@@ -92,6 +92,10 @@ Major changes associated with GraphicsMagick 1.0 (as of April, 2003)
     * InitializeMagick now registers signal handlers to ensure that
     resources are released before program exit.  This helps avoid
     temporary file leaks due to the user using "CONTROL-C".
+    * The installed <magick/magick_config.h> header now only contains
+    the few definitions required by the API headers.  This should
+    significantly reduce or eliminate conflicts with other package
+    headers.
 
   Windows platform enhancements:
     * Configure updated for Visual C++ 7.0.

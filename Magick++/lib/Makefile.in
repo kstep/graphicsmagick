@@ -366,7 +366,8 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = GraphicsMagick++.pc
 subdir = Magick++/lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
+CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
+	$(top_builddir)/magick/magick_config_api.h
 CONFIG_CLEAN_FILES = GraphicsMagick++.pc
 LTLIBRARIES = $(lib_LTLIBRARIES)
 

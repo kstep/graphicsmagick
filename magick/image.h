@@ -59,8 +59,6 @@ extern "C" {
      (unsigned int)117U*(pixel)->blue) \
     >> 10U))
 typedef unsigned char Quantum;
-typedef gm_int32_t QuantumArithType;
-typedef gm_int64_t QuantumSumType;
 #elif (QuantumDepth == 16)
 #define MaxColormapSize  65536UL
 #define MaxMap 65535UL
@@ -89,8 +87,6 @@ typedef gm_int64_t QuantumSumType;
      (unsigned int)117U*(pixel)->blue) \
     >> 10U))
 typedef unsigned short Quantum;
-typedef gm_int32_t QuantumArithType;
-typedef gm_int64_t QuantumSumType;
 #elif (QuantumDepth == 32)
 #define MaxColormapSize  65536UL
 #define MaxMap 65535UL
@@ -119,8 +115,6 @@ typedef gm_int64_t QuantumSumType;
      (double)117.0*(pixel)->blue) \
     / 1024.0))
 typedef unsigned int Quantum;
-typedef gm_int64_t QuantumArithType;
-typedef double QuantumSumType;
 #else
 # error "Specified value of QuantumDepth is not supported"
 #endif

@@ -1687,7 +1687,7 @@ echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
 
 # Generate configure header.
-          ac_config_headers="$ac_config_headers magick/magick_config.h"
+                    ac_config_headers="$ac_config_headers magick/magick_config.h magick/magick_config_api.h"
 
 
 am__api_version="1.7"
@@ -39386,6 +39386,7 @@ do
   "VisualMagick/installer/inc/version.isx" ) CONFIG_FILES="$CONFIG_FILES VisualMagick/installer/inc/version.isx" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "magick/magick_config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS magick/magick_config.h" ;;
+  "magick/magick_config_api.h" ) CONFIG_HEADERS="$CONFIG_HEADERS magick/magick_config_api.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;

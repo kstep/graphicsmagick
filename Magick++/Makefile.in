@@ -338,7 +338,8 @@ EXTRA_DIST =
 SUBDIRS = bin lib tests demo
 subdir = Magick++
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
+CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
+	$(top_builddir)/magick/magick_config_api.h
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
 

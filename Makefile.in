@@ -395,7 +395,8 @@ DOCDIRS = images www www/api www/api/types www/Magick++
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
+CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
+	$(top_builddir)/magick/magick_config_api.h
 CONFIG_CLEAN_FILES = PerlMagick/Magick.pm PerlMagick/Makefile.PL \
 	VisualMagick/installer/inc/version.isx
 DIST_SOURCES =

@@ -372,7 +372,8 @@ SMILE_MIFF = $(top_srcdir)/Magick++/demo/smile.miff
 GENERIC_TTF = $(top_srcdir)/PerlMagick/demo/Generic.ttf
 subdir = utilities
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
+CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
+	$(top_builddir)/magick/magick_config_api.h
 CONFIG_CLEAN_FILES =
 bin_PROGRAMS = gm$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
@@ -383,7 +384,7 @@ gm_OBJECTS = $(am_gm_OBJECTS)
 @WITH_LTDL_TRUE@	$(top_builddir)/ltdl/libltdlc.la
 @WITH_LTDL_FALSE@gm_DEPENDENCIES = ../magick/libGraphicsMagick.la
 
-DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick -I$(top_builddir)/magick
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/gm.Po

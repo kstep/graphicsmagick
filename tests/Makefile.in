@@ -557,7 +557,8 @@ CHECK_MIFF_FILE_COMPRESS = \
 
 subdir = tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
+CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
+	$(top_builddir)/magick/magick_config_api.h
 CONFIG_CLEAN_FILES =
 check_PROGRAMS = constitute$(EXEEXT) drawtest$(EXEEXT) rwblob$(EXEEXT) \
 	rwfile$(EXEEXT)
@@ -582,7 +583,7 @@ rwfile_LDADD = $(LDADD)
 rwfile_DEPENDENCIES = ../magick/libGraphicsMagick.la
 rwfile_LDFLAGS =
 
-DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick -I$(top_builddir)/magick
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/constitute.Po \

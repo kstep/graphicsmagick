@@ -43,7 +43,7 @@ AC_SUBST(MAGICK_LIB_VERSION_NUMBER)
 AM_SANITY_CHECK
 
 # Generate configure header.
-AC_CONFIG_HEADERS([magick/magick_config.h])
+AC_CONFIG_HEADERS([magick/magick_config.h magick/magick_config_api.h])
 
 AM_INIT_AUTOMAKE($PACKAGE_NAME,"${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}", ' ')
 

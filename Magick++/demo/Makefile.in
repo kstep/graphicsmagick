@@ -360,7 +360,8 @@ ZOOM_GEOMETRY = 600x600
 @WIN32_NATIVE_BUILD_FALSE@SRCDIR = '$(srcdir)/'
 subdir = Magick++/demo
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
+CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
+	$(top_builddir)/magick/magick_config_api.h
 CONFIG_CLEAN_FILES =
 check_PROGRAMS = button$(EXEEXT) demo$(EXEEXT) detrans$(EXEEXT) \
 	flip$(EXEEXT) gravity$(EXEEXT) piddle$(EXEEXT) shapes$(EXEEXT) \
@@ -406,7 +407,7 @@ zoom_LDADD = $(LDADD)
 zoom_DEPENDENCIES = ../lib/libGraphicsMagick++.la
 zoom_LDFLAGS =
 
-DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick -I$(top_builddir)/magick
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/button.Po ./$(DEPDIR)/demo.Po \

@@ -869,7 +869,8 @@ DATADELEGATES = \
 
 subdir = coders
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
+CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
+	$(top_builddir)/magick/magick_config_api.h
 CONFIG_CLEAN_FILES = delegates.mgk type-ghostscript.mgk type-solaris.mgk \
 	type-windows.mgk type.mgk
 LTLIBRARIES = $(noinst_LTLIBRARIES) $(pkg_LTLIBRARIES)
@@ -1176,7 +1177,7 @@ yuv_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_yuv_la_OBJECTS = yuv.lo
 yuv_la_OBJECTS = $(am_yuv_la_OBJECTS)
 
-DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick -I$(top_builddir)/magick
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/art.Plo ./$(DEPDIR)/avi.Plo \
