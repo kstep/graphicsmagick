@@ -40,7 +40,7 @@ extern "C" {
 #define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
 #define SetNotifyHandlers
-#define TemporaryTemplate  "mgk"
+#define TemporaryTemplate  "magick"
 #else
 
 #if defined(vms)
@@ -117,7 +117,7 @@ extern "C" {
 #undef sleep
 #define sleep(seconds)  Sleep(seconds*1000)
 #define HAVE_TIFFCONF_H
-#define TemporaryTemplate  "mgk"
+#define TemporaryTemplate  "magick"
 #endif
 
 #endif
