@@ -55,6 +55,7 @@
 #include "studio.h"
 #include "attribute.h"
 #include "blob.h"
+#include "color.h"
 #include "log.h"
 #include "signature.h"
 #include "utility.h"

@@ -54,6 +54,8 @@
 */
 #include "studio.h"
 #include "blob.h"
+#include "color.h"
+#include "composite.h"
 #include "magick.h"
 #include "utility.h"
 

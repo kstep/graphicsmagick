@@ -55,6 +55,7 @@
 */
 #include "studio.h"
 #include "blob.h"
+#include "constitute.h"
 #include "magick.h"
 #include "utility.h"
 #if defined(HasXML)

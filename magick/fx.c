@@ -55,9 +55,13 @@
 */
 #include "studio.h"
 #include "cache.h"
+#include "effect.h"
+#include "enhance.h"
+#include "fx.h"
 #include "gem.h"
 #include "log.h"
 #include "monitor.h"
+#include "resize.h"
 #include "utility.h"
 
 /*

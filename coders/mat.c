@@ -50,7 +50,11 @@
 */
 #include "studio.h"
 #include "blob.h"
+#include "cache.h"
+#include "color.h"
 #include "magick.h"
+#include "shear.h"
+#include "transform.h"
 #include "utility.h"
 
 /* Auto coloring method, sorry this creates some artefact inside data

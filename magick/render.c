@@ -60,11 +60,16 @@
 #include "studio.h"
 #include "attribute.h"
 #include "blob.h"
+#include "cache.h"
+#include "color.h"
+#include "constitute.h"
+#include "enhance.h"
 #include "gem.h"
 #include "log.h"
 #include "monitor.h"
 #include "paint.h"
 #include "render.h"
+#include "transform.h"
 #include "utility.h"
 
 /*

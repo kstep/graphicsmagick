@@ -192,12 +192,24 @@ extern MagickExport const PixelPacket
     const unsigned long,const unsigned long,ExceptionInfo *);
 
 extern MagickExport IndexPacket
+  *GetIndexes(const Image *),
   *GetNexusIndexes(const Cache,const unsigned long);
 
+MagickExport const PixelPacket
+  *AcquireImagePixels(const Image *,const long,const long,const unsigned long,
+    const unsigned long,ExceptionInfo *);
+
 extern MagickExport PixelPacket
+   AcquireOnePixel(const Image *,const long,const long,ExceptionInfo *),
   *GetCacheNexus(Image *,const long,const long,const unsigned long,
     const unsigned long,const unsigned long),
+  *GetImagePixels(Image *,const long,const long,const unsigned long,
+    const unsigned long),
   *GetNexusPixels(const Cache,const unsigned long),
+   GetOnePixel(Image *,const long,const long),
+  *GetPixels(const Image *),
+  *SetImagePixels(Image *,const long,const long,const unsigned long,
+     const unsigned long),
   *SetCacheNexus(Image *,const long,const long,const unsigned long,
     const unsigned long,const unsigned long);
 
@@ -205,7 +217,8 @@ extern MagickExport unsigned int
   OpenCache(Image *,const MapMode),
   PersistCache(Image *,const char *,const unsigned int,
     ExtendedSignedIntegralType *,ExceptionInfo *),
-  SyncCacheNexus(Image *,const unsigned long);
+  SyncCacheNexus(Image *,const unsigned long),
+  SyncImagePixels(Image *);
 
 extern MagickExport unsigned long
   GetNexus(Cache),
@@ -219,6 +232,7 @@ extern MagickExport void
   ClonePixelCacheMethods(Cache,const Cache),
   DestroyCacheInfo(Cache),
   DestroyCacheNexus(Cache,const unsigned long),
+  DestroyImagePixels(Image *),
   GetCacheInfo(Cache *),
   SetImageVirtualPixelMethod(const Image *,const VirtualPixelMethod),
   SetPixelCacheMethods(Cache,AcquirePixelHandler,GetPixelHandler,

@@ -10,19 +10,21 @@ extern "C" {
 
 extern MagickExport unsigned int
   AnimateImageCommand(int,char **),
-  ConjureImageCommand(int,char **),
-  DisplayImageCommand(int,char **),
-  ImportImageCommand(int,char **),
   CompositeImageCommand(ImageInfo *,const int,char **,char **,ExceptionInfo *),
+  ConjureImageCommand(int,char **),
   ConvertImageCommand(ImageInfo *,const int,char **,char **,ExceptionInfo *),
+  DisplayImageCommand(int,char **),
   IdentifyImageCommand(ImageInfo *,const int,char **,char **,ExceptionInfo *),
+  ImportImageCommand(int,char **),
+  MogrifyImage(const ImageInfo *,const int,char **,Image **),
   MogrifyImageCommand(ImageInfo *,const int,char **,char **,ExceptionInfo *),
+  MogrifyImages(const ImageInfo *,const int,char **,Image **),
   MontageImageCommand(ImageInfo *,const int,char **,char **,ExceptionInfo *);
 
 extern MagickExport void
   AnimateUsage(void),
-  ConjureUsage(void),
   CompositeUsage(void),
+  ConjureUsage(void),
   ConvertUsage(void),
   DisplayUsage(void),
   IdentifyUsage(void),

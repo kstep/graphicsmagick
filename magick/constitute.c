@@ -55,9 +55,11 @@
 #include "studio.h"
 #include "blob.h"
 #include "cache.h"
+#include "constitute.h"
 #include "delegate.h"
 #include "magick.h"
 #include "monitor.h"
+#include "stream.h"
 #include "utility.h"
 
 static SemaphoreInfo

@@ -57,6 +57,7 @@
 #include "blob.h"
 #include "cache.h"
 #include "log.h"
+#include "magick.h"
 #include "resource.h"
 #include "utility.h"
 #if defined(HasZLIB)

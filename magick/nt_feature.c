@@ -55,6 +55,7 @@
   Include declarations.
 */
 #include "studio.h"
+#include "cache.h"
 #include "utility.h"
 #include "nt_feature.h"
 #define WIN32_LEAN_AND_MEAN

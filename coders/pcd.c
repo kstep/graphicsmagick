@@ -55,9 +55,15 @@
 #include "studio.h"
 #include "attribute.h"
 #include "blob.h"
+#include "cache.h"
+#include "decorate.h"
 #include "gem.h"
 #include "magick.h"
 #include "monitor.h"
+#include "montage.h"
+#include "resize.h"
+#include "shear.h"
+#include "transform.h"
 #include "utility.h"
 
 /*

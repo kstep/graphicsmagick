@@ -52,6 +52,8 @@
   Include declarations.
 */
 #include "studio.h"
+#include "color.h"
+#include "cache.h"
 #include "blob.h"
 #include "quantize.h"
 #include "monitor.h"

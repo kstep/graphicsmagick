@@ -59,8 +59,12 @@
   Include declarations.
 */
 #include "studio.h"
+#include "cache.h"
+#include "decorate.h"
 #include "monitor.h"
 #include "render.h"
+#include "shear.h"
+#include "transform.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -53,9 +53,11 @@
   Include declarations.
 */
 #include "studio.h"
+#include "constitute.h"
 #include "delegate.h"
 #include "log.h"
 #include "monitor.h"
+#include "transform.h"
 #include "utility.h"
 #include "version.h"
 #include "xwindow.h"

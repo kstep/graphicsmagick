@@ -55,9 +55,15 @@
 */
 #include "studio.h"
 #include "attribute.h"
+#include "cache.h"
+#include "composite.h"
+#include "constitute.h"
+#include "decorate.h"
 #include "gem.h"
 #include "monitor.h"
+#include "montage.h"
 #include "render.h"
+#include "resize.h"
 #include "utility.h"
 
 /*

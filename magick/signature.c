@@ -53,6 +53,7 @@
   Include declarations.
 */
 #include "studio.h"
+#include "cache.h"
 #include "attribute.h"
 #include "signature.h"
 #include "utility.h"

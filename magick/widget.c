@@ -54,6 +54,7 @@
   Include declarations.
 */
 #include "studio.h"
+#include "color.h"
 #include "magick.h"
 #include "utility.h"
 #include "xwindow.h"

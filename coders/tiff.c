@@ -55,9 +55,13 @@
 #include "studio.h"
 #include "attribute.h"
 #include "blob.h"
+#include "cache.h"
+#include "color.h"
+#include "constitute.h"
 #include "log.h"
 #include "magick.h"
 #include "monitor.h"
+#include "resize.h"
 #include "utility.h"
 #include "version.h"
 #if defined(HasTIFF)

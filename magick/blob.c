@@ -56,10 +56,12 @@
 #include "studio.h"
 #include "blob.h"
 #include "cache.h"
+#include "constitute.h"
 #include "delegate.h"
 #include "log.h"
 #include "magick.h"
 #include "resource.h"
+#include "stream.h"
 #include "utility.h"
 #if defined(HasZLIB)
 #include "zlib.h"

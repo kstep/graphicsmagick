@@ -49,6 +49,8 @@
   Include declarations.
 */
 #include "studio.h"
+#include "cache.h"
+#include "color.h"
 #include "blob.h"
 #include "magick.h"
 #include "utility.h"

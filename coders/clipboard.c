@@ -50,6 +50,7 @@
 
 #include "studio.h"
 #include "blob.h"
+#include "cache.h"
 #include "magick.h"
 #include "utility.h"
 #if defined(HasWINGDI32)
@@ -281,7 +282,7 @@ static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r C L I P B O A R D I m a g e                                           %
+%   R e g i s t e r C L I P B O A R D I m a g e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %

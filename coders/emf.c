@@ -52,6 +52,7 @@
 
 #include "studio.h"
 #include "blob.h"
+#include "cache.h"
 #include "magick.h"
 #include "utility.h"
 #if defined(HasWINGDI32)

@@ -56,6 +56,7 @@
 #include "studio.h"
 #include "attribute.h"
 #include "blob.h"
+#include "constitute.h"
 #include "gem.h"
 #include "log.h"
 #include "magick.h"

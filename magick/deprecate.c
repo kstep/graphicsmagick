@@ -54,6 +54,7 @@
 */
 #include "studio.h"
 #include "blob.h"
+#include "color.h"
 #include "deprecate.h"
 #include "list.h"
 #include "log.h"

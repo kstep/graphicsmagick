@@ -54,6 +54,8 @@
   Include declarations.
 */
 #include "studio.h"
+#include "cache.h"
+#include "decorate.h"
 #include "monitor.h"
 
 /*

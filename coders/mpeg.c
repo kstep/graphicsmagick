@@ -53,9 +53,11 @@
 */
 #include "studio.h"
 #include "blob.h"
+#include "constitute.h"
 #include "delegate.h"
 #include "log.h"
 #include "magick.h"
+#include "transform.h"
 #include "utility.h"
 
 /*

@@ -189,6 +189,9 @@
   Include declarations.
 */
 #include "studio.h"
+#include "cache.h"
+#include "color.h"
+#include "enhance.h"
 #include "quantize.h"
 #include "monitor.h"
 #include "utility.h"

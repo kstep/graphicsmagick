@@ -54,6 +54,7 @@
 */
 #include "studio.h"
 #include "blob.h"
+#include "cache.h"
 #include "draw.h"
 #include "magick.h"
 #include "render.h"

@@ -55,6 +55,7 @@
 */
 #include "studio.h"
 #include "blob.h"
+#include "cache.h"
 #include "compress.h"
 #include "monitor.h"
 #include "utility.h"

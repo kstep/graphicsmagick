@@ -97,12 +97,57 @@ endif # WITH_MODULES
 bin_SCRIPTS = GraphicsMagick-config
 
 # Headers which are installed
-pkginclude_HEADERS = api.h attribute.h blob.h cache.h \
-  cache_view.h command.h compress.h magick_config.h delegate.h \
-  draw.h render.h error.h gem.h image.h list.h log.h magic.h magick.h \
-  module.h monitor.h quantize.h paint.h random.h resource.h registry.h \
-  semaphore.h signature.h timer.h utility.h version.h widget.h xwindow.h \
-  PreRvIcccm.h deprecate.h
+pkginclude_HEADERS = \
+	PreRvIcccm.h \
+	api.h \
+	attribute.h \
+	blob.h \
+	cache.h \
+	cache.h \
+	cache_view.h \
+	color.h \
+	command.h \
+	command.h \
+	composite.h \
+	compress.h \
+	constitute.h \
+	decorate.h \
+	delegate.h \
+	deprecate.h \
+	draw.h \
+	effect.h \
+	enhance.h \
+	error.h \
+	fx.h \
+	gem.h \
+	image.h \
+	list.h \
+	log.h \
+	magic.h \
+	magick.h \
+	magick.h \
+	magick_config.h \
+	module.h \
+	monitor.h \
+	montage.h \
+	paint.h \
+	quantize.h \
+	random.h \
+	registry.h \
+	render.h \
+	resize.h \
+	resource.h \
+	semaphore.h \
+	shear.h \
+	signature.h \
+	stream.h \
+	timer.h \
+	transform.h \
+	utility.h \
+	version.h \
+	widget.h \
+	xwindow.h
+
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = animate.h display.h mac.h nt_base.h nt_feature.h \

@@ -63,11 +63,16 @@
 #include "studio.h"
 #include "attribute.h"
 #include "blob.h"
+#include "cache.h"
+#include "color.h"
+#include "constitute.h"
+#include "enhance.h"
 #include "log.h"
 #include "magick.h"
 #include "monitor.h"
 #include "quantize.h"
 #include "static.h"
+#include "transform.h"
 #include "utility.h"
 #if defined(HasPNG)
 #include "png.h"
@@ -426,7 +431,7 @@ static unsigned int
 static unsigned int
   WriteMNGImage(const ImageInfo *,Image *);
 #if defined(JNG_SUPPORTED)
-#define HasJPEG
+#define HasJPEG 1
 #if defined(HasJPEG)
 static unsigned int
   WriteJNGImage(const ImageInfo *,Image *);

@@ -55,8 +55,13 @@
 #include "studio.h"
 #include "attribute.h"
 #include "blob.h"
+#include "color.h"
+#include "command.h"
+#include "constitute.h"
 #include "magick.h"
 #include "monitor.h"
+#include "montage.h"
+#include "resize.h"
 #include "utility.h"
 
 /*

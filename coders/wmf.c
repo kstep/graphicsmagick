@@ -57,11 +57,15 @@
  */
 #include "studio.h"
 #include "blob.h"
+#include "cache.h"
+#include "color.h"
+#include "constitute.h"
 #include "draw.h"
 #include "log.h"
 #include "magick.h"
 #include "monitor.h"
 #include "paint.h"
+#include "transform.h"
 #include "utility.h"
 #include "version.h"
 #if defined(WIN32)

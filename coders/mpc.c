@@ -57,6 +57,7 @@
 #include "attribute.h"
 #include "cache.h"
 #include "blob.h"
+#include "color.h"
 #include "magick.h"
 #include "monitor.h"
 #include "utility.h"

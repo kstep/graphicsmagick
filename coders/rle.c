@@ -55,6 +55,7 @@
 #include "studio.h"
 #include "attribute.h"
 #include "blob.h"
+#include "cache.h"
 #include "magick.h"
 #include "monitor.h"
 #include "utility.h"

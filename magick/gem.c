@@ -54,6 +54,7 @@
   Include declarations.
 */
 #include "studio.h"
+#include "cache.h"
 #include "gem.h"
 
 /*

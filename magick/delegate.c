@@ -60,6 +60,7 @@
 */
 #include "studio.h"
 #include "blob.h"
+#include "constitute.h"
 #include "delegate.h"
 #include "utility.h"
 

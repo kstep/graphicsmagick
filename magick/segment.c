@@ -95,6 +95,7 @@
 */
 
 #include "studio.h"
+#include "cache.h"
 #include "monitor.h"
 #include "quantize.h"
 #include "utility.h"
