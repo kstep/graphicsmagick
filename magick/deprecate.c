@@ -55,8 +55,39 @@
 #include "studio.h"
 #include "blob.h"
 #include "deprecate.h"
+#include "list.h"
 #include "resource.h"
 #include "utility.h"
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e l e t e I m a g e L i s t                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DeleteImageList() deletes an image at the specified position in the list.
+%
+%  The format of the DeleteImageList method is:
+%
+%      unsigned int DeleteImageList(Image *images,const long offset)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o offset: The position within the list.
+%
+%
+*/
+MagickExport unsigned int DeleteImageList(Image *images,const long offset)
+{
+  return(DeleteImageFromList(&images,offset));
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -91,6 +122,125 @@ MagickExport void DestroyImages(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e L i s t                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageList() returns an image at the specified position in the list.
+%
+%  The format of the GetImageList method is:
+%
+%      Image *GetImageList(const Image *images,const long offset,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o offset: The position within the list.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *GetImageList(const Image *images,const long offset,
+  ExceptionInfo *exception)
+{
+  return(GetImageFromList(images,offset,exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e L i s t I n d e x                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageListIndex() returns the position in the list of the specified
+%  image.
+%
+%  The format of the GetImageListIndex method is:
+%
+%      long GetImageListIndex(const Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%
+*/
+MagickExport long GetImageListIndex(const Image *images)
+{
+  return(GetImageIndexInList(images));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e L i s t S i z e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageListSize() returns the number of images in the list.
+%
+%  The format of the GetImageListSize method is:
+%
+%      unsigned long GetImageListSize(const Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%
+*/
+MagickExport unsigned long GetImageListSize(const Image *images)
+{
+  return(GetImageListLength(images));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t N e x t I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetNextImage() returns the next image in a list.
+%
+%  The format of the GetNextImage method is:
+%
+%      Image *GetNextImage(const Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%
+*/
+MagickExport Image *GetNextImage(const Image *images)
+{
+  return(GetNextImageInList(images));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t N u m b e r S c e n e s                                             %
 %                                                                             %
 %                                                                             %
@@ -112,6 +262,34 @@ MagickExport void DestroyImages(Image *image)
 MagickExport unsigned int GetNumberScenes(const Image *image)
 {
   return(GetImageListLength(image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t P r e v i o u s I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPreviousImage() returns the previous image in a list.
+%
+%  The format of the GetPreviousImage method is:
+%
+%      Image *GetPreviousImage(const Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%
+*/
+MagickExport Image *GetPreviousImage(const Image *images)
+{
+  return(GetPreviousImageInList(images));
 }
 
 /*
@@ -161,6 +339,34 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   P o p I m a g e L i s t                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PopImageList() removes the last image in the list.
+%
+%  The format of the PopImageList method is:
+%
+%      Image *PopImageList(Image **images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%
+*/
+MagickExport Image *PopImageList(Image **images)
+{
+  return(RemoveLastImageFromList(images));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  P o s t s c r i p t G e o m e t r y                                        %
 %                                                                             %
 %                                                                             %
@@ -186,7 +392,40 @@ MagickExport char *PostscriptGeometry(const char *page)
 {
   return(GetPageGeometry(page));
 }
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P u s h I m a g e L i s t                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PushImageList() adds an image to the end of the list.
+%
+%  The format of the PushImageList method is:
+%
+%      unsigned int PushImageList(Image *images,const Image *image,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o image: The image.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport unsigned int PushImageList(Image **images,const Image *image,
+  ExceptionInfo *exception)
+{
+  return(AppendImageToList(images,image,exception));
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -225,6 +464,70 @@ MagickExport void SetCacheThreshold(const unsigned long size)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S e t I m a g e L i s t                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageList() inserts an image into the list at the specified position.
+%
+%  The format of the SetImageList method is:
+%
+%      unsigned int SetImageList(Image *images,const Image *image,
+%        const long offset,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o image: The image.
+%
+%    o offset: The position within the list.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport unsigned int SetImageList(Image **images,const Image *image,
+  const long offset,ExceptionInfo *exception)
+{
+  return(InsertImageInList(images,image,offset,exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S h i f t I m a g e L i s t                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ShiftImageList() removes an image from the beginning of the list.
+%
+%  The format of the ShiftImageList method is:
+%
+%      Image *ShiftImageList(Image **images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%
+*/
+MagickExport Image *ShiftImageList(Image **images)
+{
+  return(RemoveFirstImageFromList(images));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  S i z e B l o b                                                            %
 %                                                                             %
 %                                                                             %
@@ -249,6 +552,80 @@ MagickExport void SetCacheThreshold(const unsigned long size)
 MagickExport ExtendedSignedIntegralType SizeBlob(const Image *image)
 {
   return(GetBlobSize(image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S p l i c e I m a g e L i s t                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SpliceImageList() removes the images designated by offset and length from
+%  the list and replaces them with the specified list.
+%
+%  The format of the SpliceImageList method is:
+%
+%      Image *SpliceImageList(Image *images,const long offset,
+%        const unsigned long length,const Image *splices,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o offset: The position within the list.
+%
+%    o length: The length of the image list to remove.
+%
+%    o splice: Replace the removed image list with this list.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *SpliceImageList(Image *images,const long offset,
+  const unsigned long length,const Image *splices,ExceptionInfo *exception)
+{
+  return(SpliceImageIntoList(images,offset,length,splices,exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n s h i f t I m a g e L i s t                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  UnshiftImageList() adds the image to the beginning of the list.
+%
+%  The format of the UnshiftImageList method is:
+%
+%      unsigned int UnshiftImageList(Image *images,const Image *image,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o image: The image.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
+  ExceptionInfo *exception)
+{
+  return(PrependImageToList(images,image,exception));
 }
 
 /*

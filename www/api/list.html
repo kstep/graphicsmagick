@@ -23,7 +23,7 @@
 		<li><a href="#destroyimagelist">DestroyImageList</a></li>
 		<li><a href="#getimagefromlist">GetImageFromList</a></li>
 		<li><a href="#getimageindexinlist">GetImageIndexInList</a></li>
-		<li><a href="#getimagelistsize">GetImageListSize</a></li>
+		<li><a href="#getimagelistlength">GetImageListLength</a></li>
 		<li><a href="#getnextimageinlist">GetNextImageInList</a></li>
 		<li><a href="#getpreviousimageinlist">GetPreviousImageInList</a></li>
 		<li><a href="#imagelisttoarray">ImageListToArray</a></li>
@@ -54,6 +54,7 @@
 <p>void  <strong>DestroyImageList</strong>( Image *image );</p>
 <p>Image * <strong>GetImageFromList</strong>( const Image *images, const long offset, ExceptionInfo *exception );</p>
 <p>long  <strong>GetImageIndexInList</strong>( const Image *images );</p>
+<p>unsigned long  <strong>GetImageListLength</strong>( const Image *images );</p>
 <p>Image * <strong>GetNextImageInList</strong>( const Image *images );</p>
 <p>Image * <strong>GetPreviousImageInList</strong>( const Image *images );</p>
 <p>Image **  <strong>ImageListToArray</strong>( const Image *images, ExceptionInfo *exception );</p>
@@ -178,12 +179,9 @@ The image list.
 <p></p></dl>
 <p>
 </p>
-<h2><a name="getimagelistsize">GetImageListSize</a></h2>
-<p><code>GetImageListLength()</code> returns the number of images in the list.</p>
-<p>The format of the GetImageListLength method is:</p>
-<pre>
-    unsigned long GetImageListLength(const Image *images)</pre>
-<p>A description of each parameter follows:</p>
+<h2><a name="getimagelistlength">GetImageListLength</a></h2>
+<blockquote>GetImageListLength() returns the length of the list ( the number of images in the list ) . </blockquote><p>The format of the GetImageListLength method is:</p>
+<blockquote>unsigned long GetImageListLength ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
 </dt>
@@ -270,7 +268,7 @@ Return any errors or warnings in this structure.
 <blockquote><A HREF="types/Image.html">Image</A> *NewImageList ( void ); </blockquote><p>
 </p>
 <h2><a name="prependimagetolist">PrependImageToList</a></h2>
-<blockquote>PrependImageToList() adds the image to the beginning of the list. </blockquote><p>The format of the PrependImageToList method is:</p>
+<blockquote>PrependImageToList() prepends the image to the beginning of the list. </blockquote><p>The format of the PrependImageToList method is:</p>
 <blockquote>unsigned int PrependImageToList ( <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />

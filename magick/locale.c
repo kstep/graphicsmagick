@@ -1831,7 +1831,7 @@ const char *GetLocaleMessage(const char *tag)
                   return *np ? tag : "unable to create command widget";
                 else
                 if (p - tp == 24 && !LocaleNCompare(tp, "UnableToCreateImageGroup", 24))
-                  return *np ? tag : "Unable to create image group";
+                  return *np ? tag : "unable to create image group";
                 else
                 if (p - tp == 26 && !LocaleNCompare(tp, "UnableToCreateImageMontage", 26))
                   return *np ? tag : "Unable to create image montage";
