@@ -891,18 +891,18 @@ specified geometry extends beyond the dimensions of the input image.
 shifted.
 
 .TP
-.B "-debug \fI<event-mask>"\fP
+.B "-debug \fI<events>"\fP
 \fRenable debug printout
 
-The event-mask specifies which events are to be logged.  It
-can be either None, All, or a mask consisting of
-the union of one or more of Configure, Annotate,
+The events parameter specifies which events are to be logged.  It
+can be either None, All, or a list consisting of
+one or more of Configure, Annotate,
 Render, Locale, Coder,
-X11, Cache, or Blob, using quotation
-marks to hide the OR symbol.  For example, to log cache and blob events,
+X11, Cache, or Blob, using whatever punctuation
+you like to separate them.  For example, to log cache and blob events,
 use
 
-    convert -debug "Cache|Blob" rose: rose.png
+    convert -debug "Cache, Blob" rose: rose.png
 .TP
 .B "-deconstruct"
 \fRbreak down an image sequence into constituent parts

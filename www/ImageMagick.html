@@ -1027,19 +1027,19 @@ shifted.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    -debug <i>&lt;event-mask&gt;</i>
+    -debug <i>&lt;events&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>enable debug printout</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The <tt>event-mask</tt> specifies which events are to be logged.  It
-can be either <tt>None</tt>, <tt>All</tt>, or a mask consisting of
-the union of one or more of <tt>Configure</tt>, <tt>Annotate</tt>,
+The <tt>events</tt> parameter specifies which events are to be logged.  It
+can be either <tt>None</tt>, <tt>All</tt>, or a list consisting of
+one or more of <tt>Configure</tt>, <tt>Annotate</tt>,
 <tt>Render</tt>, <tt>Locale</tt>, <tt>Coder</tt>,
-<tt>X11</tt>, <tt>Cache</tt>, or <tt>Blob</tt>, using quotation
-marks to hide the OR symbol.  For example, to log cache and blob events,
+<tt>X11</tt>, <tt>Cache</tt>, or <tt>Blob</tt>, using whatever punctuation
+you like to separate them.  For example, to log cache and blob events,
 use</font></td></tr></table>
 <pre>
-    convert -debug "Cache|Blob" rose: rose.png
+    convert -debug "Cache, Blob" rose: rose.png
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
