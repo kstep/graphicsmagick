@@ -1018,7 +1018,7 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
   }
 #  endif /* WIN32 */
 #endif /* UseInstalledImageMagick */
-  ThrowException(exception,ConfigurationError,"Unable to find configure file",
+  ThrowException(exception,ConfigurationError,"Unable to find font file",
     filename);
   return((void *) NULL);
 }

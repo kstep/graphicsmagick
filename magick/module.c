@@ -570,7 +570,8 @@ MagickExport unsigned int ListModuleInfo(FILE *file,ExceptionInfo *exception)
       {
         if (p->previous != (ModuleInfo *) NULL)
           (void) fprintf(file,"\n");
-        (void) fprintf(file,"Path: %.1024s\n\n",p->path);
+        if (p->path != (char *) NULL)
+          (void) fprintf(file,"Path: %.1024s\n\n",p->path);
         (void) fprintf(file,"Magick      Module\n");
         (void) fprintf(file,"-------------------------------------------------"
           "------------------------------\n");
@@ -698,7 +699,10 @@ MagickExport unsigned int OpenModule(const char *module,
   */
   handle=(ModuleHandle) NULL;
   module_file=TagToModule(module_name);
-  GetPathComponent(module_list->path,HeadPath,path);
+  *path='\0';
+  if ((module_list != (ModuleInfo *) NULL) && 
+      (module_list->path != (char *) NULL))
+    GetPathComponent(module_list->path,HeadPath,path);
   (void) strcat(path,DirectorySeparator);
   (void) strncat(path,module_file,MaxTextExtent-strlen(path)-1);
   handle=lt_dlopen(path);
@@ -897,7 +901,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
         module_info=(ModuleInfo *) AcquireMemory(sizeof(ModuleInfo));
         if (module_info == (ModuleInfo *) NULL)
           MagickFatalError(ResourceLimitFatalError,
-            "Unable to allocate module magick","Memory allocation failed");
+            "Unable to allocate module info","Memory allocation failed");
         (void) memset(module_info,0,sizeof(ModuleInfo));
         module_info->path=AcquireString(path);
         module_info->signature=MagickSignature;
@@ -1129,21 +1133,23 @@ MagickExport char *TagToModule(const char *tag)
     *module_name;
 
   assert(tag != (char *) NULL);
-  module_name=AllocateString("tag");
+  module_name=AllocateString(tag);
 #if defined(HasLTDL)
   (void) FormatString(module_name,"%.1024s.la",tag);
   (void) LocaleLower(module_name);
 #else
+#if defined(WIN32)
   if (LocaleNCompare("IM_MOD_",tag,7) == 0)
     (void) strncpy(module_name,tag,MaxTextExtent-1);
   else
     {
-#  if defined(_DEBUG)
+#if defined(_DEBUG)
       FormatString(module_name,"IM_MOD_DB_%.1024s_.dll",tag);
-#  else
+#else
       FormatString(module_name,"IM_MOD_RL_%.1024s_.dll",tag);
-#  endif
+#endif
     }
+#endif
 #endif
   return(module_name);
 }

@@ -245,7 +245,8 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
       {
         if (p->previous != (MagicInfo *) NULL)
           (void) fprintf(file,"\n");
-        (void) fprintf(file,"Path: %.1024s\n\n",p->path);
+        if (p->path != (char *) NULL)
+          (void) fprintf(file,"Path: %.1024s\n\n",p->path);
         (void) fprintf(file,"Name      Offset Target\n");
         (void) fprintf(file,"-------------------------------------------------"
           "------------------------------\n");

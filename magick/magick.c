@@ -481,29 +481,33 @@ MagickExport int unsigned IsMagickConflict(const char *magick)
 */
 MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 {
-  char
-    *module_file,
-    path[MaxTextExtent];
-
-  size_t
-    length;
-
   register const MagickInfo
     *p;
-
-  void
-    *blob;
 
   if (file == (FILE *) NULL)
     file=stdout;
   (void) GetMagickInfo("*",exception);
-  module_file=TagToModule("MIFF");
-  blob=GetModuleBlob(module_file,path,&length,exception);
-  if (blob != (void *) NULL)
-    LiberateMemory((void **) &blob);
-  LiberateMemory((void **) &module_file);
-  GetPathComponent(path,HeadPath,path);
-  (void) fprintf(file,"Path: %.1024s\n\n",path);
+#if defined(HasMODULES)
+  {
+    char
+      *module_file,
+      path[MaxTextExtent];
+
+    size_t
+      length;
+
+    void
+      *blob;
+
+    module_file=TagToModule("MIFF");
+    blob=GetModuleBlob(module_file,path,&length,exception);
+    if (blob != (void *) NULL)
+      LiberateMemory((void **) &blob);
+    LiberateMemory((void **) &module_file);
+    GetPathComponent(path,HeadPath,path);
+    (void) fprintf(file,"Path: %.1024s\n\n",path);
+  }
+#endif
   (void) fprintf(file,"   Format  Mode  Description\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------------\n");

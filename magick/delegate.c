@@ -513,7 +513,8 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
       {
         if (p->previous != (DelegateInfo *) NULL)
           (void) fprintf(file,"\n");
-        (void) fprintf(file,"Path: %.1024s\n\n",p->path);
+        if (p->path != (char *) NULL)
+          (void) fprintf(file,"Path: %.1024s\n\n",p->path);
         (void) fprintf(file,"Delegate             Command\n");
         (void) fprintf(file,"-------------------------------------------------"
           "------------------------------\n");

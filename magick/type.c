@@ -492,7 +492,8 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
       {
         if (p->previous != (TypeInfo *) NULL)
           (void) fprintf(file,"\n");
-        (void) fprintf(file,"Path: %.1024s\n\n",p->path);
+        if (p->path != (char *) NULL)
+          (void) fprintf(file,"Path: %.1024s\n\n",p->path);
         (void) fprintf(file,"%-32.32s %-23.23s %-7.7s %-8s %-3s\n",
           "Name","Family","Style","Stretch","Weight");
         (void) fprintf(file,"--------------------------------------------------"

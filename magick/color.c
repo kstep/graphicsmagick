@@ -1328,7 +1328,8 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
       {
         if (p->previous != (ColorInfo *) NULL)
           (void) fprintf(file,"\n");
-        (void) fprintf(file,"Path: %.1024s\n\n",p->path);
+        if (p->path != (char *) NULL)
+          (void) fprintf(file,"Path: %.1024s\n\n",p->path);
         (void) fprintf(file,
           "Name                   Color                   Compliance\n");
         (void) fprintf(file,"-------------------------------------------------"
