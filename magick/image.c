@@ -1129,6 +1129,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->compression=image_info->compression;
   clone_info->temporary=image_info->temporary;
   clone_info->adjoin=image_info->adjoin;
+  clone_info->antialias=image_info->antialias;
   clone_info->subimage=image_info->subimage;
   clone_info->subrange=image_info->subrange;
   clone_info->depth=image_info->depth;
@@ -1181,6 +1182,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   (void) strncpy(clone_info->unique,image_info->unique,MaxTextExtent-1);
   (void) strncpy(clone_info->zero,image_info->zero,MaxTextExtent-1);
   (void) strncpy(clone_info->filename,image_info->filename,MaxTextExtent-1);
+  clone_info->signature=image_info->signature;
   return(clone_info);
 }
 

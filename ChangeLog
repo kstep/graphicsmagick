@@ -1,6 +1,7 @@
 2002-07-04  Cristy  <cristy@mystic.es.dupont.com>
   * Semaphore.c will compile now when pthreads are not present.
   * 8-Bit Quantum PCD images now read correctly.
+  * The antialias member of the ImageInfo structure was not being cloned.
 
 2002-07-01  Cristy  <cristy@mystic.es.dupont.com>
   * ImageMagick 5.4.7 released.
