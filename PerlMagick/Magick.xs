@@ -5877,8 +5877,7 @@ Mogrify(ref,...)
               MagickError(OptionError,"Missing image to compare",NULL);
               goto ReturnIt;
             }
-          (void) IsImagesEqual(image,argument_list[0].image_reference,
-            &image->error,&exception);
+          (void) IsImagesEqual(image,argument_list[0].image_reference);
           break;
         }
       }

@@ -2627,8 +2627,7 @@ MagickExport unsigned int GradientImage(Image *image,
 %
 %  The format of the IsImagesEqual method is:
 %
-%      unsigned int IsImagesEqual(const Image *image,const Image *reference,
-%        ErrorInfo *error,ExceptionInfo *exception)
+%      unsigned int IsImagesEqual(Image *image,const Image *reference)
 %
 %  A description of each parameter follows.
 %
@@ -2636,14 +2635,8 @@ MagickExport unsigned int GradientImage(Image *image,
 %
 %    o reference: The reference image.
 %
-%    o error: The error measurements are returned here.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-%
 */
-MagickExport unsigned int IsImagesEqual(const Image *image,
-  const Image *reference,ErrorInfo *error,ExceptionInfo *exception)
+MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
 {
   double
     distance,
@@ -2672,7 +2665,7 @@ MagickExport unsigned int IsImagesEqual(const Image *image,
   assert(image->signature == MagickSignature);
   assert(reference != (const Image *) NULL);
   assert(reference->signature == MagickSignature);
-  memset(error,0,sizeof(ErrorInfo));
+  memset(&image->error,0,sizeof(ErrorInfo));
   (void) GetNumberColors(image,(FILE *) NULL,exception);
   if ((image->rows != reference->rows) ||
       (image->columns != reference->columns) ||
@@ -2689,8 +2682,8 @@ MagickExport unsigned int IsImagesEqual(const Image *image,
   pixel.opacity=0;
   for (y=0; y < (long) image->rows; y++)
   {
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    q=AcquireImagePixels(reference,0,y,reference->columns,1,exception);
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    q=AcquireImagePixels(reference,0,y,reference->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x+=count)
@@ -2719,10 +2712,10 @@ MagickExport unsigned int IsImagesEqual(const Image *image,
   normalize=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
   if (image->matte)
     normalize=4.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
-  error->mean_error_per_pixel=total_error/image->columns/image->rows;
-  error->normalized_mean_error=error->mean_error_per_pixel/normalize;
-  error->normalized_maximum_error=maximum_error_per_pixel/normalize;
-  return(error->normalized_mean_error == 0.0);
+  image->error.mean_error_per_pixel=total_error/image->columns/image->rows;
+  image->error.normalized_mean_error=error->mean_error_per_pixel/normalize;
+  image->error.normalized_maximum_error=maximum_error_per_pixel/normalize;
+  return(image->error.normalized_mean_error == 0.0);
 }
 
 /*
