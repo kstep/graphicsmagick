@@ -55,13 +55,11 @@
 */
 #include "magick.h"
 #include "defines.h"
-#if defined(HasMODULES)
-
 #if defined(HasLTDL)
-# include "ltdl/ltdl.h"
- typedef lt_dlhandle ModuleHandle;
+#include "ltdl/ltdl.h"
+typedef lt_dlhandle ModuleHandle;
 #else
- typedef void *ModuleHandle;
+typedef void *ModuleHandle;
 #endif
 /*
   Define declarations.
@@ -108,6 +106,31 @@ static ModuleInfo
 
 static unsigned int
   ReadConfigurationFile(const char *,ExceptionInfo *);
+
+/*
+  Module stubs.
+*/
+#if !defined(HasMODULES)
+int lt_dlinit(void)
+{
+  return(0);
+}
+void *lt_dlopen(char *filename)
+{
+  return((void *) NULL);
+}
+void lt_dlclose(void *handle)
+{
+}
+const char *lt_dlerror(void)
+{
+  return((const char *) NULL);
+}
+void *lt_dlsym(void *handle,char *symbol)
+{
+  return((void *) NULL);
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1196,4 +1219,3 @@ static int UnregisterModuleInfo(const char *tag)
   }
   return(False);
 }
-#endif /* HasMODULES */

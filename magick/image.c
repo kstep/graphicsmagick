@@ -55,10 +55,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "magic.h"
-#if defined(HasMODULES)
-#include "modules.h"
-#endif
 
 /*
   Constant declaration.
@@ -4193,7 +4189,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             draw_info->pointsize=clone_info->pointsize;
             continue;
           }
-#if defined(HasMODULES)
         if (LocaleNCompare("-process",option,5) == 0)
           {
             char
@@ -4226,12 +4221,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   *argv;
 
                 argv=&(arguments[next]);
-                ExecuteModuleProcess((const char *) token,*image,1,&argv);
+                (void) ExecuteModuleProcess((const char *) token,*image,1,&argv);
               }
             LiberateMemory((void **) &token);
             continue;
           }
-#endif
         if (LocaleNCompare("profile",option+1,4) == 0)
           {
             if (*option == '+')
@@ -4988,8 +4982,9 @@ MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
         count=sscanf(geometry,"%lfx%lf",&x_area,&y_area);
       if (count == 1)
         y_area=x_area;
-      *width=(unsigned int) (former_width/(sqrt(former_width)/x_area));
-      *height=(unsigned int) (former_height/(sqrt(former_width)/y_area));
+      distance=sqrt((double) former_width*former_height);
+      *width=(unsigned int) (former_width/(distance/x_area));
+      *height=(unsigned int) (former_height/(distance/y_area));
       former_width=(*width);
       former_height=(*height);
     }

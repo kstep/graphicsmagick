@@ -55,10 +55,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "magic.h"
-#if defined(HasMODULES)
-# include "modules.h"
-#endif
 
 /*
   Global declarations.
@@ -308,10 +304,8 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
   register MagickInfo
     *p;
 
-#if defined(HasMODULES)
   if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
     OpenModules(exception);
-#endif
   AcquireSemaphoreInfo(&magick_semaphore);
   if (magick_list != (MagickInfo *) NULL)
     LiberateSemaphoreInfo(&magick_semaphore);
@@ -321,9 +315,8 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
         Register image formats.
       */
       LiberateSemaphoreInfo(&magick_semaphore);
-#if defined(HasMODULES)
       (void) GetModuleInfo((char *) NULL,exception);
-#else
+#if !defined(HasMODULES)
       Register8BIMImage();
       RegisterARTImage();
       RegisterAVIImage();
@@ -422,7 +415,6 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
       return(p);
     }
   LiberateSemaphoreInfo(&magick_semaphore);
-#if defined(HasMODULES)
   (void) OpenModule(name,exception);
   AcquireSemaphoreInfo(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
@@ -433,7 +425,6 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
       LiberateSemaphoreInfo(&magick_semaphore);
       return(p);
     }
-#endif
   LiberateSemaphoreInfo(&magick_semaphore);
   return((MagickInfo *) NULL);
 }
