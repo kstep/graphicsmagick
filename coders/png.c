@@ -90,6 +90,20 @@
 #define JNG_SUPPORTED /* Not finished as of 5.5.2.  See "To do" comments. */
 
 /*
+  Establish thread safety.
+  setjmp/longjmp is claimed to be safe on these platforms:
+  setjmp/longjmp is allegged to be unsafe on these platforms:
+*/
+#ifndef SETJMP_IS_THREAD_SAFE
+#define PNG_SETJMP_NOT_THREAD_SAFE
+#endif
+
+#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+static SemaphoreInfo
+  *png_semaphore = (SemaphoreInfo *) NULL;
+#endif
+
+/*
   This is temporary until I set up malloc'ed object attributes array.
   Recompile with MNG_MAX_OBJECTS=65536L to avoid this limit but
   waste more memory.
@@ -1546,6 +1560,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
       "  enter ReadOnePNGImage()");
 
+#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+  AcquireSemaphoreInfo(&png_semaphore);
+#endif
+
 #if (PNG_LIBPNG_VER < 10007)
   if (image_info->verbose)
     printf("Your PNG library (libpng-%s) is rather old.\n",
@@ -1602,8 +1620,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   */
   mng_info->image_found++;
   png_set_sig_bytes(ping,8);
-  if (LocaleCompare(image_info->magick,"MNG") == 0 ||
-      LocaleCompare(image_info->magick,"MNGTS") == 0)
+  if (LocaleCompare(image_info->magick,"MNG") == 0)
     {
 #if defined(PNG_MNG_FEATURES_SUPPORTED)
       png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
@@ -2585,8 +2602,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     Free memory.
   */
   png_destroy_read_struct(&ping,&ping_info,&end_info);
+
   LiberateMemory((void **) &png_pixels);
   LiberateMemory((void **) &scanlines);
+#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+  LiberateSemaphoreInfo(&png_semaphore);
+#endif
+
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  exit ReadOnePNGImage()");
@@ -3357,8 +3379,7 @@ static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
-  if (LocaleCompare(image_info->magick,"JNG") != 0 &&
-     LocaleCompare(image_info->magick,"JNGTS") != 0)
+  if (LocaleCompare(image_info->magick,"JNG") != 0)
     ThrowReaderException(CorruptImageError,"NotAJNGImageFile",image);
   /*
     Verify JNG signature.
@@ -3532,8 +3553,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     mng_info->optimize=image_info->type == OptimizeType;
 #endif
 
-  if (LocaleCompare(image_info->magick,"MNG") == 0 ||
-      LocaleCompare(image_info->magick,"MNGTS") == 0)
+  if (LocaleCompare(image_info->magick,"MNG") == 0)
     {
       char
         magic_number[MaxTextExtent];
@@ -3576,8 +3596,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
   do
   {
-    if (LocaleCompare(image_info->magick,"MNG") == 0 ||
-        LocaleCompare(image_info->magick,"MNGTS") == 0)
+    if (LocaleCompare(image_info->magick,"MNG") == 0)
       {
         char
           type[MaxTextExtent];
@@ -5821,8 +5840,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Finished reading PNG datastream.");
-  } while (LocaleCompare(image_info->magick,"MNG") == 0 ||
-        LocaleCompare(image_info->magick,"MNGTS") == 0);
+  } while (LocaleCompare(image_info->magick,"MNG") == 0);
 #ifdef MNG_INSERT_LAYERS
   if (insert_layers && !mng_info->image_found && (mng_info->mng_width) &&
        (mng_info->mng_height))
@@ -6005,8 +6023,8 @@ ModuleExport void RegisterPNGImage(void)
 #endif
 #endif
   entry=SetMagickInfo("MNG");
-  entry->thread_support=False;  /* To do: Verify this. */
   entry->seekable_stream=True;  /* To do: eliminate this. */
+  entry->thread_support=True;
 #if defined(HasPNG)
   entry->decoder=(DecoderHandler) ReadMNGImage;
   entry->encoder=(EncoderHandler) WriteMNGImage;
@@ -6019,13 +6037,13 @@ ModuleExport void RegisterPNGImage(void)
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PNG");
-  entry->thread_support=False;
 #if defined(HasPNG)
   entry->decoder=(DecoderHandler) ReadPNGImage;
   entry->encoder=(EncoderHandler) WritePNGImage;
 #endif
   entry->magick=(MagickHandler) IsPNG;
   entry->adjoin=False;
+  entry->thread_support=True;
   entry->description=AcquireString("Portable Network Graphics");
   entry->module=AcquireString("PNG");
   if (*version != '\0')
@@ -6033,37 +6051,37 @@ ModuleExport void RegisterPNGImage(void)
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PNG8");
-  entry->thread_support=False;
 #if defined(HasPNG)
   entry->decoder=(DecoderHandler) ReadPNGImage;
   entry->encoder=(EncoderHandler) WritePNGImage;
 #endif
   entry->magick=(MagickHandler) IsPNG;
   entry->adjoin=False;
+  entry->thread_support=True;
   entry->description=AcquireString("8-bit indexed PNG, binary transparency only");
   entry->module=AcquireString("PNG");
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PNG24");
-  entry->thread_support=False;
 #if defined(HasPNG)
   entry->decoder=(DecoderHandler) ReadPNGImage;
   entry->encoder=(EncoderHandler) WritePNGImage;
 #endif
   entry->magick=(MagickHandler) IsPNG;
   entry->adjoin=False;
+  entry->thread_support=True;
   entry->description=AcquireString("24-bit RGB PNG, opaque only");
   entry->module=AcquireString("PNG");
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PNG32");
-  entry->thread_support=False; /* To do: Verify this. */
 #if defined(HasPNG)
   entry->decoder=(DecoderHandler) ReadPNGImage;
   entry->encoder=(EncoderHandler) WritePNGImage;
 #endif
   entry->magick=(MagickHandler) IsPNG;
   entry->adjoin=False;
+  entry->thread_support=True;
   entry->description=AcquireString("32-bit RGBA PNG, semitransparency OK");
   entry->module=AcquireString("PNG");
   (void) RegisterMagickInfo(entry);
@@ -6071,68 +6089,18 @@ ModuleExport void RegisterPNGImage(void)
 #if defined(JNG_SUPPORTED)
 #if defined(HasJPEG)
   entry=SetMagickInfo("JNG");
-  entry->thread_support=False;   /* To do: Verify this. */
 #if defined(HasPNG)
   entry->decoder=(DecoderHandler) ReadJNGImage;
   entry->encoder=(EncoderHandler) WriteJNGImage;
 #endif
   entry->magick=(MagickHandler) IsPNG;
   entry->adjoin=False;
+  entry->thread_support=True;
   entry->description=AcquireString("JPEG Network Graphics");
   entry->module=AcquireString("PNG");
   (void) RegisterMagickInfo(entry);
 #endif
 #endif
-
-  entry=SetMagickInfo("MNGTS");
-  /* No thread support check; WriteImage will not acquire semaphore. */
-  entry->thread_support=True;
-  entry->seekable_stream=True;  /* To do: eliminate this. */
-#if defined(HasPNG)
-  entry->decoder=(DecoderHandler) ReadMNGImage;
-  entry->encoder=(EncoderHandler) WriteMNGImage;
-#endif
-  entry->magick=(MagickHandler) IsMNG;
-  entry->description=AcquireString("Multiple-image Network Graphics");
-  if (*version != '\0')
-    entry->version=AcquireString(version);
-  entry->module=AcquireString("PNG");
-  (void) RegisterMagickInfo(entry);
-
-  entry=SetMagickInfo("PNGTS");
-  entry->stealth=True;
-  /* No thread support check; WriteImage will not acquire semaphore. */
-  entry->thread_support=True;
-#if defined(HasPNG)
-  entry->decoder=(DecoderHandler) ReadPNGImage;
-  entry->encoder=(EncoderHandler) WritePNGImage;
-#endif
-  entry->magick=(MagickHandler) IsPNG;
-  entry->adjoin=False;
-  entry->description=AcquireString("Portable Network Graphics (Thread Safe)");
-  entry->module=AcquireString("PNG");
-  if (*version != '\0')
-    entry->version=AcquireString(version);
-  (void) RegisterMagickInfo(entry);
-
-#if defined(JNG_SUPPORTED)
-#if defined(HasJPEG)
-  entry=SetMagickInfo("JNGTS");
-  /* No thread support check; WriteImage will not acquire semaphore. */
-  entry->thread_support=True;   /* Validate this. */
-#if defined(HasPNG)
-  entry->decoder=(DecoderHandler) ReadJNGImage;
-  entry->encoder=(EncoderHandler) WriteJNGImage;
-#endif
-  entry->magick=(MagickHandler) IsPNG;
-  entry->adjoin=False;
-  entry->description=AcquireString("JPEG Network Graphics");
-  entry->module=AcquireString("PNG");
-  (void) RegisterMagickInfo(entry);
-
-#endif
-#endif
-
 }
 
 /*
@@ -6161,12 +6129,9 @@ ModuleExport void UnregisterPNGImage(void)
   (void) UnregisterMagickInfo("PNG8");
   (void) UnregisterMagickInfo("PNG24");
   (void) UnregisterMagickInfo("PNG32");
-  (void) UnregisterMagickInfo("MNGTS");
-  (void) UnregisterMagickInfo("PNGTS");
 #if defined(JNG_SUPPORTED)
 #if defined(HasJPEG)
   (void) UnregisterMagickInfo("JNG");
-  (void) UnregisterMagickInfo("JNGTS");
 #endif
 #endif
 }
@@ -6391,6 +6356,11 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
 
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
       "  enter WriteOnePNGImage()");
+
+#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+  AcquireSemaphoreInfo(&png_semaphore);
+#endif
+
   (void) TransformRGBImage(image,(ColorspaceType) RGBColorspace);
   mng_info->IsPalette=image->storage_class == PseudoClass && image->colors <= 256;
 
@@ -6418,6 +6388,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
   png_set_write_fn(ping,image,png_put_data,png_flush_data);
   png_pixels=(unsigned char *) NULL;
   scanlines=(unsigned char **) NULL;
+
   if (setjmp(ping->jmpbuf))
     {
       /*
@@ -7587,8 +7558,14 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       ping_info->valid&=(~PNG_INFO_tRNS);
     }
   png_destroy_write_struct(&ping,&ping_info);
+
   LiberateMemory((void **) &scanlines);
   LiberateMemory((void **) &png_pixels);
+
+#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+  LiberateSemaphoreInfo(&png_semaphore);
+#endif
+
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  exit WriteOnePNGImage()");
@@ -7723,9 +7700,8 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
       if (jpeg_image == (Image *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
             image);
-      jpeg_image_info->blob=(BlobInfo *) AcquireMemory(sizeof(BlobInfo));
-      GetBlobInfo(jpeg_image_info->blob);
-      jpeg_image->blob=jpeg_image_info->blob;
+      jpeg_image->blob=(BlobInfo *) AcquireMemory(sizeof(BlobInfo));
+      GetBlobInfo(jpeg_image->blob);
       status=ChannelImage(jpeg_image,OpacityChannel);
       status=NegateImage(jpeg_image,False);
       jpeg_image->matte=False;
@@ -7950,8 +7926,8 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
                 "  Creating PNG blob.");
           length=0;
 
-          (void) strncpy(jpeg_image_info->magick,"PNGTS",MaxTextExtent-1);
-          (void) strncpy(jpeg_image->magick,"PNGTS",MaxTextExtent-1);
+          (void) strncpy(jpeg_image_info->magick,"PNG",MaxTextExtent-1);
+          (void) strncpy(jpeg_image->magick,"PNG",MaxTextExtent-1);
 
           blob=(char *) ImageToBlob(jpeg_image_info,jpeg_image,&length,
               &image->exception);
@@ -8047,9 +8023,8 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
   if (jpeg_image == (Image *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
         image);
-  jpeg_image_info->blob=(BlobInfo *) AcquireMemory(sizeof(BlobInfo));
-  GetBlobInfo(jpeg_image_info->blob);
-  jpeg_image->blob=jpeg_image_info->blob;
+  jpeg_image->blob=(BlobInfo *) AcquireMemory(sizeof(BlobInfo));
+  GetBlobInfo(jpeg_image->blob);
 
   FormatString(jpeg_image_info->filename,"%.1024sJ.jpg",basename);
   FormatString(jpeg_image->filename,"%.1024sJ.jpg",basename);
@@ -8090,6 +8065,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
   (void) WriteBlobMSBULong(image,crc32(crc32(0,chunk,4),(unsigned char *)
       blob,length));
 
+  (void) remove(jpeg_image->filename);
   DestroyImage(jpeg_image);
   DestroyImageInfo(jpeg_image_info);
   LiberateMemory((void **) &blob);
@@ -8236,8 +8212,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
   mng_info->image=image;
   have_mng_structure=True;
 
-  write_mng=LocaleCompare(image_info->magick,"MNG") == 0 ||
-      LocaleCompare(image_info->magick,"MNGTS") == 0;
+  write_mng=LocaleCompare(image_info->magick,"MNG") == 0;
   mng_info->write_png8=LocaleCompare(image_info->magick,"PNG8") == 0;
   mng_info->write_png24=LocaleCompare(image_info->magick,"PNG24") == 0;
   mng_info->write_png32=LocaleCompare(image_info->magick,"PNG32") == 0;
