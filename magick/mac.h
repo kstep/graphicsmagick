@@ -62,8 +62,8 @@ extern struct dirent
  
 extern void
   closedir(DIR *),
-  MACErrorHandler(const unsigned int,const char *,const char *),
-  MACWarningHandler(const unsigned int,const char *,const char *),
+  MACErrorHandler(const ErrorType,const char *,const char *),
+  MACWarningHandler(const WarningType,const char *,const char *),
   ProcessPendingEvents(const char *),
   seekdir(DIR *,long),
   SetApplicationType(const char *,const char *,OSType);

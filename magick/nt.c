@@ -288,7 +288,7 @@ Export void *mmap(char *address,size_t length,int protection,int access,
 %
 %  The format of the NTErrorHandler method is:
 %
-%      void NTErrorHandler(const unsigned int error,const char *message,
+%      void NTErrorHandler(const ErrorType error,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
@@ -302,7 +302,7 @@ Export void *mmap(char *address,size_t length,int protection,int access,
 %
 %
 */
-Export void NTErrorHandler(const unsigned int error,const char *message,
+Export void NTErrorHandler(const ErrorType error,const char *message,
   const char *qualifier)
 {
   char
@@ -498,7 +498,7 @@ Export int munmap(void *map,size_t length)
 %
 %  The format of the NTWarningHandler method is:
 %
-%      void NTWarningHandler(const unsigned int warning,const char *message,
+%      void NTWarningHandler(const ErrorType warning,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
@@ -512,7 +512,7 @@ Export int munmap(void *map,size_t length)
 %
 %
 */
-Export void NTWarningHandler(const unsigned int warning,const char *message,
+Export void NTWarningHandler(const ErrorType warning,const char *message,
   const char *qualifier)
 {
   char

@@ -33,7 +33,7 @@ monitor - ImageMagick Progress Monitor Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-void  <STRONG>ProgressMonitor</STRONG>( const char *text, const unsigned int quantum, const unsigned int span );
+void  <STRONG>ProgressMonitor</STRONG>( const char *text, const off_t quantum, const off_t span );
 
 </P>
 <P>
@@ -55,7 +55,7 @@ that describes the task and a measure of completion.
 The format of the ProgressMonitor method is:
 
 </P>
-<blockquote>void ProgressMonitor ( const char *text, const unsigned int quantum, const unsigned int span ); </blockquote>
+<blockquote>void ProgressMonitor ( const char *text, const off_t quantum, const off_t span ); </blockquote>
 
 <P>
 

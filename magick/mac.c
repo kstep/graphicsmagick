@@ -297,7 +297,7 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
 %
 %
 */
-void closedir(DIR *entry)
+Export void closedir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
   FreeMemory((void *) entry);
@@ -327,7 +327,7 @@ void closedir(DIR *entry)
 %
 %
 */
-int Exit(int status)
+Export int Exit(int status)
 {
   (void) fprintf(stderr,"Select File->Quit to exit.\n");
   exit(status);
@@ -359,7 +359,7 @@ int Exit(int status)
 %
 %
 */
-void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
+Export void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
 {
   Str255
     name;
@@ -747,8 +747,7 @@ static OSErr MacGSSetWorkingFolder(char *directory)
 %
 %  The format of the MACSystemCommand method is:
 %
-%      void MACWarningHandler(const unsigned int warning,const char *message,
-%        const char *qualifier)
+%      int MACSystemCommand(const char * command)
 %
 %  A description of each parameter follows:
 %
@@ -756,7 +755,7 @@ static OSErr MacGSSetWorkingFolder(char *directory)
 %
 %
 */
-int MACSystemCommand(const char * command)
+Export int MACSystemCommand(const char * command)
 {
   /*
     We only know how to launch Ghostscript.
@@ -781,7 +780,8 @@ int MACSystemCommand(const char * command)
 %
 %  The format of the MACWarningHandler method is:
 %
-+      MACWarningHandler(warning,message,qualifier)
++      void MACWarningHandler(const WarningType warning,const char *message,
+%        const char *qualifier)
 %
 %  A description of each parameter follows:
 %
@@ -794,7 +794,7 @@ int MACSystemCommand(const char * command)
 %
 %
 */
-Export void MACWarningHandler(const unsigned int warning,const char *message,
+Export void MACWarningHandler(const WarningType warning,const char *message,
   const char *qualifier)
 {
   char
@@ -827,7 +827,7 @@ Export void MACWarningHandler(const unsigned int warning,const char *message,
 %
 %  The format of the opendir method is:
 %
-%      void ProcessPendingEvents(const char *text)
+%      Export DIR *opendir(char *path)
 %
 %  A description of each parameter follows:
 %
@@ -835,7 +835,7 @@ Export void MACWarningHandler(const unsigned int warning,const char *message,
 %
 %
 */
-DIR *opendir(char *path)
+Export DIR *opendir(char *path)
 {
   char
     pathname[1664];
@@ -930,7 +930,7 @@ Export void ProcessPendingEvents(const char *text)
 %
 %  The format of the readdir
 %
-%      readdir(entry)
+%      struct dirent *readdir(DIR *entry)
 %
 %  A description of each parameter follows:
 %
@@ -938,7 +938,7 @@ Export void ProcessPendingEvents(const char *text)
 %
 %
 */
-struct dirent *readdir(DIR *entry)
+Export struct dirent *readdir(DIR *entry)
 {
   CInfoPBRec
     search_info;
@@ -1004,7 +1004,7 @@ struct dirent *readdir(DIR *entry)
 %
 %
 */
-Image *ReadPICTImage(const ImageInfo *image_info)
+Export Image *ReadPICTImage(const ImageInfo *image_info)
 {
 #define LoadImageText  "  Loading image...  "
 #define PICTHeaderSize    512
@@ -1304,7 +1304,7 @@ static Boolean SearchForFile(OSType creator_type,OSType file_type,FSSpec *file,
 %
 %  The format of the seekdir method is:
 %
-%      seekdir(entry,position)
+%      void seekdir(DIR *entry,long position)
 %
 %  A description of each parameter follows:
 %
@@ -1316,7 +1316,7 @@ static Boolean SearchForFile(OSType creator_type,OSType file_type,FSSpec *file,
 %
 %
 */
-void seekdir(DIR *entry,long position)
+Export void seekdir(DIR *entry,long position)
 {
   assert(entry != (DIR *) NULL);
   entry->d_index=position;
@@ -1337,7 +1337,8 @@ void seekdir(DIR *entry,long position)
 %
 %  The format of the SetApplicationType method is:
 %
-%      SetApplicationType(filename,magick,application)
+%      void SetApplicationType(const char *filename,const char *magick,
+%        OSType application)
 %
 %  A description of each parameter follows:
 %
@@ -1349,7 +1350,7 @@ void seekdir(DIR *entry,long position)
 %
 %
 */
-void SetApplicationType(const char *filename,const char *magick,
+Export void SetApplicationType(const char *filename,const char *magick,
   OSType application)
 {
   OSType
@@ -1382,7 +1383,7 @@ void SetApplicationType(const char *filename,const char *magick,
 %
 %  The format of the telldir method is:
 %
-%      telldir(entry)
+%      telldir(DIR *entry)
 %
 %  A description of each parameter follows:
 %
@@ -1390,7 +1391,7 @@ void SetApplicationType(const char *filename,const char *magick,
 %
 %
 */
-long telldir(DIR *entry)
+Export long telldir(DIR *entry)
 {
   return(entry->d_index);
 }
