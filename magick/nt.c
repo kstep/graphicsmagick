@@ -1238,9 +1238,6 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
   Image
     *image;
 
-  RGBQUAD
-    *ppBits;
-
   int
     height,
     width;
@@ -1258,7 +1255,8 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
     *q;
 
   RGBQUAD
-    *pBits;
+    *pBits,
+    *ppBits;
 
   hemf=ReadEnhMetaFile(image_info->filename,&width,&height);
   if (!hemf)
