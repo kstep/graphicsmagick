@@ -1146,10 +1146,10 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   metrics->width=0;
   metrics->height=(double) (face->size->metrics.height+32)/64;
   metrics->max_advance=(double) (face->size->metrics.max_advance+32)/64;
-  metrics->bounds.x1=65536.0;
-  metrics->bounds.y1=65536.0;
-  metrics->bounds.x2=(-65536.0);
-  metrics->bounds.y2=(-65536.0);
+  metrics->bounds.x1=(double) ((1L << 30)-1);
+  metrics->bounds.y1=(double) ((1L << 30)-1);
+  metrics->bounds.x2=(double) ((-((1L << 30)-1)));
+  metrics->bounds.y2=(double) ((-((1L << 30)-1)));
   metrics->underline_position=(face->underline_position+32)/64;
   metrics->underline_thickness=(face->underline_thickness+32)/64;
   /*
@@ -1197,6 +1197,15 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     status=FT_Get_Glyph(face->glyph,&glyph.image);
     if (status != False)
       continue;
+    FT_Glyph_Get_CBox(glyph.image,0,&bounds);
+    if (bounds.xMin < metrics->bounds.x1)
+      metrics->bounds.x1=bounds.xMin;
+    if (bounds.yMin < metrics->bounds.y1)
+      metrics->bounds.y1=bounds.yMin;
+    if (bounds.xMax > metrics->bounds.x2)
+      metrics->bounds.x2=bounds.xMax;
+    if (bounds.yMax > metrics->bounds.y2)
+      metrics->bounds.y2=bounds.yMax;
     if (render)
       if ((draw_info->stroke.opacity != TransparentOpacity) ||
           (draw_info->stroke_pattern != (Image *) NULL))
@@ -1209,15 +1218,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           (void) FT_Outline_Decompose(&((FT_OutlineGlyph)
             glyph.image)->outline,&OutlineMethods,clone_info);
         }
-    FT_Glyph_Get_CBox(glyph.image,0,&bounds);
-    if (bounds.xMin < metrics->bounds.x1)
-      metrics->bounds.x1=bounds.xMin;
-    if (bounds.yMin < metrics->bounds.y1)
-      metrics->bounds.y1=bounds.yMin;
-    if (bounds.xMax > metrics->bounds.x2)
-      metrics->bounds.x2=bounds.xMax;
-    if (bounds.yMax > metrics->bounds.y2)
-      metrics->bounds.y2=bounds.yMax;
     FT_Vector_Transform(&glyph.origin,&affine);
     (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
     if (render)
