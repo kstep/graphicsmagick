@@ -1364,13 +1364,13 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   pixel=(*p);
                   p++;
                 }
+                FormatString(buffer,"%02x%02x",(unsigned int) index,
+                  (unsigned int) Min(length,0xff));
+                (void) WriteBlobString(image,buffer);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     MagickMonitor(SaveImageText,y,image->rows);
               }
-              FormatString(buffer,"%02x%02x",(unsigned int) index,
-                (unsigned int) Min(length,0xff));
-              (void) WriteBlobString(image,buffer);
               break;
             }
             case NoCompression:
