@@ -2085,7 +2085,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             {
               for (x=0; x < (int) image->columns; x++)
               {
-                *r=(*p++ << 8) || (*p++);
+                *r=(*p++ << 8);
+                *r|=(*p++);
                 r++;
               }
               break;
@@ -2110,13 +2111,16 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           SyncImage(image);
         if (ping_info->valid & PNG_INFO_tRNS)
           {
+            ClassType
+              class;
             /*
               Image has a transparent background.
             */
             image->matte=True;
+            class=image->class;
             for (y=0; y < (int) image->rows; y++)
             {
-              image->class=PseudoClass;
+              image->class=class;
               q=GetPixelCache(image,0,y,image->columns,1);
               image->class=DirectClass;
               if (q == (PixelPacket *) NULL)
@@ -2127,16 +2131,19 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   index;
 
                 q->opacity=Opaque;
-                index=image->indexes[x];
-                q->red=(Quantum) UpScale(image->colormap[index].red);
-                q->green=(Quantum) UpScale(image->colormap[index].green);
-                q->blue=(Quantum) UpScale(image->colormap[index].blue);
-                if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+                if(class == PseudoClass)
                   {
-                    if (index < ping_info->num_trans)
-                      q->opacity=(Quantum) UpScale(ping_info->trans[index]);
+                    index=image->indexes[x];
+                    q->red=(Quantum) UpScale(image->colormap[index].red);
+                    q->green=(Quantum) UpScale(image->colormap[index].green);
+                    q->blue=(Quantum) UpScale(image->colormap[index].blue);
+                    if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+                      {
+                        if (index < ping_info->num_trans)
+                          q->opacity=(Quantum) UpScale(ping_info->trans[index]);
+                      }
                   }
-                else
+                if (ping_info->color_type != PNG_COLOR_TYPE_PALETTE)
                   {
                     if (q->red == transparent_color.opacity)
                       q->opacity=Transparent;
@@ -3335,7 +3342,9 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       image->matte=False;
     if (IsGrayImage(image))
       {
-        if (ping_info->valid & PNG_INFO_tRNS)
+        if (image->matte)
+          ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
+        else
           ping_info->color_type=PNG_COLOR_TYPE_GRAY;
       }
     else

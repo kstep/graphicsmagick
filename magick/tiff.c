@@ -783,13 +783,22 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
             }
           else
             {
-              q->red=(*p++ << 8) || (*p++);
-              q->green=(*p++ << 8) || (*p++);
-              q->blue=(*p++ << 8) || (*p++);
+              q->red=(*p++ << 8);
+              q->red|=(*p++);
+              q->green=(*p++ << 8);
+              q->green|=(*p++);
+              q->blue=(*p++ << 8);
+              q->blue|=(*p++);
               if (samples_per_pixel > 3)
-                q->opacity=(*p++ << 8) || (*p++);
+                {
+                  q->opacity=(*p++ << 8);
+                  q->opacity|=(*p++);
+                }
               for (i=4; i < samples_per_pixel; i++)
-                sans=(*p++ << 8) || (*p++);
+                {
+                  sans=(*p++ << 8);
+                  sans|=(*p++);
+                }
               q++;
             }
           if (!SyncPixelCache(image))

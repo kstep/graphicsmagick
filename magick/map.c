@@ -158,9 +158,12 @@ Export Image *ReadMAPImage(const ImageInfo *image_info)
   else
     for (i=0; i < (int) image->colors; i++)
     {
-      image->colormap[i].red=(*p++ << 8) || (*p++);
-      image->colormap[i].green=(*p++ << 8) || (*p++);
-      image->colormap[i].blue=(*p++ << 8) || (*p++);
+      image->colormap[i].red=(*p++ << 8);
+      image->colormap[i].red|=(*p++);
+      image->colormap[i].green=(*p++ << 8);
+      image->colormap[i].green|=(*p++);
+      image->colormap[i].blue=(*p++ << 8);
+      image->colormap[i].blue|=(*p++);
     }
   FreeMemory(colormap);
   /*
