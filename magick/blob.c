@@ -1013,14 +1013,10 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
 MagickExport void *GetTypeBlob(const char *filename,char *path,
   size_t *length,ExceptionInfo *exception)
 {
-  unsigned int
-    debug;
-
   assert(filename != (const char *) NULL);
   assert(path != (char *) NULL);
   assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   (void) strncpy(path,filename,MaxTextExtent-1);
   LogMagickEvent(ConfigureEvent,"Searching for type file \"%s\" ...",filename);
   if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
