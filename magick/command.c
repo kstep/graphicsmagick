@@ -1346,7 +1346,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,const int ar
           next_image=PingImage(image_info,exception);
         else
           next_image=ReadImage(image_info,exception);
-        status&=next_image != (Image *) NULL;
+        status&=(next_image != (Image *) NULL) &&
+          (exception.severity < ErrorException);
         if (next_image == (Image *) NULL)
           continue;
         if (image == (Image *) NULL)
@@ -3317,7 +3318,8 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,const int ar
           if (image_info->size == (char *) NULL)
             (void) CloneString(&image_info->size,montage_info->geometry);
           next_image=ReadImage(image_info,exception);
-          status&=next_image != (Image *) NULL;
+          status&=(next_image != (Image *) NULL) &&
+            (exception.severity < ErrorException);
           if (next_image == (Image *) NULL)
             continue;
           if (image == (Image *) NULL)
