@@ -833,6 +833,9 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     buff[MaxTextExtent],
     filename[MaxTextExtent];
 
+  off_t
+    filesize;
+
   wmffunctions = &WmfFunctions;
 
   image=AllocateImage(image_info);
@@ -867,6 +870,8 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       }
     testlong = wmfReadU32bit(file);
+    fseek(file,0,SEEK_END);
+    filesize=ftell(file);
     fclose(file);
     if(testlong == 0x9ac6cdd7)
       {
@@ -892,52 +897,59 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   cstruct->preparse = 1;
   PlayMetaFile((void *)cstruct,metafile,1,NULL);
 
-  /* Create white canvas image */
-  local_info = (ImageInfo*)AcquireMemory(sizeof(ImageInfo));
-  if(local_info == (ImageInfo*)NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-
-  GetImageInfo( local_info );
-  sprintf( buff, "%ix%i", (int)cstruct->realwidth, (int)cstruct->realheight );
-  CloneString(&(local_info->size), buff);
-  strcpy( local_info->filename, "XC:#FFFFFF" );
-  GetExceptionInfo(exception);
-  DestroyImage(image);
-  image = ReadImage( local_info, exception );
-  if(image == (Image*)NULL)
+  if(!image_info->ping)
     {
-      /* Destroy metafile handle (lacks a convenient Destroy function */
-      LiberateMemory((void**)&(metafile->wmfheader));
-      LiberateMemory((void**)&(metafile->pmh));
-      fclose(metafile->filein);
-      LiberateMemory((void**)&(metafile));
+      /* Create white canvas image */
+      local_info = (ImageInfo*)AcquireMemory(sizeof(ImageInfo));
+      if(local_info == (ImageInfo*)NULL)
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
 
-      /* Destroy cstruct */
-      LiberateMemory((void**)&(cstruct->userdata));
-      LiberateMemory((void**)&(cstruct->dc));
-      LiberateMemory((void**)&(cstruct));
-
-      /* Destroy other allocations */
-      DestroyImageInfo(local_info);
+      GetImageInfo( local_info );
+      sprintf( buff, "%ix%i", (int)cstruct->realwidth, (int)cstruct->realheight );
+      CloneString(&(local_info->size), buff);
+      strcpy( local_info->filename, "XC:#FFFFFF" );
+      GetExceptionInfo(exception);
       DestroyImage(image);
-      return image;
+      image = ReadImage( local_info, exception );
+      if(image == (Image*)NULL)
+        {
+          /* Destroy metafile handle (lacks a convenient Destroy function */
+          LiberateMemory((void**)&(metafile->wmfheader));
+          LiberateMemory((void**)&(metafile->pmh));
+          fclose(metafile->filein);
+          LiberateMemory((void**)&(metafile));
+
+          /* Destroy cstruct */
+          LiberateMemory((void**)&(cstruct->userdata));
+          LiberateMemory((void**)&(cstruct->dc));
+          LiberateMemory((void**)&(cstruct));
+
+          /* Destroy other allocations */
+          DestroyImageInfo(local_info);
+          DestroyImage(image);
+          return image;
+        }
+
+      /* Scribble on canvas image */
+      cstruct->preparse = 0;
+      PlayMetaFile((void *)cstruct,metafile,1,NULL);
+
+      draw_info = (DrawInfo*)AcquireMemory(sizeof(DrawInfo));
+      GetDrawInfo( local_info, draw_info );
+      draw_info->primitive=(char*)cstruct->userdata;
+      DrawImage(image,draw_info);
+      draw_info->primitive = (char*)NULL;
+      DestroyDrawInfo(draw_info);
+      DestroyImageInfo(local_info);
     }
-
-  /* Scribble on canvas image */
-  cstruct->preparse = 0;
-  PlayMetaFile((void *)cstruct,metafile,1,NULL);
-
-  draw_info = (DrawInfo*)AcquireMemory(sizeof(DrawInfo));
-  GetDrawInfo( local_info, draw_info );
-  draw_info->primitive=(char*)cstruct->userdata;
-  DrawImage(image,draw_info);
-  draw_info->primitive = (char*)NULL;
-  DestroyDrawInfo(draw_info);
-  DestroyImageInfo(local_info);
 
   /* Restore original filename and magick */
   strcpy(image->filename,image_info->filename);
   strcpy(image->magick,image_info->magick);
+  image->filesize=filesize;
+  image->rows=cstruct->realheight;
+  image->columns=cstruct->realwidth;
+
 
   /* Destroy metafile handle (lacks a convenient Destroy function */
   LiberateMemory((void**)&(metafile->wmfheader));
