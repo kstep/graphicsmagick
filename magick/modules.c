@@ -301,7 +301,9 @@ MagickExport ModuleAlias *GetModuleAlias(const char *name,
     *p;
 
   AcquireSemaphore(&module_semaphore);
-  if (module_aliases == (ModuleAlias *) NULL)
+  if (module_aliases != (ModuleAlias *) NULL)
+    LiberateSemaphore(&module_semaphore);
+  else
     {
       /*
         Initialize ltdl.
@@ -313,9 +315,9 @@ MagickExport ModuleAlias *GetModuleAlias(const char *name,
         Read modules.
       */
       (void) ReadConfigurationFile("modules.mgk",exception);
+      LiberateSemaphore(&module_semaphore);
       atexit(DestroyModuleInfo);
     }
-  LiberateSemaphore(&module_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return(module_aliases);
   for (p=module_aliases; p != (ModuleAlias *) NULL; p=p->next)
