@@ -190,7 +190,6 @@ MagickExport char *GetImageMagick(const unsigned char *magick,
 %             $MAGICK_HOME/
 %             $HOME/.magick/
 %             MagickLibPath
-%             MagickModulesPath
 %             MagickSharePath
 %
 %  The format of the GetMagickConfigurePath method is:
@@ -236,9 +235,6 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
         return(path);
     }
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
-  if (IsAccessible(path))
-    return(path);
-  FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
   if (IsAccessible(path))
     return(path);
   FormatString(path,"%.1024s%.1024s",MagickSharePath,filename);
