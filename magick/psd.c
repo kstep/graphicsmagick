@@ -688,6 +688,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
         packet_size++;
       if ((image->depth > 8) ||
           ((image->class == PseudoClass) && (image->colors > 256)))
+        packet_size++;
       scanline=(unsigned char *)
         AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
       if (scanline == (unsigned char *) NULL)
