@@ -271,10 +271,11 @@ static void BlurScanline(const double *kernel,const int width,
           p++;
           q++;
         }
-        destination[x].red=(Quantum) ((red+0.5)/scale);
-        destination[x].green=(Quantum) ((green+0.5)/scale);
-        destination[x].blue=(Quantum) ((blue+0.5)/scale);
-        destination[x].opacity=(Quantum) ((opacity+0.5)/scale);
+        scale=1.0/scale;
+        destination[x].red=(Quantum) (scale*(red+0.5));
+        destination[x].green=(Quantum) (scale*(green+0.5));
+        destination[x].blue=(Quantum) (scale*(blue+0.5));
+        destination[x].opacity=(Quantum) (scale*(opacity+0.5));
       }
       return;
     }
@@ -300,10 +301,11 @@ static void BlurScanline(const double *kernel,const int width,
       p++;
       q++;
     }
-    destination[x].red=(Quantum) ((red+0.5)/scale);
-    destination[x].green=(Quantum) ((green+0.5)/scale);
-    destination[x].blue=(Quantum) ((blue+0.5)/scale);
-    destination[x].opacity=(Quantum) ((opacity+0.5)/scale);
+    scale=1.0/scale;
+    destination[x].red=(Quantum) (scale*(red+0.5));
+    destination[x].green=(Quantum) (scale*(green+0.5));
+    destination[x].blue=(Quantum) (scale*(blue+0.5));
+    destination[x].opacity=(Quantum) (scale*(opacity+0.5));
   }
   for ( ; x < (columns-width/2); x++)
   {
@@ -346,10 +348,11 @@ static void BlurScanline(const double *kernel,const int width,
       p++;
       q++;
     }
-    destination[x].red=(Quantum) ((red+0.5)/scale);
-    destination[x].green=(Quantum) ((green+0.5)/scale);
-    destination[x].blue=(Quantum) ((blue+0.5)/scale);
-    destination[x].opacity=(Quantum) ((opacity+0.5)/scale);
+    scale=1.0/scale;
+    destination[x].red=(Quantum) (scale*(red+0.5));
+    destination[x].green=(Quantum) (scale*(green+0.5));
+    destination[x].blue=(Quantum) (scale*(blue+0.5));
+    destination[x].opacity=(Quantum) (scale*(opacity+0.5));
   }
 }
 
