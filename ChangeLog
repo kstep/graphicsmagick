@@ -1,17 +1,23 @@
-2003-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2003-08-18  William Radcliffe  <billr@corbis.com>
+	* magick\gm_messages.bin locale_c.h transform.c: Updates that
+	add latest enhancments by Lars to color management code in
+	ProfileImage.
 
+2003-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* coders/wpg.c: Incorporated patch from Fojtik Jaroslav to support
 	rendering embedded WMFs.
 
 2003-08-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-
 	* magick/image.c (SetImageChannelDepth): New function to transform
 	the specified channel so it fits the specified modulus depth.
 	* magick/blob.c (BlobToImage): Skip calling SetImageInfo() if
 	magick is already set.
 
-2003-08-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2003-08-18  William Radcliffe  <billr@corbis.com>
+	* PerlMagick/Magick.xs: Some fixes to get PerlMagick compiling
+	again due to new ID based error macros.
 
+2003-08-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/error.h (enum): Remove spurious comma.
 
 2003-08-17  William Radcliffe  <billr@corbis.com>
