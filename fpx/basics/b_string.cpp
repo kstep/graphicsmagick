@@ -344,12 +344,12 @@ void Chaine::PlaceParametre(const Chaine& replaceStr, short numParam )
     int  nbUnchangedStartingChars;
     
     // Copy unmodified start of string *this
-    nbUnchangedStartingChars = foundStr - Texte();
+    nbUnchangedStartingChars = foundStr - (const char*)Texte();
     strncpy(modifiedStr, (const char*)Texte(), nbUnchangedStartingChars);
     modifiedStr[nbUnchangedStartingChars] = '\0';
     
     // Replace "^i" by replaceStr
-    strcat(modifiedStr, replaceStr.Texte());
+    strcat(modifiedStr, (const char*)replaceStr.Texte());
     
     // Copy unmodified end of string *this
     strcat(modifiedStr, foundStr+strlen(toSearch));

@@ -1,5 +1,7 @@
 2003-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* FlashPIX: Applied patches from FreeBSD.  Bumped package
+	version to version to 1.2.0.8.
 	* www/api.html: Updated to reflect GraphicsMagick
 	* www/*.html: Updated with format_c_api_docs script.
 	* Makefile.am (format_c_api_docs): Add a target to update

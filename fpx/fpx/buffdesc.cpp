@@ -1399,7 +1399,7 @@ Boolean CreateThumbnail(unsigned char* buf, FPXBaselineColorSpace baseSpace,
             unsigned short thumbNailWidth, unsigned short thumbNailHeight, 
             CLIPDATA * clipData)
 {
-  char* buffer;
+  Ptr buffer;
   long  thumbnailSize;
   ptr_Compresseur monCompresseur;
   BITMAPINFOHEADER  bmpInfoHdr;

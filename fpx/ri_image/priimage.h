@@ -162,11 +162,11 @@
             Boolean NoMoreReference()           { return (nbRefs == 0); }
             
             void  ResetMagicNumber()        { magicNumber = 0; }
-            void  SetMagicNumber()        { magicNumber = (int32)(this); }
-            Boolean ChallengeMagicNumber()      { return (magicNumber == (int32)(this)); }
-            void  SetMagicNumber(int32 id)    { magicNumber = id; }
-            Boolean ChallengeMagicNumber(int32 id)  { return (magicNumber == id); }
-            int32 GetMagicNumber()        { return magicNumber; }
+            void  SetMagicNumber()        { magicNumber = (unsigned long)(this); }
+            Boolean ChallengeMagicNumber()      { return (magicNumber == (unsigned long)(this)); }
+            void  SetMagicNumber(unsigned long id)    { magicNumber = id; }
+            Boolean ChallengeMagicNumber(unsigned long id)  { return (magicNumber == id); }
+            unsigned long GetMagicNumber()        { return magicNumber; }
   protected:
         // Protected interface: Methods used by the derived classes to customize the behavior of a RI Image:
         // -------------------------------------------------------------------------------------------------
@@ -214,7 +214,7 @@
         // ----------------------------------------
 
         // Reference management
-        int32     magicNumber;      // Used to reference a PRIImage object used by several composition objects
+        unsigned long magicNumber;      // Used to reference a PRIImage object used by several composition objects
         long      nbRefs;         // Number of existing references to this PRIImage object
 
         // Error management

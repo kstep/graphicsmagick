@@ -174,7 +174,6 @@ void CorrectLut::Save(ref_Fichier file)
 {
   RGBColor  colorTarget={0,0,0};
   Boolean   valide=FALSE;
-  long    influence=0;
   int     i;
 
   file.Ecriture(active);
@@ -189,7 +188,7 @@ void CorrectLut::Save(ref_Fichier file)
       file.Ecriture(colorTarget); 
     for (i=0; i<lut_NbContraintes; i++)
       file.Ecriture(valide);
-    file.Ecriture(influence);
+    file.Ecriture((short)0);
   }
 }
 
@@ -198,7 +197,7 @@ void CorrectLut::Load(ref_Fichier file, long)
 {
   RGBColor  colorTarget={0,0,0};
   Boolean   valide=FALSE;
-  long    influence=0;
+  short int influence=0;
   int     i;
 
   file.Lecture(&active);

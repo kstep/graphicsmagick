@@ -86,7 +86,7 @@ protected:
 //      Notes:      B-flat,C-sharp
 //
 //-----------------------------------------------------------------------
-const unsigned int CBDIRPAD = DIRENTRYSIZE - sizeof(SPreDirEntry);
+const unsigned int CBDIRPAD = (unsigned int)DIRENTRYSIZE - (unsigned int)sizeof(SPreDirEntry);
 
 //  DirEntry bit flags are used for the following private state
 

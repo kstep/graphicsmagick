@@ -1,3 +1,19 @@
+2003-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Bumped package version to 1.2.0.8.
+	* Updated to libtool 1.5 release.
+	* configure.ac: Add <sys/param.h> as a dependency when testing
+	for <sys/mount.h>.
+	* ole/gen_guid.cpp, basics/b_string.cpp, basics/mac_comp.h,
+	fpx/buffdesc.cpp, ri_image/priimage.h, ri_image/ptile.h,
+	fpx/ptil_fpx.cpp, ri_image/corr_lut.cpp, ri_image/ptile.cpp,
+	oless/h/dir.hxx, oless/wchar.c: Applied FreeBSD ports patches
+	except that native types are substituted for types from stdint.h
+	since stdint.h is too new to improve portability.	
+	* configure.ac: Add check for <sys/time.h>
+	* ole/gen_guid.cpp: Include <sys/time.h> if HAVE_SYS_TIME_H
+	is defined.
+
 2003-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Add checks for sys/statfs.h, sys/param.h,

@@ -292,9 +292,9 @@ FPXStatus PTileFlashPix::Write()
 
   ptr_Compresseur monCompresseur; 
 
-  char      *buffer = NULL;
-  Pixel     *entireTile;
-  Boolean     wasLocked;
+  Ptr           buffer = NULL;
+  Pixel        *entireTile;
+  Boolean       wasLocked;
   FPXStatus     status = FPX_OK;
   
   FPXBaselineColorSpace base = ((PResolutionFlashPix*)fatherSubImage)->baseSpace;
@@ -413,7 +413,7 @@ FPXStatus PTileFlashPix::Write()
       sizeCompressed = TILE_WIDTH * TILE_WIDTH * sizeof(Pixel);
 
       // Set the output buffer to write
-      buffer = (char *)(entireTile);
+      buffer = (Ptr)(entireTile);
       break; 
     
     case TLC_SingleColor: // Single color compression
@@ -469,7 +469,7 @@ FPXStatus PTileFlashPix::Write()
         }
         memcpy(decompressBuffer, buffer, tileSize);
       } else
-        decompressBuffer = (char *)entireTile;
+        decompressBuffer = (Ptr)entireTile;
       
       // Get the jpeg compressor
       monCompresseur = (*tousLesCodecs)[idCodec];
@@ -1696,10 +1696,8 @@ Boolean PTileFlashPix::WriteHeader(PFlashPixFile* filePtr,
   OLEBlob     jpegTable; 
 
   // Get jpeg table index and make sure it is in 0 - 255 range
-  unsigned char JPEGtableSelector = ((PResolutionFlashPix*)fatherSubImage)->compressTableGroup;
-  JPEGtableSelector = (JPEGtableSelector < 0) ? 0 : JPEGtableSelector; 
-  JPEGtableSelector = (JPEGtableSelector >255) ? 255 : JPEGtableSelector; 
-  
+  unsigned char JPEGtableSelector =
+    (((PResolutionFlashPix*)fatherSubImage)->compressTableGroup >255) ? 255 : JPEGtableSelector; 
 
   // If jpeg table index is 0, then the header is stored with tile data
   if ( !JPEGtableSelector )
