@@ -101,9 +101,9 @@ To join several GIF images together without any extraneous graphics
 .B "-adjoin
 join images into a single multi-image file.
 .TP
-.B "-blur \fIfactor\fP"
-blur an image.  Specify \fIfactor\fP as the percent enhancement
-(0.0 - 99.9%).
+.B "-blur \fI<radius>x<sigma>\fP"
+blue the image with a gaussian operator of the given radius and
+standard deviation (sigma).
 .TP
 .B "-cache \fIthreshold\fP"
 megabytes of memory available to the pixel cache.
@@ -714,9 +714,9 @@ image scene number.
 .B "-shadow
 add a shadow beneath a tile to simulate depth.
 .TP
-.B "-sharpen \fIfactor\fP"
-sharpen an image.  Specify \fIfactor\fP as the percent
-enhancement (0.0 - 99.9%).
+.B "-sharpen \fI<radius>x<sigma>\fP"
+sharpen the image with a gaussian operator of the given radius and
+standard deviation (sigma).
 .TP
 .B "-size \fI<width>x<height>{+offset}"
 width and height of the image.

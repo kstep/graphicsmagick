@@ -28,10 +28,9 @@ pixels in height, use:
 .B "-antialias
 remove pixel aliasing.
 .TP
-.B "-blur \fIorder\fP"
-blur an image.
-
-Good order values are odd numbers from 3 to 31.
+.B "-blur \fI<radius>x<sigma>\fP"
+blur the image with a gaussian operator of the given radius and
+standard deviation (sigma).
 .TP
 .B "-border \fI<width>x<height>\fP"
 surround the image with a border of color.  See \fBX(1)\fP for details
@@ -450,7 +449,7 @@ Use \fB+gamma\fP to set the image gamma level without actually adjusting
 the image pixels.  This option is useful if the image is of a known
 gamma but not set as an image attribute (e.g. PNG images).
 .TP
-.B "-gaussian \fI<width>x<sigma>\fP"
+.B "-gaussian \fI<radius>x<sigma>\fP"
 blur the image with a gaussian operator of the given width and
 standard deviation (sigma).
 .TP
@@ -778,10 +777,9 @@ shade the image using a distant light source.
 Specify \fIazimuth\fP and \fIelevation\fP as the position of the light source.
 Use \fB+shade\fP to return the shading results as a grayscale image.
 .TP
-.B "-sharpen \fIorder\fP"
-sharpen an image.
-
-Good order values are odd numbers from 3 to 31.
+.B "-sharpen \fI<radius>x<sigma>\fP"
+sharpen the image with a gaussian operator of the given radius and
+standard deviation (sigma).
 .TP
 .B "-shear \fI<x degrees>x<y degrees>\fP"
 shear the image along the X or Y axis by a positive or negative shear angle.

@@ -428,9 +428,11 @@ rotate=><i>float</i>.  skewX=><i>float</i>, skewY=><i>float</i>
 <tr>
 <td>Blur</td>
 
-<td>order=><i>integer</i></td>
+<td>geometry=><i>geometry</i>, radius=><i>double</i>, sigma=><i>double</i></td>
 
-<td>blur the image.  Good order values are odd numbers from 3 to 31.</td>
+
+<td>blur the image with a gaussian operator of the given radius and
+standard deviation (sigma).</td>
 </tr>
 
 <tr>
@@ -658,16 +660,6 @@ inner=><i>integer</i>, outer=><i>integer</i>, color=><i>colorname</i></td>
 </tr>
 
 <tr>
-<td>GaussianBlur</td>
-
-<td>geometry=><i>geometry</i>, radius=><i>double</i>, sigma=><i>double</i></td>
-
-
-<td>blur the image with a gaussian operator of the given radius and
-standard deviation (sigma).</td>
-</tr>
-
-<tr>
 <td>Implode</td>
 
 <td>factor=><i>percentage</i></td>
@@ -866,9 +858,11 @@ color=>{true, false}&nbsp;</td>
 <tr>
 <td>Sharpen</td>
 
-<td>order=><i>integer</i></td>
+<td>geometry=><i>geometry</i>, radius=><i>double</i>, sigma=><i>double</i></td>
 
-<td>sharpen the image.  Good order values are odd numbers from 3 to 31.</td>
+
+<td>sharpen the image with a gaussian operator of the given radius and
+standard deviation (sigma).</td>
 </tr>
 
 <tr>

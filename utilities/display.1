@@ -597,9 +597,9 @@ the cluster threshold to be considered valid.
 
 See \fBIMAGE SEGMENTATION\fB for details.
 .TP
-.B "-sharpen \fIfactor\fP"
-sharpen an image.  Specify \fIfactor\fP as the percent enhancement
-(0.0 - 99.9%).
+.B "-sharpen \fI<radius>x<sigma>\fP"
+sharpen the image with a gaussian operator of the given radius and
+standard deviation (sigma).
 .TP
 .B "-size \fI<width>x<height>+<offset>\fP"
 width and height of the image.

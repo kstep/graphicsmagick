@@ -3368,19 +3368,23 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         (*image)->background_color=clone_info->background_color;
         continue;
       }
-    if (LocaleNCompare("-blur",option,4) == 0)
+    if (LocaleCompare("blur",option+1) == 0)
       {
+        double
+          radius,
+          sigma;
+
         Image
           *blur_image;
 
-        unsigned int
-          order;
-
         /*
-          Blur an image.
+          Gaussian blur image.
         */
-        order=atoi(argv[++i]);
-        blur_image=BlurImage(*image,order,&(*image)->exception);
+        radius=3.0;
+        sigma=1.0;
+        if (*option == '-')
+          (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
+        blur_image=BlurImage(*image,radius,sigma,&(*image)->exception);
         if (blur_image == (Image *) NULL)
           break;
         DestroyImage(*image);
@@ -3821,8 +3825,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     if (LocaleCompare("gaussian",option+1) == 0)
       {
         double
-          sigma,
-          width;
+          radius,
+          sigma;
 
         Image
           *blur_image;
@@ -3830,11 +3834,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         /*
           Gaussian blur image.
         */
-        width=3.0;
+        radius=3.0;
         sigma=1.0;
         if (*option == '-')
-          (void) sscanf(argv[++i],"%lfx%lf",&width,&sigma);
-        blur_image=GaussianBlurImage(*image,width,sigma,&(*image)->exception);
+          (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
+        blur_image=GaussianBlurImage(*image,radius,sigma,&(*image)->exception);
         if (blur_image == (Image *) NULL)
           break;
         DestroyImage(*image);
@@ -4384,21 +4388,25 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
     if (LocaleNCompare("-sharpen",option,5) == 0)
       {
-        Image
-          *sharpen_image;
+        double
+          radius,
+          sigma;
 
-        unsigned int
-          order;
+        Image
+          *blur_image;
 
         /*
-          Sharpen an image.
+          Gaussian sharpen image.
         */
-        order=atoi(argv[++i]);
-        sharpen_image=SharpenImage(*image,order,&(*image)->exception);
-        if (sharpen_image == (Image *) NULL)
+        radius=3.0;
+        sigma=1.0;
+        if (*option == '-')
+          (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
+        blur_image=SharpenImage(*image,radius,sigma,&(*image)->exception);
+        if (blur_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        *image=sharpen_image;
+        *image=blur_image;
         continue;
       }
     if (LocaleNCompare("-shear",option,4) == 0)

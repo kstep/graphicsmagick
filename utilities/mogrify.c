@@ -57,7 +57,7 @@
 %  Where options include:
 %    -affine matrix       drawing transform matrix
 %    -antialias           remove pixel-aliasing
-%    -blur order          apply a filter to blur the image
+%    -blur geometry       blur the image
 %    -border geometry     surround image with a border of color
 %    -bordercolor color   border color
 %    -box color           color for annotation bounding box
@@ -92,7 +92,7 @@
 %    -frame geometry      surround image with an ornamental border
 %    -fuzz distance       colors within this distance are considered equal
 %    -gamma value         level of gamma correction
-%    -gaussian geometry   gaussian blur an image
+%    -gaussian geometry   blur an image
 %    -geometry geometry   perferred size or location of the image
 %    -implode amount      implode image pixels about the center
 %    -interlace type      None, Line, Plane, or Partition
@@ -123,7 +123,7 @@
 %    -seed value          pseudo-random number generator seed value
 %    -segment values      segment an image
 %    -shade degrees       shade the image using a distant light source
-%    -sharpen order       apply a filter to sharpen the image
+%    -sharpen geometry    sharpen the image
 %    -shear geometry      slide one edge of the image along the X or Y axis
 %    -size geometry       width and height of image
 %    -solarize threshold  negate all pixels above the threshold level
@@ -183,7 +183,7 @@ static void Usage()
     {
       "-affine matrix       drawing transform matrix",
       "-antialias           remove pixel-aliasing",
-      "-blur order          apply a filter to blur the image",
+      "-blur order          blur the image",
       "-border geometry     surround image with a border of color",
       "-bordercolor color   border color",
       "-box color           color for annotation bounding box",
@@ -250,7 +250,7 @@ static void Usage()
       "-seed value          pseudo-random number generator seed value",
       "-segment values      segment an image",
       "-shade degrees       shade the image using a distant light source",
-      "-sharpen order       apply a filter to sharpen the image",
+      "-sharpen order       sharpen the image",
       "-shear geometry      slide one edge of the image along the X or Y axis",
       "-size geometry       width and height of image",
       "-solarize threshold  negate all pixels above the threshold level",
@@ -399,14 +399,11 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("blur",option+1,3) == 0)
+          if (LocaleCompare("blur",option+1) == 0)
             {
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing order",option);
-                }
+              i++;
+              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                MagickError(OptionError,"Missing geometry",option);
               break;
             }
           if (LocaleNCompare("border",option+1,7) == 0)
@@ -833,7 +830,7 @@ int main(int argc,char **argv)
             {
               i++;
               if ((i == argc) || !sscanf(argv[i],"%d",&x))
-                MagickError(OptionError,"Missing width",option);
+                MagickError(OptionError,"Missing geometry",option);
               break;
             }
           if (LocaleNCompare("geometry",option+1,2) == 0)
@@ -1262,12 +1259,9 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("sharpen",option+1,5) == 0)
             {
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing order",option);
-                }
+              i++;
+              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                MagickError(OptionError,"Missing geometry",option);
               break;
             }
           if (LocaleNCompare("shear",option+1,3) == 0)

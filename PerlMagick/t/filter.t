@@ -14,8 +14,8 @@ require 't/subroutines.pl';
 chdir 't' || die 'Cd failed';
 
 testFilter('input.miff', 'Blur',
-  q/3/,
-  '741ee7b9f9f31a4dd2daaf6197692617',
+  q/0.0x1.5/,
+  '8e0eae0c7092c534b74ee963f4f0aacf',
   '6046acf8622ed1bdf5628416cf26ea88');
 
 ++$test;
@@ -208,8 +208,8 @@ testFilter('input.miff', 'Shade',
 
 ++$test;
 testFilter('input.miff', 'Sharpen',
-  q/3/,
-  '087e8130210a07139b7fcb9d0b7d5eff',
+  q/0.0x1.5/,
+  '5dc124a61f8355e0b4786b6a9cbaa9de',
   'd2a0063811738be757a6d427499a6187');
 
 ++$test;

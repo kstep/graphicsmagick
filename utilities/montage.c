@@ -89,7 +89,7 @@
 %
 %  Where options include:
 %    -adjoin             join images into a single multi-image file
-%    -blur factor        apply a filter to blur the image
+%    -blur geometry      blur the image
 %    -cache threshold    megabytes of memory available to the pixel cache
 %    -colors value       preferred number of colors in the image
 %    -colorspace type    alternate image colorspace
@@ -119,7 +119,7 @@
 %    -rotate degrees     apply Paeth rotation to the image
 %    -scene value        image scene number
 %    -shadow             add a shadow beneath a tile to simulate depth
-%    -sharpen factor     apply a filter to sharpen the image
+%    -sharpen geometry   sharpen the image
 %    -size geometry      width and height of image
 %    -stroke color       color to use when stroking a graphic primitive
 %    -texture filename   name of texture to tile onto the image background
@@ -361,8 +361,8 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing factor",option);
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing geometry",option);
                 }
               break;
             }
@@ -999,8 +999,8 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing factor",option);
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing geometry",option);
                 }
               break;
             }

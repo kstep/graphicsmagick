@@ -106,7 +106,7 @@
 %    -sample geometry   scale image with pixel sampling
 %    -scene value       image scene number
 %    -segment value     segment an image
-%    -sharpen factor    apply a filter to sharpen the image
+%    -sharpen geometry  sharpen the image
 %    -size geometry     width and height of image
 %    -texture filename  name of texture to tile onto the image background
 %    -treedepth value   depth of the color color tree
@@ -219,7 +219,7 @@ static void Usage()
       "-scene value       image scene number",
       "-segment value     segment an image",
       "-sample geometry   scale image with pixel sampling",
-      "-sharpen factor    apply a filter to sharpen the image",
+      "-sharpen geometry  sharpen the image",
       "-size geometry     width and height of image",
       "-texture filename  name of texture to tile onto the image background",
       "-treedepth value   depth of the color color tree",
@@ -1120,7 +1120,7 @@ int main(int argc,char **argv)
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing factor",option);
+                    MagickError(OptionError,"Missing geometry",option);
                 }
               break;
             }

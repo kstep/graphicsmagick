@@ -155,69 +155,271 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method BlurImage creates a new image that is a copy of an existing
-%  one with the pixels blurred.  It allocates the memory necessary for the
-%  new Image structure and returns a pointer to the new image.
+%  Method BlurImage creates a blurred copy of the input image.  We
+%  convolve the image with a gaussian operator of the given width and
+%  standard deviation (sigma).
+%
+%  Each output pixel is set to a value that is the weighted average of the
+%  input pixels in an area enclosing the pixel.  The width parameter
+%  determines how large the area is.  Each pixel in the area is weighted
+%  in the average according to its distance from the center, and the
+%  standard deviation, sigma. The actual weight is calculated according to
+%  the gaussian distribution (also called normal distribution), which
+%  looks like a Bell Curve centered on a pixel.  The standard deviation
+%  controls how 'pointy' the curve is.  The pixels near the center of the
+%  curve (closer to the center of the area we are averaging) contribute
+%  more than the distant pixels.
+%
+%  In general, the width should be wide enough to include most of the
+%  total weight under the gaussian for the standard deviation you choose.
+%  As a guideline about 90% of the weight lies within two standard
+%  deviations, and 98% of the weight within 3 standard deviations. Since
+%  the width parameter to the function specifies the radius of the
+%  gaussian convolution mask in pixels, not counting the centre pixel, the
+%  width parameter should be chosen larger than the standard deviation,
+%  perhaps about twice as large to three times as large. A width of 1 will
+%  give a (standard) 3x3 convolution mask, a width of 2 gives a 5 by 5
+%  convolution mask. Using non-integral widths will result in some pixels
+%  being considered 'partial' pixels, in which case their weight will be
+%  reduced proportionally.
+%
+%  Pixels for which the convolution mask does not completely fit on the
+%  image (e.g. pixels without a full set of neighbours) are averaged with
+%  those neighbours they do have. Thus pixels at the edge of images are
+%  typically less blur.
+%
+%  Since a 2d gaussian is seperable, we perform the Gaussian blur by
+%  convolving with two 1d gaussians, first in the x, then in the y
+%  direction. For an n by n image and gaussian width w this requires 2wn^2
+%  multiplications, while convolving with a 2d gaussian requres w^2n^2
+%  mults.
+%
+%  We blur the image into a copy, and the original is left untouched.
+%  We must process the image in two passes, in each pass we change the
+%  pixel based on its neighbors, but we need the pixel's original value
+%  for the next pixel's calculation. For the first pass we could use the
+%  original image but that's no good for the second pass, and it would
+%  imply that the original image have to stay around in ram. Instead we
+%  use a small (size=width) buffer to store the pixels we have
+%  overwritten.
+%
+%  This method was contributed by runger@cs.mcgill.ca.
 %
 %  The format of the BlurImage method is:
 %
-%      Image *BlurImage(Image *image,const double factor,
+%      Image *BlurImage(Image *image,const double radius,const double sigma,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o blur_image: Method BlurImage returns a pointer to the image
-%      after it is blurred.  A null image is returned if there is a memory
+%      after it is blur.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
+%    o radius: The radius of the gaussian, in pixels, not counting the center
+%      pixel.
 %
-%    o order: An unsigned int that is the order of the pixel neighborhood.
+%    o sigma: The standard deviation of the gaussian, in pixels.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
-MagickExport Image *BlurImage(Image *image,const unsigned int order,
-  ExceptionInfo *exception)
+MagickExport Image *BlurImage(Image *image,const double radius,
+  const double sigma,ExceptionInfo *exception)
 {
+#define BlurImageText  "  Blurring image...  "
+
   double
-    *kernel;
+    blue,
+    green,
+    *kernel,
+    normalize,
+    red;
 
   Image
     *blur_image;
 
   int
-    i;
+    j,
+    k,
+    width,
+    y;
+
+  PixelPacket
+    *scanline;
 
   register int
-    u,
-    v;
+    i,
+    x;
+
+  register PixelPacket
+    *q;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((order % 2) == 0)
+  width=(int) ceil(radius);
+  if (radius == 0.0)
+    {
+      double
+        value;
+
+      /*
+        Determine optimal kernel radius.
+      */
+      normalize=0.0;
+      for (width=0; ; width++)
+      {
+        value=exp((double) (-width*width)/(2.0*sigma*sigma));
+        normalize+=value;
+        if ((value/normalize) < (1.0/MaxRGB))
+          break;
+      }
+    }
+  if ((image->columns < width) || (image->rows < width))
     ThrowImageException(ResourceLimitWarning,"Unable to blur image",
-      "kernel order must be an odd number");
-  kernel=(double *) AcquireMemory(order*order*sizeof(double));
-  if (kernel == (double *) NULL)
+      "image is smaller than radius");
+  blur_image=CloneImage(image,image->columns,image->rows,False,exception);
+  if (blur_image == (Image *) NULL)
+    return((Image *) NULL);
+  blur_image->storage_class=DirectClass;
+  /*
+    Build convolution kernel.
+  */
+  kernel=(double *) AcquireMemory((width+1)*sizeof(double));
+  scanline=(PixelPacket *) AcquireMemory((width+1)*sizeof(PixelPacket));
+  if ((kernel == (double *) NULL) || (scanline == (PixelPacket *) NULL))
     ThrowImageException(ResourceLimitWarning,"Unable to blur image",
       "Memory allocation failed");
-  i=0;
-  for (v=(-(int) order/2); v <= ((int) order/2); v++)
+  for (i=0; i < (width+1); i++)
+    kernel[i]=exp((double) (-i*i)/(2.0*sigma*sigma));
+  if ((radius != 0.0) && (radius < width))
+    kernel[width]*=(radius-(double) width+1.0);
+  normalize=0.0;
+  for (i=0; i < (width+1); i++)
+    normalize+=kernel[i];
+  for (i=1; i < (width+1); i++)
+    normalize+=kernel[i];
+  for (i=0; i < (width+1); i++)
+    kernel[i]/=normalize;
+  /*
+    Blur each row.
+  */
+  for (y=0; y < (int) blur_image->rows; y++)
   {
-    for (u=(-(int) order/2); u <= ((int) order/2); u++)
+    q=GetImagePixels(blur_image,0,y,blur_image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    j=0;
+    memcpy(scanline,q,width*sizeof(PixelPacket));
+    for (x=0; x < (int) blur_image->columns; x++)
     {
-      kernel[i]=exp(-(double) v*v-u*u);
-      i++;
+      /*
+        Convolve this pixel.
+      */
+      red=kernel[0]*q->red;
+      green=kernel[0]*q->green;
+      blue=kernel[0]*q->blue;
+      k=j-1;
+      if (k < 0)
+        k+=width;
+      for (i=1; i < (width+1); i++)
+      {
+        red+=kernel[i]*scanline[k].red;
+        green+=kernel[i]*scanline[k].green;
+        blue+=kernel[i]*scanline[k].blue;
+        k--;
+        if (k < 0)
+          k+=width;
+      }
+      k=1;
+      for (i=1; i < (width+1); i++)
+      {
+        if ((x+k) >= blur_image->columns)
+          k-=width;
+        red+=kernel[i]*q[k].red;
+        green+=kernel[i]*q[k].green;
+        blue+=kernel[i]*q[k].blue;
+        k++;
+      }
+      scanline[j]=(*q);
+      j++;
+      if (j >= width)
+        j-=width;
+      q->red=(Quantum) (red+0.5);
+      q->red=(Quantum) (red+0.5);
+      q->green=(Quantum) (green+0.5);
+      q->blue=(Quantum) (blue+0.5);
+      q++;
     }
+    if (!SyncImagePixels(blur_image))
+      break;
+    if (QuantumTick(y,blur_image->rows+blur_image->columns))
+      ProgressMonitor(BlurImageText,y,blur_image->rows+
+        blur_image->columns);
   }
-  kernel[i/2]=13.0/order;
-  blur_image=ConvolveImage(image,order,kernel,exception);
+  /*
+    Blur each column.
+  */
+  for (x=0; x < (int) blur_image->columns; x++)
+  {
+    q=GetImagePixels(blur_image,x,0,1,blur_image->rows);
+    if (q == (PixelPacket *) NULL)
+      break;
+    j=0;
+    memcpy(scanline,q,width*sizeof(PixelPacket));
+    for (y=0; y < (int) blur_image->rows; y++)
+    {
+      /*
+        Convolve this pixel.
+      */
+      red=kernel[0]*q->red;
+      green=kernel[0]*q->green;
+      blue=kernel[0]*q->blue;
+      k=j-1;
+      if (k < 0)
+        k+=width;
+      for (i=1; i < (width+1); i++)
+      {
+        red+=kernel[i]*scanline[k].red;
+        green+=kernel[i]*scanline[k].green;
+        blue+=kernel[i]*scanline[k].blue;
+        k--;
+        if (k < 0)
+          k+=width;
+      }
+      k=1;
+      for (i=1; i < (width+1); i++)
+      {
+        if ((y+k) >= blur_image->rows)
+          k-=width;
+        red+=kernel[i]*q[k].red;
+        green+=kernel[i]*q[k].green;
+        blue+=kernel[i]*q[k].blue;
+        k++;
+      }
+      scanline[j]=(*q);
+      j++;
+      if (j >= width)
+        j-=width;
+      q->red=(Quantum) (red+0.5);
+      q->green=(Quantum) (green+0.5);
+      q->blue=(Quantum) (blue+0.5);
+      q++;
+    }
+    if (!SyncImagePixels(blur_image))
+      break;
+    if (QuantumTick(blur_image->rows+x,blur_image->rows+blur_image->columns))
+      ProgressMonitor(BlurImageText,blur_image->rows+x,blur_image->rows+
+        blur_image->columns);
+  }
+  /*
+    Free resources.
+  */
   LiberateMemory((void **) &kernel);
+  LiberateMemory((void **) &scanline);
   return(blur_image);
 }
 
@@ -1021,149 +1223,39 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GaussianBlurImage creates a blurred copy of the input image.  We
-%  convolve the image with a gaussian operator of the given width and
-%  standard deviation (sigma).
+%  Method BlurImage creates a new image that is a copy of an existing
+%  one with the pixels blur.  It allocates the memory necessary for the
+%  new Image structure and returns a pointer to the new image.
 %
-%  Each output pixel is set to a value that is the weighted average of the
-%  input pixels in an area enclosing the pixel.  The width parameter
-%  determines how large the area is.  Each pixel in the area is weighted
-%  in the average according to its distance from the center, and the
-%  standard deviation, sigma. The actual weight is calculated according to
-%  the gaussian distribution (also called normal distribution), which
-%  looks like a Bell Curve centered on a pixel.  The standard deviation
-%  controls how 'pointy' the curve is.  The pixels near the center of the
-%  curve (closer to the center of the area we are averaging) contribute
-%  more than the distant pixels.
+%  The format of the BlurImage method is:
 %
-%  In general, the width should be wide enough to include most of the
-%  total weight under the gaussian for the standard deviation you choose.
-%  As a guideline about 90% of the weight lies within two standard
-%  deviations, and 98% of the weight within 3 standard deviations. Since
-%  the width parameter to the function specifies the radius of the
-%  gaussian convolution mask in pixels, not counting the centre pixel, the
-%  width parameter should be chosen larger than the standard deviation,
-%  perhaps about twice as large to three times as large. A width of 1 will
-%  give a (standard) 3x3 convolution mask, a width of 2 gives a 5 by 5
-%  convolution mask. Using non-integral widths will result in some pixels
-%  being considered 'partial' pixels, in which case their weight will be
-%  reduced proportionally.
-%
-%  Pixels for which the convolution mask does not completely fit on the
-%  image (e.g. pixels without a full set of neighbours) are averaged with
-%  those neighbours they do have. Thus pixels at the edge of images are
-%  typically less blurred.
-%
-%  Since a 2d gaussian is seperable, we perform Gaussian Blurring by
-%  convolving with two 1d gaussians, first in the x, then in the y
-%  direction. For an n by n image and gaussian width w this requires 2wn^2
-%  multiplications, while convolving with a 2d gaussian requres w^2n^2
-%  mults.
-%
-%  We are blur the image into a copy, and the original is left untouched.
-%  We must process the image in two passes, in each pass we change the
-%  pixel based on its neightbours, but we need the pixel's original value
-%  for the next pixel's calculation. For the first pass we could use the
-%  original image but that's no good for the second pass, and it would
-%  imply that the original image have to stay around in ram. Instead we
-%  use a small (size=width) buffer to store the pixels we have
-%  overwritten.
-%
-%  BlurImage deals with boundary pixels by assuming the neighbours not in
-%  the image are zero (black) pixels. The function could be easily
-%  modified to pre-fill the buffer with the first width pixels from the
-%  image scan-line, in effect averaging only the available neighbours for
-%  any pixel.
-%
-%  This method was contributed by runger@cs.mcgill.ca.
-%
-%  The format of the GaussianBlurImage method is:
-%
-%      Image *GaussianBlurImage(Image *image,const double width,
+%      Image *GaussianBlurImage(Image *image,const double radius,
 %        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o blur_image: Method GaussianBlurImage returns a pointer to the image
-%      after it is blurred.  A null image is returned if there is a memory
+%      after it is blur.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o width: The radius of the gaussian, in pixels, not counting the center
+%    o radius: The radius of the gaussian, in pixels, not counting the center
 %      pixel.
 %
 %    o sigma: The standard deviation of the gaussian, in pixels.
+%
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
 MagickExport Image *GaussianBlurImage(Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
-  double
-    *kernel,
-    sum,
-    value;
-
   Image
     *blur_image;
 
-  int
-    length;
-
-  register int
-    i,
-    u,
-    v;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  if (radius > 0.0)
-    {
-      length=2.0*ceil(radius-0.5)+1.0;
-      if (length < 4)
-        length=3;
-    }
-  else
-    {
-      length=0;
-      sum=0.0;
-      for ( ; ; )
-      {
-        value= exp((double) (-length*length)/(sigma*sigma));
-        sum+=value;
-        if ((value/sum) < (1.0/MaxRGB))
-          {
-            if (length < 4)
-              length=3;
-            else
-              length=(2*(length-1))-1;
-            break;
-          }
-        length++;
-      }
-    }
-  if ((image->columns < length) || (image->rows < length))
-    ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
-      "image is smaller than radius");
-  kernel=(double *) AcquireMemory(length*length*sizeof(double));
-  if (kernel == (double *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
-      "Memory allocation failed");
-  i=0;
-  sum=0;
-  for (v=(-(int) length/2); v <= ((int) length/2); v++)
-  {
-    for (u=(-(int) length/2); u <= ((int) length/2); u++)
-    {
-      kernel[i]=exp((double) (-v*v+u*u)/(sigma*sigma));
-      sum+=kernel[i];
-      i++;
-    }
-  }
-  for (i=0; i < (length*length); i++)
-    kernel[i]/=sum;
-  blur_image=ConvolveImage(image,length,kernel,exception);
-  LiberateMemory((void **) &kernel);
+  blur_image=BlurImage(image,radius,sigma,&(image->exception));
+  if (blur_image == (Image *) NULL)
+    return((Image *) NULL);
   return(blur_image);
 }
 
@@ -2355,71 +2447,33 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SharpenImage creates a new image that is a copy of an existing
-%  one with the pixels sharpened.  It allocates the memory necessary for the
-%  new Image structure and returns a pointer to the new image.
+%  Method SharpenImage creates a new image that is sharpened version of
+%  the original image using the unsharp mask algorithm.
 %
 %  The format of the SharpenImage method is:
 %
-%      Image *SharpenImage(Image *image,const double factor,
-%        ExceptionInfo *exception)
+%    Image *SharpenImage(Image *image,const double radius,
+%      const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o sharpen_image: Method SharpenImage returns a pointer to the image
-%      after it is sharpened.  A null image is returned if there is a memory
+%    o unsharp_image: Method SharpenImage returns a pointer to the image
+%      after it is blur.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
+%    o radius: The radius of the gaussian, in pixels, not counting the center
+%      pixel.
 %
-%    o factor:  An double value reflecting the percent weight to give to the
-%      center pixel of the neighborhood.
+%    o sigma: The standard deviation of the gaussian, in pixels.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
-MagickExport Image *SharpenImage(Image *image,const unsigned int order,
-  ExceptionInfo *exception)
+MagickExport Image *SharpenImage(Image *image,const double radius,
+  const double sigma,ExceptionInfo *exception)
 {
-  double
-    *kernel;
-
-  Image
-    *sharpen_image;
-
-  int
-    i;
-
-  register int
-    u,
-    v;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  if ((order % 2) == 0)
-    ThrowImageException(ResourceLimitWarning,"Unable to sharpen image",
-      "kernel order must be an odd number");
-  kernel=(double *) AcquireMemory(order*order*sizeof(double));
-  if (kernel == (double *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to sharpen image",
-      "Memory allocation failed");
-  i=0;
-  for (v=(-(int) order/2); v <= ((int) order/2); v++)
-  {
-    for (u=(-(int) order/2); u <= ((int) order/2); u++)
-    {
-      kernel[i]=(-1.0)*exp(-(double) v*v-u*u);
-      i++;
-    }
-  }
-  kernel[i/2]=13.0/order;
-  sharpen_image=ConvolveImage(image,order,kernel,exception);
-  LiberateMemory((void **) &kernel);
-  return(sharpen_image);
+  return(UnsharpMaskImage(image,radius,sigma,1.0,0.0,exception));
 }
 
 /*
@@ -3088,13 +3142,13 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 %  The format of the UnsharpMaskImage method is:
 %
 %    Image *UnsharpMaskImage(Image *image,const double radius,
-%      const double sigma, const double amount,const double threshold,
+%      const double sigma,const double amount,const double threshold,
 %      ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o unsharp_image: Method UnsharpMaskImage returns a pointer to the image
-%      after it is blurred.  A null image is returned if there is a memory
+%      after it is blur.  A null image is returned if there is a memory
 %      shortage.
 %
 %    o radius: The radius of the gaussian, in pixels, not counting the center
@@ -3103,7 +3157,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 %    o sigma: The standard deviation of the gaussian, in pixels.
 %
 %    o amount: The percentage of the difference between the original and the
-%      blurred image that is added back into the original.
+%      blur image that is added back into the original.
 %
 %    o threshold: The threshold in pixels needed to apply the diffence amount.
 %
@@ -3116,16 +3170,20 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
   ExceptionInfo *exception)
 {
   Image
-    *blurred_image;
+    *blur_image,
+    *sharpen_image;
 
-  blurred_image=GaussianBlurImage(image,radius,sigma,&(image->exception));
-  if (blurred_image == (Image *) NULL)
+  blur_image=BlurImage(image,radius,sigma,&(image->exception));
+  if (blur_image == (Image *) NULL)
     return((Image *) NULL);
-  blurred_image->geometry=AllocateString("");
-  FormatString(blurred_image->geometry,"%.2fx%.2f",amount,threshold);
-  CompositeImage(image,ThresholdCompositeOp,blurred_image,0,0);
-  DestroyImage(blurred_image);
-  return(image);
+  sharpen_image=CloneImage(image,image->columns,image->rows,False,exception);
+  if (sharpen_image == (Image *) NULL)
+    return((Image *) NULL);
+  blur_image->geometry=AllocateString("");
+  FormatString(blur_image->geometry,"%.2fx%.2f",amount,threshold);
+  CompositeImage(sharpen_image,ThresholdCompositeOp,blur_image,0,0);
+  DestroyImage(blur_image);
+  return(sharpen_image);
 }
 
 /*

@@ -285,7 +285,8 @@ static struct
     { "Colorize", { {"fill", StringReference}, {"opacity", StringReference} } },
     { "Border", { {"geom", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"color", StringReference} } },
-    { "Blur", { {"order", IntegerReference} } },
+    { "Blur", { {"geom", StringReference}, {"radius", DoubleReference},
+      {"sigma", DoubleReference} } },
     { "Chop", { {"geom", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
@@ -316,7 +317,8 @@ static struct
       {"height", IntegerReference} } },
     { "Shade", { {"geom", StringReference}, {"azimuth", DoubleReference},
       {"elevat", DoubleReference}, {"color", BooleanTypes} } },
-    { "Sharpen", { {"order", IntegerReference} } },
+    { "Sharpen", { {"geom", StringReference}, {"radius", DoubleReference},
+      {"sigma", DoubleReference} } },
     { "Shear", { {"geom", StringReference}, {"x", DoubleReference},
       {"y", DoubleReference} } },
     { "Spread", { {"amount", IntegerReference} } },
@@ -3993,9 +3995,20 @@ Mogrify(ref,...)
         }
         case 6:  /* Blur */
         {
-          if (!attribute_flag[0])
-            argument_list[0].int_reference=3;
-          image=BlurImage(image,argument_list[0].int_reference,&exception);
+          double
+            radius,
+            sigma;
+
+          radius=0.0;
+          sigma=1.5;
+          if (attribute_flag[1])
+            radius=argument_list[1].double_reference;
+          if (attribute_flag[2])
+            sigma=argument_list[2].double_reference;
+          if (attribute_flag[0])
+            (void) sscanf(argument_list[0].string_reference,"%lfx%lf",
+              &radius,&sigma);
+          image=BlurImage(image,radius,sigma,&exception);
           break;
         }
         case 7:  /* Chop */
@@ -4229,9 +4242,20 @@ Mogrify(ref,...)
         }
         case 27:  /* Sharpen */
         {
-          if (!attribute_flag[0])
-            argument_list[0].int_reference=3;
-          image=SharpenImage(image,argument_list[0].int_reference,&exception);
+          double
+            radius,
+            sigma;
+
+          radius=0.0;
+          sigma=1.5;
+          if (attribute_flag[1])
+            radius=argument_list[1].double_reference;
+          if (attribute_flag[2])
+            sigma=argument_list[2].double_reference;
+          if (attribute_flag[0])
+            (void) sscanf(argument_list[0].string_reference,"%lfx%lf",
+              &radius,&sigma);
+          image=SharpenImage(image,radius,sigma,&exception);
           break;
         }
         case 28:  /* Shear */

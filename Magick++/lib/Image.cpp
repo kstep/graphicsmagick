@@ -244,7 +244,7 @@ void Magick::Image::blur( unsigned int order_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
-    BlurImage( image(), order_, &exceptionInfo);
+    BlurImage( image(), (double) order_, 1.5, &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
@@ -1196,7 +1196,8 @@ void Magick::Image::sharpen ( unsigned int order_ )
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
     SharpenImage( image(),
-			     order_,
+			     (double) order_,
+			     1.5,
 			     &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );

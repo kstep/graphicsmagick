@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>effects - ImageMagick Image Effects Methods</TITLE>
-<LINK REV="made" HREF="mailto:root@fantasia.es.dupont.com">
+<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
@@ -60,14 +60,14 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>Image * <STRONG>AddNoiseImage</STRONG>( Image *image, const NoiseType noise_type, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>BlurImage</STRONG>( Image *image, const double factor, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>BlurImage</STRONG>( Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ColorizeImage</STRONG>( Image *image, const char *opacity, const PixelPacket target, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ConvolveImage</STRONG>( Image *image, const unsigned int order, const double *kernel, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>DespeckleImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>EdgeImage</STRONG>( Image *image, const unsigned int order, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>EmbossImage</STRONG>( Image *image, unsigned int order, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>EnhanceImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>GaussianBlurImage</STRONG>( Image *image, const double width, const double sigma, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>GaussianBlurImage</STRONG>( Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ImplodeImage</STRONG>( Image *image, const double factor, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MedianFilterImage</STRONG>( Image *image, const unsigned int order, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MorphImages</STRONG>( Image *image, const unsigned int number_frames, ExceptionInfo *exception );</P>
@@ -75,7 +75,7 @@
 <P>unsigned int  <STRONG>PlasmaImage</STRONG>( Image *image, const SegmentInfo *segment, int attenuate, int depth );</P>
 <P>Image * <STRONG>ReduceNoiseImage</STRONG>( Image *image, const unsigned int, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ShadeImage</STRONG>( Image *image, const unsigned int color_shading, double azimuth, double elevation, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>SharpenImage</STRONG>( Image *image, const double factor, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>SharpenImage</STRONG>( Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
 <P>void  <STRONG>SolarizeImage</STRONG>( Image *image, const double factor );</P>
 <P>Image * <STRONG>SpreadImage</STRONG>( Image *image, const unsigned int amount, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>SteganoImage</STRONG>( Image *image, Image *watermark, ExceptionInfo *exception );</P>
@@ -115,23 +115,30 @@ return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="blurimage">BlurImage</A></H2>
-<P>Method BlurImage creates a new image that is a copy of an existing one with the pixels blurred.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
+<P>Method BlurImage creates a blurred copy of the input image.  We convolve the image with a gaussian operator of the given width and standard deviation (sigma).</P>
+<P>Each output pixel is set to a value that is the weighted average of the input pixels in an area enclosing the pixel.  The width parameter determines how large the area is.  Each pixel in the area is weighted in the average according to its distance from the center, and the standard deviation, sigma.  The actual weight is calculated according to the gaussian distribution (also called normal distribution), which looks like a Bell Curve centered on a pixel.  The standard deviation controls how 'pointy' the curve is.  The pixels near the center of the curve (closer to the center of the area we are averaging) contribute more than the distant pixels.</P>
+<P>In general, the width should be wide enough to include most of the total weight under the gaussian for the standard deviation you choose.  the width parameter to the function specifies the radius of the gaussian convolution mask in pixels, not counting the centre pixel, the width parameter should be chosen larger than the standard deviation, perhaps about twice as large to three times as large.  
+<FONT SIZE=-1>A</FONT> width of 1 will give a (standard) 3x3 convolution mask, a width of 2 gives a 5 by 5 convolution mask.  Using non-integral widths will result in some pixels being considered 'partial' pixels, in which case their weight will be reduced proportionally.</P>
+<P>Pixels for which the convolution mask does not completely fit on the image (e.g.  pixels without a full set of neighbours) are averaged with those neighbours they do have.  Thus pixels at the edge of images are typically less blur.</P>
+<P>Since a 2d gaussian is seperable, we perform the Gaussian blur by convolving with two 1d gaussians, first in the x, then in the y direction.  For an n by n image and gaussian width w this requires 2wn^2 multiplications, while convolving with a 2d gaussian requres w^2n^2 mults.</P>
+<P>We blur the image into a copy, and the original is left untouched.  We must process the image in two passes, in each pass we change the pixel based on its neighbors, but we need the pixel's original value for the next pixel's calculation.  For the first pass we could use the original image but that's no good for the second pass, and it would imply that the original image have to stay around in ram.  Instead we use a small (size=width) buffer to store the pixels we have overwritten.</P>
+<P>This method was contributed by <A HREF="mailto:runger@cs.mcgill.ca.">runger@cs.mcgill.ca.</A></P>
 <P>The format of the BlurImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *BlurImage ( <A HREF="types/Image.html">Image</A> *image, const double factor, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *BlurImage ( <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_blur_image%3A">blur_image:</A></STRONG><BR>
 <DD>
-Method BlurImage returns a pointer to the image after it is blurred.  
+Method BlurImage returns a pointer to the image after it is blur.  
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 <P></P>
-<p><dt><STRONG>image:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_radius%3A">radius:</A></STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The radius of the gaussian, in pixels, not counting the center pixel.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_order%3A">order:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_sigma%3A">sigma:</A></STRONG><BR>
 <DD>
-An unsigned int that is the order of the pixel neighborhood.
+The standard deviation of the gaussian, in pixels.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -178,7 +185,7 @@ Method ConvolveImage returns a pointer to the image after it is convolved.
 <DD>
 The address of a structure of type Image; returned from ReadImage.
 <P></P>
-<p><dt><STRONG>order:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_order%3A">order:</A></STRONG><BR>
 <DD>
 The number of columns and rows in the filter kernel.
 <P></P>
@@ -285,31 +292,27 @@ return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="gaussianblurimage">GaussianBlurImage</A></H2>
-<P>Method GaussianBlurImage creates a blurred copy of the input image.  We convolve the image with a gaussian operator of the given width and standard deviation (sigma).</P>
-<P>Each output pixel is set to a value that is the weighted average of the input pixels in an area enclosing the pixel.  The width parameter determines how large the area is.  Each pixel in the area is weighted in the average according to its distance from the center, and the standard deviation, sigma.  The actual weight is calculated according to the gaussian distribution (also called normal distribution), which looks like a Bell Curve centered on a pixel.  The standard deviation controls how 'pointy' the curve is.  The pixels near the center of the curve (closer to the center of the area we are averaging) contribute more than the distant pixels.</P>
-<P>In general, the width should be wide enough to include most of the total weight under the gaussian for the standard deviation you choose.  the width parameter to the function specifies the radius of the gaussian convolution mask in pixels, not counting the centre pixel, the width parameter should be chosen larger than the standard deviation, perhaps about twice as large to three times as large.  
-<FONT SIZE=-1>A</FONT> width of 1 will give a (standard) 3x3 convolution mask, a width of 2 gives a 5 by 5 convolution mask.  Using non-integral widths will result in some pixels being considered 'partial' pixels, in which case their weight will be reduced proportionally.</P>
-<P>Pixels for which the convolution mask does not completely fit on the image (e.g.  pixels without a full set of neighbours) are averaged with those neighbours they do have.  Thus pixels at the edge of images are typically less blurred.</P>
-<P>Since a 2d gaussian is seperable, we perform Gaussian Blurring by convolving with two 1d gaussians, first in the x, then in the y direction.  For an n by n image and gaussian width w this requires 2wn^2 multiplications, while convolving with a 2d gaussian requres w^2n^2 mults.</P>
-<P>We are blur the image into a copy, and the original is left untouched.  We must process the image in two passes, in each pass we change the pixel based on its neightbours, but we need the pixel's original value for the next pixel's calculation.  For the first pass we could use the original image but that's no good for the second pass, and it would imply that the original image have to stay around in ram.  Instead we use a small (size=width) buffer to store the pixels we have overwritten.</P>
-<P>BlurImage deals with boundary pixels by assuming the neighbours not in the image are zero (black) pixels.  The function could be easily modified to pre-fill the buffer with the first width pixels from the image scan-line, in effect averaging only the available neighbours for any pixel.</P>
-<P>This method was contributed by <A HREF="mailto:runger@cs.mcgill.ca.">runger@cs.mcgill.ca.</A></P>
-<P>The format of the GaussianBlurImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *GaussianBlurImage ( <A HREF="types/Image.html">Image</A> *image, const double width, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<P>Method BlurImage creates a new image that is a copy of an existing one with the pixels blur.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
+<P>The format of the BlurImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *GaussianBlurImage ( <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>blur_image:</STRONG><BR>
 <DD>
-Method GaussianBlurImage returns a pointer to the image after it is blurred.  
+Method GaussianBlurImage returns a pointer to the image after it is blur.  
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_width%3A">width:</A></STRONG><BR>
+<p><dt><STRONG>radius:</STRONG><BR>
 <DD>
 The radius of the gaussian, in pixels, not counting the center pixel.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_sigma%3A">sigma:</A></STRONG><BR>
+<p><dt><STRONG>sigma:</STRONG><BR>
 <DD>
 The standard deviation of the gaussian, in pixels.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="implodeimage">ImplodeImage</A></H2>
@@ -399,7 +402,7 @@ Method OilPaintImage returns a pointer to the image after it is `painted'.
 <DD>
 The address of a structure of type Image; returned from ReadImage.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_radius%3A">radius:</A></STRONG><BR>
+<p><dt><STRONG>radius:</STRONG><BR>
 <DD>
 An unsigned int that is the radius of the circular neighborhood.
 <P></P>
@@ -492,9 +495,16 @@ return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="sharpenimage">SharpenImage</A></H2>
-<P>Method SharpenImage creates a new image that is a copy of an existing one with the pixels sharpened.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
+<P>Method SharpenImage creates a sharpened copy of the input image.  We convolve the image with a gaussian operator of the given width and standard deviation (sigma).</P>
+<P>Each output pixel is set to a value that is the weighted average of the input pixels in an area enclosing the pixel.  The width parameter determines how large the area is.  Each pixel in the area is weighted in the average according to its distance from the center, and the standard deviation, sigma.  The actual weight is calculated according to the gaussian distribution (also called normal distribution), which looks like a Bell Curve centered on a pixel.  The standard deviation controls how 'pointy' the curve is.  The pixels near the center of the curve (closer to the center of the area we are averaging) contribute more than the distant pixels.</P>
+<P>In general, the width should be wide enough to include most of the total weight under the gaussian for the standard deviation you choose.  the width parameter to the function specifies the radius of the gaussian convolution mask in pixels, not counting the centre pixel, the width parameter should be chosen larger than the standard deviation, perhaps about twice as large to three times as large.  
+<FONT SIZE=-1>A</FONT> width of 1 will give a (standard) 3x3 convolution mask, a width of 2 gives a 5 by 5 convolution mask.  Using non-integral widths will result in some pixels being considered 'partial' pixels, in which case their weight will be reduced proportionally.</P>
+<P>Pixels for which the convolution mask does not completely fit on the image (e.g.  pixels without a full set of neighbours) are averaged with those neighbours they do have.  Thus pixels at the edge of images are typically less sharpness.</P>
+<P>Since a 2d gaussian is seperable, we perform the Gaussian sharpen by convolving with two 1d gaussians, first in the x, then in the y direction.  For an n by n image and gaussian width w this requires 2wn^2 multiplications, while convolving with a 2d gaussian requres w^2n^2 mults.</P>
+<P>We sharpen the image into a copy, and the original is left untouched.  We must process the image in two passes, in each pass we change the pixel based on its neighbors, but we need the pixel's original value for the next pixel's calculation.  For the first pass we could use the original image but that's no good for the second pass, and it would imply that the original image have to stay around in ram.  Instead we use a small (size=width) buffer to store the pixels we have overwritten.</P>
+<P>This method was contributed by <A HREF="mailto:runger@cs.mcgill.ca.">runger@cs.mcgill.ca.</A></P>
 <P>The format of the SharpenImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *SharpenImage ( <A HREF="types/Image.html">Image</A> *image, const double factor, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *SharpenImage ( <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_sharpen_image%3A">sharpen_image:</A></STRONG><BR>
@@ -502,13 +512,13 @@ return any errors or warnings in this structure.
 Method SharpenImage returns a pointer to the image after it is sharpened.  
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 <P></P>
-<p><dt><STRONG>image:</STRONG><BR>
+<p><dt><STRONG>radius:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The radius of the gaussian, in pixels, not counting the center pixel.
 <P></P>
-<p><dt><STRONG>factor:</STRONG><BR>
+<p><dt><STRONG>sigma:</STRONG><BR>
 <DD>
-An double value reflecting the percent weight to give to the center pixel of the neighborhood.
+The standard deviation of the gaussian, in pixels.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -650,7 +660,7 @@ The address of a structure of type Image; returned from ReadImage.
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_unsharp_image%3A">unsharp_image:</A></STRONG><BR>
 <DD>
-Method UnsharpMaskImage returns a pointer to the image after it is blurred.  
+Method UnsharpMaskImage returns a pointer to the image after it is blur.  
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 <P></P>
 <p><dt><STRONG>radius:</STRONG><BR>
@@ -663,7 +673,7 @@ The standard deviation of the gaussian, in pixels.
 <P></P>
 <p><dt><STRONG>amount:</STRONG><BR>
 <DD>
-The percentage of the difference between the original and the blurred image that is added back into the original.
+The percentage of the difference between the original and the blur image that is added back into the original.
 <P></P>
 <p><dt><STRONG>threshold:</STRONG><BR>
 <DD>
