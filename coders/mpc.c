@@ -844,51 +844,58 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
   CacheInfo
     *cache_info;
 
-  int
-    file;
-
-  char
-    filename[MaxTextExtent];
-
-  register int
-    y;
-
-  register PixelPacket
-    *p;
-
   unsigned int
     status;
 
   /*
-    Write persistent cache to disk.
+    Open persistent cache.
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   cache_info=(CacheInfo *) image->cache;
+  cache_info->persist=True;
   (void) strcpy(cache_info->meta_filename,image->filename);
-  (void) strcpy(cache_info->cache_filename,image->filename);
-  AppendImageFormat("cache",cache_info->cache_filename);
-  file=open(cache_info->cache_filename,O_WRONLY | O_CREAT | O_BINARY,0777);
-  if (file == -1)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  for (y=0; y < (int) image->rows; y++)
-  {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
-      break;
-    (void) write(file,(char *) p,image->columns*sizeof(PixelPacket));
-  }
-  if (image->storage_class == PseudoClass)
-    for (y=0; y < (int) image->rows; y++)
+  if (cache_info->type == MemoryCache)
     {
-      p=GetImagePixels(image,0,y,image->columns,1);
-      if (p == (PixelPacket *) NULL)
-        break;
-      (void) write(file,(char *) GetIndexes(image),image->columns*
-        sizeof(IndexPacket));
+      int
+        file;
+
+      char
+        filename[MaxTextExtent];
+
+      register int
+        y;
+
+      register PixelPacket
+        *p;
+
+      /*
+        Write persistent cache to disk.
+      */
+      (void) strcpy(cache_info->cache_filename,image->filename);
+      AppendImageFormat("cache",cache_info->cache_filename);
+      file=open(cache_info->cache_filename,O_WRONLY | O_CREAT | O_BINARY,0777);
+      if (file == -1)
+        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+      for (y=0; y < (int) image->rows; y++)
+      {
+        p=GetImagePixels(image,0,y,image->columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        (void) write(file,(char *) p,image->columns*sizeof(PixelPacket));
+      }
+      if (image->storage_class == PseudoClass)
+        for (y=0; y < (int) image->rows; y++)
+        {
+          p=GetImagePixels(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
+          (void) write(file,(char *) GetIndexes(image),image->columns*
+            sizeof(IndexPacket));
+        }
+      (void) close(file);
     }
-  (void) close(file);
   CloseBlob(image);
   return(status);
 }
