@@ -1087,29 +1087,26 @@ MagickExport struct dirent *readdir(DIR *entry)
 */
 
 /*
-  Aldus Placeable Header.
-*/
-#pragma pack( push )
-#pragma pack( 2 )
-typedef struct
-{
-  DWORD dwKey;
-  WORD hmf;
-  SMALL_RECT bbox;
-  WORD wInch;
-  DWORD dwReserved;
-  WORD wCheckSum;
-} APMHEADER, *PAPMHEADER;
-#pragma pack( pop )
-
-/*
-  This method reads either an enhanced metafile, or a regular 16bit
-  windows metafile, or an Aldus Placeable metafile and converts it into
-  an enhanced metafile.
+  This method reads either an enhanced metafile, a regular 16bit Windows
+  metafile, or an Aldus Placeable metafile and converts it into an enhanced
+  metafile.
 */
 static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,int *width,
   int *height)
 {
+#pragma pack( push )
+#pragma pack( 2 )
+  typedef struct
+  {
+    DWORD dwKey;
+    WORD hmf;
+    SMALL_RECT bbox;
+    WORD wInch;
+    DWORD dwReserved;
+    WORD wCheckSum;
+  } APMHEADER, *PAPMHEADER;
+#pragma pack( pop )
+
   DWORD
     dwSize;
 
@@ -1137,7 +1134,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,int *width,
   width=512;
   height=512;
   hTemp=GetEnhMetaFile(szFileName);
-  if (hTemp != NULL)
+  if (hTemp != (HENHMETAFILE) NULL)
     {
       /*
         Enhanced metafile.
@@ -1148,7 +1145,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,int *width,
       return(hTemp);
     }
   hOld=GetMetaFile(szFileName);
-  if (hOld != NULL)
+  if (hOld != (HMETAFILE) NULL)
     {
       /*
         16bit windows metafile.
@@ -1157,19 +1154,19 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,int *width,
       if(dwSize == 0)
         {
           DeleteMetaFile(hOld);
-          return(NULL);
+          return((HENHMETAFILE) NULL);
         }
       pBits=(LPBYTE) AcquireMemory(dwSize);
       if(pBits == (LPBYTE) NULL)
         {
           DeleteMetaFile(hOld);
-          return(NULL);
+          return((HENHMETAFILE) NULL);
         }
       if(GetMetaFileBitsEx(hOld,dwSize,pBits) == 0)
         {
           LiberateMemory((void **) &pBits);
           DeleteMetaFile(hOld);
-          return(NULL);
+          return((HENHMETAFILE) NULL);
         }
       /*
         Make an enhanced metafile from the windows metafile.
@@ -1199,10 +1196,10 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,int *width,
   pBits=(LPBYTE) AcquireMemory(dwSize);
   ReadFile(hFile,pBits,dwSize,&dwSize,NULL);
   CloseHandle(hFile);
-  if (((PAPMHEADER)pBits)->dwKey != 0x9ac6cdd7l)
+  if (((PAPMHEADER) pBits)->dwKey != 0x9ac6cdd7l)
     {
       LiberateMemory((void **) *pBits);
-      return(NULL);
+      return((HENHMETAFILE) NULL);
     }
   /*
     Make an enhanced metafile from the placable metafile.
