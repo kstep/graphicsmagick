@@ -14,17 +14,10 @@ Unix:
 
     gunzip -c ImageMagick-5.2.0.tar.gz | tar xvf -
     cd ImageMagick-5.2.0
-    ./configure --enable-shared --enable-lzw --with-perl
+    ./configure
     make
     make install
     identify -verbose logo:
-
-  Optionally, edit Magick.tmpl and type 
-
-    xmkmf
-
-  after the configure command above if you choose to use the X11 imake
-  method to build ImageMagick.
 
   Alternatively, download the appropriate binary from
   ftp://www.wizards.dupont.com/pub/ImageMagick/binaries.
@@ -49,12 +42,15 @@ Unix:
     export TMPDIR=/home/tmp
 
 NT:
+Win95:
+Win98:
 
   Download
 
     ftp://www.wizards.dupont.com/pub/ImageMagick/nt/ImageMagick-nt.zip
 
-  and double click on it to extract the distribution.  Next, copy
+  and double click on it to extract the distribution.  Next, select
+  File->New->Folder to create c:\ImageMagick.
 
     ImageMagick-5.2.0/delegates/nt.mgk
 
@@ -62,17 +58,14 @@ NT:
 
     c:\ImageMagick\delegates.mgk
 
-  and copy
-
+  Use Copy/Paste/Rename to copy and rename nt.mgk to delegates.mgk.  Now
+  copy
 
     ImageMagick-5.2.0\magick\magic.mgk
 
   to
 
     c:\ImageMagick\magic.mgk
-
-  Select File->New->Folder to create c:\ImageMagick.  Use
-  Copy/Paste/Rename to copy and rename nt.mgk to delegates.mgk.
 
   If you have an X server, change to directory
   ImageMagick-5.2.0/ImageMagick-5.2.0/bin and double-click on
@@ -80,59 +73,9 @@ NT:
   the Command Prompt window type
 
     cd ImageMagick-5.2.0
-    identifyy -verbose logo:
-
-  Alternatively, download the ImageMagick NT source
-
-    ftp://www.wizards.dupont.com/pub/ImageMagick/nt/ImageMagick-5.2.0.zip
-
-  and double click on the ImageMagick Visual C++ project to build from
-  the source.
-
-  In some cases, ImageMagick needs to write temporary files.  If your
-  default location is too small, use the TMPDIR environment variable to
-  specify a path. For example:
-
-    set TMPDIR=d:\temp
-
-
-Win95:
-
-  Download
-
-    ftp://www.wizards.dupont.com/pub/ImageMagick/binaries/ImageMagick-win95.zip
-
-  and double click on it to extract the distribution.  Next, copy
-
-
-    ImageMagick-5.2.0/delegates/win95.mgk
-
-  to
-
-    c:\ImageMagick\delegates.mgk
-
-  and copy
-
-
-    ImageMagick-5.2.0\magick\magic.mgk
-
-  to
-
-    c:\ImageMagick\magic.mgk
-
-  Select File->New->Folder to create c:\ImageMagick.  Use
-  Copy/Paste/Rename to copy and rename win95.mgk to delegates.mgk.
-
-  If you have an X server, change to directory
-  ImageMagick-5.2.0/ImageMagick-5.2.0/bin and double-click on
-  display.exe.  Otherwise, select Start->Programs->MSDOS Prompt.  In
-  the MSDOS Prompt window type
-
-    cd c:\ImageMagick-5.2.0
-    del delegates.mgk
     identify -verbose logo:
 
-  Alternatively, download the ImageMagick Win95 source
+  Alternatively, download the ImageMagick NT source
 
     ftp://www.wizards.dupont.com/pub/ImageMagick/nt/ImageMagick-5.2.0.zip
 
