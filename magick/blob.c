@@ -577,7 +577,6 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       status=WriteImage(clone_info,image);
       if (status == False)
         {
-          DestroyImageInfo(clone_info);
           ThrowException(exception,BlobWarning,"Unable to write blob",
             clone_info->magick);
           DestroyImageInfo(clone_info);
