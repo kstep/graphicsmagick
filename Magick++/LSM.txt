@@ -26,8 +26,8 @@ Keywords:       ImageMagick,Magick++,image-processing,C++,STL,graphics,library
 Author:         bfriesen@simple.dallas.tx.us (Bob Friesenhahn)
 Maintained-by:  bfriesen@simple.dallas.tx.us (Bob Friesenhahn)
 Primary-site:   ftp://ftp.simplesystems.org/pub/Magick++/
-                         368 kb Magick++-5.2.4.tar.gz
-                         400 kb Magick++-5.2.4.zip
+                         368 kb Magick++-5.2.5.tar.gz
+                         400 kb Magick++-5.2.5.zip
 
 Platforms:      Unix, Linux, and Windows
 Copying-policy: Freeware
