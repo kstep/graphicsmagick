@@ -1,3 +1,9 @@
+2003-12-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/annotate.c (RenderFreetype): Ensure that image storage
+	class is set to DirectClass. Text rendering was not working
+	properly on top of PseudoClass images.
+
 2003-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Search for the shmctl() function.  Under current

@@ -1207,6 +1207,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
             if (status != False)
               continue;
             bitmap=(FT_BitmapGlyph) glyph.image;
+            image->storage_class=DirectClass;
             point.x=offset->x+bitmap->left;
             point.y=offset->y-bitmap->top;
             p=bitmap->bitmap.buffer;
