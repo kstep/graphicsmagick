@@ -133,7 +133,7 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 %
 %  The format of the DeleteImageList method is:
 %
-%      unsigned int DeleteImageList(Image *images,const long offset)
+%      unsigned int DeleteImageList(Image **images,const long offset)
 %
 %  A description of each parameter follows:
 %
@@ -143,7 +143,7 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 %
 %
 */
-MagickExport unsigned int DeleteImageList(Image *images,const long offset)
+MagickExport unsigned int DeleteImageList(Image **images,const long offset)
 {
   Image
     *image;
@@ -151,21 +151,24 @@ MagickExport unsigned int DeleteImageList(Image *images,const long offset)
   register long
     i;
 
-  if (images == (Image *) NULL)
+  assert(images != (Image **) NULL);
+  if ((*images) == (Image *) NULL)
     return(False);
-  assert(images->signature == MagickSignature);
-  while (images->previous != (Image *) NULL)
-    images=images->previous;
-  for (i=0; images != (Image *) NULL; images=images->next)
+  assert((*images)->signature == MagickSignature);
+  image=(*images);
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
+  for (i=0; image != (Image *) NULL; image=image->next)
     if (i++ == offset)
       break;
-  if (images == (Image *) NULL)
+  if (image == (Image *) NULL)
     return(False);
-  image=images;
-  if (images->previous != (Image *) NULL)
-    images->previous->next=images->next;
-  if (images->next != (Image *) NULL)
-    images->next->previous=images->previous;
+  if ((*images)->previous != (Image *) NULL)
+    (*images)->previous->next=(*images)->next;
+  if ((*images)->next != (Image *) NULL)
+    (*images)->next->previous=(*images)->previous;
+  if ((image->previous == (Image *) NULL) && (image->next == (Image *) NULL))
+    *images=(Image *) NULL;
   DestroyImage(image);
   return(True);
 }

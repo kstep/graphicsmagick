@@ -4003,7 +4003,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                 length=image->columns;
 
-                DeleteImageList(image,GetImageListIndex(image));
+                DeleteImageList(&image,GetImageListIndex(image));
 
                 image=large_image;
 
