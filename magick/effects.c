@@ -253,6 +253,11 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
 {
 #define ColorizeImageText  "  Colorizing the image...  "
 
+  double
+    blue,
+    green,
+    red;
+
   Image
     *colorize_image;
 
@@ -260,10 +265,7 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
     y;
 
   long
-    blue,
-    count,
-    green,
-    red;
+    count;
 
   register int
     x;
@@ -283,13 +285,13 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
   /*
     Determine RGB values of the pen color.
   */
-  red=100;
-  green=100;
-  blue=100;
-  count=sscanf(opacity,"%ld/%ld/%ld",&red,&green,&blue);
+  red=100.0;
+  green=100.0;
+  blue=100.0;
+  count=sscanf(opacity,"%lf/%lf/%lf",&red,&green,&blue);
   if (count == 1)
     {
-      if (red == 0)
+      if (red == 0.0)
         return(colorize_image);
       green=red;
       blue=red;
@@ -305,9 +307,9 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->red=((unsigned long) (p->red*(100-red)+target.red*red)/100);
-      q->green=((unsigned long) (p->green*(100-green)+target.green*green)/100);
-      q->blue=((unsigned long) (p->blue*(100-blue)+target.blue*blue)/100);
+      q->red=(p->red*(100.0-red)+target.red*red)/100.0;
+      q->green=(p->green*(100.0-green)+target.green*green)/100.0;
+      q->blue=(p->blue*(100.0-blue)+target.blue*blue)/100.0;
       p++;
       q++;
     }

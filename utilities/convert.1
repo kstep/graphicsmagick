@@ -324,7 +324,7 @@ To annotate an image with blue text using font 12x24 at position (100,100),
 use:
 
 .nf
-     convert -font helvetica -pen blue -draw "text 100,100 Cockatoo" bird.jpg bird.miff
+     convert -font helvetica -fill blue -draw "text 100,100 Cockatoo" bird.jpg bird.miff
 .fi
 
 To tile a 640x480 image with a JPEG texture with bumps use:
@@ -404,7 +404,7 @@ Good order values are odd numbers from 3 to 31.
 merge a sequence of images.
 .TP
 .B "-colorize \fIvalue\fP"
-colorize the image with the pen color.
+colorize the image with the fill color.
 
 Specify the amount of colorization as a percentage.  You can apply separate
 colorization values to the red, green, and blue channels of the image with a
@@ -671,8 +671,8 @@ If the first character of \fIstring\fP is \fB@\fP, the text is read
 from a file titled by the remaining characters in the string.
 
 You can set the primitive color, font color, and font bounding box color with
-\fB-pen\fP, \fB-font\fP, and \fB-box\fP respectively.  Options are
-processed in command line order so be sure to use \fB-pen\fP
+\fB-fill\fP, \fB-font\fP, and \fB-box\fP respectively.  Options are
+processed in command line order so be sure to use \fB-fill\fP
 \fIbefore\fP the \fB-draw\fP option.
 .TP
 .B "-edge \fIorder\fP"
@@ -691,8 +691,9 @@ apply a digital filter to enhance a noisy image.
 .B "-equalize"
 perform histogram equalization to the image.
 .TP
-.B "-fill
-paint the interior of a drawing primitive.
+.B "-fill \fIcolor\fP"
+color to use when filling a graphic primitive.  See \fB-draw\fP for further
+details.
 .TP
 .B "-filter \fItype\fP"
 use this type of filter when resizing an image.
@@ -958,7 +959,7 @@ transform image to span the full range of color values.
 This is a contrast enhancement technique.
 .TP
 .B "-opaque \fIcolor\fP"
-change this color to the pen color within the image.  See \fB-pen\fP for
+change this color to the fill color within the image.  See \fB-fill\fP for
 more details.
 .TP
 .B "-page \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
@@ -1030,13 +1031,6 @@ simulate an oil painting.
 
 Each pixel is replaced by the most frequent color in a circular neighborhood
 whose width is specified with \fIradius\fP.
-.TP
-.B "-pen \fIcolor\fP"
-set the color of the font or opaque color.  See \fB-draw\fP for further details.
-
-See \fBX(1)\fP for details about the color specification.  A pen can also
-be an image.  Specify the pen color as an image name preceded by a \fB@\fP
-(e.g. @tile.gif).
 .TP
 .B "-pointsize \fIvalue\fP"
 pointsize of the Postscript font.
@@ -1231,6 +1225,10 @@ displace image pixels by a random amount.
 
 \fIAmount\fP defines the size of the neighborhood around each pixel to
 choose a candidate pixel to swap.
+.TP
+.B "-stroke \fIcolor\fP"
+color to use when stoking a graphic primitive.  See \fB-draw\fP for further
+details.
 .TP
 .B "-swirl \fIdegrees\fP"
 swirl image pixels about the center.
