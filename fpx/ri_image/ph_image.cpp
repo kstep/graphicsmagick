@@ -1077,7 +1077,7 @@ FPXStatus PHierarchicalImage::ReadSampledRectangle(long x0, long y0,long x1, lon
     if (i) {
       x1 >>= i; y1 >>= i;
       x0 >>= i; y0 >>= i;
-      ratio *= (float) (pow(2,i));
+      ratio *= (float) (pow(2,(double) i));
     }
     
     // read the rectangle in the correct sub image
@@ -1100,7 +1100,7 @@ FPXStatus PHierarchicalImage::SearchPixelTopLeftCorner(long* x1, long* y1, float
         
     // compute the coordinates in the choosed sub image
     if (i) 
-      ratio *= (float) (pow(2,i));
+      ratio *= (float) (pow(2,(double) i));
       
     // read the rectangle in the correct sub image
     return subImages[i]->SearchPixelTopLeftCorner(x1, y1, ratio);
