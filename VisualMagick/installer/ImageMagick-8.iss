@@ -52,7 +52,7 @@
 AppName=ImageMagick 5.5.2 Q:8
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=ImageMagick 5.5.2 Q:8 Beta (September 29, 2002)
+AppVerName=ImageMagick 5.5.2 Q:8 Beta (November 4, 2002)
 AppVersion=5.5.2
 AppCopyright=Copyright (C) 2002 ImageMagick Studio LLC
 AppPublisher=ImageMagick Studio
@@ -834,6 +834,7 @@ Source: "..\..\magick\registry.h"; DestDir: "{app}\include\magick"; CopyMode: al
 Source: "..\..\magick\render.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\resource.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\semaphore.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\..\magick\signature.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\timer.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\utility.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\version.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
