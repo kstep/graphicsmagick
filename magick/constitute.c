@@ -1208,6 +1208,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   GetExceptionInfo(exception);
   clone_info=CloneImageInfo(image_info);
+  clone_info->ping=True;
   if (clone_info->size == (char *) NULL)
     clone_info->size=AllocateString(DefaultTileGeometry);
   image=ReadStream(clone_info,&StreamHandler,exception);
