@@ -212,7 +212,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open temporary output file.
   */
-  UniqueImageFilename(postscript_filename);
+  TemporaryFilename(postscript_filename);
   file=fopen(postscript_filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to write file",image);
@@ -323,7 +323,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     FormatString(options,"-dFirstPage=%u -dLastPage=%u",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strcpy(filename,image_info->filename);
-  UniqueImageFilename((char *) image_info->filename);
+  TemporaryFilename((char *) image_info->filename);
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
     postscript_filename);
@@ -491,14 +491,14 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
       /*
         Write image as Encapsulated Postscript to a temporary file.
       */
-      UniqueImageFilename(ps_filename);
+      TemporaryFilename(ps_filename);
       FormatString(image->filename,"eps:%.1024s",ps_filename);
       (void) WriteImage(image_info,image);
     }
   /*
     Write image as TIFF to a temporary file.
   */
-  UniqueImageFilename(tiff_filename);
+  TemporaryFilename(tiff_filename);
   FormatString(image->filename,"tiff:%.1024s",tiff_filename);
   (void) strcpy(image->filename,tiff_filename);
   (void) WriteImage(image_info,image);

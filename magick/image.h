@@ -892,7 +892,6 @@ extern MagickExport void
   TransformHSL(const Quantum,const Quantum,const Quantum,double *,double *,
     double *),
   TransformImage(Image **,const char *,const char *),
-  UniqueImageFilename(char *),
   Unregister8BIMImage(void),
   UnregisterARTImage(void),
   UnregisterAVIImage(void),

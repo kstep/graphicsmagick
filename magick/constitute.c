@@ -1928,7 +1928,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           return((Image *) NULL);
         }
       (void) strcpy(image->filename,clone_info->filename);
-      UniqueImageFilename(clone_info->filename);
+      TemporaryFilename(clone_info->filename);
       status=InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL);
       ThrowException(exception,image->exception.severity,
         image->exception.reason,image->exception.description);
@@ -2299,7 +2299,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           /*
             Let our encoding delegate process the image.
           */
-          UniqueImageFilename(image->filename);
+          TemporaryFilename(image->filename);
           status=
             InvokeDelegate(clone_info,image,(char *) NULL,clone_info->magick);
           (void) remove(image->filename);

@@ -1373,7 +1373,7 @@ MagickExport unsigned int OpenCache(Image *image)
     Create pixel cache on disk.
   */
   if (cache_info->storage_class == UndefinedClass)
-    UniqueImageFilename(cache_info->cache_filename);
+    TemporaryFilename(cache_info->cache_filename);
   if (cache_info->file == -1)
     {
       cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);

@@ -1210,7 +1210,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         jpeg=True;
         clone_info=CloneImageInfo(image_info);
         RewindBlob(clone_info->blob);
-        UniqueImageFilename(clone_info->filename);
+        TemporaryFilename(clone_info->filename);
         file=fopen(clone_info->filename,WriteBinaryType);
         if (file == (FILE *) NULL)
           ThrowReaderException(FileOpenWarning,"Unable to write file",image);

@@ -176,7 +176,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Copy image to temporary file.
   */
-  UniqueImageFilename((char *) image_info->filename);
+  TemporaryFilename((char *) image_info->filename);
   file=fopen(image_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to write file",image);
@@ -814,7 +814,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(filename,image->filename);
   if ((image->file == stdout) || image->pipet ||
       (image->blob->data != (unsigned char *) NULL))
-    UniqueImageFilename(filename);
+    TemporaryFilename(filename);
   else
     CloseBlob(image);
   {

@@ -284,7 +284,7 @@ MagickExport unsigned int ConcatenateString(char **destination,
 %
 %    o command: The address of a character string containing the command to
 %      execute.
-%      
+%
 %
 */
 MagickExport unsigned int ExecutePostscriptInterpreter(
@@ -747,7 +747,7 @@ MagickExport int GetGeometry(const char *image_geometry,int *x,int *y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetPathComponent returns the parent directory name, filename, 
+%  Method GetPathComponent returns the parent directory name, filename,
 %  basename, or extension of a file path.
 %
 %  The format of the GetPathComponent function is:
@@ -2397,6 +2397,60 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
     MagickWarning(DelegateWarning,command,!status ? strerror(status) :
       (char *) NULL);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  T e m p o r a r y F i l e n a m e                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method TemporaryFilename replaces the contents of the string pointed to
+%  by filename by a unique file name.
+%
+%  The format of the TemporaryFilename method is:
+%
+%      void TemporaryFilename(har *filename)
+%
+%  A description of each parameter follows.
+%
+%   o  filename:  Specifies a pointer to an array of characters.  The unique
+%      file name is returned in this array.
+%
+*/
+MagickExport void TemporaryFilename(char *filename)
+{
+  assert(filename != (char *) NULL);
+  (void) strcpy(filename,"XXXXXX");
+#if defined(HAVE_MKSTEMP)
+  {
+    int
+      file;
+
+    file=mkstemp(filename);
+    if (file != -1)
+      close(file);
+  }
+#elif !defined(vms) && !defined(macintosh)
+  {
+    char
+      *name;
+
+    name=(char *) tempnam((char *) NULL,filename);
+    if (name != (char *) NULL)
+      {
+        (void) strcpy(filename,name);
+        LiberateMemory((void **) &name);
+      }
+  }
+#else
+  (void) tmpnam(filename);
+#endif
 }
 
 /*

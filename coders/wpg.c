@@ -432,7 +432,7 @@ Image *image2;
 
 if ((clone_info=CloneImageInfo(image_info)) == NULL) return(image);
 RewindBlob(clone_info->blob);
-UniqueImageFilename((char *) clone_info->filename);
+TemporaryFilename((char *) clone_info->filename);
 
 if( (f=fopen(clone_info->filename,"wb"))==NULL) goto FINISH;
 SeekBlob(image,PS_Offset,SEEK_SET);

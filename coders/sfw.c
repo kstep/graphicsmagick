@@ -288,7 +288,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   clone_info=CloneImageInfo(image_info);
   RewindBlob(clone_info->blob);
-  UniqueImageFilename(clone_info->filename);
+  TemporaryFilename(clone_info->filename);
   file=fopen(clone_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     {

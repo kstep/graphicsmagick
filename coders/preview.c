@@ -509,7 +509,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         clone_info->quality=(unsigned int) (percentage+13.0);
         FormatString(factor,"%u",clone_info->quality);
         (void) strcpy(images[i]->filename,"jpeg:");
-        UniqueImageFilename(images[i]->filename+5);
+        TemporaryFilename(images[i]->filename+5);
         status=WriteImage(clone_info,images[i]);
         if (status != False)
           {
