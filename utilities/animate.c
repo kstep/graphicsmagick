@@ -340,7 +340,7 @@ int main(int argc,char **argv)
   if (display == (Display *) NULL)
     MagickError(XServerError,"Unable to connect to X server",
       XDisplayName(server_name));
- (void) XSetErrorHandle(XError);
+ (void) XSetErrorHandler(XError);
   client_name=SetClientName((char *) NULL);
   resource_database=XGetResourceDatabase(display,client_name);
   XGetResourceInfo(resource_database,client_name,&resource_info);

@@ -302,7 +302,7 @@ int main(int argc,char **argv)
   if (display == (Display *) NULL)
     MagickError(OptionError,"Unable to connect to X server",
       XDisplayName(server_name));
- (void) XSetErrorHandle(XError);
+ (void) XSetErrorHandler(XError);
   client_name=SetClientName((char *) NULL);
   resource_database=XGetResourceDatabase(display,client_name);
   XGetImportInfo(&ximage_info);
