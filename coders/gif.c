@@ -418,11 +418,13 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
 }
 
   int
+#if defined(HasLZW)
+    displacement,
+    next_pixel,
+#endif
     bits,
     byte_count,
-    displacement,
     k,
-    next_pixel,
     number_bits,
     offset,
     pass,
@@ -505,9 +507,9 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
       k=(int) ((int) index << (MaxGIFBits-8))+waiting_code;
       if (k >= MaxHashTable)
         k-=MaxHashTable;
+#if defined(HasLZW)
       next_pixel=False;
       displacement=1;
-#if defined(HasLZW)
       if ((image_info->compression != NoCompression) && (hash_code[k] > 0))
         {
           if ((hash_prefix[k] == waiting_code) && (hash_suffix[k] == index))
@@ -750,6 +752,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open image file.
   */
+
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
@@ -813,7 +816,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             delay=(header[2] << 8) | header[1];
             if ((header[0] & 0x01) == 1)
               opacity=header[3];
-            image->matte=opacity >= 0;
             break;
           }
           case 0xfe:
@@ -906,6 +908,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     flag=ReadBlobByte(image);
     image->interlace=BitSet(flag,0x40) ? PlaneInterlace : NoInterlace;
     image->colors=!BitSet(flag,0x80) ? global_colors : 1 << ((flag & 0x07)+1);
+    if (opacity >= (int) image->colors)
+      image->colors=opacity+1;
     image->page.width=page.width;
     image->page.height=page.height;
     image->page.y=page.y;
@@ -913,6 +917,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->delay=delay;
     image->dispose=dispose;
     image->iterations=iterations;
+    image->matte=opacity >= 0;
     delay=0;
     dispose=0;
     iterations=1;
@@ -965,16 +970,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].blue=UpScale(*p++);
         }
         LiberateMemory((void **) &colormap);
-      }
-    if (opacity >= (int) image->colors)
-      {
-        for (i=image->colors; i < (opacity+1); i++)
-        {
-          image->colormap[i].red=0;
-          image->colormap[i].green=0;
-          image->colormap[i].blue=0;
-        }
-        image->colors=opacity+1;
       }
     /*
       Decode image.

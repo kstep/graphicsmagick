@@ -75,7 +75,7 @@
 */
 #undef MNG_OBJECT_BUFFERS
 #undef MNG_BASI_SUPPORTED
-#undef PNG_SORT_PALETTE
+#define PNG_SORT_PALETTE
 #undef PNG_REDUCE_TO_PSEUDOCLASS
 
 /*
@@ -354,6 +354,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     new_number_colors,
     number_colors,
     remap_needed,
+    transparent_pixels,
     j,
     k,
     y;
@@ -407,6 +408,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     marker[i]=False;
     opacity[i]=OpaqueOpacity;
   }
+  transparent_pixels=0;
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
@@ -417,6 +419,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
     {
       marker[(int) indexes[x]]=True;
       opacity[(int) indexes[x]]=p->opacity;
+      if(p->opacity != OpaqueOpacity)
+         transparent_pixels++;
       p++;
     }
   }
@@ -511,7 +515,6 @@ static unsigned int CompressColormapTransFirst(Image *image)
     if (marker[i])
       {
         colormap[j]=image->colormap[i];
-        opacity[j]=opacity[i];
         j++;
       }
   }
@@ -534,8 +537,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
             for (j=0; j < number_colors; j++)
             {
               if (map[j] == 0)
-                map[j]=(unsigned short) i;
-              else if (map[j] == i)
+                map[j]=(unsigned short) map[i];
+              else if (map[j] == map[i])
                 map[j]=0;
             }
             remap_needed=True;
@@ -549,10 +552,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     for (i=new_number_colors; i < number_colors; i++)
     {
       if (marker[i])
-         {
-           remap_needed=True;
-           image->colors=i;
-         }
+        remap_needed=True;
     }
   LiberateMemory((void **) &marker);
 
@@ -4347,6 +4347,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   {
     png_colorp
        palette;
+
     /*
       If we aren't using a global palette for the entire MNG, check to
       see if we can use one for two or more consecutive images.
@@ -4469,6 +4470,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     ping_info->height=image->rows;
     save_image_depth=image->depth;
     ping_info->bit_depth=save_image_depth;
+#ifdef PNG_DEBUG
+    if(image_info->verbose)
+       printf("Writing %lu x %lu PNG image\n",ping_info->width,
+          ping_info->height);
+#endif
 #if (QuantumDepth == 16)
     if (ping_info->bit_depth == 16)
       {
@@ -4640,10 +4646,14 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 if (p->opacity != OpaqueOpacity)
                   {
                     if (!ColorMatch(ping_info->trans_values,*p,0))
+                    {
                        break;  /* Can't use RGB + tRNS for multiple transparent
                                   colors.  */
+                    }
                     if (p->opacity != TransparentOpacity)
+                    {
                        break;  /* Can't use RGB + tRNS for semitransparency. */
+                    }
                   }
                  else
                   {
@@ -4750,6 +4760,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             if (ping_info->trans == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);
+            assert(number_colors <= 256);
             for (i=0; i < number_colors; i++)
                ping_info->trans[i]=255;
             for (y=0; y < (int) image->rows; y++)
@@ -4766,6 +4777,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                       index;
 
                     index=indexes[x];
+                    assert(index < number_colors);
 #if (QuantumDepth == 8)
                     ping_info->trans[index]=(png_byte) (255-p->opacity);
 #else
@@ -4784,6 +4796,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               ping_info->valid&=(~PNG_INFO_tRNS);
             if (!(ping_info->valid & PNG_INFO_tRNS))
               ping_info->num_trans=0;
+
             /*
               Identify which colormap entry is the background color.
             */
@@ -4805,6 +4818,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.gray*=0x0101;
           }
       }
+#ifdef PNG_DEBUG
+    if(image_info->verbose)
+       printf("Color type=%d, depth=%d\n",ping_info->color_type,
+          ping_info->bit_depth);
+#endif
 #if (PNG_LIBPNG_VER > 10008) && defined(PNG_WRITE_iCCP_SUPPORTED)
     if(image->color_profile.length)
       {

@@ -1325,7 +1325,7 @@ MagickExport unsigned int PushImagePixels(const Image *image,
     }
     case IndexOpacityQuantum:
     {
-      if (image->depth <= 256)
+      if (image->colors <= 256)
         {
           for (x=0; x < (int) image->columns; x++)
           {
