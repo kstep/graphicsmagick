@@ -179,7 +179,8 @@ static void BlurScanline(const double *kernel,const int width,
     scale;
 
   DoublePixelPacket
-    aggregate;
+    aggregate,
+    zero;
 
   register const double
     *p;
@@ -191,11 +192,12 @@ static void BlurScanline(const double *kernel,const int width,
     i,
     x;
 
+  (void) memset(&zero,0,sizeof(DoublePixelPacket));
   if ((unsigned long) width > columns)
     {
       for (x=0; x < (long) columns; x++)
       {
-        (void) memset(&aggregate,0,sizeof(DoublePixelPacket));
+        aggregate=zero;
         scale=0.0;
         p=kernel;
         q=source;
@@ -226,7 +228,7 @@ static void BlurScanline(const double *kernel,const int width,
   */
   for (x=0; x < (long) (width/2); x++)
   {
-    (void) memset(&aggregate,0,sizeof(DoublePixelPacket));
+    aggregate=zero;
     scale=0.0;
     p=kernel+width/2-x;
     q=source;
@@ -248,7 +250,7 @@ static void BlurScanline(const double *kernel,const int width,
   }
   for ( ; x < (long) (columns-width/2); x++)
   {
-    (void) memset(&aggregate,0,sizeof(DoublePixelPacket));
+    aggregate=zero;
     p=kernel;
     q=source+(x-width/2);
     for (i=0; i < (long) width; i++)
@@ -267,7 +269,7 @@ static void BlurScanline(const double *kernel,const int width,
   }
   for ( ; x < (long) columns; x++)
   {
-    (void) memset(&aggregate,0,sizeof(DoublePixelPacket));
+    aggregate=zero;
     scale=0;
     p=kernel;
     q=source+(x-width/2);
@@ -795,7 +797,8 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 #define EnhanceImageText  "  Enhance image...  "
 
   DoublePixelPacket
-    aggregate;
+    aggregate,
+    zero;
 
   double
     distance,
@@ -838,6 +841,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   /*
     Enhance image.
   */
+  (void) memset(&zero,0,sizeof(DoublePixelPacket));
   for (y=0; y < (long) image->rows; y++)
   {
     /*
@@ -857,7 +861,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       /*
         Compute weighted average of target pixel color components.
       */
-      (void) memset(&aggregate,0,sizeof(DoublePixelPacket));
+      aggregate=zero;
       total_weight=0.0;
       r=p+2*image->columns+2;
       pixel=(*r);
@@ -1368,7 +1372,8 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
     *kernel;
 
   DoublePixelPacket
-    aggregate;
+    aggregate,
+    zero;
 
   Image
     *blur_image;
@@ -1447,6 +1452,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
     offsets[i].x=i*x/sqrt(x*x+y*y);
     offsets[i].y=i*y/sqrt(x*x+y*y);
   }
+  (void) memset(&zero,0,sizeof(DoublePixelPacket));
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(blur_image,0,y,blur_image->columns,1);
@@ -1454,7 +1460,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      (void) memset(&aggregate,0,sizeof(DoublePixelPacket));
+      aggregate=zero;
       for (i=0; i < width; i++)
       {
         u=x+(long) offsets[i].x;
