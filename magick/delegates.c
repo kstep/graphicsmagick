@@ -361,7 +361,8 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
       decode ? decode : encode);
   if (LocaleCompare(delegate_info->decode,"YUV") == 0)
     if ((LocaleCompare(delegate_info->encode,"M2V") == 0) ||
-        (LocaleCompare(delegate_info->encode,"MPG") == 0))
+        (LocaleCompare(delegate_info->encode,"MPG") == 0) ||
+        (LocaleCompare(delegate_info->encode,"MPEG") == 0))
       {
         FILE
           *file;
