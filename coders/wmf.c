@@ -93,7 +93,7 @@ static void
   WmfDrawText(CSTRUCT *cstruct,char *str,RECT *arect,U16 flags,U16 *lpDx,int x,int y),
   WmfExtFloodFill(CSTRUCT *,WMFRECORD *),
   WmfFillOpaque(CSTRUCT *,WMFRECORD *),
-  WmfFinish(CSTRUCT *),
+/*   WmfFinish(CSTRUCT *), */
   WmfFloodFill(CSTRUCT *,WMFRECORD *),
 /*   WmfFrameRgn(CSTRUCT *cstruct,WINEREGION *rgn,U16 width,U16 height), */
 /*   WmfFreeUserData(CSTRUCT *,DC *), */
@@ -107,13 +107,6 @@ static void
   WmfSetPmfSize(CSTRUCT *,HMETAFILE );
 
 
-  /* Libwmf userdata */
-typedef struct _IM
-{
-  char*             mvg;
-  Image*            image;
-} IM;
-
 
 #define SCREEN_WIDTH_PIXELS  1280
 #define SCREEN_WIDTH_MM      433
@@ -156,7 +149,7 @@ wmf_functions WmfFunctions =
   NULL, /* WmfRestoreUserData, */
   NULL, /* WmfFreeUserData */
   NULL, /* WmfInitialUserData, */
-  WmfFinish
+  NULL, /* WmfFinish */
 };
 
 /*
@@ -193,7 +186,7 @@ wmf_functions WmfFunctions =
 /* Extend MVG drawing primitives in cstruct userdata */
 static void ExtendMVG(CSTRUCT *cstruct, const char* buff)
 {
-  ConcatenateString(&((IM*)cstruct->userdata)->mvg, buff);
+  ConcatenateString((char**)&cstruct->userdata, buff);
 }
 
 /* Return output height of screen in milimeters? */
@@ -249,24 +242,199 @@ static void WmfCopyXpm(CSTRUCT *cstruct,
   puts("WmfCopyXpm()");
 }
 
-/* Draw closed (and optionally filled) arc */
+/*
+  Draw closed (and optionally filled) arc
+  
+    ImageMagick Parameters:
+      ellipse centerX,centerY radiusX,radiusY arcStart,arcEnd
+
+      Note that width and height are the distance from the center
+      coordinate, not the overall width and height!
+  
+    WMF Array Parameters:
+      0  yend, y of endpoint
+      1  xend, x of endpoint
+      2  ystart, y of endpoint
+      3  xstart, x of endpoint
+      4  bottom, bottom of bounding box
+      5  right, right of bounding box
+      6  top, top of bounding box
+      7  left, left of bounding box
+
+     Note that the arc starts at the point on the ellipse where a line
+     from the origin to xstart,ystart intersects the ellipse, and that
+     the arc ends at the point on the ellipse where the where a line
+     from the origin from xend,yend intersets the ellipse.
+
+    Interpretation of finishtype:
+     0  Simple arc (open and unfilled)
+     1  Chord arc (line between end points, and optionally filled with brush)
+     2  Pie arc (lines from end points to center, and optionally filled with brush)
+*/
 static void WmfDrawArc(CSTRUCT *cstruct, WMFRECORD *wmfrecord,
                        int finishtype)
 {
-  puts("WmfDrawArc()");
+  char
+    buff[MaxTextExtent];
+
+  double
+    angle1,
+    angle2,
+    oangle1,
+    oangle2;
+
+  float
+    bottom,
+    centerx,
+    centery,
+    left,
+    radiusx,
+    radiusy,
+    right,
+    tmp,
+    top,
+    x1,
+    x2,
+    xend,
+    xstart,
+    y1,
+    y2,
+    yend,
+    ystart;
+
+  int
+    width;
+
+  width = cstruct->dc->pen->lopnWidth;
+
+  ExtendMVG(cstruct, "push graphic-context\n");
+
+  yend   = (NormY(wmfrecord->Parameters[0],cstruct));
+  xend   = (NormX(wmfrecord->Parameters[1],cstruct));
+  ystart = (NormY(wmfrecord->Parameters[2],cstruct));
+  xstart = (NormX(wmfrecord->Parameters[3],cstruct));
+  bottom = (NormY(wmfrecord->Parameters[4],cstruct));
+  right  = (NormX(wmfrecord->Parameters[5],cstruct));
+  top    = (NormY(wmfrecord->Parameters[6],cstruct));
+  left   = (NormX(wmfrecord->Parameters[7],cstruct));
+
+  if (right < left) { tmp = right; right = left; left = tmp; }
+  if (bottom < top) { tmp = bottom; bottom = top; top = tmp; }
+
+  if (cstruct->dc->pen->lopnStyle != PS_INSIDEFRAME)
+    {
+      if (2*width > (right-left)) width=(right-left + 1)/2;
+      if (2*width > (bottom-top)) width=(bottom-top + 1)/2;
+      left   += width / 2;
+      right  -= (width - 1) / 2;
+      top    += width / 2;
+      bottom -= (width - 1) / 2;
+    }
+
+  centerx = (right+left)/2;
+  centery = (bottom+top)/2;
+  radiusx = (right-left)/2;
+  radiusy = (bottom-top)/2;
+
+  angle1 = atan2( (double)(centery-yend)*(right-left),(double)(xend-centerx)*(bottom-top) );
+  angle2 = atan2( (double)(centery-ystart)*(right-left),(double)(xstart-centerx)*(bottom-top) );
+
+  if ((xstart==xend)&&(ystart==yend))
+    { /* A lazy program delivers xstart=xend=ystart=yend=0) */
+      angle2 = 0;
+      angle1 = 2* PI;
+    }
+  else if ((angle2 == PI)&&( angle1 <0))
+    angle2 = - PI;
+  else if ((angle1 == PI)&&( angle2 <0))
+    angle2 = - PI;
+
+  oangle1 = angle1;
+  oangle2 = angle2;
+
+  angle2 = (oangle2 * 180 * 64 / PI + 0.5);
+  angle1  = ((oangle1 - oangle2) * 180 * 64 / PI + 0.5);
+  if (angle1 <= 0) angle1 += 360 * 64;
+
+  /* Intersecting points on ellipse */
+  x1 = floor((right+left)/2.0 + cos(oangle2) * (right-left-width/**2+2*/) / 2. /*+ 0.5*/);
+  y1 = floor((top+bottom)/2.0 - sin(oangle2) * (bottom-top-width/**2+2*/) / 2. /*+ 0.5*/);
+  x2 = floor((right+left)/2.0 + cos(oangle1) * (right-left-width/**2+2*/) / 2. /*+ 0.5*/);
+  y2 = floor((top+bottom)/2.0 - sin(oangle1) * (bottom-top-width/**2+2*/) / 2. /*+ 0.5*/);
+
+  if ((cstruct->dc->brush->lbStyle != BS_NULL) && (finishtype != 0))
+    {
+      /* Set fill color for filled ellipse*/
+      sprintf(buff, "fill #%02x%02x%02x\n",
+              (cstruct->dc->brush->lbColor[0]& 0x00FF),
+              (cstruct->dc->brush->lbColor[0]& 0xFF00)>>8,
+              (cstruct->dc->brush->lbColor[1]& 0x00FF)
+              );
+      ExtendMVG(cstruct, buff);
+    }
+  else
+    ExtendMVG(cstruct, "fill none\n");
+
+  if (cstruct->dc->pen->lopnStyle != PS_NULL)
+    {
+      /* Set stroke color for stroked ellipse */
+      sprintf(buff, "stroke #%02x%02x%02x\n",
+              (cstruct->dc->pen->lopnColor[0]& 0x00FF),
+              ((cstruct->dc->pen->lopnColor[0]& 0xFF00)>>8),
+              (cstruct->dc->pen->lopnColor[1]& 0x00FF)
+              );
+      ExtendMVG(cstruct, buff);
+    }
+  else
+    ExtendMVG(cstruct, "stroke none\n");
+
+  /* Draw the arc */
+  sprintf( buff, "ellipse %f,%f %f,%f %f,%f\n",
+           (float)centerx,
+           (float)centery,
+           (float)radiusx,
+           (float)radiusy,
+           (float)angle1,
+           (float)angle2
+           );
+  ExtendMVG(cstruct, buff);
+
+  if (finishtype == 2)
+  {
+    /* Draw lines for pie arc */
+    sprintf(buff,"line %f,%f %f,%f\n",x1,y1,centerx,centery);
+    ExtendMVG(cstruct, buff);
+    sprintf(buff,"line %f,%f %f,%f\n",x2,y2,centerx,centery);
+    ExtendMVG(cstruct, buff);
+  }
+  else if (finishtype == 1)
+  {
+    /* Draw line for chord arc */
+    sprintf(buff,"line %f,%f %f,%f\n",x1,y1,x2,y2);
+    ExtendMVG(cstruct, buff);
+  }
+
+  ExtendMVG(cstruct, "pop graphic-context\n");
 }
 
-/* Draw open arc */
+/* Draw closed (and optionally filled) arc */
 static void WmfDrawChord(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
   puts("WmfDrawChord()");
+  WmfDrawArc(cstruct,wmfrecord,1);
 }
 
 /* Draw ellipse */
 static void WmfDrawEllipse(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
-  char buff[MaxTextExtent];
-  float bottom, right, top, left;
+  char
+    buff[MaxTextExtent];
+  float
+    bottom,
+    left,
+    right,
+    tmp,
+    top;
 
   ExtendMVG(cstruct, "push graphic-context\n");
   if (cstruct->dc->brush->lbStyle != BS_NULL)
@@ -298,7 +466,7 @@ static void WmfDrawEllipse(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
   /* Add ellipse primitive and points */
   /*
     ImageMagick Parameters:
-      ellipse centerX,centerY width,height arcStart,arcEnd
+      ellipse centerX,centerY radiusX,radiusY arcStart,arcEnd
 
       Note that width and height are the distance from the center
       coordinate, not the overall width and height!
@@ -314,9 +482,12 @@ static void WmfDrawEllipse(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
   top    = (NormY(wmfrecord->Parameters[2],cstruct));
   left   = (NormX(wmfrecord->Parameters[3],cstruct));
 
+  if (right < left) { tmp = right; right = left; left = tmp; }
+  if (bottom < top) { tmp = bottom; bottom = top; top = tmp; }
+
   sprintf( buff, "ellipse %f,%f %f,%f %f,%f\n",
-           (float)((right-left)/2)+left,
-           (float)((bottom-top)/2)+top,
+           (float)(right+left)/2,
+           (float)(bottom+top)/2,
            (float)(right-left)/2,
            (float)(bottom-top)/2,
            (float)0,
@@ -354,6 +525,7 @@ static void WmfDrawLine(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 static void WmfDrawPie(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
   puts("WmfDrawPie()");
+  WmfDrawArc(cstruct,wmfrecord,2);
 }
 
 /* Draw a filled polygon */
@@ -550,6 +722,7 @@ static void WmfDrawRoundRectangle(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 static void WmfDrawSimpleArc(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
   puts("WmfDrawSimpleArc()");
+  WmfDrawArc(cstruct,wmfrecord,0);
 }
 
 /* Draw text */
@@ -576,30 +749,9 @@ static void WmfFillOpaque(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 }
 
 /* Perform finishing steps */
-static void WmfFinish(CSTRUCT *cstruct)
-{
-  ImageInfo*        image_info;
-  DrawInfo*         draw_info;
-  ExceptionInfo     exception_info;
-
-  if( cstruct->preparse == 0 )
-    {
-      image_info = (ImageInfo*)AcquireMemory(sizeof(ImageInfo));
-      GetImageInfo( image_info );
-  
-      draw_info = (DrawInfo*)AcquireMemory(sizeof(DrawInfo));
-      GetDrawInfo( image_info, draw_info );
-
-      GetExceptionInfo( &exception_info );
-
-      draw_info->primitive = ((IM*)cstruct->userdata)->mvg;
-      DrawImage( ((IM*)cstruct->userdata)->image, draw_info );
-      draw_info->primitive = (char*)NULL;
-
-      DestroyImageInfo(image_info);
-      DestroyDrawInfo(draw_info);
-    }
-}
+/* static void WmfFinish(CSTRUCT *cstruct) */
+/* { */
+/* } */
 
 /* Fill with color until border color */
 static void WmfFloodFill(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
@@ -665,6 +817,9 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CSTRUCT*
     cstruct;
 
+  DrawInfo*
+    draw_info;
+
   HMETAFILE 
     metafile;
 
@@ -689,14 +844,10 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   memset((void*)cstruct,0,sizeof(CSTRUCT));
   wmfinit(cstruct);
-  cstruct->userdata = (void *)AcquireMemory(sizeof(IM));
-  if(cstruct->userdata == (void*)NULL)
+  (char*)cstruct->userdata=AllocateString("");
+  if((char*)cstruct->userdata == (char*)NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  ((IM*)cstruct->userdata)->mvg=AllocateString("");
-  if(((IM*)cstruct->userdata)->mvg == (char*)NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  ((IM*)cstruct->userdata)->image=(Image*)NULL;
-
+  
   /* Open metafile */
   strcpy(filename,image_info->filename);
   {
@@ -711,7 +862,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     file = fopen(filename,"rb");
     if(file == NULL)
       {
-        LiberateMemory((void**)&((IM*)cstruct->userdata)->mvg);
         LiberateMemory((void**)&(cstruct->userdata));
         LiberateMemory((void**)&(cstruct));
         ThrowReaderException(FileOpenWarning,"Unable to open file",image);
@@ -733,7 +883,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }  
   if (metafile == NULL)
     {
-      LiberateMemory((void**)&((IM*)cstruct->userdata)->mvg);
       LiberateMemory((void**)&(cstruct->userdata));
       LiberateMemory((void**)&(cstruct));
       ThrowReaderException(FileOpenWarning,"Unable to open file",image);
@@ -750,11 +899,12 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   GetImageInfo( local_info );
   sprintf( buff, "%ix%i", (int)cstruct->realwidth, (int)cstruct->realheight );
-  CloneString(&local_info->size, buff);
+  CloneString(&(local_info->size), buff);
   strcpy( local_info->filename, "XC:#FFFFFF" );
   GetExceptionInfo(exception);
-  ((IM*)cstruct->userdata)->image = ReadImage( local_info, exception );
-  if(((IM*)cstruct->userdata)->image == (Image*)NULL)
+  DestroyImage(image);
+  image = ReadImage( local_info, exception );
+  if(image == (Image*)NULL)
     {
       /* Destroy metafile handle (lacks a convenient Destroy function */
       LiberateMemory((void**)&(metafile->wmfheader));
@@ -763,7 +913,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       LiberateMemory((void**)&(metafile));
 
       /* Destroy cstruct */
-      LiberateMemory((void**)&((IM*)cstruct->userdata)->mvg);
       LiberateMemory((void**)&(cstruct->userdata));
       LiberateMemory((void**)&(cstruct->dc));
       LiberateMemory((void**)&(cstruct));
@@ -778,10 +927,13 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   cstruct->preparse = 0;
   PlayMetaFile((void *)cstruct,metafile,1,NULL);
 
-  /* Replace temporary image with real image */
-  DestroyImage(image);
+  draw_info = (DrawInfo*)AcquireMemory(sizeof(DrawInfo));
+  GetDrawInfo( local_info, draw_info );
+  draw_info->primitive=(char*)cstruct->userdata;
+  DrawImage(image,draw_info);
+  draw_info->primitive = (char*)NULL;
+  DestroyDrawInfo(draw_info);
   DestroyImageInfo(local_info);
-  image=((IM*)cstruct->userdata)->image;
 
   /* Restore original filename and magick */
   strcpy(image->filename,image_info->filename);
@@ -794,7 +946,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LiberateMemory((void**)&(metafile));
 
   /* Destroy cstruct handle */
-  LiberateMemory((void**)&((IM*)cstruct->userdata)->mvg);
   LiberateMemory((void**)&(cstruct->userdata));
   LiberateMemory((void**)&(cstruct->dc));
   LiberateMemory((void**)&(cstruct));
