@@ -56,6 +56,11 @@
 2003-12-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/image.c (IsImagesEqual): Properly compute error distance
+        vectors. Math was missing the necessary sqrt call.  Also,
+        pre-normalize the error differences to 1.0 in order to reduce the
+        storage size required to store the summation of error values.
+  <LI> PerlMagick/t/composite.t: Update Minus and Xor reference images.
   <LI> magick/composite.c (CompositeImage): Incorporated fixes from
         ImageMagick for XorCompositeOp, PlusCompositeOp, and
         MinusCompositeOp.  Thanks to John Cristy for bringing the need for

@@ -3467,26 +3467,21 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
 %    o reference: The reference image.
 %
 */
-#if QuantumDepth > 16 && defined(HAVE_LONG_DOUBLE)
-  typedef long double ErrorSumType;
-#else
-  typedef double ErrorSumType;
-#endif
 MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
 {
   double
     distance,
     maximum_error_per_pixel,
-    normalize;
+    mean_error_per_pixel,
+    number_pixels,
+    normalize,
+    total_error;
 
   DoublePixelPacket
     pixel;
 
   long
     y;
-
-  ErrorSumType
-    total_error;
 
   register const PixelPacket
     *p,
@@ -3516,9 +3511,10 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   /*
     For each pixel, collect error statistics.
   */
-  maximum_error_per_pixel=0;
-  total_error=0;
-  pixel.opacity=0;
+  number_pixels=(double) image->columns*image->rows;
+  maximum_error_per_pixel=0.0;
+  total_error=0.0;
+  pixel.opacity=0.0;
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -3528,11 +3524,11 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
     if (!image->matte)
       for (x=(long) image->columns; x > 0; x--)
       {
-        pixel.red=p->red-(double) q->red;
-        pixel.green=p->green-(double) q->green;
-        pixel.blue=p->blue-(double) q->blue;
-        distance=pixel.red*pixel.red+pixel.green*pixel.green+
-          pixel.blue*pixel.blue;
+        pixel.red=(p->red-(double) q->red)/MaxRGB;
+        pixel.green=(p->green-(double) q->green)/MaxRGB;
+        pixel.blue=(p->blue-(double) q->blue)/MaxRGB;
+        distance=sqrt(pixel.red*pixel.red+pixel.green*pixel.green+
+          pixel.blue*pixel.blue);
         total_error+=distance;
         if (distance > maximum_error_per_pixel)
           maximum_error_per_pixel=distance;
@@ -3542,12 +3538,12 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
     else
       for (x=(long) image->columns; x > 0; x--)
       {
-        pixel.red=p->red-(double) q->red;
-        pixel.green=p->green-(double) q->green;
-        pixel.blue=p->blue-(double) q->blue;
-        pixel.opacity=p->opacity-(double) q->opacity;
-        distance=pixel.red*pixel.red+pixel.green*pixel.green+
-          pixel.blue*pixel.blue+pixel.opacity*pixel.opacity;
+        pixel.red=(p->red-(double) q->red)/MaxRGB;
+        pixel.green=(p->green-(double) q->green)/MaxRGB;
+        pixel.blue=(p->blue-(double) q->blue)/MaxRGB;
+        pixel.opacity=(p->opacity-(double) q->opacity)/MaxRGB;
+        distance=sqrt(pixel.red*pixel.red+pixel.green*pixel.green+
+          pixel.blue*pixel.blue+pixel.opacity*pixel.opacity);
         total_error+=distance;
         if (distance > maximum_error_per_pixel)
           maximum_error_per_pixel=distance;
@@ -3558,12 +3554,14 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   /*
     Compute final error statistics.
   */
-  normalize=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
+  
   if (image->matte)
-    normalize=4.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
-  image->error.mean_error_per_pixel=total_error/image->columns/image->rows;
-  image->error.normalized_mean_error=
-    image->error.mean_error_per_pixel/normalize;
+    normalize = sqrt(4.0); /* sqrt(1.0*1.0+1.0*1.0+1.0*1.0+1.0*1.0) */
+  else
+    normalize = sqrt(3.0); /* sqrt(1.0*1.0+1.0*1.0+1.0*1.0) */
+  mean_error_per_pixel=total_error/number_pixels;
+  image->error.mean_error_per_pixel=mean_error_per_pixel*MaxRGB;
+  image->error.normalized_mean_error=mean_error_per_pixel/normalize;
   image->error.normalized_maximum_error=maximum_error_per_pixel/normalize;
   return(image->error.normalized_mean_error == 0.0);
 }

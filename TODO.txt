@@ -6,12 +6,15 @@ For 1.1 Release
 ===============
 
  o ImageMagickObject should compile.
- o Fix Xor, Plus, & Minus composition operators.
  o Fix IsImagesEqual arithmetic (should use distance vector).
  o Fix -process parsing so '-process analyze' works.
  o Finish storing JPEG compression/sampling-factor estimates as
    attributes & add option to re-use attributes ("preserve settings")
    when writing JPEG file.
+ o Fix SegmentImage.  Result image is coming out all black!
+ o Fix AnnotateImage. Result image has no text!
+ o Fix new XorCompositeOp implementation.  Apparently a pixel is inverted
+   between SPARC and Intel in the PerlMagick tests.
  o Port latest Wand library code.
  o Fix libtool configure problem under IRIX and AIX.
  o Debug utilities test failure noticed under OS-X.

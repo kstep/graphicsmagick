@@ -157,7 +157,7 @@ sub testCompositeCompare {
     {
       print("  mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
       print "not ok $test\n";
-      # $background->Display();
+      $background->Display();
       undef $background;
       undef $composite;
       undef $refimage;
@@ -334,7 +334,7 @@ sub testReadCompare {
       goto COMPARE_RUNTIME_ERROR;
     }
 
-# if ("$srcimage_name" eq "input.tim") {
+# if ("$srcimage_name" eq "CGM:input.cgm") {
 #    $srcimage->write(filename=>"$refimage_name", compression=>'None');
 #  }
 
@@ -389,7 +389,7 @@ sub testReadCompare {
        ($normalized_maximum_error > $normalized_maximum_error_max) )
     {
       print("mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
-      #$srcimage->Display();
+      $srcimage->Display();
       print "not ok $test\n";
       return 1
     }
@@ -632,8 +632,11 @@ sub testReadWriteCompare {
     }
 
 # eval "\$status=\$image->Set($write_options);";
-#$status=$image->write(filename=>"$refimage_name", compression=>'None');
-# warn "$status" if $status;
+#  if ("$outimage_name" eq "P7:output_p7.p7")
+#    {
+#      $status=$image->write(filename=>"$refimage_name", compression=>'None');
+#      warn "$status" if $status;
+#    }
 
   #
   # Read reference image
@@ -686,6 +689,7 @@ sub testReadWriteCompare {
     {
       print("mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
       print "not ok $test\n";
+      $image->Display();
       return 1
     }
 
@@ -1249,7 +1253,7 @@ sub testFilterCompare {
     {
       print("  mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
       print "not ok $test\n";
-      #$srcimage->Display();
+      $srcimage->Display();
       undef $srcimage;
       undef $refimage;
       return 1
