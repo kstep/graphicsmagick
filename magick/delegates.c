@@ -654,10 +654,11 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
           Strip(text);
           if (delegate_info.commands != (char *) NULL)
             delegate_info.commands=(char *) ReallocateMemory(
-              delegate_info.commands,(strlen(delegate_info.commands)+(text)+2));
+              delegate_info.commands,(strlen(delegate_info.commands)+
+              strlen(text)+3));
           else
             {
-              delegate_info.commands=(char *) AllocateMemory(strlen(text)+2);
+              delegate_info.commands=(char *) AllocateMemory(strlen(text)+3);
               if (delegate_info.commands != (char *) NULL)
                 *delegate_info.commands='\0';
             }
@@ -672,13 +673,16 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
         if (delegate_info.commands == (char *) NULL)
           MagickWarning(DelegateWarning,"no command for this delegate",
             delegate_info.decode_tag);
-        /*
-          Add delegate to the delegate list.
-        */
-        Strip(delegate_info.commands);
-        (void) SetDelegateInfo(&delegate_info);
-        number_delegates++;
-        FreeMemory((void **) &delegate_info.commands);
+        else
+          {
+            /*
+              Add delegate to the delegate list.
+            */
+            Strip(delegate_info.commands);
+            (void) SetDelegateInfo(&delegate_info);
+            number_delegates++;
+            FreeMemory((void **) &delegate_info.commands);
+          }
       }
       (void) fclose(file);
     }
