@@ -943,9 +943,9 @@ static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  FormatString(path,"C%g,%g %g,%g %g,%g",affine.tx+((p->x+32)/64),
-    affine.ty+(-(p->y+32)/64),affine.tx+(q->x/64.0),affine.ty+(-(q->y+32)/64),
-    affine.tx+((to->x+32)/64),affine.ty+(-(to->y+32)/64));
+  FormatString(path,"C%g,%g %g,%g %g,%g",affine.tx+(p->x+32)/64,
+    affine.ty-(p->y+32)/64,affine.tx+(q->x+32)/64,affine.ty-(q->y+32)/64,
+    affine.tx+(to->x+32)/64,affine.ty-(to->y+32)/64);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -959,8 +959,7 @@ static int TraceLineTo(FT_Vector *to,DrawInfo *draw_info)
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  FormatString(path,"L%g,%g",affine.tx+((to->x+32)/64),affine.ty+
-	  (-(to->y+32)/64));
+  FormatString(path,"L%g,%g",affine.tx+(to->x+32)/64,affine.ty-(to->y+32)/64);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -974,8 +973,7 @@ static int TraceMoveTo(FT_Vector *to,DrawInfo *draw_info)
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  FormatString(path,"M%g,%g",affine.tx+((to->x+32)/64),affine.ty+
-	  (-(to->y+32)/64));
+  FormatString(path,"M%g,%g",affine.tx+(to->x+32)/64,affine.ty-(to->y+32)/64);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -990,9 +988,8 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  FormatString(path,"Q%g,%g %g,%g",affine.tx+((control->x+32)/64),
-    affine.ty+(-(control->y+32)/64),affine.tx+((to->x+32)/64),
-    affine.ty+(-(to->y+32)/64));
+  FormatString(path,"Q%g,%g %g,%g",affine.tx+(control->x+32)/64,affine.ty-
+    (control->y+32)/64,affine.tx+(to->x+32)/64,affine.ty-(to->y+32)/64);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
