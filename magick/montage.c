@@ -291,7 +291,7 @@ MagickExport Image *MontageImages(const Image *images,
     *montage,
     *texture,
     *tile_image,
-    *zoom_image;
+    *thumbnail;
 
   ImageInfo
     *image_info;
@@ -367,11 +367,11 @@ MagickExport Image *MontageImages(const Image *images,
     SetGeometry(image,&geometry);
     flags=GetMagickGeometry(montage_info->geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
-    zoom_image=ZoomImage(image,geometry.width,geometry.height,exception);
-    if (zoom_image == (Image *) NULL)
+    thumbnail=ThumbnailImage(image,geometry.width,geometry.height,exception);
+    if (thumbnail == (Image *) NULL)
       break;
     DestroyImage(image);
-    image_list[i]=zoom_image;
+    image_list[i]=thumbnail;
     (void) SetMonitorHandler(handler);
     if (!MagickMonitor(TileImageText,i,number_images,&image->exception))
       break;

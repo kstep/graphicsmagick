@@ -1660,10 +1660,18 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
 MagickExport Image *ThumbnailImage(const Image *image,
   const unsigned long columns,const unsigned long rows,ExceptionInfo *exception)
 {
+  double
+    x_factor,
+    y_factor;
+
   Image
     *sample_image,
     *thumbnail_image;
 
+  x_factor=(double) columns/image->columns;
+  y_factor=(double) rows/image->rows;
+  if ((x_factor*y_factor) > 0.1)
+    return(ZoomImage(image,columns,rows,exception));
   sample_image=SampleImage(image,5*columns,5*rows,exception);
   if (sample_image == (Image *) NULL)
     return((Image *) NULL);
