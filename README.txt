@@ -86,7 +86,12 @@ MAGICK DELEGATES
 
     o GraphicsMagick requires the BZLIB library from
 
-        http://sourceware.cygnus.com/bzip2/index.html
+        http://sources.redhat.com/bzip2/
+
+          or
+
+        ftp://sources.redhat.com/pub/bzip2/
+
 
       to read and write BZip compressed MIFF images.
 
@@ -199,7 +204,7 @@ MAGICK DELEGATES
       to read lossless jpeg-encoded DICOM images, please disregard the patch.
 
     o GraphicsMagick requires the JasPer Project's Jasper library version
-      1.700.2 available via http from
+      1.701.0 available via http from
 
          http://www.ece.uvic.ca/~mdadams/jasper/
 

@@ -21,7 +21,42 @@
 </tr>
 </table>
 <p>
-2004-07-10  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+2004-07-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Pass essential flags on down to subordinate
+        configures when performing 'make distcheck'.  Support DESTDIR
+        installs for PERL 5.8.1 and later, which support DESTDIR
+        internally.
+
+</UL>
+<p>
+2004-07-16  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
+
+<UL>
+  <LI> BCBMagick\coders\libCoders.bpr; BCBMagick\magick\GM_magick.bpr: include
+          file jbig.h could not be found during compilation. Solved.
+
+</UL>
+<p>
+2004-07-15  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
+
+<UL>
+  <LI> BCBMagick\magick\magick_config.h.: enabled LZW compression by default.
+  <LI> BCBMagick: included jbig delegate library.
+  <UL>
+    <LI> Modified these files into directory BCBMagick: All\bcbMagick.mak;
+            All\GMlib.bpg; All\GMdll.bpg; coders\libCoders.bpr; magick\GM_magick.bpr;
+            utilities\gm_lib.bpr; utilities\gm_dll.bpr
+    <LI> Added these files into new directory BCBMagick\jbig: jbig.bpr;
+            jbig.bpf; GM_jbig.bpr; GM_jbig.c; tstcodec.bpr
+    <LI> Modified file jbig\jbiglib\jbig.h;
+  </UL>
+  <LI> BCBMagick\readme.txt: updated documentation.
+
+</UL>
+<p>
+2004-07-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> magick/command.c (MogrifyUsage): -ordered-dither help was

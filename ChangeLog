@@ -1,3 +1,10 @@
+2004-07-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Pass essential flags on down to subordinate
+	configures when performing 'make distcheck'.  Support DESTDIR
+	installs for PERL 5.8.1 and later, which support DESTDIR
+	internally.
+
 2004-07-16  Mike Chiarappa  <mikechiarappa@libero.it>
 
 	* BCBMagick\coders\libCoders.bpr; BCBMagick\magick\GM_magick.bpr: include
@@ -15,7 +22,7 @@
 	  - Modified file jbig\jbiglib\jbig.h; 
 	* BCBMagick\readme.txt: updated documentation.    
 
-2004-07-10  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+2004-07-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyUsage): -ordered-dither help was
 	formatted incorrectly.

@@ -445,7 +445,7 @@ static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
 {
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "TIFF write blob: data=%p size=%ld", data, size);
+      "TIFF write blob: data=%p size=%u", data, (unsigned int) size);
   return((tsize_t) WriteBlob((Image *) image,(size_t) size,data));
 }
 

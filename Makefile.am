@@ -24,6 +24,12 @@ endif # WITH_MAGICK_PLUS_PLUS
 # Directories to include in distribution
 DIST_SUBDIRS=ltdl config coders filters magick utilities tests Magick++ wand
 
+# Options to pass when running configure in the distcheck target.
+#
+# We want to preserve user-provided option variables so the same
+# compiler, headers, and libraries are used as for a normal build.
+DISTCHECK_CONFIGURE_FLAGS=$(DISTCHECK_CONFIG_FLAGS)
+
 if WITH_LTDL
 LTDL=ltdl
 else
@@ -148,10 +154,10 @@ all-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 
 install-exec-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 	rm -f "$(DESTDIR)$(BIN_DIR)/$(PERLSTATICNAME)"
-	if test "x$(DESTDIR)" = "x" ; then \
+	if test "x$(DESTDIR)" = "x" -o "$(PERL_SUPPORTS_DESTDIR)" = 'yes' ; then \
 	  ( cd $(PERLMAGICK) && \
 	    $(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) \
-	    INSTALLBIN="$(DESTDIR)$(BIN_DIR)" \
+	    INSTALLBIN="$(BIN_DIR)" \
 	  ) ; \
 	else \
 	  ( cd $(PERLMAGICK) && \

@@ -12,6 +12,18 @@
 AC_PREREQ(2.59)
 AC_INIT(magick/magick.h)
 
+#
+# Save initial user-tunable values
+#
+for var in CC CFLAGS  CPPFLAGS CXX CXXCPP LDFLAGS LIBS ; do
+  eval isset=\${$var+set}
+  if test "$isset" = 'set' ; then
+    eval val=$`echo $var`
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS}'${var}=${val}' "
+  fi
+done
+AC_SUBST(DISTCHECK_CONFIG_FLAGS)
+
 # Source file containing package/library versioning information.
 . ${srcdir}/version.sh
 
@@ -61,18 +73,10 @@ AC_CONFIG_HEADERS([magick/magick_config.h magick/magick_config_api.h])
 
 AM_INIT_AUTOMAKE($PACKAGE_NAME,"${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}", ' ')
 
-#
-# Save initial user-tunable values
-#
-CC_INITIAL=$CC
-CFLAGS_INITIAL=$CFLAGS
-CPPFLAGS_INITIAL=$CPPFLAGS
-LDFLAGS_INITIAL=$LDFLAGS
-LIBS_INITIAL=$LIBS
 PERLMAINCC=$CC
 
 MAGICK_API_CFLAGS=''
-MAGICK_API_CPPFLAGS=$CPPFLAGS_INITIAL
+MAGICK_API_CPPFLAGS=$CPPFLAGS_USER
 MAGICK_API_LDFLAGS=''
 MAGICK_API_LIBS=''
 
@@ -369,6 +373,8 @@ AC_ARG_ENABLE(installed,
 if test "$with_installed" = 'yes'
 then
   AC_DEFINE(UseInstalledMagick,1,[GraphicsMagick is formally installed under prefix])
+else
+  DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --disable-installed "
 fi
 
 # Enable verbose output from libtool (enable libtool's default)
@@ -444,6 +450,7 @@ AC_ARG_ENABLE(symbol-prefix,
 if test "$with_symbol_prefix" != 'no'
 then
   AC_DEFINE(PREFIX_MAGICK_SYMBOLS,1,[Prefix Magick library symbols with a common string.])
+  DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --enable-symbol-prefix "
 fi
 
 # Enable ImageMagick utilities compatibility shortcuts (default no)
@@ -458,6 +465,9 @@ AC_ARG_WITH(quantum-depth,
 	      [  --with-quantum-depth    number of bits in a pixel quantum (default 8)],
 	      [with_quantum_depth=$withval],
 	      [with_quantum_depth=8])
+if test "$with_quantum_depth" != '8' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-quantum-depth=$with_quantum_depth "
+fi
 
 case "${with_quantum_depth}" in
   8 ) ;;
@@ -477,6 +487,7 @@ AC_ARG_WITH(cache,
 if test "$with_cache" != ''
 then
   AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache,[Pixel cache threshold in MB (defaults to available memory)])
+  DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-cache=$with_cache "
 fi
 
 # Disable/Enable support for full delegate paths in delegates.mgk
@@ -512,24 +523,36 @@ AC_ARG_WITH(bzlib,
 	      [  --without-bzlib         disable BZLIB support],
 	      [with_bzlib=$withval],
 	      [with_bzlib='yes'])
+if test "$with_bzlib" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-bzlib=$with_bzlib "
+fi
 
 # Disable Display Postscript.
 AC_ARG_WITH(dps,
 	      [  --without-dps           disable Display Postscript support],
 	      [with_dps=$withval],
 	      [with_dps='yes'])
+if test "$with_dps" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-dps=$with_dps "
+fi
 
 # Disable FlashPIX.
 AC_ARG_WITH(fpx,
 	      [  --without-fpx           disable FlashPIX support],
 	      [with_fpx=$withval],
 	      [with_fpx='yes'])
+if test "$with_fpx" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-fpx=$with_fpx "
+fi
 
 # Enable Ghostscript library support.
 AC_ARG_WITH(gslib,
 	      [  --with-gslib            enable Ghostscript library support],
 	      [with_gslib=$withval],
 	      [with_gslib='no'])
+if test "$with_gslib" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-gzlib=$with_gslib "
+fi
 
 # # Enable HDF.
 # AC_ARG_WITH(hdf,
@@ -542,24 +565,36 @@ AC_ARG_WITH(jbig,
 	      [  --without-jbig          disable JBIG support],
 	      [with_jbig=$withval],
 	      [with_jbig='yes'])
+if test "$with_jbig" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jbig=$with_jbig "
+fi
 
 # Disable JPEG.
 AC_ARG_WITH(jpeg,
 	      [  --without-jpeg          disable JPEG support],
 	      [with_jpeg=$withval],
 	      [with_jpeg='yes'])
+if test "$with_jpeg" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jpeg=$with_jpeg "
+fi
 
 # Disable JPEG Version 2.
 AC_ARG_WITH(jp2,
 	      [  --without-jp2           disable JPEG v2 support],
 	      [with_jp2=$withval],
 	      [with_jp2='yes'])
+if test "$with_jp2" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jp2=$with_jp2 "
+fi
 
 # Disable LCMS.
 AC_ARG_WITH(lcms,
 	      [  --without-lcms          disable LCMS support],
 	      [with_lcms=$withval],
 	      [with_lcms='yes'])
+if test "$with_lcms" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-lcms=$with_lcms "
+fi
 
 # # Disable MPEG.
 # AC_ARG_WITH(mpeg2,
@@ -572,30 +607,45 @@ AC_ARG_WITH(png,
 	      [  --without-png           disable PNG support],
 	      [with_png=$withval],
 	      [with_png='yes'])
+if test "$with_png" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-png=$with_png "
+fi
 
 # Disable TIFF.
 AC_ARG_WITH(tiff,
 	      [  --without-tiff          disable TIFF support],
 	      [with_tiff=$withval],
 	      [with_tiff='yes'])
+if test "$with_tiff" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-tiff=$with_tiff "
+fi
 
 # Disable TRIO.
 AC_ARG_WITH(trio,
 	      [  --without-trio          disable TRIO support],
 	      [with_trio=$withval],
 	      [with_trio='yes'])
+if test "$with_trio" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-trio=$with_trio "
+fi
 
 # Disable TTF.
 AC_ARG_WITH(ttf,
 	      [  --without-ttf           disable TrueType support],
 	      [with_ttf=$withval],
 	      [with_ttf='yes'])
+if test "$with_ttf" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-ttf=$with_ttf "
+fi
 
 # Disable WMF.
 AC_ARG_WITH(wmf,
 	      [  --without-wmf           disable WMF support],
 	      [with_wmf=$withval],
 	      [with_wmf='yes'])
+if test "$with_wmf" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-wmf=$with_wmf "
+fi
 
 # Set default font search path
 AC_ARG_WITH(fontpath,
@@ -608,12 +658,18 @@ then
 else
   AC_DEFINE_UNQUOTED(MAGICK_FONT_PATH,"$with_fontpath",Define to prepend to default font search path.)
 fi
+if test "$with_fontpath=" != '' ; then
+  DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-fontpath=$with_fontpath "
+fi
 
 # Set Ghostscript font directory
 AC_ARG_WITH(gs-font-dir,
 	      [  --with-gs-font-dir=DIR  directory containing Ghostscript fonts],
 	      [with_gs_font_dir=$withval],
 	      [with_gs_font_dir='default'])
+if test "$with_gs_font_dir" != 'default' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-gs-font-dir=$with_gs_font_dir "
+fi
 
 # Set Windows font directory
 AC_ARG_WITH(windows-font-dir,
@@ -621,17 +677,26 @@ AC_ARG_WITH(windows-font-dir,
                           directory containing MS-Windows fonts],
 	      [with_windows_font_dir=$withval],
 	      [with_windows_font_dir=''])
+if test "$with_windows_font_dir" != '' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-windows-font-dir==$with_windows_font_dir "
+fi
 
 # Disable XML.
 AC_ARG_WITH(xml,
 	      [  --without-xml           disable XML support],
 	      [with_xml=$withval],
 	      [with_xml='yes'])
+if test "$with_xml" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-xml=$with_xml "
+fi
 
 AC_ARG_WITH(zlib,
 	      [  --without-zlib          disable ZLIB support],
 	      [with_zlib=$withval],
 	      [with_zlib='yes'])
+if test "$with_zlib" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-zlib=$with_zlib "
+fi
 
 #
 # Specify path to shared libstdc++ if not in normal location
@@ -2472,11 +2537,16 @@ then
         fi
     fi
 fi
+if test "$with_perl" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-perl=$with_perl "
+fi
 
+PERL_SUPPORTS_DESTDIR='no'
 with_perl_static='no'
 with_perl_dynamic='no'
 if test "$have_perl" != 'no'
 then
+  # Should we build shared libraries?
   if test "$with_perl" != 'no' && test "$libtool_build_shared_libs" = 'no'
   then
     with_perl_static='yes'
@@ -2485,10 +2555,14 @@ then
   then
     with_perl_dynamic='yes'
   fi
+
+  # Is PERL's MakeMaker new enough to support DESTDIR?
+  AC_PROG_PERL_VERSION(5.8.1,[PERL_SUPPORTS_DESTDIR='yes'],[PERL_SUPPORTS_DESTDIR='no'])
 fi
 AM_CONDITIONAL(WITH_PERL, test "$have_perl" != 'no')
 AM_CONDITIONAL(WITH_PERL_STATIC, test $with_perl_static = 'yes')
 AM_CONDITIONAL(WITH_PERL_DYNAMIC, test $with_perl_dynamic = 'yes')
+AC_SUBST(PERL_SUPPORTS_DESTDIR)
 
 # Determine path to pick up GraphicsMagick library from for use with building PerlMagick
 MAGICKLIBDIR="${LIB_DIR}"
@@ -2579,9 +2653,9 @@ fi
 #
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD $LIBS_INITIAL"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD $LIBS_USER"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD $LIBS_INITIAL"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD $LIBS_USER"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
