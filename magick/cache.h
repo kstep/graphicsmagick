@@ -241,6 +241,6 @@ extern MagickExport void
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
-#endif
+#endif /* defined(__cplusplus) || defined(c_plusplus) */
 
-#endif
+#endif /* _MAGICK_CACHE_H */

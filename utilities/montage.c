@@ -60,6 +60,7 @@
 #include "studio.h"
 #include "command.h"
 #include "log.h"
+#include "magick.h"
 #include "utility.h"
 #include "version.h"
 

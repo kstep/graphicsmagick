@@ -431,7 +431,9 @@ static unsigned int
 static unsigned int
   WriteMNGImage(const ImageInfo *,Image *);
 #if defined(JNG_SUPPORTED)
-#define HasJPEG 1
+#if !defined(HasJPEG)
+#  define HasJPEG 1
+#endif /* !defined(HasJPEG) */
 #if defined(HasJPEG)
 static unsigned int
   WriteJNGImage(const ImageInfo *,Image *);
