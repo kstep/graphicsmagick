@@ -232,7 +232,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Scale image.
     */
     chroma_image->orphan=True;
-    zoom_image=SampleImage(chroma_image,image->columns,image->rows,exception);
+    zoom_image=ZoomImage(chroma_image,image->columns,image->rows,exception);
     DestroyImage(chroma_image);
     if (zoom_image == (Image *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
@@ -419,13 +419,13 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
   do
   {
     /*
-      Sample image to an even width and height.
+      Zoom image to an even width and height.
     */
     TransformRGBImage(image,RGBColorspace);
     width=image->columns+(image->columns & 0x01);
     height=image->rows+(image->rows & 0x01);
     image->orphan=True;
-    yuv_image=SampleImage(image,width,height,&image->exception);
+    yuv_image=ZoomImage(image,width,height,&image->exception);
     if (yuv_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Unable to zoom image",image);
     RGBTransformImage(yuv_image,YCbCrColorspace);
@@ -451,7 +451,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       Downsample image.
     */
     image->orphan=True;
-    chroma_image=SampleImage(image,width/2,height/2,&image->exception);
+    chroma_image=ZoomImage(image,width/2,height/2,&image->exception);
     if (chroma_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Unable to zoom image",image);
     RGBTransformImage(chroma_image,YCbCrColorspace);

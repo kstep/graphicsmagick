@@ -5231,7 +5231,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 
           Y =  0.299000*R+0.587000*G+0.114000*B
           Cb= -0.168736*R-0.331264*G+0.500000*B
-          Cr=  0.500000*R-0.418688*G-0.083168*B
+          Cr=  0.500000*R-0.418688*G-0.081316*B
 
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
@@ -5248,7 +5248,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         z_map[i+Y]=0.500000*i;
         x_map[i+Z]=0.500000*i;
         y_map[i+Z]=(-0.418688)*i;
-        z_map[i+Z]=(-0.081312)*i;
+        z_map[i+Z]=(-0.081316)*i;
       }
       break;
     }
