@@ -44,6 +44,8 @@
         erases the provided filename if it is the name of a valid
         temporary file. This helps avoid errors. The return
         status may be used to determine if a file was removed.
+        (AcquireTemporaryFileDescriptor): Decided that adding a
+        .tmp extension to temporary file names is unnecessary.
   <LI> coders/jp2.c (WriteJP2Image): Destroy pixel matrix
         after encoding image.  Cristy says that there is memory
         corruption otherwise.

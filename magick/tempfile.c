@@ -253,7 +253,7 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
       
       for (tries=0; tries < 10; tries++)
         {
-          strcpy(tempname,"gmXXXXXX.tmp");
+          strcpy(tempname,"gmXXXXXX");
           ComposeTemporaryFileName(tempname);
           strcpy(fname,tempdir);
           if (tempdir[strlen(tempdir)-1] != DirectorySeparator[0])
