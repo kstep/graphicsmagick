@@ -2,6 +2,9 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+* Extend Image constructor to allow specifying DirectClass or
+  PsuedoClass representation when creating a solid-color canvas.
+
 * Add Image constructor that takes only a Geometry argument in order
   to support constructing an image with size, but without content.
 
