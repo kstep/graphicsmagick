@@ -1,5 +1,7 @@
 2003-05-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/GraphicsMagick-config.in (usage): Added example
+	usage to the help output.
 	* magick/magick.c (InitializeMagick): Added a static flag to
 	ensure that the Magick library is initialized only one time.
 	(DestroyMagick): Ensure that Magick library resources are only

@@ -7,8 +7,11 @@
 # configuration information is presented instead so that it may be used more
 # effictively in configure scripts.
 #
-usage="\
-Usage: GraphicsMagick-config [--cflags] [--cppflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]"
+usage='Usage: GraphicsMagick-config [--cflags] [--cppflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]
+
+ For example, "example.c" may be compiled to produce "example" as follows:
+
+  "gcc -o example example.c `GraphicsMagick-config --cppflags --cflags --ldflags --libs`"'
 
 if test $# -eq 0; then
       echo "${usage}" 1>&2
