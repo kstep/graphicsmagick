@@ -1,3 +1,13 @@
+2003-08-07  William Radcliffe  <billr@corbis.com>
+
+	* magick/error.c: Protect against NULL string passed into the
+	message lookup function.
+
+2003-08-07  William Radcliffe  <billr@corbis.com>
+
+	* magick/locale.c: Switched use of IsAccessible to nonloggging
+	version to prevent recursive problems.
+
 2003-08-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/Makefile.am (noinst_HEADERS): Distribute locale_c.h.
