@@ -241,12 +241,12 @@ static void DefaultWarningHandler(const ExceptionType warning,
 %
 %
 */
-Export void GetExceptionInfo(ExceptionInfo *exception_info)
+Export void GetExceptionInfo(ExceptionInfo *exception)
 {
-  assert(exception_info != (ExceptionInfo *) NULL);
-  exception_info->severity=UndefinedException;
-  exception_info->message=(char *) NULL;
-  exception_info->qualifier=(char *) NULL;
+  assert(exception != (ExceptionInfo *) NULL);
+  exception->severity=UndefinedException;
+  exception->message=(char *) NULL;
+  exception->qualifier=(char *) NULL;
 }
 
 /*

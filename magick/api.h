@@ -55,7 +55,6 @@
 #include "image.h"
 #include "gems.h"
 #include "quantize.h"
-#include "error.h"
 #include "monitor.h"
 #include "compress.h"
 #include "attributes.h"
