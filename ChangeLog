@@ -3,7 +3,7 @@
 	* coders/jpeg.c: Changed stored jpeg quality attribute from
 	[jpeg-quality] to JPEG-Quality.  Added attributes JPEG-Colorspace
 	and JPEG-Sampling-factors.  Added code to save and restore
-	these attributes when "-define JPEG:preserve-settings" is
+	these attributes when "-define JPEG:preserve-settings=yes" is
 	present in the comandline.  Quality is restored if the input
 	was a JPEG and the quality was preserved.  Sampling factors
 	are restored if the input was a JPEG, sampling factors were
