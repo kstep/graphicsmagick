@@ -2331,19 +2331,23 @@ Coalesce(ref)
       error_jmp;
 
     Image
-      *image;
+      *image,
+      *next;
 
     struct PackageInfo
       *info;
 
     SV
+      *av_reference,
       *reference,
       *rv,
+      **reference_vector,
       *sv;
 
     volatile int
       status;
 
+    reference_vector=NULL;
     status=0;
     error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
@@ -2353,6 +2357,9 @@ Coalesce(ref)
       }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
+    av=newAV();
+    av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
+    SvREFCNT_dec(av);
     error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
@@ -2367,31 +2374,26 @@ Coalesce(ref)
     image=CoalesceImages(image,&exception);
     if (!image)
       {
-        MagickWarning(exception.severity,exception.reason,exception.description);
+        MagickWarning(exception.severity,exception.reason,
+          exception.description);
         goto MethodException;
       }
-    /*
-      Create blessed Perl array for the returned image.
-    */
-    av=newAV();
-    ST(0)=sv_2mortal(sv_bless(newRV((SV *) av),hv));
-    SvREFCNT_dec(av);
-    sv=newSViv((IV) image);
-    rv=newRV(sv);
-    av_push(av,sv_bless(rv,hv));
-    SvREFCNT_dec(sv);
-    info=GetPackageInfo((void *) av,info);
-    FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
-      ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
-    (void) strncpy(image->filename,info->image_info->filename,MaxTextExtent-1);
-    SetImageInfo(info->image_info,False,&image->exception);
-    SvREFCNT_dec(error_list);
+    for (next=image; next; next=next->next)
+    {
+      sv=newSViv((IV) next);
+      rv=newRV(sv);
+      av_push(av,sv_bless(rv,hv));
+      SvREFCNT_dec(sv);
+    }
+    ST(0)=av_reference;
     error_jump=NULL;
+    SvREFCNT_dec(error_list);
+    error_list=NULL;
     XSRETURN(1);
 
   MethodException:
     sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
-    SvPOK_on(error_list);  /* return messages in string context */
+    SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);
     error_list=NULL;
     error_jump=NULL;
