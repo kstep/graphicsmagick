@@ -23,20 +23,24 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-07-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Added SubstituteString to utility.c for performing substitions
+    on strings.
+  * Added support for performing Ghostscript-related substitutions while
+    reading delegates.mgk and type.mgk files.
+
 2002-07-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Added the Windows utility functions NTGhostscriptDLL(),
-    NTGhostscriptEXE(), and NTGhostscriptFonts(), to find the
-    DLL, executable, and font directory corresponding to the
-    newest Ghostscript install on the system.
+    NTGhostscriptEXE(), and NTGhostscriptFonts(), to find the DLL,
+    executable, and font directory corresponding to the newest Ghostscript
+    install on the system.
 
 2002-07-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Split nt.c into ntbase.c and ntfeature.c
   * Split nt.h into ntbase.h and ntfeature.h
-  * Invoke NTIsMagickConflict() under Cygwin to ensure that
-    drive letters in file specifications are not confused with
-    magick strings.
-  * Invoke NTGetTypeList() under Cygwin to read the list of
-    Windows fonts.
+  * Invoke NTIsMagickConflict() under Cygwin to ensure that drive letters
+    in file specifications are not confused with magick strings.
+  * Invoke NTGetTypeList() under Cygwin to read the list of Windows fonts.
 
 2002-07-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Created Windows "setup.exe" style installation package for

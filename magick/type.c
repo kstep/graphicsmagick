@@ -519,14 +519,13 @@ static unsigned int ReadConfigurationFile(const char *basename,
   size_t
     length;
 
-#if defined(WIN32)
-  NTGhostscriptFonts(gsfonts,sizeof(gsfonts));
-  strcat(gsfonts,DirectorySeparator);
-#endif /* WIN32 */
-
   /*
     Read the type configuration file.
   */
+#if defined(WIN32)
+  NTGhostscriptFonts(gsfonts,sizeof(gsfonts));
+  (void) strcat(gsfonts,DirectorySeparator);
+#endif /* WIN32 */
   FormatString(filename,"%.1024s",basename);
   path=GetMagickConfigurePath(filename,exception);
   if (path != (char *) NULL)
@@ -651,14 +650,15 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"glyphs") == 0)
           {
-			char
-			  *scratch = (char*) NULL;
+            char
+              *glyphs;
 
-			CloneString(&scratch,token);
+            glyphs=(char *) NULL;
+            CloneString(&glyphs,token);
 #if defined(WIN32)
-            SubstituteString(&scratch,"@ghostscript_font_dir@",gsfonts);
+            SubstituteString(&glyphs,"@ghostscript_font_dir@",gsfonts);
 #endif /* WIN32 */
-            type_list->glyphs=scratch;
+            type_list->glyphs=glyphs;
             break;
           }
         break;
@@ -668,14 +668,15 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"metrics") == 0)
           {
-			char
-			  *scratch = (char*) NULL;
+            char
+              *metrics;
 
-            CloneString(&scratch,token);
+            metrics=(char *) NULL;
+            CloneString(&metrics,token);
 #if defined(WIN32)
-            SubstituteString(&scratch,"@ghostscript_font_dir@",gsfonts);
+            SubstituteString(&metrics,"@ghostscript_font_dir@",gsfonts);
 #endif /* WIN32 */
-			type_list->metrics=scratch;
+            type_list->metrics=metrics;
             break;
           }
         break;

@@ -2918,33 +2918,27 @@ MagickExport void Strip(char *message)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SubstituteString performs string substitution on a buffer, replacing
-%  the buffer with the substituted version. Buffer must be allocated from the
-%  heap.
+%  SubstituteString() performs string substitution on a buffer, replacing the
+%  buffer with the substituted version. Buffer must be allocated from the heap.
 %
 %  The format of the SubstituteString method is:
 %
-%      void SubstituteString(char **buffer, const char* search, const char *replace)
+%      void SubstituteString(char **buffer, const char* search,
+%        const char *replace)
 %
 %  A description of each parameter follows:
 %
 %    o buffer: The buffer to perform replacements on. Replaced with new
-%              allocation if a replacement is made.
+%      allocation if a replacement is made.
 %
 %    o search: String to search for.
 %
 %    o replace: Replacement string.
 %
 */
-MagickExport int SubstituteString(char** buffer, const char* search, const char *replace)
+MagickExport int SubstituteString(char **buffer,const char *search,
+  const char *replace)
 {
-  size_t
-    allocated_length,
-    copy_length,
-    result_length,
-    replace_length,
-    search_length;
-
   char
     *dest,
     *result;
@@ -2953,87 +2947,87 @@ MagickExport int SubstituteString(char** buffer, const char* search, const char 
     *match,
     *source;
 
+  size_t
+    allocated_length,
+    copy_length,
+    replace_length,
+    result_length,
+    search_length;
+
   assert(buffer != (char**) NULL);
   assert(*buffer != (char *) NULL);
   assert(search != (const char*) NULL);
   assert(replace != (const char*) NULL);
-
-  source=*buffer;
-  match = strstr(source, search);
+  source=(*buffer);
+  match=strstr(source,search);
   if (match == (char *) NULL)
-    return False;
+    return(False);
   allocated_length=strlen(source)+MaxTextExtent;
-  result=(char*)AcquireMemory(allocated_length);
+  result=(char *) AcquireMemory(allocated_length);
   if (result == (char *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Unable to allocate string",
-                     "Memory allocation failed");
+      "Memory allocation failed");
   *result='\0';
   result_length=0;
   dest=result;
   replace_length=strlen(replace);
   search_length=strlen(search);
-
   while (match != (char*) NULL)
-    {
+  {
+    /*
+      Copy portion before match.
+    */
+    copy_length=match-source;
+    if (copy_length != 0)
+      {
+        result_length+=copy_length;
+        if (result_length >= allocated_length)
+          {
+            allocated_length+=copy_length+MaxTextExtent;
+            ReacquireMemory((void **) &result,allocated_length);
+            if (result == (char *) NULL)
+              MagickFatalError(ResourceLimitFatalError,
+                "Unable to reallocate string","Memory allocation failed");
+          }
+        (void) strncpy(dest,source,copy_length);
+        dest+=copy_length;
+        *dest='\0';
+      }
       /*
-        copy portion before match
-      */
-      copy_length=match-source;
-
-      if (copy_length!=0)
-        {
-          result_length+=copy_length;
-          if (result_length>=allocated_length)
-            {
-              allocated_length+=copy_length+MaxTextExtent;
-              ReacquireMemory((void**)&result, allocated_length);
-              if (result == (char *) NULL)
-                MagickFatalError(ResourceLimitFatalError,"Unable to reallocate string",
-                                 "Memory allocation failed");
-            }
-          strncpy(dest,source,copy_length);
-          dest+=copy_length;
-          *dest='\0';
-        }
-
-      /*
-        copy replacement
+        Copy replacement.
       */
       result_length+=replace_length;
-      if (result_length>=allocated_length)
+      if (result_length >= allocated_length)
         {
           allocated_length+=replace_length+MaxTextExtent;
-          ReacquireMemory((void**)&result, allocated_length);
+          ReacquireMemory((void **) &result,allocated_length);
           if (result == (char *) NULL)
-            MagickFatalError(ResourceLimitFatalError,"Unable to reallocate string",
-                             "Memory allocation failed");
+            MagickFatalError(ResourceLimitFatalError,
+              "Unable to reallocate string","Memory allocation failed");
         }
-      strcat(dest,replace);
+      (void) strcat(dest,replace);
       dest+=replace_length;
-
       /*
-        find next match
+        Find next match.
       */
       source=match;
       source+=search_length;
-      match=strstr(source, search);
+      match=strstr(source,search);
     }
-
   /*
-    copy remaining string
+    Copy remaining string.
   */
   copy_length=strlen(source);
   result_length+=copy_length;
-  if (result_length>=allocated_length)
+  if (result_length >= allocated_length)
     {
       allocated_length+=copy_length+MaxTextExtent;
-      ReacquireMemory((void**)&result, allocated_length);
+      ReacquireMemory((void **) &result,allocated_length);
       if (result == (char *) NULL)
         MagickFatalError(ResourceLimitFatalError,"Unable to reallocate string",
-                         "Memory allocation failed");
+          "Memory allocation failed");
     }
-  strcat(dest,source);
-
+  (void) strcat(dest,source);
   LiberateMemory((void **)buffer);
   *buffer=result;
   return True;
