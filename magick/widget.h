@@ -73,7 +73,8 @@ extern MagickExport void
   XInfoWidget(Display *,XWindows *,const char *),
   XListBrowserWidget(Display *,XWindows *,XWindowInfo *,const char **,
     const char *,const char *,char *),
-  XMonitorWidget(Display *,XWindows *,const char *,const ExtendedSignedIntegralType,const size_t),
+  XMonitorWidget(Display *,XWindows *,const char *,
+    const ExtendedSignedIntegralType,const ExtendedUnsignedIntegralType),
   XNoticeWidget(Display *,XWindows *,const char *,const char *),
   XTextViewWidget(Display *,const XResourceInfo *,XWindows *,const unsigned int,
     const char *,const char **);

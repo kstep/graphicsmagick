@@ -170,7 +170,7 @@ testFilterSignature('input.miff', 'Raise',
 testFilterSignature('input.miff', 'Resize',
   q/50%/,
   '034a25c1de9337e993d64629478c0f7826653cf8408b95511e98da17c8b16f92',
-  '9d54ceadb2dd6b36eef5cd9e3c4f2015d277f93bf2205927ba41f449915b6edf');
+  'f86074bf6840baedd168de4618d56e26836500048378f22ef7b6f16f5536b29c');
 
 ++$test;
 testFilterSignature('input.miff', 'Roll',

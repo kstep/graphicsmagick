@@ -7815,7 +7815,7 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
 */
 MagickExport unsigned int XMagickMonitor(const char *task,
   const ExtendedSignedIntegralType quantum,
-	const ExtendedUnsignedIntegralType span,ExceptionInfo *exception)
+  const ExtendedUnsignedIntegralType span,ExceptionInfo *exception)
 {
   XWindows
     *windows;
