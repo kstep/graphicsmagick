@@ -1116,8 +1116,17 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
         if (image->colors == 2)
-          polarity=
-            Intensity(image->colormap[1]) > Intensity(image->colormap[0]);
+          {
+            PixelPacket temp;
+            polarity=
+              Intensity(image->colormap[1]) > Intensity(image->colormap[0]);
+            if (!polarity)
+              {
+                temp=image->colormap[1];
+                image->colormap[1]=image->colormap[0];
+                image->colormap[0]=temp;
+              }
+          }
         for (y=0; y < (int) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
