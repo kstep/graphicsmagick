@@ -51,17 +51,18 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CompositeImage() returns the second image composited onto the first at the
-%  specified offsets.
+%  CompositeImage() returns the second image (composite_image) composited
+%  onto the first (canvas_image) at the specified offsets.
 %
 %  The format of the CompositeImage method is:
 %
-%      unsigned int CompositeImage(Image *image,const CompositeOperator compose,
-%        const Image *composite_image,const long x_offset,const long y_offset)
+%      unsigned int CompositeImage(Image *canvas_image,
+%        const CompositeOperator compose,const Image *composite_image,
+%        const long x_offset,const long y_offset)
 %
 %  A description of each parameter follows:
 %
-%    o image: The image.
+%    o canvas_image: The image to be updated.
 %
 %    o compose: This operator affects how the composite is applied to
 %      the image.  The default is Over.  Choose from one of these
@@ -103,7 +104,7 @@ static inline PixelPacket AlphaComposite(const PixelPacket *p,
   return(composite);
 }
 
-MagickExport unsigned int CompositeImage(Image *image,
+MagickExport unsigned int CompositeImage(Image *canvas_image,
   const CompositeOperator compose,const Image *composite_image,
   const long x_offset,const long y_offset)
 {
@@ -147,13 +148,13 @@ MagickExport unsigned int CompositeImage(Image *image,
   /*
     Prepare composite image.
   */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(canvas_image != (Image *) NULL);
+  assert(canvas_image->signature == MagickSignature);
   assert(composite_image != (Image *) NULL);
   assert(composite_image->signature == MagickSignature);
   if (compose == NoCompositeOp)
     return(True);
-  SetImageType(image,TrueColorType);
+  SetImageType(canvas_image,TrueColorType);
   switch (compose)
   {
     case DisplaceCompositeOp:
@@ -175,7 +176,7 @@ MagickExport unsigned int CompositeImage(Image *image,
       /*
         Allocate the displace image.
       */
-      displace_image=CloneImage(composite_image,0,0,True,&image->exception);
+      displace_image=CloneImage(composite_image,0,0,True,&canvas_image->exception);
       if (displace_image == (Image *) NULL)
         return(False);
       horizontal_scale=20.0;
@@ -198,11 +199,11 @@ MagickExport unsigned int CompositeImage(Image *image,
       */
       for (y=0; y < (long) composite_image->rows; y++)
       {
-        if (((y+y_offset) < 0) || ((y+y_offset) >= (long) image->rows))
+        if (((y+y_offset) < 0) || ((y+y_offset) >= (long) canvas_image->rows))
           continue;
         p=AcquireImagePixels(composite_image,0,y,composite_image->columns,1,
-          &image->exception);
-        q=GetImagePixels(image,0,y+y_offset,image->columns,1);
+          &canvas_image->exception);
+        q=GetImagePixels(canvas_image,0,y+y_offset,canvas_image->columns,1);
         r=GetImagePixels(displace_image,0,y,displace_image->columns,1);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
             (r == (PixelPacket *) NULL))
@@ -210,7 +211,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         q+=x_offset;
         for (x=0; x < (long) composite_image->columns; x++)
         {
-          if (((x_offset+x) < 0) || ((x_offset+x) >= (long) image->columns))
+          if (((x_offset+x) < 0) || ((x_offset+x) >= (long) canvas_image->columns))
             {
               p++;
               q++;
@@ -222,8 +223,8 @@ MagickExport unsigned int CompositeImage(Image *image,
           if (composite_image->matte)
             y_displace=(vertical_scale*(p->opacity-
               (((double) MaxRGB+1.0)/2)))/(((double) MaxRGB+1.0)/2);
-          *r=InterpolateColor(image,x_offset+x+x_displace,y_offset+y+y_displace,
-            &image->exception);
+          *r=InterpolateColor(canvas_image,x_offset+x+x_displace,y_offset+y+y_displace,
+            &canvas_image->exception);
           p++;
           q++;
           r++;
@@ -274,23 +275,23 @@ MagickExport unsigned int CompositeImage(Image *image,
     Composite image.
   */
   midpoint=((double) MaxRGB+1.0)/2;
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (long) canvas_image->rows; y++)
   {
     if (y < y_offset)
       continue;
     if ((y-y_offset) >= (long) composite_image->rows)
       break;
     p=AcquireImagePixels(composite_image,0,y-y_offset,composite_image->columns,
-      1,&image->exception);
-    q=GetImagePixels(image,0,y,image->columns,1);
+      1,&canvas_image->exception);
+    q=GetImagePixels(canvas_image,0,y,canvas_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     pixels=p;
     if (x_offset < 0)
       p-=x_offset;
-    indexes=GetIndexes(image);
+    indexes=GetIndexes(canvas_image);
     composite_indexes=GetIndexes(composite_image);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (long) canvas_image->columns; x++)
     {
       if (x < x_offset)
         {
@@ -306,10 +307,10 @@ MagickExport unsigned int CompositeImage(Image *image,
         if (composite_image->colorspace == CMYKColorspace)
           source.opacity=composite_indexes[x];
       destination=(*q);
-      if (!image->matte)
+      if (!canvas_image->matte)
         destination.opacity=OpaqueOpacity;
       else
-        if (image->colorspace == CMYKColorspace)
+        if (canvas_image->colorspace == CMYKColorspace)
           destination.opacity=indexes[x];
       switch (compose)
       {
@@ -509,8 +510,6 @@ MagickExport unsigned int CompositeImage(Image *image,
           /*
             The result of change-image + base-image, with overflow
             wrapping around (mod MaxRGB+1).
-            
-            FIXME: This produces larger maximum errors than it should.
           */
           double composite;
 
@@ -536,8 +535,6 @@ MagickExport unsigned int CompositeImage(Image *image,
             wrapping around (mod MaxRGB+1). The add and subtract
             operators can be used to perform reversible
             transformations.
-            
-            FIXME: This produces larger maximum errors than it should.
           */
           double composite;
 
@@ -686,7 +683,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           /*
             Copy the CMYK Black (K) channel into the image.
           */
-          if ((image->colorspace == CMYKColorspace) &&
+          if ((canvas_image->colorspace == CMYKColorspace) &&
               (composite_image->colorspace == CMYKColorspace))
             indexes[x]=(*composite_indexes++);
           break;
@@ -884,7 +881,7 @@ MagickExport unsigned int CompositeImage(Image *image,
       q->red=destination.red;
       q->green=destination.green;
       q->blue=destination.blue;
-      if (image->colorspace != CMYKColorspace)
+      if (canvas_image->colorspace != CMYKColorspace)
         q->opacity=destination.opacity;
       else
         {
@@ -896,7 +893,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         p=pixels;
       q++;
     }
-    if (!SyncImagePixels(image))
+    if (!SyncImagePixels(canvas_image))
       break;
   }
   return(True);

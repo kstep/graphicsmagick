@@ -3481,11 +3481,13 @@ typedef struct _PixelErrorStats {
 
 static MagickPassFail
 ComputePixelError(void *user_data,
-                  const long x,
-                  const long y,
                   const Image *first_image,
+                  const long first_x,
+                  const long first_y,
                   const PixelPacket *first_pixel,
                   const Image *second_image,
+                  const long second_x,
+                  const long second_y,
                   const PixelPacket *second_pixel,
                   ExceptionInfo *exception)
 {
@@ -3551,8 +3553,11 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   stats.maximum_error_per_pixel=0.0;
   stats.total_error=0.0;
 
-  PixelIterateDualRead(ComputePixelError,(void *) &stats,0,0,image->columns,
-                       image->rows,image,reference,&image->exception);
+  PixelIterateDualRead(ComputePixelError,(void *) &stats,
+                       image->columns,image->rows,
+                       image,0,0,
+                       reference,0,0,
+                       &image->exception);
 
   /*
     Compute final error statistics.

@@ -56,6 +56,10 @@
 2004-03-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/pixel_iterator.c (PixelIterateDualRead): Extended so that
+        the region in each image may use a different origin.
+        (PixelIterateDualModify): Extended so that
+        the region in each image may use a different origin.
   <LI> magick/composite.c (CompositeImage): Fix XorCompositeOp overflow
         condition which occured on non-Intel architectures.
 

@@ -64,55 +64,63 @@ extern "C" {
                          ExceptionInfo *exception);
 
   /*
-    Read-only access across the same pixel regions of two images.
+    Read-only access across pixel regions of two images.
   */
 
   typedef MagickPassFail (*PixelIteratorDualReadCallback)
     (void *user_data,
-     const long x,
-     const long y,
      const Image *first_image,
+     const long first_x,
+     const long first_y,
      const PixelPacket *first_pixel,
      const Image *second_image,
+     const long second_x,
+     const long second_y,
      const PixelPacket *second_pixel,
      ExceptionInfo *exception);
 
   extern MagickExport MagickPassFail
   PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
                        void *user_data,
-                       const long x,
-                       const long y,
                        const unsigned long columns,
                        const unsigned long rows,
                        const Image *first_image,
+                       const long first_x,
+                       const long first_y,
                        const Image *second_image,
+                       const long second_x,
+                       const long second_y,
                        ExceptionInfo *exception);
 
   /*
-    Read-write access across the same pixel regions of two images. The
-    first image is accessed read-only while the second image is
-    accessed as read-write.
+    Read-write access across pixel regions of two images. The first
+    (source) image is accessed read-only while the second (update)
+    image is accessed as read-write.
   */
 
   typedef MagickPassFail (*PixelIteratorDualModifyCallback)
     (void *user_data,
-     const long x,
-     const long y,
-     const Image *first_image,
-     const PixelPacket *first_pixel,
-     Image *second_image,
-     PixelPacket *second_pixel,
+     const Image *source_image,
+     const long source_x,
+     const long source_y,
+     const PixelPacket *source_pixel,
+     Image *update_image,
+     const long update_x,
+     const long update_y,
+     PixelPacket *update_pixel,
      ExceptionInfo *exception);
 
   extern MagickExport MagickPassFail
   PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
                          void *user_data,
-                         const long x,
-                         const long y,
                          const unsigned long columns,
                          const unsigned long rows,
-                         const Image *first_image,
-                         Image *second_image,
+                         const Image *source_image,
+                         const long source_x,
+                         const long source_y,
+                         Image *update_image,
+                         const long update_x,
+                         const long update_y,
                          ExceptionInfo *exception);
 
 #if defined(__cplusplus) || defined(c_plusplus)
