@@ -750,7 +750,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open image file.
   */
-
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
