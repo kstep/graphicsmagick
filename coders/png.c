@@ -1210,7 +1210,7 @@ static void PNGWarningHandler(png_struct *ping,png_const_charp message)
       message);
 #endif
   image=(Image *) png_get_error_ptr(ping);
-  ThrowException(&image->exception,(ExceptionType) DelegateError,message,
+  ThrowException(&image->exception,(ExceptionType) DelegateWarning,message,
      image->filename);
 }
 
