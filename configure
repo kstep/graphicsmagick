@@ -1007,8 +1007,8 @@ esac
 
 # Set version
 MAJOR_VERSION=5
-MINOR_VERSION=3
-MICRO_VERSION=0
+MINOR_VERSION=2
+MICRO_VERSION=9
 echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 ac_aux_dir=
 for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
