@@ -2492,7 +2492,7 @@ static const DicomInfo
     { 0x5000, 0x0103, (char *) "US", (char *) "Data Value Representation" },
     { 0x5000, 0x0104, (char *) "US", (char *) "Minimum Coordinate Value" },
     { 0x5000, 0x0105, (char *) "US", (char *) "Maximum Coordinate Value" },
-    { 0x5000, 0x0106, (char *) "SH", (char *) "Curve Range" },
+    { 0x5000, 0x0106, (char *) "US", (char *) "Curve Range" },
     { 0x5000, 0x0110, (char *) "US", (char *) "Curve Data Descriptor" },
     { 0x5000, 0x0112, (char *) "US", (char *) "Coordinate Start Value" },
     { 0x5000, 0x0114, (char *) "US", (char *) "Coordinate Step Value" },
@@ -2508,7 +2508,7 @@ static const DicomInfo
     { 0x5000, 0x2500, (char *) "LO", (char *) "Curve Label" },
     { 0x5000, 0x2600, (char *) "SQ", (char *) "CurveReferenced Overlay Sequence" },
     { 0x5000, 0x2610, (char *) "US", (char *) "CurveReferenced Overlay Group" },
-    { 0x5000, 0x3000, (char *) "xs", (char *) "Curve Data" },
+    { 0x5000, 0x3000, (char *) "OW", (char *) "Curve Data" },
     { 0x6000, 0x0000, (char *) "UL", (char *) "Overlay Group Length" },
     { 0x6000, 0x0001, (char *) "US", (char *) "Gray Palette Color Lookup Table Descriptor" },
     { 0x6000, 0x0002, (char *) "US", (char *) "Gray Palette Color Lookup Table Data" },
@@ -2719,6 +2719,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bytes_per_pixel,
     height,
     high_bit,
+    mask,
     msb_first,
     number_scenes,
     quantum,
@@ -2760,6 +2761,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   group=0;
   height=0;
   high_bit=0;
+  max_value=MaxRGB;
+  mask=0x7fffffff;
   msb_first=False;
   number_scenes=1;
   samples_per_pixel=1;
@@ -3003,6 +3006,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bytes_per_pixel=1;
             if (datum > 8)
               bytes_per_pixel=2;
+            max_value=(1 << (8*bytes_per_pixel))-1;
             break;
           }
           case 0x0101:
@@ -3014,6 +3018,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bytes_per_pixel=1;
             if (significant_bits > 8)
               bytes_per_pixel=2;
+            mask=(1 << significant_bits)-1;
             break;
           }
           case 0x0102:
@@ -3123,6 +3128,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((strcmp(transfer_syntax,"1.2.840.10008.1.2.4.50") == 0) ||
       (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0))
     {
+      char
+        filename[MaxTextExtent];       
+
       FILE
         *file;
 
@@ -3135,9 +3143,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Handle 2.4.50 lossy JPEG and 2.4.70 lossless JPEG.
       */
-      clone_info=CloneImageInfo(image_info);
-      TemporaryFilename((char *) clone_info->filename);
-      file=fopen(clone_info->filename,WriteBinaryType);
+      TemporaryFilename(filename);
+      file=fopen(filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         ThrowReaderException(FileOpenWarning,"Unable to write file",image);
       c=16;
@@ -3153,14 +3160,13 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       (void) fclose(file);
       DestroyImage(image);
+      clone_info=CloneImageInfo(image_info);
+      FormatString(clone_info->filename,"jpeg:%.1024s",filename);
       image=ReadImage(clone_info,exception);
-      (void) remove(clone_info->filename);
+      (void) remove(filename);
       DestroyImageInfo(clone_info);
       return(image);
     }
-  max_value=(1 << (8*bytes_per_pixel))-1;
-  if (LocaleNCompare(photometric,"MONOCHROME",10) == 0)
-    max_value=(1 << significant_bits)-1;
   scale=(Quantum *) NULL;
   if (max_value != MaxRGB)
     {
@@ -3270,6 +3276,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         }
                       i++;
                     }
+                index&=mask;
                 if (index > max_value)
                   index=max_value;
                 if (graymap != (unsigned short *) NULL)
@@ -3305,6 +3312,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         blue=ReadBlobLSBShort(image);
                       }
                   }
+                red&=mask;
+                green&=mask;
+                blue&=mask;
                 if (scale != (Quantum *) NULL)
                   {
                     red=scale[red];

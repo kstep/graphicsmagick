@@ -603,7 +603,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       jpeg_destroy_decompress(&jpeg_info);
       *exception=image->exception;
       GetExceptionInfo(&image->exception);
-      return(image);
+      if ((image->columns*image->rows) != 0)
+        return(image);
+      DestroyImage(image);
+      return((Image *) NULL);
     }
   jpeg_create_decompress(&jpeg_info);
   JPEGSourceManager(&jpeg_info,image);
