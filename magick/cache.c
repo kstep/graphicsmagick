@@ -64,6 +64,14 @@
 /*
  Windows open extensions
 */
+#if defined(__BORLANDC__)
+/* These do not appear to work with Borland C++ */
+#  undef _O_RANDOM
+#  undef _O_SEQUENTIAL
+#  undef _O_SHORT_LIVED
+#  undef _O_TEMPORARY
+#endif
+
 #if !defined(_O_RANDOM)
 # define _O_RANDOM 0
 #endif
