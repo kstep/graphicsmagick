@@ -33,7 +33,7 @@ AUTOMAKE_OPTIONS = 1.5 foreign
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
 MAGICK_CODER_SRCS = \
-  art.c avi.c avs.c bmp.c cmyk.c cut.c dcm.c dib.c dps.c dpx.c \
+  art.c avi.c avs.c bmp.c caption.c cmyk.c cut.c dcm.c dib.c dps.c dpx.c \
   ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c \
   histogram.c html.c icon.c jbig.c jp2.c jpeg.c label.c logo.c \
   map.c mat.c matte.c meta.c miff.c mono.c mpc.c mpeg.c mpr.c msl.c \
@@ -75,8 +75,8 @@ pkgdata_DATA =
 
 # Modules which are to be built
 pkg_LTLIBRARIES = \
-  art.la avi.la avs.la bmp.la cmyk.la cut.la dcm.la dib.la dps.la dpx.la \
-  ept.la fax.la fits.la fpx.la gif.la gradient.la gray.la hdf.la \
+  art.la avi.la avs.la bmp.la caption.la cmyk.la cut.la dcm.la dib.la dps.la \
+	dpx.la ept.la fax.la fits.la fpx.la gif.la gradient.la gray.la hdf.la \
   histogram.la html.la icon.la jbig.la jp2.la jpeg.la label.la logo.la \
   map.la mat.la matte.la meta.la miff.la mono.la mpc.la mpeg.la mpr.la msl.la \
   mtv.la mvg.la null.la otb.la palm.la pcd.la pcl.la pcx.la pdb.la pdf.la \
@@ -110,6 +110,11 @@ avs_la_LIBADD       = $(LIBMAGICK)
 bmp_la_SOURCES      = bmp.c
 bmp_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 bmp_la_LIBADD       = $(LIBMAGICK)
+
+# CAPTION module
+caption_la_SOURCES     = caption.c
+caption_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+caption_la_LIBADD      = $(LIBMAGICK)
 
 # CMYK module
 cmyk_la_SOURCES     = cmyk.c

@@ -276,13 +276,13 @@ ModuleExport void RegisterTXTImage(void)
   entry->decoder=ReadTXTImage;
   entry->encoder=WriteTXTImage;
   entry->raw=True;
-  entry->description=AllocateString("Raw text");
+  entry->description=AllocateString("Text");
   entry->module=AllocateString("TXT");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("TXT");
   entry->decoder=ReadTXTImage;
   entry->encoder=WriteTXTImage;
-  entry->description=AllocateString("Raw text");
+  entry->description=AllocateString("Text");
   entry->module=AllocateString("TXT");
   (void) RegisterMagickInfo(entry);
 }

@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                     L       AAA   BBBB   EEEEE  L                           %
-%                     L      A   A  B   B  E      L                           %
-%                     L      AAAAA  BBBB   EEE    L                           %
-%                     L      A   A  B   B  E      L                           %
-%                     LLLLL  A   A  BBBB   EEEEE  LLLLL                       %
+%               CCCC   AAA   PPPP   TTTTT  IIIII   OOO   N   N                %
+%              C      A   A  P   P    T      I    O   O  NN  N                %
+%              C      AAAAA  PPPP     T      I    O   O  N N N                %
+%              C      A   A  P        T      I    O   O  N  NN                %
+%               CCCC  A   A  P        T    IIIII   OOO   N   N                %
 %                                                                             %
 %                                                                             %
 %                    Read/Write ImageMagick Image Format.                     %
@@ -15,7 +15,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
-%                                 July 1992                                   %
+%                               February 2002                                 %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
@@ -60,24 +60,24 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d L A B E L I m a g e                                               %
+%   R e a d C A P T I O N I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadLABELImage reads a LABEL image file and returns it.  It
+%  Method ReadCAPTIONImage reads a CAPTION image file and returns it.  It
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadLABELImage method is:
+%  The format of the ReadCAPTIONImage method is:
 %
-%      Image *ReadLABELImage(const ImageInfo *image_info,
+%      Image *ReadCAPTIONImage(const ImageInfo *image_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadLABELImage returns a pointer to the image after
+%    o image:  Method ReadCAPTIONImage returns a pointer to the image after
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
@@ -87,7 +87,7 @@
 %
 %
 */
-static Image *ReadLABELImage(const ImageInfo *image_info,
+static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
@@ -170,34 +170,34 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r L A B E L I m a g e                                       %
+%   R e g i s t e r C A P T I O N I m a g e                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterLABELImage adds attributes for the LABEL image format to
+%  Method RegisterCAPTIONImage adds attributes for the CAPTION image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterLABELImage method is:
+%  The format of the RegisterCAPTIONImage method is:
 %
-%      RegisterLABELImage(void)
+%      RegisterCAPTIONImage(void)
 %
 */
-ModuleExport void RegisterLABELImage(void)
+ModuleExport void RegisterCAPTIONImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("LABEL");
-  entry->decoder=ReadLABELImage;
+  entry=SetMagickInfo("CAPTION");
+  entry->decoder=ReadCAPTIONImage;
   entry->adjoin=False;
-  entry->description=AllocateString("Image label");
-  entry->module=AllocateString("LABEL");
+  entry->description=AllocateString("Image caption");
+  entry->module=AllocateString("CAPTION");
   (void) RegisterMagickInfo(entry);
 }
 
@@ -206,21 +206,21 @@ ModuleExport void RegisterLABELImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r L A B E L I m a g e                                   %
+%   U n r e g i s t e r C A P T I O N I m a g e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnregisterLABELImage removes format registrations made by the
-%  LABEL module from the list of supported formats.
+%  Method UnregisterCAPTIONImage removes format registrations made by the
+%  CAPTION module from the list of supported formats.
 %
-%  The format of the UnregisterLABELImage method is:
+%  The format of the UnregisterCAPTIONImage method is:
 %
-%      UnregisterLABELImage(void)
+%      UnregisterCAPTIONImage(void)
 %
 */
-ModuleExport void UnregisterLABELImage(void)
+ModuleExport void UnregisterCAPTIONImage(void)
 {
-  (void) UnregisterMagickInfo("LABEL");
+  (void) UnregisterMagickInfo("CAPTION");
 }
