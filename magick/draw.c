@@ -2087,6 +2087,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 
                 GetToken(q,&q,token);
                 FormatString(name,"[%.1024s]",token);
+                GetToken(q,&q,token);  /* geometry */
                 for (p=q; *q != '\0'; )
                 {
                   GetToken(q,&q,token);

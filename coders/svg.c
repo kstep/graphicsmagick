@@ -898,7 +898,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare((char *) name,"pattern") == 0)
         {
-          (void) fprintf(svg_info->file,"push pattern %s\n",id);
+          (void) fprintf(svg_info->file,"push pattern %s %gx%g%+g%+g\n",id,
+            svg_info->bounds.width,svg_info->bounds.height,svg_info->bounds.x,
+            svg_info->bounds.y);
           break;
         }
       if (LocaleCompare((char *) name,"polygon") == 0)
