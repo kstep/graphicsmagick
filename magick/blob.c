@@ -105,12 +105,12 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
   const size_t length)
 {
   assert(blob_info != (BlobInfo *) NULL);
-  blob_info->data=(unsigned char *) blob;
   blob_info->length=length;
   blob_info->extent=length;
   blob_info->quantum=DefaultBlobQuantum;
   blob_info->offset=0;
   blob_info->type=BlobStream;
+  blob_info->data=(unsigned char *) blob;
 }
 
 /*
@@ -189,8 +189,8 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  BlobToImage() implements direct to memory image formats.  It returns
-%  the blob as an image.
+%  BlobToImage() implements direct to memory image formats.  It returns the
+%  blob as an image.
 %
 %  The format of the BlobToImage method is:
 %
@@ -287,8 +287,8 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloneBlobInfo makes a duplicate of the given blob info structure,
-%  or if blob info is NULL, a new one.
+%  CloneBlobInfo() makes a duplicate of the given blob info structure, or if
+%  blob info is NULL, a new one.
 %
 %  The format of the CloneBlobInfo method is:
 %
@@ -320,15 +320,15 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
   clone_info->quantum=blob_info->quantum;
   clone_info->mapped=blob_info->mapped;
   clone_info->eof=blob_info->eof;
-  clone_info->data=blob_info->data;
   clone_info->offset=blob_info->offset;
   clone_info->size=blob_info->size;
   clone_info->exempt=blob_info->exempt;
   clone_info->status=blob_info->status;
   clone_info->temporary=blob_info->temporary;
+  clone_info->type=blob_info->type;
   clone_info->file=blob_info->file;
   clone_info->stream=blob_info->stream;
-  clone_info->type=blob_info->type;
+  clone_info->data=blob_info->data;
   clone_info->reference_count=1;
   clone_info->semaphore=(SemaphoreInfo *) NULL;
   return(clone_info);
@@ -345,8 +345,8 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloseBlob closes a file associated with the image.  If the
-%  filename prefix is '|', the file is a pipe and is closed with PipeClose.
+%  CloseBlob() closes a file associated with the image.  If the filename
+%  prefix is '|', the file is a pipe and is closed with PipeClose.
 %
 %  The format of the CloseBlob method is:
 %
@@ -360,90 +360,93 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
 */
 MagickExport void CloseBlob(Image *image)
 {
+  int
+    status;
+
   /*
     Close image file.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->type != UndefinedStream);
+  status=0;
+  switch (image->blob->type)
+  {
+    case UndefinedStream:
+      break;
+    case FileStream:
+    case StandardStream:
+    case PipeStream:
+    {
+      image->blob->status=ferror(image->blob->file);
+      break;
+    }
+    case ZipStream:
+    {
+#if defined(HasZLIB)
+      (void) gzerror(image->blob->file,&status);
+#endif
+      image->blob->status=status < 0;
+      break;
+    }
+    case BZipStream:
+    {
+#if defined(HasBZLIB)
+      (void) BZ2_bzerror(image->blob->file,&status);
+#endif
+      image->blob->status=status < 0;
+      break;
+    }
+    case FifoStream:
+    case BlobStream:
+      break;
+  }
+  errno=0;
   image->taint=False;
+  image->blob->size=GetBlobSize(image);
   image->blob->eof=False;
-  if (!image->blob->exempt)
-    DetachBlob(image->blob);
-  if (image->blob->file != (FILE *) NULL)
+  if (image->blob->exempt)
+    return;
+  switch (image->blob->type)
+  {
+    case UndefinedStream:
+      break;
+    case FileStream:
+    case StandardStream:
     {
-      image->blob->size=GetBlobSize(image);
-      switch (image->blob->type)
-      {
-#if defined(HasBZLIB)
-        case BZipStream:
-        {
-          int
-            status;
-
-          (void) BZ2_bzerror(image->blob->file,&status);
-          image->blob->status=status < 0;
-          break;
-        }
-#endif
+      (void) fclose(image->blob->file);
+    }
+    case ZipStream:
+    {
 #if defined(HasZLIB)
-        case ZipStream:
-        {
-          int
-            status;
-
-          (void) gzerror(image->blob->file,&status);
-          image->blob->status=status < 0;
-          break;
-        }
+      (void) gzclose(image->blob->file);
 #endif
-        case StandardStream:
-          break;
-        default:
-        {
-          image->blob->status=ferror(image->blob->file);
-          break;
-        }
-      }
-      errno=0;
-      if (!image->blob->exempt)
-        {
-          switch (image->blob->type)
-          {
+      break;
+    }
+    case BZipStream:
+    {
 #if defined(HasBZLIB)
-            case BZipStream:
-            {
-              (void) BZ2_bzclose(image->blob->file);
-              break;
-            }
+      (void) BZ2_bzclose(image->blob->file);
 #endif
-#if defined(HasZLIB)
-            case ZipStream:
-            {
-              (void) gzclose(image->blob->file);
-              break;
-            }
-#endif
+      break;
+    }
+    case PipeStream:
+    {
 #if !defined(vms) && !defined(macintosh)
-            case PipeStream:
-            {
-              (void) pclose(image->blob->file);
-              break;
-            }
+      (void) pclose(image->blob->file);
 #endif
-            case StandardStream:
-              break;
-            default:
-              (void) fclose(image->blob->file);
-          }
-          image->blob->file=(FILE *) NULL;
-        }
+      break;
     }
-  if (image->blob->stream != (StreamHandler) NULL)
+    case FifoStream:
     {
-      (void) image->blob->stream(image,(const void *) NULL,0);
-      if (!image->blob->exempt)
-        image->blob->stream=(StreamHandler) NULL;
+      (void) pclose(image->blob->file);
+      break;
     }
+    case BlobStream:
+      break;
+  }
+  DetachBlob(image->blob);
 }
 
 /*
@@ -517,12 +520,14 @@ MagickExport void DetachBlob(BlobInfo *blob_info)
   if (blob_info->mapped)
     (void) UnmapBlob(blob_info->data,blob_info->length);
   blob_info->mapped=False;
-  blob_info->data=(unsigned char *) NULL;
   blob_info->length=0;
   blob_info->offset=0;
   blob_info->eof=False;
   blob_info->exempt=False;
   blob_info->type=UndefinedStream;
+  blob_info->file=(FILE *) NULL;
+  blob_info->data=(unsigned char *) NULL;
+  blob_info->stream=(StreamHandler) NULL;
 }
 
 /*
@@ -536,8 +541,8 @@ MagickExport void DetachBlob(BlobInfo *blob_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method EOFBlob returns a non-zero value when EOF has been detected reading
-%  from a blob or file.
+%  EOFBlob() returns a non-zero value when EOF has been detected reading from
+%  a blob or file.
 %
 %  The format of the EOFBlob method is:
 %
@@ -556,28 +561,40 @@ MagickExport int EOFBlob(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->blob->data != (unsigned char *) NULL)
-    return(image->blob->eof);
-  if (image->blob->file == (FILE *) NULL)
-    return(-1);
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->type != UndefinedStream);
   switch (image->blob->type)
   {
-#if defined(HasBZLIB)
+    case UndefinedStream:
+      break;
+    case FileStream:
+    case StandardStream:
+    case PipeStream:
+      return(feof(image->blob->file));
+    case ZipStream:
+    {
+#if defined(HasZLIB)
+      return(gzeof(image->blob->file));
+#else
+      return(0);
+#endif
+    }
     case BZipStream:
     {
+#if defined(HasBZLIB)
       int
         status;
 
       (void) BZ2_bzerror(image->blob->file,&status);
       return(status == BZ_UNEXPECTED_EOF);
+#else
+      return(0);
+#endif
     }
-#endif
-#if defined(HasZLIB)
-    case ZipStream:
-      return(!gzeof(image->blob->file));
-#endif
-    default:
-      return(feof(image->blob->file));
+    case FifoStream:
+      return(0);
+    case BlobStream:
+      return(image->blob->eof);
   }
 }
 
@@ -733,7 +750,7 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetBlobSize returns the current length of the image file or blob.
+%  GetBlobSize() returns the current length of the image file or blob.
 %
 %  The format of the GetBlobSize method is:
 %
@@ -758,35 +775,42 @@ MagickExport ExtendedSignedIntegralType GetBlobSize(const Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->blob->data != (unsigned char *) NULL)
-    return(image->blob->length);
-  if (image->blob->file == (FILE *) NULL)
+  assert(image->blob != (BlobInfo *) NULL);
+  if (image->blob->type == UndefinedStream)
     return(image->blob->size);
+  offset=0;
   switch (image->blob->type)
   {
-#if defined(HasBZLIB)
-    case BZipStream:
-    {
-      offset=stat(image->filename,&attributes) < 0 ? 0 : attributes.st_size;
+    case UndefinedStream:
       break;
-    }
-#endif
-#if defined(HasZLIB)
-    case ZipStream:
-    {
-      offset=stat(image->filename,&attributes) < 0 ? 0 : attributes.st_size;
-      break;
-    }
-#endif
-    case StandardStream:
-    {
-      offset=0;
-      break;
-    }
-    default:
+    case FileStream:
     {
       offset=fstat(fileno(image->blob->file),&attributes) < 0 ? 0 :
         attributes.st_size;
+      break;
+    }
+    case StandardStream:
+      break;
+    case ZipStream:
+    {
+#if defined(HasZLIB)
+      offset=stat(image->filename,&attributes) < 0 ? 0 : attributes.st_size;
+#endif
+      break;
+    }
+    case BZipStream:
+    {
+#if defined(HasBZLIB)
+      offset=stat(image->filename,&attributes) < 0 ? 0 : attributes.st_size;
+#endif
+      break;
+    }
+    case PipeStream:
+    case FifoStream:
+      break;
+    case BlobStream:
+    {
+      offset=image->blob->length;
       break;
     }
   }
@@ -1104,8 +1128,8 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
 %
 %
 */
-MagickExport void *GetTypeBlob(const char *filename,char *path,
-  size_t *length,ExceptionInfo *exception)
+MagickExport void *GetTypeBlob(const char *filename,char *path,size_t *length,
+  ExceptionInfo *exception)
 {
   assert(filename != (const char *) NULL);
   assert(path != (char *) NULL);
@@ -1497,11 +1521,11 @@ MagickExport void MSBOrderShort(unsigned char *p,const size_t length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method OpenBlob opens a file associated with the image.  A file name of
-%  '-' sets the file to stdin for type 'r' and stdout for type 'w'.  If the
-%  filename suffix is '.gz' or '.Z', the image is decompressed for type 'r'
-%  and compressed for type 'w'.  If the filename prefix is '|', it is piped
-%  to or from a system command.
+%  OpenBlob() opens a file associated with the image.  A file name of '-' sets
+%  the file to stdin for type 'r' and stdout for type 'w'.  If the filename
+%  suffix is '.gz' or '.Z', the image is decompressed for type 'r' and
+%  compressed for type 'w'.  If the filename prefix is '|', it is piped to or
+%  from a system command.
 %
 %  The format of the OpenBlob method is:
 %
@@ -1647,39 +1671,34 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
             SetApplicationType(filename,image_info->magick,'8BIM');
 #endif
           }
-        if (image_info->file != (FILE *) NULL)
+        switch (image->blob->type)
+        {
+          case FileStream:
           {
-            /*
-              Use previously opened filehandle.
-            */
             image->blob->file=image_info->file;
             image->blob->exempt=True;
           }
-        else
-          switch (image->blob->type)
+          case ZipStream:
+          {
+#if defined(HasZLIB)
+            image->blob->file=(FILE *) gzopen(filename,type);
+#endif
+            break;
+          }
+          case BZipStream:
           {
 #if defined(HasBZLIB)
-            case BZipStream:
-            {
-              image->blob->file=(FILE *) BZ2_bzopen(filename,type);
-              break;
-            }
+            image->blob->file=(FILE *) BZ2_bzopen(filename,type);
 #endif
-#if defined(HasZLIB)
-            case ZipStream:
-            {
-              image->blob->file=(FILE *) gzopen(filename,type);
-              break;
-            }
-#endif
-            case StandardStream:
-              break;
-            default:
-            {
-              image->blob->file=(FILE *) fopen(filename,type);
-              break;
-            }
+            break;
           }
+          default:
+          {
+            image->blob->type=FileStream;
+            image->blob->file=(FILE *) fopen(filename,type);
+            break;
+          }
+        }
         if ((image->blob->file != (FILE *) NULL) &&
             (image->blob->type == FileStream) && (*type == 'r'))
           {
@@ -1741,9 +1760,9 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PingBlob() returns all the attributes of an image or image sequence
-%  except for the pixels.  It is much faster and consumes far less memory
-%  than BlobToImage().  On failure, a NULL image is returned and exception
+%  PingBlob() returns all the attributes of an image or image sequence except
+%  for the pixels.  It is much faster and consumes far less memory than
+%  BlobToImage().  On failure, a NULL image is returned and exception
 %  describes the reason for the failure.
 %
 %
@@ -1822,7 +1841,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadBlob reads data from the blob or image file and returns it.  It
+%  ReadBlob() reads data from the blob or image file and returns it.  It
 %  returns the number of bytes read.
 %
 %  The format of the ReadBlob method is:
@@ -1847,8 +1866,36 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->type != UndefinedStream);
   assert(data != (void *) NULL);
-  if (image->blob->data != (unsigned char *) NULL)
+  switch (image->blob->type)
+  {
+    case UndefinedStream:
+      return(0);
+    case FileStream:
+    case StandardStream:
+    case PipeStream:
+      return(fread(data,1,length,image->blob->file));
+    case ZipStream:
+    {
+#if defined(HasZLIB)
+      return(gzread(image->blob->file,data,length));
+#else
+      return(0);
+#endif
+    }
+    case BZipStream:
+    {
+#if defined(HasBZLIB)
+      return(BZ2_bzread(image->blob->file,data,length));
+#else
+      return(0);
+#endif
+    }
+    case FifoStream:
+      return(0);
+    case BlobStream:
     {
       size_t
         count;
@@ -1861,20 +1908,6 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
         image->blob->eof=True;
       return(count);
     }
-  if (image->blob->file == (FILE *) NULL)
-    return(0);
-  switch (image->blob->type)
-  {
-#if defined(HasBZLIB)
-    case BZipStream:
-      return(BZ2_bzread(image->blob->file,data,length));
-#endif
-#if defined(HasZLIB)
-    case ZipStream:
-      return(gzread(image->blob->file,data,length));
-#endif
-    default:
-      return(fread(data,1,length,image->blob->file));
   }
 }
 
@@ -2022,7 +2055,7 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadBlobMSBLong reads a long value as a 32 bit quantity in
+%  ReadBlobMSBLong() reads a long value as a 32 bit quantity in
 %  most-significant byte first order.
 %
 %  The format of the ReadBlobMSBLong method is:
@@ -2115,7 +2148,7 @@ MagickExport unsigned short ReadBlobMSBShort(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadBlobString reads characters from a blob or file until a newline
+%  ReadBlobString() reads characters from a blob or file until a newline
 %  character is read or an end-of-file condition is encountered.
 %
 %  The format of the ReadBlobString method is:
@@ -2201,8 +2234,8 @@ MagickExport BlobInfo *ReferenceBlob(BlobInfo *blob)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SeekBlob sets the offset in bytes from the beginning of a blob or
-%  file and returns the resulting offset.
+%  SeekBlob() sets the offset in bytes from the beginning of a blob or file
+%  and returns the resulting offset.
 %
 %  The format of the SeekBlob method is:
 %
@@ -2232,7 +2265,25 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->blob->data != (unsigned char *) NULL)
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->type != UndefinedStream);
+  switch (image->blob->type)
+  {
+    case UndefinedStream:
+      return(-1);
+    case FileStream:
+    {
+      if (fseek(image->blob->file,(off_t) offset,whence) < 0)
+        return(-1);
+      return(TellBlob(image));
+    }
+    case StandardStream:
+    case ZipStream:
+    case BZipStream:
+    case PipeStream:
+    case FifoStream:
+      return(-1);
+    case BlobStream:
     {
       switch (whence)
       {
@@ -2279,26 +2330,6 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
           }
       return(TellBlob(image));
     }
-  if (image->blob->file == (FILE *) NULL)
-    return(-1);
-  switch (image->blob->type)
-  {
-#if defined(HasBZLIB)
-    case BZipStream:
-      return(-1);
-#endif
-#if defined(HasZLIB)
-    case ZipStream:
-      return(-1);
-#endif
-    case StandardStream:
-      return(-1);
-    default:
-    {
-      if (fseek(image->blob->file,(off_t) offset,whence) < 0)
-        return(-1);
-      return(TellBlob(image));
-    }
   }
 }
 
@@ -2336,27 +2367,38 @@ MagickExport int SyncBlob(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->blob->data != (unsigned char *) NULL)
-    {
-      for (p=image; p->previous != (Image *) NULL; p=p->previous);
-      for ( ; p->next != (Image *) NULL; p=p->next)
-        *p->blob=(*image->blob);
-      return(0);
-    }
-  if (image->blob->file == (FILE *) NULL)
-    return(0);
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->type != UndefinedStream);
+  for (p=image; p->previous != (Image *) NULL; p=p->previous);
+  for ( ; p->next != (Image *) NULL; p=p->next)
+    *p->blob=(*image->blob);
   switch (image->blob->type)
   {
-#if defined(HasBZLIB)
-    case BZipStream:
-      return(BZ2_bzflush(image->blob->file));
-#endif
-#if defined(HasZLIB)
-    case ZipStream:
-      return(gzflush(image->blob->file,Z_SYNC_FLUSH));
-#endif
-    default:
+    case UndefinedStream:
+      return(0);
+    case FileStream:
+    case StandardStream:
+    case PipeStream:
       return(fflush(image->blob->file));
+    case ZipStream:
+    {
+#if defined(HasZLIB)
+      return(gzflush(image->blob->file,Z_SYNC_FLUSH));
+#else
+      return(0);
+#endif
+    }
+    case BZipStream:
+    {
+#if defined(HasBZLIB)
+      return(BZ2_bzflush(image->blob->file));
+#else
+      return(0);
+#endif
+    }
+    case FifoStream:
+    case BlobStream:
+      return(0);
   }
 }
 
@@ -2371,7 +2413,7 @@ MagickExport int SyncBlob(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method TellBlob obtains the current value of the blob or file position.
+%  TellBlob() obtains the current value of the blob or file position.
 %
 %  The format of the TellBlob method is:
 %
@@ -2391,11 +2433,22 @@ MagickExport ExtendedSignedIntegralType TellBlob(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->blob->data != (unsigned char) NULL)
-    return(image->blob->offset);
-  if (image->blob->file == (FILE *) NULL)
-    return(-1);
-  return(ftell(image->blob->file));
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->type != UndefinedStream);
+  switch (image->blob->type)
+  {
+    case UndefinedStream:
+    case FileStream:
+      return(ftell(image->blob->file));
+    case StandardStream:
+    case ZipStream:
+    case BZipStream:
+    case PipeStream:
+    case FifoStream:
+      return(-1);
+    case BlobStream:
+      return(image->blob->offset);
+  }
 }
 
 /*
@@ -2452,8 +2505,8 @@ MagickExport unsigned int UnmapBlob(void *map,const size_t length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteBlob writes data to a blob or image file.  It returns the
-%  number of bytes written.
+%  WriteBlob() writes data to a blob or image file.  It returns the number of
+%  bytes written.
 %
 %  The format of the WriteBlob method is:
 %
@@ -2478,9 +2531,35 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(data != (const char *) NULL);
-  if (image->blob->stream != (StreamHandler) NULL)
-    return(image->blob->stream(image,data,length));
-  if (image->blob->data != (unsigned char *) NULL)
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->type != UndefinedStream);
+  switch (image->blob->type)
+  {
+    case UndefinedStream:
+      return(0);
+    case FileStream:
+    case StandardStream:
+    case PipeStream:
+      return(fwrite((char *) data,1,length,image->blob->file));
+    case BZipStream:
+    {
+#if defined(HasBZLIB)
+      return(BZ2_bzwrite(image->blob->file,(void *) data,length));
+#else
+      return(0);
+#endif
+    }
+    case ZipStream:
+    {
+#if defined(HasZLIB)
+      return(gzwrite(image->blob->file,(void *) data,length));
+#else
+      return(0);
+#endif
+    }
+    case FifoStream:
+      return(image->blob->stream(image,data,length));
+    case BlobStream:
     {
       if ((image->blob->offset+length) >= image->blob->extent)
         {
@@ -2503,20 +2582,6 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
         image->blob->length=image->blob->offset;
       return(length);
     }
-  if (image->blob->file == (FILE *) NULL)
-    return(0);
-  switch (image->blob->type)
-  {
-#if defined(HasBZLIB)
-    case BZipStream:
-      return(BZ2_bzwrite(image->blob->file,(void *) data,length));
-#endif
-#if defined(HasZLIB)
-    case ZipStream:
-      return(gzwrite(image->blob->file,(void *) data,length));
-#endif
-    default:
-      return(fwrite((char *) data,1,length,image->blob->file));
   }
 }
 
