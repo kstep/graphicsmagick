@@ -56,9 +56,30 @@
 2003-10-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> coders/tiff.c (WriteTIFFImage): Re-arranged logging for improved
+        output.  Cleaned up evaluation of SAMPLESPERPIXEL and
+        BITSPERSAMPLE.  Provided support for the TIFF coder options
+        tiff:samples-per-pixel and tiff:bits-per-sample for power users.
   <LI> coders/ps3.c (WritePS3Image): Use AccessCoderOption().
   <LI> magick/image.c (AccessCoderOption): Added a function to use for
         accessing coder-specific options.
+
+</UL>
+<p>
+2003-10-08  Lars Ruben Skyum  &lt;lars.skyum@stibo.com&gt;
+
+<UL>
+  <LI> magick/attribute.c (TraceSVGClippingPath): optimized for speed
+        and precision in clipping mask generation by using lines to
+        connect Bezier curve control points where applicable.
+
+</UL>
+<p>
+2003-10-07  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> Revised ScaleColor5to8 and ScaleColor6to8 macros again, to
+        fill the low bits correctly.
 
 </UL>
 <p>

@@ -711,24 +711,32 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         {
           case PHOTOMETRIC_MINISBLACK:
           {
+            Quantum
+              quantum;
+
             for (i=0; i < (long) image->colors; i++)
             {
-              image->colormap[i].red=(Quantum)
-                (((double) MaxRGB*i)/Max(image->colors-1,1)+0.5);
-              image->colormap[i].green=image->colormap[i].red;
-              image->colormap[i].blue=image->colormap[i].red;
+              quantum = (Quantum) (i*(MaxRGB/Max(image->colors-1,1)));
+              image->colormap[i].red=quantum;
+              image->colormap[i].green=quantum;
+              image->colormap[i].blue=quantum;
+              image->colormap[i].opacity=OpaqueOpacity;
             }
             break;
           }
           case PHOTOMETRIC_MINISWHITE:
           default:
           {
+            Quantum
+              quantum;
+
             for (i=0; i < (long) image->colors; i++)
             {
-              image->colormap[i].red=(Quantum) (MaxRGB-
-                (((double) MaxRGB*i)/Max(image->colors-1,1))+0.5);
-              image->colormap[i].green=image->colormap[i].red;
-              image->colormap[i].blue=image->colormap[i].red;
+              quantum = (Quantum) (MaxRGB - (i*(MaxRGB/Max(image->colors-1,1))));
+              image->colormap[i].red=quantum;
+              image->colormap[i].green=quantum;
+              image->colormap[i].blue=quantum;
+              image->colormap[i].opacity=OpaqueOpacity;
             }
             break;
           }
