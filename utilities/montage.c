@@ -807,6 +807,7 @@ static unsigned int MontageUtility(int argc,char **argv)
                   if (LocaleCompare("Static",option) == 0)
                     gravity=StaticGravity;
                 }
+              montage_info->gravity=gravity;
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);

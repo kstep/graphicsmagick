@@ -190,6 +190,7 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   (void) memset(montage_info,0,sizeof(MontageInfo));
   (void) strncpy(montage_info->filename,image_info->filename,MaxTextExtent-1);
   montage_info->geometry=AllocateString(DefaultTileGeometry);
+  montage_info->gravity=CenterGravity;
   montage_info->tile=AllocateString("6x4");
   montage_info->font=AllocateString(image_info->font);
   montage_info->pointsize=image_info->pointsize;
@@ -613,7 +614,9 @@ MagickExport Image *MontageImages(const Image *images,
       */
       tile_image->columns=width;
       tile_image->rows=height;
-      tile_image->gravity=image->gravity;
+      tile_image->gravity=montage_info->gravity;
+      if (image->gravity != ForgetGravity)
+        tile_image->gravity=image->gravity;
       FormatString(tile_geometry,"%lux%lu+0+0",image->columns,image->rows);
       flags=GetImageGeometry(tile_image,tile_geometry,False,&geometry);
       x=geometry.x+border_width;

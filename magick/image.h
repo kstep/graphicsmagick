@@ -235,7 +235,7 @@ typedef struct _MontageInfo
     matte_color;
 
   GravityType
-    gravity;  /* deprecated */
+    gravity;
 
   char
     filename[MaxTextExtent];

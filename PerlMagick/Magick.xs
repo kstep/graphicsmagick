@@ -5689,6 +5689,7 @@ Montage(ref,...)
                    SvPV(ST(i),na));
                  return;
                }
+             montage_info->gravity=(GravityType) in;
              for (next=image; next; next=next->next)
                next->gravity=(GravityType) in;
              break;
