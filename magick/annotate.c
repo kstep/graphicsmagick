@@ -584,7 +584,7 @@ static long GetUnicodeCharacter(const unsigned char *text,size_t *length)
   if (!(c & 0x80))
     {
       *length=1;
-      return(c);
+      return((long) c);
     }
   if ((*length < 2) || ((text[1] & 0xc0) != 0x80))
     {
@@ -596,7 +596,7 @@ static long GetUnicodeCharacter(const unsigned char *text,size_t *length)
       *length=2;
       c=(text[0] & 0x1f) << 6;
       c|=text[1] & 0x3f;
-      return(c);
+      return((long) c);
     }
   if ((*length < 3) || ((text[2] & 0xc0) != 0x80))
     {
@@ -609,7 +609,7 @@ static long GetUnicodeCharacter(const unsigned char *text,size_t *length)
       c=(text[0] & 0xf) << 12;
       c|=(text[1] & 0x3f) << 6;
       c|=text[2] & 0x3f;
-      return(c);
+      return((long) c);
     }
   if ((*length < 4) || ((c & 0xf8) != 0xf0) || ((text[3] & 0xc0) != 0x80))
     {
