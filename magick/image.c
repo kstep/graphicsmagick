@@ -3936,11 +3936,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 
             if (*option == '+')
               {
-                (*image)->filter=LanczosFilter;
+                (*image)->filter=MitchellFilter;
                 continue;
               }
             option=argv[++i];
-            filter=LanczosFilter;
+            filter=MitchellFilter;
             if (LocaleCompare("Point",option) == 0)
               filter=PointFilter;
             if (LocaleCompare("Box",option) == 0)
