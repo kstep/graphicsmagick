@@ -150,8 +150,8 @@ static const ImWmfFont FontList [] =
   { (char *) "Monotype Corsiva",  (char *) "Monotype Corsiva", (char *) "mtcorsva.ttf" },
   { (char *) "Small Fonts",  (char *) "Small Fonts", (char *) "smallf.ttf" },
   { (char *) "Symbol",  (char *) "Symbol", (char *) "symbol.ttf" },
-  { (char *) "Tahoma",  (char *) "Tahoma", (char *) "tahoma.ttf" },
   { (char *) "Tahoma",  (char *) "Tahoma Bold", (char *) "tahomabd.ttf" },
+  { (char *) "Tahoma",  (char *) "Tahoma", (char *) "tahoma.ttf" },
   { (char *) "Times New Roman",  (char *) "Times New Roman", (char *) "times.ttf" },
   { (char *) "Times New Roman",  (char *) "Times New Roman Bold", (char *) "timesbd.ttf" },
   { (char *) "Times New Roman",  (char *) "Times New Roman Bold Italic", (char *) "timesbi.ttf" },
@@ -161,8 +161,10 @@ static const ImWmfFont FontList [] =
   { (char *) "Verdana",  (char *) "Verdana Bold", (char *) "verdanab.ttf" },
   { (char *) "Verdana",  (char *) "Verdana Bold Italic", (char *) "verdanaz.ttf" },
   { (char *) "Verdana",  (char *) "Verdana Italic", (char *) "verdanai.ttf" },
-  { (char *) "WingDings",  (char *) "WingDings", (char *) "winding.ttf" },
+  { (char *) "Verdana",  (char *) "Verdana", (char *) "verdana.ttf" },
+  { (char *) "WingDings",  (char *) "WingDings", (char *) "wingding.ttf" },
   { (char *) "WingDings",  (char *) "Wingdings 2", (char *) "wingdng2.ttf" },
+  { (char *) "WingDings",  (char *) "Wingdings 3", (char *) "wingdng3.ttf" },
   { (char *) NULL,  (char *) NULL, (char *) NULL }
 };
 
