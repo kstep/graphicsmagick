@@ -67,6 +67,7 @@ DESCRIPTIONS</A>
 	<UL>
 
 		<LI><A HREF="#getcolorinfoarray">GetColorInfoArray</A>
+		<LI><A HREF="#getcolorhistogram">GetColorHistogram</A>
 		<LI><A HREF="#getcolorlist">GetColorlist</A>
 		<LI><A HREF="#getnumbercolors">GetNumberColors</A>
 		<LI><A HREF="#isgrayimage">IsGrayImage</A>
@@ -90,6 +91,7 @@ NAME</A></H2>
 <HR>
 <H2><A NAME="synopsis">
 SYNOPSIS</A></H2>
+<P>HistogramColorPacket * <STRONG>GetColorHistogram</STRONG>( const Image *, unsigned long *colors, ExceptionInfo *);</P>
 <P>const ColorInfo **  <STRONG>GetColorInfoArray</STRONG>( ExceptionInfo *exception );</P>
 <P>unsigned long  <STRONG>GetNumberColors</STRONG>( const Image *image, 
 FILE *file, ExceptionInfo *exception );</P>
@@ -113,6 +115,25 @@ DESCRIPTIONS</A></H2>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="getcolorhistogram">GetColorHistogram</A></H3>
+<P>Method GetColorHistogram returns an array of HistogramColorPacket structures which specify the number of times each unique color occurs in the image.  The referenced colors parameter is updated with the number of unique colors in the image.  The returned array should be deallocated by the user once it is no longer ndded.</P>
+<P>The format of the GetColorHistogram method is:</P>
+<blockquote>HistogramColorPacket *GetColorHistogram ( const <A HREF="types.html#Image">Image</A> *, unsigned long *colors, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *); </blockquote><P>
+A description of each parameter follows.</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
+The image.
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_colors%3A">colors:</A></STRONG><BR>
+<DD>
+The referenced value is updated with the with the number of unique colors.
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
@@ -144,7 +165,7 @@ This integer returns the number of colors in the list.
 <blockquote>unsigned long GetNumberColors ( const <A HREF="types.html#Image">Image</A> *image, FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows.</P>
 <DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>

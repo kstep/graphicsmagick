@@ -56,6 +56,12 @@
 2003-08-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/color.c (HistogramToFile): Renamed static method
+        'Histogram' to 'HistogramToFile' to make it more clear what this
+        function does.<BR>
+        (GetColorHistogram): Added new function to support retrieving a
+        color histogram of the image.  A color histogram contains a count
+        of how many times each color occurs in the image.
   <LI> magick/image.c (GetImageChannelDepth): Return an 'unsigned int'
         rather than 'long'.
 

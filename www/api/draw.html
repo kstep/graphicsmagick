@@ -245,7 +245,7 @@ SYNOPSIS</A></H2>
 <P>void  <STRONG>DrawPathMoveToAbsolute</STRONG>( DrawContext context, const double x, const double y );</P>
 <P>void  <STRONG>DrawPathMoveToRelative</STRONG>( DrawContext context, const double x, const double y );</P>
 <P>void  <STRONG>DrawPathStart</STRONG>( DrawContext context );</P>
-<P>const DrawInfo * <STRONG>DrawPeekGraphicContext</STRONG>( const DrawContext context );</P>
+<P>DrawInfo * <STRONG>DrawPeekGraphicContext</STRONG>( const DrawContext context );</P>
 <P>void  <STRONG>DrawPoint</STRONG>( DrawContext context, const double x, const double y );</P>
 <P>void  <STRONG>DrawPolygon</STRONG>( DrawContext context, const size_t num_coords, const PointInfo *coordinates );</P>
 <P>void  <STRONG>DrawPolyline</STRONG>( DrawContext context, const size_t num_coords, const PointInfo *coordinates );</P>
@@ -1394,8 +1394,8 @@ drawing context
 <P></P></DL></DL>
 <P>
 <H3><A NAME="drawpeekgraphiccontext">DrawPeekGraphicContext</A></H3>
-<blockquote>DrawPeekGraphicContext() returns a pointer to the <A HREF="types.html#DrawInfo">DrawInfo</A> structure at the head of the drawing context stack. The returned <A HREF="types.html#DrawInfo">DrawInfo</A> structure is invalidated by DrawPopGraphicsContext so it should be used immediately. </blockquote><P>The format of the DrawPeekGraphicContext method is:</P>
-<blockquote>const <A HREF="types.html#DrawInfo">DrawInfo</A> *DrawPeekGraphicContext ( const <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>
+<blockquote>DrawPeekGraphicContext() returns a copy of the the <A HREF="types.html#DrawInfo">DrawInfo</A> structure at the head of the drawing context stack. The user is responsible for deallocating the returned object using DestroyDrawInfo. </blockquote><P>The format of the DrawPeekGraphicContext method is:</P>
+<blockquote><A HREF="types.html#DrawInfo">DrawInfo</A> *DrawPeekGraphicContext ( const <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>context:</STRONG><BR>

@@ -97,7 +97,7 @@ SYNOPSIS</A></H2>
 <P>Image * <STRONG>ImplodeImage</STRONG>( const Image *image, const double amount, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MorphImages</STRONG>( const Image *image, const unsigned long number_frames, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>OilPaintImage</STRONG>( const Image *image, const double radius, ExceptionInfo *exception );</P>
-<P>void  <STRONG>SolarizeImage</STRONG>( Image *image, const double threshold );</P>
+<P>unsigned int  <STRONG>SolarizeImage</STRONG>( Image *image, const double threshold );</P>
 <P>Image * <STRONG>SteganoImage</STRONG>( const Image *image, Image *watermark, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>StereoImage</STRONG>( const Image *image, const Image *offset_image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>SwirlImage</STRONG>( const Image *image, double degrees, ExceptionInfo *exception );</P>
@@ -243,8 +243,8 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="solarizeimage">SolarizeImage</A></H3>
-<blockquote>SolarizeImage() applies a special effect to the image, similar to the effect achieved in a photo darkroom by selectively exposing areas of photo sensitive paper to light. Threshold ranges from 0 to MaxRGB and is a measure of the extent of the solarization. </blockquote><P>The format of the SolarizeImage method is:</P>
-<blockquote>void SolarizeImage ( <A HREF="types.html#Image">Image</A> *image, const double threshold ); </blockquote><P>
+<blockquote>SolarizeImage() applies a special effect to the image, similar to the effect achieved in a photo darkroom by selectively exposing areas of photo sensitive paper to light. Threshold ranges from 0 to MaxRGB and is a measure of the extent of the solarization. False is returned if an error is encountered. </blockquote><P>The format of the SolarizeImage method is:</P>
+<blockquote>unsigned int SolarizeImage ( <A HREF="types.html#Image">Image</A> *image, const double threshold ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>

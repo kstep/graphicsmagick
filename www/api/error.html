@@ -72,6 +72,7 @@ DESCRIPTIONS</A>
 		<LI><A HREF="#getexceptioninfo">GetExceptionInfo</A>
 		<LI><A HREF="#getlocaleexceptionmessage">GetLocaleExceptionMessage</A>
 		<LI><A HREF="#magickerror">MagickError</A>
+		<LI><A HREF="#magickfatalerror">MagickFatalError</A>
 		<LI><A HREF="#magickwarning">MagickWarning</A>
 		<LI><A HREF="#seterrorhandler">SetErrorHandler</A>
 		<LI><A HREF="#setexceptioninfo">SetExceptionInfo</A>
@@ -99,6 +100,7 @@ SYNOPSIS</A></H2>
 <P><STRONG>GetExceptionInfo</STRONG>( ExceptionInfo *exception );</P>
 <P>const char * <STRONG>GetLocaleExceptionMessage</STRONG>( const ExceptionType severity, const char *tag );</P>
 <P>void  <STRONG>MagickError</STRONG>( const ExceptionType error, const char *reason, const char *description );</P>
+<P>void  <STRONG>MagickFatalError</STRONG>( const ExceptionType error, const char *reason, const char *description );</P>
 <P>void  <STRONG>MagickWarning</STRONG>( const ExceptionType warning, const char *reason, const char *description );</P>
 <P>ErrorHandler  <STRONG>SetErrorHandler</STRONG>( ErrorHandler handler );</P>
 <P><STRONG>SetExceptionInfo</STRONG>( ExceptionInfo *exception, ExceptionType severity );</P>
@@ -187,12 +189,10 @@ Specifies the reason to display before terminating the program.
 <DD>
 Specifies any description to the reason.
 <P></P></DL></DL>
-<P><CODE>MagickFatalError()</CODE> calls the fatal error handler methods with an error reason.</P>
-<P>The format of the MagickError method is:</P>
-<PRE>
-    void MagickFatalError(const ExceptionType error,const char *reason,
-      const char *description)</PRE>
 <P>
+<H3><A NAME="magickfatalerror">MagickFatalError</A></H3>
+<blockquote>MagickFatalError() calls the fatal error handler methods with an error reason. </blockquote><P>The format of the MagickError method is:</P>
+<blockquote>void MagickFatalError ( const <A HREF="types.html#ExceptionType">ExceptionType</A> error, const char *reason, const char *description ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>exception:</STRONG><BR>
