@@ -264,6 +264,7 @@ static char *Ascii85Tuple(unsigned char *data)
 
 MagickExport void Ascii85Initialize(Image *image)
 {
+    return;
   image->ascii85.line_break=MaxLineExtent << 1;
   image->ascii85.offset=0;
 }
@@ -1046,7 +1047,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
     number_bits+=code_width; \
     while (number_bits >= 8) \
     { \
-        Ascii85Encode(image,(unsigned int) (accumulator >> 24)); \
+        WriteBlobByte(image,(unsigned int) (accumulator >> 24)); \
         accumulator=accumulator << 8; \
         number_bits-=8; \
     } \
@@ -1094,7 +1095,6 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
   code_width=9;
   number_bits=0;
   last_code=0;
-  Ascii85Initialize(image);
   OutputCode(LZWClr);
   for (index=0; index < 256; index++)
   {
@@ -1163,8 +1163,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
   OutputCode(last_code);
   OutputCode(LZWEod);
   if (number_bits != 0)
-    Ascii85Encode(image,accumulator >> 24);
-  Ascii85Flush(image);
+    WriteBlobByte(image,accumulator >> 24);
   LiberateMemory((void **) &table);
   return(True);
 }
@@ -1235,7 +1234,6 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
   if (packbits == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       (char *) NULL);
-  Ascii85Initialize(image);
   i=number_pixels;
   while (i != 0)
   {
@@ -1244,16 +1242,16 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
       case 1:
       {
         i--;
-        Ascii85Encode(image,0);
-        Ascii85Encode(image,*pixels);
+        WriteBlobByte(image,0);
+        WriteBlobByte(image,*pixels);
         break;
       }
       case 2:
       {
         i-=2;
-        Ascii85Encode(image,1);
-        Ascii85Encode(image,*pixels);
-        Ascii85Encode(image,pixels[1]);
+        WriteBlobByte(image,1);
+        WriteBlobByte(image,*pixels);
+        WriteBlobByte(image,pixels[1]);
         break;
       }
       case 3:
@@ -1261,14 +1259,14 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
         i-=3;
         if ((*pixels == *(pixels+1)) && (*(pixels+1) == *(pixels+2)))
           {
-            Ascii85Encode(image,(256-3)+1);
-            Ascii85Encode(image,*pixels);
+            WriteBlobByte(image,(256-3)+1);
+            WriteBlobByte(image,*pixels);
             break;
           }
-        Ascii85Encode(image,2);
-        Ascii85Encode(image,*pixels);
-        Ascii85Encode(image,pixels[1]);
-        Ascii85Encode(image,pixels[2]);
+        WriteBlobByte(image,2);
+        WriteBlobByte(image,*pixels);
+        WriteBlobByte(image,pixels[1]);
+        WriteBlobByte(image,pixels[2]);
         break;
       }
       default:
@@ -1286,8 +1284,8 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
                 break;
             }
             i-=count;
-            Ascii85Encode(image,(256-count)+1);
-            Ascii85Encode(image,*pixels);
+            WriteBlobByte(image,(256-count)+1);
+            WriteBlobByte(image,*pixels);
             pixels+=count;
             break;
           }
@@ -1306,14 +1304,13 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
         i-=count;
         *packbits=count-1;
         for (j=0; j <= count; j++)
-          Ascii85Encode(image,packbits[j]);
+          WriteBlobByte(image,packbits[j]);
         pixels+=count;
         break;
       }
     }
   }
-  Ascii85Encode(image,128);  /* EOD marker */
-  Ascii85Flush(image);
+  WriteBlobByte(image,128);  /* EOD marker */
   LiberateMemory((void **) &packbits);
   return(True);
 }
@@ -1405,12 +1402,8 @@ MagickExport unsigned int ZLIBEncodeImage(Image *image,
     ThrowBinaryException(DelegateWarning,"Unable to Zip compress image",
       (char *) NULL)
   else
-    {
-      Ascii85Initialize(image);
-      for (i=0; i < (int) compressed_packets; i++)
-        Ascii85Encode(image,compressed_pixels[i]);
-      Ascii85Flush(image);
-    }
+    for (i=0; i < (int) compressed_packets; i++)
+      WriteBlobByte(image,compressed_pixels[i]);
   LiberateMemory((void **) &compressed_pixels);
   return(!status);
 }

@@ -159,7 +159,7 @@ ModuleExport void UnregisterPS3Image(void)
 */
 static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 {
-#define CFormat  "/%.1024s filter "
+#define CFormat  "currentfile /%.1024s filter\n"
 
   char
     buffer[MaxTextExtent],
@@ -222,6 +222,23 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
+    if ((compression == FaxCompression) && !IsMonochromeImage(image))
+      {
+        QuantizeInfo
+          quantize_info;
+
+        /*
+          Convert image to monochrome.
+        */
+        image=CloneImage(image,0,0,True,&image->exception);
+        if (image == (Image *) NULL)
+          return(False);
+        GetQuantizeInfo(&quantize_info);
+        quantize_info.number_colors=2;
+        quantize_info.dither=image_info->dither;
+        quantize_info.colorspace=GRAYColorspace;
+        (void) QuantizeImage(&quantize_info,image);
+      }
     /*
       Scale image to size of Postscript page.
     */
@@ -323,19 +340,24 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     /*
       Output image data.
     */
-    (void) WriteBlobString(image,"currentfile /ASCII85Decode filter ");
-    if (compression != NoCompression)
+    switch (compression)
+    {
+      case NoCompression: FormatString(buffer,CFormat,"ASCII85Decode"); break;
+      case JPEGCompression: FormatString(buffer,CFormat,"DCTDecode"); break;
+      case LZWCompression: FormatString(buffer,CFormat,"LZWDecode"); break;
+      case ZipCompression: FormatString(buffer,CFormat,"FlateDecode"); break;
+      case FaxCompression:
       {
-        switch (compression)
-        {
-          case JPEGCompression: FormatString(buffer,CFormat,"DCTDecode"); break;
-          case LZWCompression: FormatString(buffer,CFormat,"LZWDecode"); break;
-          case ZipCompression:
-            FormatString(buffer,CFormat,"FlateDecode"); break;
-          default: FormatString(buffer,CFormat,"RunLengthDecode"); break;
-        }
+        (void) strcpy(buffer,"currentfile /ASCII85Decode filter\n");
         (void) WriteBlobString(image,buffer);
+        FormatString(buffer,
+          "<< /K %.1024s /Columns %d /Rows %d >> /CCITTFaxDecode filter\n",
+          CCITTParam,image->columns,image->rows);
+        break;
       }
+      default: FormatString(buffer,CFormat,"RunLengthDecode"); break;
+    }
+    (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"/ReusableStreamDecode filter\n");
     switch (compression)
     {
@@ -368,10 +390,8 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         file=fopen(filename,ReadBinaryType);
         if (file == (FILE *) NULL)
           ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-        Ascii85Initialize(image);
         for (c=fgetc(file); c != EOF; c=fgetc(file))
-          Ascii85Encode(image,c);
-        Ascii85Flush(image);
+          WriteBlobByte(image,c);
         (void) fclose(file);
         (void) remove(filename);
         break;
@@ -425,6 +445,14 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             return(False);
           }
         LiberateMemory((void **) &pixels);
+        break;
+      }
+      case FaxCompression:
+      {
+        if (LocaleCompare(CCITTParam,"0") == 0)
+          (void) HuffmanEncodeImage((ImageInfo *) image_info,image);
+        else
+          (void) Huffman2DEncodeImage((ImageInfo *) image_info,image);
         break;
       }
       case NoCompression:
