@@ -331,7 +331,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
         "Memory allocation failed")
     }
   /*
-    Initialize zoom image pixels.
+    Initialize magnify image pixels.
   */
   for (y=0; y < (long) image->rows; y++)
   {
