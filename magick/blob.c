@@ -188,7 +188,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       DestroyImageInfo(clone_info);
       return((Image *) NULL);
     }
-  count=write(file,blob,length);
+  count=write(file,(char *) blob,length);
   (void) close(file);
   if ((size_t) count != length)
     {
