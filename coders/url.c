@@ -113,8 +113,10 @@ static void GetFTPData(void *userdata,const char *data,int length)
 
 static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+#define MaxBufferExtent  8192
+
   char
-    buffer[MaxTextExtent],
+    buffer[MaxBufferExtent],
     filename[MaxTextExtent];
 
   FILE
@@ -128,9 +130,6 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   void
     *context;
-
-  struct stat
-    file_info;
 
   int
     status;
@@ -161,7 +160,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       context=xmlNanoHTTPOpen(filename,&type);
       if (context != (void *) NULL)
         {
-          while ((bytes=xmlNanoHTTPRead(context,buffer,MaxTextExtent)) > 0)
+          while ((bytes=xmlNanoHTTPRead(context,buffer,MaxBufferExtent)) > 0)
             (void) fwrite(buffer,bytes,1,file);
           xmlNanoHTTPClose(context);
           xmlFree(type);
@@ -181,14 +180,15 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
   (void) fclose(file);
-  status=stat(clone_info->filename,&file_info);
-  *clone_info->magick='\0';
-  if ((status == 0) && (file_info.st_size > 0))
-    image=ReadImage(clone_info,exception);
+  if (!IsAccessible(clone_info->filename)
+    ThrowException(exception,FileOpenWarning,"No data returned from:",filename);
+  else
+    {
+      *clone_info->magick='\0';
+      image=ReadImage(clone_info,exception);
+    }
   (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);
-  if ((status != 0) || (file_info.st_size <= 0))
-    ThrowException(exception,FileOpenWarning,"No data returned from:",filename);
   return(image);
 }
 #else
