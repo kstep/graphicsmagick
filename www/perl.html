@@ -1533,9 +1533,9 @@ format, weight, glyphs, metrics, and version values.<br>
                                               </dl>
  Call QueryFormat() with no parameters to return a list of known image formats 
 or specify one or more format names to get these attributes: adjoin, blob
-support, raw, format, decoder, encoder, description, and module. <br>
+support, raw, decoder, encoder, description, and module. <br>
                                               <dl>
-                                              <p> <pre>&nbsp;&nbsp;&nbsp; @formats = $image-&gt;QueryFormat();<br>&nbsp;&nbsp;&nbsp; ($adjoin, $blob_support, $raw, $format, $decoder, $encoder, $description, $module) = $image-&gt;QueryFormat('gif');<br></pre>
+                                              <p> <pre>&nbsp;&nbsp;&nbsp; @formats = $image-&gt;QueryFormat();<br>&nbsp;&nbsp;&nbsp; ($adjoin, $blob_support, $raw, $decoder, $encoder, $description, $module) = $image-&gt;QueryFormat('gif');<br></pre>
   </p>
                                               <p> Use RemoteCommand() to
 send a command to an already running <a href="display.html">display</a> or
