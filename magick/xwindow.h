@@ -217,7 +217,9 @@ typedef struct _XPixelInfo
     trough_color,
     box_color,
     pen_color,
-    pen_colors[MaxNumberPens],
+    pen_colors[MaxNumberPens];
+
+  PixelPacket
     *gamma_map;
 
   GC

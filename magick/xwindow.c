@@ -2396,9 +2396,9 @@ MagickExport void XFreeStandardColormap(Display *display,
   map_info->colormap=(Colormap) NULL;
   if (pixel != (XPixelInfo *) NULL)
     {
-      if (pixel->gamma_map != (XColor *) NULL)
+      if (pixel->gamma_map != (PixelPacket *) NULL)
         LiberateMemory((void **) &pixel->gamma_map);
-      pixel->gamma_map=(XColor *) NULL;
+      pixel->gamma_map=(PixelPacket *) NULL;
       if (pixel->pixels != (unsigned long *) NULL)
         LiberateMemory((void **) &pixel->pixels);
       pixel->pixels=(unsigned long *) NULL;
@@ -2772,18 +2772,19 @@ MagickExport void XGetPixelPacket(Display *display,
   /*
     Initialize gamma map to linear brightness.
   */
-  if (pixel->gamma_map != (XColor *) NULL)
+  if (pixel->gamma_map != (PixelPacket *) NULL)
     LiberateMemory((void **) &pixel->gamma_map);
-  pixel->gamma_map=(XColor *) AcquireMemory((MaxRGB+1)*sizeof(XColor));
-  if (pixel->gamma_map == (XColor *) NULL)
+  pixel->gamma_map=(PixelPacket *)
+    AcquireMemory((MaxRGB+1)*sizeof(PixelPacket));
+  if (pixel->gamma_map == (PixelPacket *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate gamma map",
       "Memory allocation failed");
     else
       for (i=0; i <= MaxRGB; i++)
       {
-        pixel->gamma_map[i].red=(unsigned short) i;
-        pixel->gamma_map[i].green=(unsigned short) i;
-        pixel->gamma_map[i].blue=(unsigned short) i;
+        pixel->gamma_map[i].red=i;
+        pixel->gamma_map[i].green=i;
+        pixel->gamma_map[i].blue=i;
       }
   if (image != (Image *) NULL)
     {
@@ -2815,17 +2816,17 @@ MagickExport void XGetPixelPacket(Display *display,
           blue_gamma*=image->gamma;
           for (i=0; i <= MaxRGB; i++)
           {
-            pixel->gamma_map[i].red=(unsigned short)
+            pixel->gamma_map[i].red=(Quantum)
               ((pow((double) i/MaxRGB,1.0/red_gamma)*MaxRGB)+0.5);
-            pixel->gamma_map[i].green=(unsigned short)
+            pixel->gamma_map[i].green=(Quantum)
               ((pow((double) i/MaxRGB,1.0/green_gamma)*MaxRGB)+0.5);
-            pixel->gamma_map[i].blue=(unsigned short)
+            pixel->gamma_map[i].blue=(Quantum)
               ((pow((double) i/MaxRGB,1.0/blue_gamma)*MaxRGB)+0.5);
           }
         }
       if (image->storage_class == PseudoClass)
         {
-          register XColor
+          register PixelPacket
             *gamma_map;
 
           /*
@@ -4827,14 +4828,14 @@ MagickExport XWindows *XInitializeWindows(Display *display,
   windows->map_info->colormap=(Colormap) NULL;
   windows->icon_map->colormap=(Colormap) NULL;
   windows->pixel_info->pixels=(unsigned long *) NULL;
-  windows->pixel_info->gamma_map=(XColor *) NULL;
+  windows->pixel_info->gamma_map=(PixelPacket *) NULL;
   windows->pixel_info->annotate_context=(GC) NULL;
   windows->pixel_info->highlight_context=(GC) NULL;
   windows->pixel_info->widget_context=(GC) NULL;
   windows->font_info=(XFontStruct *) NULL;
   windows->icon_pixel->annotate_context=(GC) NULL;
   windows->icon_pixel->pixels=(unsigned long *) NULL;
-  windows->icon_pixel->gamma_map=(XColor *) NULL;
+  windows->icon_pixel->gamma_map=(PixelPacket *) NULL;
   /*
     Allocate visual.
   */
@@ -5373,6 +5374,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
   int
     y;
 
+  PixelPacket
+    *gamma_map;
+
   register IndexPacket
     *indexes;
 
@@ -5384,9 +5388,6 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
 
   register unsigned char
     *q;
-
-  register XColor
-    *gamma_map;
 
   unsigned char
     bit,
@@ -5909,6 +5910,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
   int
     y;
 
+  PixelPacket
+    *gamma_map;
+
   register IndexPacket
     *indexes;
 
@@ -5920,9 +5924,6 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
 
   register unsigned char
     *q;
-
-  register XColor
-    *gamma_map;
 
   unsigned char
     bit,
@@ -7015,6 +7016,9 @@ MagickExport void XMakeStandardColormap(Display *display,
   int
     status;
 
+  PixelPacket
+    *gamma_map;
+
   register IndexPacket
     *indexes;
 
@@ -7023,9 +7027,6 @@ MagickExport void XMakeStandardColormap(Display *display,
 
   register long
     i;
-
-  register XColor
-    *gamma_map;
 
   unsigned long
     number_colors,
