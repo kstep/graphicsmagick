@@ -257,9 +257,9 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-info-recursive all-recursive install-data-recursive \
 	install-exec-recursive installdirs-recursive install-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
-DIST_COMMON = Makefile.am Makefile.in acconfig.h acinclude.m4 \
-	aclocal.m4 config.guess config.sub configure configure.ac \
-	depcomp install-sh ltmain.sh missing mkinstalldirs
+DIST_COMMON = Makefile.am Makefile.in acinclude.m4 aclocal.m4 \
+	config.guess config.sub configure configure.ac depcomp \
+	install-sh ltmain.sh missing mkinstalldirs
 all: all-recursive
 
 .SUFFIXES:
