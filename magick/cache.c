@@ -208,7 +208,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   cache_info=(CacheInfo *) image->cache;
   if (cache_info->type == UndefinedCache)
     {
-      ThrowException(exception,CacheError,"Pixel cache is not open",
+      ThrowException(exception,CacheError,"/Cache/Error/PixelCacheIsNotOpen",
         image->filename);
       return((const PixelPacket *) NULL);
     }

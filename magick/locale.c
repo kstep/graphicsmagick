@@ -95,12 +95,12 @@ const char *GetLocaleMessage(const char *tag)
            (!(locale = getenv("LC_CTYPE"))     || *locale == '\0') &&
            (!(locale = getenv("LANG"))         || *locale == '\0') ) )
          || !strcasecmp(locale, "C"))
-      locale = "iso8859-1";
+      locale = "C";
 
    tp = locale;
    p = locale + strlen(locale);
    np = tag;
-  if (strncasecmp(locale, "iso8859-1", 9) || p - tp != 9)
+  if (strncasecmp(locale, "C", 9) || p - tp != 1)
     return tag;
   else
     switch (*NEXT_FIELD)
