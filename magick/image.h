@@ -165,6 +165,15 @@ typedef struct _FrameInfo
 
 typedef Quantum IndexPacket;
 
+typedef struct _LongPixelPacket
+{
+  unsigned long
+    red,
+    green,
+    blue,
+    opacity;
+} LongPixelPacket;
+
 typedef struct _MontageInfo
 {
   char
@@ -223,15 +232,6 @@ typedef struct _RectangleInfo
     x,
     y;
 } RectangleInfo;
-
-typedef struct _ShortPixelPacket
-{
-  unsigned short
-    red,
-    green,
-    blue,
-    opacity;
-} ShortPixelPacket;
 
 typedef struct _SegmentInfo
 {
