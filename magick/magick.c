@@ -52,7 +52,7 @@
 #include "registry.h"
 #include "resource.h"
 #include "render.h"
-#include "temporary.h"
+#include "tempfile.h"
 #include "utility.h"
 
 /*

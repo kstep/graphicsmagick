@@ -12,7 +12,7 @@
 #include "studio.h"
 #include "error.h"
 #include "log.h"
-#include "temporary.h"
+#include "tempfile.h"
 #include "utility.h"
 
 /*
