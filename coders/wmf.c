@@ -1013,10 +1013,10 @@ static void wmf_magick_draw_text (wmfAPI* API,
     *q;
 
   int
-    pointsize,
     string_length;
 
   double
+    pointsize,
     angle = 0;
 
   wmfFont
@@ -1068,36 +1068,15 @@ static void wmf_magick_draw_text (wmfAPI* API,
   if(WMF_TEXT_STRIKEOUT(font))
     wmf_stream_printf (API,out,"decorate line-through\n");
 
-  /* Set font size */
-  pointsize = ceil(abs(WMF_FONT_HEIGHT(font)*draw_text->dc->pixel_height));
-  
-/*   printf("WMF_FONT_NAME:        = %s\n", WMF_FONT_NAME(font)); */
-/*   printf("WMF_FONT_HEIGHT       = %i\n", (int)WMF_FONT_HEIGHT(font)); */
-/*   printf("WMF_FONT_WIDTH        = %i\n", (int)WMF_FONT_WIDTH(font)); */
-/*   printf("pointsize             = %i\n", (int)pointsize); */
-/*   printf("scaled pointsize      = %.10g\n", (float)pointsize*ddata->scale_y); */
-  wmf_stream_printf (API,out,"font-size %i\n", pointsize);
-
-  /* Translate coordinates so target is 0,0 */
-  wmf_stream_printf (API,out,"translate %.10g,%.10g\n",
-                     draw_text->pt.x,draw_text->pt.y);
-  
-  /* Apply rotation */
-  /* ImageMagick's drawing rotation is clockwise from horizontal
-     while WMF drawing rotation is counterclockwise from horizontal */
-  /* FIXME: rotation is backwards */
-  angle = abs(RadiansToDegrees(2*MagickPI-WMF_TEXT_ANGLE(font)));
-  if(angle == 360)
-    angle = 0;
-  if (angle != 0)
-    wmf_stream_printf (API,out,"rotate %.10g\n",angle);
           
   /*
    * Render text
    *
    */
 
-  /* Build escaped string */
+  /*
+   * Build escaped string
+   */
   for( p=draw_text->str, q=buff, string_length=0;
        *p!=0 && string_length < (sizeof(buff)-3);
        ++p )
@@ -1115,6 +1094,74 @@ static void wmf_magick_draw_text (wmfAPI* API,
         }
     }
   *q=0;
+
+  /* Set font size */
+  pointsize = ceil(abs(WMF_FONT_HEIGHT(font)*draw_text->dc->pixel_height));
+  
+/*   printf("WMF_FONT_NAME:        = %s\n", WMF_FONT_NAME(font)); */
+/*   printf("WMF_FONT_HEIGHT       = %i\n", (int)WMF_FONT_HEIGHT(font)); */
+/*   printf("WMF_FONT_WIDTH        = %i\n", (int)WMF_FONT_WIDTH(font)); */
+/*   printf("pointsize             = %.10g\n", pointsize); */
+/*   printf("scaled pointsize      = %.10g\n", pointsize*ddata->scale_y); */
+/*   printf("font ratio            = %.10g\n", draw_text->font_ratio ); */
+
+  {
+    Image
+      *image = ddata->image;
+
+    DrawInfo
+      draw_info;
+
+    ImageInfo
+      *image_info;
+
+    TypeMetric
+      metrics;
+
+    image_info=CloneImageInfo((const ImageInfo *)NULL);
+    CloneString(&image_info->font,font_name);
+    image_info->pointsize=pointsize*ddata->scale_y;
+
+    GetDrawInfo(image_info,&draw_info);
+    CloneString(&draw_info.text,buff);
+    if(GetTypeMetrics(image,&draw_info,&metrics) != False)
+      {
+
+/*         printf("Metric pixels_per_em x=%.10g y=%.10g\n", */
+/*                metrics.pixels_per_em.x, metrics.pixels_per_em.y); */
+/*         printf("Metric ascent        = %li (%.10g)\n", metrics.ascent, (double)metrics.ascent/ddata->scale_y); */
+/*         printf("Metric descent       = %li (%.10g)\n", metrics.descent, (double)metrics.descent/ddata->scale_y); */
+/*         printf("Metric width         = %lu (%.10g)\n", metrics.width, (double)metrics.width/ddata->scale_y); */
+/*         printf("Metric height        = %lu (%.10g)\n", metrics.height, (double)metrics.height/ddata->scale_y); */
+/*         printf("Metric max_advance   = %lu (%.10g)\n", metrics.max_advance, (double)metrics.max_advance/ddata->scale_y); */
+
+        pointsize *= pointsize/(((double)abs(metrics.ascent) + abs(metrics.descent))/ddata->scale_y);
+/*         printf("adjusted pointsize   = %.10g (%.10g)\n", pointsize, pointsize*ddata->scale_y ); */
+      }
+  }
+
+  wmf_stream_printf (API,out,"font-size %.10g\n", pointsize);
+
+  /* Translate coordinates so target is 0,0 */
+  wmf_stream_printf (API,out,"translate %.10g,%.10g\n",
+                     draw_text->pt.x,draw_text->pt.y);
+
+  /* Transform scale to draw text at 1:1 ratio */
+  if(ddata->scale_y != ddata->scale_x)
+    wmf_stream_printf (API,out,"scale %.10g,%.10g\n",
+                       ddata->scale_y/ddata->scale_x, 1.0);
+  
+  /* Apply rotation */
+  /* ImageMagick's drawing rotation is clockwise from horizontal
+     while WMF drawing rotation is counterclockwise from horizontal */
+  /* FIXME: rotation is backwards */
+  angle = abs(RadiansToDegrees(2*MagickPI-WMF_TEXT_ANGLE(font)));
+  if(angle == 360)
+    angle = 0;
+  if (angle != 0)
+    wmf_stream_printf (API,out,"rotate %.10g\n",angle);
+
+  /* Output string */
   wmf_stream_printf (API,out,"text 0,0 '%.1024s'\n",buff);
 
   /* Restore graphic context */
