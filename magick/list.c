@@ -90,6 +90,8 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
   clone_images=(Image *) NULL;
+  while (images->previous != (Image *) NULL)
+    images=images->previous;
   for ( ; images != (Image *) NULL; images=images->next)
   {
     image=CloneImage(images,0,0,True,exception);
