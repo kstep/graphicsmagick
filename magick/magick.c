@@ -282,13 +282,13 @@ MagickExport int unsigned IsMagickConflict(const char *magick)
 {
   assert(magick != (char *) NULL);
 #if defined(macintosh)
-  return(MACIsMagickConflict());
+  return(MACIsMagickConflict(magick));
 #endif
 #if defined(vms)
-  return(VMSIsMagickConflict());
+  return(VMSIsMagickConflict(magick));
 #endif
 #if defined(WIN32)
-  return(NTIsMagickConflict());
+  return(NTIsMagickConflict(magick));
 #endif
   return(False);
 }

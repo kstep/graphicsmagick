@@ -148,23 +148,23 @@ MagickExport int Exit(int status)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsMagickConfict returns true if the image format conflicts with
+%  Method IsMagickConflict returns true if the image format conflicts with
 %  a logical drive (.e.g. X:).
 %
-%  The format of the IsMagickConfict method is:
+%  The format of the IsMagickConflict method is:
 %
-%      unsigned int IsMagickConfict(const char *magick)
+%      unsigned int IsMagickConflict(const char *magick)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method IsMagickConfict returns true if the image format
+%    o status: Method IsMagickConflict returns true if the image format
 %      conflicts with a logical drive.
 %
 %    o magick: Specifies the image format.
 %
 %
 */
-MagickExport unsigned int NTIsMagickConfict(const char *magick)
+MagickExport unsigned int NTIsMagickConflict(const char *magick)
 {
   assert(magick != (char *) NULL);
   if (strlen(magick) > 1)

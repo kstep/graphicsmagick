@@ -95,7 +95,7 @@ extern MagickExport struct dirent
   *readdir(DIR *);
  
 extern MagickExport int
-  NTIsMagickConflict(const char *),
+  NTIsMagickConflict(const char *);
 
 extern MagickExport void
   closedir(DIR *),
