@@ -275,7 +275,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
             Transfer a single pixel.
           */
           span=1;
-	  p=AcquireCacheNexus(image,Cx(x+u),Cy(y+v),1,1,image_nexus,exception);
+          p=AcquireCacheNexus(image,Cx(x+u),Cy(y+v),1,1,image_nexus,exception);
           if (p == (const PixelPacket *) NULL)
             break;
           *q=(*p);
