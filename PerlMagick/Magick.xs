@@ -1148,7 +1148,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           if (info)
             info->image_info->depth=SvIV(sval);
           for ( ; image; image=image->next)
-            image->depth=SvIV(sval);
+            SetImageDepth(image,SvIV(sval));
           return;
         }
       if (strEQcase(attribute,"dispose"))

@@ -2442,14 +2442,14 @@ MagickExport unsigned int GetImageDepth(Image *image)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      if (((p->red >> 8) & 0xff) != (p->red & 0xff))
+      if (p->red != UpScale(DownScale(p->red)))
         return(QuantumDepth);
-      if (((p->green >> 8) & 0xff) != (p->green & 0xff))
+      if (p->green != UpScale(DownScale(p->green)))
         return(QuantumDepth);
-      if (((p->blue >> 8) & 0xff) != (p->blue & 0xff))
+      if (p->blue != UpScale(DownScale(p->blue)))
         return(QuantumDepth);
       if (image->matte || (image->colorspace == CMYKColorspace))
-        if (((p->opacity >> 8) & 0xff) != (p->opacity & 0xff))
+        if (p->opacity != UpScale(DownScale(p->opacity)))
           return(QuantumDepth);
       p++;
     }
@@ -3362,7 +3362,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleNCompare("-depth",option,4) == 0)
           {
-            (*image)->depth=atoi(argv[++i]) <= 8 ? 8 : 16;
+            SetImageDepth(*image,atoi(argv[++i]));
             continue;
           }
         if (LocaleNCompare("-despeckle",option,4) == 0)
@@ -5341,6 +5341,63 @@ MagickExport void SetImage(Image *image,Quantum opacity)
     if (!SyncImagePixels(image))
       break;
   }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e D e p t h                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetImageDepth sets the depth of the image.
+%
+%  The format of the SetImageDepth method is:
+%
+%      RectangleInfo SetImageDepth(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o bounds: Method SetImageDepth returns the depth of the image.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+MagickExport unsigned int SetImageDepth(Image *image)
+{
+  int
+    y;
+
+  register int
+    x;
+
+  register PixelPacket
+    *p;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (QuantumDepth == 8)
+    return(True);
+  for (y=0; y < (int) image->rows; y++)
+  {
+    p=GetImagePixels(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      p->red=UpScale(DownScale(p->red));
+      p->green=UpScale(DownScale(p->green));
+      p->blue=UpScale(DownScale(p->blue));
+      p->opacity=UpScale(DownScale(p->opacity));
+      p++;
+    }
+  }
+  return(True);
 }
 
 /*
