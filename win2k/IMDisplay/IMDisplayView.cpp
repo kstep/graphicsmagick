@@ -214,7 +214,7 @@ void CIMDisplayView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CIMDisplayView::OnHalfsize() 
 {
-    MinifyImage( newGeo );
+    MinifyImage( );
 }
 
 void CIMDisplayView::OnOriginalsize() 
@@ -224,7 +224,7 @@ void CIMDisplayView::OnOriginalsize()
 
 void CIMDisplayView::OnDoublesize() 
 {
-    MagnifyImage( newGeo );
+    MagnifyImage( );
 }
 
 void CIMDisplayView::OnResize() 
@@ -692,7 +692,7 @@ void CIMDisplayView::MagnifyImage( void )
     BeginWaitCursor();
 
     try {
-	pDoc->GetImage()->magify( );
+	pDoc->GetImage()->magnify( );
     }
 
     catch(Exception e)
