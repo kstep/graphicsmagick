@@ -72,14 +72,11 @@
   Forward declarations.
 */
 static unsigned int
-  RenderType(Image *,const DrawInfo *,const PointInfo *,const unsigned int,
+  RenderType(Image *,const DrawInfo *,const PointInfo *,TypeMetric *),
+  RenderPostscript(Image *,const DrawInfo *,const PointInfo *,TypeMetric *),
+  RenderFreetype(Image *,const DrawInfo *,const char *,const PointInfo *,
     TypeMetric *),
-  RenderPostscript(Image *,const DrawInfo *,const PointInfo *,
-    const unsigned int,TypeMetric *),
-  RenderFreetype(Image *,const DrawInfo *,const PointInfo *,const unsigned int,
-    TypeMetric *),
-  RenderX11(Image *,const DrawInfo *,const PointInfo *,const unsigned int,
-    TypeMetric *);
+  RenderX11(Image *,const DrawInfo *,const PointInfo *,TypeMetric *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -364,7 +361,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     /*
       Annotate image with text.
     */
-    status=RenderType(image,annotate,&offset,True,&metrics);
+    status=RenderType(image,annotate,&offset,&metrics);
     if (status == False)
       break;
     if (annotate->decorate == LineThroughDecoration)
@@ -576,9 +573,9 @@ static unsigned short *EncodeText(const char *text,size_t *count)
 %
 */
 
-static int GetUnicodeCharacter(const unsigned char *text,size_t *length)
+static long GetUnicodeCharacter(const unsigned char *text,size_t *length)
 {
-  unsigned int
+  unsigned long
     c;
 
   if (*length < 1)
@@ -624,7 +621,7 @@ static int GetUnicodeCharacter(const unsigned char *text,size_t *length)
   c|=(text[1] & 0x3f) << 12;
   c|=(text[2] & 0x3f) << 6;
   c|=text[3] & 0x3f;
-  return(c);
+  return((long) c);
 }
 
 static unsigned short *EncodeUnicode(const char *text,size_t *count)
@@ -713,6 +710,9 @@ static unsigned short *EncodeUnicode(const char *text,size_t *count)
 MagickExport unsigned int GetTypeMetrics(Image *image,const DrawInfo *draw_info,
   TypeMetric *metrics)
 {
+  DrawInfo
+    *clone_info;
+
   PointInfo
     offset;
 
@@ -722,10 +722,13 @@ MagickExport unsigned int GetTypeMetrics(Image *image,const DrawInfo *draw_info,
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->text != (char *) NULL);
   assert(draw_info->signature == MagickSignature);
+  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  clone_info->render=False;
   memset(metrics,0,sizeof(TypeMetric));
   offset.x=0.0;
   offset.y=0.0;
-  status=RenderType(image,draw_info,&offset,False,metrics);
+  status=RenderType(image,clone_info,&offset,metrics);
+  DestroyDrawInfo(clone_info);
   return(status);
 }
 
@@ -746,7 +749,7 @@ MagickExport unsigned int GetTypeMetrics(Image *image,const DrawInfo *draw_info,
 %  The format of the RenderType method is:
 %
 %      unsigned int RenderType(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
+%        const PointInfo *offset,TypeMetric *metrics)
 %
 %  A description of each parameter follows:
 %
@@ -759,16 +762,16 @@ MagickExport unsigned int GetTypeMetrics(Image *image,const DrawInfo *draw_info,
 %
 %    o offset: (x,y) location of text relative to image.
 %
-%    o render: a value other than zero renders the text otherwise just the
-%      font metric is returned.
-%
 %    o metrics: bounding box of text.
 %
 %
 */
 static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
+  const PointInfo *offset,TypeMetric *metrics)
 {
+  char
+    *encoding;
+
   const TypeInfo
     *type_info;
 
@@ -783,28 +786,29 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
   if (draw_info->font != (char *) NULL)
     type_info=GetTypeInfo(draw_info->font,&image->exception);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  encoding=(char *) NULL;
   if (type_info != (const TypeInfo *) NULL)
     {
       if (type_info->glyphs != (char *) NULL)
         (void) CloneString(&clone_info->font,type_info->glyphs);
       if (type_info->encoding != (char *) NULL)
-        (void) CloneString(&clone_info->encoding,type_info->encoding);
-      status=RenderFreetype(image,clone_info,offset,render,metrics);
+        (void) CloneString(&encoding,type_info->encoding);
+      status=RenderFreetype(image,clone_info,encoding,offset,metrics);
     }
   else
     if (*draw_info->font == '@')
       {
         (void) CloneString(&clone_info->font,draw_info->font+1);
-        status=RenderFreetype(image,clone_info,offset,render,metrics);
+        status=RenderFreetype(image,clone_info,encoding,offset,metrics);
       }
     else
       if (*draw_info->font == '-')
-        status=RenderX11(image,clone_info,offset,render,metrics);
+        status=RenderX11(image,clone_info,offset,metrics);
       else
         if (IsAccessible(clone_info->font))
-          status=RenderFreetype(image,clone_info,offset,render,metrics);
+          status=RenderFreetype(image,clone_info,encoding,offset,metrics);
         else
-          status=RenderPostscript(image,clone_info,offset,render,metrics);
+          status=RenderPostscript(image,clone_info,offset,metrics);
   DestroyDrawInfo(clone_info);
   return(status);
 }
@@ -826,7 +830,7 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
 %  The format of the RenderFreetype method is:
 %
 %      unsigned int RenderFreetype(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
+%        const char *encoding,const PointInfo *offset,TypeMetric *metrics)
 %
 %  A description of each parameter follows:
 %
@@ -837,10 +841,9 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
 %
 %    o draw_info: The draw info.
 %
-%    o offset: (x,y) location of text relative to image.
+%    o encoding: The font encoding.
 %
-%    o render: a value other than zero renders the text otherwise just the
-%      font metric is returned.
+%    o offset: (x,y) location of text relative to image.
 %
 %    o metrics: bounding box of text.
 %
@@ -927,7 +930,7 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
 }
 
 static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
+  const char *encoding,const PointInfo *offset,TypeMetric *metrics)
 {
   typedef struct _GlyphInfo
   {
@@ -1018,7 +1021,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
     active;
 
   unsigned short
-    *encoding;
+    *text;
 
   /*
     Initialize Truetype library.
@@ -1037,38 +1040,36 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (face->num_charmaps != 0)
     status=FT_Set_Charmap(face,face->charmaps[0]);
   encoding_type=ft_encoding_none;
-  if (draw_info->encoding != (char *) NULL)
+  if (encoding != (char *) NULL)
     {
-      if (LocaleCompare(draw_info->encoding,"AdobeCustom") == 0)
+      if (LocaleCompare(encoding,"AdobeCustom") == 0)
         encoding_type=ft_encoding_adobe_custom;
-      if (LocaleCompare(draw_info->encoding,"AdobeExpert") == 0)
+      if (LocaleCompare(encoding,"AdobeExpert") == 0)
         encoding_type=ft_encoding_adobe_expert;
-      if (LocaleCompare(draw_info->encoding,"AdobeStandard") == 0)
+      if (LocaleCompare(encoding,"AdobeStandard") == 0)
         encoding_type=ft_encoding_adobe_standard;
-      if (LocaleCompare(draw_info->encoding,"AppleRoman") == 0)
+      if (LocaleCompare(encoding,"AppleRoman") == 0)
         encoding_type=ft_encoding_apple_roman;
-      if (LocaleCompare(draw_info->encoding,"BIG5") == 0)
+      if (LocaleCompare(encoding,"BIG5") == 0)
         encoding_type=ft_encoding_big5;
-      if (LocaleCompare(draw_info->encoding,"GB2312") == 0)
+      if (LocaleCompare(encoding,"GB2312") == 0)
         encoding_type=ft_encoding_gb2312;
-      if (LocaleCompare(draw_info->encoding,"Latin 2") == 0)
+      if (LocaleCompare(encoding,"Latin 2") == 0)
         encoding_type=ft_encoding_latin_2;
-      if (LocaleCompare(draw_info->encoding,"None") == 0)
+      if (LocaleCompare(encoding,"None") == 0)
         encoding_type=ft_encoding_none;
-      if (LocaleCompare(draw_info->encoding,"SJIScode") == 0)
+      if (LocaleCompare(encoding,"SJIScode") == 0)
         encoding_type=ft_encoding_sjis;
-      if (LocaleCompare(draw_info->encoding,"Symbol") == 0)
+      if (LocaleCompare(encoding,"Symbol") == 0)
         encoding_type=ft_encoding_symbol;
-      if (LocaleCompare(draw_info->encoding,"Unicode") == 0)
+      if (LocaleCompare(encoding,"Unicode") == 0)
         encoding_type=ft_encoding_unicode;
-      if (LocaleCompare(draw_info->encoding,"UTF-8") == 0)
-        encoding_type=ft_encoding_unicode;
-      if (LocaleCompare(draw_info->encoding,"Wansung") == 0)
+      if (LocaleCompare(encoding,"Wansung") == 0)
         encoding_type=ft_encoding_wansung;
       status=FT_Select_Charmap(face,encoding_type);
       if (status != 0)
-        ThrowBinaryException(DelegateError,"Unrecognized encoding",
-          draw_info->encoding);
+        ThrowBinaryException(DelegateError,"Unrecognized font encoding",
+          encoding);
     }
   /*
     Set text size.
@@ -1104,17 +1105,24 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   {
     case ft_encoding_sjis:
     {
-      encoding=EncodeSJIS(draw_info->text,&length);
+      text=EncodeSJIS(draw_info->text,&length);
       break;
     }
-    case ft_encoding_unicode:
     default:
     {
-      encoding=EncodeUnicode(draw_info->text,&length);
+      if (LocaleCompare(draw_info->encoding,"UTF-8") == 0)
+        {
+          text=EncodeText(draw_info->text,&length);
+          break;
+        }
+    }
+    case ft_encoding_unicode:
+    {
+      text=EncodeUnicode(draw_info->text,&length);
       break;
     }
   }
-  if (encoding == (unsigned short *) NULL)
+  if (text == (unsigned short *) NULL)
     {
       (void) FT_Done_Face(face);
       (void) FT_Done_FreeType(library);
@@ -1138,7 +1146,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   pattern=draw_info->fill_pattern;
   for (i=0; i < (long) length; i++)
   {
-    glyph.id=FT_Get_Char_Index(face,encoding[i]);
+    glyph.id=FT_Get_Char_Index(face,text[i]);
     if ((glyph.id != 0) && (last_glyph.id != 0) && FT_HAS_KERNING(face))
       {
         FT_Vector
@@ -1164,7 +1172,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
       metrics->bounds.x2=bounds.xMax;
     if ((i == 0) || (bounds.yMax > metrics->bounds.y2))
       metrics->bounds.y2=bounds.yMax;
-    if (render)
+    if (draw_info->render)
       if ((draw_info->stroke.opacity != TransparentOpacity) ||
           (draw_info->stroke_pattern != (Image *) NULL))
         {
@@ -1178,7 +1186,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
         }
     FT_Vector_Transform(&glyph.origin,&affine);
     (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
-    if (render)
+    if (draw_info->render)
       {
         if ((draw_info->fill.opacity != TransparentOpacity) ||
             (pattern != (Image *) NULL))
@@ -1257,7 +1265,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   metrics->bounds.y1/=64.0;
   metrics->bounds.x2/=64.0;
   metrics->bounds.y2/=64.0;
-  if (render)
+  if (draw_info->render)
     if ((draw_info->stroke.opacity != TransparentOpacity) ||
         (draw_info->stroke_pattern != (Image *) NULL))
       {
@@ -1274,7 +1282,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   /*
     Free resources.
   */
-  LiberateMemory((void **) &encoding);
+  LiberateMemory((void **) &text);
   DestroyDrawInfo(clone_info);
   (void) FT_Done_Face(face);
   (void) FT_Done_FreeType(library);
@@ -1282,7 +1290,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
 }
 #else
 static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
+  const char *encoding,const PointInfo *offset,TypeMetric *metrics)
 {
   ThrowBinaryException(MissingDelegateError,"FreeType library is not available",
     draw_info->font)
@@ -1306,7 +1314,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
 %  The format of the RenderPostscript method is:
 %
 %      unsigned int RenderPostscript(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
+%        const PointInfo *offset,TypeMetric *metrics)
 %
 %  A description of each parameter follows:
 %
@@ -1318,9 +1326,6 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
 %    o draw_info: The draw info.
 %
 %    o offset: (x,y) location of text relative to image.
-%
-%    o render: a value other than zero renders the text otherwise just the
-%      font metric is returned.
 %
 %    o metrics: bounding box of text.
 %
@@ -1358,7 +1363,7 @@ static char *EscapeParenthesis(const char *text)
 }
 
 static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
+  const PointInfo *offset,TypeMetric *metrics)
 {
   char
     filename[MaxTextExtent],
@@ -1504,7 +1509,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   metrics->bounds.y2=metrics->ascent+metrics->descent;
   metrics->underline_position=(-2.0);
   metrics->underline_thickness=1.0;
-  if (!render)
+  if (!draw_info->render)
     {
       DestroyImage(annotate_image);
       return(True);
@@ -1568,7 +1573,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
 %  The format of the RenderX11 method is:
 %
 %      unsigned int RenderX11(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
+%        const PointInfo *offset,TypeMetric *metrics)
 %
 %  A description of each parameter follows:
 %
@@ -1581,16 +1586,13 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
 %
 %    o offset: (x,y) location of text relative to image.
 %
-%    o render: a value other than zero renders the text otherwise just the
-%      font metric is returned.
-%
 %    o metrics: bounding box of text.
 %
 %
 */
 #if defined(HasX11)
 static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
+  const PointInfo *offset,TypeMetric *metrics)
 {
   static DrawInfo
     cache_info;
@@ -1725,7 +1727,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   metrics->bounds.y2=metrics->ascent+metrics->descent;
   metrics->underline_position=(-2.0);
   metrics->underline_thickness=1.0;
-  if (!render)
+  if (!draw_info->render)
     return(True);
   if (draw_info->fill.opacity == TransparentOpacity)
     return(True);
@@ -1755,7 +1757,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
 }
 #else
 static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
+  const PointInfo *offset,TypeMetric *metrics)
 {
   ThrowBinaryException(MissingDelegateError,
     "X11 library is not available",draw_info->font);

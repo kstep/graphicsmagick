@@ -91,7 +91,7 @@
 <P>unsigned int  <STRONG>IsImagesEqual</STRONG>( Image *image, Image *reference );</P>
 <P>unsigned int  <STRONG>IsTaintImage</STRONG>( const Image *image );</P>
 <P><STRONG>ModifyImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
-<P>unsigned int  <STRONG>PlasmaImage</STRONG>( Image *image, const SegmentInfo *segment, int attenuate, int depth );</P>
+<P>unsigned int  <STRONG>PlasmaImage</STRONG>( Image *image, const SegmentInfo *segment, unsigned long attenuate, unsigned long depth );</P>
 <P>Image * <STRONG>ReferenceImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>SetImage</STRONG>( Image *image, const Quantum opacity );</P>
 <P>unsigned int  <STRONG>SetImageClipMask</STRONG>( Image *image, Image *clip_mask );</P>
@@ -467,7 +467,7 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="plasmaimage">PlasmaImage</A></H2>
 <blockquote>PlasmaImage() initializes an image with plasma fractal values. The image must be initialized with a base color and the random number generator seeded before this method is called. </blockquote><P>The format of the PlasmaImage method is:</P>
-<blockquote>unsigned int PlasmaImage ( <A HREF="types/Image.html">Image</A> *image, const SegmentInfo *segment, int attenuate, int depth ); </blockquote><P>
+<blockquote>unsigned int PlasmaImage ( <A HREF="types/Image.html">Image</A> *image, const SegmentInfo *segment, unsigned long attenuate, unsigned long depth ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>image:</STRONG><BR>

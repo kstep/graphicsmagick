@@ -165,6 +165,8 @@ static void ConvertUsage(void)
       "-quality value       JPEG/MIFF/PNG compression level",
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-region geometry     apply options to a portion of the image",
+      "-raise value         lighten/darken image edges to create a 3-D effect",
+      "-render              render vector graphics",
       "-resize geometry     resize the image",
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",

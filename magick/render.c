@@ -245,6 +245,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     clone_info->clip_path=AllocateString(draw_info->clip_path);
   clone_info->bounds=draw_info->bounds;
   clone_info->clip_units=draw_info->clip_units;
+  clone_info->render=draw_info->render;
   clone_info->debug=draw_info->debug;
   clone_info->opacity=draw_info->opacity;
   return(clone_info);
@@ -3199,12 +3200,15 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (primitive_info[i].primitive == ImagePrimitive)
         break;
     }
-    if ((n != 0) && (graphic_context[n]->clip_path != (char *) NULL) &&
-        (LocaleCompare(graphic_context[n]->clip_path,
-         graphic_context[n-1]->clip_path) != 0))
-      (void) DrawClipPath(image,graphic_context[n],
-        graphic_context[n]->clip_path);
-    (void) DrawPrimitive(image,graphic_context[n],primitive_info);
+    if (graphic_context[n]->render)
+      {
+        if ((n != 0) && (graphic_context[n]->clip_path != (char *) NULL) &&
+            (LocaleCompare(graphic_context[n]->clip_path,
+             graphic_context[n-1]->clip_path) != 0))
+          (void) DrawClipPath(image,graphic_context[n],
+            graphic_context[n]->clip_path);
+        (void) DrawPrimitive(image,graphic_context[n],primitive_info);
+      }
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
     MagickMonitor(RenderImageText,q-primitive,(off_t) primitive_extent);
@@ -4338,6 +4342,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->compose=CopyCompositeOp;
   if (clone_info->server_name != (char *) NULL)
     draw_info->server_name=AllocateString(clone_info->server_name);
+  draw_info->render=True;
   draw_info->debug=clone_info->debug;
   draw_info->signature=MagickSignature;
   DestroyImageInfo(clone_info);

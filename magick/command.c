@@ -972,6 +972,8 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               ThrowCompositeException(OptionError,"Missing degrees",option);
             break;
           }
+        if (LocaleCompare("render",option+1) == 0)
+          break;
         if (LocaleCompare("resize",option+1) == 0)
           {
             if (*option == '-')
@@ -2505,6 +2507,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("render",option+1) == 0)
+          break;
         if (LocaleCompare("resize",option+1) == 0)
           {
             if (*option == '-')
@@ -4375,6 +4379,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("render",option+1) == 0)
+          break;
         if (LocaleCompare("resize",option+1) == 0)
           {
             if (*option == '-')
@@ -5632,6 +5638,8 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("render",option+1) == 0)
+          break;
         if (LocaleCompare("rotate",option+1) == 0)
           {
             i++;

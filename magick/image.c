@@ -4152,6 +4152,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=crop_image;
             continue;
           }
+        if (LocaleCompare("render",option+1) == 0)
+          {
+            draw_info->render=(*option == '+');
+            continue;
+          }
         if (LocaleCompare("-resize",option) == 0)
           {
             Image

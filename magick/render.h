@@ -105,11 +105,12 @@ typedef struct _DrawInfo
   ClipPathUnits
     clip_units;
 
-  unsigned int
-    debug;
-
   Quantum
     opacity;
+
+  unsigned int
+    debug,
+    render;
 
   unsigned long
     signature;
