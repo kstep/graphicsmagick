@@ -3164,6 +3164,9 @@ MagickExport unsigned int WriteImages(ImageInfo *image_info,Image *image,
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     status&=WriteImage(image_info,p);
+    if(p->exception.severity > exception->severity)
+      ThrowException(exception,p->exception.severity,
+        p->exception.reason,p->exception.description);
     (void) CatchImageException(p);
     if (image_info->adjoin)
       break;
