@@ -847,23 +847,18 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       format=5;
     else
       if (LocaleCompare(image_info->magick,"PBM") == 0)
-        {
-          format=4;
-          if ((image->storage_class == DirectClass) ||
-              !IsMonochromeImage(image,&image->exception))
-            SetImageType(image,BilevelType);
-        }
+        format=4;
       else
         if ((LocaleCompare(image_info->magick,"PNM") == 0) &&
             (image_info->type != TrueColorType) &&
             IsGrayImage(image,&image->exception))
-          {
-            format=5;
-            if (IsMonochromeImage(image,&image->exception))
-              format=4;
-          }
+          format=5;
+    if (IsMonochromeImage(image,&image->exception))
+      format=4;
     if (image_info->compression == NoCompression)
       format-=3;
+    if ((format == 1) || (format == 4))
+      SetImageType(image,BilevelType);
     if (LocaleCompare(image_info->magick,"P7") != 0)
       FormatString(buffer,"P%d\n",format);
     else
