@@ -4051,7 +4051,7 @@ static PixelPacket *SetPixelCache(Image *image,const long x,const long y,
 %
 %  SetPixelCacheMethods() sets the image pixel methods to the specified ones.
 %
-%  The format of the DestroyCacheInfo() method is:
+%  The format of the SetPixelCacheMethods() method is:
 %
 %      SetPixelCacheMethods(Cache *,AcquirePixelHandler acquire_pixel,
 %        GetPixelHandler get_pixel,SetPixelHandler set_pixel,

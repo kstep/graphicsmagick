@@ -384,67 +384,6 @@ typedef struct _Image
     *next;
 } Image;
 
-typedef IndexPacket
-  *(*GetIndexesFromHandler)(const Image *);
-
-typedef const PixelPacket
-  *(*AcquirePixelHandler)(const Image *,const long,const long,
-    const unsigned long,const unsigned long,ExceptionInfo *);
-
-typedef PixelPacket
-  (*AcquireOnePixelFromHandler)(const Image *,const long,const long,
-    ExceptionInfo *);
-
-typedef PixelPacket
-  (*GetOnePixelFromHandler)(Image *,const long,const long);
-
-typedef PixelPacket
-  *(*GetPixelHandler)(Image *,const long,const long,const unsigned long,
-    const unsigned long);
-
-typedef PixelPacket
-  *(*GetPixelsFromHandler)(const Image *);
-
-typedef PixelPacket
-  *(*SetPixelHandler)(Image *,const long,const long,const unsigned long,
-    const unsigned long);
-
-typedef unsigned int
-  (*SyncPixelHandler)(Image *);
-
-typedef void
-  (*DestroyPixelHandler)(Image *);
-
-typedef struct _CacheMethods
-{
-  AcquireOnePixelFromHandler
-    acquire_one_pixel_from_handler;
-
-  AcquirePixelHandler
-    acquire_pixel_handler;
-
-  DestroyPixelHandler
-    destroy_pixel_handler;
-
-  GetIndexesFromHandler
-    get_indexes_from_handler;
-
-  GetOnePixelFromHandler
-    get_one_pixel_from_handler;
-
-  GetPixelHandler
-    get_pixel_handler;
-
-  GetPixelsFromHandler
-    get_pixels_from_handler;
-
-  SetPixelHandler
-    set_pixel_handler;
-
-  SyncPixelHandler
-    sync_pixel_handler;
-} CacheMethods;
-
 typedef struct _ImageInfo
 {
   CompressionType
@@ -524,11 +463,11 @@ typedef struct _ImageInfo
   Image
     *attributes;
 
-  CacheMethods
-    methods;
-
   void
     *client_data;
+
+  void
+    *cache;
 
   int
     (*fifo)(const Image *,const void *,const size_t);

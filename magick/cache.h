@@ -8,7 +8,6 @@
 extern "C" {
 #endif
 
-
 /*
   Typedef declaractions.
 */

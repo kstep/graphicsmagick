@@ -1224,13 +1224,13 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   if (metadata != (char **) NULL)
     {
       char
-        *s;
+        *text;
 
-      s=TranslateText(image_info,image,format);
-      if (s == (char *) NULL)
+      text=TranslateText(image_info,image,format);
+      if (text == (char *) NULL)
         ThrowCompositeException(ResourceLimitError,
           "Unable to format image metadata","Memory allocation failed");
-      *metadata=s;
+      *metadata=text;
     }
   LiberateCompositeOptions(&option_info);
   DestroyImageList(composite_image);
@@ -2946,13 +2946,13 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
   if (metadata != (char **) NULL)
     {
       char
-        *s;
+        *text;
 
-      s=TranslateText(image_info,image_list,format);
-      if (s == (char *) NULL)
+      text=TranslateText(image_info,image_list,format);
+      if (text == (char *) NULL)
         ThrowConvertException(ResourceLimitError,
           "Unable to format image metadata","Memory allocation failed");
-      *metadata=s;
+      *metadata=text;
     }
   DestroyImageList(image_list);
   return(status);
@@ -5966,13 +5966,13 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   if (metadata != (char **) NULL)
     {
       char
-        *s;
+        *text;
 
-      s=TranslateText(image_info,montage_image,format);
-      if (s == (char *) NULL)
+      text=TranslateText(image_info,montage_image,format);
+      if (text == (char *) NULL)
         ThrowMontageException(ResourceLimitError,
           "Unable to format image metadata","Memory allocation failed");
-      *metadata=s;
+      *metadata=text;
     }
   DestroyImageList(montage_image);
   DestroyMontageInfo(montage_info);
