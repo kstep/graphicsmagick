@@ -1,3 +1,8 @@
+2003-12-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* index.html: Added a table showing current stable release and
+	development version.
+
 2003-12-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/options.imdoc (use): Describe the syntax of the -process
