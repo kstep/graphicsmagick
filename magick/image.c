@@ -108,7 +108,9 @@ const unsigned long
 %    o image_info: The image info.
 %
 %    o options: List of key/value pairs to put in the coder options map. The
-%      format of the string is "key1=value1,key2=value2,...".
+%      format of the string is "key1[=[value1]],key2[=[value2]],...". A missing
+%      value argument (with or without the equal sign) inserts an empty, zero
+%      length string as value for a key.
 %
 %    o exception: Errors result in updates to this structure.
 %
@@ -141,14 +143,23 @@ AddCoderOptions(ImageInfo *image_info,const char *options,
   i=0;
   while (i < length)
   {
-    for (j=0; (i < length) && (options[i] != '='); i++,j++)
+    unsigned int
+      has_value;
+
+    for (j=0; (i < length) && (options[i] != '=') && (options[i] != ','); i++,j++)
       key[j]=options[i];
     key[j]='\0';
+    has_value=(i < length) && (options[i] == '='); /* Could be 0-length value */
     i++;
-    for (j=0; (i < length) && (options[i] != ','); i++,j++)
-      value[j]=options[i];
+
+    j=0;
+    if (has_value)
+      {
+        for (; (i < length) && (options[i] != ','); i++,j++)
+          value[j]=options[i];
+        i++;
+      }
     value[j]='\0';
-    i++;
     /* Accepts zero length values */
     if (strlen(key) > 0)
       status &= MagickMapAddEntry(image_info->coder_options,key,value,0,exception);
