@@ -12,6 +12,7 @@ extern MagickExport Image
   *CloneImageList(const Image *,ExceptionInfo *),
   *GetImageList(const Image *,const long,ExceptionInfo *),
   *GetNextImage(const Image *),
+  *GetPreviousImage(const Image *),
   **ImageListToArray(const Image *,ExceptionInfo *),
   *NewImageList(void),
   *PopImageList(Image **),

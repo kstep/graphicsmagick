@@ -374,6 +374,44 @@ MagickExport Image *GetNextImage(const Image *images)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
+%   G e t P r e v i o u s I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPreviousImage() returns the previous image in a list.
+%
+%  The format of the GetPreviousImage method is:
+%
+%      Image *GetPreviousImage(const Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%
+*/
+MagickExport Image *GetPreviousImage(const Image *images)
+{
+  if (images == (Image *) NULL)
+    return((Image *) NULL);
+  assert(images->signature == MagickSignature);
+  if (images->previous == (Image *) NULL)
+    return((Image *) NULL);
+  if (images->blob != images->previous->blob)
+    {
+      DestroyBlobInfo(images->previous->blob);
+      images->previous->blob=ReferenceBlob(images->blob);
+    }
+  return(images->previous);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %     I m a g e L i s t T o A r r a y                                         %
 %                                                                             %
 %                                                                             %
