@@ -53,7 +53,7 @@ while test $# -gt 0; do
     --cppflags)
       if test $prefix_set = yes
       then
-	echo "-I$prefix/include -DHAVE_CONFIG_H"'@CPPFLAGS@'
+	echo "-I$prefix/include -DHAVE_CONFIG_H "'@CPPFLAGS@'
       else
 	echo "-DHAVE_CONFIG_H @CPPFLAGS@"
       fi
