@@ -72,7 +72,6 @@
 */
 static unsigned int
   WritePS3Image(const ImageInfo *,Image *),
-  ZLIBEncodeImage(Image *,const size_t,const unsigned long,unsigned char *),
   ZLIBEncode2Image(Image *,const size_t,const unsigned long,unsigned char *,
     WriteByteHook,void *);
 
@@ -237,7 +236,7 @@ static unsigned int SerializeHuffman2DImage(const ImageInfo *image_info,
 static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   Image *image)
 {
-  long
+  size_t
     length;
 
   register long
@@ -293,7 +292,7 @@ static unsigned int JPEGEncodeImage(const ImageInfo *image_info,
   Image
     *jpeg_image;
 
-  long
+  size_t
     i,
     length;
 
@@ -1790,24 +1789,9 @@ static unsigned int ZLIBEncode2Image(Image *image,const size_t length,
   MagickFreeMemory(compressed_pixels);
   return(!status);
 }
-
-static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
-  const unsigned long quality,unsigned char *pixels)
-{
-  return(ZLIBEncode2Image(image,length,quality,pixels,BlobWriteByteHook,(void *)NULL));
-}
 #else
 static unsigned int ZLIBEncode2Image(Image *image,const size_t length,
   const unsigned long quality,unsigned char *pixels,WriteByteHook,void *)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,ZipLibraryIsNotAvailable,image->filename);
-  return(False);
-}
-
-static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
-  const unsigned long quality,unsigned char *pixels)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
