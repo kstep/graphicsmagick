@@ -2201,7 +2201,10 @@ Magick::Color Magick::Image::penColor ( void  ) const
 void Magick::Image::penTexture ( const Image &penTexture_ )
 {
   modifyImage();
-  options()->penTexture( const_cast<Image &>(penTexture_).constImage() );
+  if(penTexture_.isValid())
+    options()->penTexture( const_cast<Image &>(penTexture_).constImage() );
+  else
+    options()->penTexture( static_cast<MagickLib::Image*>(NULL) );
 }
 
 Magick::Image  Magick::Image::penTexture ( void  ) const

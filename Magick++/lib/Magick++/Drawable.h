@@ -71,25 +71,13 @@ namespace Magick
 		     double lowerRightX_, double lowerRightY );
     void rectangle ( const Coordinate &upperLeftCoordinate_,
 		     const Coordinate &lowerRightCoordinate_ );
-    
-    // Filled Rectangle
-    void fillRectangle ( double upperLeftX_, double upperLeftY_,
-			 double lowerRightX_, double lowerRightY );
-    void fillRectangle ( const Coordinate &upperLeftCoordinate_,
-			 const Coordinate &lowerRightCoordinate_ );
-    
+
     // Circle
     void circle ( double originX_, double originY_,
 		  double perimX_, double perimY_ );
     void circle ( const Coordinate &originCoordinate_,
 		  const Coordinate &perimCoordinate_ );
-    
-    // Filled Circle
-    void fillCircle ( double originX_, double originY_,
-		      double perimX_, double perimY_ );
-    void fillCircle ( const Coordinate &originCoordinate_,
-		      const Coordinate &perimCoordinate_ );
-    
+
     // Ellipse
     void ellipse ( double originX_, double originY_, 
 		   double width_, double height_,
@@ -97,21 +85,10 @@ namespace Magick
     void ellipse ( const Coordinate &originCoordinate_, 
 		   double width_, double height_,
 		   double arcStart_, double arcEnd_ );
-    
-    // Filled Ellipse
-    void fillEllipse ( double originX_, double originY_, 
-		       double width_, double height_,
-		       double arcStart_, double arcEnd_ );
-    void fillEllipse ( const Coordinate &originCoordinate_, 
-		       double width_, double height_,
-		       double arcStart_, double arcEnd_ );
-    
+
     // Polygon (Coordinate list must contain at least three members)
     void polygon ( const std::list<Magick::Coordinate> &coordinates_ );
     
-    // Filled Polygon (vectors_ is number coordinates)
-    void fillPolygon ( const std::list<Magick::Coordinate> &coordinates_ );
-
     // Bezier curve (Coordinate list must contain at least three members)
     void bezier ( const std::list<Magick::Coordinate> &coordinates_ );
     
@@ -279,21 +256,6 @@ inline void Magick::Drawable::rectangle ( double upperLeftX_,
 	     Coordinate( lowerRightX_, lowerRightY ) );
 }
 
-// Filled Rectangle
-inline void Magick::Drawable::fillRectangle ( const Magick::Coordinate &upperLeftCoordinate_,
-					      const Magick::Coordinate &lowerRightCoordinate_ )
-{
-  two_arg_impl( "fillRectangle", upperLeftCoordinate_, lowerRightCoordinate_ );
-}
-inline void Magick::Drawable::fillRectangle ( double upperLeftX_,
-					      double upperLeftY_,
-					      double lowerRightX_,
-					      double lowerRightY )
-{
-  fillRectangle( Coordinate( upperLeftX_, upperLeftY_ ),
-		 Coordinate( lowerRightX_, lowerRightY ) );
-}
-
 // Circle
 inline void Magick::Drawable::circle ( const Magick::Coordinate &originCoordinate_,
 				       const Magick::Coordinate &perimCoordinate_ )
@@ -309,21 +271,6 @@ inline void Magick::Drawable::circle ( double originX_,
 	  Coordinate( perimX_, perimY_ ) );
 }
 
-// Filled Circle
-inline void Magick::Drawable::fillCircle ( const Magick::Coordinate &originCoordinate_,
-					   const Magick::Coordinate &perimCoordinate_ )
-{
-  two_arg_impl( "fillCircle", originCoordinate_, perimCoordinate_ );
-}
-inline void Magick::Drawable::fillCircle ( double originX_,
-					   double originY_,
-					   double perimX_,
-					   double perimY_ )
-{
-  fillCircle( Coordinate( originX_, originY_ ),
-	      Coordinate( perimX_, perimY_ ) );
-}
-
 // Ellipse
 inline void Magick::Drawable::ellipse ( double originX_,
 					double originY_, 
@@ -337,29 +284,10 @@ inline void Magick::Drawable::ellipse ( double originX_,
 	   arcStart_, arcEnd_ );
 }
 
-// Filled Ellipse
-inline void Magick::Drawable::fillEllipse ( double originX_,
-					    double originY_, 
-					    double width_,
-					    double height_,
-					    double arcStart_,
-					    double arcEnd_ )
-{
-  fillEllipse( Coordinate( originX_, originY_ ),
-	       width_, height_,
-	       arcStart_, arcEnd_ );
-}
-
 // Polygon (Coordinate list must contain at least three members)
 inline void Magick::Drawable::polygon ( const std::list<Magick::Coordinate> &coordinates_ )
 {
   list_arg_impl( "polygon", coordinates_ );
-}
-
-// Filled Polygon (Coordinate list must contain at least three members)
-inline void Magick::Drawable::fillPolygon ( const std::list<Magick::Coordinate> &coordinates_ )
-{
-  list_arg_impl( "fillPolygon", coordinates_ );
 }
 
 // Bezier curve (Coordinate list must contain at least three members)

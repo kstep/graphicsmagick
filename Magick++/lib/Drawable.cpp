@@ -47,20 +47,6 @@ void Magick::Drawable::ellipse( const Magick::Coordinate &originCoordinate_,
   _primitive.assign( buffer );
 }
 
-// Filled Ellipse
-void Magick::Drawable::fillEllipse( const Magick::Coordinate &originCoordinate_, 
-				    double width_, double height_,
-				    double arcStart_, double arcEnd_ )
-{
-  char buffer[MaxTextExtent + 1];
-  ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "fillEllipse " << originCoordinate_
-	  << " " << width_ << "," << height_
-	  << " " << arcStart_ << "," << arcEnd_
-	  << ends;
-  _primitive.assign( buffer );
-}
-
 // Colorize at point using PaintMethod
 void Magick::Drawable::color( const Magick::Coordinate &coordinate_,
 			      Magick::PaintMethod paintMethod_ )

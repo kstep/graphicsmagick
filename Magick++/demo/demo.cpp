@@ -59,7 +59,7 @@ int main( int /*argc*/, char ** /*argv*/)
     cout << "  annotate ..." << endl;
     example.label( "Annotate" );
     example.font( "@Generic.ttf" );
-    example.penColor( "gold" );
+    example.strokeColor( "gold" );
     example.annotate( "Magick++", "+0+10", NorthGravity );
     images.push_back( example );
 
@@ -109,7 +109,7 @@ int main( int /*argc*/, char ** /*argv*/)
     cout << "  draw ..." << endl;
     example = model;
     example.label( "Draw" );
-    example.penColor( "gold" );
+    example.strokeColor( "gold" );
     example.lineWidth( 2 );
     Drawable drawable;
     drawable.circle( 60,90, 60,120 );
@@ -307,10 +307,11 @@ int main( int /*argc*/, char ** /*argv*/)
     title.font( "@Generic.ttf" );
     title.fontPointsize( 18 );
     title.density( "300x300" );
-    title.penColor( "white" );
+    title.strokeColor( "white" );
+    title.fillColor( "white" );
     title.annotate( "Magick++", "+1+1", CenterGravity );
 
-    title.penColor( "black" );
+    title.strokeColor( "black" );
     drawable.matte( 0, 0, ReplaceMethod );
     title.draw( drawable );
     title.composite( background, 0, 0, AddCompositeOp );
@@ -324,7 +325,7 @@ int main( int /*argc*/, char ** /*argv*/)
 
     Image& imageRef = images.front();
     imageRef.font( "@Generic.ttf" );
-    imageRef.penColor( "#600" );
+    imageRef.strokeColor( "#600" );
 
     MontageFramed montageOpts;
     montageOpts.borderColor( "green" );
@@ -345,7 +346,7 @@ int main( int /*argc*/, char ** /*argv*/)
 
     final.font( "@Generic.ttf" );
     final.fontPointsize( 11 );
-    final.penColor( "#600" );
+    final.strokeColor( "#600" );
     final.annotate( "Every thing you see on this page was created with the "\
 		    "Magick++ and ImageMagick libraries.",
 		    "+20+175" );

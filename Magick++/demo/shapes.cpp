@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // GD/PerlMagick example using Magick++ methods.
 //
@@ -26,16 +26,18 @@ int main( int /*argc*/, char ** /*argv*/)
     //
     Image image( "300x300", "white" );
 
+    // Polygon list
+    std::list<Coordinate> poly;
+
     //
-    // Draw shapes.
+    // Draw texture-filled polygon
     //
     Drawable drawable;
-    std::list<Coordinate> poly;
     poly.push_back( Coordinate(30,30) );
     poly.push_back( Coordinate(100,10) );
     poly.push_back( Coordinate(190,290) );
     poly.push_back( Coordinate(30,290) );
-    drawable.fillPolygon( poly );
+    drawable.polygon( poly );
 
     Image texture( "tile.miff" );
     image.penTexture( texture );
@@ -43,56 +45,62 @@ int main( int /*argc*/, char ** /*argv*/)
     texture.isValid( false );
     image.penTexture( texture );  // Unset texture
 
-    image.penColor( "red" );
-    drawable.fillEllipse( 100,100, 100,150, 0,360 );
-    image.draw( drawable );
-
-    image.penColor( "black" );
+    //
+    // Draw filled ellipse with black border, and red fill color
+    //
+    image.strokeColor( "black" );
+    image.fillColor( "red" );
     image.lineWidth( 5 );
+    drawable.ellipse( 100,100, 100,150, 0,360 );
+    image.draw( drawable );
+    image.fillColor( Color() ); // Clear out fill color
 
-    // Create drawables list
+    //
+    // Draw ellipse, and polygon, with black stroke, linewidth of 5
+    //
+    image.strokeColor( "black" );
+    image.lineWidth( 5 );
     list<Drawable> drawlist;
 
-    // Add ellipse to drawables list
+    // Add ellipse to list
     drawable.ellipse( 100,100, 100,150, 0,360 );
     drawlist.push_back( drawable );
 
-    // Add arbitrary polygon to drawables list
+    // Add polygon to list
     poly.clear();
     poly.push_back( Coordinate(30,30) );
     poly.push_back( Coordinate(100,10) );
     poly.push_back( Coordinate(190,290) );
     poly.push_back( Coordinate(30,290) );
-    poly.push_back( Coordinate(30,30) );
     drawable.polygon( poly );
     drawlist.push_back( drawable );
-
-    // Draw using drawables list
     image.draw( drawlist );
 
+    //
+    // Floodfill object with blue
+    //
     image.colorFuzz( 80 );
     image.floodFillColor( "+132+62", "blue" );
 
-    image.penColor( "red" );
+    //
+    // Draw text
+    //
+    image.fillColor( "red" );
     image.font( "@Generic.ttf" );
     image.fontPointsize( 12 );
     image.annotate( "Hello world!", "+150+10" );
 
-    image.penColor( "blue" );
+    image.fillColor( "blue" );
     image.font( "@Generic.ttf" );
     image.fontPointsize( 10 );
     image.annotate( "Goodbye cruel world!", "+150+28" );
 
-    //
-    // Write rotated text.
-    //
-    image.rotate( 90 );
-    image.penColor( "black" );
+    image.fillColor( "black" );
     image.font( "@Generic.ttf" );
     image.fontPointsize( 10 );
-    image.annotate( "I'm climbing the wall!", "+20+280" );
-    image.rotate( -90 );
-
+    image.annotate( "I'm climbing the wall!", "+280+150",
+                    NorthWestGravity, 90.0);
+    //image.display();
     //
     // Write image.
     //

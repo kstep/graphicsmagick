@@ -267,7 +267,10 @@ Magick::Geometry Magick::Options::page ( void ) const
 void Magick::Options::penTexture ( const MagickLib::Image *penTexture_ )
 {
   if ( _drawInfo->tile )
-    DestroyImage( _drawInfo->tile );
+    {
+      DestroyImage( _drawInfo->tile );
+      _drawInfo->tile = (MagickLib::Image*)NULL;
+    }
 
   if ( penTexture_ )
     {

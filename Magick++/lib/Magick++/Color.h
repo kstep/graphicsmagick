@@ -147,7 +147,7 @@ namespace Magick
     PixelType			_pixelType;
 
     // Object represents a valid color
-    bool                        _valid;
+    //bool                        _valid;
   };
 
   //
@@ -284,12 +284,14 @@ namespace Magick
 //
 
 // Common initializer for PixelPacket representation
+// Initialized to state that ImageMagick considers to be
+// an invalid color.
 inline void Magick::Color::initPixel()
 {
   _pixel->red     = 0;
   _pixel->green   = 0;
   _pixel->blue    = 0;
-  _pixel->opacity = MaxRGB;
+  _pixel->opacity = Transparent;
 }
 
 inline Magick::Color::Color ( Quantum red_,
@@ -297,8 +299,7 @@ inline Magick::Color::Color ( Quantum red_,
 			      Quantum blue_ )
   : _pixel(new MagickLib::PixelPacket),
     _pixelOwn(true),
-    _pixelType(RGBPixel),
-    _valid(true)
+    _pixelType(RGBPixel)
 {
   redQuantum   ( red_   );
   greenQuantum ( green_ );
@@ -312,8 +313,7 @@ inline Magick::Color::Color ( Quantum red_,
 			      Quantum alpha_ )
   : _pixel(new MagickLib::PixelPacket),
     _pixelOwn(true),
-    _pixelType(RGBAPixel),
-    _valid(true)
+    _pixelType(RGBAPixel)
 {
   redQuantum   ( red_   );
   greenQuantum ( green_ );
@@ -325,8 +325,7 @@ inline Magick::Color::Color ( Quantum red_,
 inline Magick::Color::Color ( const std::string x11color_ )
   : _pixel(new MagickLib::PixelPacket),
     _pixelOwn(true),
-    _pixelType(RGBPixel),
-    _valid(true)
+    _pixelType(RGBPixel)
 {
   initPixel();
 
@@ -338,8 +337,7 @@ inline Magick::Color::Color ( const std::string x11color_ )
 inline Magick::Color::Color ( const char * x11color_ )
   : _pixel(new MagickLib::PixelPacket),
     _pixelOwn(true),
-    _pixelType(RGBPixel),
-    _valid(true)
+    _pixelType(RGBPixel)
 {
   initPixel();
 
@@ -351,8 +349,7 @@ inline Magick::Color::Color ( const char * x11color_ )
 inline Magick::Color::Color ( void )
   : _pixel(new MagickLib::PixelPacket),
     _pixelOwn(true),
-    _pixelType(RGBPixel),
-    _valid(false)
+    _pixelType(RGBPixel)
 {
   initPixel();
 }
@@ -415,9 +412,16 @@ inline double Magick::Color::alpha ( void ) const
 }
 
 // Does object contain valid color?
+inline bool Magick::Color::isValid ( void ) const
+{
+  return( _pixel->opacity != Transparent ||
+          _pixel->red != 0 ||
+          _pixel->green != 0 ||
+          _pixel->blue != 0 );
+}
 inline void Magick::Color::isValid ( bool valid_ )
 {
-  if ( (valid_ && _valid) || (!valid_ && !_valid) )
+  if ( (valid_ && isValid()) || (!valid_ && !isValid()) )
     return;
 
   if ( !_pixelOwn )
@@ -427,12 +431,6 @@ inline void Magick::Color::isValid ( bool valid_ )
     }
 
   initPixel();
-
-  _valid = valid_;
-}
-inline bool Magick::Color::isValid ( void ) const
-{
-  return _valid;
 }
 
 // Protected constructor to construct with PixelPacket*
@@ -440,11 +438,8 @@ inline bool Magick::Color::isValid ( void ) const
 inline Magick::Color::Color ( MagickLib::PixelPacket* rep_, PixelType pixelType_  )
   : _pixel(rep_),
     _pixelOwn(false),
-    _pixelType(pixelType_),
-    _valid(false)
+    _pixelType(pixelType_)
 {
-  if ( _pixel )
-    _valid = true;
 }
 
     // Set pixel
@@ -456,8 +451,6 @@ inline void Magick::Color::pixel ( MagickLib::PixelPacket* rep_, PixelType pixel
   _pixel = rep_;
   _pixelOwn = false;
   _pixelType = pixelType_;
-  if ( _pixel )
-    _valid = true;
 }
 
 //

@@ -90,9 +90,6 @@ Magick::Color::Color ( const Color & color_ )
       
       // Copy pixel type
       _pixelType = color_._pixelType;
-
-      // Copy validity
-      _valid = color_._valid;
     }
 }
 
@@ -106,9 +103,6 @@ Magick::Color Magick::Color::operator = ( const Color& color_ )
 
       // Copy pixel type
       _pixelType = color_._pixelType;
-
-      // Copy pixel validity
-      _valid = color_._valid;
     }
   return *this;
 }
@@ -187,8 +181,7 @@ Magick::Color::operator std::string() const
 Magick::Color::Color ( PixelPacket &color_ )
   : _pixel(new PixelPacket),
     _pixelOwn(true),	    // We allocated this pixel
-    _pixelType(RGBPixel),  // RGB pixel by default
-    _valid(true)
+    _pixelType(RGBPixel)  // RGB pixel by default
 {
   *_pixel = color_;
 
