@@ -137,6 +137,16 @@ Export MagickInfo *GetMagickInfo(const char *tag)
   register MagickInfo
     *p;
 
+  MagickInfo
+    *return_value = (MagickInfo *)NULL;
+
+#if defined(HasPTHREADS)
+  static pthread_mutex_t
+    magick_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+  pthread_mutex_lock(&magick_mutex);
+#endif
+
   if (magick_info_list == (MagickInfo *) NULL)
     {
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
@@ -216,23 +226,45 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       RegisterYUVImage();
 #endif
     }
+  /*
+    If tag is NULL, then return head of list
+  */
   if (tag == (char *) NULL)
-    return(magick_info_list);
+    {
+      return_value = magick_info_list;
+      goto return_result;
+    }
+  /*
+    An empty tag is not worth looking up.
+  */
   if (*tag == '\0')
-    return((MagickInfo *) NULL);
+    goto return_result;
+  /*
+    Find tag in list
+  */
   for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
-      return(p);
+      {
+        return_value = p;
+        goto return_result;
+      }
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
   /*
-    Try loading format module.
+    Try loading format module, and see if support is added to list.
   */
   if (LoadDynamicModule(tag))
     for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
       if (LocaleCompare(p->tag,tag) == 0)
-        return(p);
+        {
+          return_value = p;
+          goto return_result;
+        }
 #endif
-  return((MagickInfo *) NULL);
+ return_result:
+#if defined(HasPTHREADS)
+  pthread_mutex_unlock(&magick_mutex);
+#endif
+  return(return_value);
 }
 
 /*
