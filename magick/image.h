@@ -150,6 +150,16 @@ typedef struct _ColorInfo
     color;
 } ColorInfo;
 
+typedef struct _ElementInfo
+{   
+  double
+    cx,
+    cy,
+    major,
+    minor,
+    angle;
+} ElementInfo;
+
 typedef struct _ExceptionInfo
 {
   unsigned long

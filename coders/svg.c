@@ -91,16 +91,6 @@ typedef struct _BoundingBox
     height;
 } BoundingBox;
 
-typedef struct _ElementInfo
-{
-  double
-    cx,
-    cy,
-    major,
-    minor,
-    angle;
-} ElementInfo;
-
 typedef struct _SVGInfo
 {
   FILE
