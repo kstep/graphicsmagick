@@ -501,10 +501,10 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         {
           switch (compression)
           {
-            case JPEGCompression: sprintf(buffer,*q,"DCTDecode"); break;
-            case LZWCompression: sprintf(buffer,*q,"LZWDecode"); break;
-            case ZipCompression: sprintf(buffer,*q,"FlateDecode"); break;
-            default: sprintf(buffer,*q,"RunLengthDecode"); break;
+            case JPEGCompression: FormatString(buffer,*q,"DCTDecode"); break;
+            case LZWCompression: FormatString(buffer,*q,"LZWDecode"); break;
+            case ZipCompression: FormatString(buffer,*q,"FlateDecode"); break;
+            default: FormatString(buffer,*q,"RunLengthDecode"); break;
           }
           (void) WriteBlob(image,strlen(buffer),buffer);
           (void) WriteByte(image,'\n');
@@ -612,7 +612,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           jpeg_image=CloneImage(image,0,0,True,&image->exception);
           if (jpeg_image == (Image *) NULL)
             ThrowWriterException(DelegateWarning,"Unable to clone image",image);
-          (void) FormatString(jpeg_image->filename,"jpeg:%s",filename);
+          (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
           status=WriteImage(image_info,jpeg_image);
           DestroyImage(jpeg_image);
           if (status == False)

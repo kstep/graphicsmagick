@@ -197,12 +197,12 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
     *path;
 
   path=AllocateString(filename);
-  FormatString(path,"%s%s",MagickModulesPath,filename);
+  FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
   if (IsAccessible(path))
     return(path);
   if (getenv("HOME") != (char *) NULL)
     {
-      FormatString(path,"%s%s%s%s%s",getenv("HOME"),
+      FormatString(path,"%.1024s%.1024s%.1024s%.1024s%.1024s",getenv("HOME"),
         *getenv("HOME") == '/' ? ".magick" : "",DirectorySeparator,
         DirectorySeparator,filename);
       if (IsAccessible(path))
@@ -210,19 +210,19 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
     }
   if (getenv("MAGICK_HOME") != (char *) NULL)
     {
-      FormatString(path,"%s%s%s",getenv("MAGICK_HOME"),DirectorySeparator,
-        filename);
+      FormatString(path,"%.1024s%.1024s%.1024s",getenv("MAGICK_HOME"),
+        DirectorySeparator,filename);
       if (IsAccessible(path))
         return(path);
     }
-  FormatString(path,"%s%s%s",SetClientPath((char *) NULL),DirectorySeparator,
-    filename);
+  FormatString(path,"%.1024s%.1024s%.1024s",SetClientPath((char *) NULL),
+    DirectorySeparator,filename);
   if (IsAccessible(path))
     return(path);
-  FormatString(path,"%s%s",MagickConfigurePath,filename);
+  FormatString(path,"%.1024s%.1024s",MagickConfigurePath,filename);
   if (IsAccessible(path))
     return(path);
-  FormatString(path,"%s%s",X11ConfigurePath,filename);
+  FormatString(path,"%.1024s%.1024s",X11ConfigurePath,filename);
   if (IsAccessible(path))
     return(path);
   LiberateMemory((void **) &path);
@@ -476,11 +476,7 @@ MagickExport void MagickIncarnate(const char *path)
       /*
         Set client path.
       */
-#if !defined(WIN32)
-      filename=AllocateString(path);
-#else
-      filename=NTGetExecutionPath();
-#endif
+      filename=GetExecutionPath(path);
       for (p=filename+(Extent(filename)-1); p > filename; p--)
         if (IsBasenameSeparator(*p))
           {

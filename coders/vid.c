@@ -299,7 +299,7 @@ static unsigned int WriteVIDImage(const ImageInfo *image_info,Image *image)
   montage_image=MontageImages(image,montage_info,&image->exception);
   if (montage_image == (Image *) NULL)
     ThrowWriterException(CorruptImageWarning,"unable to write VID image",image);
-  FormatString(montage_image->filename,"miff:%s",image->filename);
+  FormatString(montage_image->filename,"miff:%.1024s",image->filename);
   status=WriteImage(image_info,montage_image);
   DestroyImages(montage_image);
   return(status);

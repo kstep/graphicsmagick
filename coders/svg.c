@@ -1786,7 +1786,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Open draw file.
   */
   TemporaryFilename(filename);
-  /* FormatString(filename,"C:\\Temp\\%s.mvg",image_info->filename); */
   file=fopen(filename,"w");
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);

@@ -129,7 +129,8 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
     Recursively apply plasma to the image.
   */
   clone_info=CloneImageInfo(image_info);
-  (void) FormatString(clone_info->filename,"gradient:%s",image_info->filename);
+  (void) FormatString(clone_info->filename,"gradient:%.1024s",
+    image_info->filename);
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)

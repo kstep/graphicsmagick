@@ -716,6 +716,45 @@ MagickExport void FormatString(char *string,const char *format,...)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t E x e c u t i o n P a t h                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetExecutionPath function returns the pathname of the executable
+%  that started the process.
+%
+%  The format of the GetExecutionPath method is:
+%
+%      char *GetExecutionPath(const char *path)
+%
+%  A description of each parameter follows:
+%
+%    o execution_path: Method GetExecutionPath returns the pathname of the
+%      executable that started the process.
+%
+%    o path: This character string is returned if no method is available to
+%      determine the pathname of the executable.
+%
+%
+*/
+MagickExport char *GetExecutionPath(const char *path)
+{
+#if defined(HAVE_GETEXECNAME)
+  return(AllocateString(getexecname(void));
+#endif
+#if defined(WIN32)
+  return(NTGetExecutionPath(void));
+#endif
+  return(AllocateString(path));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t G e o m e t r y                                                     %
 %                                                                             %
 %                                                                             %

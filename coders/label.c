@@ -1023,8 +1023,8 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
           p++;
         }
       }
-      (void) sprintf(geometry,"%ux%u%+d%+d",crop_info.width+1,crop_info.height,
-        crop_info.x,crop_info.y);
+      (void) FormatString(geometry,"%ux%u%+d%+d",crop_info.width+1,
+        crop_info.height,crop_info.x,crop_info.y);
       TransformImage(&image,geometry,(char *) NULL);
     }
   image->matte=True;

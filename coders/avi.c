@@ -787,7 +787,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) ReadByte(image);
         continue;
       }
-    FormatString(message,"AVI support for chunk %s not yet available",id);
+    FormatString(message,"AVI support for chunk %.1024s not yet available",id);
     ThrowReaderException(CorruptImageWarning,message,image);
   }
   while (image->previous != (Image *) NULL)

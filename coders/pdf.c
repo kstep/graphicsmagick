@@ -840,10 +840,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         {
           switch (compression)
           {
-            case JPEGCompression: sprintf(buffer,CFormat,"DCTDecode"); break;
-            case LZWCompression: sprintf(buffer,CFormat,"LZWDecode"); break;
-            case ZipCompression: sprintf(buffer,CFormat,"FlateDecode"); break;
-            default: sprintf(buffer,CFormat,"RunLengthDecode"); break;
+            case JPEGCompression:
+              FormatString(buffer,CFormat,"DCTDecode"); break;
+            case LZWCompression:
+              FormatString(buffer,CFormat,"LZWDecode"); break;
+            case ZipCompression:
+              FormatString(buffer,CFormat,"FlateDecode"); break;
+            default: FormatString(buffer,CFormat,"RunLengthDecode"); break;
           }
           (void) WriteBlob(image,strlen(buffer),buffer);
         }
@@ -897,7 +900,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           jpeg_image=CloneImage(image,0,0,True,&image->exception);
           if (jpeg_image == (Image *) NULL)
             ThrowWriterException(DelegateWarning,"Unable to clone image",image);
-          (void) FormatString(jpeg_image->filename,"jpeg:%s",filename);
+          (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
           status=WriteImage(image_info,jpeg_image);
           DestroyImage(jpeg_image);
           if (status == False)

@@ -159,7 +159,7 @@ ModuleExport void UnregisterPS3Image(void)
 */
 static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 {
-#define CFormat  "/%s filter "
+#define CFormat  "/%.1024s filter "
 
   char
     buffer[MaxTextExtent],
@@ -338,10 +338,11 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       {
         switch (compression)
         {
-          case JPEGCompression: sprintf(buffer,CFormat,"DCTDecode"); break;
-          case LZWCompression: sprintf(buffer,CFormat,"LZWDecode"); break;
-          case ZipCompression: sprintf(buffer,CFormat,"FlateDecode"); break;
-          default: sprintf(buffer,CFormat,"RunLengthDecode"); break;
+          case JPEGCompression: FormatString(buffer,CFormat,"DCTDecode"); break;
+          case LZWCompression: FormatString(buffer,CFormat,"LZWDecode"); break;
+          case ZipCompression:
+            FormatString(buffer,CFormat,"FlateDecode"); break;
+          default: FormatString(buffer,CFormat,"RunLengthDecode"); break;
         }
         (void) WriteBlob(image,strlen(buffer),buffer);
       }

@@ -1215,7 +1215,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
         element=AllocateString(p);
         element[q-p]='\0';
-        (void) fprintf(stdout,"%s\n",element);
+        (void) fprintf(stdout,"%.1024s\n",element);
         LiberateMemory((void **) &element);
       }
     if (primitive_type == UndefinedPrimitive)

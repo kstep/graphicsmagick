@@ -346,7 +346,8 @@ static int ReadMagicConfigureFile()
       char
         message[MaxTextExtent];
 
-      FormatString(message,"%s:%d: syntax: \"%s\"\n",path,line_number,p);
+      FormatString(message,"%.1024s:%d: syntax: \"%.1024s\"\n",path,
+        line_number,p);
       MagickWarning(OptionWarning,message,(char *) NULL);
       continue;
     }
@@ -355,8 +356,8 @@ static int ReadMagicConfigureFile()
       char
         message[MaxTextExtent];
 
-      FormatString(message,"%s:%d: syntax: \"%s\"\n",message,line_number,
-        "unexpected end of line");
+      FormatString(message,"%.1024s:%d: syntax: \"%.1024s\"\n",message,
+        line_number,"unexpected end of line");
       MagickWarning(OptionWarning,message,(char *) NULL);
       continue;
     }

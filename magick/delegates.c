@@ -353,7 +353,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
         (void) fprintf(file,"-\n");
         (void) fprintf(file,"-\n");
         (void) fprintf(file,"-\n");
-        (void) fprintf(file,"%s\n",image_info->zero);
+        (void) fprintf(file,"%.1024s\n",image_info->zero);
         (void) fprintf(file,"1\n");
         (void) fprintf(file,"%u\n",GetNumberScenes(image));
         (void) fprintf(file,"0\n");
@@ -555,7 +555,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
     tag[i]='\0';
     if (p->encode_tag != (char *) NULL)
       (void) strncpy(tag,p->encode_tag,strlen(p->encode_tag));
-    (void) fprintf(file,"%10s%s=%s%s  %s\n",
+    (void) fprintf(file,"%10s%.1024s=%.1024s%.1024s  %s\n",
       p->decode_tag ? p->decode_tag : "",p->direction <= 0 ? "<" : " ",
       p->direction >= 0 ? ">" : " ",tag,delegate);
   }

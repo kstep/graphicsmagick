@@ -169,7 +169,7 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
       char
         message[MaxTextExtent];
 
-      FormatString(message,"failed to load module \"%s\"",module_name);
+      FormatString(message,"failed to load module \"%.1024s\"",module_name);
       MagickWarning(MissingDelegateWarning,message,lt_dlerror());
     }
   else
@@ -567,7 +567,7 @@ MagickExport int OpenModule(const char *module)
       handle=lt_dlopen(path);
       if (handle == (ModuleHandle) NULL)
         {
-          FormatString(message,"failed to load module \"%s\"",path);
+          FormatString(message,"failed to load module \"%.1024s\"",path);
           MagickWarning(MissingDelegateWarning,message,lt_dlerror());
         }
       LiberateMemory((void **) &path);
@@ -785,10 +785,10 @@ char *TagToProcess(const char *tag)
   assert(tag != (char *) NULL);
   module_name=AllocateString((char *) NULL);
 #if !defined(_VISUALC_)
-  (void) FormatString(module_name,"%s.la",tag);
+  (void) FormatString(module_name,"%.1024s.la",tag);
   (void) LocaleLower(module_name);
 #else
-  (void) FormatString(module_name,"%s.dll",tag);
+  (void) FormatString(module_name,"%.1024s.dll",tag);
 #endif
   return(module_name);
 }
@@ -825,7 +825,7 @@ char *TagToModule(const char *tag)
   assert(tag != (char *) NULL);
   module_name=AllocateString("tag");
 #if !defined(_VISUALC_)
-  (void) FormatString(module_name,"%s.la",tag);
+  (void) FormatString(module_name,"%.1024s.la",tag);
   (void) LocaleLower(module_name);
 #else
   if (LocaleNCompare("IM_MOD_",tag,7) == 0)
@@ -833,9 +833,9 @@ char *TagToModule(const char *tag)
   else
     {
 #if defined(_DEBUG)
-      FormatString(module_name,"IM_MOD_DB_%s_.dll",tag);
+      FormatString(module_name,"IM_MOD_DB_%.1024s_.dll",tag);
 #else
-      FormatString(module_name,"IM_MOD_RL_%s_.dll",tag);
+      FormatString(module_name,"IM_MOD_RL_%.1024s_.dll",tag);
 #endif
     }
 #endif

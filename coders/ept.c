@@ -354,7 +354,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Ghostscript has failed-- try the Display Postscript Extension.
       */
-      (void) FormatString((char *) image_info->filename,"dps:%s",filename);
+      (void) FormatString((char *) image_info->filename,"dps:%.1024s",filename);
       image=ReadImage((ImageInfo *) image_info,exception);
       if (image != (Image *) NULL)
         return(image);

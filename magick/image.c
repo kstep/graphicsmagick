@@ -1851,7 +1851,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       (*magick_info->description == '\0'))
     (void) fprintf(file,"  Format: %.1024s\n",image->magick);
   else
-    (void) fprintf(file,"  Format: %.1024s (%s)\n",image->magick,
+    (void) fprintf(file,"  Format: %.1024s (%.1024s)\n",image->magick,
       magick_info->description);
   (void) fprintf(file,"  Type: ");
   switch (GetImageType(image))
@@ -2071,7 +2071,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           default: tag="unknown"; break;
         }
         i++;
-        (void) fprintf(file,"    %s:\n",tag);
+        (void) fprintf(file,"    %.1024s:\n",tag);
         length=image->iptc_profile.info[i++] << 8;
         length|=image->iptc_profile.info[i++];
         text=(char *) AcquireMemory(length+1);
@@ -2104,7 +2104,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   {
     if (image->generic_profile[i].length == 0)
       continue;
-    (void) fprintf(file,"  Profile-%s: %u bytes\n",
+    (void) fprintf(file,"  Profile-%.1024s: %u bytes\n",
       image->generic_profile[i].name == (char *) NULL ? "generic" :
       image->generic_profile[i].name,image->generic_profile[i].length);
   }
@@ -2238,7 +2238,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         attribute=GetImageAttribute(tile,(char *) NULL);
         while (attribute != (ImageAttribute *) NULL)
         {
-          (void) fprintf(file,"  %s:\n",attribute->key);
+          (void) fprintf(file,"  %.1024s:\n",attribute->key);
           (void) fprintf(file,"%s\n",attribute->value);
           attribute=attribute->next;
         }
@@ -2252,7 +2252,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   attribute=GetImageAttribute(image,(char *) NULL);
   while (attribute != (ImageAttribute *) NULL)
   {
-    (void) fprintf(file,"  %s: ",attribute->key);
+    (void) fprintf(file,"  %.1024s: ",attribute->key);
     (void) fprintf(file,"%s\n",attribute->value);
     attribute=attribute->next;
   }
