@@ -850,7 +850,8 @@ MagickExport unsigned int SpliceImageIntoList(Image **images,const long offset,
   const unsigned long length,Image *splices,ExceptionInfo *exception)
 {
   Image
-    *image;
+    *image,
+    *next;
 
 	register int
     i;
@@ -868,6 +869,9 @@ MagickExport unsigned int SpliceImageIntoList(Image **images,const long offset,
       break;
   if (image == (Image *) NULL)
     return(False);
+  next=image;
+  for (i=0; i < length; i++)
+    next=next->next;
   if ((image->previous != (Image *) NULL) && (image->next != (Image *) NULL))
     *images=splices;
   else
@@ -879,16 +883,19 @@ MagickExport unsigned int SpliceImageIntoList(Image **images,const long offset,
             splices=splices->previous;
           splices->previous=image->previous;
         }
-      for (i=0; i < length; i++)
-        image=image->next;
-      if (image->next != (Image *) NULL)
+      if (next->next != (Image *) NULL)
         {
           while (splices->next != (Image *) NULL)
             splices=splices->next;
-          splices->next=image->next;
-          image->next->previous=splices;
+          splices->next=next->next;
+          next->next->previous=splices;
         }
     }
-  DestroyImage(image);
+  for (i=0; i < length; i++)
+  {
+    next=image;
+    image=image->next;
+    DestroyImage(next);
+  }
   return(True);
 }
