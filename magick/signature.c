@@ -492,9 +492,6 @@ MagickExport unsigned int SignatureImage(Image *image)
   unsigned char
     *message;
 
-  unsigned int
-    packet_size;
-
   /*
     Allocate memory for digital signature.
   */
@@ -543,7 +540,7 @@ MagickExport unsigned int SignatureImage(Image *image)
         else
           {
             *q++=XUpScale(MaxRGB) >> 8;
-            *q++=XUpScale(MaxRGB);
+            *q++=XUpScale(MaxRGB) & 0xff;
           }
       p++;
     }

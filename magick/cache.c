@@ -1015,8 +1015,7 @@ MagickExport unsigned int OpenCache(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->cache == (void *) NULL)
-    return;
+  assert(image->cache != (void *) NULL);
   if (cache_threshold == ~0)
     {
       off_t
