@@ -335,7 +335,7 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       if (image_info->signature != MagickSignature)
         {
           ThrowException(exception,RegistryWarning,"Unable to set registry",
-            "Image expected");
+            "Image info expected");
           return(-1);
         }
       clone_blob=(void *) CloneImageInfo(image_info);
