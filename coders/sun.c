@@ -117,8 +117,7 @@ static unsigned int IsSUN(const unsigned char *magick,const unsigned int length)
 %  The format of the DecodeImage method is:
 %
 %      unsigned int DecodeImage(const unsigned char *compressed_pixels,
-%        const unsigned int number_columns,const unsigned int number_rows,
-%        unsigned char *pixels)
+%        const unsigned int length,unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -128,22 +127,18 @@ static unsigned int IsSUN(const unsigned char *magick,const unsigned int length)
 %    o compressed_pixels:  The address of a byte (8 bits) array of compressed
 %      pixel data.
 %
+%    o length:  An integer value that is the total number of bytes of the
+%      source image (as just read by ReadBlob)
+%
 %    o pixels:  The address of a byte (8 bits) array of pixel data created by
 %      the uncompression process.  The number of bytes in this array
 %      must be at least equal to the number columns times the number of rows
 %      of the source pixels.
 %
-%    o number_columns:  An integer value that is the number of columns or
-%      width in pixels of your source image.
-%
-%    o number_rows:  An integer value that is the number of rows or
-%      heigth in pixels of your source image.
-%
 %
 */
 static unsigned int DecodeImage(const unsigned char *compressed_pixels,
-  const unsigned int number_columns,const unsigned int number_rows,
-  unsigned char *pixels)
+  const unsigned int length,unsigned char *pixels)
 {
   register const unsigned char
     *p;
@@ -161,7 +156,7 @@ static unsigned int DecodeImage(const unsigned char *compressed_pixels,
   assert(pixels != (unsigned char *) NULL);
   p=compressed_pixels;
   q=pixels;
-  while ((q-pixels) < (int) (number_columns*number_rows))
+  while ((p-compressed_pixels) < length)
   {
     byte=(*p++);
     if (byte != 128)
@@ -396,7 +391,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (sun_pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
-        (void) DecodeImage(sun_data,bytes_per_line,height,sun_pixels);
+        (void) DecodeImage(sun_data,sun_info.length,sun_pixels);
         LiberateMemory((void **) &sun_data);
       }
     /*
