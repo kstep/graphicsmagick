@@ -3,16 +3,19 @@ Magick++ release numbering tracks ImageMagick release numbering so the
 Magick++ release number increments even if there are no changes associated
 with Magick++ itself.
 
-(5.3.9)
-  * New Image method 'fontTypeMetrics()' to obtain font type metrics.
-
-  * New class 'TypeMetric' to contain font type metrics.
-
+(5.3.8.2)
   * User now may tell Blob updateNoCopy() what memory system (C or C++)
     the memory was allocated from.  Used to assume the C++ allocator.
     This resolves a bug on some platforms.
 
+(5.3.8.1)
+  * No change
+
 (5.3.8)
+  * New class 'TypeMetric' to contain font type metrics.
+
+  * New Image method 'fontTypeMetrics()' to obtain font type metrics.
+
   * Image colorMap method automatically extends the colormap if index
     is past the end of the current colormap.
 
