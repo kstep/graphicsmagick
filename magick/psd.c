@@ -744,6 +744,8 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
             break;
         }
       }
+      if (image->matte)
+        MatteImage(image,Transparent);
       FreeMemory(scanline);
     }
   if (image->colorspace == CMYKColorspace)
