@@ -256,17 +256,20 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
           return(path);
         }
       /*
-        Search executable directory.
+        Search executable directory if directory is known.
       */
-      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
-        DirectorySeparator,filename);
-      if (IsAccessible(path))
+      if ( *SetClientPath((char *) NULL) != '\0')
         {
-          LiberateMemory((void **) &search_path);
-          return(path);
+          FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
+                       DirectorySeparator,filename);
+          if (IsAccessible(path))
+            {
+              LiberateMemory((void **) &search_path);
+              return(path);
+            }
+          ConcatenateString(&search_path,"; Client Path:");
+          ConcatenateString(&search_path,path);
         }
-      ConcatenateString(&search_path,"; Client Path:");
-      ConcatenateString(&search_path,path);
       if (getenv("HOME") != (char *) NULL)
         {
           /*

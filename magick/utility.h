@@ -39,13 +39,13 @@ extern MagickExport char
   **ListFiles(const char *,const char *,long *),
   *PostscriptGeometry(const char *),
   *SetClientName(const char *),
-  *SetClientPath(const char *),
   **StringToArgv(const char *,int *),
   **StringToList(const char *),
   *TranslateText(const ImageInfo *,Image *,const char *);
 
 extern MagickExport const char
-  *AcquireString(const char *);
+  *AcquireString(const char *),
+  *SetClientPath(const char *);
 
 extern MagickExport double
   StringToDouble(const char *,const double);

@@ -2517,7 +2517,8 @@ MagickExport char *SetClientName(const char *name)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method SetClientPath sets the client path if the name is specified.
-%  Otherwise the current client path is returned.
+%  Otherwise the current client path is returned. A zero-length string
+%  is returned if the client path has never been set.
 %
 %  The format of the SetClientPath method is:
 %
@@ -2531,10 +2532,10 @@ MagickExport char *SetClientName(const char *name)
 %
 %
 */
-MagickExport char *SetClientPath(const char *path)
+MagickExport const char *SetClientPath(const char *path)
 {
   static char
-    client_path[MaxTextExtent] = MagickModulesPath;
+    client_path[MaxTextExtent] = "";
 
   if ((path != (char *) NULL) && (*path != '\0'))
     (void) strncpy(client_path,path,MaxTextExtent-1);
