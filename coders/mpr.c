@@ -102,9 +102,6 @@ static Image *ReadMPRImage(const ImageInfo *image_info,
   Image
     *image;
 
-  long
-    id;
-
   RegistryType
     type;
 
@@ -115,12 +112,9 @@ static Image *ReadMPRImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  id=strtol(image_info->filename,&p,0);
-  image=(Image *) GetMagickRegistry(id,&type,&length);
+  image=(Image *) GetImageByNameFromRegistry(image_info->filename,exception);
   if ((image == (Image *) NULL) || (type != ImageRegistryType))
-    ThrowReaderException(RegistryWarning,"Image not found in registry",image);
-  if (length != sizeof(Image))
-    ThrowReaderException(RegistryWarning,"Image structure size mismatch",image);
+    return((Image *) NULL);
   return(CloneImage(image,0,0,True,exception));
 }
 
