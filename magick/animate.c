@@ -273,14 +273,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case SlowerCommand:
     {
-      resource_info->delay<<=1;
-      if (resource_info->delay == 0)
-        resource_info->delay=1;
+      resource_info->delay++;
       break;
     }
     case FasterCommand:
     {
-      resource_info->delay>>=1;
+      if (resource_info->delay == 0)
+        break;
+      resource_info->delay--;
       break;
     }
     case ForwardCommand:
@@ -815,10 +815,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     window_info.matte_pixmaps[scene]=window_info.matte_pixmap;
     if (images[scene]->matte)
       XClearWindow(display,window_info.id);
-    if (resources.delay != 0)
-      XDelay(display,(unsigned long) resources.delay*10);
-    else
-      XDelay(display,(unsigned long) image->delay*10);
+    XDelay(display,(unsigned long) resources.delay*image->delay*10);
   }
   window_info.pixel_info=(&pixel);
   /*
@@ -841,10 +838,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       XSetWindowBackgroundPixmap(display,window_info.id,window_info.pixmap);
       XClearWindow(display,window_info.id);
       XSync(display,False);
-      if (resources.delay != 0)
-        XDelay(display,(unsigned long) resources.delay*10);
-      else
-        XDelay(display,(unsigned long) images[scene]->delay*10);
+      XDelay(display,(unsigned long) 10*resources.delay*images[scene]->delay);
     }
   } while (event.type != DestroyNotify);
   XSync(display,False);
@@ -1761,10 +1755,7 @@ MagickExport Image *XAnimateImages(Display *display,
           XRefreshWindow(display,&windows->image,&event);
           XSync(display,False);
           state&=(~StepAnimationState);
-          if (resource_info->delay != 0)
-            XDelay(display,(unsigned long) resource_info->delay*10);
-          else
-            XDelay(display,(unsigned long) image->delay*10);
+          XDelay(display,(unsigned long) 10*resource_info->delay*image->delay);
           continue;
         }
     /*

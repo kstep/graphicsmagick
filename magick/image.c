@@ -3537,11 +3537,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (count == 1)
               (*image)->delay=minimum_delay;
             else
-              if ((*image)->delay < minimum_delay)
-                (*image)->delay=minimum_delay;
-              else
+              {
+                if ((*image)->delay < minimum_delay)
+                  (*image)->delay=minimum_delay;
                 if ((*image)->delay > maximum_delay)
                   (*image)->delay=maximum_delay;
+              }
             continue;
           }
         if (LocaleNCompare("-density",option,4) == 0)

@@ -2914,6 +2914,18 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         q=translated_text+Extent(translated_text);
         break;
       }
+      case 'c':
+      {
+        ImageAttribute
+          *attribute;
+
+        attribute=GetImageAttribute(image,"Comment");
+        if (attribute == (ImageAttribute *) NULL)
+          break;
+        (void) strcpy(q,attribute->value);
+        q+=Extent(attribute->value);
+        break;
+      }
       case 'd':
       case 'e':
       case 'f':

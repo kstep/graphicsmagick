@@ -313,20 +313,27 @@ See <a href="#xres">X Resources</a> for details.</dd>
 <dl>&nbsp;
 <table BORDER=0 WIDTH="65%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-delay
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color
+="#FFFFFF"><font size=+1>-delay
 <i>&lt;1/100ths
-of a second>x&lt;seconds></i></font></font></font></b></td>
+of a second></i></font></font></font></b></td>
 </tr>
 </table>
 
 <dd>
 display the next image after pausing.</dd>
 
-<p><br>This option is useful for regulating the display of the sequence
-of images. <i>1/100ths of a second</i> must expire before the display of
-the next image. The default is 6/100th of a second between each frame of
-the image sequence. The second value is optional. It specifies the number
-of <i>seconds</i> to pause before repeating your animation sequence.</dl>
+<p>This option is useful for regulating the animation of GIF images
+within Netscape.. <i>1/100ths of a second</i> must expire before the display
+of the next image. The default is no delay between each showing of the
+image sequence. The maximum delay is 65535.
+<p>
+
+You can specify a delay range (e.g. -delay 10-500) which sets the
+minimum and maximum delay.
+</dl>
+
 
 <dl>&nbsp;
 <table BORDER=0 WIDTH="65%" >
@@ -618,6 +625,7 @@ Optionally you can include the image filename, type, width, height, or
 other image attribute by embedding special format characters:</dd>
 
 <pre>&nbsp;&nbsp;&nbsp; %b&nbsp;&nbsp; file size
+&nbsp;&nbsp;&nbsp; %c&nbsp;&nbsp; comment
 &nbsp;&nbsp;&nbsp; %d&nbsp;&nbsp; directory
 &nbsp;&nbsp;&nbsp; %e&nbsp;&nbsp; filename extention
 &nbsp;&nbsp;&nbsp; %f&nbsp;&nbsp; filename

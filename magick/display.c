@@ -6870,12 +6870,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Display next image after pausing.
       */
-      resource_info->delay=0;
       (void) XDialogWidget(display,windows,"Slide Show",
         "Pause how many 1/100ths of a second between images:",delay);
       if (*delay == '\0')
         break;
-      resource_info->delay=atoi(delay);
       XClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
       break;
@@ -11509,8 +11507,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
     window_info.height);
   XSetWindowBackgroundPixmap(display,window_info.id,window_info.pixmap);
   XClearWindow(display,window_info.id);
-  if (resources.delay != 0)
-    XDelay(display,10*resources.delay);
+  XDelay(display,10*image->delay);
   XSync(display,False);
   return(window_info.id == root_window);
 }
@@ -12519,7 +12516,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   /*
     Respond to events.
   */
-  timer=time((time_t *) NULL)+(resource_info->delay/100)+1;
+  timer=time((time_t *) NULL)+10*display_image->delay+1;
   update_time=0;
   if (resource_info->update)
     {
@@ -12538,7 +12535,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     /*
       Handle a window event.
     */
-    if (windows->image.mapped && resource_info->delay)
+    if (windows->image.mapped && display_image->delay)
       {
         if (timer < time((time_t *) NULL))
           {
@@ -12566,7 +12563,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                       if (nexus != (Image *) NULL)
                         *state|=NextImageState | ExitState;
                     }
-                timer=time((time_t *) NULL)+(resource_info->delay/100)+1;
+                timer=time((time_t *) NULL)+10*display_image->delay+1;
               }
           }
         if (XEventsQueued(display,QueuedAfterFlush) == 0)
@@ -12761,7 +12758,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             XPanImage(display,windows,&event);
             break;
           }
-        timer=time((time_t *) NULL)+(resource_info->delay/100)+1;
+        timer=time((time_t *) NULL)+10*display_image->delay+1;
         break;
       }
       case ButtonRelease:
@@ -13138,7 +13135,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           if (windows->image.mapped)
             {
               XRefreshWindow(display,&windows->image,&event);
-              timer=time((time_t *) NULL)+(resource_info->delay/100)+1;
+              timer=time((time_t *) NULL)+10*display_image->delay+1;
               break;
             }
         if (event.xexpose.window == windows->magnify.id)
@@ -13197,7 +13194,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               else
                 XTranslateImage(display,windows,*image,key_symbol);
           }
-        timer=time((time_t *) NULL)+(resource_info->delay/100)+1;
+        timer=time((time_t *) NULL)+10*display_image->delay+1;
         break;
       }
       case KeyRelease:

@@ -81,6 +81,7 @@
 %    -map type            display image using this Standard Colormap
 %    -matte               store matte channel if the image has one
 %    -monochrome          transform image to black and white
+%    -pause               seconds to pause before reanimating
 %    -remote command      execute a command in an remote display process
 %    -rotate degrees      apply Paeth rotation to the image
 %    -scene value         image scene number
@@ -164,6 +165,7 @@ static void Usage()
       "-matte               store matte channel if the image has one",
       "-map type            display image using this Standard Colormap",
       "-monochrome          transform image to black and white",
+      "-pause               seconds to pause before reanimating",
       "-remote command      execute a command in an remote display process",
       "-rotate degrees      apply Paeth rotation to the image",
       "-scene value         image scene number",
@@ -339,12 +341,6 @@ int main(int argc,char **argv)
   XGetResourceInfo(resource_database,client_name,&resource_info);
   image_info=resource_info.image_info;
   quantize_info=resource_info.quantize_info;
-  resource_info.delay=0;
-  resource_info.pause=0;
-  resource_value=
-    XGetResourceInstance(resource_database,client_name,"delay","0");
-  (void) XParseGeometry(resource_value,&x,&x,&resource_info.delay,
-    &resource_info.pause);
   image_info->density=
     XGetResourceInstance(resource_database,client_name,"density",(char *) NULL);
   if (image_info->density == (char *) NULL)
@@ -542,15 +538,11 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("delay",option+1,3) == 0)
             {
-              resource_info.delay=0;
-              resource_info.pause=0;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing seconds",option);
-                  (void) XParseGeometry(argv[i],&x,&x,&resource_info.delay,
-                    &resource_info.pause);
                 }
               break;
             }
@@ -748,6 +740,22 @@ int main(int argc,char **argv)
               if (i == argc)
                 MagickError(OptionError,"Missing name",option);
               (void) CloneString(&resource_info.name,argv[i]);
+            }
+          break;
+        }
+        case 'p':
+        {
+          if (LocaleNCompare("pause",option+1,3) == 0)
+            {
+              resource_info.pause=0;
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing seconds",option);
+                }
+              resource_info.pause=atoi(argv[i]);
+              break;
             }
           break;
         }
