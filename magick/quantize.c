@@ -447,8 +447,8 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
       */
       for (i=0; i < (long) image->colors; i++)
       {
-        intensity=PixelIntensityToQuantum(&image->colormap[i]) <
-          (MaxRGB/2) ? 0 : MaxRGB;
+        intensity=(Quantum) (PixelIntensityToQuantum(&image->colormap[i]) <
+          (MaxRGB/2) ? 0 : MaxRGB);
         image->colormap[i].red=intensity;
         image->colormap[i].green=intensity;
         image->colormap[i].blue=intensity;

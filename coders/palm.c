@@ -562,7 +562,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     bit = 8 - bpp;
     for(x = 0; x < (long) image->columns; x++)
       {
-      index = mask - (((*ptr) & (mask << bit)) >> bit);
+      index =(IndexPacket) (mask - (((*ptr) & (mask << bit)) >> bit));
       indexes[x] = index;
       *q++ = image->colormap[index];
       if (!bit)

@@ -748,14 +748,10 @@ static void ChopPathComponents(char *path,const unsigned long components)
 MagickExport void *GetConfigureBlob(const char *filename,char *path,
   size_t *length,ExceptionInfo *exception)
 {
-  unsigned int
-    debug;
-
   assert(filename != (const char *) NULL);
   assert(path != (char *) NULL);
   assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   (void) strncpy(path,filename,MaxTextExtent-1);
   if (magick_debug)
     (void) fprintf(stdout,"Searching for configure file \"%s\" ...\n",filename);
@@ -882,14 +878,10 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
   ExceptionInfo *exception)
 {
-  unsigned int
-    debug;
-
   assert(filename != (const char *) NULL);
   assert(path != (char *) NULL);
   assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   (void) strncpy(path,filename,MaxTextExtent-1);
   if (magick_debug)
     (void) fprintf(stdout,"Searching for module file \"%s\" ...\n", filename);

@@ -602,27 +602,27 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
         if (runlength < 3)
           while (runlength > 0)
           {
-            *q++=index;
+            *q++=(unsigned char) index;
             runlength--;
             count++;
             if (count == MaxCount)
               {
-                *q++=MaxCount-1;
+                *q++=(unsigned char) (MaxCount-1);
                 count-=MaxCount;
               }
           }
         else
           {
             if (count > 0)
-              *q++=count-1;
+              *q++=(unsigned char) (count-1);
             count=0;
             while (runlength > 0)
             {
               repeat_count=runlength;
               if (repeat_count > MaxPackbitsRunlength)
                 repeat_count=MaxPackbitsRunlength;
-              *q++=index;
-              *q++=257-repeat_count;
+              *q++=(unsigned char) index;
+              *q++=(unsigned char) (257-repeat_count);
               runlength-=repeat_count;
             }
           }
@@ -634,27 +634,27 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
   if (runlength < 3)
     while (runlength > 0)
     {
-      *q++=index;
+      *q++=(unsigned char) index;
       runlength--;
       count++;
       if (count == MaxCount)
         {
-          *q++=MaxCount-1;
+          *q++=(unsigned char) (MaxCount-1);
           count-=MaxCount;
         }
     }
   else
     {
       if (count > 0)
-        *q++=count-1;
+        *q++=(unsigned char) (count-1);
       count=0;
       while (runlength > 0)
       {
         repeat_count=runlength;
         if (repeat_count > MaxPackbitsRunlength)
           repeat_count=MaxPackbitsRunlength;
-        *q++=index;
-        *q++=257-repeat_count;
+        *q++=(unsigned char) index;
+        *q++=(unsigned char) (257-repeat_count);
         runlength-=repeat_count;
       }
     }
