@@ -64,7 +64,7 @@ testFilter('input.miff', 'Crop',
 testFilter('input.miff', 'Despeckle',
   q/ /,
   '8c63f4f807d48648c73f2eee9c278f068deae3093b4d917d91eff2f5e9ed8551',
-  '82ef64b02d8d223e8880d07be102ba0f11c398bc47dbee866867401b3d95eee0');
+  '9f822ae938e743651e361cd7adb5e831a16ba6fd4dd1efc89d32f7e73a5ac128');
 
 ++$test;
 testFilter('input.miff', 'Edge',
