@@ -174,7 +174,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
     security.nLength=sizeof(security);
     security.lpSecurityDescriptor=NULL;
     security.bInheritHandle=TRUE;
-    semaphore_info->id=CreateSemaphore(&&security,1,MAXSEMLEN,NULL);
+    semaphore_info->id=CreateSemaphore(&security,1,MAXSEMLEN,NULL);
     if (semaphore_info->id == NULL)
       {
         LiberateMemory((void **) &semaphore_info);
