@@ -38,6 +38,7 @@
 #include "magick/blob.h"
 #include "magick/bit_stream.h"
 #include "magick/cache.h"
+#include "magick/color.h"
 #include "magick/endian.h"
 #include "magick/log.h"
 #include "magick/magick.h"
@@ -76,9 +77,9 @@ typedef enum
   ImageElementRGBA=51,             /* BGRA order */
   ImageElementABGR=52,             /* ARGB order */
   ImageElementCbYCrY422=100,       /* SMPTE 125M, 4:2:2 */
-  ImageElementCbYACrYA4224=101,    /* 4:2:2:4 */
-  ImageElementCbYCr444=102,        /* 4:4:4 */
-  ImageElementCbYCrA4444=103       /* 4:4:4:4 */
+  ImageElementCbYACrYA4224=101,    /* SMPTE 125M, 4:2:2:4 */
+  ImageElementCbYCr444=102,        /* SMPTE 125M, 4:4:4 */
+  ImageElementCbYCrA4444=103       /* SMPTE 125M, 4:4:4:4 */
 } DPXImageElementDescriptor;
 
 typedef enum
@@ -138,6 +139,10 @@ typedef struct _DPXImageInfo
 
 typedef struct _DPXImageSourceBorderValidity
 {
+  /*
+    Border validity indicates portion of border pixels which have been
+    eroded due to processing.
+  */
   U16   XL;                        /* Border validity XL border */
   U16   XR;                        /* Border validity XR border */
   U16   YT;                        /* Border validity YT border */
@@ -471,6 +476,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ImageComponentPackingMethod
     packing_method;
 
+  WordStreamReadFunc
+    word_read_func;
+
   /*
     Open image file.
   */
@@ -494,8 +502,12 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Check for swapped endian order.
   */
-  if (dpx_file_info.magic != 0x53445058)
-    swab=MagickTrue;
+  word_read_func=(WordStreamReadFunc) ReadBlobMSBLong;
+  if (dpx_file_info.magic != 0x53445058U)
+    {
+      word_read_func=(WordStreamReadFunc) ReadBlobLSBLong;
+      swab=MagickTrue;
+    }
   
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "%s endian DPX format",
@@ -507,6 +519,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         );
   if (swab)
     SwabDPXFileInfo(&dpx_file_info);
+
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "File size: %u", dpx_file_info.file_size);
 
   StringToAttribute(image,"artist",dpx_file_info.creator);
   StringToAttribute(image,"comment",dpx_file_info.project_name);
@@ -725,8 +740,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               }
 
-            WordStreamInitializeRead(&word_stream,image,
-                                     (WordStreamReadFunc) ReadBlobMSBLong);
+            WordStreamInitializeRead(&word_stream,image,word_read_func);
             for (y=0; y < (long) image->rows; y++)
               {
                 if (image_is_set == MagickFalse)
@@ -851,8 +865,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   Advance to next 32-bit word if components are packed.
                 */
                 if (packing_method == PackingMethodPacked)
-                  WordStreamInitializeRead(&word_stream,image,
-                                           (WordStreamReadFunc) ReadBlobMSBLong);
+                  WordStreamInitializeRead(&word_stream,image,word_read_func);
 
                 /*
                   FIXME: Add support for optional EOL padding.
@@ -976,6 +989,18 @@ ModuleExport void UnregisterDPXImage(void)
 */
 static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 {
+  DPXFileInfo
+    dpx_file_info;
+
+  DPXImageInfo
+    dpx_image_info;
+
+  DPXImageSourceInfo
+    dpx_source_info;
+
+  ImageComponentPackingMethod
+    packing_method;
+
   long
     y;
 
@@ -987,10 +1012,22 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     x;
 
   unsigned int
+    bits_per_sample,
+    number_of_elements,
+    samples_per_component,
     status;
  
   unsigned long
     pixel;
+
+  magick_int64_t
+    element_size;
+
+  size_t
+    offset=0;
+
+  MagickBool
+    is_grayscale;
 
   /*
     Open output image file.
@@ -1002,36 +1039,183 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+
+  if (image->depth > 12 )
+    bits_per_sample=16;
+  else if (image->depth > 10)
+    bits_per_sample=12;
+  else if (image->depth > 8)
+    bits_per_sample=10;
+  else if (image->depth > 1)
+    bits_per_sample=8;
+  else
+    bits_per_sample=1;
+
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Bits per sample: %u", bits_per_sample);
+
+  is_grayscale=IsGrayImage(image,&image->exception);
+  if (is_grayscale)
+    samples_per_component=1;
+  else
+    samples_per_component=3;
+  if (image->matte)
+    samples_per_component++;
+
+  number_of_elements=1;
+  if (image_info->interlace == PlaneInterlace)
+    {
+      number_of_elements=samples_per_component;
+      samples_per_component=1;
+    }
+
+  bits_per_sample=10;
+
+  packing_method=PackingMethodPacked;
+  element_size=((magick_int64_t) image->columns*image->rows*samples_per_component);
+  if (bits_per_sample == 10)
+    {
+      /* three 10-bit samples per 32-bit word */
+      packing_method=PackingMethodWordsFillLSB;
+      element_size=((element_size+2)/3)*sizeof(magick_int32_t);
+    }
+  else if (bits_per_sample == 12)
+    {
+      /* two 12-bit samples per 32-bit word */
+      packing_method=PackingMethodWordsFillLSB;
+      element_size=((element_size+1)/2)*sizeof(magick_int32_t);
+    }
+  else
+    {
+      /* samples packed end-to-end */
+      element_size=((element_size*8+31)/32)*sizeof(magick_int32_t);
+    }
+
+  /*
+    Image information header
+  */
+  memset(&dpx_image_info,0,sizeof(dpx_image_info));
+  dpx_image_info.orientation=0; /* Left to right, top to bottom */
+  dpx_image_info.elements=number_of_elements;
+  dpx_image_info.pixels_per_line=image->columns;
+  dpx_image_info.lines_per_image_element=image->rows;
+
+  dpx_image_info.element_info[0].data_sign=0; /* unsigned */
+  dpx_image_info.element_info[0].reference_low_data_code=0;
+  dpx_image_info.element_info[0].reference_low_quantity=0.00; /* FIXME */
+  dpx_image_info.element_info[0].reference_high_data_code=
+    MaxValueGivenBits(bits_per_sample);
+  dpx_image_info.element_info[0].reference_high_quantity=2.048; /* FIXME */
+  dpx_image_info.element_info[0].descriptor=ImageElementRGB;
+  dpx_image_info.element_info[0].transfer_characteristic=2; /* linear */
+  dpx_image_info.element_info[0].colorimetric=6; /* ITU 709-4 */
+  dpx_image_info.element_info[0].bits_per_sample=bits_per_sample;
+  dpx_image_info.element_info[0].packing=0;
+  if ((bits_per_sample == 10) || (bits_per_sample == 12))
+    dpx_image_info.element_info[0].packing=packing_method;
+  dpx_image_info.element_info[0].encoding=0; /* No encoding */
+  dpx_image_info.element_info[0].data_offset=0x2000; /* FIXME */
+  dpx_image_info.element_info[0].eol_pad=0;
+  dpx_image_info.element_info[0].eoi_pad=0;
+
+  for (i=1; i < number_of_elements; i++)
+    {
+      /* Clone settings from preceding element */
+      dpx_image_info.element_info[i]=dpx_image_info.element_info[i-1];
+      /* Compute offset to data */
+      dpx_image_info.element_info[i].data_offset=
+        dpx_image_info.element_info[i-1].data_offset+element_size;
+    }
+
+#if 0
+  if (is_grayscale)
+    {
+      /*
+        Grayscale with alpha plane.
+      */
+      dpx_image_info.element_info[0].descriptor=ImageElementLuma;
+      if (number_of_elements > 1)
+        dpx_image_info.element_info[1].descriptor=ImageElementAlpha;
+    }
+  else
+    {
+      if (number_of_elements > 1)
+        {
+          /*
+            Planar image configuration.
+          */
+          dpx_image_info.element_info[0].descriptor=ImageElementRed;
+          dpx_image_info.element_info[1].descriptor=ImageElementGreen;
+          dpx_image_info.element_info[2].descriptor=ImageElementBlue;
+          if ((image->matte) && (number_of_elements == 4))
+            dpx_image_info.element_info[3].descriptor=ImageElementAlpha;
+        }
+    }
+#endif
+
+  /*
+    File information header.
+  */
+  memset(&dpx_file_info,0,sizeof(dpx_file_info));
+  dpx_file_info.magic=0x53445058U;
+  dpx_file_info.image_data_offset=dpx_image_info.element_info[0].data_offset;
+  strlcpy(dpx_file_info.header_format_version,"V2.0",
+          sizeof(dpx_file_info.header_format_version));
+  dpx_file_info.file_size=
+    dpx_file_info.image_data_offset+number_of_elements*element_size;
+  dpx_file_info.ditto_key=1; /* new frame */
+  dpx_file_info.generic_section_length=sizeof(dpx_file_info)+
+    sizeof(dpx_image_info)+sizeof(dpx_source_info);
+  dpx_file_info.industry_section_length=0;
+  dpx_file_info.user_defined_length=0;
+  strlcpy(dpx_file_info.image_filename,image->filename,
+          sizeof(dpx_file_info.image_filename));
+  strlcpy(dpx_file_info.creation_datetime,"",
+          sizeof(dpx_file_info.creation_datetime));
+  strlcpy(dpx_file_info.creator,"",sizeof(dpx_file_info.creator));
+  strlcpy(dpx_file_info.project_name,"",sizeof(dpx_file_info.project_name));
+  strlcpy(dpx_file_info.copyright,"",sizeof(dpx_file_info.copyright));
+  dpx_file_info.encrption_key=UNDEFINED_U32_VALUE;
+
+  /*
+    Image source information header
+  */
+  memset(&dpx_source_info,0,sizeof(dpx_source_info));
+  dpx_source_info.x_offset=0; /* FIXME, use geometry for offset? */
+  dpx_source_info.y_offset=0;
+  dpx_source_info.x_center=image->columns/2.0;
+  dpx_source_info.y_center=image->rows/2.0;
+  dpx_source_info.x_original_size=image->magick_columns;
+  dpx_source_info.y_original_size=image->magick_rows;
+  strlcpy(dpx_source_info.source_image_filename,image->magick_filename,
+          sizeof(dpx_source_info.source_image_filename));
+  strlcpy(dpx_source_info.source_image_datetime,"",
+          sizeof(dpx_source_info.source_image_datetime));
+  strlcpy(dpx_source_info.input_device_name,"",
+          sizeof(dpx_source_info.input_device_name));
+  strlcpy(dpx_source_info.input_device_serialnumber,"",
+          sizeof(dpx_source_info.input_device_serialnumber));
+  dpx_source_info.border_validity.XL=0;
+  dpx_source_info.border_validity.XR=0;
+  dpx_source_info.border_validity.YT=0;
+  dpx_source_info.border_validity.YB=0;
+  dpx_source_info.aspect_ratio.horizontal=1;
+  dpx_source_info.aspect_ratio.vertical=1;
+  dpx_source_info.x_scanned_size=UNDEFINED_U32_VALUE;
+  dpx_source_info.y_scanned_size=UNDEFINED_U32_VALUE;
+
   (void) TransformColorspace(image,RGBColorspace);
-  (void) WriteBlobMSBLong(image,0x53445058);
-  (void) WriteBlobMSBLong(image,0x2000);
-  (void) WriteBlobMSBLong(image,0x56312E30);
-  (void) WriteBlobMSBLong(image,0x00000000);
-  (void) WriteBlobMSBLong(image,4*image->columns*image->rows+0x2000);
-  (void) WriteBlobMSBLong(image,0x00000001);
-  (void) WriteBlobMSBLong(image,0x00000680);
-  (void) WriteBlobMSBLong(image,0x00000180);
-  (void) WriteBlobMSBLong(image,0x00001800);
-  for (i=0; i < 124; i++)
+
+  /*
+    Write file headers.
+  */
+  offset += WriteBlob(image,sizeof(dpx_file_info),&dpx_file_info);
+  offset += WriteBlob(image,sizeof(dpx_image_info),&dpx_image_info);
+  offset += WriteBlob(image,sizeof(dpx_source_info),&dpx_source_info);
+
+  for( ; offset < dpx_image_info.element_info[0].data_offset; offset++)
     (void) WriteBlobByte(image,0x00);
-  (void) WriteBlobMSBLong(image,0x496D6167);
-  (void) WriteBlobMSBLong(image,0x654D6167);
-  (void) WriteBlobMSBLong(image,0x69636B20);
-  for (i=0; i < 599; i++)
-    (void) WriteBlobByte(image,0x00);
-  (void) WriteBlobByte(image,0x01);
-  (void) WriteBlobMSBLong(image,image->columns);
-  (void) WriteBlobMSBLong(image,image->rows);
-  for (i=0; i < 20; i++)
-    (void) WriteBlobByte(image,0x00);
-  (void) WriteBlobByte(image,ImageElementRGB);
-  (void) WriteBlobByte(image,0x00);
-  (void) WriteBlobByte(image,0x00);
-  (void) WriteBlobByte(image,10);  /* bit depth */
-  (void) WriteBlobByte(image,0x00);
-  (void) WriteBlobByte(image,0x01);
-  for (i=0; i < (0x2000-806); i++)
-    (void) WriteBlobByte(image,0x00);
+
   /*
     Convert pixel packets to DPX raster image.
   */

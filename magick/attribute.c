@@ -45,6 +45,15 @@
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 
+static void DestroyImageAttribute(ImageAttribute *attribute)
+{
+  if (attribute == (ImageAttribute *) NULL)
+    return;
+  MagickFreeMemory(attribute->value);
+  MagickFreeMemory(attribute->key);
+  memset(attribute,0xbf,sizeof(ImageAttribute));
+  MagickFreeMemory(attribute);
+}
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -83,11 +92,7 @@ MagickExport void DestroyImageAttributes(Image *image)
   {
     attribute=p;
     p=p->next;
-    if (attribute->key != (char *) NULL)
-      MagickFreeMemory(attribute->key);
-    if (attribute->value != (char *) NULL)
-      MagickFreeMemory(attribute->value);
-    MagickFreeMemory(attribute);
+    DestroyImageAttribute(attribute);
   }
   image->attributes=(ImageAttribute *) NULL;
 }
@@ -682,7 +687,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
   size_t
     profile_length;
 
-  if((profile=GetImageProfile(image,"IPTC",&profile_length)) == 0)
+  if ((profile=GetImageProfile(image,"IPTC",&profile_length)) == 0)
     return(False);
 
   /*
@@ -705,7 +710,9 @@ static int Generate8BIMAttribute(Image *image,const char *key)
 
   status=False;
   length=profile_length;
-  info=profile;
+  /* FIXME: following cast should not be necessary but info can't be
+     const due to odd function design. */
+  info=(unsigned char *) profile;
 
   while ((length > 0) && (status == False))
   {
@@ -1691,7 +1698,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
 %
 %
 */
-MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
+MagickExport MagickPassFail SetImageAttribute(Image *image,const char *key,
   const char *value)
 {
   ImageAttribute
@@ -1706,7 +1713,7 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if ((key == (const char *) NULL) || (*key == '\0'))
-    return(False);
+    return(MagickFail);
   if (value == (const char *) NULL)
     {
       /*
@@ -1717,10 +1724,6 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
           break;
       if (p == (ImageAttribute *) NULL)
         return(False);
-      if (p->key != (char *) NULL)
-        MagickFreeMemory(p->key);
-      if (p->value != (char *) NULL)
-        MagickFreeMemory(p->value);
       if (p->previous != (ImageAttribute *) NULL)
         p->previous->next=p->next;
       else
@@ -1732,39 +1735,64 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
       if (p->next != (ImageAttribute *) NULL)
         p->next->previous=p->previous;
       attribute=p;
-      MagickFreeMemory(attribute);
-      return(True);
+      DestroyImageAttribute(attribute);
+      return(MagickPass);
     }
   if (*value == '\0')
-    return(False);
+    return(MagickFail);
   attribute=MagickAllocateMemory(ImageAttribute *,sizeof(ImageAttribute));
   if (attribute == (ImageAttribute *) NULL)
-    return(False);
+    return(MagickFail);
   attribute->key=AllocateString(key);
   if ((LocaleNCompare(key,"EXIF",4) == 0) ||
       (LocaleNCompare(key,"IPTC",4) == 0) ||
       (LocaleNCompare(key,"[Locale",7) == 0) ||
       (LocaleNCompare(key,"8BIM",4) == 0))
-    attribute->value=AllocateString(value);
+    {
+      attribute->length=strlen(value);
+      attribute->value=MagickAllocateMemory(char *,attribute->length+MaxTextExtent);
+      if (attribute->value != (char *) NULL)
+        (void) strcpy(attribute->value,value);
+    }
   else
-    attribute->value=TranslateText((ImageInfo *) NULL,image,value);
-  attribute->compression=False;
+    {
+      attribute->value=TranslateText((ImageInfo *) NULL,image,value);
+      if (attribute->value != (char *) NULL)
+        attribute->length=strlen(attribute->value);
+    }
+  if ((attribute->value == (char *) NULL) ||
+      (attribute->key == (char *) NULL))
+    {
+      DestroyImageAttribute(attribute);
+      return(MagickFail);
+    }
+
   attribute->previous=(ImageAttribute *) NULL;
   attribute->next=(ImageAttribute *) NULL;
   if (image->attributes == (ImageAttribute *) NULL)
     {
       image->attributes=attribute;
-      return(True);
+      return(MagickPass);
     }
   for (p=image->attributes; p != (ImageAttribute *) NULL; p=p->next)
   {
     if (LocaleCompare(attribute->key,p->key) == 0)
       {
-        (void) ConcatenateString(&p->value,attribute->value);
-        MagickFreeMemory(attribute->value);
-        MagickFreeMemory(attribute->key);
-        MagickFreeMemory(attribute);
-        return(True);
+        size_t
+          min_l,
+          realloc_l;
+
+        min_l=p->length+attribute->length+1;
+        for (realloc_l=2; realloc_l <= min_l; realloc_l *= 2);
+        MagickReallocMemory(p->value,realloc_l);
+        if (p->value != (char *) NULL)
+          strcat(p->value+p->length,attribute->value);
+        p->length += attribute->length;
+        DestroyImageAttribute(attribute);
+        if (p->value != (char *) NULL)
+          return(MagickPass);
+        (void) SetImageAttribute(image,key,NULL);
+        return(MagickFail);
       }
     if (p->next == (ImageAttribute *) NULL)
       break;
@@ -1774,5 +1802,5 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
   */
   attribute->previous=p;
   p->next=attribute;
-  return(True);
+  return(MagickPass);
 }

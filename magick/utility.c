@@ -47,6 +47,21 @@
 #include "magick/utility.h"
 
 /*
+  Compute a value which is the next power of 2 larger than the
+  requested value, or size+MaxTextExtent, whichever is larger.
+*/
+#define MagickRoundUpStringLength(size) \
+{ \
+  size_t \
+    _rounded; \
+ \
+  for (_rounded=1024U; _rounded <= size; _rounded *= 2); \
+  if (_rounded < size+MaxTextExtent) \
+    _rounded=size+MaxTextExtent; \
+  size=_rounded; \
+}
+
+/*
   Static declarations.
 */
 static const char
@@ -99,7 +114,9 @@ MagickStrToD(const char *start,char **end,double *value);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  AcquireString() allocates memory for a string and copies the source string
-%  to that memory location (and returns it).
+%  to that memory location (and returns it). This method is best used to
+%  allocate constant strings since only enough memory to support the data
+%  is allocated.
 %
 %  The format of the AcquireString method is:
 %
@@ -142,7 +159,8 @@ MagickExport char *AcquireString(const char *source)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  AllocateString() allocates memory for a string and copies the source string
-%  to that memory location (and returns it).
+%  to that memory location (and returns it). Additional memory is allocated
+%  so that subsequent concatenations to the string are most efficient.
 %
 %  The format of the AllocateString method is:
 %
@@ -167,8 +185,11 @@ MagickExport char *AllocateString(const char *source)
 
   length=MaxTextExtent;
   if (source != (char *) NULL)
-    length+=strlen(source);
-  destination=MagickAllocateMemory(char *,length+MaxTextExtent);
+    {
+      length=strlen(source)+1;
+      MagickRoundUpStringLength(length);
+    }
+  destination=MagickAllocateMemory(char *,length);
   if (destination == (char *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToAllocateString);
@@ -491,12 +512,12 @@ MagickExport char *Base64Encode(const unsigned char *blob,
 %
 %  The format of the CloneString method is:
 %
-%      unsigned int CloneString(char **destination,const char *source)
+%      MagickPassFail CloneString(char **destination,const char *source)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method CloneString returns True is the string is cloned,
-%      otherwise False is returned.
+%    o status:  Method CloneString returns MagickPass if the string is cloned,
+%      otherwise MagickFail is returned.
 %
 %    o destination:  A pointer to a character string.
 %
@@ -504,27 +525,25 @@ MagickExport char *Base64Encode(const unsigned char *blob,
 %
 %
 */
-MagickExport unsigned int CloneString(char **destination,const char *source)
+MagickExport MagickPassFail CloneString(char **destination,const char *source)
 {
+  size_t
+    allocation_length;
+
   assert(destination != (char **) NULL);
   if (source == (const char *) NULL)
     {
-      if (*destination != (char *) NULL)
-        MagickFreeMemory(*destination);
-      *destination=(char *) NULL;
-      return(True);
+      MagickFreeMemory(*destination);
+      return(MagickPass);
     }
-  if (*destination == (char *) NULL)
-    {
-      *destination=AllocateString(source);
-      return(True);
-    }
-  MagickReallocMemory(*destination,strlen(source)+MaxTextExtent);
+  allocation_length=strlen(source)+1;
+  MagickRoundUpStringLength(allocation_length);
+  MagickReallocMemory(*destination,allocation_length);
   if (*destination == (char *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToAllocateString);
   (void) strcpy(*destination,source);
-  return(True);
+  return(MagickPass);
 }
 
 /*
@@ -543,12 +562,12 @@ MagickExport unsigned int CloneString(char **destination,const char *source)
 %
 %  The format of the ConcatenateString method is:
 %
-%      unsigned int ConcatenateString(char **destination,const char *source)
+%      MagickPassFail ConcatenateString(char **destination,const char *source)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method ConcatenateString returns True is the string is cloned,
-%      otherwise False is returned.
+%    o status:  Method ConcatenateString returns MagickPass if the string is cloned,
+%      otherwise MagickFail is returned.
 %
 %    o destination:  A pointer to a character string.
 %
@@ -556,24 +575,28 @@ MagickExport unsigned int CloneString(char **destination,const char *source)
 %
 %
 */
-MagickExport unsigned int ConcatenateString(char **destination,
+MagickExport MagickPassFail ConcatenateString(char **destination,
   const char *source)
 {
+  size_t
+    allocation_length,
+    destination_length=0,
+    source_length;
+
   assert(destination != (char **) NULL);
   if (source == (const char *) NULL)
-    return(True);
-  if (*destination == (char *) NULL)
-    {
-      *destination=AllocateString(source);
-      return(True);
-    }
-  MagickReallocMemory((*destination),
-    strlen(*destination)+strlen(source)+MaxTextExtent);
+    return(MagickPass);
+  source_length=strlen(source);
+  if (*destination != (char *) NULL)
+    destination_length=strlen(*destination);
+  allocation_length=destination_length+source_length+1;
+  MagickRoundUpStringLength(allocation_length);
+  MagickReallocMemory((*destination),allocation_length);
   if (*destination == (char *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToConcatenateString);
-  (void) strcat(*destination,source);
-  return(True);
+  (void) strcpy(((*destination)+destination_length),source);
+  return(MagickPass);
 }
 
 /*
@@ -1079,7 +1102,8 @@ MagickExport void FormatSize(const magick_int64_t size,char *format)
 %  A description of each parameter follows.
 %
 %   o  string:  Method FormatString returns the formatted string in this
-%      character buffer.
+%      character buffer. Buffer must be at least MaxTextExtent characters
+%      in size.
 %
 %   o  format:  A string describing the format to use to write the remaining
 %      arguments.
@@ -4422,7 +4446,10 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
     Translate any embedded format characters.
   */
   length=strlen(text)+MaxTextExtent;
-  translated_text=AllocateString(text);
+  translated_text=MagickAllocateMemory(char *,length);
+  if (translated_text == (char *) NULL)
+    return NULL;
+  strcpy(translated_text,text);
   clone_info=CloneImageInfo(image_info);
   p=text;
   for (q=translated_text; *p != '\0'; p++)

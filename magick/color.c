@@ -306,10 +306,8 @@ MagickExport void DestroyColorInfo(void)
   {
     color_info=p;
     p=p->next;
-    if (color_info->path != (char *) NULL)
-      MagickFreeMemory(color_info->path);
-    if (color_info->name != (char *) NULL)
-      MagickFreeMemory(color_info->name);
+    MagickFreeMemory(color_info->path);
+    MagickFreeMemory(color_info->name);
     MagickFreeMemory(color_info);
   }
   color_list=(ColorInfo *) NULL;
@@ -394,8 +392,7 @@ static void DestroyColorList(NodeInfo *node_info)
   for (id=0; id < 8; id++)
     if (node_info->child[id] != (NodeInfo *) NULL)
       DestroyColorList(node_info->child[id]);
-  if (node_info->list != (ColorPacket *) NULL)
-    MagickFreeMemory(node_info->list);
+  MagickFreeMemory(node_info->list);
 }
 
 /*

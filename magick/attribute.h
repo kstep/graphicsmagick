@@ -18,11 +18,11 @@ extern "C" {
 typedef struct _ImageAttribute
 {
   char
-    *key,
-    *value;
+    *key,           /* identifying key */
+    *value;         /* value string */
 
-  unsigned int
-    compression;
+  size_t
+    length;         /* value string length */
 
   struct _ImageAttribute
     *previous,

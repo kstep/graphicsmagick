@@ -21,6 +21,50 @@
 </tr>
 </table>
 <p>
+2005-04-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.c (AllocateString): Performance enhancement.
+        (CloneString): Performance enhancement.
+        (ConcatenateString): Performance enhancement.
+
+</UL>
+<p>
+2005-03-31 Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
+
+<UL>
+  <LI> coders/jpeg.c: revised EOF test.  It was rejecting good image
+        files.  Needs more work.
+
+</UL>
+<p>
+2005-03-30 Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
+
+<UL>
+  <LI> coders/pnm.c (ReadPNMImage): Throw a "Corrupt Image" exception
+        if EOF is encountered while reading scanlines in P1, P2, P3, or P4
+        formatted images (P5 and P6 were OK).
+
+</UL>
+<p>
+2005-03-29 Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
+
+<UL>
+  <LI> coders/sgi.c (ReadSGIImage): Throw a "Corrupt Image" exception
+        if EOF is encountered while reading scanlines.
+
+</UL>
+<p>
+2005-03-28 Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
+
+<UL>
+  <LI> coders/jpeg.c (ReadJPEGImage): Throw a "Corrupt Image" exception
+        if EOF is encountered while reading scanlines.
+  <LI> coders/pcx.c (ReadPCXImage): Throw a "Corrupt Image" exception
+        if EOF is encountered while reading pixels.
+
+</UL>
+<p>
 2005-03-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -5099,12 +5099,14 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
     Ensure that image->depth is 8/16/32 until such time that the rest
     of the code handles arbitrary depth.
   */
+#if 0
   if (image->depth < 8)
     image->depth=8;
   else if (image->depth > 8 && image->depth < 16)
     image->depth=16;
   else if (image->depth > 16 && image->depth < 32)
     image->depth=32;
+#endif
 
   image->is_grayscale=is_grayscale;
   return(status);
