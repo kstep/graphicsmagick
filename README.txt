@@ -552,24 +552,20 @@ MAGICK DELEGATES
       to read the TIFF image format.  It in turn optionally requires
       the JPEG and ZLIB libraries.
 
-    o ImageMagick requires libwmf 0.1.21 available from
+    o ImageMagick requires libwmf 0.2.1 (a component of wvWare) available
+      from
 
-          http://www.wvware.com/libwmf.html
+          http://sourceforge.net/projects/wvware/
 
       to read the Windows Meta File image format (16-bit WMF files only,
       not 32-bit "EMF"). This is the format used for most Windows clipart.
       If ImageMagick is built using libwmf then WMF files are rendered
       directly by ImageMagick otherwise the rendering is done by running
-      the wmftopng program.
-
-      In order for text to be rendered when reading WMF files, a set of
-      Windows 3.1 compatible (filenames and outlines) TrueType fonts must
-      be available in the TrueType font search path (set via TT_FONT_PATH).
-      All font file names must be lower case. Windows 3.1 compatible
-      TrueType fonts (Arial, Times New Roman, and Courier New) may be
-      downloaded from Microsoft's web site via the URL
-
-          http://www.microsoft.com/typography/fontpack/default.htm
+      the wmftopng program.  The configure script for libwmf offers a
+      choice between using the 'expat' XML library (--with-expat) and
+      xmlsoft's libxml (--with-xml).  Since ImageMagick already uses
+      libxml, it is recommended that the options '--without-expat
+      --with-xml' be supplied to libwmf's configure script.
 
     o ImageMagick requires an X server for display and animate to work
       properly.  There is a nearly free X server available for Windows
