@@ -9,12 +9,12 @@ PACKAGE_NAME='GraphicsMagick'
 #
 # Package base version.  This is is the numeric version suffix applied to
 # PACKAGE_NAME (e.g. "1.1").
-PACKAGE_VERSION='1.1.4'
+PACKAGE_VERSION='1.1.5'
 
 #
 # Formal Package release date
 # Set to string "unreleased" if package is not a formal release.
-PACKAGE_RELEASE_DATE="2004-11-13"
+PACKAGE_RELEASE_DATE="2005-01-22"
 #PACKAGE_RELEASE_DATE="unreleased"
 
 #
@@ -26,7 +26,7 @@ PACKAGE_CHANGE_DATE=`awk '/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/ { print 
 # Package version addendum.  This is a suffix (if any) appended to the
 # package base version.  Formal releases do not have a suffix applied.
 #
-if test "$PACKAGE_RELEASE_DATE" = "unreleased"
+if test "$PACKAGE_RELEASE_DATE" = ""
 then
   PACKAGE_VERSION_ADDENDUM=".0${PACKAGE_CHANGE_DATE}"
 else
@@ -63,7 +63,7 @@ CVS_BRANCH_TAG=GraphicsMagick-1_1
 # Magick library versioning
 #
 MAGICK_LIBRARY_CURRENT=1
-MAGICK_LIBRARY_REVISION=4
+MAGICK_LIBRARY_REVISION=5
 MAGICK_LIBRARY_AGE=0
 
 #

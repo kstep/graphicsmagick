@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.1.4 News</TITLE>
+<TITLE>GraphicsMagick 1.1.5 News</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -17,15 +17,23 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1.4 News</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1.5 News</font></font></font></b></td>
 </tr>
 </table>
 <p>
-This file was last updated on January 9, 2004.
+This file was last updated on January 22, 2005.
 
 <p>
-Significant changes associated with GraphicsMagick 1.1.5 (not yet released)
+Significant changes associated with GraphicsMagick 1.1.5 (released January 22, 2005)
 
+<p>
+  Security Fixes:
+
+<UL>
+  <LI> Fixed vulnerability associated with reading PSD files. See
+    http://lwn.net/Articles/119713/ for details.
+
+</UL>
 <p>
   Incompatible changes:<BR>
 <UL>
@@ -33,6 +41,9 @@ Significant changes associated with GraphicsMagick 1.1.5 (not yet released)
     argument is altered since the previous definition did not work. Hue
     argument now represents a rotation from -180 degrees to +180 degrees
     expressed as an argument of 0 to 2.0 (1.0 for no change).
+  <LI> FlashPIX library sources are no longer distributed in the Windows
+    source package and building FlashPIX is disabled by default.  FlashPIX
+    may still be built by adding the library (separately distributed).
 
 </UL>
 <p>
@@ -47,6 +58,8 @@ Significant changes associated with GraphicsMagick 1.1.5 (not yet released)
   <LI> Reading TIFFs with more than one strip was broken.
   <LI> Obscure error-path memory leak fix for GIF coder.
   <LI> Automatically discover Ghostscript fonts under latest Cygwin.
+  <LI> Gmdisplay now converts the image colorspace to RGB while reading
+    so that it displays correctly.
 
 </UL>
 <p>
@@ -54,6 +67,7 @@ Significant changes associated with GraphicsMagick 1.1.5 (not yet released)
 <UL>
   <LI> Handle JP2 images in YCBCR colorspace. Retrieve color profiles from
     JP2 images.<BR>
+  <LI> TGA coder now writes grayscale images if appropriate.
   <LI> LCMS in Windows package updated to version 1.14.
 
 

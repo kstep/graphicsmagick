@@ -1,3 +1,93 @@
+2005-01-17  David N. Welton  <davidw@dedasys.com>
+
+	* debian/rules: Added debian directory to aid in creation of
+	TclMagick .deb package.
+
+2005-01-12  David N. Welton  <davidw@dedasys.com>
+
+	* Makefile.am (EXTRA_DIST): Added pkgIndex.tcl so that it gets
+	distributed.
+	(install-data-local): Change pkgIndex.tcl install location.
+
+	* generic/Makefile.am (libdir): Make the version part of the
+	install directory.
+
+	* pkgIndex.tcl: Moved the Tk and TclMagick requires here for
+	TkMagick.
+
+	* generic/TclMagick.c (Tclmagick_Init): Use VERSION instead of
+	hard coded version.
+
+	* generic/TkMagick.c: Added stubs ifdef's.
+	(Tkmagick_Init): Use VERSION instead of hard-coded version.
+
+2005-01-11  David N. Welton  <davidw@dedasys.com>
+
+	* ltmain.sh: I'm not terribly happy about including this, but not
+	having it causes problems, and there is an exception to the GPL,
+	so I guess it's ok.
+
+	* generic/Makefile.am: Install libraries to package directory.
+
+	* pkgIndex.tcl: Use the packages in the current directory.
+
+	* genconf.sh: Slightly improved script to work with different
+	versions of autotools.
+
+2005-01-08  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TclMagick.c: Added patch from George Peter Staplin
+	dealing with UTF/External encoding issues.  There may be more work
+	to be done.
+
+	* generic/TkMagick.c (PhotoToMagick): Swapped A and O letters to
+	make alpha channel work here.  Argh!  Thanks to David Zolli for
+	writing code to point this out.
+
+	* configure.ac: Bumped version number.
+
+2004-12-21  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TclMagick.c (wandObjCmd): Return errors on failure for
+	image compare methods.
+
+2004-12-20  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TclMagick.c (myMagickError): Use package name function
+	to generate error messages.
+	(wandObjCmd): Fixed bug that was causing AnnotateImage to not
+	function properly.
+
+2004-12-19  David N. Welton  <davidw@dedasys.com>
+
+	* INSTALL: Updated install instructions.
+
+	* genconf.sh: Shell script that may be used to generate the config
+	stuff.
+
+2004-12-18  David N. Welton  <davidw@dedasys.com>
+
+	* tests/test-bmp-compare.tcl: New tests, thanks to Sheila Miguez.
+
+	* images/*.bmp: Added some bitmap images from Sheila for the
+	comparison test.
+
+2004-12-16  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TkMagick.c (MagickToPhoto): Added ifdef'ed
+	Tk_PhotoPutBlock to make things work with Tk 8.5.  Thanks to
+	George Staplin for reporting the problem.
+
+	* configure.ac: Bumped version number.
+
+	* generic/Makefile.am (libTkMagick_la_CPPFLAGS): Added
+	TK_XINCLUDES.  Thanks to George Staplin for reporting the problem.
+
+	* generic/TclMagick.c (magickCmd): Only free the memory if
+	necessary.  Thanks to David Zolli for reporting the problem.
+
+	* generic/TclMagick.c: Fixed a few more, similar free'ing errors.
+
 2004-11-06  David N. Welton  <davidw@dedasys.com>
 
 	* generic/TkMagick.c: phototomagick's error message had the photo

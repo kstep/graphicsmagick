@@ -86,9 +86,18 @@ static int MagickToPhoto(
 	return myMagickError(interp, wand);
     }
 
+#if TCL_MAJOR_VERSION <= 8 && TCL_MINOR_VERSION <= 4
     Tk_PhotoPutBlock(photohandle, &magickblock, 0, 0,
 		     magickblock.width, magickblock.height,
 		     TK_PHOTO_COMPOSITE_SET);
+#else
+    if (Tk_PhotoPutBlock(interp, photohandle, &magickblock,
+			 0, 0, magickblock.width, magickblock.height,
+			 TK_PHOTO_COMPOSITE_SET) != TCL_OK) {
+	ckfree(magickblock.pixelPtr);
+	return TCL_ERROR;
+    }
+#endif /* TCL_MAJOR_VERSION <= 8 && TCL_MINOR_VERSION <= 4 */
 
     ckfree(magickblock.pixelPtr);
     return TCL_OK;
@@ -168,9 +177,9 @@ static int PhotoToMagick(
 	map[photoblock.offset[1]] = 'G';
 	map[photoblock.offset[2]] = 'B';
 	if (strcmp(MagickPackageName, "ImageMagick") == 0) {
-	    map[photoblock.offset[3]] = 'O';
-	} else {
 	    map[photoblock.offset[3]] = 'A';
+	} else {
+	    map[photoblock.offset[3]] = 'O';
 	}
 	break;
     default:
@@ -207,22 +216,23 @@ static int PhotoToMagick(
 
 EXPORT(int, Tkmagick_Init)(Tcl_Interp *interp)
 {
+#ifdef USE_TCL_STUBS
     if (Tcl_InitStubs(interp, "8", 0) == NULL) {
 	return TCL_ERROR;
     }
+#endif
+#ifdef USE_TK_STUBS
     if (Tk_InitStubs(interp, "8", 0) == NULL) {
 	return TCL_ERROR;
     }
-
-    if ( Tcl_PkgRequire(interp, "TclMagick", "0.4", 0) == NULL) {
-	return TCL_ERROR;
-    }
-    if ( Tcl_PkgProvide(interp,"TkMagick", "0.2") != TCL_OK ) {
-        return TCL_ERROR;
-    }
+#endif
 
     Tcl_CreateObjCommand(interp, "magicktophoto",  MagickToPhoto,  NULL, NULL);
     Tcl_CreateObjCommand(interp, "phototomagick",  PhotoToMagick,  NULL, NULL);
+
+    if ( Tcl_PkgProvide(interp,"TkMagick", VERSION) != TCL_OK ) {
+        return TCL_ERROR;
+    }
 
     return TCL_OK;
 }

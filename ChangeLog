@@ -1,10 +1,16 @@
+2005-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh: Released 1.1.5.
+	* NEWS: Updated with latest news.
+
 2005-01-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tga.c (WriteTGAImage): Incorported patch from Stefan
 	v. Wachter to enable writing grayscale images as well as adding
 	more image type option smarts.
 	* coders/psd.c (ReadPSDImage): Fix stack overflow vulnerability
-	reported by Andrei Nigmatulin.
+	reported by Andrei Nigmatulin. See http://lwn.net/Articles/119713/
+	for details.
 
 2005-01-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

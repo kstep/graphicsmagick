@@ -15,10 +15,6 @@
 #include "TclMagick.h"
 #include <wand/magick_wand.h>
 
-#define TCLMAGICK_VERSION_STR "0.41"
-#define TCLMAGICK_VERSION_HI  0
-#define TCLMAGICK_VERSION_LO  41
-
 /**********************************************************************/
 /* Workaround for bugs: */
 
@@ -45,7 +41,7 @@ static Tcl_ObjCmdProc    pixelObjCmd;
 static Tcl_ObjCmdProc    drawObjCmd;
 
 /*----------------------------------------------------------------------
- * Return ImageMagick error description as a TCL result
+ * Return Magick error description as a TCL result
  *----------------------------------------------------------------------
  */
 int myMagickError(Tcl_Interp  *interp, MagickWand *wandPtr )
@@ -57,9 +53,9 @@ int myMagickError(Tcl_Interp  *interp, MagickWand *wandPtr )
 
     description = MagickGetException(wandPtr, &severity);
     if( (description == NULL) || (strlen(description) == 0) ) {
-        Tcl_AppendResult(interp, "ImageMagick: Unknown error", NULL);
+        Tcl_AppendResult(interp, MagickGetPackageName(), ": Unknown error", NULL);
     } else {
-        sprintf(msg, "ImageMagick #%d:", severity);
+        sprintf(msg, "%s: #%d:", MagickGetPackageName(), severity);
         Tcl_AppendResult(interp, description, NULL);
     }
     if( description != NULL ) {
@@ -286,6 +282,18 @@ static PixelWand *findPixelWand(Tcl_Interp *interp, char *name)
 }
 
 /*----------------------------------------------------------------------
+ * encoding functions
+ *----------------------------------------------------------------------
+ */
+static void SetResultAsExternalString(Tcl_Interp *interp, char *ext) {
+    Tcl_DString extrep;
+    Tcl_ExternalToUtfDString(NULL, ext, -1, &extrep);
+    Tcl_DStringResult(interp, &extrep);
+    Tcl_DStringFree(&extrep);
+}
+
+
+/*----------------------------------------------------------------------
  * magick command
  *----------------------------------------------------------------------
  *
@@ -501,7 +509,8 @@ static int magickCmd(
             }
     	    Tcl_SetObjResult(interp, listPtr);
         }
-	MagickRelinquishMemory(fonts); /* Free TclMagick resource */
+	if (fonts != NULL)
+	    MagickRelinquishMemory(fonts); /* Free TclMagick resource */
 
         break;
     }
@@ -531,7 +540,8 @@ static int magickCmd(
             }
     	    Tcl_SetObjResult(interp, listPtr);
         }
-	MagickRelinquishMemory(fonts); /* Free TclMagick resource */
+	if (fonts != NULL)
+	    MagickRelinquishMemory(fonts); /* Free TclMagick resource */
 
         break;
     }
@@ -542,7 +552,7 @@ static int magickCmd(
 	    Tcl_WrongNumArgs(interp, 2, objv, NULL);
 	    return TCL_ERROR;
 	}
-	Tcl_SetResult(interp, TCLMAGICK_VERSION_STR, TCL_VOLATILE);
+	Tcl_SetResult(interp, VERSION, TCL_VOLATILE);
 
 	break;
     }
@@ -1287,7 +1297,7 @@ static int wandObjCmd(
                     return stat;
 		}
             }
-            name = Tcl_GetString(objv[objc-1]);
+	    txt = Tcl_GetString(objv[objc-1]);
 
             result = MagickAnnotateImage(wandPtr, drawPtr, x, y, angle, txt);
             if (!result) {
@@ -1652,15 +1662,21 @@ static int wandObjCmd(
 	if( (refWand = findMagickWand(interp, name)) == NULL ) {
 	    return TCL_ERROR;
 	}
-	if (Tcl_GetIndexFromObj(interp, objv[3], chanNames, "channelType", 0, &chanIdx) != TCL_OK) {
+	if (Tcl_GetIndexFromObj(interp, objv[3], chanNames,
+				"channelType", 0, &chanIdx) != TCL_OK) {
 	    return TCL_ERROR;
 	}
-	if (Tcl_GetIndexFromObj(interp, objv[4], metricNames, "metricType", 0, &metricIdx) != TCL_OK) {
+	if (Tcl_GetIndexFromObj(interp, objv[4], metricNames,
+				"metricType", 0, &metricIdx) != TCL_OK) {
 	    return TCL_ERROR;
 	}
-	newWand = MagickCompareImageChannels( wandPtr, refWand, chanTypes[chanIdx], metricTypes[metricIdx], &value );
+	newWand = MagickCompareImageChannels( wandPtr, refWand, chanTypes[chanIdx],
+					      metricTypes[metricIdx], &value );
 	if (newWand != NULL) {
             DestroyMagickWand(newWand);
+	} else {
+	    myMagickError(interp, wandPtr);
+	    return TCL_ERROR;
 	}
 	Tcl_SetObjResult(interp, Tcl_NewDoubleObj(value));
 
@@ -1683,12 +1699,16 @@ static int wandObjCmd(
 	if( (refWand = findMagickWand(interp, name)) == NULL ) {
 	    return TCL_ERROR;
 	}
-	if (Tcl_GetIndexFromObj(interp, objv[3], metricNames, "metricType", 0, &metricIdx) != TCL_OK) {
+	if (Tcl_GetIndexFromObj(interp, objv[3], metricNames,
+				"metricType", 0, &metricIdx) != TCL_OK) {
 	    return TCL_ERROR;
 	}
 	newWand = MagickCompareImages( wandPtr, refWand, metricTypes[metricIdx], &value );
 	if (newWand != NULL) {
             DestroyMagickWand(newWand);
+	} else {
+	    myMagickError(interp, wandPtr);
+	    return TCL_ERROR;
 	}
 	Tcl_SetObjResult(interp, Tcl_NewDoubleObj(value));
 
@@ -1768,7 +1788,9 @@ static int wandObjCmd(
 	    return stat;
 	}
 	if( (unsigned long)listLen != order * order ) {
-	    Tcl_AppendResult(interp, "ConvolveImage: Invalid kernelList length, should be = (order x order)", NULL);
+	    Tcl_AppendResult(
+		interp,
+		"ConvolveImage: Invalid kernelList length, should be = (order x order)", NULL);
 	    return TCL_ERROR;
 	}
 	kernel = (double *)ckalloc(listLen * sizeof(double));
@@ -2189,12 +2211,16 @@ static int wandObjCmd(
 	    return TCL_ERROR;
 	}
 	if (objc > 2) { /* Set filename */
-	    filename = Tcl_GetString(objv[2]);
+	    Tcl_DString extrep;
+
+	    filename = Tcl_UtfToExternalDString (NULL, Tcl_GetString(objv[2]), -1, &extrep);
 	    MagickSetFilename(wandPtr, filename);
+
+	    Tcl_DStringFree (&extrep);
 	} else {    /* Get filename */
 	    filename = (char *)MagickGetFilename(wandPtr);
 	    if(filename != NULL) {
-		Tcl_SetResult(interp, filename, TCL_VOLATILE);
+		SetResultAsExternalString(interp, filename);
 		MagickRelinquishMemory(filename); /* Free TclMagick resource */
 	    }
 	}
@@ -2854,15 +2880,17 @@ static int wandObjCmd(
 	    return TCL_ERROR;
 	}
 	if (objc > 2) { /* Set filename */
-	    filename = Tcl_GetString(objv[2]);
+	    Tcl_DString extrep;
+	    filename = Tcl_UtfToExternalDString(NULL, Tcl_GetString(objv[2]), -1, &extrep);
 	    result = MagickSetImageFilename(wandPtr, filename);
+	    Tcl_DStringFree(&extrep);
 	    if (!result) {
 		return myMagickError(interp, wandPtr);
 	    }
 	} else {    /* Get filename */
 	    filename = (char *)MagickGetImageFilename(wandPtr);
 	    if(filename != NULL) {
-		Tcl_SetResult(interp, filename, TCL_VOLATILE);
+		SetResultAsExternalString(interp, filename);
 		MagickRelinquishMemory(filename); /* Free TclMagick resource */
 	    }
 	}
@@ -2977,7 +3005,7 @@ static int wandObjCmd(
     case TM_GET_INDEX:  /* GetIndex */
     case TM_SET_INDEX:  /* SetIndex index */
     {
-        unsigned long idx;
+	long idx;
 
 	if( ((enum subIndex)index == TM_INDEX) && (objc > 3) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?index?");
@@ -2998,7 +3026,7 @@ static int wandObjCmd(
 	    if (Tcl_GetLongFromObj(interp, objv[2], &idx) != TCL_OK) {
 	        return TCL_ERROR;
 	    }
-	    result = MagickSetImageIndex(wandPtr, idx);
+	    result = MagickSetImageIndex(wandPtr, (long) idx);
 	    if (!result) {
 		return myMagickError(interp, wandPtr);
 	    }
@@ -3564,7 +3592,8 @@ static int wandObjCmd(
 	    /*
 	     * Set image type
 	     */
-            if (Tcl_GetIndexFromObj(interp, objv[2], typeNames, "typeType", 0, &typeIdx) != TCL_OK) {
+            if (Tcl_GetIndexFromObj(interp, objv[2], typeNames,
+				    "typeType", 0, &typeIdx) != TCL_OK) {
 	        return TCL_ERROR;
 	    }
 	    result = MagickSetImageType(wandPtr, typeTypes[typeIdx]);
@@ -3816,7 +3845,8 @@ static int wandObjCmd(
                 }
     	        Tcl_SetObjResult(interp, listPtr);
             }
-	    MagickRelinquishMemory(factors); /* Free TclMagick resource */
+	    if (factors != NULL)
+		MagickRelinquishMemory(factors); /* Free TclMagick resource */
 	}
 	break;
     }
@@ -3914,11 +3944,15 @@ static int wandObjCmd(
     case TM_LABEL:        /* label str */
     case TM_LABEL_IMAGE:  /* LabelImage str */
     {
+	Tcl_DString extrep;
 	if( objc != 3 ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "str");
 	    return TCL_ERROR;
 	}
-	result = MagickLabelImage(wandPtr, Tcl_GetString(objv[2]));
+	result = MagickLabelImage(wandPtr, 
+	    Tcl_UtfToExternalDString(NULL, Tcl_GetString(objv[2]), -1, &extrep));
+
+	Tcl_DStringFree(&extrep);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
 	}
@@ -4026,7 +4060,7 @@ static int wandObjCmd(
     {
 	unsigned int	opacity;
 	long x = 0, y = 0;
-	double  fuzz=0.0;
+	double  fuzz = 0.0;
 	char	*name;
 	PixelWand	*borderPtr=NULL;
 
@@ -4489,7 +4523,8 @@ static int wandObjCmd(
             }
     	    Tcl_SetObjResult(interp, listPtr);
         }
-	MagickRelinquishMemory(metrics); /* Free TclMagick resource */
+	if (metrics != NULL)
+	    MagickRelinquishMemory(metrics); /* Free TclMagick resource */
 
         break;
     }
@@ -4531,13 +4566,15 @@ static int wandObjCmd(
     case TM_READ_IMAGE:    /* ReadImage filename */
     {
 	char *filename;
+	Tcl_DString extrep;
 
 	if (objc != 3) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "filename");
 	    return TCL_ERROR;
 	}
-	filename = Tcl_GetString(objv[2]);
+	filename = Tcl_UtfToExternalDString(NULL, Tcl_GetString(objv[2]), -1, &extrep);
 	result = MagickReadImage(wandPtr, filename);
+	Tcl_DStringFree(&extrep);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
 	}
@@ -5282,6 +5319,7 @@ static int wandObjCmd(
     {
 	char *filename;
 	unsigned int  adjoin=0;
+	Tcl_DString extrep;
 
 	if( ((enum subIndex)index == TM_WRITE_IMAGES) && ((objc < 3) || (objc > 4)) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "filename ?adjoin=no?");
@@ -5291,7 +5329,7 @@ static int wandObjCmd(
 	    Tcl_WrongNumArgs(interp, 2, objv, "filename");
 	    return TCL_ERROR;
 	}
-	filename = Tcl_GetString(objv[2]);
+	filename = Tcl_UtfToExternalDString(NULL, Tcl_GetString(objv[2]), -1, &extrep);
 	if( (objc > 3) && ((stat = Tcl_GetBooleanFromObj(interp, objv[3], &adjoin)) != TCL_OK) ) {
 	    return stat;
 	}
@@ -5300,6 +5338,7 @@ static int wandObjCmd(
 	} else {
 	    result = MagickWriteImage(wandPtr, filename);
 	}
+	Tcl_DStringFree(&extrep);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
 	}
@@ -8119,9 +8158,7 @@ EXPORT(int, Tclmagick_Init)(Tcl_Interp *interp)
     /*
      * Create commands per interpreter
      */
-    Tcl_CreateObjCommand(interp, "magick",  magickCmd,  NULL, NULL);
-
-    if ( Tcl_PkgProvide(interp,"TclMagick", TCLMAGICK_VERSION_STR) != TCL_OK ) {
+    if ( Tcl_PkgProvide(interp,"TclMagick", VERSION) != TCL_OK ) {
         return TCL_ERROR;
     }
 
