@@ -7177,13 +7177,15 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
     }
   if (compress)
     CondenseImage(*image);
-  if (quantize_info.number_colors != 0)
+  if ((quantize_info.number_colors != 0) ||
+      (quantize_info.colorspace == GRAYColorspace))
     {
       /*
         Reduce the number of colors in the image.
       */
       if (((*image)->class == DirectClass) ||
-          ((*image)->colors > quantize_info.number_colors))
+          ((*image)->colors > quantize_info.number_colors) ||
+          (quantize_info.colorspace == GRAYColorspace))
         (void) QuantizeImage(&quantize_info,*image);
       else
         CompressColormap(*image);
@@ -10336,6 +10338,8 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
   if (strncmp(magick,"\377\330\377\340",4) == 0)
     (void) strcpy(image_info->magick,"JPEG");
   if (strncmp(magick,"\377\330\377\356",4) == 0)
+    (void) strcpy(image_info->magick,"JPEG");
+  if (strncmp(magick,"\377\330\377\376",4) == 0)
     (void) strcpy(image_info->magick,"JPEG");
   if (strncmp(magick,"id=ImageMagick",14) == 0)
     (void) strcpy(image_info->magick,"MIFF");

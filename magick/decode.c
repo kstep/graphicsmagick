@@ -512,7 +512,7 @@ Image *ReadBMPImage(const ImageInfo *image_info)
       AllocateMemory(image_size*sizeof(unsigned char));
     if (bmp_pixels == (unsigned char *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    if ((bmp_header.compression == 0) || (bmp_header.compression ==3))
+    if ((bmp_header.compression == 0) || (bmp_header.compression == 3))
       (void) ReadData((char *) bmp_pixels,1,(unsigned int) image_size,
         image->file);
     else
@@ -13716,206 +13716,6 @@ Image *ReadTGAImage(const ImageInfo *image_info)
   return(image);
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e a d T E X T I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadTEXTImage reads a text file and returns it as an image.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
-%
-%  The format of the ReadTEXTImage routine is:
-%
-%      image=ReadTEXTImage(image_info)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method ReadTEXTImage returns a pointer to the image after
-%      reading. A null image is returned if there is a a memory shortage or if
-%      the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%
-*/
-Image *ReadTEXTImage(const ImageInfo *image_info)
-{
-  AnnotateInfo
-    annotate_info;
-
-  char
-    filename[MaxTextExtent],
-    geometry[MaxTextExtent],
-    *status,
-    text[MaxTextExtent];
-
-  double
-    dx_resolution,
-    dy_resolution;
-
-  Image
-    *image;
-
-  int
-    count,
-    offset;
-
-  RectangleInfo
-    bounding_box;
-
-  register int
-    i;
-
-  register RunlengthPacket
-    *q;
-
-  XColor
-    color;
-
-  /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
-    Open image file.
-  */
-  OpenImage(image_info,image,"r");
-  if (image->file == (FILE *) NULL)
-    PrematureExit(FileOpenWarning,"Unable to open file",image);
-  /*
-    Set the page geometry.
-  */
-  dx_resolution=72.0;
-  dy_resolution=72.0;
-  if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
-    {
-      char
-        density[MaxTextExtent];
-
-      (void) strcpy(density,PSDensityGeometry);
-      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
-      if (count != 2)
-        image->y_resolution=image->x_resolution;
-    }
-  bounding_box.width=612;
-  bounding_box.height=792;
-  bounding_box.x=0;
-  bounding_box.y=0;
-  (void) ParseImageGeometry(TextPageGeometry,&bounding_box.x,&bounding_box.y,
-    &bounding_box.width,&bounding_box.height);
-  if (image_info->page != (char *) NULL)
-    (void) ParseImageGeometry(image_info->page,&bounding_box.x,&bounding_box.y,
-      &bounding_box.width,&bounding_box.height);
-  /*
-    Initialize Image structure.
-  */
-  image->columns=(unsigned int)
-    (((bounding_box.width*image->x_resolution)/dx_resolution)+0.5);
-  image->rows=(unsigned int)
-    (((bounding_box.height*image->y_resolution)/dy_resolution)+0.5);
-  image->packets=image->columns*image->rows;
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-  (void) XQueryColorDatabase(DefaultTextBackground,&color);
-  image->background_color.red=XDownScale(color.red);
-  image->background_color.green=XDownScale(color.green);
-  image->background_color.blue=XDownScale(color.blue);
-  BlackImage(image);
-  if (image_info->texture != (char *) NULL)
-    TextureImage(image,image_info->texture);
-  /*
-    Initialize image annotation info.
-  */
-  GetAnnotateInfo((ImageInfo *) image_info,&annotate_info);
-  annotate_info.text=text;
-  annotate_info.geometry=geometry;
-  (void) strcpy(filename,image_info->filename);
-  /*
-    Annotate the text image.
-  */
-  offset=0;
-  for ( ; ; )
-  {
-    /*
-      Annotate image with text.
-    */
-    status=fgets(text,MaxTextExtent,image->file);
-    if (status == (char *) NULL)
-      break;
-    if (Extent(text) > 0)
-      text[Extent(text)-1]='\0';
-    FormatString(annotate_info.geometry,"%+d%+d",bounding_box.x,
-      bounding_box.y+offset);
-    AnnotateImage(image,&annotate_info);
-    offset+=annotate_info.bounds.height;
-    if (image->previous == (Image *) NULL)
-      if (QuantumTick(bounding_box.y+offset,image->rows))
-        ProgressMonitor(LoadImageText,bounding_box.y+offset,image->rows);
-    if (((bounding_box.y << 1)+offset+annotate_info.bounds.height) < image->rows)
-      continue;
-    /*
-      Page is full-- allocate next image structure.
-    */
-    image->orphan=True;
-    image->next=CloneImage(image,image->columns,image->rows,False);
-    image->orphan=False;
-    if (image->next == (Image *) NULL)
-      {
-        MagickWarning(ResourceLimitWarning,"Unable to annotate image",
-          "Memory allocation failed");
-        break;
-      }
-    (void) strcpy(image->next->filename,filename);
-    image->next->file=image->file;
-    image->next->filesize=image->filesize;
-    image->next->scene=image->scene+1;
-    image->next->previous=image;
-    (void) IsPseudoClass(image);
-    image=image->next;
-    ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
-      (unsigned int) image->filesize);
-    /*
-      Initialize text image to background color.
-    */
-    q=image->pixels;
-    for (i=0; i < image->packets; i++)
-    {
-      q->red=XDownScale(color.red);
-      q->green=XDownScale(color.green);
-      q->blue=XDownScale(color.blue);
-      q->index=0;
-      q->length=0;
-      q++;
-    }
-    if (image_info->texture != (char *) NULL)
-      {
-        MonitorHandler
-          handler;
-
-        handler=SetMonitorHandler((MonitorHandler) NULL);
-        TextureImage(image,image_info->texture);
-        (void) SetMonitorHandler(handler);
-      }
-    offset=0;
-  }
-  (void) IsPseudoClass(image);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
-  CloseImage(image);
-  return(image);
-}
-
 #if defined(HasTIFF)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -15184,6 +14984,206 @@ Image *ReadTTFImage(const ImageInfo *image_info)
   return((Image *) NULL);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d T X T I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadTXTImage reads a text file and returns it as an image.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
+%
+%  The format of the ReadTXTImage routine is:
+%
+%      image=ReadTXTImage(image_info)
+%
+%  A description of each parameter follows:
+%
+%    o image:  Method ReadTXTImage returns a pointer to the image after
+%      reading. A null image is returned if there is a a memory shortage or if
+%      the image cannot be read.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%
+*/
+Image *ReadTXTImage(const ImageInfo *image_info)
+{
+  AnnotateInfo
+    annotate_info;
+
+  char
+    filename[MaxTextExtent],
+    geometry[MaxTextExtent],
+    *status,
+    text[MaxTextExtent];
+
+  double
+    dx_resolution,
+    dy_resolution;
+
+  Image
+    *image;
+
+  int
+    count,
+    offset;
+
+  RectangleInfo
+    bounding_box;
+
+  register int
+    i;
+
+  register RunlengthPacket
+    *q;
+
+  XColor
+    color;
+
+  /*
+    Allocate image structure.
+  */
+  image=AllocateImage(image_info);
+  if (image == (Image *) NULL)
+    return((Image *) NULL);
+  /*
+    Open image file.
+  */
+  OpenImage(image_info,image,"r");
+  if (image->file == (FILE *) NULL)
+    PrematureExit(FileOpenWarning,"Unable to open file",image);
+  /*
+    Set the page geometry.
+  */
+  dx_resolution=72.0;
+  dy_resolution=72.0;
+  if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
+    {
+      char
+        density[MaxTextExtent];
+
+      (void) strcpy(density,PSDensityGeometry);
+      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
+      if (count != 2)
+        image->y_resolution=image->x_resolution;
+    }
+  bounding_box.width=612;
+  bounding_box.height=792;
+  bounding_box.x=0;
+  bounding_box.y=0;
+  (void) ParseImageGeometry(TextPageGeometry,&bounding_box.x,&bounding_box.y,
+    &bounding_box.width,&bounding_box.height);
+  if (image_info->page != (char *) NULL)
+    (void) ParseImageGeometry(image_info->page,&bounding_box.x,&bounding_box.y,
+      &bounding_box.width,&bounding_box.height);
+  /*
+    Initialize Image structure.
+  */
+  image->columns=(unsigned int)
+    (((bounding_box.width*image->x_resolution)/dx_resolution)+0.5);
+  image->rows=(unsigned int)
+    (((bounding_box.height*image->y_resolution)/dy_resolution)+0.5);
+  image->packets=image->columns*image->rows;
+  image->pixels=(RunlengthPacket *)
+    AllocateMemory(image->packets*sizeof(RunlengthPacket));
+  if (image->pixels == (RunlengthPacket *) NULL)
+    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+  (void) XQueryColorDatabase(DefaultTextBackground,&color);
+  image->background_color.red=XDownScale(color.red);
+  image->background_color.green=XDownScale(color.green);
+  image->background_color.blue=XDownScale(color.blue);
+  BlackImage(image);
+  if (image_info->texture != (char *) NULL)
+    TextureImage(image,image_info->texture);
+  /*
+    Initialize image annotation info.
+  */
+  GetAnnotateInfo((ImageInfo *) image_info,&annotate_info);
+  annotate_info.text=text;
+  annotate_info.geometry=geometry;
+  (void) strcpy(filename,image_info->filename);
+  /*
+    Annotate the text image.
+  */
+  offset=0;
+  for ( ; ; )
+  {
+    /*
+      Annotate image with text.
+    */
+    status=fgets(text,MaxTextExtent,image->file);
+    if (status == (char *) NULL)
+      break;
+    if (Extent(text) > 0)
+      text[Extent(text)-1]='\0';
+    FormatString(annotate_info.geometry,"%+d%+d",bounding_box.x,
+      bounding_box.y+offset);
+    AnnotateImage(image,&annotate_info);
+    offset+=annotate_info.bounds.height;
+    if (image->previous == (Image *) NULL)
+      if (QuantumTick(bounding_box.y+offset,image->rows))
+        ProgressMonitor(LoadImageText,bounding_box.y+offset,image->rows);
+    if (((bounding_box.y << 1)+offset+annotate_info.bounds.height) < image->rows)
+      continue;
+    /*
+      Page is full-- allocate next image structure.
+    */
+    image->orphan=True;
+    image->next=CloneImage(image,image->columns,image->rows,False);
+    image->orphan=False;
+    if (image->next == (Image *) NULL)
+      {
+        MagickWarning(ResourceLimitWarning,"Unable to annotate image",
+          "Memory allocation failed");
+        break;
+      }
+    (void) strcpy(image->next->filename,filename);
+    image->next->file=image->file;
+    image->next->filesize=image->filesize;
+    image->next->scene=image->scene+1;
+    image->next->previous=image;
+    (void) IsPseudoClass(image);
+    image=image->next;
+    ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+      (unsigned int) image->filesize);
+    /*
+      Initialize text image to background color.
+    */
+    q=image->pixels;
+    for (i=0; i < image->packets; i++)
+    {
+      q->red=XDownScale(color.red);
+      q->green=XDownScale(color.green);
+      q->blue=XDownScale(color.blue);
+      q->index=0;
+      q->length=0;
+      q++;
+    }
+    if (image_info->texture != (char *) NULL)
+      {
+        MonitorHandler
+          handler;
+
+        handler=SetMonitorHandler((MonitorHandler) NULL);
+        TextureImage(image,image_info->texture);
+        (void) SetMonitorHandler(handler);
+      }
+    offset=0;
+  }
+  (void) IsPseudoClass(image);
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
+  CloseImage(image);
+  return(image);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -16888,6 +16888,22 @@ Image *ReadXPMImage(const ImageInfo *image_info)
   */
   for (p=xpm_buffer; *p != '\0'; p++)
   {
+    if ((*p == '"') || (*p == '\''))
+      {
+        if (*p == '"')
+          {
+            for (p++; *p != '\0'; p++)
+              if ((*p == '"') && (*(p-1) != '\\'))
+                break;
+          }
+        else
+          for (p++; *p != '\0'; p++)
+            if ((*p == '\'') && (*(p-1) != '\\'))
+              break;
+        if (*p == '\0')
+          break;
+        continue;
+      }
     if ((*p != '/') || (*(p+1) != '*'))
       continue;
     for (q=p+2; *q != '\0'; q++)

@@ -197,22 +197,22 @@
 */
 typedef struct _NodeInfo
 {
-  unsigned char
-    id,
-    level,
-    census;
-
-  unsigned int
-    color_number;
+  double
+    total_red,
+    total_green,
+    total_blue,
+    quantization_error;
 
   unsigned long
     number_unique;
 
-  double
-    quantization_error,
-    total_red,
-    total_green,
-    total_blue;
+  unsigned int
+    color_number;
+
+  unsigned char
+    id,
+    level,
+    census;
 
   struct _NodeInfo
     *parent,
@@ -275,7 +275,6 @@ typedef struct _CubeInfo
   double
     weights[ErrorQueueLength];
 } CubeInfo;
-
 
 /*
   Method prototypes.
@@ -513,6 +512,10 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
     mid_green,
     mid_blue;
 
+  int
+    distance,
+    mean;
+
   register int
     i;
 
@@ -584,10 +587,6 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
       node_info=node_info->child[id];
       if (level != 8)
         {
-          int
-            distance,
-            mean;
-
           register double
             distance_squared;
 

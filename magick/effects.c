@@ -3013,14 +3013,11 @@ Export Image *WaveImage(Image *image,double amplitude,double wavelength)
     for (x=0; x < waved_image->columns; x++)
     {
       offset=y-sine_map[x];
-      if ((offset >= 0) && (offset < image->rows))
-        {
-          interpolated_color=InterpolateColor(image,x,offset);
-          q->red=interpolated_color.red;
-          q->green=interpolated_color.green;
-          q->blue=interpolated_color.blue;
-          q->index=interpolated_color.index;
-        }
+      interpolated_color=InterpolateColor(image,x,offset);
+      q->red=interpolated_color.red;
+      q->green=interpolated_color.green;
+      q->blue=interpolated_color.blue;
+      q->index=interpolated_color.index;
       q++;
     }
     if (QuantumTick(y,image->rows))

@@ -71,7 +71,6 @@
   CloseImage(image); \
   return(False); \
 }
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -11802,6 +11801,105 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   return(False);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e T X T I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteTXTImage writes the pixel values as text numbers.
+%
+%  The format of the WriteTXTImage routine is:
+%
+%      status=WriteTXTImage(image_info,image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Method WriteTXTImage return True if the image is written.
+%      False is returned is there is a memory shortage or if the image file
+%      fails to write.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image:  A pointer to a Image structure.
+%
+%
+*/
+unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
+{
+  int
+    x,
+    y;
+
+  register int
+    i,
+    j;
+
+  register RunlengthPacket
+    *p;
+
+  unsigned int
+    scene;
+
+  /*
+    Open output image file.
+  */
+  OpenImage(image_info,image,WriteBinaryType);
+  if (image->file == (FILE *) NULL)
+    PrematureExit(FileOpenWarning,"Unable to open file",image);
+  scene=0;
+  do
+  {
+    /*
+      Convert MIFF to TXT raster pixels.
+    */
+    x=0;
+    y=0;
+    p=image->pixels;
+    for (i=0; i < image->packets; i++)
+    {
+      for (j=0; j <= ((int) p->length); j++)
+      {
+        if (image->matte)
+          (void) fprintf(image->file,"%d,%d: %d,%d,%d,%d\n",x,y,
+            p->red,p->green,p->blue,p->index);
+        else
+          {
+            (void) fprintf(image->file,"%d,%d: %d,%d,%d  ",x,y,
+              p->red,p->green,p->blue);
+            (void) fprintf(image->file,HexColorFormat,p->red,p->green,p->blue);
+          }
+        (void) fprintf(image->file,"\n");
+        x++;
+        if (x == image->columns)
+          {
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
+            x=0;
+            y++;
+          }
+      }
+      p++;
+    }
+    if (image->next == (Image *) NULL)
+      break;
+    image->next->file=image->file;
+    image=image->next;
+    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+  } while (image_info->adjoin);
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
+  CloseImage(image);
+  return(True);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -2111,6 +2111,7 @@ Export char *SetClientName(const char *name)
     {
       (void) strcpy(client_name,BaseFilename(name));
       setlocale(LC_ALL,"");
+      setlocale(LC_NUMERIC,"C");
     }
   return(client_name);
 }
