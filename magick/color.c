@@ -834,6 +834,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
   }
   if (file != (FILE *) NULL)
     {
+      image->depth=QuantumDepth;
       Histogram(image,cube_info,cube_info->root,file,exception);
       (void) fflush(file);
     }
