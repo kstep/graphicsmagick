@@ -481,7 +481,7 @@ MAGICK DELEGATES
 
     o ImageMagick requires html2ps available from
 
-	  http://www.tdb.uu.se/~jan/html2ps-1.0b1.zip
+	  http://www.tdb.uu.se/~jan/html2ps.html
 
       to read the HTML image format.
 
