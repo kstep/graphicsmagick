@@ -278,7 +278,7 @@ check-constitute: constitute$(EXEEXT)
 	exit $$status
 
 check-rwblob: rwblob$(EXEEXT)
-	-@status=0 ; \
+	@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_BLOB_FORMATS) ; \
 	do \
@@ -305,7 +305,7 @@ check-rwblob: rwblob$(EXEEXT)
 	exit $$status
 
 check-rwfile: rwfile$(EXEEXT)
-	-@status=0 ; \
+	@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_FILE_FORMATS) ; \
 	do \
@@ -332,7 +332,7 @@ check-rwfile: rwfile$(EXEEXT)
 	exit $$status
 
 check-rwblob-sized: rwblob$(EXEEXT)
-	-@status=0 ; \
+	@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_SIZED_BLOB_FORMATS) ; \
 	do \
@@ -359,7 +359,7 @@ check-rwblob-sized: rwblob$(EXEEXT)
 	exit $$status
 
 check-rwfile-sized: rwfile$(EXEEXT)
-	-@status=0 ; \
+	@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_SIZED_FILE_FORMATS) ; \
 	do \

@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 #
 # Copyright 2004 Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #

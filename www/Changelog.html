@@ -56,6 +56,9 @@
 2004-02-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> coders/tiff.c (WriteTIFFImage): Fix detection of when to use a
+        temporary file when writing TIFF.  Writing to TIFF BLOBs was
+        broken by the recent changes to make BlobInfo a private type.
   <LI> magick/render.c (DestroyEdge): Use memmove for overlapping copy.
 
 </UL>

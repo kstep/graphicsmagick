@@ -71,14 +71,14 @@
 */
 typedef enum
 {
-  UndefinedStream,
-  FileStream,
-  StandardStream,
-  PipeStream,
-  ZipStream,
-  BZipStream,
-  FifoStream,
-  BlobStream
+  UndefinedStream,  /* Closed or open error */
+  FileStream,       /* Opened with stdio fopen() or via image_info->file */
+  StandardStream,   /* Stdin or stdout (filename "-") */
+  PipeStream,       /* Command pipe stream opened via popen() */
+  ZipStream,        /* Opened with zlib's gzopen() */
+  BZipStream,       /* Opened with bzlib's BZ2_bzopen() */
+  FifoStream,       /* Passed via image_info->stream */
+  BlobStream        /* Memory mapped, or in allocated RAM */
 } StreamType;
 
 /*
