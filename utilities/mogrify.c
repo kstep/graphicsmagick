@@ -176,7 +176,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MogrifyUsage displays the program command syntax.
+%  MogrifyUsage() displays the program command syntax.
 %
 %  The format of the MogrifyUsage method is:
 %

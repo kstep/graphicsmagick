@@ -118,21 +118,21 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U s a g e                                                                 %
+%   I m p o r t U s a g e                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure Usage displays the program usage;
+%  ImportUsage() displays the program command syntax.
 %
-%  The format of the Usage method is:
+%  The format of the ImportUsage method is:
 %
-%      void Usage()
+%      void ImportUsage()
 %
 %
 */
-static void Usage(void)
+static void ImportUsage(void)
 {
   const char
     **p;
@@ -184,7 +184,7 @@ static void Usage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [ -option value ... ] [ file ]\n",
+  (void) printf("ImportUsage: %.1024s [ -option value ... ] [ file ]\n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
@@ -300,7 +300,7 @@ int main(int argc,char **argv)
         break;
       }
     if (LocaleCompare("help",option+1) == 0)
-      Usage();
+      ImportUsage();
   }
   /*
     Get user defaults from X resource database.
@@ -645,7 +645,7 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("help",option+1) == 0)
             {
-              Usage();
+              ImportUsage();
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
@@ -906,7 +906,7 @@ int main(int argc,char **argv)
         }
         case '?':
         {
-          Usage();
+          ImportUsage();
           break;
         }
         default:

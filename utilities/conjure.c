@@ -92,20 +92,20 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U s a g e                                                                 %
+%   C o n j u r e U s a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure Usage displays the program usage;
+%  ConjureUsage() displays the program command syntax.
 %
-%  The format of the Usage method is:
+%  The format of the ConjureUsage method is:
 %
-%      void Usage()
+%      void ConjureUsage()
 %
 */
-static void Usage(void)
+static void ConjureUsage(void)
 {
   static const char
     *options[]=
@@ -124,7 +124,7 @@ static void Usage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [ -option value ... ] file [ [ -option value "
+  (void) printf("ConjureUsage: %.1024s [ -option value ... ] file [ [ -option value "
     "... ] file ... ]\n",SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
@@ -177,7 +177,7 @@ int main(int argc,char **argv)
   if (status == False)
     MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
   if (argc < 2)
-    Usage();
+    ConjureUsage();
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   image_info->attributes=AllocateImage(image_info);
@@ -196,7 +196,7 @@ int main(int argc,char **argv)
         if (LocaleCompare("help",option+1) == 0)
           {
             if (*option == '-')
-              Usage();
+              ConjureUsage();
             continue;
           }
         if (LocaleCompare("verbose",option+1) == 0)

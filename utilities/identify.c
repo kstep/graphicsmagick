@@ -84,7 +84,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IdentifyUsage() displays the program usage;
+%  IdentifyUsage() displays the program command syntax.
 %
 %  The format of the IdentifyUsage method is:
 %

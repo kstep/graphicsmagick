@@ -163,7 +163,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MontageUsage displays the program command syntax.
+%  MontageUsage() displays the program command syntax.
 %
 %  The format of the MontageUsage method is:
 %

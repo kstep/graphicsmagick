@@ -151,23 +151,23 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U s a g e                                                                 %
+%   D i s p l a y U s a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method Usage displays the program command syntax.
+%  DisplayUsage() displays the program command syntax.
 %
-%  The format of the Usage method is:
+%  The format of the DisplayUsage method is:
 %
-%      void Usage(void)
+%      void DisplayUsage(void)
 %
 %  A description of each parameter follows:
 %
 %
 */
-static void Usage(void)
+static void DisplayUsage(void)
 {
   const char
     **p;
@@ -242,7 +242,7 @@ static void Usage(void)
     version;
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
-  (void) printf("Usage: %.1024s [ option value ... ] file [ [ -option value "
+  (void) printf("DisplayUsage: %.1024s [ option value ... ] file [ [ -option value "
     "... ] file ... ]\n",SetClientName((char *) NULL));
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
@@ -406,7 +406,7 @@ int main(int argc,char **argv)
         break;
       }
     if (LocaleCompare("help",option+1) == 0)
-      Usage();
+      DisplayUsage();
   }
   /*
     Get user defaults from X resource database.
@@ -882,7 +882,7 @@ int main(int argc,char **argv)
         case 'h':
         {
           if (LocaleCompare("help",option+1) == 0)
-            Usage();
+            DisplayUsage();
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
@@ -1317,7 +1317,7 @@ int main(int argc,char **argv)
         }
         case '?':
         {
-          Usage();
+          DisplayUsage();
           break;
         }
         default:

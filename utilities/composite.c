@@ -404,7 +404,7 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure CompositeUsage displays the program usage;
+%  CompositeUsage() displays the program command syntax.
 %
 %  The format of the CompositeUsage method is:
 %

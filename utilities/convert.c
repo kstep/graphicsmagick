@@ -459,7 +459,7 @@ static unsigned int ConvertImageList(ImageInfo *image_info,Image **image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure ConvertUsage displays the program usage;
+%  Procedure ConvertUsage displays the program command syntax.
 %
 %  The format of the ConvertUsage method is:
 %
