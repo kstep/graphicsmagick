@@ -85,7 +85,7 @@ static void Usage(void)
     {
       "Define any key value pairs required by your script, for example:",
       "",
-      "    conjure -geometry 100x100 -color blue -foo bar script.msl",
+      "    conjure -dimensions 100x100 -color blue -foo bar script.msl",
       (char *) NULL
     };
 
@@ -156,6 +156,23 @@ int main(int argc,char **argv)
     option=argv[i];
     if ((strlen(option) > 1) && ((*option == '-') || (*option == '+')))
       {
+
+        if (LocaleCompare("debug",option+1) == 0)
+          {
+            image_info->debug=(*option == '-');
+            continue;
+          }
+        if (LocaleCompare("help",option+1) == 0)
+          {
+            if (*option == '-')
+              Usage();
+            continue;
+          }
+        if (LocaleCompare("verbose",option+1) == 0)
+          {
+            image_info->verbose=(*option == '-');
+            continue;
+          }
         /*
           Persist key/value pair.
         */

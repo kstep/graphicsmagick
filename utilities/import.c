@@ -530,6 +530,11 @@ int main(int argc,char **argv)
         }
         case 'd':
         {
+          if (LocaleCompare("debug",option+1) == 0)
+            {
+              image_info->debug=(*option == '-');
+              break;
+            }
           if (LocaleCompare("delay",option+1) == 0)
             {
               resource_info.delay=0;

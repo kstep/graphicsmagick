@@ -803,6 +803,11 @@ int main(int argc,char **argv)
         }
         case 'd':
         {
+          if (LocaleCompare("debug",option+1) == 0)
+            {
+              image_info.debug=(*option == '-');
+              break;
+            }
           if (LocaleCompare("density",option+1) == 0)
             {
               (void) CloneString(&image_info->density,(char *) NULL);
