@@ -105,7 +105,7 @@ static void AttachBlob(BlobInfo *blob_info,const void *blob,const size_t length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  BlobToImage(0 implements direct to memory image formats.  It returns
+%  BlobToImage() implements direct to memory image formats.  It returns
 %  the blob as an image.
 %
 %  The format of the BlobToImage method is:
@@ -147,6 +147,12 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
+  if ((blob == (const void *) NULL) || (length == 0))
+    {
+      ThrowException(exception,BlobWarning,"Unrecognized image format",
+        image_info->magick);
+      return((Image *) NULL);
+    }
   clone_info=CloneImageInfo(image_info);
   AttachBlob(clone_info->blob,blob,length);
   GetExceptionInfo(exception);

@@ -145,7 +145,11 @@ typedef struct _SVGInfo
   PointInfo
     radius;
 
+  long
+    offset;
+
   char
+    *stop_color,
     *text,
     *vertices,
     *url,
@@ -760,6 +764,38 @@ static void SVGStartElement(void *context,const xmlChar *name,
       value=(const char *) attributes[i+1];
       switch (*keyword)
       {
+        case 'C':
+        case 'c':
+        {
+          if (LocaleCompare(keyword,"cx") == 0)
+            {
+              svg_info->element.cx=GetUserSpaceCoordinateValue(svg_info,value);
+              break;
+            }
+          if (LocaleCompare(keyword,"cy") == 0)
+            {
+              svg_info->element.cy=GetUserSpaceCoordinateValue(svg_info,value);
+              break;
+            }
+          break;
+        }
+        case 'F':
+        case 'f':
+        {
+          if (LocaleCompare(keyword,"fx") == 0)
+            {
+              svg_info->element.major=
+                GetUserSpaceCoordinateValue(svg_info,value);
+              break;
+            }
+          if (LocaleCompare(keyword,"fy") == 0)
+            {
+              svg_info->element.minor=
+                GetUserSpaceCoordinateValue(svg_info,value);
+              break;
+            }
+          break;
+        }
         case 'H':
         case 'h':
         {
@@ -777,6 +813,17 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"id") == 0)
             {
               (void) strncpy(id,value,MaxTextExtent-1);
+              break;
+            }
+          break;
+        }
+        case 'R':
+        case 'r':
+        {
+          if (LocaleCompare(keyword,"r") == 0)
+            {
+              svg_info->element.angle=
+                GetUserSpaceCoordinateValue(svg_info,value);
               break;
             }
           break;
@@ -800,6 +847,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
               svg_info->bounds.x=GetUserSpaceCoordinateValue(svg_info,value);
               break;
             }
+          if (LocaleCompare(keyword,"x1") == 0)
+            {
+              svg_info->segment.x1=GetUserSpaceCoordinateValue(svg_info,value);
+              break;
+            }
+          if (LocaleCompare(keyword,"x2") == 0)
+            {
+              svg_info->segment.x2=GetUserSpaceCoordinateValue(svg_info,value);
+              break;
+            }
           break;
         }
         case 'Y':
@@ -808,6 +865,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"y") == 0)
             {
               svg_info->bounds.y=GetUserSpaceCoordinateValue(svg_info,value);
+              break;
+            }
+          if (LocaleCompare(keyword,"y1") == 0)
+            {
+              svg_info->segment.y1=GetUserSpaceCoordinateValue(svg_info,value);
+              break;
+            }
+          if (LocaleCompare(keyword,"y2") == 0)
+            {
+              svg_info->segment.y2=GetUserSpaceCoordinateValue(svg_info,value);
               break;
             }
           break;
@@ -884,8 +951,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (LocaleCompare((char *) name,"linearGradient") == 0)
         {
           (void) fprintf(svg_info->file,
-            "push gradient %s linear '%gx%g%+g%+g'\n",id,svg_info->bounds.width,
-            svg_info->bounds.height,svg_info->bounds.x,svg_info->bounds.y);
+            "push gradient %s linear %g,%g %g,%g\n",id,svg_info->segment.x1,
+             svg_info->segment.y1,svg_info->segment.x2,svg_info->segment.y2);
           break;
         }
       break;
@@ -923,8 +990,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (LocaleCompare((char *) name,"radialGradient") == 0)
         {
           (void) fprintf(svg_info->file,
-            "push gradient %s radial '%gx%g%+g%+g'\n",id,svg_info->bounds.width,
-            svg_info->bounds.height,svg_info->bounds.x,svg_info->bounds.y);
+            "push gradient %s radial %g,%g %g,%g %g\n",id,
+            svg_info->element.cx,svg_info->element.cy,svg_info->element.major,
+            svg_info->element.minor,svg_info->element.angle);
           break;
         }
       if (LocaleCompare((char *) name,"rect") == 0)
@@ -1070,7 +1138,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"font-size") == 0)
             {
               svg_info->pointsize=GetUserSpaceCoordinateValue(svg_info,value);
-              (void) fprintf(svg_info->file,"font-size %g\n",svg_info->pointsize);
+              (void) fprintf(svg_info->file,"font-size %g\n",
+                svg_info->pointsize);
               break;
             }
           if (LocaleCompare(keyword,"font-weight") == 0)
@@ -1099,7 +1168,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"height") == 0)
             {
-              svg_info->bounds.height=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->bounds.height=
+                GetUserSpaceCoordinateValue(svg_info,value);
               break;
             }
           if (LocaleCompare(keyword,"href") == 0)
@@ -1114,12 +1184,14 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"major") == 0)
             {
-              svg_info->element.major=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->element.major=
+                GetUserSpaceCoordinateValue(svg_info,value);
               break;
             }
           if (LocaleCompare(keyword,"minor") == 0)
             {
-              svg_info->element.minor=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->element.minor=
+                GetUserSpaceCoordinateValue(svg_info,value);
               break;
             }
           break;
@@ -1129,7 +1201,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"offset") == 0)
             {
-              (void) fprintf(svg_info->file,"offset %s\n",value);
+              svg_info->offset=GetUserSpaceCoordinateValue(svg_info,value);
               break;
             }
           if (LocaleCompare(keyword,"opacity") == 0)
@@ -1159,8 +1231,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"r") == 0)
             {
-              svg_info->element.major=GetUserSpaceCoordinateValue(svg_info,value);
-              svg_info->element.minor=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->element.major=
+                GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->element.minor=
+                GetUserSpaceCoordinateValue(svg_info,value);
               break;
             }
           if (LocaleCompare(keyword,"rx") == 0)
@@ -1188,7 +1262,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"stop-color") == 0)
             {
-              (void) fprintf(svg_info->file,"stop-color %s\n",value);
+              (void) CloneString(&svg_info->stop_color,value);
               break;
             }
           if (LocaleCompare(keyword,"stroke") == 0)
@@ -1361,11 +1435,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   case 'S':
                   case 's':
                   {
-                    if (LocaleCompare(keyword,"stop-color") == 0)
-                      {
-                        (void) fprintf(svg_info->file,"stop-color %s\n",value);
-                        break;
-                      }
                     if (LocaleCompare(keyword,"stroke") == 0)
                       {
                          if (LocaleCompare(value,"currentColor") == 0)
@@ -1674,7 +1743,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"width") == 0)
             {
-              svg_info->bounds.width=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->bounds.width=
+                GetUserSpaceCoordinateValue(svg_info,value);
               break;
             }
           break;
@@ -1986,6 +2056,12 @@ static void SVGEndElement(void *context,const xmlChar *name)
     case 'S':
     case 's':
     {
+      if (LocaleCompare((char *) name,"stop") == 0)
+        {
+          (void) fprintf(svg_info->file,"stop-color %s %lu\n",
+            svg_info->stop_color,svg_info->offset);
+          break;
+        }
       if (LocaleCompare((char *) name,"svg") == 0)
         {
           (void) fprintf(svg_info->file,"pop graphic-context\n");
@@ -3153,28 +3229,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                   }
                 (void) WriteBlobString(image,"<g style=\"");
                 active=True;
-              }
-            if (LocaleCompare("gradient",token) == 0)
-              {
-                char
-                  name[MaxTextExtent],
-                  type[MaxTextExtent];
-
-                RectangleInfo
-                  bounds;
-
-                GetToken(q,&q,token);
-                (void) strncpy(name,token,MaxTextExtent-1);
-                GetToken(q,&q,token);
-                (void) strncpy(type,token,MaxTextExtent-1);
-                GetToken(q,&q,token);
-                (void) ParseGeometry(token,&bounds.x,&bounds.y,&bounds.width,
-                  &bounds.height);
-                FormatString(message,"<%sGradient id=\"%s\" x1=\"%ld\" "
-                  "y1=\"%ld\" x1=\"%lu\" y2=\"%lu\">\n",type,name,bounds.x,
-                  bounds.y,bounds.width,bounds.height);
-                (void) WriteBlobString(image,message);
-                break;
               }
             if (LocaleCompare("pattern",token) == 0)
               {

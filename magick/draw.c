@@ -1795,20 +1795,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
       case 'g':
       case 'G':
       {
-        if (LocaleCompare("gradient",keyword) == 0)
-          {
-            GetToken(q,&q,token);
-            GetToken(q,&q,token);
-            if (*token == ',')
-              GetToken(q,&q,token);
-            GetToken(q,&q,token);
-            if (*token == ',')
-              GetToken(q,&q,token);
-            GetToken(q,&q,token);
-            if (*token == ',')
-              GetToken(q,&q,token);
-            break;
-          }
         if (LocaleCompare("gradient-units",keyword) == 0)
           {
             GetToken(q,&q,token);
@@ -2093,7 +2079,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             if (LocaleCompare("gradient",token) == 0)
               {
                 char
-                  geometry[MaxTextExtent],
                   key[2*MaxTextExtent],
                   name[MaxTextExtent],
                   type[MaxTextExtent];
@@ -2103,7 +2088,23 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 GetToken(q,&q,token);
                 (void) strncpy(type,token,MaxTextExtent-1);
                 GetToken(q,&q,token);
-                (void) strncpy(geometry,token,MaxTextExtent-1);
+                if (*token == ',')
+                  GetToken(q,&q,token);
+                GetToken(q,&q,token);
+                if (*token == ',')
+                  GetToken(q,&q,token);
+                GetToken(q,&q,token);
+                if (*token == ',')
+                  GetToken(q,&q,token);
+                GetToken(q,&q,token);
+                if (*token == ',')
+                  GetToken(q,&q,token);
+                if (LocaleCompare(type,"radial") == 0)
+                  {
+                    GetToken(q,&q,token);
+                    if (*token == ',')
+                      GetToken(q,&q,token);
+                  }
                 for (p=q; *q != '\0'; )
                 {
                   GetToken(q,&q,token);
@@ -2116,10 +2117,10 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 }
                 (void) strncpy(token,p,q-p-4);
                 token[q-p-4]='\0';
-                FormatString(key,"[%.1024s]",name);
+                FormatString(key,"[%.1024s-gradient]",name);
                 (void) SetImageAttribute(image,key,token);
-                FormatString(key,"[%.1024s-geometry]",name);
-                (void) SetImageAttribute(image,key,geometry);
+                FormatString(key,"[%.1024s-stops]",name);
+                (void) SetImageAttribute(image,key,"null");
                 GetToken(q,&q,token);
                 break;
               }
@@ -2231,6 +2232,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
           }
         if (LocaleCompare("stop-color",keyword) == 0)
           {
+            GetToken(q,&q,token);
             GetToken(q,&q,token);
             break;
           }
