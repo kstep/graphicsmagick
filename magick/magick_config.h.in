@@ -61,9 +61,6 @@
 /* Define to 1 if you have the <dl.h> header file. */
 #undef HAVE_DL_H
 
-/* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
-#undef HAVE_DOPRNT
-
 /* Define to 1 if you have the <errno.h> header file. */
 #undef HAVE_ERRNO_H
 
@@ -76,29 +73,17 @@
 /* define if the compiler supports the explicit keyword */
 #undef HAVE_EXPLICIT
 
-/* Define to 1 if you have the <fcntl.h> header file. */
-#undef HAVE_FCNTL_H
-
 /* Define to 1 if you have the <freetype/freetype.h> header file. */
 #undef HAVE_FREETYPE_FREETYPE_H
 
-/* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
-#undef HAVE_FSEEKO
-
 /* Define to 1 if you have the `ftime' function. */
 #undef HAVE_FTIME
-
-/* Define to 1 if you have the `getcwd' function. */
-#undef HAVE_GETCWD
 
 /* Define to 1 if you have the `getexecname' function. */
 #undef HAVE_GETEXECNAME
 
 /* Define to 1 if you have the `getpagesize' function. */
 #undef HAVE_GETPAGESIZE
-
-/* Define to 1 if you have the `gettimeofday' function. */
-#undef HAVE_GETTIMEOFDAY
 
 /* Define to 1 if you have the <hdf.h> header file. */
 #undef HAVE_HDF_H
@@ -124,22 +109,8 @@
 /* Define if you have the libdl library or equivalent. */
 #undef HAVE_LIBDL
 
-/* Define to 1 if long double works and has more range or precision than
-   double. */
-#undef HAVE_LONG_DOUBLE
-
-/* Define to 1 if you support file names longer than 14 characters. */
-#undef HAVE_LONG_FILE_NAMES
-
-/* Define to 1 if your system has a working `malloc' function, and to 0
-   otherwise. */
-#undef HAVE_MALLOC
-
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
-
-/* Define to 1 if you have the <math.h> header file. */
-#undef HAVE_MATH_H
 
 /* Define to 1 if you have the `memcpy' function. */
 #undef HAVE_MEMCPY
@@ -149,12 +120,6 @@
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
-
-/* Define to 1 if you have the `mkdir' function. */
-#undef HAVE_MKDIR
-
-/* Define to 1 if you have the `mkstemp' function. */
-#undef HAVE_MKSTEMP
 
 /* Define to 1 if you have a working `mmap' system call. */
 #undef HAVE_MMAP
@@ -180,15 +145,8 @@
 /* Define if libtool can extract symbol lists from object files. */
 #undef HAVE_PRELOADED_SYMBOLS
 
-/* Define to 1 if you have the <pwd.h> header file. */
-#undef HAVE_PWD_H
-
 /* Define to 1 if you have the `readdir' function. */
 #undef HAVE_READDIR
-
-/* Define to 1 if your system has a working `realloc' function, and to 0
-   otherwise. */
-#undef HAVE_REALLOC
 
 /* Define to 1 if you have the `rindex' function. */
 #undef HAVE_RINDEX
@@ -199,21 +157,11 @@
 /* Define if you have the shl_load function. */
 #undef HAVE_SHL_LOAD
 
-/* Define to 1 if you have the `snprintf' function. */
-#undef HAVE_SNPRINTF
-
 /* define if the compiler supports static_cast<> */
 #undef HAVE_STATIC_CAST
 
-/* Define to 1 if `stat' has the bug that it succeeds when given the
-   zero-length file name argument. */
-#undef HAVE_STAT_EMPTY_STRING_BUG
-
 /* define if the compiler supports ISO C++ standard library */
 #undef HAVE_STD
-
-/* Define to 1 if you have the <stdarg.h> header file. */
-#undef HAVE_STDARG_H
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -233,10 +181,6 @@
 /* Define to 1 if you have the `strcmp' function. */
 #undef HAVE_STRCMP
 
-/* Define to 1 if you have the `strcoll' function and it is properly defined.
-   */
-#undef HAVE_STRCOLL
-
 /* Define to 1 if you have the `strerror' function. */
 #undef HAVE_STRERROR
 
@@ -249,9 +193,6 @@
 /* Define to 1 if you have the `strrchr' function. */
 #undef HAVE_STRRCHR
 
-/* Define to 1 if you have the `strtol' function. */
-#undef HAVE_STRTOL
-
 /* Define to 1 if you have the `sysconf' function. */
 #undef HAVE_SYSCONF
 
@@ -262,21 +203,12 @@
 /* Define to 1 if you have the <sys/dl.h> header file. */
 #undef HAVE_SYS_DL_H
 
-/* Define if you have sys_errlist in libc */
-#undef HAVE_SYS_ERRLIST
-
 /* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
    */
 #undef HAVE_SYS_NDIR_H
 
-/* Define to 1 if you have the <sys/select.h> header file. */
-#undef HAVE_SYS_SELECT_H
-
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
-
-/* Define to 1 if you have the <sys/time.h> header file. */
-#undef HAVE_SYS_TIME_H
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
@@ -284,20 +216,11 @@
 /* define if the compiler supports basic templates */
 #undef HAVE_TEMPLATES
 
-/* Define to 1 if you have the `tempnam' function. */
-#undef HAVE_TEMPNAM
-
 /* Define to 1 if you have the <tiffconf.h> header file. */
 #undef HAVE_TIFFCONF_H
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
-
-/* Define to 1 if you have the <varargs.h> header file. */
-#undef HAVE_VARARGS_H
-
-/* Define to 1 if you have the `vprintf' function. */
-#undef HAVE_VPRINTF
 
 /* Define to 1 if you have the `vsnprintf' function. */
 #undef HAVE_VSNPRINTF
@@ -374,10 +297,6 @@
 /* Define if you have zlib compression library */
 #undef HasZLIB
 
-/* Define to 1 if `lstat' dereferences a symlink specified with a trailing
-   slash. */
-#undef LSTAT_FOLLOWS_SLASHED_SYMLINK
-
 /* Define if the OS needs help to load dependent libraries for dlopen(). */
 #undef LTDL_DLOPEN_DEPLIBS
 
@@ -432,32 +351,14 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
-/* Pixel cache threshold (defaults to available memory) */
+/* Pixel cache threshold in MB (defaults to available memory) */
 #undef PixelCacheThreshold
 
 /* Number of bits in a pixel Quantum (8/16/32) */
 #undef QuantumDepth
 
-/* Define as the return type of signal handlers (`int' or `void'). */
-#undef RETSIGTYPE
-
-/* The size of a `int', as computed by sizeof. */
-#undef SIZEOF_INT
-
-/* The size of a `long', as computed by sizeof. */
-#undef SIZEOF_LONG
-
-/* The size of a `long long', as computed by sizeof. */
-#undef SIZEOF_LONG_LONG
-
-/* Define to 1 if the `S_IS*' macros in <sys/stat.h> do not work properly. */
-#undef STAT_MACROS_BROKEN
-
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
-
-/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
-#undef TIME_WITH_SYS_TIME
 
 /* ImageMagick is formally installed under prefix */
 #undef UseInstalledImageMagick
@@ -472,9 +373,6 @@
 /* Define to 1 if the X Window System is missing or not being used. */
 #undef X_DISPLAY_MISSING
 
-/* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
-#undef _LARGEFILE_SOURCE
-
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
 
@@ -485,9 +383,6 @@
    if it is not supported. */
 #undef inline
 
-/* Define to rpl_malloc if the replacement function should be used. */
-#undef malloc
-
 /* Define to `int' if <sys/types.h> does not define. */
 #undef mode_t
 
@@ -497,12 +392,5 @@
 /* Define to `int' if <sys/types.h> does not define. */
 #undef pid_t
 
-/* Define to rpl_realloc if the replacement function should be used. */
-#undef realloc
-
 /* Define to `unsigned' if <sys/types.h> does not define. */
 #undef size_t
-
-/* Define to empty if the keyword `volatile' does not work. Warning: valid
-   code using `volatile' can become incorrect without. Disable with care. */
-#undef volatile

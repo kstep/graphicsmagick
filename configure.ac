@@ -92,9 +92,6 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
 
-# check for system services
-AC_SYS_LONG_FILE_NAMES
-
 #
 # Tests for Windows
 #
@@ -556,30 +553,20 @@ AC_SUBST(LIB_LF)
 
 # Check standard headers
 AC_HEADER_STDC
-AC_HEADER_STAT
-AC_HEADER_TIME
 AC_HEADER_DIRENT
 
 # Check additional headers
-AC_CHECK_HEADERS(sys/select.h sys/time.h sys/stat.h sys/types.h math.h \
-  string.h stdarg.h varargs.h pwd.h malloc.h memory.h errno.h fcntl.h \
-  stdint.h)
+AC_CHECK_HEADERS(sys/types.h)
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
-AC_C_VOLATILE
 AC_C_INLINE
-AC_C_LONG_DOUBLE
 AC_C_BIGENDIAN
 
-AC_TYPE_SIGNAL
-AC_TYPE_MODE_T
-AC_TYPE_OFF_T
-AC_TYPE_PID_T
-AC_TYPE_SIZE_T
-AC_CHECK_SIZEOF(int,0)
-AC_CHECK_SIZEOF(long,0)
-AC_CHECK_SIZEOF(long long,0)
+AC_CHECK_TYPE(mode_t, int)
+AC_CHECK_TYPE(off_t, long)
+AC_CHECK_TYPE(pid_t, int)
+AC_CHECK_TYPE(size_t, unsigned)
 
 # Test for C compiler __func__ support
 if test "$ac_cv_have___func__" != 'yes' ; then
@@ -606,40 +593,8 @@ fi
 #
 # Check for functions
 #
-AC_FUNC_FSEEKO
-AC_FUNC_MALLOC
-AC_FUNC_REALLOC
-AC_FUNC_MEMCMP
-AC_TYPE_SIGNAL
-AC_FUNC_STAT
-AC_FUNC_VPRINTF
 AC_FUNC_MMAP
-AC_FUNC_STRTOD
-AC_FUNC_STRCOLL
-AC_CHECK_FUNCS(closedir ftime getcwd getexecname gettimeofday mkdir \
-  mkstemp opendir poll readdir select snprintf strchr strerror strtol \
-  sysconf tempnam vsnprintf)
-
-# Test for sys_errlist array if strerror() not supported.
-if test "$ac_cv_func_strerror" != 'yes' ; then
-AC_CACHE_CHECK(for sys_errlist array, ac_cv_sys_errlist,
-[AC_TRY_LINK(
-changequote(<<, >>)dnl
-<<
-extern char** sys_errlist;
->>,<<
-char** p = sys_errlist;
->>,
-changequote([, ])dnl
-ac_cv_sys_errlist='yes',
-ac_cv_sys_errlist='no')])
-if test "$ac_cv_sys_errlist" = 'yes' ; then
- AC_DEFINE(HAVE_SYS_ERRLIST,,Define if you have sys_errlist in libc)
- AC_MSG_RESULT(yes)
-else
- AC_MSG_RESULT(no)
-fi
-fi
+AC_CHECK_FUNCS(ftime getexecname poll select strerror sysconf vsnprintf)
 
 #
 # C++ Support Tests (For Magick++)
