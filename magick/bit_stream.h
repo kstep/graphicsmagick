@@ -35,11 +35,8 @@ extern "C" {
   */
   typedef struct _BitStreamReadHandle
   {
-    const unsigned char
-      *bytes;
-
-    unsigned int
-      bits_remaining;
+    const unsigned char  *bytes;
+    unsigned int          bits_remaining;
   } BitStreamReadHandle;
 
   /*
@@ -56,6 +53,9 @@ extern "C" {
     Return the requested number of bits from the current position in a
     bit stream. Stream is read in most-significant bit/byte "big endian"
     order.
+
+    bit_stream      - already initialized bit stream.
+    requested_bits  - number of bits to read
   */
   static inline unsigned int BitStreamMSBRead(BitStreamReadHandle *bit_stream,
                                               const unsigned int requested_bits)
@@ -97,15 +97,15 @@ extern "C" {
   */
   typedef struct _BitStreamWriteHandle
   {
-    unsigned char
-      *bytes;
-
-    unsigned int
-      bits_remaining;
+    unsigned char  *bytes;
+    unsigned int    bits_remaining;
   } BitStreamWriteHandle;
 
   /*
     Initialize Bit Stream for writing
+
+    bit_stream  - bit stream to initialize.
+    bytes       - bytes to read bits from.
   */
   static inline void BitStreamInitializeWrite(BitStreamWriteHandle *bit_stream,
                                               unsigned char *bytes)
@@ -118,6 +118,10 @@ extern "C" {
     Write quantum using the specified number of bits at the current
     position in the bit stream. Stream is written in most-significant
     bit/byte "big endian" order.
+
+    bit_stream      - already initialized bit stream.
+    requested_bits  - number of bits to write to stream.
+    quantum         - value to write.
   */
   static inline void BitStreamMSBWrite(BitStreamWriteHandle *bit_stream,
                                        const unsigned int requested_bits,
@@ -153,6 +157,84 @@ extern "C" {
           }
       }
   }
+
+  /*
+    Word reading function.
+
+    read_func_state  - state to pass to word reading function.
+  */
+  typedef unsigned long (*WordStreamReadFunc) (void *read_func_state);
+  
+  /*
+    Word stream word reader "handle"
+  */
+  typedef struct _WordStreamReadHandle
+  {
+    magick_uint32_t      word;
+    unsigned int         bits_remaining;
+    WordStreamReadFunc   read_func;
+    void                *read_func_state;
+  } WordStreamReadHandle;
+  
+  /*
+    Initialize Word Stream for reading
+
+    word_stream     - stream to initialize.
+    read_func_state - state to pass to read_func.
+    read_func       - function to retrieve the next word.
+  */
+  static inline void WordStreamInitializeRead(WordStreamReadHandle *word_stream,
+                                              void *read_func_state,
+                                              WordStreamReadFunc read_func)
+  {
+    word_stream->word            = 0;
+    word_stream->bits_remaining  = 0;
+    word_stream->read_func       = read_func;
+    word_stream->read_func_state = read_func_state;
+  }
+  
+  /*
+    Return the requested number of bits from the current position in a
+    32-bit word stream. Stream is read starting with the least significant
+    bits of the word.
+
+    word_stream     - an initialized word reader stream.
+    requested_bits  - number of bits to retrieve from the stream.
+  */
+  static inline unsigned int WordStreamLSBRead(WordStreamReadHandle *word_stream,
+                                               const unsigned int requested_bits)
+  {
+    register unsigned int
+      remaining_quantum_bits,
+      quantum;
+    
+    remaining_quantum_bits = requested_bits;
+    quantum = 0;
+    
+    while (remaining_quantum_bits > 0)
+      {
+        register unsigned int
+          word_bits;
+        
+        if (word_stream->bits_remaining == 0)
+          {
+            word_stream->word=word_stream->read_func(word_stream->read_func_state);
+            word_stream->bits_remaining=32;
+          }
+        
+        word_bits = remaining_quantum_bits;
+        if (word_bits > word_stream->bits_remaining)
+          word_bits = word_stream->bits_remaining;
+        
+        quantum |= (((word_stream->word >> (32-word_stream->bits_remaining))
+                     & BitAndMasks[word_bits]) << (requested_bits-remaining_quantum_bits));
+        
+        remaining_quantum_bits -= word_bits;
+        word_stream->bits_remaining -= word_bits;
+      }
+    return quantum;
+  }
+
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

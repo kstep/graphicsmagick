@@ -1,3 +1,11 @@
+2005-03-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (ReadDPXImage): First pass at a new SMPTE268M-2003
+	DPX reader.
+	* magick/bit_stream.h (WordStreamLSBRead): New function to parse
+	values from a stream which is defined by 32-bit words.  Values are
+	read starting with the least significant bits.
+
 2005-03-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (ExtensionTagsInitialize): Fix conditional use of

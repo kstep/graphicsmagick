@@ -56,6 +56,11 @@ typedef magick_uint16_t U16;
 typedef magick_uint32_t U32;
 typedef float R32;
 
+#define UNDEFINED_U8_VALUE 0xffU
+#define UNDEFINED_U16_VALUE 0xffffU
+#define UNDEFINED_U32_VALUE 0xffffffffU
+#define UNDEFINED_ASCII_VALUE '\0'
+
 typedef enum
 {
   ImageElementUnspecified=0,
@@ -289,77 +294,6 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
 %
 */
 
-/*
-  Bit stream word reader "handle"
-*/
-typedef struct _BitStreamWordReadHandle
-{
-  const magick_uint32_t
-  *words;
-  
-  unsigned int
-  bits_remaining;
-} BitStreamWordReadHandle;
-
-/*
-  Initialize Bit Stream for reading
-*/
-static inline void BitStreamWordInitializeRead(BitStreamWordReadHandle *bit_stream,
-                                               const magick_uint32_t *words)
-{
-  bit_stream->words          = words;
-  bit_stream->bits_remaining = 32;
-}
-
-/*
-  Return the requested number of bits from the current position in a
-  bit stream. Stream is read in most-significant bit/byte "big endian"
-  order.
-*/
-static inline unsigned int BitStreamWordLSBRead(BitStreamWordReadHandle *bit_stream,
-                                                const unsigned int requested_bits)
-{
-  register unsigned int
-    remaining_quantum_bits,
-    quantum;
-  
-  remaining_quantum_bits = requested_bits;
-  quantum = 0;
-  
-  while (remaining_quantum_bits > 0)
-    {
-      register unsigned int
-        word_bits;
-      
-      word_bits = remaining_quantum_bits;
-      if (word_bits > bit_stream->bits_remaining)
-        word_bits = bit_stream->bits_remaining;
-      
-      remaining_quantum_bits -= word_bits;
-      bit_stream->bits_remaining -= word_bits;
-
-#if 1
-      quantum = quantum |
-        (((*bit_stream->words >> (32-word_bits-bit_stream->bits_remaining))
-         & BitAndMasks[word_bits]) << (0));
-/*       printf("word_bits=%u remaining_quantum_bits=%u bit_stream->bits_remaining=%u\n", */
-/*              word_bits,remaining_quantum_bits,bit_stream->bits_remaining); */
-#else
-      quantum = (quantum << word_bits) |
-        ((*bit_stream->words >> (bit_stream->bits_remaining))
-         & BitAndMasks[word_bits]);
-#endif
-
-      if (bit_stream->bits_remaining == 0)
-        {
-          bit_stream->words++;
-          bit_stream->bits_remaining=32;
-        }
-    }
-  return quantum;
-}
-
-
 #define StringToAttribute(image,name,member) \
 { \
   char \
@@ -511,18 +445,31 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset;    
 
   unsigned int
+    bits_per_sample,
     element,
+    scale_to_short,
+    samples[5],
+    samples_per_element,
     status;
 
   unsigned long
-    pixels_offset,
-    pixel;
+    i,
+    pixels_offset;
 
   MagickBool
+    image_is_set=MagickFalse,
+    word_pad_lsb=MagickFalse,
+    word_pad_msb=MagickFalse,
     swab=MagickFalse;
 
-  BitStreamWordReadHandle
-    bit_word_stream;
+  WordStreamReadHandle
+    word_stream;
+
+  DPXImageElementDescriptor
+    element_descriptor;
+
+  ImageComponentPackingMethod
+    packing_method;
 
   /*
     Open image file.
@@ -690,77 +637,227 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       if (dpx_image_info.element_info[element].data_sign != 0)
         continue;
-
       /*
         Bits per sample.
       */
       if (dpx_image_info.element_info[element].bits_per_sample > 16)
         continue;
 
-      image->depth=Max(image->depth,dpx_image_info.element_info[element].bits_per_sample);
-
-      switch ((DPXImageElementDescriptor) dpx_image_info.element_info[element].descriptor)
+      /*
+        Move to element data
+      */
+      if ((dpx_image_info.element_info[element].data_offset != UNDEFINED_U32_VALUE) &&
+          (dpx_image_info.element_info[element].data_offset != 0U))
         {
-        case (ImageElementLuma):
+          pixels_offset=dpx_image_info.element_info[element].data_offset;
+          if (pixels_offset > offset)
+            {
+              /* Data is ahead of current position.  Good! */
+              for ( ; offset < pixels_offset ; offset++ )
+                (void) ReadBlobByte(image);
+            }
+          else
+            {
+              /* Data is behind current position.  Bad! */
+              offset=SeekBlob(image,(magick_off_t) pixels_offset,SEEK_SET);
+            }
+        }
+
+      bits_per_sample=dpx_image_info.element_info[element].bits_per_sample;
+      image->depth=Max(image->depth,bits_per_sample);
+      element_descriptor=(DPXImageElementDescriptor)
+        dpx_image_info.element_info[element].descriptor;
+      packing_method=dpx_image_info.element_info[element].packing;
+
+      /* FIXME: hack around Cinepaint oddity which mis-marks files. */
+      if ((element_descriptor == ImageElementUnspecified) &&
+          (dpx_image_info.elements == 1))
+        packing_method=PackingMethodWordsFillMSB;
+
+      /*
+        Determine component packing method.
+      */
+      if ((bits_per_sample == 10) || (bits_per_sample == 12))
+        {
+          if (packing_method == PackingMethodWordsFillLSB)
+            word_pad_lsb=MagickTrue;
+          else if (packing_method == PackingMethodWordsFillMSB)
+            word_pad_msb=MagickTrue;
+        }
+
+      switch (element_descriptor)
+        {
+        case ImageElementUnspecified:
+        case ImageElementRed:
+        case ImageElementGreen:
+        case ImageElementBlue:
+        case ImageElementAlpha:
+        case ImageElementLuma:
+        case ImageElementRGB:
+        case ImageElementRGBA:
+        case ImageElementABGR:
           {
-            q=SetImagePixels(image,0,0,image->columns,image->rows);
-            for (x=0; x < (long) ((image->columns*image->rows)/3); x++)
+            scale_to_short=1U;
+            if (bits_per_sample < 16U)
+              scale_to_short=(65535U / (65535U >> (16-bits_per_sample)));
+
+            /*
+              Determine number of samples per element.
+            */
+            switch (element_descriptor)
               {
-                pixel=ReadBlobMSBLong(image);
-                q->red=(Quantum) ((double) MaxRGB*((pixel >> 0) & 0x3ff)/1023+0.5);
-                q->green=q->red;
-                q->blue=q->red;
-                q++;
-                q->red=(Quantum) ((double) MaxRGB*((pixel >> 10) & 0x3ff)/1023+0.5);
-                q->green=q->red;
-                q->blue=q->red;
-                q++;
-                q->red=(Quantum) ((double) MaxRGB*((pixel >> 20) & 0x3ff)/1023+0.5);
-                q->green=q->red;
-                q->blue=q->red;
-                q++;
+              case ImageElementUnspecified:
+              case ImageElementRed:
+              case ImageElementGreen:
+              case ImageElementBlue:
+              case ImageElementAlpha:
+              case ImageElementLuma:
+                samples_per_element=1;
+                break;
+              case ImageElementRGB:
+                samples_per_element=3;
+                break;
+              case ImageElementRGBA:
+              case ImageElementABGR:
+                samples_per_element=4;
+              default:
+                samples_per_element=0;
+                break;
               }
-            break;
-          }
-        case (ImageElementRGB):
-          {
+
+            WordStreamInitializeRead(&word_stream,image,
+                                     (WordStreamReadFunc) ReadBlobMSBLong);
             for (y=0; y < (long) image->rows; y++)
               {
-                q=SetImagePixels(image,0,y,image->columns,1);
+                if (image_is_set == MagickFalse)
+                  {
+                    q=SetImagePixels(image,0,y,image->columns,1);
+                    image_is_set = MagickTrue;
+                  }
+                else
+                  {
+                    q=GetImagePixels(image,0,y,image->columns,1);
+                  }
                 if (q == (PixelPacket *) NULL)
                   break;
 
                 for (x=0; x < (long) image->columns; x++)
                   {
-                    magick_uint32_t
-                      word;
-
-                    word=ReadBlobMSBLong(image);
-                    BitStreamWordInitializeRead(&bit_word_stream,&word);
-#if 0
-                    if (x == 256 && y == 147)
+                    if (word_pad_lsb)
                       {
-                        printf("0x%08x\n",word);
-                        printf("blue=%u green=%u red=%u\n", (word >> 22) & BitAndMasks[10],
-                               (word >> 12) &  BitAndMasks[10],
-                               (word >> 2) & BitAndMasks[10]);
-                        (void) BitStreamWordLSBRead(&bit_word_stream,2);
-                        printf("blue=%u green=%u red=%u\n",
-                               BitStreamWordLSBRead(&bit_word_stream,10),
-                               BitStreamWordLSBRead(&bit_word_stream,10),
-                               BitStreamWordLSBRead(&bit_word_stream,10));
+                        /*
+                          Padding in LSB (Method A).
+                        */
+                        if (bits_per_sample == 10)
+                          {
+                            for (i=0; i < samples_per_element; i++)
+                              {
+                                if (word_stream.bits_remaining == 0)
+                                  (void) WordStreamLSBRead(&word_stream,2);
+                                samples[i]=WordStreamLSBRead(&word_stream,
+                                                             bits_per_sample);
+                              }
+                          }
+                        else if (bits_per_sample == 12)
+                          {
+                            for (i=0; i < samples_per_element; i++)
+                              {
+                                (void) WordStreamLSBRead(&word_stream,4);
+                                samples[i]=WordStreamLSBRead(&word_stream,
+                                                             bits_per_sample);
+                              }
+                          }
                       }
-#endif
-
-                    (void) BitStreamWordLSBRead(&bit_word_stream,2);
-                    q->blue=ScaleShortToQuantum(BitStreamWordLSBRead(&bit_word_stream,10)*64);
-                    q->green=ScaleShortToQuantum(BitStreamWordLSBRead(&bit_word_stream,10)*64);
-                    q->red=ScaleShortToQuantum(BitStreamWordLSBRead(&bit_word_stream,10)*64);
-                    q->opacity=0U; 
+                    else if (word_pad_msb)
+                      {
+                        /*
+                          Padding in MSB (Method B).
+                        */
+                        if (bits_per_sample == 10)
+                          {
+                            for (i=0; i < samples_per_element; i++)
+                              {
+                                if (word_stream.bits_remaining == 2)
+                                  (void) WordStreamLSBRead(&word_stream,2);
+                                samples[i]=WordStreamLSBRead(&word_stream,
+                                                             bits_per_sample);
+                              }
+                          }
+                        else if (bits_per_sample == 12)
+                          {
+                            for (i=0; i < samples_per_element; i++)
+                              {
+                                samples[i]=WordStreamLSBRead(&word_stream,
+                                                             bits_per_sample);
+                                (void) WordStreamLSBRead(&word_stream,4);
+                              }
+                          }
+                      }
+                    else
+                      {
+                        /*
+                          Packed data. Packing is broken on scan-line boundaries.
+                        */
+                        for (i=0; i < samples_per_element; i++)
+                          samples[i]=WordStreamLSBRead(&word_stream,bits_per_sample);
+                      }
+                    switch (element_descriptor)
+                      {
+                      case ImageElementRed:
+                        q->red=ScaleShortToQuantum(samples[0]*scale_to_short);
+                        break;
+                      case ImageElementGreen:
+                        q->green=ScaleShortToQuantum(samples[0]*scale_to_short);
+                        break;
+                      case ImageElementBlue:
+                        q->blue=ScaleShortToQuantum(samples[0]*scale_to_short);
+                        break;
+                      case ImageElementAlpha:
+                        q->opacity=MaxRGB-ScaleShortToQuantum(samples[0]*scale_to_short);
+                        break;
+                      case ImageElementUnspecified:
+                      case ImageElementLuma:
+                        q->red=q->green=q->blue=ScaleShortToQuantum(samples[0]*
+                                                                    scale_to_short);
+                        q->opacity=OpaqueOpacity;
+                        break;
+                      case ImageElementRGB:
+                        q->blue=ScaleShortToQuantum(samples[0]*scale_to_short);
+                        q->green=ScaleShortToQuantum(samples[1]*scale_to_short);
+                        q->red=ScaleShortToQuantum(samples[2]*scale_to_short);
+                        q->opacity=OpaqueOpacity;
+                        break;
+                      case ImageElementRGBA:
+                        q->blue=ScaleShortToQuantum(samples[0]*scale_to_short);
+                        q->green=ScaleShortToQuantum(samples[1]*scale_to_short);
+                        q->red=ScaleShortToQuantum(samples[2]*scale_to_short);
+                        q->opacity=MaxRGB-ScaleShortToQuantum(samples[3]*scale_to_short);
+                        break;
+                      case ImageElementABGR:
+                        q->opacity=MaxRGB-ScaleShortToQuantum(samples[0]*scale_to_short);
+                        q->red=ScaleShortToQuantum(samples[1]*scale_to_short);
+                        q->green=ScaleShortToQuantum(samples[2]*scale_to_short);
+                        q->blue=ScaleShortToQuantum(samples[3]*scale_to_short);
+                        break;
+                      default:
+                        break;
+                      }
                     q++;
                   }
                 if (!SyncImagePixels(image))
                   break;
+
+                /*
+                  Advance to next 32-bit word if components are packed.
+                */
+                if (packing_method == PackingMethodPacked)
+                  WordStreamInitializeRead(&word_stream,image,
+                                           (WordStreamReadFunc) ReadBlobMSBLong);
+
+                /*
+                  FIXME: Add support for optional EOL padding.
+                */
+
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     if (!MagickMonitor(LoadImageText,y,image->rows,exception))
