@@ -529,15 +529,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     switch (compression)
     {
       case NoCompression: FormatString(buffer,CFormat,"ASCII85Decode"); break;
-      case JPEGCompression: 
-      {
-        FormatString(buffer,CFormat,"DCTDecode"); 
-        if (image->colorspace != CMYKColorspace)
-          break;
-        (void) WriteBlobString(image,buffer);
-        (void) strcpy(buffer,"/Decode [1 0 1 0 1 0 1 0]\n");
-        break;
-      }
+      case JPEGCompression: FormatString(buffer,CFormat,"DCTDecode"); break;
       case LZWCompression: FormatString(buffer,CFormat,"LZWDecode"); break;
       case ZipCompression: FormatString(buffer,CFormat,"FlateDecode"); break;
       case FaxCompression:
@@ -673,7 +665,10 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlobByte(image,'\n');
     (void) WriteBlobByte(image,'\n');
     (void) WriteBlobString(image,"/datastream exch def\n");
-    (void) WriteBlobString(image,"/DeviceRGB setcolorspace\n");
+    if (image->colorspace != CMYKColorspace)
+      (void) WriteBlobString(image,"/DeviceRGB setcolorspace\n");
+    else
+      (void) WriteBlobString(image,"/DeviceCMYK setcolorspace\n");
     (void) WriteBlobString(image,"/ImageDataDictionary 8 dict def\n");
     (void) WriteBlobString(image,"ImageDataDictionary begin\n");
     (void) WriteBlobString(image,"  /ImageType 1 def\n");
@@ -687,7 +682,10 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"  /ImageMatrix [ %lu 0 0 %lu neg 0 %lu ] def\n",
       image->columns,image->rows,image->rows);
     (void) WriteBlobString(image,buffer);
-    (void) WriteBlobString(image,"  /Decode [ 0 1 0 1 0 1 ] def\n");
+    if (image->colorspace != CMYKColorspace)
+      (void) WriteBlobString(image,"  /Decode [ 0 1 0 1 0 1 ] def\n");
+		else
+      (void) WriteBlobString(image,"  /Decode [ 1 0 1 0 1 0 1 0 ] def\n");
     (void) WriteBlobString(image,"end\n");
     (void) WriteBlobByte(image,'\n');
     (void) WriteBlobString(image,"/ImageMaskDictionary 8 dict def\n");
