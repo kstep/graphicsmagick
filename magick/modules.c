@@ -165,7 +165,7 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   status=False;
-  module_name=TagToModule(tag);
+  module_name=TagToProcess(tag);
   handle=lt_dlopen(module_name);
   if (handle == 0)
     {
@@ -813,6 +813,49 @@ MagickExport ModuleInfo *SetModuleInfo(const char *tag)
   entry->previous=(ModuleInfo *) NULL;
   entry->next=(ModuleInfo *) NULL;
   return(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  T a g T o P r o c e s s                                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method TagToProcess takes a module "name" and returnes a complete file
+%  system dynamic module name.
+%
+%  The format of the TagToProcess method is:
+%
+%      void TagToProcess(const char *tag)
+%
+%  A description of each parameter follows:
+%
+%    o tag: a character string that represents the name of the particular
+%      processing dynamically loadable module.
+%
+*/
+char *TagToProcess(const char *tag)
+{
+  char
+    *module_name;
+
+  assert(tag != (char *) NULL);
+  module_name=(char *) AcquireMemory(MaxTextExtent);
+  if (module_name == (char *) NULL)
+    MagickError(ResourceLimitError,"Unable to get module name",
+      "Memory allocation failed");
+#if !defined(_VISUALC_)
+  (void) FormatString(module_name,"%s.la",tag);
+  (void) LocaleLower(module_name);
+#else
+  (void) FormatString(module_name,"%s.dll",tag);
+#endif
+  return(module_name);
 }
 
 /*

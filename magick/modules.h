@@ -71,7 +71,8 @@ typedef struct _ModuleInfo
 */
 extern MagickExport char
   **ListModules(void),
-  *TagToModule(const char *);
+  *TagToModule(const char *),
+  *TagToProcess(const char *);
 
 extern MagickExport int
   OpenModules(void),
