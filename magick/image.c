@@ -1098,7 +1098,7 @@ MagickExport unsigned int CompositeImage(Image *image,
   red=0.0;
   green=0.0;
   blue=0.0;
-  midpoint=0.0;
+  midpoint=128.0;
   switch (compose)
   {
     case XorCompositeOp:
@@ -1202,7 +1202,7 @@ MagickExport unsigned int CompositeImage(Image *image,
     }
     case ModulateCompositeOp:
     {
-      midpoint=MaxRGB/2.0;
+      midpoint=128.0;
       saturation_scale=50.0;
       brightness_scale=50.0;
       if (composite_image->geometry != (char *) NULL)
@@ -1519,7 +1519,10 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case ModulateCompositeOp:
         {
-          if (Intensity(*p) != midpoint)
+          int offset;
+
+          offset=(int)(Intensity(*p)+0.5)-midpoint;
+          if (offset != 0)
             {
               double
                 percent_brightness;
@@ -1530,9 +1533,8 @@ MagickExport unsigned int CompositeImage(Image *image,
               color=(*q);
               TransformHSL(color.red,color.green,color.blue,&hue,&saturation,
                 &brightness);
-              percent_brightness=
-                (brightness_scale*(Intensity(*p)-midpoint))/midpoint;
-              brightness*=percent_brightness/100.0;
+              percent_brightness=(brightness_scale*((double) offset))/(double)midpoint;
+              brightness+=percent_brightness;
               if (brightness < 0.0)
                 brightness=0.0;
               else
@@ -1543,6 +1545,7 @@ MagickExport unsigned int CompositeImage(Image *image,
               red=color.red;
               green=color.green;
               blue=color.blue;
+              opacity=OpaqueOpacity;
               break;
             }
           red=q->red;
