@@ -120,3 +120,23 @@ Solaris 2.X
     o Remove /usr/openwin/lib/libtiff.so.3. Note that if you take this
       step, some tools like 'imagetool' and 'pageview' will stop working.
 
+  Problem
+  
+    When using gcc 3.0.1, configure decides that the compiler is insufficient
+    to compile Magick++.
+    
+  Indications
+  
+    Fails ISO C++ test.
+  
+  Solution
+
+    The problem is due to gcc provided headers undefining Solaris-provided
+    defines for 64-bit versions of stdio functions.  The solution is to
+    either configure with --disable-largefile or edit the installed
+    g++-v3/bits/std_cstdio.h to bracket the offending undefs (for fgetpos,
+    fopen, freopen, fsetpos, & tmpfile) like:
+
+    #if _FILE_OFFSET_BITS != 64
+    #undef fopen
+    #endif
