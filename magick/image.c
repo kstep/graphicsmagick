@@ -1595,14 +1595,7 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->storage_class == DirectClass)
-    {
-      QuantizeInfo
-        quantize_info;
-
-      GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=MaxRGB+1;
-      (void) QuantizeImage(&quantize_info,image);
-    }
+    SetImageType(image,PaletteType);
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);

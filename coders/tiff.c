@@ -1271,13 +1271,15 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     {
       case FaxCompression:
       {
-        if (IsMonochromeImage(image,&image->exception))
+        if ((image->storage_class == PseudoClass) &&
+            IsMonochromeImage(image,&image->exception))
           compress_tag=COMPRESSION_CCITTFAX3;
         break;
       }
       case Group4Compression:
       {
-        if (IsMonochromeImage(image,&image->exception))
+        if ((image->storage_class == PseudoClass) &&
+            IsMonochromeImage(image,&image->exception))
           compress_tag=COMPRESSION_CCITTFAX4;
         break;
       }

@@ -800,7 +800,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   colorspace.numberOfComponents=3;
   if (image->matte)
     colorspace.numberOfComponents=4;
-  if ((image->storage_class == PseudoClass) && IsGrayImage(image))
+  if ((image->storage_class == PseudoClass) &&
+      IsGrayImage(image,&image->exception))
     {
       colorspace.numberOfComponents=1;
       colorspace.theComponents[0].myColor=MONOCHROME;

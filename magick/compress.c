@@ -710,20 +710,9 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
     return(False);
-  if (!IsMonochromeImage(huffman_image,&image->exception))
-    {
-      QuantizeInfo
-        quantize_info;
-
-      /*
-        Convert image to monochrome.
-      */
-      GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=2;
-      quantize_info.dither=image_info->dither;
-      quantize_info.colorspace=GRAYColorspace;
-      (void) QuantizeImage(&quantize_info,huffman_image);
-    }
+  if ((huffman_image->storage_class == DirectClass) ||
+       !IsMonochromeImage(huffman_image,&image->exception))
+    SetImageType(huffman_image,BilevelType);
   byte=0;
   bit=0x80;
   if (LocaleCompare(image_info->magick,"FAX") != 0)
@@ -920,20 +909,9 @@ MagickExport unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
     return(False);
-  if (!IsMonochromeImage(huffman_image,&image->exception))
-    {
-      QuantizeInfo
-        quantize_info;
-
-      /*
-        Convert image to monochrome.
-      */
-      GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=2;
-      quantize_info.dither=image_info->dither;
-      quantize_info.colorspace=GRAYColorspace;
-      (void) QuantizeImage(&quantize_info,huffman_image);
-    }
+  if ((huffman_image->storage_class == DirectClass) ||
+       !IsMonochromeImage(huffman_image,&image->exception))
+    SetImageType(huffman_image,BilevelType);
   TemporaryFilename(filename);
   FormatString(huffman_image->filename,"tiff:%s",filename);
   clone_info=CloneImageInfo(image_info);

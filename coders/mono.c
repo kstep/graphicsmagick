@@ -292,7 +292,8 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
   /*
     Convert image to a bi-level image.
   */
-  if (!IsMonochromeImage(image,&image->exception))
+  if ((image->storage_class == DirectClass) ||
+      !IsMonochromeImage(image,&image->exception))
     SetImageType(image,BilevelType);
   polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
   if (image->colors == 2)

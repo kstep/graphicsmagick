@@ -853,8 +853,6 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (!IsGrayImage(image,exception))
-    return(False);
   switch (image->storage_class)
   {
     case DirectClass:
@@ -867,6 +865,8 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
           return(False);
         for (x=0; x < (long) image->columns; x++)
         {
+          if (!IsGray(*p))
+            return(False);
           if ((p->red != 0) && (p->red != MaxRGB))
             return(False);
           p++;
@@ -877,8 +877,12 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
     case PseudoClass:
     {
       for (i=0; i < (long) image->colors; i++)
+      {
+        if (!IsGray(image->colormap[i]))
+          return(False);
         if ((image->colormap[i].red != 0) && (image->colormap[i].red != MaxRGB))
           return(False);
+      }
       break;
     }
   }
