@@ -150,9 +150,9 @@ int main( int /*argc*/, char ** argv)
 
 //     image.write( "piddle.mvg" );
 
-    cout << "Writing image \"piddle.miff\" ..." << endl;
+    cout << "Writing image \"piddle_out.miff\" ..." << endl;
     image.compressType( RunlengthEncodedCompression );
-    image.write( "piddle.miff" );
+    image.write( "piddle_out.miff" );
 
 //     cout << "Display image..." << endl;
 //     image.display( );

@@ -362,9 +362,9 @@ int main( int /*argc*/, char ** argv)
 		    "Magick++ and ImageMagick libraries.",
 		    "+20+175" );
 
-    cout << "Writing image \"demo.miff\" ..." << endl;
+    cout << "Writing image \"demo_out.miff\" ..." << endl;
     final.matte( false );
-    final.write( "demo.miff" );
+    final.write( "demo_out.miff" );
 
     // Uncomment following lines to display image to screen
 //    cout <<  "Display image..." << endl;

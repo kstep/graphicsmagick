@@ -21,7 +21,7 @@ shapes_SOURCES  = shapes.cpp
 
 EXTRA_DIST = Generic.ttf model.miff smile.miff smile_anim.miff tile.miff
 
-CLEANFILES = button.miff demo.miff flip_out.miff gravity.miff piddle.miff shapes.miff
+CLEANFILES = *_out.miff
 
 check:
 	env srcdir=$(srcdir) ./button

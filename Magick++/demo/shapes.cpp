@@ -107,9 +107,9 @@ int main( int /*argc*/, char ** argv)
     // Write image.
     //
 
-    cout << "Writing image \"shapes.miff\" ..." << endl;
+    cout << "Writing image \"shapes_out.miff\" ..." << endl;
     image.compressType( RunlengthEncodedCompression );
-    image.write( "shapes.miff" );
+    image.write( "shapes_out.miff" );
 
     // cout << "Display image..." << endl;
     // image.display( );
