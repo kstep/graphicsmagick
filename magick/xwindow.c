@@ -1200,7 +1200,7 @@ MagickExport void XClientMessage(Display *display,const Window window,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X C l i e n t W i n d o w                                                 %
++   X C l i e n t W i n d o w                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3375,7 +3375,7 @@ MagickExport char *XGetScreenDensity(Display *display)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X G e t S u b w i n d o w                                                 %
++   X G e t S u b w i n d o w                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3587,7 +3587,7 @@ MagickExport unsigned int XGetWindowColor(Display *display,char *name)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X G e t W i n d o w I m a g e                                             %
++   X G e t W i n d o w I m a g e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
