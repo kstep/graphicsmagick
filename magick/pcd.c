@@ -812,7 +812,6 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   char *geometry,char *tile_geometry)
 {
   Image
-    *clone_image,
     *downsampled_image,
     *tile_image;
 
