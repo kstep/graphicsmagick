@@ -2078,6 +2078,29 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 GetToken(q,&q,token);
                 break;
               }
+            if (LocaleCompare("pattern",token) == 0)
+              {
+                char
+                  name[MaxTextExtent];
+
+                GetToken(q,&q,token);
+                FormatString(name,"[%.1024s]",token);
+                for (p=q; *q != '\0'; )
+                {
+                  GetToken(q,&q,token);
+                  if (LocaleCompare(token,"pop") != 0)
+                    continue;
+                  GetToken(q,(char **) NULL,token);
+                  if (LocaleCompare(token,"pattern") != 0)
+                    continue;
+                  break;
+                }
+                (void) strncpy(token,p,q-p-4);
+                token[q-p-4]='\0';
+                (void) SetImageAttribute(image,name,token);
+                GetToken(q,&q,token);
+                break;
+              }
             if (LocaleCompare("graphic-context",token) == 0)
               {
                 n++;

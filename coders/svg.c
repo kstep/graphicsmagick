@@ -829,6 +829,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
           (void) fprintf(svg_info->file,"push graphic-context\n");
           break;
         }
+      if (LocaleCompare((char *) name,"pattern") == 0)
+        {
+          (void) fprintf(svg_info->file,"push pattern %s\n",value);
+          break;
+        }
       if (LocaleCompare((char *) name,"polygon") == 0)
         {
           (void) fprintf(svg_info->file,"push graphic-context\n");
@@ -1854,6 +1859,11 @@ static void SVGEndElement(void *context,const xmlChar *name)
     case 'P':
     case 'p':
     {
+      if (LocaleCompare((char *) name,"pattern") == 0)
+        {
+          (void) fprintf(svg_info->file,"pop pattern\n");
+          break;
+        }
       if (LocaleCompare((char *) name,"path") == 0)
         {
           (void) fprintf(svg_info->file,"path '%s'\n",svg_info->vertices);
