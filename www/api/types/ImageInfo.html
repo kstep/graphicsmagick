@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Description of ImageInfo structure members.">
    <title>ImageMagick ImageInfo Structure</title>
@@ -22,7 +22,8 @@ The ImageInfo structure is used to supply option information to the functions
 <a href="../blob.html#ImageToBlob">ImageToBlob()</a>,
 <a href="../image.html#PingImage">PingImage()</a>,
 <a href="../image.html#ReadImage">ReadImage()</a>,
-<a href="../image.html#ReadImages">ReadImages()</a>, and,
+<a href="../image.html#ReadImages">ReadImages()</a>,
+and,
 <br><a href="../image.html#WriteImage">WriteImage()</a>.&nbsp; These functions
 update information in ImageInfo to reflect attributes of the current image.
 <p>Use <a href="../image.html#CloneImageInfo">CloneImageInfo()</a> to duplicate
@@ -61,14 +62,6 @@ image.
 <td><font size=-1>Join images into a single multi-image file.</font></td>
 </tr>
 
-<tr>
-<td><b><font size=-1>affirm</font></b></td>
-
-<td><font size=-1>unsigned int</font></td>
-
-<td><font size=-1>???</font></td>
-</tr>
-
 <tr NOSAVE>
 <td><b><font size=-1>antialias</font></b></td>
 
@@ -81,23 +74,15 @@ Postscript or TrueType fonts. Enabled by default.</font></td>
 <tr>
 <td><b><font size=-1>background_color</font></b></td>
 
-<td><font size=-1>char *</font></td>
+<td><font size=-1><a href="PixelPacket.html">PixelPacket</a></font></td>
 
 <td><font size=-1>Image background color.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>blob</font></b></td>
-
-<td><font size=-1>BlobInfo</font></td>
-
-<td><font size=-1>Private member. Use by BlobToImage() and ImageToBlob().</font></td>
-</tr>
-
-<tr>
 <td><b><font size=-1>border_color</font></b></td>
 
-<td><font size=-1>char *</font></td>
+<td><font size=-1><a href="PixelPacket.html">PixelPacket</a></font></td>
 
 <td><font size=-1>Image border color.</font></td>
 </tr>
@@ -108,14 +93,6 @@ Postscript or TrueType fonts. Enabled by default.</font></td>
 <td><font size=-1>char *</font></td>
 
 <td><font size=-1>Base color that annotation text is rendered on.</font></td>
-</tr>
-
-<tr>
-<td><b><font size=-1>coalesce_frames</font></b></td>
-
-<td><font size=-1>unsigned int</font></td>
-
-<td><font size=-1>???</font></td>
 </tr>
 
 <tr>
@@ -136,14 +113,6 @@ the colorspace is ignored.</font></td>
 
 <td><font size=-1>Image compresion type. The default is the compression
 type of the specified image file.</font></td>
-</tr>
-
-<tr>
-<td><b><font size=-1>decode_all_MNG_objects</font></b></td>
-
-<td><font size=-1>unsigned int</font></td>
-
-<td><font size=-1>???</font></td>
 </tr>
 
 <tr>
@@ -241,22 +210,6 @@ space.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>group</font></b></td>
-
-<td><font size=-1>long</font></td>
-
-<td><font size=-1>???</font></td>
-</tr>
-
-<tr>
-<td><b><font size=-1>insert_backdrops</font></b></td>
-
-<td><font size=-1>unsigned int</font></td>
-
-<td><font size=-1>???</font></td>
-</tr>
-
-<tr>
 <td><b><font size=-1>interlace</font></b></td>
 
 <td><font size=-1><a href="Enumerations.html#InterlaceType">InterlaceType</a></font></td>
@@ -298,7 +251,7 @@ loop extension) for.</font></td>
 <tr>
 <td><b><font size=-1>matte_color</font></b></td>
 
-<td><font size=-1>char *</font></td>
+<td><font size=-1><a href="PixelPacket.html">PixelPacket</a></font></td>
 
 <td><font size=-1>Image matte (transparent) color.</font></td>
 </tr>
@@ -341,7 +294,7 @@ is not valid after calling ReadImage() if ping is set.</font></td>
 <tr>
 <td><b><font size=-1>pointsize</font></b></td>
 
-<td><font size=-1>unsigned int</font></td>
+<td><font size=-1>double</font></td>
 
 <td><font size=-1>Text rendering font point size.</font></td>
 </tr>
@@ -398,14 +351,6 @@ or JPEG.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>temporary</font></b></td>
-
-<td><font size=-1>unsigned int</font></td>
-
-<td><font size=-1>???</font></td>
-</tr>
-
-<tr>
 <td><b><font size=-1>texture</font></b></td>
 
 <td><font size=-1>char *</font></td>
@@ -422,14 +367,6 @@ or JPEG.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>unique</font></b></td>
-
-<td><font size=-1>char[MaxTextExtent]</font></td>
-
-<td><font size=-1>???</font></td>
-</tr>
-
-<tr>
 <td><b><font size=-1>units</font></b></td>
 
 <td><font size=-1><a href="Enumerations.html#ResolutionType">ResolutionType</a></font></td>
@@ -442,7 +379,7 @@ or JPEG.</font></td>
 
 <td><font size=-1>unsigned int</font></td>
 
-<td><font size=-1>Print detailed information about the image.</font></td>
+<td><font size=-1>Print detailed information about the image if True.</font></td>
 </tr>
 
 <tr>
@@ -452,20 +389,11 @@ or JPEG.</font></td>
 
 <td><font size=-1>FlashPix viewing parameters.</font></td>
 </tr>
-
-<tr NOSAVE>
-<td NOSAVE><b><font size=-1>zero</font></b></td>
-
-<td><font size=-1>char[MaxTextExtent]</font></td>
-
-<td><font size=-1>???</font></td>
-</tr>
 </table>
 
-<p><hr>
-<p><a href="../../../ImageMagick.html"><img SRC="../../../images/home.gif"
-  ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
-  Image manipulation software that works like magic.</font></dl>
-
+<p>
+<hr>
+<p><a href="../../../ImageMagick.html"><img SRC="../../../images/home.gif" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
+Image manipulation software that works like magic.</font>
 </body>
 </html>
