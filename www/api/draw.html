@@ -67,7 +67,7 @@ Gems'' by Paul Heckbert.
 <P>
 The format of the ColorFloodfillImage method is:
 
-<blockquote>void ColorFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RunlengthPacket.html">RunlengthPacket</A> *target, <A HREF="types/Image.html">Image</A> *tile, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ) ; </blockquote>
+<blockquote>void ColorFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RunlengthPacket.html">RunlengthPacket</A> *target, <A HREF="types/Image.html">Image</A> *tile, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote>
 
 <P>
 
@@ -107,7 +107,7 @@ Method DrawImage draws a primitive (line, rectangle, ellipse) on the image.
 <P>
 The format of the DrawImage method is:
 
-<blockquote>void DrawImage ( <A HREF="types/Image.html">Image</A> *image, const AnnotateInfo *annotate_info ) ; </blockquote>
+<blockquote>void DrawImage ( <A HREF="types/Image.html">Image</A> *image, const AnnotateInfo *annotate_info ); </blockquote>
 
 <P>
 
@@ -137,7 +137,7 @@ Rick Mabry provided the algorithms for anti-aliased primitives.
 <P>
 The format of the InsidePrimitive method is:
 
-<blockquote>unsigned short InsidePrimitive ( PrimitiveInfo *primitive_info, const AnnotateInfo *annotate_info, const <A HREF="types/PointInfo.html">PointInfo</A> *pixel, <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>unsigned short InsidePrimitive ( PrimitiveInfo *primitive_info, const AnnotateInfo *annotate_info, const <A HREF="types/PointInfo.html">PointInfo</A> *pixel, <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -177,7 +177,7 @@ value. The floodfill algorithm is strongly based on a similar algorithm in
 <P>
 The format of the MatteFloodfillImage method is:
 
-<blockquote>void MatteFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RunlengthPacket.html">RunlengthPacket</A> *target, const unsigned int matte, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ) ; </blockquote>
+<blockquote>void MatteFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RunlengthPacket.html">RunlengthPacket</A> *target, const unsigned int matte, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote>
 
 <P>
 
@@ -219,7 +219,7 @@ Method OpaqueImage changes the color of an opaque pixel to the pen color.
 <P>
 The format of the OpaqueImage method is:
 
-<blockquote>void OpaqueImage ( <A HREF="types/Image.html">Image</A> *image, const char *opaque_color, const char *pen_color ) ; </blockquote>
+<blockquote>void OpaqueImage ( <A HREF="types/Image.html">Image</A> *image, const char *opaque_color, const char *pen_color ); </blockquote>
 
 <P>
 

@@ -64,11 +64,11 @@ unsigned int  <STRONG>RunlengthDecodeImage</STRONG>( Image <CODE>*image</CODE> )
 unsigned int  <STRONG>RunlengthEncodeImage</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-<PRE> B&lt;SetRunlengthEncoder&gt;( packet );
-</PRE>
+<STRONG>SetRunlengthEncoder</STRONG>( packet );
+
 <P>
-<PRE> B&lt;SetRunlengthPackets&gt;( image, packets );
-</PRE>
+<STRONG>SetRunlengthPackets</STRONG>( image, packets );
+
 <P>
 unsigned int  <STRONG>ZLIBEncodeImage</STRONG>( Image *image, const unsigned long number_pixels, const unsigned int
 quality, unsigned char <CODE>*pixels</CODE> );
@@ -117,7 +117,7 @@ Method HuffmanDecodeImage uncompresses an image via Huffman-coding.
 <P>
 The format of the HuffmanDecodeImage method is:
 
-<blockquote>unsigned int HuffmanDecodeImage ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>unsigned int HuffmanDecodeImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -143,7 +143,7 @@ Method HuffmanEncodeImage compresses an image via Huffman-coding.
 <P>
 The format of the HuffmanEncodeImage method is:
 
-<blockquote>unsigned int HuffmanEncodeImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>unsigned int HuffmanEncodeImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -174,7 +174,7 @@ Huffman-coding.
 <P>
 The format of the Huffman2DEncodeImage method is:
 
-<blockquote>unsigned int Huffman2DEncodeImage ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>unsigned int Huffman2DEncodeImage ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -208,7 +208,7 @@ Method LZWEncodeImage compresses an image via LZW-coding specific to Postscript 
 <P>
 The format of the LZWEncodeImage method is:
 
-<blockquote>unsigned int LZWEncodeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int number_pixels, unsigned char *pixels ) ; </blockquote>
+<blockquote>unsigned int LZWEncodeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int number_pixels, unsigned char *pixels ); </blockquote>
 
 <P>
 
@@ -246,7 +246,7 @@ Method PackbitsEncodeImage compresses an image via Macintosh Packbits encoding s
 <P>
 The format of the PackbitsEncodeImage method is:
 
-<blockquote>unsigned int PackbitsEncodeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int number_pixels, unsigned char *pixels ) ; </blockquote>
+<blockquote>unsigned int PackbitsEncodeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int number_pixels, unsigned char *pixels ); </blockquote>
 
 <P>
 
@@ -283,7 +283,7 @@ freed.
 <P>
 The format of the RunlengthDecodeImage method is:
 
-<blockquote>unsigned int RunlengthDecodeImage ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>unsigned int RunlengthDecodeImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -310,7 +310,7 @@ the minimum number of bytes.
 <P>
 The format of the RunlengthEncodeImage method is:
 
-<blockquote>unsigned int RunlengthEncodeImage ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>unsigned int RunlengthEncodeImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -336,7 +336,7 @@ Method SetRunlengthEncoder initializes the runlength encoder.
 <P>
 The format of the SetRunlengthEncoder function is:
 
-<blockquote>SetRunlengthEncoder ( packet ) ; </blockquote>
+<blockquote>SetRunlengthEncoder ( packet ); </blockquote>
 
 <P>
 
@@ -357,7 +357,7 @@ Method SetRunlengthPackets initializes the runlength encoder.
 <P>
 The format of the SetRunlengthPackets function is:
 
-<blockquote>SetRunlengthPackets ( image, packets ) ; </blockquote>
+<blockquote>SetRunlengthPackets ( image, packets ); </blockquote>
 
 <P>
 
@@ -386,7 +386,7 @@ Method ZLIBEncodeImage compresses an image via ZLIB-coding specific to Postscrip
 <P>
 The format of the ZLIBEncodeImage method is:
 
-<blockquote>unsigned int ZLIBEncodeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned long number_pixels, const unsigned int quality, unsigned char *pixels ) ; </blockquote>
+<blockquote>unsigned int ZLIBEncodeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned long number_pixels, const unsigned int quality, unsigned char *pixels ); </blockquote>
 
 <P>
 

@@ -42,14 +42,14 @@ quantize - Methods to Reduce the Number of Unique Colors in an Image
 cloned_info= <STRONG>CloneQuantizeInfo</STRONG>( quantize_info );
 
 <P>
-<PRE> B&lt;DestroyCubeInfo&gt;( cube_info ));
-</PRE>
+<STRONG>DestroyCubeInfo</STRONG>( cube_info ));
+
 <P>
-<PRE> B&lt;DestroyQuantizeInfo&gt;( quantize_info );
-</PRE>
+<STRONG>DestroyQuantizeInfo</STRONG>( quantize_info );
+
 <P>
-<PRE> B&lt;GetQuantizeInfo&gt;( quantize_info );
-</PRE>
+<STRONG>GetQuantizeInfo</STRONG>( quantize_info );
+
 <P>
 status= <STRONG>MapImage</STRONG>( image, map_image, dither );
 
@@ -79,7 +79,7 @@ Method CloneQuantizeInfo makes a duplicate of the given quantize info, or if qua
 <P>
 The format of the CloneQuantizeInfo method is:
 
-<blockquote>cloned_info=CloneQuantizeInfo ( quantize_info ) ; </blockquote>
+<blockquote>cloned_info=CloneQuantizeInfo ( quantize_info ); </blockquote>
 
 <P>
 
@@ -106,7 +106,7 @@ Method DestroyCubeInfo deallocates memory associated with an image.
 <P>
 The format of the DestroyCubeInfo method is:
 
-<blockquote>DestroyCubeInfo ( cube_info ) ) ; </blockquote>
+<blockquote>DestroyCubeInfo ( cube_info ) ); </blockquote>
 
 <P>
 
@@ -128,7 +128,7 @@ QuantizeInfo structure.
 <P>
 The format of the DestroyQuantizeInfo method is:
 
-<blockquote>DestroyQuantizeInfo ( quantize_info ) ; </blockquote>
+<blockquote>DestroyQuantizeInfo ( quantize_info ); </blockquote>
 
 <P>
 
@@ -149,7 +149,7 @@ Method GetQuantizeInfo initializes the QuantizeInfo structure.
 <P>
 The format of the GetQuantizeInfo method is:
 
-<blockquote>GetQuantizeInfo ( quantize_info ) ; </blockquote>
+<blockquote>GetQuantizeInfo ( quantize_info ); </blockquote>
 
 <P>
 
@@ -171,7 +171,7 @@ reference image.
 <P>
 The format of the MapImage method is:
 
-<blockquote>status=MapImage ( image, map_image, dither ) ; </blockquote>
+<blockquote>status=MapImage ( image, map_image, dither ); </blockquote>
 
 <P>
 
@@ -203,7 +203,7 @@ color from a reference image.
 <P>
 The format of the MapImage method is:
 
-<blockquote>status=MapImages ( images, map_image, dither ) ; </blockquote>
+<blockquote>status=MapImages ( images, map_image, dither ); </blockquote>
 
 <P>
 
@@ -256,7 +256,7 @@ your image.
 <P>
 The format of the QuantizationError method is:
 
-<blockquote>status=QuantizationError ( image ) ; </blockquote>
+<blockquote>status=QuantizationError ( image ); </blockquote>
 
 <P>
 
@@ -282,7 +282,7 @@ while minimizing the processing time.
 <P>
 The format of the QuantizeImage method is:
 
-<blockquote>status=QuantizeImage ( quantize_info, image ) ; </blockquote>
+<blockquote>status=QuantizeImage ( quantize_info, image ); </blockquote>
 
 <P>
 
@@ -310,7 +310,7 @@ while minimizing the processing time.
 <P>
 The format of the QuantizeImages method is:
 
-<blockquote>unsigned int QuantizeImages ( const QuantizeInfo *quantize_info, <A HREF="types/Image.html">Image</A> *images ) ; </blockquote>
+<blockquote>unsigned int QuantizeImages ( const QuantizeInfo *quantize_info, <A HREF="types/Image.html">Image</A> *images ); </blockquote>
 
 <P>
 

@@ -108,7 +108,7 @@ button to exit. The typed text is returned as the reply function parameter.
 <P>
 The format of the XColorBrowserWidget method is:
 
-<blockquote>void XColorBrowserWidget ( Display *display, XWindows *windows, const char *action, char *reply ) ; </blockquote>
+<blockquote>void XColorBrowserWidget ( Display *display, XWindows *windows, const char *action, char *reply ); </blockquote>
 
 <P>
 
@@ -143,7 +143,7 @@ user when the button is released.
 <P>
 The format of the XCommandWidget method is:
 
-<blockquote>int XCommandWidget ( Display *display, XWindows *windows, const char **selections, XEvent *event ) ; </blockquote>
+<blockquote>int XCommandWidget ( Display *display, XWindows *windows, const char **selections, XEvent *event ); </blockquote>
 
 <P>
 
@@ -184,7 +184,7 @@ The function returns -1 if Dismiss is pressed, 0 for Cancel, and 1 for Yes.
 <P>
 The format of the XConfirmWidget method is:
 
-<blockquote>int XConfirmWidget ( Display *display, XWindows *windows, const char *message, const char *qualifier ) ; </blockquote>
+<blockquote>int XConfirmWidget ( Display *display, XWindows *windows, const char *message, const char *qualifier ); </blockquote>
 
 <P>
 
@@ -225,7 +225,7 @@ text is returned as the reply function parameter.
 <P>
 The format of the XDialogWidget method is:
 
-<blockquote>int XDialogWidget ( Display *display, XWindows *windows, const char *action, const char *query, char *reply ) ; </blockquote>
+<blockquote>int XDialogWidget ( Display *display, XWindows *windows, const char *action, const char *query, char *reply ); </blockquote>
 
 <P>
 
@@ -265,7 +265,7 @@ to exit. The typed text is returned as the reply function parameter.
 <P>
 The format of the XFileBrowserWidget method is:
 
-<blockquote>void XFileBrowserWidget ( Display *display, XWindows *windows, const char *action, char *reply ) ; </blockquote>
+<blockquote>void XFileBrowserWidget ( Display *display, XWindows *windows, const char *action, char *reply ); </blockquote>
 
 <P>
 
@@ -301,7 +301,7 @@ to exit. The typed text is returned as the reply function parameter.
 <P>
 The format of the XFontBrowserWidget method is:
 
-<blockquote>void XFontBrowserWidget ( Display *display, XWindows *windows, const char *action, char *reply ) ; </blockquote>
+<blockquote>void XFontBrowserWidget ( Display *display, XWindows *windows, const char *action, char *reply ); </blockquote>
 
 <P>
 
@@ -337,7 +337,7 @@ reading an image, rotating an image, etc.).
 <P>
 The format of the XInfoWidget method is:
 
-<blockquote>void XInfoWidget ( Display *display, XWindows *windows, const char *activity ) ; </blockquote>
+<blockquote>void XInfoWidget ( Display *display, XWindows *windows, const char *activity ); </blockquote>
 
 <P>
 
@@ -371,7 +371,7 @@ returned as the reply function parameter.
 <P>
 The format of the XListBrowserWidget method is:
 
-<blockquote>void XListBrowserWidget ( Display *display, XWindows *windows, XWindowInfo *window_info, char const **list, const char *action, const char *query, char *reply ) ; </blockquote>
+<blockquote>void XListBrowserWidget ( Display *display, XWindows *windows, XWindowInfo *window_info, char const **list, const char *action, const char *query, char *reply ); </blockquote>
 
 <P>
 
@@ -415,7 +415,7 @@ user when the button is released.
 <P>
 The format of the XMenuWidget method is:
 
-<blockquote>int XMenuWidget ( Display *display, XWindows *windows, const char *title, const char **selections, char *item ) ; </blockquote>
+<blockquote>int XMenuWidget ( Display *display, XWindows *windows, const char *title, const char **selections, char *item ); </blockquote>
 
 <P>
 
@@ -461,7 +461,7 @@ Method XMonitorWidget displays the progress a task is making in completing a tas
 <P>
 The format of the XMonitorWidget method is:
 
-<blockquote>void XMonitorWidget ( Display *display, XWindows *windows, const char *task, const unsigned int quantum, const unsigned int span ) ; </blockquote>
+<blockquote>void XMonitorWidget ( Display *display, XWindows *windows, const char *task, const unsigned int quantum, const unsigned int span ); </blockquote>
 
 <P>
 
@@ -501,7 +501,7 @@ The function returns when the user presses the ``Dismiss'' button.
 <P>
 The format of the XNoticeWidget method is:
 
-<blockquote>void XNoticeWidget ( Display *display, XWindows *windows, const char *message, const char *qualifier ) ; </blockquote>
+<blockquote>void XNoticeWidget ( Display *display, XWindows *windows, const char *message, const char *qualifier ); </blockquote>
 
 <P>
 
@@ -537,7 +537,7 @@ stored in a configuration file in the users' home directory.
 <P>
 The format of the XPreferencesWidget method is:
 
-<blockquote>unsigned int XPreferencesWidget ( Display *display, XResourceInfo *resource_info, XWindows *windows ) ; </blockquote>
+<blockquote>unsigned int XPreferencesWidget ( Display *display, XResourceInfo *resource_info, XWindows *windows ); </blockquote>
 
 <P>
 
@@ -568,7 +568,7 @@ Method XTextViewWidget displays text in a Text View widget.
 <P>
 The format of the XTextViewWidget method is:
 
-<blockquote>void XTextViewWidget ( Display *display, const XResourceInfo *resource_info, XWindows *windows, const unsigned int mono, const char *title, char const **textlist ) ; </blockquote>
+<blockquote>void XTextViewWidget ( Display *display, const XResourceInfo *resource_info, XWindows *windows, const unsigned int mono, const char *title, char const **textlist ); </blockquote>
 
 <P>
 

@@ -106,7 +106,7 @@ Method GenerateNoise adds noise to a pixel.
 <P>
 The format of the GenerateNoise method is:
 
-<blockquote>Quantum GenerateNoise ( const Quantum pixel, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type ) ; </blockquote>
+<blockquote>Quantum GenerateNoise ( const Quantum pixel, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type ); </blockquote>
 
 <P>
 
@@ -134,7 +134,7 @@ green, blue) triple.
 <P>
 The format of the HSLTransformImage method is:
 
-<blockquote>void HSLTransform ( const double hue, const double saturation, const double luminosity, Quantum *red, Quantum *green, Quantum *blue ) ; </blockquote>
+<blockquote>void HSLTransform ( const double hue, const double saturation, const double luminosity, Quantum *red, Quantum *green, Quantum *blue ); </blockquote>
 
 <P>
 
@@ -165,7 +165,7 @@ Method Hull implements the eight hull algorithm described in Applied Optics, Vol
 <P>
 The format of the Hull method is:
 
-<blockquote>void Hull ( const int x_offset, const int y_offset, const int polarity, const unsigned int columns, const unsigned int rows, Quantum *f, Quantum *g ) ; </blockquote>
+<blockquote>void Hull ( const int x_offset, const int y_offset, const int polarity, const unsigned int columns, const unsigned int rows, Quantum *f, Quantum *g ); </blockquote>
 
 <P>
 
@@ -201,7 +201,7 @@ it's neighbors.
 <P>
 The format of the InterpolateColor method is:
 
-<blockquote><A HREF="types/ColorPacket.html">ColorPacket</A> InterpolateColor ( <A HREF="types/Image.html">Image</A> *image, const double x_offset, const double y_offset ) ; </blockquote>
+<blockquote><A HREF="types/ColorPacket.html">ColorPacket</A> InterpolateColor ( <A HREF="types/Image.html">Image</A> *image, const double x_offset, const double y_offset ); </blockquote>
 
 <P>
 
@@ -228,7 +228,7 @@ Method Modulate modulates the hue, saturation, and brightness of an image.
 <P>
 The format of the ModulateImage method is:
 
-<blockquote>void Modulate ( double percent_hue, double percent_saturation, double percent_brightness, Quantum *red, Quantum *green, Quantum *blue ) blue ) ; </blockquote>
+<blockquote>void Modulate ( double percent_hue, double percent_saturation, double percent_brightness, Quantum *red, Quantum *green, Quantum *blue ) blue ); </blockquote>
 
 <P>
 
@@ -258,7 +258,7 @@ luminosity) triple.
 <P>
 The format of the TransformHSL method is:
 
-<blockquote>void TransformHSL ( const Quantum red, const Quantum green, const Quantum blue, double *hue, double *saturation, double *luminosity ) ; </blockquote>
+<blockquote>void TransformHSL ( const Quantum red, const Quantum green, const Quantum blue, double *hue, double *saturation, double *luminosity ); </blockquote>
 
 <P>
 
@@ -288,7 +288,7 @@ Method Upsample doubles the size of the image.
 <P>
 The format of the UpSample method is:
 
-<blockquote>void Upsample ( const unsigned int width, const unsigned int height, const unsigned int scaled_width, unsigned char *pixels ) ; </blockquote>
+<blockquote>void Upsample ( const unsigned int width, const unsigned int height, const unsigned int scaled_width, unsigned char *pixels ); </blockquote>
 
 <P>
 

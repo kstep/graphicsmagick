@@ -59,7 +59,7 @@ Method GetMagickInfo returns a pointer MagickInfo structure that matches the spe
 <P>
 The format of the GetMagickInfo method is:
 
-<blockquote>MagickInfo *GetMagickInfo ( const char *tag ) ; </blockquote>
+<blockquote>MagickInfo *GetMagickInfo ( const char *tag ); </blockquote>
 
 <P>
 
@@ -85,7 +85,7 @@ Method ListMagickInfo lists the image formats to a.
 <P>
 The format of the ListMagickInfo method is:
 
-<blockquote>void ListMagickInfo ( FILE *file ) ; </blockquote>
+<blockquote>void ListMagickInfo ( FILE *file ); </blockquote>
 
 <P>
 
@@ -103,7 +103,7 @@ Method RegisterMagickInfo adds attributes for a particular image format to the l
 <P>
 The format of the RegisterMagickInfo method is:
 
-<blockquote>MagickInfo *RegisterMagickInfo ( const char *tag, <A HREF="types/Image.html">Image</A> *( *decoder ) ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *), unsigned int ( *encoder ) ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *, <A HREF="types/Image.html">Image</A> *), unsigned int ( *magick ) ( const unsigned char *, const unsigned int ), const unsigned int adjoin, const unsigned int blob_support, const char *description ) blob_support, description ) ) ; </blockquote>
+<blockquote>MagickInfo *RegisterMagickInfo ( const char *tag, <A HREF="types/Image.html">Image</A> *( *decoder ) ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *), unsigned int ( *encoder ) ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *, <A HREF="types/Image.html">Image</A> *), unsigned int ( *magick ) ( const unsigned char *, const unsigned int ), const unsigned int adjoin, const unsigned int blob_support, const char *description ) blob_support, description ) ); </blockquote>
 
 <P>
 

@@ -75,8 +75,8 @@ char * <STRONG>AllocateString</STRONG>( const char <CODE>*source</CODE> );
 void  <STRONG>AppendImageFormat</STRONG>( const char *format, char <CODE>*filename</CODE> );
 
 <P>
-<PRE> B&lt;BaseFilename&gt;( name );
-</PRE>
+<STRONG>BaseFilename</STRONG>( name );
+
 <P>
 unsigned int  <STRONG>CloneString</STRONG>( char ** destination, const char <CODE>*source</CODE> );
 
@@ -84,8 +84,8 @@ unsigned int  <STRONG>CloneString</STRONG>( char ** destination, const char <COD
 unicode= <STRONG>ConvertTextToUnicode</STRONG>( text, count );
 
 <P>
-<PRE> B&lt;ExpandFilename&gt;( filename );
-</PRE>
+<STRONG>ExpandFilename</STRONG>( filename );
+
 <P>
 status= <STRONG>ExpandFilenames</STRONG>( argc, argv );
 
@@ -97,8 +97,8 @@ int  <STRONG>GetGeometry</STRONG>( const char *image_geometry, int *x, int *y, u
 int <CODE>*height</CODE> );
 
 <P>
-<PRE> B&lt;GlobExpression&gt;( expression, pattern );
-</PRE>
+<STRONG>GlobExpression</STRONG>( expression, pattern );
+
 <P>
 unsigned int  <STRONG>IsAccessible</STRONG>( const char <CODE>*filename</CODE> );
 
@@ -198,7 +198,7 @@ string to that memory location (and returns it).
 <P>
 The format of the AllocateString method is:
 
-<blockquote>char *AllocateString ( const char *source ) ; </blockquote>
+<blockquote>char *AllocateString ( const char *source ); </blockquote>
 
 <P>
 
@@ -225,7 +225,7 @@ an extension to the file already exists, it is first removed.
 <P>
 The format of the AppendImageFormat method is:
 
-<blockquote>void AppendImageFormat ( const char *format, char *filename ) ; </blockquote>
+<blockquote>void AppendImageFormat ( const char *format, char *filename ); </blockquote>
 
 <P>
 
@@ -252,7 +252,7 @@ Method BaseFilename removes the path name component and any extensions.
 <P>
 The format of the BaseFilename function is:
 
-<blockquote>BaseFilename ( name ) ; </blockquote>
+<blockquote>BaseFilename ( name ); </blockquote>
 
 <P>
 
@@ -274,7 +274,7 @@ the source string to that memory location.
 <P>
 The format of the (void) CloneString method is:
 
-<blockquote>unsigned int CloneString ( char **destination, const char *source ) ; </blockquote>
+<blockquote>unsigned int CloneString ( char **destination, const char *source ); </blockquote>
 
 <P>
 
@@ -310,7 +310,7 @@ However, escaped hex codes are interpreted before converting to Unicode
 <P>
 The format of the ConvertTextToUnicode function is:
 
-<blockquote>unicode=ConvertTextToUnicode ( text, count ) ; </blockquote>
+<blockquote>unicode=ConvertTextToUnicode ( text, count ); </blockquote>
 
 <P>
 
@@ -343,7 +343,7 @@ Method ExpandFilename expands '~' in a filename.
 <P>
 The format of the ExpandFilename function is:
 
-<blockquote>ExpandFilename ( filename ) ; </blockquote>
+<blockquote>ExpandFilename ( filename ); </blockquote>
 
 <P>
 
@@ -366,7 +366,7 @@ expand to: bird.jpg rose.jpg tiki.jpg.
 <P>
 The format of the ExpandFilenames function is:
 
-<blockquote>status=ExpandFilenames ( argc, argv ) ; </blockquote>
+<blockquote>status=ExpandFilenames ( argc, argv ); </blockquote>
 
 <P>
 
@@ -392,7 +392,7 @@ Method FormatString prints formatted output of a variable argument list.
 <P>
 The format of the FormatString method is:
 
-<blockquote>void FormatString ( char *string, const char *format, ... ) ; </blockquote>
+<blockquote>void FormatString ( char *string, const char *format, ... ); </blockquote>
 
 <P>
 
@@ -422,7 +422,7 @@ and whether the x and y values are negative. In addition,
 <P>
 The format of the GetGeometry method is:
 
-<blockquote>int GetGeometry ( const char *image_geometry, int *x, int *y, unsigned int *width, unsigned int *height ) ; </blockquote>
+<blockquote>int GetGeometry ( const char *image_geometry, int *x, int *y, unsigned int *width, unsigned int *height ); </blockquote>
 
 <P>
 
@@ -460,7 +460,7 @@ Method GlobExpression returns True if the expression matches the pattern.
 <P>
 The format of the GlobExpression function is:
 
-<blockquote>GlobExpression ( expression, pattern ) ; </blockquote>
+<blockquote>GlobExpression ( expression, pattern ); </blockquote>
 
 <P>
 
@@ -486,7 +486,7 @@ accessible.
 <P>
 The format of the IsAccessible method is:
 
-<blockquote>unsigned int IsAccessible ( const char *filename ) ; </blockquote>
+<blockquote>unsigned int IsAccessible ( const char *filename ); </blockquote>
 
 <P>
 
@@ -515,7 +515,7 @@ remove the <CODE>chdir(2)</CODE> function.
 <P>
 The format of the IsAccessible method is:
 
-<blockquote>unsigned int IsDirectory ( const char *filename ) ; </blockquote>
+<blockquote>unsigned int IsDirectory ( const char *filename ); </blockquote>
 
 <P>
 
@@ -544,7 +544,7 @@ Method Latin1Compare compares two null terminated Latin-1 strings, ignoring case
 <P>
 The format of the Latin1Compare method is:
 
-<blockquote>int Latin1Compare ( const char *p, const char *q ) ; </blockquote>
+<blockquote>int Latin1Compare ( const char *p, const char *q ); </blockquote>
 
 <P>
 
@@ -573,7 +573,7 @@ contained in the database sorted in ascending alphabetic order.
 <P>
 The format of the ListColors function is:
 
-<blockquote>filelist=ListColors ( pattern, number_colors ) ; </blockquote>
+<blockquote>filelist=ListColors ( pattern, number_colors ); </blockquote>
 
 <P>
 
@@ -605,7 +605,7 @@ filenames contained in the directory sorted in ascending alphabetic order.
 <P>
 The format of the ListFiles function is:
 
-<blockquote>filelist=ListFiles ( directory, pattern, number_entries ) ; </blockquote>
+<blockquote>filelist=ListFiles ( directory, pattern, number_entries ); </blockquote>
 
 <P>
 
@@ -641,7 +641,7 @@ filename by a unique file name relative to the directory.
 <P>
 The format of the LocaleFilename method is:
 
-<blockquote>void LocaleFilename ( char *filename ) ; </blockquote>
+<blockquote>void LocaleFilename ( char *filename ); </blockquote>
 
 <P>
 
@@ -664,7 +664,7 @@ least-significant byte first order.
 <P>
 The format of the LSBFirstReadLong method is:
 
-<blockquote>unsigned long LSBFirstReadLong ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>unsigned long LSBFirstReadLong ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -690,7 +690,7 @@ least-significant byte first order.
 <P>
 The format of the LSBFirstReadShort method is:
 
-<blockquote>unsigned short LSBFirstReadShort ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>unsigned short LSBFirstReadShort ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -716,7 +716,7 @@ least-significant byte first order.
 <P>
 The format of the LSBFirstWriteLong method is:
 
-<blockquote>unsigned long LSBFirstWriteLong ( <A HREF="types/Image.html">Image</A> *image, const unsigned long value ) ; </blockquote>
+<blockquote>unsigned long LSBFirstWriteLong ( <A HREF="types/Image.html">Image</A> *image, const unsigned long value ); </blockquote>
 
 <P>
 
@@ -746,7 +746,7 @@ least-significant byte first order.
 <P>
 The format of the LSBFirstWriteShort method is:
 
-<blockquote>unsigned long LSBFirstWriteShort ( <A HREF="types/Image.html">Image</A> *image, const unsigned short value ) ; </blockquote>
+<blockquote>unsigned long LSBFirstWriteShort ( <A HREF="types/Image.html">Image</A> *image, const unsigned short value ); </blockquote>
 
 <P>
 
@@ -776,7 +776,7 @@ integers to most-significant byte first.
 <P>
 The format of the MSBFirstOrderLong method is:
 
-<blockquote>void MSBFirstOrderLong ( register char *p, const unsigned int length ) ; </blockquote>
+<blockquote>void MSBFirstOrderLong ( register char *p, const unsigned int length ); </blockquote>
 
 <P>
 
@@ -802,7 +802,7 @@ integers to most-significant byte first.
 <P>
 The format of the MSBFirstOrderShort method is:
 
-<blockquote>void MSBFirstOrderShort ( register char *p, const unsigned int length ) ; </blockquote>
+<blockquote>void MSBFirstOrderShort ( register char *p, const unsigned int length ); </blockquote>
 
 <P>
 
@@ -828,7 +828,7 @@ most-significant byte first order.
 <P>
 The format of the MSBFirstReadShort method is:
 
-<blockquote>unsigned short MSBFirstReadShort ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>unsigned short MSBFirstReadShort ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -854,7 +854,7 @@ most-significant byte first order.
 <P>
 The format of the MSBFirstReadLong method is:
 
-<blockquote>unsigned long MSBFirstReadLong ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>unsigned long MSBFirstReadLong ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -880,7 +880,7 @@ most-significant byte first order.
 <P>
 The format of the MSBFirstWriteLong method is:
 
-<blockquote>unsigned long MSBFirstWriteLong ( <A HREF="types/Image.html">Image</A> *image, const unsigned long value ) ; </blockquote>
+<blockquote>unsigned long MSBFirstWriteLong ( <A HREF="types/Image.html">Image</A> *image, const unsigned long value ); </blockquote>
 
 <P>
 
@@ -910,7 +910,7 @@ most-significant byte first order.
 <P>
 The format of the MSBFirstWriteShort method is:
 
-<blockquote>unsigned long MSBFirstWriteShort ( <A HREF="types/Image.html">Image</A> *image, const unsigned short value ) ; </blockquote>
+<blockquote>unsigned long MSBFirstWriteShort ( <A HREF="types/Image.html">Image</A> *image, const unsigned short value ); </blockquote>
 
 <P>
 
@@ -936,7 +936,7 @@ Method MultilineCensus returns the number of lines within a label.
 <P>
 The format of the MultilineCenus method is:
 
-<blockquote>int MultilineCensus ( const char *label ) ; </blockquote>
+<blockquote>int MultilineCensus ( const char *label ); </blockquote>
 
 <P>
 
@@ -960,7 +960,7 @@ string, and whether the x and y values are negative. In addition,
 <P>
 The format of the ParseImageGeometry method is:
 
-<blockquote>int ParseGeometry ( const char *geometry, int *x, int *y, unsigned int *width, unsigned int *height ) ; </blockquote>
+<blockquote>int ParseGeometry ( const char *geometry, int *x, int *y, unsigned int *width, unsigned int *height ); </blockquote>
 
 <P>
 
@@ -999,7 +999,7 @@ size in picas.
 <P>
 The format of the PostscriptGeometry method is:
 
-<blockquote>void DestroyPostscriptGeometry ( char *geometry ) ; </blockquote>
+<blockquote>void DestroyPostscriptGeometry ( char *geometry ); </blockquote>
 
 <P>
 
@@ -1022,7 +1022,7 @@ Method ReadByte reads a single byte from the image file and returns it.
 <P>
 The format of the ReadByte method is:
 
-<blockquote>int ReadByte ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>int ReadByte ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -1080,7 +1080,7 @@ Otherwise the current client name is returned.
 <P>
 The format of the SetClientName method is:
 
-<blockquote>char *SetClientName ( const char *name ) ; </blockquote>
+<blockquote>char *SetClientName ( const char *name ); </blockquote>
 
 <P>
 
@@ -1105,7 +1105,7 @@ Method StringToArgv converts a text string into command line arguments.
 <P>
 The format of the StringToArgv method is:
 
-<blockquote>char **StringToArgv ( const char *text, int *argc ) ; </blockquote>
+<blockquote>char **StringToArgv ( const char *text, int *argc ); </blockquote>
 
 <P>
 
@@ -1138,7 +1138,7 @@ Method StringToList converts a text string into a list by segmenting the text st
 <P>
 The format of the StringToList method is:
 
-<blockquote>char **StringToList ( const char *text ) ; </blockquote>
+<blockquote>char **StringToList ( const char *text ); </blockquote>
 
 <P>
 
@@ -1166,7 +1166,7 @@ of characters.
 <P>
 The format of the Strip method is:
 
-<blockquote>void Strip ( char *data ) ; </blockquote>
+<blockquote>void Strip ( char *data ); </blockquote>
 
 <P>
 
@@ -1188,7 +1188,7 @@ terminates. The returned value is the exit status of the command.
 <P>
 The format of the SystemCommand method is:
 
-<blockquote>int SystemCommand ( const unsigned int verbose, const char *command ) ; </blockquote>
+<blockquote>int SystemCommand ( const unsigned int verbose, const char *command ); </blockquote>
 
 <P>
 
@@ -1219,7 +1219,7 @@ their filenames.
 <P>
 The format of the TemporaryFilename method is:
 
-<blockquote>void TemporaryFilename ( char *filename ) ; </blockquote>
+<blockquote>void TemporaryFilename ( char *filename ); </blockquote>
 
 <P>
 
@@ -1242,7 +1242,7 @@ appropriate image attribute and returns the translated text.
 <P>
 The format of the TranslateText method is:
 
-<blockquote>char *TranslateText ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const <A HREF="types/Image.html">Image</A> *image, const char *formatted_text ) ; </blockquote>
+<blockquote>char *TranslateText ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const <A HREF="types/Image.html">Image</A> *image, const char *formatted_text ); </blockquote>
 
 <P>
 
@@ -1277,7 +1277,7 @@ written (either 0 or 1);
 <P>
 The format of the WriteByte method is:
 
-<blockquote>unsigned long WriteByte ( <A HREF="types/Image.html">Image</A> *image, const char value ) ; </blockquote>
+<blockquote>unsigned long WriteByte ( <A HREF="types/Image.html">Image</A> *image, const char value ); </blockquote>
 
 <P>
 

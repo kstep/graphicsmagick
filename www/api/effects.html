@@ -129,7 +129,7 @@ structure and returns a pointer to the new image.
 <P>
 The format of the AddNoiseImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *AddNoiseImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *AddNoiseImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type ); </blockquote>
 
 <P>
 
@@ -176,7 +176,7 @@ the scan.
 <P>
 The format of the BlurImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *BlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double factor ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *BlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double factor ); </blockquote>
 
 <P>
 
@@ -209,7 +209,7 @@ the coloring is controlled with the opacity levels.
 <P>
 The format of the ColorizeImage method is:
 
-<blockquote>void ColorizeImage ( <A HREF="types/Image.html">Image</A> *image, const char *opacity, const char *pen_color ) ; </blockquote>
+<blockquote>void ColorizeImage ( <A HREF="types/Image.html">Image</A> *image, const char *opacity, const char *pen_color ); </blockquote>
 
 <P>
 
@@ -239,7 +239,7 @@ Method DespeckleImage creates a new image that is a copy of an existing one with
 <P>
 The format of the DespeckleImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *DespeckleImage ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *DespeckleImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -281,7 +281,7 @@ the scan.
 <P>
 The format of the EdgeImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *EdgeImage ( const <A HREF="types/Image.html">Image</A> *image, const double factor ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *EdgeImage ( const <A HREF="types/Image.html">Image</A> *image, const double factor ); </blockquote>
 
 <P>
 
@@ -328,7 +328,7 @@ the scan.
 <P>
 The format of the EmbossImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *EmbossImage ( const <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *EmbossImage ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -371,7 +371,7 @@ the scan.
 <P>
 The format of the EnhanceImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *EnhanceImage ( const <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *EnhanceImage ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -401,7 +401,7 @@ pointer to the new image.
 <P>
 The format of the ImplodeImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *ImplodeImage ( <A HREF="types/Image.html">Image</A> *image, const double factor ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *ImplodeImage ( <A HREF="types/Image.html">Image</A> *image, const double factor ); </blockquote>
 
 <P>
 
@@ -436,7 +436,7 @@ one image to the next.
 <P>
 The format of the MorphImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *MorphImages ( <A HREF="types/Image.html">Image</A> *images, const unsigned int number_frames ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *MorphImages ( <A HREF="types/Image.html">Image</A> *images, const unsigned int number_frames ); </blockquote>
 
 <P>
 
@@ -469,7 +469,7 @@ a circular neighborhood.
 <P>
 The format of the OilPaintImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *OilPaintImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int radius ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *OilPaintImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int radius ); </blockquote>
 
 <P>
 
@@ -502,7 +502,7 @@ seeded before this method is called.
 <P>
 The format of the PlasmaImage method is:
 
-<blockquote>unsigned int PlasmaImage ( <A HREF="types/Image.html">Image</A> *image, const SegmentInfo *segment_info, int attenuate, int depth ) ; </blockquote>
+<blockquote>unsigned int PlasmaImage ( <A HREF="types/Image.html">Image</A> *image, const SegmentInfo *segment_info, int attenuate, int depth ); </blockquote>
 
 <P>
 
@@ -549,7 +549,7 @@ The principal function of noise peak elimination filter is to smooth the objects
 <P>
 The format of the ReduceNoiseImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *ReduceNoiseImage ( const <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *ReduceNoiseImage ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -579,7 +579,7 @@ the new image.
 <P>
 The format of the ShadeImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *ShadeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int color_shading, double azimuth, double elevation ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *ShadeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int color_shading, double azimuth, double elevation ); </blockquote>
 
 <P>
 
@@ -633,7 +633,7 @@ the scan.
 <P>
 The format of the SharpenImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *SharpenImage ( const <A HREF="types/Image.html">Image</A> *image, const double factor ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *SharpenImage ( const <A HREF="types/Image.html">Image</A> *image, const double factor ); </blockquote>
 
 <P>
 
@@ -666,7 +666,7 @@ photographic film to light during the development process.
 <P>
 The format of the SolarizeImage method is:
 
-<blockquote>void SolarizeImage ( <A HREF="types/Image.html">Image</A> *image, const double factor ) ; </blockquote>
+<blockquote>void SolarizeImage ( <A HREF="types/Image.html">Image</A> *image, const double factor ); </blockquote>
 
 <P>
 
@@ -693,7 +693,7 @@ for the new Image structure and returns a pointer to the new image.
 <P>
 The format of the SpreadImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *SpreadImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int amount ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *SpreadImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int amount ); </blockquote>
 
 <P>
 
@@ -725,7 +725,7 @@ Method SteganoImage hides a digital watermark within the image.
 <P>
 The format of the SteganoImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *SteganoImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *watermark ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *SteganoImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *watermark ); </blockquote>
 
 <P>
 
@@ -761,7 +761,7 @@ create a stereo effect.
 <P>
 The format of the StereoImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *StereoImage ( <A HREF="types/Image.html">Image</A> *left_image, const <A HREF="types/Image.html">Image</A> *right_image ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *StereoImage ( <A HREF="types/Image.html">Image</A> *left_image, const <A HREF="types/Image.html">Image</A> *right_image ); </blockquote>
 
 <P>
 
@@ -795,7 +795,7 @@ new image.
 <P>
 The format of the SwirlImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *SwirlImage ( <A HREF="types/Image.html">Image</A> *image, double degrees ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *SwirlImage ( <A HREF="types/Image.html">Image</A> *image, double degrees ); </blockquote>
 
 <P>
 
@@ -826,7 +826,7 @@ Method ThresholdImage thresholds the reference image.
 <P>
 The format of the ThresholdImage method is:
 
-<blockquote>void ThresholdImage ( <A HREF="types/Image.html">Image</A> *image, const double threshold ) ; </blockquote>
+<blockquote>void ThresholdImage ( <A HREF="types/Image.html">Image</A> *image, const double threshold ); </blockquote>
 
 <P>
 
@@ -855,7 +855,7 @@ image.
 <P>
 The format of the WaveImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *WaveImage ( <A HREF="types/Image.html">Image</A> *image, const double amplitude, const double wavelength ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *WaveImage ( <A HREF="types/Image.html">Image</A> *image, const double amplitude, const double wavelength ); </blockquote>
 
 <P>
 

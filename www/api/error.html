@@ -34,8 +34,8 @@ error - ImageMagick Error Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<PRE> B&lt;MagickError&gt;( error, message, qualifier );
-</PRE>
+<STRONG>MagickError</STRONG>( error, message, qualifier );
+
 <P>
 void  <STRONG>MagickWarning</STRONG>( const unsigned int warning, const char *message, const char
 <CODE>*qualifier</CODE> );
@@ -76,7 +76,7 @@ Method MagickError calls the error handler methods with an error message.
 <P>
 The format of the MagickError method is:
 
-<blockquote>MagickError ( error, message, qualifier ) ; </blockquote>
+<blockquote>MagickError ( error, message, qualifier ); </blockquote>
 
 <P>
 
@@ -106,7 +106,7 @@ message.
 <P>
 The format of the MagickWarning method is:
 
-<blockquote>void MagickWarning ( const unsigned int warning, const char *message, const char *qualifier ) ; </blockquote>
+<blockquote>void MagickWarning ( const unsigned int warning, const char *message, const char *qualifier ); </blockquote>
 
 <P>
 
@@ -136,7 +136,7 @@ returns the previous error handler.
 <P>
 The format of the SetErrorHandler method is:
 
-<blockquote>ErrorHandler SetErrorHandler ( ErrorHandler handler ) ; </blockquote>
+<blockquote>ErrorHandler SetErrorHandler ( ErrorHandler handler ); </blockquote>
 
 <P>
 
@@ -158,7 +158,7 @@ and returns the previous warning handler.
 <P>
 The format of the SetWarningHandler method is:
 
-<blockquote>ErrorHandler SetWarningHandler ( ErrorHandler handler ) ; </blockquote>
+<blockquote>ErrorHandler SetWarningHandler ( ErrorHandler handler ); </blockquote>
 
 <P>
 

@@ -98,7 +98,7 @@ the blob as an image.
 <P>
 The format of the BlobToImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *BlobToImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const char *blob, const unsigned long length ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *BlobToImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const char *blob, const unsigned long length ); </blockquote>
 
 <P>
 
@@ -135,7 +135,7 @@ prefix is '|', the file is a pipe and is closed with PipeClose.
 <P>
 The format of the CloseBlob method is:
 
-<blockquote>void CloseBlob ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>void CloseBlob ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -157,7 +157,7 @@ Method EOFBlob returns a non-zero value when
 <P>
 The format of the EOFBlob method is:
 
-<blockquote>int EOFBlob ( const <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>int EOFBlob ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -183,7 +183,7 @@ Method FlushBlob flushes the datastream if it is a file.
 <P>
 The format of the FlushBlob method is:
 
-<blockquote>int FlushBlob ( const <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>int FlushBlob ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -209,7 +209,7 @@ Method GetBlobInfo initializes the BlobInfo structure.
 <P>
 The format of the GetBlobInfo method is:
 
-<blockquote>void GetBlobInfo ( BlobInfo *blob_info ) ; </blockquote>
+<blockquote>void GetBlobInfo ( BlobInfo *blob_info ); </blockquote>
 
 <P>
 
@@ -232,7 +232,7 @@ or file.
 <P>
 The format of the GetStringBlob method is:
 
-<blockquote>char *GetStringBlob ( <A HREF="types/Image.html">Image</A> *image, char *string ) ; </blockquote>
+<blockquote>char *GetStringBlob ( <A HREF="types/Image.html">Image</A> *image, char *string ); </blockquote>
 
 <P>
 
@@ -263,7 +263,7 @@ the image as a blob and its length.
 <P>
 The format of the ImageToBlob method is:
 
-<blockquote>char *ImageToBlob ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image, unsigned long *length ) ; </blockquote>
+<blockquote>char *ImageToBlob ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image, unsigned long *length ); </blockquote>
 
 <P>
 
@@ -304,7 +304,7 @@ Method OpenBlob open a file associated with the image.
 <P>
 The format of the OpenBlob method is:
 
-<blockquote>unsigned int OpenBlob ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image, const char *type ) ; </blockquote>
+<blockquote>unsigned int OpenBlob ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image, const char *type ); </blockquote>
 
 <P>
 
@@ -339,7 +339,7 @@ returns the number of bytes read.
 <P>
 The format of the ReadBlob method is:
 
-<blockquote>unsigned long ReadBlob ( <A HREF="types/Image.html">Image</A> *image, const unsigned long number_bytes, char *data ) ; </blockquote>
+<blockquote>unsigned long ReadBlob ( <A HREF="types/Image.html">Image</A> *image, const unsigned long number_bytes, char *data ); </blockquote>
 
 <P>
 
@@ -374,7 +374,7 @@ file.
 <P>
 The format of the SeekBlob method is:
 
-<blockquote>int SeekBlob ( <A HREF="types/Image.html">Image</A> *image, const long offset, const int whence ) ; </blockquote>
+<blockquote>int SeekBlob ( <A HREF="types/Image.html">Image</A> *image, const long offset, const int whence ); </blockquote>
 
 <P>
 
@@ -414,7 +414,7 @@ current length.
 <P>
 The format of the SetBlobQuantum method is:
 
-<blockquote>void SetBlobQuantum ( BlobInfo *blob_info, const unsigned long quantum ) ; </blockquote>
+<blockquote>void SetBlobQuantum ( BlobInfo *blob_info, const unsigned long quantum ); </blockquote>
 
 <P>
 
@@ -440,7 +440,7 @@ Method TellBlob obtains the current value of the blob or file position.
 <P>
 The format of the TellBlob method is:
 
-<blockquote>int TellBlob ( const <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>int TellBlob ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -467,7 +467,7 @@ of items written.
 <P>
 The format of the WriteBlob method is:
 
-<blockquote>unsigned long WriteBlob ( <A HREF="types/Image.html">Image</A> *image, const unsigned long number_bytes, const char *data ) ; </blockquote>
+<blockquote>unsigned long WriteBlob ( <A HREF="types/Image.html">Image</A> *image, const unsigned long number_bytes, const char *data ); </blockquote>
 
 <P>
 

@@ -36,8 +36,8 @@ delegates - Methods to Read/Write/Invoke Delegates
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<PRE> B&lt;DestroyDelegateInfo&gt;( image_info );
-</PRE>
+<STRONG>DestroyDelegateInfo</STRONG>( image_info );
+
 <P>
 char * <STRONG>GetDelegateCommand</STRONG>( const ImageInfo *image_info, const Image *image, const char *decode_tag,
 const char <CODE>*encode_tag</CODE> );
@@ -70,7 +70,7 @@ list.
 <P>
 The format of the DestroyDelegateInfo method is:
 
-<blockquote>DestroyDelegateInfo ( image_info ) ; </blockquote>
+<blockquote>DestroyDelegateInfo ( image_info ); </blockquote>
 
 <P>
 
@@ -92,7 +92,7 @@ tag. True is returned if a delegate is found, otherwise False.
 <P>
 The format of the GetDelegateInfo method is:
 
-<blockquote>unsigned int GetDelegateInfo ( const char *decode_tag, const char *encode_tag, DelegateInfo *delegate_info ) ; </blockquote>
+<blockquote>unsigned int GetDelegateInfo ( const char *decode_tag, const char *encode_tag, DelegateInfo *delegate_info ); </blockquote>
 
 <P>
 
@@ -129,7 +129,7 @@ the appropriate image attribute and returns the resulting command.
 <P>
 The format of the GetDelegateCommand method is:
 
-<blockquote>char *GetDelegateCommand ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const <A HREF="types/Image.html">Image</A> *image, const char *decode_tag, const char *encode_tag ) ; </blockquote>
+<blockquote>char *GetDelegateCommand ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const <A HREF="types/Image.html">Image</A> *image, const char *decode_tag, const char *encode_tag ); </blockquote>
 
 <P>
 
@@ -169,7 +169,7 @@ returned if the commands execute with success otherwise True.
 <P>
 The format of the InvokeDelegate method is:
 
-<blockquote>unsigned int InvokeDelegate ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image, const char *decode_tag, const char *encode_tag ) ; </blockquote>
+<blockquote>unsigned int InvokeDelegate ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image, const char *decode_tag, const char *encode_tag ); </blockquote>
 
 <P>
 
@@ -194,7 +194,7 @@ Method ListDelegateInfo lists the image formats to a file.
 <P>
 The format of the ListDelegateInfo method is:
 
-<blockquote>void ListDelegateInfo ( FILE *file ) ; </blockquote>
+<blockquote>void ListDelegateInfo ( FILE *file ); </blockquote>
 
 <P>
 
@@ -218,7 +218,7 @@ Method SetDelegateInfo adds or replaces a delegate in the delegate list and retu
 <P>
 The format of the SetDelegateInfo method is:
 
-<blockquote>DelegateInfo *SetDelegateInfo ( DelegateInfo *delegate_info ) ; </blockquote>
+<blockquote>DelegateInfo *SetDelegateInfo ( DelegateInfo *delegate_info ); </blockquote>
 
 <P>
 

@@ -113,8 +113,8 @@ XVisualInfo * <STRONG>XBestVisualInfo</STRONG>( Display *display, XStandardColor
 void  <STRONG>XCheckRefreshWindows</STRONG>( Display *display, XWindows <CODE>*windows</CODE> );
 
 <P>
-<PRE> B&lt;XClientMessage&gt;( display, window, protocol, message, timestamp );
-</PRE>
+<STRONG>XClientMessage</STRONG>( display, window, protocol, message, timestamp );
+
 <P>
 client_window= <STRONG>XClientWindow</STRONG>( display, target_window );
 
@@ -139,8 +139,8 @@ Image *undo_image, Image <CODE>*image</CODE> );
 status= <STRONG>XDrawImage</STRONG>( display, pixel_info, draw_info, image );
 
 <P>
-<PRE> B&lt;XError&gt;( display, error );
-</PRE>
+<STRONG>XError</STRONG>( display, error );
+
 <P>
 void  <STRONG>XFreeResources</STRONG>( Display *display, XVisualInfo *visual_info, XStandardColormap *map_info,
 XPixelInfo *pixel_info, XFontStruct *font_info, XResourceInfo
@@ -226,11 +226,11 @@ unsigned int  <STRONG>XMakeImage</STRONG>( Display *display, const XResourceInfo
 *window, Image *image, unsigned int width, unsigned int height );
 
 <P>
-<PRE> B&lt;XMakeMagnifyImage&gt;( display, windows );
-</PRE>
+<STRONG>XMakeMagnifyImage</STRONG>( display, windows );
+
 <P>
-<PRE> B&lt;XMakeStandardColormap&gt;( display, visual_info, resource_info, image, map_info, pixel_info );
-</PRE>
+<STRONG>XMakeStandardColormap</STRONG>( display, visual_info, resource_info, image, map_info, pixel_info );
+
 <P>
 void  <STRONG>XMakeWindow</STRONG>( Display *display, Window parent, char ** argv, int argc, XClassHint
 *class_hint, XWMHints *manager_hints, XWindowInfo <CODE>*window_info</CODE>
@@ -260,8 +260,8 @@ void  <STRONG>XRetainWindowColors</STRONG>( Display *display, const Window windo
 target_window= <STRONG>XSelectWindow</STRONG>( display, crop_info );
 
 <P>
-<PRE> B&lt;XSetCursorState&gt;( display, windows, state );
-</PRE>
+<STRONG>XSetCursorState</STRONG>( display, windows, state );
+
 <P>
 XWindows * <STRONG>XSetWindows</STRONG>( XWindows <CODE>*windows_info</CODE> );
 
@@ -294,7 +294,7 @@ Method IsTrue returns True if the message is ``true'', ``on'', ``yes'' or
 <P>
 The format of the IsTrue method is:
 
-<blockquote>unsigned int IsTrue ( const char *message ) ; </blockquote>
+<blockquote>unsigned int IsTrue ( const char *message ); </blockquote>
 
 <P>
 
@@ -319,7 +319,7 @@ Method XAnnotateImage annotates the image with text.
 <P>
 The format of the XAnnotateImage method is:
 
-<blockquote>unsigned int XAnnotateImage ( Display *display, const XPixelInfo *pixel_info, XAnnotateInfo *annotate_info, <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>unsigned int XAnnotateImage ( Display *display, const XPixelInfo *pixel_info, XAnnotateInfo *annotate_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -360,7 +360,7 @@ Method XBestFont returns the ``best'' font. ``Best'' is defined as a font specif
 <P>
 The format of the XBestFont method is:
 
-<blockquote>XFontStruct *XBestFont ( Display *display, const XResourceInfo *resource_info, const unsigned int text_font ) ; </blockquote>
+<blockquote>XFontStruct *XBestFont ( Display *display, const XResourceInfo *resource_info, const unsigned int text_font ); </blockquote>
 
 <P>
 
@@ -397,7 +397,7 @@ manager has preferred icon sizes, one of the preferred sizes is used.
 <P>
 The format of the XBestIconSize method is:
 
-<blockquote>void XBestIconSize ( Display *display, XWindowInfo *window, <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>void XBestIconSize ( Display *display, XWindowInfo *window, <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -426,7 +426,7 @@ Method XBestPixel returns a pixel from an array of pixels that is closest to the
 <P>
 The format of the XBestPixel method is:
 
-<blockquote>void XBestPixel ( Display *display, const Colormap colormap, XColor *colors, unsigned int number_colors, XColor *color ) ; </blockquote>
+<blockquote>void XBestPixel ( Display *display, const Colormap colormap, XColor *colors, unsigned int number_colors, XColor *color ); </blockquote>
 
 <P>
 
@@ -492,7 +492,7 @@ Method XBestVisualInfo returns visual information for a visual that is the
 <P>
 The format of the XBestVisualInfo method is:
 
-<blockquote>XVisualInfo *XBestVisualInfo ( Display *display, XStandardColormap *map_info, XResourceInfo *resource_info ) ; </blockquote>
+<blockquote>XVisualInfo *XBestVisualInfo ( Display *display, XStandardColormap *map_info, XResourceInfo *resource_info ); </blockquote>
 
 <P>
 
@@ -531,7 +531,7 @@ and updates the area associated withe exposure event.
 <P>
 The format of the XCheckRefreshWindows method is:
 
-<blockquote>void XCheckRefreshWindows ( Display *display, XWindows *windows ) ; </blockquote>
+<blockquote>void XCheckRefreshWindows ( Display *display, XWindows *windows ); </blockquote>
 
 <P>
 
@@ -558,7 +558,7 @@ message is initialized with a particular protocol type and atom.
 <P>
 The format of the XClientMessage function is:
 
-<blockquote>XClientMessage ( display, window, protocol, message, timestamp ) ; </blockquote>
+<blockquote>XClientMessage ( display, window, protocol, message, timestamp ); </blockquote>
 
 <P>
 
@@ -597,7 +597,7 @@ Method XClientWindow finds a window, at or below the specified window, which has
 <P>
 The format of the XClientWindow function is:
 
-<blockquote>client_window=XClientWindow ( display, target_window ) ; </blockquote>
+<blockquote>client_window=XClientWindow ( display, target_window ); </blockquote>
 
 <P>
 
@@ -630,7 +630,7 @@ Method XConfigureImageColormap creates a new
 <P>
 The format of the XConfigureImageColormap method is:
 
-<blockquote>void XConfigureImageColormap ( Display *display, XResourceInfo *resource_info, XWindows *windows, <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>void XConfigureImageColormap ( Display *display, XResourceInfo *resource_info, XWindows *windows, <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -666,7 +666,7 @@ Method XConstrainWindowPosition assures a window is positioned witin the
 <P>
 The format of the XConstrainWindowPosition method is:
 
-<blockquote>void XConstrainWindowPosition ( Display *display, XWindowInfo *window_info ) ; </blockquote>
+<blockquote>void XConstrainWindowPosition ( Display *display, XWindowInfo *window_info ); </blockquote>
 
 <P>
 
@@ -692,7 +692,7 @@ specified.
 <P>
 The format of the Delay method is:
 
-<blockquote>void XDelay ( Display *display, const unsigned long milliseconds ) ; </blockquote>
+<blockquote>void XDelay ( Display *display, const unsigned long milliseconds ); </blockquote>
 
 <P>
 
@@ -719,7 +719,7 @@ XRetainWindowColors or programs like xsetroot.
 <P>
 The format of the XDestroyWindowColors method is:
 
-<blockquote>void XDestroyWindowColors ( Display *display, Window window ) ; </blockquote>
+<blockquote>void XDestroyWindowColors ( Display *display, Window window ); </blockquote>
 
 <P>
 
@@ -746,7 +746,7 @@ Method XDisplayImageInfo displays information about an
 <P>
 The format of the XDisplayImageInfo method is:
 
-<blockquote>void XDisplayImageInfo ( Display *display, const XResourceInfo *resource_info, XWindows *windows, <A HREF="types/Image.html">Image</A> *undo_image, <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
+<blockquote>void XDisplayImageInfo ( Display *display, const XResourceInfo *resource_info, XWindows *windows, <A HREF="types/Image.html">Image</A> *undo_image, <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
@@ -785,7 +785,7 @@ Method XDrawImage draws a line on the image.
 <P>
 The format of the XDrawImage method is:
 
-<blockquote>status=XDrawImage ( display, pixel_info, draw_info, image ) ; </blockquote>
+<blockquote>status=XDrawImage ( display, pixel_info, draw_info, image ); </blockquote>
 
 <P>
 
@@ -827,7 +827,7 @@ Otherwise it returns True.
 <P>
 The format of the XError function is:
 
-<blockquote>XError ( display, error ) ; </blockquote>
+<blockquote>XError ( display, error ); </blockquote>
 
 <P>
 
@@ -853,7 +853,7 @@ Method XFreeResources frees
 <P>
 The format of the XFreeResources method is:
 
-<blockquote>void XFreeResources ( Display *display, XVisualInfo *visual_info, XStandardColormap *map_info, XPixelInfo *pixel_info, XFontStruct *font_info, XResourceInfo *resource_info, XWindowInfo *window_info ) resource_info, window_info ) ; </blockquote>
+<blockquote>void XFreeResources ( Display *display, XVisualInfo *visual_info, XStandardColormap *map_info, XPixelInfo *pixel_info, XFontStruct *font_info, XResourceInfo *resource_info, XWindowInfo *window_info ) resource_info, window_info ); </blockquote>
 
 <P>
 
@@ -905,7 +905,7 @@ Method XFreeStandardColormap frees an
 <P>
 The format of the XFreeStandardColormap method is:
 
-<blockquote>void XFreeStandardColormap ( Display *display, const XVisualInfo *visual_info, XStandardColormap *map_info, XPixelInfo *pixel_info ) ; </blockquote>
+<blockquote>void XFreeStandardColormap ( Display *display, const XVisualInfo *visual_info, XStandardColormap *map_info, XPixelInfo *pixel_info ); </blockquote>
 
 <P>
 
@@ -942,7 +942,7 @@ Method XGetAnnotateInfo initializes the AnnotateInfo structure.
 <P>
 The format of the GetAnnotateInfo method is:
 
-<blockquote>void XGetAnnotateInfo ( XAnnotateInfo *annotate_info ) ; </blockquote>
+<blockquote>void XGetAnnotateInfo ( XAnnotateInfo *annotate_info ); </blockquote>
 
 <P>
 
@@ -963,7 +963,7 @@ Method XGetMapInfo initializes the XStandardColormap structure.
 <P>
 The format of the XStandardColormap method is:
 
-<blockquote>void XGetMapInfo ( const XVisualInfo *visual_info, const Colormap colormap, XStandardColormap *map_info ) ; </blockquote>
+<blockquote>void XGetMapInfo ( const XVisualInfo *visual_info, const Colormap colormap, XStandardColormap *map_info ); </blockquote>
 
 <P>
 
@@ -1020,7 +1020,7 @@ Method XGetPixelInfo initializes the PixelInfo structure.
 <P>
 The format of the XGetPixelInfo method is:
 
-<blockquote>void XGetPixelInfo ( Display *display, const XVisualInfo *visual_info, const XStandardColormap *map_info, const XResourceInfo *resource_info, <A HREF="types/Image.html">Image</A> *image, XPixelInfo *pixel_info ) pixel_info ) ; </blockquote>
+<blockquote>void XGetPixelInfo ( Display *display, const XVisualInfo *visual_info, const XStandardColormap *map_info, const XResourceInfo *resource_info, <A HREF="types/Image.html">Image</A> *image, XPixelInfo *pixel_info ) pixel_info ); </blockquote>
 
 <P>
 
@@ -1069,7 +1069,7 @@ default value is returned.
 <P>
 The format of the XGetResourceClass method is:
 
-<blockquote>char *XGetResourceClass ( XrmDatabase database, const char *client_name, const char *keyword, char *resource_default ) ; </blockquote>
+<blockquote>char *XGetResourceClass ( XrmDatabase database, const char *client_name, const char *keyword, char *resource_default ); </blockquote>
 
 <P>
 
@@ -1110,7 +1110,7 @@ it.
 <P>
 The format of the XGetResourceDatabase method is:
 
-<blockquote>XrmDatabase XGetResourceDatabase ( Display *display, const char *client_name ) ; </blockquote>
+<blockquote>XrmDatabase XGetResourceDatabase ( Display *display, const char *client_name ); </blockquote>
 
 <P>
 
@@ -1141,7 +1141,7 @@ Method XGetResourceInfo initializes the ResourceInfo structure.
 <P>
 The format of the XGetResourceInfo method is:
 
-<blockquote>void XGetResourceInfo ( XrmDatabase database, char *client_name, XResourceInfo *resource_info ) ; </blockquote>
+<blockquote>void XGetResourceInfo ( XrmDatabase database, char *client_name, XResourceInfo *resource_info ); </blockquote>
 
 <P>
 
@@ -1175,7 +1175,7 @@ returned.
 <P>
 The format of the XGetResourceInstance method is:
 
-<blockquote>char *XGetResourceInstance ( XrmDatabase database, const char *client_name, const char *keyword, const char *resource_default ) ; </blockquote>
+<blockquote>char *XGetResourceInstance ( XrmDatabase database, const char *client_name, const char *keyword, const char *resource_default ); </blockquote>
 
 <P>
 
@@ -1216,7 +1216,7 @@ Method XGetScreenDensity returns the density of the
 <P>
 The format of the XGetScreenDensity method is:
 
-<blockquote>char *XGetScreenDensity ( Display *display ) ; </blockquote>
+<blockquote>char *XGetScreenDensity ( Display *display ); </blockquote>
 
 <P>
 
@@ -1244,7 +1244,7 @@ the pointer and a button press.
 <P>
 The format of the XGetSubwindow method is:
 
-<blockquote>Window XGetSubwindow ( Display *display, Window window, int x, int y ) ; </blockquote>
+<blockquote>Window XGetSubwindow ( Display *display, Window window, int x, int y ); </blockquote>
 
 <P>
 
@@ -1286,7 +1286,7 @@ Method XGetWindowColor returns the color of a pixel interactively chosen from th
 <P>
 The format of the XGetWindowColor method is:
 
-<blockquote>unsigned int XGetWindowColor ( Display *display, char *name ) ; </blockquote>
+<blockquote>unsigned int XGetWindowColor ( Display *display, char *name ); </blockquote>
 
 <P>
 
@@ -1322,7 +1322,7 @@ colormap, and are contained by its parent are exempted.
 <P>
 The format of the XGetWindowImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *XGetWindowImage ( Display *display, const Window window, const unsigned int borders, const unsigned int level ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *XGetWindowImage ( Display *display, const Window window, const unsigned int borders, const unsigned int level ); </blockquote>
 
 <P>
 
@@ -1367,7 +1367,7 @@ Method XGetWindowInfo initializes the XWindowInfo structure.
 <P>
 The format of the XGetWindowInfo method is:
 
-<blockquote>void XGetWindowInfo ( Display *display, XVisualInfo *visual_info, XStandardColormap *map_info, XPixelInfo *pixel_info, XFontStruct *font_info, XResourceInfo *resource_info, XWindowInfo *window ) resource_info, window ) ; </blockquote>
+<blockquote>void XGetWindowInfo ( Display *display, XVisualInfo *visual_info, XStandardColormap *map_info, XPixelInfo *pixel_info, XFontStruct *font_info, XResourceInfo *resource_info, XWindowInfo *window ) resource_info, window ); </blockquote>
 
 <P>
 
@@ -1414,7 +1414,7 @@ Method XHighlightEllipse puts a border on the
 <P>
 The format of the XHighlightEllipse method is:
 
-<blockquote>void XHighlightEllipse ( Display *display, Window window, GC annotate_context, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *highlight_info ) ; </blockquote>
+<blockquote>void XHighlightEllipse ( Display *display, Window window, GC annotate_context, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *highlight_info ); </blockquote>
 
 <P>
 
@@ -1451,7 +1451,7 @@ Method XHighlightLine puts a border on the
 <P>
 The format of the XHighlightLine method is:
 
-<blockquote>void XHighlightLine ( Display *display, Window window, GC annotate_context, const XSegment *highlight_info ) ; </blockquote>
+<blockquote>void XHighlightLine ( Display *display, Window window, GC annotate_context, const XSegment *highlight_info ); </blockquote>
 
 <P>
 
@@ -1488,7 +1488,7 @@ Method XHighlightRectangle puts a border on the
 <P>
 The format of the XHighlightRectangle method is:
 
-<blockquote>void XHighlightRectangle ( Display *display, Window window, GC annotate_context, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *highlight_info ) ; </blockquote>
+<blockquote>void XHighlightRectangle ( Display *display, Window window, GC annotate_context, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *highlight_info ); </blockquote>
 
 <P>
 
@@ -1525,7 +1525,7 @@ Procedure XImportImage reads an image from an
 <P>
 The format of the XImportImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *XImportImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, XImportInfo *ximage_info ) ; </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *XImportImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, XImportInfo *ximage_info ); </blockquote>
 
 <P>
 
@@ -1550,7 +1550,7 @@ Method XInitializeWindows initializes the XWindows structure.
 <P>
 The format of the XInitializeWindows method is:
 
-<blockquote>XWindows *XInitializeWindows ( Display *display, XResourceInfo *resource_info ) ; </blockquote>
+<blockquote>XWindows *XInitializeWindows ( Display *display, XResourceInfo *resource_info ); </blockquote>
 
 <P>
 
@@ -1582,7 +1582,7 @@ Method XMakeCursor creates a crosshairs
 <P>
 The format of the XMakeCursor method is:
 
-<blockquote>Cursor XMakeCursor ( Display *display, Window window, Colormap colormap, char *background_color, char *foreground_color ) ; </blockquote>
+<blockquote>Cursor XMakeCursor ( Display *display, Window window, Colormap colormap, char *background_color, char *foreground_color ); </blockquote>
 
 <P>
 
@@ -1626,7 +1626,7 @@ Method XMakeImage creates an
 <P>
 The format of the XMakeImage method is:
 
-<blockquote>unsigned int XMakeImage ( Display *display, const XResourceInfo *resource_info, XWindowInfo *window, <A HREF="types/Image.html">Image</A> *image, unsigned int width, unsigned int height ) ; </blockquote>
+<blockquote>unsigned int XMakeImage ( Display *display, const XResourceInfo *resource_info, XWindowInfo *window, <A HREF="types/Image.html">Image</A> *image, unsigned int width, unsigned int height ); </blockquote>
 
 <P>
 
@@ -1676,7 +1676,7 @@ Method XMakeMagnifyImage magnifies a region of an
 <P>
 The format of the XMakeMagnifyImage method is:
 
-<blockquote>XMakeMagnifyImage ( display, windows ) ; </blockquote>
+<blockquote>XMakeMagnifyImage ( display, windows ); </blockquote>
 
 <P>
 
@@ -1744,7 +1744,7 @@ Method XMakeStandardColormap creates an
 <P>
 The format of the XMakeStandardColormap method is:
 
-<blockquote>XMakeStandardColormap ( display, visual_info, resource_info, image, map_info, pixel_info ) ; </blockquote>
+<blockquote>XMakeStandardColormap ( display, visual_info, resource_info, image, map_info, pixel_info ); </blockquote>
 
 <P>
 
@@ -1791,7 +1791,7 @@ Method XMakeWindow creates an
 <P>
 The format of the XMakeWindow method is:
 
-<blockquote>void XMakeWindow ( Display *display, Window parent, char **argv, int argc, XClassHint *class_hint, XWMHints *manager_hints, XWindowInfo *window_info ) window_info ) ; </blockquote>
+<blockquote>void XMakeWindow ( Display *display, Window parent, char **argv, int argc, XClassHint *class_hint, XWMHints *manager_hints, XWindowInfo *window_info ) window_info ); </blockquote>
 
 <P>
 
@@ -1841,7 +1841,7 @@ completing a task.
 <P>
 The format of the XProgressMonitor method is:
 
-<blockquote>void XProgressMonitor ( const char *task, const unsigned int quantum, const unsigned int span ) ; </blockquote>
+<blockquote>void XProgressMonitor ( const char *task, const unsigned int quantum, const unsigned int span ); </blockquote>
 
 <P>
 
@@ -1872,7 +1872,7 @@ Method XQueryColorDatabase looks up a
 <P>
 The format of the XQueryColorDatabase method is:
 
-<blockquote>unsigned int XQueryColorDatabase ( const char *target, <A HREF="types/ColorPacket.html">ColorPacket</A> *color ) ; </blockquote>
+<blockquote>unsigned int XQueryColorDatabase ( const char *target, <A HREF="types/ColorPacket.html">ColorPacket</A> *color ); </blockquote>
 
 <P>
 
@@ -1907,7 +1907,7 @@ Method XQueryPosition gets the pointer coordinates relative to a window.
 <P>
 The format of the XQueryPosition method is:
 
-<blockquote>void XQueryPosition ( Display *display, const Window window, int *x, int *y ) ; </blockquote>
+<blockquote>void XQueryPosition ( Display *display, const Window window, int *x, int *y ); </blockquote>
 
 <P>
 
@@ -1944,7 +1944,7 @@ Method XRefreshWindow refreshes an image in a
 <P>
 The format of the XRefreshWindow method is:
 
-<blockquote>void XRefreshWindow ( Display *display, const XWindowInfo *window, const XEvent *event ) ; </blockquote>
+<blockquote>void XRefreshWindow ( Display *display, const XWindowInfo *window, const XEvent *event ); </blockquote>
 
 <P>
 
@@ -1976,7 +1976,7 @@ the specified image filename.
 <P>
 The format of the XRemoteCommand method is:
 
-<blockquote>void XRemoteCommand ( Display *display, const char *window, const char *filename ) ; </blockquote>
+<blockquote>void XRemoteCommand ( Display *display, const char *window, const char *filename ); </blockquote>
 
 <P>
 
@@ -2009,7 +2009,7 @@ colors associated with an image displayed on the window.
 <P>
 The format of the XRetainWindowColors method is:
 
-<blockquote>void XRetainWindowColors ( Display *display, const Window window ) ; </blockquote>
+<blockquote>void XRetainWindowColors ( Display *display, const Window window ); </blockquote>
 
 <P>
 
@@ -2037,7 +2037,7 @@ rectangle is returned in the crop_info structure.
 <P>
 The format of the XSelectWindow function is:
 
-<blockquote>target_window=XSelectWindow ( display, crop_info ) ; </blockquote>
+<blockquote>target_window=XSelectWindow ( display, crop_info ); </blockquote>
 
 <P>
 
@@ -2079,7 +2079,7 @@ are reset to their default.
 <P>
 The format of the XXSetCursorState method is:
 
-<blockquote>XSetCursorState ( display, windows, state ) ; </blockquote>
+<blockquote>XSetCursorState ( display, windows, state ); </blockquote>
 
 <P>
 
@@ -2112,7 +2112,7 @@ Otherwise the current windows structure is returned.
 <P>
 The format of the XSetWindows method is:
 
-<blockquote>XWindows *XSetWindows ( XWindows *windows_info ) ; </blockquote>
+<blockquote>XWindows *XSetWindows ( XWindows *windows_info ); </blockquote>
 
 <P>
 
@@ -2138,7 +2138,7 @@ the users' home directory.
 <P>
 The format of the XUserPreferences method is:
 
-<blockquote>void XUserPreferences ( XResourceInfo *resource_info ) ; </blockquote>
+<blockquote>void XUserPreferences ( XResourceInfo *resource_info ); </blockquote>
 
 <P>
 
@@ -2161,7 +2161,7 @@ string.
 <P>
 The format of the XVisualClassName method is:
 
-<blockquote>char *XVisualClassName ( const int class ) ; </blockquote>
+<blockquote>char *XVisualClassName ( const int class ); </blockquote>
 
 <P>
 
@@ -2186,7 +2186,7 @@ Method XWarning displays a warning message in a Notice widget.
 <P>
 The format of the XWarning method is:
 
-<blockquote>void XWarning ( const unsigned int warning, const char *message, const char *qualifier ) ; </blockquote>
+<blockquote>void XWarning ( const unsigned int warning, const char *message, const char *qualifier ); </blockquote>
 
 <P>
 
@@ -2217,7 +2217,7 @@ returned. Only the window specified and its subwindows are searched.
 <P>
 The format of the XWindowByID function is:
 
-<blockquote>child=XWindowByID ( display, window, id ) ; </blockquote>
+<blockquote>child=XWindowByID ( display, window, id ); </blockquote>
 
 <P>
 
@@ -2250,7 +2250,7 @@ are searched.
 <P>
 The format of the XWindowByName function is:
 
-<blockquote>window=XWindowByName ( display, root_window, name ) ; </blockquote>
+<blockquote>window=XWindowByName ( display, root_window, name ); </blockquote>
 
 <P>
 
