@@ -313,13 +313,15 @@ file Copyright.txt for the GraphicsMagick licence.
          http://www.remotesensing.org/libtiff/
 
       to read the TIFF image format. It in turn optionally requires the
-      JPEG and ZLIB libraries. Support for JPEG, ZIP, and LZW compression
-      must be explicitly enabled by editing libtiff Makefiles. Since LZW
-      was protected by Unisys patent until July 7, 2004, the TIFF library
-      has not been including support for LZW compression. If you need to
-      use LZW compression and libtiff is not yet updated to include it,
-      support is available via a seperate LZW compression kit (a patch) at
-      the sites listed above.
+      JPEG and ZLIB libraries. In versions prior to libtiff 3.7.0,
+      support for JPEG, ZIP, and LZW compression must be explicitly
+      enabled by editing libtiff Makefiles. Since LZW was protected by
+      Unisys patent until July 7, 2004, older versions of the TIFF
+      library have not been including support for LZW compression. If you
+      need to use LZW compression and your libtiff version is not yet
+      updated to include it, support is available via a seperate LZW
+      compression kit (a patch) at the sites listed above. Libtiff 3.7.0
+      and later include LZW compression support as part of the the package.
 
     o GraphicsMagick may optionally use the TRIO library from
 

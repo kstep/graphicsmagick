@@ -74,14 +74,6 @@
 
 /////////////
 //
-// HasLZW
-//
-// Define to support UNISYS patented LZW compression as used by GIF.
-// The UNISYS patent on LZW expired on July 7, 2004 worldwide.
-#define HasLZW 1
-
-/////////////
-//
 // HasX11
 //
 // Define if MIT X11 is available (or stubbed)
@@ -114,7 +106,10 @@
 // Define to use the bzip2 compression library
 #define HasBZLIB
 
-// Define to use the FlashPIX library (fpx module/subdirectory)
+// Define to use the FlashPIX library (fpx module/subdirectory).
+// FlashPix is no longer actively supported but it should still be
+// discovered by the configure program and work if the source is
+// extracted to a 'fpx' subdirectory.
 // #undef HasFPX
 
 // Define to use the JBIG library

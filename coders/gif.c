@@ -407,11 +407,8 @@ static MagickPassFail DecodeImage(Image *image,const long opacity)
 #define MaxCode(number_bits)  ((1 << (number_bits))-1)
 #define MaxHashTable  5003
 #define MaxGIFBits  12
-#if defined(HasLZW)
-#  define MaxGIFTable  (1 << MaxGIFBits)
-#else
-#  define MaxGIFTable  max_code
-#endif
+#define MaxGIFTable  (1 << MaxGIFBits)
+
 #define GIFOutputCode(code) \
 { \
   /*  \
@@ -451,10 +448,8 @@ static MagickPassFail EncodeImage(const ImageInfo *image_info,Image *image,
 {
 
   int
-#if defined(HasLZW)
     displacement,
     next_pixel,
-#endif
     bits,
     byte_count,
     k,
@@ -546,7 +541,6 @@ static MagickPassFail EncodeImage(const ImageInfo *image_info,Image *image,
       k=(int) ((int) index << (MaxGIFBits-8))+waiting_code;
       if (k >= MaxHashTable)
         k-=MaxHashTable;
-#if defined(HasLZW)
       next_pixel=False;
       displacement=1;
       if ((image_info->compression != NoCompression) && (hash_code[k] > 0))
@@ -575,7 +569,6 @@ static MagickPassFail EncodeImage(const ImageInfo *image_info,Image *image,
           if (next_pixel == True)
             continue;
         }
-#endif
       GIFOutputCode(waiting_code);
       if (free_code < MaxGIFTable)
         {
@@ -1096,11 +1089,10 @@ ModuleExport void RegisterGIFImage(void)
   entry->encoder=(EncoderHandler) WriteGIFImage;
   entry->magick=(MagickHandler) IsGIF;
   entry->description=AcquireString("CompuServe graphics interchange format");
-#if !defined(HasLZW)
-  entry->version=AcquireString("LZW disabled");
-#endif
+  entry->version=AcquireString("version 89a");
   entry->module=AcquireString("GIF");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("GIF87");
   entry->decoder=(DecoderHandler) ReadGIFImage;
   entry->encoder=(EncoderHandler) WriteGIFImage;

@@ -878,7 +878,6 @@ MagickExport MagickPassFail HuffmanEncodeImage(const ImageInfo *image_info,
   }
 }
 
-#if defined(HasLZW)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1050,24 +1049,6 @@ MagickExport MagickPassFail LZWEncodeImage(Image *image, const size_t length,
 {
   return(LZWEncode2Image(image,length,pixels,BlobWriteByteHook,(void *)NULL));
 }
-
-#else
-MagickExport MagickPassFail LZWEncode2Image(Image *image,const size_t length,
-  unsigned char *pixels,WriteByteHook write_byte,void *info)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,LZWEncodingNotEnabled,(char *) NULL)
-}
-
-MagickExport MagickPassFail LZWEncodeImage(Image *image,const size_t length,
-  unsigned char *pixels)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,LZWEncodingNotEnabled,(char *) NULL)
-}
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

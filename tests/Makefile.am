@@ -147,9 +147,6 @@ TESTS_BZIP_XFAIL_TESTS = \
 	tests/rwfile_MIFF_truecolor_bzip.sh
 endif
 
-if !HasLZW
-endif
-
 # These tests do not currently actually fail so they are not included
 # in TESTS_XFAIL_TESTS
 if !HasZLIB

@@ -1948,13 +1948,11 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         break;
       }
 #endif
-#ifdef HasLZW
       case LZWCompression:
       {
         compress_tag=COMPRESSION_LZW;
         break;
       }
-#endif
       case RLECompression:
       {
         compress_tag=COMPRESSION_PACKBITS;

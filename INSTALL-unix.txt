@@ -110,7 +110,6 @@ UNIX/Cygwin/MinGW COMPILATION
    --disable-installed     disable building an installed GraphicsMagick
                            (default enabled)
    --disable-largefile     disable support for large (64 bit) file offsets
-   --disable-lzw           disable LZW support (default enabled)
    --enable-symbol-prefix  enable prefixing library symbols with "Gm"
    --enable-magick-compat  install ImageMagick utility shortcuts (default disabled)
 
@@ -237,10 +236,6 @@ UNIX/Cygwin/MinGW COMPILATION
       active (allowing extending an installed GraphicsMagick by simply
       copying a module into place) but GraphicsMagick itself is not built
       using modules.
-
-    o --disable-lzw: Until July 7, 2004, Unisys held a patent on the LZW
-      algorithm so LZW was disabled by default. Support for LZW is now
-      enabled by default. Use this option if you need to disable it.
 
     o --enable-symbol-prefix: The GraphicsMagick libraries may contain
       symbols which conflict with other libraries.  Specifify this option

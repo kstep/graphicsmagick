@@ -18,14 +18,8 @@ For 1.2 Branch
 
   o Update Windows libtiff to version 3.7.X.
 
-  o Optimize TGA coder for grayscale images as per updates from
-    Stefan v. Wachter.
-
   o Fix bug noticed when writing multiple image frames to a JPEG
     file without an extension.
-
-  o Fix PSD security issue related to not bounds-checking channel_info
-    array.
 
   o Update Windows lcms to version 1.14. (done).
 

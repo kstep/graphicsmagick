@@ -731,12 +731,6 @@ Specify <s>+compress</s> to store the binary image in an uncompressed format.
 The default is the compression type of the specified image file.</pp>
 
 <pp>
-If <i>LZW</i> compression is specified but LZW compression has not been enabled,
-the image data will be written
-in an uncompressed LZW format that can be read by LZW decoders.  This
-may result in larger-than-expected GIF files.</pp>
-
-<pp>
 <i>"Lossless"</i> refers to lossless JPEG, which is only available if
 the JPEG library has been patched to support it. Use of lossless JPEG is
 generally not recommended.</pp>

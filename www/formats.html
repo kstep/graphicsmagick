@@ -5,8 +5,8 @@
 	<TITLE>GraphicsMagick - File Formats</TITLE>
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020810;12535100">
-	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20040807;20223600">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20050117;19062000">
 	<META NAME="CLASSIFICATION" CONTENT="Describes the file formats supported by GraphicsMagick.">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software    development, simulation, image, software, AniMagick, Animagic,    Magick++">
@@ -39,13 +39,6 @@ and embedded profile types. After a file has been read or &quot;pinged&quot;,
 the associated magick string is stored in the &quot;magick&quot;
 member of the Image structure, and is reported in the default output
 of 'gm identify'.</FONT></P>
-<P STYLE="margin-bottom: 0in">Several formats optionally rely on the
-LZW algorithm, which used to be (until July 7, 2004) patented by the
-UNISYS corporation. Since the patent has expired, LZW support is now
-enabled by default.The latest TIFF library supports LZW via an
-optional patch. If the TIFF library is not patched to support LZW,
-then an error is returned if there is an attempt to save the image in
-a LZW-compressed TIFF format.</P>
 <P STYLE="margin-bottom: 0in"><FONT SIZE=3><BR>GraphicsMagick
 supports reading over 88 major file formats (not including
 sub-formats). The following table provides a summary of the supported
@@ -569,8 +562,7 @@ Image Formats</B></FONT></P>
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8-bit
 				RGB PseudoColor with up to 256 palette entires. Specify the
 				format &quot;GIF87&quot; to write the older version 87a of the
-				format. GIF uses the LZW algorithm. Ensure that the LZW algorithm
-				is enabled in order to obtain small files.</FONT></FONT></P>
+				format.</FONT></FONT></P>
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>The
 				PNG format provides a superior set of features to GIF. Consider
@@ -1720,7 +1712,7 @@ Image Formats</B></FONT></P>
 				&quot;TIF&quot;. Requires <A HREF="http://ftp://ftp.remotesensing.org/pub/libtiff/">tiff-v3.5.4.tar.gz</A>
 				or later. Note that since the Unisys LZW patent recently expired,
 				libtiff may still require a separate LZW patch in order to
-				support LZW.</SPAN></P>
+				support LZW. LZW is included in libtiff by default since v3.7.0.</SPAN></P>
 			</TD>
 		</TR>
 		<TR>

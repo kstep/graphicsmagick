@@ -735,14 +735,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       break;
     }
 #endif
-#if !defined(HasLZW)
-    case LZWCompression:
-    {
-      compression=RLECompression;
-      ThrowException(&image->exception,MissingDelegateError,LZWEncodingNotEnabled,image->filename);
-      break;
-    }
-#endif
 #if !defined(HasZLIB)
     case ZipCompression:
     {

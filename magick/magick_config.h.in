@@ -359,9 +359,6 @@
 /* Define if using libltdl to support dynamically loadable modules */
 #undef HasLTDL
 
-/* Include LZW compression */
-#undef HasLZW
-
 /* Define if you have PNG library */
 #undef HasPNG
 
