@@ -1310,7 +1310,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  G e t I m a g e Q u a n t i z a t i o n E r r o r                          %
+%  G e t I m a g e Q u a n t i z e E r r o r                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %

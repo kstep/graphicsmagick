@@ -47,7 +47,6 @@
 <P>QuantizeInfo * <STRONG>CloneQuantizeInfo</STRONG>( const QuantizeInfo *quantize_info );</P>
 <P>void  <STRONG>CompressImageColormap</STRONG>( Image *image );</P>
 <P><STRONG>DestroyQuantizeInfo</STRONG>( QuantizeInfo *quantize_info );</P>
-<P>unsigned int  <STRONG>GetImageQuantizationError</STRONG>( Image *image );</P>
 <P><STRONG>GetQuantizeInfo</STRONG>( QuantizeInfo *quantize_info );</P>
 <P>unsigned int  <STRONG>MapImage</STRONG>( Image *image, const Image *map_image, const unsigned int dither );</P>
 <P>unsigned int  <STRONG>MapImages</STRONG>( Image *images, Image *map_image, const unsigned int dither );</P>
@@ -99,7 +98,9 @@ Specifies a pointer to an QuantizeInfo structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimagequantizationerror">GetImageQuantizationError</A></H2>
-<blockquote>GetImageQuantizationError() measures the difference between the original and quantized images. This difference is the total quantization error. The error is computed by summing over all pixels in an image the distance squared in RGB space between each reference pixel value and its quantized value. These values are computed: </blockquote><DL><DT><DD><DL>
+<P><CODE>GetImageQuantizeError()</CODE> measures the difference between the original and quantized images.  This difference is the total quantization error.  The error is computed by summing over all pixels in an image the distance squared in 
+<FONT SIZE=-1>RGB</FONT> space between each reference pixel value and its quantized value.  These values are computed:</P>
+<DL><DT><DD><DL>
 <dd><p></p><dt><STRONG><A NAME="item_o_mean_error_per_pixel%3A">mean_error_per_pixel:</A></STRONG><BR>
 <DD>
 This value is the mean error for any single pixel in the image.
@@ -112,8 +113,10 @@ This value is the normalized mean quantization error for any single pixel in the
 <DD>
 Thsi value is the normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.
 <P></P></DL></DL>
-<P>The format of the GetImageQuantizationError method is:</P>
-<blockquote>unsigned int GetImageQuantizationError ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<P>The format of the GetImageQuantizeError method is:</P>
+<PRE>
+    unsigned int GetImageQuantizeError(Image *image)</PRE>
+<P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>image:</STRONG><BR>
