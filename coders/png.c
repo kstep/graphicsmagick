@@ -1169,20 +1169,20 @@ static void PNGWarningHandler(png_struct *ping,png_const_charp message)
 }
 
 #ifdef PNG_USER_MEM_SUPPORTED
-extern PNG_EXPORT(png_voidp,png_IM_malloc)
-  PNGARG((png_structp png_ptr,png_uint_32 size));
-extern PNG_EXPORT(png_free_ptr,png_IM_free)
-  PNGARG((png_structp png_ptr,png_voidp ptr));
+png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size);
 png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
 {
 #if (PNG_LIBPNG_VER < 10011)
   png_voidp
     ret;
+
+  png_ptr=png_ptr;
   ret = ((png_voidp) AcquireMemory((size_t) size));
   if (ret == NULL)
     png_error("Insufficient memory.");
   return (ret);
 #else
+  png_ptr=png_ptr;
   return((png_voidp) AcquireMemory((size_t) size));
 #endif
 }
@@ -1190,8 +1190,10 @@ png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
 /*
   Free a pointer.  It is removed from the list at the same time.
 */
-static png_free_ptr png_IM_free(png_structp png_ptr,png_voidp ptr)
+png_free_ptr png_IM_free(png_structp png_ptr,png_voidp ptr);
+png_free_ptr png_IM_free(png_structp png_ptr,png_voidp ptr)
 {
+  png_ptr=png_ptr;
   LiberateMemory((void **) &ptr);
   return((png_free_ptr) NULL);
 }
@@ -2771,24 +2773,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Set image background color.
         */
-        if (ping_info->bit_depth == QuantumDepth)
+        if (ping_info->bit_depth <= QuantumDepth)
           {
             image->background_color.red=ping_info->background.red;
             image->background_color.green=ping_info->background.green;
             image->background_color.blue=ping_info->background.blue;
-          }
-        else if (ping_info->bit_depth < QuantumDepth)
-          {
-            int
-              scale;
-
-            if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
-               scale=MaxRGB/255;
-            else
-               scale=(int) MaxRGB/((1<<ping_info->bit_depth)-1);
-            image->background_color.red=scale*ping_info->background.red;
-            image->background_color.green=scale*ping_info->background.green;
-            image->background_color.blue=scale*ping_info->background.blue;
           }
         else
           {
@@ -3745,6 +3734,75 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=mng_info->image;
 #endif
       }
+
+#if (QuantumDepth == 16)
+    /* Determine if bit depth can be reduced from 16 to 8.
+     * Note that the method GetImageDepth doesn't check background
+     * and doesn't handle PseudoClass specially.  Also it uses
+     * multiplication and division by 257 instead of shifting, so
+     * might be slower.
+     */
+    if (image->depth == 16)
+      {
+        int
+          ok_to_reduce;
+
+        PixelPacket
+          *p;
+
+        ok_to_reduce=((((image->background_color.red >> 8) & 0xff)
+          == (image->background_color.red & 0xff)) &&
+           (((image->background_color.green >> 8) & 0xff)
+          == (image->background_color.green & 0xff)) &&
+           (((image->background_color.blue >> 8) & 0xff)
+          == (image->background_color.blue & 0xff)));
+        if (ok_to_reduce && image->storage_class == PseudoClass)
+          {
+            int index;
+
+            for (index=0; index < (int) image->colors; index++)
+              {
+                ok_to_reduce=((((image->colormap[index].red >> 8) & 0xff)
+                  == (image->colormap[index].red & 0xff)) &&
+                  (((image->colormap[index].green >> 8) & 0xff)
+                  == (image->colormap[index].green & 0xff)) &&
+                  (((image->colormap[index].blue >> 8) & 0xff)
+                  == (image->colormap[index].blue & 0xff)));
+                if (!ok_to_reduce)
+                  break;
+              }
+          }
+        if (ok_to_reduce && image->storage_class != PseudoClass)
+          for (y=0; y < (int) image->rows; y++)
+          {
+            p=GetImagePixels(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
+            {
+              ok_to_reduce=((((p->red >> 8) & 0xff) == (p->red & 0xff)) &&
+                (((p->green >> 8) & 0xff) == (p->green & 0xff)) &&
+                (((p->blue >> 8) & 0xff) == (p->blue & 0xff)) &&
+                (((!image->matte ||
+                ((p->opacity >> 8) & 0xff) == (p->opacity & 0xff)))));
+              if (!ok_to_reduce)
+                break;
+              p++;
+            }
+            if (x < (int) image->columns)
+              break;
+          }
+        if (ok_to_reduce)
+          {
+            image->depth=8;
+#ifdef PNG_DEBUG
+            if (image_info->verbose)
+              printf("png.c: reducing bit depth to 8 without loss of info\n");
+#endif
+          }
+      }
+#endif
+
       CatchImageException(image);
   } while (LocaleCompare(image_info->magick,"MNG") == 0);
   if (insert_layers && !image_found && (mng_width > 0) && (mng_height > 0))
@@ -4723,52 +4781,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     ping_info->height=image->rows;
     save_image_depth=image->depth;
     ping_info->bit_depth=save_image_depth;
-#if (QuantumDepth == 16)
-    if (ping_info->bit_depth == 16)
-      {
-        int
-          ok_to_reduce;
-
-        /*
-          Determine if bit depth can be reduced from 16 to 8.
-        */
-        ok_to_reduce=((((image->background_color.red >> 8) & 0xff)
-          == (image->background_color.red & 0xff)) &&
-           (((image->background_color.green >> 8) & 0xff)
-          == (image->background_color.green & 0xff)) &&
-           (((image->background_color.blue >> 8) & 0xff)
-          == (image->background_color.blue & 0xff)));
-        if (ok_to_reduce)
-          for (y=0; y < (int) image->rows; y++)
-          {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (int) image->columns; x++)
-            {
-              ok_to_reduce=((((p->red >> 8) & 0xff) == (p->red & 0xff)) &&
-                (((p->green >> 8) & 0xff) == (p->green & 0xff)) &&
-                (((p->blue >> 8) & 0xff) == (p->blue & 0xff)) &&
-                (((!image->matte ||
-                ((p->opacity >> 8) & 0xff) == (p->opacity & 0xff)))));
-              if (!ok_to_reduce)
-                break;
-              p++;
-            }
-            if (x < (int) image->columns)
-              break;
-          }
-        if (ok_to_reduce)
-          {
-            ping_info->bit_depth=8;
-            image->depth=8;
-#ifdef PNG_DEBUG
-            if (image_info->verbose)
-              printf("png.c: reducing bit depth to 8 without loss of info\n");
-#endif
-          }
-      }
-#endif
     if ((image->x_resolution != 0) && (image->y_resolution != 0) &&
         (!image_info->adjoin || !equal_physs))
       {
@@ -4804,11 +4816,21 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         png_color_16
           background;
 
-        background.red=DownScale(image->background_color.red);
-        background.green=DownScale(image->background_color.green);
-        background.blue=DownScale(image->background_color.blue);
-        background.gray=(png_uint_16)
-          DownScale(Intensity(image->background_color));
+        if (image->depth < QuantumDepth)
+          {
+            background.red=DownScale(image->background_color.red);
+            background.green=DownScale(image->background_color.green);
+            background.blue=DownScale(image->background_color.blue);
+            background.gray=(png_uint_16)
+              DownScale(Intensity(image->background_color));
+          }
+        else
+          {
+            background.red = image->background_color.red;
+            background.green = image->background_color.green;
+            background.blue = image->background_color.blue;
+            background.gray=(png_uint_16) Intensity(image->background_color);
+          }
         background.index=background.gray;
         png_set_bKGD(ping,ping_info,&background);
       }

@@ -2706,7 +2706,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->antialias=True;
   image_info->pointsize=12;
   (void) QueryColorDatabase("none",&image_info->pen);
-  (void) QueryColorDatabase("#ffffff",&image_info->background_color);
+  (void) QueryColorDatabase("white",&image_info->background_color);
   (void) QueryColorDatabase(BorderColor,&image_info->border_color);
   (void) QueryColorDatabase(MatteColor,&image_info->matte_color);
   image_info->dither=True;
