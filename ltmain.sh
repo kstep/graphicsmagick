@@ -55,7 +55,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4a
-TIMESTAMP=" (1.641.2.119 2000/09/21 00:28:28)"
+TIMESTAMP=" (1.641.2.125 2000/10/27 20:01:42)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -122,7 +122,7 @@ do
   if test -n "$prev"; then
     case "$prev" in
     execute_dlfiles)
-      eval "$prev=\"\$$prev \$arg\""
+      execute_dlfiles="$execute_dlfiles $arg"
       ;;
     tag)
       tagname="$arg"
