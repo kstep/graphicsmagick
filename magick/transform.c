@@ -44,6 +44,7 @@
 #include "magick/resize.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
+#include "magick/log.h"
 #if defined(HasLCMS)
 #if defined(HAVE_LCMS_LCMS_H)
 #include <lcms/lcms.h>
@@ -1099,8 +1100,13 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
     }
   if (LocaleCompare("icm",name) == 0)
     {
-      if (image->color_profile.length != 0)
-        {
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),"Profile1: %ld bytes, Profile2: %ld bytes",
+                length,image->color_profile.length);
+      /* check for missing or identical input and output profilea */
+      if ((length != 0) && (image->color_profile.length != 0) &&
+        (image->color_profile.length != length) &&
+          (memcmp(image->color_profile.info,profile,length) != 0))
+       {
 #if defined(HasLCMS)
           typedef struct _ProfilePacket
           {
@@ -1122,6 +1128,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
             transform;
 
           int
+            errstate,
             intent;
 
           long
@@ -1140,6 +1147,8 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
           /*
             Transform pixel colors as defined by the color profiles.
           */
+          /* Safeguard against early abortion */
+          errstate = cmsErrorAction(LCMS_ERROR_SHOW);
           image_profile=cmsOpenProfileFromMem(image->color_profile.info,
             image->color_profile.length);
           transform_profile=
@@ -1183,9 +1192,18 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
                 transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
                   transform_profile,TYPE_RGBA_16,intent,0);
             }
+          /* we dump these at this point since we do not need them and do no want to have a
+             memory leak if something goes wrong from this point forward */
+          cmsCloseProfile(image_profile);
+          cmsCloseProfile(transform_profile);
           if (transform == (cmsHTRANSFORM) NULL)
-            ThrowBinaryException(ResourceLimitError,"UnableToManageColor",
-              "UnableToCreateColorTransform");
+            {
+              /* Restores error handler previous state */
+              cmsErrorAction(errstate);
+              ThrowBinaryException(ResourceLimitError,"UnableToManageColor",
+                "UnableToCreateColorTransform");
+            }
+          (void) LogMagickEvent(TransformEvent,GetMagickModule(),"Performing color conversion");
           for (y=0; y < (long) image->rows; y++)
           {
             q=GetImagePixels(image,0,y,image->columns,1);
@@ -1208,12 +1226,16 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
               break;
           }
           cmsDeleteTransform(transform);
+#ifdef PREVIOUS_RELEASE_LOGIC
           cmsCloseProfile(image_profile);
           cmsCloseProfile(transform_profile);
+#endif
           if (colorspace == CMYKColorspace)
             image->colorspace=CMYKColorspace;
           else
             image->colorspace=RGBColorspace;
+          /* Restores error handler previous state */
+          cmsErrorAction(errstate);
 #endif
           MagickFreeMemory(image->color_profile.info);
         }
@@ -1222,7 +1244,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
           image->color_profile.info=MagickAllocateMemory(unsigned char *,length);
           if (image->color_profile.info == (unsigned char *) NULL)
             ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-              "UnableToAddICMProfile");
+              "UnableToAddColorProfile");
           image->color_profile.length=length;
           (void) memcpy(image->color_profile.info,profile,length);
         }
