@@ -591,16 +591,16 @@ MagickExport void DestroyConstitute(void)
 %
 %  The format of the DispatchImage method is:
 %
-%      unsigned int DispatchImage(Image *image,const int x,const int y,
-%        const unsigned int columns,const unsigned int rows,const char *map,
-%        const StorageType type,void *pixels)
+%      unsigned int DispatchImage(Image *image,const int x_offset,
+%        const int y_offset,const unsigned int columns,const unsigned int rows,
+%        const char *map,const StorageType type,void *pixels)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
-%    o x, y, columns, rows:  These values define the perimeter of a region of
-%      pixels you want to extract.
+%    o x_offset, y_offset, columns, rows:  These values define the perimeter
+%      of a region of pixels you want to extract.
 %
 %    o map:  This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
@@ -617,23 +617,25 @@ MagickExport void DestroyConstitute(void)
 %
 %
 */
-MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
-  const unsigned int columns,const unsigned int rows,const char *map,
-  const StorageType type,void *pixels)
+MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
+  const int y_offset,const unsigned int columns,const unsigned int rows,
+  const char *map,const StorageType type,void *pixels)
 {
-  off_t
-    number_pixels;
+  int
+    y;
 
-  register off_t
+  register IndexPacket
+    *indexes;
+
+  register int
     i,
-    j;
+    x;
 
   register PixelPacket
     *p;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  number_pixels=columns*rows;
   for (i=0; i < Extent(map); i++)
     switch (map[i])
     {
@@ -646,8 +648,22 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       case 'k':
       case 'K':
       {
-        if (image->colorspace != CMYKColorspace)
-          RGBTransformImage(image,CMYKColorspace);
+        if (image->colorspace == CMYKColorspace)
+          break;
+        RGBTransformImage(image,CMYKColorspace);
+        break;
+      }
+      case 'i':
+      case 'I':
+      {
+        QuantizeInfo
+          quantize_info;
+
+        if (image->storage_class == PseudoClass)
+          break;
+        GetQuantizeInfo(&quantize_info);
+        quantize_info.number_colors=MaxRGB+1;
+        (void) QuantizeImage(&quantize_info,image);
         break;
       }
       default:
@@ -660,53 +676,63 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       register unsigned char
         *q;
 
-      p=GetImagePixels(image,x,y,columns,rows);
-      if (p == (PixelPacket *) NULL)
-        break;
       q=(unsigned char *) pixels;
-      for (i=0; i < number_pixels; i++)
+      for (y=0; y < (int) rows; y++)
       {
-        for (j=0; j < Extent(map); j++)
+        p=GetImagePixels(image,x_offset,y_offset+y,columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        indexes=GetIndexes(image);
+        for (x=0; x < (int) columns; x++)
         {
-          switch (map[j])
+          for (i=0; i < Extent(map); i++)
           {
-            case 'r':
-            case 'R':
-            case 'c':
-            case 'C':
+            switch (map[i])
             {
-              *q++=DownScale(p->red);
-              break;
+              case 'r':
+              case 'R':
+              case 'c':
+              case 'C':
+              {
+                *q++=DownScale(p->red);
+                break;
+              }
+              case 'g':
+              case 'G':
+              case 'm':
+              case 'M':
+              {
+                *q++=DownScale(p->green);
+                break;
+              }
+              case 'b':
+              case 'B':
+              case 'y':
+              case 'Y':
+              {
+                *q++=DownScale(p->blue);
+                break;
+              }
+              case 'a':
+              case 'A':
+              case 'k':
+              case 'K':
+              {
+                *q++=DownScale(p->opacity);
+                break;
+              }
+              case 'i':
+              case 'I':
+              {
+                *q++=indexes[x];
+                break;
+              }
+              default:
+                ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
             }
-            case 'g':
-            case 'G':
-            case 'm':
-            case 'M':
-            {
-              *q++=DownScale(p->green);
-              break;
-            }
-            case 'b':
-            case 'B':
-            case 'y':
-            case 'Y':
-            {
-              *q++=DownScale(p->blue);
-              break;
-            }
-            case 'a':
-            case 'A':
-            case 'k':
-            case 'K':
-            {
-              *q++=DownScale(p->opacity);
-              break;
-            }
-            default:
-              ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
           }
+          p++;
         }
-        p++;
       }
       break;
     }
@@ -715,53 +741,63 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       register unsigned short
         *q;
 
-      p=GetImagePixels(image,x,y,columns,rows);
-      if (p == (PixelPacket *) NULL)
-        break;
       q=(unsigned short *) pixels;
-      for (i=0; i < number_pixels; i++)
+      for (y=0; y < (int) rows; y++)
       {
-        for (j=0; j < Extent(map); j++)
+        p=GetImagePixels(image,x_offset,y_offset+y,columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        indexes=GetIndexes(image);
+        for (x=0; x < (int) columns; x++)
         {
-          switch (map[j])
+          for (i=0; i < Extent(map); i++)
           {
-            case 'r':
-            case 'R':
-            case 'c':
-            case 'C':
+            switch (map[i])
             {
-              *q++=p->red;
-              break;
+              case 'r':
+              case 'R':
+              case 'c':
+              case 'C':
+              {
+                *q++=p->red;
+                break;
+              }
+              case 'g':
+              case 'G':
+              case 'm':
+              case 'M':
+              {
+                *q++=p->green;
+                break;
+              }
+              case 'b':
+              case 'B':
+              case 'y':
+              case 'Y':
+              {
+                *q++=p->blue;
+                break;
+              }
+              case 'a':
+              case 'A':
+              case 'k':
+              case 'K':
+              {
+                *q++=p->opacity;
+                break;
+              }
+              case 'i':
+              case 'I':
+              {
+                *q++=indexes[x];
+                break;
+              }
+              default:
+                ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
             }
-            case 'g':
-            case 'G':
-            case 'm':
-            case 'M':
-            {
-              *q++=p->green;
-              break;
-            }
-            case 'b':
-            case 'B':
-            case 'y':
-            case 'Y':
-            {
-              *q++=p->blue;
-              break;
-            }
-            case 'a':
-            case 'A':
-            case 'k':
-            case 'K':
-            {
-              *q++=p->opacity;
-              break;
-            }
-            default:
-              ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
           }
+          p++;
         }
-        p++;
       }
       break;
     }
@@ -770,53 +806,63 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       register unsigned int
         *q;
 
-      p=GetImagePixels(image,x,y,columns,rows);
-      if (p == (PixelPacket *) NULL)
-        break;
       q=(unsigned int *) pixels;
-      for (i=0; i < number_pixels; i++)
+      for (y=0; y < (int) rows; y++)
       {
-        for (j=0; j < Extent(map); j++)
+        p=GetImagePixels(image,x_offset,y_offset+y,columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        indexes=GetIndexes(image);
+        for (x=0; x < (int) columns; x++)
         {
-          switch (map[j])
+          for (i=0; i < Extent(map); i++)
           {
-            case 'r':
-            case 'R':
-            case 'c':
-            case 'C':
+            switch (map[i])
             {
-              *q++=p->red;
-              break;
+              case 'r':
+              case 'R':
+              case 'c':
+              case 'C':
+              {
+                *q++=p->red;
+                break;
+              }
+              case 'g':
+              case 'G':
+              case 'm':
+              case 'M':
+              {
+                *q++=p->green;
+                break;
+              }
+              case 'b':
+              case 'B':
+              case 'y':
+              case 'Y':
+              {
+                *q++=p->blue;
+                break;
+              }
+              case 'a':
+              case 'A':
+              case 'k':
+              case 'K':
+              {
+                *q++=p->opacity;
+                break;
+              }
+              case 'i':
+              case 'I':
+              {
+                *q++=indexes[x];
+                break;
+              }
+              default:
+                ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
             }
-            case 'g':
-            case 'G':
-            case 'm':
-            case 'M':
-            {
-              *q++=p->green;
-              break;
-            }
-            case 'b':
-            case 'B':
-            case 'y':
-            case 'Y':
-            {
-              *q++=p->blue;
-              break;
-            }
-            case 'a':
-            case 'A':
-            case 'k':
-            case 'K':
-            {
-              *q++=p->opacity;
-              break;
-            }
-            default:
-              ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
           }
+          p++;
         }
-        p++;
       }
       break;
     }
@@ -825,53 +871,63 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       register float
         *q;
 
-      p=GetImagePixels(image,x,y,columns,rows);
-      if (p == (PixelPacket *) NULL)
-        break;
       q=(float *) pixels;
-      for (i=0; i < number_pixels; i++)
+      for (y=0; y < (int) rows; y++)
       {
-        for (j=0; j < Extent(map); j++)
+        p=GetImagePixels(image,x_offset,y_offset+y,columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        indexes=GetIndexes(image);
+        for (x=0; x < (int) columns; x++)
         {
-          switch (map[j])
+          for (i=0; i < Extent(map); i++)
           {
-            case 'r':
-            case 'R':
-            case 'c':
-            case 'C':
+            switch (map[i])
             {
-              *q++=(float) p->red/MaxRGB;
-              break;
+              case 'r':
+              case 'R':
+              case 'c':
+              case 'C':
+              {
+                *q++=p->red;
+                break;
+              }
+              case 'g':
+              case 'G':
+              case 'm':
+              case 'M':
+              {
+                *q++=p->green;
+                break;
+              }
+              case 'b':
+              case 'B':
+              case 'y':
+              case 'Y':
+              {
+                *q++=p->blue;
+                break;
+              }
+              case 'a':
+              case 'A':
+              case 'k':
+              case 'K':
+              {
+                *q++=p->opacity;
+                break;
+              }
+              case 'i':
+              case 'I':
+              {
+                *q++=indexes[x];
+                break;
+              }
+              default:
+                ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
             }
-            case 'g':
-            case 'G':
-            case 'm':
-            case 'M':
-            {
-              *q++=(float) p->green/MaxRGB;
-              break;
-            }
-            case 'b':
-            case 'B':
-            case 'y':
-            case 'Y':
-            {
-              *q++=(float) p->blue/MaxRGB;
-              break;
-            }
-            case 'a':
-            case 'A':
-            case 'k':
-            case 'K':
-            {
-              *q++=(float) p->opacity/MaxRGB;
-              break;
-            }
-            default:
-              ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
           }
+          p++;
         }
-        p++;
       }
       break;
     }
@@ -880,53 +936,63 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       register double
         *q;
 
-      p=GetImagePixels(image,x,y,columns,rows);
-      if (p == (PixelPacket *) NULL)
-        break;
       q=(double *) pixels;
-      for (i=0; i < number_pixels; i++)
+      for (y=0; y < (int) rows; y++)
       {
-        for (j=0; j < Extent(map); j++)
+        p=GetImagePixels(image,x_offset,y_offset+y,columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        indexes=GetIndexes(image);
+        for (x=0; x < (int) columns; x++)
         {
-          switch (map[j])
+          for (i=0; i < Extent(map); i++)
           {
-            case 'r':
-            case 'R':
-            case 'c':
-            case 'C':
+            switch (map[i])
             {
-              *q++=(double) p->red/MaxRGB;
-              break;
+              case 'r':
+              case 'R':
+              case 'c':
+              case 'C':
+              {
+                *q++=p->red;
+                break;
+              }
+              case 'g':
+              case 'G':
+              case 'm':
+              case 'M':
+              {
+                *q++=p->green;
+                break;
+              }
+              case 'b':
+              case 'B':
+              case 'y':
+              case 'Y':
+              {
+                *q++=p->blue;
+                break;
+              }
+              case 'a':
+              case 'A':
+              case 'k':
+              case 'K':
+              {
+                *q++=p->opacity;
+                break;
+              }
+              case 'i':
+              case 'I':
+              {
+                *q++=indexes[x];
+                break;
+              }
+              default:
+                ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
             }
-            case 'g':
-            case 'G':
-            case 'y':
-            case 'Y':
-            {
-              *q++=(double) p->green/MaxRGB;
-              break;
-            }
-            case 'b':
-            case 'B':
-            case 'm':
-            case 'M':
-            {
-              *q++=(double) p->blue/MaxRGB;
-              break;
-            }
-            case 'a':
-            case 'A':
-            case 'k':
-            case 'K':
-            {
-              *q++=(double) p->opacity/MaxRGB;
-              break;
-            }
-            default:
-              ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
           }
+          p++;
         }
-        p++;
       }
       break;
     }
@@ -1849,7 +1915,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           if (IsAccessible(clone_info->filename))
             ThrowException(exception,MissingDelegateWarning,
               "no delegate for this image format",clone_info->filename);
-          else 
+          else
             ThrowException(exception,FileOpenWarning,"Unable to open file",
               clone_info->filename);
           DestroyImageInfo(clone_info);
