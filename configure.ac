@@ -2,7 +2,7 @@
 # ImageMagick Configure Script
 #
 
-AC_PREREQ(2.54)
+AC_PREREQ(2.55)
 AC_INIT(magick/magick.h)
 
 # Set version
