@@ -1403,7 +1403,6 @@ MagickExport Image *ImplodeImage(Image *image,const double amount,
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   /*
@@ -1440,9 +1439,8 @@ MagickExport Image *ImplodeImage(Image *image,const double amount,
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
     q=SetImagePixels(implode_image,0,y,implode_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if (q == (PixelPacket *) NULL)
       break;
     y_distance=y_scale*(y-y_center);
     for (x=0; x < (int) image->columns; x++)
@@ -1450,10 +1448,11 @@ MagickExport Image *ImplodeImage(Image *image,const double amount,
       /*
         Determine if the pixel is within an ellipse.
       */
-      *q=(*p);
       x_distance=x_scale*(x-x_center);
       distance=x_distance*x_distance+y_distance*y_distance;
-      if (distance < (radius*radius))
+      if (distance >= (radius*radius))
+        *q=GetOnePixel(image,x,y);
+      else     
         {
           double
             factor;
@@ -1467,7 +1466,6 @@ MagickExport Image *ImplodeImage(Image *image,const double amount,
           *q=InterpolateColor(image,factor*x_distance/x_scale+x_center,
             factor*y_distance/y_scale+y_center);
         }
-      p++;
       q++;
     }
     if (!SyncImagePixels(implode_image))
@@ -3311,7 +3309,6 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   /*
@@ -3346,9 +3343,8 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
     q=SetImagePixels(swirl_image,0,y,swirl_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if (q == (PixelPacket *) NULL)
       break;
     y_distance=y_scale*(y-y_center);
     for (x=0; x < (int) image->columns; x++)
@@ -3356,10 +3352,11 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
       /*
         Determine if the pixel is within an ellipse.
       */
-      *q=(*p);
       x_distance=x_scale*(x-x_center);
       distance=x_distance*x_distance+y_distance*y_distance;
-      if (distance < (radius*radius))
+      if (distance >= (radius*radius))
+        *q=GetOnePixel(image,x,y);
+      else     
         {
           /*
             Swirl the pixel.
@@ -3371,7 +3368,6 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
             (cosine*x_distance-sine*y_distance)/x_scale+x_center,
             (sine*x_distance+cosine*y_distance)/y_scale+y_center);
         }
-      p++;
       q++;
     }
     if (!SyncImagePixels(swirl_image))
