@@ -187,7 +187,7 @@ static void
 %
 %
 */
-MagickExport inline PixelPacket AlphaComposite(const PixelPacket *p,
+static inline PixelPacket AlphaComposite(const PixelPacket *p,
   const double alpha,const PixelPacket *q,const double beta)
 {
   register double
