@@ -290,6 +290,8 @@ static double UnitOfMeasure(const char *value)
     return(72.0);
   if (LocaleCompare(value+strlen(value)-2,"pt") == 0)
     return(1.0);
+  if (LocaleCompare(value+strlen(value)-2,"px") == 0)
+    return(72/28);
   return(1.0);
 }
 
