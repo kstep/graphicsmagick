@@ -9809,6 +9809,12 @@ LDFLAGS="$LDFLAGS "`GraphicsMagickWand-config --ldflags`
 echo "$as_me:$LINENO: result: \"$LDFLAGS\"" >&5
 echo "${ECHO_T}\"$LDFLAGS\"" >&6
 
+echo "$as_me:$LINENO: checking libs" >&5
+echo $ECHO_N "checking libs... $ECHO_C" >&6
+LIBS="$LIBS "`GraphicsMagickWand-config --libs`
+echo "$as_me:$LINENO: result: \"$LIBS\"" >&5
+echo "${ECHO_T}\"$LIBS\"" >&6
+
 
 #--------------------------------------------------------------------
 # Finally, substitute all of the various values into the Makefile.

@@ -188,6 +188,10 @@ AC_MSG_CHECKING(linker flags)
 LDFLAGS="$LDFLAGS "`GraphicsMagickWand-config --ldflags`
 AC_MSG_RESULT("$LDFLAGS")
 
+AC_MSG_CHECKING(libs)
+LIBS="$LIBS "`GraphicsMagickWand-config --libs`
+AC_MSG_RESULT("$LIBS")
+
 
 #--------------------------------------------------------------------
 # Finally, substitute all of the various values into the Makefile.
