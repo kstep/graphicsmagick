@@ -398,13 +398,13 @@ namespace Magick
     // size can be estimated in advance.
     void            write ( Blob *blob_,
 			    size_t lengthEstimate_ = 1664 );
-    void            write ( Blob *blob_,
-			    const std::string &magick_,
-			    size_t lengthEstimate_ = 1664 );
-    void            write ( Blob *blob_,
-			    const std::string &magick_,
-			    unsigned short depth_,
-			    size_t lengthEstimate_ = 1664 );
+//    void            write ( Blob *blob_,
+//			              const std::string &magick_,
+//			              size_t lengthEstimate_ = 1664 );
+//    void            write ( Blob *blob_,
+//			    const std::string &magick_,
+//			    unsigned short depth_,
+//			    size_t lengthEstimate_ = 1664 );
     
     // Zoom image to specified size.
     void            zoom ( const Geometry &geometry_ );

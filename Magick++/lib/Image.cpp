@@ -1191,6 +1191,7 @@ void Magick::Image::write ( Blob *blob_,
   blob_->updateNoCopy( data, length );
   throwMagickError();
 }
+#if 0
 void Magick::Image::write ( Blob *blob_,
 			    const std::string &magick_,
 			    size_t lengthEstimate_ = 1664 )
@@ -1217,6 +1218,7 @@ void Magick::Image::write ( Blob *blob_,
   blob_->updateNoCopy( data, length );
   throwMagickError();
 }
+#endif
 
 // Zoom image
 void Magick::Image::zoom( const Geometry &geometry_ )
