@@ -2004,7 +2004,7 @@ MagickExport char *SetClientName(const char *name)
 MagickExport char *SetClientPath(const char *path)
 {
   static char
-    client_path[MaxTextExtent] = MagickConfigurePath;
+    client_path[MaxTextExtent] = MagickModulesPath;
 
   if (path == (char *) NULL)
     return(client_path);

@@ -186,11 +186,12 @@ MagickExport char *GetImageMagick(const unsigned char *magick,
 %  for the specified ImageMagick configuration file and returns the path.
 %  The search order follows:
 %
-%             MagickConfigurePath
+%             MagickModulesPath
 %             $HOME/.magick/
 %             $MAGICK_HOME/
 %             <program directory>/
-%             MagickModulesPath
+%             MagickLibPath
+%             MagickSharePath
 %             X11ConfigurePath
 %
 %  The format of the GetMagickConfigurePath method is:
@@ -235,7 +236,10 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
     DirectorySeparator,filename);
   if (IsAccessible(path))
     return(path);
-  FormatString(path,"%.1024s%.1024s",MagickConfigurePath,filename);
+  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
+  if (IsAccessible(path))
+    return(path);
+  FormatString(path,"%.1024s%.1024s",MagickSharePath,filename);
   if (IsAccessible(path))
     return(path);
   FormatString(path,"%.1024s%.1024s",X11ConfigurePath,filename);

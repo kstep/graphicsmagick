@@ -27,11 +27,14 @@ extern "C" {
    (strchr(text,'}') != (char *) NULL) || \
    (strchr(text,'[') != (char *) NULL) || \
    (strchr(text,']') != (char *) NULL))
-#if !defined(MagickConfigurePath)
-#define MagickConfigurePath  "/usr/local/share/ImageMagick/"
+#if !defined(MagickLibPath)
+#define MagickLibPath  "/usr/local/lib/ImageMagick/"
 #endif
 #if !defined(MagickModulesPath)
 #define MagickModulesPath  "/usr/local/lib/ImageMagick/modules/"
+#endif
+#if !defined(MagickSharePath)
+#define MagickSharePath  "/usr/local/share/ImageMagick/"
 #endif
 #define PreferencesDefaults  "~/."
 #define ProcessPendingEvents(text)
@@ -56,8 +59,9 @@ extern "C" {
    (strchr(text,'{') != (char *) NULL) || \
    (strchr(text,'}') != (char *) NULL))
 #define j1(x)  x
-#define MagickConfigurePath  "sys$login:"
+#define MagickLibPath  "sys$login:"
 #define MagickModulesPath  "sys$login:"
+#define MagickSharePath  "sys$login:"
 #define PreferencesDefaults  "decw$user_defaults:"
 #define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
@@ -81,8 +85,9 @@ extern "C" {
    (strchr(text,'[') != (char *) NULL) || \
    (strchr(text,']') != (char *) NULL))
 #define j1(x)  x
-#define MagickConfigurePath  ""
+#define MagickLibPath  ""
 #define MagickModulesPath  ""
+#define MagickSharePath  ""
 #define PreferencesDefaults  "~/."
 #define ReadCommandlLine(argc,argv)  argc=ccommand(argv); puts(MagickVersion);
 #if !defined(X11ConfigurePath)
@@ -109,8 +114,9 @@ extern "C" {
    (strchr(text,'[') != (char *) NULL) || \
    (strchr(text,']') != (char *) NULL))
 #define j1(x)  x
-#define MagickConfigurePath  "c:\\ImageMagick\\"
+#define MagickLibPath  "c:\\ImageMagick\\"
 #define MagickModulesPath  "c:\\ImageMagick\\"
+#define MagickSharePath  "c:\\ImageMagick\\"
 #define PreferencesDefaults  "~/."
 #define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)

@@ -398,11 +398,12 @@ static int ReadMagicConfigureFile(const char *filename)
 %  for the specified ImageMagick configuration file and returns the path.
 %  The search order follows:
 %
-%             MagickConfigurePath
+%             MagickModulesPath
 %             $HOME/.magick/
 %             $MAGICK_HOME/
 %             <program directory>/
-%             MagickModulesPath
+%             MagickLibPath
+%             MagickSharePath
 %             X11ConfigurePath
 %
 %  The format of the ReadMagicConfigureFiles method is:
@@ -446,7 +447,9 @@ static unsigned int ReadMagicConfigureFiles(const char *filename)
   FormatString(path,"%.1024s%.1024s%.1024s",SetClientPath((char *) NULL),
     DirectorySeparator,filename);
   status|=ReadMagicConfigureFile(path);
-  FormatString(path,"%.1024s%.1024s",MagickConfigurePath,filename);
+  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
+  status|=ReadMagicConfigureFile(path);
+  FormatString(path,"%.1024s%.1024s",MagickSharePath,filename);
   status|=ReadMagicConfigureFile(path);
   FormatString(path,"%.1024s%.1024s",X11ConfigurePath,filename);
   status|=ReadMagicConfigureFile(path);
