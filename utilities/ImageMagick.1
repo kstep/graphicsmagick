@@ -1109,6 +1109,7 @@ options \fIbefore\fP the \fB-draw\fP option.
 \fRspecify endianness (MSB or LSB) of output image
 
 Use \fB+endian\fP to revert to unspecified endianness.
+
 .TP
 .B "-enhance"
 \fRapply a digital filter to enhance a noisy image
@@ -2432,23 +2433,22 @@ same image in its current state if there are additional options.  To
 restore the image to its original state after writing it, use
 the \fB+write\fP \fIfilename\fP option.
 .TP
-.B "-write"
+.B "-write \fI<filename>"\fP
 \fRwrite the image to a file [\fIdisplay\fP]
 
-If \fIfile\fP already exists, you will be prompted as to whether it should
+If \fIfilename\fP already exists, you will be prompted as to whether it should
 be overwritten.
 
 By default, the image is written in the format that it was read in as.
-To specify a particular image format, prefix \fIfile\fP with the image
+To specify a particular image format, prefix \fIfilename\fP with the image
 type and a colon (e.g., ps:image) or specify the image type as the filename
 suffix (e.g., image.ps). See convert(1) for a list of valid image formats.
 Specify file as - for standard output. If file has the
 extension \fB.Z\fP or
-\fB.gz\fP, the file size is \fBcompressed\fP using with compress or
+\fB.gz\fP, the file size is \fBcompressed\fP using compress or
 \fBgzip\fP
 respectively. Precede the image file name with | to pipe to a system command.
-If \fIfile\fP already exists, you will be prompted as to whether it should
-be overwritten.
+
 
 Use \fB-compress\fP to specify the type of image compression.
 
@@ -2457,7 +2457,7 @@ The equivalent X resource for this option is
 See
 "X Resources", below,
 for details.
-.SH FILES AND FORMATS</A>
+.SH FILES AND FORMATS
 
 By default, the image format is determined by its magic number, i.e., the
 first few bytes of the file. To specify
