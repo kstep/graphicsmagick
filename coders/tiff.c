@@ -779,7 +779,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           /*
             Transfer image scanline.
           */
-          (void) PushImagePixels(image,IndexQuantum,quantum_scanline);
+          if (photometric != PHOTOMETRIC_PALETTE)
+            (void) PushImagePixels(image,GrayQuantum,quantum_scanline);
+					else
+            (void) PushImagePixels(image,IndexQuantum,quantum_scanline);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -1874,6 +1877,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Convert PseudoClass packets to contiguous monochrome scanlines.
         */
+        SetImageType(image,BilevelType);
         polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
         if (photometric == PHOTOMETRIC_PALETTE)
           polarity=1;
@@ -1902,7 +1906,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             bit++;
             if (bit == 8)
               {
-                *q++=byte;
+                *q++=byte >> 8;
                 bit=0;
                 byte=0;
               }
