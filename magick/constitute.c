@@ -1155,7 +1155,6 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
 %  than ReadImage().  On failure, a NULL image is returned and exception
 %  describes the reason for the failure.
 %
-%
 %  The format of the PingImage method is:
 %
 %      Image *PingImage(const ImageInfo *image_info,ExceptionInfo *exception)
