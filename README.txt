@@ -137,7 +137,7 @@ UNIX/Cygwin COMPILATION
   Optional Packages:
    --with-modules          enable support for dynamically loadable modules
    --with-cache            set pixel cache threshhold (default 2047MB)
-   --with-threads          enable threads support
+   --without-threads       disable threads support
    --without-frozenpaths   disable frozen delegate paths
    --without-largefiles    disable support for large (64 bit) file offsets
    --without-magick-plus-plus disable build/install of Magick++
@@ -251,14 +251,9 @@ UNIX/Cygwin COMPILATION
       distributions), --without-frozenpaths may be specified so that
       only the delegate's name is included in the delegates.mgk file.
 
-    o --with-threads: By default, the ImageMagick library is compiled
-      without multi-thread support.  This is fine for the utilities,
-      and for use in single-threaded applications. When multi-threaded
-      applications are to be used with the ImageMagick library, thread
-      safety should be selected via --with-threads.  Multi-thread
-      support is disabled by default since a thread-safe ImageMagick
-      may run slower (OS dependent) due to additional locking within
-      the C library (e.g. in malloc()).
+    o --without-threads: By default, the ImageMagick library is compiled
+      with multi-thread support.  If this is undesireable, then specify
+      --without-threads.
 
     o --with-cache: Specify a different image pixel cache threshold
       using the --with-cache option. When ImageMagick will have more

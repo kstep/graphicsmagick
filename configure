@@ -755,7 +755,7 @@ Optional Packages:
   --with-pic              try to use only PIC/non-PIC objects default=use both
   --with-modules          enable support for dynamically loadable modules
   --with-cache            set pixel cache threshhold (default 2047MB)
-  --with-threads          enable threads support
+  --without-threads       disable threads support
   --without-frozenpaths   disable frozen delegate paths
   --without-largefiles    disable support for large (64 bit) file offsets
   --without-magick-plus-plus disable build/install of Magick++
@@ -3716,7 +3716,7 @@ if test "${with_threads+set}" = set; then
   withval="$with_threads"
   with_threads=$withval
 else
-  with_threads='no'
+  with_threads='yes'
 fi;
 
 # Disable support for full delegate paths

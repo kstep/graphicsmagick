@@ -179,9 +179,9 @@ AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache,Pixel cache threshold (defaul
 
 # Enable support for threads
 AC_ARG_WITH(threads,
-	      [  --with-threads          enable threads support],
+	      [  --without-threads       disable threads support],
 	      [with_threads=$withval],
-	      [with_threads='no'])
+	      [with_threads='yes'])
 
 # Disable support for full delegate paths
 AC_ARG_WITH(frozenpaths,
