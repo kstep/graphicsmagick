@@ -1,3 +1,8 @@
+2003-10-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/reference/read/input_tim.miff: The TIM read results
+	changed somewhat due to Glenn's ScaleColor5to8 fix.
+
 2003-10-01  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
         * Revised ScaleColor5to8 and ScaleColor6to8 macros to fill in

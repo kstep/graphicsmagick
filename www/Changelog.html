@@ -53,6 +53,32 @@
 </tr>
 </table>
 <p>
+2003-10-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> PerlMagick/t/reference/read/input_tim.miff: The TIM read results
+        changed somewhat due to Glenn's ScaleColor5to8 fix.
+
+</UL>
+<p>
+2003-10-01  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> Revised ScaleColor5to8 and ScaleColor6to8 macros to fill in
+        the low bytes.<BR>
+  <LI> coders/bmp.c (ReadBMPImage): scaling of 8-8-8-8-bit images was
+        also slightly incorrect.
+
+</UL>
+<p>
+2003-09-30  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/bmp.c (ReadBMPImage): scaling of 5-5-5-bit and 5-6-5-bit
+        images was slightly incorrect.
+
+</UL>
+<p>
 2003-09-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

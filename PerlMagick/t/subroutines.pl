@@ -336,7 +336,7 @@ sub testReadCompare {
       goto COMPARE_RUNTIME_ERROR;
     }
 
-#  if ("$srcimage_name" eq "input.wpg") {
+# if ("$srcimage_name" eq "input.wpg") {
 #    $srcimage->write(filename=>"$refimage_name", compression=>'None');
 #  }
 
