@@ -14991,46 +14991,6 @@ fi;
 
 
 
-
-if test "$with_perl" != 'no'; then
-  WITH_PERL_TRUE=
-  WITH_PERL_FALSE='#'
-else
-  WITH_PERL_TRUE='#'
-  WITH_PERL_FALSE=
-fi
-
-with_perl_static='no'
-if test "$with_perl" != 'no' && test "$libtool_build_shared_libs" = 'no'
-then
-  with_perl_static='yes'
-fi
-with_perl_dynamic='no'
-if test "$with_perl" != 'no' && test "$libtool_build_shared_libs" = 'yes'
-then
-  with_perl_dynamic='yes'
-fi
-
-
-if test $with_perl_static = 'yes'; then
-  WITH_PERL_STATIC_TRUE=
-  WITH_PERL_STATIC_FALSE='#'
-else
-  WITH_PERL_STATIC_TRUE='#'
-  WITH_PERL_STATIC_FALSE=
-fi
-
-
-
-if test $with_perl_dynamic = 'yes'; then
-  WITH_PERL_DYNAMIC_TRUE=
-  WITH_PERL_DYNAMIC_FALSE='#'
-else
-  WITH_PERL_DYNAMIC_TRUE='#'
-  WITH_PERL_DYNAMIC_FALSE=
-fi
-
-
 # Disable BZLIB (bzip2 library)
 
 # Check whether --with-bzlib or --without-bzlib was given.
@@ -29070,7 +29030,9 @@ fi
 
 
 
-# Figure out what drivers Ghostscript supports (if available)
+#
+# Ghostscript related configuration.
+#
 GSColorDevice=ppmraw
 GSMonoDevice=pbmraw
 GSPDFDevice=pdfwrite
@@ -29224,6 +29186,50 @@ done
         fi
     fi
 fi
+
+with_perl_static='no'
+with_perl_dynamic='no'
+if test "$have_perl" != 'no'
+then
+  if test "$with_perl" != 'no' && test "$libtool_build_shared_libs" = 'no'
+  then
+    with_perl_static='yes'
+  fi
+  if test "$with_perl" != 'no' && test "$libtool_build_shared_libs" = 'yes'
+  then
+    with_perl_dynamic='yes'
+  fi
+fi
+
+
+if test "$have_perl" != 'no'; then
+  WITH_PERL_TRUE=
+  WITH_PERL_FALSE='#'
+else
+  WITH_PERL_TRUE='#'
+  WITH_PERL_FALSE=
+fi
+
+
+
+if test $with_perl_static = 'yes'; then
+  WITH_PERL_STATIC_TRUE=
+  WITH_PERL_STATIC_FALSE='#'
+else
+  WITH_PERL_STATIC_TRUE='#'
+  WITH_PERL_STATIC_FALSE=
+fi
+
+
+
+if test $with_perl_dynamic = 'yes'; then
+  WITH_PERL_DYNAMIC_TRUE=
+  WITH_PERL_DYNAMIC_FALSE='#'
+else
+  WITH_PERL_DYNAMIC_TRUE='#'
+  WITH_PERL_DYNAMIC_FALSE=
+fi
+
 
 # Determine path to pick up ImageMagick library from for use with building PerlMagick
 MAGICKLIB="-L${LIB_DIR} -lMagick"
@@ -29439,27 +29445,6 @@ echo "$as_me: error: conditional \"HasLZW\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
-if test -z "${WITH_PERL_TRUE}" && test -z "${WITH_PERL_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"WITH_PERL\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"WITH_PERL\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
-if test -z "${WITH_PERL_STATIC_TRUE}" && test -z "${WITH_PERL_STATIC_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"WITH_PERL_STATIC\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"WITH_PERL_STATIC\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
-if test -z "${WITH_PERL_DYNAMIC_TRUE}" && test -z "${WITH_PERL_DYNAMIC_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"WITH_PERL_DYNAMIC\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"WITH_PERL_DYNAMIC\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
 if test -z "${WITH_MAGICK_PLUS_PLUS_TRUE}" && test -z "${WITH_MAGICK_PLUS_PLUS_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"WITH_MAGICK_PLUS_PLUS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -29590,6 +29575,27 @@ if test -z "${HasTXT2HTML_TRUE}" && test -z "${HasTXT2HTML_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"HasTXT2HTML\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"HasTXT2HTML\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${WITH_PERL_TRUE}" && test -z "${WITH_PERL_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"WITH_PERL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"WITH_PERL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${WITH_PERL_STATIC_TRUE}" && test -z "${WITH_PERL_STATIC_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"WITH_PERL_STATIC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"WITH_PERL_STATIC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${WITH_PERL_DYNAMIC_TRUE}" && test -z "${WITH_PERL_DYNAMIC_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"WITH_PERL_DYNAMIC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"WITH_PERL_DYNAMIC\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -30188,12 +30194,6 @@ s,@MAINT@,$MAINT,;t t
 s,@HasLZW_TRUE@,$HasLZW_TRUE,;t t
 s,@HasLZW_FALSE@,$HasLZW_FALSE,;t t
 s,@PERL_MAKE_OPTIONS@,$PERL_MAKE_OPTIONS,;t t
-s,@WITH_PERL_TRUE@,$WITH_PERL_TRUE,;t t
-s,@WITH_PERL_FALSE@,$WITH_PERL_FALSE,;t t
-s,@WITH_PERL_STATIC_TRUE@,$WITH_PERL_STATIC_TRUE,;t t
-s,@WITH_PERL_STATIC_FALSE@,$WITH_PERL_STATIC_FALSE,;t t
-s,@WITH_PERL_DYNAMIC_TRUE@,$WITH_PERL_DYNAMIC_TRUE,;t t
-s,@WITH_PERL_DYNAMIC_FALSE@,$WITH_PERL_DYNAMIC_FALSE,;t t
 s,@LIBSTDCLDFLAGS@,$LIBSTDCLDFLAGS,;t t
 s,@MODULE_EXTRA_CPPFLAGS@,$MODULE_EXTRA_CPPFLAGS,;t t
 s,@LIBRARY_EXTRA_CPPFLAGS@,$LIBRARY_EXTRA_CPPFLAGS,;t t
@@ -30317,6 +30317,12 @@ s,@GSPSDevice@,$GSPSDevice,;t t
 s,@GSColorDevice@,$GSColorDevice,;t t
 s,@GSEPSDevice@,$GSEPSDevice,;t t
 s,@PERL@,$PERL,;t t
+s,@WITH_PERL_TRUE@,$WITH_PERL_TRUE,;t t
+s,@WITH_PERL_FALSE@,$WITH_PERL_FALSE,;t t
+s,@WITH_PERL_STATIC_TRUE@,$WITH_PERL_STATIC_TRUE,;t t
+s,@WITH_PERL_STATIC_FALSE@,$WITH_PERL_STATIC_FALSE,;t t
+s,@WITH_PERL_DYNAMIC_TRUE@,$WITH_PERL_DYNAMIC_TRUE,;t t
+s,@WITH_PERL_DYNAMIC_FALSE@,$WITH_PERL_DYNAMIC_FALSE,;t t
 s,@MAGICKLIB@,$MAGICKLIB,;t t
 s,@DELEGATES@,$DELEGATES,;t t
 s,@MAGICK_DEP_LIBS@,$MAGICK_DEP_LIBS,;t t
