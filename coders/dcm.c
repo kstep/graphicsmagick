@@ -18,7 +18,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
+%  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
 %  to making software imaging solutions freely available.                     %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
@@ -712,7 +712,7 @@ static const DicomInfo
     { 0x0018, 0x5210, (char *) "DS", (char *) "Image Transformation Matrix" },
     { 0x0018, 0x5212, (char *) "DS", (char *) "Image Translation Vector" },
     { 0x0018, 0x6000, (char *) "DS", (char *) "Sensitivity" },
-    { 0x0018, 0x6011, (char *) "SQ", (char *) "Sequence of Ultrasound Regions" },
+    { 0x0018, 0x6011, (char *) "IS", (char *) "Sequence of Ultrasound Regions" },
     { 0x0018, 0x6012, (char *) "US", (char *) "Region Spatial Format" },
     { 0x0018, 0x6014, (char *) "US", (char *) "Region Data Type" },
     { 0x0018, 0x6016, (char *) "UL", (char *) "Region Flags" },
@@ -725,9 +725,9 @@ static const DicomInfo
     { 0x0018, 0x6024, (char *) "US", (char *) "Physical Units X Direction" },
     { 0x0018, 0x6026, (char *) "US", (char *) "Physical Units Y Direction" },
     { 0x0018, 0x6028, (char *) "FD", (char *) "Reference Pixel Physical Value X" },
-    { 0x0018, 0x602a, (char *) "FD", (char *) "Reference Pixel Physical Value Y" },
-    { 0x0018, 0x602c, (char *) "FD", (char *) "Physical Delta X" },
-    { 0x0018, 0x602e, (char *) "FD", (char *) "Physical Delta Y" },
+    { 0x0018, 0x602a, (char *) "US", (char *) "Reference Pixel Physical Value Y" },
+    { 0x0018, 0x602c, (char *) "US", (char *) "Physical Delta X" },
+    { 0x0018, 0x602e, (char *) "US", (char *) "Physical Delta Y" },
     { 0x0018, 0x6030, (char *) "UL", (char *) "Transducer Frequency" },
     { 0x0018, 0x6031, (char *) "CS", (char *) "Transducer Type" },
     { 0x0018, 0x6032, (char *) "UL", (char *) "Pulse Repetition Frequency" },
@@ -2843,7 +2843,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               quantum=2;
               datum=datum/2;
-              length=datum;
+              length=(size_t) datum;
               break;
             }
             case 4:
@@ -2867,7 +2867,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (strcmp(implicit_vr,"xs") != 0)
               {
                 quantum=1;
-                length=datum;
+                length=(size_t) datum;
+                if (datum == -1)
+                  length=8;
               }
             else
               if ((strcmp(implicit_vr,"FL") == 0) ||
@@ -2878,7 +2880,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                   quantum=2;
                   datum=datum/2;
-                  length=datum;
+                  length=(size_t) datum;
                 }
       }
     if (image_info->verbose)
@@ -3083,7 +3085,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             p=data;
             for (i=0; i < (long) image->colors; i++)
             {
-              index=ValidateColormapIndex(image,*p | *(p+1) << 8);
+              index=(*p | *(p+1) << 8);
               if (element == 0x1201)
                 image->colormap[i].red=XDownscale(index);
               if (element == 0x1202)

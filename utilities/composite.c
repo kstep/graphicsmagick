@@ -216,6 +216,8 @@ static unsigned int CompositeImages(ImageInfo *image_info,
       /*
         Create mattes for dissolve.
       */
+      composite_image->storage_class=DirectClass;
+      composite_image->matte=True;
       for (y=0; y < (long) composite_image->rows; y++)
       {
         q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
@@ -233,7 +235,6 @@ static unsigned int CompositeImages(ImageInfo *image_info,
         if (!SyncImagePixels(composite_image))
           break;
       }
-      SetImageType(composite_image,TrueColorMatteType);
     }
   if (option_info->compose == DisplaceCompositeOp)
     (void) CloneString(&composite_image->geometry,

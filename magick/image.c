@@ -1545,11 +1545,11 @@ MagickExport unsigned int CompositeImage(Image *image,
             case DissolveCompositeOp:
             {
               q->red=(Quantum) ((unsigned long) ((pixel.opacity*pixel.red+
-                (MaxRGB-q->opacity)*q->red)/MaxRGB));
+                (MaxRGB-pixel.opacity)*q->red)/MaxRGB));
               q->green=(Quantum) ((unsigned long) ((pixel.opacity*pixel.green+
-                (MaxRGB-q->opacity)*q->green)/MaxRGB));
+                (MaxRGB-pixel.opacity)*q->green)/MaxRGB));
               q->blue=(Quantum) ((unsigned long) ((pixel.opacity*pixel.blue+
-                (MaxRGB-q->opacity)*q->blue)/MaxRGB));
+                (MaxRGB-pixel.opacity)*q->blue)/MaxRGB));
               q->opacity=OpaqueOpacity;
               break;
             }

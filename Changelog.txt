@@ -1,3 +1,8 @@
+2001-12-07  Cristy  <cristy@mystic.es.dupont.com>
+	* -dissolve wasn't working for the composite program (thanks to
+	  Rick Manbry).
+	* DCM coder failed to read a valid DCM image file.
+
 2001-12-06  Cristy  <cristy@mystic.es.dupont.com>
 	* Stream buffer was not being freed in ReadStream().
 
