@@ -1771,6 +1771,7 @@ static unsigned int ModifyCache(Image *image)
   *clone_image=(*image);
   GetCacheInfo(&image->cache);
   length=clone_image->columns*sizeof(PixelPacket);
+  p=AcquireImagePixels(clone_image,0,y,image->columns,1,&image->exception);
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(clone_image,0,y,image->columns,1,&image->exception);
@@ -1790,8 +1791,9 @@ static unsigned int ModifyCache(Image *image)
   /*
     Restore nexus.
   */
-  p=AcquireImagePixels(clone_image,region.x,region.y,region.width,region.height,
-    &image->exception);
+  if ((region.width != 0) && (region.height != 0))
+    p=AcquireImagePixels(clone_image,region.x,region.y,region.width,
+      region.height,&image->exception);
   LiberateMemory((void **) &clone_image);
   LiberateSemaphoreInfo(&cache_info->semaphore);
   if ((p == (const PixelPacket *) NULL) || (y < (long) image->rows))
