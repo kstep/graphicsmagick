@@ -1886,7 +1886,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
         {
           if (image->blob->mapped)
             return(0);
-          image->blob->quantum<<=1; 
+          image->blob->quantum<<=1;
           image->blob->extent+=length+image->blob->quantum;
           ReacquireMemory((void **) &image->blob->data,image->blob->extent+1);
           (void) SyncBlob(image);
