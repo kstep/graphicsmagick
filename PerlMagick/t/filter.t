@@ -173,7 +173,7 @@ testFilter('input.miff', 'Raise',
 ++$test;
 testFilter('input.miff', 'Resize',
   q/50%/,
-  'e37ea53b8e167838add16e4a46be3689150df6b8d496da15ec41bee74d2fb9f1',
+  'ddf4132b3fd9c097c4390428ee18f3eb45f99aa2d9046702d980980cad3e0e57',
   'f401a1f40401518dce6a77ef250c8b63cab0b22087176aa7570cbbf230b3c82d');
 
 ++$test;
