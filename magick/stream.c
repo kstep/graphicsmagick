@@ -250,6 +250,14 @@ static void DestroyPixelStream(Image *image)
   assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
+  AcquireSemaphoreInfo(&stream_info->semaphore);
+  stream_info->reference_count--;
+  if (stream_info->reference_count > 0)
+    {
+      LiberateSemaphoreInfo(&stream_info->semaphore);
+      return;
+    }
+  LiberateSemaphoreInfo(&stream_info->semaphore);
   if (stream_info->pixels != (PixelPacket *) NULL)
     LiberateMemory((void **) &stream_info->pixels);
   LiberateMemory((void **) &stream_info);
