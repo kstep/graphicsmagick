@@ -187,7 +187,7 @@ int main(int argc,char **argv)
 #define NotInitialized  (unsigned int) (~0)
 
   char
-    *displacement_geometry,
+    *displace_geometry,
     *filename,
     *geometry,
     *option,
@@ -266,7 +266,7 @@ int main(int argc,char **argv)
   dissolve=0.0;
   compose=CopyCompositeOp;
   composite_image=(Image *) NULL;
-  displacement_geometry=(char *) NULL;
+  displace_geometry=(char *) NULL;
   GetExceptionInfo(&exception);
   geometry=(char *) NULL;
   gravity=NorthWestGravity;
@@ -295,9 +295,9 @@ int main(int argc,char **argv)
         */
         filename=argv[i];
         (void) strcpy(image_info->filename,filename);
-        if (image == (Image *) NULL)
+        if (composite_image == (Image *) NULL)
           {
-            image=ReadImage(image_info,&exception);
+            composite_image=ReadImage(image_info,&exception);
             if (exception.severity != UndefinedException)
               MagickWarning(exception.severity,exception.reason,
                 exception.description);
@@ -305,9 +305,9 @@ int main(int argc,char **argv)
           }
         if (mask_image != (Image *) NULL)
           MagickError(OptionError,"input images already specified",filename);
-        if (composite_image == (Image *) NULL)
+        if (image == (Image *) NULL)
           {
-            composite_image=ReadImage(image_info,&exception);
+            image=ReadImage(image_info,&exception);
             if (exception.severity != UndefinedException)
               MagickWarning(exception.severity,exception.reason,
                 exception.description);
@@ -458,6 +458,8 @@ int main(int argc,char **argv)
                     compose=CopyBlueCompositeOp;
                   if (LocaleCompare("CopyOpacity",option) == 0)
                     compose=CopyOpacityCompositeOp;
+                  if (LocaleCompare("Clear",option) == 0)
+                    compose=ClearCompositeOp;
                   if (compose == UndefinedCompositeOp)
                     MagickError(OptionError,"Invalid compose type",option);
                 }
@@ -527,13 +529,13 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("displace",option+1) == 0)
             {
-              CloneString(&displacement_geometry,(char *) NULL);
+              CloneString(&displace_geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&displacement_geometry,argv[i]);
+                  (void) CloneString(&displace_geometry,argv[i]);
                   compose=DisplaceCompositeOp;
                 }
               break;
@@ -1004,8 +1006,6 @@ int main(int argc,char **argv)
       /*
         Create mattes for dissolve.
       */
-      if (!composite_image->matte)
-        SetImageOpacity(image,OpaqueOpacity);
       for (y=0; y < (int) composite_image->rows; y++)
       {
         q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
@@ -1013,15 +1013,20 @@ int main(int argc,char **argv)
           break;
         for (x=0; x < (int) composite_image->columns; x++)
         {
-          q->opacity=(Quantum) (((MaxRGB-q->opacity)*dissolve)/100);
+          if (composite_image->matte)
+            q->opacity=(Quantum) (((MaxRGB-q->opacity)*dissolve)/100);
+          else
+            q->opacity=(Quantum) ((MaxRGB*dissolve)/100);
           q++;
         }
         if (!SyncImagePixels(composite_image))
           break;
       }
+      composite_image->storage_class=DirectClass;
+      composite_image->matte=True;
     }
   if (compose == DisplaceCompositeOp)
-    CloneString(&composite_image->geometry,displacement_geometry);
+    CloneString(&composite_image->geometry,displace_geometry);
   if (compose == ModulateCompositeOp)
     CloneString(&composite_image->geometry,watermark_geometry);
   if (compose == ThresholdCompositeOp)
@@ -1123,7 +1128,7 @@ int main(int argc,char **argv)
               y+=height-composite_image->rows;
               break;
             }
-           case SouthEastGravity:
+            case SouthEastGravity:
             {
               x+=width-composite_image->columns;
               y+=height-composite_image->rows;
