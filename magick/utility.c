@@ -1724,13 +1724,13 @@ MagickExport int ParseGeometry(const char *geometry,long *x,long *y,
       if (*p == '-')
         {
           p++;
-          bounds.x=(-strtod(p,&p));
+          bounds.x=(long) (-strtod(p,&p));
           mask|=XNegative;
         }
       else
         {
           p++;
-          bounds.x=strtod(p,&p);
+          bounds.x=(long) strtod(p,&p);
         }
       mask|=XValue;
       if ((*p == '+') || (*p == '-'))
@@ -1741,13 +1741,13 @@ MagickExport int ParseGeometry(const char *geometry,long *x,long *y,
           if (*p == '-')
             {
               p++;
-              bounds.y=(-strtod(p,&p));
+              bounds.y=(long) (-strtod(p,&p));
               mask|=YNegative;
             }
           else
             {
               p++;
-              bounds.y=strtod(p,&p);
+              bounds.y=(long) strtod(p,&p);
             }
           mask|=YValue;
         }
