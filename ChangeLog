@@ -11,7 +11,7 @@
 
 2002-02-18  Cristy  <cristy@mystic.es.dupont.com>
   * Fixed memory overrun with -format option of the mogrify program.
-	* Labels were not positioned correctly rectly for VID format.
+  * Labels were not positioned correctly for VID format.
 
 2002-02-16  Cristy  <cristy@mystic.es.dupont.com>
   * Replaced -copy/-replace options with +/-write in the convert program.
