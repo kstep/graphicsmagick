@@ -445,7 +445,7 @@ MagickExport void *mmap(char *address,size_t length,int protection,int access,
         length,0);
       if (!handle)
         break;
-      map=(void *) MapViewOfFile(handle,FILE_MAP_READ,0,0,length);
+      map=(void *) MapViewOfFile(handle,FILE_MAP_READ,0,offset,length);
       CloseHandle(handle);
       break;
     }
@@ -455,7 +455,7 @@ MagickExport void *mmap(char *address,size_t length,int protection,int access,
         length,0);
       if (!handle)
         break;
-      map=(void *) MapViewOfFile(handle,FILE_MAP_WRITE,0,0,length);
+      map=(void *) MapViewOfFile(handle,FILE_MAP_WRITE,0,offset,length);
       CloseHandle(handle);
       break;
     }
@@ -465,14 +465,14 @@ MagickExport void *mmap(char *address,size_t length,int protection,int access,
         length,0);
       if (!handle)
         break;
-      map=(void *) MapViewOfFile(handle,FILE_MAP_ALL_ACCESS,0,0,length);
+      map=(void *) MapViewOfFile(handle,FILE_MAP_ALL_ACCESS,0,offset,length);
       CloseHandle(handle);
       break;
     }
   }
   if (map == (void *) NULL)
     return((void *) MAP_FAILED);
-  return((void *) ((char *) map+offset));
+  return((void *) ((char *) map));
 }
 
 /*
