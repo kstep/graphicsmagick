@@ -213,75 +213,6 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
       DestroyImage(annotate_image);
       (void) strcpy(label+j,"...");
     }
-    /*
-      Composite text onto the image.
-    */
-    switch (local_info->gravity)
-    {
-      case NorthWestGravity:
-      {
-        local_info->bounds.x=x;
-        local_info->bounds.y=i*local_info->bounds.height+y;
-        break;
-      }
-      case NorthGravity:
-      {
-        local_info->bounds.x=(width >> 1)-(annotate_image->columns >> 1)+x;
-        local_info->bounds.y=i*local_info->bounds.height+y;
-        break;
-      }
-      case NorthEastGravity:
-      {
-        local_info->bounds.x=width-annotate_image->columns+x;
-        local_info->bounds.y=i*local_info->bounds.height+y;
-        break;
-      }
-      case WestGravity:
-      {
-        local_info->bounds.x=x;
-        local_info->bounds.y=(height >> 1)-
-          (number_lines*local_info->bounds.height >> 1)+
-          i*local_info->bounds.height+y;
-        break;
-      }
-      case ForgetGravity:
-      case StaticGravity:
-      case CenterGravity:
-      default:
-      {
-        local_info->bounds.x=(width >> 1)-(annotate_image->columns >> 1)+x;
-        local_info->bounds.y=(height >> 1)-
-          (number_lines*local_info->bounds.height >> 1)+
-          i*local_info->bounds.height+y;
-        break;
-      }
-      case EastGravity:
-      {
-        local_info->bounds.x=width-annotate_image->columns-x;
-        local_info->bounds.y=(height >> 1)-
-          (number_lines*local_info->bounds.height >> 1)+
-          i*local_info->bounds.height-y;
-        break;
-      }
-      case SouthWestGravity:
-      {
-        local_info->bounds.x=x;
-        local_info->bounds.y=height-(i+1)*local_info->bounds.height-y;
-        break;
-      }
-      case SouthGravity:
-      {
-        local_info->bounds.x=(width >> 1)-(annotate_image->columns >> 1)-x;
-        local_info->bounds.y=height-(i+1)*local_info->bounds.height-y;
-        break;
-      }
-      case SouthEastGravity:
-      {
-        local_info->bounds.x=width-annotate_image->columns-x;
-        local_info->bounds.y=height-(i+1)*local_info->bounds.height-y;
-        break;
-      }
-    }
     if (local_info->image_info->box != (char *) NULL)
       {
         /*
@@ -313,13 +244,79 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
             DestroyImage(annotate_image);
             annotate_image=rotated_image;
           }
+        local_info->bounds.height=annotate_image->rows;
       }
+    /*
+      Composite text onto the image.
+    */
+    switch (local_info->gravity)
+    {
+      case NorthWestGravity:
+      {
+        local_info->bounds.x=x;
+        local_info->bounds.y=i*local_info->bounds.height+y;
+        break;
+      }
+      case NorthGravity:
+      {
+        local_info->bounds.x=(width/2)-(annotate_image->columns/2)+x;
+        local_info->bounds.y=i*local_info->bounds.height+y;
+        break;
+      }
+      case NorthEastGravity:
+      {
+        local_info->bounds.x=width-annotate_image->columns+x;
+        local_info->bounds.y=i*local_info->bounds.height+y;
+        break;
+      }
+      case WestGravity:
+      {
+        local_info->bounds.x=x;
+        local_info->bounds.y=(height/2)-(number_lines*
+          local_info->bounds.height/2)+i*local_info->bounds.height+y;
+        break;
+      }
+      case ForgetGravity:
+      case StaticGravity:
+      case CenterGravity:
+      default:
+      {
+        local_info->bounds.x=(width/2)-(annotate_image->columns/2)+x;
+        local_info->bounds.y=(height/2)-(number_lines*
+          local_info->bounds.height/2)+i*local_info->bounds.height+y;
+        break;
+      }
+      case EastGravity:
+      {
+        local_info->bounds.x=width-annotate_image->columns-x;
+        local_info->bounds.y=(height/2)-(number_lines*
+          local_info->bounds.height/2)+i*local_info->bounds.height-y;
+        break;
+      }
+      case SouthWestGravity:
+      {
+        local_info->bounds.x=x;
+        local_info->bounds.y=height-(i+1)*local_info->bounds.height-y;
+        break;
+      }
+      case SouthGravity:
+      {
+        local_info->bounds.x=(width/2)-(annotate_image->columns/2)-x;
+        local_info->bounds.y=height-(i+1)*local_info->bounds.height-y;
+        break;
+      }
+      case SouthEastGravity:
+      {
+        local_info->bounds.x=width-annotate_image->columns-x;
+        local_info->bounds.y=height-(i+1)*local_info->bounds.height-y;
+        break;
+      }
+    }
     CompositeImage(image,AnnotateCompositeOp,annotate_image,
       local_info->bounds.x,local_info->bounds.y);
     DestroyImage(annotate_image);
   }
-/*  DestroyAnnotateInfo(local_info);*/
-  FreeMemory(local_info);
+  DestroyAnnotateInfo(local_info);
   FreeMemory(text);
   for ( ; textlist[i] != (char *) NULL; i++)
     FreeMemory(textlist[i]);
