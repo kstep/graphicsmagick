@@ -180,10 +180,11 @@ typedef enum
   XNegative = 0x0010,
 #undef YNegative
   YNegative = 0x0020,
+  PercentValue = 0x1000,
   AspectValue = 0x2000,
-  GreaterValue = 0x8000,
   LessValue = 0x4000,
-  PercentValue = 0x1000
+  GreaterValue = 0x8000,
+  AreaValue = 0x10000
 } GeometryFlags;
 
 typedef enum

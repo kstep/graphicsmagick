@@ -4925,6 +4925,7 @@ MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
   unsigned int *width,unsigned int *height)
 {
   int
+    count,
     delta,
     flags;
 
@@ -4952,9 +4953,6 @@ MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
   flags=GetGeometry(geometry,x,y,width,height);
   if (flags & PercentValue)
     {
-      int
-        count;
-
       double
         x_scale,
         y_scale;
@@ -4971,6 +4969,29 @@ MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
         y_scale=x_scale;
       *width=Max((unsigned int) ((x_scale*former_width)/100.0),1);
       *height=Max((unsigned int) ((y_scale*former_height)/100.0),1);
+      former_width=(*width);
+      former_height=(*height);
+    }
+  if (flags & AreaValue)
+    {
+      double
+        distance,
+        x_area,
+        y_area;
+
+      /*
+        Geometry is a maximum area in pixels.
+      */
+      x_area=(*width);
+      y_area=(*height);
+      count=sscanf(geometry,"%lf%%x%lf",&x_area,&y_area);
+      if (count != 2)
+        count=sscanf(geometry,"%lfx%lf",&x_area,&y_area);
+      if (count == 1)
+        y_area=x_area;
+      distance=sqrt((double) former_width*former_height);
+      *width=(unsigned int) (former_width/(distance/x_area));
+      *height=(unsigned int) (former_height/(distance/y_area));
       former_width=(*width);
       former_height=(*height);
     }

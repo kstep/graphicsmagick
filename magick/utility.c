@@ -853,6 +853,12 @@ MagickExport int GetGeometry(const char *image_geometry,int *x,int *y,
           (void) strcpy(p,p+1);
           break;
         }
+        case '@':
+        {
+          flags|=AreaValue;
+          (void) strcpy(p,p+1);
+          break;
+        }
         default:
           p++;
       }
