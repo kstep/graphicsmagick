@@ -364,6 +364,16 @@ static unsigned int ReadConfigurationFile(const char *basename,
           }
         break;
       }
+      case 'E':
+      case 'e':
+      {
+        if (LocaleCompare((char *) keyword,"encoding") == 0)
+          {
+            type_list->encoding=AllocateString(token);
+            break;
+          }
+        break;
+      }
       case 'F':
       case 'f':
       {

@@ -82,6 +82,7 @@ typedef struct _DrawInfo
 
   char
     *font,
+    *encoding,
     *density;
 
   PixelPacket
@@ -122,7 +123,8 @@ typedef struct _TypeInfo
     *weight,
     *glyphs,
     *metrics,
-    *version;
+    *version,
+    *encoding;
 
   struct _TypeInfo
     *previous,

@@ -634,6 +634,9 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
     (void) CloneString(&clone_info->font,image_info->filename);
   else
     (void) CloneString(&clone_info->font,image_info->filename+1);
+  if ((type_info != (const TypeInfo *) NULL) &&
+      (type_info->encoding != (char *) NULL))
+    (void) CloneString(&clone_info->encoding,type_info->encoding);
   if (LocaleCompare(image_info->magick,"PS") == 0)
     status=RenderPostscript(image,clone_info,offset,render,metrics);
   else
@@ -1152,6 +1155,33 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         draw_info->font);
     (void) strncpy(font,draw_info->font,MaxTextExtent-1);
   }
+  if (draw_info->encoding != (char *) NULL)
+    {
+      if (LocaleCompare(draw_info->encoding,"Adobe Custom") == 0)
+        FT_Select_Charmap(face,ft_encoding_adobe_custom);
+      if (LocaleCompare(draw_info->encoding,"Adobe Expert") == 0)
+        FT_Select_Charmap(face,ft_encoding_adobe_expert);
+      if (LocaleCompare(draw_info->encoding,"Adobe Standard") == 0)
+        FT_Select_Charmap(face,ft_encoding_adobe_standard);
+      if (LocaleCompare(draw_info->encoding,"Apple Roman") == 0)
+        FT_Select_Charmap(face,ft_encoding_apple_roman);
+      if (LocaleCompare(draw_info->encoding,"BIG5") == 0)
+        FT_Select_Charmap(face,ft_encoding_big5);
+      if (LocaleCompare(draw_info->encoding,"GB2312") == 0)
+        FT_Select_Charmap(face,ft_encoding_gb2312);
+      if (LocaleCompare(draw_info->encoding,"Latin 2") == 0)
+        FT_Select_Charmap(face,ft_encoding_latin_2);
+      if (LocaleCompare(draw_info->encoding,"None") == 0)
+        FT_Select_Charmap(face,ft_encoding_none);
+      if (LocaleCompare(draw_info->encoding,"SJIS") == 0)
+        FT_Select_Charmap(face,ft_encoding_sjis);
+      if (LocaleCompare(draw_info->encoding,"Symbol") == 0)
+        FT_Select_Charmap(face,ft_encoding_symbol);
+      if (LocaleCompare(draw_info->encoding,"Unicode") == 0)
+        FT_Select_Charmap(face,ft_encoding_unicode);
+      if (LocaleCompare(draw_info->encoding,"Wansung") == 0)
+        FT_Select_Charmap(face,ft_encoding_wansung);
+    }
   /*
     Set text size.
   */

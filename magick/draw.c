@@ -206,6 +206,9 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     clone_info->geometry=AllocateString(draw_info->geometry);
   if (draw_info->font != (char *) NULL)
     clone_info->font=AllocateString(draw_info->font);
+  if (draw_info->encoding != (char *) NULL)
+    clone_info->encoding=AllocateString(draw_info->encoding);
+  if (draw_info->density != (char *) NULL)
   if (draw_info->density != (char *) NULL)
     clone_info->density=AllocateString(draw_info->density);
   if (draw_info->tile != (Image *) NULL)
@@ -950,6 +953,8 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     LiberateMemory((void **) &draw_info->geometry);
   if (draw_info->font != (char *) NULL)
     LiberateMemory((void **) &draw_info->font);
+  if (draw_info->encoding != (char *) NULL)
+    LiberateMemory((void **) &draw_info->encoding);
   if (draw_info->density != (char *) NULL)
     LiberateMemory((void **) &draw_info->density);
   if (draw_info->tile != (Image *) NULL)
