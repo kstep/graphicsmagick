@@ -57,8 +57,8 @@ Source: "bin\montage.exe"; DestDir: "{app}"
 Source: "bin\mpeg2dec.exe"; DestDir: "{app}"
 Source: "bin\mpeg2enc.exe"; DestDir: "{app}"
 ; DLLs
-Source: "bin\CORE_*.dll"; DestDir: "{app}"
-Source: "bin\IM_MOD_*.dll"; DestDir: "{app}"
+Source: "bin\CORE_RL*.dll"; DestDir: "{app}"
+Source: "bin\IM_MOD_RL*.dll"; DestDir: "{app}"
 Source: "bin\X11.dll"; DestDir: "{app}"
 Source: "bin\Xext.dll"; DestDir: "{app}"
 ; Configuration files
