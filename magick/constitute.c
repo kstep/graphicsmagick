@@ -1677,8 +1677,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         }
       for (x=0; x < (long) image->columns; x++)
       {
-        index=PushColormapIndex(image,
-          (Downscale(*p) << 8) | Downscale(*(p+1)));
+        index=PushColormapIndex(image,(*p << 8) | *(p+1));
         *indexes++=index;
         *q=image->colormap[index];
         p+=2;
