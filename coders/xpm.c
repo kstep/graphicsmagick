@@ -210,12 +210,11 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i;
 
   unsigned int
-    length,
-    status,
-    width;
+    status;
 
   unsigned long
-    colors;
+    length,
+		width;
 
   /*
     Open image file.
@@ -258,34 +257,27 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   for (p=xpm_buffer; *p != '\0'; p++)
   {
-    if ((*p == '"') || (*p == '\''))
-      {
-        if (*p == '"')
-          {
-            for (p++; *p != '\0'; p++)
-              if ((*p == '"') && (*(p-1) != '\\'))
-                break;
-          }
-        else
-          for (p++; *p != '\0'; p++)
-            if ((*p == '\'') && (*(p-1) != '\\'))
-              break;
-        if (*p == '\0')
-          break;
-        continue;
-      }
-    if ((*p != '/') || (*(p+1) != '*'))
+    if (*p != '"')
       continue;
-    for (q=p+2; *q != '\0'; q++)
-      if ((*q == '*') && (*(q+1) == '/'))
-        break;
-    (void) strcpy(p,q+2);
+    count=sscanf(p+1,"%lu %lu %lu %lu",&image->columns,&image->rows,
+      &image->colors,&width);
+    if (count == 4)
+      break;
   }
+  if ((count != 4) || (width > 2) || (image->columns == 0) ||
+      (image->rows == 0) || (image->colors == 0))
+    {
+      for (i=0; textlist[i] != (char *) NULL; i++)
+        LiberateMemory((void **) &textlist[i]);
+      LiberateMemory((void **) &textlist);
+      ThrowReaderException(CorruptImageWarning,"Not a XPM image file",image)
+    }
+  image->depth=8;
   /*
     Remove unquoted characters.
   */
   i=0;
-  for (p=xpm_buffer; *p != '\0'; p++)
+  for ( ; *p != '\0'; p++)
   {
     if (*p != '"')
       continue;
@@ -302,21 +294,6 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LiberateMemory((void **) &xpm_buffer);
   if (textlist == (char **) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  /*
-    Read hints.
-  */
-  count=sscanf(textlist[0],"%lu %lu %lu %u",&image->columns,&image->rows,
-    &colors,&width);
-  image->colors=colors;
-  if ((count != 4) || (width > 2) || (image->columns == 0) ||
-      (image->rows == 0) || (image->colors == 0))
-    {
-      for (i=0; textlist[i] != (char *) NULL; i++)
-        LiberateMemory((void **) &textlist[i]);
-      LiberateMemory((void **) &textlist);
-      ThrowReaderException(CorruptImageWarning,"Not a XPM image file",image)
-    }
-  image->depth=8;
   /*
     Initialize image structure.
   */
