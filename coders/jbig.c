@@ -444,7 +444,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
       SetImageType(image,BilevelType);
     polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
     if (image->colors == 2)
-      polarity=PixelIntensityToQuantum(&image->colormap[0]) <
+      polarity=PixelIntensityToQuantum(&image->colormap[0]) >
         PixelIntensityToQuantum(&image->colormap[1]);
     q=pixels;
     for (y=0; y < (long) image->rows; y++)

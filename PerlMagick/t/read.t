@@ -104,7 +104,7 @@ testRead( 'NULL:DarkOrange',
 print("Portable bitmap format (black and white), ASCII format ...\n");
 ++$test;
 testRead( 'input_p1.pbm',
-  'b48bcf7d93cc31a8deb3026d872f1bb0a300b0f4e177423e5301adc638179e4');
+  '2b48bcf7d93cc31a8deb3026d872f1bb0a300b0f4e177423e5301adc638179e4');
 
 print("Portable bitmap format (black and white), binary format ...\n");
 ++$test;

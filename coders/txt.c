@@ -398,13 +398,13 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
       {
         if (image->matte)
           {
-            FormatString(buffer,"%ld,%ld: %u,%u,%u,%u",x,y,
+            FormatString(buffer,"%ld,%ld: %u,%u,%u,%u ",x,y,
               p->red,p->green,p->blue,p->opacity);
             (void) WriteBlobString(image,buffer);
           }
         else
           {
-            FormatString(buffer,"%ld,%ld: %u,%u,%u",x,y,
+            FormatString(buffer,"%ld,%ld: %u,%u,%u ",x,y,
               p->red,p->green,p->blue);
             (void) WriteBlobString(image,buffer);
             (void) QueryColorname(image,p,SVGCompliance,buffer,
