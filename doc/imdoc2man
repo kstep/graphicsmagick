@@ -4,7 +4,7 @@
 
 echo ".TH $1 1 \"Date: 2003/01/01 01:00:00\" \"ImageMagick\""
 
-/bin/sed  "
+/usr/bin/sed  "
    : begin
      /<imdoc>/d
      /<\/imdoc>/d

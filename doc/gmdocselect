@@ -8,7 +8,7 @@
 # To select all utilities, use imdocselect . options.imdoc > all.imdoc
 
 
-/bin/sed "
+/usr/bin/sed "
        /<gm>/d
        /<\/gm>/d
        s/    composite/    gm composite/
@@ -39,7 +39,7 @@
        " $3 | \
               \
               \
-/bin/sed "
+/usr/bin/sed "
      : begin
 
        /<imdoc>/d
@@ -103,4 +103,4 @@
        d
      " |         \
                     \
-/bin/sed "/!DELETE!/d"
+/usr/bin/sed "/!DELETE!/d"
