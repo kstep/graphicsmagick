@@ -425,6 +425,12 @@ inline Magick::Color::Color ( PixelPacket* rep_, PixelType pixelType_  )
 {
 }
 
+// Return ImageMagick PixelPacket struct based on color.
+inline Magick::Color::operator MagickLib::PixelPacket () const
+{
+  return *_pixel;
+}
+
 // Destructor
 inline Magick::Color::~Color( void )
 {

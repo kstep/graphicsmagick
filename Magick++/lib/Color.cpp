@@ -191,13 +191,6 @@ const Magick::Color& Magick::Color::operator= ( const MagickLib::PixelPacket &co
   return *this;
 }
 
-// Return ImageMagick PixelPacket struct based on color.
-Magick::Color::operator MagickLib::PixelPacket () const
-{
-  return *_pixel;
-}
-
-
 //
 // ColorHSL Implementation
 //

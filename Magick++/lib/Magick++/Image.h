@@ -304,7 +304,7 @@ namespace Magick
     // Floodfill designated area with replacement opacity value
     void            matteFloodfill ( const Color &target_ ,
 				     const unsigned int opacity_,
-				     const long x_, const long y_,
+				     const int x_, const int y_,
 				     const PaintMethod method_ );
 
     // Filter image by replacing each pixel component with the median
@@ -585,7 +585,7 @@ namespace Magick
     // Pixel cache threshold.  Once this threshold is exceeded, all
     // subsequent pixels cache operations are to/from disk.
     // This setting is shared by all Image objects.
-    static void     cacheThreshold ( const long threshold_ );
+    static void     cacheThreshold ( const unsigned int threshold_ );
     
     // Chromaticity blue primary point (e.g. x=0.15, y=0.06)
     void            chromaBluePrimary ( const double x_, const double y_ );

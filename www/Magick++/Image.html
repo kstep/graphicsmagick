@@ -837,7 +837,7 @@ y_, int innerBevel_ = 0, int outerBevel_ = 0</font></td>
 <center><a NAME="gaussianBlur"></a><font size=-1>gaussianBlur</font></center>
 </td>
 
-<td><font size=-1>double width_, double sigma_</font></td>
+<td><font size=-1>const double width_, const double sigma_</font></td>
 
 <td><font size=-1>Gaussian blur image. The number of neighbor pixels to
 be included in the convolution mask is specified by 'width_'.&nbsp; For
@@ -850,7 +850,7 @@ deviation of the gaussian bell curve is specified by 'sigma_'.</font></td>
 <center><a NAME="implode"></a><font size=-1>implode</font></center>
 </td>
 
-<td><font size=-1>double factor_</font></td>
+<td><font size=-1>const double factor_</font></td>
 
 <td><font size=-1>Implode image (special effect)</font></td>
 </tr>
@@ -901,8 +901,8 @@ an image file with this option.</font></td>
 <center><a NAME="matteFloodfill"></a><font size=-1>matteFloodfill</font></center>
 </td>
 
-<td><font size=-1>const <a href="Color.html">Color</a> &amp;target_, unsigned
-int&nbsp; opacity_, long x_, long y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a>
+<td><font size=-1>const <a href="Color.html">Color</a> &amp;target_, const
+unsigned int&nbsp; opacity_, const int x_, const int y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a>
 method_</font></td>
 
 <td><font size=-1>Floodfill designated area with a replacement opacity
@@ -1765,11 +1765,11 @@ is the crop bounding box used by crop(Geometry(0,0)).</font></td>
 <tr>
 <td><a NAME="cacheThreshold"></a><font size=-1>cacheThreshold</font></td>
 
-<td><font size=-1>unsigned int</font></td>
+<td><font size=-1>const unsigned int</font></td>
 
 <td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
-<td><font size=-1>unsigned int</font></td>
+<td><font size=-1>const int</font></td>
 
 <td><font size=-1>Pixel cache threshold in megabytes. Once this threshold
 is exceeded, all subsequent pixels cache operations are to/from disk. This

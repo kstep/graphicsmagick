@@ -946,20 +946,12 @@ void Magick::Image::map ( const Image &mapImage_ , const bool dither_ )
 // Floodfill designated area with replacement opacity value
 void Magick::Image::matteFloodfill ( const Color &target_ ,
 				     const unsigned int opacity_,
-				     const long x_, const long y_,
+				     const int x_, const int y_,
 				     const Magick::PaintMethod method_ )
 {
-  if ( !target_.isValid() )
-  {
-    throwExceptionExplicit( OptionError,
-			    "Target color argument is invalid" );
-  }
-
   modifyImage();
-
-  PixelPacket rllPacket = target_;
-  MatteFloodfillImage ( image(), rllPacket, opacity_,
-			x_, y_, method_ );
+  MatteFloodfillImage ( image(), static_cast<PixelPacket>(target_),
+                        opacity_, x_, y_, method_ );
   throwImageException();
 }
 
@@ -1824,7 +1816,7 @@ Magick::Color Magick::Image::boxColor ( void ) const
 // subsequent pixels cache operations are to/from disk.
 // This setting is shared by all Image objects.
 /* static */
-void Magick::Image::cacheThreshold ( const long threshold_ )
+void Magick::Image::cacheThreshold ( const unsigned int threshold_ )
 {
   SetCacheThreshold( threshold_ );
 }
