@@ -4,13 +4,13 @@
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <meta name="description" content="ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
    <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
-   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <title>ImageMagick - Image Processing and Display Package</title>
 <link rev="made" href="mailto:magick@wizards.dupont.com">
 </head>
 <body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
 
-<center><img SRC="../images/magick_small.png" width=129 height=133></center>
+<center><img SRC="../images/magick_small.png" height=133 width=129></center>
 
 <ol>
 <li>
@@ -117,6 +117,10 @@ format?</a></li>
 
 <li>
 <a href="#C28">How can I add a matte layer to my image?</a></li>
+
+<li>
+<a href="#C29">How can I&nbsp;draw with text using 'convert' under Windows
+NT?</a></li>
 </ol>
 
 <dl>
@@ -136,7 +140,7 @@ Finally, for <i>PostScript</i>, verify that Ghostscript supports the <b>pnmraw</
 or <b>ppmraw</b> device (<tt>gs -h</tt>) and that the document contains
 valid <i>PostScript</i> statements (<tt>gs image.ps</tt>).</dd>
 
-<p><br>
+<br>
 <hr size=5 width=325>
 <dt>
 <a NAME="C2"></a><b>2. How can I improve the appearance of 24-bit images
@@ -149,12 +153,10 @@ before it can be displayed. <a href="display.html">Display</a> tries to
 make the color reduced image closely resemble the original. However, there
 are some options that may improve the appearance.</dd>
 
-<br>&nbsp;
-<p>&nbsp;
-<p>You can use a private colormap. By default, your image must share colors
-with existing applications on your <i>X server</i>. The colors in your
-image may be very different than the shared colors and the results may
-be visually unsatisfactory. Try
+<p><br>You can use a private colormap. By default, your image must share
+colors with existing applications on your <i>X server</i>. The colors in
+your image may be very different than the shared colors and the results
+may be visually unsatisfactory. Try
 <pre>&nbsp;&nbsp;&nbsp; display -colormap private image.miff</pre>
 The disadvantage is the annoying colormap loading and unloading as you
 move your pointer in and out of the image window.
@@ -269,7 +271,9 @@ The default dimensions of a <i>PostScript</i> page is 612x792. If you prefer
 another default, change the page geometries in <i>magick/image.h</i> and
 recompile.</dd>
 
-<p><br>
+<br>&nbsp;
+<p>&nbsp;
+<p>
 <hr size=5 width=325>
 <dt>
 <a NAME="C9"></a><b>9. When I display or convert an image, I get
@@ -283,7 +287,9 @@ you should have at least 24mb of real memory and 48mb of virtual on your
 computer. And keep in mind processor speed as well. An image operation
 that takes 5 seconds on my 200mhz Sun Ultra may take 2 minutes on a 486pc.</dd>
 
-<p><br><b>ImageMagick</b> is designed to be general purpose. It can display
+<br>&nbsp;
+<p>&nbsp;
+<p><b>ImageMagick</b> is designed to be general purpose. It can display
 many image storage formats (<i>Monochrome</i>, <i>PseudoColor</i>, or
 <i>TrueColor</i>)
 on many different types of <i>X visuals</i> (<i>StaticGray, StaticColor,
@@ -545,7 +551,6 @@ use:</li>
 &nbsp;&nbsp;&nbsp; convert -mattecolor gray -frame 25x25+25+0 image.jpg image.gif</pre>
 </ul>
 
-<p>
 <hr size=5 width=325>
 <dt>
 <a NAME="C21"></a><b>21. I try to launch display from my window manager
@@ -615,17 +620,21 @@ individual image files?</b></dt>
 <dd>
 Use the scene embedded file format with <a href="convert.html">convert</a>:</dd>
 
-<pre>&nbsp;&nbsp;&nbsp; convert animation.gif frame%02d.gif</pre>
+<dd>
+</dd>
+
+<dd>
+&nbsp;&nbsp;&nbsp; <tt>convert animation.gif frame%02d.gif</tt></dd>
+
+<dd>
+<tt></tt></dd>
 
 <dd>
 The resulting image files are titled <tt>frame01.gif</tt>, <tt>frame02.gif</tt>,
 <tt>frame03.gif</tt>,
 etc.</dd>
 
-<br>&nbsp;
-<p>&nbsp;
-<br>&nbsp;
-<p>
+<p><br>
 <hr size=5 width=325>
 <dt>
 <a NAME="C25"></a><b>25. How can I remove the background that prints around
@@ -635,7 +644,14 @@ my image when I display it with Netscape?</b></dt>
 Use the <tt>+page</tt> option of the <a href="convert.html">convert</a>
 command:</dd>
 
-<pre>&nbsp;&nbsp;&nbsp; convert +page alpha.gif beta.gif</pre>
+<dd>
+</dd>
+
+<dd>
+&nbsp;&nbsp;&nbsp; <tt>convert +page alpha.gif beta.gif</tt></dd>
+
+<dd>
+</dd>
 
 <dd>
 GIF allows for a page offset relative to some background. The page offset
@@ -643,10 +659,7 @@ information may have been in your GIF image already or it could have been
 introduced by ImageMagick. Either way, <tt>+page</tt> removes the unwanted
 page offset and Netscape should behave as expected.</dd>
 
-<br>&nbsp;
-<p>&nbsp;
-<br>&nbsp;
-<p>
+<p><br>
 <hr size=5 width=325>
 <dt>
 <a NAME="C26"></a><b>26. How do I create a GIF image with Web safe colors?</b></dt>
@@ -655,17 +668,24 @@ page offset and Netscape should behave as expected.</dd>
 Use the <tt>-map</tt> option of the <a href="convert.html">convert</a>
 command:</dd>
 
-<pre>&nbsp;&nbsp;&nbsp; convert -map netscape: alpha.gif beta.gif</pre>
+<dd>
+</dd>
+
+<dd>
+<tt>&nbsp;&nbsp;&nbsp; convert -map netscape: alpha.gif beta.gif</tt></dd>
+
+<dd>
+<tt></tt></dd>
 
 <dd>
 Netscape predefines 216 colors for colormapped workstations. Use the above
 command to ensure only these predefined colors are used. Otherwise Netscape
 dithers your image with varying degrees of image fidelity.</dd>
 
-<br>&nbsp;
-<p>&nbsp;
-<br>&nbsp;
-<p>
+<dd>
+</dd>
+
+<br>
 <hr size=5 width=325>
 <dt>
 <a NAME="C27"></a><b>27. How come Adobe Acrobat 2.1 can't read ImageMagick's
@@ -676,8 +696,13 @@ The default PDF compression is <i>Zip</i>. You need Acrobat 3.0 and above
 to read Zip compressed PDF. Instead use no compression or LZW compression
 when you create the PDF file:</dd>
 
-<pre>&nbsp;&nbsp;&nbsp; convert +compress images.tiff image.pdf</pre>
+<dd>
+</dd>
 
+<dd>
+&nbsp;&nbsp;&nbsp; <tt>convert +compress images.tiff image.pdf</tt></dd>
+
+<br>
 <hr size=5 width=325>
 <dt>
 <a NAME="C28"></a><b>28. How can I add a matte layer to my image?</b></dt>
@@ -685,13 +710,39 @@ when you create the PDF file:</dd>
 <dd>
 One way is to use a bitmap as your transparency mask. Try</dd>
 
-<pre>&nbsp;&nbsp;&nbsp; combine -compose CopyOpacity image.gif mask.xbm transparent.gif</pre>
+<dd>
+</dd>
+
+<dd>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c<tt>ombine -compose CopyOpacity image.gif
+mask.xbm transparent.gif</tt></dd>
+
+<dd>
+<tt></tt></dd>
 
 <dd>
 Note, GIF is limited to one transparent color. If your mask has variable
 opacity, use a format like MIFF, TIFF, or PNG as you output image format.</dd>
 </dl>
 
+<hr size=5 width=325>
+<dt>
+<a NAME="C29"></a><b>29. How can I&nbsp;draw with text using 'convert'
+under Windows NT?</b></dt>
+
+<dd>
+The problem is that NT interprets the command line differently than Unix
+does, causing the documented command to fail. The following argument format
+has been reported to work correctly (all on one line):</dd>
+
+<dd>
+</dd>
+
+<dd>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>convert -font @c:/winnt/fonts/arial.ttf
+-fill blue -draw "text 10,10 'your text here'" d:\test.tif png:d:\test.png</tt></dd>
+
+<br>
 <hr>
 <p><a href="../ImageMagick.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
 Image manipulation software that works like magic.</font>
