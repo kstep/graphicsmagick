@@ -210,7 +210,8 @@ typedef struct _DrawInfo
     opacity;
 
   unsigned int
-    render;
+    render,
+    debug;  /* deprecated */
 
   unsigned long
     signature;

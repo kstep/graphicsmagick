@@ -10,6 +10,7 @@ extern "C" {
 
 typedef enum
 { 
+  UndefinedEvents = 0x0000,
   NoEvents = 0x0000,
   ConfigureEvent = 0x0001,
   AnnotateEvent = 0x0002,
