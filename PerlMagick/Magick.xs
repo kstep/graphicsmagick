@@ -1817,8 +1817,8 @@ Animate(ref,...)
         XSetErrorHandler(XError);
         resource_database=XGetResourceDatabase(display,client_name);
         XGetResourceInfo(resource_database,client_name,&resource);
-        resource.image_info=package_info->image_info;
-        resource.quantize_info=package_info->quantize_info;
+        *resource.image_info=(*package_info->image_info);
+        *resource.quantize_info=(*package_info->quantize_info);
         (void) XAnimateImages(display,&resource,&client_name,1,image);
         XCloseDisplay(display);
       }
@@ -2443,8 +2443,8 @@ Display(ref,...)
         XSetErrorHandler(XError);
         resource_database=XGetResourceDatabase(display,client_name);
         XGetResourceInfo(resource_database,client_name,&resource);
-        resource.image_info=package_info->image_info;
-        resource.quantize_info=package_info->quantize_info;
+        *resource.image_info=(*package_info->image_info);
+        *resource.quantize_info=(*package_info->quantize_info);
         resource.immutable=True;
         if (package_info->image_info->delay)
           resource.delay=atoi(package_info->image_info->delay);

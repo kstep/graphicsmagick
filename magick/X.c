@@ -3115,8 +3115,8 @@ Export void XGetResourceInfo(XrmDatabase database,char *client_name,
   */
   assert(resource_info != (XResourceInfo *) NULL);
   resource_info->resource_database=database;
-  resource_info->image_info=(ImageInfo *) NULL;
-  resource_info->quantize_info=(QuantizeInfo *) NULL;
+  resource_info->image_info=CloneImageInfo((ImageInfo *) NULL);
+  resource_info->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
   resource_info->colors=0;
   resource_info->close_server=True;
   resource_info->client_name=client_name;

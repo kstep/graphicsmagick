@@ -1917,7 +1917,7 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
       /*
         Initialize visual info.
       */
-      resource_info.visual_type="default";
+      (void) CloneString(&resource_info.visual_type,"default");
       visual_info=XBestVisualInfo(display,map_info,&resource_info);
       map_info->colormap=(Colormap) NULL;
     }
@@ -5523,7 +5523,7 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
 %
 */
 
-static char *EscapeParenthesis(char *text)
+static char *EscapeParenthesis(const char *text)
 {
   int
     escapes;
@@ -6005,8 +6005,8 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
               resource_info.close_server=False;
               resource_info.colormap=PrivateColormap;
               (void) CloneString(&resource_info.font,local_info->font);
-              resource_info.background_color="black";
-              resource_info.foreground_color="white";
+              resource_info.background_color=AllocateString("black");
+              resource_info.foreground_color=AllocateString("white");
               map_info=XAllocStandardColormap();
               if (map_info == (XStandardColormap *) NULL)
                 PrematureExit(ResourceLimitWarning,"Memory allocation failed",

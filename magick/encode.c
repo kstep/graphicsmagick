@@ -12858,10 +12858,6 @@ Export unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   Display
     *display;
 
-
-  QuantizeInfo
-    quantize_info;
-
   unsigned long
     state;
 
@@ -12887,9 +12883,6 @@ Export unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   client_name=SetClientName((char *) NULL);
   resource_database=XGetResourceDatabase(display,client_name);
   XGetResourceInfo(resource_database,client_name,&resource_info);
-  resource_info.image_info=(ImageInfo *) image_info;
-  resource_info.quantize_info=(&quantize_info);
-  GetQuantizeInfo(resource_info.quantize_info);
   resource_info.immutable=True;
   if (image_info->delay)
     resource_info.delay=atoi(image_info->delay);
