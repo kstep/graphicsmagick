@@ -846,7 +846,7 @@ MagickExport unsigned int ClipImage(Image *image)
     *clip_mask;
 
   ImageInfo
-	  *image_info;
+    *image_info;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -855,7 +855,7 @@ MagickExport unsigned int ClipImage(Image *image)
     return(False);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) QueryColorDatabase("none",&image_info->background_color);
-  (void) QueryColorDatabase("white",&image_info->foreground_color);
+  (void) QueryColorDatabase("white",&image_info->pen);
   clip_mask=BlobToImage(image_info,attribute->value,strlen(attribute->value),
     &image->exception);
   DestroyImageInfo(image_info);
@@ -4097,7 +4097,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleCompare("-geometry",option) == 0)
           {
             Image
-              *resize_image;
+              *zoom_image;
 
             /*
               Resize image.
@@ -4109,11 +4109,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) ParseImageGeometry(argv[++i],&x,&y,&width,&height);
             if ((width == (*image)->columns) && (height == (*image)->rows))
               break;
-            resize_image=ZoomImage(*image,width,height,&(*image)->exception);
-            if (resize_image == (Image *) NULL)
+            zoom_image=ZoomImage(*image,width,height,&(*image)->exception);
+            if (zoom_image == (Image *) NULL)
               break;
             DestroyImage(*image);
-            *image=resize_image;
+            *image=zoom_image;
             continue;
           }
         if (LocaleCompare("gravity",option+1) == 0)
@@ -4545,6 +4545,29 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               break;
             region_image=(*image);
             *image=crop_image;
+            continue;
+          }
+        if (LocaleCompare("-resize",option) == 0)
+          {
+            Image
+              *resize_image;
+
+            /*
+              Resize image.
+            */
+            width=(*image)->columns;
+            height=(*image)->rows;
+            x=0;
+            y=0;
+            (void) ParseGeometry(argv[++i],&x,&y,&width,&height);
+            if ((width == (*image)->columns) && (height == (*image)->rows))
+              break;
+            resize_image=ResizeImage(*image,width,height,(*image)->filter,
+              (*image)->blur,&(*image)->exception);
+            if (resize_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=resize_image;
             continue;
           }
         if (LocaleCompare("-roll",option) == 0)
