@@ -452,7 +452,8 @@ MagickExport TypeInfo* NTGetTypeList( void )
 MagickExport void *ImageToHBITMAP(Image* image)
 {
   unsigned long 
-    nPixels;
+    nPixels,
+    row;
 
   long
     memSize;
@@ -489,30 +490,32 @@ MagickExport void *ImageToHBITMAP(Image* image)
     if ( bitmap.bmBits == NULL )
       bitmap.bmBits = theBits;
 
-    pPixels = AcquireImagePixels(image,0,0,image->columns,image->rows,&image->exception);
+    for( row = 0 ; row < rows ; row++ )
+      {
+        pPixels = AcquireImagePixels(image,0,row,image->columns,1,&image->exception);
 
 #if QuantumDepth == 8
-
-    /* Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8 */
-    memcpy((void*)pDestPixel,(const void*)pPixels,sizeof(PixelPacket)*nPixels);
+        // Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8
+        memcpy((void*)pDestPixel,(const void*)pPixels,sizeof(PixelPacket)*image->columns);
+        pDestPixel += image->columns;
 
 #else  /* 16 or 32 bit Quantum */
-    {
-      unsigned long nPixelCount;
-
-      /* Transfer pixels, scaling to Quantum */
-      for( nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
         {
-          pDestPixel->rgbRed = ScaleQuantumToChar(pPixels->red);
-          pDestPixel->rgbGreen = ScaleQuantumToChar(pPixels->green);
-          pDestPixel->rgbBlue = ScaleQuantumToChar(pPixels->blue);
-          pDestPixel->rgbReserved = 0;
-          ++pDestPixel;
-          ++pPixels;
-        }
-    }
+          unsigned long nPixelCount;
 
+          /* Transfer pixels, scaling to Quantum */
+          for( unsigned long nPixelCount = image->columns; nPixelCount ; nPixelCount-- )
+            {
+              pDestPixel->rgbRed = ScaleQuantumToChar(pPixels->red);
+              pDestPixel->rgbGreen = ScaleQuantumToChar(pPixels->green);
+              pDestPixel->rgbBlue = ScaleQuantumToChar(pPixels->blue);
+              pDestPixel->rgbReserved = 0;
+              ++pDestPixel;
+              ++pPixels;
+            }
+        }
 #endif
+      }
 
     bitmap.bmBits = theBits;
     bitmapH = CreateBitmapIndirect( &bitmap );
