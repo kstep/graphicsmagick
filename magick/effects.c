@@ -573,7 +573,7 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
 MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
   const double *kernel,ExceptionInfo *exception)
 {
-#define ConvolveImageText  "  Convolve image...  "
+#define ConvolveImageText  "  Convolving image...  "
 #define Cx(x) \
   (x) < 0 ? (x)+image->columns : (x) >= image->columns ? (x)-image->columns : x
 #define Cy(y) \
@@ -618,7 +618,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
   assert(exception->signature == MagickSignature);
   if ((order % 2) == 0)
     ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
-      "kernel order must be an odd");
+      "kernel order must be an odd number");
   if ((image->columns < order) || (image->rows < order))
     ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
       "image smaller than kernel order");
@@ -645,12 +645,12 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
       blue=0.0;
       opacity=0.0;
       k=kernel;
-      if ((x < (int) (0.5*order)) || (x >= (int) (image->columns-0.5*order)) ||
-          (y < (int) (0.5*order)) || (y >= (int) (image->rows-0.5*order)))
+      if ((x < ((int) order/2)) || (x >= (image->columns-(int) order/2)) ||
+          (y < ((int) order/2)) || (y >= (image->rows-(int) order/2)))
         {
-          for (v=(int) (-0.5*order); v <= (int) (0.5*order); v++)
+          for (v=(-(int) order/2); v <= (int) order/2; v++)
           {
-            for (u=(int) (-0.5*order); u <= (int) (0.5*order); u++)
+            for (u=(-(int) order/2); u <= (int) order/2; u++)
             {
               pixel=GetOnePixel(image,Cx(x+u),Cy(y+v));
               red+=(*k)*pixel.red;
@@ -664,11 +664,11 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
       else
         {
           if (p == (PixelPacket *) NULL)
-            p=GetImagePixels(image,0,y-(0.5*order),image->columns,order);
+            p=GetImagePixels(image,0,y-(int) order/2,image->columns,order);
           s=p+x;
-          for (v=(int) (-0.5*order); v <= (int) (0.5*order); v++)
+          for (v=(-(int) order/2); v <= (int) order/2; v++)
           {
-            for (u=(int) (-0.5*order); u <= (int) (0.5*order); u++)
+            for (u=(-(int) order/2); u <= (int) order/2; u++)
             {
               red+=(*k)*s[u].red;
               green+=(*k)*s[u].green;
@@ -689,9 +689,10 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
       q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
       q->green=(Quantum)
         ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-      q->blue=(Quantum) ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+      q->blue=(Quantum)
+        ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
       q->opacity=(Quantum)
-        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+	((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
       q++;
     }
     if (!SyncImagePixels(convolve_image))
