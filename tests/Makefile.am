@@ -59,6 +59,15 @@ CHECK_FILES = \
 	'$(top_srcdir)/PerlMagick/t/input_p5.pgm' \
 	'$(top_srcdir)/PerlMagick/t/input_p6.ppm'
 
+CHECK_SIZED_FILES = \
+	"xc:white" \
+	"xc:black" \
+	"xc:\#bfbfbf" \
+	"xc:\#7FFF7FFF7FFF" \
+	"xc:\#800080008000" \
+	"xc:\#800180018001" \
+	"xc:transparent"
+
 if HasFPX
 FPX=FPX
 else
@@ -256,9 +265,63 @@ check-rwfile:
 	for format in $(CHECK_FILE_FORMATS) ; \
 	do \
 	  format_failed=0 ; \
-	  for file in $(CHECK_FILES) ; \
+	  for file in  $(CHECK_FILES) ; \
 	  do \
 	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwfile $$file $$format ; \
+	    then \
+	      : ; \
+	    else \
+	      status=1 ; \
+	      format_failed=1 ; \
+	    fi \
+	  done ; \
+	  if test $$format_failed -gt 0 ; \
+	  then \
+	    failed="$$failed$$format " ; \
+	  fi ; \
+	done ; \
+	if test -n "$$failed" ; \
+	then \
+	  echo "Failed rwfile for formats: $$failed" ; \
+	fi ; \
+	exit $$status
+
+check-rwblob-sized:
+	-@status=0 ; \
+	format='' ; \
+	for format in $(CHECK_BLOB_FORMATS) ; \
+	do \
+	  format_failed=0 ; \
+	  for file in $(CHECK_SIZED_FILES) ; \
+	  do \
+	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwblob -size 320x200 $$file $$format ; \
+	    then \
+	      : ; \
+	    else \
+	      status=1 ; \
+	      format_failed=1 ; \
+	    fi \
+	  done ; \
+	  if test $$format_failed -gt 0 ; \
+	  then \
+	    failed="$$failed$$format " ; \
+	  fi ; \
+	done ; \
+	if test -n "$$failed" ; \
+	then \
+	  echo "Failed rwblob for formats: $$failed" ; \
+	fi ; \
+	exit $$status
+
+check-rwfile-sized:
+	-@status=0 ; \
+	format='' ; \
+	for format in $(CHECK_FILE_FORMATS) ; \
+	do \
+	  format_failed=0 ; \
+	  for file in $(CHECK_SIZED_FILES) ; \
+	  do \
+	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwfile -size 320x200 $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -282,4 +345,4 @@ check-drawtest:
 	./drawtest drawtest_out.mvg
 	./drawtest drawtest_out.svg
 
-check: check-drawtest check-rwfile check-rwblob
+check: check-drawtest check-rwfile check-rwfile-sized check-rwblob check-rwblob-sized

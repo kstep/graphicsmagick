@@ -27,34 +27,91 @@
 
 int main ( int argc, char **argv )
 {
-  Image *original = (Image *)NULL;
-  Image *final = (Image *)NULL;
-  char * blob = NULL;
-  char infile[MaxTextExtent];
-  char format[MaxTextExtent];
-  size_t blob_length = 0;
-  char *size = NULL;
-  int rows, columns = 0;
-  double fuzz_factor = 0;
-  ImageInfo imageInfo;
-  ExceptionInfo exception;
+  Image
+    *final = (Image *) NULL,
+    *original = (Image *) NULL;
 
-  if ( argc != 3 )
-    {
-      printf ( "Usage: %s infile format\n", argv[0] );
-      exit( 1 );
-    }
+  size_t
+    blob_length = 0;
+
+  char
+    *blob = NULL,
+    infile[MaxTextExtent],
+    format[MaxTextExtent],
+    *size = NULL;
+
+  int
+    arg = 1,
+    rows = 0,
+    columns = 0;
+
+  double
+    fuzz_factor = 0;
+
+  ImageInfo
+    imageInfo;
+
+  ExceptionInfo
+    exception;
 
   if (LocaleNCompare("rwblob",argv[0],7) == 0)
     InitializeMagick(GetExecutionPath(argv[0]));
   else
     InitializeMagick(*argv);
 
-  strncpy( infile, argv[1], MaxTextExtent-1 );
-  strncpy( format, argv[2], MaxTextExtent-1 );
+  GetImageInfo( &imageInfo );
+  GetExceptionInfo( &exception );
 
-  printf("%s %s %s\n",
-    argv[0],infile, format );
+  for (arg=1; arg < argc; arg++)
+    {
+      char
+        *option = argv[arg];
+    
+      if (*option == '-')
+        {
+          if (LocaleCompare("depth",option+1) == 0)
+            {
+              imageInfo.depth=QuantumDepth;
+              arg++;
+              if ((arg == argc) || !sscanf(argv[arg],"%ld",&imageInfo.depth))
+                {
+                  printf("-depth argument missing or not integer\n");
+                  exit (1);
+                }
+              if(imageInfo.depth != 8 && imageInfo.depth != 16 && imageInfo.depth != 32)
+                {
+                  printf("-depth (%ld) not 8, 16, or 32\n", imageInfo.depth);
+                  exit (1);
+                }
+            }
+          else if (LocaleCompare("size",option+1) == 0)
+            {
+              arg++;
+              if ((arg == argc) || !IsGeometry(argv[arg]))
+                {
+                  printf("-size argument missing or not geometry\n");
+                  exit (1);
+                }
+              (void) CloneString(&imageInfo.size,argv[arg]);
+            }
+        }
+      else
+        break;
+    }
+  if (arg != argc-2)
+    {
+      printf("arg=%d, argc=%d\n", arg, argc);
+      printf ( "Usage: %s [-depth integer -size geometry] infile format\n", argv[0] );
+      exit( 1 );
+    }
+
+  strncpy(infile, argv[arg], MaxTextExtent-1 );
+  arg++;
+  strncpy( format, argv[arg], MaxTextExtent-1 );
+
+  for (arg=0; arg < argc; arg++)
+    printf("%s ", argv[arg]);
+  printf("\n");
   fflush(stdout);
 
   /*
