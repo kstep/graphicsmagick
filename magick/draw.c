@@ -473,13 +473,13 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
               else
                 {
                   q->red=((unsigned long) (color.red*(MaxRGB-color.opacity)+
-                    q->red*color.opacity)/(MaxRGB+1));
+                    q->red*color.opacity)/MaxRGB);
                   q->green=((unsigned long) (color.green*(MaxRGB-color.opacity)+
-                    q->green*color.opacity)/(MaxRGB+1));
+                    q->green*color.opacity)/MaxRGB);
                   q->blue=((unsigned long) (color.blue*(MaxRGB-color.opacity)+
-                    q->blue*color.opacity)/(MaxRGB+1));
+                    q->blue*color.opacity)/MaxRGB);
                   q->opacity=((unsigned long) (color.opacity*(MaxRGB-
-                    color.opacity)+q->opacity*color.opacity)/(MaxRGB+1));
+                    color.opacity)+q->opacity*color.opacity)/MaxRGB);
                 }
             }
           q++;
@@ -2228,13 +2228,13 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                   */
                   fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
                   q->red=((unsigned long) (fill_color.red*
-                    (MaxRGB-fill_opacity)+q->red*fill_opacity)/(MaxRGB+1));
+                    (MaxRGB-fill_opacity)+q->red*fill_opacity)/MaxRGB);
                   q->green=((unsigned long) (fill_color.green*
-                    (MaxRGB-fill_opacity)+q->green*fill_opacity)/(MaxRGB+1));
+                    (MaxRGB-fill_opacity)+q->green*fill_opacity)/MaxRGB);
                   q->blue=((unsigned long) (fill_color.blue*
-                    (MaxRGB-fill_opacity)+q->blue*fill_opacity)/(MaxRGB+1));
+                    (MaxRGB-fill_opacity)+q->blue*fill_opacity)/MaxRGB);
                   q->opacity=((unsigned long) (fill_color.opacity*
-                    (MaxRGB-fill_opacity)+q->opacity*fill_opacity)/(MaxRGB+1));
+                    (MaxRGB-fill_opacity)+q->opacity*fill_opacity)/MaxRGB);
                 }
             }
           if ((stroke_opacity == 0.0) ||
@@ -2248,13 +2248,13 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
           */
           stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
           q->red=((unsigned long) (stroke_color.red*
-            (MaxRGB-stroke_opacity)+q->red*stroke_opacity)/(MaxRGB+1));
+            (MaxRGB-stroke_opacity)+q->red*stroke_opacity)/MaxRGB);
           q->green=((unsigned long) (stroke_color.green*
-            (MaxRGB-stroke_opacity)+q->green*stroke_opacity)/(MaxRGB+1));
+            (MaxRGB-stroke_opacity)+q->green*stroke_opacity)/MaxRGB);
           q->blue=((unsigned long) (stroke_color.blue*
-            (MaxRGB-stroke_opacity)+q->blue*stroke_opacity)/(MaxRGB+1));
+            (MaxRGB-stroke_opacity)+q->blue*stroke_opacity)/MaxRGB);
           q->opacity=((unsigned long) (stroke_color.opacity*(MaxRGB-
-            stroke_opacity)+q->opacity*stroke_opacity)/(MaxRGB+1));
+            stroke_opacity)+q->opacity*stroke_opacity)/MaxRGB);
           q++;
         }
         break;

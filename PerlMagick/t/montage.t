@@ -111,7 +111,7 @@ testMontage( q//,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
 	     q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+3+3>', frame=>'8x10',
                borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-	     'b9be068a39143613b03c8dc8178d03c6',
+	     '669532cc318073c3753b41dc40913a57',
              '60ea9340bb48b5ea1be1096fec70b533');
 
 #
@@ -121,7 +121,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
 	     q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
                borderwidth=>'0', gravity=>'Center', shadow=>'True',background=>'gray'/,
-	     '5fe2b72ff6a4c092d1a4166a9535f489',
+	     '74ca7232e4ef5d5d0f04459d1e74f579',
              '30e961a27827c6b244e4f489bfbf7764');
 
 #
@@ -131,7 +131,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
 	     q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
                borderwidth=>'0', gravity=>'Center', shadow=>'True', texture=>'granite:'/,
-	     'ddf8eb5d270af94b0c55635b9d05a5b8',
+	     'f205a6806f42331663c5655fba7ad621',
              '0d5959c27c6b42bd660377c55e2963c5');
 
 #

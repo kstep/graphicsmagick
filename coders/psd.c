@@ -666,7 +666,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 for (x=0; x < (int) layer_info[i].image->columns; x++)
                 {
                   q->opacity=((unsigned long)
-                    (q->opacity*layer_info[i].opacity)/(MaxRGB+1));
+                    (q->opacity*layer_info[i].opacity)/MaxRGB);
                   q++;
                 }
                 if (!SyncImagePixels(layer_info[i].image))

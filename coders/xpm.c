@@ -536,9 +536,6 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     k,
     y;
 
-  long
-    mean;
-
   register IndexPacket
     *indexes;
 

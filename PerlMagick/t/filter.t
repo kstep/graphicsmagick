@@ -44,7 +44,7 @@ testFilter('input.miff', 'Colorize',
 ++$test;
 testFilter('input.miff', 'Contrast',
   q/1/,
-  'f8f1572eb126b38dd2f7dc9eaa13e096',
+  'c2156d2134de57d98a03fe8ffdf0a3cd',
   '1266016b4344fc66ac452f03c0e0e64a');
 
 ++$test;
@@ -95,13 +95,13 @@ testFilter('input.miff', 'Flop',
 ++$test;
 testFilter('input.miff', 'Frame',
   q/10x10/,
-  'd27ccf72b41b2b87d535e464b8923aab', 
+  '026f10a0cd41b8b61e31b27f3adb6d71', 
   'a0562c7bf1c1f32034b51e9acd61bf87');
 
 ++$test;
 testFilter('input.miff', 'Gamma',
   q/2.2/,
-  '2f18f7a94d720b622b819b8a8ea0c908',
+  '23a6358f8dfb340e7daf90c2ac991321',
   '65eb79eb7ead8e407e65f4cc9c3dd4da');
 
 ++$test;
@@ -136,7 +136,7 @@ testFilter('input.miff', 'Minify',
 ++$test;
 testFilter('input.miff', 'Modulate',
   q/60/,
-  'a6eef3f5bc63ac8e61bb6baa5e5c9d85',
+  '1c4736b6d1ed28e1846ab1f47c792ef4',
   'fd048c1088c4733003db264fca9e28af');
 
 ++$test;
@@ -170,7 +170,7 @@ testFilter('input.miff', 'Quantize',
 ++$test;
 testFilter('input.miff', 'Raise',
   q/10x10/,
-  '57d5c0a93bb2e28e9e4ed38f9a4e2ea6',
+  '0cbe112e62a8e8a6e178a55a56b69a4b',
   '739ac80d67ea57a0c891a20e28d96ccd');
 
 ++$test;
@@ -187,7 +187,7 @@ testFilter('input.miff', 'Roll',
 ++$test;
 testFilter('input.miff', 'Rotate',
   q/10/,
-  '2327a9e2f715f9023868389bc7d20e4e',
+  'ae4c2b922aec1130999e6f9668b1f080',
   '2f138b1a69864a62ed3f5181efa4a356');
 
 ++$test;
@@ -221,7 +221,7 @@ testFilter('input.miff', 'Sharpen',
 ++$test;
 testFilter('input.miff', 'Shear',
   q/10/,
-  'c5b1713b3f0b0771c05e3ecc80798771',
+  '640dffd1d8ad695bde747a76f79c8312',
   '2faf269e7f99a10fb5369e9d5c3e980a');
 
 ++$test;

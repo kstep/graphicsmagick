@@ -1180,12 +1180,12 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
   mean=(int) (s->red+red)/2; \
   distance=s->red-(int) red; \
   distance_squared= \
-    (double) (2.0*(MaxRGB+1)+mean)*distance*distance/(MaxRGB+1); \
+    (double) (2.0*(MaxRGB+1)+mean)*distance*distance/MaxRGB; \
   distance=s->green-(int) green; \
   distance_squared+=4.0*distance*distance; \
   distance=s->blue-(int) blue; \
   distance_squared+= \
-    (double) (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/(MaxRGB+1); \
+    (double) (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
   if (distance_squared < Threshold) \
     { \
       total_red+=(weight)*s->red; \
@@ -2538,9 +2538,9 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
         }
       else
         {
-          q->red=((unsigned long) (shade*s1->red)/(MaxRGB+1));
-          q->green=((unsigned long) (shade*s1->green)/(MaxRGB+1));
-          q->blue=((unsigned long) (shade*s1->blue)/(MaxRGB+1));
+          q->red=((unsigned long) (shade*s1->red)/MaxRGB);
+          q->green=((unsigned long) (shade*s1->green)/MaxRGB);
+          q->blue=((unsigned long) (shade*s1->blue)/MaxRGB);
         }
       q->opacity=s1->opacity;
       s0++;

@@ -211,29 +211,29 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
   */
   matte=image->matte_color;
   accentuate.red=((unsigned long) (matte.red*(MaxRGB-AccentuateModulate)+
-    MaxRGB*AccentuateModulate)/(MaxRGB+1));
+    MaxRGB*AccentuateModulate)/MaxRGB);
   accentuate.green=((unsigned long) (matte.green*(MaxRGB-AccentuateModulate)+
-    MaxRGB*AccentuateModulate)/(MaxRGB+1));
+    MaxRGB*AccentuateModulate)/MaxRGB);
   accentuate.blue=((unsigned long) (matte.blue*(MaxRGB-AccentuateModulate)+
-    MaxRGB*AccentuateModulate)/(MaxRGB+1));
+    MaxRGB*AccentuateModulate)/MaxRGB);
   accentuate.opacity=((unsigned long) (matte.opacity*(MaxRGB-
-    AccentuateModulate)+MaxRGB*AccentuateModulate)/(MaxRGB+1));
+    AccentuateModulate)+MaxRGB*AccentuateModulate)/MaxRGB);
   highlight.red=((unsigned long) (matte.red*(MaxRGB-HighlightModulate)+
-    MaxRGB*HighlightModulate)/(MaxRGB+1));
+    MaxRGB*HighlightModulate)/MaxRGB);
   highlight.green=((unsigned long) (matte.green*(MaxRGB-HighlightModulate)+
-    MaxRGB*HighlightModulate)/(MaxRGB+1));
+    MaxRGB*HighlightModulate)/MaxRGB);
   highlight.blue=((unsigned long) (matte.blue*(MaxRGB-HighlightModulate)+
-    MaxRGB*HighlightModulate)/(MaxRGB+1));
+    MaxRGB*HighlightModulate)/MaxRGB);
   highlight.opacity=((unsigned long) (matte.opacity*(MaxRGB-HighlightModulate)+
-    MaxRGB*HighlightModulate)/(MaxRGB+1));
-  shadow.red=((unsigned long) (matte.red*ShadowModulate)/(MaxRGB+1));
-  shadow.green=((unsigned long) (matte.green*ShadowModulate)/(MaxRGB+1));
-  shadow.blue=((unsigned long) (matte.blue*ShadowModulate)/(MaxRGB+1));
-  shadow.opacity=((unsigned long) (matte.opacity*ShadowModulate)/(MaxRGB+1));
-  trough.red=((unsigned long) (matte.red*TroughModulate)/(MaxRGB+1));
-  trough.green=((unsigned long) (matte.green*TroughModulate)/(MaxRGB+1));
-  trough.blue=((unsigned long) (matte.blue*TroughModulate)/(MaxRGB+1));
-  trough.opacity=((unsigned long) (matte.opacity*TroughModulate)/(MaxRGB+1));
+    MaxRGB*HighlightModulate)/MaxRGB);
+  shadow.red=((unsigned long) (matte.red*ShadowModulate)/MaxRGB);
+  shadow.green=((unsigned long) (matte.green*ShadowModulate)/MaxRGB);
+  shadow.blue=((unsigned long) (matte.blue*ShadowModulate)/MaxRGB);
+  shadow.opacity=((unsigned long) (matte.opacity*ShadowModulate)/MaxRGB);
+  trough.red=((unsigned long) (matte.red*TroughModulate)/MaxRGB);
+  trough.green=((unsigned long) (matte.green*TroughModulate)/MaxRGB);
+  trough.blue=((unsigned long) (matte.blue*TroughModulate)/MaxRGB);
+  trough.opacity=((unsigned long) (matte.opacity*TroughModulate)/MaxRGB);
   /*
     Draw top of ornamental border.
   */
@@ -463,31 +463,31 @@ MagickExport unsigned int RaiseImage(Image *image,
     for (x=0; x < y; x++)
     {
       q->red=((unsigned long) (q->red*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/(MaxRGB+1));
+        (MaxRGB-HighlightFactor))/MaxRGB);
       q->green=((unsigned long) (q->green*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/(MaxRGB+1));
+        (MaxRGB-HighlightFactor))/MaxRGB);
       q->blue=((unsigned long) (q->blue*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/(MaxRGB+1));
+        (MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
     for (x=0; x < (int) (image->columns-(y << 1)); x++)
     {
       q->red=((unsigned long) (q->red*AccentuateFactor+foreground*
-        (MaxRGB-AccentuateFactor))/(MaxRGB+1));
+        (MaxRGB-AccentuateFactor))/MaxRGB);
       q->green=((unsigned long) (q->green* AccentuateFactor+foreground*
-        (MaxRGB-AccentuateFactor))/(MaxRGB+1));
+        (MaxRGB-AccentuateFactor))/MaxRGB);
       q->blue=((unsigned long) (q->blue*AccentuateFactor+foreground*
-        (MaxRGB-AccentuateFactor))/(MaxRGB+1));
+        (MaxRGB-AccentuateFactor))/MaxRGB);
       q++;
     }
     for (x=0; x < y; x++)
     {
       q->red=((unsigned long) (q->red*ShadowFactor+background*
-        (MaxRGB-ShadowFactor))/(MaxRGB+1));
+        (MaxRGB-ShadowFactor))/MaxRGB);
       q->green=((unsigned long) (q->green*ShadowFactor+background*
-        (MaxRGB-ShadowFactor))/(MaxRGB+1));
+        (MaxRGB-ShadowFactor))/MaxRGB);
       q->blue=((unsigned long) (q->blue*ShadowFactor+background*
-        (MaxRGB-ShadowFactor))/(MaxRGB+1));
+        (MaxRGB-ShadowFactor))/MaxRGB);
       q++;
     }
     if (!SyncImagePixels(image))
@@ -504,11 +504,11 @@ MagickExport unsigned int RaiseImage(Image *image,
     for (x=0; x < (int) raise_info->width; x++)
     {
       q->red=((unsigned long) (q->red*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/(MaxRGB+1));
+        (MaxRGB-HighlightFactor))/MaxRGB);
       q->green=((unsigned long) (q->green*HighlightFactor+foreground*
-	(MaxRGB-HighlightFactor))/(MaxRGB+1));
+	(MaxRGB-HighlightFactor))/MaxRGB);
       q->blue=((unsigned long) (q->blue*HighlightFactor+foreground*
-	(MaxRGB-HighlightFactor))/(MaxRGB+1));
+	(MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
     for (x=0; x < (int) (image->columns-(raise_info->width << 1)); x++)
@@ -516,11 +516,11 @@ MagickExport unsigned int RaiseImage(Image *image,
     for (x=0; x < (int) raise_info->width; x++)
     {
       q->red=((unsigned long) (q->red*ShadowFactor+background*
-        (MaxRGB-ShadowFactor))/(MaxRGB+1));
+        (MaxRGB-ShadowFactor))/MaxRGB);
       q->green=((unsigned long) (q->green*ShadowFactor+background*
-        (MaxRGB-ShadowFactor))/(MaxRGB+1));
+        (MaxRGB-ShadowFactor))/MaxRGB);
       q->blue=((unsigned long) (q->blue*ShadowFactor+background*
-        (MaxRGB-ShadowFactor))/(MaxRGB+1));
+        (MaxRGB-ShadowFactor))/MaxRGB);
       q++;
     }
     if (!SyncImagePixels(image))
@@ -536,31 +536,31 @@ MagickExport unsigned int RaiseImage(Image *image,
     for (x=0; x < (int) (raise_info->width-y); x++)
     {
       q->red=((unsigned long) (q->red*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/(MaxRGB+1));
+        (MaxRGB-HighlightFactor))/MaxRGB);
       q->green=((unsigned long) (q->green*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/(MaxRGB+1));
+        (MaxRGB-HighlightFactor))/MaxRGB);
       q->blue=((unsigned long) (q->blue*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/(MaxRGB+1));
+        (MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
     for (x=0; x < (int) (image->columns-((raise_info->width-y) << 1)); x++)
     {
       q->red=((unsigned long) (q->red*TroughFactor+background*
-        (MaxRGB-TroughFactor))/(MaxRGB+1));
+        (MaxRGB-TroughFactor))/MaxRGB);
       q->green=((unsigned long) (q->green*TroughFactor+background*
-        (MaxRGB-TroughFactor))/(MaxRGB+1));
+        (MaxRGB-TroughFactor))/MaxRGB);
       q->blue=((unsigned long) (q->blue*TroughFactor+background*
-        (MaxRGB-TroughFactor))/(MaxRGB+1));
+        (MaxRGB-TroughFactor))/MaxRGB);
       q++;
     }
     for (x=0; x < (int) (raise_info->width-y); x++)
     {
       q->red=((unsigned long) (q->red*ShadowFactor+background*
-        (MaxRGB-ShadowFactor))/(MaxRGB+1));
+        (MaxRGB-ShadowFactor))/MaxRGB);
       q->green=((unsigned long) (q->green*ShadowFactor+background*
-        (MaxRGB-ShadowFactor))/(MaxRGB+1));
+        (MaxRGB-ShadowFactor))/MaxRGB);
       q->blue=((unsigned long) (q->blue*ShadowFactor+background*
-        (MaxRGB-ShadowFactor))/(MaxRGB+1));
+        (MaxRGB-ShadowFactor))/MaxRGB);
       q++;
     }
     if (!SyncImagePixels(image))
