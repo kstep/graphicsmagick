@@ -135,8 +135,9 @@ static double ElapsedTime(void)
 #else
 #if defined(WIN32)
   return(NTElapsedTime());
-#endif
+#else
   return((double) clock()/CLK_TCK);
+#endif
 #endif
 }
 
@@ -377,7 +378,8 @@ static double UserTime(void)
 #else
 #if defined(WIN32)
   return(NTUserTime());
-#endif
+#else
   return((double) clock()/CLK_TCK);
+#endif
 #endif
 }

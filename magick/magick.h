@@ -47,9 +47,9 @@
 #if !defined(vms) && !defined(macintosh)
 # include <sys/types.h>
 # include <sys/stat.h>
+# include <sys/time.h>
 #if !defined(WIN32)
 # include <sys/times.h>
-# include <sys/time.h>
 #if defined(HAVE_MMAP)
 # include <sys/mman.h>
 #endif
