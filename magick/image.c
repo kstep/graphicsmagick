@@ -1212,6 +1212,11 @@ MagickExport unsigned int CompositeImage(Image *image,
   SetImageType(image,TrueColorType);
   switch (compose)
   {
+    case CopyOpacityCompositeOp:
+    {
+      SetImageType(image,TrueColorMatteType);
+      break;
+    }
     case DisplaceCompositeOp:
     {
       double
@@ -1539,10 +1544,16 @@ MagickExport unsigned int CompositeImage(Image *image,
         {
           if (!composite_image->matte)
             {
-              q->opacity=Intensity(&pixel);
+              if (image->colorspace == CMYKColorspace)
+                indexes[x]=Intensity(&pixel);
+              else
+                q->opacity=Intensity(&pixel);
               break;
             }
-          q->opacity=pixel.opacity;
+          if (image->colorspace == CMYKColorspace)
+            indexes[x]=pixel.opacity;
+          else
+            q->opacity=pixel.opacity;
           break;
         }
         case ClearCompositeOp:
