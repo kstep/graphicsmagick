@@ -923,10 +923,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PGM image.
         */
         if (image->depth <= 8)
-          FormatString(buffer,"%u\n",ScaleQuantumToChar(MaxRGB));
+          (void) WriteBlobString(image,"255");
         else
-          FormatString(buffer,"%u\n",ScaleQuantumToShort(MaxRGB));
-        (void) WriteBlobString(image,buffer);
+          (void) WriteBlobString(image,"65535");
         i=0;
         for (y=0; y < (long) image->rows; y++)
         {
@@ -963,10 +962,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PNM image.
         */
         if (image->depth <= 8)
-          FormatString(buffer,"%u\n",ScaleQuantumToChar(MaxRGB));
+          (void) WriteBlobString(image,"255");
         else
-          FormatString(buffer,"%u\n",ScaleQuantumToShort(MaxRGB));
-        (void) WriteBlobString(image,buffer);
+          (void) WriteBlobString(image,"65535");
         i=0;
         for (y=0; y < (long) image->rows; y++)
         {
