@@ -2,13 +2,12 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Description of ImageInfo structure members.">
    <title>ImageMagick ImageInfo Structure</title>
 </head>
-<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"
-  vlink="#9900DD">
+<body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
 
 <center>
 <h1>
@@ -56,7 +55,7 @@ image.
 </tr>
 
 <tr>
-<td><b><font size=-1>adjoin</font></b></td>
+<td><a NAME="adjoin"></a><b><font size=-1>adjoin</font></b></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -64,7 +63,7 @@ image.
 </tr>
 
 <tr NOSAVE>
-<td><b><font size=-1>antialias</font></b></td>
+<td><a NAME="antialias"></a><b><font size=-1>antialias</font></b></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -73,7 +72,7 @@ Postscript or TrueType fonts. Enabled by default.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>background_color</font></b></td>
+<td><a NAME="background_color"></a><b><font size=-1>background_color</font></b></td>
 
 <td><font size=-1><a href="PixelPacket.html">PixelPacket</a></font></td>
 
@@ -81,7 +80,7 @@ Postscript or TrueType fonts. Enabled by default.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>border_color</font></b></td>
+<td><a NAME="border_color"></a><b><font size=-1>border_color</font></b></td>
 
 <td><font size=-1><a href="PixelPacket.html">PixelPacket</a></font></td>
 
@@ -89,7 +88,7 @@ Postscript or TrueType fonts. Enabled by default.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>box</font></b></td>
+<td><a NAME="box"></a><b><font size=-1>box</font></b></td>
 
 <td><font size=-1>char *</font></td>
 
@@ -97,7 +96,7 @@ Postscript or TrueType fonts. Enabled by default.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>colorspace</font></b></td>
+<td><a NAME="colorspace"></a><b><font size=-1>colorspace</font></b></td>
 
 <td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a></font></td>
 
@@ -108,7 +107,7 @@ the colorspace is ignored.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>compression</font></b></td>
+<td><a NAME="compression"></a><b><font size=-1>compression</font></b></td>
 
 <td><font size=-1><a href="Enumerations.html#CompressionType">CompressionType</a></font></td>
 
@@ -117,7 +116,7 @@ type of the specified image file.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>delay</font></b></td>
+<td><a NAME="delay"></a><b><font size=-1>delay</font></b></td>
 
 <td><font size=-1>char *</font></td>
 
@@ -128,7 +127,7 @@ Netscape.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>density</font></b></td>
+<td><a NAME="density"></a><b><font size=-1>density</font></b></td>
 
 <td><font size=-1>char *</font></td>
 
@@ -138,7 +137,7 @@ Document page. Often used with <a href="Image.html#page">page</a>.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>depth</font></b></td>
+<td><a NAME="depth"></a><b><font size=-1>depth</font></b></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -147,7 +146,7 @@ a depth of 16 is valid.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>dispose</font></b></td>
+<td><a NAME="dispose"></a><b><font size=-1>dispose</font></b></td>
 
 <td><font size=-1>char *</font></td>
 
@@ -157,7 +156,7 @@ when creating a GIF animation.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>dither</font></b></td>
+<td><a NAME="dither"></a><b><font size=-1>dither</font></b></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -170,7 +169,7 @@ for this option to take effect.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>file</font></b></td>
+<td><a NAME="file"></a><b><font size=-1>file</font></b></td>
 
 <td><font size=-1>FILE *</font></td>
 
@@ -181,7 +180,7 @@ the operation completes.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>filename</font></b></td>
+<td><a NAME="filename"></a><b><font size=-1>filename</font></b></td>
 
 <td><font size=-1>char[MaxTextExtent]</font></td>
 
@@ -189,7 +188,15 @@ the operation completes.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>font</font></b></td>
+<td><a NAME="fill"></a><b><font size=-1>fill</font></b></td>
+
+<td><font size=-1>PixelPacket</font></td>
+
+<td><font size=-1>Drawing object fill color.</font></td>
+</tr>
+
+<tr>
+<td><a NAME="font"></a><b><font size=-1>font</font></b></td>
 
 <td><font size=-1>char *</font></td>
 
@@ -200,7 +207,7 @@ font name (e.g. "helvetica").</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>fuzz</font></b></td>
+<td><a NAME="fuzz"></a><b><font size=-1>fuzz</font></b></td>
 
 <td><font size=-1>int</font></td>
 
@@ -211,7 +218,7 @@ space.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>interlace</font></b></td>
+<td><a NAME="interlace"></a><b><font size=-1>interlace</font></b></td>
 
 <td><font size=-1><a href="Enumerations.html#InterlaceType">InterlaceType</a></font></td>
 
@@ -225,7 +232,7 @@ to create an interlaced GIF or progressive JPEG image.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>iterations</font></b></td>
+<td><a NAME="iterations"></a><b><font size=-1>iterations</font></b></td>
 
 <td><font size=-1>char *</font></td>
 
@@ -234,7 +241,7 @@ loop extension) for.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>linewidth</font></b></td>
+<td><a NAME="linewidth"></a><b><font size=-1>linewidth</font></b></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -242,7 +249,7 @@ loop extension) for.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>magick</font></b></td>
+<td><a NAME="magick"></a><b><font size=-1>magick</font></b></td>
 
 <td><font size=-1>char[MaxTextExtent]</font></td>
 
@@ -250,7 +257,7 @@ loop extension) for.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>matte_color</font></b></td>
+<td><a NAME="matte_color"></a><b><font size=-1>matte_color</font></b></td>
 
 <td><font size=-1><a href="PixelPacket.html">PixelPacket</a></font></td>
 
@@ -258,7 +265,7 @@ loop extension) for.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>monochrome</font></b></td>
+<td><a NAME="monochrome"></a><b><font size=-1>monochrome</font></b></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -266,7 +273,7 @@ loop extension) for.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>page</font></b></td>
+<td><a NAME="page"></a><b><font size=-1>page</font></b></td>
 
 <td><font size=-1>char *</font></td>
 
@@ -274,15 +281,7 @@ loop extension) for.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>pen</font></b></td>
-
-<td><font size=-1>char *</font></td>
-
-<td><font size=-1>Pen color to use when annotating on or drawing on image.</font></td>
-</tr>
-
-<tr>
-<td><b><font size=-1>ping</font></b></td>
+<td><a NAME="ping"></a><b><font size=-1>ping</font></b></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -293,7 +292,7 @@ is not valid after calling ReadImage() if ping is set.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>pointsize</font></b></td>
+<td><a NAME="pointsize"></a><b><font size=-1>pointsize</font></b></td>
 
 <td><font size=-1>double</font></td>
 
@@ -301,7 +300,7 @@ is not valid after calling ReadImage() if ping is set.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>preview_type</font></b></td>
+<td><a NAME="preview_type"></a><b><font size=-1>preview_type</font></b></td>
 
 <td><font size=-1>PreviewType</font></td>
 
@@ -309,7 +308,7 @@ is not valid after calling ReadImage() if ping is set.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>quality</font></b></td>
+<td><a NAME="quality"></a><b><font size=-1>quality</font></b></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -317,15 +316,16 @@ is not valid after calling ReadImage() if ping is set.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>server_name</font></b></td>
+<td><a NAME="server_name"></a><b><font size=-1>server_name</font></b></td>
 
-<td><font size=-1>X11 display to display to</font></td>
+<td><font size=-1>char *</font></td>
 
-<td><font size=-1>obtain fonts from, or to capture image from.</font></td>
+<td><font size=-1>X11 display to display to obtain fonts from, or to capture
+image from.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>size</font></b></td>
+<td><a NAME="size"></a><b><font size=-1>size</font></b></td>
 
 <td><font size=-1>char *</font></td>
 
@@ -336,7 +336,15 @@ or JPEG.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>subimage</font></b></td>
+<td><a NAME="stroke"></a><b><font size=-1>stroke</font></b></td>
+
+<td><font size=-1>PixelPacket</font></td>
+
+<td><font size=-1>Drawing object outline color.</font></td>
+</tr>
+
+<tr>
+<td><a NAME="subimage"></a><b><font size=-1>subimage</font></b></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -344,7 +352,7 @@ or JPEG.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>subrange</font></b></td>
+<td><a NAME="subrange"></a><b><font size=-1>subrange</font></b></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -352,7 +360,7 @@ or JPEG.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>texture</font></b></td>
+<td><a NAME="texture"></a><b><font size=-1>texture</font></b></td>
 
 <td><font size=-1>char *</font></td>
 
@@ -360,7 +368,7 @@ or JPEG.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>tile</font></b></td>
+<td><a NAME="tile"></a><b><font size=-1>tile</font></b></td>
 
 <td><font size=-1>char *</font></td>
 
@@ -368,7 +376,7 @@ or JPEG.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>units</font></b></td>
+<td><a NAME="units"></a><b><font size=-1>units</font></b></td>
 
 <td><font size=-1><a href="Enumerations.html#ResolutionType">ResolutionType</a></font></td>
 
@@ -376,7 +384,7 @@ or JPEG.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>verbose</font></b></td>
+<td><a NAME="verbose"></a><b><font size=-1>verbose</font></b></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -384,7 +392,7 @@ or JPEG.</font></td>
 </tr>
 
 <tr>
-<td><b><font size=-1>view</font></b></td>
+<td><a NAME="view"></a><b><font size=-1>view</font></b></td>
 
 <td><font size=-1>char *</font></td>
 

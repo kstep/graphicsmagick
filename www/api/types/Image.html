@@ -2,13 +2,12 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Description of Image structure members.">
    <title>ImageMagick Image</title>
 </head>
-<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"
-  vlink="#9900DD">
+<body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
 
 <center>
 <h1>
@@ -204,6 +203,14 @@ reading a MIFF file which contains a directory.</font></td>
 <td><font size=-1>GIF disposal method. This option is used to control how
 successive frames are rendered (how the preceding frame is disposed of)
 when creating a GIF animation.</font></td>
+</tr>
+
+<tr>
+<td><a NAME="exception"></a><font size=-1>exception</font></td>
+
+<td><font size=-1>ExceptionInfo</font></td>
+
+<td><font size=-1>Record of any error which occurred when updating image.</font></td>
 </tr>
 
 <tr>
@@ -448,7 +455,7 @@ clones only the current frame, creating an "orphan" frame.</font></td>
 <tr>
 <td><a NAME="page"></a><font size=-1>page</font></td>
 
-<td><font size=-1>char *</font></td>
+<td><font size=-1><a href="RectangleInfo.html">RectangleInfo</a></font></td>
 
 <td><font size=-1>Equivalent size of Postscript page.</font></td>
 </tr>
@@ -533,6 +540,14 @@ been modified.</font></td>
 <td><font size=-1>Describes a tile within an image.&nbsp; For example,
 if your images is 640x480 you may only want 320x256 with an offset of +128+64.
 It is used for raw formats such as RGB and CMYK as well as for TIFF.</font></td>
+</tr>
+
+<tr>
+<td><a NAME="timer"></a><font size=-1>timer</font></td>
+
+<td><font size=-1>TimerInfo</font></td>
+
+<td><font size=-1>Support for measuring actual and elapsed execution time.</font></td>
 </tr>
 
 <tr>
