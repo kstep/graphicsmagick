@@ -2185,7 +2185,7 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
     }
   if (image->blob->file == (FILE *) NULL)
     return(-1);
-  if (fseek(image->blob->file,offset,whence) < 0)
+  if (fseek(image->blob->file,(off_t) offset,whence) < 0)
     return(-1);
   return(TellBlob(image));
 }
