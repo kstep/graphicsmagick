@@ -199,7 +199,7 @@ testFilterSignature('input.miff', 'Scale',
   'ff2af316c85f4d38a707e974525def24ed8b9c25eaf247c960d8d923575f1add');
 
 ++$test;
-testFilterCompare('input.miff', 'reference/filter/Shade.miff', 'Shade',
+testFilterCompare('input.miff', q//, 'reference/filter/Shade.miff', 'Shade',
   q//, 0, 0, 0);
 
 ++$test;
