@@ -1532,15 +1532,19 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         Display image chromaticity.
       */
       (void) fprintf(file,"  Chromaticity:\n");
-      (void) fprintf(file,"    red primary: (%g,%g)\n",
-        image->chromaticity.red_primary.x,image->chromaticity.red_primary.y);
-      (void) fprintf(file,"    green primary: (%g,%g)\n",
+      (void) fprintf(file,"    red primary: (%g,%g,%g)\n",
+        image->chromaticity.red_primary.x,image->chromaticity.red_primary.y,
+        image->chromaticity.red_primary.z);
+      (void) fprintf(file,"    green primary: (%g,%g,%g)\n",
         image->chromaticity.green_primary.x,
-        image->chromaticity.green_primary.y);
-      (void) fprintf(file,"    blue primary: (%g,%g)\n",
-        image->chromaticity.blue_primary.x,image->chromaticity.blue_primary.y);
-      (void) fprintf(file,"    white point: (%g,%g)\n",
-        image->chromaticity.white_point.x,image->chromaticity.white_point.y);
+        image->chromaticity.green_primary.y,
+        image->chromaticity.green_primary.z);
+      (void) fprintf(file,"    blue primary: (%g,%g,%g)\n",
+        image->chromaticity.blue_primary.x,image->chromaticity.blue_primary.y,
+        image->chromaticity.blue_primary.z);
+      (void) fprintf(file,"    white point: (%g,%g,%g)\n",
+        image->chromaticity.white_point.x,image->chromaticity.white_point.y,
+        image->chromaticity.white_point.z);
     }
   if (image->color_profile.length != 0)
     (void) fprintf(file,"  Profile-color: %lu bytes\n",(unsigned long)

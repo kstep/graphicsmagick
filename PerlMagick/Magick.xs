@@ -1190,9 +1190,10 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       if (LocaleCompare(attribute,"blue-primary") == 0)
         {
           for ( ; image; image=image->next)
-            (void) sscanf(SvPV(sval,na),"%lf%*[, ]%lf",
+            (void) sscanf(SvPV(sval,na),"%lf%*[, ]%lf%*[, ]%lf",
               &image->chromaticity.blue_primary.x,
-              &image->chromaticity.blue_primary.y);
+              &image->chromaticity.blue_primary.y,
+              &image->chromaticity.blue_primary.z);
           return;
         }
       if (LocaleCompare(attribute,"bordercolor") == 0)
@@ -1486,9 +1487,10 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       if (LocaleCompare(attribute,"green-primary") == 0)
         {
           for ( ; image; image=image->next)
-            (void) sscanf(SvPV(sval,na),"%lf%*[, ]%lf",
+            (void) sscanf(SvPV(sval,na),"%lf%*[, ]%lf%*[, ]%lf",
               &image->chromaticity.green_primary.x,
-              &image->chromaticity.green_primary.y);
+              &image->chromaticity.green_primary.y,
+              &image->chromaticity.green_primary.z);
           return;
         }
       MagickError(OptionError,"Invalid attribute",attribute);
@@ -1724,9 +1726,10 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       if (LocaleCompare(attribute,"red-primary") == 0)
         {
           for ( ; image; image=image->next)
-            (void) sscanf(SvPV(sval,na),"%lf%*[, ]%lf",
+            (void) sscanf(SvPV(sval,na),"%lf%*[, ]%lf%*[, ]%lf",
               &image->chromaticity.red_primary.x,
-              &image->chromaticity.red_primary.y);
+              &image->chromaticity.red_primary.y,
+              &image->chromaticity.red_primary.z);
           return;
         }
       if (LocaleCompare(attribute,"render") == 0)
@@ -1901,9 +1904,10 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       if (LocaleCompare(attribute,"white-point") == 0)
         {
           for ( ; image; image=image->next)
-            (void) sscanf(SvPV(sval,na),"%lf%*[, ]%lf",
+            (void) sscanf(SvPV(sval,na),"%lf%*[, ]%lf%*[, ]%lf",
               &image->chromaticity.white_point.x,
-              &image->chromaticity.white_point.y);
+              &image->chromaticity.white_point.y,
+              &image->chromaticity.white_point.z);
           return;
         }
       MagickError(OptionError,"Invalid attribute",attribute);
@@ -3135,8 +3139,9 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              FormatString(color,"%g,%g",image->chromaticity.blue_primary.x,
-                image->chromaticity.blue_primary.y);
+              FormatString(color,"%g,%g,%g",image->chromaticity.blue_primary.x,
+                image->chromaticity.blue_primary.y,
+                image->chromaticity.blue_primary.z);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -3469,8 +3474,9 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              FormatString(color,"%g,%g",image->chromaticity.green_primary.x,
-                image->chromaticity.green_primary.y);
+              FormatString(color,"%g,%g,%g",image->chromaticity.green_primary.x,
+                image->chromaticity.green_primary.y,
+                image->chromaticity.green_primary.z);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -3758,8 +3764,9 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              FormatString(color,"%g,%g",image->chromaticity.red_primary.x,
-                image->chromaticity.red_primary.y);
+              FormatString(color,"%g,%g,%g",image->chromaticity.red_primary.x,
+                image->chromaticity.red_primary.y,
+                image->chromaticity.red_primary.z);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -3940,8 +3947,9 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              FormatString(color,"%g,%g",image->chromaticity.white_point.x,
-                image->chromaticity.white_point.y);
+              FormatString(color,"%g,%g,%g",image->chromaticity.white_point.x,
+                image->chromaticity.white_point.y,
+                image->chromaticity.white_point.z);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
