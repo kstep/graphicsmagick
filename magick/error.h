@@ -60,9 +60,9 @@ extern MagickExport ErrorHandler
   SetErrorHandler(ErrorHandler);
 
 extern MagickExport void
-  CatchImageException(const Image *),
+  CatchImageException(Image *),
   DestroyExceptionInfo(ExceptionInfo *),
-  GetImageException(const Image *,ExceptionInfo *),
+  GetImageException(Image *,ExceptionInfo *),
   GetExceptionInfo(ExceptionInfo *),
   MagickError(const ExceptionType,const char *,const char *),
   MagickWarning(const ExceptionType,const char *,const char *),

@@ -89,7 +89,7 @@ static WarningHandler
 %
 %  The format of the CatchImageException method is:
 %
-%      CatchImageException(const Image *image)
+%      CatchImageException(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -97,7 +97,7 @@ static WarningHandler
 %
 %
 */
-MagickExport void CatchImageException(const Image *image)
+MagickExport void CatchImageException(Image *image)
 {
   ExceptionInfo
     exception;
@@ -286,7 +286,7 @@ MagickExport void GetExceptionInfo(ExceptionInfo *exception)
 %
 %  The format of the GetImageException method is:
 %
-%      GetImageException(const Image *image,ExceptionInfo *exception)
+%      GetImageException(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -296,9 +296,9 @@ MagickExport void GetExceptionInfo(ExceptionInfo *exception)
 %
 %
 */
-MagickExport void GetImageException(const Image *image,ExceptionInfo *exception)
+MagickExport void GetImageException(Image *image,ExceptionInfo *exception)
 {
-  register const Image
+  register Image
     *next;
 
   assert(image != (const Image *) NULL);
