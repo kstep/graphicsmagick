@@ -4,7 +4,7 @@ Significant changes associated with GraphicsMagick 1.1.4 (released November 13, 
 
   Security Fixes:
     * Security fixes for AVI, BMP, DIB, and TIFF formats.
-    * LZW security fix (updated Windows sources to use zlib 1.2.2).
+    * Zlib security fix (updated Windows sources to use zlib 1.2.2).
 
   Bugs fixed:
     * Properly detect and handle errors from libtiff APIs while writing

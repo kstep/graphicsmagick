@@ -501,7 +501,13 @@ static MagickPassFail EncodeImage(const ImageInfo *image_info,Image *image,
   if ((packet == (unsigned char *) NULL) || (hash_code == (short *) NULL) ||
       (hash_prefix == (short *) NULL) ||
       (hash_suffix == (unsigned char *) NULL))
-    return(MagickFail);
+    {
+      MagickFreeMemory(packet);
+      MagickFreeMemory(hash_code);
+      MagickFreeMemory(hash_prefix);
+      MagickFreeMemory(hash_suffix);
+      return(MagickFail);
+    }
   /*
     Initialize GIF encoder.
   */
@@ -793,11 +799,10 @@ static size_t ReadBlobBlock(Image *image,unsigned char *data)
 %
 %
 */
-static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
 #define BitSet(byte,bit)  (((byte) & (bit)) == (bit))
 #define LSBFirstOrder(x,y)  (((y) << 8) | (x))
-
+static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+{
   Image
     *image;
 
@@ -1021,8 +1026,11 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         colormap=MagickAllocateMemory(unsigned char *,3*image->colors);
         if (colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-            image);
+          {
+            MagickFreeMemory(global_colormap);
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+                                 image);
+          }
         (void) ReadBlob(image,3*image->colors,(char *) colormap);
         p=colormap;
         for (i=0; i < (long) image->colors; i++)
