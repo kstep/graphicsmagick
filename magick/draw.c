@@ -190,6 +190,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     cloned_info->primitive=AllocateString(draw_info->primitive);
   if (draw_info->font != (char *) NULL)
     cloned_info->font=AllocateString(draw_info->font);
+  if (draw_info->density != (char *) NULL)
+    cloned_info->density=AllocateString(draw_info->density);
   if (draw_info->tile != (Image *) NULL)
     cloned_info->tile=
       CloneImage(draw_info->tile,0,0,True,&draw_info->tile->exception);
@@ -2671,6 +2673,8 @@ static void DrawPrimitive(const DrawInfo *draw_info,
         clone_info->font=AllocateString(draw_info->font);
       clone_info->antialias=draw_info->text_antialias;
       clone_info->pointsize=draw_info->pointsize;
+      if (draw_info->density != (char *) NULL)
+        clone_info->density=AllocateString(draw_info->density);
       clone_info->affine=draw_info->affine;
       if (draw_info->server_name != (char *) NULL)
         clone_info->server_name=AllocateString(draw_info->server_name);

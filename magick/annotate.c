@@ -462,7 +462,6 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
     annotate_info->density=AllocateString(clone_info->density);
   annotate_info->antialias=clone_info->antialias;
   annotate_info->gravity=NorthWestGravity;
-  annotate_info->density=clone_info->density;
   annotate_info->pointsize=clone_info->pointsize;
   annotate_info->affine=clone_info->affine;
   annotate_info->fill=clone_info->fill;
