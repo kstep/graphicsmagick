@@ -302,7 +302,7 @@ Export void GetCacheInfo(CacheHandle *cache_handle)
 %
 %  The format of the GetCacheMemory method is:
 %
-%      size_t GetCacheMemory(size_t memory)
+%      off_t GetCacheMemory(off_t memory)
 %
 %  A description of each parameter follows:
 %
@@ -311,12 +311,12 @@ Export void GetCacheInfo(CacheHandle *cache_handle)
 %
 %
 */
-Export size_t GetCacheMemory(size_t memory)
+Export off_t GetCacheMemory(off_t memory)
 {
   CacheInfo
     *cache_info;
 
-  static size_t
+  static off_t
     free_memory = PixelCacheThreshold*1024*1024;
 
 #if defined(HasPTHREADS)
