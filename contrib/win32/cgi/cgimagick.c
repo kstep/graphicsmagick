@@ -49,7 +49,7 @@
   Include declarations.
 */
 #include "magick/magick.h"
-#include "magick/defines.h"
+#include "magick/define.h"
 /*
   Include the convert mainline as a subroutine
 */

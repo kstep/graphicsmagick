@@ -46,7 +46,7 @@
 */
 
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 
 #include <httpext.h>
 
