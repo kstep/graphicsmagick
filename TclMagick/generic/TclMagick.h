@@ -1,5 +1,7 @@
 /*
+ * TclMagick definitions
  */
+/* $Id$ */
 
 #ifndef _TCLMAGICK_H_
 #define _TCLMAGICK_H_
