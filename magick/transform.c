@@ -1015,9 +1015,6 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
           cmsHTRANSFORM
             transform;
 
-          IndexPacket
-            *indexes;
-
           int
             intent,
             y;
@@ -1080,27 +1077,17 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            indexes=GetPixels(image);
             for (x=0; x < (int) image->columns; x++)
             {
               alpha.red=XUpScale(q->red);
               alpha.green=XUpScale(q->green);
               alpha.blue=XUpScale(q->blue);
-              alpha.opacity=OpaqueOpacity;
-              if (image->colorspace == CMYKColorspace)
-                alpha.opacity=XUpScale(indexes[x]);
-              else
-                if (image->matte)
-                  alpha.opacity=XUpScale(q->opacity);
+              alpha.opacity=XUpScale(q->opacity);
               cmsDoTransform(transform,&alpha,&beta,1);
               q->red=XDownScale(beta.red);
               q->green=XDownScale(beta.green);
               q->blue=XDownScale(beta.blue);
-              if (image->colorspace == CMYKColorspace)
-                indexes[x]=XDownScale(beta.opacity);
-              else
-                if (image->matte)
-                  q->opacity=XDownScale(beta.opacity);
+              q->opacity=XDownScale(beta.opacity);
               q++;
             }
             if (!SyncImagePixels(image))

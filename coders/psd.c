@@ -155,15 +155,15 @@ static unsigned int DecodeImage(Image *image,const int channel)
             case 3:
             {
               if (image->colorspace == CMYKColorspace)
-                {
-                  *indexes=UpScale(pixel);
-                  break;
-                }
+                q->opacity=UpScale(pixel);
+              else
+                q->opacity=MaxRGB-UpScale(pixel);
             }
             case 4:
             case -1:
             {
-              q->opacity=MaxRGB-UpScale(pixel);
+              if (image->colorspace == CMYKColorspace)
+                *indexes=MaxRGB-UpScale(pixel);
               break;
             }
             default:
@@ -209,15 +209,16 @@ static unsigned int DecodeImage(Image *image,const int channel)
         case 3:
         {
           if (image->colorspace == CMYKColorspace)
-            {
-              *indexes=UpScale(pixel);
-              break;
-            }
+            q->opacity=UpScale(pixel);
+          else
+            q->opacity=MaxRGB-UpScale(pixel);
+          break;
         }
         case 4:
         case -1:
         {
-          q->opacity=MaxRGB-UpScale(pixel);
+          if (image->colorspace == CMYKColorspace)
+            *indexes=MaxRGB-UpScale(pixel);
           break;
         }
         default:
@@ -662,13 +663,17 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (layer_info[i].image->colorspace == CMYKColorspace)
                   (void) PushImagePixels(layer_info[i].image,BlackQuantum,
                     scanline);
+                else
+                  (void) PushImagePixels(layer_info[i].image,OpacityQuantum,
+                    scanline);
                 break;
               }
               case 4:
               case -1:
               {
-                (void) PushImagePixels(layer_info[i].image,OpacityQuantum,
-                  scanline);
+                if (layer_info[i].image->colorspace == CMYKColorspace)
+                  (void) PushImagePixels(layer_info[i].image,OpacityQuantum,
+                    scanline);
                 break;
               }
               default:
@@ -681,6 +686,31 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         image->file=layer_info[i].image->file;
         image->blob=layer_info[i].image->blob;
+        if (layer_info[i].opacity != OpaqueOpacity)
+          {
+            /*
+              Correct for opacity level.
+            */
+            for (y=0; y < (int) layer_info[i].image->rows; y++)
+            {
+              q=GetImagePixels(layer_info[i].image,0,y,
+                layer_info[i].image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              indexes=GetIndexes(image);
+              for (x=0; x < (int) layer_info[i].image->columns; x++)
+              {
+                q->opacity=((unsigned long)
+                  (q->opacity*layer_info[i].opacity)/MaxRGB);
+                if (layer_info[i].image->colorspace == CMYKColorspace)
+                  indexes[x]=((unsigned long)
+                    (indexes[x]*layer_info[i].opacity)/MaxRGB);
+                q++;
+              }
+              if (!SyncImagePixels(layer_info[i].image))
+                break;
+            }
+          }
         if (layer_info[i].image->colorspace == CMYKColorspace)
           {
             /*
@@ -692,41 +722,18 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 layer_info[i].image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(layer_info[i].image);
               for (x=0; x < (int) layer_info[i].image->columns; x++)
               {
                 q->red=MaxRGB-q->red;
                 q->green=MaxRGB-q->green;
                 q->blue=MaxRGB-q->blue;
-                indexes[x]=MaxRGB-indexes[x];
+                q->opacity=MaxRGB-q->opacity;
                 q++;
               }
               if (!SyncImagePixels(layer_info[i].image))
                 break;
             }
           }
-        else
-          if (layer_info[i].opacity != OpaqueOpacity)
-            {
-              /*
-                Correct for opacity level.
-              */
-              for (y=0; y < (int) layer_info[i].image->rows; y++)
-              {
-                q=GetImagePixels(layer_info[i].image,0,y,
-                  layer_info[i].image->columns,1);
-                if (q == (PixelPacket *) NULL)
-                  break;
-                for (x=0; x < (int) layer_info[i].image->columns; x++)
-                {
-                  q->opacity=((unsigned long)
-                    (q->opacity*layer_info[i].opacity)/MaxRGB);
-                  q++;
-                }
-                if (!SyncImagePixels(layer_info[i].image))
-                  break;
-              }
-            }
         layer_info[i].image->file=(FILE *) NULL;
       }
       for (i=0; i < 4; i++)
@@ -821,13 +828,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
         for (x=0; x < (int) image->columns; x++)
         {
           q->red=MaxRGB-q->red;
           q->green=MaxRGB-q->green;
           q->blue=MaxRGB-q->blue;
-          indexes[x]=MaxRGB-indexes[x];
+          q->opacity=MaxRGB-q->opacity;
           q++;
         }
         if (!SyncImagePixels(image))

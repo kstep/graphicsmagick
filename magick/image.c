@@ -1135,8 +1135,12 @@ MagickExport unsigned int CompositeImage(Image *image,
   assert(composite_image != (Image *) NULL);
   assert(composite_image->signature == MagickSignature);
   image->storage_class=DirectClass;
+  if (image->colorspace != RGBColorspace)
+    TransformRGBImage(image,RGBColorspace);
   if (!image->matte)
     SetImageOpacity(image,OpaqueOpacity);
+  if (composite_image->colorspace != RGBColorspace)
+    TransformRGBImage(composite_image,RGBColorspace);
   composite_image->storage_class=DirectClass;
   if (!composite_image->matte)
     SetImageOpacity(composite_image,OpaqueOpacity);
@@ -5068,7 +5072,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
             (magenta < 0 ? 0 : magenta >= MaxRGB ? MaxRGB : magenta);
           q->blue=(Quantum)
             (yellow < 0 ? 0 : yellow >= MaxRGB ? MaxRGB : yellow);
-          indexes[x]=(IndexPacket) black;
+          indexes[x]=q->opacity;
+          q->opacity=(Quantum) black;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -6448,11 +6453,11 @@ MagickExport unsigned int TransformRGBImage(Image *image,
         indexes=GetIndexes(image);
         for (x=0; x < (int) image->columns; x++)
         {
-          q->red=(unsigned long) ((MaxRGB-q->red)*(MaxRGB-indexes[x]))/MaxRGB;
+          q->red=(unsigned long) ((MaxRGB-q->red)*(MaxRGB-q->opacity))/MaxRGB;
           q->green=(unsigned long)
-            ((MaxRGB-q->green)*(MaxRGB-indexes[x]))/MaxRGB;
-          q->blue=(unsigned long) ((MaxRGB-q->blue)*(MaxRGB-indexes[x]))/MaxRGB;
-          q->opacity=OpaqueOpacity;
+            ((MaxRGB-q->green)*(MaxRGB-q->opacity))/MaxRGB;
+          q->blue=(unsigned long) ((MaxRGB-q->blue)*(MaxRGB-q->opacity))/MaxRGB;
+          q->opacity=indexes[x];
           q++;
         }
         if (!SyncImagePixels(image))
