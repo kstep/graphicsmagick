@@ -99,11 +99,11 @@ extern MagickExport long
 extern MagickExport struct dirent
   *readdir(DIR *);
 
-extern MagickExport int
-  NTIsMagickConflict(const char *);
-
-extern MagickExport char
+extern MagickExport unsigned char
   *NTResourceToBlob(const char *);
+
+extern MagickExport unsigned int
+  NTIsMagickConflict(const char *);
 
 extern MagickExport void
   closedir(DIR *),
