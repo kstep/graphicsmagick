@@ -18,7 +18,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated %
+%  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
 %  to making software imaging solutions freely available.                     %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
@@ -103,7 +103,7 @@ static unsigned int
 MagickExport unsigned int AnnotateImage(Image *image,
   const AnnotateInfo *annotate_info)
 {
-  AffineInfo
+  AffineMatrix
     affine;
 
   AnnotateInfo
@@ -189,8 +189,6 @@ MagickExport unsigned int AnnotateImage(Image *image,
         height-=2*y > height ? height : 2*y;
     }
   clone_info=CloneAnnotateInfo((ImageInfo *) NULL,annotate_info);
-  if (clone_info->fill.opacity == TransparentOpacity)
-    clone_info->fill.opacity=OpaqueOpacity;
   affine=annotate_info->affine;
   draw_info=CloneDrawInfo((ImageInfo *) NULL,(DrawInfo *) NULL);
   draw_info->primitive=AllocateString(primitive);
@@ -396,6 +394,16 @@ MagickExport AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
     clone_info->density=AllocateString(annotate_info->density);
   if (annotate_info->server_name != (char *) NULL)
     clone_info->server_name=AllocateString(annotate_info->server_name);
+  if (annotate_info->clip_path.number_edges != 0)
+    {
+      clone_info->clip_path.edges=(EdgeInfo *)
+        AcquireMemory(annotate_info->clip_path.number_edges*sizeof(EdgeInfo));
+      if (clone_info->clip_path.edges == (EdgeInfo *) NULL)
+        MagickError(ResourceLimitWarning,"Unable to clone annotate info",
+          "Memory allocation failed");
+      memcpy(clone_info->clip_path.edges,annotate_info->clip_path.edges,
+        annotate_info->clip_path.number_edges*sizeof(EdgeInfo));
+    }
   return(clone_info);
 }
 
@@ -437,6 +445,8 @@ MagickExport void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
     LiberateMemory((void **) &annotate_info->density);
   if (annotate_info->server_name != (char *) NULL)
     LiberateMemory((void **) &annotate_info->server_name);
+  if (annotate_info->clip_path.edges != (EdgeInfo *) NULL)
+    LiberateMemory((void **) &annotate_info->clip_path.edges);
   LiberateMemory((void **) &annotate_info);
 }
 
@@ -662,9 +672,6 @@ static unsigned int RenderTruetype(Image *image,
     length,
     y;
 
-  PixelPacket
-    fill_color;
-
   PointInfo
     point,
     resolution;
@@ -831,8 +838,8 @@ static unsigned int RenderTruetype(Image *image,
   }
   glyph->id=0;
   LiberateMemory((void **) &unicode);
-  metrics->ppem.x=face->size->metrics.x_ppem;
-  metrics->ppem.y=face->size->metrics.y_ppem;
+  metrics->pixels_per_em.x=face->size->metrics.x_ppem;
+  metrics->pixels_per_em.y=face->size->metrics.y_ppem;
   metrics->ascent=face->size->metrics.ascender >> 6;
   metrics->descent=face->size->metrics.descender >> 6;
   metrics->width=Max(origin.x >> 6,extent.x2);
@@ -845,62 +852,88 @@ static unsigned int RenderTruetype(Image *image,
       LiberateMemory((void **) &glyphs);
       return(True);
     }
-  /*
-    Render label.
-  */
-  image->storage_class=DirectClass;
-  fill_color=annotate_info->fill;
-  for (glyph=glyphs; glyph->id != 0; glyph++)
-  {
-    if (glyph->image == (FT_Glyph) NULL)
-      continue;
-    status=FT_Glyph_To_Bitmap(&glyph->image,ft_render_mode_normal,False,False);
-    bitmap=(FT_BitmapGlyph) glyph->image;
-    if ((bitmap->bitmap.width == 0) || (bitmap->bitmap.rows == 0))
-      continue;
-    point.x=offset->x+bitmap->left;
-    point.y=offset->y-bitmap->top;
-    p=bitmap->bitmap.buffer;
-    for (y=0; y < bitmap->bitmap.rows; y++)
+  if (annotate_info->fill.opacity != TransparentOpacity)
     {
-      if (ceil(point.y+y-0.5) < 0)
-        continue;
-      if (ceil(point.y+y-0.5) >= image->rows)
-        break;
-      for (x=0; x < bitmap->bitmap.width; x++)
+      PixelPacket
+        fill_color;
+
+      /*
+        Render fill color.
+      */
+      image->storage_class=DirectClass;
+      fill_color=annotate_info->fill;
+      for (glyph=glyphs; glyph->id != 0; glyph++)
       {
-        if ((ceil(point.x+x-0.5) < 0) ||
-            (ceil(point.x+x-0.5) >= image->columns))
-          {
-            p++;
+        if (glyph->image == (FT_Glyph) NULL)
+          continue;
+        status=FT_Glyph_To_Bitmap(&glyph->image,ft_render_mode_normal,False,
+          False);
+        bitmap=(FT_BitmapGlyph) glyph->image;
+        if ((bitmap->bitmap.width == 0) || (bitmap->bitmap.rows == 0))
+          continue;
+        point.x=offset->x+bitmap->left;
+        point.y=offset->y-bitmap->top;
+        p=bitmap->bitmap.buffer;
+        for (y=0; y < bitmap->bitmap.rows; y++)
+        {
+          if (ceil(point.y+y-0.5) < 0)
             continue;
-          }
-        if (*p == 0)
+          if (ceil(point.y+y-0.5) >= image->rows)
+            break;
+          for (x=0; x < bitmap->bitmap.width; x++)
           {
+            if ((ceil(point.x+x-0.5) < 0) ||
+                (ceil(point.x+x-0.5) >= image->columns))
+              {
+                p++;
+                continue;
+              }
+            if (*p == 0)
+              {
+                p++;
+                continue;
+              }
+            q=GetImagePixels(image,(int) ceil(point.x+x-0.5),
+              (int) ceil(point.y+y-0.5),1,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            opacity=MaxRGB-((unsigned long) (UpScale(*p)*
+              (MaxRGB-fill_color.opacity))/MaxRGB);
+            q->red=((unsigned long) (fill_color.red*(MaxRGB-opacity)+
+              q->red*opacity)/MaxRGB);
+            q->green=((unsigned long) (fill_color.green*(MaxRGB-opacity)+
+              q->green*opacity)/MaxRGB);
+            q->blue=((unsigned long) (fill_color.blue*(MaxRGB-opacity)+
+              q->blue*opacity)/MaxRGB);
+            q->opacity=((unsigned long) (opacity*(MaxRGB-opacity)+
+              q->opacity*opacity)/MaxRGB);
+            if (!SyncImagePixels(image))
+              break;
             p++;
-            continue;
           }
-        q=GetImagePixels(image,(int) ceil(point.x+x-0.5),
-          (int) ceil(point.y+y-0.5),1,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        opacity=MaxRGB-((unsigned long) (UpScale(*p)*
-          (MaxRGB-fill_color.opacity))/MaxRGB);
-        q->red=((unsigned long) (fill_color.red*(MaxRGB-opacity)+
-          q->red*opacity)/MaxRGB);
-        q->green=((unsigned long) (fill_color.green*(MaxRGB-opacity)+
-          q->green*opacity)/MaxRGB);
-        q->blue=((unsigned long) (fill_color.blue*(MaxRGB-opacity)+
-          q->blue*opacity)/MaxRGB);
-        q->opacity=((unsigned long) (opacity*(MaxRGB-opacity)+
-          q->opacity*opacity)/MaxRGB);
-        if (!SyncImagePixels(image))
-          break;
-        p++;
+        }
       }
     }
+  if (annotate_info->stroke.opacity != TransparentOpacity)
+    {
+      PixelPacket
+        stroke_color;
+
+      /*
+        Render stroke color.
+      */
+      image->storage_class=DirectClass;
+      stroke_color=annotate_info->stroke;
+      for (glyph=glyphs; glyph->id != 0; glyph++)
+      {
+        /* waiting for leonard to code */
+      }
+    }
+  /*
+    Free resources.
+  */
+  for (glyph=glyphs; glyph->id != 0; glyph++)
     FT_Done_Glyph(glyph->image);
-  }
   LiberateMemory((void **) &glyphs);
   return(True);
 }
@@ -936,9 +969,6 @@ static unsigned int RenderPostscript(Image *image,
 
   int
     y;
-
-  PixelPacket
-    fill_color;
 
   PointInfo
     extent,
@@ -1051,40 +1081,50 @@ static unsigned int RenderPostscript(Image *image,
         crop_info.height,crop_info.x,crop_info.y);
       TransformImage(&annotate_image,geometry,(char *) NULL);
     }
-  metrics->ppem.x=(resolution.y/72.0)*ExpandAffine(&annotate_info->affine)*
-    annotate_info->pointsize;
-  metrics->ppem.y=metrics->ppem.x;
-  metrics->ascent=metrics->ppem.x;
-  metrics->descent=(int) metrics->ppem.y/-5;
+  metrics->pixels_per_em.x=(resolution.y/72.0)*
+    ExpandAffine(&annotate_info->affine)*annotate_info->pointsize;
+  metrics->pixels_per_em.y=metrics->pixels_per_em.x;
+  metrics->ascent=metrics->pixels_per_em.x;
+  metrics->descent=(int) metrics->pixels_per_em.y/-5;
   metrics->width=annotate_image->columns/ExpandAffine(&annotate_info->affine);
-  metrics->height=1.152*metrics->ppem.x;
-  metrics->max_advance=metrics->ppem.x;
+  metrics->height=1.152*metrics->pixels_per_em.x;
+  metrics->max_advance=metrics->pixels_per_em.x;
   if (!render)
     {
       DestroyImage(annotate_image);
       return(True);
     }
-  annotate_image->matte=True;
-  fill_color=annotate_info->fill;
-  for (y=0; y < (int) annotate_image->rows; y++)
-  {
-    q=GetImagePixels(annotate_image,0,y,annotate_image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (int) annotate_image->columns; x++)
+  if (annotate_info->fill.opacity != TransparentOpacity)
     {
-      q->opacity=MaxRGB-((unsigned long) ((MaxRGB-Intensity(*q))*
-        (MaxRGB-fill_color.opacity))/MaxRGB);
-      q->red=fill_color.red;
-      q->green=fill_color.green;
-      q->blue=fill_color.blue;
-      q++;
+      PixelPacket
+        fill_color;
+
+      /*
+        Render fill color.
+      */
+      annotate_image->matte=True;
+      fill_color=annotate_info->fill;
+      for (y=0; y < (int) annotate_image->rows; y++)
+      {
+        q=GetImagePixels(annotate_image,0,y,annotate_image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) annotate_image->columns; x++)
+        {
+          q->opacity=MaxRGB-((unsigned long) ((MaxRGB-Intensity(*q))*
+            (MaxRGB-fill_color.opacity))/MaxRGB);
+          q->red=fill_color.red;
+          q->green=fill_color.green;
+          q->blue=fill_color.blue;
+          q++;
+        }
+        if (!SyncImagePixels(annotate_image))
+          break;
+      }
+      CompositeImage(image,OverCompositeOp,annotate_image,(int)
+        ceil(offset->x-0.5),(int) ceil(offset->y-(metrics->ascent+
+        metrics->descent)-0.5));
     }
-    if (!SyncImagePixels(annotate_image))
-      break;
-  }
-  CompositeImage(image,OverCompositeOp,annotate_image,(int) ceil(offset->x-0.5),
-    (int) ceil(offset->y-(metrics->ascent+metrics->descent)-0.5));
   DestroyImage(annotate_image);
   return(True);
 }
@@ -1221,37 +1261,41 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
   xannotate_info.width=XTextWidth(font_info,annotate_info->text,
     Extent(annotate_info->text));
   xannotate_info.height=font_info->ascent+font_info->descent;
-  metrics->ppem.x=font_info->max_bounds.width;
-  metrics->ppem.y=font_info->max_bounds.width;
+  metrics->pixels_per_em.x=font_info->max_bounds.width;
+  metrics->pixels_per_em.y=font_info->max_bounds.width;
   metrics->ascent=font_info->ascent;
   metrics->descent=(-font_info->descent);
   metrics->width=xannotate_info.width/ExpandAffine(&annotate_info->affine);
-  metrics->height=metrics->ppem.x+4;
+  metrics->height=metrics->pixels_per_em.x+4;
   metrics->max_advance=font_info->max_bounds.width;
   if (!render)
     return(True);
-  /*
-    Render label with a X11 server font.
-  */
-  width=xannotate_info.width;
-  height=xannotate_info.height;
-  if ((annotate_info->affine.rx != 0.0) || (annotate_info->affine.ry != 0.0))
+  if (annotate_info->fill.opacity != TransparentOpacity)
     {
-      if (((annotate_info->affine.sx-annotate_info->affine.sy) == 0.0) &&
-          ((annotate_info->affine.rx+annotate_info->affine.ry) == 0.0))
-        xannotate_info.degrees=(180.0/M_PI)*
-          atan2(annotate_info->affine.rx,annotate_info->affine.sx);
+      /*
+        Render fill color.
+      */
+      width=xannotate_info.width;
+      height=xannotate_info.height;
+      if ((annotate_info->affine.rx != 0.0) ||
+          (annotate_info->affine.ry != 0.0))
+        {
+          if (((annotate_info->affine.sx-annotate_info->affine.sy) == 0.0) &&
+              ((annotate_info->affine.rx+annotate_info->affine.ry) == 0.0))
+            xannotate_info.degrees=(180.0/M_PI)*
+              atan2(annotate_info->affine.rx,annotate_info->affine.sx);
+        }
+      FormatString(xannotate_info.geometry,"%ux%u+%d+%d",width,height,
+        (int) ceil(offset->x-0.5),(int) ceil(offset->y-metrics->ascent-
+        metrics->descent-1.5));
+      pixel.pen_color.red=XUpScale(annotate_info->fill.red);
+      pixel.pen_color.green=XUpScale(annotate_info->fill.green);
+      pixel.pen_color.blue=XUpScale(annotate_info->fill.blue);
+      status=XAnnotateImage(display,&pixel,&xannotate_info,image);
+      if (status == 0)
+        ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
+          "Memory allocation failed");
     }
-  FormatString(xannotate_info.geometry,"%ux%u+%d+%d",width,height,
-    (int) ceil(offset->x-0.5),(int) ceil(offset->y-metrics->ascent-
-    metrics->descent-1.5));
-  pixel.pen_color.red=XUpScale(annotate_info->fill.red);
-  pixel.pen_color.green=XUpScale(annotate_info->fill.green);
-  pixel.pen_color.blue=XUpScale(annotate_info->fill.blue);
-  status=XAnnotateImage(display,&pixel,&xannotate_info,image);
-  if (status == 0)
-    ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
-      "Memory allocation failed");
   return(True);
 }
 #else

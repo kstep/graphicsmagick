@@ -19,7 +19,7 @@
 %                              July 1992                                      %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2000 imagemagick Studio, a non-profit organization dedicated %
+%  Copyright (C) 2001 imagemagick Studio, a non-profit organization dedicated %
 %  to making software imaging solutions freely available.                     %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %

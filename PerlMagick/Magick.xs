@@ -24,7 +24,7 @@
 %                             February 1997                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated %
+%  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
 %  to making software imaging solutions freely available.                     %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
@@ -3755,7 +3755,7 @@ Mogrify(ref,...)
     MogrifyRegion      = 666
   PPCODE:
   {
-    AffineInfo
+    AffineMatrix
       affine,
       current;
 
@@ -6096,7 +6096,7 @@ QueryFontMetrics(ref,...)
     queryfontmetrics = 1
   PPCODE:
   {
-    AffineInfo
+    AffineMatrix
       affine,
       current;
 
@@ -6114,14 +6114,14 @@ QueryFontMetrics(ref,...)
       x,
       y;
 
+    FontMetrics
+      metrics;
+
     Image
       *image;
 
     register int
       i;
-
-    SegmentInfo
-      bounds;
 
     struct PackageInfo
       *info;
@@ -6147,10 +6147,6 @@ QueryFontMetrics(ref,...)
     CloneString(&annotate_info->text,"");
     current=annotate_info->affine;
     IdentityAffine(&affine);
-    bounds.x1=0.0;
-    bounds.y1=0.0;
-    bounds.x2=0.0;
-    bounds.y2=0.0;
     x=0.0;
     y=0.0;
     for (i=1; i < items; i+=2)
@@ -6289,27 +6285,12 @@ QueryFontMetrics(ref,...)
         annotate_info->geometry=AllocateString((char *) NULL);
         FormatString(annotate_info->geometry,"%f,%f",x,y);
       }
-    status=GetFontMetrics(image,annotate_info,&bounds);
+    status=GetFontMetrics(image,annotate_info,&metrics);
     if (status != False)
       {
-        PointInfo
-          resolution;
-    
-        resolution.x=72.0;
-        resolution.y=72.0;
-        if (annotate_info->density != (char *) NULL)
-          {
-            int
-              count;
-
-            count=sscanf(annotate_info->density,"%lfx%lf",&resolution.x,
-              &resolution.y);
-            if (count != 2)
-              resolution.y=resolution.x;
-          }
-        FormatString(message,"%g,%g,%g,%g,%g",bounds.x1,bounds.y1,bounds.x2,
-          bounds.y2,(resolution.y/72.0)*ExpandAffine(&annotate_info->affine)*
-          annotate_info->pointsize);
+        FormatString(message,"%g,%g,%d,%d,%d,%d,%d",metrics.pixels_per_em.x,
+          metrics.pixels_per_em.y,metrics.ascent,metrics.descent,metrics.width,
+          metrics.height,metrics.max_advance);
         s=sv_2mortal(newSVpv(message,0));
         PUSHs(s);
       }

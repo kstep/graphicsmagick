@@ -18,7 +18,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated %
+%  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
 %  to making software imaging solutions freely available.                     %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
@@ -2719,7 +2719,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->pointsize=12;
   IdentityAffine(&image_info->affine);
   (void) QueryColorDatabase("none",&image_info->stroke);
-  (void) QueryColorDatabase("none",&image_info->fill);
+  (void) QueryColorDatabase("black",&image_info->fill);
   (void) QueryColorDatabase("#ffffff",&image_info->background_color);
   (void) QueryColorDatabase(BorderColor,&image_info->border_color);
   (void) QueryColorDatabase(MatteColor,&image_info->matte_color);

@@ -11,6 +11,33 @@ extern "C" {
 /*
   Typedef declarations.
 */
+typedef struct _EdgeInfo
+{
+  SegmentInfo
+    bounds;
+
+  double
+    scanline;
+
+  PointInfo
+    *points;
+
+  int
+    number_points,
+    direction,
+    ghostline,
+    highwater;
+} EdgeInfo;
+
+typedef struct _PolygonInfo
+{
+  EdgeInfo
+    *edges;
+
+  int
+    number_edges;
+} PolygonInfo;
+
 typedef struct _AnnotateInfo
 {
   char
@@ -28,7 +55,7 @@ typedef struct _AnnotateInfo
   double
     pointsize;
 
-  AffineInfo
+  AffineMatrix
     affine;
 
   PixelPacket
@@ -42,8 +69,8 @@ typedef struct _AnnotateInfo
   char
     *server_name;
 
-  Image
-    *clip_mask;
+  PolygonInfo
+    clip_path;
 
   unsigned long
     signature;
@@ -54,7 +81,7 @@ typedef struct _DrawInfo
   char
     *primitive;
 
-  AffineInfo
+  AffineMatrix
     affine;
 
   GravityType
@@ -113,8 +140,8 @@ typedef struct _DrawInfo
   char
     *server_name;
 
-  Image
-    *clip_mask;
+  PolygonInfo
+    clip_path;
 
   unsigned long
     signature;
@@ -123,7 +150,7 @@ typedef struct _DrawInfo
 typedef struct _FontMetrics
 {
   PointInfo
-    ppem;
+    pixels_per_em;
 
   int
     ascent,

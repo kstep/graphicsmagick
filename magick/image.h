@@ -50,7 +50,7 @@ typedef unsigned char Quantum;
 /*
   Typedef declarations.
 */
-typedef struct _AffineInfo
+typedef struct _AffineMatrix
 {
   double
     sx,
@@ -59,7 +59,7 @@ typedef struct _AffineInfo
     sy,
     tx,
     ty;
-} AffineInfo;
+} AffineMatrix;
 
 typedef struct _Ascii85Info
 {
@@ -503,7 +503,7 @@ typedef struct _ImageInfo
   double
     pointsize;
 
-  AffineInfo
+  AffineMatrix
     affine;
 
   double

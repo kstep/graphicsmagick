@@ -18,7 +18,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated %
+%  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
 %  to making software imaging solutions freely available.                     %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
@@ -80,24 +80,6 @@
 /*
   Typedef declarations.
 */
-typedef struct _EdgeInfo
-{
-  SegmentInfo
-    bounds;
-
-  double
-    scanline;
-
-  PointInfo
-    *points;
-
-  int
-    number_points,
-    direction,
-    ghostline,
-    highwater;
-} EdgeInfo;
-
 typedef enum
 {
   MoveToCode,
@@ -115,15 +97,6 @@ typedef struct _PathInfo
   PathInfoCode
     code;
 } PathInfo;
-
-typedef struct _PolygonInfo
-{
-  EdgeInfo
-    *edges;
-
-  int
-    number_edges;
-} PolygonInfo;
 
 /*
   Forward declarations.
@@ -217,6 +190,16 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
       CloneImage(draw_info->tile,0,0,True,&draw_info->tile->exception);
   if (draw_info->server_name != (char *) NULL)
     clone_info->server_name=AllocateString(draw_info->server_name);
+  if (draw_info->clip_path.number_edges != 0)
+    {
+      clone_info->clip_path.edges=(EdgeInfo *)
+        AcquireMemory(draw_info->clip_path.number_edges*sizeof(EdgeInfo));
+      if (clone_info->clip_path.edges == (EdgeInfo *) NULL)
+        MagickError(ResourceLimitWarning,"Unable to clone draw info",
+          "Memory allocation failed");
+      memcpy(clone_info->clip_path.edges,draw_info->clip_path.edges,
+        draw_info->clip_path.number_edges*sizeof(EdgeInfo));
+    }
   return(clone_info);
 }
 
@@ -533,6 +516,8 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     LiberateMemory((void **) &draw_info->dash_pattern);
   if (draw_info->server_name != (char *) NULL)
     LiberateMemory((void **) &draw_info->server_name);
+  if (draw_info->clip_path.edges != (EdgeInfo *) NULL)
+    LiberateMemory((void **) &draw_info->clip_path.edges);
   LiberateMemory((void **) &draw_info);
 }
 
@@ -847,7 +832,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
 */
 MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 {
-  AffineInfo
+  AffineMatrix
     affine,
     current;
 
@@ -2952,6 +2937,16 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
       CloneString(&annotate->text,primitive_info->text);
       FormatString(annotate->geometry,"%+g%+g",primitive_info->point.x,
         primitive_info->point.y);
+      if (draw_info->clip_path.number_edges != 0)
+        {
+          annotate->clip_path.edges=(EdgeInfo *)
+            AcquireMemory(draw_info->clip_path.number_edges*sizeof(EdgeInfo));
+          if (annotate->clip_path.edges == (EdgeInfo *) NULL)
+            MagickError(ResourceLimitWarning,"Unable to clone clip path",
+              "Memory allocation failed");
+          memcpy(annotate->clip_path.edges,draw_info->clip_path.edges,
+            draw_info->clip_path.number_edges*sizeof(EdgeInfo));
+        }
       status=AnnotateImage(image,annotate);
       DestroyAnnotateInfo(annotate);
       break;
@@ -3104,8 +3099,8 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
             (primitive_info[i-1].point.y == primitive_info[0].point.y);
           i=primitive_info[0].coordinates;
           if ((((draw_info->linecap == RoundCap) || closed_path) &&
-               (draw_info->linejoin == RoundJoin)) || 
-	       (primitive_info[i].primitive != UndefinedPrimitive))
+               (draw_info->linejoin == RoundJoin)) ||
+               (primitive_info[i].primitive != UndefinedPrimitive))
             {
               DrawPolygonPrimitive(draw_info,primitive_info,polygon_info,image);
               DestroyPolygonInfo(polygon_info);

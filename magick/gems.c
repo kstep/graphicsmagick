@@ -18,7 +18,7 @@
 %                                 August 1996                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated %
+%  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
 %  to making software imaging solutions freely available.                     %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
@@ -126,22 +126,22 @@ MagickExport void Contrast(const int sign,Quantum *red,Quantum *green,
 %
 %  The format of the ExpandAffine method is:
 %
-%      double ExpandAffine(const AffineInfo *affine)
+%      double ExpandAffine(const AffineMatrix *affine)
 %
 %  A description of each parameter follows:
 %
 %    o expansion: Method ExpandAffine returns the affine's expansion factor.
 %
-%    o affine: A pointer the the affine transform of type AffineInfo.
+%    o affine: A pointer the the affine transform of type AffineMatrix.
 %
 %
 */
-MagickExport double ExpandAffine(const AffineInfo *affine)
+MagickExport double ExpandAffine(const AffineMatrix *affine)
 {
   double
     expand;
 
-  assert(affine != (const AffineInfo *) NULL);
+  assert(affine != (const AffineMatrix *) NULL);
   expand=fabs(affine->sx*affine->sy)-fabs(affine->rx*affine->ry);
   return(sqrt(fabs(expand)));
 }
@@ -591,17 +591,17 @@ MagickExport void Hull(const int x_offset,const int y_offset,const int polarity,
 %
 %  The format of the IdentityAffine method is:
 %
-%      IdentityAffine(AffineInfo *affine)
+%      IdentityAffine(AffineMatrix *affine)
 %
 %  A description of each parameter follows:
 %
-%    o affine: A pointer the the affine transform of type AffineInfo.
+%    o affine: A pointer the the affine transform of type AffineMatrix.
 %
 %
 */
-MagickExport void IdentityAffine(AffineInfo *affine)
+MagickExport void IdentityAffine(AffineMatrix *affine)
 {
-  assert(affine != (AffineInfo *) NULL);
+  assert(affine != (AffineMatrix *) NULL);
   affine->sx=1.0;
   affine->rx=0.0;
   affine->ry=0.0;
