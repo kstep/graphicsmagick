@@ -1,3 +1,9 @@
+
+2002-10-29  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+  * Added three output formats: PNG24 (24-bit RGB PNG, opaque only),
+    PNG32 32-bit (RGBA PNG, semitransparency OK), and PNG8 (8-bit
+    indexed PNG, binary transparency only).
+
 2002-10-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * coders/vid.c: Modified to be 10X faster for large images and to take
     advantage of JPEG size optimizations.
