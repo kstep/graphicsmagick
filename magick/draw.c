@@ -2156,7 +2156,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %
 */
 
-static inline double DistanceToLine(const PointInfo *point,const PointInfo *p,
+inline static double DistanceToLine(const PointInfo *point,const PointInfo *p,
   const PointInfo *q)
 {
   double
@@ -2182,7 +2182,7 @@ static inline double DistanceToLine(const PointInfo *point,const PointInfo *p,
   return(alpha*alpha+beta*beta);
 }
 
-static inline double PixelOnLine(const PointInfo *point,const PointInfo *p,
+static _inline double PixelOnLine(const PointInfo *point,const PointInfo *p,
   const PointInfo *q,const double mid,const double opacity)
 {
   register double
