@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.0 News</TITLE>
+<TITLE>GraphicsMagick 1.0.2 News</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -49,11 +49,47 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0 News</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0.2 News</font></font></font></b></td>
 </tr>
 </table>
 <p>
-Major changes associated with GraphicsMagick 1.0 (as of April, 2003)
+Major changes associated with GraphicsMagick 1.0.2 (Pending)
+
+<p>
+  Bug Fixes:<BR>
+<UL>
+  <LI> Under Windows, extend PATH to include directory where CORE DLLs
+    reside so that module loading works reliably.
+  <LI> Added missing module mappings for PNG8, PNG24, and PNG32.
+  <LI> Search for type.mgk in $MAGICK_HOME.
+  <LI> Fix hang while floodfilling image using a pattern.
+  <LI> Incorporated shear fixes from ImageMagick.
+  <LI> Minor memory leak fixed.
+  <LI> Fixed PerlMagick Shade 'elevation' argument.
+  <LI> Fixed EPT writing.
+  <LI> Fixed an error handling path in mogrify command.
+  <LI> Added missing module mappings for a number of coders.
+  <LI> Fixed problem with libxml/libxml2.def &amp; Visual C++ 6.0.
+
+</UL>
+<p>
+Major changes associated with GraphicsMagick 1.0.1 (Released May 18, 2003)
+
+<p>
+  Bug Fixes:<BR>
+<UL>
+  <LI> Gravity works in conjunction with coordinates in MSL.
+  <LI> Include HasX11 in installed magick_config.h so xwindow.h works.
+
+</UL>
+<p>
+  Other Changes:<BR>
+<UL>
+  <LI> New logo image.
+
+</UL>
+<p>
+Major changes associated with GraphicsMagick 1.0 (Released May 5, 2003)
 
 <p>
   GraphicsMagick support services:<BR>

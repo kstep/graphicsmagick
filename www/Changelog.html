@@ -53,9 +53,23 @@
 </tr>
 </table>
 <p>
+2003-06-02  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> png.c: Merge bugfixes from 1.1 branch:
+  <LI> MNG encoder failed to set the JNG bit in the simplicity profile.
+  <LI> MNG encoder failed to write FRAM chunks when all images were JNG.
+  <LI> JNG encoder wrote the wrong alpha_sample_depth for opaque images.
+  <LI> coders/png.c: png.c would dump core when writing a grayscale
+        image in png24 or png32 format.
+
+</UL>
+<p>
 2003-06-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/version.h.in: Change to be Copyright (C) 2002, 2003.
+  <LI> NEWS: Updated to incorporate changes since the 1.0 release.
   <LI> version.sh: Bump library revision and release version since code
         updates have been made.<BR>
   <LI> libxml/libxml2.def: Remove 'LIBRARY libxml2' statement which

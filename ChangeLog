@@ -9,6 +9,7 @@
 
 2003-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/version.h.in: Change to be Copyright (C) 2002, 2003.
 	* NEWS: Updated to incorporate changes since the 1.0 release.
 	* version.sh: Bump library revision and release version since code
 	updates have been made.
