@@ -3748,6 +3748,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (*image)->border_color=clone_info->border_color;
             continue;
           }
+        if (LocaleCompare("-box",option) == 0)
+          {
+            (void) QueryColorDatabase(argv[++i],&draw_info->undercolor,
+              &(*image)->exception);
+            continue;
+          }
         break;
       }
       case 'c':

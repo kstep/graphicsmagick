@@ -97,7 +97,7 @@ extern "C" {
 #define False  0
 #define ImageReference  (char **) 3
 #define IntegerReference  (char **) 1
-#define MaxArguments  27
+#define MaxArguments  28
 #ifndef na
 #define na  PL_na
 #endif
@@ -345,7 +345,7 @@ static struct
       {"style", StyleTypes}, {"stretch", StretchTypes},
       {"weight", IntegerReference}, {"align", AlignTypes},
       {"encoding", StringReference}, {"unicode", BooleanTypes },
-      {"affine", ArrayReference} } },
+      {"affine", ArrayReference}, {"box", StringReference} } },
     { "ColorFloodfill", { {"geometry", StringReference},
       {"x", IntegerReference}, {"y", IntegerReference},
       {"fill", StringReference}, {"bordercolor", StringReference},
@@ -4898,6 +4898,9 @@ Mogrify(ref,...)
               argument_list[24].string_reference);
           if (attribute_flag[25])
             draw_info->unicode=argument_list[25].int_reference != 0;
+          if (attribute_flag[27])
+            (void) QueryColorDatabase(argument_list[27].string_reference,
+              &draw_info->undercolor,&image->exception);
           AnnotateImage(image,draw_info);
           DestroyDrawInfo(draw_info);
           break;

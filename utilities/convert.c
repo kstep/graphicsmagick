@@ -493,6 +493,16 @@ static unsigned int ConvertUtility(int argc,char **argv)
               }
             break;
           }
+        if (LocaleCompare("box",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"Missing color",option);
+              }
+            break;
+          }
         MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
