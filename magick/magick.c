@@ -712,7 +712,7 @@ MagickExport char *MagickToMime(const char *magick)
       { "ps",    "application/postscript" },
       { "ps2",   "application/postscript" },
       { "ps3",   "application/postscript" },
-      { "svg",   "svg+xml" },
+      { "svg",   "image/svg+xml" },
       { "tif",   "image/tiff" },
       { "tiff",  "image/tiff" },
       { "wbmp",  "image/vnd.wap.wbmp" },
