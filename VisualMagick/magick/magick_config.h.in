@@ -114,8 +114,8 @@
 // Define to use the bzip2 compression library
 #define HasBZLIB
 
-// Define to use the FlashPIX library
-#define HasFPX
+// Define to use the FlashPIX library (fpx module/subdirectory)
+// #undef HasFPX
 
 // Define to use the JBIG library
 #define HasJBIG

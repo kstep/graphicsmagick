@@ -566,11 +566,11 @@ if test "$with_dps" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-dps=$with_dps "
 fi
 
-# Disable FlashPIX.
+# Enable FlashPIX.
 AC_ARG_WITH(fpx,
-	      [  --without-fpx           disable FlashPIX support],
+	      [  --with-fpx              enable FlashPIX support],
 	      [with_fpx=$withval],
-	      [with_fpx='yes'])
+	      [with_fpx='no'])
 if test "$with_fpx" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-fpx=$with_fpx "
 fi
@@ -583,12 +583,6 @@ AC_ARG_WITH(gslib,
 if test "$with_gslib" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-gzlib=$with_gslib "
 fi
-
-# # Enable HDF.
-# AC_ARG_WITH(hdf,
-# 	      [  --with-hdf              enable HDF support],
-# 	      [with_hdf=$withval],
-# 	      [with_hdf='no'])
 
 # Disable JBIG.
 AC_ARG_WITH(jbig,
@@ -1889,46 +1883,6 @@ fi
 AM_CONDITIONAL(HasTIFF, test "$have_tiff" = 'yes')
 AC_SUBST(LIB_TIFF)
 
-# #
-# # Check for HDF
-# #
-# have_hdf='no'
-# LIB_HDF=''
-# if test "$with_hdf" != 'no'
-# then
-#     AC_MSG_CHECKING(for HDF components )
-#     AC_MSG_RESULT()
-#     failed=0;
-#     passed=0;
-#     AC_CHECK_HEADERS(hdf.h hdf/hdf.h)
-#     if test "$ac_cv_header_hdf_h" = 'yes' -o "$ac_cv_header_hdf_hdf_h" = 'yes'
-#     then
-#         passed=`expr $passed + 1`
-#     else
-#         failed=`expr $failed + 1`
-#     fi
-#     AC_CHECK_LIB(df,DFANputlabel,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-#     AC_MSG_CHECKING(if HDF package is complete)
-#     if test $passed -gt 0
-#     then
-#     if test $failed -gt 0
-#     then
-#         AC_MSG_RESULT(no -- some components failed test)
-#         have_hdf='no (failed tests)'
-#     else
-#         LIB_HDF='-ldf'
-#         LIBS="$LIB_HDF $LIBS"
-#         AC_DEFINE(HasHDF,1,Define if you have HDF library)
-#         AC_MSG_RESULT(yes)
-#         have_hdf='yes'
-#     fi
-#     else
-#     AC_MSG_RESULT(no)
-#     fi
-# fi
-# AM_CONDITIONAL(HasHDF, test "$have_hdf" = 'yes')
-# AC_SUBST(LIB_HDF)
-
 #
 # Check for JBIG
 #
@@ -2636,7 +2590,6 @@ if test "$have_bzlib"  = 'yes' ; then DELEGATES="$DELEGATES bzlib"  ; fi
 if test "$have_ralcgm" = 'yes' ; then DELEGATES="$DELEGATES cgm"  ; fi
 if test "$have_fpx"    = 'yes' ; then DELEGATES="$DELEGATES fpx"  ; fi
 if test "$have_hp2xx"  = 'yes' ; then DELEGATES="$DELEGATES hpgl"  ; fi
-# if test "$have_hdf"    = 'yes' ; then DELEGATES="$DELEGATES hdf"  ; fi
 if test "$have_jbig"   = 'yes' ; then DELEGATES="$DELEGATES jbig" ; fi
 if test "$have_png$have_jpeg" = 'yesyes' ; then DELEGATES="$DELEGATES jng"; fi
 if test "$have_jp2"   = 'yes' ; then DELEGATES="$DELEGATES jp2" ; fi
@@ -2804,7 +2757,6 @@ then
 fi
 echo "Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir    $result_ghostscript_font_dir"
 echo "Ghostscript lib   --with-gslib=$with_gslib       	$have_gslib"
-# echo "HDF               --with-hdf=$with_hdf          	$have_hdf"
 echo "JBIG              --with-jbig=$with_jbig        	$have_jbig"
 echo "JPEG v1           --with-jpeg=$with_jpeg        	$have_jpeg"
 echo "JPEG-2000         --with-jp2=$with_jp2          	$have_jp2"

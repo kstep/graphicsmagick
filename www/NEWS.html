@@ -21,7 +21,7 @@
 </tr>
 </table>
 <p>
-This file was last updated on December 28, 2004.
+This file was last updated on January 9, 2005.
 
 <p>
 Please note that this file records news for the associated development
@@ -67,6 +67,7 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
   <LI> Ensure that MIFF files indicate the compression which was actually used.
   <LI> Properly handle errors from libtiff so that corrupted images are not
     output.<BR>
+  <LI> Fix for stripped-TIFF reader.
   <LI> Improved handling of corrupt GIF files.
 
 </UL>
@@ -81,6 +82,7 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     compatibility.<BR>
   <LI> Provide the --enable-magick-compat option when configuring to install
     ImageMagick utilities compatibility links.
+  <LI> Identify -verbose output includes normalized (0.0-1.0) statistics.
   <LI> The display program now supports the +progress option to disable any
     visual progress indication (and hourglass cursor) while loading images.
 
@@ -96,6 +98,8 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
   <LI> Support 32-bit raw RGB images.
   <LI> Support 32-bit raw CMYK images.
   <LI> Support 32-bit raw gray images.
+  <LI> JP2 coder reads images in YCBCR colorspace and retrieves an embedded
+    ICC ICM color profile if present.
 
 </UL>
 <p>
@@ -125,7 +129,7 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     build as a static library since otherwise C++ exceptions don't work.
   <LI> Determine location of Ghostscript fonts only once in order to improve
     performance.<BR>
-  <LI> Updated LCMS to version 1.13.
+  <LI> Updated LCMS to version 1.14.
   <LI> Libtiff updated to support LZW compression.
   <LI> Use GlobalMemoryStatusEx(), if available, to determine how much physical
     memory is available.  Important for large-memory machines.
