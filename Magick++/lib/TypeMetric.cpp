@@ -29,7 +29,7 @@ double Magick::TypeMetric::ascent ( void )
 }
 
 // Descent, expressed in pixels
-double Magick::TypeMetric::decent ( void )
+double Magick::TypeMetric::descent ( void )
 {
   return _typeMetric.descent;
 }

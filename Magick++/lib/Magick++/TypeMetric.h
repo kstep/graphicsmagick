@@ -29,7 +29,7 @@ namespace Magick
     // Descent, the distance in pixels from the baseline to the lowest
     // grid coordinate used to place an outline point. Always a
     // negative value.
-    double         decent ( void );
+    double         descent ( void );
 
     // Text width in pixels.
     double         textWidth ( void );
