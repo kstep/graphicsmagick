@@ -89,12 +89,6 @@ uninstall-data-html:
 	  rm -rf $(DESTDIR)$(pkgdocdir)$$dir ; \
 	done
 
-if WITH_PERL
-
-PERLMAGICK=PerlMagick
-PERLMAKEMAKER=$(PERLMAGICK)/Makefile.PL
-PERLMAKEFILE=$(PERLMAGICK)/Makefile
-
 # If source files missing, see if they can be obtained via VPATH
 perl-sources:
 	if test -n "$(VPATH)" ; then \
@@ -104,6 +98,12 @@ perl-sources:
 	    find . -type d -print | xargs chmod 777 ) \
 	fi
 	touch perl-sources
+
+if WITH_PERL
+
+PERLMAGICK=PerlMagick
+PERLMAKEMAKER=$(PERLMAGICK)/Makefile.PL
+PERLMAKEFILE=$(PERLMAGICK)/Makefile
 
 if WITH_PERL_DYNAMIC
 

@@ -662,14 +662,14 @@ uninstall-data-html:
 	done
 
 # If source files missing, see if they can be obtained via VPATH
-@WITH_PERL_TRUE@perl-sources:
-@WITH_PERL_TRUE@	if test -n "$(VPATH)" ; then \
-@WITH_PERL_TRUE@	  imagemagick=`(cd $(VPATH) ; pwd)` && \
-@WITH_PERL_TRUE@	  ( cd $(PERLMAGICK) && \
-@WITH_PERL_TRUE@	    sh $$imagemagick/lndir.sh $$imagemagick/$(PERLMAGICK) && \
-@WITH_PERL_TRUE@	    find . -type d -print | xargs chmod 777 ) \
-@WITH_PERL_TRUE@	fi
-@WITH_PERL_TRUE@	touch perl-sources
+perl-sources:
+	if test -n "$(VPATH)" ; then \
+	  imagemagick=`(cd $(VPATH) ; pwd)` && \
+	  ( cd $(PERLMAGICK) && \
+	    sh $$imagemagick/lndir.sh $$imagemagick/$(PERLMAGICK) && \
+	    find . -type d -print | xargs chmod 777 ) \
+	fi
+	touch perl-sources
 
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@$(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && @PERL@ Makefile.PL $(PERL_MAKE_OPTIONS)
