@@ -3243,6 +3243,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleNCompare("-bordercolor",option,8) == 0)
           {
             (void) QueryColorDatabase(argv[++i],&clone_info->border_color);
+            draw_info->border_color=clone_info->border_color;
             (*image)->border_color=clone_info->border_color;
             continue;
           }
@@ -3435,7 +3436,10 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       case 'd':
       {
         if (LocaleNCompare("debug",option+1,3) == 0)
-          draw_info->debug=(*option == '-');
+          {
+            draw_info->debug=(*option == '-');
+            continue;
+          }
         if (LocaleNCompare("-delay",option,4) == 0)
           {
             double
@@ -3463,6 +3467,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               Set image density.
             */
             (void) CloneString(&clone_info->density,argv[++i]);
+            (void) CloneString(&draw_info->density,clone_info->density);
             count=sscanf(clone_info->density,"%lfx%lf",
               &(*image)->x_resolution,&(*image)->y_resolution);
             if (count != 2)
@@ -3492,6 +3497,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleNCompare("-display",option,6) == 0)
           {
             (void) CloneString(&clone_info->server_name,argv[++i]);
+            (void) CloneString(&draw_info->server_name,clone_info->server_name);
             continue;
           }
         if (LocaleNCompare("-dispose",option,6) == 0)
@@ -3710,9 +3716,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("-font",option) == 0)
           {
-            i++;
-            (void) CloneString(&clone_info->font,argv[i]);
-            (void) CloneString(&draw_info->font,argv[i]);
+            (void) CloneString(&clone_info->font,argv[++i]);
+            (void) CloneString(&draw_info->font,clone_info->font);
             continue;
           }
         break;
@@ -4017,6 +4022,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleNCompare("pointsize",option+1,2) == 0)
           {
             clone_info->pointsize=atof(argv[++i]);
+            draw_info->pointsize=clone_info->pointsize;
             continue;
           }
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
