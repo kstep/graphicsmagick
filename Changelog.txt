@@ -1,9 +1,9 @@
+2002-01-05  Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
+        * Fixed an out-of-bounds memset() and two other memory overruns
+          when decoding 1-bit AVI, BMP, and DIB images.
+
 2002-01-04 Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
         * Fix lcms header inclusion in transform.c.
-
-2002-01-03  Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
-        * Fixed an out-of-bounds memset() when decoding 1-bit AVI, BMP,
-	  and DIB images.
 
 2002-01-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* coders/wmf.c (magick_brush): Fixed bug with setting fill color.
@@ -125,7 +125,7 @@
 2001-10-30  Cristy  <cristy@mystic.es.dupont.com>
 	* Added support for On-the-air bitmap.
 
-2001-09-29  Glenn  <glennrp@home.kom>
+2001-09-29  Glenn  <randeg@alum.rpi.edu>
   * When the delay setting for an image is greater than 4cs, duplicate
     frames are inserted to achieve the desired delay while creating MPEG
     files (contributed by Lawrence Livermore National Laboratory (LLNL)).
@@ -238,7 +238,7 @@
 	* Added -background to convert program usage text.
 	* DispatchImage() now properly handles grayscale images.
 
-2001-09-01  Glenn  <glennrp@home.kom>
+2001-09-01  Glenn  <randeg@alum.rpi.edu>
 	* The compression quality setting is now recognized when creating
 	  MPEG images (contributed by Lawrence Livermore National Laboratory
   	(LLNL)).
