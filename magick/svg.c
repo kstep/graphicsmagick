@@ -302,137 +302,100 @@ static char *TraversePath(const char *data)
     segment;
 
   unsigned int
-    length,
     status;
 
-  length=MaxTextExtent;
-  path=(char *) AllocateMemory(length);
-  if (path == (char *) NULL)
-    return((char *) NULL);
-  *path='\0';
+  path=AllocateString("");
   p=data;
   while (*p != '\0')
   {
     while (isspace(*p))
       p++;
-    *points='\0';
-    n=0;
     switch (*p)
     {
-      case 'A':
-      {
-        (void) sscanf(p+1,"%lf%lf%lf%lf%lf%lf%n",&segment.x1,&segment.y1,
-          segment.x2,segment.y2,x,y,&n);
-        if (n == 0)
-          (void) sscanf(p+1,"%lf,%lf%lf,%lf%lf,%lf%n",&segment.x1,&segment.y1,
-            segment.x2,segment.y2,x,y,&n);
-        p+=n;
-        (void) FormatString(points,"%g,%g %g,%g %g,%g ",segment.x1,segment.y1,
-          segment.x2,segment.y2,x,y);
-        break;
-      }
-      case 'C':
-      {
-        (void) sscanf(p+1,"%lf%lf%lf%lf%lf%lf%n",&segment.x1,&segment.y1,
-          segment.x2,segment.y2,x,y,&n);
-        if (n == 0)
-          (void) sscanf(p+1,"%lf,%lf%lf,%lf%lf,%lf%n",&segment.x1,&segment.y1,
-            segment.x2,segment.y2,x,y,&n);
-        p+=n;
-        (void) FormatString(points,"%g,%g %g,%g %g,%g ",segment.x1,segment.y1,
-          segment.x2,segment.y2,x,y);
-        break;
-      }
       case 'h':
       {
         (void) sscanf(p+1,"%lf%n",&x,&n);
-        p+=n;
         segment.x2+=x;
-        (void) FormatString(points,"%g,%g %g,%g ",segment.x1,segment.y1,
-          segment.x2,segment.y2);
+        (void) FormatString(points,"%g,%g ",segment.x2,segment.y2);
+        if (!ConcatenateString(&path,points))
+          return((char *) NULL);
+        p+=n;
         break;
       }
       case 'H':
       {
         (void) sscanf(p+1,"%lf%n",&segment.x2,&n);
+        (void) FormatString(points,"%g,%g ",segment.x2,segment.y2);
+        if (!ConcatenateString(&path,points))
+          return((char *) NULL);
         p+=n;
-        (void) FormatString(points,"%g,%g %g,%g ",segment.x1,segment.y1,
-          segment.x2,segment.y2);
         break;
       }
       case 'l':
       {
-        (void) sscanf(p+1,"%lf%lf%n",&x,&y,&n);
-        if (n == 0)
-          (void) sscanf(p+1,"%lf,%lf%n",&x,&y,&n);
-        p+=n;
-        segment.x2+=x;
-        segment.y2+=y;
-        (void) FormatString(points,"%g,%g %g,%g ",segment.x1,segment.y1,
-          segment.x2,segment.y2);
+        for (n=0; ; n=0)
+        {
+          (void) sscanf(p+1,"%lf%lf%n",&x,&y,&n);
+          if (n == 0)
+            (void) sscanf(p+1,"%lf,%lf%n",&x,&y,&n);
+          if (n == 0)
+            break;
+          segment.x2+=x;
+          segment.y2+=y;
+          (void) FormatString(points,"%g,%g ",segment.x2,segment.y2);
+          if (!ConcatenateString(&path,points))
+            return((char *) NULL);
+          p+=n;
+        }
         break;
       }
       case 'L':
       {
-        (void) sscanf(p+1,"%lf%lf%n",&segment.x2,&segment.y2,&n);
-        if (n == 0)
-          (void) sscanf(p+1,"%lf,%lf%n",&segment.x2,&segment.y2,&n);
-        p+=n;
-        (void) FormatString(points,"%g,%g %g,%g ",segment.x1,segment.y1,
-          segment.x2,segment.y2);
+        for (n=0; ; n=0)
+        {
+          (void) sscanf(p+1,"%lf%lf%n",&segment.x2,&segment.y2,&n);
+          if (n == 0)
+            (void) sscanf(p+1,"%lf,%lf%n",&segment.x2,&segment.y2,&n);
+          if (n == 0)
+            break;
+          (void) FormatString(points,"%g,%g  ",segment.x2,segment.y2);
+          if (!ConcatenateString(&path,points))
+            return((char *) NULL);
+          p+=n;
+        }
         break;
       }
       case 'M':
       {
+        n=0;
         (void) sscanf(p+1,"%lf%lf%n",&segment.x1,&segment.y1,&n);
         if (n == 0)
           (void) sscanf(p+1,"%lf,%lf%n",&segment.x1,&segment.y1,&n);
-        p+=n;
-        segment.x2=segment.x1;
-        segment.y2=segment.y1;
+        (void) FormatString(points,"%g,%g ",segment.x1,segment.y1);
+        if (!ConcatenateString(&path,points))
+          return((char *) NULL);
         start.x=segment.x1;
         start.y=segment.y1;
-        break;
-      }
-      case 'S':
-      {
-        (void) sscanf(p+1,"%lf%lf%lf%lf%lf%lf%n",&segment.x1,&segment.y1,
-          segment.x2,segment.y2,x,y,&n);
-        if (n == 0)
-          (void) sscanf(p+1,"%lf,%lf%lf,%lf%lf,%lf%n",&segment.x1,&segment.y1,
-            segment.x2,segment.y2,x,y,&n);
         p+=n;
-        (void) FormatString(points,"%g,%g %g,%g %g,%g ",segment.x1,segment.y1,
-          segment.x2,segment.y2,x,y);
-        break;
-      }
-      case 'T':
-      {
-        (void) sscanf(p+1,"%lf%lf%lf%lf%lf%lf%n",&segment.x1,&segment.y1,
-          segment.x2,segment.y2,x,y,&n);
-        if (n == 0)
-          (void) sscanf(p+1,"%lf,%lf%lf,%lf%lf.%lf%n",&segment.x1,&segment.y1,
-            segment.x2,segment.y2,x,y,&n);
-        p+=n;
-        (void) FormatString(points,"%g,%g %g,%g %g,%g ",segment.x1,segment.y1,
-          segment.x2,segment.y2,x,y);
         break;
       }
       case 'v':
       {
         (void) sscanf(p+1,"%lf%n",&y,&n);
-        p+=n;
         segment.y2+=y;
-        (void) FormatString(points,"%g,%g %g,%g ",segment.x1,segment.y1,
-          segment.x2,segment.y2);
+        (void) FormatString(points,"%g,%g ",segment.x2,segment.y2);
+        if (!ConcatenateString(&path,points))
+          return((char *) NULL);
+        p+=n;
         break;
       }
       case 'V':
       {
         (void) sscanf(p+1,"%lf%n",&segment.y2,&n);
+        (void) FormatString(points,"%g,%g ",segment.x2,segment.y2);
+        if (!ConcatenateString(&path,points))
+          return((char *) NULL);
         p+=n;
-        (void) FormatString(points,"%g,%g %g,%g ",segment.x1,segment.y1,
-          segment.x2,segment.y2);
         break;
       }
       case 'z':
@@ -440,8 +403,9 @@ static char *TraversePath(const char *data)
       {
         segment.x1=start.x;
         segment.y1=start.y;
-        (void) FormatString(points,"%g,%g %g,%g ",segment.x1,segment.y1,
-          segment.x2,segment.y2);
+        (void) FormatString(points,"%g,%g ",start.x,start.y);
+        if (!ConcatenateString(&path,points))
+          return((char *) NULL);
         break;
       }
       default:
@@ -450,19 +414,6 @@ static char *TraversePath(const char *data)
         break;
       }
     }
-    if (*points != '\0')
-      {
-        (void) strcat(path,points);
-        if (Extent(path) >= (length-MaxTextExtent-1))
-          {
-            length<<=1;
-            path=(char *) ReallocateMemory(path,length);
-            if (path == (char *) NULL)
-              return((char *) NULL);
-          }
-      }
-    segment.x1=segment.x2;
-    segment.y1=segment.y2;
     p++;
   }
   return(path);
