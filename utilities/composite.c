@@ -195,7 +195,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,Image **image,
   while ((*image)->previous != (Image *) NULL)
     (*image)=(*image)->previous;
   status=MogrifyImages(image_info,argc-1,argv,image);
-  CatchImageException(*image);
+  (void) CatchImageException(*image);
   if (composite_image != (Image *) NULL)
     {
       assert(composite_image->signature == MagickSignature);
@@ -209,7 +209,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,Image **image,
           status=CompositeImage(composite_image,CopyOpacityCompositeOp,
             mask_image,0,0);
           if (status == False)
-            CatchImageException(composite_image);
+            (void) CatchImageException(composite_image);
         }
       if (option_info->compose == DissolveCompositeOp)
         {
@@ -289,7 +289,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,Image **image,
                 {
                   status=CompositeImage(*image,option_info->compose,
                     composite_image,x,y);
-                  CatchImageException(*image);
+                  (void) CatchImageException(*image);
                 }
             }
           else
@@ -371,7 +371,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,Image **image,
               }
               status=CompositeImage(*image,option_info->compose,
                 composite_image,x,y);
-              CatchImageException(*image);
+              (void) CatchImageException(*image);
             }
       (*image)->matte=matte;
     }
@@ -385,7 +385,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,Image **image,
   for (p=(*image); p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(image_info,p);
-    CatchImageException(p);
+    (void) CatchImageException(p);
   }
   if (image_info->verbose)
     DescribeImage(*image,stderr,False);
@@ -600,7 +600,7 @@ int main(int argc,char **argv)
             if (composite_image == (Image *) NULL)
               continue;
             status=MogrifyImages(image_info,i-k,argv+k,&composite_image);
-            CatchImageException(composite_image);
+            (void) CatchImageException(composite_image);
             continue;
           }
         if (mask_image != (Image *) NULL)
@@ -614,7 +614,7 @@ int main(int argc,char **argv)
             if (image == (Image *) NULL)
               continue;
             status=MogrifyImages(image_info,i-k,argv+k,&image);
-            CatchImageException(image);
+            (void) CatchImageException(image);
             continue;
           }
         mask_image=ReadImage(image_info,&exception);
@@ -627,7 +627,7 @@ int main(int argc,char **argv)
         if (mask_image == (Image *) NULL)
           continue;
         status=MogrifyImages(image_info,i-k,argv+k,&mask_image);
-        CatchImageException(mask_image);
+        (void) CatchImageException(mask_image);
       }
     else
       switch(*(option+1))

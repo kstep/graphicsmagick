@@ -316,7 +316,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,Image **image,
   while ((*image)->previous != (Image *) NULL)
     (*image)=(*image)->previous;
   status=MogrifyImages(image_info,argc-1,argv,image);
-  CatchImageException(*image);
+  (void) CatchImageException(*image);
   if (option_info->append != 0)
     {
       Image
@@ -437,7 +437,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,Image **image,
   for (p=(*image); p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(image_info,p);
-    CatchImageException(p);
+    (void) CatchImageException(p);
     if (image_info->adjoin)
       break;
   }
@@ -716,7 +716,7 @@ int main(int argc,char **argv)
         if (next_image == (Image *) NULL)
           continue;
         status=MogrifyImages(image_info,i,argv,&next_image);
-        CatchImageException(next_image);
+        (void) CatchImageException(next_image);
         if (image == (Image *) NULL)
           image=next_image;
         else

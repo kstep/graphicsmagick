@@ -59,8 +59,10 @@ typedef void
 extern MagickExport ErrorHandler
   SetErrorHandler(ErrorHandler);
 
+extern MagickExport ExceptionType
+  CatchImageException(Image *);
+
 extern MagickExport void
-  CatchImageException(Image *),
   DestroyExceptionInfo(ExceptionInfo *),
   GetImageException(Image *,ExceptionInfo *),
   GetExceptionInfo(ExceptionInfo *),

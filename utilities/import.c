@@ -945,13 +945,13 @@ int main(int argc,char **argv)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   status=MogrifyImages(image_info,argc-1,argv,&image);
-  CatchImageException(image);
+  (void) CatchImageException(image);
   (void) SetImageInfo(image_info,True,&image->exception);
   status=0;
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(image_info,p);
-    CatchImageException(p);
+    (void) CatchImageException(p);
     if (image_info->adjoin)
       break;
   }

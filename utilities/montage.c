@@ -1232,7 +1232,7 @@ int main(int argc,char **argv)
         if (next_image == (Image *) NULL)
           continue;
         status=MogrifyImages(image_info,i,argv,&next_image);
-        CatchImageException(next_image);
+        (void) CatchImageException(next_image);
         if (image == (Image *) NULL)
           image=next_image;
         else
@@ -1251,7 +1251,7 @@ int main(int argc,char **argv)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   status=MogrifyImages(image_info,argc-j-1,argv+j,&image);
-  CatchImageException(image);
+  (void) CatchImageException(image);
   /*
     Create composite image.
   */
@@ -1294,7 +1294,7 @@ int main(int argc,char **argv)
   for (p=montage_image; p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(image_info,p);
-    CatchImageException(p);
+    (void) CatchImageException(p);
     if (image_info->adjoin)
       break;
   }

@@ -1716,7 +1716,7 @@ int main(int argc,char **argv)
           Transmogrify image as defined by the image processing options.
         */
         status=MogrifyImages(image_info,i,argv,&image);
-        CatchImageException(image);
+        (void) CatchImageException(image);
         if (global_colormap)
           (void) MapImages(image,(Image *) NULL,image_info->dither);
         /*
@@ -1746,7 +1746,7 @@ int main(int argc,char **argv)
         for (p=image; p != (Image *) NULL; p=p->next)
         {
           status=WriteImage(image_info,p);
-          CatchImageException(p);
+          (void) CatchImageException(p);
           if (image_info->adjoin)
             break;
         }

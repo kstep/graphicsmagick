@@ -97,7 +97,7 @@ static WarningHandler
 %
 %
 */
-MagickExport ExceptionInfo CatchImageException(Image *image)
+MagickExport ExceptionType CatchImageException(Image *image)
 {
   ExceptionInfo
     exception;

@@ -975,7 +975,7 @@ int main(int argc,char **argv)
           if (next_image == (Image *) NULL)
             continue;
           status=MogrifyImages(image_info,i,argv,&next_image);
-          CatchImageException(next_image);
+          (void) CatchImageException(next_image);
           if (image == (Image *) NULL)
             image=next_image;
           else
@@ -996,7 +996,7 @@ int main(int argc,char **argv)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   status=MogrifyImages(image_info,argc-j-1,argv+j,&image);
-  CatchImageException(image);
+  (void) CatchImageException(image);
   if (resource_info.window_id != (char *) NULL)
     XAnimateBackgroundImage(display,&resource_info,image);
   else
@@ -1009,7 +1009,7 @@ int main(int argc,char **argv)
       {
         image=loaded_image;
         status=MogrifyImage(image_info,argc-1,argv,&image);
-        CatchImageException(image);
+        (void) CatchImageException(image);
         loaded_image=XAnimateImages(display,&resource_info,argv,argc,image);
       }
     }
