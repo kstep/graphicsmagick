@@ -607,7 +607,10 @@ MagickExport void DrawDestroyContext(DrawContext context)
 
   /* Graphic context */
   for ( ; context->index >= 0; context->index--)
-    DestroyDrawInfo(CurrentContext);
+    {
+      DestroyDrawInfo(CurrentContext);
+      CurrentContext = (DrawInfo*) NULL;
+    }
   LiberateMemory((void **) &context->graphic_context);
 
   /* MVG output string and housekeeping */
