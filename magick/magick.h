@@ -89,6 +89,9 @@ extern "C" {
 
 #if defined(WIN32)
 #include "nt.h"
+#if defined(_DEBUG)
+#include <crtdbg.h>
+#endif
 #endif
 #if defined(macintosh)
 #include "mac.h"

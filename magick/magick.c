@@ -424,6 +424,16 @@ MagickExport void InitializeMagick(const char *path)
   (void) SetClientName(filename);
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
+#if defined(WIN32) && defined(_DEBUG)
+  {
+    int tmpDbgFlag;
+    tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+    tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;
+    tmpDbgFlag |= _CRTDBG_DELAY_FREE_MEM_DF;
+    tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
+    //_CrtSetDbgFlag(tmpDbgFlag);
+  }
+#endif
 }
 
 /*
