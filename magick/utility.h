@@ -91,7 +91,7 @@ extern MagickExport void
 
 extern MagickExport void
 #if defined(__GNUC__)
-  FormatString(char *,const char *,...) __attribute__((format (printf, 2, 3)));
+  FormatString(char *,const char *,...) __attribute__((format (printf,2,3)));
 #else
   FormatString(char *,const char *,...);
 #endif
