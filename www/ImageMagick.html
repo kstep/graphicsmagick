@@ -1941,10 +1941,13 @@ the composite image.  Similarly, if the <strong>-gravity</strong> option is pres
 with <em>SouthWest, South,</em> or <em>SouthEast</em> gravity, <em>y</em>
 is measured between the bottom edges. Accordingly, a positive offset will
 never point in the direction outside of the image.  The
-offsets are not affected by "%"; they are always measured in pixels.</font></td></tr></table>
+offsets are not affected by "%"; they are always measured in pixels.
+To specify the dimensions of the composite image, use the <strong>-resize</strong>
+option.
+</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When used as a <em>convert</em>, <em>import</em> or <em>mogrify</em> option,
-<strong>-geometry</strong>
+<strong>-geometry</strong> is synonymous with <strong>-resize</strong> and
 specifies the size of the output image.  The offsets, if present, are ignored.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1955,6 +1958,8 @@ option affects the placement of the image within the tile; the default
 gravity for this purpose is <em>Center</em>.  If the "%" sign appears in
 the geometry specification, the tile size is the specified percentage of
 the original dimensions of the first tile.
+To specify the dimensions of the montage, use the <strong>-resize</strong>
+option.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -2776,6 +2781,17 @@ or <tt>+profile profile_name</tt> to remove the respective
 profile.  Use <tt>identify -verbose</tt> to find out what profiles are in the
 image file.  Use <tt>+profile "*"</tt> to remove all profiles.
 </font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+To extract a profile, the <strong>-profile</strong> option is not used.  Instead,
+simply write the file to an image
+format such as <em>APP1, 8BIM, ICM,</em> or <em>IPTC</em>.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+For example, to extract the Exif data (which is stored in JPEG files
+in the <em>APP1</em> profile), use
+</font></td></tr></table>
+<pre>
+    convert cockatoo.jpg exifdata.app1
+</pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2895,9 +2911,9 @@ an image file to load.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-resize">-resize</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
+    <a name="-resize">-resize</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>resize and locate an image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>resize an image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This is an alias for the <strong>-geometry</strong> option and it behaves in the
 same manner. If the <strong>-filter</strong> option precedes the <strong>-resize</strong>
@@ -2906,12 +2922,12 @@ option, the specified filter is used.</font></td></tr></table>
 There are some exceptions:</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When used as a <em>composite</em> option, <strong>-resize</strong> conveys the preferred
-size and location of the output image, while <strong>-geometry</strong> conveys
+size of the output image, while <strong>-geometry</strong> conveys
 the size and placement of the <em>composite image</em> within the main
 image.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When used as a <em>montage</em> option, <strong>-resize</strong> conveys the preferred
-size and location of the montage, while <strong>-geometry</strong> conveys
+size of the montage, while <strong>-geometry</strong> conveys
 information about the tiles.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>

@@ -1427,9 +1427,12 @@ with \fISouthWest, South,\fP or \fISouthEast\fP gravity, \fIy\fP
 is measured between the bottom edges. Accordingly, a positive offset will
 never point in the direction outside of the image.  The
 offsets are not affected by "%"; they are always measured in pixels.
+To specify the dimensions of the composite image, use the \fB-resize\fP
+option.
+
 
 When used as a \fIconvert\fP, \fIimport\fP or \fImogrify\fP option,
-\fB-geometry\fP
+\fB-geometry\fP is synonymous with \fB-resize\fP and
 specifies the size of the output image.  The offsets, if present, are ignored.
 
 
@@ -1440,6 +1443,8 @@ option affects the placement of the image within the tile; the default
 gravity for this purpose is \fICenter\fP.  If the "%" sign appears in
 the geometry specification, the tile size is the specified percentage of
 the original dimensions of the first tile.
+To specify the dimensions of the montage, use the \fB-resize\fP
+option.
 
 .TP
 .B "-gravity \fI<type>"\fP
@@ -1928,6 +1933,16 @@ or +profile profile_name to remove the respective
 profile.  Use identify -verbose to find out what profiles are in the
 image file.  Use +profile "*" to remove all profiles.
 
+
+To extract a profile, the \fB-profile\fP option is not used.  Instead,
+simply write the file to an image
+format such as \fIAPP1, 8BIM, ICM,\fP or \fIIPTC\fP.
+
+For example, to extract the Exif data (which is stored in JPEG files
+in the \fIAPP1\fP profile), use
+
+
+    convert cockatoo.jpg exifdata.app1
 .TP
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level
@@ -2007,8 +2022,8 @@ The only command recognized at this time is the name of
 an image file to load.
 
 .TP
-.B "-resize \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{<}{>}"\fP
-\fRresize and locate an image
+.B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
+\fRresize an image
 
 This is an alias for the \fB-geometry\fP option and it behaves in the
 same manner. If the \fB-filter\fP option precedes the \fB-resize\fP
@@ -2017,12 +2032,12 @@ option, the specified filter is used.
 There are some exceptions:
 
 When used as a \fIcomposite\fP option, \fB-resize\fP conveys the preferred
-size and location of the output image, while \fB-geometry\fP conveys
+size of the output image, while \fB-geometry\fP conveys
 the size and placement of the \fIcomposite image\fP within the main
 image.
 
 When used as a \fImontage\fP option, \fB-resize\fP conveys the preferred
-size and location of the montage, while \fB-geometry\fP conveys
+size of the montage, while \fB-geometry\fP conveys
 information about the tiles.
 .TP
 .B "-roll \fI{+-}<x>{+-}<y>"\fP
