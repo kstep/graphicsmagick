@@ -1,3 +1,9 @@
+2002-11-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Modified IMdisplay so that Magick++ Images are stored by
+    value rather than via pointer.
+  * IMdisplay now uses minify(), magnify(), and zoom() methods
+    where appropriate.
+
 2002-11-04  Cristy  <cristy@mystic.es.dupont.com>
   * Quantizing a DirectClass image with less than 256 unique colors is
     no longer lossy.
