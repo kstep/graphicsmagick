@@ -383,7 +383,7 @@ MagickExport unsigned short *ConvertTextToUnicode(const char *text,int *count)
 %  The format of the ExecutePostscriptInterpreter method is:
 %
 %      unsigned int ExecutePostscriptInterpreter(const unsigned int verbose,
-%        const char *command,
+%        const char *command)
 %
 %  A description of each parameter follows:
 %

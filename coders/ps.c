@@ -291,8 +291,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
     if (count != 4)
       continue;
-    if ((bounds.x1 > bounds.x2) ||
-        (bounds.y1 > bounds.y2))
+    if ((bounds.x1 > bounds.x2) || (bounds.y1 > bounds.y2))
       continue;
     /*
       Set Postscript render geometry.
