@@ -1,37 +1,37 @@
-@echo off
+dir@echo off
 set srcdir=..\..\..\Magick++\tests\
 set bindir=..\..\bin\
 set PATH=%bindir%;%PATH%
 
 echo exceptions ...
-exceptions.exe
+%bindir%exceptions.exe
 
 echo appendImages ...
-appendImages.exe
+%bindir%appendImages.exe
 
 echo attributes ...
-attributes.exe
+%bindir%attributes.exe
 
 echo averageImages ...
-averageImages.exe
+%bindir%averageImages.exe
 
 echo coaleseImages ...
-coalesceImages.exe
+%bindir%coalesceImages.exe
 
 echo coderInfo ...
-coderInfo.exe
+%bindir%coderInfo.exe
 
 echo color ...
-color.exe
+%bindir%color.exe
 
 echo montageImages ...
-montageImages.exe
+%bindir%montageImages.exe
 
 echo morphImages ...
-morphImages.exe
+%bindir%morphImages.exe
 
 echo readWriteBlob ...
-readWriteBlob.exe
+%bindir%readWriteBlob.exe
 
 echo readWriteImages ...
-readWriteImages.exe
+%bindir%readWriteImages.exe
