@@ -103,7 +103,7 @@ typedef struct _NexusInfo
     x,
     y;
 
-  off_t
+  ExtendedSignedIntegralType
     length;
 
   PixelPacket
@@ -142,7 +142,7 @@ typedef struct _CacheInfo
     columns,
     rows;
 
-  off_t
+  ExtendedSignedIntegralType
     offset,
     length;
 
@@ -203,7 +203,8 @@ extern MagickExport PixelPacket
 
 extern MagickExport unsigned int
   OpenCache(Image *,const MapMode),
-  PersistCache(Image *,const char *,const unsigned int,off_t *,ExceptionInfo *),
+  PersistCache(Image *,const char *,const unsigned int,
+    ExtendedSignedIntegralType *,ExceptionInfo *),
   SyncCacheNexus(Image *,const unsigned long);
 
 extern MagickExport unsigned long

@@ -505,6 +505,12 @@ typedef struct _ErrorInfo
     normalized_maximum_error;
 } ErrorInfo;
 
+#if defined(WIN32)
+typedef __int64 ExtendedSignedIntegralType;
+#else
+typedef off_t ExtendedSignedIntegralType;
+#endif
+
 typedef struct _FrameInfo
 {
   unsigned long

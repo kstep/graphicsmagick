@@ -106,7 +106,7 @@ static ResourceInfo
 %  The format of the AcquireMagickResource() method is:
 %
 %      unsigned int AcquireMagickResource(const ResourceType type,
-%        const off_t size)
+%        const ExtendedSignedIntegralType size)
 %
 %  A description of each parameter follows:
 %
@@ -117,7 +117,7 @@ static ResourceInfo
 %
 */
 MagickExport unsigned int AcquireMagickResource(const ResourceType type,
-  const off_t size)
+  const ExtendedSignedIntegralType size)
 {
   unsigned int
     status;
@@ -260,7 +260,8 @@ MagickExport unsigned long GetMagickResource(const ResourceType type)
 %
 %  The format of the LiberateMagickResource() method is:
 %
-%      void LiberateMagickResource(const ResourceType type,const off_t size)
+%      void LiberateMagickResource(const ResourceType type,
+%        const ExtendedSignedIntegralType size)
 %
 %  A description of each parameter follows:
 %
@@ -271,7 +272,7 @@ MagickExport unsigned long GetMagickResource(const ResourceType type)
 %
 */
 MagickExport void LiberateMagickResource(const ResourceType type,
-  const off_t size)
+  const ExtendedSignedIntegralType size)
 {
   AcquireSemaphoreInfo(&resource_semaphore);
   switch (type)

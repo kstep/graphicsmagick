@@ -146,15 +146,15 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     keyword[MaxTextExtent],
     *values;
 
+  ExtendedSignedIntegralType
+    length,
+    offset;
+
   Image
     *image;
 
   int
     c;
-
-  off_t
-    length,
-    offset;
 
   register long
     i;
@@ -942,7 +942,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
   const ImageAttribute
     *attribute;
 
-  off_t
+  ExtendedSignedIntegralType
     offset;
 
   register long
