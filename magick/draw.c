@@ -683,8 +683,6 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       primitive_type=FillPolygonPrimitive;
     if (Latin1Compare("Bezier",keyword) == 0)
       primitive_type=BezierPrimitive;
-    if (Latin1Compare("FillBezier",keyword) == 0)
-      primitive_type=FillBezierPrimitive;
     if (Latin1Compare("Color",keyword) == 0)
       primitive_type=ColorPrimitive;
     if (Latin1Compare("Matte",keyword) == 0)
@@ -869,7 +867,6 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         break;
       }
       case BezierPrimitive:
-      case FillBezierPrimitive:
       {
         double
           alpha,
@@ -926,8 +923,6 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           Bezier curves are just short segmented polys.
         */
         primitive_info[j].primitive=PolygonPrimitive;
-        if (primitive_type == FillBezierPrimitive)
-          primitive_info[j].primitive=FillPolygonPrimitive;
         primitive_info[j].coordinates=BezierQuantum*control_points;
         i=j;
         for (l=0; l < (BezierQuantum*control_points); l++)
