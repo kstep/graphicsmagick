@@ -954,6 +954,9 @@
       <Message name="UnrecognizedType">
         Unrecognized type
       </Message>
+      <Message name="UnrecognizedOperator">
+        Unrecognized operator
+      </Message>
       <Message name="UnrecognizedOption">
         Unrecognized option
       </Message>

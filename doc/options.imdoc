@@ -2859,6 +2859,38 @@ See <s>-fill</s> for more details.
 </utils>
 
 
+
+<!-- ------------ -operator ----------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-operator channel operator rvalue</opt>
+
+<abs>apply a mathematical or bitwise operator to an image channel</abs>
+
+<pp>
+Apply a low-level mathematical or bitwise operator to a selected image
+channel or all image channels. Operations which result in negative
+results are reset to zero, and operations which overflow the
+available range are reset to the maximum possible value.
+</pp>
+<pp>
+Select a channel from: <s>Red</s>, <s>Green</s>, <s>Blue</s>, <s>Opacity</s>,
+<s>Matte</s>, <s>Cyan</s>, <s>Magenta</s>, <s>Yellow</s>, <s>Black</s>,
+or <s>All</s>.
+</pp>
+<pp>
+Select an operator from <s>Add</s>, <s>And</s>, <s>Divide</s>, <s>LShift</s>,
+<s>Multiply</s>, <s>Or</s>, <s>RShift</s>, <s>Subtract</s>, <s>Xor</s>.
+</pp>
+<pp>
+The range of rvalue is integers from 0 to MaxRGB, where MaxRGB is
+the largest quantum value supported by the GraphicsMagick build (255,
+65535, or 4294967295).
+</pp>
+
+</utils>
+
+
 <!-- ------------ -ordered-dither------------------------------------ -->
 
 <utils apps=composite,convert,display,import,mogrify,montage>

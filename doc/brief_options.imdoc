@@ -421,6 +421,10 @@ display image using this type.</abs>
 <lopt>-opaque <color></opt>
 <abs>change this color to the pen color within the image</abs>
 </utils>
+<utils apps=convert,mogrify>
+<lopt>-operator channel operator rvalue</opt>
+<abs>apply a mathematical or bitwise operator to an image channel</abs>
+</utils>
 <utils apps=composite,convert,display,import,mogrify,montage>
 <lopt>-ordered-dither <channeltype> <NxN>
 <abs>ordered dither the image</abs>

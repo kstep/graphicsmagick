@@ -3903,6 +3903,87 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("operator",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                ChannelType
+                  channel;
+
+                QuantumOperator
+                  quantum_operator;
+
+                unsigned int
+                  rvalue;
+                  
+                /* channel */
+                i++;
+                if (i == argc)
+                  ThrowConvertException(OptionError,MissingArgument,
+                    option);
+                option=argv[i];
+                channel=UndefinedChannel;
+                if (LocaleCompare("Red",option) == 0)
+                  channel=RedChannel;
+                else if (LocaleCompare("Cyan",option) == 0)
+                  channel=CyanChannel;
+                else if (LocaleCompare("Green",option) == 0)
+                  channel=GreenChannel;
+                else if (LocaleCompare("Magenta",option) == 0)
+                  channel=MagentaChannel;
+                else if (LocaleCompare("Blue",option) == 0)
+                  channel=BlueChannel;
+                else if (LocaleCompare("Yellow",option) == 0)
+                  channel=YellowChannel;
+                else if (LocaleCompare("Opacity",option) == 0)
+                  channel=OpacityChannel;
+                else if (LocaleCompare("Black",option) == 0)
+                  channel=BlackChannel;
+                else if (LocaleCompare("Matte",option) == 0)
+                  channel=MatteChannel;
+                else if (LocaleCompare("All",option) == 0)
+                  channel=AllChannels;
+                if (channel == UndefinedChannel)
+                  ThrowConvertException(OptionError,UnrecognizedChannelType,
+                    option);
+
+                /* operator id */
+                i++;
+                if (i == argc)
+                  ThrowConvertException(OptionError,MissingArgument,
+                    option);
+                option=argv[i];
+                quantum_operator=UndefinedQuantumOp;
+                if (LocaleCompare("add",option) == 0)
+                  quantum_operator=AddQuantumOp;
+                else if (LocaleCompare("and",option) == 0)
+                  quantum_operator=AndQuantumOp;
+                else if (LocaleCompare("divide",option) == 0)
+                  quantum_operator=DivideQuantumOp;
+                else if (LocaleCompare("lshift",option) == 0)
+                  quantum_operator=LShiftQuantumOp;
+                else if (LocaleCompare("multiply",option) == 0)
+                  quantum_operator=MultiplyQuantumOp;
+                else if (LocaleCompare("or",option) == 0)
+                  quantum_operator=OrQuantumOp;
+                else if (LocaleCompare("rshift",option) == 0)
+                  quantum_operator=RShiftQuantumOp;
+                else if (LocaleCompare("subtract",option) == 0)
+                  quantum_operator=SubtractQuantumOp;
+                else if (LocaleCompare("xor",option) == 0)
+                  quantum_operator=XorQuantumOp;
+                if (quantum_operator == UndefinedQuantumOp)
+                  ThrowConvertException(OptionError,UnrecognizedOperator,
+                    option);
+
+                /* rvalue */
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%u",&rvalue))
+                  ThrowConvertException(OptionError,MissingArgument,
+                    option);
+              }
+            break;
+          }
         if (LocaleCompare("ordered-dither",option+1) == 0)
           {
             if (*option == '-')
@@ -8382,6 +8463,71 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) OpaqueImage(*image,target,draw_info->fill);
             continue;
           }
+        if (LocaleCompare("operator",option+1) == 0)
+          {
+            ChannelType
+              channel;
+            
+            QuantumOperator
+              quantum_operator;
+
+            unsigned int
+              rvalue;
+
+            /* channel */
+            option=argv[++i];
+            channel=UndefinedChannel;
+            if (LocaleCompare("Red",option) == 0)
+              channel=RedChannel;
+            else if (LocaleCompare("Cyan",option) == 0)
+              channel=CyanChannel;
+            else if (LocaleCompare("Green",option) == 0)
+              channel=GreenChannel;
+            else if (LocaleCompare("Magenta",option) == 0)
+              channel=MagentaChannel;
+            else if (LocaleCompare("Blue",option) == 0)
+              channel=BlueChannel;
+            else if (LocaleCompare("Yellow",option) == 0)
+              channel=YellowChannel;
+            else if (LocaleCompare("Opacity",option) == 0)
+              channel=OpacityChannel;
+            else if (LocaleCompare("Black",option) == 0)
+              channel=BlackChannel;
+            else if (LocaleCompare("Matte",option) == 0)
+              channel=MatteChannel;
+            else if (LocaleCompare("All",option) == 0)
+              channel=AllChannels;
+
+            /* operator id */
+            option=argv[++i];
+            quantum_operator=UndefinedQuantumOp;
+            if (LocaleCompare("add",option) == 0)
+              quantum_operator=AddQuantumOp;
+            else if (LocaleCompare("and",option) == 0)
+              quantum_operator=AndQuantumOp;
+            else if (LocaleCompare("divide",option) == 0)
+              quantum_operator=DivideQuantumOp;
+            else if (LocaleCompare("lshift",option) == 0)
+              quantum_operator=LShiftQuantumOp;
+            else if (LocaleCompare("multiply",option) == 0)
+              quantum_operator=MultiplyQuantumOp;
+            else if (LocaleCompare("or",option) == 0)
+              quantum_operator=OrQuantumOp;
+            else if (LocaleCompare("rshift",option) == 0)
+              quantum_operator=RShiftQuantumOp;
+            else if (LocaleCompare("subtract",option) == 0)
+              quantum_operator=SubtractQuantumOp;
+            else if (LocaleCompare("xor",option) == 0)
+              quantum_operator=XorQuantumOp;
+
+            /* rvalue */
+            option=argv[++i];
+            sscanf(option,"%u",&rvalue);
+            (void) QuantumOperatorImage(*image,channel,quantum_operator,
+               rvalue,&(*image)->exception);
+
+            continue;
+          }
         if (LocaleCompare("ordered-dither",option+1) == 0)
           {
             /*
@@ -10734,6 +10880,87 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
+                  ThrowMogrifyException(OptionError,MissingArgument,
+                    option);
+              }
+            break;
+          }
+        if (LocaleCompare("operator",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                ChannelType
+                  channel;
+
+                QuantumOperator
+                  quantum_operator;
+
+                unsigned int
+                  rvalue;
+
+                /* channel */
+                i++;
+                if (i == argc)
+                  ThrowMogrifyException(OptionError,MissingArgument,
+                    option);
+                option=argv[i];
+                channel=UndefinedChannel;
+                if (LocaleCompare("Red",option) == 0)
+                  channel=RedChannel;
+                else if (LocaleCompare("Cyan",option) == 0)
+                  channel=CyanChannel;
+                else if (LocaleCompare("Green",option) == 0)
+                  channel=GreenChannel;
+                else if (LocaleCompare("Magenta",option) == 0)
+                  channel=MagentaChannel;
+                else if (LocaleCompare("Blue",option) == 0)
+                  channel=BlueChannel;
+                else if (LocaleCompare("Yellow",option) == 0)
+                  channel=YellowChannel;
+                else if (LocaleCompare("Opacity",option) == 0)
+                  channel=OpacityChannel;
+                else if (LocaleCompare("Black",option) == 0)
+                  channel=BlackChannel;
+                else if (LocaleCompare("Matte",option) == 0)
+                  channel=MatteChannel;
+                else if (LocaleCompare("All",option) == 0)
+                  channel=AllChannels;
+                if (channel == UndefinedChannel)
+                  ThrowMogrifyException(OptionError,UnrecognizedChannelType,
+                    option);
+
+                /* operator id */
+                i++;
+                if (i == argc)
+                  ThrowMogrifyException(OptionError,MissingArgument,
+                    option);
+                option=argv[i];
+                quantum_operator=UndefinedQuantumOp;
+                if (LocaleCompare("add",option) == 0)
+                  quantum_operator=AddQuantumOp;
+                else if (LocaleCompare("and",option) == 0)
+                  quantum_operator=AndQuantumOp;
+                else if (LocaleCompare("divide",option) == 0)
+                  quantum_operator=DivideQuantumOp;
+                else if (LocaleCompare("lshift",option) == 0)
+                  quantum_operator=LShiftQuantumOp;
+                else if (LocaleCompare("multiply",option) == 0)
+                  quantum_operator=MultiplyQuantumOp;
+                else if (LocaleCompare("or",option) == 0)
+                  quantum_operator=OrQuantumOp;
+                else if (LocaleCompare("rshift",option) == 0)
+                  quantum_operator=RShiftQuantumOp;
+                else if (LocaleCompare("subtract",option) == 0)
+                  quantum_operator=SubtractQuantumOp;
+                else if (LocaleCompare("xor",option) == 0)
+                  quantum_operator=XorQuantumOp;
+                if (quantum_operator == UndefinedQuantumOp)
+                  ThrowMogrifyException(OptionError,UnrecognizedOperator,
+                    option);
+
+                /* rvalue */
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%u",&rvalue))
                   ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }

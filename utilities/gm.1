@@ -2181,6 +2181,29 @@ option.
 See \fB-fill\fP for more details.
 
 .TP
+.B "-operator \fIchannel operator rvalue"\fP
+\fRapply a mathematical or bitwise operator to an image channel
+
+Apply a low-level mathematical or bitwise operator to a selected image
+channel or all image channels. Operations which result in negative
+results are reset to zero, and operations which overflow the
+available range are reset to the maximum possible value.
+
+
+Select a channel from: \fBRed\fP, \fBGreen\fP, \fBBlue\fP, \fBOpacity\fP,
+\fBMatte\fP, \fBCyan\fP, \fBMagenta\fP, \fBYellow\fP, \fBBlack\fP,
+or \fBAll\fP.
+
+
+Select an operator from \fBAdd\fP, \fBAnd\fP, \fBDivide\fP, \fBLShift\fP,
+\fBMultiply\fP, \fBOr\fP, \fBRShift\fP, \fBSubtract\fP, \fBXor\fP.
+
+
+The range of rvalue is integers from 0 to MaxRGB, where MaxRGB is
+the largest quantum value supported by the GraphicsMagick build (255,
+65535, or 4294967295).
+
+.TP
 .B "-ordered-dither \fI<channeltype> <NxN>
 \fRordered dither the image
 
@@ -4610,6 +4633,9 @@ Options, above.
 .TP
 .B "-opaque \fI<color>"\fP
 \fRchange this color to the pen color within the image
+.TP
+.B "-operator \fIchannel operator rvalue"\fP
+\fRapply a mathematical or bitwise operator to an image channel
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>
 \fRordered dither the image
@@ -7480,6 +7506,9 @@ Options, above.
 .TP
 .B "-opaque \fI<color>"\fP
 \fRchange this color to the pen color within the image
+.TP
+.B "-operator \fIchannel operator rvalue"\fP
+\fRapply a mathematical or bitwise operator to an image channel
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>
 \fRordered dither the image

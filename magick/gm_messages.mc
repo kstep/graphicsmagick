@@ -1703,6 +1703,12 @@ Unrecognized noise type
 .
 
 MessageId       = +1
+SymbolicName    = OptionErrorUnrecognizedOperator
+Language        = English
+Unrecognized operator
+.
+
+MessageId       = +1
 SymbolicName    = OptionErrorUnrecognizedOption
 Language        = English
 Unrecognized option

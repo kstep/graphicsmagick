@@ -3088,6 +3088,37 @@ See <strong>-fill</strong> for more details.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    <a name="details-operator"></a>-operator <i>channel operator rvalue</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a mathematical or bitwise operator to an image channel</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Apply a low-level mathematical or bitwise operator to a selected image
+channel or all image channels. Operations which result in negative
+results are reset to zero, and operations which overflow the
+available range are reset to the maximum possible value.
+</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Select a channel from: <strong>Red</strong>, <strong>Green</strong>, <strong>Blue</strong>, <strong>Opacity</strong>,
+<strong>Matte</strong>, <strong>Cyan</strong>, <strong>Magenta</strong>, <strong>Yellow</strong>, <strong>Black</strong>,
+or <strong>All</strong>.
+</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Divide</strong>, <strong>LShift</strong>,
+<strong>Multiply</strong>, <strong>Or</strong>, <strong>RShift</strong>, <strong>Subtract</strong>, <strong>Xor</strong>.
+</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The range of rvalue is integers from 0 to MaxRGB, where MaxRGB is
+the largest quantum value supported by the GraphicsMagick build (255,
+65535, or 4294967295).
+</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     <a name="details-ordered-dither"></a>-ordered-dither &lt;channeltype&gt; &lt;NxN&gt;
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>ordered dither the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">

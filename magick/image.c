@@ -3947,8 +3947,9 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %
 %    o channel: Channel to operate on.
 %
-%    o quantum_operator: Arithmetic operator to use (AddQuantumOp,
-%                        DivideQuantumOp, MultiplyQuantumOp,
+%    o quantum_operator: arithmetic or bitwise operator to use (AddQuantumOp,
+%                        AndQuantumOp, DivideQuantumOp, LShiftQuantumOp,
+%                        MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp,
 %                        SubtractQuantumOp, XorQuantumOp).
 %
 %    o rvalue: Operator argument.
@@ -3999,8 +4000,9 @@ MagickExport MagickPassFail QuantumOperatorImage(Image *image,
 %
 %    o rows: Height of region.
 %
-%    o quantum_operator: Arithmetic operator to use (AddQuantumOp,
-%                        DivideQuantumOp, MultiplyQuantumOp,
+%    o quantum_operator: arithmetic or bitwise operator to use (AddQuantumOp,
+%                        AndQuantumOp, DivideQuantumOp, LShiftQuantumOp,
+%                        MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp,
 %                        SubtractQuantumOp, XorQuantumOp).
 %
 %    o rvalue: Operator argument.
@@ -4383,6 +4385,8 @@ QuantumOperatorRegionImage(Image *image,
 
   PixelIteratorMonoModifyCallback
     call_back = 0;
+
+  image->storage_class=DirectClass;
 
   context.channel=channel;
   context.rvalue=rvalue;
