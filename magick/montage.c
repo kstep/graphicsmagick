@@ -197,7 +197,7 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   montage_info->font=AllocateString(image_info->font);
   montage_info->pointsize=image_info->pointsize;
   montage_info->gravity=CenterGravity;
-  montage_info->compose=CopyCompositeOp;
+  montage_info->compose=OverCompositeOp;
   montage_info->fill=image_info->pen;
   montage_info->stroke=image_info->pen;
   montage_info->background_color=image_info->background_color;
@@ -276,7 +276,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     **master_list,
     *montage_next,
     *texture,
-    *tiled_next;
+    *tile_next;
 
   ImageAttribute
     *attribute;
@@ -346,15 +346,15 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     y=0;
     (void) ParseImageGeometry(montage_info->geometry,&x,&y,&width,&height);
     next_list[tile]->orphan=True;
-    tiled_next=ZoomImage(next_list[tile],width,height,exception);
-    if (tiled_next == (Image *) NULL)
+    tile_next=ZoomImage(next_list[tile],width,height,exception);
+    if (tile_next == (Image *) NULL)
       {
         for (i=0; i < (int) tile; i++)
           DestroyImage(next_list[i]);
         (void) SetMonitorHandler(handler);
         return((Image *) NULL);
       }
-    next_list[tile]=tiled_next;
+    next_list[tile]=tile_next;
     (void) SetMonitorHandler(handler);
     MagickMonitor(TileImageText,tile,number_images);
   }
@@ -709,13 +709,8 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
           /*
             Composite background next with tile next.
           */
-          if (next->matte)
-            CompositeImage(montage_next,montage_info->compose,next,x_offset+x,
-              y_offset+y);
-          else
-            CompositeImage(montage_next,CopyCompositeOp,next,x_offset+x,
-              y_offset+y);
-          montage_next->matte=False;
+          CompositeImage(montage_next,montage_info->compose,next,x_offset+x,
+            y_offset+y);
           if (montage_info->shadow)
             {
               register int
@@ -785,6 +780,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
       MagickMonitor(MontageImageText,tiles,total_tiles);
       tiles++;
     }
+    montage_next->matte=False;
     if ((i+1) < (int) image_per_page)
       {
         /*
