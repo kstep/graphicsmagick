@@ -156,7 +156,8 @@
     metrics="/usr/openwin/lib/X11/fonts/Type1/Symbol.afm"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/Symbol.pfa"
     version="0.1"
-    encoding="AdobeCustom" />
+    encoding="AdobeCustom"
+    />
   <type
     name="Utopia-Regular"
     fullname="Utopia Regular"
@@ -167,7 +168,7 @@
     stretch="normal"
     format="type1"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/UTRG____.pfa"
-    >
+    />
   <type
     name="Utopia-Italic"
     fullname="Utopia Italic"
@@ -178,7 +179,7 @@
     stretch="normal"
     format="type1"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/UTI_____.pfa"
-    >
+    />
   <type
     name="Utopia-Bold"
     fullname="Utopia Bold"
@@ -189,7 +190,7 @@
     stretch="normal"
     format="type1"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/UTB_____.pfa"
-    >
+    />
   <type
     name="Utopia-BoldItalic"
     fullname="Utopia Bold Italic"
@@ -200,6 +201,6 @@
     stretch="normal"
     format="type1"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/UTBI____.pfa"
-    >
+    />
 </typemap>
 
