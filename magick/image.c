@@ -310,9 +310,7 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
   if (image_info != (ImageInfo *) NULL)
     (void) strcpy(image->next->filename,image_info->filename);
   image->next->blob=image->blob;
-  image->next->filesize=image->filesize;
   image->next->file=image->file;
-  image->next->filesize=image->filesize;
   image->next->scene=image->scene+1;
   image->next->previous=image;
 }
@@ -1763,17 +1761,17 @@ MagickExport void DescribeImage(Image *image,FILE *file,
               image->normalized_maximum_error);
           }
       (void) fprintf(file,"%u-bit ",image->depth);
-      if (image->filesize != 0)
+      if (image->blob.filesize != 0)
         {
-          if (image->filesize >= (1 << 24))
+          if (image->blob.filesize >= (1 << 24))
             (void) fprintf(file,"%lumb ",
-              (unsigned long) (image->filesize/1024/1024));
+              (unsigned long) (image->blob.filesize/1024/1024));
           else
-            if (image->filesize >= (1 << 16))
+            if (image->blob.filesize >= (1 << 16))
               (void) fprintf(file,"%lukb ",
-                (unsigned long) (image->filesize/1024));
+                (unsigned long) (image->blob.filesize/1024));
             else
-              (void) fprintf(file,"%lub ",(unsigned long) image->filesize);
+              (void) fprintf(file,"%lub ",(unsigned long) image->blob.filesize);
         }
       (void) fprintf(file,"%.1fu %d:%02d\n",user_time,(int) (elapsed_time/60.0),
         (int) ceil(fmod(elapsed_time,60.0)));
@@ -2063,15 +2061,16 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           else
             (void) fprintf(file,"\n");
     }
-  if (image->filesize >= (1 << 24))
+  if (image->blob.filesize >= (1 << 24))
     (void) fprintf(file,"  Filesize: %lumb\n",
-      (unsigned long) (image->filesize/1024/1024));
+      (unsigned long) (image->blob.filesize/1024/1024));
   else
-    if (image->filesize >= (1 << 16))
+    if (image->blob.filesize >= (1 << 16))
       (void) fprintf(file,"  Filesize: %lukb\n",
-        (unsigned long) (image->filesize/1024));
+        (unsigned long) (image->blob.filesize/1024));
     else
-      (void) fprintf(file,"  Filesize: %lub\n",(unsigned long) image->filesize);
+      (void) fprintf(file,"  Filesize: %lub\n",
+        (unsigned long) image->blob.filesize);
   if (image->interlace == NoInterlace)
     (void) fprintf(file,"  Interlace: None\n");
   else

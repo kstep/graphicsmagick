@@ -112,6 +112,9 @@ typedef struct _BlobInfo
   unsigned int
     eof;
 
+  off_t
+    filesize;
+
   unsigned long
     signature;
 } BlobInfo;
@@ -437,9 +440,6 @@ typedef struct _Image
 
   unsigned long
     signature;
-
-  off_t
-    filesize;
 } Image;
 
 typedef struct _ImageInfo
