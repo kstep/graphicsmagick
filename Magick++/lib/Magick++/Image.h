@@ -743,7 +743,7 @@ namespace Magick
     // Get/set pixel color at location x & y.
     void            pixelColor ( unsigned int x_, unsigned int y_,
 				 const Color &color_ );
-    Color           pixelColor ( unsigned int x_, unsigned int y_ );
+    Color           pixelColor ( unsigned int x_, unsigned int y_ ) const;
 
     // Preferred size and location of an image canvas.
     void            page ( const Geometry &pageSize_ );
@@ -918,9 +918,15 @@ namespace Magick
                                         unsigned int columns_,
                                         unsigned int rows_ ) const;
 
+    // Obtain image pixel indexes (valid for PseudoClass images)
+    IndexPacket* getIndexes ( void );
+    // Obtain image pixel indexes (valid for PseudoClass images)
+    const IndexPacket* getConstIndexes ( void ) const;
+
     // Transfers pixels from the image to the pixel cache as defined
     // by the specified region. Modified pixels may be subsequently
     // transferred back to the image via syncPixels.
+    // This method is valid for DirectClass images
     PixelPacket* getPixels ( int x_, int y_,
 			     unsigned int columns_, unsigned int rows_ );
 
@@ -1094,6 +1100,24 @@ inline MagickLib::ImageInfo* Magick::Image::imageInfo( void )
 inline const MagickLib::ImageInfo * Magick::Image::constImageInfo( void ) const
 {
   return _imgRef->options()->imageInfo();
+}
+
+// Get image storage class
+inline Magick::ClassType Magick::Image::classType ( void ) const
+{
+  return static_cast<Magick::ClassType>(constImage()->c_class);
+}
+
+// Get number of image columns
+inline unsigned int Magick::Image::columns ( void ) const
+{
+  return constImage()->columns;
+}
+
+// Get number of image rows
+inline unsigned int Magick::Image::rows ( void ) const
+{
+  return constImage()->rows;
 }
 
 #endif // Magick_Image_header

@@ -1,218 +1,380 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-   <META NAME="GENERATOR" CONTENT="Mozilla/4.07 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
-   <META NAME="Author" CONTENT="Bob Friesenhahn">
-   <META NAME="Description" CONTENT="Magick::Color class documentation">
-   <TITLE>Magick::Color Class</TITLE>
-</HEAD>
-<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="Author" content="Bob Friesenhahn">
+   <meta name="Description" content="Magick::Color class documentation">
+   <title>Magick::Color Class</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
 
-<CENTER>
-<H1>
-Magick::Color</H1></CENTER>
-<A HREF="#Color">Color</A> is the base color class in Magick++. It is a
-simple container class for the raw red, green, and blue values scaled to
-a depth of 16 bits. Normally users will instantiate a class derived from
-Color which supports the color model that fits the needs of the application.
-The Color class may be constructed directly from an X11-style color string.
-<P>Available derived color specification classes are shown in the following
+<center>
+<h1>
+Magick::Color</h1></center>
+<a href="#Color">Color</a> is the base color class in Magick++. It is a
+simple container class for the pixel red, green, blue, and alpha values
+scaled to fit ImageMagick's Quantum size. Normally users will instantiate
+a class derived from Color which supports the color model that fits the
+needs of the application. The Color class may be constructed directly from
+an X11-style color string.
+<p>Available derived color specification classes are shown in the following
 table:
-<BR>&nbsp;
-<TABLE BORDER WIDTH="100%" NOSAVE >
-<CAPTION>Color Derived Classes</CAPTION>
+<br>&nbsp;
+<table BORDER WIDTH="100%" NOSAVE >
+<caption>Color Derived Classes</caption>
 
-<TR NOSAVE>
-<TD NOSAVE><A HREF="#ColorRGB">ColorRGB</A></TD>
+<tr NOSAVE>
+<td NOSAVE><a href="#ColorRGB">ColorRGB</a></td>
 
-<TD>Representation of RGB color with red, green, and blue specified as
-ratios (0 to 1)</TD>
-</TR>
+<td>Representation of RGB color with red, green, and blue specified as
+ratios (0 to 1)</td>
+</tr>
 
-<TR>
-<TD><A HREF="#ColorGray">ColorGray</A></TD>
+<tr>
+<td><a href="#ColorGray">ColorGray</a></td>
 
-<TD>Representation of grayscale RGB color (equal parts red, green, and
-blue) specified as a ratio (0 to 1)</TD>
-</TR>
+<td>Representation of grayscale RGB color (equal parts red, green, and
+blue) specified as a ratio (0 to 1)</td>
+</tr>
 
-<TR>
-<TD><A HREF="#ColorMono">ColorMono</A></TD>
+<tr>
+<td><a href="#ColorMono">ColorMono</a></td>
 
-<TD>Representation of a black/white color (true/false)</TD>
-</TR>
+<td>Representation of a black/white color (true/false)</td>
+</tr>
 
-<TR>
-<TD><A HREF="#ColorYUV">ColorYUV</A></TD>
+<tr>
+<td><a href="#ColorYUV">ColorYUV</a></td>
 
-<TD>Representation of a color in the YUV colorspace</TD>
-</TR>
-</TABLE>
+<td>Representation of a color in the YUV colorspace</td>
+</tr>
+</table>
 
-<BR>&nbsp;
-<P>Base color class stores RGB components scaled to fit ColorType (16 bits)
-<H3>
-<A NAME="Color"></A>Color Class</H3>
+<p>ImageMagick may be compiled to support 32 or 64 bit pixels of type <a href="PixelPacket.html">PixelPacket</a>.
+This is controlled by the value of the QuantumDepth define. The default
+is 64 bit pixels, which provide the best accuracy. If memory consumption
+must be minimized, or processing time must be minimized, then ImageMagick
+may be compiled with QuantumDepth=8. The following table shows the relationship
+between <i>QuantumDepth</i>, the type of <i>Quantum</i>, and the overall
+<i>PixelPacket</i> size.
+<br>&nbsp;
+<table BORDER NOSAVE >
+<caption>
+<center><b>Effect Of QuantumDepth Values</b></center>
+</caption>
+
+<tr>
+<td>
+<center><b>QuantumDepth</b></center>
+</td>
+
+<td>
+<center><b>Quantum Typedef</b></center>
+</td>
+
+<td>
+<center><b>PixelPacket Size</b></center>
+</td>
+</tr>
+
+<tr NOSAVE>
+<td>
+<center>8</center>
+</td>
+
+<td NOSAVE>
+<center>unsigned char</center>
+</td>
+
+<td>
+<center>32 bits</center>
+</td>
+</tr>
+
+<tr>
+<td>
+<center>16</center>
+</td>
+
+<td>
+<center>unsigned short</center>
+</td>
+
+<td>
+<center>64 bits</center>
+</td>
+</tr>
+</table>
+
+<h3>
+<a NAME="Color"></a>Color Class</h3>
 The Color base class is not intended to be used directly. Normally a user
 will construct a derived class or inherit from this class. Color arguments
-must be scaled to the ColorType size (16 bits). The ScaleDoubleToQuantum
-and ScaleQuantumToDouble macros can aid with this task.
-<P>An alternate way to contruct the class is via an X11-compatable color
+are must be scaled to fit the Quantum size. The Color class contains a
+pointer to a PixelPacket, which may be allocated by the Color class, or
+may refer to an existing pixel in an image.
+<p>An alternate way to contruct the class is via an X11-compatable color
 specification string.
-<P><TT><FONT COLOR="#000066">class Color</FONT></TT>
-<BR><TT><FONT COLOR="#000066">{</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; friend class Image;</FONT></TT>
-<BR><TT><FONT COLOR="#000066">public:</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; Color ( ColorType red_, ColorType
-green_, ColorType blue_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; Color ( const std::string x11color_
-);</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; Color ( const char * x11color_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; Color ( void );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; virtual&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-~Color ( void );</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; // Does object contain valid color?</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-isValid ( bool valid_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-isValid ( void ) const;</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; // Set color via X11 color specification
-string</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; const Color&amp; operator = ( std::string
-x11color_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; const Color&amp; operator = ( const
-char * x11color_ );</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; // Return X11 color specification string</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; /* virtual */ operator std::string()
-const;</FONT></TT>
-<P><TT><FONT COLOR="#000066">protected:</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-redQuantum ( ColorType red_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; ColorType&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-redQuantum ( void ) const;</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-greenQuantum ( ColorType green_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; ColorType&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-greenQuantum ( void ) const;</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-blueQuantum ( ColorType blue_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; ColorType&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-blueQuantum ( void ) const;</FONT></TT>
-<P><TT><FONT COLOR="#000066">};</FONT></TT>
-<BR>&nbsp;
-<H3>
-<A NAME="ColorRGB"></A>ColorRGB</H3>
+<p><tt><font color="#000066"><font size=-1>class Color</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>{</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp; public:</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; Color (
+Quantum red_,</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; Quantum
+green_,</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; Quantum
+blue_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; Color (
+Quantum red_,</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; Quantum
+green_,</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; Quantum
+blue_,</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; Quantum
+alpha_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; Color (
+const std::string &amp;x11color_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; Color (
+const char * x11color_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; Color (
+void );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; virtual&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+~Color ( void );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; Color (
+const Color &amp; color_ );</font></font></tt><tt><font color="#000066"><font size=-1></font></font></tt>
+<p><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Red color
+(range 0 to MaxRGB)</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+redQuantum ( Quantum red_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; Quantum&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+redQuantum ( void ) const;</font></font></tt><tt><font color="#000066"><font size=-1></font></font></tt>
+<p><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Green
+color (range 0 to MaxRGB)</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+greenQuantum ( Quantum green_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; Quantum&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+greenQuantum ( void ) const;</font></font></tt><tt><font color="#000066"><font size=-1></font></font></tt>
+<p><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Blue color
+(range 0 to MaxRGB)</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+blueQuantum ( Quantum blue_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; Quantum&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+blueQuantum ( void ) const;</font></font></tt><tt><font color="#000066"><font size=-1></font></font></tt>
+<p><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Alpha
+level (range OpaqueOpacity=0 to TransparentOpacity=MaxRGB)</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+alphaQuantum ( Quantum alpha_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; Quantum&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+alphaQuantum ( void ) const;</font></font></tt><tt><font color="#000066"><font size=-1></font></font></tt>
+<p><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Scaled
+(to 1.0) version of alpha for use in sub-classes</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // (range
+opaque=0 to transparent=1.0)</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+alpha ( double alpha_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+alpha ( void ) const;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Does
+object contain valid color?</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+isValid ( bool valid_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+isValid ( void ) const;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Set color
+via X11 color specification string</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; const Color&amp;
+operator= ( const std::string &amp;x11color_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; const Color&amp;
+operator= ( const char * x11color_ );</font></font></tt><tt><font color="#000066"><font size=-1></font></font></tt>
+<p><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Assignment
+operator</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; Color&amp;
+operator= ( const Color&amp; color_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Return
+X11 color specification string</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; /* virtual
+*/ operator std::string() const;</font></font></tt><tt><font color="#000066"><font size=-1></font></font></tt>
+<p><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Return
+ImageMagick PixelPacket</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; operator
+PixelPacket() const;</font></font></tt><tt><font color="#000066"><font size=-1></font></font></tt>
+<p><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Construct
+color via ImageMagick PixelPacket</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; Color (
+const PixelPacket &amp;color_ );</font></font></tt><tt><font color="#000066"><font size=-1></font></font></tt>
+<p><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Set color
+via ImageMagick PixelPacket</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; const Color&amp;
+operator= ( PixelPacket &amp;color_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>};</font></font></tt>
+<br>&nbsp;
+<h3>
+<a NAME="ColorRGB"></a>ColorRGB</h3>
 Representation of an RGB color. All color arguments have a valid range
 of 0.0 - 1.0.
-<P><TT><FONT COLOR="#000066">class ColorRGB : public Color</FONT></TT>
-<BR><TT><FONT COLOR="#000066">{</FONT></TT>
-<BR><TT><FONT COLOR="#000066">public:</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; ColorRGB ( double red_, double green_,
-double blue_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; ColorRGB ( const string x11color_
-);</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; ColorRGB ( void );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; /* virtual */&nbsp; ~ColorRGB ( void
-);</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-red ( double red_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-red ( void ) const;</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-green ( double green_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-green ( void ) const;</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-blue ( double blue_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-blue ( void ) const;</FONT></TT>
-<BR><TT><FONT COLOR="#000066">};</FONT></TT>
-<BR>&nbsp;
-<H3>
-<A NAME="ColorGray"></A>ColorGray</H3>
+<p><tt><font color="#000066"><font size=-1>class ColorRGB : public Color</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>{</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp; public:</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorRGB
+( double red_, double green_, double blue_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorRGB
+( void );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorRGB
+( const Color &amp; color_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; /* virtual
+*/&nbsp; ~ColorRGB ( void );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+red ( double red_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+red ( void ) const;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+green ( double green_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+green ( void ) const;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+blue ( double blue_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+blue ( void ) const;</font></font></tt><tt><font color="#000066"><font size=-1></font></font></tt>
+<p><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Assignment
+operator from base class</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorRGB&amp;
+operator= ( const Color&amp; color_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>};</font></font></tt>
+<br>&nbsp;
+<h3>
+<a NAME="ColorGray"></a>ColorGray</h3>
 Representation of a grayscale color (in RGB colorspace). Grayscale is simply
 RGB with equal parts of red, green, and blue. All double arguments have
 a valid range of 0.0 - 1.0.
-<P><TT><FONT COLOR="#000066">class ColorGray : public Color</FONT></TT>
-<BR><TT><FONT COLOR="#000066">{</FONT></TT>
-<BR><TT><FONT COLOR="#000066">public:</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; ColorGray ( double shade_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; ColorGray ( void );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; /* virtual */ ~ColorGray ();</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-shade ( double shade_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-shade ( void ) const;</FONT></TT>
-<BR><TT><FONT COLOR="#000066">};</FONT></TT>
-<BR>&nbsp;
-<H3>
-<A NAME="ColorMono"></A>ColorMono</H3>
+<p><tt><font color="#000066"><font size=-1>class ColorGray : public Color</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>{</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp; public:</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorGray
+( double shade_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorGray
+( void );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorGray
+( const Color &amp; color_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; /* virtual
+*/ ~ColorGray ();</font></font></tt><tt><font color="#000066"><font size=-1></font></font></tt>
+<p><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+shade ( double shade_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+shade ( void ) const;</font></font></tt><tt><font color="#000066"><font size=-1></font></font></tt>
+<p><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Assignment
+operator from base class</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorGray&amp;
+operator= ( const Color&amp; color_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>};</font></font></tt>
+<br>&nbsp;
+<h3>
+<a NAME="ColorMono"></a>ColorMono</h3>
 Representation of a black/white pixel (in RGB colorspace). Color arguments
 are constrained to 'false' (black pixel) and 'true' (white pixel).
-<P><TT><FONT COLOR="#000066">class ColorMono : public Color</FONT></TT>
-<BR><TT><FONT COLOR="#000066">{</FONT></TT>
-<BR><TT><FONT COLOR="#000066">public:</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; ColorMono ( bool mono_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; ColorMono ( void );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; /* virtual */ ~ColorMono ();</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-mono ( bool mono_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-mono ( void ) const;</FONT></TT>
-<P><TT><FONT COLOR="#000066">};</FONT></TT>
-<BR>&nbsp;
-<H3>
-<A NAME="ColorHSL"></A>ColorHSL</H3>
+<p><tt><font color="#000066"><font size=-1>class ColorMono : public Color</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>{</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp; public:</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorMono
+( bool mono_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorMono
+( void );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorMono
+( const Color &amp; color_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; /* virtual
+*/ ~ColorMono ();</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mono ( bool mono_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mono ( void ) const;</font></font></tt><tt><font color="#000066"><font size=-1></font></font></tt>
+<p><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Assignment
+operator from base class</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorMono&amp;
+operator= ( const Color&amp; color_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>};</font></font></tt>
+<br>&nbsp;
+<h3>
+<a NAME="ColorHSL"></a>ColorHSL</h3>
 Representation of a color in Hue/Saturation/Luminosity (HSL) colorspace.
-<P><TT><FONT COLOR="#000066">class ColorHSL : public Color</FONT></TT>
-<BR><TT><FONT COLOR="#000066">{</FONT></TT>
-<BR><TT><FONT COLOR="#000066">public:</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; ColorHSL ( double hue_, double saturation_,
-double luminosity_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; ColorHSL ( );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; /* virtual */&nbsp; ~ColorHSL ( );</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-hue ( double hue_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-hue ( void ) const;</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-saturation ( double saturation_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-saturation ( void ) const;</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-luminosity ( double luminosity_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-luminosity ( void ) const;</FONT></TT>
-<BR><TT><FONT COLOR="#000066">};</FONT></TT>
-<BR>&nbsp;
-<H3>
-<A NAME="ColorYUV"></A>ColorYUV</H3>
+<p><tt><font color="#000066"><font size=-1>class ColorHSL : public Color</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>{</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp; public:</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorHSL
+( double hue_, double saturation_, double luminosity_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorHSL
+( void );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorHSL
+( const Color &amp; color_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; /* virtual
+*/&nbsp; ~ColorHSL ( );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+hue ( double hue_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+hue ( void ) const;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+saturation ( double saturation_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+saturation ( void ) const;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+luminosity ( double luminosity_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+luminosity ( void ) const;</font></font></tt><tt><font color="#000066"><font size=-1></font></font></tt>
+<p><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Assignment
+operator from base class</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorHSL&amp;
+operator= ( const Color&amp; color_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>};</font></font></tt>
+<br>&nbsp;
+<h3>
+<a NAME="ColorYUV"></a>ColorYUV</h3>
 Representation of a color in YUV colorspace (used to encode color for television
 transmission).
-<P>&nbsp;Argument ranges:
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Y:&nbsp; 0.0 through 1.0
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; U: -0.5 through 0.5
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; V: -0.5 through 0.5
-<P><TT><FONT COLOR="#000066">class ColorYUV : public Color</FONT></TT>
-<BR><TT><FONT COLOR="#000066">{</FONT></TT>
-<BR><TT><FONT COLOR="#000066">public:</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; ColorYUV ( double y_, double u_, double
-v_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; ColorYUV ( void );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; /* virtual */ ~ColorYUV ( void );</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-u ( double u_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-u ( void ) const;</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-v ( double v_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-v ( void ) const;</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-y ( double y_ );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-y ( void ) const;</FONT></TT>
-<BR><TT><FONT COLOR="#000066">};</FONT></TT>
-</BODY>
-</HTML>
+<p>&nbsp;Argument ranges:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Y:&nbsp; 0.0 through 1.0
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; U: -0.5 through 0.5
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; V: -0.5 through 0.5
+<p><tt><font color="#000066"><font size=-1>class ColorYUV : public Color</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>{</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp; public:</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorYUV
+( double y_, double u_, double v_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorYUV
+( void );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorYUV
+( const Color &amp; color_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; /* virtual
+*/ ~ColorYUV ( void );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+u ( double u_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+u ( void ) const;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+v ( double v_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+v ( void ) const;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+y ( double y_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+y ( void ) const;</font></font></tt><tt><font color="#000066"><font size=-1></font></font></tt>
+<p><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; // Assignment
+operator from base class</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>&nbsp;&nbsp;&nbsp; ColorYUV&amp;
+operator= ( const Color&amp; color_ );</font></font></tt>
+<br><tt><font color="#000066"><font size=-1>};</font></font></tt>
+<br><tt><font color="#000066"></font></tt>&nbsp;
+<br><tt><font color="#000066"></font></tt>&nbsp;
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Description of PixelPacket structure members.">
    <title>PixelPacket Structure</title>
@@ -12,18 +12,67 @@
 <center>
 <h1>
 PixelPacket Structure</h1></center>
-The <i>PixelPacket</i> structure is used to represent <a href="Enumerations.html#ClassType">DirectClass</a>
-color <a href="Image.html#pixels">pixels</a> in ImageMagick. If the image
-is indicated as a <a href="Enumerations.html#ClassType">PseudoClass</a>
-image, its DirectClass representation is only valid immediately after calling
-SyncImage(). If an image is set as PseudoClass and the DirectClass representation
-is modified, the image should then be set as DirectClass. Use QuantizeImage()
-to restore the PseudoClass colormap if the DirectClass representation is
-modified.
-<p>The members of the <i>PixelPacket</i> structure are shown in the following
-table:
+The <i>PixelPacket</i> structure is used to represent pixels in ImageMagick.
+ImageMagick may be compiled to support 32 or 64 bit pixels. The size of
+PixelPacket is controlled by the value of the <i>QuantumDepth</i> define.
+The default is 64 bit pixels, which provide the best accuracy. If memory
+consumption must be minimized, or processing time must be minimized, then
+ImageMagick may be compiled with QuantumDepth=8. The following table shows
+the relationship between <i>QuantumDepth</i>, the type of <i>Quantum</i>,
+and the overall <i>PixelPacket</i> size.
 <br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER BGCOLOR="#CCCCCC" NOSAVE >
+<caption>
+<center><b>Effect Of QuantumDepth Values</b></center>
+</caption>
+
+<tr>
+<td>
+<center><b>QuantumDepth</b></center>
+</td>
+
+<td>
+<center><b>Quantum Type</b></center>
+</td>
+
+<td>
+<center><b>PixelPacket Size</b></center>
+</td>
+</tr>
+
+<tr NOSAVE>
+<td>
+<center>8</center>
+</td>
+
+<td NOSAVE>
+<center>unsigned char</center>
+</td>
+
+<td>
+<center>32 bits</center>
+</td>
+</tr>
+
+<tr NOSAVE>
+<td>
+<center>16</center>
+</td>
+
+<td>
+<center>unsigned short</center>
+</td>
+
+<td NOSAVE>
+<center>64 bits</center>
+</td>
+</tr>
+</table>
+
+<p>The members of the <i>PixelPacket</i> structure, and their interpretation,
+are shown in the following table:
+<br>&nbsp;
+<table BORDER BGCOLOR="#CCCCCC" NOSAVE >
 <caption><b>PixelPacket Structure Members</b></caption>
 
 <tr NOSAVE>
@@ -42,12 +91,12 @@ table:
 
 <tr>
 <td>
-<center><a href="Enumerations.html#ColorspaceType">RGBColorspace</a> <font color="#FF0000">(4)</font></center>
+<center><a href="Enumerations.html#ColorspaceType">RGBColorspace</a></center>
 </td>
 
 <td>
 <center><a href="Enumerations.html#ColorspaceType">RGBColorspace</a> +
-<a href="Image.html#matte">matte</a><font color="#FF0000">(4)&nbsp;</font></center>
+<a href="Image.html#matte">matte</a></center>
 </td>
 
 <td>
@@ -62,7 +111,7 @@ table:
 
 <td NOSAVE><font size=-1>Red</font></td>
 
-<td><font size=-1>Red</font></td>
+<td NOSAVE><font size=-1>Red</font></td>
 
 <td><font size=-1>Cyan</font></td>
 </tr>
@@ -96,43 +145,14 @@ table:
 
 <td><font size=-1>Quantum</font></td>
 
-<td><font size=-1>Opacity</font></td>
+<td><font size=-1>Ignored</font></td>
 
 <td><font size=-1>Opacity</font></td>
 
 <td><font size=-1>Black</font></td>
 </tr>
-
-<tr>
-<td><font size=-1>index</font></td>
-
-<td><font size=-1>unsigned short</font></td>
-
-<td><font size=-1>Index into image <a href="Image.html#colormap">colormap</a><font color="#FF0000">(2)</font></font></td>
-
-<td><font size=-1>Index into image <a href="Image.html#colormap">colormap</a><font color="#FF0000">(2)</font></font></td>
-
-<td><font size=-1>Index into image <a href="Image.html#colormap">colormap</a><font color="#FF0000">(2)</font></font></td>
-</tr>
 </table>
 
-<p><font color="#000000">Notes:</font>
-<ol>
-<li>
-Quantum is an unsigned short (MaxRGB=65535) if ImageMagick is built using
--DQuantumMagick is an unsigned char (MaxRGB=255).</li>
-
-<li>
-RGB index is only valid for PseudoClass images (<a href="Image.html#class">class</a>=<a href="Enumerations.html#ClassType">PseudoClass</a>).</li>
-
-<li>
-SyncImage() may be used to synchronize the DirectClass color pixels to
-the current PseudoClass colormap.</li>
-
-<li>
-For pixel representation purposes, all colorspaces are treated like RGBColorspace
-except for CMYKColorspace.</li>
-</ol>
-<font size=-2></font>
+<br>&nbsp;
 </body>
 </html>

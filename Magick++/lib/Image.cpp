@@ -1859,6 +1859,7 @@ void Magick::Image::chromaWhitePoint ( float *x_, float *y_ ) const
   *y_ = constImage()->chromaticity.white_point.y;
 }
 
+// Set image storage class
 void Magick::Image::classType ( Magick::ClassType class_ )
 {
   if ( classType() == PseudoClass && class_ == DirectClass )
@@ -1880,10 +1881,6 @@ void Magick::Image::classType ( Magick::ClassType class_ )
       quantize();
       image()->c_class = static_cast<MagickLib::ClassType>(PseudoClass);
     }
-}
-Magick::ClassType Magick::Image::classType ( void ) const
-{
-  return static_cast<Magick::ClassType>(constImage()->c_class);
 }
 
 // Associate a clip mask with the image. The clip mask must be the
@@ -2057,12 +2054,6 @@ void Magick::Image::colorSpace( ColorspaceType colorSpace_ )
 Magick::ColorspaceType Magick::Image::colorSpace ( void ) const
 {
   return constImage()->colorspace;
-}
-
-// Image columns
-unsigned int Magick::Image::columns ( void ) const
-{
-  return constImage()->columns;
 }
 
 // Comment string
@@ -2525,7 +2516,7 @@ Magick::Image  Magick::Image::penTexture ( void  ) const
   return texture;
 }
 
-// Update the truecolor representation of a pixel.
+// Set the color of a pixel.
 void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
 				 const Color &color_ )
 {
@@ -2554,18 +2545,29 @@ void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
   throwExceptionExplicit( OptionError,
 			  "Color argument is invalid" );
 }
+// Get the color of a pixel
 Magick::Color Magick::Image::pixelColor ( unsigned int x_,
-					  unsigned int y_ )
+					  unsigned int y_ ) const
 {
-  // Test arguments to ensure they are within the image.
-  if ( y_ > rows() || x_ > columns() )
-    throwExceptionExplicit( OptionError,
-			    "Access outside of image boundary" );
+  ClassType storage_class;
+  storage_class = classType();
+  // DirectClass
+  if ( storage_class == DirectClass )
+    {
+      const PixelPacket* pixel = getConstPixels( x_, y_, 1, 1 );
+      if ( pixel )
+        return Color( *pixel );
+    }
 
-  // Get pixel view
-  Pixels pixels(*this);
-  // Return value
-  return Color( *(pixels.get(x_, y_, 1, 1 )) );
+  // PseudoClass
+  if ( storage_class == PseudoClass )
+    {
+      const IndexPacket* indexes = getConstIndexes();
+      if ( indexes )
+        return colorMap( *(indexes + y_*columns() + x_) );
+    }
+
+  return Color(); // invalid
 }
 
 // Preferred size and location of an image canvas.
@@ -2652,11 +2654,6 @@ void Magick::Image::resolutionUnits ( Magick::ResolutionType resolutionUnits_ )
 Magick::ResolutionType Magick::Image::resolutionUnits ( void ) const
 {
   return constOptions()->resolutionUnits( );
-}
-
-unsigned int Magick::Image::rows ( void ) const
-{
-  return constImage()->rows;
 }
 
 void Magick::Image::scene ( unsigned int scene_ )
@@ -2995,6 +2992,18 @@ const Magick::PixelPacket* Magick::Image::getConstPixels ( int x_, int y_,
                                                         &exceptionInfo );
   throwException( exceptionInfo );
   return p;
+}
+
+// Obtain read-only pixel indexes (valid for PseudoClass images)
+const Magick::IndexPacket* Magick::Image::getConstIndexes ( void ) const
+{
+  return GetIndexes( constImage() );
+}
+
+// Obtain image pixel indexes (valid for PseudoClass images)
+Magick::IndexPacket* Magick::Image::getIndexes ( void )
+{
+  return GetIndexes( constImage() );
 }
 
 // Transfers pixels from the image to the pixel cache as defined

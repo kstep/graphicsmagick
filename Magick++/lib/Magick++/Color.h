@@ -76,18 +76,18 @@ namespace Magick
     // Return X11 color specification string
     /* virtual */ operator std::string() const;
 
-    //
-    // Public methods beyond this point are for Magick++ use only.
-    //
+    // Return ImageMagick PixelPacket
+    operator PixelPacket() const;
 
     // Construct color via ImageMagick PixelPacket
-    Color ( PixelPacket &color_ );
+    Color ( const PixelPacket &color_ );
 
     // Set color via ImageMagick PixelPacket
     const Color& operator= ( PixelPacket &color_ );
 
-    // Return ImageMagick PixelPacket
-    operator PixelPacket() const;
+    //
+    // Public methods beyond this point are for Magick++ use only.
+    //
 
     // Scale a value expressed as a double (0-1) to Quantum range (0-MaxRGB)
     static Quantum scaleDoubleToQuantum( const double double_ )

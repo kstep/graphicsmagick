@@ -172,7 +172,7 @@ Magick::Color::operator std::string() const
 }
 
 // Construct color via ImageMagick PixelPacket
-Magick::Color::Color ( PixelPacket &color_ )
+Magick::Color::Color ( const PixelPacket &color_ )
   : _pixel(new PixelPacket),
     _pixelOwn(true),	    // We allocated this pixel
     _pixelType(RGBPixel)  // RGB pixel by default
