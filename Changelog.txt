@@ -1,3 +1,8 @@
+2001-11-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/Makefile.PL.in: Install PerlMagick using
+ 	ImageMagick's configure prefix.
+
 2001-11-02  Cristy  <cristy@mystic.es.dupont.com>
 	* Typecast offset to unsigned long in coders/pdf.c.
 
