@@ -91,6 +91,8 @@ MagickExport unsigned int DeleteImageList(Image *images,const long offset)
   register long
     i;
 
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   while (images->previous != (Image *) NULL)
     images=images->previous;
   for (i=0; i < offset; i++)
@@ -130,6 +132,8 @@ MagickExport unsigned int DeleteImageList(Image *images,const long offset)
 */
 MagickExport void DestroyImages(Image *image)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   DestroyImageList(image);
 }
 
@@ -166,6 +170,8 @@ MagickExport void DestroyImages(Image *image)
 MagickExport Image *GetImageList(const Image *images,const long offset,
   ExceptionInfo *exception)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   return(CloneImage(GetImageFromList(images,offset),0,0,True,exception));
 }
 
@@ -197,6 +203,8 @@ MagickExport Image *GetImageList(const Image *images,const long offset,
 */
 MagickExport long GetImageListIndex(const Image *images)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   return(GetImageIndexInList(images));
 }
 
@@ -227,6 +235,8 @@ MagickExport long GetImageListIndex(const Image *images)
 */
 MagickExport unsigned long GetImageListSize(const Image *images)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   return(GetImageListLength(images));
 }
 
@@ -257,6 +267,8 @@ MagickExport unsigned long GetImageListSize(const Image *images)
 */
 MagickExport Image *GetNextImage(const Image *images)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   return(GetNextImageInList(images));
 }
 
@@ -287,6 +299,8 @@ MagickExport Image *GetNextImage(const Image *images)
 */
 MagickExport unsigned int GetNumberScenes(const Image *image)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   return(GetImageListLength(image));
 }
 
@@ -317,6 +331,8 @@ MagickExport unsigned int GetNumberScenes(const Image *image)
 */
 MagickExport Image *GetPreviousImage(const Image *images)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   return(GetPreviousImageInList(images));
 }
 
@@ -361,6 +377,8 @@ MagickExport Image *GetPreviousImage(const Image *images)
 MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
   unsigned long *width,unsigned long *height)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   return(GetMagickGeometry(geometry,x,y,width,height));
 }
 
@@ -391,6 +409,8 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
 */
 MagickExport Image *PopImageList(Image **images)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   return(RemoveLastImageFromList(images));
 }
 
@@ -424,6 +444,8 @@ MagickExport Image *PopImageList(Image **images)
 */
 MagickExport char *PostscriptGeometry(const char *page)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   return(GetPageGeometry(page));
 }
 
@@ -460,6 +482,8 @@ MagickExport char *PostscriptGeometry(const char *page)
 MagickExport unsigned int PushImageList(Image **images,const Image *image,
   ExceptionInfo *exception)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   AppendImageToList(images,CloneImageList(image,exception));
   return(True);
 }
@@ -494,6 +518,8 @@ MagickExport unsigned int PushImageList(Image **images,const Image *image,
 */
 MagickExport void SetCacheThreshold(const unsigned long size)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   SetMagickResourceLimit(MemoryResource,size);
   SetMagickResourceLimit(MapResource,2*size);
 }
@@ -539,6 +565,8 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
   register long
     i;
 
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   clone=CloneImageList(image,exception);
   while ((*images)->previous != (Image *) NULL)
     (*images)=(*images)->previous;
@@ -579,6 +607,8 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
 */
 MagickExport Image *ShiftImageList(Image **images)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   return(RemoveFirstImageFromList(images));
 }
 
@@ -612,6 +642,8 @@ MagickExport Image *ShiftImageList(Image **images)
 */
 MagickExport ExtendedSignedIntegralType SizeBlob(const Image *image)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   return(GetBlobSize(image));
 }
 
@@ -660,6 +692,8 @@ MagickExport Image *SpliceImageList(Image *images,const long offset,
   register long
     i;
 
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   clone=CloneImageList(splices,exception);
   while (images->previous != (Image *) NULL)
     images=images->previous;
@@ -706,6 +740,8 @@ MagickExport Image *SpliceImageList(Image *images,const long offset,
 MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
   ExceptionInfo *exception)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   PrependImageToList(images,CloneImageList(image,exception));
   return(True);
 }
@@ -746,5 +782,7 @@ MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
 MagickExport IndexPacket ValidateColormapIndex(Image *image,
   const unsigned long index)
 {
+  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+    "Method has been deprecated");
   return(ConstrainColormapIndex(image,index));
 }
