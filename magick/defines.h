@@ -146,7 +146,7 @@ extern "C" {
       (double) (distance*distance))
 #define Extent(string)  ((int) strlen(string))
 #define False  0
-#define DegreesToRadians(x) (M_PI*(x)/180.0)
+#define DegreesToRadians(x) (MagickPI*(x)/180.0)
 #define Intensity(color)  \
   ((0.299*(color).red+0.587*(color).green+(0.114+MagickEpsilon)*(color).blue))
 #define IsFaxImage(color) \
@@ -154,16 +154,14 @@ extern "C" {
 #define IsGray(color)  \
   (((color).red == (color).green) && ((color).green == (color).blue))
 #define MagickEpsilon  1.0e-12
+#define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
 #define MaxApplicationProfiles  16
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))
-#if !defined(M_PI)
-#define M_PI  3.14159265358979323846
-#endif
 #define OpenImage(image_info,image,type)  OpenBlob(image,image,type)
 #define QuantumTick(i,span) \
   (((~((span)-i-1) & ((span)-i-2))+1) == ((span)-i-1))
-#define RadiansToDegrees(x) (180.0*(x)/M_PI)
+#define RadiansToDegrees(x) (180.0*(x)/MagickPI)
 #define RenderPostscriptText  "  Rendering postscript...  "
 #define ScaleColor5to8(x)  ((x) << 3)
 #define ScaleColor6to8(x)  ((x) << 2)

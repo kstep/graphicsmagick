@@ -218,6 +218,9 @@ typedef struct _MngInfo
      saved_bkgd_index;
 #endif
 
+  int
+    new_number_colors;
+
   long
     x_off[MNG_MAX_OBJECTS],
     y_off[MNG_MAX_OBJECTS];
@@ -329,10 +332,6 @@ static unsigned int
 */
 static unsigned int CompressColormapTransFirst(Image *image)
 {
-#if 0  /* Doesn't always work, so disabled for now. */
-  IndexPacket
-    index;
-
   int
     new_number_colors,
     number_colors,
@@ -354,8 +353,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
     *p;
 
   unsigned char
-    have_transparency,
-    *marker;
+    *marker,
+    have_transparency;
 
   unsigned short
     *map,
@@ -365,7 +364,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     Determine if colormap can be compressed.
   */
   assert(image != (Image *) NULL);
-  if (image->storage_class != PseudoClass)
+  if (image->storage_class != PseudoClass || image->colors > 256)
     return(True);
   marker=(unsigned char *) AcquireMemory(image->colors);
   if (marker == (unsigned char *) NULL)
@@ -396,10 +395,21 @@ static unsigned int CompressColormapTransFirst(Image *image)
     indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
     {
-      marker[indexes[x]]=True;
-      opacity[indexes[x]]=p->opacity;
+      marker[(int) indexes[x]]=True;
+      opacity[(int) indexes[x]]=p->opacity;
       p++;
     }
+  }
+  /*
+    Mark background color.
+  */
+  for (i=0; i < number_colors; i++)
+  {
+    if (ColorMatch(image->colormap[i],image->background_color,0))
+      {
+        marker[i]=True;
+        break;
+      }
   }
   /*
     Unmark duplicates.
@@ -442,7 +452,6 @@ static unsigned int CompressColormapTransFirst(Image *image)
     {
       LiberateMemory((void **) &marker);
       LiberateMemory((void **) &opacity);
-      image->colors=number_colors;
       ThrowBinaryException(ResourceLimitWarning,"Unable to compress colormap",
         "Memory allocation failed");
     }
@@ -455,17 +464,16 @@ static unsigned int CompressColormapTransFirst(Image *image)
       LiberateMemory((void **) &marker);
       LiberateMemory((void **) &opacity);
       LiberateMemory((void **) &colormap);
-      image->colors=number_colors;
       ThrowBinaryException(ResourceLimitWarning,"Unable to compress colormap",
         "Memory allocation failed");
     }
-  index=0;
+  j=0;
   for (i=0; i < number_colors; i++)
   {
     if (marker[i])
       {
-        map[i]=index;
-        index++;
+        map[i]=j;
+        j++;
       }
   }
   for (i=0; i < number_colors; i++)
@@ -478,21 +486,22 @@ static unsigned int CompressColormapTransFirst(Image *image)
               (ColorMatch(image->colormap[i],image->colormap[j],0)))
             {
                map[j]=map[i];
+               marker[j]=False;
             }
         }
       }
   }
-  index=0;
+  j=0;
   for (i=0; i < number_colors; i++)
   {
     if (marker[i])
       {
-        colormap[index]=image->colormap[i];
-        opacity[index]=opacity[i];
-        index++;
+        colormap[j]=image->colormap[i];
+        opacity[j]=opacity[i];
+        j++;
       }
   }
-  LiberateMemory((void **) &marker);
+  remap_needed=False;
   if (have_transparency && (opacity[0] != TransparentOpacity))
     {
       /*
@@ -512,7 +521,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
             {
               if (map[j] == 0)
                 {
-                map[j]=(unsigned short) i;
+                  map[j]=(unsigned short) i;
                 }
               else
                 if (map[j] == i)
@@ -520,18 +529,20 @@ static unsigned int CompressColormapTransFirst(Image *image)
                   map[j]=0;
                 }
             }
+            remap_needed=True;
             break;
           }
       }
    }
   LiberateMemory((void **) &opacity);
 
-  remap_needed=False;
-  for (i=new_number_colors; i < number_colors; i++)
-  {
-    if (marker[i])
-       remap_needed=True;
-  }
+  if (!remap_needed)
+    for (i=new_number_colors; i < number_colors; i++)
+    {
+      if (marker[i])
+         remap_needed=True;
+    }
+  LiberateMemory((void **) &marker);
   if(remap_needed)
     {
       /*
@@ -545,8 +556,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
         indexes=GetIndexes(image);
         for (x=0; x < (int) image->columns; x++)
         {
-          index=indexes[x];
-          indexes[x]=(IndexPacket) map[index];
+          j=(int) indexes[x];
+          indexes[x]=(IndexPacket) map[j];
         }
         if (!SyncImagePixels(image))
           break;
@@ -554,9 +565,10 @@ static unsigned int CompressColormapTransFirst(Image *image)
       LiberateMemory((void **) &image->colormap);
       image->colormap=colormap;
     }
+  else
+      LiberateMemory((void **) &colormap);
   image->colors=new_number_colors;
   LiberateMemory((void **) &map);
-#endif
   return(True);
 }
 
@@ -677,7 +689,7 @@ static unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
 %    Restore features that were lost in the 4.2.9-to-5.1.0 update:
 %
 %       o preserve transparency when reading gray-alpha PNGs
-%       o variable interframe durations (restart_animation_here feature
+%       o variable interframe durations (animate_restart feature
 %         was broken)
 %       o coalescing frames that have zero interframe duration
 %
@@ -1116,7 +1128,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int
     framing_mode = 1,
     mandatory_back = 0,
-#if 0
+#ifdef MNG_OBJECT_BUFFERS
     mng_background_object = 0,
 #endif
     mng_type = 0,   /* 0: PNG; 1: MNG; 2: MNG-LC; 3: MNG-VLC */
@@ -1131,8 +1143,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     frame_timeout,
     image_height,
     image_width,
+    insert_layers,
     length,
     mng_height = 0,
+    mng_iterations=0,
     mng_width = 0,
     subframe_height,
     subframe_width,
@@ -1145,7 +1159,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  first_mng_object=0;
+  first_mng_object=False;
   skipping_loop=(-1);
   have_mng_structure=False;
   if (LocaleCompare(image_info->magick,"MNG") == 0)
@@ -1159,7 +1173,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) ReadBlob(image,8,magic_number);
       if (memcmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
         ThrowReaderException(CorruptImageWarning,"Not a MNG image file",image);
-      first_mng_object=1;
+      first_mng_object=True;
       /*
         Allocate a MngInfo structure.
       */
@@ -1208,6 +1222,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
   mng_type=0;
+  insert_layers=False;
   default_frame_delay=0;
   default_frame_timeout=0;
   frame_delay=0;
@@ -1216,9 +1231,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   object_id=0;
   skip_to_iend=False;
   term_chunk_found=False;
-  image_found=0;
+  image_found=False;
   framing_mode=1;
-  mandatory_back=0;
+  mandatory_back=False;
   have_global_chrm=False;
   have_global_bkgd=False;
   have_global_gama=False;
@@ -1243,7 +1258,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         type[0]='\0';
         strcat(type,"errr");
-        length=ReadBlobMSBLong(image);
+        length=MSBFirstReadLong(image);
         status=ReadBlob(image,4,type);
         if (length > PNG_MAX_UINT)
           status=False;
@@ -1272,10 +1287,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(ResourceLimitWarning,
                "Unable to allocate memory for chunk data",image);
             for (i=0; i < (int) length; i++)
-              chunk[i]=ReadBlobByte(image);
+              chunk[i]=ReadByte(image);
             p=chunk;
           }
-        (void) ReadBlobMSBLong(image);  /* read crc word */
+        (void) MSBFirstReadLong(image);  /* read crc word */
         if (!memcmp(type,mng_MEND,4))
           break;
         if (skip_to_iend)
@@ -1352,19 +1367,17 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             int
               repeat=0;
 
-            png_uint_32
-              iterations;
 
             if (length > 0)
               repeat=p[0];
             if (repeat == 3)
               {
-                final_delay=(int) mng_get_long(&p[2]);
-                iterations=(int) mng_get_long(&p[6]);
-                if (iterations == PNG_MAX_UINT)
-                  iterations=0;
+                final_delay=(png_uint_32) mng_get_long(&p[2]);
+                mng_iterations=(png_uint_32) mng_get_long(&p[6]);
+                if (mng_iterations == PNG_MAX_UINT)
+                  mng_iterations=0;
                 if (image_info->iterations == (char *) NULL)
-                  image->iterations=iterations;
+                  image->iterations=mng_iterations;
                 term_chunk_found=True;
               }
             LiberateMemory((void **) &chunk);
@@ -1453,7 +1466,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 mng_background_color.blue=
                   (unsigned short) XDownScale((p[4]<<8) | p[5]);
               }
-#if 0
+#ifdef MNG_OBJECT_BUFFERS
             if (length > 8)
               mng_background_object=(p[7] << 8) | p[8];
 #endif
@@ -1631,27 +1644,33 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Insert a background layer behind the frame if framing_mode is 4.
             */
-            if ((framing_mode == 4) && (subframe_width > 0) &&
+            if (insert_layers && (framing_mode == 4) && (subframe_width > 0) &&
                 (subframe_height > 0))
               {
                 /*
                   Allocate next image structure.
                 */
-                AllocateNextImage(image_info,image);
-                if (image->next == (Image *) NULL)
+                if (GetPixels(image) != (PixelPacket *) NULL)
                   {
-                    DestroyImages(image);
-                    MngInfoFreeStruct(mng_info,&have_mng_structure);
-                    return((Image *) NULL);
+                    AllocateNextImage(image_info,image);
+                    if (image->next == (Image *) NULL)
+                      {
+                        DestroyImages(image);
+                        MngInfoFreeStruct(mng_info,&have_mng_structure);
+                        return((Image *) NULL);
+                      }
+                    image->next->blob=image->blob;
+                    image=image->next;
                   }
-                image->next->blob=image->blob;
-                image=image->next;
                 mng_info->image=image;
                 if (term_chunk_found)
                   {
-                    image->restart_animation_here=True;
+                    image->animate_restart=True;
+                    image->iterations=mng_iterations;
                     term_chunk_found=False;
                   }
+                else
+                    image->animate_restart=False;
                 image->columns=subframe_width;
                 image->rows=subframe_height;
                 image->page.width=subframe_width;
@@ -1661,6 +1680,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->background_color=mng_background_color;
                 image->matte=False;
                 image->delay=0;
+                SetImage(image,OpaqueOpacity);
               }
             LiberateMemory((void **) &chunk);
             continue;
@@ -1954,71 +1974,47 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &chunk);
             continue;
           }
-        /*
-          Insert a background layer behind the upcoming image if
-          framing_mode is 3 and transparency might be present.
-        */
         image_width=(unsigned int) mng_get_long(p);
         image_height=(unsigned int) mng_get_long(&p[4]);
         LiberateMemory((void **) &chunk);
-        if ((framing_mode == 3) && ((first_mng_object == 0) ||
-            ((clip.left == 0) && (clip.top == 0) &&
-            (image_width == mng_width) && (image_height == mng_height))))
-          {
-            if (simplicity == 0 || (simplicity & 0x08) == 0x08)
-              {
-                unsigned int
-                  delay;
 
-                /*
-                  Allocate next image structure.
-                */
-                AllocateNextImage(image_info,image);
-                if (image->next == (Image *) NULL)
-                  {
-                    DestroyImages(image);
-                    MngInfoFreeStruct(mng_info,&have_mng_structure);
-                    return((Image *) NULL);
-                  }
-                image->next->blob=image->blob;
-                image=image->next;
-                mng_info->image=image;
-                if (term_chunk_found)
-                  {
-                    image->restart_animation_here=True;
-                    term_chunk_found=False;
-                  }
-                delay=image->delay;
-                image->delay=0;
-                image->columns=subframe_width;
-                image->rows=subframe_height;
-                image->page.width=subframe_width;
-                image->page.height=subframe_height;
-                image->page.x=clip.left;
-                image->page.y=clip.top;
-                image->background_color=mng_background_color;
-                image->matte=False;
-                SetImage(image,TransparentOpacity);
-                image->delay=delay;
-              }
-          }
         /*
-          Insert a background layer behind the entire animation if it
-          is not full screen or transparency might be present.
+          Insert a transparent background layer behind the entire animation
+          if it is not full screen or transparency might be present.
         */
-        if (mng_type && first_mng_object)
+        if (insert_layers && mng_type && first_mng_object)
           {
             if ((simplicity == 0) || ((simplicity & 0x08) == 0x08) ||
                 ((clip.left != 0) || (clip.top != 0) ||
                 (image_width != mng_width) || (image_height != mng_height)))
               {
-                unsigned int
-                  delay;
-
+                if (GetPixels(image) != (PixelPacket *) NULL)
+                  {
+                    /*
+                      Allocate next image structure.
+                    */
+                    AllocateNextImage(image_info,image);
+                    if (image->next == (Image *) NULL)
+                      {
+                        DestroyImages(image);
+                        MngInfoFreeStruct(mng_info,&have_mng_structure);
+                        return((Image *) NULL);
+                      }
+                    image->next->blob=image->blob;
+                    image=image->next;
+                  }
+                mng_info->image=image;
+                if (term_chunk_found)
+                  {
+                    image->animate_restart=True;
+                    image->iterations=mng_iterations;
+                    term_chunk_found=False;
+                  }
+                else
+                    image->animate_restart=False;
                 /*
                   Make a background rectangle.
                 */
-                delay=image->delay;
                 image->delay=0;
                 image->columns=mng_width;
                 image->rows=mng_height;
@@ -2027,12 +2023,54 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->page.x=0;
                 image->page.y=0;
                 image->background_color=mng_background_color;
-                image->matte=False;
-                image->delay=delay;
+                image->matte=True;
                 SetImage(image,TransparentOpacity);
               }
           }
-        first_mng_object=0;
+        /*
+          Insert a background layer behind the upcoming image if
+          framing_mode is 3, and we haven't already inserted one.
+        */
+        else if (insert_layers && (framing_mode == 3) && (subframe_width > 0) &&
+                (subframe_height > 0) && ((simplicity == 0 ||
+                (simplicity & 0x08) == 0x08)))
+          {
+            if (GetPixels(image) != (PixelPacket *) NULL)
+            {
+              /*
+                Allocate next image structure.
+              */
+              AllocateNextImage(image_info,image);
+              if (image->next == (Image *) NULL)
+                {
+                  DestroyImages(image);
+                  MngInfoFreeStruct(mng_info,&have_mng_structure);
+                  return((Image *) NULL);
+                }
+              image->next->blob=image->blob;
+              image=image->next;
+            }
+            mng_info->image=image;
+            if (term_chunk_found)
+              {
+                image->animate_restart=True;
+                image->iterations=mng_iterations;
+                term_chunk_found=False;
+              }
+            else
+                image->animate_restart=False;
+            image->delay=0;
+            image->columns=subframe_width;
+            image->rows=subframe_height;
+            image->page.width=subframe_width;
+            image->page.height=subframe_height;
+            image->page.x=clip.left;
+            image->page.y=clip.top;
+            image->background_color=mng_background_color;
+            image->matte=True;
+            SetImage(image,TransparentOpacity);
+          }
+        first_mng_object=False;
         /*
           Read the PNG image.
         */
@@ -2050,14 +2088,16 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             image->next->blob=image->blob;
             image=image->next;
-            mng_info->image=image;
-            MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
           }
+        mng_info->image=image;
+        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
         if (term_chunk_found)
           {
-            image->restart_animation_here=True;
+            image->animate_restart=True;
             term_chunk_found=False;
           }
+        else
+            image->animate_restart=False;
         if (framing_mode == 1 || framing_mode == 3)
           {
             image->delay=(unsigned int) frame_delay;
@@ -2069,6 +2109,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->page.height=mng_height;
         image->page.x=mng_info->x_off[object_id];
         image->page.y=mng_info->y_off[object_id];
+        image->iterations=mng_iterations;
         /*
           Seek back to the beginning of the IHDR chunk's length field.
         */
@@ -2327,7 +2368,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
                      mng_info->have_saved_bkgd_index ||
 #endif
-                         ping_info->valid & PNG_INFO_bKGD)
+                     ping_info->valid & PNG_INFO_bKGD)
                       {
                         png_color_16
                            background;
@@ -2346,7 +2387,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           mng_info->global_plte[background.index].blue;
                         png_set_bKGD(ping,ping_info,&background);
                       }
-    #endif
+#endif
                   }
                 else
                   ThrowException(&image->exception,DelegateWarning,
@@ -2393,7 +2434,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         transparent_color.red=ping_info->trans_values.red;
         transparent_color.green=ping_info->trans_values.green;
         transparent_color.blue=ping_info->trans_values.blue;
-        transparent_color.opacity=MaxRGB-ping_info->trans_values.gray;
+        transparent_color.opacity=ping_info->trans_values.gray;
         if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
           {
             transparent_color.red=transparent_color.opacity;
@@ -2534,7 +2575,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           *r;
 
         /*
-          Convert image to PseudoClass pixel packets.
+          Convert grayscale image to PseudoClass pixel packets.
         */
         quantum_scanline=(Quantum *) AcquireMemory((ping_info->color_type == 4
           ? 2 : 1) * image->columns*sizeof(Quantum));
@@ -2598,27 +2639,24 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case 8:
             {
-#if (QuantumDepth == 108)
-              memcpy(r,p,(int) image->columns*sizeof(Quantum));
-#else
               for (x=0; x < (int) image->columns; x++)
               {
                 *r++=(*p++);
                 if (ping_info->color_type == 4)
                   {
-                    q->opacity=MaxRGB-(*p++);
+                    /* In image.h, OpaqueOpacity is 0
+                     * TransparentOpacity is MaxRGB
+                     * In a PNG datastream, Opaque is MaxRGB
+                     * and Transparent is 0.
+                     */
+                    q->opacity=UpScale(255-(*p++));
                     q++;
                   }
               }
-#endif
               break;
             }
             case 16:
             {
-#if (QuantumDepth == 116 && WORDS_BIGENDIAN)
-              memcpy(r,p,(ping_info->color_type == 4 ? 2 : 1)*
-                image->columns*sizeof(Quantum));
-#else
               for (x=0; x < (int) image->columns; x++)
               {
 #if (QuantumDepth == 16)
@@ -2632,17 +2670,15 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     q++;
                   }
 #else
-                indexes[x]=(unsigned short) (((*p) << 8) | (*(p+1)));
                 *r++=(*p++);
-                p++;
+                p++; /* strip low byte */
                 if (ping_info->color_type == 4)
                   {
-                    *r++|=(*p++);
+                    q->opacity=MaxRGB-(*p++);
                     p++;
                   }
 #endif
               }
-#endif
               break;
             }
             default:
@@ -2652,11 +2688,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Transfer image scanline.
           */
           r=quantum_scanline;
-#if (QuantumDepth == 8)
-          if (ping_info->bit_depth < 16)
-#endif
-            for (x=0; x < (int) image->columns; x++)
-              indexes[x]=(*r++);
+          for (x=0; x < (int) image->columns; x++)
+            indexes[x]=(*r++);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -2675,9 +2708,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Image has a transparent background.
           */
-          image->storage_class=DirectClass;
-          image->matte=True;
           storage_class=image->storage_class;
+          image->matte=True;
           for (y=0; y < (int) image->rows; y++)
           {
             image->storage_class=storage_class;
@@ -2694,22 +2726,19 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (storage_class == PseudoClass)
                 {
                   index=indexes[x];
-                  if (ping_info->color_type != PNG_COLOR_TYPE_PALETTE)
+                  if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+                    {
+                      if (index < ping_info->num_trans)
+                        q->opacity=UpScale(255-ping_info->trans[index]);
+                    }
+                  else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
                     {
                       q->red=image->colormap[index].red;
                       q->green=image->colormap[index].green;
                       q->blue=image->colormap[index].blue;
+                      if (q->red == transparent_color.opacity)
+                        q->opacity=TransparentOpacity;
                     }
-                  if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
-                    {
-                      if (index < ping_info->num_trans)
-                        q->opacity=MaxRGB-UpScale(ping_info->trans[index]);
-                    }
-                if (ping_info->color_type != PNG_COLOR_TYPE_PALETTE)
-                  {
-                    if (q->red == transparent_color.opacity)
-                      q->opacity=TransparentOpacity;
-                  }
                 }
               else
                 if (q->red == transparent_color.red &&
@@ -2718,6 +2747,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                    q->opacity=TransparentOpacity;
               q++;
             }
+            image->storage_class=DirectClass;
             if (!SyncImagePixels(image))
               break;
           }
@@ -2925,6 +2955,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=mng_info->image;
 #endif
       }
+      CatchImageException(image);
   } while (LocaleCompare(image_info->magick,"MNG") == 0);
   if (!image_found && (mng_width > 0) && (mng_height > 0))
     {
@@ -2954,13 +2985,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->page.y=0;
       image->background_color=mng_background_color;
       image->matte=False;
-      SetImage(image,TransparentOpacity);
+      SetImage(image,OpaqueOpacity);
       image_found++;
     }
   if (ticks_per_second)
      image->delay=(unsigned int) (100*final_delay/ticks_per_second);
   else
      image->delay=(unsigned int) final_delay;
+  image->iterations=mng_iterations;
   while (image->previous != (Image *) NULL)
   {
     image_count++;
@@ -3328,13 +3360,17 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         /*
           check for global palette possibility.
         */
-        if (!IsGrayImage(image))
-          all_images_are_gray=False;
-        equal_palettes=PalettesAreEqual(image_info,image,next_image);
-        if (!use_global_plte)
-          use_global_plte=equal_palettes;
+        if (image->matte)
+           need_local_plte=True;
         if (!need_local_plte)
-          need_local_plte=!equal_palettes;
+          {
+            if (!IsGrayImage(image))
+              all_images_are_gray=False;
+            equal_palettes=PalettesAreEqual(image_info,image,next_image);
+            if (!use_global_plte)
+              use_global_plte=equal_palettes;
+            need_local_plte=!equal_palettes;
+          }
 #else
         need_local_plte=True;
 #endif
@@ -3407,7 +3443,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                  final_delay=10;
                  ThrowException(&image->exception,DelegateWarning,
                    "input has zero delay between all frames; assuming 10 cs",
-                   image->filename);
+                    (char *) NULL);
                }
              else
                ticks_per_second=0;
@@ -3436,7 +3472,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         Write the MNG version 0.96 signature and MHDR chunk.
      */
      (void) WriteBlob(image,8,"\212MNG\r\n\032\n");
-     WriteBlobMSBLong(image,28L);  /* chunk data length = 28 */
+     MSBFirstWriteLong(image,28L);  /* chunk data length = 28 */
      PNGType(chunk,mng_MHDR);
      PNGLong(chunk+4,page.width);
      PNGLong(chunk+8,page.height);
@@ -3459,14 +3495,14 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            PNGLong(chunk+28,1L);    /* simplicity = VLC, no transparency */
        }
      (void) WriteBlob(image,32,(char *) chunk);
-     WriteBlobMSBLong(image,crc32(0,chunk,32));
+     MSBFirstWriteLong(image,crc32(0,chunk,32));
      if ((image->previous == (Image *) NULL) &&
          (image->next != (Image *) NULL) && (image->iterations != 1))
        {
          /*
            Write MNG TERM chunk
          */
-         WriteBlobMSBLong(image,10L);  /* data length = 10 */
+         MSBFirstWriteLong(image,10L);  /* data length = 10 */
          PNGType(chunk,mng_TERM);
          chunk[4]=3;  /* repeat animation */
          chunk[5]=0;  /* show last frame when done */
@@ -3476,7 +3512,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          else
            PNGLong(chunk+10,(png_uint_32) image->iterations);
          (void) WriteBlob(image,14,(char *) chunk);
-         WriteBlobMSBLong(image,crc32(0,chunk,14));
+         MSBFirstWriteLong(image,crc32(0,chunk,14));
        }
      /*
        To do: check for cHRM+gAMA == sRGB, and write sRGB instead.
@@ -3487,11 +3523,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          /*
            Write MNG sRGB chunk
          */
-         WriteBlobMSBLong(image,1L);
+         MSBFirstWriteLong(image,1L);
          PNGType(chunk,mng_sRGB);
          chunk[4]=image->rendering_intent+1;
          (void) WriteBlob(image,5,(char *) chunk);
-         WriteBlobMSBLong(image,crc32(0,chunk,5));
+         MSBFirstWriteLong(image,crc32(0,chunk,5));
          have_write_global_srgb=True;
        }
      else
@@ -3501,11 +3537,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              /*
                 Write MNG gAMA chunk
              */
-             WriteBlobMSBLong(image,4L);
+             MSBFirstWriteLong(image,4L);
              PNGType(chunk,mng_gAMA);
              PNGLong(chunk+4,(unsigned long) (100000*image->gamma+0.5));
              (void) WriteBlob(image,8,(char *) chunk);
-             WriteBlobMSBLong(image,crc32(0,chunk,8));
+             MSBFirstWriteLong(image,crc32(0,chunk,8));
              have_write_global_gama=True;
            }
          if (equal_chrms)
@@ -3513,7 +3549,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              /*
                 Write MNG cHRM chunk
              */
-             WriteBlobMSBLong(image,32L);
+             MSBFirstWriteLong(image,32L);
              PNGType(chunk,mng_cHRM);
              PNGLong(chunk+4,(unsigned long)
                (100000*image->chromaticity.white_point.x+0.5));
@@ -3532,7 +3568,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              PNGLong(chunk+32,(unsigned long)
                (100000*image->chromaticity.blue_primary.y+0.5));
              (void) WriteBlob(image,36,(char *) chunk);
-             WriteBlobMSBLong(image,crc32(0,chunk,36));
+             MSBFirstWriteLong(image,crc32(0,chunk,36));
              have_write_global_chrm=True;
            }
        }
@@ -3541,7 +3577,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          /*
             Write MNG pHYs chunk
          */
-         WriteBlobMSBLong(image,9L);
+         MSBFirstWriteLong(image,9L);
          PNGType(chunk,mng_pHYs);
          if (image->units == PixelsPerInchResolution)
            {
@@ -3569,7 +3605,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                }
            }
          (void) WriteBlob(image,13,(char *) chunk);
-         WriteBlobMSBLong(image,crc32(0,chunk,13));
+         MSBFirstWriteLong(image,crc32(0,chunk,13));
        }
      /*
        Write MNG BACK chunk and global bKGD chunk, if the image is transparent
@@ -3579,7 +3615,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          image->page.width && (image->page.width+image->page.x < page.width) || 
          image->page.height && (image->page.height+image->page.y < page.height))
        {
-         WriteBlobMSBLong(image,6L);
+         MSBFirstWriteLong(image,6L);
          PNGType(chunk,mng_BACK);
          red=UpScale(image->background_color.red);
          green=UpScale(image->background_color.green);
@@ -3588,13 +3624,13 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          PNGShort(chunk+6,green);
          PNGShort(chunk+8,blue);
          (void) WriteBlob(image,10,(char *) chunk);
-         WriteBlobMSBLong(image,crc32(0,chunk,10));
+         MSBFirstWriteLong(image,crc32(0,chunk,10));
          if (equal_backgrounds)
            {
-             WriteBlobMSBLong(image,6L);
+             MSBFirstWriteLong(image,6L);
              PNGType(chunk,mng_bKGD);
              (void) WriteBlob(image,10,(char *) chunk);
-             WriteBlobMSBLong(image,crc32(0,chunk,10));
+             MSBFirstWriteLong(image,crc32(0,chunk,10));
            }
        }
 
@@ -3607,7 +3643,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            Write MNG PLTE chunk
          */
          data_length=3*image->colors;
-         WriteBlobMSBLong(image,data_length);
+         MSBFirstWriteLong(image,data_length);
          PNGType(chunk,mng_PLTE);
          for (i=0; i < (int) image->colors; i++)
          {
@@ -3616,7 +3652,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            chunk[6+i*3]= DownScale(image->colormap[i].blue) & 0xff;
          }
          (void) WriteBlob(image,data_length+4,(char *) chunk);
-         WriteBlobMSBLong(image,crc32(0,chunk,data_length+4));
+         MSBFirstWriteLong(image,crc32(0,chunk,data_length+4));
          have_write_global_plte=True;
        }
     }
@@ -3650,7 +3686,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   data_length;
 
                 data_length=3*image->colors;
-                WriteBlobMSBLong(image,data_length);
+                MSBFirstWriteLong(image,data_length);
                 PNGType(chunk,mng_PLTE);
                 for (i=0; i < (int) image->colors; i++)
                 {
@@ -3659,7 +3695,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   chunk[6+i*3]=DownScale(image->colormap[i].blue) & 0xff;
                 }
                 (void) WriteBlob(image,data_length+4,(char *) chunk);
-                WriteBlobMSBLong(image,crc32(0,chunk,data_length+4));
+                MSBFirstWriteLong(image,crc32(0,chunk,data_length+4));
                 have_write_global_plte=True;
               }
           }
@@ -3685,7 +3721,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         page=image->page;
         if ((page.x !=  previous_x) || (page.y != previous_y))
           {
-             WriteBlobMSBLong(image,12L);  /* data length = 12 */
+             MSBFirstWriteLong(image,12L);  /* data length = 12 */
              PNGType(chunk,mng_DEFI);
              chunk[4]=0; /* object 0 MSB */
              chunk[5]=0; /* object 0 LSB */
@@ -3694,7 +3730,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              PNGLong(chunk+8,page.x);
              PNGLong(chunk+12,page.y);
              (void) WriteBlob(image,16,(char *) chunk);
-             WriteBlobMSBLong(image,crc32(0,chunk,16));
+             MSBFirstWriteLong(image,crc32(0,chunk,16));
           }
       }
     /*
@@ -3910,7 +3946,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                     if (!ColorMatch(ping_info->trans_values,*p,0))
                        break;  /* Can't use RGB + tRNS for multiple transparent
                                   colors.  */
-                    if (p->opacity)
+                    if (p->opacity != TransparentOpacity)
                        break;  /* Can't use RGB + tRNS for semitransparency. */
                   }
                  else
@@ -3962,6 +3998,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           {
             int
                number_colors;
+
+            number_colors=image->colors;
             if (matte)
                ping_info->valid|=PNG_INFO_tRNS;
             /*
@@ -3974,15 +4012,20 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             else
               {
 #if (PNG_LIBPNG_VER > 10005)
+                int
+                   save_number_colors;
+
+                save_number_colors=image->colors;
                 CompressColormapTransFirst(image);
-#endif
                 number_colors=image->colors;
+                image->colors=save_number_colors;
+#endif
                 palette=(png_color *)
-                  AcquireMemory(image->colors*sizeof(png_color));
+                  AcquireMemory(number_colors*sizeof(png_color));
                 if (palette == (png_color *) NULL)
                   ThrowWriterException(ResourceLimitWarning,
                     "Memory allocation failed",image);
-                for (i=0; i < (int) image->colors; i++)
+                for (i=0; i < (int) number_colors; i++)
                 {
                   palette[i].red=DownScale(image->colormap[i].red);
                   palette[i].green=DownScale(image->colormap[i].green);
@@ -3991,17 +4034,17 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 png_set_PLTE(ping,ping_info,palette,number_colors);
               }
             ping_info->bit_depth=1;
-            while ((1 << ping_info->bit_depth) < (int) image->colors)
+            while ((1 << ping_info->bit_depth) < number_colors)
               ping_info->bit_depth<<=1;
             /*
               Identify which colormap entry is transparent.
             */
-            ping_info->trans=(unsigned char *) AcquireMemory(image->colors);
+            ping_info->trans=(unsigned char *) AcquireMemory(number_colors);
             if (ping_info->trans == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);
-            for (i=0; i < (int) image->colors; i++)
-               ping_info->trans[i]=(png_byte) DownScale(OpaqueOpacity);
+            for (i=0; i < number_colors; i++)
+               ping_info->trans[i]=255;
             for (y=0; y < (int) image->rows; y++)
             {
               p=GetImagePixels(image,0,y,image->columns,1);
@@ -4016,14 +4059,19 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                       index;
 
                     index=indexes[x];
-                    ping_info->trans[index]=MaxRGB-DownScale(p->opacity);
+#if (QuantumDepth == 8)
+                    ping_info->trans[index]=(png_byte) (255-p->opacity);
+#else
+                    ping_info->trans[index]=
+                       (png_byte) (255-((p->opacity>>8)&255));
+#endif
                   }
                 p++;
               }
             }
             ping_info->num_trans=0;
-            for (i=0; i < (int) image->colors; i++)
-              if (ping_info->trans[i] != (png_byte) DownScale(OpaqueOpacity))
+            for (i=0; i < number_colors; i++)
+              if (ping_info->trans[i] != 255)
                 ping_info->num_trans=i+1;
             if (ping_info->num_trans == 0)
               ping_info->valid&=(~PNG_INFO_tRNS);
@@ -4032,7 +4080,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             /*
               Identify which colormap entry is the background color.
             */
-            for (i=0; i < (int) Max(image->colors-1,1); i++)
+            for (i=0; i < (int) Max(number_colors-1,1); i++)
               if (ColorMatch(ping_info->background,image->colormap[i],0))
                 break;
             ping_info->background.index=i;
@@ -4138,18 +4186,18 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             /*
               Write a MNG FRAM chunk with the new framing mode.
             */
-            WriteBlobMSBLong(image,1L);  /* data length = 1 */
+            MSBFirstWriteLong(image,1L);  /* data length = 1 */
             PNGType(chunk,mng_FRAM);
             chunk[4]=framing_mode;
             (void) WriteBlob(image,5,(char *) chunk);
-            WriteBlobMSBLong(image,crc32(0,chunk,5));
+            MSBFirstWriteLong(image,crc32(0,chunk,5));
           }
         else
           {
             /*
               Write a MNG FRAM chunk with the delay.
             */
-            WriteBlobMSBLong(image,10L);  /* data length = 10 */
+            MSBFirstWriteLong(image,10L);  /* data length = 10 */
             PNGType(chunk,mng_FRAM);
             chunk[4]=framing_mode;
             chunk[5]=0;  /* frame name separator (no name) */
@@ -4160,7 +4208,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             PNGLong(chunk+10,(png_uint_32)
               ((ticks_per_second*image->delay)/100));
             (void) WriteBlob(image,14,(char *) chunk);
-            WriteBlobMSBLong(image,crc32(0,chunk,14));
+            MSBFirstWriteLong(image,crc32(0,chunk,14));
             delay=image->delay;
           }
         old_framing_mode=framing_mode;
@@ -4327,7 +4375,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             /*
               Write FRAM 4 with clipping boundaries followed by FRAM 1.
             */
-            WriteBlobMSBLong(image,27L);  /* data length = 27 */
+            MSBFirstWriteLong(image,27L);  /* data length = 27 */
             PNGType(chunk,mng_FRAM);
             chunk[4]=4;
             chunk[5]=0;  /* frame name separator (no name) */
@@ -4342,7 +4390,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             PNGLong(chunk+23,(png_uint_32) (page.y)); /* top cb */
             PNGLong(chunk+27,(png_uint_32) (page.y + ping_info->height));
             (void) WriteBlob(image,31,(char *) chunk);
-            WriteBlobMSBLong(image,crc32(0,chunk,31));
+            MSBFirstWriteLong(image,crc32(0,chunk,31));
             old_framing_mode=4;
             framing_mode=1;
           }
@@ -4366,6 +4414,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     LiberateMemory((void **) &png_pixels);
     if (image->next == (Image *) NULL)
       break;
+    CatchImageException(image);
     image=GetNextImage(image);
     MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
@@ -4377,10 +4426,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       /*
         Write the MEND chunk.
       */
-      WriteBlobMSBLong(image,0x00000000L);
+      MSBFirstWriteLong(image,0x00000000L);
       PNGType(chunk,mng_MEND);
       (void) WriteBlob(image,4,(char *) chunk);
-      WriteBlobMSBLong(image,crc32(0,chunk,4));
+      MSBFirstWriteLong(image,crc32(0,chunk,4));
     }
   /*
     Free memory.

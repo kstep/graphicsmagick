@@ -1499,7 +1499,7 @@ MagickExport Image *ImplodeImage(Image *image,const double factor,
           */
           factor=1.0;
           if (distance > 0.0)
-            factor=pow(sin(0.5*M_PI*sqrt(distance)/radius),-amount);
+            factor=pow(sin(0.5*MagickPI*sqrt(distance)/radius),-amount);
           *q=InterpolateColor(image,factor*x_distance/x_scale+x_center,
             factor*y_distance/y_scale+y_center);
         }
@@ -3481,7 +3481,7 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
         "Memory allocation failed");
     }
   for (x=0; x < (int) wave_image->columns; x++)
-    sine_map[x]=fabs(amplitude)+amplitude*sin((2*M_PI*x)/wave_length);
+    sine_map[x]=fabs(amplitude)+amplitude*sin((2*MagickPI*x)/wave_length);
   /*
     Wave image.
   */

@@ -2526,7 +2526,7 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
               double
                 theta;
 
-              theta=(180.0/M_PI)*atan2(affine->rx,affine->sx);
+              theta=(180.0/MagickPI)*atan2(affine->rx,affine->sx);
               FormatString(transform,"\" transform=\"rotate(%g)",theta);
               (void) WriteBlobString(image,transform);
               return;
@@ -2546,7 +2546,7 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
           return;
         }
     }
-  FormatString(transform,"\" transform=\"matrix(%g,%g,%g,%g,%g,%g)",
+  FormatString(transform,"\"\n  transform=\"matrix(%g,%g,%g,%g,%g,%g)",
     affine->sx,affine->rx,affine->ry,affine->sy,affine->tx,affine->ty);
   (void) WriteBlobString(image,transform);
 }

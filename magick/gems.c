@@ -99,7 +99,8 @@ MagickExport void Contrast(const int sign,Quantum *red,Quantum *green,
   assert(blue != (Quantum *) NULL);
   TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
   alpha=0.5+MagickEpsilon;
-  brightness+=alpha*sign*(alpha*(sin(M_PI*(brightness-alpha))+1.0)-brightness);
+  brightness+=
+    alpha*sign*(alpha*(sin(MagickPI*(brightness-alpha))+1.0)-brightness);
   if (brightness > 1.0)
     brightness=1.0;
   else
@@ -208,8 +209,8 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
         tau;
 
       beta=(double) (rand() & NoiseMask)/NoiseMask;
-      sigma=sqrt(-2.0*log(alpha))*cos(2.0*M_PI*beta);
-      tau=sqrt(-2.0*log(alpha))*sin(2.0*M_PI*beta);
+      sigma=sqrt(-2.0*log(alpha))*cos(2.0*MagickPI*beta);
+      tau=sqrt(-2.0*log(alpha))*sin(2.0*MagickPI*beta);
       value=(double) pixel+
         (sqrt((double) pixel)*SigmaGaussian*sigma)+(TauGaussian*tau);
       break;
@@ -222,7 +223,7 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
         sigma=sqrt(-2.0*log(alpha));
       beta=(rand() & NoiseMask)/NoiseMask;
       value=(double) pixel+
-        pixel*SigmaMultiplicativeGaussian*sigma*cos(2.0*M_PI*beta);
+        pixel*SigmaMultiplicativeGaussian*sigma*cos(2.0*MagickPI*beta);
       break;
     }
     case ImpulseNoise:

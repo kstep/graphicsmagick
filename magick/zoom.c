@@ -254,7 +254,7 @@ static double BesselOrderOne(double x)
     x=(-x);
   if (x < 8.0)
     return(p*J1(x));
-  q=sqrt(2.0/(M_PI*x))*(P1(x)*(1.0/sqrt(2.0)*(sin(x)-cos(x)))-8.0/x*Q1(x)*
+  q=sqrt(2.0/(MagickPI*x))*(P1(x)*(1.0/sqrt(2.0)*(sin(x)-cos(x)))-8.0/x*Q1(x)*
     (-1.0/sqrt(2.0)*(sin(x)+cos(x))));
   if (p < 0.0)
     q=(-q);
@@ -631,13 +631,13 @@ static double Box(double x)
 static double Bessel(double x)
 {
   if (x == 0.0)
-    return(M_PI/4.0);
-  return(BesselOrderOne(M_PI*x)/(2.0*x));
+    return(MagickPI/4.0);
+  return(BesselOrderOne(MagickPI*x)/(2.0*x));
 }
 
 static double Blackman(double x)
 {
-  return(0.42+0.50*cos(M_PI*x)+0.08*cos(2.0*M_PI*x));
+  return(0.42+0.50*cos(MagickPI*x)+0.08*cos(2.0*MagickPI*x));
 }
 
 static double Catrom(double x)
@@ -667,17 +667,17 @@ static double Cubic(double x)
 
 static double Gaussian(double x)
 {
-  return(exp(-2.0*x*x)*sqrt(2.0/M_PI));
+  return(exp(-2.0*x*x)*sqrt(2.0/MagickPI));
 }
 
 static double Hanning(double x)
 {
-  return(0.5+0.5*cos(M_PI*x));
+  return(0.5+0.5*cos(MagickPI*x));
 }
 
 static double Hamming(double x)
 {
-  return(0.54+0.46*cos(M_PI*x));
+  return(0.54+0.46*cos(MagickPI*x));
 }
 
 static double Hermite(double x)
@@ -691,7 +691,7 @@ static double Hermite(double x)
 
 static double Sinc(double x)
 {
-  x*=M_PI;
+  x*=MagickPI;
   if (x != 0.0)
     return(sin(x)/x);
   return(1.0);

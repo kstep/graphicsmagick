@@ -3139,7 +3139,7 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
               Image
                 *rotate_image;
 
-              theta=(180.0/M_PI)*
+              theta=(180.0/MagickPI)*
                 atan2(draw_info->affine.rx,draw_info->affine.sx);
               rotate_image=RotateImage(composite_image,theta,&image->exception);
               if (rotate_image != (Image *) NULL)
@@ -3633,7 +3633,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
           theta.p=atan2(left_points[1].y-center.y,left_points[1].x-center.x);
           theta.q=atan2(left_points[2].y-center.y,left_points[2].x-center.x);
           if (theta.q < theta.p)
-            theta.q+=2.0*M_PI;
+            theta.q+=2.0*MagickPI;
           arc_segments=ceil((theta.q-theta.p)/(2.0*sqrt(1.0/mid))-0.5);
           left_strokes[l].x=left_points[1].x;
           left_strokes[l].y=left_points[1].y;
@@ -3737,7 +3737,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
           theta.p=atan2(right_points[1].y-center.y,right_points[1].x-center.x);
           theta.q=atan2(right_points[2].y-center.y,right_points[2].x-center.x);
           if (theta.p < theta.q)
-            theta.p+=2.0*M_PI;
+            theta.p+=2.0*MagickPI;
           arc_segments=ceil((theta.p-theta.q)/(2.0*sqrt(1.0/mid))-0.5);
           right_strokes[r].x=right_points[1].x;
           right_strokes[r].y=right_points[1].y;
@@ -4256,11 +4256,11 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   alpha=atan2(points[0].y-center.y,points[0].x-center.x);
   theta=atan2(points[1].y-center.y,points[1].x-center.x)-alpha;
   if ((theta < 0.0) && sweep)
-    theta+=2.0*M_PI;
+    theta+=2.0*MagickPI;
   else
     if ((theta > 0.0) && !sweep)
-      theta-=2.0*M_PI;
-  arc_segments=ceil(fabs(theta/(0.5*M_PI+MagickEpsilon))-0.5);
+      theta-=2.0*MagickPI;
+  arc_segments=ceil(fabs(theta/(0.5*MagickPI+MagickEpsilon))-0.5);
   p=primitive_info;
   for (i=0; i < arc_segments; i++)
   {
