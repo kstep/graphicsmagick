@@ -384,11 +384,11 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            q->blue=ReadBlobByte(image);
-            q->green=ReadBlobByte(image);
-            q->red=ReadBlobByte(image);
+            q->blue=UpScale(ReadBlobByte(image));
+            q->green=UpScale(ReadBlobByte(image));
+            q->red=UpScale(ReadBlobByte(image));
             if (image->matte)
-              q->opacity=ReadBlobByte(image);
+              q->opacity=UpScale(ReadBlobByte(image));
             q++;
           }
           if (!SyncImagePixels(image))
