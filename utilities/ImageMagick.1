@@ -820,6 +820,11 @@ may result in larger-than-expected GIF files.
 
 \fI"Lossless"\fP refers to lossless JPEG, which is only available if
 the JPEG library has been patched to support it.
+
+Use the \fB-quality\fP option to set the compression level to be used by
+JPEG, PNG, MIFF, and MPEG encoders.  Use the \fB-sampling_factor\fP
+option to set the sampling factor to be used by JPEG, MPEG, and YUV encoders
+for downsampling the chroma channels.
 .TP
 .B "-contrast"
 \fRenhance or reduce the image contrast
