@@ -3206,7 +3206,7 @@ MagickExport Image **ListToGroupImage(const Image *image,unsigned long *number_i
 %
 %  The format of the ModifyImage method is:
 %
-%      Image *ModifyImage(Image *image,ExceptionInfo *exception)
+%      ModifyImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %

@@ -688,6 +688,7 @@ static void DestroyCacheInfo(Cache cache)
   assert(cache_info->signature == MagickSignature);
   destroy=False;
   AcquireSemaphoreInfo(&cache_info->semaphore);
+printf("ref: %lu\n",cache_info->reference_count);
   cache_info->reference_count--;
   if (cache_info->reference_count == 0)
     destroy=True;
@@ -1923,6 +1924,44 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long id)
     offset+=cache_info->columns;
   }
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e f e r e n c e C a c h e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReferenceCache() increments the reference count associated with the pixel
+%  cache returning a pointer to the cache.
+%
+%  The format of the ReferenceCache method is:
+%
+%      Cache ReferenceCache(Cache cache_info)
+%
+%  A description of each parameter follows:
+%
+%    o cache_info: The cache_info.
+%
+%
+*/
+MagickExport Cache ReferenceCache(Cache cache)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(cache != (Cache *) NULL);
+  cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
+  AcquireSemaphoreInfo(&cache_info->semaphore);
+  cache_info->reference_count++;
+  LiberateSemaphoreInfo(&cache_info->semaphore);
+  return(cache_info);
 }
 
 /*

@@ -89,8 +89,8 @@ typedef struct _CacheInfo
 typedef const PixelPacket
   (*AcquireOnePixelFromHandler)(const Image *,const long,const long,
     ExceptionInfo *),
-  *(*AcquirePixelHandler)(const Image *,const long,const long,const unsigned long,
-    const unsigned long,ExceptionInfo *);
+  *(*AcquirePixelHandler)(const Image *,const long,const long,
+    const unsigned long,const unsigned long,ExceptionInfo *);
 
 typedef PixelPacket
   (*GetOnePixelFromHandler)(Image *,const long,const long),
@@ -111,6 +111,9 @@ typedef void
 /*
   MagickExported interfaces.
 */
+extern MagickExport Cache
+  ReferenceCache(Cache);
+
 extern MagickExport ClassType
   GetCacheClass(const Cache);
 
