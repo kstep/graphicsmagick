@@ -1,3 +1,16 @@
+tclmagick (0.45-1) unstable; urgency=low
+
+  * New upstream version.
+  * tclmagick_0.44-1(hppa/unstable): FTBFS: cannot find install-sh
+
+ -- David N. Welton <davidw@debian.org>  Sat, 22 Jan 2005 22:31:58 +0100
+
+tclmagick (0.44-2) unstable; urgency=low
+
+  * Use release tarball to generate .deb with.
+
+ -- David N. Welton <davidw@debian.org>  Sat, 22 Jan 2005 12:15:49 +0100
+
 tclmagick (0.44-1) unstable; urgency=low
 
   * New version.
