@@ -6813,6 +6813,8 @@ QueryFormat(ref,...)
         EXTEND(sp,i);
         for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
         {
+          if (p->stealth)
+            continue;
           if (p->name == (char *) NULL)
             {
               PUSHs(&sv_undef);
