@@ -39,7 +39,7 @@
   #include  "numbers.h"
 #endif
 #ifndef Couleur_h
-  #include  "color.h"
+  #include  "fpx_color.h"
 #endif
 #ifndef CorrectLut_h
   #include  "corr_lut.h"

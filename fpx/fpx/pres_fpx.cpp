@@ -33,7 +33,7 @@
   #include  <Errors.h>
 #endif  
 #ifndef Couleur_h
-  #include  "color.h"
+  #include  "fpx_color.h"
 #endif
 #ifndef Numbers_h
   #include  "numbers.h"

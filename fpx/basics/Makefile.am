@@ -19,7 +19,7 @@ EXTRA_DIST =
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = \
-  a_file.h b_error.h b_memory.h b_string.h b_types.h color.h common.h \
+  a_file.h b_error.h b_memory.h b_string.h b_types.h fpx_color.h common.h \
   common_a.h common_b.h debug.h filename.h fileutil.h geometry.h graphic.h \
   mac_comp.h npixel.h numbers.h p_define.h pasconv.h pixel.h resource.h \
   swapbyte.h
