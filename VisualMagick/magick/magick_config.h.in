@@ -22,4 +22,8 @@
 #define HasZLIB
 #define QuantumDepth 16
 #define inline __inline
+#define ApplicationDefaults "c:\\ImageMagick\\"
+#define MagickLibPath       "c:\\ImageMagick\\"
+#define MagickModulesPath   "c:\\ImageMagick\\"
+#define MagickSharePath     "c:\\ImageMagick\\"
 #endif
