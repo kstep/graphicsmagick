@@ -1568,6 +1568,8 @@ MAGICKLIB="-L${LIB_DIR} -lMagick"
 if test $with_perl_static = 'yes'
 then
   MAGICKLIB="-L${builddir}/magick -lMagick"
+#else
+#  MAGICKLIB="-L${builddir}/magick/.libs -lMagick"
 fi
 AC_SUBST(MAGICKLIB)
 

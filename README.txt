@@ -24,7 +24,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.4.0.tar.gz
+    ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.4.1.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -77,8 +77,8 @@ UNIX/Cygwin COMPILATION
 
   Type:
 
-    gzip -dc ImageMagick-5.4.0.tar.gz | tar xvf -
-    cd ImageMagick-5.4.0
+    gzip -dc ImageMagick-5.4.1.tar.gz | tar xvf -
+    cd ImageMagick-5.4.1
 
   If you do not have gunzip(1), it is available as
   ftp.gnu.org:pub/gnu/gzip-1.2.4.shar.
@@ -211,13 +211,13 @@ UNIX/Cygwin COMPILATION
 
       If --enable-shared is not specified, a new PERL interpreter
       (PerlMagick) is built which is statically linked against the
-      PerlMagick extension. This new interpreter is installed alongside
-      your existing PERL interpreter. If --enable-shared is specified,
-      the PerlMagick extension is built as a dynamically loadable object
-      which is loaded into your current PERL interpreter at run-time.
-      Use of dynamically-loaded extensions is preferable over statically
-      linked extensions so --enable-shared should be specified if
-      possible.
+      PerlMagick extension. This new interpreter is installed into the
+      same directory as the ImageMagick utilities. If --enable-shared is
+      specified, the PerlMagick extension is built as a dynamically
+      loadable object which is loaded into your current PERL interpreter
+      at run-time. Use of dynamically-loaded extensions is preferable
+      over statically linked extensions so --enable-shared should be
+      specified if possible.
 
     o --disable-static: static archive libraries (with extension .a)
       are not built.  If you are building shared libraries, there is
@@ -303,10 +303,13 @@ UNIX/Cygwin COMPILATION
       the 'perl' executable in your PATH is not PERL5, or is not the
       PERL you want to use.
 
-    o --with-perl-options: The PerlMagick module is normally installed into
-      PERL's directory tree. If you want PerlMagick to install elsewhere,
-      then provide a PREFIX option to the PerlMagick configuration step via
-      "--with-perl-options=PREFIX=/some/place"
+    o --with-perl-options: The PerlMagick module is normally installed
+      into the same directory tree as ImageMagick. If you want PerlMagick
+      to install elsewhere, then provide a PREFIX option to PERL's
+      configuration step via "--with-perl-options=PREFIX=/some/place".
+      Other options accepted by MakeMaker are 'LIB', 'LIBPERL_A',
+      'LINKTYPE', and 'OPTIMIZE'. See the ExtUtils::MakeMaker(3) manual
+      page for more information on configuring PERL extensions.
 
     o --without-x: By default, ImageMagick will use X11 libraries if
       they are available. When --without-x is specified, use of X11 is
@@ -622,7 +625,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-5.4.0.zip set default [.imagemagick] @make set
+      unzip ImageMagick-5.4.1.zip set default [.imagemagick] @make set
       display/create/node=node_name::
 
   where node_name is the DECNET X server to contact.
@@ -634,7 +637,7 @@ VMS COMPILATION
   Alternatively, get a zipped distribution (with JPEG, PNG, TIFF, TTF)
   from
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/vms/ImageMagick-5.4.0.zip
+      ftp://ftp.imagemagick.org/pub/ImageMagick/vms/ImageMagick-5.4.1.zip
 
   The VMS JPEG, PNG, TIFF, and TTF  source libraries are available on
   axp.psl.ku.dk in [anonymous.decwindows.lib].
