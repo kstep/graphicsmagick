@@ -56,7 +56,7 @@ static int MagickToPhoto(
     photoname = Tcl_GetStringFromObj(objv[2], NULL);
     photohandle = Tk_FindPhoto(interp, photoname);
     if (photohandle == NULL) {
-	Tcl_AddErrorInfo(interp, "Not a photo image.");
+	Tcl_AppendResult(interp, "Not a photo image.", NULL);
 	return TCL_ERROR;
     }
 
@@ -147,7 +147,7 @@ static int PhotoToMagick(
     photohandle = Tk_FindPhoto(
 	interp, photoname);
     if (photohandle == NULL) {
-	Tcl_AddErrorInfo(interp, "Not a photo image.");
+	Tcl_AppendResult(interp, "Not a photo image.", NULL);
 	return TCL_ERROR;
     }
     Tk_PhotoGetImage(photohandle, &photoblock);
@@ -183,7 +183,7 @@ static int PhotoToMagick(
 	}
 	break;
     default:
-	Tcl_AddErrorInfo(interp, "Unsupported pixelSize in Tk image.");
+	Tcl_AppendResult(interp, "Unsupported pixelSize in Tk image.", NULL);
 	return TCL_ERROR;
     };
 
