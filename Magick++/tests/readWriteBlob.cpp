@@ -40,6 +40,14 @@ int main( int /*argc*/, char ** argv)
 
   int failures=0;
 
+  string srcdir;
+  if(getenv("srcdir") != (char*)NULL)
+    srcdir = getenv("srcdir") + string("/");
+  else
+    srcdir = "";
+
+  string testimage;
+
   try {
     
     //
@@ -48,15 +56,16 @@ int main( int /*argc*/, char ** argv)
     {
       string signature("");
       {
-	Image image("test_image.miff");
+	Image image(srcdir + "test_image.miff");
 	signature = image.signature();
       }
 
       // Read raw data from file into BLOB
-      ifstream in( "test_image.miff", ios::in | ios::binary );
+      testimage = srcdir + "test_image.miff";
+      ifstream in( testimage.c_str(), ios::in | ios::binary );
       if( !in )
 	{
-	  cout << "Failed to open file for input!" << endl;
+	  cout << "Failed to open file " << testimage << " for input!" << endl;
 	  exit(1);
 	}
       unsigned char* blobData = new unsigned char[100000];
@@ -135,7 +144,7 @@ int main( int /*argc*/, char ** argv)
       Blob blob;
       string signature("");
       {
-	Image image("test_image.miff");
+	Image image(srcdir + "test_image.miff");
 	image.magick("MIFF");
 	image.write( &blob );
 	signature = image.signature();
@@ -160,7 +169,7 @@ int main( int /*argc*/, char ** argv)
       Blob blob;
 
       list<Image> first;
-      readImages( &first, "test_image_anim.miff" );
+      readImages( &first, srcdir + "test_image_anim.miff" );
       writeImages( first.begin(), first.end(), &blob, true );
     }
 
@@ -169,12 +178,13 @@ int main( int /*argc*/, char ** argv)
 
       string signature("");
       {
-	Image image("test_image.miff");
+	Image image(srcdir + "test_image.miff");
 	signature = image.signature();
       }
 
       // Read raw data from file into BLOB
-      ifstream in( "test_image.miff", ios::in | ios::binary );
+      testimage = srcdir + "test_image.miff";
+      ifstream in( testimage.c_str(), ios::in | ios::binary );
       if( !in )
 	{
 	  cout << "Failed to open file for input!" << endl;

@@ -22,6 +22,13 @@ int main( int /*argc*/, char ** argv)
   // Initialize ImageMagick install location for Windows
   MagickIncarnate(*argv);
 
+  string srcdir("");
+  if(getenv("srcdir") != (char*)NULL)
+    srcdir = getenv("srcdir") + string("/");
+
+  // Common font to use.
+  string font = string("@") + srcdir + "Generic.ttf";
+
   try {
 
     //
@@ -40,7 +47,7 @@ int main( int /*argc*/, char ** argv)
     poly_coord.push_back( Coordinate(190,290) );
     poly_coord.push_back( Coordinate(30,290) );
 
-    Image texture( "tile.miff" );
+    Image texture( srcdir + "tile.miff" );
     image.penTexture( texture );
     image.draw( DrawablePolygon( poly_coord ) );
     texture.isValid( false );
@@ -84,17 +91,17 @@ int main( int /*argc*/, char ** argv)
     // Draw text
     //
     image.fillColor( "red" );
-    image.font( "@Generic.ttf" );
+    image.font( font );
     image.fontPointsize( 18 );
     image.annotate( "Hello world!", "+150+10" );
 
     image.fillColor( "blue" );
-    image.font( "@Generic.ttf" );
+    image.font( font );
     image.fontPointsize( 14 );
     image.annotate( "Goodbye cruel world!", "+150+28" );
 
     image.fillColor( "black" );
-    image.font( "@Generic.ttf" );
+    image.font( font );
     image.fontPointsize( 14 );
     image.annotate( "I'm climbing the wall!", "+280+150",
                     NorthWestGravity, 90.0);
