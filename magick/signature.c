@@ -492,6 +492,9 @@ MagickExport unsigned int SignatureImage(Image *image)
   unsigned char
     *message;
 
+  unsigned int
+    packet_size;
+
   /*
     Allocate memory for digital signature.
   */
@@ -523,11 +526,15 @@ MagickExport unsigned int SignatureImage(Image *image)
       *q++=XUpScale(p->blue);
       *q++=XUpScale(image->matte ? p->opacity : MaxRGB) >> 8;
       *q++=XUpScale(image->matte ? p->opacity : MaxRGB);
-      *q++=XUpScale(image->colorspace == CMYKColorspace ? indexes[x] : 0) >> 8;
-      *q++=XUpScale(image->colorspace == CMYKColorspace ? indexes[x] : 0);
+      if (image->colorspace == CMYKColorspace)
+        {
+          *q++=
+            XUpScale(image->colorspace == CMYKColorspace ? indexes[x] : 0) >> 8;
+          *q++=XUpScale(image->colorspace == CMYKColorspace ? indexes[x] : 0);
+        }
       p++;
     }
-    UpdateMessageDigest(&message_digest,message,10*image->columns);
+    UpdateMessageDigest(&message_digest,message,q-message);
   }
   /*
     Convert digital signature to a 32 character hex string.

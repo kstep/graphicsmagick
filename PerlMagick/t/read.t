@@ -189,7 +189,7 @@ testReadSized( 'input_70x46.cmyk',
 	       '70x46',
 	       8,
 	       'eb059e77f4e55a08861e2ae8a13226c4',
-	       '840c11bcfa1e39cb97589813dc139c28');
+	       'ec3f9a01db1de264d2bb8ab4687d3645');
 
 print("GRAY format ...\n");
 ++$test;
