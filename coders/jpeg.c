@@ -607,27 +607,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       return(image);
     }
   if (jpeg_info.out_color_space == JCS_GRAYSCALE)
-    {
-      /*
-        Initialize grayscale colormap.
-      */
-      image->class=PseudoClass;
-      image->colors=1 << jpeg_info.data_precision;
-      image->colormap=(PixelPacket *)
-        AllocateMemory(image->colors*sizeof(PixelPacket));
-      if (image->colormap == (PixelPacket *) NULL)
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-          image);
-      for (i=0; i < (int) image->colors; i++)
-      {
-        image->colormap[i].red=
-          ((unsigned long) (MaxRGB*i)/(image->colors-1));
-        image->colormap[i].green=
-          ((unsigned long) (MaxRGB*i)/(image->colors-1));
-        image->colormap[i].blue=
-          ((unsigned long) (MaxRGB*i)/(image->colors-1));
-      }
-    }
+    if (!AllocateImageColormap(image,1 << jpeg_info.data_precision))
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
   jpeg_pixels=(JSAMPLE *)
     AllocateMemory(jpeg_info.output_components*image->columns*sizeof(JSAMPLE));
   if (jpeg_pixels == (JSAMPLE *) NULL)

@@ -397,10 +397,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Create colormap.
       */
-      image->colors=visual_info->colormap_size;
-      image->colormap=(PixelPacket *)
-        AllocateMemory(image->colors*sizeof(PixelPacket));
-      if (image->colormap == (PixelPacket *) NULL)
+      if (!AllocateImageColormap(image,visual_info->colormap_size))
         {
           DestroyImage(image);
           FreeMemory((void **) &colors);

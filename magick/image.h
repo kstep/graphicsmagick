@@ -756,6 +756,7 @@ extern MagickExport PixelPacket
     (Image *,const int,const int,const unsigned int,const unsigned int);
 
 extern MagickExport unsigned int
+  AllocateImageColormap(Image *,const unsigned int),
   AnimateImages(const ImageInfo *image_info,Image *image),
   AnnotateImage(Image *,const AnnotateInfo *),
   ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const int x,

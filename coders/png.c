@@ -2209,33 +2209,24 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Initialize image colormap.
         */
-        image->colormap=(PixelPacket *)
-          AllocateMemory(image->colors*sizeof(PixelPacket));
-        if (image->colormap == (PixelPacket *) NULL)
+        if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           {
             png_colorp
-               palette;
+              palette;
 
             int
-               num_palette;
+              num_palette;
 
-            png_get_PLTE(ping, ping_info, &palette, &num_palette);
+            png_get_PLTE(ping,ping_info,&palette,&num_palette);
             for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[i].red=UpScale(palette[i].red);
               image->colormap[i].green=UpScale(palette[i].green);
               image->colormap[i].blue=UpScale(palette[i].blue);
             }
-          }
-        else
-          for (i=0; i < (int) image->colors; i++)
-          {
-            image->colormap[i].red=(MaxRGB*i)/Max(image->colors-1,1);
-            image->colormap[i].green=(MaxRGB*i)/Max(image->colors-1,1);
-            image->colormap[i].blue=(MaxRGB*i)/Max(image->colors-1,1);
           }
       }
     /*
@@ -3792,7 +3783,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             /*
               Identify which colormap entry is the background color.
             */
-            for (i=0; i < (int) (image->colors-1); i++)
+            for (i=0; i < (int) Max(image->colors-1,1); i++)
               if (ColorMatch(ping_info->background,image->colormap[i],0))
                 break;
             ping_info->background.index=i;

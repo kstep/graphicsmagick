@@ -324,22 +324,12 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Create linear colormap.
       */
-      image->class=PseudoClass;
-      image->colors=MaxRGB+1;
-      image->colormap=(PixelPacket *)
-        AllocateMemory(image->colors*sizeof(PixelPacket));
-      if (image->colormap == (PixelPacket *) NULL)
+      if (!AllocateImageColormap(image,MaxRGB+1))
         {
           FPX_ClearSystem();
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         }
-      for (i=0; i < (int) image->colors; i++)
-      {
-        image->colormap[i].red=(Quantum) i;
-        image->colormap[i].green=(Quantum) i;
-        image->colormap[i].blue=(Quantum) i;
-      }
     }
   if (image_info->ping)
     {

@@ -294,7 +294,6 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read hints.
   */
-  image->class=PseudoClass;
   count=sscanf(textlist[0],"%u %u %u %u",&image->columns,&image->rows,
     &image->colors,&width);
   if ((count != 4) || (width > 2) ||
@@ -309,10 +308,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image structure.
   */
-  image->colormap=(PixelPacket *)
-    AllocateMemory(image->colors*sizeof(PixelPacket));
   keys=(char **) AllocateMemory(image->colors*sizeof(char *));
-  if ((image->colormap == (PixelPacket *) NULL) || (keys == (char **) NULL))
+  if (!AllocateImageColormap(image,image->colors) || (keys == (char **) NULL))
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
         FreeMemory((void **) &textlist[i]);
@@ -396,7 +393,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) strncpy(key,p,width);
       if (strcmp(key,keys[j]) != 0)
-        for (j=0; j < (int) (image->colors-1); j++)
+        for (j=0; j < (int) Max(image->colors-1,1); j++)
           if (strcmp(key,keys[j]) == 0)
             break;
       if (image->class == PseudoClass)

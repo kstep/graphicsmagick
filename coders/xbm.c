@@ -260,15 +260,14 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image structure.
   */
-  image->colormap=(PixelPacket *)
-    AllocateMemory(image->colors*sizeof(PixelPacket));
+  if (!AllocateImageColormap(image,image->colors))
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   padding=0;
   if ((image->columns % 16) && ((image->columns % 16) < 9)  && (version == 10))
     padding=1;
   bytes_per_line=(image->columns+7)/8+padding;
   data=(unsigned char *) AllocateMemory(bytes_per_line*image->rows);
-  if ((image->colormap == (PixelPacket *) NULL) ||
-      (data == (unsigned char *) NULL))
+  if (data == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Initialize colormap.

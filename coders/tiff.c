@@ -490,13 +490,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     range=max_sample_value-min_sample_value;
     if ((samples_per_pixel == 1) && !TIFFIsTiled(tiff))
       {
-        image->class=PseudoClass;
         image->colors=1 << image->depth;
         if (range <= (int) image->colors)
           image->colors=range+1;
-        image->colormap=(PixelPacket *)
-          AllocateMemory(image->colors*sizeof(PixelPacket));
-        if (image->colormap == (PixelPacket *) NULL)
+        if (!AllocateImageColormap(image,image->colors))
           {
             TIFFClose(tiff);
 #if defined(HasPTHREADS)
@@ -579,9 +576,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             for (i=0; i < (int) image->colors; i++)
             {
-              image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
-              image->colormap[i].green=(MaxRGB*i)/(image->colors-1);
-              image->colormap[i].blue=(MaxRGB*i)/(image->colors-1);
+              image->colormap[i].red=
+                ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1));
+              image->colormap[i].green=
+                ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1));
+              image->colormap[i].blue=
+                ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1));
             }
             break;
           }
@@ -594,9 +594,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             colors=image->colors;
             for (i=0; i < (int) image->colors; i++)
             {
-              image->colormap[colors-i-1].red=(MaxRGB*i)/(image->colors-1);
-              image->colormap[colors-i-1].green=(MaxRGB*i)/(image->colors-1);
-              image->colormap[colors-i-1].blue=(MaxRGB*i)/(image->colors-1);
+              image->colormap[colors-i-1].red=
+                ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1));
+              image->colormap[colors-i-1].green=
+                ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1));
+              image->colormap[colors-i-1].blue=
+                ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1));
             }
             break;
           }

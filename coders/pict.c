@@ -968,24 +968,12 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   flags=MSBFirstReadShort(image);
                   tile_image->colors=MSBFirstReadShort(image)+1;
                 }
-              tile_image->class=PseudoClass;
-              tile_image->colormap=(PixelPacket *)
-                AllocateMemory(tile_image->colors*sizeof(PixelPacket));
-              if (tile_image->colormap == (PixelPacket *) NULL)
+              if (!AllocateImageColormap(tile_image,tile_image->colors))
                 {
                   DestroyImage(tile_image);
                   ThrowReaderException(ResourceLimitWarning,
                     "Memory allocation failed",image);
                 }
-              for (i=0; i < (int) tile_image->colors; i++)
-              {
-                tile_image->colormap[i].red=MaxRGB-
-                  ((unsigned long) (MaxRGB*i)/(tile_image->colors-1));
-                tile_image->colormap[i].green=MaxRGB-
-                  ((unsigned long) (MaxRGB*i)/(tile_image->colors-1));
-                tile_image->colormap[i].blue=MaxRGB-
-                  ((unsigned long) (MaxRGB*i)/(tile_image->colors-1));
-              }
               if (bytes_per_line & 0x8000)
                 for (i=0; i < (int) tile_image->colors; i++)
                 {
@@ -1518,7 +1506,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       */
       MSBFirstWriteLong(image,0x00000000L);  /* color seed */
       MSBFirstWriteShort(image,0L);  /* color flags */
-      MSBFirstWriteShort(image,(unsigned short) (image->colors-1));
+      MSBFirstWriteShort(image,(unsigned short) Max(image->colors-1,1));
       for (i=0; i < (int) image->colors; i++)
       {
         red=((unsigned long) (image->colormap[i].red*65535L)/MaxRGB);

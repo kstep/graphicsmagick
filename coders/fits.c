@@ -333,23 +333,14 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     image->rows=fits_header.rows;
     image->depth=fits_header.bits_per_pixel <= 8 ? 8 : QuantumDepth;
     image->class=PseudoClass;
-    image->colors=MaxRGB+1;
     image->scene=scene;
+    if (!AllocateImageColormap(image,MaxRGB+1))
+      ThrowReaderException(FileOpenWarning,"Unable to open file",image);
     if (image_info->ping)
       {
         CloseBlob(image);
         return(image);
       }
-    image->colormap=(PixelPacket *)
-      AllocateMemory(image->colors*sizeof(PixelPacket));
-    if (image->colormap == (PixelPacket *) NULL)
-      ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-    for (i=0; i < (int) image->colors; i++)
-    {
-      image->colormap[i].red=((unsigned long) (MaxRGB*i)/(image->colors-1));
-      image->colormap[i].green=((unsigned long) (MaxRGB*i)/(image->colors-1));
-      image->colormap[i].blue=((unsigned long) (MaxRGB*i)/(image->colors-1));
-    }
     /*
       Initialize image structure.
     */

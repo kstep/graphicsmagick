@@ -164,18 +164,8 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   /*
     Initialize image structure.
   */
-  image->class=PseudoClass;
-  image->colors=2;
-  image->colormap=(PixelPacket *)
-    AllocateMemory(image->colors*sizeof(PixelPacket));
-  if (image->colormap == (PixelPacket *) NULL)
+  if (!AllocateImageColormap(image,2))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  for (i=0; i < (int) image->colors; i++)
-  {
-    image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
-    image->colormap[i].green=(MaxRGB*i)/(image->colors-1);
-    image->colormap[i].blue=(MaxRGB*i)/(image->colors-1);
-  }
   /*
     Convert bi-level image to pixel packets.
   */

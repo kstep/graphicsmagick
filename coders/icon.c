@@ -214,14 +214,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,ExceptionInfo *exception
     icon_header.colors_important=LSBFirstReadLong(image);
     image->columns=(unsigned int) icon_header.width;
     image->rows=(unsigned int) icon_header.height;
-    /*
-      Allocate image colormap.
-    */
-    image->class=PseudoClass;
-    image->colors=image->colors=1 << icon_header.bits_per_pixel;
-    image->colormap=(PixelPacket *)
-      AllocateMemory(image->colors*sizeof(PixelPacket));
-    if (image->colormap == (PixelPacket *) NULL)
+    if (!AllocateImageColormap(image,1 << icon_header.bits_per_pixel))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
     if (image_info->ping)

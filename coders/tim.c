@@ -180,13 +180,11 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void)LSBFirstReadShort(image);
         width=LSBFirstReadShort(image);
         height=LSBFirstReadShort(image);
-        image->class=PseudoClass;
-        image->colors=(unsigned int) pixel_mode == 1 ? 256 : 16;
-        image->colormap=(PixelPacket *)
-          AllocateMemory(image->colors*sizeof(PixelPacket));
+        if (!AllocateImageColormap(image,pixel_mode == 1 ? 256 : 16))
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         tim_colormap=(unsigned char *) AllocateMemory(image->colors*2);
-        if ((image->colormap == (PixelPacket *) NULL) ||
-            (tim_colormap == (unsigned char *) NULL))
+        if (tim_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         (void) ReadBlob(image,2*image->colors,(char *) tim_colormap);

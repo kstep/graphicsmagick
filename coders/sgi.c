@@ -426,17 +426,9 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Create grayscale map.
         */
-        image->colormap=(PixelPacket *)
-          AllocateMemory(image->colors*sizeof(PixelPacket));
-        if (image->colormap == (PixelPacket *) NULL)
+        if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
-        for (i=0; i < (int) image->colors; i++)
-        {
-          image->colormap[i].red=(Quantum) UpScale(i);
-          image->colormap[i].green=(Quantum) UpScale(i);
-          image->colormap[i].blue=(Quantum) UpScale(i);
-        }
         /*
           Convert SGI image to PseudoClass pixel packets.
         */

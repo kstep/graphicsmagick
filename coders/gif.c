@@ -896,13 +896,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Inititialize colormap.
     */
-    if (opacity >= (int) image->colors)
-      image->colormap=(PixelPacket *)
-        AllocateMemory((opacity+1)*sizeof(PixelPacket));
-    else
-      image->colormap=(PixelPacket *)
-        AllocateMemory(image->colors*sizeof(PixelPacket));
-    if (image->colormap == (PixelPacket *) NULL)
+    if (!AllocateImageColormap(image,image->colors))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
     if (!BitSet(flag,0x80))
@@ -1265,7 +1259,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         c|=(8-1) << 4;  /* color resolution */
         c|=(bits_per_pixel-1);   /* size of global colormap */
         (void) WriteByte(image,c);
-        for (j=0; j < (int) (image->colors-1); j++)
+        for (j=0; j < (int) Max(image->colors-1,1); j++)
           if (ColorMatch(image->background_color,image->colormap[j],0))
             break;
         (void) WriteByte(image,j);  /* background color */

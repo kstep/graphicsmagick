@@ -319,17 +319,9 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Create linear color ramp.
             */
-            image->colormap=(PixelPacket *)
-              AllocateMemory(image->colors*sizeof(PixelPacket));
-            if (image->colormap == (PixelPacket *) NULL)
+            if (!AllocateImageColormap(image,image->colors))
               ThrowReaderException(ResourceLimitWarning,
                 "Memory allocation failed",image);
-            for (i=0; i < (int) image->colors; i++)
-            {
-              image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
-              image->colormap[i].green=(MaxRGB*i)/(image->colors-1);
-              image->colormap[i].blue=(MaxRGB*i)/(image->colors-1);
-            }
           }
         break;
       }
@@ -341,11 +333,11 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read SUN raster colormap.
         */
-        image->colormap=(PixelPacket *)
-          AllocateMemory(image->colors*sizeof(PixelPacket));
+        if (!AllocateImageColormap(image,image->colors))
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         sun_colormap=(unsigned char *) AllocateMemory(image->colors);
-        if ((image->colormap == (PixelPacket *) NULL) ||
-            (sun_colormap == (unsigned char *) NULL))
+        if (sun_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);

@@ -587,16 +587,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           packet_size;
 
         /*
-          Allocate image colormap.
-        */
-        image->colormap=(PixelPacket *)
-          AllocateMemory(image->colors*sizeof(PixelPacket));
-        if (image->colormap == (PixelPacket *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-            image);
-        /*
           Read BMP raster colormap.
         */
+        if (!AllocateImageColormap(image,image->colors))
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         bmp_colormap=(unsigned char *) AllocateMemory(4*image->colors);
         if (bmp_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",

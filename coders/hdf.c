@@ -231,11 +231,11 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Create colormap.
         */
+        if (!AllocateImageColormap(image,image->colors))
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         hdf_palette=(unsigned char *) AllocateMemory(768);
-        image->colormap=(PixelPacket *)
-          AllocateMemory(image->colors*sizeof(PixelPacket));
-        if ((hdf_palette == (unsigned char *) NULL) ||
-            (image->colormap == (PixelPacket *) NULL))
+        if (hdf_palette == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         (void) DFR8getimage(image->filename,hdf_pixels,(int) image->columns,

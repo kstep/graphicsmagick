@@ -148,11 +148,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     /*
       Create linear colormap.
     */
-    image->class=PseudoClass;
-    image->colors=1 << image->depth;
-    image->colormap=(PixelPacket *)
-      AllocateMemory(image->colors*sizeof(PixelPacket));
-    if (image->colormap == (PixelPacket *) NULL)
+    if (!AllocateImageColormap(image,1 << image->depth))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
     for (i=0; i < (int) image->colors; i++)

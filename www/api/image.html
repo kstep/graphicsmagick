@@ -21,6 +21,7 @@
 	<UL>
 
 		<LI><A HREF="#allocateimage">AllocateImage</A></LI>
+		<LI><A HREF="#allocateimagecolormap">AllocateImageColormap</A></LI>
 		<LI><A HREF="#allocatenextimage">AllocateNextImage</A></LI>
 		<LI><A HREF="#animateimages">AnimateImages</A></LI>
 		<LI><A HREF="#appendimages">AppendImages</A></LI>
@@ -72,6 +73,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>Image * <STRONG>AllocateImage</STRONG>( const ImageInfo *image_info );</P>
+<P>unsigned int  <STRONG>AllocateImageColormap</STRONG>( Image *image, const unsigned int colors );</P>
 <P>void  <STRONG>AllocateNextImage</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>unsigned int  <STRONG>AnimateImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>Image * <STRONG>AppendImages</STRONG>( Image *image, const unsigned int stack, ExceptionInfo *exception );</P>
@@ -130,6 +132,25 @@ Method AllocateImage returns a pointer to an image structure initialized to defa
 Specifies a pointer to an ImageInfo structure.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="allocateimagecolormap">AllocateImageColormap</A></H2>
+<P>Method AllocateImageColormap allocates an Image colormap and initializes it.  The minimum number of colormap cells allocated is 256.</P>
+<P>The format of the AllocateNextImage method is:</P>
+<blockquote>unsigned int AllocateImageColormap ( <A HREF="types/Image.html">Image</A> *image, const unsigned int colors ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
+<DD>
+Method AllocateImageColormap returns True if the colormap is successfully allocated and initialized, otherwise False.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_colors%3A">colors:</A></STRONG><BR>
+<DD>
+The number of colors in the image colormap.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="allocatenextimage">AllocateNextImage</A></H2>
 <P>Method AllocateNextImage allocates an Image structure and initializes each field to a default value.</P>
 <P>The format of the AllocateNextImage method is:</P>
@@ -140,7 +161,7 @@ Specifies a pointer to an ImageInfo structure.
 <DD>
 Specifies a pointer to an ImageInfo structure.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The address of a structure of type Image.
 <P></P></DL></DL>
@@ -152,7 +173,7 @@ The address of a structure of type Image.
 <blockquote>unsigned int AnimateImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
+<p><dt><STRONG>status:</STRONG><BR>
 <DD>
 Method AnimateImages returns True if the images are displayed in an 
 <FONT SIZE=-1>X</FONT> window, otherwise False is returned.

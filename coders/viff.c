@@ -374,17 +374,9 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
               image->colors=2;
             else
               image->colors=1 << (viff_header.number_data_bands*QuantumDepth);
-            image->colormap=(PixelPacket *)
-              AllocateMemory(image->colors*sizeof(PixelPacket));
-            if (image->colormap == (PixelPacket *) NULL)
+            if (!AllocateImageColormap(image,image->colors))
               ThrowReaderException(ResourceLimitWarning,
                 "Memory allocation failed",image);
-            for (i=0; i < (int) image->colors; i++)
-            {
-              image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
-              image->colormap[i].green=(MaxRGB*i)/(image->colors-1);
-              image->colormap[i].blue=(MaxRGB*i)/(image->colors-1);
-            }
           }
         break;
       }
@@ -407,12 +399,12 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
           default: bytes_per_pixel=1; break;
         }
         image->colors=(unsigned int) viff_header.map_columns;
-        image->colormap=(PixelPacket *)
-          AllocateMemory(image->colors*sizeof(PixelPacket));
+        if (!AllocateImageColormap(image,image->colors))
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         viff_colormap=(unsigned char *)
           AllocateMemory(bytes_per_pixel*image->colors*viff_header.map_rows);
-        if ((image->colormap == (PixelPacket *) NULL) ||
-            (viff_colormap == (unsigned char *) NULL))
+        if (viff_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         /*

@@ -654,9 +654,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
         /*
           Create image colormap.
         */
-        image->colormap=(PixelPacket *)
-          AllocateMemory(Max(image->colors,256)*sizeof(PixelPacket));
-        if (image->colormap == (PixelPacket *) NULL)
+        if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         if (image->colors == 0)

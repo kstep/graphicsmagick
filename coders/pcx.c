@@ -314,11 +314,13 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pcx_header.reserved=ReadByte(image);
     pcx_header.planes=ReadByte(image);
     if ((pcx_header.bits_per_pixel != 8) || (pcx_header.planes == 1))
-      {
-        image->class=PseudoClass;
-        if ((pcx_header.version == 3) || (pcx_header.version == 5))
-          image->colors=1 << (pcx_header.bits_per_pixel*pcx_header.planes);
-      }
+      if ((pcx_header.version == 3) || (pcx_header.version == 5))
+        image->colors=1 << (pcx_header.bits_per_pixel*pcx_header.planes);
+    if (!AllocateImageColormap(image,image->colors))
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
+    if (pcx_header.planes != 1)
+      image->class=DirectClass;
     if (image_info->ping)
       {
         FreeMemory((void **) &pcx_colormap);
@@ -327,10 +329,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         CloseBlob(image);
         return(image);
       }
-    image->colormap=(PixelPacket *) AllocateMemory(256*sizeof(PixelPacket));
-    if (image->colormap == (PixelPacket *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-        image);
     p=pcx_colormap;
     for (i=0; i < (int) image->colors; i++)
     {
@@ -338,14 +336,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->colormap[i].green=UpScale(*p++);
       image->colormap[i].blue=UpScale(*p++);
     }
-    if (pcx_header.version == 3)
-      for (i=0; i < (int) image->colors; i++)
-      {
-        image->colormap[i].red=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
-        image->colormap[i].green=(Quantum)
-          ((long) (MaxRGB*i)/(image->colors-1));
-        image->colormap[i].blue=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
-      }
     pcx_header.bytes_per_line=LSBFirstReadShort(image);
     pcx_header.palette_info=LSBFirstReadShort(image);
     for (i=0; i < 58; i++)

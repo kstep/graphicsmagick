@@ -187,11 +187,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   */
   image->columns=(unsigned int) jbg_dec_getwidth(&jbig_info);
   image->rows=(unsigned int) jbg_dec_getheight(&jbig_info);
-  image->class=PseudoClass;
-  image->colors=2;
-  image->colormap=(PixelPacket *)
-    AllocateMemory(image->colors*sizeof(PixelPacket));
-  if (image->colormap == (PixelPacket *) NULL)
+  if (!AllocateImageColormap(image,2))
     {
       FreeMemory((void **) &buffer);
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",

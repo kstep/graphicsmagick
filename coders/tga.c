@@ -233,9 +233,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read TGA raster colormap.
         */
-        image->colormap=(PixelPacket *)
-          AllocateMemory(image->colors*sizeof(PixelPacket));
-        if (image->colormap == (PixelPacket *) NULL)
+        if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         for (i=0; i < (int) image->colors; i++)

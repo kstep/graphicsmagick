@@ -281,6 +281,62 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   A l l o c a t e I m a g e C o l o r m a p                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AllocateImageColormap allocates an Image colormap and initializes it.
+%  The minimum number of colormap cells allocated is 256.
+%
+%  The format of the AllocateNextImage method is:
+%
+%      unsigned int AllocateImageColormap(Image *image,
+%        const unsigned int colors)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method AllocateImageColormap returns True if the colormap is
+%      successfully allocated and initialized, otherwise False.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o colors: The number of colors in the image colormap.
+%
+%
+*/
+MagickExport unsigned int AllocateImageColormap(Image *image,
+  const unsigned int colors)
+{
+  register int
+    i;
+
+  /*
+    Allocate image colormap.
+  */
+  assert(image != (Image *) NULL);
+  assert(colors != 0);
+  image->class=PseudoClass;
+  image->colors=colors;
+  image->colormap=(PixelPacket *)
+    AllocateMemory(Max(colors,256)*sizeof(PixelPacket));
+  if (image->colormap == (PixelPacket *) NULL)
+    return(False);
+  for (i=0; i < (int) colors; i++)
+  {
+    image->colormap[i].red=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
+    image->colormap[i].green=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
+    image->colormap[i].blue=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
+  }
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   A l l o c a t e N e x t I m a g e                                         %
 %                                                                             %
 %                                                                             %

@@ -169,18 +169,8 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
     CloneImage(image,image->columns,image->rows,True,&image->exception);
   if (matte_image == (Image *) NULL)
     return(False);
-  matte_image->class=PseudoClass;
-  matte_image->colors=(OpaqueOpacity-TransparentOpacity)+1;
-  matte_image->colormap=(PixelPacket *)
-    AllocateMemory(matte_image->colors*sizeof(PixelPacket));
-  if (matte_image->colormap == (PixelPacket *) NULL)
+  if (!AllocateImageColormap(matte_image,(OpaqueOpacity-TransparentOpacity)+1))
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
-  for (i=TransparentOpacity; i <= OpaqueOpacity; i++)
-  {
-    matte_image->colormap[i].red=(Quantum) i;
-    matte_image->colormap[i].green=(Quantum) i;
-    matte_image->colormap[i].blue=(Quantum) i;
-  }
   SyncImage(matte_image);
   (void) strcpy(matte_image->magick,"MIFF");
   status=WriteImage(image_info,matte_image);

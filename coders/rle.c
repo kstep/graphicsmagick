@@ -438,38 +438,24 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Create colormap.
         */
-        image->class=PseudoClass;
         if (number_colormaps == 0)
           map_length=256;
-        image->colors=map_length;
-        image->colormap=(PixelPacket *)
-          AllocateMemory(image->colors*sizeof(PixelPacket));
-        if (image->colormap == (PixelPacket *) NULL)
+        if (!AllocateImageColormap(image,map_length))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         p=colormap;
-        if (number_colormaps == 0)
+        if (number_colormaps == 1)
           for (i=0; i < (int) image->colors; i++)
           {
             /*
-              Grayscale.
+              Pseudocolor.
             */
-            image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
-            image->colormap[i].green=(MaxRGB*i)/(image->colors-1);
-            image->colormap[i].blue=(MaxRGB*i)/(image->colors-1);
+            image->colormap[i].red=(Quantum) UpScale(i);
+            image->colormap[i].green=(Quantum) UpScale(i);
+            image->colormap[i].blue=(Quantum) UpScale(i);
           }
         else
-          if (number_colormaps == 1)
-            for (i=0; i < (int) image->colors; i++)
-            {
-              /*
-                Pseudocolor.
-              */
-              image->colormap[i].red=(Quantum) UpScale(i);
-              image->colormap[i].green=(Quantum) UpScale(i);
-              image->colormap[i].blue=(Quantum) UpScale(i);
-            }
-          else
+          if (number_colormaps > 1)
             for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[i].red=UpScale(*p);

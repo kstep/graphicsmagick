@@ -309,22 +309,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Create colormap.
         */
-        image->colormap=(PixelPacket *)
-          AllocateMemory(image->colors*sizeof(PixelPacket));
-        if (image->colormap == (PixelPacket *) NULL)
+        if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
-        if (format != '7')
-          for (i=0; i < (int) image->colors; i++)
-          {
-            image->colormap[i].red=
-              ((unsigned long) (MaxRGB*i)/(image->colors-1));
-            image->colormap[i].green=
-              ((unsigned long) (MaxRGB*i)/(image->colors-1));
-            image->colormap[i].blue=
-              ((unsigned long) (MaxRGB*i)/(image->colors-1));
-          }
-        else
+        if (format == '7')
           {
             /*
               Initialize 332 colormap.

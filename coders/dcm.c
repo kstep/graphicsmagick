@@ -3046,12 +3046,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Initialize colormap.
             */
-            image->class=PseudoClass;
-            image->colors=length/2;
-            if (image->colormap == (PixelPacket *) NULL)
-              image->colormap=(PixelPacket *)
-                AllocateMemory(image->colors*sizeof(PixelPacket));
-            if (image->colormap == (PixelPacket *) NULL)
+            if (!AllocateImageColormap(image,length/2))
               ThrowReaderException(ResourceLimitWarning,
                 "Unable to create colormap",image);
             p=data;
@@ -3168,26 +3163,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=width;
     image->rows=height;
     if ((image->colormap == (PixelPacket *) NULL) && (samples_per_pixel == 1))
-      {
-        /*
-          Allocate image colormap.
-        */
-        image->class=PseudoClass;
-        image->colors=max_value+1;
-        image->colormap=(PixelPacket *)
-          AllocateMemory(image->colors*sizeof(PixelPacket));
-        if (image->colormap == (PixelPacket *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-            image);
-        for (i=0; i < (int) image->colors; i++)
-        {
-          image->colormap[i].red=((unsigned long) (MaxRGB*i)/(image->colors-1));
-          image->colormap[i].green=
-            ((unsigned long) (MaxRGB*i)/(image->colors-1));
-          image->colormap[i].blue=
-            ((unsigned long) (MaxRGB*i)/(image->colors-1));
-        }
-      }
+      if (!AllocateImageColormap(image,max_value+1))
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          image);
     if (image_info->ping)
       {
         CloseBlob(image);

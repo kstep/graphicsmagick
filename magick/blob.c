@@ -448,6 +448,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   unsigned int
     status;
 
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image != (Image *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   GetExceptionInfo(exception);
   clone_info=CloneImageInfo(image_info);

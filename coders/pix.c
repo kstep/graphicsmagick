@@ -146,27 +146,9 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=width;
     image->rows=height;
     if (bits_per_pixel == 8)
-      {
-        register int
-          i;
-
-        /*
-          Create linear colormap.
-        */
-        image->class=PseudoClass;
-        image->colors=MaxRGB+1;
-        image->colormap=(PixelPacket *)
-          AllocateMemory(image->colors*sizeof(PixelPacket));
-        if (image->colormap == (PixelPacket *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-            image);
-        for (i=0; i < (int) image->colors; i++)
-        {
-          image->colormap[i].red=(Quantum) UpScale(i);
-          image->colormap[i].green=(Quantum) UpScale(i);
-          image->colormap[i].blue=(Quantum) UpScale(i);
-        }
-      }
+      if (!AllocateImageColormap(image,MaxRGB+1))
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          image);
     if (image_info->ping)
       {
         CloseBlob(image);

@@ -362,17 +362,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=8;
   image->class=PseudoClass;
   bits_per_pixel=pdb_image.type == 0 ? 2 : pdb_image.type == 2 ? 4 : 1;
-  image->colors=1 << bits_per_pixel;
-  image->colormap=(PixelPacket *)
-    AllocateMemory(image->colors*sizeof(PixelPacket));
-  if (image->colormap == (PixelPacket *) NULL)
+  if (!AllocateImageColormap(image,1 << bits_per_pixel))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  for (i=0; i < (int) image->colors; i++)
-  {
-    image->colormap[i].red= ((unsigned long) (MaxRGB*i)/(image->colors-1));
-    image->colormap[i].green= ((unsigned long) (MaxRGB*i)/(image->colors-1));
-    image->colormap[i].blue= ((unsigned long) (MaxRGB*i)/(image->colors-1));
-  }
   if (image_info->ping)
     {
       CloseBlob(image);

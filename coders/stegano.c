@@ -153,18 +153,8 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
   image=clone_image;
-  image->class=PseudoClass;
-  image->colors=1 << QuantumDepth;
-  image->colormap=(PixelPacket *)
-    AllocateMemory(image->colors*sizeof(PixelPacket));
-  if (image->colormap == (PixelPacket *) NULL)
+  if (!AllocateImageColormap(image,1 << QuantumDepth))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  for (i=0; i < (int) image->colors; i++)
-  {
-    image->colormap[i].red=((unsigned long) (MaxRGB*i)/(image->colors-1));
-    image->colormap[i].green=((unsigned long) (MaxRGB*i)/(image->colors-1));
-    image->colormap[i].blue=((unsigned long) (MaxRGB*i)/(image->colors-1));
-  }
   SetImage(image,OpaqueOpacity);
   /*
     Grab embedded watermark.

@@ -406,9 +406,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Convert X image to PseudoClass packets.
       */
-      image->colormap=(PixelPacket *)
-        AllocateMemory(image->colors*sizeof(PixelPacket));
-      if (image->colormap == (PixelPacket *) NULL)
+      if (!AllocateImageColormap(image,image->colors))
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
       for (i=0; i < (int) image->colors; i++)

@@ -113,11 +113,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image->rows == 0)
     image->rows=1;
   (void) strcpy(image->filename,image_info->filename);
-  image->class=PseudoClass;
-  image->colors=1;
-  image->colormap=(PixelPacket *)
-    AllocateMemory(image->colors*sizeof(PixelPacket));
-  if (image->colormap == (PixelPacket *) NULL)
+  if (!AllocateImageColormap(image,1))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Initialize colormap.

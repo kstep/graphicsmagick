@@ -436,19 +436,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Create colormap.
       */
-      image->class=PseudoClass;
-      image->colors=256;
-      image->colormap=(PixelPacket *)
-        AllocateMemory(image->colors*sizeof(PixelPacket));
-      if (image->colormap == (PixelPacket *) NULL)
+      if (!AllocateImageColormap(image,256))
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      for (i=0; i < (int) image->colors; i++)
-      {
-        image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
-        image->colormap[i].green=(MaxRGB*i)/(image->colors-1);
-        image->colormap[i].blue=(MaxRGB*i)/(image->colors-1);
-      }
       if (length > 0)
         {
           /*
