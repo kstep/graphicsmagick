@@ -258,6 +258,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "iptcutil"=.\iptcutils\iptcutil.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "mogrify"=.\utilities\mogrify.dsp - Package Owner=<4>
 
 Package=<5>
