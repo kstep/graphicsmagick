@@ -359,7 +359,6 @@ MagickExport Image *BlurImage(Image *image,const double radius,
       if (j >= width)
         j-=width;
       q->red=(Quantum) (red+0.5);
-      q->red=(Quantum) (red+0.5);
       q->green=(Quantum) (green+0.5);
       q->blue=(Quantum) (blue+0.5);
       q++;
