@@ -3150,11 +3150,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               index=(*p | *(p+1) << 8);
               if (element == 0x1201)
-                image->colormap[i].red=ScaleQuantumToShort(index);
+                image->colormap[i].red=ScaleShortToQuantum(index);
               if (element == 0x1202)
-                image->colormap[i].green=ScaleQuantumToShort(index);
+                image->colormap[i].green=ScaleShortToQuantum(index);
               if (element == 0x1203)
-                image->colormap[i].blue=ScaleQuantumToShort(index);
+                image->colormap[i].blue=ScaleShortToQuantum(index);
               p+=2;
             }
             break;

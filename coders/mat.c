@@ -113,9 +113,9 @@ register IndexPacket *indexes;
        break;
            for (x=0; x < (long) image->columns; x++)
               {
-              q->red=ScaleQuantumToShort(*(unsigned short *)p);
-              q->green=ScaleQuantumToShort(*(unsigned short *)p);
-              q->blue=ScaleQuantumToShort(*(unsigned short *)p);
+              q->red=ScaleShortToQuantum(*(unsigned short *)p);
+              q->green=ScaleShortToQuantum(*(unsigned short *)p);
+              q->blue=ScaleShortToQuantum(*(unsigned short *)p);
         p+=2;
               q++;
               }
@@ -144,9 +144,9 @@ register PixelPacket *q;
    for (x=0; x < (long) image->columns; x++)
           {
     f=(double)MaxRGB* (*p-Min)/(Max-Min);
-          q->red=ScaleQuantumToShort(f);
-    q->green=ScaleQuantumToShort(f);
-    q->blue=ScaleQuantumToShort(f);
+          q->red=ScaleShortToQuantum(f);
+    q->green=ScaleShortToQuantum(f);
+    q->blue=ScaleShortToQuantum(f);
           p++;
           q++;
           }

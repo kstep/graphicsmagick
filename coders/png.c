@@ -1823,10 +1823,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             have_global_bkgd=False;
             if (length > 5)
               {
-                mng_global_bkgd.red=(Quantum) ScaleQuantumToShort(((p[0]<<8) | p[1]));
-                mng_global_bkgd.green=(Quantum) ScaleQuantumToShort(((p[2]<<8)
+                mng_global_bkgd.red=(Quantum) ScaleShortToQuantum(((p[0]<<8) | p[1]));
+                mng_global_bkgd.green=(Quantum) ScaleShortToQuantum(((p[2]<<8)
                    | p[3]));
-                mng_global_bkgd.blue=(Quantum) ScaleQuantumToShort(((p[4]<<8) | p[5]));
+                mng_global_bkgd.blue=(Quantum) ScaleShortToQuantum(((p[4]<<8) | p[5]));
                 have_global_bkgd=True;
               }
             LiberateMemory((void **) &chunk);
@@ -1841,11 +1841,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               mandatory_back=0;
             if (mandatory_back && length>5)
               {
-                mng_background_color.red=(Quantum) ScaleQuantumToShort(((p[0]<<8)
+                mng_background_color.red=(Quantum) ScaleShortToQuantum(((p[0]<<8)
                    | p[1]));
-                mng_background_color.green=(Quantum) ScaleQuantumToShort(((p[2]<<8)
+                mng_background_color.green=(Quantum) ScaleShortToQuantum(((p[2]<<8)
                    | p[3]));
-                mng_background_color.blue=(Quantum) ScaleQuantumToShort(((p[4]<<8)
+                mng_background_color.blue=(Quantum) ScaleShortToQuantum(((p[4]<<8)
                    | p[5]));
                 mng_background_color.opacity=OpaqueOpacity;
               }
@@ -2939,10 +2939,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #if (QuantumDepth == 16)
         image->background_color=mng_global_bkgd;
 #else
-        image->background_color.red=(Quantum) ScaleQuantumToShort(mng_global_bkgd.red);
+        image->background_color.red=(Quantum) ScaleShortToQuantum(mng_global_bkgd.red);
         image->background_color.green=
-          (Quantum) ScaleQuantumToShort(mng_global_bkgd.green);
-        image->background_color.blue=(Quantum) ScaleQuantumToShort(mng_global_bkgd.blue);
+          (Quantum) ScaleShortToQuantum(mng_global_bkgd.green);
+        image->background_color.blue=(Quantum) ScaleShortToQuantum(mng_global_bkgd.blue);
 #endif
       }
     if (ping_info->valid & PNG_INFO_bKGD)
@@ -2959,11 +2959,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         else
           {
             image->background_color.red=
-              (Quantum) ScaleQuantumToShort(ping_info->background.red);
+              (Quantum) ScaleShortToQuantum(ping_info->background.red);
             image->background_color.green=
-              (Quantum) ScaleQuantumToShort(ping_info->background.green);
+              (Quantum) ScaleShortToQuantum(ping_info->background.green);
             image->background_color.blue=
-              (Quantum) ScaleQuantumToShort(ping_info->background.blue);
+              (Quantum) ScaleShortToQuantum(ping_info->background.blue);
           }
       }
 #endif
@@ -4964,9 +4964,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
        {
          (void) WriteBlobMSBULong(image,6L);
          PNGType(chunk,mng_BACK);
-         red=(unsigned short) ScaleShortToQuantum(image->background_color.red);
-         green=(unsigned short) ScaleShortToQuantum(image->background_color.green);
-         blue=(unsigned short) ScaleShortToQuantum(image->background_color.blue);
+         red=(unsigned short) ScaleQuantumToShort(image->background_color.red);
+         green=(unsigned short) ScaleQuantumToShort(image->background_color.green);
+         blue=(unsigned short) ScaleQuantumToShort(image->background_color.blue);
          PNGShort(chunk+4,red);
          PNGShort(chunk+6,green);
          PNGShort(chunk+8,blue);

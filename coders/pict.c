@@ -911,11 +911,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               Initialize image background color.
             */
             image->background_color.red=(Quantum)
-              ScaleQuantumToShort(ReadBlobMSBShort(image));
+              ScaleShortToQuantum(ReadBlobMSBShort(image));
             image->background_color.green=(Quantum)
-              ScaleQuantumToShort(ReadBlobMSBShort(image));
+              ScaleShortToQuantum(ReadBlobMSBShort(image));
             image->background_color.blue=(Quantum)
-              ScaleQuantumToShort(ReadBlobMSBShort(image));
+              ScaleShortToQuantum(ReadBlobMSBShort(image));
             break;
           }
           case 0x70:
@@ -1016,11 +1016,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                       if (flags & 0x8000)
                         j=i;
                       tile_image->colormap[j].red=(Quantum)
-                        ScaleQuantumToShort(ReadBlobMSBShort(image));
+                        ScaleShortToQuantum(ReadBlobMSBShort(image));
                       tile_image->colormap[j].green=(Quantum)
-                        ScaleQuantumToShort(ReadBlobMSBShort(image));
+                        ScaleShortToQuantum(ReadBlobMSBShort(image));
                       tile_image->colormap[j].blue=(Quantum)
-                        ScaleQuantumToShort(ReadBlobMSBShort(image));
+                        ScaleShortToQuantum(ReadBlobMSBShort(image));
                     }
                   }
                 else

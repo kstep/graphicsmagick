@@ -964,19 +964,19 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             green=((pixel & bmp_info.green_mask) << shift.green) >> 16;
             blue=((pixel & bmp_info.blue_mask) << shift.blue) >> 16;
             opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
-            q->red=ScaleQuantumToShort(red);
+            q->red=ScaleShortToQuantum(red);
             if (quantum_bits.red == 5)
               q->red|=(q->red >> 5);
-            q->green=ScaleQuantumToShort(green);
+            q->green=ScaleShortToQuantum(green);
             if (quantum_bits.green == 5)
               q->green|=(q->green >> 5);
             if (quantum_bits.green == 6)
               q->green|=(q->green >> 6);
-            q->blue=ScaleQuantumToShort(blue);
+            q->blue=ScaleShortToQuantum(blue);
             if (quantum_bits.blue == 5)
               q->blue|=(q->blue >> 5);
             if (image->matte)
-              q->opacity=ScaleQuantumToShort(opacity);
+              q->opacity=ScaleShortToQuantum(opacity);
 #if QuantumDepth == 16
             if (quantum_bits.blue <= 8)
               q->blue|=((q->blue & 0xff00) >> 8);
@@ -1053,11 +1053,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             green=((pixel & bmp_info.green_mask) << shift.green) >> 16;
             blue=((pixel & bmp_info.blue_mask) << shift.blue) >> 16;
             opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
-            q->red=ScaleQuantumToShort(red);
-            q->green=ScaleQuantumToShort(green);
-            q->blue=ScaleQuantumToShort(blue);
+            q->red=ScaleShortToQuantum(red);
+            q->green=ScaleShortToQuantum(green);
+            q->blue=ScaleShortToQuantum(blue);
             if (image->matte)
-              q->opacity=ScaleQuantumToShort(opacity);
+              q->opacity=ScaleShortToQuantum(opacity);
 #if QuantumDepth == 16
             if (quantum_bits.red == 8)
               q->red|=(q->red >> 8);

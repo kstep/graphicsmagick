@@ -373,11 +373,11 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               pixel=XGetPixel(ximage,(int) x,(int) y);
               index=(unsigned short) ((pixel >> red_shift) & red_mask);
-              q->red=ScaleQuantumToShort(colors[index].red);
+              q->red=ScaleShortToQuantum(colors[index].red);
               index=(unsigned short) ((pixel >> green_shift) & green_mask);
-              q->green=ScaleQuantumToShort(colors[index].green);
+              q->green=ScaleShortToQuantum(colors[index].green);
               index=(unsigned short) ((pixel >> blue_shift) & blue_mask);
-              q->blue=ScaleQuantumToShort(colors[index].blue);
+              q->blue=ScaleShortToQuantum(colors[index].blue);
               q++;
             }
             if (!SyncImagePixels(image))
@@ -395,11 +395,11 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               pixel=XGetPixel(ximage,(int) x,(int) y);
               color=(pixel >> red_shift) & red_mask;
-              q->red=ScaleQuantumToShort((color*65535L)/red_mask);
+              q->red=ScaleShortToQuantum((color*65535L)/red_mask);
               color=(pixel >> green_shift) & green_mask;
-              q->green=ScaleQuantumToShort((color*65535L)/green_mask);
+              q->green=ScaleShortToQuantum((color*65535L)/green_mask);
               color=(pixel >> blue_shift) & blue_mask;
-              q->blue=ScaleQuantumToShort((color*65535L)/blue_mask);
+              q->blue=ScaleShortToQuantum((color*65535L)/blue_mask);
               q++;
             }
             if (!SyncImagePixels(image))
@@ -419,9 +419,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         for (i=0; i < (long) image->colors; i++)
         {
-          image->colormap[i].red=ScaleQuantumToShort(colors[i].red);
-          image->colormap[i].green=ScaleQuantumToShort(colors[i].green);
-          image->colormap[i].blue=ScaleQuantumToShort(colors[i].blue);
+          image->colormap[i].red=ScaleShortToQuantum(colors[i].red);
+          image->colormap[i].green=ScaleShortToQuantum(colors[i].green);
+          image->colormap[i].blue=ScaleShortToQuantum(colors[i].blue);
         }
         for (y=0; y < (long) image->rows; y++)
         {
@@ -669,9 +669,9 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       for (i=0; i < (long) image->colors; i++)
       {
         colors[i].pixel=i;
-        colors[i].red=ScaleShortToQuantum(image->colormap[i].red);
-        colors[i].green=ScaleShortToQuantum(image->colormap[i].green);
-        colors[i].blue=ScaleShortToQuantum(image->colormap[i].blue);
+        colors[i].red=ScaleQuantumToShort(image->colormap[i].red);
+        colors[i].green=ScaleQuantumToShort(image->colormap[i].green);
+        colors[i].blue=ScaleQuantumToShort(image->colormap[i].blue);
         colors[i].flags=DoRed | DoGreen | DoBlue;
         colors[i].pad=0;
         if (*(char *) &lsb_first)

@@ -838,7 +838,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (packet_size == 1)
                 pixel=ScaleByteToQuantum(ReadBlobByte(layer_info[i].image));
               else
-                pixel=ScaleShortToQuantum(ReadBlobMSBShort(layer_info[i].image));
+                pixel=ScaleQuantumToShort(ReadBlobMSBShort(layer_info[i].image));
               switch (layer_info[i].channel_info[j].type)
               {
                 case -1:  /* transparency mask */
@@ -997,7 +997,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (packet_size == 1)
               pixel=ScaleByteToQuantum(ReadBlobByte(image));
             else
-              pixel=ScaleShortToQuantum(ReadBlobMSBShort(image));
+              pixel=ScaleQuantumToShort(ReadBlobMSBShort(image));
             switch (image->matte ? i-1 : i)
             {
               case -1:

@@ -2006,9 +2006,9 @@ static unsigned int XColorEditImage(Display *display,
             q=GetImagePixels(*image,x_offset,y_offset,1,1);
             if (q == (PixelPacket *) NULL)
               break;
-            q->red=ScaleQuantumToShort(color.red);
-            q->green=ScaleQuantumToShort(color.green);
-            q->blue=ScaleQuantumToShort(color.blue);
+            q->red=ScaleShortToQuantum(color.red);
+            q->green=ScaleShortToQuantum(color.green);
+            q->blue=ScaleShortToQuantum(color.blue);
             (void) SyncImagePixels(*image);
             break;
           }
@@ -2032,9 +2032,9 @@ static unsigned int XColorEditImage(Display *display,
                   {
                     if (FuzzyColorMatch(q,&target,(*image)->fuzz))
                       {
-                        q->red=ScaleQuantumToShort(color.red);
-                        q->green=ScaleQuantumToShort(color.green);
-                        q->blue=ScaleQuantumToShort(color.blue);
+                        q->red=ScaleShortToQuantum(color.red);
+                        q->green=ScaleShortToQuantum(color.green);
+                        q->blue=ScaleShortToQuantum(color.blue);
                       }
                     q++;
                   }
@@ -2047,11 +2047,11 @@ static unsigned int XColorEditImage(Display *display,
                 for (i=0; i < (int) (*image)->colors; i++)
                   if (FuzzyColorMatch((*image)->colormap+i,&target,(*image)->fuzz))
                     {
-                      (*image)->colormap[i].red=ScaleQuantumToShort(color.red);
+                      (*image)->colormap[i].red=ScaleShortToQuantum(color.red);
                       (*image)->colormap[i].green=
-                        ScaleQuantumToShort(color.green);
+                        ScaleShortToQuantum(color.green);
                       (*image)->colormap[i].blue=
-                        ScaleQuantumToShort(color.blue);
+                        ScaleShortToQuantum(color.blue);
                     }
                 SyncImage(*image);
               }
@@ -2072,9 +2072,9 @@ static unsigned int XColorEditImage(Display *display,
             target=GetOnePixel(*image,x_offset,y_offset);
             if (method == FillToBorderMethod)
               {
-                target.red=ScaleQuantumToShort(border_color.red);
-                target.green=ScaleQuantumToShort(border_color.green);
-                target.blue=ScaleQuantumToShort(border_color.blue);
+                target.red=ScaleShortToQuantum(border_color.red);
+                target.green=ScaleShortToQuantum(border_color.green);
+                target.blue=ScaleShortToQuantum(border_color.blue);
               }
             draw_info=
               CloneDrawInfo(resource_info->image_info,(DrawInfo *) NULL);
@@ -2098,9 +2098,9 @@ static unsigned int XColorEditImage(Display *display,
                 break;
               for (x=0; x < (int) (*image)->columns; x++)
               {
-                q->red=ScaleQuantumToShort(color.red);
-                q->green=ScaleQuantumToShort(color.green);
-                q->blue=ScaleQuantumToShort(color.blue);
+                q->red=ScaleShortToQuantum(color.red);
+                q->green=ScaleShortToQuantum(color.green);
+                q->blue=ScaleShortToQuantum(color.blue);
                 q++;
               }
               if (!SyncImagePixels(*image))
@@ -7795,9 +7795,9 @@ static unsigned int XMatteEditImage(Display *display,
             target=GetOnePixel(*image,x_offset,y_offset);
             if (method == FillToBorderMethod)
               {
-                target.red=ScaleQuantumToShort(border_color.red);
-                target.green=ScaleQuantumToShort(border_color.green);
-                target.blue=ScaleQuantumToShort(border_color.blue);
+                target.red=ScaleShortToQuantum(border_color.red);
+                target.green=ScaleShortToQuantum(border_color.green);
+                target.blue=ScaleShortToQuantum(border_color.blue);
               }
             (void) MatteFloodfillImage(*image,target,atoi(matte),x_offset,
               y_offset,method);
@@ -9962,11 +9962,11 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   (*image)->border_color.red=
-    ScaleQuantumToShort(windows->pixel_info->pen_colors[pen_id].red);
+    ScaleShortToQuantum(windows->pixel_info->pen_colors[pen_id].red);
   (*image)->border_color.green=
-    ScaleQuantumToShort(windows->pixel_info->pen_colors[pen_id].green);
+    ScaleShortToQuantum(windows->pixel_info->pen_colors[pen_id].green);
   (*image)->border_color.blue=
-    ScaleQuantumToShort(windows->pixel_info->pen_colors[pen_id].blue);
+    ScaleShortToQuantum(windows->pixel_info->pen_colors[pen_id].blue);
   (*image)->border_color.opacity=TransparentOpacity;
   rotate_image=RotateImage(*image,degrees,&(*image)->exception);
   XSetCursorState(display,windows,False);

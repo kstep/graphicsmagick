@@ -460,11 +460,11 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->red=ScaleQuantumToShort((*(p+0) << 8) | (*(p+1)));
-                q->green=ScaleQuantumToShort((*(p+2) << 8) | (*(p+3)));
-                q->blue=ScaleQuantumToShort((*(p+4) << 8) | (*(p+5)));
+                q->red=ScaleShortToQuantum((*(p+0) << 8) | (*(p+1)));
+                q->green=ScaleShortToQuantum((*(p+2) << 8) | (*(p+3)));
+                q->blue=ScaleShortToQuantum((*(p+4) << 8) | (*(p+5)));
                 q->opacity=(Quantum)
-                  (MaxRGB-ScaleQuantumToShort((*(p+6) << 8) | (*(p+7))));
+                  (MaxRGB-ScaleShortToQuantum((*(p+6) << 8) | (*(p+7))));
                 p+=8;
                 q++;
               }

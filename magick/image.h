@@ -19,8 +19,8 @@ extern "C" {
 */
 #define ScaleQuantumToByte(quantum)  (quantum)
 #define ScaleByteToQuantum(value)  (value)
-#define ScaleQuantumToShort(quantum)  ((quantum)/257)
-#define ScaleShortToQuantum(color)  (257*(color))
+#define ScaleShortToQuantum(value)  ((value)/257)
+#define ScaleQuantumToShort(quantum)  (257*(quantum))
 #define ScaleQuantumToUnsignedLong(quantum) (16843009UL*(quantum))
 
 typedef unsigned char Quantum;
@@ -30,8 +30,8 @@ typedef unsigned char Quantum;
 */
 #define ScaleQuantumToByte(quantum)  ((quantum)/257)
 #define ScaleByteToQuantum(value)  (257*(value))
-#define ScaleQuantumToShort(quantum)  (quantum)
 #define ScaleShortToQuantum(value)  (value)
+#define ScaleQuantumToShort(quantum)  (quantum)
 #define ScaleQuantumToUnsignedLong(quantum) (65537UL*(quantum))
 
 typedef unsigned short Quantum;
@@ -41,8 +41,8 @@ typedef unsigned short Quantum;
 */
 #define ScaleQuantumToByte(quantum)  ((quantum)/16843009L)
 #define ScaleByteToQuantum(value)  (16843009L*(value))
-#define ScaleQuantumToShort(quantum)  (65537L*(quantum))
-#define ScaleShortToQuantum(value)  ((value)/65537L)
+#define ScaleShortToQuantum(value)  (65537L*(value))
+#define ScaleQuantumToShort(quantum)  ((quantum)/65537L)
 #define ScaleQuantumToUnsignedLong(quantum)  (quantum)
 
 typedef unsigned int Quantum;
@@ -59,8 +59,8 @@ typedef unsigned int Quantum;
 #define OpaqueOpacity  0
 #define TransparentOpacity  MaxRGB
 #define Upscale(value) ScaleByteToQuantum(value)
-#define XDownscale(quantum) ScaleQuantumToShort(quantum)
-#define XUpscale(value) ScaleShortToQuantum(value)
+#define XDownscale(quantum) ScaleShortToQuantum(quantum)
+#define XUpscale(value) ScaleQuantumToShort(value)
 
 /*
   Typedef declarations.
