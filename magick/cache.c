@@ -1622,7 +1622,6 @@ static unsigned int ModifyCache(Image *image,ExceptionInfo *exception)
       break;
   }
   image->cache=clone_image->cache;
-  GetCacheInfo(&clone_image->cache);
   LiberateMemory((void **) &clone_image);
   if (y < (long) image->rows)
     {
