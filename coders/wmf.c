@@ -493,7 +493,7 @@ static void ipa_device_open(wmfAPI * API)
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData (API);
 
-  draw_info = CloneDrawInfo(ddata->image_info,(DrawInfo*)NULL);
+  /* draw_info = CloneDrawInfo(ddata->image_info,(DrawInfo*)NULL); */
 
   ddata->pattern_id = 0;
   ddata->clipping = False;
@@ -501,9 +501,9 @@ static void ipa_device_open(wmfAPI * API)
 
   ddata->push_depth = 0;
 
-  ddata->draw_context = DrawAllocateContext(draw_info,ddata->image);
+  ddata->draw_context = DrawAllocateContext((DrawInfo*)NULL,ddata->image);
 
-  DestroyDrawInfo(draw_info);
+  /* DestroyDrawInfo(draw_info); */
 }
 
 /*
@@ -2434,6 +2434,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    */
   
   DrawRender(ddata->draw_context);
+
   /* Cleanup allocated data */
   wmf_api_destroy(API);
   CloseBlob(image);
