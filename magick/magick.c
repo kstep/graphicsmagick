@@ -185,13 +185,13 @@ MagickExport char *GetImageMagick(const unsigned char *magick,
 %  for the specified ImageMagick configuration file and returns the path.
 %  The search order follows:
 %
-%             MagickModulesPath
-%             $HOME/.magick/
+%             <current directory>/
+%             <client path>/
 %             $MAGICK_HOME/
-%             <program directory>/
+%             $HOME/.magick/
 %             MagickLibPath
+%             MagickModulesPath
 %             MagickSharePath
-%             X11ConfigurePath
 %
 %  The format of the GetMagickConfigurePath method is:
 %
@@ -213,7 +213,11 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
     *path;
 
   path=AllocateString(filename);
-  FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
+  FormatString(path,"%.1024s",filename);
+  if (IsAccessible(path))
+    return(path);
+  FormatString(path,"%.1024s%.1024s%.1024s",SetClientPath((char *) NULL),
+    DirectorySeparator,filename);
   if (IsAccessible(path))
     return(path);
   if (getenv("HOME") != (char *) NULL)
@@ -231,20 +235,13 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
       if (IsAccessible(path))
         return(path);
     }
-  FormatString(path,"%.1024s%.1024s%.1024s",SetClientPath((char *) NULL),
-    DirectorySeparator,filename);
-  if (IsAccessible(path))
-    return(path);
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
   if (IsAccessible(path))
     return(path);
+  FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
+  if (IsAccessible(path))
+    return(path);
   FormatString(path,"%.1024s%.1024s",MagickSharePath,filename);
-  if (IsAccessible(path))
-    return(path);
-  FormatString(path,"%.1024s%.1024s",X11ConfigurePath,filename);
-  if (IsAccessible(path))
-    return(path);
-  FormatString(path,"%.1024s",filename);
   if (IsAccessible(path))
     return(path);
   LiberateMemory((void **) &path);
@@ -526,7 +523,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
     "-----------------------\n");
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
   OpenModules(exception);
-#endif    
+#endif
   p=GetMagickInfo((char *) NULL,exception);
   if (p == (MagickInfo *) NULL)
     return(False);
