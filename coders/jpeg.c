@@ -429,49 +429,55 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   length=GetCharacter(jpeg_info) << 8;
   length+=GetCharacter(jpeg_info);
   length-=2;
-#ifdef GET_ONLY_IPTC_DATA
-  /*
-    Find the beginning of the IPTC portion of the binary data.
-  */
-  for (*tag='\0'; length > 0; )
-  {
-    *tag=GetCharacter(jpeg_info);
-    *(tag+1)=GetCharacter(jpeg_info);
-    length-=2;
-    if ((*tag == 0x1c) && (*(tag+1) == 0x02))
-      break;
-  }
-  tag_length=2;
-#else
-  /*
-    Validate that this was written as a Photoshop resource format slug.
-  */
-  for (i=0; i < 10; i++)
-    magick[i]=GetCharacter(jpeg_info);
-  magick[10]='\0';
-  length-=10;
-  if (LocaleCompare(magick,"Photoshop ") != 0)
-    {
-      /*
-        Not a ICC profile, return.
-      */
-      for (i=0; i < length; i++)
-        (void) GetCharacter(jpeg_info);
-      return(True);
-    }
-  /*
-    Remove the version number.
-  */
-  for (i=0; i < 4; i++)
-    (void) GetCharacter(jpeg_info);
-  length-=4;
-  tag_length=0;
-#endif
   if (length <= 0)
     return(True);
   image=(Image *) jpeg_info->client_data;
+  if (image->iptc_profile.length == 0)
+    {
+#ifdef GET_ONLY_IPTC_DATA
+      /*
+        Find the beginning of the IPTC portion of the binary data.
+      */
+      for (*tag='\0'; length > 0; )
+      {
+        *tag=GetCharacter(jpeg_info);
+        *(tag+1)=GetCharacter(jpeg_info);
+        length-=2;
+        if ((*tag == 0x1c) && (*(tag+1) == 0x02))
+          break;
+      }
+      tag_length=2;
+#else
+      /*
+        Validate that this was written as a Photoshop resource format slug.
+      */
+      for (i=0; i < 10; i++)
+        magick[i]=GetCharacter(jpeg_info);
+      magick[10]='\0';
+      length-=10;
+      if (LocaleCompare(magick,"Photoshop ") != 0)
+        {
+          /*
+            Not a ICC profile, return.
+          */
+          for (i=0; i < length; i++)
+            (void) GetCharacter(jpeg_info);
+          return(True);
+        }
+      /*
+        Remove the version number.
+      */
+      for (i=0; i < 4; i++)
+        (void) GetCharacter(jpeg_info);
+      length-=4;
+      tag_length=0;
+#endif
+    }
+  if (length <= 0)
+    return(True);
   if (image->iptc_profile.length != 0)
-    ReacquireMemory((void **) &image->iptc_profile.info,length+tag_length);
+    ReacquireMemory((void **) &image->iptc_profile.info,
+      image->iptc_profile.length+length);
   else
     {
       image->iptc_profile.info=(unsigned char *)
@@ -485,14 +491,9 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   /*
     Read the payload of this binary data.
   */
-  image->iptc_profile.length=length+tag_length;
-  p=image->iptc_profile.info;
-#ifdef GET_ONLY_IPTC_DATA
-  *p++=0x1c;
-  *p++=0x02;
-#endif
-  while (--length >= 0)
-    *p++=GetCharacter(jpeg_info);
+  p=image->iptc_profile.info+image->iptc_profile.length;
+  for (image->iptc_profile.length+=length; --length >= 0; p++)
+    *p=GetCharacter(jpeg_info);
   return(True);
 }
 
