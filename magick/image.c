@@ -1133,18 +1133,12 @@ MagickExport unsigned int CompositeImage(Image *image,
   assert(image->signature == MagickSignature);
   assert(composite_image != (Image *) NULL);
   assert(composite_image->signature == MagickSignature);
-  if (image->colorspace == RGBColorspace)
-    {
-      image->storage_class=DirectClass;
-      if (!image->matte)
-        SetImageOpacity(image,OpaqueOpacity);
-    }
-  if (composite_image->colorspace == RGBColorspace)
-    {
-      composite_image->storage_class=DirectClass;
-      if (!composite_image->matte)
-        SetImageOpacity(composite_image,OpaqueOpacity);
-    }
+  image->storage_class=DirectClass;
+  if (!image->matte)
+    SetImageOpacity(image,OpaqueOpacity);
+  composite_image->storage_class=DirectClass;
+  if (!composite_image->matte)
+    SetImageOpacity(composite_image,OpaqueOpacity);
   switch (compose)
   {
     case DisplaceCompositeOp:

@@ -1231,7 +1231,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         image->colors,image->matte ? "True" : "False");
     else
       if (image->colorspace == CMYKColorspace)
-        FormatString(buffer,"class=DirectClass  colorspace=CMYK matte=%s\n",
+        FormatString(buffer,"class=DirectClass  colorspace=CMYK  matte=%s\n",
           image->matte ? "True" : "False");
       else
         FormatString(buffer,"class=DirectClass  matte=%s\n",
