@@ -1211,7 +1211,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
   SetExceptionInfo(exception,UndefinedException);
   clone_info=CloneImageInfo(image_info);
   clone_info->ping=True;
-  image=ReadStream(clone_info,&StreamHandler,exception);
+  image=ReadStream(clone_info,StreamHandler,exception);
   DestroyImageInfo(clone_info);
   return(image);
 }

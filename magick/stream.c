@@ -576,14 +576,19 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
       (image->colorspace == CMYKColorspace))
     offset+=number_pixels*sizeof(IndexPacket);
   if (stream_info->pixels == (PixelPacket *) NULL)
-    stream_info->pixels=(PixelPacket *) AcquireMemory(offset);
+    {
+      stream_info->pixels=(PixelPacket *) AcquireMemory(offset);
+      stream_info->length=offset;
+    }
   else
-    if (offset != stream_info->length)
-      ReacquireMemory((void **) &stream_info->pixels,offset);
+    if (stream_info->length < offset)
+      {
+        ReacquireMemory((void **) &stream_info->pixels,offset);
+        stream_info->length=offset;
+      }
   if (stream_info->pixels == (void *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
       "unable to allocate cache info");
-  stream_info->length=offset;
   stream_info->indexes=(IndexPacket *) NULL;
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
