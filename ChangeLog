@@ -1,5 +1,7 @@
 2004-04-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* utilities/gm.c (main): Default usage message wasn't right for
+	aliased utility.
 	* configure.ac: Added the --enable-magick-compat option to install
 	compatibility links to emulate ImageMagick commands.
 	* magick/command.c: Ensure that each sub-command responds to -help
