@@ -778,10 +778,8 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
   unsigned int
     status;
 
-  if (draw_info->font == (char *) NULL)
-    type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
-      draw_info->stretch,draw_info->weight,&image->exception);
-  else
+  type_info=(const TypeInfo *) NULL;
+  if (draw_info->font != (char *) NULL)
     {
       if (*draw_info->font == '@')
         return(RenderFreetype(image,draw_info,(char *) NULL,offset,metrics));
@@ -789,10 +787,11 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
         return(RenderX11(image,draw_info,offset,metrics));
       if (IsAccessible(draw_info->font))
         return(RenderFreetype(image,draw_info,(char *) NULL,offset,metrics));
-      type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
-        draw_info->stretch,draw_info->weight,&image->exception);
       type_info=GetTypeInfo(draw_info->font,&image->exception);
     }
+  if (type_info == (const TypeInfo *) NULL)
+    type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
+      draw_info->stretch,draw_info->weight,&image->exception);
   if (type_info == (const TypeInfo *) NULL)
     return(RenderPostscript(image,draw_info,offset,metrics));
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
@@ -1097,17 +1096,24 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
       text=EncodeSJIS(draw_info->text,&length);
       break;
     }
-    default:
-    {
-      if (LocaleCompare(draw_info->encoding,"UTF-8") == 0)
-        {
-          text=EncodeText(draw_info->text,&length);
-          break;
-        }
-    }
     case ft_encoding_unicode:
     {
       text=EncodeUnicode(draw_info->text,&length);
+      break;
+    }
+    default:
+    {
+      if (LocaleCompare(draw_info->encoding,"SJIS") == 0)
+        {
+          text=EncodeSJIS(draw_info->text,&length);
+          break;
+        }
+      if (LocaleCompare(draw_info->encoding,"UTF-8") == 0)
+        {
+          text=EncodeUnicode(draw_info->text,&length);
+          break;
+        }
+      text=EncodeText(draw_info->text,&length);
       break;
     }
   }
