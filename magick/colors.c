@@ -1487,11 +1487,11 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
     color->green=UpScale(green);
     color->blue=UpScale(blue);
     color->opacity=OpaqueOpacity;
-    return(True);
+    break;
   }
   (void) fclose(file);
+  return(LocaleCompare(colorname,target) == 0);
 #endif
-  return(False);
 }
 
 /*
