@@ -1363,7 +1363,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         p->next=next_image;
         continue;
       }
-    if ((image != (Image *) NULL) && (j != (k+1))
+    if ((image != (Image *) NULL) && (j != (k+1)))
       {
         status&=MogrifyImages(image_info,i-j,argv+j,&image);
         (void) CatchImageException(image);
@@ -3276,6 +3276,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   last_scene=0;
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,exception);
+  montage_image=(Image *) NULL;
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
   quantize_info.number_colors=0;
@@ -3336,7 +3337,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
         }
         continue;
       }
-    if ((image != (Image *) NULL) && (j != (k+1))
+    if ((image != (Image *) NULL) && (j != (k+1)))
       {
         status&=MogrifyImages(image_info,i-j,argv+j,&image);
         (void) CatchImageException(image);
