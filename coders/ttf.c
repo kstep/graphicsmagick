@@ -125,7 +125,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   y=0;
-  (void) fprintf(file,"font @%s\n",image_info->filename);
+  (void) fprintf(file,"font %s\n",image_info->filename);
   (void) fprintf(file,"font-size 18\n");
   (void) fprintf(file,"text +10%+d 'abcdefghijklmnopqrstuvwxyz'\n",y+=20);
   (void) fprintf(file,"text +10%+d 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'\n",y+=20);

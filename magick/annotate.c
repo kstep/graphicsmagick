@@ -65,12 +65,6 @@
 #include "freetype/ftglyph.h"
 #include "freetype/ftoutln.h"
 #endif
-#if defined(HasXML)
-#include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
-#include <libxml/parserInternals.h>
-#include <libxml/xmlerror.h>
-#endif
 
 /*
   Static declarations.
@@ -553,7 +547,6 @@ MagickExport unsigned int GetFontMetrics(Image *image,
   return(status);
 }
 
-#if defined(HasXML)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -581,36 +574,89 @@ MagickExport unsigned int GetFontMetrics(Image *image,
 %
 %
 */
-
-static void ParseFonts(void *context,const xmlChar *name,
-  const xmlChar **attributes)
+static unsigned int ReadConfigurationFile(const char *filename)
 {
-  const char
-    *keyword,
-    *value;
+  char
+    keyword[MaxTextExtent],
+    *path,
+    value[MaxTextExtent];
 
-  FontInfo
-    *font_info;
+  FILE
+    *file;
 
-  register FontInfo
+  int
+    c;
+
+  register char
     *p;
 
-  register int
-    i;
-
-  if (LocaleCompare(name,"font") != 0)
-    return;
-  if (attributes == (const xmlChar **) NULL)
-    return;
-  font_info=(FontInfo *) AcquireMemory(sizeof(FontInfo));
-  if (font_info == (FontInfo *) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate fonts",
-      "Memory allocation failed");
-  memset(font_info,0,sizeof(FontInfo));
-  for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
+  path=GetMagickConfigurePath(filename);
+  if (path == (char *) NULL)
+    return(False);
+  file=fopen(path,"r");
+  LiberateMemory((void **) &path);
+  if (file == (FILE *) NULL)
+    return(False);
+  for (c=fgetc(file); c != EOF; c=fgetc(file))
   {
-    keyword=(const char *) attributes[i];
-    value=(const char *) attributes[i+1];
+    /*
+      Parse keyword.
+    */
+    while (isspace(c))
+      c=fgetc(file);
+    p=keyword;
+    do
+    {
+      if ((p-keyword) < (MaxTextExtent-1))
+        *p++=c;
+      c=fgetc(file);
+    } while ((c == '<') || isalnum(c));
+    *p='\0';
+    if (LocaleCompare(keyword,"<font") == 0)
+      {
+        FontInfo
+          *font_info;
+
+        /*
+          Allocate memory for the font list.
+        */
+        font_info=(FontInfo *) AcquireMemory(sizeof(FontInfo));
+        if (font_info == (FontInfo *) NULL)
+          MagickError(ResourceLimitError,"Unable to allocate fonts",
+            "Memory allocation failed");
+        memset(font_info,0,sizeof(FontInfo));
+        if (font_list == (FontInfo *) NULL)
+          font_list=font_info;
+        else
+          {
+            font_list->next=font_info;
+            font_info->previous=font_list;
+            font_list=font_list->next;
+          }
+      }
+    if (*keyword == '<')
+      continue;
+    while (isspace(c))
+      c=fgetc(file);
+    if (c != '=')
+      continue;
+    do
+    {
+      c=fgetc(file);
+    }
+    while (isspace(c));
+    if (c != '"')
+      continue;
+    /*
+      Parse value.
+    */
+    p=value;
+    for (c=fgetc(file); (c != '"') && (c != EOF); c=fgetc(file))
+      if ((p-value) < (MaxTextExtent-1))
+        *p++=c;
+    *p='\0';
+    if (font_list == (FontInfo *) NULL)
+      continue;
     switch (*keyword) 
     {
       case 'A':
@@ -618,7 +664,7 @@ static void ParseFonts(void *context,const xmlChar *name,
       {
         if (LocaleCompare((char *) keyword,"alias") == 0)
           {
-            font_info->alias=AllocateString(value);
+            font_list->alias=AllocateString(value);
             break;
           }
         break;
@@ -628,12 +674,12 @@ static void ParseFonts(void *context,const xmlChar *name,
       {
         if (LocaleCompare((char *) keyword,"format") == 0)
           {
-            font_info->format=AllocateString(value);
+            font_list->format=AllocateString(value);
             break;
           }
         if (LocaleCompare((char *) keyword,"fullname") == 0)
           {
-            font_info->description=AllocateString(value);
+            font_list->description=AllocateString(value);
             break;
           }
         break;
@@ -643,7 +689,7 @@ static void ParseFonts(void *context,const xmlChar *name,
       {
         if (LocaleCompare((char *) keyword,"glyphs") == 0)
           {
-            font_info->glyphs=AllocateString(value);
+            font_list->glyphs=AllocateString(value);
             break;
           }
         break;
@@ -653,7 +699,7 @@ static void ParseFonts(void *context,const xmlChar *name,
       {
         if (LocaleCompare((char *) keyword,"metrics") == 0)
           {
-            font_info->metrics=AllocateString(value);
+            font_list->metrics=AllocateString(value);
             break;
           }
         break;
@@ -663,7 +709,7 @@ static void ParseFonts(void *context,const xmlChar *name,
       {
         if (LocaleCompare((char *) keyword,"name") == 0)
           {
-            font_info->name=AllocateString(value);
+            font_list->name=AllocateString(value);
             break;
           }
         break;
@@ -673,7 +719,7 @@ static void ParseFonts(void *context,const xmlChar *name,
       {
         if (LocaleCompare((char *) keyword,"version") == 0)
           {
-            font_info->version=AllocateString(value);
+            font_list->version=AllocateString(value);
             break;
           }
         break;
@@ -683,7 +729,7 @@ static void ParseFonts(void *context,const xmlChar *name,
       {
         if (LocaleCompare((char *) keyword,"weight") == 0)
           {
-            font_info->weight=AllocateString(value);
+            font_list->weight=AllocateString(value);
             break;
           }
         break;
@@ -693,101 +739,11 @@ static void ParseFonts(void *context,const xmlChar *name,
     }
   }
   if (font_list == (FontInfo *) NULL)
-    {
-      font_list=font_info;
-      return;
-    }
-  for (p=font_list; p->next != (FontInfo *) NULL; p=p->next);
-  p->next=font_info;
-  font_info->previous=p;
-}
-
-static unsigned int ReadConfigurationFile(const char *filename)
-{
-  xmlSAXHandler
-    SAXHandlerStruct =
-    {
-      NULL, /* internalSubset */
-      NULL, /* isStandalone */
-      NULL, /* hasInternalSubset */
-      NULL, /* hasExternalSubset */
-      NULL, /* resolveEntity */
-      NULL, /* getEntity */
-      NULL, /* entityDecl */
-      NULL, /* notationDecl */
-      NULL, /* attributeDecl */
-      NULL, /* elementDecl */
-      NULL, /* unparsedEntityDecl */
-      NULL, /* setDocumentLocator */
-      NULL, /* startDocument */
-      NULL, /* endDocument */
-      ParseFonts, /* startElement */
-      NULL, /* endElement */
-      NULL, /* reference */
-      NULL, /* characters */
-      NULL, /* ignorableWhitespace */
-      NULL, /* processingInstruction */
-      NULL, /* comment */
-      NULL, /* xmlParserWarning */
-      NULL, /* xmlParserError */
-      NULL, /* xmlParserError */
-      NULL, /* getParameterEntity */
-      NULL, /* cdataBlock; */
-    };
-
-  char
-    buffer[MaxTextExtent],
-    *path;
-
-  FILE
-    *file;
-
-  int
-    n;
-
-  unsigned int
-    status;
-
-  xmlParserCtxtPtr
-    parser;
-
-  xmlSAXHandlerPtr
-    SAXHandler;
-
-  path=GetMagickConfigurePath(filename);
-  if (path == (char *) NULL)
     return(False);
-  file=fopen(path,"r");
-  LiberateMemory((void **) &path);
-  if (file == (FILE *) NULL)
-    return(False);
-  /*
-    Initialize fonts.
-  */
-  SAXHandler=(&SAXHandlerStruct);
-  parser=xmlCreatePushParserCtxt(SAXHandler,NULL,(char *) NULL,0,filename);
-  while (fgets(buffer,MaxTextExtent,file) != (char *) NULL)
-  {
-    n=Extent(buffer);
-    if (n == 0)
-      continue;
-    status=xmlParseChunk(parser,buffer,n,False);
-    if (status != 0)
-      break;
-    (void) xmlParseChunk(parser," ",1,False);
-  }
-  (void) xmlParseChunk(parser," ",1,True);
-  xmlFreeParserCtxt(parser);
-  xmlCleanupParser();
-  (void) fclose(file);
-  return(font_list != (FontInfo *) NULL);
+  while (font_list->previous != (FontInfo *) NULL)
+    font_list=font_list->previous;
+  return(True);
 }
-#else
-static unsigned int ReadConfigurationFile(const char *filename)
-{
-  return(False);
-}
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
