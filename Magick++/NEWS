@@ -12,6 +12,9 @@ with Magick++ itself.
     rather than just a filename.
   * Added Drawable objects (DrawablePushPattern & DrawablePopPattern)
     for definining arbitrary named patterns to be used for stroke and fill.
+  * Added Image strokePattern() and fillPattern() methods for specifying
+    image to use while drawing stroked object outlines and while filling
+    objects, respectively.
 
 (5.4.1)
   * Fixed memory leak in Image::draw().

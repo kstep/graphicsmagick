@@ -84,6 +84,10 @@ namespace Magick
     void            fillColor ( const Color &fillColor_ );
     Color           fillColor ( void ) const;
 
+    // Fill pattern
+    void            fillPattern ( const MagickLib::Image *fillPattern_ );
+    const MagickLib::Image* fillPattern ( void  ) const;
+
     // Rule to use when filling drawn objects
     void            fillRule ( const FillRule &fillRule_ );
     FillRule        fillRule ( void ) const;
@@ -117,10 +121,6 @@ namespace Magick
     // Preferred size and location of an image canvas.
     void            page ( const Geometry &pageSize_ );
     Geometry        page ( void ) const;
-
-    // Pen texture image.
-    void            penTexture ( const MagickLib::Image *penTexture_ );
-    const MagickLib::Image* penTexture ( void  ) const;
 
     // Desired image quality factor
     void            quality ( unsigned int quality_ );
@@ -191,6 +191,10 @@ namespace Magick
     // value of this parameter is 4.
     void            strokeMiterLimit ( unsigned int miterLimit_ );
     unsigned int    strokeMiterLimit ( void ) const;
+
+    // Pattern image to use for stroked outlines
+    void            strokePattern ( const MagickLib::Image *strokePattern_ );
+    const MagickLib::Image* strokePattern ( void  ) const;
 
    // Stroke width for drawing vector objects (default one)
     void            strokeWidth ( double strokeWidth_ );

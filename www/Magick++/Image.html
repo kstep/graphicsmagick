@@ -1,7 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<HTML>
-<HEAD>
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
@@ -262,8 +261,8 @@ color</font></td>
 <td><a NAME="constructor_blob"></a><font size=-1>const <a href="Blob.html">Blob</a>
 &amp;blob_</font></td>
 
-<td ROWSPAN="5"><font size=-1>Construct Image by reading from encoded
-image data contained in an in-memory <a href="Blob.html">BLOB</a>. Depending
+<td ROWSPAN="5"><font size=-1>Construct Image by reading from encoded image
+data contained in an in-memory <a href="Blob.html">BLOB</a>. Depending
 on the constructor arguments, the Blob <a href="#size">size</a>, <a href="#depth">depth</a>,
 <a href="#magick">magick</a>
 (format) may also be specified. Some image formats require that size be
@@ -328,10 +327,10 @@ data, use</font>
 <tr>
 <td><font size=-1>map_</font></td>
 
-<td><font size=-1>This character string can be any combination or
-order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow
-M = magenta, and K = black. The ordering reflects the order of the pixels
-in the supplied pixel array.</font></td>
+<td><font size=-1>This character string can be any combination or order
+of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow M = magenta,
+and K = black. The ordering reflects the order of the pixels in the supplied
+pixel array.</font></td>
 </tr>
 
 <tr>
@@ -531,9 +530,9 @@ int xOffset_, int yOffset_,
 <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 
-<td><font size=-1>Compose an image onto the current image at offset
-specified by <i>xOffset_</i>, <i>yOffset_ </i>using the composition algorithm
-specified by <i>compose_</i>.&nbsp;</font></td>
+<td><font size=-1>Compose an image onto the current image at offset specified
+by <i>xOffset_</i>, <i>yOffset_ </i>using the composition algorithm specified
+by <i>compose_</i>.&nbsp;</font></td>
 </tr>
 
 <tr>
@@ -719,9 +718,9 @@ deviation of the Laplacian, in pixels.</font></td>
 <td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
 &amp;fillColor_</font></td>
 
-<td ROWSPAN="2"><font size=-1>Flood-fill color across pixels that
-match the color of the target pixel and are neighbors of the target pixel.
-Uses current fuzz setting when determining color match.</font></td>
+<td ROWSPAN="2"><font size=-1>Flood-fill color across pixels that match
+the color of the target pixel and are neighbors of the target pixel. Uses
+current fuzz setting when determining color match.</font></td>
 </tr>
 
 <tr>
@@ -733,9 +732,9 @@ const <a href="Color.html">Color</a> &amp;fillColor_</font></td>
 <td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
 &amp;fillColor_, const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
 
-<td ROWSPAN="2"><font size=-1>Flood-fill color across pixels starting
-at target-pixel and stopping at pixels matching specified border color.
-Uses current fuzz setting when determining color match.</font></td>
+<td ROWSPAN="2"><font size=-1>Flood-fill color across pixels starting at
+target-pixel and stopping at pixels matching specified border color. Uses
+current fuzz setting when determining color match.</font></td>
 </tr>
 
 <tr>
@@ -762,9 +761,9 @@ of target pixel(x,y) with replacement opacity value using method.</font></td>
 
 <td><font size=-1>unsigned int x_, unsigned int y_,&nbsp; const Image &amp;texture_</font></td>
 
-<td ROWSPAN="2"><font size=-1>Flood-fill texture across pixels that
-match the color of the target pixel and are neighbors of the target pixel.
-Uses current fuzz setting when determining color match.</font></td>
+<td ROWSPAN="2"><font size=-1>Flood-fill texture across pixels that match
+the color of the target pixel and are neighbors of the target pixel. Uses
+current fuzz setting when determining color match.</font></td>
 </tr>
 
 <tr>
@@ -1027,8 +1026,8 @@ ping.&nbsp; The image data is not valid after calling ping.</font></td>
 
 <td><font size=-1>bool measureError_ = false</font></td>
 
-<td><font size=-1>Quantize image (reduce number of colors). Set
-measureError_ to true in order to calculate error attributes.</font></td>
+<td><font size=-1>Quantize image (reduce number of colors). Set measureError_
+to true in order to calculate error attributes.</font></td>
 </tr>
 
 <tr>
@@ -1068,8 +1067,8 @@ may result in memory and time savings.</font></td>
 <tr>
 <td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_</font></td>
 
-<td ROWSPAN="5"><font size=-1>Read encoded image of specified size
-from an in-memory
+<td ROWSPAN="5"><font size=-1>Read encoded image of specified size from
+an in-memory
 <a href="Blob.html">BLOB</a> into current object. Depending
 on the method arguments, the Blob size, depth, and format may also be specified.
 Some image formats require that size be specified. The default ImageMagick
@@ -1132,10 +1131,10 @@ use</font>
 <tr>
 <td><font size=-1>map_</font></td>
 
-<td><font size=-1>This character string can be any combination or
-order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow
-M = magenta, and K = black. The ordering reflects the order of the pixels
-in the supplied pixel array.</font></td>
+<td><font size=-1>This character string can be any combination or order
+of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow M = magenta,
+and K = black. The ordering reflects the order of the pixels in the supplied
+pixel array.</font></td>
 </tr>
 
 <tr>
@@ -1163,8 +1162,8 @@ equal the area specified by the width_ and height_ values and type_ parameters.<
 
 <td><font size=-1>void</font></td>
 
-<td ROWSPAN="2"><font size=-1>Reduce noise in image using a noise
-peak elimination filter.</font></td>
+<td ROWSPAN="2"><font size=-1>Reduce noise in image using a noise peak
+elimination filter.</font></td>
 </tr>
 
 <tr>
@@ -1369,8 +1368,8 @@ red-blue glasses (Red image on left, blue on right)</font></td>
 
 <td><font size=-1>const <a href="Geometry.html">Geometry</a> &amp;imageGeometry_</font></td>
 
-<td ROWSPAN="2"><font size=-1>Transform image based on image and
-crop geometries. Crop geometry is optional.</font></td>
+<td ROWSPAN="2"><font size=-1>Transform image based on image and crop geometries.
+Crop geometry is optional.</font></td>
 </tr>
 
 <tr>
@@ -1506,10 +1505,10 @@ extract.</font></td>
 <tr>
 <td><font size=-1>map_</font></td>
 
-<td><font size=-1>This character string can be any combination or
-order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
-M = magenta, and K = black. The ordering reflects the order of the pixels
-in the supplied pixel array.</font></td>
+<td><font size=-1>This character string can be any combination or order
+of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow, M = magenta,
+and K = black. The ordering reflects the order of the pixels in the supplied
+pixel array.</font></td>
 </tr>
 
 <tr>
@@ -2047,6 +2046,20 @@ depths. Defaults to the quantum depth that ImageMagick is compiled with.</font><
 
 <tr>
 <td>
+<center><a NAME="fillPattern"></a><font size=-1>fillPattern</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>const Image &amp;fillPattern_</font></td>
+
+<td><font size=-1>Pattern image to use when filling drawn objects.</font></td>
+</tr>
+
+<tr>
+<td>
 <center><a NAME="fillRule"></a><font size=-1>fillRule</font></center>
 </td>
 
@@ -2350,8 +2363,8 @@ image has just been quantized.</font></td>
 
 <td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
-<td><font size=-1>Tile size and offset within an image montage.
-Only valid for montage images.</font></td>
+<td><font size=-1>Tile size and offset within an image montage. Only valid
+for montage images.</font></td>
 </tr>
 
 <tr>
@@ -2435,34 +2448,6 @@ of the Postscript page in dots per inch or a TEXT page in pixels. This
 option is typically used in concert with <i><a href="#density">density</a></i>.</font>
 <p><font size=-1>Page may also be used to position a GIF image (such as
 for a scene in an animation)</font></td>
-</tr>
-
-<tr>
-<td>
-<center><a NAME="penColor"></a><font size=-1>penColor</font></center>
-</td>
-
-<td><font size=-1><a href="Color.html">Color</a></font></td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1>const <a href="Color.html">Color</a> &amp;penColor_</font></td>
-
-<td><font size=-1>Pen color to use when annotating on or drawing on image.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><a NAME="penTexture"></a><font size=-1>penTexture</font></center>
-</td>
-
-<td><font size=-1>Image</font></td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1>const Image &amp; penTexture_</font></td>
-
-<td><font size=-1>Texture image to paint with (similar to penColor).</font></td>
 </tr>
 
 <tr>
@@ -2777,7 +2762,7 @@ to the 'lineWidth'. The default value of this parameter is 4.</font></td>
 
 <tr>
 <td>
-<center><a NAME="strokeWidth"></a><a NAME="lineWidth"></a><font size=-1>strokeWidth</font></center>
+<center><a NAME="strokeWidth"></a><font size=-1>strokeWidth</font></center>
 </td>
 
 <td><font size=-1>double</font></td>
@@ -2788,6 +2773,20 @@ to the 'lineWidth'. The default value of this parameter is 4.</font></td>
 
 <td><font size=-1>Stroke width for use when drawing vector objects (default
 one)</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="strokePattern"></a><font size=-1>strokePattern</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>const Image &amp;strokePattern_</font></td>
+
+<td><font size=-1>Pattern image to use while drawing object stroke (outlines).</font></td>
 </tr>
 
 <tr>
@@ -3054,12 +3053,12 @@ CMYKA images, the indexes are used to contain the alpha channel.</font></td>
 
 <td><font size=-1>Returns a pointer to the Image pixel indexes corresponding
 to the pixel region requested by the last <a href="#getConstPixels">getConstPixels</a>,
-<a href="#getPixels">getPixels</a>, or <a href="#setPixels">setPixels</a>
-call. Only valid for PseudoClass images or CMYKA images. The pixel indexes
-represent an array of type IndexPacket, with each entry corresponding to
-a pixel x,y position. For PseudoClass images, the entry's value is the
-offset into the colormap (see <a href="#colorMap">colorMap</a>)&nbsp; for
-that pixel. For CMYKA images, the indexes are used to contain the alpha
+<a href="#getPixels">getPixels</a>,
+or <a href="#setPixels">setPixels</a> call. Only valid for PseudoClass
+images or CMYKA images. The pixel indexes represent an array of type IndexPacket,
+with each entry corresponding to a pixel x,y position. For PseudoClass
+images, the entry's value is the offset into the colormap (see <a href="#colorMap">colorMap</a>)&nbsp;
+for that pixel. For CMYKA images, the indexes are used to contain the alpha
 channel.</font></td>
 </tr>
 
@@ -3084,8 +3083,7 @@ transferred back to the image via syncPixels.</font></td>
 
 <td><font size=-1><a href="PixelPacket.html">PixelPacket</a>*</font></td>
 
-<td><font size=-1>int x_, int y_, unsigned int columns_, unsigned
-int rows_</font></td>
+<td><font size=-1>int x_, int y_, unsigned int columns_, unsigned int rows_</font></td>
 
 <td><font size=-1>Allocates a pixel cache region to store image pixels
 as defined by the region rectangle.&nbsp; This area is subsequently transferred

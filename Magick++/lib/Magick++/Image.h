@@ -660,6 +660,10 @@ namespace Magick
     void            fillRule ( const FillRule &fillRule_ );
     FillRule        fillRule ( void ) const;
 
+    // Pattern to use while filling drawn objects.
+    void            fillPattern ( const Image &fillPattern_ );
+    Image           fillPattern ( void  ) const;
+
     // Filter to use when resizing image
     void            filterType ( FilterTypes filterType_ );
     FilterTypes     filterType ( void ) const;
@@ -748,11 +752,11 @@ namespace Magick
     // color reduced.
     double          normalizedMeanError ( void ) const;
 
-    // Pen color (same as fill)
+    // Pen color (deprecated, don't use any more)
     void            penColor ( const Color &penColor_ );
     Color           penColor ( void  ) const;
 
-    // Pen texture image.
+    // Pen texture image (deprecated, don't use any more)
     void            penTexture ( const Image &penTexture_ );
     Image           penTexture ( void  ) const;
 
@@ -853,6 +857,10 @@ namespace Magick
     // value of this parameter is 4.
     void            strokeMiterLimit ( unsigned int miterLimit_ );
     unsigned int    strokeMiterLimit ( void ) const;
+
+    // Pattern image to use while stroking object outlines.
+    void            strokePattern ( const Image &strokePattern_ );
+    Image           strokePattern ( void  ) const;
 
     // Stroke width for drawing vector objects (default one)
     void            strokeWidth ( double strokeWidth_ );

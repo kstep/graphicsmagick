@@ -149,6 +149,7 @@ int main( int /*argc*/, char ** argv)
       cout << "  draw ..." << endl;
       example = model;
       example.label( "Draw" );
+      example.fillColor(Color());
       example.strokeColor( "gold" );
       example.strokeWidth( 2 );
       example.draw( DrawableCircle( 60,90, 60,120 ) );

@@ -798,8 +798,8 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
 			    "Access outside of image boundary" );
   }
 
-  // Set drawing texture
-  options()->penTexture(texture_.constImage());
+  // Set drawing pattern
+  options()->fillPattern(texture_.constImage());
 
   // Get pixel view
   Pixels pixels(*this);
@@ -831,8 +831,8 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
 {
   modifyImage();
 
-  // Set drawing texture
-  options()->penTexture(texture_.constImage());
+  // Set drawing fill pattern
+  options()->fillPattern(texture_.constImage());
 
   PixelPacket target = borderColor_;
   ColorFloodfillImage ( image(), // Image *image
@@ -2226,6 +2226,38 @@ Magick::FillRule Magick::Image::fillRule ( void ) const
   return constOptions()->fillRule();
 }
 
+// Pattern to use while filling drawn objects.
+void Magick::Image::fillPattern ( const Image &fillPattern_ )
+{
+  modifyImage();
+  if(fillPattern_.isValid())
+    options()->fillPattern( fillPattern_.constImage() );
+  else
+    options()->fillPattern( static_cast<MagickLib::Image*>(NULL) );
+}
+Magick::Image  Magick::Image::fillPattern ( void  ) const
+{
+  // FIXME: This is inordinately innefficient
+  Image texture;
+  
+  const MagickLib::Image* tmpTexture = constOptions()->fillPattern( );
+
+  if ( tmpTexture )
+    {
+      ExceptionInfo exceptionInfo;
+      GetExceptionInfo( &exceptionInfo );
+      MagickLib::Image* image =
+	CloneImage( tmpTexture,
+                    0, // columns
+                    0, // rows
+                    1, // orphan
+                    &exceptionInfo);
+      texture.replaceImage( image );
+      throwException( exceptionInfo );
+    }
+  return texture;
+}
+
 // Filter used by zoom
 void Magick::Image::filterType ( Magick::FilterTypes filterType_ )
 {
@@ -2531,9 +2563,9 @@ void Magick::Image::penTexture ( const Image &penTexture_ )
 {
   modifyImage();
   if(penTexture_.isValid())
-    options()->penTexture( penTexture_.constImage() );
+    options()->fillPattern( penTexture_.constImage() );
   else
-    options()->penTexture( static_cast<MagickLib::Image*>(NULL) );
+    options()->fillPattern( static_cast<MagickLib::Image*>(NULL) );
 }
 
 Magick::Image  Magick::Image::penTexture ( void  ) const
@@ -2541,7 +2573,7 @@ Magick::Image  Magick::Image::penTexture ( void  ) const
   // FIXME: This is inordinately innefficient
   Image texture;
   
-  const MagickLib::Image* tmpTexture = constOptions()->penTexture( );
+  const MagickLib::Image* tmpTexture = constOptions()->fillPattern( );
 
   if ( tmpTexture )
     {
@@ -2828,6 +2860,38 @@ void Magick::Image::strokeMiterLimit ( unsigned int strokeMiterLimit_ )
 unsigned int Magick::Image::strokeMiterLimit ( void ) const
 {
   return constOptions()->strokeMiterLimit( );
+}
+
+// Pattern to use while stroking drawn objects.
+void Magick::Image::strokePattern ( const Image &strokePattern_ )
+{
+  modifyImage();
+  if(strokePattern_.isValid())
+    options()->strokePattern( strokePattern_.constImage() );
+  else
+    options()->strokePattern( static_cast<MagickLib::Image*>(NULL) );
+}
+Magick::Image  Magick::Image::strokePattern ( void  ) const
+{
+  // FIXME: This is inordinately innefficient
+  Image texture;
+  
+  const MagickLib::Image* tmpTexture = constOptions()->strokePattern( );
+
+  if ( tmpTexture )
+    {
+      ExceptionInfo exceptionInfo;
+      GetExceptionInfo( &exceptionInfo );
+      MagickLib::Image* image =
+	CloneImage( tmpTexture,
+                    0, // columns
+                    0, // rows
+                    1, // orphan
+                    &exceptionInfo);
+      texture.replaceImage( image );
+      throwException( exceptionInfo );
+    }
+  return texture;
 }
 
 // Stroke width for drawing lines, circles, ellipses, etc.

@@ -177,6 +177,33 @@ Magick::Color Magick::Options::fillColor ( void ) const
   return _drawInfo->fill;
 }
 
+// Pattern image to use when filling objects
+void Magick::Options::fillPattern ( const MagickLib::Image *fillPattern_ )
+{
+  if ( _drawInfo->fill_pattern )
+    {
+      DestroyImage( _drawInfo->fill_pattern );
+      _drawInfo->fill_pattern = 0;
+    }
+
+  if ( fillPattern_ )
+    {
+      ExceptionInfo exceptionInfo;
+      GetExceptionInfo( &exceptionInfo );
+      _drawInfo->fill_pattern =
+	CloneImage( const_cast<MagickLib::Image*>(fillPattern_),
+		    0,
+		    0,
+		    static_cast<int>(true),
+		    &exceptionInfo );
+      throwException( exceptionInfo );
+    }
+}
+const MagickLib::Image* Magick::Options::fillPattern ( void  ) const
+{
+  return _drawInfo->fill_pattern;
+}
+
 // Rule to use when filling drawn objects
 void Magick::Options::fillRule ( const Magick::FillRule &fillRule_ )
 {
@@ -268,32 +295,6 @@ Magick::Geometry Magick::Options::page ( void ) const
     return Geometry();
 }
 
-void Magick::Options::penTexture ( const MagickLib::Image *penTexture_ )
-{
-  if ( _drawInfo->tile )
-    {
-      DestroyImage( _drawInfo->tile );
-      _drawInfo->tile = 0;
-    }
-
-  if ( penTexture_ )
-    {
-      ExceptionInfo exceptionInfo;
-      GetExceptionInfo( &exceptionInfo );
-      _drawInfo->tile =
-	CloneImage( const_cast<MagickLib::Image*>(penTexture_),
-		    0,
-		    0,
-		    static_cast<int>(true),
-		    &exceptionInfo );
-      throwException( exceptionInfo );
-    }
-}
-const MagickLib::Image* Magick::Options::penTexture ( void  ) const
-{
-  return _drawInfo->tile;
-}
-
 void Magick::Options::resolutionUnits ( Magick::ResolutionType resolutionUnits_ )
 {
   _imageInfo->units = resolutionUnits_;
@@ -327,6 +328,34 @@ Magick::Color Magick::Options::strokeColor ( void ) const
 {
   return _drawInfo->stroke;
 }
+
+// Pattern image to use for stroked outlines
+void Magick::Options::strokePattern ( const MagickLib::Image *strokePattern_ )
+{
+  if ( _drawInfo->stroke_pattern )
+    {
+      DestroyImage( _drawInfo->stroke_pattern );
+      _drawInfo->stroke_pattern = 0;
+    }
+
+  if ( strokePattern_ )
+    {
+      ExceptionInfo exceptionInfo;
+      GetExceptionInfo( &exceptionInfo );
+      _drawInfo->stroke_pattern =
+	CloneImage( const_cast<MagickLib::Image*>(strokePattern_),
+		    0,
+		    0,
+		    static_cast<int>(true),
+		    &exceptionInfo );
+      throwException( exceptionInfo );
+    }
+}
+const MagickLib::Image* Magick::Options::strokePattern ( void  ) const
+{
+  return _drawInfo->stroke_pattern;
+}
+
 
 void Magick::Options::tileName ( const std::string &tileName_ )
 {

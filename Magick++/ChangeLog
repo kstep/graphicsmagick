@@ -1,5 +1,12 @@
 2001-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* lib/Image.cpp (strokePattern): New method to specify image to
+ 	use as pattern while drawing stroked-outlines of drawn objects.
+	(fillPattern): New method to specify image to use as pattern while
+ 	filling drawn objects.
+	(penTexture): Method is officially deprecated.  Don't use anymore.
+	(penColor): Method is officially deprecated. Don't use anymore.
+
 	* lib/Drawable.cpp (DrawablePushPattern): Support pushing
  	(starting) pattern definition.
 	(DrawablePopPattern): Support popping (terminating) pattern
