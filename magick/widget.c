@@ -19,7 +19,8 @@
 %                              September 1993                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999 E. I. du Pont de Nemours and Company                        %
+%  Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated %
+%  to making software imaging solutions freely available.                     %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
 %  copy of this software and associated documentation files ("ImageMagick"),  %
@@ -34,15 +35,15 @@
 %  The software is provided "as is", without warranty of any kind, express or %
 %  implied, including but not limited to the warranties of merchantability,   %
 %  fitness for a particular purpose and noninfringement.  In no event shall   %
-%  E. I. du Pont de Nemours and Company be liable for any claim, damages or   %
-%  other liability, whether in an action of contract, tort or otherwise,      %
-%  arising from, out of or in connection with ImageMagick or the use or other %
-%  dealings in ImageMagick.                                                   %
+%  ImageMagick Studio be liable for any claim, damages or other liability,    %
+%  whether in an action of contract, tort or otherwise, arising from, out of  %
+%  or in connection with ImageMagick or the use or other dealings in          %
+%  ImageMagick.                                                               %
 %                                                                             %
-%  Except as contained in this notice, the name of the E. I. du Pont de       %
-%  Nemours and Company shall not be used in advertising or otherwise to       %
-%  promote the sale, use or other dealings in ImageMagick without prior       %
-%  written authorization from the E. I. du Pont de Nemours and Company.       %
+%  Except as contained in this notice, the name of the ImageMagick Studio     %
+%  shall not be used in advertising or otherwise to promote the sale, use or  %
+%  other dealings in ImageMagick without prior written authorization from the %
+%  ImageMagick Studio.                                                        %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %

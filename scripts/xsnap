@@ -7,26 +7,32 @@ exec wish "$0" "$@"
 #
 #  Software design, John Cristy (magick@dupont.com), March 1996
 #
-#  Copyright 1996 E. I. du Pont de Nemours and Company
+#  Copyright (C) 2000 ImageMagick Studio, a non-profit organization
+#  dedicated to making software imaging solutions freely available.
 #
-#  Permission to use, copy, modify, distribute, and sell this software and
-#  its documentation for any purpose is hereby granted without fee,
-#  provided that the above Copyright notice appear in all copies and that
-#  both that Copyright notice and this permission notice appear in
-#  supporting documentation, and that the name of E. I. du Pont de Nemours
-#  and Company not be used in advertising or publicity pertaining to
-#  distribution of the software without specific, written prior
-#  permission.  E. I. du Pont de Nemours and Company makes no representations
-#  about the suitability of this software for any purpose.  It is provided
-#  "as is" without express or implied warranty.
+#  Permission is hereby granted, free of charge, to any person obtaining
+#  a copy of this software and associated documentation files
+#  ("ImageMagick"), to deal in ImageMagick without restriction,
+#  including without limitation the rights to use, copy, modify, merge,
+#  publish, distribute, sublicense, and/or sell copies of ImageMagick,
+#  and to permit persons to whom the ImageMagick is furnished to do so,
+#  subject to the following conditions:
 #
-#  E. I. du Pont de Nemours and Company disclaims all warranties with regard
-#  to this software, including all implied warranties of merchantability
-#  and fitness, in no event shall E. I. du Pont de Nemours and Company be
-#  liable for any special, indirect or consequential damages or any
-#  damages whatsoever resulting from loss of use, data or profits, whether
-#  in an action of contract, negligence or other tortuous action, arising
-#  out of or in connection with the use or performance of this software.
+#  The above copyright notice and this permission notice shall be
+#  included in all copies or substantial portions of ImageMagick.
+#
+#  The software is provided "as is", without warranty of any kind,
+#  express or implied, including but not limited to the warranties of
+#  merchantability, fitness for a particular purpose and
+#  noninfringement.  In no event shall ImageMagick Studio be liable for
+#  any claim, damages or other liability, whether in an action of
+#  contract, tort or otherwise, arising from, out of or in connection
+#  with ImageMagick or the use or other dealings in ImageMagick.
+#
+#  Except as contained in this notice, the name of the ImageMagick
+#  Studio shall not be used in advertising or otherwise to promote the
+#  sale, use or other dealings in ImageMagick without prior written
+#  authorization from the ImageMagick Studio.
 #
 #
 
