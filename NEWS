@@ -1,4 +1,4 @@
-Major changes associated with GraphicsMagick 1.0.2 (Pending)
+Major changes associated with GraphicsMagick 1.0.2 (Released June 6, 2003)
 
   Bug Fixes:
     * Under Windows, extend PATH to include directory where CORE DLLs
