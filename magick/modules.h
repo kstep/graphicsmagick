@@ -51,12 +51,11 @@ typedef struct _ModuleAliases
 
   struct _ModuleAliases
     *next;
-
 } ModuleAliases;
 
-  /*
-    Modules declarations.
-  */
+/*
+  Modules declarations.
+*/
 extern Export void
   DestroyModuleInfo(),
   ExitModules(void),

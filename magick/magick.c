@@ -140,14 +140,10 @@ Export MagickInfo *GetMagickInfo(const char *tag)
   if (magick_info_list == (MagickInfo *) NULL)
     {
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
-      /* Initialize ltdl */
+      /*
+        Initialize ltdl.
+      */
       InitializeModules();
-
-#if 0
-      /* Load all modules */
-      LoadAllModules();
-#endif
-
 #else
       Register8BIMImage();
       RegisterAVSImage();
@@ -222,14 +218,16 @@ Export MagickInfo *GetMagickInfo(const char *tag)
     }
   if (tag == (char *) NULL)
     return(magick_info_list);
-  if(*tag == '\0')
+  if (*tag == '\0')
     return((MagickInfo *) NULL);
   for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
       return(p);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
-  /* Try loading format module */
-  if(LoadDynamicModule(tag))
+  /*
+    Try loading format module.
+  */
+  if (LoadDynamicModule(tag))
     for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
       if (LocaleCompare(p->tag,tag) == 0)
         return(p);
@@ -266,11 +264,11 @@ Export void ListMagickInfo(FILE *file)
     *p;
 
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
-      /* Initialize ltdl */
-      InitializeModules();
-
-      /* Load all modules */
-      LoadAllModules();
+  /*
+    Initialize ltdl and load modules.
+  */
+  InitializeModules();
+  LoadAllModules();
 #endif
   if (file == (FILE *) NULL)
     file=stdout;
@@ -327,19 +325,17 @@ Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   */
   p=(MagickInfo *) NULL;
   if (magick_info_list != (MagickInfo *) NULL)
+    for (p=magick_info_list; p->next != (MagickInfo *) NULL; p=p->next)
     {
-      for (p=magick_info_list; p->next != (MagickInfo *) NULL; p=p->next)
-      {
-        if (LocaleCompare(p->tag,entry->tag) >= 0)
-          {
-            if (LocaleCompare(p->tag,entry->tag) == 0)
-              {
-                p=p->previous;
-                UnregisterMagickInfo(entry->tag);
-              }
-            break;
-          }
-      }
+      if (LocaleCompare(p->tag,entry->tag) >= 0)
+        {
+          if (LocaleCompare(p->tag,entry->tag) == 0)
+            {
+              p=p->previous;
+              UnregisterMagickInfo(entry->tag);
+            }
+          break;
+        }
     }
   if (magick_info_list == (MagickInfo *) NULL)
     {
@@ -390,7 +386,7 @@ Export MagickInfo *SetMagickInfo(const char *tag)
   entry=(MagickInfo *) AllocateMemory(sizeof(MagickInfo));
   if (entry == (MagickInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
-                "Memory allocation failed");
+      "Memory allocation failed");
   entry->tag=AllocateString(tag);
   entry->decoder=(Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL;
   entry->encoder=(unsigned int (*)(const ImageInfo *,Image *)) NULL;
@@ -440,7 +436,7 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
     *p;
 
   p=magick_info_list;
-  while ( p != (MagickInfo *) NULL )
+  while (p != (MagickInfo *) NULL)
   {
     if (LocaleCompare(p->tag,tag) == 0)
       {
@@ -450,7 +446,6 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
           p->previous->next=p->next;
         else
           magick_info_list=p->next;
-
         FreeMemory((void **) &p->tag);
         FreeMemory((void **) &p->description);
         FreeMemory((void **) &p->module);
