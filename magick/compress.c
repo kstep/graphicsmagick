@@ -55,9 +55,6 @@
 */
 #include "magick.h"
 #include "define.h"
-#if defined(HasZLIB)
-#include "zlib.h"
-#endif
 
 /*
   Define declarations.
@@ -1146,104 +1143,3 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
   LiberateMemory((void **) &packbits);
   return(True);
 }
-
-#if defined(HasZLIB)
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   Z L I B E n c o d e I m a g e                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ZLIBEncodeImage compresses an image via ZLIB-coding specific to
-%  Postscript Level II or Portable Document Format.  To ensure portability, the
-%  binary ZLIB bytes are encoded as ASCII base-85.
-%
-%  The format of the ZLIBEncodeImage method is:
-%
-%      unsigned int ZLIBEncodeImage(Image *image,const size_t length,
-%        const unsigned long quality,unsigned char *pixels)
-%
-%  A description of each parameter follows:
-%
-%    o status:  Method ZLIBEncodeImage returns True if all the pixels are
-%      compressed without error, otherwise False.
-%
-%    o file: The address of a structure of type FILE.  ZLIB encoded pixels
-%      are written to this file.
-%
-%    o length:  A value that specifies the number of pixels to compress.
-%
-%    o quality: the compression level (0-100).
-%
-%    o pixels: The address of an unsigned array of characters containing the
-%      pixels to compress.
-%
-%
-*/
-MagickExport unsigned int ZLIBEncodeImage(Image *image,const size_t length,
-  const unsigned long quality,unsigned char *pixels)
-{
-  int
-    status;
-
-  register long
-    i;
-
-  unsigned char
-    *compressed_pixels;
-
-  unsigned long
-    compressed_packets;
-
-  z_stream
-    stream;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  compressed_packets=(unsigned long) (1.001*length+12);
-  compressed_pixels=(unsigned char *) AcquireMemory(compressed_packets);
-  if (compressed_pixels == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-      (char *) NULL);
-  stream.next_in=pixels;
-  stream.avail_in=(unsigned int) length;
-  stream.next_out=compressed_pixels;
-  stream.avail_out=(unsigned int) compressed_packets;
-  stream.zalloc=(alloc_func) NULL;
-  stream.zfree=(free_func) NULL;
-  stream.opaque=(voidpf) NULL;
-  status=deflateInit(&stream,(int) Min(quality/10,9));
-  if (status == Z_OK)
-    {
-      status=deflate(&stream,Z_FINISH);
-      if (status == Z_STREAM_END)
-        status=deflateEnd(&stream);
-      else
-        (void) deflateEnd(&stream);
-      compressed_packets=stream.total_out;
-    }
-  if (status)
-    ThrowBinaryException(DelegateWarning,"Unable to Zip compress image",
-      (char *) NULL)
-  else
-    for (i=0; i < (long) compressed_packets; i++)
-      (void) WriteBlobByte(image,compressed_pixels[i]);
-  LiberateMemory((void **) &compressed_pixels);
-  return(!status);
-}
-#else
-MagickExport unsigned int ZLIBEncodeImage(Image *image,const size_t length,
-  const unsigned long quality,unsigned char *pixels)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateWarning,"ZLIB library is not available",
-    image->filename);
-  return(False);
-}
-#endif

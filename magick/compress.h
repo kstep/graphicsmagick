@@ -12,8 +12,7 @@ extern MagickExport unsigned int
   HuffmanDecodeImage(Image *),
   HuffmanEncodeImage(const ImageInfo *,Image *),
   LZWEncodeImage(Image *,const size_t,unsigned char *),
-  PackbitsEncodeImage(Image *,const size_t,unsigned char *),
-  ZLIBEncodeImage(Image *,const size_t,const unsigned long,unsigned char *);
+  PackbitsEncodeImage(Image *,const size_t,unsigned char *);
 
 extern MagickExport void
   Ascii85Encode(Image *,const unsigned long),
