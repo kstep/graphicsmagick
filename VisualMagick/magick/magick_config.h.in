@@ -9,7 +9,7 @@
 #define HasX11
 #define HasZLIB
 #define HasBZLIB
-#define HasHDF
+//#define HasHDF
 #define HasFPX
 #define HasJP2
 #define HAVE_MMAP
