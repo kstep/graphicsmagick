@@ -830,8 +830,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           &sample_info);
         image->matte=
           ((extra_samples == 1) && (sample_info[0] == EXTRASAMPLE_ASSOCALPHA));
-        pixels=(uint32 *) AcquireMemory((image->columns*image->rows+
-          image->columns)*sizeof(uint32));
+        pixels=(uint32 *) AcquireMemory((4*image->columns*image->rows+
+          2*image->columns)*sizeof(uint32));
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
@@ -839,7 +839,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
-        status=TIFFReadRGBAImage(tiff,image->columns,image->rows,pixels,0);
+        status=TIFFReadRGBAImage(tiff,image->columns,image->rows,
+          pixels+image->columns*sizeof(uint32),0);
         if (status == False)
           {
             LiberateMemory((void **) &pixels);
@@ -851,7 +852,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert image to DirectClass pixel packets.
         */
-        p=pixels+image->columns*image->rows-1;
+        p=pixels+image->columns*image->rows+image->columns*sizeof(uint32)-1;
         for (y=0; y < (int) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
