@@ -2830,8 +2830,8 @@ Get(ref,...)
         MagickWarning(OptionWarning,"Nothing to get attributes from",NULL);
         XSRETURN_EMPTY;
       }
-    EXTEND(sp,items-1);
     GetExceptionInfo(&exception);
+    EXTEND(sp,items);
     for (i=1; i < items; i++)
     {
       attribute=(char *) SvPV(ST(i),na);
@@ -3741,6 +3741,7 @@ ImageToBlob(ref,...)
     }
     SetImageInfo(package_info->image_info,True,&image->exception);
     GetExceptionInfo(&exception);
+    EXTEND(sp,GetNumberScenes(image));
     for (next=image; next; next=next->next)
     {
       length=0;
@@ -6244,12 +6245,11 @@ Ping(ref,...)
       *reference,  /* reference is the SV* of ref=SvIV(reference) */
       *s;
 
-    EXTEND(sp,items-1);
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
-    EXTEND(sp,4*items-1);
+    EXTEND(sp,4*items);
     for (i=1; i < items; i++)
     {
       (void) strcpy(info->image_info->filename,(char *) SvPV(ST(i),na));
@@ -6316,8 +6316,8 @@ QueryColor(ref,...)
     SV
       *s;
 
-    EXTEND(sp,items-1);
     error_list=newSVpv("",0);
+    EXTEND(sp,4*items);
     for (i=1; i < items; i++)
     {
       attribute=(char *) SvPV(ST(i),na);
@@ -6379,12 +6379,12 @@ QueryColorname(ref,...)
     SV
       *reference;  /* reference is the SV* of ref=SvIV(reference) */
 
-    EXTEND(sp,items-1);
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     image=SetupList(reference,&info,(SV ***) NULL);
+    EXTEND(sp,items);
     for (i=1; i < items; i++)
     {
       (void) QueryColorDatabase(SvPV(ST(i),na),&target_color);
@@ -6434,13 +6434,12 @@ QueryConfiguration(ref,...)
     SV
       *reference;  /* reference is the SV* of ref=SvIV(reference) */
 
-    EXTEND(sp,items-1);
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
-    EXTEND(sp,7*items-1);
     GetExceptionInfo(&exception);
+    EXTEND(sp,8*items);
     for (i=2; i < items; i+=2)
     {
       attribute=(char *) SvPV(ST(i-1),na);
@@ -6458,7 +6457,7 @@ QueryConfiguration(ref,...)
               p=GetColorInfo(value,&exception);
               if (p == (ColorInfo *) NULL)
                 break;
-              if (LocalCompare(value,"*") == 0)
+              if (LocaleCompare(value,"*") == 0)
                 {
                   for ( ; p != (ColorInfo *) NULL; p=p->next)
                   {
@@ -6498,7 +6497,7 @@ QueryConfiguration(ref,...)
               p=GetFontInfo(value,&exception);
               if (p == (FontInfo *) NULL)
                 break;
-              if (LocalCompare(value,"*") == 0)
+              if (LocaleCompare(value,"*") == 0)
                 {
                   for ( ; p != (FontInfo *) NULL; p=p->next)
                   {
@@ -6551,7 +6550,7 @@ QueryConfiguration(ref,...)
               p=GetMagickInfo(value,&exception);
               if (p == (MagickInfo *) NULL)
                 break;
-              if (LocalCompare(value,"*") == 0)
+              if (LocaleCompare(value,"*") == 0)
                 {
                   for ( ; p != (MagickInfo *) NULL; p=p->next)
                   {
@@ -6586,11 +6585,11 @@ QueryConfiguration(ref,...)
                 *p;
 
               p=GetMagicInfo((unsigned char *) value,Extent(value),&exception);
-              if (LocalCompare(value,"*") == 0)
+              if (LocaleCompare(value,"*") == 0)
                 p=GetMagicInfo((unsigned char *) NULL,0,&exception);
               if (p == (MagicInfo *) NULL)
                 break;
-              if (LocalCompare(value,"*") == 0)
+              if (LocaleCompare(value,"*") == 0)
                 {
                   for ( ; p != (MagicInfo *) NULL; p=p->next)
                   {
@@ -6617,7 +6616,7 @@ QueryConfiguration(ref,...)
               p=GetModuleAlias(value,&exception);
               if (p == (ModuleAlias *) NULL)
                 break;
-              if (LocalCompare(value,"*") == 0)
+              if (LocaleCompare(value,"*") == 0)
                 {
                   for ( ; p != (ModuleAlias *) NULL; p=p->next)
                   {
@@ -6697,12 +6696,10 @@ QueryFontMetrics(ref,...)
     unsigned int
       status;
 
-    EXTEND(sp,items-1);
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
-    EXTEND(sp,7*items-1);
     image=SetupList(reference,&info,(SV ***) NULL);
     if (!image)
       {
@@ -6715,6 +6712,7 @@ QueryFontMetrics(ref,...)
     IdentityAffine(&affine);
     x=0.0;
     y=0.0;
+    EXTEND(sp,7*items);
     for (i=2; i < items; i+=2)
     {
       attribute=(char *) SvPV(ST(i-1),na);
@@ -7058,7 +7056,6 @@ Remote(ref,...)
     struct PackageInfo
       *info;
 
-    EXTEND(sp,items-1);
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
     av=(AV *) reference;
