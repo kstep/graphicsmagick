@@ -5928,11 +5928,11 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       image_info->subrange=image_info->subimage;
       for (p=image_info->tile; *p != '\0'; p++)
       {
-        while (isspace(*p) || (*p == ','))
+        while (isspace((int) *p) || (*p == ','))
           p++;
         first=strtol(p,&q,10);
         last=first;
-        while (isspace(*q))
+        while (isspace((int) *q))
           q++;
         if (*q == '-')
           last=strtol(q+1,&q,10);

@@ -2129,11 +2129,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       subimages=NewImageList();
       for (p=clone_info->tile; *p != '\0'; p++)
       {
-        while (isspace(*p) || (*p == ','))
+        while (isspace((int) *p) || (*p == ','))
           p++;
         first=strtol(p,&q,10);
         last=first;
-        while (isspace(*q))
+        while (isspace((int) *q))
           q++;
         if (*q == '-')
           last=strtol(q+1,&q,10);
