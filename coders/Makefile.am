@@ -382,7 +382,7 @@ sun_la_LIBADD       = ../magick/libMagick.la
 # SVG module
 svg_la_SOURCES      = svg.c
 svg_la_LDFLAGS      = -no-undefined -module -avoid-version
-svg_la_LIBADD       = ../magick/libMagick.la
+svg_la_LIBADD       = ../magick/libMagick.la @LIB_XML@
 
 # TGA module
 tga_la_SOURCES      = tga.c
