@@ -48,6 +48,7 @@ int main( int /*argc*/, char ** argv)
 	cout << "Line: " << __LINE__
 	     << "  Horizontal append failed, signature = "
 	     << appended.signature() << endl;
+	appended.write("appendImages_horizontal_out.miff");
 	// appended.display();
       }
 
@@ -59,6 +60,7 @@ int main( int /*argc*/, char ** argv)
 	cout << "Line: " << __LINE__
 	     << "  Vertical append failed, signature = "
 	     << appended.signature() << endl;
+	appended.write("appendImages_vertical_out.miff");
 	// appended.display();
       }
     
