@@ -1134,6 +1134,18 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'D':
     case 'd':
     {
+      if (strEQcase(attribute,"debug"))
+        {
+          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
+          if (sp < 0)
+            {
+              MagickWarning(OptionWarning,"Invalid debug type",SvPV(sval,na));
+              return;
+            }
+          if (info)
+            info->image_info->debug=sp;
+          return;
+        }
       if (strEQcase(attribute,"delay"))
         {
           for ( ; image; image=image->next)
