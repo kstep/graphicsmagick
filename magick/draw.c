@@ -1293,12 +1293,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             q++;
             continue;
           }
-        q->red=alpha*(color.red*color.opacity+
-          q->red*(MaxRGB-color.opacity));
+        q->red=alpha*(color.red*color.opacity+q->red*(MaxRGB-color.opacity));
         q->green=alpha*(color.green*color.opacity+
           q->green*(MaxRGB-color.opacity));
-        q->blue=alpha*(color.blue*color.opacity+
-          q->blue*(MaxRGB-color.opacity));
+        q->blue=alpha*(color.blue*color.opacity+q->blue*(MaxRGB-color.opacity));
         q->opacity=alpha*(color.opacity*color.opacity+
           q->opacity*(MaxRGB-color.opacity));
         q++;
@@ -2447,7 +2445,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
           annotate->affine[i]=draw_info->affine[i];
         annotate->gravity=draw_info->gravity;
         annotate->decorate=draw_info->decorate;
-        annotate->geometry=AllocateString("                                  ");
+        annotate->geometry=AllocateString("");
         annotate->fill=draw_info->fill;
         annotate->stroke=draw_info->stroke;
         annotate->box=draw_info->box;

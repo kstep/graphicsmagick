@@ -61,6 +61,12 @@
 */
 static off_t
   cache_threshold = ~0;
+
+static off_t
+  free_memory = 0;
+
+static MagickMutex
+  *cache_mutex = (MagickMutex *) NULL;
 
 /*
   Declare pixel cache interfaces.
@@ -437,19 +443,9 @@ MagickExport void GetCacheInfo(Cache *cache)
 */
 static off_t GetCacheMemory(const off_t memory)
 {
-  static off_t
-    free_memory = 0;
-
-#if defined(HasPTHREADS)
-  static pthread_mutex_t
-    magick_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-  pthread_mutex_lock(&magick_mutex);
-#endif
+  Magick_LockMutex(cache_mutex);
   free_memory+=memory;
-#if defined(HasPTHREADS)
-  pthread_mutex_unlock(&magick_mutex);
-#endif
+  Magick_UnlockMutex(cache_mutex);
   return(free_memory);
 }
 

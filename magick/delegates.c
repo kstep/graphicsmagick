@@ -72,6 +72,9 @@ const char
 */
 static DelegateInfo
   *delegates = (DelegateInfo *) NULL;
+
+static MagickMutex *
+  delegate_mutex = (MagickMutex *) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,6 +103,7 @@ MagickExport void DestroyDelegateInfo(void)
   register DelegateInfo
     *p;
 
+  Magick_LockMutex(delegate_mutex);
   for (p=delegates; p != (DelegateInfo *) NULL; )
   {
     if (p->commands != (char *) NULL)
@@ -109,6 +113,7 @@ MagickExport void DestroyDelegateInfo(void)
     FreeMemory((void **) &delegate);
   }
   delegates=(DelegateInfo *) NULL;
+  Magick_UnlockMutex(delegate_mutex);
 }
 
 /*
@@ -154,7 +159,9 @@ MagickExport unsigned int GetDelegateInfo(const char *decode_tag,
     *delegates;
 
   assert(delegate_info != (DelegateInfo *) NULL);
+  Magick_LockMutex(delegate_mutex);
   delegates=SetDelegateInfo((DelegateInfo *) NULL);
+  Magick_UnlockMutex(delegate_mutex);
   if (delegates == (DelegateInfo *) NULL)
     MagickWarning(DelegateWarning,"no delegates configuration file found",
       DelegateFilename);
@@ -513,7 +520,9 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
 
   if (file == (const FILE *) NULL)
     file=stdout;
+  Magick_LockMutex(delegate_mutex);
   delegates=SetDelegateInfo((DelegateInfo *) NULL);
+  Magick_UnlockMutex(delegate_mutex);
   if (delegates == (DelegateInfo *) NULL)
     {
       MagickWarning(DelegateWarning,"no delegates configuration file found",
@@ -593,12 +602,6 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
   unsigned int
     number_delegates;
 
-#if defined(HasPTHREADS)
-  static pthread_mutex_t
-    delegate_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-  pthread_mutex_lock(&delegate_mutex);
-#endif
   /*
     Determine delegate filename.
   */
@@ -685,9 +688,6 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
       }
       (void) fclose(file);
     }
-#if defined(HasPTHREADS)
-  pthread_mutex_unlock(&delegate_mutex);
-#endif
   return(number_delegates != 0);
 }
 
@@ -764,6 +764,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   if (delegates == (DelegateInfo *) NULL)
     {
       delegates=delegate;
+      Magick_UnlockMutex(delegate_mutex);
       return(delegates);
     }
   for (p=delegates; p != (DelegateInfo *) NULL; p=p->next)

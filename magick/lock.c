@@ -1,201 +1,265 @@
 
-#include "lock.h"
+/*
+  Include declarations.
+*/
+#include "magick.h"
+#include "defines.h"
 
-MagickExport int RecursiveMutexInit(RecursiveMutexLock_t *lock)
+#if defined(_VISUALC_)
+#include <windows.h>
+
+struct MagickMutex 
 {
-#if defined(HasPTHREADS)
-  static pthread_t NULL_thread;
-  if(pthread_mutex_init(&lock->nesting_mutex,NULL) == -1)
-    return False;
-  else if(pthread_cond_init(&lock->lock_available,NULL) == -1)
-    return False;
-  else
+	HANDLE id;
+};
+
+#if defined(_MT)
+
+/* This is a binary semphore -- increase for a counting semaphore */
+#define MAXSEMLEN	1
+
+/* Create a semaphore */
+MagickMutex *Magick_CreateMutex(void)
+{
+	SECURITY_ATTRIBUTES security;
+	MagickMutex *mutex;
+
+	/* Allocate mutex memory */
+	mutex = (MagickMutex *)malloc(sizeof(*mutex));
+	if ( mutex == NULL )
     {
-      lock->nesting_level=0;
-      lock->owner_id=NULL_thread;
-      return True;
+		  return(NULL);
     }
-#else
-  return True;
-#endif
-}
-MagickExport int RecursiveMutexDestroy(RecursiveMutexLock_t *lock)
-{
-#if defined(HasPTHREADS)
-  if(pthread_mutex_destroy(&lock->nesting_mutex) == -1)
-    return False;
-  else if(pthread_cond_destroy(&lock->lock_available) == -1)
-    return False;
-  else
-    return True;
-#else
-  return True;
-#endif
-}
-MagickExport int RecursiveMutexLock(RecursiveMutexLock_t *lock)
-{
-#if defined(HasPTHREADS)
-  int result=True;
-  int oerrno=0;
-  pthread_t t_id=pthread_self();
 
-  /* Acquire the guard. */
-  if(pthread_mutex_lock(&lock->nesting_mutex) == -1)
-    result=False;
-  else
+	/* Allow the semaphore to be inherited */
+	security.nLength = sizeof(security);
+	security.lpSecurityDescriptor = NULL;
+	security.bInheritHandle = TRUE;
+
+	/* Create the semaphore, with initial value signaled */
+	mutex->id = CreateSemaphore(&security, 1, MAXSEMLEN, NULL);
+	if ( mutex->id == NULL )
     {
-      /* If there's no contention, just grab the lock immediately (since
-         this is the common case we'll optimize for it). */
-      if(&lock->nesting_level == 0)
-        lock->owner_id = t_id;
-      /* If we already own the lock, then increment the nesting level and
-         return. */
-      else if(pthread_equal(t_id,lock->owner_id) == 0)
-        {
-          /* Wait until the nesting level has dropped to zero, at which
-             point we can acquire the lock. */
-          while(lock->nesting_level > 0)
-            pthread_cond_wait(&lock->lock_available,
-                              &lock->nesting_mutex);
-          /* At this point the nesting_mutex_ is held... */
-          lock->owner_id=t_id;
-        }
-      /* At this point, we can safely increment the nesting_level_ no
-         matter how we got here! */
-      lock->nesting_level++;
-    }
-  oerrno=errno;
-  pthread_mutex_unlock(&lock->nesting_mutex);
-  errno=oerrno;
-  return result;
-#else
-  return True;
-#endif
+		  free(mutex);
+		  return(NULL);
+	  }
+	return(mutex);
 }
-MagickExport int RecursiveMutexTryLock(RecursiveMutexLock_t *lock)
-{
-#if defined(HasPTHREADS)
-  int result=True;
-  int oerrno=0;
-  pthread_t t_id=pthread_self();
 
-  /* Acquire the guard. */
-  if(pthread_mutex_lock(&lock->nesting_mutex) == -1)
-    result=False;
-  else
+/* Lock the semaphore */
+int MagickMutexP(MagickMutex *mutex)
+{
+	if ( WaitForSingleObject(mutex->id, INFINITE) == WAIT_FAILED )
+		return(-1);
+	return(0);
+}
+
+/* Unlock the semaphore */
+int MagickMutexV(MagickMutex *mutex)
+{
+	if ( ReleaseSemaphore(mutex->id, 1, NULL) == FALSE )
+		return(-1);
+	return(0);
+}
+
+/* Free the semaphore */
+void Magick_DestroyMutex(MagickMutex *mutex)
+{
+	if ( mutex )
     {
-      /* If there's no contention, just grab the lock immediately. */
-      if(lock->nesting_level == 0)
-        {
-          lock->owner_id=t_id;
-          lock->nesting_level=1;
-        }
-      /* If we already own the lock, then increment the nesting level and
-         proceed. */
-      else if(pthread_equal(t_id,lock->owner_id))
-        lock->nesting_level++;
-      else
-        {
-          errno=EBUSY;
-          result=False;
-        }
-    }
-  oerrno=errno;
-  pthread_mutex_unlock(&lock->nesting_mutex);
-  errno=oerrno;
-  return result;
-#else
-  return True;
-#endif
+		  CloseHandle(mutex->id);
+		  free(mutex);
+	  }
 }
-MagickExport int RecursiveMutexUnLock(RecursiveMutexLock_t *lock)
+#else /* _MT */
+/* Create a semaphore */
+MagickMutex *Magick_CreateMutex(void)
 {
-#if defined(HasPTHREADS)
-  int result=True;
-  int oerrno=0;
-  static pthread_t NULL_thread;
-  pthread_t t_id=pthread_self();
+	/* Allocate mutex memory */
+	mutex = (MagickMutex *)malloc(sizeof(*mutex));
+	if ( mutex == NULL )
+		  return(NULL);
+	return(mutex);
+}
 
-  if(pthread_mutex_lock(&lock->nesting_mutex) == -1)
-    result=False;
-  else
+/* Lock the semaphore */
+int MagickMutexP(MagickMutex *mutex)
+{
+	return(0);
+}
+
+/* Unlock the semaphore */
+int MagickMutexV(MagickMutex *mutex)
+{
+	return(0);
+}
+
+/* Free the semaphore */
+void Magick_DestroyMutex(MagickMutex *mutex)
+{
+  free(mutex);
+}
+#endif /* _MT */
+#else /* _VISUALC_ */
+
+/* Simple mutex lock */
+#if defined(HasPTHREADS)
+
+#if (__GLIBC__ == 2) && (__GLIBC_MINOR__ == 0)
+#warning Working around a bug in glibc 2.0 pthreads
+#undef HasPTHREADS
+/* The bug is actually a problem where threads are suspended,
+   but don't wake up when the thread manager sends them a signal.
+   This is a problem with thread creation too, but it happens
+   less often. We avoid this by using System V IPC for mutexes.
+ */
+#endif /* glibc 2.0 */
+#endif /* linux */
+
+#if defined(HasPTHREADS)
+
+#include <pthread.h>
+
+struct MagickMutex
+{
+	pthread_mutex_t id;
+};
+
+/* Create a blockable semaphore */
+MagickMutex * Magick_CreateMutex (void)
+{
+	MagickMutex *mutex;
+
+	/* Allocate the structure */
+	mutex = (MagickMutex *)malloc(sizeof(*mutex));
+	if ( mutex == NULL )
+		return(NULL);
+
+	if ( pthread_mutex_init(&mutex->id, NULL) != 0 )
     {
-      if(lock->nesting_level == 0
-         || pthread_equal(t_id,lock->owner_id) == 0)
-        {
-          errno=EINVAL;
-          result=False;
-        }
-      else
-        {
-          lock->nesting_level--;
-          if(lock->nesting_level == 0)
-            {
-              /* This may not be strictly necessary, but it does put
-                 the mutex into a known state... */
-              lock->owner_id=NULL_thread;
-              /* Inform waiters that the lock is free. */
-              if(pthread_cond_signal(&lock->lock_available) == -1)
-                result=False;
-            }
-        }
-    }
-  oerrno=errno;
-  pthread_mutex_unlock(&lock->nesting_mutex);
-  errno=oerrno;
-  return result;
-#else
-  return True;
-#endif
+		  free(mutex);
+		  return(NULL);
+	  }
+	return(mutex);
 }
 
-MagickExport int SimpleMutexInit(SimpleMutexLock_t *lock)
+/* Lock the semaphore */
+int MagickMutexP (MagickMutex *mutex)
 {
-#if defined(HasPTHREADS)
-  if(pthread_mutex_init(lock,NULL) == -1)
-    return False;
-  return True;
-#else
-  return True;
-#endif
+	if ( ! mutex )
+		return(-1);
+	if ( pthread_mutex_lock(&mutex->id) != 0 )
+		return(-1);
+	return(0);
 }
-MagickExport int SimpleMutexDestroy(SimpleMutexLock_t *lock)
+
+/* Unlock the semaphore */
+int MagickMutexV (MagickMutex *mutex)
 {
-#if defined(HasPTHREADS)
-  if(pthread_mutex_destroy(lock) == -1)
-    return False;
-  return True;
-#else
-  return True;
-#endif
+	if ( ! mutex )
+		return(-1);
+	if ( pthread_mutex_unlock(&mutex->id) != 0 )
+		return(-1);
+	return(0);
 }
-MagickExport int SimpleMutexLock(SimpleMutexLock_t *lock)
+
+/* Free the semaphore */
+void Magick_DestroyMutex (MagickMutex *mutex)
 {
-#if defined(HasPTHREADS)
-  if(pthread_mutex_lock(lock) == -1)
-    return False;
-  return True;
-#else
-  return True;
-#endif
+	if ( mutex )
+    {
+		  pthread_mutex_destroy(&mutex->id);
+		  free(mutex);
+	  }
 }
-MagickExport int SimpleMutexTryLock(SimpleMutexLock_t *lock)
+
+#else /* System V IPC based implementation */
+
+#include <sys/ipc.h>
+#include <sys/sem.h>
+
+struct MagickMutex
 {
-#if defined(HasPTHREADS)
-  if(pthread_mutex_trylock(lock) == -1)
-    return False;
-  return True;
-#else
-  return True;
+	int id;
+};
+
+/* Not defined by Solaris or later versions of Linux */
+#if defined(__SVR4) || defined(_SEM_SEMUN_UNDEFINED)
+union semun {
+	int val;
+	struct semid_ds *buf;
+	ushort *array;
+};
 #endif
-}
-MagickExport int SimpleMutexUnLock(SimpleMutexLock_t *lock)
+
+static struct sembuf op_lock[2] = {
+	{ 0, 0, 0 },			/* Wait for semaphore to reach 0 */
+	{ 0, 1, SEM_UNDO },		/* Increment semaphore */
+};
+static struct sembuf op_unlock[1] = {
+	{ 0, -1, (IPC_NOWAIT|SEM_UNDO) }	/* Decrement semaphore */
+};
+
+/* Create a blockable semaphore */
+MagickMutex * Magick_CreateMutex (void)
 {
-#if defined(HasPTHREADS)
-  if(pthread_mutex_unlock(lock) == -1)
-    return False;
-  return True;
-#else
-  return True;
-#endif
+	MagickMutex *mutex;
+	union semun init;
+
+	mutex = (MagickMutex *)malloc(sizeof(*mutex));
+	if ( mutex == NULL )
+		return(NULL);
+	mutex->id = semget(IPC_PRIVATE, 1, (0600|IPC_CREAT));
+	if ( mutex->id < 0 )
+    {
+		  free(mutex);
+		  return(NULL);
+	  }
+	init.val = 0;		/* Initialize semaphore */
+	semctl(mutex->id, 0, SETVAL, init);
+	return(mutex);
 }
+
+/* Lock the semaphore */
+int MagickMutexP (MagickMutex *mutex)
+{
+	if ( ! mutex )
+		return(-1);
+tryagain:
+	if ( semop(mutex->id, op_lock, 2) < 0 )
+    {
+		  if ( errno == EINTR )
+        {
+			    goto tryagain;
+		    }
+		  return(-1);
+	  }
+	return(0);
+}
+
+/* Unlock the semaphore */
+int MagickMutexV (MagickMutex *mutex)
+{
+	if ( ! mutex )
+		return(-1);
+	if ( semop(mutex->id, op_unlock, 1) < 0 )
+		return(-1);
+	return(0);
+}
+
+/* Free the semaphore */
+void Magick_DestroyMutex (MagickMutex *mutex)
+{
+	if ( mutex )
+    {
+#ifdef _SGI_SOURCE
+		  semctl(mutex->id, 0, IPC_RMID);
+#else
+		  semctl(mutex->id, 0, IPC_RMID, (union semun)0);
+#endif
+		  free(mutex);
+	  }
+}
+
+#endif /* HasPTHREADS */
+#endif /* _VISUALC_ */
