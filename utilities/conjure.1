@@ -122,7 +122,6 @@ another. For example:
     <read filename="input.png" />
     <get width="base-width" height="base-height" />
     <image height="base-height" width="base-width">
-    <label>this is a simple label<label/>
     <image />
     <write filename="output.mng" />
     </image>
@@ -225,6 +224,15 @@ use. Currently only \fIwidth\fP and \fIheight\fP are supported.
     <get width="base-width" height="base-height" />
     <print output="Image size is %[base-width]x%[base-height].\\n" />
 
+.in 15
+.in 15
+.B "<set>"
+.in 20
+ \fR
+.in 20
+background, bordercolor, clip-mask, colorspace, density,
+magtick, mattecolor, opacity.  Set an attribute recognized by
+PerlMagick's GetAttribute().
 .in 15
 .in 15
 .B "<border>"
@@ -331,7 +339,7 @@ use. Currently only \fIwidth\fP and \fIheight\fP are supported.
 .in 20
  \fR
 .in 20
-    blur, filter, height, width
+    blur, filter, geometry, height, width
 .in 15
 .in 15
 .B "<roll>"
@@ -397,6 +405,20 @@ use. Currently only \fIwidth\fP and \fIheight\fP are supported.
     radius
 .in 15
 .in 15
+.B "<stegano>"
+.in 20
+ \fR
+.in 20
+    image
+.in 15
+.in 15
+.B "<stereo>"
+.in 20
+ \fR
+.in 20
+    image
+.in 15
+.in 15
 .B "<swirl>"
 .in 20
  \fR
@@ -404,11 +426,25 @@ use. Currently only \fIwidth\fP and \fIheight\fP are supported.
     degrees
 .in 15
 .in 15
+.B "<texture>"
+.in 20
+ \fR
+.in 20
+    image
+.in 15
+.in 15
 .B "<threshold>"
 .in 20
  \fR
 .in 20
     threshold
+.in 15
+.in 15
+.B "<transparent>"
+.in 20
+ \fR
+.in 20
+    color
 .in 15
 .in 15
 .B "<trim>"

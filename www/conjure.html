@@ -253,7 +253,6 @@ another. For example:
     &lt;read filename="input.png" /&gt;
     &lt;get width="base-width" height="base-height" /&gt;
     &lt;image height="base-height" width="base-width"&gt;
-    &lt;label&gt;this is a simple label&lt;label/&gt;
     &lt;image /&gt;
     &lt;write filename="output.mng" /&gt;
     &lt;/image&gt;
@@ -327,6 +326,10 @@ use. Currently only <em>width</em> and <em>height</em> are supported.</dd>
     &lt;print output="Image size is %[base-width]x%[base-height].\n" /&gt;
 </pre>
 </dd>
+<dt>&lt;set&gt;</dt>
+<dd>background, bordercolor, clip-mask, colorspace, density,
+magtick, mattecolor, opacity.  Set an attribute recognized by
+PerlMagick's GetAttribute().</dd>
 <dt>&lt;border&gt;</dt>
     <dd>fill, geometry, height, width</dd>
 <dt>&lt;blur&gt;</dt>
@@ -355,7 +358,7 @@ use. Currently only <em>width</em> and <em>height</em> are supported.</dd>
     <dd>output</dd>
 <dt>&lt;read&gt;</dt>
 <dt>&lt;resize&gt;</dt>
-    <dd>blur, filter, height, width</dd>
+    <dd>blur, filter, geometry, height, width</dd>
 <dt>&lt;roll&gt;</dt>
     <dd>geometry, x, y</dd>
 <dt>&lt;rotate&gt;</dt>
@@ -374,10 +377,18 @@ use. Currently only <em>width</em> and <em>height</em> are supported.</dd>
     <dd>threshold</dd>
 <dt>&lt;spread&gt;</dt>
     <dd>radius</dd>
+<dt>&lt;stegano&gt;</dt>
+    <dd>image</dd>
+<dt>&lt;stereo&gt;</dt>
+    <dd>image</dd>
 <dt>&lt;swirl&gt;</dt>
     <dd>degrees</dd>
+<dt>&lt;texture&gt;</dt>
+    <dd>image</dd>
 <dt>&lt;threshold&gt;</dt>
     <dd>threshold</dd>
+<dt>&lt;transparent&gt;</dt>
+    <dd>color</dd>
 <dt>&lt;trim&gt;</dt>
 </dl>
 </td></tr></table>
