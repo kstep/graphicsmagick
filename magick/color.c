@@ -1049,8 +1049,13 @@ MagickExport unsigned int IsOpaqueImage(const Image *image,
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+    /* NOTE: we return False if we can not read any pixels since
+       this is likely due to use of ping feature. In any case if
+       we know there is a matte we should report tranparent if we
+       can not verify via the pixels that the image is really not
+     */
     if (p == (const PixelPacket *) NULL)
-      return(True);
+      return(False);
     for (x=0; x < (long) image->columns; x++)
     {
       if (p->opacity != OpaqueOpacity)
