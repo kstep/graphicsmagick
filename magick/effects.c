@@ -2813,18 +2813,19 @@ MagickExport Image *SharpenImage(Image *image,const double radius,
 %
 %  The format of the SolarizeImage method is:
 %
-%      void SolarizeImage(Image *image,const double factor)
+%      void SolarizeImage(Image *image,const double threshold)
 %
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o factor:  An double value that defines the extent of the solarization.
+%    o threshold:  An double value that defines the extent of the
+%      solarization.
 %
 %
 */
-MagickExport void SolarizeImage(Image *image,const double factor)
+MagickExport void SolarizeImage(Image *image,const double threshold)
 {
 #define SolarizeImageText  "  Solarize the image colors...  "
 
@@ -2838,12 +2839,8 @@ MagickExport void SolarizeImage(Image *image,const double factor)
   register PixelPacket
     *q;
 
-  unsigned int
-    threshold;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  threshold=(unsigned int) (factor*(MaxRGB+1)/100.0);
   switch (image->storage_class)
   {
     case DirectClass:
