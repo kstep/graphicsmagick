@@ -1648,7 +1648,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
   if (polygon_info == (PolygonInfo *) NULL)
     return((PolygonInfo *) NULL);
   number_edges=16;
-  polygon_info->edges=AcquireMemory(number_edges*sizeof(EdgeInfo));
+  polygon_info->edges=(EdgeInfo *) AcquireMemory(number_edges*sizeof(EdgeInfo));
   if (polygon_info->edges == (EdgeInfo *) NULL)
     return((PolygonInfo *) NULL);
   direction=0;
@@ -1806,13 +1806,15 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
 static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
 {
   int
-    code,
     coordinates,
     path_length,
     start;
 
   PathInfo
     *path_info;
+
+  PathInfoCode
+    code;
 
   PointInfo
     first,
