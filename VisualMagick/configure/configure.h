@@ -57,10 +57,11 @@ private:
     bool dll,
     int runtime,
     int project_type,
-		std::string directory,
+		std::string root,
+		std::string search,
 		std::string name,
-		std::string libname,
 		std::string prefix,
+		std::string extn,
 		std::list<std::string> &libs_list_shared,
 		std::list<std::string> &libs_list_release,
 		std::list<std::string> &libs_list_debug,
@@ -71,10 +72,11 @@ private:
 	void write_exe_dsp(
     int runtime,
     int project_type,
-		std::string staging,
+		std::string root,
+		std::string search,
 		std::string name,
-		std::string extn,
 		std::string prefix,
+		std::string extn,
 		std::list<std::string> &libs_list_shared,
 		std::list<std::string> &libs_list_release,
 		std::list<std::string> &libs_list_debug,
@@ -91,9 +93,11 @@ private:
   void process_utility(ofstream &dsw,
           const char *root, const char *filename,
           int runtime, int project_type);
-  void process_library(ofstream &dsw, const char *filename,
-          bool dll, int runtime, int project_type);
-  void process_3rd_party_library(ofstream &dsw, const char *filename,
+  void process_library(ofstream &dsw,
+          const char *root, const char *filename,
+          int runtime, int project_type);
+  void process_3rd_party_library(ofstream &dsw,
+          const char *root, const char *filename,
           int runtime, int project_type);
   void process_module(ofstream &dsw,
           const char *root, const char *filename,
