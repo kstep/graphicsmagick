@@ -4187,6 +4187,55 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             map_image=ReadImage(clone_info,&(*image)->exception);
             continue;
           }
+        if (LocaleCompare("mask",option+1) == 0)
+          {
+            Image
+              *mask;
+
+            long
+              y;
+
+            register long
+              x;
+
+            register PixelPacket
+              *q;
+
+            if (*option == '+')
+              {
+                /*
+                  Remove a clip mask.
+                */
+                (void) SetImageClipMask(*image,(Image *) NULL);
+                continue;
+              }
+            /*
+              Set the image clip mask.
+            */
+            (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
+            mask=ReadImage(clone_info,&(*image)->exception);
+            if (mask == (Image *) NULL)
+              continue;
+            for (y=0; y < (long) mask->rows; y++)
+            {
+              q=GetImagePixels(mask,0,y,mask->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (long) mask->columns; x++)
+              {
+                if (!mask->matte)
+                  q->opacity=(Quantum) Intensity(q);
+                q->red=q->opacity;
+                q->green=q->opacity;
+                q->blue=q->opacity;
+                q++;
+              }
+              if (!SyncImagePixels(mask))
+                break;
+            }
+            SetImageType(mask,TrueColorMatteType);
+            (void) SetImageClipMask(*image,mask);
+          }
         if (LocaleCompare("matte",option+1) == 0)
           {
             if (*option == '-')

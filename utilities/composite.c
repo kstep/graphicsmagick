@@ -206,7 +206,7 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
           assert(mask_image->signature == MagickSignature);
           SetImageType(composite_image,TrueColorMatteType);
           if (!composite_image->matte)
-            SetImageOpacity(composite_image,OpaqueOpacity);;
+            SetImageOpacity(composite_image,OpaqueOpacity);
           status=CompositeImage(composite_image,CopyOpacityCompositeOp,
             mask_image,0,0);
           if (status == False)

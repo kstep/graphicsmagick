@@ -112,6 +112,7 @@
 %    -list type           Color, Delegate, Format, Magic, Module, or Type
 %    -loop iterations     add Netscape loop extension to your GIF animation
 %    -map filename        transform image colors to match this set of colors
+%    -mask filename       set the image clip mask
 %    -matte               store matte channel if the image has one
 %    -median radius       apply a median filter to the image
 %    -modulate value      vary the brightness, saturation and hue
@@ -530,6 +531,7 @@ static void ConvertUsage(void)
       "-list type           Color, Delegate, Format, Magic, Module, or Type",
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-map filename        transform image colors to match this set of colors",
+      "-mask filename       set the image clip mask",
       "-matte               store matte channel if the image has one",
       "-median radius       apply a median filter to the image",
       "-modulate value      vary the brightness, saturation, and hue",
@@ -1531,6 +1533,16 @@ static unsigned int ConvertUtility(int argc,char **argv)
           if (LocaleCompare("map",option+1) == 0)
             {
               option_info.global_colormap=(*option == '+');
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing file name",option);
+                }
+              break;
+            }
+          if (LocaleCompare("mask",option+1) == 0)
+            {
               if (*option == '-')
                 {
                   i++;
