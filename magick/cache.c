@@ -396,9 +396,7 @@ static void DestroyCacheInfo(Cache cache)
       break;
     }
     case MemoryMappedCache:
-    {
       (void) UnmapBlob(cache_info->pixels,length);
-    }
     case DiskCache:
     {
       CloseCache(cache);
@@ -638,9 +636,7 @@ MagickExport void GetCacheInfo(Cache *cache)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache info");
   memset(cache_info,0,sizeof(CacheInfo));
-  cache_info->storage_class=UndefinedClass;
   cache_info->colorspace=RGBColorspace;
-  cache_info->type=UndefinedCache;
   cache_info->file=(-1);
   cache_info->signature=MagickSignature;
   *cache=cache_info;
