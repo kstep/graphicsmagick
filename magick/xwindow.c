@@ -7041,16 +7041,16 @@ MagickExport void XMakeStandardColormap(Display *display,
                 {
                   q->red=0;
                   if (map_info->red_max != 0)
-                    q->red=(Quantum) ((MaxRGB*
+                    q->red=(Quantum) (((double) MaxRGB*
                       (i/map_info->red_mult))/map_info->red_max+0.5);
                   q->green=0;
                   if (map_info->green_max != 0)
-                    q->green=(Quantum) ((MaxRGB*
+                    q->green=(Quantum) (((double) MaxRGB*
                       ((i/map_info->green_mult) % (map_info->green_max+1)))/
                       map_info->green_max+0.5);
                   q->blue=0;
                   if (map_info->blue_max != 0)
-                    q->blue=(Quantum) ((MaxRGB*
+                    q->blue=(Quantum) (((double) MaxRGB*
                       (i % map_info->green_mult))/map_info->blue_max+0.5);
                   q->opacity=TransparentOpacity;
                   q++;

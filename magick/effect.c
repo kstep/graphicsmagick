@@ -1105,7 +1105,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   mean=(long) (r->opacity+pixel.opacity)/2; \
   distance=r->opacity-(double) pixel.opacity; \
   distance_squared+=(3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
-  if (distance_squared < (MaxRGB*MaxRGB/25.0)) \
+  if (distance_squared < ((double) MaxRGB*MaxRGB/25.0)) \
     { \
       aggregate.red+=(weight)*r->red; \
       aggregate.green+=(weight)*r->green; \
@@ -2683,9 +2683,9 @@ MagickExport Image *ShadeImage(const Image *image,
   */
   azimuth=DegreesToRadians(azimuth);
   elevation=DegreesToRadians(elevation);
-  light.x=MaxRGB*cos(azimuth)*cos(elevation);
-  light.y=MaxRGB*sin(azimuth)*cos(elevation);
-  light.z=MaxRGB*sin(elevation);
+  light.x=(double) MaxRGB*cos(azimuth)*cos(elevation);
+  light.y=(double) MaxRGB*sin(azimuth)*cos(elevation);
+  light.z=(double) MaxRGB*sin(elevation);
   normal.z=2.0*MaxRGB;  /* constant Z of surface normal */
   /*
     Shade image.
