@@ -5070,9 +5070,11 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(images != (Image **) NULL);
   assert((*images)->signature == MagickSignature);
+  number_images=GetImageListSize(*images);
+  if (number_images == 1)
+		return(MogrifyImage(image_info,argc,argv,images));
   status=True;
   mogrify_images=NewImageList();
-  number_images=GetImageListSize(*images);
   for (i=0; i < (long) number_images; i++)
   {
     image=PopImageList(images);
