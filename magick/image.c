@@ -538,6 +538,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
       if (!global_colormap)
         append_image->storage_class=DirectClass;
     }
+  (void) IsOpaqueImage(image);
   return(append_image);
 }
 
@@ -4113,13 +4114,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 /*
                   Composite region.
                 */
-                matte=region_image->matte;
-                CompositeImage(region_image,
-                  (*image)->matte ? OverCompositeOp : CopyCompositeOp,*image,
-                  region_info.x,region_info.y);
+                CompositeImage(region_image,(*image)->matte ? OverCompositeOp :
+                  CopyCompositeOp,*image,region_info.x,region_info.y);
                 DestroyImage(*image);
                 *image=region_image;
-                (*image)->matte=matte;
+                (void) IsOpaqueImage(*image);
               }
             if (*option == '+')
               continue;

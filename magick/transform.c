@@ -694,7 +694,7 @@ MagickExport Image *FlattenImages(Image *image,ExceptionInfo *exception)
       CopyCompositeOp,next,next->page.x,next->page.y);
     CloseImagePixels(next);
   }
-  IsOpaqueImage(flatten_image);
+  (void) IsOpaqueImage(flatten_image);
   return(flatten_image);
 }
 
