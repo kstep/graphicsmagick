@@ -27,7 +27,8 @@ typedef enum
   X11Event = 0x0040,
   CacheEvent = 0x0080,
   BlobEvent = 0x0100,
-  UserEvent = 0x0200,
+  DeprecateEvent = 0x0200,
+  UserEvent = 0x0400,
   AllEvents = 0xFFFF
 } LogEventType;
 

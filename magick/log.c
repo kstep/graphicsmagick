@@ -575,6 +575,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
     case X11Event: domain=(char *) "X11"; break;
     case CacheEvent: domain=(char *) "Cache"; break;
     case BlobEvent: domain=(char *) "Blob"; break;
+    case DeprecateEvent: domain=(char *) "Deprecate"; break;
     case UserEvent: domain=(char *) "User"; break;
     default: domain=(char *) "UnknownEvent"; break;
   }
@@ -881,6 +882,8 @@ static unsigned int ReadConfigureFile(const char *basename,
               log_info->events|=CoderEvent;
             if (GlobExpression(token,"*[Cc]onfigure*"))
               log_info->events|=ConfigureEvent;
+            if (GlobExpression(token,"*[Dd]precate*"))
+              log_info->events|=DeprecateEvent;
             if (GlobExpression(token,"*[Ll]ocale*"))
               log_info->events|=LocaleEvent;
             if (GlobExpression(token,"*[Nn]one*"))
@@ -1022,6 +1025,8 @@ MagickExport unsigned long SetLogEventMask(const char *events)
     log_info->events|=CoderEvent;
   if (GlobExpression(events,"*[Cc]onfigure*"))
     log_info->events|=ConfigureEvent;
+  if (GlobExpression(events,"*[Dd]eprecate*"))
+    log_info->events|=DeprecateEvent;
   if (GlobExpression(events,"*[Ll]ocale*"))
     log_info->events|=LocaleEvent;
   if (GlobExpression(events,"*[Nn]one*"))

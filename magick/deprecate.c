@@ -56,6 +56,7 @@
 #include "blob.h"
 #include "deprecate.h"
 #include "list.h"
+#include "log.h"
 #include "resource.h"
 #include "utility.h"
 
