@@ -649,15 +649,9 @@ MagickExport double IntersectPrimitive(PrimitiveInfo *primitive_info,
     crossing,
     crossings;
 
-  register int
-    i;
-
   register PrimitiveInfo
     *p,
     *q;
-
-  PixelPacket
-    target;
 
   assert(primitive_info != (PrimitiveInfo *) NULL);
   assert(draw_info != (DrawInfo *) NULL);
@@ -667,6 +661,7 @@ MagickExport double IntersectPrimitive(PrimitiveInfo *primitive_info,
   *fill_opacity=0.0;
   if (primitive_info->coordinates <= 0)
     return(0.0);
+  p=primitive_info;
   if (primitive_info->coordinates == 1)
     {
       if ((point->x == (int) ceil(p->point.x-0.5)) &&
@@ -674,7 +669,6 @@ MagickExport double IntersectPrimitive(PrimitiveInfo *primitive_info,
         return(1.0);
       return(0.0);
     }
-  p=primitive_info;
   mid=draw_info->affine[0]*draw_info->linewidth/2.0;
   if (primitive_info->coordinates == 2)
     return(PixelOnLine(point,&p->point,&(p+1)->point,mid,0.0,&distance));

@@ -422,7 +422,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   kernel=(double *) NULL;
   if (radius > 0)
-    width=GetKernelWidth(2.0*ceil(radius)+1.0,sigma,&kernel);
+    width=GetKernelWidth((int) (2.0*ceil(radius)+1.0),sigma,&kernel);
   else
     {
       double
