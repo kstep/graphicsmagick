@@ -27,6 +27,7 @@
 		<LI><A HREF="#magickerror">MagickError</A>
 		<LI><A HREF="#magickwarning">MagickWarning</A>
 		<LI><A HREF="#seterrorhandler">SetErrorHandler</A>
+		<LI><A HREF="#setexceptioninfo">SetExceptionInfo</A>
 		<LI><A HREF="#setwarninghandler">SetWarningHandler</A>
 		<LI><A HREF="#throwexception">ThrowException</A>
 	</UL>
@@ -50,6 +51,7 @@
 <P>void  <STRONG>MagickError</STRONG>( const ExceptionType error, const char *reason, const char *description );</P>
 <P>void  <STRONG>MagickWarning</STRONG>( const ExceptionType warning, const char *reason, const char *description );</P>
 <P>ErrorHandler  <STRONG>SetErrorHandler</STRONG>( ErrorHandler handler );</P>
+<P><STRONG>SetExceptionInfo</STRONG>( ExceptionInfo *exception, ExceptionType severity );</P>
 <P>ErrorHandler  <STRONG>SetWarningHandler</STRONG>( ErrorHandler handler );</P>
 <P>void  <STRONG>ThrowException</STRONG>( ExceptionInfo *exception, const ExceptionType severity, const char *reason, const char *description );</P>
 <P>
@@ -85,7 +87,7 @@ The exception info.
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-The exception info
+The exception info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimageexception">GetImageException</A></H2>
@@ -150,6 +152,20 @@ Describe the warning.
 The method to handle errors.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="setexceptioninfo">SetExceptionInfo</A></H2>
+<blockquote>SetExceptionInfo() set the exception severity. </blockquote><P>The format of the SetExceptionInfo method is:</P>
+<blockquote>SetExceptionInfo ( <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception, <A HREF="types/Enumerations.html#ExceptionType">ExceptionType</A> severity ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+The exception info.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_severity%3A">severity:</A></STRONG><BR>
+<DD>
+The exception severity.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="setwarninghandler">SetWarningHandler</A></H2>
 <blockquote>SetWarningHandler() sets the warning handler to the specified method and returns the previous warning handler. </blockquote><P>The format of the SetWarningHandler method is:</P>
 <blockquote>ErrorHandler SetWarningHandler ( ErrorHandler handler ); </blockquote><P>
@@ -169,7 +185,7 @@ The method to handle warnings.
 <DD>
 The exception.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_severity%3A">severity:</A></STRONG><BR>
+<dd><p></p><dt><STRONG>severity:</STRONG><BR>
 <DD>
 Define the severity of the exception.
 <P></P>

@@ -62,11 +62,15 @@ The registry id.
 <FONT SIZE=-1>NULL</FONT> is returned.</P>
 <P>The format of the GetImageFromMagickRegistry method is:</P>
 <PRE>
-    Image *GetImageFromMagickRegistry(const char *name,
+    Image *GetImageFromMagickRegistry(const char *name,long *id,
       ExceptionInfo *exception)</PRE>
 <P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
+<dd><p></p><dt><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
+<DD>
+The name of the image to retrieve from the registry.
+<P></P>
 <dd><p></p><dt><STRONG>id:</STRONG><BR>
 <DD>
 The registry id.
