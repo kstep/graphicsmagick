@@ -4481,7 +4481,7 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
       case 'M':
       case 'm':
       {
-        if (subpath)
+        if (q != primitive_info)
           {
             primitive_info->coordinates=q-primitive_info;
             number_coordinates+=primitive_info->coordinates;
