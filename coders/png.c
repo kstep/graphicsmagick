@@ -86,7 +86,8 @@
 */
 #undef MNG_OBJECT_BUFFERS
 #undef MNG_BASI_SUPPORTED
-#undef  MNG_INSERT_LAYERS /* In 5.4.4, this interferes with MMAP'ed files */
+#undef  MNG_COALESCE_LAYERS /* In 5.4.4, this interferes with MMAP'ed files */
+#define MNG_INSERT_LAYERS
 #define PNG_BUILD_PALETTE /* This works as of 5.4.3 */
 #define PNG_SORT_PALETTE  /* This works as of 5.4.0 */
 
@@ -4076,7 +4077,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MngInfoFreeStruct(mng_info,&have_mng_structure);
       return((Image *) NULL);
     }
-#ifdef MNG_INSERT_LAYERS
+#ifdef MNG_COALESCE_LAYERS
   if (insert_layers)
     {
       Image
