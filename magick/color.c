@@ -1411,7 +1411,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
   DoublePixelPacket
     pixel;
 
-  register volatile const ColorInfo
+  register const ColorInfo
     *p;
 
   register long

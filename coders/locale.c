@@ -774,8 +774,8 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   */
   for (i=0; locale[i] != (char *) NULL; i++);
   count=i-1;
-  for (i=0; i < count; i++)
-    for (j=(i+1); j < count; j++)
+  for (i=0; i < (long) count; i++)
+    for (j=(i+1); j < (long) count; j++)
       if (LocaleCompare(locale[i],locale[j]) > 0)
         {
           char
@@ -795,7 +795,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
     Write finite-state-machine.
   */
   if (IsEventLogging())
-    for (i=0; i < count; i++)
+    for (i=0; i < (long) count; i++)
       LogMagickEvent(LocaleEvent,"%.1024s",locale[i]);
   locales=(struct locale_str *) NULL;
   accumulate((const char **) locale,count,&locales);
@@ -805,7 +805,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   /*
     Free resources.
   */
-  for (i=0; i <= count; i++)
+  for (i=0; i <= (long) count; i++)
     LiberateMemory((void **) &locale[i]);
   LiberateMemory((void **) &locale);
   CloseBlob(image);

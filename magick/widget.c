@@ -1640,7 +1640,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
   */
   font_info=windows->widget.font_info;
   text_width=0;
-  for (i=0; i < colors; i++)
+  for (i=0; i < (long) colors; i++)
     if (XTextWidth(font_info,colorlist[i],Extent(colorlist[i])) > text_width)
       text_width=XTextWidth(font_info,colorlist[i],Extent(colorlist[i]));
   width=XTextWidth(font_info,(char *) action,Extent(action));
@@ -1777,7 +1777,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
           scroll_info.height-((slider_info.min_y-scroll_info.y+1) << 1)+2;
         visible_colors=
           (scroll_info.height-(height >> 3)-3)/((9*height) >> 3);
-        if (colors > (int) visible_colors)
+        if (colors > visible_colors)
           slider_info.height=(visible_colors*slider_info.height)/colors;
         slider_info.max_y=south_info.y-south_info.bevel_width-
           slider_info.bevel_width-2;
@@ -1883,7 +1883,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
           }
         else
           {
-            for (i=0; i < colors; i++)
+            for (i=0; i < (long) colors; i++)
               LiberateMemory((void **) &colorlist[i]);
             if (colorlist != (char **) NULL)
               LiberateMemory((void **) &colorlist);
@@ -1895,7 +1895,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         */
         slider_info.height=
           scroll_info.height-((slider_info.min_y-scroll_info.y+1) << 1)+1;
-        if (colors > (int) visible_colors)
+        if (colors > visible_colors)
           slider_info.height=(visible_colors*slider_info.height)/colors;
         slider_info.max_y=south_info.y-south_info.bevel_width-
           slider_info.bevel_width-2;
@@ -1926,7 +1926,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
           Jump scroll to match user color.
         */
         list_info.id=(~0);
-        for (i=0; i < colors; i++)
+        for (i=0; i < (long) colors; i++)
           if (LocaleCompare(colorlist[i],reply) >= 0)
             {
               list_info.id=LocaleCompare(colorlist[i],reply) == 0 ? i : ~0;
@@ -1946,7 +1946,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         */
         if (slider_info.id >= (int) (colors-visible_colors))
           slider_info.id=colors-visible_colors;
-        if ((slider_info.id < 0) || (colors <= (int) visible_colors))
+        if ((slider_info.id < 0) || (colors <= visible_colors))
           slider_info.id=0;
         slider_info.y=slider_info.min_y;
         if (colors > 0)
@@ -1963,7 +1963,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             {
               selection_info.raised=(slider_info.id+i) != list_info.id;
               selection_info.text=(char *) NULL;
-              if ((slider_info.id+i) < colors)
+              if ((slider_info.id+i) < (long) colors)
                 selection_info.text=colorlist[slider_info.id+i];
               XDrawWidgetText(display,&windows->widget,&selection_info);
               selection_info.y+=(int) selection_info.height;
@@ -2037,7 +2037,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
               state|=RedrawListState;
             }
         if (!south_info.raised)
-          if (slider_info.id < colors)
+          if (slider_info.id < (long) colors)
             {
               /*
                 Move slider down.
@@ -2072,7 +2072,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
               break;
             }
         if (MatteIsActive(south_info,event.xbutton))
-          if (slider_info.id < colors)
+          if (slider_info.id < (long) colors)
             {
               /*
                 Move slider down.
@@ -2104,7 +2104,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             */
             id=slider_info.id+(event.xbutton.y-(list_info.y+(height >> 1))+1)/
               selection_info.height;
-            if ((int) id >= colors)
+            if (id >= colors)
               break;
             (void) strncpy(reply_info.text,colorlist[id],MaxTextExtent-1);
             reply_info.highlight=False;
@@ -2653,7 +2653,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
   /*
     Free color list.
   */
-  for (i=0; i < colors; i++)
+  for (i=0; i < (long) colors; i++)
     LiberateMemory((void **) &colorlist[i]);
   if (colorlist != (char **) NULL)
     LiberateMemory((void **) &colorlist);

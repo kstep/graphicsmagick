@@ -801,7 +801,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     if (LocaleCompare("COLORMAP",attribute->value) == 0)
       flags |= PALM_HAS_COLORMAP_FLAG;
   count = GetNumberColors(image, NULL, &exception);
-  for (bits_per_pixel=1;  (1 << bits_per_pixel) < count;  bits_per_pixel*=2);
+  for (bits_per_pixel=1;  (1UL << bits_per_pixel) < count;  bits_per_pixel*=2);
   if (bits_per_pixel < 16)
     TransformRGBImage(image,RGBColorspace);
   if (bits_per_pixel < 8)

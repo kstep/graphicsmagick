@@ -6980,7 +6980,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       if ((map_info->red_max*map_info->green_max*map_info->blue_max) != 0)
         if (!image->matte && !resource_info->color_recovery &&
             resource_info->quantize_info->dither &&
-            ((int) number_colors < MaxColormapSize))
+            (number_colors < MaxColormapSize))
           {
             Image
               *map_image;

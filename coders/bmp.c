@@ -776,7 +776,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (bmp_info.bits_per_pixel != 24) && (bmp_info.bits_per_pixel != 32))
       ThrowReaderException(CorruptImageWarning,
         "Corrupt BMP image: Invalid bits per pixel",image);
-    if (bmp_info.number_colors > (1L << bmp_info.bits_per_pixel))
+    if (bmp_info.number_colors > (1UL << bmp_info.bits_per_pixel))
       ThrowReaderException(CorruptImageWarning,
         "Corrupt BMP image: Invalid number of colors",image);
     if (bmp_info.compression > 3)

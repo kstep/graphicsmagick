@@ -366,7 +366,7 @@ MagickExport Image *MontageImages(const Image *images,
     handler=SetMonitorHandler((MonitorHandler) NULL);
     image=image_list[i];
     SetGeometry(image,&geometry);
-    flags=ParseImageGeometry(montage_info->geometry,&geometry.x,&geometry.y,
+    flags=GetGeometry(montage_info->geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
     zoom_image=ZoomImage(image,geometry.width,geometry.height,exception);
     if (zoom_image == (Image *) NULL)
@@ -438,7 +438,7 @@ MagickExport Image *MontageImages(const Image *images,
       frame_info.width=tile_info.width;
       frame_info.height=tile_info.height;
       FormatString(absolute_geometry,"%.1024s!",montage_info->frame);
-      flags=ParseImageGeometry(absolute_geometry,&frame_info.outer_bevel,
+      flags=GetGeometry(absolute_geometry,&frame_info.outer_bevel,
         &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
       if ((flags & HeightValue) == 0)
         frame_info.height=frame_info.width;
