@@ -440,7 +440,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
         else
           if (scaled_pixel > MaxRGB)
             scaled_pixel=MaxRGB;
-        index=scaled_pixel;
+        index=(IndexPacket) (scaled_pixel+0.5);
         image->indexes[x]=index;
         q->red=image->colormap[index].red;
         q->green=image->colormap[index].green;
