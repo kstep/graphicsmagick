@@ -5758,9 +5758,7 @@ ModuleExport void UnregisterPNGImage(void)
   (void) UnregisterMagickInfo("PNG8");
   (void) UnregisterMagickInfo("PNG24");
   (void) UnregisterMagickInfo("PNG32");
-#if defined(JNG_SUPPORTED)
   (void) UnregisterMagickInfo("JNG");
-#endif
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
   DestroySemaphoreInfo(&png_semaphore);
