@@ -53,6 +53,10 @@
   Include declarations.
 */
 #include "studio.h"
+#if defined(HasGS)
+#include "ps/iapi.h"
+#include "ps/errors.h"
+#endif
 
 /*
   Forward declarations.
@@ -60,9 +64,6 @@
 static unsigned int
   WritePSImage(const ImageInfo *,Image *);
 
-#if defined(HasGS)
-#include "ps/iapi.h"
-#include "ps/errors.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -98,6 +99,7 @@ static unsigned int
 static unsigned int ExecutePostscriptInterpreter(const unsigned int verbose,
   const char *command)
 {
+#if defined(HasGS) || defined(WIN32)
   char
     **argv;
 
@@ -112,31 +114,60 @@ static unsigned int ExecutePostscriptInterpreter(const unsigned int verbose,
   register int
     i;
 
+#if defined(HasGS)
+  GhostscriptVectors
+    gs_func_struct;
+
+  const GhostscriptVectors
+    *gs_func = &gs_funcs_struct;
+
+  gs_func_struct.exit=gsapi_exit;
+  gs_func_struct.init_with_args=gsapi_init_with_args;
+  gs_func_struct.new_instance=gsapi_new_instance;
+  gs_func_struct.run_string=gsapi_run_string;
+  gs_func_struct.delete_instance=gsapi_delete_instance;
+#elif defined(WIN32)
+  const GhostscriptVectors
+    *gs_func = NTGhostscriptDLLVectors();
+#endif
+
+  if (gs_func == (GhostscriptVectors*) NULL)
+    {
+      if (verbose)
+        (void) fputs(command,stdout);
+      return(SystemCommand(verbose,command));
+    }
+
   if (verbose)
-    (void) fputs(command,stdout);
-  status=gsapi_new_instance(&interpreter,(void *) NULL);
+    {
+      (void) fputs("gsdll32",stdout);
+      (void) fputs(strchr(command,' '),stdout);
+    }
+
+  status=(gs_func->new_instance)(&interpreter,(void *) NULL);
   if (status < 0)
     return(False);
   argv=StringToArgv(command,&argc);
-  status=gsapi_init_with_args(interpreter,argc-1,argv+1);
+  status=(gs_func->init_with_args)(interpreter,argc-1,argv+1);
   if (status == 0)
-    status=gsapi_run_string(interpreter,"systemdict /start get exec\n",0,&code);
-  gsapi_exit(interpreter);
-  gsapi_delete_instance(interpreter);
+    status=(gs_func->run_string)(interpreter,"systemdict /start get exec\n",0,&code);
+  (gs_func->exit)(interpreter);
+  (gs_func->delete_instance)(interpreter);
   for (i=0; i < argc; i++)
     LiberateMemory((void **) &argv[i]);
   LiberateMemory((void **) &argv);
-  if ((status == 0) || (status == e_Quit))
+  /*
+    If gsapi_run_* functions return <= -100, either quit a or a fatal
+    error has occured.  The defined value for e_Quit is -101.
+  */
+  if ((status == 0) || (status == -101 /* e_Quit */))
     return(False);
   return(True);
-}
+
 #else
-static unsigned int ExecutePostscriptInterpreter(const unsigned int verbose,
-  const char *command)
-{
   return(SystemCommand(verbose,command));
-}
 #endif
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
