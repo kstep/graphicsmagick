@@ -19,7 +19,7 @@
   <magic name="FITS" offset="0" target="SIMPLE" />
   <magic name="GIF" offset="0" target="GIF8" />
   <magic name="GPLT" offset="0" target="#!/usr/local/bin/gnuplot" />
-  <magic name="HDF" offset="0" target="\016\003\023\001" />
+  <magic name="HDF" offset="1" target="HDF" />
   <magic name="HPGL" offset="0" target="IN;" />
   <magic name="HPGL" offset="0" target="\033E\033" />
   <magic name="HTML" offset="1" target="HTML" />

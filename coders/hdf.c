@@ -98,7 +98,7 @@ static unsigned int IsHDF(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (memcmp(magick,"\016\003\023\001",4) == 0)
+  if (memcmp(magick+1,"HDF",3) == 0)
     return(True);
   return(False);
 }
