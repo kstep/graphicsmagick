@@ -429,7 +429,7 @@ static struct
       {"filter", FilterTypess} } },
     { "Transparent", { {"color", StringReference},
       {"opacity", IntegerReference}, {"fuzz", DoubleReference} } },
-    { "Threshold", { {"threshold", DoubleReference} } },
+    { "Threshold", { {"threshold", StringReference} } },
     { "Charcoal", { {"geometry", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference} } },
     { "Trim", { {"fuzz", DoubleReference} } },
