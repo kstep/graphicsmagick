@@ -8,4 +8,4 @@
 ;
 #endif
 
-Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl v5.8.0 build 804"; Flags: unchecked
+Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl v5.8.1 build 807"; Flags: unchecked
