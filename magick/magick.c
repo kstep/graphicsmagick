@@ -378,7 +378,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag,ExceptionInfo *exception)
       atexit(DestroyMagickInfo);
     }
   LiberateSemaphore(&magick_semaphore);
-  if ((tag == (const char *) NULL) || (*tag == '\0'))
+  if ((tag == (const char *) NULL) ||  (LocaleCompare(tag,"*") == 0))
     return(magick_list);
   /*
     Find tag in list
@@ -525,7 +525,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 #if defined(HasMODULES)
   OpenModules(exception);
 #endif
-  p=GetMagickInfo((char *) NULL,exception);
+  p=GetMagickInfo("*",exception);
   if (p == (MagickInfo *) NULL)
     return(False);
   AcquireSemaphore(&magick_semaphore);

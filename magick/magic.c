@@ -230,7 +230,7 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
   if (file == (const FILE *) NULL)
     file=stdout;
   (void) fprintf(file,"ImageMagick understands these magic strings:\n");
-  p=GetMagicInfo("*",0,exception);
+  p=GetMagicInfo((unsigned char *) "*",1,exception);
   if (p == (MagicInfo *) NULL)
     return(False);
   if (p->filename != (char *) NULL)

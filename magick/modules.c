@@ -314,9 +314,7 @@ MagickExport ModuleAlias *GetModuleAlias(const char *name,
       atexit(DestroyModuleInfo);
     }
   LiberateSemaphore(&module_semaphore);
-  if (module_aliases == (ModuleAlias *) NULL)
-    return((ModuleAlias *) NULL);
-  if (name == (const char *) NULL)
+  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return(module_aliases);
   for (p=module_aliases; p != (ModuleAlias *) NULL; p=p->next)
     if (LocaleCompare(p->name,name) == 0)
@@ -377,9 +375,7 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
       atexit(DestroyModuleInfo);
     }
   LiberateSemaphore(&module_semaphore);
-  if (module_list == (ModuleInfo *) NULL)
-    return((ModuleInfo *) NULL);
-  if (tag == (const char *) NULL)
+  if ((tag == (const char *) NULL) || (LocaleCompare(tag,"*") == 0))
     return(module_list);
   for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
@@ -513,8 +509,8 @@ MagickExport unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"ImageMagick understands these module aliases.\n");
-  p=GetModuleAlias((const char *) NULL,exception);
+  (void) fprintf(file,"ImageMagick understands these module aliases:\n");
+  p=GetModuleAlias("*",exception);
   if (p == (ModuleAlias *) NULL)
     return(False);
   if (p->filename != (char *) NULL)
