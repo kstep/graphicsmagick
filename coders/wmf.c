@@ -283,7 +283,7 @@ static void WmfCopyXpm(CSTRUCT *cstruct,
                        unsigned short dest_w, unsigned short dest_h,
                        char *filename, unsigned int dwROP)
 {
-
+#if 0
   /* FIXME: this trivial implementation only implements pixel
      replacement and ignores ROP entirely.  More support is needed in
      ImageMagick to support setting the fill style.
@@ -306,6 +306,7 @@ static void WmfCopyXpm(CSTRUCT *cstruct,
           filename);
   ExtendMVG(cstruct, buff);
   ScribbleMVG(cstruct);
+#endif
 }
 
 /*
@@ -1054,8 +1055,6 @@ static void WmfSetPixel(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 /* Set scaled output size */
 static void WmfSetPmfSize(CSTRUCT *cstruct, HMETAFILE file)
 {
-/*   float pixperin; */
-
   double
     x_resolution,
     y_resolution;
@@ -1189,7 +1188,14 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       GetImageInfo( local_info );
       sprintf( buff, "%ix%i", (int)cstruct->realwidth, (int)cstruct->realheight );
       CloneString(&(local_info->size), buff);
-      strcpy( local_info->filename, "XC:#FFFFFF" );
+      if(image_info->texture == (char*)NULL)
+        sprintf(local_info->filename,"XC:#%02x%02x%02x%02x",
+                image_info->background_color.red,
+                image_info->background_color.green,
+                image_info->background_color.blue,
+                image_info->background_color.opacity);
+      else
+        sprintf(local_info->filename,"TILE:%s",image_info->texture);
       GetExceptionInfo(exception);
       DestroyImage(image);
       image = ReadImage( local_info, exception );
