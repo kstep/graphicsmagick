@@ -2241,9 +2241,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   for (next=image; next; next=next->next)
   {
     next->taint=False;
-    (void) strncpy(next->magick_filename,clone_info->filename,MaxTextExtent-1);
+    (void) strncpy(next->magick_filename,filename,MaxTextExtent-1);
     if (image->temporary)
-      (void) strncpy(next->filename,clone_info->filename,MaxTextExtent-1);
+      (void) strncpy(next->filename,filename,MaxTextExtent-1);
     if (next->magick_columns == 0)
       next->magick_columns=next->columns;
     if (next->magick_rows == 0)
