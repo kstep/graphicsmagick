@@ -39,7 +39,8 @@
 #  written authorization from the E. I. du Pont de Nemours and Company. 
 #
 #  This file is currently maintained by Bob Friesenhahn,
-#  bfriesen@simple.dallas.tx.us
+#  bfriesen@simple.dallas.tx.us. Please report any bugs via the ImageMagick
+#  bug tracking system at http://www.simplesystems.org/ImageMagick/bugs.
 
 # Don't require all the GNU mandated files
 # Remove comment from no-dependencies for distributions compatable with
@@ -770,7 +771,7 @@ dist-hook:
 @WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@	$(MAKE) clean && rm -f  Makefile.old )
 
 @WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@check-perl: $(PERLMAKEFILE)
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@	DELEGATE_PATH=../delegates cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
+@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
 
 @WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@$(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
 @WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	cd $(PERLMAGICK) && @PERL@ Makefile.PL MAP_TARGET=$(PERLSTATICNAME)
@@ -785,7 +786,7 @@ dist-hook:
 @WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	$(MAKE) clean && rm -f  Makefile.old )
 
 @WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@check-perl: $(PERLMAGICK)/$(PERLMAGICK)
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	DELEGATE_PATH=../delegates cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
+@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
 
 @WITH_PERL_TRUE@clean-perl: $(PERLMAKEFILE)
 @WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' clean && rm -f Makefile.old PerlMagick

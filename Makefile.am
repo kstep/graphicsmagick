@@ -27,7 +27,8 @@
 #  written authorization from the E. I. du Pont de Nemours and Company. 
 #
 #  This file is currently maintained by Bob Friesenhahn,
-#  bfriesen@simple.dallas.tx.us
+#  bfriesen@simple.dallas.tx.us. Please report any bugs via the ImageMagick
+#  bug tracking system at http://www.simplesystems.org/ImageMagick/bugs.
 
 # Don't require all the GNU mandated files
 # Remove comment from no-dependencies for distributions compatable with
@@ -114,7 +115,7 @@ install-exec-perl: $(PERLMAKEFILE)
 	$(MAKE) clean && rm -f  Makefile.old )
 
 check-perl: $(PERLMAKEFILE)
-	DELEGATE_PATH=../delegates cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
+	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
 
 else
 if WITH_PERL_STATIC
@@ -134,7 +135,7 @@ install-exec-perl: $(PERLMAGICK)/$(PERLMAGICK)
 	$(MAKE) clean && rm -f  Makefile.old )
 	
 check-perl: $(PERLMAGICK)/$(PERLMAGICK)
-	DELEGATE_PATH=../delegates cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
+	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
 
 endif # WITH_PERL_STATIC
 endif # WTIH_PERL_DYNAMIC
