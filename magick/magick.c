@@ -241,6 +241,47 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     *path,
     *search_path;
 
+#if defined(WIN32)
+  {
+    /*
+      At least Windows will be somewhat secure
+    */
+    char
+      *key_value;
+
+    long
+      i;
+
+    static char
+      *registry_path_keys[] =
+      {
+        "LibPath",
+        "ModulesPath",
+        "SharePath",
+        (char *) NULL
+      };
+
+    /*
+      Search windows registry.
+    */
+    for (i=0; registry_path_keys[i] != (char *) NULL; i++)
+    {
+      key_value=NTRegistryKeyLookup(registry_path_keys[i]);
+      if (key_value == (char *) NULL)
+        continue;
+      FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
+        filename);
+      LiberateMemory((void **) &key_value);
+      if (IsAccessible(path))
+        return(path);
+      ConcatenateString(&search_path,"; Registry[");
+      ConcatenateString(&search_path, registry_path_keys[i]);
+      ConcatenateString(&search_path,"]:");
+      ConcatenateString(&search_path,path);
+    }
+  }
+#endif
+
   /*
     Search current directory.
   */
@@ -278,43 +319,6 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
       ConcatenateString(&search_path,"; HOME:");
       ConcatenateString(&search_path,path);
     }
-#if defined(WIN32)
-  {
-    char
-      *key_value;
-
-    long
-      i;
-
-    static char
-      *registry_path_keys[] =
-      {
-        "LibPath",
-        "ModulesPath",
-        "SharePath",
-        (char *) NULL
-      };
-
-    /*
-      Search windows registry.
-    */
-    for (i=0; registry_path_keys[i] != (char *) NULL; i++)
-    {
-      key_value=NTRegistryKeyLookup(registry_path_keys[i]);
-      if (key_value == (char *) NULL)
-        continue;
-      FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
-        filename);
-      LiberateMemory((void **) &key_value);
-      if (IsAccessible(path))
-        return(path);
-      ConcatenateString(&search_path,"; Registry[");
-      ConcatenateString(&search_path, registry_path_keys[i]);
-      ConcatenateString(&search_path,"]:");
-      ConcatenateString(&search_path,path);
-    }
-  }
-#endif
   if (getenv("MAGICK_HOME") != (char *) NULL)
     {
       /*
