@@ -1933,7 +1933,7 @@ namespace Magick
     // Transfer histogram array to container
     for ( unsigned long i=0; i < colors; i++)
       {
-        histogram_->insert(histogram_->end(),std::pair<Color,unsigned long>
+        histogram_->insert(histogram_->end(),std::pair<const Color,unsigned long>
                            ( Color(histogram_array[i].pixel.red,
                                    histogram_array[i].pixel.green,
                                    histogram_array[i].pixel.blue),

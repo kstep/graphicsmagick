@@ -1,3 +1,10 @@
+2003-09-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (colorHistogram): If map key is not const,
+        then implicit type conversion occurs.  Sun's C++ compiler doesn't
+        seem to handle that.  The map key is now defined as const in
+	the insert arguments.
+
 2003-09-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/Makefile.am: Add build support for colorHistogram.cpp.

@@ -5,13 +5,20 @@
 // Test STL colorHistogram function
 //
 
+#undef USE_VECTOR
+#define USE_MAP
+
 #include <Magick++.h>
 #include <string>
 #include <iostream>
 #include <iomanip>
-#include <vector>
-#include <map>
-#include <utility>
+#if defined(USE_VECTOR)
+#  include <vector>
+#  include <utility>
+#endif
+#if defined(USE_MAP)
+#  include <map>
+#endif
 
 using namespace std;
 
@@ -34,9 +41,6 @@ int main( int /*argc*/, char ** argv)
     // Read image
     Image image;
     image.read( srcdir + "test_image.miff" );
-
-#undef USE_VECTOR
-#define USE_MAP
 
     // Create histogram vector
 #if defined(USE_MAP)
