@@ -832,7 +832,7 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
     }
   }
   (void) fprintf(stderr,"GetList: Invalid reference type %ld\n",
-    SvTYPE(reference));
+    (long) SvTYPE(reference));
   return((Image *) NULL);
 }
 
