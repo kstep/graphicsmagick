@@ -1146,6 +1146,10 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   metrics->width=0;
   metrics->height=(double) face->size->metrics.height/64.0;
   metrics->max_advance=(double) face->size->metrics.max_advance/64.0;
+  metrics->bounds.x1=0.0;
+  metrics->bounds.y1=metrics->descent;
+  metrics->bounds.x2=metrics->ascent+metrics->descent;
+  metrics->bounds.y2=metrics->ascent+metrics->descent;
   metrics->underline_position=face->underline_position/64.0;
   metrics->underline_thickness=face->underline_thickness/64.0;
   /*
