@@ -134,8 +134,6 @@ MagickExport void DestroyTypeInfo(void)
       LiberateMemory((void **) &type_info->metrics);
     if (type_info->glyphs != (char *) NULL)
       LiberateMemory((void **) &type_info->glyphs);
-    if (type_info->version != (char *) NULL)
-      LiberateMemory((void **) &type_info->version);
     LiberateMemory((void **) &type_info);
   }
   type_list=(TypeInfo *) NULL;
@@ -585,16 +583,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
               type_list->style=NormalStyle;
             if (LocaleCompare(token,"oblique") == 0)
               type_list->style=ObliqueStyle;
-            break;
-          }
-        break;
-      }
-      case 'V':
-      case 'v':
-      {
-        if (LocaleCompare((char *) keyword,"version") == 0)
-          {
-            type_list->version=AllocateString(token);
             break;
           }
         break;

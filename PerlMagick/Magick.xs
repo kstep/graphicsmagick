@@ -6484,10 +6484,6 @@ QueryFont(ref,...)
         PUSHs(&sv_undef);
       else
         PUSHs(sv_2mortal(newSVpv(type_info->glyphs,0)));
-      if (type_info->version == (char *) NULL)
-        PUSHs(&sv_undef);
-      else
-        PUSHs(sv_2mortal(newSVpv(type_info->version,0)));
     }
 
   MethodException:
