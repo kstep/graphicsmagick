@@ -172,13 +172,27 @@ MagickExport unsigned int EqualizeImage(Image *image)
 {
 #define EqualizeImageText  "  Equalizing image...  "
 
-  long
+  typedef struct _HistogramPacket
+  {
+    unsigned long
+      red,
+      green,
+      blue,
+      opacity;
+  } HistogramPacket;
+
+  HistogramPacket
+    high,
+    *histogram,
     j,
+    low,
+    *map;
+
+  long
     y;
 
-  Quantum
-    *equalize_map,
-    intensity;
+  PixelPacket
+    *equalize_map;
 
   register const PixelPacket
     *p;
@@ -190,29 +204,24 @@ MagickExport unsigned int EqualizeImage(Image *image)
   register PixelPacket
     *q;
 
-  unsigned long
-    high,
-    *histogram,
-    low,
-    *map;
-
   /*
     Allocate and initialize histogram arrays.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  histogram=(unsigned long *) AcquireMemory((MaxRGB+1)*sizeof(unsigned long));
-  map=(unsigned long *) AcquireMemory((MaxRGB+1)*sizeof(unsigned long));
-  equalize_map=(Quantum *) AcquireMemory((MaxRGB+1)*sizeof(Quantum));
-  if ((histogram == (unsigned long *) NULL) ||
-      (map == (unsigned long *) NULL) ||
-      (equalize_map == (Quantum *) NULL))
+  histogram=(HistogramPacket *)
+    AcquireMemory((MaxRGB+1)*sizeof(HistogramPacket));
+  map=(HistogramPacket *) AcquireMemory((MaxRGB+1)*sizeof(HistogramPacket));
+  equalize_map=(PixelPacket *) AcquireMemory((MaxRGB+1)*sizeof(PixelPacket));
+  if ((histogram == (HistogramPacket *) NULL) ||
+      (map == (HistogramPacket *) NULL) ||
+      (equalize_map == (PixelPacket *) NULL))
     ThrowBinaryException(ResourceLimitError,"Unable to equalize image",
       "Memory allocation failed");
   /*
     Form histogram.
   */
-  memset(histogram,0,(MaxRGB+1)*sizeof(unsigned long));
+  memset(histogram,0,(MaxRGB+1)*sizeof(HistogramPacket));
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -220,35 +229,39 @@ MagickExport unsigned int EqualizeImage(Image *image)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      intensity=Intensity(p);
-      histogram[intensity]++;
+      histogram[p->red].red++;
+      histogram[p->green].green++;
+      histogram[p->blue].blue++;
+      histogram[p->opacity].opacity++;
       p++;
     }
   }
   /*
     Integrate the histogram to get the equalization map.
   */
-  j=0;
+  memset(&j,0,sizeof(HistogramPacket));
   for (i=0; i <= MaxRGB; i++)
   {
-    j+=histogram[i];
+    j.red+=histogram[i].red;
+    j.green+=histogram[i].green;
+    j.blue+=histogram[i].blue;
+    j.opacity+=histogram[i].opacity;
     map[i]=j;
   }
-  LiberateMemory((void **) &histogram);
   low=map[0];
   high=map[MaxRGB];
-  if (low == high)
-    {
-      LiberateMemory((void **) &equalize_map);
-      LiberateMemory((void **) &map);
-      return(True);
-    }
-  /*
-    Equalize.
-  */
   for (i=0; i <= MaxRGB; i++)
-    equalize_map[i]=(Quantum)
-      ((((double) (map[i]-low))*MaxRGB)/Max(high-low,1));
+  {
+    equalize_map[i].red=(Quantum) ((((double) (map[i].red-
+      low.red))*MaxRGB)/Max(high.red-low.red,1));
+    equalize_map[i].green=(Quantum) ((((double) (map[i].green-
+      low.green))*MaxRGB)/Max(high.green-low.green,1));
+    equalize_map[i].blue=(Quantum) ((((double) (map[i].blue-
+      low.blue))*MaxRGB)/Max(high.blue-low.blue,1));
+    equalize_map[i].opacity=(Quantum) ((((double) (map[i].opacity-
+      low.opacity))*MaxRGB)/Max(high.opacity-low.opacity,1));
+  }
+  LiberateMemory((void **) &histogram);
   LiberateMemory((void **) &map);
   /*
     Stretch the histogram.
@@ -268,9 +281,10 @@ MagickExport unsigned int EqualizeImage(Image *image)
           break;
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=equalize_map[q->red];
-          q->green=equalize_map[q->green];
-          q->blue=equalize_map[q->blue];
+          q->red=equalize_map[q->red].red;
+          q->green=equalize_map[q->green].green;
+          q->blue=equalize_map[q->blue].blue;
+          q->opacity=equalize_map[q->opacity].opacity;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -287,9 +301,9 @@ MagickExport unsigned int EqualizeImage(Image *image)
       */
       for (i=0; i < (long) image->colors; i++)
       {
-        image->colormap[i].red=equalize_map[image->colormap[i].red];
-        image->colormap[i].green=equalize_map[image->colormap[i].green];
-        image->colormap[i].blue=equalize_map[image->colormap[i].blue];
+        image->colormap[i].red=equalize_map[image->colormap[i].red].red;
+        image->colormap[i].green=equalize_map[image->colormap[i].green].green;
+        image->colormap[i].blue=equalize_map[image->colormap[i].blue].blue;
       }
       SyncImage(image);
       break;
