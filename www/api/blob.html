@@ -23,10 +23,10 @@
 		<LI><A HREF="#blobtoimage">BlobToImage</A></LI>
 		<LI><A HREF="#cloneblobinfo">CloneBlobInfo</A></LI>
 		<LI><A HREF="#destroyblobinfo">DestroyBlobInfo</A></LI>
-		<LI><A HREF="#disengageblob">DisengageBlob</A></LI>
 		<LI><A HREF="#filetoblob">FileToBlob</A></LI>
 		<LI><A HREF="#getblobinfo">GetBlobInfo</A></LI>
 		<LI><A HREF="#imagetoblob">ImageToBlob</A></LI>
+		<LI><A HREF="#rewindblob">RewindBlob</A></LI>
 		<LI><A HREF="#setblobquantum">SetBlobQuantum</A></LI>
 	</UL>
 
@@ -45,10 +45,10 @@
 <P>Image * <STRONG>BlobToImage</STRONG>( const ImageInfo *image_info, const void *blob, const size_t length, ExceptionInfo *exception );</P>
 <P>BlobInfo * <STRONG>CloneBlobInfo</STRONG>( const BlobInfo *blob_info );</P>
 <P>void  <STRONG>DestroyBlobInfo</STRONG>( BlobInfo *blob );</P>
-<P>void  <STRONG>DisengageBlob</STRONG>( BlobInfo *blob );</P>
 <P>void * <STRONG>FileToBlob</STRONG>( const char *filename, size_t *length, ExceptionInfo *exception );</P>
 <P>void  <STRONG>GetBlobInfo</STRONG>( BlobInfo *blob );</P>
 <P>void * <STRONG>ImageToBlob</STRONG>( const ImageInfo *image_info, Image *image, size_t *length, ExceptionInfo *exception );</P>
+<P>void  <STRONG>RewindBlob</STRONG>( BlobInfo *blob );</P>
 <P>void  <STRONG>SetBlobQuantum</STRONG>( BlobInfo *blob, const size_t quantum );</P>
 <P>
 <HR>
@@ -105,17 +105,6 @@ a structure of type info.
 <P>Method DestroyBlobInfo deallocates memory associated with an BlobInfo structure.</P>
 <P>The format of the DestroyBlobInfo method is:</P>
 <blockquote>void DestroyBlobInfo ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>blob:</STRONG><BR>
-<DD>
-Specifies a pointer to a BlobInfo structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="disengageblob">DisengageBlob</A></H2>
-<P>Method DisengageBlob disengages the BlobInfo structure.</P>
-<P>The format of the DisengageBlob method is:</P>
-<blockquote>void DisengageBlob ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>blob:</STRONG><BR>
@@ -189,6 +178,17 @@ This pointer to a size_t integer sets the initial length of the blob.  On return
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="rewindblob">RewindBlob</A></H2>
+<P>Method RewindBlob rewinds the BlobInfo structure.</P>
+<P>The format of the RewindBlob method is:</P>
+<blockquote>void RewindBlob ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>blob:</STRONG><BR>
+<DD>
+Specifies a pointer to a BlobInfo structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setblobquantum">SetBlobQuantum</A></H2>

@@ -22,6 +22,7 @@
 
 		<LI><A HREF="#addnoiseimage">AddNoiseImage</A></LI>
 		<LI><A HREF="#blurimage">BlurImage</A></LI>
+		<LI><A HREF="#charcoalimage">CharcoalImage</A></LI>
 		<LI><A HREF="#colorizeimage">ColorizeImage</A></LI>
 		<LI><A HREF="#convolveimage">ConvolveImage</A></LI>
 		<LI><A HREF="#despeckleimage">DespeckleImage</A></LI>
@@ -62,6 +63,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>Image * <STRONG>AddNoiseImage</STRONG>( Image *image, const NoiseType noise_type, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>BlurImage</STRONG>( Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>CharcoalImage</STRONG>( Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ColorizeImage</STRONG>( Image *image, const char *opacity, const PixelPacket target, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ConvolveImage</STRONG>( Image *image, const unsigned int order, const double *kernel, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>DespeckleImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
@@ -139,6 +141,34 @@ Method BlurImage returns a pointer to the image after it is blur.
 The radius of the Gaussian, in pixels, not counting the center pixel.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_sigma%3A">sigma:</A></STRONG><BR>
+<DD>
+The standard deviation of the Gaussian, in pixels.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="charcoalimage">CharcoalImage</A></H2>
+<P>Method CharcoalImage creates a new image that is a copy of an existing one with the edge highlighted.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
+<P>The format of the CharcoalImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *CharcoalImage ( <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_charcoal_image%3A">charcoal_image:</A></STRONG><BR>
+<DD>
+Method CharcoalImage returns a pointer to the image after it is embossed.  
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<p><dt><STRONG>radius:</STRONG><BR>
+<DD>
+the radius of the pixel neighborhood.
+<P></P>
+<p><dt><STRONG>sigma:</STRONG><BR>
 <DD>
 The standard deviation of the Gaussian, in pixels.
 <P></P>

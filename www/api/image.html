@@ -67,7 +67,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>Image * <STRONG>AllocateImage</STRONG>( const ImageInfo *image_info );</P>
-<P>unsigned int  <STRONG>AllocateImageColormap</STRONG>( Image *image, const unsigned int colors );</P>
+<P>unsigned int  <STRONG>AllocateImageColormap</STRONG>( Image *image, const unsigned long colors );</P>
 <P>void  <STRONG>AllocateNextImage</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>unsigned int  <STRONG>AnimateImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>Image * <STRONG>AppendImages</STRONG>( Image *image, const unsigned int stack, ExceptionInfo *exception );</P>
@@ -117,7 +117,7 @@ Many of the image default values are set from this structure.  For example, file
 <P>
 <H2><A NAME="allocateimagecolormap">AllocateImageColormap</A></H2>
 <blockquote>AllocateImageColormap ( ) allocates an image colormap and initializesit to a linear gray colorspace. If the image already has a colormap, it is replaced. AllocateImageColormap ( ) returns True if successful, otherwise False if there is not enough memory.; </blockquote><P>The format of the AllocateImageColormap method is:</P>
-<blockquote>unsigned int AllocateImageColormap ( <A HREF="types/Image.html">Image</A> *image, const unsigned int colors ); </blockquote><P>
+<blockquote>unsigned int AllocateImageColormap ( <A HREF="types/Image.html">Image</A> *image, const unsigned long colors ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
