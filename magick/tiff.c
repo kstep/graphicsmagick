@@ -53,9 +53,9 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "proxy.h"
 
 #if defined(HasTIFF)
+#include "tiffio.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1283,6 +1283,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         }
     switch (image_info->compression)
     {
+      case NoCompression: compress_tag=COMPRESSION_NONE; break;
       case FaxCompression: compress_tag=COMPRESSION_CCITTFAX3; break;
       case Group4Compression: compress_tag=COMPRESSION_CCITTFAX4; break;
       case JPEGCompression: compress_tag=COMPRESSION_JPEG; break;

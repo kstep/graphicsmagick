@@ -53,7 +53,9 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "proxy.h"
+#if defined(HasZLIB)
+#include "zlib.h"
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -53,7 +53,11 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "proxy.h"
+#if defined(HasTIFF)
+#define CCITTParam  "-1"
+#else
+#define CCITTParam  "0"
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -55,7 +55,9 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "proxy.h"
+#if defined(HasX11)
+#include "xwindows.h"
+#endif
 
 /*
   Structures.

@@ -30,6 +30,8 @@
 #include <ctype.h>
 #include <string.h>
 #include <signal.h>
+#include <setjmp.h>
+#include <locale.h>
 #include <errno.h>
 #include <math.h>
 #include <assert.h>

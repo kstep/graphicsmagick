@@ -53,9 +53,13 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "proxy.h"
 
-#if defined(HasJPEG)
+/*
+  Define declarations.
+*/
+#define ICC_MARKER  (JPEG_APP0+2)
+#define IPTC_MARKER  (JPEG_APP0+13)
+
 /*
   Static declarations.
 */
@@ -64,6 +68,10 @@ static Image
 
 static jmp_buf
   error_recovery;
+
+#if defined(HasJPEG)
+#include "jpeglib.h"
+#include "jerror.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

@@ -144,7 +144,7 @@
 /*
   Include declarations.
 */
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if !defined(macintosh)
 #include "magick/magick.h"
 #include "magick/defines.h"
 #else

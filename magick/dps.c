@@ -53,9 +53,11 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "proxy.h"
 
 #if defined(HasDPS)
+#include "xwindows.h"
+#include <DPS/dpsXclient.h>
+#include <DPS/dpsXpreview.h>
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

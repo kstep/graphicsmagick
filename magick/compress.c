@@ -54,7 +54,12 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "proxy.h"
+#if defined(HasTIFF)
+#include "tiffio.h"
+#endif
+#if defined(HasZLIB)
+#include "zlib.h"
+#endif
 
 /*
   Define declarations.

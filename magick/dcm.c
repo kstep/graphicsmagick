@@ -53,7 +53,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "proxy.h"
 
 /*
   Dicom medical image declarations.

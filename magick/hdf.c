@@ -53,9 +53,11 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "proxy.h"
 
 #if defined(HasHDF)
+#include "hdf.h"
+#undef BSD
+#undef LOCAL
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

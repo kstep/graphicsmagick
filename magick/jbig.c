@@ -53,9 +53,9 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "proxy.h"
 
 #if defined(HasJBIG)
+#include "jbig.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

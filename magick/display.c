@@ -51,12 +51,8 @@
 /*
   Include declarations.
 */
-#define __EXTENSIONS__  1
 #include "magick.h"
 #include "defines.h"
-#include "proxy.h"
-#if defined(HasX11)
-#include "display.h"
 
 /*
   Constant declaration.
@@ -64,6 +60,9 @@
 const int
   RoiDelta = 8;
 
+#if defined(HasX11)
+#include "xwindows.h"
+#include "display.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

@@ -46,6 +46,7 @@ extern "C" {
 #include <X11/extensions/XShm.h>
 #endif
 #include "PreRvIcccm.h"
+
 #undef index
 #if defined(hpux9)
 #define XFD_SET  int
@@ -586,6 +587,7 @@ extern Export XWindows
 #define PRE_R4_ICCCM
 #endif
 #include "PreRvIcccm.h"
+#include "widget.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -103,14 +103,14 @@
 /*
   Include declarations.
 */
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if !defined(macintosh)
 #include "magick/magick.h"
 #include "magick/defines.h"
-#include "magick/proxy.h"
+#include "magick/xwindows.h"
 #else
 #include "magick.h"
 #include "defines.h"
-#include "proxy.h"
+#include "xwindows.h"
 #endif
 
 /*
