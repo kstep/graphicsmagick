@@ -512,10 +512,10 @@ void CConfigureApp::process_library(ofstream &dsw,
 	includes_list.push_back("..\\..\\zlib");
 	includes_list.push_back("..\\..\\tiff\\libtiff");
 
-  if (project_type == LIBRARY)
-  {
-	  defines_list.push_back("_MAGICKLIB_");
-  }
+  //if (project_type == LIBRARY)
+  //{
+	//  defines_list.push_back("_MAGICKLIB_");
+  //}
 
   std::string libpath;
   libpath = "..\\";
@@ -646,10 +646,10 @@ void CConfigureApp::process_3rd_party_library(ofstream &dsw,
 		defines_list.push_back("_LIB");
   }
 
-  if (project_type == LIBRARY)
-  {
-	  defines_list.push_back("_MAGICKLIB_");
-  }
+  //if (project_type == LIBRARY)
+  //{
+	//  defines_list.push_back("_MAGICKLIB_");
+  //}
 
   std::string libpath;
   bool do_extra_stuff = false;
