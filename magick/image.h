@@ -818,8 +818,7 @@ extern MagickExport unsigned int
   TransformRGBImage(Image *,const ColorspaceType),
   TransparentImage(Image *,const PixelPacket),
   UnregisterMagickInfo(const char *),
-  WriteImage(const ImageInfo *,Image *),
-  WriteStream(const ImageInfo *,Image *,void (*)(Image *));
+  WriteImage(const ImageInfo *,Image *);
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),
