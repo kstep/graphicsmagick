@@ -543,6 +543,7 @@ static int jpeg_transfer_1(Image *ifile, Image *ofile)
   return c;
 }
 
+#ifdef META_JPEG_STRIP_SUPPORTED /* Currently unused */
 static int jpeg_skip_1(Image *ifile)
 {
   int c;
@@ -552,6 +553,7 @@ static int jpeg_skip_1(Image *ifile)
     return EOF;
   return c;
 }
+#endif
 
 static int jpeg_read_remaining(Image *ifile, Image *ofile)
 {
@@ -626,6 +628,7 @@ static int jpeg_nextmarker(Image *ifile, Image *ofile)
   return c;
 }
 
+#ifdef META_JPEG_STRIP_SUPPORTED /* Currently unused */
 static int jpeg_skip_till_marker(Image *ifile, int marker)
 {
   int c, i;
@@ -652,6 +655,7 @@ static int jpeg_skip_till_marker(Image *ifile, int marker)
   } while (c != marker);
   return c;
 }
+#endif
 
 static char psheader[] = "\xFF\xED\0\0Photoshop 3.0\08BIM\x04\x04\0\0\0\0";
 
@@ -725,6 +729,7 @@ static int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
   return 1;
 }
 
+#ifdef META_JPEG_STRIP_SUPPORTED /* Currently unused */
 /* handle stripping the APP13 data out of a JPEG */
 static void jpeg_strip(Image *ifile, Image *ofile)
 {
@@ -738,7 +743,9 @@ static void jpeg_strip(Image *ifile, Image *ofile)
     jpeg_read_remaining(ifile, ofile);
   }
 }
+#endif
 
+#ifdef META_JPEG_STRIP_SUPPORTED /* Currently unused */
 /* Extract any APP13 binary data into a file. */
 static int jpeg_extract(Image *ifile, Image *ofile)
 {
@@ -761,6 +768,7 @@ static int jpeg_extract(Image *ifile, Image *ofile)
   }
   return 1;
 }
+#endif
 
 static Image *ReadMETAImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
