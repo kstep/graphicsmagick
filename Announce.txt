@@ -24,51 +24,34 @@ for details):
 
   o General:
 
-    - WMF rendering is significantly improved. Fill patterns and
-      clip-masks are now supported. Text is properly centered.
-      
-    - PSD coder now supports more types of images (Duotone, etc.)
-      and should read more PSD files.
-      
-    - PSD and XCF coders now support setting the layer
-      CompositeOperator.
-    
-    - PDF coder now writes out a CropBox for each page
+    - Palm pixmap support contributed by Christopher R. Hawks.
+
+    - Bugfixes to AVI, BMP, DIB, MPC, PGM, PPM, PSD, WMF, & XCF coders.
+
+    - ASCII Postscript Type 1 (PFA) fonts rendered via FreeType.
+
+    - Format of type.mgk font specification file is extended to
+      support more font attributes, and in particular, to support
+      including additional font specification files.
+
+    - Font specification files provided for Ghostscript, Solaris DPS,
+      and Microsoft Windows fonts.
+
+    - Font search path (TT_FONT_PATH) no longer supported.
+
+    - A ChangeLog is now included with the source distribution.
       
   o Utilities enhancements/changes:
 
-    - Added conjure, the Magick Scripting Language interpreter.
+    - Use -trim to trim the edges of an image.
 
   o C API enhancements:
 
-    - Display the search path in the event a utility cannot find a 
-      particular configuration file.
-
-    - Memory-mapped files are now properly unmapped for PingImage().
-
-    - Corrected bias when downsizing an image with ResizeImage().
-    
-    - Added a number of new CompositeOperators: NoCompositeOp,
-      DarkenCompositeOp, LightenCompositeOp, HueCompositeOp,
-      SaturateCompositeOp, ValueCompositeOp, ColorizeCompositeOp,
-      LuminizeCompositeOp, ScreenCompositeOp, OverlayCompositeOp.
+    - Image list functions added to API.
 
   o C++ API enhancements:
 
-    - TypeMetrics class re-defined to properly present metrics as
-      returned by ImageMagick.
-
-    - Fixed possible stack corruption in Color class.
-
-    - DrawableCompositeImage can be constructed based on an Image
-      in memory (rather than by filename).
-
-    - Added DrawablePushPattern and DrawablePopPattern classes to
-      support fill and stroke pattern definition.
-
-    - Added Image strokePattern() and fillPattern() methods to support
-      supplying the image to use when stroking or filling objects.
-
+    - Various bugfixes (see Magick++/NEWS and Magick++/ChangeLog).
 
 The ImageMagick WWW page is
 
