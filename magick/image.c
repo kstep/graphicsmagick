@@ -368,10 +368,11 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
   client_name=SetClientName((char *) NULL);
   resource_database=XGetResourceDatabase(display,client_name);
   XGetResourceInfo(resource_database,client_name,&resource);
-  *resource.image_info=(*image_info);
+  resource.image_info=CloneImageInfo(image_info);
   resource.immutable=True;
   (void) XAnimateImages(display,&resource,&client_name,1,image);
   (void) XCloseDisplay(display);
+  DestroyImageInfo(resource.image_info);
   return(image->exception.severity == UndefinedException);
 }
 #else
