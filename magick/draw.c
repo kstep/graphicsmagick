@@ -838,7 +838,6 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
 {
   int
     coordinates,
-    path_length,
     start;
 
   PathInfo
@@ -849,7 +848,6 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
 
   PointInfo
     p,
-    point,
     q;
 
   register int
@@ -870,54 +868,47 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
     default:
       break;
   }
-  n=0;
-  q.x=(-1.0);
-  q.y=(-1.0);
+  for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
+  path_info=(PathInfo *) AcquireMemory((2*i+3)*sizeof(PathInfo));
+  if (path_info == (PathInfo *) NULL)
+    return((PathInfo *) NULL);
   coordinates=0;
+  n=0;
+  q=primitive_info[0].point;
   start=0;
-  path_length=0;
-  path_info=(PathInfo *) NULL;
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
   {
-    point=primitive_info[i].point;
     code=LineToCode;
     if (coordinates <= 0)
       {
         coordinates=primitive_info[i].coordinates;
-        path_length+=2*coordinates+3;
-        if (path_info == (PathInfo *) NULL)
-          path_info=(PathInfo *) AcquireMemory(path_length*sizeof(PathInfo));
-        else
-          ReacquireMemory((void **) &path_info,path_length*sizeof(PathInfo));
-        if (path_info == (PathInfo *) NULL)
-          return((PathInfo *) NULL);
+        p=primitive_info[i].point;
         start=n;
-        p=point;
         code=MoveToCode;
       }
     coordinates--;
     /*
-      Reject duplicate points.
+      Eliminate duplicate points.
     */
-    if ((fabs(q.x-point.x) > MagickEpsilon) ||
-        (fabs(q.y-point.y) > MagickEpsilon))
+    if ((fabs(q.x-primitive_info[i].point.x) > MagickEpsilon) ||
+        (fabs(q.y-primitive_info[i].point.y) > MagickEpsilon))
       {
         path_info[n].code=code;
-        path_info[n].point=point;
-        q=point;
+        path_info[n].point=primitive_info[i].point;
+        q=primitive_info[i].point;
         n++;
       }
     if (coordinates > 0)
       continue;
-    if ((fabs(p.x-point.x) <= MagickEpsilon) &&
-        (fabs(p.y-point.y) <= MagickEpsilon))
+    if ((fabs(p.x-primitive_info[i].point.x) <= MagickEpsilon) &&
+        (fabs(p.y-primitive_info[i].point.y) <= MagickEpsilon))
       continue;
     /*
       Mark the p point as open if it does not match the q.
     */
     path_info[start].code=OpenCode;
     path_info[n].code=GhostlineCode;
-    path_info[n].point=point;
+    path_info[n].point=primitive_info[i].point;
     n++;
     path_info[n].code=LineToCode;
     path_info[n].point=p;
