@@ -58,13 +58,15 @@
 #include "xwindows.h"
 #endif
 #if defined(HasTTF)
-#if !defined(vms) && !defined(macintosh)
+#if FREETYPE_MAJOR > 1
+#include "freetype/freetype.h"
+#include "freetype/ftglyph.h"
+#else
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #include "freetype/freetype.h"
 #else
 #include "freetype.h"
 #endif
-#if FREETYPE_MAJOR > 1
-#include "freetype/ftglyph.h"
 #endif
 #endif
 
