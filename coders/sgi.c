@@ -785,8 +785,8 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
       Write SGI header.
     */
     MSBFirstWriteShort(image,iris_info.magic);
-    (void) WriteBlobByte(image,iris_info.storage);
-    (void) WriteBlobByte(image,iris_info.bytes_per_pixel);
+    (void) WriteByteBlob(image,iris_info.storage);
+    (void) WriteByteBlob(image,iris_info.bytes_per_pixel);
     MSBFirstWriteShort(image,iris_info.dimension);
     MSBFirstWriteShort(image,iris_info.columns);
     MSBFirstWriteShort(image,iris_info.rows);

@@ -39,8 +39,8 @@ extern MagickExport size_t
   ReadBlob(Image *,const size_t,void *),
   ReadBlobBlock(Image *,char *),
   WriteBlob(Image *,const size_t,const void *),
-  WriteBlobByte(Image *,const int),
-  WriteBlobString(Image *,const char *);
+  WriteByteBlob(Image *,const int),
+  WriteStringBlob(Image *,const char *);
 
 extern MagickExport unsigned int
   OpenBlob(const ImageInfo *,Image *,const char *),

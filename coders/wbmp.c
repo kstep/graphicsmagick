@@ -390,13 +390,13 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
       bit++;
       if (bit == 8)
         {
-          (void) WriteBlobByte(image,byte);
+          (void) WriteByteBlob(image,byte);
           bit=0;
           byte=0;
         }
     }
     if (bit != 0)
-      (void) WriteBlobByte(image,byte);
+      (void) WriteByteBlob(image,byte);
     if (QuantumTick(y,image->rows))
       MagickMonitor(SaveImageText,y,image->rows);
   }

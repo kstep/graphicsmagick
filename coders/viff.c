@@ -1025,7 +1025,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     MSBFirstWriteLong(image,viff_info.maps_per_cycle);
     MSBFirstWriteLong(image,viff_info.color_space_model);
     for (i=0; i < 420; i++)
-      (void) WriteBlobByte(image,'\0');
+      (void) WriteByteBlob(image,'\0');
     /*
       Convert MIFF to VIFF raster pixels.
     */

@@ -541,9 +541,9 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
       LSBFirstWriteLong(image,attributes.st_size);
       LSBFirstWriteShort(image,0xffff);
       for (c=fgetc(ps_file); c != EOF; c=fgetc(ps_file))
-        (void) WriteBlobByte(image,c);
+        (void) WriteByteBlob(image,c);
       for (c=fgetc(tiff_file); c != EOF; c=fgetc(tiff_file))
-        (void) WriteBlobByte(image,c);
+        (void) WriteByteBlob(image,c);
       CloseBlob(image);
     }
   (void) fclose(ps_file);

@@ -903,16 +903,16 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           (void) strcpy(buffer,"%!PS-Adobe-3.0\n");
         else
           (void) strcpy(buffer,"%!PS-Adobe-3.0 EPSF-3.0\n");
-        (void) WriteBlobString(image,buffer);
-        (void) WriteBlobString(image,"%%Creator: (ImageMagick)\n");
+        (void) WriteStringBlob(image,buffer);
+        (void) WriteStringBlob(image,"%%Creator: (ImageMagick)\n");
         FormatString(buffer,"%%%%Title: (%.1024s)\n",image->filename);
-        (void) WriteBlobString(image,buffer);
+        (void) WriteStringBlob(image,buffer);
         timer=time((time_t *) NULL);
         (void) localtime(&timer);
         (void) strcpy(date,ctime(&timer));
         date[Extent(date)-1]='\0';
         FormatString(buffer,"%%%%CreationDate: (%.1024s)\n",date);
-        (void) WriteBlobString(image,buffer);
+        (void) WriteStringBlob(image,buffer);
         bounds.x1=x;
         bounds.y1=y;
         bounds.x2=x+x_scale-1;
@@ -922,30 +922,30 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         else
           FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
             bounds.x1,bounds.y1,bounds.x2,bounds.y2);
-        (void) WriteBlobString(image,buffer);
+        (void) WriteStringBlob(image,buffer);
         attribute=GetImageAttribute(image,"Label");
         if (attribute != (ImageAttribute *) NULL)
-          (void) WriteBlobString(image,
+          (void) WriteStringBlob(image,
             "%%%%DocumentNeededResources: font Times\n");
-        (void) WriteBlobString(image,"%%DocumentData: Clean7Bit\n");
-        (void) WriteBlobString(image,"%%LanguageLevel: 1\n");
+        (void) WriteStringBlob(image,"%%DocumentData: Clean7Bit\n");
+        (void) WriteStringBlob(image,"%%LanguageLevel: 1\n");
         if (LocaleCompare(image_info->magick,"PS") != 0)
-          (void) WriteBlobString(image,"%%Pages: 1\n");
+          (void) WriteStringBlob(image,"%%Pages: 1\n");
         else
           {
             /*
               Compute the number of pages.
             */
-            (void) WriteBlobString(image,"%%Orientation: Portrait\n");
-            (void) WriteBlobString(image,"%%PageOrder: Ascend\n");
+            (void) WriteStringBlob(image,"%%Orientation: Portrait\n");
+            (void) WriteStringBlob(image,"%%PageOrder: Ascend\n");
             FormatString(buffer,"%%%%Pages: %u\n",
               image_info->adjoin ? GetNumberScenes(image) : 1);
-            (void) WriteBlobString(image,buffer);
+            (void) WriteStringBlob(image,buffer);
           }
-        (void) WriteBlobString(image,"%%EndComments\n");
-        (void) WriteBlobString(image,"\n%%BeginDefaults\n");
-        (void) WriteBlobString(image,"%%PageOrientation: Portrait\n");
-        (void) WriteBlobString(image,"%%EndDefaults\n\n");
+        (void) WriteStringBlob(image,"%%EndComments\n");
+        (void) WriteStringBlob(image,"\n%%BeginDefaults\n");
+        (void) WriteStringBlob(image,"%%PageOrientation: Portrait\n");
+        (void) WriteStringBlob(image,"%%EndDefaults\n\n");
         if ((LocaleCompare(image_info->magick,"EPI") == 0) ||
             (LocaleCompare(image_info->magick,"EPT") == 0) ||
             (LocaleCompare(image_info->magick,"EPSI") == 0))
@@ -987,7 +987,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             FormatString(buffer,"%%%%BeginPreview: %u %u %u %u\n%%  ",
               preview_image->columns,preview_image->rows,(unsigned int) 1,
               (((preview_image->columns+7) >> 3)*preview_image->rows+35)/36);
-            (void) WriteBlobString(image,buffer);
+            (void) WriteStringBlob(image,buffer);
             count=0;
             for (y=0; y < (int) image->rows; y++)
             {
@@ -1006,11 +1006,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 if (bit == 8)
                   {
                     FormatString(buffer,"%02x",byte & 0xff);
-                    (void) WriteBlobString(image,buffer);
+                    (void) WriteStringBlob(image,buffer);
                     count++;
                     if (count == 36)
                       {
-                        (void) WriteBlobString(image,"\n%  ");
+                        (void) WriteStringBlob(image,"\n%  ");
                         count=0;
                       };
                     bit=0;
@@ -1021,16 +1021,16 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 {
                   byte<<=(8-bit);
                   FormatString(buffer,"%02x",byte & 0xff);
-                  (void) WriteBlobString(image,buffer);
+                  (void) WriteStringBlob(image,buffer);
                   count++;
                   if (count == 36)
                     {
-                      (void) WriteBlobString(image,"\n%  ");
+                      (void) WriteStringBlob(image,"\n%  ");
                       count=0;
                     };
                 };
             }
-            (void) WriteBlobString(image,"\n%%EndPreview\n");
+            (void) WriteStringBlob(image,"\n%%EndPreview\n");
             DestroyImage(preview_image);
           }
         /*
@@ -1039,33 +1039,33 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         for (q=PostscriptProlog; *q; q++)
         {
           FormatString(buffer,"%.255s\n",*q);
-          (void) WriteBlobString(image,buffer);
+          (void) WriteStringBlob(image,buffer);
         }
         attribute=GetImageAttribute(image,"Label");
         if (attribute != (ImageAttribute *) NULL)
           for (i=MultilineCensus(attribute->value)-1; i >= 0; i--)
           {
-            (void) WriteBlobString(image,"  /label 512 string def\n");
-            (void) WriteBlobString(image,"  currentfile label readline pop\n");
+            (void) WriteStringBlob(image,"  /label 512 string def\n");
+            (void) WriteStringBlob(image,"  currentfile label readline pop\n");
             FormatString(buffer,"  0 y %f add moveto label show pop\n",
               i*image_info->pointsize+12);
-            (void) WriteBlobString(image,buffer);
+            (void) WriteStringBlob(image,buffer);
           }
         for (q=PostscriptEpilog; *q; q++)
         {
           FormatString(buffer,"%.255s\n",*q);
-          (void) WriteBlobString(image,buffer);
+          (void) WriteStringBlob(image,buffer);
         }
         if (LocaleCompare(image_info->magick,"PS") == 0)
-          (void) WriteBlobString(image,"  showpage\n");
-        (void) WriteBlobString(image,"} bind def\n");
-        (void) WriteBlobString(image,"%%EndProlog\n");
+          (void) WriteStringBlob(image,"  showpage\n");
+        (void) WriteStringBlob(image,"} bind def\n");
+        (void) WriteStringBlob(image,"%%EndProlog\n");
       }
     FormatString(buffer,"%%%%Page:  1 %u\n",page++);
-    (void) WriteBlobString(image,buffer);
+    (void) WriteStringBlob(image,buffer);
     FormatString(buffer,"%%%%PageBoundingBox: %d %d %d %d\n",x,y,
       x+(int) width,y+(int) (height+text_size));
-    (void) WriteBlobString(image,buffer);
+    (void) WriteStringBlob(image,buffer);
     if (x < bounds.x1)
       bounds.x1=x;
     if (y < bounds.y1)
@@ -1076,16 +1076,16 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       bounds.y2=y+(height+text_size)-1;
     attribute=GetImageAttribute(image,"Label");
     if (attribute != (ImageAttribute *) NULL)
-      (void) WriteBlobString(image,"%%%%PageResources: font Times\n");
+      (void) WriteStringBlob(image,"%%%%PageResources: font Times\n");
     if (LocaleCompare(image_info->magick,"PS") != 0)
-      (void) WriteBlobString(image,"userdict begin\n");
-    (void) WriteBlobString(image,"DisplayImage\n");
+      (void) WriteStringBlob(image,"userdict begin\n");
+    (void) WriteStringBlob(image,"DisplayImage\n");
     /*
       Output image data.
     */
     FormatString(buffer,"%d %d\n%g %g\n%f\n",x,y,x_scale,y_scale,
       image_info->pointsize);
-    (void) WriteBlobString(image,buffer);
+    (void) WriteStringBlob(image,buffer);
     labels=(char **) NULL;
     attribute=GetImageAttribute(image,"Label");
     if (attribute != (ImageAttribute *) NULL)
@@ -1095,7 +1095,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         for (i=0; labels[i] != (char *) NULL; i++)
         {
           FormatString(buffer,"%.1024s \n",labels[i]);
-          (void) WriteBlobString(image,buffer);
+          (void) WriteStringBlob(image,buffer);
           LiberateMemory((void **) &labels[i]);
         }
         LiberateMemory((void **) &labels);
@@ -1112,7 +1112,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         FormatString(buffer,"%u %u\n%d\n%d\n",image->columns,image->rows,
           (int) (image->storage_class == PseudoClass),
           (int) (image_info->compression == NoCompression));
-        (void) WriteBlobString(image,buffer);
+        (void) WriteStringBlob(image,buffer);
         switch (image_info->compression)
         {
           case RunlengthEncodedCompression:
@@ -1144,11 +1144,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                         DownScale(pixel.red),DownScale(pixel.green),
                         DownScale(pixel.blue),
                         (unsigned long) Min(length,0xff));
-                    (void) WriteBlobString(image,buffer);
+                    (void) WriteStringBlob(image,buffer);
                     i++;
                     if (i == 9)
                       {
-                        (void) WriteBlobByte(image,'\n');
+                        (void) WriteByteBlob(image,'\n');
                         i=0;
                       }
                     length=0;
@@ -1180,12 +1180,12 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 else
                   FormatString(buffer,"%02lx%02lx%02lx",
                     DownScale(p->red),DownScale(p->green),DownScale(p->blue));
-                (void) WriteBlobString(image,buffer);
+                (void) WriteStringBlob(image,buffer);
                 i++;
                 if (i == 12)
                   {
                     i=0;
-                    (void) WriteBlobByte(image,'\n');
+                    (void) WriteByteBlob(image,'\n');
                   }
                 p++;
               }
@@ -1196,14 +1196,14 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             break;
           }
         }
-        (void) WriteBlobByte(image,'\n');
+        (void) WriteByteBlob(image,'\n');
       }
     else
       if (IsGrayImage(image))
         {
           FormatString(buffer,"%u %u\n1\n1\n1\n%d\n",
             image->columns,image->rows,IsMonochromeImage(image) ? 1 : 8);
-          (void) WriteBlobString(image,buffer);
+          (void) WriteStringBlob(image,buffer);
           if (!IsMonochromeImage(image))
             {
               /*
@@ -1218,11 +1218,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (int) image->columns; x++)
                 {
                   FormatString(buffer,"%02lx",(int) Intensity(*p));
-                  (void) WriteBlobString(image,buffer);
+                  (void) WriteStringBlob(image,buffer);
                   i++;
                   if (i == 36)
                     {
-                      (void) WriteBlobByte(image,'\n');
+                      (void) WriteByteBlob(image,'\n');
                       i=0;
                     }
                   p++;
@@ -1262,11 +1262,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   if (bit == 8)
                     {
                       FormatString(buffer,"%02x",byte & 0xff);
-                      (void) WriteBlobString(image,buffer);
+                      (void) WriteStringBlob(image,buffer);
                       count++;
                       if (count == 36)
                         {
-                          (void) WriteBlobByte(image,'\n');
+                          (void) WriteByteBlob(image,'\n');
                           count=0;
                         };
                       bit=0;
@@ -1278,11 +1278,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   {
                     byte<<=(8-bit);
                     FormatString(buffer,"%02x",byte & 0xff);
-                    (void) WriteBlobString(image,buffer);
+                    (void) WriteStringBlob(image,buffer);
                     count++;
                     if (count == 36)
                       {
-                        (void) WriteBlobByte(image,'\n');
+                        (void) WriteByteBlob(image,'\n');
                         count=0;
                       };
                   };
@@ -1292,7 +1292,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               }
             }
           if (count != 0)
-            (void) WriteBlobByte(image,'\n');
+            (void) WriteByteBlob(image,'\n');
         }
       else
         {
@@ -1302,19 +1302,19 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           FormatString(buffer,"%u %u\n%d\n%d\n0\n",image->columns,image->rows,
             (int) (image->storage_class == PseudoClass),
             (int) (image_info->compression == NoCompression));
-          (void) WriteBlobString(image,buffer);
+          (void) WriteStringBlob(image,buffer);
           /*
             Dump number of colors and colormap.
           */
           FormatString(buffer,"%u\n",image->colors);
-          (void) WriteBlobString(image,buffer);
+          (void) WriteStringBlob(image,buffer);
           for (i=0; i < (int) image->colors; i++)
           {
             FormatString(buffer,"%02lx%02lx%02lx\n",
               DownScale(image->colormap[i].red),
               DownScale(image->colormap[i].green),
               DownScale(image->colormap[i].blue));
-            (void) WriteBlobString(image,buffer);
+            (void) WriteStringBlob(image,buffer);
           }
           switch (image_info->compression)
           {
@@ -1342,11 +1342,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     {
                       FormatString(buffer,"%02x%02x",(unsigned int)
                         index,(unsigned int) Min(length,0xff));
-                      (void) WriteBlobString(image,buffer);
+                      (void) WriteStringBlob(image,buffer);
                       i++;
                       if (i == 18)
                         {
-                          (void) WriteBlobByte(image,'\n');
+                          (void) WriteByteBlob(image,'\n');
                           i=0;
                         }
                       length=0;
@@ -1376,11 +1376,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (int) image->columns; x++)
                 {
                   FormatString(buffer,"%02x",indexes[x]);
-                  (void) WriteBlobString(image,buffer);
+                  (void) WriteStringBlob(image,buffer);
                   i++;
                   if (i == 36)
                     {
-                      (void) WriteBlobByte(image,'\n');
+                      (void) WriteByteBlob(image,'\n');
                       i=0;
                     }
                   p++;
@@ -1392,11 +1392,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               break;
             }
           }
-          (void) WriteBlobByte(image,'\n');
+          (void) WriteByteBlob(image,'\n');
         }
     if (LocaleCompare(image_info->magick,"PS") != 0)
-      (void) WriteBlobString(image,"end\n");
-    (void) WriteBlobString(image,"%%PageTrailer\n");
+      (void) WriteStringBlob(image,"end\n");
+    (void) WriteStringBlob(image,"%%PageTrailer\n");
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
@@ -1405,14 +1405,14 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  (void) WriteBlobString(image,"%%Trailer\n");
+  (void) WriteStringBlob(image,"%%Trailer\n");
   if (page > 2)
     {
       FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
         bounds.x1,bounds.y1,bounds.x2,bounds.y2);
-      (void) WriteBlobString(image,buffer);
+      (void) WriteStringBlob(image,buffer);
     }
-  (void) WriteBlobString(image,"%%EOF\n");
+  (void) WriteStringBlob(image,"%%EOF\n");
   CloseBlob(image);
   return(True);
 }

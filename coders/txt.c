@@ -386,17 +386,17 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
           {
             FormatString(buffer,"%d,%d: %u,%u,%u,%u\n",x,y,
               p->red,p->green,p->blue,p->opacity);
-            (void) WriteBlobString(image,buffer);
+            (void) WriteStringBlob(image,buffer);
           }
         else
           {
             FormatString(buffer,"%d,%d: %u,%u,%u  ",x,y,
               p->red,p->green,p->blue);
-            (void) WriteBlobString(image,buffer);
+            (void) WriteStringBlob(image,buffer);
             FormatString(buffer,HexColorFormat,p->red,p->green,p->blue);
-            (void) WriteBlobString(image,buffer);
+            (void) WriteStringBlob(image,buffer);
           }
-        (void) WriteBlobByte(image,'\n');
+        (void) WriteByteBlob(image,'\n');
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
             MagickMonitor(SaveImageText,y,image->rows);

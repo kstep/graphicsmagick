@@ -947,17 +947,17 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
       */
       MSBFirstWriteLong(image,768);
       for (i=0; i < (int) image->colors; i++)
-        (void) WriteBlobByte(image,DownScale(image->colormap[i].red));
+        (void) WriteByteBlob(image,DownScale(image->colormap[i].red));
       for ( ; i < 256; i++)
-        (void) WriteBlobByte(image,0);
+        (void) WriteByteBlob(image,0);
       for (i=0; i < (int) image->colors; i++)
-        (void) WriteBlobByte(image,DownScale(image->colormap[i].green));
+        (void) WriteByteBlob(image,DownScale(image->colormap[i].green));
       for ( ; i < 256; i++)
-        (void) WriteBlobByte(image,0);
+        (void) WriteByteBlob(image,0);
       for (i=0; i < (int) image->colors; i++)
-        (void) WriteBlobByte(image,DownScale(image->colormap[i].blue));
+        (void) WriteByteBlob(image,DownScale(image->colormap[i].blue));
       for ( ; i < 256; i++)
-        (void) WriteBlobByte(image,0);
+        (void) WriteByteBlob(image,0);
     }
   MSBFirstWriteLong(image,0);  /* image resource block */
   MSBFirstWriteLong(image,0);  /* layer and mask block */

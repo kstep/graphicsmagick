@@ -806,10 +806,10 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     /*
       Write PCX header.
     */
-    (void) WriteBlobByte(image,pcx_info.identifier);
-    (void) WriteBlobByte(image,pcx_info.version);
-    (void) WriteBlobByte(image,pcx_info.encoding);
-    (void) WriteBlobByte(image,pcx_info.bits_per_pixel);
+    (void) WriteByteBlob(image,pcx_info.identifier);
+    (void) WriteByteBlob(image,pcx_info.version);
+    (void) WriteByteBlob(image,pcx_info.encoding);
+    (void) WriteByteBlob(image,pcx_info.bits_per_pixel);
     LSBFirstWriteShort(image,(unsigned int) pcx_info.left);
     LSBFirstWriteShort(image,(unsigned int) pcx_info.top);
     LSBFirstWriteShort(image,(unsigned int) pcx_info.right);
@@ -834,12 +834,12 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         *q++=DownScale(image->colormap[i].blue);
       }
     (void) WriteBlob(image,3*16,(char *) pcx_colormap);
-    (void) WriteBlobByte(image,pcx_info.reserved);
-    (void) WriteBlobByte(image,pcx_info.planes);
+    (void) WriteByteBlob(image,pcx_info.reserved);
+    (void) WriteByteBlob(image,pcx_info.planes);
     LSBFirstWriteShort(image,(unsigned int) pcx_info.bytes_per_line);
     LSBFirstWriteShort(image,(unsigned int) pcx_info.palette_info);
     for (i=0; i < 58; i++)
-      (void) WriteBlobByte(image,'\0');
+      (void) WriteByteBlob(image,'\0');
     packets=image->rows*pcx_info.bytes_per_line*pcx_info.planes;
     pcx_pixels=(unsigned char *) AcquireMemory(packets);
     if (pcx_pixels == (unsigned char *) NULL)
@@ -972,23 +972,23 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           if ((count > 1) || ((previous & 0xc0) == 0xc0))
             {
               count|=0xc0;
-              (void) WriteBlobByte(image,count);
+              (void) WriteByteBlob(image,count);
             }
-          (void) WriteBlobByte(image,previous);
+          (void) WriteByteBlob(image,previous);
           previous=packet;
           count=1;
         }
         if ((count > 1) || ((previous & 0xc0) == 0xc0))
           {
             count|=0xc0;
-            (void) WriteBlobByte(image,count);
+            (void) WriteByteBlob(image,count);
           }
-        (void) WriteBlobByte(image,previous);
+        (void) WriteByteBlob(image,previous);
         if (QuantumTick(y,image->rows))
           MagickMonitor(SaveImageText,y,image->rows);
       }
     }
-    (void) WriteBlobByte(image,pcx_info.colormap_signature);
+    (void) WriteByteBlob(image,pcx_info.colormap_signature);
     (void) WriteBlob(image,3*256,(char *) pcx_colormap);
     LiberateMemory((void **) &pcx_pixels);
     LiberateMemory((void **) &pcx_colormap);

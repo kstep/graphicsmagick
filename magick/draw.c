@@ -853,14 +853,12 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
     default:
       break;
   }
-  coordinates=0;
   n=0;
   q.x=(-1.0);
   q.y=(-1.0);
+  coordinates=0;
   path_length=0;
-  path_info=(PathInfo *) AcquireMemory((path_length+3)*sizeof(PathInfo));
-  if (path_info == (PathInfo *) NULL)
-    return((PathInfo *) NULL);
+  path_info=(PathInfo *) NULL;
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
   {
     point=primitive_info[i].point;
@@ -868,8 +866,11 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
     if (coordinates <= 0)
       {
         coordinates=primitive_info[i].coordinates;
-        path_length+=coordinates;
-        ReacquireMemory((void **) &path_info,(path_length+3)*sizeof(PathInfo));
+        path_length+=2*coordinates+3;
+        if (path_info == (PathInfo *) NULL)
+          path_info=(PathInfo *) AcquireMemory(path_length*sizeof(PathInfo));
+        else
+          ReacquireMemory((void **) &path_info,path_length*sizeof(PathInfo));
         if (path_info == (PathInfo *) NULL)
           return((PathInfo *) NULL);
         start=n;
@@ -1328,8 +1329,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DrawImage draws a primitive (line, rectangle, ellipse) on the
-%  image.
+%  Method DrawImage draws a primitive (line, rectangle, ellipse) on the image.
 %
 %  The format of the DrawImage method is:
 %
@@ -1480,11 +1480,20 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     (void) fprintf(stdout,"begin vector-graphics\n");
   for (q=primitive; *q != '\0'; )
   {
+    while (isspace((int) (*q)) && (*q != '\0'))
+      q++;
+    if (*q == '#')
+      {
+        /*
+          Comment.
+        */
+        while ((*q != '\n') && (*q != '\0'))
+          q++;
+        continue;
+      }
     /*
       Define primitive.
     */
-    while (isspace((int) (*q)) && (*q != '\0'))
-      q++;
     p=q;
     for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
       keyword[x]=(*q++);

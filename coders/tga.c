@@ -654,18 +654,18 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     /*
       Write TGA header.
     */
-    (void) WriteBlobByte(image,targa_info.id_length);
-    (void) WriteBlobByte(image,targa_info.colormap_type);
-    (void) WriteBlobByte(image,targa_info.image_type);
+    (void) WriteByteBlob(image,targa_info.id_length);
+    (void) WriteByteBlob(image,targa_info.colormap_type);
+    (void) WriteByteBlob(image,targa_info.image_type);
     LSBFirstWriteShort(image,targa_info.colormap_index);
     LSBFirstWriteShort(image,targa_info.colormap_length);
-    (void) WriteBlobByte(image,targa_info.colormap_size);
+    (void) WriteByteBlob(image,targa_info.colormap_size);
     LSBFirstWriteShort(image,targa_info.x_origin);
     LSBFirstWriteShort(image,targa_info.y_origin);
     LSBFirstWriteShort(image,targa_info.width);
     LSBFirstWriteShort(image,targa_info.height);
-    (void) WriteBlobByte(image,targa_info.bits_per_pixel);
-    (void) WriteBlobByte(image,targa_info.attributes);
+    (void) WriteByteBlob(image,targa_info.bits_per_pixel);
+    (void) WriteByteBlob(image,targa_info.attributes);
     if (targa_info.id_length != 0)
       (void) WriteBlob(image,targa_info.id_length,attribute->value);
     if (IsPseudoClass(image))

@@ -4005,29 +4005,29 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  (void) WriteBlobString(image,"/*\n");
-  (void) WriteBlobString(image,"  Logo image declaration.\n");
-  (void) WriteBlobString(image,"*/\n");
+  (void) WriteStringBlob(image,"/*\n");
+  (void) WriteStringBlob(image,"  Logo image declaration.\n");
+  (void) WriteStringBlob(image,"*/\n");
   FormatString(buffer,"#define LogoImageExtent  %lu\n\n",filesize);
-  (void) WriteBlobString(image,buffer);
-  (void) WriteBlobString(image,"static unsigned char\n");
-  (void) WriteBlobString(image,"  LogoImage[]=\n");
-  (void) WriteBlobString(image,"  {\n");
-  (void) WriteBlobString(image,"    ");
+  (void) WriteStringBlob(image,buffer);
+  (void) WriteStringBlob(image,"static unsigned char\n");
+  (void) WriteStringBlob(image,"  LogoImage[]=\n");
+  (void) WriteStringBlob(image,"  {\n");
+  (void) WriteStringBlob(image,"    ");
   for (i=0; ; i++)
   {
     c=fgetc(file);
     if (c < 0)
       break;
     FormatString(buffer,"0x%02x, ",c);
-    (void) WriteBlobString(image,buffer);
+    (void) WriteStringBlob(image,buffer);
     if (((i+1) % 12) == 0)
       {
         (void) strcpy(buffer,"\n    ");
-        (void) WriteBlobString(image,buffer);
+        (void) WriteStringBlob(image,buffer);
       }
   }
-  (void) WriteBlobString(image,"\n  };\n");
+  (void) WriteStringBlob(image,"\n  };\n");
   (void) fclose(file);
   CloseBlob(image);
   return(True);

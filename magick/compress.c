@@ -284,9 +284,9 @@ MagickExport void Ascii85Flush(Image *image)
       (void) WriteBlob(image,image->ascii85.offset+1,
         *tuple == 'z' ? "!!!!" : tuple);
     }
-  (void) WriteBlobByte(image,'~');
-  (void) WriteBlobByte(image,'>');
-  (void) WriteBlobByte(image,'\n');
+  (void) WriteByteBlob(image,'~');
+  (void) WriteByteBlob(image,'>');
+  (void) WriteByteBlob(image,'\n');
 }
 
 MagickExport void Ascii85Encode(Image *image,const unsigned int code)
@@ -314,10 +314,10 @@ MagickExport void Ascii85Encode(Image *image,const unsigned int code)
       image->ascii85.line_break--;
       if ((image->ascii85.line_break < 0) && (*(q+1) != '%'))
         {
-          (void) WriteBlobByte(image,'\n');
+          (void) WriteByteBlob(image,'\n');
           image->ascii85.line_break=2*MaxLineExtent;
         }
-      (void) WriteBlobByte(image,*q);
+      (void) WriteByteBlob(image,*q);
     }
     p+=8;
   }
@@ -653,7 +653,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   if ((bit & 0xff) == 0)   \
     {  \
       if (LocaleCompare(image_info->magick,"FAX") == 0) \
-        (void) WriteBlobByte(image,byte);  \
+        (void) WriteByteBlob(image,byte);  \
       else \
         Ascii85Encode(image,(unsigned int) byte); \
       byte=0;  \
@@ -835,7 +835,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   if (bit != 0x80)
     {
       if (LocaleCompare(image_info->magick,"FAX") == 0)
-        (void) WriteBlobByte(image,byte);
+        (void) WriteByteBlob(image,byte);
       else
         Ascii85Encode(image,(unsigned int) byte);
     }

@@ -311,10 +311,10 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
     {
       if (full)
         {
-          (void) WriteBlobByte(image,DownScale((u+p->green) >> 1));
-          (void) WriteBlobByte(image,DownScale(y1));
-          (void) WriteBlobByte(image,DownScale((v+p->blue) >> 1));
-          (void) WriteBlobByte(image,DownScale(p->red));
+          (void) WriteByteBlob(image,DownScale((u+p->green) >> 1));
+          (void) WriteByteBlob(image,DownScale(y1));
+          (void) WriteByteBlob(image,DownScale((v+p->blue) >> 1));
+          (void) WriteByteBlob(image,DownScale(p->red));
           full=False;
         }
       else

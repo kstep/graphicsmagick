@@ -404,7 +404,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
     packet[byte_count++]=(datum & 0xff); \
     if (byte_count >= 254) \
       { \
-        (void) WriteBlobByte(image,byte_count); \
+        (void) WriteByteBlob(image,byte_count); \
         (void) WriteBlob(image,byte_count,(char *) packet); \
         byte_count=0; \
       } \
@@ -623,7 +623,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
       packet[byte_count++]=(datum & 0xff);
       if (byte_count >= 254)
         {
-          (void) WriteBlobByte(image,byte_count);
+          (void) WriteByteBlob(image,byte_count);
           (void) WriteBlob(image,byte_count,(char *) packet);
           byte_count=0;
         }
@@ -633,7 +633,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
   */
   if (byte_count > 0)
     {
-      (void) WriteBlobByte(image,byte_count);
+      (void) WriteByteBlob(image,byte_count);
       (void) WriteBlob(image,byte_count,(char *) packet);
     }
   /*
@@ -1298,12 +1298,12 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         c=0x80;
         c|=(8-1) << 4;  /* color resolution */
         c|=(bits_per_pixel-1);   /* size of global colormap */
-        (void) WriteBlobByte(image,c);
+        (void) WriteByteBlob(image,c);
         for (j=0; j < (int) Max(image->colors-1,1); j++)
           if (ColorMatch(image->background_color,image->colormap[j],0))
             break;
-        (void) WriteBlobByte(image,j);  /* background color */
-        (void) WriteBlobByte(image,0x0);  /* reserved */
+        (void) WriteByteBlob(image,j);  /* background color */
+        (void) WriteByteBlob(image,0x0);  /* reserved */
         (void) WriteBlob(image,3*(1 << bits_per_pixel),(char *) colormap);
         for (j=0; j < 768; j++)
           global_colormap[j]=colormap[j];
@@ -1313,16 +1313,16 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         /*
           Write Graphics Control extension.
         */
-        (void) WriteBlobByte(image,0x21);
-        (void) WriteBlobByte(image,0xf9);
-        (void) WriteBlobByte(image,0x04);
+        (void) WriteByteBlob(image,0x21);
+        (void) WriteByteBlob(image,0xf9);
+        (void) WriteByteBlob(image,0x04);
         c=image->dispose << 2;
         if (image->matte)
           c|=0x01;
-        (void) WriteBlobByte(image,c);
+        (void) WriteByteBlob(image,c);
         LSBFirstWriteShort(image,image->delay);
-        (void) WriteBlobByte(image,opacity);
-        (void) WriteBlobByte(image,0x00);
+        (void) WriteByteBlob(image,opacity);
+        (void) WriteByteBlob(image,0x00);
         if (GetImageAttribute(image,"Comment") != (ImageAttribute *) NULL)
           {
             ImageAttribute
@@ -1337,18 +1337,18 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             /*
               Write Comment extension.
             */
-            (void) WriteBlobByte(image,0x21);
-            (void) WriteBlobByte(image,0xfe);
+            (void) WriteByteBlob(image,0x21);
+            (void) WriteByteBlob(image,0xfe);
             attribute=GetImageAttribute(image,"Comment");
             p=attribute->value;
             while (Extent(p) > 0)
             {
               count=Min(Extent(p),255);
-              (void) WriteBlobByte(image,count);
+              (void) WriteByteBlob(image,count);
               for (i=0; i < (int) count; i++)
-                (void) WriteBlobByte(image,*p++);
+                (void) WriteByteBlob(image,*p++);
             }
-            (void) WriteBlobByte(image,0x0);
+            (void) WriteByteBlob(image,0x0);
           }
         if ((image->previous == (Image *) NULL) &&
             (image->next != (Image *) NULL) && (image->iterations != 1))
@@ -1356,17 +1356,17 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             /*
               Write Netscape Loop extension.
             */
-            (void) WriteBlobByte(image,0x21);
-            (void) WriteBlobByte(image,0xff);
-            (void) WriteBlobByte(image,0x0b);
+            (void) WriteByteBlob(image,0x21);
+            (void) WriteByteBlob(image,0xff);
+            (void) WriteByteBlob(image,0x0b);
             (void) WriteBlob(image,11,"NETSCAPE2.0");
-            (void) WriteBlobByte(image,0x03);
-            (void) WriteBlobByte(image,0x01);
+            (void) WriteByteBlob(image,0x03);
+            (void) WriteByteBlob(image,0x01);
             LSBFirstWriteShort(image,image->iterations);
-            (void) WriteBlobByte(image,0x00);
+            (void) WriteByteBlob(image,0x00);
           }
       }
-    (void) WriteBlobByte(image,',');  /* image separator */
+    (void) WriteByteBlob(image,',');  /* image separator */
     /*
       Write the image header.
     */
@@ -1391,19 +1391,19 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       if (colormap[j] != global_colormap[j])
         break;
     if (j == (int) (3*image->colors))
-      (void) WriteBlobByte(image,c);
+      (void) WriteByteBlob(image,c);
     else
       {
         c|=0x80;
         c|=(bits_per_pixel-1);   /* size of local colormap */
-        (void) WriteBlobByte(image,c);
+        (void) WriteByteBlob(image,c);
         (void) WriteBlob(image,3*(1 << bits_per_pixel),(char *) colormap);
       }
     /*
       Write the image data.
     */
     c=Max(bits_per_pixel,2);
-    (void) WriteBlobByte(image,c);
+    (void) WriteByteBlob(image,c);
     status=EncodeImage(image_info,image,Max(bits_per_pixel,2)+1);
     if (status == False)
       {
@@ -1412,13 +1412,13 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
           image);
       }
-    (void) WriteBlobByte(image,0x0);
+    (void) WriteByteBlob(image,0x0);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
     MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
-  (void) WriteBlobByte(image,';'); /* terminator */
+  (void) WriteByteBlob(image,';'); /* terminator */
   LiberateMemory((void **) &global_colormap);
   LiberateMemory((void **) &colormap);
   if (image_info->adjoin)
