@@ -193,9 +193,10 @@ $composite:==$'f$environment("default")'composite
 $write sys$output "..symbol COMPOSITE defined."
 $SkipComposite:
 $set def [-]
-$copy [.delegates]vms.mgk sys$login:delegates.mgk
 $copy [.magick]magic.mgk sys$login:magic.mgk
-$copy [.magick]fonts.mgk sys$login:fonts.mgk
+$copy [.magick]colors.mgk sys$login:colors.mgk
+$copy [.coders]delegates.mgk sys$login:delegates.mgk
+$copy [.coders]fonts.mgk sys$login:fonts.mgk
 $copy [.coders]modules.mgk sys$login:modules.mgk
 $type sys$input
 
