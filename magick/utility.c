@@ -565,7 +565,6 @@ MagickExport void ChopPathComponents(char *path,const unsigned long components)
   size_t
     length;
 
-  count=0;
   length=strlen(path);
   p=path+length;
   if (*p == *DirectorySeparator)
