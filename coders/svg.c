@@ -2665,8 +2665,11 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
         {
           if ((fabs(affine->sx-1.0) < MagickEpsilon) &&
               (fabs(affine->sy-1.0) < MagickEpsilon))
-            return;
-          FormatString(transform,"\" transform=\"scale(%g,%g)",
+            {
+              (void) WriteBlobString(image,"\">\n");
+              return;
+            }
+          FormatString(transform,"\" transform=\"scale(%g,%g)\">\n",
             affine->sx,affine->sy);
           (void) WriteBlobString(image,transform);
           return;
@@ -2682,7 +2685,7 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
                 theta;
 
               theta=(180.0/MagickPI)*atan2(affine->rx,affine->sx);
-              FormatString(transform,"\" transform=\"rotate(%g)",theta);
+              FormatString(transform,"\" transform=\"rotate(%g)\">\n",theta);
               (void) WriteBlobString(image,transform);
               return;
             }
@@ -2695,13 +2698,13 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
           (fabs(affine->ry) < MagickEpsilon) &&
           (fabs(affine->sy-1.0) < MagickEpsilon))
         {
-          FormatString(transform,"\" transform=\"translate(%g,%g)",
+          FormatString(transform,"\" transform=\"translate(%g,%g)\">\n",
             affine->tx,affine->ty);
           (void) WriteBlobString(image,transform);
           return;
         }
     }
-  FormatString(transform,"\"\n  transform=\"matrix(%g,%g,%g,%g,%g,%g)",
+  FormatString(transform,"\" transform=\"matrix(%g %g %g %g %g %g)\">\n",
     affine->sx,affine->rx,affine->ry,affine->sy,affine->tx,affine->ty);
   (void) WriteBlobString(image,transform);
 }
@@ -2807,12 +2810,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         */
         if (active)
           {
-            FormatString(message,
-              "\" transform=\"matrix(%g %g %g %g %g %g)\">\n",affine.sx,
-              affine.rx,affine.ry,affine.sy,affine.tx,affine.ty);
-            (void) WriteBlobString(image,message);
+            AffineToTransform(image,&affine);
+            active=False;
           }
-        active=False;
         (void) WriteBlobString(image,"<desc>");
         (void) WriteBlobString(image,keyword+1);
         for ( ; (*q != '\n') && (*q != '\0'); q++)
@@ -2858,14 +2858,13 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             if (*token == ',')
               GetToken(q,&q,token);
             affine.ty=atof(token);
-            AffineToTransform(image,&affine);
             break;
           }
         if (LocaleCompare("angle",keyword) == 0)
           {
             GetToken(q,&q,token);
-            FormatString(message,"rotate(%.1024s) ",token);
-            (void) WriteBlobString(image,message);
+            affine.rx=atof(token);
+            affine.ry=atof(token);
             break;
           }
         if (LocaleCompare("arc",keyword) == 0)
@@ -3138,11 +3137,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 n++;
                 if (active)
                   {
-                    FormatString(message,
-                      "\" transform=\"matrix(%g %g %g %g %g %g)\">\n",
-                      affine.sx,affine.rx,affine.ry,affine.sy,affine.tx,
-                      affine.ty);
-                    (void) WriteBlobString(image,message);
+                    AffineToTransform(image,&affine);
+                    active=False;
                   }
                 (void) WriteBlobString(image,"<g style=\"");
                 active=True;
@@ -3415,9 +3411,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     primitive_info[j].text=(char *) NULL;
     if (active)
       {
-        FormatString(message,"\" transform=\"matrix(%g %g %g %g %g %g)\">\n",
-          affine.sx,affine.rx,affine.ry,affine.sy,affine.tx,affine.ty);
-        (void) WriteBlobString(image,message);
+        AffineToTransform(image,&affine);
+        active=False;
       }
     active=False;
     switch (primitive_type)
