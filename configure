@@ -15265,6 +15265,10 @@ echo "$as_me: error: $ac_sub_configure failed for $ac_subdir" >&2;}
   done
 fi
 
+if test ! -f /usr/local/share/fonts/fontmap; then
+  cp -f /usr/local/share/fonts/fontmap magick/fonts.mgk
+fi
+
 echo ""
 
 echo "ImageMagick is configured as follows. Please verify that this"
