@@ -545,7 +545,7 @@ MagickExport Image **ImageListToArray(const Image *images,
 %
 %  The format of the InsertImageInList method is:
 %
-%      unsigned int InsertImageInList(Image *images,const Image *image,
+%      unsigned int InsertImageInList(Image *images,Image *image,
 %        const long offset)
 %
 %  A description of each parameter follows:
@@ -558,7 +558,7 @@ MagickExport Image **ImageListToArray(const Image *images,
 %
 %
 */
-MagickExport unsigned int InsertImageInList(Image **images,const Image *image,
+MagickExport unsigned int InsertImageInList(Image **images,Image *image,
   const long offset)
 {
   register Image
@@ -576,7 +576,7 @@ MagickExport unsigned int InsertImageInList(Image **images,const Image *image,
       if (offset > 0)
         return(False);
       *images=image;
-      return(*images != (Image *) NULL);
+      return(True);
     }
   assert((*images)->signature == MagickSignature);
   for (p=(*images); p->previous != (Image *) NULL; p=p->previous);
@@ -733,20 +733,21 @@ MagickExport Image *RemoveFirstImageFromList(Image **images)
 */
 MagickExport Image *RemoveLastImageFromList(Image **images)
 {
-  Image
+  register Image
     *p;
 
   assert(images != (Image **) NULL);
   if ((*images) == (Image *) NULL)
     return((Image *) NULL);
   assert((*images)->signature == MagickSignature);
-  while ((*images)->next != (Image *) NULL)
-    (*images)=(*images)->next;
-  p=(*images);
-  *images=(*images)->previous;
-  if ((*images) != (Image *) NULL)
-    (*images)->next=(Image *) NULL;
-  p->previous=(Image *) NULL;
+  for (p=(*images); p->next != (Image *) NULL; p=p->next);
+  if (p == *images)
+    {
+      (*images)=(Image *) NULL;
+      return(p);
+    }
+  p->next->previous=(Image *) NULL;
+  p->next=(Image *) NULL;
   return(p);
 }
 
