@@ -676,48 +676,58 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   scanline[0]=(JSAMPROW) jpeg_pixels;
   for (y=0; y < (int) image->rows; y++)
   {
+    (void) jpeg_read_scanlines(&jpeg_info,scanline,1);
     p=jpeg_pixels;
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    (void) jpeg_read_scanlines(&jpeg_info,scanline,1);
-    for (x=0; x < (int) image->columns; x++)
-    {
-      if (jpeg_info.data_precision > QuantumDepth)
-        {
-          if (jpeg_info.out_color_space == JCS_GRAYSCALE)
+    if (jpeg_info.data_precision > QuantumDepth)
+      {
+        if (jpeg_info.out_color_space == JCS_GRAYSCALE)
+          {
+            for (x=0; x < (int) image->columns; x++)
             {
               index=GETJSAMPLE(*p++)/16;
               indexes[x]=index;
-              *q=image->colormap[index];
+              *q++=image->colormap[index];
             }
-          else
+          }
+        else
+          {
+            for (x=0; x < (int) image->columns; x++)
             {
               q->red=(Quantum) (GETJSAMPLE(*p++)/16);
               q->green=(Quantum) (GETJSAMPLE(*p++)/16);
               q->blue=(Quantum) (GETJSAMPLE(*p++)/16);
               if (image->colorspace == CMYKColorspace)
                 q->opacity=(Quantum) (GETJSAMPLE(*p++)/16);
+              q++;
             }
-        }
-      else
-        if (jpeg_info.out_color_space == JCS_GRAYSCALE)
+          }
+      }
+    else
+      if (jpeg_info.out_color_space == JCS_GRAYSCALE)
+        {
+          for (x=0; x < (int) image->columns; x++)
           {
             index=GETJSAMPLE(*p++);
             indexes[x]=index;
-            *q=image->colormap[index];
+            *q++=image->colormap[index];
           }
-        else
+        }
+      else
+        {
+          for (x=0; x < (int) image->columns; x++)
           {
             q->red=(Quantum) UpScale(GETJSAMPLE(*p++));
             q->green=(Quantum) UpScale(GETJSAMPLE(*p++));
             q->blue=(Quantum) UpScale(GETJSAMPLE(*p++));
             if (image->colorspace == CMYKColorspace)
               q->opacity=(Quantum) UpScale(GETJSAMPLE(*p++));
+            q++;
           }
-      q++;
-    }
+        }
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
