@@ -742,10 +742,10 @@ MagickExport Image *SpliceImageList(Image *images,const unsigned long offset,
       break;
   if (images == (Image *) NULL)
     return((Image *) NULL);
+  q=images;
   splice=CloneImageList(splices,exception);
 	if (splice == (Image *) NULL)
 	  return((Image *) NULL);
-  q=images;
   if (p->previous != (Image *) NULL)
     {
       p->previous->next=splice;
@@ -753,14 +753,15 @@ MagickExport Image *SpliceImageList(Image *images,const unsigned long offset,
         splice->previous=p->previous;
     }
   p->previous=(Image *) NULL;
-  if (splice != (Image *) NULL)
-	  while (splice->next != (Image *) NULL)
-		  splice=splice->next;
   if (q->next != (Image *) NULL)
     {
       q->next->previous=splice;
       if (splice != (Image *) NULL)
-        splice->next=q->next;
+        {
+  	      while (splice->next != (Image *) NULL)
+  		      splice=splice->next;
+          splice->next=q->next;
+        }
     }
   q->next=(Image *) NULL;
   return(p);
