@@ -402,7 +402,8 @@ static int ReadMagicConfigurationFile(const char *filename)
 static unsigned int InitializeMagic(void)
 {
   char
-    path[MaxTextExtent];
+    path[MaxTextExtent],
+    *client_path;
 
   if (getenv("MAGICK_DELEGATE_PATH") != (char *) NULL)
     {
@@ -414,7 +415,12 @@ static unsigned int InitializeMagic(void)
     }
   if (ReadMagicConfigurationFile(MagicFilename) == True)
     return(True);
-  (void) strcpy(path,DelegatePath);
+
+  client_path=SetClientPath((char *) NULL);
+  if (client_path)
+    (void) strcpy(path,client_path);
+  else
+    (void) strcpy(path,DelegatePath);
   (void) strcat(path,DirectorySeparator);
   (void) strcat(path,MagicFilename);
   return(ReadMagicConfigurationFile(path));

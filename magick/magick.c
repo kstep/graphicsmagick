@@ -55,6 +55,7 @@
 */
 #include "magick.h"
 #include "defines.h"
+#include "magic.h"
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
 #include "modules.h"
 #endif

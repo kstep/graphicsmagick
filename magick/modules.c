@@ -382,7 +382,20 @@ MagickExport void InitializeModules(void)
     Add default module installation directory.
   */
   if (i < MaxPathElements)
+#if defined(_VISUALC_)
+    {
+      char
+        *client_path;
+
+      client_path=SetClientPath((char *) NULL);
+      if (client_path)
+        module_path[i++]=AllocateString(client_path);
+      else
+        module_path[i++]=AllocateString(".");
+    }
+#else
     module_path[i++]=AllocateString(CoderModuleDirectory);
+#endif
   module_path[i]=(char *) NULL;
   module_aliases=(ModuleAliases *) NULL;
   for (i=0; module_path[i]; i++)
