@@ -74,7 +74,7 @@
 %  X resource.  If you do not specify a font, a font is chosen that allows
 %  the name of the image to fit the maximum width of a tiled area.  The label
 %  colors is determined by the -background and -stroke command line
-%  argument or X resource.  Note, that if the background and pen colors
+%  argument or X resource.  Note, that if the background and fill colors
 %  are the same, labels will not appear.
 %
 %  Finally, each image is set onto the composite image, surrounded by its
@@ -920,7 +920,7 @@ int main(int argc,char **argv)
                 {
                   i++;
                   if (i == argc)
-                    MagickError(OptionError,"Missing pen color",option);
+                    MagickError(OptionError,"Missing fill color",option);
                   (void) QueryColorDatabase(argv[i],&image_info->fill);
                   (void) QueryColorDatabase(argv[i],&image_info->stroke);
                 }

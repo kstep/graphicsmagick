@@ -616,6 +616,13 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
             }
             case 'a':
             case 'A':
+            {
+              if (!image->matte)
+                *q++=MaxRGB;
+              else
+                *q++=p->opacity;
+              break;
+            }
             case 'k':
             case 'K':
             {

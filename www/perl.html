@@ -351,7 +351,7 @@ For example,
 Use <tt>-</tt> as the filename to method <tt>Read</tt> to read from standard
 in or to method <tt>Write</tt> to write to standard out:
 <pre>&nbsp;&nbsp;&nbsp; binmode STDOUT;
-&nbsp;&nbsp;&nbsp; $image->Write(.png:-');</pre>
+&nbsp;&nbsp;&nbsp; $image->Write('png:-');</pre>
 To read an image in the GIF format from a PERL filehandle, use:
 <pre>&nbsp;&nbsp;&nbsp; $image = Image::Magick->new(magick=>'GIF');
 &nbsp;&nbsp;&nbsp; open(DATA, 'image.png');

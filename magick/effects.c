@@ -310,6 +310,7 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
       q->red=(p->red*(100.0-red)+target.red*red)/100.0;
       q->green=(p->green*(100.0-green)+target.green*green)/100.0;
       q->blue=(p->blue*(100.0-blue)+target.blue*blue)/100.0;
+      q->opacity=p->opacity;
       p++;
       q++;
     }

@@ -419,13 +419,10 @@ static unsigned int InitializeMagic(void)
     DirectorySeparator,MagicFilename);
   status|=ReadMagicConfigurationFile(filename);
   status|=ReadMagicConfigurationFile(MagicFilename);
-  if (getenv("MAGICK_DELEGATE_PATH") != (char *) NULL)
-    {
-      FormatString(filename,"%s%s%s",
-	getenv("MAGICK_DELEGATE_PATH") ? getenv("MAGICK_DELEGATE_PATH") : "",
-        DirectorySeparator,MagicFilename);
-      status|=ReadMagicConfigurationFile(filename);
-    }
+  FormatString(filename,"%s%s%s",
+    getenv("MAGICK_DELEGATE_PATH") ? getenv("MAGICK_DELEGATE_PATH") : "",
+    DirectorySeparator,MagicFilename);
+  status|=ReadMagicConfigurationFile(filename);
   return(status);
 }
 

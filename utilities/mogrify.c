@@ -63,7 +63,7 @@
 %    -box color           color for annotation bounding box
 %    -cache threshold     megabytes of memory available to the pixel cache
 %    -charcoal order      simulate a charcoal drawing
-%    -colorize value      colorize the image with the pen color
+%    -colorize value      colorize the image with the fill color
 %    -colors value        preferred number of colors in the image
 %    -colorspace type     alternate image colorspace
 %    -comment string      annotate image with comment
@@ -108,7 +108,7 @@
 %    -negate              replace every pixel with its complementary color 
 %    -noise value         add or reduce noise in an image
 %    -normalize           transform image to span the full range of colors
-%    -opaque color        change this color to the pen color
+%    -opaque color        change this color to the fill color
 %    -page geometry       size and location of an image canvas
 %    -paint radius        simulate an oil painting
 %    -pointsize value     pointsize of Postscript font
@@ -192,7 +192,7 @@ static void Usage(const char *client_name)
       "-box color           color for annotation bounding box",
       "-cache threshold     megabytes of memory available to the pixel cache",
       "-charcoal order      simulate a charcoal drawing",
-      "-colorize value      colorize the image with the pen color",
+      "-colorize value      colorize the image with the fill color",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
@@ -237,10 +237,10 @@ static void Usage(const char *client_name)
       "-negate              replace every pixel with its complementary color ",
       "-noise value         add or reduce noise in an image.",
       "-normalize           transform image to span the full range of colors",
-      "-opaque color        change this color to the pen color",
+      "-opaque color        change this color to the fill color",
       "-page geometry       size and location of an image canvas",
       "-paint radius        simulate an oil painting",
-      "-pen color           color for annotating or changing opaque color",
+      "-fill color           color for annotating or changing opaque color",
       "-pointsize value     pointsize of Postscript font",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-raise value         lighten/darken image edges to create a 3-D effect",
@@ -1123,7 +1123,7 @@ int main(int argc,char **argv)
                 {
                   i++;
                   if (i == argc)
-                    MagickError(OptionError,"Missing pen color",option);
+                    MagickError(OptionError,"Missing fill color",option);
                   (void) QueryColorDatabase(argv[i],&image_info->fill);
                   (void) QueryColorDatabase(argv[i],&image_info->stroke);
                 }

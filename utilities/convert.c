@@ -67,7 +67,7 @@
 %    -cache threshold     number of megabytes available to the pixel cache
 %    -charcoal order      simulate a charcoal drawing
 %    -coalesce            merge a sequence of images
-%    -colorize value      colorize the image with the pen color
+%    -colorize value      colorize the image with the fill color
 %    -colors value        preferred number of colors in the image
 %    -colorspace type     alternate image colorspace
 %    -comment string      annotate image with comment
@@ -116,7 +116,7 @@
 %    -negate              replace every pixel with its complementary color
 %    -noise               add or reduce noise in an image
 %    -normalize           transform image to span the full range of colors
-%    -opaque color        change this color to the pen color
+%    -opaque color        change this color to the fill color
 %    -page geometry       size and location of an image canvas
 %    -paint radius        simulate an oil painting
 %    -ping                efficiently determine image characteristics
@@ -268,7 +268,7 @@ static void Usage(const char *client_name)
       "-cache threshold     megabytes of memory available to the pixel cache",
       "-charcoal order      simulate a charcoal drawing",
       "-coalesce            merge a sequence of images",
-      "-colorize value      colorize the image with the pen color",
+      "-colorize value      colorize the image with the fill color",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
@@ -318,7 +318,7 @@ static void Usage(const char *client_name)
       "-negate              replace every pixel with its complementary color ",
       "-noise               add or reduce noise in an image",
       "-normalize           transform image to span the full range of colors",
-      "-opaque color        change this color to the pen color",
+      "-opaque color        change this color to the fill color",
       "-page geometry       size and location of an image canvas",
       "-paint radius        simulate an oil painting",
       "-ping                efficiently determine image characteristics",
@@ -1322,7 +1322,7 @@ int main(int argc,char **argv)
                 {
                   i++;
                   if (i == argc)
-                    MagickError(OptionError,"Missing pen color",option);
+                    MagickError(OptionError,"Missing fill color",option);
                   (void) QueryColorDatabase(argv[i],&image_info->fill);
                   (void) QueryColorDatabase(argv[i],&image_info->stroke);
                 }

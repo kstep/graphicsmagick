@@ -73,8 +73,11 @@
   (((color).blue*map->blue_max+(1 << (dx-1)))/((1 << dx)-1))*map->blue_mult)
 
 /*
-  Global declarations.
+  Constant declaractions.
 */
+const char
+  *ColorDatabasseFilename = "rgb.mgk";
+
 static volatile unsigned int
   xerror_alert = False;
 
@@ -3560,7 +3563,7 @@ MagickExport unsigned int XGetWindowColor(Display *display,char *name)
   XQueryColor(display,window_attributes.colormap,&color);
   FormatString(name,"#%04x%04x%04x",color.red,color.green,color.blue);
   FormatString(filename,"%s%s%s",SetClientPath((char *) NULL),
-    DirectorySeparator,"rgb.txt");
+    DirectorySeparator,ColorDatabasseFilename);
   database=fopen(filename,"r");
   if (database == (FILE *) NULL)
     database=fopen(RGBColorDatabase,"r");

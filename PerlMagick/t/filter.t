@@ -37,8 +37,8 @@ testFilter('input.miff', 'ColorFloodfill',
 
 ++$test;
 testFilter('input.miff', 'Colorize',
-  q/red/,
-  '4d2b370daf4cbe131b0753f71023f748',
+  q/fill=>'red',opacity=>50/,
+  '62907fa59892a6241e81fa10cd513ef2',
   '2ffd120c34e437df526227b1dcd83f7d');
 
 ++$test;

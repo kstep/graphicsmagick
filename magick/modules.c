@@ -318,7 +318,6 @@ MagickExport void InitializeModules(void)
   char
     alias[MaxTextExtent],
     filename[MaxTextExtent],
-    message[MaxTextExtent],
     module[MaxTextExtent];
 
   FILE

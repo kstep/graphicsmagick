@@ -2172,7 +2172,7 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
       {
         double
           minimum_distance,
-	  poly_opacity;
+          poly_opacity;
 
         int
           crossing,
