@@ -146,13 +146,13 @@ UNIX/Cygwin COMPILATION
 
   Optional Packages:
    --with-modules          enable support for dynamically loadable modules
-   --with-cache            set pixel cache threshhold (defaults to malloc limit)
+   --with-cache            set pixel cache threshhold (defaults to available memory)
    --without-threads       disable threads support
    --without-frozenpaths   disable frozen delegate paths
    --without-magick-plus-plus disable build/install of Magick++
    --without-perl          disable build/install of PerlMagick
         or
-   --with-perl=PERL        use specified PERL binary to configure PerlMagick
+   --with-perl=PERL        use specified Perl binary to configure PerlMagick
    --with-perl-options=OPTIONS  options to pass on command-line when
                            generating PerlMagick's Makefile from Makefile.PL
    --without-bzlib         disable BZLIB support
@@ -162,15 +162,20 @@ UNIX/Cygwin COMPILATION
    --with-hdf              enable HDF support
    --without-jbig          disable JBIG support
    --without-jpeg          disable JPEG support
+   --without-jp2           disable JPEG v2 support
    --without-lcms          disable LCMS support
+   --without-mpeg2         disable MPEG support
    --without-png           disable PNG support
    --without-tiff          disable TIFF support
    --without-ttf           disable TrueType support
    --without-wmf           disable WMF support
    --with-fontpath         prepend to default font search path
+   --with-windows-font-dir directory containing MS-Windows fonts
    --without-xml           disable XML support
    --without-zlib          disable ZLIB support
    --with-x                use the X Window System
+   --with-share-path=DIR   Alternate path to share directory
+                           (default share/ImageMagick)
    --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)
 
   ImageMagick options represent either features to be enabled,
@@ -323,6 +328,13 @@ UNIX/Cygwin COMPILATION
       or installed. The remaining programs have reduced functionality
       such as no access to X11 fonts (consider using Postscript or
       TrueType fonts instead).
+
+    o --with-windows-font-dir: If configured under a Unix emulation
+      environment like Cygwin or mingw, configure should automatically
+      locate the MS-Windows system font directory. If configure is not
+      running under MS-Windows yet MS-Windows-compatible fonts are
+      available use --with-windows-font-dir=/path to specify the
+      directory where the fonts are installed.
 
   Building under Cygwin
 
