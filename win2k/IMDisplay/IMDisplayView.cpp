@@ -770,7 +770,7 @@ void CIMDisplayView::DoDisplayImage( Image* inImage, CDC* pDC )
       // Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8
       memcpy((void*)pDestPixel,(const void*)pPixels,sizeof(PixelPacket)*nPixels);
 
-#elif QuantumDepth == 16
+#else	// 16 or 32 bit Quantum
 
       // Transfer pixels, scaling to Quantum
       for( unsigned long nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
