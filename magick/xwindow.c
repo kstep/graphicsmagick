@@ -3580,9 +3580,8 @@ MagickExport unsigned int XGetWindowColor(Display *display,char *name)
     count=sscanf(text,"%d %d %d %[^\n]\n",&red,&green,&blue,colorname);
     if (count != 4)
       continue;
-    if ((red == (int) XDownscale(color.red)) &&
-        (green == (int) XDownscale(color.green)) &&
-        (blue == (int) XDownscale(color.blue)))
+    if ((red == XDownscale(color.red)) && (green == XDownscale(color.green)) &&
+        (blue == XDownscale(color.blue)))
       {
         (void) strncpy(name,colorname,MaxTextExtent-1);
         break;
