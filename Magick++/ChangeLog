@@ -1,3 +1,11 @@
+2001-09-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (coderInfoList): New function to support
+ 	obtaining format coder information (as a list of type CoderInfo).
+
+	* lib/CoderInfo.cpp (CoderInfo): New class to support obtaining
+ 	format coder information.
+
 2001-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (depth): Use GetImageDepth and SetImageDepth

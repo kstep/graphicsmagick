@@ -4,7 +4,7 @@
 //
 // CoderInfo Definition
 //
-// Container for image format coder information
+// Return format coder details.
 //
 
 #if !defined (Magick_CoderInfo_header)
@@ -15,10 +15,16 @@
 
 namespace Magick
 {
+  enum MatchType {
+    AnyMatch,	// match any coder
+    TrueMatch,	// match coder if true
+    FalseMatch	// match coder if false
+  };
+
   class CoderInfo
   {
   public:
-    
+
     CoderInfo ( const std::string &name_ );
     ~CoderInfo ( void );
 
@@ -37,18 +43,28 @@ namespace Magick
     // Format supports multiple frames
     bool isMultiFrame( void ) const;
 
+    //
+    // Implemementation methods
+    //
+    CoderInfo ( const MagickLib::MagickInfo *magickInfo_ );
+
   private:
 
-    // Default constructor
+    // Default constructor (not supported)
     CoderInfo::CoderInfo ( void );
 
-    // Copy constructor
+    // Copy constructor (not supported)
     CoderInfo::CoderInfo ( const CoderInfo &coder_ );
 
-    // Assignment operator
+    // Assignment operator (not supported)
     CoderInfo& operator= (const CoderInfo &coder_ );
 
-    MagickLib::MagickInfo	*_magickInfo;
+    std::string		_name;
+    std::string		_description;
+    bool		_isReadable;
+    bool		_isWritable;
+    bool		_isMultiFrame;
+    
   };
 } // namespace Magick
 

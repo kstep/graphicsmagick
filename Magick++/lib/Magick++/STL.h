@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
+#include "Magick++/CoderInfo.h"
 #include "Magick++/Drawable.h"
 #include "Magick++/Montage.h"
 #include "Magick++/Include.h"
@@ -2186,6 +2187,55 @@ namespace Magick
     MagickLib::CoalesceImages( first_->image(), &exceptionInfo );
     unlinkImages( first_, last_ );
     throwException( exceptionInfo );
+  }
+
+  // Return format coders matching specified conditions.
+  //
+  // The default (if no match terms are supplied) is to return all
+  // available format coders.
+  //
+  // For example, to return all readable formats:
+  //  list<CoderInfo> coderList;
+  //  coderInfoList( &coderList, TrueMatch, AnyMatch, AnyMatch)
+  //
+  template <class Container >
+  void coderInfoList( Container *container_,
+                      MatchType isReadable_ = AnyMatch,
+                      MatchType isWritable_ = AnyMatch,
+                      MatchType isMultiFrame_ = AnyMatch
+                      ) {
+    // Obtain first entry in MagickInfo list
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
+    MagickLib::MagickInfo *magickInfo = GetMagickInfo( "*", &exceptionInfo );
+    throwException( exceptionInfo );
+    if( !magickInfo )
+      throwExceptionExplicit(MissingDelegateError, "Coder list not returned!", 0 );
+
+    // Clear out container
+    container_->clear();
+
+    for ( ; magickInfo != 0; magickInfo=magickInfo->next)
+      {
+        // Skip stealth coders
+        if ( magickInfo->stealth )
+          continue;
+
+        // Test isReadable_
+        if ( isReadable_ != AnyMatch && !magickInfo->decoder)
+          continue;
+
+        // Test isWritable_
+        if ( isWritable_ != AnyMatch && !magickInfo->encoder)
+          continue;
+
+        // Test isMultiFrame_
+        if ( isMultiFrame_ != AnyMatch && !magickInfo->adjoin)
+          continue;
+
+        // Append to container
+        container_->push_back( CoderInfo( magickInfo ) );
+      }
   }
 
   // Break down an image sequence into constituent parts.  This is
