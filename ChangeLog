@@ -1,3 +1,9 @@
+2002-12-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/png.c: Fixed compile problems.
+	* magick/image.c: SyncImage() performance optimizations.
+	* TransformRGBImage() cleanup/enhancements. Some rounding issues remain.
+	* RGBTransformImage() cleanup/enhancements. Some rounding issues remain.
+
 2002-12-24  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 	* BUGFIX: Fixed bug, introduced on 12/18/02, in which a misplaced
 	 "}" caused an assertion failure after reading any opaque JNG image.

@@ -97,13 +97,19 @@ const unsigned long
 /*
   Macros to avoid quantization errors when storing color
   transform table values in integer form.
+  Scale: (MaxMap+1)*scale == 2,097,152
+  Max int =  2,147,483,647
+  Min int = -2,147,483,648
 */
-#if MaxMap == 255UL
-#define AntiQuantizeScaleUp(value) (8192*(value))
-#define AntiQuantizeScaleDown(value) (((int)(value))/8192)
-#else
-#define AntiQuantizeScaleUp(value) (32*(value))
-#define AntiQuantizeScaleDown(value) (((int)(value))/32)
+#if MaxMap == 255
+#define QScaleUp(value) (8192*(value))
+#define QScaleDown(value) (((int)(value))/8192)
+#elif MaxMap == 65535
+#define QScaleUp(value) (32*(value))
+#define QScaleDown(value) (((int)(value))/32)
+#elif MaxMap == 1048575
+#define QScaleUp(value) (2*(value))
+#define QScaleDown(value) (((int)(value))/2)
 #endif
 
 
@@ -3189,6 +3195,14 @@ MagickExport Image *ReferenceImage(Image *image)
 %
 %
 */
+typedef struct _XYZColorTransformPacket
+{
+  int
+  x,
+    y,
+    z;
+} XYZColorTransformPacket;
+
 static const char *ColorspaceTypeToString(const ColorspaceType colorspace)
 {
   const char *
@@ -3218,7 +3232,7 @@ static const char *ColorspaceTypeToString(const ColorspaceType colorspace)
       log_colorspace="YCbCr";
       break;
     case YCCColorspace:
-      log_colorspace="YCC";
+      log_colorspace="PhotoCD YCC";
       break;
     case YIQColorspace:
       log_colorspace="YIQ";
@@ -3233,23 +3247,50 @@ static const char *ColorspaceTypeToString(const ColorspaceType colorspace)
       log_colorspace="CMYK";
       break;
     case sRGBColorspace:
-      log_colorspace="sRGB";
+      log_colorspace="PhotoCD sRGB";
       break;
     }
   return log_colorspace;
+}
+static inline void XYZTransformPacket(PixelPacket *pixel,
+  const XYZColorTransformPacket *x_map,
+  const XYZColorTransformPacket *y_map,
+  const XYZColorTransformPacket *z_map,
+  const XYZColorTransformPacket *primary_info)
+{
+  register int
+    blue,
+    green,
+    red;
+
+  register const XYZColorTransformPacket
+    *x_p,
+    *y_p,
+    *z_p;
+
+  x_p = &x_map[ScaleQuantumToMap(pixel->red)];
+  y_p = &y_map[ScaleQuantumToMap(pixel->green)];
+  z_p = &z_map[ScaleQuantumToMap(pixel->blue)];
+
+  red=QScaleDown(x_p->x+y_p->x+z_p->x+primary_info->x);
+  if(red < 0) red = 0;
+  if(red > MaxMap) red = MaxMap;
+  pixel->red=ScaleMapToQuantum(red);
+
+  green=QScaleDown(x_p->y+y_p->y+z_p->y+primary_info->y);
+  if(green < 0) green = 0;
+  if(green > MaxMap) green = MaxMap;
+  pixel->green=ScaleMapToQuantum(green);
+
+  blue=QScaleDown(x_p->z+y_p->z+z_p->z+primary_info->z);
+  if(blue < 0) blue = 0;
+  if(blue > MaxMap) blue = MaxMap;
+  pixel->blue=ScaleMapToQuantum(blue);
 }
 MagickExport unsigned int RGBTransformImage(Image *image,
   const ColorspaceType colorspace)
 {
 #define RGBTransformImageText  "  Transform image colors...  "
-
-  typedef struct _XYZColorTransformPacket
-  {
-    int
-      x,
-      y,
-      z;
-  } XYZColorTransformPacket;
 
   XYZColorTransformPacket
     *x_map,
@@ -3257,14 +3298,9 @@ MagickExport unsigned int RGBTransformImage(Image *image,
     *z_map;
 
   register XYZColorTransformPacket
-    *x_map_p,
-    *y_map_p,
-    *z_map_p;
-
-  register int
-    blue,
-    green,
-    red;
+    *x_p,
+    *y_p,
+    *z_p;
 
   long
     y;
@@ -3275,9 +3311,6 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   register long
     i,
     x;
-
-  register PixelPacket
-    *q;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3308,12 +3341,17 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         magenta,
         yellow;
 
+      register PixelPacket
+        *q;
+
       /*
         Convert RGB to CMYK colorspace.
       */
       if (image->storage_class == PseudoClass)
-        SyncImage(image);
-      image->storage_class=DirectClass;
+        {
+          SyncImage(image);
+          image->storage_class=DirectClass;
+        }
       image->colorspace=CMYKColorspace;
       for (y=0; y < (long) image->rows; y++)
       {
@@ -3326,13 +3364,12 @@ MagickExport unsigned int RGBTransformImage(Image *image,
           cyan=(Quantum) (MaxRGB-q->red);
           magenta=(Quantum) (MaxRGB-q->green);
           yellow=(Quantum) (MaxRGB-q->blue);
-          black=(Quantum)
-            (cyan < magenta ? Min(cyan,yellow) : Min(magenta,yellow));
+          black=(cyan < magenta ? Min(cyan,yellow) : Min(magenta,yellow));
           q->red=cyan;
           q->green=magenta;
           q->blue=yellow;
           indexes[x]=q->opacity;
-          q->opacity=(Quantum) black;
+          q->opacity=black;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -3373,18 +3410,18 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 
           G = 0.29900*R+0.58700*G+0.11400*B
       */
-      x_map_p = x_map;
-      y_map_p = y_map;
-      z_map_p = z_map;
+      x_p = x_map;
+      y_p = y_map;
+      z_p = z_map;
 
       for (i=0; i <= MaxMap; i++)
       {
-        x_map_p->x=x_map_p->y=x_map_p->z=AntiQuantizeScaleUp(0.299*i);
-        y_map_p->x=y_map_p->y=y_map_p->z=AntiQuantizeScaleUp(0.587*i);
-        z_map_p->x=z_map_p->y=z_map_p->z=AntiQuantizeScaleUp(0.114*i);
-        ++x_map_p;
-        ++y_map_p;
-        ++z_map_p;
+        x_p->x=x_p->y=x_p->z=QScaleUp(0.299*i);
+        y_p->x=y_p->y=y_p->z=QScaleUp(0.587*i);
+        z_p->x=z_p->y=z_p->z=QScaleUp(0.114*i);
+        ++x_p;
+        ++y_p;
+        ++z_p;
       }
       break;
     }
@@ -3400,25 +3437,27 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      primary_info.y=AntiQuantizeScaleUp((MaxMap+1)/2);
-      primary_info.z=AntiQuantizeScaleUp((MaxMap+1)/2);
+      primary_info.y=QScaleUp((MaxMap+1)/2);
+      primary_info.z=QScaleUp((MaxMap+1)/2);
       for (i=0; i <= MaxMap; i++)
       {
-        x_map[i].x=AntiQuantizeScaleUp(0.33333*i);
-        y_map[i].x=AntiQuantizeScaleUp(0.33334*i);
-        z_map[i].x=AntiQuantizeScaleUp(0.33333*i);
-        x_map[i].y=AntiQuantizeScaleUp(0.5*i);
-        y_map[i].y=AntiQuantizeScaleUp(0.0);
-        z_map[i].y=AntiQuantizeScaleUp((-0.5)*i);
-        x_map[i].z=AntiQuantizeScaleUp((-0.25)*i);
-        y_map[i].z=AntiQuantizeScaleUp(0.5*i);
-        z_map[i].z=AntiQuantizeScaleUp((-0.25)*i);
+        x_map[i].x=QScaleUp(0.33333*i);
+        y_map[i].x=QScaleUp(0.33334*i);
+        z_map[i].x=QScaleUp(0.33333*i);
+        x_map[i].y=QScaleUp(0.5*i);
+        y_map[i].y=QScaleUp(0.0);
+        z_map[i].y=QScaleUp((-0.5)*i);
+        x_map[i].z=QScaleUp((-0.25)*i);
+        y_map[i].z=QScaleUp(0.5*i);
+        z_map[i].z=QScaleUp((-0.25)*i);
       }
       break;
     }
     case sRGBColorspace:
     {
       /*
+        Kodak PhotoYCC Color Space
+
         Initialize sRGB tables:
 
           Y =  0.29900*R+0.58700*G+0.11400*B
@@ -3429,31 +3468,31 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       */
       /* FIXME! The scaling factors for this transform look bizarre,
          and in fact, the results are not correct. */
-      primary_info.y=AntiQuantizeScaleUp(ScaleCharToMap(156));
-      primary_info.z=AntiQuantizeScaleUp(ScaleCharToMap(137));
+      primary_info.y=QScaleUp(ScaleCharToMap(156));
+      primary_info.z=QScaleUp(ScaleCharToMap(137));
       for (i=0; i <= (long) (0.018*MaxMap); i++)
       {
-        x_map[i].x=AntiQuantizeScaleUp(0.003962014134275617*i);
-        y_map[i].x=AntiQuantizeScaleUp(0.007778268551236748*i);
-        z_map[i].x=AntiQuantizeScaleUp(0.001510600706713781*i);
-        x_map[i].y=AntiQuantizeScaleUp((-0.002426619775463276)*i);
-        y_map[i].y=AntiQuantizeScaleUp((-0.004763965913702149)*i);
-        z_map[i].y=AntiQuantizeScaleUp(0.007190585689165425*i);
-        x_map[i].z=AntiQuantizeScaleUp(0.006927257754597858*i);
-        y_map[i].z=AntiQuantizeScaleUp((-0.005800713697502058)*i);
-        z_map[i].z=AntiQuantizeScaleUp((-0.0011265440570958)*i);
+        x_map[i].x=QScaleUp(0.003962014134275617*i);
+        y_map[i].x=QScaleUp(0.007778268551236748*i);
+        z_map[i].x=QScaleUp(0.001510600706713781*i);
+        x_map[i].y=QScaleUp((-0.002426619775463276)*i);
+        y_map[i].y=QScaleUp((-0.004763965913702149)*i);
+        z_map[i].y=QScaleUp(0.007190585689165425*i);
+        x_map[i].z=QScaleUp(0.006927257754597858*i);
+        y_map[i].z=QScaleUp((-0.005800713697502058)*i);
+        z_map[i].z=QScaleUp((-0.0011265440570958)*i);
       }
       for ( ; i <= MaxMap; i++)
       {
-        x_map[i].x=AntiQuantizeScaleUp(0.2201118963486454*(1.099*i-0.099));
-        y_map[i].x=AntiQuantizeScaleUp(0.4321260306242638*(1.099*i-0.099));
-        z_map[i].x=AntiQuantizeScaleUp(0.08392226148409894*(1.099*i-0.099));
-        x_map[i].y=AntiQuantizeScaleUp((-0.1348122097479598)*(1.099*i-0.099));
-        y_map[i].y=AntiQuantizeScaleUp((-0.2646647729834528)*(1.099*i-0.099));
-        z_map[i].y=AntiQuantizeScaleUp(0.3994769827314126*(1.099*i-0.099));
-        x_map[i].z=AntiQuantizeScaleUp(0.3848476530332144*(1.099*i-0.099));
-        y_map[i].z=AntiQuantizeScaleUp((-0.3222618720834477)*(1.099*i-0.099));
-        z_map[i].z=AntiQuantizeScaleUp((-0.06258578094976668)*(1.099*i-0.099));
+        x_map[i].x=QScaleUp(0.2201118963486454*(1.099*i-0.099));
+        y_map[i].x=QScaleUp(0.4321260306242638*(1.099*i-0.099));
+        z_map[i].x=QScaleUp(0.08392226148409894*(1.099*i-0.099));
+        x_map[i].y=QScaleUp((-0.1348122097479598)*(1.099*i-0.099));
+        y_map[i].y=QScaleUp((-0.2646647729834528)*(1.099*i-0.099));
+        z_map[i].y=QScaleUp(0.3994769827314126*(1.099*i-0.099));
+        x_map[i].z=QScaleUp(0.3848476530332144*(1.099*i-0.099));
+        y_map[i].z=QScaleUp((-0.3222618720834477)*(1.099*i-0.099));
+        z_map[i].z=QScaleUp((-0.06258578094976668)*(1.099*i-0.099));
       }
       break;
     }
@@ -3468,15 +3507,15 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       */
       for (i=0; i <= MaxMap; i++)
       {
-        x_map[i].x=AntiQuantizeScaleUp(0.412453*i);
-        y_map[i].x=AntiQuantizeScaleUp(0.35758*i);
-        z_map[i].x=AntiQuantizeScaleUp(0.180423*i);
-        x_map[i].y=AntiQuantizeScaleUp(0.212671*i);
-        y_map[i].y=AntiQuantizeScaleUp(0.71516*i);
-        z_map[i].y=AntiQuantizeScaleUp(0.072169*i);
-        x_map[i].z=AntiQuantizeScaleUp(0.019334*i);
-        y_map[i].z=AntiQuantizeScaleUp(0.119193*i);
-        z_map[i].z=AntiQuantizeScaleUp(0.950227*i);
+        x_map[i].x=QScaleUp(0.412453*i);
+        y_map[i].x=QScaleUp(0.35758*i);
+        z_map[i].x=QScaleUp(0.180423*i);
+        x_map[i].y=QScaleUp(0.212671*i);
+        y_map[i].y=QScaleUp(0.71516*i);
+        z_map[i].y=QScaleUp(0.072169*i);
+        x_map[i].z=QScaleUp(0.019334*i);
+        y_map[i].z=QScaleUp(0.119193*i);
+        z_map[i].z=QScaleUp(0.950227*i);
       }
       break;
     }
@@ -3492,25 +3531,27 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      primary_info.y=AntiQuantizeScaleUp((MaxMap+1)/2);
-      primary_info.z=AntiQuantizeScaleUp((MaxMap+1)/2);
+      primary_info.y=QScaleUp((MaxMap+1)/2);
+      primary_info.z=QScaleUp((MaxMap+1)/2);
       for (i=0; i <= MaxMap; i++)
       {
-        x_map[i].x=AntiQuantizeScaleUp(0.299*i);
-        y_map[i].x=AntiQuantizeScaleUp(0.587*i);
-        z_map[i].x=AntiQuantizeScaleUp(0.114*i);
-        x_map[i].y=AntiQuantizeScaleUp((-0.16873)*i);
-        y_map[i].y=AntiQuantizeScaleUp((-0.331264)*i);
-        z_map[i].y=AntiQuantizeScaleUp(0.500000*i);
-        x_map[i].z=AntiQuantizeScaleUp(0.500000*i);
-        y_map[i].z=AntiQuantizeScaleUp((-0.418688)*i);
-        z_map[i].z=AntiQuantizeScaleUp((-0.081316)*i);
+        x_map[i].x=QScaleUp(0.299*i);
+        y_map[i].x=QScaleUp(0.587*i);
+        z_map[i].x=QScaleUp(0.114*i);
+        x_map[i].y=QScaleUp((-0.16873)*i);
+        y_map[i].y=QScaleUp((-0.331264)*i);
+        z_map[i].y=QScaleUp(0.500000*i);
+        x_map[i].z=QScaleUp(0.500000*i);
+        y_map[i].z=QScaleUp((-0.418688)*i);
+        z_map[i].z=QScaleUp((-0.081316)*i);
       }
       break;
     }
     case YCCColorspace:
     {
       /*
+        Kodak PhotoYCC Color Space.
+
         Initialize YCC tables:
 
           Y =  0.29900*R+0.58700*G+0.11400*B
@@ -3521,31 +3562,31 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       */
       /* FIXME! The scaling factors for this transform look bizarre,
          and in fact, the results are not correct. */
-      primary_info.y=AntiQuantizeScaleUp(ScaleCharToMap(156));
-      primary_info.z=AntiQuantizeScaleUp(ScaleCharToMap(137));
+      primary_info.y=QScaleUp(ScaleCharToMap(156));
+      primary_info.z=QScaleUp(ScaleCharToMap(137));
       for (i=0; i <= (long) (0.018*MaxMap); i++)
       {
-        x_map[i].x=AntiQuantizeScaleUp(0.003962014134275617*i);
-        y_map[i].x=AntiQuantizeScaleUp(0.007778268551236748*i);
-        z_map[i].x=AntiQuantizeScaleUp(0.001510600706713781*i);
-        x_map[i].y=AntiQuantizeScaleUp((-0.002426619775463276)*i);
-        y_map[i].y=AntiQuantizeScaleUp((-0.004763965913702149)*i);
-        z_map[i].y=AntiQuantizeScaleUp(0.007190585689165425*i);
-        x_map[i].z=AntiQuantizeScaleUp(0.006927257754597858*i);
-        y_map[i].z=AntiQuantizeScaleUp((-0.005800713697502058)*i);
-        z_map[i].z=AntiQuantizeScaleUp((-0.0011265440570958)*i);
+        x_map[i].x=QScaleUp(0.003962014134275617*i);
+        y_map[i].x=QScaleUp(0.007778268551236748*i);
+        z_map[i].x=QScaleUp(0.001510600706713781*i);
+        x_map[i].y=QScaleUp((-0.002426619775463276)*i);
+        y_map[i].y=QScaleUp((-0.004763965913702149)*i);
+        z_map[i].y=QScaleUp(0.007190585689165425*i);
+        x_map[i].z=QScaleUp(0.006927257754597858*i);
+        y_map[i].z=QScaleUp((-0.005800713697502058)*i);
+        z_map[i].z=QScaleUp((-0.0011265440570958)*i);
       }
       for ( ; i <= MaxMap; i++)
       {
-        x_map[i].x=AntiQuantizeScaleUp(0.2201118963486454*(1.099*i-0.099));
-        y_map[i].x=AntiQuantizeScaleUp(0.4321260306242638*(1.099*i-0.099));
-        z_map[i].x=AntiQuantizeScaleUp(0.08392226148409894*(1.099*i-0.099));
-        x_map[i].y=AntiQuantizeScaleUp((-0.1348122097479598)*(1.099*i-0.099));
-        y_map[i].y=AntiQuantizeScaleUp((-0.2646647729834528)*(1.099*i-0.099));
-        z_map[i].y=AntiQuantizeScaleUp(0.3994769827314126*(1.099*i-0.099));
-        x_map[i].z=AntiQuantizeScaleUp(0.3848476530332144*(1.099*i-0.099));
-        y_map[i].z=AntiQuantizeScaleUp((-0.3222618720834477)*(1.099*i-0.099));
-        z_map[i].z=AntiQuantizeScaleUp((-0.06258578094976668)*(1.099*i-0.099));
+        x_map[i].x=QScaleUp(0.2201118963486454*(1.099*i-0.099));
+        y_map[i].x=QScaleUp(0.4321260306242638*(1.099*i-0.099));
+        z_map[i].x=QScaleUp(0.08392226148409894*(1.099*i-0.099));
+        x_map[i].y=QScaleUp((-0.1348122097479598)*(1.099*i-0.099));
+        y_map[i].y=QScaleUp((-0.2646647729834528)*(1.099*i-0.099));
+        z_map[i].y=QScaleUp(0.3994769827314126*(1.099*i-0.099));
+        x_map[i].z=QScaleUp(0.3848476530332144*(1.099*i-0.099));
+        y_map[i].z=QScaleUp((-0.3222618720834477)*(1.099*i-0.099));
+        z_map[i].z=QScaleUp((-0.06258578094976668)*(1.099*i-0.099));
       }
       break;
     }
@@ -3561,19 +3602,19 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      primary_info.y=AntiQuantizeScaleUp((MaxMap+1)/2);
-      primary_info.z=AntiQuantizeScaleUp((MaxMap+1)/2);
+      primary_info.y=QScaleUp((MaxMap+1)/2);
+      primary_info.z=QScaleUp((MaxMap+1)/2);
       for (i=0; i <= MaxMap; i++)
       {
-        x_map[i].x=AntiQuantizeScaleUp(0.299*i);
-        y_map[i].x=AntiQuantizeScaleUp(0.587*i);
-        z_map[i].x=AntiQuantizeScaleUp(0.114*i);
-        x_map[i].y=AntiQuantizeScaleUp(0.596*i);
-        y_map[i].y=AntiQuantizeScaleUp((-0.274)*i);
-        z_map[i].y=AntiQuantizeScaleUp((-0.322)*i);
-        x_map[i].z=AntiQuantizeScaleUp(0.211*i);
-        y_map[i].z=AntiQuantizeScaleUp((-0.523)*i);
-        z_map[i].z=AntiQuantizeScaleUp(0.312*i);
+        x_map[i].x=QScaleUp(0.299*i);
+        y_map[i].x=QScaleUp(0.587*i);
+        z_map[i].x=QScaleUp(0.114*i);
+        x_map[i].y=QScaleUp(0.596*i);
+        y_map[i].y=QScaleUp((-0.274)*i);
+        z_map[i].y=QScaleUp((-0.322)*i);
+        x_map[i].z=QScaleUp(0.211*i);
+        y_map[i].z=QScaleUp((-0.523)*i);
+        z_map[i].z=QScaleUp(0.312*i);
       }
       break;
     }
@@ -3589,19 +3630,19 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         Pb and Pr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      primary_info.y=AntiQuantizeScaleUp((MaxMap+1)/2);
-      primary_info.z=AntiQuantizeScaleUp((MaxMap+1)/2);
+      primary_info.y=QScaleUp((MaxMap+1)/2);
+      primary_info.z=QScaleUp((MaxMap+1)/2);
       for (i=0; i <= MaxMap; i++)
       {
-        x_map[i].x=AntiQuantizeScaleUp(0.299*i);
-        y_map[i].x=AntiQuantizeScaleUp(0.587*i);
-        z_map[i].x=AntiQuantizeScaleUp(0.114*i);
-        x_map[i].y=AntiQuantizeScaleUp((-0.168736)*i);
-        y_map[i].y=AntiQuantizeScaleUp((-0.331264)*i);
-        z_map[i].y=AntiQuantizeScaleUp(0.5*i);
-        x_map[i].z=AntiQuantizeScaleUp(0.5*i);
-        y_map[i].z=AntiQuantizeScaleUp((-0.418688)*i);
-        z_map[i].z=AntiQuantizeScaleUp((-0.081312)*i);
+        x_map[i].x=QScaleUp(0.299*i);
+        y_map[i].x=QScaleUp(0.587*i);
+        z_map[i].x=QScaleUp(0.114*i);
+        x_map[i].y=QScaleUp((-0.168736)*i);
+        y_map[i].y=QScaleUp((-0.331264)*i);
+        z_map[i].y=QScaleUp(0.5*i);
+        x_map[i].z=QScaleUp(0.5*i);
+        y_map[i].z=QScaleUp((-0.418688)*i);
+        z_map[i].z=QScaleUp((-0.081312)*i);
       }
       break;
     }
@@ -3618,19 +3659,19 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         U and V, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.  Note that U = 0.493*(B-Y), V = 0.877*(R-Y).
       */
-      primary_info.y=AntiQuantizeScaleUp((MaxMap+1)/2);
-      primary_info.z=AntiQuantizeScaleUp((MaxMap+1)/2);
+      primary_info.y=QScaleUp((MaxMap+1)/2);
+      primary_info.z=QScaleUp((MaxMap+1)/2);
       for (i=0; i <= MaxMap; i++)
       {
-        x_map[i].x=AntiQuantizeScaleUp(0.299*i);
-        y_map[i].x=AntiQuantizeScaleUp(0.587*i);
-        z_map[i].x=AntiQuantizeScaleUp(0.114*i);
-        x_map[i].y=AntiQuantizeScaleUp((-0.1474)*i);
-        y_map[i].y=AntiQuantizeScaleUp((-0.2895)*i);
-        z_map[i].y=AntiQuantizeScaleUp(0.4369*i);
-        x_map[i].z=AntiQuantizeScaleUp(0.615*i);
-        y_map[i].z=AntiQuantizeScaleUp((-0.515)*i);
-        z_map[i].z=AntiQuantizeScaleUp((-0.1)*i);
+        x_map[i].x=QScaleUp(0.299*i);
+        y_map[i].x=QScaleUp(0.587*i);
+        z_map[i].x=QScaleUp(0.114*i);
+        x_map[i].y=QScaleUp((-0.1474)*i);
+        y_map[i].y=QScaleUp((-0.2895)*i);
+        z_map[i].y=QScaleUp(0.4369*i);
+        x_map[i].z=QScaleUp(0.615*i);
+        y_map[i].z=QScaleUp((-0.515)*i);
+        z_map[i].z=QScaleUp((-0.1)*i);
       }
       break;
     }
@@ -3644,17 +3685,17 @@ MagickExport unsigned int RGBTransformImage(Image *image,
     {
       printf("%5ld: x_map(%7d,%7d,%7d) y_map(%7d,%7d,%7d) z_map(%7d,%7d,%7d)\n",
              i,
-             (AntiQuantizeScaleDown(x_map[i].x)),
-             (AntiQuantizeScaleDown(x_map[i].y)),
-             (AntiQuantizeScaleDown(x_map[i].z)),
+             (QScaleDown(x_map[i].x)),
+             (QScaleDown(x_map[i].y)),
+             (QScaleDown(x_map[i].z)),
              
-             (AntiQuantizeScaleDown(y_map[i].x)),
-             (AntiQuantizeScaleDown(y_map[i].y)),
-             (AntiQuantizeScaleDown(y_map[i].z)),
+             (QScaleDown(y_map[i].x)),
+             (QScaleDown(y_map[i].y)),
+             (QScaleDown(y_map[i].z)),
              
-             (AntiQuantizeScaleDown(z_map[i].x)),
-             (AntiQuantizeScaleDown(z_map[i].y)),
-             (AntiQuantizeScaleDown(z_map[i].z)));
+             (QScaleDown(z_map[i].x)),
+             (QScaleDown(z_map[i].y)),
+             (QScaleDown(z_map[i].z)));
     }
 #endif
 
@@ -3669,31 +3710,21 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       ExceptionInfo
         *exception;
 
-      /*
+      register PixelPacket
+        *q;
+
+       /*
         Convert DirectClass image.
       */
       exception=(&image->exception);
       for (y=0; y < (long) image->rows; y++)
       {
-        q=GetImagePixels(image,0,y,image->columns,1);
+       q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (long) image->columns; x++)
+        for (x=(long) image->columns; x > 0; x--)
         {
-          x_map_p = &x_map[ScaleQuantumToMap(q->red)];
-          y_map_p = &y_map[ScaleQuantumToMap(q->green)];
-          z_map_p = &z_map[ScaleQuantumToMap(q->blue)];
-
-          red=AntiQuantizeScaleDown(x_map_p->x+y_map_p->x+z_map_p->x+primary_info.x);
-          red=((red < 0) ? 0 : (red > MaxMap) ? MaxMap : red);
-          green=AntiQuantizeScaleDown(x_map_p->y+y_map_p->y+z_map_p->y+primary_info.y);
-          green=((green < 0) ? 0 : (green > MaxMap) ? MaxMap : green);
-          blue=AntiQuantizeScaleDown(x_map_p->z+y_map_p->z+z_map_p->z+primary_info.z);
-          blue=((blue < 0) ? 0 : (blue > MaxMap) ? MaxMap : blue);
-
-          q->red=ScaleMapToQuantum(red);
-          q->green=ScaleMapToQuantum(green);
-          q->blue=ScaleMapToQuantum(blue);
+          XYZTransformPacket(q,x_map,y_map,z_map,&primary_info);
           q++;
         }
         if (!SyncImagePixels(image))
@@ -3709,24 +3740,17 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       /*
         Convert PseudoClass image.
       */
-      for (i=0; i < (long) image->colors; i++)
+      register PixelPacket
+        *q;
+
+      q=image->colormap;
+      for (i=(long) image->colors; i > 0; i--)
       {
-        x_map_p = &x_map[ScaleQuantumToMap(image->colormap[i].red)];
-        y_map_p = &y_map[ScaleQuantumToMap(image->colormap[i].green)];
-        z_map_p = &z_map[ScaleQuantumToMap(image->colormap[i].blue)];
-        
-        red=AntiQuantizeScaleDown(x_map_p->x+y_map_p->x+z_map_p->x+primary_info.x);
-        red=((red < 0) ? 0 : (red > MaxMap) ? MaxMap : red);
-        green=AntiQuantizeScaleDown(x_map_p->y+y_map_p->y+z_map_p->y+primary_info.y);
-        green=((green < 0) ? 0 : (green > MaxMap) ? MaxMap : green);
-        blue=AntiQuantizeScaleDown(x_map_p->z+y_map_p->z+z_map_p->z+primary_info.z);
-        blue=((blue < 0) ? 0 : (blue > MaxMap) ? MaxMap : blue);
-        
-        image->colormap[i].red=ScaleMapToQuantum(red);
-        image->colormap[i].green=ScaleMapToQuantum(green);
-        image->colormap[i].blue=ScaleMapToQuantum(blue);
+        XYZTransformPacket(q,x_map,y_map,z_map,&primary_info);
+        q++;
       }
-      SyncImage(image);
+      /* SyncImage(image);  FIXME: Remove? */
+      SyncImagePixels(image);
       break;
     }
   }
@@ -4644,9 +4668,6 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
 */
 MagickExport void SyncImage(Image *image)
 {
-  IndexPacket
-    index;
-
   long
     y;
 
@@ -4659,6 +4680,9 @@ MagickExport void SyncImage(Image *image)
   register PixelPacket
     *q;
 
+  register const PixelPacket
+    *p;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->storage_class == DirectClass)
@@ -4669,19 +4693,20 @@ MagickExport void SyncImage(Image *image)
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=(long) image->columns; x > 0; x--)
     {
-      if (indexes[x] >= image->colors)
+      if (*indexes >= image->colors)
         {
           ThrowException(&image->exception,CorruptImageError,
             "InvalidColormapIndex",image->filename);
-          indexes[x]=0;
+          *indexes=0;
         }
-      index=indexes[x];
-      q->red=image->colormap[index].red;
-      q->green=image->colormap[index].green;
-      q->blue=image->colormap[index].blue;
+      p=&image->colormap[*indexes];
+      q->red=p->red;
+      q->green=p->green;
+      q->blue=p->blue;
       q++;
+      indexes++;
     }
     if (!SyncImagePixels(image))
       break;
@@ -4766,18 +4791,79 @@ MagickExport void TextureImage(Image *image,const Image *texture)
 %    o colorspace: the colorspace to transform the image to.
 %
 */
+typedef struct _RGBColorTransformPacket
+{
+  int
+    red,
+    green,
+    blue;
+} RGBColorTransformPacket;
+
+static inline void RGBTransformPacket(PixelPacket *pixel,
+  const RGBColorTransformPacket *red_map,
+  const RGBColorTransformPacket *green_map,
+  const RGBColorTransformPacket *blue_map,
+  const unsigned char *rgb_map,
+  const unsigned int rgb_map_max_index)
+{
+  register int
+    blue,
+    green,
+    red;
+
+  register const RGBColorTransformPacket
+    *red_p,
+    *green_p,
+    *blue_p;
+
+  red_p = &red_map[ScaleQuantumToMap(pixel->red)];
+  green_p = &green_map[ScaleQuantumToMap(pixel->green)];
+  blue_p = &blue_map[ScaleQuantumToMap(pixel->blue)];
+
+  red=QScaleDown(red_p->red+green_p->red+blue_p->red);
+  if(red < 0) red = 0;
+
+  green=QScaleDown(red_p->green+green_p->green+blue_p->green);
+  if(green < 0) green = 0;
+
+  blue=QScaleDown(red_p->blue+green_p->blue+blue_p->blue);
+  if(blue < 0) blue = 0;
+
+  if ( rgb_map != 0 )
+    {
+      unsigned int
+        red_index,
+        green_index,
+        blue_index;
+
+      red_index = ScaleMapToChar(red);
+      green_index = ScaleMapToChar(green);
+      blue_index = ScaleMapToChar(blue);
+
+      if(red_index > rgb_map_max_index) red_index = rgb_map_max_index;
+      if(green_index > rgb_map_max_index) green_index = rgb_map_max_index;
+      if(blue_index > rgb_map_max_index) blue_index = rgb_map_max_index;
+
+      pixel->red=ScaleCharToQuantum(rgb_map[red_index]);
+      pixel->green=ScaleCharToQuantum(rgb_map[green_index]);
+      pixel->blue=ScaleCharToQuantum(rgb_map[blue_index]);
+    }
+  else
+    {
+      if(red > MaxMap) red=MaxMap;
+      if(green > MaxMap) green=MaxMap;
+      if(blue > MaxMap) blue=MaxMap;
+
+      pixel->red=ScaleMapToQuantum((unsigned int) red);
+      pixel->green=ScaleMapToQuantum((unsigned int) green);
+      pixel->blue=ScaleMapToQuantum((unsigned int) blue);
+    }
+}
 MagickExport unsigned int TransformRGBImage(Image *image,
   const ColorspaceType colorspace)
 {
 #define TransformRGBImageText  "  Transform image colors...  "
 
-  typedef struct _RGBColorTransformPacket
-  {
-    int
-      red,
-      green,
-      blue;
-  } RGBColorTransformPacket;
 
   static const unsigned char
     sRGBMap[351] =
@@ -4853,8 +4939,11 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   register long
     i;
 
-  register PixelPacket
-    *q;
+  const unsigned char
+    *rgb_map=0;
+
+  unsigned int
+    rgb_map_max_index=0;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -4880,9 +4969,17 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       IndexPacket
         *indexes;
 
+      register PixelPacket
+        *q;
+
       /*
         Transform image from CMYK to RGB.
       */
+      if (image->storage_class == PseudoClass)
+        {
+          SyncImage(image);
+          image->storage_class=DirectClass;
+        }
       for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
@@ -4936,15 +5033,15 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       */
       for (i=0; i <= MaxMap; i++)
       {
-        red_map[i].red=AntiQuantizeScaleUp(i);
-        green_map[i].red=AntiQuantizeScaleUp(0.5*(2.0*i-MaxMap));
-        blue_map[i].red=AntiQuantizeScaleUp((-0.33334)*(2.0*i-MaxMap));
-        red_map[i].green=AntiQuantizeScaleUp(i);
+        red_map[i].red=QScaleUp(i);
+        green_map[i].red=QScaleUp(0.5*(2.0*i-MaxMap));
+        blue_map[i].red=QScaleUp((-0.33334)*(2.0*i-MaxMap));
+        red_map[i].green=QScaleUp(i);
         green_map[i].green=0;
-        blue_map[i].green=AntiQuantizeScaleUp(0.666665*(2.0*i-MaxMap));
-        red_map[i].blue=AntiQuantizeScaleUp(i);
-        green_map[i].blue=AntiQuantizeScaleUp((-0.5)*(2.0*i-MaxMap));
-        blue_map[i].blue=AntiQuantizeScaleUp((-0.33334)*(2.0*i-MaxMap));
+        blue_map[i].green=QScaleUp(0.666665*(2.0*i-MaxMap));
+        red_map[i].blue=QScaleUp(i);
+        green_map[i].blue=QScaleUp((-0.5)*(2.0*i-MaxMap));
+        blue_map[i].blue=QScaleUp((-0.33334)*(2.0*i-MaxMap));
       }
       break;
     }
@@ -4959,21 +5056,18 @@ MagickExport unsigned int TransformRGBImage(Image *image,
 
         sRGB is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
+      rgb_map=sRGBMap;
+      rgb_map_max_index=350;
       for (i=0; i <= MaxMap; i++)
       {
-        red_map[i].red=AntiQuantizeScaleUp(1.40200*i);
+        red_map[i].red=QScaleUp(1.40200*i);
         green_map[i].red=0;
-        blue_map[i].red=
-          AntiQuantizeScaleUp(1.88000*(i-(long) ScaleCharToMap(137)));
-        red_map[i].green=
-          AntiQuantizeScaleUp(1.40200*i);
-        green_map[i].green=
-          AntiQuantizeScaleUp((-0.444066)*(i-(long) ScaleCharToMap(156)));
-        blue_map[i].green=
-          AntiQuantizeScaleUp((-0.95692)*(i-(long) ScaleCharToMap(137)));
-        red_map[i].blue=AntiQuantizeScaleUp(1.40200*i);
-        green_map[i].blue=
-          AntiQuantizeScaleUp(2.28900*(i-(long) ScaleCharToMap(156)));
+        blue_map[i].red=QScaleUp(1.88000*(i-ScaleCharToMap(137)));
+        red_map[i].green=QScaleUp(1.40200*i);
+        green_map[i].green=QScaleUp((-0.444066)*(i-ScaleCharToMap(156)));
+        blue_map[i].green=QScaleUp((-0.95692)*(i-ScaleCharToMap(137)));
+        red_map[i].blue=QScaleUp(1.40200*i);
+        green_map[i].blue=QScaleUp(2.28900*(i-ScaleCharToMap(156)));
         blue_map[i].blue=0;
       }
       break;
@@ -4989,15 +5083,15 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       */
       for (i=0; i <= MaxMap; i++)
       {
-        red_map[i].red=AntiQuantizeScaleUp(3.240479*i);
-        green_map[i].red=AntiQuantizeScaleUp((-1.537150)*i);
-        blue_map[i].red=AntiQuantizeScaleUp((-0.498535)*i);
-        red_map[i].green=AntiQuantizeScaleUp((-0.969256)*i);
-        green_map[i].green=AntiQuantizeScaleUp(1.875992*i);
-        blue_map[i].green=AntiQuantizeScaleUp(0.041556*i);
-        red_map[i].blue=AntiQuantizeScaleUp(0.055648*i);
-        green_map[i].blue=AntiQuantizeScaleUp((-0.204043)*i);
-        blue_map[i].blue=AntiQuantizeScaleUp(1.057311*i);
+        red_map[i].red=QScaleUp(3.240479*i);
+        green_map[i].red=QScaleUp((-1.537150)*i);
+        blue_map[i].red=QScaleUp((-0.498535)*i);
+        red_map[i].green=QScaleUp((-0.969256)*i);
+        green_map[i].green=QScaleUp(1.875992*i);
+        blue_map[i].green=QScaleUp(0.041556*i);
+        red_map[i].blue=QScaleUp(0.055648*i);
+        green_map[i].blue=QScaleUp((-0.204043)*i);
+        blue_map[i].blue=QScaleUp(1.057311*i);
       }
       break;
     }
@@ -5015,14 +5109,14 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       */
       for (i=0; i <= MaxMap; i++)
       {
-        red_map[i].red=AntiQuantizeScaleUp(i);
+        red_map[i].red=QScaleUp(i);
         green_map[i].red=0;
-        blue_map[i].red=AntiQuantizeScaleUp((1.402000*0.5)*(2.0*i-MaxMap));
-        red_map[i].green=AntiQuantizeScaleUp(i);
-        green_map[i].green=AntiQuantizeScaleUp((-0.344136*0.5)*(2.0*i-MaxMap));
-        blue_map[i].green=AntiQuantizeScaleUp((-0.714136*0.5)*(2.0*i-MaxMap));
-        red_map[i].blue=AntiQuantizeScaleUp(i);
-        green_map[i].blue=AntiQuantizeScaleUp((1.772000*0.5)*(2.0*i-MaxMap));
+        blue_map[i].red=QScaleUp((1.402000*0.5)*(2.0*i-MaxMap));
+        red_map[i].green=QScaleUp(i);
+        green_map[i].green=QScaleUp((-0.344136*0.5)*(2.0*i-MaxMap));
+        blue_map[i].green=QScaleUp((-0.714136*0.5)*(2.0*i-MaxMap));
+        red_map[i].blue=QScaleUp(i);
+        green_map[i].blue=QScaleUp((1.772000*0.5)*(2.0*i-MaxMap));
         blue_map[i].blue=0;
       }
       break;
@@ -5030,6 +5124,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
     case YCCColorspace:
     {
       /*
+        Kodak PhotoYCC Color Space.
+
         Initialize YCC tables:
 
           R = Y            +1.340762*C2
@@ -5038,22 +5134,18 @@ MagickExport unsigned int TransformRGBImage(Image *image,
 
         YCC is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
+      rgb_map=YCCMap;
+      rgb_map_max_index=350;
       for (i=0; i <= MaxMap; i++)
       {
-        red_map[i].red=AntiQuantizeScaleUp(1.3584*i);
+        red_map[i].red=QScaleUp(1.3584*i);
         green_map[i].red=0;
-        blue_map[i].red=
-          AntiQuantizeScaleUp(1.8215*(i-(long) ScaleCharToMap(137)));
-        red_map[i].green=
-          AntiQuantizeScaleUp(1.3584*i);
-        green_map[i].green=
-          AntiQuantizeScaleUp((-0.4302726)*(i-(long) ScaleCharToMap(156)));
-        blue_map[i].green=
-          AntiQuantizeScaleUp((-0.9271435)*(i-(long) ScaleCharToMap(137)));
-        red_map[i].blue=
-          AntiQuantizeScaleUp(1.3584*i);
-        green_map[i].blue=
-          AntiQuantizeScaleUp(2.2179*(i-(long) ScaleCharToMap(156)));
+        blue_map[i].red=QScaleUp(1.8215*(i-ScaleCharToMap(137)));
+        red_map[i].green=QScaleUp(1.3584*i);
+        green_map[i].green=QScaleUp((-0.4302726)*(i-ScaleCharToMap(156)));
+        blue_map[i].green=QScaleUp((-0.9271435)*(i-ScaleCharToMap(137)));
+        red_map[i].blue=QScaleUp(1.3584*i);
+        green_map[i].blue=QScaleUp(2.2179*(i-ScaleCharToMap(156)));
         blue_map[i].blue=0;
       }
       break;
@@ -5072,15 +5164,15 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       */
       for (i=0; i <= MaxMap; i++)
       {
-        red_map[i].red=AntiQuantizeScaleUp(i);
-        green_map[i].red=AntiQuantizeScaleUp(0.4781*(2.0*i-MaxMap));
-        blue_map[i].red=AntiQuantizeScaleUp(0.3107*(2.0*i-MaxMap));
-        red_map[i].green=AntiQuantizeScaleUp(i);
-        green_map[i].green=AntiQuantizeScaleUp((-0.13635)*(2.0*i-MaxMap));
-        blue_map[i].green=AntiQuantizeScaleUp((-0.3234)*(2.0*i-MaxMap));
-        red_map[i].blue=AntiQuantizeScaleUp(i);
-        green_map[i].blue=AntiQuantizeScaleUp((-0.55185)*(2.0*i-MaxMap));
-        blue_map[i].blue=AntiQuantizeScaleUp(0.8503*(2.0*i-MaxMap));
+        red_map[i].red=QScaleUp(i);
+        green_map[i].red=QScaleUp(0.4781*(2.0*i-MaxMap));
+        blue_map[i].red=QScaleUp(0.3107*(2.0*i-MaxMap));
+        red_map[i].green=QScaleUp(i);
+        green_map[i].green=QScaleUp((-0.13635)*(2.0*i-MaxMap));
+        blue_map[i].green=QScaleUp((-0.3234)*(2.0*i-MaxMap));
+        red_map[i].blue=QScaleUp(i);
+        green_map[i].blue=QScaleUp((-0.55185)*(2.0*i-MaxMap));
+        blue_map[i].blue=QScaleUp(0.8503*(2.0*i-MaxMap));
       }
       break;
     }
@@ -5098,14 +5190,14 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       */
       for (i=0; i <= MaxMap; i++)
       {
-        red_map[i].red=AntiQuantizeScaleUp(i);
+        red_map[i].red=QScaleUp(i);
         green_map[i].red=0;
-        blue_map[i].red=AntiQuantizeScaleUp(0.701*(2.0*i-MaxMap));
-        red_map[i].green=AntiQuantizeScaleUp(i);
-        green_map[i].green=AntiQuantizeScaleUp((-0.172068)*(2.0*i-MaxMap));
-        blue_map[i].green=AntiQuantizeScaleUp(0.357068*(2.0*i-MaxMap));
-        red_map[i].blue=AntiQuantizeScaleUp(i);
-        green_map[i].blue=AntiQuantizeScaleUp(0.886*(2.0*i-MaxMap));
+        blue_map[i].red=QScaleUp(0.701*(2.0*i-MaxMap));
+        red_map[i].green=QScaleUp(i);
+        green_map[i].green=QScaleUp((-0.172068)*(2.0*i-MaxMap));
+        blue_map[i].green=QScaleUp(0.357068*(2.0*i-MaxMap));
+        red_map[i].blue=QScaleUp(i);
+        green_map[i].blue=QScaleUp(0.886*(2.0*i-MaxMap));
         blue_map[i].blue=0;
       }
       break;
@@ -5125,19 +5217,42 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       */
       for (i=0; i <= MaxMap; i++)
       {
-        red_map[i].red=AntiQuantizeScaleUp(i);
+        red_map[i].red=QScaleUp(i);
         green_map[i].red=0;
-        blue_map[i].red=AntiQuantizeScaleUp(0.5699*(2.0*i-MaxMap));
-        red_map[i].green=AntiQuantizeScaleUp(i);
-        green_map[i].green=AntiQuantizeScaleUp((-0.1969)*(2.0*i-MaxMap));
-        blue_map[i].green=AntiQuantizeScaleUp((-0.29025)*(2.0*i-MaxMap));
-        red_map[i].blue=AntiQuantizeScaleUp(i);
-        green_map[i].blue=AntiQuantizeScaleUp(1.01395*(2.0*i-MaxMap));
+        blue_map[i].red=QScaleUp(0.5699*(2.0*i-MaxMap));
+        red_map[i].green=QScaleUp(i);
+        green_map[i].green=QScaleUp((-0.1969)*(2.0*i-MaxMap));
+        blue_map[i].green=QScaleUp((-0.29025)*(2.0*i-MaxMap));
+        red_map[i].blue=QScaleUp(i);
+        green_map[i].blue=QScaleUp(1.01395*(2.0*i-MaxMap));
         blue_map[i].blue=0;
       }
       break;
     }
   }
+
+#if 0
+  /*
+    Dump tables
+  */
+  for (i=0; i <= MaxMap; i++)
+    {
+      printf("%5ld: red_map(%7d,%7d,%7d) green_map(%7d,%7d,%7d) blue_map(%7d,%7d,%7d)\n",
+             i,
+             (QScaleDown(red_map[i].red)),
+             (QScaleDown(red_map[i].green)),
+             (QScaleDown(red_map[i].blue)),
+             
+             (QScaleDown(green_map[i].red)),
+             (QScaleDown(green_map[i].green)),
+             (QScaleDown(green_map[i].blue)),
+             
+             (QScaleDown(blue_map[i].red)),
+             (QScaleDown(blue_map[i].green)),
+             (QScaleDown(blue_map[i].blue)));
+    }
+#endif
+
   /*
     Convert to RGB.
   */
@@ -5149,10 +5264,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       ExceptionInfo
         *exception;
 
-      register int
-        blue,
-        green,
-        red;
+      register PixelPacket
+        *q;
 
       /*
         Convert DirectClass image.
@@ -5164,73 +5277,10 @@ MagickExport unsigned int TransformRGBImage(Image *image,
         if (q == (PixelPacket *) NULL)
           break;
 
-        for (x=0; x < (long) image->columns; x++)
+        for (x=(long) image->columns; x > 0; x--)
         {
-          RGBColorTransformPacket
-            *red_map_p,
-            *green_map_p,
-            *blue_map_p;
-
-          red_map_p = &red_map[ScaleQuantumToMap(q->red)];
-          green_map_p = &green_map[ScaleQuantumToMap(q->green)];
-          blue_map_p = &blue_map[ScaleQuantumToMap(q->blue)];
-
-          red=(AntiQuantizeScaleDown(red_map_p->red+green_map_p->red+
-                                     blue_map_p->red));
-          green=(AntiQuantizeScaleDown(red_map_p->green+green_map_p->green
-                                       +blue_map_p->green));
-          blue=(AntiQuantizeScaleDown(red_map_p->blue+green_map_p->blue
-                                      +blue_map_p->blue));
-
-          if(red < 0) red = 0;
-          if(green < 0) green = 0;
-          if(blue < 0) blue = 0;
-
-          switch (colorspace)
-          {
-            case sRGBColorspace:
-            case YCCColorspace:
-            {
-              const static unsigned int
-                max_index=ScaleCharToMap(350);
-
-              if(red > max_index) red = max_index;
-              if(green > max_index) green = max_index;
-              if(blue > max_index) blue = max_index;
-
-              if (colorspace == sRGBColorspace)
-                {
-                  q->red=ScaleCharToQuantum(sRGBMap[(unsigned int)
-                     ScaleMapToChar(red)]);
-                  q->green=ScaleCharToQuantum(sRGBMap[(unsigned int)
-                     ScaleMapToChar(green)]);
-                  q->blue=ScaleCharToQuantum(sRGBMap[(unsigned int)
-                     ScaleMapToChar(blue)]);
-                  break;
-                }
-              q->red=ScaleCharToQuantum(YCCMap[(unsigned int)
-                                              ScaleMapToChar(red)]);
-              q->green=ScaleCharToQuantum(YCCMap[(unsigned int)
-                                                ScaleMapToChar(green)]);
-              q->blue=ScaleCharToQuantum(YCCMap[(unsigned int)
-                                               ScaleMapToChar(blue)]);
-              break;
-            }
-            default:
-            {
-              const static unsigned int
-                max_index=MaxMap;
-
-              if(red > max_index) red = max_index;
-              if(green > max_index) green = max_index;
-              if(blue > max_index) blue = max_index;
-
-              q->red=ScaleMapToQuantum((unsigned int) red);
-              q->green=ScaleMapToQuantum((unsigned int) green);
-              q->blue=ScaleMapToQuantum((unsigned int) blue);
-              break;
-            }
-          }
+          RGBTransformPacket(q,red_map,green_map,blue_map,rgb_map,
+                             rgb_map_max_index);
           q++;
         }
         if (!SyncImagePixels(image))
@@ -5246,84 +5296,18 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       /*
         Convert PseudoClass image.
       */
+      register PixelPacket
+        *q;
 
-      register int
-        blue,
-        green,
-        red;
-
-      for (i=0; i < (long) image->colors; i++)
+      q=image->colormap;
+      for (i=(long) image->colors; i > 0; i--)
       {
-        RGBColorTransformPacket
-          *red_map_p,
-          *green_map_p,
-          *blue_map_p;
-
-        red_map_p = &red_map[ScaleQuantumToMap(image->colormap[i].red)];
-        green_map_p = &green_map[ScaleQuantumToMap(image->colormap[i].green)];
-        blue_map_p = &blue_map[ScaleQuantumToMap(image->colormap[i].blue)];
-
-        red=(AntiQuantizeScaleDown(red_map_p->red+green_map_p->red
-                                   +blue_map_p->red));
-        green=(AntiQuantizeScaleDown(red_map_p->green+green_map_p->green
-                                     +blue_map_p->green));
-        blue=(AntiQuantizeScaleDown(red_map_p->blue+green_map_p->blue
-                                    +blue_map_p->blue));
-
-        if(red < 0) red = 0;
-        if(green < 0) green = 0;
-        if(blue < 0) blue = 0;
-
-        switch (colorspace)
-        {
-          case sRGBColorspace:
-          case YCCColorspace:
-            {
-              const static unsigned int
-                max_index=ScaleCharToMap(350);
-              
-              if(red > max_index) red = max_index;
-              if(green > max_index) green = max_index;
-              if(blue > max_index) blue = max_index;
-
-            if (colorspace == sRGBColorspace)
-              {
-                image->colormap[i].red=
-                  ScaleCharToQuantum(sRGBMap[(unsigned int)
-                    ScaleMapToChar(red)]);
-                image->colormap[i].green=
-                  ScaleCharToQuantum(sRGBMap[(unsigned int)
-                     ScaleMapToChar(green)]);
-                image->colormap[i].blue=
-                  ScaleCharToQuantum(sRGBMap[(unsigned int)
-                     ScaleMapToChar(blue)]);
-                break;
-              }
-            image->colormap[i].red=
-              ScaleCharToQuantum(YCCMap[(unsigned int) ScaleMapToChar(red)]);
-            image->colormap[i].green=
-              ScaleCharToQuantum(YCCMap[(unsigned int) ScaleMapToChar(green)]);
-            image->colormap[i].blue=
-              ScaleCharToQuantum(YCCMap[(unsigned int) ScaleMapToChar(blue)]);
-            break;
-          }
-          default:
-          {
-            const static unsigned int
-              max_index=MaxMap;
-
-            if(red > max_index) red = max_index;
-            if(green > max_index) green = max_index;
-            if(blue > max_index) blue = max_index;
-
-            image->colormap[i].red=ScaleMapToQuantum((unsigned int) red);
-            image->colormap[i].green=ScaleMapToQuantum((unsigned int) green);
-            image->colormap[i].blue=ScaleMapToQuantum((unsigned int) blue);
-            break;
-          }
-        }
+        RGBTransformPacket(q,red_map,green_map,blue_map,rgb_map,
+                           rgb_map_max_index);
+        q++;
       }
-      SyncImage(image);
+      /* SyncImage(image); FIXME: remove ? */
+      SyncImagePixels(image);
       break;
     }
   }
