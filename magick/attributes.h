@@ -1,8 +1,8 @@
 /*
   Methods to Get/Set/Destroy Image Text Attributes.
 */
-#ifndef _ATTRIBUTES_H
-#define _ATTRIBUTES_H
+#ifndef _MAGICK_ATTRIBUTES_H
+#define _MAGICK_ATTRIBUTES_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

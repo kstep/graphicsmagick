@@ -1,8 +1,8 @@
 /*
   Magic methods.
 */
-#ifndef _MAGIC_H
-#define _MAGIC_H
+#ifndef _MAGICK_MAGIC_H
+#define _MAGICK_MAGIC_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -1,8 +1,8 @@
 /*
   ImageMagick X11 compatibility methods.
 */
-#ifndef _PRER5ICCCM_H
-#define _PRER5ICCCM_H
+#ifndef _MAGICK_PRER5ICCCM_H
+#define _MAGICK_PRER5ICCCM_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

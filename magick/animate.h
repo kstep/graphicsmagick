@@ -1,8 +1,8 @@
 /*
   Methods to Interactively Animate an Image Sequence.
 */
-#ifndef _ANIMATE_H
-#define _ANIMATE_H
+#ifndef _MAGICK_ANIMATE_H
+#define _MAGICK_ANIMATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

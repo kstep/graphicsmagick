@@ -1,8 +1,8 @@
 /*
   ImageMagick Image Methods.
 */
-#ifndef _IMAGE_H
-#define _IMAGE_H
+#ifndef _MAGICK_IMAGE_H
+#define _MAGICK_IMAGE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -772,7 +772,6 @@ extern MagickExport void
   RegisterAVSImage(void),
   RegisterBIEImage(void),
   RegisterBMPImage(void),
-  RegisterBMP24Image(void),
   RegisterCMYKImage(void),
   RegisterCUTImage(void),
   RegisterDCMImage(void),
@@ -810,7 +809,7 @@ extern MagickExport void
   RegisterJBIGImage(void),
   RegisterJPGImage(void),
   RegisterJPEGImage(void),
-  RegisterJPEG24Image(void),
+  RegisterJP2Image(void),
   RegisterLABELImage(void),
   RegisterLOGOImage(void),
   RegisterMAPImage(void),
@@ -834,7 +833,6 @@ extern MagickExport void
   RegisterPDFImage(void),
   RegisterPICImage(void),
   RegisterPICTImage(void),
-  RegisterPICT24Image(void),
   RegisterPIXImage(void),
   RegisterPLASMAImage(void),
   RegisterPGMImage(void),
@@ -865,7 +863,6 @@ extern MagickExport void
   RegisterTGAImage(void),
   RegisterTIFImage(void),
   RegisterTIFFImage(void),
-  RegisterTIFF24Image(void),
   RegisterTILEImage(void),
   RegisterTIMImage(void),
   RegisterTTFImage(void),
@@ -903,7 +900,6 @@ extern MagickExport void
   UnregisterAVSImage(void),
   UnregisterBIEImage(void),
   UnregisterBMPImage(void),
-  UnregisterBMP24Image(void),
   UnregisterCMYKImage(void),
   UnregisterDCMImage(void),
   UnregisterDCXImage(void),
@@ -940,7 +936,7 @@ extern MagickExport void
   UnregisterJBIGImage(void),
   UnregisterJPGImage(void),
   UnregisterJPEGImage(void),
-  UnregisterJPEG24Image(void),
+  UnregisterJP2Image(void),
   UnregisterLABELImage(void),
   UnregisterLOGOImage(void),
   UnregisterMAPImage(void),
@@ -964,7 +960,6 @@ extern MagickExport void
   UnregisterPDFImage(void),
   UnregisterPICImage(void),
   UnregisterPICTImage(void),
-  UnregisterPICT24Image(void),
   UnregisterPIXImage(void),
   UnregisterPLASMAImage(void),
   UnregisterPGMImage(void),
@@ -995,7 +990,6 @@ extern MagickExport void
   UnregisterTGAImage(void),
   UnregisterTIFImage(void),
   UnregisterTIFFImage(void),
-  UnregisterTIFF24Image(void),
   UnregisterTILEImage(void),
   UnregisterTIMImage(void),
   UnregisterTTFImage(void),

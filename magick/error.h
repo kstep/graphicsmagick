@@ -1,8 +1,8 @@
 /*
   ImageMagick Exception Methods.
 */
-#ifndef _ERROR_H
-#define _ERROR_H
+#ifndef _MAGICK_ERROR_H
+#define _MAGICK_ERROR_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

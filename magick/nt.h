@@ -1,8 +1,8 @@
 /*
   Windows NT Utility Methods for ImageMagick.
 */
-#ifndef _NT_H
-#define _NT_H
+#ifndef _MAGICK_NT_H
+#define _MAGICK_NT_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

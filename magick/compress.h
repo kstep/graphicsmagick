@@ -1,8 +1,8 @@
 /*
   Image Compression/Decompression Methods.
 */
-#ifndef _COMPRESS_H
-#define _COMPRESS_H
+#ifndef _MAGICK_COMPRESS_H
+#define _MAGICK_COMPRESS_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

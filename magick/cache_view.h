@@ -1,8 +1,8 @@
 /*
   ImageMagick Cache View Methods.
 */
-#ifndef _CACHEVIEW_H
-#define _CACHEVIEW_H
+#ifndef _MAGICK_CACHE_VIEW_H
+#define _MAGICK_CACHE_VIEW_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

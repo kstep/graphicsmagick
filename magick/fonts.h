@@ -1,8 +1,8 @@
 /*
   Font methods.
 */
-#ifndef _FONT_H
-#define _FONT_H
+#ifndef _MAGICK_FONT_H
+#define _MAGICK_FONT_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

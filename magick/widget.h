@@ -1,8 +1,8 @@
 /*
   X11 User Interface Methods for ImageMagick.
 */
-#ifndef _WIDGET_H
-#define _WIDGET_H
+#ifndef _MAGICK_WIDGET_H
+#define _MAGICK_WIDGET_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -1,8 +1,8 @@
 /*
   ImageMagick Utility Methods.
 */
-#ifndef _UTILITY_H
-#define _UTILITY_H
+#ifndef _MAGICK_UTILITY_H
+#define _MAGICK_UTILITY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

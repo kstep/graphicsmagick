@@ -1,8 +1,8 @@
 /*
   Methods to Reduce the Number of Unique Colors in an Image.
 */
-#ifndef _QUANTIZE_H
-#define _QUANTIZE_H
+#ifndef _MAGICK_QUANTIZE_H
+#define _MAGICK_QUANTIZE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

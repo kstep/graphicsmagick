@@ -1,8 +1,8 @@
 /*
   Methods to Interactively Display and Edit an Image.
 */
-#ifndef _DISPLAY_H
-#define _DISPLAY_H
+#ifndef _MAGICK_DISPLAY_H
+#define _MAGICK_DISPLAY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

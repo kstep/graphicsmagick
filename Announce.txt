@@ -1,8 +1,6 @@
-Subject: ImageMagick 5.3.4 - tools and libraries for image manipulation
-
-The ImageMagick Studio LLC development group is proud to announce the
-release of ImageMagick 5.3.4.  Version 5.3.4 is a bug-fix release to
-resolve bugs reported against 5.2.8.
+The ImageMagick Studio LLC development group announces the release of
+ImageMagick 5.3.7.  Version 5.3.7 is a bug-fix release to resolve bugs
+reported against 5.3.6.
 
 ImageMagick is a robust collection of tools and libraries to read,
 write, and manipulate an image in many image formats (over 71 major
@@ -25,49 +23,13 @@ The ImageMagick WWW page is
 
    http://www.imagemagick.org/
  
-ImageMagick 5.3.4 is available via ftp as
+ImageMagick 5.3.7 is available via ftp as
 
-   ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.3.4.tar.gz
+   ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.3.7.tar.gz
 
 If ftp.imagemagick.org is overloaded (very likely), check the list of
 mirrors at http://www.imagemagick.org/www/archives.html for other
-mirrors.   You may want to use a mirror anyway, since many of the
-mirrors are faster than imagemagick.org.
-
-Note that the primary distribution site has changed in the past two
-months.  If you are running a mirror site, please adjust your mirror
-parameters.
-
-
-Enhancements Over Previous Release:
-
-  Previous releases defaulted to 8 bits per pixel component.  Version
-  5.2.8 defaults to 16 bits per pixel component.  With this change
-  there were a number of bug reports fixes which include
-
-    o improvements to 16-bit PNG support
-
-    o 8-bit ImageMagick can now read 16-bit PNM images
-
-    o For image formats that support both 8 & 16 bit pixel components,
-      the proper depth is selected.  Previously if the image was read as
-      8-bit, it was written as 8-bit even if the depth was promoted to
-      16-bit due to a transformation such as sharpen/draw.
-
-
-Future Plans:
-
-  o Magick++ HTML documentation installed under /usr/local/share/Magick++.
-
-  o Improvements to SVG support.
-
-  o Complete native WMF rendering support.
-
-  o Work on gradients, image filters, and clipping paths.
-
-  o Support for iptcutil and cgimagick utilities (code is written but
-    documentation is still required).
-
+mirrors. 
 
 ImageMagick is developed by the members of the ImageMagick Studio
 team:

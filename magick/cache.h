@@ -1,8 +1,8 @@
 /*
   ImageMagick Cache Methods.
 */
-#ifndef _CACHE_H
-#define _CACHE_H
+#ifndef _MAGICK_CACHE_H
+#define _MAGICK_CACHE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

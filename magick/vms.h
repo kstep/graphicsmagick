@@ -1,8 +1,8 @@
 /*
   VMS Utility Methods for ImageMagick.
 */
-#ifndef _VMS_H
-#define _VMS_H
+#ifndef _MAGICK_VMS_H
+#define _MAGICK_VMS_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

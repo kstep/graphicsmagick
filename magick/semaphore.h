@@ -1,8 +1,8 @@
 /*
   Methods to lock and unlock semaphores.
 */
-#ifndef _SEMAPHORE_H
-#define _SEMAPHORE_H
+#ifndef _MAGICK_SEMAPHORE_H
+#define _MAGICK_SEMAPHORE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

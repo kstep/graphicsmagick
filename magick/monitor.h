@@ -1,8 +1,8 @@
 /*
   ImageMagick Progress Monitor Methods.
 */
-#ifndef _MONITOR_H
-#define _MONITOR_H
+#ifndef _MAGICK_MONITOR_H
+#define _MAGICK_MONITOR_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

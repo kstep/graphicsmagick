@@ -1,8 +1,8 @@
 /*
   ImageMagick defines.
 */
-#ifndef _DEFINES_H
-#define _DEFINES_H
+#ifndef _MAGICK_DEFINES_H
+#define _MAGICK_DEFINES_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

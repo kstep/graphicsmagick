@@ -1,8 +1,8 @@
 /*
   Image Compression/Decompression Methods.
 */
-#ifndef _BLOBS_H
-#define _BLOBS_H
+#ifndef _MAGICK_BLOB_H
+#define _MAGICK_BLOB_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -1,8 +1,8 @@
 /*
   ImageMagick Timer Methods.
 */
-#ifndef _TIMER_H
-#define _TIMER_H
+#ifndef _MAGICK_TIMER_H
+#define _MAGICK_TIMER_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -1,8 +1,8 @@
 /*
   ImageMagick image and error storage_classs.
 */
-#ifndef _CLASSIFY_H
-#define _CLASSIFY_H
+#ifndef _MAGICK_CLASSIFY_H
+#define _MAGICK_CLASSIFY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -1,8 +1,8 @@
 /*
   Methods to Read/Write/Invoke Delegates.
 */
-#ifndef _DELEGATES_H
-#define _DELEGATES_H
+#ifndef _MAGICK_DELEGATES_H
+#define _MAGICK_DELEGATES_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

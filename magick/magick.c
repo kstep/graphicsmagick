@@ -318,6 +318,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag,ExceptionInfo *exception)
       RegisterIPTCImage();
       RegisterJBIGImage();
       RegisterJPEGImage();
+      RegisterJP2Image();
       RegisterLABELImage();
       RegisterLOGOImage();
       RegisterMAPImage();
