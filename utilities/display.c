@@ -350,7 +350,10 @@ int main(int argc,char **argv)
     Initialize command line arguments.
   */
   ReadCommandlLine(argc,&argv);
-  MagickIncarnate(*argv);
+  if (LocaleCompare("display",argv[0]) == 0)
+    MagickIncarnate(GetExecutionPath(argv[0]));
+  else
+    MagickIncarnate(*argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);

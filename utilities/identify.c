@@ -166,7 +166,10 @@ int main(int argc,char **argv)
     Initialize command line arguments.
   */
   ReadCommandlLine(argc,&argv);
-  MagickIncarnate(*argv);
+  if (LocaleCompare("identify",argv[0]) == 0)
+    MagickIncarnate(GetExecutionPath(argv[0]));
+  else
+    MagickIncarnate(*argv);
   format=(char *) NULL;
   for (i=1; i < argc; i++)
   {
