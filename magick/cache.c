@@ -1842,8 +1842,8 @@ static unsigned int ReadCacheIndexes(const Cache cache,
   number_pixels=cache_info->columns*cache_info->rows;
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=lseek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+offset*
-      sizeof(IndexPacket),SEEK_SET);
+    count=lseek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
+      offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
     count=read(file,(char *) indexes,nexus_info->columns*sizeof(IndexPacket));
@@ -2627,8 +2627,8 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   number_pixels=cache_info->columns*cache_info->rows;
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=lseek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+offset*
-      sizeof(IndexPacket),SEEK_SET);
+    count=lseek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
+      offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
     count=write(file,(char *) indexes,nexus_info->columns*sizeof(IndexPacket));
