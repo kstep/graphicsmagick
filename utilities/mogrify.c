@@ -312,7 +312,7 @@ static unsigned int MogrifyUtility(int argc,char **argv)
               p--;
             p++;
             if (LocaleCompare(p,image->magick) == 0)
-              (void) strncpy(p,format,MaxTextExtent-1);
+              (void) strncpy(p,format,MaxTextExtent-(p-image->filename)-1);
             else
               {
                 FormatString(image_info->filename,"%.1024s:%.1024s",format,
