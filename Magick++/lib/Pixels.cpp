@@ -21,22 +21,21 @@ namespace Magick
 // Construct pixel view using specified image.
 Magick::Pixels::Pixels( Magick::Image &image_ )
   : _image(image_),
-    _view(MagickLib::OpenCacheView(image_.image())),
-    _pixels(0),
+    _view(OpenCacheView(image_.image())),
     _x(0),
     _y(0),
     _columns(0),
     _rows(0)
 {
   if (!_view)
-    throwExceptionExplicit( MagickLib::ResourceLimitError, "Out of pixel views" );
+    throwExceptionExplicit( ResourceLimitError, "Out of pixel views" );
 }
 
 // Destroy pixel view
 Magick::Pixels::~Pixels( void )
 {
   if ( _view )
-    MagickLib::CloseCacheView( _view );
+    CloseCacheView( _view );
 }
 
 // Transfer pixels from the image to the pixel view as defined by
@@ -57,19 +56,19 @@ Magick::PixelPacket* Magick::Pixels::get ( unsigned int x_,
   _columns = columns_;
   _rows = rows_;
 
-  _pixels = MagickLib::GetCacheView( _view, x_, y_,
-				     columns_, rows_ );
-  if ( _pixels == 0 )
-    throwExceptionExplicit( MagickLib::OptionError, "Failed to get pixels" );
+  PixelPacket* pixels = GetCacheView( _view, x_, y_,
+                                      columns_, rows_ );
+  if ( pixels == 0 )
+    throwExceptionExplicit( OptionError, "Failed to get pixels" );
   
-  return _pixels;
+  return pixels;
 }
 
 // Transfers the image view pixels to the image.
 void Magick::Pixels::sync ( void )
 {
-  if( !MagickLib::SyncCacheView( _view ) )
-    throwExceptionExplicit( MagickLib::OptionError, "Failed to sync pixels" );
+  if( !SyncCacheView( _view ) )
+    throwExceptionExplicit( OptionError, "Failed to sync pixels" );
 }
     
 // Allocate a pixel view region to store image pixels as defined
@@ -82,7 +81,7 @@ Magick::PixelPacket* Magick::Pixels::set ( unsigned int x_,
 {
   if ( ( x_ + columns_ > _image.columns()) ||
        ( y_ + rows_ > _image.rows()) )
-    throwExceptionExplicit( MagickLib::OptionError,
+    throwExceptionExplicit( OptionError,
 			    "View requested outside of image" );
 
   _x = x_;
@@ -90,21 +89,21 @@ Magick::PixelPacket* Magick::Pixels::set ( unsigned int x_,
   _columns = columns_;
   _rows = rows_;
 
-  _pixels = MagickLib::SetCacheView( _view, x_, y_,
-				     columns_, rows_ );
-  if ( !_pixels )
-    throwExceptionExplicit( MagickLib::OptionError, "Failed to set pixels" );
+  PixelPacket* pixels = SetCacheView( _view, x_, y_,
+                                      columns_, rows_ );
+  if ( !pixels )
+    throwExceptionExplicit( OptionError, "Failed to set pixels" );
   
-  return _pixels;
+  return pixels;
 }
 
 // Return pixel colormap index array
 Magick::IndexPacket* Magick::Pixels::indexes ( void )
 {
-  IndexPacket* indexes = MagickLib::GetCacheViewIndexes( _view );
+  IndexPacket* indexes = GetCacheViewIndexes( _view );
 
   if ( !indexes )
-    throwExceptionExplicit( MagickLib::OptionError,
+    throwExceptionExplicit( OptionError,
 			    "Image does not contain index channel");
 
   return indexes;

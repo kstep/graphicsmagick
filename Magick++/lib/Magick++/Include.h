@@ -390,6 +390,7 @@ namespace Magick
   using MagickLib::GammaImage;
   using MagickLib::GaussianBlurImage;
   using MagickLib::GetCacheView;
+  using MagickLib::GetCacheViewIndexes;
   using MagickLib::GetDrawInfo;
   using MagickLib::GetExceptionInfo;
   using MagickLib::GetGeometry;
@@ -464,13 +465,13 @@ namespace Magick
   using MagickLib::SetCacheThreshold;
   using MagickLib::SetCacheView;
   using MagickLib::SetClientName;
+  using MagickLib::SetImage;
   using MagickLib::SetImageAttribute;
   using MagickLib::SetImageClipMask;
   using MagickLib::SetImageDepth;
   using MagickLib::SetImageInfo;
   using MagickLib::SetImageOpacity;
   using MagickLib::SetImagePixels;
-  using MagickLib::SetImage;
   using MagickLib::SetImageType;
   using MagickLib::SetMagickInfo;
   using MagickLib::ShadeImage;

@@ -80,7 +80,6 @@ namespace Magick
 
     Magick::Image          _image;   // Image reference
     MagickLib::ViewInfo*   _view;    // Image view handle
-    Magick::PixelPacket*   _pixels;  // View pixels
     unsigned int           _x;       // Left ordinate of view
     unsigned int           _y;       // Top ordinate of view
     unsigned int           _columns; // Width of view
