@@ -5370,7 +5370,7 @@ MagickExport void SetImage(Image *image,Quantum opacity)
 %
 %
 */
-MagickExport unsigned int SetImageDepth(Image *image,const unsigned int)
+MagickExport unsigned int SetImageDepth(Image *image,const unsigned int depth)
 {
   int
     y;
@@ -5383,13 +5383,15 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned int)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (QuantumDepth == 8)
+  if (QuantumDepth < 16)
+    return(True);
+  if (GetImageDepth(image) == depth)
     return(True);
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
-      break;
+      return(False);
     for (x=0; x < (int) image->columns; x++)
     {
       p->red=UpScale(DownScale(p->red));
@@ -5398,6 +5400,8 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned int)
       p->opacity=UpScale(DownScale(p->opacity));
       p++;
     }
+    if (!SyncImagePixels(image))
+      return(False);
   }
   return(True);
 }
