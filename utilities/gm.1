@@ -383,11 +383,36 @@ behavior.
 
 .TP
 .B "-affine \fI<matrix>"\fP
-\fRdrawing transform matrix
+\fRdrawing transformation matrix
 
-This option provides a transform matrix {sx,rx,ry,sy,tx,ty} for
+This option provides a transformation matrix {sx,rx,ry,sy,tx,ty} for
 use by subsequent \fB-draw\fP or \fB-transform\fP options.
 
+
+The transformation matrix has 3x3 elements, but three of them are omitted
+from the input because they are constant.  The complete matrix is
+
+
+     sx rx  0
+     ry sy  0
+     tx ty  1
+
+Scaling by the factor s is accomplished with the matrix
+
+    {s,0,0,s,0,0}
+
+Translation by a displacement {dx,dy} is
+accomplished with the matrix
+
+    {1,0,0,1,dx,dy}
+
+Rotation counterclockwise about the origin by an angle a is
+accomplished with the matrix
+
+    {cos(a),sin(a),-sin(a),cos(a),0,0}
+
+A series of operations can be accomplished by using a matrix
+that is the multiple of the matrices for each operation.
 .TP
 .B "-antialias"
 \fRremove pixel aliasing
@@ -1860,7 +1885,6 @@ This option lists information about the ImageMagick configuration.
 
 .TP
 .B "-log \fI<string>"\fP
-\fRSpecify format for debug log
 
 This option specifies the format for the log printed when the \fB-debug\fP
 option is active.
@@ -3060,7 +3084,6 @@ Options, above.
 \fRDisk, File, Map, or Memory resource limit
 .TP
 .B "-log \fI<string>"\fP
-\fRSpecify format for debug log
 .TP
 .B "-map \fI<type>"\fP
 \fR
@@ -3528,7 +3551,6 @@ Options, above.
 \fRDisk, File, Map, or Memory resource limit
 .TP
 .B "-log \fI<string>"\fP
-\fRSpecify format for debug log
 .TP
 .B "-matte"
 \fRstore matte channel if the image has one
@@ -3698,7 +3720,6 @@ Options, above.
 \fRprint usage instructions
 .TP
 .B "-log \fI<string>"\fP
-\fRSpecify format for debug log
 .TP
 .B "-verbose"
 \fRprint detailed information about the image
@@ -4162,7 +4183,7 @@ Options, above.
 \fRjoin images into a single multi-image file
 .TP
 .B "-affine \fI<matrix>"\fP
-\fRdrawing transform matrix
+\fRdrawing transformation matrix
 .TP
 .B "-antialias"
 \fRremove pixel aliasing
@@ -4360,7 +4381,6 @@ Options, above.
 \fRthe type of list
 .TP
 .B "-log \fI<string>"\fP
-\fRSpecify format for debug log
 .TP
 .B "-loop \fI<iterations>"\fP
 \fRadd Netscape loop extension to your GIF animation
@@ -4814,7 +4834,6 @@ Options, above.
 \fRDisk, File, Map, or Memory resource limit
 .TP
 .B "-log \fI<string>"\fP
-\fRSpecify format for debug log
 .TP
 .B "-magnify \fI<factor>"\fP
 \fRmagnify the image
@@ -6794,7 +6813,6 @@ Options, above.
 \fRthe type of list
 .TP
 .B "-log \fI<string>"\fP
-\fRSpecify format for debug log
 .TP
 .B "-ping"
 \fRefficiently determine image characteristics
@@ -6936,7 +6954,6 @@ Options, above.
 \fRDisk, File, Map, or Memory resource limit
 .TP
 .B "-log \fI<string>"\fP
-\fRSpecify format for debug log
 .TP
 .B "-monochrome"
 \fRtransform the image to black and white
@@ -7040,7 +7057,7 @@ Options, above.
 
 .TP
 .B "-affine \fI<matrix>"\fP
-\fRdrawing transform matrix
+\fRdrawing transformation matrix
 .TP
 .B "-antialias"
 \fRremove pixel aliasing
@@ -7217,7 +7234,6 @@ Options, above.
 \fRthe type of list
 .TP
 .B "-log \fI<string>"\fP
-\fRSpecify format for debug log
 .TP
 .B "-loop \fI<iterations>"\fP
 \fRadd Netscape loop extension to your GIF animation
@@ -7615,7 +7631,6 @@ Options, above.
 \fRDisk, File, Map, or Memory resource limit
 .TP
 .B "-log \fI<string>"\fP
-\fRSpecify format for debug log
 .TP
 .B "-matte"
 \fRstore matte channel if the image has one

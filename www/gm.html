@@ -493,11 +493,40 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="details-affine"></a>-affine <i>&lt;matrix&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>drawing transform matrix</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>drawing transformation matrix</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This option provides a transform matrix <tt>{sx,rx,ry,sy,tx,ty}</tt> for
+This option provides a transformation matrix <tt>{sx,rx,ry,sy,tx,ty}</tt> for
 use by subsequent <strong>-draw</strong> or <strong>-transform</strong> options.
 </font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The transformation matrix has 3x3 elements, but three of them are omitted
+from the input because they are constant.  The complete matrix is
+</font></td></tr></table>
+<pre>
+     sx rx  0
+     ry sy  0
+     tx ty  1
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Scaling by the factor <tt>s</tt> is accomplished with the matrix</font></td></tr></table>
+<pre>
+    {s,0,0,s,0,0}
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Translation by a displacement <tt>{dx,dy}</tt> is
+accomplished with the matrix</font></td></tr></table>
+<pre>
+    {1,0,0,1,dx,dy}
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Rotation counterclockwise about the origin by an angle <tt>a</tt> is
+accomplished with the matrix</font></td></tr></table>
+<pre>
+    {cos(a),sin(a),-sin(a),cos(a),0,0}
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+A series of operations can be accomplished by using a matrix
+that is the multiple of the matrices for each operation.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2547,7 +2576,6 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="details-log"></a>-log <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify format for debug log</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This option specifies the format for the log printed when the <strong>-debug</strong>
 option is active.</font></td></tr></table>
@@ -4752,7 +4780,6 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-log">-log</a> <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify format for debug log</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -5614,7 +5641,6 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-log">-log</a> <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify format for debug log</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -6042,7 +6068,6 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-log">-log</a> <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify format for debug log</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -6389,7 +6414,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-affine">-affine</a> <i>&lt;matrix&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>drawing transform matrix</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>drawing transformation matrix</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -7115,7 +7140,6 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-log">-log</a> <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify format for debug log</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -8467,7 +8491,6 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-log">-log</a> <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify format for debug log</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -11491,7 +11514,6 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-log">-log</a> <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify format for debug log</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -11909,7 +11931,6 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-log">-log</a> <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify format for debug log</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -12205,7 +12226,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-affine">-affine</a> <i>&lt;matrix&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>drawing transform matrix</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>drawing transformation matrix</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -12854,7 +12875,6 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-log">-log</a> <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify format for debug log</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -14063,7 +14083,6 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-log">-log</a> <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify format for debug log</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
