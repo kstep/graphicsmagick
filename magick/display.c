@@ -8013,7 +8013,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       /*
         Unknown image format.
       */
-      text=(char *) FileToBlob(filename,&length,&nexus->exception);
+      text=(char *) FileToBlob(filename,&length,&exception);
       if (text == (char *) NULL)
         return((Image *) NULL);
       textlist=StringToList(text);
@@ -8034,6 +8034,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
         }
       LiberateMemory((void **) &text);
     }
+  DestroyExceptionInfo(&exception);
   DestroyImageInfo(image_info);
   return(nexus);
 }
@@ -12042,6 +12043,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       (void) chdir(working_directory);
       monitor_handler=SetMonitorHandler(XMagickMonitor);
       warning_handler=resource_info->display_warnings ?
+        SetErrorHandler(XWarning) : SetErrorHandler((ErrorHandler) NULL);
+      warning_handler=resource_info->display_warnings ?
         SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
       (void) signal(SIGINT,XSignalHandler);
       (void) signal(SIGSEGV,XSignalHandler);
@@ -12534,8 +12537,12 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   if (monitor_handler == (MonitorHandler) NULL)
     monitor_handler=SetMonitorHandler(XMagickMonitor);
   if (warning_handler == (WarningHandler) NULL)
-    warning_handler=resource_info->display_warnings ?
-      SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
+    {
+      warning_handler=resource_info->display_warnings ?
+        SetErrorHandler(XWarning) : SetErrorHandler((ErrorHandler) NULL);
+      warning_handler=resource_info->display_warnings ?
+        SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
+    }
   (void) signal(SIGINT,XSignalHandler);
   (void) signal(SIGSEGV,XSignalHandler);
   (void) signal(SIGTERM,XSignalHandler);
@@ -13618,6 +13625,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Restore our progress monitor and warning handlers.
   */
   (void) SetMonitorHandler(monitor_handler);
+  (void) SetErrorHandler(warning_handler);
   (void) SetWarningHandler(warning_handler);
   /*
     Change to home directory.

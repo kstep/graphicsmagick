@@ -1122,6 +1122,8 @@ MagickExport Image *XAnimateImages(Display *display,
       (void) chdir(working_directory);
       monitor_handler=SetMonitorHandler(XMagickMonitor);
       warning_handler=resource_info->display_warnings ?
+        SetErrorHandler(XWarning) : SetErrorHandler((ErrorHandler) NULL);
+      warning_handler=resource_info->display_warnings ?
         SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
       (void) signal(SIGINT,XSignalHandler);
       (void) signal(SIGSEGV,XSignalHandler);
@@ -1616,8 +1618,12 @@ MagickExport Image *XAnimateImages(Display *display,
   if (monitor_handler == (MonitorHandler) NULL)
     monitor_handler=SetMonitorHandler(XMagickMonitor);
   if (warning_handler == (WarningHandler) NULL)
-    warning_handler=resource_info->display_warnings ?
-      SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
+    {
+      warning_handler=resource_info->display_warnings ?
+        SetErrorHandler(XWarning) : SetErrorHandler((ErrorHandler) NULL);
+      warning_handler=resource_info->display_warnings ?
+        SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
+    }
   (void) signal(SIGINT,XSignalHandler);
   (void) signal(SIGSEGV,XSignalHandler);
   (void) signal(SIGTERM,XSignalHandler);
@@ -2530,6 +2536,7 @@ MagickExport Image *XAnimateImages(Display *display,
     Restore our progress monitor and warning handlers.
   */
   (void) SetMonitorHandler(monitor_handler);
+  (void) SetErrorHandler(warning_handler);
   (void) SetWarningHandler(warning_handler);
   /*
     Change to home directory.
