@@ -944,11 +944,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           /*
             Initialize tile_image.
           */
-          if (frame.left == 0 && frame.top == 0
-                && frame.right == image->columns
-                && frame.bottom == image->rows)
-            tile_image=image;
-          else
+          tile_image=image;
+          if ((frame.left != 0) || (frame.top != 0) ||
+              (frame.right != image->columns) || (frame.bottom != image->rows))
             tile_image=CloneImage(image,frame.right-frame.left,
               frame.bottom-frame.top,True,exception);
           if (tile_image == (Image *) NULL)
@@ -1085,8 +1083,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           (void) FreeMemory((void **) &pixels);
           if (tile_image != image)
             {
-              CompositeImage(image,ReplaceCompositeOp,tile_image,destination.left,
-                destination.top);
+              CompositeImage(image,ReplaceCompositeOp,tile_image,
+                destination.left,destination.top);
               DestroyImage(tile_image);
             }
           if (destination.bottom != (int) image->rows)
