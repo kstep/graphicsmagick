@@ -61,7 +61,7 @@
 /*
   Optional declarations. Define or undefine them as you like.
 */
-#define PNG_DEBUG
+/* #define PNG_DEBUG  -- turning this on breaks VisualC compiling */ 
 
 /*
   Features under construction.  Define these to work on them.
