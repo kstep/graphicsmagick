@@ -212,7 +212,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 # Shared libraries built in this directory
 lib_LTLIBRARIES = libMagick.la
 
-BUILT_SOURCES = config.h
+BUILT_SOURCES = magick_config.h
 
 INCLUDES = -I$(top_srcdir)
 
@@ -240,7 +240,7 @@ bin_SCRIPTS = Magick-config
 
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h cache_view.h \
-  classify.h compress.h config.h delegate.h draw.h error.h gem.h \
+  classify.h compress.h magick_config.h delegate.h draw.h error.h gem.h \
   image.h magic.h magick.h module.h monitor.h quantize.h semaphore.h \
   timer.h utility.h version.h widget.h xwindow.h
 
@@ -747,7 +747,7 @@ uninstall-man: uninstall-man1
 
 # Ensure that configuration header is not distributed
 dist-hook:
-	-rm $(distdir)/config.h
+	-rm $(distdir)/magick_config.h
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

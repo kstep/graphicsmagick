@@ -460,7 +460,7 @@ pdb_la_LIBADD = ../magick/libMagick.la
 # PDF module
 pdf_la_SOURCES = pdf.c
 pdf_la_LDFLAGS = -no-undefined -module -avoid-version
-pdf_la_LIBADD = ../magick/libMagick.la @LIB_TIFF@ @LIB_GS@ $(LIB_MATH)
+pdf_la_LIBADD = ../magick/libMagick.la @LIB_TIFF@ @LIB_JPEG@ @LIB_ZLIB@ @LIB_GS@ $(LIB_MATH)
 
 # PICT module
 pict_la_SOURCES = pict.c

@@ -37,7 +37,7 @@ MAJOR_VERSION=@MAJOR_VERSION@
 MINOR_VERSION=@MINOR_VERSION@
 MICRO_VERSION=@MICRO_VERSION@
 
-BUILT_SOURCES = config.h
+BUILT_SOURCES = magick_config.h
 
 INCLUDES = -I$(top_srcdir)
 
@@ -67,7 +67,7 @@ bin_SCRIPTS = Magick-config
 
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h cache_view.h \
-  classify.h compress.h config.h delegate.h draw.h error.h gem.h \
+  classify.h compress.h magick_config.h delegate.h draw.h error.h gem.h \
   image.h magic.h magick.h module.h monitor.h quantize.h semaphore.h \
   timer.h utility.h version.h widget.h xwindow.h
 
@@ -92,6 +92,6 @@ man_MANS = $(ALLMANPAGES)
 
 # Ensure that configuration header is not distributed
 dist-hook:
-	-rm $(distdir)/config.h
+	-rm $(distdir)/magick_config.h
 
 DEFS = @DEFS@ -I../
