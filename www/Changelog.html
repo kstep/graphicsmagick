@@ -53,9 +53,32 @@
 </tr>
 </table>
 <p>
+2003-08-21  Lars Ruben Skyum  &lt;lars.skyum@stibo.com&gt;
+
+<UL>
+  <LI> magick/attribute.c, magick/image.c, magick/command.c: Added
+        "clippath" option for clipping named Photoshop clipping paths,
+        increased precision in clipping path knots, added comments, and
+        fixed a few bugs resulting from moving TraceClippingPath function
+        from ImageMagick to GraphicsMagick. Still need to update some of
+        the documentation.<BR>
+  <LI> magick/locale_c.h, magick/studio.h: added MagickExport to
+        declaration of GetLocaleMessageFromID and moved include of
+        magick/locale_c.h after declaration of MagickExport. This fixes a
+        link error in dynamic, DLL version.
+  <LI> coders/locale.h: added MagickExport to prototype declaration of
+        GetLocaleMessageFromID in WriteLOCALEImage.
+
+</UL>
+<p>
 2003-08-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> PerlMagick/t/subroutines.pl (testRead): Ignore useless TIFF
+        warning so that 12-bit TIFF test passes.
+  <LI> magick/constitute.c (ReadImage): Ensure that the reported image
+        magic string is that of the user-specified input file rather than
+        a temporary file prepared by an external delegate program.
   <LI> magick/command.c (ImportImageCommand): Since
         DestroyExceptionInfo() now sets the destroyed exception signature
         to an invalid value, GetExceptionInfo(exception) must be invoked

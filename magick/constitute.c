@@ -2714,7 +2714,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent];
+    filename[MaxTextExtent],
+    magick[MaxTextExtent];
 
   const DelegateInfo
     *delegate_info;
@@ -2746,6 +2747,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   */
   (void) SetImageInfo(clone_info,False,exception);
   (void) strncpy(filename,clone_info->filename,MaxTextExtent-1);
+  (void) strncpy(magick,clone_info->magick,MaxTextExtent-1);
   /*
     Call appropriate image reader based on image type.
   */
@@ -2857,6 +2859,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       clone_info->temporary=True;
       (void) SetImageInfo(clone_info,False,exception);
       magick_info=GetMagickInfo(clone_info->magick,exception);
+      /*
+        If there is no magick info entry for this format, or there is
+        no decoder for the format, or an error is reported, then
+        attempt to return a reasonable error report.
+      */
       if ((magick_info == (const MagickInfo *) NULL) ||
           (magick_info->decoder == NULL) ||
           (exception->severity != UndefinedException))
@@ -2864,7 +2871,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           if (exception->severity == UndefinedException)
           {
             if (IsAccessibleAndNotEmpty(clone_info->filename))
-              ThrowException(exception,MissingDelegateError,NoDecodeDelegateForThisImageFormat,clone_info->filename);
+              ThrowException(exception,MissingDelegateError,
+                NoDecodeDelegateForThisImageFormat,clone_info->filename);
             else
               ThrowException(exception,FileOpenError,UnableToOpenFile,
                 clone_info->filename);
@@ -2874,6 +2882,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           DestroyImageInfo(clone_info);
           return((Image *) NULL);
         }
+      /*
+        Invoke decoder for format
+      */
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
       LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2884,6 +2895,13 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         "Returned from \"%.1024s\" decoder",magick_info->name);
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
+      /*
+        Restore original input file magick in case read is from a
+        temporary file prepared by an external delegate.  The user
+        will expect that the format reported is that of the input
+        file.
+      */
+      (void) strncpy(image->magick,magick,MaxTextExtent-1);
     }
   if (clone_info->temporary)
     {
