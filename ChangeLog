@@ -1,5 +1,8 @@
 2003-07-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/log.h (LogEventType::AllEvents): Increase the value of
+	AllEvents so that it spans the complete positive range of a signed
+	integer.
 	* magick/xwindow.c, magick/xwindow.h: Incorporate patch from John
 	Cristy's ImageMagick to eliminate conditional dependence of
 	magick/xwindow.h on <X11/extensions/XShm.h>.

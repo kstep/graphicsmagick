@@ -25,23 +25,23 @@ extern "C" {
 
 typedef enum
 { 
-  UndefinedEvents = 0x0000,
-  NoEvents = 0x0000,
-  ConfigureEvent = 0x0001,
-  AnnotateEvent = 0x0002,
-  RenderEvent = 0x0004,
-  TransformEvent = 0x0008,
-  LocaleEvent = 0x0010,
-  CoderEvent = 0x0020,
-  X11Event = 0x0040,
-  CacheEvent = 0x0080,
-  BlobEvent = 0x0100,
-  DeprecateEvent = 0x0200,
-  UserEvent = 0x0400,
-  ResourceEvent = 0x0800,
-  TemporaryFileEvent = 0x01000,
-  ExceptionEvent = 0x02000,
-  AllEvents = 0xFFFFF
+  UndefinedEvents       = 0x0000000,
+  NoEvents              = 0x0000000,
+  ConfigureEvent        = 0x00000001,
+  AnnotateEvent         = 0x00000002,
+  RenderEvent           = 0x00000004,
+  TransformEvent        = 0x00000008,
+  LocaleEvent           = 0x00000010,
+  CoderEvent            = 0x00000020,
+  X11Event              = 0x00000040,
+  CacheEvent            = 0x00000080,
+  BlobEvent             = 0x00000100,
+  DeprecateEvent        = 0x00000200,
+  UserEvent             = 0x00000400,
+  ResourceEvent         = 0x00000800,
+  TemporaryFileEvent    = 0x00001000,
+  ExceptionEvent        = 0x00002000,
+  AllEvents             = 0x7FFFFFFF
 } LogEventType;
 
 /*
