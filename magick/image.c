@@ -5442,7 +5442,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       for (c=fgetc(image->file); c != EOF; c=fgetc(image->file))
       {
         if (i < MaxTextExtent)
-          magick[i++]=c;
+          magick[i++]=(unsigned char) c;
         (void) fputc(c,file);
       }
       (void) fclose(file);

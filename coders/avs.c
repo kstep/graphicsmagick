@@ -169,7 +169,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q->red=UpScale(*p++);
         q->green=UpScale(*p++);
         q->blue=UpScale(*p++);
-        image->matte|=q->opacity != OpaqueOpacity;
+        image->matte|=(q->opacity != OpaqueOpacity);
         q++;
       }
       if (!SyncImagePixels(image))

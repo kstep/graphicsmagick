@@ -178,7 +178,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       for (i=0; i < 17; i++)
         magick[i]=magick[i+1];
-      magick[17]=c;
+      magick[17]=(unsigned char) c;
       if (LocaleNCompare((char *) (magick+12),"SFW94A",6) == 0)
         break;
     }

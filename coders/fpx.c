@@ -484,17 +484,16 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterFPXImage(void)
 {
-#if defined(HasFPX)
   MagickInfo
     *entry;
 
   entry=SetMagickInfo("FPX");
+  entry->decoder=ReadFPXImage;
   entry->encoder=WriteFPXImage;
   entry->adjoin=False;
   entry->description=AllocateString("FlashPix Format");
   entry->module=AllocateString("FPX");
   RegisterMagickInfo(entry);
-#endif
 }
 
 /*

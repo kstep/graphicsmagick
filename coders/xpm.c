@@ -400,7 +400,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (strcmp(key,keys[j]) == 0)
             break;
       if (image->class == PseudoClass)
-        indexes[x]=j;
+        indexes[x]=(IndexPacket) j;
       *r=image->colormap[j];
       r->opacity=j == none ? TransparentOpacity : OpaqueOpacity;
       r++;

@@ -113,7 +113,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *pixels,
     count=pixel+1-0x80;
     pixel=ReadByte(image);
     for (i=0; i < count; i++)
-      *p++=pixel;
+      *p++=(unsigned char) pixel;
   }
   return(True);
 }

@@ -538,7 +538,7 @@ static unsigned int Classify(Image *image,short **extrema,
                   Classify this pixel.
                 */
                 local_minima=1.0/sum;
-                indexes[x]=j;
+                indexes[x]=(IndexPacket) j;
               }
           }
         }

@@ -628,13 +628,15 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
           for (x=0; x < (int) (image->columns-7); x+=8)
           {
             for (bit=0; bit < 8; bit++)
-              indexes[x+bit]=(*p) & (0x01 << bit) ? !polarity : polarity;
+              indexes[x+bit]=(IndexPacket)
+                ((*p) & (0x01 << bit) ? !polarity : polarity);
             p++;
           }
           if ((image->columns % 8) != 0)
             {
               for (bit=0; bit < (int) (image->columns % 8); bit++)
-                indexes[x+bit]=(*p) & (0x01 << bit) ? !polarity : polarity;
+                indexes[x+bit]=(IndexPacket)
+                  ((*p) & (0x01 << bit) ? !polarity : polarity);
               p++;
             }
           if (!SyncImagePixels(image))

@@ -190,7 +190,7 @@ static Image *ReadIPTCImage(const ImageInfo *image_info,
           break;
         q=data+image->iptc_profile.length;
       }
-    *q++=c;
+    *q++=(unsigned char) c;
   }
   image->iptc_profile.length=0;
   if (data != (unsigned char *) NULL)

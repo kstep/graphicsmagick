@@ -1062,6 +1062,7 @@ int main(int argc,char **argv)
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
+          break;
         }
         case 'l':
         {
@@ -1194,6 +1195,7 @@ int main(int argc,char **argv)
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
+          break;
         }
         case 'n':
         {
@@ -1382,6 +1384,7 @@ int main(int argc,char **argv)
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
+          break;
         }
         case 'q':
         {

@@ -2733,7 +2733,7 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
   token_info->state=IN_WHITE;
   token_info->quote=False;
   token_info->flag=flag;
-  for (token_info->offset=0; c=line[*next]; (*next)++)
+  for (token_info->offset=0; (c=line[*next]) != 0; (*next)++)
   {
     i=sindex(c,break_set);
     if (i >= 0)

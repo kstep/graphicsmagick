@@ -294,7 +294,8 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       quantum=(long) (*q)+r->key;
     else
       quantum=(long) (*q)+r->key-256;
-    *q=(quantum < 0) ? 0 : (quantum > MaxRGB) ? MaxRGB : quantum;
+    *q=(unsigned char)
+      ((quantum < 0) ? 0 : (quantum > MaxRGB) ? MaxRGB : quantum);
     q++;
     PCDGetBits(r->length);
     count--;

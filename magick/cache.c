@@ -80,8 +80,7 @@ static PixelPacket
     const unsigned int);
 
 static unsigned int
-  SyncPixelCache(Image *),
-  WriteCACHEImage(const ImageInfo *,Image *);
+  SyncPixelCache(Image *);
 
 static void
   ClosePixelCache(Image *),

@@ -261,7 +261,7 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
   if (blob->mapped)
-    UnmapBlob(blob->data,blob->length);
+    (void) UnmapBlob(blob->data,blob->length);
   GetBlobInfo(blob);
 }
 
@@ -1479,7 +1479,7 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
     }
     case SEEK_END:
     {
-      if ((image->blob.offset+image->blob.length+offset) < 0)
+      if ((off_t) (image->blob.offset+image->blob.length+offset) < 0)
         return(-1);
       image->blob.offset=image->blob.length+offset;
       break;
@@ -1676,9 +1676,9 @@ MagickExport unsigned int UnmapBlob(void *map,const size_t length)
     status;
 
   status=munmap(map,length);
-  return(status);
+  return(status == 0);
 #else
-  return(-1);
+  return(False);
 #endif
 }
 

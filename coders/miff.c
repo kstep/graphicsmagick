@@ -1413,7 +1413,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                           }
                       }
                   }
-                *q++=length;
+                *q++=(unsigned char) length;
                 length=0;
               }
             if (image->class == PseudoClass)

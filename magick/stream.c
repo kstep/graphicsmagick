@@ -208,7 +208,7 @@ static IndexPacket *GetIndexesFromStream(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t P i x e l S t r e a m P i x e l                                     %
++   G e t One P i x e l F r o m S t r e a m                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -235,7 +235,13 @@ static IndexPacket *GetIndexesFromStream(const Image *image)
 */
 static PixelPacket GetOnePixelFromStream(Image *image,const int x,const int y)
 {
+  register PixelPacket
+    *pixel;
+
   assert(image != (Image *) NULL);
+  pixel=GetPixelStream(image,x,y,1,1);
+  if (pixel != (PixelPacket *) NULL)
+    return(*pixel);
   return(image->background_color);
 }
 

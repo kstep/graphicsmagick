@@ -169,7 +169,7 @@ static unsigned int DecodeImage(Image *image,const int opacity,
   for (code=0; code < clear; code++)
   {
     prefix[code]=0;
-    suffix[code]=code;
+    suffix[code]=(unsigned char) code;
   }
   /*
     Decode GIF pixel stream.
@@ -237,7 +237,7 @@ static unsigned int DecodeImage(Image *image,const int opacity,
             {
               *top_stack++=suffix[code];
               old_code=code;
-              first=code;
+              first=(unsigned char) code;
               continue;
             }
           in_code=code;
@@ -546,7 +546,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
         {
           hash_code[k]=free_code++;
           hash_prefix[k]=waiting_code;
-          hash_suffix[k]=index;
+          hash_suffix[k]=(unsigned char) index;
         }
       else
         {

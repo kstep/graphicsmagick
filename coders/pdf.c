@@ -243,7 +243,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (c == EOF)
       break;
     (void) fputc(c,file);
-    *p++=c;
+    *p++=(char) c;
     if ((c != '\n') && (c != '\r') && ((p-command) < (MaxTextExtent-1)))
       continue;
     *p='\0';

@@ -58,51 +58,12 @@
 */
 #include "magick.h"
 #include "defines.h"
-#if defined(HasJPEG)
-#define JPEG_INTERNAL_OPTIONS
-#include <setjmp.h>
-#include "jpeglib.h"
-#include "jerror.h"
 
 /*
-  Define declarations.
+  Static declarations.
 */
-#define ICC_MARKER  (JPEG_APP0+2)
-#define IPTC_MARKER  (JPEG_APP0+13)
-#define MaxBufferExtent  8192
-
-typedef struct _DestinationManager
-{
-  struct jpeg_destination_mgr
-    manager;
-
-  Image
-    *image;
-
-  JOCTET
-    *buffer;
-} DestinationManager;
-
-typedef struct _SourceManager
-{
-  struct jpeg_source_mgr
-    manager;
-
-  Image
-    *image;
-
-  JOCTET
-    *buffer;
-
-  boolean
-    start_of_blob;
-} SourceManager;
-
 static Image
   *image;
-
-static jmp_buf
-  error_recovery;
 
 /*
   Forward declarations.
@@ -150,6 +111,49 @@ static unsigned int IsJPEG(const unsigned char *magick,
   return(False);
 }
 
+#if defined(HasJPEG)
+#define JPEG_INTERNAL_OPTIONS
+#include <setjmp.h>
+#include "jpeglib.h"
+#include "jerror.h"
+
+/*
+  Define declarations.
+*/
+#define ICC_MARKER  (JPEG_APP0+2)
+#define IPTC_MARKER  (JPEG_APP0+13)
+#define MaxBufferExtent  8192
+
+typedef struct _DestinationManager
+{
+  struct jpeg_destination_mgr
+    manager;
+
+  Image
+    *image;
+
+  JOCTET
+    *buffer;
+} DestinationManager;
+
+typedef struct _SourceManager
+{
+  struct jpeg_source_mgr
+    manager;
+
+  Image
+    *image;
+
+  JOCTET
+    *buffer;
+
+  boolean
+    start_of_blob;
+} SourceManager;
+
+static jmp_buf
+  error_recovery;
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -732,7 +736,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 */
 ModuleExport void RegisterJPEGImage(void)
 {
-#if defined(HasJPEG)
   MagickInfo
     *entry;
 
@@ -761,7 +764,6 @@ ModuleExport void RegisterJPEGImage(void)
     AllocateString("Joint Photographic Experts Group JFIF format");
   entry->module=AllocateString("JPEG");
   RegisterMagickInfo(entry);
-#endif
 }
 
 /*

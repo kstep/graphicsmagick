@@ -320,7 +320,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         case SetColorOp:
         {
           operand=ReadByte(image);
-          plane=operand;
+          plane=(unsigned char) operand;
           if (plane == 255)
             plane=number_planes-1;
           x=0;

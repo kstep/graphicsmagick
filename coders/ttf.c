@@ -243,7 +243,6 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterTTFImage(void)
 {
-#if defined(HasTTF)
   MagickInfo
     *entry;
 
@@ -253,7 +252,6 @@ ModuleExport void RegisterTTFImage(void)
   entry->description=AllocateString("TrueType font");
   entry->module=AllocateString("TTF");
   RegisterMagickInfo(entry);
-#endif
 }
 
 /*

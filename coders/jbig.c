@@ -55,14 +55,14 @@
 #include "magick.h"
 #include "defines.h"
 
-#if defined(HasJBIG)
-#include "jbig.h"
-
 /*
   Forward declarations.
 */
 static unsigned int
   WriteJBIGImage(const ImageInfo *,Image *);
+
+#if defined(HasJBIG)
+#include "jbig.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -80,7 +80,8 @@ static unsigned int
 %
 %  The format of the ReadJBIGImage method is:
 %
-%      Image *ReadJBIGImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadJBIGImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -94,7 +95,8 @@ static unsigned int
 %
 %
 */
-static Image *ReadJBIGImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadJBIGImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
 #define MaxBufferSize  8192
 
@@ -278,7 +280,6 @@ ModuleExport void RegisterJBIGImage(void)
   MagickInfo
     *entry;
 
-#if defined(HasJBIG)
   entry=SetMagickInfo("BIE");
   entry->decoder=ReadJBIGImage;
   entry->encoder=WriteJBIGImage;
@@ -301,7 +302,6 @@ ModuleExport void RegisterJBIGImage(void)
     AllocateString("Joint Bi-level Image experts Group interchange format");
   entry->module=AllocateString("JBIG");
   RegisterMagickInfo(entry);
-#endif
 }
 
 /*
@@ -309,7 +309,7 @@ ModuleExport void RegisterJBIGImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r J B I G I m a g e                                        %
+%   U n r e g i s t e r J B I G I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %

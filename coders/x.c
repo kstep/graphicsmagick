@@ -135,7 +135,6 @@ ModuleExport void RegisterXImage(void)
   MagickInfo
     *entry;
 
-#if defined(HasX11)
   entry=SetMagickInfo("X");
   entry->decoder=ReadXImage;
   entry->encoder=WriteXImage;
@@ -143,7 +142,6 @@ ModuleExport void RegisterXImage(void)
   entry->description=AllocateString("X Image");
   entry->module=AllocateString("X");
   RegisterMagickInfo(entry);
-#endif
 }
 
 /*

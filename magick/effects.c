@@ -2083,18 +2083,6 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %
 %
 */
-
-static int ReduceNoiseCompare(const void *x,const void *y)
-{
-  PixelPacket
-    *color_1,
-    *color_2;
-
-  color_1=(PixelPacket *) x;
-  color_2=(PixelPacket *) y;
-  return((int) Intensity(*color_1)-(int) Intensity(*color_2));
-}
-
 MagickExport Image *ReduceNoiseImage(Image *image,const unsigned int order,
   ExceptionInfo *exception)
 {

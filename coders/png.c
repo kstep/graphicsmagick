@@ -54,11 +54,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#if defined(HasPNG)
-#include "png.h"
-#include "zlib.h"
-#include "mng.h"
-#endif
 
 /*
   Global declarations.
@@ -71,8 +66,6 @@ static Image
 */
 static unsigned int
   WritePNGImage(const ImageInfo *,Image *);
-
-#if defined(HasPNG)
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -278,7 +271,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
             for (j=0; j < number_colors; j++)
             {
               if (map[j] == 0)
-                map[j]=i;
+                map[j]=(unsigned short) i;
               else
                 if (map[j] == i)
                   map[j]=0;
@@ -310,6 +303,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
   image->colormap=colormap;
   return(True);
 }
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -388,6 +382,11 @@ static unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
   return(False);
 }
 
+
+#if defined(HasPNG)
+#include "png.h"
+#include "zlib.h"
+#include "mng.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2783,7 +2782,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterPNGImage(void)
 {
-#if defined(HasPNG)
   MagickInfo
     *entry;
 
@@ -2802,7 +2800,6 @@ ModuleExport void RegisterPNGImage(void)
   entry->description=AllocateString("Portable Network Graphics");
   entry->module=AllocateString("PNG");
   RegisterMagickInfo(entry);
-#endif
 }
 
 /*

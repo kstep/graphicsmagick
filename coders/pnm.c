@@ -227,15 +227,15 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     index;
 
   int
-    blue,
-    green,
-    red,
     y;
 
   MonitorHandler
     handler;
 
   Quantum
+    blue,
+    green,
+    red,
     *scale;
 
   register IndexPacket
@@ -1156,18 +1156,20 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
               if (x < 48)
                 value=x/2+8;
               value+=dither_red[i][j];
-              red_map[i][j][x]=((value < 0) ? 0 : (value > 255) ? 255 : value);
+              red_map[i][j][x]=(unsigned short)
+                ((value < 0) ? 0 : (value > 255) ? 255 : value);
               value=x-16;
               if (x < 48)
                 value=x/2+8;
               value+=dither_green[i][j];
-              green_map[i][j][x]=
+              green_map[i][j][x]=(unsigned short)
                 ((value < 0) ? 0 : (value > 255) ? 255 : value);
               value=x-32;
               if (x < 112)
                 value=x/2+24;
               value+=2*dither_blue[i][j];
-              blue_map[i][j][x]=((value < 0) ? 0 : (value > 255) ? 255 : value);
+              blue_map[i][j][x]=(unsigned short)
+                ((value < 0) ? 0 : (value > 255) ? 255 : value);
             }
         /*
           Convert image to a P7 image.

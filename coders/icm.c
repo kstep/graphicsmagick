@@ -139,7 +139,7 @@ static Image *ReadICMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         q=image->color_profile.info+image->color_profile.length;
       }
-    *q=c;
+    *q=(unsigned char) c;
   }
   image->color_profile.length=0;
   if (image->color_profile.info != (unsigned char *) NULL)

@@ -54,15 +54,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#if defined(HasHDF)
-#if defined(HAVE_HDF_HDF_H)
-#include "hdf/hdf.h"
-#else
-#include "hdf.h"
-#endif
-#undef BSD
-#undef LOCAL
-#endif
 
 /*
   Forward declarations.
@@ -110,6 +101,14 @@ static unsigned int IsHDF(const unsigned char *magick,const unsigned int length)
 }
 
 #if defined(HasHDF)
+#if defined(HAVE_HDF_HDF_H)
+#include "hdf/hdf.h"
+#else
+#include "hdf.h"
+#endif
+#undef BSD
+#undef LOCAL
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -412,7 +411,6 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterHDFImage(void)
 {
-#if defined(HasHDF)
   MagickInfo
     *entry;
 
@@ -424,7 +422,6 @@ ModuleExport void RegisterHDFImage(void)
   entry->description=AllocateString("Hierarchical Data Format");
   entry->module=AllocateString("HDF");
   RegisterMagickInfo(entry);
-#endif
 }
 
 /*

@@ -139,7 +139,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
         for (i=0; i < count; i++)
         {
           if (compression == 1)
-            *q++=byte;
+            *q++=(unsigned char) byte;
           else
             *q++=(i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f);
           x++;
@@ -292,7 +292,7 @@ static unsigned int EncodeImage(const unsigned char *pixels,
       for (i=1; ((x+i) < (int) bytes_per_line); i++)
         if ((*(p+i) != *p) || (i == 255))
           break;
-      *q++=i;
+      *q++=(unsigned char) i;
       *q++=(*p);
       p+=i;
     }

@@ -94,11 +94,13 @@ static unsigned int
 static unsigned int DecodeImage(Image *image,const int channel)
 {
   int
-    count,
-    pixel;
+    count;
 
   long
     length;
+
+  Quantum
+    pixel;
 
   register IndexPacket
     *indexes;

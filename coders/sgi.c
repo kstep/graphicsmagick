@@ -588,11 +588,13 @@ static int SGIEncode(unsigned char *pixels,int count,
   short
     runlength;
 
-  unsigned char
-    *limit,
-    *mark,
+  register unsigned char
     *p,
     *q;
+
+  unsigned char
+    *limit,
+    *mark;
 
   p=pixels;
   limit=p+count*4;
@@ -625,7 +627,7 @@ static int SGIEncode(unsigned char *pixels,int count,
     {
       runlength=(short) (count > 126 ? 126 : count);
       count-=runlength;
-      *q++=runlength;
+      *q++=(unsigned char) runlength;
       *q++=(*mark);
     }
   }

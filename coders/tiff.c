@@ -54,12 +54,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#if defined(HasTIFF)
-#if defined(HAVE_TIFFCONF_H)
-#include "tiffconf.h"
-#endif
-#include "tiffio.h"
-#endif
 
 /*
   Global declarations.
@@ -72,8 +66,6 @@ static Image
 */
 static unsigned int
   WriteTIFFImage(const ImageInfo *,Image *);
-
-#if defined(HasTIFF)
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -118,6 +110,12 @@ static unsigned int IsTIFF(const unsigned char *magick,
   return(False);
 }
 
+#if defined(HasTIFF)
+#if defined(HAVE_TIFFCONF_H)
+#include "tiffconf.h"
+#endif
+#include "tiffio.h"
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -906,7 +904,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 */
 ModuleExport void RegisterTIFFImage(void)
 {
-#if defined(HasTIFF)
   MagickInfo
     *entry;
 
@@ -939,7 +936,6 @@ ModuleExport void RegisterTIFFImage(void)
   entry->description=AllocateString("24-bit Tagged Image File Format");
   entry->module=AllocateString("TIFF");
   RegisterMagickInfo(entry);
-#endif
 }
 
 /*

@@ -180,7 +180,7 @@ static Image *Read8BIMImage(const ImageInfo *image_info,
           break;
         q=image->iptc_profile.info+image->iptc_profile.length;
       }
-    *q=c;
+    *q=(unsigned char) c;
   }
   if (image->iptc_profile.info == (unsigned char *) NULL)
     ThrowReaderException(FileOpenWarning,"Memory allocation failed",image);

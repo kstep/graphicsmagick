@@ -1497,6 +1497,8 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
   register PrimitiveInfo
     *q;
 
+  point.x=0;
+  point.y=0;
   p=path;
   q=primitive_info;
   q->primitive=PolygonPrimitive;
@@ -2018,7 +2020,7 @@ static double PixelOnLine(const PointInfo *pixel,const PointInfo *p,
   distance=DistanceToLine(pixel,p,q);
   alpha=mid-0.5;
   if (distance <= (alpha*alpha))
-    return(OpaqueOpacity);
+    return((double) OpaqueOpacity);
   alpha=mid+0.5;
   if (distance <= (alpha*alpha))
     {

@@ -54,9 +54,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#if defined(HasX11)
-#include "xwindows.h"
-#endif
 
 /*
   Forward declarations.
@@ -64,7 +61,6 @@
 static unsigned int
   WriteXWDImage(const ImageInfo *,Image *);
 
-#if defined(HasX11)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -106,6 +102,8 @@ static unsigned int IsXWD(const unsigned char *magick,const unsigned int length)
   return(False);
 }
 
+#if defined(HasX11)
+#include "xwindows.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -489,7 +487,6 @@ ModuleExport void RegisterXWDImage(void)
   MagickInfo
     *entry;
 
-#if defined(HasX11)
   entry=SetMagickInfo("XWD");
   entry->decoder=ReadXWDImage;
   entry->encoder=WriteXWDImage;
@@ -498,7 +495,6 @@ ModuleExport void RegisterXWDImage(void)
   entry->description=AllocateString("X Windows system window dump (color)");
   entry->module=AllocateString("XWD");
   RegisterMagickInfo(entry);
-#endif
 }
 
 /*

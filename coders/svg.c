@@ -57,12 +57,6 @@
 #include "defines.h"
 
 /*
-  Forward declarations.
-*/
-static unsigned int
-  WriteSVGImage(const ImageInfo *,Image *);
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -291,7 +285,7 @@ static double UnitOfMeasure(const char *value)
   if (LocaleCompare(value+strlen(value)-2,"pt") == 0)
     return(1.0);
   if (LocaleCompare(value+strlen(value)-2,"px") == 0)
-    return(72/28);
+    return(72.0/28.0);
   return(1.0);
 }
 
@@ -415,6 +409,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   quote=False;
   GetPageInfo(&page);
   primitive=AllocateString("none");
+  segment.x1=0.0;
+  segment.y1=0.0;
+  segment.x2=0.0;
+  segment.y2=0.0;
   text=AllocateString("none");
   token=AllocateString("none");
   translate.x=0.0;
