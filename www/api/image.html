@@ -26,6 +26,7 @@
 		<LI><A HREF="#animateimages">AnimateImages</A></LI>
 		<LI><A HREF="#appendimages">AppendImages</A></LI>
 		<LI><A HREF="#averageimages">AverageImages</A></LI>
+		<LI><A HREF="#channelimage">ChannelImage</A></LI>
 		<LI><A HREF="#cloneimage">CloneImage</A></LI>
 		<LI><A HREF="#cloneimageinfo">CloneImageInfo</A></LI>
 		<LI><A HREF="#compositeimage">CompositeImage</A></LI>
@@ -45,7 +46,6 @@
 		<LI><A HREF="#isgeometry">IsGeometry</A></LI>
 		<LI><A HREF="#issubimage">IsSubimage</A></LI>
 		<LI><A HREF="#isimagetainted">IsImageTainted</A></LI>
-		<LI><A HREF="#layerimage">LayerImage</A></LI>
 		<LI><A HREF="#listtogroupimage">ListToGroupImage</A></LI>
 		<LI><A HREF="#mogrifyimage">MogrifyImage</A></LI>
 		<LI><A HREF="#mogrifyimages">MogrifyImages</A></LI>
@@ -80,6 +80,7 @@
 <P>unsigned int  <STRONG>AnimateImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>Image * <STRONG>AppendImages</STRONG>( Image *image, const unsigned int stack, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>AverageImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>ChannelImage</STRONG>( Image *image, const ChannelType channel );</P>
 <P>Image * <STRONG>CloneImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, const unsigned int orphan, ExceptionInfo *exception );</P>
 <P>ImageInfo * <STRONG>CloneImageInfo</STRONG>( const ImageInfo *image_info );</P>
 <P>unsigned int  <STRONG>CompositeImage</STRONG>( Image *image, const CompositeOperator compose, Image *composite_image, const int x_offset, const int y_offset );</P>
@@ -100,7 +101,6 @@
 <P>unsigned int  <STRONG>IsGeometry</STRONG>( const char *geometry );</P>
 <P>unsigned int  <STRONG>IsImageTainted</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>IsSubimage</STRONG>( const char *geometry, const unsigned int pedantic );</P>
-<P>unsigned int  <STRONG>LayerImage</STRONG>( Image *image, const LayerType layer );</P>
 <P>Image **  <STRONG>ListToGroupImage</STRONG>( Image *image, unsigned int *number_images );</P>
 <P>unsigned int  <STRONG>MogrifyImage</STRONG>( const ImageInfo *image_info, const int argc, char ** argv, Image ** image );</P>
 <P>unsigned int  <STRONG>MogrifyImages</STRONG>( const ImageInfo *next_info, const int argc, char ** argv, Image ** image );</P>
@@ -138,7 +138,7 @@ Specifies a pointer to an ImageInfo structure.
 <P>
 <H2><A NAME="allocateimagecolormap">AllocateImageColormap</A></H2>
 <P>Method AllocateImageColormap allocates an Image colormap and initializes it.  The minimum number of colormap cells allocated is 256.</P>
-<P>The format of the AllocateNextImage method is:</P>
+<P>The format of the AllocateImageColormap method is:</P>
 <blockquote>unsigned int AllocateImageColormap ( <A HREF="types/Image.html">Image</A> *image, const unsigned int colors ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -227,6 +227,22 @@ The address of a structure of type Image; returned from ReadImage.
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="channelimage">ChannelImage</A></H2>
+<P>Method ChannelImage extracts the specified channel from the referenced image.</P>
+<P>The format of the ChannelImage method is:</P>
+<blockquote>unsigned int ChannelImage ( <A HREF="types/Image.html">Image</A> *image, const ChannelType channel ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image; returned from ReadImage.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_channel%3A">channel:</A></STRONG><BR>
+<DD>
+
+<FONT SIZE=-1>A</FONT> value of type ChannelType that identifies which channel to extract.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cloneimage">CloneImage</A></H2>
@@ -534,22 +550,6 @@ Method IsImageTainted returns True if the image has been altered since it was fi
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The address of a structure of type Image.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="layerimage">LayerImage</A></H2>
-<P>Method LayerImage extracts the specified layer from the references image.</P>
-<P>The format of the LayerImage method is:</P>
-<blockquote>unsigned int LayerImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#LayerType">LayerType</A> layer ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image; returned from ReadImage.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_layer%3A">layer:</A></STRONG><BR>
-<DD>
-
-<FONT SIZE=-1>A</FONT> value of type LayerType that identifies which layer to extract.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="listtogroupimage">ListToGroupImage</A></H2>

@@ -108,7 +108,7 @@ These character strings are the name of an image attribute to return.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimageattribute">SetImageAttribute</A></H2>
-<P>Method SetImageAttribute searches the list of image attributes and replaces the attribute value.  If it is not found in the list, the attribute name and value is added to the list.  SetImageAttribute returns True if the attribute is successfully replaced or added to the list, otherwise False.  If the value is 
+<P>Method SetImageAttribute searches the list of image attributes and replaces the attribute value.  If it is not found in the list, the attribute name and value is added to the list.  If the attribute exists in the list, the value is concatenated to the attribute.  SetImageAttribute returns True if the attribute is successfully concatenated or added to the list, otherwise False.  If the value is 
 <FONT SIZE=-1>NULL,</FONT> the matching key is deleted from the list.</P>
 <P>The format of the SetImageAttribute method is:</P>
 <blockquote>unsigned int SetImageAttribute ( <A HREF="types/Image.html">Image</A> *image, const char *key, const char *value ); </blockquote><P>
