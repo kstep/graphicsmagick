@@ -5,117 +5,130 @@
     fullname="Courier Regular"
     familyname="Courier"
     weight="Regular"
+    style="Regular"
     format="type1"
     metrics="@prefix@/share/ghostscript/fonts/n022003l.afm"
     glyphs="@prefix@/share/ghostscript/fonts/n022003l.pfb"
-    version="0.1"/>
+    version="0.1" />
   <type
     name="Courier-Bold"
     fullname="Courier Bold"
     familyname="Courier"
     weight="Bold"
+    style="Regular"
     format="type1"
     metrics="@prefix@/share/ghostscript/fonts/n022004l.afm"
     glyphs="@prefix@/share/ghostscript/fonts/n022004l.pfb"
-    version="0.1"/>
+    version="0.1" />
   <type
     name="Courier-Oblique"
     fullname="Courier Regular Oblique"
     familyname="Courier"
     weight="Regular"
+    style="Oblique"
     format="type1"
     metrics="@prefix@/share/ghostscript/fonts/n022023l.afm"
     glyphs="@prefix@/share/ghostscript/fonts/n022023l.pfb"
-    version="0.1"/>
+    version="0.1" />
   <type
     name="Courier-BoldOblique"
     fullname="Courier Bold Oblique"
     familyname="Courier"
     weight="Bold"
+    style="Oblique"
     format="type1"
     metrics="@prefix@/share/ghostscript/fonts/n022024l.afm"
     glyphs="@prefix@/share/ghostscript/fonts/n022024l.pfb"
-    version="0.1"/>
+    version="0.1" />
   <type
     name="Helvetica"
     fullname="Helvetica Regular"
     familyname="Helvetica"
     weight="Regular"
+    style="Regular"
     format="type1"
     metrics="@prefix@/share/ghostscript/fonts/n019003l.afm"
     glyphs="@prefix@/share/ghostscript/fonts/n019003l.pfb"
-    version="0.1"/>
+    version="0.1" />
   <type
     name="Helvetica-Bold"
     fullname="Helvetica Bold"
     familyname="Helvetica"
     weight="Bold"
+    style="Regular"
     format="type1"
     metrics="@prefix@/share/ghostscript/fonts/n019004l.afm"
     glyphs="@prefix@/share/ghostscript/fonts/n019004l.pfb"
-    version="0.1"/>
+    version="0.1" />
   <type
     name="Helvetica-Oblique"
     fullname="Helvetica Regular Italic"
     familyname="Helvetica"
     weight="Regular"
+    style="Italic"
     format="type1"
     metrics="@prefix@/share/ghostscript/fonts/n019023l.afm"
     glyphs="@prefix@/share/ghostscript/fonts/n019023l.pfb"
-    version="0.1"/>
+    version="0.1" />
   <type
     name="Helvetica-BoldOblique"
     fullname="Helvetica Bold Italic"
     familyname="Helvetica"
     weight="Bold"
+    style="Italic"
     format="type1"
     metrics="@prefix@/share/ghostscript/fonts/n019024l.afm"
     glyphs="@prefix@/share/ghostscript/fonts/n019024l.pfb"
-    version="0.1"/>
+    version="0.1" />
   <type
     name="Times-Roman"
     fullname="Times Regular"
     familyname="Times"
     weight="Regular"
+    style="Regular"
     format="type1"
     metrics="@prefix@/share/ghostscript/fonts/n021003l.afm"
     glyphs="@prefix@/share/ghostscript/fonts/n021003l.pfb"
-    version="0.1"/>
+    version="0.1" />
   <type
     name="Times-Bold"
     fullname="Times Medium"
     familyname="Times"
     weight="Bold"
+    style="Regular"
     format="type1"
     metrics="@prefix@/share/ghostscript/fonts/n021004l.afm"
     glyphs="@prefix@/share/ghostscript/fonts/n021004l.pfb"
-    version="0.1"/>
+    version="0.1" />
   <type
     name="Times-Italic"
     fullname="Times Regular Italic"
     familyname="Times"
     weight="Regular"
+    style="Italic"
     format="type1"
     metrics="@prefix@/share/ghostscript/fonts/n021023l.afm"
     glyphs="@prefix@/share/ghostscript/fonts/n021023l.pfb"
-    version="0.1"/>
+    version="0.1" />
   <type
     name="Times-BoldItalic"
     fullname="Times Medium Italic"
     familyname="Times"
     weight="Bold"
+    style="Italic"
     format="type1"
     metrics="@prefix@/share/ghostscript/fonts/n021024l.afm"
     glyphs="@prefix@/share/ghostscript/fonts/n021024l.pfb"
-    version="0.1"/>
+    version="0.1" />
   <type
     name="Symbol"
     fullname="Symbol"
     familyname="Symbol"
     weight="Regular"
+    style="Regular"
     format="type1"
     metrics="@prefix@/share/ghostscript/fonts/s050000l.afm"
     glyphs="@prefix@/share/ghostscript/fonts/s050000l.pfb"
     version="0.1"
-    encoding="AdobeCustom"/>
+    encoding="AdobeCustom" />
 </typemap>
