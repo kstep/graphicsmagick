@@ -159,7 +159,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
         break;
   }
   image->colorspace=YCbCrColorspace;
-  TransformColorspace(image,RGBColorspace);
+  (void) TransformColorspace(image,RGBColorspace);
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
@@ -304,7 +304,7 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
     Convert to YUV, at full resolution.
   */
   original_colorspace=image->colorspace;
-  TransformColorspace(image,YCbCrColorspace);
+  (void) TransformColorspace(image,YCbCrColorspace);
   /*
     Accumulate two pixels, then output.
   */
@@ -339,7 +339,7 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
   /*
     Restore colorspace
   */
-  TransformColorspace(image,original_colorspace);
+  (void) TransformColorspace(image,original_colorspace);
   CloseBlob(image);
   return(True);
 }

@@ -522,7 +522,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize raster file header.
     */
-    TransformColorspace(image,RGBColorspace);
+    (void) TransformColorspace(image,RGBColorspace);
     packet_size=image->storage_class == DirectClass ? 3 : 11;
     hdf_pixels=MagickAllocateMemory(unsigned char *),
       packet_size*image->columns*image->rows);

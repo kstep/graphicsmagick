@@ -777,7 +777,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize SGI raster file header.
     */
-    TransformColorspace(image,RGBColorspace);
+    (void) TransformColorspace(image,RGBColorspace);
     iris_info.magic=0x01DA;
     if (image_info->compression == NoCompression)
       iris_info.storage=0x00;

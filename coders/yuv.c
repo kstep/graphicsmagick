@@ -327,7 +327,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     DestroyImage(resize_image);
     image->colorspace=YCbCrColorspace;
-    TransformColorspace(image,RGBColorspace);
+    (void) TransformColorspace(image,RGBColorspace);
     if (interlace == PartitionInterlace)
       (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
     if (EOFBlob(image))
@@ -542,14 +542,14 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       Sample image to an even width and height, if necessary.
     */
     image->depth=8;
-    TransformColorspace(image,RGBColorspace);
+    (void) TransformColorspace(image,RGBColorspace);
     width=image->columns+(image->columns & (horizontal_factor-1));
     height=image->rows+(image->rows & (vertical_factor-1));
     yuv_image=ResizeImage(image,width,height,TriangleFilter,1.0,
       &image->exception);
     if (yuv_image == (Image *) NULL)
       ThrowWriterException2(ResourceLimitError,image->exception.reason,image);
-    TransformColorspace(yuv_image,YCbCrColorspace);
+    (void) TransformColorspace(yuv_image,YCbCrColorspace);
     /*
       Downsample image.
     */
@@ -557,7 +557,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       height/vertical_factor,TriangleFilter,1.0,&image->exception);
     if (chroma_image == (Image *) NULL)
       ThrowWriterException2(ResourceLimitError,image->exception.reason,image);
-    TransformColorspace(chroma_image,YCbCrColorspace);
+    (void) TransformColorspace(chroma_image,YCbCrColorspace);
     if (interlace == NoInterlace)
       {
         /*

@@ -1442,19 +1442,19 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     {
       jpeg_info.input_components=4;
       jpeg_info.in_color_space=JCS_CMYK;
-      TransformColorspace(image,CMYKColorspace);
+      (void) TransformColorspace(image,CMYKColorspace);
       break;
     }
     case YCbCrColorspace:
     {
       jpeg_info.in_color_space=JCS_YCbCr;
-      TransformColorspace(image,YCbCrColorspace);
+      (void) TransformColorspace(image,YCbCrColorspace);
       break;
     }
     case GRAYColorspace:
     {
       jpeg_info.in_color_space=JCS_GRAYSCALE;
-      TransformColorspace(image,GRAYColorspace);
+      (void) TransformColorspace(image,GRAYColorspace);
       break;
     }
     default:
@@ -1470,7 +1470,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           jpeg_info.in_color_space=JCS_YCbCr;
           break;
         }
-      TransformColorspace(image,RGBColorspace);
+      (void) TransformColorspace(image,RGBColorspace);
       break;
     }
   }

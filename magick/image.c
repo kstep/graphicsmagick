@@ -3290,7 +3290,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
   assert(image->signature == MagickSignature);
 
   if (!image->is_grayscale)
-    TransformColorspace(image,GRAYColorspace);
+    (void) TransformColorspace(image,GRAYColorspace);
 
   if (image->storage_class != PseudoClass)
     {
@@ -6088,7 +6088,7 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
     case BilevelType:
     {
       if (image->colorspace != RGBColorspace)
-        TransformColorspace(image,RGBColorspace);
+        (void) TransformColorspace(image,RGBColorspace);
       if ((image->storage_class != PseudoClass) ||
           !IsMonochromeImage(image,&image->exception))
         {
@@ -6120,18 +6120,18 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
     case GrayscaleType:
     {
       if (image->colorspace != RGBColorspace)
-        TransformColorspace(image,RGBColorspace);
+        (void) TransformColorspace(image,RGBColorspace);
       if (!IsGrayImage(image,&image->exception))
-        TransformColorspace(image,GRAYColorspace);
+        (void) TransformColorspace(image,GRAYColorspace);
       image->is_grayscale=True;
       break;
     }
     case GrayscaleMatteType:
     {
       if (image->colorspace != RGBColorspace)
-        TransformColorspace(image,RGBColorspace);
+        (void) TransformColorspace(image,RGBColorspace);
       if (!IsGrayImage(image,&image->exception))
-          TransformColorspace(image,GRAYColorspace);
+          (void) TransformColorspace(image,GRAYColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
       image->is_grayscale=True;
@@ -6140,7 +6140,7 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
     case PaletteType:
     {
       if (image->colorspace != RGBColorspace)
-        TransformColorspace(image,RGBColorspace);
+        (void) TransformColorspace(image,RGBColorspace);
       if (image->storage_class != PseudoClass)
         {
           GetQuantizeInfo(&quantize_info);
@@ -6152,7 +6152,7 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
     case PaletteMatteType:
     {
       if (image->colorspace != RGBColorspace)
-        TransformColorspace(image,RGBColorspace);
+        (void) TransformColorspace(image,RGBColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
       if (image->storage_class != PseudoClass)
@@ -6167,14 +6167,14 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
     case TrueColorType:
     {
       if (image->colorspace != RGBColorspace)
-        TransformColorspace(image,RGBColorspace);
+        (void) TransformColorspace(image,RGBColorspace);
       image->storage_class=DirectClass;
       break;
     }
     case TrueColorMatteType:
     {
       if (image->colorspace != RGBColorspace)
-        TransformColorspace(image,RGBColorspace);
+        (void) TransformColorspace(image,RGBColorspace);
       image->storage_class=DirectClass;
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
@@ -6182,12 +6182,12 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
     }
     case ColorSeparationType:
     {
-      TransformColorspace(image,CMYKColorspace);
+      (void) TransformColorspace(image,CMYKColorspace);
       break;
     }
     case ColorSeparationMatteType:
     {
-      TransformColorspace(image,CMYKColorspace);
+      (void) TransformColorspace(image,CMYKColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
       break;
@@ -6520,16 +6520,16 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method TransformColorspace converts the image to a specified colorspace.
+%  Method (void) TransformColorspace converts the image to a specified colorspace.
 %  If the image is already in the requested colorspace, no work is performed.
 %  Note that the current colorspace is stored in the image colorspace member.
 %  The transformation matrices are not necessarily the standard ones: the
 %  weights are rescaled to normalize the range of the transformed values to
 %  be [0..MaxRGB].
 %
-%  The format of the TransformColorspace method is:
+%  The format of the (void) TransformColorspace method is:
 %
-%      unsigned int TransformColorspace(Image *image,
+%      unsigned int (void) TransformColorspace(Image *image,
 %        const ColorspaceType colorspace)
 %
 %  A description of each parameter follows:

@@ -584,7 +584,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to CMYK raster pixels.
     */
-    TransformColorspace(image,CMYKColorspace);
+    (void) TransformColorspace(image,CMYKColorspace);
     if (LocaleCompare(image_info->magick,"CMYKA") == 0)
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);

@@ -6042,7 +6042,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      TransformColorspace(*image,GRAYColorspace);
+      (void) TransformColorspace(*image,GRAYColorspace);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -12228,7 +12228,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
   display_image=(*image);
-  TransformColorspace(display_image,RGBColorspace);
+  (void) TransformColorspace(display_image,RGBColorspace);
   monitor_handler=(MonitorHandler) NULL;
   warning_handler=(WarningHandler) NULL;
   windows=XSetWindows((XWindows *) ~0);

@@ -2155,7 +2155,7 @@ MagickExport MagickPassFail QuantizeImage(const QuantizeInfo *quantize_info,
     less than MaxColormapSize.
   */
   if (quantize_info->colorspace == GRAYColorspace)
-    TransformColorspace(image,quantize_info->colorspace);
+    (void) TransformColorspace(image,quantize_info->colorspace);
   if (IsGrayImage(image,&image->exception))
     GrayscalePseudoClassImage(image,True);
   /*
@@ -2190,7 +2190,7 @@ MagickExport MagickPassFail QuantizeImage(const QuantizeInfo *quantize_info,
     ThrowBinaryException3(ResourceLimitError,
       MemoryAllocationFailed,UnableToQuantizeImage);
   if (quantize_info->colorspace != RGBColorspace)
-    TransformColorspace(image,quantize_info->colorspace);
+    (void) TransformColorspace(image,quantize_info->colorspace);
   status=ClassifyImageColors(cube_info,image,&image->exception);
   if (status != MagickFail)
     {
@@ -2200,7 +2200,7 @@ MagickExport MagickPassFail QuantizeImage(const QuantizeInfo *quantize_info,
       ReduceImageColors(cube_info,number_colors,&image->exception);
       status=AssignImageColors(cube_info,image);
       if (quantize_info->colorspace != RGBColorspace)
-        TransformColorspace(image,quantize_info->colorspace);
+        (void) TransformColorspace(image,quantize_info->colorspace);
     }
   DestroyCubeInfo(cube_info);
   return(status);
@@ -2313,7 +2313,7 @@ MagickExport MagickPassFail QuantizeImages(const QuantizeInfo *quantize_info,
   for (i=0; image != (Image *) NULL; i++)
   {
     if (quantize_info->colorspace != RGBColorspace)
-      TransformColorspace(image,quantize_info->colorspace);
+      (void) TransformColorspace(image,quantize_info->colorspace);
     image=image->next;
   }
   number_images=i;
@@ -2343,7 +2343,7 @@ MagickExport MagickPassFail QuantizeImages(const QuantizeInfo *quantize_info,
         if (status == MagickFail)
           break;
         if (quantize_info->colorspace != RGBColorspace)
-          TransformColorspace(image,quantize_info->colorspace);
+          (void) TransformColorspace(image,quantize_info->colorspace);
         image=image->next;
         (void) SetMonitorHandler(handler);
         if (!MagickMonitor(AssignImageTag,i,number_images,&image->exception))

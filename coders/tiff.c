@@ -1978,7 +1978,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           RGB or Gray Image.
         */
-        TransformColorspace(image,RGBColorspace);
+        (void) TransformColorspace(image,RGBColorspace);
         photometric=PHOTOMETRIC_RGB;
         samples_per_pixel=3;
         if ((image_info->type != TrueColorType) &&
@@ -2381,7 +2381,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           CMYK TIFF image.
         */
-        TransformColorspace(image,CMYKColorspace);
+        (void) TransformColorspace(image,CMYKColorspace);
         for (y=0; y < (long) image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);

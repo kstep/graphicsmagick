@@ -229,7 +229,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   CloseBlob(image);
-  TransformColorspace(image,RGBColorspace);
+  (void) TransformColorspace(image,RGBColorspace);
   clone_info=CloneImageInfo(image_info);
   clone_info->quality=0;
   colors=2;
@@ -343,7 +343,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         GetQuantizeInfo(&quantize_info);
         FormatString(factor,"%lu",colors);
         FormatString(label,"colors %.1024s",factor);
-        TransformColorspace(preview_image,GRAYColorspace);
+        (void) TransformColorspace(preview_image,GRAYColorspace);
         quantize_info.number_colors=colors;
         quantize_info.colorspace=GRAYColorspace;
         quantize_info.dither=image_info->dither;

@@ -925,7 +925,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize VIFF image structure.
     */
-    TransformColorspace(image,RGBColorspace);
+    (void) TransformColorspace(image,RGBColorspace);
     viff_info.identifier=(char) 0xab;
     viff_info.file_type=1;
     viff_info.release=1;

@@ -680,7 +680,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize SUN raster file header.
     */
-    TransformColorspace(image,RGBColorspace);
+    (void) TransformColorspace(image,RGBColorspace);
     sun_info.magic=0x59a66a95;
     sun_info.width=image->columns;
     sun_info.height=image->rows;

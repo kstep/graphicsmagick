@@ -785,7 +785,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   count = GetNumberColors(image, NULL, &exception);
   for (bits_per_pixel=1;  (1UL << bits_per_pixel) < count;  bits_per_pixel*=2);
   if (bits_per_pixel < 16)
-    TransformColorspace(image,RGBColorspace);
+    (void) TransformColorspace(image,RGBColorspace);
   if (bits_per_pixel < 8)
     {
     if(IsGrayImage(image, &exception))   /* gray scale */

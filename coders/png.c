@@ -5995,7 +5995,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
   AcquireSemaphoreInfo(&png_semaphore);
 #endif
 
-  TransformColorspace(image,RGBColorspace);
+  (void) TransformColorspace(image,RGBColorspace);
   mng_info->IsPalette=image->storage_class == PseudoClass &&
       image->colors <= 256;
 

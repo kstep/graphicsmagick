@@ -1864,9 +1864,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     if (((image_info->colorspace != UndefinedColorspace) ||
          (image->colorspace != CMYKColorspace)) &&
          (image_info->colorspace != CMYKColorspace))
-      TransformColorspace(image,RGBColorspace);
+      (void) TransformColorspace(image,RGBColorspace);
     else
-      TransformColorspace(image,CMYKColorspace);
+      (void) TransformColorspace(image,CMYKColorspace);
     packet_size=image->depth/8;
     if (image->storage_class == DirectClass)
       packet_size=3*image->depth/8;

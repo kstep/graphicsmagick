@@ -407,7 +407,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate memory for scanline.
     */
-    TransformColorspace(image,RGBColorspace);
+    (void) TransformColorspace(image,RGBColorspace);
     packet_size=image->depth > 8 ? 2: 1;
     scanline=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
     if (scanline == (unsigned char *) NULL)

@@ -549,7 +549,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to RGB raster pixels.
     */
-    TransformColorspace(image,RGBColorspace);
+    (void) TransformColorspace(image,RGBColorspace);
     if (LocaleCompare(image_info->magick,"RGBA") == 0)
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);

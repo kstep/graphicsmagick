@@ -819,7 +819,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     /*
       Write PNM file header.
     */
-    TransformColorspace(image,RGBColorspace);
+    (void) TransformColorspace(image,RGBColorspace);
     format=6;
     if (LocaleCompare(image_info->magick,"PGM") == 0)
       format=5;

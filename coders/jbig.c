@@ -418,7 +418,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate pixel data.
     */
-    TransformColorspace(image,RGBColorspace);
+    (void) TransformColorspace(image,RGBColorspace);
     number_packets=((image->columns+7) >> 3)*image->rows;
     pixels=MagickAllocateMemory(unsigned char *,number_packets);
     if (pixels == (unsigned char *) NULL)

@@ -339,7 +339,7 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate memory for pixels.
     */
-    TransformColorspace(image,RGBColorspace);
+    (void) TransformColorspace(image,RGBColorspace);
     pixels=MagickAllocateMemory(unsigned char *,
       image->columns*sizeof(PixelPacket));
     if (pixels == (unsigned char *) NULL)

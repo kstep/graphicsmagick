@@ -597,7 +597,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-  TransformColorspace(image,RGBColorspace);
+  (void) TransformColorspace(image,RGBColorspace);
   SetGeometry(image,&geometry);
   (void) GetMagickGeometry(PiconGeometry,&geometry.x,&geometry.y,
     &geometry.width,&geometry.height);
@@ -831,7 +831,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-  TransformColorspace(image,RGBColorspace);
+  (void) TransformColorspace(image,RGBColorspace);
   transparent=False;
   if (image->storage_class == PseudoClass)
     {

@@ -434,7 +434,7 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     return(status);
   /* Magick Number... */
-  (void) TransformColorspace(image,RGBColorspace);
+  (void) (void) TransformColorspace(image,RGBColorspace);
   (void) WriteBlobMSBLong(image,0x802A5FD7);
   /* Offset to image */
   (void) WriteBlobMSBLong(image,0x0800);

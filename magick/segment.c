@@ -1505,7 +1505,7 @@ MagickExport MagickPassFail SegmentImage(Image *image,
           image->filename)
       }
   }
-  TransformColorspace(image,colorspace);
+  (void) TransformColorspace(image,colorspace);
   /*
     Initialize histogram.
   */
@@ -1520,7 +1520,7 @@ MagickExport MagickPassFail SegmentImage(Image *image,
     Classify using the fuzzy c-Means technique.
   */
   status=Classify(image,extrema,cluster_threshold,(double)WeightingExponent,verbose);
-  TransformColorspace(image,RGBColorspace);
+  (void) TransformColorspace(image,RGBColorspace);
   /*
     Free memory.
   */
