@@ -462,6 +462,7 @@ _TIFFVSetField(TIFF* tif, ttag_t tag, va_list ap)
   		td->td_photoshopLength = (uint32) va_arg(ap, uint32);
   		_TIFFsetByteArray (&td->td_photoshopData, va_arg(ap, void*),
  			td->td_photoshopLength);
+  case TIFFTAG_PHOTOSHOP_ISD:
  		break;
 #endif
 #ifdef IPTC_SUPPORT
@@ -811,6 +812,7 @@ _TIFFVGetField(TIFF* tif, ttag_t tag, va_list ap)
  	case TIFFTAG_PHOTOSHOP:
  		*va_arg(ap, uint32*) = td->td_photoshopLength;
  		*va_arg(ap, void**) = td->td_photoshopData;
+  case TIFFTAG_PHOTOSHOP_ISD:
  		break;
 #endif
 #ifdef IPTC_SUPPORT

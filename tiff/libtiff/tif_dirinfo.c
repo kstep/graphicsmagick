@@ -101,9 +101,9 @@ const TIFFFieldInfo tiffFieldInfo[] = {
       FALSE,	FALSE,	"StripByteCounts" },
     { TIFFTAG_STRIPBYTECOUNTS,	-1,-1, TIFF_SHORT,	FIELD_STRIPBYTECOUNTS,
       FALSE,	FALSE,	"StripByteCounts" },
-    { TIFFTAG_MINSAMPLEVALUE,	-2,-1, TIFF_SHORT,	FIELD_MINSAMPLEVALUE,
+    { TIFFTAG_MINSAMPLEVALUE,	-1,-1, TIFF_SHORT,	FIELD_MINSAMPLEVALUE,
       TRUE,	FALSE,	"MinSampleValue" },
-    { TIFFTAG_MAXSAMPLEVALUE,	-2,-1, TIFF_SHORT,	FIELD_MAXSAMPLEVALUE,
+    { TIFFTAG_MAXSAMPLEVALUE,	-1,-1, TIFF_SHORT,	FIELD_MAXSAMPLEVALUE,
       TRUE,	FALSE,	"MaxSampleValue" },
     { TIFFTAG_XRESOLUTION,	 1, 1, TIFF_RATIONAL,	FIELD_RESOLUTION,
       FALSE,	FALSE,	"XResolution" },
@@ -255,6 +255,10 @@ const TIFFFieldInfo tiffFieldInfo[] = {
 #ifdef PHOTOSHOP_SUPPORT
     { TIFFTAG_PHOTOSHOP,    -1,-3, TIFF_BYTE,   FIELD_PHOTOSHOP, 
       FALSE,    TRUE,   "Photoshop" },
+    { TIFFTAG_PHOTOSHOP,    -1,-3, TIFF_UNDEFINED,   FIELD_PHOTOSHOP, 
+      FALSE,    TRUE,   "Photoshop" },
+    { TIFFTAG_PHOTOSHOP,    -1,-3, TIFF_NOTYPE,   FIELD_PHOTOSHOP, 
+      FALSE,    TRUE,   "Photoshop" },
 #endif
 #ifdef ICC_SUPPORT
     { TIFFTAG_ICCPROFILE,	-1,-3, TIFF_UNDEFINED,	FIELD_ICCPROFILE,
@@ -262,6 +266,10 @@ const TIFFFieldInfo tiffFieldInfo[] = {
 #endif
     { TIFFTAG_STONITS,		 1, 1, TIFF_DOUBLE,	FIELD_STONITS,
       FALSE,	FALSE,	"StoNits" },
+#ifdef PHOTOSHOP_SUPPORT
+    { TIFFTAG_PHOTOSHOP_ISD,    -1,-3, TIFF_ANY,   FIELD_PHOTOSHOP, 
+      FALSE,    TRUE,   "Photoshop Image Source Data" },
+#endif
 };
 #define	N(a)	(sizeof (a) / sizeof (a[0]))
 
