@@ -52,6 +52,7 @@
 #pragma warning(disable : 4244)
 #pragma warning(disable : 4142)
 #pragma warning(disable : 4800)
+#pragma warning(disable : 4786)
 
 #else
 # define MagickExport __declspec(dllexport)
