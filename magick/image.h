@@ -168,8 +168,7 @@ typedef struct _ImageInfo
   char
     *background_color,
     *border_color,
-    *matte_color,
-    *undercolor;
+    *matte_color;
 
   char
     unique[MaxTextExtent];
