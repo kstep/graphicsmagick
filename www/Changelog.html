@@ -56,6 +56,10 @@
 2003-05-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> Makefile.am (magick-version): Perform version.isx substitutions
+        via Makefile.am rather than configure.
+  <LI> magick/magick_config_api.h.in: Added template header for
+        the installed magick_config.h.<BR>
   <LI> magick/magick.c (InitializeMagick): Improved the signal handling
         and registration method. Signal handlers are only registered for a
         signal if the current signal handling disposition for that signal

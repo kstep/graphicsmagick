@@ -397,8 +397,7 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
 	$(top_builddir)/magick/magick_config_api.h
-CONFIG_CLEAN_FILES = PerlMagick/Magick.pm PerlMagick/Makefile.PL \
-	VisualMagick/installer/inc/version.isx
+CONFIG_CLEAN_FILES = PerlMagick/Magick.pm PerlMagick/Makefile.PL
 DIST_SOURCES =
 DATA = $(pkgdata_DATA)
 
@@ -433,8 +432,6 @@ $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.ac acinclude.m4
 PerlMagick/Magick.pm: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Magick.pm.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Makefile.PL.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-VisualMagick/installer/inc/version.isx: $(top_builddir)/config.status $(top_srcdir)/VisualMagick/installer/inc/version.isx.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:
@@ -599,7 +596,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/Magick++/bin $(distdir)/Magick++/lib $(distdir)/PerlMagick $(distdir)/VisualMagick/installer/inc $(distdir)/coders $(distdir)/magick
+	$(mkinstalldirs) $(distdir)/Magick++/bin $(distdir)/Magick++/lib $(distdir)/PerlMagick $(distdir)/coders $(distdir)/magick
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -856,16 +853,14 @@ uninstall-data-html:
 
 # Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.
 magick-version: magick/version.h
+	@if test -f "$(srcdir)/VisualMagick/installer/inc/version.isx.in" ; then \
+	  ./config.status --file="$(srcdir)/VisualMagick/installer/inc/version.isx" 2> /dev/null ; \
+	fi
 	@if test -n "$(VPATH)" ; then \
 	  cmp magick/version.h $(srcdir)/magick/version.h > /dev/null ; \
           if test $$? -eq 1 ; then \
 	    echo "Updating $(srcdir)/magick/version.h ..."; \
 	    cp magick/version.h $(srcdir)/magick/version.h ; \
-	  fi ; \
-	  cmp VisualMagick/installer/inc/version.isx $(srcdir)/VisualMagick/installer/inc/version.isx > /dev/null ; \
-          if test $$? -eq 1 ; then \
-	    echo "Updating $(srcdir)/VisualMagick/installer/inc/version.isx ..."; \
-	    cp VisualMagick/installer/inc/version.isx $(srcdir)/VisualMagick/installer/inc/version.isx ; \
 	  fi ; \
 	fi ; \
 	touch magick-version

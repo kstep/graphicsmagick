@@ -87,16 +87,14 @@ uninstall-data-html:
 
 # Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.
 magick-version: magick/version.h
+	@if test -f "$(srcdir)/VisualMagick/installer/inc/version.isx.in" ; then \
+	  ./config.status --file="$(srcdir)/VisualMagick/installer/inc/version.isx" 2> /dev/null ; \
+	fi
 	@if test -n "$(VPATH)" ; then \
 	  cmp magick/version.h $(srcdir)/magick/version.h > /dev/null ; \
           if test $$? -eq 1 ; then \
 	    echo "Updating $(srcdir)/magick/version.h ..."; \
 	    cp magick/version.h $(srcdir)/magick/version.h ; \
-	  fi ; \
-	  cmp VisualMagick/installer/inc/version.isx $(srcdir)/VisualMagick/installer/inc/version.isx > /dev/null ; \
-          if test $$? -eq 1 ; then \
-	    echo "Updating $(srcdir)/VisualMagick/installer/inc/version.isx ..."; \
-	    cp VisualMagick/installer/inc/version.isx $(srcdir)/VisualMagick/installer/inc/version.isx ; \
 	  fi ; \
 	fi ; \
 	touch magick-version

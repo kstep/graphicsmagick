@@ -38660,7 +38660,7 @@ LIBS=""
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
-                                                                                                                                                                                                                                                                    ac_config_files="$ac_config_files Makefile magick/Makefile coders/delegates.mgk coders/Makefile utilities/Makefile tests/Makefile coders/type-ghostscript.mgk coders/type-solaris.mgk coders/type-windows.mgk coders/type.mgk filters/Makefile ltdl/Makefile magick/GraphicsMagick-config magick/GraphicsMagick.pc magick/version.h Magick++/Makefile Magick++/bin/GraphicsMagick++-config Magick++/bin/Makefile Magick++/demo/Makefile Magick++/lib/GraphicsMagick++.pc Magick++/lib/Makefile Magick++/lib/Magick++/Makefile Magick++/tests/Makefile PerlMagick/Magick.pm PerlMagick/Makefile.PL VisualMagick/installer/inc/version.isx"
+                                                                                                                                                                                                                                                          ac_config_files="$ac_config_files Makefile magick/Makefile coders/delegates.mgk coders/Makefile utilities/Makefile tests/Makefile coders/type-ghostscript.mgk coders/type-solaris.mgk coders/type-windows.mgk coders/type.mgk filters/Makefile ltdl/Makefile magick/GraphicsMagick-config magick/GraphicsMagick.pc magick/version.h Magick++/Makefile Magick++/bin/GraphicsMagick++-config Magick++/bin/Makefile Magick++/demo/Makefile Magick++/lib/GraphicsMagick++.pc Magick++/lib/Makefile Magick++/lib/Magick++/Makefile Magick++/tests/Makefile PerlMagick/Magick.pm PerlMagick/Makefile.PL"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -39451,7 +39451,6 @@ do
   "Magick++/tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/tests/Makefile" ;;
   "PerlMagick/Magick.pm" ) CONFIG_FILES="$CONFIG_FILES PerlMagick/Magick.pm" ;;
   "PerlMagick/Makefile.PL" ) CONFIG_FILES="$CONFIG_FILES PerlMagick/Makefile.PL" ;;
-  "VisualMagick/installer/inc/version.isx" ) CONFIG_FILES="$CONFIG_FILES VisualMagick/installer/inc/version.isx" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "magick/magick_config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS magick/magick_config.h" ;;
   "magick/magick_config_api.h" ) CONFIG_HEADERS="$CONFIG_HEADERS magick/magick_config_api.h" ;;

@@ -2342,8 +2342,7 @@ AC_OUTPUT( \
         Magick++/lib/Magick++/Makefile \
         Magick++/tests/Makefile \
         PerlMagick/Magick.pm \
-        PerlMagick/Makefile.PL \
-        VisualMagick/installer/inc/version.isx )
+        PerlMagick/Makefile.PL )
 rm -f magick-version
 
 echo ""
