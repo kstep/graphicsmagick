@@ -124,9 +124,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
   page=image->page;
   rotations%=4;
   if ((rotations == 1) || (rotations == 3))
-    rotate_image=CloneImage(image,image->rows,image->columns,True,exception);
+    rotate_image=CloneImage(image,image->rows,image->columns,False,exception);
   else
-    rotate_image=CloneImage(image,image->columns,image->rows,True,exception);
+    rotate_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (rotate_image == (Image *) NULL)
     return((Image *) NULL);
   /*

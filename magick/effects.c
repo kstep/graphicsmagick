@@ -116,7 +116,7 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  noise_image=CloneImage(image,image->columns,image->rows,True,exception);
+  noise_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
   noise_image->storage_class=DirectClass;
@@ -453,7 +453,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   /*
     Allocate blur image.
   */
-  blur_image=CloneImage(image,image->columns,image->rows,True,exception);
+  blur_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (blur_image == (Image *) NULL)
     {
       LiberateMemory((void **) &kernel);
@@ -569,7 +569,7 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  colorize_image=CloneImage(image,image->columns,image->rows,True,exception);
+  colorize_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (colorize_image == (Image *) NULL)
     return((Image *) NULL);
   colorize_image->storage_class=DirectClass;
@@ -703,7 +703,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(OptionWarning,"Unable to convolve image",
       "image smaller than kernel width");
-  convolve_image=CloneImage(image,image->columns,image->rows,True,exception);
+  convolve_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
   convolve_image->storage_class=DirectClass;
@@ -856,7 +856,7 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  despeckle_image=CloneImage(image,image->columns,image->rows,True,exception);
+  despeckle_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (despeckle_image == (Image *) NULL)
     return((Image *) NULL);
   despeckle_image->storage_class=DirectClass;
@@ -1199,7 +1199,7 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   if ((image->columns < 5) || (image->rows < 5))
     return((Image *) NULL);
-  enhance_image=CloneImage(image,image->columns,image->rows,True,exception);
+  enhance_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (enhance_image == (Image *) NULL)
     return((Image *) NULL);
   enhance_image->storage_class=DirectClass;
@@ -1411,7 +1411,7 @@ MagickExport Image *ImplodeImage(Image *image,const double factor,
   assert(exception->signature == MagickSignature);
   if (!image->matte)
     SetImageOpacity(image,OpaqueOpacity);
-  implode_image=CloneImage(image,image->columns,image->rows,True,exception);
+  implode_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (implode_image == (Image *) NULL)
     return((Image *) NULL);
   implode_image->storage_class=DirectClass;
@@ -1603,7 +1603,7 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(OptionWarning,"Unable to median filter image",
       "image smaller than kernel radius");
-  median_image=CloneImage(image,image->columns,image->rows,True,exception);
+  median_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (median_image == (Image *) NULL)
     return((Image *) NULL);
   median_image->storage_class=DirectClass;
@@ -1960,7 +1960,7 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
   /*
     Allocate blur image.
   */
-  blur_image=CloneImage(image,image->columns,image->rows,True,exception);
+  blur_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (blur_image == (Image *) NULL)
     {
       LiberateMemory((void **) &kernel);
@@ -2086,7 +2086,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(OptionWarning,"Unable to oil paint",
       "image smaller than radius");
-  paint_image=CloneImage(image,0,0,True,exception);
+  paint_image=CloneImage(image,0,0,False,exception);
   if (paint_image == (Image *) NULL)
     return((Image *) NULL);
   paint_image->storage_class=DirectClass;
@@ -2448,7 +2448,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(OptionWarning,"Unable to noise filter image",
       "image smaller than kernel radius");
-  noise_image=CloneImage(image,image->columns,image->rows,True,exception);
+  noise_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
   noise_image->storage_class=DirectClass;
@@ -2643,7 +2643,7 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  shade_image=CloneImage(image,image->columns,image->rows,True,exception);
+  shade_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (shade_image == (Image *) NULL)
     return((Image *) NULL);
   shade_image->storage_class=DirectClass;
@@ -2962,7 +2962,7 @@ MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
   /*
     Initialize spread image attributes.
   */
-  spread_image=CloneImage(image,image->columns,image->rows,True,exception);
+  spread_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (spread_image == (Image *) NULL)
     return((Image *) NULL);
   spread_image->storage_class=DirectClass;
@@ -3071,7 +3071,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   assert(watermark->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  stegano_image=CloneImage(image,0,0,True,exception);
+  stegano_image=CloneImage(image,0,0,False,exception);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
   if (stegano_image->storage_class == PseudoClass)
@@ -3214,7 +3214,7 @@ MagickExport Image *StereoImage(Image *image,Image *offset_image,
   /*
     Initialize stereo image attributes.
   */
-  stereo_image=CloneImage(image,image->columns,image->rows,True,exception);
+  stereo_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (stereo_image == (Image *) NULL)
     return((Image *) NULL);
   stereo_image->storage_class=DirectClass;
@@ -3321,7 +3321,7 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
   assert(exception->signature == MagickSignature);
   if (!image->matte)
     SetImageOpacity(image,OpaqueOpacity);
-  swirl_image=CloneImage(image,image->columns,image->rows,True,exception);
+  swirl_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (swirl_image == (Image *) NULL)
     return((Image *) NULL);
   swirl_image->storage_class=DirectClass;

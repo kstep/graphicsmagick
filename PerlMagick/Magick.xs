@@ -782,7 +782,7 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
                   exception;
 
                 GetExceptionInfo(&exception);
-                image=CloneImage(image,0,0,True,&exception);
+                image=CloneImage(image,0,0,False,&exception);
                 if (image == (Image *) NULL)
                   {
                     MagickWarning(exception.severity,exception.reason,
@@ -1910,11 +1910,11 @@ Animate(ref,...)
       }
     package_info=ClonePackageInfo(info);
     if (items == 2)
-      SetAttribute(package_info,image,"server",ST(1));
+      SetAttribute(package_info,NULL,"server",ST(1));
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
-          SetAttribute(package_info,image,SvPV(ST(i-1),na),ST(i));
+          SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
     AnimateImages(package_info->image_info,image);
     CatchImageException(image);
 
@@ -2493,7 +2493,7 @@ Copy(ref)
     SvREFCNT_dec(av);
     for (next=image; next; next=next->next)
     {
-      image=CloneImage(next,0,0,True,&next->exception);
+      image=CloneImage(next,0,0,False,&next->exception);
       if (!image)
         {
           MagickWarning(next->exception.severity,next->exception.reason,
@@ -2654,11 +2654,11 @@ Display(ref,...)
       }
     package_info=ClonePackageInfo(info);
     if (items == 2)
-      SetAttribute(package_info,image,"server",ST(1));
+      SetAttribute(package_info,NULL,"server",ST(1));
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
-          SetAttribute(package_info,image,SvPV(ST(i-1),na),ST(i));
+          SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
     DisplayImages(package_info->image_info,image);
 
   MethodException:
@@ -3562,7 +3562,7 @@ ImageToBlob(ref,...)
       }
     package_info=ClonePackageInfo(info);
     for (i=2; i < items; i+=2)
-      SetAttribute(package_info,image,SvPV(ST(i-1),na),ST(i));
+      SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
     (void) strcpy(filename,package_info->image_info->filename);
     scene=0;
     for (next=image; next; next=next->next)
@@ -4569,6 +4569,9 @@ Mogrify(ref,...)
           CompositeOperator
             compose;
 
+          double
+            opacity;
+
           Image
             *composite_image,
             *rotate_image;
@@ -4577,9 +4580,6 @@ Mogrify(ref,...)
             status,
             x,
             y;
-
-          Quantum
-            opacity;
 
           unsigned int
             height,
@@ -4598,8 +4598,7 @@ Mogrify(ref,...)
             compose=(CompositeOperator) argument_list[1].int_reference;
           opacity=OpaqueOpacity;
           if (attribute_flag[6])
-            opacity=(Quantum)
-              ceil(MaxRGB*argument_list[6].double_reference/100.0-0.5);
+            opacity=argument_list[6].double_reference;
           if (opacity != OpaqueOpacity)
             SetImageOpacity(composite_image,opacity);
           if (compose == DissolveCompositeOp)
@@ -6783,7 +6782,7 @@ Transform(ref,...)
     GetExceptionInfo(&exception);
     for (next=image; next; next=next->next)
     {
-      clone=CloneImage(next,0,0,True,&exception);
+      clone=CloneImage(next,0,0,False,&exception);
       if (clone)
         TransformImage(&clone,crop_geometry,geometry);
       if (!image)
@@ -6886,11 +6885,11 @@ Write(ref,...)
       }
     package_info=ClonePackageInfo(info);
     if (items == 2)
-      SetAttribute(package_info,image,"filen",ST(1));
+      SetAttribute(package_info,NULL,"filen",ST(1));
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
-          SetAttribute(package_info,image,SvPV(ST(i-1),na),ST(i));
+          SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
     (void) strcpy(filename,package_info->image_info->filename);
     scene=0;
     for (next=image; next; next=next->next)
