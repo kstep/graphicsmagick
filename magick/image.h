@@ -95,12 +95,6 @@ typedef struct _Ascii85Info
 
 typedef struct _BlobInfo
 {
-  unsigned int
-    mapped;
-
-  unsigned char
-    *data;
-
   off_t
     filesize,
     offset;
@@ -111,7 +105,11 @@ typedef struct _BlobInfo
     quantum;
 
   unsigned int
+    mapped,
     eof;
+
+  unsigned char
+    *data;
 
   unsigned long
     signature;
