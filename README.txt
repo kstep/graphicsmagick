@@ -83,9 +83,8 @@ UNIX/Cygwin COMPILATION
 
   Type:
 
-    gunzip ImageMagick-4.2.8.tar.gz
-    tar xvf ImageMagick-4.2.8.tar
-    cd ImageMagick
+    gzip -dc ImageMagick-4.2.8.tar.gz | tar xvf -
+    cd ImageMagick-4.2.8
 
   If you do not have gunzip(1), it is available as
   prep.ai.mit.edu:pub/gnu/gzip-1.2.4.shar.

@@ -13233,13 +13233,18 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           }
         if (event.xmap.window == windows->icon.id)
           {
+            unsigned int
+              tainted;
+
             /*
               Create an icon image.
             */
+            tainted=displayed_image->tainted;
             XMakeStandardColormap(display,icon_visual,icon_resources,
               displayed_image,icon_map,icon_pixel);
             (void) XMakeImage(display,icon_resources,&windows->icon,
               displayed_image,windows->icon.width,windows->icon.height);
+            displayed_image->tainted=tainted;
             XSetWindowBackgroundPixmap(display,windows->icon.id,
               windows->icon.pixmap);
             XClearWindow(display,windows->icon.id);

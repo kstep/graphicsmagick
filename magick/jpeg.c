@@ -67,6 +67,7 @@
 
 #if defined(HasJPEG)
 #include <setjmp.h>
+#define JPEG_INTERNAL_OPTIONS
 #include "jpeglib.h"
 #include "jerror.h"
 

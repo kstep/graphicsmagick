@@ -3022,56 +3022,6 @@ Export unsigned int IsGrayImage(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%   I s M o n o c h r o m e I m a g e                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method IsMonochromeImage returns True if the image is monochrome otherwise
-%  False is returned.  If the image is DirectClass and monochrome, it is
-%  demoted to PseudoClass.
-%
-%  The format of the IsMonochromeImage routine is:
-%
-%      status=IsMonochromeImage(image)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method IsMonochromeImage returns True if the image is
-%      monochrome otherwise False is returned.
-%
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
-%
-%
-*/
-Export unsigned int IsMonochromeImage(Image *image)
-{
-  /*
-    Determine if image is monochrome.
-  */
-  assert(image != (Image *) NULL);
-  if (image->pixels == (RunlengthPacket *) NULL)
-    return(False);
-  if (!IsGrayImage(image))
-    return(False);
-  if (image->colors > 2)
-    return(False);
-  if ((Intensity(image->colormap[0]) != 0) &&
-      (Intensity(image->colormap[0]) != MaxRGB))
-    return(False);
-  if (image->colors == 2)
-    if ((Intensity(image->colormap[1]) != 0) &&
-        (Intensity(image->colormap[1]) != MaxRGB))
-      return(False);
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
 %     I s S u b i m a g e                                                     %
 %                                                                             %
 %                                                                             %
