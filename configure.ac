@@ -745,7 +745,22 @@ then
     AC_MSG_RESULT()
     failed=0;
     passed=0;
-    AC_CHECK_HEADER(lcms/lcms.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    have_lcms_header='no'
+    AC_CHECK_HEADER(lcms.h,have_lcms_header='yes',,)
+    if test "$have_lcms_header" != 'no'
+    then
+      passed=`expr $passed + 1`
+        AC_DEFINE(HAVE_LCMS_H,1,Define if you have the <lcms.h> header file.)
+    else
+      AC_CHECK_HEADER(lcms/lcms.h,have_lcms_header='yes',,)
+      if test "$have_lcms_header" != 'no'
+      then
+        passed=`expr $passed + 1`
+        AC_DEFINE(HAVE_LCMS_LCMS_H,1,Define if you have the <lcms/lcms.h> header file.)
+      else
+        failed=`expr $failed + 1`
+      fi
+    fi
     AC_CHECK_LIB(lcms,cmsOpenProfileFromMem,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if LCMS package is complete)
     if test $passed -gt 0

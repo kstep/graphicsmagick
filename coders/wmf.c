@@ -1882,7 +1882,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     }
 
 #if 0
-  printf("Size in metafile units:      %.10gx%.10g\n", wmf_width, wmf_height);
+  printf("\nSize in metafile units:      %.10gx%.10g\n", wmf_width, wmf_height);
   printf("Metafile units/inch:         %.10g\n", units_per_inch);
   printf("Bounding Box:                %.10g,%.10g %.10g,%.10g\n",
          bounding_box.TL.x, bounding_box.TL.y, bounding_box.BR.x, bounding_box.BR.y);
@@ -1892,6 +1892,36 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
          ddata->bbox_to_pixels_scale_x, ddata->bbox_to_pixels_scale_y);
   printf("Translation:                 %.10g,%.10g\n",
 	 ddata->bbox_to_pixels_translate_x, ddata->bbox_to_pixels_translate_y);
+
+#if 0
+  {
+    typedef struct _wmfPlayer_t wmfPlayer_t;
+    struct _wmfPlayer_t
+    {
+      wmfPen   default_pen;
+      wmfBrush default_brush;
+      wmfFont  default_font;
+      
+      wmfDC* dc; /* current dc */
+    };
+
+    wmfDC
+      *dc;
+
+#define WMF_ELICIT_DC(API) (((wmfPlayer_t*)((API)->player_data))->dc)
+
+    dc = WMF_ELICIT_DC(API);
+
+    printf("dc->Window.Ox     = %d\n", dc->Window.Ox);
+    printf("dc->Window.Oy     = %d\n", dc->Window.Oy);
+    printf("dc->Window.width  = %d\n", dc->Window.width);
+    printf("dc->Window.height = %d\n", dc->Window.height);
+    printf("dc->pixel_width   = %.10g\n", dc->pixel_width);
+    printf("dc->pixel_height  = %.10g\n", dc->pixel_height);
+
+  }
+#endif
+
 #endif
 
   /*

@@ -57,6 +57,12 @@
 /* Define if you have the <jp2conf.h> header file. */
 #undef HAVE_JP2CONF_H
 
+/* Define if you have the <lcms.h> header file. */
+#undef HAVE_LCMS_H
+
+/* Define if you have the <lcms/lcms.h> header file. */
+#undef HAVE_LCMS_LCMS_H
+
 /* Define if you have the <libwmf/font.h> header file. */
 #undef HAVE_LIBWMF_FONT_H
 
