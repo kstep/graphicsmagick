@@ -137,6 +137,7 @@ UNIX/Cygwin COMPILATION
   follows (execute 'configure --help' to see all options).
 
   Optional Features:
+   --enable-ccmalloc       enable 'ccmalloc' memory debug support (default disabled)
    --enable-prof           enable 'prof' profiling support (default disabled)
    --enable-gprof          enable 'gprof' profiling support (default disabled)
    --enable-gcov           enable 'gcov' profiling support (default disabled)
