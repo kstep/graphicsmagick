@@ -79,6 +79,7 @@
 %    -page geometry      size and location of an image canvas
 %    -profile filename   add ICM or IPTC information profile to image
 %    -quality value      JPEG/MIFF/PNG compression level
+%    -resize geometry    perferred size or location of the image
 %    -rotate degrees     apply Paeth rotation to the image
 %    -scene value        image scene number
 %    -size geometry      width and height of image
@@ -147,7 +148,7 @@ typedef struct _CompositeOptionInfo
 %
 %      unsigned int CompositeImages(const ImageInfo *image_info,
 %        CompositeOptionInfo *option_info,const int argc,char **argv,
-%        Image *composite_image,Image *mask_image,Image **image)
+%        Image **composite_image,Image **mask_image,Image **image)
 %
 %  A description of each parameter follows:
 %
@@ -168,8 +169,8 @@ typedef struct _CompositeOptionInfo
 %
 */
 static unsigned int CompositeImages(ImageInfo *image_info,
-  CompositeOptionInfo *option_info,const int argc,char **argv,Image *composite_image,
-  Image *mask_image,Image **image)
+  CompositeOptionInfo *option_info,const int argc,char **argv,
+    Image **composite_ref,Image **mask_ref,Image **image)
 {
   long
     x,
@@ -177,6 +178,10 @@ static unsigned int CompositeImages(ImageInfo *image_info,
 
   register Image
     *p;
+
+  Image
+    *composite_image,
+    *mask_image;
 
   unsigned int
     matte,
@@ -186,194 +191,204 @@ static unsigned int CompositeImages(ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
-  assert(composite_image != (Image *) NULL);
-  assert(composite_image->signature == MagickSignature);
-  if (mask_image != (Image *) NULL)
-    {
-      assert(mask_image != (Image *) NULL);
-      assert(mask_image->signature == MagickSignature);
-    }
   if (argc < 2)
     return(False);
   while ((*image)->previous != (Image *) NULL)
     (*image)=(*image)->previous;
   status=MogrifyImages(image_info,argc-1,argv,image);
   CatchImageException(*image);
-  if (mask_image != (Image *) NULL)
+  composite_image=*composite_ref;
+  if (composite_image != (Image *) NULL)
     {
-      SetImageType(composite_image,TrueColorMatteType);
-      if (!composite_image->matte)
-        SetImageOpacity(composite_image,OpaqueOpacity);;
-      status=CompositeImage(composite_image,CopyOpacityCompositeOp,
-        mask_image,0,0);
-      if (status == False)
-        CatchImageException(composite_image);
-      DestroyImage(mask_image);
-    }
-  if (option_info->compose == DissolveCompositeOp)
-    {
-      register PixelPacket
-        *q;
-
-      /*
-        Create mattes for dissolve.
-      */
-      composite_image->storage_class=DirectClass;
-      composite_image->matte=True;
-      for (y=0; y < (long) composite_image->rows; y++)
-      {
-        q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) composite_image->columns; x++)
+      assert(composite_image->signature == MagickSignature);
+      mask_image=*mask_ref;
+      if (mask_image != (Image *) NULL)
         {
-          if (composite_image->matte)
-            q->opacity=(Quantum)
-              (((MaxRGB-q->opacity)*option_info->dissolve)/100);
-          else
-            q->opacity=(Quantum) ((MaxRGB*option_info->dissolve)/100);
-          q++;
+          assert(mask_image != (Image *) NULL);
+          assert(mask_image->signature == MagickSignature);
+          SetImageType(composite_image,TrueColorMatteType);
+          if (!composite_image->matte)
+            SetImageOpacity(composite_image,OpaqueOpacity);;
+          status=CompositeImage(composite_image,CopyOpacityCompositeOp,
+            mask_image,0,0);
+          if (status == False)
+            CatchImageException(composite_image);
+          DestroyImage(mask_image);
         }
-        if (!SyncImagePixels(composite_image))
-          break;
-      }
-    }
-  if (option_info->compose == DisplaceCompositeOp)
-    (void) CloneString(&composite_image->geometry,
-      option_info->displace_geometry);
-  if (option_info->compose == ModulateCompositeOp)
-    (void) CloneString(&composite_image->geometry,
-      option_info->watermark_geometry);
-  if (option_info->compose == ThresholdCompositeOp)
-    (void) CloneString(&composite_image->geometry,
-      option_info->unsharp_geometry);
-  /*
-    Composite image.
-  */
-  matte=(*image)->matte;
-  if (option_info->stegano != 0)
-    {
-      Image
-        *stego_image;
-
-      (*image)->offset=option_info->stegano-1;
-      stego_image=SteganoImage(*image,composite_image,&(*image)->exception);
-      if (stego_image != (Image *) NULL)
+      if (option_info->compose == DissolveCompositeOp)
         {
-          DestroyImageList(*image);
-          *image=stego_image;
-        }
-    }
-  else
-    if (option_info->stereo)
-      {
-        Image
-          *stereo_image;
+          register PixelPacket
+            *q;
 
-        stereo_image=StereoImage(*image,composite_image,&(*image)->exception);
-        if (stereo_image != (Image *) NULL)
-          {
-            DestroyImageList(*image);
-            *image=stereo_image;
-          }
-      }
-    else
-      if (option_info->tile)
-        {
           /*
-            Tile the composite image.
+            Create mattes for dissolve.
           */
-          for (y=0; y < (long) (*image)->rows; y+=composite_image->rows)
-            for (x=0; x < (long) (*image)->columns; x+=composite_image->columns)
+          composite_image->storage_class=DirectClass;
+          composite_image->matte=True;
+          for (y=0; y < (long) composite_image->rows; y++)
+          {
+            q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (long) composite_image->columns; x++)
             {
-              status=CompositeImage(*image,option_info->compose,
-                composite_image,x,y);
-              CatchImageException(*image);
+              if (composite_image->matte)
+                q->opacity=(Quantum)
+                  (((MaxRGB-q->opacity)*option_info->dissolve)/100);
+              else
+                q->opacity=(Quantum) ((MaxRGB*option_info->dissolve)/100);
+              q++;
+            }
+            if (!SyncImagePixels(composite_image))
+              break;
+          }
+        }
+      if (option_info->compose == DisplaceCompositeOp)
+        (void) CloneString(&composite_image->geometry,
+          option_info->displace_geometry);
+      if (option_info->compose == ModulateCompositeOp)
+        (void) CloneString(&composite_image->geometry,
+          option_info->watermark_geometry);
+      if (option_info->compose == ThresholdCompositeOp)
+        (void) CloneString(&composite_image->geometry,
+          option_info->unsharp_geometry);
+      /*
+        Composite image.
+      */
+      matte=(*image)->matte;
+      if (option_info->stegano != 0)
+        {
+          Image
+            *stego_image;
+
+          (*image)->offset=option_info->stegano-1;
+          stego_image=SteganoImage(*image,composite_image,
+                                    &(*image)->exception);
+          if (stego_image != (Image *) NULL)
+            {
+              DestroyImages(*image);
+              *image=stego_image;
             }
         }
       else
-        {
-          int
-            flags;
+        if (option_info->stereo)
+          {
+            Image
+              *stereo_image;
 
-          unsigned long
-            height,
-            width;
-
-          /*
-            Digitally composite image.
-          */
-          width=(*image)->columns;
-          height=(*image)->rows;
-          x=0;
-          y=0;
-          flags=ParseGeometry(option_info->geometry,&x,&y,&width,&height);
-          if ((flags & XNegative) != 0)
-            x+=(*image)->columns;
-          if ((flags & WidthValue) == 0)
-            width-=2*x > (long) width ? width : 2*x;
-          if ((flags & YNegative) != 0)
-            y+=(*image)->rows;
-          if ((flags & HeightValue) == 0)
-            height-=2*y > (long) height ? height : 2*y;
-          if ((flags & XValue) || (flags & YValue))
-            switch (option_info->gravity)
+            stereo_image=StereoImage(*image,composite_image,
+                                      &(*image)->exception);
+            if (stereo_image != (Image *) NULL)
+              {
+                DestroyImages(*image);
+                *image=stereo_image;
+              }
+          }
+        else
+          if (option_info->tile)
             {
-              case NorthWestGravity:
-                break;
-              case NorthGravity:
-              {
-                x+=(int) (0.5*width-composite_image->columns/2);
-                break;
-              }
-              case NorthEastGravity:
-              {
-                x+=width-composite_image->columns;
-                break;
-              }
-              case WestGravity:
-              {
-                y+=(int) (0.5*height-composite_image->rows/2);
-                break;
-              }
-              case ForgetGravity:
-              case StaticGravity:
-              case CenterGravity:
-              default:
-              {
-                x+=(int) (0.5*width-composite_image->columns/2);
-                y+=(int) (0.5*height-composite_image->rows/2);
-                break;
-              }
-              case EastGravity:
-              {
-                x+=width-composite_image->columns;
-                y+=(int) (0.5*height-composite_image->rows/2);
-                break;
-              }
-              case SouthWestGravity:
-              {
-                y+=height-composite_image->rows;
-                break;
-              }
-              case SouthGravity:
-              {
-                x+=(int) (0.5*width-composite_image->columns/2);
-                y+=height-composite_image->rows;
-                break;
-              }
-              case SouthEastGravity:
-              {
-                x+=width-composite_image->columns;
-                y+=height-composite_image->rows;
-                break;
-              }
+              /*
+                Tile the composite image.
+              */
+              for (y=0; y < (long) (*image)->rows; y+=composite_image->rows)
+                for (x=0; x < (long) (*image)->columns;
+                      x+=composite_image->columns)
+                {
+                  status=CompositeImage(*image,option_info->compose,
+                    composite_image,x,y);
+                  CatchImageException(*image);
+                }
             }
-          status=
-            CompositeImage(*image,option_info->compose,composite_image,x,y);
-          CatchImageException(*image);
+          else
+            {
+              int
+                flags;
+
+              unsigned long
+                height,
+                width;
+
+              /*
+                Digitally composite image.
+              */
+              width=(*image)->columns;
+              height=(*image)->rows;
+              x=0;
+              y=0;
+              flags=ParseGeometry(option_info->geometry,&x,&y,&width,&height);
+              if ((flags & XNegative) != 0)
+                x+=(*image)->columns;
+              if ((flags & WidthValue) == 0)
+                width-=2*x > (long) width ? width : 2*x;
+              if ((flags & YNegative) != 0)
+                y+=(*image)->rows;
+              if ((flags & HeightValue) == 0)
+                height-=2*y > (long) height ? height : 2*y;
+              switch (option_info->gravity)
+              {
+                case NorthWestGravity:
+                  break;
+                case NorthGravity:
+                {
+                  x+=(int) (0.5*width-composite_image->columns/2);
+                  break;
+                }
+                case NorthEastGravity:
+                {
+                  x+=width-composite_image->columns;
+                  break;
+                }
+                case WestGravity:
+                {
+                  y+=(int) (0.5*height-composite_image->rows/2);
+                  break;
+                }
+                case ForgetGravity:
+                case StaticGravity:
+                case CenterGravity:
+                default:
+                {
+                  x+=(int) (0.5*width-composite_image->columns/2);
+                  y+=(int) (0.5*height-composite_image->rows/2);
+                  break;
+                }
+                case EastGravity:
+                {
+                  x+=width-composite_image->columns;
+                  y+=(int) (0.5*height-composite_image->rows/2);
+                  break;
+                }
+                case SouthWestGravity:
+                {
+                  y+=height-composite_image->rows;
+                  break;
+                }
+                case SouthGravity:
+                {
+                  x+=(int) (0.5*width-composite_image->columns/2);
+                  y+=height-composite_image->rows;
+                  break;
+                }
+                case SouthEastGravity:
+                {
+                  x+=width-composite_image->columns;
+                  y+=height-composite_image->rows;
+                  break;
+                }
+              }
+              status=CompositeImage(*image,option_info->compose,
+                                 composite_image,x,y);
+              CatchImageException(*image);
+            }
+      (*image)->matte=matte;
+      DestroyImages(composite_image);
+      *composite_ref = (Image *) NULL; /* tell caller we freed this */
+      if (mask_image != (Image *) NULL)
+        {
+          DestroyImages(mask_image);
+          *mask_ref= (Image *) NULL; /* tell caller we freed this */
         }
-  (*image)->matte=matte;
+    }
   /*
     Write combined images.
   */
@@ -445,6 +460,7 @@ static void Usage(void)
       "-page geometry      size and location of an image canvas",
       "-profile filename   add ICM or IPTC information profile to image",
       "-quality value      JPEG/MIFF/PNG compression level",
+      "-resize geometry    perferred size or location of the image",
       "-rotate degrees     apply Paeth rotation to the image",
       "-scene value        image scene number",
       "-size geometry      width and height of image",
@@ -827,8 +843,8 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing an image file name",
                       (char *) NULL);
                   status=CompositeImages(clone_info,&option_info,i-j+2,
-                    argv+j-1,composite_image,mask_image,&clone_image);
-                  DestroyImageList(clone_image);
+                    argv+j-1,&composite_image,&mask_image,&clone_image);
+                  DestroyImages(clone_image);
                   DestroyImageInfo(clone_info);
                   j=i+1;
                 }
@@ -1180,8 +1196,18 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing source image",
                       (char *) NULL);
                   status=CompositeImages(image_info,&option_info,i-j+2,
-                    argv+j-1,composite_image,mask_image,&image);
+                    argv+j-1,&composite_image,&mask_image,&image);
                   j=i+1;
+                }
+              break;
+            }
+          if (LocaleCompare("resize",option+1) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !IsGeometry(argv[i]))
+                    MagickError(OptionError,"Missing geometry",option);
                 }
               break;
             }
@@ -1361,11 +1387,12 @@ int main(int argc,char **argv)
         }
       }
   }
-  if ((i != (argc-1)) || (image == (Image *) NULL) ||
-      (composite_image == (Image *) NULL))
+  /* we do not need to check for NULL composite_image,
+     since it can not be NULL if image is not NULL */
+  if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   status=CompositeImages(image_info,&option_info,argc-j+1,argv+j-1,
-    composite_image,mask_image,&image);
+    &composite_image,&mask_image,&image);
   if (option_info.displace_geometry != (char *) NULL)
     LiberateMemory((void **) &option_info.displace_geometry);
   if (option_info.geometry != (char *) NULL)
