@@ -63,6 +63,13 @@ for details):
 
     - Added PingBlob() function to test a BLOB based on its header.
 
+    - AcquireImagePixels() now supports "virtual pixels" which represent
+      pixels which are located outside of the image. This allows image
+      processing algorithms to request rectangular regions of pixels,
+      without regard to whether some of the region is outside of the image.
+      The pixels returned from outside of the image are set to be similar
+      to the edge pixels.
+
   o C++ API enhancements:
 
     - Eliminated memory leak in the draw() method.
