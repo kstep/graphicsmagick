@@ -2682,7 +2682,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         User specified subimages (e.g. image.miff[1,3-5,7-6,2]).
       */
       subimages=NewImageList();
-      for (p=clone_info->tile; *p != '\0'; p++)
+      p=clone_info->tile;
+      for (q=p; *q != '\0'; p++)
       {
         while (isspace((int) *p) || (*p == ','))
           p++;
@@ -2712,8 +2713,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
             i++;
           }
         }
-        if (*p == '\0')
-          break;
       }
       if (subimages == (Image *) NULL)
         ThrowException(exception,OptionError,
