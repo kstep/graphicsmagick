@@ -534,7 +534,7 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
     c=GetOneCharacter((const unsigned char *) p,&length);
     if (c < 0)
       {
-        q=unicode;
+        q=encoding;
         for (p=text; *p != '\0'; p++)
           *q++=(unsigned char) *p;
         break;
