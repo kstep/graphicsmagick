@@ -90,19 +90,61 @@ int main(int argc,char **argv)
 #if defined(WIN32)
   InitializeMagick((char *) NULL);
 #else
-  InitializeMagick(*argv);
+  InitializeMagick(argv[0]);
 #endif
 
-  SetClientName(*argv);
-
+  SetClientName(argv[0]);
   if (argc < 2)
     {
       PrintUsage();
       Exit(1);
     }
 
-  argc--;
-  argv++;
+  {
+    /*
+      Support traditional alternate names for GraphicsMagick subcommands.
+    */
+    static const char *alternate_names [] =
+      {
+        "animate",
+        "composite",
+        "conjure",
+        "convert",
+        "display",
+        "identify",
+        "import",
+        "mogrify",
+        "montage",
+        NULL
+      };
+
+    char
+      command_filename[MaxTextExtent];
+
+    unsigned int
+      i;
+
+    GetPathComponent(argv[0],BasePath,command_filename);
+    for (i=0; alternate_names[i]; i++)
+      if (LocaleCompare(command_filename,alternate_names[i]) == 0)
+        break;
+
+    if (alternate_names[i])
+      {
+        /*
+          Set command name to alternate name.
+        */
+        argv[0]=alternate_names[i];
+      }
+    else
+      {
+        /*
+          Skip to subcommand name.
+        */
+        argc--;
+        argv++;
+      }
+  }
 
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
