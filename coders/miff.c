@@ -1126,7 +1126,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             value*=257; \
           *q++=value >> 8; \
           *q++=value & 0xff; \
-	  if (image->colorspace == CMYKColorspace) \
+          if (image->colorspace == CMYKColorspace) \
             { \
               value=pixel.opacity; \
               if ((QuantumDepth-image->depth) > 0) \
@@ -1258,7 +1258,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         image->colors,image->matte ? "True" : "False");
     else
       if (image->colorspace == CMYKColorspace)
-        FormatString(buffer,"class=DirectClass  colorspace=CMYK  matte=%.1024s\n",
+        FormatString(buffer,
+          "class=DirectClass  colorspace=CMYK  matte=%.1024s\n",
           image->matte ? "True" : "False");
       else
         FormatString(buffer,"class=DirectClass  matte=%.1024s\n",
