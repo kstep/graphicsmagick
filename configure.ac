@@ -1,10 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl Currently maintained by Bob Friesenhahn, bfriesen@simple.dallas.tx.us
 #
 # ImageMagick Configure Script
-#
-# Report ImageMagick configure bugs via the URL
-#   http://www.simplesystems.org/ImageMagick/bugs
 #
 
 AC_PREREQ(2.2)

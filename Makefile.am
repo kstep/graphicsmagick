@@ -26,10 +26,6 @@
 # shall not be used in advertising or otherwise to promote the sale, use or
 # other dealings in ImageMagick without prior written authorization from the
 # ImageMagick Studio.
-#
-#  This file is currently maintained by Bob Friesenhahn,
-#  bfriesen@simple.dallas.tx.us. Please report any bugs via the ImageMagick
-#  bug tracking system at http://www.imagemagick.org/ImageMagick/bugs.
 
 # Don't require all the GNU mandated files
 AUTOMAKE_OPTIONS = 1.5 dist-zip dist-bzip2 foreign

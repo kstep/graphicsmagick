@@ -27,8 +27,6 @@
 # other dealings in ImageMagick without prior written authorization from the
 # ImageMagick Studio.
 #
-#  This file is currently maintained by Bob Friesenhahn,
-#  bfriesen@simple.dallas.tx.us
 
 # Don't require all the GNU mandated files
 AUTOMAKE_OPTIONS = 1.4 foreign
