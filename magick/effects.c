@@ -189,12 +189,15 @@ Export Image *BlurImage(Image *image,const double factor)
   total_red+=(weight)*s->red; \
   total_green+=(weight)*s->green; \
   total_blue+=(weight)*s->blue; \
+  total_opacity+=(weight)*s->opacity; \
   s++;
-#define BlurImageText  "  Blurring image...  "
+#define BlurImageText  "  Bluring image...  "
 
   double
+    quantum,
     total_blue,
     total_green,
+    total_opacity,
     total_red,
     weight;
 
@@ -212,14 +215,11 @@ Export Image *BlurImage(Image *image,const double factor)
     *q,
     *s;
 
-  unsigned int
-    quantum;
-
   assert(image != (Image *) NULL);
   if ((image->columns < 3) || (image->rows < 3))
     return((Image *) NULL);
   /*
-    Clone blurred image.
+    Initialize blured image attributes.
   */
   blur_image=CloneImage(image,image->columns,image->rows,False);
   if (blur_image == (Image *) NULL)
@@ -232,8 +232,8 @@ Export Image *BlurImage(Image *image,const double factor)
   /*
     Blur image.
   */
-  weight=(100.0-factor)/2;
-  quantum=(unsigned int) Max(weight+12,1);
+  weight=((100.0-factor)/2)+13;
+  quantum=Max(weight+12.0,1.0);
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetPixelCache(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
@@ -252,16 +252,17 @@ Export Image *BlurImage(Image *image,const double factor)
       total_red=0.0;
       total_green=0.0;
       total_blue=0.0;
+      total_opacity=0.0;
       s=p;
-      Blur(1);  Blur(2); Blur(1);
+      Blur(1); Blur(2); Blur(1);
       s=p+image->columns;
       Blur(2); Blur(weight); Blur(2);
       s=p+2*image->columns;
-      Blur(1);  Blur(2); Blur(1);
+      Blur(1); Blur(2); Blur(1);
       q->red=(total_red+(quantum/2))/quantum;
       q->green=(total_green+(quantum/2))/quantum;
       q->blue=(total_blue+(quantum/2))/quantum;
-      q->opacity=(p+image->columns)->opacity;
+      q->opacity=(total_opacity+(quantum/2))/quantum;
       p++;
       q++;
     }
@@ -269,8 +270,8 @@ Export Image *BlurImage(Image *image,const double factor)
     *q++=(*p);
     if (!SyncPixelCache(blur_image))
       break;
-    if (QuantumTick(y,image->rows))
-      ProgressMonitor(BlurImageText,y,image->rows);
+    if (QuantumTick(y,image->rows-1))
+      ProgressMonitor(BlurImageText,y,image->rows-1);
   }
   return(blur_image);
 }
@@ -2234,6 +2235,7 @@ Export Image *SharpenImage(Image *image,const double factor)
 #define SharpenImageText  "  Sharpening image...  "
 
   double
+    quantum,
     total_blue,
     total_green,
     total_opacity,
@@ -2254,9 +2256,6 @@ Export Image *SharpenImage(Image *image,const double factor)
     *q,
     *s;
 
-  unsigned int
-    quantum;
-
   assert(image != (Image *) NULL);
   if ((image->columns < 3) || (image->rows < 3))
     return((Image *) NULL);
@@ -2274,8 +2273,8 @@ Export Image *SharpenImage(Image *image,const double factor)
   /*
     Sharpen image.
   */
-  weight=((100.0-factor)/2+13);
-  quantum=(unsigned int) Max(weight-12,1);
+  weight=((100.0-factor)/2.0+13.0);
+  quantum=Max(weight-12.0,1.0);
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetPixelCache(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
@@ -2307,28 +2306,28 @@ Export Image *SharpenImage(Image *image,const double factor)
         if (total_red > (int) (MaxRGB*quantum))
           q->red=MaxRGB;
         else
-          q->red=(Quantum) ((total_red+(quantum >> 1))/quantum);
+          q->red=(Quantum) ((total_red+(quantum/2.0))/quantum);
       if (total_green < 0)
         q->green=0;
       else
         if (total_green > (int) (MaxRGB*quantum))
           q->green=MaxRGB;
         else
-          q->green=(Quantum) ((total_green+(quantum >> 1))/quantum);
+          q->green=(Quantum) ((total_green+(quantum/2.0))/quantum);
       if (total_blue < 0)
         q->blue=0;
       else
         if (total_blue > (int) (MaxRGB*quantum))
           q->blue=MaxRGB;
         else
-          q->blue=(Quantum) ((total_blue+(quantum >> 1))/quantum);
+          q->blue=(Quantum) ((total_blue+(quantum/2.0))/quantum);
       if (total_opacity < 0)
         q->opacity=0;
       else
         if (total_opacity > (int) (MaxRGB*quantum))
           q->opacity=MaxRGB;
         else
-          q->opacity=(Quantum) ((total_opacity+(quantum >> 1))/quantum);
+          q->opacity=(Quantum) ((total_opacity+(quantum/2.0))/quantum);
       p++;
       q++;
     }
