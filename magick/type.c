@@ -184,7 +184,7 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
         TypeInfo
           *type_info;
 
-        type_info=NTGetTypeList();
+        type_info=XPGetTypeList();
         if (type_info != (TypeInfo *) NULL)
           {
             if (type_list == (TypeInfo *) NULL)

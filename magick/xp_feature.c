@@ -86,7 +86,7 @@
 %
 %
 */
-MagickExport unsigned int NTIsMagickConflict(const char *magick)
+MagickExport unsigned int XPIsMagickConflict(const char *magick)
 {
   assert(magick != (char *) NULL);
   if (strlen(magick) > 1)

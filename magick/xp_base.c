@@ -1195,12 +1195,12 @@ MagickExport const GhostscriptVectors *NTGhostscriptDLLVectors( void )
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method NTGhostscriptEXE obtains the path to the latest Ghostscript
+%   Method XPGhostscriptEXE obtains the path to the latest Ghostscript
 %   executable.  The method returns False if a value is not obtained.
 %
-%  The format of the NTGhostscriptEXE method is:
+%  The format of the XPGhostscriptEXE method is:
 %
-%      int NTGhostscriptEXE(char *path, int path_length)
+%      int XPGhostscriptEXE(char *path, int path_length)
 %
 %  A description of each parameter follows:
 %
@@ -1209,7 +1209,7 @@ MagickExport const GhostscriptVectors *NTGhostscriptDLLVectors( void )
 %    o path_length: Length of buffer
 %
 */
-MagickExport int NTGhostscriptEXE(char *path, int path_length)
+MagickExport int XPGhostscriptEXE(char *path, int path_length)
 {
   int
     gsver;

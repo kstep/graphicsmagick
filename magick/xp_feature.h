@@ -30,7 +30,7 @@ extern MagickExport HBITMAP
 #if !defined(XS_VERSION)
 
 extern MagickExport unsigned int
-  NTIsMagickConflict(const char *);
+  XPIsMagickConflict(const char *);
 
 extern MagickExport TypeInfo
   * NTGetTypeList( void );
