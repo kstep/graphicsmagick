@@ -1,3 +1,21 @@
+2000-11-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (annotate): Reimplement text rotation using affine
+ 	member of AnnotateInfo.
+	(strokeDashOffset): New method for specifying the dash offset to use for
+ 	drawing vector objects. Similar to SVG stroke-dashoffset.
+	(strokeDashPattern): New method for specifying the dash pattern to use
+ 	for drawing vector objects.  Similar to SVG stroke-dasharray
+	(strokeLineCap): New method to specify the shape to be used at the end
+ 	of open subpaths when they are stroked. Similar to SVG
+ 	stroke-linecap.
+	(strokLineJoin): New method to specify the shape to be used at the
+ 	corners of paths (or other vector shapes) when they are
+ 	stroked. Similar to SVG stroke-linejoin.
+	(strokeMiterLimit): New method to specify the miter limit when joining
+ 	lines using MiterJoin. Similar to SVG stroke-miterlimit.
+	(strokeWidth): Renamed lineWidth method to strokeWidth.
+
 2000-10-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Drawable.h (DrawableCompositeImage): Add a

@@ -24,8 +24,20 @@ UNIX-emulation environment</a> for Windows. Standards compliant commercial
 C++ compilers should also work fine. Most modern C++ compilers for PCs
 should also work (project files are provided in the VisualMagick package
 for Microsoft Visual C++ 6.0).
-<p>The compiler must support the following recent C++ standard features:
+<p>It was decided that Magick++ will be around for the long-haul, so its
+API definition depends on valuable C++ features which should be common
+in all current and future C++ compilers. The compiler must support the
+following C++ standard features:
 <ul>
+<li>
+templates</li>
+
+<li>
+static constructors</li>
+
+<li>
+C++-style casts (e.g. static_cast)</li>
+
 <li>
 bool type</li>
 
@@ -62,7 +74,7 @@ the following compiler/platform combinations:
 </tr>
 
 <tr>
-<td><font size=-1>Solaris 2.6</font></td>
+<td><font size=-1>SunOS 5.6</font></td>
 
 <td><font size=-1>SPARC</font></td>
 
@@ -70,7 +82,7 @@ the following compiler/platform combinations:
 </tr>
 
 <tr>
-<td><font size=-1>Solaris 2.6, 2.7</font></td>
+<td><font size=-1>SunOS 5.6, 5.7, 5.8</font></td>
 
 <td><font size=-1>SPARC</font></td>
 
@@ -78,7 +90,7 @@ the following compiler/platform combinations:
 </tr>
 
 <tr>
-<td><font size=-1>Solaris 2.7</font></td>
+<td><font size=-1>SunOS 5.7</font></td>
 
 <td><font size=-1>SPARC</font></td>
 
@@ -86,7 +98,15 @@ the following compiler/platform combinations:
 </tr>
 
 <tr>
-<td><font size=-1>Solaris 8</font></td>
+<td><font size=-1>SunOS 5.7</font></td>
+
+<td><font size=-1>SPARC</font></td>
+
+<td><font size=-1>gcc-3.X snapshot (20001023)</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>SunOS 5.8</font></td>
 
 <td><font size=-1>SPARC</font></td>
 
@@ -163,6 +183,16 @@ with Magick++:
 </tr>
 
 <tr>
+<td><font size=-1>Red Hat Linux 7.0</font></td>
+
+<td><font size=-1>i386</font></td>
+
+<td><font size=-1>gcc "2.96" snapshot</font></td>
+
+<td><font size=-1>???</font></td>
+</tr>
+
+<tr>
 <td><font size=-1>Red Hat Linux 5.2</font></td>
 
 <td><font size=-1>Alpha</font></td>
@@ -211,10 +241,10 @@ Please follow the installation instructions provided by its README.txt
 file. The following instructions pertain to the Magick++ specific configuration
 and build options.
 <p>To install Magick++ under Unix, installation should be similar to
-<p><tt>./configure --with-magick_plus_plus [ --prefix=/prefix ]</tt>
+<p><tt>./configure --with-magick-plus-plus [ --prefix=/prefix ]</tt>
 <br><tt>make</tt>
 <br><tt>make install</tt>
-<p>The library is currently named similar to 'libMagick++.a' (and/or libMagick++.so.5.0.24)
+<p>The library is currently named similar to 'libMagick++.a' (and/or libMagick++.so.5.0.26)
 and is installed under prefix/lib while the headers are installed with
 Magick++.h being installed in prefix/include and the remaining headers
 in prefix/include/Magick++.

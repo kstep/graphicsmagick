@@ -172,11 +172,11 @@ void Magick::throwExceptionExplicit( ExceptionType error_,
   if ( description_ )
     message += " (" + std::string(description_) + ")";
 
-  if ( error_ != OptionError && errno)
-    {
-      message += " [" + std::string(strerror(errno)) + "]";
-      errno = 0;
-    }
+//   if ( error_ != OptionError && errno)
+//     {
+//       message += " [" + std::string(strerror(errno)) + "]";
+//       errno = 0;
+//     }
 
   switch ( error_ )
     {

@@ -557,14 +557,6 @@ namespace Magick
     void            compressType ( CompressionType compressType_ );
     CompressionType compressType ( void ) const;
 
-     // dash offset for drawing vector objects (default one)
-    void            dashOffset ( unsigned int dashOffset_ );
-    unsigned int	dashOffset ( void ) const;
-    
-     // dash pattern for drawing vector objects (default one)
-    void            dashPattern ( unsigned int* dashPattern_ );
-    unsigned int*	dashPattern ( void ) const;
-    
     // Vertical and horizontal resolution in pixels of the image
     void            density ( const Geometry &geomery_ );
     Geometry        density ( void ) const;
@@ -630,18 +622,11 @@ namespace Magick
 
     // Image label
     std::string     label ( void ) const;
-    
-    // Linewidth for drawing vector objects (default one)
+
+    // Stroke width for drawing vector objects (default one)
+    // This method is now deprecated. Please use strokeWidth instead.
     void            lineWidth ( double lineWidth_ );
     double          lineWidth ( void ) const;
-    
-	 // LineCap for drawing lines, circles, ellipses, etc.
-	void				lineCap ( MagickLib::LineCap lineCap_ );
-	MagickLib::LineCap	lineCap ( void ) const;
-
-	// LineJoin for drawing lines, circles, ellipses, etc.
-	void				lineJoin ( MagickLib::LineJoin lineJoin_ );
-	MagickLib::LineJoin	lineJoin ( void ) const;
 
     // File type magick identifier (.e.g "GIF")
     void            magick ( const std::string &magick_ );
@@ -658,10 +643,6 @@ namespace Magick
     // The mean error per pixel computed when an image is color reduced
     double          meanErrorPerPixel ( void ) const;
 
-     // miterLimit for drawing vector objects (default one)
-    void            miterLimit ( unsigned int miterLimit_ );
-    unsigned int    miterLimit ( void ) const;
-    
    // Tile size and offset within an image montage
     Geometry        montageGeometry ( void ) const;
 
@@ -741,6 +722,47 @@ namespace Magick
     // Color to use when drawing object outlines
     void            strokeColor ( const Color &strokeColor_ );
     Color           strokeColor ( void ) const;
+
+    // While drawing using a dash pattern, specify distance into the
+    // dash pattern to start the dash (default 0).
+    void            strokeDashOffset ( unsigned int strokeDashOffset_ );
+    unsigned int    strokeDashOffset ( void ) const;
+    
+    // Specify the pattern of dashes and gaps used to stroke
+    // paths. The strokeDashPattern represents a zero-terminated array
+    // of numbers that specify the lengths (in pixels) of alternating
+    // dashes and gaps in user units. If an odd number of values is
+    // provided, then the list of values is repeated to yield an even
+    // number of values.  A typical strokeDashPattern_ array might
+    // contain the members 5 3 2 0, where the zero value indicates the
+    // end of the pattern array.
+    void            strokeDashPattern ( const unsigned int* strokeDashPattern_ );
+    const unsigned int* strokeDashPattern ( void ) const;
+
+    // Specify the shape to be used at the end of open subpaths when
+    // they are stroked. Values of LineCap are UndefinedCap, ButtCap,
+    // RoundCap, and SquareCap.
+    void            strokeLineCap ( LineCap lineCap_ );
+    LineCap         strokeLineCap ( void ) const;
+    
+    // Specify the shape to be used at the corners of paths (or other
+    // vector shapes) when they are stroked. Values of LineJoin are
+    // UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.
+    void            strokeLineJoin ( LineJoin lineJoin_ );
+    LineJoin        strokeLineJoin ( void ) const;
+
+    // Specify miter limit. When two line segments meet at a sharp
+    // angle and miter joins have been specified for 'lineJoin', it is
+    // possible for the miter to extend far beyond the thickness of
+    // the line stroking the path. The miterLimit' imposes a limit on
+    // the ratio of the miter length to the 'lineWidth'. The default
+    // value of this parameter is 4.
+    void            strokeMiterLimit ( unsigned int miterLimit_ );
+    unsigned int    strokeMiterLimit ( void ) const;
+
+    // Stroke width for drawing vector objects (default one)
+    void            strokeWidth ( double strokeWidth_ );
+    double          strokeWidth ( void ) const;
 
     // Subimage of an image sequence
     void            subImage ( unsigned int subImage_ );
@@ -943,6 +965,16 @@ inline Magick::Options * Magick::ImageRef::options ( void )
 inline void Magick::Image::reduceNoise ( void )
 {
   reduceNoise( 3 );
+}
+
+// Stroke width for drawing vector objects (default one)
+inline void Magick::Image::lineWidth ( double lineWidth_ )
+{
+  strokeWidth( lineWidth_ );
+}
+inline double Magick::Image::lineWidth ( void ) const
+{
+  return strokeWidth( );
 }
 
 // Get MagickLib::Image*

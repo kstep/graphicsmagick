@@ -210,7 +210,7 @@ The available Image constructors are shown in the following table:
 <br>&nbsp;
 <br>&nbsp;
 <table BORDER WIDTH="100%" BGCOLOR="#FFFFFF" NOSAVE >
-<caption>Image Constructors</caption>
+<caption><b>Image Constructors</b></caption>
 
 <tr>
 <td>
@@ -288,10 +288,10 @@ The pixel data must be in scanline order top-to-bottom. The data can be
 character, short int, integer, float, or double. Float and double require
 the pixels to be normalized [0..1]. The other types are [0..MaxRGB].&nbsp;
 For example, to create a 640x480 image from unsigned red-green-blue character
-data, use</font><font size=-1></font>
-<p><font size=-1>&nbsp;&nbsp; Image image( 640, 480, "RGB", 0, pixels );</font><font size=-1></font>
+data, use</font>
+<p><font size=-1>&nbsp;&nbsp; Image image( 640, 480, "RGB", 0, pixels );</font>
 <p><font size=-1>The parameters are as follows:</font>
-<br><font size=-1></font>&nbsp;
+<br>&nbsp;
 <table BORDER=0 WIDTH="100%" NOSAVE >
 <tr>
 <td><font size=-1>width_</font></td>
@@ -866,6 +866,17 @@ median color in a circular neighborhood</font></td>
 </tr>
 
 <tr>
+<td><a NAME="modifyImage"></a><font size=-1>modifyImage</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Prepare to update image. Ensures that there is only one
+reference to the underlying image so that the underlying image may be safely
+modified without effecting previous generations of the image. Copies the
+underlying image to a new image if necessary.</font></td>
+</tr>
+
+<tr>
 <td>
 <center><a NAME="modulate"></a><font size=-1>modulate</font></center>
 </td>
@@ -1027,10 +1038,10 @@ data must be in scanline order top-to-bottom. The data can be character,
 short int, integer, float, or double. Float and double require the pixels
 to be normalized [0..1]. The other types are [0..MaxRGB].&nbsp; For example,
 to create a 640x480 image from unsigned red-green-blue character data,
-use</font><font size=-1></font>
-<p><font size=-1>&nbsp; image.read( 640, 480, "RGB", 0, pixels );</font><font size=-1></font>
+use</font>
+<p><font size=-1>&nbsp; image.read( 640, 480, "RGB", 0, pixels );</font>
 <p><font size=-1>The parameters are as follows:</font>
-<br><font size=-1></font>&nbsp;
+<br>&nbsp;
 <table BORDER=0 WIDTH="100%" NOSAVE >
 <tr>
 <td><font size=-1>width_</font></td>
@@ -1068,7 +1079,7 @@ defined by the map_ and type_ parameters. The length of the arrays must
 equal the area specified by the width_ and height_ values and type_ parameters.</font></td>
 </tr>
 </table>
-<font size=-1></font></td>
+</td>
 </tr>
 
 <tr NOSAVE>
@@ -1358,10 +1369,10 @@ type_, void *pixels_</font></td>
 <td><font size=-1>Write pixel data into a buffer you supply. The data is
 saved either as char, short int, integer, float or double format in the
 order specified by the type_ parameter. For example, we want to extract
-scanline 1 of a 640x480 image as character data in red-green-blue order:</font><font size=-1></font>
-<p><font size=-1>&nbsp; image.write(0,0,640,1,"RGB",0,pixels);</font><font size=-1></font>
+scanline 1 of a 640x480 image as character data in red-green-blue order:</font>
+<p><font size=-1>&nbsp; image.write(0,0,640,1,"RGB",0,pixels);</font>
 <p><font size=-1>The parameters are as follows:</font>
-<br><font size=-1></font>&nbsp;
+<br>&nbsp;
 <table BORDER=0 WIDTH="100%" NOSAVE >
 <tr>
 <td><font size=-1>x_</font></td>
@@ -1413,7 +1424,7 @@ defined by the map_ and type_ parameters. The length of the arrays must
 equal the area specified by the width_ and height_ values and type_ parameters.</font></td>
 </tr>
 </table>
-<font size=-1></font></td>
+</td>
 </tr>
 
 <tr>
@@ -1432,17 +1443,7 @@ equal the area specified by the width_ and height_ values and type_ parameters.<
 <a NAME="Image Attributes"></a>Image Attributes</h3></center>
 Image attributes are set and obtained via methods in Image. Except for
 methods which accept pointer arguments (e.g. c<tt>hromaBluePrimary)</tt>
-all methods return attributes by value. Within the image object, attributes
-may be properties of the image, the user-options, or both. In the case
-where the attribute is a property of both the image and the user-options,
-the attribute associated with the image is returned if operations on the
-image can usefully update it, or the user-options if not. In all cases,
-the value set is equivalent to the next returned value. It is an error
-(<a href="Exception.html">an exception</a> will be thrown) to attempt to
-set an attribute which is only a property of the image if no image is contained
-within the object. In the case of setting an attribute which is both a
-property of the image and the user-options and no image is present, the
-user-options are set and no error is reported.
+all methods return attributes by value.
 <p>The supported image attributes and the method arguments required to
 obtain them are shown in the following table:
 <br>&nbsp;
@@ -1452,11 +1453,6 @@ obtain them are shown in the following table:
 <tr>
 <td>
 <center><b>Attribute</b></center>
-</td>
-
-<td>
-<center><b>Property</b>
-<br><b>Of</b></center>
 </td>
 
 <td>
@@ -1481,8 +1477,6 @@ obtain them are shown in the following table:
 <center><a NAME="adjoin"></a><font size=-1>adjoin</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>bool</font></td>
 
 <td><font size=-1>void</font></td>
@@ -1496,8 +1490,6 @@ obtain them are shown in the following table:
 <td>
 <center><a NAME="antiAlias"></a><font size=-1>antiAlias</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1>bool</font></td>
 
@@ -1514,9 +1506,6 @@ or TrueType fonts. Enabled by default.</font></td>
 <center><a NAME="animationDelay"></a><font size=-1>animation-</font>
 <br><font size=-1>Delay</font></center>
 </td>
-
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
 
 <td NOSAVE><font size=-1>unsigned int (0 to 65535)</font></td>
 
@@ -1536,9 +1525,6 @@ within Netscape.</font></td>
 <br><font size=-1>Iterations</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
-
 <td><font size=-1>unsigned int</font></td>
 
 <td><font size=-1>void</font></td>
@@ -1555,9 +1541,6 @@ loop extension) for.</font></td>
 <br><font size=-1>Color</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
-
 <td><font size=-1><a href="Color.html">Color</a></font></td>
 
 <td><font size=-1>void</font></td>
@@ -1572,8 +1555,6 @@ loop extension) for.</font></td>
 <center><a NAME="backgroundTexture"></a><font size=-1>background-</font>
 <br><font size=-1>Texture</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1>string</font></td>
 
@@ -1590,8 +1571,6 @@ not modify image pixels.</font></td>
 <center><a NAME="baseColumns"></a><font size=-1>baseColumns</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td NOSAVE><font size=-1>unsigned int</font></td>
 
 <td><font size=-1>void</font></td>
@@ -1605,8 +1584,6 @@ not modify image pixels.</font></td>
 <td>
 <center><a NAME="baseFilename"></a><font size=-1>baseFilename</font></center>
 </td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1>string</font></td>
 
@@ -1622,8 +1599,6 @@ not modify image pixels.</font></td>
 <center><a NAME="baseRows"></a><font size=-1>baseRows</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>unsigned int</font></td>
 
 <td><font size=-1>void</font></td>
@@ -1637,9 +1612,6 @@ not modify image pixels.</font></td>
 <td>
 <center><a NAME="borderColor"></a><font size=-1>borderColor</font></center>
 </td>
-
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
 
 <td><font size=-1><a href="Color.html">Color</a></font></td>
 
@@ -1655,8 +1627,6 @@ not modify image pixels.</font></td>
 <center><a NAME="boxColor"></a><font size=-1>boxColor</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1><a href="Color.html">Color</a></font></td>
 
 <td><font size=-1>void</font></td>
@@ -1668,8 +1638,6 @@ not modify image pixels.</font></td>
 
 <tr NOSAVE>
 <td><a NAME="cacheThreshold"></a><font size=-1>cacheThreshold</font></td>
-
-<td><font size=-1>All Images</font></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -1689,8 +1657,6 @@ shared by all Image objects.</font></td>
 <br><font size=-1>BluePrimary</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>float x &amp; y</font></td>
 
 <td><font size=-1>float *x_, float *y_</font></td>
@@ -1705,8 +1671,6 @@ shared by all Image objects.</font></td>
 <center><a NAME="chromaGreenPrimary"></a><font size=-1>chroma-</font>
 <br><font size=-1>GreenPrimary</font></center>
 </td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1>float x &amp; y</font></td>
 
@@ -1723,8 +1687,6 @@ shared by all Image objects.</font></td>
 <br><font size=-1>RedPrimary</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>float x &amp; y</font></td>
 
 <td><font size=-1>float *x_, float *y_</font></td>
@@ -1740,8 +1702,6 @@ shared by all Image objects.</font></td>
 <br><font size=-1>WhitePoint</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>float x &amp; y</font></td>
 
 <td><font size=-1>float *x_, float *y_</font></td>
@@ -1755,8 +1715,6 @@ shared by all Image objects.</font></td>
 <td>
 <center><a NAME="classType"></a><font size=-1>classType</font></center>
 </td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1><a href="Enumerations.html#ClassType">ClassType</a></font></td>
 
@@ -1775,9 +1733,6 @@ due to the limited size of the palette (256 or 65535 colors).</font></td>
 <center><a NAME="colorFuzz"></a><font size=-1>colorFuzz</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
-
 <td><font size=-1>double</font></td>
 
 <td><font size=-1>void</font></td>
@@ -1795,8 +1750,6 @@ color in RGB space.</font></td>
 <center><a NAME="colorMap"></a><font size=-1>colorMap</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1><a href="Color.html">Color</a></font></td>
 
 <td><font size=-1>unsigned int index_</font></td>
@@ -1809,8 +1762,6 @@ color in RGB space.</font></td>
 
 <tr>
 <td><a NAME="colorSpace"></a><font size=-1>colorSpace</font></td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a>
 colorSpace_</font></td>
@@ -1830,8 +1781,6 @@ of CMY(K).</font></td>
 <center><a NAME="columns"></a><font size=-1>columns</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>unsigned int</font></td>
 
 <td><font size=-1>void</font></td>
@@ -1845,8 +1794,6 @@ of CMY(K).</font></td>
 <td>
 <center><a NAME="comment"></a><font size=-1>comment</font></center>
 </td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1>string</font></td>
 
@@ -1862,9 +1809,6 @@ of CMY(K).</font></td>
 <center><a NAME="compressType"></a><font size=-1>compress-</font>
 <br><font size=-1>Type</font></center>
 </td>
-
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
 
 <td><font size=-1><a href="Enumerations.html#CompressionType">CompressionType</a></font></td>
 
@@ -1882,8 +1826,6 @@ type of the specified image file.</font></td>
 <center><a NAME="density"></a><font size=-1>density</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1><a href="Geometry.html">Geometry</a>&nbsp; (default 72x72)</font></td>
 
 <td><font size=-1>void</font></td>
@@ -1899,9 +1841,6 @@ Document page. Often used with <i>psPageSize</i>.</font></td>
 <td>
 <center><a NAME="depth"></a><font size=-1>depth</font></center>
 </td>
-
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
 
 <td><font size=-1>&nbsp;unsigned int (8 or 16)</font></td>
 
@@ -1919,8 +1858,6 @@ is compiled with.</font></td>
 <center><a NAME="directory"></a><font size=-1>directory</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>string</font></td>
 
 <td><font size=-1>void</font></td>
@@ -1934,9 +1871,6 @@ is compiled with.</font></td>
 <td>
 <center><a NAME="fileName"></a><font size=-1>fileName</font></center>
 </td>
-
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
 
 <td><font size=-1>string</font></td>
 
@@ -1952,8 +1886,6 @@ is compiled with.</font></td>
 <center><a NAME="fileSize"></a><font size=-1>fileSize</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>unsigned int</font></td>
 
 <td><font size=-1>void</font></td>
@@ -1968,8 +1900,6 @@ is compiled with.</font></td>
 <center><a NAME="fillColor"></a><font size=-1>fillColor</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>Color</font></td>
 
 <td><font size=-1>void</font></td>
@@ -1983,9 +1913,6 @@ is compiled with.</font></td>
 <td>
 <center><a NAME="filterType"></a><font size=-1>filterType</font></center>
 </td>
-
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
 
 <td><font size=-1><a href="Enumerations.html#FilterTypes">FilterTypes</a></font></td>
 
@@ -2005,8 +1932,6 @@ been shown to produce high quality results when reducing most images.</font></td
 <center><a NAME="font"></a><font size=-1>font</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>string</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2015,8 +1940,7 @@ been shown to produce high quality results when reducing most images.</font></td
 
 <td><font size=-1>Text rendering font. If the font is a fully qualified
 X server font name, the font is obtained from an X&nbsp; server. To use
-a
-TrueType font, precede the TrueType filename with an @. Otherwise, specify&nbsp;
+a TrueType font, precede the TrueType filename with an @. Otherwise, specify&nbsp;
 a&nbsp; Postscript font name (e.g. "helvetica").</font></td>
 </tr>
 
@@ -2024,8 +1948,6 @@ a&nbsp; Postscript font name (e.g. "helvetica").</font></td>
 <td>
 <center><a NAME="fontPointsize"></a><font size=-1>fontPointsize</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -2041,8 +1963,6 @@ a&nbsp; Postscript font name (e.g. "helvetica").</font></td>
 <center><a NAME="format"></a><font size=-1>format</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>string</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2056,8 +1976,6 @@ a&nbsp; Postscript font name (e.g. "helvetica").</font></td>
 <td>
 <center><a NAME="gamma"></a><font size=-1>gamma</font></center>
 </td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1>double (typical range 0.8 to 2.3)</font></td>
 
@@ -2076,8 +1994,6 @@ to&nbsp; adjust&nbsp; for this&nbsp; color&nbsp; difference.</font></td>
 <center><a NAME="geometry"></a><font size=-1>geometry</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1><a href="Geometry.html">Geometry</a></font></td>
 
 <td><font size=-1>void</font></td>
@@ -2092,9 +2008,6 @@ to&nbsp; adjust&nbsp; for this&nbsp; color&nbsp; difference.</font></td>
 <center><a NAME="gifDisposeMethod"></a><font size=-1>gifDispose-</font>
 <br><font size=-1>Method</font></center>
 </td>
-
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
 
 <td><font size=-1>unsigned int</font>
 <br><font size=-1>{ 0 = Disposal not specified,</font>
@@ -2116,8 +2029,6 @@ when creating a GIF animation.</font></td>
 <center><a NAME="iccColorProfile"></a>i<font size=-1>ccColorProfile</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1><a href="Blob.html">Blob</a></font></td>
 
 <td><font size=-1>void</font></td>
@@ -2135,9 +2046,6 @@ Color Consortium</a> for the format of ICC color profiles.</font></td>
 <center><a NAME="interlaceType"></a><font size=-1>interlace-</font>
 <br><font size=-1>Type</font></center>
 </td>
-
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
 
 <td><font size=-1><a href="Enumerations.html#InterlaceType">InterlaceType</a></font></td>
 
@@ -2162,8 +2070,6 @@ GIF or progressive JPEG image.</font></td>
 <center><a NAME="iptcProfile"></a><font size=-1>iptcProfile</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1><a href="Blob.html">Blob</a></font></td>
 
 <td><font size=-1>void</font></td>
@@ -2181,8 +2087,6 @@ Press Telecommunications Council</a> for IPTC profiles.</font></td>
 <center><a NAME="label"></a><font size=-1>label</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>string</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2192,30 +2096,10 @@ Press Telecommunications Council</a> for IPTC profiles.</font></td>
 <td><font size=-1>Image label</font></td>
 </tr>
 
-<tr>
-<td>
-<center><a NAME="lineWidth"></a><font size=-1>lineWidth</font></center>
-</td>
-
-<td><font size=-1>Options</font></td>
-
-<td><font size=-1>double</font></td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1>double lineWidth_</font></td>
-
-<td><font size=-1>Line width for drawing lines, circles, ellipses, etc.
-See <a href="Drawable.html">Drawable</a>.</font></td>
-</tr>
-
 <tr NOSAVE>
 <td>
 <center><a NAME="magick"></a><font size=-1>magick</font></center>
 </td>
-
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
 
 <td><font size=-1>string</font></td>
 
@@ -2230,8 +2114,6 @@ See <a href="Drawable.html">Drawable</a>.</font></td>
 <td>
 <center><a NAME="matte"></a><font size=-1>matte</font></center>
 </td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1>bool</font></td>
 
@@ -2248,9 +2130,6 @@ matte channel if&nbsp; the image has one otherwise create an opaque one.</font><
 <center><a NAME="matteColor"></a><font size=-1>matteColor</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
-
 <td><font size=-1><a href="Color.html">Color</a></font></td>
 
 <td><font size=-1>void</font></td>
@@ -2265,8 +2144,6 @@ matte channel if&nbsp; the image has one otherwise create an opaque one.</font><
 <center><a NAME="meanErrorPerPixel"></a><font size=-1>meanError-</font>
 <br><font size=-1>PerPixel</font></center>
 </td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1>double</font></td>
 
@@ -2284,8 +2161,6 @@ image has just been quantized.</font></td>
 <center><a NAME="monochrome"></a><font size=-1>monochrome</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>bool</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2300,8 +2175,6 @@ image has just been quantized.</font></td>
 <center><a NAME="montageGeometry"></a><font size=-1>montage-</font>
 <br><font size=-1>Geometry</font></center>
 </td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1><a href="Geometry.html">Geometry</a></font></td>
 
@@ -2318,8 +2191,6 @@ Only valid for montage images.</font></td>
 <center><a NAME="normalizedMaxError"></a><font size=-1>normalized-</font>
 <br><font size=-1>MaxError</font></center>
 </td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1>double</font></td>
 
@@ -2338,8 +2209,6 @@ and the image has just been quantized.</font></td>
 <br><font size=-1>MeanError</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>double</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2356,8 +2225,6 @@ to true and the image has just been quantized.</font></td>
 <center><a NAME="packets"></a><font size=-1>packets</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>unsigned int</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2373,8 +2240,6 @@ to true and the image has just been quantized.</font></td>
 <center><a NAME="packetSize"></a><font size=-1>packetSize</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>unsigned int</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2388,8 +2253,6 @@ to true and the image has just been quantized.</font></td>
 <td>
 <center><a NAME="page"></a><font size=-1>page</font></center>
 </td>
-
-<td><font size=-1>Image &amp; Options</font></td>
 
 <td><font size=-1><a href="Geometry.html#PostscriptPageSize">Geometry</a></font></td>
 
@@ -2411,8 +2274,6 @@ for a scene in an animation)</font></td>
 <center><a NAME="penColor"></a><font size=-1>penColor</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1><a href="Color.html">Color</a></font></td>
 
 <td><font size=-1>void</font></td>
@@ -2427,8 +2288,6 @@ for a scene in an animation)</font></td>
 <center><a NAME="penTexture"></a><font size=-1>penTexture</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>Image</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2442,8 +2301,6 @@ for a scene in an animation)</font></td>
 <td>
 <center><a NAME="pixelColor"></a><font size=-1>pixelColor</font></center>
 </td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1><a href="Color.html">Color</a></font></td>
 
@@ -2460,8 +2317,6 @@ for a scene in an animation)</font></td>
 <center><a NAME="quality"></a><font size=-1>quality</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>unsigned int (0 to 100)</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2476,8 +2331,6 @@ for a scene in an animation)</font></td>
 <center><a NAME="quantizeColors"></a><font size=-1>quantize-</font>
 <br><font size=-1>Colors</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -2497,8 +2350,6 @@ or unused colors removed.</font></td>
 <br><font size=-1>ColorSpace</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a></font></td>
 
 <td><font size=-1>void</font></td>
@@ -2517,8 +2368,6 @@ These color spaces may give better results when color reducing an image.</font><
 <center><a NAME="quantizeDither"></a><font size=-1>quantize-</font>
 <br><font size=-1>Dither</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1>bool</font></td>
 
@@ -2541,8 +2390,6 @@ be set for this option to take effect.</font></td>
 <br><font size=-1>TreeDepth</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>unsigned int&nbsp;</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2561,8 +2408,6 @@ the tree depth.</font></td>
 <br><font size=-1>Intent</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1><a href="Enumerations.html#RenderingIntent">RenderingIntent</a></font></td>
 
 <td><font size=-1>void</font></td>
@@ -2579,9 +2424,6 @@ render_</font></td>
 <br><font size=-1>Units</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
-
 <td><font size=-1><a href="Enumerations.html#ResolutionType">ResolutionType</a></font></td>
 
 <td><font size=-1>void</font></td>
@@ -2597,8 +2439,6 @@ units_</font></td>
 <center><a NAME="rows"></a><font size=-1>rows</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>unsigned int</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2612,8 +2452,6 @@ units_</font></td>
 <td>
 <center><a NAME="scene"></a><font size=-1>scene</font></center>
 </td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -2629,8 +2467,6 @@ units_</font></td>
 <center><a NAME="signature"></a><font size=-1>signature</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>string</font></td>
 
 <td><font size=-1>bool force_ = false</font></td>
@@ -2645,8 +2481,6 @@ of signature.</font></td>
 <td>
 <center><a NAME="size"></a><font size=-1>size</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1><a href="Geometry.html">Geometry</a></font></td>
 
@@ -2665,8 +2499,6 @@ CD, JBIG, or JPEG.</font></td>
 <center><a NAME="strokeColor"></a><font size=-1>strokeColor</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>Color</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2678,10 +2510,108 @@ CD, JBIG, or JPEG.</font></td>
 
 <tr>
 <td>
-<center><a NAME="subImage"></a><font size=-1>subImage</font></center>
+<center><a NAME="strokeDashOffset"></a><font size=-1>strokeDashOffset</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>unsigned int strokeDashOffset_</font></td>
+
+<td><font size=-1>While drawing using a dash pattern, specify distance
+into the dash pattern to start the dash (default 0).</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="strokeDashPattern"></a><font size=-1>strokeDashPattern</font></center>
+</td>
+
+<td><font size=-1>const unsigned int*</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>const unsigned int* strokeDashPattern_</font></td>
+
+<td><font size=-1>Specify the pattern of dashes and gaps used to stroke
+paths. The strokeDashPattern represents a zero-terminated array of numbers
+that specify the lengths (in pixels) of alternating dashes and gaps in
+user units. If an odd number of values is provided, then the list of values
+is repeated to yield an even number of values.&nbsp; A typical strokeDashPattern_
+array might contain the members 5 3 2 0, where the zero value indicates
+the end of the pattern array.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="strokeLineCap"></a><font size=-1>strokeLineCap</font></center>
+</td>
+
+<td><font size=-1>LineCap</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>LineCap lineCap_</font></td>
+
+<td><font size=-1>Specify the shape to be used at the corners of paths
+(or other vector shapes) when they are stroked. Values of LineJoin are
+UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="strokeLineJoin"></a><font size=-1>strokeLineJoin</font></center>
+</td>
+
+<td><font size=-1>LineJoin</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>LineJoin lineJoin_</font></td>
+
+<td><font size=-1>Specify the shape to be used at the corners of paths
+(or other vector shapes) when they are stroked. Values of LineJoin are
+UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="strokeMiterLimit"></a><font size=-1>strokeMiterLimit</font></center>
+</td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>unsigned int miterLimit_</font></td>
+
+<td><font size=-1>Specify miter limit. When two line segments meet at a
+sharp angle and miter joins have been specified for 'lineJoin', it is possible
+for the miter to extend far beyond the thickness of the line stroking the
+path. The miterLimit' imposes a limit on the ratio of the miter length
+to the 'lineWidth'. The default value of this parameter is 4.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="strokeWidth"></a><a NAME="lineWidth"></a><font size=-1>strokeWidth</font></center>
+</td>
+
+<td><font size=-1>double</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>double strokeWidth_</font></td>
+
+<td><font size=-1>Stroke width for use when drawing vector objects (default
+one)</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="subImage"></a><font size=-1>subImage</font></center>
+</td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -2697,8 +2627,6 @@ CD, JBIG, or JPEG.</font></td>
 <center><a NAME="subRange"></a><font size=-1>subRange</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>unsigned int</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2712,8 +2640,6 @@ CD, JBIG, or JPEG.</font></td>
 <td>
 <center><a NAME="tileName"></a><font size=-1>tileName</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1>string</font></td>
 
@@ -2729,8 +2655,6 @@ CD, JBIG, or JPEG.</font></td>
 <center><a NAME="totalColors"></a><font size=-1>totalColors</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>unsigned long</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2744,8 +2668,6 @@ CD, JBIG, or JPEG.</font></td>
 <td>
 <center><a NAME="type"></a><font size=-1>type</font></center>
 </td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1><a href="Enumerations.html#ImageType">ImageType</a></font></td>
 
@@ -2761,8 +2683,6 @@ CD, JBIG, or JPEG.</font></td>
 <center><a NAME="verbose"></a><font size=-1>verbose</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>bool</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2777,8 +2697,6 @@ CD, JBIG, or JPEG.</font></td>
 <center><a NAME="view"></a><font size=-1>view</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>string</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2792,8 +2710,6 @@ CD, JBIG, or JPEG.</font></td>
 <td>
 <center><a NAME="x11Display"></a><font size=-1>x11Display</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1>string (e.g. "hostname:0.0")</font></td>
 
@@ -2810,8 +2726,6 @@ image from</font></td>
 <center><a NAME="xResolution"></a><font size=-1>xResolution</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>double</font></td>
 
 <td><font size=-1>void</font></td>
@@ -2825,8 +2739,6 @@ image from</font></td>
 <td>
 <center><a NAME="yResolution"></a><font size=-1>yResolution</font></center>
 </td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1>double</font></td>
 

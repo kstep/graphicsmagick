@@ -199,7 +199,21 @@ namespace Magick
   using MagickLib::GreenLayer;
   using MagickLib::BlueLayer;
   using MagickLib::MatteLayer;
-  
+
+  // Line cap types
+  using MagickLib::LineCap;
+  using MagickLib::UndefinedCap;
+  using MagickLib::ButtCap;
+  using MagickLib::RoundCap;
+  using MagickLib::SquareCap;
+
+  // Line join types
+  using MagickLib::LineJoin;
+  using MagickLib::UndefinedJoin;
+  using MagickLib::MiterJoin;
+  using MagickLib::RoundJoin;
+  using MagickLib::BevelJoin;
+
   // Noise types
   using MagickLib::NoiseType;
   using MagickLib::UniformNoise;

@@ -123,7 +123,7 @@ int main( int /*argc*/, char ** argv)
     example = model;
     example.label( "Draw" );
     example.strokeColor( "gold" );
-    example.lineWidth( 2 );
+    example.strokeWidth( 2 );
     example.draw( DrawableCircle( 60,90, 60,120 ) );
     images.push_back( example );
 

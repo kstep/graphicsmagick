@@ -58,15 +58,15 @@ int main( int /*argc*/, char ** argv)
     //
     image.strokeColor( "black" );
     image.fillColor( "red" );
-    image.lineWidth( 5 );
+    image.strokeWidth( 5 );
     image.draw( DrawableEllipse( 100,100, 50,75, 0,360 ) );
     image.fillColor( Color() ); // Clear out fill color
 
     //
-    // Draw ellipse, and polygon, with black stroke, linewidth of 5
+    // Draw ellipse, and polygon, with black stroke, strokeWidth of 5
     //
     image.strokeColor( "black" );
-    image.lineWidth( 5 );
+    image.strokeWidth( 5 );
     list<Drawable> drawlist;
 
     // Add polygon to list

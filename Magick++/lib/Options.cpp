@@ -159,6 +159,28 @@ Magick::Color Magick::Options::boxColor ( void ) const
   return Magick::Color( _annotateInfo->box );
 }
 
+void Magick::Options::strokeDashPattern ( const unsigned int* strokeDashPattern_ )
+{
+  delete _drawInfo->dash_pattern;
+  _drawInfo->dash_pattern = 0;
+
+  if(strokeDashPattern_)
+    {
+      // Count elements
+      int x;
+      for (x=0; _drawInfo->dash_pattern[x]; x++);
+      // Allocate elements
+      _drawInfo->dash_pattern=new unsigned int[x+1];
+      // Copy elements
+      memcpy(_drawInfo->dash_pattern,strokeDashPattern_,
+             (x+1)*sizeof(unsigned int));
+    }
+}
+const unsigned int* Magick::Options::strokeDashPattern ( void ) const
+{
+  return _drawInfo->dash_pattern;
+}
+
 void Magick::Options::density ( const Magick::Geometry &density_ )
 {
   if ( !density_.isValid() )

@@ -1920,27 +1920,15 @@ Magick::CompressionType Magick::Image::compressType ( void ) const
 }
 
 // dash offset for drawing vector objects (default one)
-void Magick::Image::dashOffset ( unsigned int dashOffset_ )
+void Magick::Image::strokeDashOffset ( unsigned int strokeDashOffset_ )
 {
   modifyImage();
-  options()->dashOffset( dashOffset_ );
+  options()->strokeDashOffset( strokeDashOffset_ );
 }
 
-unsigned int Magick::Image::dashOffset ( void ) const
+unsigned int Magick::Image::strokeDashOffset ( void ) const
 {
-  return constOptions()->dashOffset( );
-}
-
- // dash pattern for drawing vector objects (default one)
-void Magick::Image::dashPattern ( unsigned int* dashPattern_ )
-{
-  modifyImage();
-  options()->dashPattern( dashPattern_ );
-}
-
-unsigned int* Magick::Image::dashPattern ( void ) const
-{
-  return constOptions()->dashPattern( );
+  return constOptions()->strokeDashOffset( );
 }
 
 void Magick::Image::density ( const Geometry &density_ )
@@ -2206,39 +2194,6 @@ std::string Magick::Image::label ( void ) const
   return std::string();
 }
 
-// Linewidth for drawing lines, circles, ellipses, etc.
-void Magick::Image::lineWidth ( double lineWidth_ )
-{
-  modifyImage();
-  options()->lineWidth( lineWidth_ );
-}
-double Magick::Image::lineWidth ( void ) const
-{
-  return constOptions()->lineWidth( );
-}
-
-// LineCap for drawing lines, circles, ellipses, etc.
-void Magick::Image::lineCap ( MagickLib::LineCap lineCap_ )
-{
-  modifyImage();
-  options()->lineCap( lineCap_ );
-}
-MagickLib::LineCap Magick::Image::lineCap ( void ) const
-{
-  return constOptions()->lineCap( );
-}
-
-// LineJoin for drawing lines, circles, ellipses, etc.
-void Magick::Image::lineJoin ( MagickLib::LineJoin lineJoin_ )
-{
-  modifyImage();
-  options()->lineJoin( lineJoin_ );
-}
-MagickLib::LineJoin Magick::Image::lineJoin ( void ) const
-{
-  return constOptions()->lineJoin( );
-}
-
 void Magick::Image::magick ( const std::string &magick_ )
 {
   modifyImage();
@@ -2303,17 +2258,6 @@ Magick::Color Magick::Image::matteColor ( void ) const
 double Magick::Image::meanErrorPerPixel ( void ) const
 {
   return(constImage()->mean_error_per_pixel);
-}
-
-// Linewidth for drawing lines, circles, ellipses, etc.
-void Magick::Image::miterLimit ( unsigned int miterLimit_ )
-{
-  modifyImage();
-  options()->miterLimit( miterLimit_ );
-}
-unsigned int Magick::Image::miterLimit ( void ) const
-{
-  return constOptions()->miterLimit( );
 }
 
 void Magick::Image::monochrome ( bool monochromeFlag_ )
@@ -2577,6 +2521,71 @@ void Magick::Image::strokeColor ( const Magick::Color &strokeColor_ )
 Magick::Color Magick::Image::strokeColor ( void ) const
 {
   return constOptions()->strokeColor();
+}
+
+// dash pattern for drawing vector objects (default one)
+void Magick::Image::strokeDashPattern ( const unsigned int* strokeDashPattern_ )
+{
+  modifyImage();
+  options()->strokeDashPattern( strokeDashPattern_ );
+}
+
+const unsigned int* Magick::Image::strokeDashPattern ( void ) const
+{
+  return constOptions()->strokeDashPattern( );
+}
+
+// Specify the shape to be used at the end of open subpaths when they
+// are stroked. Values of LineCap are UndefinedCap, ButtCap, RoundCap,
+// and SquareCap.
+void Magick::Image::strokeLineCap ( Magick::LineCap lineCap_ )
+{
+  modifyImage();
+  options()->strokeLineCap( lineCap_ );
+}
+Magick::LineCap Magick::Image::strokeLineCap ( void ) const
+{
+  return constOptions()->strokeLineCap( );
+}
+
+// Specify the shape to be used at the corners of paths (or other
+// vector shapes) when they are stroked. Values of LineJoin are
+// UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.
+void Magick::Image::strokeLineJoin ( MagickLib::LineJoin lineJoin_ )
+{
+  modifyImage();
+  options()->strokeLineJoin( lineJoin_ );
+}
+MagickLib::LineJoin Magick::Image::strokeLineJoin ( void ) const
+{
+  return constOptions()->strokeLineJoin( );
+}
+
+// Specify miter limit. When two line segments meet at a sharp angle
+// and miter joins have been specified for 'lineJoin', it is possible
+// for the miter to extend far beyond the thickness of the line
+// stroking the path. The miterLimit' imposes a limit on the ratio of
+// the miter length to the 'lineWidth'. The default value of this
+// parameter is 4.
+void Magick::Image::strokeMiterLimit ( unsigned int strokeMiterLimit_ )
+{
+  modifyImage();
+  options()->strokeMiterLimit( strokeMiterLimit_ );
+}
+unsigned int Magick::Image::strokeMiterLimit ( void ) const
+{
+  return constOptions()->strokeMiterLimit( );
+}
+
+// Stroke width for drawing lines, circles, ellipses, etc.
+void Magick::Image::strokeWidth ( double strokeWidth_ )
+{
+  modifyImage();
+  options()->strokeWidth( strokeWidth_ );
+}
+double Magick::Image::strokeWidth ( void ) const
+{
+  return constOptions()->strokeWidth( );
 }
 
 void Magick::Image::subImage ( unsigned int subImage_ )
