@@ -476,7 +476,11 @@ MagickExport void MagickIncarnate(const char *path)
       /*
         Set client path.
       */
+#if !defined(WIN32)
       filename=AllocateString(path);
+#else
+      filename=NTGetExecutionPath();
+#endif
       for (p=filename+(Extent(filename)-1); p > filename; p--)
         if (IsBasenameSeparator(*p))
           {

@@ -705,10 +705,10 @@ int main(int argc,char **argv)
                         if (status)
                           impersonating=True;
                         else
-                          errmsg = ntgetlasterror(); 
+                          errmsg = NTGetLastError(); 
                       }
                     else
-                      errmsg = ntgetlasterror();
+                      errmsg = NTGetLastError();
                   }
 #endif
                 argc_hw = i;
@@ -977,7 +977,7 @@ int main(int argc,char **argv)
       if (status)
         impersonating=False;
       else
-        errmsg = ntgetlasterror();
+        errmsg = NTGetLastError();
 #endif
     }
   LiberateMemory((void **) &argv);

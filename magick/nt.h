@@ -28,6 +28,7 @@ extern "C" {
 #define R_OK 4
 #define W_OK 2
 #define RW_OK 6
+#define lt_dlerror NTGetLastError
 #if defined(_MT) && defined(_VISUALC_)
 #define SAFE_GLOBAL __declspec(thread)
 #else
@@ -65,9 +66,9 @@ struct dirent
   NT utilities routines.
 */
 extern MagickExport char
+  *NTGetExecutionPath(void),
   *SetClientName(const char *),
-  *lt_dlerror(void),
-  *ntgetlasterror(void);
+  *lt_dlerror(void);
 
 extern MagickExport int
   Exit(int),
