@@ -1,13 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
 <TITLE>Magick++ News</TITLE>
+	<STYLE>
+	<!--
+		@page { size: 8.5in 11in }
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		A:link { color: #0085c0 }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
 </HEAD>
-<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
+<body LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Magick++ News</font></font></font></b></td>
+</tr>
+</table>
 <p>
 This file records noteworthy changes in Magick++.
 
 <p>
-(5.5.2)<BR>
+For some reason this file stopped being maintained when Magick++ moved
+to GraphicsMagick.  See the ChangeLog for change details.
+
+<p>
+(ImageMagick 5.5.2)<BR>
 <UL>
   <LI> Added adaptiveThreshold() method.
   <LI> Added colorMapSize() method.
@@ -15,7 +36,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.5.1)<BR>
+(ImageMagick 5.5.1)<BR>
 <UL>
   <LI> Fixed a Color memory allocation problem which became evident when
     using the Magick++ DLL.<BR>
@@ -23,7 +44,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.4.9)<BR>
+(ImageMagick 5.4.9)<BR>
 <UL>
   <LI> Added the Image textEncoding() method and an encoding option to
     DrawableText to support specifying "UTF-8" (Unicode) text encoding.
@@ -33,7 +54,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.4.8)<BR>
+(ImageMagick 5.4.8)<BR>
 <UL>
   <LI> The image type() method now also specifies the output image type
     to use while writing.<BR>
@@ -43,20 +64,20 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.4.7)<BR>
+(ImageMagick 5.4.7)<BR>
 <UL>
   <LI> No changes to report.
 
 </UL>
 <p>
-(5.4.6)<BR>
+(ImageMagick 5.4.6)<BR>
 <UL>
   <LI> Magick++ library no longer depends on C++ iostreams APIs.
   <LI> Added DrawableTextUnderColor class to set text underbox color.
 
 </UL>
 <p>
-(5.4.5)<BR>
+(ImageMagick 5.4.5)<BR>
 <UL>
   <LI> Drawable classes have been re-written to use ImageMagick's draw.h
     APIs.<BR>
@@ -74,7 +95,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.4.4)<BR>
+(ImageMagick 5.4.4)<BR>
 <UL>
   <LI> Fixed a bug in DrawableDashArray.
   <LI> Numerous consistency improvements based on findings from Gimpel lint.
@@ -85,7 +106,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.4.3)<BR>
+(ImageMagick 5.4.3)<BR>
 <UL>
   <LI> Support selecting fonts via font-family, font-style, font-weight,
     and font-stretch via the DrawableFont class.
@@ -98,7 +119,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.4.2)<BR>
+(ImageMagick 5.4.2)<BR>
 <UL>
   <LI> TypeMetric class revamped to match current ImageMagick type metrics
     definition.<BR>
@@ -114,7 +135,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.4.1)<BR>
+(ImageMagick 5.4.1)<BR>
 <UL>
   <LI> Fixed memory leak in Image::draw().
 
@@ -123,7 +144,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.4.0)<BR>
+(ImageMagick 5.4.0)<BR>
 <UL>
   <LI> Fixed bug when scaling from Quantum to double in derived Color classes.
 
@@ -138,7 +159,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.3.9)<BR>
+(ImageMagick 5.3.9)<BR>
 <UL>
   <LI> New class, CoderInfo, to return information for a specified image
     format as well as the coderInfoList() template function to return
@@ -159,7 +180,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.3.8)<BR>
+(ImageMagick 5.3.8)<BR>
 <UL>
   <LI> New class 'TypeMetric' to contain font type metrics.
 
@@ -177,13 +198,13 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.3.7)<BR>
+(ImageMagick 5.3.7)<BR>
 <UL>
   <LI> No changes.
 
 </UL>
 <p>
-(5.3.6)<BR>
+(ImageMagick 5.3.6)<BR>
 <UL>
   <LI> Adjusted parameters to 'edge' and 'medianFilter' to match
     equivalent libMagick functions.<BR>
@@ -193,7 +214,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.3.5)<BR>
+(ImageMagick 5.3.5)<BR>
 <UL>
   <LI> Default radius and sigma parameters were changed on the blur,
     charcoal, emboss, and sharpen methods to match ImageMagick defaults.
@@ -202,13 +223,13 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.3.1-5.3.4)<BR>
+(ImageMagick 5.3.1-5.3.4)<BR>
 <UL>
   <LI> No changes.
 
 </UL>
 <p>
-(5.3.0)<BR>
+(ImageMagick 5.3.0)<BR>
 <UL>
   <LI> Released with ImageMagick 5.3.0
   <LI> Bug fix. Under certain conditions, several annotation options
@@ -216,14 +237,14 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.2.9)<BR>
+(ImageMagick 5.2.9)<BR>
 <UL>
   <LI> Released with ImageMagick 5.2.9
   <LI> Added fillRule method to Image class.
 
 </UL>
 <p>
-(5.2.8)<BR>
+(ImageMagick 5.2.8)<BR>
 <UL>
   <LI> Released with ImageMagick 5.2.8
   <LI> Added 'fill' and 'stroke' methods to Montage class.
@@ -233,7 +254,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.2.7)<BR>
+(ImageMagick 5.2.7)<BR>
 <UL>
   <LI> Released with ImageMagick 5.2.7
   <LI> Added convolve and unsharpmask methods to Image.
@@ -242,7 +263,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.2.6)<BR>
+(ImageMagick 5.2.6)<BR>
 <UL>
   <LI> Released with ImageMagick 5.2.6.
   <LI> Added support for a SVG-style dash array and dash offset
@@ -256,7 +277,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.2.5)<BR>
+(ImageMagick 5.2.5)<BR>
 <UL>
   <LI> Released with ImageMagick 5.2.5.
   <LI> Completely re-wrote drawable object classes in order to support
@@ -266,7 +287,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.2.4)<BR>
+(ImageMagick 5.2.4)<BR>
 <UL>
   <LI> Released with ImageMagick 5.2.4.
   <LI> Magick++ is now built by the regular ImageMagick build process.
@@ -280,7 +301,7 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 <p>
-(5.2.3)<BR>
+(ImageMagick 5.2.3)<BR>
 <UL>
   <LI> Switched to new release numbering (match ImageMagick release number)
   <LI> Released with ImageMagick 5.2.3.
@@ -538,5 +559,8 @@ This file records noteworthy changes in Magick++.
 
 </UL>
 
-</BODY>
+<hr>
+<P ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
+<FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
+GraphicsMagick Group 2002, 2003, 2004</FONT></P></BODY>
 </HTML>

@@ -374,7 +374,7 @@ wmf_la_OBJECTS = $(am_wmf_la_OBJECTS)
 wpg_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_wpg_la_OBJECTS = wpg.lo
 wpg_la_OBJECTS = $(am_wpg_la_OBJECTS)
-x_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+x_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2)
 am_x_la_OBJECTS = x.lo
 x_la_OBJECTS = $(am_x_la_OBJECTS)
 xbm_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -389,7 +389,7 @@ xcf_la_OBJECTS = $(am_xcf_la_OBJECTS)
 xpm_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_xpm_la_OBJECTS = xpm.lo
 xpm_la_OBJECTS = $(am_xpm_la_OBJECTS)
-xwd_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+xwd_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2)
 am_xwd_la_OBJECTS = xwd.lo
 xwd_la_OBJECTS = $(am_xwd_la_OBJECTS)
 yuv_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -1340,7 +1340,7 @@ wpg_la_LIBADD = $(LIBMAGICK)
 # X module
 x_la_SOURCES = x.c
 x_la_LDFLAGS = $(MODULECOMMONFLAGS)
-x_la_LIBADD = $(LIBMAGICK)
+x_la_LIBADD = $(LIBMAGICK) $(LIB_X11)
 
 # XBM module
 xbm_la_SOURCES = xbm.c
@@ -1365,7 +1365,7 @@ xpm_la_LIBADD = $(LIBMAGICK)
 # XWD module
 xwd_la_SOURCES = xwd.c
 xwd_la_LDFLAGS = $(MODULECOMMONFLAGS)
-xwd_la_LIBADD = $(LIBMAGICK)
+xwd_la_LIBADD = $(LIBMAGICK) $(LIB_X11)
 
 # YUV module
 yuv_la_SOURCES = yuv.c

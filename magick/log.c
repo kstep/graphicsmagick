@@ -1054,9 +1054,6 @@ MagickExport void SetLogFormat(const char *format)
 
   if (log_configured == False)
     {
-      LogEventType
-        event_flags;
-
       ExceptionInfo
         exception;
 

@@ -54,7 +54,7 @@ typedef struct _PCXInfo
     encoding,
     bits_per_pixel;
 
-  short int
+  unsigned short
     left,
     top,
     right,
@@ -66,7 +66,7 @@ typedef struct _PCXInfo
     reserved,
     planes;
 
-  short int
+  unsigned short
     bytes_per_line,
     palette_info;
 
@@ -336,10 +336,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image data.
     */
-    pcx_packets=image->rows*pcx_info.bytes_per_line*pcx_info.planes;
+    pcx_packets=(unsigned long) image->rows*pcx_info.bytes_per_line*pcx_info.planes;
     pcx_pixels=MagickAllocateMemory(unsigned char *,pcx_packets);
     scanline=MagickAllocateMemory(unsigned char *,Max(image->columns,
-      pcx_info.bytes_per_line)*pcx_info.planes);
+      (unsigned long) pcx_info.bytes_per_line)*pcx_info.planes);
     if ((pcx_pixels == (unsigned char *) NULL) ||
         (scanline == (unsigned char *) NULL))
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
@@ -429,7 +429,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     for (y=0; y < (long) image->rows; y++)
     {
-      p=pcx_pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
+      p=pcx_pixels+((unsigned long) y*pcx_info.bytes_per_line*pcx_info.planes);
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
@@ -656,6 +656,7 @@ ModuleExport void RegisterPCXImage(void)
   entry->description=AcquireString("ZSoft IBM PC multi-page Paintbrush");
   entry->module=AcquireString("PCX");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("PCX");
   entry->decoder=(DecoderHandler) ReadPCXImage;
   entry->encoder=(EncoderHandler) WritePCXImage;
@@ -722,6 +723,57 @@ ModuleExport void UnregisterPCXImage(void)
 %
 %
 */
+static MagickPassFail WriteRLEPixels(Image *image,
+                                     PCXInfo *pcx_info,
+                                     const unsigned char *pcx_row_pixels)
+{
+  register const unsigned char
+    *q;
+
+  unsigned char
+    count,
+    packet,
+    previous;
+
+  register long
+    i,
+    x;
+
+  q=pcx_row_pixels;
+
+  /* For each color plane ... */
+  for (i=0; i < (long) pcx_info->planes; i++)
+    {
+      previous=(*q++);
+      count=1;
+      /* For each column ... */
+      for (x=0; x < (long) (pcx_info->bytes_per_line-1); x++)
+        {
+          packet=(*q++);
+          if ((packet == previous) && (count < 63))
+            {
+              count++;
+              continue;
+            }
+          if ((count > 1) || ((previous & 0xc0) == 0xc0))
+            {
+              count|=0xc0;
+              (void) WriteBlobByte(image,count);
+            }
+          (void) WriteBlobByte(image,previous);
+          previous=packet;
+          count=1;
+        }
+      if ((count > 1) || ((previous & 0xc0) == 0xc0))
+        {
+          count|=0xc0;
+          (void) WriteBlobByte(image,count);
+        }
+      (void) WriteBlobByte(image,previous);
+    }
+  return (MagickPass);
+}
+
 static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
 {
   long
@@ -747,11 +799,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     length;
 
   unsigned char
-    count,
-    packet,
     *pcx_colormap,
-    *pcx_pixels,
-    previous;
+    *pcx_pixels;
 
   unsigned int
     status;
@@ -804,19 +853,19 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       pcx_info.bits_per_pixel=1;
     pcx_info.left=0;
     pcx_info.top=0;
-    pcx_info.right=(short) (image->columns-1);
-    pcx_info.bottom=(short) (image->rows-1);
-    pcx_info.horizontal_resolution=(short) image->columns;
-    pcx_info.vertical_resolution=(short) image->rows;
+    pcx_info.right=(unsigned short) (image->columns-1);
+    pcx_info.bottom=(unsigned short) (image->rows-1);
+    pcx_info.horizontal_resolution=(unsigned short) image->columns;
+    pcx_info.vertical_resolution=(unsigned short) image->rows;
     if (image->units == PixelsPerInchResolution)
       {
-        pcx_info.horizontal_resolution=(short) image->x_resolution;
-        pcx_info.vertical_resolution=(short) image->y_resolution;
+        pcx_info.horizontal_resolution=(unsigned short) image->x_resolution;
+        pcx_info.vertical_resolution=(unsigned short) image->y_resolution;
       }
     if (image->units == PixelsPerCentimeterResolution)
       {
-        pcx_info.horizontal_resolution=(short) (2.54*image->x_resolution);
-        pcx_info.vertical_resolution=(short) (2.54*image->y_resolution);
+        pcx_info.horizontal_resolution=(unsigned short) (2.54*image->x_resolution);
+        pcx_info.vertical_resolution=(unsigned short) (2.54*image->y_resolution);
       }
     pcx_info.reserved=0;
     pcx_info.planes=1;
@@ -826,8 +875,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         if (image->matte)
           pcx_info.planes++;
       }
-    pcx_info.bytes_per_line=(short)
-      (image->columns*pcx_info.bits_per_pixel+7)/8;
+    pcx_info.bytes_per_line=(unsigned short)
+      (((unsigned long) image->columns*pcx_info.bits_per_pixel+7)/8);
     pcx_info.palette_info=1;
     pcx_info.colormap_signature=0x0c;
     /*
@@ -867,7 +916,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobLSBShort(image,(unsigned int) pcx_info.palette_info);
     for (i=0; i < 58; i++)
       (void) WriteBlobByte(image,'\0');
-    length=image->rows*pcx_info.bytes_per_line*pcx_info.planes;
+    /* Allocate memory for one pixel row. */
+    length=(size_t) pcx_info.bytes_per_line*pcx_info.planes;
     pcx_pixels=MagickAllocateMemory(unsigned char *,length);
     if (pcx_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
@@ -877,59 +927,81 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         /*
           Convert DirectClass image to PCX raster pixels.
         */
+
+        /* For each row ... */
         for (y=0; y < (long) image->rows; y++)
         {
-          q=pcx_pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
+          const PixelPacket *
+            row_pixels;
+
+          row_pixels=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (row_pixels == (const PixelPacket *) NULL)
+            break;
+
+          q=pcx_pixels;
+
+          /* For each color plane ... */
           for (i=0; i < pcx_info.planes; i++)
           {
-            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < pcx_info.bytes_per_line; x++)
-            {
-              switch ((int) i)
+            p=row_pixels;
+            switch ((int) i)
               {
-                case 0:
+              case 0:
                 {
-                  *q++=ScaleQuantumToChar(p->red);
+                  /* For each column ... */
+                  for (x=(long) pcx_info.bytes_per_line; x > 0; x--)
+                    *q++=ScaleQuantumToChar(p++->red);
                   break;
                 }
-                case 1:
+              case 1:
                 {
-                  *q++=ScaleQuantumToChar(p->green);
+                  /* For each column ... */
+                  for (x=(long) pcx_info.bytes_per_line; x > 0; x--)
+                    *q++=ScaleQuantumToChar(p++->green);
                   break;
                 }
-                case 2:
+              case 2:
                 {
-                  *q++=ScaleQuantumToChar(p->blue);
+                  /* For each column ... */
+                  for (x=(long) pcx_info.bytes_per_line; x > 0; x--)
+                    *q++=ScaleQuantumToChar(p++->blue);
                   break;
                 }
-                case 3:
-                default:
+              case 3:
+              default:
                 {
-                  *q++=ScaleQuantumToChar(MaxRGB-p->opacity);
+                  /* For each column ... */
+                  for (x=(long) pcx_info.bytes_per_line; x > 0; x--)
+                    *q++=ScaleQuantumToChar(MaxRGB-p++->opacity);
                   break;
                 }
               }
-              p++;
-            }
           }
+          if (WriteRLEPixels(image,&pcx_info,pcx_pixels) == MagickFail)
+            break;
           if (QuantumTick(y,image->rows))
             if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
               break;
         }
       }
     else
+      /*
+        Convert PseudoClass image to a PCX grayscale image.
+      */
       if (pcx_info.bits_per_pixel > 1)
+        /* For each row ... */
         for (y=0; y < (long) image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          q=pcx_pixels+y*pcx_info.bytes_per_line;
+          q=pcx_pixels;
+          /* For each column ... */
           for (x=0; x < (long) image->columns; x++)
             *q++=indexes[x];
+          if (WriteRLEPixels(image,&pcx_info,pcx_pixels) == MagickFail)
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
@@ -949,6 +1021,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           if (image->colors == 2)
             polarity=PixelIntensityToQuantum(&image->colormap[0]) <
               PixelIntensityToQuantum(&image->colormap[1]);
+          /* For each row ... */
           for (y=0; y < (long) image->rows; y++)
           {
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -957,7 +1030,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             indexes=GetIndexes(image);
             bit=0;
             byte=0;
-            q=pcx_pixels+y*pcx_info.bytes_per_line;
+            q=pcx_pixels;
+            /* For each column ... */
             for (x=0; x < (long) image->columns; x++)
             {
               byte<<=1;
@@ -974,50 +1048,15 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             }
             if (bit != 0)
               *q++=byte << (8-bit);
+            if (WriteRLEPixels(image,&pcx_info,pcx_pixels) == MagickFail)
+            break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
                   break;
           }
         }
-    /*
-      Runlength-encoded PCX pixels.
-    */
-    for (y=0; y < (long) image->rows; y++)
-    {
-      q=pcx_pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
-      for (i=0; i < pcx_info.planes; i++)
-      {
-        previous=(*q++);
-        count=1;
-        for (x=0; x < (long) (pcx_info.bytes_per_line-1); x++)
-        {
-          packet=(*q++);
-          if ((packet == previous) && (count < 63))
-            {
-              count++;
-              continue;
-            }
-          if ((count > 1) || ((previous & 0xc0) == 0xc0))
-            {
-              count|=0xc0;
-              (void) WriteBlobByte(image,count);
-            }
-          (void) WriteBlobByte(image,previous);
-          previous=packet;
-          count=1;
-        }
-        if ((count > 1) || ((previous & 0xc0) == 0xc0))
-          {
-            count|=0xc0;
-            (void) WriteBlobByte(image,count);
-          }
-        (void) WriteBlobByte(image,previous);
-        if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-            break;
-      }
-    }
+
     (void) WriteBlobByte(image,pcx_info.colormap_signature);
     (void) WriteBlob(image,3*256,(char *) pcx_colormap);
     MagickFreeMemory(pcx_pixels);

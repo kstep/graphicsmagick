@@ -50,20 +50,19 @@
 #include "magick/utility.h"
 #include "magick/version.h"
 #if defined(HasTIFF)
-#if defined(HAVE_TIFFCONF_H)
-#include "tiffconf.h"
-#endif
-#include "tiffio.h"
-#if !defined(COMPRESSION_ADOBE_DEFLATE)
-#define COMPRESSION_ADOBE_DEFLATE  8
-#endif
+#  if defined(HAVE_TIFFCONF_H)
+#    include "tiffconf.h"
+#  endif
+#  include "tiffio.h"
+#  if !defined(COMPRESSION_ADOBE_DEFLATE)
+#    define COMPRESSION_ADOBE_DEFLATE  8
+#  endif
 
 /*
   Global declarations.
 */
 static ExceptionInfo
   *tiff_exception;
-#endif
 
 /*
   Forward declarations.
@@ -112,7 +111,6 @@ static unsigned int IsTIFF(const unsigned char *magick,const size_t length)
   return(False);
 }
 
-#if defined(HasTIFF)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

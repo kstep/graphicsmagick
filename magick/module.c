@@ -628,7 +628,7 @@ static MagickPassFail GetModuleListForDirectory
   char
     module_tag[MaxTextExtent];
 
-  DIR
+  const DIR
     *directory;
 
   register long
@@ -644,7 +644,7 @@ static MagickPassFail GetModuleListForDirectory
   assert( exception != (ExceptionInfo *) NULL );
 
   directory=opendir(path);
-  if (directory == (DIR *) NULL)
+  if (directory == (const DIR *) NULL)
     return(MagickFail);
 
   /*
@@ -1286,7 +1286,8 @@ MagickExport unsigned int OpenModule(const char *module,
     TagToCoderModuleName(module_name,module_file);
 
     (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-      "Loading module \"%s\" from file \"%s\"", module_name, module_file);
+      "Searching for module \"%s\" using file name \"%s\"",
+         module_name, module_file);
 
     *path='\0';
 #if 1
@@ -1306,6 +1307,9 @@ MagickExport unsigned int OpenModule(const char *module,
     /*
       Load module
     */
+    (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+      "Opening module at path \"%s\" ...", path);
+
     handle=lt_dlopen(path);
     if (handle == (ModuleHandle) NULL)
       {

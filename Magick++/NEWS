@@ -1,37 +1,40 @@
 This file records noteworthy changes in Magick++.
 
-(5.5.2)
+For some reason this file stopped being maintained when Magick++ moved
+to GraphicsMagick.  See the ChangeLog for change details.
+
+(ImageMagick 5.5.2)
   * Added adaptiveThreshold() method.
   * Added colorMapSize() method.
   * Added DrawablePushClipPath, DrawablePopClipPath, and DrawableClipPath.
 
-(5.5.1)
+(ImageMagick 5.5.1)
   * Fixed a Color memory allocation problem which became evident when
     using the Magick++ DLL.
   * Completed implementation of Image textEncoding() method.  Oops!
 
-(5.4.9)
+(ImageMagick 5.4.9)
   * Added the Image textEncoding() method and an encoding option to
     DrawableText to support specifying "UTF-8" (Unicode) text encoding.
   * Added the Image compare() method to support comparing two similar
     images and obtaining error values.
   * Magick++ compiles as a DLL under Visual C++ 7.0.
 
-(5.4.8)
+(ImageMagick 5.4.8)
   * The image type() method now also specifies the output image type
     to use while writing.
   * Added a profile() method to Image to support adding, removing,
     and retrieving named embedded application profiles.
   * Magick++ compiles as a DLL under Visual C++ 6.0.
 
-(5.4.7)
+(ImageMagick 5.4.7)
   * No changes to report.
 
-(5.4.6)
+(ImageMagick 5.4.6)
   * Magick++ library no longer depends on C++ iostreams APIs.
   * Added DrawableTextUnderColor class to set text underbox color.
 
-(5.4.5)
+(ImageMagick 5.4.5)
   * Drawable classes have been re-written to use ImageMagick's draw.h
     APIs.
   * Fixed a nasty bug when reporting some forms of errors.  The bug
@@ -46,7 +49,7 @@ This file records noteworthy changes in Magick++.
   * Blob class supports encoding and decoding Base64 data.
   * New method, Image::ping to ping a Blob.
 
-(5.4.4)
+(ImageMagick 5.4.4)
   * Fixed a bug in DrawableDashArray.
   * Numerous consistency improvements based on findings from Gimpel lint.
   * Added endian method to Image, and endianImage class to STL.h in
@@ -54,7 +57,7 @@ This file records noteworthy changes in Magick++.
     the notion (e.g. TIFF).
   * DrawableCompositeImage was not working.  Now it does.
 
-(5.4.3)
+(ImageMagick 5.4.3)
   * Support selecting fonts via font-family, font-style, font-weight,
     and font-stretch via the DrawableFont class.
   * CoderInfo API change.  MatchType is scoped to CoderInfo class.
@@ -64,7 +67,7 @@ This file records noteworthy changes in Magick++.
   * Reimplemented image registration code (which passes image via
     DrawableCompositeImage).
 
-(5.4.2)
+(ImageMagick 5.4.2)
   * TypeMetric class revamped to match current ImageMagick type metrics
     definition.
   * Fixed possible stack corruption on some architectures when returning
@@ -77,13 +80,13 @@ This file records noteworthy changes in Magick++.
     image to use while drawing stroked object outlines and while filling
     objects, respectively.
 
-(5.4.1)
+(ImageMagick 5.4.1)
   * Fixed memory leak in Image::draw().
 
   * Automatically cleans up ImageMagick allocations prior to process
     exit to avoid annoying memory leak tools.
 
-(5.4.0)
+(ImageMagick 5.4.0)
   * Fixed bug when scaling from Quantum to double in derived Color classes.
 
   * Pass all input parameter strings as 'const std::string &' in Color class.
@@ -95,7 +98,7 @@ This file records noteworthy changes in Magick++.
   * Added Image boundingBox() method to return smallest bounding box
     enclosing non-border pixels.
 
-(5.3.9)
+(ImageMagick 5.3.9)
   * New class, CoderInfo, to return information for a specified image
     format as well as the coderInfoList() template function to return
     the list of coders which match a specification.
@@ -113,7 +116,7 @@ This file records noteworthy changes in Magick++.
   * Image depth method now adjusts pixels to match specified image depth,
     and reports depth based on current image pixels.
 
-(5.3.8)
+(ImageMagick 5.3.8)
   * New class 'TypeMetric' to contain font type metrics.
 
   * New Image method 'fontTypeMetrics()' to obtain font type metrics.
@@ -128,48 +131,48 @@ This file records noteworthy changes in Magick++.
   * Documented methods which were added previously, but left
     undocumented.
 
-(5.3.7)
+(ImageMagick 5.3.7)
   * No changes.
 
-(5.3.6)
+(ImageMagick 5.3.6)
   * Adjusted parameters to 'edge' and 'medianFilter' to match
     equivalent libMagick functions.
   * Fixed a Montage bug which was not allowing color options to be unset.
   * Montage defaults are no longer taken from first Image in list.
   * Magick++ demo output looks like PerlMagick demo output again.
 
-(5.3.5)
+(ImageMagick 5.3.5)
   * Default radius and sigma parameters were changed on the blur,
     charcoal, emboss, and sharpen methods to match ImageMagick defaults.
   * Fixes to Magick++ demos to restore appearance.
   * Added shave method for shaving edges from image (a form of crop).
 
-(5.3.1-5.3.4)
+(ImageMagick 5.3.1-5.3.4)
   * No changes.
 
-(5.3.0)
+(ImageMagick 5.3.0)
   * Released with ImageMagick 5.3.0
   * Bug fix. Under certain conditions, several annotation options
     were being reset.
 
-(5.2.9)
+(ImageMagick 5.2.9)
   * Released with ImageMagick 5.2.9
   * Added fillRule method to Image class.
 
-(5.2.8)
+(ImageMagick 5.2.8)
   * Released with ImageMagick 5.2.8
   * Added 'fill' and 'stroke' methods to Montage class.
   * Added 'erase' and 'strokeAntiAlias' methods to Image class.
   * Renamed Image class 'layer' method to 'channel'.
   * Support supplying composition rule to DrawableCompositeImage.
 
-(5.2.7)
+(ImageMagick 5.2.7)
   * Released with ImageMagick 5.2.7
   * Added convolve and unsharpmask methods to Image.
   * Added deconstructImages and mosaicImages template functions.
   * Fixed handling of geometry parameter to annotate method.
 
-(5.2.6)
+(ImageMagick 5.2.6)
   * Released with ImageMagick 5.2.6.
   * Added support for a SVG-style dash array and dash offset
     parameters (for drawing dashed lines).
@@ -180,14 +183,14 @@ This file records noteworthy changes in Magick++.
   * Added support for setting extension limit for miter joins.
   * Rotate text the proper way using an affine transform.
 
-(5.2.5)
+(ImageMagick 5.2.5)
   * Released with ImageMagick 5.2.5.
   * Completely re-wrote drawable object classes in order to support
     all current ImageMagick drawing capabilities using a list-based paradigm.
     New drawing capabilities include coordinate transformations and the
     currently undocumented (but quite powerful) path capabilities.
 
-(5.2.4)
+(ImageMagick 5.2.4)
   * Released with ImageMagick 5.2.4.
   * Magick++ is now built by the regular ImageMagick build process.
     when --with-magick_plus_plus is specified to configure.
@@ -198,7 +201,7 @@ This file records noteworthy changes in Magick++.
     some demos/tests due to libtool-related compiler/linker bug.
   * Compiles using Sun Forte 6.0 compiler.
 
-(5.2.3)
+(ImageMagick 5.2.3)
   * Switched to new release numbering (match ImageMagick release number)
   * Released with ImageMagick 5.2.3.
   * Fixed bug in which the Image read method was not reporting

@@ -45,23 +45,23 @@ file Copyright.txt for the GraphicsMagick licence.
   via CVS using the following procedure:
 
 <p>
-  Use
+  To use CVS over SSH:
+
+<PRE>
+    export CVS_RSH=ssh
+    export CVSROOT=":ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick"
+</PRE>
+
+<p>
+  or to use CVS with its built-in (and insecure) pserver protocol:
 
 <PRE>
     export CVSROOT=":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick"
 </PRE>
 
 <p>
-  or
-
-<PRE>
-    setenv CVSROOT=":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick"
-</PRE>
-
-<p>
-  to set CVSROOT in the environment (depending on your shell), or prepend
+  to set CVSROOT in the environment (adjust for your shell), or prepend
   -d followed by the CVS root to every command. For example
-
 
 <PRE>
     cvs -d ":pserver:anonymous@cvs ...

@@ -1,5 +1,5 @@
 
-This is Magick++, the object-oriented C++ API to the ImageMagick
+This is Magick++, the object-oriented C++ API to the GraphicsMagick
 image-processing library, the most comprehensive open-source image
 processing solution available. Read the release notes for Magick++.
 
@@ -17,7 +17,7 @@ trivial to support multiple generations of an image in memory at one time.
 Magick++ provides integrated support for the Standard Template Library (STL)
 so that the powerful containers available (e.g. deque, vector, list, and
 map)  can be used to write programs similar to those possible with PERL &
-PerlMagick. STL-compatable template versions of ImageMagick's list-style
+PerlMagick. STL-compatable template versions of GraphicsMagick's list-style
 operations are provided so that operations may be performed on multiple
 images stored in STL containers.
 
@@ -28,7 +28,7 @@ and template functions which comprise the API.
 
 Obtaining Magick++
 
-Magick++ is included as part of ImageMagick source releases and may be
+Magick++ is included as part of GraphicsMagick source releases and may be
 retrieved via ftp or CVS.
 
 Installation
