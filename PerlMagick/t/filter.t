@@ -21,7 +21,7 @@ testFilter('input.miff', 'Blur',
 ++$test;
 testFilter('input.miff', 'Border',
   q/10/,
-  '64d5519395a5facdba262efa93fc7243d0b384433f45c80199bb98e781b417fe');
+  'db2045a3b8d6d27dc4083f05d4345a8a5bec6f941d368fc8b791e0cdf27c8bbf');
 
 ++$test;
 testFilter('input.miff', 'Channel',

@@ -944,7 +944,7 @@ static unsigned int MontageUtility(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing page geometry",option);
-                  image_info->page=PostscriptGeometry(argv[i]);
+                  image_info->page=GetPageGeometry(argv[i]);
                 }
               break;
             }

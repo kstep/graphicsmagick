@@ -1985,10 +1985,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
           page.y=0;
           geometry=(char *) NULL;
           if (svg_info->page != (char *) NULL)
-            geometry=PostscriptGeometry(svg_info->page);
+            geometry=GetPageGeometry(svg_info->page);
           else
             if (svg_info->size != (char *) NULL)
-              geometry=PostscriptGeometry(svg_info->size);
+              geometry=GetPageGeometry(svg_info->size);
           if (geometry != (char *) NULL)
             {
               p=strchr(geometry,'>');

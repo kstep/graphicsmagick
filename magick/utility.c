@@ -669,6 +669,146 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  G e t P a g e G e o m e t r y                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPageGeometry() replaces any page mneumonic with the equivalent size in
+%  picas.
+%
+%  The format of the GetPageGeometry() method is:
+%
+%      char *GetPageGeometry(const char *page_geometry)
+%
+%  A description of each parameter follows.
+%
+%   o  page_geometry:  Specifies a pointer to an array of characters.
+%      The string is either a Postscript page name (e.g. A4) or a postscript
+%      page geometry (e.g. 612x792+36+36).
+%
+%
+*/
+
+MagickExport char *PostscriptGeometry(const char *geometry)
+{
+  return(GetPageGeometry(geometry));
+}
+
+MagickExport char *GetPageGeometry(const char *page_geometry)
+{
+  static const char
+    *PageSizes[][2]=
+    {
+      { "4x6",  "288x432" },
+      { "5x7",  "360x504" },
+      { "7x9",  "504x648" },
+      { "8x10", "576x720" },
+      { "9x11",  "648x792" },
+      { "9x12",  "648x864" },
+      { "10x13",  "720x936" },
+      { "10x14",  "720x1008" },
+      { "11x17",  "792x1224" },
+      { "A0",  "2384x3370" },
+      { "A1",  "1684x2384" },
+      { "A10", "73x105" },
+      { "A2",  "1191x1684" },
+      { "A3",  "842x1191" },
+      { "A4",  "595x842" },
+      { "A4SMALL", "595x842" },
+      { "A5",  "420x595" },
+      { "A6",  "297x420" },
+      { "A7",  "210x297" },
+      { "A8",  "148x210" },
+      { "A9",  "105x148" },
+      { "ARCHA", "648x864" },
+      { "ARCHB", "864x1296" },
+      { "ARCHC", "1296x1728" },
+      { "ARCHD", "1728x2592" },
+      { "ARCHE", "2592x3456" },
+      { "B0",  "2920x4127" },
+      { "B1",  "2064x2920" },
+      { "B10", "91x127" },
+      { "B2",  "1460x2064" },
+      { "B3",  "1032x1460" },
+      { "B4",  "729x1032" },
+      { "B5",  "516x729" },
+      { "B6",  "363x516" },
+      { "B7",  "258x363" },
+      { "B8",  "181x258" },
+      { "B9",  "127x181" },
+      { "C0",  "2599x3676" },
+      { "C1",  "1837x2599" },
+      { "C2",  "1298x1837" },
+      { "C3",  "918x1296" },
+      { "C4",  "649x918" },
+      { "C5",  "459x649" },
+      { "C6",  "323x459" },
+      { "C7",  "230x323" },
+      { "EXECUTIVE", "540x720" },
+      { "FLSA", "612x936" },
+      { "FLSE", "612x936" },
+      { "FOLIO",  "612x936" },
+      { "HALFLETTER", "396x612" },
+      { "ISOB0", "2835x4008" },
+      { "ISOB1", "2004x2835" },
+      { "ISOB10", "88x125" },
+      { "ISOB2", "1417x2004" },
+      { "ISOB3", "1001x1417" },
+      { "ISOB4", "709x1001" },
+      { "ISOB5", "499x709" },
+      { "ISOB6", "354x499" },
+      { "ISOB7", "249x354" },
+      { "ISOB8", "176x249" },
+      { "ISOB9", "125x176" },
+      { "LEDGER",  "1224x792" },
+      { "LEGAL",  "612x1008" },
+      { "LETTER", "612x792" },
+      { "LETTERSMALL",  "612x792" },
+      { "QUARTO",  "610x780" },
+      { "STATEMENT",  "396x612" },
+      { "TABLOID",  "792x1224" },
+      { (char *) NULL, (char *) NULL }
+    };
+
+  char
+    *page;
+
+  register int
+    i;
+
+  assert(page_geometry != (char *) NULL);
+  page=AllocateString(page_geometry);
+  for (i=0; *PageSizes[i] != (char *) NULL; i++)
+    if (LocaleNCompare(PageSizes[i][0],page,strlen(PageSizes[i][0])) == 0)
+      {
+        int
+          flags;
+
+        RectangleInfo
+          geometry;
+
+        /*
+          Replace mneumonic with the equivalent size in dots-per-inch.
+        */
+        (void) strncpy(page,PageSizes[i][1],MaxTextExtent-1);
+        (void) strncat(page,page_geometry+strlen(PageSizes[i][0]),MaxTextExtent-
+          strlen(page)-2);
+        flags=GetGeometry(page,&geometry.x,&geometry.y,&geometry.width,
+          &geometry.height);
+        if (!(flags & GreaterValue))
+          (void) strcat(page,">");
+        break;
+      }
+  return(page);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t P a t h C o m p o n e n t                                           %
 %                                                                             %
 %                                                                             %
@@ -1773,153 +1913,6 @@ MagickExport int ParseGeometry(const char *geometry,long *x,long *y,
   if (mask & HeightValue)
     *height=bounds.height;
   return(mask);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  P o s t s c r i p t G e o m e t r y                                        %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method PostscriptGeometry replaces any page mneumonic with the equivalent
-%  size in picas.
-%
-%  The format of the PostscriptGeometry method is:
-%
-%      void PostscriptGeometry(const char *page)
-%
-%  A description of each parameter follows.
-%
-%   o  page:  Specifies a pointer to an array of characters.  The string is
-%      either a Postscript page name (e.g. A4) or a postscript page geometry
-%      (e.g. 612x792+36+36).
-%
-%
-*/
-MagickExport char *PostscriptGeometry(const char *page)
-{
-  static const char
-    *PageSizes[][2]=
-    {
-      { "4x6",  "288x432>" },
-      { "5x7",  "360x504>" },
-      { "7x9",  "504x648>" },
-      { "8x10", "576x720>" },
-      { "9x11",  "648x792>" },
-      { "9x12",  "648x864>" },
-      { "10x13",  "720x936>" },
-      { "10x14",  "720x1008>" },
-      { "11x17",  "792x1224>" },
-      { "A0",  "2384x3370>" },
-      { "A1",  "1684x2384>" },
-      { "A10", "73x105>" },
-      { "A2",  "1191x1684>" },
-      { "A3",  "842x1191>" },
-      { "A4",  "595x842>" },
-      { "A4SMALL", "595x842>" },
-      { "A5",  "420x595>" },
-      { "A6",  "297x420>" },
-      { "A7",  "210x297>" },
-      { "A8",  "148x210>" },
-      { "A9",  "105x148>" },
-      { "ARCHA", "648x864>" },
-      { "ARCHB", "864x1296>" },
-      { "ARCHC", "1296x1728>" },
-      { "ARCHD", "1728x2592>" },
-      { "ARCHE", "2592x3456>" },
-      { "B0",  "2920x4127>" },
-      { "B1",  "2064x2920>" },
-      { "B10", "91x127>" },
-      { "B2",  "1460x2064>" },
-      { "B3",  "1032x1460>" },
-      { "B4",  "729x1032>" },
-      { "B5",  "516x729>" },
-      { "B6",  "363x516>" },
-      { "B7",  "258x363>" },
-      { "B8",  "181x258>" },
-      { "B9",  "127x181>" },
-      { "C0",  "2599x3676>" },
-      { "C1",  "1837x2599>" },
-      { "C2",  "1298x1837>" },
-      { "C3",  "918x1296>" },
-      { "C4",  "649x918>" },
-      { "C5",  "459x649>" },
-      { "C6",  "323x459>" },
-      { "C7",  "230x323>" },
-      { "EXECUTIVE", "540x720>" },
-      { "FLSA", "612x936>" },
-      { "FLSE", "612x936>" },
-      { "FOLIO",  "612x936>" },
-      { "HALFLETTER", "396x612>" },
-      { "ISOB0", "2835x4008>" },
-      { "ISOB1", "2004x2835>" },
-      { "ISOB10", "88x125>" },
-      { "ISOB2", "1417x2004>" },
-      { "ISOB3", "1001x1417>" },
-      { "ISOB4", "709x1001>" },
-      { "ISOB5", "499x709>" },
-      { "ISOB6", "354x499>" },
-      { "ISOB7", "249x354>" },
-      { "ISOB8", "176x249>" },
-      { "ISOB9", "125x176>" },
-      { "LEDGER",  "1224x792>" },
-      { "LEGAL",  "612x1008>" },
-      { "LETTER", "612x792>" },
-      { "LETTERSMALL",  "612x792>" },
-      { "QUARTO",  "610x780>" },
-      { "STATEMENT",  "396x612>" },
-      { "TABLOID",  "792x1224>" },
-      { (char *) NULL, (char *) NULL }
-    };
-
-  char
-    c,
-    *geometry;
-
-  register char
-    *p;
-
-  register int
-    i;
-
-  /*
-    Allocate page geometry memory.
-  */
-  geometry=AllocateString(page);
-  *geometry='\0';
-  if (page == (char *) NULL)
-    return(geometry);
-  /*
-    Comparison is case insensitive.
-  */
-  (void) strncpy(geometry,page,MaxTextExtent-1);
-  if (!isdigit((int) (*geometry)))
-    for (p=geometry; *p != '\0'; p++)
-    {
-      c=(*p);
-      if (islower((int) c))
-        *p=toupper(c);
-    }
-  /*
-    Comparison is case insensitive.
-  */
-  for (i=0; *PageSizes[i] != (char *) NULL; i++)
-    if (LocaleNCompare(PageSizes[i][0],geometry,strlen(PageSizes[i][0])) == 0)
-      {
-        /*
-          Replace mneumonic with the equivalent size in dots-per-inch.
-        */
-        (void) strncpy(geometry,PageSizes[i][1],MaxTextExtent-1);
-        (void) strncat(geometry,page+strlen(PageSizes[i][0]),MaxTextExtent-
-          strlen(geometry)-1);
-        break;
-      }
-  return(geometry);
 }
 
 /*

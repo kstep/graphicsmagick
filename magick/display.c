@@ -8645,7 +8645,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
     "Select Postscript Page Geometry:",geometry);
   if (*geometry == '\0')
     return(True);
-  image_info->page=PostscriptGeometry(geometry);
+  image_info->page=GetPageGeometry(geometry);
   /*
     Apply image transforms.
   */
@@ -10163,7 +10163,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
       XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
         "Select page geometry:",geometry);
       if (*geometry != '\0')
-        image_info->page=PostscriptGeometry(geometry);
+        image_info->page=GetPageGeometry(geometry);
     }
   /*
     Apply image transforms.

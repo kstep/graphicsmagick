@@ -1309,7 +1309,7 @@ MagickExport Image *ReadEMFImage(const ImageInfo *image_info,
       unsigned int
         flags;
 
-      geometry=PostscriptGeometry(image_info->page);
+      geometry=GetPageGeometry(image_info->page);
       p=strchr(geometry,'>');
       if (!p)
         {

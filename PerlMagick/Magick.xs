@@ -1447,7 +1447,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           char
             *geometry;
 
-          geometry=PostscriptGeometry(SvPV(sval,na));
+          geometry=GetPageGeometry(SvPV(sval,na));
           if (info)
             (void) CloneString(&info->image_info->page,geometry);
           for ( ; image; image=image->next)

@@ -184,7 +184,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
       char
         *geometry;
 
-      geometry=PostscriptGeometry(image_info->page);
+      geometry=GetPageGeometry(image_info->page);
       flags=ParseImageGeometry(geometry,&allocate_image->page.x,
         &allocate_image->page.y,&allocate_image->page.width,
         &allocate_image->page.height);

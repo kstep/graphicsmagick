@@ -3368,7 +3368,7 @@ MagickExport char *XGetScreenDensity(Display *display)
   y_density=((((double) DisplayHeight(display,XDefaultScreen(display)))*25.4)/
     ((double) DisplayHeightMM(display,XDefaultScreen(display))));
   FormatString(density,"%gx%g",x_density,y_density);
-  return(PostscriptGeometry(density));
+  return(GetPageGeometry(density));
 }
 
 /*
