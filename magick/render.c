@@ -624,7 +624,7 @@ static void LogPolygonInfo(const PolygonInfo *polygon_info)
       p->direction ? "down" : "up");
     LogMagickEvent(RenderEvent,"      ghostline: %s",
       p->ghostline ? "transparent" : "opaque");
-    LogMagickEvent(RenderEvent,"       bounds: %g,%g - %g,%g",
+    LogMagickEvent(RenderEvent,"      bounds: %g,%g - %g,%g",
       p->bounds.x1,p->bounds.y1,p->bounds.x2,p->bounds.y2);
     for (j=0; j < p->number_points; j++)
       LogMagickEvent(RenderEvent,"        %g,%g",p->points[j].x,p->points[j].y);
@@ -3256,8 +3256,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 %
 %
 */
-MagickExport unsigned int DrawPatternPath(Image *image,const DrawInfo *draw_info,
-  const char *name,Image **pattern)
+MagickExport unsigned int DrawPatternPath(Image *image,
+  const DrawInfo *draw_info,const char *name,Image **pattern)
 {
   char
     attribute[MaxTextExtent];
@@ -4102,7 +4102,7 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
         LogPrimitiveInfo(primitive_info);
       scale=ExpandAffine(&draw_info->affine);
       if ((draw_info->dash_pattern != (double *) NULL) &&
-          (scale*draw_info->stroke_width > MagickEpsilon) &&
+          ((scale*draw_info->stroke_width) > MagickEpsilon) &&
           (draw_info->stroke.opacity != TransparentOpacity))
         {
           /*
@@ -4879,6 +4879,8 @@ MagickExport void TraceEllipse(PrimitiveInfo *primitive_info,
   y=degrees.y;
   while (y < degrees.x)
     y+=360.0;
+  if (y == 360.0)
+    y-=MagickEpsilon;
   angle.y=DegreesToRadians(y);
   p=primitive_info;
   for ( ; angle.x < angle.y; angle.x+=step)

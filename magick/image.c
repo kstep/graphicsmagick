@@ -1379,7 +1379,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       if (GetBlobSize(image) != 0)
         {
           FormatSize(GetBlobSize(image),format);
-          (void) fprintf(file,"%.1024 ",format);
+          (void) fprintf(file,"%.1024s ",format);
         }
       (void) fprintf(file,"%.1fu %ld:%02ld\n",user_time,
         (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)));
@@ -1707,8 +1707,6 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   if ((image->page.width != 0) && (image->page.height != 0))
     (void) fprintf(file,"  Page geometry: %lux%lu%+ld%+ld\n",image->page.width,
       image->page.height,image->page.x,image->page.y);
-  if (image->dispose != 0)
-    (void) fprintf(file,"  Dispose Method: %lu\n",image->dispose);
   (void) fprintf(file,"  Dispose: ");
   switch (image->dispose)
   {
