@@ -1203,7 +1203,7 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
           p++;
           q=p;
           bounds.x=(long) ceil(strtod(p,&p)-0.5);
-        } 
+        }
       else
         {
           p++;
@@ -3274,7 +3274,9 @@ MagickExport void TemporaryFilename(char *filename)
     LiberateMemory((void **) &name);
   }
 #endif
+#if !defined(vms)
   FormatString(filename+strlen(filename),".%ld.tmp",(long) getpid());
+#endif
 }
 
 /*
