@@ -2510,23 +2510,23 @@ for a description of these values.
 .B "-view \fI<string>"\fP
 \fRFlashPix viewing parameters
 .TP
-.B "-virtual_pixel \fI<type>"\fP
+.B "-virtual_pixel \fI<method>"\fP
 \fRspecify contents of "virtual pixels"
 
 This option 
-defines "virtual pixels" for use by methods that can access pixels outside
+defines "virtual pixels" for use in operations that can access pixels outside
 the boundaries of an image.
 
-Choose from these types:
+Choose from these methods:
 
 
     Constant:  Use the image background color.
-    Edge:  Extend the edge pixel toward infinity.
-    Mirror:  mirror the image.
-    Tile:  Tile the image.
+    Edge:      Extend the edge pixel toward infinity (default).
+    Mirror:    Mirror the image.
+    Tile:      Tile the image.
 
-This option affects methods that use
-virtual pixels such as convolve, sharpen, wave, etc.
+This option affects operations that use
+virtual pixels such as \fB-blur\fP, \fB-sharpen\fP, \fB-wave\fP, etc.
 .TP
 .B "-visual \fI<type>"\fP
 \fRanimate images using this X visual type
