@@ -95,7 +95,7 @@ static void
   WmfFillOpaque(CSTRUCT *,WMFRECORD *),
   WmfFinish(CSTRUCT *),
   WmfFloodFill(CSTRUCT *,WMFRECORD *),
-  WmfFrameRgn(CSTRUCT *, WINEREGION *rgn,U16,U16),
+  WmfFrameRgn(CSTRUCT *cstruct,WINEREGION *rgn,U16 width,U16 height),
   WmfFreeUserData(CSTRUCT *,DC *),
   WmfNoClipRect(CSTRUCT *),
   WmfPaintRgn(CSTRUCT *, WINEREGION *rgn),
@@ -193,8 +193,6 @@ wmf_functions WmfFunctions =
 /* Extend MVG drawing primitives in cstruct userdata */
 static void ExtendMVG(CSTRUCT *cstruct, const char* buff)
 {
-  if(((IM*)cstruct->userdata)->mvg == NULL)
-    CloneString(&((IM*)cstruct->userdata)->mvg, "");
   ConcatenateString(&((IM*)cstruct->userdata)->mvg, buff);
 }
 
@@ -223,10 +221,12 @@ static int WmfPixelWidth(CSTRUCT *cstruct)
 }
 
 /* Return initialized drawing context */
+#if 0
 static void *WmfInitialUserData(CSTRUCT *cstruct)
 {
   return (void*)NULL;
 }
+#endif
 
 /* Set rectangular clipping region */
 static void WmfClipRect(CSTRUCT *cstruct)
@@ -235,10 +235,12 @@ static void WmfClipRect(CSTRUCT *cstruct)
 }
 
 /* Copy drawing context */
+#if 0
 static void WmfCopyUserData(CSTRUCT *cstruct, DC *old, DC *new)
 {
   puts("WmfCopyUserData()");
 }
+#endif
 
 static void WmfCopyXpm(CSTRUCT *cstruct,
                        unsigned short src_x, unsigned short src_y,
@@ -502,6 +504,13 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
   puts("WmfDrawText()");
 }
 
+#if 0
+static void WmfFrameRgn(CSTRUCT *cstruct,WINEREGION *rgn,U16 width,U16 height)
+{
+  puts("WmfFrameRgn()");
+}
+#endif
+
 /* Extended floodfill. Fill to border color, or fill color at point. */
 static void WmfExtFloodFill(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
@@ -519,9 +528,6 @@ static void WmfFinish(CSTRUCT *cstruct)
   ImageInfo*        image_info;
   DrawInfo*         draw_info;
   ExceptionInfo     exception_info;
-  Image*            image;
-  char*             mvg;
-  char buff[MaxTextExtent];
 
   if( cstruct->preparse == 0 )
     {
@@ -568,10 +574,12 @@ static void WmfParseROP(CSTRUCT *cstruct, unsigned int dwROP,
 }
 
 /* Restore drawing context */
+#if 0
 static void WmfRestoreUserData(CSTRUCT *cstruct, DC *new)
 {
   puts("WmfRestoreUserData()");
 }
+#endif
 
 /* Set pixel to specified color */
 static void WmfSetPixel(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
@@ -604,12 +612,11 @@ static void WmfSetPenStyle(CSTRUCT *cstruct, LOGPEN *pen, DC *currentDC)
 
 static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  char *in;
   HMETAFILE file;
   CSTRUCT rstruct;
   CSTRUCT *cstruct = &rstruct;
-  int brect[8];
   char buff[MaxTextExtent];
+  char filename[MaxTextExtent];
   IM* im;
   ImageInfo* local_info;
   Image* image;
@@ -619,19 +626,21 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   wmfinit(cstruct);
   wmffunctions = &WmfFunctions;
 
+  strcpy(filename,image_info->filename);
+
   cstruct->userdata = (void *)&im;
   ((IM*)cstruct->userdata)->mvg=AcquireMemory(sizeof(char)*MaxTextExtent);
   strcpy(((IM*)cstruct->userdata)->mvg,"");
   ((IM*)cstruct->userdata)->image=(Image*)NULL;
 
-  if (1 == FileIsPlaceable(image_info->filename))
+  if (1 == FileIsPlaceable(filename))
     {
-      file = GetPlaceableMetaFile(image_info->filename);
+      file = GetPlaceableMetaFile(filename);
       if (file != NULL)
         wmffunctions->set_pmf_size(cstruct,file);
     }
   else
-    file = GetMetaFile(image_info->filename);
+    file = GetMetaFile(filename);
 
   if (file == NULL)
     {
@@ -645,7 +654,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   /* Create white canvas image */
   local_info = (ImageInfo*)AcquireMemory(sizeof(ImageInfo));
-  if(local_info == (char*)NULL)
+  if(local_info == (ImageInfo*)NULL)
     {
       LiberateMemory((void**)&((IM*)cstruct->userdata)->mvg);
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
@@ -654,8 +663,8 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   sprintf( buff, "%ix%i", (int)cstruct->realwidth, (int)cstruct->realheight );
   CloneString(&local_info->size, buff);
   strcpy( local_info->filename, "XC:#FFFFFF" );
-  GetExceptionInfo(&exception);
-  ((IM*)cstruct->userdata)->image = ReadImage( local_info, &exception );
+  GetExceptionInfo(exception);
+  ((IM*)cstruct->userdata)->image = ReadImage( local_info, exception );
   if(((IM*)cstruct->userdata)->image == (Image*)NULL)
     {
       LiberateMemory((void**)&file->pmh);
