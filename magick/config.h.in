@@ -212,6 +212,12 @@
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
 
+/* Define if you have the <freetype.h> header file.  */
+#undef HAVE_FREETYPE_H
+
+/* Define if you have the <freetype/freetype.h> header file.  */
+#undef HAVE_FREETYPE_FREETYPE_H
+
 /* Define if you have the <malloc.h> header file.  */
 #undef HAVE_MALLOC_H
 
@@ -247,6 +253,9 @@
 
 /* Define if you have the <sys/types.h> header file.  */
 #undef HAVE_SYS_TYPES_H
+
+/* Define if you have the <tiffconf.h> header file.  */
+#undef HAVE_TIFFCONF_H
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H

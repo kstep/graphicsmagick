@@ -3,7 +3,7 @@ dnl Currently maintained by Bob Friesenhahn, bfriesen@simple.dallas.tx.us
 #
 # ImageMagick Configure Script
 #
-# Report ImageMagick configure bugs to bfriesen@simple.dallas.tx.us
+# Report ImageMagick configure bugs via http://www.simplesystems.org/ImageMagick/bugs
 #
 
 AC_INIT(magick/magick.h)
@@ -769,7 +769,13 @@ then
     AC_CHECKING(for TrueType Font support ...)
     failed=0;
     passed=0;
-    AC_CHECK_HEADER(freetype.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_HEADERS(freetype.h freetype/freetype.h)
+    if test "$ac_cv_header_freetype_h" = 'yes' -o "$ac_cv_header_freetype_freetype_h" = 'yes'
+    then
+	passed=`expr $passed + 1`
+    else
+	failed=`expr $failed + 1`
+    fi
     AC_CHECK_LIB(ttf,TT_Init_FreeType,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if FreeType package is complete)
     if test $passed -gt 0
@@ -816,6 +822,7 @@ then
 	AC_DEFINE(HasTIFF)
 	AC_MSG_RESULT(yes)
 	have_tiff='yes'
+	AC_CHECK_HEADERS(tiffconf.h)
     fi
     else
     AC_MSG_RESULT(no)
