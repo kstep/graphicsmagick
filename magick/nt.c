@@ -1309,7 +1309,7 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
       LiberateMemory((void **) &geometry);
     }
   hDC=GetDC(NULL);
-  if (!hDC) 
+  if (!hDC)
     ThrowReaderException(FatalException,"failed to create a DC",image);
   /*
     Initialize the bitmap header info.
@@ -1327,7 +1327,7 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
   if (!hBitmap)
     ThrowReaderException(FatalException,"failed to create bitmap",image);
   hDC=CreateCompatibleDC(NULL);
-  if (!hDC) 
+  if (!hDC)
     {
       DeleteObject(hBitmap);
       ThrowReaderException(FatalException,"failed to create a memory DC",image);
@@ -1339,11 +1339,27 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
       DeleteObject(hBitmap);
       ThrowReaderException(FatalException,"failed to create bitmap",image);
     }
-  memset(ppBits,0xFF,image->columns*image->rows*sizeof(RGBQUAD));
+  /*
+    Initialize the bitmap to the image background color.
+  */
+  pBits=ppBits;
+  for (y=0; y < (long) image->rows; y++)
+  {
+    for (x=0; x < (long) image->columns; x++)
+    {
+      pBits->rgbRed=DownScale(image->background_color.red);
+      pBits->rgbGreen=DownScale(image->background_color.green);
+      pBits->rgbBlue=DownScale(image->background_color.blue);
+      pBits++;
+    }
+  }
   rect.top=0;
   rect.left=0;
   rect.right=image->columns;
   rect.bottom=image->rows;
+  /*
+    Convert metafile pixels.
+  */
   PlayEnhMetaFile(hDC,hemf,&rect);
   pBits=ppBits;
   for (y=0; y < (long) image->rows; y++)
