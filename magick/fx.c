@@ -923,7 +923,7 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
 MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   ExceptionInfo *exception)
 {
-#define GetBit(a,i) (((a) >> (i)) & 1UL)
+#define GetBit(a,i) (((a) >> (i)) & 0x01)
 #define SetBit(a,i,set) \
   a=(Quantum) ((set) ? (a) | (1UL << (i)) : (a) & ~(1UL << (i)))
 #define SteganoImageText  "  Hide image...  "
