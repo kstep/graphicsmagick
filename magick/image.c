@@ -4539,8 +4539,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("-tile",option) == 0)
           {
+            ExceptionInfo
+              exception;
+
             (void) strcpy(clone_info->filename,argv[++i]);
-            draw_info->tile=ReadImage(clone_info,&(*image)->exception);
+            draw_info->tile=ReadImage(clone_info,&exception);
             continue;
           }
         if (LocaleNCompare("-transparent",option,8) == 0)
