@@ -1784,16 +1784,20 @@ static unsigned int ModifyCache(Image *image)
 
 static unsigned int ExtendCache(int file,off_t length)
 {
-  struct stat
-    attributes;
+  off_t
+    count,
+    offset;
 
-  if (fstat(file,&attributes) < 0)
+  offset=lseek(file,0,SEEK_END);
+  if (offset < 0)
     return(False);
-  if (attributes.st_size >= length)
+  if (offset >= length)
     return(True);
-  if (lseek(file,length-1,SEEK_SET) < 0)
+  offset=lseek(file,length-1,SEEK_SET);
+  if (offset < 0)
     return(False);
-  if (write(file,(void *) "",1) != 1)
+  count=write(file,(void *) "",1);
+  if (count != 1)
     return(False);
   return(True);
 }

@@ -434,8 +434,8 @@ static void *LogToBlob(const char *filename,size_t *length,
   int
     file;
 
-  struct stat
-    attributes;
+  off_t
+    offset;
 
   unsigned char
     *blob;
@@ -449,13 +449,13 @@ static void *LogToBlob(const char *filename,size_t *length,
   file=open(filename,O_RDONLY | O_BINARY,0777);
   if (file == -1)
     return((void *) NULL);
-  if ((fstat(file,&attributes) < 0) ||
-      (attributes.st_size != (size_t) attributes.st_size))
+  offset=lseek(file,0,SEEK_END);
+  if ((offset < 0) || (offset != (size_t) offset))
     {
       (void) close(file);
       return((void *) NULL);
     }
-  *length=(size_t) attributes.st_size;
+  *length=(size_t) offset;
   blob=(unsigned char *) AcquireMemory(*length+1);
   if (blob == (unsigned char *) NULL)
     {

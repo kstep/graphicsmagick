@@ -541,8 +541,8 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
   int
     file;
 
-  struct stat
-    attributes;
+  off_t
+    offset;
 
   unsigned char
     *blob;
@@ -559,15 +559,15 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
       ThrowException(exception,BlobError,"UnableToOpenFile",filename);
       return((void *) NULL);
     }
-  if ((fstat(file,&attributes) < 0) ||
-      (attributes.st_size != (size_t) attributes.st_size))
+  offset=lseek(file,0,SEEK_END);
+  if ((offset < 0) || (offset != (size_t) offset))
     {
       (void) close(file);
       ThrowException(exception,BlobError,"UnableToCreateBlob",
         "MemoryAllocationFailed");
       return((void *) NULL);
     }
-  *length=(size_t) attributes.st_size;
+  *length=(size_t) offset;
   blob=(unsigned char *) AcquireMemory(*length+1);
   if (blob == (unsigned char *) NULL)
     {
