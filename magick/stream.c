@@ -450,11 +450,13 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
     }
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
-  if (image->storage_class != GetCacheClassType(image->cache))
+  if ((image->storage_class != GetCacheClass(image->cache)) ||
+      (image->colorspace != GetCacheColorspace(image->cache)))
     {
-      if (GetCacheClassType(image->cache) == UndefinedClass)
+      if (GetCacheClass(image->cache) == UndefinedClass)
         (void) image->fifo(image,(const void *) NULL,stream_info->columns);
       stream_info->storage_class=image->storage_class;
+      stream_info->colorspace=image->colorspace;
       stream_info->columns=image->columns;
       stream_info->rows=image->rows;
       image->cache=stream_info;
@@ -464,7 +466,8 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
   */
   number_pixels=stream_info->columns*stream_info->rows;
   length=number_pixels*sizeof(PixelPacket);
-  if (image->storage_class == PseudoClass)
+  if ((image->storage_class == PseudoClass) ||
+      (image->colorspace != RGBColorspace))
     length+=number_pixels*sizeof(IndexPacket);
   if (stream_info->pixels == (PixelPacket *) NULL)
     stream_info->pixels=(PixelPacket *) AcquireMemory(length);

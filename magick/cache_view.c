@@ -151,7 +151,8 @@ MagickExport PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
   if (IsNexusInCore(image->cache,view->id))
     return(pixels);
   status=ReadCachePixels(image->cache,view->id);
-  if (image->storage_class == PseudoClass)
+  if ((image->storage_class == PseudoClass) ||
+      (image->colorspace != RGBColorspace))
     status|=ReadCacheIndexes(image->cache,view->id);
   if (status == False)
     {
@@ -273,7 +274,8 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
   assert(image->signature == MagickSignature);
   if (image->cache == (Cache) NULL)
     GetCacheInfo(&image->cache);
-  if (image->storage_class != GetCacheClassType(image->cache))
+  if ((image->storage_class != GetCacheClass(image->cache)) ||
+      (image->colorspace != GetCacheColorspace(image->cache)))
     {
       /*
         Allocate pixel cache.
@@ -413,7 +415,8 @@ MagickExport unsigned int SyncCacheView(ViewInfo *view)
   if (IsNexusInCore(image->cache,view->id))
     return(True);
   status=WriteCachePixels(image->cache,view->id);
-  if (image->storage_class == PseudoClass)
+  if ((image->storage_class == PseudoClass) ||
+      (image->colorspace != RGBColorspace))
     status|=WriteCacheIndexes(image->cache,view->id);
   if (status == False)
     ThrowBinaryException(CacheWarning,"Unable to sync pixel cache",
