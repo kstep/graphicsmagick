@@ -1,5 +1,12 @@
+2003-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/logo.c, Copyright.txt, www/Copyright.html: Acknowledge
+	and respect the XFig copyright.
+
 2003-05-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/image.h (RoundToQuantum): New macro to round positive
+	double to Quantum.
 	* magick/xwindow.c, magick/xwindow.h, magick/studio.h: Use FreeBSD
 	portability fixes from FreeBSD ports collection.
 	* configure.ac: Test for <machine/param.h> as used by some *BSD systems.

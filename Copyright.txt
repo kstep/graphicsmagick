@@ -145,6 +145,25 @@ follows.
   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 6)
+
+  Many of the pattern images in coders/logo.c are derived from XFig,
+  which is distributed under the following license:
+ 
+  FIG : Facility for Interactive Generation of figures
+  Copyright (c) 1985-1988 by Supoj Sutanthavibul
+  Parts Copyright (c) 1989-2000 by Brian V. Smith
+  Parts Copyright (c) 1991 by Paul King
+ 
+  Any party obtaining a copy of these files is granted, free of charge, a
+  full and unrestricted irrevocable, world-wide, paid up, royalty-free,
+  nonexclusive right and license to deal in this software and
+  documentation files (the "Software"), including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense,
+  and/or sell copies of the Software, and to permit persons who receive
+  copies from any such party to do so, with the only requirement being
+  that this copyright notice remain intact.
+
+7)
   The C++ API known as "Magick++", and which resides in the Magick++
   directory, is distributed under the following license:
 
@@ -171,7 +190,7 @@ follows.
   contract, tort or otherwise, arising from, out of or in connection
   with Magick++ or the use or other dealings in Magick++.
 
-7)
+8)
   GraphicsMagick makes use of third-party "delegate" libraries to
   support certain optional features. These libraries bear their own
   copyrights and licenses, which may be more or less restrictive than the
