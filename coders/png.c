@@ -122,6 +122,7 @@ png_byte FARDATA mng_JDAT[5] = { 74,  68,  65,  84, '\0'};
 png_byte FARDATA mng_JHDR[5] = { 74,  72,  68,  82, '\0'};
 png_byte FARDATA mng_JSEP[5] = { 74,  83,  69,  80, '\0'};
 png_byte FARDATA mng_LOOP[5] = { 76,  79,  79,  80, '\0'};
+png_byte FARDATA mng_MAGN[5] = { 77,  65,  71,  78, '\0'};
 png_byte FARDATA mng_MEND[5] = { 77,  69,  78,  68, '\0'};
 png_byte FARDATA mng_MOVE[5] = { 77,  79,  86,  69, '\0'};
 png_byte FARDATA mng_PAST[5] = { 80,  65,  83,  84, '\0'};
@@ -273,6 +274,7 @@ typedef struct _MngInfo
     clon_warning,
     dhdr_warning,
     jhdr_warning,
+    magn_warning,
     past_warning,
     phyg_warning,
     phys_warning,
@@ -296,6 +298,19 @@ typedef struct _MngInfo
     basi_alpha,
     basi_viewable;
 #endif
+
+  png_uint_16
+    magn_first,
+    magn_last,
+    magn_mb,
+    magn_ml,
+    magn_mr,
+    magn_mt,
+    magn_mx,
+    magn_my,
+    magn_methx,
+    magn_methy;
+
 } MngInfo;
 #endif
 
@@ -1184,11 +1199,15 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       mng_info->clon_warning=False;
       mng_info->dhdr_warning=False;
       mng_info->jhdr_warning=False;
+      mng_info->magn_warning=False;
       mng_info->past_warning=False;
       mng_info->phyg_warning=False;
       mng_info->phys_warning=False;
       mng_info->sbit_warning=False;
       mng_info->show_warning=False;
+      mng_info->magn_methx=0;
+      mng_info->magn_methy=0;
+
       for (i=0; i < MNG_MAX_OBJECTS; i++)
       {
         mng_info->exists[i]=False;
@@ -1857,6 +1876,114 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 "CLON is not implemented yet",image->filename);
             mng_info->clon_warning++;
           }
+        if (!memcmp(type,mng_MAGN,4))
+          {
+            png_uint_16
+              magn_first,
+              magn_last,
+              magn_mb,
+              magn_ml,
+              magn_mr,
+              magn_mt,
+              magn_mx,
+              magn_my,
+              magn_methx,
+              magn_methy;
+
+            if (length > 1)
+              magn_first=(p[0] << 8) | p[1];
+            else
+              magn_first=0;
+            if (length > 3)
+              magn_last=(p[2] << 8) | p[3];
+            else
+              magn_last=magn_first;
+#ifndef MNG_OBJECT_BUFFERS
+            if (magn_first || magn_last)
+              if (!mng_info->magn_warning)
+                {
+                  ThrowException(&image->exception,DelegateWarning,
+                     "MAGN is not implemented yet for nonzero objects",
+                     image->filename);
+                   mng_info->magn_warning++;
+                }
+#endif
+            if (length > 4)
+              magn_methx=p[4];
+            else
+              magn_methx=0;
+
+            if (length > 6)
+              magn_mx=(p[5] << 8) | p[6];
+            else
+              magn_mx=1;
+            if (magn_mx == 0)
+              magn_mx=1;
+
+            if (length > 8)
+              magn_my=(p[7] << 8) | p[8];
+            else
+              magn_my=magn_mx;
+            if (magn_my == 0)
+              magn_my=1;
+
+            if (length > 10)
+              magn_ml=(p[9] << 8) | p[10];
+            else
+              magn_ml=magn_mx;
+            if (magn_ml == 0)
+              magn_ml=1;
+
+            if (length > 12)
+              magn_mr=(p[11] << 8) | p[12];
+            else
+              magn_mr=magn_mx;
+            if (magn_mr == 0)
+              magn_mr=1;
+
+            if (length > 14)
+              magn_mt=(p[13] << 8) | p[14];
+            else
+              magn_mt=magn_my;
+            if (magn_mt == 0)
+              magn_mt=1;
+
+            if (length > 16)
+              magn_mb=(p[15] << 8) | p[16];
+            else
+              magn_mb=magn_my;
+            if (magn_mb == 0)
+              magn_mb=1;
+
+            if (length > 17)
+              magn_methy=p[17];
+            else
+              magn_methy=magn_methx;
+
+            if (magn_methx > 5 || magn_methy > 5)
+              if (!mng_info->magn_warning)
+                {
+                  ThrowException(&image->exception,DelegateWarning,
+                     "Unknown MAGN method in MNG datastream",
+                     image->filename);
+                   mng_info->magn_warning++;
+                }
+#ifdef MNG_OBJECT_BUFFERS
+          /* Magnify existing objects in the range magn_first to magn_last */
+#endif
+            if (magn_first == 0 || magn_last == 0)
+              {
+                /* Save the magnification factors for object 0 */
+                mng_info->magn_mb=magn_mb;
+                mng_info->magn_ml=magn_ml;
+                mng_info->magn_mr=magn_mr;
+                mng_info->magn_mt=magn_mt;
+                mng_info->magn_mx=magn_mx;
+                mng_info->magn_my=magn_my;
+                mng_info->magn_methx=magn_methx;
+                mng_info->magn_methy=magn_methy;
+              }
+          }
         if (!memcmp(type,mng_PAST,4))
           {
             if (!mng_info->past_warning)
@@ -2518,6 +2645,16 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image->colormap[i].blue=UpScale(palette[i].blue);
             }
           }
+#if (QuantumDepth == 8)         
+        else
+          if (ping_info->bit_depth > QuantumDepth)
+            for (i=0; i < 256; i++)
+            {
+              image->colormap[i].red=i;
+              image->colormap[i].green=i;
+              image->colormap[i].blue=i;
+            }
+#endif
       }
     /*
       Read image scanlines.
@@ -2534,10 +2671,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert image to DirectClass pixel packets.
         */
-        if ((ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
+        image->matte=((ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
             (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
-            (ping_info->valid & PNG_INFO_tRNS))
-          image->matte=True;
+            (ping_info->valid & PNG_INFO_tRNS));
         for (y=0; y < (int) image->rows; y++)
         {
           if (!SetImagePixels(image,0,y,image->columns,1))
@@ -2672,6 +2808,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     q->opacity=MaxRGB-(*p++);
                     p++;
+                    q++;
                   }
 #endif
               }
@@ -2873,6 +3010,311 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         MngBox
           crop_box;
+
+        if (mng_info->magn_methx || mng_info->magn_methy)
+          {
+            png_uint_32
+               magnified_height,
+               magnified_width;
+
+            if(mng_info->magn_methx == 1)
+              {
+                magnified_width=mng_info->magn_ml;
+                if (image->columns > 1)
+                   magnified_width += mng_info->magn_mr;
+                if (image->columns > 2)
+                   magnified_width += (image->columns-2)*(mng_info->magn_mx);
+              }
+            else
+              {
+                magnified_width=image->columns;
+                if (image->columns > 1)
+                   magnified_width += mng_info->magn_ml-1;
+                if (image->columns > 2)
+                   magnified_width += mng_info->magn_mr-1;
+                if (image->columns > 3)
+                   magnified_width += (image->columns-3)*(mng_info->magn_mx-1);
+              }
+            if(mng_info->magn_methy == 1)
+              {
+                magnified_height=mng_info->magn_mt;
+                if (image->rows > 1)
+                   magnified_height += mng_info->magn_mb;
+                if (image->rows > 2)
+                   magnified_height += (image->rows-2)*(mng_info->magn_my);
+              }
+            else
+              {
+                magnified_height=image->rows;
+                if (image->rows > 1)
+                   magnified_height += mng_info->magn_mt-1;
+                if (image->rows > 2)
+                   magnified_height += mng_info->magn_mb-1;
+                if (image->rows > 3)
+                   magnified_height += (image->rows-3)*(mng_info->magn_my-1);
+              }
+            if (magnified_height > image->rows ||
+                magnified_width > image->columns)
+              {
+                Image *
+                  large_image;
+
+                int
+                  m,
+                  y,
+                  yy;
+
+/*
+                register IndexPacket
+                  *indexes;
+*/
+
+                register int
+                  i,
+                  x;
+
+                register PixelPacket
+                  *n,
+                  *p,
+                  *q;
+
+                PixelPacket
+                  *next,
+                  *prev;
+
+                size_t
+                  length;
+
+                png_uint_16
+                  magn_methx,
+                  magn_methy;
+
+                if (GetPixels(image) != (PixelPacket *) NULL)
+                  {
+                    AllocateNextImage(image_info,image);
+                    if (image->next == (Image *) NULL)
+                      {
+                         DestroyImages(image);
+                         MngInfoFreeStruct(mng_info,&have_mng_structure);
+                         ThrowReaderException(ResourceLimitWarning,
+                           "Memory allocation failed while magnifying", image);
+                         return((Image *) NULL);
+                      }
+                   }
+
+                large_image=image->next;
+                large_image->blob=image->blob;
+                large_image->columns=magnified_width;
+                large_image->rows=magnified_height;
+
+                magn_methx=mng_info->magn_methx;
+                magn_methy=mng_info->magn_methy;
+
+                if (image->matte)
+                   SetImage(large_image,TransparentOpacity);
+                else
+                  {
+                    SetImage(large_image,OpaqueOpacity);
+                    if (magn_methx == 4)
+                      magn_methx = 2;
+                    if (magn_methx == 5)
+                      magn_methx = 3;
+                    if (magn_methy == 4)
+                      magn_methy = 2;
+                    if (magn_methy == 5)
+                      magn_methy = 3;
+                  }
+
+                /* magnify the rows into the right side of the large image */
+
+                m=mng_info->magn_mt;
+                yy=0;
+                length=(size_t) (image->columns*sizeof(PixelPacket));
+                next=(PixelPacket *) AcquireMemory(length);
+                prev=(PixelPacket *) AcquireMemory(length);
+                if ((prev == (PixelPacket *) NULL) ||
+                    (next == (PixelPacket *) NULL))
+                  {
+                     DestroyImages(image);
+                     MngInfoFreeStruct(mng_info,&have_mng_structure);
+                     ThrowReaderException(ResourceLimitWarning,
+                       "Memory allocation failed while magnifying", image);
+                     return((Image *) NULL);
+                  }
+                n=GetImagePixels(image,0,0,image->columns,1);
+                memcpy(next,n,length);
+                for (y=0; y < (int) image->rows; y++)
+                {
+                  if (y == 0)
+                    m=mng_info->magn_mt;
+                  else if (magn_methy > 1 && y == image->rows-2)
+                    m=mng_info->magn_mb;
+                  else if (magn_methy <= 1 && y == image->rows-1)
+                    m=mng_info->magn_mb;
+                  else if (magn_methy > 1 && y == image->rows-1)
+                    m=1;
+                  else
+                    m=mng_info->magn_my;
+                  n=prev;
+                  prev=next;
+                  next=n;
+                  if (y < (int) image->rows-1)
+                    {
+                      n=GetImagePixels(image,0,y+1,image->columns,1);
+                      memcpy(next,n,length);
+                    }
+                  for (i=0; i<m; i++, yy++)
+                  {
+                    assert(yy < large_image->rows);
+                    p=prev;
+                    n=next;
+                    q=SetImagePixels(large_image,0,yy,large_image->columns,1);
+                    q+=(large_image->columns-image->columns);
+                    for (x=0; x < (int) image->columns; x++)
+                    {
+                      if (image->storage_class == PseudoClass)
+                        /* TO DO: get color as function of indexes[x] */;
+                      if (magn_methy <= 1)
+                        {
+                          *q=(*p); /* replicate previous */
+                        }
+                      else if (magn_methy == 2 || magn_methy == 4)
+                        {
+                          if (i == 0)
+                             *q=(*p);
+                          else
+                            {
+                              /* Interpolate */
+                              (*q).red=(2*i*((*n).red-(*p).red)+m)
+                                 /(m*2)+(*p).red;
+                              (*q).green=(2*i*((*n).green-(*p).green)+m)
+                                 /(m*2)+(*p).green;
+                              (*q).blue=(2*i*((*n).blue-(*p).blue)+m)
+                                 /(m*2)+(*p).blue;
+                              if (image->matte)
+                                 (*q).opacity=(2*i*((*n).opacity-(*p).opacity)+m)
+                                    /(m*2)+(*p).opacity;
+                            }
+                          if (magn_methy == 4)
+                            {
+                              /* Replicate nearest */
+                              if (i <= ((m+1)<<1))
+                                 (*q).opacity=(*p).opacity+0;
+                              else
+                                 (*q).opacity=(*n).opacity+0;
+                            }
+                        }
+                      else /* if (magn_methy == 3 || magn_methy == 5) */
+                        {
+                          /* Replicate nearest */
+                          if (i <= ((m+1)<<1))
+                             *q=(*p);
+                          else
+                             *q=(*n);
+                          if (magn_methy == 5)
+                            {
+                              (*q).opacity=(2*i*((*n).opacity-(*p).opacity)+m)
+                                 /(m*2)+(*p).opacity;
+                            }
+                        }
+                      n++;
+                      q++;
+                      p++;
+                    } /* x */
+                    if (!SyncImagePixels(large_image))
+                      break;
+                  } /* i */
+                } /* y */
+                LiberateMemory((void **) &prev);
+                LiberateMemory((void **) &next);
+
+                length=image->columns;
+                large_image->previous=image->previous;
+                if (image->previous)
+                   image->previous->next=large_image;
+                image->orphan=True;
+                image->file=(FILE *) NULL;
+                image->blob.mapped=False;
+                DestroyImage(image);
+                image=large_image;
+                mng_info->image=image;
+
+                /* magnify the columns */
+
+                for (y=0; y < (int) image->rows; y++)
+                {
+                  q=GetImagePixels(image,0,y,image->columns,1);
+                  p=q+(image->columns-length);
+                  n=p+1;
+                  for (x=(image->columns-length); x < (int) image->columns; x++)
+                  {
+                    if (x == image->columns-length)
+                      m=mng_info->magn_ml;
+                    else if (magn_methx > 1 && x == image->columns-2)
+                      m=mng_info->magn_mr;
+                    else if (magn_methx <= 1 && x == image->columns-1)
+                      m=mng_info->magn_mr;
+                    else if (magn_methx > 1 && x == image->columns-1)
+                      m=1;
+                    else
+                      m=mng_info->magn_mx;
+                    for (i=0; i<m; i++)
+                    {
+                      if (magn_methx <= 1)
+                        {
+                          /* replicate previous */
+                          *q=(*p);
+                        }
+                      else if (magn_methx == 2 || magn_methx == 4)
+                        {
+                          if (i == 0)
+                            *q=(*p);
+                          else
+                            {
+                              /* Interpolate */
+                              (*q).red=(2*i*((*n).red-(*p).red)+m)
+                                 /(m*2)+(*p).red;
+                              (*q).green=(2*i*((*n).green-(*p).green)+m)
+                                 /(m*2)+(*p).green;
+                              (*q).blue=(2*i*((*n).blue-(*p).blue)+m)
+                                 /(m*2)+(*p).blue;
+                              if (image->matte)
+                                 (*q).opacity=(2*i*((*n).opacity-(*p).opacity)+m)
+                                   /(m*2)+(*p).opacity;
+                            }
+                          if (magn_methx == 4)
+                            {
+                              /* Replicate nearest */
+                              if (i <= ((m+1)<<1))
+                                 (*q).opacity=(*p).opacity+0;
+                              else
+                                 (*q).opacity=(*n).opacity+0;
+                            }
+                        }
+                      else /* if (magn_methx == 3 || magn_methx == 5) */
+                        {
+                          /* Replicate nearest */
+                          if (i <= ((m+1)<<1))
+                             *q=(*p);
+                          else
+                             *q=(*n);
+                          if (magn_methx == 5)
+                            {
+                              /* Interpolate */
+                              (*q).opacity=(2*i*((*n).opacity-(*p).opacity)+m)
+                                 /(m*2)+(*p).opacity;
+                            }
+                        }
+                      q++;
+                    }
+                    n++;
+                    p++;
+                  }
+                  if (!SyncImagePixels(image))
+                    break;
+                }
+              }
+          }
 
         /*
           Crop_box is with respect to the upper left corner of the MNG.
