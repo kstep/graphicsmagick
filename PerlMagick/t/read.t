@@ -58,7 +58,7 @@ print("Gradient (gradual passing from one shade to another) ...\n");
 ++$test;
 testRead( 'gradient:red-blue',
   '7f708830d2766a485e07526173008906a7154ac50088d2ac58be41a0bbf987c1',
-  '455f985c3755024be2a0165774166d8dcee66edb9b5381b9569605cb29b102d5' );
+  'a998be3784293c29adaeab7d6d2dcea78211b9768a0f9e0066975cc442af6e58' );
 
 print("GRANITE (granite texture) ...\n");
 ++$test;

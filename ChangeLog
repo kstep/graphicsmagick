@@ -1,6 +1,6 @@
 2002-10-21  Leonard Rosenthol <leonardr@lazerware.com>
-  * PDF coder no longer uses ASCII85 encoding with TIFF for
-    MUCH smaller files!
+  * PDF coder no longer uses ASCII85 encoding with TIFF for MUCH smaller
+    files!
   * Cleaned up a few other things in PDF coder.
 
 2002-10-19  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>

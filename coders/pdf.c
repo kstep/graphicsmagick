@@ -191,15 +191,9 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
   for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
   {
-    // Ascii85Initialize(image);
     count=TIFFReadRawStrip(tiff,(uint32) i,buffer,(long) byte_count[i]);
     if (fillorder == FILLORDER_LSB2MSB)
       TIFFReverseBits(buffer,count);
-/*
-    for (j=0; j < count; j++)
-      Ascii85Encode(image,(unsigned long) buffer[j]);
-    Ascii85Flush(image);
-*/
   }
   LiberateMemory((void **) &buffer);
   TIFFClose(tiff);
@@ -1049,7 +1043,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       case ZipCompression: FormatString(buffer,CFormat,"FlateDecode"); break;
       case FaxCompression:
       {
-        // (void) strcpy(buffer,"/Filter [ /ASCII85Decode /CCITTFaxDecode ]\n");
         (void) strcpy(buffer,"/Filter [ /CCITTFaxDecode ]\n");
         (void) WriteBlobString(image,buffer);
         FormatString(buffer,
@@ -1451,7 +1444,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       case ZipCompression: FormatString(buffer,CFormat,"FlateDecode"); break;
       case FaxCompression:
       {
-        // (void) strcpy(buffer,"/Filter [ /ASCII85Decode /CCITTFaxDecode ]\n");
         (void) strcpy(buffer,"/Filter [ /CCITTFaxDecode ]\n");
         (void) WriteBlobString(image,buffer);
         FormatString(buffer,
