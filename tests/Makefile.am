@@ -5,7 +5,7 @@
 #
 AUTOMAKE_OPTIONS = 1.2 foreign
 
-INCLUDES = -I../magick
+INCLUDES = -I../ -I$(top_srcdir)
 
 #
 # Execute 'make check' to compile and run a test program
