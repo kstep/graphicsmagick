@@ -464,9 +464,6 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   register int
     x;
 
-  register char
-    *q;
-
   register IndexPacket
     *indexes;
 

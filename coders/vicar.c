@@ -145,9 +145,6 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   Image
     *image;
 
-  IndexPacket
-    index;
-
   int
     c,
     y;

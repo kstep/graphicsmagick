@@ -8583,9 +8583,7 @@ MagickExport void XUserPreferences(XResourceInfo *resource_info)
     cache[MaxTextExtent],
     *client_name,
     filename[MaxTextExtent],
-    specifier[MaxTextExtent];
-
-  const char
+    specifier[MaxTextExtent],
     *value;
 
   XrmDatabase
