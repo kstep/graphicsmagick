@@ -2908,8 +2908,8 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                         stroke_opacity=1.0;
                       else
                         {
-                          beta=distance;
-                          if (beta != 1.0)
+                          beta=1.0;
+                          if (distance != 1.0)
                             beta=sqrt(distance);
                           alpha=beta-mid-0.5;
                           stroke_opacity=Max(stroke_opacity,alpha*alpha);
