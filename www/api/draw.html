@@ -46,7 +46,7 @@
 <P>DrawInfo * <STRONG>CloneDrawInfo</STRONG>( const ImageInfo *image_info, const DrawInfo *draw_info );</P>
 <P>unsigned int  <STRONG>ColorFloodfillImage</STRONG>( Image *image, const DrawInfo *draw_info, const PixelPacket target, const long x_offset, const long y_offset, const PaintMethod method );</P>
 <P>void  <STRONG>DestroyDrawInfo</STRONG>( DrawInfo *draw_info );</P>
-<P>unsigned int  <STRONG>DrawClipPath</STRONG>( Image *image, DrawInfo *draw_info );</P>
+<P>unsigned int  <STRONG>DrawClipPath</STRONG>( Image *image, DrawInfo *draw_info, const char *name );</P>
 <P>unsigned int  <STRONG>DrawImage</STRONG>( Image *image, DrawInfo *draw_info );</P>
 <P>unsigned int  <STRONG>DrawPatternPath</STRONG>( Image *image, DrawInfo *draw_info, const char *name, Image ** pattern );</P>
 <P>unsigned int  <STRONG>MatteFloodfillImage</STRONG>( Image *image, const PixelPacket target, const unsigned int opacity, const long x_offset, const long y_offset, const PaintMethod method );</P>
@@ -113,7 +113,7 @@ The draw info.
 <P>
 <H2><A NAME="drawclippath">DrawClipPath</A></H2>
 <blockquote>DrawClipPath() draws the clip path on the image mask. </blockquote><P>The format of the DrawClipPath method is:</P>
-<blockquote>unsigned int DrawClipPath ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info ); </blockquote><P>
+<blockquote>unsigned int DrawClipPath ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, const char *name ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>image:</STRONG><BR>
@@ -123,6 +123,10 @@ The image.
 <dd><p></p><dt><STRONG>draw_info:</STRONG><BR>
 <DD>
 The draw info.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
+<DD>
+The name of the clip path.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="drawimage">DrawImage</A></H2>
@@ -152,7 +156,7 @@ The image.
 <DD>
 The draw info.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
+<dd><p></p><dt><STRONG>name:</STRONG><BR>
 <DD>
 The pattern name.
 <P></P>

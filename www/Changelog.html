@@ -23,6 +23,39 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2001-12-14  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
+	* Fixed some bugs in the new composite operators.
+
+2001-12-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+	* coders/wmf.c : Added native BLOB support.
+
+2001-12-13  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
+	* Added new composite operators to support PSD/XCF layer
+	  compositing:  NoCompositeOp, DarkenCompositeOp,
+	  LightenCompositeOp, HueCompositeOp, SaturateCompositeOp,
+	  ValueCompositeOp, ColorizeCompositeOp, LuminizeCompositeOp,
+	  ScreenCompositeOp, OverlayCompositeOp.
+	* Modified the PSD coder to set the appropriate composite
+	  operator.
+	* Modified the XCF coder to set the appropriate composite
+	  operator.
+
+2001-12-09  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
+	* Added new member to ImageInfo, flatten, used by
+	  PSD and XCF to determine whether to flatten an image when read.
+	* PSD and XCF now respect image_info-&gt;flatten.
+	* Fixed bug in XCF loader when loading layered image as layers.
+	* Modified the convert program to set image_info-&gt;flatten
+	  if -flatten is specified; we still call FlattenImages for
+	  other formats that don't respect image_info-&gt;flatten.
+	* Modified Magick++'s Image class to support image_info-&gt;flatten.
+
+2001-12-08  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
+	* Improvements to the Photoshop (PSD) coder:  1) added support
+	  for Duotone images loaded as grayscale as per PSD docs;  and
+	  2) added option to composite layers when reading respects layer
+	  visibility setting.
+		
 2001-12-07  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
 	* -dissolve wasn't working for the composite program (thanks to
 	  Rick Manbry).
