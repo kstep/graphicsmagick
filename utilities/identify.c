@@ -228,9 +228,7 @@ static int IdentifyUtility(int argc,char **argv)
           image=ReadImage(image_info,&exception);
         else
           image=PingImage(image_info,&exception);
-        if (exception.severity != UndefinedException)
-          MagickError(exception.severity,exception.reason,
-            exception.description);
+        CatchException(&exception);
         status&=image != (Image *) NULL;
         if (image == (Image *) NULL)
           continue;

@@ -380,9 +380,7 @@ int main(int argc,char **argv)
           image_info->colorspace=quantize_info->colorspace;
           image_info->dither=quantize_info->dither;
           next_image=ReadImage(image_info,&exception);
-          if (exception.severity != UndefinedException)
-            MagickError(exception.severity,exception.reason,
-              exception.description);
+          CatchException(&exception);
           status&=next_image != (Image *) NULL;
           if (next_image == (Image *) NULL)
             continue;

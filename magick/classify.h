@@ -147,6 +147,7 @@ typedef enum
 typedef enum
 {
   UndefinedException,
+  WarningException = 300,
   ResourceLimitWarning = 300,
   TypeWarning = 305,
   OptionWarning = 310,
@@ -160,6 +161,7 @@ typedef enum
   XServerWarning = 385,
   RegistryWarning = 390,
   ConfigurationWarning = 395,
+  ErrorException = 400,
   ResourceLimitError = 400,
   TypeError = 405,
   OptionError = 410,

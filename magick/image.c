@@ -689,12 +689,7 @@ MagickExport ExceptionType CatchImageException(Image *image)
   assert(image->signature == MagickSignature);
   GetExceptionInfo(&exception);
   GetImageException(image,&exception);
-  if (exception.severity != UndefinedException)
-    {
-      if (exception.severity >= FatalException)
-        MagickError(exception.severity,exception.reason,exception.description);
-      MagickWarning(exception.severity,exception.reason,exception.description);
-    }
+  CatchException(&exception);
   DestroyExceptionInfo(&exception);
   return(exception.severity);
 }

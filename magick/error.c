@@ -80,6 +80,55 @@ static WarningHandler
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C a t c h E x c e p t i o n                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CatchException() returns if no exceptions is found otherwise it determines
+%  the most severe exception and reports it as a warning or error depending on
+%  the severity.
+%
+%  The format of the CatchException method is:
+%
+%      CatchException(ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o exception: The exception info.
+%
+%
+*/
+MagickExport void CatchException(const ExceptionInfo *exception)
+{
+  assert(exception != (ExceptionInfo *) NULL);
+  if ((exception->severity >= WarningException) &&
+      (exception->severity < ErrorException))
+    {
+      MagickWarning(exception->severity,exception->reason,
+        exception->description);
+      return;
+    }
+  if ((exception->severity >= ErrorException) &&
+      (exception->severity < FatalException))
+    {
+      MagickError(exception->severity,exception->reason,exception->description);
+      return;
+    }
+  if (exception->severity >= FatalException)
+    {
+      MagickFatalError(exception->severity,exception->reason,
+        exception->description);
+      return;
+    }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D e f a u l t E r r o r H a n d l e r                                     %
 %                                                                             %
 %                                                                             %

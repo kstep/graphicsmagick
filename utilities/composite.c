@@ -463,9 +463,7 @@ unsigned int CompositeUtility(int argc,char **argv)
         if (composite_image == (Image *) NULL)
           {
             composite_image=ReadImage(image_info,&exception);
-            if (exception.severity != UndefinedException)
-              MagickError(exception.severity,exception.reason,
-                exception.description);
+            CatchException(&exception);
             if (composite_image != (Image *) NULL)
               {
                 status&=MogrifyImages(image_info,i-j,argv+j,&composite_image);
@@ -480,9 +478,7 @@ unsigned int CompositeUtility(int argc,char **argv)
         if (image == (Image *) NULL)
           {
             image=ReadImage(image_info,&exception);
-            if (exception.severity != UndefinedException)
-              MagickError(exception.severity,exception.reason,
-                exception.description);
+            CatchException(&exception);
             if (image != (Image *) NULL)
               {
                 status&=MogrifyImages(image_info,i-j,argv+j,&image);
@@ -492,12 +488,9 @@ unsigned int CompositeUtility(int argc,char **argv)
             continue;
           }
         mask_image=ReadImage(image_info,&exception);
+        CatchException(&exception);
         if (mask_image == (Image *) NULL)
-          MagickFatalError(exception.severity,exception.reason,
-            exception.description);
-        if (exception.severity != UndefinedException)
-          MagickError(exception.severity,exception.reason,
-            exception.description);
+          exit(1);
         status&=mask_image != (Image *) NULL;
         if (mask_image != (Image *) NULL)
           {

@@ -539,28 +539,32 @@ static double constant(char *name,int sans)
     {
       if (strEQ(name,"BlobError"))
         return(BlobError);
-      if (strEQ(name,"BlobError"))
-        return(BlobError);
+      if (strEQ(name,"BlobWarning"))
+        return(BlobWarning);
       break;
     }
     case 'C':
     {
       if (strEQ(name,"CacheError"))
         return(CacheError);
-      if (strEQ(name,"CacheError"))
-        return(CacheError);
+      if (strEQ(name,"CacheWarning"))
+        return(CacheWarning);
+      if (strEQ(name,"ConfigurationError"))
+        return(ConfigurationError);
+      if (strEQ(name,"ConfigurationWarning"))
+        return(ConfigurationWarning);
       if (strEQ(name,"CorruptImageError"))
         return(CorruptImageError);
-      if (strEQ(name,"CorruptImageError"))
-        return(CorruptImageError);
+      if (strEQ(name,"CorruptImageWarning"))
+        return(CorruptImageWarning);
       break;
     }
     case 'D':
     {
       if (strEQ(name,"DelegateError"))
         return(DelegateError);
-      if (strEQ(name,"DelegateError"))
-        return(DelegateError);
+      if (strEQ(name,"DelegateWarning"))
+        return(DelegateWarning);
       break;
     }
     case 'F':
@@ -569,8 +573,8 @@ static double constant(char *name,int sans)
         return(FatalException);
       if (strEQ(name,"FileOpenError"))
         return(FileOpenError);
-      if (strEQ(name,"FileOpenError"))
-        return(FileOpenError);
+      if (strEQ(name,"FileOpenWarning"))
+        return(FileOpenWarning);
       break;
     }
     case 'M':
@@ -579,10 +583,8 @@ static double constant(char *name,int sans)
         return(MaxRGB);
       if (strEQ(name,"MissingDelegateError"))
         return(MissingDelegateError);
-      if (strEQ(name,"MissingDelegateError"))
-        return(MissingDelegateError);
-      if (strEQ(name,"MissingPluginWarning"))
-        return(MissingDelegateError);
+      if (strEQ(name,"MissingDelegateWarning"))
+        return(MissingDelegateWarning);
       break;
     }
     case 'O':
@@ -591,8 +593,8 @@ static double constant(char *name,int sans)
         return(OpaqueOpacity);
       if (strEQ(name,"OptionError"))
         return(OptionError);
-      if (strEQ(name,"OptionError"))
-        return(OptionError);
+      if (strEQ(name,"OptionWarning"))
+        return(OptionWarning);
       break;
     }
     case 'P':
@@ -605,16 +607,20 @@ static double constant(char *name,int sans)
     {
       if (strEQ(name,"ResourceLimitError"))
         return(ResourceLimitError);
-      if (strEQ(name,"ResourceLimitError"))
-        return(ResourceLimitError);
+      if (strEQ(name,"ResourceLimitWarning"))
+        return(ResourceLimitWarning);
+      if (strEQ(name,"RegistryError"))
+        return(RegistryError);
+      if (strEQ(name,"RegistryWarning"))
+        return(RegistryWarning);
       break;
     }
     case 'S':
     {
       if (strEQ(name,"StreamError"))
         return(StreamError);
-      if (strEQ(name,"StreamError"))
-        return(StreamError);
+      if (strEQ(name,"StreamWarning"))
+        return(StreamWarning);
       if (strEQ(name,"Success"))
         return(0);
       break;
@@ -623,14 +629,18 @@ static double constant(char *name,int sans)
     {
       if (strEQ(name,"Transparent"))
         return(TransparentOpacity);
+      if (strEQ(name,"TypeError"))
+        return(TypeError);
+      if (strEQ(name,"TypeWarning"))
+        return(TypeWarning);
       break;
     }
     case 'X':
     {
       if (strEQ(name,"XServerError"))
         return(XServerError);
-      if (strEQ(name,"XServerError"))
-        return(XServerError);
+      if (strEQ(name,"XServerWarning"))
+        return(XServerWarning);
       break;
     }
   }
@@ -744,12 +754,9 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
 
                 exception=(&image->exception);
                 image=CloneImage(image,0,0,True,exception);
+                CatchException(exception);
                 if (image == (Image *) NULL)
-                  {
-                    MagickError(exception->severity,exception->reason,
-                      exception->description);
-                    return(NULL);
-                  }
+                  return(NULL);
               }
             image->previous=previous;
             *(previous ? &previous->next : &head)=image;
@@ -973,13 +980,13 @@ static void MagickErrorHandler(const ExceptionType error,const char *message,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MagickErrorHandler replaces the ImageMagick warning handler.  This
+%  Method MagickWarningHandler replaces the ImageMagick warning handler.  This
 %  stores the (possibly multiple) messages in a Perl variable for later
 %  returning.
 %
-%  The format of the MagickErrorHandler routine is:
+%  The format of the MagickWarningHandler routine is:
 %
-%      MagickErrorHandler(const ExceptionType warning,const char *message,
+%      MagickWarningHandler(const ExceptionType warning,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
@@ -2171,12 +2178,7 @@ Append(ref,...)
       }
     }
     next=AppendImages(image,stack,&image->exception);
-    if (!next)
-      {
-        MagickError(image->exception.severity,image->exception.reason,
-          image->exception.description);
-        goto MethodException;
-      }
+    CatchImageException(image);
     for ( ; next; next=next->next)
     {
       sv=newSViv((IV) next);
@@ -2268,12 +2270,7 @@ Average(ref)
         goto MethodException;
       }
     next=AverageImages(image,&image->exception);
-    if (!next)
-      {
-        MagickError(image->exception.severity,image->exception.reason,
-          image->exception.description);
-        goto MethodException;
-      }
+    CatchImageException(image);
     /*
       Create blessed Perl array for the returned image.
     */
@@ -2410,9 +2407,7 @@ BlobToImage(ref,...)
     for (i=number_images=0; i < n; i++)
     {
       image=BlobToImage(info->image_info,list[i],length[i],&exception);
-      if (image == (Image *) NULL)
-        MagickError(exception.severity,exception.reason,
-          exception.description);
+      CatchException(&exception);
       for ( ; image; image=image->next)
       {
         sv=newSViv((IV) image);
@@ -2523,12 +2518,7 @@ Coalesce(ref)
       }
     exception=(&image->exception);
     image=CoalesceImages(image,exception);
-    if (!image)
-      {
-        MagickError(exception->severity,exception->reason,
-          exception->description);
-        goto MethodException;
-      }
+    CatchException(exception);
     for (next=image; next; next=next->next)
     {
       sv=newSViv((IV) next);
@@ -2614,9 +2604,9 @@ Copy(ref)
     if (status)
       goto MethodException;
     image=SetupList(reference,&info,(SV ***) NULL);
-    if (!(image=SetupList(reference,&info,(SV ***) NULL)))
+    if (image == (Image *) NULL);
       {
-        MagickError(OptionError,"No images to Copy",NULL);
+        MagickError(OptionError,"No images to clone",NULL);
         goto MethodException;
       }
     /*
@@ -2628,12 +2618,7 @@ Copy(ref)
     for (next=image; next; next=next->next)
     {
       image=CloneImage(next,0,0,True,&next->exception);
-      if (!image)
-        {
-          MagickError(next->exception.severity,next->exception.reason,
-            next->exception.description);
-          continue;
-        }
+      CatchImageException(next);
       sv=newSViv((IV) image);
       rv=newRV(sv);
       av_push(av,sv_bless(rv,hv));
@@ -2780,7 +2765,7 @@ Display(ref,...)
     if (status)
       goto MethodException;
     image=SetupList(reference,&info,(SV ***) NULL);
-    if (!(image=SetupList(reference,&info,(SV ***) NULL)))
+    if (image == (Image *) NULL)
       {
         MagickError(OptionError,"No images to display",NULL);
         goto MethodException;
@@ -2876,12 +2861,7 @@ Flatten(ref)
       }
     exception=(&image->exception);
     image=FlattenImages(image,exception);
-    if (!image)
-      {
-        MagickError(exception->severity,exception->reason,
-          exception->description);
-        goto MethodException;
-      }
+    CatchException(exception);
     /*
       Create blessed Perl array for the returned image.
     */
@@ -3964,9 +3944,7 @@ ImageToBlob(ref,...)
     {
       length=0;
       blob=ImageToBlob(package_info->image_info,next,&length,&next->exception);
-      if (blob == (void *) NULL)
-        MagickError(next->exception.severity,next->exception.reason,
-          next->exception.description);
+      CatchImageException(next);
       if (blob != (char *) NULL)
         {
           PUSHs(sv_2mortal(newSVpv(blob,length)));
@@ -4364,12 +4342,7 @@ Mogrify(ref,...)
         {
           region_image=image;
           image=CropImage(image,&region_info,exception);
-          if (!image)
-            {
-              MagickError(exception->severity,exception->reason,
-                exception->description);
-              continue;
-            }
+          CatchException(exception);
         }
       switch (ix)
       {
@@ -5817,12 +5790,9 @@ Mogrify(ref,...)
           break;
         }
       }
-      if (image == (Image *) NULL)
-        MagickError(exception->severity,exception->reason,
-          exception->description);
-      else
-        if (next != (Image *) NULL)
-          (void) CatchImageException(next);
+      CatchException(exception);
+      if (next != (Image *) NULL)
+        (void) CatchImageException(next);
       if (region_image != (Image *) NULL)
         {
           unsigned int
@@ -6067,8 +6037,7 @@ Montage(ref,...)
                LookupStr(GravityTypes,SvPV(ST(i),na));
              if (in < 0)
                {
-                 MagickError(OptionError,"Invalid gravity type",
-                   SvPV(ST(i),na));
+                 MagickError(OptionError,"Invalid gravity type",SvPV(ST(i),na));
                  return;
                }
              montage_info->gravity=(GravityType) in;
@@ -6111,8 +6080,7 @@ Montage(ref,...)
               {
                 default:
                 {
-                  MagickError(OptionError,"Invalid mode value",
-                    SvPV(ST(i),na));
+                  MagickError(OptionError,"Invalid mode value",SvPV(ST(i),na));
                   break;
                 }
                 case FrameMode:
@@ -6224,12 +6192,7 @@ Montage(ref,...)
     exception=(&image->exception);
     image=MontageImages(image,montage_info,exception);
     DestroyMontageInfo(montage_info);
-    if (!image)
-      {
-        MagickError(exception->severity,exception->reason,
-          exception->description);
-        goto MethodException;
-      }
+    CatchException(exception);
     if (transparent_color.opacity != TransparentOpacity)
       for (next=image; next; next=next->next)
         TransparentImage(next,transparent_color,TransparentOpacity);
@@ -6369,12 +6332,7 @@ Morph(ref,...)
     }
     exception=(&image->exception);
     image=MorphImages(image,number_frames,exception);
-    if (!image)
-      {
-        MagickError(exception->severity,exception->reason,
-          exception->description);
-        goto MethodException;
-      }
+    CatchException(exception);
     for (next=image; next; next=next->next)
     {
       sv=newSViv((IV) next);
@@ -6466,12 +6424,7 @@ Mosaic(ref)
       }
     exception=(&image->exception);
     image=MosaicImages(image,exception);
-    if (!image)
-      {
-        MagickError(exception->severity,exception->reason,
-          exception->description);
-        goto MethodException;
-      }
+    CatchException(exception);
     /*
       Create blessed Perl array for the returned image.
     */
@@ -6618,9 +6571,7 @@ Ping(ref,...)
       (void) strncpy(package_info->image_info->filename,list[i],
         MaxTextExtent-1);
       image=PingImage(package_info->image_info,&exception);
-      if (exception.severity != UndefinedException)
-        MagickError(exception.severity,exception.reason,
-          exception.description);
+      CatchException(&exception);
       count+=GetImageListSize(image);
       EXTEND(sp,4*count);
       for ( ; image; image=image->next)
@@ -7418,9 +7369,7 @@ Read(ref,...)
       (void) strncpy(package_info->image_info->filename,list[i],
         MaxTextExtent-1);
       image=ReadImage(package_info->image_info,&exception);
-      if (exception.severity != UndefinedException)
-        MagickError(exception.severity,exception.reason,
-          exception.description);
+      CatchException(&exception);
       for ( ; image; image=image->next)
       {
         sv=newSViv((IV) image);
@@ -7687,12 +7636,7 @@ Transform(ref,...)
     for (next=image; next; next=next->next)
     {
       clone=CloneImage(next,0,0,True,&next->exception);
-      if (!clone)
-        {
-          MagickError(next->exception.severity,next->exception.reason,
-            next->exception.description);
-          goto MethodException;
-        }
+      CatchImageException(next);
       TransformImage(&clone,crop_geometry,geometry);
       for (image=clone; image; image=image->next)
       {

@@ -83,6 +83,7 @@ extern MagickExport FatalErrorHandler
   SetFatalErrorHandler(FatalErrorHandler);
 
 extern MagickExport void
+  CatchException(const ExceptionInfo *),
   DestroyExceptionInfo(ExceptionInfo *),
   GetExceptionInfo(ExceptionInfo *),
   MagickError(const ExceptionType,const char *,const char *),

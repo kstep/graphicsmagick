@@ -297,9 +297,7 @@ static unsigned int MogrifyUtility(int argc,char **argv)
         k=i;
         (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
         image=ReadImage(image_info,&exception);
-        if (exception.severity != UndefinedException)
-          MagickError(exception.severity,exception.reason,
-            exception.description);
+        CatchException(&exception);
         status&=image != (Image *) NULL;
         if (image == (Image *) NULL)
           continue;
@@ -1130,9 +1128,7 @@ static unsigned int MogrifyUtility(int argc,char **argv)
                     MagickFatalError(OptionFatalError,"Invalid list type",
                       option);
                 }
-                if (exception.severity != UndefinedException)
-                  MagickFatalError(exception.severity,exception.reason,
-                    exception.description);
+                CatchException(&exception);
                 DestroyMagick();
                 Exit(0);
               }
