@@ -103,167 +103,6 @@ MagickExport void closedir(DIR *entry)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e b u g S t r i n g                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method DebugString formats and sends a prtinf like message to the NT
-%  debug trace API, a file, or to the Event Log
-%
-%  The format of the DebugString method is:
-%
-%      void DebugString(const char *format,...)
-%
-%  A description of each parameter follows.
-%
-%   o  format:  A string describing the format to use to write the
-%      remaining arguments.
-%
-*/
-
-#define IM_DEBUG_WIN32  1
-#define IM_DEBUG_FILE   2
-#define IM_DEBUG_EVENT  4
-
-static CRITICAL_SECTION
-  critical_section;
-
-static unsigned int
-  critical_section_exists = False;
-
-static int
-  tracings_level = 0;
-
-static unsigned int
-  tracings_sequence = 0,
-  tracings_counter = 0;
-
-static char
-  tracings_filepath[MaxTextExtent] =
-    "C:\\";
-
-static TimerInfo
-  tracings_timer;
-
-FILE
-  *trace_file = (FILE *) NULL;
-
-MagickExport void DestroyTracingCriticalSection(void)
-{
-  if (critical_section_exists)
-    DeleteCriticalSection(&critical_section);
-}
-
-MagickExport void InitializeTracingCriticalSection(void)
-{
-  char
-    *debug = getenv("MAGICK_DEBUG");
-
-  if (debug)
-    tracings_level |= atoi(debug);
-  GetTimerInfo(&tracings_timer);
-  if (!critical_section_exists)
-    InitializeCriticalSection(&critical_section);
-  critical_section_exists=True;
-}
-
-static void EnterTracingCriticalSection(void)
-{
-  if (critical_section_exists)
-    EnterCriticalSection(&critical_section);
-}
-
-static void LeaveTracingCriticalSection(void)
-{
-  if (critical_section_exists)
-    LeaveCriticalSection(&critical_section);
-}
-
-MagickExport void DebugLevel(const int level)
-{
-  if (critical_section_exists)
-    {
-      EnterTracingCriticalSection();
-      if (level > 0)
-        tracings_level = level;
-      LeaveTracingCriticalSection();
-    }
-}
-
-MagickExport void DebugFilePath(const char *s)
-{
-  if (critical_section_exists)
-    {
-      EnterTracingCriticalSection();
-      (void) strncpy(tracings_filepath,s,MaxTextExtent-1);
-      LeaveTracingCriticalSection();
-    }
-}
-
-MagickExport void DebugString(char *format,...)
-{
-  va_list
-    operands;
-
-  char
-    string[MaxTextExtent],
-    trace_name[MaxTextExtent];
-
-  va_start(operands, format);
-
-  if (tracings_level <= 0)
-    return;
-
-  if (critical_section_exists)
-    EnterTracingCriticalSection();
-
-  (void) _snprintf(string,MaxTextExtent-1,"%08d - %010.1fu  ",
-    (int) GetCurrentThreadId(), GetElapsedTime(&tracings_timer));
-  (void) ContinueTimer(&tracings_timer);
-  (void) _vsnprintf(&string[24],MaxTextExtent-25,format,operands);
-
-  if (tracings_level & IM_DEBUG_WIN32)
-    OutputDebugString(string);
-  if (tracings_level & IM_DEBUG_FILE)
-    {
-      /* we send the data to files, and keep the number of items
-         down to less the 0x2000 to that they are managable */
-      if (trace_file == (FILE *) NULL)
-        {
-          tracings_counter=0;
-          (void) _snprintf(trace_name, MaxTextExtent-1,
-            "%sIM_%08X.log",tracings_filepath,tracings_sequence);
-          trace_file=fopen(trace_name,"wS");
-        }
-      if (trace_file != (FILE *) NULL)
-        {
-          fputs(string, trace_file);
-          fflush(trace_file);
-          tracings_counter++;
-          if (tracings_counter > 0x2000)
-            {
-              fclose(trace_file);
-              trace_file = (FILE *) NULL;
-              tracings_sequence++;
-            }
-        }
-    }
-  if (tracings_level & IM_DEBUG_EVENT)
-    {
-    }
-
-  if (critical_section_exists)
-    LeaveTracingCriticalSection();
-  va_end(operands);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   DllMain                                                                   %
 %                                                                             %
 %                                                                             %
@@ -947,17 +786,17 @@ MagickExport void NTErrorHandler(const ExceptionType error,const char *reason,
     }
   if ((description != (char *) NULL) && errno)
     FormatString(buffer,"%.1024s: %.1024s (%.1024s) [%.1024s].\n",
-      SetClientName((char *) NULL),reason,description,strerror(errno));
+      GetClientName(),reason,description,strerror(errno));
   else
     if (description != (char *) NULL)
       FormatString(buffer,"%.1024s: %.1024s (%.1024s).\n",
-        SetClientName((char *) NULL),reason,description);
+        GetClientName(),reason,description);
     else
       if (errno)
         FormatString(buffer,"%.1024s: %.1024s [%.1024s].\n",
-          SetClientName((char *) NULL),reason,strerror(errno));
+          GetClientName(),reason,strerror(errno));
       else
-        FormatString(buffer,"%.1024s: %.1024s.\n",SetClientName((char *) NULL),
+        FormatString(buffer,"%.1024s: %.1024s.\n",GetClientName(),
           reason);
   (void) MessageBox(NULL,buffer,"GraphicsMagick Exception",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONEXCLAMATION);
@@ -1722,8 +1561,8 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
     *value;
 
   assert(id != (const char *) NULL);
-  FormatString(directory,"%.1024s%.1024s%.1024s",SetClientPath((char *) NULL),
-    DirectorySeparator,SetClientName((char *) NULL));
+  FormatString(directory,"%.1024s%.1024s%.1024s",GetClientPath(),
+    DirectorySeparator,GetClientFilename());
   if (IsAccessible(directory))
     handle=GetModuleHandle(directory);
   else
@@ -1936,10 +1775,10 @@ MagickExport void NTWarningHandler(const ExceptionType warning,
     return;
   if (description == (char *) NULL)
     FormatString(buffer,"%.1024s: %.1024s.\n",
-      SetClientName((char *) NULL),reason);
+      GetClientName(),reason);
   else
     FormatString(buffer,"%.1024s: %.1024s (%.1024s).\n",
-      SetClientName((char *) NULL),reason,description);
+      GetClientName(),reason,description);
   (void) MessageBox(NULL,buffer,"GraphicsMagick Warning",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONINFORMATION);
 }

@@ -163,11 +163,6 @@ extern MagickExport unsigned int
 
 extern MagickExport void
   closedir(DIR *),
-  DebugString(char *, ...),
-  DebugFilePath(const char *s),
-  DebugLevel(const int),
-  DestroyTracingCriticalSection(void),
-  InitializeTracingCriticalSection(void),
   *mmap(char *,size_t,int,int,int,off_t),
   NTErrorHandler(const ExceptionType,const char *,const char *),
   NTWarningHandler(const ExceptionType,const char *,const char *),

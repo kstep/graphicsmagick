@@ -55,6 +55,8 @@
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 #include "magick/version.h"
+/* watch out here - this include code for simple spinlock semaphore */
+#include "magick/spinlock.h"
 
 /*
   Global declarations.
@@ -112,7 +114,6 @@ MagickExport void DestroyMagick(void)
   DestroyTemporaryFiles();
   DestroySemaphore();
 #if defined(WIN32)
-  DestroyTracingCriticalSection();
   NTGhostscriptUnLoadDLL();
 #endif
 
@@ -564,156 +565,111 @@ static RETSIGTYPE MagickSignalHandler(int signo)
   Exit(signo);
 }
 
-MagickExport void InitializeMagick(const char *path)
+/*
+   The goal of this routine is to determine whether tha passed
+   string is a valid and complete path to a file within the 
+   filesystem
+ */
+static unsigned int IsValidFilesystemPath(const char *path)
 {
-  char
-    execution_path[MaxTextExtent];
-
-  if (MagickInitialized == InitInitialized)
-    return;
-
-  MagickInitialized=InitInitialized;
-
-  (void) setlocale(LC_ALL,"");
-  (void) setlocale(LC_NUMERIC,"C");
-
-  /* Seed the random number generator */
-  srand(time(0));
-
-  /* Initialize semaphores */
-  InitializeSemaphore();
-
-  /*
-    Set logging flags using value of MAGICK_DEBUG if it is set in
-    the environment.
-  */
-  {
-    const char
-      *magick_debug=getenv("MAGICK_DEBUG");
-    
-    if (magick_debug)
-      (void) SetLogEventMask(magick_debug);
-  }
-
-  /*
-    Compute memory allocation and memory map resource limits based
-    on available memory
-  */
-  InitializeMagickResources();
-
-  *execution_path='\0';
-#if !defined(UseInstalledMagick)
-#if defined(POSIX) || defined(WIN32)
-  /* passing NULL means that we want the code to try to figure it out via
-     asking the operating system
-   */
-  if (path == (const char *) NULL)
-    {
-      (void) GetExecutionPath(execution_path);
-      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-        "Path to app is NULL - OS says: \"%s\"",execution_path);
-    }
-  /* we also check to see if the path seems to be a path by looking for
-     the presence of directory seperators and some reasonable length
-   */
-  else if ((strchr(path,*DirectorySeparator) == (char *) NULL) ||
-      (strlen(path) <= 2))
-    {
-      (void) GetExecutionPath(execution_path);
-      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-        "Path to app \"%s\" is bad - OS says: \"%s\"",path,
-          execution_path);
-    }
-  /* We get here if the caller seems to have called us with a legit path
-     to the application.
-   */
-  else
+  if ((path != (const char *) NULL) && (*path != '\0'))
     {
 #if defined(POSIX)
       /* For POSIX we check the first character to see of it is a file
-         system path seperator. If not then we ignore the passed data
-       */
-      if (*path == *DirectorySeparator)
-        {
-          (void) strncpy(execution_path,path,MaxTextExtent-1);
-        }
+          system path seperator. If not then we ignore the passed data
+      */
+      if ((*path == *DirectorySeparator))
+        return IsAccessibleNoLogging(path);
 #elif defined(WIN32)
-      /* For Windows we check to see if the path passed seems to be a UNC
+      /* For Windows we check to see if the path passed seems to be a 
+         pathof any kind (contains delimiters) or seem to be either UNC
          path or one with a drive letter spec in it: \\Server\share, C:\
-       */
-      if (((*path == *DirectorySeparator) &&
-           (*(path+1) == *DirectorySeparator)) || (*(path+1) == ':'))
-        {
-          (void) strncpy(execution_path,path,MaxTextExtent-1);
-        }
+      */
+      if (((*path == *DirectorySeparator) && (*(path+1) == *DirectorySeparator)) ||
+            (*(path+1) == ':') ||
+              (strchr(path,*DirectorySeparator) != (char *) NULL))
+        return IsAccessibleNoLogging(path);
 #else
-      /* In any other case, we just let it go right through unscathed */
-      if (1)
-        {
-          (void) strncpy(execution_path,path,MaxTextExtent-1);
-        }
+      /* In any other case, we just look to see if it has path delimiters */
+      if ((strchr(path,*DirectorySeparator) != (char *) NULL))
+        return IsAccessibleNoLogging(path);
 #endif
-      else
+    }
+  return False;
+}
+
+/*
+  Try and figure out the path and name of the client
+ */
+MagickExport void InitializeMagickClientPathAndName(const char *path)
+{
+  const char
+    *spath;
+
+  char
+    execution_path[MaxTextExtent];
+
+#if !defined(UseInstalledMagick)
+  /* the following is to make the logging more readable later on */
+  spath = path;
+  if (spath == (char *) NULL)
+    spath = "NULL";
+  if (*spath == '\0')
+    spath = "EMPTY";
+
+  *execution_path='\0';
+  if (!IsValidFilesystemPath(path))
+    {
+      /* If the path passed is NULL or invalid then we try to ask the OS
+        what the name of the executable is. Callers will often pass NULL
+        in order to invoke this functionality.
+      */
+      if (GetExecutionPath(execution_path))
         {
-          /* This logic is UNIX only and tries for figure out the path to
-             application using a call to getcwd and then assuming that the
-             passed string is just the name of the application. It then
-             combines those two things.
-           */
-          (void) getcwd(execution_path,MaxTextExtent-2);
-          (void) strcat(execution_path,DirectorySeparator);
-          if((*path == '.') && (*(path+1) == *DirectorySeparator))
-            (void) strncat(execution_path,path+2,MaxTextExtent-
-              strlen(execution_path)-1);
-          else
-            (void) strncat(execution_path,path,MaxTextExtent-
-              strlen(execution_path)-1);
+          /* The call to the OS worked so we can do all the settings */
+          (void) DefineClientPathAndName(execution_path);
           (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-            "Path to app \"%s\" is bad - getcwd says: \"%s\"",path,
+            "Invalid path \"%s\" passed - asking OS worked: \"%s\"",spath,
               execution_path);
         }
-    }
-#endif
-  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-    "Path to the app set to: \"%s\"",execution_path);
-#endif
-  if (*execution_path == '\0')
-    {
-      if (path != (char *) NULL)
-        (void) SetClientName(path);
+      else
+        {
+          /* The call to the OS failed so we try one last kludgy thing -
+             we call getcwd and sling whatever seems to be a filename
+             passed by the caller onto the end and see if that works */
+          (void) strncpy(execution_path,path,MaxTextExtent-1);
+          if (GetExecutionPathUsingName(execution_path))
+            {
+              (void) DefineClientPathAndName(execution_path);
+              (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+                "Invalid path \"%s\" passed - asking OS failed, getcwd worked: \"%s\"",spath,
+                  execution_path);
+            }
+          else
+            {
+              /* At this point we are totally hosed and have nothing to
+                 go on for the path, so all we can do is log the error */
+              (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+                "Invalid path \"%s\" passed - asking OS failed, getcwd also failed",spath);
+            }
+        }
     }
   else
     {
-      char
-        filename[MaxTextExtent];
-
-      GetPathComponent(execution_path,HeadPath,filename);
-      (void) SetClientPath(filename);
-      GetPathComponent(execution_path,TailPath,filename);
-      (void) SetClientName(filename);
+      /* This is the easy one. The caller gave us the correct and
+         working path to the application, so we just use it */
+      (void) strncpy(execution_path,path,MaxTextExtent-1);
+      (void) DefineClientPathAndName(execution_path);
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"Valid path \"%s\"",spath);
     }
-#if defined(WIN32)
-    InitializeTracingCriticalSection();
-# if defined(_DEBUG) && !defined(__BORLANDC__)
-    /* if (IsEventLogging()) */
-      {
-        int
-          debug;
+#endif
+}
 
-        debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-        debug|=_CRTDBG_CHECK_ALWAYS_DF;
-        debug|=_CRTDBG_DELAY_FREE_MEM_DF;
-        debug|=_CRTDBG_LEAK_CHECK_DF;
-        /* debug=_CrtSetDbgFlag(debug);
-           _ASSERTE(_CrtCheckMemory()); */
-      }
-# endif /* defined(_DEBUG) */
-#endif /* defined(WIN32) */
-
-  /*
-    Establish signal handlers for common signals
-  */
-
+/*
+  Establish signal handlers for common signals
+*/
+MagickExport void InitializeMagickSignalHandlers(void)
+{
   /* hangup, default terminate */
 #if defined(SIGHUP)
   (void) MagickCondSignal(SIGHUP,MagickSignalHandler);
@@ -746,7 +702,91 @@ MagickExport void InitializeMagick(const char *path)
 #if defined(SIGXFSZ)
   (void) MagickCondSignal(SIGXFSZ,MagickSignalHandler);
 #endif
+}
 
+MagickExport void InitializeMagick(const char *path)
+{
+  /* NOTE: This routine sets up the path to the client which needs to
+     be determined before almost anything else works right. This also
+     includes logging!!! So we can't start logging until the path is
+     actually saved. As soon as we know what the path is we make the
+     same call to DefineClientSettings to set it up. Please make sure
+     that this rule is followed in any future updates the this code!!!
+   */
+
+  if (MagickInitialized == InitInitialized)
+    return;
+  SPINLOCK_WAIT;
+  MagickInitialized=InitInitialized;
+  SPINLOCK_RELEASE;
+
+#if defined(WIN32)
+# if defined(_DEBUG) && !defined(__BORLANDC__)
+  {
+    int
+      debug;
+
+    debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+    debug|=_CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_DELAY_FREE_MEM_DF |
+            _CRTDBG_LEAK_CHECK_DF;
+    // debug=_CrtSetDbgFlag(debug);
+    // _ASSERTE(_CrtCheckMemory());
+  }
+# endif /* defined(_DEBUG) */
+#endif /* defined(WIN32) */
+
+  (void) setlocale(LC_ALL,"");
+  (void) setlocale(LC_NUMERIC,"C");
+
+  /* Seed the random number generator */
+  srand(time(0));
+
+  /* Initialize semaphores */
+  InitializeSemaphore();
+
+#if defined(WIN32)
+  InitializeTracingCriticalSection();
+#endif
+  /*
+    Set logging flags using value of MAGICK_DEBUG if it is set in
+    the environment.
+  */
+  {
+    const char
+      *magick_debug=getenv("MAGICK_DEBUG");
+    
+    if (magick_debug)
+      (void) SetLogEventMask(magick_debug);
+  }
+
+  /*
+    Establish the path, filename, and display name of the client app
+  */
+  InitializeMagickClientPathAndName(path);
+  /*
+    If the client name did not get setup for any reason, we take one
+    last shot at it using the data the caller passed us.
+  */
+  if (GetClientName() == (const char *) NULL)
+    DefineClientName(path);
+
+  /*
+    Establish signal handlers for common signals
+  */
+  InitializeMagickSignalHandlers();
+
+  /*
+    Compute memory allocation and memory map resource limits based
+    on available memory
+  */
+  /* NOTE: This call does logging, so you can not make it before the path
+     to the client is setup */
+  InitializeMagickResources();
+
+  /* Let's log the three important setting as we exit this routine */
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+    "Path: \"%s\" Name: \"%s\" Filename: \"%s\"",
+      GetClientPath(),GetClientName(),GetClientFilename());
 }
 
 /*
