@@ -2983,9 +2983,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     else
       {
-       /* Correct image->page.y for SouthWest gravity. */
-       image->page.y=(long) image->page.height-mng_info->y_off[object_id]
-         -(long) ping_info->height;
+        /* Correct image->page.y for SouthWest gravity. */
+        image->page.y=(long) image->page.height-mng_info->y_off[object_id]
+          -(long) ping_info->height;
       }
     image->compression=ZipCompression;
     image->columns=ping_info->width;
@@ -4069,6 +4069,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for(next=image; next->next != (Image *) NULL; next=next_image)
       {
          next_image=next->next;
+         /* Restore page, which gets zeroed out in CoalesceImage(). */
+         next->page.height=mng_height;
+         next->page.width=mng_height;
          if (next->delay == 0)
            {
              next_image->previous=next->previous;
