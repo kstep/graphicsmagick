@@ -609,6 +609,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   IndexPacket
     index;
 
+  char
+    s[16];
+
   long
     x,
     y;
@@ -768,10 +771,20 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         (int) jpeg_info.data_precision);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Geometry: %dx%d",
         (int) jpeg_info.output_width,(int) jpeg_info.output_height);
+    }
+  if (logging || image_info->verbose)
+    {
+      long
+        save_quality;
+
+      save_quality=0;
 #ifdef D_LOSSLESS_SUPPORTED
       if (image->compression==LosslessJPEGCompression)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Quality: 100 (lossless)");
+        {
+          save_quality=100;
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "Quality: 100 (lossless)");
+        }
       else
 #endif
       {
@@ -780,7 +793,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           sum;
 
         /*
-          Log the JPEG quality that was used for compression.A
+          Log the JPEG quality that was used for compression.
         */
         sum=0;
         for (i=0; i < NUM_QUANT_TBLS; i++)
@@ -833,12 +846,16 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
              {
                if ((hashval >= hash[i]) || (sum >= sums[i]))
                  {
-                   if ((hashval > hash[i]) || (sum > sums[i]))
-                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                       "Quality: %ld (approximate)",i+1);
-                   else
-                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                       "Quality: %ld",i+1);
+                   save_quality=i+1;
+                   if (logging)
+                     {
+                       if ((hashval > hash[i]) || (sum > sums[i]))
+                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                           "Quality: %ld (approximate)",save_quality);
+                       else
+                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                           "Quality: %ld",save_quality);
+                     }
                    break;
                  }
              }
@@ -878,17 +895,27 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
              {
                if ((hashval >= bwhash[i]) || (sum >= bwsum[i]))
                  {
-                   if ((hashval > bwhash[i]) || (sum > bwsum[i]))
-                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                       "Quality: %ld (approximate)",i+1);
-                   else
-                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                       "Quality: %ld",i+1);
+                   save_quality=i+1;
+                   if (logging)
+                     {
+                       if ((hashval > bwhash[i]) || (sum > bwsum[i]))
+                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                           "Quality: %ld (approximate)",i+1);
+                       else
+                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                           "Quality: %ld",i+1);
+                     }
                    break;
                  }
              }
            }
       }
+      sprintf(s,"%ld",save_quality);
+      (void) SetImageAttribute(image,"[jpeg_quality]",s);
+    }
+
+  if (logging)
+    {
       switch (jpeg_info.out_color_space)
       {
         case JCS_CMYK:
