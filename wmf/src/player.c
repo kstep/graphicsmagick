@@ -346,7 +346,7 @@ static wmf_error_t WMFLibPlayMetaFile (wmfAPI* API)
 		return (API->err);
 	}
 
-	WMFLibSetMapMode (API,(PLACEABLE (API) (U16)? MM_DPI : (U16)MM_TEXT));
+	WMFLibSetMapMode (API,(PLACEABLE (API)? (U16)MM_DPI : (U16)MM_TEXT));
 
 	if (PLAY (API))
 	{	if (FR->device_begin) FR->device_begin (API);
