@@ -199,7 +199,7 @@ for(iz=0;iz<z;iz++)
 %
 %
 */
-static Image *ReadMATLABImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image *image;
   unsigned int status;
@@ -310,13 +310,13 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 %      RegisterMATImage(void)
 %
 */
-ModuleExport void RegisterMATLABImage(void)
+ModuleExport void RegisterMATImage(void)
 {
   MagickInfo
     *entry;
 
   entry=SetMagickInfo("MAT");
-  entry->decoder=ReadMATLABImage;
+  entry->decoder=ReadMATImage;
   entry->description=AllocateString("MATLAB");
   entry->module=AllocateString("MAT");
   RegisterMagickInfo(entry);
