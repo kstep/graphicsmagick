@@ -16,7 +16,7 @@ if { $tcl_platform(platform) == "unix" } {
 } else {
     set dll [file join .. win debug tclMagick.dll]
     if {[file exists $dll]} {
-	load $dll
+        load $dll
     }
     package require TclMagick
 }
@@ -29,17 +29,12 @@ puts [info script]
 set IMG  "logo:"
 set SEQ  "../images/sequence.miff"
 set MAP  "../images/map6colors.gif"
-set PATH "../images/path2.tif"
+set CLIP "../images/clippath.tif"
 set TMP  "../tmp"
 
 ##########################################
 # Check which tests should be performed
 #
-set xTestFunctions {
-    AnnotateImage               img     0
-    ClipImage                   img     1
-    ClipPathImage               img     0
-}
 set TestFunctions {
     AdaptiveThresholdImage      img     1
     AddImage                    seq     1
@@ -53,8 +48,8 @@ set TestFunctions {
     BorderImage                 img     1
     CharcoalImage               img     1
     ChopImage                   img     1
-    ???-how-to-ClipImage        img     0
-    ???-how-to-ClipPathImage    img     0
+    ClipImage                   img     1
+    ClipPathImage               img     1
     CoalesceImages              seq     1
     ColorFloodfillImage         img     1
     ColorizeImage               img     1
@@ -328,16 +323,22 @@ proc ClipImage {img} {
     set wand [magick create wand]
     debug $wand
     
-    $wand ReadImage $::PATH
+    $wand ReadImage $::CLIP
     $wand ClipImage
-    $wand WriteImage "$::TMP/x-Clip.jpg"
+    $wand GammaImage 5.0
+
+    $wand WriteImage "$::TMP/x-Clip-Gamma.jpg"
     magick delete $wand
 }
 proc ClipPathImage {img} {
-    set wand [$img clone imgX]
+    set wand [magick create wand]
     debug $wand
-    $wand ClipPathImage "#1" 1
-    $wand WriteImage "$::TMP/x-ClipPath.jpg"
+    
+    $wand ReadImage $::CLIP
+    $wand ClipPathImage "#1" 0
+    $wand SolarizeImage 3
+
+    $wand WriteImage "$::TMP/x-ClipPath-Solarize.jpg"
     magick delete $wand
 }
 proc CoalesceImages {img} {

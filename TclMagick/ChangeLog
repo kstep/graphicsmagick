@@ -1,4 +1,6 @@
 2004-02-27  Rolf Schroedter <rolf.schroedter@dlr.de>
+	* TclMagick version 0.4
+	
 	* Fixed ClipImage and ClipPathImage tests
 
 	* [magick library] list now includes -maxrgb

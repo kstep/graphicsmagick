@@ -15,9 +15,9 @@
 #include "TclMagick.h"
 #include <wand/magick_wand.h>
 
-#define TCLMAGICK_VERSION_STR "0.32"
+#define TCLMAGICK_VERSION_STR "0.40"
 #define TCLMAGICK_VERSION_HI  0
-#define TCLMAGICK_VERSION_LO  32
+#define TCLMAGICK_VERSION_LO  40
 
 /**********************************************************************/
 /* Workaround for bugs: */
@@ -587,8 +587,11 @@ static int magickCmd(
 	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, -1));
 
             str = MagickGetQuantumDepth(&depth);
+            maxrgb = (1 << depth) - 1;
 	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[3], -1));
 	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewLongObj((signed long)depth));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[7], -1));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewLongObj((signed long)maxrgb));
 
             str = MagickGetHomeURL();
 	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[4], -1));
@@ -601,7 +604,8 @@ static int magickCmd(
 	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[6], -1));
 	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, -1));
 
-	    Tcl_SetObjResult(interp, listPtr);
+
+            Tcl_SetObjResult(interp, listPtr);
         } else {
             int idx;
 
