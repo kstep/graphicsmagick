@@ -35,8 +35,9 @@ Before You Start
   
   The installation package includes the Perl Image::Magick extension
   (PerlMagick) as an installation option. If you would like to use this
-  extension, then you should install ActiveState ActivePerl prior to
-  commencing with installation of ImageMagick. If you should decide to
+  extension, then you should install ActiveState ActivePerl (available from
+  "http://www.activestate.com/Products/Download/Register.plex?id=ActivePerl")
+  prior to commencing with installation of ImageMagick. If you should decide to
   install ActivePerl later, you can simply re-run this installation program
   to install PerlMagick.
   

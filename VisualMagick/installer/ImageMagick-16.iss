@@ -52,7 +52,7 @@
 AppName=ImageMagick 5.4.9 Q:16
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=ImageMagick 5.4.9 Q:16 Beta (September 2, 2002)
+AppVerName=ImageMagick 5.4.9 Q:16 Beta (September 3, 2002)
 AppVersion=5.4.9
 AppCopyright=Copyright (C) 2002 ImageMagick Studio LLC
 AppPublisher=ImageMagick Studio
@@ -850,6 +850,7 @@ Source: "..\..\Magick++\lib\Magick++\TypeMetric.h"; DestDir: "{app}\include\Magi
 Source: "Magick++_Demo\*.dsw"; DestDir: "{app}\Magick++_Demo"; CopyMode: alwaysoverwrite
 Source: "Magick++_Demo\*.dsp"; DestDir: "{app}\Magick++_Demo"; CopyMode: alwaysoverwrite
 Source: "Magick++_Demo\*.bat"; DestDir: "{app}\Magick++_Demo"; CopyMode: alwaysoverwrite
+Source: "Magick++_Demo\README.txt"; DestDir: "{app}\Magick++_Demo"; CopyMode: alwaysoverwrite
 Source: "..\..\Magick++\demo\*.cpp"; DestDir: "{app}\Magick++_Demo"; CopyMode: alwaysoverwrite
 Source: "..\..\Magick++\demo\*.miff"; DestDir: "{app}\Magick++_Demo"; CopyMode: alwaysoverwrite
 
