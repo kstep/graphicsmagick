@@ -519,6 +519,8 @@ static unsigned short *ConvertTextToUnicode(const char *text,size_t *count)
 %    o text width
 %    o text height
 %    o maximum horizontal advance
+%    o underline position
+%    o underline thickness
 %
 %  The format of the GetTypeMetrics method is:
 %
@@ -535,8 +537,8 @@ static unsigned short *ConvertTextToUnicode(const char *text,size_t *count)
 %
 %
 */
-MagickExport unsigned int GetTypeMetrics(Image *image,
-  const DrawInfo *draw_info,TypeMetric *metrics)
+MagickExport unsigned int GetTypeMetrics(Image *image,const DrawInfo *draw_info,
+  TypeMetric *metrics)
 {
   PointInfo
     offset;
@@ -547,6 +549,7 @@ MagickExport unsigned int GetTypeMetrics(Image *image,
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->text != (char *) NULL);
   assert(draw_info->signature == MagickSignature);
+  memset(metrics,0,sizeof(TypeMetric));
   offset.x=0.0;
   offset.y=0.0;
   status=RenderType(image,draw_info,&offset,False,metrics);
@@ -1150,6 +1153,11 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   metrics->width=0;
   metrics->height=(double) face->size->metrics.height/64.0;
   metrics->max_advance=(double) face->size->metrics.max_advance/64.0;
+  metrics->underline_position=face->underline_position/64.0;
+  metrics->underline_thickness=face->underline_thickness/64.0;
+printf("%g %g\n",metrics->height,metrics->pixels_per_em.y);
+printf("%g %g\n",(double) face->underline_thickness/64.0,
+  (double) face->underline_position/64.0);
   /*
     Convert to Unicode.
   */
