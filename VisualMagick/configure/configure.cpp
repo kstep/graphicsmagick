@@ -466,7 +466,7 @@ void CConfigureApp::process_utility(ofstream &dsw,
 	        add_project_dependency(dsw, "CORE_xlib");
         if (extn.compare("cpp") == 0)
         {
-		      add_project_dependency(dsw, "CORE_MagickArgs");
+		      //add_project_dependency(dsw, "CORE_MagickArgs");
 		      add_project_dependency(dsw, "CORE_Magick++");
         }
         CStringEx strDepends = staging.c_str();
@@ -1336,7 +1336,7 @@ BOOL CConfigureApp::InitInstance()
     standard_include.push_back("..\\..\\magick");
     standard_include.push_back("..\\..\\xlib");
     standard_include.push_back("..\\..\\Magick++\\lib");
-    standard_include.push_back("..\\..\\MagickArgs");
+    //standard_include.push_back("..\\..\\MagickArgs");
 
     // Write all library project files:
     if (projectType == MULTITHREADEDDLL)
@@ -2113,8 +2113,8 @@ void CConfigureApp::write_exe_dsp(
           }
           if (extn.compare("cpp") == 0)
           {
-            strDepends.Format("CORE_%sMagickArgs%s","RL_","_.lib");
-			      dsp << " " << strDepends << "";
+            //strDepends.Format("CORE_%sMagickArgs%s","RL_","_.lib");
+			      //dsp << " " << strDepends << "";
             strDepends.Format("CORE_%sMagick++%s","RL_","_.lib");
 			      dsp << " " << strDepends << "";
           }
@@ -2274,8 +2274,8 @@ void CConfigureApp::write_exe_dsp(
           }
           if (extn.compare("cpp") == 0)
           {
-            strDepends.Format("CORE_%sMagickArgs%s","DB_","_.lib");
-			      dsp << " " << strDepends << "";
+            //strDepends.Format("CORE_%sMagickArgs%s","DB_","_.lib");
+			      //dsp << " " << strDepends << "";
             strDepends.Format("CORE_%sMagick++%s","DB_","_.lib");
 			      dsp << " " << strDepends << "";
           }
