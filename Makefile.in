@@ -338,8 +338,7 @@ MANS = $(man_MANS)
 NROFF = nroff
 DIST_COMMON =  Makefile.am Makefile.in acconfig.h aclocal.m4 \
 config.guess config.sub configure configure.in depcomp install-sh \
-ltconfig ltmain.sh magick/config.h.in magick/stamp-h.in missing \
-mkinstalldirs
+ltconfig ltmain.sh missing mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -369,38 +368,6 @@ config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
 $(srcdir)/configure: @MAINTAINER_MODE_TRUE@$(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
-
-magick/config.h: magick/stamp-h
-	@if test ! -f $@; then \
-		rm -f magick/stamp-h; \
-		$(MAKE) magick/stamp-h; \
-	else :; fi
-magick/stamp-h: $(srcdir)/magick/config.h.in $(top_builddir)/config.status
-	@rm -f magick/stamp-h magick/stamp-hT
-	@echo timestamp > magick/stamp-hT 2> /dev/null
-	cd $(top_builddir) \
-	  && CONFIG_FILES= CONFIG_HEADERS=magick/config.h \
-	     $(SHELL) ./config.status
-	@mv magick/stamp-hT magick/stamp-h
-$(srcdir)/magick/config.h.in: @MAINTAINER_MODE_TRUE@$(srcdir)/magick/stamp-h.in
-	@if test ! -f $@; then \
-		rm -f $(srcdir)/magick/stamp-h.in; \
-		$(MAKE) $(srcdir)/magick/stamp-h.in; \
-	else :; fi
-$(srcdir)/magick/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) acconfig.h
-	@rm -f $(srcdir)/magick/stamp-h.in $(srcdir)/magick/stamp-h.inT
-	@echo timestamp > $(srcdir)/magick/stamp-h.inT 2> /dev/null
-	cd $(top_srcdir) && $(AUTOHEADER)
-	@mv $(srcdir)/magick/stamp-h.inT $(srcdir)/magick/stamp-h.in
-
-mostlyclean-hdr:
-
-clean-hdr:
-
-distclean-hdr:
-	-rm -f magick/config.h
-
-maintainer-clean-hdr:
 
 mostlyclean-binPROGRAMS:
 
@@ -738,7 +705,6 @@ dist-all: distdir
 distdir: $(DISTFILES)
 	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/magick
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -838,27 +804,26 @@ distclean-generic:
 
 maintainer-clean-generic:
 	-rm -f Makefile.in
-mostlyclean-am:  mostlyclean-hdr mostlyclean-binPROGRAMS \
-		mostlyclean-compile mostlyclean-libtool \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
+		mostlyclean-generic
 
 mostlyclean: mostlyclean-recursive
 
-clean-am:  clean-hdr clean-binPROGRAMS clean-compile clean-libtool \
-		clean-tags clean-depend clean-generic mostlyclean-am \
-		clean-local
+clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
+		clean-depend clean-generic mostlyclean-am clean-local
 
 clean: clean-recursive
 
-distclean-am:  distclean-hdr distclean-binPROGRAMS distclean-compile \
-		distclean-libtool distclean-tags distclean-depend \
-		distclean-generic clean-am distclean-local
+distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
+		distclean-tags distclean-depend distclean-generic \
+		clean-am distclean-local
 	-rm -f libtool
 
 distclean: distclean-recursive
 	-rm -f config.status
 
-maintainer-clean-am:  maintainer-clean-hdr maintainer-clean-binPROGRAMS \
+maintainer-clean-am:  maintainer-clean-binPROGRAMS \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-depend \
 		maintainer-clean-generic distclean-am \
@@ -869,8 +834,7 @@ maintainer-clean-am:  maintainer-clean-hdr maintainer-clean-binPROGRAMS \
 maintainer-clean: maintainer-clean-recursive
 	-rm -f config.status
 
-.PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
-mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
+.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
 maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \

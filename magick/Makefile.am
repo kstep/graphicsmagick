@@ -93,7 +93,7 @@ endif # WITH_MODULES
 # AVS module
 avs_la_SOURCES      = avs.c
 avs_la_LDFLAGS      = -no-undefined -module -avoid-version
-avs_la_LIBADD       =
+avs_la_LIBADD       = libMagick.la
 
 # BIM module
 bim_la_SOURCES     = bim.c

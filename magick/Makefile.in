@@ -249,7 +249,7 @@ pkgdir = $(libdir)/ImageMagick/modules/coders
 # AVS module
 avs_la_SOURCES = avs.c
 avs_la_LDFLAGS = -no-undefined -module -avoid-version
-avs_la_LIBADD = 
+avs_la_LIBADD = libMagick.la
 
 # BIM module
 bim_la_SOURCES = bim.c
@@ -577,12 +577,12 @@ DEFS = @DEFS@ -I../
 subdir = magick
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = 
+CONFIG_CLEAN_FILES =  Magick-config
 LTLIBRARIES =  $(lib_LTLIBRARIES) $(pkg_LTLIBRARIES)
 
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-avs_la_DEPENDENCIES = 
+avs_la_DEPENDENCIES =  libMagick.la
 am_avs_la_OBJECTS =  avs.lo
 avs_la_OBJECTS =  $(am_avs_la_OBJECTS)
 bim_la_DEPENDENCIES = 
@@ -831,7 +831,7 @@ $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
 DIST_COMMON =  $(include_HEADERS) $(noinst_HEADERS) ./stamp-h.in \
-Makefile.am Makefile.in config.h.in
+Magick-config.in Makefile.am Makefile.in config.h.in
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -918,6 +918,8 @@ distclean-hdr:
 	-rm -f config.h
 
 maintainer-clean-hdr:
+Magick-config: $(top_builddir)/config.status Magick-config.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 mostlyclean-libLTLIBRARIES:
 

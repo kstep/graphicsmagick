@@ -60,7 +60,7 @@ AC_PROG_RANLIB
 # Configure libtool
 AM_ENABLE_SHARED(no)
 AM_ENABLE_STATIC(yes)
-AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
 
 # Add configure option --enable-maintainer-mode which enables dependency
 # checking and generation useful to package maintainers.  This is made an
