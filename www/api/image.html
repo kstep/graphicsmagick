@@ -42,7 +42,7 @@
 		<LI><A HREF="#getnextimage">GetNextImage</A></LI>
 		<LI><A HREF="#getnumberscenes">GetNumberScenes</A></LI>
 		<LI><A HREF="#isimagesequal">IsImagesEqual</A></LI>
-		<LI><A HREF="#isimagetainted">IsImageTainted</A></LI>
+		<LI><A HREF="#istaintimage">IsTaintImage</A></LI>
 		<LI><A HREF="#listtogroupimage">ListToGroupImage</A></LI>
 		<LI><A HREF="#modifyimage">ModifyImage</A></LI>
 		<LI><A HREF="#referenceimage">ReferenceImage</A></LI>
@@ -88,9 +88,9 @@
 <P>ImageType  <STRONG>GetImageType</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>GetNextImage</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>GetNumberScenes</STRONG>( const Image *image );</P>
-<P>unsigned int  <STRONG>IsImageTainted</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>IsImagesEqual</STRONG>( Image *image, Image *reference );</P>
-<P>Image **  <STRONG>ListToGroupImage</STRONG>( Image *image, unsigned long *number_images );</P>
+<P>unsigned int  <STRONG>IsTaintImage</STRONG>( const Image *image );</P>
+<P>Image **  <STRONG>ListToGroupImage</STRONG>( const Image *image, unsigned long *number_images );</P>
 <P><STRONG>ModifyImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ReferenceImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>SetImage</STRONG>( Image *image, const Quantum opacity );</P>
@@ -210,7 +210,7 @@ Identify which channel to extract: Red, Cyan, Green, Magenta, Blue, Yellow, or O
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cloneimage">CloneImage</A></H2>
-<blockquote>CloneImage ( ) copies an image and returns the copy as a new image object.If the specified columns and rows is 0, an exact copy of the image isreturned, otherwise the pixel data is undefined and must be initializedwith the SetImagePixels ( ) and SyncImagePixels ( ) methods. A NULL imageis returned if the image cannot be cloned; check exception for the reasonwhy.; </blockquote><P>The format of the CloneImage method is:</P>
+<blockquote>CloneImage ( ) copies an image and returns the copy as a new image object.If the specified columns and rows is 0, an exact copy of the image isreturned, otherwise the pixel data is undefined and must be initializedwith the SetImagePixels ( ) and SyncImagePixels ( ) methods. On failure, a NULL image is returned and exception describes the reason for thefailure.; </blockquote><P>The format of the CloneImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *CloneImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -220,11 +220,11 @@ The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_columns%3A">columns:</A></STRONG><BR>
 <DD>
-The number of columns in the copied
+The number of columns in the cloned image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_rows%3A">rows:</A></STRONG><BR>
 <DD>
-The number of rows in the copied image.
+The number of rows in the cloned image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_orphan%3A">orphan:</A></STRONG><BR>
 <DD>
@@ -292,11 +292,11 @@ The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_amount%3A">amount:</A></STRONG><BR>
 <DD>
-Offset of the colormap this much.
+Offset the colormap this much.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="describeimage">DescribeImage</A></H2>
-<blockquote>DescribeImage ( ) describes an image by printing its attributes to thefile. Attributes include the image width, height, size, and others.; </blockquote><P>The format of the DescribeImage method is:</P>
+<blockquote>DescribeImage ( ) describes an image by printing its attributes to the file.Attributes include the image width, height, size, and others.; </blockquote><P>The format of the DescribeImage method is:</P>
 <blockquote>void DescribeImage ( <A HREF="types/Image.html">Image</A> *image, FILE *file, const unsigned int verbose ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -315,7 +315,7 @@ The file, typically stdout.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyimage">DestroyImage</A></H2>
-<blockquote>DestroyImage ( ) dereferences an image, deallocating memory associated withthe image if the reference count becomes zero.; </blockquote><P>The format of the DestroyImage method is:</P>
+<blockquote>DestroyImage ( ) dereferences an image, deallocating memory associatedwith the image if the reference count becomes zero.; </blockquote><P>The format of the DestroyImage method is:</P>
 <blockquote>void DestroyImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -325,7 +325,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyimageinfo">DestroyImageInfo</A></H2>
-<blockquote>DestroyImageInfo ( ) deallocates memory associated with an <A HREF="types/ImageInfo.html">ImageInfo</A> structure.; </blockquote><P>The format of the DestroyImageInfo method is:</P>
+<blockquote>DestroyImageInfo ( ) deallocates memory associated with an ImageInfostructure.; </blockquote><P>The format of the DestroyImageInfo method is:</P>
 <blockquote>void DestroyImageInfo ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -335,7 +335,7 @@ The image info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyimages">DestroyImages</A></H2>
-<blockquote>DestroyImages ( ) deallocates memory associated with all the images in asequence.; </blockquote><P>The format of the DestroyImages method is:</P>
+<blockquote>DestroyImages ( ) is a convenience method. It calls DestroyImage ( ) for eachimage in the sequence.; </blockquote><P>The format of the DestroyImages method is:</P>
 <blockquote>void DestroyImages ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -345,7 +345,7 @@ The image sequence.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="displayimages">DisplayImages</A></H2>
-<blockquote>DisplayImages ( ) displays an image sequence to any X windowscreen. It returns a value other than 0 if successful. Check theexception member of image to determine the reason for any failure.; </blockquote><P>The format of the AllocateNextImage method is:</P>
+<blockquote>DisplayImages ( ) displays an image sequence to any X window screen. Itreturns a value other than 0 if successful. Check the exception memberof image to determine the reason for any failure.; </blockquote><P>The format of the AllocateNextImage method is:</P>
 <blockquote>unsigned int DisplayImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -425,15 +425,15 @@ The image.
 <blockquote>IsImagesEqual ( ) measures the difference between colors at each pixellocation of two images. A value other than 0 means the colors matchexactly. Otherwise an error measure is computed by summing over allpixels in an image the distance squared in RGB space between each imagepixel and its corresponding pixel in the reference image. The errormeasure is assigned to these image members:; </blockquote><DL><DL>
 <p><dt><STRONG><A NAME="item_o_mean_error_per_pixel%3A">mean_error_per_pixel:</A></STRONG><BR>
 <DD>
-This value is the mean error for any single pixel in the image.
+The mean error for any single pixel in the image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_normalized_mean_error%3A">normalized_mean_error:</A></STRONG><BR>
 <DD>
-This value is the normalized mean quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in the image.
+The normalized mean quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in the image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_normalized_maximum_error%3A">normalized_maximum_error:</A></STRONG><BR>
 <DD>
-This value is the normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.
+The normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.
 <P></P></DL></DL>
 <P>
 <FONT SIZE=-1>A</FONT> small normalized mean square error, accessed as image-&gt;normalized_mean_error, suggests the images are very similiar in spatial layout and color.</P>
@@ -450,9 +450,9 @@ The image.
 The reference image.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="isimagetainted">IsImageTainted</A></H2>
-<blockquote>IsImageTainted ( ) returns a value other than 0 if any pixel in an imagehas been altered since it was first constituted.; </blockquote><P>The format of the IsImageTainted method is:</P>
-<blockquote>unsigned int IsImageTainted ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<H2><A NAME="istaintimage">IsTaintImage</A></H2>
+<blockquote>IsTaintImage ( ) returns a value other than 0 if any pixel in the imagehas been altered since it was first constituted.; </blockquote><P>The format of the IsTaintImage method is:</P>
+<blockquote>unsigned int IsTaintImage ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -462,7 +462,7 @@ The image.
 <P>
 <H2><A NAME="listtogroupimage">ListToGroupImage</A></H2>
 <blockquote>ListToGroupImage ( ) is a convenience method that converts a linked list ofimages to a sequential array. For example, ; </blockquote><blockquote>images = ListToGroupImage ( image_list, &n ); for ( i=0; i < n; i++ ) puts ( images[i]->filename ) ;; </blockquote><P>The format of the ListToGroupImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> **ListToGroupImage ( <A HREF="types/Image.html">Image</A> *image, unsigned long *number_images ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> **ListToGroupImage ( const <A HREF="types/Image.html">Image</A> *image, unsigned long *number_images ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -527,7 +527,7 @@ The image clip mask.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimagedepth">SetImageDepth</A></H2>
-<blockquote>SetImageDepth ( ) sets the depth of the image, either 8 or 16. Some imageformats support both 8 and 16-bits per color component ( e.g. PNG ) . UseSetImageDepth ( ) to specify your preference. A value other than 0 isreturned if the depth is set.; </blockquote><P>The format of the SetImageDepth method is:</P>
+<blockquote>SetImageDepth ( ) sets the depth of the image, either 8 or 16. Some imageformats support both 8 and 16-bits per color component ( e.g. PNG ) . UseSetImageDepth ( ) to specify your preference. A value other than 0 isreturned if the depth is set. Check the exception member of image todetermine the cause for any failure.; </blockquote><P>The format of the SetImageDepth method is:</P>
 <blockquote>unsigned int SetImageDepth ( <A HREF="types/Image.html">Image</A> *image, const unsigned long depth ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>

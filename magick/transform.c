@@ -970,7 +970,7 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ProfileImage() adds or removes a ICM, IPTC, or generic profile to an
+%  ProfileImage() adds or removes a ICM, IPTC, or generic profile from an
 %  image.  If the profile name is defined it is deleted from the image.
 %  If a filename is given, one or more profiles are read and added to the
 %  image.  ProfileImage() returns a value other than 0 if the profile is

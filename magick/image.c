@@ -827,9 +827,9 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
 %  CloneImage() copies an image and returns the copy as a new image object.
 %  If the specified columns and rows is 0, an exact copy of the image is
 %  returned, otherwise the pixel data is undefined and must be initialized
-%  with the SetImagePixels() and SyncImagePixels() methods.  A NULL image
-%  is returned if the image cannot be cloned; check exception for the reason
-%  why.
+%  with the SetImagePixels() and SyncImagePixels() methods.  On failure,
+%  a NULL image is returned and exception describes the reason for the
+%  failure.
 %
 %  The format of the CloneImage method is:
 %
@@ -841,9 +841,9 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
 %
 %    o image: The image.
 %
-%    o columns: The number of columns in the copied
+%    o columns: The number of columns in the cloned image.
 %
-%    o rows: The number of rows in the copied image.
+%    o rows: The number of rows in the cloned image.
 %
 %    o orphan:  With a value other than 0, the cloned image is an orphan.  An
 %      orphan is a stand-alone image that is not assocated with an image list.
@@ -1576,9 +1576,9 @@ MagickExport unsigned int CompositeImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CycleColormap() displaces an image's colormap by a given number of positions.
-%  If you cycle the colormap a number of times you can produce a psychodelic
-%  effect.
+%  CycleColormap() displaces an image's colormap by a given number of 
+%  positions.  If you cycle the colormap a number of times you can produce
+%  a psychodelic effect.
 %
 %  The format of the CycleColormapImage method is:
 %
@@ -1588,7 +1588,7 @@ MagickExport unsigned int CompositeImage(Image *image,
 %
 %    o image: The image.
 %
-%    o amount:  Offset of the colormap this much.
+%    o amount:  Offset the colormap this much.
 %
 %
 */
@@ -1646,8 +1646,8 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DescribeImage() describes an image by printing its attributes to the
-%  file.  Attributes include the image width, height, size, and others.
+%  DescribeImage() describes an image by printing its attributes to the file.
+%  Attributes include the image width, height, size, and others.
 %
 %  The format of the DescribeImage method is:
 %
@@ -2211,8 +2211,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyImage() dereferences an image, deallocating memory associated with
-%  the image if the reference count becomes zero.
+%  DestroyImage() dereferences an image, deallocating memory associated
+%  with the image if the reference count becomes zero.
 %
 %  The format of the DestroyImage method is:
 %
@@ -2316,7 +2316,8 @@ MagickExport void DestroyImage(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyImageInfo() deallocates memory associated with an ImageInfo structure.
+%  DestroyImageInfo() deallocates memory associated with an ImageInfo
+%  structure.
 %
 %  The format of the DestroyImageInfo method is:
 %
@@ -2363,8 +2364,8 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyImages() deallocates memory associated with all the images in a
-%  sequence.
+%  DestroyImages() is a convenience method.  It calls DestroyImage() for each
+%  image in the sequence.
 %
 %  The format of the DestroyImages method is:
 %
@@ -2413,9 +2414,9 @@ MagickExport void DestroyImages(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% DisplayImages() displays an image sequence to any X window
-% screen.  It returns a value other than 0 if successful.  Check the
-% exception member of image to determine the reason for any failure.
+%  DisplayImages() displays an image sequence to any X window screen.  It
+%  returns a value other than 0 if successful.  Check the exception member
+%  of image to determine the reason for any failure.
 %
 %  The format of the AllocateNextImage method is:
 %
@@ -2910,18 +2911,18 @@ MagickExport unsigned int IsGeometry(const char *geometry)
 %  pixel and its corresponding pixel in the reference image.  The error
 %  measure is assigned to these image members:
 %
-%    o mean_error_per_pixel:  This value is the mean error for any single
-%      pixel in the image.
+%    o mean_error_per_pixel:  The mean error for any single pixel in
+%      the image.
 %
-%    o normalized_mean_error:  This value is the normalized mean
-%      quantization error for any single pixel in the image.  This distance
-%      measure is normalized to a range between 0 and 1.  It is independent
-%      of the range of red, green, and blue values in the image.
+%    o normalized_mean_error:  The normalized mean quantization error for
+%      any single pixel in the image.  This distance measure is normalized to
+%      a range between 0 and 1.  It is independent of the range of red, green,
+%      and blue values in the image.
 %
-%    o normalized_maximum_error:  This value is the normalized
-%      maximum quantization error for any single pixel in the image.  This
-%      distance measure is normalized to a range between 0 and 1.  It is
-%      independent of the range of red, green, and blue values in your image.
+%    o normalized_maximum_error:  The normalized maximum quantization
+%      error for any single pixel in the image.  This distance measure is
+%      normalized to a range between 0 and 1.  It is independent of the range
+%      of red, green, and blue values in your image.
 %
 %  A small normalized mean square error, accessed as
 %  image->normalized_mean_error, suggests the images are very similiar in
@@ -3025,54 +3026,6 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     I s I m a g e T a i n t e d                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IsImageTainted() returns a value other than 0 if any pixel in an image
-%  has been altered since it was first constituted.
-%
-%  The format of the IsImageTainted method is:
-%
-%      unsigned int IsImageTainted(const Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: The image.
-%
-%
-*/
-MagickExport unsigned int IsImageTainted(const Image *image)
-{
-  char
-    magick[MaxTextExtent],
-    filename[MaxTextExtent];
-
-  register const Image
-    *p;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  (void) strncpy(magick,image->magick,MaxTextExtent-1);
-  (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  for (p=image; p != (Image *) NULL; p=p->next)
-  {
-    if (p->taint)
-      return(True);
-    if (LocaleCompare(p->magick,magick) != 0)
-      return(True);
-    if (LocaleCompare(p->filename,filename) != 0)
-      return(True);
-  }
-  return(False);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
 +     I s S u b i m a g e                                                     %
 %                                                                             %
 %                                                                             %
@@ -3124,6 +3077,54 @@ MagickExport unsigned int IsSubimage(const char *geometry,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     I s T a i n t I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsTaintImage() returns a value other than 0 if any pixel in the image
+%  has been altered since it was first constituted.
+%
+%  The format of the IsTaintImage method is:
+%
+%      unsigned int IsTaintImage(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport unsigned int IsTaintImage(const Image *image)
+{
+  char
+    magick[MaxTextExtent],
+    filename[MaxTextExtent];
+
+  register const Image
+    *p;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  (void) strncpy(magick,image->magick,MaxTextExtent-1);
+  (void) strncpy(filename,image->filename,MaxTextExtent-1);
+  for (p=image; p != (Image *) NULL; p=p->next)
+  {
+    if (p->taint)
+      return(True);
+    if (LocaleCompare(p->magick,magick) != 0)
+      return(True);
+    if (LocaleCompare(p->filename,filename) != 0)
+      return(True);
+  }
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %     L i s t T o G r o u p I m a g e                                         %
 %                                                                             %
 %                                                                             %
@@ -3139,7 +3140,7 @@ MagickExport unsigned int IsSubimage(const char *geometry,
 %
 %  The format of the ListToGroupImage method is:
 %
-%      Image **ListToGroupImage(Image *image,unsigned long *number_images)
+%      Image **ListToGroupImage(const Image *image,unsigned long *number_images)
 %
 %  A description of each parameter follows:
 %
@@ -3149,7 +3150,8 @@ MagickExport unsigned int IsSubimage(const char *geometry,
 %
 %
 */
-MagickExport Image **ListToGroupImage(const Image *image,unsigned long *number_images)
+MagickExport Image **ListToGroupImage(const Image *image,
+  unsigned long *number_images)
 {
   Image
     **images,
@@ -5774,7 +5776,8 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
 %  SetImageDepth() sets the depth of the image, either 8 or 16.  Some image
 %  formats support both 8 and 16-bits per color component (e.g. PNG).  Use
 %  SetImageDepth() to specify your preference.  A value other than 0 is
-%  returned if the depth is set.
+%  returned if the depth is set.  Check the exception member of image to
+%  determine the cause for any failure.
 %
 %  The format of the SetImageDepth method is:
 %
