@@ -67,7 +67,7 @@
 /*
   Struct declaractions.
 */
-typedef struct _SemaphoreInfo
+struct SemaphoreInfo
 {
 #if defined(HasPTHREADS)
   pthread_mutex_t
@@ -81,7 +81,7 @@ typedef struct _SemaphoreInfo
 
   unsigned int
     signature;
-} SemaphoreInfo;
+};
 
 /*
   Static declaractions.
