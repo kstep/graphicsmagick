@@ -3575,21 +3575,14 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       scanlines[i]=png_pixels+(rowbytes*i);
     if (IsMonochromeImage(image))
       {
-        register unsigned char
-          polarity;
-
         /*
           Convert PseudoClass image to a PNG monochrome image.
         */
-        polarity=Intensity(image->colormap[0]) < (MaxRGB >> 1);
-        if (image->colors == 2)
-          polarity=
-            Intensity(image->colormap[1]) > Intensity(image->colormap[0]);
         for (y=0; y < (int) image->rows; y++)
         {
           if (!GetPixelCache(image,0,y,image->columns,1))
             break;
-          (void) WritePixelCache(image,IndexQuantum,scanlines[y]);
+          (void) WritePixelCache(image,GrayQuantum,scanlines[y]);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(SaveImageText,y,image->rows);
