@@ -1683,7 +1683,6 @@ static unsigned int MogrifyUtility(int argc,char **argv)
         /*
           Option is a file name: begin by reading image from specified file.
         */
-        j=i+1;
         (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
         image=ReadImage(image_info,&exception);
         if (exception.severity != UndefinedException)
@@ -1717,7 +1716,7 @@ static unsigned int MogrifyUtility(int argc,char **argv)
         /*
           Transmogrify image as defined by the image processing options.
         */
-        status&=MogrifyImages(image_info,i-j+2,argv+j-1,&image);
+        status&=MogrifyImages(image_info,i-j,argv+j,&image);
         (void) CatchImageException(image);
         if (global_colormap)
           (void) MapImages(image,(Image *) NULL,image_info->dither);
@@ -1747,6 +1746,7 @@ static unsigned int MogrifyUtility(int argc,char **argv)
               (void) rename(image->filename,filename);
             }
         DestroyImage(image);
+        j=i+1;
       }
   }
   if ((i != argc) || (image == (Image *) NULL))

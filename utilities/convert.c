@@ -489,7 +489,6 @@ static unsigned int ConvertUtility(int argc,char **argv)
         /*
           Read input image.
         */
-        j=i+1;
         filename=argv[i];
         (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
         if (ping)
@@ -502,7 +501,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
         status&=next_image != (Image *) NULL;
         if (next_image == (Image *) NULL)
           continue;
-        status&=MogrifyImages(image_info,i-j+2,argv+j-1,&next_image);
+        status&=MogrifyImages(image_info,i-j,argv+j,&next_image);
         (void) CatchImageException(next_image);
         if (image == (Image *) NULL)
           image=next_image;
@@ -515,6 +514,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
             next_image->previous=p;
             p->next=next_image;
           }
+        j=i+1;
       }
     else
       switch (*(option+1))
@@ -800,7 +800,6 @@ static unsigned int ConvertUtility(int argc,char **argv)
                     *clone_info;
 
                   i++;
-                  j=i+1;
                   if (i == argc)
                     MagickError(OptionError,"Missing output filename",
                       option);
@@ -812,7 +811,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
                   if (clone_image == (Image *) NULL)
                     MagickError(OptionError,"Missing an image file name",
                       (char *) NULL);
-                  status&=MogrifyImages(image_info,i-j+2,argv+j-1,&clone_image);
+                  status&=MogrifyImages(image_info,i-j,argv+j,&clone_image);
                   (void) CatchImageException(clone_image);
                   status&=WriteImages(clone_info,clone_image,argv[i],
                     &exception);
@@ -824,6 +823,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
                       image=clone_image;
                     }
                   DestroyImageInfo(clone_info);
+                  j=i+1;
                 }
               break;
             }
@@ -1632,15 +1632,15 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  j=i+1;
                   if (i == argc)
                     MagickError(OptionError,"Missing output filename",option);
                   if (image == (Image *) NULL)
                     MagickError(OptionError,"Missing source image",
                       (char *) NULL);
-                  status&=MogrifyImages(image_info,i-j+2,argv+j-1,&image);
+                  status&=MogrifyImages(image_info,i-j,argv+j,&image);
                   (void) CatchImageException(image);
                   status&=WriteImages(image_info,image,argv[i],&exception);
+                  j=i+1;
                 }
               break;
             }
@@ -1983,7 +1983,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  status&=MogrifyImages(image_info,i-j+2,argv+j-1,&image);
+  status&=MogrifyImages(image_info,i-j,argv+j,&image);
   (void) CatchImageException(image);
   status&=WriteImages(image_info,image,argv[argc-1],&exception);
   DestroyImageList(image);
