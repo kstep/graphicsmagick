@@ -253,8 +253,8 @@ static double BesselOrderOne(double x)
     x=(-x);
   if (x < 8.0)
     return(p*J1(x));
-  q=sqrt(2.0/(MagickPI*x))*(P1(x)*(1.0/sqrt(2.0)*(sin(x)-cos(x)))-8.0/x*Q1(x)*
-    (-1.0/sqrt(2.0)*(sin(x)+cos(x))));
+  q=sqrt(2.0/(MagickPI*x))*(P1(x)*((1.0/sqrt(2.0))*(sin(x)-cos(x)))-8.0/x*Q1(x)*
+    ((-1.0/sqrt(2.0))*(sin(x)+cos(x))));
   if (p < 0.0)
     q=(-q);
   return(q);
@@ -351,12 +351,12 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   */
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(magnify_image,0,(long) (image->rows-1-y),
+    p=GetImagePixels(magnify_image,0,(long) (image->rows-y-1),
       magnify_image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     (void) memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
-    q=GetImagePixels(magnify_image,0,(long) (2*(image->rows-1-y)),
+    q=GetImagePixels(magnify_image,0,(long) (2*(image->rows-y-1)),
       magnify_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
@@ -369,10 +369,10 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
       p--;
       q-=2;
       *q=(*p);
-      (q+1)->red=(((int) p->red)+((int) (p+1)->red)+1)/2;
-      (q+1)->green=(((int) p->green)+((int) (p+1)->green)+1)/2;
-      (q+1)->blue=(((int) p->blue)+((int) (p+1)->blue)+1)/2;
-      (q+1)->opacity=(((int) p->opacity)+((int) (p+1)->opacity)+1)/2;
+      (q+1)->red=(((long) p->red)+((long) (p+1)->red)+1)/2;
+      (q+1)->green=(((long) p->green)+((long) (p+1)->green)+1)/2;
+      (q+1)->blue=(((long) p->blue)+((long) (p+1)->blue)+1)/2;
+      (q+1)->opacity=(((long) p->opacity)+((long) (p+1)->opacity)+1)/2;
     }
     if (!SyncImagePixels(magnify_image))
       break;
@@ -391,33 +391,33 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
       r=q+magnify_image->columns;
     for (x=0; x < (long) (image->columns-1); x++)
     {
-      q->red=(((int) p->red)+((int) r->red)+1)/2;
-      q->green=(((int) p->green)+((int) r->green)+1)/2;
-      q->blue=(((int) p->blue)+((int) r->blue)+1)/2;
-      q->opacity=(((int) p->opacity)+((int) r->opacity)+1)/2;
-      (q+1)->red=(((int) p->red)+((int) (p+2)->red)+((int) r->red)+
-        ((int) (r+2)->red)+2) >> 2;
-      (q+1)->green=(((int) p->green)+((int) (p+2)->green)+((int) r->green)+
-        ((int) (r+2)->green)+2) >> 2;
-      (q+1)->blue=(((int) p->blue)+((int) (p+2)->blue)+((int) r->blue)+
-        ((int) (r+2)->blue)+2) >> 2;
-      (q+1)->opacity=(((int) p->opacity)+((int) (p+2)->opacity)+
-        ((int) r->opacity)+((int) (r+2)->opacity)+2) >> 2;
+      q->red=(((long) p->red)+((long) r->red)+1)/2;
+      q->green=(((long) p->green)+((long) r->green)+1)/2;
+      q->blue=(((long) p->blue)+((long) r->blue)+1)/2;
+      q->opacity=(((long) p->opacity)+((long) r->opacity)+1)/2;
+      (q+1)->red=(((long) p->red)+((long) (p+2)->red)+((long) r->red)+
+        ((long) (r+2)->red)+2) >> 2;
+      (q+1)->green=(((long) p->green)+((long) (p+2)->green)+((long) r->green)+
+        ((long) (r+2)->green)+2) >> 2;
+      (q+1)->blue=(((long) p->blue)+((long) (p+2)->blue)+((long) r->blue)+
+        ((long) (r+2)->blue)+2) >> 2;
+      (q+1)->opacity=(((long) p->opacity)+((long) (p+2)->opacity)+
+        ((long) r->opacity)+((long) (r+2)->opacity)+2) >> 2;
       q+=2;
       p+=2;
       r+=2;
     }
-    q->red=(((int) p->red)+((int) r->red)+1)/2;
-    q->green=(((int) p->green)+((int) r->green)+1)/2;
-    q->blue=(((int) p->blue)+((int) r->blue)+1)/2;
-    q->opacity=(((int) p->opacity)+((int) r->opacity)+1)/2;
+    q->red=(((long) p->red)+((long) r->red)+1)/2;
+    q->green=(((long) p->green)+((long) r->green)+1)/2;
+    q->blue=(((long) p->blue)+((long) r->blue)+1)/2;
+    q->opacity=(((long) p->opacity)+((long) r->opacity)+1)/2;
     p++;
     q++;
     r++;
-    q->red=(((int) p->red)+((int) r->red)+1)/2;
-    q->green=(((int) p->green)+((int) r->green)+1)/2;
-    q->blue=(((int) p->blue)+((int) r->blue)+1)/2;
-    q->opacity=(((int) p->opacity)+((int) r->opacity)+1)/2;
+    q->red=(((long) p->red)+((long) r->red)+1)/2;
+    q->green=(((long) p->green)+((long) r->green)+1)/2;
+    q->blue=(((long) p->blue)+((long) r->blue)+1)/2;
+    q->opacity=(((long) p->opacity)+((long) r->opacity)+1)/2;
     if (!SyncImagePixels(magnify_image))
       break;
     if (QuantumTick(y,image->rows))
