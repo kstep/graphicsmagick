@@ -188,7 +188,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 	  /*
 	    Load module
 	  */
-	  printf("Loading %s\n", file_list[i]);
+	  /* printf("Loading %s\n", file_list[i]); */
 	  if( ( handle=lt_dlopen(file_list[i]) ) == 0)
 	    {
 	      printf("ERROR: failed to load module %s: %s\n",
