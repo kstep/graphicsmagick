@@ -1756,7 +1756,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           q->coordinates=4;
           GenerateBezier(q);
           q+=q->coordinates;
-          point=(q-1)->point;
+          point=end;
         } while (IsGeometry(p));
         break;
       }
@@ -1767,7 +1767,6 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         point.x=attribute == 'H' ? x: point.x+x;
         GeneratePoint(q,point);
         q+=q->coordinates;
-        point=(q-1)->point;
         break;
       }
       case 'l':
@@ -1785,7 +1784,6 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           point.y=attribute == 'L' ? y : point.y+y;
           GeneratePoint(q,point);
           q+=q->coordinates;
-          point=(q-1)->point;
         } while (IsGeometry(p));
         break;
       }
@@ -1807,7 +1805,6 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           point.y=attribute == 'M' ? y : point.y+y;
           GeneratePoint(q,point);
           q+=q->coordinates;
-          point=(q-1)->point;
         } while (IsGeometry(p));
         start=point;
         break;
@@ -1838,7 +1835,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           q->coordinates=3;
           GenerateBezier(q);
           q+=q->coordinates;
-          point=(q-1)->point;
+          point=end;
         } while (IsGeometry(p));
         break;
       }
@@ -1870,7 +1867,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           q->coordinates=4;
           GenerateBezier(q);
           q+=q->coordinates;
-          point=(q-1)->point;
+          point=end;
         } while (IsGeometry(p));
         break;
       }
@@ -1902,7 +1899,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           q->coordinates=3;
           GenerateBezier(q);
           q+=q->coordinates;
-          point=(q-1)->point;
+          point=end;
         } while (IsGeometry(p));
         break;
       }
@@ -1913,15 +1910,14 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         point.y=attribute == 'V' ? y : point.y+y;
         GeneratePoint(q,point);
         q+=q->coordinates;
-        point=(q-1)->point;
         break;
       }
       case 'z':
       case 'Z':
       {
-        GeneratePoint(q,start);
+        point=start;
+        GeneratePoint(q,point);
         q+=q->coordinates;
-        point=(q-1)->point;
         primitive_info->coordinates=q-primitive_info;
         number_coordinates+=primitive_info->coordinates;
         primitive_info=q;
