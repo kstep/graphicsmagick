@@ -7140,9 +7140,9 @@ MagickExport void XMakeStandardColormap(Display *display,
         if (visual_info->storage_class != StaticColor)
           {
             gray_value=PixelIntensity(&color);
-            color.red=ScaleQuantumToShort(gray_value);
-            color.green=color.red;
-            color.blue=color.red;
+            color.red=gray_value;
+            color.green=gray_value;
+            color.blue=gray_value;
           }
         status=XAllocColor(display,colormap,&color);
         if (status == 0)
@@ -7260,9 +7260,9 @@ MagickExport void XMakeStandardColormap(Display *display,
             if (visual_info->storage_class != PseudoColor)
               {
                 gray_value=PixelIntensity(&color);
-                color.red=ScaleQuantumToShort(gray_value);
-                color.green=color.red;
-                color.blue=color.red;
+                color.red=gray_value;
+                color.green=gray_value;
+                color.blue=gray_value;
               }
             status=XAllocColor(display,colormap,&color);
             if (status == 0)
@@ -7297,9 +7297,9 @@ MagickExport void XMakeStandardColormap(Display *display,
             if (visual_info->storage_class != PseudoColor)
               {
                 gray_value=PixelIntensity(&color);
-                color.red=ScaleQuantumToShort(gray_value);
-                color.green=color.red;
-                color.blue=color.red;
+                color.red=gray_value;
+                color.green=gray_value;
+                color.blue=gray_value;
               }
             XBestPixel(display,colormap,server_colors,(unsigned int)
               visual_info->colormap_size,&color);
@@ -7382,9 +7382,9 @@ MagickExport void XMakeStandardColormap(Display *display,
         if (visual_info->storage_class != PseudoColor)
           {
             gray_value=PixelIntensity(&color);
-            color.red=ScaleQuantumToShort(gray_value);
-            color.green=color.red;
-            color.blue=color.red;
+            color.red=gray_value;
+            color.green=gray_value;
+            color.blue=gray_value;
           }
         color.pixel=pixel->pixels[i];
         *p++=color;
