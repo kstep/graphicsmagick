@@ -6,9 +6,9 @@
  *     and http://www.intel.com/drg/pentiumII/appnotes/923/923.htm
  *     for Intel's performance analysis of the MMX vs. non-MMX code.
  *
- * libpng version 1.2.0 - September 1, 2001
+ * libpng version 1.2.2 - April 15, 2002
  * For conditions of distribution and use, see copyright notice in png.h
- * Copyright (c) 1998-2001 Glenn Randers-Pehrson
+ * Copyright (c) 1998-2002 Glenn Randers-Pehrson
  * Copyright (c) 1998, Intel Corporation
  *
  * Based on MSVC code contributed by Nirav Chhatrapati, Intel Corp., 1998.
@@ -219,6 +219,9 @@
  *
  * 20010310:
  *  - fixed buffer-overrun bug in png_combine_row() C code (non-MMX)
+ *
+ * 20020304:
+ *  - eliminated incorrect use of width_mmx in pixel_bytes == 8 case
  *
  * STILL TO DO:
  *     - test png_do_read_interlace() 64-bit case (pixel_bytes == 8)
@@ -597,8 +600,12 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
             png_bytep dstptr;
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
+#if !defined(PNG_1_0_X)
             if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
                 /* && _mmx_supported */ )
+#else
+            if (_mmx_supported)
+#endif
             {
                png_uint_32 len;
                int diff;
@@ -731,8 +738,12 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
             png_bytep dstptr;
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
+#if !defined(PNG_1_0_X)
             if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
                 /* && _mmx_supported */ )
+#else
+            if (_mmx_supported)
+#endif
             {
                png_uint_32 len;
                int diff;
@@ -880,8 +891,12 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
             png_bytep dstptr;
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
+#if !defined(PNG_1_0_X)
             if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
                 /* && _mmx_supported */ )
+#else
+            if (_mmx_supported)
+#endif
             {
                png_uint_32 len;
                int diff;
@@ -1044,8 +1059,12 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
             png_bytep dstptr;
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
+#if !defined(PNG_1_0_X)
             if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
                 /* && _mmx_supported */ )
+#else
+            if (_mmx_supported)
+#endif
             {
                png_uint_32 len;
                int diff;
@@ -1215,8 +1234,12 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
             png_bytep dstptr;
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
+#if !defined(PNG_1_0_X)
             if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
                 /* && _mmx_supported */ )
+#else
+            if (_mmx_supported)
+#endif
             {
                png_uint_32 len;
                int diff;
@@ -1691,8 +1714,12 @@ png_do_read_interlace(png_structp png_ptr)
             /* New code by Nirav Chhatrapati - Intel Corporation */
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED)
+#if !defined(PNG_1_0_X)
             if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_INTERLACE)
                 /* && _mmx_supported */ )
+#else
+            if (_mmx_supported)
+#endif
             {
                //--------------------------------------------------------------
                if (pixel_bytes == 3)
@@ -2464,9 +2491,8 @@ png_do_read_interlace(png_structp png_ptr)
                   {
                      // source is 8-byte RRGGBBAA
                      // dest is 32-byte RRGGBBAA RRGGBBAA RRGGBBAA RRGGBBAA
-                     int width_mmx = ((width >> 1) << 1) ;
-                     width -= width_mmx;
-                     if (width_mmx)
+                     // (recall that expansion is _in place_:  sptr and dp
+                     //  both point at locations within same row buffer)
                      {
                         int dummy_value_c;  // fix 'forbidden register spilled'
                         int dummy_value_S;
@@ -2505,9 +2531,6 @@ png_do_read_interlace(png_structp png_ptr)
                   {
                      // source is 8-byte RRGGBBAA
                      // dest is 16-byte RRGGBBAA RRGGBBAA
-                     int width_mmx = ((width >> 1) << 1) ;
-                     width -= width_mmx;
-                     if (width_mmx)
                      {
                         int dummy_value_c;  // fix 'forbidden register spilled'
                         int dummy_value_S;
@@ -4895,6 +4918,9 @@ png_read_filter_row_mmx_up(png_row_infop row_info, png_bytep row,
    __asm__ __volatile__ (
 //pre "movl row, %%edi              \n\t"
       // get # of bytes to alignment
+#ifdef __PIC__
+      "pushl %%ebx                  \n\t"
+#endif
       "movl %%edi, %%ecx            \n\t"
       "xorl %%ebx, %%ebx            \n\t"
       "addl $0x7, %%ecx             \n\t"
@@ -4994,6 +5020,9 @@ png_read_filter_row_mmx_up(png_row_infop row_info, png_bytep row,
 
    "up_end:                         \n\t"
       "EMMS                         \n\t" // conversion of filtered row complete
+#ifdef __PIC__
+      "popl %%ebx                   \n\t"
+#endif
 
       : "=d" (dummy_value_d),   // 0      // output regs (dummy)
         "=S" (dummy_value_S),   // 1
@@ -5057,25 +5086,33 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
          break;
       case 1: sprintf(filnm, "sub-%s",
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
+#if !defined(PNG_1_0_X)
         (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_SUB)? "MMX" : 
+#endif
 #endif
 "x86");
          break;
       case 2: sprintf(filnm, "up-%s",
 #ifdef PNG_ASSEMBLER_CODE_SUPPORTED
+#if !defined(PNG_1_0_X)
         (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_UP)? "MMX" :
+#endif
 #endif
  "x86");
          break;
       case 3: sprintf(filnm, "avg-%s",
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
+#if !defined(PNG_1_0_X)
         (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_AVG)? "MMX" :
+#endif
 #endif
  "x86");
          break;
       case 4: sprintf(filnm, "Paeth-%s",
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
+#if !defined(PNG_1_0_X)
         (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_PAETH)? "MMX":
+#endif
 #endif
 "x86");
          break;
@@ -5096,7 +5133,11 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
 
       case PNG_FILTER_VALUE_SUB:
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
+#if !defined(PNG_1_0_X)
          if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_SUB) &&
+#else
+         if (
+#endif
              (row_info->pixel_depth >= png_ptr->mmx_bitdepth_threshold) &&
              (row_info->rowbytes >= png_ptr->mmx_rowbytes_threshold))
          {
@@ -5121,7 +5162,11 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
 
       case PNG_FILTER_VALUE_UP:
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED)
+#if !defined(PNG_1_0_X)
          if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_UP) &&
+#else
+         if (
+#endif
              (row_info->pixel_depth >= png_ptr->mmx_bitdepth_threshold) &&
              (row_info->rowbytes >= png_ptr->mmx_rowbytes_threshold))
          {
@@ -5145,7 +5190,11 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
 
       case PNG_FILTER_VALUE_AVG:
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
+#if !defined(PNG_1_0_X)
          if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_AVG) &&
+#else
+         if (
+#endif
              (row_info->pixel_depth >= png_ptr->mmx_bitdepth_threshold) &&
              (row_info->rowbytes >= png_ptr->mmx_rowbytes_threshold))
          {
@@ -5179,7 +5228,11 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
 
       case PNG_FILTER_VALUE_PAETH:
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
+#if !defined(PNG_1_0_X)
          if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_PAETH) &&
+#else
+         if (
+#endif
              (row_info->pixel_depth >= png_ptr->mmx_bitdepth_threshold) &&
              (row_info->rowbytes >= png_ptr->mmx_rowbytes_threshold))
          {
@@ -5287,6 +5340,8 @@ png_mmx_support(void)
         "popfl                \n\t"  // restore modified value to Eflag reg
         "pushfl               \n\t"  // save Eflag to stack
         "popl %%eax           \n\t"  // get Eflag from stack
+        "pushl %%ecx          \n\t"  // save original Eflag to stack
+        "popfl                \n\t"  // restore original Eflag
         "xorl %%ecx, %%eax    \n\t"  // compare new Eflag with original Eflag
         "jz .NOT_SUPPORTED    \n\t"  // if same, CPUID instr. is not supported
 
