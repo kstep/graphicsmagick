@@ -154,13 +154,11 @@ Export Image *ReadSTEGANOImage(const ImageInfo *image_info)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=0; i < (int) image->colors; i++)
   {
-    image->colormap[i].red=(Quantum)
-      ((unsigned long) (MaxRGB*i)/(image->colors-1));
-    image->colormap[i].green=(Quantum)
-      ((unsigned long) (MaxRGB*i)/(image->colors-1));
-    image->colormap[i].blue=(Quantum)
-      ((unsigned long) (MaxRGB*i)/(image->colors-1));
+    image->colormap[i].red=((unsigned long) (MaxRGB*i)/(image->colors-1));
+    image->colormap[i].green=((unsigned long) (MaxRGB*i)/(image->colors-1));
+    image->colormap[i].blue=((unsigned long) (MaxRGB*i)/(image->colors-1));
   }
+  SetImage(image);
   /*
     Grab embedded watermark.
   */
@@ -181,9 +179,9 @@ Export Image *ReadSTEGANOImage(const ImageInfo *image_info)
         UnembedBit(*stegano_image->indexes)
       else
         {
-          UnembedBit(stegano_image->pixels->red);
-          UnembedBit(stegano_image->pixels->green);
-          UnembedBit(stegano_image->pixels->blue);
+          UnembedBit(p->red);
+          UnembedBit(p->green);
+          UnembedBit(p->blue);
         }
       i++;
     }
