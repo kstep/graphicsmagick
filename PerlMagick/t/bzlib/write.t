@@ -21,7 +21,7 @@ chdir 't/bzlib' || die 'Cd failed';
 testReadWrite( 'input.miff',
 	       'output.miff',
 	       q/compress=>'BZip'/,
-	       '12643c99ecf96cf1d7e8f5cc62b13c78' );
+	       'eb4d6e084afe2835a1ad28ad7fc12ced' );
 
 $test = 0;  # Quench PERL compliaint
 
