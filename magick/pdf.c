@@ -387,6 +387,7 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
 */
 Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 {
+#define CFormat  "/Filter [ /ASCII85Decode /%.1024s ]\n"
 #define ObjectsPerImage  12
 
   char
@@ -468,16 +469,9 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       if (status == False)
         WriterExit(FileOpenWarning,"Unable to open file",image);
     }
-  compression=image_info->compression;
-#if defined(HasZLIB)
-  if (compression == UndefinedCompression)
-    compression=ZipCompression;
-#else
-#if defined(HasLZW)
-  if (compression == UndefinedCompression)
-    compression=LZWCompression;
-#endif
-#endif
+  compression=image->compression;
+  if (image_info->compression != UndefinedCompression)
+    compression=image_info->compression;
   /*
     Allocate X ref memory.
   */
@@ -764,9 +758,13 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     else
       if (!IsFaxImage(image))
         {
-          (void) sprintf(buffer,"/Filter [ /ASCII85Decode /%.1024s ]\n",
-            compression == ZipCompression ? "FlateDecode" :
-            compression == LZWCompression ? "LZWDecode" : "RunLengthDecode");
+          switch (compression)
+          {
+            case JPEGCompression: sprintf(buffer,CFormat,"DCTDecode"); break;
+            case LZWCompression: sprintf(buffer,CFormat,"LZWDecode"); break;
+            case ZipCompression: sprintf(buffer,CFormat,"FlateDecode"); break;
+            default: sprintf(buffer,CFormat,"RunLengthDecode"); break;
+          }
           (void) WriteBlob(image,strlen(buffer),buffer);
         }
       else
@@ -799,6 +797,43 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       switch (compression)
       {
+        case JPEGCompression:
+        {
+          char
+            filename[MaxTextExtent];
+
+          FILE
+            *file;
+
+          Image
+            *jpeg_image;
+
+          int
+            c;
+
+          /*
+            Write image to temporary file in JPEG format.
+          */
+          TemporaryFilename(filename);
+          jpeg_image=CloneImage(image,image->columns,image->rows,True);
+          if (jpeg_image == (Image *) NULL)
+            WriterExit(DelegateWarning,"Unable to clone image",image);
+          (void) strcpy(jpeg_image->filename,filename);
+          status=WriteJPEGImage(image_info,jpeg_image);
+          DestroyImage(jpeg_image);
+          if (status == False)
+            WriterExit(DelegateWarning,"Unable to write image",image);
+          file=fopen(filename,ReadBinaryType);
+          if (file == (FILE *) NULL)
+            WriterExit(FileOpenWarning,"Unable to open file",image);
+          Ascii85Initialize();
+          for (c=fgetc(file); c != EOF; c=fgetc(file))
+            Ascii85Encode(image,c);
+          Ascii85Flush(image);
+          (void) fclose(file);
+          (void) remove(filename);
+          break;
+        }
         case RunlengthEncodedCompression:
         default:
         {

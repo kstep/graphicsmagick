@@ -269,7 +269,7 @@ Export void GetCacheInfo(CacheHandle *cache_handle)
   CacheInfo
     *cache_info;
 
-  assert(cache_handle != (CacheHandle) NULL);
+  assert(cache_handle != (CacheHandle *) NULL);
   cache_info=(CacheInfo *) AllocateMemory(sizeof(CacheInfo));
   *cache_info->filename='\0';
   cache_info->file=(FILE *) NULL;
@@ -556,7 +556,7 @@ Export unsigned int ReadCacheIndexes(CacheHandle cache_handle,
   off_t
     offset;
 
-  assert(cache_handle != (CacheHandle *) NULL);
+  assert(cache_handle != (CacheHandle) NULL);
   cache_info=(CacheInfo *) cache_handle;
   offset=region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
@@ -670,7 +670,7 @@ Export unsigned int ReadCachePixels(CacheHandle cache_handle,
 %
 %  The format of the SetCacheClassType method is:
 %
-%      void SetCacheClassType(CacheHandle *cache_handle)
+%      void SetCacheClassType(CacheHandle cache_handle)
 %
 %  A description of each parameter follows:
 %
@@ -685,7 +685,7 @@ Export void SetCacheClassType(CacheHandle cache_handle,ClassType type)
   CacheInfo
     *cache_info;
 
-  assert(cache_handle != (CacheHandle *) NULL);
+  assert(cache_handle != (CacheHandle) NULL);
   cache_info=(CacheInfo *) cache_handle;
   cache_info->class=type;
 }
@@ -771,7 +771,7 @@ Export unsigned int WriteCacheIndexes(CacheHandle cache_handle,
   off_t
     offset;
 
-  assert(cache_handle != (CacheHandle *) NULL);
+  assert(cache_handle != (CacheHandle) NULL);
   cache_info=(CacheInfo *) cache_handle;
   offset=region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
@@ -847,7 +847,7 @@ Export unsigned int WriteCachePixels(CacheHandle cache_handle,
   off_t
     offset;
 
-  assert(cache_handle != (CacheHandle *) NULL);
+  assert(cache_handle != (CacheHandle) NULL);
   cache_info=(CacheInfo *) cache_handle;
   offset=region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)

@@ -827,16 +827,6 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
-#if !defined(HasZLIB)
-  if (compression == ZipCompression)
-    compression=RunlengthEncodedCompression;
-#endif
-#if !defined(HasBZLIB)
-  if (compression == BZipCompression)
-    compression=RunlengthEncodedCompression;
-#endif
-  if (compression == UndefinedCompression)
-    compression=RunlengthEncodedCompression;
   scene=0;
   do
   {

@@ -143,7 +143,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->label=(char *) NULL;
   allocated_image->class=DirectClass;
   allocated_image->matte=False;
-  allocated_image->compression=RunlengthEncodedCompression;
+  allocated_image->compression=UndefinedCompression;
   allocated_image->columns=0;
   allocated_image->rows=0;
   allocated_image->depth=QuantumDepth;

@@ -303,11 +303,9 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  compression=image_info->compression;
-#if defined(HasLZW)
-  if (compression == UndefinedCompression)
-    compression=LZWCompression;
-#endif
+  compression=image->compression;
+  if (image_info->compression != UndefinedCompression)
+    compression=image_info->compression;
   page=1;
   scene=0;
   do
@@ -421,9 +419,13 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         */
         for (q=PostscriptProlog; *q; q++)
         {
-          (void) sprintf(buffer,*q,
-            compression == ZipCompression ? "FlateDecode" :
-            compression == LZWCompression ? "LZWDecode" : "RunLengthDecode");
+          switch (compression)
+          {
+            case JPEGCompression: sprintf(buffer,*q,"DCTDecode"); break;
+            case LZWCompression: sprintf(buffer,*q,"LZWDecode"); break;
+            case ZipCompression: sprintf(buffer,*q,"FlateDecode"); break;
+            default: sprintf(buffer,*q,"RunLengthDecode"); break;
+          }
           (void) WriteBlob(image,strlen(buffer),buffer);
           (void) WriteByte(image,'\n');
         }
@@ -503,6 +505,43 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       switch (compression)
       {
+        case JPEGCompression:
+        {
+          char
+            filename[MaxTextExtent];
+
+          FILE
+            *file;
+
+          Image
+            *jpeg_image;
+
+          int
+            c;
+
+          /*
+            Write image to temporary file in JPEG format.
+          */
+          TemporaryFilename(filename);
+          jpeg_image=CloneImage(image,image->columns,image->rows,True);
+          if (jpeg_image == (Image *) NULL)
+            WriterExit(DelegateWarning,"Unable to clone image",image);
+          (void) strcpy(jpeg_image->filename,filename);
+          status=WriteJPEGImage(image_info,jpeg_image);
+          DestroyImage(jpeg_image);
+          if (status == False)
+            WriterExit(DelegateWarning,"Unable to write image",image);
+          file=fopen(filename,ReadBinaryType);
+          if (file == (FILE *) NULL)
+            WriterExit(FileOpenWarning,"Unable to open file",image);
+          Ascii85Initialize();
+          for (c=fgetc(file); c != EOF; c=fgetc(file))
+            Ascii85Encode(image,c);
+          Ascii85Flush(image);
+          (void) fclose(file);
+          (void) remove(filename);
+          break;
+        }
         case RunlengthEncodedCompression:
         default:
         {
@@ -752,10 +791,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 if (!GetPixelCache(image,0,y,image->columns,1))
                   break;
                 for (x=0; x < (int) image->columns; x++)
-                {
                   Ascii85Encode(image,image->indexes[x]);
-                  p++;
-                }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     ProgressMonitor(SaveImageText,y,image->rows);
