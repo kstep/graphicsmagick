@@ -1086,23 +1086,29 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 {
   Image
     *clone_images,
-		*image;
+    *image;
 
   assert(images != (Image *) NULL);
   if (images == (Image *) NULL)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
-  clone_images=NewImageList();
+  clone_images=(Image *) NULL;
   for ( ; images != (Image *) NULL; images=images->next)
   {
-	  image=CloneImage(images,0,0,True,exception);
+    image=CloneImage(images,0,0,True,exception);
     if (image == (Image *) NULL)
-		  {
-		    if (clone_images != (Image *) NULL)
+      {
+        if (clone_images != (Image *) NULL)
           DestroyImages(clone_images);
         break;
-		  }
-    PushImageList(&clone_images,image,exception);
+      }
+    if (clone_images == (Image *) NULL)
+      {
+        clone_images=image;
+        continue;
+      }
+    image->previous=clone_images;
+    clone_images->next=image;
   }
   return(clone_images);
 }
@@ -5566,8 +5572,8 @@ MagickExport Image *PopImageList(Image **images)
 MagickExport unsigned int PushImageList(Image **images,const Image *image,
   ExceptionInfo *exception)
 {
-	Image
-		*next;
+  Image
+    *next;
 
   assert(images != (Image **) NULL);
   assert(image != (Image *) NULL);
@@ -5584,7 +5590,7 @@ MagickExport unsigned int PushImageList(Image **images,const Image *image,
     return(False);
   next->next->previous=next;
   next->next->next=(Image *) NULL;
-	return(True);
+  return(True);
 }
 
 /*
@@ -5617,10 +5623,10 @@ MagickExport unsigned int PushImageList(Image **images,const Image *image,
 %
 */
 MagickExport unsigned int SetImageList(Image **images,const Image *image,
-	const unsigned long n,ExceptionInfo *exception)
+  const unsigned long n,ExceptionInfo *exception)
 {
-	Image
-		*next;
+  Image
+    *next;
 
   register long
     i;
