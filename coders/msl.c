@@ -56,13 +56,16 @@
 */
 #include "studio.h"
 #if defined(HasXML)
-#ifdef WIN32
-#include <win32config.h>
-#endif
-#include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
-#include <libxml/parserInternals.h>
-#include <libxml/xmlerror.h>
+#  if defined(WIN32)
+#    if defined(__MINGW32__)
+#      define _MSC_VER
+#    endif
+#    include <win32config.h>
+#  endif
+#  include <libxml/parser.h>
+#  include <libxml/xmlmemory.h>
+#  include <libxml/parserInternals.h>
+#  include <libxml/xmlerror.h>
 #endif
 
 /*
