@@ -258,6 +258,7 @@ MagickExport Image *MontageImages(const Image *images,
 #define TileImageText  "  Create image tiles...  "
 
   char
+    montage_geometry[MaxTextExtent],
     *title;
 
   const ImageAttribute
@@ -398,8 +399,10 @@ MagickExport Image *MontageImages(const Image *images,
   if (montage_info->frame != (char *) NULL)
     {
       SetGeometry(image_list[0],&geometry);
-      flags=GetGeometry(montage_info->geometry,&tile_info.x,
-        &tile_info.y,&tile_info.width,&tile_info.height);
+      (void) strncpy(montage_geometry,montage_info->geometry,MaxTextExtent-2);
+      (void) strcat(montage_geometry,"!");
+      flags=ParseImageGeometry(montage_geometry,&tile_info.x,&tile_info.y,
+        &tile_info.width,&tile_info.height);
       frame_info.width=geometry.width;
       frame_info.height=geometry.height;
       frame_info.x=geometry.x;
@@ -426,8 +429,10 @@ MagickExport Image *MontageImages(const Image *images,
         Initialize tile geometry.
       */
       SetGeometry(image_list[0],&tile_info);
-      flags=GetGeometry(montage_info->geometry,&tile_info.x,
-        &tile_info.y,&tile_info.width,&tile_info.height);
+      (void) strncpy(montage_geometry,montage_info->geometry,MaxTextExtent-2);
+      (void) strcat(montage_geometry,"!");
+      flags=ParseImageGeometry(montage_geometry,&tile_info.x,&tile_info.y,
+        &tile_info.width,&tile_info.height);
       if ((tile_info.x == 0) && (tile_info.y == 0))
         concatenate=!((flags & WidthValue) || (flags & HeightValue));
     }
