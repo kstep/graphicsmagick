@@ -409,6 +409,9 @@ typedef struct _Image
   Cache
     cache;
 
+  void
+    (*fifo)(struct _Image *);
+
   unsigned int
     orphan;
 
@@ -551,7 +554,7 @@ typedef struct _ImageInfo
     ping;
 
   void
-    (*fifo)(Image *,PixelPacket *,IndexPacket *);
+    (*fifo)(Image *);
 } ImageInfo;
 
 typedef struct _MagickInfo

@@ -916,7 +916,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       default:
       {
         register uint32
-          *p,
+          *p;
+
+        uint32
           *pixels;
 
         /*

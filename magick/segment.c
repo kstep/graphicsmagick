@@ -1072,7 +1072,7 @@ static void FreeNodes(const IntervalTree *node)
     return;
   FreeNodes(node->sibling);
   FreeNodes(node->child);
-  FreeMemory((void *) &(void *) node);
+  FreeMemory((void *) &node);
 }
 
 static double OptimalTau(const long *histogram,const double max_tau,

@@ -636,6 +636,8 @@ Export unsigned int SyncPixelCache(Image *image)
     ThrowBinaryException(CacheWarning,"pixel cache is not allocated",
       image->filename);
   image->taint=True;
+  if (image->fifo != (void (*)(Image *)) NULL)
+    image->fifo(image);
   if (IsNexusInCore(image->cache,0))
     return(True);
   status=WriteCachePixels(image->cache,0);

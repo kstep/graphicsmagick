@@ -262,6 +262,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->background_color=image_info->background_color;
   allocated_image->border_color=image_info->border_color;
   allocated_image->matte_color=image_info->matte_color;
+  allocated_image->fifo=image_info->fifo;
   return(allocated_image);
 }
 
@@ -2900,7 +2901,7 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->view=(char *) NULL;
   image_info->group=0L;
   image_info->ping=False;
-  image_info->fifo=(void (*)(Image *,PixelPacket *,IndexPacket *)) NULL;
+  image_info->fifo=(void (*)(Image *)) NULL;
 }
 
 /*
@@ -5743,6 +5744,7 @@ Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
   {
     GetBlobInfo(&next->blob);
     next->taint=False;
+    next->fifo=(void (*)(Image *)) NULL;
     (void) strcpy(next->magick_filename,image_info->filename);
     if (image->temporary)
       (void) strcpy(next->filename,image_info->filename);
