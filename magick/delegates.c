@@ -495,7 +495,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
     /*
       Execute delegate.
     */
-    if (!delegate_info->wait)
+    if (delegate_info->spawn)
       ConcatenateString(&command," &");
     status=SystemCommand(image_info->verbose,command);
     LiberateMemory((void **) &command);
@@ -563,6 +563,8 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
     return(False);
   for (p=delegate_list; p != (DelegateInfo *) NULL; p=p->next)
   {
+    if (p->restrict)
+      continue;
     i=0;
     if (p->commands != (char *) NULL)
       for (i=0; !isspace((int) p->commands[i]); i++)
@@ -659,7 +661,6 @@ static unsigned int ReadConfigurationFile(const char *filename)
           MagickError(ResourceLimitError,"Unable to allocate delegates",
             "Memory allocation failed");
         memset(delegate_info,0,sizeof(DelegateInfo));
-        delegate_info->wait=True;
         if (delegate_list == (DelegateInfo *) NULL)
           delegate_list=delegate_info;
         else
@@ -748,12 +749,22 @@ static unsigned int ReadConfigurationFile(const char *filename)
           }
         break;
       }
-      case 'W':
-      case 'w':
+      case 'R':
+      case 'r':
       {
-        if (LocaleCompare((char *) keyword,"wait") == 0)
+        if (LocaleCompare((char *) keyword,"restrict") == 0)
           {
-            delegate_list->wait=LocaleCompare(value,"no") == 0;
+            delegate_list->restrict=LocaleCompare(value,"True") == 0;
+            break;
+          }
+        break;
+      }
+      case 'S':
+      case 's':
+      {
+        if (LocaleCompare((char *) keyword,"spawn") == 0)
+          {
+            delegate_list->spawn=LocaleCompare(value,"True") == 0;
             break;
           }
         break;

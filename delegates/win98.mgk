@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <delegatemap>
-  <delegate decode="browse" wait="no" command='cmd /C start http://www.imagemagick.org/ImageMagick/'  />
-  <delegate decode="bzip" command='|bzip2 -cd "%i"' />
+  <delegate decode="browse" restrict="True"" spawn="True" command='cmd /C start http://www.imagemagick.org/ImageMagick/'  />
+  <delegate decode="bzip" restrict="True"" restrict="True"" command='|bzip2 -cd "%i"' />
   <delegate decode="cgm" command='ralcgm -d ps "%i" "%o" %u\nconvert -concatenate "%o"*.ps "%o"' />
-  <delegate decode="compress" command='|uncompress -c "%i"' />
+  <delegate decode="compress" restrict="True"" command='|uncompress -c "%i"' />
   <delegate decode="dot" command='dot -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='dvips -q -o "%o" "%i"' />
   <delegate decode="edit" command='/usr/X11R6/bin/xterm -title "Edit Image Comment" -e vi "%o"' />
@@ -42,9 +42,9 @@
   <delegate decode="yuv" encode="m2v" mode="encode" command='mpeg2encode %u "%o"\n/usr/local/bin/convert -concatenate "%i*.yuv" %u' />
   <delegate decode="yuv" encode="mpeg" mode="encode" command='mpeg2encode %u "%o"\n/usr/local/bin/convert -concatenate "%i*.yuv" %u' />
   <delegate decode="yuv" encode="mpg" mode="encode" command='mpeg2encode %u "%o"\n/usr/local/bin/convert -concatenate "%i*.yuv" %u' />
-  <delegate decode="zip" command='|gzip -cdfq "%i"' />
-  <delegate encode="bzip" command='|bzip2 -f > "%o"' />
-  <delegate encode="compress" command='|compress -c > "%o"' />
-  <delegate encode="show" wait="no" command='display -immutable -window_group %g -title "%l of %f" "tmp:%o"' />
-  <delegate encode="zip" command='|gzip -cf > "%o"' />
+  <delegate decode="zip" restrict="True"" command='|gzip -cdfq "%i"' />
+  <delegate encode="bzip" restrict="True"" restrict="True"" command='|bzip2 -f > "%o"' />
+  <delegate encode="compress" restrict="True"" command='|compress -c > "%o"' />
+  <delegate encode="show" restrict="True"" spawn="True" command='display -immutable -window_group %g -title "%l of %f" "tmp:%o"' />
+  <delegate encode="zip" restrict="True"" command='|gzip -cf > "%o"' />
 </delegatemap>
