@@ -212,6 +212,7 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,
     token[MaxTextExtent];
 
   double
+    scale,
     value;
 
   register long
@@ -231,20 +232,21 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,
       return(value*svg_info->width/svg_info->scale[n]/scale/100.0);
     }
   GetToken(p,&p,token);
+  scale=ExpandAffine(&svg_info->affine);
   if (LocaleNCompare(token,"cm",2) == 0)
-    return(72.0/2.54*value/svg_info->scale[n]);
+    return(72.0*scale/2.54*value/svg_info->scale[n]);
   if (LocaleNCompare(token,"em",2) == 0)
-    return(svg_info->pointsize*value/svg_info->scale[n]);
+    return(svg_info->pointsize*scale*value/svg_info->scale[n]);
   if (LocaleNCompare(token,"ex",2) == 0)
-    return(svg_info->pointsize*value/svg_info->scale[n]/2.0);
+    return(svg_info->pointsize**scalevalue/svg_info->scale[n]/2.0);
   if (LocaleNCompare(token,"in",2) == 0)
-    return(72.0*value/svg_info->scale[n]);
+    return(72.0*scale*value/svg_info->scale[n]);
   if (LocaleNCompare(token,"mm",2) == 0)
-    return(72.0/25.4*value/svg_info->scale[n]);
+    return(72.0*scale/25.4*value/svg_info->scale[n]);
   if (LocaleNCompare(token,"pc",2) == 0)
-    return(72.0/6.0*value/svg_info->scale[n]);
+    return(72.0*scale/6.0*value/svg_info->scale[n]);
   if (LocaleNCompare(token,"pt",2) == 0)
-    return(value/svg_info->scale[n]);
+    return(scale*value/svg_info->scale[n]);
   if (LocaleNCompare(token,"px",2) == 0)
     return(value/svg_info->scale[n]);
   return(value);
