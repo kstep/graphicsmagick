@@ -5,17 +5,7 @@ Items large and small which remain to be done before Magick++ 1.0
   <BillR@corbis.com> has agreed to write a container class to support
   this.
 
-* Integrate with GdkMagick.
-
-* Port to Sun Workshop 5.0 under Solaris (no access to compiler yet
-  but hope so eventually ...)
-
-* Support building working DLL under Win32.
-
-* Documentation based on Framemaker sources which produce Postscript,
-  PDF, and HTML outputs.  Status: documentation for Magick++ is
-  included in the ImageMagick documentation which is distributed
-  as a PDF file.  HTML generation not yet ready for use.
+* Port to Sun Workshop 5.0 under Solaris
 
 Items which will require the aid of volunteers.  Volunteers?
 --------------------------------------------------------------------

@@ -513,8 +513,8 @@ void Magick::Image::draw ( const Drawable &drawable_ )
   DrawInfo *drawInfo
     = options()->drawInfo();
 
-//   cout << "Primitive:" << drawable_.primitive() << endl;
   drawInfo->primitive = const_cast<char*>(drawable_.primitive().c_str());
+  //cout << "Primitive:" << drawInfo->primitive << endl;
   DrawImage( image(), drawInfo );
   drawInfo->primitive = 0;
 
