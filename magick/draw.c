@@ -693,10 +693,16 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (LocaleCompare("transform",keyword) == 0)
       {
-        (void) sscanf(p,"%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%n",
+        n=0;
+        (void) sscanf(p,"%lf%lf%lf%lf%lf%lf%n",
           &clone_info->transform[0],&clone_info->transform[1],
           &clone_info->transform[2],&clone_info->transform[3],
           &clone_info->transform[4],&clone_info->transform[5],&n);
+        if (n == 0)
+          (void) sscanf(p,"%lf,%lf,%lf,%lf,%lf,%lf%n",
+            &clone_info->transform[0],&clone_info->transform[1],
+            &clone_info->transform[2],&clone_info->transform[3],
+            &clone_info->transform[4],&clone_info->transform[5],&n);
         p+=n;
         continue;
       }
@@ -757,7 +763,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       pixel.x=0;
       pixel.y=0;
       n=0;
-      (void) sscanf(p,"%lf%*[ ,]%lf%n",&pixel.x,&pixel.y,&n);
+      (void) sscanf(p,"%lf%lf%n",&pixel.x,&pixel.y,&n);
+      if (n == 0)
+        (void) sscanf(p,"%lf,%lf%n",&pixel.x,&pixel.y,&n);
       if (n == 0)
         {
           primitive_type=UndefinedPrimitive;
@@ -1506,9 +1514,13 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           Compute arc points.
         */
         n=0;
-        (void) sscanf(p+1,
-          "%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%n",
+        (void) sscanf(p+1,"%lf%lf%lf%lf%lf%lf%lf%n",
           &arc.x,&arc.y,&rotate,&large_arc,&sweep,&x,&y,&n);
+        if (n == 0)
+          (void) sscanf(p+1,"%lf,%lf,%lf,%lf,%lf,%lf,%lf%n",
+            &arc.x,&arc.y,&rotate,&large_arc,&sweep,&x,&y,&n);
+        if (n == 0)
+          break;
         p+=n;
         last.x=attribute == 'A' ? x : point.x+x;
         last.y=attribute == 'A' ? y : point.y+y;
@@ -1526,10 +1538,12 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         pixels[0]=point;
         for (i=1; i < 4; i++)
         {
-          n=0;
           if ((*p == ',') || isspace(*p))
             p++;
-          (void) sscanf(p,"%lf%*[ ,]%lf%n",&x,&y,&n);
+          n=0;
+          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
+          if (n == 0)
+            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
           if (n == 0)
             break;
           p+=n;
@@ -1560,7 +1574,9 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       {
         for (n=0; ; n=0)
         {
-          (void) sscanf(p+1,"%lf%*[ ,]%lf%n",&x,&y,&n);
+          (void) sscanf(p+1,"%lf%lf%n",&x,&y,&n);
+          if (n == 0)
+            (void) sscanf(p+1,"%lf,%lf%n",&x,&y,&n);
           if (n == 0)
             break;
           p+=n;
@@ -1575,7 +1591,11 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       case 'm':
       {
         n=0;
-        (void) sscanf(p+1,"%lf%*[ ,]%lf%n",&point.x,&point.y,&n);
+        (void) sscanf(p+1,"%lf%lf%n",&point.x,&point.y,&n);
+        if (n = 0)
+          (void) sscanf(p+1,"%lf,%lf%n",&point.x,&point.y,&n);
+        if (n == 0)
+          break;
         p+=n;
         GeneratePoint(q,point);
         q+=q->coordinates;
@@ -1592,10 +1612,12 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         pixels[0]=point;
         for (i=1; i < 3; i++)
         {
-          n=0;
           if ((*p == ',') || isspace(*p))
             p++;
-          (void) sscanf(p,"%lf%*[ ,]%lf%n",&x,&y,&n);
+          n=0;
+          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
+          if (n == 0)
+            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
           if (n == 0)
             break;
           p+=n;
@@ -1622,10 +1644,12 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         reflected_pixels[0]=pixels[3];
         for (i=2; i < 4; i++)
         {
-          n=0;
           if ((*p == ',') || isspace(*p))
             p++;
-          (void) sscanf(p,"%lf%*[ ,]%lf%n",&x,&y,&n);
+          n=0;
+          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
+          if (n == 0)
+            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
           if (n == 0)
             break;
           p+=n;
@@ -1673,10 +1697,12 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         reflected_pixels[0]=pixels[2];
         for (i=2; i < 3; i++)
         {
-          n=0;
           if ((*p == ',') || isspace(*p))
             p++;
-          (void) sscanf(p,"%lf%*[ ,]%lf%n",&x,&y,&n);
+          n=0;
+          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
+          if (n == 0)
+            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
           if (n == 0)
             break;
           p+=n;
