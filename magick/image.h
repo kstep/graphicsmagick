@@ -519,7 +519,6 @@ typedef struct _ImageInfo
 */
 extern MagickExport const char
   *Alphabet,
-  *AppendBinaryType,
   *BackgroundColor,
   *BorderColor,
   *DefaultPointSize,
@@ -532,11 +531,8 @@ extern MagickExport const char
   *LoadImagesText,
   *PSDensityGeometry,
   *PSPageGeometry,
-  *ReadBinaryType,
-  *ReadBinaryUnbufferedType,
   *SaveImageText,
-  *SaveImagesText,
-  *WriteBinaryType;
+  *SaveImagesText;
 
 extern MagickExport const unsigned long
   DefaultCompressionQuality;

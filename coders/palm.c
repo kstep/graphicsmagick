@@ -456,7 +456,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     Open image file.
   */
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
   image->columns = ReadBlobMSBShort(image);
@@ -729,7 +729,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenBlob(image_info, image, WriteBinaryType, &exception);
+  status=OpenBlob(image_info, image, WriteBinaryBlobMode, &exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);

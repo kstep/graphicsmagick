@@ -1099,7 +1099,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
     Open image file.
   */
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
   picture_handle=(PicHandle)

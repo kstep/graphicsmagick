@@ -2303,7 +2303,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     bbox;
 
   image = AllocateImage(image_info);
-  if (!OpenBlob(image_info,image,ReadBinaryType,exception))
+  if (!OpenBlob(image_info,image,ReadBinaryBlobMode,exception))
     ThrowReaderException(FileOpenError,"Unable to open file",image);
 
   /*

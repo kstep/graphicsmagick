@@ -263,7 +263,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   DestroyImage(huffman_image);
   if (status == False)
     return(False);
-  tiff=TIFFOpen(filename,ReadBinaryType);
+  tiff=TIFFOpen(filename,"rb");
   if (tiff == (TIFF *) NULL)
     {
       (void) remove(filename);
@@ -460,14 +460,14 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Open image file.
   */
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Open temporary output file.
   */
   TemporaryFilename(postscript_filename);
-  file=fopen(postscript_filename,WriteBinaryType);
+  file=fopen(postscript_filename,"wb");
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenError,"Unable to write file",image);
   /*
@@ -830,7 +830,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
   if ((image->blob->file == stdout) || image->blob->pipet)
@@ -841,7 +841,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       encode_image=(*image);
       TemporaryFilename(image->filename);
       image->blob->temporary=True;
-      status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+      status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenError,"Unable to open file",image);
     }
@@ -1974,7 +1974,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       /*
         Copy temporary file to standard output or pipe.
       */
-      file=fopen(image->filename,ReadBinaryType);
+      file=fopen(image->filename,"rb");
       if (file == (FILE *) NULL)
         ThrowWriterException(FileOpenError,"Unable to open file",image);
       for (c=fgetc(file); c != EOF; c=fgetc(file))

@@ -6714,7 +6714,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           register char
             *p;
 
-          file=fopen(image_info->filename,WriteBinaryType);
+          file=fopen(image_info->filename,"w");
           if (file == (FILE *) NULL)
             {
               XNoticeWidget(display,windows,"Unable to edit image comment",

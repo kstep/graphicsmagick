@@ -1000,7 +1000,7 @@ MagickExport void MSBOrderShort(unsigned char *p,const size_t length)
 %  The format of the OpenBlob method is:
 %
 %      unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
-%        const char *type,ExceptionInfo *exception)
+%        const BlobMode mode,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1011,26 +1011,34 @@ MagickExport void MSBOrderShort(unsigned char *p,const size_t length)
 %
 %    o image: The image.
 %
-%    o type: 'r' for reading; 'w' for writing.
+%    o mode: The mode for opening the file.
 %
 */
 MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
-  const char *type,ExceptionInfo *exception)
+  const BlobMode mode,ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent];
+    filename[MaxTextExtent],
+    *type;
 
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(type != (char *) NULL);
   if (image_info->blob != (void *) NULL)
     {
       AttachBlob(image->blob,image_info->blob,image_info->length);
       return(True);
     }
   DetachBlob(image->blob);
+  switch (mode)
+  {
+    default: type="r"; break;
+    case ReadBlobMode: type="r"; break;
+    case ReadBinaryBlobMode: type="rb"; break;
+    case WriteBlobMode: type="w"; break;
+    case WriteBinaryBlobMode: type="wb"; break;
+  }
   if (image_info->fifo !=
       (int (*)(const Image *,const void *,const size_t)) NULL)
     {
@@ -1175,11 +1183,10 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                       MaxTextExtent-1);
                 }
             (void) strncpy(image->filename,filename,MaxTextExtent-1);
-          }
 #if defined(macintosh)
-        if (*type == 'w')
-          SetApplicationType(filename,image_info->magick,'8BIM');
+            SetApplicationType(filename,image_info->magick,'8BIM');
 #endif
+          }
         if (image_info->file == (FILE *) NULL)
           image->blob->file=(FILE *) fopen(filename,type);
         else

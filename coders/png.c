@@ -1511,7 +1511,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   mng_info=(MngInfo *) NULL;
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException((ExceptionType) FileOpenError,
     "Unable to open file",image);
@@ -4642,7 +4642,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException((ExceptionType) FileOpenError,
       "Unable to open file",image);

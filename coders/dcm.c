@@ -2747,7 +2747,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
@@ -3222,7 +3222,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Handle 2.4.50 lossy JPEG and 2.4.70 lossless JPEG.
       */
       TemporaryFilename(filename);
-      file=fopen(filename,WriteBinaryType);
+      file=fopen(filename,"wb");
       if (file == (FILE *) NULL)
         ThrowReaderException(FileOpenError,"Unable to write file",image);
       (void) memset(magick,0,sizeof(magick));

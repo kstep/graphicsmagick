@@ -59,7 +59,6 @@
   Constant declaration.
 */
 const char
-  *AppendBinaryType = "ab",
   *BackgroundColor = "#ffffffffffff",  /* white */
   *BorderColor = "#dfdfdfdfdfdf",  /* gray */
   *DefaultTileFrame = "15x15+3+3",
@@ -71,11 +70,8 @@ const char
   *MatteColor = "#bdbdbdbdbdbd",  /* gray */
   *PSDensityGeometry = "72.0x72.0",
   *PSPageGeometry = "612x792>",
-  *ReadBinaryType = "rb",
-  *ReadBinaryUnbufferedType = "rbu",
   *SaveImageText = "  Saving image...  ",
-  *SaveImagesText = "  Saving images...  ",
-  *WriteBinaryType = "wb";
+  *SaveImagesText = "  Saving images...  ";
 
 const unsigned long
   DefaultCompressionQuality = 75;
@@ -6164,7 +6160,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
     Determine the image format from the first few bytes of the file.
   */
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     {
       CloseBlob(image);
@@ -6192,7 +6188,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       TemporaryFilename(image->filename);
       image_info->temporary=True;
       FormatString(image_info->filename,"%.1024s",image->filename);
-      file=fopen(image->filename,WriteBinaryType);
+      file=fopen(image->filename,"wb");
       if (file == (FILE *) NULL)
         ThrowBinaryException(MissingDelegateError,"Unable to write file",
           image->filename);

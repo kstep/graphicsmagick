@@ -783,7 +783,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
   image->columns=1;
@@ -1757,7 +1757,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       */
       if (image->iptc_profile.length == 0)
         ThrowWriterException(FileOpenError,"No 8BIM data is available",image);
-      status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+      status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenError,"Unable to open file",image);
       (void) WriteBlob(image,image->iptc_profile.length,
@@ -1773,7 +1773,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
 
       if (image->iptc_profile.length == 0)
         ThrowWriterException(FileOpenError,"No IPTC profile available",image);
-      status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+      status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       info=image->iptc_profile.info;
       length=image->iptc_profile.length;
       length=GetIPTCStream(&info,length);
@@ -1788,7 +1788,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
 
       if (image->iptc_profile.length == 0)
         ThrowWriterException(FileOpenError,"No 8BIM data is available",image);
-      status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+      status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenError,"Unable to open file",image);
       buff=AllocateImage((ImageInfo *) NULL);
@@ -1817,7 +1817,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       length=GetIPTCStream(&info,length);
       if (length == 0)
         ThrowWriterException(FileOpenError,"No IPTC info was found",image);
-      status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+      status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenError,"Unable to open file",image);
       buff=AllocateImage((ImageInfo *) NULL);
@@ -1843,7 +1843,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
             /*
               Open image file.
             */
-            status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+            status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
             if (status == False)
               ThrowWriterException(FileOpenError,"Unable to open file",image);
             p=(unsigned char *) image->generic_profile[i].info;
@@ -1902,7 +1902,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       */
       if (image->color_profile.length == 0)
         ThrowWriterException(FileOpenError,"No color profile available",image);
-      status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+      status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenError,"Unable to open file",image);
       (void) WriteBlob(image,image->color_profile.length,

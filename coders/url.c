@@ -138,7 +138,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
   TemporaryFilename(clone_info->filename);
-  file=fopen(clone_info->filename,WriteBinaryType);
+  file=fopen(clone_info->filename,"wb");
   if (file == (FILE *) NULL)
     {
       DestroyImageInfo(clone_info);

@@ -2013,7 +2013,7 @@ MagickExport unsigned int IsAccessible(const char *filename)
   */
   if ((filename == (const char *) NULL) || (*filename == '\0'))
     return(False);
-  file=fopen(filename,ReadBinaryType);
+  file=fopen(filename,"r");
   if (file == (FILE *) NULL)
     return(False);
   (void) fgetc(file);

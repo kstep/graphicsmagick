@@ -320,7 +320,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   LiberateMemory((void **) &green);
   LiberateMemory((void **) &red);
   TemporaryFilename(filename);
-  file=fopen(filename,WriteBinaryType);
+  file=fopen(filename,"wb");
   if (file != (FILE *) NULL)
     {
       char

@@ -377,16 +377,16 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
   tiff_exception=exception;
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   if ((image->blob->file != stdin) && !image->blob->pipet)
-    tiff=TIFFClientOpen(image->filename,ReadBinaryUnbufferedType,
-      (thandle_t) image,TIFFReadBlob,TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,
-      TIFFGetBlobSize,TIFFMapBlob,TIFFUnmapBlob);
+    tiff=TIFFClientOpen(image->filename,"rb",(thandle_t) image,TIFFReadBlob,
+      TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFGetBlobSize,TIFFMapBlob,
+      TIFFUnmapBlob);
   else
     {
       FILE
@@ -396,13 +396,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         c;
 
       TemporaryFilename(filename);
-      file=fopen(filename,WriteBinaryType);
+      file=fopen(filename,"wb");
       if (file == (FILE *) NULL)
         ThrowReaderException(FileOpenWarning,"Unable to write file",image);
       for (c=ReadBlobByte(image); c != EOF; c=ReadBlobByte(image))
         (void) fputc(c,file);
       (void) fclose(file);
-      tiff=TIFFOpen(filename,ReadBinaryType);
+      tiff=TIFFOpen(filename,"rb");
     }
   if (tiff == (TIFF *) NULL)
     {
@@ -1375,7 +1375,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
   tiff_exception=(&image->exception);
@@ -1387,7 +1387,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     TemporaryFilename(filename);
   else
     CloseBlob(image);
-  tiff=TIFFOpen(filename,WriteBinaryType);
+  tiff=TIFFOpen(filename,"wb");
   if (tiff == (TIFF *) NULL)
     return(False);
   scene=0;
@@ -1943,7 +1943,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       /*
         Copy temporary file to image blob->
       */
-      file=fopen(filename,ReadBinaryType);
+      file=fopen(filename,"rb");
       if (file == (FILE *) NULL)
         ThrowWriterException(FileOpenError,"Unable to open file",image);
       for (c=fgetc(file); c != EOF; c=fgetc(file))

@@ -43,7 +43,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>unsigned int  <STRONG>ContrastImage</STRONG>( Image *image, const unsigned int sharpen );</P>
 <P>unsigned int  <STRONG>EqualizeImage</STRONG>( Image *image );</P>
-<P>unsigned int  <STRONG>GammaImage</STRONG>( Image *image, const char *gamma );</P>
+<P>unsigned int  <STRONG>GammaImage</STRONG>( Image *image, const char *level );</P>
 <P>unsigned int  <STRONG>LevelImage</STRONG>( Image *image, const char *level );</P>
 <P>unsigned int  <STRONG>ModulateImage</STRONG>( Image *image, const char *modulate );</P>
 <P>unsigned int  <STRONG>NegateImage</STRONG>( Image *image, const unsigned int grayscale );</P>
@@ -81,14 +81,14 @@ The image.
 <H2><A NAME="gammaimage">GammaImage</A></H2>
 <blockquote>Use GammaImage() to gamma-correct an image. The same image viewed on different devices will have perceptual differences in the way the image's intensities are represented on the screen. Specify individual gamma levels for the red, green, and blue channels, or adjust all three with the gamma parameter. Values typically range from 0.8 to 2.3. </blockquote><P>You can also reduce the influence of a particular channel with a gamma value of 0.</P>
 <P>The format of the GammaImage method is:</P>
-<blockquote>unsigned int GammaImage ( <A HREF="types/Image.html">Image</A> *image, const char *gamma ); </blockquote><P>
+<blockquote>unsigned int GammaImage ( <A HREF="types/Image.html">Image</A> *image, const char *level ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_gamma%3A">gamma:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_level%3A">level:</A></STRONG><BR>
 <DD>
 Define the level of gamma correction.
 <P></P></DL></DL>

@@ -316,14 +316,14 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Open image file.
   */
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Open temporary output file.
   */
   TemporaryFilename(postscript_filename);
-  file=fopen(postscript_filename,WriteBinaryType);
+  file=fopen(postscript_filename,"wb");
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenError,"Unable to write file",image);
   FormatString(translate_geometry,"%g %g translate\n              ",0.0,0.0);
@@ -445,7 +445,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Ghostscript requires a showpage operator.
       */
-      file=fopen(postscript_filename,AppendBinaryType);
+      file=fopen(postscript_filename,"ab");
       if (file == (FILE *) NULL)
         ThrowReaderException(FileOpenError,"Unable to write file",image);
       (void) fputs("showpage\n",file);
@@ -965,7 +965,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
   page=1;

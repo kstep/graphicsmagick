@@ -21,6 +21,15 @@ typedef enum
 
 typedef enum
 {
+  UndefinedBlobMode,
+  ReadBlobMode,
+  ReadBinaryBlobMode,
+  WriteBlobMode,
+  WriteBinaryBlobMode
+} BlobMode;
+
+typedef enum
+{
   UndefinedCache,
   MemoryCache,
   DiskCache,

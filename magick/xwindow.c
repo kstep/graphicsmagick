@@ -1577,7 +1577,7 @@ MagickExport void XDisplayImageInfo(Display *display,
   assert(windows != (XWindows *) NULL);
   assert(image != (Image *) NULL);
   TemporaryFilename(filename);
-  file=fopen(filename,WriteBinaryType);
+  file=fopen(filename,"w");
   if (file == (FILE *) NULL)
     {
       XNoticeWidget(display,windows,"Unable to display image info",filename);

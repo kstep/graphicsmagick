@@ -317,14 +317,14 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
     Open image file.
   */
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Open temporary output file.
   */
   TemporaryFilename(postscript_filename);
-  file=fopen(postscript_filename,WriteBinaryType);
+  file=fopen(postscript_filename,"wb");
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenError,"Unable to write file",image);
   FormatString(translate_geometry,"%g %g translate\n              ",0.0,0.0);
@@ -443,7 +443,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
       /*
         Ghostscript requires a showpage operator.
       */
-      file=fopen(postscript_filename,AppendBinaryType);
+      file=fopen(postscript_filename,"ab");
       if (file == (FILE *) NULL)
         ThrowReaderException(FileOpenError,"Unable to write file",image);
       (void) fputs("showpage\n",file);
@@ -620,10 +620,10 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
     Write EPT image.
   */
   (void) strncpy(image->filename,filename,MaxTextExtent-1);
-  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
-  ps_file=fopen(ps_filename,ReadBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  ps_file=fopen(ps_filename,"rb");
   status&=ps_file != (FILE *) NULL;
-  tiff_file=fopen(tiff_filename,ReadBinaryType);
+  tiff_file=fopen(tiff_filename,"rb");
   status&=tiff_file != (FILE *) NULL;
   if (status != False)
     {

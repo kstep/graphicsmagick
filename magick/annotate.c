@@ -1401,7 +1401,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
     Render label with a Postscript font.
   */
   TemporaryFilename(filename);
-  file=fopen(filename,WriteBinaryType);
+  file=fopen(filename,"wb");
   if (file == (FILE *) NULL)
     ThrowBinaryException(FileOpenError,"Unable to open file",filename);
   (void) fprintf(file,"%%!PS-Adobe-3.0\n");

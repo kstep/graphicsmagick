@@ -168,7 +168,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   pwp_image=AllocateImage(image_info);
-  status=OpenBlob(image_info,pwp_image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,pwp_image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",pwp_image);
   count=ReadBlob(pwp_image,5,(char *) magick);
@@ -197,7 +197,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Dump SFW image to a temporary file.
     */
-    file=fopen(clone_info->filename,WriteBinaryType);
+    file=fopen(clone_info->filename,"wb");
     if (file == (FILE *) NULL)
       ThrowReaderException(FileOpenError,"Unable to write file",image);
     (void) fwrite("SFW94A",1,6,file);

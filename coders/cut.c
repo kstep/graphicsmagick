@@ -298,7 +298,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
@@ -381,7 +381,7 @@ CUT_KO:  ThrowReaderException(CorruptImageError,"Not a CUT image file",image);
      }
 
  if( (palette=AllocateImage(clone_info))==NULL ) goto NoPalette;
- status=OpenBlob(clone_info,palette,ReadBinaryType,exception);
+ status=OpenBlob(clone_info,palette,ReadBinaryBlobMode,exception);
  if (status == False)
      {
 ErasePalette:     

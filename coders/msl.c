@@ -4210,7 +4210,7 @@ static unsigned int ProcessMSLScript(const ImageInfo *image_info,Image **image,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image **) NULL);
   msl_image=AllocateImage(image_info);
-  status=OpenBlob(image_info,msl_image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,msl_image,ReadBinaryBlobMode,exception);
   if (status == False)
     {
       ThrowException(exception,FileOpenError,

@@ -213,14 +213,14 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Copy image to temporary file.
   */
   TemporaryFilename((char *) image_info->filename);
-  file=fopen(image_info->filename,WriteBinaryType);
+  file=fopen(image_info->filename,"wb");
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenError,"Unable to write file",image);
   c=ReadBlobByte(image);
@@ -840,7 +840,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
   /*
@@ -1153,7 +1153,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       /*
         Copy temporary file to image blob->
       */
-      file=fopen(filename,ReadBinaryType);
+      file=fopen(filename,"rb");
       if (file == (FILE *) NULL)
         ThrowWriterException(FileOpenError,"Unable to open file",image);
       for (c=fgetc(file); c != EOF; c=fgetc(file))
