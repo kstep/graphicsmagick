@@ -6885,6 +6885,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         "Pause how many 1/100ths of a second between images:",delay);
       if (*delay == '\0')
         break;
+      resource_info->delay=atoi(delay);
       XClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
       break;
@@ -12477,6 +12478,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   /*
     Respond to events.
   */
+  if (resource_info->delay > 1)
+    display_image->delay=resource_info->delay;
   timer=time((time_t *) NULL)+display_image->delay/100+1;
   update_time=0;
   if (resource_info->update)
