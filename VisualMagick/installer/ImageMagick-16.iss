@@ -5,7 +5,7 @@
 ;
 ; Inno Setup is freely available from "http://www.jrsoftware.org/isinfo.php".
 ;
-; Copyright (C) 2002 GraphicsMagick Group, a non-profit organization dedicated
+; Copyright (C) 2003 GraphicsMagick Group, a non-profit organization dedicated
 ; to making software imaging solutions freely available.
 ;
 ; Permission is hereby granted, free of charge, to any person obtaining a
@@ -52,7 +52,7 @@
 AppName=GraphicsMagick 1.0.0 Q:16
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=GraphicsMagick 1.0.0 Q:16 Beta (March 3, 2002)
+AppVerName=GraphicsMagick 1.0.0 Q:16 Beta (March 10, 2003)
 AppVersion=1.0.0
 AppCopyright=Copyright (C) 2003 GraphicsMagick Group
 AppPublisher=GraphicsMagick Group
