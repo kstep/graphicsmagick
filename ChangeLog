@@ -1,3 +1,7 @@
+2002-11-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Flashpix library now uses C++ standard <new> and iostreams
+    rather than legacy new and iostreams.
+
 2002-11-15  Cristy  <cristy@mystic.es.dupont.com>
   * The blob methods were enhanced to use GZip or BZip API methods to
     compress/uncompress images (previously the external programs gunzip
