@@ -2710,20 +2710,12 @@ MagickExport Image *ShadeImage(const Image *image,
       /*
         Determine the surface normal and compute shading.
       */
-      normal.x=
-        ScaleQuantumToShort(PixelIntensityToQuantum(s0-1))+
-	ScaleQuantumToShort(PixelIntensityToQuantum(s1-1))+
-        ScaleQuantumToShort(PixelIntensityToQuantum(s2-1))-
-	(long) ScaleQuantumToShort(PixelIntensityToQuantum(s0+1))-
-        (long) ScaleQuantumToShort(PixelIntensityToQuantum(s1+1))-
-        (long) ScaleQuantumToShort(PixelIntensityToQuantum(s2+1));
-      normal.y=
-        ScaleQuantumToShort(PixelIntensityToQuantum(s2-1))+
-        ScaleQuantumToShort(PixelIntensityToQuantum(s2))+
-        ScaleQuantumToShort(PixelIntensityToQuantum(s2+1))-
-        (long) ScaleQuantumToShort(PixelIntensityToQuantum(s0-1))-
-        (long) ScaleQuantumToShort(PixelIntensityToQuantum(s0))-
-        (long) ScaleQuantumToShort(PixelIntensityToQuantum(s0+1));
+      normal.x=(double) PixelIntensity(s0-1)+(double) PixelIntensity(s1-1)+
+        (double) PixelIntensity(s2-1)-(double) PixelIntensity(s0+1)-
+        (double) PixelIntensity(s1+1)-(double) PixelIntensity(s2+1);
+      normal.y=(double) PixelIntensity(s2-1)+(double) PixelIntensity(s2)+
+        (double) PixelIntensity(s2+1)-(double) PixelIntensity(s0-1)-
+        (double) PixelIntensity(s0)-(double) PixelIntensity(s0+1);
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else
@@ -2740,15 +2732,15 @@ MagickExport Image *ShadeImage(const Image *image,
         }
       if (!color_shading)
         {
-          q->red=ScaleShortToQuantum(shade);
-          q->green=q->red;
-          q->blue=q->red;
+          q->red=(Quantum) shade;
+          q->green=(Quantum) shade;
+          q->blue=(Quantum) shade;
         }
       else
         {
-          q->red=ScaleShortToQuantum((shade*s1->red)/65535.0);
-          q->green=ScaleShortToQuantum((shade*s1->green)/65535.0);
-          q->blue=ScaleShortToQuantum((shade*s1->blue)/65535.0);
+          q->red=(Quantum) ((shade*s1->red)/MaxRGB);
+          q->green=(Quantum) ((shade*s1->green)/MaxRGB);
+          q->blue=(Quantum) ((shade*s1->blue)/MaxRGB);
         }
       q->opacity=s1->opacity;
       s0++;
