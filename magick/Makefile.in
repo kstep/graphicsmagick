@@ -31,8 +31,6 @@ mandir = @mandir@
 includedir = @includedir@
 oldincludedir = /usr/include
 
-DESTDIR =
-
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -316,7 +314,7 @@ $(DEPDIR)/stream.Plo $(DEPDIR)/timer.Plo $(DEPDIR)/transform.Plo \
 $(DEPDIR)/utility.Plo $(DEPDIR)/widget.Plo $(DEPDIR)/xwindows.Plo \
 $(DEPDIR)/zoom.Plo
 DIST_COMMON =  $(include_HEADERS) $(noinst_HEADERS) ./stamp-h.in \
-Magick-config.in Makefile.am Makefile.in config.h.in depcomp
+Magick-config.in Makefile.am Makefile.in config.h.in
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
