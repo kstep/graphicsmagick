@@ -417,6 +417,108 @@ static void SwabDPXTVInfo(DPXTVInfo *tv_info)
   MagickSwabFloat(&tv_info->white_level);
   MagickSwabFloat(&tv_info->integration_time);
 }
+static const char *DescribeImageElementDescriptor(const DPXImageElementDescriptor descriptor)
+{
+  char *
+    description="Unknown";
+
+  switch(descriptor)
+    {
+    case ImageElementUnspecified:
+      description="Unspecified(0)";
+      break;
+    case ImageElementRed:
+      description="Red(1)";
+      break;
+    case ImageElementGreen:
+      description="Green(2)";
+      break;
+    case ImageElementBlue:
+      description="Blue(3)";
+      break;
+    case ImageElementAlpha:
+      description="Alpha(4)";
+      break;
+    case ImageElementLuma:
+      description="Luma(6)";
+      break;
+    case ImageElementColorDifferenceCbCr:
+      description="ColorDifferenceCbCr(7)";
+      break;
+    case ImageElementDepth:
+      description="Depth(8)";
+      break;
+    case ImageElementCompositeVideo:
+      description="CompositeVideo(9)";
+      break;
+    case ImageElementRGB:
+      description="RGB(50)";
+      break;
+    case ImageElementRGBA:
+      description="RGBA(51)";
+      break;
+    case ImageElementABGR:
+      description="ABGR(52)";
+      break;
+    case ImageElementCbYCrY422:
+      description="CbYACrYA 4:2:2:4 (100)";
+      break;
+    case ImageElementCbYACrYA4224:
+      description="CbYACrYA 4:2:2:4 (101)";
+      break;
+    case ImageElementCbYCr444:
+      description="CbYCr 4:4:4 (102)";
+      break;
+    case ImageElementCbYCrA4444:
+      description="CbYCrA 4:4:4:4 (103)";
+      break;
+    default:
+      {
+      }
+    }
+
+  return description;
+}
+static void DescribeDPXImageElement(const DPXImageElement *element_info,
+                                    const unsigned int element)
+{
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Element %u: data_sign=%s",element, 
+                        element_info->data_sign == 0 ?
+                        "unsigned" : "signed");
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Element %u: reference_low_data_code=%u reference_low_quantity=%g",
+                        element,
+                        element_info->reference_low_data_code,
+                        element_info->reference_low_quantity);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Element %u: reference_high_data_code=%u reference_high_quantity=%g",
+                        element,
+                        element_info->reference_low_data_code,
+                        element_info->reference_low_quantity);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Element %u: descriptor=%s characteristic=%u colorimetric=%u",
+                        element,
+                        DescribeImageElementDescriptor(element_info->descriptor),
+                        (unsigned int) element_info->transfer_characteristic,
+                        (unsigned int) element_info->colorimetric);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Element %u: bits-per-sample=%u",
+                        element,
+                        (unsigned int) element_info->bits_per_sample);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Element %u: packing=%u encoding=%u data_offset=%u eol_pad=%u eoi_pad=%u",
+                        element,
+                        (unsigned int) element_info->packing,
+                        (unsigned int) element_info->encoding,
+                        (unsigned int) element_info->data_offset,
+                        (unsigned int) element_info->eol_pad,
+                        (unsigned int) element_info->eoi_pad);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Element %u: description=\"%.32s\"",
+                        element,
+                        element_info->description);
+}
 static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   DPXFileInfo
@@ -453,7 +555,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bits_per_sample,
     element,
     scale_to_short,
-    samples[5],
+    samples[8],
     samples_per_element,
     status;
 
@@ -462,7 +564,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pixels_offset;
 
   MagickBool
-    image_is_set=MagickFalse,
     word_pad_lsb=MagickFalse,
     word_pad_msb=MagickFalse,
     swab=MagickFalse;
@@ -502,12 +603,16 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Check for swapped endian order.
   */
-  word_read_func=(WordStreamReadFunc) ReadBlobMSBLong;
   if (dpx_file_info.magic != 0x53445058U)
-    {
-      word_read_func=(WordStreamReadFunc) ReadBlobLSBLong;
-      swab=MagickTrue;
-    }
+    swab=MagickTrue;
+
+#if defined(WORDS_BIGENDIAN)
+  word_read_func = (swab ? (WordStreamReadFunc) ReadBlobLSBLong :
+                    (WordStreamReadFunc) ReadBlobMSBLong);
+#else
+  word_read_func = (swab ? (WordStreamReadFunc) ReadBlobMSBLong :
+                    (WordStreamReadFunc) ReadBlobLSBLong);
+#endif
   
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "%s endian DPX format",
@@ -593,6 +698,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SwabDPXTVInfo(&dpx_tv_info);
     }
   /*
+    Obtain image depth.
+  */
+  image->depth=dpx_image_info.element_info[0].bits_per_sample;
+  /*
     Skip reading pixels if ping requested.
   */
   if (image_info->ping)
@@ -610,43 +719,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   for (element=0; element < dpx_image_info.elements; element++)
     {
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "Element %u: data_sign=%s",element+1, 
-                            dpx_image_info.element_info[element].data_sign == 0 ?
-                            "unsigned" : "signed");
-      
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "Element %u: reference_low_data_code=%u reference_low_quantity=%g",
-                            element+1,
-                            dpx_image_info.element_info[element].reference_low_data_code,
-                            dpx_image_info.element_info[element].reference_low_quantity);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "Element %u: reference_high_data_code=%u reference_high_quantity=%g",
-                            element+1,
-                            dpx_image_info.element_info[element].reference_low_data_code,
-                            dpx_image_info.element_info[element].reference_low_quantity);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "Element %u: descriptor=%u characteristic=%u colorimetric=%u",
-                            element+1,
-                            (unsigned int) dpx_image_info.element_info[element].descriptor,
-                            (unsigned int) dpx_image_info.element_info[element].transfer_characteristic,
-                            (unsigned int) dpx_image_info.element_info[element].colorimetric);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "Element %u: bits-per-sample=%u",
-                            element+1,
-                            (unsigned int) dpx_image_info.element_info[element].bits_per_sample);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "Element %u: packing=%u encoding=%u data_offset=%u eol_pad=%u eoi_pad=%u",
-                            element+1,
-                            (unsigned int) dpx_image_info.element_info[element].packing,
-                            (unsigned int) dpx_image_info.element_info[element].encoding,
-                            (unsigned int) dpx_image_info.element_info[element].data_offset,
-                            (unsigned int) dpx_image_info.element_info[element].eol_pad,
-                            (unsigned int) dpx_image_info.element_info[element].eoi_pad);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "Element %u: description=\"%.32s\"",
-                            element+1,
-                            dpx_image_info.element_info[element].description);
+      DescribeDPXImageElement(&dpx_image_info.element_info[element],element+1);
+
       /*
         Data sign, (0 = unsigned; 1 = signed)
       */
@@ -661,10 +735,14 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Move to element data
       */
+
       if ((dpx_image_info.element_info[element].data_offset != UNDEFINED_U32_VALUE) &&
           (dpx_image_info.element_info[element].data_offset != 0U))
         {
           pixels_offset=dpx_image_info.element_info[element].data_offset;
+          offset=SeekBlob(image,(magick_off_t) pixels_offset,SEEK_SET);
+
+#if 0
           if (pixels_offset > offset)
             {
               /* Data is ahead of current position.  Good! */
@@ -676,6 +754,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /* Data is behind current position.  Bad! */
               offset=SeekBlob(image,(magick_off_t) pixels_offset,SEEK_SET);
             }
+#endif
         }
 
       bits_per_sample=dpx_image_info.element_info[element].bits_per_sample;
@@ -735,23 +814,33 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               case ImageElementRGBA:
               case ImageElementABGR:
                 samples_per_element=4;
+                break;
               default:
                 samples_per_element=0;
                 break;
               }
 
-            WordStreamInitializeRead(&word_stream,image,word_read_func);
+            /*
+              Determine if matte channel is supported.
+            */
+            switch (element_descriptor)
+              {
+              case ImageElementAlpha:
+              case ImageElementRGBA:
+              case ImageElementABGR:
+                image->matte=MagickTrue;
+                break;
+              default:
+                break;
+              }
+
+            WordStreamInitializeRead(&word_stream,word_read_func,image);
             for (y=0; y < (long) image->rows; y++)
               {
-                if (image_is_set == MagickFalse)
-                  {
-                    q=SetImagePixels(image,0,y,image->columns,1);
-                    image_is_set = MagickTrue;
-                  }
+                if (element == 0)
+                  q=SetImagePixels(image,0,y,image->columns,1);
                 else
-                  {
-                    q=GetImagePixels(image,0,y,image->columns,1);
-                  }
+                  q=GetImagePixels(image,0,y,image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
 
@@ -833,7 +922,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       case ImageElementLuma:
                         q->red=q->green=q->blue=ScaleShortToQuantum(samples[0]*
                                                                     scale_to_short);
-                        q->opacity=OpaqueOpacity;
                         break;
                       case ImageElementRGB:
                         q->blue=ScaleShortToQuantum(samples[0]*scale_to_short);
@@ -865,7 +953,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   Advance to next 32-bit word if components are packed.
                 */
                 if (packing_method == PackingMethodPacked)
-                  WordStreamInitializeRead(&word_stream,image,word_read_func);
+                  WordStreamInitializeRead(&word_stream,word_read_func,image);
 
                 /*
                   FIXME: Add support for optional EOL padding.
@@ -875,6 +963,14 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (QuantumTick(y,image->rows))
                     if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                       break;
+
+                if (EOFBlob(image))
+                  {
+                    printf("### File length %u, TellBlob says %u\n",
+                           dpx_file_info.file_size,
+                           (unsigned int) TellBlob(image));
+                    break;
+                  }
               }
             break;
           }
@@ -998,6 +1094,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   DPXImageSourceInfo
     dpx_source_info;
 
+  DPXImageElementDescriptor
+    element_descriptor;
+
   ImageComponentPackingMethod
     packing_method;
 
@@ -1013,15 +1112,31 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 
   unsigned int
     bits_per_sample,
+    element,
     number_of_elements,
+    samples[8],
     samples_per_component,
+    samples_per_element,
+    scale_from_short,
     status;
  
-  unsigned long
-    pixel;
+  MagickBool
+    word_pad_lsb=MagickFalse,
+    word_pad_msb=MagickFalse,
+    swab=MagickFalse;
+
+  WordStreamWriteHandle
+    word_stream;
+
+  WordStreamWriteFunc
+    word_write_func;
 
   magick_int64_t
-    element_size;
+    element_size,
+    row_samples;
+
+  const char *
+    definition_value;
 
   size_t
     offset=0;
@@ -1040,6 +1155,12 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
 
+#if defined(WORDS_BIGENDIAN)
+  word_write_func=(WordStreamWriteFunc) WriteBlobMSBLong;
+#else
+  word_write_func=(WordStreamWriteFunc) WriteBlobLSBLong;
+#endif
+
   if (image->depth > 12 )
     bits_per_sample=16;
   else if (image->depth > 10)
@@ -1055,41 +1176,72 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                         "Bits per sample: %u", bits_per_sample);
 
   is_grayscale=IsGrayImage(image,&image->exception);
+
   if (is_grayscale)
-    samples_per_component=1;
-  else
-    samples_per_component=3;
-  if (image->matte)
-    samples_per_component++;
-
-  number_of_elements=1;
-  if (image_info->interlace == PlaneInterlace)
     {
-      number_of_elements=samples_per_component;
       samples_per_component=1;
+      number_of_elements=1;
+      if (image->matte)
+        number_of_elements++;
     }
-
-  bits_per_sample=10;
+  else
+    {
+      if (image_info->interlace == PlaneInterlace)
+        {
+          samples_per_component=1;
+          number_of_elements=3;
+          if (image->matte)
+            number_of_elements++;
+        }
+      else
+        {
+          samples_per_component=3;
+          number_of_elements=1;
+          if (image->matte)
+            samples_per_component++;
+        }
+    }
 
   packing_method=PackingMethodPacked;
-  element_size=((magick_int64_t) image->columns*image->rows*samples_per_component);
-  if (bits_per_sample == 10)
+
+  if ((definition_value=AccessDefinition(image_info,"dpx","packing-method")))
     {
-      /* three 10-bit samples per 32-bit word */
-      packing_method=PackingMethodWordsFillLSB;
-      element_size=((element_size+2)/3)*sizeof(magick_int32_t);
+      if (LocaleCompare(definition_value,"packed") == 0)
+        {
+          packing_method=PackingMethodPacked;
+        }
+      else if ((bits_per_sample == 10) || (bits_per_sample == 12))
+        {
+          if ((LocaleCompare(definition_value,"lsbpad") == 0) ||
+              (LocaleCompare(definition_value,"a") == 0))
+            packing_method=PackingMethodWordsFillLSB;
+          else if ((LocaleCompare(definition_value,"msbpad") == 0) ||
+                   (LocaleCompare(definition_value,"b") == 0))
+            packing_method=PackingMethodWordsFillMSB;
+        }
     }
-  else if (bits_per_sample == 12)
+
+  row_samples=((magick_int64_t) image->columns*samples_per_component);
+  
+  /* samples packed end-to-end, but padded to next word at end of each row */
+  element_size=((row_samples*bits_per_sample+31)/32)*sizeof(magick_int32_t)*image->rows;
+  if ((packing_method == PackingMethodWordsFillLSB) ||
+      (packing_method == PackingMethodWordsFillMSB))
     {
-      /* two 12-bit samples per 32-bit word */
-      packing_method=PackingMethodWordsFillLSB;
-      element_size=((element_size+1)/2)*sizeof(magick_int32_t);
+      if (bits_per_sample == 10)
+        {
+          /* three 10-bit samples per 32-bit word, no extra padding at end of row */
+          element_size=((row_samples*image->rows+2)/3)*sizeof(magick_int32_t);
+        }
+      else if (bits_per_sample == 12)
+        {
+          /* samples packed end-to-end, but padded to next word at end of each row */
+          element_size=((row_samples*image->rows+1)/2)*sizeof(magick_int32_t);
+        }
     }
-  else
-    {
-      /* samples packed end-to-end */
-      element_size=((element_size*8+31)/32)*sizeof(magick_int32_t);
-    }
+
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Element size: %u", (unsigned int) element_size);
 
   /*
     Image information header
@@ -1106,7 +1258,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   dpx_image_info.element_info[0].reference_high_data_code=
     MaxValueGivenBits(bits_per_sample);
   dpx_image_info.element_info[0].reference_high_quantity=2.048; /* FIXME */
-  dpx_image_info.element_info[0].descriptor=ImageElementRGB;
+  dpx_image_info.element_info[0].descriptor=image->matte ? ImageElementRGBA : ImageElementRGB;
   dpx_image_info.element_info[0].transfer_characteristic=2; /* linear */
   dpx_image_info.element_info[0].colorimetric=6; /* ITU 709-4 */
   dpx_image_info.element_info[0].bits_per_sample=bits_per_sample;
@@ -1127,7 +1279,6 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         dpx_image_info.element_info[i-1].data_offset+element_size;
     }
 
-#if 0
   if (is_grayscale)
     {
       /*
@@ -1151,7 +1302,6 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             dpx_image_info.element_info[3].descriptor=ImageElementAlpha;
         }
     }
-#endif
 
   /*
     File information header.
@@ -1163,6 +1313,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           sizeof(dpx_file_info.header_format_version));
   dpx_file_info.file_size=
     dpx_file_info.image_data_offset+number_of_elements*element_size;
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Estimated file length: %u",dpx_file_info.file_size);
   dpx_file_info.ditto_key=1; /* new frame */
   dpx_file_info.generic_section_length=sizeof(dpx_file_info)+
     sizeof(dpx_image_info)+sizeof(dpx_source_info);
@@ -1212,27 +1364,197 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   offset += WriteBlob(image,sizeof(dpx_file_info),&dpx_file_info);
   offset += WriteBlob(image,sizeof(dpx_image_info),&dpx_image_info);
   offset += WriteBlob(image,sizeof(dpx_source_info),&dpx_source_info);
-
   for( ; offset < dpx_image_info.element_info[0].data_offset; offset++)
     (void) WriteBlobByte(image,0x00);
 
-  /*
-    Convert pixel packets to DPX raster image.
-  */
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const PixelPacket *) NULL)
-      break;
-    for (x=0; x < (long) image->columns; x++)
+  for (element=0; element < dpx_image_info.elements; element++)
     {
-      pixel=(((long) ((1023L*p->red+MaxRGB/2)/MaxRGB) & 0x3ffU) << 22U) |
-        (((long) ((1023L*p->green+MaxRGB/2)/MaxRGB) &0x3ffU) << 12U) |
-        (((long) ((1023L*p->blue+MaxRGB/2)/MaxRGB) &0x3ffU) << 2U);
-      (void) WriteBlobMSBLong(image,pixel);
-      p++;
+      if ((magick_off_t) dpx_image_info.element_info[element].data_offset !=
+          TellBlob(image))
+        {
+          printf("### Descriptor %u offset %u, TellBlob says %u\n",
+                 element+1, dpx_image_info.element_info[element].data_offset,
+                 (unsigned int) TellBlob(image));
+        }
+      DescribeDPXImageElement(&dpx_image_info.element_info[element],element+1);
+
+      bits_per_sample=dpx_image_info.element_info[element].bits_per_sample;
+
+      scale_from_short=1U;
+      if (bits_per_sample < 16U)
+        scale_from_short=(65535U / (65535U >> (16-bits_per_sample)));
+
+      element_descriptor=(DPXImageElementDescriptor)
+        dpx_image_info.element_info[element].descriptor;
+
+      /*
+        Determine component packing method.
+      */
+      packing_method=dpx_image_info.element_info[element].packing;
+      if ((bits_per_sample == 10) || (bits_per_sample == 12))
+        {
+          if (packing_method == PackingMethodWordsFillLSB)
+            word_pad_lsb=MagickTrue;
+          else if (packing_method == PackingMethodWordsFillMSB)
+            word_pad_msb=MagickTrue;
+        }
+
+      switch (element_descriptor)
+        {
+        case ImageElementUnspecified:
+        case ImageElementRed:
+        case ImageElementGreen:
+        case ImageElementBlue:
+        case ImageElementAlpha:
+        case ImageElementLuma:
+          samples_per_element=1;
+          break;
+        case ImageElementRGB:
+          samples_per_element=3;
+          break;
+        case ImageElementRGBA:
+        case ImageElementABGR:
+          samples_per_element=4;
+          break;
+        default:
+          samples_per_element=0;
+          break;
+        }
+
+      WordStreamInitializeWrite(&word_stream,word_write_func,image);
+      for (y=0; y < (long) image->rows; y++)
+        {
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
+            break;
+
+          for (x=0; x < (long) image->columns; x++)
+            {
+              /*
+                Prepare samples.
+              */
+              switch (element_descriptor)
+                {
+                case ImageElementRed:
+                  samples[0]=ScaleQuantumToShort(p->red)/scale_from_short;
+                  break;
+                case ImageElementGreen:
+                  samples[0]=ScaleQuantumToShort(p->green)/scale_from_short;
+                  break;
+                case ImageElementBlue:
+                  samples[0]=ScaleQuantumToShort(p->blue)/scale_from_short;
+                  break;
+                case ImageElementAlpha:
+                  samples[0]=ScaleQuantumToShort(MaxRGB-p->opacity)/scale_from_short;
+                  break;
+                case ImageElementUnspecified:
+                case ImageElementLuma:
+                  samples[0]=ScaleQuantumToShort(PixelIntensity(p))/scale_from_short;
+                  break;
+                case ImageElementRGB:
+                  samples[0]=ScaleQuantumToShort(p->blue)/scale_from_short;
+                  samples[1]=ScaleQuantumToShort(p->green)/scale_from_short;
+                  samples[2]=ScaleQuantumToShort(p->red)/scale_from_short;
+                  break;
+                case ImageElementRGBA:
+                  samples[0]=ScaleQuantumToShort(p->blue)/scale_from_short;
+                  samples[1]=ScaleQuantumToShort(p->green)/scale_from_short;
+                  samples[2]=ScaleQuantumToShort(p->red)/scale_from_short;
+                  samples[3]=ScaleQuantumToShort(MaxRGB-p->opacity)/scale_from_short;
+                  break;
+                case ImageElementABGR:
+                  samples[0]=ScaleQuantumToShort(MaxRGB-p->opacity)/scale_from_short;
+                  samples[1]=ScaleQuantumToShort(p->red)/scale_from_short;
+                  samples[2]=ScaleQuantumToShort(p->green)/scale_from_short;
+                  samples[3]=ScaleQuantumToShort(p->blue)/scale_from_short;
+                  break;
+                default:
+                  break;
+                }
+              /*
+                Output samples.
+              */
+              if (word_pad_lsb)
+                {
+                  /*
+                    Padding in LSB (Method A).
+                  */
+                  if (bits_per_sample == 10)
+                    {
+                      for (i=0; i < samples_per_element; i++)
+                        {
+                          if (word_stream.bits_remaining == 32)
+                            (void) WordStreamLSBWrite(&word_stream,2,0);
+                          WordStreamLSBWrite(&word_stream,
+                                             bits_per_sample,samples[i]);
+                        }
+                    }
+                  else if (bits_per_sample == 12)
+                    {
+                      for (i=0; i < samples_per_element; i++)
+                        {
+                          (void) WordStreamLSBWrite(&word_stream,4,0);
+                          (void) WordStreamLSBWrite(&word_stream,
+                                                    bits_per_sample,samples[i]);
+                        }
+                    }
+                }
+              else if (word_pad_msb)
+                {
+                  /*
+                    Padding in MSB (Method B).
+                  */
+                  if (bits_per_sample == 10)
+                    {
+                      for (i=0; i < samples_per_element; i++)
+                        {
+                          if (word_stream.bits_remaining == 2)
+                            (void) WordStreamLSBWrite(&word_stream,2,0);
+                          (void) WordStreamLSBWrite(&word_stream,
+                                                    bits_per_sample,samples[i]);
+                        }
+                    }
+                  else if (bits_per_sample == 12)
+                    {
+                      for (i=0; i < samples_per_element; i++)
+                        {
+                          (void) WordStreamLSBWrite(&word_stream,
+                                                    bits_per_sample,samples[i]);
+                          (void) WordStreamLSBWrite(&word_stream,4,0);
+                        }
+                    }
+                }
+              else
+                {
+                  /*
+                    Packed data. Packing is broken on scan-line boundaries.
+                  */
+                  for (i=0; i < samples_per_element; i++)
+                    (void) WordStreamLSBWrite(&word_stream,
+                                              bits_per_sample,samples[i]);
+                }
+              p++;
+            }
+          /*
+            Flush packed row.
+          */
+          if (packing_method == PackingMethodPacked)
+            WordStreamLSBWriteFlush(&word_stream);
+        }
+      /*
+        Flush any remaining element output.
+      */
+      WordStreamLSBWriteFlush(&word_stream);
     }
-  }
+
+
+  if ((magick_off_t) dpx_file_info.file_size != TellBlob(image))
+    {
+      printf("### File length %u, TellBlob says %u\n",
+             dpx_file_info.file_size,
+             (unsigned int) TellBlob(image));
+    }
+
   CloseBlob(image);  
   return(status);
 }

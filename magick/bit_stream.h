@@ -180,12 +180,12 @@ extern "C" {
     Initialize Word Stream for reading
 
     word_stream     - stream to initialize.
-    read_func_state - state to pass to read_func.
     read_func       - function to retrieve the next word.
+    read_func_state - state to pass to read_func.
   */
   static inline void WordStreamInitializeRead(WordStreamReadHandle *word_stream,
-                                              void *read_func_state,
-                                              WordStreamReadFunc read_func)
+                                              WordStreamReadFunc read_func,
+                                              void *read_func_state)
   {
     word_stream->word            = 0;
     word_stream->bits_remaining  = 0;
@@ -235,6 +235,103 @@ extern "C" {
     return quantum;
   }
 
+  /*
+    Word writing function.
+
+    write_func_state  - state to pass to word writing function.
+    value             - value to write
+    returns number of bytes written.
+  */
+  typedef size_t (*WordStreamWriteFunc) (void *write_func_state,
+                                         const unsigned long value);
+
+  /*
+    Word stream writer "handle"
+  */
+  typedef struct _WordStreamWriteHandle
+  {
+    magick_uint32_t      word;
+    unsigned int         bits_remaining;
+    WordStreamWriteFunc  write_func;
+    void                *write_func_state;
+  } WordStreamWriteHandle;
+
+  /*
+    Initialize Word Stream for writing
+
+    word_stream      - stream to initialize.
+    write_func_state - state to pass to write_func.
+    write_func        - function to retrieve the next word.
+  */
+  static inline void WordStreamInitializeWrite(WordStreamWriteHandle *word_stream,
+                                               WordStreamWriteFunc write_func,
+                                               void *write_func_state)
+  {
+    word_stream->word             = 0U;
+    word_stream->bits_remaining   = 32U;
+    word_stream->write_func       = write_func;
+    word_stream->write_func_state = write_func_state;
+  }
+
+  /*
+    Write quantum using the specified number of bits at the current
+    position in a 32-bit word stream. Samples are output to words
+    starting at the least significant bits of the word.
+
+    Note that since a callback function is used to output the words,
+    the remaining bits in the last word need to be flushed out by
+    invoking WordStreamLSBWriteFlush().
+
+    word_stream     - already initialized word stream.
+    requested_bits  - number of bits to write to stream.
+    quantum         - value to write.
+  */
+  static inline void WordStreamLSBWrite(WordStreamWriteHandle *word_stream,
+                                        const unsigned int requested_bits,
+                                        const unsigned int quantum)
+  {
+    register unsigned int
+      remaining_quantum_bits = requested_bits;
+
+    while (remaining_quantum_bits > 0U)
+      {
+        register unsigned int
+          word_bits;
+
+        word_bits = remaining_quantum_bits;
+        if (word_bits > word_stream->bits_remaining)
+          word_bits = word_stream->bits_remaining;
+
+        word_stream->word |=
+          (((quantum >> (requested_bits-remaining_quantum_bits)) &
+            BitAndMasks[word_bits]) << (32-word_stream->bits_remaining));
+
+        remaining_quantum_bits -= word_bits;
+        word_stream->bits_remaining -= word_bits;
+
+        if (word_stream->bits_remaining == 0U)
+          {
+            (void) word_stream->write_func(word_stream->write_func_state,
+                                           word_stream->word);
+            word_stream->word=0U;
+            word_stream->bits_remaining=32U;
+          }
+      }
+  }
+
+  /*
+    Write the current output word, regardless of completion.  Unset bits
+    are set to zero.  Should be used to ensure that last word in word
+    stream is written to the output.  May also be used to apply
+    word-level padding at the end of an image row.
+
+    word_stream     - already initialized word stream.
+  */  
+  static inline void WordStreamLSBWriteFlush(WordStreamWriteHandle *word_stream)
+  {
+    if (word_stream->bits_remaining != 32U)
+      WordStreamLSBWrite(word_stream,word_stream->bits_remaining,0U);
+  }
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
