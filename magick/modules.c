@@ -354,6 +354,7 @@ static void InitializeModuleSearchPath(void)
                 }
             }
         }
+#if !defined(_VISUALC_)
       /* Add HOME/.magick if it exists */
       if ((path_index<max_path_elements) &&
           ((path=getenv("HOME")) != NULL))
@@ -366,6 +367,7 @@ static void InitializeModuleSearchPath(void)
               ++path_index;
             }
         }
+#endif
       /* Add default module installation directory */
       if (path_index<max_path_elements)
         {
@@ -529,7 +531,7 @@ Export char **ListModules(void)
   entry=readdir(directory);
   while (entry != (struct dirent *) NULL)
     {
-#if !defined(_VISUALC_)
+#if defined(HasLTDL)
       name_length=Extent(entry->d_name);
       p = (entry->d_name + name_length - 3);
       if ( name_length < 4 ||
