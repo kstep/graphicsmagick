@@ -2371,7 +2371,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(CoderError,"TIFFLibraryIsNotAvailable",
+  ThrowBinaryException(MissingDelegateError,"TIFFLibraryIsNotAvailable",
     image->filename);
 }
 #endif

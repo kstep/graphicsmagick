@@ -522,7 +522,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowException(exception,CoderError,"DPSLibraryIsNotAvailable",
+  ThrowException(exception,MissingDelegateError,"DPSLibraryIsNotAvailable",
     image_info->filename);
   return((Image *) NULL);
 }

@@ -480,7 +480,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowException(exception,CoderError,"FPXLibraryIsNotAvailable",
+  ThrowException(exception,MissingDelegateError,"FPXLibraryIsNotAvailable",
     image_info->filename);
   return((Image *) NULL);
 }
@@ -1111,7 +1111,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(CoderError,"FPXLibraryIsNotAvailable",
+  ThrowBinaryException(MissingDelegateError,"FPXLibraryIsNotAvailable",
     image->filename)
 }
 #endif

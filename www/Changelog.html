@@ -13,6 +13,34 @@
 </tr>
 </table>
 <p>
+2003-03-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (GrayscalePseudoClassImage): Properly invoke SyncImagePixels.
+  <LI> magick/cache.c (SyncCacheNexus): Add back in is_monochrome and is_grayscale
+        flag resetting which was lost by copying over ImageMagick's cache.c.
+
+</UL>
+<p>
+2003-03-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/stream.c (AcquirePixelStream): Store total pixels in 64-bit type.
+        (SetPixelStream): Store total pixels in 64-bit type.
+  <LI> coders/tiff.c (WriteTIFFImage): CoderError should be MissingDelegateError.
+  <LI> coders/ps3.c (Huffman2DEncodeImage): CoderError should be MissingDelegateError.
+        (WritePS3Image): CoderError should be MissingDelegateError.
+  <LI> coders/ps2.c (Huffman2DEncodeImage): CoderError should be MissingDelegateError.
+  <LI> coders/pdf.c (Huffman2DEncodeImage): CoderError should be MissingDelegateError.
+  <LI> coders/fpx.c (ReadFPXImage): CoderError should be MissingDelegateError.
+        (WriteFPXImage): CoderError should be MissingDelegateError.
+  <LI> coders/dps.c (ReadDPSImage): CoderError should be MissingDelegateError.
+  <LI> magick/image.c (AnimateImages): DelegateError should be MissingDelegateError.
+  <LI> magick/annotate.c (RenderX11): DelegateError should be MissingDelegateError.
+  <LI> magick/image.c (DisplayImages): DelegateError should be MissingDelegateError.
+
+</UL>
+<p>
 2003-03-17  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
 
 <UL>
@@ -698,7 +726,7 @@
 
 </UL>
 <p>
-2002-02-10  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+2003-02-10  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
 
 <UL>
   <LI> Brought MNG handling of final delay into compliance with MNG spec.
@@ -1220,7 +1248,7 @@
          "}" caused an assertion failure after reading any opaque JNG image.
   <LI> Added CloseBlob before returning a NULL JNG image.
   <LI> Merged png.c with IM-5.5.3-1, including a seemingly pointless
-        rename of SaveImagText string to SaveImageTag.
+        rename of SaveImageText string to SaveImageTag.
 
 </UL>
 <p>
@@ -1240,16 +1268,6 @@
         Pass image-&gt;colorspace to TransformRGBImage().
   <LI> magick/nt_feature.c: Ensure that image is RGB prior to transfer
         to HBITMAP.
-
-</UL>
-<p>
-2002-12-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
-<UL>
-  <LI> magick/image.c: Re-worked RGBTransformImage so that it is now
-        smoking fast for Q:8 and Q:16. Changed lookup tables, and all
-        per-pixel transforms to use only integer arithmetic. A
-        pre-multiplication scheme is used which should actually improve
-        the quantization error over using double arithmetic
 
 </UL>
 <p>
@@ -1495,7 +1513,7 @@
 <UL>
   <LI> magick/magick.c
         Fixed bugs in InitializeMagick, but I also heavily commented
-        the code so show what it seesm to be doing. It appears broken
+        the code so show what it seems to be doing. It appears broken
         and needs testing on all platforms. Toward that end, I added
         Log events so that we can see what it is doing.
 

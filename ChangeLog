@@ -1,3 +1,25 @@
+2003-03-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (GrayscalePseudoClassImage): Properly invoke SyncImagePixels.
+	* magick/cache.c (SyncCacheNexus): Add back in is_monochrome and is_grayscale
+	flag resetting which was lost by copying over ImageMagick's cache.c.
+
+2003-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/stream.c (AcquirePixelStream): Store total pixels in 64-bit type.
+	(SetPixelStream): Store total pixels in 64-bit type.
+	* coders/tiff.c (WriteTIFFImage): CoderError should be MissingDelegateError.
+	* coders/ps3.c (Huffman2DEncodeImage): CoderError should be MissingDelegateError.
+	(WritePS3Image): CoderError should be MissingDelegateError.
+	* coders/ps2.c (Huffman2DEncodeImage): CoderError should be MissingDelegateError.
+	* coders/pdf.c (Huffman2DEncodeImage): CoderError should be MissingDelegateError.
+	* coders/fpx.c (ReadFPXImage): CoderError should be MissingDelegateError.
+	(WriteFPXImage): CoderError should be MissingDelegateError.
+	* coders/dps.c (ReadDPSImage): CoderError should be MissingDelegateError.
+	* magick/image.c (AnimateImages): DelegateError should be MissingDelegateError.
+	* magick/annotate.c (RenderX11): DelegateError should be MissingDelegateError.
+	* magick/image.c (DisplayImages): DelegateError should be MissingDelegateError.
+
 2003-03-17  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* magick/image.c Relocated misplaced break in ChannelImage()

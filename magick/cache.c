@@ -731,7 +731,7 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
       return(y == (long) image->rows);
     }
   /*
-    Opimized pixel cache clone.
+    Optimized pixel cache clone.
   */
   if ((cache_info->type != DiskCache) && (clone_info->type != DiskCache))
     {
@@ -3128,6 +3128,8 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long nexus)
   if (image->cache == (Cache) NULL)
     ThrowBinaryException(CacheError,"PixelCacheIsNotOpen",image->filename);
   image->taint=True;
+  image->is_grayscale=False;
+  image->is_monochrome=False;
   if (IsNexusInCore(image->cache,nexus))
     return(True);
   if (image->clip_mask != (Image *) NULL)

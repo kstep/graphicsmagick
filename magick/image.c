@@ -404,7 +404,7 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(DelegateError,"XWindowLibraryIsNotAvailable",
+  ThrowBinaryException(MissingDelegateError,"XWindowLibraryIsNotAvailable",
     image->filename);
   return(False);
 }
@@ -2106,7 +2106,7 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(DelegateError,"XWindowLibraryIsNotAvailable",
+  ThrowBinaryException(MissingDelegateError,"XWindowLibraryIsNotAvailable",
     image->filename);
   return(False);
 }
@@ -2802,8 +2802,9 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
                   *indexes++=colormap_index[intensity];
                   q++;
                 }
+              if (!SyncImagePixels(image))
+                return;
             }
-          image->storage_class=PseudoClass;
         }
       else
         {
@@ -2821,9 +2822,10 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
                   *indexes=ScaleQuantumToMap(q->red);
                   q++;
                   indexes++;
-                }
-            }
-          image->storage_class=PseudoClass;
+                } 
+              if (!SyncImagePixels(image))
+                break;
+           }
           image->is_grayscale=True;
           return;
         }
@@ -2909,6 +2911,8 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
               *indexes=colormap_index[*indexes];
               indexes++;
             }
+          if (!SyncImagePixels(image))
+            break;
         }
       LiberateMemory((void **) &colormap_index);
     }
@@ -4898,8 +4902,6 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
               */
               NormalizeImage(image); 
               ThresholdImage(image,(double)MaxRGB/2);
-              image->storage_class=PseudoClass;
-              image->colorspace=GRAYColorspace;
             }
         }
       image->is_grayscale=True;

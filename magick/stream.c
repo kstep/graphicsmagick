@@ -192,7 +192,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   StreamInfo
     *stream_info;
 
-  unsigned long
+  ExtendedSignedIntegralType
     number_pixels;
 
   /*
@@ -217,7 +217,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   /*
     Pixels are stored in a temporary buffer until they are synced to the cache.
   */
-  number_pixels=columns*rows;
+  number_pixels=(ExtendedSignedIntegralType)columns*rows;
   length=number_pixels*sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
@@ -551,7 +551,7 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   StreamInfo
     *stream_info;
 
-  unsigned long
+  ExtendedSignedIntegralType
     number_pixels;
 
   /*
@@ -590,7 +590,7 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   */
   stream_info->columns=columns;
   stream_info->rows=rows;
-  number_pixels=columns*rows;
+  number_pixels=(ExtendedSignedIntegralType)columns*rows;
   length=number_pixels*sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))

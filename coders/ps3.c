@@ -212,7 +212,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(CoderError,"TIFFLibraryIsNotAvailable",image->filename)
+  ThrowBinaryException(MissingDelegateError,"TIFFLibraryIsNotAvailable",image->filename)
 }
 #endif
 
@@ -407,7 +407,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     case ZipCompression:
     {
       compression=RLECompression;
-      ThrowException(&image->exception,CoderError,
+      ThrowException(&image->exception,MissingDelegateError,
         "ZipLibraryIsNotAvailable",image->filename);
       break;
     }

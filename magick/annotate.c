@@ -1786,7 +1786,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
 static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,TypeMetric *metrics)
 {
-  ThrowBinaryException(DelegateError,"XWindowLibraryIsNotAvailable",
+  ThrowBinaryException(MissingDelegateError,"XWindowLibraryIsNotAvailable",
     draw_info->font);
 }
 #endif
