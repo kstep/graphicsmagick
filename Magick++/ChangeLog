@@ -1,3 +1,9 @@
+2004-02-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (Image): Delete the allocated image reference
+	object if a Magick::Error is thrown by the Image constructor.
+	Otherwise the image reference object becomes a memory leak.
+
 2004-01-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (WriteImages): Pass Blob::MallocAllocator to

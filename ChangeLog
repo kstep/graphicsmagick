@@ -1,3 +1,8 @@
+2004-02-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/montage.c (MontageImages): Fix leak of texture image (big
+	leak).
+
 2004-02-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): Fix detection of when to use a

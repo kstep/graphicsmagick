@@ -772,7 +772,7 @@ MagickExport Image *MontageImages(const Image *images,
   }
   DestroyImage(tile_image);
   if (texture != (Image *) NULL)
-    MagickFreeMemory(texture);
+    DestroyImage(texture);
   MagickFreeMemory(master_list);
   DestroyDrawInfo(draw_info);
   DestroyImageInfo(image_info);
