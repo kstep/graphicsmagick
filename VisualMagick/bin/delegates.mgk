@@ -5,7 +5,7 @@
   <delegate decode="bmp" encode="win" mode="encode" command='imdisplay.exe "%i."' />
   <delegate decode="browse" restrain="True" spawn="True" command='cmd /C start http://www.imagemagick.org/'  />
   <delegate decode="cgm" command='ralcgm -d ps "%i" "%o" %u
-    convert -concatenate %o*.ps "%o"' />
+    gm convert -concatenate %o*.ps "%o"' />
   <delegate decode="compress" restrain="True" command='|uncompress -c "%i"' />
   <delegate decode="dot" command='dot -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='dvips -q -o "%o" "%i"' />
@@ -29,17 +29,17 @@
   <delegate decode="pgp" command='pgpv -fq "%i"' />
   <delegate decode="pnm" encode="ilbm" mode="encode" command='ppmtoilbm -24if "%i" > "%o"' />
   <delegate decode="pov" command='povray "+i"%i"" +o"%o" +fn%q +w%w +h%h +a -q9 -kfi"%s" -kff"%n"
-    convert -concatenate %o*.png "%o"' />
+    gm convert -concatenate %o*.png "%o"' />
   <delegate decode="ps" encode="eps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=epswrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="ps" encode="pdf" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="pcl" encode="print" mode="encode" command='print "%i"' />
   <delegate decode="rad" command='ra_ppm -g 1.0 "%i" "%o"' />
-  <delegate decode="rgba" encode="rle" mode="encode" command='mogrify -flip -size %wx%h "rgba:%i"
+  <delegate decode="rgba" encode="rle" mode="encode" command='gm mogrify -flip -size %wx%h "rgba:%i"
     rawtorle -w %w -h %h -n 4 -o "%o" "%i"' />
   <delegate decode="scan" command='scanimage -d "%i" > "%o"' />
   <delegate decode="shtml" command='html2ps -U -o "%o" "%i"' />
   <delegate decode="txt" encode="ps" mode="bi" command='enscript -o "%o" "%i"' />
   <delegate decode="xcf" command='xcftopnm "%i" > "%o"' />
   <delegate encode="compress" restrain="True" command='|compress -c > "%o"' />
-  <delegate encode="show" restrain="True" spawn="True" command='display -immutable -window_group %g -title "%l of %f" "tmp:%o"' />
+  <delegate encode="show" restrain="True" spawn="True" command='gm display -immutable -window_group %g -title "%l of %f" "tmp:%o"' />
 </delegatemap>

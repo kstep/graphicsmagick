@@ -1628,12 +1628,13 @@ BZIPDelegateDefault='bzip2'
 BrowseDelegateDefault='netscape'
 CGMDecodeDelegateDefault='ralcgm'
 CatDelegateDefault='cat'
-ConvertDelegateDefault=`echo convert | sed ${configure_transform_name}`
+### ConvertDelegateDefault=`echo convert | sed ${configure_transform_name}`
 DOTDecodeDelegateDefault='dot'
 DVIDecodeDelegateDefault='dvips'
 EchoDelegateDefault='echo'
 EditorDelegateDefault='xterm'
 FIGDecodeDelegateDefault='fig2dev'
+GMDelegateDefault=`echo gm | sed ${configure_transform_name}`
 GnuplotDecodeDelegateDefault='gnuplot'
 HPGLDecodeDelegateDefault='hp2xx'
 HTMLDecodeDelegateDefault='html2ps'
@@ -1648,7 +1649,7 @@ MANDelegateDefault='groff'
 MPEGDecodeDelegateDefault='mpeg2decode'
 MPEGEncodeDelegateDefault='mpeg2encode'
 MVDelegateDefault='mv'
-MogrifyDelegateDefault=`echo mogrify | sed ${configure_transform_name}`
+### MogrifyDelegateDefault=`echo mogrify | sed ${configure_transform_name}`
 PGPDecodeDelegateDefault='pgpv'
 POVDelegateDefault='povray'
 if test "$native_win32_build" = 'yes' ; then
@@ -1660,7 +1661,7 @@ RADDecodeDelegateDefault='ra_ppm'
 RLEEncodeDelegateDefault='rawtorle'
 RMDelegateDefault='rm'
 SCANDecodeDelegateDefault='scanimage'
-ShowImageDelegateDefault=`echo display | sed ${configure_transform_name}`
+### ShowImageDelegateDefault=`echo display | sed ${configure_transform_name}`
 TXTDelegateDefault='enscript'
 WMFDecodeDelegateDefault='wmf2eps'
 WWWDecodeDelegateDefault='wget'
@@ -1677,6 +1678,7 @@ AC_PATH_PROG(DVIDecodeDelegate, "$DVIDecodeDelegateDefault", "$DVIDecodeDelegate
 AC_PATH_PROG(EchoDelegate, "$EchoDelegateDefault", "$EchoDelegateDefault")
 AC_PATH_PROG(EditorDelegate, "$EditorDelegateDefault", "$EditorDelegateDefault")
 AC_PATH_PROG(FIGDecodeDelegate, "$FIGDecodeDelegateDefault", "$FIGDecodeDelegateDefault")
+AC_PATH_PROG(GMDelegate, "$GMDelegateDefault", "$GMDelegateDefault")
 AC_PATH_PROG(GnuplotDecodeDelegate, "$GnuplotDecodeDelegateDefault", "$GnuplotDecodeDelegateDefault")
 AC_PATH_PROG(HPGLDecodeDelegate, "$HPGLDecodeDelegateDefault", "$HPGLDecodeDelegateDefault")
 AC_PATH_PROG(HTMLDecodeDelegate, "$HTMLDecodeDelegateDefault", "$HTMLDecodeDelegateDefault")
@@ -1713,9 +1715,10 @@ fi
 AC_SUBST(PrintDelegate)
 
 # Installed GraphicsMagick utiltity paths
-ConvertDelegate="${BIN_DIR}/${ConvertDelegateDefault}"
-ShowImageDelegate="${BIN_DIR}/${ShowImageDelegateDefault}"
-MogrifyDelegate="${BIN_DIR}/${MogrifyDelegateDefault}"
+GMDelegate="${BIN_DIR}/${GMDelegateDefault}"
+### ConvertDelegate="${BIN_DIR}/${ConvertDelegateDefault}"
+### ShowImageDelegate="${BIN_DIR}/${ShowImageDelegateDefault}"
+### MogrifyDelegate="${BIN_DIR}/${MogrifyDelegateDefault}"
 
 # Set delegate booleans
 have_fig2dev='no' ; if test "$FIGDecodeDelegate" != "$FIGDecodeDelegateDefault" ; then have_fig2dev='yes' ; fi

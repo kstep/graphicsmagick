@@ -3,7 +3,7 @@
   <delegate decode="autotrace" stealth="True" command='@AutotraceDecodeDelegate@ -output-format svg -output-file "%o" "%i"' />
   <delegate decode="browse" stealth="True" spawn="True" command='@BrowseDelegate@ http://www.imagemagick.org/'  />
   <delegate decode="cgm" command='@CGMDecodeDelegate@ -d ps "%i" "%o" "%u"
-    @ConvertDelegate@ -concatenate %o*.ps "%o"' />
+    @GMDelegate@ convert -concatenate %o*.ps "%o"' />
   <delegate decode="dot" command='@DOTDecodeDelegate@ -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='@DVIDecodeDelegate@ -q -o "%o" "%i"' />
   <delegate decode="edit" stealth="True" command='@EditorDelegate@ -title "Edit Image Comment" -e vi "%o"' />
@@ -29,18 +29,18 @@
   <delegate decode="pdf" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="pnm" encode="ilbm" mode="encode" command='@ILBMEncodeDelegate@ -24if "%i" > "%o"' />
   <delegate decode="pnm" encode="launch" mode="encode" command='@LaunchDelegate@ "%i"' />
-  <delegate decode="pnm" encode="win" mode="encode" command='@ShowImageDelegate@ -immutable "%i"' />
+  <delegate decode="pnm" encode="win" mode="encode" command='@GMDelegate@ display -immutable "%i"' />
   <delegate decode="pov" command='@POVDelegate@ "+i"%i"" +o"%o" +fn%q +w%w +h%h +a -q9 -kfi"%s" -kff"%n"
-    @ConvertDelegate@ -concatenate "%o*.png" "%o"' />
+    @GMDelegate@ convert -concatenate "%o*.png" "%o"' />
   <delegate decode="ps" encode="eps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSEPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="ps" encode="pdf" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSPDFDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="ps" encode="print" mode="encode" command='@PrintDelegate@ "%i"' />
   <delegate decode="rad" command='@RADDecodeDelegate@ -g 1.0 "%i" "%o"' />
-  <delegate decode="rgba" encode="rle" mode="encode" command='@MogrifyDelegate@ -flip -size %wx%h "rgba:%i"
+  <delegate decode="rgba" encode="rle" mode="encode" command='@GMDelegate@ mogrify -flip -size %wx%h "rgba:%i"
     @RLEEncodeDelegate@ -w %w -h %h -n 4 -o "%o" "%i"' />
   <delegate decode="scan" command='@SCANDecodeDelegate@ -d "%i" > "%o"' />
   <delegate decode="shtml" command='@HTMLDecodeDelegate@ -U -o "%o" "%i"' />
   <delegate decode="txt" encode="ps" mode="bi" command='@TXTDelegate@ -o "%o" "%i"' />
   <delegate decode="wmf" command='@WMFDecodeDelegate@ -o "%o" "%i"' />
-  <delegate encode="show" stealth="True" spawn="True" command='@ShowImageDelegate@ -immutable -delay 0 -window_group %g -title "%l of %f" "tmp:%o"' />
+  <delegate encode="show" stealth="True" spawn="True" command='@GMDelegate@ display -immutable -delay 0 -window_group %g -title "%l of %f" "tmp:%o"' />
 </delegatemap>

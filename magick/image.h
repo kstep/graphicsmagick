@@ -883,229 +883,229 @@ typedef struct _ImageInfo
   Image const declarations.
 */
 extern MagickExport const char
-  *BackgroundColor,
-  *BorderColor,
-  *DefaultTileFrame,
-  *DefaultTileGeometry,
-  *DefaultTileLabel,
-  *ForegroundColor,
-  *MatteColor,
-  *LoadImageText,
-  *LoadImagesText,
-  *PSDensityGeometry,
-  *PSPageGeometry,
-  *SaveImageText,
-  *SaveImagesText;
+  *BackgroundColor, /* image.c */
+  *BorderColor, /* image.c */
+  *DefaultTileFrame, /* image.c */
+  *DefaultTileGeometry, /* image.c */
+  *DefaultTileLabel, /* image.c */
+  *ForegroundColor, /* image.c */
+  *MatteColor, /* image.c */
+  *LoadImageText, /* image.c */
+  *LoadImagesText, /* image.c */
+  *PSDensityGeometry, /* image.c */
+  *PSPageGeometry, /* image.c */
+  *SaveImageText, /* image.c */
+  *SaveImagesText; /* image.c */
 
 extern MagickExport const unsigned long
-  DefaultCompressionQuality;
+  DefaultCompressionQuality; /* image.c */
 
 /*
   Image utilities methods.
 */
 extern MagickExport char
-  **GetColorList(const char *,unsigned long *);
+  **GetColorList(const char *,unsigned long *); /* color.c */
 
 extern MagickExport const char
-  *GetImageMagick(const unsigned char *,const size_t);
+  *GetImageMagick(const unsigned char *,const size_t); /* magick.c */
 
 extern MagickExport const ColorInfo
-  *GetColorInfo(const char *,ExceptionInfo *);
+  *GetColorInfo(const char *,ExceptionInfo *); /* color.c */
 
 extern MagickExport ExceptionType
-  CatchImageException(Image *);
+  CatchImageException(Image *); /* image.c */
 
 extern MagickExport const PixelPacket
   *AcquireImagePixels(const Image *,const long,const long,const unsigned long,
-    const unsigned long,ExceptionInfo *);
+    const unsigned long,ExceptionInfo *); /* cache.c */
 
 extern MagickExport Image
   *AdaptiveThresholdImage(const Image *,const unsigned long,const unsigned long,
-    const long,ExceptionInfo *),
-  *AddNoiseImage(const Image *,const NoiseType,ExceptionInfo *),
-  *AffineTransformImage(const Image *,const AffineMatrix *,ExceptionInfo *),
-  *AllocateImage(const ImageInfo *),
-  *AppendImages(const Image *,const unsigned int,ExceptionInfo *),
-  *AverageImages(const Image *,ExceptionInfo *),
-  *BlurImage(const Image *,const double,const double,ExceptionInfo *),
-  *BorderImage(const Image *,const RectangleInfo *,ExceptionInfo *),
-  *CharcoalImage(const Image *,const double,const double,ExceptionInfo *),
-  *ChopImage(const Image *,const RectangleInfo *,ExceptionInfo *),
+     const double,ExceptionInfo *), /* effect.c */
+  *AddNoiseImage(const Image *,const NoiseType,ExceptionInfo *), /* effect.c */
+  *AffineTransformImage(const Image *,const AffineMatrix *,ExceptionInfo *), /* shear.c */
+  *AllocateImage(const ImageInfo *), /* image.c */
+  *AppendImages(const Image *,const unsigned int,ExceptionInfo *), /* image.c */
+  *AverageImages(const Image *,ExceptionInfo *), /* image.c */
+  *BlurImage(const Image *,const double,const double,ExceptionInfo *), /* effect.c */
+  *BorderImage(const Image *,const RectangleInfo *,ExceptionInfo *), /* decorate.c */
+  *CharcoalImage(const Image *,const double,const double,ExceptionInfo *), /* fx.c */
+  *ChopImage(const Image *,const RectangleInfo *,ExceptionInfo *), /* transform.c */
   *CloneImage(const Image *,const unsigned long,const unsigned long,
-    const unsigned int,ExceptionInfo *),
-  *CoalesceImages(const Image *,ExceptionInfo *),
-  *ColorizeImage(const Image *,const char *,const PixelPacket,ExceptionInfo *),
+   const unsigned int,ExceptionInfo *), /* image.c */
+  *CoalesceImages(const Image *,ExceptionInfo *), /* transform.c */
+  *ColorizeImage(const Image *,const char *,const PixelPacket,ExceptionInfo *), /* fx.c */
   *ConstituteImage(const unsigned long,const unsigned long,const char *,
-    const StorageType,const void *,ExceptionInfo *),
+   const StorageType,const void *,ExceptionInfo *), /* constitute.c */
   *ConvolveImage(const Image *,const unsigned int,const double *,
-    ExceptionInfo *),
-  *CropImage(const Image *,const RectangleInfo *,ExceptionInfo *),
-  *DeconstructImages(const Image *,ExceptionInfo *),
-  *DespeckleImage(const Image *,ExceptionInfo *),
-  *EdgeImage(const Image *,const double,ExceptionInfo *),
-  *EmbossImage(const Image *,const double,const double,ExceptionInfo *),
-  *EnhanceImage(const Image *,ExceptionInfo *),
-  *FlattenImages(const Image *,ExceptionInfo *),
-  *FlipImage(const Image *,ExceptionInfo *),
-  *FlopImage(const Image *,ExceptionInfo *),
-  *FrameImage(const Image *,const FrameInfo *,ExceptionInfo *),
-  *GaussianBlurImage(const Image *,const double,const double,ExceptionInfo *),
-  *ImplodeImage(const Image *,const double,ExceptionInfo *),
-  *MagnifyImage(const Image *,ExceptionInfo *),
-  *MedianFilterImage(const Image *,const double,ExceptionInfo *),
-  *MinifyImage(const Image *,ExceptionInfo *),
-  *MontageImages(const Image *,const MontageInfo *,ExceptionInfo *),
-  *MorphImages(const Image *,const unsigned long,ExceptionInfo *),
-  *MosaicImages(const Image *,ExceptionInfo *),
+     ExceptionInfo *), /* fx.c */
+  *CropImage(const Image *,const RectangleInfo *,ExceptionInfo *), /* transform.c */
+  *DeconstructImages(const Image *,ExceptionInfo *), /* transform.c */
+  *DespeckleImage(const Image *,ExceptionInfo *), /* effect.c */
+  *EdgeImage(const Image *,const double,ExceptionInfo *), /* effect.c */
+  *EmbossImage(const Image *,const double,const double,ExceptionInfo *), /* effect.c */
+  *EnhanceImage(const Image *,ExceptionInfo *), /* effect.c */
+  *FlattenImages(const Image *,ExceptionInfo *), /* transform.c */
+  *FlipImage(const Image *,ExceptionInfo *), /* transform.c */
+  *FlopImage(const Image *,ExceptionInfo *), /* transform.c */
+  *FrameImage(const Image *,const FrameInfo *,ExceptionInfo *), /* decorate.c */
+  *GaussianBlurImage(const Image *,const double,const double,ExceptionInfo *), /* effect.c */
+  *ImplodeImage(const Image *,const double,ExceptionInfo *), /* fx.c */
+  *MagnifyImage(const Image *,ExceptionInfo *), /* resize.c */
+  *MedianFilterImage(const Image *,const double,ExceptionInfo *), /* effect.c */
+  *MinifyImage(const Image *,ExceptionInfo *), /* resize.c */
+  *MontageImages(const Image *,const MontageInfo *,ExceptionInfo *), /* montage.c */
+  *MorphImages(const Image *,const unsigned long,ExceptionInfo *), /* fx.c */
+  *MosaicImages(const Image *,ExceptionInfo *), /* transform.c */
   *MotionBlurImage(const Image *,const double,const double,const double,
-    ExceptionInfo *),
-  *OilPaintImage(const Image *,const double,ExceptionInfo *),
-  *PingImage(const ImageInfo *,ExceptionInfo *),
-  *ReadImage(const ImageInfo *,ExceptionInfo *),
-  *ReadInlineImage(const ImageInfo *,const char *,ExceptionInfo *),
-  *ReadStream(const ImageInfo *,StreamHandler,ExceptionInfo *),
-  *ReduceNoiseImage(const Image *,const double,ExceptionInfo *),
-  *ReferenceImage(Image *),
+     ExceptionInfo *), /* effect.c */
+  *OilPaintImage(const Image *,const double,ExceptionInfo *), /* fx.c */
+  *PingImage(const ImageInfo *,ExceptionInfo *), /* constitute.c */
+  *ReadImage(const ImageInfo *,ExceptionInfo *), /* constitute.c */
+  *ReadInlineImage(const ImageInfo *,const char *,ExceptionInfo *), /* constitute.c */
+  *ReadStream(const ImageInfo *,StreamHandler,ExceptionInfo *), /* stream.c */
+  *ReduceNoiseImage(const Image *,const double,ExceptionInfo *), /* effect.c */
+  *ReferenceImage(Image *), /* image.c */
   *ResizeImage(const Image *,const unsigned long,const unsigned long,
-    const FilterTypes,const double,ExceptionInfo *),
-  *RollImage(const Image *,const long,const long,ExceptionInfo *),
-  *RotateImage(const Image *,const double,ExceptionInfo *),
+     const FilterTypes,const double,ExceptionInfo *), /* resize.c */
+  *RollImage(const Image *,const long,const long,ExceptionInfo *), /* transform.c */
+  *RotateImage(const Image *,const double,ExceptionInfo *), /* shear.c */
   *SampleImage(const Image *,const unsigned long,const unsigned long,
-    ExceptionInfo *),
+   ExceptionInfo *), /* SampleImage */
   *ScaleImage(const Image *,const unsigned long,const unsigned long,
-    ExceptionInfo *),
-  *ShadeImage(const Image *,const unsigned int,double,double,ExceptionInfo *),
-  *SharpenImage(const Image *,const double,const double,ExceptionInfo *),
-  *ShaveImage(const Image *,const RectangleInfo *,ExceptionInfo *),
-  *ShearImage(const Image *,const double,const double,ExceptionInfo *),
-  *SpreadImage(const Image *,const unsigned int,ExceptionInfo *),
-  *SteganoImage(const Image *,const Image *,ExceptionInfo *),
-  *StereoImage(const Image *,const Image *,ExceptionInfo *),
-  *SwirlImage(const Image *,double,ExceptionInfo *),
+     ExceptionInfo *), /* resize.c */
+  *ShadeImage(const Image *,const unsigned int,double,double,ExceptionInfo *), /* effect.c */
+  *SharpenImage(const Image *,const double,const double,ExceptionInfo *), /* effect.c */
+  *ShaveImage(const Image *,const RectangleInfo *,ExceptionInfo *), /* transform.c */
+  *ShearImage(const Image *,const double,const double,ExceptionInfo *), /* shear.c */
+  *SpreadImage(const Image *,const unsigned int,ExceptionInfo *), /* effect.c */
+  *SteganoImage(const Image *,const Image *,ExceptionInfo *), /* fx.c */
+  *StereoImage(const Image *,const Image *,ExceptionInfo *), /* fx.c */
+  *SwirlImage(const Image *,double,ExceptionInfo *), /* fx.c */
   *ThumbnailImage(const Image *,const unsigned long,const unsigned long,
-    ExceptionInfo *),
+   ExceptionInfo *), /* resize.c */
   *UnsharpMaskImage(const Image *,const double,const double,const double,
-    const double,ExceptionInfo *),
-  *WaveImage(const Image *,const double,const double,ExceptionInfo *),
+     const double,ExceptionInfo *), /* effect.c */
+  *WaveImage(const Image *,const double,const double,ExceptionInfo *), /* fx.c */
   *ZoomImage(const Image *,const unsigned long,const unsigned long,
-    ExceptionInfo *);
+     ExceptionInfo *); /* resize.c */
 
 extern MagickExport ImageInfo
-  *CloneImageInfo(const ImageInfo *);
+  *CloneImageInfo(const ImageInfo *); /* image.c */
 
 extern MagickExport ImageType
-  GetImageType(const Image *,ExceptionInfo *);
+  GetImageType(const Image *,ExceptionInfo *); /* image.c */
 
 extern MagickExport IndexPacket
-  ConstrainColormapIndex(Image *,const unsigned long),
-  *GetIndexes(const Image *);
+  ConstrainColormapIndex(Image *,const unsigned long), /* color.c */
+  *GetIndexes(const Image *); /* cache.c */
 
 extern MagickExport int
   GetImageGeometry(const Image *,const char *,const unsigned int,
-    RectangleInfo *);
+  RectangleInfo *); /* image.c */
 
 extern MagickExport MontageInfo
-  *CloneMontageInfo(const ImageInfo *,const MontageInfo *);
+  *CloneMontageInfo(const ImageInfo *,const MontageInfo *); /* montage.c */
 
 extern MagickExport PixelPacket
-  AcquireOnePixel(const Image *,const long,const long,ExceptionInfo *),
+  AcquireOnePixel(const Image *,const long,const long,ExceptionInfo *), /* cache.c */
   *GetImagePixels(Image *,const long,const long,const unsigned long,
-    const unsigned long),
-  GetOnePixel(Image *,const long,const long),
-  *GetPixels(const Image *),
+    const unsigned long), /* cache.c */
+  GetOnePixel(Image *,const long,const long), /* cache.c */
+  *GetPixels(const Image *), /* cache.c */
   *SetImagePixels(Image *,const long,const long,const unsigned long,
-    const unsigned long);
+     const unsigned long); /* cache.c */
 
 extern MagickExport RectangleInfo
-  GetImageBoundingBox(const Image *,ExceptionInfo *exception);
+  GetImageBoundingBox(const Image *,ExceptionInfo *exception); /* image.c */
 
 extern MagickExport unsigned int
-  AllocateImageColormap(Image *,const unsigned long),
-  AnimateImages(const ImageInfo *image_info,Image *image),
-  ChannelImage(Image *,const ChannelType),
-  ChannelThresholdImage(Image *,const char *),
-  ClipImage(Image *),
+  AllocateImageColormap(Image *,const unsigned long), /* image.c */
+  AnimateImages(const ImageInfo *image_info,Image *image), /* image.c */
+  ChannelImage(Image *,const ChannelType), /* image.c */
+  ChannelThresholdImage(Image *,const char *), /* effect.c */
+  ClipImage(Image *), /* image.c */
   CompositeImage(Image *,const CompositeOperator,const Image *,const long,
-    const long),
-  ContrastImage(Image *,const unsigned int),
+    const long), /* composite.c */
+  ContrastImage(Image *,const unsigned int), /* enhance.c */
   DispatchImage(const Image *,const long,const long,const unsigned long,
-    const unsigned long,const char *,const StorageType,void *,ExceptionInfo *),
-  DisplayImages(const ImageInfo *image_info,Image *image),
-  EqualizeImage(Image *),
-  FuzzyColorMatch(const PixelPacket *,const PixelPacket *,const double),
-  GammaImage(Image *,const char *),
-  GradientImage(Image *,const PixelPacket *,const PixelPacket *),
-  IsGrayImage(const Image *,ExceptionInfo *),
-  IsImagesEqual(Image *,const Image *),
-  IsTaintImage(const Image *),
-  IsMagickConflict(const char *),
-  IsMonochromeImage(const Image *,ExceptionInfo *),
-  IsOpaqueImage(const Image *,ExceptionInfo *),
-  IsPaletteImage(const Image *,ExceptionInfo *),
-  IsSubimage(const char *,const unsigned int),
-  LevelImage(Image *,const char *),
+    const unsigned long,const char *,const StorageType,void *,ExceptionInfo *), /* constitute.c */
+  DisplayImages(const ImageInfo *image_info,Image *image), /* image.c */
+  EqualizeImage(Image *), /* enhance.c */
+  FuzzyColorMatch(const PixelPacket *,const PixelPacket *,const double), /* color.c */
+  GammaImage(Image *,const char *), /* enhance.c */
+  GradientImage(Image *,const PixelPacket *,const PixelPacket *), /* image.c */
+  IsGrayImage(const Image *,ExceptionInfo *), /* color.c */
+  IsImagesEqual(Image *,const Image *), /* image.c */
+  IsTaintImage(const Image *), /* image.c */
+  IsMagickConflict(const char *), /* magick.c */
+  IsMonochromeImage(const Image *,ExceptionInfo *), /* color.c */
+  IsOpaqueImage(const Image *,ExceptionInfo *), /* color.c */
+  IsPaletteImage(const Image *,ExceptionInfo *), /* color.c */
+  IsSubimage(const char *,const unsigned int), /* image.c */
+  LevelImage(Image *,const char *), /* enhance.c */
   LevelImageChannel(Image *,const ChannelType,const double,const double,
-    const double),
-  ListColorInfo(FILE *,ExceptionInfo *),
-  ListMagickInfo(FILE *,ExceptionInfo *),
-  ModulateImage(Image *,const char *),
-  MogrifyImage(const ImageInfo *,const int,char **,Image **),
-  MogrifyImages(const ImageInfo *,const int,char **,Image **),
-  NegateImage(Image *,const unsigned int),
-  NormalizeImage(Image *),
-  PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
-  PopImagePixels(const Image *,const QuantumType,unsigned char *),
+    const double), /* enhance.c */
+  ListColorInfo(FILE *,ExceptionInfo *), /* color.c */
+  ListMagickInfo(FILE *,ExceptionInfo *), /* magick.c */
+  ModulateImage(Image *,const char *), /* enhance.c */
+  MogrifyImage(const ImageInfo *,const int,char **,Image **), /* command.c */
+  MogrifyImages(const ImageInfo *,const int,char **,Image **), /* command.c */
+  NegateImage(Image *,const unsigned int), /* enhance.c */
+  NormalizeImage(Image *), /* enhance.c */
+  PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long), /* image.c */
+  PopImagePixels(const Image *,const QuantumType,unsigned char *), /* constitute.c */
   ProfileImage(Image *,const char *,const unsigned char *,const size_t,
-    unsigned int),
-  PushImagePixels(Image *,const QuantumType,const unsigned char *),
-  QueryColorDatabase(const char *,PixelPacket *,ExceptionInfo *),
+    unsigned int), /* transform.c */
+  PushImagePixels(Image *,const QuantumType,const unsigned char *), /* constitute.c */
+  QueryColorDatabase(const char *,PixelPacket *,ExceptionInfo *), /* color.c */
   QueryColorname(const Image *,const PixelPacket *,const ComplianceType,char *,
-    ExceptionInfo *),
-  RaiseImage(Image *,const RectangleInfo *,const int),
-  RGBTransformImage(Image *,const ColorspaceType),
-  SetImageClipMask(Image *,Image *),
-  SetImageDepth(Image *,const unsigned long),
-  SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
-  SignatureImage(Image *),
-  SortColormapByIntensity(Image *),
-  SyncImagePixels(Image *),
-  ThresholdImage(Image *,const double),
-  TransformRGBImage(Image *,const ColorspaceType),
-  UnregisterMagickInfo(const char *),
-  WriteImage(const ImageInfo *,Image *),
-  WriteImages(ImageInfo *,Image *,const char *,ExceptionInfo *),
-  WriteStream(const ImageInfo *,Image *,StreamHandler);
+    ExceptionInfo *), /* color.c */
+  RaiseImage(Image *,const RectangleInfo *,const int), /* decorate.c */
+  RGBTransformImage(Image *,const ColorspaceType), /* image.c */
+  SetImageClipMask(Image *,Image *), /* image.c */
+  SetImageDepth(Image *,const unsigned long), /* image.c */
+  SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *), /* image.c */
+  SignatureImage(Image *), /* signature.c */
+  SortColormapByIntensity(Image *), /* image.c */
+  SyncImagePixels(Image *), /* cache.c */
+  ThresholdImage(Image *,const double), /* effect.c */
+  TransformRGBImage(Image *,const ColorspaceType), /* image.c */
+  UnregisterMagickInfo(const char *), /* magick.c */
+  WriteImage(const ImageInfo *,Image *), /* constitute.c */
+  WriteImages(ImageInfo *,Image *,const char *,ExceptionInfo *), /* constitute.c */
+  WriteStream(const ImageInfo *,Image *,StreamHandler); /* stream.c */
 
 extern MagickExport unsigned long
-  GetImageDepth(const Image *,ExceptionInfo *),
-  GetNumberColors(const Image *,FILE *,ExceptionInfo *);
+  GetImageDepth(const Image *,ExceptionInfo *), /* image.c */
+  GetNumberColors(const Image *,FILE *,ExceptionInfo *); /* color.c */
 
 extern MagickExport void
-  AllocateNextImage(const ImageInfo *,Image *),
-  CycleColormapImage(Image *,const int),
-  DescribeImage(Image *,FILE *,const unsigned int),
-  DestroyColorInfo(void),
-  DestroyConstitute(void),
-  DestroyImage(Image *),
-  DestroyImageInfo(ImageInfo *),
-  DestroyImagePixels(Image *),
-  DestroyMagick(void),
-  DestroyMagickInfo(void),
-  DestroyMontageInfo(MontageInfo *),
+  AllocateNextImage(const ImageInfo *,Image *), /* image.c */
+  CycleColormapImage(Image *,const int), /* image.c */
+  DescribeImage(Image *,FILE *,const unsigned int), /* image.c */
+  DestroyColorInfo(void), /* color.c */
+  DestroyConstitute(void), /* constitute.c */
+  DestroyImage(Image *), /* image.c */
+  DestroyImageInfo(ImageInfo *), /* image.c */
+  DestroyImagePixels(Image *), /* cache.c */
+  DestroyMagick(void), /* magick.c */
+  DestroyMagickInfo(void), /* magick.c */
+  DestroyMontageInfo(MontageInfo *), /* montage.c */
   GetColorTuple(const PixelPacket *,const unsigned int,const unsigned int,
-    const unsigned int,char *),
-  GetImageException(Image *,ExceptionInfo *),
-  GetImageInfo(ImageInfo *),
-  GetMontageInfo(const ImageInfo *,MontageInfo *),
-  InitializeMagick(const char *),
-  ModifyImage(Image **,ExceptionInfo *),
-  SetImage(Image *,const Quantum),
-  SetImageOpacity(Image *,const unsigned int),
-  SetImageType(Image *,const ImageType),
-  SolarizeImage(Image *,const double),
-  SyncImage(Image *),
-  TextureImage(Image *,const Image *),
-  TransformImage(Image **,const char *,const char *);
+    const unsigned int,char *), /* color.c */
+  GetImageException(Image *,ExceptionInfo *), /* image.c */
+  GetImageInfo(ImageInfo *), /* image.c */
+  GetMontageInfo(const ImageInfo *,MontageInfo *), /* montage.c */
+  InitializeMagick(const char *), /* magick.c */
+  ModifyImage(Image **,ExceptionInfo *), /* image.c */
+  SetImage(Image *,const Quantum), /* image.c */
+  SetImageOpacity(Image *,const unsigned int), /* image.c */
+  SetImageType(Image *,const ImageType), /* image.c */
+  SolarizeImage(Image *,const double), /* fx.c */
+  SyncImage(Image *), /* image.c */
+  TextureImage(Image *,const Image *), /* image.c */
+  TransformImage(Image **,const char *,const char *); /* transform.c */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -89,6 +89,7 @@ EditorDelegate = @EditorDelegate@
 F77 = @F77@
 FFLAGS = @FFLAGS@
 FIGDecodeDelegate = @FIGDecodeDelegate@
+GMDelegate = @GMDelegate@
 GSColorDevice = @GSColorDevice@
 GSEPSDevice = @GSEPSDevice@
 GSMonoDevice = @GSMonoDevice@

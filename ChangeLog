@@ -1,3 +1,29 @@
+2002-12-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* configure.ac: Updated to substitute for @GMDelegate@.
+	* magick/effect.c: Changed AdaptiveThresholdImage offset
+	to double so that it works with QuantumDepth=32. Thanks
+	to Glenn for pointing out this problem.
+	* magick/image.c: Adapted to AdaptiveThresholdImage API
+	change.
+	* magick/image.h: Annotated global constants and functions
+	with the name of the source file where they are implemented.
+	This is in preparation to break up image.h into multiple
+	header files to diminish unnecessary header dependencies.
+	* coders/delegates.mgk.in: Updated to use @GMDelegate@
+	definition and 'gm' program rather than ImageMagick utility
+	names.
+	* PerlMagick/t/read.t: Converted gradient test (which was not
+	working at all) to compare with a reference image.
+	* PerlMagick/t/jpeg/read.t: Re-wrote to compare with reference
+	image.
+	* PerlMagick/t/jpeg/write.t: Re-wrote to compare with reference
+	image.
+	* magick/image.c, magick/command.c: Moved MogrifyImage and
+	MogrifyImages from image.c to command.c in order to diminish
+	unnecessary inter-object coupling. Only functions in command.c
+	should use MogrifyImage or MogrifyImages.  Some work remains
+	to accomplish that.
+
 2002-12-16  Cristy  <cristy@mystic.es.dupont.com>
 	* coders/jpeg.c: Add missing break statements to fix
 	colorspace handling when image colorspace is CMYKColorspace

@@ -96,7 +96,7 @@
 */
 MagickExport Image *AdaptiveThresholdImage(const Image *image,
   const unsigned long width,const unsigned long height,
-  const long offset,ExceptionInfo *exception)
+  const double offset,ExceptionInfo *exception)
 {
 #define ThresholdImageText  "  Threshold the image...  "
 

@@ -17,14 +17,13 @@ chdir 't/jpeg' || die 'Cd failed';
 # 1) Test non-interlaced image read
 # 
 print( "Non-interlaced JPEG ...\n" );
-testRead( 'input.jpg',
-  'd02c694bf78dc3fd8551ed4b5ab839f7ee6fe105c9b93fb014bc5072a35b8dd4' );
+testReadCompare('input.jpg', '../reference/jpeg/read_non_interlaced.miff', q//, 0, 0);
 
 #
 # 2) Test plane-interlaced image read
 # 
 ++$test;
 print( "Plane-interlaced JPEG ...\n" );
-testRead( 'input_plane.jpg',
-  'd02c694bf78dc3fd8551ed4b5ab839f7ee6fe105c9b93fb014bc5072a35b8dd4' );
+testReadCompare('input_plane.jpg', '../reference/jpeg/read_plane_interlaced.miff', q//, 0, 0);
+
 

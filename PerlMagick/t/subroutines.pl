@@ -150,19 +150,25 @@ sub testReadCompare {
   $srcimage=Image::Magick->new;
   $refimage=Image::Magick->new;  
 
-  eval "\$status=\$srcimage->Set($read_options);";
-  if ("$status")
-    {
-      $errorinfo = "Set($read_options): $status";
-      goto COMPARE_RUNTIME_ERROR;
-    }
-
+  if ( "$read_options" ne "" ) {
+    eval "\$status=\$srcimage->Set($read_options);";
+    if ("$status")
+      {
+        $errorinfo = "Set($read_options): $status";
+        goto COMPARE_RUNTIME_ERROR;
+      }
+  }
+  
   $status=$srcimage->ReadImage($srcimage_name);
   if ("$status")
     {
       $errorinfo = "Readimage ($srcimage_name): $status";
       goto COMPARE_RUNTIME_ERROR;
     }
+
+#  if ("$srcimage_name" eq "gradient:red-blue") {
+#    $srcimage->write(filename=>"$refimage_name", compression=>'None');
+#  }
 
 #  $status=$srcimage->write(filename=>"$refimage_name", compression=>'None');
 #  warn "$status" if $status;
@@ -373,12 +379,14 @@ sub testReadWriteCompare {
   #
   # Write image to output file
   #
-  eval "\$status=\$image->Set($write_options);";
-  if ("$status")
-    {
-      $errorinfo = "Set($write_options): $status";
-      goto COMPARE_RUNTIME_ERROR;
-    }
+  if ( "$write_options" ne "" ) {
+    eval "\$status=\$image->Set($write_options);";
+    if ("$status")
+      {
+        $errorinfo = "Set($write_options): $status";
+        goto COMPARE_RUNTIME_ERROR;
+      }
+  }
   $image->Set(filename=>"$outimage_name");
 
   $status=$image->WriteImage( );
@@ -394,12 +402,14 @@ sub testReadWriteCompare {
   #
   # Read image from output file
   #
-  eval "\$status=\$image->Set($read_options);";
-  if ("$status")
-    {
-      $errorinfo = "Set($read_options): $status";
-      goto COMPARE_RUNTIME_ERROR;
-    }
+  if ( "$read_options" ne "" ) {
+    eval "\$status=\$image->Set($read_options);";
+    if ("$status")
+      {
+        $errorinfo = "Set($read_options): $status";
+        goto COMPARE_RUNTIME_ERROR;
+      }
+  }
 
   $image->ReadImage("$outimage_name");
   if ("$status")
@@ -409,7 +419,7 @@ sub testReadWriteCompare {
     }
 
 # eval "\$status=\$image->Set($write_options);";
-# $status=$image->write(filename=>"$refimage_name", compression=>'None');
+#$status=$image->write(filename=>"$refimage_name", compression=>'None');
 # warn "$status" if $status;
 
   #
