@@ -1,6 +1,7 @@
 2001-12-26  Leonard Rosenthol  <leonardr@lazerware.com>
 	* Conjure now supports having a list of files for the
 	  script to process being passed on the command line.
+	* More features and options were added to conjure
 	
 2001-12-25  Leonard Rosenthol  <leonardr@lazerware.com>
 	* Made a huge number of improvements to conjure.  It now
