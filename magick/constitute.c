@@ -5265,8 +5265,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Returned from \"%.1024s\" decoder, monochrome=%s, grayscale=%s",
                             magick_info->name,
-                            (image->is_monochrome != MagickFalse ? "True" : "False"),
-                            (image->is_grayscale != MagickFalse ? "True" : "False"));
+                            (((image) && (image->is_monochrome != MagickFalse))
+                             ? "True" : "False"),
+                            (((image) && (image->is_grayscale != MagickFalse))
+                             ? "True" : "False"));
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
     }
@@ -5338,8 +5340,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "Returned from \"%.1024s\" decoder, monochrome=%s, grayscale=%s",
                             magick_info->name,
-                            (image->is_monochrome != MagickFalse ? "True" : "False"),
-                            (image->is_grayscale != MagickFalse ? "True" : "False"));
+                            (((image) && (image->is_monochrome != MagickFalse))
+                             ? "True" : "False"),
+                            (((image) && (image->is_grayscale != MagickFalse))
+                             ? "True" : "False"));
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
       /*

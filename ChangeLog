@@ -1,3 +1,8 @@
+2005-03-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (ReadImage): Don't attempt to access image
+	members if image pointer is null.  Oops!
+
 2005-03-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (SetImageType): Bilevel image is not required to
