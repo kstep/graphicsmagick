@@ -1928,18 +1928,9 @@ at location (40, 50):
 The <tt>Clone</tt> method copies a set of images. For example,</dd>
 
 <pre>&nbsp;&nbsp;&nbsp; $p = $image->Clone();</pre>
-copies all the images from object <tt>$q</tt> to <tt>$p</tt>. Use this
-method for multi-image sequences. <b>PerlMagick</b> transparently creates
-a linked list from an image array. If two locations in the array point
-to
-the same object, the linked list goes into an infinite loop and your script
-will run forever until interrupted. Instead of
-<pre>&nbsp;&nbsp;&nbsp; push(@$images, $image);
-&nbsp;&nbsp;&nbsp; push(@$images, $image);&nbsp; # warning duplicate object</pre>
-use cloning to prevent an infinite loop:
-<pre>&nbsp;&nbsp;&nbsp; push(@$images, $image);
-&nbsp;&nbsp;&nbsp; $clone=$image->Clone();
-&nbsp;&nbsp;&nbsp; push(@$images, $clone);&nbsp; # same image but different object</pre>
+copies all the images from object <tt>$q</tt> to <tt>$p</tt>. You can use this
+method for single or multi-image sequences.
+<p>
 <tt>Ping</tt> accepts one or more image file names and returns their respective
 width, height, size in bytes, and format (e.g. GIF, JPEG, etc.). For example,
 <pre>&nbsp;&nbsp;&nbsp; ($width, $height, $size, $format) = split(',', $image->Ping('logo.png'));</pre>

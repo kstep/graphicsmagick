@@ -565,7 +565,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("density",option+1,3) == 0)
             {
-              image_info->density=(char *) NULL;
+              CloneString(&image_info->density,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -577,7 +577,7 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("display",option+1) == 0)
             {
-              image_info->server_name=(char *) NULL;
+              CloneString(&image_info->server_name,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -589,7 +589,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("dispose",option+1,5) == 0)
             {
-              image_info->dispose=(char *) NULL;
+              CloneString(&image_info->dispose,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -681,20 +681,20 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("font",option+1,3) == 0)
             {
-              image_info->font=(char *) NULL;
+              CloneString(&image_info->font,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing font name",option);
                   (void) CloneString(&image_info->font,argv[i]);
-                  (void) CloneString(&montage_info->font,image_info->font);
+                  (void) CloneString(&montage_info->font,argv[i]);
                 }
               break;
             }
           if (LocaleNCompare("frame",option+1,2) == 0)
             {
-              montage_info->frame=(char *) NULL;
+              CloneString(&montage_info->frame,(char *) NULL);
               argv[i]="+sans";
               if (*option == '-')
                 {
@@ -719,7 +719,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("geometry",option+1,2) == 0)
             {
-              montage_info->geometry=(char *) NULL;
+              CloneString(&montage_info->geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -897,7 +897,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("page",option+1,3) == 0)
             {
-              image_info->page=(char *) NULL;
+              CloneString(&image_info->page,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -1006,7 +1006,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("size",option+1,2) == 0)
             {
-              image_info->size=(char *) NULL;
+              CloneString(&image_info->size,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -1036,7 +1036,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("texture",option+1,5) == 0)
             {
-              montage_info->texture=(char *) NULL;
+              CloneString(&montage_info->texture,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -1048,7 +1048,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("tile",option+1,3) == 0)
             {
-              montage_info->tile=(char *) NULL;
+              CloneString(&montage_info->tile,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -1060,7 +1060,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("title",option+1,3) == 0)
             {
-              montage_info->title=(char *) NULL;
+              CloneString(&montage_info->title,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -1138,11 +1138,11 @@ int main(int argc,char **argv)
               FormatString(filename,"%.1024s.%u",image_info->filename,scene);
             (void) strcpy(image_info->filename,filename);
           }
-        image_info->font=montage_info->font;
+        CloneString(&image_info->font,montage_info->font);
         image_info->colorspace=quantize_info.colorspace;
         image_info->dither=quantize_info.dither;
         if (image_info->size == (char *) NULL)
-          image_info->size=montage_info->geometry;
+          CloneString(&image_info->size,montage_info->geometry);
         next_image=ReadImage(image_info,&exception);
         if (next_image == (Image *) NULL)
           {

@@ -11,6 +11,8 @@
  *
  */
 
+#include <config.h>
+#include <sys/types.h>
 #include <stdio.h>
 #if defined(_VISUALC_)
 #include <stdlib.h>

@@ -191,7 +191,8 @@ install_sh = @install_sh@
 
 AUTOMAKE_OPTIONS = 1.2 foreign
 
-INCLUDES = -I../ -I$(top_srcdir)
+INCLUDES = -I../ -I$(top_srcdir) -I../magick
+# ../magick/config.h is needed.
 
 #
 # Execute 'make check' to compile and run a test program
@@ -304,7 +305,7 @@ LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDF
 DIST_SOURCES =  $(rwblob_SOURCES) $(rwfile_SOURCES)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 DEP_FILES =  @AMDEP@ $(DEPDIR)/rwblob.Po $(DEPDIR)/rwfile.Po
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  Makefile.am Makefile.in depcomp
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -531,7 +532,7 @@ check-rwblob:
 	do \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if DELEGATE_PATH=../delegates ./rwblob $$file $$format ; \
+	    if DELEGATE_PATH=$(top_srcdir)/delegates ./rwblob $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -547,7 +548,7 @@ check-rwfile:
 	do \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if DELEGATE_PATH=../delegates ./rwfile $$file $$format ; \
+	    if DELEGATE_PATH=$(top_srcdir)/delegates ./rwfile $$file $$format ; \
 	    then \
 	      : ; \
 	    else \

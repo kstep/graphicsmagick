@@ -1,6 +1,6 @@
 package Image::Magick;
 
-# Released Feb. 17, 1997  by Kyle Shorter (magick@sympatico.org)
+# Released Feb. 17, 1997  by Kyle Shorter (magick@wizards.dupont.com)
 # Public Domain
 
 use strict;
@@ -18,11 +18,12 @@ require AutoLoader;
 # Do not simply export all your public functions/methods/constants.
 @EXPORT =
   qw(
-    ResourceLimitError XServerError OptionError 
-    Success
-    ResourceLimitWarning XServerWarning OptionWarning DelegateWarning
-	MissingDelegateWarning CorruptImageWarning FileOpenWarning
-	Transparent Opaque
+      ResourceLimitWarning XServerWarning OptionWarning DelegateWarning
+      MissingDelegateWarning CorruptImageWarning FileOpenWarning
+      BlobWarning CacheWarning StreamWarning FatalException
+      ResourceLimitError XServerError OptionError DelegateError
+      MissingDelegateError CorruptImageError FileOpenError BlobError
+      CacheError StreamError Success Transparent Opaque
     );
 
 $VERSION = '5.20';

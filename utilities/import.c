@@ -532,7 +532,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("density",option+1,3) == 0)
             {
-              image_info->density=(char *) NULL;
+              CloneString(&image_info->density,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -549,7 +549,7 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("display",option+1) == 0)
             {
-              image_info->server_name=(char *) NULL;
+              CloneString(&image_info->server_name,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -561,7 +561,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("dispose",option+1,5) == 0)
             {
-              image_info->dispose=(char *) NULL;
+              CloneString(&image_info->dispose,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -683,7 +683,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("page",option+1,3) == 0)
             {
-              image_info->page=(char *) NULL;
+              CloneString(&image_info->page,(char *) NULL);
               if (*option == '-')
                 {
                   i++;

@@ -30,7 +30,8 @@
 
 AUTOMAKE_OPTIONS = 1.2 foreign
 
-INCLUDES = -I../ -I$(top_srcdir)
+INCLUDES = -I../ -I$(top_srcdir) -I../magick
+# ../magick/config.h is needed.
 
 #
 # Execute 'make check' to compile and run a test program
@@ -147,7 +148,7 @@ check-rwblob:
 	do \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if DELEGATE_PATH=../delegates ./rwblob $$file $$format ; \
+	    if DELEGATE_PATH=$(top_srcdir)/delegates ./rwblob $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -164,7 +165,7 @@ check-rwfile:
 	do \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if DELEGATE_PATH=../delegates ./rwfile $$file $$format ; \
+	    if DELEGATE_PATH=$(top_srcdir)/delegates ./rwfile $$file $$format ; \
 	    then \
 	      : ; \
 	    else \

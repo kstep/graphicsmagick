@@ -138,7 +138,6 @@ OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PERL = @PERL@
-PERL_MAKE_OPTIONS = @PERL_MAKE_OPTIONS@
 PGPDecodeDelegate = @PGPDecodeDelegate@
 POVDelegate = @POVDelegate@
 PSDelegate = @PSDelegate@

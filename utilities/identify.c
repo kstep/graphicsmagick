@@ -195,7 +195,7 @@ int main(int argc,char **argv)
                     i++;
                     if (i == argc)
                       MagickError(OptionError,"Missing format string",option);
-                    format=argv[i];
+                    CloneString(&format,argv[i]);
                   }
                 break;
               }
@@ -241,7 +241,7 @@ int main(int argc,char **argv)
           {
             if (LocaleNCompare("size",option+1,2) == 0)
               {
-                image_info->size=(char *) NULL;
+                CloneString(&image_info->size,(char *) NULL);
                 if (*option == '-')
                   {
                     i++;
@@ -283,29 +283,28 @@ int main(int argc,char **argv)
     (void) strcpy(image_info->filename,argv[i]);
     if (image_info->ping)
       {
-        /* in this case we want the first frame only */
+        /*
+          Get first frame only.
+        */
         image_info->verbose=False;
         image_info->subimage=0;
         image_info->subrange=0;
         image=ReadImage(image_info,&exception);
         if (image == (Image *) NULL)
           MagickError(exception.severity,exception.message,exception.qualifier);
-        if (format != NULL)
+        if (format == (char *) NULL)
+          DescribeImage(image,stdout,False);
+        else
           {
             char
               *text;
 
             text=TranslateText((ImageInfo *) NULL,image,format);
             if (text == (char *) NULL)
-              {
-                ThrowBinaryException(ResourceLimitWarning,"Unable to format image data",
-                  "Memory allocation failed");
-              }
-            else
-              fputs(text,stdout);
+              ThrowBinaryException(ResourceLimitWarning,
+                "Unable to format image data","Memory allocation failed");
+            (void) fputs(text,stdout);
           }
-        else
-          DescribeImage(image,stdout,False);
         number_images++;
         continue;
       }

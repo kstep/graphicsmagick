@@ -442,13 +442,13 @@ static off_t GetCacheMemory(const off_t memory)
 
 #if defined(HasPTHREADS)
   static pthread_mutex_t
-    memory_mutex = PTHREAD_MUTEX_INITIALIZER;
+    magick_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-  pthread_mutex_lock(&memory_mutex);
+  pthread_mutex_lock(&magick_mutex);
 #endif
   free_memory+=memory;
 #if defined(HasPTHREADS)
-  pthread_mutex_unlock(&memory_mutex);
+  pthread_mutex_unlock(&magick_mutex);
 #endif
   return(free_memory);
 }

@@ -238,7 +238,6 @@ int main(int argc,char **argv)
   blend=0.0;
   compose=ReplaceCompositeOp;
   composite_image=(Image *) NULL;
-  combined_image=(Image *) NULL;
   displacement_geometry=(char *) NULL;
   geometry=(char *) NULL;
   gravity=NorthWestGravity;
@@ -476,7 +475,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("density",option+1,3) == 0)
             {
-              image_info->density=(char *) NULL;
+              CloneString(&image_info->density,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -488,7 +487,7 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("displace",option+1) == 0)
             {
-              displacement_geometry=(char *) NULL;
+              CloneString(&displacement_geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -501,7 +500,7 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("display",option+1) == 0)
             {
-              image_info->server_name=(char *) NULL;
+              CloneString(&image_info->server_name,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -513,7 +512,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("dispose",option+1,5) == 0)
             {
-              image_info->dispose=(char *) NULL;
+              CloneString(&image_info->dispose,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -533,7 +532,7 @@ int main(int argc,char **argv)
         }
         case 'f':
         {
-          image_info->font=(char *) NULL;
+          CloneString(&image_info->font,(char *) NULL);
           if (*option == '-')
             {
               i++;
@@ -547,7 +546,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("geometry",option+1,2) == 0)
             {
-              geometry=(char *) NULL;
+              CloneString(&geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -667,7 +666,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("page",option+1,3) == 0)
             {
-              image_info->page=(char *) NULL;
+              CloneString(&image_info->page,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -711,7 +710,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("size",option+1,2) == 0)
             {
-              image_info->size=(char *) NULL;
+              CloneString(&image_info->size,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -776,7 +775,7 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("watermark",option+1) == 0)
             {
-              watermark_geometry=(char *) NULL;
+              CloneString(&watermark_geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -804,10 +803,8 @@ int main(int argc,char **argv)
   }
   if ((image == (Image *) NULL) || (composite_image == (Image *) NULL))
     Usage(client_name);
-/*
-  if ((i != (argc-1)) || (combined_image == (Image *) NULL))
+  if (i != (argc-1))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
- */
   if (mask_image != (Image *) NULL)
     {
       status=CompositeImage(composite_image,ReplaceMatteCompositeOp,
@@ -860,9 +857,9 @@ int main(int argc,char **argv)
       }
     }
   if (compose == DisplaceCompositeOp)
-    composite_image->geometry=displacement_geometry;
+    CloneString(&composite_image->geometry,displacement_geometry);
   if (compose == ModulateCompositeOp)
-    composite_image->geometry=watermark_geometry;
+    CloneString(&composite_image->geometry,watermark_geometry);
   /*
     Combine image.
   */
@@ -880,8 +877,8 @@ int main(int argc,char **argv)
           /*
             Tile the composite image.
           */
-          for (y=0; y < (int) image->rows; y+=composite_image->rows)
-            for (x=0; x < (int) image->columns; x+=composite_image->columns)
+          for (y=0; y < (int) image->rows; y+=(int) composite_image->rows)
+            for (x=0; x < (int) image->columns; x+=(int) composite_image->columns)
             {
               status=CompositeImage(image,compose,composite_image,x,y);
               if (status == False)
@@ -918,7 +915,7 @@ int main(int argc,char **argv)
             }
             case WestGravity:
             {
-              y+=((int) image->rows-(int) composite_image->rows)/2;
+              y+=(int) (image->rows-(int) composite_image->rows)/2;
               break;
             }
             case ForgetGravity:

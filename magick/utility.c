@@ -256,7 +256,8 @@ MagickExport char *BaseFilename(const char *name)
 MagickExport unsigned int CloneString(char **destination,const char *source)
 {
   assert(destination != (char **) NULL);
-  FreeMemory((void **) &*destination);
+  if (*destination != (char *) NULL)
+    FreeMemory((void **) &*destination);
   if (source == (const char *) NULL)
     {
       *destination=(char *) NULL;

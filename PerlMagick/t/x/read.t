@@ -14,13 +14,6 @@ require 't/subroutines.pl';
 
 chdir 't/x' || die 'Cd failed';
 
-# Bail gracefully if DISPLAY is not set.
-if( !defined($ENV{'DISPLAY'} ) ) {
-  print "Skipping X11 test since DISPLAY is not defined\n";
-  print "ok $test\n";
-  exit(0);
-}
-
 #
 # 1) Test rendering text using common X11 font
 #

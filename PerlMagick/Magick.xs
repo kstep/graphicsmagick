@@ -243,7 +243,7 @@ static char
   },
   *PrimitiveTypes[] =
   {
-    "Undefined", "point", "line", "rectangle", "roundRectangle", "arc", 
+    "Undefined", "point", "line", "rectangle", "roundRectangle", "arc",
     "ellipse", "circle", "polyline", "polygon", "bezier", "path", "color",
     "matte", "text", "image", (char *) NULL
   },
@@ -496,6 +496,8 @@ static double constant(char *name,int sans)
     {
       if (strEQ(name,"CacheError"))
         return(CacheError);
+      if (strEQ(name,"CacheWarning"))
+        return(CacheWarning);
       if (strEQ(name,"CorruptImageError"))
         return(CorruptImageError);
       if (strEQ(name,"CorruptImageWarning"))
@@ -504,12 +506,16 @@ static double constant(char *name,int sans)
     }
     case 'D':
     {
+      if (strEQ(name,"DelegateError"))
+        return(DelegateError);
       if (strEQ(name,"DelegateWarning"))
         return(DelegateWarning);
       break;
     }
     case 'F':
     {
+      if (strEQ(name,"FatalException"))
+        return(FatalException);
       if (strEQ(name,"FileOpenError"))
         return(FileOpenError);
       if (strEQ(name,"FileOpenWarning"))
@@ -552,6 +558,10 @@ static double constant(char *name,int sans)
     }
     case 'S':
     {
+      if (strEQ(name,"StreamError"))
+        return(StreamError);
+      if (strEQ(name,"StreamWarning"))
+        return(StreamWarning);
       if (strEQ(name,"Success"))
         return(0);
       break;
