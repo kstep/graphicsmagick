@@ -3098,11 +3098,11 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         GetToken(q,&q,token);
         length=1;
         for (p=token; *p != '\0'; p++)
-				{
+        {
           GetToken(p,&p,token);
           if (isdigit((int) *token))
             length++;
-				}
+        }
         if (i > (long) (number_points-6*BezierQuantum*length/3-1))
           {
             number_points+=6*BezierQuantum*length/3;
