@@ -155,8 +155,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
 
   assert(image != (Image *) NULL);
   assert(pixels != (unsigned char *) NULL);
-  for (i=0; i < (int) (image->columns*image->rows); i++)
-    pixels[i]=0;
+  memset(pixels,0,image->columns*image->rows);
   byte=0;
   x=0;
   q=pixels;
