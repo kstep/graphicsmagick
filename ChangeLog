@@ -1,13 +1,16 @@
 2002-06-18  Cristy  <cristy@mystic.es.dupont.com>
-	* Added PerlMagick threading support (patch by Doug MacEachern).
+  * Added PerlMagick threading support (patch by Doug MacEachern).
+
+2002-06-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * CLIPBOARD and EMF modules compile under MinGW and Cygwin.
 
 2002-06-14  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
   * The wbmp writer would dump core if it received a DirectClass image
     that contained only black and white pixels, because no colormap exists.
 
 2002-06-09  Cristy  <cristy@mystic.es.dupont.com>
-	* Label color could not be set (bug report by Ron Savage).
-	* Added CatchException() method to magick/error.c.
+  * Label color could not be set (bug report by Ron Savage).
+  * Added CatchException() method to magick/error.c.
 
 2002-06-06  Cristy  <cristy@mystic.es.dupont.com>
   * ImageMagick, version 5.4.6-1 released.
