@@ -44,6 +44,22 @@
 %  other dealings in ImageMagick without prior written authorization from the %
 %  ImageMagick Studio.                                                        %
 %                                                                             %
+%  This coder is a kind of backdoor used by the COM object that allows it to  %
+%  pass blobs back and forth using the coder interface. It simply encodes and %
+%  decodes the filename as a comma delimited string and extracts the info it  %
+%  needs. The five methods of passing images are:                             %
+%                                                                             %
+%     FILE   - same thing as filename so it should be a NOP                   %
+%     IMAGE  - passes an image and image info structure                       %
+%     BLOB   - passes binary blob containining the image                      %
+%     STREAM - passes pointers to stream hooks in and does the hooking        %
+%     ARRAY  - passes a pointer to a Win32 smart array and streams to it      %
+%                                                                             %
+%  Of all of these, the only one getting any real use at the moment is the    %
+%  ARRAY handler. It is the primary way that images are shuttled back and     %
+%  forth as blobs via COM since this is what VB and VBSCRIPT use internally   %
+%  for this purpose.                                                          %
+%                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
@@ -274,6 +290,7 @@ ModuleExport void RegisterXTRNImage(void)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
   entry->adjoin=False;
+  entry->stealth=True;
   entry->description=AllocateString("External transfer of a file");
   entry->module=AllocateString("XTRN");
   RegisterMagickInfo(entry);
@@ -282,6 +299,7 @@ ModuleExport void RegisterXTRNImage(void)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
   entry->adjoin=False;
+  entry->stealth=True;
   entry->description=AllocateString("External transfer of a image in memory");
   entry->module=AllocateString("XTRN");
   RegisterMagickInfo(entry);
@@ -290,6 +308,7 @@ ModuleExport void RegisterXTRNImage(void)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
   entry->adjoin=False;
+  entry->stealth=True;
   entry->description=AllocateString("IExternal transfer of a blob in memory");
   entry->module=AllocateString("XTRN");
   RegisterMagickInfo(entry);
@@ -298,6 +317,7 @@ ModuleExport void RegisterXTRNImage(void)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
   entry->adjoin=False;
+  entry->stealth=True;
   entry->description=AllocateString("External transfer via a streaming interface");
   entry->module=AllocateString("XTRN");
   RegisterMagickInfo(entry);
@@ -306,6 +326,7 @@ ModuleExport void RegisterXTRNImage(void)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
   entry->adjoin=False;
+  entry->stealth=True;
   entry->description=AllocateString("External transfer via a smart array interface");
   entry->module=AllocateString("XTRN");
   RegisterMagickInfo(entry);
