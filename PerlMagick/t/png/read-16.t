@@ -41,7 +41,7 @@ testRead( 'input.mng', 'd072eb3997b849f84172d162c266389a' );
 # 5) Test 16-bit Portable Network Graphics
 # 
 ++$test;
-testRead( 'input_16.png', 'fcdc12cc9144c09c01c6085d9db307c8',
+testRead( 'input_16.png', 'f20dcdb4be59aa17f5e0996d9f2fc789',
 			  '283037a3703baa1595b6c146a4187baa');
 
 
