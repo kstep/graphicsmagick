@@ -218,9 +218,9 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   offset=region.y*cache_info->columns+region.x;
   span=(region.height-1)*cache_info->columns+region.width-1;
   number_pixels=cache_info->columns*cache_info->rows;
-  if ((offset >= 0) && ((offset+span) < (off_t) number_pixels))
-    if ((x >= 0) && (y >= 0) && ((x+columns) <= cache_info->columns) &&
-        ((y+rows) <= cache_info->rows))
+  if ((offset >= 0) && ((offset+span) < (off_t) (number_pixels)))
+    if ((x >= 0) && ((x+columns) <= cache_info->columns) &&
+        (y >= 0) && ((y+rows) <= cache_info->rows))
       {
         unsigned int
           status;
@@ -1732,6 +1732,9 @@ static unsigned int ModifyCache(Image *image)
   register PixelPacket
     *q;
 
+  unsigned long
+    image_nexus;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
@@ -1748,10 +1751,15 @@ static unsigned int ModifyCache(Image *image)
     MagickFatalError(ResourceLimitFatalError,"Unable to clone image",
       "Memory allocation failed");
   *clone_image=(*image);
+  image_nexus=GetNexus(cache_info);
+  if (image_nexus == 0)
+    MagickFatalError(ResourceLimitFatalError,"Unable to get cache nexus",
+      "No available nexuses");
   GetCacheInfo(&image->cache);
   for (y=0; y < (long) image->rows; y++)
   {
-    p=AcquireImagePixels(clone_image,0,y,image->columns,1,&image->exception);
+    p=AcquireCacheNexus(clone_image,0,y,image->columns,1,image_nexus,
+      &image->exception);
     q=SetImagePixels(image,0,y,image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -1765,6 +1773,7 @@ static unsigned int ModifyCache(Image *image)
     if (!SyncImagePixels(image))
       break;
   }
+  DestroyCacheNexus(cache_info,image_nexus);
   LiberateMemory((void **) &clone_image);
   LiberateSemaphoreInfo(&cache_info->semaphore);
   if (y < (long) image->rows)
