@@ -80,11 +80,29 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,
   Image **image,const int argc,char **argv)
 #endif /* defined(SupportMagickModules) */
 {
+  unsigned int
+    status = False;
+
 #if !defined(BuildMagickModules)
+  unsigned int
+    (*method)(Image **,const int,char **) = 0;
+
   if (LocaleCompare("analyze",tag) == 0)
-    return AnalyzeImage(image,argc,argv);
+    method=AnalyzeImage;
+
+  if (method)
+    {
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Invoking \"%.1024s\" filter module",tag);
+
+      status=(*method)(image,argc,argv);
+
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Returned from \"%.1024s\" filter module",tag);
+    }
+
 #endif /* !defined(BuildMagickModules) */
-  return(False);
+  return(status);
 }
 
 /*

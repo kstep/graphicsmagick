@@ -355,9 +355,16 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
     method=(unsigned int (*)(Image **,const int,char **))
       lt_dlsym(handle,method_name);
 
+    LogMagickEvent(CoderEvent,GetMagickModule(),
+      "Invoking \"%.1024s\" filter module",tag);
+
     /* Execute module method */
     if (method != (unsigned int (*)(Image **,const int,char **)) NULL)
       status=(*method)(image,argc,argv);
+
+    LogMagickEvent(CoderEvent,GetMagickModule(),
+      "Returned from \"%.1024s\" filter module",tag);
+
   }
   /* Close the module */
   (void) lt_dlclose(handle);
