@@ -84,6 +84,7 @@ int main( int /*argc*/, char ** argv)
 
     // Save to file
     cout << "Writing to button.miff" << endl;
+    button.compressType( RunlengthEncodedCompression );
     button.write("button.miff");
 
     // Display on screen

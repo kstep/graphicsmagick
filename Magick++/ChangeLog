@@ -1,3 +1,8 @@
+2000-12-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (annotateImage): Brought into sync with
+ 	annotate methods in Image.
+
 2000-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (annotate): Usage of Geometry parameter was

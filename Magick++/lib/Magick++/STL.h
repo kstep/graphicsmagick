@@ -57,29 +57,50 @@ namespace Magick
   class annotateImage : public std::unary_function<Image&,void>
   {
   public:
+    // Annotate using specified text, and placement location
     annotateImage ( const std::string &text_,
-		    const Geometry &location_,
-		    GravityType gravity_ = NorthWestGravity )
+                    const Geometry &geometry_ )
       : _text( text_ ),
-	_location( location_ ),
-	_gravity( gravity_ ) { }
+	_geometry( geometry_ ),
+	_gravity( NorthWestGravity ),
+        _degrees( 0 ) { }
+    // Annotate using specified text, bounding area, and placement
+    // gravity
     annotateImage ( const std::string &text_,
-		    GravityType gravity_ = NorthWestGravity )
+		    const Geometry &geometry_,
+		    GravityType gravity_ )
       : _text( text_ ),
-	_location( ),
-	_gravity( gravity_ ) { }
-
+	_geometry( geometry_ ),
+	_gravity( gravity_ ),
+        _degrees( 0 ) { }
+    // Annotate with text using specified text, bounding area,
+    // placement gravity, and rotation.
+    annotateImage ( const std::string &text_,
+                    const Geometry &geometry_,
+                    GravityType gravity_,
+                    double degrees_ )
+      : _text( text_ ),
+        _geometry( geometry_ ),
+        _gravity( gravity_ ),
+        _degrees( degrees_ ) { }
+    // Annotate with text (bounding area is entire image) and
+    // placement gravity.
+    annotateImage ( const std::string &text_,
+		    GravityType gravity_ )
+      : _text( text_ ),
+	_geometry( ),
+	_gravity( gravity_ ),
+        _degrees( 0 ) { }
+    
     void operator()( Image &image_ )
       {
-	if ( _location.isValid() )
-	  image_.annotate( _text, _location, _gravity );
-	else
-	  image_.annotate( _text, _gravity );
+        image_.annotate( _text, _geometry, _gravity, _degrees );
       }
   private:
     const std::string   _text;
-    const Geometry      _location;
+    const Geometry      _geometry;
     const GravityType   _gravity;
+    const double        _degrees;
   };
 
   // Blur image with specified blur factor

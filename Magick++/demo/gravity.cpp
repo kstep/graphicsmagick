@@ -2,7 +2,11 @@
 //
 // Copyright Bob Friesenhahn, 2000
 //
-// Demo of text annotation with gravity
+// Demo of text annotation with gravity.  Produces an animation showing
+// the effect of rotated text along with various gravity specifications.
+//
+// After running demo program, run 'animate gravity_out.miff' if you
+// are using X-Windows to see an animated result.
 //
 // Concept and algorithms lifted from PerlMagick demo script written
 // by John Christy.
@@ -36,7 +40,7 @@ int main( int /*argc*/, char ** argv)
 
   try {
 
-    list<Image> images;
+    list<Image> animation;
 
     Image base( Geometry(600,600), Color("white") );
     base.strokeColor("#600");
@@ -63,9 +67,9 @@ int main( int /*argc*/, char ** argv)
         pic.annotate( "South", Geometry(0,0,x,y), SouthGravity, angle );
         pic.annotate( "SouthWest", Geometry(0,0,x,y), SouthWestGravity, angle );
         pic.annotate( "West", Geometry(0,0,x,y), WestGravity, angle );
-        images.push_back( pic );
+        animation.push_back( pic );
       }
-    writeImages( images.begin(), images.end(), "gravity_out.miff" );
+    writeImages( animation.begin(), animation.end(), "gravity_out.miff" );
     // system( "animate gravity_out.miff" );
 
   }
