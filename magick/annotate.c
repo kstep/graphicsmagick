@@ -292,7 +292,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
     */
     if (clone_info->decorate == OverlineDecoration)
       q=GetImagePixels(image,(int) ceil(offset.x-0.5),(int)
-        ceil(offset.y-font_height/2.0-1.5),(int) font_width,1);
+        ceil(offset.y-3.0*font_height/4.0+1.5),(int) font_width,1);
     else
       if (clone_info->decorate == UnderlineDecoration)
         q=GetImagePixels(image,(int) ceil(offset.x+0.5),
