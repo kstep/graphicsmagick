@@ -1178,7 +1178,8 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
 %
 %  The format of the DrawClipPath method is:
 %
-%      unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
+%      unsigned int DrawClipPath(Image *image,DrawInfo *draw_info,
+%        const char *name)
 %
 %  A description of each parameter follows:
 %
@@ -1186,9 +1187,12 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
 %
 %    o draw_info: The draw info.
 %
+%    o name: The name of the clip path.
+%
 %
 */
-static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
+static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info,
+  const char *name)
 {
   char
     clip_path[MaxTextExtent];
@@ -1205,7 +1209,7 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(draw_info != (const DrawInfo *) NULL);
-  FormatString(clip_path,"[%.1024s]",draw_info->clip_path);
+  FormatString(clip_path,"[%.1024s]",name);
   attribute=GetImageAttribute(image,clip_path);
   if (attribute == (ImageAttribute *) NULL)
     return(False);
@@ -1636,7 +1640,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             */
             GetToken(q,&q,token);
             graphic_context[n]->clip_path=AllocateString(token);
-            (void) DrawClipPath(image,graphic_context[n]);
+            (void) DrawClipPath(image,draw_info,token);
             break;
           }
         if (LocaleCompare("clip-rule",keyword) == 0)
@@ -1660,17 +1664,17 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             GetToken(q,&q,token);
             if (LocaleCompare("userSpace",token) == 0)
               {
-                draw_info->clip_units=UserSpace;
+                graphic_context[n]->clip_units=UserSpace;
                 break;
               }
             if (LocaleCompare("userSpaceOnUse",token) == 0)
               {
-                draw_info->clip_units=UserSpaceOnUse;
+                graphic_context[n]->clip_units=UserSpaceOnUse;
                 break;
               }
             if (LocaleCompare("objectBoundingBox",token) == 0)
               {
-                draw_info->clip_units=ObjectBoundingBox;
+                graphic_context[n]->clip_units=ObjectBoundingBox;
                 IdentityAffine(&current);
                 affine.sx=draw_info->bounds.x2;
                 affine.sy=draw_info->bounds.y2;
@@ -1748,7 +1752,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             if (GetImageAttribute(image,pattern) == (ImageAttribute *) NULL)
               (void) QueryColorDatabase(token,&graphic_context[n]->fill);
             else
-              DrawPatternPath(image,graphic_context[n],token,
+              DrawPatternPath(image,draw_info,token,
                 &graphic_context[n]->fill_pattern);
             if (graphic_context[n]->fill.opacity != TransparentOpacity)
               graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
@@ -1781,8 +1785,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         if (LocaleCompare("font",keyword) == 0)
           {
             GetToken(q,&q,token);
-            if (draw_info->font != (char *) NULL)
-              (void) strncpy(token,draw_info->font,MaxTextExtent-1);
             (void) CloneString(&graphic_context[n]->font,token);
             break;
           }
@@ -2276,7 +2278,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             if (GetImageAttribute(image,pattern) == (ImageAttribute *) NULL)
               (void) QueryColorDatabase(token,&graphic_context[n]->stroke);
             else
-              DrawPatternPath(image,graphic_context[n],token,
+              DrawPatternPath(image,draw_info,token,
                 &graphic_context[n]->stroke_pattern);
             if (graphic_context[n]->stroke.opacity != TransparentOpacity)
               graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
@@ -2748,7 +2750,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
     }
     if (graphic_context[n]->clip_path != (char *) NULL)
       if (graphic_context[n]->clip_units == ObjectBoundingBox)
-        (void) DrawClipPath(image,graphic_context[n]);
+        (void) DrawClipPath(image,graphic_context[n],
+          graphic_context[n]->clip_path);
     (void) DrawPrimitive(image,graphic_context[n],primitive_info);
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
