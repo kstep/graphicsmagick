@@ -25,6 +25,7 @@
 		<LI><A HREF="#dispatchimage">DispatchImage</A>
 		<LI><A HREF="#pingimage">PingImage</A>
 		<LI><A HREF="#readimage">ReadImage</A>
+		<LI><A HREF="#readinlineimage">ReadInlineImage</A>
 		<LI><A HREF="#writeimage">WriteImage</A>
 	</UL>
 
@@ -45,6 +46,7 @@
 <P>unsigned int  <STRONG>DispatchImage</STRONG>( const Image *image, const long x_offset, const long y_offset, const unsigned long columns, const unsigned long rows, const char *map, const StorageType type, void *pixels, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>PingImage</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ReadImage</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ReadInlineImage</STRONG>( const ImageInfo *image_info, const char *content, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>WriteImage</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>
 <HR>
@@ -156,6 +158,24 @@ Return any errors or warnings in this structure.
 <dd><p></p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
 Read the image defined by the file or filename members of this structure.
+<P></P>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="readinlineimage">ReadInlineImage</A></H2>
+<blockquote>ReadInlineImage() reads a Base64-encoded inline image or image sequence. The method returns a NULL if there is a memory shortage or if the image cannot be read. On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the ReadInlineImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *ReadInlineImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const char *content, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image_info:</STRONG><BR>
+<DD>
+The image info.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_content%3A">content:</A></STRONG><BR>
+<DD>
+The image encoded in Base64.
 <P></P>
 <dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>

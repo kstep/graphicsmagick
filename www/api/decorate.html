@@ -39,7 +39,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>Image * <STRONG>BorderImage</STRONG>( const Image *image, const RectangleInfo *border_info, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>FrameImage</STRONG>( const Image *image, const FrameInfo *frame_info, ExceptionInfo *exception );</P>
-<P>unsigned int  <STRONG>RaiseImage</STRONG>( Image *image, const RectangleInfo *raise_info, const int raised );</P>
+<P>unsigned int  <STRONG>RaiseImage</STRONG>( Image *image, const RectangleInfo *raise_info, const int raise );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -84,7 +84,7 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="raiseimage">RaiseImage</A></H2>
 <blockquote>RaiseImage() creates a simulated three-dimensional button-like effect by lightening and darkening the edges of the image. Members width and height of raise_info define the width of the vertical and horizontal edge of the effect. </blockquote><P>The format of the RaiseImage method is:</P>
-<blockquote>unsigned int RaiseImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *raise_info, const int raised ); </blockquote><P>
+<blockquote>unsigned int RaiseImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *raise_info, const int raise ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>image:</STRONG><BR>
@@ -93,13 +93,13 @@ The image.
 <P></P>
 <dd><p></p><dt><STRONG><A NAME="item_o_raise_info%3A">raise_info:</A></STRONG><BR>
 <DD>
-Define the width and height of the raised area.
+Define the width and height of the raise area.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_raised%3A">raised:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_raise%3A">raise:</A></STRONG><BR>
 <DD>
 
 <FONT SIZE=-1>A</FONT> value other than zero creates a 
-<FONT SIZE=-1>3-D</FONT> raised effect, otherwise it has a lowered effect.
+<FONT SIZE=-1>3-D</FONT> raise effect, otherwise it has a lowered effect.
 </DL></DL>
 
 </BODY>

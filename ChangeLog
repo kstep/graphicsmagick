@@ -1,9 +1,10 @@
+2002-02-07  Cristy  <cristy@mystic.es.dupont.com>,
+  * SVG coders understands inline images.
+
 2002-02-06  Cristy  <cristy@mystic.es.dupont.com>,
             Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
-  * Conflicting uses of the "-scene" option have been separated.  Now
-    "-scene scene_number" only sets image->scene, "-scenes begin-end" sets
-    a range of scenes to be read, and "-snaps number_of_scenes" sets the
-    number of scenes to be captured by "import".
+  * Made -scene consistent across all utilities.  -snaps replaces previous
+    functionality of -scene for import program.
 
 2002-01-30  Cristy  <cristy@mystic.es.dupont.com>,
   * Correctly draw arc when arc end/start are not integer
