@@ -76,7 +76,7 @@ int main ( int argc, char **argv )
    */
   rows    = original->rows;
   columns = original->columns;
-  size = AcquireMemory( 40 );
+  size = (char *) AcquireMemory( 40 );
   sprintf( size, "%dx%d", columns, rows );
 
   /*
@@ -86,7 +86,7 @@ int main ( int argc, char **argv )
   strcpy( original->magick, format );
   strcpy( imageInfo.filename, "" );
   original->delay = 10;
-  blob = ImageToBlob ( &imageInfo, original, &blob_length, &exception );
+  blob = (char *) ImageToBlob ( &imageInfo, original, &blob_length, &exception );
   if ( blob == NULL )
     {
       printf ( "Failed to write BLOB in format %s\n", imageInfo.magick );
@@ -118,7 +118,7 @@ int main ( int argc, char **argv )
   strcpy( original->magick, format );
   strcpy( imageInfo.filename, "" );
   original->delay = 10;
-  blob = ImageToBlob ( &imageInfo, original, &blob_length, &exception );
+  blob = (char *) ImageToBlob ( &imageInfo, original, &blob_length, &exception );
   imageInfo.depth=original->depth;
   if ( blob == NULL )
     {

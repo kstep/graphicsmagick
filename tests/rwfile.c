@@ -75,7 +75,7 @@ int main ( int argc, char **argv )
    */
   rows    = original->rows;
   columns = original->columns;
-  size = AcquireMemory( 40 );
+  size = (char *) AcquireMemory( 40 );
   sprintf( size, "%dx%d", columns, rows );
 
   /*
