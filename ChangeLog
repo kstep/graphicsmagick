@@ -1,5 +1,9 @@
 2003-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/module.c (FindMagickModule): Removed extraneous
+	"Searching for module file" log event.
+	(GetModuleBlob): Under Windows, don't clear or overwrite
+	an existing exception.
 	* magick/nt_base.h: Imported some obscure defines from
 	magick\magick_config.h.
 	* VisualMagick/magick/magick_config.h.in: Improved description

@@ -56,6 +56,10 @@
 2003-05-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/module.c (FindMagickModule): Removed extraneous
+        "Searching for module file" log event.
+        (GetModuleBlob): Under Windows, don't clear or overwrite
+        an existing exception.<BR>
   <LI> magick/nt_base.h: Imported some obscure defines from
         magick\magick_config.h.<BR>
   <LI> VisualMagick/magick/magick_config.h.in: Improved description
@@ -78,6 +82,8 @@
         code, and improve coding style.
   <LI> coders/logo.c, Copyright.txt, www/Copyright.html: Acknowledge
         and respect the XFig copyright.
+  <LI> VisualMagick/installer/inc/files-documentation.isx: QuickStart.txt
+        is no longer distributed so it is removed.
 
 </UL>
 <p>

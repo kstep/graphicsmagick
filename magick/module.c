@@ -503,8 +503,6 @@ static unsigned int FindMagickModule(const char *filename,
       break;
     }
 
-  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-    "Searching for module file \"%s\" ...",filename);
 #if defined(UseInstalledMagick)
 # if defined(MagickCoderModulesPath)
   {
@@ -782,6 +780,9 @@ static char **GetModuleList(ExceptionInfo *exception)
 static void *GetModuleBlob(const char *filename,char *path,size_t *length,
   ExceptionInfo *exception)
 {
+  void
+    *blob = 0;
+
   assert(filename != (const char *) NULL);
   assert(path != (char *) NULL);
   assert(length != (size_t *) NULL);
@@ -790,24 +791,37 @@ static void *GetModuleBlob(const char *filename,char *path,size_t *length,
     Search for the file
   */
   if(FindMagickModule(filename,MagickCoderModule,path,exception))
-    return(FileToBlob(path,length,exception));
-#if defined(WIN32)
-  {
-    unsigned char
-      *blob;
+    blob=FileToBlob(path,length,exception);
 
-    /*
-      Try to obtain the file from a Windows resource
-    */
-    DestroyExceptionInfo(exception);
-    if ((blob=NTResourceToBlob(filename)) != (unsigned char *)NULL)
-      return blob;
-    else
-      ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",
-        filename);
-  }
+#if defined(WIN32)
+  if (!blob)
+    {
+      /*
+        Try to obtain the file from a Windows resource
+      */
+      blob=NTResourceToBlob(filename);
+      if (blob)
+        {
+          /*
+            Clear any existing error in order to not annoy the user.
+          */
+          DestroyExceptionInfo(exception);
+        }
+      else
+        {
+          /*
+            Only overwrite and clear the error if our error
+            is less significant than the existing error.
+          */
+          if (exception->severity < ConfigureError)
+            {
+              ThrowException(exception,ConfigureError,
+                             "UnableToAccessModuleFile",filename);
+            }
+        }
+    }
 #endif
-  return((void *) NULL);
+  return (blob);
 }
 
 /*
@@ -1148,8 +1162,8 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigureFile reads the color configuration file which maps
-%  color strings with a particular image format.
+%  Method ReadConfigureFile reads the module configuration file which maps
+%  format names to a module name.
 %
 %  The format of the ReadConfigureFile method is:
 %
@@ -1158,8 +1172,8 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: ReadConfigureFile() returns True if at least one color is
-%      defined otherwise False.
+%    o status: ReadConfigureFile() returns True if at least one mapping is
+%        defined otherwise False.
 %
 %    o basename:  The color configuration filename.
 %
