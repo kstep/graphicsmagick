@@ -490,12 +490,12 @@ DEFS = @DEFS@ -I../
 
 # Install delegates files
 install-data-delegates: 
-        $(mkinstalldirs) $(pkglibdir)
-        $(INSTALL_DATA) delegates.mgk $(pkglibdir)
+	$(mkinstalldirs) $(pkglibdir)
+	$(INSTALL_DATA) delegates.mgk $(pkglibdir)
 
 # Uninstall delegates files
 uninstall-data-delegates:
-        rm -f $(pkglibdir)/delegates.mgk
+	rm -f $(pkglibdir)/delegates.mgk
 
 install-exec-local: install-data-delegates
 

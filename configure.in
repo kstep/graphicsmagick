@@ -1576,7 +1576,7 @@ AC_SUBST(X_CFLAGS)
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
-AC_OUTPUT(Makefile magick/delegates.mgk magick/Makefile coders/Makefile \
+AC_OUTPUT(Makefile magick/Makefile coders/delegates.mgk coders/Makefile \
   utilities/Makefile tests/Makefile magick/fonts.mgk magick/Magick-config \
   Magick++/bin/Makefile Magick++/bin/Magick++-config Magick++/Makefile \
   Magick++/lib/Makefile Magick++/lib/Magick++/Makefile  Magick++/demo/Makefile \
