@@ -487,12 +487,14 @@ static void XDrawMatteText(Display *display,const XWindowInfo *window_info,
   else
     {
       text=text_info->marker;
-      if (XTextWidth(font_info,text,(text_info->cursor-text)) > (int) width)
+      if (XTextWidth(font_info,(char *) text,(text_info->cursor-text)) >
+          (int) width)
         {
           text=text_info->text;
           for (i=0; i < Extent(text); i++)
           {
-            n=XTextWidth(font_info,text+i,(int) (text_info->cursor-text-i));
+            n=XTextWidth(font_info,(char *) text+i,(int)
+              (text_info->cursor-text-i));
             if (n <= (int) width)
               break;
           }
@@ -1634,7 +1636,7 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,
   for (i=0; i < colors; i++)
     if (XTextWidth(font_info,colorlist[i],Extent(colorlist[i])) > text_width)
       text_width=XTextWidth(font_info,colorlist[i],Extent(colorlist[i]));
-  width=XTextWidth(font_info,action,Extent(action));
+  width=XTextWidth(font_info,(char *) action,Extent(action));
   if (XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText)) > width)
     width=XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText));
   if (XTextWidth(font_info,ResetButtonText,Extent(ResetButtonText)) > width)
@@ -2829,7 +2831,8 @@ Export int XCommandWidget(Display *display,XWindows *windows,
       windows->command.width=0;
       for (i=0; selections[i] != (char *) NULL; i++)
       {
-        width=XTextWidth(font_info,selections[i],Extent(selections[i]));
+        width=
+          XTextWidth(font_info,(char *) selections[i],Extent(selections[i]));
         if (width > windows->command.width)
           windows->command.width=width;
       }
@@ -3170,11 +3173,11 @@ Export int XConfirmWidget(Display *display,XWindows *windows,
     width=XTextWidth(font_info,YesButtonText,Extent(YesButtonText));
   width<<=1;
   if (qualifier != (char *) NULL)
-    if (XTextWidth(font_info,qualifier,Extent(qualifier)) > width)
-      width=XTextWidth(font_info,qualifier,Extent(qualifier));
+    if (XTextWidth(font_info,(char *) qualifier,Extent(qualifier)) > width)
+      width=XTextWidth(font_info,(char *) qualifier,Extent(qualifier));
   if (qualifier != (char *) NULL)
-    if (XTextWidth(font_info,qualifier,Extent(qualifier)) > width)
-      width=XTextWidth(font_info,qualifier,Extent(qualifier));
+    if (XTextWidth(font_info,(char *) qualifier,Extent(qualifier)) > width)
+      width=XTextWidth(font_info,(char *) qualifier,Extent(qualifier));
   height=(font_info->ascent+font_info->descent);
   /*
     Position Confirm widget.
@@ -3252,7 +3255,7 @@ Export int XConfirmWidget(Display *display,XWindows *windows,
         /*
           Redraw Confirm widget.
         */
-        width=XTextWidth(font_info,message,Extent(message));
+        width=XTextWidth(font_info,(char *) message,Extent(message));
         x=(windows->widget.width >> 1)-(width >> 1);
         y=(windows->widget.height >> 1)-(height << 1);
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
@@ -3576,7 +3579,7 @@ Export int XDialogWidget(Display *display,XWindows *windows,const char *action,
   assert(reply != (char *) NULL);
   XCheckRefreshWindows(display,windows);
   font_info=windows->widget.font_info;
-  width=XTextWidth(font_info,action,Extent(action));
+  width=XTextWidth(font_info,(char *) action,Extent(action));
   if (XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText)) > width)
     width=XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText));
   width+=(3*QuantumMargin) >> 1;
@@ -3584,7 +3587,8 @@ Export int XDialogWidget(Display *display,XWindows *windows,const char *action,
   /*
     Position Dialog widget.
   */
-  windows->widget.width=Max(2*width,XTextWidth(font_info,query,Extent(query)));
+  windows->widget.width=
+    Max(2*width,XTextWidth(font_info,(char *) query,Extent(query)));
   if ((int) windows->widget.width < XTextWidth(font_info,reply,Extent(reply)))
     windows->widget.width=XTextWidth(font_info,reply,Extent(reply));
   windows->widget.width+=6*QuantumMargin;
@@ -4258,7 +4262,7 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,
   for (i=0; i < files; i++)
     if (XTextWidth(font_info,filelist[i],Extent(filelist[i])) > text_width)
       text_width=XTextWidth(font_info,filelist[i],Extent(filelist[i]));
-  width=XTextWidth(font_info,action,Extent(action));
+  width=XTextWidth(font_info,(char *) action,Extent(action));
   if (XTextWidth(font_info,GrabButtonText,Extent(GrabButtonText)) > width)
     width=XTextWidth(font_info,GrabButtonText,Extent(GrabButtonText));
   if (XTextWidth(font_info,FormatButtonText,Extent(FormatButtonText)) > width)
@@ -5454,7 +5458,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,
   for (i=0; i < fonts; i++)
     if (XTextWidth(font_info,fontlist[i],Extent(fontlist[i])) > text_width)
       text_width=XTextWidth(font_info,fontlist[i],Extent(fontlist[i]));
-  width=XTextWidth(font_info,action,Extent(action));
+  width=XTextWidth(font_info,(char *) action,Extent(action));
   if (XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText)) > width)
     width=XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText));
   if (XTextWidth(font_info,ResetButtonText,Extent(ResetButtonText)) > width)
@@ -6513,8 +6517,8 @@ Export void XInfoWidget(Display *display,XWindows *windows,const char *activity)
   assert(windows != (XWindows *) NULL);
   assert(activity != (char *) NULL);
   font_info=windows->info.font_info;
-  width=
-    XTextWidth(font_info,activity,Extent(activity))+((3*QuantumMargin) >> 1)+4;
+  width=XTextWidth(font_info,(char *) activity,Extent(activity))+
+    ((3*QuantumMargin) >> 1)+4;
   height=((6*(font_info->ascent+font_info->descent)) >> 2)+4;
   if (((int) windows->info.width != width) ||
       ((int) windows->info.height != height))
@@ -6674,11 +6678,11 @@ Export void XListBrowserWidget(Display *display,XWindows *windows,
     Determine Font Browser widget attributes.
   */
   font_info=window_info->font_info;
-  text_width=XTextWidth(font_info,query,Extent(query));
+  text_width=XTextWidth(font_info,(char *) query,Extent(query));
   for (i=0; i < entries; i++)
-    if (XTextWidth(font_info,list[i],Extent(list[i])) > text_width)
-      text_width=XTextWidth(font_info,list[i],Extent(list[i]));
-  width=XTextWidth(font_info,action,Extent(action));
+    if (XTextWidth(font_info,(char *) list[i],Extent(list[i])) > text_width)
+      text_width=XTextWidth(font_info,(char *) list[i],Extent(list[i]));
+  width=XTextWidth(font_info,(char *) action,Extent(action));
   if (XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText)) > width)
     width=XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText));
   width+=QuantumMargin;
@@ -7541,10 +7545,10 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
   assert(item != (char *) NULL);
   font_info=windows->widget.font_info;
   windows->widget.width=!submenu_info.active ?
-    XTextWidth(font_info,title,Extent(title)) : 0;
+    XTextWidth(font_info,(char *) title,Extent(title)) : 0;
   for (id=0; selections[id] != (char *) NULL; id++)
   {
-    width=XTextWidth(font_info,selections[id],Extent(selections[id]));
+    width=XTextWidth(font_info,(char *) selections[id],Extent(selections[id]));
     if (width > (int) windows->widget.width)
       windows->widget.width=width;
   }
@@ -7552,7 +7556,7 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
   XGetWidgetInfo((char *) NULL,&menu_info);
   title_height=!submenu_info.active ?
     (3*(font_info->descent+font_info->ascent) >> 1)+5 : 2;
-  width=XTextWidth(font_info,title,Extent(title));
+  width=XTextWidth(font_info,(char *) title,Extent(title));
   height=(3*(font_info->ascent+font_info->descent)) >> 1;
   /*
     Position Menu widget.
@@ -8043,11 +8047,12 @@ Export void XNoticeWidget(Display *display,XWindows *windows,
   font_info=windows->widget.font_info;
   width=XTextWidth(font_info,DismissButtonText,Extent(DismissButtonText));
   if (message != (char *) NULL)
-    if (XTextWidth(font_info,message,Extent(message)) > (int) width)
-      width=XTextWidth(font_info,message,Extent(message));
+    if (XTextWidth(font_info,(char *) message,Extent(message)) > (int) width)
+      width=XTextWidth(font_info,(char *) message,Extent(message));
   if (qualifier != (char *) NULL)
-    if (XTextWidth(font_info,qualifier,Extent(qualifier)) > (int) width)
-      width=XTextWidth(font_info,qualifier,Extent(qualifier));
+    if (XTextWidth(font_info,(char *) qualifier,Extent(qualifier)) >
+        (int) width)
+      width=XTextWidth(font_info,(char *) qualifier,Extent(qualifier));
   height=(font_info->ascent+font_info->descent);
   /*
     Position Notice widget.
@@ -8108,14 +8113,14 @@ Export void XNoticeWidget(Display *display,XWindows *windows,
         /*
           Redraw Notice widget.
         */
-        width=XTextWidth(font_info,message,Extent(message));
+        width=XTextWidth(font_info,(char *) message,Extent(message));
         x=(windows->widget.width >> 1)-(width >> 1);
         y=(windows->widget.height >> 1)-(height << 1);
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
           x,y,(char *) message,Extent(message));
         if (qualifier != (char *) NULL)
           {
-            width=XTextWidth(font_info,qualifier,Extent(qualifier));
+            width=XTextWidth(font_info,(char *) qualifier,Extent(qualifier));
             x=(windows->widget.width >> 1)-(width >> 1);
             y+=height;
             XDrawString(display,windows->widget.id,
@@ -8817,8 +8822,9 @@ Export void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
     text_info=windows->widget.font_info;
   text_width=0;
   for (i=0; textlist[i] != (char *) NULL; i++)
-    if (XTextWidth(text_info,textlist[i],Extent(textlist[i])) > text_width)
-      text_width=XTextWidth(text_info,textlist[i],Extent(textlist[i]));
+    if (XTextWidth(text_info,(char *) textlist[i],Extent(textlist[i])) >
+        text_width)
+      text_width=XTextWidth(text_info,(char *) textlist[i],Extent(textlist[i]));
   lines=i;
   width=XTextWidth(font_info,DismissButtonText,Extent(DismissButtonText));
   width+=QuantumMargin;

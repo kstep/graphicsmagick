@@ -1817,6 +1817,13 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
   }
 #else
   {
+    char
+      colorname[MaxTextExtent],
+      text[MaxTextExtent];
+
+    int
+      count;
+
     static FILE
       *database = (FILE *) NULL;
 
