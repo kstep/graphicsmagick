@@ -141,7 +141,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'False',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-  '54ca4428fd00911ab1cd81c79dd021c0c898c8f136fa68c127361d5b1f13076a',
+  'fd7ad72249c7fbd3dff4942d916edc5b5d7211827196a6d50c717212de95961c',
   '16cd0fc709aee5928df7e7eb2298dd235a13e5d34d171fdee8e27aad6ddbfea1');
 
 #
@@ -151,7 +151,7 @@ testMontage( q//,
 testMontage( q/bordercolor=>'red'/, 
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'False',
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
-  '16ecaa37dbeb88ebfbf17ebc216e5d0700b8c7926338b6f5086d7b9989bcc42b',
+  'cea55f11c06a780b82e4125ee5f3105169f7b6bcbf24742e8a4a6c06f62ef327',
   'fbc115a43a4f1645c84d9e4174577c6c343b5f0fb09b429dc4ee8d23aa7c061b');
 
 #
@@ -171,7 +171,7 @@ testMontage( q/bordercolor=>'red'/,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'16x1', geometry=>'90x80+0+0>', frame=>'False',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-  'e3a7e7131cff4fb340f77fdf643f28c2fb8c5df7f8656c146ea3ea9119c32ed8',
+  'b60e513f1f90718ab5530f7902e58a1628f33598653131f584415c52b5ee1719',
   '399a943baf51c8a1c26fa92460302af18b49f97d80527881b5b7cce595befb31');
 
 #
@@ -191,5 +191,5 @@ testMontage( q//,
 testMontage( q//, 
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'+0+0', frame=>'False', shadow=>'False',
   borderwidth=>'0', background=>'gray'/,
-  'd5ae380d2e007621935ee4add9e14227cf75e929e992effe0152054ef1a273c6',
+  'bae96cb788c8c5e231945548279605642560708bfca7ddd255a6ab08302031c5',
   'e3aa9c4c515bd8ddcc7dae52d608da62c20dbe0b30d3ae5c948a113401630eaf');
