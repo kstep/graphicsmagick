@@ -94,8 +94,7 @@ perl-sources:
 	if test -n "$(VPATH)" ; then \
 	  imagemagick=`(cd $(VPATH) ; pwd)` && \
 	  ( cd $(PERLMAGICK) && \
-	    sh $$imagemagick/lndir.sh $$imagemagick/$(PERLMAGICK) && \
-	    find . -type d -print | xargs chmod 777 ) \
+	    sh $$imagemagick/lndir.sh $$imagemagick/$(PERLMAGICK) ) \
 	fi
 	touch perl-sources
 

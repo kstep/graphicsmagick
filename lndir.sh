@@ -78,7 +78,7 @@ do
 	test -r $file || ln -s $DIRFROM/$file .
     else
 	#echo $file:
-	test -d $file || mkdir $file
+	test -d $file || mkdir $file && chmod 777 $file
 	(cd $file
 	pwd=`pwd`
 	case "$DIRFROM" in

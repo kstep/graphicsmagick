@@ -2034,18 +2034,18 @@ void Magick::Image::colorSpace( const ColorspaceType colorSpace_ )
        colorSpace_ == GRAYColorspace )
     {
       // Convert the image from an alternate colorspace representation
-      // In:				Out:
+      // In:			Out:
       // CMYKColorspace		RGBColorspace
-      // RGBColorspace		RGBColorspace (no conversion)
-      // GRAYColorspace		GRAYColorspace (no conversion)
+      // RGBColorspace          RGBColorspace (no conversion)
+      // GRAYColorspace         GRAYColorspace (no conversion)
       // TransparentColorspace	TransparentColorspace (no conversion)
       // OHTAColorspace		RGBColorspace
       // sRGBColorspace		RGBColorspace
       // XYZColorspace		RGBColorspace
-      // YCbCrColorspace		RGBColorspace
+      // YCbCrColorspace	RGBColorspace
       // YCCColorspace		RGBColorspace
       // YIQColorspace		RGBColorspace
-      // YPbPrColorspace		RGBColorspace
+      // YPbPrColorspace        RGBColorspace
       // YUVColorspace		RGBColorspace
       TransformRGBImage( image(), colorSpace_ );
       throwImageException();
