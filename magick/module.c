@@ -268,7 +268,8 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
 
           FormatString(message,"failed to load module \"%.1024s\"",
             module_name);
-          MagickWarning(MissingDelegateWarning,message,lt_dlerror());
+          ThrowException(&(*image)->exception,MissingDelegateWarning,message,
+            lt_dlerror());
           LiberateMemory((void **) &module_name);
           return(status);
         }
