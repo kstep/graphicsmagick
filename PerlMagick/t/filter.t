@@ -79,12 +79,12 @@ testFilter('input.miff', 'Edge',
 testFilter('input.miff', 'Emboss',
   q/3/,
   '83642cd00e36ca29fa4ddee858cc5e80',
-  'dda130a1e96654fbfd1e27865f4f5922');
+  '5aa0ab5936b49e14d3e9b58caa6a1861');
 
 ++$test;
 testFilter('input.miff', 'Equalize',
   q/ /,
-  'e7c25176f93a087008197e82104ab3cb',
+  '61eb62ac349952e079237eab1b26302d',
   '4731d138fa4bf61a12911686b3bebf85');
 
 ++$test;
@@ -154,7 +154,7 @@ testFilter('input.miff', 'Normalize',
 testFilter('input.miff', 'OilPaint',
   q/3/,
   '1db2b56a7a33507c693860b698058250',
-  '79e079df8a24f7410b608a19788f7859');
+  '274418a706b9fee352f7ba148a8ee419');
 
 ++$test;
 testFilter('input.miff', 'Opaque',
@@ -210,7 +210,7 @@ testFilter('input.miff', 'Segment',
 testFilter('input.miff', 'Shade',
   q/30/,
   '2096afda6790e7e8a8abf31665a78d0f',
-  '04c3ca7d5cda76586548c35170cdd749');
+  'c322c40dd3d91dd9086d5867943d2d06');
 
 ++$test;
 testFilter('input.miff', 'Sharpen',
