@@ -845,6 +845,9 @@ MagickExport unsigned int ClipImage(Image *image)
   Image
     *clip_mask;
 
+  ImageInfo
+	  *image_info;
+
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   attribute=GetImageAttribute(image,"8BIM:1999,2998");
