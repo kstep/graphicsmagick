@@ -413,6 +413,8 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
         (void) strncpy(filename,image->filename,MaxTextExtent-1);
         FormatString(clone_info->filename,"%.1024s:",delegate_info->decode);
         (void) SetImageInfo(clone_info,True,exception);
+        (void) strncpy(clone_info->filename,image_info->filename,
+          MaxTextExtent-1);
         for (p=image; p != (Image *) NULL; p=p->next)
         {
           FormatString(p->filename,"%.1024s:%.1024s",delegate_info->decode,
