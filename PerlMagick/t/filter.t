@@ -111,8 +111,8 @@ testFilter('input.miff', 'Gamma',
 
 ++$test;
 testFilter('input.miff', 'Implode',
-  q/30/,
-  '595ba49fdaa2052c97ad604fefd2d89e',
+  q/3/,
+  '4ccfff8db3c8caefa0ff7cb9e3e5069e',
   'a8e08e25ea60706c37b264edfdc9bd99');
 
 ++$test;
