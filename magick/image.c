@@ -6240,14 +6240,14 @@ MagickExport unsigned int TransformRGBImage(Image *image,
                 blue+0.5;
               if (colorspace == sRGBColorspace)
                 {
-                  q->red=sRGBMap[(int) red];
-                  q->green=sRGBMap[(int) green];
-                  q->blue=sRGBMap[(int) blue];
+                  q->red=sRGBMap[(int) DownScale(red)];
+                  q->green=sRGBMap[(int) DownScale(green)];
+                  q->blue=sRGBMap[(int) DownScale(blue)];
                   break;
                 }
-              q->red=YCCMap[(int) red];
-              q->green=YCCMap[(int) green];
-              q->blue=YCCMap[(int) blue];
+              q->red=YCCMap[(int) DownScale(red)];
+              q->green=YCCMap[(int) DownScale(green)];
+              q->blue=YCCMap[(int) DownScale(blue)];
               break;
             }
             default:
@@ -6295,14 +6295,14 @@ MagickExport unsigned int TransformRGBImage(Image *image,
               blue+0.5;
             if (colorspace == sRGBColorspace)
               {
-                image->colormap[i].red=sRGBMap[(int) red];
-                image->colormap[i].green=sRGBMap[(int) green];
-                image->colormap[i].blue=sRGBMap[(int) blue];
+                image->colormap[i].red=sRGBMap[(int) DownScale(red)];
+                image->colormap[i].green=sRGBMap[(int) DownScale(green)];
+                image->colormap[i].blue=sRGBMap[(int) DownScale(blue)];
                 break;
               }
-            image->colormap[i].red=YCCMap[(int) red];
-            image->colormap[i].green=YCCMap[(int) green];
-            image->colormap[i].blue=YCCMap[(int) blue];
+            image->colormap[i].red=YCCMap[(int) DownScale(red)];
+            image->colormap[i].green=YCCMap[(int) DownScale(green)];
+            image->colormap[i].blue=YCCMap[(int) DownScale(blue)];
             break;
           }
           default:
