@@ -2753,7 +2753,7 @@ static unsigned int XConfigureImage(Display *display,
   FormatString(geometry,"%ux%u+0+0>!",
     XDisplayWidth(display,windows->image.screen),
     XDisplayHeight(display,windows->image.screen));
-  (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+  (void) GetMagickGeometry(geometry,&x,&y,&width,&height);
   window_changes.width=(unsigned int) width;
   window_changes.height=(unsigned int) height;
   mask=CWWidth | CWHeight;
@@ -5550,7 +5550,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         break;
       if (!status)
         (void) strcat(geometry,"!");
-      (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+      (void) GetMagickGeometry(geometry,&x,&y,&width,&height);
       windows->image.window_changes.width=(unsigned int) width;
       windows->image.window_changes.height=(unsigned int) height;
       (void) XConfigureImage(display,resource_info,windows,*image);
@@ -11451,7 +11451,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   height=window_info.height;
   x=window_info.x;
   y=window_info.y;
-  (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+  (void) GetMagickGeometry(geometry,&x,&y,&width,&height);
   window_info.width=(unsigned int) width;
   window_info.height=(unsigned int) height;
   window_info.x=(int) x;
@@ -12243,7 +12243,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   height=display_image->rows;
   x=0;
   y=0;
-  (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+  (void) GetMagickGeometry(geometry,&x,&y,&width,&height);
   windows->image.width=(unsigned int) width;
   windows->image.height=(unsigned int) height;
   windows->image.attributes.event_mask=ButtonMotionMask | ButtonPressMask |

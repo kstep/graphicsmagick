@@ -585,7 +585,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
     status;
 
   SetGeometry(image,&geometry);
-  (void) ParseImageGeometry(PiconGeometry,&geometry.x,&geometry.y,
+  (void) GetMagickGeometry(PiconGeometry,&geometry.x,&geometry.y,
 		&geometry.width,&geometry.height);
   picon=ZoomImage(image,geometry.width,geometry.height,&image->exception);
   if (IsGrayImage(image,&image->exception))

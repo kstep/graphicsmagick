@@ -1487,7 +1487,7 @@ printf("%ldx%ld%+ld%+ld\n",geometry.width,geometry.height,
     Scale image to a user specified size.
   */
   SetGeometry(transform_image,&geometry);
-  flags=ParseImageGeometry(image_geometry,&geometry.x,&geometry.y,
+  flags=GetMagickGeometry(image_geometry,&geometry.x,&geometry.y,
 		&geometry.width,&geometry.height);
   if ((transform_image->columns == geometry.width) &&
       (transform_image->rows == geometry.height))

@@ -1312,7 +1312,7 @@ MagickExport Image *ReadEMFImage(const ImageInfo *image_info,
       p=strchr(geometry,'>');
       if (!p)
         {
-          flags=ParseImageGeometry(geometry,&sans,&sans,&image->columns,
+          flags=GetMagickGeometry(geometry,&sans,&sans,&image->columns,
             &image->rows);
           if (image->x_resolution != 0.0)
             image->columns=(unsigned int)
@@ -1324,7 +1324,7 @@ MagickExport Image *ReadEMFImage(const ImageInfo *image_info,
       else
         {
           *p='\0';
-          flags=ParseImageGeometry(geometry,&sans,&sans,&image->columns,
+          flags=GetMagickGeometry(geometry,&sans,&sans,&image->columns,
             &image->rows);
           if (image->x_resolution != 0.0)
             image->columns=(unsigned int)

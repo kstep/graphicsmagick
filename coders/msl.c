@@ -677,7 +677,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             {
             if (LocaleCompare(keyword,"geometry") == 0)
               {
-              (void) ParseImageGeometry(value,&x,&y,&width,&height);
+              (void) GetMagickGeometry(value,&x,&y,&width,&height);
               break;
               }
             ThrowException(msl_info->exception,OptionWarning,
@@ -847,7 +847,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
           if (LocaleCompare(keyword,"geometry") == 0)
             {
-            (void) ParseImageGeometry(value,&x,&y,&width,&height);
+            (void) GetMagickGeometry(value,&x,&y,&width,&height);
             break;
             }
           ThrowException(msl_info->exception,OptionWarning,
@@ -1036,7 +1036,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             {
               if (LocaleCompare(keyword,"geometry") == 0)
               {
-                (void) ParseImageGeometry(value,&x,&y,&width,&height);
+                (void) GetMagickGeometry(value,&x,&y,&width,&height);
                 gravity = ForgetGravity;  /* disable on explicit x,y */
                 break;
               }
@@ -1229,7 +1229,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
           if (LocaleCompare(keyword,"geometry") == 0)
             {
-            (void) ParseImageGeometry(value,&x,&y,&width,&height);
+            (void) GetMagickGeometry(value,&x,&y,&width,&height);
             break;
             }
           ThrowException(msl_info->exception,OptionWarning,
@@ -1644,7 +1644,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             {
             if (LocaleCompare(keyword,"geometry") == 0)
               {
-              (void) ParseImageGeometry(value,&x,&y,&width,&height);
+              (void) GetMagickGeometry(value,&x,&y,&width,&height);
               break;
               }
             ThrowException(msl_info->exception,OptionWarning,
@@ -2521,7 +2521,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               {
                 if (LocaleCompare(keyword,"geometry") == 0)
                   {
-                    (void) ParseImageGeometry(value,&x,&y,&width,&height);
+                    (void) GetMagickGeometry(value,&x,&y,&width,&height);
                     break;
                   }
                 ThrowException(msl_info->exception,OptionWarning,
@@ -2609,7 +2609,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
           if (LocaleCompare(keyword,"geometry") == 0)
             {
-            (void) ParseImageGeometry(value,&x,&y,&width,&height);
+            (void) GetMagickGeometry(value,&x,&y,&width,&height);
             break;
             }
           ThrowException(msl_info->exception,OptionWarning,
@@ -2757,7 +2757,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
           if (LocaleCompare(keyword,"geometry") == 0)
             {
-            (void) ParseImageGeometry(value,&x,&y,&width,&height);
+            (void) GetMagickGeometry(value,&x,&y,&width,&height);
             break;
             }
           ThrowException(msl_info->exception,OptionWarning,
@@ -2841,7 +2841,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
           if (LocaleCompare(keyword,"geometry") == 0)
             {
-            (void) ParseImageGeometry(value,&x,&y,&width,&height);
+            (void) GetMagickGeometry(value,&x,&y,&width,&height);
             break;
             }
           ThrowException(msl_info->exception,OptionWarning,
@@ -3138,7 +3138,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
           if (LocaleCompare(keyword,"geometry") == 0)
             {
-            (void) ParseImageGeometry(value,&x,&y,&width,&height);
+            (void) GetMagickGeometry(value,&x,&y,&width,&height);
             break;
             }
           ThrowException(msl_info->exception,OptionWarning,

@@ -436,7 +436,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       else
         if (LocaleCompare(image_info->magick,"PS3") == 0)
           (void) strcpy(page_geometry,PSPageGeometry);
-    (void) ParseImageGeometry(page_geometry,&geometry.x,&geometry.y,
+    (void) GetMagickGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
     /*
       Scale relative to dots-per-inch.

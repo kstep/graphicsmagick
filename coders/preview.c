@@ -216,7 +216,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   */
   (void) TransformRGBImage(image,RGBColorspace);
   SetGeometry(image,&geometry);
-  (void) ParseImageGeometry(DefaultPreviewGeometry,&geometry.x,&geometry.y,
+  (void) GetMagickGeometry(DefaultPreviewGeometry,&geometry.x,&geometry.y,
 		&geometry.width,&geometry.height);
   clone_image=CloneImage(image,0,0,True,&image->exception);
   if (clone_image == (Image *) NULL)

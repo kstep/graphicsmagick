@@ -896,7 +896,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     Scale image to tile size.
   */
   SetGeometry(image,&geometry);
-  (void) ParseImageGeometry(page_geometry,&geometry.x,&geometry.y,
+  (void) GetMagickGeometry(page_geometry,&geometry.x,&geometry.y,
 	  &geometry.width,&geometry.height);
   if ((geometry.width % 2) != 0)
     geometry.width--;

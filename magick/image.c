@@ -2776,7 +2776,7 @@ MagickExport int GetImageGeometry(const Image *image,const char *geometry,
   (void) strncpy(region_geometry,geometry,MaxTextExtent-2);
   if (!size_to_fit)
     (void) strcat(region_geometry,"!");
-  flags=ParseImageGeometry(region_geometry,&region_info->x,&region_info->y,
+  flags=GetMagickGeometry(region_geometry,&region_info->x,&region_info->y,
     &region_info->width,&region_info->height);
   switch (image->gravity)
   {

@@ -1993,7 +1993,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               p=strchr(geometry,'>');
               if (p != (char *) NULL)
                 *p='\0';
-              (void) ParseImageGeometry(geometry,&page.x,&page.y,
+              (void) GetMagickGeometry(geometry,&page.x,&page.y,
                 &page.width,&page.height);
               LiberateMemory((void **) &geometry);
             }

@@ -315,7 +315,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       */
       SetGeometry(image,&geometry);
       if (image->montage != (char *) NULL)
-        (void) ParseImageGeometry(image->montage,&geometry.x,&geometry.y,
+        (void) GetMagickGeometry(image->montage,&geometry.x,&geometry.y,
           &geometry.width,&geometry.height);
       /*
         Write an image map.
@@ -395,7 +395,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   */
   SetGeometry(image,&geometry);
   if (image->montage != (char *) NULL)
-    (void) ParseImageGeometry(image->montage,&geometry.x,&geometry.y,
+    (void) GetMagickGeometry(image->montage,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
   /*
     Write an image map.

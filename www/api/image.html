@@ -368,26 +368,26 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimagegeometry">GetImageGeometry</A></H2>
-<blockquote>GetImageGeometry() returns a region as defined by the geometry specification with respect to the image gravity. </blockquote><P>The format of the GetImageGeometry method is:</P>
+<blockquote>GetImageGeometry() returns a region as defined by the geometry string with respect to the image and its gravity. </blockquote><P>The format of the GetImageGeometry method is:</P>
 <blockquote>int GetImageGeometry ( const <A HREF="types/Image.html">Image</A> *image, const char *geometry, const unsigned int size_to_fit, RectangeInfo *region_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG><A NAME="item_o_flags%3A">flags:</A></STRONG><BR>
 <DD>
-Method GetGeometry returns a bitmask that indicates which of the four values were located in the geometry string.
+Method GetImageGeometry returns a bitmask that indicates which of the four values were located in the geometry string.
 <P></P>
 <dd><p></p><dt><STRONG><A NAME="item_o_geometry%3A">geometry:</A></STRONG><BR>
 <DD>
-The geometry specification (e.g.  100x100+10+10).
+The geometry (e.g.  100x100+10+10).
 <P></P>
 <dd><p></p><dt><STRONG><A NAME="item_o_size_to_fit%3A">size_to_fit:</A></STRONG><BR>
 <DD>
 
-<FONT SIZE=-1>A</FONT> value other than 0 means to interpet any width/height values as a maximum.
+<FONT SIZE=-1>A</FONT> value other than 0 means to scale the region so it fits within the specified width and height.
 <P></P>
 <dd><p></p><dt><STRONG><A NAME="item_o_region_info%3A">region_info:</A></STRONG><BR>
 <DD>
-The region as defined by the geometry specification and the image gravity.
+The region as defined by the geometry string with respect to the image and its gravity.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimageinfo">GetImageInfo</A></H2>

@@ -955,7 +955,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       else
         if (LocaleCompare(image_info->magick,"PDF") == 0)
           (void) strcpy(page_geometry,PSPageGeometry);
-    (void) ParseImageGeometry(page_geometry,&geometry.x,&geometry.y,
+    (void) GetMagickGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
     (void) GetGeometry(page_geometry,&media_info.x,&media_info.y,
       &media_info.width,&media_info.height);
@@ -1388,7 +1388,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Thumb object.
     */
     SetGeometry(image,&geometry);
-    (void) ParseImageGeometry("106x106+0+0>",&geometry.x,&geometry.y,
+    (void) GetMagickGeometry("106x106+0+0>",&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
     clone_image=CloneImage(image,0,0,True,&image->exception);
     if (clone_image == (Image *) NULL)

@@ -681,7 +681,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   height=window_info.height;
   x=window_info.x;
   y=window_info.y;
-  (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+  (void) GetMagickGeometry(geometry,&x,&y,&width,&height);
   window_info.width=(unsigned int) height;
   window_info.height=(unsigned int) height;
   window_info.x=(int) x;
