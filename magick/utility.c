@@ -3225,16 +3225,40 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         attribute=GetImageAttribute(image,key);
         if (attribute != (ImageAttribute *) NULL)
           {
+            int
+              alen;
+
+            alen=Extent(attribute->value);
+            if ((q-translated_text+alen) >= (int) length)
+              {
+                length+=(alen+MaxTextExtent);
+                ReacquireMemory((void **) &translated_text,length);
+                if (translated_text == (char *) NULL)
+                  break;
+                q=translated_text+Extent(translated_text);
+              }
             (void) strcpy(q,attribute->value);
-            q+=Extent(attribute->value);
+            q+=alen;
           }
         else
           {
             attribute=GetImageInfoAttribute(clone_info,image,key);
             if (attribute != (ImageAttribute *) NULL)
               {
+                int
+                  alen;
+
+                alen=Extent(attribute->value);
+                if ((q-translated_text+alen) >= (int) length)
+                  {
+                    length+=(alen+MaxTextExtent);
+                    ReacquireMemory((void **) &translated_text,length);
+                    if (translated_text == (char *) NULL)
+                      break;
+                    q=translated_text+Extent(translated_text);
+                  }
                 (void) strcpy(q,attribute->value);
-                q+=Extent(attribute->value);
+                q+=alen;
               }
           }
         break;
