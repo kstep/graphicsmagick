@@ -41,7 +41,7 @@
 <P>MontageInfo * <STRONG>CloneMontageInfo</STRONG>( const ImageInfo *image_info, const MontageInfo *montage_info );</P>
 <P>void  <STRONG>DestroyMontageInfo</STRONG>( MontageInfo *montage_info );</P>
 <P>void  <STRONG>GetMontageInfo</STRONG>( const ImageInfo *image_info, MontageInfo *montage_info );</P>
-<P>Image * <STRONG>MontageImages</STRONG>( Image *image, const MontageInfo *montage_info, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>MontageImages</STRONG>( const Image *image, const MontageInfo *montage_info, ExceptionInfo *exception );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -98,7 +98,7 @@ Specifies a pointer to a MontageInfo structure.
 <H2><A NAME="montageimages">MontageImages</A></H2>
 <P>Method MontageImages creates a composite image by combining several separate images.</P>
 <P>The format of the MontageImages method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *MontageImages ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/MontageInfo.html">MontageInfo</A> *montage_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *MontageImages ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/MontageInfo.html">MontageInfo</A> *montage_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>

@@ -36,8 +36,8 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>Image * <STRONG>RotateImage</STRONG>( Image *image, const double degrees, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>ShearImage</STRONG>( Image *image, const double x_shear, const double y_shear, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>RotateImage</STRONG>( const Image *image, const double degrees, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ShearImage</STRONG>( const Image *image, const double x_shear, const double y_shear, ExceptionInfo *exception );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -52,7 +52,7 @@
 <FONT SIZE=-1>W.</FONT>  Paeth.  RotateImage is adapted from a similar method based on the Paeth paper written by Michael Halle of the Spatial Imaging Group, 
 <FONT SIZE=-1>MIT</FONT> Media Lab.</P>
 <P>The format of the RotateImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *RotateImage ( <A HREF="types/Image.html">Image</A> *image, const double degrees, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *RotateImage ( const <A HREF="types/Image.html">Image</A> *image, const double degrees, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
@@ -89,7 +89,7 @@ Return any errors or warnings in this structure.
 <FONT SIZE=-1>``A</FONT> Fast Algorithm for General Raster Rotatation'' by Alan 
 <FONT SIZE=-1>W.</FONT>  Paeth.</P>
 <P>The format of the ShearImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ShearImage ( <A HREF="types/Image.html">Image</A> *image, const double x_shear, const double y_shear, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ShearImage ( const <A HREF="types/Image.html">Image</A> *image, const double x_shear, const double y_shear, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><BR>

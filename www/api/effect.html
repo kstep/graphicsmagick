@@ -73,7 +73,7 @@
 <P>Image * <STRONG>GaussianBlurImage</STRONG>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ImplodeImage</STRONG>( const Image *image, const double amount, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MedianFilterImage</STRONG>( const Image *image, const double radius, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>MorphImages</STRONG>( Image *image, const unsigned long number_frames, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>MorphImages</STRONG>( const Image *image, const unsigned long number_frames, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MotionBlurImage</STRONG>( const Image *image, const double radius, const double sigma, const double amount, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>OilPaintImage</STRONG>( const Image *image, const double radius, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>PlasmaImage</STRONG>( Image *image, const SegmentInfo *segment, int attenuate, int depth );</P>
@@ -403,7 +403,7 @@ Return any errors or warnings in this structure.
 <H2><A NAME="morphimages">MorphImages</A></H2>
 <P>Method MorphImages morphs a sequence of images.  Both the next pixels and size are linearly interpolated to give the appearance of a meta-morphosis from one next to the next.</P>
 <P>The format of the MorphImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *MorphImages ( <A HREF="types/Image.html">Image</A> *image, const unsigned long number_frames, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *MorphImages ( const <A HREF="types/Image.html">Image</A> *image, const unsigned long number_frames, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_morph_images%3A">morph_images:</A></STRONG><BR>

@@ -43,10 +43,10 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P><STRONG>CatchImageException</STRONG>( Image *image );</P>
+<P><STRONG>CatchImageException</STRONG>( const Image *image );</P>
 <P>void  <STRONG>DestroyExceptionInfo</STRONG>( ExceptionInfo *exception );</P>
 <P><STRONG>GetExceptionInfo</STRONG>( ExceptionInfo *exception );</P>
-<P><STRONG>GetImageException</STRONG>( Image *image, ExceptionInfo *exception );</P>
+<P><STRONG>GetImageException</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>void  <STRONG>MagickError</STRONG>( const ExceptionType error, const char *reason, const char *description );</P>
 <P>void  <STRONG>MagickWarning</STRONG>( const ExceptionType warning, const char *reason, const char *description );</P>
 <P>ErrorHandler  <STRONG>SetErrorHandler</STRONG>( ErrorHandler handler );</P>
@@ -61,7 +61,7 @@
 <H2><A NAME="catchimageexception">CatchImageException</A></H2>
 <P>Method CatchImageException returns if no exceptions are found in the image sequence, otherwise it determines the most severe exception and reports it as a warning or error depending on the severity.</P>
 <P>The format of the CatchImageException method is:</P>
-<blockquote>CatchImageException ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>CatchImageException ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
@@ -94,7 +94,7 @@ Specifies a pointer to a ExceptionInfo structure.
 <H2><A NAME="getimageexception">GetImageException</A></H2>
 <P>Method GetImageException traverses an image sequence and returns any error more severe than noted by the exception parameter.</P>
 <P>The format of the GetImageException method is:</P>
-<blockquote>GetImageException ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>GetImageException ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>

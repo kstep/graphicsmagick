@@ -38,7 +38,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>Image * <STRONG>BorderImage</STRONG>( const Image *image, const RectangleInfo *border_info, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>FrameImage</STRONG>( Image *image, const FrameInfo *frame_info, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>FrameImage</STRONG>( const Image *image, const FrameInfo *frame_info, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>RaiseImage</STRONG>( Image *image, const RectangleInfo *raise_info, const int raised );</P>
 <P>
 <HR>
@@ -73,7 +73,7 @@ Return any errors or warnings in this structure.
 <H2><A NAME="frameimage">FrameImage</A></H2>
 <P>Method FrameImage takes an image and puts a frame around it of a particular color.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the FrameImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *FrameImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/FrameInfo.html">FrameInfo</A> *frame_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *FrameImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/FrameInfo.html">FrameInfo</A> *frame_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_frame_image%3A">frame_image:</A></STRONG><BR>

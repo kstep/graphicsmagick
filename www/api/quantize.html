@@ -48,7 +48,7 @@
 <P>void  <STRONG>CompressColormap</STRONG>( Image *image );</P>
 <P><STRONG>DestroyQuantizeInfo</STRONG>( QuantizeInfo *quantize_info );</P>
 <P><STRONG>GetQuantizeInfo</STRONG>( QuantizeInfo *quantize_info );</P>
-<P>unsigned int  <STRONG>MapImage</STRONG>( Image *image, Image *map_image, const unsigned int dither );</P>
+<P>unsigned int  <STRONG>MapImage</STRONG>( Image *image, const Image *map_image, const unsigned int dither );</P>
 <P>unsigned int  <STRONG>MapImages</STRONG>( Image *images, Image *map_image, const unsigned int dither );</P>
 <P>unsigned int  <STRONG>OrderedDitherImage</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>QuantizationError</STRONG>( Image *image );</P>
@@ -113,7 +113,7 @@ Specifies a pointer to a QuantizeInfo structure.
 <H2><A NAME="mapimage">MapImage</A></H2>
 <P>MapImage replaces the colors of an image with the closest color from a reference image.</P>
 <P>The format of the MapImage method is:</P>
-<blockquote>unsigned int MapImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *map_image, const unsigned int dither ); </blockquote><P>
+<blockquote>unsigned int MapImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Image.html">Image</A> *map_image, const unsigned int dither ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>

@@ -104,7 +104,8 @@ The image.
 <P>Method GetImageInfoAttribute returns a ``fake'' attribute based on data in the image info or image structures.</P>
 <P>The format of the GetImageInfoAttribute method is:</P>
 <PRE>
-    ImageAttribute *GetImageAttribute(const Image *image,const char *key)</PRE>
+    ImageAttribute *GetImageAttribute(const ImageInfo *image_info,
+      const Image *image,const char *key)</PRE>
 <P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>

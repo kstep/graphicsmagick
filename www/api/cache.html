@@ -28,6 +28,8 @@
 		<LI><A HREF="#getindexes">GetIndexes</A></LI>
 		<LI><A HREF="#getonepixel">GetOnePixel</A></LI>
 		<LI><A HREF="#getpixels">GetPixels</A></LI>
+		<LI><A HREF="#modifycache">ModifyCache</A></LI>
+		<LI><A HREF="#referencecache">ReferenceCache</A></LI>
 		<LI><A HREF="#setimagepixels">SetImagePixels</A></LI>
 		<LI><A HREF="#syncimagepixels">SyncImagePixels</A></LI>
 	</UL>
@@ -54,6 +56,8 @@
 <P>indexes: Method  <STRONG>GetIndexes</STRONG>( )returns the indexes associated with the last call to SetImagePixels( )or GetImagePixels( ).;</P>
 <P>pixels: Method  <STRONG>GetOnePixel</STRONG>( )returns a pixel at the specified( x, y );</P>
 <P>pixels: Method  <STRONG>GetPixels</STRONG>( )returns the pixels associated with the last call to SetImagePixels( )or GetImagePixels( ).;</P>
+<P>unsigned int  <STRONG>ModifyCache</STRONG>( Image *image );</P>
+<P>Cache  <STRONG>ReferenceCache</STRONG>( Cache cache_info );</P>
 <P>PixelPacket * <STRONG>SetImagePixels</STRONG>( Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
 <P>status: Method  <STRONG>SyncImagePixels</STRONG>( )returns True if the image pixels are transferred to the in-memory or disk cache otherwise False.;</P>
 <P>
@@ -81,7 +85,7 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="acquireonepixel">AcquireOnePixel</A></H2>
 <blockquote>Method AcquireOnePixel ( ) returns a single pixel at the specified ( x, y ); </blockquote><P>location.  The image background color is returned if an error occurs.</P>
-<blockquote>The format of the AcquireOnePixel ( ) method is:; </blockquote><blockquote>const <A HREF="types/PixelPacket.html">PixelPacket</A> *AcquireOnePixel ( const <A HREF="types/Image.html">Image</A> image, const long x, const long y, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> exception ); </blockquote><P>
+<blockquote>The format of the AcquireOnePixel ( ) method is:; </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> AcquireOnePixel ( const <A HREF="types/Image.html">Image</A> image, const long x, const long y, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <blockquote>pixels: Method AcquireOnePixel ( ) returns a pixel at the specified ( x, y ); </blockquote><PRE>
     location.
@@ -163,6 +167,26 @@ These values define the location of the pixel to return.
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="modifycache">ModifyCache</A></H2>
+<blockquote>ModifyCache ( ) ensures that there is only a single reference to the pixelcache to be modified, updating the provided cache pointer to point toa clone of the original pixel cache if necessary.; </blockquote><P>The format of the ModifyCache method is:</P>
+<blockquote>unsigned int ModifyCache ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="referencecache">ReferenceCache</A></H2>
+<blockquote>ReferenceCache ( ) increments the reference count associated with the pixelcache returning a pointer to the cache.; </blockquote><P>The format of the ReferenceCache method is:</P>
+<blockquote>Cache ReferenceCache ( Cache cache_info ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_cache_info%3A">cache_info:</A></STRONG><BR>
+<DD>
+The cache_info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimagepixels">SetImagePixels</A></H2>

@@ -25,7 +25,7 @@
 		<LI><A HREF="#isgrayimage">IsGrayImage</A></LI>
 		<LI><A HREF="#ismonochromeimage">IsMonochromeImage</A></LI>
 		<LI><A HREF="#isopaqueimage">IsOpaqueImage</A></LI>
-		<LI><A HREF="#ispseudoclass">IsPseudoClass</A></LI>
+		<LI><A HREF="#ispaletteimage">IsPaletteImage</A></LI>
 		<LI><A HREF="#listcolorinfo">ListColorInfo</A></LI>
 		<LI><A HREF="#querycolordatabase">QueryColorDatabase</A></LI>
 		<LI><A HREF="#querycolorname">QueryColorname</A></LI>
@@ -43,16 +43,16 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>unsigned long  <STRONG>GetNumberColors</STRONG>( Image *image, 
-<FONT SIZE=-1>FILE</FONT> *file );</P>
-<P>unsigned int  <STRONG>IsGrayImage</STRONG>( Image *image );</P>
-<P>status= <STRONG>IsMonochromeImage</STRONG>( image );</P>
-<P>unsigned int  <STRONG>IsOpaqueImage</STRONG>( Image *image );</P>
-<P>unsigned int  <STRONG>IsPseudoClass</STRONG>( Image *image );</P>
+<P>unsigned long  <STRONG>GetNumberColors</STRONG>( const Image *image, 
+<FONT SIZE=-1>FILE</FONT> *file, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>IsGrayImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>IsMonochromeImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>IsOpaqueImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>IsPaletteImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>ListColorInfo</STRONG>( 
 <FONT SIZE=-1>FILE</FONT> *file, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>QueryColorDatabase</STRONG>( const char *name, PixelPacket *color );</P>
-<P>unsigned int  <STRONG>QueryColorname</STRONG>( Image *image, const PixelPacket *color, ComplianceType compliance, char *name );</P>
+<P>unsigned int  <STRONG>QueryColorname</STRONG>( const Image *image, const PixelPacket *color, ComplianceType compliance, char *name );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -83,7 +83,7 @@ This integer returns the number of colors in the list.
 <H2><A NAME="getnumbercolors">GetNumberColors</A></H2>
 <P>Method GetNumberColors returns the number of unique colors in an image.</P>
 <P>The format of the GetNumberColors method is:</P>
-<blockquote>unsigned long GetNumberColors ( <A HREF="types/Image.html">Image</A> *image, FILE *file ); </blockquote><P>
+<blockquote>unsigned long GetNumberColors ( const <A HREF="types/Image.html">Image</A> *image, FILE *file, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DL>
 <p><dt><STRONG>number_colors:</STRONG><BR>
@@ -101,9 +101,9 @@ An pointer to a
 <P></P></DL></DL>
 <P>
 <H2><A NAME="isgrayimage">IsGrayImage</A></H2>
-<P>Method IsGrayImage returns True if the image is grayscale otherwise False is returned.  If the image is DirectClass and grayscale, it is demoted to PseudoClass.</P>
+<P>Method IsGrayImage returns True if the image is grayscale otherwise False is returned.</P>
 <P>The format of the IsGrayImage method is:</P>
-<blockquote>unsigned int IsGrayImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>unsigned int IsGrayImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
@@ -112,13 +112,17 @@ Method IsGrayImage returns True if the image is grayscale otherwise False is ret
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The image; returned from ReadImage.
+The image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="ismonochromeimage">IsMonochromeImage</A></H2>
 <P>Method IsMonochromeImage returns True if the image is monochrome otherwise False is returned.  If the image is DirectClass and grayscale (including monochrome), it is demoted to PseudoClass.</P>
 <P>The format of the IsMonochromeImage method is:</P>
-<blockquote>status=IsMonochromeImage ( image ); </blockquote><P>
+<blockquote>unsigned int IsMonochromeImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><BR>
@@ -127,13 +131,17 @@ Method IsMonochromeImage returns True if the image is monochrome otherwise False
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The image; returned from ReadImage.
+The image.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="isopaqueimage">IsOpaqueImage</A></H2>
 <P>Method IsOpaqueImage returns False if the image has one or more pixels that are transparent otherwise True is returned.</P>
 <P>The format of the IsOpaqueImage method is:</P>
-<blockquote>unsigned int IsOpaqueImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>unsigned int IsOpaqueImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><BR>
@@ -142,22 +150,30 @@ Method IsOpaqueImage returns False if the image has one or more pixels that are 
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The image; returned from ReadImage.
+The image.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="ispseudoclass">IsPseudoClass</A></H2>
-<P>Method IsPseudoClass returns True if the image is PseudoClass and has 256 unique colors or less.  If the image is DirectClass and has 256 colors or less, the image is demoted to PseudoClass.</P>
-<P>The format of the IsPseudoClass method is:</P>
-<blockquote>unsigned int IsPseudoClass ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<H2><A NAME="ispaletteimage">IsPaletteImage</A></H2>
+<P>Method IsPaletteImage returns True if the image is PseudoClass and has 256 unique colors or less.</P>
+<P>The format of the IsPaletteImage method is:</P>
+<blockquote>unsigned int IsPaletteImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><BR>
 <DD>
-Method IsPseudoClass returns True is the image is PseudoClass or has 256 color or less.
+Method IsPaletteImage returns True is the image is PseudoClass or has 256 color or less.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="listcolorinfo">ListColorInfo</A></H2>
@@ -171,7 +187,7 @@ The image.
 An pointer to a 
 <FONT SIZE=-1>FILE.</FONT>
 <P></P>
-<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
@@ -204,7 +220,7 @@ Specifies the color to lookup in the
 <P>Method QueryColorname returns the name of the color that is closest to the supplied color in 
 <FONT SIZE=-1>RGB</FONT> space.</P>
 <P>The format of the QueryColorname method is:</P>
-<blockquote>unsigned int QueryColorname ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> *color, ComplianceType compliance, char *name ); </blockquote><P>
+<blockquote>unsigned int QueryColorname ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> *color, ComplianceType compliance, char *name ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><BR>

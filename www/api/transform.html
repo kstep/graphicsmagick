@@ -46,17 +46,17 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>Image * <STRONG>ChopImage</STRONG>( Image *image, const RectangleInfo *chop_info );</P>
-<P>Image * <STRONG>CoalesceImages</STRONG>( Image *image, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>CropImage</STRONG>( Image *image, const RectangleInfo *crop_info, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>DeconstructImages</STRONG>( Image *image, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>FlattenImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>FlipImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>FlopImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ChopImage</STRONG>( const Image *image, const RectangleInfo *chop_info );</P>
+<P>Image * <STRONG>CoalesceImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>CropImage</STRONG>( const Image *image, const RectangleInfo *crop_info, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>DeconstructImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>FlattenImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>FlipImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>FlopImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MosaicImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>ProfileImage</STRONG>( Image *image, const char *profile_name, const char *filename );</P>
-<P>Image * <STRONG>RollImage</STRONG>( Image *image, const long x_offset, const long y_offset, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>ShaveImage</STRONG>( Image *image, const RectangleInfo *shave_info, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>RollImage</STRONG>( const Image *image, const long x_offset, const long y_offset, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ShaveImage</STRONG>( const Image *image, const RectangleInfo *shave_info, ExceptionInfo *exception );</P>
 <P>void  <STRONG>TransformImage</STRONG>( Image ** image, const char *crop_geometry, const char *image_geometry );</P>
 <P>
 <HR>
@@ -68,7 +68,7 @@
 <P><CODE>Chop()</CODE> removes a region of an image and collapses the image to occupy the removed portion.  If a 
 <FONT SIZE=-1>NULL</FONT> image is returned, check exception to determine why the operation failed.</P>
 <P>The format of the ChopImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ChopImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *chop_info ); </blockquote><PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *ChopImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *chop_info ); </blockquote><PRE>
       ExceptionInfo *exception)</PRE>
 <P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
@@ -92,7 +92,7 @@ Return any errors or warnings in this structure.
 <FONT SIZE=-1>MIFF,</FONT> and 
 <FONT SIZE=-1>MNG</FONT> animation sequences typically start with an image background and each subsequent image varies in size and offset.  <CODE>Coalesce()</CODE> returns a new sequence where each image in the sequence is the same size as the first and composited with the next image in the sequence.  On failure, check exception to determine the reason why the operation failed.</P>
 <P>The format of the CoalesceImages method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *CoalesceImages ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *CoalesceImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -106,7 +106,7 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="cropimage">CropImage</A></H2>
 <blockquote>CropImage ( ) extracts a region of the image starting at the offset defined bycrop_info. If a NULL image is returned, check exception to determine thereason why the operation failed.; </blockquote><P>The format of the CropImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *CropImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *crop_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *CropImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *crop_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -124,7 +124,7 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="deconstructimages">DeconstructImages</A></H2>
 <blockquote>DeconstructImages ( ) returns a new sequence that consists of the first imagein the sequence followed by the maximum bounding region of any differencesin subsequent images. This method can undo a coalesced sequence returnedby CoalesceImages ( ) .; </blockquote><P>The format of the DeconstructImages method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *DeconstructImages ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *DeconstructImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -139,12 +139,12 @@ Return any errors or warnings in this structure.
 <H2><A NAME="flattenimage">FlattenImage</A></H2>
 <P>Method FlattenImage merges a sequence of images.  This is useful for combining Photoshop layers into a single image.</P>
 <P>The format of the FlattenImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *FlattenImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *FlattenImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The image; returned from ReadImage.  It points to the first image in the group to be coalesced.
+The image sequence.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -153,7 +153,7 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="flipimage">FlipImage</A></H2>
 <blockquote>FlipImage ( ) creates a vertical mirror image by reflecting the pixelsaround the central x-axis. If a NULL image is returned, checkexception to determine the reason why the operation failed.; </blockquote><P>The format of the FlipImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *FlipImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *FlipImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -167,7 +167,7 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="flopimage">FlopImage</A></H2>
 <blockquote>FlopImage ( ) creates a horizontal mirror image by reflecting the pixelsaround the central y-axis. If a NULL image is returned, checkexception to determine the reason why the operation failed.; </blockquote><P>The format of the FlopImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *FlopImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *FlopImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -215,7 +215,7 @@ Filename of the
 <P>
 <H2><A NAME="rollimage">RollImage</A></H2>
 <blockquote>RollImage ( ) offsets an image as defined by x and y. If a NULL image isreturned, check exception to determine the reason why the operation failed.; </blockquote><P>The format of the RollImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *RollImage ( <A HREF="types/Image.html">Image</A> *image, const long x_offset, const long y_offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *RollImage ( const <A HREF="types/Image.html">Image</A> *image, const long x_offset, const long y_offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -238,7 +238,7 @@ Return any errors or warnings in this structure.
 <H2><A NAME="shaveimage">ShaveImage</A></H2>
 <P>Method ShaveImage shaves pixels from the image edges.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the ShaveImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ShaveImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *shave_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ShaveImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *shave_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_shave_image%3A">shave_image:</A></STRONG><BR>

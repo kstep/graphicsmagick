@@ -70,12 +70,12 @@
 <P>unsigned int  <STRONG>AllocateImageColormap</STRONG>( Image *image, const unsigned long colors );</P>
 <P>void  <STRONG>AllocateNextImage</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>unsigned int  <STRONG>AnimateImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
-<P>Image * <STRONG>AppendImages</STRONG>( Image *image, const unsigned int stack, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>AppendImages</STRONG>( const Image *image, const unsigned int stack, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>AverageImages</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>ChannelImage</STRONG>( Image *image, const ChannelType channel );</P>
 <P>Image * <STRONG>CloneImage</STRONG>( const Image *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, ExceptionInfo *exception );</P>
 <P>ImageInfo * <STRONG>CloneImageInfo</STRONG>( const ImageInfo *image_info );</P>
-<P>unsigned int  <STRONG>CompositeImage</STRONG>( Image *image, const CompositeOperator compose, Image *composite_image, const long x_offset, const long y_offset );</P>
+<P>unsigned int  <STRONG>CompositeImage</STRONG>( Image *image, const CompositeOperator compose, const Image *composite_image, const long x_offset, const long y_offset );</P>
 <P><STRONG>CycleColormapImage</STRONG>( Image *image, const int amount );</P>
 <P>void  <STRONG>DescribeImage</STRONG>( Image *image, 
 <FONT SIZE=-1>FILE</FONT> *file, const unsigned int verbose );</P>
@@ -83,22 +83,22 @@
 <P>void  <STRONG>DestroyImageInfo</STRONG>( ImageInfo *image_info );</P>
 <P>void  <STRONG>DestroyImages</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>DisplayImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
-<P>unsigned long  <STRONG>GetImageDepth</STRONG>( Image *image );</P>
+<P>unsigned long  <STRONG>GetImageDepth</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>void  <STRONG>GetImageInfo</STRONG>( ImageInfo *image_info );</P>
-<P>ImageType  <STRONG>GetImageType</STRONG>( Image *image );</P>
+<P>ImageType  <STRONG>GetImageType</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>GetNextImage</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>GetNumberScenes</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>IsImageTainted</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>IsImagesEqual</STRONG>( Image *image, Image *reference );</P>
 <P>Image **  <STRONG>ListToGroupImage</STRONG>( Image *image, unsigned long *number_images );</P>
-<P>Image * <STRONG>ModifyImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
+<P><STRONG>ModifyImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ReferenceImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>SetImage</STRONG>( Image *image, const Quantum opacity );</P>
 <P>unsigned int  <STRONG>SetImageClipMask</STRONG>( Image *image, Image *clip_mask );</P>
 <P>unsigned int  <STRONG>SetImageDepth</STRONG>( Image *image, const unsigned long depth );</P>
 <P>void  <STRONG>SetImageOpacity</STRONG>( Image *image, const unsigned int opacity );</P>
 <P><STRONG>SetImageType</STRONG>( Image *image, const ImageType image_type );</P>
-<P>void  <STRONG>TextureImage</STRONG>( Image *image, Image *texture );</P>
+<P>void  <STRONG>TextureImage</STRONG>( Image *image, const Image *texture );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -130,7 +130,7 @@ The number of colors in the image colormap.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="allocatenextimage">AllocateNextImage</A></H2>
-<blockquote>Use AllocateNextImage ( ) to initialize the next image in a sequence. Thenext member of image points to the newly allocated image. If there is amemory shortage, next is assigned NULL.; </blockquote><P>The format of the AllocateNextImage method is:</P>
+<blockquote>Use AllocateNextImage ( ) to initialize the next image in a sequence todefault values. The next member of image points to the newly allocatedimage. If there is a memory shortage, next is assigned NULL.; </blockquote><P>The format of the AllocateNextImage method is:</P>
 <blockquote>void AllocateNextImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -158,10 +158,10 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="appendimages">AppendImages</A></H2>
-<P>The <CODE>Append()</CODE> method takes a set of images and appends them to each other.  Each image in the set must have the equal width or equal height (or both). <CODE>Append()</CODE> returns a single image where each image in the original set is side-by-side if all the heights are equal or stacked on top of each other if all widths are equal.  On failure, a 
+<P>The <CODE>Append()</CODE> method takes a set of images and appends them to each other.  Each image in the set must have the same width or height (or both) (or both). <CODE>Append()</CODE> returns a single image where each image in the original set is side-by-side if all the heights are the same or stacked on top of each other if all widths are the same.  On failure, a 
 <FONT SIZE=-1>NULL</FONT> image is returned and exception describes the reason for the failure.</P>
 <P>The format of the AppendImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *AppendImages ( <A HREF="types/Image.html">Image</A> *image, const unsigned int stack, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *AppendImages ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int stack, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -178,7 +178,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="averageimages">AverageImages</A></H2>
-<P>The <CODE>Average()</CODE> method takes a set of images and averages them together.  Each image in the set must have the same width and the same height.  <CODE>Average()</CODE> returns a single image with each corresponding pixel component of each image averaged.  On failure, a 
+<P>The <CODE>Average()</CODE> method takes a set of images and averages them together.  Each image in the set must have the same width and height.  <CODE>Average()</CODE> returns a single image with each corresponding pixel component of each image averaged.  On failure, a 
 <FONT SIZE=-1>NULL</FONT> image is returned and exception describes the reason for the failure.</P>
 <P>The format of the AverageImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *AverageImages ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
@@ -206,8 +206,7 @@ The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_channel%3A">channel:</A></STRONG><BR>
 <DD>
-
-<FONT SIZE=-1>A</FONT> value of type ChannelType that identifies which channel to extract: Red, Green, Blue, or Opacity.
+Identify which channel to extract: Red, Cyan, Green, Magenta, Blue, Yellow, or Opacity.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cloneimage">CloneImage</A></H2>
@@ -249,7 +248,7 @@ The image info.
 <P>
 <H2><A NAME="compositeimage">CompositeImage</A></H2>
 <blockquote>CompositeImage ( ) returns the second image composited onto the first at thespecified offsets.; </blockquote><P>The format of the CompositeImage method is:</P>
-<blockquote>unsigned int CompositeImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#CompositeOperator">CompositeOperator</A> compose, <A HREF="types/Image.html">Image</A> *composite_image, const long x_offset, const long y_offset ); </blockquote><P>
+<blockquote>unsigned int CompositeImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#CompositeOperator">CompositeOperator</A> compose, const <A HREF="types/Image.html">Image</A> *composite_image, const long x_offset, const long y_offset ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -361,12 +360,16 @@ The image.
 <P>
 <H2><A NAME="getimagedepth">GetImageDepth</A></H2>
 <blockquote>GetImageDepth ( ) returns the depth of the image, either 8 or 16 bits. Bydefault, pixels components are stored as 16-bit two byte unsigned shortintegers that range in value from 0 to 65535. However, if all the pixelshave lower-order bytes of zero, the image is considered to have a depth of8-bit.; </blockquote><P>The format of the GetImageDepth method is:</P>
-<blockquote>unsigned long GetImageDepth ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>unsigned long GetImageDepth ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimageinfo">GetImageInfo</A></H2>
@@ -385,12 +388,16 @@ The image info.
       Palette        PaletteMatte    TrueColor
       TrueColorMatte ColorSeparation ColorSeparationMatte</PRE>
 <P>The format of the GetImageType method is:</P>
-<blockquote><A HREF="types/Enumerations.html#ImageType">ImageType</A> GetImageType ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote><A HREF="types/Enumerations.html#ImageType">ImageType</A> GetImageType ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getnextimage">GetNextImage</A></H2>
@@ -469,7 +476,7 @@ The length of the image array is returned here.
 <P>
 <H2><A NAME="modifyimage">ModifyImage</A></H2>
 <blockquote>ModifyImage ( ) ensures that there is only a single reference to the imageto be modified, updating the provided image pointer to point to a clone ofthe original image if necessary.; </blockquote><P>The format of the ModifyImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ModifyImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>ModifyImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -567,7 +574,7 @@ Image type.
 <P>
 <H2><A NAME="textureimage">TextureImage</A></H2>
 <blockquote>TextureImage ( ) repeatedly tiles the texture image across and down the imagecanvas.; </blockquote><P>The format of the TextureImage method is:</P>
-<blockquote>void TextureImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *texture ); </blockquote><P>
+<blockquote>void TextureImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Image.html">Image</A> *texture ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
