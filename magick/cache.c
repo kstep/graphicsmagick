@@ -63,8 +63,7 @@
   Global declarations.
 */
 static off_t
-  cache_threshold = ~0,
-  free_memory = 0;
+  free_memory = ~0;
 
 static SemaphoreInfo
   *cache_semaphore = (SemaphoreInfo *) NULL;
@@ -177,8 +176,8 @@ static void CloseCache(Cache cache)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloseImagePixels() closes the pixel cache.  Use this method to
-%  prevent too many file descriptors from being allocated when reading an image
+%  Method CloseImagePixels() closes the pixel cache.  Use this method to prevent
+%  too many file descriptors from being allocated when reading an image
 %  sequence.  File descriptors are only used for a disk-based cache.  This is
 %  essentially a no-op for a memory-based cache.
 %
@@ -1280,18 +1279,20 @@ MagickExport unsigned int OpenCache(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (void *) NULL);
-  if (cache_threshold == ~0)
+  if (free_memory == ~0)
     {
-      size_t
-        threshold;
+      char
+        *threshold;
 
       /*
         Set cache memory threshold.
       */
-      threshold=PixelCacheThreshold;
-      if (getenv("MAGICK_CACHE_THRESHOLD") != (char *) NULL)
-        threshold=atol(getenv("MAGICK_CACHE_THRESHOLD"));
-      SetCacheThreshold(threshold);
+#if defined(PixelCacheThreshold)
+      SetCacheThreshold(PixelCacheThreshold);
+#endif
+      threshold=getenv("MAGICK_CACHE_THRESHOLD");
+      if (threshold != (char *) NULL)
+        SetCacheThreshold(atol(threshold));
     }
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
@@ -1395,22 +1396,19 @@ else
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
-  if (cache_threshold != 0)
+  pixels=(PixelPacket *) MapBlob(cache_info->file,IOMode,&offset);
+  if (pixels != (PixelPacket *) NULL)
     {
       /*
         Create memory-mapped pixel cache.
       */
-      pixels=(PixelPacket *) MapBlob(cache_info->file,IOMode,&offset);
-      if (pixels != (PixelPacket *) NULL)
-        {
-          cache_info->type=MemoryMappedCache;
-          cache_info->pixels=pixels;
-          cache_info->indexes=(IndexPacket *) NULL;
-          if ((cache_info->storage_class == PseudoClass) ||
-              (cache_info->colorspace == CMYKColorspace))
-            cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
-          CloseCache(image->cache);
-        }
+      cache_info->type=MemoryMappedCache;
+      cache_info->pixels=pixels;
+      cache_info->indexes=(IndexPacket *) NULL;
+      if ((cache_info->storage_class == PseudoClass) ||
+          (cache_info->colorspace == CMYKColorspace))
+        cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
+      CloseCache(image->cache);
     }
   return(True);
 }
@@ -1763,14 +1761,7 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
 */
 MagickExport void SetCacheThreshold(const long threshold)
 {
-  off_t
-    offset;
-
-  if (cache_threshold == ~0)
-    cache_threshold=0;
-  offset=1048576*(cache_threshold-threshold);
-  (void) GetCacheMemory(-offset);
-  cache_threshold=threshold;
+  free_memory=1024*1024*threshold;
 }
 
 /*
