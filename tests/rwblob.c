@@ -56,15 +56,13 @@ static int CompareImage( int fuzz, Image *original, Image *final )
   for ( y = 0; y < (int) original->rows; y++ )
     {
       /* Get row from original */
-      if (!GetPixelCache(original,0,y,original->columns,1))
+      if (!(orig_p = GetPixelCache(original,0,y,original->columns,1)))
 	return 1;
       /* Get row from final */
-      if (!GetPixelCache(final,0,y,final->columns,1))
+      if (!(final_p = GetPixelCache(final,0,y,final->columns,1)))
 	return 1;
 
       /* Compare pixels in row */
-      orig_p  = original->pixels;
-      final_p = final->pixels;
       for ( x = 0; x < (int) original->columns; x++ )
 	{
 	  if ( ( ( diff = labs((long)orig_p->red     - (long)final_p->red   ) )  > factor ) ||
