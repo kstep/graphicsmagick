@@ -178,9 +178,9 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       RegisterFPXImage();
       RegisterGIFImage();
       RegisterGRAYImage();
-      RegisterGradationImage();
+      RegisterGRADATIONImage();
       RegisterHDFImage();
-      RegisterHistogramImage();
+      RegisterHISTOGRAMImage();
       RegisterHTMLImage();
       RegisterICCImage();
       RegisterICONImage();
