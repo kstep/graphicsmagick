@@ -425,6 +425,26 @@ void Magick::Image::channel ( const ChannelType channel_ )
   throwImageException();
 }
 
+// Set or obtain modulus channel depth
+void Magick::Image::channelDepth ( const ChannelType channel_,
+                                   const unsigned int depth_)
+{
+  modifyImage();
+  SetImageChannelDepth( image(), channel_, depth_);
+  throwImageException();
+}
+unsigned int Magick::Image::channelDepth ( const ChannelType channel_ )
+{
+  unsigned int channel_depth;
+
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  channel_depth=GetImageChannelDepth( constImage(), channel_,
+                                      &exceptionInfo );
+  throwException( exceptionInfo );
+}
+
+
 // Charcoal-effect image
 void Magick::Image::charcoal( const double radius_, const double sigma_ )
 {

@@ -2423,7 +2423,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     } \
 }
 
-MagickExport unsigned long GetImageChannelDepth(const Image *image,
+MagickExport unsigned int GetImageChannelDepth(const Image *image,
   const ChannelType channel, ExceptionInfo *exception)
 {
   unsigned int

@@ -30,16 +30,16 @@ image sequences or images (e.g. of  format  GIF, TIFF, MIFF, Postscript,
 &amp; MNG) which are comprized of multiple  image  frames. Individual
 frames of a multi-frame image may be requested by adding array-style
 notation to the end of the file name (e.g. "animation.gif[3]" retrieves
-the fourth frame of a GIF animation.&nbsp; Various image manipulation  
+the fourth frame of a GIF animation.&nbsp; Various image manipulation
 operations may be applied to the image. Attributes may be set on the
-image   to influence the operation of the manipulation operations. The <a
+image to influence the operation of the manipulation operations. The <a
  href="Pixels.html"> Pixels</a> class provides low-level access to image
 pixels. As a convenience, including <tt><font color="#663366">&lt;Magick++.h&gt;</font></tt>
 is sufficient in  order to use the complete Magick++ API. The Magick++
 API is enclosed within the <i>Magick</i> namespace so you must either
-add the prefix "<tt> Magick::</tt> " to each class/enumeration name or
-add the statement "<tt> using namespace  Magick;</tt>" after including
-the <tt>Magick++.h </tt> header.
+add the prefix "<tt> Magick::</tt> " to each class/enumeration name or add
+the statement "<tt> using namespace  Magick;</tt>" after including the <tt>Magick++.h</tt>
+header.
 <p>The preferred way to allocate Image objects is via automatic
 allocation (on the stack). There is no concern that allocating Image
 objects on the   stack will excessively enlarge the stack since Magick++
@@ -49,9 +49,9 @@ allocation (via <i>new</i>) since it  is much less error prone and
 allows use of C++ scoping rules to avoid memory  leaks. Use of automatic
 allocation allows Magick++ objects to be assigned  and copied just like
 the C++ intrinsic data types (e.g. '<i>int</i> '), leading  to clear and
-easy to read code. Use of automatic allocation leads to naturally 
+easy to read code. Use of automatic allocation leads to naturally
 exception-safe code since if an exception is thrown, the object is
-automatically  deallocated once the stack unwinds past the scope of the
+automatically deallocated once the stack unwinds past the scope of the
 allocation (not the case for objects allocated via <i>new</i> ). </p>
 <p>Image is very easy to use. For example, here is a the source to a
 program which reads an image, crops it, and writes it to a new file (the
@@ -163,8 +163,8 @@ represented using  the <a href="Blob.html">Blob</a> class. The encoded
 image may be initially placed in memory by reading it  directly from a
 file, reading the image from a database, memory-mapped  from  a disk
 file, or could be written to memory by Magick++. Once the encoded image
-has been placed within a Blob, it may be read into a Magick++ Image 
-via a <a href="#constructor_blob">constructor</a> or <a href="#read">read()</a>
+has been placed within a Blob, it may be read into a Magick++ Image via
+a <a href="#constructor_blob">constructor</a> or <a href="#read">read()</a>
 . Likewise, a Magick++ image may be written to a Blob via <a
  href="#write"> write()</a> .
 <p>An example of using Image to write to a Blob follows: <br>
@@ -887,7 +887,7 @@ image. If the image pixels are opaque then they are set to the specified
 opacity value, otherwise they are blended with the supplied opacity
 value.&nbsp; The value of opacity_ ranges from 0 (completely opaque) to <i>MaxRGB</i>
 . The defines <i>OpaqueOpacity</i> and <i>TransparentOpacity</i> are
-available   to specify completely opaque or completely transparent,
+available to specify completely opaque or completely transparent,
 respectively.</font></td>
     </tr>
     <tr>
@@ -1509,13 +1509,38 @@ on.</font></td>
     </tr>
     <tr>
       <td><a name="cacheThreshold"></a> <font size="-1">cacheThreshold</font></td>
-      <td><font size="-1">const unsigned int</font></td>
+      <td><font size="-1">unsigned int</font></td>
       <td bgcolor="#666666"><font size="-1">&nbsp;</font></td>
       <td><font size="-1">const int</font></td>
       <td><font size="-1">Pixel cache threshold in megabytes. Once this
 threshold is exceeded, all subsequent pixels cache operations are
 to/from disk. This    is a static method and the attribute it sets is
 shared by all Image objects.</font></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: middle;" valign="middle"><small><a
+ name="channelDepth"></a>channelDepth<br>
+      </small></td>
+      <td style="vertical-align: middle;" valign="middle"><small>unsigned
+int<br>
+      </small></td>
+      <td style="vertical-align: middle;" valign="middle"><small>const
+ChannelType channel_<br>
+      </small></td>
+      <td style="vertical-align: middle;"><small>const ChannelType
+channel_, const unsigned int depth_<br>
+      </small></td>
+      <td style="vertical-align: middle;"><small>Channel modulus depth.
+The channel modulus depth represents the minimum number of bits
+required to support the channel without loss. Setting the channel's
+modulus depth modifies the channel (i.e. discards resolution) if the
+requested modulus depth is less than the current modulus depth,
+otherwise the channel is not altered. There is no attribute associated
+with the modulus depth so the current modulus depth is obtained by
+inspecting the pixels. As a result, the depth returned may be less than
+the most recently set channel depth. Subsequent image processing may
+result in increasing the channel depth.<br>
+      </small></td>
     </tr>
     <tr>
       <td>
@@ -1899,8 +1924,7 @@ interlacing, and <i>PlaneInterlace</i> uses plane interlacing. <i>
 PartitionInterlace</i> is like <i>PlaneInterlace</i> except the&nbsp;
 different planes&nbsp; are saved&nbsp; to individual  files (e.g.&nbsp;
 image.R, image.G, and image.B). Use <i>LineInterlace</i> or <i>
-PlaneInterlace</i> to create an interlaced GIF or progressive JPEG
-image.</font></td>
+PlaneInterlace</i> to create an interlaced GIF or progressive JPEG image.</font></td>
     </tr>
     <tr>
       <td>
@@ -1984,9 +2008,9 @@ int depth_<br>
 modulus depth (minimum number of bits required to support
 red/green/blue components without loss of accuracy). The pixel modulus
 depth may be decreased by supplying a value which is less than the
-current value, updating the pixels (reducing accuracy) to the new
-depth. The pixel modulus depth can not be increased over the current
-value using this method.<br>
+current value, updating the pixels (reducing accuracy) to the new depth.
+The pixel modulus depth can not be increased over the current value
+using this method.<br>
       </small></td>
     </tr>
     <tr>

@@ -939,6 +939,8 @@ extern MagickExport unsigned int
   CycleColormapImage(Image *image,const int amount),
   DescribeImage(Image *image,FILE *file,const unsigned int verbose),
   DisplayImages(const ImageInfo *image_info,Image *image),
+  GetImageChannelDepth(const Image *image,
+    const ChannelType channel, ExceptionInfo *exception),
   GradientImage(Image *,const PixelPacket *,const PixelPacket *),
   IsImagesEqual(Image *,const Image *),
   IsTaintImage(const Image *),
@@ -955,8 +957,6 @@ extern MagickExport unsigned int
   TransformRGBImage(Image *,const ColorspaceType);
 
 extern MagickExport unsigned long
-  GetImageChannelDepth(const Image *image,
-    const ChannelType channel, ExceptionInfo *exception),
   GetImageDepth(const Image *,ExceptionInfo *);
 
 extern MagickExport void

@@ -168,6 +168,11 @@ namespace Magick
     // Extract channel from image
     void            channel ( const ChannelType channel_ );
 
+    // Set or obtain modulus channel depth
+    void            channelDepth ( const ChannelType channel_,
+                                   const unsigned int depth_ );
+    unsigned int    channelDepth ( const ChannelType channel_ );
+
     // Charcoal effect image (looks like charcoal sketch)
     // The radius_ parameter specifies the radius of the Gaussian, in
     // pixels, not counting the center pixel.  The sigma_ parameter

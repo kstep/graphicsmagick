@@ -1,3 +1,8 @@
+2003-08-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (channelDepth): New method to set or get the
+	modulus depth for a specified channel.
+
 2003-08-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h (Magick): Added support for

@@ -1,3 +1,8 @@
+2003-08-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (GetImageChannelDepth): Return an 'unsigned int'
+	rather than 'long'.
+
 2003-08-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/Magick.xs: Add support for CopyCyan, CopyMagenta,
