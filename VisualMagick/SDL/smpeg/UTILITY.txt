@@ -1,3 +1,7 @@
 #ECF - this file contains additional configuration info.
 SOURCE = ..\..\..\..\SDL\Sdl\src\main\win32\SDL_main.c
-EXCLUDE = testtypes.c
+EXCLUDE = gtv.c
+EXCLUDE = gtv.h
+EXCLUDE = glmovie.c
+EXCLUDE = glmovie.h
+EXCLUDE = glmovie-tile.c
