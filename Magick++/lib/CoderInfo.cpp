@@ -22,7 +22,7 @@ Magick::CoderInfo::CoderInfo ( const std::string &name_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  Magick::MagickInfo *magickInfo = GetMagickInfo( name_.c_str(), &exceptionInfo );
+  const Magick::MagickInfo *magickInfo = GetMagickInfo( name_.c_str(), &exceptionInfo );
   throwException( exceptionInfo );
   if( !magickInfo )
     throwExceptionExplicit(OptionError,

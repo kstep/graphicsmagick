@@ -161,7 +161,8 @@ static void Usage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [options ...] image composite [mask] composite\n",
+  (void) printf(
+    "Usage: %.1024s [options ...] image composite [mask] composite\n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
@@ -227,7 +228,6 @@ int main(int argc,char **argv)
     i;
 
   unsigned int
-    doexit,
     matte,
     status,
     stereo,
@@ -238,13 +238,11 @@ int main(int argc,char **argv)
   */
   if (LocaleCompare("-composite",argv[0]) == 0)
     {
-      doexit=False;
       if (argc < 4)
         return(False);
     }
   else
     {
-      doexit=True;
       ReadCommandlLine(argc,&argv);
       if (LocaleNCompare("composite",argv[0],9) == 0)
         InitializeMagick(GetExecutionPath(argv[0]));
@@ -1081,7 +1079,7 @@ int main(int argc,char **argv)
     DescribeImage(combine_image,stderr,False);
   DestroyImages(combine_image);
   DestroyImageInfo(image_info);
-  if (doexit == False)
+  if (LocaleCompare("-composite",argv[0]) == 0)
     return(True);
   DestroyMagick();
   LiberateMemory((void **) &argv);

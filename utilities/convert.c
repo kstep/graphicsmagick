@@ -171,6 +171,27 @@
 #include "magick/define.h"
 
 /*
+  Typedef declarations.
+*/
+typedef struct _OptionInfo
+{
+  int
+    append;
+
+  long
+    morph,
+    scene;
+
+  unsigned int
+    average,
+    coalesce,
+    deconstruct,
+    global_colormap,
+    flatten,
+    mosaic;
+} OptionInfo;
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -242,13 +263,13 @@ static void ConcatenateImages(int argc,char **argv)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SnapshotImages performs all the steps needed to take the images
-%  that have been read and send them to an output file.
+%  Method SnapshotImages performs all the steps needed to take the images that
+%  have been read and send them to an output file.
 %
 %  The format of the SnapshotImages method is:
 %
 %      unsigned int SnapshotImages(const ImageInfo *image_info,const int argc,
-%        char **argv,Image **images,WriteOptions *opts)
+%        char **argv,Image **images,OptionInfo *option_info)
 %
 %  A description of each parameter follows:
 %
@@ -262,32 +283,13 @@ static void ConcatenateImages(int argc,char **argv)
 %
 %    o images: The image; returned from ReadImage.
 %
-%    o opts: A pointer to a structure containing a set of flags that
+%    o option_info: A pointer to a structure containing a set of flags that
 %      control how the images are written.
 %
 %
 */
-typedef struct _WriteOptions
-{
-  int
-    append;
-
-  long
-    morph,
-    scene;
-
-  unsigned int
-    average,
-    coalesce,
-    deconstruct,
-    global_colormap,
-    flatten,
-    mosaic;
-} WriteOptions;
-
-static void SnapshotImages(ImageInfo *image_info,
-  const int argc,char **argv,Image **images,
-    WriteOptions *opts)
+static void SnapshotImages(ImageInfo *image_info,const int argc,char **argv,
+  Image **images,OptionInfo *option_info)
 {
   ExceptionInfo
     exception;
@@ -308,17 +310,16 @@ static void SnapshotImages(ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(images != (Image **) NULL);
   assert((*images)->signature == MagickSignature);
-
   if (argc < 2)
     return;
-  scene=opts->scene;
+  scene=option_info->scene;
   image=(*images);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   status=MogrifyImages(image_info,argc-1,argv,images);
   image=(*images);
   CatchImageException(image);
-  if (opts->append != 0)
+  if (option_info->append != 0)
     {
       Image
         *append_image;
@@ -326,14 +327,14 @@ static void SnapshotImages(ImageInfo *image_info,
       /*
         Append an image sequence.
       */
-      append_image=AppendImages(image,opts->append == 1,&exception);
+      append_image=AppendImages(image,option_info->append == 1,&exception);
       if (append_image != (Image *) NULL)
         {
           DestroyImages(image);
           image=append_image;
         }
     }
-  if (opts->average)
+  if (option_info->average)
     {
       Image
         *average_image;
@@ -348,7 +349,7 @@ static void SnapshotImages(ImageInfo *image_info,
           image=average_image;
         }
     }
-  if (opts->coalesce)
+  if (option_info->coalesce)
     {
       Image
         *coalesce_image;
@@ -363,7 +364,7 @@ static void SnapshotImages(ImageInfo *image_info,
           image=coalesce_image;
         }
     }
-  if (opts->deconstruct)
+  if (option_info->deconstruct)
     {
       Image
         *deconstruct_image;
@@ -378,7 +379,7 @@ static void SnapshotImages(ImageInfo *image_info,
           image=deconstruct_image;
         }
     }
-  if (opts->flatten)
+  if (option_info->flatten)
     {
       Image
         *flatten_image;
@@ -393,7 +394,7 @@ static void SnapshotImages(ImageInfo *image_info,
           image=flatten_image;
         }
     }
-  if (opts->morph != 0)
+  if (option_info->morph != 0)
     {
       Image
         *morph_image;
@@ -401,14 +402,14 @@ static void SnapshotImages(ImageInfo *image_info,
       /*
         Morph an image sequence.
       */
-      morph_image=MorphImages(image,opts->morph,&exception);
+      morph_image=MorphImages(image,option_info->morph,&exception);
       if (morph_image != (Image *) NULL)
         {
           DestroyImages(image);
           image=morph_image;
         }
     }
-  if (opts->mosaic)
+  if (option_info->mosaic)
     {
       Image
         *mosaic_image;
@@ -423,7 +424,7 @@ static void SnapshotImages(ImageInfo *image_info,
           image=mosaic_image;
         }
     }
-  if (opts->global_colormap)
+  if (option_info->global_colormap)
     (void) MapImages(image,(Image *) NULL,image_info->dither);
   /*
     Write converted images.
@@ -636,6 +637,9 @@ int main(int argc,char **argv)
     j,
     x;
 
+  OptionInfo
+    option_info;
+
   register Image
     *p;
 
@@ -643,25 +647,19 @@ int main(int argc,char **argv)
     i;
 
   unsigned int
-    doexit,
     ping,
     status;
-
-  WriteOptions
-    opts;
 
   /*
     Initialize command line arguments.
   */
   if (LocaleCompare("-convert",argv[0]) == 0)
     {
-      doexit=False;
       if (argc < 3)
         return(False);
     }
   else
     {
-      doexit=True;
       ReadCommandlLine(argc,&argv);
       if (LocaleNCompare("convert",argv[0],7) == 0)
         InitializeMagick(GetExecutionPath(argv[0]));
@@ -677,23 +675,15 @@ int main(int argc,char **argv)
   /*
     Set defaults.
   */
-  opts.append=0;
-  opts.average=False;
-  opts.coalesce=False;
-  opts.deconstruct=False;
-  opts.flatten=False;
   GetExceptionInfo(&exception);
-  opts.morph=0;
-  opts.mosaic=False;
   filename=(char *) NULL;
-  opts.global_colormap=False;
   image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,&exception);
   ping=False;
   option=(char *) NULL;
-  opts.scene=0;
+  memset(&option_info,0,sizeof(OptionInfo));
   /*
     Parse command-line arguments.
   */
@@ -761,12 +751,12 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("append",option+1,2) == 0)
             {
-              opts.append=(*option) == '-' ? 1 : -1;
+              option_info.append=(*option) == '-' ? 1 : -1;
               break;
             }
           if (LocaleNCompare("average",option+1,2) == 0)
             {
-              opts.average=(*option == '-');
+              option_info.average=(*option == '-');
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
@@ -888,7 +878,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("coalesce",option+1,3) == 0)
             {
-              opts.coalesce=(*option == '-');
+              option_info.coalesce=(*option == '-');
               break;
             }
           if (LocaleNCompare("colorize",option+1,7) == 0)
@@ -1021,7 +1011,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("deconstruct",option+1,3) == 0)
             {
-              opts.deconstruct=(*option == '-');
+              option_info.deconstruct=(*option == '-');
               break;
             }
           if (LocaleNCompare("debug",option+1,3) == 0)
@@ -1195,7 +1185,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("flatten",option+1,3) == 0)
             {
-              opts.flatten=(*option == '-');
+              option_info.flatten=(*option == '-');
               break;
             }
           if (LocaleNCompare("flip",option+1,3) == 0)
@@ -1488,7 +1478,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("map",option+1,3) == 0)
             {
-              opts.global_colormap=(*option == '+');
+              option_info.global_colormap=(*option == '+');
               if (*option == '-')
                 {
                   i++;
@@ -1537,19 +1527,19 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("morph",option+1,3) == 0)
             {
-              opts.morph=0;
+              option_info.morph=0;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing frames",option);
-                  opts.morph=atol(argv[i]);
+                  option_info.morph=atol(argv[i]);
                 }
               break;
             }
           if (LocaleNCompare("mosaic",option+1,3) == 0)
             {
-              opts.mosaic=(*option == '-');
+              option_info.mosaic=(*option == '-');
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
@@ -1834,14 +1824,14 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("scene",option+1,3) == 0)
             {
-              opts.scene=0;
+              option_info.scene=0;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing scene number",option);
                 }
-              opts.scene=atol(argv[i]);
+              option_info.scene=atol(argv[i]);
               break;
             }
           if (LocaleNCompare("seed",option+1,3) == 0)
@@ -1933,9 +1923,6 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("stack",option+1,5) == 0)
             {
-              /* mogrify currrent image and write it, but leave the current
-                 image as the top of the stack.
-               */
               if (LocaleNCompare("stackdrop",option+1,9) == 0)
                 {
                   if (*option == '-')
@@ -1946,45 +1933,43 @@ int main(int argc,char **argv)
                       ImageInfo
                         *clone_info;
 
-                      int
-                        nargs;
-
                       i++;
                       if (i == argc)
-                        MagickError(OptionError,"Missing outut filename",option);
+                        MagickError(OptionError,"Missing output filename",
+                          option);
                       if (image == (Image *) NULL)
-                        MagickError(OptionError,"Missing source image",(char *) NULL);
-                      nargs=i+1;
+                        MagickError(OptionError,"Missing source image",
+                          (char *) NULL);
                       clone_info=CloneImageInfo(image_info);
-                      clone_image=CloneImage(image,0,0,False,&(image->exception));
+                      clone_image=CloneImage(image,0,0,False,
+                        &(image->exception));
                       if (clone_image == (Image *) NULL)
-                        MagickError(OptionError,"Missing an image file name",(char *) NULL);
-                      SnapshotImages(clone_info,nargs-j+1,argv+j-1,&clone_image,&opts);
+                        MagickError(OptionError,"Missing an image file name",
+                          (char *) NULL);
+                      SnapshotImages(clone_info,i-j+2,argv+j-1,&clone_image,
+                        &option_info);
                       DestroyImages(clone_image);
                       DestroyImageInfo(clone_info);
                       j=i+1;
                     }
                 }
-              /* mogrify current image and write it and then replace it
-                 with the image that was written out.
-               */
-              else if (LocaleNCompare("stackreplace",option+1,9) == 0)
-                {
-                  if (*option == '-')
-                    {
-                      int
-                        nargs;
-
-                      i++;
-                      if (i == argc)
-                        MagickError(OptionError,"Missing output filename",option);
-                      if (image == (Image *) NULL)
-                        MagickError(OptionError,"Missing source image",(char *) NULL);
-                      nargs=i+1;
-                      SnapshotImages(image_info,nargs-j+1,argv+j-1,&image,&opts);
-                      j=i+1;
-                    }
-                }
+              else
+                if (LocaleNCompare("stackreplace",option+1,9) == 0)
+                  {
+                    if (*option == '-')
+                      {
+                        i++;
+                        if (i == argc)
+                          MagickError(OptionError,"Missing output filename",
+                            option);
+                        if (image == (Image *) NULL)
+                          MagickError(OptionError,"Missing source image",
+                            (char *) NULL);
+                        SnapshotImages(image_info,i-j+2,argv+j-1,&image,
+                          &option_info);
+                        j=i+1;
+                      }
+                  }
               break;
             }
           if (LocaleCompare("stroke",option+1) == 0)
@@ -2195,10 +2180,10 @@ int main(int argc,char **argv)
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  SnapshotImages(image_info,argc-j+1,argv+j-1,&image,&opts);  
+  SnapshotImages(image_info,argc-j+1,argv+j-1,&image,&option_info);
   DestroyImages(image);
   DestroyImageInfo(image_info);
-  if (doexit == False)
+  if (LocaleCompare("-convert",argv[0]) == 0)
     return(True);
   DestroyMagick();
   LiberateMemory((void **) &argv);

@@ -106,7 +106,7 @@
 %    -median radius       apply a median filter to the image
 %    -modulate value      vary the brightness, saturation, and hue
 %    -monochrome          transform image to black and white
-%    -negate              replace every pixel with its complementary color 
+%    -negate              replace every pixel with its complementary color
 %    -noise radius        add or reduce noise in an image
 %    -normalize           transform image to span the full range of colors
 %    -opaque color        change this color to the fill color
@@ -348,7 +348,6 @@ int main(int argc,char **argv)
     i;
 
   unsigned int
-    doexit,
     global_colormap,
     status;
 
@@ -357,13 +356,11 @@ int main(int argc,char **argv)
   */
   if (LocaleCompare("-mogrify",argv[0]) == 0)
     {
-      doexit=False;
       if (argc < 3)
         return(False);
     }
   else
     {
-      doexit=True;
       ReadCommandlLine(argc,&argv);
       if (LocaleNCompare("mogrify",argv[0],7) == 0)
         InitializeMagick(GetExecutionPath(argv[0]));
@@ -1738,7 +1735,7 @@ int main(int argc,char **argv)
   if ((i != argc) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   DestroyImageInfo(image_info);
-  if (doexit == False)
+  if (LocaleCompare("-mogrify",argv[0]) == 0)
     return(True);
   DestroyMagick();
   LiberateMemory((void **) &argv);
