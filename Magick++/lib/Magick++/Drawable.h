@@ -12,6 +12,7 @@
 
 #include <string>
 #include <list>
+#include <utility>
 #include "Magick++/Color.h"
 #include "Magick++/Geometry.h"
 
@@ -20,26 +21,10 @@ namespace Magick
   //
   // Representation of an x,y coordinate
   //
-  class Coordinate
-  {
-    friend std::ostream& operator<<( std::ostream& stream_,
-				     const Coordinate& coordinate_ );
-  public:
-    Coordinate ( void );
-    Coordinate ( double x_, double y_ );
-    ~Coordinate ();
+  typedef std::pair<const double,const double> Coordinate;
 
-    void   x ( double x_ );
-    double x ( void ) const;
-
-    void   y ( double y_ );
-    double y ( void ) const;
-
-  private:
-    double _x;
-    double _y;
-  };
-
+  std::ostream& operator<<( std::ostream& stream_,
+                            const Coordinate& coordinate_ );
   //
   // Representation of a drawable object
   //
@@ -50,99 +35,15 @@ namespace Magick
     Drawable ( void );
     
     // Destructor
-    ~Drawable ( void );
-    
-    //
-    // Drawable Objects
-    //
+    virtual ~Drawable ( void );
 
-    // Arc
-    void arc ( double startX_, double startY_,
-               double endX_, double endY_,
-               double startDegrees, double endDegrees_ );
-    void arc ( const Coordinate &startCoordinate_,
-               const Coordinate &endCoordinate_,
-               const Coordinate &rotation_ );
-
-    // Bezier curve (Coordinate list must contain at least three members)
-    void bezier ( const std::list<Magick::Coordinate> &coordinates_ );
-
-    // Circle
-    void circle ( double originX_, double originY_,
-		  double perimX_, double perimY_ );
-    void circle ( const Coordinate &originCoordinate_,
-		  const Coordinate &perimCoordinate_ );
-
-    // Colorize at point using PaintMethod
-    void color ( double x_, double y_,
-		 PaintMethod paintMethod_ );
-    void color ( const Coordinate &coordinate_,
-		 PaintMethod paintMethod_ );
-
-    // Ellipse
-    void ellipse ( double originX_, double originY_, 
-		   double width_, double height_,
-		   double arcStart_, double arcEnd_ );
-    void ellipse ( const Coordinate &originCoordinate_, 
-		   double width_, double height_,
-		   double arcStart_, double arcEnd_ );
-
-    // Draw image at point
-    void image ( double x_, double y_,
-		 const std::string &image_ );
-    void image ( const Coordinate &coordinate_,
-		 const std::string &image_ );
-
-    // Line
-    void line ( double startX_, double startY_,
-		double endX_, double endY_ );
-    void line ( const Coordinate &startCoordinate_,
-		const Coordinate &endCoordinate_ );
-
-    // Change pixel matte value to transparent using PaintMethod
-    void matte ( double x_, double y_,
-		 PaintMethod paintMethod_ );
-    void matte ( const Coordinate &coordinate_,
-		 PaintMethod paintMethod_ );
-
-// path
-
-    // Point
-    void point ( double x_, double y_ );
-    void point ( const Coordinate &coordinate_ );
-
-    // Polygon (Coordinate list must contain at least three members)
-    void polygon ( const std::list<Magick::Coordinate> &coordinates_ );
-
-// polyline
-
-    // Rectangle
-    void rectangle ( double upperLeftX_, double upperLeftY_,
-                     double lowerRightX_, double lowerRightY );
-    void rectangle ( const Coordinate &upperLeftCoordinate_,
-                     const Coordinate &lowerRightCoordinate_ );
-
-    // RoundRectangle
-    void roundRectangle ( double centerX_, double centerY_,
-                          double width_, double hight_,
-                          double cornerWidth_, double cornerHeight_);
-    void roundRectangle ( const Coordinate &centerCoordinate_,
-                          const Coordinate &rectangleDimension_,
-                          const Coordinate &cornerDimension_);
-
-    // Draw text at point
-    void text ( double x_, double y_,
-		std::string text_ );
-    void text ( const Coordinate &coordinate_,
-		std::string text_ );
-     
     //
     // Following accessors are for internal use only
     //
     void        primitive ( const std::string &primitive_ );
     std::string primitive ( void ) const;
-    
-  private:
+
+  protected:
 
     // Common implementation of methods which take one Coordinate argument
     void one_arg_impl ( const char* command_,
@@ -160,7 +61,138 @@ namespace Magick
     // This is the string normally passed by -draw, e.g. "circle
     // +100+100 +200+200"
     std::string _primitive;
+
+    // PrimitiveType _primitive
+    // std::list<Magick::Coordinate> _points
+    // PaintMethod __method
+    // Color _stroke
+    // Color _fill
+    // Image _tile
+    // double _linewidth
+    // Color _bordercolor
+    // double _x
+    // double _y
+    // double _rotate
   };
+
+    
+  //
+  // Drawable Objects
+  //
+
+  // Arc
+  class DrawableArc : public Drawable
+  {
+  public:
+    DrawableArc ( double startX_, double startY_,
+                  double endX_, double endY_,
+                  double startDegrees, double endDegrees_ );
+  };
+
+  // Bezier curve (Coordinate list must contain at least three members)
+  class DrawableBezier : public Drawable
+  {
+  public:
+    DrawableBezier ( const std::list<Magick::Coordinate> &coordinates_ );
+  };
+
+    // Circle
+  class DrawableCircle : public Drawable
+  {
+  public:
+    DrawableCircle ( double originX_, double originY_,
+                     double perimX_, double perimY_ );
+  };
+
+  // Colorize at point using PaintMethod
+  class DrawableColor : public Drawable
+  {
+  public:
+    DrawableColor ( double x_, double y_,
+                    PaintMethod paintMethod_ );
+  };
+
+  // Ellipse
+  class DrawableEllipse : public Drawable
+  {
+  public:
+    DrawableEllipse ( double originX_, double originY_, 
+                      double width_, double height_,
+                      double arcStart_, double arcEnd_ );
+  };
+
+  // Draw image at point
+  class DrawableImage : public Drawable
+  {
+  public:
+    DrawableImage ( double x_, double y_,
+                    const std::string &image_ );
+  };
+
+  // Line
+  class DrawableLine : public Drawable
+  {
+  public:
+    DrawableLine ( double startX_, double startY_,
+                   double endX_, double endY_ );
+  };
+
+  // Change pixel matte value to transparent using PaintMethod
+  class DrawableMatte : public Drawable
+  {
+  public:
+    DrawableMatte ( double x_, double y_,
+                    PaintMethod paintMethod_ );
+  };
+
+// path
+
+  // Point
+  class DrawablePoint : public Drawable
+  {
+  public:
+    DrawablePoint ( double x_, double y_ );
+  };
+
+  // Polygon (Coordinate list must contain at least three members)
+  class DrawablePolygon : public Drawable
+  {
+  public:
+    DrawablePolygon ( const std::list<Magick::Coordinate> &coordinates_ );
+  };
+
+  // Polyline (Coordinate list must contain at least three members)
+  class DrawablePolyline : public Drawable
+  {
+  public:
+    DrawablePolyline ( const std::list<Magick::Coordinate> &coordinates_ );
+  };
+
+  // Rectangle
+  class DrawableRectangle : public Drawable
+  {
+  public:
+    DrawableRectangle ( double upperLeftX_, double upperLeftY_,
+                        double lowerRightX_, double lowerRightY );
+  };
+
+  // RoundRectangle
+  class DrawableRoundRectangle : public Drawable
+  {
+  public:
+    DrawableRoundRectangle ( double centerX_, double centerY_,
+                             double width_, double hight_,
+                             double cornerWidth_, double cornerHeight_);
+  };
+
+  // Draw text at point
+  class DrawableText : public Drawable
+  {
+  public:
+    DrawableText ( double x_, double y_,
+                   std::string text_ );
+  };
+
 } // namespace Magick
 
 //
@@ -168,61 +200,8 @@ namespace Magick
 //
 
 //
-// Coordinate class
-//
-inline Magick::Coordinate::Coordinate ( void )
-  : _x(0),
-    _y(0)
-{
-}
-
-inline Magick::Coordinate::Coordinate ( double x_, double y_ )
-  : _x(x_),
-    _y(y_)
-{
-}
-
-inline Magick::Coordinate::~Coordinate ()
-{
-  // Nothing to do
-}
-
-inline void Magick::Coordinate::x ( double x_ )
-{
-  _x = x_;
-}
-
-inline double Magick::Coordinate::x ( void ) const
-{
-  return _x;
-}
-
-inline void Magick::Coordinate::y ( double y_ )
-{
-  _y = y_;
-}
-
-inline double Magick::Coordinate::y ( void ) const
-{
-  return _y;
-}
-
-//
 // Drawable class
 //
-
-// Constructor
-inline Magick::Drawable::Drawable( void )
-  : _primitive()
-{
-  // All components are self-initializing
-}
-
-// Destructor
-inline Magick::Drawable::~Drawable( void )
-{
-  // Nothing to do
-}
 
 // Completed draw primitive (for ImageMagick)
 inline void Magick::Drawable::primitive ( const std::string &primitive_ )
@@ -234,117 +213,5 @@ inline std::string Magick::Drawable::primitive ( void ) const
   // cout << _primitive << endl;
   return _primitive;
 }
-
-
-// Point
-inline void Magick::Drawable::point ( const Magick::Coordinate &coordinate_ )
-{
-  one_arg_impl( "point", coordinate_ );
-}
-inline void Magick::Drawable::point ( double x_,
-				      double y_ )
-{
-  point( Coordinate( x_, y_ ) );
-}
-
-// Line
-inline void Magick::Drawable::line ( const Magick::Coordinate &startCoordinate_,
-				     const Magick::Coordinate &endCoordinate_ )
-{
-  two_arg_impl( "line", startCoordinate_, endCoordinate_ );
-}
-inline void Magick::Drawable::line ( double startX_,
-				     double startY_,
-				     double endX_,
-				     double endY_ )
-{
-  line( Coordinate( startX_, startY_ ), Coordinate( endX_, endY_ ) );
-}
-
-// Rectangle
-inline void Magick::Drawable::rectangle ( const Magick::Coordinate &upperLeftCoordinate_,
-					  const Magick::Coordinate &lowerRightCoordinate_ )
-{
-  two_arg_impl( "rectangle", upperLeftCoordinate_, lowerRightCoordinate_ );
-}
-inline void Magick::Drawable::rectangle ( double upperLeftX_,
-					  double upperLeftY_,
-					  double lowerRightX_,
-					  double lowerRightY )
-{
-  rectangle( Coordinate( upperLeftX_, upperLeftY_ ),
-	     Coordinate( lowerRightX_, lowerRightY ) );
-}
-
-// Circle
-inline void Magick::Drawable::circle ( const Magick::Coordinate &originCoordinate_,
-				       const Magick::Coordinate &perimCoordinate_ )
-{
-  two_arg_impl( "circle", originCoordinate_, perimCoordinate_ );
-}
-inline void Magick::Drawable::circle ( double originX_,
-				       double originY_,
-				       double perimX_,
-				       double perimY_ )
-{
-  circle( Coordinate( originX_, originY_ ),
-	  Coordinate( perimX_, perimY_ ) );
-}
-
-// Ellipse
-inline void Magick::Drawable::ellipse ( double originX_,
-					double originY_, 
-					double width_,
-					double height_,
-					double arcStart_,
-					double arcEnd_ )
-{
-  ellipse( Coordinate( originX_, originY_ ),
-	   width_, height_,
-	   arcStart_, arcEnd_ );
-}
-
-// Polygon (Coordinate list must contain at least three members)
-inline void Magick::Drawable::polygon ( const std::list<Magick::Coordinate> &coordinates_ )
-{
-  list_arg_impl( "polygon", coordinates_ );
-}
-
-// Bezier curve (Coordinate list must contain at least three members)
-inline void Magick::Drawable::bezier ( const std::list<Magick::Coordinate> &coordinates_ )
-{
-  list_arg_impl( "bezier", coordinates_ );
-}
-
-// Colorize at point using PaintMethod
-inline void Magick::Drawable::color ( double x_, double y_,
-				      Magick::PaintMethod paintMethod_ )
-{
-  color( Coordinate( x_, y_ ), paintMethod_ );
-}
-
-// Change pixel matte value to transparent using PaintMethod
-inline void Magick::Drawable::matte ( double x_, double y_,
-				      Magick::PaintMethod paintMethod_ )
-{
-  matte( Coordinate( x_, y_ ), paintMethod_ );
-}
-
-// Draw text at point
-inline void Magick::Drawable::text ( double x_,
-				     double y_,
-				     std::string text_ )
-{
-  text( Coordinate( x_, y_), text_ );
-}
-
-// Draw image at point
-inline void Magick::Drawable::image ( double x_,
-				      double y_,
-				      const std::string &image_ )
-{
-  image( Coordinate( x_, y_), image_ );
-}
-
 
 #endif // Drawable_header

@@ -26,22 +26,20 @@ int main( int /*argc*/, char ** /*argv*/)
     //
     Image image( "300x300", "white" );
 
-    // Polygon list
-    std::list<Coordinate> poly;
 
     //
     // Draw texture-filled polygon
     //
-    Drawable drawable;
-    poly.push_back( Coordinate(30,30) );
-    poly.push_back( Coordinate(100,10) );
-    poly.push_back( Coordinate(190,290) );
-    poly.push_back( Coordinate(30,290) );
-    drawable.polygon( poly );
+    // Polygon list
+    std::list<Coordinate> poly_coord;
+    poly_coord.push_back( Coordinate(30,30) );
+    poly_coord.push_back( Coordinate(100,10) );
+    poly_coord.push_back( Coordinate(190,290) );
+    poly_coord.push_back( Coordinate(30,290) );
 
     Image texture( "tile.miff" );
     image.penTexture( texture );
-    image.draw( drawable );
+    image.draw( DrawablePolygon( poly_coord ) );
     texture.isValid( false );
     image.penTexture( texture );  // Unset texture
 
@@ -51,8 +49,7 @@ int main( int /*argc*/, char ** /*argv*/)
     image.strokeColor( "black" );
     image.fillColor( "red" );
     image.lineWidth( 5 );
-    drawable.ellipse( 100,100, 100,150, 0,360 );
-    image.draw( drawable );
+    image.draw( DrawableEllipse( 100,100, 100,150, 0,360 ) );
     image.fillColor( Color() ); // Clear out fill color
 
     //
@@ -63,17 +60,15 @@ int main( int /*argc*/, char ** /*argv*/)
     list<Drawable> drawlist;
 
     // Add ellipse to list
-    drawable.ellipse( 100,100, 100,150, 0,360 );
-    drawlist.push_back( drawable );
+    drawlist.push_back( DrawableEllipse( 100,100, 100,150, 0,360 ) );
 
     // Add polygon to list
-    poly.clear();
-    poly.push_back( Coordinate(30,30) );
-    poly.push_back( Coordinate(100,10) );
-    poly.push_back( Coordinate(190,290) );
-    poly.push_back( Coordinate(30,290) );
-    drawable.polygon( poly );
-    drawlist.push_back( drawable );
+    poly_coord.clear();
+    poly_coord.push_back( Coordinate(30,30) );
+    poly_coord.push_back( Coordinate(100,10) );
+    poly_coord.push_back( Coordinate(190,290) );
+    poly_coord.push_back( Coordinate(30,290) );
+    drawlist.push_back( DrawablePolygon( poly_coord ) );
     image.draw( drawlist );
 
     //

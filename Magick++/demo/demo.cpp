@@ -111,9 +111,7 @@ int main( int /*argc*/, char ** /*argv*/)
     example.label( "Draw" );
     example.strokeColor( "gold" );
     example.lineWidth( 2 );
-    Drawable drawable;
-    drawable.circle( 60,90, 60,120 );
-    example.draw( drawable );
+    example.draw( DrawableCircle( 60,90, 60,120 ) );
     images.push_back( example );
 
     cout << "  emboss ..." << endl;
@@ -304,16 +302,15 @@ int main( int /*argc*/, char ** /*argv*/)
     title.size( "550x90" );
     title.read( "xc:black" );
 
+    title.density( "300x300" );
     title.font( "@Generic.ttf" );
     title.fontPointsize( 18 );
-    title.density( "300x300" );
     title.strokeColor( "white" );
     title.fillColor( "white" );
     title.annotate( "Magick++", "+1+1", CenterGravity );
 
     title.strokeColor( "black" );
-    drawable.matte( 0, 0, ReplaceMethod );
-    title.draw( drawable );
+    title.draw( DrawableMatte( 0, 0, ReplaceMethod ) );
     title.composite( background, 0, 0, AddCompositeOp );
 
     //

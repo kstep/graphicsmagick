@@ -1,3 +1,13 @@
+2000-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp: Removed all public methods which accept
+ 	Coordinate arguments except those that accept lists of
+ 	Coordinates.  Converted remaining drawable object methods into
+ 	individual classes which inherit from Drawable (e.g. "circle"
+ 	becomes "DrawableCircle"). The constructor for each class is
+ 	compatible with the original method. This results in annoying
+ 	changes to user code but provides more implementation flexibility.
+
 2000-04-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp
