@@ -245,16 +245,14 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     if (preview_image == (Image *) NULL)
       break;
     (void) SetImageAttribute(preview_image,"label",DefaultTileLabel);
-    argc=1;
     if (i == (NumberTiles >> 1))
       {
-        commands[argc++]=(char *) "-mattecolor";
-        commands[argc++]=(char *) "#dfdfdf";
-        (void) MogrifyImage(clone_info,argc,commands,&preview_image);
+        (void) QueryColorDatabase("#dfdfdf",&preview_image->matte_color);
         PushImageList(&images,preview_image,&image->exception);
         DestroyImage(preview_image);
         continue;
       }
+    argc=1;
     handler=SetMonitorHandler((MonitorHandler) NULL);
     switch (image_info->preview_type)
     {
@@ -559,7 +557,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   if (images == (Image *) NULL)
 		return(False);
   /*
-    Create the PCD Overview image.
+    Create the montage.
   */
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   (void) strncpy(montage_info->filename,image->filename,MaxTextExtent-1);
