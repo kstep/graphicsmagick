@@ -6249,6 +6249,12 @@ Ping(ref,...)
     Image
       *image;
 
+    int
+      count;
+
+    register Image
+      *p;
+
     register int
       i;
 
@@ -6263,7 +6269,7 @@ Ping(ref,...)
     reference=SvRV(ST(0));
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
-    EXTEND(sp,4*items);
+    count=0;
     for (i=1; i < items; i++)
     {
       (void) strcpy(info->image_info->filename,(char *) SvPV(ST(i),na));
@@ -6280,18 +6286,21 @@ Ping(ref,...)
           MagickWarning(exception.severity,exception.reason,
             exception.description);
           PUSHs(&sv_undef);
+          continue;
         }
-      else
-        {
-          FormatString(message,"%u",image->columns);
-          PUSHs(sv_2mortal(newSVpv(message,0)));
-          FormatString(message,"%u",image->rows);
-          PUSHs(sv_2mortal(newSVpv(message,0)));
-          FormatString(message,"%lu",(unsigned long) SizeBlob(image));
-          PUSHs(sv_2mortal(newSVpv(message,0)));
-          PUSHs(sv_2mortal(newSVpv(image->magick,0)));
-          DestroyImage(image);
-        }
+      count+=GetNumberScene(image);
+      EXTEND(sp,4*count);
+      for (p=image ; p != (Image *) NULL; p=p->next)
+      {
+        FormatString(message,"%u",p->columns);
+        PUSHs(sv_2mortal(newSVpv(message,0)));
+        FormatString(message,"%u",p->rows);
+        PUSHs(sv_2mortal(newSVpv(message,0)));
+        FormatString(message,"%lu",(unsigned long) SizeBlob(p));
+        PUSHs(sv_2mortal(newSVpv(message,0)));
+        PUSHs(sv_2mortal(newSVpv(p->magick,0)));
+      }
+      DestroyImage(image);
     }
     info->image_info->file=(FILE *) NULL;
     SvREFCNT_dec(error_list);  /* throw away all errors */

@@ -491,7 +491,6 @@ typedef struct _ImageInfo
     group;
 
   unsigned int
-    ping,
     verbose,
     debug;
 
@@ -634,6 +633,8 @@ extern MagickExport Image
   *OilPaintImage(Image *,const double,ExceptionInfo *),
   *PingImage(const ImageInfo *,ExceptionInfo *),
   *ReadImage(const ImageInfo *,ExceptionInfo *),
+  *ReadStream(const ImageInfo *,
+    int (*)(const Image *,const void *,const size_t),ExceptionInfo *),
   *ReduceNoiseImage(Image *,const double,ExceptionInfo *),
   *ReferenceImage(Image *),
   *ResizeImage(Image *,const unsigned int,const unsigned int,const FilterTypes,
@@ -725,8 +726,6 @@ extern MagickExport unsigned int
   QueryColorDatabase(const char *,PixelPacket *),
   QueryColorname(Image *,const PixelPacket *,const ComplianceType,char *),
   RaiseImage(Image *,const RectangleInfo *,const int),
-  ReadStream(const ImageInfo *,int (*)(const Image *,const void *,const size_t),
-    ExceptionInfo *),
   RGBTransformImage(Image *,const ColorspaceType),
   SetImageClipMask(Image *,Image *),
   SetImageDepth(Image *,const unsigned int),

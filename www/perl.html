@@ -1482,8 +1482,7 @@ image file names and returns their respective width, height, size in bytes,
 and format (e.g. GIF, JPEG, etc.). For example,
                                               <pre>&nbsp;&nbsp;&nbsp; ($width, $height, $size, $format) = $image-&gt;Ping('logo.png');</pre>
 This is a more efficient and less memory intensive way to query if an image 
-exists and what its characteristics are. Note, only information about the 
-first image in a multi-frame image file is returned. 
+exists and what its characteristics are.
                                               <p>To have full control over
 text positioning you need font metric information. Use <pre>&nbsp;&nbsp;&nbsp; ($x_ppem, $y_ppem, $ascender, $descender, $width, $height, $max_advance) =<br>&nbsp;&nbsp;&nbsp;&nbsp; $image-&gt;QueryFontMetrics(<i>parameters</i>);</pre>
  Where <i>parameters</i> is any parameter of the <a href="#mani">Annotate</a>

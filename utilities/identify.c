@@ -59,7 +59,6 @@
 %    -density geometry vertical and horizontal density of the image
 %    -depth value      depth of the image
 %    -format "string"  output formatted image characteristics
-%    -ping             efficiently determine image characteristics
 %    -size geometry    width and height of image
 %    -verbose          print detailed information about the image
 %
@@ -103,7 +102,6 @@ static void Usage()
       "-density geometry  vertical and horizontal density of the image",
       "-depth value       depth of the image",
       "-format \"string\"   output formatted image characteristics",
-      "-ping              efficiently determine image characteristics",
       "-size geometry     width and height of image",
       "-verbose           print detailed information about the image",
       (char *) NULL
@@ -288,11 +286,6 @@ int main(int argc,char **argv)
           }
           case 'p':
           {
-            if (LocaleNCompare("ping",option+1,2) == 0)
-              {
-                image_info->ping=(*option == '-');
-                break;
-              }
             MagickError(OptionError,"Unrecognized option",option);
             break;
           }
@@ -340,37 +333,10 @@ int main(int argc,char **argv)
       Identify image.
     */
     (void) strcpy(image_info->filename,argv[i]);
-    if (image_info->ping)
-      {
-        /*
-          Get first frame only.
-        */
-        image_info->verbose=False;
-        image_info->subimage=0;
-        image_info->subrange=0;
-        image=ReadImage(image_info,&exception);
-        if (exception.severity != UndefinedException)
-          MagickWarning(exception.severity,exception.reason,
-            exception.description);
-        if (image == (Image *) NULL)
-          continue;
-        if (format == (char *) NULL)
-          DescribeImage(image,stdout,False);
-        else
-          {
-            char
-              *text;
-
-            text=TranslateText((ImageInfo *) NULL,image,format);
-            if (text == (char *) NULL)
-              ThrowBinaryException(ResourceLimitWarning,
-                "Unable to format image data","Memory allocation failed");
-            (void) fputs(text,stdout);
-          }
-        number_images++;
-        continue;
-      }
-    image=ReadImage(image_info,&exception);
+    if (image_info->verbose)
+      image=ReadImage(image_info,&exception);
+    else
+      image=PingImage(image_info,&exception);
     if (exception.severity != UndefinedException)
       MagickWarning(exception.severity,exception.reason,
         exception.description);

@@ -59,8 +59,7 @@
 /*
   Typedef declaractions.
 */
-typedef CacheInfo
-  StreamInfo;
+typedef CacheInfo StreamInfo;
 
 /*
   Declare pixel stream interfaces.
@@ -336,14 +335,11 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 %
 %  The format of the ReadStream method is:
 %
-%      unsigned int ReadStream(const ImageInfo *image_info,
+%      Image *ReadStream(const ImageInfo *image_info,
 %        void (*Stream)(const Image *,const void *,const size_t),
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
-%
-%    o status: Method ReadStream returns True if the image pixels are
-%      streamed to the user supplied callback method otherwise False.
 %
 %    o image_info: The image info..
 %
@@ -353,7 +349,7 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 %
 %
 */
-MagickExport unsigned int ReadStream(const ImageInfo *image_info,
+MagickExport Image *ReadStream(const ImageInfo *image_info,
   int (*fifo)(const Image *,const void *,const size_t),ExceptionInfo *exception)
 {
   Image
@@ -361,6 +357,9 @@ MagickExport unsigned int ReadStream(const ImageInfo *image_info,
 
   ImageInfo
     *clone_info;
+
+  register Image
+    *p;
 
   /*
     Stream image pixels.
@@ -376,10 +375,10 @@ MagickExport unsigned int ReadStream(const ImageInfo *image_info,
   clone_info->fifo=fifo;
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
-  if (image != (Image *) NULL)
-    DestroyImage(image);
   ResetPixelCacheMethods();
-  return(exception->severity == UndefinedException);
+  for (p=image; p != (Image *) NULL; p=p->next)
+    GetCacheInfo(p->cache);
+  return(image);
 }
 
 /*

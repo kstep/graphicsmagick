@@ -119,7 +119,6 @@
 %    -opaque color        change this color to the fill color
 %    -page geometry       size and location of an image canvas
 %    -paint radius        simulate an oil painting
-%    -ping                efficiently determine image characteristics
 %    -pointsize value     pointsize of Postscript font
 %    -preview type        image preview type
 %    -profile filename    add ICM or IPTC information profile to image
@@ -320,7 +319,6 @@ static void Usage()
       "-opaque color        change this color to the fill color",
       "-page geometry       size and location of an image canvas",
       "-paint radius        simulate an oil painting",
-      "-ping                efficiently determine image characteristics",
       "-pointsize value     pointsize of Postscript font",
       "-preview type        image preview type",
       "-profile filename    add ICM or IPTC information profile to image",
@@ -1411,11 +1409,6 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing pen color",option);
                   (void) QueryColorDatabase(argv[i],&image_info->pen);
                 }
-              break;
-            }
-          if (LocaleNCompare("ping",option+1,2) == 0)
-            {
-              image_info->ping=(*option == '-');
               break;
             }
           if (LocaleNCompare("pointsize",option+1,2) == 0)

@@ -82,7 +82,6 @@
 %    -monochrome         transform image to black and white
 %    -negate             replace every pixel with its complementary color 
 %    -page geometry      size and location of an image canvas
-%    -ping               efficiently determine image width and height
 %    -pointsize value    pointsize of Postscript font
 %    -quality value      JPEG/MIFF/PNG compression level
 %    -rotate degrees     apply Paeth rotation to the image
@@ -160,7 +159,6 @@ static void Usage()
       "-monochrome         transform image to black and white",
       "-negate             replace every pixel with its complementary color ",
       "-page geometry      size and location of an image canvas",
-      "-ping               efficiently determine image width and height",
       "-pointsize value    pointsize of Postscript font",
       "-quality value      JPEG/MIFF/PNG compression level",
       "-rotate degrees     apply Paeth rotation to the image",
@@ -715,11 +713,6 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing page geometry",option);
                   image_info->page=PostscriptGeometry(argv[i]);
                 }
-              break;
-            }
-          if (LocaleNCompare("ping",option+1,2) == 0)
-            {
-              image_info->ping=(*option == '-');
               break;
             }
           if (LocaleNCompare("pointsize",option+1,2) == 0)

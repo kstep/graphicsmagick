@@ -1016,8 +1016,6 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
 %  PingImage() is a convenience method that returns information about an
 %  image without having to read the image into memory.  It returns the
 %  width, height, file size in bytes, and the file format of the image.
-%  For an image sequence, only the information for the first image
-%  in the sequence is returned.
 %
 %  PingImage() returns an Image on success and NULL if the image cannot be
 %  pinged.  The image does not contain any pixel data.
@@ -1036,6 +1034,12 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
 %
 %
 */
+
+int StreamHandler(const Image *image,const void *pixels,const size_t columns)
+{
+  return(True);
+}
+
 MagickExport Image *PingImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -1043,22 +1047,17 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
     *image;
 
   ImageInfo
-    *ping_info;
+    *clone_info;
 
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  ping_info=CloneImageInfo(image_info);
-  ping_info->ping=True;
-  ping_info->verbose=False;
-  ping_info->subimage=0;
-  ping_info->subrange=0;
-  image=ReadImage(ping_info,exception);
-  DestroyImageInfo(ping_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  if (image_info->verbose)
-    DescribeImage(image,stdout,False);
+  clone_info=CloneImageInfo(image_info);
+  clone_info->verbose=False;
+  clone_info->subimage=0;
+  clone_info->subrange=0;
+  image=ReadStream(clone_info,&StreamHandler,exception);
+  DestroyImageInfo(clone_info);
   return(image);
 }
 
