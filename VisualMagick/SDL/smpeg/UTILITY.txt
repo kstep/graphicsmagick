@@ -11,3 +11,4 @@ EXCLUDE = MPEGring.cpp
 EXCLUDE = MPEGstream.cpp
 EXCLUDE = MPEGsystem.cpp
 EXCLUDE = smpeg.cpp
+EXCLUDE = MPEGfilter.c
