@@ -478,14 +478,14 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   /*
     Initialize append next attributes.
   */
-  if (((image->columns*GetNumberScenes(image)) == width) && !stack)
+  if (((image->columns*GetNumberScenes(image)) == width) && stack)
     append_image=CloneImage(image,image->columns,height,True,exception);
   else
     append_image=CloneImage(image,width,image->rows,True,exception);
   if (append_image == (Image *) NULL)
     return((Image *) NULL);
   scene=0;
-  if (((image->columns*GetNumberScenes(image)) == width) && !stack)
+  if (((image->columns*GetNumberScenes(image)) == width) && stack)
     {
       register long
         y;
