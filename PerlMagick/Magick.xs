@@ -6255,6 +6255,8 @@ QueryFontMetrics(ref,...)
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
     av=(AV *) reference;
+    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
+    EXTEND(sp,7*items-1);
     image=SetupList(reference,&info,(SV ***) NULL);
     if (!image)
       {
