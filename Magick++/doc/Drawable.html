@@ -14,34 +14,102 @@
 Magick::Drawable</h1></center>
 Drawable provides a convenient interface for preparing vector, image, or
 text arguments for the Image::draw() method. Each instance of a Drawable
-sub-class represents a single drawable object.
-<p>The following is an example of how sub-classes of Drawable may be used:
-<p><tt><font color="#000066">#include &lt;Magick++.h></font></tt>
+sub-class represents a single drawable object. Drawable objects may be
+drawn "one-by-one" via multiple invocations of the Image <a href="Image.html#draw">draw</a>()
+method, or may be drawn "all-at-once" by passing a list of Drawable objects
+to the Image <a href="Image.html#draw">draw</a>() method. The one-by-one
+approach is convenient for simple drawings, while the list-based approach
+is appropriate for drawings which require more sophistication.
+<p>The following is an example of using the Drawable subclasses with the
+one-by-one approach to draw the following figure:
+<p><img SRC="Drawable_example_1.png" BORDER=3 height=200 width=300>
+<p><tt><font color="#000066">#include &lt;string></font></tt>
+<br><tt><font color="#000066">#include &lt;iostream></font></tt>
+<br><tt><font color="#000066">#include &lt;Magick++.h></font></tt>
 <p><tt><font color="#000066">using namespace std;</font></tt>
 <br><tt><font color="#000066">using namespace Magick;</font></tt>
-<p><tt><font color="#000066">int main(int argc,char **argv)</font></tt>
+<p><tt><font color="#000066">int main(int /*argc*/,char **/*argv*/)</font></tt>
 <br><tt><font color="#000066">{</font></tt>
+<br><tt><font color="#000066">&nbsp; try {</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Create base image (white
-image of 600 by 400 pixels)</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image image( Geometry(600,400),
+image of 300 by 200 pixels)</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image image( Geometry(300,200),
 Color("white") );</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Set draw options</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.penColor("red");</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.strokeColor("red");
+// Outline color</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.fillColor("green");
+// Fill color</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.lineWidth(5);</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Draw a circle</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.draw( DrawableCircle(100,100,
-150,150) );</font></tt>
+50,100) );</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Draw a rectangle</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.draw( DrawableRectangle(200,200
-300,300) );</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.draw( DrawableRectangle(200,200,
+270,170) );</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Display the result</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.display( );</font></tt>
+<br><tt><font color="#000066">&nbsp; }</font></tt>
+<br><tt><font color="#000066">&nbsp; catch( exception error_ )</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; {</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"Caught exception: " &lt;&lt; error_.what() &lt;&lt; endl;</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 1;</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; }</font></tt>
+<p><tt><font color="#000066">&nbsp; return 0;</font></tt>
 <br><tt><font color="#000066">}</font></tt>
 <p><font color="#000000">Since Drawable is an object it may be saved in
-an array or a list for later (perhaps repeated) use. Drawable depends on
-the simple Coordinate structure which represents a pair of x,y coodinates.&nbsp;
-The methods provided by the Coordinate structure are shown in the following
-table:</font>
+an array or a list for later (perhaps repeated) use. The following example
+shows how to draw the same figure using the </font>list-based approach
+<p><tt><font color="#000066">#include &lt;string></font></tt>
+<br><tt><font color="#000066">#include &lt;iostream></font></tt>
+<br><tt><font color="#000066">#include &lt;list></font></tt>
+<br><tt><font color="#000066">#include &lt;Magick++.h></font></tt><tt><font color="#000066"></font></tt>
+<p><tt><font color="#000066">using namespace std;</font></tt>
+<br><tt><font color="#000066">using namespace Magick;</font></tt><tt><font color="#000066"></font></tt>
+<p><tt><font color="#000066">int main(int /*argc*/,char **/*argv*/)</font></tt>
+<br><tt><font color="#000066">{</font></tt>
+<br><tt><font color="#000066">&nbsp; try {</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Create base image (white
+image of 300 by 200 pixels)</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image image( Geometry(300,200),
+Color("white") );</font></tt><tt><font color="#000066"></font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Construct drawing list</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; std::list&lt;Magick::Drawable>
+drawList;</font></tt><tt><font color="#000066"></font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Add some drawing options
+to drawing list</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; drawList.push_back(DrawableStrokeColor("red"));
+// Outline color</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; drawList.push_back(DrawableStrokeWidth(5));
+// Stroke width</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; drawList.push_back(DrawableFillColor("green"));
+// Fill color</font></tt><tt><font color="#000066"></font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Add a Circle to drawing
+list</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; drawList.push_back(DrawableCircle(100,100,
+50,100));</font></tt><tt><font color="#000066"></font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Add a Rectangle to drawing
+list</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; drawList.push_back(DrawableRectangle(200,100,
+270,170));</font></tt><tt><font color="#000066"></font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Draw everything using
+completed drawing list</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.draw(drawList);</font></tt><tt><font color="#000066"></font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Display the result</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.display( );</font></tt>
+<br><tt><font color="#000066">&nbsp; }</font></tt>
+<br><tt><font color="#000066">&nbsp; catch( exception error_ )</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; {</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"Caught exception: " &lt;&lt; error_.what() &lt;&lt; endl;</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 1;</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; }</font></tt><tt><font color="#000066"></font></tt>
+<p><tt><font color="#000066">&nbsp; return 0;</font></tt>
+<br><tt><font color="#000066">}</font></tt>
+<p><font color="#000000">Drawable depends on the simple Coordinate structure
+which represents a pair of x,y coodinates.&nbsp; The methods provided by
+the Coordinate structure are shown in the following table:</font>
 <br>&nbsp;
 <table BORDER WIDTH="100%" NOSAVE >
 <caption>Coordinate Structure Methods</caption>
@@ -201,9 +269,10 @@ color. Finally, reset recolors all pixels.</font></td>
 
 <td><font size=-1>Composite current image with contents of specified image
 file, at specified coordinates. If the <i>matte</i> attribute is set to
-<i>true</i>, then the image composition will consider an alpha channel,
-or transparency, present in the image file so that non-opaque portions
-allow part (or all) of the composite image to show through.</font></td>
+<i>true</i>,
+then the image composition will consider an alpha channel, or transparency,
+present in the image file so that non-opaque portions allow part (or all)
+of the composite image to show through.</font></td>
 </tr>
 
 <tr>
@@ -376,8 +445,8 @@ list. If a <i>fill</i> color is specified, then the object is filled.</font></td
 <td><font size=-1>void</font></td>
 
 <td><font size=-1>Pop Graphic Context. Removing the current graphic context
-from the graphic context stack returns the options to the settings they
-had prior to the preceding <i><a href="#DrawablePushGraphicContext">DrawablePushGraphicContext</a></i>
+from the graphic context stack returns the options to the values they had
+prior to the preceding <i><a href="#DrawablePushGraphicContext">DrawablePushGraphicContext</a></i>
 operation.</font></td>
 </tr>
 
@@ -389,10 +458,10 @@ operation.</font></td>
 <td><font size=-1>void</font></td>
 
 <td><font size=-1>Push Graphic Context.&nbsp; When a graphic context is
-pushed, options such as coordinate transformations, color settings, etc.,
-are saved to a new graphic context. This allows related options to be saved
-on a graphic context "stack" in order to support heirarchical nesting of
-options. When <i><a href="#DrawablePopGraphicContext">DrawablePopGraphicContext</a></i>
+pushedcdc, options set after the context is pushed (such as coordinate
+transformations, color settings, etc.) are saved to a new graphic context.
+This allows related options to be saved on a graphic context "stack" in
+order to support heirarchical nesting of options. When <i><a href="#DrawablePopGraphicContext">DrawablePopGraphicContext</a></i>
 is used to pop the current graphic context, the options in effect during
 the last <i>DrawablePushGraphicContext</i> operation.</font></td>
 </tr>
@@ -807,7 +876,6 @@ double x_, double y_ );</tt>
 from the current point to (x,y) using (x1,y1) as the control point at the
 beginning of the curve and (x2,y2) as the control point at the end of the
 curve. <i>PathCurvetoAbs</i> indicates that absolutecoordinates will follow;
-
 <i>PathCurvetoRel</i> indicates that relative coordinates will follow.
 Multiple sets of coordinates may be specified to draw a polybezier. At
 the end of the command, the new current point becomes the final (x,y) coordinate
