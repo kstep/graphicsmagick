@@ -4001,7 +4001,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->page.width=image->columns;
                     image->page.height=image->rows;
                     image->page.x=crop_box.left;
-                    image->page.y=crop_box.bottom;
+                    image->page.y=crop_box.top;
                   }
               }
             else
@@ -4740,8 +4740,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         green,
         blue;
 
+      page=image->page;
       need_geom=True;
-      if (image_info->page != (char *) NULL)
+      if (page.width || page.height)
          need_geom=False;
       /*
         Check all the scenes.
@@ -4758,8 +4759,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       equal_palettes=False;
       need_local_plte=False;
 #endif
-      page=image->page;
-      page.y=image->page.y;
       for (next_image=image; next_image != (Image *) NULL; )
       {
         if (need_geom)
