@@ -56,6 +56,24 @@
 #include "defines.h"
 
 /*
+  Typedef declarations.
+*/
+typedef struct _GraphicContext
+{
+  char
+    *fill,
+    *stroke;
+
+  unsigned int
+    antialias;
+
+  double
+    linewidth,
+    pointsize,
+    opacity;
+} GraphicContext;
+
+/*
   Forward declarations.
 */
 static unsigned int
@@ -96,7 +114,7 @@ static unsigned int IsSVG(const unsigned char *magick,
 {
   if (length < 5)
     return(False);
-  if (LatinNCompare((char *) magick,"<?XML",5) == 0)
+  if (LatinNCompare((char *) magick,"<?xml",5) == 0)
     return(True);
   return(False);
 }
@@ -278,6 +296,58 @@ Export char **StringToTokens(const char *text,int *number_tokens)
   return(tokens);
 }
 
+static void TraversePath(FILE *file,GraphicContext *graphic_context,
+  const char *path)
+{
+  char
+    primitive[MaxTextExtent];
+
+  int
+    n;
+
+  register const char
+    *p;
+
+  SegmentInfo
+    segment;
+
+  unsigned int
+    status;
+
+  p=path;
+  while (*p != '\0')
+  {
+    while (isspace(*p))
+      p++;
+    *primitive='\0';
+    switch (*p)
+    {
+      case 'L':
+      {
+        (void) sscanf(p+1,"%lf%lf%n",&segment.x2,&segment.y2,&n);
+        p+=n+1;
+        FormatString(primitive,"line %g,%g %g,%g",segment.x1,segment.y1,
+          segment.x2,segment.y2);
+      }
+      case 'M':
+      {
+        (void) sscanf(p+1,"%lf%lf%n",&segment.x1,&segment.y1,&n);
+        p+=n+1;
+      }
+      default:
+      {
+        (void) fprintf(stderr,"unrecognized attribute: %c\n",*p);
+        break;
+      }
+    }
+    if (*primitive != '\0')
+      {
+        puts(primitive);
+      }
+    p++;
+  }
+}
+
 static double UnitOfMeasure(const char *value)
 {
   assert(value != (const char *) NULL);
@@ -306,30 +376,15 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       angle;
   } ElementInfo;
 
-  typedef struct _GraphicContext
-  {
-    char
-      *fill,
-      *stroke;
-
-    unsigned int
-      antialias;
-
-    double
-      linewidth,
-      pointsize,
-      opacity;
-  } GraphicContext;
-
   char
-    *filename,
+    filename[MaxTextExtent],
     geometry[MaxTextExtent],
     *keyword,
-    points[MaxTextExtent],
     *primitive,
     *text,
     *token,
     **tokens,
+    *url,
     *value,
     *vertices;
 
@@ -339,13 +394,14 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ElementInfo
     element;
 
+  FILE
+    *file;
+
   GraphicContext
     graphic_context[MaxContexts];
 
   Image
-    *canvas,
-    *image,
-    *tile;
+    *image;
 
   ImageInfo
     *clone_info;
@@ -379,25 +435,26 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  clone_info=CloneImageInfo(image_info);
-  (void) strcpy(clone_info->filename,"xc:white");
-  canvas=ReadImage(clone_info,exception);
-  if (canvas == (Image *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
-      image);
-  (void) strcpy(canvas->filename,image->filename);
-  SetImage(canvas,Opaque);
-  canvas->filter=TriangleFilter;
+  image->columns=1;
+  image->rows=1;
+  SetImage(image,Opaque);
+  /*
+    Open draw file.
+  */
+  TemporaryFilename(filename);
+puts(filename);
+  file=fopen(filename,"w");
+  if (file == (FILE *) NULL)
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Interpret SVG language.
   */
-  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   element.cx=0.0;
   element.cy=0.0;
   element.minor=0.0;
   element.major=0.0;
   element.angle=0.0;
-  filename=AllocateString("logo:");
+  url=AllocateString("logo:");
   keyword=AllocateString("none");
   quote=False;
   GetPageInfo(&page);
@@ -447,7 +504,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (Latin1Compare(primitive,"none") != 0))
       {
         char
-          *command;
+          *command,
+          points[MaxTextExtent];
 
         unsigned int
           length;
@@ -458,19 +516,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((Latin1Compare(primitive,"rectangle") == 0) &&
             (element.major != 0.0))
           CloneString(&primitive,"roundRectangle");
-        for (i=0; i < strlen(vertices); i++)
-          if (isalpha((int) vertices[i]))
-            vertices[i]=' ';
-        if (Latin1Compare(primitive,"polygon") == 0)
-          {
-            float
-              x;
-
-            i=sscanf(vertices,"%f%*[, ]%f%*[, ]%f%*[, ]%f%*[, ]%f",
-              &x,&x,&x,&x,&x);
-            if (i < 5)
-              CloneString(&primitive,"line");
-          }
         length=strlen(primitive)+MaxTextExtent;
         if (vertices != (char *) NULL)
           length+=strlen(vertices);
@@ -478,21 +523,16 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (command == (char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
             image);
-        (void) strcpy(command,"    ");
-        (void) strcat(command,primitive);
+        (void) strcpy(command,primitive);
         (void) strcat(command," ");
         if (Latin1Compare(primitive,"circle") == 0)
           {
-            if (Latin1Compare(graphic_context[n].fill,"none") != 0)
-              (void) strncpy(command,"fill",4);
             FormatString(points,"%g,%g %g,%g",element.cx,element.cy,
               element.cx,element.cy+element.minor);
             (void) strcat(command,points);
           }
         if (Latin1Compare(primitive,"ellipse") == 0)
           {
-            if (Latin1Compare(graphic_context[n].fill,"none") != 0)
-              (void) strncpy(command,"fill",4);
             FormatString(points,"%g,%g %g,%g 0,360",element.cx,element.cy,
               element.major,element.minor);
             (void) strcat(command,points);
@@ -504,29 +544,17 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) strcat(command,points);
           }
         if (Latin1Compare(primitive,"polyline") == 0)
-          {
-            if (Latin1Compare(graphic_context[n].fill,"none") != 0)
-              (void) strncpy(command,"fill",4);
-            (void) strcat(command,vertices);
-          }
+          (void) strcat(command,vertices);
         if (Latin1Compare(primitive,"polygon") == 0)
-          {
-            if (Latin1Compare(graphic_context[n].fill,"none") != 0)
-              (void) strncpy(command,"fill",4);
-            (void) strcat(command,vertices);
-          }
+          (void) strcat(command,vertices);
         if (Latin1Compare(primitive,"rectangle") == 0)
           {
-            if (Latin1Compare(graphic_context[n].fill,"none") != 0)
-              (void) strncpy(command,"fill",4);
             FormatString(points,"%d,%d %d,%d",page.x,page.y,
               page.x+page.width,page.y+page.height);
             (void) strcat(command,points);
           }
         if (Latin1Compare(primitive,"roundRectangle") == 0)
           {
-            if (Latin1Compare(graphic_context[n].fill,"none") != 0)
-              (void) strncpy(command,"fill",4);
             FormatString(points,"%g,%g %d,%d %g,%g",page.x+page.width/2.0,
               page.y+page.height/2.0,page.width,page.height,
               element.major/2.0,element.minor/2.0);
@@ -537,7 +565,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             FormatString(points,"%d,%d",page.x,page.y);
             (void) strcat(command,points);
             (void) strcat(command," ");
-            (void) strcat(command,filename);
+            (void) strcat(command,url);
           }
         if (Latin1Compare(primitive,"text") == 0)
           {
@@ -548,49 +576,27 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) strcat(command,text+1);
             (void) strcat(command,"'");
           }
-        tile=ReadImage(clone_info,exception);
-        if (tile == (Image *) NULL)
-          ThrowReaderException(ResourceLimitWarning,
-            "Unable to draw primitive",image);
-        (void) CloneString(&draw_info->pen,"black");
-        if (Latin1Compare(graphic_context[n].stroke,"none") != 0)
-          (void) CloneString(&draw_info->pen,graphic_context[n].stroke);
-        if ((Latin1Compare(graphic_context[n].fill,"none") != 0) ||
-            (LatinNCompare(command,"fill",4) == 0))
-          (void) CloneString(&draw_info->pen,graphic_context[n].fill);
-        (void) QueryColorDatabase(draw_info->pen,&tile->background_color);
-        SetImage(tile,(Quantum) (graphic_context[n].opacity*Opaque/100.0));
-        if (draw_info->tile != (Image *) NULL)
-          DestroyImage(draw_info->tile);
-        draw_info->tile=tile;
-        draw_info->linewidth=graphic_context[n].linewidth;
-        draw_info->antialias=graphic_context[n].antialias;
-        draw_info->pointsize=graphic_context[n].pointsize;
-        draw_info->translate=translate;
-        draw_info->rotate=element.angle;
-        (void) CloneString(&draw_info->primitive,command);
-        status=DrawImage(canvas,draw_info);
-        if (status == False)
-          ThrowReaderException(ResourceLimitWarning,
-            "Unable to draw primitive",image);
-        if ((LatinNCompare(command,"fill",4) == 0) &&
-            (Latin1Compare(graphic_context[n].stroke,"none") != 0))
+        (void) fprintf(file,"antialias %d\n",
+          graphic_context[n].antialias ? 1 : 0);
+        (void) fprintf(file,"linewidth %g\n",graphic_context[n].linewidth);
+        (void) fprintf(file,"pointsize %g\n",graphic_context[n].pointsize);
+        (void) fprintf(file,"translate %g,%g\n",translate.x,translate.y);
+        (void) fprintf(file,"rotate %g\n",element.angle);
+        (void) fprintf(file,"opacity %g\n",graphic_context[n].opacity);
+        (void) fprintf(file,"fill %d\n",
+          Latin1Compare(graphic_context[n].fill,"none") != 0 ? 1 : 0);
+        if (Latin1Compare(graphic_context[n].fill,"none") == 0)
           {
-            tile=ReadImage(clone_info,exception);
-            if (tile == (Image *) NULL)
-              ThrowReaderException(ResourceLimitWarning,
-                "Unable to draw primitive",image);
-            (void) CloneString(&draw_info->pen,graphic_context[n].stroke);
-            (void) QueryColorDatabase(draw_info->pen,&tile->background_color);
-            SetImage(tile,(Quantum) (graphic_context[n].opacity*Opaque/100.0));
-            if (draw_info->tile != (Image *) NULL)
-              DestroyImage(draw_info->tile);
-            draw_info->tile=tile;
-            (void) CloneString(&draw_info->primitive,command+4);
-            status=DrawImage(canvas,draw_info);
-            if (status == False)
-              ThrowReaderException(ResourceLimitWarning,
-                "Unable to draw primitive",image);
+            (void) fprintf(file,"pen %s\n",graphic_context[n].stroke);
+            (void) fprintf(file,"%s\n",command);
+          }
+        else
+          {
+            (void) fprintf(file,"pen %s\n",graphic_context[n].fill);
+            (void) fprintf(file,"%s\n",command);
+            (void) fprintf(file,"fill 0\n");
+            (void) fprintf(file,"pen %s\n",graphic_context[n].stroke);
+            (void) fprintf(file,"%s\n",command);
           }
         FreeMemory((void *) &command);
         (void) CloneString(&primitive,"none");
@@ -630,7 +636,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         element.cy*=UnitOfMeasure(value);
       }
     if (Latin1Compare(keyword,"d") == 0)
-      (void) ConcatenateString(&vertices,value);
+      TraversePath(file,graphic_context+n,value);
     if (Latin1Compare(keyword,"ellipse") == 0)
       CloneString(&primitive,"ellipse");
     if (Latin1Compare(keyword,"g") == 0)
@@ -644,12 +650,14 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         (void) sscanf(value,"%u",&page.height);
         page.height*=UnitOfMeasure(value);
-        FormatString(geometry,"%ux%u!",canvas->columns,page.height);
-        if ((canvas->columns < page.width) || (canvas->rows < page.height))
-          TransformImage(&canvas,(char *) NULL,geometry);
+	/*
+        FormatString(geometry,"%ux%u!",image->columns,page.height);
+        if ((image->columns < page.width) || (image->rows < page.height))
+          TransformImage(&image,(char *) NULL,geometry);
+	  */
       }
     if (Latin1Compare(keyword,"href") == 0)
-      (void) CloneString(&filename,value);
+      (void) CloneString(&url,value);
     if (Latin1Compare(keyword,"line") == 0)
       CloneString(&primitive,"line");
     if (Latin1Compare(keyword,"image") == 0)
@@ -662,8 +670,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       CloneString(&primitive,"polygon");
     if (Latin1Compare(keyword,"polyline") == 0)
       CloneString(&primitive,"polyline");
-    if (Latin1Compare(keyword,"path") == 0)
-      CloneString(&primitive,"polygon");
     if (Latin1Compare(keyword,"points") == 0)
       (void) CloneString(&vertices,value);
     if (Latin1Compare(keyword,"r") == 0)
@@ -752,16 +758,20 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) sscanf(value,"%d %d %u %u",&page.x,&page.y,
           &page.width,&page.height);
         FormatString(geometry,"%ux%u!",page.width,page.height);
-        if ((canvas->columns < page.width) || (canvas->rows < page.height))
-          TransformImage(&canvas,(char *) NULL,geometry);
+	/*
+        if ((image->columns < page.width) || (image->rows < page.height))
+          TransformImage(&image,(char *) NULL,geometry);
+	  */
       }
     if (Latin1Compare(keyword,"width") == 0)
       {
         (void) sscanf(value,"%u",&page.width);
         page.width*=UnitOfMeasure(value);
-        FormatString(geometry,"%ux%u!",page.width,canvas->rows);
-        if ((canvas->columns < page.width) || (canvas->rows < page.height))
-          TransformImage(&canvas,(char *) NULL,geometry);
+	/*
+        FormatString(geometry,"%ux%u!",page.width,image->rows);
+        if ((image->columns < page.width) || (image->rows < page.height))
+          TransformImage(&image,(char *) NULL,geometry);
+	  */
       }
     if (Latin1Compare(keyword,"x") == 0)
       {
@@ -783,8 +793,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) sscanf(value,"%lf",&segment.y2);
     (void) CloneString(&keyword,token);
   }
-  DestroyDrawInfo(draw_info);
-  DestroyImage(image);
+  /*
+    Free resources.
+  */
   for (i=0; i < MaxContexts; i++)
   {
     FreeMemory((void *) &graphic_context[i].fill);
@@ -792,12 +803,23 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   FreeMemory((void *) &vertices);
   FreeMemory((void *) &value);
+  FreeMemory((void *) &url);
   FreeMemory((void *) &token);
   FreeMemory((void *) &text);
   FreeMemory((void *) &primitive);
   FreeMemory((void *) &keyword);
-  FreeMemory((void *) &filename);
-  return(canvas);
+  (void) fclose(file);
+  /*
+    Draw image.
+  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  (void) CloneString(&draw_info->primitive,command);
+  status=DrawImage(image,draw_info);
+  if (status == False)
+    ThrowReaderException(ResourceLimitWarning,"Unable to draw primitive",image);
+  DestroyDrawInfo(draw_info);
+  remove(filename);
+  */
+  return(image);
 }
 
 /*
@@ -829,6 +851,11 @@ Export void RegisterSVGImage(void)
     *entry;
 
   entry=SetMagickInfo("SVG");
+  entry->magick=IsSVG;
+  entry->decoder=ReadSVGImage;
+  entry->description=AllocateString("Scalable Vector Gaphics");
+  RegisterMagickInfo(entry);
+  entry=SetMagickInfo("XML");
   entry->magick=IsSVG;
   entry->decoder=ReadSVGImage;
   entry->description=AllocateString("Scalable Vector Gaphics");

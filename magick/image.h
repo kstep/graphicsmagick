@@ -428,6 +428,7 @@ typedef struct _DrawInfo
     *box;
 
   unsigned int
+    opacity,
     antialias,
     fill,
     gravity;

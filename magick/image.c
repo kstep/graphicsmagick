@@ -5463,7 +5463,7 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
     (void) strcpy(image_info->magick,"HPGL");
   if (LatinNCompare((char *) magick,"\033E\033&",4) == 0)
     (void) strcpy(image_info->magick,"HPGL");
-  if (LatinNCompare(magick+8,"ILBM",2) == 0)
+  if (LatinNCompare(magick+8,"ILBM",4) == 0)
     (void) strcpy(image_info->magick,"ILBM");
   if ((magick[0] == 0x00) && (magick[1] == 0x00))
     if ((magick[2] == 0x01) && ((unsigned char) magick[3] == 0xb3))

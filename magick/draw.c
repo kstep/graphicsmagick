@@ -510,7 +510,7 @@ static void GenerateArc(PrimitiveInfo *primitive_info,PointInfo start,
     angle,
     x,
     y;
-    
+
   PointInfo
     pixel,
     scale;
@@ -946,21 +946,12 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
-  /*
-    Parse the primitive attributes.
-  */
-  bounds.x1=image->columns-1.0;
-  bounds.y1=image->rows-1.0;
-  bounds.x2=0.0;
-  bounds.y2=0.0;
-  primitive_type=UndefinedPrimitive;
-  radius=0.0;
-  i=0;
   for (p=primitive; *p != '\0'; )
   {
     /*
       Define primitive.
     */
+    primitive_type=UndefinedPrimitive;
     while (isspace((int) (*p)))
       p++;
     for (x=0; isalpha((int) (*p)); x++)
@@ -968,12 +959,71 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     keyword[x]='\0';
     if (*keyword == '\0')
       break;
+    while (isspace((int) (*p)))
+      p++;
+    n=0;
+    if (Latin1Compare("antialias",keyword) == 0)
+      {
+        (void) sscanf(p,"%u%n",&clone_info->antialias,&n);
+        p+=n;
+        continue;
+      }
+    if (Latin1Compare("fill",keyword) == 0)
+      {
+        (void) sscanf(p,"%u%n",&clone_info->fill,&n);
+        p+=n;
+        continue;
+      }
+    if (Latin1Compare("linewidth",keyword) == 0)
+      {
+        (void) sscanf(p,"%lf%n",&clone_info->linewidth,&n);
+        p+=n;
+        continue;
+      }
+    if (Latin1Compare("opacity",keyword) == 0)
+      {
+        (void) sscanf(p,"%u%n",&clone_info->opacity,&n);
+        p+=n;
+        continue;
+      }
+    if (Latin1Compare("pen",keyword) == 0)
+      {
+        for (x=0; isalpha((int) (*p)); x++)
+          keyword[x]=(*p++);
+        keyword[x]='\0';
+        CloneString(&clone_info->pen,keyword);
+        (void) QueryColorDatabase(clone_info->pen,
+          &clone_info->tile->background_color);
+        SetImage(clone_info->tile,(Quantum) (Opaque*clone_info->opacity/100.0));
+        continue;
+      }
+    if (Latin1Compare("pointsize",keyword) == 0)
+      {
+        (void) sscanf(p,"%lf%n",&clone_info->pointsize,&n);
+        p+=n;
+        continue;
+      }
+    if (Latin1Compare("rotate",keyword) == 0)
+      {
+        (void) sscanf(p,"%lf%n",&clone_info->rotate,&n);
+        p+=n;
+        continue;
+      }
+    if (Latin1Compare("translate",keyword) == 0)
+      {
+        (void) sscanf(p,"%lf%lf%n",&clone_info->translate.x,
+          clone_info->translate.y,&n);
+        if (n == 0)
+          (void) sscanf(p,"%lf,%lf%n",&clone_info->translate.x,
+            &clone_info->translate.y,&n);
+        p+=n;
+        continue;
+      }
     if (LatinNCompare("fill",keyword,4) == 0)
       {
-        clone_info->fill=True;
         (void) strcpy(keyword,keyword+4);
+        clone_info->fill=True;
       }
-    primitive_type=UndefinedPrimitive;
     if (Latin1Compare("Point",keyword) == 0)
       primitive_type=PointPrimitive;
     if (Latin1Compare("Line",keyword) == 0)
@@ -1004,6 +1054,15 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       primitive_type=ImagePrimitive;
     if (primitive_type == UndefinedPrimitive)
       break;
+    /*
+      Parse the primitive attributes.
+    */
+    bounds.x1=image->columns-1.0;
+    bounds.y1=image->rows-1.0;
+    bounds.x2=0.0;
+    bounds.y2=0.0;
+    radius=0.0;
+    i=0;
     j=i;
     for (x=0; *p != '\0'; x++)
     {
@@ -1021,17 +1080,15 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (n == 0)
         (void) sscanf(p,"%lf,%lf%n",&pixel.x,&pixel.y,&n);
       if (n == 0)
-        (void) sscanf(p,"%lf, %lf%n",&pixel.x,&pixel.y,&n);
-      if (n == 0)
-        (void) sscanf(p,"%lf %lf%n",&pixel.x,&pixel.y,&n);
-      if (n == 0)
-        ThrowBinaryException(OptionWarning,
-          "Non-conforming drawing primitive definition",p);
+        {
+          primitive_type=UndefinedPrimitive;
+          break;
+        }
+      p+=n;
       primitive_info[i].primitive=primitive_type;
       primitive_info[i].coordinates=0;
       primitive_info[i].pixel=pixel;
       primitive_info[i].method=FloodfillMethod;
-      p+=n;
       while (isspace((int) (*p)) || (*p == ','))
         p++;
       i++;
@@ -1309,129 +1366,115 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     }
     if (primitive_type == UndefinedPrimitive)
       break;
-  }
-  primitive_info[i].primitive=UndefinedPrimitive;
-  if (primitive_type == UndefinedPrimitive)
-    {
-      FreeMemory((void *) &primitive_info);
-      if (indirection)
-        FreeMemory((void *) &primitive);
-      DestroyDrawInfo(clone_info);
-      ThrowBinaryException(OptionWarning,
-        "Non-conforming drawing primitive definition",keyword);
-    }
-  if (draw_info->rotate != 0.0)
-    {
-      double
-        alpha,
-        beta;
+    primitive_info[i].primitive=UndefinedPrimitive;
+    if (clone_info->rotate != 0.0)
+      {
+        double
+          alpha,
+          beta;
 
-      /*
-        Rotate transform.
-      */
-      alpha=cos(DegreesToRadians(fmod(draw_info->rotate,360.0)));
-      beta=sin(DegreesToRadians(fmod(draw_info->rotate,360.0)));
-      for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
-      {
-        pixel=primitive_info[i].pixel;
-        primitive_info[i].pixel.x=alpha*pixel.x+beta*pixel.y;
-        primitive_info[i].pixel.y=(-beta*pixel.x+alpha*pixel.y);
-      }
-    }
-  if ((draw_info->translate.x != 0.0) || (draw_info->translate.y != 0.0))
-    {
-      /*
-        Translate transform.
-      */
-      for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
-      {
-        primitive_info[i].pixel.x+=draw_info->translate.x;
-        primitive_info[i].pixel.y+=draw_info->translate.y;
-      }
-    }
-  /*
-    Compute bounding box.
-  */
-  for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
-  {
-    pixel=primitive_info[i].pixel;
-    if (pixel.x < bounds.x1)
-      bounds.x1=pixel.x;
-    if (pixel.y < bounds.y1)
-      bounds.y1=pixel.y;
-    if (pixel.x > bounds.x2)
-      bounds.x2=pixel.x;
-    if (pixel.y > bounds.y2)
-      bounds.y2=pixel.y;
-  }
-  mid=ceil(radius+clone_info->linewidth/2.0);
-  bounds.x1-=mid;
-  if (bounds.x1 < 0.0)
-    bounds.x1=0.0;
-  bounds.y1-=mid;
-  if (bounds.y1 < 0.0)
-    bounds.y1=0.0;
-  bounds.x2+=mid;
-  if (bounds.x2 >= image->columns)
-    bounds.x2=image->columns-1.0;
-  bounds.y2+=mid;
-  if (bounds.y2 >= image->rows)
-    bounds.y2=image->rows-1.0;
-  /*
-    Draw the primitive on the image.
-  */
-  color=GetOnePixel(clone_info->tile,0,0);
-  tile=clone_info->tile;
-  image->class=DirectClass;
-  for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
-  {
-    target.y=y;
-    q=GetImagePixels(image,(int) bounds.x1,y,(int) (bounds.x2-bounds.x1+1.0),1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
-    {
-      target.x=x;
-      opacity=InsidePrimitive(primitive_info,clone_info,&target,image);
-      if (!clone_info->antialias)
-        if (opacity != Transparent)
-          opacity=Opaque;
-      if (opacity != Transparent)
+        /*
+          Rotate transform.
+        */
+        alpha=cos(DegreesToRadians(fmod(clone_info->rotate,360.0)));
+        beta=sin(DegreesToRadians(fmod(clone_info->rotate,360.0)));
+        for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
         {
-          if ((tile->columns > 1) || (tile->rows > 1))
-            color=GetOnePixel(tile,x % tile->columns,y % tile->rows);
-          if (!clone_info->tile->matte)
-            {
-              q->red=((unsigned long)
-                (color.red*opacity+q->red*(Opaque-opacity))/Opaque);
-              q->green=((unsigned long)
-                (color.green*opacity+q->green*(Opaque-opacity))/Opaque);
-              q->blue=((unsigned long)
-                (color.blue*opacity+q->blue*(Opaque-opacity))/Opaque);
-            }
-          else
-            {
-              q->red=((unsigned long) (color.red*color.opacity+q->red*
-                (Opaque-color.opacity))/Opaque);
-              q->green=((unsigned long) (color.green*color.opacity+q->green*
-                (Opaque-color.opacity))/Opaque);
-              q->blue=((unsigned long) (color.blue*color.opacity+q->blue*
-                (Opaque-color.opacity))/Opaque);
-              q->opacity=((unsigned long) (color.opacity*color.opacity+
-                q->opacity*(Opaque-color.opacity))/Opaque);
-            }
+          pixel=primitive_info[i].pixel;
+          primitive_info[i].pixel.x=alpha*pixel.x+beta*pixel.y;
+          primitive_info[i].pixel.y=(-beta*pixel.x+alpha*pixel.y);
         }
-      q++;
+      }
+    /*
+      Translate transform.
+    */
+    if ((clone_info->translate.x != 0.0) || (clone_info->translate.y != 0.0))
+      for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
+      {
+        primitive_info[i].pixel.x+=clone_info->translate.x;
+        primitive_info[i].pixel.y+=clone_info->translate.y;
+      }
+    /*
+      Compute bounding box.
+    */
+    for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
+    {
+      pixel=primitive_info[i].pixel;
+      if (pixel.x < bounds.x1)
+        bounds.x1=pixel.x;
+      if (pixel.y < bounds.y1)
+        bounds.y1=pixel.y;
+      if (pixel.x > bounds.x2)
+        bounds.x2=pixel.x;
+      if (pixel.y > bounds.y2)
+        bounds.y2=pixel.y;
     }
-    if (!SyncImagePixels(image))
-      break;
-    if (QuantumTick(y,image->rows))
-      ProgressMonitor(DrawImageText,y,image->rows);
+    mid=ceil(radius+clone_info->linewidth/2.0);
+    bounds.x1-=mid;
+    if (bounds.x1 < 0.0)
+      bounds.x1=0.0;
+    bounds.y1-=mid;
+    if (bounds.y1 < 0.0)
+      bounds.y1=0.0;
+    bounds.x2+=mid;
+    if (bounds.x2 >= image->columns)
+      bounds.x2=image->columns-1.0;
+    bounds.y2+=mid;
+    if (bounds.y2 >= image->rows)
+      bounds.y2=image->rows-1.0;
+    /*
+      Draw the primitive on the image.
+    */
+    color=GetOnePixel(clone_info->tile,0,0);
+    tile=clone_info->tile;
+    image->class=DirectClass;
+    for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
+    {
+      target.x=(int) (bounds.x2-bounds.x1+1.0);
+      target.y=y;
+      q=GetImagePixels(image,(int) bounds.x1,y,target.x,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+      for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
+      {
+        target.x=x;
+        opacity=InsidePrimitive(primitive_info,clone_info,&target,image);
+        if (!clone_info->antialias)
+          if (opacity != Transparent)
+            opacity=Opaque;
+        if (opacity != Transparent)
+          {
+            if ((tile->columns > 1) || (tile->rows > 1))
+              color=GetOnePixel(tile,x % tile->columns,y % tile->rows);
+            if (!clone_info->tile->matte)
+              {
+                q->red=((unsigned long)
+                  (color.red*opacity+q->red*(Opaque-opacity))/Opaque);
+                q->green=((unsigned long)
+                  (color.green*opacity+q->green*(Opaque-opacity))/Opaque);
+                q->blue=((unsigned long)
+                  (color.blue*opacity+q->blue*(Opaque-opacity))/Opaque);
+              }
+            else
+              {
+                q->red=((unsigned long) (color.red*color.opacity+q->red*
+                  (Opaque-color.opacity))/Opaque);
+                q->green=((unsigned long) (color.green*color.opacity+q->green*
+                  (Opaque-color.opacity))/Opaque);
+                q->blue=((unsigned long) (color.blue*color.opacity+q->blue*
+                  (Opaque-color.opacity))/Opaque);
+                q->opacity=((unsigned long) (color.opacity*color.opacity+
+                  q->opacity*(Opaque-color.opacity))/Opaque);
+              }
+          }
+        q++;
+      }
+      if (!SyncImagePixels(image))
+        break;
+      if (QuantumTick(y,image->rows))
+        ProgressMonitor(DrawImageText,y,image->rows);
+    }
   }
-  for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
-    if ((primitive_info[i].primitive == MattePrimitive) &&
-        (primitive_info[i].method == ResetMethod))
-      image->matte=False;
   /*
     Free resources.
   */
@@ -1439,6 +1482,10 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   if (indirection)
     FreeMemory((void *) &primitive);
   DestroyDrawInfo(clone_info);
+  if (primitive_type == UndefinedPrimitive)
+    ThrowBinaryException(OptionWarning,
+      "Non-conforming drawing primitive definition",keyword);
+  (void) IsMatteImage(image);
   return(True);
 }
 
@@ -1483,6 +1530,7 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->font=AllocateString(image_info->font);
   draw_info->pen=AllocateString(image_info->pen);
   draw_info->box=(char *) NULL;
+  draw_info->opacity=Opaque;
   draw_info->antialias=image_info->antialias;
   draw_info->fill=False;
   draw_info->gravity=NorthWestGravity;
