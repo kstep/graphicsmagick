@@ -1,3 +1,32 @@
+2002-12-04 William Radcliffe <billr@corbis.com>
+	* contrib/win32/ATL7/ImageMagickObject/ImageMagickObject.cpp:
+	Fixed serious problem with not installing custom error and warning
+	handlers in the new version of the COM object.
+
+2002-12-04 William Radcliffe <billr@corbis.com>
+	* magick/constitute.c:
+	Pass exceptions on write up into the exception structure passed into
+	the WriteImages function.
+
+2002-12-04 William Radcliffe <billr@corbis.com>
+	* magick/image.c:
+	Added orphan image functionality changes that are purported to fix
+	bugs in PDF and PS coders.
+
+2002-12-04 William Radcliffe <billr@corbis.com>
+	* magick/locale.c:
+	Hard coded the locale as per Cristy fix, but also added a comment and
+	disabled useless code.
+
+2002-12-04 William Radcliffe <billr@corbis.com>
+	* VisualMagick/bin/magic.mgk:
+	Added JNG as per the copy in magick subdirectory.
+
+2002-12-04 William Radcliffe <billr@corbis.com>
+	* tiff/libtiff/tiff.h:
+	Minor changes to make reading older Photoshop TIFF files spew fewer
+	warnings.
+
 2002-12-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
   * Optimized ConvolveImage() by normalizing the kernel values instead of
     normalizing the pixels.
