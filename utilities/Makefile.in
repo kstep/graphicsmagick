@@ -82,6 +82,7 @@ CYGWIN_BUILD_TRUE = @CYGWIN_BUILD_TRUE@
 CatDelegate = @CatDelegate@
 ConvertDelegate = @ConvertDelegate@
 DATA_DIR = @DATA_DIR@
+DCRAWDecodeDelegate = @DCRAWDecodeDelegate@
 DEFS = @DEFS@
 DELEGATES = @DELEGATES@
 DEPDIR = @DEPDIR@

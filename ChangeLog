@@ -1,13 +1,19 @@
+2003-05-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* README.txt: Added text regarding where to obtain dcraw, a simple
+	but useful decoder for the proprietary raw file formats produced
+	by digital cameras (58 supported cameras!).
+	* configure.ac: Added support for finding dcraw.
+	* VisualMagick/bin/delegates.mgk: Added support for dcraw.
+	* coders/delegates.mgk.in: Added support for dcraw.
+	* version.sh (PACKAGE_RELEASE_DATE): Extract the most recent
+	update date from the ChangeLog file using awk.
+
 2003-05-12  William Radcliffe  <billr@corbis.com>
 
 	* modules.mgk, magic.mgk : Sync up both of these for UNIX
 	as well as VisualMagick builds. Includes changes for the
 	meta.c code.
-
-2003-05-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-
-	* VisualMagick/bin/modules.mgk: Create a mapping from "IMAGE"
-	to "LOGO".
 
 2003-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

@@ -93,14 +93,22 @@ MAGICK DELEGATES
 
       to read and write BZip compressed MIFF images.
 
-    o GraphicsMagick requires ralcgm from
+    o GraphicsMagick requires 'ralcgm' from
 
         http://www.agocg.ac.uk/train/cgm/ralcgm.htm
 
       to read the Computer Graphics Metafile (CGM) image format. You also
       need Ghostscript (see below).
 
-    o GraphicsMagick requires fig2dev from
+    o GraphicsMagick requires 'dcraw' from
+
+        http://www2.primushost.com/~dcoffin/powershot/
+
+      to read raw images from digital cameras.  Use similar to
+
+        gm convert dcraw:infile outfile
+
+    o GraphicsMagick requires 'fig2dev' from
 
         ftp://ftp.x.org/contrib/applications/drawing_tools/transfig
 

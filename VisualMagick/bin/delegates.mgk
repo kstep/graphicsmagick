@@ -54,6 +54,7 @@
   <delegate decode="cgm" command='ralcgm -d ps "%i" "%o" %u
     @GMDelegate@ convert -concatenate %o*.ps "%o"' />
   <delegate decode="compress" restrain="True" command='|uncompress -c "%i"' />
+  <delegate decode="dcraw" command='dcraw -c -w -2 "%i" > "%o"' />
   <delegate decode="dot" command='dot -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='dvips -q -o "%o" "%i"' />
   <delegate decode="edit" restrain="True" command='notepad "%o"' />

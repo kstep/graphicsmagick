@@ -1806,6 +1806,7 @@ BrowseDelegateDefault='netscape'
 CGMDecodeDelegateDefault='ralcgm'
 CatDelegateDefault='cat'
 ### ConvertDelegateDefault=`echo convert | sed ${configure_transform_name}`
+DCRAWDecodeDelegateDefault='dcraw'
 DOTDecodeDelegateDefault='dot'
 DVIDecodeDelegateDefault='dvips'
 EchoDelegateDefault='echo'
@@ -1850,6 +1851,7 @@ AC_PATH_PROG(BZIPDelegate, "$BZIPDelegateDefault", "$BZIPDelegateDefault")
 AC_PATH_PROG(BrowseDelegate, "$BrowseDelegateDefault", "$BrowseDelegateDefault")
 AC_PATH_PROG(CGMDecodeDelegate, "$CGMDecodeDelegateDefault", "$CGMDecodeDelegateDefault")
 AC_PATH_PROG(CatDelegate, "$CatDelegateDefault", "$CatDelegateDefault")
+AC_PATH_PROG(DCRAWDecodeDelegate, "$DCRAWDecodeDelegateDefault", "$DCRAWDecodeDelegateDefault")
 AC_PATH_PROG(DOTDecodeDelegate, "$DOTDecodeDelegateDefault", "$DOTDecodeDelegateDefault")
 AC_PATH_PROG(DVIDecodeDelegate, "$DVIDecodeDelegateDefault", "$DVIDecodeDelegateDefault")
 AC_PATH_PROG(EchoDelegate, "$EchoDelegateDefault", "$EchoDelegateDefault")
