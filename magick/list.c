@@ -372,11 +372,11 @@ MagickExport long GetImageIndexInList(const Image *images)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageFromListSize() returns the number of images in the list.
+%  GetImageListSize() returns the number of images in the list.
 %
-%  The format of the GetImageFromListSize method is:
+%  The format of the GetImageListSize method is:
 %
-%      unsigned long GetImageFromListSize(const Image *images)
+%      unsigned long GetImageListSize(const Image *images)
 %
 %  A description of each parameter follows:
 %
@@ -384,7 +384,7 @@ MagickExport long GetImageIndexInList(const Image *images)
 %
 %
 */
-MagickExport unsigned long GetImageFromListSize(const Image *images)
+MagickExport unsigned long GetImageListSize(const Image *images)
 {
   register long
     i;
@@ -511,14 +511,14 @@ MagickExport Image **ImageListToArray(const Image *images,
   if (images == (Image *) NULL)
     return((Image **) NULL);
   assert(images->signature == MagickSignature);
-  group=(Image **) AcquireMemory(GetImageFromListSize(images)*sizeof(Image *));
+  group=(Image **) AcquireMemory(GetImageListSize(images)*sizeof(Image *));
   if (group == (Image **) NULL)
     {
       ThrowException(exception,ResourceLimitError,"Memory allocation failed",
         "UnableToCreateImageGroup");
       return((Image **) NULL);
     }
-  for (i=0; i < (long) GetImageFromListSize(images); i++)
+  for (i=0; i < (long) GetImageListSize(images); i++)
     group[i]=GetImageFromList(images,i,exception);
   return(group);
 }

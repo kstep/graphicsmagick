@@ -956,7 +956,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobString(image,"%%Orientation: Portrait\n");
             (void) WriteBlobString(image,"%%PageOrder: Ascend\n");
             FormatString(buffer,"%%%%Pages: %lu\n", image_info->adjoin ?
-              (unsigned long) GetImageFromListSize(image) : 1L);
+              (unsigned long) GetImageListSize(image) : 1L);
             (void) WriteBlobString(image,buffer);
           }
         (void) WriteBlobString(image,"%%EndComments\n");
@@ -1426,7 +1426,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImageInList(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageFromListSize(image),&image->exception))
+    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
       break;
   } while (image_info->adjoin);
   if (image_info->adjoin)

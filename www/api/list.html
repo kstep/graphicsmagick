@@ -54,6 +54,7 @@
 <p>void  <strong>DestroyImageList</strong>( Image *image );</p>
 <p>Image * <strong>GetImageFromList</strong>( const Image *images, const long offset, ExceptionInfo *exception );</p>
 <p>long  <strong>GetImageIndexInList</strong>( const Image *images );</p>
+<p>unsigned long  <strong>GetImageListSize</strong>( const Image *images );</p>
 <p>Image * <strong>GetNextImageInList</strong>( const Image *images );</p>
 <p>Image * <strong>GetPreviousImageInList</strong>( const Image *images );</p>
 <p>Image **  <strong>ImageListToArray</strong>( const Image *images, ExceptionInfo *exception );</p>
@@ -179,11 +180,8 @@ The image list.
 <p>
 </p>
 <h2><a name="getimagelistsize">GetImageListSize</a></h2>
-<p><code>GetImageFromListSize()</code> returns the number of images in the list.</p>
-<p>The format of the GetImageFromListSize method is:</p>
-<pre>
-    unsigned long GetImageFromListSize(const Image *images)</pre>
-<p>A description of each parameter follows:</p>
+<blockquote>GetImageListSize() returns the number of images in the list. </blockquote><p>The format of the GetImageListSize method is:</p>
+<blockquote>unsigned long GetImageListSize ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
 </dt>

@@ -1015,7 +1015,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImageInList(image);
-    status=MagickMonitor(SaveImagesText,scene++,GetImageFromListSize(image),
+    status=MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),
       &image->exception);
     if (status == False)
       break;

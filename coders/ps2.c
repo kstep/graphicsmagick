@@ -670,7 +670,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               (void) strcpy(buffer,"%%Pages: 1\n");
             else
               FormatString(buffer,"%%%%Pages: %lu\n",(unsigned long)
-                GetImageFromListSize(image));
+                GetImageListSize(image));
             (void) WriteBlobString(image,buffer);
           }
         (void) WriteBlobString(image,"%%EndComments\n");
@@ -1125,7 +1125,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImageInList(image);
-    status=MagickMonitor(SaveImagesText,scene++,GetImageFromListSize(image),
+    status=MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),
       &image->exception);
     if (status == False)
       break;

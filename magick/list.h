@@ -31,7 +31,7 @@ extern MagickExport unsigned int
   PrependImageToList(Image **,const Image *,ExceptionInfo *);
 
 extern MagickExport unsigned long
-  GetImageFromListSize(const Image *);
+  GetImageListSize(const Image *);
 
 extern MagickExport void
   DestroyImageList(Image *);

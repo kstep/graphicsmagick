@@ -111,7 +111,7 @@ MagickExport void DestroyImages(Image *image)
 */
 MagickExport unsigned int GetNumberScenes(const Image *image)
 {
-  return(GetImageFromListSize(image));
+  return(GetImageListSize(image));
 }
 
 /*

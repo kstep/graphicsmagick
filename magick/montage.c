@@ -354,7 +354,7 @@ MagickExport Image *MontageImages(const Image *images,
   assert(montage_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  number_images=GetImageFromListSize(images);
+  number_images=GetImageListSize(images);
   master_list=ImageListToArray(images,exception);
   if (master_list == (Image **) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",

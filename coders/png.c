@@ -6654,7 +6654,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImageInList(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageFromListSize(image),&image->exception))
+    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
       break;
   } while (adjoin);
   if (write_mng)

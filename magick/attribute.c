@@ -1221,7 +1221,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
         }
       if (LocaleNCompare("scenes",key,6) == 0)
         {
-          FormatString(attribute,"%lu",(unsigned long) GetImageFromListSize(image));
+          FormatString(attribute,"%lu",(unsigned long) GetImageListSize(image));
           break;
         }
        break;
