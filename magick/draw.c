@@ -3620,17 +3620,16 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
       image->filename);
   memcpy(polygon_primitive,primitive_info,number_vertices*
     sizeof(PrimitiveInfo));
-  /*
-    Compute the slope for the first line segment, p.
-  */
-  if ((draw_info->linejoin != RoundJoin) &&
-      ((draw_info->linejoin != MiterJoin) || !closed_path))
-    polygon_primitive[number_vertices].primitive=UndefinedPrimitive;
-  else
+  if ((draw_info->linejoin == RoundJoin) ||
+      ((draw_info->linejoin == MiterJoin) && closed_path))
     {
       polygon_primitive[number_vertices]=primitive_info[1];
       number_vertices++;
     }
+  polygon_primitive[number_vertices].primitive=UndefinedPrimitive;
+  /*
+    Compute the slope for the first line segment, p.
+  */
   for (n=1; n < (int) number_vertices; n++)
   {
     dx.p=polygon_primitive[n].point.x-polygon_primitive[0].point.x;
