@@ -770,7 +770,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
             case 'c':
             case 'C':
             {
-              *q++=(float) p->red/MaxRGB;
+              *q++=(float) p->red/(MaxRGB+1);
               break;
             }
             case 'g':
@@ -778,7 +778,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
             case 'y':
             case 'Y':
             {
-              *q++=(float) p->green/MaxRGB;
+              *q++=(float) p->green/(MaxRGB+1);
               break;
             }
             case 'b':
@@ -786,7 +786,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
             case 'm':
             case 'M':
             {
-              *q++=(float) p->blue/MaxRGB;
+              *q++=(float) p->blue/(MaxRGB+1);
               break;
             }
             case 'a':
@@ -794,7 +794,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
             case 'k':
             case 'K':
             {
-              *q++=(float) p->opacity/MaxRGB;
+              *q++=(float) p->opacity/(MaxRGB+1);
               break;
             }
             default:
@@ -825,7 +825,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
             case 'c':
             case 'C':
             {
-              *q++=p->red/MaxRGB;
+              *q++=(double) p->red/(MaxRGB+1);
               break;
             }
             case 'g':
@@ -833,7 +833,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
             case 'y':
             case 'Y':
             {
-              *q++=p->green/MaxRGB;
+              *q++=(double) p->green/(MaxRGB+1);
               break;
             }
             case 'b':
@@ -841,7 +841,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
             case 'm':
             case 'M':
             {
-              *q++=p->blue/MaxRGB;
+              *q++=(double) p->blue/(MaxRGB+1);
               break;
             }
             case 'a':
@@ -849,7 +849,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
             case 'k':
             case 'K':
             {
-              *q++=p->opacity/MaxRGB;
+              *q++=(double) p->opacity/(MaxRGB+1);
               break;
             }
             default:

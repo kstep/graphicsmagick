@@ -453,13 +453,9 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
     }
   else
     {
-      double
-        alpha;
-
       /*
         Tile image onto floodplane.
       */
-      alpha=1.0/MaxRGB;
       for (y=0; y < (int) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
@@ -476,14 +472,14 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
                 *q=color;
               else
                 {
-                  q->red=(Quantum) (alpha*(color.red*(MaxRGB-color.opacity)+
-                    q->red*color.opacity));
-                  q->green=(Quantum) (alpha*(color.green*(MaxRGB-color.opacity)+
-                    q->green*color.opacity));
-                  q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-color.opacity)+
-                    q->blue*color.opacity));
-                  q->opacity=(Quantum) (alpha*(color.opacity*
-                    (MaxRGB-color.opacity)+q->opacity*color.opacity));
+                  q->red=((unsigned long) (color.red*(MaxRGB-color.opacity)+
+                    q->red*color.opacity)/(MaxRGB+1));
+                  q->green=((unsigned long) (color.green*(MaxRGB-color.opacity)+
+                    q->green*color.opacity)/(MaxRGB+1));
+                  q->blue=((unsigned long) (color.blue*(MaxRGB-color.opacity)+
+                    q->blue*color.opacity)/(MaxRGB+1));
+                  q->opacity=((unsigned long) (color.opacity*(MaxRGB-
+                    color.opacity)+q->opacity*color.opacity)/(MaxRGB+1));
                 }
             }
           q++;
@@ -2051,7 +2047,6 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
     alpha,
     beta,
     distance,
-    gamma,
     fill_opacity,
     mid,
     stroke_opacity,
@@ -2088,7 +2083,6 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
   assert(draw_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  alpha=1.0/MaxRGB;
   fill=(primitive_info->method == FillToBorderMethod) ||
     (primitive_info->method == FloodfillMethod);
   fill_color=draw_info->fill;
@@ -2178,20 +2172,20 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                   p->highwater=j;
                 }
               distance=DistanceToLine(p->points+j-1,x,y);
-              gamma=0.0;
+              beta=0.0;
               if (!p->ghostline)
                 {
-                  beta=mid+0.5;
-                  if ((stroke_opacity < 1.0) && (distance <= (beta*beta)))
+                  alpha=mid+0.5;
+                  if ((stroke_opacity < 1.0) && (distance <= (alpha*alpha)))
                     {
-                      beta=mid-0.5;
-                      if (distance <= (beta*beta))
+                      alpha=mid-0.5;
+                      if (distance <= (alpha*alpha))
                         stroke_opacity=1.0;
                       else
                         {
-                          gamma=sqrt(distance);
-                          beta=gamma-mid-0.5;
-                          stroke_opacity=Max(stroke_opacity,beta*beta);
+                          beta=sqrt(distance);
+                          alpha=beta-mid-0.5;
+                          stroke_opacity=Max(stroke_opacity,alpha*alpha);
                         }
                     }
                 }
@@ -2204,8 +2198,8 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                 }
               if (distance > 1.0)
                 continue;
-              beta=(gamma == 0.0 ? sqrt(distance) : gamma)-1.0;
-              subpath_opacity=Max(subpath_opacity,beta*beta);
+              alpha=(beta == 0.0 ? sqrt(distance) : beta)-1.0;
+              subpath_opacity=Max(subpath_opacity,alpha*alpha);
             }
           }
           if (fill)
@@ -2233,14 +2227,14 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                     Fill.
                   */
                   fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
-                  q->red=(Quantum) (alpha*(fill_color.red*
-                    (MaxRGB-fill_opacity)+q->red*fill_opacity));
-                  q->green=(Quantum) (alpha*(fill_color.green*
-                    (MaxRGB-fill_opacity)+q->green*fill_opacity));
-                  q->blue=(Quantum) (alpha*(fill_color.blue*
-                    (MaxRGB-fill_opacity)+q->blue*fill_opacity));
-                  q->opacity=(Quantum) (alpha*(fill_color.opacity*
-                    (MaxRGB-fill_opacity)+q->opacity*fill_opacity));
+                  q->red=((unsigned long) (fill_color.red*
+                    (MaxRGB-fill_opacity)+q->red*fill_opacity)/(MaxRGB+1));
+                  q->green=((unsigned long) (fill_color.green*
+                    (MaxRGB-fill_opacity)+q->green*fill_opacity)/(MaxRGB+1));
+                  q->blue=((unsigned long) (fill_color.blue*
+                    (MaxRGB-fill_opacity)+q->blue*fill_opacity)/(MaxRGB+1));
+                  q->opacity=((unsigned long) (fill_color.opacity*
+                    (MaxRGB-fill_opacity)+q->opacity*fill_opacity)/(MaxRGB+1));
                 }
             }
           if ((stroke_opacity == 0.0) ||
@@ -2253,14 +2247,14 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
             Stroke.
           */
           stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
-          q->red=(Quantum) (alpha*(stroke_color.red*
-            (MaxRGB-stroke_opacity)+q->red*stroke_opacity));
-          q->green=(Quantum) (alpha*(stroke_color.green*
-            (MaxRGB-stroke_opacity)+q->green*stroke_opacity));
-          q->blue=(Quantum) (alpha*(stroke_color.blue*
-            (MaxRGB-stroke_opacity)+q->blue*stroke_opacity));
-          q->opacity=(Quantum) (alpha*(stroke_color.opacity*(MaxRGB-
-            stroke_opacity)+q->opacity*stroke_opacity));
+          q->red=((unsigned long) (stroke_color.red*
+            (MaxRGB-stroke_opacity)+q->red*stroke_opacity)/(MaxRGB+1));
+          q->green=((unsigned long) (stroke_color.green*
+            (MaxRGB-stroke_opacity)+q->green*stroke_opacity)/(MaxRGB+1));
+          q->blue=((unsigned long) (stroke_color.blue*
+            (MaxRGB-stroke_opacity)+q->blue*stroke_opacity)/(MaxRGB+1));
+          q->opacity=((unsigned long) (stroke_color.opacity*(MaxRGB-
+            stroke_opacity)+q->opacity*stroke_opacity)/(MaxRGB+1));
           q++;
         }
         break;
@@ -3045,13 +3039,13 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
         PrintPrimitiveInfo(primitive_info);
       path_info=ConvertPrimitiveToPath(primitive_info);
       if (path_info == (PathInfo *) NULL)
-        return(False);
+        return;
       if (draw_info->verbose)
         PrintPathInfo(path_info);
       polygon_info=ConvertPathToPolygon(path_info);
       LiberateMemory((void **) &path_info);
       if (polygon_info == (PolygonInfo *) NULL)
-        return(False);
+        return;
       if (draw_info->verbose)
         PrintPolygonInfo(polygon_info);
 #ifdef DEBUG_BOUND_BOXES

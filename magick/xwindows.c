@@ -2725,13 +2725,13 @@ MagickExport void XGetPixelPacket(Display *display,
   */
   pixel->highlight_color.red=
     ((unsigned long) (pixel->matte_color.red*HighlightModulate+
-    (unsigned long) (MaxRGB-HighlightModulate)*65535L)/MaxRGB);
+    (unsigned long) (MaxRGB-HighlightModulate)*65535L)/(MaxRGB+1));
   pixel->highlight_color.green=
     ((unsigned long) (pixel->matte_color.green*HighlightModulate+
-    (unsigned long) (MaxRGB-HighlightModulate)*65535L)/MaxRGB);
+    (unsigned long) (MaxRGB-HighlightModulate)*65535L)/(MaxRGB+1));
   pixel->highlight_color.blue=
     ((unsigned long) (pixel->matte_color.blue*HighlightModulate+
-    (unsigned long) (MaxRGB-HighlightModulate)*65535L)/MaxRGB);
+    (unsigned long) (MaxRGB-HighlightModulate)*65535L)/(MaxRGB+1));
   pixel->highlight_color.pixel=
     XStandardPixel(map_info,pixel->highlight_color,16);
   pixel->highlight_color.flags=DoRed | DoGreen | DoBlue;
@@ -2739,11 +2739,11 @@ MagickExport void XGetPixelPacket(Display *display,
     Set shadow color.
   */
   pixel->shadow_color.red=((unsigned long)
-    (pixel->matte_color.red*ShadowModulate)/MaxRGB);
+    (pixel->matte_color.red*ShadowModulate)/(MaxRGB+1));
   pixel->shadow_color.green=((unsigned long)
-    (pixel->matte_color.green*ShadowModulate)/MaxRGB);
+    (pixel->matte_color.green*ShadowModulate)/(MaxRGB+1));
   pixel->shadow_color.blue=((unsigned long)
-    (pixel->matte_color.blue*ShadowModulate)/MaxRGB);
+    (pixel->matte_color.blue*ShadowModulate)/(MaxRGB+1));
   pixel->shadow_color.pixel=
     XStandardPixel(map_info,pixel->shadow_color,16);
   pixel->shadow_color.flags=DoRed | DoGreen | DoBlue;
@@ -2751,11 +2751,11 @@ MagickExport void XGetPixelPacket(Display *display,
     Set depth color.
   */
   pixel->depth_color.red=((unsigned long)
-    (pixel->matte_color.red*DepthModulate)/MaxRGB);
+    (pixel->matte_color.red*DepthModulate)/(MaxRGB+1));
   pixel->depth_color.green=((unsigned long)
-    (pixel->matte_color.green*DepthModulate)/MaxRGB);
+    (pixel->matte_color.green*DepthModulate)/(MaxRGB+1));
   pixel->depth_color.blue=((unsigned long)
-    (pixel->matte_color.blue*DepthModulate)/MaxRGB);
+    (pixel->matte_color.blue*DepthModulate)/(MaxRGB+1));
   pixel->depth_color.pixel=
     XStandardPixel(map_info,pixel->depth_color,16);
   pixel->depth_color.flags=DoRed | DoGreen | DoBlue;
@@ -2763,11 +2763,11 @@ MagickExport void XGetPixelPacket(Display *display,
     Set trough color.
   */
   pixel->trough_color.red=((unsigned long)
-    (pixel->matte_color.red*TroughModulate)/MaxRGB);
+    (pixel->matte_color.red*TroughModulate)/(MaxRGB+1));
   pixel->trough_color.green=((unsigned long)
-    (pixel->matte_color.green*TroughModulate)/MaxRGB);
+    (pixel->matte_color.green*TroughModulate)/(MaxRGB+1));
   pixel->trough_color.blue=((unsigned long)
-    (pixel->matte_color.blue*TroughModulate)/MaxRGB);
+    (pixel->matte_color.blue*TroughModulate)/(MaxRGB+1));
   pixel->trough_color.pixel=
     XStandardPixel(map_info,pixel->trough_color,16);
   pixel->trough_color.flags=DoRed | DoGreen | DoBlue;
@@ -2838,11 +2838,11 @@ MagickExport void XGetPixelPacket(Display *display,
           for (i=0; i <= MaxRGB; i++)
           {
             pixel->gamma_map[i].red=(short unsigned int)
-              ((pow((double) i/MaxRGB,1.0/red_gamma)*MaxRGB)+0.5);
+              ((pow((double) i/(MaxRGB+1),1.0/red_gamma)*MaxRGB)+0.5);
             pixel->gamma_map[i].green=(short unsigned int)
-              ((pow((double) i/MaxRGB,1.0/green_gamma)*MaxRGB)+0.5);
+              ((pow((double) i/(MaxRGB+1),1.0/green_gamma)*MaxRGB)+0.5);
             pixel->gamma_map[i].blue=(short unsigned int)
-              ((pow((double) i/MaxRGB,1.0/blue_gamma)*MaxRGB)+0.5);
+              ((pow((double) i/(MaxRGB+1),1.0/blue_gamma)*MaxRGB)+0.5);
           }
         }
       if (image->storage_class == PseudoClass)

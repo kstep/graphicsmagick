@@ -355,7 +355,7 @@ static void BlurScanline(const double *kernel,const int width,
 
 static int GetKernelWidth(int width,const double sigma,double **kernel)
 {
-#define KernelRes 3
+#define KernelRank 3
 
   double
     normalize;
@@ -378,10 +378,10 @@ static int GetKernelWidth(int width,const double sigma,double **kernel)
     return(0);
   for (i=0; i < width; i++)
     (*kernel)[i]=0.0;
-  bias=KernelRes*width/2;
+  bias=KernelRank*width/2;
   for (i=(-bias); i <= bias; i++)
-    (*kernel)[(i+bias)/KernelRes]+=
-      exp((double) (-i*i)/(2.0*KernelRes*KernelRes*sigma*sigma));
+    (*kernel)[(i+bias)/KernelRank]+=
+      exp((double) (-i*i)/(2.0*KernelRank*KernelRank*sigma*sigma));
   normalize=0;
   for (i=0; i < width; i++)
     normalize+=(*kernel)[i];
@@ -1180,12 +1180,12 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
   mean=(int) (s->red+red)/2; \
   distance=s->red-(int) red; \
   distance_squared= \
-    (2.0*(MaxRGB+1)+mean)*distance*distance/(double) (MaxRGB+1); \
+    (double) (2.0*(MaxRGB+1)+mean)*distance*distance/(MaxRGB+1); \
   distance=s->green-(int) green; \
   distance_squared+=4.0*distance*distance; \
   distance=s->blue-(int) blue; \
   distance_squared+= \
-    (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/(double) (MaxRGB+1); \
+    (double) (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/(MaxRGB+1); \
   if (distance_squared < Threshold) \
     { \
       total_red+=(weight)*s->red; \
@@ -2538,9 +2538,9 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
         }
       else
         {
-          q->red=(Quantum) ((shade*s1->red)/(MaxRGB+1));
-          q->green=(Quantum) ((shade*s1->green)/(MaxRGB+1));
-          q->blue=(Quantum) ((shade*s1->blue)/(MaxRGB+1));
+          q->red=((unsigned long) (shade*s1->red)/(MaxRGB+1));
+          q->green=((unsigned long) (shade*s1->green)/(MaxRGB+1));
+          q->blue=((unsigned long) (shade*s1->blue)/(MaxRGB+1));
         }
       q->opacity=s1->opacity;
       s0++;

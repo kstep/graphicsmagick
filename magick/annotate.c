@@ -638,10 +638,6 @@ static unsigned int RenderTruetype(Image *image,
   char
     filename[MaxTextExtent];
 
-  double
-    alpha,
-    opacity;
-
   FT_BBox
     bounding_box;
 
@@ -668,6 +664,9 @@ static unsigned int RenderTruetype(Image *image,
   PointInfo
     point,
     resolution;
+
+  Quantum
+    opacity;
 
   register unsigned char
     *p;
@@ -860,7 +859,6 @@ static unsigned int RenderTruetype(Image *image,
     Render label.
   */
   image->storage_class=DirectClass;
-  alpha=1.0/MaxRGB;
   fill_color=annotate_info->fill;
   for (glyph=glyphs; glyph->id != 0; glyph++)
   {
@@ -897,15 +895,16 @@ static unsigned int RenderTruetype(Image *image,
           (int) ceil(point.y+y-0.5),1,1);
         if (q == (PixelPacket *) NULL)
           break;
-        opacity=MaxRGB-UpScale(*p)*(MaxRGB-fill_color.opacity)*alpha;
-        q->red=(Quantum) (((double) fill_color.red*(MaxRGB-opacity)+
-          (double) q->red*opacity)*alpha);
-        q->green=(Quantum) (((double) fill_color.green*(MaxRGB-opacity)+
-          (double) q->green*opacity)*alpha);
-        q->blue=(Quantum) (((double) fill_color.blue*(MaxRGB-opacity)+
-          (double) q->blue*opacity)*alpha);
-        q->opacity=(Quantum) (((double) opacity*(MaxRGB-opacity)+
-          (double) q->opacity*opacity)*alpha);
+        opacity=((unsigned long) (MaxRGB-UpScale(*p)*
+          (MaxRGB-fill_color.opacity))/(MaxRGB+1));
+        q->red=((unsigned long) (fill_color.red*(MaxRGB-opacity)+
+          q->red*opacity)/(MaxRGB+1));
+        q->green=((unsigned long) (fill_color.green*(MaxRGB-opacity)+
+          q->green*opacity)/(MaxRGB+1));
+        q->blue=((unsigned long) (fill_color.blue*(MaxRGB-opacity)+
+          q->blue*opacity)/(MaxRGB+1));
+        q->opacity=((unsigned long) (opacity*(MaxRGB-opacity)+
+          q->opacity*opacity)/(MaxRGB+1));
         if (!SyncImagePixels(image))
           break;
         p++;
@@ -935,9 +934,7 @@ static unsigned int RenderPostscript(Image *image,
     geometry[MaxTextExtent];
 
   double
-    alpha,
-    font_height,
-    opacity;
+    font_height;
 
   FILE
     *file;
@@ -961,7 +958,6 @@ static unsigned int RenderPostscript(Image *image,
     extent,
     point,
     resolution;
-
 
   register int
     i,
@@ -1079,7 +1075,6 @@ static unsigned int RenderPostscript(Image *image,
     }
   annotate_image->matte=True;
   fill_color=annotate_info->fill;
-  alpha=1.0/MaxRGB;
   for (y=0; y < (int) annotate_image->rows; y++)
   {
     q=GetImagePixels(annotate_image,0,y,annotate_image->columns,1);
@@ -1087,8 +1082,8 @@ static unsigned int RenderPostscript(Image *image,
       break;
     for (x=0; x < (int) annotate_image->columns; x++)
     {
-      opacity=(MaxRGB-Intensity(*q))*(MaxRGB-fill_color.opacity)*alpha;
-      q->opacity=(Quantum) ceil(MaxRGB-opacity-0.5);
+      q->opacity=((unsigned long) (Intensity(*q)*
+        (MaxRGB-fill_color.opacity))/(MaxRGB+1));
       q->red=fill_color.red;
       q->green=fill_color.green;
       q->blue=fill_color.blue;

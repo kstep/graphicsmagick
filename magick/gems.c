@@ -844,9 +844,9 @@ MagickExport void TransformHSL(const Quantum red,const Quantum green,
   assert(hue != (double *) NULL);
   assert(saturation != (double *) NULL);
   assert(luminosity != (double *) NULL);
-  r=(double) red/MaxRGB;
-  g=(double) green/MaxRGB;
-  b=(double) blue/MaxRGB;
+  r=(double) red/(MaxRGB+1);
+  g=(double) green/(MaxRGB+1);
+  b=(double) blue/(MaxRGB+1);
   max=Max(r,Max(g,b));
   min=Min(r,Min(g,b));
   *hue=(-1.0);

@@ -1536,9 +1536,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       MSBFirstWriteShort(image,(unsigned short) Max(image->colors-1,1));
       for (i=0; i < (int) image->colors; i++)
       {
-        red=((unsigned long) (image->colormap[i].red*65535L)/MaxRGB);
-        green=((unsigned long) (image->colormap[i].green*65535L)/MaxRGB);
-        blue=((unsigned long) (image->colormap[i].blue*65535L)/MaxRGB);
+        red=((unsigned long) (image->colormap[i].red*65535L)/(MaxRGB+1));
+        green=((unsigned long) (image->colormap[i].green*65535L)/(MaxRGB+1));
+        blue=((unsigned long) (image->colormap[i].blue*65535L)/(MaxRGB+1));
         MSBFirstWriteShort(image,(unsigned int) i);
         MSBFirstWriteShort(image,red);
         MSBFirstWriteShort(image,green);

@@ -44,8 +44,8 @@ testFilter('input.miff', 'Colorize',
 ++$test;
 testFilter('input.miff', 'Contrast',
   q/1/,
-  'c2156d2134de57d98a03fe8ffdf0a3cd',
-  'e4d90d8d2af844650864c4e193acb270');
+  'f8f1572eb126b38dd2f7dc9eaa13e096',
+  '1266016b4344fc66ac452f03c0e0e64a');
 
 ++$test;
 testFilter('input.miff', 'Convolve',
@@ -95,14 +95,14 @@ testFilter('input.miff', 'Flop',
 ++$test;
 testFilter('input.miff', 'Frame',
   q/10x10/,
-  '026f10a0cd41b8b61e31b27f3adb6d71', 
-  '1c36dcdff27bd8618598def99f5227d0');
+  'd27ccf72b41b2b87d535e464b8923aab', 
+  'a0562c7bf1c1f32034b51e9acd61bf87');
 
 ++$test;
 testFilter('input.miff', 'Gamma',
   q/2.2/,
-  '23a6358f8dfb340e7daf90c2ac991321',
-  'e2570162c1ee89f182107c21d5aa0bbd');
+  '2f18f7a94d720b622b819b8a8ea0c908',
+  '65eb79eb7ead8e407e65f4cc9c3dd4da');
 
 ++$test;
 testFilter('input.miff', 'Implode',
@@ -136,8 +136,8 @@ testFilter('input.miff', 'Minify',
 ++$test;
 testFilter('input.miff', 'Modulate',
   q/60/,
-  '1c4736b6d1ed28e1846ab1f47c792ef4',
-  'cfc9efc540fe048eefd92ce743c0630e');
+  'a6eef3f5bc63ac8e61bb6baa5e5c9d85',
+  'fd048c1088c4733003db264fca9e28af');
 
 ++$test;
 testFilter('input.miff', 'Negate',
@@ -170,8 +170,8 @@ testFilter('input.miff', 'Quantize',
 ++$test;
 testFilter('input.miff', 'Raise',
   q/10x10/,
-  '0cbe112e62a8e8a6e178a55a56b69a4b',
-  '1bc9ae340eef6cc6257b0e2bfb5a0ab0');
+  '57d5c0a93bb2e28e9e4ed38f9a4e2ea6',
+  '739ac80d67ea57a0c891a20e28d96ccd');
 
 ++$test;
 testFilter('input.miff', 'Resize',
@@ -187,8 +187,8 @@ testFilter('input.miff', 'Roll',
 ++$test;
 testFilter('input.miff', 'Rotate',
   q/10/,
-  'ae4c2b922aec1130999e6f9668b1f080',
-  'd5141f9e3a246be7bbd3b15e38602e15');
+  '2327a9e2f715f9023868389bc7d20e4e',
+  '2f138b1a69864a62ed3f5181efa4a356');
 
 ++$test;
 testFilter('input.miff', 'Sample',
@@ -221,8 +221,8 @@ testFilter('input.miff', 'Sharpen',
 ++$test;
 testFilter('input.miff', 'Shear',
   q/10/,
-  '640dffd1d8ad695bde747a76f79c8312',
-  '97dc6a82f0fd80f7d82c5f6fe0fecc73');
+  'c5b1713b3f0b0771c05e3ecc80798771',
+  '2faf269e7f99a10fb5369e9d5c3e980a');
 
 ++$test;
 testFilter('input.miff', 'Solarize',

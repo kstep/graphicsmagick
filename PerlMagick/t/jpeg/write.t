@@ -22,7 +22,7 @@ testReadWrite( 'input.jpg',
 	       'output_tmp.jpg',
 	       q/quality=>80, interlace=>'None'/,
 	       'f6288189c96505670be06ed9f4ec708a',
-               'b802ff01d382e3549b0779c26ade4d4e' );
+               '5f29d4405c4775d10fb1beecee08fe33' );
 
 #
 # 2) Test with plane-interlaced image
@@ -32,6 +32,6 @@ print( "Plane-interlaced JPEG ...\n" );
 testReadWrite( 'input_plane.jpg', 'output_plane_tmp.jpg',
 	       q/quality=>80, interlace=>'Plane'/,
 	       'f6288189c96505670be06ed9f4ec708a',
-               'b802ff01d382e3549b0779c26ade4d4e' );
+               '5f29d4405c4775d10fb1beecee08fe33' );
 
 
