@@ -851,7 +851,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("title",option+1,2) == 0)
+          if (LocaleNCompare("title",option+1,4) == 0)
             {
               CloneString(&resource_info.title,(char *) NULL);
               if (*option == '-')

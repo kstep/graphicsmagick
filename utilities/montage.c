@@ -1077,7 +1077,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("tile",option+1,3) == 0)
+          if (LocaleCompare("tile",option+1) == 0)
             {
               CloneString(&montage_info->tile,(char *) NULL);
               if (*option == '-')
@@ -1089,7 +1089,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("title",option+1,3) == 0)
+          if (LocaleNCompare("title",option+1,4) == 0)
             {
               CloneString(&montage_info->title,(char *) NULL);
               if (*option == '-')
