@@ -6048,7 +6048,7 @@ QueryFontMetrics(ref,...)
     DrawInfo
       *draw_info;
 
-    FontInfo
+    FontMetric
       metrics;
 
     Image

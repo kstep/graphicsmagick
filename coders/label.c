@@ -93,7 +93,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   DrawInfo
     *draw_info;
 
-  FontInfo
+  FontMetric
     metrics;
 
   Image

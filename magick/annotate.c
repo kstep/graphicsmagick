@@ -71,13 +71,13 @@
 */
 static unsigned int
   RenderFont(Image *,const DrawInfo *,const PointInfo *,
-    const unsigned int,FontInfo *),
+    const unsigned int,FontMetric *),
   RenderPostscript(Image *,const DrawInfo *,const PointInfo *,
-    const unsigned int,FontInfo *),
+    const unsigned int,FontMetric *),
   RenderTruetype(Image *,const DrawInfo *,const PointInfo *,
-    const unsigned int,FontInfo *),
+    const unsigned int,FontMetric *),
   RenderX11(Image *,const DrawInfo *,const PointInfo *,const unsigned int,
-    FontInfo *);
+    FontMetric *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -120,7 +120,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     *annotate,
     *clone_info;
 
-  FontInfo
+  FontMetric
     metrics;
 
   int
@@ -383,7 +383,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %  The format of the GetFontMetrics method is:
 %
 %      unsigned int GetFontMetrics(Image *image,
-%        const DrawInfo *draw_info,FontInfo metrics)
+%        const DrawInfo *draw_info,FontMetric metrics)
 %
 %  A description of each parameter follows:
 %
@@ -399,7 +399,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %
 */
 MagickExport unsigned int GetFontMetrics(Image *image,
-  const DrawInfo *draw_info,FontInfo *metrics)
+  const DrawInfo *draw_info,FontMetric *metrics)
 {
   PointInfo
     offset;
@@ -433,7 +433,7 @@ MagickExport unsigned int GetFontMetrics(Image *image,
 %  The format of the RenderFont method is:
 %
 %      unsigned int RenderFont(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,const unsigned int render,FontInfo *metrics)
+%        const PointInfo *offset,const unsigned int render,FontMetric *metrics)
 %
 %  A description of each parameter follows:
 %
@@ -454,7 +454,7 @@ MagickExport unsigned int GetFontMetrics(Image *image,
 %
 */
 static unsigned int RenderFont(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,FontInfo *metrics)
+  const PointInfo *offset,const unsigned int render,FontMetric *metrics)
 {
   DrawInfo
     *clone_info;
@@ -515,7 +515,7 @@ static unsigned int RenderFont(Image *image,const DrawInfo *draw_info,
 %  The format of the RenderPostscript method is:
 %
 %      unsigned int RenderPostscript(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,const unsigned int render,FontInfo *metrics)
+%        const PointInfo *offset,const unsigned int render,FontMetric *metrics)
 %
 %  A description of each parameter follows:
 %
@@ -566,7 +566,7 @@ static char *EscapeParenthesis(const char *text)
 }
 
 static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,FontInfo *metrics)
+  const PointInfo *offset,const unsigned int render,FontMetric *metrics)
 {
   char
     filename[MaxTextExtent],
@@ -762,7 +762,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
 %  The format of the RenderTruetype method is:
 %
 %      unsigned int RenderTruetype(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,const unsigned int render,FontInfo *metrics)
+%        const PointInfo *offset,const unsigned int render,FontMetric *metrics)
 %
 %  A description of each parameter follows:
 %
@@ -830,7 +830,7 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
 }
 
 static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,FontInfo *metrics)
+  const PointInfo *offset,const unsigned int render,FontMetric *metrics)
 {
   typedef struct _GlyphInfo
   {
@@ -1132,7 +1132,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
 }
 #else
 static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,FontInfo *metrics)
+  const PointInfo *offset,const unsigned int render,FontMetric *metrics)
 {
   ThrowBinaryException(MissingDelegateWarning,
     "FreeType library is not available",draw_info->font);
@@ -1156,7 +1156,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
 %  The format of the RenderX11 method is:
 %
 %      unsigned int RenderX11(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,const unsigned int render,FontInfo *metrics)
+%        const PointInfo *offset,const unsigned int render,FontMetric *metrics)
 %
 %  A description of each parameter follows:
 %
@@ -1178,17 +1178,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
 */
 #if defined(HasX11)
 static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,FontInfo *metrics)
+  const PointInfo *offset,const unsigned int render,FontMetric *metrics)
 {
-  int
-    y;
-
-  register int
-    x;
-
-  register PixelPacket
-    *q;
-
   static DrawInfo
     cache_info;
 
@@ -1346,7 +1337,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
 }
 #else
 static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,FontInfo *metrics)
+  const PointInfo *offset,const unsigned int render,FontMetric *metrics)
 {
   ThrowBinaryException(MissingDelegateWarning,
     "X11 library is not available",draw_info->font);

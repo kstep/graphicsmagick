@@ -654,9 +654,6 @@ static void SVGSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
 
 static void SVGStartDocument(void *context)
 {
-  register int
-    i;
-
   SVGInfo
     *svg_info;
 
@@ -683,9 +680,6 @@ static void SVGStartDocument(void *context)
 
 static void SVGEndDocument(void *context)
 {
-  register int
-    i;
-
   SVGInfo
     *svg_info;
 
@@ -729,8 +723,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
 
   register int
     i,
-    j,
-    k;
+    j;
 
   /*
     Called when an opening tag has been processed.
