@@ -951,12 +951,12 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
       break;
     if (fpx_info.numberOfComponents == 1)
-      (void) PopImagePixels(image,GrayQuantum,pixels);
+      (void) ExportImagePixelArea(image,GrayQuantum,8,pixels);
     else
       if (!image->matte)
-        (void) PopImagePixels(image,RGBQuantum,pixels);
+        (void) ExportImagePixelArea(image,RGBQuantum,8,pixels);
       else
-        (void) PopImagePixels(image,RGBAQuantum,pixels);
+        (void) ExportImagePixelArea(image,RGBAQuantum,8,pixels);
     fpx_status=FPX_WriteImageLine(flashpix,&fpx_info);
     if (fpx_status != FPX_OK)
       break;
