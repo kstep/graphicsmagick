@@ -847,7 +847,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
       crop_info=GetImageBoundingBox(annotate_image,&annotate_image->exception);
       crop_info.height=(unsigned int) ceil((resolution.y/72.0)*
         ExpandAffine(&draw_info->affine)*draw_info->pointsize-0.5);
-      crop_info.y=(int) ceil((resolution.y/72.0)*extent.y/8.0-0.5);
+      crop_info.y=(long) ceil((resolution.y/72.0)*extent.y/8.0-0.5);
       (void) FormatString(geometry,"%lux%lu%+ld%+ld",crop_info.width,
         crop_info.height,crop_info.x,crop_info.y);
       TransformImage(&annotate_image,geometry,(char *) NULL);
@@ -898,7 +898,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
           break;
       }
       (void) CompositeImage(image,OverCompositeOp,annotate_image,(int)
-        ceil(offset->x-0.5),(int) ceil(offset->y-(metrics->ascent+
+        ceil(offset->x-0.5),(long) ceil(offset->y-(metrics->ascent+
         metrics->descent)-0.5));
     }
   DestroyImage(annotate_image);
@@ -1249,8 +1249,13 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
             else
               opacity=(Quantum)
                 ((*p) >= 64 ? TransparentOpacity : OpaqueOpacity);
+            fill_color=draw_info->fill;
+            if (draw_info->fill_pattern != (Image *) NULL)
+              fill_color=GetOnePixel(draw_info->fill_pattern,
+                x % draw_info->fill_pattern->columns,
+                y % draw_info->fill_pattern->rows);
             opacity=(Quantum) ((unsigned long) ((MaxRGB-opacity)*
-              (MaxRGB-draw_info->fill.opacity))/MaxRGB);
+              (MaxRGB-fill_color.opacity))/MaxRGB);
             if (!active)
               q=GetImagePixels(image,(long) ceil(point.x+x-0.5),
                 (long) ceil(point.y+y-0.5),1,1);
@@ -1259,11 +1264,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                 p++;
                 break;
               }
-            fill_color=draw_info->fill;
-            if (draw_info->fill_pattern != (Image *) NULL)
-              fill_color=GetOnePixel(draw_info->fill_pattern,
-                (long) ceil(point.x+x-0.5) % draw_info->fill_pattern->columns,
-                (long) ceil(point.y+y-0.5) % draw_info->fill_pattern->rows);
             AlphaComposite(&fill_color,opacity,q,q->opacity);
             if (!active)
               (void) SyncImagePixels(image);
@@ -1501,7 +1501,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
           atan2(draw_info->affine.rx,draw_info->affine.sx);
     }
   FormatString(annotate_info.geometry,"%ux%u+%d+%d",width,height,
-    (int) ceil(offset->x-0.5),(int) ceil(offset->y-metrics->ascent-
+    (long) ceil(offset->x-0.5),(long) ceil(offset->y-metrics->ascent-
     metrics->descent-1.5));
   pixel.pen_color.red=XUpScale(draw_info->fill.red);
   pixel.pen_color.green=XUpScale(draw_info->fill.green);

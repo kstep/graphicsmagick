@@ -3105,16 +3105,16 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
       /*
         Draw point.
       */
-      for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
+      for (y=(long) ceil(bounds.y1-0.5); y <= (long) floor(bounds.y2-0.5); y++)
       {
-        x=(int) ceil(bounds.x1-0.5);
-        q=GetImagePixels(image,x,y,(int) floor(bounds.x2-0.5)-x+1,1);
+        x=(long) ceil(bounds.x1-0.5);
+        q=GetImagePixels(image,x,y,(long) floor(bounds.x2-0.5)-x+1,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for ( ; x <= (int) floor(bounds.x2-0.5); x++)
+        for ( ; x <= (long) floor(bounds.x2-0.5); x++)
         {
-          if ((x == (int) ceil(primitive_info->point.x-0.5)) &&
-              (y == (int) ceil(primitive_info->point.y-0.5)))
+          if ((x == (long) ceil(primitive_info->point.x-0.5)) &&
+              (y == (long) ceil(primitive_info->point.y-0.5)))
             *q=stroke_color;
           q++;
         }
@@ -3129,13 +3129,13 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   /*
     Draw polygon or line.
   */
-  for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
+  for (y=(long) ceil(bounds.y1-0.5); y <= (long) floor(bounds.y2-0.5); y++)
   {
-    x=(int) ceil(bounds.x1-0.5);
-    q=GetImagePixels(image,x,y,(int) floor(bounds.x2-0.5)-x+1,1);
+    x=(long) ceil(bounds.x1-0.5);
+    q=GetImagePixels(image,x,y,(long) floor(bounds.x2-0.5)-x+1,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for ( ; x <= (int) floor(bounds.x2-0.5); x++)
+    for ( ; x <= (long) floor(bounds.x2-0.5); x++)
     {
       /*
         Fill and/or stroke.
@@ -3149,14 +3149,14 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
         }
       if (draw_info->fill_pattern != (Image *) NULL)
         fill_color=GetOnePixel(draw_info->fill_pattern,
-          x % draw_info->fill_pattern->columns,
-          y % draw_info->fill_pattern->rows);
+          (x-(long) ceil(bounds.x1-0.5)) % draw_info->fill_pattern->columns,
+          (y-(long) ceil(bounds.y1-0.5)) % draw_info->fill_pattern->rows);
       fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
       AlphaComposite(&fill_color,fill_opacity,q,q->opacity);
       if (draw_info->stroke_pattern != (Image *) NULL)
         stroke_color=GetOnePixel(draw_info->stroke_pattern,
-          x % draw_info->stroke_pattern->columns,
-          y % draw_info->stroke_pattern->rows);
+          (x-(long) ceil(bounds.x1-0.5)) % draw_info->stroke_pattern->columns,
+          (y-(long) ceil(bounds.y1-0.5)) % draw_info->stroke_pattern->rows);
       stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
       AlphaComposite(&stroke_color,stroke_opacity,q,q->opacity);
       q++;
@@ -3226,8 +3226,8 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
     i,
     x;
 
-  x=(int) ceil(primitive_info->point.x-0.5);
-  y=(int) ceil(primitive_info->point.y-0.5);
+  x=(long) ceil(primitive_info->point.x-0.5);
+  y=(long) ceil(primitive_info->point.y-0.5);
   switch (primitive_info->primitive)
   {
     case PointPrimitive:
@@ -3317,8 +3317,8 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       (void) fprintf(stdout,"  begin draw-primitive\n");
     }
   status=True;
-  x=(int) ceil(primitive_info->point.x-0.5);
-  y=(int) ceil(primitive_info->point.y-0.5);
+  x=(long) ceil(primitive_info->point.x-0.5);
+  y=(long) ceil(primitive_info->point.y-0.5);
   switch (primitive_info->primitive)
   {
     case PointPrimitive:
@@ -4167,7 +4167,7 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   else
     if ((theta > 0.0) && !sweep)
       theta-=2.0*MagickPI;
-  arc_segments=(int) ceil(fabs(theta/(0.5*MagickPI+MagickEpsilon)));
+  arc_segments=(long) ceil(fabs(theta/(0.5*MagickPI+MagickEpsilon)));
   p=primitive_info;
   for (i=0; i < (long) arc_segments; i++)
   {
@@ -5122,7 +5122,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           theta.q=atan2(box_q[2].y-center.y,box_q[2].x-center.x);
           if (theta.q < theta.p)
             theta.q+=2.0*MagickPI;
-          arc_segments=(int) ceil((theta.q-theta.p)/(2.0*sqrt(1.0/mid)));
+          arc_segments=(long) ceil((theta.q-theta.p)/(2.0*sqrt(1.0/mid)));
           path_q[q].x=box_q[1].x;
           path_q[q].y=box_q[1].y;
           q++;
@@ -5191,7 +5191,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           theta.q=atan2(box_p[2].y-center.y,box_p[2].x-center.x);
           if (theta.p < theta.q)
             theta.p+=2.0*MagickPI;
-          arc_segments=(int) ceil((theta.p-theta.q)/(2.0*sqrt(1.0/mid)));
+          arc_segments=(long) ceil((theta.p-theta.q)/(2.0*sqrt(1.0/mid)));
           path_p[p++]=box_p[1];
           for (j=1; j < arc_segments; j++)
           {
