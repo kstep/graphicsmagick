@@ -441,7 +441,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image)
     }
   clone_info=CloneImageInfo(image_info);
-  DetachBlob(clone_info->blob);
+  clone_info->blob=(void *) NULL;
+  clone_info->length=0;
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   (void) remove(image_info->filename);

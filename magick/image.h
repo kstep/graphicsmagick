@@ -38,7 +38,7 @@ typedef unsigned short Quantum;
 #endif
 
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
-	((p)->green == (q)->green) && ((p)->blue == (q)->blue))
+  ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
 #define Intensity(color)  ((Quantum) \
   ((9798L*(color)->red+19235L*(color)->green+3735L*(color)->blue)/32768L))
 #define XIntensity(color)  ((unsigned short) \
@@ -50,6 +50,11 @@ typedef unsigned short Quantum;
 /*
   Typedef declarations.
 */
+struct SemaphoreInfo;
+
+typedef struct SemaphoreInfo
+  SemaphoreInfo;
+
 typedef struct _PointInfo
 {
   double
@@ -122,6 +127,12 @@ typedef struct _BlobInfo
     offset,
     size;
 
+  SemaphoreInfo
+    *semaphore;
+
+  long
+    reference_count;
+
   unsigned long
     signature;
 } BlobInfo;
@@ -159,7 +170,7 @@ typedef struct _ColorInfo
 } ColorInfo;
 
 typedef struct _ElementInfo
-{   
+{
   double
     cx,
     cy,
@@ -266,11 +277,6 @@ typedef struct _SegmentInfo
     x2,
     y2;
 } SegmentInfo;
-
-struct SemaphoreInfo;
-
-typedef struct SemaphoreInfo
-  SemaphoreInfo;
 
 typedef struct _Timer
 {
@@ -546,8 +552,11 @@ typedef struct _ImageInfo
   FILE
     *file;
 
-  BlobInfo
+  void
     *blob;
+
+  size_t
+    length;
 
   char
     magick[MaxTextExtent],
@@ -756,7 +765,7 @@ extern MagickExport unsigned int
     const unsigned long,const char *,const StorageType,void *,ExceptionInfo *),
   DisplayImages(const ImageInfo *image_info,Image *image),
   EqualizeImage(Image *),
-	FuzzyColorMatch(const PixelPacket *,const PixelPacket *,const double),
+  FuzzyColorMatch(const PixelPacket *,const PixelPacket *,const double),
   GammaImage(Image *,const char *),
   GetNumberScenes(const Image *),
   GradientImage(Image *,const PixelPacket *,const PixelPacket *),

@@ -1227,7 +1227,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         */
         jpeg=True;
         clone_info=CloneImageInfo(image_info);
-        DetachBlob(clone_info->blob);
+        clone_info->blob=(void *) NULL;
+        clone_info->length=0;
         TemporaryFilename(clone_info->filename);
         file=fopen(clone_info->filename,WriteBinaryType);
         if (file == (FILE *) NULL)

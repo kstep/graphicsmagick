@@ -13,7 +13,8 @@ extern "C" {
   Blob methods.
 */
 extern MagickExport BlobInfo
-  *CloneBlobInfo(const BlobInfo *);
+  *CloneBlobInfo(const BlobInfo *),
+  *ReferenceBlob(BlobInfo *);
 
 extern MagickExport char
   *ReadBlobString(Image *,char *);

@@ -1,4 +1,5 @@
 2002-04-08  Cristy  <cristy@mystic.es.dupont.com>
+  * Added reference counted blobs.
   * Added MagickFatalError() and SetFatalErrorHandler() to the C API.
 
 2002-04-06  Glenn Randers-Pehrson <randeg@alum.pri.edu>

@@ -353,7 +353,7 @@ static struct
       {"y", IntegerReference}, {"gravity", GravityTypes},
       {"opacity", DoubleReference}, {"tile", BooleanTypes},
       {"rotate", DoubleReference}, {"color", StringReference},
-			{"mask", ImageReference} } },
+      {"mask", ImageReference} } },
     { "Contrast", { {"sharp", BooleanTypes} } },
     { "CycleColormap", { {"display", IntegerReference} } },
     { "Draw", { {"primitive", PrimitiveTypes}, {"points", StringReference},

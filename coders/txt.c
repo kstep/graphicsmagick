@@ -172,7 +172,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         *clone_info;
 
       clone_info=CloneImageInfo(image_info);
-      DetachBlob(clone_info->blob);
+      clone_info->blob=(void *) NULL;
+      clone_info->length=0;
       (void) strncpy(clone_info->filename,image_info->texture,MaxTextExtent-1);
       texture=ReadImage(clone_info,exception);
       DestroyImageInfo(clone_info);

@@ -545,7 +545,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image)
     }
   DestroyImage(image);
-  DetachBlob(clone_info->blob);
+  clone_info->blob=(void *) NULL;
+  clone_info->length=0;
   image=ReadImage(clone_info,exception);
   (void) remove(postscript_filename);
   (void) remove(clone_info->filename);
@@ -1572,13 +1573,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         {
           case FaxCompression:
           {
-            *tile_image->blob=(*image->blob);
             tile_image->file=image->file;
             if (LocaleCompare(CCITTParam,"0") == 0)
               (void) HuffmanEncodeImage(image_info,tile_image);
             else
               (void) Huffman2DEncodeImage(image_info,tile_image);
-            *image->blob=(*tile_image->blob);
             image->file=tile_image->file;
             break;
           }

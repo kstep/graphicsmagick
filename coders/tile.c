@@ -92,7 +92,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   Image
     *clone_image,
     *image,
-    *tiled_image;
+    *tile_image;
 
   ImageInfo
     *clone_info;
@@ -110,34 +110,30 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  clone_info=CloneImageInfo(image_info);
+  clone_info->blob=(void *) NULL;
+  clone_info->length=0;
+  *clone_info->magick='\0';
+  tile_image=ReadImage(clone_info,exception);
+  DestroyImageInfo(clone_info);
+  if (tile_image == (Image *) NULL)
+    return((Image *) NULL);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"Must specify image size",image);
   if (*image_info->filename == '\0')
     ThrowReaderException(OptionError,"must specify an image name",image);
-  clone_info=CloneImageInfo(image_info);
-  DetachBlob(clone_info->blob);
-  *clone_info->magick='\0';
-  tiled_image=ReadImage(clone_info,exception);
-  DestroyImageInfo(clone_info);
-  if (tiled_image == (Image *) NULL)
-    return((Image *) NULL);
-  clone_image=CloneImage(tiled_image,image->columns,image->rows,True,exception);
-  DestroyImage(image);
-  if (clone_image == (Image *) NULL)
-    return((Image *) NULL);
-  image=clone_image;
-  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   /*
     Tile texture onto image.
   */
-  for (y=0; y < (long) image->rows; y+=tiled_image->rows)
+  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+  for (y=0; y < (long) image->rows; y+=tile_image->rows)
   {
-    for (x=0; x < (long) image->columns; x+=tiled_image->columns)
-      (void) CompositeImage(image,CopyCompositeOp,tiled_image,x,y);
+    for (x=0; x < (long) image->columns; x+=tile_image->columns)
+      (void) CompositeImage(image,CopyCompositeOp,tile_image,x,y);
     MagickMonitor(LoadImageText,y,image->rows);
   }
-  DestroyImage(tiled_image);
+  DestroyImage(tile_image);
   return(image);
 }
 

@@ -176,7 +176,8 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((count == 0) || (LocaleNCompare((char *) magick,"SFW95",5) != 0))
     ThrowReaderException(CorruptImageError,"Not a PWP image file",pwp_image);
   clone_info=CloneImageInfo(image_info);
-  DetachBlob(clone_info->blob);
+  clone_info->blob=(void *) NULL;
+  clone_info->length=0;
   TemporaryFilename(clone_info->filename);
   image=(Image *) NULL;
   for ( ; ; )

@@ -4112,7 +4112,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                {
                  image=next_image;
                  image->file=next->file;
-                 image->blob->mapped=next->blob->mapped;
                }
              else
                next->previous->next=next_image;

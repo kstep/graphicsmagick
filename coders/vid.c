@@ -146,7 +146,8 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image=(Image *) NULL;
   clone_info=CloneImageInfo(image_info);
-  DetachBlob(clone_info->blob);
+  clone_info->blob=(void *) NULL;
+  clone_info->length=0;
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);

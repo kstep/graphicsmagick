@@ -131,7 +131,8 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"Must specify image size",image);
   clone_info=CloneImageInfo(image_info);
-  DetachBlob(clone_info->blob);
+  clone_info->blob=(void *) NULL;
+  clone_info->length=0;
   *clone_info->magick='\0';
   watermark=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);

@@ -195,7 +195,6 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->scene=image_info->subimage;
   allocate_image->fifo=image_info->fifo;
   allocate_image->client_data=image_info->client_data;
-  *allocate_image->blob=(*image_info->blob);
   return(allocate_image);
 }
 
@@ -1016,8 +1015,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->temporary=image->temporary;
   clone_image->pipet=image->pipet;
   clone_image->file=image->file;
-  clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
-  clone_image->blob->size=image->blob->size;
+  clone_image->blob=ReferenceBlob(image->blob);
   clone_image->magick_columns=image->magick_columns;
   clone_image->magick_rows=image->magick_rows;
   (void) strncpy(clone_image->magick_filename,image->magick_filename,
@@ -1142,8 +1140,8 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->client_data=image_info->client_data;
   clone_info->fifo=image_info->fifo;
   clone_info->file=image_info->file;
-  DestroyBlobInfo(clone_info->blob);
-  clone_info->blob=CloneBlobInfo(image_info->blob);
+  clone_info->blob=image_info->blob;
+  clone_info->length=image_info->length;
   (void) strncpy(clone_info->magick,image_info->magick,MaxTextExtent-1);
   (void) strncpy(clone_info->unique,image_info->unique,MaxTextExtent-1);
   (void) strncpy(clone_info->zero,image_info->zero,MaxTextExtent-1);
@@ -2610,7 +2608,6 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
     LiberateMemory((void **) &image_info->view);
   if (image_info->attributes != (Image *) NULL)
     DestroyImage(image_info->attributes);
-  DestroyBlobInfo(image_info->blob);
   LiberateMemory((void **) &image_info);
 }
 
@@ -3012,7 +3009,6 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   */
   assert(image_info != (ImageInfo *) NULL);
   (void) memset(image_info,0,sizeof(ImageInfo));
-  image_info->blob=CloneBlobInfo((BlobInfo *) NULL);
   image_info->adjoin=True;
   image_info->depth=QuantumDepth;
   image_info->interlace=NoInterlace;

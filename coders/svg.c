@@ -2672,7 +2672,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Draw image.
       */
       clone_info=CloneImageInfo(image_info);
-      DetachBlob(clone_info->blob);
+      clone_info->blob=(void *) NULL;
+      clone_info->length=0;
       FormatString(geometry,"%ldx%ld",svg_info.width,svg_info.height);
       (void) CloneString(&clone_info->size,geometry);
       FormatString(clone_info->filename,"mvg:%.1024s",filename);

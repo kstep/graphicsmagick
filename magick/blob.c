@@ -215,7 +215,8 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       return((Image *) NULL);
     }
   clone_info=CloneImageInfo(image_info);
-  AttachBlob(clone_info->blob,blob,length);
+  clone_info->blob=(void *) blob;
+  clone_info->length=length;
   (void) SetImageInfo(clone_info,False,exception);
   magick_info=GetMagickInfo(clone_info->magick,exception);
   if (magick_info == (const MagickInfo *) NULL)
@@ -228,12 +229,9 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       /*
         Native blob support for this image format.
       */
-      AttachBlob(clone_info->blob,blob,length);
       (void) strncpy(clone_info->filename,image_info->filename,MaxTextExtent-1);
       (void) strncpy(clone_info->magick,image_info->magick,MaxTextExtent-1);
       image=ReadImage(clone_info,exception);
-      if (image != (Image *) NULL)
-        DetachBlob(image->blob);
       DestroyImageInfo(clone_info);
       return(image);
     }
@@ -330,11 +328,16 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
 */
 MagickExport void CloseBlob(Image *image)
 {
+  Image
+    *next;
+
   /*
     Close image file.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
   image->taint=False;
   if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
     {
@@ -342,28 +345,9 @@ MagickExport void CloseBlob(Image *image)
       image->fifo=(int (*)(const Image *,const void *,const size_t)) NULL;
       return;
     }
-  if (image->blob->data != (unsigned char *) NULL)
-    {
-      Image
-        *next;
-
-      while (image->previous != (Image *) NULL)
-        image=image->previous;
-      if (!image->exempt)
-        {
-          if (image->blob->mapped)
-            (void) UnmapBlob(image->blob->data,image->blob->length);
-          DetachBlob(image->blob);
-          for ( ; image != (Image *) NULL; image=image->next)
-            DetachBlob(image->blob);
-          return;
-        }
-      for (next=image; next->next != (Image *) NULL; next=next->next);
-      next->blob->eof=False;
-      for ( ; image->next != (Image *) NULL; image=image->next)
-        *image->blob=(*next->blob);
-      return;
-    }
+  image->blob->eof=False;
+  if (!image->exempt)
+    DetachBlob(image->blob);
   if (image->file == (FILE *) NULL)
     return;
   image->blob->size=GetBlobSize(image);
@@ -378,10 +362,8 @@ MagickExport void CloseBlob(Image *image)
 #endif
     (void) fclose(image->file);
   image->file=(FILE *) NULL;
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
-  for ( ; image != (Image *) NULL; image=image->next)
-    image->file=(FILE *) NULL;
+  for (next=image; next != (Image *) NULL; next=next->next)
+    next->file=(FILE *) NULL;
 }
 
 /*
@@ -411,6 +393,18 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
   assert(blob->signature == MagickSignature);
+  AcquireSemaphoreInfo(&blob->semaphore);
+  blob->reference_count--;
+  if (blob->reference_count > 0)
+    {
+      LiberateSemaphoreInfo(&blob->semaphore);
+      return;
+    }
+  LiberateSemaphoreInfo(&blob->semaphore);
+  if (blob->mapped)
+    (void) UnmapBlob(blob->data,blob->length);
+  if (blob->semaphore != (SemaphoreInfo *) NULL)
+    DestroySemaphoreInfo(&blob->semaphore);
   LiberateMemory((void **) &blob);
 }
 
@@ -625,6 +619,7 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
   assert(blob_info != (BlobInfo *) NULL);
   (void) memset(blob_info,0,sizeof(BlobInfo));
   blob_info->quantum=65536;
+  blob_info->reference_count=1;
   blob_info->signature=MagickSignature;
 }
 
@@ -746,17 +741,15 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       /*
         Native blob support for this image format.
       */
-      DetachBlob(clone_info->blob);
-      clone_info->blob->extent=Max(*length,image->blob->quantum);
-      clone_info->blob->data=(unsigned char *)
-        AcquireMemory(clone_info->blob->extent+1);
-      if (clone_info->blob->data == (unsigned char *) NULL)
+      clone_info->blob=(void *) AcquireMemory(65535);
+      if (clone_info->blob == (void *) NULL)
         {
           ThrowException(exception,BlobError,"Unable to create blob",
             "Memory allocation failed");
           DestroyImageInfo(clone_info);
           return((void *) NULL);
         }
+      clone_info->length=0;
       image->exempt=True;
       *image->filename='\0';
       status=WriteImage(clone_info,image);
@@ -778,7 +771,6 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   /*
     Write file to disk in blob image format.
   */
-  DetachBlob(clone_info->blob);
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
   TemporaryFilename(unique);
   FormatString(image->filename,"%.1024s:%.1024s",image->magick,unique);
@@ -1017,12 +1009,11 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(type != (char *) NULL);
-  if (image_info->blob->data != (unsigned char *) NULL)
+  if (image_info->blob != (void *) NULL)
     {
-      *image->blob=(*image_info->blob);
+      AttachBlob(image->blob,image_info->blob,image_info->length);
       return(True);
     }
-  DetachBlob(image->blob);
   image->exempt=False;
   if (image_info->fifo !=
       (int (*)(const Image *,const void *,const size_t)) NULL)
@@ -1634,6 +1625,40 @@ MagickExport char *ReadBlobString(Image *image,char *string)
   }
   string[i]='\0';
   return(string);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e f e r e n c e B l o b                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReferenceBlob() increments the reference count associated with the pixel
+%  blob returning a pointer to the blob.
+%
+%  The format of the ReferenceBlob method is:
+%
+%      BlobInfo ReferenceBlob(BlobInfo *blob_info)
+%
+%  A description of each parameter follows:
+%
+%    o blob_info: The blob_info.
+%
+%
+*/
+MagickExport BlobInfo *ReferenceBlob(BlobInfo *blob)
+{
+  assert(blob != (BlobInfo *) NULL);
+  assert(blob->signature == MagickSignature);
+  AcquireSemaphoreInfo(&blob->semaphore);
+  blob->reference_count++;
+  LiberateSemaphoreInfo(&blob->semaphore);
+  return(blob);
 }
 
 /*

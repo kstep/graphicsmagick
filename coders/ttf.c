@@ -212,7 +212,8 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Draw image.
   */
   clone_info=CloneImageInfo(image_info);
-  DetachBlob(clone_info->blob);
+  clone_info->blob=(void *) NULL;
+  clone_info->length=0;
   FormatString(clone_info->filename,"mvg:%.1024s",filename);
   image=ReadImage(clone_info,exception);
   if (image != (Image *) NULL)
