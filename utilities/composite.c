@@ -805,7 +805,7 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("debug",option+1) == 0)
             {
-              image_info.debug=(*option == '-');
+              image_info->debug=(*option == '-');
               break;
             }
           if (LocaleCompare("density",option+1) == 0)
