@@ -759,9 +759,6 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     i,
     y;
 
-  register IndexPacket
-    *indexes;
-
   register PixelPacket
     *q;
 
@@ -770,19 +767,17 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
   */
   scale=blur/x_factor;
   support=scale*filter_info->support;
-  destination->storage_class=source->storage_class;
-  if (support > 0.5)
-    SetImageType(destination,TrueColorType);
-  else
+  if (support < 0.5)
     {
       /*
         Reduce to point sampling.
       */
-      support=0.5;
       scale=1.0;
+      support=0.5;
     }
   scale=1.0/scale;
-  center=MagickEpsilon;
+  for (i=1; i < source->columns; i<<=1);
+  center=i == source->columns ? MagickEpsilon : 0.0;
   for (x=0; x < (long) destination->columns; x++)
   {
     start=(long) Max(ceil(center-support-0.5),0);
@@ -805,7 +800,6 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     q=SetImagePixels(destination,x,0,1,destination->rows);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    indexes=GetIndexes(destination);
     for (y=0; y < (long) destination->rows; y++)
     {
       j=0;
@@ -822,8 +816,6 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
         blue+=contribution[i].weight*(p+j)->blue;
         opacity+=contribution[i].weight*(p+j)->opacity;
       }
-      if (indexes != (IndexPacket *) NULL)
-        indexes[y]=(GetIndexes(source))[j];
       q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
       q->green=(Quantum)
         ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
@@ -872,9 +864,6 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     i,
     x;
 
-  register IndexPacket
-    *indexes;
-
   register PixelPacket
     *q;
 
@@ -883,19 +872,17 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
   */
   scale=blur/y_factor;
   support=scale*filter_info->support;
-  destination->storage_class=source->storage_class;
-  if (support > 0.5)
-    SetImageType(destination,TrueColorType);
-  else
+  if (support <= 0.5)
     {
       /*
         Reduce to point sampling.
       */
-      support=0.5;
       scale=1.0;
+      support=0.5;
     }
   scale=1.0/scale;
-  center=MagickEpsilon;
+  for (i=1; i < source->rows; i<<=1);
+  center=i == source->rows ? MagickEpsilon : 0.0;
   for (y=0; y < (long) destination->rows; y++)
   {
     start=(long) Max(ceil(center-support-0.5),0);
@@ -918,7 +905,6 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     q=SetImagePixels(destination,0,y,destination->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    indexes=GetIndexes(destination);
     for (x=0; x < (long) destination->columns; x++)
     {
       j=0;
@@ -934,8 +920,6 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
         blue+=contribution[i].weight*(p+j)->blue;
         opacity+=contribution[i].weight*(p+j)->opacity;
       }
-      if (indexes != (IndexPacket *) NULL)
-        indexes[x]=(GetIndexes(source))[j];
       q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
       q->green=(Quantum)
         ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
@@ -1011,11 +995,12 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if ((columns == 0) || (rows == 0))
     ThrowImageException(OptionWarning,"Unable to resize image",
       "image dimensions are zero");
-  if ((columns == image->columns) && (rows == image->rows))
+  if ((columns == image->columns) && (rows == image->rows) && (blur == 1.0))
     return(CloneImage(image,0,0,False,exception));
   resize_image=CloneImage(image,columns,rows,False,exception);
   if (resize_image == (Image *) NULL)
     return((Image *) NULL);
+  SetImageType(resize_image,TrueColorType);
   /*
     Allocate filter contribution info.
   */
@@ -1041,7 +1026,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if ((size_t) (columns*(image->rows+rows)) <
       (size_t) (rows*(image->columns+columns)))
     {
-      source_image=CloneImage(image,columns,image->rows,True,exception);
+      source_image=CloneImage(resize_image,columns,image->rows,True,exception);
       if (source_image == (Image *) NULL)
         {
           LiberateMemory((void **) &contribution);
@@ -1056,7 +1041,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
     }
   else
     {
-      source_image=CloneImage(image,image->columns,rows,True,exception);
+      source_image=CloneImage(resize_image,image->columns,rows,True,exception);
       if (source_image == (Image *) NULL)
         {
           LiberateMemory((void **) &contribution);
