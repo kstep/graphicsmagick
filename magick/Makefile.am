@@ -93,6 +93,9 @@ pkg_DATA =
 # Architecture independent data files installed in the package's data directory
 pkgdata_DATA =
 
+# Manual pages to install
+man_MANS = $(ALLMANPAGES)
+
 # Ensure that configuration header is not distributed
 dist-hook:
 	-rm $(distdir)/config.h

@@ -1,12 +1,10 @@
 .ad l
 .nh
-.TH Magick++-Config 1 "1 October 2000" "ImageMagick"
+.TH Magick++-Config 1 "4 November 2000" "ImageMagick"
 .SH NAME
 Magick++-config \- get information about the installed version of Magick++
 .SH SYNOPSIS
 .B Magick++-config 
-.BI [--prefix[= DIR ]]
-.BI [--exec-prefix[= DIR ]]
 .B [--version]
 .B [--cppflags]
 .B [--cxxflags]
@@ -26,7 +24,7 @@ To print the version of the installed distribution of
 use:
 
 .nf
-      Magick++-config --version
+  Magick++-config --version
 .fi
   
 To compile a program that calls the 
@@ -62,38 +60,6 @@ Print the linker flags that are needed to link a program with
 Print the linker flags that are needed to link with the
 .B libMagick++
 library.
-.TP
-.BI --prefix= PREFIX
-If specified, use 
-.I PREFIX
-instead of the installation prefix that 
-.B libMagick++
-was built with when determining the output for the 
-.B --cppflags
-and
-.B --ldflags
-options. This option is also used for the exec prefix if
-.B --exec-prefix
-was not specified. This option must be specified before any
-.B --cppflags
-or 
-.B --ldflags
-options.
-.TP
-.BI --exec-prefix= PREFIX
-If specified, use 
-.I PREFIX
-instead of the installation exec prefix that
-.B ImageMagick
-was built with when determining the output for the
-.B --cppflags
-and 
-.B --ldflags
-options. This option must be specified before any
-.B --cppflags
-or
-.B --ldflags
-options.
 .SH COPYRIGHT
 Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated
 to making software imaging solutions freely available.

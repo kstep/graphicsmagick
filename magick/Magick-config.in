@@ -7,11 +7,6 @@
 # configuration information is presented instead so that it may be used more
 # effictively in configure scripts.
 #
-prefix=@prefix@
-prefix_set=no
-exec_prefix=@exec_prefix@
-exec_prefix_set=no
-
 usage="\
 Usage: Magick-config [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--cflags] [--cppflags] [--ldflags] [--libs]"
 
@@ -27,23 +22,6 @@ while test $# -gt 0; do
   esac
 
   case $1 in
-    --prefix=*)
-      prefix=$optarg
-      prefix_set=yes
-      if test $exec_prefix_set = no ; then
-        exec_prefix=$optarg
-      fi
-      ;;
-    --prefix)
-      echo $prefix
-      ;;
-    --exec-prefix=*)
-      exec_prefix=$optarg
-      exec_prefix_set=yes
-      ;;
-    --exec-prefix)
-      echo $exec_prefix
-      ;;
     --version)
       echo @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@
       ;;
@@ -51,23 +29,14 @@ while test $# -gt 0; do
       echo '@CFLAGS@'
       ;;
     --cppflags)
-      if test $prefix_set = yes
-      then
-	echo "-I$prefix/include -DHAVE_CONFIG_H "'@CPPFLAGS@'
-      else
-	echo "-DHAVE_CONFIG_H @CPPFLAGS@"
-      fi
+      echo "-DHAVE_CONFIG_H @CPPFLAGS@"
       ;;
     --ldflags)
-      if test $exec_prefix_set = yes || test $prefix_set = yes
-      then
-	echo "-L$exec_prefix/lib "'@LDFLAGS@'
-      else
-	echo '@LDFLAGS@'
-      fi
+      echo '@LDFLAGS@'
       ;;
     --libs)
-      echo '@MAGICKLIB@ @LIB_JBIG@ @LIB_HDF@ @LIB_TIFF@ @LIB_TTF@ @LIB_JPEG@ @LIB_PNG@ @LIB_FPX@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ @LIB_SFIO@ @LIB_THREAD@ @LIB_LF@ @LIB_MATH@'
+      LIBS=`echo @MAGICKLIB@ @LIB_JBIG@ @LIB_HDF@ @LIB_LCMS@ @LIB_TIFF@ @LIB_TTF@ @LIB_JPEG@ @LIB_PNG@ @LIB_FPX@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ @LIB_SFIO@ @LIB_THREAD@ @LIB_LF@ @LIB_MATH@ | sed -e 's/  */ /g'`
+      echo "$LIBS"
       ;;
     *)
       echo "${usage}" 1>&2
