@@ -77,6 +77,13 @@ typedef struct
 	BYTE	RecType;
 	DWORD   RecordLength;
 	}WPGRecord;
+typedef struct 
+	{
+	BYTE	RecLeader;
+	WORD    RecType;
+	DWORD   RecordLength;
+	} WPG2Record
+;
 typedef struct
 	{
 	WORD Width;
@@ -85,6 +92,14 @@ typedef struct
 	WORD HorzRes;
 	WORD VertRes;
 	}WPGBitmapType1;
+typedef struct
+	{
+	WORD Width;
+	WORD Heigth;
+	WORD Depth;
+	}WPG2BitmapType1
+
+;
 typedef struct
 	{
 	WORD RotAngle;
@@ -130,7 +145,7 @@ static void Rd_WP_DWORD(Image *image, DWORD *d)
 }
 
 
-static void InsertRow(unsigned char *p,int y,Image *image)
+static void InsertRow(BYTE *p,int y,Image *image)
 {
 int bit,x;
 register PixelPacket *q;
@@ -173,6 +188,57 @@ register IndexPacket *indexes;
                    ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
             break;
             }
+      case 2:  /* Convert PseudoColor scanline. */
+           {
+           q=SetImagePixels(image,0,y,image->columns,1);
+           if (q == (PixelPacket *) NULL)
+                 break;
+           indexes=GetIndexes(image);
+           for (x=0; x < ((int) image->columns-1); x+=2)
+                 {
+                 index=(*p >> 6) & 0x3;
+                 indexes[x]=index;
+                 *q++=image->colormap[index];
+		 index=(*p >> 4) & 0x3;
+                 indexes[x]=index;
+                 *q++=image->colormap[index];
+		 index=(*p >> 2) & 0x3;
+                 indexes[x]=index;
+                 *q++=image->colormap[index];
+                 index=(*p) & 0x3;
+                 indexes[x+1]=index;
+                 *q++=image->colormap[index];
+                 p++;
+                 }
+           if ((image->columns % 4) != 0)
+                 {
+                   index=(*p >> 6) & 0x3;
+                   indexes[x]=index;
+                   *q++=image->colormap[index];
+		   if ((image->columns % 4) >= 1)
+
+		      {
+		      index=(*p >> 4) & 0x3;
+                      indexes[x]=index;
+                      *q++=image->colormap[index];
+		      if ((image->columns % 4) >= 2)
+
+		        {
+		        index=(*p >> 2) & 0x3;
+                        indexes[x]=index;
+                        *q++=image->colormap[index];
+		        }
+		      }
+                   p++;
+                 }
+           if (!SyncImagePixels(image))
+                 break;
+/*         if (image->previous == (Image *) NULL)
+                 if (QuantumTick(y,image->rows))
+                   ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
+           break;
+           }
+	    
       case 4:  /* Convert PseudoColor scanline. */
            {
            q=SetImagePixels(image,0,y,image->columns,1);
@@ -222,6 +288,24 @@ register IndexPacket *indexes;
                    ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
            }
            break;
+	   
+       case 24:     /*  Convert DirectColor scanline.  */
+          q=SetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (int) image->columns; x++)
+             {
+             q->red=UpScale(*p++);
+             q->green=UpScale(*p++);
+             q->blue=UpScale(*p++);
+             q++;
+             }
+          if (!SyncImagePixels(image))
+            break;
+/*          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
+          break;	   
        }
 }
 
@@ -250,7 +334,7 @@ long ldblk;
  while(y<image->rows)
      {
      bbuf=ReadByte(image);
-     
+
 /*     if not readed byte ??????	{
 	delete Raster;
 	Raster=NULL;
@@ -303,9 +387,7 @@ long ldblk;
  free(BImgBuff);
  return(0);
 }
-
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -343,10 +425,14 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int status;
   WPGHeader  Header;
   WPGRecord  Rec;
+  WPG2Record Rec2;
   WPGBitmapType1 BitmapHeader1;
+  WPG2BitmapType1 Bitmap2Header1;
   WPGBitmapType2 BitmapHeader2;
   WPGColorMapRec WPG_Palette;
   int i;
+  long ldblk;
+  BYTE *BImgBuff;
 
   /*
     Open image file.
@@ -371,122 +457,221 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageWarning,"Not a WPG image file",image);
   if(Header.EncryptKey!=0 )
       ThrowReaderException(CorruptImageWarning,"Encrypted WPG image file",image);
-  if(Header.FileType!=1 )
-      ThrowReaderException(CorruptImageWarning,"Unsupported level of WPG image",image);
 
   image->colors = 0;
-  while(!EOFBlob(image)) /* object parser loop */
-   {
-   SeekBlob(image,Header.DataOffset,SEEK_SET);  /*How could I do fseek??*/
-   if(EOFBlob(image)) break;
 
-   Rec.RecType=(i=ReadByte(image));
-   if(i==EOF) break;
-   Rd_WP_DWORD(image,&Rec.RecordLength);
-   if(EOFBlob(image)) break;
+  switch(Header.FileType)
+    {
+    case 1:     /*WPG level 1*/
+      while(!EOFBlob(image)) /* object parser loop */
+       {
+       SeekBlob(image,Header.DataOffset,SEEK_SET);  /*How could I do fseek??*/
+       if(EOFBlob(image)) break;
 
-//printf("[--Type:%d;%lX----]",(int)Rec.RecType,Rec.RecordLength);fflush(stdout);
+       Rec.RecType=(i=ReadByte(image));
+       if(i==EOF) break;
+       Rd_WP_DWORD(image,&Rec.RecordLength);
+       if(EOFBlob(image)) break;
 
-   Header.DataOffset=TellBlob(image)+Rec.RecordLength;
+    //printf("[--Type:%d;%lX----]",(int)Rec.RecType,Rec.RecordLength);fflush(stdout);
 
-   switch(Rec.RecType)
-     {
-     case 0x0B: /* bitmap type 1 */
-     	     BitmapHeader1.Width=LSBFirstReadShort(image);
-	     BitmapHeader1.Heigth=LSBFirstReadShort(image);
-	     BitmapHeader1.Depth=LSBFirstReadShort(image);
-	     BitmapHeader1.HorzRes=LSBFirstReadShort(image);
-	     BitmapHeader1.VertRes=LSBFirstReadShort(image);
+       Header.DataOffset=TellBlob(image)+Rec.RecordLength;
 
-	     if(BitmapHeader1.HorzRes && BitmapHeader1.VertRes)
-	       {
-	       image->units=PixelsPerCentimeterResolution;
-	       image->x_resolution=BitmapHeader1.HorzRes/470.0;
-	       image->y_resolution=BitmapHeader1.VertRes/470.0;
-	       }
-             image->columns=BitmapHeader1.Width;
-             image->rows=BitmapHeader1.Heigth;
-             image->depth=BitmapHeader1.Depth;
+       switch(Rec.RecType)
+	 {
+	 case 0x0B: /* bitmap type 1 */
+		 BitmapHeader1.Width=LSBFirstReadShort(image);
+		 BitmapHeader1.Heigth=LSBFirstReadShort(image);
+		 BitmapHeader1.Depth=LSBFirstReadShort(image);
+		 BitmapHeader1.HorzRes=LSBFirstReadShort(image);
+		 BitmapHeader1.VertRes=LSBFirstReadShort(image);
 
-	     goto UnpackRaster;
-	     
-     case 0x0E:	/*Color palette */
-             WPG_Palette.StartIndex=LSBFirstReadShort(image);
+		 if(BitmapHeader1.HorzRes && BitmapHeader1.VertRes)
+		   {
+		   image->units=PixelsPerCentimeterResolution;
+		   image->x_resolution=BitmapHeader1.HorzRes/470.0;
+		   image->y_resolution=BitmapHeader1.VertRes/470.0;
+		   }
+		 image->columns=BitmapHeader1.Width;
+		 image->rows=BitmapHeader1.Heigth;
+		 image->depth=BitmapHeader1.Depth;
+
+		 goto UnpackRaster;
+
+	 case 0x0E:	/*Color palette */
+		 WPG_Palette.StartIndex=LSBFirstReadShort(image);
+		 WPG_Palette.NumOfEntries=LSBFirstReadShort(image);
+
+		 image->colors=WPG_Palette.NumOfEntries;
+		 if (!AllocateImageColormap(image,image->colors))
+			goto NoMemory;
+		 for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
+		   {
+		   image->colormap[i].red=ReadByte(image);
+		   image->colormap[i].green=ReadByte(image);
+		   image->colormap[i].blue=ReadByte(image);
+		   }
+		 break;
+
+	 case 0x14:  /* bitmap type 2 */
+		 BitmapHeader2.RotAngle=LSBFirstReadShort(image);
+		 BitmapHeader2.LowLeftX=LSBFirstReadShort(image);
+		 BitmapHeader2.LowLeftY=LSBFirstReadShort(image);
+		 BitmapHeader2.UpRightX=LSBFirstReadShort(image);
+		 BitmapHeader2.UpRightY=LSBFirstReadShort(image);
+		 BitmapHeader2.Width=LSBFirstReadShort(image);
+		 BitmapHeader2.Heigth=LSBFirstReadShort(image);
+		 BitmapHeader2.Depth=LSBFirstReadShort(image);
+		 BitmapHeader2.HorzRes=LSBFirstReadShort(image);
+		 BitmapHeader2.VertRes=LSBFirstReadShort(image);
+
+		 image->units=PixelsPerCentimeterResolution;
+		 image->page.width=(BitmapHeader2.LowLeftX-BitmapHeader2.UpRightX)/470.0;
+		 image->page.height=(BitmapHeader2.LowLeftX-BitmapHeader2.UpRightY)/470.0;
+		 image->page.x=BitmapHeader2.LowLeftX/470.0;
+		 image->page.y=BitmapHeader2.LowLeftX/470.0;
+		 if(BitmapHeader2.HorzRes && BitmapHeader2.VertRes)
+		   {
+		   image->x_resolution=BitmapHeader2.HorzRes/470.0;
+		   image->y_resolution=BitmapHeader2.VertRes/470.0;
+		   }
+		 image->columns=BitmapHeader2.Width;
+		 image->rows=BitmapHeader2.Heigth;
+		 image->depth=BitmapHeader2.Depth;
+
+    UnpackRaster:
+		 if (image->colors == 0 && image->depth!=24)
+		     {
+		     image->colors=1 << image->depth;
+		     if (!AllocateImageColormap(image,image->colors))
+			{
+NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+					 image);
+			}
+		     }
+		 else {
+		      if(image->depth<24)
+			if( image->colors<(1<<image->depth) && image->depth!=24 )
+			    ReallocateMemory((void **)&image->colormap,(1<<image->depth)*sizeof(PixelPacket));
+		      }
+
+		 if(UnpackWPGRaster(image)<0) /* The raster cannot be unpacked */
+		     {
+		     ThrowReaderException(ResourceLimitWarning,"Cannot decompress WPG raster",image);
+		     }
+
+		 /* Allocate next image structure. */
+		 AllocateNextImage(image_info,image);
+		 if (image->next == (Image *) NULL) goto Finish;
+		 image=image->next;
+		 image->colors=image->columns=image->rows=image->depth=0;
+		 break;
+	 }
+      }
+      break;
+
+   case 2:  /*WPG level 2*/
+     while(!EOFBlob(image)) /* object parser loop */
+   
+       {
+       SeekBlob(image,Header.DataOffset,SEEK_SET);
+       if(EOFBlob(image)) break;
+
+       Rec2.RecLeader=(i=ReadByte(image));
+       if(i==EOF) break;
+       Rec2.RecType=LSBFirstReadShort(image);
+       Rd_WP_DWORD(image,&Rec2.RecordLength);
+       if(EOFBlob(image)) break;
+
+       Header.DataOffset=TellBlob(image)+Rec2.RecordLength;
+
+       switch(Rec2.RecType)
+	 {
+	 case 0x0C:  	/*Color palette */
+	     WPG_Palette.StartIndex=LSBFirstReadShort(image);
 	     WPG_Palette.NumOfEntries=LSBFirstReadShort(image);
-	     
+
 	     image->colors=WPG_Palette.NumOfEntries;
 	     if (!AllocateImageColormap(image,image->colors))
-                    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-			             image);
-             for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
-               {
-	       image->colormap[i].red=ReadByte(image);
-	       image->colormap[i].green=ReadByte(image);
-               image->colormap[i].blue=ReadByte(image);
-	       }
-	     break;  
-
-     case 0x14:  /* bitmap type 2 */
-             BitmapHeader2.RotAngle=LSBFirstReadShort(image);
-             BitmapHeader2.LowLeftX=LSBFirstReadShort(image);
-             BitmapHeader2.LowLeftY=LSBFirstReadShort(image);
-             BitmapHeader2.UpRightX=LSBFirstReadShort(image);
-             BitmapHeader2.UpRightY=LSBFirstReadShort(image);
-             BitmapHeader2.Width=LSBFirstReadShort(image);
-             BitmapHeader2.Heigth=LSBFirstReadShort(image);
-             BitmapHeader2.Depth=LSBFirstReadShort(image);
-             BitmapHeader2.HorzRes=LSBFirstReadShort(image);
-             BitmapHeader2.VertRes=LSBFirstReadShort(image);
-	     
-	     image->units=PixelsPerCentimeterResolution;
-	     image->page.width=(BitmapHeader2.LowLeftX-BitmapHeader2.UpRightX)/470.0;
-	     image->page.height=(BitmapHeader2.LowLeftX-BitmapHeader2.UpRightY)/470.0;
-	     image->page.x=BitmapHeader2.LowLeftX/470.0;
-	     image->page.y=BitmapHeader2.LowLeftX/470.0;
-	     if(BitmapHeader2.HorzRes && BitmapHeader2.VertRes)
-	       {
-	       image->x_resolution=BitmapHeader2.HorzRes/470.0;
-	       image->y_resolution=BitmapHeader2.VertRes/470.0;
-	       }
-             image->columns=BitmapHeader2.Width;
-             image->rows=BitmapHeader2.Heigth;
-             image->depth=BitmapHeader2.Depth;
-	     
-UnpackRaster:
-	     if (image->colors == 0)
-	         { 
-                 image->colors=1 << BitmapHeader1.Depth; 
-	         if (!AllocateImageColormap(image,image->colors))
-                    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-			             image);	 
-                 }
-	     if(UnpackWPGRaster(image)<0) /* The raster cannot be unpacked */
-                 {
-                 ThrowReaderException(ResourceLimitWarning,"Cannot decompress WPG raster",image);
-                 }
-		 
-	     /* Allocate next image structure. */
-             AllocateNextImage(image_info,image);
-             if (image->next == (Image *) NULL) goto Finish;
-             image=image->next;	 
-	     image->columns=image->rows=image->depth=0;
+			ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+					 image);
+	     for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
+		   {
+		   image->colormap[i].red=ReadByte(image);
+		   image->colormap[i].green=ReadByte(image);
+		   image->colormap[i].blue=ReadByte(image);
+		   ReadByte(image);
+  /*Opacity??*/
+		   }
 	     break;
-     }
-  }
-  
+	 case 0x0E:
+	     Bitmap2Header1.Width=LSBFirstReadShort(image);
+	     Bitmap2Header1.Heigth=LSBFirstReadShort(image);
+	     Bitmap2Header1.Depth=LSBFirstReadShort(image);
+
+	     image->columns=Bitmap2Header1.Width;
+	     image->rows=Bitmap2Header1.Heigth;
+	     switch(Bitmap2Header1.Depth)
+	       {
+	       case 1:image->depth=1;break;
+	       case 2:image->depth=2;break;
+	       case 3:image->depth=4;break;
+	       case 4:image->depth=8;break;
+	       case 8:image->depth=24;break;
+	       default:continue;  /*Ignore raster with unknown depth*/
+	       }
+
+	     if (image->colors == 0 && image->depth!=24)
+		     {
+		     image->colors=1 << image->depth;
+		     if (!AllocateImageColormap(image,image->colors))
+			goto NoMemory;
+		     }
+	     else {
+		  if(image->depth<24)
+		    if( image->colors<(1<<image->depth) && image->depth!=24 )
+			 ReallocateMemory((void **)&image->colormap,(1<<image->depth)*sizeof(PixelPacket));
+		  }
+
+             ldblk=((long)image->depth*image->columns+7)/8;
+	     if( (BImgBuff=malloc(ldblk))==NULL) goto NoMemory;
+
+	     for(i=0;i<image->rows;i++)
+		{
+		ReadBlob(image,ldblk,(char *)BImgBuff);
+//		if(fread(BImgBuff,ldblk,1,f)!=1) {goto KONEC;}
+		InsertRow(BImgBuff,i,image);
+	//	AlineProc(i,p);
+		}
+	     if(BImgBuff) free(BImgBuff);
+	     
+	          /* Allocate next image structure. */
+	     AllocateNextImage(image_info,image);
+	     if (image->next == (Image *) NULL) goto Finish;
+	     image=image->next;
+	     image->colors=image->columns=image->rows=image->depth=0;
+	     break;
+	 }
+       }
+
+      break;
+
+   default:
+     ThrowReaderException(CorruptImageWarning,"Unsupported level of WPG image",image);
+   }
+
+
 Finish:
  while (image->previous != (Image *) NULL)
     {
     image=image->previous;
     if(image->next!=NULL)
-      if(image->next->rows==0 && image->next->columns==0) 
+      if(image->next->rows==0 && image->next->columns==0)
 	    DestroyImage(image->next);
     }
   CloseBlob(image);
   return(image);       
 }
-
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -528,7 +713,7 @@ ModuleExport void RegisterWPGImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r A V S I m a g e                                       %
+%   U n r e g i s t e r W P G I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
