@@ -567,6 +567,7 @@ namespace Magick
   using MagickLib::GetIndexes;
   using MagickLib::GetMagickGeometry;
   using MagickLib::GetMagickInfo;
+  using MagickLib::GetMagickInfoArray;
   using MagickLib::GetMagickRegistry;
   using MagickLib::GetNumberColors;
   using MagickLib::GetPageGeometry;

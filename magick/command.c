@@ -2422,7 +2422,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                   case 'C':
                   case 'c':
                   {
-                    if (LocaleCompare("Color",option) == 0)
+                    if ((LocaleCompare("Color",option) == 0) ||
+                        (LocaleCompare("Colors",option) == 0))
                       {
                         (void) ListColorInfo((FILE *) NULL,exception);
                         break;
@@ -2433,7 +2434,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                   case 'D':
                   case 'd':
                   {
-                    if (LocaleCompare("Delegate",option) == 0)
+                    if ((LocaleCompare("Delegate",option) == 0) ||
+                        (LocaleCompare("Delegates",option) == 0))
                       {
                         (void) ListDelegateInfo((FILE *) NULL,exception);
                         break;
@@ -2444,7 +2446,14 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                   case 'F':
                   case 'f':
                   {
-                    if (LocaleCompare("Format",option) == 0)
+                    if ((LocaleCompare("Font",option) == 0) ||
+                        (LocaleCompare("Fonts",option) == 0))
+                      {
+                        (void) ListTypeInfo((FILE *) NULL,exception);
+                        break;
+                      }
+                    if ((LocaleCompare("Format",option) == 0) ||
+                        (LocaleCompare("Formats",option) == 0))
                       {
                         (void) ListMagickInfo((FILE *) NULL,exception);
                         break;
@@ -2461,19 +2470,26 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                         break;
                       }
 #if defined(SupportMagickModules)
-                    if (LocaleCompare("Module",option) == 0)
+                    if ((LocaleCompare("Module",option) == 0) ||
+                        (LocaleCompare("Modules",option) == 0))
                       {
                         (void) ListModuleInfo((FILE *) NULL,exception);
                         break;
                       }
 #endif /* SupportMagickModules */
+                    if (LocaleCompare("ModuleMap",option) == 0)
+                      {
+                        (void) ListModuleMap((FILE *) NULL,exception);
+                        break;
+                      }
                     ThrowConvertException(OptionError,"UnrecognizedListType",
                       option)
                   }
                   case 'R':
                   case 'r':
                   {
-                    if (LocaleCompare("Resource",option) == 0)
+                    if ((LocaleCompare("Resource",option) == 0) ||
+                        (LocaleCompare("Resource",option)))
                       {
                         (void) ListMagickResourceInfo((FILE *) NULL,exception);
                         break;
@@ -7080,7 +7096,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                   case 'C':
                   case 'c':
                   {
-                    if (LocaleCompare("Color",option) == 0)
+                    if ((LocaleCompare("Color",option) == 0) ||
+                        (LocaleCompare("Colors",option) == 0))
                       {
                         (void) ListColorInfo((FILE *) NULL,exception);
                         break;
@@ -7091,7 +7108,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                   case 'D':
                   case 'd':
                   {
-                    if (LocaleCompare("Delegate",option) == 0)
+                    if ((LocaleCompare("Delegate",option) == 0) ||
+                        (LocaleCompare("Delegates",option) == 0))
                       {
                         (void) ListDelegateInfo((FILE *) NULL,exception);
                         break;
@@ -7102,7 +7120,14 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                   case 'F':
                   case 'f':
                   {
-                    if (LocaleCompare("Format",option) == 0)
+                    if ((LocaleCompare("Font",option) == 0) ||
+                        (LocaleCompare("Fonts",option) == 0))
+                      {
+                        (void) ListTypeInfo((FILE *) NULL,exception);
+                        break;
+                      }
+                    if ((LocaleCompare("Format",option) == 0) ||
+                        (LocaleCompare("Formats",option) == 0))
                       {
                         (void) ListMagickInfo((FILE *) NULL,exception);
                         break;
@@ -7119,19 +7144,26 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                         break;
                       }
 #if defined(SupportMagickModules)
-                    if (LocaleCompare("Module",option) == 0)
+                    if ((LocaleCompare("Module",option) == 0) ||
+                        (LocaleCompare("Modules",option) == 0))
                       {
                         (void) ListModuleInfo((FILE *) NULL,exception);
                         break;
                       }
 #endif /* SupportMagickModules */
+                    if (LocaleCompare("ModuleMap",option) == 0)
+                      {
+                        (void) ListModuleMap((FILE *) NULL,exception);
+                        break;
+                      }
                     ThrowMogrifyException(OptionError,"UnrecognizedListType",
                       option)
                   }
                   case 'R':
                   case 'r':
                   {
-                    if (LocaleCompare("Resource",option) == 0)
+                    if ((LocaleCompare("Resource",option) == 0) ||
+                        (LocaleCompare("Resources",option) == 0))
                       {
                         (void) ListMagickResourceInfo((FILE *) NULL,exception);
                         break;

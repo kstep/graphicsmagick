@@ -146,7 +146,9 @@ static const CoderInfo
 #endif /* defined(SupportMagickModules) */
 
 static unsigned int
+#if defined(SupportMagickModules)
   ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *),
+#endif
   UnloadModule(const CoderInfo *,ExceptionInfo *),
   UnregisterModule(const char *,ExceptionInfo *);
 
@@ -1195,10 +1197,10 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 %
 %
 */
+#if defined(SupportMagickModules)
 static unsigned int ReadConfigureFile(const char *basename,
   const unsigned long depth,ExceptionInfo *exception)
 {
-#if defined(SupportMagickModules)
   char
     keyword[MaxTextExtent],
     path[MaxTextExtent],
@@ -1348,9 +1350,9 @@ static unsigned int ReadConfigureFile(const char *basename,
     return(False);
   while (module_list->previous != (ModuleInfo *) NULL)
     module_list=module_list->previous;
-#endif
   return(True);
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

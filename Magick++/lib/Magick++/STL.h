@@ -1823,24 +1823,24 @@ namespace Magick
     // Obtain first entry in MagickInfo list
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
-    const MagickLib::MagickInfo *magickInfo =
-      MagickLib::GetMagickInfo( "*", &exceptionInfo );
+    const MagickLib::MagickInfo **coder_list =
+      MagickLib::GetMagickInfoArray( &exceptionInfo );
     throwException( exceptionInfo );
-    if( !magickInfo )
+    if( !coder_list )
       throwExceptionExplicit(MagickLib::MissingDelegateError,
-                             "Coder list not returned!", 0 );
+                             "Coder array not returned!", 0 );
 
     // Clear out container
     container_->clear();
 
-    for ( ; magickInfo != 0; magickInfo=(const MagickLib::MagickInfo *) magickInfo->next)
+    for ( int i=0; coder_list[i] != 0; i++)
       {
         // Skip stealth coders
-        if ( magickInfo->stealth )
+        if ( coder_list[i]->stealth )
           continue;
 
         try {
-          CoderInfo coderInfo( magickInfo );
+          CoderInfo coderInfo( coder_list[i]->name );
 
           // Test isReadable_
           if ( isReadable_ != CoderInfo::AnyMatch &&
@@ -1869,6 +1869,7 @@ namespace Magick
             continue;
           }
       }
+    MagickLib::LiberateMemory((void **)&coder_list);
   }
 
   // Break down an image sequence into constituent parts.  This is

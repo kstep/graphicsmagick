@@ -70,20 +70,24 @@ extern MagickExport char
   *MagickToMime(const char *);
 
 extern MagickExport const char
-  *GetImageMagick(const unsigned char *,const size_t); /* magick.c */
+  *GetImageMagick(const unsigned char *,const size_t);
 
 extern MagickExport unsigned int
-  IsMagickConflict(const char *), /* magick.c */
-  ListMagickInfo(FILE *,ExceptionInfo *), /* magick.c */
-  UnregisterMagickInfo(const char *); /* magick.c */
+  IsMagickConflict(const char *),
+  ListModuleMap(FILE *,ExceptionInfo *),
+  ListMagickInfo(FILE *,ExceptionInfo *),
+  UnregisterMagickInfo(const char *);
 
 extern MagickExport void
-  DestroyMagick(void), /* magick.c */
-  DestroyMagickInfo(void), /* magick.c */
-  InitializeMagick(const char *); /* magick.c */
+  DestroyMagick(void),
+  DestroyMagickInfo(void),
+  InitializeMagick(const char *);
 
 extern const MagickExport MagickInfo
   *GetMagickInfo(const char *,ExceptionInfo *exception);
+
+extern const MagickExport MagickInfo **
+  GetMagickInfoArray(ExceptionInfo *exception);
 
 extern MagickExport MagickInfo
   *RegisterMagickInfo(MagickInfo *),

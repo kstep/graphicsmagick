@@ -53,6 +53,31 @@
 </tr>
 </table>
 <p>
+2003-05-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/magick.c (GetMagickInfoArray): New function to return
+        MagickInfo array.<BR>
+        (ListMagickInfo): Updated to use GetMagickInfoArray.
+        (ListModuleMap): New function to list module map to a file.
+  <LI> utilities/gm.c: Centered the file header and made note of this
+        stupendously significant accomplishment.
+  <LI> magick/command.c: Added a '-list modulemap' option. Added plural
+        forms of other list options for people who are are not limited to
+        the singular.  Also '-list font' and '-list fonts' now work for
+        people who think in terms of fonts rather than type.
+
+</UL>
+<p>
+2003-05-30  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> MNG encoder failed to set the JNG bit in the simplicity profile.
+  <LI> MNG encoder failed to write FRAM chunks when all images were JNG.
+  <LI> JNG encoder wrote the wrong alpha_sample_depth for opaque images.
+
+</UL>
+<p>
 2003-05-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

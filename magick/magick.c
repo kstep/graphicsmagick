@@ -54,6 +54,7 @@
 #include "magick/render.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
+#include "magick/version.h"
 
 /*
   Global declarations.
@@ -226,7 +227,7 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %
 %  The format of the GetMagickInfo method is:
 %
-%      const MagickInfo *GetMagickInfo(const char *name,Exception *exception)
+%     const MagickInfo *GetMagickInfo(const char *name,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -244,6 +245,9 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
 
   if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
     (void) OpenModules(exception);
+  if (exception->severity > UndefinedException)
+    return 0;
+
   AcquireSemaphoreInfo(&magick_semaphore);
   if (magick_list != (MagickInfo *) NULL)
     LiberateSemaphoreInfo(&magick_semaphore);
@@ -310,6 +314,97 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
       }
   LiberateSemaphoreInfo(&magick_semaphore);
   return((const MagickInfo *) p);
+}
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t M a g i c k A r r a y                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickInfoArray() returns a sorted null-terminated array of MagickInfo
+%  pointers corresponding to the available format registrations. If necessarly
+%  all modules are loaded in order to return a complete list. This function
+%  should be used to access the entire list rather than GetMagickInfo since
+%  the list returned by GetMagickInfo may be re-ordered every time it is
+%  invoked.
+%
+%  The format of the GetMagickList method is:
+%
+%      const MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+/*
+  Compare two MagickInfo structures based on their name
+*/
+static int MagickInfoCompare(const void *x, const void *y)
+{
+  const MagickInfo
+    *xx=*((const MagickInfo **) x),
+    *yy=*((const MagickInfo **) y);
+
+  return (strcmp(xx->name, yy->name));
+}
+MagickExport const MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
+{
+  const MagickInfo
+    **array,
+    *p;
+
+  const MagickInfo
+    *list;
+
+  size_t
+    entries=0;
+
+  int
+    i;
+
+  /*
+    Load all modules and obtain pointer to head of list
+  */
+  list=GetMagickInfo("*",exception);
+  if ((!list) || (exception->severity > UndefinedException))
+    return 0;
+
+  AcquireSemaphoreInfo(&magick_semaphore);
+
+  /*
+    Count number of list entries
+  */
+  for (p=list; p != 0; p=p->next)
+    entries++;
+
+  /*
+    Allocate array memory
+  */
+  array=MagickAllocateMemory(const MagickInfo **,sizeof(MagickInfo *)*entries+1);
+  memset((void **)array,0,entries+1);
+
+  /*
+    Add entries to array
+  */
+  i=0;
+  for (p=list; p != 0; p=p->next)
+    array[i++]=p;
+
+  LiberateSemaphoreInfo(&magick_semaphore);
+
+  /*
+    Sort array entries
+  */
+  qsort((void *) array, entries, sizeof(MagickInfo *), MagickInfoCompare);
+
+  return array;
 }
 
 /*
@@ -702,55 +797,41 @@ MagickExport int unsigned IsMagickConflict(const char *magick)
 */
 MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 {
-  register const MagickInfo
-    *p;
+
+  const MagickInfo
+    **magick_array;
+
+  int
+    i;
 
   if (file == (FILE *) NULL)
     file=stdout;
-  (void) GetMagickInfo("*",exception);
-/* #if defined(SupportMagickModules) */
-/*   { */
-/*     char */
-/*       *module_file, */
-/*       path[MaxTextExtent]; */
 
-/*     size_t */
-/*       length; */
+  magick_array=GetMagickInfoArray(exception);
+  if ((!magick_array) || (exception->severity > UndefinedException))
+    return False;
 
-/*     void */
-/*       *blob; */
-
-/*     module_file=TagToModule("MIFF"); */
-/*     blob=GetModuleBlob(module_file,path,&length,exception); */
-/*     if (blob != (void *) NULL) */
-/*       MagickFreeMemory(blob); */
-/*     MagickFreeMemory(module_file); */
-/*     GetPathComponent(path,HeadPath,path); */
-/*     (void) fprintf(file,"Path: %.1024s\n\n",path); */
-/*   } */
-/* #endif */
   (void) fprintf(file,"   Format  Mode  Description\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------------\n");
-  AcquireSemaphoreInfo(&magick_semaphore);
-  for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
+  for (i=0; magick_array[i] != 0; i++)
   {
-    if (p->stealth)
+    if (magick_array[i]->stealth)
       continue;
-    (void) fprintf(file,"%9s%c  %c%c%c",p->name ? p->name : "",
-      p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',
-      p->encoder ? 'w' : '-',p->encoder && p->adjoin ? '+' : '-');
-    if (p->description != (char *) NULL)
-      (void) fprintf(file,"  %.1024s",p->description);
-    if (p->version != (char *) NULL)
-      (void) fprintf(file," (%.1024s)",p->version);
+    (void) fprintf(file,"%9s%c  %c%c%c",magick_array[i]->name ? magick_array[i]->name : "",
+      magick_array[i]->blob_support ? '*' : ' ',magick_array[i]->decoder ? 'r' : '-',
+      magick_array[i]->encoder ? 'w' : '-',magick_array[i]->encoder && magick_array[i]->adjoin ? '+' : '-');
+    if (magick_array[i]->description != (char *) NULL)
+      (void) fprintf(file,"  %.1024s",magick_array[i]->description);
+    if (magick_array[i]->version != (char *) NULL)
+      (void) fprintf(file," (%.1024s)",magick_array[i]->version);
     (void) fprintf(file,"\n");
-    if (p->note != (char *) NULL)
+    if (magick_array[i]->note != (char *) NULL)
       {
         char
           **text;
 
-        text=StringToList(p->note);
+        text=StringToList(magick_array[i]->note);
         if (text != (char **) NULL)
           {
             register long
@@ -767,8 +848,73 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   }
   (void) fprintf(file,"\n* native blob support\n\n");
   (void) fflush(file);
-  LiberateSemaphoreInfo(&magick_semaphore);
+  MagickFreeMemory(magick_array);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  L i s t M o d u l e M a p                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ListModuleMap lists the module alias info to a file in the XML
+%  format used by modules.mgk. True is returned on success.
+%
+%  The format of the ListModuleMap method is:
+%
+%      unsigned int ListModuleMap(FILE *file,ExceptionInfo *exception)
+%
+%  A description of each parameter follows.
+%
+%    o file:  An pointer to a FILE.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport unsigned int ListModuleMap(FILE *file,ExceptionInfo *exception)
+{
+  const MagickInfo
+    **magick_array;
+
+  int
+    i;
+
+  if (file == (const FILE *) NULL)
+    file=stdout;
+
+   magick_array=GetMagickInfoArray(exception);
+   if ((!magick_array) || (exception->severity > UndefinedException))
+     return False;
+
+   (void) fprintf(file, "<?xml version=\"1.0\"?>\n");
+   (void) fprintf(file, "<!-- %s -->\n",GetMagickCopyright());
+   (void) fprintf(file, "<!-- Magick Module Alias Map (modules.mgk) -->\n");
+   (void) fprintf(file, "<modulemap>\n");
+
+   for (i=0; magick_array[i] != 0; i++)
+     {
+       if (LocaleCompare(magick_array[i]->name,magick_array[i]->module) != 0)
+         {
+/*            if (i != 0) */
+/*              (void) fprintf(file, "\n"); */
+/*            (void) fprintf(file, "  <!-- %s -->\n",magick_array[i]->description); */
+           (void) fprintf(file, "  <module magick=\"%s\" name=\"%s\" />\n",
+                          magick_array[i]->name, magick_array[i]->module);
+         }
+     }
+   (void) fprintf(file, "</modulemap>\n");
+   (void) fflush(file);
+
+   MagickFreeMemory(magick_array);
+
+   return(True);
 }
 
 /*
