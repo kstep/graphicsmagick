@@ -159,7 +159,8 @@ int IdentifyUtility(int argc,char **argv)
 {
   char
     *format,
-    *option;
+    *option,
+    *text;
 
   double
     sans;
@@ -353,13 +354,16 @@ int IdentifyUtility(int argc,char **argv)
       Identify image.
     */
     (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
-    if (!image_info->verbose)
-      image=PingImage(image_info,&exception);
-    else
+    if (format != (char *) NULL)
+			if ((strchr(format,'k') != (char *) NULL) ||
+          (strchr(format,'#') != (char *) NULL))
+        image_info->verbose=True;
+		if (image_info->verbose)
       image=ReadImage(image_info,&exception);
+    else
+      image=PingImage(image_info,&exception);
     if (exception.severity != UndefinedException)
-      MagickWarning(exception.severity,exception.reason,
-        exception.description);
+      MagickWarning(exception.severity,exception.reason,exception.description);
     status&=image != (Image *) NULL;
     if (image == (Image *) NULL)
       continue;
@@ -368,20 +372,17 @@ int IdentifyUtility(int argc,char **argv)
       if (p->scene == 0)
         p->scene=count++;
       if (format == (char *) NULL)
-        DescribeImage(p,stdout,image_info->verbose);
-      else
         {
-          char
-            *text;
-
-          text=TranslateText(image_info,p,format);
-          if (text == (char *) NULL)
-            ThrowBinaryException(ResourceLimitWarning,
-              "Unable to format image data","Memory allocation failed");
-          (void) fputs(text,stdout);
-          (void) fputc('\n',stdout);
-          LiberateMemory((void **) &text);
+          DescribeImage(p,stdout,image_info->verbose);
+          continue;
         }
+      text=TranslateText(image_info,p,format);
+      if (text == (char *) NULL)
+        ThrowBinaryException(ResourceLimitWarning,"Unable to format image data",
+          "Memory allocation failed");
+      (void) fputs(text,stdout);
+      (void) fputc('\n',stdout);
+      LiberateMemory((void **) &text);
     }
     DestroyImageList(image);
     number_images++;
