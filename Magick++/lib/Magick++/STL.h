@@ -38,6 +38,25 @@ namespace Magick
   // readImages( &images, "animation.gif" );
   // for_each( images.begin(), images.end(), transparentImage( "red" ) );
   // writeImages( images.begin(), images.end(), "animation.gif" );
+
+  // Local adaptive threshold image
+  // http://www.dai.ed.ac.uk/HIPR2/adpthrsh.htm
+  // Width x height define the size of the pixel neighborhood
+  // offset = constant to subtract from pixel neighborhood mean
+  class MagickDLLDecl adaptiveThresholdImage : public std::unary_function<Image&,void>
+  {
+  public:
+    adaptiveThresholdImage( const unsigned int width_,
+                            const unsigned int height_,
+                            const unsigned int offset_ = 0  );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    const unsigned int _width;
+    const unsigned int _height;
+    const unsigned int _offset;
+  };
   
   // Add noise to image with specified noise type
   class MagickDLLDecl addNoiseImage : public std::unary_function<Image&,void>

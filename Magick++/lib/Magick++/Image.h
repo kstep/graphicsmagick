@@ -103,7 +103,15 @@ namespace Magick
     // Image operations
     //
     //////////////////////////////////////////////////////////////////////
-    
+
+    // Local adaptive threshold image
+    // http://www.dai.ed.ac.uk/HIPR2/adpthrsh.htm
+    // Width x height define the size of the pixel neighborhood
+    // offset = constant to subtract from pixel neighborhood mean
+    void            adaptiveThreshold ( const unsigned int width,
+                                        const unsigned int height,
+                                        const unsigned offset = 0 );
+
     // Add noise to image with specified noise type
     void            addNoise ( const NoiseType noiseType_ );
 
@@ -325,7 +333,7 @@ namespace Magick
     
     // Label image
     void            label ( const std::string &label_ );
-     
+
     // Magnify image by integral size
     void            magnify ( void );
     

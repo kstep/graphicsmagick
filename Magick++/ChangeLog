@@ -1,3 +1,7 @@
+2002-11-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (adaptiveThreshold): New method.
+
 2002-10-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (coderInfoList): Intentionally ignore missing

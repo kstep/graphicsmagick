@@ -1,5 +1,8 @@
 This file records noteworthy changes in Magick++.
 
+(5.5.2)
+  * Added adaptiveThreshold() method.
+
 (5.5.1)
   * Fixed a Color memory allocation problem which became evident when
     using the Magick++ DLL.

@@ -240,6 +240,22 @@ Magick::Image::~Image()
   _imgRef = 0;
 }
 
+// Local adaptive threshold image
+// http://www.dai.ed.ac.uk/HIPR2/adpthrsh.htm
+// Width x height define the size of the pixel neighborhood
+// offset = constant to subtract from pixel neighborhood mean
+void Magick::Image::adaptiveThreshold ( const unsigned int width_,
+                                        const unsigned int height_,
+                                        const unsigned int offset_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* newImage =
+    AdaptiveThresholdImage( constImage(), width_, height_, offset_, &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+}
+
 // Add noise to image
 void Magick::Image::addNoise( const NoiseType noiseType_ )
 {

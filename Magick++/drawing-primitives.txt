@@ -100,7 +100,7 @@ gravity (NorthWest|North|NorthEast|West|Center|East|SouthWest|
          South|SouthEast)
 image (Add|Atop|Bumpmap|Clear|CopyBlue|CopyGreen|CopyOpacity|CopyRed|
        Copy|Difference|In|Minus|Multiply|Out|Over|Plus|Subtract|Xor)
-       dest_x,dest_y dest_width,dest_height filename
+       dest_x,dest_y dest_width,dest_height 'filename'
 line startX,startY endX,endY
 matte x,y (point|replace|floodfill|filltoborder|reset)
 offset  ???

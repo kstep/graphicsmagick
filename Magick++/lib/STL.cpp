@@ -10,6 +10,20 @@
 #include <Magick++/Image.h>
 #include <Magick++/STL.h>
 
+// Local adaptive threshold image
+Magick::adaptiveThresholdImage::adaptiveThresholdImage( const unsigned int width_,
+                                                        const unsigned int height_,
+                                                        const unsigned int offset_ )
+      : _width(width_),
+        _height(height_),
+        _offset(offset_)
+{
+}
+void Magick::adaptiveThresholdImage::operator()( Magick::Image &image_ ) const
+{
+  image_.adaptiveThreshold( _width, _height, _offset );
+}
+
 // Add noise to image with specified noise type
 Magick::addNoiseImage::addNoiseImage( Magick::NoiseType noiseType_ )
   : _noiseType( noiseType_ )
