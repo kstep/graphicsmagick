@@ -854,13 +854,13 @@ static inline PixelPacket AlphaComposite(const PixelPacket *p,
     composite;
 
   composite.red=(Quantum)
-    (((MaxRGB-alpha)*p->red+alpha*((MaxRGB-beta)*q->red/MaxRGB))/MaxRGB);
+    (((MaxRGB-alpha)*p->red+alpha*(MaxRGB-beta)*q->red/MaxRGB)/MaxRGB);
   composite.green=(Quantum)
-    (((MaxRGB-alpha)*p->green+alpha*((MaxRGB-beta)*q->green/MaxRGB))/MaxRGB);
+    (((MaxRGB-alpha)*p->green+alpha*(MaxRGB-beta)*q->green/MaxRGB)/MaxRGB);
   composite.blue=(Quantum)
-    (((MaxRGB-alpha)*p->blue+alpha*((MaxRGB-beta)*q->blue/MaxRGB))/MaxRGB);
+    (((MaxRGB-alpha)*p->blue+alpha*(MaxRGB-beta)*q->blue/MaxRGB)/MaxRGB);
   composite.opacity=(Quantum)
-    (MaxRGB-((MaxRGB-alpha)+alpha*((MaxRGB-beta)/MaxRGB)));
+    (MaxRGB-((MaxRGB-alpha)+alpha*(MaxRGB-beta)/MaxRGB));
   return(composite);
 }
 

@@ -429,7 +429,7 @@ MagickExport unsigned int CompositeImage(Image *image,
             destination.opacity)*destination.red)/MaxRGB);
           destination.blue=(Quantum) ((((QuantumPrecision) MaxRGB-
             source.opacity)*source.blue+((QuantumPrecision) MaxRGB-
-            destination.opacity)*destination.red)/MaxRGB);
+            destination.opacity)*destination.blue)/MaxRGB);
           destination.opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity);
           break;
         }
@@ -454,9 +454,9 @@ MagickExport unsigned int CompositeImage(Image *image,
           destination.red=(Quantum)
             ((QuantumPrecision) source.red+destination.red);
           destination.green=(Quantum)
-            ((QuantumPrecision) source.red+destination.red);
+            ((QuantumPrecision) source.green+destination.green);
           destination.blue=(Quantum)
-            ((QuantumPrecision) source.red+destination.red);
+            ((QuantumPrecision) source.blue+destination.blue);
           destination.opacity=OpaqueOpacity;
           break;
         }
@@ -467,7 +467,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           destination.green=(Quantum)
             ((QuantumPrecision) source.green-destination.green);
           destination.blue=(Quantum)
-            ((QuantumPrecision) source.green-destination.blue);
+            ((QuantumPrecision) source.blue-destination.blue);
           destination.opacity=OpaqueOpacity;
           break;
         }
@@ -489,9 +489,9 @@ MagickExport unsigned int CompositeImage(Image *image,
             (AbsoluteValue((QuantumPrecision) source.red-destination.red));
           destination.green=(Quantum)
             (AbsoluteValue((QuantumPrecision) source.green-destination.green));
-          destination.red=(Quantum)
+          destination.blue=(Quantum)
             (AbsoluteValue((QuantumPrecision) source.blue-destination.blue));
-          destination.red=(Quantum) (AbsoluteValue((QuantumPrecision)
+          destination.opacity=(Quantum) (AbsoluteValue((QuantumPrecision)
             source.opacity-destination.opacity));
           break;
         }
