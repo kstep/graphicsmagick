@@ -560,7 +560,7 @@ MagickExport void Hull(const long x_offset,const long y_offset,
   const unsigned long columns,const unsigned long rows,Quantum *f,Quantum *g,
   const int polarity)
 {
-  long
+  double
     v,
     y;
 

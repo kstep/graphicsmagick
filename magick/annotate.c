@@ -948,6 +948,9 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   char
     font[MaxTextExtent];
 
+  double
+    opacity;
+
   DrawInfo
     *clone_info;
 
@@ -991,9 +994,6 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   PointInfo
     point,
     resolution;
-
-  Quantum
-    opacity;
 
   register long
     i,
@@ -1235,8 +1235,8 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
                     (point.x+x-pattern->tile_info.x) % pattern->columns),(long)
                     ((unsigned long) (point.y+y-pattern->tile_info.y) %
                     pattern->rows),&image->exception);
-                opacity=(Quantum) ((unsigned long) ((MaxRGB-opacity)*
-                  (MaxRGB-fill_color.opacity))/MaxRGB);
+                opacity= ((double) (MaxRGB-opacity)*
+                  (MaxRGB-fill_color.opacity))/MaxRGB;
                 if (!active)
                   q=GetImagePixels(image,(long) ceil(point.x+x-0.5),
                     (long) ceil(point.y+y-0.5),1,1);
@@ -1543,7 +1543,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
               (x-pattern->tile_info.x) % pattern->columns),(long)
               ((unsigned long) (y-pattern->tile_info.y) % pattern->rows),
               &image->exception);
-          q->opacity=(Quantum) (MaxRGB-((unsigned long) ((MaxRGB-
+          q->opacity=(Quantum) (MaxRGB-((double) ((MaxRGB-
             PixelIntensityToQuantum(q))*(MaxRGB-fill_color.opacity))/MaxRGB));
           q->red=fill_color.red;
           q->green=fill_color.green;
