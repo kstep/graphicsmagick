@@ -138,7 +138,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         width=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
         height=(unsigned long) floor(metrics.height+0.5);
         if (((image->columns != 0) && (width <= image->columns)) ||
-            ((image->rows != 0) && (height <= image->rows)))
+            ((image->rows != 0) && (height <= image->rows)) ||
+            (draw_info->pointsize == 1.0))
           break;
       }
     }
