@@ -5,14 +5,13 @@
 General
 
 In order to compile Magick++ you must have access to a standard C++
-implementation and have ImageMagick installed
-(ftp://ftp.wizards.dupont.com/pub/ImageMagick/). Magick++ is co-packaged as
-a subdirectory of ImageMagick as of ImageMagick version 4.2.2 and later. The
-author uses  gcc 2.95.2 (GNU C++) which is available under UNIX and under
-the Cygwin UNIX-emulation environment for Windows. Standards compliant
-commercial C++ compilers should also work fine. Most modern C++ compilers
-for PCs should also work (project files are provided in the VisualMagick
-package for Microsoft Visual C++ 6.0).
+implementation. Magick++ is co-packaged as a subdirectory of ImageMagick as
+of ImageMagick version 4.2.2 and later. The author uses  gcc 2.95.2 (GNU
+C++) which is available under UNIX and under the Cygwin UNIX-emulation
+environment for Windows. Standards compliant commercial C++ compilers should
+also work fine. Most modern C++ compilers for PCs should also work (project
+files are provided in the VisualMagick package for Microsoft Visual C++
+6.0).
 
 The compiler must support the following recent C++ standard features:
 
@@ -30,6 +29,8 @@ following compiler/platform combinations:
    Operating System      Architecture                 Compiler
  Solaris 2.6          SPARC              egcs 1.1.2
  Solaris 2.6, 2.7     SPARC              gcc-2.95.2
+ Solaris 2.7          SPARC              Sun Workshop 5.0 C++
+ Solaris 8            SPARC              Sun Forte 6.0 C++
  FreeBSD 2.2.7        Intel Pentium II   egcs 1.1.2
  Windows NT 4.0 SP6a  Intel Pentium II   Visual C++ 6.0 Standard Edition
 
@@ -46,6 +47,8 @@ Magick++:
  Red Hat               egcs 1.1.2    Dr. Alexander Zimmermann
  Linux 5.2i386         (updated from <Alexander.Zimmermann@fmi.uni-passau.de>
                        SRPM)
+ Red Hat                             Dr. Alexander Zimmermann
+ Linux 7.0i386         gcc 2.95.2    <Alexander.Zimmermann@fmi.uni-passau.de>
 
  Red Hat               egcs 1.1.2    Dr. Alexander Zimmermann
  Linux 5.2Alpha        (updated from <Alexander.Zimmermann@fmi.uni-passau.de>
@@ -67,18 +70,21 @@ configurations.
 
 Building From Source
 
-To install the package under Unix, installation should be similar to
+Magick++ is now built using the ImageMagick configure script and Makefiles.
+Please follow the installation instructions provided by its README.txt file.
+The following instructions pertain to the Magick++ specific configuration
+and build options.
 
-./configure [ --prefix=/prefix ]
+To install Magick++ under Unix, installation should be similar to
+
+./configure --with-magick_plus_plus [ --prefix=/prefix ]
 make
 make install
 
-The configure script uses the compiler/linker flags it obtains from the
-installed 'Magick-config' script when performing the build. This means that
-ImageMagick must be installed before Magick++ is configured. The library is
-currently named similar to 'libMagick++.a' and is installed under prefix/lib
-while the headers are installed with Magick++.h being installed in
-prefix/include and the remaining headers in prefix/include/Magick++.
+The library is currently named similar to 'libMagick++.a' (and/or
+libMagick++.so.5.0.24) and is installed under prefix/lib while the headers
+are installed with Magick++.h being installed in prefix/include and the
+remaining headers in prefix/include/Magick++.
 
 To influence the options the configure script chooses, you may specify
 'make' option variables when running the configure script. For example, the
@@ -137,12 +143,13 @@ Available demos are:
 
      button
         program to create a simple rectangular button with an
-     annotation
+        annotation
      flip
         program to invert and morph images in an existing GIF animation
-
      demo
         program to demonstrate the image manipulation primitives
+     piddle
+        program to demonstrate use of the drawing primitives
      shapes
         program to demonstrate use of the drawing primitives
 
@@ -171,11 +178,12 @@ The available tests are:
 
 Cygwin & EGCS
 
-It is possible to build both ImageMagick and Magick++ under the Cygwin
-Unix-emulation environment for Windows NT. Obtain and install Cgywin from
-http://sourceware.cygnus.com/cygwin/ and update to the latest GNU compiler
-from http://www.xraylith.wisc.edu/~khan/software/gnu-win32/gcc.html.
-X11R6.4 libraries are available from
+It should be possible to build both ImageMagick and Magick++ under the
+Cygwin Unix-emulation environment for Windows NT. Obtain and install Cgywin
+from http://sourceware.cygnus.com/cygwin/ and update to the latest GNU
+compiler from
+http://www.xraylith.wisc.edu/~khan/software/gnu-win32/gcc.html.   X11R6.4
+libraries are available from
 http://dao.gsfc.nasa.gov/software/grads/win32/X11R6.4/.  To build using
 Cygwin and EGCS, follow the instructions for building under Unix.
 ImageMagick and Magick++ do not yet include support for building Windows

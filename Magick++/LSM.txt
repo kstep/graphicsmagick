@@ -1,7 +1,7 @@
 Begin3
 Title:          Magick++ image processing library (in C++)
 Version:        5.2.5
-Entered-date:   25OCT00
+Entered-date:   29OCT00
 Description:    Magick++ is a library written in C++ that provides
                 a user-friendly interface to the sophisticated
                 image-processing capabilities of ImageMagick. Magick++

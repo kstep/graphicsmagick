@@ -15,11 +15,9 @@ Installing Magick++</h1></center>
 
 <h3>
 General</h3>
-In order to compile Magick++ you must have access to a standard C++ implementation
-and have <a href="http://www.wizards.dupont.com/cristy/ImageMagick.html">ImageMagick</a>
-installed (<a href="ftp://ftp.wizards.dupont.com/pub/ImageMagick/">ftp://ftp.wizards.dupont.com/pub/ImageMagick/</a>).
-Magick++ is co-packaged as a subdirectory of ImageMagick as of ImageMagick
-version 4.2.2 and later. The author uses&nbsp; <a href="http://gcc.gnu.org/index.html">gcc
+In order to compile Magick++ you must have access to a standard C++ implementation.
+Magick++ is co-packaged as a subdirectory of <a href="http://www.imagemagick.org/">ImageMagick</a>
+as of ImageMagick version 4.2.2 and later. The author uses&nbsp; <a href="http://gcc.gnu.org/index.html">gcc
 2.95.2 (GNU C++)</a> which is available under UNIX and under the
 <a href="http://sourceware.cygnus.com/cygwin/">Cygwin
 UNIX-emulation environment</a> for Windows. Standards compliant commercial
@@ -80,6 +78,22 @@ the following compiler/platform combinations:
 </tr>
 
 <tr>
+<td><font size=-1>Solaris 2.7</font></td>
+
+<td><font size=-1>SPARC</font></td>
+
+<td><font size=-1>Sun Workshop 5.0 C++</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>Solaris 8</font></td>
+
+<td><font size=-1>SPARC</font></td>
+
+<td><font size=-1>Sun Forte 6.0 C++</font></td>
+</tr>
+
+<tr>
 <td><font size=-1>FreeBSD 2.2.7</font></td>
 
 <td><font size=-1>Intel Pentium II</font></td>
@@ -134,6 +148,16 @@ with Magick++:
 <td><font size=-1>i386</font></td>
 
 <td><font size=-1>egcs 1.1.2 (updated from SRPM)</font></td>
+
+<td><font size=-1>Dr. Alexander Zimmermann &lt;Alexander.Zimmermann@fmi.uni-passau.de></font></td>
+</tr>
+
+<tr>
+<td><font size=-1>Red Hat Linux 7.0</font></td>
+
+<td><font size=-1>i386</font></td>
+
+<td><font size=-1>gcc 2.95.2</font></td>
 
 <td><font size=-1>Dr. Alexander Zimmermann &lt;Alexander.Zimmermann@fmi.uni-passau.de></font></td>
 </tr>
@@ -296,6 +320,8 @@ annotation
 animation
 <br>demo
 <br>&nbsp;&nbsp; program to demonstrate the image manipulation primitives
+<br>piddle
+<br>&nbsp;&nbsp; program to demonstrate use of the drawing primitives
 <br>shapes
 <br>&nbsp;&nbsp; program to demonstrate use of the drawing primitives</blockquote>
 
@@ -323,8 +349,9 @@ The available tests are:
 
 <h4>
 Cygwin &amp; EGCS</h4>
-It is possible to build both ImageMagick and Magick++ under the Cygwin
-Unix-emulation environment for Windows NT. Obtain and install Cgywin from
+It should be possible to build both ImageMagick and Magick++ under the
+Cygwin Unix-emulation environment for Windows NT. Obtain and install Cgywin
+from
 <a href="http://sourceware.cygnus.com/cygwin/">http://sourceware.cygnus.com/cygwin/</a>
 and update to the latest GNU compiler from <a href="http://www.xraylith.wisc.edu/~khan/software/gnu-win32/gcc.html">http://www.xraylith.wisc.edu/~khan/software/gnu-win32/gcc.html</a>.&nbsp;&nbsp;
 X11R6.4 libraries are available from <a href="http://dao.gsfc.nasa.gov/software/grads/win32/X11R6.4/">http://dao.gsfc.nasa.gov/software/grads/win32/X11R6.4/</a>.&nbsp;
