@@ -174,7 +174,7 @@
 /*
   Typedef declarations.
 */
-typedef struct _ConvertOptionInfo
+typedef struct _OptionInfo
 {
   int
     append;
@@ -190,7 +190,7 @@ typedef struct _ConvertOptionInfo
     global_colormap,
     flatten,
     mosaic;
-} ConvertOptionInfo;
+} OptionInfo;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -270,7 +270,7 @@ static void ConcatenateImages(int argc,char **argv)
 %  The format of the ConvertImages method is:
 %
 %      unsigned int ConvertImages(const ImageInfo *image_info,
-%        ConvertOptionInfo *option_info,const int argc,char **argv,Image **image)
+%        OptionInfo *option_info,const int argc,char **argv,Image **image)
 %
 %  A description of each parameter follows:
 %
@@ -286,7 +286,7 @@ static void ConcatenateImages(int argc,char **argv)
 %
 %
 */
-static unsigned int ConvertImages(ImageInfo *image_info,ConvertOptionInfo *option_info,
+static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
   const int argc,char **argv,Image **image)
 {
   long
@@ -630,7 +630,7 @@ int main(int argc,char **argv)
     j,
     x;
 
-  ConvertOptionInfo
+  OptionInfo
     option_info;
 
   register Image
@@ -676,7 +676,7 @@ int main(int argc,char **argv)
   (void) SetImageInfo(image_info,True,&exception);
   ping=False;
   option=(char *) NULL;
-  memset(&option_info,0,sizeof(ConvertOptionInfo));
+  memset(&option_info,0,sizeof(OptionInfo));
   /*
     Parse command-line arguments.
   */
