@@ -4134,7 +4134,7 @@ Export Image *XGetWindowImage(Display *display,const Window window,
               q=SetPixelCache(composite_image,0,y,composite_image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(composite_image->cache);
+              indexes=GetIndexes(composite_image);
               for (x=0; x < (int) composite_image->columns; x++)
               {
                 index=XGetPixel(ximage,x,y);
@@ -5480,7 +5480,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         p=GetPixelCache(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image->cache);
+        indexes=GetIndexes(image);
         bit=0;
         byte=0;
         for (x=0; x < (int) image->columns; x++)
@@ -5520,7 +5520,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image->cache);
+            indexes=GetIndexes(image);
             nibble=0;
             for (x=0; x < (int) image->columns; x++)
             {
@@ -5571,7 +5571,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image->cache);
+            indexes=GetIndexes(image);
             nibble=0;
             for (x=0; x < (int) image->columns; x++)
             {
@@ -5614,7 +5614,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image->cache);
+            indexes=GetIndexes(image);
             for (x=0; x < (int) image->columns; x++)
             {
               pixel=pixels[indexes[x]];
@@ -5644,7 +5644,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image->cache);
+            indexes=GetIndexes(image);
             for (x=0; x < (int) image->columns; x++)
             {
               pixel=pixels[indexes[x]];
@@ -6013,7 +6013,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         p=GetPixelCache(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image->cache);
+        indexes=GetIndexes(image);
         bit=0;
         byte=0;
         for (x=0; x < (int) image->columns; x++)
@@ -6053,7 +6053,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image->cache);
+            indexes=GetIndexes(image);
             nibble=0;
             for (x=0; x < (int) image->columns; x++)
             {
@@ -6104,7 +6104,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image->cache);
+            indexes=GetIndexes(image);
             nibble=0;
             for (x=0; x < (int) image->columns; x++)
             {
@@ -6147,7 +6147,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image->cache);
+            indexes=GetIndexes(image);
             for (x=0; x < (int) image->columns; x++)
             {
               pixel=pixels[indexes[x]];
@@ -6177,7 +6177,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image->cache);
+            indexes=GetIndexes(image);
             for (x=0; x < (int) image->columns; x++)
             {
               pixel=pixels[indexes[x]];
@@ -7297,7 +7297,7 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
             q=GetPixelCache(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image->cache);
+            indexes=GetIndexes(image);
             for (x=0; x < (int) image->columns; x++)
               diversity[indexes[x]].count++;
           }
