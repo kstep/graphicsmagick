@@ -127,6 +127,7 @@ static void DisplayUsage(void)
       "-dispose method      GIF disposal method",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-edge factor         apply a filter to detect edges in the image",
+      "-endian type         LSB or MSB",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-filter type         use this filter when resizing an image",
       "-flip                flip image in the vertical direction",
@@ -861,6 +862,25 @@ int main(int argc,char **argv)
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                   MagickError(OptionError,"Missing factor",option);
+              }
+            break;
+          }
+        if (LocaleCompare("endian",option+1) == 0)
+          {
+            image_info->endian=UndefinedEndian;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                image_info->endian=UndefinedEndian;
+                if (LocaleCompare("LSB",option) == 0)
+                  image_info->endian=LSBEndian;
+                if (LocaleCompare("MSB",option) == 0)
+                  image_info->endian=MSBEndian;
+                if (image_info->endian == UndefinedEndian)
+                  MagickError(OptionError,"Invalid endian type",option);
               }
             break;
           }
