@@ -821,7 +821,7 @@ then
 
 dnl First see if there is a library
     OLD_LDFLAGS="$LDFLAGS"
-    LDFLAGS=-L`freetype-config --prefix`/lib" $LDFLAGS"
+    LDFLAGS=-L`freetype-config --prefix`/lib" $LDFLAGS" 2> /dev/null
     if test "$LIB_TTF" = ''
     then
       AC_CHECK_LIB(freetype,FT_Init_FreeType,LIB_TTF='-lfreetype',,)
@@ -837,7 +837,7 @@ dnl Next see what magic is required for the headers
     OLD_CPPFLAGS="$CPPFLAGS"
     if test "$LIB_TTF" != ''
     then
-      CPPFLAGS=`freetype-config --cflags`" $CPPFLAGS"
+      CPPFLAGS=`freetype-config --cflags`" $CPPFLAGS" 2> /dev/null
     fi
 
 dnl Now test for the headers

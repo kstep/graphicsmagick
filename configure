@@ -6542,7 +6542,7 @@ echo "${ECHO_T}" >&6
     passed=0;
 
     OLD_LDFLAGS="$LDFLAGS"
-    LDFLAGS=-L`freetype-config --prefix`/lib" $LDFLAGS"
+    LDFLAGS=-L`freetype-config --prefix`/lib" $LDFLAGS" 2> /dev/null
     if test "$LIB_TTF" = ''
     then
 
@@ -6600,7 +6600,7 @@ fi
     OLD_CPPFLAGS="$CPPFLAGS"
     if test "$LIB_TTF" != ''
     then
-      CPPFLAGS=`freetype-config --cflags`" $CPPFLAGS"
+      CPPFLAGS=`freetype-config --cflags`" $CPPFLAGS" 2> /dev/null
     fi
 
 for ac_header in freetype/freetype.h
