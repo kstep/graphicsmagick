@@ -467,31 +467,33 @@ UNIX/Cygwin/MinGW COMPILATION
     (and why) so the failure you are observing can be identified and
     resolved.
 
-  Once ImageMagick is configured, these standard build targets are
-  available from the generated Makefiles:
+  Makefile Build Targets
 
-     'make'
-        Build the package
-
-     'make install'
-        Install the package
-
-     'make check'
-        Run tests using the installed ImageMagick ('make install' must
-        be done first!).
-
-     'make clean'
-        Remove everything in the build directory created by 'make'
-
-     'make distclean'
-        Remove everything in the build directory created by 'configure'
-        and 'make'. This is useful if you want to start over from scratch.
-
-     'make uninstall'
-   	Remove all files from the system which are (or would be)
-   	installed by 'make install' using the current configuration.
-        Note that this target is imperfect for PerlMagick since Perl
-        no longer supports an 'uninstall' target.
+    Once ImageMagick is configured, these standard build targets are
+    available from the generated Makefiles:
+  
+       'make'
+          Build the package
+  
+       'make install'
+          Install the package
+  
+       'make check'
+          Run tests using the installed ImageMagick ('make install' must
+          be done first!).
+  
+       'make clean'
+          Remove everything in the build directory created by 'make'
+  
+       'make distclean'
+          Remove everything in the build directory created by 'configure'
+          and 'make'. This is useful if you want to start over from scratch.
+  
+       'make uninstall'
+     	Remove all files from the system which are (or would be)
+     	installed by 'make install' using the current configuration.
+          Note that this target is imperfect for PerlMagick since Perl
+          no longer supports an 'uninstall' target.
 
   Build & Install:
 
