@@ -1206,8 +1206,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           */
           clone_info->affine.tx=glyph.origin.x/64.0;
           clone_info->affine.ty=glyph.origin.y/64.0;
-          (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
-            &OutlineMethods,clone_info);
+          (void) FT_Outline_Decompose(&((FT_OutlineGlyph)
+            glyph.image)->outline,&OutlineMethods,clone_info);
         }
     FT_Glyph_Get_CBox(glyph.image,0,&bounds);
     if (bounds.xMin < metrics->bounds.x1)
