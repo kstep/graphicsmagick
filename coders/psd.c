@@ -1397,7 +1397,7 @@ compute_layer_info:
 		  if (tmp_image->storage_class == PseudoClass) {
 			 (void) WriteBlobMSBShort(image, tmp_image->matte ? 2 : 1);
 			 if (tmp_image->matte) {
-				 (void) WriteBlobMSBShort(image, -1);
+				 (void) WriteBlobMSBShort(image, (unsigned long) -1);
 				 (void) WriteBlobMSBLong(image, channel_size);
 			 }
 			 (void) WriteBlobMSBShort(image, 0);
@@ -1407,7 +1407,7 @@ compute_layer_info:
 			{
 			  (void) WriteBlobMSBShort(image, tmp_image->matte ? 4 : 3);
 			 if (tmp_image->matte) {
-				 (void) WriteBlobMSBShort(image, -1);
+				 (void) WriteBlobMSBShort(image, (unsigned long) -1);
 				 (void) WriteBlobMSBLong(image, channel_size);
 			 }
 			 (void) WriteBlobMSBShort(image, 0);
@@ -1421,7 +1421,7 @@ compute_layer_info:
 			{
 			  (void) WriteBlobMSBShort(image, tmp_image->matte ? 5 : 4);
 			 if (tmp_image->matte) {
-				 (void) WriteBlobMSBShort(image, -1);
+				 (void) WriteBlobMSBShort(image, (unsigned long) -1);
 				 (void) WriteBlobMSBLong(image, channel_size);
 			 }
 			 (void) WriteBlobMSBShort(image, 0);
