@@ -1,0 +1,591 @@
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%                        X   X  TTTTT  RRRR   N   N                           %
+%                         X X     T    R   R  NN  N                           %
+%                          X      T    RRRR   N N N                           %
+%                         X X     T    R R    N  NN                           %
+%                        X   X    T    R  R   N   N                           %
+%                                                                             %
+%                                                                             %
+%                    Read/Write ImageMagick Image Format.                     %
+%                                                                             %
+%                                                                             %
+%                              Software Design                                %
+%                             William Radcliffe                               %
+%                                 May 2001                                    %
+%                                                                             %
+%                                                                             %
+%  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
+%  to making software imaging solutions freely available.                     %
+%                                                                             %
+%  Permission is hereby granted, free of charge, to any person obtaining a    %
+%  copy of this software and associated documentation files ("ImageMagick"),  %
+%  to deal in ImageMagick without restriction, including without limitation   %
+%  the rights to use, copy, modify, merge, publish, distribute, sublicense,   %
+%  and/or sell copies of ImageMagick, and to permit persons to whom the       %
+%  ImageMagick is furnished to do so, subject to the following conditions:    %
+%                                                                             %
+%  The above copyright notice and this permission notice shall be included in %
+%  all copies or substantial portions of ImageMagick.                         %
+%                                                                             %
+%  The software is provided "as is", without warranty of any kind, express or %
+%  implied, including but not limited to the warranties of merchantability,   %
+%  fitness for a particular purpose and noninfringement.  In no event shall   %
+%  ImageMagick Studio be liable for any claim, damages or other liability,    %
+%  whether in an action of contract, tort or otherwise, arising from, out of  %
+%  or in connection with ImageMagick or the use or other dealings in          %
+%  ImageMagick.                                                               %
+%                                                                             %
+%  Except as contained in this notice, the name of the ImageMagick Studio     %
+%  shall not be used in advertising or otherwise to promote the sale, use or  %
+%  other dealings in ImageMagick without prior written authorization from the %
+%  ImageMagick Studio.                                                        %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+*/
+
+/*
+  Include declarations.
+*/
+#if defined(_VISUALC_)
+#include "studio.h"
+#define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
+#include <windows.h>
+#include <ole2.h>
+
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WriteXTRNImage(const ImageInfo *,Image *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d X T R N I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadXTRNImage reads a XTRN image file and returns it.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
+%
+%  The format of the ReadXTRNImage method is:
+%
+%      Image *ReadXTRNImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image:  Method ReadXTRNImage returns a pointer to the image after
+%      reading.  A null image is returned if there is a memory shortage or
+%      if the image cannot be read.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+%
+*/
+static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exception)
+{
+  Image
+    *image;
+
+  ImageInfo
+    *clone_info;
+
+  void
+    *param1,
+    *param2,
+    *param3;
+
+  param1 = param2 = param3 = (void *) NULL;
+  clone_info=CloneImageInfo(image_info);
+  if (clone_info->filename == NULL)
+    {
+      DestroyImageInfo(clone_info);
+      ThrowReaderException(FileOpenWarning,"No filename specified",(Image *) NULL);
+    }
+  if (LocaleCompare(image_info->magick,"XTRNFILE") == 0)
+    {
+      image=ReadImage(clone_info,exception);
+      if (exception->severity != UndefinedException)
+        MagickWarning(exception->severity,exception->reason,exception->description);
+    }
+  else if (LocaleCompare(image_info->magick,"XTRNIMAGE") == 0)
+    {
+      Image
+        **image_ptr;
+
+#ifdef ALL_IMAGEINFO
+      ImageInfo
+        **image_info_ptr;
+#endif
+
+      (void) sscanf(clone_info->filename,"%lx,%lx",&param1,&param2);
+      image_ptr=(Image **) param2;
+      if (*image_ptr != (Image *)NULL)
+        image=CloneImage(*image_ptr,0,0,False,&(*image_ptr)->exception);
+#ifdef ALL_IMAGEINFO
+      image_info_ptr=(ImageInfo **) param1;
+      if (*image_info_ptr != (ImageInfo *)NULL)
+        image_info=*image_info_ptr;
+#endif
+    }
+  else if (LocaleCompare(image_info->magick,"XTRNBLOB") == 0)
+    {
+      char
+        **blob_data;
+
+      size_t
+        *blob_length;
+
+      char
+        filename[MaxTextExtent];
+
+      (void) sscanf(clone_info->filename,"%lx,%lx,%s",&param1,&param2,&filename);
+      blob_data=(char **) param1;
+      blob_length=(size_t *) param2;
+      image=BlobToImage(clone_info,*blob_data,*blob_length,exception);
+      if (exception->severity != UndefinedException)
+        MagickWarning(exception->severity,exception->reason,exception->description);
+    }
+  else if (LocaleCompare(image_info->magick,"XTRNSTREAM") == 0)
+    {
+#ifdef IMPLEMENT_THIS
+      unsigned int
+        status;
+#endif
+
+      char
+        filename[MaxTextExtent];
+
+      int
+        (*fifo)(const Image *,const void *,const size_t);
+
+      (void) sscanf(clone_info->filename,"%lx,%lx,%s",&param1,&param2,&filename);
+      fifo=(int (*)(const Image *,const void *,const size_t)) param1;
+      clone_info->client_data=param2;
+#ifdef IMPLEMENT_THIS
+      status=ReadStream(clone_info,fifo,exception);
+      if (exception->severity != UndefinedException)
+        MagickWarning(exception->severity,exception->reason,exception->description);
+#endif
+    }
+  else if (LocaleCompare(image_info->magick,"XTRNARRAY") == 0)
+    {
+      SAFEARRAY
+        *pSafeArray;
+
+      char
+        *blob_data;
+
+      size_t
+        blob_length;
+
+		  long
+        lBoundl,
+        lBoundu;
+
+      HRESULT
+        hr;
+
+      char
+        filename[MaxTextExtent];
+
+      filename[0] = '\0';
+      (void) sscanf(clone_info->filename,"%lx,%s",&param1,&filename);
+	    hr = S_OK;
+      pSafeArray = (SAFEARRAY *) param1;
+      if (pSafeArray)
+        {
+		      hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
+          if (SUCCEEDED(hr))
+		        hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
+          if (SUCCEEDED(hr))
+            {
+		          blob_length = lBoundu - lBoundl + 1;
+              hr = SafeArrayAccessData(pSafeArray, (void**)&blob_data);
+	            if(SUCCEEDED(hr))
+                {
+                  if (filename[0] != '\0')
+                    {
+                      (void) strcpy(clone_info->filename, filename);
+                      (void) strcpy(clone_info->magick, filename);
+                    }
+                  else
+                    {
+                      *clone_info->magick = '\0';
+                      clone_info->filename[0] = '\0';
+                    }
+                  image=BlobToImage(clone_info,blob_data,blob_length,exception);
+                  hr = SafeArrayUnaccessData(pSafeArray);
+                  if (exception->severity != UndefinedException)
+                    MagickWarning(exception->severity,exception->reason,
+                       exception->description);
+                }
+            }
+        }
+    }
+  DestroyImageInfo(clone_info);
+  return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r X T R N I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterXTRNImage adds attributes for the XTRN image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterXTRNImage method is:
+%
+%      RegisterXTRNImage(void)
+%
+*/
+ModuleExport void RegisterXTRNImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("XTRNFILE");
+  entry->decoder=ReadXTRNImage;
+  entry->encoder=WriteXTRNImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("External transfer of a file");
+  entry->module=AllocateString("XTRN");
+  RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("XTRNIMAGE");
+  entry->decoder=ReadXTRNImage;
+  entry->encoder=WriteXTRNImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("External transfer of a image in memory");
+  entry->module=AllocateString("XTRN");
+  RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("XTRNBLOB");
+  entry->decoder=ReadXTRNImage;
+  entry->encoder=WriteXTRNImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("IExternal transfer of a blob in memory");
+  entry->module=AllocateString("XTRN");
+  RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("XTRNSTREAM");
+  entry->decoder=ReadXTRNImage;
+  entry->encoder=WriteXTRNImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("External transfer via a streaming interface");
+  entry->module=AllocateString("XTRN");
+  RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("XTRNARRAY");
+  entry->decoder=ReadXTRNImage;
+  entry->encoder=WriteXTRNImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("External transfer via a smart array interface");
+  entry->module=AllocateString("XTRN");
+  RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r X T R N I m a g e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterXTRNImage removes format registrations made by the
+%  XTRN module from the list of supported formats.
+%
+%  The format of the UnregisterXTRNImage method is:
+%
+%      UnregisterXTRNImage(void)
+%
+*/
+ModuleExport void UnregisterXTRNImage(void)
+{
+  UnregisterMagickInfo("XTRNFILE");
+  UnregisterMagickInfo("XTRNIMAGE");
+  UnregisterMagickInfo("XTRNBLOB");
+  UnregisterMagickInfo("XTRNSTREAM");
+  UnregisterMagickInfo("XTRNARRAY");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e X T R N I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteXTRNImage writes an image in the XTRN encoded image format.
+%  We use GIF because it is the only format that is compressed without
+%  requiring addition optional delegates (TIFF, ZIP, etc).
+%
+%  The format of the WriteXTRNImage method is:
+%
+%      unsigned int WriteXTRNImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Method WriteXTRNImage return True if the image is written.
+%      False is returned is there is a memory shortage or if the image file
+%      fails to write.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image:  A pointer to a Image structure.
+%
+%
+*/
+
+int SafeArrayFifo(const Image *image,const void *data,const size_t length)
+{
+  SAFEARRAYBOUND NewArrayBounds[1];  // 1 Dimension
+  size_t tlen=length;
+  SAFEARRAY *pSafeArray = (SAFEARRAY *)image->client_data;
+  if (pSafeArray != NULL)
+  {
+		long lBoundl, lBoundu, lCount;
+	  HRESULT hr = S_OK;
+    // First see how big the buffer currently is
+		hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
+    if (FAILED(hr))
+      return tlen;
+		hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
+    if (FAILED(hr))
+      return tlen;
+		lCount = lBoundu - lBoundl + 1;
+
+    if (length>0)
+    {
+	    unsigned char	*pReturnBuffer = NULL;
+      NewArrayBounds[0].lLbound = 0;   // Start-Index 0
+      NewArrayBounds[0].cElements = length+lCount;  // # Elemente
+      hr = SafeArrayRedim(pSafeArray, NewArrayBounds);
+      if (FAILED(hr))
+        return tlen;
+      hr = SafeArrayAccessData(pSafeArray, (void**)&pReturnBuffer);
+	    if( FAILED(hr) )
+		    return tlen;
+	    memcpy( pReturnBuffer+lCount, (unsigned char *)data, length );
+      hr = SafeArrayUnaccessData(pSafeArray);
+	    if( FAILED(hr) )
+		    return tlen;
+    }
+    else
+    {
+      // Adjust the length of the buffer to fit
+    }
+  }
+  return(tlen);
+}
+
+// forcing a format
+#ifdef STUFF
+{
+  ExceptionInfo
+    exception;
+
+  GetExceptionInfo(&exception);
+  FormatString(info->image_info->filename,"%.1024s:",SvPV(sval,na));
+  SetImageInfo(info->image_info,True,&exception);
+  if (*info->image_info->magick == '\0')
+    MagickWarning(OptionWarning,"Unrecognized image format",
+      info->image_info->filename);
+  else
+    for ( ; image; image=image->next)
+      (void) strncpy(image->magick,info->image_info->magick,
+        MaxTextExtent-1);
+  DestroyExceptionInfo(&exception);
+}
+#endif
+
+static unsigned int WriteXTRNImage(const ImageInfo *image_info,Image *image)
+{
+  Image *
+    p;
+
+  ImageInfo
+    *clone_info;
+
+  int
+    scene;
+
+  void
+    *param1,
+    *param2,
+    *param3;
+
+  unsigned int
+    status;
+
+  param1 = param2 = param3 = (void *) NULL;
+  if (LocaleCompare(image_info->magick,"XTRNFILE") == 0)
+    {
+      clone_info=CloneImageInfo(image_info);
+      status=WriteImage(image_info,image);
+      if (status == False)
+        CatchImageException(image);
+      DestroyImageInfo(clone_info);
+    }
+  else if (LocaleCompare(image_info->magick,"XTRNIMAGE") == 0)
+    {
+      Image
+        **image_ptr;
+
+      ImageInfo
+        **image_info_ptr;
+
+      clone_info=CloneImageInfo(image_info);
+      if (clone_info->filename[0])
+        {
+          (void) sscanf(clone_info->filename,"%lx,%lx",&param1,&param2);
+          image_info_ptr=(ImageInfo **) param1;
+          image_ptr=(Image **) param2;
+          if ((image_info_ptr != (ImageInfo **) NULL) &&
+              (image_ptr != (Image **) NULL))
+            {
+              *image_ptr=CloneImage(image,0,0,False,&(image->exception));
+              *image_info_ptr=clone_info;
+            }
+        }
+    }
+  else if (LocaleCompare(image_info->magick,"XTRNBLOB") == 0)
+    {
+      char
+        **blob_data;
+
+      ExceptionInfo
+        exception;
+
+      size_t
+        *blob_length;
+
+      char
+        filename[MaxTextExtent];
+
+      clone_info=CloneImageInfo(image_info);
+      if (clone_info->filename[0])
+        {
+          (void) sscanf(clone_info->filename,"%lx,%lx,%s",
+            &param1,&param2,&filename);
+
+          blob_data=(char **) param1;
+          blob_length=(size_t *) param2;
+
+          scene = 0;
+          (void) strcpy(clone_info->filename, filename);
+          for (p=image; p != (Image *) NULL; p=p->next)
+          {
+            (void) strcpy(p->filename, filename);
+            p->scene=scene++;
+          }
+          SetImageInfo(clone_info,True,&image->exception);
+          (void) strcpy(image->magick,clone_info->magick);
+          GetExceptionInfo(&exception);
+          if (*blob_length == 0)
+            *blob_length=8192;
+          *blob_data=(char *) ImageToBlob(clone_info,image,blob_length,&exception);
+          if (*blob_data == NULL)
+            status=False;
+          if (status == False)
+            CatchImageException(image);
+        }
+      DestroyImageInfo(clone_info);
+    }
+  else if (LocaleCompare(image_info->magick,"XTRNSTREAM") == 0)
+    {
+      int
+        (*fifo)(const Image *,const void *,const size_t);
+
+      char
+        filename[MaxTextExtent];
+
+      clone_info=CloneImageInfo(image_info);
+      if (clone_info->filename[0])
+        {
+          (void) sscanf(clone_info->filename,"%lx,%lx,%s",
+            &param1,&param2,&filename);
+
+          fifo=(int (*)(const Image *,const void *,const size_t)) param1;
+          image->client_data=param2;
+
+          scene = 0;
+          (void) strcpy(clone_info->filename, filename);
+          for (p=image; p != (Image *) NULL; p=p->next)
+          {
+            (void) strcpy(p->filename, filename);
+            p->scene=scene++;
+          }
+          SetImageInfo(clone_info,True,&image->exception);
+          (void) strcpy(image->magick,clone_info->magick);
+          status=WriteStream(clone_info,image,fifo);
+          if (status == False)
+            CatchImageException(image);
+        }
+      DestroyImageInfo(clone_info);
+    }
+  else if (LocaleCompare(image_info->magick,"XTRNARRAY") == 0)
+    {
+      char
+        filename[MaxTextExtent];
+
+      clone_info=CloneImageInfo(image_info);
+      if (clone_info->filename[0])
+        {
+          (void) sscanf(clone_info->filename,"%lx,%s",
+            &param1,&filename);
+
+          image->client_data=param1;
+
+          scene = 0;
+          (void) strcpy(clone_info->filename, filename);
+          for (p=image; p != (Image *) NULL; p=p->next)
+          {
+            (void) strcpy(p->filename, filename);
+            p->scene=scene++;
+          }
+          SetImageInfo(clone_info,True,&image->exception);
+          (void) strcpy(image->magick,clone_info->magick);
+          status=WriteStream(clone_info,image,SafeArrayFifo);
+          if (status == False)
+            CatchImageException(image);
+        }
+      DestroyImageInfo(clone_info);
+    }
+  return(True);
+}
+#endif
