@@ -56,6 +56,32 @@
 #include "defines.h"
 
 /*
+  Typedef declaractions.
+*/
+typedef struct _SGIHeader
+{
+  unsigned short
+    magic;
+
+  unsigned char
+    storage,
+    bytes_per_pixel;
+
+  unsigned short
+    dimension,
+    columns,
+    rows,
+    depth;
+
+  unsigned long
+    minimum_value,
+    maximum_value;
+
+  unsigned char
+    filler[492];
+} SGIHeader;
+
+/*
   Forward declarations.
 */
 static unsigned int
@@ -135,19 +161,21 @@ static unsigned int IsSGI(const unsigned char *magick,const unsigned int length)
 static void SGIDecode(const unsigned int bytes_per_pixel,
   unsigned char *max_packets,unsigned char *pixels)
 {
-  unsigned short
-    count,
-    pixel;
+  int
+    count;
 
   register unsigned char
     *p,
     *q;
 
+  unsigned int
+    pixel;
+
   p=max_packets;
   q=pixels;
   if (bytes_per_pixel == 2)
     {
-      for ( ; ;)
+      for ( ; ; )
       {
         pixel=(*p++) << 8;
         pixel|=(*p++);
@@ -175,7 +203,7 @@ static void SGIDecode(const unsigned int bytes_per_pixel,
       }
       return;
     }
-  for ( ; ;)
+  for ( ; ; )
   {
     pixel=(*p++);
     count=pixel & 0x7f;
@@ -201,29 +229,6 @@ static void SGIDecode(const unsigned int bytes_per_pixel,
 
 static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  typedef struct _SGIHeader
-  {
-    unsigned short
-      magic;
-
-    unsigned char
-      storage,
-      bytes_per_pixel;
-
-    unsigned short
-      dimension,
-      columns,
-      rows,
-      depth;
-
-    unsigned long
-      minimum_value,
-      maximum_value;
-
-    unsigned char
-      filler[492];
-  } SGIHeader;
-
   Image
     *image;
 
@@ -446,16 +451,16 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             for (y=0; y < (int) image->rows; y++)
             {
-              p=iris_pixels+((image->rows-1)-y)*(image->columns*8);
+              p=iris_pixels+(image->rows-y-1)*8*image->columns;
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) image->columns; x++)
               {
-                q->red=UpScale((*(p+0) << 8)+(*(p+1)));
-                q->green=UpScale((*(p+2) << 8)+(*(p+3)));
-                q->blue=UpScale((*(p+4) << 8)+(*(p+5)));
-                q->opacity=UpScale((*(p+6) << 8)+(*(p+7)));
+                q->red=XDownScale((*(p+0) << 8) | (*(p+1)));
+                q->green=XDownScale((*(p+2) << 8) | (*(p+3)));
+                q->blue=XDownScale((*(p+4) << 8) | (*(p+5)));
+                q->opacity=XDownScale((*(p+6) << 8) | (*(p+7)));
                 p+=8;
                 q++;
               }
@@ -469,7 +474,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         else
           for (y=0; y < (int) image->rows; y++)
           {
-            p=iris_pixels+((image->rows-1)-y)*(image->columns*4);
+            p=iris_pixels+(image->rows-y-1)*4*image->columns;
             q=SetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
@@ -504,7 +509,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             for (y=0; y < (int) image->rows; y++)
             {
-              p=iris_pixels+((image->rows-1)-y)*(image->columns*8);
+              p=iris_pixels+(image->rows-y-1)*8*image->columns;
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
@@ -526,8 +531,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         else
           for (y=0; y < (int) image->rows; y++)
           {
-            p=iris_pixels;
-            p+=((image->rows-1)-y)*(image->columns*4);
+            p=iris_pixels+(image->rows-y-1)*4*image->columns;
             q=SetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
@@ -721,29 +725,6 @@ static int SGIEncode(unsigned char *pixels,int count,
 
 static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
 {
-  typedef struct _SGIHeader
-  {
-    unsigned short
-      magic;
-
-    unsigned char
-      storage,
-      bytes_per_pixel;
-
-    unsigned short
-      dimension,
-      columns,
-      rows,
-      depth;
-
-    unsigned long
-      minimum_value,
-      maximum_value;
-
-    unsigned char
-      filler[492];
-  } SGIHeader;
-
   int
     y,
     z;
