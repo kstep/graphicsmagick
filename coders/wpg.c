@@ -277,7 +277,7 @@ register IndexPacket *indexes;
        }
 }
 
-#define InsertByte(b) {BImgBuff[x]=b;x++;if((int)x>=ldblk) {InsertRow(BImgBuff,y,image);x=0;y++;}}
+#define InsertByte(b) {BImgBuff[x]=b;x++;if((long) x>=ldblk) {InsertRow(BImgBuff,y,image);x=0;y++;}}
 static int UnpackWPGRaster(Image *image)
 {
 int x,y,i;
@@ -350,7 +350,7 @@ long ldblk;
  return(0);
 }
 
-#define InsertRByte(b) {BImgBuff[x]=b;x++;if(x>=ldblk) {InsertRow(BImgBuff,image->rows-y-1,image);x=0;y++;}}
+#define InsertRByte(b) {BImgBuff[x]=b;x++;if((long)x>=ldblk) {InsertRow(BImgBuff,image->rows-y-1,image);x=0;y++;}}
 static int UnpackWPG2Raster(Image *image)
 {
 int x,y,i;
@@ -693,12 +693,12 @@ UnpackRaster:
 		     if (!AllocateImageColormap(image,image->colors))
 			{
 NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-					 image);
+					 image)
 			}
 		     }
 		 else {
 		      if(image->depth<24)
-			if( (int) image->colors<(1<<image->depth) && image->depth!=24 )
+			if( image->colors<(1UL<<image->depth) && image->depth!=24 )
 			    ReacquireMemory((void **) &image->colormap,(1<<image->depth)*sizeof(PixelPacket));
 		      }
 		      
@@ -715,7 +715,7 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 
 		 if(UnpackWPGRaster(image)<0) /* The raster cannot be unpacked */
 		     {
-DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompress WPG raster",image);
+DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompress WPG raster",image)
 		     }
 
 		 /* Allocate next image structure. */
@@ -795,7 +795,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 		     }
 	     else {
 		  if(image->depth<24)
-		    if( (int) image->colors<(1<<image->depth) && image->depth!=24 )
+		    if( image->colors<(1UL<<image->depth) && image->depth!=24 )
 			 ReacquireMemory((void **) &image->colormap,(1<<image->depth)*sizeof(PixelPacket));
 		  }
 
@@ -843,7 +843,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
       break;
 
    default:
-     ThrowReaderException(CorruptImageWarning,"Unsupported level of WPG image",image);
+     ThrowReaderException(CorruptImageWarning,"Unsupported level of WPG image",image)
    }
 
 

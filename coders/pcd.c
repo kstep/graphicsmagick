@@ -193,7 +193,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       {
         LiberateMemory((void **) &buffer);
         ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-          (char *) NULL);
+          (char *) NULL)
       }
     r=pcd_table[i];
     for (j=0; j < (int) length; j++)
@@ -270,7 +270,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
           default:
           {
             ThrowBinaryException(CorruptImageWarning,"Corrupt PCD image",
-              image->filename);
+              image->filename)
           }
         }
         length=pcd_length[plane];
@@ -430,15 +430,14 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     x;
 
-  long int
-    offset;
-
   register int
-    i,
     y;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   register unsigned char
     *c1,
@@ -446,6 +445,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *yy;
 
   size_t
+    count,
     number_pixels;
 
   unsigned char
@@ -460,8 +460,11 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     overview,
     rotate,
     status,
-    subimage,
     width;
+
+  unsigned long
+    offset,
+    subimage;
 
   /*
     Open image file.
@@ -476,9 +479,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   header=(unsigned char *) AcquireMemory(3*0x800);
   if (header == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  status=ReadBlob(image,3*0x800,(char *) header);
+  count=ReadBlob(image,3*0x800,(char *) header);
   overview=LocaleNCompare((char *) header,"PCD_OPA",7) == 0;
-  if ((status == False) ||
+  if ((count == 0) ||
       ((LocaleNCompare((char *) header+0x800,"PCD",3) != 0) && !overview))
     ThrowReaderException(CorruptImageWarning,"Not a PCD image file",image);
   rotate=header[0x0e02] & 0x03;
@@ -511,7 +514,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   width=192;
   height=128;
-  for (i=1; i < Min((int) subimage,3); i++)
+  for (i=1; i < Min(subimage,3); i++)
   {
     width<<=1;
     height<<=1;
@@ -519,7 +522,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=width;
   image->rows=height;
   image->depth=8;
-  for ( ; i < (int) subimage; i++)
+  for ( ; i < subimage; i++)
   {
     image->columns<<=1;
     image->rows<<=1;
@@ -574,7 +577,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         yy=luma;
         c1=chroma1;
         c2=chroma2;
-        for (i=0; i < (int) height; i+=2)
+        for (i=0; i < height; i+=2)
         {
           (void) ReadBlob(image,width,(char *) yy);
           yy+=image->columns;
@@ -642,7 +645,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   yy=luma;
   c1=chroma1;
   c2=chroma2;
-  for (i=0; i < (int) height; i+=2)
+  for (i=0; i < height; i+=2)
   {
     (void) ReadBlob(image,width,(char *) yy);
     yy+=image->columns;

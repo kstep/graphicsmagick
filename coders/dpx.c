@@ -146,11 +146,16 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
+
+  size_t
+    count;    
 
   unsigned char
     colortype;    
@@ -172,22 +177,22 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read DPX image.
   */
-  status=ReadBlob(image,4,(char *) magick);
-  if ((status == False) || ((LocaleNCompare((char *) magick,"SDPX",4) != 0) &&
+  count=ReadBlob(image,4,(char *) magick);
+  if ((count == 0) || ((LocaleNCompare((char *) magick,"SDPX",4) != 0) &&
       (LocaleNCompare((char *) magick,"XPDS",4) != 0)))
     ThrowReaderException(CorruptImageWarning,"Not a DPX image file",image);
   headersize=ReadBlobMSBLong(image); 
   for (i=0; i < 764; i++)
     (void) ReadBlobByte(image);
-  image->columns=ReadBlobMSBLong(image);
-  image->rows=ReadBlobMSBLong(image);
+  image->columns=(unsigned int) ReadBlobMSBLong(image);
+  image->rows=(unsigned int) ReadBlobMSBLong(image);
   for (i=0; i < 20; i++)
     (void) ReadBlobByte(image);
   colortype=ReadBlobByte(image);
   (void) ReadBlobByte(image);
   (void) ReadBlobByte(image);
   image->depth=ReadBlobByte(image) > 8 ? 16  : 8;
-  for (i=0; i < (int) (headersize-804); i++)
+  for (i=0; i < (headersize-804); i++)
     (void) ReadBlobByte(image);
   /*
     Convert DPX raster image to pixel packets.

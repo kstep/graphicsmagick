@@ -221,6 +221,9 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *header,
     *data;
 
+  size_t
+    count;
+
   unsigned char
     *buffer,
     *offset;
@@ -241,8 +244,8 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   buffer=(unsigned char *) AcquireMemory(SizeBlob(image));
   if (buffer == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  status=ReadBlob(image,SizeBlob(image),(char *) buffer);
-  if ((status == False) || (LocaleNCompare((char *) buffer,"SFW",3) != 0))
+  count=ReadBlob(image,SizeBlob(image),(char *) buffer);
+  if ((count == 0) || (LocaleNCompare((char *) buffer,"SFW",3) != 0))
     ThrowReaderException(CorruptImageWarning,"Not a SFW image file",image);
   CloseBlob(image);
   DestroyImage(image);
@@ -254,7 +257,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (header == (unsigned char *) NULL)
     {
       LiberateMemory((void **) &buffer);
-      ThrowReaderException(CorruptImageWarning,"Not a SFW image file",image);
+      ThrowReaderException(CorruptImageWarning,"Not a SFW image file",image)
     }
   TranslateSFWMarker(header);  /* translate soi and app tags */
   TranslateSFWMarker(header+2);
@@ -277,7 +280,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (data == (unsigned char *) NULL)
     {
       LiberateMemory((void **) &buffer);
-      ThrowReaderException(CorruptImageWarning,"Not a SFW image file",image);
+      ThrowReaderException(CorruptImageWarning,"Not a SFW image file",image)
     }
   TranslateSFWMarker(data++);  /* translate eoi marker */
   /*
@@ -291,7 +294,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       LiberateMemory((void **) &buffer);
       DestroyImageInfo(clone_info);
-      ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+      ThrowReaderException(FileOpenWarning,"Unable to write file",image)
     }
   (void) fwrite(header,offset-header+1,1,file);
   (void) fwrite(HuffmanTable,1,sizeof(HuffmanTable)/sizeof(*HuffmanTable),file);
@@ -303,7 +306,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) remove(clone_info->filename);
       DestroyImageInfo(clone_info);
-      ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+      ThrowReaderException(FileOpenWarning,"Unable to write file",image)
     }
   /*
     Read JPEG image.

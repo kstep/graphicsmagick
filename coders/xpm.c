@@ -187,9 +187,10 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   int
     count,
-    j,
-    none,
     y;
+
+  long
+    none;
 
   register char
     *p,
@@ -199,13 +200,19 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *r;
 
+  register size_t
+    i;
+
+  size_t
+    j;
+
   unsigned int
+    colors,
     length,
     status,
     width;
@@ -295,14 +302,15 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read hints.
   */
   count=sscanf(textlist[0],"%u %u %u %u",&image->columns,&image->rows,
-    &image->colors,&width);
+    &colors,&width);
+  image->colors=colors;
   if ((count != 4) || (width > 2) || (image->columns == 0) ||
       (image->rows == 0) || (image->colors == 0))
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
         LiberateMemory((void **) &textlist[i]);
       LiberateMemory((void **) &textlist);
-      ThrowReaderException(CorruptImageWarning,"Not a XPM image file",image);
+      ThrowReaderException(CorruptImageWarning,"Not a XPM image file",image)
     }
   image->depth=8;
   /*
@@ -315,30 +323,30 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         LiberateMemory((void **) &textlist[i]);
       LiberateMemory((void **) &textlist);
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-        image);
+        image)
     }
   /*
     Read image colormap.
   */
   i=1;
   none=(-1);
-  for (x=0; x < (int) image->colors; x++)
+  for (j=0; j < image->colors; j++)
   {
     p=textlist[i++];
     if (p == (char *) NULL)
       break;
-    keys[x]=(char *) AcquireMemory(width+1);
-    if (keys[x] == (char *) NULL)
+    keys[j]=(char *) AcquireMemory(width+1);
+    if (keys[j] == (char *) NULL)
       {
         for (i=0; textlist[i] != (char *) NULL; i++)
           LiberateMemory((void **) &textlist[i]);
         LiberateMemory((void **) &textlist);
         LiberateMemory((void **) &keys);
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-          image);
+          image)
       }
-    keys[x][width]='\0';
-    (void) strncpy(keys[x],p,width);
+    keys[j][width]='\0';
+    (void) strncpy(keys[j],p,width);
     /*
       Parse color.
     */
@@ -358,17 +366,17 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         image->storage_class=DirectClass;
         image->matte=True;
-        none=x;
+        none=j;
         (void) strcpy(target,"black");
       }
-    (void) QueryColorDatabase(target,&image->colormap[x]);
+    (void) QueryColorDatabase(target,&image->colormap[j]);
   }
-  if (x < (int) image->colors)
+  if (j < image->colors)
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
         LiberateMemory((void **) &textlist[i]);
       LiberateMemory((void **) &textlist);
-      ThrowReaderException(CorruptImageWarning,"Corrupt XPM image file",image);
+      ThrowReaderException(CorruptImageWarning,"Corrupt XPM image file",image)
     }
   /*
     Read image pixels.
@@ -388,13 +396,13 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) strncpy(key,p,width);
       if (strcmp(key,keys[j]) != 0)
-        for (j=0; j < (int) Max(image->colors-1,1); j++)
+        for (j=0; j < Max(image->colors-1,1); j++)
           if (strcmp(key,keys[j]) == 0)
             break;
       if (image->storage_class == PseudoClass)
         indexes[x]=(IndexPacket) j;
       *r=image->colormap[j];
-      r->opacity=j == none ? TransparentOpacity : OpaqueOpacity;
+      r->opacity=j == (size_t) none ? TransparentOpacity : OpaqueOpacity;
       r++;
       p+=width;
     }
@@ -404,8 +412,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Free resources.
   */
-  for (x=0; x < (int) image->colors; x++)
-    LiberateMemory((void **) &keys[x]);
+  for (i=0; i < image->colors; i++)
+    LiberateMemory((void **) &keys[i]);
   LiberateMemory((void **) &keys);
   for (i=0; textlist[i] != (char *) NULL; i++)
     LiberateMemory((void **) &textlist[i]);
@@ -630,24 +638,30 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
 
   int
     j,
-    k,
     y;
 
   register IndexPacket
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *p;
 
+  register size_t
+    i;
+
+  size_t
+    k;
+
   unsigned int
     characters_per_pixel,
-    colors,
     status,
     transparent;
+
+  unsigned long
+    colors;
 
   /*
     Open output image file.
@@ -722,7 +736,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     Compute the character per pixel.
   */
   characters_per_pixel=1;
-  for (k=MaxCixels; (int) colors > k; k*=MaxCixels)
+  for (k=MaxCixels; colors > k; k*=MaxCixels)
     characters_per_pixel++;
   /*
     XPM header.
@@ -733,7 +747,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   FormatString(buffer,"\"%u %u %u %d\",\n",image->columns,
     image->rows,colors,characters_per_pixel);
   (void) WriteBlobString(image,buffer);
-  for (i=0; i < (int) colors; i++)
+  for (i=0; i < colors; i++)
   {
     /*
       Define XPM color.
@@ -742,7 +756,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     (void) QueryColorname(image,image->colormap+i,X11Compliance,name);
     if (transparent)
       {
-        if (i == (int) (colors-1))
+        if (i == (colors-1))
           {
             if (LocaleCompare(image_info->magick,"PICON") == 0)
               (void) strcpy(name,"grey75");

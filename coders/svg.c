@@ -1714,12 +1714,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (svg_info->affine.sy != 0.0)
             page.height=(unsigned int)
               ceil(ExpandAffine(&svg_info->affine)*page.height-0.5);
-          (void) fprintf(svg_info->file,"viewbox %g %g %g %g\n",
-            svg_info->view_box.x,svg_info->view_box.y,svg_info->view_box.width,
-            svg_info->view_box.height);
-          (void) fprintf(svg_info->file,"affine %g 0.0 0.0 %g 0.0 0.0\n",
+          (void) fprintf(svg_info->file,"viewbox 0 0 %g %g\n",
+            svg_info->view_box.width,svg_info->view_box.height);
+          (void) fprintf(svg_info->file,"affine %g 0.0 0.0 %g %g %g\n",
             (double) page.width/svg_info->view_box.width,
-            (double) page.height/svg_info->view_box.height);
+            (double) page.height/svg_info->view_box.height,
+	    -svg_info->view_box.x,-svg_info->view_box.y);
           svg_info->width=page.width;
           svg_info->height=page.height;
         }
@@ -2263,7 +2263,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ImageInfo
     *clone_info;
 
-  int
+  size_t
     n;
 
   SVGInfo
@@ -2323,7 +2323,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     n=strlen(message);
     if (n == 0)
       continue;
-    status=xmlParseChunk(svg_info.parser,message,n,False);
+    status=xmlParseChunk(svg_info.parser,message,(int) n,False);
     if (status != 0)
       break;
     (void) xmlParseChunk(svg_info.parser," ",1,False);
@@ -2652,9 +2652,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     *attribute;
 
   int
-    j,
-    n,
-    number_points;
+    n;
 
   PointInfo
     point;
@@ -2666,13 +2664,21 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     primitive_type;
 
   register int
-    i,
     x;
+
+  register size_t
+    i;
+
+  size_t
+    j,
+    length;
 
   unsigned int
     active,
-    length,
     status;
+
+  unsigned long
+    number_points;
 
   /*
     Open output image file.
@@ -3125,12 +3131,15 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           {
             if (IsGeometry(q))
               {
+                size_t
+                  k;
+
                 p=q;
                 GetToken(p,&p,token);
-                for (x=0; IsGeometry(token); x++)
+                for (k=0; IsGeometry(token); k++)
                   GetToken(p,&p,token);
                 WriteBlobString(image,"stroke-dasharray:");
-                for (j=0; j < x; j++)
+                for (j=0; j < k; j++)
                 {
                   GetToken(q,&q,token);
                   FormatString(message,"%.1024s ",token);
@@ -3275,7 +3284,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       primitive_info[i].coordinates=0;
       primitive_info[i].method=FloodfillMethod;
       i++;
-      if (i < (int) (number_points-6*BezierQuantum-360))
+      if (i < (number_points-6*BezierQuantum-360))
         continue;
       number_points+=6*BezierQuantum+360;
       ReacquireMemory((void **) &primitive_info,

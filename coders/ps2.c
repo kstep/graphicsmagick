@@ -346,13 +346,16 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     x,
     y;
 
+  long
+    j;
+
   register IndexPacket
     *indexes;
 
   register PixelPacket
     *p;
 
-  register int
+  register size_t
     i;
 
   SegmentInfo
@@ -551,12 +554,12 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         }
         attribute=GetImageAttribute(image,"label");
         if (attribute != (ImageAttribute *) NULL)
-          for (i=MultilineCensus(attribute->value)-1; i >= 0; i--)
+          for (j=MultilineCensus(attribute->value)-1; j >= 0; j--)
           {
             (void) WriteBlobString(image,"  /label 512 string def\n");
             (void) WriteBlobString(image,"  currentfile label readline pop\n");
             FormatString(buffer,"  0 y %f add moveto label show pop\n",
-              i*image_info->pointsize+12);
+              j*image_info->pointsize+12);
             (void) WriteBlobString(image,buffer);
           }
         for (q=PostscriptEpilog; *q; q++)
@@ -781,7 +784,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           */
           FormatString(buffer,"%u\n",image->colors);
           (void) WriteBlobString(image,buffer);
-          for (i=0; i < (int) image->colors; i++)
+          for (i=0; i < image->colors; i++)
           {
             FormatString(buffer,"%02lx%02lx%02lx\n",
               DownScale(image->colormap[i].red),

@@ -156,16 +156,19 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
 
+  register size_t
+    i;
+
   register unsigned long
     pixel;
 
   size_t
+    count,
     length;
 
   unsigned long
@@ -190,8 +193,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
      Read in header information.
   */
-  status=ReadBlob(image,sz_XWDheader,(char *) &header);
-  if (status == False)
+  count=ReadBlob(image,sz_XWDheader,(char *) &header);
+  if (count == 0)
     ThrowReaderException(CorruptImageWarning,"Unable to read dump file header",
       image);
   image->columns=header.pixmap_width;
@@ -216,11 +219,11 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   comment=(char *) AcquireMemory(length+1);
   if (comment == (char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  status=ReadBlob(image,length,comment);
+  count=ReadBlob(image,length,comment);
   comment[length]='\0';
   (void) SetImageAttribute(image,"comment",comment);
   LiberateMemory((void **) &comment);
-  if (status == False)
+  if (count == 0)
     ThrowReaderException(CorruptImageWarning,
       "Unable to read window name from dump file",image);
   /*
@@ -261,10 +264,10 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (colors == (XColor *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      for (i=0; i < (int) header.ncolors; i++)
+      for (i=0; i < header.ncolors; i++)
       {
-        status=ReadBlob(image,sz_XWDColor,(char *) &color);
-        if (status == False)
+        count=ReadBlob(image,sz_XWDColor,(char *) &color);
+        if (count == 0)
           ThrowReaderException(CorruptImageWarning,
             "Unable to read color map from dump file",image);
         colors[i].pixel=color.pixel;
@@ -278,7 +281,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       lsb_first=1;
       if (*(char *) &lsb_first)
-        for (i=0; i < (int) header.ncolors; i++)
+        for (i=0; i < header.ncolors; i++)
         {
           MSBOrderLong((char *) &colors[i].pixel,sizeof(unsigned long));
           MSBOrderShort((char *) &colors[i].red,3*sizeof(unsigned short));
@@ -294,8 +297,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ximage->data=(char *) AcquireMemory(length);
   if (ximage->data == (char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  status=ReadBlob(image,length,ximage->data);
-  if (status == False)
+  count=ReadBlob(image,length,ximage->data);
+  if (count == 0)
     ThrowReaderException(CorruptImageWarning,"Unable to read dump pixmap",
       image);
   /*
@@ -406,7 +409,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!AllocateImageColormap(image,image->colors))
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
       {
         image->colormap[i].red=XDownScale(colors[i].red);
         image->colormap[i].green=XDownScale(colors[i].green);
@@ -557,11 +560,13 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *p;
+
+  register size_t
+    i;
 
   register unsigned char
     *q;
@@ -591,7 +596,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   /*
     Initialize XWD file header.
   */
-  xwd_info.header_size=sz_XWDheader+strlen(image->filename)+1;
+  xwd_info.header_size=(CARD32) (sz_XWDheader+strlen(image->filename)+1);
   xwd_info.file_version=(CARD32) XWD_FILE_VERSION;
   xwd_info.pixmap_format=(CARD32) ZPixmap;
   xwd_info.pixmap_depth=(CARD32) (image->storage_class == DirectClass ? 24 : 8);
@@ -618,7 +623,8 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   xwd_info.bits_per_rgb=(CARD32) (image->storage_class == DirectClass ? 24 : 8);
   xwd_info.colormap_entries=(CARD32)
     (image->storage_class == DirectClass ? 256 : image->colors);
-  xwd_info.ncolors=(image->storage_class == DirectClass ? 0 : image->colors);
+  xwd_info.ncolors=(unsigned int)
+    (image->storage_class == DirectClass ? 0 : image->colors);
   xwd_info.window_width=(CARD32) image->columns;
   xwd_info.window_height=(CARD32) image->rows;
   xwd_info.window_x=0;
@@ -647,7 +653,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       if (colors == (XColor *) NULL)
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
       {
         colors[i].pixel=i;
         colors[i].red=XUpScale(image->colormap[i].red);
@@ -661,9 +667,9 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
             MSBOrderShort((char *) &colors[i].red,3*sizeof(short));
           }
       }
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
       {
-        color.pixel=(unsigned long) colors[i].pixel;
+        color.pixel=(CARD32) colors[i].pixel;
         color.red=colors[i].red;
         color.green=colors[i].green;
         color.blue=colors[i].blue;

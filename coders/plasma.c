@@ -154,7 +154,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
   segment_info.y1=0;
   segment_info.x2=image->columns-1;
   segment_info.y2=image->rows-1;
-  srand(time(0));
+  srand((unsigned int) time(0));
   if (LocaleCompare(image_info->filename,"fractal") == 0)
     {
       /*

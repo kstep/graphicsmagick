@@ -167,11 +167,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   int
     c,
-    count,
     status;
-
-  long int
-    filesize;
 
   RectangleInfo
     box,
@@ -180,11 +176,15 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register char
     *p;
 
-  register int
+  register size_t
     i;
 
   SegmentInfo
     bounds;
+
+  size_t
+    count,
+    filesize;
 
   unsigned int
     height,
@@ -309,7 +309,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) fclose(file);
       ThrowReaderException(FileOpenWarning,
-        "An error has occurred writing to file",image);
+        "An error has occurred writing to file",image)
     }
   (void) rewind(file);
   (void) fputs(translate_geometry,file);
@@ -355,7 +355,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image != (Image *) NULL)
         return(image);
       ThrowReaderException(CorruptImageWarning,"Postscript delegate failed",
-        image);
+        image)
     }
   clone_info=CloneImageInfo(image_info);
   RewindBlob(clone_info->blob);
@@ -810,6 +810,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     x,
     y;
 
+  long
+    j;
+
   PixelPacket
     pixel;
 
@@ -819,7 +822,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  register int
+  register size_t
     i;
 
   SegmentInfo
@@ -1045,12 +1048,12 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         }
         attribute=GetImageAttribute(image,"label");
         if (attribute != (ImageAttribute *) NULL)
-          for (i=MultilineCensus(attribute->value)-1; i >= 0; i--)
+          for (j=MultilineCensus(attribute->value)-1; j >= 0; j--)
           {
             (void) WriteBlobString(image,"  /label 512 string def\n");
             (void) WriteBlobString(image,"  currentfile label readline pop\n");
             FormatString(buffer,"  0 y %f add moveto label show pop\n",
-              i*image_info->pointsize+12);
+              j*image_info->pointsize+12);
             (void) WriteBlobString(image,buffer);
           }
         for (q=PostscriptEpilog; *q; q++)
@@ -1216,7 +1219,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   break;
                 for (x=0; x < (int) image->columns; x++)
                 {
-                  FormatString(buffer,"%02lx",(int) DownScale(Intensity(*p)));
+                  FormatString(buffer,"%02lx",DownScale(Intensity(*p)));
                   (void) WriteBlobString(image,buffer);
                   i++;
                   if (i == 36)
@@ -1307,7 +1310,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           */
           FormatString(buffer,"%u\n",image->colors);
           (void) WriteBlobString(image,buffer);
-          for (i=0; i < (int) image->colors; i++)
+          for (i=0; i < image->colors; i++)
           {
             FormatString(buffer,"%02lx%02lx%02lx\n",
               DownScale(image->colormap[i].red),

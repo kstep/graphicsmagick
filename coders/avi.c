@@ -359,11 +359,13 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   register unsigned char
     *p;
@@ -375,13 +377,13 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *pixels;
 
   unsigned int
-    bytes_per_line,
-    number_colors,
-    chunk_size,
     status;
 
   unsigned long
-    count;
+    bytes_per_line,
+    chunk_size,
+    count,
+    number_colors;
 
   /*
     Open image file.
@@ -408,15 +410,15 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->verbose)
       {
         (void) fprintf(stdout,"AVI cid %.1024s\n",id);
-        (void) fprintf(stdout,"  chunk size %u\n",chunk_size);
+        (void) fprintf(stdout,"  chunk size %lu\n",chunk_size);
       }
     if ((LocaleCompare(id,"00db") == 0) || (LocaleCompare(id,"00dc") == 0))
       {
         /*
           Initialize image structure.
         */
-        image->columns=avi_info.width;
-        image->rows=avi_info.height;
+        image->columns=(unsigned int) avi_info.width;
+        image->rows=(unsigned int) avi_info.height;
         image->units=PixelsPerCentimeterResolution;
         image->x_resolution=bmp_info.x_pixels/100.0;
         image->y_resolution=bmp_info.y_pixels/100.0;
@@ -616,7 +618,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image);
         }
         LiberateMemory((void **) &pixels);
-        if (image->scene < (avi_info.total_frames-1))
+        if ((unsigned long) image->scene < (avi_info.total_frames-1))
           {
             /*
               Allocate next image structure.
@@ -725,7 +727,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (colormap == (PixelPacket *) NULL)
                   ThrowReaderException(ResourceLimitWarning,
                     "Memory allocation failed",image);
-                for (i=0; i < (int) number_colors; i++)
+                for (i=0; i < number_colors; i++)
                 {
                   colormap[i].blue=UpScale(ReadBlobByte(image));
                   colormap[i].green=UpScale(ReadBlobByte(image));

@@ -103,21 +103,24 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  register int
-    i,
-    x,
+  int
     y;
 
   int
     bits_per_pixel,
-    has_clut,
-    pixel_mode;
+    has_clut;
 
   register IndexPacket
     *indexes;
 
+  register int
+    x;
+
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   register unsigned char
     *p;
@@ -135,6 +138,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_size,
     status,
     width;
+
+  unsigned long
+    pixel_mode;
 
   /*
     Open image file.
@@ -187,7 +193,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         (void) ReadBlob(image,2*image->colors,(char *) tim_colormap);
         p=tim_colormap;
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
           word=(*p++);
           word|=(*p++ << 8);
@@ -327,7 +333,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
-        ThrowReaderException(CorruptImageWarning,"Not a TIM image file",image);
+        ThrowReaderException(CorruptImageWarning,"Not a TIM image file",image)
     }
     if (image->storage_class == PseudoClass)
       SyncImage(image);

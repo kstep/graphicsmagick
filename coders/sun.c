@@ -242,14 +242,19 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
 
+  register size_t
+    i;
+
   register unsigned char
     *p;
+
+  size_t
+    count;
 
   SUNInfo
     sun_info;
@@ -259,8 +264,10 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *sun_pixels;
 
   unsigned int
-    bytes_per_line,
     status;
+
+  unsigned long
+    bytes_per_line;
 
   /*
     Open image file.
@@ -297,7 +304,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (sun_info.maptype == RMT_NONE)
           image->colors=1 << sun_info.depth;
         if (sun_info.maptype == RMT_EQUAL_RGB)
-          image->colors=(unsigned int) sun_info.maplength/3;
+          image->colors=sun_info.maplength/3;
       }
     switch (sun_info.maptype)
     {
@@ -330,13 +337,13 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
           image->colormap[i].red=UpScale(sun_colormap[i]);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
           image->colormap[i].green=UpScale(sun_colormap[i]);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
           image->colormap[i].blue=UpScale(sun_colormap[i]);
         LiberateMemory((void **) &sun_colormap);
         break;
@@ -353,33 +360,32 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (sun_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
-        (void) ReadBlob(image,(unsigned int) sun_info.maplength,
-          (char *) sun_colormap);
+        (void) ReadBlob(image,sun_info.maplength,(char *) sun_colormap);
         LiberateMemory((void **) &sun_colormap);
         break;
       }
       default:
         ThrowReaderException(CorruptImageWarning,
-          "Colormap type is not supported",image);
+          "Colormap type is not supported",image)
     }
     sun_data=(unsigned char *) AcquireMemory(sun_info.length);
     if (sun_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
-    status=ReadBlob(image,(unsigned int) sun_info.length,(char *) sun_data);
-    if ((status == False) && (sun_info.type != RT_ENCODED))
+    count=ReadBlob(image,sun_info.length,(char *) sun_data);
+    if ((count == 0) && (sun_info.type != RT_ENCODED))
       ThrowReaderException(CorruptImageWarning,"Unable to read image data",
         image);
     sun_pixels=sun_data;
     if (sun_info.type == RT_ENCODED)
       {
-        unsigned int
+        size_t
           height;
 
         /*
           Read run-length encoded raster pixels.
         */
-        height=(unsigned int) sun_info.height;
+        height=sun_info.height;
         bytes_per_line=2*(sun_info.width*sun_info.depth+15)/16;
         sun_pixels=(unsigned char *) AcquireMemory(bytes_per_line*height);
         if (sun_pixels == (unsigned char *) NULL)
@@ -639,11 +645,13 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *p;
+
+  register size_t
+    i;
 
   size_t
     number_pixels;
@@ -821,11 +829,11 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           /*
             Dump colormap to file.
           */
-          for (i=0; i < (int) image->colors; i++)
+          for (i=0; i < image->colors; i++)
             (void) WriteBlobByte(image,DownScale(image->colormap[i].red));
-          for (i=0; i < (int) image->colors; i++)
+          for (i=0; i < image->colors; i++)
             (void) WriteBlobByte(image,DownScale(image->colormap[i].green));
-          for (i=0; i < (int) image->colors; i++)
+          for (i=0; i < image->colors; i++)
             (void) WriteBlobByte(image,DownScale(image->colormap[i].blue));
           /*
             Convert PseudoClass packet to SUN colormapped pixel.

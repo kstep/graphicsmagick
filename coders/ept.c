@@ -165,11 +165,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   int
     c,
-    count,
     status;
-
-  long int
-    filesize;
 
   RectangleInfo
     box,
@@ -178,15 +174,21 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register char
     *p;
 
-  register int
+  register size_t
     i;
 
   SegmentInfo
     bounds;
 
+  size_t
+    count;
+
   unsigned int
     height,
     width;
+
+  unsigned long
+    filesize;
 
   if (image_info->monochrome)
     {
@@ -305,7 +307,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) fclose(file);
       ThrowReaderException(FileOpenWarning,
-        "An error has occurred writing to file",image);
+        "An error has occurred writing to file",image)
     }
   (void) rewind(file);
   (void) fputs(translate_geometry,file);
@@ -351,7 +353,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image != (Image *) NULL)
         return(image);
       ThrowReaderException(CorruptImageWarning,"Postscript delegate failed",
-        image);
+        image)
     }
   clone_info=CloneImageInfo(image_info);
   RewindBlob(clone_info->blob);

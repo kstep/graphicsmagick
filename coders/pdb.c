@@ -274,6 +274,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p;
 
   size_t
+    count,
     packets;
 
   unsigned char
@@ -293,7 +294,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine if this is a PDB image file.
   */
-  status=ReadBlob(image,32,pdb_info.name);
+  count=ReadBlob(image,32,pdb_info.name);
   pdb_info.flags=ReadBlobMSBShort(image);
   pdb_info.version=ReadBlobMSBShort(image);
   pdb_info.create_time=ReadBlobMSBLong(image);
@@ -307,7 +308,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   pdb_info.seed=ReadBlobMSBLong(image);
   pdb_info.next_record=ReadBlobMSBLong(image);
   pdb_info.number_records=ReadBlobMSBShort(image);
-  if ((status == False) || (memcmp((char *) &pdb_info.type,"vIMG",4) != 0) ||
+  if ((count == 0) || (memcmp((char *) &pdb_info.type,"vIMG",4) != 0) ||
       (memcmp((char *) &pdb_info.id,"View",4) != 0))
     ThrowReaderException(CorruptImageWarning,"Not a PDB image file",image);
   /*
@@ -469,7 +470,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
     default:
-      ThrowReaderException(CorruptImageWarning,"Not a PDB image file",image);
+      ThrowReaderException(CorruptImageWarning,"Not a PDB image file",image)
   }
   LiberateMemory((void **) &pixels);
   if (EOFBlob(image))

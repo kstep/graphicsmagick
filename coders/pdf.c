@@ -288,7 +288,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) fclose(file);
       ThrowReaderException(FileOpenWarning,
-        "An error has occurred writing to file",image);
+        "An error has occurred writing to file",image)
     }
   (void) fclose(file);
   CloseBlob(image);
@@ -311,7 +311,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) remove(postscript_filename);
       ThrowReaderException(FileOpenWarning,"Portable Document delegate failed",
-        image);
+        image)
     }
   DestroyImage(image);
   clone_info=CloneImageInfo(image_info);
@@ -452,21 +452,21 @@ ModuleExport void UnregisterPDFImage(void)
 
 static char *EscapeParenthesis(const char *text)
 {
-  int
-    escapes;
-
   register char
     *p;
 
-  register int
+  register size_t
     i;
+
+  size_t
+    escapes;
 
   static char
     buffer[MaxTextExtent];
 
   escapes=0;
   p=buffer;
-  for (i=0; i < Min((int) strlen(text),(MaxTextExtent-escapes-1)); i++)
+  for (i=0; i < Min(strlen(text),(MaxTextExtent-escapes-1)); i++)
   {
     if ((text[i] == '(') || (text[i] == ')'))
       {
@@ -527,7 +527,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   register unsigned char
     *q;
 
-  register int
+  register size_t
     i;
 
   size_t
@@ -1268,7 +1268,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               {
                 DestroyImage(tile_image);
                 ThrowWriterException(ResourceLimitWarning,
-                  "Memory allocation failed",image);
+                  "Memory allocation failed",image)
               }
             /*
               Dump runlength encoded pixels.
@@ -1363,7 +1363,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 {
                   DestroyImage(tile_image);
                   ThrowWriterException(ResourceLimitWarning,
-                    "Memory allocation failed",image);
+                    "Memory allocation failed",image)
                 }
               /*
                 Dump Runlength encoded pixels.
@@ -1451,7 +1451,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         length=TellBlob(image);
         if (compression == NoCompression)
           Ascii85Initialize(image);
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
           if (compression == NoCompression)
             {
@@ -1495,7 +1495,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   FormatString(buffer,"0 %u\n",object+1);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"0000000000 65535 f \n");
-  for (i=0; i < (int) object; i++)
+  for (i=0; i < object; i++)
   {
     FormatString(buffer,"%010lu 00000 n \n",xref[i]);
     (void) WriteBlobString(image,buffer);

@@ -109,6 +109,9 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned char
     *p;
 
+  size_t
+    count;
+
   unsigned char
     *pixels;
 
@@ -138,8 +141,8 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert AVS raster image to pixel packets.
     */
-    image->columns=width;
-    image->rows=height;
+    image->columns=(unsigned int) width;
+    image->rows=(unsigned int) height;
     image->depth=8;
     pixels=(unsigned char *) AcquireMemory(4*image->columns);
     if (pixels == (unsigned char *) NULL)
@@ -147,8 +150,8 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image);
     for (y=0; y < (int) image->rows; y++)
     {
-      status=ReadBlob(image,4*image->columns,pixels);
-      if (status == False)
+      count=ReadBlob(image,4*image->columns,pixels);
+      if (count == 0)
         ThrowReaderException(CorruptImageWarning,"Unable to read image data",
           image);
       p=pixels;

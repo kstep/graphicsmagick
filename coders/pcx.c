@@ -209,7 +209,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   int
     bits,
-    count,
     id,
     mask,
     pcx_packets,
@@ -222,15 +221,20 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
 
+  register size_t
+    i;
+
   register unsigned char
     *p,
     *r;
+
+  size_t
+    count;
 
   unsigned char
     packet,
@@ -279,14 +283,14 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (page_table != (unsigned long *) NULL)
     (void) SeekBlob(image,page_table[0],SEEK_SET);
-  status=ReadBlob(image,1,(char *) &pcx_info.identifier);
+  count=ReadBlob(image,1,(char *) &pcx_info.identifier);
   for (id=1; id < 1024; id++)
   {
     /*
       Verify PCX identifier.
     */
     pcx_info.version=ReadBlobByte(image);
-    if ((status == False) || (pcx_info.identifier != 0x0a))
+    if ((count == 0) || (pcx_info.identifier != 0x0a))
       ThrowReaderException(CorruptImageWarning,"Not a PCX image file",image);
     pcx_info.encoding=ReadBlobByte(image);
     pcx_info.bits_per_pixel=ReadBlobByte(image);
@@ -323,7 +327,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((pcx_info.bits_per_pixel >= 8) && (pcx_info.planes != 1))
       image->storage_class=DirectClass;
     p=pcx_colormap;
-    for (i=0; i < (int) image->colors; i++)
+    for (i=0; i < image->colors; i++)
     {
       image->colormap[i].red=UpScale(*p++);
       image->colormap[i].green=UpScale(*p++);
@@ -398,7 +402,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 pcx_info.colormap_signature=ReadBlobByte(image);
                 (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
                 p=pcx_colormap;
-                for (i=0; i < (int) image->colors; i++)
+                for (i=0; i < image->colors; i++)
                 {
                   image->colormap[i].red=UpScale(*p++);
                   image->colormap[i].green=UpScale(*p++);
@@ -419,7 +423,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       indexes=GetIndexes(image);
       r=scanline;
       if (image->storage_class == DirectClass)
-        for (i=0; i < (int) pcx_info.planes; i++)
+        for (i=0; i < pcx_info.planes; i++)
         {
           r=scanline+i;
           for (x=0; x < pcx_info.bytes_per_line; x++)
@@ -456,7 +460,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             for (x=0; x < (int) image->columns; x++)
               *r++=0;
-            for (i=0; i < (int) pcx_info.planes; i++)
+            for (i=0; i < pcx_info.planes; i++)
             {
               r=scanline;
               for (x=0; x < pcx_info.bytes_per_line; x++)
@@ -505,7 +509,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
               if ((image->columns % 4) != 0)
                 {
-                  for (i=3; i >= (int) (4-(image->columns % 4)); i--)
+                  for (i=3; i >= (4-(image->columns % 4)); i--)
                     *r++=(*p >> (i*2)) & 0x03;
                   p++;
                 }
@@ -572,8 +576,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (page_table[id] == 0)
       break;
     (void) SeekBlob(image,page_table[id],SEEK_SET);
-    status=ReadBlob(image,1,(char *) &pcx_info.identifier);
-    if ((status == True) && (pcx_info.identifier == 0x0a))
+    count=ReadBlob(image,1,(char *) &pcx_info.identifier);
+    if ((count != 0) && (pcx_info.identifier == 0x0a))
       {
         /*
           Allocate next image structure.
@@ -708,11 +712,13 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *p;
+
+  register size_t
+    i;
 
   register unsigned char
     *q;
@@ -819,7 +825,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       pcx_colormap[i]=0;
     q=pcx_colormap;
     if (image->storage_class == PseudoClass)
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
       {
         *q++=DownScale(image->colormap[i].red);
         *q++=DownScale(image->colormap[i].green);
@@ -846,7 +852,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         for (y=0; y < (int) image->rows; y++)
         {
           q=pcx_pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
-          for (i=0; i < (int) pcx_info.planes; i++)
+          for (i=0; i < pcx_info.planes; i++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
@@ -949,7 +955,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     for (y=0; y < (int) image->rows; y++)
     {
       q=pcx_pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
-      for (i=0; i < (int) pcx_info.planes; i++)
+      for (i=0; i < pcx_info.planes; i++)
       {
         previous=(*q++);
         count=1;
@@ -1002,7 +1008,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       page_table[scene+1]=0;
       (void) SeekBlob(image,0L,SEEK_SET);
       WriteBlobLSBLong(image,0x3ADE68B1L);
-      for (i=0; i <= (int) scene; i++)
+      for (i=0; i <= scene; i++)
         WriteBlobLSBLong(image,page_table[i]);
       LiberateMemory((void **) &page_table);
     }

@@ -3971,7 +3971,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   register char
     *p;
 
-  register int
+  register size_t
     i;
 
   unsigned int
@@ -3995,7 +3995,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   if (blob == (void *) NULL)
     {
       DestroyImage(logo_image);
-      ThrowWriterException(FileOpenWarning,"Unable to write blob",image);
+      ThrowWriterException(FileOpenWarning,"Unable to write blob",image)
     }
   DestroyImage(logo_image);
   (void) WriteBlobString(image,"/*\n");
@@ -4008,7 +4008,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"  {\n");
   (void) WriteBlobString(image,"    ");
   p=(char *) blob;
-  for (i=0; i < (int) length ; i++)
+  for (i=0; i < length ; i++)
   {
     FormatString(buffer,"0x%02x, ",*p & 0xff);
     (void) WriteBlobString(image,buffer);

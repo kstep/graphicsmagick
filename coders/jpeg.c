@@ -291,10 +291,10 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   Image
     *image;
 
-  long int
+  long
     length;
 
-  register int
+  register size_t
     i;
 
   register unsigned char
@@ -349,14 +349,14 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   Image
     *image;
 
-  long int
+  long
     length;
+
+  register size_t
+    i;
 
   register unsigned char
     *p;
-
-  register int
-    i;
 
   /*
     Determine length of color profile.
@@ -406,14 +406,14 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   Image
     *image;
 
-  long int
+  long
     length,
     tag_length;
 
   register unsigned char
     *p;
 
-  register int
+  register size_t
     i;
 
 #ifdef GET_ONLY_IPTC_DATA
@@ -976,20 +976,20 @@ static void TerminateDestination(j_compress_ptr cinfo)
 
 static void WriteICCProfile(j_compress_ptr jpeg_info,Image *image)
 {
-  register int
+  register size_t
     i,
     j;
+
+  size_t
+    length;
 
   unsigned char
     *profile;
 
-  unsigned int
-    length;
-
   /*
     Save color profile as a APP marker.
   */
-  for (i=0; i < (int) image->color_profile.length; i+=65519)
+  for (i=0; i < image->color_profile.length; i+=65519)
   {
     length=Min(image->color_profile.length-i,65519);
     profile=(unsigned char *) AcquireMemory(length+14);
@@ -998,7 +998,7 @@ static void WriteICCProfile(j_compress_ptr jpeg_info,Image *image)
     (void) strcpy((char *) profile,"ICC_PROFILE");
     profile[12]=(i/65519)+1;
     profile[13]=(image->color_profile.length/65519)+1;
-    for (j=0; j < (int) length; j++)
+    for (j=0; j < length; j++)
       profile[j+14]=image->color_profile.info[i+j];
     jpeg_write_marker(jpeg_info,ICC_MARKER,profile,(unsigned int) length+14);
     LiberateMemory((void **) &profile);
@@ -1007,18 +1007,16 @@ static void WriteICCProfile(j_compress_ptr jpeg_info,Image *image)
 
 static void WriteIPTCProfile(j_compress_ptr jpeg_info,Image *image)
 {
-  int
-    roundup;
-
-  register int
+  register size_t
     i;
+
+  size_t
+    length,
+    roundup,
+    tag_length;
 
   unsigned char
     *profile;
-
-  unsigned int
-    length,
-    tag_length;
 
   /*
     Save binary Photoshop resource data using an APP marker.
@@ -1028,7 +1026,7 @@ static void WriteIPTCProfile(j_compress_ptr jpeg_info,Image *image)
 #else
   tag_length=14;
 #endif
-  for (i=0; i < (int) image->iptc_profile.length; i+=65500)
+  for (i=0; i < image->iptc_profile.length; i+=65500)
   {
     length=Min(image->iptc_profile.length-i,65500);
     roundup=(length & 0x01); /* round up for Photoshop */
@@ -1048,7 +1046,7 @@ static void WriteIPTCProfile(j_compress_ptr jpeg_info,Image *image)
     if (roundup)
       profile[length+tag_length]=0;
     jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int)
-      length+roundup+tag_length);
+      (length+roundup+tag_length));
     LiberateMemory((void **) &profile);
   }
 }
@@ -1087,7 +1085,6 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     scanline[1];
 
   register int
-    i,
     x;
 
   register JSAMPLE
@@ -1095,6 +1092,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 
   register PixelPacket
     *p;
+
+  register size_t
+    i;
 
   struct jpeg_compress_struct
     jpeg_info;
@@ -1239,17 +1239,17 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     WriteICCProfile(&jpeg_info,image);
   if (image->iptc_profile.length > 0)
     WriteIPTCProfile(&jpeg_info,image);
-  for (i=0; i < (int) image->generic_profiles; i++)
+  for (i=0; i < image->generic_profiles; i++)
   {
-    register int
+    register size_t
       j;
 
     if (LocaleNCompare(image->generic_profile[i].name,"APP",3) != 0)
       continue;
     x=atoi(image->generic_profile[i].name+3);
-    for (j=0; j < (int) image->generic_profile[i].length; j+=65533)
+    for (j=0; j < image->generic_profile[i].length; j+=65533)
       jpeg_write_marker(&jpeg_info,JPEG_APP0+x,image->generic_profile[i].info+j,
-        Min(image->generic_profile[i].length-j,65533));
+        (int) Min(image->generic_profile[i].length-j,65533));
   }
   /*
     Convert MIFF to JPEG raster pixels.

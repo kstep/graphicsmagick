@@ -101,7 +101,6 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   int
-    count,
     y;
 
   register int
@@ -112,6 +111,9 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   register unsigned char
     *p;
+
+  size_t
+    count;
 
   unsigned char
     *pixels;
@@ -152,8 +154,8 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image);
     for (y=0; y < (int) image->rows; y++)
     {
-      status=ReadBlob(image,3*image->columns,pixels);
-      if (status == False)
+      count=ReadBlob(image,3*image->columns,pixels);
+      if (count == 0)
         ThrowReaderException(CorruptImageWarning,"Unable to read image data",
           image);
       p=pixels;

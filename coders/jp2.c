@@ -188,14 +188,24 @@ typedef struct _StreamManager
     *image;
 } StreamManager;
 
-static int BlobRead(jas_stream_obj_t *object,char *buffer,int count)
+static int BlobRead(jas_stream_obj_t *object,char *buffer,const int length)
 {
-  return(ReadBlob(((StreamManager *) object)->image,count,(void *) buffer));
+  size_t
+    count;
+
+  count=ReadBlob(((StreamManager *) object)->image,(size_t) length,
+    (void *) buffer);
+  return((int) count);
 }
 
-static int BlobWrite(jas_stream_obj_t *object,char *buffer,int count)
+static int BlobWrite(jas_stream_obj_t *object,char *buffer,const int length)
 {
-  return(WriteBlob(((StreamManager *) object)->image,count,(void *) buffer));
+  size_t
+    count;
+
+  count=WriteBlob(((StreamManager *) object)->image,(size_t) length,
+    (void *) buffer);
+  return((int) count);
 }
 
 static long BlobSeek(jas_stream_obj_t *object,long offset,int origin)
@@ -307,7 +317,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         jas_image_destroy(jp2_image);
         ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
-          image);
+          image)
       }
   }
   for (y=0; y < (int) image->rows; y++)
@@ -534,7 +544,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
           jas_matrix_destroy(pixels[x]);
         jas_image_destroy(jp2_image);
         ThrowWriterException(ResourceLimitWarning,"Unable to allocate memory",
-          image);
+          image)
       }
   }
   for (y=0; y < (int) image->rows; y++)

@@ -92,14 +92,14 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
 {
 #define UnembedBit(byte) \
 { \
-  q=GetImagePixels(image,j % image->columns,j/image->columns,1,1); \
+  q=GetImagePixels(image,(int) (j % image->columns),(int) (j/image->columns),1,1); \
   if (q == (PixelPacket *) NULL) \
     break; \
   indexes=GetIndexes(image); \
   (*indexes)|=((byte) & 0x01) << shift; \
   (void) SyncImagePixels(image); \
   j++; \
-  if (j == (image->columns*image->rows)) \
+  if (j == (long) (image->columns*image->rows)) \
     { \
       j=0; \
       shift--; \
@@ -120,6 +120,10 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     shift,
     y;
 
+  long
+    i,
+    j;
+
   register IndexPacket
     *indexes,
     *stegano_indexes;
@@ -130,10 +134,6 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   register PixelPacket
     *p,
     *q;
-
-  size_t
-    i,
-    j;
 
   /*
     Initialize Image structure.
@@ -167,10 +167,10 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   {
     for (x=0; x < (int) stegano_image->columns; x++)
     {
-      if (i == (stegano_image->columns*stegano_image->rows))
+      if (i == (long) (stegano_image->columns*stegano_image->rows))
         i=0;
-      p=GetImagePixels(stegano_image,i % stegano_image->columns,
-        i/stegano_image->columns,1,1);
+      p=GetImagePixels(stegano_image,(int) (i % stegano_image->columns),
+        (int) (i/stegano_image->columns),1,1);
       if (p == (PixelPacket *) NULL)
         break;
       stegano_indexes=GetIndexes(stegano_image);

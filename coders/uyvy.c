@@ -103,11 +103,13 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
     y;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   unsigned char
     u,

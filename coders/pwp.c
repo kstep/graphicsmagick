@@ -140,17 +140,18 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     c;
 
-  long
-    filesize;
-
   MonitorHandler
     handler;
 
   register Image
     *p;
 
-  register int
+  register size_t
     i;
+
+  size_t
+    count,
+    filesize;
 
   unsigned char
     magick[MaxTextExtent];
@@ -165,8 +166,8 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,pwp_image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",pwp_image);
-  status=ReadBlob(pwp_image,5,(char *) magick);
-  if ((status == False) || (LocaleNCompare((char *) magick,"SFW95",5) != 0))
+  count=ReadBlob(pwp_image,5,(char *) magick);
+  if ((count == 0) || (LocaleNCompare((char *) magick,"SFW95",5) != 0))
     ThrowReaderException(CorruptImageWarning,"Not a PWP image file",pwp_image);
   clone_info=CloneImageInfo(image_info);
   RewindBlob(clone_info->blob);

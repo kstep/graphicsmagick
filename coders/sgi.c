@@ -156,7 +156,7 @@ static unsigned int IsSGI(const unsigned char *magick,const size_t length)
 %
 */
 
-static void SGIDecode(const unsigned int bytes_per_pixel,
+static void SGIDecode(const unsigned long bytes_per_pixel,
   unsigned char *max_packets,unsigned char *pixels)
 {
   int
@@ -257,8 +257,10 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *iris_pixels;
 
   unsigned int
-    bytes_per_pixel,
     status;
+
+  unsigned long
+    bytes_per_pixel;
 
   /*
     Open image file.
@@ -398,8 +400,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     offset=offsets[y+z*iris_info.rows];
                     (void) SeekBlob(image,(long) offset,SEEK_SET);
                   }
-                (void) ReadBlob(image,(unsigned int)
-                  runlength[y+z*iris_info.rows],(char *) max_packets);
+                (void) ReadBlob(image,runlength[y+z*iris_info.rows],
+                  (char *) max_packets);
                 offset+=runlength[y+z*iris_info.rows];
                 SGIDecode(bytes_per_pixel,max_packets,p+bytes_per_pixel*z);
                 p+=(iris_info.columns*4*bytes_per_pixel);
@@ -418,8 +420,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     offset=offsets[y+z*iris_info.rows];
                     (void) SeekBlob(image,(long) offset,SEEK_SET);
                   }
-                (void) ReadBlob(image,(unsigned int)
-                  runlength[y+z*iris_info.rows],(char *) max_packets);
+                (void) ReadBlob(image,runlength[y+z*iris_info.rows],
+                  (char *) max_packets);
                 offset+=runlength[y+z*iris_info.rows];
                 SGIDecode(bytes_per_pixel,max_packets,p+bytes_per_pixel*z);
               }
@@ -669,7 +671,7 @@ ModuleExport void UnregisterSGIImage(void)
 %
 */
 
-static int SGIEncode(unsigned char *pixels,int count,
+static size_t SGIEncode(unsigned char *pixels,size_t count,
   unsigned char *packets)
 {
   short
@@ -693,7 +695,7 @@ static int SGIEncode(unsigned char *pixels,int count,
     while ((p < limit) && ((*(p-8) != *(p-4)) || (*(p-4) != *p)))
       p+=4;
     p-=8;
-    count=(int) ((p-mark) >> 2);
+    count=((p-mark) >> 2);
     while (count)
     {
       runlength=(short) (count > 126 ? 126 : count);
@@ -709,7 +711,7 @@ static int SGIEncode(unsigned char *pixels,int count,
     p+=4;
     while ((p < limit) && (*p == *mark))
       p+=4;
-    count=(int) ((p-mark) >> 2);
+    count=((p-mark) >> 2);
     while (count)
     {
       runlength=(short) (count > 126 ? 126 : count);
@@ -719,7 +721,7 @@ static int SGIEncode(unsigned char *pixels,int count,
     }
   }
   *q++=0;
-  return((int) (q-packets));
+  return(q-packets);
 }
 
 static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)

@@ -1,7 +1,6 @@
+#  Makefile for building ImageMagick coder modules
 #
-#  Top-Level Makefile for building ImageMagick
-#
-# Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated
+# Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated
 # to making software imaging solutions freely available.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,155 +26,484 @@
 # other dealings in ImageMagick without prior written authorization from the
 # ImageMagick Studio.
 #
-#  This file is currently maintained by Bob Friesenhahn,
-#  bfriesen@simple.dallas.tx.us. Please report any bugs via the ImageMagick
-#  bug tracking system at http://www.imagemagick.org/ImageMagick/bugs.
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.4 dist-zip dist-bzip2 foreign
+AUTOMAKE_OPTIONS = 1.4 foreign
 
-# Subdirectories to build
-if WITH_MAGICK_PLUS_PLUS
-MAGICK_PLUS_PLUS=Magick++
-endif # WITH_MAGICK_PLUS_PLUS
+INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
-# Directories to include in distribution
-DIST_SUBDIRS=ltdl coders magick utilities tests Magick++
+MAGICK_CODER_SRCS = art.c avi.c avs.c 8bim.c bmp.c cmyk.c cut.c dcm.c dps.c \
+  dpx.c ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c histogram.c  \
+  html.c icm.c icon.c iptc.c jbig.c jpeg.c jp2.c label.c logo.c map.c matte.c \
+  miff.c mono.c mpc.c mtv.c mvg.c null.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c \
+  pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c \
+  rla.c rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c tga.c tiff.c tile.c \
+  tim.c ttf.c txt.c uil.c url.c uyvy.c vicar.c vid.c viff.c wbmp.c wmf.c \
+  wpg.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
 
+MAJOR_VERSION=@MAJOR_VERSION@
+MINOR_VERSION=@MINOR_VERSION@
+MICRO_VERSION=@MICRO_VERSION@
 if WITH_MODULES
-SUBDIRS = ltdl magick coders utilities tests $(MAGICK_PLUS_PLUS)
+noinst_LTLIBRARIES =
 else
-SUBDIRS = coders magick utilities tests $(MAGICK_PLUS_PLUS)
+noinst_LTLIBRARIES = libCoders.la
+libCoders_la_SOURCES = $(MAGICK_CODER_SRCS)
 endif # WITH_MODULES
 
-# Architecture independent data files installed in the package's data directory
-pkgdata_DATA = Copyright.txt QuickStart.txt
-
 # Additional files to distribute
-EXTRA_DIST = Copyright.txt TODO.txt ImageMagick.html Magickshr.opt Make.com \
-	Manifest.ps PLATFORMS.txt QuickStart.txt README.txt acconfig.h \
-	lndir.sh ltcf-c.sh ltcf-cxx.sh ltcf-gcj.sh ltconfig
+EXTRA_DIST = modules.mgk delegates.mgk.in type.mgk.in
 
-# Non-Automake subdirectories to distribute
-DISTDIRS = contrib guide images scenes scripts www PerlMagick
-dist-hook:
-	( \
-	  builddir=`pwd` ; \
-	  cd $(srcdir) && \
-	  ( \
-	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)' | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
-	    done \
-	  ) \
-	)
+# Headers which are not installed but which are distributed
+noinst_HEADERS = 
 
-#
-# Additional install rules
-#
+if WITH_MODULES
+# Where modules are installed
+pkgdir = $(libdir)/ImageMagick/modules/coders
 
-# Install HTML files
-pkgdocdir = @MagickSharePath@
-DOCDIRS = images www www/api www/api/types www/Magick++
-install-data-html:
-	$(mkinstalldirs) $(pkgdocdir)
-	$(INSTALL_DATA) $(srcdir)/ImageMagick.html $(pkgdocdir)
-	for dir in $(DOCDIRS) ; do \
-	  $(mkinstalldirs) $(pkgdocdir)/$$dir && \
-	  $(INSTALL_DATA) $(srcdir)/$$dir/*.* $(pkgdocdir)/$$dir ; \
-	done
+# Architecture-dependent data files installed with modules
+pkg_DATA = modules.mgk
 
-# Uninstall HTML files
-uninstall-data-html:
-	rm -f $(pkgdocdir)/ImageMagick.html
-	for dir in $(DOCDIRS) ; do \
-	  rm -rf $(pkgdocdir)/$$dir ; \
-	done
+# Architecture independent data files installed in the package's data directory
+pkgdata_DATA = 
 
-if WITH_PERL
-
-PERLMAGICK=PerlMagick
-PERLMAKEMAKER=$(PERLMAGICK)/Makefile.PL
-PERLMAKEFILE=$(PERLMAGICK)/Makefile
-
-# If source files missing, see if they can be obtained via VPATH
-perl-sources:
-	if test -n "$(VPATH)" ; then \
-	  imagemagick=`(cd $(VPATH) ; pwd)` && \
-	  ( cd $(PERLMAGICK) && sh $$imagemagick/lndir.sh $$imagemagick/$(PERLMAGICK) ) \
-	fi
-	touch perl-sources
-
-if WITH_PERL_DYNAMIC
-
-$(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
-	cd $(PERLMAGICK) && @PERL@ Makefile.PL $(PERL_MAKE_OPTIONS)
-
-install-exec-perl: $(PERLMAKEFILE)
-	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' && \
-	$(MAKE) CC='@CC@' install && \
-	$(MAKE) clean && rm -f  Makefile.old )
-
-check-perl: $(PERLMAKEFILE)
-	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
-
+# Modules which are to be built
+pkg_LTLIBRARIES   = 8bim.la art.la avi.la avs.la bmp.la cmyk.la cut.la \
+  dcm.la dps.la dpx.la ept.la fax.la fpx.la fits.la gif.la gray.la gradient.la \
+  hdf.la histogram.la html.la icm.la icon.la iptc.la jbig.la jpeg.la jp2.la \
+  label.la logo.la map.la matte.la miff.la mono.la mpc.la mtv.la mvg.la \
+  null.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la pix.la plasma.la \
+  png.la pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la rla.la \
+  rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la tga.la tiff.la \
+  tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la vicar.la vid.la viff.la \
+  wbmp.la wmf.la wpg.la x.la xbm.la xc.la xpm.la xwd.la yuv.la
 else
-if WITH_PERL_STATIC
+pkg_LTLIBRARIES   =
+endif # WITH_MODULES
 
-PERLSTATICNAME=PerlMagick
+# ART module
+art_la_SOURCES      = art.c
+art_la_LDFLAGS      = -no-undefined -module -avoid-version
+art_la_LIBADD       = ../magick/libMagick.la
 
-$(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
-	cd $(PERLMAGICK) && @PERL@ Makefile.PL MAP_TARGET=$(PERLSTATICNAME) $(PERL_MAKE_OPTIONS)
+# AVI module
+avi_la_SOURCES      = avi.c
+avi_la_LDFLAGS      = -no-undefined -module -avoid-version
+avi_la_LIBADD       = ../magick/libMagick.la
 
-$(PERLMAGICK)/$(PERLMAGICK): $(PERLMAKEFILE)
-	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME) )
+# AVS module
+avs_la_SOURCES      = avs.c
+avs_la_LDFLAGS      = -no-undefined -module -avoid-version
+avs_la_LIBADD       = ../magick/libMagick.la
 
-install-exec-perl: $(PERLMAGICK)/$(PERLMAGICK)
-	( cd $(PERLMAGICK) && \
-	$(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) && \
-	$(MAKE) -f Makefile.aperl map_clean && \
-	$(MAKE) clean && rm -f  Makefile.old )
+# BIM module
+8bim_la_SOURCES     = 8bim.c
+8bim_la_LDFLAGS     = -no-undefined -module -avoid-version
+8bim_la_LIBADD      = ../magick/libMagick.la
 
-check-perl: $(PERLMAGICK)/$(PERLMAGICK)
-	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
+# BMP module
+bmp_la_SOURCES      = bmp.c
+bmp_la_LDFLAGS      = -no-undefined -module -avoid-version
+bmp_la_LIBADD       = ../magick/libMagick.la
 
-endif # WITH_PERL_STATIC
-endif # WTIH_PERL_DYNAMIC
+# CMYK module
+cmyk_la_SOURCES     = cmyk.c
+cmyk_la_LDFLAGS     = -no-undefined -module -avoid-version
+cmyk_la_LIBADD      = ../magick/libMagick.la
 
+# CUT module
+cut_la_SOURCES     = cut.c
+cut_la_LDFLAGS     = -no-undefined -module -avoid-version
+cut_la_LIBADD      = ../magick/libMagick.la
 
-clean-perl: $(PERLMAKEFILE)
-	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' clean && rm -f Makefile.old PerlMagick
-	rm -f perl-sources
+# DCM module
+dcm_la_SOURCES      = dcm.c
+dcm_la_LDFLAGS      = -no-undefined -module -avoid-version
+dcm_la_LIBADD       = ../magick/libMagick.la
 
-distclean-perl: clean-perl
+# DPS module
+dps_la_SOURCES      = dps.c
+dps_la_LDFLAGS      = -no-undefined -module -avoid-version
+dps_la_LIBADD       = ../magick/libMagick.la @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@
 
-else
-# Satisfy makefile requirements if not building PERL
-all-perl:
-install-exec-perl:
-check-perl:
-clean-perl:
-distclean-perl:
-endif # WITH_PERL
+# DPX module
+dpx_la_SOURCES      = dpx.c
+dpx_la_LDFLAGS      = -no-undefined -module -avoid-version
+dpx_la_LIBADD       = ../magick/libMagick.la 
 
-#all-local: all-perl
+# EPT module
+ept_la_SOURCES      = ept.c
+ept_la_LDFLAGS      = -no-undefined -module -avoid-version
+ept_la_LIBADD       = ../magick/libMagick.la $(LIB_MATH)
 
-# Install PerlMagick
-install-exec-local: install-exec-perl
+# FAX module
+fax_la_SOURCES      = fax.c
+fax_la_LDFLAGS      = -no-undefined -module -avoid-version
+fax_la_LIBADD       = ../magick/libMagick.la
 
-# Install arch-independent package data
-install-data-local: install-data-html
+# FITS module
+fits_la_SOURCES     = fits.c
+fits_la_LDFLAGS     = -no-undefined -module -avoid-version
+fits_la_LIBADD      = ../magick/libMagick.la
 
-# Uninstall arch-independent package data
-uninstall-local: uninstall-data-html
+# FPX module
+fpx_la_SOURCES      = fpx.c
+fpx_la_LDFLAGS      = -no-undefined -module -avoid-version
+fpx_la_LIBADD       = ../magick/libMagick.la @LIB_FPX@
 
-# Do a make clean in PerlMagick directory 
-clean-local: clean-perl
+# GIF module
+gif_la_SOURCES      = gif.c
+gif_la_LDFLAGS      = -no-undefined -module -avoid-version
+gif_la_LIBADD       = ../magick/libMagick.la
 
-# Do a make distclean in PerlMagick directory 
-distclean-local: distclean-perl
+# GRAY module
+gray_la_SOURCES     = gray.c
+gray_la_LDFLAGS     = -no-undefined -module -avoid-version
+gray_la_LIBADD      = ../magick/libMagick.la
 
-# Maintainer clean is just like 'distclean' for PerlMagick
-maintainer-clean-local: distclean-local
+# GRADIENT module
+gradient_la_SOURCES = gradient.c
+gradient_la_LDFLAGS = -no-undefined -module -avoid-version
+gradient_la_LIBADD  = ../magick/libMagick.la
 
-# Run tests on PerlMagick
-check-local: check-perl
+# HDF module
+hdf_la_SOURCES      = hdf.c
+hdf_la_LDFLAGS      = -no-undefined -module -avoid-version
+hdf_la_LIBADD       = ../magick/libMagick.la @LIB_HDF@ @LIB_JPEG@ @LIB_ZLIB@
+
+# HISTOGRAM module
+histogram_la_SOURCES = histogram.c
+histogram_la_LDFLAGS = -no-undefined -module -avoid-version
+histogram_la_LIBADD  = ../magick/libMagick.la
+
+# HTML module
+html_la_SOURCES     = html.c
+html_la_LDFLAGS     = -no-undefined -module -avoid-version
+html_la_LIBADD      = ../magick/libMagick.la
+
+# ICC module
+icm_la_SOURCES      = icm.c
+icm_la_LDFLAGS      = -no-undefined -module -avoid-version
+icm_la_LIBADD       = ../magick/libMagick.la
+
+# ICON module
+icon_la_SOURCES     = icon.c
+icon_la_LDFLAGS     = -no-undefined -module -avoid-version
+icon_la_LIBADD      = ../magick/libMagick.la
+
+# IPTC module
+iptc_la_SOURCES     = iptc.c
+iptc_la_LDFLAGS     = -no-undefined -module -avoid-version
+iptc_la_LIBADD      = ../magick/libMagick.la
+
+# JBIG module
+jbig_la_SOURCES     = jbig.c
+jbig_la_LDFLAGS     = -no-undefined -module -avoid-version
+jbig_la_LIBADD      = ../magick/libMagick.la @LIB_JBIG@
+
+# JPEG module
+jpeg_la_SOURCES     = jpeg.c
+jpeg_la_LDFLAGS     = -no-undefined -module -avoid-version
+jpeg_la_LIBADD      = ../magick/libMagick.la @LIB_JPEG@
+
+# JPEG 2000 module
+jp2_la_SOURCES     = jp2.c
+jp2_la_LDFLAGS     = -no-undefined -module -avoid-version
+jp2_la_LIBADD      = ../magick/libMagick.la @LIB_JP2@ $(LIB_MATH)
+
+# LABEL module
+label_la_SOURCES     = label.c
+label_la_LDFLAGS     = -no-undefined -module -avoid-version
+label_la_LIBADD      = ../magick/libMagick.la
+
+# LOGO module
+logo_la_SOURCES     = logo.c
+logo_la_LDFLAGS     = -no-undefined -module -avoid-version
+logo_la_LIBADD      = ../magick/libMagick.la
+
+# MAP module
+map_la_SOURCES      = map.c
+map_la_LDFLAGS      = -no-undefined -module -avoid-version
+map_la_LIBADD       = ../magick/libMagick.la
+
+# MATTE module
+matte_la_SOURCES    = matte.c
+matte_la_LDFLAGS    = -no-undefined -module -avoid-version
+matte_la_LIBADD     = ../magick/libMagick.la
+
+# MIFF module
+miff_la_SOURCES     = miff.c
+miff_la_LDFLAGS     = -no-undefined -module -avoid-version
+miff_la_LIBADD      = ../magick/libMagick.la @LIB_ZLIB@  @LIB_BZLIB@ @LIB_JPEG@
+
+# MONO module
+mono_la_SOURCES     = mono.c
+mono_la_LDFLAGS     = -no-undefined -module -avoid-version
+mono_la_LIBADD      = ../magick/libMagick.la
+
+# MPC module
+mpc_la_SOURCES    = mpc.c
+mpc_la_LDFLAGS    = -no-undefined -module -avoid-version
+mpc_la_LIBADD     = ../magick/libMagick.la
+
+# MTV module
+mtv_la_SOURCES      = mtv.c
+mtv_la_LDFLAGS      = -no-undefined -module -avoid-version
+mtv_la_LIBADD       = ../magick/libMagick.la
+
+# MVG module
+mvg_la_SOURCES      = mvg.c
+mvg_la_LDFLAGS      = -no-undefined -module -avoid-version
+mvg_la_LIBADD       = ../magick/libMagick.la
+
+# NULL module
+null_la_SOURCES      = null.c
+null_la_LDFLAGS      = -no-undefined -module -avoid-version
+null_la_LIBADD       = ../magick/libMagick.la
+
+# PCD module
+pcd_la_SOURCES      = pcd.c
+pcd_la_LDFLAGS      = -no-undefined -module -avoid-version
+pcd_la_LIBADD       = ../magick/libMagick.la
+
+# PCL module
+pcl_la_SOURCES      = pcl.c
+pcl_la_LDFLAGS      = -no-undefined -module -avoid-version
+pcl_la_LIBADD       = ../magick/libMagick.la
+
+# PCX module
+pcx_la_SOURCES      = pcx.c
+pcx_la_LDFLAGS      = -no-undefined -module -avoid-version
+pcx_la_LIBADD       = ../magick/libMagick.la
+
+# PDB module
+pdb_la_SOURCES      = pdb.c
+pdb_la_LDFLAGS      = -no-undefined -module -avoid-version
+pdb_la_LIBADD       = ../magick/libMagick.la
+
+# PDF module
+pdf_la_SOURCES      = pdf.c
+pdf_la_LDFLAGS      = -no-undefined -module -avoid-version
+pdf_la_LIBADD       = ../magick/libMagick.la @LIB_TIFF@ $(LIB_MATH)
+
+# PICT module
+pict_la_SOURCES     = pict.c
+pict_la_LDFLAGS     = -no-undefined -module -avoid-version
+pict_la_LIBADD      = ../magick/libMagick.la
+
+# PIX module
+pix_la_SOURCES      = pix.c
+pix_la_LDFLAGS      = -no-undefined -module -avoid-version
+pix_la_LIBADD       = ../magick/libMagick.la
+
+# PNG module
+png_la_SOURCES      = png.c
+png_la_LDFLAGS      = -no-undefined -module -avoid-version
+png_la_LIBADD       = ../magick/libMagick.la @LIB_PNG@ @LIB_ZLIB@ $(LIB_MATH)
+
+# PLASMA module
+plasma_la_SOURCES   = plasma.c
+plasma_la_LDFLAGS   = -no-undefined -module -avoid-version
+plasma_la_LIBADD    = ../magick/libMagick.la
+
+# PNM module
+pnm_la_SOURCES      = pnm.c
+pnm_la_LDFLAGS      = -no-undefined -module -avoid-version
+pnm_la_LIBADD       = ../magick/libMagick.la
+
+# PREVIEW module
+preview_la_SOURCES  = preview.c
+preview_la_LDFLAGS  = -no-undefined -module -avoid-version
+preview_la_LIBADD   = ../magick/libMagick.la
+
+# PS module
+ps_la_SOURCES       = ps.c
+ps_la_LDFLAGS       = -no-undefined -module -avoid-version
+ps_la_LIBADD        = ../magick/libMagick.la $(LIB_MATH)
+
+# PS2 module
+ps2_la_SOURCES      = ps2.c
+ps2_la_LDFLAGS      = -no-undefined -module -avoid-version
+ps2_la_LIBADD       = ../magick/libMagick.la @LIB_TIFF@ $(LIB_MATH)
+
+# PS3 module
+ps3_la_SOURCES      = ps3.c
+ps3_la_LDFLAGS      = -no-undefined -module -avoid-version
+ps3_la_LIBADD       = ../magick/libMagick.la $(LIB_MATH)
+
+# PSD module
+psd_la_SOURCES      = psd.c
+psd_la_LDFLAGS      = -no-undefined -module -avoid-version
+psd_la_LIBADD       = ../magick/libMagick.la
+
+# PWP module
+pwp_la_SOURCES      = pwp.c
+pwp_la_LDFLAGS      = -no-undefined -module -avoid-version
+pwp_la_LIBADD       = ../magick/libMagick.la
+
+# RGB module
+rgb_la_SOURCES      = rgb.c
+rgb_la_LDFLAGS      = -no-undefined -module -avoid-version
+rgb_la_LIBADD       = ../magick/libMagick.la
+
+# RLA module
+rla_la_SOURCES      = rla.c
+rla_la_LDFLAGS      = -no-undefined -module -avoid-version
+rla_la_LIBADD       = ../magick/libMagick.la
+
+# RLE module
+rle_la_SOURCES      = rle.c
+rle_la_LDFLAGS      = -no-undefined -module -avoid-version
+rle_la_LIBADD       = ../magick/libMagick.la
+
+# SCT module
+sct_la_SOURCES      = sct.c
+sct_la_LDFLAGS      = -no-undefined -module -avoid-version
+sct_la_LIBADD       = ../magick/libMagick.la
+
+# SFW module
+sfw_la_SOURCES      = sfw.c
+sfw_la_LDFLAGS      = -no-undefined -module -avoid-version
+sfw_la_LIBADD       = ../magick/libMagick.la
+
+# SGI module
+sgi_la_SOURCES      = sgi.c
+sgi_la_LDFLAGS      = -no-undefined -module -avoid-version
+sgi_la_LIBADD       = ../magick/libMagick.la
+
+# STEGANO module
+stegano_la_SOURCES  = stegano.c
+stegano_la_LDFLAGS  = -no-undefined -module -avoid-version
+stegano_la_LIBADD   = ../magick/libMagick.la
+
+# SUN module
+sun_la_SOURCES      = sun.c
+sun_la_LDFLAGS      = -no-undefined -module -avoid-version
+sun_la_LIBADD       = ../magick/libMagick.la
+
+# SVG module
+svg_la_SOURCES      = svg.c
+svg_la_LDFLAGS      = -no-undefined -module -avoid-version
+svg_la_LIBADD       = ../magick/libMagick.la @LIB_XML@ @LIB_ZLIB@ $(LIB_MATH)
+
+# TGA module
+tga_la_SOURCES      = tga.c
+tga_la_LDFLAGS      = -no-undefined -module -avoid-version
+tga_la_LIBADD       = ../magick/libMagick.la
+
+# TIFF module
+tiff_la_SOURCES     = tiff.c
+tiff_la_LDFLAGS     = -no-undefined -module -avoid-version
+tiff_la_LIBADD      = ../magick/libMagick.la @LIB_TIFF@ @LIB_ZLIB@
+
+# TILE module
+tile_la_SOURCES     = tile.c
+tile_la_LDFLAGS     = -no-undefined -module -avoid-version
+tile_la_LIBADD      = ../magick/libMagick.la
+
+# TIM module
+tim_la_SOURCES      = tim.c
+tim_la_LDFLAGS      = -no-undefined -module -avoid-version
+tim_la_LIBADD       = ../magick/libMagick.la
+
+# TTF module
+ttf_la_SOURCES      = ttf.c
+ttf_la_LDFLAGS      = -no-undefined -module -avoid-version
+ttf_la_LIBADD       = ../magick/libMagick.la
+
+# TXT module
+txt_la_SOURCES      = txt.c
+txt_la_LDFLAGS      = -no-undefined -module -avoid-version
+txt_la_LIBADD       = ../magick/libMagick.la $(LIB_MATH)
+
+# UIL module
+uil_la_SOURCES      = uil.c
+uil_la_LDFLAGS      = -no-undefined -module -avoid-version
+uil_la_LIBADD       = ../magick/libMagick.la $(LIB_MATH)
+
+# SVG module
+url_la_SOURCES      = url.c
+url_la_LDFLAGS      = -no-undefined -module -avoid-version
+url_la_LIBADD       = ../magick/libMagick.la @LIB_XML@ @LIB_ZLIB@
+
+# UYVY module
+uyvy_la_SOURCES     = uyvy.c
+uyvy_la_LDFLAGS     = -no-undefined -module -avoid-version
+uyvy_la_LIBADD      = ../magick/libMagick.la
+
+# VICAR module
+vicar_la_SOURCES    = vicar.c
+vicar_la_LDFLAGS    = -no-undefined -module -avoid-version
+vicar_la_LIBADD     = ../magick/libMagick.la
+
+# VID module
+vid_la_SOURCES      = vid.c
+vid_la_LDFLAGS      = -no-undefined -module -avoid-version
+vid_la_LIBADD       = ../magick/libMagick.la
+
+# VIFF module
+viff_la_SOURCES     = viff.c
+viff_la_LDFLAGS     = -no-undefined -module -avoid-version
+viff_la_LIBADD      = ../magick/libMagick.la
+
+# WBMP module
+wbmp_la_SOURCES     = wbmp.c
+wbmp_la_LDFLAGS     = -no-undefined -module -avoid-version
+wbmp_la_LIBADD      = ../magick/libMagick.la
+
+# WMF module
+wmf_la_SOURCES      = wmf.c
+wmf_la_LDFLAGS      = -no-undefined -module -avoid-version
+wmf_la_LIBADD       = ../magick/libMagick.la @LIB_WMF@ $(LIB_MATH)
+
+# WPG module
+wpg_la_SOURCES     = wpg.c
+wpg_la_LDFLAGS     = -no-undefined -module -avoid-version
+wpg_la_LIBADD      = ../magick/libMagick.la
+
+# X module
+x_la_SOURCES        = x.c
+x_la_LDFLAGS        = -no-undefined -module -avoid-version
+x_la_LIBADD         = ../magick/libMagick.la @LIB_X11@
+
+# XBM module
+xbm_la_SOURCES      = xbm.c
+xbm_la_LDFLAGS      = -no-undefined -module -avoid-version
+xbm_la_LIBADD       = ../magick/libMagick.la
+
+# XC module
+xc_la_SOURCES       = xc.c
+xc_la_LDFLAGS       = -no-undefined -module -avoid-version
+xc_la_LIBADD        = ../magick/libMagick.la
+
+# XPM module
+xpm_la_SOURCES      = xpm.c
+xpm_la_LDFLAGS      = -no-undefined -module -avoid-version
+xpm_la_LIBADD       = ../magick/libMagick.la
+
+# XWD module
+xwd_la_SOURCES      = xwd.c
+xwd_la_LDFLAGS      = -no-undefined -module -avoid-version
+xwd_la_LIBADD       = ../magick/libMagick.la @LIB_X11@
+
+# YUV module
+yuv_la_SOURCES      = yuv.c
+yuv_la_LDFLAGS      = -no-undefined -module -avoid-version
+yuv_la_LIBADD       = ../magick/libMagick.la
+
+DEFS = @DEFS@ -I../
+
+# Install delegates files
+install-data-delegates: 
+	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
+	$(INSTALL_DATA) delegates.mgk $(DESTDIR)$(pkglibdir)
+	$(INSTALL_DATA) type.mgk $(DESTDIR)$(pkglibdir)
+
+# Uninstall delegates files
+uninstall-data-delegates:
+	rm -f $(DESTDIR)$(pkglibdir)/delegates.mgk
+	rm -f $(DESTDIR)$(pkglibdir)/type.mgk
+
+install-exec-local: install-data-delegates
+
+uninstall-local: uninstall-data-delegates

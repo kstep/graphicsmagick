@@ -191,8 +191,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     icon_file.directory[i].reserved=ReadBlobByte(image);
     icon_file.directory[i].planes=ReadBlobLSBShort(image);
     icon_file.directory[i].bits_per_pixel=ReadBlobLSBShort(image);
-    icon_file.directory[i].size=ReadBlobLSBLong(image);
-    icon_file.directory[i].offset=ReadBlobLSBLong(image);
+    icon_file.directory[i].size=(unsigned int) ReadBlobLSBLong(image);
+    icon_file.directory[i].offset=(unsigned int) ReadBlobLSBLong(image);
   }
   for (i=0; i < icon_file.count; i++)
   {
@@ -218,12 +218,15 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     if ((icon_info.number_colors != 0) || (icon_info.bits_per_pixel < 16))
       {
         image->storage_class=PseudoClass;
-        image->colors=(unsigned int) icon_info.number_colors;
+        image->colors=icon_info.number_colors;
         if (image->colors == 0)
           image->colors=1 << icon_info.bits_per_pixel;
       }
   if (image->storage_class == PseudoClass)
     {
+      register size_t
+        i;
+
       unsigned char
         *icon_colormap;
 
@@ -239,11 +242,11 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           image);
       (void) ReadBlob(image,4*image->colors,(char *) icon_colormap);
       p=icon_colormap;
-      for (x=0; x < (int) image->colors; x++)
+      for (i=0; i < image->colors; i++)
       {
-        image->colormap[x].blue=UpScale(*p++);
-        image->colormap[x].green=UpScale(*p++);
-        image->colormap[x].red=UpScale(*p++);
+        image->colormap[i].blue=UpScale(*p++);
+        image->colormap[i].green=UpScale(*p++);
+        image->colormap[i].red=UpScale(*p++);
         p++;
       }
       LiberateMemory((void **) &icon_colormap);

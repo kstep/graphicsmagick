@@ -360,7 +360,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       (void) strcpy(filename,image->filename);
       (void) WriteBlobString(image,"</center>\n");
       (void) WriteBlobString(image,"</body>\n");
-      status=WriteBlobString(image,"</html>\n");
+      (void) WriteBlobString(image,"</html>\n");
       CloseBlob(image);
       /*
         Write the image as transparent GIF.
@@ -370,7 +370,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       next=image->next;
       image->next=(Image *) NULL;
       (void) strcpy(image->magick,"GIF");
-      status|=WriteImage(clone_info,image);
+      (void) WriteImage(clone_info,image);
       image->next=next;
       /*
         Determine image map filename.

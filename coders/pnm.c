@@ -158,7 +158,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
           *p,
           *q;
 
-        unsigned int
+        size_t
           length,
           offset;
 
@@ -172,7 +172,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
         if (comment != (char *) NULL)
           for ( ; (c != EOF) && (c != '\n'); p++)
           {
-            if ((p-comment) >= (int) length)
+            if ((size_t) (p-comment) >= length)
               {
                 length<<=1;
                 length+=MaxTextExtent;
@@ -240,16 +240,19 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
 
+  register size_t
+    i;
+
   register unsigned char
     *p;
 
   size_t
+    count,
     number_pixels;
 
   unsigned char
@@ -270,13 +273,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read PNM image.
   */
-  status=ReadBlob(image,1,(char *) &format);
+  count=ReadBlob(image,1,(char *) &format);
   do
   {
     /*
       Verify PNM identifier.
     */
-    if ((status == False) || (format != 'P'))
+    if ((count == 0) || (format != 'P'))
       ThrowReaderException(CorruptImageWarning,"Not a PNM image file",image);
     /*
       Initialize image structure.
@@ -337,7 +340,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (scale == (Quantum *) NULL)
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
-          for (i=0; i <= (int) max_value; i++)
+          for (i=0; i <= max_value; i++)
             scale[i]=(Quantum) ((MaxRGB*i+(max_value >> 1))/max_value);
         }
     /*
@@ -479,8 +482,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         for (y=0; y < (int) image->rows; y++)
         {
-          status=ReadBlob(image,packets*image->columns,pixels);
-          if (status == False)
+          count=ReadBlob(image,packets*image->columns,pixels);
+          if (count == 0)
             ThrowReaderException(CorruptImageWarning,
               "Unable to read image data",image);
           p=pixels;
@@ -521,8 +524,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         for (y=0; y < (int) image->rows; y++)
         {
-          status=ReadBlob(image,packets*image->columns,pixels);
-          if (status == False)
+          count=ReadBlob(image,packets*image->columns,pixels);
+          if (count == 0)
             ThrowReaderException(CorruptImageWarning,
               "Unable to read image data",image);
           p=pixels;
@@ -569,7 +572,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
-        ThrowReaderException(CorruptImageWarning,"Not a PNM image file",image);
+        ThrowReaderException(CorruptImageWarning,"Not a PNM image file",image)
     }
     if (scale != (Quantum *) NULL)
       LiberateMemory((void **) &scale);
@@ -587,12 +590,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Skip to end of line.
         */
-        status=ReadBlob(image,1,&format);
-        if (status == False)
+        count=ReadBlob(image,1,&format);
+        if (count == 0)
           break;
       } while (format != '\n');
-    status=ReadBlob(image,1,(char *) &format);
-    if ((status == True) && (format == 'P'))
+    count=ReadBlob(image,1,(char *) &format);
+    if ((count != 0) && (format == 'P'))
       {
         /*
           Allocate next image structure.

@@ -77,7 +77,7 @@ static unsigned int
 %
 %  The format of the DecodeImage method is:
 %
-%      unsigned int DecodeImage(Image *image,const int channel)
+%      unsigned int DecodeImage(Image *image,const long channel)
 %
 %  A description of each parameter follows:
 %
@@ -91,7 +91,7 @@ static unsigned int
 %
 %
 */
-static unsigned int DecodeImage(Image *image,const int channel)
+static unsigned int DecodeImage(Image *image,const long channel)
 {
   int
     count;
@@ -394,15 +394,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *indexes;
 
   int
-    j,
     y;
 
   LayerInfo
     *layer_info;
-
-  long
-    length,
-    size;
 
   PSDInfo
     psd_info;
@@ -411,17 +406,20 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pixel;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
 
-  short int
-    number_layers;
+  register size_t
+    i;
 
   size_t
-    count;
+    count,
+    j,
+    length,
+    number_layers,
+    size;
 
   unsigned char
     *scanline;
@@ -450,8 +448,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
   (void) ReadBlob(image,6,(char *) psd_info.reserved);
   psd_info.channels=ReadBlobMSBShort(image);
-  psd_info.rows=ReadBlobMSBLong(image);
-  psd_info.columns=ReadBlobMSBLong(image);
+  psd_info.rows=(unsigned int) ReadBlobMSBLong(image);
+  psd_info.columns=(unsigned int) ReadBlobMSBLong(image);
   psd_info.depth=ReadBlobMSBShort(image);
   psd_info.mode=ReadBlobMSBShort(image);
   /*
@@ -483,11 +481,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!AllocateImageColormap(image,length/3))
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
         image->colormap[i].red=UpScale(ReadBlobByte(image));
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
         image->colormap[i].green=UpScale(ReadBlobByte(image));
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
         image->colormap[i].blue=UpScale(ReadBlobByte(image));
       image->matte=psd_info.channels >= 2;
     }
@@ -530,12 +528,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       memset(layer_info,0,number_layers*sizeof(LayerInfo));
       for (i=0; i < number_layers; i++)
       {
-        layer_info[i].page.y=ReadBlobMSBLong(image);
-        layer_info[i].page.x=ReadBlobMSBLong(image);
-        layer_info[i].page.height=ReadBlobMSBLong(image)-layer_info[i].page.y;
-        layer_info[i].page.width=ReadBlobMSBLong(image)-layer_info[i].page.x;
+        layer_info[i].page.y=(int) ReadBlobMSBLong(image);
+        layer_info[i].page.x=(int) ReadBlobMSBLong(image);
+        layer_info[i].page.height=(unsigned int)
+	  (ReadBlobMSBLong(image)-layer_info[i].page.y);
+        layer_info[i].page.width=(unsigned int)
+	  (ReadBlobMSBLong(image)-layer_info[i].page.x);
         layer_info[i].channels=ReadBlobMSBShort(image);
-        for (j=0; j < (int) layer_info[i].channels; j++)
+        for (j=0; j < layer_info[i].channels; j++)
         {
           layer_info[i].channel_info[j].type=ReadBlobMSBShort(image);
           layer_info[i].channel_info[j].size=ReadBlobMSBLong(image);
@@ -558,12 +558,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 /*
                   Layer mask info.
                 */
-                layer_info[i].mask.y=ReadBlobMSBLong(image);
-                layer_info[i].mask.x=ReadBlobMSBLong(image);
-                layer_info[i].mask.height=ReadBlobMSBLong(image)-
-                  layer_info[i].mask.y;
-                layer_info[i].mask.width=ReadBlobMSBLong(image)-
-                  layer_info[i].mask.x;
+                layer_info[i].mask.y=(int) ReadBlobMSBLong(image);
+                layer_info[i].mask.x=(int) ReadBlobMSBLong(image);
+                layer_info[i].mask.height=(unsigned int)
+                  (ReadBlobMSBLong(image)-layer_info[i].mask.y);
+                layer_info[i].mask.width=(unsigned int)
+                  (ReadBlobMSBLong(image)-layer_info[i].mask.x);
                 for (j=0; j < (length-16); j++)
                   (void) ReadBlobByte(image);
               }
@@ -580,12 +580,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (j=0; j < i; j++)
               DestroyImage(layer_info[j].image);
             ThrowReaderException(ResourceLimitWarning,
-              "Memory allocation failed",image);
+              "Memory allocation failed",image)
           }
         SetImage(layer_info[i].image,TransparentOpacity);
         if (psd_info.mode == CMYKMode)
           layer_info[i].image->colorspace=CMYKColorspace;
-        for (j=0; j < (int) layer_info[i].channels; j++)
+        for (j=0; j < layer_info[i].channels; j++)
           if (layer_info[i].channel_info[j].type == -1)
             layer_info[i].image->matte=True;
       }
@@ -596,18 +596,18 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         *layer_info[i].image->blob=(*image->blob);
         layer_info[i].image->file=image->file;
-        for (j=0; j < (int) layer_info[i].channels; j++)
+        for (j=0; j < layer_info[i].channels; j++)
         {
           if (layer_info[i].channel_info[j].size < 8)
             {
-              int
+              size_t
                 k;
 
               /*
                 A layer without data.
               */
               SetImage(layer_info[i].image,OpaqueOpacity);
-              for (k=0; k < (int) layer_info[i].channel_info[j].size; k++)
+              for (k=0; k < layer_info[i].channel_info[j].size; k++)
                 (void) ReadBlobByte(layer_info[i].image);
               continue;
             }
@@ -780,9 +780,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read Packbit encoded pixel data as separate planes.
       */
-      for (i=0; i < (int) (image->rows*psd_info.channels); i++)
+      for (i=0; i < (image->rows*psd_info.channels); i++)
         (void) ReadBlobMSBShort(image);
-      for (i=0; i < (int) psd_info.channels; i++)
+      for (i=0; i < psd_info.channels; i++)
         (void) DecodeImage(image,i);
     }
   else
@@ -803,7 +803,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (scanline == (unsigned char *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      for (i=0; i < (int) psd_info.channels; i++)
+      for (i=0; i < psd_info.channels; i++)
       {
         for (y=0; y < (int) image->rows; y++)
         {
@@ -814,8 +814,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
           {
+            int
+              channel;
+
             pixel=scanline[x];
-            switch (image->matte ? i-1 : i)
+            channel=(int) i;
+            switch (image->matte ? channel-1 : channel)
             {
               case -1:
               {
@@ -995,7 +999,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   int
     y;
 
-  register int
+  register size_t
     i;
 
   unsigned char
@@ -1053,15 +1057,15 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
         Write PSD raster colormap.
       */
       WriteBlobMSBLong(image,768);
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
         (void) WriteBlobByte(image,DownScale(image->colormap[i].red));
       for ( ; i < 256; i++)
         (void) WriteBlobByte(image,0);
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
         (void) WriteBlobByte(image,DownScale(image->colormap[i].green));
       for ( ; i < 256; i++)
         (void) WriteBlobByte(image,0);
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
         (void) WriteBlobByte(image,DownScale(image->colormap[i].blue));
       for ( ; i < 256; i++)
         (void) WriteBlobByte(image,0);

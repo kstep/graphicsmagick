@@ -142,11 +142,16 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
+
+  size_t
+    count;
 
   TGAInfo
     tga_info;
@@ -174,12 +179,12 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read TGA header information.
   */
-  status=ReadBlob(image,1,(char *) &tga_info.id_length);
+  count=ReadBlob(image,1,(char *) &tga_info.id_length);
   tga_info.colormap_type=ReadBlobByte(image);
   tga_info.image_type=ReadBlobByte(image);
   do
   {
-    if ((status == False) || (tga_info.image_type == 0) ||
+    if ((count == 0) || (tga_info.image_type == 0) ||
         (tga_info.image_type > 11))
       ThrowReaderException(CorruptImageWarning,"Not a TGA image file",image);
     tga_info.colormap_index=ReadBlobLSBShort(image);
@@ -232,7 +237,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
           switch (tga_info.colormap_size)
           {
@@ -308,8 +313,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             else
               {
-                status=ReadBlob(image,1,(char *) &runlength);
-                if (status == False)
+                count=ReadBlob(image,1,(char *) &runlength);
+                if (count == 0)
                   ThrowReaderException(CorruptImageWarning,
                     "Unable to read image data",image);
                 flag=runlength & 0x80;
@@ -400,11 +405,11 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    status=ReadBlob(image,1,(char *) &tga_info.id_length);
+    count=ReadBlob(image,1,(char *) &tga_info.id_length);
     tga_info.colormap_type=ReadBlobByte(image);
     tga_info.image_type=ReadBlobByte(image);
     status&=((tga_info.image_type != 0) && (tga_info.image_type <= 11));
-    if (status == True)
+    if (count != 0)
       {
         /*
           Allocate next image structure.
@@ -581,11 +586,13 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *p;
+
+  register size_t
+    i;
 
   register unsigned char
     *q;
@@ -677,13 +684,13 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);
         q=targa_colormap;
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
           *q++=DownScale(image->colormap[i].blue);
           *q++=DownScale(image->colormap[i].green);
           *q++=DownScale(image->colormap[i].red);
         }
-        (void) WriteBlob(image,(int) 3*targa_info.colormap_length,
+        (void) WriteBlob(image,3*targa_info.colormap_length,
           (char *) targa_colormap);
         LiberateMemory((void **) &targa_colormap);
       }
@@ -719,7 +726,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           }
         p++;
       }
-      status=WriteBlob(image,q-targa_pixels,(char *) targa_pixels);
+      (void) WriteBlob(image,q-targa_pixels,(char *) targa_pixels);
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
           MagickMonitor(SaveImageText,y,image->rows);

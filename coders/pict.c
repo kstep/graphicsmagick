@@ -87,7 +87,7 @@ typedef struct _PICTCode
   char
     *name;
 
-  int
+  long
     length;
 
   char
@@ -338,7 +338,7 @@ static unsigned int
 static unsigned char *ExpandBuffer(unsigned char *pixels,size_t *bytes_per_line,
   const int bits_per_pixel)
 {
-  register int
+  register size_t
     i;
 
   register unsigned char
@@ -358,7 +358,7 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,size_t *bytes_per_line,
       return(pixels);
     case 4:
     {
-      for (i=0; i < (int) *bytes_per_line; i++)
+      for (i=0; i < *bytes_per_line; i++)
       {
         *q++=(*p >> 4) & 0xff;
         *q++=(*p & 15);
@@ -369,7 +369,7 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,size_t *bytes_per_line,
     }
     case 2:
     {
-      for (i=0; i < (int) *bytes_per_line; i++)
+      for (i=0; i < *bytes_per_line; i++)
       {
         *q++=(*p >> 6) & 0x03;
         *q++=(*p >> 4) & 0x03;
@@ -382,7 +382,7 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,size_t *bytes_per_line,
     }
     case 1:
     {
-      for (i=0; i < (int) *bytes_per_line; i++)
+      for (i=0; i < *bytes_per_line; i++)
       {
         *q++=(*p >> 7) & 0x01;
         *q++=(*p >> 6) & 0x01;
@@ -408,19 +408,18 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
 {
   int
     bytes_per_pixel,
-    scanline_length,
     width,
     y;
 
-  register int
-    i,
-    x;
+  register size_t
+    i;
 
   register unsigned char
     *p,
     *q;
 
   size_t
+    j,
     length,
     number_pixels;
 
@@ -430,6 +429,9 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
 
   unsigned short
     row_bytes;
+
+  unsigned long
+    scanline_length;
 
   /*
     Determine pixel buffer size.
@@ -487,27 +489,27 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
     else
       scanline_length=ReadBlobByte(blob);
     (void) ReadBlob(blob,scanline_length,(char *) scanline);
-    for (x=0; x < scanline_length; )
-      if ((scanline[x] & 0x80) == 0)
+    for (j=0; j < scanline_length; )
+      if ((scanline[j] & 0x80) == 0)
         {
-          length=(scanline[x] & 0xff)+1;
+          length=(scanline[j] & 0xff)+1;
           number_pixels=length*bytes_per_pixel;
-          p=ExpandBuffer(scanline+x+1,&number_pixels,bits_per_pixel);
+          p=ExpandBuffer(scanline+j+1,&number_pixels,bits_per_pixel);
           memcpy(q,p,number_pixels);
           q+=number_pixels;
-          x+=length*bytes_per_pixel+1;
+          j+=length*bytes_per_pixel+1;
         }
       else
         {
-          length=((scanline[x] ^ 0xff) & 0xff)+2;
+          length=((scanline[j]^0xff) & 0xff)+2;
           number_pixels=bytes_per_pixel;
-          p=ExpandBuffer(scanline+x+1,&number_pixels,bits_per_pixel);
-          for (i=0; i < (int) length; i++)
+          p=ExpandBuffer(scanline+j+1,&number_pixels,bits_per_pixel);
+          for (i=0; i < length; i++)
           {
             memcpy(q,p,number_pixels);
             q+=number_pixels;
           }
-          x+=bytes_per_pixel+1;
+          j+=bytes_per_pixel+1;
         }
   }
   LiberateMemory((void **) &scanline);
@@ -564,11 +566,11 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
   register int
     i;
 
-  register long
-    packets;
-
   register unsigned char
     *q;
+
+  size_t
+    packets;
 
   unsigned char
     index;
@@ -654,7 +656,7 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
   /*
     Write the number of and the packed packets.
   */
-  packets=(int) (q-pixels);
+  packets=(q-pixels);
   if (bytes_per_line > 250)
     {
       WriteBlobMSBShort(image,(unsigned short) packets);
@@ -662,7 +664,7 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
     }
   else
     {
-      (void) WriteBlobByte(image,packets);
+      (void) WriteBlobByte(image,(int) packets);
       packets++;
     }
   while (q != pixels)
@@ -722,11 +724,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     c,
     code,
     flags,
+    j,
     version,
     y;
-
-  long
-    length;
 
   PICTRectangle
     frame;
@@ -738,11 +738,16 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
+
+  size_t
+    length;
 
   unsigned int
     jpeg,
@@ -871,16 +876,16 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               length=width;
             if (length < 8)
               {
-                for (i=0; i < (int) (length*height); i++)
+                for (i=0; i < (length*height); i++)
                   (void) ReadBlobByte(image);
               }
             else
-              for (i=0; i < (int) height; i++)
+              for (j=0; j < (int) height; j++)
                 if (length > 250)
-                  for (i=0; i < (int) ReadBlobMSBShort(image); i++)
+                  for (j=0; j < ReadBlobMSBShort(image); j++)
                     (void) ReadBlobByte(image);
                 else
-                  for (i=0; i < ReadBlobByte(image); i++)
+                  for (j=0; j < ReadBlobByte(image); j++)
                     (void) ReadBlobByte(image);
             break;
           }
@@ -919,8 +924,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           case 0x9b:
           {
             int
-              bytes_per_line,
-              j;
+              bytes_per_line;
 
             PICTRectangle
               source,
@@ -928,6 +932,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
 
             register unsigned char
               *p;
+
+            size_t
+              j;
 
             unsigned char
               *pixels;
@@ -980,11 +987,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   {
                     DestroyImage(tile_image);
                     ThrowReaderException(ResourceLimitWarning,
-                      "Memory allocation failed",image);
+                      "Memory allocation failed",image)
                   }
                 if (bytes_per_line & 0x8000)
                   {
-                    for (i=0; i < (int) tile_image->colors; i++)
+                    for (i=0; i < tile_image->colors; i++)
                     {
                       j=ReadBlobMSBShort(image) % tile_image->colors;
                       if (flags & 0x8000)
@@ -999,7 +1006,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   }
                 else
                   {
-                    for (i=0; i < (int) tile_image->colors; i++)
+                    for (i=0; i < tile_image->colors; i++)
                     {
                       tile_image->colormap[i].red=MaxRGB-
                         tile_image->colormap[i].red;
@@ -1032,7 +1039,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               {
                 DestroyImage(tile_image);
                 ThrowReaderException(ResourceLimitWarning,
-                  "Memory allocation failed",image);
+                  "Memory allocation failed",image)
               }
             /*
               Convert PICT tile image to pixel packets.
@@ -1166,7 +1173,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if (codes[code].length == -1)
               (void) ReadBlobMSBShort(image);
             else
-              for (i=0; i < codes[code].length; i++)
+              for (i=0; i < (size_t) codes[code].length; i++)
                 (void) ReadBlobByte(image);
           }
         }
@@ -1392,8 +1399,10 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     *indexes;
 
   register int
-    i,
     x;
+
+  register size_t
+    i;
 
   register PixelPacket
     *p;
@@ -1510,7 +1519,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     {
       WriteBlobMSBShort(image,0xa1);
       WriteBlobMSBShort(image,0x1f2);
-      WriteBlobMSBShort(image,image->iptc_profile.length+4);
+      WriteBlobMSBShort(image,(int) (image->iptc_profile.length+4));
       WriteBlobString(image,"8BIM");
       WriteBlob(image,image->iptc_profile.length,image->iptc_profile.info);
     }
@@ -1518,7 +1527,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     {
       WriteBlobMSBShort(image,0xa1);
       WriteBlobMSBShort(image,0xe0);
-      WriteBlobMSBShort(image,image->color_profile.length+4);
+      WriteBlobMSBShort(image,(int) (image->color_profile.length+4));
       WriteBlobMSBLong(image,0x00000000UL);
       WriteBlob(image,image->color_profile.length,image->color_profile.info);
       WriteBlobMSBShort(image,0xa1);
@@ -1648,12 +1657,12 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       WriteBlobMSBLong(image,0x00000000L);  /* color seed */
       WriteBlobMSBShort(image,0L);  /* color flags */
       WriteBlobMSBShort(image,(unsigned short) Max(image->colors-1,1));
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
       {
         red=((unsigned long) (image->colormap[i].red*65535L)/MaxRGB);
         green=((unsigned long) (image->colormap[i].green*65535L)/MaxRGB);
         blue=((unsigned long) (image->colormap[i].blue*65535L)/MaxRGB);
-        WriteBlobMSBShort(image,(unsigned int) i);
+        WriteBlobMSBShort(image,(int) i);
         WriteBlobMSBShort(image,red);
         WriteBlobMSBShort(image,green);
         WriteBlobMSBShort(image,blue);
@@ -1741,7 +1750,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   WriteBlobMSBShort(image,PictEndOfPictureOp);
   offset=TellBlob(image);
   (void) SeekBlob(image,512,SEEK_SET);
-  WriteBlobMSBShort(image,offset);
+  WriteBlobMSBShort(image,(int) offset);
   LiberateMemory((void **) &scanline);
   LiberateMemory((void **) &packed_scanline);
   LiberateMemory((void **) &buffer);

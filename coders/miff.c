@@ -170,11 +170,13 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   register unsigned char
     *p;
@@ -696,7 +698,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         /*
           Generic profile.
         */
-        for (i=0; i < (int) image->generic_profiles; i++)
+        for (i=0; i < image->generic_profiles; i++)
         {
           if (image->generic_profile[i].length == 0)
             continue;
@@ -737,14 +739,14 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             (void) ReadBlob(image,packet_size*image->colors,colormap);
             p=colormap;
             if (image->depth <= 8)
-              for (i=0; i < (int) image->colors; i++)
+              for (i=0; i < image->colors; i++)
               {
                 image->colormap[i].red=UpScale(*p++);
                 image->colormap[i].green=UpScale(*p++);
                 image->colormap[i].blue=UpScale(*p++);
               }
             else
-              for (i=0; i < (int) image->colors; i++)
+              for (i=0; i < image->colors; i++)
               {
                 image->colormap[i].red=(*p++ << 8);
                 image->colormap[i].red|=(*p++);
@@ -806,7 +808,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 zip_info.next_in=compress_pixels;
                 length=(int) (1.01*packet_size*image->columns+12);
-                zip_info.avail_in=ReadBlob(image,length,zip_info.next_in);
+                zip_info.avail_in=(unsigned int)
+                  ReadBlob(image,length,zip_info.next_in);
               }
             if (inflate(&zip_info,Z_NO_FLUSH) == Z_STREAM_END)
               break;
@@ -839,7 +842,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 {
                   bzip_info.next_in=(char *) compress_pixels;
                   length=(int) (1.01*packet_size*image->columns+12);
-                  bzip_info.avail_in=ReadBlob(image,length,bzip_info.next_in);
+                  bzip_info.avail_in=(unsigned int)
+                    ReadBlob(image,length,bzip_info.next_in);
                 }
               if (BZ2_bzDecompress(&bzip_info) == BZ_STREAM_END)
                 break;
@@ -1176,7 +1180,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     index;
 
   int
-    length,
     y;
 
   PixelPacket
@@ -1189,11 +1192,16 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     *p;
 
   register int
-    i,
     x;
 
   register unsigned char
     *q;
+
+  register size_t
+    i;
+
+  size_t
+    length;
 
   unsigned char
     *compress_pixels,
@@ -1383,7 +1391,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Generic profile.
         */
-        for (i=0; i < (int) image->generic_profiles; i++)
+        for (i=0; i < image->generic_profiles; i++)
         {
           FormatString(buffer,"profile-%.1024s=%u\n",
             image->generic_profile[i].name == (char *) NULL ? "generic" :
@@ -1404,13 +1412,13 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         continue;
       FormatString(buffer,"%.1024s=",attribute->key);
       (void) WriteBlobString(image,buffer);
-      for (i=0; i < (int) strlen(attribute->value); i++)
+      for (i=0; i < strlen(attribute->value); i++)
         if (isspace((int) attribute->value[i]))
           break;
-      if (i < (int) strlen(attribute->value))
+      if (i < strlen(attribute->value))
         (void) WriteBlobByte(image,'{');
       (void) WriteBlob(image,strlen(attribute->value),attribute->value);
-      if (i < (int) strlen(attribute->value))
+      if (i < strlen(attribute->value))
         (void) WriteBlobByte(image,'}');
       (void) WriteBlobByte(image,'\n');
     }
@@ -1425,21 +1433,21 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,'\0');
       }
     if (image->color_profile.length > 0)
-      (void) WriteBlob(image,(int) image->color_profile.length,
+      (void) WriteBlob(image,image->color_profile.length,
         (char *) image->color_profile.info);
     if (image->iptc_profile.length > 0)
-      (void) WriteBlob(image,(int) image->iptc_profile.length,
+      (void) WriteBlob(image,image->iptc_profile.length,
         (char *) image->iptc_profile.info);
     if (image->generic_profiles != 0)
       {
         /*
           Generic profile.
         */
-        for (i=0; i < (int) image->generic_profiles; i++)
+        for (i=0; i < image->generic_profiles; i++)
         {
           if (image->generic_profile[i].length == 0)
             continue;
-          (void) WriteBlob(image,(int) image->generic_profile[i].length,
+          (void) WriteBlob(image,image->generic_profile[i].length,
             (char *) image->generic_profile[i].info);
         }
       }
@@ -1467,14 +1475,14 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         */
         q=colormap;
         if (image->depth <= 8)
-          for (i=0; i < (int) image->colors; i++)
+          for (i=0; i < image->colors; i++)
           {
             *q++=DownScale(image->colormap[i].red);
             *q++=DownScale(image->colormap[i].green);
             *q++=DownScale(image->colormap[i].blue);
           }
         else
-          for (i=0; i < (int) image->colors; i++)
+          for (i=0; i < image->colors; i++)
           {
             *q++=image->colormap[i].red >> 8;
             *q++=image->colormap[i].red & 0xff;
@@ -1625,9 +1633,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         else
 #endif
           if (compression == RunlengthEncodedCompression)
-            status=WriteBlob(image,q-pixels,pixels);
+            (void) WriteBlob(image,q-pixels,pixels);
           else
-            status=WriteBlob(image,packet_size*image->columns,pixels);
+            (void) WriteBlob(image,packet_size*image->columns,pixels);
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
           MagickMonitor(SaveImageText,y,image->rows);

@@ -126,9 +126,6 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ImageInfo
     *clone_info;
 
-  int
-    length;
-
   void
     *context;
 
@@ -140,7 +137,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (file == (FILE *) NULL)
     {
       DestroyImageInfo(clone_info);
-      ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+      ThrowReaderException(FileOpenWarning,"Unable to open file",image)
     }
   (void) strcpy(filename,image_info->magick);
   (void) strcat(filename,":");
@@ -155,7 +152,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       context=xmlNanoHTTPOpen(filename,&type);
       if (context != (void *) NULL)
         {
-          while ((length=xmlNanoHTTPRead(context,buffer,MaxTextExtent)) > 0)
+          while (xmlNanoHTTPRead(context,buffer,MaxTextExtent) > 0)
             (void) fwrite(buffer,MaxTextExtent,1,file);
           xmlNanoHTTPClose(context);
           xmlFree(type);

@@ -183,23 +183,25 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     y;
 
   long
-    count,
     quantum;
 
   register IndexPacket
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
 
+  register size_t
+    i;
+
   register unsigned char
     *p;
 
   size_t
+    count,
     number_pixels;
 
   unsigned char
@@ -351,8 +353,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     /*
       Convert FITS pixels to pixel packets.
     */
-    status=ReadBlob(image,packet_size*number_pixels,fits_pixels);
-    if (status == False)
+    count=ReadBlob(image,packet_size*number_pixels,fits_pixels);
+    if (count == 0)
       ThrowReaderException(CorruptImageWarning,
         "Insufficient image data in file",image);
     if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))
@@ -378,7 +380,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           pixel=(double) (*((double *) long_quantum));
         fits_info.min_data=pixel*fits_info.scale-fits_info.zero;
         fits_info.max_data=pixel*fits_info.scale-fits_info.zero;
-        for (i=1; i < (int) number_pixels; i++)
+        for (i=1; i < number_pixels; i++)
         {
           long_quantum[0]=(*p);
           quantum=(*p++);

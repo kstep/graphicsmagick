@@ -223,7 +223,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     {
       DestroyImage(histogram_image);
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-        image);
+        image)
     }
   /*
     Initialize histogram count arrays.

@@ -520,7 +520,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            Ascii85Encode(image,MaxRGB-DownScale(p->opacity));
+            Ascii85Encode(image,(int) (MaxRGB-DownScale(p->opacity)));
             Ascii85Encode(image,DownScale(p->red));
             Ascii85Encode(image,DownScale(p->green));
             Ascii85Encode(image,DownScale(p->blue));

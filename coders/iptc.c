@@ -145,12 +145,14 @@ static Image *ReadIPTCImage(const ImageInfo *image_info,
   register unsigned char
     *q;
 
+  size_t
+    length;
+
   unsigned char
     *data;
 
   unsigned int
     tag_length,
-    length,
     status;
 
   /*
@@ -174,12 +176,12 @@ static Image *ReadIPTCImage(const ImageInfo *image_info,
   memcpy(data,"8BIM\04\04\0\0\0\0\0\0",tag_length);
   q=data;
   q+=tag_length;
-  while (1)
+  for ( ; ; )
   {
     c=ReadBlobByte(image);
     if (c == EOF)
       break;
-    if ((q-data+1) >= (int) length)
+    if ((size_t) (q-data+1) >= length)
       {
         image->iptc_profile.length=q-data;
         length<<=1;
@@ -297,7 +299,7 @@ ModuleExport void UnregisterIPTCImage(void)
 %
 */
 
-static long GetIPTCStream(unsigned char **info,long length)
+static long GetIPTCStream(unsigned char **info,unsigned long length)
 {
   unsigned char
     buffer[4];
@@ -308,13 +310,15 @@ static long GetIPTCStream(unsigned char **info,long length)
   register unsigned char
     *p;
 
+  size_t
+    info_length,
+    tag_length;
+
   unsigned char
     c;
 
   unsigned int
-    info_length,
-    marker,
-    tag_length;
+    marker;
 
   /*
     Find the beginning of the IPTC info.
@@ -397,7 +401,7 @@ static long GetIPTCStream(unsigned char **info,long length)
         info_length++;
         tag_length|=(long) c;
       }
-    if ((int) tag_length > length)
+    if (tag_length > length)
       break;
     p+=tag_length;
     length-=tag_length;
@@ -432,7 +436,7 @@ static unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  (void) WriteBlob(image,(int) length,info);
+  (void) WriteBlob(image,length,info);
   CloseBlob(image);
   return(True);
 }

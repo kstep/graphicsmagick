@@ -250,7 +250,7 @@ static unsigned int WriteICMImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  (void) WriteBlob(image,(int) image->color_profile.length,
+  (void) WriteBlob(image,image->color_profile.length,
     (char *) image->color_profile.info);
   CloseBlob(image);
   return(True);

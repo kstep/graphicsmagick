@@ -165,12 +165,12 @@ static Image *Read8BIMImage(const ImageInfo *image_info,
   */
   length=MaxTextExtent;
   image->iptc_profile.info=(unsigned char *) AcquireMemory(length+2);
-  for (q=image->iptc_profile.info; image->iptc_profile.info; q++)
+  for (q=image->iptc_profile.info; q != (unsigned char *) NULL; q++)
   {
     c=ReadBlobByte(image);
     if (c == EOF)
       break;
-    if ((q-image->iptc_profile.info+1) >= (int) length)
+    if ((size_t) (q-image->iptc_profile.info+1) >= length)
       {
         image->iptc_profile.length=q-image->iptc_profile.info;
         length<<=1;
@@ -292,7 +292,7 @@ static unsigned int Write8BIMImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  (void) WriteBlob(image,(int) image->iptc_profile.length,
+  (void) WriteBlob(image,image->iptc_profile.length,
     (char *) image->iptc_profile.info);
   CloseBlob(image);
   return(True);

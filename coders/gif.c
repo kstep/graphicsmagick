@@ -76,7 +76,7 @@ static unsigned int
 %
 %  The format of the DecodeImage method is:
 %
-%      unsigned int DecodeImage(Image *image,const int opacity)
+%      unsigned int DecodeImage(Image *image,const long opacity)
 %
 %  A description of each parameter follows:
 %
@@ -90,7 +90,7 @@ static unsigned int
 %
 %
 */
-static unsigned int DecodeImage(Image *image,const int opacity)
+static unsigned int DecodeImage(Image *image,const long opacity)
 {
 #define MaxStackSize  4096
 #define NullCode  (-1)
@@ -102,7 +102,6 @@ static unsigned int DecodeImage(Image *image,const int opacity)
     clear,
     code_mask,
     code_size,
-    count,
     end_of_information,
     in_code,
     offset,
@@ -124,6 +123,9 @@ static unsigned int DecodeImage(Image *image,const int opacity)
 
   register unsigned int
     datum;
+
+  size_t
+    count;
 
   short
     *prefix;
@@ -201,7 +203,7 @@ static unsigned int DecodeImage(Image *image,const int opacity)
                     Read a new data block.
                   */
                   count=ReadBlobBlock(image,packet);
-                  if (count <= 0)
+                  if (count == 0)
                     break;
                   c=packet;
                 }
@@ -720,17 +722,22 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   int
-    opacity,
     status;
+
+  long
+    opacity;
 
   RectangleInfo
     page;
 
-  register int
+  register size_t
     i;
 
   register unsigned char
     *p;
+
+  size_t
+    count;
 
   unsigned char
     background,
@@ -757,8 +764,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine if this is a GIF file.
   */
-  status=ReadBlob(image,6,(char *) magick);
-  if ((status == False) || ((LocaleNCompare((char *) magick,"GIF87",5) != 0) &&
+  count=ReadBlob(image,6,(char *) magick);
+  if ((count == 0) || ((LocaleNCompare((char *) magick,"GIF87",5) != 0) &&
       (LocaleNCompare((char *) magick,"GIF89",5) != 0)))
     ThrowReaderException(CorruptImageWarning,"Not a GIF image file",image);
   global_colors=0;
@@ -781,8 +788,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image_count=0;
   for ( ; ; )
   {
-    status=ReadBlob(image,1,(char *) &c);
-    if (status == False)
+    count=ReadBlob(image,1,(char *) &c);
+    if (count == 0)
       break;
     if (c == ';')
       break;  /* terminator */
@@ -791,8 +798,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           GIF Extension block.
         */
-        status=ReadBlob(image,1,(char *) &c);
-        if (status == False)
+        count=ReadBlob(image,1,(char *) &c);
+        if (count == 0)
           ThrowReaderException(CorruptImageWarning,
             "Unable to read extension block",image);
         switch (c)
@@ -814,19 +821,16 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             char
               *comments;
 
-            int
-              length;
-
             /*
               Read Comment extension.
             */
             comments=AllocateString((char *) NULL);
             for ( ; ; )
             {
-              length=ReadBlobBlock(image,header);
-              if (length <= 0)
+              count=ReadBlobBlock(image,header);
+              if (count == 0)
                 break;
-              header[length]='\0';
+              header[count]='\0';
               (void) ConcatenateString(&comments,(const char *) header);
             }
             (void) SetImageAttribute(image,"comment",comments);
@@ -886,7 +890,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     flag=ReadBlobByte(image);
     image->interlace=BitSet(flag,0x40) ? PlaneInterlace : NoInterlace;
     image->colors=!BitSet(flag,0x80) ? global_colors : 1 << ((flag & 0x07)+1);
-    if (opacity >= (int) image->colors)
+    if (opacity >= (long) image->colors)
       image->colors=opacity+1;
     image->page.width=page.width;
     image->page.height=page.height;
@@ -913,7 +917,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Use global colormap.
         */
         p=global_colormap;
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
           image->colormap[i].red=UpScale(*p++);
           image->colormap[i].green=UpScale(*p++);
@@ -936,7 +940,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         (void) ReadBlob(image,3*image->colors,(char *) colormap);
         p=colormap;
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
           image->colormap[i].red=UpScale(*p++);
           image->colormap[i].green=UpScale(*p++);
@@ -1070,8 +1074,10 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     *next_image;
 
   int
-    j,
     y;
+
+  long
+    opacity;
 
   QuantizeInfo
     quantize_info;
@@ -1083,14 +1089,19 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *p;
 
+  register size_t
+    i;
+
   register unsigned char
     *q;
+
+  size_t
+    j;
 
   unsigned char
     bits_per_pixel,
@@ -1100,7 +1111,6 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
 
   unsigned int
     interlace,
-    opacity,
     scene,
     status;
 
@@ -1187,7 +1197,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
                 LiberateMemory((void **) &global_colormap);
                 LiberateMemory((void **) &colormap);
                 ThrowWriterException(ResourceLimitWarning,
-                  "Memory allocation failed",image);
+                  "Memory allocation failed",image)
               }
             image->colormap[opacity]=image->background_color;
             for (y=0; y < (int) image->rows; y++)
@@ -1199,7 +1209,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (int) image->columns; x++)
               {
                 if (p->opacity == TransparentOpacity)
-                  indexes[x]=opacity;
+                  indexes[x]=(IndexPacket) opacity;
                 p++;
               }
               if (!SyncImagePixels(image))
@@ -1235,16 +1245,16 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     if (image->colormap == (PixelPacket *) NULL)
       break;
     for (bits_per_pixel=1; bits_per_pixel < 8; bits_per_pixel++)
-      if ((1 << bits_per_pixel) >= (int) image->colors)
+      if ((1UL << bits_per_pixel) >= image->colors)
         break;
     q=colormap;
-    for (i=0; i < (int) image->colors; i++)
+    for (i=0; i < image->colors; i++)
     {
       *q++=DownScale(image->colormap[i].red);
       *q++=DownScale(image->colormap[i].green);
       *q++=DownScale(image->colormap[i].blue);
     }
-    for ( ; i < (int) (1 << bits_per_pixel); i++)
+    for ( ; i < (1UL << bits_per_pixel); i++)
     {
       *q++=(Quantum) 0x0;
       *q++=(Quantum) 0x0;
@@ -1259,10 +1269,10 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         c|=(8-1) << 4;  /* color resolution */
         c|=(bits_per_pixel-1);   /* size of global colormap */
         (void) WriteBlobByte(image,c);
-        for (j=0; j < (int) Max(image->colors-1,1); j++)
+        for (j=0; j < Max(image->colors-1,1); j++)
           if (ColorMatch(image->background_color,image->colormap[j],0))
             break;
-        (void) WriteBlobByte(image,j);  /* background color */
+        (void) WriteBlobByte(image,(int) j);  /* background color */
         (void) WriteBlobByte(image,0x0);  /* reserved */
         (void) WriteBlob(image,3*(1 << bits_per_pixel),(char *) colormap);
         for (j=0; j < 768; j++)
@@ -1281,7 +1291,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
           c|=0x01;
         (void) WriteBlobByte(image,c);
         WriteBlobLSBShort(image,image->delay);
-        (void) WriteBlobByte(image,opacity);
+        (void) WriteBlobByte(image,(int) opacity);
         (void) WriteBlobByte(image,0x00);
         if (GetImageAttribute(image,"comment") != (ImageAttribute *) NULL)
           {
@@ -1291,7 +1301,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             register char
               *p;
 
-            register unsigned int
+            size_t
               count;
 
             /*
@@ -1304,8 +1314,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             while (strlen(p) > 0)
             {
               count=Min(strlen(p),255);
-              (void) WriteBlobByte(image,count);
-              for (i=0; i < (int) count; i++)
+              (void) WriteBlobByte(image,(int) count);
+              for (i=0; i < count; i++)
                 (void) WriteBlobByte(image,*p++);
             }
             (void) WriteBlobByte(image,0x0);
@@ -1347,10 +1357,10 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     c=0x00;
     if (interlace != NoInterlace)
       c|=0x40;  /* pixel data is interlaced */
-    for (j=0; j < (int) (3*image->colors); j++)
+    for (j=0; j < (3*image->colors); j++)
       if (colormap[j] != global_colormap[j])
         break;
-    if (j == (int) (3*image->colors))
+    if (j == (3*image->colors))
       (void) WriteBlobByte(image,c);
     else
       {
@@ -1370,7 +1380,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         LiberateMemory((void **) &global_colormap);
         LiberateMemory((void **) &colormap);
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-          image);
+          image)
       }
     (void) WriteBlobByte(image,0x0);
     if (image->next == (Image *) NULL)

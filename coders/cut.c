@@ -345,7 +345,7 @@ CUT_KO:  ThrowReaderException(CorruptImageWarning,"Not a CUT image file",image);
  if ((clone_info=CloneImageInfo(image_info)) == NULL) goto NoPalette;
  
  
- i=strlen(clone_info->filename);
+ i=(int) strlen(clone_info->filename);
  j=i;
  while(--i>0)
         {
@@ -414,7 +414,7 @@ ErasePalette:
    
    for(i=0;i<=(int) PalHeader.MaxIndex;i++)
            {      /*this may be wrong- I don't know why is palette such strange*/
-	   j=TellBlob(palette);
+	   j=(int) TellBlob(palette);
 	   if((j % 512)>512-/*sizeof(pal)*/6)
 	       {
 	       j=((j / 512)+1)*512;
@@ -452,7 +452,7 @@ NoPalette:
    if (!AllocateImageColormap(image,image->colors))
 	   {
 NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-				image);
+				image)
            }	   
    
    for (i=0; i < (int)image->colors; i++)
@@ -474,7 +474,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
       EncodedByte=ReadBlobLSBShort(image);
 
       ptrB=BImgBuff;
-      j=ldblk;
+      j=(int) ldblk;
 
       RunCount=ReadBlobByte(image);
       RunCountMasked=RunCount & 0x7F;
