@@ -7179,14 +7179,14 @@ static void XMagnifyWindowCommand(Display *display,XWindows *windows,
     case XK_Right:
     case XK_KP_Right:
     {
-      if (windows->magnify.x < (int) (windows->image.width-1))
+      if (windows->magnify.x < (int) (windows->image.ximage->width-1))
         windows->magnify.x+=quantum;
       break;
     }
     case XK_Down:
     case XK_KP_Down:
     {
-      if (windows->magnify.y < (int) (windows->image.height-1))
+      if (windows->magnify.y < (int) (windows->image.ximage->height-1))
         windows->magnify.y+=quantum;
       break;
     }

@@ -1252,7 +1252,7 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
         /*
           Read a scan line.
         */
-        j=(int) (y_offset[y]+0.5);
+        j=y_offset[y];
         p=GetImagePixels(image,0,j,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
