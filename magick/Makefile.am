@@ -98,307 +98,307 @@ avs_la_LIBADD       = libMagick.la
 # BIM module
 bim_la_SOURCES     = bim.c
 bim_la_LDFLAGS     = -no-undefined -module -avoid-version
-bim_la_LIBADD      = 
+bim_la_LIBADD      = libMagick.la
 
 # BMP module
 bmp_la_SOURCES      = bmp.c
 bmp_la_LDFLAGS      = -no-undefined -module -avoid-version
-bmp_la_LIBADD       =
+bmp_la_LIBADD       = libMagick.la
 
 # CMYK module
 cmyk_la_SOURCES     = cmyk.c
 cmyk_la_LDFLAGS     = -no-undefined -module -avoid-version
-cmyk_la_LIBADD      =
+cmyk_la_LIBADD      = libMagick.la
 
 # DCM module
 dcm_la_SOURCES      = dcm.c
 dcm_la_LDFLAGS      = -no-undefined -module -avoid-version
-dcm_la_LIBADD       =
+dcm_la_LIBADD       = libMagick.la
 
 # DPS module
 dps_la_SOURCES      = dps.c
 dps_la_LDFLAGS      = -no-undefined -module -avoid-version
-dps_la_LIBADD       = @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@
+dps_la_LIBADD       = libMagick.la @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@
 
 # EPT module
 ept_la_SOURCES      = ept.c
 ept_la_LDFLAGS      = -no-undefined -module -avoid-version
-ept_la_LIBADD       =
+ept_la_LIBADD       = libMagick.la
 
 # FAX module
 fax_la_SOURCES      = fax.c
 fax_la_LDFLAGS      = -no-undefined -module -avoid-version
-fax_la_LIBADD       =
+fax_la_LIBADD       = libMagick.la
 
 # FITS module
 fits_la_SOURCES     = fits.c
 fits_la_LDFLAGS     = -no-undefined -module -avoid-version
-fits_la_LIBADD      =
+fits_la_LIBADD      = libMagick.la
 
 # FPX module
 fpx_la_SOURCES      = fpx.c
 fpx_la_LDFLAGS      = -no-undefined -module -avoid-version
-fpx_la_LIBADD       = @LIB_FPX@
+fpx_la_LIBADD       = libMagick.la @LIB_FPX@
 
 # GIF module
 gif_la_SOURCES      = gif.c
 gif_la_LDFLAGS      = -no-undefined -module -avoid-version
-gif_la_LIBADD       =
+gif_la_LIBADD       = libMagick.la
 
 # GRAY module
 gray_la_SOURCES     = gray.c
 gray_la_LDFLAGS     = -no-undefined -module -avoid-version
-gray_la_LIBADD      =
+gray_la_LIBADD      = libMagick.la
 
 # HDF module
 hdf_la_SOURCES      = hdf.c
 hdf_la_LDFLAGS      = -no-undefined -module -avoid-version
-hdf_la_LIBADD       = @LIB_HDF@ @LIB_JPEG@ @LIB_ZLIB@
+hdf_la_LIBADD       = libMagick.la @LIB_HDF@ @LIB_JPEG@ @LIB_ZLIB@
 
 # ICC module
 icc_la_SOURCES      = icc.c
 icc_la_LDFLAGS      = -no-undefined -module -avoid-version
-icc_la_LIBADD       =
+icc_la_LIBADD       = libMagick.la
 
 # ICON module
 icon_la_SOURCES     = icon.c
 icon_la_LDFLAGS     = -no-undefined -module -avoid-version
-icon_la_LIBADD      =
+icon_la_LIBADD      = libMagick.la
 
 # IPTC module
 iptc_la_SOURCES     = iptc.c
 iptc_la_LDFLAGS     = -no-undefined -module -avoid-version
-iptc_la_LIBADD      =
+iptc_la_LIBADD      = libMagick.la
 
 # JBIG module
 jbig_la_SOURCES     = jbig.c
 jbig_la_LDFLAGS     = -no-undefined -module -avoid-version
-jbig_la_LIBADD      = @LIB_JBIG@
+jbig_la_LIBADD      = libMagick.la @LIB_JBIG@
 
 # JPEG module
 jpeg_la_SOURCES     = jpeg.c
 jpeg_la_LDFLAGS     = -no-undefined -module -avoid-version
-jpeg_la_LIBADD      = @LIB_JPEG@
+jpeg_la_LIBADD      = libMagick.la @LIB_JPEG@
 
 # LOGO module
 logo_la_SOURCES     = logo.c
 logo_la_LDFLAGS     = -no-undefined -module -avoid-version
-logo_la_LIBADD      =
+logo_la_LIBADD      = libMagick.la
 
 # MIFF module
 miff_la_SOURCES     = miff.c
 miff_la_LDFLAGS     = -no-undefined -module -avoid-version
-miff_la_LIBADD      =
+miff_la_LIBADD      = libMagick.la
 
 # MONO module
 mono_la_SOURCES     = mono.c
 mono_la_LDFLAGS     = -no-undefined -module -avoid-version
-mono_la_LIBADD      =
+mono_la_LIBADD      = libMagick.la
 
 # MTV module
 mtv_la_SOURCES      = mtv.c
 mtv_la_LDFLAGS      = -no-undefined -module -avoid-version
-mtv_la_LIBADD       =
+mtv_la_LIBADD       = libMagick.la
 
 # PCD module
 pcd_la_SOURCES      = pcd.c
 pcd_la_LDFLAGS      = -no-undefined -module -avoid-version
-pcd_la_LIBADD       =
+pcd_la_LIBADD       = libMagick.la
 
 # PCL module
 pcl_la_SOURCES      = pcl.c
 pcl_la_LDFLAGS      = -no-undefined -module -avoid-version
-pcl_la_LIBADD       =
+pcl_la_LIBADD       = libMagick.la
 
 # PCX module
 pcx_la_SOURCES      = pcx.c
 pcx_la_LDFLAGS      = -no-undefined -module -avoid-version
-pcx_la_LIBADD       =
+pcx_la_LIBADD       = libMagick.la
 
 # PDB module
 pdb_la_SOURCES      = pdb.c
 pdb_la_LDFLAGS      = -no-undefined -module -avoid-version
-pdb_la_LIBADD       =
+pdb_la_LIBADD       = libMagick.la
 
 # PDF module
 pdf_la_SOURCES      = pdf.c
 pdf_la_LDFLAGS      = -no-undefined -module -avoid-version
-pdf_la_LIBADD       =
+pdf_la_LIBADD       = libMagick.la
 
 # PICT module
 pict_la_SOURCES     = pict.c
 pict_la_LDFLAGS     = -no-undefined -module -avoid-version
-pict_la_LIBADD      =
+pict_la_LIBADD      = libMagick.la
 
 # PIX module
 pix_la_SOURCES      = pix.c
 pix_la_LDFLAGS      = -no-undefined -module -avoid-version
-pix_la_LIBADD       =
+pix_la_LIBADD       = libMagick.la
 
 # PNG module
 png_la_SOURCES      = png.c
 png_la_LDFLAGS      = -no-undefined -module -avoid-version
-png_la_LIBADD       = @LIB_PNG@ @LIB_ZLIB@
+png_la_LIBADD       = libMagick.la @LIB_PNG@ @LIB_ZLIB@
 
 # PLASMA module
 plasma_la_SOURCES   = plasma.c
 plasma_la_LDFLAGS   = -no-undefined -module -avoid-version
-plasma_la_LIBADD    = 
+plasma_la_LIBADD    = libMagick.la
 
 # PNM module
 pnm_la_SOURCES      = pnm.c
 pnm_la_LDFLAGS      = -no-undefined -module -avoid-version
-pnm_la_LIBADD       = 
+pnm_la_LIBADD       = libMagick.la
 
 # PREVIEW module
 preview_la_SOURCES  = preview.c
 preview_la_LDFLAGS  = -no-undefined -module -avoid-version
-preview_la_LIBADD   =
+preview_la_LIBADD   = libMagick.la
 
 # PS module
 ps_la_SOURCES       = ps.c
 ps_la_LDFLAGS       = -no-undefined -module -avoid-version
-ps_la_LIBADD        = 
+ps_la_LIBADD        = libMagick.la
 
 # PS2 module
 ps2_la_SOURCES      = ps2.c
 ps2_la_LDFLAGS      = -no-undefined -module -avoid-version
-ps2_la_LIBADD       = 
+ps2_la_LIBADD       = libMagick.la
 
 # PS3 module
 ps3_la_SOURCES      = ps3.c
 ps3_la_LDFLAGS      = -no-undefined -module -avoid-version
-ps3_la_LIBADD       = 
+ps3_la_LIBADD       = libMagick.la
 
 # PSD module
 psd_la_SOURCES      = psd.c
 psd_la_LDFLAGS      = -no-undefined -module -avoid-version
-psd_la_LIBADD       = 
+psd_la_LIBADD       = libMagick.la
 
 # PWP module
 pwp_la_SOURCES      = pwp.c
 pwp_la_LDFLAGS      = -no-undefined -module -avoid-version
-pwp_la_LIBADD       = 
+pwp_la_LIBADD       = libMagick.la
 
 # RGB module
 rgb_la_SOURCES      = rgb.c
 rgb_la_LDFLAGS      = -no-undefined -module -avoid-version
-rgb_la_LIBADD       = 
+rgb_la_LIBADD       = libMagick.la
 
 # RLA module
 rla_la_SOURCES      = rla.c
 rla_la_LDFLAGS      = -no-undefined -module -avoid-version
-rla_la_LIBADD       = 
+rla_la_LIBADD       = libMagick.la
 
 # RLE module
 rle_la_SOURCES      = rle.c
 rle_la_LDFLAGS      = -no-undefined -module -avoid-version
-rle_la_LIBADD       = 
+rle_la_LIBADD       = libMagick.la
 
 # SCT module
 sct_la_SOURCES      = sct.c
 sct_la_LDFLAGS      = -no-undefined -module -avoid-version
-sct_la_LIBADD       = 
+sct_la_LIBADD       = libMagick.la
 
 # SFW module
 sfw_la_SOURCES      = sfw.c
 sfw_la_LDFLAGS      = -no-undefined -module -avoid-version
-sfw_la_LIBADD       = 
+sfw_la_LIBADD       = libMagick.la
 
 # SGI module
 sgi_la_SOURCES      = sgi.c
 sgi_la_LDFLAGS      = -no-undefined -module -avoid-version
-sgi_la_LIBADD       = 
+sgi_la_LIBADD       = libMagick.la
 
 # SUN module
 sun_la_SOURCES      = sun.c
 sun_la_LDFLAGS      = -no-undefined -module -avoid-version
-sun_la_LIBADD       = 
+sun_la_LIBADD       = libMagick.la
 
 # TGA module
 tga_la_SOURCES      = tga.c
 tga_la_LDFLAGS      = -no-undefined -module -avoid-version
-tga_la_LIBADD       = 
+tga_la_LIBADD       = libMagick.la
 
 # TIFF module
 tiff_la_SOURCES     = tiff.c
 tiff_la_LDFLAGS     = -no-undefined -module -avoid-version
-tiff_la_LIBADD      = @LIB_TIFF@ @LIB_ZLIB@
+tiff_la_LIBADD      = libMagick.la @LIB_TIFF@ @LIB_ZLIB@
 
 # TILE module
 tile_la_SOURCES     = tile.c
 tile_la_LDFLAGS     = -no-undefined -module -avoid-version
-tile_la_LIBADD      = 
+tile_la_LIBADD      = libMagick.la
 
 # TIM module
 tim_la_SOURCES      = tim.c
 tim_la_LDFLAGS      = -no-undefined -module -avoid-version
-tim_la_LIBADD       = 
+tim_la_LIBADD       = libMagick.la
 
 # TXT module
 txt_la_SOURCES      = txt.c
 txt_la_LDFLAGS      = -no-undefined -module -avoid-version
-txt_la_LIBADD       = 
+txt_la_LIBADD       = libMagick.la
 
 # UIL module
 uil_la_SOURCES      = uil.c
 uil_la_LDFLAGS      = -no-undefined -module -avoid-version
-uil_la_LIBADD       = 
+uil_la_LIBADD       = libMagick.la
 
 # UYVY module
 uyvy_la_SOURCES     = uyvy.c
 uyvy_la_LDFLAGS     = -no-undefined -module -avoid-version
-uyvy_la_LIBADD      = 
+uyvy_la_LIBADD      = libMagick.la
 
 # VICAR module
 vicar_la_SOURCES    = vicar.c
 vicar_la_LDFLAGS    = -no-undefined -module -avoid-version
-vicar_la_LIBADD     = 
+vicar_la_LIBADD     = libMagick.la
 
 # VID module
 vid_la_SOURCES      = vid.c
 vid_la_LDFLAGS      = -no-undefined -module -avoid-version
-vid_la_LIBADD       = 
+vid_la_LIBADD       = libMagick.la
 
 # VIFF module
 viff_la_SOURCES     = viff.c
 viff_la_LDFLAGS     = -no-undefined -module -avoid-version
-viff_la_LIBADD      = 
+viff_la_LIBADD      = libMagick.la
 
 # WBMP module
 wbmp_la_SOURCES     = wbmp.c
 wbmp_la_LDFLAGS     = -no-undefined -module -avoid-version
-wbmp_la_LIBADD      = 
+wbmp_la_LIBADD      = libMagick.la
 
 # X module
 x_la_SOURCES        = x.c
 x_la_LDFLAGS        = -no-undefined -module -avoid-version
-x_la_LIBADD         = @LIB_X11@
+x_la_LIBADD         = libMagick.la @LIB_X11@
 
 # XBM module
 xbm_la_SOURCES      = xbm.c
 xbm_la_LDFLAGS      = -no-undefined -module -avoid-version
-xbm_la_LIBADD       = 
+xbm_la_LIBADD       = libMagick.la
 
 # XC module
 xc_la_SOURCES       = xc.c
 xc_la_LDFLAGS       = -no-undefined -module -avoid-version
-xc_la_LIBADD        = 
+xc_la_LIBADD        = libMagick.la
 
 # XPM module
 xpm_la_SOURCES      = xpm.c
 xpm_la_LDFLAGS      = -no-undefined -module -avoid-version
-xpm_la_LIBADD       = 
+xpm_la_LIBADD       = libMagick.la
 
 # XWD module
 xwd_la_SOURCES      = xwd.c
 xwd_la_LDFLAGS      = -no-undefined -module -avoid-version
-xwd_la_LIBADD       = @LIB_X11@
+xwd_la_LIBADD       = libMagick.la @LIB_X11@
 
 # YUV module
 yuv_la_SOURCES      = yuv.c
 yuv_la_LDFLAGS      = -no-undefined -module -avoid-version
-yuv_la_LIBADD       = 
+yuv_la_LIBADD       = libMagick.la
 
 # Binary scripts
 bin_SCRIPTS = Magick-config
