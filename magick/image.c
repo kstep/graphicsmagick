@@ -2257,9 +2257,9 @@ MagickExport void DestroyImage(Image *image)
   /*
     Close image.
   */
+  CloseBlob(image);
   if (image->file != (FILE *) NULL)
     {
-      CloseBlob(image);
       if (image->temporary)
         (void) remove(image->filename);
     }
