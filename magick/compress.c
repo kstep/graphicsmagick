@@ -190,7 +190,7 @@ static const HuffmanTable
 %
 %  The format of the ASCII85Encode method is:
 %
-%      void Ascii85Initialize(void)
+%      void Ascii85Encode(Image *image,const unsigned long code)
 %
 %  A description of each parameter follows:
 %
@@ -215,22 +215,23 @@ static char *Ascii85Tuple(unsigned char *data)
     code,
     quantum;
 
-  code=(((data[0] << 8) | data[1]) << 16) | (data[2] << 8) | data[3];
+  code=((((unsigned long) data[0] << 8) | (unsigned long) data[1]) << 16) |
+    ((unsigned long) data[2] << 8) | (unsigned long) data[3];
   if (code == 0L)
     {
       tuple[0]='z';
       tuple[1]='\0';
       return(tuple);
     }
-  quantum=85L*85L*85L*85L;
+  quantum=85UL*85UL*85UL*85UL;
   for (i=0; i < 4; i++)
   {
     x=(long) (code/quantum);
     code-=quantum*x;
-    tuple[i]=(char) ('!'+x);
+    tuple[i]=(char) (x+(int) '!');
     quantum/=85L;
   }
-  tuple[4]=(char) ('!'+(code % 85L));
+  tuple[4]=(char) ((code % 85L)+(int) '!');
   tuple[5]='\0';
   return(tuple);
 }
@@ -651,7 +652,7 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
   bit>>=1;  \
   if ((bit & 0xff) == 0)   \
     {  \
-      (*write_byte)(image,(magick_uint8_t)byte,info);  \
+      (void) (*write_byte)(image,(magick_uint8_t)byte,info);  \
       byte=0;  \
       bit=0x80;  \
     }  \
@@ -717,7 +718,7 @@ MagickExport unsigned int HuffmanEncode2Image(const ImageInfo *image_info,
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
     return(False);
-  SetImageType(huffman_image,BilevelType);
+  (void) SetImageType(huffman_image,BilevelType);
   byte=0;
   bit=0x80;
   if (is_fax == True)
@@ -824,7 +825,7 @@ MagickExport unsigned int HuffmanEncode2Image(const ImageInfo *image_info,
     Flush bits.
   */
   if (bit != 0x80)
-    (*write_byte)(image,(magick_uint8_t)byte,info);
+    (void) (*write_byte)(image,(magick_uint8_t)byte,info);
   DestroyImage(huffman_image);
   MagickFreeMemory(scanline);
   return(True);
@@ -1080,7 +1081,7 @@ MagickExport unsigned int PackbitsEncode2Image(Image *image,
   int
     count;
 
-  register long
+  register int
     i,
     j;
 
