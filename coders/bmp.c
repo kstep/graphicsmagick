@@ -1,4 +1,4 @@
-/*
+/* 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -61,12 +61,8 @@
 typedef struct _BMPInfo
 {
   unsigned long
-    file_size;
-
-  unsigned short
-    reserved[2];
-
-  unsigned long
+    file_size,
+    ba_offset,
     offset_bits,
     size;
 
@@ -473,26 +469,27 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine if this is a BMP file.
   */
+  bmp_info.ba_offset=0;
   status=ReadBlob(image,2,(char *) magick);
   do
   {
     /*
       Verify BMP identifier.
     */
+    if (bmp_info.ba_offset == 0)
+      start_position=TellBlob(image)-2;
+    bmp_info.ba_offset=0;
     while (LocaleNCompare((char *) magick,"BA",2) == 0)
     {
       bmp_info.file_size=LSBFirstReadLong(image);
-      bmp_info.reserved[0]=LSBFirstReadShort(image);
-      bmp_info.reserved[1]=LSBFirstReadShort(image);
+      bmp_info.ba_offset=LSBFirstReadLong(image);
       bmp_info.offset_bits=LSBFirstReadLong(image);
       status=ReadBlob(image,2,(char *) magick);
     }
-    start_position=TellBlob(image)-2;
     if ((status == False) || (LocaleNCompare((char *) magick,"BM",2) != 0))
       ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
     bmp_info.file_size=LSBFirstReadLong(image);
-    bmp_info.reserved[0]=LSBFirstReadShort(image);
-    bmp_info.reserved[1]=LSBFirstReadShort(image);
+    (void) LSBFirstReadLong(image);
     bmp_info.offset_bits=LSBFirstReadLong(image);
     bmp_info.size=LSBFirstReadLong(image);
     if (bmp_info.size == 12)
@@ -839,6 +836,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
     *magick='\0';
+    if (bmp_info.ba_offset > 0)
+      SeekBlob(image,bmp_info.ba_offset,SEEK_SET);
     (void) ReadBlob(image,2,(char *) magick);
     if (IsBMP(magick,2))
       {
@@ -1034,8 +1033,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         bmp_info.number_colors=1 << bmp_info.bits_per_pixel;
       }
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
-    bmp_info.reserved[0]=0;
-    bmp_info.reserved[1]=0;
+    bmp_info.ba_offset=0;
     bmp_info.size=40;
     bmp_info.width=image->columns;
     bmp_info.height=image->rows;
@@ -1190,8 +1188,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     */
     (void) WriteBlob(image,2,"BM");
     (void) LSBFirstWriteLong(image,bmp_info.file_size);
-    (void) LSBFirstWriteShort(image,bmp_info.reserved[0]);
-    (void) LSBFirstWriteShort(image,bmp_info.reserved[1]);
+    (void) LSBFirstWriteLong(image,bmp_info.ba_offset);
     (void) LSBFirstWriteLong(image,bmp_info.offset_bits);
     (void) LSBFirstWriteLong(image,bmp_info.size);
     (void) LSBFirstWriteLong(image,bmp_info.width);
