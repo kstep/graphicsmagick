@@ -237,6 +237,11 @@ AUTOMAKE_OPTIONS = 1.6 foreign
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
+@WIN32_TRUE@MAGICK_WIN32_SRCS = clipboard.c
+@WIN32_FALSE@MAGICK_WIN32_SRCS = 
+@WIN32_TRUE@MAGICK_WIN32_MODULES = clipboard.la
+@WIN32_FALSE@MAGICK_WIN32_MODULES = 
+
 MAGICK_CODER_SRCS = \
   art.c avi.c avs.c bmp.c caption.c cmyk.c cut.c dcm.c dib.c dps.c dpx.c \
   ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c \
@@ -247,11 +252,12 @@ MAGICK_CODER_SRCS = \
   pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c \
   tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c url.c uyvy.c vicar.c \
   vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c xc.c xcf.c xpm.c xwd.c \
-  yuv.c
+  yuv.c $(MAGICK_WIN32_SRCS)
 
 @WITH_MODULES_TRUE@noinst_LTLIBRARIES = 
 @WITH_MODULES_FALSE@noinst_LTLIBRARIES = libCoders.la
 @WITH_MODULES_FALSE@libCoders_la_SOURCES = $(MAGICK_CODER_SRCS)
+@WITH_MODULES_FALSE@EXTRA_libCoders_la_SOURCES = clipboard.c
 
 # Additional files to distribute
 EXTRA_DIST = modules.mgk delegates.mgk.in type.mgk.in
@@ -282,7 +288,7 @@ LIBMAGICK = ../magick/libMagick.la
 @WITH_MODULES_TRUE@  pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la \
 @WITH_MODULES_TRUE@  tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la vicar.la \
 @WITH_MODULES_TRUE@  vid.la viff.la wbmp.la wmf.la wpg.la x.la xbm.la xc.la xcf.la xpm.la xwd.la \
-@WITH_MODULES_TRUE@  yuv.la
+@WITH_MODULES_TRUE@  yuv.la $(MAGICK_WIN32_MODULES)
 
 @WITH_MODULES_FALSE@pkg_LTLIBRARIES = 
 @WITH_MODULES_TRUE@MODULECOMMONFLAGS = -no-undefined -module -avoid-version
@@ -312,6 +318,11 @@ bmp_la_LIBADD = $(LIBMAGICK)
 caption_la_SOURCES = caption.c
 caption_la_LDFLAGS = $(MODULECOMMONFLAGS)
 caption_la_LIBADD = $(LIBMAGICK)
+
+# CLIPBOARD module
+clipboard_la_SOURCES = clipboard.c
+clipboard_la_LDFLAGS = $(MODULECOMMONFLAGS)
+clipboard_la_LIBADD = $(LIBMAGICK)
 
 # CMYK module
 cmyk_la_SOURCES = cmyk.c
@@ -765,6 +776,9 @@ bmp_la_OBJECTS = $(am_bmp_la_OBJECTS)
 caption_la_DEPENDENCIES = ../magick/libMagick.la
 am_caption_la_OBJECTS = caption.lo
 caption_la_OBJECTS = $(am_caption_la_OBJECTS)
+clipboard_la_DEPENDENCIES = ../magick/libMagick.la
+am_clipboard_la_OBJECTS = clipboard.lo
+clipboard_la_OBJECTS = $(am_clipboard_la_OBJECTS)
 cmyk_la_DEPENDENCIES = ../magick/libMagick.la
 am_cmyk_la_OBJECTS = cmyk.lo
 cmyk_la_OBJECTS = $(am_cmyk_la_OBJECTS)
@@ -830,6 +844,8 @@ am_label_la_OBJECTS = label.lo
 label_la_OBJECTS = $(am_label_la_OBJECTS)
 libCoders_la_LDFLAGS =
 libCoders_la_LIBADD =
+@WIN32_TRUE@am__objects_2 = clipboard.lo
+@WIN32_FALSE@am__objects_2 =
 am__objects_1 = art.lo avi.lo avs.lo bmp.lo caption.lo cmyk.lo cut.lo \
 	dcm.lo dib.lo dps.lo dpx.lo ept.lo fax.lo fits.lo fpx.lo gif.lo \
 	gradient.lo gray.lo hdf.lo histogram.lo html.lo icon.lo jbig.lo \
@@ -840,7 +856,8 @@ am__objects_1 = art.lo avi.lo avs.lo bmp.lo caption.lo cmyk.lo cut.lo \
 	ps3.lo psd.lo pwp.lo rgb.lo rla.lo rle.lo sct.lo sfw.lo sgi.lo \
 	stegano.lo sun.lo svg.lo tga.lo tiff.lo tile.lo tim.lo ttf.lo \
 	txt.lo uil.lo url.lo uyvy.lo vicar.lo vid.lo viff.lo wbmp.lo \
-	wmf.lo wpg.lo x.lo xbm.lo xc.lo xcf.lo xpm.lo xwd.lo yuv.lo
+	wmf.lo wpg.lo x.lo xbm.lo xc.lo xcf.lo xpm.lo xwd.lo yuv.lo \
+	$(am__objects_2)
 @WITH_MODULES_FALSE@am_libCoders_la_OBJECTS = $(am__objects_1)
 libCoders_la_OBJECTS = $(am_libCoders_la_OBJECTS)
 logo_la_DEPENDENCIES = ../magick/libMagick.la
@@ -1040,49 +1057,49 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/art.Plo ./$(DEPDIR)/avi.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/avs.Plo ./$(DEPDIR)/bmp.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/caption.Plo ./$(DEPDIR)/cmyk.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/cut.Plo ./$(DEPDIR)/dcm.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/dib.Plo ./$(DEPDIR)/dps.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/dpx.Plo ./$(DEPDIR)/ept.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/fax.Plo ./$(DEPDIR)/fits.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/fpx.Plo ./$(DEPDIR)/gif.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/gradient.Plo ./$(DEPDIR)/gray.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/hdf.Plo ./$(DEPDIR)/histogram.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/html.Plo ./$(DEPDIR)/icon.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/jbig.Plo ./$(DEPDIR)/jp2.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/jpeg.Plo ./$(DEPDIR)/label.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/logo.Plo ./$(DEPDIR)/map.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/mat.Plo ./$(DEPDIR)/matte.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/meta.Plo ./$(DEPDIR)/miff.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/mono.Plo ./$(DEPDIR)/mpc.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/mpeg.Plo ./$(DEPDIR)/mpr.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/msl.Plo ./$(DEPDIR)/mtv.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/mvg.Plo ./$(DEPDIR)/null.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/otb.Plo ./$(DEPDIR)/palm.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/pcd.Plo ./$(DEPDIR)/pcl.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/pcx.Plo ./$(DEPDIR)/pdb.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/pdf.Plo ./$(DEPDIR)/pict.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/pix.Plo ./$(DEPDIR)/plasma.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/png.Plo ./$(DEPDIR)/pnm.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/preview.Plo ./$(DEPDIR)/ps.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/ps2.Plo ./$(DEPDIR)/ps3.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/psd.Plo ./$(DEPDIR)/pwp.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/rgb.Plo ./$(DEPDIR)/rla.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/rle.Plo ./$(DEPDIR)/sct.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/sfw.Plo ./$(DEPDIR)/sgi.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/stegano.Plo ./$(DEPDIR)/sun.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/svg.Plo ./$(DEPDIR)/tga.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/tiff.Plo ./$(DEPDIR)/tile.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/tim.Plo ./$(DEPDIR)/ttf.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/txt.Plo ./$(DEPDIR)/uil.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/url.Plo ./$(DEPDIR)/uyvy.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/vicar.Plo ./$(DEPDIR)/vid.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/viff.Plo ./$(DEPDIR)/wbmp.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/wmf.Plo ./$(DEPDIR)/wpg.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/x.Plo ./$(DEPDIR)/xbm.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/xc.Plo ./$(DEPDIR)/xcf.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/xpm.Plo ./$(DEPDIR)/xwd.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/yuv.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/caption.Plo ./$(DEPDIR)/clipboard.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/cmyk.Plo ./$(DEPDIR)/cut.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/dcm.Plo ./$(DEPDIR)/dib.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/dps.Plo ./$(DEPDIR)/dpx.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/ept.Plo ./$(DEPDIR)/fax.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/fits.Plo ./$(DEPDIR)/fpx.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/gif.Plo ./$(DEPDIR)/gradient.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/gray.Plo ./$(DEPDIR)/hdf.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/histogram.Plo ./$(DEPDIR)/html.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/icon.Plo ./$(DEPDIR)/jbig.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/jp2.Plo ./$(DEPDIR)/jpeg.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/label.Plo ./$(DEPDIR)/logo.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/map.Plo ./$(DEPDIR)/mat.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/matte.Plo ./$(DEPDIR)/meta.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/miff.Plo ./$(DEPDIR)/mono.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/mpc.Plo ./$(DEPDIR)/mpeg.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/mpr.Plo ./$(DEPDIR)/msl.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/mtv.Plo ./$(DEPDIR)/mvg.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/null.Plo ./$(DEPDIR)/otb.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/palm.Plo ./$(DEPDIR)/pcd.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/pcl.Plo ./$(DEPDIR)/pcx.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/pdb.Plo ./$(DEPDIR)/pdf.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/pict.Plo ./$(DEPDIR)/pix.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/plasma.Plo ./$(DEPDIR)/png.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/pnm.Plo ./$(DEPDIR)/preview.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/ps.Plo ./$(DEPDIR)/ps2.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/ps3.Plo ./$(DEPDIR)/psd.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/pwp.Plo ./$(DEPDIR)/rgb.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/rla.Plo ./$(DEPDIR)/rle.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/sct.Plo ./$(DEPDIR)/sfw.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/sgi.Plo ./$(DEPDIR)/stegano.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/sun.Plo ./$(DEPDIR)/svg.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/tga.Plo ./$(DEPDIR)/tiff.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/tile.Plo ./$(DEPDIR)/tim.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/ttf.Plo ./$(DEPDIR)/txt.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/uil.Plo ./$(DEPDIR)/url.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/uyvy.Plo ./$(DEPDIR)/vicar.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/vid.Plo ./$(DEPDIR)/viff.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/wbmp.Plo ./$(DEPDIR)/wmf.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/wpg.Plo ./$(DEPDIR)/x.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/xbm.Plo ./$(DEPDIR)/xc.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/xcf.Plo ./$(DEPDIR)/xpm.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/xwd.Plo ./$(DEPDIR)/yuv.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -1092,14 +1109,15 @@ LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
 DIST_SOURCES = $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) \
-	$(bmp_la_SOURCES) $(caption_la_SOURCES) $(cmyk_la_SOURCES) \
-	$(cut_la_SOURCES) $(dcm_la_SOURCES) $(dib_la_SOURCES) \
-	$(dps_la_SOURCES) $(dpx_la_SOURCES) $(ept_la_SOURCES) \
-	$(fax_la_SOURCES) $(fits_la_SOURCES) $(fpx_la_SOURCES) \
-	$(gif_la_SOURCES) $(gradient_la_SOURCES) $(gray_la_SOURCES) \
-	$(hdf_la_SOURCES) $(histogram_la_SOURCES) $(html_la_SOURCES) \
-	$(icon_la_SOURCES) $(jbig_la_SOURCES) $(jp2_la_SOURCES) \
-	$(jpeg_la_SOURCES) $(label_la_SOURCES) $(libCoders_la_SOURCES) \
+	$(bmp_la_SOURCES) $(caption_la_SOURCES) $(clipboard_la_SOURCES) \
+	$(cmyk_la_SOURCES) $(cut_la_SOURCES) $(dcm_la_SOURCES) \
+	$(dib_la_SOURCES) $(dps_la_SOURCES) $(dpx_la_SOURCES) \
+	$(ept_la_SOURCES) $(fax_la_SOURCES) $(fits_la_SOURCES) \
+	$(fpx_la_SOURCES) $(gif_la_SOURCES) $(gradient_la_SOURCES) \
+	$(gray_la_SOURCES) $(hdf_la_SOURCES) $(histogram_la_SOURCES) \
+	$(html_la_SOURCES) $(icon_la_SOURCES) $(jbig_la_SOURCES) \
+	$(jp2_la_SOURCES) $(jpeg_la_SOURCES) $(label_la_SOURCES) \
+	$(libCoders_la_SOURCES) $(EXTRA_libCoders_la_SOURCES) \
 	$(logo_la_SOURCES) $(map_la_SOURCES) $(mat_la_SOURCES) \
 	$(matte_la_SOURCES) $(meta_la_SOURCES) $(miff_la_SOURCES) \
 	$(mono_la_SOURCES) $(mpc_la_SOURCES) $(mpeg_la_SOURCES) \
@@ -1128,7 +1146,7 @@ HEADERS = $(noinst_HEADERS)
 DIST_COMMON = $(noinst_HEADERS) Makefile.am Makefile.in \
 	delegates.mgk.in type-ghostscript.mgk.in type-solaris.mgk.in \
 	type-windows.mgk.in type.mgk.in
-SOURCES = $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) $(bmp_la_SOURCES) $(caption_la_SOURCES) $(cmyk_la_SOURCES) $(cut_la_SOURCES) $(dcm_la_SOURCES) $(dib_la_SOURCES) $(dps_la_SOURCES) $(dpx_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fits_la_SOURCES) $(fpx_la_SOURCES) $(gif_la_SOURCES) $(gradient_la_SOURCES) $(gray_la_SOURCES) $(hdf_la_SOURCES) $(histogram_la_SOURCES) $(html_la_SOURCES) $(icon_la_SOURCES) $(jbig_la_SOURCES) $(jp2_la_SOURCES) $(jpeg_la_SOURCES) $(label_la_SOURCES) $(libCoders_la_SOURCES) $(logo_la_SOURCES) $(map_la_SOURCES) $(mat_la_SOURCES) $(matte_la_SOURCES) $(meta_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mpc_la_SOURCES) $(mpeg_la_SOURCES) $(mpr_la_SOURCES) $(msl_la_SOURCES) $(mtv_la_SOURCES) $(mvg_la_SOURCES) $(null_la_SOURCES) $(otb_la_SOURCES) $(palm_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(png_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(stegano_la_SOURCES) $(sun_la_SOURCES) $(svg_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(ttf_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(url_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(wmf_la_SOURCES) $(wpg_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xcf_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
+SOURCES = $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) $(bmp_la_SOURCES) $(caption_la_SOURCES) $(clipboard_la_SOURCES) $(cmyk_la_SOURCES) $(cut_la_SOURCES) $(dcm_la_SOURCES) $(dib_la_SOURCES) $(dps_la_SOURCES) $(dpx_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fits_la_SOURCES) $(fpx_la_SOURCES) $(gif_la_SOURCES) $(gradient_la_SOURCES) $(gray_la_SOURCES) $(hdf_la_SOURCES) $(histogram_la_SOURCES) $(html_la_SOURCES) $(icon_la_SOURCES) $(jbig_la_SOURCES) $(jp2_la_SOURCES) $(jpeg_la_SOURCES) $(label_la_SOURCES) $(libCoders_la_SOURCES) $(EXTRA_libCoders_la_SOURCES) $(logo_la_SOURCES) $(map_la_SOURCES) $(mat_la_SOURCES) $(matte_la_SOURCES) $(meta_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mpc_la_SOURCES) $(mpeg_la_SOURCES) $(mpr_la_SOURCES) $(msl_la_SOURCES) $(mtv_la_SOURCES) $(mvg_la_SOURCES) $(null_la_SOURCES) $(otb_la_SOURCES) $(palm_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(png_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(stegano_la_SOURCES) $(sun_la_SOURCES) $(svg_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(ttf_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(url_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(wmf_la_SOURCES) $(wpg_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xcf_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
 
 all: all-am
 
@@ -1193,6 +1211,8 @@ bmp.la: $(bmp_la_OBJECTS) $(bmp_la_DEPENDENCIES)
 	$(LINK) -rpath $(pkgdir) $(bmp_la_LDFLAGS) $(bmp_la_OBJECTS) $(bmp_la_LIBADD) $(LIBS)
 caption.la: $(caption_la_OBJECTS) $(caption_la_DEPENDENCIES) 
 	$(LINK) -rpath $(pkgdir) $(caption_la_LDFLAGS) $(caption_la_OBJECTS) $(caption_la_LIBADD) $(LIBS)
+clipboard.la: $(clipboard_la_OBJECTS) $(clipboard_la_DEPENDENCIES) 
+	$(LINK) -rpath $(pkgdir) $(clipboard_la_LDFLAGS) $(clipboard_la_OBJECTS) $(clipboard_la_LIBADD) $(LIBS)
 cmyk.la: $(cmyk_la_OBJECTS) $(cmyk_la_DEPENDENCIES) 
 	$(LINK) -rpath $(pkgdir) $(cmyk_la_LDFLAGS) $(cmyk_la_OBJECTS) $(cmyk_la_LIBADD) $(LIBS)
 cut.la: $(cut_la_OBJECTS) $(cut_la_DEPENDENCIES) 
@@ -1375,6 +1395,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bmp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/caption.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clipboard.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cmyk.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cut.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dcm.Plo@am__quote@

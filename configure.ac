@@ -58,11 +58,13 @@ AC_OBJEXT
 
 native_win32_build='no'
 LIB_GDI32=''
+dirsep='/'
 case "${host_os}" in
   mingw* )
     native_win32_build='yes'
     LIB_GDI32='-lgdi32'
     AC_SUBST(LIB_GDI32)
+    dirsep='\\'
     ;;
 esac
 AM_CONDITIONAL(WIN32, test "$native_win32_build" != 'no')
@@ -1596,12 +1598,22 @@ else
       font_dir=`cygpath --windir`/Fonts
       if test -f "$font_dir/times.ttf"
       then
-        windows_font_dir="$font_dir"
+        windows_font_dir="$font_dir/"
       fi
       ;;
     mingw* )
       # FIXME: need a real test here.
-      windows_font_dir="c:\\windows\\fonts"
+      for drive in c d e f g h i j k l m n o p q r s t u v w x y z
+      do
+        for sysdir in windows winnt
+        do
+          if test -f "/${drive}/${sysdir}/fonts/times.ttf"
+          then
+            windows_font_dir="${drive}:\\${sysdir}\\fonts\\"
+            break 2
+          fi
+        done
+      done
       ;;
     #pw32*)
   esac
@@ -1621,9 +1633,9 @@ esac
 # Ghostscript
 if test "$with_gs_font_dir" != 'default'
 then
-  ghostscript_font_dir="$with_gs_font_dir"
+  ghostscript_font_dir="$with_gs_font_dir${dirsep}"
 else
-  ghostscript_font_dir="$prefix/share/ghostscript/fonts"
+  ghostscript_font_dir="$prefix${dirsep}share${dirsep}ghostscript${dirsep}fonts${dirsep}"
   if test "$PSDelegate" != 'gs'
   then
     ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/bin/gs:/share/ghostscript/fonts:'`

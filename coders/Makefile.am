@@ -32,6 +32,14 @@ AUTOMAKE_OPTIONS = 1.6 foreign
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
+if WIN32
+MAGICK_WIN32_SRCS = clipboard.c
+MAGICK_WIN32_MODULES = clipboard.la
+else
+MAGICK_WIN32_SRCS =
+MAGICK_WIN32_MODULES =
+endif
+
 MAGICK_CODER_SRCS = \
   art.c avi.c avs.c bmp.c caption.c cmyk.c cut.c dcm.c dib.c dps.c dpx.c \
   ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c \
@@ -42,7 +50,7 @@ MAGICK_CODER_SRCS = \
   pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c \
   tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c url.c uyvy.c vicar.c \
   vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c xc.c xcf.c xpm.c xwd.c \
-  yuv.c
+  yuv.c $(MAGICK_WIN32_SRCS)
 
 MAJOR_VERSION=@MAJOR_VERSION@
 MINOR_VERSION=@MINOR_VERSION@
@@ -52,6 +60,7 @@ noinst_LTLIBRARIES =
 else
 noinst_LTLIBRARIES = libCoders.la
 libCoders_la_SOURCES = $(MAGICK_CODER_SRCS)
+EXTRA_libCoders_la_SOURCES = clipboard.c
 endif # WITH_MODULES
 
 # Additional files to distribute
@@ -84,7 +93,7 @@ pkg_LTLIBRARIES = \
   pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la \
   tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la vicar.la \
   vid.la viff.la wbmp.la wmf.la wpg.la x.la xbm.la xc.la xcf.la xpm.la xwd.la \
-  yuv.la
+  yuv.la $(MAGICK_WIN32_MODULES)
 MODULECOMMONFLAGS = -no-undefined -module -avoid-version
 else
 pkg_LTLIBRARIES =
@@ -112,9 +121,14 @@ bmp_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 bmp_la_LIBADD       = $(LIBMAGICK)
 
 # CAPTION module
-caption_la_SOURCES     = caption.c
-caption_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-caption_la_LIBADD      = $(LIBMAGICK)
+caption_la_SOURCES  = caption.c
+caption_la_LDFLAGS  = $(MODULECOMMONFLAGS)
+caption_la_LIBADD   = $(LIBMAGICK)
+
+# CLIPBOARD module
+clipboard_la_SOURCES= clipboard.c
+clipboard_la_LDFLAGS= $(MODULECOMMONFLAGS)
+clipboard_la_LIBADD = $(LIBMAGICK)
 
 # CMYK module
 cmyk_la_SOURCES     = cmyk.c
@@ -122,9 +136,9 @@ cmyk_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 cmyk_la_LIBADD      = $(LIBMAGICK)
 
 # CUT module
-cut_la_SOURCES     = cut.c
-cut_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-cut_la_LIBADD      = $(LIBMAGICK)
+cut_la_SOURCES      = cut.c
+cut_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+cut_la_LIBADD       = $(LIBMAGICK)
 
 # DCM module
 dcm_la_SOURCES      = dcm.c
@@ -212,14 +226,14 @@ jpeg_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 jpeg_la_LIBADD      = $(LIBMAGICK) @LIB_JPEG@
 
 # JPEG 2000 module
-jp2_la_SOURCES     = jp2.c
-jp2_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-jp2_la_LIBADD      = $(LIBMAGICK) @LIB_JP2@  @LIB_JPEG@ $(LIB_MATH)
+jp2_la_SOURCES      = jp2.c
+jp2_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+jp2_la_LIBADD       = $(LIBMAGICK) @LIB_JP2@  @LIB_JPEG@ $(LIB_MATH)
 
 # LABEL module
-label_la_SOURCES     = label.c
-label_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-label_la_LIBADD      = $(LIBMAGICK)
+label_la_SOURCES    = label.c
+label_la_LDFLAGS    = $(MODULECOMMONFLAGS)
+label_la_LIBADD     = $(LIBMAGICK)
 
 # LOGO module
 logo_la_SOURCES     = logo.c
@@ -232,9 +246,9 @@ map_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 map_la_LIBADD       = $(LIBMAGICK)
 
 # MAT module
-mat_la_SOURCES    = mat.c
-mat_la_LDFLAGS    = $(MODULECOMMONFLAGS)
-mat_la_LIBADD     = $(LIBMAGICK)
+mat_la_SOURCES      = mat.c
+mat_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+mat_la_LIBADD       = $(LIBMAGICK)
 
 # MATTE module
 matte_la_SOURCES    = matte.c
@@ -257,14 +271,14 @@ mono_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 mono_la_LIBADD      = $(LIBMAGICK)
 
 # MPC module
-mpc_la_SOURCES    = mpc.c
-mpc_la_LDFLAGS    = $(MODULECOMMONFLAGS)
-mpc_la_LIBADD     = $(LIBMAGICK)
+mpc_la_SOURCES      = mpc.c
+mpc_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+mpc_la_LIBADD       = $(LIBMAGICK)
 
 # MPEG module
-mpeg_la_SOURCES    = mpeg.c
-mpeg_la_LDFLAGS    = $(MODULECOMMONFLAGS)
-mpeg_la_LIBADD     = $(LIBMAGICK) @LIB_MPEG2@
+mpeg_la_SOURCES     = mpeg.c
+mpeg_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+mpeg_la_LIBADD      = $(LIBMAGICK) @LIB_MPEG2@
 
 # MPR module
 mpr_la_SOURCES      = mpr.c
@@ -497,9 +511,9 @@ wmf_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 wmf_la_LIBADD       = $(LIBMAGICK) @LIB_WMF@ @LIB_WMF_DEPS@ $(LIB_MATH)
 
 # WPG module
-wpg_la_SOURCES     = wpg.c
-wpg_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-wpg_la_LIBADD      = $(LIBMAGICK)
+wpg_la_SOURCES      = wpg.c
+wpg_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+wpg_la_LIBADD       = $(LIBMAGICK)
 
 # X module
 x_la_SOURCES        = x.c

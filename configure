@@ -3238,11 +3238,13 @@ fi
 
 native_win32_build='no'
 LIB_GDI32=''
+dirsep='/'
 case "${host_os}" in
   mingw* )
     native_win32_build='yes'
     LIB_GDI32='-lgdi32'
 
+    dirsep='\\'
     ;;
 esac
 
@@ -3711,7 +3713,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3714 "configure"' > conftest.$ac_ext
+  echo '#line 3716 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7617,7 +7619,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7620 "configure"
+#line 7622 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7715,7 +7717,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7718 "configure"
+#line 7720 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10862,7 +10864,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10865 "configure"
+#line 10867 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10960,7 +10962,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10963 "configure"
+#line 10965 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13622,7 +13624,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13625 "configure"
+#line 13627 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13720,7 +13722,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13723 "configure"
+#line 13725 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -28811,12 +28813,22 @@ else
       font_dir=`cygpath --windir`/Fonts
       if test -f "$font_dir/times.ttf"
       then
-        windows_font_dir="$font_dir"
+        windows_font_dir="$font_dir/"
       fi
       ;;
     mingw* )
       # FIXME: need a real test here.
-      windows_font_dir="c:\\windows\\fonts"
+      for drive in c d e f g h i j k l m n o p q r s t u v w x y z
+      do
+        for sysdir in windows winnt
+        do
+          if test -f "/${drive}/${sysdir}/fonts/times.ttf"
+          then
+            windows_font_dir="${drive}:\\${sysdir}\\fonts\\"
+            break 2
+          fi
+        done
+      done
       ;;
     #pw32*)
   esac
@@ -28837,9 +28849,9 @@ esac
 # Ghostscript
 if test "$with_gs_font_dir" != 'default'
 then
-  ghostscript_font_dir="$with_gs_font_dir"
+  ghostscript_font_dir="$with_gs_font_dir${dirsep}"
 else
-  ghostscript_font_dir="$prefix/share/ghostscript/fonts"
+  ghostscript_font_dir="$prefix${dirsep}share${dirsep}ghostscript${dirsep}fonts${dirsep}"
   if test "$PSDelegate" != 'gs'
   then
     ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/bin/gs:/share/ghostscript/fonts:'`
