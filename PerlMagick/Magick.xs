@@ -4066,14 +4066,14 @@ Mogrify(ref,...)
         case 10:  /* Edge */
         {
           if (!attribute_flag[0])
-            argument_list[0].double_reference=1;
+            argument_list[0].double_reference=0.0;
           image=EdgeImage(image,argument_list[0].double_reference,&exception);
           break;
         }
         case 11:  /* Emboss */
         {
           if (!attribute_flag[0])
-            argument_list[0].double_reference=1;
+            argument_list[0].double_reference=0.0;
           image=EmbossImage(image,argument_list[0].double_reference,&exception);
           break;
         }
@@ -4136,8 +4136,8 @@ Mogrify(ref,...)
         {
           if (!attribute_flag[0])
             argument_list[0].double_reference=30.0;
-          image=
-            ImplodeImage(image,argument_list[0].double_reference,&exception);
+          image=ImplodeImage(image,argument_list[0].double_reference,
+            &exception);
           break;
         }
         case 17:  /* Magnify */
@@ -4148,7 +4148,7 @@ Mogrify(ref,...)
         case 18:  /* MedianFilter */
         {
           if (!attribute_flag[0])
-            argument_list[0].double_reference=1;
+            argument_list[0].double_reference=0.0;
           image=MedianFilterImage(image,argument_list[0].double_reference,
             &exception);
           break;
@@ -4161,7 +4161,7 @@ Mogrify(ref,...)
         case 20:  /* OilPaint */
         {
           if (!attribute_flag[0])
-            argument_list[0].double_reference=1;
+            argument_list[0].double_reference=0.0;
           image=OilPaintImage(image,argument_list[0].double_reference,
             &exception);
           break;
@@ -4169,7 +4169,7 @@ Mogrify(ref,...)
         case 21:  /* ReduceNoise */
         {
           if (!attribute_flag[0])
-            argument_list[0].double_reference=3;
+            argument_list[0].double_reference=0.0;
           image=ReduceNoiseImage(image,argument_list[0].double_reference,
             &exception);
           break;
@@ -4645,7 +4645,7 @@ Mogrify(ref,...)
         case 36:  /* Contrast */
         {
           if (!attribute_flag[0])
-            argument_list[0].int_reference=1;
+            argument_list[0].int_reference=0.0;
           ContrastImage(image,argument_list[0].int_reference);
           break;
         }

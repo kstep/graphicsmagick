@@ -225,6 +225,33 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 %
 %
 */
+
+static int GetKernelWidth(const double radius,const double sigma)
+{
+  double
+    normalize,
+    value;
+
+  int
+    width;
+
+  if (radius > 0.0)
+    return(2*ceil(radius)+1);
+  /*
+    Determine optimal kernel radius.
+  */
+  normalize=0.0;
+  for (width=0; ; width++)
+  {
+    value=exp((double) (-width*width)/(sigma*sigma));
+    normalize+=value;
+    if ((value/normalize) < (1.0/MaxRGB))
+      break;
+  }
+  width--;
+  return(2*width+1);
+}
+
 MagickExport Image *BlurImage(Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
@@ -260,25 +287,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=2*ceil(radius)+1;
-  if (radius <= 0.0)
-    {
-      double
-        value;
-
-      /*
-        Determine optimal kernel radius.
-      */
-      normalize=0.0;
-      for (width=0; ; width++)
-      {
-        value=exp((double) (-width*width)/(sigma*sigma));
-        normalize+=value;
-        if ((value/normalize) < (1.0/MaxRGB))
-          break;
-      }
-      width=2*(width-1)+1;
-    }
+  width=GetKernelWidth(radius,sigma);
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(ResourceLimitWarning,"Unable to blur image",
       "image is smaller than radius");
@@ -956,7 +965,7 @@ MagickExport Image *EdgeImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=2*ceil(radius)+1;
+  width=GetKernelWidth(radius,0.5);
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to detect edges",
@@ -1025,7 +1034,7 @@ MagickExport Image *EmbossImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=2*ceil(radius)+1;
+  width=GetKernelWidth(radius,0.5);
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to emboss image",
@@ -1272,22 +1281,7 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=2*ceil(radius)+1;
-  if (radius <= 0.0)
-    {
-      double
-        value;
-
-      normalize=0.0;
-      for (width=0; ; width++)
-      {
-        value=exp((double) (-width*width)/(sigma*sigma));
-        normalize+=value;
-        if ((value/normalize) < (1.0/MaxRGB))
-          break;
-      }
-      width=2*(width-1)+1;
-    }
+  width=GetKernelWidth(radius,sigma);
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
       "image is smaller than radius");
@@ -1564,7 +1558,7 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=2*ceil(radius)+1;
+  width=GetKernelWidth(radius,0.5);
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(ResourceLimitWarning,"Unable to median filter image",
       "image smaller than kernel radius");
@@ -1851,7 +1845,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=2*ceil(radius)+1;
+  width=GetKernelWidth(radius,0.5);
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(ResourceLimitWarning,"Unable to oil paint",
       "image smaller than radius");
@@ -2213,7 +2207,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=2*ceil(radius)+1;
+  width=GetKernelWidth(radius,0.5);
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(ResourceLimitWarning,"Unable to noise filter image",
       "image smaller than kernel radius");
