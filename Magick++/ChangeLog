@@ -1,3 +1,8 @@
+2000-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Montage.h (gravity): Type of gravity_ argument, and
+ 	return value changed from 'unsigned int' to GravityType.
+
 2000-04-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableArc, DrawableBezier, DrawablePolyline,

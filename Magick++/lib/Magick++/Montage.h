@@ -37,8 +37,8 @@ namespace Magick
     void              geometry ( const Geometry &geometry_ );
     Geometry          geometry ( void ) const;
     
-    void              gravity ( unsigned int gravity_ );
-    unsigned int      gravity ( void ) const;
+    void              gravity ( GravityType gravity_ );
+    GravityType       gravity ( void ) const;
     
     // Apply as attribute to all images before montage
     void              label( std::string label_ );
@@ -81,7 +81,7 @@ namespace Magick
     std::string       _fileName;          // Filename to save montages to
     std::string       _font;              // Label font
     Geometry          _geometry;          // Thumbnail width & height plus border width & height
-    unsigned int      _gravity;           // Thumbnail position (e.g. SouthWestGravity)
+    GravityType       _gravity;           // Thumbnail position (e.g. SouthWestGravity)
     std::string       _label;             // Thumbnail label (applied to image prior to montage)
     Color             _pen;               // Color for text annotations
     unsigned int      _pointSize;         // Font point size
@@ -145,7 +145,7 @@ inline Magick::Montage::Montage ( void )
     _fileName(),
     _font(),
     _geometry(),
-    _gravity(0),
+    _gravity(CenterGravity),
     _label(),
     _pen(),
     _pointSize(0),
@@ -198,7 +198,7 @@ inline std::string Magick::Montage::font ( void ) const
   return _font;
 }
 
-inline void Magick::Montage::geometry ( const Geometry &geometry_ )
+inline void Magick::Montage::geometry ( const Magick::Geometry &geometry_ )
 {
   _geometry = geometry_;
 }
@@ -207,11 +207,11 @@ inline Magick::Geometry Magick::Montage::geometry ( void ) const
   return _geometry;
 }
 
-inline void Magick::Montage::gravity ( unsigned int gravity_ )
+inline void Magick::Montage::gravity ( Magick::GravityType gravity_ )
 {
   _gravity = gravity_;
 }
-inline unsigned int Magick::Montage::gravity ( void ) const
+inline Magick::GravityType Magick::Montage::gravity ( void ) const
 {
   return _gravity;
 }

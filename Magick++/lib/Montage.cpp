@@ -33,8 +33,7 @@ void Magick::Montage::updateMontageInfo ( MontageInfo &montageInfo_ ) const
   if ( _geometry.isValid() )
     Magick::CloneString( &montageInfo_.geometry, _geometry );
 
-  if ( _gravity != 0 )
-    montageInfo_.gravity = _gravity;
+  montageInfo_.gravity = _gravity;
 
   if ( _pen.isValid() )
     {
