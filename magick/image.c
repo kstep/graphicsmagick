@@ -2369,6 +2369,7 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
   ThrowBinaryException(MissingDelegateWarning,"X11 library is not available",
     image->filename);
   return(False);
+}
 #endif
 
 /*
