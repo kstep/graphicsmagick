@@ -18,9 +18,9 @@ extern "C" {
   Color quantum is [0..255].
 */
 #define Downscale(quantum)  ((Quantum) (quantum))
-#define Upscale(quantum)  ((Quantum) (quantum))
+#define Upscale(quantum)  ((unsigned long) (quantum))
 #define XDownscale(color)  ((Quantum) ((color)/257L))
-#define XUpscale(color)  ((unsigned short) (257L*(color)))
+#define XUpscale(color)  ((unsigned long) (257L*(color)))
 
 typedef unsigned char Quantum;
 #elif QuantumDepth == 16
@@ -28,9 +28,9 @@ typedef unsigned char Quantum;
   Color quantum is [0..65535].
 */
 #define Downscale(quantum)  ((Quantum) ((quantum)/257L))
-#define Upscale(quantum)  ((Quantum) (257L*(quantum)))
+#define Upscale(quantum)  ((unsigned long) (257L*(quantum)))
 #define XDownscale(color)  ((Quantum) (color))
-#define XUpscale(color)  ((unsigned short) (color))
+#define XUpscale(color)  ((unsigned long) (color))
 
 typedef unsigned short Quantum;
 #else

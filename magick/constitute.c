@@ -1659,7 +1659,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
             indexes[x]=index;
             *q=image->colormap[index];
             p++;
-            q->opacity=MaxRGB-Upscale(*p);
+            q->opacity=MaxRGB-(long) Upscale(*p);
             p++;
             q++;
           }
@@ -1811,7 +1811,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            q->opacity=MaxRGB-Upscale(*p++);
+            q->opacity=MaxRGB-(long) Upscale(*p++);
             q++;
           }
           break;
@@ -1878,7 +1878,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
             q->red=Upscale(*p++);
             q->green=Upscale(*p++);
             q->blue=Upscale(*p++);
-            q->opacity=MaxRGB-Upscale(*p++);
+            q->opacity=MaxRGB-(long) Upscale(*p++);
             q++;
           }
           break;
@@ -1935,7 +1935,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
             q->green=Upscale(*p++);
             q->blue=Upscale(*p++);
             q->opacity=Upscale(*p++);
-            indexes[x]=(IndexPacket) (MaxRGB-Upscale(*p++));
+            indexes[x]=(IndexPacket) (MaxRGB-(long) Upscale(*p++));
             q++;
           }
           break;

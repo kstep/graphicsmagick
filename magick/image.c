@@ -6784,12 +6784,12 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       {
         red_map[i+R]=1.40200*i;
         green_map[i+R]=0.0;
-        blue_map[i+R]=1.88000*(i-Upscale(137));
+        blue_map[i+R]=1.88000*(i-(long) Upscale(137));
         red_map[i+G]=1.40200*i;
-        green_map[i+G]=(-0.444066)*(i-Upscale(156));
-        blue_map[i+G]=(-0.95692)*(i-Upscale(137));
+        green_map[i+G]=(-0.444066)*(i-(long) Upscale(156));
+        blue_map[i+G]=(-0.95692)*(i-(long) Upscale(137));
         red_map[i+B]=1.40200*i;
-        green_map[i+B]=2.28900*(i-Upscale(156));
+        green_map[i+B]=2.28900*(i-(long) Upscale(156));
         blue_map[i+B]=0.0;
       }
       break;
@@ -6858,12 +6858,12 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       {
         red_map[i+R]=1.3584*i;
         green_map[i+R]=0.0;
-        blue_map[i+R]=1.8215*(i-Upscale(137));
+        blue_map[i+R]=1.8215*(i-(long) Upscale(137));
         red_map[i+G]=1.3584*i;
-        green_map[i+G]=(-0.4302726)*(i-Upscale(156));
-        blue_map[i+G]=(-0.9271435)*(i-Upscale(137));
+        green_map[i+G]=(-0.4302726)*(i-(long) Upscale(156));
+        blue_map[i+G]=(-0.9271435)*(i-(long) Upscale(137));
         red_map[i+B]=1.3584*i;
-        green_map[i+B]=2.2179*(i-Upscale(156));
+        green_map[i+B]=2.2179*(i-(long) Upscale(156));
         blue_map[i+B]=0.0;
       }
       break;
@@ -6981,14 +6981,14 @@ MagickExport unsigned int TransformRGBImage(Image *image,
                 blue+0.5;
               if (colorspace == sRGBColorspace)
                 {
-                  q->red=Upscale(sRGBMap[Downscale((unsigned long) red)]);
-                  q->green=Upscale(sRGBMap[Downscale((unsigned long) green)]);
-                  q->blue=Upscale(sRGBMap[Downscale((unsigned long) blue)]);
+                  q->red=Upscale(sRGBMap[Downscale(red)]);
+                  q->green=Upscale(sRGBMap[Downscale(green)]);
+                  q->blue=Upscale(sRGBMap[Downscale(blue)]);
                   break;
                 }
-              q->red=Upscale(YCCMap[Downscale((unsigned long) red)]);
-              q->green=Upscale(YCCMap[Downscale((unsigned long) green)]);
-              q->blue=Upscale(YCCMap[Downscale((unsigned long) blue)]);
+              q->red=Upscale(YCCMap[Downscale(red)]);
+              q->green=Upscale(YCCMap[Downscale(green)]);
+              q->blue=Upscale(YCCMap[Downscale(blue)]);
               break;
             }
             default:
