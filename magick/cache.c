@@ -1019,7 +1019,9 @@ MagickExport unsigned int OpenCache(Image *image)
 
   off_t
     length,
-    number_pixels,
+    number_pixels;
+
+  size_t
     offset;
 
   void
