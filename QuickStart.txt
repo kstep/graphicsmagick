@@ -72,7 +72,6 @@ Win2K, NT, Win98, Win95 Install:
   Select Start->Programs->Command Prompt.  In the Command Prompt window type
 
       cd ImageMagick-win2k
-      set MAGICK_HOME=c:\ImageMagick-win2k
       identify -verbose logo:
 
   Alternatively, download the ImageMagick NT source
