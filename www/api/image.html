@@ -199,9 +199,8 @@ field to a default value.
 <P>
 The format of the AllocateImage method is:
 
-<P>
-<PRE>        Image *AllocateImage(const ImageInfo *image_info)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *AllocateImage (const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -228,9 +227,8 @@ field to a default value.
 <P>
 The format of the AllocateNextImage method is:
 
-<P>
-<PRE>        void AllocateNextImage(const ImageInfo *image_info,Image *image)
-</PRE>
+<blockquote>void AllocateNextImage (const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -255,9 +253,8 @@ Method AnimateImages displays one or more images to an
 <P>
 The format of the AllocateNextImage method is:
 
-<P>
-<PRE>        unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
-</PRE>
+<blockquote>unsigned int AnimateImages (const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -290,9 +287,8 @@ top-to-bottom.
 <P>
 The format of the AppendImage method is:
 
-<P>
-<PRE>        Image *AppendImages(Image *images,const unsigned int stack)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *AppendImages (<A HREF="types/Image.html">Image</A> *images, const unsigned int stack) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -318,9 +314,8 @@ the same size in pixels.
 <P>
 The format of the AverageImage method is:
 
-<P>
-<PRE>        Image *AverageImages(const Image *images)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *AverageImages (const <A HREF="types/Image.html">Image</A> *images) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -388,9 +383,8 @@ Method CloneImageInfo makes a duplicate of the given image info, or if image inf
 <P>
 The format of the CloneImageInfo method is:
 
-<P>
-<PRE>        ImageInfo *CloneImageInfo(const ImageInfo *image_info)
-</PRE>
+<blockquote><A HREF="types/ImageInfo.html">ImageInfo</A> *CloneImageInfo (const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -418,9 +412,8 @@ embedding special format characters.
 <P>
 The format of the CommentImage method is:
 
-<P>
-<PRE>        void CommentImage(Image *image,const char *comments)
-</PRE>
+<blockquote>void CommentImage (<A HREF="types/Image.html">Image</A> *image, const char *comments) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -485,9 +478,8 @@ runlength-encoded packets.
 <P>
 The format of the CondenseImage method is:
 
-<P>
-<PRE>        void CondenseImage(Image *image)
-</PRE>
+<blockquote>void CondenseImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -547,9 +539,8 @@ Method CycleColormapImage cycles the image colormap by a specified amount.
 <P>
 The format of the CycleColormapImage method is:
 
-<P>
-<PRE>        CycleColormapImage(image,amount)
-</PRE>
+<blockquote>CycleColormapImage (image, amount) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -574,9 +565,8 @@ stdout.
 <P>
 The format of the DescribeImage method is:
 
-<P>
-<PRE>        void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
-</PRE>
+<blockquote>void DescribeImage (<A HREF="types/Image.html">Image</A> *image, FILE *file,const unsigned int verbose) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -605,9 +595,8 @@ Method DestroyImage deallocates memory associated with an image.
 <P>
 The format of the DestroyImage method is:
 
-<P>
-<PRE>        void DestroyImage(Image *image)
-</PRE>
+<blockquote>void DestroyImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -628,9 +617,8 @@ structure.
 <P>
 The format of the DestroyImageInfo method is:
 
-<P>
-<PRE>        void DestroyImageInfo(ImageInfo *image_info)
-</PRE>
+<blockquote>void DestroyImageInfo (<A HREF="types/ImageInfo.html">ImageInfo</A> *image_info) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -651,9 +639,8 @@ images.
 <P>
 The format of the DestroyImages method is:
 
-<P>
-<PRE>        void DestroyImages(Image *image)
-</PRE>
+<blockquote>void DestroyImages (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -674,9 +661,8 @@ Method DisplayImages displays one or more images to an
 <P>
 The format of the AllocateNextImage method is:
 
-<P>
-<PRE>        unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
-</PRE>
+<blockquote>unsigned int DisplayImages (const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -705,9 +691,8 @@ Method GetImageInfo initializes the ImageInfo structure.
 <P>
 The format of the GetImageInfo method is:
 
-<P>
-<PRE>        void GetImageInfo(ImageInfo *image_info)
-</PRE>
+<blockquote>void GetImageInfo (<A HREF="types/ImageInfo.html">ImageInfo</A> *image_info) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -727,9 +712,8 @@ Method GetImageType returns the type of image (e.g. bilevel, palette, etc).
 <P>
 The format of the GetImageType method is:
 
-<P>
-<PRE>        ImageType GetImageType(Image *image)
-</PRE>
+<blockquote><A HREF="types/Enumerations.html#ImageType">ImageType</A> GetImageType (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -754,9 +738,8 @@ Method GetNumberScenes returns the number of scenes in an image sequence.
 <P>
 The format of the GetNumberScenes method is:
 
-<P>
-<PRE>        unsigned int GetNumberScenes(const Image *image)
-</PRE>
+<blockquote>unsigned int GetNumberScenes (const <A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -810,9 +793,8 @@ determined by ParseGeometry.
 <P>
 The format of the IsGeometry method is:
 
-<P>
-<PRE>        unsigned int IsGeometry(const char *geometry)
-</PRE>
+<blockquote>unsigned int IsGeometry (const char *geometry) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -839,9 +821,8 @@ PseudoClass.
 <P>
 The format of the IsGrayImage method is:
 
-<P>
-<PRE>        unsigned int IsGrayImage(Image *image)
-</PRE>
+<blockquote>unsigned int IsGrayImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -867,9 +848,8 @@ specification (e.g. [1], [1-9], [1,7,4]).
 <P>
 The format of the IsSubimage method is:
 
-<P>
-<PRE>        unsigned int IsSubimage(const char *geometry,const unsigned int pedantic)
-</PRE>
+<blockquote>unsigned int IsSubimage (const char *geometry, const unsigned int pedantic) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -902,9 +882,8 @@ filename.
 <P>
 The format of the IsTainted method is:
 
-<P>
-<PRE>        unsigned int IsTainted(const Image *image)
-</PRE>
+<blockquote>unsigned int IsTainted (const <A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -931,9 +910,8 @@ embedding special format characters.
 <P>
 The format of the LabelImage method is:
 
-<P>
-<PRE>        void LabelImage(Image *image,const char *label)
-</PRE>
+<blockquote>void LabelImage (<A HREF="types/Image.html">Image</A> *image, const char *label) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -957,9 +935,8 @@ Method LayerImage extracts the specified layer from the references image.
 <P>
 The format of the LayerImage method is:
 
-<P>
-<PRE>        void LayerImage(Image *image,const LayerType layer)
-</PRE>
+<blockquote>void LayerImage (<A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#LayerType">LayerType</A> layer) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -986,9 +963,8 @@ array.
 <P>
 The format of the ListToGroupImage method is:
 
-<P>
-<PRE>        Image **ListToGroupImage(const Image *image,unsigned int *number_images)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> **ListToGroupImage (const <A HREF="types/Image.html">Image</A> *image, unsigned int *number_images) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1020,9 +996,8 @@ opaque.
 <P>
 The format of the MatteImage method is:
 
-<P>
-<PRE>        void MatteImage(Image *image)
-</PRE>
+<blockquote>void MatteImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1161,9 +1136,8 @@ image file is pinged.
 <P>
 The format of the PingImage method is:
 
-<P>
-<PRE>        Image *PingImage(const ImageInfo *image_info)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *PingImage (const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1193,9 +1167,8 @@ image format name and a colon (i.e. ps:image) or as the filename suffix
 <P>
 The format of the ReadImage method is:
 
-<P>
-<PRE>        Image *ReadImage(ImageInfo *image_info)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *ReadImage (<A HREF="types/ImageInfo.html">ImageInfo</A> *image_info) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1222,9 +1195,8 @@ the images as a linked list.
 <P>
 The format of the ReadImage method is:
 
-<P>
-<PRE>        Image *ReadImages(ImageInfo *image_info)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *ReadImages (<A HREF="types/ImageInfo.html">ImageInfo</A> *image_info) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1253,9 +1225,8 @@ the range of the transformed values to be [0..MaxRGB].
 <P>
 The format of the RGBTransformImage method is:
 
-<P>
-<PRE>        void RGBTransformImage(Image *image,const ColorspaceType colorspace)
-</PRE>
+<blockquote>void RGBTransformImage (<A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#ColorspaceType">ColorspaceType</A> colorspace) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1280,9 +1251,8 @@ Method SetImage initializes the reference image to the background color.
 <P>
 The format of the SetImage method is:
 
-<P>
-<PRE>        void SetImage(Image *image)
-</PRE>
+<blockquote>void SetImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1306,9 +1276,8 @@ Method SetImageInfo initializes the `magick' field of the ImageInfo structure. I
 <P>
 The format of the SetImageInfo method is:
 
-<P>
-<PRE>        void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
-</PRE>
+<blockquote>void SetImageInfo (<A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const unsigned int rectify) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1358,9 +1327,8 @@ pixel as defined by the colormap index.
 <P>
 The format of the SyncImage method is:
 
-<P>
-<PRE>        void SyncImage(Image *image)
-</PRE>
+<blockquote>void SyncImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1380,9 +1348,8 @@ Method TextureImage layers a texture onto the background of an image.
 <P>
 The format of the TextureImage method is:
 
-<P>
-<PRE>        void TextureImage(Image *image,Image *texture)
-</PRE>
+<blockquote>void TextureImage (<A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *texture) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1457,9 +1424,8 @@ be [0..MaxRGB].
 <P>
 The format of the TransformRGBImage method is:
 
-<P>
-<PRE>        void TransformRGBImage(Image *image,const ColorspaceType colorspace)
-</PRE>
+<blockquote>void TransformRGBImage (<A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#ColorspaceType">ColorspaceType</A> colorspace) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1487,9 +1453,8 @@ specified color are set to transparent.
 <P>
 The format of the TransparentImage method is:
 
-<P>
-<PRE>        void TransparentImage(Image *image,const char *color)
-</PRE>
+<blockquote>void TransparentImage (<A HREF="types/Image.html">Image</A> *image, const char *color) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1517,9 +1482,8 @@ rectangular array of pixels.
 <P>
 The format of the UncondenseImage method is:
 
-<P>
-<PRE>        unsigned int UncondenseImage(Image *image)
-</PRE>
+<blockquote>unsigned int UncondenseImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1546,9 +1510,8 @@ Method WriteImage writes an image to a file as defined by image-&gt;filename. Yo
 <P>
 The format of the WriteImage method is:
 
-<P>
-<PRE>        unsigned int WriteImage(const ImageInfo *image_info,Image *image)
-</PRE>
+<blockquote>unsigned int WriteImage (const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:

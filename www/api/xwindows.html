@@ -178,9 +178,8 @@ Method IsTrue returns True if the message is ``true'', ``on'', ``yes'' or
 <P>
 The format of the IsTrue method is:
 
-<P>
-<PRE>        unsigned int IsTrue(const char *message)
-</PRE>
+<blockquote>unsigned int IsTrue (const char *message) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -286,9 +285,8 @@ manager has preferred icon sizes, one of the preferred sizes is used.
 <P>
 The format of the XBestIconSize method is:
 
-<P>
-<PRE>        void XBestIconSize(Display *display,XWindowInfo *window,Image *image)
-</PRE>
+<blockquote>void XBestIconSize (Display *display, XWindowInfo *window,Image *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -425,9 +423,8 @@ and updates the area associated withe exposure event.
 <P>
 The format of the XCheckRefreshWindows method is:
 
-<P>
-<PRE>        void XCheckRefreshWindows(Display *display,XWindows *windows)
-</PRE>
+<blockquote>void XCheckRefreshWindows (Display *display, XWindows *windows) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -453,9 +450,8 @@ message is initialized with a particular protocol type and atom.
 <P>
 The format of the XClientMessage function is:
 
-<P>
-<PRE>        XClientMessage(display,window,protocol,message,timestamp)
-</PRE>
+<blockquote>XClientMessage (display, window,protocol,message,timestamp) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -493,9 +489,8 @@ Method XClientWindow finds a window, at or below the specified window, which has
 <P>
 The format of the XClientWindow function is:
 
-<P>
-<PRE>        client_window=XClientWindow(display,target_window)
-</PRE>
+<blockquote>client_window=XClientWindow (display, target_window) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -565,9 +560,8 @@ Method XConstrainWindowPosition assures a window is positioned witin the
 <P>
 The format of the XConstrainWindowPosition method is:
 
-<P>
-<PRE>        void XConstrainWindowPosition(Display *display,XWindowInfo *window_info)
-</PRE>
+<blockquote>void XConstrainWindowPosition (Display *display, XWindowInfo *window_info) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -592,9 +586,8 @@ specified.
 <P>
 The format of the Delay method is:
 
-<P>
-<PRE>        void XDelay(Display *display,const unsigned long milliseconds)
-</PRE>
+<blockquote>void XDelay (Display *display, const unsigned long milliseconds) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -620,9 +613,8 @@ XRetainWindowColors or programs like xsetroot.
 <P>
 The format of the XDestroyWindowColors method is:
 
-<P>
-<PRE>        void XDestroyWindowColors(Display *display,Window window)
-</PRE>
+<blockquote>void XDestroyWindowColors (Display *display, Window window) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -690,9 +682,8 @@ Method XDrawImage draws a line on the image.
 <P>
 The format of the XDrawImage method is:
 
-<P>
-<PRE>      status=XDrawImage(display,pixel_info,draw_info,image)
-</PRE>
+<blockquote>status=XDrawImage (display, pixel_info,draw_info,image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -733,9 +724,8 @@ Otherwise it returns True.
 <P>
 The format of the XError function is:
 
-<P>
-<PRE>        XError(display,error)
-</PRE>
+<blockquote>XError (display, error) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -856,9 +846,8 @@ Method XGetAnnotateInfo initializes the AnnotateInfo structure.
 <P>
 The format of the GetAnnotateInfo method is:
 
-<P>
-<PRE>        void XGetAnnotateInfo(XAnnotateInfo *annotate_info)
-</PRE>
+<blockquote>void XGetAnnotateInfo (XAnnotateInfo *annotate_info) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1145,9 +1134,8 @@ Method XGetScreenDensity returns the density of the
 <P>
 The format of the XGetScreenDensity method is:
 
-<P>
-<PRE>        char *XGetScreenDensity(Display *display)
-</PRE>
+<blockquote>char *XGetScreenDensity (Display *display) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1174,9 +1162,8 @@ the pointer and a button press.
 <P>
 The format of the XGetSubwindow method is:
 
-<P>
-<PRE>        Window XGetSubwindow(Display *display,Window window,int x,int y)
-</PRE>
+<blockquote>Window XGetSubwindow (Display *display, Window window,int x,int y) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1217,9 +1204,8 @@ Method XGetWindowColor returns the color of a pixel interactively chosen from th
 <P>
 The format of the XGetWindowColor method is:
 
-<P>
-<PRE>        unsigned int XGetWindowColor(Display *display,char *name)
-</PRE>
+<blockquote>unsigned int XGetWindowColor (Display *display, char *name) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1469,9 +1455,8 @@ Procedure XImportImage reads an image from an
 <P>
 The format of the XImportImage method is:
 
-<P>
-<PRE>        Image *XImportImage(const ImageInfo *image_info,XImportInfo *ximage_info)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *XImportImage (const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, XImportInfo *ximage_info) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1628,9 +1613,8 @@ Method XMakeMagnifyImage magnifies a region of an
 <P>
 The format of the XMakeMagnifyImage method is:
 
-<P>
-<PRE>        XMakeMagnifyImage(display,windows)
-</PRE>
+<blockquote>XMakeMagnifyImage (display, windows) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1832,9 +1816,8 @@ Method XQueryColorDatabase looks up a
 <P>
 The format of the XQueryColorDatabase method is:
 
-<P>
-<PRE>        unsigned int XQueryColorDatabase(const char *target,ColorPacket *color)
-</PRE>
+<blockquote>unsigned int XQueryColorDatabase (const char *target, <A HREF="types/ColorPacket.html">ColorPacket</A> *color) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1868,9 +1851,8 @@ Method XQueryPosition gets the pointer coordinates relative to a window.
 <P>
 The format of the XQueryPosition method is:
 
-<P>
-<PRE>        void XQueryPosition(Display *display,const Window window,int *x,int *y)
-</PRE>
+<blockquote>void XQueryPosition (Display *display, const Window window,int *x,int *y) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1975,9 +1957,8 @@ colors associated with an image displayed on the window.
 <P>
 The format of the XRetainWindowColors method is:
 
-<P>
-<PRE>        void XRetainWindowColors(Display *display,const Window window)
-</PRE>
+<blockquote>void XRetainWindowColors (Display *display, const Window window) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -2004,9 +1985,8 @@ rectangle is returned in the crop_info structure.
 <P>
 The format of the XSelectWindow function is:
 
-<P>
-<PRE>        target_window=XSelectWindow(display,crop_info)
-</PRE>
+<blockquote>target_window=XSelectWindow (display, crop_info) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -2047,9 +2027,8 @@ are reset to their default.
 <P>
 The format of the XXSetCursorState method is:
 
-<P>
-<PRE>        XSetCursorState(display,windows,state)
-</PRE>
+<blockquote>XSetCursorState (display, windows,state) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -2081,9 +2060,8 @@ Otherwise the current windows structure is returned.
 <P>
 The format of the XSetWindows method is:
 
-<P>
-<PRE>        XWindows *XSetWindows(XWindows *windows_info)
-</PRE>
+<blockquote>XWindows *XSetWindows (XWindows *windows_info) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -2108,9 +2086,8 @@ the users' home directory.
 <P>
 The format of the XUserPreferences method is:
 
-<P>
-<PRE>        void XUserPreferences(XResourceInfo *resource_info)
-</PRE>
+<blockquote>void XUserPreferences (XResourceInfo *resource_info) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -2132,9 +2109,8 @@ string.
 <P>
 The format of the XVisualClassName method is:
 
-<P>
-<PRE>        char *XVisualClassName(const int class)
-</PRE>
+<blockquote>char *XVisualClassName (const int class) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -2191,9 +2167,8 @@ returned. Only the window specified and its subwindows are searched.
 <P>
 The format of the XWindowByID function is:
 
-<P>
-<PRE>        child=XWindowByID(display,window,id)
-</PRE>
+<blockquote>child=XWindowByID (display, window,id) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -2225,9 +2200,8 @@ are searched.
 <P>
 The format of the XWindowByName function is:
 
-<P>
-<PRE>        window=XWindowByName(display,root_window,name)
-</PRE>
+<blockquote>window=XWindowByName (display, root_window,name) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:

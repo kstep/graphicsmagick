@@ -117,9 +117,8 @@ prefix is '|', the file is a pipe and is closed with PipeClose.
 <P>
 The format of the CloseBlob method is:
 
-<P>
-<PRE>        void CloseBlob(Image *image)
-</PRE>
+<blockquote>void CloseBlob (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -140,9 +139,8 @@ Method EOFBlob returns a non-zero value when
 <P>
 The format of the EOFBlob method is:
 
-<P>
-<PRE>        int EOFBlob(const Image *image)
-</PRE>
+<blockquote>int EOFBlob (const <A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -167,9 +165,8 @@ Method FlushBlob flushes the datastream if it is a file.
 <P>
 The format of the FlushBlob method is:
 
-<P>
-<PRE>        int FlushBlob(const Image *image)
-</PRE>
+<blockquote>int FlushBlob (const <A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -194,9 +191,8 @@ Method GetBlobInfo initializes the BlobInfo structure.
 <P>
 The format of the GetBlobInfo method is:
 
-<P>
-<PRE>        void GetBlobInfo(BlobInfo *blob_info)
-</PRE>
+<blockquote>void GetBlobInfo (BlobInfo *blob_info) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -218,9 +214,8 @@ or file.
 <P>
 The format of the GetStringBlob method is:
 
-<P>
-<PRE>        char *GetStringBlob(Image *image,char *string)
-</PRE>
+<blockquote>char *GetStringBlob (<A HREF="types/Image.html">Image</A> *image, char *string) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -367,9 +362,8 @@ file.
 <P>
 The format of the SeekBlob method is:
 
-<P>
-<PRE>        int SeekBlob(Image *image,const long offset,const int whence)
-</PRE>
+<blockquote>int SeekBlob (<A HREF="types/Image.html">Image</A> *image, const long offset,const int whence) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -408,9 +402,8 @@ current length.
 <P>
 The format of the SetBlobQuantum method is:
 
-<P>
-<PRE>        void SetBlobQuantum(BlobInfo *blob_info,const unsigned long quantum)
-</PRE>
+<blockquote>void SetBlobQuantum (BlobInfo *blob_info, const unsigned long quantum) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -435,9 +428,8 @@ Method TellBlob obtains the current value of the blob or file position.
 <P>
 The format of the TellBlob method is:
 
-<P>
-<PRE>        int TellBlob(const Image *image)
-</PRE>
+<blockquote>int TellBlob (const <A HREF="types/Image.html">Image</A> *image) </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
