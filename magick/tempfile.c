@@ -234,7 +234,7 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
   if (!tempdir)
     tempdir=getenv("TEMP");
 #endif /* WIN32 */
-#if defined(P_tmpdir)
+#if defined(P_tmpdir) || defined(WIN32)
   if (!tempdir)
     tempdir=P_tmpdir;
 #endif
@@ -259,7 +259,7 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
           if (tempdir[strlen(tempdir)-1] != DirectorySeparator[0])
             strcat(fname,DirectorySeparator);
           strcat(fname,tempname);
-          fd=open(fname,O_WRONLY | O_CREAT | O_BINARY | O_EXCL, S_MODE);
+          fd=open(fname,O_RDWR | O_CREAT | O_BINARY | O_EXCL, S_MODE);
           if (fd != -1)
             {
               strcpy(filename,fname);
@@ -289,7 +289,7 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
     if ((name=tempnam(tempdir,fname)))
       {
         (void) remove(filename);
-        fd=open(name,O_WRONLY | O_CREAT | O_BINARY | O_EXCL, S_MODE);
+        fd=open(name,O_RDWR | O_CREAT | O_BINARY | O_EXCL, S_MODE);
         if (fd != -1)
           {
             (void) strncpy(filename,name,MaxTextExtent-1);
