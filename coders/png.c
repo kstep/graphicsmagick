@@ -79,7 +79,7 @@
 /*
   Optional declarations. Define or undefine them as you like.
 */
-/* #define PNG_DEBUG  -- turning this on breaks VisualC compiling */ 
+/* #define PNG_DEBUG  -- turning this on breaks VisualC compiling */
 
 /*
   Features under construction.  Define these to work on them.
@@ -1276,6 +1276,9 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
    while (*sp != ' ' && *sp != '\n')
       sp++;
    /* allocate space */
+   if (length == 0)
+     ThrowBinaryException((ExceptionType)  DelegateWarning,
+        "Unable to copy profile", "invalid profile length");
    info=(unsigned char *) AcquireMemory(length);
    if (info == (unsigned char *) NULL)
      ThrowBinaryException((ExceptionType) ResourceLimitWarning,
@@ -4460,7 +4463,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   unsigned int
     matte,
     status;
-  
+
   volatile unsigned int
     adjoin,
     optimize,
@@ -4470,7 +4473,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     final_delay=0,
     initial_delay,
     save_image_depth;
-  
+
   volatile unsigned long
     delay,
     ticks_per_second=0;
@@ -4503,7 +4506,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   {
     Image
       *p;
- 
+
     for(p=image; p != (Image *) NULL; p=p->next)
     {
       if(p->storage_class == PseudoClass)
@@ -4522,7 +4525,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       */
       Image
         *p;
- 
+
       for(p=image; p != (Image *) NULL; p=p->next)
       {
         if(p->storage_class != PseudoClass)
