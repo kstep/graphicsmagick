@@ -25,7 +25,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.2.2.tar.gz
+    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.2.3.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -72,8 +72,8 @@ UNIX/Cygwin COMPILATION
 
   Type:
 
-    gzip -dc ImageMagick-5.2.2.tar.gz | tar xvf -
-    cd ImageMagick-5.2.2
+    gzip -dc ImageMagick-5.2.3.tar.gz | tar xvf -
+    cd ImageMagick-5.2.3
 
   If you do not have gunzip(1), it is available as
   ftp.gnu.org:pub/gnu/gzip-1.2.4.shar.
@@ -99,6 +99,7 @@ UNIX/Cygwin COMPILATION
   The configure variables you should be aware of are:
 
       CC          Name of C compiler (e.g. 'cc -Xa') to use
+      CXX         Name of C++ compiler to use
       CFLAGS      Compiler flags (e.g. '-g -O2') to compile with
       CPPFLAGS    Include paths (-I/somedir) to look for header files
       LDFLAGS     Library paths (-L/somedir) to look for libraries
@@ -133,6 +134,7 @@ UNIX/Cygwin COMPILATION
     --enable-16bit-pixel    enable 16 bit/quantum pixels (default is no)
     --with-threads          enable threads support
     --with-cache            set pixel cache threshhold (default 80MB)
+    --with-magick_plus_plus enable build/install of Magick++
     --without-frozenpaths   disable frozen delegate paths
     --without-largefiles    disable support for large (64 bit) file offsets
     --without-perl          disable build/install of PerlMagick
@@ -215,6 +217,10 @@ UNIX/Cygwin COMPILATION
       ImageMagick is built, allowing RGBA values to range from 0 to
       65535 rather than 0 to 255.  Enabling this option will cause
       ImageMagick to run about 30% slower.
+
+    o --with-magick_plus_plus: Enable building Magick++, the C++
+      application programming interface to ImageMagick.  A suitable
+      C++ compiler is required.
 
     o --without-frozenpaths: By default, the configure script will
       determine the location of all delegates (external programs) and
@@ -559,7 +565,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-5.2.2.zip
+      unzip ImageMagick-5.2.3.zip
       set default [.imagemagick]
       @make
       set display/create/node=node_name::
@@ -572,7 +578,7 @@ VMS COMPILATION
 
   Alternatively, get a zipped distribution (with JPEG, PNG, TIFF, TTF) from
 
-      ftp://ftp.wizards.dupont.com/pub/ImageMagick/vms/ImageMagick-5.2.2.zip
+      ftp://ftp.wizards.dupont.com/pub/ImageMagick/vms/ImageMagick-5.2.3.zip
 
   The VMS JPEG, PNG, TIFF, and TTF  source libraries are available on
   axp.psl.ku.dk in [anonymous.decwindows.lib].
@@ -867,14 +873,13 @@ MACINTOSH COMPILATION
 
 Magick++
 
-  If you would like to build and install the Magick++ C++ programming
-  interface to ImageMagick, first build and install ImageMagick
-  according to the instructions in this file (configure script method
-  for Unix) and then build and install Magick++ according to the
-  instructions in the INSTALL file in the Magick++ subdirectory.
-  Magick++ is currently supported using the egcs 1.1.2 version of GNU
-  g++ (or later) under Unix and Microsoft Visual C++ 6.0 under Windows
-  Win2K or Windows 95/98.
+  Magick++ provides a C++ language API to ImageMagick. When configuring
+  for Unix, supply the option --with-magick_plus_plus to the configure
+  script in order to generate Makefiles which build and install the
+  Magick++ headers and library. Magick++ is built by default in the
+  Windows build environment. Magick++ is currently supported using the
+  egcs 1.1.2 version of GNU g++ (or later) under Unix and Microsoft
+  Visual C++ 6.0 under Windows Win2K or Windows 95/98/2000.
 
 
 COPYRIGHT
