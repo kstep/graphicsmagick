@@ -2128,6 +2128,22 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
     number_colors=MaxColormapSize;
   if (number_colors > MaxColormapSize)
     number_colors=MaxColormapSize;
+  /*
+    For grayscale images, use a fast translation to PseudoClass,
+    which assures that the maximum number of colors is equal to, or
+    less than MaxColormapSize.
+  */
+  if (quantize_info->colorspace == GRAYColorspace)
+    TransformColorspace(image,quantize_info->colorspace);
+  if (IsGrayImage(image,&image->exception))
+    GrayscalePseudoClassImage(image,True);
+  /*
+    If the image colors do not require further reduction, then simply
+    return.
+  */
+  if ((image->storage_class == PseudoClass) &&
+      (image->colors <= number_colors))
+    return(True);
   depth=quantize_info->tree_depth;
   if (depth == 0)
     {

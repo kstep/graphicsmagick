@@ -102,11 +102,15 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
     i,
     x;
 
+  unsigned int
+    is_grayscale;
+
   register PixelPacket
     *q;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  is_grayscale=image->is_grayscale;
   sign=sharpen ? 1 : -1;
   switch (image->storage_class)
   {
@@ -160,6 +164,7 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
       break;
     }
   }
+  image->is_grayscale=is_grayscale;
   return(False);
 }
 
@@ -208,6 +213,9 @@ MagickExport unsigned int EqualizeImage(Image *image)
     i,
     x;
 
+  unsigned int
+    is_grayscale;
+
   register PixelPacket
     *q;
 
@@ -216,6 +224,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  is_grayscale=image->is_grayscale;
   histogram=(DoublePixelPacket *)
     AcquireMemory((MaxMap+1)*sizeof(DoublePixelPacket));
   map=(DoublePixelPacket *) AcquireMemory((MaxMap+1)*sizeof(DoublePixelPacket));
@@ -333,6 +342,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
     }
   }
   LiberateMemory((void **) &equalize_map);
+  image->is_grayscale=is_grayscale;
   return(True);
 }
 
@@ -385,6 +395,9 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
     i,
     x;
 
+  unsigned int
+    is_grayscale;
+
   register PixelPacket
     *q;
 
@@ -404,6 +417,8 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
       gamma.green=gamma.red;
       gamma.blue=gamma.red;
     }
+  is_grayscale=(image->is_grayscale && (gamma.red == gamma.green) &&
+                (gamma.green == gamma.blue));
   /*
     Allocate and initialize gamma maps.
   */
@@ -473,6 +488,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
   if (image->gamma != 0.0)
     image->gamma*=(gamma.red+gamma.green+gamma.blue)/3.0;
   LiberateMemory((void **) &gamma_map);
+  image->is_grayscale=is_grayscale;
   return(True);
 }
 
@@ -521,6 +537,9 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
   int
     count;
 
+  unsigned int
+    is_grayscale;
+
   long
     y;
 
@@ -538,6 +557,7 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
   assert(image->signature == MagickSignature);
   if (levels == (char *) NULL)
     return(False);
+  is_grayscale=image->is_grayscale;
   black_point=0.0;
   mid_point=1.0;
   white_point=MaxRGB;
@@ -620,6 +640,7 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
     }
   }
   LiberateMemory((void **) &levels_map);
+  image->is_grayscale=is_grayscale;
   return(True);
 }
 
@@ -846,6 +867,9 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
     i,
     x;
 
+  unsigned int
+    is_grayscale;
+
   register PixelPacket
     *q;
 
@@ -853,6 +877,7 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
   assert(image->signature == MagickSignature);
   if (modulate == (char *) NULL)
     return(False);
+  is_grayscale=image->is_grayscale;
   percent_brightness=100.0;
   percent_saturation=100.0;
   percent_hue=100.0;
@@ -911,6 +936,7 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
       break;
     }
   }
+  image->is_grayscale=is_grayscale;
   return(True);
 }
 
@@ -948,11 +974,15 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
   register long
     x;
 
+  unsigned int
+    is_grayscale;
+
   register PixelPacket
     *q;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  is_grayscale=image->is_grayscale;
   switch (image->storage_class)
   {
     case DirectClass:
@@ -1038,6 +1068,7 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
       break;
     }
   }
+  image->is_grayscale=is_grayscale;
   return(True);
 }
 
@@ -1093,6 +1124,9 @@ MagickExport unsigned int NormalizeImage(Image *image)
   register long
     i;
 
+  unsigned int
+    is_grayscale;
+
   unsigned long
     threshold_intensity;
 
@@ -1101,6 +1135,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  is_grayscale=image->is_grayscale;
   histogram=(DoublePixelPacket *)
     AcquireMemory((MaxMap+1)*sizeof(DoublePixelPacket));
   normalize_map=(PixelPacket *) AcquireMemory((MaxMap+1)*sizeof(PixelPacket));
@@ -1376,5 +1411,6 @@ MagickExport unsigned int NormalizeImage(Image *image)
     }
   }
   LiberateMemory((void **) &normalize_map);
+  image->is_grayscale=is_grayscale;
   return(True);
 }

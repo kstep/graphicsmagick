@@ -184,12 +184,16 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   unsigned long
     bevel_width;
 
+  unsigned int
+    is_grayscale;
+
   /*
     Check frame geometry.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(frame_info != (FrameInfo *) NULL);
+  is_grayscale=image->is_grayscale;
   if ((frame_info->outer_bevel < 0) || (frame_info->inner_bevel < 0))
     ThrowImageException(OptionError,"UnableToFrameImage",
       "BevelWidthIsNegative");
@@ -212,6 +216,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     Initialize 3D effects color.
   */
   matte=image->matte_color;
+  if (!IsGray(image->matte_color))
+    is_grayscale=False;
   accentuate.red=(Quantum) ((((double) MaxRGB-AccentuateModulate)*matte.red+
     ((double) MaxRGB*AccentuateModulate))/MaxRGB+0.5);
   accentuate.green=(Quantum) ((((double) MaxRGB-AccentuateModulate)*matte.green+
@@ -372,6 +378,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
         *q++=trough;
   }
   (void) SyncImagePixels(frame_image);
+  frame_image->is_grayscale=is_grayscale;
   return(frame_image);
 }
 
@@ -426,12 +433,16 @@ MagickExport unsigned int RaiseImage(Image *image,
   register long
     x;
 
+  unsigned int
+    is_grayscale;
+
   register PixelPacket
     *q;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(raise_info != (RectangleInfo *) NULL);
+  is_grayscale=image->is_grayscale;
   if ((image->columns <= (raise_info->width << 1)) ||
       (image->rows <= (raise_info->height << 1)))
     ThrowBinaryException(OptionError,"UnableToRaiseImage",
@@ -559,5 +570,6 @@ MagickExport unsigned int RaiseImage(Image *image,
       if (!MagickMonitor(RaiseImageText,y,image->rows,&image->exception))
         break;
   }
+  image->is_grayscale=is_grayscale;
   return(True);
 }

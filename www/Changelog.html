@@ -13,6 +13,71 @@
 </tr>
 </table>
 <p>
+2003-02-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/enhance.c (ContrastImage): Preserve is_grayscale flag.
+        (EqualizeImage): Preserve is_grayscale flag.
+        (ModulateImage): Preserve is_grayscale flag.
+        (NegateImage): Preserve is_grayscale flag.
+        (NormalizeImage): Preserve is_grayscale flag.
+  <LI> magick/fx.c (ColorizeImage): Evaluate is_grayscale status.
+        (ConvolveImage): Preserve is_grayscale flag.
+        (ImplodeImage): Preserve is_grayscale flag.
+        (SolarizeImage): Preserve is_grayscale flag.
+        (OilPaintImage): Preserve is_grayscale flag.
+        (SwirlImage): Preserve is_grayscale flag.
+        (WaveImage): Preserve is_grayscale flag.
+  <LI> magick/resize.c (MagnifyImage): Preserve is_grayscale flag.
+        (MinifyImage): Preserve is_grayscale flag.
+        (ResizeImage): Preserve is_grayscale flag.
+  <LI> magick/decorate.c (FrameImage): Evaluate is_grayscale status.
+        (RaiseImage): Preserve is_grayscale.
+  <LI> magick/shear.c (IntegralRotateImage): Preserve is_grayscale.
+        flag.<BR>
+        (XShearImage): Evaluate is_grayscale status.
+        (YShearImage): Evaluate is_grayscale status.
+  <LI> magick/transform.c (ChopImage): Preserve is_grayscale flag.
+        (CropImage): Preserve is_grayscale flag.
+        (FlipImage): Preserve is_grayscale flag.
+        (FlopImage): Preserve is_grayscale flag.
+        (RollImage): Preserve is_grayscale flag.
+  <LI> magick/effect.c (AddNoiseImage): If image colorspace is
+        GRAYColorspace, then add intensity noise, and transfer
+        image is_grayscale flag to output image.
+        (BlurImage): Preserve is_grayscale flag.
+        (DespeckleImage): Preserve is_grayscale flag.
+        (EdgeImage): Preserve is_grayscale flag.
+        (EmbossImage): Preserve is_grayscale flag.
+        (GaussianBlurImage): Preserve is_grayscale flag.
+        (MotionBlurImage): Preserve is_grayscale flag.
+        (ShadeImage): Preserve is_grayscale flag.
+        (SharpenImage): Preserve is_grayscale flag.
+        (UnsharpMaskImage): Preserve is_grayscale flag.
+  <LI> magick/quantize.c (QuantizeImage): Pre-reduce gray images
+        to PseudoClass in order to quickly determine the number of
+        colors, and provide the expected PseudoClass output. Also
+        skip slow color quantization if there are already fewer
+        colors than requested.<BR>
+  <LI> magick/image.c (GrayscalePseudoClassImage): New function
+        to quickly reduce an image to PseudoClass grayscale.  This
+        is a fast way to determine the number of intensities in a
+        grayscale image. Either a compact sorted colormap or a faster,
+        contiguous linear colormap is created, depending on the
+        optimize_colormap flag. If the image is already PseudoClass,
+        and the optimize_colormap flag is True, then the existing
+        colormap is sorted and reduced.
+        (SyncImage): Preserve is_grayscale flag.
+        (ChannelImage): Result is grayscale.
+        (CycleColormapImage): Preserve is_grayscale and is_monochrome flags.
+        (SetImage): Evaluate is_grayscale flag.
+        (SetImageDepth): Preserve is_grayscale flag.
+        (SetImageOpacity): Preserve is_grayscale flag.
+        (SortColormapByIntensity): Preserve is_grayscale flag.
+        (TransformRGBImage): Evaluate is_grayscale flag.
+
+</UL>
+<p>
 2003-02-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -60,6 +125,8 @@
 
 <UL>
   <LI> www/archives.html: commented out sites not mirroring GM yet.
+        Changed "ftp.simplesystems.org" to "ftp.graphicsmagick.org".
+        Added link to graphicsmagick.sf.net.
 
 </UL>
 <p>

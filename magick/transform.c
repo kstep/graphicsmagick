@@ -225,6 +225,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
       if (!MagickMonitor(ChopImageText,i,image->rows,exception))
         break;
   }
+  chop_image->is_grayscale=image->is_grayscale;
   return(chop_image);
 }
 
@@ -479,6 +480,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
       DestroyImage(crop_image);
       return((Image *) NULL);
     }
+  crop_image->is_grayscale=image->is_grayscale;
   return(crop_image);
 }
 
@@ -813,6 +815,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
       if (!MagickMonitor(FlipImageText,y,flip_image->rows,exception))
         break;
   }
+  flip_image->is_grayscale=image->is_grayscale;
   return(flip_image);
 }
 
@@ -906,6 +909,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
       if (!MagickMonitor(FlopImageText,y,flop_image->rows,exception))
         break;
   }
+  flop_image->is_grayscale=image->is_grayscale;
   return(flop_image);
 }
 
@@ -1393,6 +1397,7 @@ MagickExport Image *RollImage(const Image *image,const long x_offset,
       if (!MagickMonitor(RollImageText,y,image->rows,exception))
         break;
   }
+  roll_image->is_grayscale=image->is_grayscale;
   return(roll_image);
 }
 
@@ -1457,7 +1462,8 @@ MagickExport Image *ShaveImage(const Image *image,
 %   T r a n s f o r m I m a g e                                               %
 %                                                                             %
 %                                                                             %
-%                                                                             % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             % 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  TransformImage() is a convenience method that behaves like ResizeImage() or
 %  CropImage() but accepts scaling and/or cropping information as a region

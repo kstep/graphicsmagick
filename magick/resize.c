@@ -443,6 +443,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     (void) memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
   (void) SyncImagePixels(magnify_image);
   LiberateMemory((void **) &scanline);
+  magnify_image->is_grayscale=image->is_grayscale;
   return(magnify_image);
 }
 
@@ -557,6 +558,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
       if (!MagickMonitor(MinifyImageText,y,minify_image->rows,exception))
         break;
   }
+  minify_image->is_grayscale=image->is_grayscale;
   return(minify_image);
 }
 
@@ -1216,6 +1218,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
         "UnableToResizeImage")
     }
+  resize_image->is_grayscale=image->is_grayscale;
   return(resize_image);
 }
 
@@ -1704,6 +1707,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   if (scale_image->rows != image->rows)
     LiberateMemory((void **) &scanline);
   LiberateMemory((void **) &x_vector);
+  scale_image->is_grayscale=image->is_grayscale;
   return(scale_image);
 }
 

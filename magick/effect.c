@@ -260,20 +260,38 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
     q=SetImagePixels(noise_image,0,y,noise_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      q->red=GenerateNoise(p->red,noise_type);
-      q->green=GenerateNoise(p->green,noise_type);
-      q->blue=GenerateNoise(p->blue,noise_type);
-      p++;
-      q++;
-    }
+    if (image->colorspace == GRAYColorspace)
+      {
+        /*
+          Intensity noise
+        */
+        q->red=q->green=q->blue=
+          GenerateNoise(PixelIntensityToQuantum(q),noise_type);
+        p++;
+        q++;
+      }
+    else
+      {
+        /*
+          Noise across RGB channels
+        */
+        for (x=0; x < (long) image->columns; x++)
+          {
+            q->red=GenerateNoise(p->red,noise_type);
+            q->green=GenerateNoise(p->green,noise_type);
+            q->blue=GenerateNoise(p->blue,noise_type);
+            p++;
+            q++;
+          }
+      }
     if (!SyncImagePixels(noise_image))
       break;
     if (QuantumTick(y,image->rows))
       if (!MagickMonitor(AddNoiseImageText,y,image->rows,exception))
         break;
   }
+  if (image->colorspace == GRAYColorspace)
+    noise_image->is_grayscale=image->is_grayscale;
   return(noise_image);
 }
 
@@ -595,6 +613,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   }
   LiberateMemory((void **) &scanline);
   LiberateMemory((void **) &kernel);
+  blur_image->is_grayscale=image->is_grayscale;
   return(blur_image);
 }
 
@@ -879,6 +898,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   */
   LiberateMemory((void **) &buffer);
   LiberateMemory((void **) &pixels);
+  despeckle_image->is_grayscale=image->is_grayscale;
   return(despeckle_image);
 }
 
@@ -943,6 +963,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   kernel[i/2]=width*width-1.0;
   edge_image=ConvolveImage(image,width,kernel,exception);
   LiberateMemory((void **) &kernel);
+  edge_image->is_grayscale=image->is_grayscale;
   return(edge_image);
 }
 
@@ -1026,6 +1047,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   if (emboss_image != (Image *) NULL)
     (void) EqualizeImage(emboss_image);
   LiberateMemory((void **) &kernel);
+  emboss_image->is_grayscale=image->is_grayscale;
   return(emboss_image);
 }
 
@@ -1178,6 +1200,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       if (!MagickMonitor(EnhanceImageText,y,image->rows-2,exception))
         break;
   }
+  enhance_image->is_grayscale=image->is_grayscale;
   return(enhance_image);
 }
 
@@ -1258,6 +1281,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   }
   blur_image=ConvolveImage(image,width,kernel,exception);
   LiberateMemory((void **) &kernel);
+  blur_image->is_grayscale=image->is_grayscale;
   return(blur_image);
 }
 
@@ -1585,6 +1609,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
         break;
   }
   LiberateMemory((void **) &skiplist);
+  median_image->is_grayscale=image->is_grayscale;
   return(median_image);
 }
 
@@ -1790,6 +1815,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   }
   LiberateMemory((void **) &kernel);
   LiberateMemory((void **) &offsets);
+  blur_image->is_grayscale=image->is_grayscale;
   return(blur_image);
 }
 
@@ -1960,6 +1986,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
         break;
   }
   LiberateMemory((void **) &skiplist);
+  noise_image->is_grayscale=image->is_grayscale;
   return(noise_image);
 }
 
@@ -2112,6 +2139,7 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
       if (!MagickMonitor(ShadeImageText,y,image->rows,exception))
         break;
   }
+  shade_image->is_grayscale=image->is_grayscale;
   if (gray)
     shade_image->is_grayscale=True;
   return(shade_image);
@@ -2196,6 +2224,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   kernel[i/2]=(-2.0)*normalize;
   sharp_image=ConvolveImage(image,width,kernel,exception);
   LiberateMemory((void **) &kernel);
+  sharp_image->is_grayscale=image->is_grayscale;
   return(sharp_image);
 }
 
@@ -2537,5 +2566,6 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
       if (!MagickMonitor(SharpenImageText,y,image->rows,exception))
         break;
   }
+  sharp_image->is_grayscale=image->is_grayscale;
   return(sharp_image);
 }

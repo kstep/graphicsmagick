@@ -233,9 +233,9 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  AllocateImageColormap() allocates an image colormap and initializes
-%  it to a linear gray colorspace.  If the image already has a colormap,
-%  it is replaced.  AllocateImageColormap() returns True if successful,
-%  otherwise False if there is not enough memory.
+%  it to a linear gray colorspace with increasing intensity.  If the image
+%  already has a colormap, it is replaced.  AllocateImageColormap() returns
+%  True if successful, otherwise False if there is not enough memory.
 %
 %  The format of the AllocateImageColormap method is:
 %
@@ -847,6 +847,7 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
       if (!MagickMonitor(ChannelImageText,y,image->rows,&image->exception))
         break;
   }
+  image->is_grayscale=True;
   return(True);
 }
 
@@ -1281,8 +1282,15 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
   register PixelPacket
     *q;
 
+  unsigned int
+    is_grayscale,
+    is_monochrome;
+
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  is_grayscale=image->is_grayscale;
+  is_monochrome=image->is_monochrome;
   if (image->storage_class == DirectClass)
     SetImageType(image,PaletteType);
   for (y=0; y < (long) image->rows; y++)
@@ -1305,6 +1313,8 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
     if (!SyncImagePixels(image))
       break;
   }
+  image->is_grayscale=is_grayscale;
+  image->is_monochrome=is_monochrome;
 }
 
 /*
@@ -2652,6 +2662,258 @@ MagickExport unsigned int GradientImage(Image *image,
         break;
   }
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G r a y s c a l e P s e u d o C l a s s I m a g e                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GrayscalePseudoClassImage converts an image to a PseudoClass
+%  grayscale representation with an (optionally) compressed and sorted
+%  colormap. Colormap is ordered by increasing intensity.
+%
+%  The format of the GrayscalePseudoClassImage method is:
+%
+%      void GrayscalePseudoClassImage(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o optimize_colormap: If true, produce an optimimal (compact) colormap.
+%
+*/
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+static int IntensityCompare(const void *x,const void *y)
+{
+  long
+    intensity;
+
+  PixelPacket
+    *color_1,
+    *color_2;
+
+  color_1=(PixelPacket *) x;
+  color_2=(PixelPacket *) y;
+  intensity=PixelIntensityToQuantum(color_1)-
+    (long) PixelIntensityToQuantum(color_2);
+  return(intensity);
+}
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
+MagickExport void GrayscalePseudoClassImage(Image *image,
+  unsigned int optimize_colormap)
+{
+  long
+    y;
+
+  register long
+    x;
+
+  register IndexPacket
+    *indexes;
+
+  register const PixelPacket
+    *q;
+
+  register int
+    i;
+
+  int
+    *colormap_index=(int *) NULL;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+
+  if (!image->is_grayscale)
+    TransformColorspace(image,GRAYColorspace);
+
+  if (image->storage_class != PseudoClass)
+    {
+      /*
+        Allocate maximum sized grayscale image colormap
+      */
+      if (!AllocateImageColormap(image,MaxColormapSize))
+        {
+          ThrowException(&image->exception,ResourceLimitError,"MemoryAllocationFailed",
+                         "UnableToSortImageColormap");
+          return;
+        }
+
+      if (optimize_colormap)
+        {
+          /*
+            Use minimal colormap method.
+          */
+
+          /*
+            Allocate memory for colormap index
+          */
+          colormap_index=(int *) AcquireMemory(MaxColormapSize*sizeof(int));
+          if (colormap_index == (int *) NULL)
+            {
+              ThrowException(&image->exception,ResourceLimitError,"MemoryAllocationFailed",
+                             "UnableToSortImageColormap");
+              return;
+            }
+
+          /*
+            Initial colormap index value is -1 so we can tell if it
+            is initialized.
+          */
+          for (i=0; i < MaxColormapSize; i++)
+            colormap_index[i]=-1;
+
+          image->colors=0;
+          for (y=0; y < (long) image->rows; y++)
+            {
+              q=GetImagePixels(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              indexes=GetIndexes(image);
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  register int
+                    intensity;
+                  
+                  /*
+                    If index is new, create index to colormap
+                  */
+                  intensity=ScaleQuantumToMap(q->red);
+                  if (colormap_index[intensity] < 0)
+                    {
+                      colormap_index[intensity]=image->colors;
+                      image->colormap[image->colors]=*q;
+                      image->colors++;
+                    }
+                  *indexes++=colormap_index[intensity];
+                  q++;
+                }
+            }
+          image->storage_class=PseudoClass;
+        }
+      else
+        {
+          /*
+            Use fast-cut linear colormap method.
+          */
+          for (y=0; y < (long) image->rows; y++)
+            {
+              q=GetImagePixels(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              indexes=GetIndexes(image);
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  *indexes=ScaleQuantumToMap(q->red);
+                  q++;
+                  indexes++;
+                }
+            }
+          image->storage_class=PseudoClass;
+          image->is_grayscale=True;
+          return;
+        }
+    }
+
+  if (optimize_colormap)
+    {
+      /*
+        Sort and compact the colormap
+      */
+
+      /*
+        Allocate memory for colormap index
+      */
+      if (colormap_index == (int *) NULL)
+        {
+          colormap_index=(int *) AcquireMemory(MaxColormapSize*sizeof(int));
+          if (colormap_index == (int *) NULL)
+            {
+              ThrowException(&image->exception,ResourceLimitError,"MemoryAllocationFailed",
+                             "UnableToSortImageColormap");
+              return;
+            }
+        }
+      
+      /*
+        Assign index values to colormap entries.
+      */
+      for (i=0; i < (long) image->colors; i++)
+        image->colormap[i].opacity=(unsigned short) i;
+      /*
+        Sort image colormap by increasing intensity.
+      */
+      qsort((void *) image->colormap,image->colors,sizeof(PixelPacket),
+            IntensityCompare);
+      /*
+        Create mapping between original indexes and reduced/sorted
+        colormap.
+      */
+      {
+        PixelPacket
+          *new_colormap;
+
+        int
+          j;
+
+        new_colormap=(PixelPacket *) AcquireMemory(image->colors*sizeof(PixelPacket));
+        if (new_colormap == (PixelPacket *) NULL)
+          {
+            ThrowException(&image->exception,ResourceLimitError,"MemoryAllocationFailed",
+                           "UnableToSortImageColormap");
+            return;
+          }
+
+        j=0;
+        new_colormap[j]=image->colormap[0];
+        for (i=0; i < (long) image->colors; i++)
+          {
+            if (!ColorMatch(&new_colormap[j],&image->colormap[i]))
+              {
+                j++;
+                new_colormap[j]=image->colormap[i];
+              }
+            
+            colormap_index[image->colormap[i].opacity]=j;
+          }
+        image->colors=j+1;
+        LiberateMemory((void **)&image->colormap);
+        image->colormap=new_colormap;
+      }
+
+      /*
+        Reassign image colormap indexes
+      */
+      for (y=0; y < (long) image->rows; y++)
+        {
+          q=GetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          indexes=GetIndexes(image);
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              *indexes=colormap_index[*indexes];
+              indexes++;
+            }
+        }
+      LiberateMemory((void **) &colormap_index);
+    }
+  image->is_grayscale=True;
 }
 
 /*
@@ -4024,6 +4286,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
       if (!SyncImagePixels(image))
         break;
     }
+  image->is_grayscale=IsGray(image->background_color);
 }
 
 /*
@@ -4110,11 +4373,15 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
   register long
     x;
 
+  unsigned int
+    is_grayscale;
+
   register PixelPacket
     *q;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  is_grayscale=image->is_grayscale;
   image->depth=GetImageDepth(image,&image->exception);
   if (image->depth == depth)
     return(True);
@@ -4152,6 +4419,7 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
           }
         }
       image->depth=8;
+      image->is_grayscale=is_grayscale;
       return(True);
     }
   if (depth <= 16)
@@ -4188,9 +4456,11 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
           }
         }
       image->depth=16;
+      image->is_grayscale=is_grayscale;
       return(True);
     }
   image->depth=32;
+  image->is_grayscale=is_grayscale;
   return(True);
 }
 
@@ -4490,11 +4760,15 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
   register long
     x;
 
+  unsigned int
+    is_grayscale;
+
   register PixelPacket
     *q;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  is_grayscale=image->is_grayscale;
   if (image->matte)
     {
       /*
@@ -4528,6 +4802,7 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
         if (!SyncImagePixels(image))
           break;
       }
+      image->is_grayscale=is_grayscale;
       return;
     }
   /*
@@ -4556,6 +4831,7 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
     if (!SyncImagePixels(image))
       break;
   }
+  image->is_grayscale=is_grayscale;
 }
 
 /*
@@ -4627,6 +4903,8 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
               image->colorspace=GRAYColorspace;
             }
         }
+      image->is_grayscale=True;
+      image->is_monochrome=True;
       break;
     }
     case GrayscaleType:
@@ -4635,6 +4913,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
         TransformColorspace(image,RGBColorspace);
       if (!IsGrayImage(image,&image->exception))
         TransformColorspace(image,GRAYColorspace);
+      image->is_grayscale=True;
       break;
     }
     case GrayscaleMatteType:
@@ -4645,6 +4924,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
           TransformColorspace(image,GRAYColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
+      image->is_grayscale=True;
       break;
     }
     case PaletteType:
@@ -4737,7 +5017,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
 extern "C" {
 #endif
 
-static int IntensityCompare(const void *x,const void *y)
+static int InverseIntensityCompare(const void *x,const void *y)
 {
   long
     intensity;
@@ -4748,6 +5028,9 @@ static int IntensityCompare(const void *x,const void *y)
 
   color_1=(PixelPacket *) x;
   color_2=(PixelPacket *) y;
+  /*
+    y - x results in decreasing order
+  */
   intensity=PixelIntensityToQuantum(color_2)-
     (long) PixelIntensityToQuantum(color_1);
   return(intensity);
@@ -4777,6 +5060,9 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
   register long
     i;
 
+  unsigned int
+    is_grayscale;
+
   unsigned short
     *pixels;
 
@@ -4784,6 +5070,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
   assert(image->signature == MagickSignature);
   if (image->storage_class != PseudoClass)
     return(True);
+  is_grayscale=image->is_grayscale;
   /*
     Allocate memory for pixel indexes.
   */
@@ -4797,10 +5084,10 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
   for (i=0; i < (long) image->colors; i++)
     image->colormap[i].opacity=(unsigned short) i;
   /*
-    Sort image colormap by decreasing color popularity.
+    Sort image colormap by decreasing intensity.
   */
   qsort((void *) image->colormap,image->colors,sizeof(PixelPacket),
-    IntensityCompare);
+    InverseIntensityCompare);
   /*
     Update image colormap indexes to sorted colormap order.
   */
@@ -4820,6 +5107,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
     }
   }
   LiberateMemory((void **) &pixels);
+  image->is_grayscale=is_grayscale;
   return(True);
 }
 
@@ -4864,10 +5152,14 @@ MagickExport void SyncImage(Image *image)
   register const PixelPacket
     *p;
 
+  unsigned int
+    is_grayscale;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->storage_class == DirectClass)
     return;
+  is_grayscale=image->is_grayscale;
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
@@ -4886,6 +5178,7 @@ MagickExport void SyncImage(Image *image)
     if (!SyncImagePixels(image))
       break;
   }
+  image->is_grayscale=is_grayscale;
 }
 
 /*
@@ -5178,6 +5471,9 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   register long
     i;
 
+  unsigned int
+    is_grayscale;
+
   const unsigned char
     *rgb_map=0;
 
@@ -5186,6 +5482,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  is_grayscale=(image->is_grayscale ||
+                (image->colorspace == GRAYColorspace));
 
   /*
     If colorspace is already RGB type, then simply return.
@@ -5630,7 +5928,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       break;
     }
   }
-
+  image->is_grayscale=is_grayscale;
   image->colorspace=RGBColorspace;
 
   /*

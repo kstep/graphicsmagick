@@ -184,6 +184,9 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   register long
     x;
 
+  unsigned int
+    is_grayscale;
+
   register PixelPacket
     *q;
 
@@ -194,6 +197,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  is_grayscale=image->is_grayscale;
   colorize_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (colorize_image == (Image *) NULL)
     return((Image *) NULL);
@@ -245,6 +249,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
       if (!MagickMonitor(ColorizeImageText,y,image->rows,exception))
         break;
   }
+  colorize_image->is_grayscale=(is_grayscale && IsGray(target));
   return(colorize_image);
 }
 
@@ -471,6 +476,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
         break;
   }
   LiberateMemory((void **) &normal_kernel);
+  convolve_image->is_grayscale=image->is_grayscale;
   return(convolve_image);
 }
 
@@ -603,6 +609,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       if (!MagickMonitor(ImplodeImageText,y,image->rows,exception))
         break;
   }
+  implode_image->is_grayscale=image->is_grayscale;
   return(implode_image);
 }
 
@@ -920,6 +927,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         break;
   }
   LiberateMemory((void **) &histogram);
+  paint_image->is_grayscale=image->is_grayscale;
   return(paint_image);
 }
 
@@ -961,11 +969,15 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
     i,
     x;
 
+  unsigned int
+    is_grayscale;
+
   register PixelPacket
     *q;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  is_grayscale=image->is_grayscale;
   switch (image->storage_class)
   {
     case DirectClass:
@@ -1013,6 +1025,7 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
       break;
     }
   }
+  image->is_grayscale=is_grayscale;
 }
 
 /*
@@ -1070,6 +1083,9 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   register long
     x;
 
+  unsigned int
+    is_grayscale;
+
   register PixelPacket
     *q;
 
@@ -1082,6 +1098,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   assert(watermark->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  is_grayscale=(image->is_grayscale && watermark->is_grayscale);
   stegano_image=CloneImage(image,0,0,True,exception);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1140,6 +1157,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   }
   if (stegano_image->storage_class == PseudoClass)
     SyncImage(stegano_image);
+  stegano_image->is_grayscale=is_grayscale;
   return(stegano_image);
 }
 
@@ -1366,6 +1384,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       if (!MagickMonitor(SwirlImageText,y,image->rows,exception))
         break;
   }
+  swirl_image->is_grayscale=image->is_grayscale;
   return(swirl_image);
 }
 
@@ -1471,5 +1490,6 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   }
   SetImageVirtualPixelMethod(image,virtual_pixel_method);
   LiberateMemory((void **) &sine_map);
+  wave_image->is_grayscale=image->is_grayscale;
   return(wave_image);
 }

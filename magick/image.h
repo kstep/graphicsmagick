@@ -672,9 +672,9 @@ typedef struct _Image
 
   unsigned int
     dither,             /* True if image is to be dithered */
-    is_monochrome,      /* True if image is known to be monochrome */
-    is_grayscale,       /* True if image is known to be grayscale */
-    taint,              /* True if image has not been modifed */
+    is_monochrome,      /* Private, True if image is known to be monochrome */
+    is_grayscale,       /* Private, True if image is known to be grayscale */
+    taint,              /* Private, True if image has not been modifed */
     matte;              /* True if image has an opacity channel */ 
 
   unsigned long
@@ -752,7 +752,7 @@ typedef struct _Image
     dispose;            /* GIF disposal option */
 
   struct _Image
-    *clip_mask;         /* Clipping mask to apply when updating pixels */
+    *clip_mask;         /* Private, Clipping mask to apply when updating pixels */
 
   unsigned long
     scene,              /* Animation frame scene number */
@@ -764,7 +764,7 @@ typedef struct _Image
     start_loop;         /* Animation frame number to start looping at */
 
   ErrorInfo
-    error;              /* Computed error between two images, or quantization */
+    error;              /* Computed image comparison or quantization error */
 
   TimerInfo
     timer;              /* Operation micro-timer */
@@ -807,7 +807,7 @@ typedef struct _Image
 
   struct _Image
     *previous,          /* Pointer to previous frame */
-    *list,              /* Private, only used by display */
+    *list,              /* Private, used only by display */
     *next;              /* Pointer to next frame */
 } Image;
 
@@ -1000,6 +1000,7 @@ extern MagickExport void
   DestroyImageInfo(ImageInfo *),
   GetImageException(Image *,ExceptionInfo *),
   GetImageInfo(ImageInfo *),
+  GrayscalePseudoClassImage(Image *,unsigned int),
   ModifyImage(Image **,ExceptionInfo *),
   SetImage(Image *,const Quantum),
   SetImageOpacity(Image *,const unsigned int),

@@ -459,6 +459,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
     }
   }
   rotate_image->page=page;
+  rotate_image->is_grayscale=image->is_grayscale;
   return(rotate_image);
 }
 
@@ -541,11 +542,15 @@ static void XShearImage(Image *image,const double degrees,
   register long
     i;
 
+  unsigned int
+    is_grayscale;
+
   register PixelPacket
     *p,
     *q;
 
   assert(image != (Image *) NULL);
+  is_grayscale=image->is_grayscale;
   y_offset--;
   for (y=0; y < (long) height; y++)
   {
@@ -674,6 +679,8 @@ static void XShearImage(Image *image,const double degrees,
       if (!MagickMonitor(XShearImageText,y,height,&image->exception))
         break;
   }
+  if (is_grayscale && IsGray(image->background_color))
+    image->is_grayscale=True;
 }
 
 /*
@@ -734,10 +741,14 @@ static void YShearImage(Image *image,const double degrees,
   register long
     i;
 
+  unsigned int
+    is_grayscale;
+
   PixelPacket
     pixel;
 
   assert(image != (Image *) NULL);
+  is_grayscale=image->is_grayscale;
   x_offset--;
   for (y=0; y < (long) width; y++)
   {
@@ -866,6 +877,8 @@ static void YShearImage(Image *image,const double degrees,
       if (!MagickMonitor(YShearImageText,y,width,&image->exception))
         break;
   }
+  if (is_grayscale && IsGray(image->background_color))
+    image->is_grayscale=True;
 }
 
 /*
