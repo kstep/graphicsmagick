@@ -81,6 +81,8 @@ private:
           bool dll, bool mt);
   void process_module(ofstream &dsw,
           WIN32_FIND_DATA	&data, const char *filename, bool dll);
+  void process_one_folder(ofstream &dsw,
+          WIN32_FIND_DATA	&data, int project_type, int projectType);
 };
 
 BOOL BrowseForFolder(HWND hOwner, char* szTitle, char* szRetval);

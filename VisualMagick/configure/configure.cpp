@@ -520,6 +520,102 @@ void CConfigureApp::process_module(ofstream &dsw,
 	end_project(dsw);
 }
 
+void CConfigureApp::process_one_folder(ofstream &dsw,
+  WIN32_FIND_DATA	&data, int project_type, int projectType)
+{
+  CString subpath;
+
+  switch (project_type)
+  {
+  case UTILITY:
+    {
+	    subpath = "..\\..\\";
+      subpath += data.cFileName;
+      subpath += "\\*.c";
+	    WIN32_FIND_DATA	subdata;
+	    HANDLE subhandle = FindFirstFile(subpath, &subdata);
+	    if (subhandle != INVALID_HANDLE_VALUE)
+      {
+	      do
+	      {
+          process_utility(dsw, data, subdata.cFileName,
+            projectType == MULTITHREADEDDLL);
+	      } while (FindNextFile(subhandle, &subdata));
+        FindClose(subhandle);
+      }
+
+	    subpath = "..\\..\\";
+      subpath += data.cFileName;
+      subpath += "\\*.cpp";
+	    subhandle = FindFirstFile(subpath, &subdata);
+	    if (subhandle != INVALID_HANDLE_VALUE)
+      {
+	      do
+	      {
+          process_utility(dsw, data, subdata.cFileName,
+            projectType == MULTITHREADEDDLL);
+	      } while (FindNextFile(subhandle, &subdata));
+        FindClose(subhandle);
+      }
+    }
+    break;
+  case LIBRARY:
+	  defines_list.push_back("_MAGICKLIB_");
+    if (projectType != MULTITHREADEDDLL)
+      project_type=STATICLIB;
+    process_library(dsw, data.cFileName, (project_type==LIBRARY),
+        projectType == MULTITHREADEDDLL);
+	  defines_list.pop_back();
+    break;
+  case STATICLIB:
+    if (projectType != MULTITHREADEDDLL)
+      project_type=STATICLIB;
+    process_library(dsw, data.cFileName, (project_type==LIBRARY),
+        projectType == MULTITHREADEDDLL);
+    break;
+  case MODULE:
+    {
+	    subpath = "..\\..\\";
+      subpath += data.cFileName;
+      subpath += "\\*.c";
+	    WIN32_FIND_DATA	subdata;
+	    HANDLE subhandle = FindFirstFile(subpath, &subdata);
+	    if (subhandle != INVALID_HANDLE_VALUE)
+      {
+	      do
+	      {
+          process_module(dsw, data, subdata.cFileName,
+            projectType == MULTITHREADEDDLL);
+	      } while (FindNextFile(subhandle, &subdata));
+        FindClose(subhandle);
+      }
+
+	    subpath = "..\\..\\";
+      subpath += data.cFileName;
+      subpath += "\\*.cpp";
+	    subhandle = FindFirstFile(subpath, &subdata);
+	    if (subhandle != INVALID_HANDLE_VALUE)
+      {
+	      do
+	      {
+          process_module(dsw, data, subdata.cFileName,
+            projectType == MULTITHREADEDDLL);
+	      } while (FindNextFile(subhandle, &subdata));
+        FindClose(subhandle);
+      }
+    }
+    break;
+  case THIRDPARTY:
+	  defines_list.push_back("_MAGICKLIB_");
+    process_3rd_party_library(dsw, data.cFileName, (projectType == MULTITHREADEDDLL),
+        projectType == MULTITHREADEDDLL);
+	  defines_list.pop_back();
+    break;
+  }
+}
+
+#define NEW_METHOD
+
 BOOL CConfigureApp::InitInstance()
 {
 	// Standard initialization
@@ -583,17 +679,6 @@ BOOL CConfigureApp::InitInstance()
 		  libs_list_shared.push_back("kernel32.lib");
 		  libs_list_shared.push_back("user32.lib");
 		  libs_list_shared.push_back("gdi32.lib");
-#ifdef OLD_METHOD
-		  libs_list_shared.push_back("winspool.lib");
-		  libs_list_shared.push_back("comdlg32.lib");
-		  libs_list_shared.push_back("advapi32.lib");
-		  libs_list_shared.push_back("shell32.lib");
-		  libs_list_shared.push_back("ole32.lib");
-		  libs_list_shared.push_back("oleaut32.lib");
-		  libs_list_shared.push_back("uuid.lib");
-		  libs_list_shared.push_back("odbc32.lib");
-		  libs_list_shared.push_back("odbccp32.lib");
-#endif
 			defines_list.push_back("_DLL");
 		  defines_list.push_back("_MAGICKMOD_");
 		}
@@ -605,6 +690,65 @@ BOOL CConfigureApp::InitInstance()
 		  defines_list.push_back("_LIB");
     }
 
+#ifdef NEW_METHOD
+    int project_type = DISABLED;
+    HANDLE tophandle;
+    // Scan all top level directories and process the ones
+    // that we are allowed to.
+	  WIN32_FIND_DATA	topdata;
+	  tophandle = FindFirstFile("..\\*.", &topdata);
+//->
+	  do
+	  {
+	    if (tophandle == INVALID_HANDLE_VALUE)
+        break;
+		  if ((topdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
+              FILE_ATTRIBUTE_DIRECTORY)
+      {
+        HANDLE handle;
+	      WIN32_FIND_DATA	data;
+
+        if (stricmp(topdata.cFileName,".") == 0)
+          continue;
+        if (stricmp(topdata.cFileName,"..") == 0)
+          continue;
+
+        std::string searchpath = "..\\";
+        searchpath += topdata.cFileName;
+        searchpath += "\\*.txt";
+
+	      handle = FindFirstFile(searchpath.c_str(), &data);
+	      if (handle == INVALID_HANDLE_VALUE)
+          continue;
+        FindClose(handle);
+
+        project_type = DISABLED;
+        if (stricmp(data.cFileName,"UTILITY.txt") == 0)
+          project_type = UTILITY;
+        else if (stricmp(data.cFileName,"THIRDPARTY.txt") == 0)
+          project_type = THIRDPARTY;
+        else if (stricmp(data.cFileName,"LIBRARY.txt") == 0)
+          project_type = LIBRARY;
+        else if (stricmp(data.cFileName,"MODULE.txt") == 0)
+          project_type = MODULE;
+        else if (stricmp(data.cFileName,"STATICLIB.txt") == 0)
+          project_type = STATICLIB;
+
+        searchpath = "..\\..\\";
+        searchpath += topdata.cFileName;
+
+	      handle = FindFirstFile(searchpath.c_str(), &data);
+	      if (handle == INVALID_HANDLE_VALUE)
+          continue;
+        FindClose(handle);
+		    if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
+                FILE_ATTRIBUTE_DIRECTORY)
+          process_one_folder(dsw, data, project_type, projectType);
+      }
+	  } while (FindNextFile(tophandle, &topdata));
+//->
+    FindClose(tophandle);
+#else
     const ConfigureInfo
       valid_dirs[] = {
       { "bzlib",        THIRDPARTY },
@@ -642,105 +786,13 @@ BOOL CConfigureApp::InitInstance()
 	    handle = FindFirstFile(searchpath.c_str(), &data);
 	    if (handle == INVALID_HANDLE_VALUE)
         continue;
-      project_type = valid_dirs[i].type;
-	    do
-	    {
-		    if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
-                FILE_ATTRIBUTE_DIRECTORY)
-		    {
-	        CString subpath;
-
-          switch (project_type)
-          {
-          case UTILITY:
-            {
-	            subpath = "..\\..\\";
-              subpath += data.cFileName;
-              subpath += "\\*.c";
-	            WIN32_FIND_DATA	subdata;
-	            HANDLE subhandle = FindFirstFile(subpath, &subdata);
-	            if (subhandle != INVALID_HANDLE_VALUE)
-              {
-	              do
-	              {
-                  process_utility(dsw, data, subdata.cFileName,
-                    projectType == MULTITHREADEDDLL);
-	              } while (FindNextFile(subhandle, &subdata));
-                FindClose(subhandle);
-              }
-
-	            subpath = "..\\..\\";
-              subpath += data.cFileName;
-              subpath += "\\*.cpp";
-	            subhandle = FindFirstFile(subpath, &subdata);
-	            if (subhandle != INVALID_HANDLE_VALUE)
-              {
-	              do
-	              {
-                  process_utility(dsw, data, subdata.cFileName,
-                    projectType == MULTITHREADEDDLL);
-	              } while (FindNextFile(subhandle, &subdata));
-                FindClose(subhandle);
-              }
-            }
-            break;
-          case LIBRARY:
-		        defines_list.push_back("_MAGICKLIB_");
-            if (projectType != MULTITHREADEDDLL)
-              project_type=STATICLIB;
-            process_library(dsw, data.cFileName, (project_type==LIBRARY),
-                projectType == MULTITHREADEDDLL);
-		        defines_list.pop_back();
-            break;
-          case STATICLIB:
-            if (projectType != MULTITHREADEDDLL)
-              project_type=STATICLIB;
-            process_library(dsw, data.cFileName, (project_type==LIBRARY),
-                projectType == MULTITHREADEDDLL);
-            break;
-          case MODULE:
-            {
-	            subpath = "..\\..\\";
-              subpath += data.cFileName;
-              subpath += "\\*.c";
-	            WIN32_FIND_DATA	subdata;
-	            HANDLE subhandle = FindFirstFile(subpath, &subdata);
-	            if (subhandle != INVALID_HANDLE_VALUE)
-              {
-	              do
-	              {
-                  process_module(dsw, data, subdata.cFileName,
-                    projectType == MULTITHREADEDDLL);
-	              } while (FindNextFile(subhandle, &subdata));
-                FindClose(subhandle);
-              }
-
-	            subpath = "..\\..\\";
-              subpath += data.cFileName;
-              subpath += "\\*.cpp";
-	            subhandle = FindFirstFile(subpath, &subdata);
-	            if (subhandle != INVALID_HANDLE_VALUE)
-              {
-	              do
-	              {
-                  process_module(dsw, data, subdata.cFileName,
-                    projectType == MULTITHREADEDDLL);
-	              } while (FindNextFile(subhandle, &subdata));
-                FindClose(subhandle);
-              }
-            }
-            break;
-          case THIRDPARTY:
-		        defines_list.push_back("_MAGICKLIB_");
-            process_3rd_party_library(dsw, data.cFileName, (projectType == MULTITHREADEDDLL),
-                projectType == MULTITHREADEDDLL);
-		        defines_list.pop_back();
-            break;
-          }
-        }
-	    } while (FindNextFile(handle, &data));
       FindClose(handle);
+      project_type = valid_dirs[i].type;
+		  if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
+              FILE_ATTRIBUTE_DIRECTORY)
+        process_one_folder(dsw, data, project_type, projectType);
     }
+#endif
 		write_dsw_end(dsw);
 	}
 /*	else if (nResponse == IDCANCEL)
