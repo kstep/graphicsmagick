@@ -1433,7 +1433,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case InCompositeOp:
         {
-          if ((source.opacity == TransparentOpacity) &&
+          if ((source.opacity == TransparentOpacity) ||
               (destination.opacity == TransparentOpacity))
             {
 					    destination=source;
@@ -1452,7 +1452,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case OutCompositeOp:
         {
-          if ((source.opacity == TransparentOpacity) &&
+          if ((source.opacity == TransparentOpacity) ||
               (destination.opacity == OpaqueOpacity))
             {
 					    destination=source;
