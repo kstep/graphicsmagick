@@ -1471,7 +1471,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w C l i p P a t h                                                   %
++   D r a w C l i p P a t h                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
