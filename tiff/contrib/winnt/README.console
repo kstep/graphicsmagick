@@ -176,3 +176,7 @@ clobber:
 	del libtiff.lib
 	del *.obj
 	del g3states.h
+
+
+
+[60;1H[K
