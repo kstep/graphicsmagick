@@ -1002,9 +1002,9 @@ static int DestroyEdge(PolygonInfo *polygon_info,const int edge)
   if (edge >= polygon_info->number_edges)
     return(polygon_info->number_edges);
   LiberateMemory((void **) &polygon_info->edges[edge].points);
+  polygon_info->number_edges--;
   for (i=edge; i < polygon_info->number_edges; i++)
     polygon_info->edges[i]=polygon_info->edges[i+1];
-  polygon_info->number_edges--;
   return(polygon_info->number_edges);
 }
 
