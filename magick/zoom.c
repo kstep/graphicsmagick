@@ -636,25 +636,16 @@ static double Catrom(const double x)
 
 static double Cubic(const double x)
 {
-  double
-    t;
-
   if (x < -2.0)
     return(0.0);
   if (x < -1.0)
-    {
-      t=2.0+x;
-      return(t*t*t/6.0);
-    }
+    return((2.0+x)*(2.0+x)*(2.0+x)/6.0);
   if (x < 0.0)
     return((4.0+x*x*(-6.0-3.0*x))/6.0);
   if (x < 1.0)
     return((4.0+x*x*(-6.0+3.0*x))/6.0);
   if (x < 2.0)
-    {
-      t=2.0-x;
-      return(t*t*t/6.0);
-    }
+    return((2.0-x)*(2.0-x)*(2.0-x)/6.0);
   return(0.0);
 }
 
@@ -675,12 +666,12 @@ static double Hamming(const double x)
 
 static double Hermite(const double x)
 {
-  double
-    v;
-
-  v=x < 0.0 ? -x : x;
-  if (v < 1.0)
-    return((2.0*v-3.0)*v*v+1.0);
+  if (x < -1.0)
+    return(0.0);
+  if (x < 0.0)
+    return((2.0*(-x)-3.0)*(-x)*(-x)+1.0);
+  if (x < 1.0)
+    return((2.0*x-3.0)*x*x+1.0);
   return(0.0);
 }
 
@@ -729,23 +720,14 @@ static double Mitchell(const double x)
 
 static double Quadratic(const double x)
 {
-  double
-    t;
-
   if (x < -1.5)
     return(0.0);
   if (x < -0.5)
-    {
-      t=x+1.5;
-      return(0.5*t*t);
-    }
+    return(0.5*(x+1.5)*(x+1.5));
   if (x < 0.5)
     return(0.75-x*x);
   if (x < 1.5)
-    {
-      t=x-1.5;
-      return(0.5*t*t);
-    }
+    return(0.5*(x-1.5)*(x-1.5));
   return(0.0);
 }
 
