@@ -92,7 +92,7 @@ Export char *AllocateString(const char *source)
   destination=(char *) AllocateMemory(Max(Extent(source)+1,MaxTextExtent));
   if (destination == (char *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate string",
-      "Memory allocation failed");
+      "a. Memory allocation failed");
   (void) strcpy(destination,source);
   return(destination);
 }
@@ -198,7 +198,7 @@ Export char *BaseFilename(const char *name)
       basename=(char *) AllocateMemory(MaxTextExtent);
       if (basename == (char *) NULL)
         MagickError(ResourceLimitError,"Unable to get base filename",
-          "Memory allocation failed");
+          "b. Memory allocation failed");
     }
   (void) strcpy(basename,name);
   p=basename+(Extent(basename)-1);
@@ -268,7 +268,7 @@ Export unsigned int CloneString(char **destination,const char *source)
     AllocateMemory(Max(Extent(source)+1,MaxTextExtent));
   if (*destination == (char *) NULL)
     MagickError(ResourceLimitError,"Unable to clone string",
-      "Memory allocation failed");
+      "c. Memory allocation failed");
   (void) strcpy(*destination,source);
   return(True);
 }
@@ -368,7 +368,7 @@ Export unsigned short *ConvertTextToUnicode(const char *text,int *count)
     AllocateMemory((strlen(text)+1)*sizeof(unsigned short));
   if (unicode == (unsigned short *) NULL)
     MagickError(ResourceLimitError,"Unable to convert text to Unicode",
-      "Memory allocation failed");
+      "d. Memory allocation failed");
   p=text;
   q=unicode;
   while (*p != '\0')
@@ -528,10 +528,10 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
   */
   assert(argc != (int *) NULL);
   assert(argv != (char ***) NULL);
-  vector=(char **) AllocateMemory((*argc+1)*sizeof(char *));
   for (i=1; i < *argc; i++)
     if (Extent((*argv)[i]) > (MaxTextExtent/2-1))
       MagickError(ResourceLimitError,"Token length exceeds limit",(*argv)[i]);
+  vector=(char **) AllocateMemory((*argc+1)*sizeof(char *));
   if (vector == (char **) NULL)
     return(False);
   /*
@@ -621,7 +621,7 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
   if (!expanded)
     {
       FreeMemory(vector);
-      return(False);
+      return(True);
     }
   *argc=count;
   *argv=vector;
@@ -1884,7 +1884,7 @@ Export char *PostscriptGeometry(const char *page)
   geometry=(char *) AllocateMemory(Extent(page)+MaxTextExtent);
   if (geometry == (char *) NULL)
     MagickError(ResourceLimitError,"Unable to translate page geometry",
-      "Memory allocation failed");
+      "e. Memory allocation failed");
   *geometry='\0';
   if (page == (char *) NULL)
     return(geometry);
@@ -2018,7 +2018,7 @@ Export char **StringToArgv(const char *text,int *argc)
   argv=(char **) AllocateMemory((*argc+1)*sizeof(char *));
   if (argv == (char **) NULL)
     MagickError(ResourceLimitError,"Unable to convert text",
-      "Memory allocation failed");
+      "f. Memory allocation failed");
   /*
     Convert string to an ASCII list.
   */
@@ -2046,7 +2046,7 @@ Export char **StringToArgv(const char *text,int *argc)
     argv[i]=(char *) AllocateMemory(q-p+1);
     if (argv[i] == (char *) NULL)
       MagickError(ResourceLimitError,"Unable to convert text",
-        "Memory allocation failed");
+        "g. Memory allocation failed");
     (void) strncpy(argv[i],p,q-p);
     argv[i][q-p]='\0';
     p=q;
@@ -2120,7 +2120,7 @@ Export char **StringToList(const char *text)
       textlist=(char **) AllocateMemory((lines+1)*sizeof(char *));
       if (textlist == (char **) NULL)
         MagickError(ResourceLimitError,"Unable to convert text to list",
-          "Memory allocation failed");
+          "i. Memory allocation failed");
       p=text;
       for (i=0; i < (int) lines; i++)
       {
@@ -2130,7 +2130,7 @@ Export char **StringToList(const char *text)
         textlist[i]=(char *) AllocateMemory(q-p+2);
         if (textlist[i] == (char *) NULL)
           MagickError(ResourceLimitError,"Unable to convert text to list",
-            "Memory allocation failed");
+            "j. Memory allocation failed");
         (void) strncpy(textlist[i],p,q-p);
         textlist[i][q-p]='\0';
         if (*q == '\r')
@@ -2153,14 +2153,14 @@ Export char **StringToList(const char *text)
       textlist=(char **) AllocateMemory((lines+1)*sizeof(char *));
       if (textlist == (char **) NULL)
         MagickError(ResourceLimitError,"Unable to convert text",
-          "Memory allocation failed");
+          "k. Memory allocation failed");
       p=text;
       for (i=0; i < (int) lines; i++)
       {
         textlist[i]=(char *) AllocateMemory(900);
         if (textlist[i] == (char *) NULL)
           MagickError(ResourceLimitError,"Unable to convert text",
-            "Memory allocation failed");
+            "l. Memory allocation failed");
         FormatString(textlist[i],"0x%08x: ",(unsigned int) (i*0x14));
         q=textlist[i]+Extent(textlist[i]);
         for (j=1; j <= Min(Extent(p),0x14); j++)
@@ -2444,7 +2444,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
           (void) fclose(file);
           if (text == (char *) NULL)
             MagickError(ResourceLimitError,"Unable to translate text",
-              "Memory allocation failed");
+              "m. Memory allocation failed");
           *q='\0';
         }
     }
@@ -2455,11 +2455,11 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
   translated_text=(char *) AllocateMemory(length);
   if (translated_text == (char *) NULL)
     MagickError(ResourceLimitError,"Unable to translate text",
-      "Memory allocation failed");
+      "n. Memory allocation failed");
   clone_info=CloneImageInfo(image_info);
   if ((clone_info == (ImageInfo *) NULL))
     MagickError(ResourceLimitError,"Unable to translate text",
-      "Memory allocation failed");
+      "o. Memory allocation failed");
   /*
     Translate any embedded format characters.
   */
