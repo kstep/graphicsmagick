@@ -232,7 +232,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   colors=2;
   x=0;
   y=0;
-  percentage=0.0;
+  percentage=12.5;
   radius=0.0;
   sigma=1.0;
   threshold=0.0;
@@ -286,7 +286,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case HuePreview:
       {
-        FormatString(factor,"0,0,%g",percentage);
+        FormatString(factor,"100/100/%g",2.0*percentage);
         FormatString(label,"modulate %.1024s",factor);
         commands[argc++]=(char *) "-modulate";
         commands[argc++]=factor;
@@ -294,7 +294,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case SaturationPreview:
       {
-        FormatString(factor,"0,%g",percentage);
+        FormatString(factor,"100/%g",2.0*percentage);
         FormatString(label,"modulate %.1024s",factor);
         commands[argc++]=(char *) "-modulate";
         commands[argc++]=factor;
@@ -302,7 +302,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case BrightnessPreview:
       {
-        FormatString(factor,"%g",percentage);
+        FormatString(factor,"%g",2.0*percentage);
         FormatString(label,"modulate %.1024s",factor);
         commands[argc++]=(char *) "-modulate";
         commands[argc++]=factor;
@@ -490,7 +490,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case OilPaintPreview:
       {
-        FormatString(factor,"%i",i+1);
+        FormatString(factor,"%g",0.5*(i+1));
         FormatString(label,"paint %.1024s",factor);
         commands[argc++]=(char *) "-paint";
         commands[argc++]=factor;
