@@ -445,10 +445,6 @@
 /* Define if you have the <math.h> header file. */
 #undef HAVE_MATH_H
 
-/* define if the compiler supports member templates outside the class
-   declaration */
-#undef HAVE_MEMBER_TEMPLATES_OUTSIDE_CLASS
-
 /* Define if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 

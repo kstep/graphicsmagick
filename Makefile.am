@@ -44,7 +44,7 @@ endif # WITH_MAGICK_PLUS_PLUS
 if WITH_MODULES
 SUBDIRS = delegates ltdl magick coders utilities tests $(MAGICK_PLUS_PLUS)
 else
-SUBDIRS = delegates ltdl coders magick utilities tests $(MAGICK_PLUS_PLUS)
+SUBDIRS = delegates coders magick utilities tests $(MAGICK_PLUS_PLUS)
 endif # WITH_MODULES
 
 # Additional files to distribute

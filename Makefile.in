@@ -207,7 +207,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign # no-dependencies
 # Subdirectories to build
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICK_PLUS_PLUS = @WITH_MAGICK_PLUS_PLUS_TRUE@Magick++
 @WITH_MODULES_TRUE@SUBDIRS = @WITH_MODULES_TRUE@delegates ltdl magick coders utilities tests $(MAGICK_PLUS_PLUS)
-@WITH_MODULES_FALSE@SUBDIRS = @WITH_MODULES_FALSE@delegates ltdl coders magick utilities tests $(MAGICK_PLUS_PLUS)
+@WITH_MODULES_FALSE@SUBDIRS = @WITH_MODULES_FALSE@delegates coders magick utilities tests $(MAGICK_PLUS_PLUS)
 
 # Additional files to distribute
 EXTRA_DIST = Manifest.ps ImageMagick.html Magickshr.opt Make.com README.txt \

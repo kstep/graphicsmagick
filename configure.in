@@ -374,7 +374,6 @@ then
  AC_CXX_EXPLICIT
  AC_CXX_HAVE_STD
  AC_CXX_HAVE_STL
- AC_CXX_MEMBER_TEMPLATES_OUTSIDE_CLASS
  AC_CXX_MUTABLE
  AC_CXX_NAMESPACES
  AC_CXX_NEW_FOR_SCOPING
@@ -390,7 +389,6 @@ then
   $ac_cv_cxx_explicit = 'yes' -a \
   $ac_cv_cxx_have_std = 'yes' -a \
   $ac_cv_cxx_have_stl = 'yes' -a \
-  $ac_cv_cxx_member_templates_outside_class = 'yes' -a \
   $ac_cv_cxx_mutable = 'yes' -a \
   $ac_cv_cxx_namespaces = 'yes' -a \
   $ac_cv_cxx_new_for_scoping = 'yes' -a \
