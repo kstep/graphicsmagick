@@ -167,7 +167,7 @@ static void DirectoryRequest(char *fileinfo,char *filename)
 
   status=0;
   for (p=filename; *p != '\0'; p++)
-    if (!isprint(*p))
+    if (!isprint((int) *p))
       *p=' ';
   if (*fileinfo == '\0')
     (void) fprintf(stdout,"%s\n",filename);
@@ -324,9 +324,6 @@ void ExpandFilename(char *filename)
 */
 static void ExecuteFtp(char *hostname,char *port)
 {
-  char
-    buffer[10240];
-
   int
     slave;
 
@@ -355,8 +352,13 @@ static void ExecuteFtp(char *hostname,char *port)
   (void) ioctl(slave,I_PUSH,"ttcompat");
 #endif
 #if defined(HAVE_PTMX_BSD)
-  if ((void) ioctl(slave,I_LOOK,buffer) != 0)
-    (void) ioctl(slave,I_PUSH,"ldterm");
+  {
+    char
+      buffer[10240];
+
+    if ((void) ioctl(slave,I_LOOK,buffer) != 0)
+      (void) ioctl(slave,I_PUSH,"ldterm");
+  }
 #endif
   (void) tcgetattr(slave,&attributes);
   attributes.c_iflag&=(~(BRKINT | IGNPAR | PARMRK | INPCK | ISTRIP | INLCR |
@@ -711,12 +713,14 @@ static void PrintRequest(char *filename,unsigned int verbose)
       (void) strcat(command," -\n");
   (void) write(master,command,strlen(command));
   (void) fprintf(stdout,"%s:\n",filename);
-  while (response=Wait())
+  while ((response=Wait()))
+  {
     if (status == 0)
       (void) fprintf(stdout,"%s\n",response);
     else
       if ((status == 5) || verbose)
         (void) fprintf(stderr,"%s\n",response);
+  }
 }
 
 /*
@@ -787,49 +791,55 @@ static void ProcessRequest(char *system_type,unsigned int prune,
   */
   (void) strcpy(command,"dir\n");
   if (!prune)
-    if (strncmp("VMS",system_type,3) == 0)
-      (void) strcpy(command,"ls [...]\n");
-    else
-      if ((strncmp("UNIX",system_type,4) == 0) ||
-          (strncmp("Windows_NT",system_type,10) == 0))
-        {
-          RegularExpression
-            *list_expression;
+    {
+      if (strncmp("VMS",system_type,3) == 0)
+        (void) strcpy(command,"ls [...]\n");
+      else
+        if ((strncmp("UNIX",system_type,4) == 0) ||
+            (strncmp("Windows_NT",system_type,10) == 0))
+          {
+            RegularExpression
+              *list_expression;
 
-          /*
-            Get a recursive file listing.
-          */
-          (void) write(master,command,strlen(command));
-          (void) strcpy(command,"ls -ltR\n");
-          list_expression=CompileRegularExpression(ListExpression);
-          while (response=Wait())
-            if ((status == 0) && (*response != '\0'))
-              if (ExecuteRegularExpression(list_expression,response))
-                {
-                  /*
-                    Remote site has a directory listing file.
-                  */
-                  (void) strncpy(filename,list_expression->subpattern[0],
-                    list_expression->pattern_length);
-                  (void) fprintf(stderr,"Using remote file listing %s...\n",
-                    filename);
-                  (void) sprintf(command,"get %s",filename);
-                  if (strcmp(filename+strlen(filename)-2,".Z") == 0)
-                    (void) strcat(command," |zcat\n");
-                  else
-                    if (strcmp(filename+strlen(filename)-3,".gz") == 0)
-                      (void) strcat(command," |gunzip -c\n");
+            /*
+              Get a recursive file listing.
+            */
+            (void) write(master,command,strlen(command));
+            (void) strcpy(command,"ls -ltR\n");
+            list_expression=CompileRegularExpression(ListExpression);
+            while ((response=Wait()))
+            {
+              if ((status == 0) && (*response != '\0'))
+                if (ExecuteRegularExpression(list_expression,response))
+                  {
+                    /*
+                      Remote site has a directory listing file.
+                    */
+                    (void) strncpy(filename,list_expression->subpattern[0],
+                      list_expression->pattern_length);
+                    (void) fprintf(stderr,"Using remote file listing %s...\n",
+                      filename);
+                    (void) sprintf(command,"get %s",filename);
+                    if (strcmp(filename+strlen(filename)-2,".Z") == 0)
+                      (void) strcat(command," |zcat\n");
                     else
-                      (void) strcat(command," -\n");
-                  while (Wait());
-                  break;
-                }
-          free((char *) list_expression);
-        }
+                      if (strcmp(filename+strlen(filename)-3,".gz") == 0)
+                        (void) strcat(command," |gunzip -c\n");
+                      else
+                        (void) strcat(command," -\n");
+                    while (Wait());
+                    break;
+                  }
+            }
+            free((char *) list_expression);
+          }
+    }
   (void) write(master,command,strlen(command));
-  while (response=Wait())
+  while ((response=Wait()))
+  {
     if ((status == 0) || (status == 5))
       break;
+  }
   if (status == 5)
     {
       /*
@@ -838,9 +848,11 @@ static void ProcessRequest(char *system_type,unsigned int prune,
       while (Wait());
       (void) strcpy(command,"dir\n");
       (void) write(master,command,strlen(command));
-      while (response=Wait())
+      while ((response=Wait()))
+      {
         if ((status == 0) || (status == 5))
           break;
+      }
     }
   status=(-1);
   if (response == (char *) NULL)
@@ -943,7 +955,7 @@ static void ProcessRequest(char *system_type,unsigned int prune,
       Error("Unable to allocate memory",(char *) NULL);
     (void) strcpy(filelist[number_files],filename);
     number_files++;
-  } while (response=Wait());
+  } while ((response=Wait()));
   free((char *) date_expression);
   free((char *) access_expression);
   if (!print_expression && !retrieve_expression)
@@ -1008,9 +1020,11 @@ static void RetrieveRequest(char *filename,unsigned int verbose)
   (void) MakeDirectory(filename);
   (void) sprintf(command,"get %s\n",filename);
   (void) write(master,command,strlen(command));
-  while (response=Wait())
+  while ((response=Wait()))
+  {
     if (verbose)
       (void) fprintf(stderr,"%s\n",response);
+  }
 }
 
 /*
@@ -1213,7 +1227,7 @@ static char *Wait(void)
           return((char *) NULL);
   } while (p < (line+sizeof(line)));
   *p='\0';
-  if (isdigit(*line))
+  if (isdigit((int) *line))
     status=atoi(line)/100;
   return(line);
 }
@@ -1380,7 +1394,7 @@ int main(int argc,char **argv)
   /*
     Parse command line arguments.
   */
-  for (*argv++; *argv && ((**argv == '-') || (**argv == '+')); argv++)
+  for (argv++; *argv && ((**argv == '-') || (**argv == '+')); argv++)
     switch (argv[0][1])
     {
       case 'a':
@@ -1496,18 +1510,23 @@ int main(int argc,char **argv)
       (put_expression == (char *) NULL))
     get_expression=filename;
   if (*protocol != '\0')
-    if (strcmp(protocol,"ftp:") != 0)
-      if ((get_expression == (char *) NULL) || (strlen(get_expression) == 0))
-        Error("Unsupported protocol",protocol);
-      else
+    {
+      if (strcmp(protocol,"ftp:") != 0)
         {
-          /*
-            Use GET to handle non-ftp protocol but only for *get*.
-          */
-          (void) sprintf(command,"GET %s > %s",url,filename);
-          status=system(command);
-          return(status < 0);
+          if ((get_expression == (char *) NULL) ||
+              (strlen(get_expression) == 0))
+            Error("Unsupported protocol",protocol);
+          else
+            {
+              /*
+                Use GET to handle non-ftp protocol but only for *get*.
+              */
+              (void) sprintf(command,"GET %s > %s",url,filename);
+              status=system(command);
+              return(status < 0);
+            }
         }
+    }
   if ((*ident == '\0') && (*user == '\0'))
     {
       struct passwd
@@ -1551,10 +1570,12 @@ int main(int argc,char **argv)
   if (host_info == (char *) NULL)
     Error("Unknown host",hostname);
   if (verbose)
-    if (*directory == '\0')
-      (void) fprintf(stderr,"%s\n",host_info);
-    else
-      (void) fprintf(stderr,"%s %s\n",host_info,directory);
+    {
+      if (*directory == '\0')
+        (void) fprintf(stderr,"%s\n",host_info);
+      else
+        (void) fprintf(stderr,"%s %s\n",host_info,directory);
+    }
   GetPseudoTerminal();
   /*
     Set signal handlers.
@@ -1576,7 +1597,7 @@ int main(int argc,char **argv)
   if (child == 0)
     ExecuteFtp(hostname,port);
   type_expression=CompileRegularExpression(TypeExpression);
-  while (response=Wait())
+  while ((response=Wait()))
   {
     if (verbose)
       (void) fprintf(stderr,"%s\n",response);
@@ -1596,7 +1617,7 @@ int main(int argc,char **argv)
   account_expression=CompileRegularExpression(AccountExpression);
   connect_expression=CompileRegularExpression(ConnectExpression);
   ident_expression=CompileRegularExpression(IdentExpression);
-  while (response=Wait())
+  while ((response=Wait()))
   {
     if (verbose)
       (void) fprintf(stderr,"%s\n",response);
@@ -1638,9 +1659,11 @@ int main(int argc,char **argv)
       (void) strcpy(system_type,"UNIX");
       (void) strcpy(command,"quote syst\n");
       (void) write(master,command,strlen(command));
-      while (response=Wait())
+      while ((response=Wait()))
+      {
         if (status == 2)
           (void) strcpy(system_type,response+4);
+      }
     }
   if (*directory != '\0')
     {
@@ -1649,7 +1672,7 @@ int main(int argc,char **argv)
       */
       (void) sprintf(command,"cd %s\n",directory);
       (void) write(master,command,strlen(command));
-      while (response=Wait())
+      while ((response=Wait()))
       {
         if (verbose)
           (void) fprintf(stderr,"%s\n",response);
@@ -1658,9 +1681,11 @@ int main(int argc,char **argv)
       }
       (void) strcpy(command,"pwd\n");
       (void) write(master,command,strlen(command));
-      while (response=Wait())
+      while ((response=Wait()))
+      {
         if (verbose)
           (void) fprintf(stderr,"%s\n",response);
+      }
     }
   if (binary)
     {
@@ -1669,14 +1694,18 @@ int main(int argc,char **argv)
       */
       (void) strcpy(command,"binary\n");
       (void) write(master,command,strlen(command));
-      while (response=Wait())
+      while ((response=Wait()))
+      {
         if (verbose)
           (void) fprintf(stderr,"%s\n",response);
+      }
       (void) strcpy(command,"type\n");
       (void) write(master,command,strlen(command));
-      while (response=Wait())
+      while ((response=Wait()))
+      {
         if (verbose)
           (void) fprintf(stderr,"%s\n",response);
+      }
     }
   if (get_expression != (char *) NULL)
     {
@@ -1685,24 +1714,30 @@ int main(int argc,char **argv)
       */
       (void) sprintf(command,"mget %s\n",get_expression);
       if (!IsGlob(get_expression) && (localname != (char *) NULL))
-        if ((strncmp("UNIX",system_type,4) != 0) &&
-            (strncmp("Windows_NT",system_type,10) != 0))
-          (void) sprintf(command,"get %s %s\n",get_expression,localname);
-        else
-          (void) sprintf(command,"get %s %s~\n",get_expression,localname);
+        {
+          if ((strncmp("UNIX",system_type,4) != 0) &&
+              (strncmp("Windows_NT",system_type,10) != 0))
+            (void) sprintf(command,"get %s %s\n",get_expression,localname);
+          else
+            (void) sprintf(command,"get %s %s~\n",get_expression,localname);
+        }
       (void) write(master,command,strlen(command));
-      while (response=Wait())
+      while ((response=Wait()))
+      {
         if ((status == 5) || verbose)
           (void) fprintf(stderr,"%s\n",response);
+      }
       if (!IsGlob(get_expression) && (localname != (char *) NULL))
         if ((strncmp("UNIX",system_type,4) == 0) ||
             (strncmp("Windows_NT",system_type,10) == 0))
           {
             (void) sprintf(command,"rename %s~ %s\n",localname,localname);
             (void) write(master,command,strlen(command));
-            while (response=Wait())
+            while ((response=Wait()))
+            {
               if ((status == 5) || verbose)
                 (void) fprintf(stderr,"%s\n",response);
+            }
           }
     }
   else
@@ -1713,31 +1748,41 @@ int main(int argc,char **argv)
         */
         (void) strcpy(command,"glob on\n");
         (void) write(master,command,strlen(command));
-        while (response=Wait())
+        while ((response=Wait()))
+        {
           if (verbose)
             (void) fprintf(stderr,"%s\n",response);
+        }
         (void) sprintf(command,"mput %s\n",put_expression);
         if (!IsGlob(put_expression) && (remotename != (char *) NULL))
-          if ((strncmp("UNIX",system_type,4) != 0) &&
-              (strncmp("Windows_NT",system_type,10) != 0))
-            (void) sprintf(command,"put %s %s\n",put_expression,remotename);
-          else
-            (void) sprintf(command,"put %s %s~\n",put_expression,remotename);
+          {
+            if ((strncmp("UNIX",system_type,4) != 0) &&
+                (strncmp("Windows_NT",system_type,10) != 0))
+              (void) sprintf(command,"put %s %s\n",put_expression,remotename);
+            else
+              (void) sprintf(command,"put %s %s~\n",put_expression,remotename);
+          }
         (void) write(master,command,strlen(command));
-        while (response=Wait())
+        while ((response=Wait()))
+        {
           if ((status == 5) || verbose)
             (void) fprintf(stderr,"%s\n",response);
+        }
         if (!IsGlob(put_expression) && (remotename != (char *) NULL))
-          if ((strncmp("UNIX",system_type,4) == 0) ||
-              (strncmp("Windows_NT",system_type,10) == 0))
-            {
-              (void) sprintf(command,"rename %s~ %s\n",remotename,
-                remotename);
-              (void) write(master,command,strlen(command));
-              while (response=Wait())
-                if ((status == 5) || verbose)
-                  (void) fprintf(stderr,"%s\n",response);
-            }
+          {
+            if ((strncmp("UNIX",system_type,4) == 0) ||
+                (strncmp("Windows_NT",system_type,10) == 0))
+              {
+                (void) sprintf(command,"rename %s~ %s\n",remotename,
+                  remotename);
+                (void) write(master,command,strlen(command));
+                while ((response=Wait()))
+                {
+                  if ((status == 5) || verbose)
+                    (void) fprintf(stderr,"%s\n",response);
+                }
+              }
+          }
       }
     else
       ProcessRequest(system_type,prune,verbose);

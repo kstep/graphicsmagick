@@ -140,16 +140,16 @@ static unsigned int ReadDelegates(char *path,char *directory)
     if (*p == '<')
       {
         delegate_info.direction--;
-        *p++;
+        p++;
       }
     if (*p == '=')
-      *p++;
+      p++;
     if (*p == '>')
       {
         delegate_info.direction++;
-        *p++;
+        p++;
       }
-    while (isspace(*p))
+    while (isspace((int) *p))
       p++;
     if (*p != '0')
       (void) strcpy(delegate_info.encode_tag,p);
@@ -700,7 +700,7 @@ Export void ListDelegateInfo(FILE *file)
   {
     i=0;
     if (p->commands != (char *) NULL)
-      for (i=0; !isspace(p->commands[i]); i++)
+      for (i=0; !isspace((int) p->commands[i]); i++)
         delegate[i]=p->commands[i];
     delegate[i]='\0';
     for (i=0; i < 10; i++)
@@ -712,6 +712,7 @@ Export void ListDelegateInfo(FILE *file)
       p->decode_tag ? p->decode_tag : "",p->direction <= 0 ? "<" : " ",
       p->direction >= 0 ? ">" : " ",tag,delegate);
   }
+  (void) fflush(file);
 }
 
 /*

@@ -111,7 +111,8 @@ static void DefaultErrorHandler(const char *message,const char *qualifier)
   magick_status=SetErrorStatus(0);
   if (message == (char *) NULL)
     Exit(magick_status % 100);
-  (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),message);
+  (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
+    message);
   if (qualifier != (char *) NULL)
     (void) fprintf(stderr," (%.1024s)",qualifier);
   if (errno)

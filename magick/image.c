@@ -174,17 +174,17 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->background_color.red=XDownScale(color.red);
   allocated_image->background_color.green=XDownScale(color.green);
   allocated_image->background_color.blue=XDownScale(color.blue);
-  allocated_image->background_color.index=0;
+  allocated_image->background_color.index=Transparent;
   (void) XQueryColorDatabase(BorderColor,&color);
   allocated_image->border_color.red=XDownScale(color.red);
   allocated_image->border_color.green=XDownScale(color.green);
   allocated_image->border_color.blue=XDownScale(color.blue);
-  allocated_image->border_color.index=0;
+  allocated_image->border_color.index=Transparent;
   (void) XQueryColorDatabase(MatteColor,&color);
   allocated_image->matte_color.red=XDownScale(color.red);
   allocated_image->matte_color.green=XDownScale(color.green);
   allocated_image->matte_color.blue=XDownScale(color.blue);
-  allocated_image->matte_color.index=0;
+  allocated_image->matte_color.index=Transparent;
   *allocated_image->magick_filename='\0';
   allocated_image->magick_columns=0;
   allocated_image->magick_rows=0;
@@ -230,6 +230,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->magick_rows=allocated_image->rows;
   allocated_image->compression=image_info->compression;
   allocated_image->interlace=image_info->interlace;
+  allocated_image->units=image_info->units;
   if (image_info->density != (char *) NULL)
     {
       int
@@ -239,7 +240,6 @@ Export Image *AllocateImage(const ImageInfo *image_info)
         &allocated_image->y_resolution);
       if (count != 2)
         allocated_image->y_resolution=allocated_image->x_resolution;
-      allocated_image->units=PixelsPerInchResolution;
     }
   if (image_info->page != (char *) NULL)
     allocated_image->page=PostscriptGeometry(image_info->page);
@@ -1197,6 +1197,7 @@ Export void CloseImage(Image *image)
   assert(image != (Image *) NULL);
   if (image->file == (FILE *) NULL)
     return;
+  (void) fflush(image->file);
   image->status=ferror(image->file);
   (void) fseek(image->file,0L,SEEK_END);
   image->filesize=ftell(image->file);
@@ -1955,31 +1956,24 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
         Promote image to DirectClass if colormaps differ.
       */
       if (image->class == PseudoClass)
-        if ((composite_image->class == DirectClass) ||
-            (composite_image->colors != image->colors))
-          image->class=DirectClass;
-        else
-          {
-            int
-              status;
-
-            status=memcmp((char *) composite_image->colormap,
-              (char *) image->colormap,composite_image->colors*
-              sizeof(ColorPacket));
-            if (status != 0)
-              image->class=DirectClass;
-          }
-      if (image->matte && !composite_image->matte)
         {
-          p=composite_image->pixels;
-          for (i=0; i < composite_image->packets; i++)
-          {
-            p->index=Opaque;
-            p++;
-          }
-          composite_image->class=DirectClass;
-          composite_image->matte=True;
+          if ((composite_image->class == DirectClass) ||
+              (composite_image->colors != image->colors))
+            image->class=DirectClass;
+          else
+            {
+              int
+                status;
+
+              status=memcmp((char *) composite_image->colormap,
+                (char *) image->colormap,composite_image->colors*
+                sizeof(ColorPacket));
+              if (status != 0)
+                image->class=DirectClass;
+            }
         }
+      if (image->matte && !composite_image->matte)
+        MatteImage(composite_image);
       break;
     }
     default:
@@ -1991,15 +1985,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
         {
           image->class=DirectClass;
           if (compose != AnnotateCompositeOp)
-            {
-              q=image->pixels;
-              for (i=0; i < image->packets; i++)
-              {
-                q->index=Opaque;
-                q++;
-              }
-              image->matte=True;
-            }
+            MatteImage(image);
         }
       if (!composite_image->matte)
         {
@@ -2411,10 +2397,12 @@ Export void ContrastImage(Image *image,const unsigned int sharpen)
         Contrast(sign,&p->red,&p->green,&p->blue);
         p++;
         if (QuantumTick(i,image->packets))
-          if (sharpen)
-            ProgressMonitor(SharpenContrastImageText,i,image->packets);
-          else
-            ProgressMonitor(DullContrastImageText,i,image->packets);
+          {
+            if (sharpen)
+              ProgressMonitor(SharpenContrastImageText,i,image->packets);
+            else
+              ProgressMonitor(DullContrastImageText,i,image->packets);
+          }
       }
       break;
     }
@@ -2700,8 +2688,8 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
   assert(crop_info != (RectangleInfo *) NULL);
   if (((crop_info->x+(int) crop_info->width) < 0) ||
       ((crop_info->y+(int) crop_info->height) < 0) ||
-      (crop_info->x > (int) image->columns) ||
-      (crop_info->y > (int) image->rows))
+      (crop_info->x >= (int) image->columns) ||
+      (crop_info->y >= (int) image->rows))
     {
       MagickWarning(OptionWarning,"Unable to crop image",
         "geometry does not contain image");
@@ -3082,13 +3070,15 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
               image->normalized_mean_error,image->normalized_maximum_error);
           }
       if (image->filesize != 0)
-        if (image->filesize >= (1 << 24))
-          (void) fprintf(file,"%ldmb ",image->filesize/1024/1024);
-        else
-          if (image->filesize >= (1 << 14))
-            (void) fprintf(file,"%ldkb ",image->filesize/1024);
+        {
+          if (image->filesize >= (1 << 24))
+            (void) fprintf(file,"%ldmb ",image->filesize/1024/1024);
           else
-            (void) fprintf(file,"%ldb ",image->filesize);
+            if (image->filesize >= (1 << 14))
+              (void) fprintf(file,"%ldkb ",image->filesize/1024);
+            else
+              (void) fprintf(file,"%ldb ",image->filesize);
+        }
       (void) fprintf(file,"%.1024s %lds\n",image->magick,time((time_t *) NULL)-
         image->magick_time+1);
       return;
@@ -3237,13 +3227,15 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     }
   (void) fprintf(file,"  depth: %u\n",image->depth);
   if (image->filesize != 0)
-    if (image->filesize >= (1 << 24))
-      (void) fprintf(file,"  filesize: %ldmb\n",image->filesize/1024/1024);
-    else
-      if (image->filesize >= (1 << 14))
-        (void) fprintf(file,"  filesize: %ldkb\n",image->filesize/1024);
+    {
+      if (image->filesize >= (1 << 24))
+        (void) fprintf(file,"  filesize: %ldmb\n",image->filesize/1024/1024);
       else
-        (void) fprintf(file,"  filesize: %ldb\n",image->filesize);
+        if (image->filesize >= (1 << 14))
+          (void) fprintf(file,"  filesize: %ldkb\n",image->filesize/1024);
+        else
+          (void) fprintf(file,"  filesize: %ldb\n",image->filesize);
+    }
   if (image->interlace == NoInterlace)
     (void) fprintf(file,"  interlace: None\n");
   else
@@ -3386,6 +3378,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         DestroyImage(tile);
       }
     }
+  (void) fflush(file);
 }
 
 /*
@@ -3478,15 +3471,19 @@ Export void DestroyImage(Image *image)
         Unlink from linked list.
       */
       if (image->previous != (Image *) NULL)
-        if (image->next != (Image *) NULL)
-          image->previous->next=image->next;
-        else
-          image->previous->next=(Image *) NULL;
+        {
+          if (image->next != (Image *) NULL)
+            image->previous->next=image->next;
+          else
+            image->previous->next=(Image *) NULL;
+        }
       if (image->next != (Image *) NULL)
-        if (image->previous != (Image *) NULL)
-          image->next->previous=image->previous;
-        else
-          image->next->previous=(Image *) NULL;
+        {
+          if (image->previous != (Image *) NULL)
+            image->next->previous=image->previous;
+          else
+            image->next->previous=(Image *) NULL;
+        }
     }
   /*
     Deallocate the image structure.
@@ -3856,7 +3853,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
               }
             else
               for (p++;  *p != '\0'; p++)
-                if (isspace(*p) && (*(p-1) != '\\'))
+                if (isspace((int) *p) && (*(p-1) != '\\'))
                   break;
           if (*p != '\0')
             p++;
@@ -4848,16 +4845,17 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->texture=(char *) NULL;
   image_info->view=(char *) NULL;
   image_info->adjoin=True;
-  image_info->colorspace=RGBColorspace;
-  image_info->compression=UndefinedCompression;
   image_info->depth=QuantumDepth;
   image_info->dither=True;
-  image_info->interlace=DefaultInterlace;
   image_info->monochrome=False;
   image_info->pointsize=atoi(DefaultPointSize);
   image_info->fuzz=0;
   image_info->quality=atoi(DefaultImageQuality);
   image_info->verbose=False;
+  image_info->colorspace=RGBColorspace;
+  image_info->compression=UndefinedCompression;
+  image_info->interlace=DefaultInterlace;
+  image_info->units=UndefinedResolution;
   image_info->filter=MitchellFilter;
   image_info->preview_type=JPEGPreview;
   image_info->group=0L;
@@ -4956,7 +4954,7 @@ Export unsigned int IsGeometry(char *geometry)
   if (geometry == (char *) NULL)
     return(False);
   flags=XParseGeometry(geometry,&x,&y,&width,&height);
-  return((flags != NoValue) || sscanf(geometry,"%f",&value));
+  return((flags != NoValue) || sscanf(geometry,"%lf",&value));
 }
 
 /*
@@ -5642,17 +5640,7 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
   */
   image->class=DirectClass;
   if (!image->matte)
-    {
-      register int
-        i;
-
-      /*
-        Initialize matte image.
-      */
-      image->matte=True;
-      for (i=0; i < image->packets; i++)
-        image->pixels[i].index=Opaque;
-    }
+    MatteImage(image);
   start=0;
   p=segment_stack;
   Push(y,x,x,1);
@@ -5735,6 +5723,49 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
     } while (x <= x2);
   }
   FreeMemory((char *) segment_stack);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     M a t t e I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MatteImage initializes the matte channel of the reference image to
+%  opaque.
+%
+%  The format of the MatteImage routine is:
+%
+%      MatteImage(image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%
+*/
+Export void MatteImage(Image *image)
+{
+  register int
+    i;
+
+  register RunlengthPacket
+    *p;
+
+  assert(image != (Image *) NULL);
+  image->class=DirectClass;
+  image->matte=True;
+  p=image->pixels;
+  for (i=0; i < image->packets; i++)
+  {
+    p->index=Opaque;
+    p++;
+  }
 }
 
 /*
@@ -6147,6 +6178,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
 
   unsigned int
     compress,
+    matte,
     height,
     width;
 
@@ -6376,6 +6408,19 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
         */
         CycleColormapImage(*image,atoi(argv[++i]));
         continue;
+      }
+    if (strncmp("-density",option,4) == 0)
+      {
+        int
+          count;
+  
+        /*
+          Set image density.
+        */
+        count=sscanf(image_info->density,"%lfx%lf",
+          &(*image)->x_resolution,&(*image)->y_resolution);
+        if (count != 2)
+          (*image)->y_resolution=(*image)->x_resolution;
       }
     if (strncmp("-despeckle",option,4) == 0)
       {
@@ -6691,21 +6736,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       {
         if (*option == '-')
           if (!(*image)->matte)
-            {
-              register RunlengthPacket
-                *p;
-
-              /*
-                Image does not have a matte channel-- create an opaque one.
-              */
-              (*image)->class=DirectClass;
-              p=(*image)->pixels;
-              for (i=0; i < (*image)->packets; i++)
-              {
-                p->index=Opaque;
-                p++;
-              }
-            }
+            MatteImage(*image);
         (*image)->matte=(*option == '-');
         continue;
       }
@@ -6841,7 +6872,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
             (*image)->color_profile.length=profile->color_profile.length;
             (*image)->color_profile.info=profile->color_profile.info;
             profile->color_profile.length=0;
-	    profile->color_profile.info=(unsigned char *) NULL;
+            profile->color_profile.info=(unsigned char *) NULL;
           }
         if (Latin1Compare("iptc",profile->magick) == 0)
           {
@@ -6884,10 +6915,13 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
             /*
               Composite region.
             */
-            CompositeImage(region_image,ReplaceCompositeOp,*image,
+            matte=region_image->matte;
+            CompositeImage(region_image,
+              (*image)->matte ? OverCompositeOp : ReplaceCompositeOp,*image,
               region_info.x,region_info.y);
             DestroyImage(*image);
             *image=region_image;
+            (*image)->matte=matte;
           }
         if (*option == '+')
           continue;
@@ -6898,7 +6932,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
         region_info.height=(*image)->rows;
         region_info.x=0;
         region_info.y=0;
-        (void) XParseGeometry(argv[i++],&region_info.x,&region_info.y,
+        (void) XParseGeometry(argv[++i],&region_info.x,&region_info.y,
           &region_info.width,&region_info.height);
         cropped_image=CropImage(*image,&region_info);
         if (cropped_image == (Image *) NULL)
@@ -7140,6 +7174,19 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
         quantize_info.tree_depth=atoi(argv[++i]);
         continue;
       }
+    if (strncmp("units",option+1,3) == 0)
+      {
+        (*image)->units=UndefinedResolution;
+        if (*option == '-')
+          {
+            option=argv[++i];
+            if (Latin1Compare("PixelsPerInch",option) == 0)
+              (*image)->units=PixelsPerInchResolution;
+            if (Latin1Compare("PixelsPerCentimeter",option) == 0)
+              (*image)->units=PixelsPerCentimeterResolution;
+          }
+        continue;
+      }
     if (Latin1Compare("wave",option+1) == 0)
       {
         double
@@ -7152,8 +7199,8 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
         /*
           Wave image.
         */
-        amplitude=10.0;
-        wavelength=30.0;
+        amplitude=25.0;
+        wavelength=150.0;
         if (*option == '-')
           (void) sscanf(argv[++i],"%lfx%lf",&amplitude,&wavelength);
         waved_image=WaveImage(*image,(double) amplitude,(double) wavelength);
@@ -7170,10 +7217,13 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       /*
         Composite transformed region onto image.
       */
-      CompositeImage(region_image,ReplaceCompositeOp,*image,
+      matte=region_image->matte;
+      CompositeImage(region_image,
+        (*image)->matte ? OverCompositeOp : ReplaceCompositeOp,*image,
         region_info.x,region_info.y);
       DestroyImage(*image);
       *image=region_image;
+      (*image)->matte=matte;
     }
   if (compress)
     CondenseImage(*image);
@@ -8504,51 +8554,55 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
   (void) strcpy(filename,image->filename);
   p=(char *) NULL;
   if (*filename != '|')
-    if ((Extent(filename) > 4) &&
-        (Latin1Compare(filename+Extent(filename)-4,".pgp") == 0))
-      {
-        /*
-          Decrypt image file with PGP encryption utilities.
-        */
-        if (*type == 'r')
-          p=GetDelegateCommand(image_info,image,"pgp",(char *) NULL);
-      }
-    else
+    {
       if ((Extent(filename) > 4) &&
-          (Latin1Compare(filename+Extent(filename)-4,".bz2") == 0))
+          (Latin1Compare(filename+Extent(filename)-4,".pgp") == 0))
         {
           /*
-            Uncompress/compress image file with BZIP compress utilities.
+            Decrypt image file with PGP encryption utilities.
           */
           if (*type == 'r')
-            p=GetDelegateCommand(image_info,image,"bzip",(char *) NULL);
-          else
-            p=GetDelegateCommand(image_info,image,(char *) NULL,"bzip");
+            p=GetDelegateCommand(image_info,image,"pgp",(char *) NULL);
         }
       else
-        if ((Extent(filename) > 3) &&
-            (Latin1Compare(filename+Extent(filename)-3,".gz") == 0))
+        if ((Extent(filename) > 4) &&
+            (Latin1Compare(filename+Extent(filename)-4,".bz2") == 0))
           {
             /*
-              Uncompress/compress image file with GNU compress utilities.
+              Uncompress/compress image file with BZIP compress utilities.
             */
             if (*type == 'r')
-              p=GetDelegateCommand(image_info,image,"zip",(char *) NULL);
+              p=GetDelegateCommand(image_info,image,"bzip",(char *) NULL);
             else
-              p=GetDelegateCommand(image_info,image,(char *) NULL,"zip");
+              p=GetDelegateCommand(image_info,image,(char *) NULL,"bzip");
           }
         else
-          if ((Extent(filename) > 2) &&
-              (Latin1Compare(filename+Extent(filename)-2,".Z") == 0))
+          if ((Extent(filename) > 3) &&
+              (Latin1Compare(filename+Extent(filename)-3,".gz") == 0))
             {
               /*
-                Uncompress/compress image file with UNIX compress utilities.
+                Uncompress/compress image file with GNU compress utilities.
               */
               if (*type == 'r')
-                p=GetDelegateCommand(image_info,image,"compress",(char *) NULL);
+                p=GetDelegateCommand(image_info,image,"zip",(char *) NULL);
               else
-                p=GetDelegateCommand(image_info,image,(char *) NULL,"compress");
+                p=GetDelegateCommand(image_info,image,(char *) NULL,"zip");
             }
+          else
+            if ((Extent(filename) > 2) &&
+                (Latin1Compare(filename+Extent(filename)-2,".Z") == 0))
+              {
+                /*
+                  Uncompress/compress image file with UNIX compress utilities.
+                */
+                if (*type == 'r')
+                  p=GetDelegateCommand(image_info,image,"compress",
+                    (char *) NULL);
+                else
+                  p=GetDelegateCommand(image_info,image,(char *) NULL,
+                    "compress");
+              }
+    }
   if (p != (char *) NULL)
     {
       (void) strcpy(filename,p);
@@ -8786,17 +8840,19 @@ Export int ParseImageGeometry(char *image_geometry,int *x, int *y,
       */
       scale_factor=UpShift(1);
       if ((former_width*former_height) != 0)
-        if (((flags & WidthValue) != 0) && (flags & HeightValue) != 0)
-          {
-            scale_factor=UpShift(*width)/former_width;
-            if (scale_factor > (UpShift(*height)/former_height))
-              scale_factor=UpShift(*height)/former_height;
-          }
-        else
-          if ((flags & WidthValue) != 0)
-            scale_factor=UpShift(*width)/former_width;
+        {
+          if (((flags & WidthValue) != 0) && (flags & HeightValue) != 0)
+            {
+              scale_factor=UpShift(*width)/former_width;
+              if (scale_factor > (UpShift(*height)/former_height))
+                scale_factor=UpShift(*height)/former_height;
+            }
           else
-            scale_factor=UpShift(*height)/former_height;
+            if ((flags & WidthValue) != 0)
+              scale_factor=UpShift(*width)/former_width;
+            else
+              scale_factor=UpShift(*height)/former_height;
+        }
       *width=Max(DownShift(former_width*scale_factor),1);
       *height=Max(DownShift(former_height*scale_factor),1);
     }
@@ -10199,7 +10255,7 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
   */
   image_info->affirm=image_info->file != (FILE *) NULL;
   p=image_info->filename;
-  while (isalnum(*p))
+  while (isalnum((int) *p))
     p++;
 #if defined(vms)
   if (*(p+1) == '[')
@@ -10610,33 +10666,35 @@ Export Image *SteganoImage(Image *image,Image *watermark)
       return((Image *) NULL);
     }
   if (stegano_image->class == PseudoClass)
-    if (stegano_image->colors > ((MaxRGB+1) >> 1))
-      stegano_image->class=DirectClass;
-    else
-      {
-        /*
-          Shift colormap to make room for information hiding.
-        */
-        stegano_image->colors<<=1;
-        stegano_image->colormap=(ColorPacket *) ReallocateMemory((char *)
-          stegano_image->colormap,stegano_image->colors*sizeof(ColorPacket));
-        if (stegano_image->colormap == (ColorPacket *) NULL)
-          {
-            MagickWarning(ResourceLimitWarning,
-              "Unable to create steganographic image",
-              "Memory allocation failed");
-            DestroyImage(stegano_image);
-            return((Image *) NULL);
-          }
-        for (i=stegano_image->colors-1; i >= 0; i--)
-          stegano_image->colormap[i]=stegano_image->colormap[i >> 1];
-        q=stegano_image->pixels;
-        for (i=0; i < stegano_image->packets; i++)
+    {
+      if (stegano_image->colors > ((MaxRGB+1) >> 1))
+        stegano_image->class=DirectClass;
+      else
         {
-          q->index<<=1;
-          q++;
+          /*
+            Shift colormap to make room for information hiding.
+          */
+          stegano_image->colors<<=1;
+          stegano_image->colormap=(ColorPacket *) ReallocateMemory((char *)
+            stegano_image->colormap,stegano_image->colors*sizeof(ColorPacket));
+          if (stegano_image->colormap == (ColorPacket *) NULL)
+            {
+              MagickWarning(ResourceLimitWarning,
+                "Unable to create steganographic image",
+                "Memory allocation failed");
+              DestroyImage(stegano_image);
+              return((Image *) NULL);
+            }
+          for (i=stegano_image->colors-1; i >= 0; i--)
+            stegano_image->colormap[i]=stegano_image->colormap[i >> 1];
+          q=stegano_image->pixels;
+          for (i=0; i < stegano_image->packets; i++)
+          {
+            q->index<<=1;
+            q++;
+          }
         }
-      }
+    }
   /*
     Hide watermark in low-order bits of image.
   */
@@ -11690,19 +11748,7 @@ Export void TransparentImage(Image *image,char *color)
     Make image color transparent.
   */
   if (!image->matte)
-    {
-      /*
-        Initialize image matte to opaque.
-      */
-      image->class=DirectClass;
-      image->matte=True;
-      p=image->pixels;
-      for (i=0; i < image->packets; i++)
-      {
-        p->index=Opaque;
-        p++;
-      }
-    }
+    MatteImage(image);
   p=image->pixels;
   for (i=0; i < image->packets; i++)
   {

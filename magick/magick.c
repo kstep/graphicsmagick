@@ -97,7 +97,7 @@ static const MagickInfo
     { "CMYK", ReadCMYKImage, WriteCMYKImage, False,
       "Raw cyan, magenta, yellow, and black bytes" },
     { "DCM", ReadDCMImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-      False, "DICOM Medical image file" },
+      False, "Digital Imaging and Communications in Medicine image file" },
     { "DCX", ReadPCXImage, WritePCXImage, True,
       "ZSoft IBM PC multi-page Paintbrush file" },
     { "DIB", ReadBMPImage, WriteBMPImage, True,
@@ -319,4 +319,5 @@ Export void ListMagickInfo(FILE *file)
       ImageFormats[i].decoder ? 'r' : '-',ImageFormats[i].encoder ? 'w' : '-',
       ImageFormats[i].encoder && ImageFormats[i].adjoin ? '+' : '-',
       ImageFormats[i].description);
+  (void) fflush(file);
 }

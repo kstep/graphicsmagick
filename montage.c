@@ -255,6 +255,9 @@ int main(int argc,char **argv)
     *option,
     *transparent_color;
 
+  double
+    sans;
+
   Image
     *image,
     *montage_image,
@@ -654,7 +657,7 @@ int main(int argc,char **argv)
           if (strncmp("gamma",option+1,2) == 0)
             {
               i++;
-              if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+              if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                 MagickError(OptionError,"Missing value",option);
               break;
             }
@@ -931,7 +934,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing factor",option);
                 }
               break;
@@ -1064,10 +1067,12 @@ int main(int argc,char **argv)
           image_info.size=montage_info.geometry;
         next_image=ReadImage(&image_info);
         if (next_image == (Image *) NULL)
-          if (*option == '-')
-            break;
-          else
-            continue;
+          {
+            if (*option == '-')
+              break;
+            else
+              continue;
+          }
         MogrifyImages(&image_info,i,argv,&next_image);
         if (image == (Image *) NULL)
           image=next_image;
@@ -1126,7 +1131,7 @@ int main(int argc,char **argv)
   if (image_info.verbose)
     DescribeImage(montage_image,stderr,False);
   DestroyImage(montage_image);
-  DestroyDelegateInfo;
+  DestroyDelegateInfo();
   Exit(0);
   return(False);
 }

@@ -1049,15 +1049,13 @@ Export Image *EmbossImage(Image *image)
 Export Image *EnhanceImage(Image *image)
 {
 #define Enhance(weight) \
-  mean=(unsigned int) (s->red+red) >> 1; \
-  distance=(int) s->red-(int) red; \
-  distance_squared= \
-    (((2*(MaxRGB+1))+mean)*squares[distance]) >> QuantumDepth; \
-  distance=(int) s->green-(int) green; \
-  distance_squared+=4*squares[distance]; \
-  distance=(int) s->blue-(int) blue; \
-  distance_squared+= \
-    (((3*(MaxRGB+1)-1)-mean)*squares[distance]) >> QuantumDepth; \
+  mean=(s->red+red)/2; \
+  distance=s->red-(int) red; \
+  distance_squared=(2.0*(MaxRGB+1)+mean)*squares[distance]/(MaxRGB+1); \
+  distance=s->green-(int) green; \
+  distance_squared+=4.0*squares[distance]; \
+  distance=s->blue-(int) blue; \
+  distance_squared+=(3*(MaxRGB+1)-1.0-mean)*squares[distance]/(MaxRGB+1); \
   if (distance_squared < Threshold) \
     { \
       total_red+=(weight)*(s->red); \
@@ -1077,8 +1075,10 @@ Export Image *EnhanceImage(Image *image)
 
   int
     distance,
-    mean,
     y;
+
+  long
+    mean;
 
   Quantum
     blue,
@@ -1348,6 +1348,8 @@ Export Image *ImplodeImage(Image *image,double factor)
   /*
     Initialize imploded image attributes.
   */
+  if (!image->matte)
+    MatteImage(image);
   imploded_image=CloneImage(image,image->columns,image->rows,False);
   if (imploded_image == (Image *) NULL)
     {
@@ -1355,7 +1357,6 @@ Export Image *ImplodeImage(Image *image,double factor)
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  imploded_image->class=DirectClass;
   /*
     Compute scaling factor.
   */
@@ -1408,6 +1409,7 @@ Export Image *ImplodeImage(Image *image,double factor)
           q->green=interpolated_color.green;
           q->blue=interpolated_color.blue;
           q->index=interpolated_color.index;
+          q->length=0;
         }
       p++;
       q++;
@@ -2855,6 +2857,8 @@ Export Image *SwirlImage(Image *image,double degrees)
   /*
     Initialize swirled image attributes.
   */
+  if (!image->matte)
+    MatteImage(image);
   swirled_image=CloneImage(image,image->columns,image->rows,False);
   if (swirled_image == (Image *) NULL)
     {
@@ -2863,6 +2867,7 @@ Export Image *SwirlImage(Image *image,double degrees)
       return((Image *) NULL);
     }
   swirled_image->class=DirectClass;
+  swirled_image->matte=True;
   /*
     Compute scaling factor.
   */
@@ -2911,6 +2916,7 @@ Export Image *SwirlImage(Image *image,double degrees)
           q->green=interpolated_color.green;
           q->blue=interpolated_color.blue;
           q->index=interpolated_color.index;
+          q->length=0;
         }
       p++;
       q++;
@@ -2981,6 +2987,8 @@ Export Image *WaveImage(Image *image,double amplitude,double wavelength)
   /*
     Initialize waved image attributes.
   */
+  if (!image->matte)
+    MatteImage(image);
   waved_image=CloneImage(image,image->columns,image->rows+
     (int) (2*AbsoluteValue(amplitude)),False);
   if (waved_image == (Image *) NULL)
@@ -2989,7 +2997,6 @@ Export Image *WaveImage(Image *image,double amplitude,double wavelength)
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  waved_image->class=DirectClass;
   /*
     Allocate sine map.
   */
@@ -3018,6 +3025,7 @@ Export Image *WaveImage(Image *image,double amplitude,double wavelength)
       q->green=interpolated_color.green;
       q->blue=interpolated_color.blue;
       q->index=interpolated_color.index;
+      q->length=0;
       q++;
     }
     if (QuantumTick(y,image->rows))

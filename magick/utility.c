@@ -963,7 +963,7 @@ Export unsigned int IsDirectory(const char *filename)
 */
 Export int Latin1Compare(const char *p,const char *q)
 {
-  register char
+  register int
     i,
     j;
 
@@ -1016,7 +1016,7 @@ Export int Latin1Compare(const char *p,const char *q)
 */
 Export void Latin1Upper(char *string)
 {
-  register char
+  register int
     c;
 
   assert(string != (char *) NULL);

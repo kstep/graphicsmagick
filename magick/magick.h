@@ -131,7 +131,6 @@ extern "C" {
 */
 #define AppendBinaryType  "ab"
 #define DefaultDisplayGamma  "2.2"
-#define DefaultFont  "-adobe-helvetica-medium-r-*-*-14-*-*-*-*-*-iso8859-*"
 #define DefaultImageQuality  "75"
 #define DefaultImportName  "magick.miff"
 #define DefaultInterlace  NoInterlace
@@ -139,6 +138,7 @@ extern "C" {
 #define DefaultPreviewGeometry  "204x204+10+10"
 #define DefaultPreviewMatte  "#dfdfdf"
 #define DefaultPreviewPageGeometry  "3x3"
+#define DefaultPSFont  "Helvetica"
 #define DefaultPyramidHeight  64
 #define DefaultPyramidWidth  64
 #define DefaultTextBackground  "#ffffff"
@@ -151,6 +151,7 @@ extern "C" {
 #define DefaultTileMatte  "#bdbdbd"
 #define DefaultTilePageGeometry  "6x4"
 #define DefaultThumbnailGeometry  "106x106+0+0>"
+#define DefaultXFont  "-adobe-helvetica-medium-r-*-*-14-*-*-*-*-*-iso8859-*"
 #define DocumentationURL  \
   "http://www.wizards.dupont.com/magick/ImageMagick.html"
 #define PostscriptColorDevice  "pnmraw"

@@ -469,8 +469,11 @@ Export unsigned int QueryColorName(ColorPacket *color,char *name)
   double
     min_distance;
 
-  int
+  long
     mean;
+
+  register const XColorlist
+    *p;
 
   register double
     distance_squared;
@@ -478,29 +481,24 @@ Export unsigned int QueryColorName(ColorPacket *color,char *name)
   register int
     distance;
 
-  register const XColorlist
-    *p;
-
   *name='\0';
-  min_distance=3.0*65536.0*65536.0;
+  min_distance=0;
   for (p=Colorlist; p->name != (char *) NULL; p++)
   {
-    mean=(unsigned int) (DownScale(color->red)+(int) p->red) >> 1;
-    distance=(int) DownScale(color->red)-(int) p->red;
-    distance_squared=
-      (((2*(MaxRGB+1))+mean)*distance*distance) >> 8;
-    distance=(int) DownScale(color->green)-(int) p->green;
-    distance_squared+=4*distance*distance;
-    distance=(int) DownScale(color->blue)-(int) p->blue;
-    distance_squared+=
-      (((3*(MaxRGB+1)-1)-mean)*distance*distance) >> 8;
-    if (distance_squared < min_distance)
+    mean=(DownScale(color->red)+(int) p->red)/2;
+    distance=DownScale(color->red)-(int) p->red;
+    distance_squared=(2.0*256.0+mean)*distance*distance/256.0;
+    distance=DownScale(color->green)-(int) p->green;
+    distance_squared+=4.0*distance*distance;
+    distance=DownScale(color->blue)-(int) p->blue;
+    distance_squared+=(3.0*256.0-1.0-mean)*distance*distance/256.0;
+    if ((p == Colorlist) || (distance_squared < min_distance))
       {
         min_distance=distance_squared;
         (void) strcpy(name,p->name);
       }
   }
-  if (min_distance != 0)
+  if (min_distance != 0.0)
     FormatString(name,HexColorFormat,(unsigned int) color->red,
       (unsigned int) color->green,(unsigned int) color->blue);
   return((unsigned int) min_distance);
@@ -637,7 +635,10 @@ Export void NumberColors(Image *image,FILE *file)
       ProgressMonitor(NumberColorsImageText,i,image->packets);
   }
   if (file != (FILE *) NULL)
-    Histogram(&color_cube,color_cube.root,file);
+    {
+      Histogram(&color_cube,color_cube.root,file);
+      (void) fflush(file);
+    }
   /*
     Release color cube tree storage.
   */

@@ -3369,13 +3369,19 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         }
     }
   jpeg_set_defaults(&jpeg_info);
-  jpeg_info.density_unit=0;
-  jpeg_info.X_density=(short) image->x_resolution;
-  jpeg_info.Y_density=(short) image->y_resolution;
-  if (image->units == PixelsPerInchResolution)
-    jpeg_info.density_unit=1;
-  if (image->units == PixelsPerCentimeterResolution)
-    jpeg_info.density_unit=2;
+  if ((image->x_resolution != 0) && (image->y_resolution != 0))
+    {
+      /*
+        Set image resolution.
+      */
+      jpeg_info.density_unit=0;
+      jpeg_info.X_density=(short) image->x_resolution;
+      jpeg_info.Y_density=(short) image->y_resolution;
+      if (image->units == PixelsPerInchResolution)
+        jpeg_info.density_unit=1;
+      if (image->units == PixelsPerCentimeterResolution)
+        jpeg_info.density_unit=2;
+    }
   if (image->compression != NoCompression)
     for (i=0; i < MAX_COMPONENTS; i++)
     {
@@ -4166,16 +4172,18 @@ unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           (void) fprintf(image->file,"dispose=%u\n",image->dispose);
       }
     if (image->rendering_intent != UndefinedIntent)
-      if (image->rendering_intent == SaturationIntent)
-        (void) fprintf(image->file,"rendering-intent=saturation\n");
-      else
-        if (image->rendering_intent == PerceptualIntent)
-          (void) fprintf(image->file,"rendering-intent=perceptual\n");
+      {
+        if (image->rendering_intent == SaturationIntent)
+          (void) fprintf(image->file,"rendering-intent=saturation\n");
         else
-          if (image->rendering_intent == AbsoluteIntent)
-            (void) fprintf(image->file,"rendering-intent=absolute\n");
+          if (image->rendering_intent == PerceptualIntent)
+            (void) fprintf(image->file,"rendering-intent=perceptual\n");
           else
-            (void) fprintf(image->file,"rendering-intent=relative\n");
+            if (image->rendering_intent == AbsoluteIntent)
+              (void) fprintf(image->file,"rendering-intent=absolute\n");
+            else
+              (void) fprintf(image->file,"rendering-intent=relative\n");
+      }
     if (image->gamma != 0.0)
       (void) fprintf(image->file,"gamma=%g\n",image->gamma);
     if (image->chromaticity.white_point.x != 0.0)
@@ -5535,19 +5543,21 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     y=text_size;
     FormatString(geometry,"%ux%u",image->columns,image->rows);
     if (Latin1Compare(image_info->magick,"PDF") == 0)
-      if (image_info->page != (char *) NULL)
-        {
-          (void) ParseImageGeometry(image_info->page,&x,&y,&width,&height);
-          (void) strcpy(geometry,image_info->page);
-        }
-      else
-        if (image->page != (char *) NULL)
+      {
+        if (image_info->page != (char *) NULL)
           {
-            (void) ParseImageGeometry(image->page,&x,&y,&width,&height);
-            (void) strcpy(geometry,image->page);
+            (void) ParseImageGeometry(image_info->page,&x,&y,&width,&height);
+            (void) strcpy(geometry,image_info->page);
           }
         else
-          (void) strcpy(geometry,PDFPageGeometry);
+          if (image->page != (char *) NULL)
+            {
+              (void) ParseImageGeometry(image->page,&x,&y,&width,&height);
+              (void) strcpy(geometry,image->page);
+            }
+          else
+            (void) strcpy(geometry,PDFPageGeometry);
+      }
     (void) strcat(geometry,"~");
     (void) ParseImageGeometry(geometry,&media_info.x,&media_info.y,
       &media_info.width,&media_info.height);
@@ -11145,8 +11155,6 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     encode_image;
 
   int
-    flags,
-    sans_offset,
     y;
 
   register RunlengthPacket
@@ -11171,9 +11179,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   unsigned int
-    scene,
-    x_resolution,
-    y_resolution;
+    scene;
 
   unsigned short
     value;
@@ -11318,10 +11324,12 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               if (IsMonochromeImage(image))
                 photometric=PHOTOMETRIC_MINISWHITE;
               if (image->compression != NoCompression)
-                if (image->compression == FaxCompression)
-                  compress_tag=COMPRESSION_CCITTFAX3;
-                else
-                  compress_tag=COMPRESSION_CCITTFAX4;
+                {
+                  if (image->compression == FaxCompression)
+                    compress_tag=COMPRESSION_CCITTFAX3;
+                  else
+                    compress_tag=COMPRESSION_CCITTFAX4;
+                }
               TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,1);
             }
           else
@@ -11347,19 +11355,6 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       if ((image_info->interlace == PlaneInterlace) ||
           (image_info->interlace == PartitionInterlace))
         TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
-    /*
-      Determine image resolution.
-    */
-    flags=NoValue;
-    x_resolution=72;
-    y_resolution=72;
-    if (image_info->density != (char *) NULL)
-      flags=XParseGeometry(image_info->density,&sans_offset,&sans_offset,
-        &x_resolution,&y_resolution);
-    if (flags & WidthValue)
-      image->x_resolution=x_resolution;
-    if (flags & HeightValue)
-      image->y_resolution=y_resolution;
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
         unsigned short
@@ -11949,8 +11944,10 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   int
     j,
     k,
-    mean,
     y;
+
+  long
+    mean;
 
   register double
     distance_squared;
@@ -12055,20 +12052,18 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     /*
       Define UIL color.
     */
+    min_distance=0;
     p=image->colormap+i;
-    min_distance=3.0*65536.0*65536.0;
     for (q=XPMColorlist; q->name != (char *) NULL; q++)
     {
-      mean=(unsigned int) (DownScale(p->red)+q->red) >> 1;
-      distance=(int) DownScale(p->red)-(int) q->red;
-      distance_squared=(unsigned int)
-        (((2*(MaxRGB+1))+mean)*(distance*distance)) >> 8;
-      distance=(int) DownScale(p->green)-(int) q->green;
-      distance_squared+=(unsigned int) 4*(distance*distance);
-      distance=(int) DownScale(p->blue)-(int) q->blue;
-      distance_squared+=(unsigned int)
-        (((3*(MaxRGB+1)-1)-mean)*(distance*distance)) >> 8;
-      if (distance_squared <= min_distance)
+      mean=(DownScale(p->red)+q->red)/2;
+      distance=DownScale(p->red)-(int) q->red;
+      distance_squared=(2.0*256.0+mean)*distance*distance/256.0;
+      distance=DownScale(p->green)-(int) q->green;
+      distance_squared+=4.0*distance*distance;
+      distance=DownScale(p->blue)-(int) q->blue;
+      distance_squared+=(3.0*256.0-1.0-mean)*distance*distance/256.0;
+      if ((q == XPMColorlist) || (distance_squared <= min_distance))
         {
           min_distance=distance_squared;
           (void) strcpy(name,q->name);
@@ -13148,8 +13143,10 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   int
     j,
     k,
-    mean,
     y;
+
+  long
+    mean;
 
   register double
     distance_squared;
@@ -13256,22 +13253,20 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     /*
       Define XPM color.
     */
+    min_distance=0;
     p=image->colormap+i;
     FormatString(name,HexColorFormat,(unsigned int) p->red,
       (unsigned int) p->green,(unsigned int) p->blue);
-    min_distance=3.0*65536.0*65536.0;
     for (q=XPMColorlist; q->name != (char *) NULL; q++)
     {
       mean=(DownScale(p->red)+(int) q->red)/2;
-      distance=(int) DownScale(p->red)-(int) q->red;
-      distance_squared=(unsigned int)
-        (((2*(MaxRGB+1))+mean)*(distance*distance)) >> 8;
-      distance=(int) DownScale(p->green)-(int) q->green;
-      distance_squared+=(unsigned int) 4*(distance*distance);
-      distance=(int) DownScale(p->blue)-(int) q->blue;
-      distance_squared+=(unsigned int)
-        (((3*(MaxRGB+1)-1)-mean)*(distance*distance)) >> 8;
-      if (distance_squared <= min_distance)
+      distance=DownScale(p->red)-(int) q->red;
+      distance_squared=(2.0*256.0+mean)*distance*distance/256.0;
+      distance=DownScale(p->green)-(int) q->green;
+      distance_squared+=4.0*(distance*distance);
+      distance=DownScale(p->blue)-(int) q->blue;
+      distance_squared+=(3.0*256.0-1.0-mean)*distance*distance/256.0;
+      if ((q == XPMColorlist) || (distance_squared <= min_distance))
         {
           min_distance=distance_squared;
           if (min_distance == 0.0)
@@ -13743,10 +13738,10 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
   SetImageInfo(image_info,True);
   SetNumberScenes(image);
   (void) strcpy(image->filename,image_info->filename);
-  if (GetDelegateInfo(image->magick,image_info->magick,&delegate_info))
-    if ((image->next == (Image *) NULL) || image_info->adjoin)
-      if ((image->previous == (Image *) NULL) && !IsTainted(image))
-        if (IsAccessible(image->magick_filename))
+  if ((image->next == (Image *) NULL) || image_info->adjoin)
+    if ((image->previous == (Image *) NULL) && !IsTainted(image))
+      if (IsAccessible(image->magick_filename))
+        if (GetDelegateInfo(image->magick,image_info->magick,&delegate_info))
           {
             /*
               Let our bi-directional delegate process the image.
@@ -13756,16 +13751,6 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
               InvokeDelegate(image_info,image,image->magick,image_info->magick);
             return(status);
           }
-  if (GetDelegateInfo((char *) NULL,image_info->magick,&delegate_info))
-    {
-      /*
-        Let our encoding delegate process the image.
-      */
-      TemporaryFilename(image->filename);
-      status=InvokeDelegate(image_info,image,(char *) NULL,image_info->magick);
-      (void) remove(image->filename);
-      return(status);
-    }
   /*
     Call appropriate image writer based on image type.
   */
@@ -13776,8 +13761,28 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
       (unsigned int (*)(const ImageInfo *,Image *)) NULL))
     status=(magick_info->encoder)(image_info,image);
   else
-    MagickWarning(MissingDelegateWarning,
-      "no encode delegate for this image format",image_info->magick);
+    if (!GetDelegateInfo((char *) NULL,image_info->magick,&delegate_info))
+      {
+        magick_info=(MagickInfo *) GetMagickInfo(image->magick);
+        if ((magick_info != (MagickInfo *) NULL) &&
+            (magick_info->encoder !=
+            (unsigned int (*)(const ImageInfo *,Image *)) NULL))
+          status=(magick_info->encoder)(image_info,image);
+        else
+          MagickWarning(MissingDelegateWarning,
+            "no encode delegate for this image format",image_info->magick);
+      }
+    else
+      {
+        /*
+          Let our encoding delegate process the image.
+        */
+        TemporaryFilename(image->filename);
+        status=
+          InvokeDelegate(image_info,image,(char *) NULL,image_info->magick);
+        (void) remove(image->filename);
+        return(status);
+      }
   if (image->status)
     {
       MagickWarning(CorruptImageWarning,"An error has occurred writing to file",

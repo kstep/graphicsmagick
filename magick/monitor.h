@@ -2,7 +2,7 @@
   Monitor define declarations.
 */
 #define QuantumTick(i,span) \
-  (((~(span-i-1) & (span-i-2))+1) == (span-i-1))
+  (((~((span)-i-1) & ((span)-i-2))+1) == ((span)-i-1))
 
 /*
   Monitor typedef declarations.

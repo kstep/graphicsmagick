@@ -102,7 +102,7 @@ char *GetHostInfo(char *name)
   /*
     Get host name and address.
   */
-  if (isascii(*name) && isdigit(*name))
+  if (isascii((int) *name) && isdigit((int) *name))
     in.s_addr=inet_addr(name);
   else
     {

@@ -725,9 +725,11 @@ Export void XBestPixel(Display *display,const Colormap colormap,XColor *colors,
     min_distance;
 
   int
-    mean,
     query_server,
     status;
+
+  long
+    mean;
 
   register double
     distance_squared;
@@ -764,21 +766,17 @@ Export void XBestPixel(Display *display,const Colormap colormap,XColor *colors,
         number_colors=256;
       XQueryColors(display,colormap,colors,number_colors);
     }
-  min_distance=3.0*65536.0*65536.0;
-  color->pixel=colors[0].pixel;
-  j=0;
+  min_distance=0;
   for (i=0; i < number_colors; i++)
   {
-    mean=(unsigned int) (colors[i].red+color->red) >> 1;
-    distance=(int) colors[i].red-(int) color->red;
-    distance_squared=(unsigned int)
-      (((2*(MaxRGB+1))+mean)*distance*distance) >> QuantumDepth;
-    distance=(int) colors[i].green-(int) color->green;
-    distance_squared+=(unsigned int) (4*distance*distance);
-    distance=(int) colors[i].blue-(int) color->blue;
-    distance_squared+=(unsigned int)
-      (((3*(MaxRGB+1)-1)-mean)*distance*distance) >> QuantumDepth;
-    if (distance_squared < min_distance)
+    mean=(colors[i].red+color->red)/2;
+    distance=colors[i].red-(int) color->red;
+    distance_squared=(2.0*65536.0+mean)*distance*distance/65536.0;
+    distance=colors[i].green-(int) color->green;
+    distance_squared+=4.0*distance*distance;
+    distance=colors[i].blue-(int) color->blue;
+    distance_squared+=(3.0*65536.0-1.0-mean)*distance*distance/65536.0;
+    if ((i == 0) || (distance_squared < min_distance))
       {
         min_distance=distance_squared;
         color->pixel=colors[i].pixel;
@@ -1690,7 +1688,8 @@ Export void XDisplayImageInfo(Display *display,
         FormatString(text,"%s    %d: (%3d,%3d,%3d)  ",text,i,p->red,
           p->green,p->blue);
         (void) QueryColorName(p,name);
-        (void) FormatString(text,"%s  %.1024s",text,name);
+        (void) strcat(text,"  ");
+        (void) strcat(text,name);
         (void) strcat(text,"\n");
         p++;
       }
@@ -1779,15 +1778,17 @@ Export void XDisplayImageInfo(Display *display,
     }
   FormatString(text,"%s  depth: %u\n",text,image->depth);
   if (image->filesize != 0)
-    if (image->filesize >= (1 << 24))
-      FormatString(text,"%s  filesize: %ldmb\n",text,
-        image->filesize/1024/1024);
-    else
-      if (image->filesize >= (1 << 14))
-        FormatString(text,"%s  filesize: %ldkb\n",text,
-          image->filesize/1024);
+    {
+      if (image->filesize >= (1 << 24))
+        FormatString(text,"%s  filesize: %ldmb\n",text,
+          image->filesize/1024/1024);
       else
-        FormatString(text,"%s  filesize: %ldb\n",text,image->filesize);
+        if (image->filesize >= (1 << 14))
+          FormatString(text,"%s  filesize: %ldkb\n",text,
+            image->filesize/1024);
+        else
+          FormatString(text,"%s  filesize: %ldb\n",text,image->filesize);
+    }
   if (image->interlace == NoInterlace)
     (void) strcat(text,"  interlace: None\n");
   else
@@ -2614,14 +2615,16 @@ Export void XFreeStandardColormap(Display *display,
   assert(map_info != (XStandardColormap *) NULL);
   XFlush(display);
   if (map_info->colormap != (Colormap) NULL)
-    if (map_info->colormap != XDefaultColormap(display,visual_info->screen))
-      XFreeColormap(display,map_info->colormap);
-    else
-      if (pixel_info != (XPixelInfo *) NULL)
-        if ((visual_info->class != TrueColor) &&
-            (visual_info->class != DirectColor))
-          XFreeColors(display,map_info->colormap,pixel_info->pixels,
-            (int) pixel_info->colors,0);
+    {
+      if (map_info->colormap != XDefaultColormap(display,visual_info->screen))
+        XFreeColormap(display,map_info->colormap);
+      else
+        if (pixel_info != (XPixelInfo *) NULL)
+          if ((visual_info->class != TrueColor) &&
+              (visual_info->class != DirectColor))
+            XFreeColors(display,map_info->colormap,pixel_info->pixels,
+              (int) pixel_info->colors,0);
+    }
   map_info->colormap=(Colormap) NULL;
   if (pixel_info != (XPixelInfo *) NULL)
     {
@@ -4727,23 +4730,24 @@ Export Image *XImportImage(const ImageInfo *image_info,XImportInfo *ximage_info)
   target=(Window) NULL;
   if ((image_info->filename != (char *) NULL) &&
       (*image_info->filename != '\0'))
-    if (Latin1Compare(image_info->filename,"root") == 0)
-      target=root;
-    else
-      {
-        /*
-          Select window by ID or name.
-        */
-        if (isdigit((int) (*image_info->filename)))
-          target=XWindowByID(display,root,(Window) strtol(image_info->filename,
-            (char **) NULL,0));
-        if (target == (Window) NULL)
-          target=XWindowByName(display,root,image_info->filename);
-        if (target == (Window) NULL)
-          MagickWarning(OptionWarning,"No window with specified id exists",
-            image_info->filename);
-      }
-
+    {
+      if (Latin1Compare(image_info->filename,"root") == 0)
+        target=root;
+      else
+        {
+          /*
+            Select window by ID or name.
+          */
+          if (isdigit((int) (*image_info->filename)))
+            target=XWindowByID(display,root,(Window)
+              strtol(image_info->filename,(char **) NULL,0));
+          if (target == (Window) NULL)
+            target=XWindowByName(display,root,image_info->filename);
+          if (target == (Window) NULL)
+            MagickWarning(OptionWarning,"No window with specified id exists",
+              image_info->filename);
+        }
+    }
   /*
     If target window is not defined, interactively select one.
   */
@@ -5388,12 +5392,14 @@ Export unsigned int XMakeImage(Display *display,
     }
 #endif
   if (!window->shared_memory)
-    if (ximage->format == XYBitmap)
-      ximage->data=(char *)
-        AllocateMemory(ximage->bytes_per_line*ximage->height*ximage->depth);
-    else
-      ximage->data=(char *)
-        AllocateMemory(ximage->bytes_per_line*ximage->height);
+    {
+      if (ximage->format == XYBitmap)
+        ximage->data=(char *)
+          AllocateMemory(ximage->bytes_per_line*ximage->height*ximage->depth);
+      else
+        ximage->data=(char *)
+          AllocateMemory(ximage->bytes_per_line*ximage->height);
+    }
   if (ximage->data == (char *) NULL)
     {
       /*
@@ -5486,13 +5492,15 @@ Export unsigned int XMakeImage(Display *display,
     Convert runlength-encoded pixels to X image data.
   */
   if (transformed_image != (Image *) NULL)
-    if ((ximage->byte_order == LSBFirst) || ((ximage->format == XYBitmap) &&
-        (ximage->bitmap_bit_order == LSBFirst)))
-      XMakeImageLSBFirst(resource_info,window,transformed_image,ximage,
-        matte_image);
-    else
-      XMakeImageMSBFirst(resource_info,window,transformed_image,ximage,
-        matte_image);
+    {
+      if ((ximage->byte_order == LSBFirst) || ((ximage->format == XYBitmap) &&
+          (ximage->bitmap_bit_order == LSBFirst)))
+        XMakeImageLSBFirst(resource_info,window,transformed_image,ximage,
+          matte_image);
+      else
+        XMakeImageMSBFirst(resource_info,window,transformed_image,ximage,
+          matte_image);
+    }
   if (window->matte_image != (XImage *) NULL)
     {
       /*
@@ -8193,7 +8201,7 @@ Export unsigned int XQueryColorDatabase(char *target,XColor *color)
   color->green=0;
   color->blue=0;
   color->flags=DoRed | DoGreen | DoBlue;
-  if (target == (char *) NULL)
+  if ((target == (char *) NULL) || (*target == '\0'))
     target=BackgroundColor;
   while (isspace((int) (*target)))
     target++;

@@ -183,7 +183,7 @@ $example->Swirl(90);
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Wave');
-$example->Wave('10x30');
+$example->Wave('25x150');
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Zoom');
@@ -218,6 +218,6 @@ $montage->Annotate(text=>'Every thing you see on this page was created ' .
   font=>'@Generic.ttf',pointsize=>11,pen=>'#600');
 print "Write image...\n";
 $montage->Set(matte=>'false');
-$montage->Write('demo.gif') if "$x";  # may not have the JPEG plug-in
+$montage->Write('demo.gif');
 print "Display image...\n";
 $montage->display();

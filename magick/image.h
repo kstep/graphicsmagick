@@ -398,7 +398,14 @@ typedef struct _ImageInfo
     *view;
 
   unsigned int
-    adjoin;
+    adjoin,
+    depth,
+    dither,
+    monochrome,
+    pointsize,
+    quality,
+    fuzz,
+    verbose;
 
   ColorspaceType
     colorspace;
@@ -406,19 +413,11 @@ typedef struct _ImageInfo
   CompressionType
     compression;
 
-  unsigned int
-    depth,
-    dither;
-
   InterlaceType
     interlace;
 
-  unsigned int
-    monochrome,
-    pointsize,
-    quality,
-    fuzz,
-    verbose;
+  ResolutionType
+    units;
 
   FilterType
     filter;
@@ -922,6 +921,7 @@ extern Export void
   LayerImage(Image *,LayerType),
   MatteFloodfillImage(Image *,const RunlengthPacket *,const unsigned int,int x,
     int y,const PaintMethod),
+  MatteImage(Image *),
   ModulateImage(Image *,char *),
   MogrifyImage(ImageInfo *,int,char **,Image **),
   MogrifyImages(ImageInfo *,int,char **,Image **),

@@ -126,6 +126,7 @@
 %    -transparent color   make this color transparent within the image
 %    -treedepth value     depth of the color classification tree
 %    -undercolor geometry control undercolor removal and black generation
+%    -units type          PixelsPerInch, PixelsPerCentimeter, or Undefined
 %    -verbose             print detailed information about the image
 %    -view                FlashPix viewing transforms
 %    -wave geometry       alter an image along a sine wave
@@ -246,6 +247,7 @@ static void Usage(const char *client_name)
       "-transparent color   make this color transparent within the image",
       "-treedepth value     depth of the color classification tree",
       "-undercolor geometry control undercolor removal and black generation",
+      "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
       "-verbose             print detailed information about the image",
       "-view                FlashPix viewing transforms",
       "-wave geometry       alter an image along a sine wave",
@@ -255,7 +257,8 @@ static void Usage(const char *client_name)
   (void) printf("Version: %.1024s\n",MagickVersion);
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
   (void) printf(
-    "Usage: %.1024s [-options ...] file [ [-options ...] file ...]\n",client_name);
+    "Usage: %.1024s [-options ...] file [ [-options ...] file ...]\n",
+    client_name);
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -293,6 +296,9 @@ int main(int argc,char **argv)
     filename[MaxTextExtent],
     *format,
     *option;
+
+  double
+    sans;
 
   ImageInfo
     image_info;
@@ -388,7 +394,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing factor",option);
                 }
               break;
@@ -435,7 +441,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing factor",option);
                 }
               break;
@@ -651,7 +657,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing factor",option);
                 }
               break;
@@ -775,7 +781,7 @@ int main(int argc,char **argv)
           if (strncmp("gamma",option+1,2) == 0)
             {
               i++;
-              if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+              if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                 MagickError(OptionError,"Missing value",option);
               break;
             }
@@ -841,7 +847,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing amount",option);
                 }
               break;
@@ -966,7 +972,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing value",option);
                 }
               break;
@@ -1171,7 +1177,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing threshold",option);
                 }
               break;
@@ -1188,7 +1194,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing factor",option);
                 }
               break;
@@ -1198,7 +1204,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing geometry",option);
                 }
               break;
@@ -1240,7 +1246,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing degrees",option);
                 }
               break;
@@ -1297,16 +1303,33 @@ int main(int argc,char **argv)
         }
         case 'u':
         {
-          if (strncmp("undercolor",option+1,2) == 0)
+          if (strncmp("undercolor",option+1,3) == 0)
             {
               image_info.undercolor=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing undercolor geometry",
                       option);
                   image_info.undercolor=argv[i];
+                }
+              break;
+            }
+          if (strncmp("units",option+1,3) == 0)
+            {
+              image_info.units=UndefinedResolution;
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing type",option);
+                  option=argv[i];
+                  image_info.units=UndefinedResolution;
+                  if (Latin1Compare("PixelsPerInch",option) == 0)
+                    image_info.units=PixelsPerInchResolution;
+                  if (Latin1Compare("PixelsPerCentimeter",option) == 0)
+                    image_info.units=PixelsPerCentimeterResolution;
                 }
               break;
             }
@@ -1366,10 +1389,12 @@ int main(int argc,char **argv)
         (void) strcpy(image_info.filename,argv[i]);
         image=ReadImage(&image_info);
         if (image == (Image *) NULL)
-          if (*option == '-')
-            break;
-          else
-            continue;
+          {
+            if (*option == '-')
+              break;
+            else
+              continue;
+          }
         if (scene != 0)
           image->scene=scene;
         if (format != (char *) NULL)
@@ -1436,7 +1461,7 @@ int main(int argc,char **argv)
     }
   if (image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  DestroyDelegateInfo;
+  DestroyDelegateInfo();
   Exit(0);
   return(False);
 }

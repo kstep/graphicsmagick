@@ -249,7 +249,9 @@ static unsigned int Classify(Image *image,short **extrema,
     red;
 
   int
-    count,
+    count;
+
+  long
     mean;
 
   register double
@@ -516,27 +518,25 @@ static unsigned int Classify(Image *image,short **extrema,
         for (j=0; j < image->colors; j++)
         {
           sum=0.0;
-          mean=(unsigned int) (q->red+image->colormap[j].red) >> 1;
-          distance=(int) q->red-(int) image->colormap[j].red;
-          distance_squared=
-            (((2*(MaxRGB+1))+mean)*squares[distance]) >> QuantumDepth;
-          distance=(int) q->green-(int) image->colormap[j].green;
-          distance_squared+=4*squares[distance];
-          distance=(int) q->blue-(int) image->colormap[j].blue;
+          mean=(q->red+image->colormap[j].red)/2;
+          distance=q->red-(int) image->colormap[j].red;
+          distance_squared=(2.0*(MaxRGB+1)+mean)*squares[distance]/(MaxRGB+1);
+          distance=q->green-(int) image->colormap[j].green;
+          distance_squared+=4.0*squares[distance];
+          distance=q->blue-(int) image->colormap[j].blue;
           distance_squared+=
-            (((3*(MaxRGB+1)-1)-mean)*squares[distance]) >> QuantumDepth;
+            (3.0*(MaxRGB+1)-1.0-mean)*squares[distance]/(MaxRGB+1);
           numerator=sqrt(distance_squared);
           for (k=0; k < image->colors; k++)
           {
-            mean=(unsigned int) (q->red+image->colormap[k].red) >> 1;
-            distance=(int) q->red-(int) image->colormap[k].red;
-            distance_squared=
-              (((2*(MaxRGB+1))+mean)*squares[distance]) >> QuantumDepth;
-            distance=(int) q->green-(int) image->colormap[k].green;
-            distance_squared+=4*squares[distance];
-            distance=(int) q->blue-(int) image->colormap[k].blue;
+            mean=(q->red+image->colormap[k].red)/2;
+            distance=q->red-(int) image->colormap[k].red;
+            distance_squared=(2.0*(MaxRGB+1)+mean)*squares[distance]/(MaxRGB+1);
+            distance=q->green-(int) image->colormap[k].green;
+            distance_squared+=4.0*squares[distance];
+            distance=q->blue-(int) image->colormap[k].blue;
             distance_squared+=
-              (((3*(MaxRGB+1)-1)-mean)*squares[distance]) >> QuantumDepth;
+              (3.0*(MaxRGB+1)-1.0-mean)*squares[distance]/(MaxRGB+1);
             ratio=numerator/sqrt(distance_squared);
             sum+=pow(ratio,(double) (2.0/(weighting_exponent-1.0)));
           }

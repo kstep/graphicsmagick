@@ -832,7 +832,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               }
             else
               for (r++;  *r != '\0'; r++)
-                if (isspace(*r) && (*(r-1) != '\\'))
+                if (isspace((int) *r) && (*(r-1) != '\\'))
                   break;
           (void) strncpy(annotate_info->text,p->text,r-p->text);
           annotate_info->text[r-p->text]='\0';

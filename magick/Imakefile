@@ -88,6 +88,8 @@ install-shlib: $(SHLIB)
 	-cp $(SHLIB) $(MAGICKDIR)
 	-chmod a+rx $(MAGICKDIR) $(MAGICKDIR)/$(SHLIB)
 
+install:: all
+
 clean::
 	-$(RM) $(ARLIB) $(SHLIB)
 

@@ -188,7 +188,8 @@ int main(int argc,char **argv)
     compose;
 
   double
-    blend;
+    blend,
+    sans;
 
   Image
     *combined_image,
@@ -453,7 +454,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing geometry",option);
                   displacement_geometry=argv[i];
                   compose=DisplaceCompositeOp;
@@ -901,7 +902,7 @@ int main(int argc,char **argv)
   if (image_info.verbose)
     DescribeImage(combined_image,stdout,False);
   DestroyImage(combined_image);
-  DestroyDelegateInfo;
+  DestroyDelegateInfo();
   Exit(0);
   return(False);
 }

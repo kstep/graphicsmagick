@@ -716,21 +716,23 @@ static unsigned int XAnnotateEditImage(Display *display,
               Erase one character.
             */
             if (p == annotate_info->text)
-              if (annotate_info->previous == (XAnnotateInfo *) NULL)
-                break;
-              else
-                {
-                  /*
-                    Go to end of the previous line of text.
-                  */
-                  annotate_info=annotate_info->previous;
-                  p=annotate_info->text;
-                  x=annotate_info->x+annotate_info->width;
-                  y=annotate_info->y;
-                  if (annotate_info->width != 0)
-                    p+=Extent(annotate_info->text);
+              {
+                if (annotate_info->previous == (XAnnotateInfo *) NULL)
                   break;
-                }
+                else
+                  {
+                    /*
+                      Go to end of the previous line of text.
+                    */
+                    annotate_info=annotate_info->previous;
+                    p=annotate_info->text;
+                    x=annotate_info->x+annotate_info->width;
+                    y=annotate_info->y;
+                    if (annotate_info->width != 0)
+                      p+=Extent(annotate_info->text);
+                    break;
+                  }
+              }
             p--;
             x-=XTextWidth(font_info,p,1);
             text_event.xexpose.x=x;
@@ -2536,14 +2538,7 @@ static unsigned int XCompositeImage(Display *display,
         Create mattes for blending.
       */
       index=(unsigned short) (((int) DownScale(MaxRGB)*blend)/100);
-      composite_image->class=DirectClass;
-      composite_image->matte=True;
-      p=composite_image->pixels;
-      for (i=0; i < composite_image->packets; i++)
-      {
-        p->index=index;
-        p++;
-      }
+      MatteImage(composite_image);
       index=(unsigned short)
         ((int) DownScale(MaxRGB)-((int) DownScale(MaxRGB)*blend)/100);
       image->class=DirectClass;
@@ -3453,18 +3448,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   */
   image->class=DirectClass;
   if (!image->matte)
-    {
-      /*
-        Initialize matte data.
-      */
-      p=image->pixels;
-      for (x=0; x < image->packets; x++)
-      {
-        p->index=Opaque;
-        p++;
-      }
-      image->matte=True;
-    }
+    MatteImage(image);
   if (UncondenseImage(image))
     for (y=0; y < crop_info.height; y++)
     {
@@ -6322,7 +6306,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case WaveCommand:
     {
       static char
-        geometry[MaxTextExtent] = "10x30";
+        geometry[MaxTextExtent] = "25x150";
 
       /*
         Query user for the shade geometry.
@@ -7533,18 +7517,7 @@ static unsigned int XMatteEditImage(Display *display,
           continue;
         (*image)->class=DirectClass;
         if (!(*image)->matte)
-          {
-            /*
-              Initialize matte data.
-            */
-            p=(*image)->pixels;
-            for (i=0; i < (*image)->packets; i++)
-            {
-              p->index=Opaque;
-              p++;
-            }
-            (*image)->matte=True;
-          }
+          MatteImage(*image);
         switch (method)
         {
           case PointMethod:
@@ -12397,28 +12370,30 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     if (windows->image.mapped && resource_info->delay)
       {
         if (timer < time((time_t *) NULL))
-          if (!resource_info->update)
-            *state|=NextImageState | ExitState;
-          else
-            {
-              /*
-                Determine if image file was modified.
-              */
-              status=stat(displayed_image->filename,&file_info);
-              if (status == 0)
-                if (update_time != file_info.st_mtime)
-                  {
-                    /*
-                      Redisplay image.
-                    */
-                    (void) strcpy(resource_info->image_info.filename,
-                      displayed_image->filename);
-                    loaded_image=ReadImage(&resource_info->image_info);
-                    if (loaded_image != (Image *) NULL)
-                      *state|=NextImageState | ExitState;
-                  }
-              timer=time((time_t *) NULL)+(resource_info->delay/100)+1;
-            }
+          {
+            if (!resource_info->update)
+              *state|=NextImageState | ExitState;
+            else
+              {
+                /*
+                  Determine if image file was modified.
+                */
+                status=stat(displayed_image->filename,&file_info);
+                if (status == 0)
+                  if (update_time != file_info.st_mtime)
+                    {
+                      /*
+                        Redisplay image.
+                      */
+                      (void) strcpy(resource_info->image_info.filename,
+                        displayed_image->filename);
+                      loaded_image=ReadImage(&resource_info->image_info);
+                      if (loaded_image != (Image *) NULL)
+                        *state|=NextImageState | ExitState;
+                    }
+                timer=time((time_t *) NULL)+(resource_info->delay/100)+1;
+              }
+          }
         if (XEventsQueued(display,QueuedAfterFlush) == 0)
           {
             /*
@@ -13010,8 +12985,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           &key_symbol,(XComposeStatus *) NULL);
         *(command+length)='\0';
         if (resource_info->debug)
-          (void) fprintf(stderr,"Key press: %d 0x%lx (%.1024s)\n",event.xkey.state,
-            key_symbol,command);
+          (void) fprintf(stderr,"Key press: %d 0x%lx (%.1024s)\n",
+            event.xkey.state,key_symbol,command);
         if (event.xkey.window == windows->image.id)
           {
             command_type=XImageWindowCommand(display,resource_info,windows,
@@ -13023,14 +12998,16 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         if (event.xkey.window == windows->magnify.id)
           XMagnifyWindowCommand(display,windows,event.xkey.state,key_symbol);
         if (event.xkey.window == windows->pan.id)
-          if (key_symbol == XK_q)
-            XWithdrawWindow(display,windows->pan.id,windows->pan.screen);
-          else
-            if ((key_symbol == XK_F1) || (key_symbol == XK_Help))
-              XTextViewWidget(display,resource_info,windows,False,
-                "Help Viewer - Image Panning",ImagePanHelp);
+          {
+            if (key_symbol == XK_q)
+              XWithdrawWindow(display,windows->pan.id,windows->pan.screen);
             else
-              XTranslateImage(display,windows,*image,key_symbol);
+              if ((key_symbol == XK_F1) || (key_symbol == XK_Help))
+                XTextViewWidget(display,resource_info,windows,False,
+                  "Help Viewer - Image Panning",ImagePanHelp);
+              else
+                XTranslateImage(display,windows,*image,key_symbol);
+          }
         timer=time((time_t *) NULL)+(resource_info->delay/100)+1;
         break;
       }
@@ -13072,10 +13049,12 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             if (windows->backdrop.id != (Window) NULL)
               XInstallColormap(display,map_info->colormap);
             if (Latin1Compare(displayed_image->magick,"LOGO") == 0)
-              if (Latin1Compare(displayed_image->filename,"Untitled") == 0)
-                loaded_image=XOpenImage(display,resource_info,windows,False);
-              else
-                *state|=NextImageState | ExitState;
+              {
+                if (Latin1Compare(displayed_image->filename,"Untitled") == 0)
+                  loaded_image=XOpenImage(display,resource_info,windows,False);
+                else
+                  *state|=NextImageState | ExitState;
+              }
             if ((windows->image.width < windows->image.ximage->width) ||
                 (windows->image.height < windows->image.ximage->height))
               XMapRaised(display,windows->pan.id);

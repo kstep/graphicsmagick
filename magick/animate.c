@@ -174,14 +174,16 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         if (filelist[i] != filenames)
           FreeMemory((char *) filelist[i]);
         if (next_image != (Image *) NULL)
-          if (image == (Image *) NULL)
-            image=next_image;
-          else
-            {
-              image->next=next_image;
-              image->next->previous=image;
-              image=image->next;
-            }
+          {
+            if (image == (Image *) NULL)
+              image=next_image;
+            else
+              {
+                image->next=next_image;
+                image->next->previous=image;
+                image=image->next;
+              }
+          }
         if (number_files <= 5)
           continue;
         (void) SetMonitorHandler(handler);
@@ -1146,8 +1148,9 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   }
   if (resource_info->debug)
     {
-      (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",displayed_image->filename,
-        displayed_image->scene,displayed_image->columns,displayed_image->rows);
+      (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",
+        displayed_image->filename,displayed_image->scene,
+        displayed_image->columns,displayed_image->rows);
       if (displayed_image->colors != 0)
         (void) fprintf(stderr,"%uc ",displayed_image->colors);
       (void) fprintf(stderr,"%.1024s\n",displayed_image->magick);
@@ -1643,8 +1646,8 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
               p=images[scene]->filename+Extent(images[scene]->filename)-1;
               while ((p > images[scene]->filename) && (*(p-1) != '/'))
                 p--;
-              FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",p,
-                scene,number_scenes);
+              FormatString(windows->image.name,
+                "ImageMagick: %.1024s[%u of %u]",p,scene,number_scenes);
               if (resource_info->title != (char *) NULL)
                 (void) strcpy(windows->image.name,image->label);
               status=
@@ -1658,6 +1661,9 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
           /*
             Copy X pixmap to Image window.
           */
+XGetPixelInfo(display,visual_info,map_info,resource_info,
+images[scene],&scene_info);
+windows->image.pixel_info=(&scene_info);
           windows->image.ximage->width=image->columns;
           windows->image.ximage->height=image->rows;
           windows->image.pixmap=windows->image.pixmaps[scene];
@@ -2096,11 +2102,13 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
             if (windows->backdrop.id != (Window) NULL)
               XInstallColormap(display,map_info->colormap);
             if (Latin1Compare(images[0]->magick,"LOGO") == 0)
-              if (Latin1Compare(displayed_image->filename,"Untitled") == 0)
-                loaded_image=XMagickCommand(display,resource_info,windows,
-                  OpenCommand,&image,&state);
-              else
-                state|=ExitState;
+              {
+                if (Latin1Compare(displayed_image->filename,"Untitled") == 0)
+                  loaded_image=XMagickCommand(display,resource_info,windows,
+                    OpenCommand,&image,&state);
+                else
+                  state|=ExitState;
+              }
             windows->image.mapped=True;
             break;
           }

@@ -831,7 +831,7 @@ int main(int argc,char **argv)
   if (image_info.verbose)
     DescribeImage(image,stdout,False);
   DestroyImages(image);
-  DestroyDelegateInfo;
+  DestroyDelegateInfo();
   Exit(0);
   return(False);
 }

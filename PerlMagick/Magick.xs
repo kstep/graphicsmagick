@@ -51,7 +51,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% PerlMagick,version 1.52,is an objected-oriented Perl interface to
+% PerlMagick, version 1.52, is an objected-oriented Perl interface to
 % ImageMagick.  Use the module to read,manipulate,or write an image or
 % image sequence from within a Perl script.  This makes it very suitable
 % for Web CGI scripts.  You must have ImageMagick 4.1.5 or above and Perl
@@ -228,9 +228,9 @@ static char
     "Circle", "FillCircle", "Ellipse", "FillEllipse", "Polygon",
     "FillPolygon", "Color", "Matte", "Text", "Image", (char *) NULL
   },
-  *UnitTypes[] =
+  *ResolutionTypes[] =
   {
-    "undefined units", "pixels / inch", "pixels / centimeter", (char *) NULL
+    "Undefined", "PixelsPerInch", "PixelsPerCentimeter", (char *) NULL
   };
 
 /*
@@ -1612,6 +1612,22 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           if (info)
             CopyString(&info->image_info.undercolor,SvPV(sval,na));
+          return;
+        }
+      if (strEQcase(attribute,"unit"))
+        {
+          sp=SvPOK(sval) ? LookupStr(ResolutionTypes,SvPV(sval,na)) :
+            SvIV(sval);
+          if (sp < 0)
+            {
+              MagickWarning(OptionWarning,"Invalid resolution unit",
+                SvPV(sval,na));
+              return;
+            }
+          if (info)
+            info->image_info.units=(ResolutionType) sp;
+          for ( ; image; image=image->next)
+            image->units=(ResolutionType) sp;
           return;
         }
       break;
@@ -3242,14 +3258,17 @@ Get(ref,...)
             }
           if (strEQcase(attribute,"units"))
             {
-              if (!image)
-                break;
-              s=newSViv(image->units);
-             if ((image->units >= 0) && (image->units < NumberOf(UnitTypes)-1))
-               {
-                 sv_setpv(s,UnitTypes[image->units]);
-                 SvIOK_on(s);
-               }
+              j=info ? info->image_info.units : image->units;
+              if (info)
+                if (info->image_info.units == UndefinedResolution)
+                  j=image->units;
+              if (j == UndefinedResolution)
+                s=newSVpv("undefined units",0);
+              else
+                if (j == PixelsPerInchResolution)
+                  s=newSVpv("pixels / inch",0);
+                else
+                  s=newSVpv("pixels / centimeter",0);
               break;
             }
           break;
@@ -3639,7 +3658,7 @@ Mogrify(ref,...)
             else
               if (!SvPOK(sv))  /* not a string; just get number */
                 al->int_reference=SvIV(sv);
-              else 
+              else
                 {
                   /*
                     Is a string; look up name.
@@ -3777,7 +3796,7 @@ Mogrify(ref,...)
         }
         case 59:  /* Trim */
         {
-          ++attribute_flag[0];
+          attribute_flag[0]++;
           argument_list[0].string_reference="0x0";
         }
         case 8:  /* Crop */
@@ -4045,7 +4064,8 @@ Mogrify(ref,...)
                 CopyString(&package_info->image_info.font,
                   argument_list[1].string_reference);
               if (attribute_flag[2])
-               package_info->image_info.pointsize=argument_list[2].int_reference;
+               package_info->image_info.pointsize=
+                 argument_list[2].int_reference;
               if (attribute_flag[3])
                 CopyString(&package_info->image_info.density,
                   argument_list[3].string_reference);
@@ -4224,14 +4244,14 @@ Mogrify(ref,...)
         }
         case 36:  /* Contrast */
         {
-          if (attribute_flag[0])
+          if (!attribute_flag[0])
             argument_list[0].int_reference=1;
           ContrastImage(image,argument_list[0].int_reference);
           break;
         }
         case 37:  /* CycleColormap */
         {
-          if (attribute_flag[0])
+          if (!attribute_flag[0])
             argument_list[0].int_reference=6;
           CycleColormapImage(image,argument_list[0].int_reference);
           break;
@@ -4581,8 +4601,8 @@ Mogrify(ref,...)
             amplitude,
             wavelength;
 
-          amplitude=10.0;
-          wavelength=10.0;
+          amplitude=25.0;
+          wavelength=150.0;
           if (attribute_flag[1])
             amplitude=argument_list[1].double_reference;
           if (attribute_flag[2])
@@ -4647,7 +4667,7 @@ Mogrify(ref,...)
       }
     if (image)
       {
-        ++number_images;
+        number_images++;
         if (next && (next != image))
           {
             image->next=next->next;

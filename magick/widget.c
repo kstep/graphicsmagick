@@ -2262,11 +2262,15 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
         if (!action_info.raised)
           {
             if (event.xbutton.window == windows->widget.id)
-              if (MatteIsActive(action_info,event.xbutton))
-                if (*reply_info.text == '\0')
-                  XBell(display,0);
-                else
-                  state|=ExitState;
+              {
+                if (MatteIsActive(action_info,event.xbutton))
+                  {
+                    if (*reply_info.text == '\0')
+                      XBell(display,0);
+                    else
+                      state|=ExitState;
+                  }
+              }
             action_info.raised=True;
             XDrawBeveledButton(display,&windows->widget,&action_info);
           }
@@ -4882,11 +4886,15 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
         if (!action_info.raised)
           {
             if (event.xbutton.window == windows->widget.id)
-              if (MatteIsActive(action_info,event.xbutton))
-                if (*reply_info.text == '\0')
-                  XBell(display,0);
-                else
-                  state|=ExitState;
+              {
+                if (MatteIsActive(action_info,event.xbutton))
+                  {
+                    if (*reply_info.text == '\0')
+                      XBell(display,0);
+                    else
+                      state|=ExitState;
+                  }
+              }
             action_info.raised=True;
             XDrawBeveledButton(display,&windows->widget,&action_info);
           }
@@ -6077,11 +6085,15 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
         if (!action_info.raised)
           {
             if (event.xbutton.window == windows->widget.id)
-              if (MatteIsActive(action_info,event.xbutton))
-                if (*reply_info.text == '\0')
-                  XBell(display,0);
-                else
-                  state|=ExitState;
+              {
+                if (MatteIsActive(action_info,event.xbutton))
+                  {
+                    if (*reply_info.text == '\0')
+                      XBell(display,0);
+                    else
+                      state|=ExitState;
+                  }
+              }
             action_info.raised=True;
             XDrawBeveledButton(display,&windows->widget,&action_info);
           }
@@ -7083,11 +7095,15 @@ Export void XListBrowserWidget(Display *display,XWindows *windows,
         if (!action_info.raised)
           {
             if (event.xbutton.window == window_info->id)
-              if (MatteIsActive(action_info,event.xbutton))
-                if (*reply_info.text == '\0')
-                  XBell(display,0);
-                else
-                  state|=ExitState;
+              {
+                if (MatteIsActive(action_info,event.xbutton))
+                  {
+                    if (*reply_info.text == '\0')
+                      XBell(display,0);
+                    else
+                      state|=ExitState;
+                  }
+              }
             action_info.raised=True;
             XDrawBeveledButton(display,window_info,&action_info);
           }
@@ -7788,24 +7804,26 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
         while (XCheckMaskEvent(display,ButtonMotionMask,&event));
         if (submenu_info.active)
           if (event.xmotion.window == windows->command.id)
-            if (!(state & InactiveWidgetState))
-              {
-                if (!MatteIsActive(submenu_info,event.xmotion))
+            {
+              if (!(state & InactiveWidgetState))
+                {
+                  if (!MatteIsActive(submenu_info,event.xmotion))
+                    {
+                      selection_info.id=(~0);
+                        *item='\0';
+                      state|=ExitState;
+                      break;
+                    }
+                }
+              else
+                if (WindowIsActive(windows->command,event.xmotion))
                   {
                     selection_info.id=(~0);
                     *item='\0';
                     state|=ExitState;
                     break;
                   }
-              }
-            else
-              if (WindowIsActive(windows->command,event.xmotion))
-                {
-                  selection_info.id=(~0);
-                  *item='\0';
-                  state|=ExitState;
-                  break;
-                }
+            }
         if (event.xmotion.window != windows->widget.id)
           break;
         if (state & InactiveWidgetState)

@@ -299,6 +299,9 @@ int main(int argc,char **argv)
   Display
     *display;
 
+  double
+    sans;
+
   Image
     *image,
     *next_image;
@@ -693,7 +696,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing factor",option);
                 }
               break;
@@ -800,7 +803,7 @@ int main(int argc,char **argv)
           if (strncmp("gamma",option+1,2) == 0)
             {
               i++;
-              if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+              if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                 MagickError(OptionError,"Missing value",option);
               break;
             }
@@ -1072,7 +1075,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing threshold",option);
                 }
               break;
@@ -1082,7 +1085,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing factor",option);
                 }
               break;
@@ -1298,13 +1301,15 @@ int main(int argc,char **argv)
           image_info->dither=quantize_info->dither;
           image=ReadImage(image_info);
           if (image == (Image *) NULL)
-            if ((i < (argc-1)) || (scene < last_scene))
-              continue;
-            else
-              {
-                state|=ExitState;
-                break;
-              }
+            {
+              if ((i < (argc-1)) || (scene < last_scene))
+                continue;
+              else
+                {
+                  state|=ExitState;
+                  break;
+                }
+            }
           do
           {
             /*
@@ -1442,7 +1447,7 @@ int main(int argc,char **argv)
       XRetainWindowColors(display,XRootWindow(display,XDefaultScreen(display)));
       XSync(display,False);
     }
-  DestroyDelegateInfo;
+  DestroyDelegateInfo();
   Exit(0);
   return(False);
 }

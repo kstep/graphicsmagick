@@ -424,7 +424,7 @@ static unsigned int Assignment(CubeInfo *cube_info,QuantizeInfo *quantize_info,
       cube_info->color.red=p->red;
       cube_info->color.green=p->green;
       cube_info->color.blue=p->blue;
-      cube_info->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
+      cube_info->distance=9.0*(MaxRGB+1)*(MaxRGB+1);
       ClosestColor(cube_info,node_info->parent);
       index=cube_info->color_number;
       if (image->class == PseudoClass)
@@ -513,7 +513,9 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
     mid_blue;
 
   int
-    distance,
+    distance;
+
+  long
     mean;
 
   register int
@@ -538,7 +540,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
 
   squares=cube_info->squares;
   cube_info->root->quantization_error=
-    3.0*(MaxRGB/2.0)*(MaxRGB/2.0)*image->columns*image->rows;
+    9.0*(MaxRGB/2.0)*(MaxRGB/2.0)*image->columns*image->rows;
   if (image->packets == (image->columns*image->rows))
     CondenseImage(image);
   p=image->pixels;
@@ -593,13 +595,13 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
           /*
             Approximate the quantization error represented by this node.
           */
-          mean=(unsigned int) (DownScale(p->red)+mid_red) >> 1;
-          distance=(int) DownScale(p->red)-mid_red;
-          distance_squared=(((2*(MaxRGB+1))+mean)*squares[distance]) >> 8;
-          distance=(int) DownScale(p->green)-mid_green;
-          distance_squared+=4*squares[distance];
-          distance=(int) DownScale(p->blue)-mid_blue;
-          distance_squared+=(((3*(MaxRGB+1)-1)-mean)*squares[distance]) >> 8;
+          mean=(DownScale(p->red)+mid_red)/2;
+          distance=DownScale(p->red)-mid_red;
+          distance_squared=(2.0*256.0+mean)*squares[distance]/256.0;
+          distance=DownScale(p->green)-mid_green;
+          distance_squared+=4.0*squares[distance];
+          distance=DownScale(p->blue)-mid_blue;
+          distance_squared+=(3.0*256.0-1.0-mean)*squares[distance]/256.0;
           node_info->quantization_error+=distance_squared*(p->length+1);
         }
       index--;
@@ -659,15 +661,17 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
         ClosestColor(cube_info,node_info->child[id]);
   if (node_info->number_unique != 0)
     {
+      register ColorPacket
+        *color;
+
       register double
         distance_squared;
 
       register int
-        distance,
-        mean;
+        distance;
 
-      register ColorPacket
-        *color;
+      register long
+        mean;
 
       register unsigned int
         *squares;
@@ -677,15 +681,13 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
       */
       squares=cube_info->squares;
       color=cube_info->colormap+node_info->color_number;
-      mean=(unsigned int) (color->red+cube_info->color.red) >> 1;
-      distance=(int) color->red-(int) cube_info->color.red;
-      distance_squared=
-        (((2*(MaxRGB+1))+mean)*squares[distance]) >> QuantumDepth;
-      distance=(int) color->green-(int) cube_info->color.green;
-      distance_squared+=4*squares[distance];
-      distance=(int) color->blue-(int) cube_info->color.blue;
-      distance_squared+=
-        (((3*(MaxRGB+1)-1)-mean)*squares[distance]) >> QuantumDepth;
+      mean=(color->red+cube_info->color.red)/2;
+      distance=color->red-(int) cube_info->color.red;
+      distance_squared=(2.0*(MaxRGB+1)+mean)*squares[distance]/(MaxRGB+1);
+      distance=color->green-(int) cube_info->color.green;
+      distance_squared+=4.0*squares[distance];
+      distance=color->blue-(int) cube_info->color.blue;
+      distance_squared+=(3.0*(MaxRGB+1)-1.0-mean)*squares[distance]/(MaxRGB+1);
       if (distance_squared < cube_info->distance)
         {
           cube_info->distance=distance_squared;
@@ -905,7 +907,7 @@ static void Dither(CubeInfo *cube_info,Image *image,unsigned int direction)
           p->color.red=red;
           p->color.green=green;
           p->color.blue=blue;
-          p->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
+          p->distance=9.0*(MaxRGB+1)*(MaxRGB+1);
           ClosestColor(p,node_info->parent);
           p->cache[i]=p->color_number;
         }
@@ -984,8 +986,19 @@ static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
   if (!UncondenseImage(image))
     return(True);
   /*
+    Initialize error queue.
+  */
+  for (i=0; i < ErrorQueueLength; i++)
+  {
+    cube_info->error[i].red=0;
+    cube_info->error[i].green=0;
+    cube_info->error[i].blue=0;
+  }
+  /*
     Distribute quantization error along a Hilbert curve.
   */
+  cube_info->x=0;
+  cube_info->y=0;
   i=image->columns > image->rows ? image->columns : image->rows;
   for (depth=1; i != 0; depth++)
     i>>=1;
@@ -1074,8 +1087,6 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,unsigned int dither,
   /*
     Initialize dither resources.
   */
-  cube_info->x=0;
-  cube_info->y=0;
   cube_info->cache=(int *) AllocateMemory((1 << 18)*sizeof(int));
   cube_info->range_limit=(Quantum *)
     AllocateMemory(3*(MaxRGB+1)*sizeof(Quantum));
@@ -1101,15 +1112,6 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,unsigned int dither,
   */
   for (i=0; i < (1 << 18); i++)
     cube_info->cache[i]=(-1);
-  /*
-    Initialize error queue.
-  */
-  for (i=0; i < ErrorQueueLength; i++)
-  {
-    cube_info->error[i].red=0;
-    cube_info->error[i].green=0;
-    cube_info->error[i].blue=0;
-  }
   /*
     Distribute weights along a curve of exponential decay.
   */
@@ -1939,11 +1941,11 @@ unsigned int QuantizationError(Image *image)
   p=image->pixels;
   for (i=0; i < image->packets; i++)
   {
-    distance=(int) p->red-(int) image->colormap[p->index].red;
+    distance=p->red-(int) image->colormap[p->index].red;
     distance_squared=cube_info.squares[distance];
-    distance=(int) p->green-(int) image->colormap[p->index].green;
+    distance=p->green-(int) image->colormap[p->index].green;
     distance_squared+=cube_info.squares[distance];
-    distance=(int) p->blue-(int) image->colormap[p->index].blue;
+    distance=p->blue-(int) image->colormap[p->index].blue;
     distance_squared+=cube_info.squares[distance];
     total_error+=(distance_squared*(p->length+1));
     if (distance_squared > maximum_error_per_pixel)

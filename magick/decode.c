@@ -1118,9 +1118,9 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadDCMImage reads a DICOM Medical image file and returns it.  It
-%  It allocates the memory necessary for the new Image structure and returns
-%  a pointer to the new image.
+%  Method ReadDCMImage reads a Digital Imaging and Communications in Medicine
+%  (DICOM) file and returns it.  It It allocates the memory necessary for the
+%  new Image structure and returns a pointer to the new image.
 %
 %  The format of the ReadDCMImage routine is:
 %
@@ -1254,7 +1254,7 @@ Image *ReadDCMImage(const ImageInfo *image_info)
     (void) strcpy(implicit_vr,dicom_info[i].vr);
     ReadData((char *) explicit_vr,1,2,image->file);
     if (strcmp(implicit_vr,"xs") == 0)
-      if (isupper(*explicit_vr) && isupper(*(explicit_vr+1)))
+      if (isupper((int) *explicit_vr) && isupper((int) *(explicit_vr+1)))
         (void) strcpy(implicit_vr,explicit_vr);
     if (strcmp(implicit_vr,explicit_vr) == 0)
       {
@@ -1288,54 +1288,56 @@ Image *ReadDCMImage(const ImageInfo *image_info)
     quantum=0;
     length=1;
     if (datum != 0)
-      if ((strcmp(implicit_vr,"SS") == 0) ||
-          (strcmp(implicit_vr,"US") == 0))
-        switch (datum)
-        {
-          case 2:
-          default:
+      {
+        if ((strcmp(implicit_vr,"SS") == 0) ||
+            (strcmp(implicit_vr,"US") == 0))
+          switch (datum)
           {
-            quantum=2;
-            datum=datum/2;
-            length=datum;
-            break;
+            case 2:
+            default:
+            {
+              quantum=2;
+              datum=datum/2;
+              length=datum;
+              break;
+            }
+            case 4:
+            {
+              quantum=4;
+              break;
+            }
+            case 8:
+            {
+              quantum=2;
+              length=4;
+              break;
+            }
           }
-          case 4:
-          {
-            quantum=4;
-            break;
-          }
-          case 8:
-          {
-            quantum=2;
-            length=4;
-            break;
-          }
-        }
-      else
-        if ((strcmp(implicit_vr,"UL") == 0) ||
-            (strcmp(implicit_vr,"SL") == 0) ||
-            (strcmp(implicit_vr,"FL") == 0))
-          quantum=4;
         else
-          if (strcmp(implicit_vr,"FD") == 0)
+          if ((strcmp(implicit_vr,"UL") == 0) ||
+              (strcmp(implicit_vr,"SL") == 0) ||
+              (strcmp(implicit_vr,"FL") == 0))
             quantum=4;
           else
-            if (strcmp(implicit_vr,"xs") != 0)
-              {
-                quantum=1;
-                length=datum;
-              }
+            if (strcmp(implicit_vr,"FD") == 0)
+              quantum=4;
             else
-              if ((strcmp(explicit_vr,"SS") == 0) ||
-                  (strcmp(explicit_vr,"US") == 0))
-                quantum=2;
-              else
+              if (strcmp(implicit_vr,"xs") != 0)
                 {
-                  quantum=2;
-                  datum=datum/2;
+                  quantum=1;
                   length=datum;
                 }
+              else
+                if ((strcmp(explicit_vr,"SS") == 0) ||
+                    (strcmp(explicit_vr,"US") == 0))
+                  quantum=2;
+                else
+                  {
+                    quantum=2;
+                    datum=datum/2;
+                    length=datum;
+                  }
+      }
     if (image_info->verbose)
       {
         /*
@@ -1521,31 +1523,33 @@ Image *ReadDCMImage(const ImageInfo *image_info)
         break;
     }
     if (image_info->verbose)
-      if (data == (unsigned char *) NULL)
-        (void) fprintf(stdout,"%d\n",datum);
-      else
-        {
-          /*
-            Display group data.
-          */
-          for (i=0; i < Max(length,4); i++)
-            if (!isprint(data[i]))
-              break;
-          if ((i != length) && (length <= 4))
-            {
-              datum=0;
-              for (i=length-1; i >= 0; i--)
-                datum=256*datum+data[i];
-                (void) fprintf(stdout,"%lu",datum);
-            }
-          else
-            for (i=0; i < length; i++)
-              if (isprint(data[i]))
-                (void) fprintf(stdout,"%c",(char) data[i]);
-              else
-                (void) fprintf(stdout,"%c",'.');
-          (void) fprintf(stdout,"\n");
-        }
+      {
+        if (data == (unsigned char *) NULL)
+          (void) fprintf(stdout,"%ld\n",datum);
+        else
+          {
+            /*
+              Display group data.
+            */
+            for (i=0; i < Max(length,4); i++)
+              if (!isprint(data[i]))
+                break;
+            if ((i != length) && (length <= 4))
+              {
+                datum=0;
+                for (i=length-1; i >= 0; i--)
+                  datum=256*datum+data[i];
+                  (void) fprintf(stdout,"%lu",datum);
+              }
+            else
+              for (i=0; i < length; i++)
+                if (isprint(data[i]))
+                  (void) fprintf(stdout,"%c",(char) data[i]);
+                else
+                  (void) fprintf(stdout,"%c",'.');
+            (void) fprintf(stdout,"\n");
+          }
+      }
     FreeMemory(data);
   }
   if ((width == 0) || (height == 0))
@@ -3355,27 +3359,29 @@ Image *ReadGIFImage(const ImageInfo *image_info)
         break;
       }
     if (image_info->subrange != 0)
-      if (image->scene < image_info->subimage)
-        {
-          Image
-            subimage;
+      {
+        if (image->scene < image_info->subimage)
+          {
+            Image
+              subimage;
 
-          /*
-            Destroy image.
-          */
-          subimage=(*image);
-          image->file=(FILE *) NULL;
-          DestroyImage(image);
-          image=AllocateImage(image_info);
-          if (image == (Image *) NULL)
-            return((Image *) NULL);
-          image->file=subimage.file;
-          image->scene=subimage.scene+1;
-          image_count=0;
-        }
-      else
-        if (image->scene >= (image_info->subimage+image_info->subrange-1))
-          break;
+            /*
+              Destroy image.
+            */
+            subimage=(*image);
+            image->file=(FILE *) NULL;
+            DestroyImage(image);
+            image=AllocateImage(image_info);
+            if (image == (Image *) NULL)
+              return((Image *) NULL);
+            image->file=subimage.file;
+            image->scene=subimage.scene+1;
+            image_count=0;
+          }
+        else
+          if (image->scene >= (image_info->subimage+image_info->subrange-1))
+            break;
+      }
   }
   if (global_colormap != (unsigned char *) NULL)
     FreeMemory((char *) global_colormap);
@@ -4574,7 +4580,7 @@ Image *ReadIPTCImage(const ImageInfo *image_info)
   */
   length=MaxTextExtent;
   image->iptc_profile.info=(unsigned char *)
-    AllocateMemory(length*sizeof(unsigned char));
+    AllocateMemory((length+2)*sizeof(unsigned char));
   for (q=image->iptc_profile.info; ; q++)
   {
     c=fgetc(image->file);
@@ -4585,7 +4591,7 @@ Image *ReadIPTCImage(const ImageInfo *image_info)
         image->iptc_profile.length=q-image->iptc_profile.info;
         length<<=1;
         image->iptc_profile.info=(unsigned char *) ReallocateMemory((char *)
-          image->iptc_profile.info,length*sizeof(unsigned char));
+          image->iptc_profile.info,(length+2)*sizeof(unsigned char));
         if (image->iptc_profile.info == (unsigned char *) NULL)
           break;
         q=image->iptc_profile.info+image->iptc_profile.length;
@@ -5491,9 +5497,6 @@ Image *ReadLABELImage(const ImageInfo *image_info)
   RunlengthPacket
     corner;
 
-  static char
-    *default_font = DefaultFont;
-
   XColor
     pen_color;
 
@@ -5508,7 +5511,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
   */
   local_info=(*image_info);
   if (local_info.font == (char *) NULL)
-    local_info.font=default_font;
+    local_info.font=DefaultXFont;
   text=local_info.filename;
   (void) XQueryColorDatabase("black",&pen_color);
   if (local_info.pen != (char *) NULL)
@@ -5585,7 +5588,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
           MagickWarning(DelegateWarning,"Unable to open TTF font",
             local_info.font+1);
           DestroyImage(image);
-          local_info.font=default_font;
+          local_info.font=DefaultXFont;
           image=ReadLABELImage(&local_info);
           return(image);
         }
@@ -5851,7 +5854,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
           MagickWarning(XServerWarning,"Unable to open X server",
             local_info.server_name);
           DestroyImage(image);
-          local_info.font=default_font;
+          local_info.font=DefaultPSFont;
           image=ReadLABELImage(&local_info);
           return(image);
         }
@@ -6392,51 +6395,63 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
                 image->border_color.index=0;
               }
             if (Latin1Compare(keyword,"class") == 0)
-              if (Latin1Compare(value,"PseudoClass") == 0)
-                image->class=PseudoClass;
-              else
-                if (Latin1Compare(value,"DirectClass") == 0)
-                  image->class=DirectClass;
+              {
+                if (Latin1Compare(value,"PseudoClass") == 0)
+                  image->class=PseudoClass;
                 else
-                  image->class=UndefinedClass;
+                  if (Latin1Compare(value,"DirectClass") == 0)
+                    image->class=DirectClass;
+                  else
+                    image->class=UndefinedClass;
+              }
             if (Latin1Compare(keyword,"colors") == 0)
               image->colors=(unsigned int) atoi(value);
             if (Latin1Compare(keyword,"color-profile") == 0)
               image->color_profile.length=(unsigned int) atoi(value);
             if (Latin1Compare(keyword,"compression") == 0)
-              if (Latin1Compare(value,"Zip") == 0)
-                image->compression=ZipCompression;
-              else
-                if (Latin1Compare(value,"BZip") == 0)
-                  image->compression=BZipCompression;
+              {
+                if (Latin1Compare(value,"Zip") == 0)
+                  image->compression=ZipCompression;
                 else
-                  if (Latin1Compare(value,"RunlengthEncoded") == 0)
-                    image->compression=RunlengthEncodedCompression;
+                  if (Latin1Compare(value,"BZip") == 0)
+                    image->compression=BZipCompression;
                   else
-                    image->compression=UndefinedCompression;
+                    if (Latin1Compare(value,"RunlengthEncoded") == 0)
+                      image->compression=RunlengthEncodedCompression;
+                    else
+                      image->compression=UndefinedCompression;
+              }
             if (Latin1Compare(keyword,"columns") == 0)
               image->columns=(unsigned int) atoi(value);
             if (Latin1Compare(keyword,"delay") == 0)
-              if (image_info->delay == (char *) NULL)
-                image->delay=atoi(value);
+              {
+                if (image_info->delay == (char *) NULL)
+                  image->delay=atoi(value);
+              }
             if (Latin1Compare(keyword,"depth") == 0)
               image->depth=atoi(value) <= 8 ? 8 : 16;
             if (Latin1Compare(keyword,"dispose") == 0)
+              {
               if (image_info->dispose == (char *) NULL)
                 image->dispose=atoi(value);
+              }
             if (Latin1Compare(keyword,"gamma") == 0)
               image->gamma=atof(value);
             if (Latin1Compare(keyword,"green-primary") == 0)
               (void) sscanf(value,"%f,%f",&image->chromaticity.green_primary.x,
                 &image->chromaticity.green_primary.y);
             if (Latin1Compare(keyword,"id") == 0)
-              if (Latin1Compare(value,"ImageMagick") == 0)
-                image->id=ImageMagickId;
-              else
-                image->id=UndefinedId;
+              {
+                if (Latin1Compare(value,"ImageMagick") == 0)
+                  image->id=ImageMagickId;
+                else
+                  image->id=UndefinedId;
+              }
             if (Latin1Compare(keyword,"iterations") == 0)
-              if (image_info->iterations == (char *) NULL)
-                image->iterations=atoi(value);
+              {
+                if (image_info->iterations == (char *) NULL)
+                  image->iterations=atoi(value);
+              }
             if (Latin1Compare(keyword,"label") == 0)
               {
                 image->label=(char *)
@@ -6448,11 +6463,13 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
               }
             if ((Latin1Compare(keyword,"matte") == 0) ||
                 (Latin1Compare(keyword,"alpha") == 0))
-              if ((Latin1Compare(value,"True") == 0) ||
-                  (Latin1Compare(value,"true") == 0))
-                image->matte=True;
-              else
-                image->matte=False;
+              {
+                if ((Latin1Compare(value,"True") == 0) ||
+                    (Latin1Compare(value,"true") == 0))
+                  image->matte=True;
+                else
+                  image->matte=False;
+              }
             if (Latin1Compare(keyword,"matte-color") == 0)
               {
                 (void) XQueryColorDatabase(value,&color);
@@ -6471,27 +6488,31 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
                 (void) strcpy(image->montage,value);
               }
             if (Latin1Compare(keyword,"page") == 0)
-              if (image_info->page == (char *) NULL)
-                image->page=PostscriptGeometry(value);
+              {
+                if (image_info->page == (char *) NULL)
+                  image->page=PostscriptGeometry(value);
+              }
             if (Latin1Compare(keyword,"packets") == 0)
               image->packets=(unsigned int) atoi(value);
             if (Latin1Compare(keyword,"red-primary") == 0)
               (void) sscanf(value,"%f,%f",&image->chromaticity.red_primary.x,
                 &image->chromaticity.red_primary.y);
             if (Latin1Compare(keyword,"rendering-intent") == 0)
-              if (Latin1Compare(value,"saturation") == 0)
-                image->rendering_intent=SaturationIntent;
-              else
-                if (Latin1Compare(value,"perceptual") == 0)
-                  image->rendering_intent=PerceptualIntent;
+              {
+                if (Latin1Compare(value,"saturation") == 0)
+                  image->rendering_intent=SaturationIntent;
                 else
-                  if (Latin1Compare(value,"absolute") == 0)
-                    image->rendering_intent=AbsoluteIntent;
+                  if (Latin1Compare(value,"perceptual") == 0)
+                    image->rendering_intent=PerceptualIntent;
                   else
-                    if (Latin1Compare(value,"relative") == 0)
-                      image->rendering_intent=RelativeIntent;
+                    if (Latin1Compare(value,"absolute") == 0)
+                      image->rendering_intent=AbsoluteIntent;
                     else
-                      image->rendering_intent=UndefinedIntent;
+                      if (Latin1Compare(value,"relative") == 0)
+                        image->rendering_intent=RelativeIntent;
+                      else
+                        image->rendering_intent=UndefinedIntent;
+              }
             if (Latin1Compare(keyword,"resolution") == 0)
               (void) sscanf(value,"%lfx%lf",&image->x_resolution,
                 &image->y_resolution);
@@ -6509,14 +6530,16 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
                 (void) strcpy(image->signature,value);
               }
             if (Latin1Compare(keyword,"units") == 0)
-              if (Latin1Compare(value,"undefined") == 0)
-                image->units=UndefinedResolution;
-              else
-                if (Latin1Compare(value,"pixels-per-inch") == 0)
-                  image->units=PixelsPerInchResolution;
+              {
+                if (Latin1Compare(value,"undefined") == 0)
+                  image->units=UndefinedResolution;
                 else
-                  if (Latin1Compare(value,"pixels-per-centimeter") == 0)
-                    image->units=PixelsPerCentimeterResolution;
+                  if (Latin1Compare(value,"pixels-per-inch") == 0)
+                    image->units=PixelsPerInchResolution;
+                  else
+                    if (Latin1Compare(value,"pixels-per-centimeter") == 0)
+                      image->units=PixelsPerCentimeterResolution;
+              }
             if (Latin1Compare(keyword,"white-point") == 0)
               (void) sscanf(value,"%f,%f",&image->chromaticity.white_point.x,
                 &image->chromaticity.white_point.y);
@@ -9917,7 +9940,7 @@ Image *ReadPNGImage(const ImageInfo *image_info)
 
 static unsigned int PNMInteger(Image *image,const unsigned int base)
 {
-#define P7Comment  "END_OF_COMMENT"
+#define P7Comment  "END_OF_COMMENTS"
 
   int
     c;
@@ -10109,16 +10132,17 @@ Image *ReadPNMImage(const ImageInfo *image_info)
           AllocateMemory(image->colors*sizeof(ColorPacket));
         if (image->colormap == (ColorPacket *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-        for (i=0; i < image->colors; i++)
-        {
-          image->colormap[i].red=(Quantum)
-            ((long) (MaxRGB*i)/(image->colors-1));
-          image->colormap[i].green=(Quantum)
-            ((long) (MaxRGB*i)/(image->colors-1));
-          image->colormap[i].blue=(Quantum)
-            ((long) (MaxRGB*i)/(image->colors-1));
-        }
-        if (format == '7')
+        if (format != '7')
+          for (i=0; i < image->colors; i++)
+          {
+            image->colormap[i].red=(Quantum)
+              ((long) (MaxRGB*i)/(image->colors-1));
+            image->colormap[i].green=(Quantum)
+              ((long) (MaxRGB*i)/(image->colors-1));
+            image->colormap[i].blue=(Quantum)
+              ((long) (MaxRGB*i)/(image->colors-1));
+          }
+        else
           {
             /*
               Initialize 332 colormap.
@@ -10135,17 +10159,19 @@ Image *ReadPNMImage(const ImageInfo *image_info)
                 }
           }
       }
-    if (max_value != MaxRGB)
-      {
-        /*
-          Compute pixel scaling table.
-        */
-        scale=(Quantum *) AllocateMemory((max_value+1)*sizeof(Quantum));
-        if (scale == (Quantum *) NULL)
-          PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-        for (i=0; i <= max_value; i++)
-          scale[i]=(Quantum) ((i*MaxRGB+(max_value >> 1))/max_value);
-      }
+    else
+      if (max_value != MaxRGB)
+        {
+          /*
+            Compute pixel scaling table.
+          */
+          scale=(Quantum *) AllocateMemory((max_value+1)*sizeof(Quantum));
+          if (scale == (Quantum *) NULL)
+            PrematureExit(ResourceLimitWarning,"Memory allocation failed",
+              image);
+          for (i=0; i <= max_value; i++)
+            scale[i]=(Quantum) ((i*MaxRGB+(max_value >> 1))/max_value);
+        }
     /*
       Convert PNM pixels to runlength-encoded MIFF packets.
     */
@@ -10200,8 +10226,6 @@ Image *ReadPNMImage(const ImageInfo *image_info)
           for (x=0; x < image->columns; x++)
           {
             index=PNMInteger(image,10);
-            if (scale != (Quantum *) NULL)
-              index=scale[index];
             if ((index == q->index) && ((int) q->length < MaxRunlength))
               q->length++;
             else
@@ -13584,22 +13608,24 @@ Image *ReadTGAImage(const ImageInfo *image_info)
         if ((tga_header.image_type == TGARLEColormap) ||
             (tga_header.image_type == TGARLERGB) ||
             (tga_header.image_type == TGARLEMonochrome))
-          if (runlength != 0)
-            {
-              runlength--;
-              skip=flag != 0;
-            }
-          else
-            {
-              status=ReadData((char *) &runlength,1,1,image->file);
-              if (status == False)
-                PrematureExit(CorruptImageWarning,"Unable to read image data",
-                  image);
-              flag=runlength & 0x80;
-              if (flag != 0)
-                runlength-=128;
-              skip=False;
-            }
+          {
+            if (runlength != 0)
+              {
+                runlength--;
+                skip=flag != 0;
+              }
+            else
+              {
+                status=ReadData((char *) &runlength,1,1,image->file);
+                if (status == False)
+                  PrematureExit(CorruptImageWarning,"Unable to read image data",
+                    image);
+                flag=runlength & 0x80;
+                if (flag != 0)
+                  runlength-=128;
+                skip=False;
+              }
+          }
         if (!skip)
           switch (tga_header.bits_per_pixel)
           {
@@ -17745,26 +17771,6 @@ Export Image *ReadImage(ImageInfo *image_info)
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->filename != (char *) NULL);
   SetImageInfo(image_info,False);
-  if (GetDelegateInfo(image_info->magick,(char *) NULL,&delegate_info))
-    {
-      unsigned int
-        status;
-
-      /*
-        Let our decoding delegate process the image.
-      */
-      image=AllocateImage(image_info);
-      if (image == (Image *) NULL)
-        return((Image *) NULL);
-      (void) strcpy(filename,image_info->filename);
-      (void) strcpy(image->filename,image_info->filename);
-      TemporaryFilename(image_info->filename);
-      status=InvokeDelegate(image_info,image,image_info->magick,(char *) NULL);
-      DestroyImages(image);
-      if (status == False)
-        image_info->temporary=True;
-      SetImageInfo(image_info,False);
-    }
   /*
     Call appropriate image reader based on image type.
   */
@@ -17774,8 +17780,37 @@ Export Image *ReadImage(ImageInfo *image_info)
       (magick_info->decoder != (Image *(*)(const ImageInfo *)) NULL))
     image=(magick_info->decoder)(image_info);
   else
-    MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-      image_info->magick);
+    if (!GetDelegateInfo(image_info->magick,(char *) NULL,&delegate_info))
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
+    else
+      {
+        unsigned int
+          status;
+
+        /*
+          Let our decoding delegate process the image.
+        */
+        image=AllocateImage(image_info);
+        if (image == (Image *) NULL)
+          return((Image *) NULL);
+        (void) strcpy(filename,image_info->filename);
+        (void) strcpy(image->filename,image_info->filename);
+        TemporaryFilename(image_info->filename);
+        status=
+          InvokeDelegate(image_info,image,image_info->magick,(char *) NULL);
+        DestroyImages(image);
+        if (status == False)
+          image_info->temporary=True;
+        SetImageInfo(image_info,False);
+        magick_info=(MagickInfo *) GetMagickInfo(image_info->magick);
+        if ((magick_info != (MagickInfo *) NULL) &&
+            (magick_info->decoder != (Image *(*)(const ImageInfo *)) NULL))
+          image=(magick_info->decoder)(image_info);
+        else
+          MagickWarning(MissingDelegateWarning,
+            "no delegate for this image format",image_info->magick);
+      }
   if (image_info->temporary)
     {
       (void) remove(image_info->filename);

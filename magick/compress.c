@@ -1358,14 +1358,16 @@ Export unsigned int HuffmanDecodeImage(Image *image)
           if ((x+count) > image->columns)
             count=image->columns-x;
           if (count > 0)
-            if (color)
-              {
-                x+=count;
-                count=0;
-              }
-            else
-              for ( ; count > 0; count--)
-                scanline[x++]=1;
+            {
+              if (color)
+                {
+                  x+=count;
+                  count=0;
+                }
+              else
+                for ( ; count > 0; count--)
+                  scanline[x++]=1;
+            }
           color=!color;
           break;
         }
@@ -1637,10 +1639,12 @@ Export unsigned int HuffmanEncodeImage(ImageInfo *image_info,Image *image)
     Flush bits.
   */
   if (bit != 0x80)
-    if (Latin1Compare(image_info->magick,"FAX") == 0)
-      (void) fputc((char) byte,image->file);
-    else
-      Ascii85Encode((unsigned int) byte,image->file);
+    {
+      if (Latin1Compare(image_info->magick,"FAX") == 0)
+        (void) fputc((char) byte,image->file);
+      else
+        Ascii85Encode((unsigned int) byte,image->file);
+    }
   if (Latin1Compare(image_info->magick,"FAX") != 0)
     Ascii85Flush(image->file);
   FreeMemory((char *) scanline);
