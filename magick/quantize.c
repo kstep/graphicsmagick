@@ -452,12 +452,12 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
 
           polarity=PixelIntensityToQuantum(&image->colormap[0]) <
             PixelIntensityToQuantum(&image->colormap[1]);
-          image->colormap[polarity].red=0;
-          image->colormap[polarity].green=0;
-          image->colormap[polarity].blue=0;
-          image->colormap[!polarity].red=MaxRGB;
-          image->colormap[!polarity].green=MaxRGB;
-          image->colormap[!polarity].blue=MaxRGB;
+          image->colormap[polarity ? 0 : 1].red=0;
+          image->colormap[polarity ? 0 : 1].green=0;
+          image->colormap[polarity ? 0 : 1].blue=0;
+          image->colormap[polarity ? 1 : 0].red=MaxRGB;
+          image->colormap[polarity ? 1 : 0].green=MaxRGB;
+          image->colormap[polarity ? 1 : 0].blue=MaxRGB;
         }
     }
   if (cube_info->quantize_info->measure_error)
@@ -1364,7 +1364,7 @@ MagickExport unsigned int GetImageQuantizationError(Image *image)
   double
     distance,
     maximum_error_per_pixel,
-  	normalize,
+    normalize,
     total_error;
 
   DoublePixelPacket
