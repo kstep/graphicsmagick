@@ -1,6 +1,6 @@
 2002-10-12  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
-  * Use ImageMagick release number to allow multiple ImageMagick
-    releases to co-exist without interference on the same machine.
+  * Use ImageMagick release number to allow multiple ImageMagick releases
+    to co-exist without interference on the same machine.
 
 2002-10-09  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
   * Decided that DrawGet functions should return by value.
@@ -145,7 +145,7 @@
     (previously it operated on one scanline at a time).
   * Deprecated Down/Upscale defines.  Replaced them with Scale*ToQuantum()
     and ScaleQuantumTo*() methods.
-    
+
 2002-08-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Changed configure argument --disable-16bit-pixel to
     --with-quantum-depth in order to make its usage more straightforward
