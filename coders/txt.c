@@ -217,7 +217,6 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) strcpy(image->next->filename,filename);
     image->next->blob=image->blob;
     image->next->file=image->file;
-    image->next->filesize=image->blob.filesize;
     image->next->scene=image->scene+1;
     image->next->previous=image;
     image=image->next;
