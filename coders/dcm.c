@@ -3214,7 +3214,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       file=AcquireTemporaryFileStream(filename,BinaryFileIOMode);
       if (file == (FILE *) NULL)
-        ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
+        ThrowReaderTemporaryFileException(filename);
       (void) memset(magick,0,sizeof(magick));
       while ((c=ReadBlobByte(image)) != EOF)
       {

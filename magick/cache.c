@@ -2213,7 +2213,12 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     ThrowBinaryException(ResourceLimitError,"CacheResourcesExhausted",
       image->filename);
   if (*cache_info->cache_filename == '\0')
-    AcquireTemporaryFileName(cache_info->cache_filename);
+    if(!AcquireTemporaryFileName(cache_info->cache_filename))
+      {
+        LiberateMagickResource(DiskResource,cache_info->length);
+        ThrowBinaryException(FileOpenError,"UnableToCreateTemporaryFile",
+          cache_info->cache_filename)
+      }
   switch (mode)
   {
     case ReadMode:

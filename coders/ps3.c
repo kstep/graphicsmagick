@@ -134,11 +134,15 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  if(!AcquireTemporaryFileName(filename))
+    {
+      ThrowBinaryException(FileOpenError,"UnableToCreateTemporaryFile",
+        filename)
+    }
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
     return(False);
   SetImageType(huffman_image,BilevelType);
-  AcquireTemporaryFileName(filename);
   FormatString(huffman_image->filename,"tiff:%s",filename);
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;

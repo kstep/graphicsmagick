@@ -2588,7 +2588,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   file=AcquireTemporaryFileStream(filename,TextFileIOMode);
   if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderTemporaryFileException(filename);
   /*
     Parse SVG file.
   */

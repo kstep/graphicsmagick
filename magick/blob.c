@@ -414,7 +414,13 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   */
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
-  AcquireTemporaryFileName(clone_info->filename);
+  if(!AcquireTemporaryFileName(clone_info->filename))
+    {
+      ThrowException(exception,FileOpenError,"UnableToCreateTemporaryFile",
+        clone_info->filename);
+      DestroyImageInfo(clone_info);
+      return((Image *) NULL);
+    }
   status=BlobToFile(clone_info->filename,blob,length,exception);
   if (status == False)
     {
@@ -1304,7 +1310,13 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
     Write file to disk in blob image format.
   */
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  AcquireTemporaryFileName(unique);
+  if(!AcquireTemporaryFileName(unique))
+    {
+      ThrowException(exception,FileOpenError,"UnableToCreateTemporaryFile",
+        unique);
+      DestroyImageInfo(clone_info);
+      return((void *) NULL);
+    }
   FormatString(image->filename,"%.1024s:%.1024s",image->magick,unique);
   status=WriteImage(clone_info,image);
   DestroyImageInfo(clone_info);

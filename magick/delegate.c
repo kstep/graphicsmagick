@@ -363,7 +363,12 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   if (temporary_image_filename)
     {
       /* Allocate a temporary filename if image is unnamed.  */
-      AcquireTemporaryFileName(image->filename);
+      if(!AcquireTemporaryFileName(image->filename))
+        {
+          (void) ThrowException(exception,FileOpenError,
+            "UnableToCreateTemporaryFile",image->filename);
+          return(False);
+        }
     }
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
   delegate_info=GetDelegateInfo(decode,encode,exception);
@@ -382,7 +387,14 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
          to the name of a temporary file.  If not, then assign
          one. Setting image_info->temporary to True indicates that
          there is a temporary file to be removed later.  */
-      AcquireTemporaryFileName(image_info->filename);
+      if(!AcquireTemporaryFileName(image_info->filename))
+        {
+          if (temporary_image_filename)
+            LiberateTemporaryFile(image->filename);
+          (void) ThrowException(exception,FileOpenError,
+            "UnableToCreateTemporaryFile",image_info->filename);
+          return(False);
+        }
       image_info->temporary=True;
     }
 
@@ -404,8 +416,24 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           Delegate requires a particular image format.
         */
 
-        AcquireTemporaryFileName(image_info->unique);
-        AcquireTemporaryFileName(image_info->zero);
+        if (!AcquireTemporaryFileName(image_info->unique))
+        {
+          if (temporary_image_filename)
+            LiberateTemporaryFile(image->filename);
+          (void) ThrowException(exception,FileOpenError,
+            "UnableToCreateTemporaryFile",image_info->unique);
+          return(False);
+        }
+
+        if (!AcquireTemporaryFileName(image_info->zero))
+        {
+          if (temporary_image_filename)
+            LiberateTemporaryFile(image->filename);
+          LiberateTemporaryFile(image_info->unique);
+          (void) ThrowException(exception,FileOpenError,
+            "UnableToCreateTemporaryFile",image_info->zero);
+          return(False);
+        }
         /* Expand sprintf-style codes in delegate command to command string */
         magick=TranslateText(image_info,image,decode != (char *) NULL ?
           delegate_info->encode : delegate_info->decode);
@@ -472,8 +500,21 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   {
     status=True;
     /* Allocate convenience temporary files */
-    AcquireTemporaryFileName(image_info->unique);
-    AcquireTemporaryFileName(image_info->zero);
+    if (!AcquireTemporaryFileName(image_info->unique))
+    {
+      (void) ThrowException(exception,FileOpenError,
+        "UnableToCreateTemporaryFile",image_info->unique);
+      status=False;
+      goto error_exit;
+    }
+    if (!AcquireTemporaryFileName(image_info->zero))
+    {
+      (void) ThrowException(exception,FileOpenError,
+        "UnableToCreateTemporaryFile",image_info->zero);
+      LiberateTemporaryFile(image_info->unique);
+      status=False;
+      goto error_exit;
+    }
     /* Expand sprintf-style codes in delegate command to command string */
     command=TranslateText(image_info,image,commands[i]);
     if (command == (char *) NULL)
@@ -488,13 +529,17 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     LiberateTemporaryFile(image_info->unique);
     LiberateTemporaryFile(image_info->zero);
     if (status != False)
-      (void) ThrowException(exception,DelegateError,"DelegateFailed",
-        commands[i]);
+      {
+        (void) ThrowException(exception,DelegateError,"DelegateFailed",
+          commands[i]);
+        goto error_exit;
+      }
     LiberateMemory((void **) &commands[i]);
   }
   /*
     Free resources.
   */
+ error_exit:
   if (temporary_image_filename)
     LiberateTemporaryFile(image->filename);
   for ( ; commands[i] != (char *) NULL; i++)
@@ -674,7 +719,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
         command_length,
         formatted_chars=0,
         length=0,
-        screen_width=80,
+        screen_width=79,
         strip_length;
       
       char

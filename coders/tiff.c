@@ -405,7 +405,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   else
     {
       filename_is_temporary=True;
-      AcquireTemporaryFileName(filename);
+      if(!AcquireTemporaryFileName(filename))
+        ThrowReaderTemporaryFileException(filename);
       (void) ImageToFile(image,filename,exception);
       tiff=TIFFOpen(filename,"rb");
       if (logging)
@@ -1702,7 +1703,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   if (btype != FileStream)
     {
       filename_is_temporary=True;
-      AcquireTemporaryFileName(filename);
+      if(!AcquireTemporaryFileName(filename))
+        ThrowWriterTemporaryFileException(filename);
     }
   else
     CloseBlob(image);

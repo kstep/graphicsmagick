@@ -1242,7 +1242,8 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
         {
           (void) strncpy(filename,image_info->unique,MaxTextExtent-1);
           if (*filename == '\0')
-            AcquireTemporaryFileName(filename);
+            if(!AcquireTemporaryFileName(filename))
+              return((ImageAttribute *) NULL);
           (void) strncpy(attribute,filename,MaxTextExtent-1);
           break;
         }
@@ -1282,7 +1283,8 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
         {
           (void) strncpy(filename,image_info->zero,MaxTextExtent-1);
           if (*filename == '\0')
-            AcquireTemporaryFileName(filename);
+            if(!AcquireTemporaryFileName(filename))
+              return((ImageAttribute *) NULL);
           (void) strncpy(attribute,filename,MaxTextExtent-1);
           break;
         }

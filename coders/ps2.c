@@ -138,7 +138,12 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (huffman_image == (Image *) NULL)
     return(False);
   SetImageType(huffman_image,BilevelType);
-  AcquireTemporaryFileName(filename);
+  if(!AcquireTemporaryFileName(filename))
+    {
+      DestroyImage(huffman_image);
+      ThrowBinaryException(FileOpenError,"UnableToCreateTemporaryFile",
+        filename);
+    }
   FormatString(huffman_image->filename,"tiff:%s",filename);
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
@@ -150,7 +155,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   tiff=TIFFOpen(filename,"rb");
   if (tiff == (TIFF *) NULL)
     {
-      (void) remove(filename);
+      LiberateTemporaryFile(filename);
       ThrowBinaryException(FileOpenError,"UnableToOpenFile",
         image_info->filename)
     }

@@ -1230,7 +1230,10 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         clone_info->length=0;
         file=AcquireTemporaryFileStream(clone_info->filename,BinaryFileIOMode);
         if (file == (FILE *) NULL)
-          ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
+          {
+            DestroyImageInfo(clone_info);
+            ThrowReaderTemporaryFileException(clone_info->filename);
+          }
         length=ReadBlobMSBLong(image);
         for (i=0; i < 6; i++)
           (void) ReadBlobMSBLong(image);

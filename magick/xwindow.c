@@ -1570,7 +1570,8 @@ MagickExport void XDisplayImageInfo(Display *display,
   file=AcquireTemporaryFileStream(filename,TextFileIOMode);
   if (file == (FILE *) NULL)
     {
-      XNoticeWidget(display,windows,"Unable to display image info",filename);
+      XNoticeWidget(display,windows,"Unable to create temporary file",
+        filename);
       return;
     }
   if (resource_info->gamma_correct)

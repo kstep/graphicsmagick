@@ -34,6 +34,34 @@ MagickExport int
 MagickExport FILE *
   AcquireTemporaryFileStream(char *filename,FileIOMode mode);
 
+#define ThrowReaderTemporaryFileException(filename) \
+{ \
+  if ((image) == (Image *) NULL) \
+    ThrowException(exception,FileOpenError,"UnableToCreateTemporaryFile", \
+      filename); \
+  else \
+    { \
+      ThrowException(exception,FileOpenError,"UnableToCreateTemporaryFile", \
+        filename); \
+      if (image->blob->type != UndefinedStream) \
+        CloseBlob(image); \
+      DestroyImageList(image); \
+    } \
+  return((Image *) NULL); \
+}
+#define ThrowWriterTemporaryFileException(filename) \
+{ \
+  assert(image != (Image *) NULL); \
+  ThrowException(&(image)->exception,FileOpenError, \
+    "UnableToCreateTemporaryFile",filename); \
+  if (image_info->adjoin) \
+    while ((image)->previous != (Image *) NULL) \
+      (image)=(image)->previous; \
+  if (image->blob->type != UndefinedStream) \
+    CloseBlob(image); \
+  return(False); \
+}
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif /* defined(__cplusplus) || defined(c_plusplus) */

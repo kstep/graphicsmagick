@@ -312,7 +312,11 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   LiberateMemory((void **) &green);
   LiberateMemory((void **) &red);
   file=AcquireTemporaryFileStream(filename,BinaryFileIOMode);
-  if (file != (FILE *) NULL)
+  if (file == (FILE *) NULL)
+    {
+      DestroyImage(histogram_image);
+      ThrowWriterTemporaryFileException(filename);
+    }
     {
       char
         command[MaxTextExtent];

@@ -1414,7 +1414,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
     draw_info->font : "none",draw_info->pointsize);
   file=AcquireTemporaryFileStream(filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
-    ThrowBinaryException(FileOpenError,"UnableToOpenFile",filename);
+    ThrowBinaryException(FileOpenError,"UnableToCreateTemporaryFile",filename);
   (void) fprintf(file,"%%!PS-Adobe-3.0\n");
   (void) fprintf(file,"/ReencodeType\n");
   (void) fprintf(file,"{\n");

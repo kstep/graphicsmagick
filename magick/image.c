@@ -4635,6 +4635,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
               if (LocaleCompare(magic,"TMP") != 0)
                 image_info->affirm=True;
               else
+                /* input file will be automatically removed */
                 image_info->temporary=True;
             }
         }
@@ -4677,7 +4678,11 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       /*
         Copy standard input or pipe to temporary file.
       */
-      AcquireTemporaryFileName(filename);
+      if(!AcquireTemporaryFileName(filename))
+        {
+          DestroyImage(image);
+          return(False);
+        }
       (void) ImageToFile(image,filename,exception);
       CloseBlob(image);
       (void) strcpy(image->filename,filename);

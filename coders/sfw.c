@@ -284,9 +284,13 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   file=AcquireTemporaryFileStream(clone_info->filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
     {
+      char
+        filename[MaxTextExtent];
+
+      strcpy(filename,clone_info->filename);
       LiberateMemory((void **) &buffer);
       DestroyImageInfo(clone_info);
-      ThrowReaderException(FileOpenError,"UnableToWriteFile",image)
+      ThrowReaderTemporaryFileException(filename)
     }
   (void) fwrite(header,offset-header+1,1,file);
   (void) fwrite(HuffmanTable,1,sizeof(HuffmanTable)/sizeof(*HuffmanTable),file);

@@ -138,11 +138,13 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  if(!AcquireTemporaryFileName(filename))
+    ThrowBinaryException(FileOpenError,"UnableToCreateTemporaryFile",
+      filename);
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
     return(False);
   SetImageType(huffman_image,BilevelType);
-  AcquireTemporaryFileName(filename);
   FormatString(huffman_image->filename,"tiff:%s",filename);
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
@@ -351,7 +353,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   file=AcquireTemporaryFileStream(postscript_filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
+    ThrowReaderTemporaryFileException(postscript_filename);
   /*
     Set the page density.
   */
@@ -442,7 +444,11 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image_info->authenticate);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   clone_info=CloneImageInfo(image_info);
-  AcquireTemporaryFileName(clone_info->filename);
+  if (!AcquireTemporaryFileName(clone_info->filename))
+    {
+      DestroyImageInfo(clone_info);
+      ThrowReaderTemporaryFileException(clone_info->filename);
+    }
   FormatString(command,delegate_info->commands,clone_info->antialias ? 4 : 1,
     clone_info->antialias ? 4 : 1,geometry,density,options,clone_info->filename,
     postscript_filename);
@@ -451,6 +457,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) MagickMonitor(RenderPostscriptText,7,8,&image->exception);
   if (status)
     {
+      DestroyImageInfo(clone_info);
       LiberateTemporaryFile(postscript_filename);
       ThrowReaderException(DelegateError,"PostscriptDelegateFailed",image)
     }

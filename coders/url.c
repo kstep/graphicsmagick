@@ -135,8 +135,9 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   file=AcquireTemporaryFileStream(clone_info->filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
     {
+      strcpy(filename,clone_info->filename);
       DestroyImageInfo(clone_info);
-      ThrowReaderException(FileOpenError,"UnableToOpenFile",image)
+      ThrowReaderTemporaryFileException(filename)
     }
   (void) strncpy(filename,image_info->magick,MaxTextExtent-1);
   (void) strcat(filename,":");

@@ -4002,7 +4002,8 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       {
         (void) strncpy(filename,clone_info->unique,MaxTextExtent-1);
         if (*filename == '\0')
-          AcquireTemporaryFileName(filename);
+          if (!AcquireTemporaryFileName(filename))
+            break;
         (void) strncpy(q,filename,MaxTextExtent-1);
         q+=strlen(filename);
         break;
@@ -4033,7 +4034,8 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       {
         (void) strncpy(filename,clone_info->zero,MaxTextExtent-1);
         if (*filename == '\0')
-          AcquireTemporaryFileName(filename);
+          if (!AcquireTemporaryFileName(filename))
+            break;
         (void) strncpy(q,filename,MaxTextExtent-1);
         q+=strlen(filename);
         break;

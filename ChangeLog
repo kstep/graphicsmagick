@@ -1,3 +1,24 @@
+2003-04-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* locale/C.mgk: Fixed message associated with
+	"UnableToCreateTemporaryFile".
+	* magick/tempfile.c (AcquireTemporaryFileDescriptor): Decided
+	to return a pathname (if possible), even on failure, for use
+	in error reports.  The function return status should be used
+	to determine if the function has succeeded.
+	* locale/locale.mgk: Updated copyright header.
+	* (magick/annotate.c, magick/attribute.c, magick/blob.c,
+	magick/cache.c, magick/constitute.c, magick/delegate.c,
+	magick/display.c, magick/image.c, magick/locale.c
+	magick/tempfile.c, magick/tempfile.h, magick/utility.c,
+	magick/xwindow.c, coders/dcm.c, coders/ept.c,
+	coders/histogram.c, coders/mpeg.c, coders/pdf.c,
+	coders/pict.c, coders/preview.c, coders/ps2.c,
+	coders/ps3.c, coders/ps.c, coders/pwp.c, coders/sfw.c,
+	coders/svg.c, coders/tiff.c, coders/url.c, coders/wpg.c):
+	Ensure that failure to allocate/create temporary file is
+	properly detected and reported.
+
 2003-04-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/type.c (GetTypeBlob): Prioritize hard-coded path

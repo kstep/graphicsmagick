@@ -466,7 +466,11 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   /*
     Write YUV files.
   */
-  AcquireTemporaryFileName(basename);
+  if(!AcquireTemporaryFileName(basename))
+    {
+      DestroyImage(coalesce_image);
+      ThrowWriterTemporaryFileException(basename);
+    }
   FormatString(coalesce_image->filename,basename);
   clone_info=CloneImageInfo(image_info);
   (void) strncpy(clone_info->unique,basename,MaxTextExtent-1);

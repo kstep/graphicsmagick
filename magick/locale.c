@@ -1,11 +1,11 @@
-/*
-% Copyright (C) 2003 GraphicsMagick Group
-% Copyright (C) 2002 ImageMagick Studio
-%
-% This program is covered by multiple licenses, which are described in
-% Copyright.txt. You should have received a copy of Copyright.txt with this
-% package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
-%
+/* 
+% Copyright (C) 2003 GraphicsMagick Group 
+% Copyright (C) 2002 ImageMagick Studio 
+% 
+% This program is covered by multiple licenses, which are described in 
+% Copyright.txt. You should have received a copy of Copyright.txt with this 
+% package; otherwise see http://www.graphicsmagick.org/www/Copyright.html. 
+% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %                                                                             % 
 %                                                                             % 
@@ -941,7 +941,7 @@ const char *GetLocaleMessage(const char *tag)
 
           case 'u':  case 'U':
             if (p - tp == 27 && !LocaleNCompare(tp, "UnableToCreateTemporaryFile", 27))
-              return *np ? tag : "Unable to temporary file";
+              return *np ? tag : "Unable to create temporary file";
             else
             if (p - tp == 16 && !LocaleNCompare(tp, "UnableToOpenFile", 16))
               return *np ? tag : "Unable to open file";

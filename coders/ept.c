@@ -211,7 +211,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   */
   file=AcquireTemporaryFileStream(postscript_filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
+      ThrowReaderTemporaryFileException(postscript_filename);
   FormatString(translate_geometry,"%g %g translate\n              ",0.0,0.0);
   (void) fputs(translate_geometry,file);
   /*
@@ -316,7 +316,11 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   if (image_info->temporary)
     LiberateTemporaryFile((char *) image_info->filename);
-  AcquireTemporaryFileName((char *)image_info->filename);
+  if(!AcquireTemporaryFileName((char *)image_info->filename))
+    {
+      LiberateTemporaryFile(postscript_filename);
+      ThrowReaderTemporaryFileException(image_info->filename);
+    }
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
     postscript_filename);
@@ -487,14 +491,19 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
       /*
         Write image as Encapsulated Postscript to a temporary file.
       */
-      AcquireTemporaryFileName(ps_filename);
+      if(!AcquireTemporaryFileName(ps_filename))
+        ThrowWriterTemporaryFileException(ps_filename);
       FormatString(image->filename,"eps:%.1024s",ps_filename);
       (void) WriteImage(image_info,image);
     }
   /*
     Write image as TIFF to a temporary file.
   */
-  AcquireTemporaryFileName(tiff_filename);
+  if(!AcquireTemporaryFileName(tiff_filename))
+    {
+      LiberateTemporaryFile(ps_filename);
+      ThrowWriterTemporaryFileException(tiff_filename);
+    }
   FormatString(image->filename,"tiff:%.1024s",tiff_filename);
   (void) strncpy(image->filename,tiff_filename,MaxTextExtent-1);
   (void) WriteImage(image_info,image);

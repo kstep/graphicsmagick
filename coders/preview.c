@@ -565,7 +565,12 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
 
         clone_info->quality=(unsigned int) (percentage+13.0);
         FormatString(factor,"%lu",clone_info->quality);
-        AcquireTemporaryFileName(filename);
+        if(!AcquireTemporaryFileName(filename))
+          {
+            DestroyImage(master_image);
+            DestroyImageInfo(clone_info);
+            ThrowWriterTemporaryFileException(filename);
+          }
         FormatString(preview_image->filename,"jpeg:%.1024s",filename);
         status=WriteImage(clone_info,preview_image);
         if (status != False)

@@ -212,7 +212,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   file=AcquireTemporaryFileStream(postscript_filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
+    ThrowReaderTemporaryFileException(postscript_filename);
   FormatString(translate_geometry,"%g %g translate\n              ",0.0,0.0);
   (void) fputs(translate_geometry,file);
   /*
@@ -320,7 +320,11 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   if (image_info->temporary)
     LiberateTemporaryFile((char *) image_info->filename);
-  AcquireTemporaryFileName((char *) image_info->filename);
+  if(!AcquireTemporaryFileName((char *) image_info->filename))
+    {
+      LiberateTemporaryFile(postscript_filename);
+      ThrowReaderTemporaryFileException(image_info->filename);
+    }
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
     postscript_filename);

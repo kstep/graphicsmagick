@@ -220,7 +220,6 @@ MagickExport unsigned int AcquireTemporaryFileName(char *filename)
 MagickExport int AcquireTemporaryFileDescriptor(char *filename)
 {
   char
-    fname[MaxTextExtent],
     *tempdir=0;
 
   int
@@ -257,18 +256,17 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
       int
         tries=0;
       
-      for (tries=0; tries < 10; tries++)
+      for (tries=0; tries < 15; tries++)
         {
           strcpy(tempname,"gmXXXXXX");
           ComposeTemporaryFileName(tempname);
-          strcpy(fname,tempdir);
+          strcpy(filename,tempdir);
           if (tempdir[strlen(tempdir)-1] != DirectorySeparator[0])
-            strcat(fname,DirectorySeparator);
-          strcat(fname,tempname);
-          fd=open(fname,O_RDWR | O_CREAT | O_BINARY | O_EXCL, S_MODE);
+            strcat(filename,DirectorySeparator);
+          strcat(filename,tempname);
+          fd=open(filename,O_RDWR | O_CREAT | O_BINARY | O_EXCL, S_MODE);
           if (fd != -1)
             {
-              strcpy(filename,fname);
               AddTemporaryFileToList(filename);
               break;
             }
@@ -290,9 +288,9 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
     char
       *name;
 
-    strcpy(fname,"gmXXXXXX");
-    ComposeTemporaryFileName(fname);
-    if ((name=tempnam(tempdir,fname)))
+    strcpy(filename,"gmXXXXXX");
+    ComposeTemporaryFileName(filename);
+    if ((name=tempnam(tempdir,filename)))
       {
         (void) remove(filename);
         fd=open(name,O_RDWR | O_CREAT | O_BINARY | O_EXCL, S_MODE);
@@ -301,6 +299,19 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
             (void) strncpy(filename,name,MaxTextExtent-1);
             AddTemporaryFileToList(filename);
           }
+        else
+          {
+            char
+              path[MaxTextExtent];
+
+            /* Try to report a useful pathname for error reports */
+            (void) strncpy(path,tempdir,MaxTextExtent-strlen(filename)-2);
+            if (tempdir[strlen(path)-1] != DirectorySeparator[0])
+              strcat(path,DirectorySeparator);
+            strcat(path,filename);
+            (void) strncpy(filename,path,MaxTextExtent-1);
+          }
+
         LiberateMemory((void **) &name);
       }
     return (fd);
@@ -315,11 +326,10 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
     much advantage.
   */
   {
-    (void) strcpy(fname,"gmXXXXXX");
-    fd=mkstemp(fname);
+    (void) strcpy(filename,"gmXXXXXX");
+    fd=mkstemp(filename);
     if (fd != -1)
       {
-        strcpy(filename,fname);
         AddTemporaryFileToList(filename);
       }
     return (fd);
@@ -330,13 +340,12 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
     Use ANSI C standard tmpnam
   */
   {
-    if ((tmpnam(fname) == fname))
+    if ((tmpnam(filename) == filename))
       {
-        (void) remove(fname);
-        fd=open(fname,O_RDWR | O_CREAT | O_BINARY | O_EXCL, S_MODE);
+        (void) remove(filename);
+        fd=open(filename,O_RDWR | O_CREAT | O_BINARY | O_EXCL, S_MODE);
         if (fd != -1)
           {
-            (void) strncpy(filename,fname,MaxTextExtent-1);
             AddTemporaryFileToList(filename);
           }
       }

@@ -501,7 +501,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
   if( (f=AcquireTemporaryFileStream(clone_info->filename,BinaryFileIOMode))
-      ==NULL)
+      == NULL)
     goto FINISH;
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
   while(PS_Size-- > 0)

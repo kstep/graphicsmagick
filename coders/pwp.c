@@ -188,7 +188,14 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     file=AcquireTemporaryFileStream(clone_info->filename,BinaryFileIOMode);
     if (file == (FILE *) NULL)
-      ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
+      {
+        char
+          filename[MaxTextExtent];
+
+        strcpy(filename,clone_info->filename);
+        DestroyImageInfo(clone_info);
+        ThrowReaderTemporaryFileException(filename);
+      }
     (void) fwrite("SFW94A",1,6,file);
     filesize=65535L*magick[2]+256L*magick[1]+magick[0];
     for (i=0; i < (long) filesize; i++)

@@ -3957,7 +3957,12 @@ static unsigned int XDrawEditImage(Display *display,
               XSetCursorState(display,windows,False);
               if (stipple_image == (Image *) NULL)
                 break;
-              AcquireTemporaryFileName(filename);
+              if (!AcquireTemporaryFileName(filename))
+                {
+                  XNoticeWidget(display,windows,
+                    "Unable to open temporary file:",filename);
+                  break;
+                }
               FormatString(stipple_image->filename,"xbm:%.1024s",filename);
               (void) WriteImage(image_info,stipple_image);
               DestroyImage(stipple_image);
@@ -6782,7 +6787,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Edit image comment.
       */
-      AcquireTemporaryFileName(image_info->filename);
+      if (!AcquireTemporaryFileName(image_info->filename))
+        {
+          XNoticeWidget(display,windows,"Unable to open temporary file:",
+            image_info->filename);
+          break;
+        }
       attribute=GetImageAttribute(*image,"comment");
       if ((attribute != (const ImageAttribute *) NULL) &&
           (attribute->value != (char *) NULL))
@@ -6831,7 +6841,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      AcquireTemporaryFileName(filename);
+      if (!AcquireTemporaryFileName(filename))
+        {
+          XNoticeWidget(display,windows,"Unable to open temporary file:",
+            filename);
+          break;
+        }
       FormatString((*image)->filename,"launch:%s",filename);
       status=WriteImage(image_info,*image);
       if (status == False)
@@ -6913,7 +6928,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info->group=(long) windows->image.id;
       (void) SetImageAttribute(*image,"label",(char *) NULL);
       (void) SetImageAttribute(*image,"label","Preview");
-      AcquireTemporaryFileName(filename);
+      if (!AcquireTemporaryFileName(filename))
+        {
+          XNoticeWidget(display,windows,"Unable to open temporary file:",
+            filename);
+          break;
+        }
       FormatString((*image)->filename,"preview:%s",filename);
       status=WriteImage(image_info,*image);
       FormatString((*image)->filename,"show:%s",filename);
@@ -6937,7 +6957,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info->group=(long) windows->image.id;
       (void) SetImageAttribute(*image,"label",(char *) NULL);
       (void) SetImageAttribute(*image,"label","Histogram");
-      AcquireTemporaryFileName(filename);
+      if (!AcquireTemporaryFileName(filename))
+        {
+          XNoticeWidget(display,windows,"Unable to open temporary file:",
+            filename);
+          break;
+        }
       FormatString((*image)->filename,"histogram:%s",filename);
       status=WriteImage(image_info,*image);
       FormatString((*image)->filename,"show:%s",filename);
@@ -6965,7 +6990,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info->group=(long) windows->image.id;
       (void) SetImageAttribute(*image,"label",(char *) NULL);
       (void) SetImageAttribute(*image,"label","Matte");
-      AcquireTemporaryFileName(filename);
+      if (!AcquireTemporaryFileName(filename))
+        {
+          XNoticeWidget(display,windows,"Unable to open temporary file:",
+            filename);
+          break;
+        }
       FormatString((*image)->filename,"matte:%s",filename);
       status=WriteImage(image_info,*image);
       FormatString((*image)->filename,"show:%s",filename);
@@ -8748,7 +8778,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
     *image_info;
 
   unsigned int
-    status;
+    status=True;
 
   /*
     Request Postscript page geometry from user.
@@ -8776,10 +8806,23 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   /*
     Print image.
   */
-  AcquireTemporaryFileName(print_image->magick_filename);
-  AcquireTemporaryFileName(filename);
+  if (!AcquireTemporaryFileName(print_image->magick_filename))
+    {
+      XNoticeWidget(display,windows,"Unable to open temporary file:",
+        print_image->magick_filename);
+      status=False;
+      goto error_return;
+    }
+  if (!AcquireTemporaryFileName(filename))
+    {
+      XNoticeWidget(display,windows,"Unable to open temporary file:",
+        filename);
+      status=False;
+      goto error_return;
+    }
   FormatString(print_image->filename,"print:%s",filename);
   status=WriteImage(image_info,print_image);
+ error_return:
   DestroyImage(print_image);
   DestroyImageInfo(image_info);
   XSetCursorState(display,windows,False);

@@ -2728,7 +2728,15 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           /*
             Coder requires a random access stream.
           */
-          AcquireTemporaryFileName(clone_info->filename);
+          if(!AcquireTemporaryFileName(clone_info->filename))
+            {
+              ThrowException(exception,FileOpenError,
+                "UnableToCreateTemporaryFile",clone_info->filename);
+              CloseBlob(image);
+              DestroyImageInfo(clone_info);
+              DestroyImage(image);
+              return((Image *) NULL);
+            }
           (void) ImageToFile(image,clone_info->filename,exception);
           clone_info->temporary=True;
         }
@@ -2776,7 +2784,13 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           return((Image *) NULL);
         }
       (void) strncpy(image->filename,clone_info->filename,MaxTextExtent-1);
-      AcquireTemporaryFileName(clone_info->filename);
+      if(!AcquireTemporaryFileName(clone_info->filename))
+        {
+          ThrowException(exception,FileOpenError,"UnableToCreateTemporaryFile",
+            clone_info->filename);
+          DestroyImageInfo(clone_info);
+          return((Image *) NULL);
+        }
       (void) InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL,
         exception);
       DestroyImageList(image);
@@ -3196,7 +3210,13 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           /*
             Let our encoding delegate process the image.
           */
-          AcquireTemporaryFileName(image->filename);
+          if(!AcquireTemporaryFileName(image->filename))
+            {
+              ThrowException(&image->exception,FileOpenError,
+                "UnableToCreateTemporaryFile",image->filename);
+              DestroyImageInfo(clone_info);
+              return(False);
+            }
           status=InvokeDelegate(clone_info,image,(char *) NULL,
             clone_info->magick,&image->exception);
           LiberateTemporaryFile(image->filename);
