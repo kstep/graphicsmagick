@@ -14016,7 +14016,7 @@ builddir=`pwd`
 # Most delegates have includes in the same directory as the library, but not all ...
 #
 # Includes
-for dir in bzlib fpx hdf/src jasper jbig/libjbig jpeg lcms/src png tiff/libtiff ttf/include wmf/include xml zlib
+for dir in bzlib fpx hdf/src jasper jbig/libjbig jpeg lcms/src mpeg/include png tiff/libtiff ttf/include wmf/include xml zlib
 do
   if test -d "$builddir/$dir"
   then
