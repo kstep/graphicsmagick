@@ -1547,6 +1547,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         break;
       }
       case 'H':
+      case 'h':
       {
         x=strtod(p,&p);
         point.x=attribute == 'H' ? x: point.x+x;
@@ -1707,7 +1708,6 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         q+=q->coordinates;
         break;
       }
-      case 'h':
       case 'v':
       case 'V':
       {
