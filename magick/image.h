@@ -24,6 +24,11 @@ extern "C" {
 typedef unsigned char Quantum;
 #elif QuantumSize == 16
 /*
+  QuantumLeap is deprecated and will be removed in a future release.
+  Please convert existing code to use the QuantumSize define.
+*/
+#define QuantumLeap
+/*
   Color quantum is [0..65535].
 */
 #define DownScale(quantum)  ((quantum)/257)
