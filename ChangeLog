@@ -1,3 +1,8 @@
+2002-02-02  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
+  * Added Base64Decode() and Base64Encode() to utility.c and
+    updated ReadInlineImage( in constitute.c to use
+    Base64Decode().
+
 2002-02-01  Cristy  <cristy@mystic.es.dupont.com>
   * GetTypeInfoByFamily() null pointer fault (reported by Bob Friesenhahn).
 

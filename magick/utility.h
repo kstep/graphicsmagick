@@ -32,6 +32,7 @@ typedef struct _TokenInfo
 */
 extern MagickExport char
   *AllocateString(const char *),
+  *Base64Encode(const unsigned char *source, const size_t source_length),
   *GetExecutionPath(const char *),
   *GetPageGeometry(const char *),
   **ListFiles(const char *,const char *,int *),
@@ -41,6 +42,9 @@ extern MagickExport char
   **StringToArgv(const char *,int *),
   **StringToList(const char *),
   *TranslateText(const ImageInfo *,Image *,const char *);
+
+extern MagickExport unsigned char
+  *Base64Decode(const char *source, size_t *output_length);
 
 extern MagickExport double
   StringToDouble(const char *,const double);

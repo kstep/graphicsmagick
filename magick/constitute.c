@@ -2321,80 +2321,21 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   Image
     *image;
 
-  int
-    c;
-
-  register int
-    i;
-
-  register const char
-    *p;
-
-  register unsigned char
-    *q;
+  unsigned char
+    *blob;
 
   size_t
     length;
 
-  unsigned char
-    buffer[4],
-    decode[4],
-    *blob,
-    map[256];
+  register const char
+    *p;
 
   for (p=content; (*p != ',') && (*p != '\0'); p++);
   if (*p == '\0')
     return((Image *) NULL);
   p++;
-  blob=(unsigned char *) AcquireMemory(strlen(content));
-  if (blob == (unsigned char *) NULL)
-    return((Image *) NULL);
-  memset(map,0x80,sizeof(map));
-  for(i='A'; i <= 'I'; i++)
-    map[i]=0+(i-'A');
-  for (i='J'; i <= 'R'; i++)
-    map[i]=9+(i-'J');
-  for(i='S'; i <= 'Z';i++)
-    map[i]=18+(i-'S');
-  for(i='a'; i <='i'; i++)
-    map[i]=26+(i-'a');
-  for (i='j'; i <= 'r'; i++)
-    map[i]=35+(i-'j');
-  for(i='s';i <= 'z'; i++)
-    map[i]=44+(i-'s');
-  for(i='0'; i <= '9'; i++)
-    map[i]=52+(i-'0');
-  map['+']=62;
-  map['/']=63;
-  map['=']=0;
-  for (q=blob; ; )
-  {
-    for (i=0; i < 4; i++)
-    {
-      c=(*p++);
-      if (c == 0)
-        break;
-      if (map[c] & 0x80)
-        {
-          i--;
-          continue;
-        }
-      buffer[i]=(unsigned char) c;
-      decode[i]=map[c];
-    }
-    for (i=0; i < (buffer[2] == '=' ? 1 : (buffer[3] == '=' ? 2 : 3)); i++)
-      switch (i)
-      {
-        case 0: *q++=(decode[0] << 2) | (decode[1] >> 4); break;
-        case 1: *q++=(decode[1] << 4) | (decode[2] >> 2); break;
-        case 2: *q++=(decode[2] << 6) | decode[3]; break;
-        default: break;
-      }
-    if (i < 3)
-      break;
-  }
-  length=q-blob;
-  image=BlobToImage(image_info,blob,q-blob,exception);
+  blob=Base64Decode(p,&length);
+  image=BlobToImage(image_info,blob,length,exception);
   LiberateMemory((void **) &blob);
   return(image);
 }

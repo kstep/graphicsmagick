@@ -164,6 +164,379 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   B a s e 6 4 D e c o d e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method Base64Decode decodes base64 encoded text and returns its binary
+%  equivalent. NULL is returned if the text is not valid base64 data, or a
+%  memory allocation failure occurs.
+%
+%  The format of the Base64Decode method is:
+%
+%      unsigned char *Base64Decode(const char *source, size_t *output_size);
+%
+%  A description of each parameter follows:
+%
+%    o source:  A pointer to a base64 encoded string.
+%
+%    o output_length: The number of bytes decoded.
+%
+*/
+
+/*
+ * Copyright (c) 1996 by Internet Software Consortium.
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM DISCLAIMS
+ * ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL INTERNET SOFTWARE
+ * CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+ * DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+ * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
+ * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ */
+
+/*
+ * Portions Copyright (c) 1995 by International Business Machines, Inc.
+ *
+ * International Business Machines, Inc. (hereinafter called IBM) grants
+ * permission under its copyrights to use, copy, modify, and distribute this
+ * Software with or without fee, provided that the above copyright notice and
+ * all paragraphs of this notice appear in all copies, and that the name of IBM
+ * not be used in connection with the marketing of any product incorporating
+ * the Software or modifications thereof, without specific, written prior
+ * permission.
+ *
+ * To the extent it has a right to do so, IBM grants an immunity from suit
+ * under its patents, if any, for the use, sale or manufacture of products to
+ * the extent that such products are used for performing Domain Name System
+ * dynamic updates in TCP/IP networks by means of the Software.  No immunity is
+ * granted for any product per se or for any other function of any product.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", AND IBM DISCLAIMS ALL WARRANTIES,
+ * INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE.  IN NO EVENT SHALL IBM BE LIABLE FOR ANY SPECIAL,
+ * DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE, EVEN
+ * IF IBM IS APPRISED OF THE POSSIBILITY OF SUCH DAMAGES.
+ */
+
+static const char Base64[] =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static const char Pad64 = '=';
+
+unsigned char *Base64Decode(const char *source, size_t *output_length)
+{
+  char
+    *pos;
+
+  unsigned char
+    *output;
+
+  size_t
+    allocated_length;
+
+  int
+    data_length,
+    state,
+    ch;
+
+  state = 0;
+  data_length = 0;
+
+  *output_length = 0;
+  allocated_length = MaxTextExtent;
+  output = (char*)AcquireMemory(allocated_length);
+  if(output == NULL)
+    return NULL;
+
+  while ((ch = *source++) != '\0')
+    {
+      if (isspace(ch))		/* Skip whitespace anywhere. */
+        continue;
+
+      if (ch == Pad64)
+        break;
+
+      pos = strchr(Base64, ch);
+      if (pos == 0)		/* A non-base64 character. */
+        {
+          LiberateMemory((void **)&output);
+          return NULL;
+        }
+
+      switch (state)
+        {
+        case 0:
+          if (output)
+            {
+              if (data_length >= allocated_length)
+                {
+                  allocated_length += MaxTextExtent;
+                  ReacquireMemory((void **)&output, allocated_length);
+                  if(output == NULL)
+                    return NULL;
+                }
+              output[data_length] = (pos - Base64) << 2;
+            }
+          state = 1;
+          break;
+        case 1:
+          if (output)
+            {
+              if (data_length + 1 >= allocated_length)
+                {
+                  allocated_length += MaxTextExtent;
+                  ReacquireMemory((void **)&output, allocated_length);
+                  if(output == NULL)
+                    return NULL;
+                }
+              output[data_length] |= (pos - Base64) >> 4;
+              output[data_length + 1] = ((pos - Base64) & 0x0f) << 4;
+            }
+          data_length++;
+          state = 2;
+          break;
+        case 2:
+          if (output)
+            {
+              if (data_length + 1 >= allocated_length)
+                {
+                  allocated_length += MaxTextExtent;
+                  ReacquireMemory((void **)&output, allocated_length);
+                  if(output == NULL)
+                    return NULL;
+                }
+              output[data_length] |= (pos - Base64) >> 2;
+              output[data_length + 1] = ((pos - Base64) & 0x03) << 6;
+            }
+          data_length++;
+          state = 3;
+          break;
+        case 3:
+          if (output)
+            {
+              if (data_length >= allocated_length)
+                {
+                  allocated_length += MaxTextExtent;
+                  ReacquireMemory((void **)&output, allocated_length);
+                  if(output == NULL)
+                    return NULL;
+                }
+              output[data_length] |= (pos - Base64);
+            }
+          data_length++;
+          state = 0;
+          break;
+        }
+    }
+
+  /*
+   * We are done decoding Base-64 chars.  Let's see if we ended
+   * on a byte boundary, and/or with erroneous trailing characters.
+   */
+
+  if (ch == Pad64)
+    {				/* We got a pad char. */
+      ch = *source++;		/* Skip it, get next. */
+      switch (state)
+        {
+        case 0:			/* Invalid = in first position */
+        case 1:			/* Invalid = in second position */
+          {
+            LiberateMemory((void **)&output);
+            return NULL;
+          }
+
+        case 2:			/* Valid, means one byte of info */
+          /* Skip any number of spaces. */
+          for (; ch != '\0'; ch = *source++)
+            if (!isspace(ch))
+              break;
+          /* Make sure there is another trailing = sign. */
+          if (ch != Pad64)
+            {
+              LiberateMemory((void **)&output);
+              return NULL;
+            }
+          ch = *source++;		/* Skip the = */
+          /* Fall through to "single trailing =" case. */
+          /* FALLTHROUGH */
+
+        case 3:			/* Valid, means two bytes of info */
+          /*
+           * We know this char is an =.  Is there anything but
+           * whitespace after it?
+           */
+          for (; ch != '\0'; ch = *source++)
+            if (!isspace(ch))
+              {
+                LiberateMemory((void **)&output);
+                return NULL;
+              }
+
+          /*
+           * Now make sure for cases 2 and 3 that the "extra"
+           * bits that slopped past the last full byte were
+           * zeros.  If we don't check them, they become a
+           * subliminal channel.
+           */
+          if (output && output[data_length] != 0)
+            {
+              LiberateMemory((void **)&output);
+              return NULL;
+            }
+        }
+    }
+  else
+    {
+      /*
+       * We ended by seeing the end of the string.  Make sure we
+       * have no partial bytes lying around.
+       */
+      if (state != 0)
+        {
+          LiberateMemory((void **)&output);
+          return NULL;
+        }
+    }
+
+  *output_length = data_length;
+  return (output);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   B a s e 6 4 E n c o d e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method Base64Encode encodes arbitrary binary data to base64 encoded format
+%  and returns the result as a null-terminated ASCII string. NULL is returned
+%  if a memory allocation failure occurs.
+%
+%  The format of the Base64Encode method is:
+%
+%      unsigned char *Base64Encode(const unsigned char *source, const size_t source_length);
+%
+%  A description of each parameter follows:
+%
+%    o source:  A pointer to binary data to encode.
+%
+%    o source_length: The number of bytes to encode.
+%
+*/
+
+char *Base64Encode(const unsigned char *source, const size_t source_length)
+{
+  size_t
+    allocated_length = 0,
+    data_length = 0,
+    srclength = source_length;
+
+  int
+    i;
+
+  char
+    *output;
+
+  unsigned char
+    input_char[3],
+    output_char[4];
+
+
+  allocated_length = source_length;
+  output = (char*)AcquireMemory(allocated_length);
+  if(output == NULL)
+    return NULL;
+
+  while (2 < srclength)
+    {
+      input_char[0] = *source++;
+      input_char[1] = *source++;
+      input_char[2] = *source++;
+      srclength -= 3;
+
+      output_char[0] = input_char[0] >> 2;
+      output_char[1] = ((input_char[0] & 0x03) << 4) + (input_char[1] >> 4);
+      output_char[2] = ((input_char[1] & 0x0f) << 2) + (input_char[2] >> 6);
+      output_char[3] = input_char[2] & 0x3f;
+      assert(output_char[0] < 64);
+      assert(output_char[1] < 64);
+      assert(output_char[2] < 64);
+      assert(output_char[3] < 64);
+
+      if (data_length + 4 > allocated_length)
+        {
+          allocated_length += MaxTextExtent;
+          ReacquireMemory((void **)&output, allocated_length);
+          if(output == NULL)
+            return NULL;
+        }
+      output[data_length++] = Base64[output_char[0]];
+      output[data_length++] = Base64[output_char[1]];
+      output[data_length++] = Base64[output_char[2]];
+      output[data_length++] = Base64[output_char[3]];
+    }
+
+  /* Now we worry about padding. */
+  if (0 != srclength)
+    {
+      /* Get what's left. */
+      input_char[0] = input_char[1] = input_char[2] = '\0';
+      for (i = 0; i < srclength; i++)
+        input_char[i] = *source++;
+
+      output_char[0] = input_char[0] >> 2;
+      output_char[1] = ((input_char[0] & 0x03) << 4) + (input_char[1] >> 4);
+      output_char[2] = ((input_char[1] & 0x0f) << 2) + (input_char[2] >> 6);
+      assert(output_char[0] < 64);
+      assert(output_char[1] < 64);
+      assert(output_char[2] < 64);
+
+      if (data_length + 4 > allocated_length)
+        {
+          allocated_length += MaxTextExtent;
+          ReacquireMemory((void **)&output, allocated_length);
+          if(output == NULL)
+            return NULL;
+        }
+      output[data_length++] = Base64[output_char[0]];
+      output[data_length++] = Base64[output_char[1]];
+      if (srclength == 1)
+        output[data_length++] = Pad64;
+      else
+        output[data_length++] = Base64[output_char[2]];
+      output[data_length++] = Pad64;
+    }
+  if (data_length >= allocated_length)
+    {
+      allocated_length += MaxTextExtent;
+      ReacquireMemory((void **)&output, allocated_length);
+      if(output == NULL)
+        return NULL;
+    }
+  output[data_length] = '\0';	/* Returned value doesn't count \0. */
+  return (output);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C l o n e S t r i n g                                                     %
 %                                                                             %
 %                                                                             %

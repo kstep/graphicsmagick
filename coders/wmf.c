@@ -633,6 +633,7 @@ static void ipa_device_begin(wmfAPI * API)
   /* Scale width and height to image */
   util_append_mvg(API, "scale %.10g,%.10g\n",
         ddata->scale_x, ddata->scale_y);
+
   /* Translate to TL corner of bounding box */
   util_append_mvg(API, "translate %.10g,%.10g\n",
         ddata->translate_x,
