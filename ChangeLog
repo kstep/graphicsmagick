@@ -1,6 +1,7 @@
 2002-09-21  Cristy  <cristy@mystic.es.dupont.com>
   * Added 'exception' parameter to the ImageMagick progress monitor API.
   * Added enumerated types for the dispose member of the Image structure.
+  * Added -version option to commandline utilities.
 
 2002-09-21  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
   * The xcf decoder would sometimes create artifacts when reading RLE-encoded
