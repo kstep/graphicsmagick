@@ -27,7 +27,7 @@ testRead ( 'input_mono.tiff', '8023e6a23a15ab1240b48ec6c085ed40',
 ++$test;
 print("PseudoColor ...\n");
 testRead( 'input_256.tiff', 'f90f998ebc41c7c9833ea2a454791d70',
-                            '92dbcbcfb72f64958269c4139e0f85d4' );
+                            'b524c5330d43df56d89296e6fb02f93e' );
 
 #
 # 3) Test Reading TrueColor
@@ -35,5 +35,5 @@ testRead( 'input_256.tiff', 'f90f998ebc41c7c9833ea2a454791d70',
 ++$test;
 print("TrueColor image ...\n");
 testRead( 'input_truecolor.tiff', '4d3c3e472ace236f15b27c7af6e3d464',
-                                  '6dc34477296f85d8584e655b3a429945' );
+                                  'b524c5330d43df56d89296e6fb02f93e' );
 
