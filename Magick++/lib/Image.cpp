@@ -413,7 +413,7 @@ void Magick::Image::composite ( const Image &compositeImage_,
 
   CompositeImage( image(),
 		  compose_,
-		  const_cast<Image &>(compositeImage_).image(),
+		  compositeImage_.constImage(),
 		  x, y );
   throwImageException();
 }
@@ -434,7 +434,7 @@ void Magick::Image::composite ( const Image &compositeImage_,
 
   CompositeImage( image(),
 		  compose_,
-		  const_cast<Image &>(compositeImage_).image(),
+		  compositeImage_.constImage(),
 		  x, y );
   throwImageException();
 }
@@ -510,7 +510,7 @@ void Magick::Image::composite ( const Image &compositeImage_,
 
   CompositeImage( image(),
 		  compose_,
-		  const_cast<Image &>(compositeImage_).image(),
+		  compositeImage_.constImage(),
 		  x, y );
   throwImageException();
 }
@@ -680,7 +680,7 @@ void Magick::Image::equalize ( void )
 void Magick::Image::erase ( void )
 {
   modifyImage();
-  MagickLib::SetImage( image(), OpaqueOpacity );
+  SetImage( image(), OpaqueOpacity );
   throwImageException();
 }
 
@@ -914,8 +914,8 @@ void Magick::Image::map ( const Image &mapImage_ , bool dither_ )
 {
   modifyImage();
   MapImage ( image(),
-			const_cast<MagickLib::Image*>(mapImage_.constImage()),
-			dither_ );
+             mapImage_.constImage(),
+             dither_ );
   throwImageException();
 }
 
@@ -1428,7 +1428,7 @@ void Magick::Image::stegano ( const Image &watermark_ )
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
     SteganoImage( image(),
-		  const_cast<Image &>(watermark_).image(),
+		  watermark_.constImage(),
 		  &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
@@ -1441,7 +1441,7 @@ void Magick::Image::stereo ( const Image &rightImage_ )
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
     StereoImage( image(),
-		 const_cast<Image &>(rightImage_).image(),
+		 rightImage_.constImage(),
 		 &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
@@ -1463,7 +1463,7 @@ void Magick::Image::swirl ( double degrees_ )
 void Magick::Image::texture ( const Image &texture_ )
 {
   modifyImage();
-  TextureImage( image(), const_cast<Image &>(texture_).image() );
+  TextureImage( image(), texture_.constImage() );
   throwImageException();
 }
 
@@ -1899,7 +1899,7 @@ void Magick::Image::clipMask ( const Magick::Image & clipMask_ )
       ExceptionInfo exceptionInfo;
       GetExceptionInfo( &exceptionInfo );
       MagickLib::Image* clip_mask =
-	CloneImage( const_cast<MagickLib::Image *>(clipMask_.constImage()) ,
+	CloneImage( clipMask_.constImage(),
                     0, // columns
                     0, // rows
                     1, // orphan
@@ -1909,7 +1909,7 @@ void Magick::Image::clipMask ( const Magick::Image & clipMask_ )
   else
     {
       // Unset existing clip mask
-      MagickLib::SetImageClipMask( image(), 0 );
+      SetImageClipMask( image(), 0 );
     }
 }
 Magick::Image Magick::Image::clipMask ( void  ) const
@@ -2133,7 +2133,7 @@ unsigned int Magick::Image::depth ( void ) const
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  return GetImageDepth( const_cast<MagickLib::Image*>(constImage()) , &exceptionInfo );
+  return GetImageDepth( constImage(), &exceptionInfo );
 }
 
 std::string Magick::Image::directory ( void ) const
@@ -2167,7 +2167,7 @@ std::string Magick::Image::fileName ( void ) const
 // Image file size
 off_t Magick::Image::fileSize ( void ) const
 {
-  return MagickLib::SizeBlob( const_cast<MagickLib::Image*>(constImage()) );
+  return SizeBlob( constImage() );
 }
 
 // Color to use when drawing inside an object
@@ -2497,7 +2497,7 @@ void Magick::Image::penTexture ( const Image &penTexture_ )
 {
   modifyImage();
   if(penTexture_.isValid())
-    options()->penTexture( const_cast<Image &>(penTexture_).constImage() );
+    options()->penTexture( penTexture_.constImage() );
   else
     options()->penTexture( static_cast<MagickLib::Image*>(NULL) );
 }
@@ -2514,7 +2514,7 @@ Magick::Image  Magick::Image::penTexture ( void  ) const
       ExceptionInfo exceptionInfo;
       GetExceptionInfo( &exceptionInfo );
       MagickLib::Image* image =
-	CloneImage( const_cast<MagickLib::Image *>(tmpTexture),
+	CloneImage( tmpTexture,
                     0, // columns
                     0, // rows
                     1, // orphan
@@ -2681,7 +2681,7 @@ std::string Magick::Image::signature ( bool force_ ) const
        !GetImageAttribute(constImage(), "Signature") ||
        constImage()->taint )
     {
-      MagickLib::SignatureImage( const_cast<MagickLib::Image *>(constImage()) );
+      SignatureImage( const_cast<MagickLib::Image *>(constImage()) );
     }
 
   ImageAttribute * attribute =
@@ -2764,12 +2764,12 @@ Magick::LineCap Magick::Image::strokeLineCap ( void ) const
 // Specify the shape to be used at the corners of paths (or other
 // vector shapes) when they are stroked. Values of LineJoin are
 // UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.
-void Magick::Image::strokeLineJoin ( MagickLib::LineJoin lineJoin_ )
+void Magick::Image::strokeLineJoin ( Magick::LineJoin lineJoin_ )
 {
   modifyImage();
   options()->strokeLineJoin( lineJoin_ );
 }
-MagickLib::LineJoin Magick::Image::strokeLineJoin ( void ) const
+Magick::LineJoin Magick::Image::strokeLineJoin ( void ) const
 {
   return constOptions()->strokeLineJoin( );
 }
@@ -2883,9 +2883,11 @@ void Magick::Image::transformSkewY ( double skewy_ )
 // Image representation type
 Magick::ImageType Magick::Image::type ( void ) const
 {
+
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  return static_cast<Magick::ImageType>(MagickLib::GetImageType(const_cast<MagickLib::Image *>(constImage()), &exceptionInfo));
+  return static_cast<Magick::ImageType>(GetImageType(constImage(),
+                                                     &exceptionInfo));
 }
 void Magick::Image::type ( Magick::ImageType type_)
 {
@@ -2978,6 +2980,22 @@ Magick::Image Magick::Image::operator=( const Magick::Image &image_ )
 // class are provided in order to support backward compatability.
 //
 //////////////////////////////////////////////////////////////////////
+
+// Transfers read-only pixels from the image to the pixel cache as
+// defined by the specified region
+const Magick::PixelPacket* Magick::Image::getConstPixels ( int x_, int y_,
+                                                           unsigned int columns_,
+                                                           unsigned int rows_ ) const
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  const Magick::PixelPacket* p = (*AcquireImagePixels)( constImage(),
+                                                        x_, y_,
+                                                        columns_, rows_,
+                                                        &exceptionInfo );
+  throwException( exceptionInfo );
+  return p;
+}
 
 // Transfers pixels from the image to the pixel cache as defined
 // by the specified region. Modified pixels may be subsequently

@@ -911,6 +911,13 @@ namespace Magick
     //
     //////////////////////////////////////////////////////////////////////
 
+
+    // Transfers read-only pixels from the image to the pixel cache as
+    // defined by the specified region
+    const PixelPacket* getConstPixels ( int x_, int y_,
+                                        unsigned int columns_,
+                                        unsigned int rows_ ) const;
+
     // Transfers pixels from the image to the pixel cache as defined
     // by the specified region. Modified pixels may be subsequently
     // transferred back to the image via syncPixels.

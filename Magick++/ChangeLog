@@ -1,5 +1,8 @@
 2001-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* lib/Image.cpp (getConstPixels): New method for returning a
+ 	read-only pixel view.  Still requires documentation.
+
 	* lib/Magick++/STL.h (coderInfoList): Fixed compilation problem
  	when compiling with Visual C++.
 

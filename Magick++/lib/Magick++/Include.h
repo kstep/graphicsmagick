@@ -328,6 +328,7 @@ namespace Magick
   //
   // ImageMagick symbols used in implementation code
   //
+  using MagickLib::AcquireImagePixels;
   using MagickLib::AcquireMemory;
   using MagickLib::AddNoiseImage;
   using MagickLib::AffineMatrix;
@@ -397,6 +398,7 @@ namespace Magick
   using MagickLib::GetImageDepth;
   using MagickLib::GetImageInfo;
   using MagickLib::GetImagePixels;
+  using MagickLib::GetImageType;
   using MagickLib::GetIndexes;
   using MagickLib::GetMagickInfo;
   using MagickLib::GetNumberColors;
@@ -468,12 +470,14 @@ namespace Magick
   using MagickLib::SetImageInfo;
   using MagickLib::SetImageOpacity;
   using MagickLib::SetImagePixels;
+  using MagickLib::SetImage;
   using MagickLib::SetImageType;
   using MagickLib::SetMagickInfo;
   using MagickLib::ShadeImage;
   using MagickLib::SharpenImage;
   using MagickLib::ShaveImage;
   using MagickLib::ShearImage;
+  using MagickLib::SignatureImage;
   using MagickLib::SizeBlob;
   using MagickLib::SolarizeImage;
   using MagickLib::SpreadImage;
