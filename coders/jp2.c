@@ -219,7 +219,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   jas_init();
   if (image->blob.data != (unsigned char *) NULL)
-    jp2_stream=jas_stream_memopen(image->blob.data,image->blob.length);
+    jp2_stream=jas_stream_memopen((char *) image->blob.data,image->blob.length);
   else
     jp2_stream=jas_stream_freopen(image->filename,ReadBinaryType,image->file);
   if (jp2_stream == (jas_stream_t *) NULL)
@@ -234,7 +234,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=jas_image_width(jp2_image);
   image->rows=jas_image_height(jp2_image);
   number_components=Min(jas_image_numcmpts(jp2_image),4);
-  for (i=0; i < number_components; i++)
+  for (i=0; i < (int) number_components; i++)
   {
     if (jas_image_cmptprec(jp2_image,i) <= 8)
       image->depth=jas_image_cmptprec(jp2_image,i);
@@ -251,7 +251,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (i=0; i < number_components; i++)
+    for (i=0; i < (int) number_components; i++)
       (void) jas_image_readcmpt(jp2_image,i,0,y,image->columns,1,pixels[i]);
     for (x=0; x < (int) image->columns; x++)
     {
@@ -272,7 +272,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       if (QuantumTick(y,image->rows))
         MagickMonitor(LoadImageText,y,image->rows);
   }
-  for (i=0; i < number_components; i++)
+  for (i=0; i < (int) number_components; i++)
     jas_matrix_destroy(pixels[i]);
   jas_image_destroy(jp2_image);
   CloseBlob(image);
@@ -445,7 +445,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   number_components=image->matte ? 4 : 3;
   if (IsGrayImage(image))
     number_components=1;
-  for (i=0; i < number_components; i++)
+  for (i=0; i < (int) number_components; i++)
   {
     memset(component_info+i,0,sizeof(jas_image_cmptparm_t));
     component_info[i].hstep=1;
@@ -461,7 +461,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   /*
     Convert to JPEG 2000 pixels.
   */
-  for (i=0; i < number_components; i++)
+  for (i=0; i < (int) number_components; i++)
   {
     pixels[i]=jas_matrix_create(1,image->columns);
     if (pixels[i] == (jas_matrix_t *) NULL)
@@ -490,13 +490,13 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
         }
       p++;
     }
-    for (i=0; i < number_components; i++)
+    for (i=0; i < (int) number_components; i++)
       (void) jas_image_writecmpt(jp2_image,i,0,y,image->columns,1,pixels[i]);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
         MagickMonitor(SaveImageText,y,image->rows);
   }
-  for (i=0; i < number_components; i++)
+  for (i=0; i < (int) number_components; i++)
     jas_matrix_destroy(pixels[i]);
   (void) strcpy(magick,image_info->magick);
   LocaleLower(magick);

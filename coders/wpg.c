@@ -281,7 +281,7 @@ register IndexPacket *indexes;
 #define InsertByte(b) {BImgBuff[x]=b;x++;if((int)x>=ldblk) {InsertRow(BImgBuff,y,image);x=0;y++;}}
 static int UnpackWPGRaster(Image *image)
 {
-unsigned x,y,i;
+int x,y,i;
 unsigned char bbuf,RunCount;
 unsigned char *BImgBuff;
 
@@ -337,7 +337,7 @@ long ldblk;
 			x=0;
 			y++;    /* Here I need to duplicate previous row RUNCOUNT* */
 			if(y<2) continue;
-			if(y>image->rows)
+			if(y>(int) image->rows)
 				 {
 				 free(BImgBuff);
 				 return(-4);
@@ -354,7 +354,7 @@ long ldblk;
 #define InsertRByte(b) {BImgBuff[x]=b;x++;if(x>=ldblk) {InsertRow(BImgBuff,image->rows-y-1,image);x=0;y++;}}
 static int UnpackWPG2Raster(Image *image)
 {
-unsigned x,y,i;
+int x,y,i;
 unsigned char bbuf,RunCount;
 unsigned char *BImgBuff;
 long ldblk;
