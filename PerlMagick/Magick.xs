@@ -1207,6 +1207,15 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     {
       if (LocaleCompare(attribute,"cache-threshold") == 0)
         {
+          double
+            maximum,
+            minimum;
+
+          minimum=0.0;
+          maximum=0.0;
+          count=sscanf(info->image_info->density,"%lfx%lf",&minimum,&maximum);
+          if (count == 1)
+            maximum=minimum;
           SetCacheThreshold(SvIV(sval));
           return;
         }

@@ -658,14 +658,26 @@ int main(int argc,char **argv)
       {
         if (LocaleCompare("cache",option+1) == 0)
           {
-            SetCacheThreshold(0);
             if (*option == '-')
               {
+                int
+                  count;
+
+                double
+                  maximum,
+                  minimum;
+
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                  MagickFatalError(OptionFatalError,"Missing threshold",option);
-                SetCacheThreshold(atol(argv[i]));
-              }
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  ThrowCompositeException(OptionError,"Missing threshold",
+                    option);
+                minimum=0.0;
+                maximum=0.0;
+                count=sscanf(argv[++i],"%lfx%lf",&minium,&maximum);
+                if (count == 1)
+                  maximum=minimum;
+                SetCacheThreshold((size_t) minimum,(size_t) maximum);
+							}
             break;
           }
         if (LocaleCompare("colormap",option+1) == 0)
