@@ -1654,6 +1654,9 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
         AnnotateInfo
           *annotate;
 
+        ImageInfo
+          *clone_info;
+
         register char
           *r;
 
@@ -1682,12 +1685,16 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
             for (r++;  *r != '\0'; r++)
               if (isspace((int) *r) && (*(r-1) != '\\'))
                 break;
-        annotate=CloneAnnotateInfo((ImageInfo *) NULL,(AnnotateInfo *) NULL);
+        clone_info=CloneImageInfo((ImageInfo *) NULL);
+        annotate=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
+        DestroyImageInfo(clone_info);
         annotate->font=AllocateString(draw_info->font);
         annotate->pen=AllocateString(draw_info->pen);
         annotate->box=AllocateString(draw_info->box);
         annotate->antialias=draw_info->antialias;
         annotate->gravity=draw_info->gravity;
+        annotate->text=AllocateString(p->text);
+        annotate->geometry=AllocateString("                                  ");
         (void) strncpy(annotate->text,p->text,r-p->text);
         annotate->text[r-p->text]='\0';
         FormatString(annotate->geometry,"%+f%+f",p->pixel.x,p->pixel.y);
