@@ -301,10 +301,7 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
     }
     case ClearCompositeOp:
     {
-      color.red=0;
-      color.green=0;
-      color.blue=0;
-      color.opacity=0;
+      memset(&color,0,sizeof(color));
       return(color);
     }
     case DissolveCompositeOp:
