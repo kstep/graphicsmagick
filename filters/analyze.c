@@ -62,7 +62,6 @@
 %    o image: The address of a structure of type Image.
 %
 */
-//#define PRECISION "%.2f"
 #define PRECISION "%.0f"
 ModuleExport unsigned int AnalyzeImage(Image **image,
   const int argc,char **argv)
@@ -141,28 +140,28 @@ ModuleExport unsigned int AnalyzeImage(Image **image,
       brightness_mean = bsumX/total_pixels;
       FormatString(text,PRECISION,brightness_mean);
       (void) SetImageAttribute((*image),"BrightnessMean",text);
-      // This formula gives a slightly biased result
+      /*  This formula gives a slightly biased result */
       brightness_stdev =
           sqrt(bsumX2/total_pixels - (bsumX/total_pixels*bsumX/total_pixels));
       FormatString(text,PRECISION,brightness_stdev);
       (void) SetImageAttribute((*image),"BrightnessStddev",text);
-      // Now the correction for bias.
-      //stdev = stdev*sqrt((double)total_pixels/(double)(total_pixels-1));
-      // Now calculate the standard deviation of the mean
-      //  brightness_stdevmean = bstdev/sqrt((double)total_pixels);
+      /* Now the correction for bias. */
+      /*  stdev = stdev*sqrt((double)total_pixels/(double)(total_pixels-1)); */
+      /* Now calculate the standard deviation of the mean */
+      /*  brightness_stdevmean = bstdev/sqrt((double)total_pixels); */
 
       saturation_mean = ssumX/total_pixels;
       FormatString(text,PRECISION,saturation_mean);
       (void) SetImageAttribute((*image),"SaturationMean",text);
-      // This formula gives a slightly biased result
+      /* This formula gives a slightly biased result */
       saturation_stdev =
           sqrt(ssumX2/total_pixels - (ssumX/total_pixels*ssumX/total_pixels));
       FormatString(text,PRECISION,saturation_stdev);
       (void) SetImageAttribute((*image),"SaturationStddev",text);
-      // Now the correction for bias.
-      //stdev = stdev*sqrt((double)total_pixels/(double)(total_pixels-1));
-      // Now calculate the standard deviation of the mean
-      //  saturation_stdevmean = sstdev/sqrt((double)total_pixels);
+      /* Now the correction for bias. */
+      /*  stdev = stdev*sqrt((double)total_pixels/(double)(total_pixels-1)); */
+      /* Now calculate the standard deviation of the mean */
+      /*  saturation_stdevmean = sstdev/sqrt((double)total_pixels); */
     }
   return(True);
 }

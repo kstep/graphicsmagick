@@ -1,5 +1,6 @@
 2003-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* filters/analyze.c: Replace C++ comments with C comments.
 	* magick/command.c: For the composite, convert, identify, mogrify,
 	and montage commands, make sure a usage error is returned if a
 	usage message is printed. This is useful for ImageMagickObject
