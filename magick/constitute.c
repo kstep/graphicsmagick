@@ -2157,7 +2157,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         quantum=target > last ? -1 : 1;
         for ( ; target != (last+quantum); target+=quantum)
         {
-          for (next=image; next; next=GetNextImage(next))
+          for (next=image; next; next=next->next)
           {
             Image
               *clone_image;
@@ -2205,7 +2205,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
             (image->scene <= (clone_info->subimage+clone_info->subrange-1));
           if (image->next != (Image *) NULL)
             {
-              image=GetNextImage(image);
+              image=image->next;
               if (!retain)
                 DestroyImage(image->previous);
               continue;
@@ -2241,7 +2241,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       DestroyImageInfo(clone_info);
       return((Image *) NULL);
     }
-  for (next=image; next; next=GetNextImage(next))
+  for (next=image; next; next=next->next)
   {
     next->taint=False;
     (void) strncpy(next->magick_filename,clone_info->filename,MaxTextExtent-1);

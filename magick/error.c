@@ -305,7 +305,7 @@ MagickExport void GetImageException(const Image *image,ExceptionInfo *exception)
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  for (next=image; next != (Image *) NULL; next=GetNextImage(next))
+  for (next=image; next != (Image *) NULL; next=next->next)
   {
     if (next->exception.severity == UndefinedException)
       continue;
