@@ -1031,6 +1031,12 @@ image colorspace differs
 .
 
 MessageId       = +1
+SymbolicName    = ImageErrorImageDoesNotContainResolution
+Language        = English
+image does not contain resolution
+.
+
+MessageId       = +1
 SymbolicName    = ImageErrorImageOpacityDiffers
 Language        = English
 image opacity differs

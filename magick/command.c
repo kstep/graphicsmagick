@@ -8763,48 +8763,67 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           {
             Image
               *resample_image;
-
+            
             char
               resample_density[MaxTextExtent];
-
-            unsigned long
+            
+            double
               x_resolution,
               y_resolution;
-
+            
             unsigned long
               resample_height,
               resample_width;
-
-            long
-              x,
-              y;
-
-            int
-              flags;
-
+            
             /*
-              Resample image.
+              Verify that image contains useful resolution information.
             */
-            flags=GetGeometry(argv[++i],&x,&y,&x_resolution,&y_resolution);
-            if (!(flags & HeightValue))
-              y_resolution=x_resolution;
-            FormatString(resample_density,"%lux%lu",x_resolution,y_resolution);
-            if ((*image)->x_resolution == 0)
-              (*image)->x_resolution=72.0;
-            if ((*image)->y_resolution == 0)
-              (*image)->y_resolution=72.0;
+            if ( ((*image)->x_resolution == 0) || ((*image)->y_resolution == 0) )
+              {
+                ThrowException(&(*image)->exception,ImageError,
+                               ImageDoesNotContainResolution,image_info->filename);
+                continue;
+              }
+            
+            /*
+              Obtain target resolution.
+            */
+            {
+              unsigned long
+                x_integral_resolution=0,
+                y_integral_resolution=0;
+              
+              long
+                x,
+                y;
+              
+              int
+                flags;
+              
+              flags=GetGeometry(argv[++i],&x,&y,&x_integral_resolution,&y_integral_resolution);
+              if (!(flags & HeightValue))
+                y_integral_resolution=x_integral_resolution;
+              FormatString(resample_density,"%lux%lu",x_integral_resolution,y_integral_resolution);
+              x_resolution=x_integral_resolution;
+              y_resolution=y_integral_resolution;
+            }
+            
             resample_width=(unsigned long)
-              ((*image)->columns*((double)x_resolution/(*image)->x_resolution)+0.5);
+              ((*image)->columns*(x_resolution/(*image)->x_resolution)+0.5);
             resample_height=(unsigned long)
-              ((*image)->rows*((double)y_resolution/(*image)->y_resolution)+0.5);
+              ((*image)->rows*(y_resolution/(*image)->y_resolution)+0.5);
             (void) CloneString(&clone_info->density,resample_density);
             (void) CloneString(&draw_info->density,resample_density);
             (*image)->x_resolution=x_resolution;
             (*image)->y_resolution=y_resolution;
             if ((((*image)->columns == resample_width)) && ((*image)->rows == resample_height))
               break;
+            
+            /*
+              Resample image.
+            */
             resample_image=ResizeImage(*image,resample_width,resample_height,(*image)->filter,
-              (*image)->blur,&(*image)->exception);
+                                       (*image)->blur,&(*image)->exception);
             if (resample_image == (Image *) NULL)
               break;
             DestroyImage(*image);
@@ -9201,20 +9220,39 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleCompare("units",option+1) == 0)
           {
             ResolutionType
-              resolution;
+              resolution_type = UndefinedResolution;
 
             if (*option == '+')
               {
-                (*image)->units=UndefinedResolution;
-                continue;
               }
-            option=argv[++i];
-            resolution=UndefinedResolution;
-            if (LocaleCompare("PixelsPerInch",option) == 0)
-              resolution=PixelsPerInchResolution;
-            if (LocaleCompare("PixelsPerCentimeter",option) == 0)
-              resolution=PixelsPerCentimeterResolution;
-            (*image)->units=resolution;
+            else if (*option == '-')
+              {
+                option=argv[++i];
+                if (LocaleCompare("PixelsPerInch",option) == 0)
+                  resolution_type=PixelsPerInchResolution;
+                if (LocaleCompare("PixelsPerCentimeter",option) == 0)
+                  resolution_type=PixelsPerCentimeterResolution;
+              }
+
+            if ( (resolution_type == PixelsPerInchResolution) &&
+                 ((*image)->units == PixelsPerCentimeterResolution) )
+              {
+                (*image)->x_resolution /= 2.54;
+                (*image)->y_resolution /= 2.54;
+              }
+            else if ( (resolution_type == PixelsPerCentimeterResolution) &&
+                      ((*image)->units == PixelsPerInchResolution) )
+              {
+                (*image)->x_resolution *= 2.54;
+                (*image)->y_resolution *= 2.54;
+              }
+            else if ( resolution_type == UndefinedResolution )
+              {
+                (*image)->x_resolution = 0.0;
+                (*image)->y_resolution = 0.0;
+              }
+            
+            (*image)->units=resolution_type;
             continue;
           }
         if (LocaleCompare("unsharp",option+1) == 0)

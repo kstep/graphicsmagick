@@ -1,3 +1,15 @@
+2004-06-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImage): When re-sampling an image, report an error if the
+	image does not contain a valid resolution.
+	* coders/pcx.c (WritePCXImage): Support writing large PCX files.
+	(WritePCXImage): Ensure that UndefinedResolution is handled
+	properly. Avoid round-off error for centimeter based resolution.
+	* magick/command.c (MogrifyImage): When setting image units, also
+	adjust existing image x_resolution and y_resolution so that
+	existing image resolution is not trashed.
+	* configure.ac: Look for mozilla by default rather than netscape.
+
 2004-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Released 1.1.2.
