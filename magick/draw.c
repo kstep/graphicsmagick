@@ -1315,7 +1315,7 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
   if (dash_polygon == (PrimitiveInfo *) NULL)
     return(False);
   scale=ExpandAffine(&draw_info->affine);
-  offset=draw_info->dash_offset != 0.0 ?  scale*draw_info->dash_offset : 0.0;
+  offset=draw_info->dash_offset != 0.0 ? scale*draw_info->dash_offset : 0.0;
   length=0.0;
   for (n=(-1); offset > 0.0; )
   {
@@ -2285,7 +2285,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                     GetToken(p,&p,token);
                 }
                 graphic_context[n]->dash_pattern=(double *)
-                  AcquireMemory((x+1)*sizeof(double));
+                  AcquireMemory((2*x+1)*sizeof(double));
                 if (graphic_context[n]->dash_pattern == (double *) NULL)
                   {
                     ThrowException(&image->exception,ResourceLimitWarning,
@@ -2299,6 +2299,10 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                     GetToken(q,&q,token);
                   graphic_context[n]->dash_pattern[j]=atof(token);
                 }
+                if (x & 0x01)
+                  for ( ; j < (2*x); j++)
+                    graphic_context[n]->dash_pattern[j]=
+                      graphic_context[n]->dash_pattern[j-x];
                 graphic_context[n]->dash_pattern[j]=0.0;
                 break;
               }
