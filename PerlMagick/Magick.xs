@@ -4218,7 +4218,7 @@ Mogrify(ref,...)
         case 16:  /* Implode */
         {
           if (!attribute_flag[0])
-            argument_list[0].double_reference=3.0;
+            argument_list[0].double_reference=0.5;
           image=ImplodeImage(image,argument_list[0].double_reference,
             &exception);
           break;

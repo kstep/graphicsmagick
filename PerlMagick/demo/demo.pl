@@ -137,7 +137,7 @@ $example->Quantize(colorspace=>'gray');
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Implode');
-$example->Implode(0.3);
+$example->Implode(0.5);
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Median Filter');
