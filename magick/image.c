@@ -2386,7 +2386,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
             register int
               j;
 
-            (void) strncpy(text,image->iptc_profile.info+i,length);
+            (void) strncpy(text,(char *) image->iptc_profile.info+i,length);
             text[length]='\0';
             textlist=StringToList(text);
             if (textlist != (char **) NULL)
