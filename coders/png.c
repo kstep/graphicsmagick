@@ -686,12 +686,7 @@ static unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
 %  To do, more or less in chronological order (as of version 5.1.1,
 %   January 25, 2000 -- glennrp -- see also "To do" under WritePNGImage):
 %
-%    Restore features that were lost in the 4.2.9-to-5.1.0 update:
-%
-%       o preserve transparency when reading gray-alpha PNGs
-%       o variable interframe durations (start_loop feature
-%         was broken)
-%       o coalescing frames that have zero interframe duration
+%    Add MAGN chunk support.
 %
 %    (At this point, PNG decoding is supposed to be in full MNG-LC compliance)
 %
@@ -1222,7 +1217,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
   mng_type=0;
-  insert_layers=False;
+  insert_layers=False;  /* should be False when converting or mogrifying */
   default_frame_delay=0;
   default_frame_timeout=0;
   frame_delay=0;
@@ -1330,6 +1325,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               mng_type=2; /* LC */
             if ((simplicity != 0) && ((simplicity | 9) == 9))
               mng_type=3; /* VLC */
+            if (mng_type != 3)
+              insert_layers=True;
             if (GetPixels(image) != (PixelPacket *) NULL)
               {
                 /*
@@ -1464,6 +1461,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (unsigned short) XDownScale((p[2]<<8) | p[3]);
                 mng_background_color.blue=
                   (unsigned short) XDownScale((p[4]<<8) | p[5]);
+                mng_background_color.opacity=OpaqueOpacity;
               }
 #ifdef MNG_OBJECT_BUFFERS
             if (length > 8)
@@ -1979,13 +1977,13 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         /*
           Insert a transparent background layer behind the entire animation
-          if it is not full screen or transparency might be present.
+          if it is not full screen.
         */
         if (insert_layers && mng_type && first_mng_object)
           {
-            if ((simplicity == 0) || ((simplicity & 0x08) == 0x08) ||
-                ((clip.left != 0) || (clip.top != 0) ||
-                (image_width != mng_width) || (image_height != mng_height)))
+            if ((clip.left > 0) || (clip.top > 0) ||
+                (image_width < mng_width) || (clip.right < mng_width) ||
+                (image_height < mng_height) || (clip.bottom < mng_height))
               {
                 if (GetPixels(image) != (PixelPacket *) NULL)
                   {
@@ -2022,7 +2020,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->page.x=0;
                 image->page.y=0;
                 image->background_color=mng_background_color;
-                image->matte=True;
                 SetImage(image,TransparentOpacity);
               }
           }
@@ -2066,8 +2063,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->page.x=clip.left;
             image->page.y=clip.top;
             image->background_color=mng_background_color;
-            image->matte=True;
-            SetImage(image,TransparentOpacity);
+            image->matte=False;
+            SetImage(image,OpaqueOpacity);
           }
         first_mng_object=False;
         /*
@@ -2941,7 +2938,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 */
                 image->columns=1;
                 image->rows=1;
-                image->matte=True;
                 image->colors=2;
                 SetImage(image,TransparentOpacity);
                 image->page.width=1;
@@ -2956,7 +2952,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       CatchImageException(image);
   } while (LocaleCompare(image_info->magick,"MNG") == 0);
-  if (!image_found && (mng_width > 0) && (mng_height > 0))
+  if (insert_layers && !image_found && (mng_width > 0) && (mng_height > 0))
     {
       /*
         Insert a background layer if nothing else was found.
@@ -2990,8 +2986,13 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (ticks_per_second)
      image->delay=(unsigned int) (100*final_delay/ticks_per_second);
   else
+    {
      image->delay=(unsigned int) final_delay;
+     image->start_loop=True;
+    }
   image->iterations=mng_iterations;
+  if (mng_iterations == 1)
+    image->start_loop=True;
   while (image->previous != (Image *) NULL)
   {
     image_count++;
@@ -3019,6 +3020,30 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         DestroyImages(image);
       MngInfoFreeStruct(mng_info,&have_mng_structure);
       return((Image *) NULL);
+    }
+  if (insert_layers)
+    {
+      Image
+        *next_image,
+        *next;
+
+      next_image=CoalesceImages(image,&image->exception);
+      if (next_image == (Image *) NULL)
+        MagickError(image->exception.severity,image->exception.reason,
+          image->exception.description);
+      DestroyImages(image);
+      image=next_image;
+
+      for(next=image; next->next != (Image *) NULL; next=next_image)
+      {
+         next_image=next->next;
+         if (next->delay == 0)
+           {
+             if (image == next)
+               image=next_image;
+             DestroyImage(next);
+           }
+      }
     }
   CloseBlob(image);
   MngInfoFreeStruct(mng_info,&have_mng_structure);
@@ -3156,8 +3181,6 @@ ModuleExport void UnregisterPNGImage(void)
 %    Check for identical PLTE's or PLTE/tRNS combinations and use a
 %    global MNG PLTE or PLTE/tRNS combination when appropriate.
 %    [mostly done 15 June 1999 but still need to take care of tRNS]
-%
-%    Put the transparent color first in the PLTE of indexed-color PNGs.
 %
 %    Check for identical sRGB and replace with a global sRGB (and remove
 %    gAMA/cHRM if sRGB is found; check for identical gAMA/cHRM and

@@ -506,7 +506,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("compose",option+1,5) == 0)
             {
-              montage_info->compose=ReplaceCompositeOp;
+              montage_info->compose=CopyCompositeOp;
               if (*option == '-')
                 {
                   i++;
@@ -538,16 +538,16 @@ int main(int argc,char **argv)
                     montage_info->compose=MultiplyCompositeOp;
                   if (LocaleCompare("Bumpmap",option) == 0)
                     montage_info->compose=BumpmapCompositeOp;
-                  if (LocaleCompare("Replace",option) == 0)
-                    montage_info->compose=ReplaceCompositeOp;
-                  if (LocaleCompare("ReplaceRed",option) == 0)
-                    montage_info->compose=ReplaceRedCompositeOp;
-                  if (LocaleCompare("ReplaceGreen",option) == 0)
-                    montage_info->compose=ReplaceGreenCompositeOp;
-                  if (LocaleCompare("ReplaceBlue",option) == 0)
-                    montage_info->compose=ReplaceBlueCompositeOp;
-                  if (LocaleCompare("ReplaceMatte",option) == 0)
-                    montage_info->compose=ReplaceMatteCompositeOp;
+                  if (LocaleCompare("Copy",option) == 0)
+                    montage_info->compose=CopyCompositeOp;
+                  if (LocaleCompare("CopyRed",option) == 0)
+                    montage_info->compose=CopyRedCompositeOp;
+                  if (LocaleCompare("CopyGreen",option) == 0)
+                    montage_info->compose=CopyGreenCompositeOp;
+                  if (LocaleCompare("CopyBlue",option) == 0)
+                    montage_info->compose=CopyBlueCompositeOp;
+                  if (LocaleCompare("CopyOpacity",option) == 0)
+                    montage_info->compose=CopyOpacityCompositeOp;
                   if (montage_info->compose == UndefinedCompositeOp)
                     MagickError(OptionError,"Invalid compose type",option);
                 }

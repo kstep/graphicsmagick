@@ -52,7 +52,6 @@
 %  Usage: combine [options ...] image composite [mask] combined
 %
 %  Where options include:
-%    -blend value        blend the two images a given percent
 %    -cache threshold    number of megabytes available to the pixel cache
 %    -colors value       preferred number of colors in the image
 %    -compose operator   composite operator
@@ -63,6 +62,7 @@
 %    -displace geometry  shift image pixels as defined by a displacement map
 %    -display server     obtain image or font from this X server
 %    -dispose method     GIF disposal method
+%    -dissolve value     dissolve the two images a given percent
 %    -dither             apply Floyd/Steinberg error diffusion to image
 %    -font name          X11 font for displaying text
 %    -geometry geometry  location of the composite image
@@ -118,7 +118,6 @@ static void Usage()
   static const char
     *options[]=
     {
-      "-blend value        blend the two images a given percent",
       "-cache threshold    number of megabytes available to the pixel cache",
       "-colors value       preferred number of colors in the image",
       "-colorspace type    alternate image colorspace",
@@ -129,6 +128,7 @@ static void Usage()
       "-displace geometry  shift image pixels as defined by a displacement map",
       "-display server     obtain image or font from this X server",
       "-dispose method     GIF disposal method",
+      "-dissolve value     dissolve the two images a given percent",
       "-dither             apply Floyd/Steinberg error diffusion to image",
       "-font name          X11 font for displaying text",
       "-geometry geometry  location of the composite image",
@@ -193,7 +193,7 @@ int main(int argc,char **argv)
     compose;
 
   double
-    blend,
+    dissolve,
     sans;
 
   ExceptionInfo
@@ -253,8 +253,8 @@ int main(int argc,char **argv)
   /*
     Set default.
   */
-  blend=0.0;
-  compose=ReplaceCompositeOp;
+  dissolve=0.0;
+  compose=CopyCompositeOp;
   composite_image=(Image *) NULL;
   displacement_geometry=(char *) NULL;
   GetExceptionInfo(&exception);
@@ -321,19 +321,6 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing background color",option);
                   (void) QueryColorDatabase(argv[i],
                     &image_info->background_color);
-                }
-              break;
-            }
-          if (LocaleNCompare("blend",option+1,3) == 0)
-            {
-              blend=0.0;
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
-                    MagickError(OptionError,"Missing value",option);
-                  blend=atof(argv[i]);
-                  compose=BlendCompositeOp;
                 }
               break;
             }
@@ -414,7 +401,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("compose",option+1,5) == 0)
             {
-              compose=ReplaceCompositeOp;
+              compose=CopyCompositeOp;
               if (*option == '-')
                 {
                   i++;
@@ -446,16 +433,16 @@ int main(int argc,char **argv)
                     compose=MultiplyCompositeOp;
                   if (LocaleCompare("Bumpmap",option) == 0)
                     compose=BumpmapCompositeOp;
-                  if (LocaleCompare("Replace",option) == 0)
-                    compose=ReplaceCompositeOp;
-                  if (LocaleCompare("ReplaceRed",option) == 0)
-                    compose=ReplaceRedCompositeOp;
-                  if (LocaleCompare("ReplaceGreen",option) == 0)
-                    compose=ReplaceGreenCompositeOp;
-                  if (LocaleCompare("ReplaceBlue",option) == 0)
-                    compose=ReplaceBlueCompositeOp;
-                  if (LocaleCompare("ReplaceMatte",option) == 0)
-                    compose=ReplaceMatteCompositeOp;
+                  if (LocaleCompare("Copy",option) == 0)
+                    compose=CopyCompositeOp;
+                  if (LocaleCompare("CopyRed",option) == 0)
+                    compose=CopyRedCompositeOp;
+                  if (LocaleCompare("CopyGreen",option) == 0)
+                    compose=CopyGreenCompositeOp;
+                  if (LocaleCompare("CopyBlue",option) == 0)
+                    compose=CopyBlueCompositeOp;
+                  if (LocaleCompare("CopyOpacity",option) == 0)
+                    compose=CopyOpacityCompositeOp;
                   if (compose == UndefinedCompositeOp)
                     MagickError(OptionError,"Invalid compose type",option);
                 }
@@ -543,6 +530,19 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing method",option);
+                }
+              break;
+            }
+          if (LocaleNCompare("dissolve",option+1,3) == 0)
+            {
+              dissolve=0.0;
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing value",option);
+                  dissolve=atof(argv[i]);
+                  compose=DissolveCompositeOp;
                 }
               break;
             }
@@ -913,7 +913,7 @@ int main(int argc,char **argv)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   if (mask_image != (Image *) NULL)
     {
-      status=CompositeImage(composite_image,ReplaceMatteCompositeOp,
+      status=CompositeImage(composite_image,CopyOpacityCompositeOp,
         mask_image,0,0);
       if (status == False)
         CatchImageException(composite_image);
@@ -925,7 +925,7 @@ int main(int argc,char **argv)
         *q;
 
       /*
-        Create mattes for blending.
+        Create mattes for dissolve.
       */
       for (y=0; y < (int) composite_image->rows; y++)
       {
@@ -935,9 +935,9 @@ int main(int argc,char **argv)
         for (x=0; x < (int) composite_image->columns; x++)
         {
           if (composite_image->matte)
-            q->opacity=(Quantum) (((MaxRGB-q->opacity)*blend)/100);
+            q->opacity=(Quantum) (((MaxRGB-q->opacity)*dissolve)/100);
           else
-            q->opacity=(Quantum) ((MaxRGB*blend)/100);
+            q->opacity=(Quantum) ((MaxRGB*dissolve)/100);
           q++;
         }
         if (!SyncImagePixels(composite_image))

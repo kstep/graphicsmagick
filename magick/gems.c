@@ -61,27 +61,30 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o m p o s i t e O v e r                                                 %
+%   A l p h a C o m p o s i t e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CompositeOver implements the Over alpha compositing rules for
-%  combining source and destination pixels to achieve blending and
-%  transparency effects with graphics and images. The rules implemented by
-%  this class are a subset of the Porter-Duff rules described in T. Porter
-%  and T. Duff, "Compositing Digital Images", SIGGRAPH 84, 253-259.
+%  Method AlphaComposite implements the alpha compositing rules for combining
+%  source and destination pixels to achieve blending and transparency effects
+%  with graphics and images. The rules implemented by this class are a subset
+%  of the Porter-Duff rules described in T. Porter and T. Duff, "Compositing
+%  Digital Images", SIGGRAPH 84, 253-259.
 %
-%  The format of the CompositeOver method is:
+%  The format of the AlphaComposite method is:
 %
-%      PixelPacket CompositeOver(const PixelPacket *p,const double alpha,
-%        const PixelPacket *q,const double beta)
+%      PixelPacket AlphaComposite(const CompositeOperator compose,
+%        const PixelPacket *p,const double alpha,const PixelPacket *q,
+%        const double beta)
 %
 %  A description of each parameter follows:
 %
-%    o color: Method CompositeOver returns the color resulting from the
+%    o color: method AlphaComposite returns the color resulting from the
 %      compositing operation.
+%
+%    o compose: specifies an image composite operator.
 %
 %    o p: one of the color components of the source pixel.
 %
@@ -93,24 +96,227 @@
 %
 %
 */
-MagickExport PixelPacket CompositeOver(const PixelPacket *p,const double alpha,
-  const PixelPacket *q,const double beta)
+MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
+  const PixelPacket *p,const double alpha,const PixelPacket *q,
+  const double beta)
 {
   double
-    gamma;
+    blue,
+    green,
+    opacity,
+    red;
 
   PixelPacket
     color;
 
-  gamma=1.0/((MaxRGB-alpha)+(MaxRGB-beta)-(MaxRGB-alpha)*(MaxRGB-beta)/MaxRGB);
-  color.red=(Quantum) (gamma*((MaxRGB-alpha)*p->red+(MaxRGB-beta)*(q->red-
-    (MaxRGB-alpha)*p->red/MaxRGB))+0.5);
-  color.green=(Quantum) (gamma*((MaxRGB-alpha)*p->green+(MaxRGB-beta)*(q->green-
-    (MaxRGB-alpha)*p->green/MaxRGB))+0.5);
-  color.blue=(Quantum) (gamma*((MaxRGB-alpha)*p->blue+(MaxRGB-beta)*(q->blue-
-    (MaxRGB-alpha)*p->blue/MaxRGB))+0.5);
-  color.opacity=(Quantum) (gamma*((MaxRGB-alpha)*p->opacity+(MaxRGB-beta)*
-    (q->opacity-(MaxRGB-alpha)*p->opacity/MaxRGB))+0.5);
+  switch (compose)
+  {
+    case OverCompositeOp:
+    default:
+    {
+      switch ((int) alpha)
+      {
+        case TransparentOpacity:
+        {
+          color.red=q->red;
+          color.green=q->green;
+          color.blue=q->blue;
+          color.opacity=q->opacity;
+          break;
+        }
+        case OpaqueOpacity:
+        {
+          color.red=p->red;
+          color.green=p->green;
+          color.blue=p->blue;
+          color.opacity=p->opacity;
+          break;
+        }
+        default:
+        {
+          double
+            gamma;
+
+          gamma=1.0/((MaxRGB-beta)+(MaxRGB-alpha)-
+            (MaxRGB-beta)*(MaxRGB-alpha)/MaxRGB);
+          color.red=(Quantum) (gamma*((MaxRGB-beta)*q->red+(MaxRGB-alpha)*
+            (p->red-(MaxRGB-beta)*q->red/MaxRGB))+0.5);
+          color.green=(Quantum) (gamma*((MaxRGB-beta)*q->green+(MaxRGB-alpha)*
+            (p->green-(MaxRGB-beta)*q->green/MaxRGB))+0.5);
+          color.blue=(Quantum) (gamma*((MaxRGB-beta)*q->blue+(MaxRGB-alpha)*
+            (p->blue-(MaxRGB-beta)*q->blue/MaxRGB))+0.5);
+          color.opacity=(Quantum) (gamma*((MaxRGB-beta)*alpha+(MaxRGB-alpha)*
+            (alpha-(MaxRGB-beta)*beta/MaxRGB))+0.5);
+          break;
+        }
+      }
+      return(color);
+    }
+    case InCompositeOp:
+    {
+      color.red=p->red*(MaxRGB-beta)/MaxRGB;
+      color.green=p->green*(MaxRGB-beta)/MaxRGB;
+      color.blue=p->blue*(MaxRGB-beta)/MaxRGB;
+      color.opacity=alpha*(MaxRGB-beta)/MaxRGB;
+      return(color);
+    }
+    case OutCompositeOp:
+    {
+      color.red=(Quantum) (p->red*beta/MaxRGB);
+      color.green=(Quantum) (p->green*beta/MaxRGB);
+      color.blue=(Quantum) (p->blue*beta/MaxRGB);
+      color.opacity=(Quantum) (alpha*beta/MaxRGB);
+      return(color);
+    }
+    case AtopCompositeOp:
+    {
+      color.red=(Quantum) ((p->red*(MaxRGB-beta)+q->red*alpha)/MaxRGB);
+      color.green=(Quantum) ((p->green*(MaxRGB-beta)+q->green*alpha)/MaxRGB);
+      color.blue=(Quantum) ((p->blue*(MaxRGB-beta)+q->blue*alpha)/MaxRGB);
+      color.opacity=(Quantum) ((alpha*(MaxRGB-beta)+beta*alpha)/MaxRGB);
+      return(color);
+    }
+    case XorCompositeOp:
+    {
+      color.red=(Quantum) ((p->red*beta+q->red*alpha)/MaxRGB);
+      color.green=(Quantum) ((p->green*beta+q->green*alpha)/MaxRGB);
+      color.blue=(Quantum) ((p->blue*beta+q->blue*alpha)/MaxRGB);
+      color.opacity=(Quantum) ((alpha*beta+beta*alpha)/MaxRGB);
+      return(color);
+    }
+    case PlusCompositeOp:
+    {
+      red=p->red+q->red;
+      green=p->green+q->green;
+      blue=p->blue+q->blue;
+      opacity=alpha+beta;
+      break;
+    }
+    case MinusCompositeOp:
+    {
+      red=p->red-q->red;
+      green=p->green-q->green;
+      blue=p->blue-q->blue;
+      opacity=OpaqueOpacity;
+      break;
+    }
+    case AddCompositeOp:
+    {
+      red=p->red+q->red;
+      green=p->green+q->green;
+      blue=p->blue+q->blue;
+      opacity=alpha+beta;
+      break;
+    }
+    case SubtractCompositeOp:
+    {
+      red=p->red-q->red;
+      green=p->green-q->green;
+      blue=p->blue-q->blue;
+      opacity=alpha-beta;
+      break;
+    }
+    case MultiplyCompositeOp:
+    {
+      color.red=(unsigned long) (p->red*q->red/MaxRGB);
+      color.green=(unsigned long) (p->green*q->green/MaxRGB);
+      color.blue=(unsigned long) (p->blue*q->blue/MaxRGB);
+      color.opacity=(unsigned long) (alpha*beta/MaxRGB);
+      return(color);
+    }
+    case DifferenceCompositeOp:
+    {
+      red=fabs(p->red-q->red);
+      green=fabs(p->green-q->green);
+      blue=fabs(p->blue-q->blue);
+      opacity=fabs(alpha-beta);
+      break;
+    }
+    case BumpmapCompositeOp:
+    {
+      color.red=(unsigned long) (q->red*Intensity(*p)/MaxRGB);
+      color.green=(unsigned long) (q->green*Intensity(*p)/MaxRGB);
+      color.blue=(unsigned long) (q->blue*Intensity(*p)/MaxRGB);
+      color.opacity=(unsigned long) (beta*Intensity(*p)/MaxRGB);
+      return(color);
+    }
+    case CopyCompositeOp:
+    {
+      color.red=p->red;
+      color.green=p->green;
+      color.blue=p->blue;
+      color.opacity=alpha;
+      return(color);
+    }
+    case CopyRedCompositeOp:
+    {
+      color.red=Intensity(*p);
+      color.green=q->green;
+      color.blue=q->blue;
+      color.opacity=beta;
+      return(color);
+    }
+    case CopyGreenCompositeOp:
+    {
+      color.red=q->red;
+      color.green=Intensity(*p);
+      color.blue=q->blue;
+      color.opacity=beta;
+      return(color);
+    }
+    case CopyBlueCompositeOp:
+    {
+      color.red=q->red;
+      color.green=q->green;
+      color.blue=Intensity(*p);
+      color.opacity=beta;
+      return(color);
+    }
+    case CopyOpacityCompositeOp:
+    {
+      color.red=q->red;
+      color.green=q->green;
+      color.blue=q->blue;
+      color.opacity=Intensity(*p);
+      return(color);
+    }
+    case ClearCompositeOp:
+    {
+      color.red=0;
+      color.green=0;
+      color.blue=0;
+      color.opacity=0;
+      return(color);
+    }
+    case DissolveCompositeOp:
+    {
+      color.red=(unsigned long)
+        ((p->red*(MaxRGB-alpha)+q->red*(MaxRGB-beta))/MaxRGB);
+      color.green=(unsigned long)
+        ((p->green*(MaxRGB-alpha)+q->green*(MaxRGB-beta))/MaxRGB);
+      color.blue=(unsigned long)
+        ((p->blue*(MaxRGB-alpha)+q->blue*(MaxRGB-beta))/MaxRGB);
+      color.opacity=(unsigned long)
+        ((alpha*(MaxRGB-alpha)+beta*(MaxRGB-beta))/MaxRGB);
+      return(color);
+    }
+    case DisplaceCompositeOp:
+    {
+      color.red=p->red;
+      color.green=p->green;
+      color.blue=p->blue;
+      color.opacity=alpha;
+      return(color);
+    }
+  }
+  color.red=(Quantum)
+    (red+(red < 0.0 ? MaxRGB : (red > MaxRGB) ? -MaxRGB : 0)+0.5);
+  color.green=(Quantum)
+    (green+(green < 0.0 ? MaxRGB : (green > MaxRGB) ? -MaxRGB : 0)+0.5);
+  color.blue=(Quantum)
+    (blue+(blue < 0.0 ? MaxRGB : (blue > MaxRGB) ? -MaxRGB : 0)+0.5);
+  color.opacity=(Quantum)
+    (opacity+(opacity < 0.0 ? MaxRGB : (opacity > MaxRGB) ? -MaxRGB : 0)+0.5);
   return(color);
 }
 

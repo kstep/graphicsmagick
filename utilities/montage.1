@@ -207,11 +207,11 @@ operation:
     Difference
     Multiply
     Bumpmap
-    Replace
-    ReplaceRed
-    ReplaceGreen
-    ReplaceBlue
-    ReplaceMatte
+    Copy
+    CopyRed
+    CopyGreen
+    CopyBlue
+    CopyOpacity
 
 The operations behaves as follows:
 
@@ -269,23 +269,23 @@ the creation of drop-shadows.
 .B Bumpmap
 The result of \fIimage\fP shaded by \fIcomposite image\fP.
 .TP
-.B Replace
+.B Copy
 The resulting image is \fIimage\fP replaced with \fIcomposite image\fP.
 Here the matte information is ignored.
 .TP
-.B ReplaceRed
+.B CopyRed
 The resulting image is the red layer in \fIimage\fP replaced with the red
 layer in \fIcomposite image\fP.  The other layers are copied untouched.
 .TP
-.B ReplaceGreen
+.B CopyGreen
 The resulting image is the green layer in \fIimage\fP replaced with the green
 layer in \fIcomposite image\fP.  The other layers are copied untouched.
 .TP
-.B ReplaceBlue
+.B CopyBlue
 The resulting image is the blue layer in \fIimage\fP replaced with the blue
 layer in \fIcomposite image\fP.  The other layers are copied untouched.
 .TP
-.B ReplaceMatte
+.B CopyOpacity
 The resulting image is the matte layer in \fIimage\fP replaced with the matte
 layer in \fIcomposite image\fP.  The other layers are copied untouched.
 

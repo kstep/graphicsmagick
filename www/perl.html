@@ -502,8 +502,8 @@ value is changed for any neighbor pixel that is not that color.</td>
 <td>Composite</td>
 
 <td>compose=>{Over, In, Out, Atop, Xor, Plus, Minus, Add, Subtract, Difference,
-Multiply, Bumpmap, Replace, ReplaceRed, ReplaceGreen, ReplaceBlue, ReplaceMatte,
-Blend, Displace, Modulate, Threshold}, image=><i>image-handle,
+Multiply, Bumpmap, Copy, CopyRed, CopyGreen, CopyBlue, CopyMatte,
+Dissolve, Clear, Displace, Modulate, Threshold}, image=><i>image-handle,
 geometry=>geometry, x=>integer, y=>integer, gravity=>{NorthWest, North,
 NorthEast, West, Center, East, SouthWest, South, SouthEast}</i>,
 opacity=><i>integer</i>,tile=><i>image-handle</i></td>
@@ -1714,7 +1714,7 @@ And here is a list of <tt>Montage</tt> parameters you can set:
 <td>compose</td>
 
 <td>{Over, In, Out, Atop, Xor, Plus, Minus, Add, Subtract, Difference,
-Bumpmap, Replace, MatteReplace, Mask, Blend, Displace}</td>
+Bumpmap, Copy, Mask, Dissolve, Clear, Displace}</td>
 
 <td>composite operator</td>
 </tr>

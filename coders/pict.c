@@ -1097,7 +1097,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             (void) LiberateMemory((void **) &pixels);
             if (tile_image != image)
               {
-                CompositeImage(image,ReplaceCompositeOp,tile_image,
+                CompositeImage(image,CopyCompositeOp,tile_image,
                   destination.left,destination.top);
                 DestroyImage(tile_image);
               }
@@ -1194,7 +1194,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         FormatString(geometry,"%ux%u",Max(image->columns,tile_image->columns),
           Max(image->rows,tile_image->rows));
         TransformImage(&image,(char *) NULL,geometry);
-        CompositeImage(image,ReplaceCompositeOp,tile_image,frame.left,
+        CompositeImage(image,CopyCompositeOp,tile_image,frame.left,
           frame.right);
         DestroyImage(tile_image);
         continue;

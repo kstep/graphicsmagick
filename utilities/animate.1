@@ -130,15 +130,16 @@ to leave a portion of the trimmed edges with the image.
 The equivalent X resource for this option is \fBcropGeometry\fP
 (class \fBCropGeometry\fP).  See \fBX RESOURCES\fP for details.
 .TP
-.B "-delay \fI<1/100ths of a second>x<seconds>\fP"
+.B "-delay \fI<1/100ths of a second>\fP"
 display the next image after pausing.
 
-This option is useful for regulating the display of the sequence of
-images.  \fI1/100ths of a second\fP must expire before the display of
-the next image.  The default is 6/100 of a second between each frame
-of the image sequence.  The second value is optional.  It specifies the
-number of \fIseconds\fP to pause before repeating your animation
-sequence.
+This option is useful for regulating the animation of a sequence of
+GIF images within Netscape.  \fI1/100ths of a second\fP must expire
+before the redisplay of the image sequence.  The default is no delay
+between each showing of the image sequence.
+
+You can specify a delay range (e.g. -delay 10-500) which sets the
+minimum and maximum delay.
 .TP
 .B "-density \fI<width>x<height>\fP
 vertical and horizontal resolution in pixels of the image.
@@ -245,6 +246,9 @@ located. See \fBxstdcmap(1)\fP for one way of creating \fIStandard Colormaps\fP.
 .TP
 .B "-monochrome"
 transform the image to black and white.
+.TP
+.B "-pause \fI<seconds>\fP"
+the number of \fIseconds\fP to pause before repeating your animation sequence.
 .TP
 .B "-remote \fIstring\fP"
 execute a command in an remote display process.

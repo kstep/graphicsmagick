@@ -309,7 +309,7 @@ static void WmfCopyXpm(CSTRUCT *cstruct,
     buff[MaxTextExtent];
 
   /* image x,y width,height filename */
-  sprintf(buff, "image Replace %i,%i %i,%i XPM:%s\n",
+  sprintf(buff, "image Copy %i,%i %i,%i XPM:%s\n",
           (int)dest_x,
           (int)dest_y,
           (int)dest_w,

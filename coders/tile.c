@@ -131,7 +131,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   for (y=0; y < (int) image->rows; y+=tiled_image->rows)
   {
     for (x=0; x < (int) image->columns; x+=tiled_image->columns)
-      CompositeImage(image,ReplaceCompositeOp,tiled_image,x,y);
+      CompositeImage(image,CopyCompositeOp,tiled_image,x,y);
     MagickMonitor(LoadImageText,y,image->rows);
   }
   DestroyImage(tiled_image);

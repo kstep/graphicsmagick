@@ -1097,7 +1097,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
               }
               default:
               {
-                *q=CompositeOver(q,q->opacity,&draw_info->fill,opacity);
+                *q=AlphaComposite(OverCompositeOp,&draw_info->fill,opacity,q,
+                  q->opacity);
                 break;
               }
             }

@@ -685,7 +685,7 @@ when you create the PDF file:</dd>
 <dd>
 One way is to use a bitmap as your transparency mask. Try</dd>
 
-<pre>&nbsp;&nbsp;&nbsp; combine -compose ReplaceMatte image.gif mask.xbm transparent.gif</pre>
+<pre>&nbsp;&nbsp;&nbsp; combine -compose CopyOpacity image.gif mask.xbm transparent.gif</pre>
 
 <dd>
 Note, GIF is limited to one transparent color. If your mask has variable

@@ -375,7 +375,7 @@ MagickExport unsigned int XAnnotateImage(Display *display,
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
   matte=image->matte;
   CompositeImage(image,annotate_image->matte ? OverCompositeOp :
-    ReplaceCompositeOp,annotate_image,x,y);
+    CopyCompositeOp,annotate_image,x,y);
   image->matte=matte;
   DestroyImage(annotate_image);
   return(True);
@@ -2166,7 +2166,7 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
   }
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
   if (draw_info->stencil == TransparentStencil)
-    CompositeImage(image,ReplaceMatteCompositeOp,draw_image,x,y);
+    CompositeImage(image,CopyOpacityCompositeOp,draw_image,x,y);
   else
     {
       matte=image->matte;
@@ -4147,7 +4147,7 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
         y_offset-=crop_info.y;
         if (y_offset < 0)
           y_offset=0;
-        CompositeImage(image,ReplaceCompositeOp,composite_image,
+        CompositeImage(image,CopyCompositeOp,composite_image,
           x_offset,y_offset);
       }
       /*

@@ -361,24 +361,24 @@ void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
     case BumpmapCompositeOp:
       stream_ << "Bumpmap ";
       break;
-    case ReplaceCompositeOp:
-      stream_ << "Replace ";
+    case CopyCompositeOp:
+      stream_ << "Copy ";
       break;
-    case ReplaceRedCompositeOp:
-      stream_ << "ReplaceRed ";
+    case CopyRedCompositeOp:
+      stream_ << "CopyRed ";
       break;
-    case ReplaceGreenCompositeOp:
-      stream_ << "ReplaceGreen ";
+    case CopyGreenCompositeOp:
+      stream_ << "CopyGreen ";
       break;
-    case ReplaceBlueCompositeOp:
-      stream_ << "ReplaceBlue ";
+    case CopyBlueCompositeOp:
+      stream_ << "CopyBlue ";
       break;
-    case ReplaceMatteCompositeOp:
-      stream_ << "ReplaceMatte ";
+    case CopyOpacityCompositeOp:
+      stream_ << "CopyOpacity ";
       break;
     default:
         {
-          stream_ << "Replace ";
+          stream_ << "Copy ";
         }
     }
 

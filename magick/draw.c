@@ -468,7 +468,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
                 }
                 default:
                 {
-                  *q=CompositeOver(q,q->opacity,&color,color.opacity);
+                  *q=AlphaComposite(OverCompositeOp,&color,color.opacity,q,
+                    q->opacity);
                   break;
                 }
               }
@@ -1736,16 +1737,18 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               graphic_context[n]->compose=MultiplyCompositeOp;
             if (LocaleCompare("Bumpmap",value) == 0)
               graphic_context[n]->compose=BumpmapCompositeOp;
-            if (LocaleCompare("Replace",value) == 0)
-              graphic_context[n]->compose=ReplaceCompositeOp;
-            if (LocaleCompare("ReplaceRed",value) == 0)
-              graphic_context[n]->compose=ReplaceRedCompositeOp;
-            if (LocaleCompare("ReplaceGreen",value) == 0)
-              graphic_context[n]->compose=ReplaceGreenCompositeOp;
-            if (LocaleCompare("ReplaceBlue",value) == 0)
-              graphic_context[n]->compose=ReplaceBlueCompositeOp;
-            if (LocaleCompare("ReplaceMatte",value) == 0)
-              graphic_context[n]->compose=ReplaceMatteCompositeOp;
+            if (LocaleCompare("Copy",value) == 0)
+              graphic_context[n]->compose=CopyCompositeOp;
+            if (LocaleCompare("CopyRed",value) == 0)
+              graphic_context[n]->compose=CopyRedCompositeOp;
+            if (LocaleCompare("CopyGreen",value) == 0)
+              graphic_context[n]->compose=CopyGreenCompositeOp;
+            if (LocaleCompare("CopyBlue",value) == 0)
+              graphic_context[n]->compose=CopyBlueCompositeOp;
+            if (LocaleCompare("CopyOpacity",value) == 0)
+              graphic_context[n]->compose=CopyOpacityCompositeOp;
+            if (LocaleCompare("Clear",value) == 0)
+              graphic_context[n]->compose=ClearCompositeOp;
             primitive_type=ImagePrimitive;
             break;
           }
@@ -2784,7 +2787,8 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                     }
                     default:
                     {
-                      *q=CompositeOver(q,q->opacity,&fill_color,fill_opacity);
+                      *q=AlphaComposite(OverCompositeOp,&fill_color,
+                        fill_opacity,q,q->opacity);
                       break;
                     }
                   }
@@ -2811,7 +2815,8 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
             }
             default:
             {
-              *q=CompositeOver(q,q->opacity,&stroke_color,stroke_opacity);
+              *q=AlphaComposite(OverCompositeOp,&stroke_color,stroke_opacity,
+                q,q->opacity);
               break;
             }
           }
@@ -3923,7 +3928,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->pointsize=clone_info->pointsize;
   (void) QueryColorDatabase("none",&draw_info->box);
   draw_info->border_color=clone_info->border_color;
-  draw_info->compose=ReplaceCompositeOp;
+  draw_info->compose=CopyCompositeOp;
   if (clone_info->server_name != (char *) NULL)
     draw_info->server_name=AllocateString(clone_info->server_name);
   draw_info->debug=clone_info->debug;

@@ -118,11 +118,11 @@ namespace Magick
   using MagickLib::DifferenceCompositeOp;
   using MagickLib::MultiplyCompositeOp;
   using MagickLib::BumpmapCompositeOp;
-  using MagickLib::ReplaceCompositeOp;
-  using MagickLib::ReplaceRedCompositeOp;
-  using MagickLib::ReplaceGreenCompositeOp;
-  using MagickLib::ReplaceBlueCompositeOp;
-  using MagickLib::ReplaceMatteCompositeOp;
+  using MagickLib::CopyCompositeOp;
+  using MagickLib::CopyRedCompositeOp;
+  using MagickLib::CopyGreenCompositeOp;
+  using MagickLib::CopyBlueCompositeOp;
+  using MagickLib::CopyOpacityCompositeOp;
   using MagickLib::BlendCompositeOp;
   using MagickLib::DisplaceCompositeOp;
   using MagickLib::ModulateCompositeOp;

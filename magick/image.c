@@ -487,7 +487,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
       {
         if (next->storage_class == DirectClass)
           append_image->storage_class=DirectClass;
-        CompositeImage(append_image,ReplaceCompositeOp,next,x,0);
+        CompositeImage(append_image,CopyCompositeOp,next,x,0);
         x+=next->columns;
         MagickMonitor(AppendImageText,scene++,GetNumberScenes(image));
       }
@@ -505,7 +505,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
       {
         if (next->storage_class == DirectClass)
           append_image->storage_class=DirectClass;
-        CompositeImage(append_image,ReplaceCompositeOp,next,0,y);
+        CompositeImage(append_image,CopyCompositeOp,next,0,y);
         y+=next->rows;
         MagickMonitor(AppendImageText,scene,GetNumberScenes(image));
         scene++;
@@ -1011,15 +1011,11 @@ MagickExport unsigned int CompositeImage(Image *image,
 {
   double
     amount,
-    blue,
     brightness,
-    green,
     hue,
     midpoint,
-    opacity,
     percent_brightness,
     percent_saturation,
-    red,
     saturation,
     threshold;
 
@@ -1204,212 +1200,14 @@ MagickExport unsigned int CompositeImage(Image *image,
       composite_indexes=GetIndexes(composite_image);
       switch (compose)
       {
-        case OverCompositeOp:
-        default:
-        {
-          switch (p->opacity)
-          {
-            case TransparentOpacity:
-            {
-              red=q->red;
-              green=q->green;
-              blue=q->blue;
-              opacity=q->opacity;
-              break;
-            }
-            case OpaqueOpacity:
-            {
-              red=p->red;
-              green=p->green;
-              blue=p->blue;
-              opacity=p->opacity;
-              break;
-            }
-            default:
-            {
-              PixelPacket
-                color;
-
-              color=CompositeOver(q,q->opacity,p,p->opacity);
-              red=color.red;
-              green=color.green;
-              blue=color.green;
-              opacity=color.green;
-              break;
-            }
-          }
-          break;
-        }
-        case InCompositeOp:
-        {
-          red=((double) (p->red*(MaxRGB-q->opacity))/MaxRGB);
-          green=((double) (p->green*(MaxRGB-q->opacity))/MaxRGB);
-          blue=((double) (p->blue*(MaxRGB-q->opacity))/MaxRGB);
-          opacity=((double) (p->opacity*(MaxRGB-q->opacity))/MaxRGB);
-          break;
-        }
-        case OutCompositeOp:
-        {
-          red=((double) (p->red*q->opacity)/MaxRGB);
-          green=((double) (p->green*q->opacity)/MaxRGB);
-          blue=((double) (p->blue*q->opacity)/MaxRGB);
-          opacity=((double) (p->opacity*q->opacity)/MaxRGB);
-          break;
-        }
-        case AtopCompositeOp:
-        {
-          red=((double) (p->red*(MaxRGB-q->opacity)+q->red*p->opacity)/MaxRGB);
-          green=((double) (p->green*(MaxRGB-q->opacity)+
-            q->green*p->opacity)/MaxRGB);
-          blue=((double) (p->blue*(MaxRGB-q->opacity)+
-            q->blue*p->opacity)/MaxRGB);
-          opacity=((double) (p->opacity*(MaxRGB-q->opacity)+
-            q->opacity*p->opacity)/MaxRGB);
-          break;
-        }
-        case XorCompositeOp:
-        {
-          red=((double) (p->red*q->opacity+q->red*p->opacity)/MaxRGB);
-          green=((double) (p->green*q->opacity+q->green*p->opacity)/MaxRGB);
-          blue=((double) (p->blue*q->opacity+q->blue*p->opacity)/MaxRGB);
-          opacity=((double) (p->opacity*q->opacity+
-            q->opacity*p->opacity)/MaxRGB);
-          break;
-        }
-        case PlusCompositeOp:
-        {
-          red=p->red+(double) q->red;
-          green=p->green+(double) q->green;
-          blue=p->blue+(double) q->blue;
-          opacity=p->opacity+(double) q->opacity;
-          break;
-        }
-        case MinusCompositeOp:
-        {
-          red=p->red-(double) q->red;
-          green=p->green-(double) q->green;
-          blue=p->blue-(double) q->blue;
-          opacity=OpaqueOpacity;
-          break;
-        }
-        case AddCompositeOp:
-        {
-          red=p->red+(double) q->red;
-          if (red > MaxRGB)
-            red-=(MaxRGB+1);
-          green=p->green+(double) q->green;
-          if (green > MaxRGB)
-            green-=(MaxRGB+1);
-          blue=p->blue+(double) q->blue;
-          if (blue > MaxRGB)
-            blue-=(MaxRGB+1);
-          opacity=p->opacity+(double) q->opacity;
-          if (opacity > MaxRGB)
-            opacity-=(MaxRGB+1);
-          break;
-        }
-        case SubtractCompositeOp:
-        {
-          red=p->red-(double) q->red;
-          if (red < 0)
-            red+=(MaxRGB+1);
-          green=p->green-(double) q->green;
-          if (green < 0)
-            green+=(MaxRGB+1);
-          blue=p->blue-(double) q->blue;
-          if (blue < 0)
-            blue+=(MaxRGB+1);
-          opacity=p->opacity-(double) q->opacity;
-          if (opacity < 0)
-            opacity+=(MaxRGB+1);
-          break;
-        }
-        case MultiplyCompositeOp:
-        {
-          red=((double) (p->red*q->red)/MaxRGB);
-          green=((double) (p->green*q->green)/MaxRGB);
-          blue=((double) (p->blue*q->blue)/MaxRGB);
-          opacity=((double) (p->opacity*q->opacity)/MaxRGB);
-          break;
-        }
-        case DifferenceCompositeOp:
-        {
-          red=fabs(p->red-(double) q->red);
-          green=fabs(p->green-(double) q->green);
-          blue=fabs(p->blue-(double) q->blue);
-          opacity=fabs(p->opacity-(double) q->opacity);
-          break;
-        }
-        case BumpmapCompositeOp:
-        {
-          red=((double) (q->red*Intensity(*p))/MaxRGB);
-          green=((double) (q->green*Intensity(*p))/MaxRGB);
-          blue=((double) (q->blue*Intensity(*p))/MaxRGB);
-          opacity=((double) (q->opacity*Intensity(*p))/MaxRGB);
-          break;
-        }
-        case ReplaceCompositeOp:
-        {
-          red=p->red;
-          green=p->green;
-          blue=p->blue;
-          opacity=p->opacity;
-          break;
-        }
-        case ReplaceRedCompositeOp:
-        {
-          red=Intensity(*p);
-          green=q->green;
-          blue=q->blue;
-          opacity=q->opacity;
-          break;
-        }
-        case ReplaceGreenCompositeOp:
-        {
-          red=q->red;
-          green=Intensity(*p);
-          blue=q->blue;
-          opacity=q->opacity;
-          break;
-        }
-        case ReplaceBlueCompositeOp:
-        {
-          red=q->red;
-          green=q->green;
-          blue=Intensity(*p);
-          opacity=q->opacity;
-          break;
-        }
-        case ReplaceMatteCompositeOp:
-        {
-          red=q->red;
-          green=q->green;
-          blue=q->blue;
-          opacity=Intensity(*p);
-          break;
-        }
-        case BlendCompositeOp:
-        {
-          red=((double) (p->red*(MaxRGB-p->opacity)+
-            q->red*(MaxRGB-q->opacity))/MaxRGB);
-          green=((double) (p->green*(MaxRGB-p->opacity)+
-            q->green*(MaxRGB-q->opacity))/MaxRGB);
-          blue=((double) (p->blue*(MaxRGB-p->opacity)+
-            q->blue*(MaxRGB-q->opacity))/MaxRGB);
-          opacity=((double) (p->opacity*(MaxRGB-p->opacity)+
-            q->opacity*(MaxRGB-q->opacity))/MaxRGB);
-          break;
-        }
-        case DisplaceCompositeOp:
-        {
-          red=p->red;
-          green=p->green;
-          blue=p->blue;
-          opacity=p->opacity;
-          break;
-        }
         case ThresholdCompositeOp:
         {
+          double
+            blue,
+            green,
+            opacity,
+            red;
+
           red=q->red-(double) p->red;
           if (fabs(2.0*red) < threshold)
             red=q->red;
@@ -1430,6 +1228,14 @@ MagickExport unsigned int CompositeImage(Image *image,
             opacity=q->opacity;
           else
             opacity=q->opacity+(opacity*amount);
+          q->red=(Quantum)
+            ((red < 0.0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+          q->green=(Quantum)
+            ((green < 0.0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
+          q->blue=(Quantum)
+            ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+          q->opacity=(Quantum)
+            ((opacity < 0.0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
           break;
         }
         case ModulateCompositeOp:
@@ -1440,8 +1246,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           offset=(int) (Intensity(*p)-midpoint);
           if (offset == 0)
             break;
-          color=(*q);
-          TransformHSL(color.red,color.green,color.blue,&hue,&saturation,
+          TransformHSL(q->red,q->green,q->blue,&hue,&saturation,
             &brightness);
           brightness+=(percent_brightness*offset)/midpoint;
           if (brightness < 0.0)
@@ -1449,24 +1254,18 @@ MagickExport unsigned int CompositeImage(Image *image,
           else
             if (brightness > 1.0)
               brightness=1.0;
-          HSLTransform(hue,saturation,brightness,&color.red,&color.green,
-            &color.blue);
-          red=color.red;
-          green=color.green;
-          blue=color.blue;
-          opacity=color.opacity;
+          HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
+          break;
+        }
+        default:
+        {
+          *q=AlphaComposite(compose,p,p->opacity,q,q->opacity);
           break;
         }
       }
       if (image->storage_class == PseudoClass)
         if (image->storage_class == composite_image->storage_class)
           indexes[x]=(*composite_indexes);
-      q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-      q->green=(Quantum)
-        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-      q->blue=(Quantum) ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-      q->opacity=(Quantum)
-        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
       q++;
     }
     if (!SyncImagePixels(image))
@@ -1474,7 +1273,7 @@ MagickExport unsigned int CompositeImage(Image *image,
   }
   if (compose == DisplaceCompositeOp)
     DestroyImage(composite_image);
-  if (compose != ReplaceMatteCompositeOp)
+  if (compose != CopyOpacityCompositeOp)
     (void) IsMatteImage(image);
   return(True);
 }
@@ -4220,7 +4019,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 */
                 matte=region_image->matte;
                 CompositeImage(region_image,
-                  (*image)->matte ? OverCompositeOp : ReplaceCompositeOp,*image,
+                  (*image)->matte ? OverCompositeOp : CopyCompositeOp,*image,
                   region_info.x,region_info.y);
                 DestroyImage(*image);
                 *image=region_image;
@@ -4622,7 +4421,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       */
       matte=region_image->matte;
       CompositeImage(region_image,
-        (*image)->matte ? OverCompositeOp : ReplaceCompositeOp,*image,
+        (*image)->matte ? OverCompositeOp : CopyCompositeOp,*image,
         region_info.x,region_info.y);
       DestroyImage(*image);
       *image=region_image;
@@ -4847,7 +4646,7 @@ MagickExport Image *MosaicImages(Image *image,ExceptionInfo *exception)
   scene=0;
   for (next=image; next != (Image *) NULL; next=next->next)
   {
-    CompositeImage(mosaic_image,ReplaceCompositeOp,next,next->page.x,
+    CompositeImage(mosaic_image,CopyCompositeOp,next,next->page.x,
       next->page.y);
     MagickMonitor(MosaicImageText,scene++,GetNumberScenes(image));
   }
@@ -6024,7 +5823,7 @@ MagickExport void TextureImage(Image *image,Image *texture)
   for (y=0; y < (int) image->rows; y+=texture->rows)
   {
     for (x=0; x < (int) image->columns; x+=texture->columns)
-      CompositeImage(image,ReplaceCompositeOp,texture,x,y);
+      CompositeImage(image,CopyCompositeOp,texture,x,y);
     if (QuantumTick(y,image->rows))
       MagickMonitor(TextureImageText,y,image->rows);
   }

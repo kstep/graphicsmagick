@@ -2157,7 +2157,7 @@ static unsigned int XCompositeImage(Display *display,
     *CompositeMenu[]=
     {
       "Operators",
-      "Blend",
+      "Dissolve",
       "Displace",
       "Help",
       "Dismiss",
@@ -2165,13 +2165,13 @@ static unsigned int XCompositeImage(Display *display,
     };
 
   static CompositeOperator
-    compose = ReplaceCompositeOp;
+    compose = CopyCompositeOp;
 
   static const ModeType
     CompositeCommands[]=
     {
       CompositeOperatorsCommand,
-      CompositeBlendCommand,
+      CompositeDissolveCommand,
       CompositeDisplaceCommand,
       CompositeHelpCommand,
       CompositeDismissCommand
@@ -2265,7 +2265,7 @@ static unsigned int XCompositeImage(Display *display,
               XNoticeWidget(display,windows,"Unable to read image:",filename);
               return(False);
             }
-          CompositeImage(composite_image,ReplaceMatteCompositeOp,mask_image,
+          CompositeImage(composite_image,CopyOpacityCompositeOp,mask_image,
             0,0);
           DestroyImage(mask_image);
           DestroyImageInfo(image_info);
@@ -2345,11 +2345,12 @@ static unsigned int XCompositeImage(Display *display,
                 "Difference",
                 "Multiply",
                 "Bumpmap",
-                "Replace",
-                "ReplaceRed",
-                "ReplaceGreen",
-                "ReplaceBlue",
-                "ReplaceMatte",
+                "Copy",
+                "CopyRed",
+                "CopyGreen",
+                "CopyBlue",
+                "CopyOpacity",
+                "Clear",
                 (char *) NULL,
               };
 
@@ -2360,22 +2361,22 @@ static unsigned int XCompositeImage(Display *display,
               CompositeMenu[id],OperatorMenu,command)+1);
             break;
           }
-          case CompositeBlendCommand:
+          case CompositeDissolveCommand:
           {
             static char
               factor[MaxTextExtent] = "20.0";
 
             /*
-              Blend the two images a given percent.
+              Dissolve the two images a given percent.
             */
             XSetFunction(display,windows->image.highlight_context,GXcopy);
-            (void) XDialogWidget(display,windows,"Blend",
+            (void) XDialogWidget(display,windows,"Dissolve",
               "Enter the blend factor (0.0 - 99.9%):",factor);
             XSetFunction(display,windows->image.highlight_context,GXinvert);
             if (*factor == '\0')
               break;
             blend=atof(factor);
-            compose=BlendCompositeOp;
+            compose=DissolveCompositeOp;
             break;
           }
           case CompositeDisplaceCommand:
@@ -8238,7 +8239,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
     };
 
   static CompositeOperator
-    operation = ReplaceCompositeOp;
+    operation = CopyCompositeOp;
 
   char
     text[MaxTextExtent];
@@ -8351,11 +8352,12 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
                 "Difference",
                 "Multiply",
                 "Bumpmap",
-                "Replace",
-                "ReplaceRed",
-                "ReplaceGreen",
-                "ReplaceBlue",
-                "ReplaceMatte",
+                "Copy",
+                "CopyRed",
+                "CopyGreen",
+                "CopyBlue",
+                "CopyOpacity",
+                "Clear",
                 (char *) NULL,
               };
 
@@ -9274,7 +9276,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
               (void) XMagickCommand(display,resource_info,windows,
                 SaveToUndoBufferCommand,image);
               windows->image.orphan=False;
-              CompositeImage(*image,ReplaceCompositeOp,roi_image,
+              CompositeImage(*image,CopyCompositeOp,roi_image,
                 crop_info.x,crop_info.y);
               DestroyImage(roi_image);
               (void) SetMonitorHandler(handler);

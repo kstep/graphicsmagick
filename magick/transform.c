@@ -284,7 +284,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
     coalesce_image->delay=next->delay;
     coalesce_image->start_loop=next->start_loop;
     CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
-      ReplaceCompositeOp,next,next->page.x,next->page.y);
+      CopyCompositeOp,next,next->page.x,next->page.y);
     GetPageInfo(&coalesce_image->page);
     CloseImagePixels(next);
     CloseImagePixels(coalesce_image);

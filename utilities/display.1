@@ -1470,11 +1470,11 @@ options:
       Difference
       Multiply
       Bumpmap
-      Replace
-      ReplaceRed
-      ReplaceGreen
-      ReplaceBlue
-      ReplaceMatte
+      Copy
+      CopyRed
+      CopyGreen
+      CopyBlue
+      CopyOpacity
     Help
     Dismiss
 .fi
@@ -1538,23 +1538,23 @@ the creation of drop-shadows.
 .B Bumpmap
 The result of \fIimage window \fP shaded by \fIimage\fP.
 .TP
-.B Replace
+.B Copy
 The resulting image is \fIimage window\fP replaced with \fIimage\fP.
 Here the matte information is ignored.
 .TP
-.B ReplaceRed
+.B CopyRed
 The resulting image is the red layer of \fIimage window\fP replaced with
 the red layer of \fIimage\fP.  The remaining layers remain untouched.
 .TP
-.B ReplaceGreen
+.B CopyGreen
 The resulting image is the green layer of \fIimage window\fP replaced with
 the green layer of \fIimage\fP.  The remaining layers remain untouched.
 .TP
-.B ReplaceBlue
+.B CopyBlue
 The resulting image is the blue layer of \fIimage window\fP replaced with
 the blue layer of \fIimage\fP.  The remaining layers remain untouched.
 .TP
-.B ReplaceMatte
+.B CopyOpacity
 The resulting image is the matte layer of \fIimage window\fP replaced with
 the matte layer of \fIimage\fP.  The remaining layers remain untouched.
 

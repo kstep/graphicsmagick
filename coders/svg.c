@@ -1752,7 +1752,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((char *) name,"image") == 0)
         {
-          (void) fprintf(svg_info->file,"image Replace %g,%g %g,%g %s\n",
+          (void) fprintf(svg_info->file,"image Copy %g,%g %g,%g %s\n",
             svg_info->bounds.x,svg_info->bounds.y,svg_info->bounds.width,
             svg_info->bounds.height,svg_info->url);
           (void) fprintf(svg_info->file,"pop graphic-context\n");

@@ -40,14 +40,11 @@ To combine a red, green, and blue color plane into a single composite image,
 try
 
 .nf
-     combine -compose ReplaceGreen red.png green.png red-green.png
-     combine -compose ReplaceBlue red-green.png blue.png composite.png
+     combine -compose CopyGreen red.png green.png red-green.png
+     combine -compose CopyBlue red-green.png blue.png composite.png
 
 .fi
 .SH OPTIONS
-.TP
-.B "-blend \fIvalue\fP"
-blend the two images a given percent.
 .TP
 .B "-cache \fIthreshold\fP"
 megabytes of memory available to the pixel cache.
@@ -152,11 +149,11 @@ operation:
     Difference
     Multiply
     Bumpmap
-    Replace
-    ReplaceRed
-    ReplaceGreen
-    ReplaceBlue
-    ReplaceMatte
+    Copy
+    CopyRed
+    CopyGreen
+    CopyBlue
+    CopyOpacity
 .fi
 
 How each operator behaves is described below.
@@ -212,23 +209,23 @@ the creation of drop-shadows.
 .B Bumpmap
 The result \fIimage\fP shaded by \fIcomposite image\fP.
 .TP
-.B Replace
+.B Copy
 The resulting image is \fIimage\fP replaced with \fIcomposite image\fP.  Here
 the matte information is ignored.
 .TP
-.B ReplaceRed
+.B CopyRed
 The resulting image is the red layer in \fIimage\fP replaced with the red
 layer in \fIcomposite image\fP.  The other layers are copied untouched.
 .TP
-.B ReplaceGreen
+.B CopyGreen
 The resulting image is the green layer in \fIimage\fP replaced with the green
 layer in \fIcomposite image\fP.  The other layers are copied untouched.
 .TP
-.B ReplaceBlue
+.B CopyBlue
 The resulting image is the blue layer in \fIimage\fP replaced with the blue
 layer in \fIcomposite image\fP.  The other layers are copied untouched.
 .TP
-.B ReplaceMatte
+.B CopyOpacity
 The resulting image is the matte layer in \fIimage\fP replaced with the matte
 layer in \fIcomposite image\fP.  The other layers are copied untouched.
 
@@ -280,6 +277,9 @@ Here are the valid methods:
      2     Overwrite frame with background color from header.
      3     Overwrite with previous frame.
 .fi
+.TP
+.B "-dissolve \fIvalue\fP"
+dissolve the two images a given percent.
 .TP
 .B "-dither"
 apply Floyd/Steinberg error diffusion to the image.

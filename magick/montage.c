@@ -197,7 +197,7 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   montage_info->font=AllocateString(image_info->font);
   montage_info->pointsize=image_info->pointsize;
   montage_info->gravity=CenterGravity;
-  montage_info->compose=ReplaceCompositeOp;
+  montage_info->compose=CopyCompositeOp;
   montage_info->fill=image_info->pen;
   montage_info->stroke=image_info->pen;
   montage_info->background_color=image_info->background_color;
@@ -712,7 +712,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
             CompositeImage(montage_next,montage_info->compose,next,x_offset+x,
               y_offset+y);
           else
-            CompositeImage(montage_next,ReplaceCompositeOp,next,x_offset+x,
+            CompositeImage(montage_next,CopyCompositeOp,next,x_offset+x,
               y_offset+y);
           montage_next->matte=False;
           if (montage_info->shadow)
