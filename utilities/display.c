@@ -1335,11 +1335,8 @@ int main(int argc,char **argv)
           image_info->dither=quantize_info->dither;
           image=ReadImage(image_info,&exception);
           if (image == (Image *) NULL)
-            {
-              MagickError(exception.severity,exception.message,
-                exception.qualifier);
-              continue;
-            }
+            MagickError(exception.severity,exception.message,
+              exception.qualifier);
           do
           {
             /*
