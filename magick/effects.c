@@ -3027,11 +3027,11 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
 {
 #define EmbedBit(byte) \
 { \
-  q=GetImagePixels(watermark,j % watermark->columns,j/watermark->columns,1,1); \
-  if (q == (PixelPacket *) NULL) \
+  p=GetImagePixels(watermark,j % watermark->columns,j/watermark->columns,1,1); \
+  if (p == (PixelPacket *) NULL) \
     break;  \
   (byte)&=(~0x01); \
-  (byte)|=((unsigned int) Intensity(*q) >> shift) & 0x01; \
+  (byte)|=((unsigned int) Intensity(*p) >> shift) & 0x01; \
   j++; \
   if (j == (watermark->columns*watermark->rows)) \
     { \
@@ -3076,7 +3076,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
     return((Image *) NULL);
   if (stegano_image->storage_class == PseudoClass)
     {
-      if (stegano_image->colors > (DownScale(MaxRGB+1) >> 1))
+      if (stegano_image->colors > ((MaxRGB+1) >> 1))
         stegano_image->storage_class=DirectClass;
       else
         {
@@ -3113,25 +3113,25 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   */
   i=image->offset;
   j=0;
-  shift=image->depth-1;
+  shift=QuantumDepth-1;
   for (y=0; y < (int) image->rows; y++)
   {
     for (x=0; x < (int) image->columns; x++)
     {
       if (i == (stegano_image->columns*stegano_image->rows))
         i=0;
-      p=GetImagePixels(stegano_image,i % stegano_image->columns,
+      q=GetImagePixels(stegano_image,i % stegano_image->columns,
         i/stegano_image->columns,1,1);
-      if (p == (PixelPacket *) NULL)
+      if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
       if (stegano_image->storage_class == PseudoClass)
         EmbedBit(*indexes)
       else
         {
-          EmbedBit(p->red);
-          EmbedBit(p->green);
-          EmbedBit(p->blue);
+          EmbedBit(q->red);
+          EmbedBit(q->green);
+          EmbedBit(q->blue);
         }
       if (!SyncImagePixels(stegano_image))
         break;
