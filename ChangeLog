@@ -1,3 +1,14 @@
+2004-04-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pdf.c (ReadPDFImage): Double-check that Ghostscript
+	produced an output file since sometimes it reports success after
+	it has spewed an error message and has produced no output.
+
+2004-04-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/compress.c (HuffmanEncodeImage): Avoid out of bounds
+	array access.
+
 2004-04-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh (PACKAGE_RELEASE_DATE): Release 1.0.6 in order to
