@@ -100,7 +100,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
     number_pixels;
 
   register IndexPacket
-    indexes[x];
+    *indexes;
 
   register long
     i,
@@ -491,7 +491,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   IndexPacket
-    indexes[x];
+    *indexes;
 
   LayerInfo
     *layer_info;
