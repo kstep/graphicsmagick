@@ -1232,7 +1232,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"file"))
         {
           if (info)
-            info->image_info->file=IoIFP(sv_2io(sval));
+            info->image_info->file=(FILE *) IoIFP(sv_2io(sval));
           return;
         }
       if (strEQcase(attribute,"font"))
@@ -6186,7 +6186,7 @@ Ping(ref,...)
         continue;
       if ((items >= 3) && strEQcase(info->image_info->filename,"file"))
         {
-          info->image_info->file=IoIFP(sv_2io(ST(i)));
+          info->image_info->file=(FILE *) IoIFP(sv_2io(ST(i)));
           continue;
         }
       image=PingImage(info->image_info,&exception);
@@ -6647,7 +6647,7 @@ Read(ref,...)
           continue;
         if ((items >= 3) && strEQcase(list[n],"file"))
           {
-            info->image_info->file=IoIFP(sv_2io(ST(i+2)));
+            info->image_info->file=(FILE *) IoIFP(sv_2io(ST(i+2)));
             continue;
           }
         n++;
