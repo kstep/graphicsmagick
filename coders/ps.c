@@ -139,7 +139,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define DocumentMedia  "%%DocumentMedia:"
 #define PageBoundingBox  "%%PageBoundingBox:"
 #define PostscriptLevel  "%!PS-"
-#define ShowPage  "showpage"
 
   char
     density[MaxTextExtent],
@@ -189,7 +188,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bounds;
 
   unsigned int
-    eps_level,
     height,
     level,
     width;
@@ -259,7 +257,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   box.width=0;
   box.height=0;
   level=0;
-  eps_level=0;
   p=command;
   for (i=0; (LocaleCompare(image_info->magick,"EPT") != 0) || i < filesize; i++)
   {
@@ -272,10 +269,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       continue;
     *p='\0';
     p=command;
-    if (LocaleNCompare(PostscriptLevel,command,Extent(PostscriptLevel)) == 0)
-      (void) sscanf(command,"%%!PS-Adobe-%d.0 EPSF-%d.0",&level,&eps_level);
-    if (LocaleNCompare(ShowPage,command,Extent(ShowPage)) == 0)
-      eps_level=0;
     /*
       Parse a bounding box statement.
     */
@@ -309,8 +302,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     page.height=height;
     box=page;
   }
-  if (eps_level != 0)
-    (void) fputs("showpage\n",file);
   if (image_info->page != (char *) NULL)
     (void) ParseImageGeometry(image_info->page,&page.x,&page.y,&page.width,
       &page.height);
