@@ -1,3 +1,20 @@
+2003-08-21  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/attribute.c, magick/image.c, magick/command.c: Added
+	"clippath" option for clipping named Photoshop clipping paths,
+	increased precision in clipping path knots, added comments, and
+	fixed a few bugs resulting from moving TraceClippingPath function
+	from ImageMagick to GraphicsMagick. Still need to update some of
+	the documentation.
+
+	* magick/locale_c.h, magick/studio.h: added MagickExport to
+	declaration of GetLocaleMessageFromID and moved include of
+	magick/locale_c.h after declaration of MagickExport. This fixes a
+	link error in dynamic, DLL version.
+
+	* coders/locale.h: added MagickExport to prototype declaration of
+	GetLocaleMessageFromID in WriteLOCALEImage.
+
 2003-08-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (ImportImageCommand): Since

@@ -277,6 +277,7 @@ extern MagickExport WarningHandler
 
 #if defined(MAGICK_IMPLEMENTATION)
 #if defined(MAGICK_IDBASED_MESSAGES)
+
 #define MagickMsg(severity_,msg_) GetLocaleMessageFromID(MGK_##severity_##msg_)
 
 #define ThrowException(exception_,severity_,reason_,description_) \

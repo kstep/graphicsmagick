@@ -1,2 +1,2 @@
 all:
-	convert -debug locale locale:locale.mgk localeh:locale_c.h
+	gm convert -debug locale locale:locale.mgk localeh:locale_c.h

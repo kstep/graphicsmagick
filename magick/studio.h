@@ -24,11 +24,6 @@ extern "C" {
   headers when MAGICK_IMPLEMENTATION is defined.
 */
 #define MAGICK_IMPLEMENTATION 1
-#define MAGICK_IDBASED_MESSAGES 1
-
-#if defined(MAGICK_IDBASED_MESSAGES)
-#include "magick/locale_c.h"
-#endif
 
 /*
   System include declarations.
@@ -116,6 +111,11 @@ extern "C" {
 # define storage_class  c_class
 #else
 # define storage_class  class
+#endif
+
+#define MAGICK_IDBASED_MESSAGES 1
+#if defined(MAGICK_IDBASED_MESSAGES)
+#include "magick/locale_c.h"
 #endif
 
 #define MagickSignature  0xabacadabUL

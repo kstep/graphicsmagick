@@ -931,6 +931,7 @@ extern MagickExport unsigned int
   AnimateImages(const ImageInfo *image_info,Image *image),
   ChannelImage(Image *,const ChannelType),
   ClipImage(Image *),
+  ClipPathImage(Image *,const char *,const unsigned int),
   CycleColormapImage(Image *image,const int amount),
   DescribeImage(Image *image,FILE *file,const unsigned int verbose),
   DisplayImages(const ImageInfo *image_info,Image *image),

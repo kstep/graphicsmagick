@@ -924,6 +924,9 @@
       <Message name="MissingBorderColor">
         Missing border color
       </Message>
+      <Message name="MissingClippingPathName">
+        Missing clipping path name
+      </Message>
       <Message name="MissingCoefficients">
         Missing coefficients
       </Message>

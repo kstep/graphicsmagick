@@ -237,7 +237,7 @@ static char *TraceClippingPath(unsigned char *blob,size_t length,
     *message;
 
   int
-    count,
+    knot_count,
     selector;
 
   long
@@ -255,10 +255,10 @@ static char *TraceClippingPath(unsigned char *blob,size_t length,
   unsigned int
     in_subpath;
 
-  path=AcquireString((char *) NULL);
+  path=AllocateString((char *) NULL);
   if (path == (char *) NULL)
     return((char *) NULL);
-  message=AcquireString((char *) NULL);
+  message=AllocateString((char *) NULL);
 
   FormatString(message,"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
   (void) ConcatenateString(&path,message);
@@ -266,12 +266,22 @@ static char *TraceClippingPath(unsigned char *blob,size_t length,
   (void) ConcatenateString(&path,message);
   FormatString(message,"<g>\n");
   (void) ConcatenateString(&path,message);
-  FormatString(message,"<path style=\"fill:#ffffff;stroke:none\" d=\"\n");
+  FormatString(message,"<path style=\"fill:#00000000;stroke:#00000000;");
+  (void) ConcatenateString(&path,message);
+  FormatString(message,"stroke-width:0;stroke-antialiasing:false\" d=\"\n");
   (void) ConcatenateString(&path,message);
 
-  count=0;
+  knot_count=0;
   in_subpath=False;
 
+  /*
+    Open and closed subpaths are all closed in the following
+    parser loop as there's no way for the polygon renderer
+    to render an open path to a masking image.
+
+    The clipping path format is defined in "Adobe Photoshop File
+    Formats Specification" version 6.0 downloadable from adobe.com.
+  */
   while (length > 0)
   {
     selector=ReadMSBShort(&blob,&length);
@@ -280,12 +290,12 @@ static char *TraceClippingPath(unsigned char *blob,size_t length,
       case 0:
       case 3:
       {
-        if (count == 0)
+        if (knot_count == 0)
           {
             /*
               Expected subpath length record
             */
-            count=ReadMSBShort(&blob,&length);
+            knot_count=ReadMSBShort(&blob,&length);
             blob+=22;
             length-=22;
           }
@@ -301,7 +311,7 @@ static char *TraceClippingPath(unsigned char *blob,size_t length,
       case 4:
       case 5:
       {
-        if (count == 0)
+        if (knot_count == 0)
           {
             /*
               Unexpected subpath knot
@@ -323,7 +333,7 @@ static char *TraceClippingPath(unsigned char *blob,size_t length,
               }
             if (!in_subpath)
               {
-                FormatString(message,"M %.1f,%.1f\n",point[1].x,point[1].y);
+                FormatString(message,"M %.4f,%.4f\n",point[1].x,point[1].y);
                 for (i=0; i < 3; i++)
                 {
                   first[i]=point[i];
@@ -332,7 +342,7 @@ static char *TraceClippingPath(unsigned char *blob,size_t length,
               }
             else
               {
-                FormatString(message,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f\n",
+                FormatString(message,"C %.4f,%.4f %.4f,%.4f %.4f,%.4f\n",
                   last[2].x,last[2].y,point[0].x,point[0].y,point[1].x,
                   point[1].y);
                 for (i=0; i < 3; i++)
@@ -340,13 +350,13 @@ static char *TraceClippingPath(unsigned char *blob,size_t length,
               }
             (void) ConcatenateString(&path,message);
             in_subpath=True;
-            count--;
+            knot_count--;
             /*
               Close the subpath if there are no more knots.
             */
-            if (count == 0)
+            if (knot_count == 0)
               {
-                FormatString(message,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f Z\n",last[2].x,
+                FormatString(message,"C %.4f,%.4f %.4f,%.4f %.4f,%.4f Z\n",last[2].x,
                   last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
                 (void) ConcatenateString(&path,message);
                 in_subpath=False;
@@ -366,8 +376,7 @@ static char *TraceClippingPath(unsigned char *blob,size_t length,
     }
   }
   /*
-    Returns an empty SVG image, not an empty string,
-    if the path for some reason have no knots.
+    Returns an empty SVG image if the path has no knots.
   */
   FormatString(message,"\"/>\n");
   (void) ConcatenateString(&path,message);
@@ -383,12 +392,14 @@ static int Generate8BIMAttribute(Image *image,const char *key)
 {
   char
     *attribute,
-    *string;
+    name[MaxTextExtent],
+    *resource;
 
   int
     id,
     start,
-    stop;
+    stop,
+    sub_number;
 
   register long
     i;
@@ -407,13 +418,28 @@ static int Generate8BIMAttribute(Image *image,const char *key)
 
   if (image->iptc_profile.length == 0)
     return(False);
-  count=sscanf(key,"8BIM:%d,%d",&start,&stop);
-  if (count != 2)
+
+  /*
+    There may be spaces in resource names, but there are no
+    newlines, so use a newline as terminater to get the full
+    name.
+  */
+  count=sscanf(key,"8BIM:%ld,%ld:%[^\n]",&start,&stop,name);
+  if ((count != 2) && (count != 3))
     return(False);
+  if (count == 2)
+    *name='\0';
+  sub_number=1;
+  if (*name == '#')
+    sub_number=atol(&name[1]);
+  sub_number=Max(sub_number,1);
+  resource=(char *) NULL;
+
   status=False;
   length=image->iptc_profile.length;
   info=image->iptc_profile.info;
-  while (length != 0)
+
+  while ((length > 0) && (status == False))
   {
     if (ReadByte(&info,&length) != '8')
       continue;
@@ -423,28 +449,53 @@ static int Generate8BIMAttribute(Image *image,const char *key)
       continue;
     if (ReadByte(&info,&length) != 'M')
       continue;
-    id=ReadMSBShort((unsigned char **) &info,&length);
+    id=ReadMSBShort(&info,&length);
     if (id < start)
       continue;
     if (id > stop)
       continue;
+    if (resource != (char *)NULL)
+        MagickFreeMemory(resource);
     count=ReadByte(&info,&length);
-    string=(char *) NULL;
     if ((count != 0) && (count <= length))
       {
-        string=MagickAllocateMemory(char *,count+MaxTextExtent);
-        if (string != (char *) NULL)
+        resource=(char *) MagickAllocateMemory(char *,count+MaxTextExtent);
+        if (resource != (char *) NULL)
           {
             for (i=0; i < (long) count; i++)
-              string[i]=(char) ReadByte(&info,&length);
-            string[count]=0;
-            MagickFreeMemory(string);
+              resource[i]=(char) ReadByte(&info,&length);
+            resource[count]='\0';
           }
       }
     if (!(count & 0x01))
       (void) ReadByte(&info,&length);
-    count=ReadMSBLong((unsigned char **) &info,&length);
-    attribute=MagickAllocateMemory(char *,count+MaxTextExtent);
+    count=ReadMSBLong(&info,&length);
+    if ((*name != '\0') && (*name != '#'))
+      {
+        if ((resource == (char *) NULL) || (LocaleCompare(name,resource) != 0))
+          {
+            /*
+              No name match, scroll forward and try next resource.
+            */
+            info+=count;
+            length-=count;
+            continue;
+          }
+      }
+    if ((*name == '#') && (sub_number != 1))
+      {
+        /*
+          No numbered match, scroll forward and try next resource.
+        */
+        sub_number--;
+        info+=count;
+        length-=count;
+        continue;
+      }
+    /*
+      We have the resource of interest.
+    */
+    attribute=(char *) MagickAllocateMemory(char *,count+MaxTextExtent);
     if (attribute != (char *) NULL)
       {
         memcpy(attribute,(char *) info,count);
@@ -452,13 +503,16 @@ static int Generate8BIMAttribute(Image *image,const char *key)
         info+=count;
         length-=count;
         if ((id <= 1999) || (id >= 2999))
-          (void) SetImageAttribute(image,key,(const char *) attribute);
+          {
+            (void) SetImageAttribute(image,key,(const char *) attribute);
+          }
         else
           {
             char
               *path;
 
-            path=TraceClippingPath(attribute,count,image->columns,image->rows);
+            path=TraceClippingPath((unsigned char *) attribute,count,
+              image->columns,image->rows);
             (void) SetImageAttribute(image,key,(const char *) path);
             MagickFreeMemory(path);
           }
@@ -466,6 +520,8 @@ static int Generate8BIMAttribute(Image *image,const char *key)
         status=True;
       }
   }
+  if (resource != (char *)NULL)
+    MagickFreeMemory(resource);
   return(status);
 }
 

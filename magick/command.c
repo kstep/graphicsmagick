@@ -2962,6 +2962,14 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("clip",option+1) == 0)
           break;
+        if (LocaleCompare("clippath",option+1) == 0)
+         {
+            i++;
+            if (i == argc)
+              ThrowConvertException(OptionError,MissingClippingPathName,
+                option);
+            break;
+          }
         if (LocaleCompare("coalesce",option+1) == 0)
           break;
         if (LocaleCompare("colorize",option+1) == 0)
@@ -4566,7 +4574,8 @@ MagickExport void ConvertUsage(void)
       "-channel type        extract a particular color channel from image",
       "-charcoal radius     simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
-      "-clip                apply clipping path if the image has one",
+      "-clip                apply first clipping path if the image has one",
+      "-clippath            apply named clipping path if the image has one",
       "-coalesce            merge a sequence of images",
       "-colorize value      colorize the image with the fill color",
       "-colors value        preferred number of colors in the image",
@@ -7322,6 +7331,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 continue;
               }
             (void) ClipImage(*image);
+            continue;
+          }
+        if (LocaleCompare("clippath",option+1) == 0)
+          {
+            (void) ClipPathImage(*image,argv[++i],*option == '-');
             continue;
           }
         if (LocaleCompare("colorize",option+1) == 0)

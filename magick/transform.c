@@ -1338,6 +1338,14 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
                   q->green=ScaleShortToQuantum(beta.green);
                   q->blue=ScaleShortToQuantum(beta.blue);
                 }
+              if (image->matte)
+                if ((source_colorspace == CMYKColorspace) &&
+                    (target_colorspace != CMYKColorspace))
+                  q->opacity=indexes[x];
+                else
+                  if ((source_colorspace != CMYKColorspace) &&
+                      (target_colorspace == CMYKColorspace))
+                    indexes[x]=q->opacity;
               if (target_colorspace == CMYKColorspace)
                 indexes[x]=ScaleShortToQuantum(beta.black);
               q++;

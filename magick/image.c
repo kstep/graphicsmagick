@@ -860,27 +860,45 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C l i p I m a g e                                                         %
+%   C l i p P a t h I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ClipImage() sets the image clip mask based any clipping path information if
-%  it exists.
+%  ClipPathImage() sets the image clip mask based any clipping path information
+%  if it exists.
 %
-%  The format of the ClipImage method is:
+%  The format of the ClipPathImage method is:
 %
-%      unsigned int ClipImage(Image *image)
+%      unsigned int ClipPathImage(Image *image,const char *pathname,
+%        const unsigned int inside)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
+%    o pathname: name of clipping path resource. If name is preceded by #, use
+%      clipping path numbered by name.
+%
+%    o inside: if non-zero, later operations take effect inside clipping path.
+%      Otherwise later operations take effect outside clipping path.
+%
 %
 */
 MagickExport unsigned int ClipImage(Image *image)
 {
+  return(ClipPathImage(image,"#1",True));
+}
+
+MagickExport unsigned int ClipPathImage(Image *image,const char *pathname,
+  const unsigned int inside)
+{
+#define ClipPathImageTag  "ClipPath/Image"
+
+  char
+    key[MaxTextExtent];
+
   const ImageAttribute
     *attribute;
 
@@ -890,20 +908,68 @@ MagickExport unsigned int ClipImage(Image *image)
   ImageInfo
     *image_info;
 
+  long
+    intensity,
+    y;
+
+  register long
+    x;
+
+  register PixelPacket
+    *q;
+
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
-  attribute=GetImageAttribute(image,"8BIM:1999,2998");
-  if (attribute == (const ImageAttribute *) NULL)
-    return(False);
+  assert(pathname != NULL);
+  FormatString(key,"8BIM:1999,2998:%s",pathname);  attribute=GetImageAttribute(image,key);  if (attribute == (const ImageAttribute *) NULL)
+      return(False);
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) QueryColorDatabase("none",&image_info->background_color,
+  (void) QueryColorDatabase("#ffffffff",&image_info->background_color,
     &image->exception);
   clip_mask=BlobToImage(image_info,attribute->value,strlen(attribute->value),
     &image->exception);
   DestroyImageInfo(image_info);
   if (clip_mask == (Image *) NULL)
     return(False);
-  (void) NegateImage(clip_mask,False);
+  if (clip_mask->storage_class == PseudoClass)
+    {
+      SyncImage(clip_mask);
+      clip_mask->storage_class=DirectClass;
+    }
+  clip_mask->matte=True;
+  /*
+    Force all pixels to be either black or white (opaque or transparent)
+    to remove any unintended antialiasing effects created by the SVG
+    renderer.
+  */
+  for (y=0; y < (long) clip_mask->rows; y++)
+  {
+    q=GetImagePixels(clip_mask,0,y,clip_mask->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (long) clip_mask->columns; x++)
+    {
+      intensity=PixelIntensityToQuantum(q);
+      if (inside)
+        intensity=intensity == TransparentOpacity ? TransparentOpacity :
+          OpaqueOpacity;
+      else
+        intensity=intensity == TransparentOpacity ? OpaqueOpacity :
+          TransparentOpacity;
+      q->red=intensity;
+      q->green=intensity;
+      q->blue=intensity;
+      q->opacity=intensity;
+      q++;
+    }
+    if (!SyncImagePixels(clip_mask))
+      break;
+    if (QuantumTick(y,clip_mask->rows))
+      if (!MagickMonitor(ClipPathImageTag,y,clip_mask->rows,&image->exception))
+        break;
+  }
+  clip_mask->is_grayscale=True;
+  clip_mask->is_monochrome=True;
   (void) SetImageClipMask(image,clip_mask);
   DestroyImage(clip_mask);
   return(True);
