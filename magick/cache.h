@@ -89,11 +89,19 @@ typedef const PixelPacket
 
 typedef PixelPacket
   (*AcquireOnePixelFromHandler)(const Image *,const long,const long,
-    ExceptionInfo *),
-  (*GetOnePixelFromHandler)(Image *,const long,const long),
+    ExceptionInfo *);
+
+typedef PixelPacket
+  (*GetOnePixelFromHandler)(Image *,const long,const long);
+
+typedef PixelPacket
   *(*GetPixelHandler)(Image *,const long,const long,const unsigned long,
-    const unsigned long),
-  *(*GetPixelsFromHandler)(const Image *),
+    const unsigned long);
+
+typedef PixelPacket
+  *(*GetPixelsFromHandler)(const Image *);
+
+typedef PixelPacket
   *(*SetPixelHandler)(Image *,const long,const long,const unsigned long,
     const unsigned long);
 
