@@ -44,6 +44,13 @@ typedef enum
 
 typedef enum
 {
+  UndefinedGradient,
+  LinearGradient,
+  RadialGradient
+} GradientType;
+
+typedef enum
+{
   UndefinedCap,
   ButtCap,
   RoundCap,
@@ -122,17 +129,22 @@ typedef enum
 */
 typedef struct _GradientInfo
 {
+  GradientType
+    type;
+
   PixelPacket
     color;
 
   SegmentInfo
     stop;
 
+  unsigned long
+    length;
+
   SpreadMethod
     spread;
 
   unsigned long
-    length,
     signature;
 
   struct _GradientInfo
