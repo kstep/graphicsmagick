@@ -601,7 +601,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       if (jpeg_pixels != (JSAMPLE *) NULL)
         LiberateMemory((void **) &jpeg_pixels);
       jpeg_destroy_decompress(&jpeg_info);
-      ThrowReaderException(CorruptImageWarning,"Corrupt JPEG image",image);
+      return(image);
     }
   jpeg_create_decompress(&jpeg_info);
   JPEGSourceManager(&jpeg_info,image);
