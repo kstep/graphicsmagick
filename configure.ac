@@ -9,7 +9,7 @@
 # GraphicsMagick Configure Script
 #
  
-AC_PREREQ(2.57)
+AC_PREREQ(2.58)
 AC_INIT(magick/magick.h)
 
 # Source file containing package/library versioning information.

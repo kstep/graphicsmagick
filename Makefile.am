@@ -11,7 +11,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.7.8 dist-zip dist-bzip2 foreign
+AUTOMAKE_OPTIONS = 1.7.9 dist-zip dist-bzip2 foreign
 
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@

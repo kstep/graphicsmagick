@@ -2507,6 +2507,7 @@ MagickExport void DrawComposite(DrawContext context,
       MvgPrintf(context,"'\n");
     }
 
+  MagickFreeMemory(base64);
   MagickFreeMemory(media_type);
 }
 

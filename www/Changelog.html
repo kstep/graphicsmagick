@@ -53,6 +53,49 @@
 </tr>
 </table>
 <p>
+2003-11-17  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Update to Autoconf 2.58.
+  <LI> Makefile.am: Update to Automake 1.7.9.
+
+</UL>
+<p>
+2003-11-14  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/draw.c (DrawComposite): Base64-encoded image was not
+        being deallocated. Bad memory leak.
+
+</UL>
+<p>
+2003-11-03  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
+
+<UL>
+  <LI> BCBMagick: Updated installation procedure. Please read
+        BCBMagick/readme.txt for details.
+
+</UL>
+<p>
+2003-11-03  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
+
+<UL>
+  <LI> BCBMagick: Released DLL Version. Please read BCBMagick/readme.txt
+        for details about installation and/or use.
+
+</UL>
+<p>
+2003-11-03  Lars Ruben Skyum  &lt;lars.skyum@stibo.com&gt;
+
+<UL>
+  <LI> magick/utility.c (GetPathComponent): Added x, X, and +
+        characters to list of legal characters in subimage
+        specifications. Required by raw RGB image reader which accepts the
+        syntax "image.rgb[100x100+50+50]". Thanks to John Cristy for
+        catching that one.
+
+</UL>
+<p>
 2003-11-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

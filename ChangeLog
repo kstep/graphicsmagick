@@ -1,3 +1,13 @@
+2003-11-17  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Update to Autoconf 2.58.
+	* Makefile.am: Update to Automake 1.7.9.
+
+2003-11-14  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+
+	* magick/draw.c (DrawComposite): Base64-encoded image was not
+	being deallocated. Bad memory leak.
+
 2003-11-03  Mike Chiarappa  <mikechiarappa@libero.it>
 
 	* BCBMagick: Updated installation procedure. Please read 
