@@ -505,9 +505,9 @@ void ModuleToTag(const char *filename,const char *format,char *module)
   char
     *module_name;
 
-  assert(filename != (char *) NULL);
+  assert(filename != (const char *) NULL);
   assert(format != (const char *) NULL);
-  assert(module != const (char *) NULL);
+  assert(module != (char *) NULL);
   module_name=AllocateString(filename);
   LocaleUpper(module_name);
   FormatString(module,format,module_name);

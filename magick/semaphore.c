@@ -57,7 +57,7 @@
 #if defined(HasPTHREADS)
 #include <pthread.h>
 #endif
-#if defined(_VISUALC_)
+#if defined(WIN32)
 #include <windows.h>
 #endif
 #if defined(_MT)
@@ -74,7 +74,7 @@ struct SemaphoreInfo
     id;
 #endif
 
-#if defined(_VISUALC_)
+#if defined(WIN32)
   HANDLE
     id;
 #endif
@@ -163,7 +163,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
   if (semaphore_info == (SemaphoreInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate semaphore info",
       "Memory allocation failed");
-#if defined(_VISUALC_) && defined(_MT)
+#if defined(WIN32) && defined(_MT)
   {
     SECURITY_ATTRIBUTES
       security;
@@ -222,7 +222,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo *semaphore_info)
   assert(semaphore_info->signature == MagickSignature);
   if (semaphore_info == (SemaphoreInfo *) NULL)
     return;
-#if defined(_VISUALC_) && defined(_MT)
+#if defined(WIN32) && defined(_MT)
   CloseHandle(semaphore_info->id);
 #endif
 #if defined(HasPTHREADS)
@@ -292,7 +292,7 @@ MagickExport int LockSemaphore(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
-#if defined(_VISUALC_) && defined(_MT)
+#if defined(WIN32) && defined(_MT)
   if (WaitForSingleObject(semaphore_info->id,INFINITE) == WAIT_FAILED)
     return(False);
 #endif
@@ -333,7 +333,7 @@ MagickExport int UnlockSemaphore(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
-#if defined(_VISUALC_) && defined(_MT)
+#if defined(WIN32) && defined(_MT)
   if (ReleaseSemaphore(semaphore_info->id,1,NULL) == FALSE)
     return(False);
 #endif

@@ -66,7 +66,7 @@ static char
 /*
   External declarations.
 */
-#if !defined(_VISUALC_)
+#if !defined(WIN32)
 extern "C" BOOL WINAPI
   DllMain(HINSTANCE instance,DWORD data_segment,LPVOID reserved);
 #endif
