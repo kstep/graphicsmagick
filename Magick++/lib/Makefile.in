@@ -340,8 +340,8 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-Blob.lo Blob.o : Blob.cpp Magick++/Thread.h Magick++/Include.h \
-	Magick++/Blob.h
+Blob.lo Blob.o : Blob.cpp Magick++/Include.h Magick++/Blob.h \
+	Magick++/Thread.h
 Color.lo Color.o : Color.cpp Magick++/Color.h Magick++/Include.h \
 	Magick++/Functions.h Magick++/Exception.h
 Drawable.lo Drawable.o : Drawable.cpp Magick++/Drawable.h \
@@ -355,8 +355,8 @@ Image.lo Image.o : Image.cpp Magick++/Image.h Magick++/Blob.h \
 	Magick++/Thread.h Magick++/Include.h Magick++/Color.h \
 	Magick++/Drawable.h Magick++/Geometry.h Magick++/Exception.h \
 	Magick++/Options.h Magick++/LastError.h Magick++/Functions.h
-LastError.lo LastError.o : LastError.cpp Magick++/Thread.h \
-	Magick++/Include.h Magick++/LastError.h Magick++/Exception.h
+LastError.lo LastError.o : LastError.cpp Magick++/Include.h \
+	Magick++/Thread.h Magick++/LastError.h Magick++/Exception.h
 Montage.lo Montage.o : Montage.cpp Magick++/Montage.h Magick++/Color.h \
 	Magick++/Include.h Magick++/Geometry.h Magick++/Functions.h
 Options.lo Options.o : Options.cpp Magick++/Options.h Magick++/Color.h \

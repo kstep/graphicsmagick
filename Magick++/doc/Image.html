@@ -244,38 +244,34 @@ color</font></td>
 <td ROWSPAN="5" NOSAVE><font size=-1>Construct Image by reading from encoded
 image data contained in an in-memory <a href="Blob.html">BLOB</a>. Depending
 on the constructor arguments, the Blob <a href="#size">size</a>, <a href="#depth">depth</a>,
-<a href="#magick">magick</a>
-(format) may also be specified. Some image formats require that size be
-specified. The default ImageMagick uses for depth depends on the compiled-in
-Quantum size (8 or 16).&nbsp; If ImageMagick's Quantum size does not match
-that of the image, the depth may need to be specified. ImageMagick can
-usually automatically detect the image's format. When a format can't be
-automatically detected, the format (<a href="#magick">magick</a>) must
-be specified.</font></td>
+<a href="#magick">magick</a> (format) may also be specified. Some image
+formats require that size be specified. The default ImageMagick uses for
+depth depends on the compiled-in Quantum size (8 or 16).&nbsp; If ImageMagick's
+Quantum size does not match that of the image, the depth may need to be
+specified. ImageMagick can usually automatically detect the image's format.
+When a format can't be automatically detected, the format (<a href="#magick">magick</a>)
+must be specified.</font></td>
 </tr>
 
 <tr>
 <td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
-<a href="Geometry.html">Geometry</a>
-&amp;size_</font></td>
+<a href="Geometry.html">Geometry</a> &amp;size_</font></td>
 </tr>
 
 <tr>
 <td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
-<a href="Geometry.html">Geometry</a>
-&amp;size, unsigned int depth</font></td>
+<a href="Geometry.html">Geometry</a> &amp;size, unsigned int depth</font></td>
 </tr>
 
 <tr>
 <td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
-<a href="Geometry.html">Geometry</a>
-&amp;size, unsigned int depth_, const string &amp;magick_</font></td>
+<a href="Geometry.html">Geometry</a> &amp;size, unsigned int depth_, const
+string &amp;magick_</font></td>
 </tr>
 
 <tr>
 <td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
-<a href="Geometry.html">Geometry</a>
-&amp;size, const string &amp;magick_</font></td>
+<a href="Geometry.html">Geometry</a> &amp;size, const string &amp;magick_</font></td>
 </tr>
 </table>
 
@@ -426,9 +422,9 @@ int xOffset_, int yOffset_,
 <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 
-<td NOSAVE><font size=-1>Compose an image onto the current image at offset
-specified by <i>xOffset_</i>, <i>yOffset_ </i>using the composition algorithm
-specified by <i>compose_</i>.&nbsp;</font></td>
+<td NOSAVE><font size=-1>Compose an image onto another at offset specified
+by <i>xOffset_</i>, <i>yOffset_&nbsp;</i> using composition algorithm specified
+by <i>compose_</i>.</font></td>
 </tr>
 
 <tr>
@@ -437,9 +433,9 @@ const <a href="Geometry.html">Geometry</a> &amp;offset_,
 <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 
-<td><font size=-1>Compose an image onto the current image at offset specified
-by
-<i>offset_</i> using the composition algorithm specified by <i>compose_</i>.&nbsp;</font></td>
+<td><font size=-1>Compose an image onto another at offset specified by
+<i>offset_</i>
+using composition algorithm specified by <i>compose_</i>.</font></td>
 </tr>
 
 <tr>
@@ -448,9 +444,8 @@ by
 gravity_, <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 
-<td><font size=-1>Compose an image onto the current image with placement
-specified by <i>gravity_ </i>using the composition algorithm specified
-by <i>compose_</i>.&nbsp;</font></td>
+<td><font size=-1>Compose an image onto another with placement specified
+by <i>gravity_</i> using composition algorithm specified by <i>compose_</i>.</font></td>
 </tr>
 
 <tr>

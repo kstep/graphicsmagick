@@ -4,10 +4,7 @@
 #ifndef _MAGICK_H
 #define _MAGICK_H
 
-#define __EXTENSIONS__  1
-#define _POSIX_C_SOURCE  199506L
 #define _XOPEN_SOURCE  500
-#define _XOPEN_SOURCE_EXTENDED  1
 
 /*
   System include declarations.
@@ -36,7 +33,6 @@
 #endif
 
 #include <ctype.h>
-#include <fcntl.h>
 #include <signal.h>
 #include <locale.h>
 #include <errno.h>
@@ -78,6 +74,7 @@
 #endif
 #  include "api.h"
 #endif
+#include <fcntl.h>
 
 /*
   ImageMagick API headers

@@ -90,13 +90,12 @@ AUTOMAKE_OPTIONS = 1.2
 
 INCLUDES = -I../lib
 
-noinst_PROGRAMS = button demo detrans flip shapes
+noinst_PROGRAMS = button demo flip shapes
 
 LDADD = ../lib/libMagick++.la
 
 button_SOURCES = button.cpp
 demo_SOURCES = demo.cpp
-detrans_SOURCES = detrans.cpp
 flip_SOURCES = flip.cpp
 shapes_SOURCES = shapes.cpp
 
@@ -120,10 +119,6 @@ demo_OBJECTS =  demo.o
 demo_LDADD = $(LDADD)
 demo_DEPENDENCIES =  ../lib/libMagick++.la
 demo_LDFLAGS = 
-detrans_OBJECTS =  detrans.o
-detrans_LDADD = $(LDADD)
-detrans_DEPENDENCIES =  ../lib/libMagick++.la
-detrans_LDFLAGS = 
 flip_OBJECTS =  flip.o
 flip_LDADD = $(LDADD)
 flip_DEPENDENCIES =  ../lib/libMagick++.la
@@ -144,8 +139,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(button_SOURCES) $(demo_SOURCES) $(detrans_SOURCES) $(flip_SOURCES) $(shapes_SOURCES)
-OBJECTS = $(button_OBJECTS) $(demo_OBJECTS) $(detrans_OBJECTS) $(flip_OBJECTS) $(shapes_OBJECTS)
+SOURCES = $(button_SOURCES) $(demo_SOURCES) $(flip_SOURCES) $(shapes_SOURCES)
+OBJECTS = $(button_OBJECTS) $(demo_OBJECTS) $(flip_OBJECTS) $(shapes_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -213,10 +208,6 @@ demo: $(demo_OBJECTS) $(demo_DEPENDENCIES)
 	@rm -f demo
 	$(CXXLINK) $(demo_LDFLAGS) $(demo_OBJECTS) $(demo_LDADD) $(LIBS)
 
-detrans: $(detrans_OBJECTS) $(detrans_DEPENDENCIES)
-	@rm -f detrans
-	$(CXXLINK) $(detrans_LDFLAGS) $(detrans_OBJECTS) $(detrans_LDADD) $(LIBS)
-
 flip: $(flip_OBJECTS) $(flip_DEPENDENCIES)
 	@rm -f flip
 	$(CXXLINK) $(flip_LDFLAGS) $(flip_OBJECTS) $(flip_LDADD) $(LIBS)
@@ -281,13 +272,6 @@ button.o: button.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
 	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
 	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
 demo.o: demo.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Thread.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
-	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
-	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
-	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
-detrans.o: detrans.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
 	../lib/Magick++/Blob.h ../lib/Magick++/Thread.h \
 	../lib/Magick++/Include.h ../lib/Magick++/Color.h \
 	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \

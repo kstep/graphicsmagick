@@ -7,13 +7,12 @@ AUTOMAKE_OPTIONS = 1.2
 
 INCLUDES = -I../lib
 
-noinst_PROGRAMS = button demo detrans flip shapes
+noinst_PROGRAMS = button demo flip shapes
 
 LDADD = ../lib/libMagick++.la
 
 button_SOURCES = button.cpp
 demo_SOURCES   = demo.cpp
-detrans_SOURCES =  detrans.cpp
 flip_SOURCES   = flip.cpp
 shapes_SOURCES = shapes.cpp
 

@@ -13,12 +13,11 @@
 <center>
 <h1>
 Magick++ STL Support</h1></center>
-Magick++ provides a set of Standard Template Libary (STL) algorithms for
-operating across ranges of image frames in a container. It also provides
-a set of STL unary function objects to apply an operation on image frames
-in a container via an algorithm which uses unary function objects. A good
-example of a standard algorithm which is useful for processing containers
-of image frames is the STL <i><a href="http://www.sgi.com/Technology/STL/for_each.html">for_each</a></i>
+Magick++ provides a set of STL algorithms for operating across ranges of
+image frames in a container. It also provides a set of STL unary function
+objects to apply an operation on image frames in a container via an algorithm
+which uses unary function objects. A good example of a standard algorithm
+which is useful for processing containers of image frames is the STL <i><a href="http://www.sgi.com/Technology/STL/for_each.html">for_each</a></i>
 algorithm which invokes a unary function object on a range of container
 elements.
 <p>Magick++ uses a limited set of template argument types. The current
@@ -276,21 +275,18 @@ error.</font></td>
 Magick++ Unary Function Objects</h3></center>
 Magick++ unary function objects inherit from the STL unary_function template
 class . The STL unary_function template class is of the form
-<blockquote><tt><font color="#000099">unary_function&lt;Arg, Result></font></tt></blockquote>
+<blockquote><tt>unary_function&lt;Arg, Result></tt></blockquote>
 and expects that derived classes implement a method of the form:
-<blockquote><tt><font color="#000099">Result operator()( Arg argument_
-);</font></tt></blockquote>
+<blockquote><tt>Result operator()( Arg argument_ );</tt></blockquote>
 which is invoked by algorithms using the function object. In the case of
 unary function objects defined by Magick++, the invoked function looks
 like:
-<blockquote><tt><font color="#000099">void operator()( Image &amp;image_);</font></tt></blockquote>
+<blockquote><tt>void operator()( Image &amp;image_);</tt></blockquote>
 with a typical implementation looking similar to:
-<blockquote><tt><font color="#000099">void operator()( Image &amp;image_
-)</font></tt>
-<br><tt><font color="#000099">&nbsp; {</font></tt>
-<br><tt><font color="#000099">&nbsp;&nbsp;&nbsp; image_.contrast( _sharpen
-);</font></tt>
-<br><tt><font color="#000099">&nbsp; }</font></tt></blockquote>
+<blockquote><tt>void operator()( Image &amp;image_ )</tt>
+<br><tt>&nbsp; {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; image_.contrast( _sharpen );</tt>
+<br><tt>&nbsp; }</tt></blockquote>
 where <i>contrast</i> is an Image method and <i>_sharpen </i>is an argument
 stored within the function object by its contructor. Since constructors
 may be polymorphic, a given function object may have several constructors
