@@ -1118,7 +1118,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             RGBTransformImage(image,(ColorspaceType) sp);
           return;
         }
-      if (LocaleCompare(attribute,"compress") == 0)
+      if (LocaleCompare(attribute,"compression") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(CompressionTypes,SvPV(sval,na)) :
             SvIV(sval);
