@@ -1,13 +1,14 @@
 This file documents how to use the binary distribution packages built by
 ImageMagick Studio, and found in the ImageMagick 'binaries' subdirectory
 of ImageMagick ftp sites.  Those who want to build ImageMagick from
-source code should refer to the file README.txt in the ImageMagick
-source package or http://www.imagemagick.org/www/install.html on the web.
+source code should refer to the file README.txt in the ImageMagick source
+package or http://www.imagemagick.org/www/install.html on the web.
 
 Unix/Linux/Darwin/Cygwin/MinGW Install:
 
   Download the appropriate binary from
-  ftp://ftp.imagemagick.org/pub/ImageMagick/binaries.
+
+     ftp://ftp.imagemagick.org/pub/ImageMagick/binaries
 
   Create (or choose) a directory to install the package into and
   cd to that directory, for example:
@@ -39,22 +40,22 @@ Unix/Linux/Darwin/Cygwin/MinGW Install:
   Additional Information
 
     Environment Variables:
-  
+
      In addition to the MAGICK_HOME environment variable defined above,
      you may find these variables useful:
-  
+
        MAGICK_HOME             path to ImageMagick installation directory
        MAGICK_CACHE_THRESHOLD  megabytes of memory available to pixel cache
        TMPDIR                  path to store temporary files
        LD_LIBRARY_PATH         path to libMagick.so and other libraries
-  
+
     Configuration Files
-    
+
       ImageMagick depends on a number of external configuration files
       which include colors.mgk, delegates.mgk, magic.mgk, type.mgk, and
       modules.mgk. ImageMagick searches for configuration files in the
       following order, and will use the first file found:
-    
+
           <client path>/../lib/ImageMagick/
           $MAGICK_HOME/lib/ImageMagick/
           $HOME/.magick/
@@ -70,7 +71,7 @@ Unix/Linux/Darwin/Cygwin/MinGW Install:
           $MAGICK_FONT_PATH/
           $MAGICK_HOME/
           $HOME/.magick/
-    
+
     Module Files
 
       ImageMagick's file format support is usually provided in the form
@@ -127,4 +128,3 @@ VMS Install:
       set default [.imagemagick]
       @make
       identify -verbose logo:
-

@@ -899,7 +899,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  G e t C o n f i g u r a t i o n P a t h                                    %
+%  G e t C o n f i g u r e P a t h                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %

@@ -35,7 +35,6 @@ extern MagickExport char
   *Base64Encode(const unsigned char *,const size_t,size_t *),
   *EscapeString(const char *,const char),
   *GetConfigurePath(const char *,ExceptionInfo *),
-  *GetFontPath(const char *,ExceptionInfo *),
   *GetModulePath(const char *,ExceptionInfo *),
   *GetPageGeometry(const char *),
   **ListFiles(const char *,const char *,long *),
