@@ -879,7 +879,9 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (primitive_info[j].coordinates < 3)
           primitive_type=LinePrimitive;
         primitive_info[i]=primitive_info[j];
+        primitive_info[i].coordinates=0;
         primitive_info[j].coordinates++;
+        i++;
         break;
       }
       case BezierPrimitive:

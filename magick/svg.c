@@ -361,7 +361,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   text=AllocateString("none");
   token=AllocateString("none");
   value=AllocateString("none");
-  vertices=AllocateString("0,0 1,1");
+  vertices=AllocateString("");
   /*
     Parse SVG drawing primitives.
   */
@@ -398,12 +398,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (Latin1Compare(keyword,"cy") == 0)
       (void) sscanf(value,"%d",&ellipse.cy);
     if (Latin1Compare(keyword,"d") == 0)
-      {
-        (void) ConcatenateString(&vertices," ");
-        (void) ConcatenateString(&vertices,value);
-        if (strchr(value,'M') != (char *) NULL)
-          CloneString(&primitive,"none");
-      }
+      (void) ConcatenateString(&vertices,value);
     if (Latin1Compare(keyword,"ellipse") == 0)
       CloneString(&primitive,"ellipse");
     if (Latin1Compare(keyword,"g") == 0)
