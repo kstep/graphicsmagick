@@ -160,6 +160,14 @@ ModuleExport void RegisterMPRImage(void)
   entry->description=AllocateString("Magick Persistent Registry");
   entry->module=AllocateString("MPR");
   (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("MPRI");
+  entry->decoder=ReadMPRImage;
+  entry->encoder=WriteMPRImage;
+  entry->stealth=True;
+  entry->adjoin=False;
+  entry->description=AllocateString("Magick Persistent Registry");
+  entry->module=AllocateString("MPRI");
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
