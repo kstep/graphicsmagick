@@ -179,11 +179,8 @@ Export void ColorFloodfillImage(Image *image,const PixelPacket *target,
     Set floodfill color.
   */
   (void) QueryColorDatabase("black",&color);
-  if (!GetPixelCache(tile,0,0,1,1))
-    return;
-  color.red=tile->pixels->red;
-  color.green=tile->pixels->green;
-  color.blue=tile->pixels->blue;
+  if (GetPixelCache(tile,0,0,1,1))
+    color=(*tile->pixels);
   if (ColorMatch(color,*target,image->fuzz))
     return;
   segment_stack=(SegmentInfo *)
@@ -245,9 +242,7 @@ Export void ColorFloodfillImage(Image *image,const PixelPacket *target,
             ColorMatch(*q,color,image->fuzz))
           break;
       image->indexes[x]=True;
-      q->red=color.red;
-      q->green=color.green;
-      q->blue=color.blue;
+      *q=color;
       q--;
     }
     if (!SyncPixelCache(image))
@@ -264,28 +259,29 @@ Export void ColorFloodfillImage(Image *image,const PixelPacket *target,
     {
       if (!skip)
         {
-          q=GetPixelCache(image,x,y,image->columns-x,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          for (i=0; x < (int) image->columns; x++)
-          {
-            if (method == FloodfillMethod)
-              {
-                if (!ColorMatch(*q,*target,image->fuzz))
-                  break;
-              }
-            else
-              if (ColorMatch(*q,*target,image->fuzz) ||
-                  ColorMatch(*q,color,image->fuzz))
+          if (x < image->columns)
+            {
+              q=GetPixelCache(image,x,y,image->columns-x,1);
+              if (q == (PixelPacket *) NULL)
                 break;
-            image->indexes[i++]=True;
-            q->red=color.red;
-            q->green=color.green;
-            q->blue=color.blue;
-            q++;
-          }
-          if (!SyncPixelCache(image))
-            break;
+              for (i=0; x < (int) image->columns; x++)
+              {
+                if (method == FloodfillMethod)
+                  {
+                    if (!ColorMatch(*q,*target,image->fuzz))
+                      break;
+                  }
+                else
+                  if (ColorMatch(*q,*target,image->fuzz) ||
+                      ColorMatch(*q,color,image->fuzz))
+                    break;
+                image->indexes[i++]=True;
+                *q=color;
+                q++;
+              }
+              if (!SyncPixelCache(image))
+                break;
+            }
           Push(y,start,x-1,offset);
           if (x > (x2+1))
             Push(y,x2+1,x-1,-offset);
@@ -330,11 +326,7 @@ Export void ColorFloodfillImage(Image *image,const PixelPacket *target,
           if (p == (PixelPacket *) NULL)
             break;
           if (!tile->matte)
-            {
-              q->red=p->red;
-              q->green=p->green;
-              q->blue=p->blue;
-            }
+            *q=(*p);
           else
             {
               q->red=(Quantum) ((unsigned long) (p->red*p->opacity+

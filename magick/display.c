@@ -2062,10 +2062,8 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Update color information using floodfill algorithm.
             */
-            (*image)->class=DirectClass;
-            if (!GetPixelCache(*image,x_offset,y_offset,1,1))
-              break;
-            target=(*(*image)->pixels);
+            if (GetPixelCache(*image,x_offset,y_offset,1,1))
+              target=(*(*image)->pixels);
             if (method == FillToBorderMethod)
               {
                 target.red=XDownScale(border_color.red);
