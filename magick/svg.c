@@ -300,6 +300,8 @@ printf("%s : %s\n",keyword,values);
           (void) sscanf(values,"%d",&ellipse.cx);
         if (Latin1Compare(keyword,"cy") == 0)
           (void) sscanf(values,"%d",&ellipse.cy);
+        if (Latin1Compare(keyword,"d") == 0)
+          CloneString(&vertices,values);
         if (Latin1Compare(keyword,"ellipse") == 0)
           primitive=fill ? "fillEllipse" : "ellipse";
         if (Latin1Compare(keyword,"g") == 0)
@@ -325,6 +327,8 @@ printf("%s : %s\n",keyword,values);
         if (Latin1Compare(keyword,"minor") == 0)
           (void) sscanf(values,"%d",&ellipse.minor);
         if (Latin1Compare(keyword,"polyline") == 0)
+          primitive=fill ? "fillPolygon" : "polygon";
+        if (Latin1Compare(keyword,"path") == 0)
           primitive=fill ? "fillPolygon" : "polygon";
         if (Latin1Compare(keyword,"rect") == 0)
           primitive=fill ? "fillRectangle" : "rectangle";
@@ -403,7 +407,12 @@ printf("%s : %s\n",keyword,values);
               }
             if ((Latin1Compare(primitive,"Polygon") == 0) ||
                 (Latin1Compare(primitive,"fillPolygon") == 0))
-              (void) strcat(command,vertices);
+              {
+                for (i=0; i < strlen(vertices); i++)
+                  if (!isdigit(vertices[i]) && (vertices[i] != ','))
+                    vertices[i]=' ';
+                (void) strcat(command,vertices);
+              }
             if ((Latin1Compare(primitive,"Rectangle") == 0) ||
                 (Latin1Compare(primitive,"fillRectangle") == 0))
               {
@@ -431,6 +440,8 @@ puts(command);
       c=ReadByte(image);
   }
   FreeMemory((void *) &values);
+  if (vertices != (char *) NULL)
+    FreeMemory((void *) &vertices);
   DestroyDrawInfo(draw_info);
   DestroyImage(image);
   return(canvas);
