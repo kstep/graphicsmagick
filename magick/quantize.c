@@ -515,9 +515,6 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
   int
     distance;
 
-  long
-    mean;
-
   register int
     i;
 
@@ -595,13 +592,12 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
           /*
             Approximate the quantization error represented by this node.
           */
-          mean=(long int) ((DownScale(p->red)+mid_red)/2);
           distance=(int) (DownScale(p->red)-mid_red);
-          distance_squared=(2.0*256.0+mean)*squares[distance]/256.0;
+          distance_squared=squares[(int) distance];
           distance=(int) (DownScale(p->green)-mid_green);
-          distance_squared+=4.0*squares[distance];
+          distance_squared+=squares[(int) distance];
           distance=(int) (DownScale(p->blue)-mid_blue);
-          distance_squared+=(3.0*256.0-1.0-mean)*squares[distance]/256.0;
+          distance_squared+=squares[(int) distance];
           node_info->quantization_error+=distance_squared*(p->length+1);
         }
       index--;

@@ -382,11 +382,46 @@ static jmp_buf
 /*
   Forward declarations.
 */
-static char
-  *CopyString(char *);
-
 static int
   strEQcase(const char *,const char *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A l l o c a t e S t r i n g                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AllocateString makes a duplicate of the given string.
+%
+%  The format of the AllocateString routine is:
+%
+%      allocated_string=AllocateString(string)
+%
+%  A description of each parameter follows:
+%
+%    o allocated_string: Method AllocateString returns a duplicate of the given
+%      string.
+%
+%    o string: A character string.
+%
+%
+*/
+static char *AllocateString(char *source)
+{
+  char
+    *destination;
+
+  if (!source)
+    return((char *) NULL);
+  destination=(char *) safemalloc(Extent(source)+1);
+  (void) strcpy(destination,source);
+  return(destination);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -431,38 +466,38 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
   *cloned_info=(*info);
   if (info->image_info.server_name)
     cloned_info->image_info.server_name=
-      CopyString(info->image_info.server_name);
+      AllocateString(info->image_info.server_name);
   if (info->image_info.font)
-    cloned_info->image_info.font=CopyString(info->image_info.font);
+    cloned_info->image_info.font=AllocateString(info->image_info.font);
   if (info->image_info.pen)
-    cloned_info->image_info.pen=CopyString(info->image_info.pen);
+    cloned_info->image_info.pen=AllocateString(info->image_info.pen);
   if (info->image_info.size)
-    cloned_info->image_info.size=CopyString(info->image_info.size);
+    cloned_info->image_info.size=AllocateString(info->image_info.size);
   if (info->image_info.tile)
-    cloned_info->image_info.tile=CopyString(info->image_info.tile);
+    cloned_info->image_info.tile=AllocateString(info->image_info.tile);
   if (info->image_info.density)
-    cloned_info->image_info.density=CopyString(info->image_info.density);
+    cloned_info->image_info.density=AllocateString(info->image_info.density);
   if (info->image_info.page)
-    cloned_info->image_info.page=CopyString(info->image_info.page);
+    cloned_info->image_info.page=AllocateString(info->image_info.page);
   if (info->image_info.dispose)
-    cloned_info->image_info.dispose=CopyString(info->image_info.dispose);
+    cloned_info->image_info.dispose=AllocateString(info->image_info.dispose);
   if (info->image_info.delay)
-    cloned_info->image_info.delay=CopyString(info->image_info.delay);
+    cloned_info->image_info.delay=AllocateString(info->image_info.delay);
   if (info->image_info.iterations)
-    cloned_info->image_info.iterations=CopyString(info->image_info.iterations);
+    cloned_info->image_info.iterations=AllocateString(info->image_info.iterations);
   if (info->image_info.texture)
-    cloned_info->image_info.texture=CopyString(info->image_info.texture);
+    cloned_info->image_info.texture=AllocateString(info->image_info.texture);
   if (info->image_info.background_color)
     cloned_info->image_info.background_color=
-      CopyString(info->image_info.background_color);
+      AllocateString(info->image_info.background_color);
   if (info->image_info.border_color)
     cloned_info->image_info.border_color=
-      CopyString(info->image_info.border_color);
+      AllocateString(info->image_info.border_color);
   if (info->image_info.matte_color)
     cloned_info->image_info.matte_color=
-      CopyString(info->image_info.matte_color);
+      AllocateString(info->image_info.matte_color);
   if (info->image_info.undercolor)
-    cloned_info->image_info.undercolor=CopyString(info->image_info.undercolor);
+    cloned_info->image_info.undercolor=AllocateString(info->image_info.undercolor);
   return(cloned_info);
 }
 
@@ -477,31 +512,27 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CopyString makes a duplicate of the given string.
+%  Method CopyString allocates memory for the destination string and copies the
+%  source string to that memory location.
 %
 %  The format of the CopyString routine is:
 %
-%      cloned_string=CopyString(string)
+%      CopyString(destination,source)
 %
 %  A description of each parameter follows:
 %
-%    o cloned_string: Method CopyString returns a duplicate of the given
-%      string.
+%    o destination:  A pointer to a character string.
 %
-%    o string: A character string.
+%    o source: A character string.
 %
 %
 */
-static char *CopyString(char *source)
+static void CopyString(char **destination,char *source)
 {
-  char
-    *destination;
-
-  if (!source)
-    return((char *) NULL);
-  destination=(char *) safemalloc(Extent(source)+1);
-  (void) strcpy(destination,source);
-  return(destination);
+  if (*destination)
+    safefree(*destination);
+  *destination=(char *) safemalloc(Extent(source)+1);
+  (void) strcpy(*destination,source);
 }
 
 /*
@@ -1019,7 +1050,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"background"))
         {
           if (info)
-            CloneString(&info->image_info.background_color,SvPV(sval,na));
+            CopyString(&info->image_info.background_color,SvPV(sval,na));
           (void) XQueryColorDatabase(SvPV(sval,na),&target_color);
           for ( ; image; image=image->next)
           {
@@ -1040,7 +1071,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"bordercolor"))
         {
           if (info)
-            CloneString(&info->image_info.border_color,SvPV(sval,na));
+            CopyString(&info->image_info.border_color,SvPV(sval,na));
           (void) XQueryColorDatabase(SvPV(sval,na),&target_color);
           for ( ; image; image=image->next)
           {
@@ -1139,7 +1170,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"delay"))
         {
           if (info)
-            CloneString(&info->image_info.delay,SvPV(sval,na));
+            CopyString(&info->image_info.delay,SvPV(sval,na));
           for ( ; image; image=image->next)
             image->delay=SvIV(sval);
           return;
@@ -1153,7 +1184,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               return;
             }
           if (info)
-            CloneString(&info->image_info.density,SvPV(sval,na));
+            CopyString(&info->image_info.density,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"depth"))
@@ -1167,7 +1198,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"dispose"))
         {
           if (info)
-            CloneString(&info->image_info.dispose,SvPV(sval,na));
+            CopyString(&info->image_info.dispose,SvPV(sval,na));
           for (; image; image=image->next)
             image->dispose=SvIV(sval);
           return;
@@ -1193,7 +1224,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           display:
           if (info)
-            CloneString(&info->image_info.server_name,SvPV(sval,na));
+            CopyString(&info->image_info.server_name,SvPV(sval,na));
           return;
         }
       break;
@@ -1237,7 +1268,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"font"))
         {
           if (info)
-            CloneString(&info->image_info.font,SvPV(sval,na));
+            CopyString(&info->image_info.font,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"fuzz"))
@@ -1273,7 +1304,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
   iterations:
           if (info)
-            CloneString(&info->image_info.iterations,SvPV(sval,na));
+            CopyString(&info->image_info.iterations,SvPV(sval,na));
           for ( ; image; image=image->next)
             image->iterations=SvIV(sval);
           return;
@@ -1330,7 +1361,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"mattec") || strEQcase(attribute,"matte_color"))
         {
           if (info)
-            CloneString(&info->image_info.matte_color,SvPV(sval,na));
+            CopyString(&info->image_info.matte_color,SvPV(sval,na));
           (void) XQueryColorDatabase(SvPV(sval,na),&target_color);
           for ( ; image; image=image->next)
           {
@@ -1392,16 +1423,16 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           if (!p)
             return;
           if (info)
-            CloneString(&info->image_info.page,p);
+            CopyString(&info->image_info.page,p);
           for ( ; image; image=image->next)
-            CloneString(&image->page,p);
+            CopyString(&image->page,p);
           DestroyPostscriptGeometry(p);
           return;
         }
       if (strEQcase(attribute,"pen"))
         {
           if (info)
-            CloneString(&info->image_info.pen,SvPV(sval,na));
+            CopyString(&info->image_info.pen,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"pixel"))
@@ -1545,7 +1576,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                     SvPV(sval,na));
                   return;
                 }
-              CloneString(&info->image_info.size,SvPV(sval,na));
+              CopyString(&info->image_info.size,SvPV(sval,na));
             }
           return;
         }
@@ -1557,13 +1588,13 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"tile"))
         {
           if (info)
-            CloneString(&info->image_info.tile,SvPV(sval,na));
+            CopyString(&info->image_info.tile,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"texture"))
         {
           if (info)
-            CloneString(&info->image_info.texture,SvPV(sval,na));
+            CopyString(&info->image_info.texture,SvPV(sval,na));
           return;
         }
      if (strEQcase(attribute,"tree"))
@@ -1580,7 +1611,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"underc"))
         {
           if (info)
-            CloneString(&info->image_info.undercolor,SvPV(sval,na));
+            CopyString(&info->image_info.undercolor,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"unit"))
@@ -1621,7 +1652,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"view"))
         {
           if (info)
-            CloneString(&info->image_info.view,SvPV(sval,na));
+            CopyString(&info->image_info.view,SvPV(sval,na));
           return;
         }
       break;
@@ -4014,19 +4045,19 @@ Mogrify(ref,...)
             {
               package_info=ClonePackageInfo(info);
               if (attribute_flag[1])
-                CloneString(&package_info->image_info.font,
+                CopyString(&package_info->image_info.font,
                   argument_list[1].string_reference);
               if (attribute_flag[2])
                package_info->image_info.pointsize=
                  argument_list[2].int_reference;
               if (attribute_flag[3])
-                CloneString(&package_info->image_info.density,
+                CopyString(&package_info->image_info.density,
                   argument_list[3].string_reference);
               if (attribute_flag[5])
-                CloneString(&package_info->image_info.pen,
+                CopyString(&package_info->image_info.pen,
                   argument_list[5].string_reference);
               if (attribute_flag[7])
-                CloneString(&package_info->image_info.server_name,
+                CopyString(&package_info->image_info.server_name,
                   argument_list[7].string_reference);
               GetAnnotateInfo(&package_info->image_info,&annotate);
               if (attribute_flag[0])
@@ -4211,13 +4242,13 @@ Mogrify(ref,...)
             {
               package_info=ClonePackageInfo(info);
               if (attribute_flag[3])
-                CloneString(&package_info->image_info.pen,
+                CopyString(&package_info->image_info.pen,
                   argument_list[3].string_reference);
               if (attribute_flag[5])
-                CloneString(&package_info->image_info.server_name,
+                CopyString(&package_info->image_info.server_name,
                   argument_list[5].string_reference);
               if (attribute_flag[6])
-                CloneString(&package_info->image_info.border_color,
+                CopyString(&package_info->image_info.border_color,
                   argument_list[6].string_reference);
               GetAnnotateInfo(&package_info->image_info,&annotate);
               if (attribute_flag[4])
@@ -4901,7 +4932,7 @@ Montage(ref,...)
           if (strEQcase(attribute,"pen"))
             {
               if (info)
-                CloneString(&info->image_info.pen,SvPV(ST(i),na));
+                CopyString(&info->image_info.pen,SvPV(ST(i),na));
               montage_info.pen=SvPV(ST(i),na);
               continue;
              }

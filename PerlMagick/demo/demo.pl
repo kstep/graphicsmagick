@@ -218,6 +218,6 @@ $montage->Annotate(text=>'Every thing you see on this page was created ' .
   font=>'@Generic.ttf',pointsize=>11,pen=>'#600');
 print "Write image...\n";
 $montage->Set(matte=>'false');
-$montage->Write('demo.gif');
+$montage->Write('demo.jpg');
 print "Display image...\n";
 $montage->display();
