@@ -265,63 +265,63 @@ void Magick::DrawableGravity::print (std::ostream& stream_) const
     {
     case ForgetGravity :
       {
-        stream_ << "ForgetGravity";
+        stream_ << "Forget";
         break;
       }
     case NorthWestGravity :
       {
-        stream_ << "NorthWestGravity";
+        stream_ << "NorthWest";
         break;
       }
     case NorthGravity :
       {
-        stream_ << "NorthGravity";
+        stream_ << "North";
         break;
       }
     case NorthEastGravity :
       {
-        stream_ << "NorthEastGravity";
+        stream_ << "NorthEast";
         break;
       }
     case WestGravity :
       {
-        stream_ << "WestGravity";
+        stream_ << "West";
         break;
       }
     case CenterGravity :
       {
-        stream_ << "CenterGravity";
+        stream_ << "Center";
         break;
       }
     case EastGravity :
       {
-        stream_ << "EastGravity";
+        stream_ << "East";
         break;
       }
     case SouthWestGravity :
       {
-        stream_ << "SouthWestGravity";
+        stream_ << "SouthWest";
         break;
       }
     case SouthGravity :
       {
-        stream_ << "SouthGravity";
+        stream_ << "South";
         break;
       }
     case SouthEastGravity :
       {
-        stream_ << "SouthEastGravity";
+        stream_ << "SouthEast";
         break;
       }
     case StaticGravity :
       {
-        stream_ << "StaticGravity";
+        stream_ << "Static";
         break;
       }
 
     default :
       {
-        stream_ << "ForgetGravity";
+        stream_ << "Forget";
       }
     }
 }

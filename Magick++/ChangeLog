@@ -1,3 +1,9 @@
+2002-01-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (Magick::DrawableGravity::print):
+ 	Bugfix. Remove "Gravity" from the end of each gravity
+ 	specification string.  Reported as PR#1084 by stefan@dotify.com.
+
 2002-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp, Magick++/Include.h: Use DestroyImageList() rather
