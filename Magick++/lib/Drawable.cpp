@@ -199,7 +199,7 @@ void Magick::DrawableEllipse::print (std::ostream& stream_) const
 {
   stream_ << "ellipse "
           << Magick::Coordinate(_originX,_originY)
-	  << " " << _width << "," << _height
+	  << " " << _radiusX << "," << _radiusY
 	  << " " << _arcStart << "," << _arcEnd;
 }
 
@@ -321,8 +321,68 @@ void Magick::DrawableGravity::print (std::ostream& stream_) const
 // Draw image at point
 void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
 {
-  stream_ << "image Replace "
-          << Magick::Coordinate( _x, _y)
+  stream_ << "image ";
+
+  switch ( _composition )
+    {
+    case OverCompositeOp:
+      stream_ << "Over ";
+      break;
+    case InCompositeOp:
+      stream_ << "In ";
+      break;
+    case OutCompositeOp:
+      stream_ << "Out ";
+      break;
+    case AtopCompositeOp:
+      stream_ << "Atop ";
+      break;
+    case XorCompositeOp:
+      stream_ << "Xor ";
+      break;
+    case PlusCompositeOp:
+      stream_ << "Plus ";
+      break;
+    case MinusCompositeOp:
+      stream_ << "Minus ";
+      break;
+    case AddCompositeOp:
+      stream_ << "Add ";
+      break;
+    case SubtractCompositeOp:
+      stream_ << "Subtract ";
+      break;
+    case DifferenceCompositeOp:
+      stream_ << "Difference ";
+      break;
+    case MultiplyCompositeOp:
+      stream_ << "Multiply ";
+      break;
+    case BumpmapCompositeOp:
+      stream_ << "Bumpmap ";
+      break;
+    case ReplaceCompositeOp:
+      stream_ << "Replace ";
+      break;
+    case ReplaceRedCompositeOp:
+      stream_ << "ReplaceRed ";
+      break;
+    case ReplaceGreenCompositeOp:
+      stream_ << "ReplaceGreen ";
+      break;
+    case ReplaceBlueCompositeOp:
+      stream_ << "ReplaceBlue ";
+      break;
+    case ReplaceMatteCompositeOp:
+      stream_ << "ReplaceMatte ";
+      break;
+    default:
+        {
+          stream_ << "Replace ";
+        }
+    }
+
+  stream_ << Magick::Coordinate( _x, _y)
           << " "
           << Magick::Coordinate( _width, _height)
           << " \"";

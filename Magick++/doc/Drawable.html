@@ -261,7 +261,7 @@ color. Finally, reset recolors all pixels.</font></td>
 </tr>
 
 <tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<td ROWSPAN="3" NOSAVE>
 <center><a NAME="DrawableCompositeImage"></a><font size=-1>DrawableCompositeImage</font></center>
 </td>
 
@@ -287,6 +287,20 @@ so that non-opaque portions allow part (or all) of the composite image
 to show through. If the specified <i>width</i> or <i>height</i> is zero,
 then the image is composited at its natural size, without enlargement or
 reduction.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>double x_, double y_, double width_, double height_,
+const std::string &amp;image_, CompositeOperator composition_</font></td>
+
+<td><font size=-1>Composite current image with contents of specified image
+file, rendered with specified width and height, using specified composition
+algorithm, at specified coordinates. If the <i>matte</i> attribute is set
+to <i>true</i>, then the image composition will consider an alpha channel,
+or transparency, present in the image file so that non-opaque portions
+allow part (or all) of the composite image to show through. If the specified
+<i>width</i> or <i>height</i> is zero, then the image is composited at
+its natural size, without enlargement or reduction.</font></td>
 </tr>
 
 <tr>

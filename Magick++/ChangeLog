@@ -1,3 +1,8 @@
+2000-12-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawableCompositeImage): Support specifying
+ 	composition rule.
+
 2000-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (draw): Bugfix - the primitive string was not
