@@ -389,7 +389,6 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
       return((void *) NULL);
     }
   return(blob);
-
 }
 
 /*
