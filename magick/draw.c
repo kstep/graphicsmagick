@@ -3078,8 +3078,7 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
       if ((mid > 1.0) && (draw_info->stroke.opacity != TransparentOpacity))
         {
           unsigned int
-            closed_path,
-            subpath;
+            closed_path;
 
           /*
             Draw strokes while respecting line cap/join attributes.
@@ -3089,9 +3088,9 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
             (primitive_info[i-1].point.x == primitive_info[0].point.x) &&
             (primitive_info[i-1].point.y == primitive_info[0].point.y);
           i=primitive_info[0].coordinates;
-          subpath=primitive_info[i].primitive != UndefinedPrimitive;
           if ((((draw_info->linecap == RoundCap) || closed_path) &&
-               (draw_info->linejoin == RoundJoin)) || subpath)
+               (draw_info->linejoin == RoundJoin)) || 
+	       (primitive_info[i].primitive != UndefinedPrimitive))
             {
               DrawPolygonPrimitive(draw_info,primitive_info,polygon_info,image);
               DestroyPolygonInfo(polygon_info);
