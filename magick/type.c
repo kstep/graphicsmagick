@@ -477,7 +477,6 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 
   const char
     *family,
-    *format,
     *name,
     *stretch,
     *style;
@@ -486,7 +485,6 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
     file=stdout;
   (void) GetTypeInfo("*",exception);
   AcquireSemaphoreInfo(&type_semaphore);
-  format="%-32s %-19s %-7s %-12s %-3s\n";
   for (p=type_list; p != (const TypeInfo *) NULL; p=p->next)
   {
     if ((p->previous == (TypeInfo *) NULL) ||
@@ -495,9 +493,10 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
         if (p->previous != (TypeInfo *) NULL)
           (void) fprintf(file,"\n");
         (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
-        (void) fprintf(file,format,"Name","Family","Style","Stretch","Weight");
+        (void) fprintf(file,"%-32.32s %-23.23s %-7.7s %-8s %-3s\n",
+                       "Name","Family","Style","Stretch","Weight");
         (void) fprintf(file,"--------------------------------------------------"
-          "-------------------------------\n");
+          "------------------------------\n");
       }
     if (p->stealth)
       continue;
@@ -510,7 +509,8 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
     style=StyleTypeToString(p->style);
     stretch=StretchTypeToString(p->stretch);
     FormatString(weight,"%lu",p->weight);
-    (void) fprintf(file,format,name,family,style,stretch,weight);
+    (void) fprintf(file,"%-32.32s %-23.23s %-7.7s %-9s %-3s\n",
+                   name,family,style,stretch,weight);
   }
   (void) fflush(file);
   LiberateSemaphoreInfo(&type_semaphore);
