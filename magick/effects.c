@@ -2950,8 +2950,7 @@ Export Image *WaveImage(Image *image,const double amplitude,
       return((Image *) NULL);
     }
   for (x=0; x < (int) wave_image->columns; x++)
-    sine_map[x]=
-      AbsoluteValue(amplitude)+amplitude*sin((2*M_PI*x)/wavelength);
+    sine_map[x]=AbsoluteValue(amplitude)+amplitude*sin((2*M_PI*x)/wavelength);
   /*
     Wave image.
   */
@@ -2962,7 +2961,7 @@ Export Image *WaveImage(Image *image,const double amplitude,
       break;
     for (x=0; x < (int) wave_image->columns; x++)
     {
-      *q=InterpolateColor(image,x,y-sine_map[x]);
+      *q=InterpolateColor(image,x,(int) (y-sine_map[x]));
       q++;
     }
     if (!SyncPixelCache(wave_image))

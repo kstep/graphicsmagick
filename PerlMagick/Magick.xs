@@ -3448,7 +3448,7 @@ Mogrify(ref,...)
   PPCODE:
   {
     AnnotateInfo
-      annotate_info;
+      *annotate_info;
 
     char
       *attribute,
@@ -4027,12 +4027,13 @@ Mogrify(ref,...)
               if (attribute_flag[7])
                 (void) CloneString(&package_info->image_info->server_name,
                   argument_list[7].string_reference);
-              GetAnnotateInfo(package_info->image_info,&annotate_info);
+              annotate_info=CloneAnnotateInfo(package_info->image_info,
+                (AnnotateInfo *) NULL);
               if (attribute_flag[0])
-                (void) CloneString(&annotate_info.text,
+                (void) CloneString(&annotate_info->text,
                   argument_list[0].string_reference);
               if (attribute_flag[6])
-                (void) CloneString(&annotate_info.geometry,
+                (void) CloneString(&annotate_info->geometry,
                   argument_list[6].string_reference);
               if (attribute_flag[8] || attribute_flag[9])
                 {
@@ -4042,14 +4043,14 @@ Mogrify(ref,...)
                     argument_list[9].int_reference=0;
                   FormatString(message,"%+d%+d",argument_list[8].int_reference,
                     argument_list[9].int_reference);
-                  (void) CloneString(&annotate_info.geometry,message);
+                  (void) CloneString(&annotate_info->geometry,message);
                 }
               if (attribute_flag[10])
-                annotate_info.gravity=argument_list[10].int_reference;
+                annotate_info->gravity=argument_list[10].int_reference;
               if (attribute_flag[11])
-                annotate_info.degrees=argument_list[11].double_reference;
+                annotate_info->degrees=argument_list[11].double_reference;
             }
-          AnnotateImage(image,&annotate_info);
+          AnnotateImage(image,annotate_info);
           break;
         }
         case 34:  /* ColorFloodfill */
@@ -4077,14 +4078,15 @@ Mogrify(ref,...)
               if (attribute_flag[4])
                 QueryColorDatabase(argument_list[4].string_reference,
                   &border_color);
-              GetAnnotateInfo(package_info->image_info,&annotate_info);
+              annotate_info=CloneAnnotateInfo(package_info->image_info,
+                (AnnotateInfo *) NULL);
             }
           if (GetPixelCache(image,rectangle_info.x % image->columns,
               rectangle_info.y % image->rows,1,1))
             target=(*image->pixels);
           if (attribute_flag[4])
             target=border_color;
-          ColorFloodfillImage(image,&target,annotate_info.tile,rectangle_info.x,
+          ColorFloodfillImage(image,&target,annotate_info->tile,rectangle_info.x,
             rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
             FloodfillMethod);
           break;
@@ -4221,25 +4223,26 @@ Mogrify(ref,...)
               if (attribute_flag[6])
                 (void) QueryColorDatabase(argument_list[6].string_reference,
                   &package_info->image_info->border_color);
-              GetAnnotateInfo(package_info->image_info,&annotate_info);
+              annotate_info=CloneAnnotateInfo(package_info->image_info,
+                (AnnotateInfo *) NULL);
             }
-          (void) CloneString(&annotate_info.primitive,"Point");
+          (void) CloneString(&annotate_info->primitive,"Point");
           if (attribute_flag[0] && (argument_list[0].int_reference > 0))
-            (void) CloneString(&annotate_info.primitive,
+            (void) CloneString(&annotate_info->primitive,
               PrimitiveTypes[argument_list[0].int_reference]);
           if (attribute_flag[1])
             {
-              (void) strcat(annotate_info.primitive," ");
-              (void) strcat(annotate_info.primitive,
+              (void) strcat(annotate_info->primitive," ");
+              (void) strcat(annotate_info->primitive,
                 argument_list[1].string_reference);
             }
           if (attribute_flag[2])
             {
-              (void) strcat(annotate_info.primitive," ");
-              (void) strcat(annotate_info.primitive,
+              (void) strcat(annotate_info->primitive," ");
+              (void) strcat(annotate_info->primitive,
                 MethodTypes[argument_list[2].int_reference]);
             }
-          DrawImage(image,&annotate_info);
+          DrawImage(image,annotate_info);
           break;
         }
         case 39:  /* Equalize */
@@ -4597,7 +4600,7 @@ Mogrify(ref,...)
     }
     if (package_info)
       {
-        DestroyAnnotateInfo(&annotate_info);
+        DestroyAnnotateInfo(annotate_info);
         DestroyPackageInfo(package_info);
       }
 

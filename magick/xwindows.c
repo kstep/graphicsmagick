@@ -2448,7 +2448,7 @@ Export void XFreeStandardColormap(Display *display,
 %
 %  Method XGetAnnotateInfo initializes the AnnotateInfo structure.
 %
-%  The format of the GetAnnotateInfo method is:
+%  The format of the XGetAnnotateInfo method is:
 %
 %      void XGetAnnotateInfo(XAnnotateInfo *annotate_info)
 %

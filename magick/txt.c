@@ -87,7 +87,7 @@
 Export Image *ReadTXTImage(const ImageInfo *image_info)
 {
   AnnotateInfo
-    annotate_info;
+    *annotate_info;
 
   char
     filename[MaxTextExtent],
@@ -178,7 +178,8 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     Annotate the text image.
   */
   SetImage(image);
-  GetAnnotateInfo((ImageInfo *) image_info,&annotate_info);
+  annotate_info=
+    CloneAnnotateInfo((ImageInfo *) image_info,(AnnotateInfo *) NULL);
   (void) strcpy(filename,image_info->filename);
   offset=0;
   for ( ; ; )
@@ -189,15 +190,15 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     p=GetStringBlob(image,text);
     if (p == (char *) NULL)
       break;
-    (void) CloneString(&annotate_info.text,text);
+    (void) CloneString(&annotate_info->text,text);
     FormatString(geometry,"%+d%+d",page_info.x,page_info.y+offset);
-    (void) CloneString(&annotate_info.geometry,geometry);
-    AnnotateImage(image,&annotate_info);
-    offset+=annotate_info.bounds.height;
+    (void) CloneString(&annotate_info->geometry,geometry);
+    AnnotateImage(image,annotate_info);
+    offset+=annotate_info->bounds.height;
     if (image->previous == (Image *) NULL)
       if (QuantumTick(page_info.y+offset,image->rows))
         ProgressMonitor(LoadImageText,page_info.y+offset,image->rows);
-    if (((2*page_info.y)+offset+annotate_info.bounds.height) < image->rows)
+    if (((2*page_info.y)+offset+annotate_info->bounds.height) < image->rows)
       continue;
     /*
       Page is full-- allocate next image structure.
@@ -205,7 +206,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     image->next=CloneImage(image,image->columns,image->rows,True);
     if (image->next == (Image *) NULL)
       {
-        DestroyAnnotateInfo(&annotate_info);
+        DestroyAnnotateInfo(annotate_info);
         MagickWarning(ResourceLimitWarning,"Unable to annotate image",
           "Memory allocation failed");
         break;
@@ -236,7 +237,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
   }
   if (texture != (Image *) NULL)
     DestroyImage(texture);
-  DestroyAnnotateInfo(&annotate_info);
+  DestroyAnnotateInfo(annotate_info);
   (void) IsPseudoClass(image);
   while (image->previous != (Image *) NULL)
     image=image->previous;

@@ -318,7 +318,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
       local_info->bounds.x,local_info->bounds.y);
     DestroyImage(annotate_image);
   }
-  DestroyAnnotateInfo(local_info);
+/*  DestroyAnnotateInfo(local_info);*/
   FreeMemory(local_info);
   FreeMemory(text);
   for ( ; textlist[i] != (char *) NULL; i++)
@@ -431,6 +431,7 @@ Export void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
   if (annotate_info->tile != (Image *) NULL)
     DestroyImage(annotate_info->tile);
   annotate_info->tile=(Image *) NULL;
+  FreeMemory(annotate_info);
 }
 
 /*

@@ -220,7 +220,7 @@ testFilter('input.miff', 'Trim',
 ++$test;
 testFilter('input.miff', 'Wave',
   q/25x157/,
-  '7b245cb58da477c1e4cce2a9626681cc');
+  'f1408829aaa27452850131e22f222ab6');
 
 ++$test;
 testFilter('input.miff', 'Zoom',

@@ -935,7 +935,7 @@ Export Image *RollImage(Image *image,const int x_offset,const int y_offset)
       if (q == (PixelPacket *) NULL)
         break;
       if (image->class == PseudoClass)
-        roll_image->indexes[x]=*image->indexes;
+        roll_image->indexes[x]=(*image->indexes);
       *q=(*p);
       p++;
       if (!SyncPixelCache(roll_image))
@@ -1029,11 +1029,6 @@ Export void TransformImage(Image **image,const char *crop_geometry,
         width=(unsigned int) ((int) transformed_image->columns-crop_info.x);
       if ((flags & HeightValue) == 0)
         height=(unsigned int) ((int) transformed_image->rows-crop_info.y);
-      /*
-         do not muck with offsets for autocrop case - let x and y be
-         positive and negative to allow adjustment of the autocrop
-         in either direction
-      */
       if ((width != 0) || (height != 0))
         {
           if ((flags & XNegative) != 0)

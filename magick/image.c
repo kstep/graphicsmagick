@@ -4313,19 +4313,19 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-draw",option,3) == 0)
       {
         AnnotateInfo
-          annotate_info;
+          *annotate_info;
 
         /*
           Draw image.
         */
-        GetAnnotateInfo(local_info,&annotate_info);
-        (void) CloneString(&annotate_info.primitive,argv[++i]);
+        annotate_info=CloneAnnotateInfo(local_info,(AnnotateInfo *) NULL);
+        (void) CloneString(&annotate_info->primitive,argv[++i]);
         if (geometry != (char *) NULL)
-          (void) CloneString(&annotate_info.geometry,geometry);
+          (void) CloneString(&annotate_info->geometry,geometry);
         if (gravity != ForgetGravity)
-          annotate_info.gravity=gravity;
-        DrawImage(*image,&annotate_info);
-        DestroyAnnotateInfo(&annotate_info);
+          annotate_info->gravity=gravity;
+        DrawImage(*image,annotate_info);
+        DestroyAnnotateInfo(annotate_info);
         continue;
       }
     if (strncmp("-edge",option,3) == 0)

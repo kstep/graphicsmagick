@@ -241,7 +241,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
 #define TileImageText  "  Creating image tiles...  "
 
   AnnotateInfo
-    annotate_info;
+    *annotate_info;
 
   char
     geometry[MaxTextExtent];
@@ -434,8 +434,8 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
   local_info->pointsize=montage_info->pointsize;
   local_info->background_color=montage_info->background_color;
   local_info->border_color=montage_info->border_color;
-  GetAnnotateInfo(local_info,&annotate_info);
-  annotate_info.gravity=NorthGravity;
+  annotate_info=CloneAnnotateInfo(local_info,(AnnotateInfo *) NULL);
+  annotate_info->gravity=NorthGravity;
   texture=(Image *) NULL;
   if (montage_info->texture != (char *) NULL)
     {
@@ -445,7 +445,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
   /*
     Initialize font info.
   */
-  font_height=annotate_info.bounds.height;
+  font_height=annotate_info->bounds.height;
   FormatLabel(local_info,montage_info->title,((tile_info.width+
     (border_width << 1))*Min(number_images,tiles_per_column)) >> 1,
     &font_height);
@@ -552,9 +552,9 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
         */
         FormatString(geometry,"%ux%u%+d%+d",montage_image->columns,
           font_height << 1,0,tile_info.y+4);
-        (void) CloneString(&annotate_info.geometry,geometry);
-        (void) CloneString(&annotate_info.text,montage_info->title);
-        AnnotateImage(montage_image,&annotate_info);
+        (void) CloneString(&annotate_info->geometry,geometry);
+        (void) CloneString(&annotate_info->text,montage_info->title);
+        AnnotateImage(montage_image,annotate_info);
       }
     (void) SetMonitorHandler(handler);
     /*
@@ -747,9 +747,9 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
                 (int) (montage_info->frame ? y_offset+height+
                 (border_width << 1)-bevel_width-2 : y_offset+tile_info.height+
                 (border_width << 1)+(montage_info->shadow ? 4 : 0)+2));
-              (void) CloneString(&annotate_info.geometry,geometry);
-              (void) CloneString(&annotate_info.text,image->label);
-              AnnotateImage(montage_image,&annotate_info);
+              (void) CloneString(&annotate_info->geometry,geometry);
+              (void) CloneString(&annotate_info->text,image->label);
+              AnnotateImage(montage_image,annotate_info);
             }
         }
       x_offset+=width+(tile_info.x+border_width)*2;
@@ -784,7 +784,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
   if (texture != (Image *) NULL)
     FreeMemory(texture);
   FreeMemory(master_list);
-  DestroyAnnotateInfo(&annotate_info);
+  DestroyAnnotateInfo(annotate_info);
   DestroyImageInfo(local_info);
   while (montage_image->previous != (Image *) NULL)
     montage_image=montage_image->previous;

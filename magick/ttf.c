@@ -89,7 +89,7 @@
 Export Image *ReadTTFImage(const ImageInfo *image_info)
 {
   AnnotateInfo
-    annotate_info;
+    *annotate_info;
 
   char
     font[MaxTextExtent],
@@ -142,12 +142,12 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
   (void) CloneString(&local_info->font,font);
   local_info->pointsize=18;
   FormatString(local_info->font,"@%.1024s",image_info->filename);
-  GetAnnotateInfo(local_info,&annotate_info);
-  image->columns=annotate_info.bounds.width;
-  image->rows=annotate_info.bounds.height;
+  annotate_info=CloneAnnotateInfo(local_info,(AnnotateInfo *) NULL);
+  image->columns=annotate_info->bounds.width;
+  image->rows=annotate_info->bounds.height;
   if (image_info->ping)
     {
-      DestroyAnnotateInfo(&annotate_info);
+      DestroyAnnotateInfo(annotate_info);
       DestroyImageInfo(local_info);
       CloseBlob(image);
       return(image);
@@ -158,60 +158,59 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
   DestroyImageInfo(local_info);
   if (image == (Image *) NULL)
     {
-      DestroyAnnotateInfo(&annotate_info);
+      DestroyAnnotateInfo(annotate_info);
       return((Image *) NULL);
     }
   (void) strcpy(image->filename,image_info->filename);
-  if (annotate_info.font_name != (char *) NULL)
-    (void) CloneString(&image->label,annotate_info.font_name);
+  if (annotate_info->font_name != (char *) NULL)
+    (void) CloneString(&image->label,annotate_info->font_name);
   /*
     Annotate canvas with text rendered with font at different point sizes.
   */
   y=10;
-  if (annotate_info.font_name != (char *) NULL)
+  if (annotate_info->font_name != (char *) NULL)
     {
-      annotate_info.image_info->pointsize=30;
+      annotate_info->image_info->pointsize=30;
       FormatString(geometry,"+10%+d",y);
-      (void) CloneString(&annotate_info.geometry,geometry);
-      (void) CloneString(&annotate_info.text,annotate_info.font_name);
-      AnnotateImage(image,&annotate_info);
+      (void) CloneString(&annotate_info->geometry,geometry);
+      (void) CloneString(&annotate_info->text,annotate_info->font_name);
+      AnnotateImage(image,annotate_info);
       y+=42;
     }
-  annotate_info.image_info->pointsize=18;
+  annotate_info->image_info->pointsize=18;
   FormatString(geometry,"+10%+d",y);
-  (void) CloneString(&annotate_info.geometry,geometry);
-  (void) CloneString(&annotate_info.text,"abcdefghijklmnopqrstuvwxyz");
-  AnnotateImage(image,&annotate_info);
+  (void) CloneString(&annotate_info->geometry,geometry);
+  (void) CloneString(&annotate_info->text,"abcdefghijklmnopqrstuvwxyz");
+  AnnotateImage(image,annotate_info);
   y+=20;
   FormatString(geometry,"+10%+d",y);
-  (void) CloneString(&annotate_info.geometry,geometry);
-  (void) CloneString(&annotate_info.text,"ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-  AnnotateImage(image,&annotate_info);
+  (void) CloneString(&annotate_info->geometry,geometry);
+  (void) CloneString(&annotate_info->text,"ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  AnnotateImage(image,annotate_info);
   y+=20;
   FormatString(geometry,"+10%+d",y);
-  (void) CloneString(&annotate_info.geometry,geometry);
-  (void) CloneString(&annotate_info.text,"1234567890.:,;(:*!?')");
-  AnnotateImage(image,&annotate_info);
+  (void) CloneString(&annotate_info->geometry,geometry);
+  (void) CloneString(&annotate_info->text,"1234567890.:,;(:*!?')");
+  AnnotateImage(image,annotate_info);
   y+=20;
   for (i=12; i <= 72; i+=6)
   {
     y+=i+6;
-    annotate_info.image_info->pointsize=18;
+    annotate_info->image_info->pointsize=18;
     FormatString(geometry,"+10%+d",y);
-    (void) CloneString(&annotate_info.geometry,geometry);
+    (void) CloneString(&annotate_info->geometry,geometry);
     FormatString(text,"%d",i);
-    (void) CloneString(&annotate_info.text,text);
-    AnnotateImage(image,&annotate_info);
-    annotate_info.image_info->pointsize=i;
+    (void) CloneString(&annotate_info->text,text);
+    AnnotateImage(image,annotate_info);
+    annotate_info->image_info->pointsize=i;
     FormatString(geometry,"+50%+d",y);
-    (void) CloneString(&annotate_info.geometry,geometry);
-    (void) CloneString(&annotate_info.text,
+    (void) CloneString(&annotate_info->geometry,geometry);
+    (void) CloneString(&annotate_info->text,
       "That which does not destroy me, only makes me stronger");
-    AnnotateImage(image,&annotate_info);
+    AnnotateImage(image,annotate_info);
     if (i >= 24)
       i+=6;
   }
-  DestroyAnnotateInfo(&annotate_info);
   return(image);
 }
 #else
