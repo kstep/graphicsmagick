@@ -25,7 +25,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.2.4.tar.gz
+    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.2.5.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -83,8 +83,8 @@ UNIX COMPILATION
 
   Type:
 
-    gunzip ImageMagick-4.2.4.tar.gz
-    tar xvf ImageMagick-4.2.4.tar
+    gunzip ImageMagick-4.2.5.tar.gz
+    tar xvf ImageMagick-4.2.5.tar
     cd ImageMagick
 
   If you do not have gunzip(1), it is available as
@@ -430,6 +430,12 @@ MAGICK DELEGATES
 
       to read the JPEG image format.
 
+      Apply this JPEG patch to Independent JPEG Group's source distribution to
+      read lossless jpeg-encoded DICOM images:
+
+          ftp://ftp.wizards.dupont.com/pub/ImageMagick/delegates/
+            ljpeg-6b.tar.gz
+
       Concerning iterative JPEG compression:  see Kinoshita and
       Yamamuro, Journal of Imaging Science and Technology, "Image
       Quality with Reiterative JPEG Compression", Volume 39, Number 4,
@@ -639,7 +645,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-4.2.4.zip
+      unzip ImageMagick-4.2.5.zip
       set default [.imagemagick]
       @make
       set display/create/node=node_name::

@@ -107,7 +107,7 @@ clean::
 #define IncSubdir magick
 
 #ifndef SGIArchitecture
-SOMAGICKLIBREV= 4.0.24
+SOMAGICKLIBREV= 4.0.25
 #endif
 
 #if (ProjectX < 5)

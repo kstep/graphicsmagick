@@ -11,7 +11,7 @@ AC_INIT(magick/magick.h)
 # Set version
 MAJOR_VERSION=4
 MINOR_VERSION=2
-MICRO_VERSION=4
+MICRO_VERSION=5
 echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 AC_CANONICAL_SYSTEM
 AC_SUBST(MAJOR_VERSION)dnl
@@ -823,36 +823,37 @@ eval DelegatePath="${DATA_DIR}/ImageMagick/"
 AC_DEFINE_UNQUOTED(DelegatePath,"$DelegatePath")
 
 # Locate delegates
-AC_PATH_PROG(CatDelegate, cat, cat)
-AC_PATH_PROG(EchoDelegate, echo, echo)
-AC_PATH_PROG(LPDelegate, lp, lp)
-AC_PATH_PROG(MVDelegate, mv, mv)
-AC_PATH_PROG(RMDelegate, rm, rm)
-AC_PATH_PROG(BrowseDelegate, netscape, netscape)
 AC_PATH_PROG(BZIPDelegate, bzip2, bzip2)
-AC_PATH_PROG(LZWEncodeDelegate, compress, compress)
-AC_PATH_PROG(EditorDelegate, xterm, xterm)
+AC_PATH_PROG(BrowseDelegate, netscape, netscape)
+AC_PATH_PROG(CGMDecodeDelegate, ralcgm, ralcgm)
+AC_PATH_PROG(CatDelegate, cat, cat)
 AC_PATH_PROG(DOTDecodeDelegate, dot, dot)
 AC_PATH_PROG(DVIDecodeDelegate, dvips, dvips)
+AC_PATH_PROG(EchoDelegate, echo, echo)
+AC_PATH_PROG(EditorDelegate, xterm, xterm)
 AC_PATH_PROG(FIGDecodeDelegate, fig2dev, fig2dev)
 AC_PATH_PROG(GnuplotDecodeDelegate, gnuplot, gnuplot)
-AC_PATH_PROG(ZipDelegate, gzip, gzip)
-AC_PATH_PROG(PSDelegate, gs, gs)
-AC_PATH_PROG(MANDelegate, groff, groff)
-AC_PATH_PROG(LaunchDelegate, gimp, gimp)
-AC_PATH_PROG(MPEGDecodeDelegate, mpeg2decode, mpeg2decode)
-AC_PATH_PROG(MPEGEncodeDelegate, mpeg2encode, mpeg2encode)
-AC_PATH_PROG(PGPDecodeDelegate, pgpv, pgpv)
-AC_PATH_PROG(RADDecodeDelegate, ra_ppm, ra_ppm)
-AC_PATH_PROG(CGMDecodeDelegate, ralcgm, ralcgm)
-AC_PATH_PROG(LZWDecodeDelegate, uncompress, uncompress)
 AC_PATH_PROG(HPGLDecodeDelegate, hp2xx, hp2xx)
 AC_PATH_PROG(HTMLDecodeDelegate, html2ps, html2ps)
+AC_PATH_PROG(LPDelegate, lp, lp)
+AC_PATH_PROG(LZWDecodeDelegate, uncompress, uncompress)
+AC_PATH_PROG(LZWEncodeDelegate, compress, compress)
+AC_PATH_PROG(LaunchDelegate, gimp, gimp)
+AC_PATH_PROG(MANDelegate, groff, groff)
+AC_PATH_PROG(MPEGDecodeDelegate, mpeg2decode, mpeg2decode)
+AC_PATH_PROG(MPEGEncodeDelegate, mpeg2encode, mpeg2encode)
+AC_PATH_PROG(MVDelegate, mv, mv)
+AC_PATH_PROG(PGPDecodeDelegate, pgpv, pgpv)
 AC_PATH_PROG(POVDelegate, povray, povray)
+AC_PATH_PROG(PSDelegate, gs, gs)
+AC_PATH_PROG(RADDecodeDelegate, ra_ppm, ra_ppm)
 AC_PATH_PROG(RLEEncodeDelegate, rawtorle, rawtorle)
+AC_PATH_PROG(RMDelegate, rm, rm)
 AC_PATH_PROG(SCANDecodeDelegate, scanimage, scanimage)
+AC_PATH_PROG(TXTDelegate, enscript, enscript)
 AC_PATH_PROG(WMFDecodeDelegate, wmftogif, wmftogif)
 AC_PATH_PROG(WWWDecodeDelegate, GET, GET)
+AC_PATH_PROG(ZipDelegate, gzip, gzip)
 
 # Installed ImageMagick utiltity paths
 ConvertDelegate=$BIN_DIR/convert
@@ -901,6 +902,7 @@ then
   RMDelegate='rm'
   SCANDecodeDelegate='scanimage'
   ShowImageDelegate='display'
+  TXTDelegate='enscript'
   WMFDecodeDelegate='wmftogif'
   WWWDecodeDelegate='GET'
   ZipDelegate='gzip'
@@ -937,6 +939,7 @@ AC_SUBST(RLEEncodeDelegate)
 AC_SUBST(RMDelegate)
 AC_SUBST(SCANDecodeDelegate)
 AC_SUBST(ShowImageDelegate)
+AC_SUBST(TXTDelegate)
 AC_SUBST(WMFDecodeDelegate)
 AC_SUBST(WWWDecodeDelegate)
 AC_SUBST(ZipDelegate)

@@ -9818,74 +9818,6 @@ Export int ParseImageGeometry(const char *geometry,int *x,int *y,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%                                                                             %
-%   P i n g I m a g e                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method PingImage returns the image size in bytes if it exists and can be
-%  read (at %  least up until it reveals it's size).  The width and height of
-%  the image is returned as well.  Note, only the first image in a multi-frame
-%  image file is pinged.
-%
-%  The format of the PingImage routine is:
-%
-%      filesize=PingImage(image_info,columns,rows)
-%
-%  A description of each parameter follows:
-%
-%    o filesize: Method PingImage returns the image size in bytes if the
-%      image file exists and it size can be determined otherwise 0.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o columns: An unsigned integer pointer that specifies the number of
-%      columns in the image.
-%
-%    o rows: An unsigned integer pointer that specifies the number of rows in
-%      the image.
-%
-%
-*/
-Export unsigned int PingImage(ImageInfo *image_info,unsigned int *columns,
-  unsigned int *rows)
-{
-  Image
-    *image;
-
-  ImageInfo
-    *ping_info;
-
-  unsigned int
-    filesize;
-
-  *columns=0;
-  *rows=0;
-  ping_info=CloneImageInfo(image_info);
-  ping_info->ping=True;
-  ping_info->verbose=False;
-  ping_info->subimage=0;
-  ping_info->subrange=0;
-  image=ReadImage(ping_info);
-  (void) strcpy(image_info->magick,ping_info->magick);
-  DestroyImageInfo(ping_info);
-  if (image == (Image *) NULL)
-    return(0);
-  if (image_info->verbose)
-    DescribeImage(image,stderr,False);
-  *columns=image->columns;
-  *rows=image->rows;
-  filesize=image->filesize;
-  DestroyImages(image);
-  return(filesize);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
 %     R G B T r a n s f o r m I m a g e                                       %
 %                                                                             %
 %                                                                             %

@@ -89,6 +89,57 @@ const char
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   P i n g I m a g e                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method PingImage returns the image size in bytes if it exists and can be
+%  read (at %  least up until it reveals it's size).  The width and height of
+%  the image is returned as well.  Note, only the first image in a multi-frame
+%  image file is pinged.
+%
+%  The format of the PingImage routine is:
+%
+%      image=PingImage(image_info)
+%
+%  A description of each parameter follows:
+%
+%    o Image: Method PingImage returns the image size in bytes if the
+%      image file exists and it size can be determined otherwise 0.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%
+*/
+Export Image *PingImage(const ImageInfo *image_info)
+{
+  Image
+    *image;
+
+  ImageInfo
+    *ping_info;
+
+  ping_info=CloneImageInfo(image_info);
+  ping_info->ping=True;
+  ping_info->verbose=False;
+  ping_info->subimage=0;
+  ping_info->subrange=0;
+  image=ReadImage(ping_info);
+  DestroyImageInfo(ping_info);
+  if (image == (Image *) NULL)
+    return((Image *) NULL);
+  if (image_info->verbose)
+    DescribeImage(image,stderr,False);
+  return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d A V S I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -1413,9 +1464,6 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
             if (strcmp(transfer_syntax,"1.2.840.10008.1.2.5") == 0)
               PrematureExit(CorruptImageWarning,"RLE compression not supported",
                 image);
-            if (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0)
-              PrematureExit(CorruptImageWarning,
-                "lossless JPEG compression not supported",image);
             break;
           }
           default:
@@ -1604,7 +1652,8 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
   }
   if ((width == 0) || (height == 0))
     PrematureExit(CorruptImageWarning,"Not a DCM image file",image);
-  if (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.50") == 0)
+  if ((strcmp(transfer_syntax,"1.2.840.10008.1.2.4.50") == 0) ||
+      (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0))
     {
       FILE
         *file;
@@ -1616,14 +1665,17 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
         *local_info;
 
       /*
-        Lossy JPEG.
+        Handle 2.4.50 lossy JPEG and 2.4.70 lossless JPEG.
       */
       local_info=CloneImageInfo(image_info);
       TemporaryFilename((char *) local_info->filename);
       file=fopen(local_info->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         PrematureExit(FileOpenWarning,"Unable to write file",image);
-      for (i=0; i < 16; i++)
+      c=16;
+      if (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0)
+        c+=48;
+      for (i=0; i < c; i++)
         (void) fgetc(image->file);
       c=fgetc(image->file);
       while (c != EOF)
@@ -5473,7 +5525,7 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
       jpeg_info.scale_denom=DownShift(image_info->subrange);
       jpeg_calc_output_dimensions(&jpeg_info);
     }
-#if (JPEG_LIB_VERSION >= 61)
+#if (JPEG_LIB_VERSION >= 61) && !defined(D_LOSSLESS_SUPPORTED)
   image->interlace=jpeg_info.progressive_mode ? PlaneInterlace : NoInterlace;
 #endif
   jpeg_start_decompress(&jpeg_info);
@@ -19667,6 +19719,7 @@ Export Image *ReadImage(ImageInfo *image_info)
       image->filename);
   for (next_image=image; next_image; next_image=next_image->next)
   {
+    next_image->tainted=False;
     (void) strcpy(next_image->magick_filename,image_info->filename);
     if (image->temporary)
       (void) strcpy(next_image->filename,image_info->filename);

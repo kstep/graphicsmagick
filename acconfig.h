@@ -256,3 +256,7 @@
 
 /* Define location of the 'cat' program */
 #undef CatDelegate
+
+/* Define location of 'enscript' program */
+#undef TXTDelegate
+

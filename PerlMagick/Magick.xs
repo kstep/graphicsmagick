@@ -5153,6 +5153,9 @@ Ping(ref,...)
     char
       message[MaxTextExtent];
 
+    Image
+      *image;
+
     register int
       i;
 
@@ -5183,15 +5186,16 @@ Ping(ref,...)
           info->image_info->file=IoIFP(sv_2io(ST(i)));
           continue;
         }
-      filesize=PingImage(info->image_info,&columns,&rows);
-      if (filesize == 0)
+      image=PingImage(info->image_info);
+      if (image == (Image *) NULL)
         s=(&sv_undef);
       else
         {
-          FormatString(message,"%u,%u,%u,%s",columns,rows,filesize,
-            info->image_info->magick);
+          FormatString(message,"%u,%u,%u,%s",image->columns,image->rows,
+            image->filesize,image->magick);
           s=sv_2mortal(newSVpv(message,0));
         }
+      DestroyImage(image);
       PUSHs(s);
     }
     SvREFCNT_dec(error_list);  /* throw away all errors */

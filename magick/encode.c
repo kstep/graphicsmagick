@@ -3579,7 +3579,7 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     }
   jpeg_set_quality(&jpeg_info,image_info->quality,True);
   jpeg_info.optimize_coding=True;
-#if (JPEG_LIB_VERSION >= 61)
+#if (JPEG_LIB_VERSION >= 61) && !defined(C_LOSSLESS_SUPPORTED)
   if (image_info->interlace != NoInterlace)
     jpeg_simple_progression(&jpeg_info);
 #endif

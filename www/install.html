@@ -2,7 +2,7 @@
 <HEAD>
 <TITLE>ImageMagick 4.1 README</TITLE>
 <LINK rev="made" href="mailto:magick@wizards.dupont.com">
-<meta name="description" content="ImageMagick, version 4.2.4, is a package for
+<meta name="description" content="ImageMagick, version 4.2.5, is a package for
   display and interactive manipulation of images for the X Window System. It
   is written in C and interfaces to the X library, and therefore does not
   require any proprietary toolkit in order to compile.  Although the software
@@ -85,7 +85,7 @@ my collection.
 <A NAME="avai">
 <DT>Availability
 </H2>
-<DD><B>ImageMagick</B>, version 4.2.4, is available on 
+<DD><B>ImageMagick</B>, version 4.2.5, is available on 
 <A HREF="ftp://204.183.81.131/pub/ImageMagick/">
 204.183.81.131</A>.  ImageMagick client
 <A HREF="ftp://204.183.81.131/pub/ImageMagick/binaries">executables</a>
@@ -173,8 +173,8 @@ or more is recommended.
 </H2>
 <DD>Type:
 <PRE>
-      gunzip ImageMagick-4.2.4.tar.gz
-      tar xvf ImageMagick-4.2.4.tar
+      gunzip ImageMagick-4.2.5.tar.gz
+      tar xvf ImageMagick-4.2.5.tar
       cd ImageMagick
 </PRE>
 <P>
@@ -583,6 +583,11 @@ to read and write the <B>JBIG</B> image format.
 <DD><B>ImageMagick</B> requires the <I>Independent JPEG Group's</I> software
 to read and write the JPEG image format.
 <p>
+<DD>Apply the
+<a href=ftp://ftp.wizards.dupont.com/pub/ImageMagick/delegates/ljpeg-6b.tar.gz>
+lossless</a> JPEG patch to <I>Independent JPEG Group's</I> source distribution
+to read lossless jpeg-encoded DICOM images:
+<p>
 Concerning iterative JPEG compression:  see Kinoshita and
 Yamamuro, Journal of Imaging Science and Technology, <em>Image
 Quality with Reiterative JPEG Compression</em>, Volume 39, Number 4,
@@ -854,7 +859,7 @@ your local requirements.  Next, type.
 <p>
 <DD>Type
 <PRE>
-      unzip ImageMagick-4.2.4.zip
+      unzip ImageMagick-4.2.5.zip
       set default [.imagemagick]
       @make
       set display/create/node=node_name::

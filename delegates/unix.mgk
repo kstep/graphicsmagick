@@ -189,7 +189,7 @@ ps<=>pdf
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=print
-	/usr/bin/lp -c -s %i
+	lp -c -s %i
 
 rad=>
 	ra_ppm -g 1.0 %i %o
@@ -203,6 +203,9 @@ scan=>
 
 shtml=>
 	html2ps -o %o %i
+
+txt<=>ps
+	enscript -o %o %i
 
 wmf=>
 	wmftogif %i %o

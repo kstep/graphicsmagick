@@ -196,6 +196,9 @@ scan=>
 shtml=>
 	html2ps -o %o %i
 
+txt<=>ps
+	enscript -o %o %i
+
 wmf=>
 	wmftogif %i %o
 

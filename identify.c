@@ -237,13 +237,9 @@ int main(int argc,char **argv)
     (void) strcpy(image_info.filename,argv[i]);
     if (image_info.ping)
       {
-        unsigned int
-          columns,
-          rows;
-
         image_info.verbose=True;
-        (void) PingImage(&image_info,&columns,&rows);
-         number_images++;
+        image=PingImage(&image_info);
+        number_images++;
         continue;
       }
     image=ReadImage(&image_info);

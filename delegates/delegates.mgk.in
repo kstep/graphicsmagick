@@ -204,6 +204,9 @@ scan=>
 shtml=>
 	@HTMLDecodeDelegate@ -o %o %i
 
+txt<=>ps
+	@TXTDelegate@ -o %o %i
+
 wmf=>
 	@WMFDecodeDelegate@ %i %o
 
