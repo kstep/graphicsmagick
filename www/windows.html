@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020718;12063600">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20020822;14512400">
+	<META NAME="CHANGED" CONTENT="20021031;12411600">
 	<META NAME="CLASSIFICATION" CONTENT="Describes ImageMagick features which are peculiar to Microsoft Windows">
 	<META NAME="DESCRIPTION" CONTENT="Describes how to install ImageMagick for Windows.">
 	<META NAME="KEYWORDS" CONTENT="ImageMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, WebMagick, Web Magic, visualization, image processing, software development, image, software, Magick++">
@@ -31,11 +31,7 @@
 <BODY LANG="en-US" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
 <P CLASS="western"><BR><BR>
 </P>
-<P CLASS="western" ALIGN=CENTER>
-<A HREF="http://promote.pair.com/direct.pl?imagemagick.org">
-  <IMG SRC="../images/promote.png" ALIGN=RIGHT WIDTH=120
-    HEIGHT=60 BORDER=0></A>
-<IMG SRC="../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0>
+<P CLASS="western" ALIGN=CENTER><A HREF="http://promote.pair.com/direct.pl?imagemagick.org"><IMG SRC="../images/promote.png" NAME="Graphic1" ALIGN=RIGHT WIDTH=120 HEIGHT=60 BORDER=0></A><IMG SRC="../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0>
 </P>
 <BLOCKQUOTE CLASS="western"><I>This page provides information
 specific to ImageMagick installed via a &quot;setup.exe&quot; style
@@ -75,9 +71,11 @@ ActivePerl</A> prior to commencing with installation of ImageMagick.
 <P CLASS="western">Retrieve the ImageMagick Windows binary install
 package from a one of the ftp sites listed at the <A HREF="archives.html">ImageMagick
 Download Sites</A> page. The file will be named similar to
-ImageMagick-i686-pc-windows.exe and should be found in the 'binaries'
-subdirectory of the ftp site. 
-</P>
+ImageMagick-i686-pc-windows.exe (QuantumDepth=16 version) or
+ImageMagick-i686-Q8-windows.exe (QuantumDepth=8 version),and should
+be found in the 'binaries' subdirectory of the ftp site. Note that
+the QuantumDepth=8 version consumes much less memory and CPU than the
+QuantumDepth=16 version, but provides less color resolution.</P>
 <H4 CLASS="western">Start Installation Wizard 
 </H4>
 <P CLASS="western">Execute the downloaded file from your browser or
@@ -89,7 +87,7 @@ to continue.
 <P CLASS="western">Specify what drive and directory to install
 ImageMagick into. Approximately 13MB of free disk space is required
 to install ImageMagick. The default installation directory is similar
-to &ldquo;C:\Program Files\ImageMagick-5.4.8-Q16&rdquo;. Once you
+to &ldquo;C:\Program Files\ImageMagick-5.5.2-Q16&rdquo;. Once you
 have entered the desired installation directory, then select &ldquo;Next&gt;&rdquo;
 to continue. 
 </P>
@@ -136,7 +134,9 @@ Windows Start menu. Within the window type</P>
 <P CLASS="western" STYLE="margin-left: 0.79in"><FONT FACE="Courier New">convert
 logo: logo.miff<BR>imdisplay logo.miff</FONT></P>
 <P CLASS="western">and the ImageMagick logo should be displayed in a
-window.</P>
+window. Note that NT-based Windows systems come with a program named
+'convert' and if your path is set incorrectly, the wrong convert
+program will be executed!</P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
 	<COL WIDTH=256*>
 	<TR>
@@ -284,7 +284,7 @@ composite, ...) may be executed as a sub-process by other programs.
 If the utilities are not in the systems executable search path (they
 should be since the ImageMagick install extends the path), then the
 utility should be executed via the complete path to the executable.
-Note that systems other than Windows '9X provide a &ldquo;convert.exe&rdquo;
+Note that systems other than Windows '9X/ME provide a &ldquo;convert.exe&rdquo;
 as part of the operating system. Care must be taken to avoid
 executing the wrong &ldquo;convert.exe&rdquo; by mistake.</P>
 <P CLASS="western">A package which is linked against the ImageMagick
@@ -301,12 +301,15 @@ and &ldquo;lib&rdquo; subdirectories under the installation
 directory. Using these headers and libraries to build your dependent
 application ensures that they will be compatible with the release
 DLLs.</P>
-<P CLASS="western">Note that the DLLs and libraries are built using
-Visual C++ 6.0. It is not known how well they will work with Visual
-C++ .NET. While it should be possible to use the MinGW gcc compiler
-with the CORE_RL_magick_.dll (ImageMagick C library), it will
-certainly not be possible to use it with CORE_RL_Magick++_.dll
-(ImageMagick C++ library) due to name mangling differences.</P>
+<P CLASS="western">Note that the DLLs and libraries may have been
+built using Visual C++ 6.0, or Visual C++ 7.0 (.net) depending on who
+built the release. In order to use Magick++, you must either use the
+same compiler version used to build the distribution, or download the
+Windows source package and build everything yourself. While it should
+be possible to use the MinGW gcc compiler with the
+CORE_RL_magick_.dll (ImageMagick C library), it will certainly not be
+possible to use it with CORE_RL_Magick++_.dll (ImageMagick C++
+library) due to name mangling differences.</P>
 <P CLASS="western">The following project build options (change
 &ldquo;C:\ImageMagick&rdquo; to whever you have chosen to install)
 should ensure compatibility with the headers and libraries as
@@ -558,12 +561,8 @@ matching installation via these registry entries.</P>
 <P CLASS="western" STYLE="margin-bottom: 0in"><BR>
 </P>
 <HR>
-<p><a href="../ImageMagick.html"><img SRC="../images/home.png"
-ALT="ImageMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><a 
-href="mailto:webmaster@imagemagick.org"><img SRC="../images/mail.png"
-ALT="ImageMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><font size="-2">
-Image manipulation software that works like magic.</font>
-</body>
-</html>
+<P CLASS="western"><A HREF="../ImageMagick.html"><IMG SRC="../images/home.png" NAME="Graphic5" ALT="ImageMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@imagemagick.org"><IMG SRC="../images/mail.png" NAME="Graphic6" ALT="ImageMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=1>
+Image manipulation software that works like magic.</FONT> 
+</P>
+</BODY>
+</HTML>
