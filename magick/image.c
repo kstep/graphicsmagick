@@ -6193,7 +6193,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       image_info->file=(FILE *) NULL;
       TemporaryFilename(image->filename);
       image_info->temporary=True;
-      FormatString(image_info->filename,"%.1024s",image->filename);
+      (void) strncpy(image_info->filename,image->filename,MaxTextExtent-1);
       file=fopen(image->filename,"wb");
       if (file == (FILE *) NULL)
         ThrowBinaryException(MissingDelegateError,"Unable to write file",

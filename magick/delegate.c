@@ -604,7 +604,7 @@ static unsigned int ReadConfigureFile(const char *basename,
     GetToken(q,&q,token);
     if (*token == '\0')
       break;
-    FormatString(keyword,"%.1024s",token);
+    (void) strncpy(keyword,token,MaxTextExtent-1);
     if (LocaleCompare(keyword,"<!") == 0)
       {
         /*

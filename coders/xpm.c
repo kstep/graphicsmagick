@@ -740,7 +740,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
-      FormatString(buffer,"%.1024s",symbol);
+      (void) strncpy(buffer,symbol,MaxTextExtent-1);
       (void) WriteBlobString(image,buffer);
     }
     FormatString(buffer,"\"%.1024s\n",
@@ -959,7 +959,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
-      FormatString(buffer,"%.1024s",symbol);
+      (void) strncpy(buffer,symbol,MaxTextExtent-1);
       (void) WriteBlobString(image,buffer);
     }
     FormatString(buffer,"\"%.1024s\n",

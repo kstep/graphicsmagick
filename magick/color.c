@@ -436,7 +436,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
   /*
     Search for named color.
   */
-  FormatString(colorname,"%.1024s",name);
+  (void) strncpy(colorname,name,MaxTextExtent-1);
   for (q=colorname; *q != '\0'; q++)
   {
     if (*q != ' ')
@@ -1664,7 +1664,7 @@ static unsigned int ReadConfigureFile(const char *basename,
     GetToken(q,&q,token);
     if (*token == '\0')
       break;
-    FormatString(keyword,"%.1024s",token);
+    (void) strncpy(keyword,token,MaxTextExtent-1);
     if (LocaleCompare(keyword,"<!") == 0)
       {
         /*
