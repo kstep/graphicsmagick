@@ -956,7 +956,6 @@ ModuleExport void RegisterTIFFImage(void)
   entry=SetMagickInfo("PTIF");
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
-  entry->adjoin=False;
   entry->blob_support=False;
   entry->description=AllocateString("Pyramid encoded TIFF");
   entry->module=AllocateString("TIFF");
