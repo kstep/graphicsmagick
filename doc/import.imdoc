@@ -30,6 +30,10 @@ a file.
 </dt>
 
 <dt>
+<a href="#imp-file">Configuration Files</a>
+</dt>
+
+<dt>
 <a href="#imp-auth">Authors</a>
 </dt>
 
@@ -160,6 +164,12 @@ Options, above.
 <sect NAME="imp-envi">Environment
 <include file=environment.imdoc>
 </sect>
+<back>
+
+<sect NAME="imp-file">Configuration Files
+<include file=config_files.imdoc>
+</sect>
+<back>
 
 <format type=man>
 <sect NAME="imp-also">SEE ALSO

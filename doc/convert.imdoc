@@ -65,6 +65,9 @@ convert - convert an image or sequence of images
 <a href="#conv-envi">Environment</a>
 </dt>
 <dt>
+<a href="#conv-file">Configuration Files</a>
+</dt>
+<dt>
 <a href="#conv-auth">Authors</a>
 </dt>
 <dt>
@@ -290,6 +293,11 @@ Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</bq>
 <back>
 <sect NAME="conv-envi">Environment
 <include file=environment.imdoc>
+</sect>
+<back>
+
+<sect NAME="conv-file">Configuration Files
+<include file=config_files.imdoc>
 </sect>
 <back>
 

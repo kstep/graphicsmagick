@@ -33,6 +33,10 @@ composite - composite images together.
 </dt>
 
 <dt>
+<a href="#comp-file">Configuration Files</a>
+</dt>
+
+<dt>
 <a href="#comp-auth">Authors</a>
 </dt>
 
@@ -193,6 +197,11 @@ Options, above.
 
 <sect NAME="comp-envi">Environment
 <include file=environment.imdoc>
+</sect>
+<back>
+
+<sect NAME="comp-file">Configuration Files
+<include file=config_files.imdoc>
 </sect>
 <back>
 

@@ -58,6 +58,9 @@ gm - GraphicsMagick command-line utilities to create, edit, or convert images
 <a href="#envi">Environment</a>
 </dt>
 <dt>
+<a href="#file">Configuration Files</a>
+</dt>
+<dt>
 <a href="#auth">Authors</a>
 </dt>
 <dt>
@@ -256,6 +259,11 @@ The latter can appear after the final group of input images.</p>
 <im>
 <sect NAME="envi">Environment
 <include file=environment.imdoc>
+</sect>
+<back>
+
+<sect NAME="file">Configuration Files
+<include file=config_files.imdoc>
 </sect>
 <back>
 

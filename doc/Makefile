@@ -130,7 +130,7 @@ utility-tex:	$(UTILBASE).tex
 
 utility-install: $(INSTALLWWW)/$(UTILBASE).html # $(INSTALLUTILITIES)/$(UTILBASE).1
 
-$(UTILSUBDIR)/Expanded.imdoc: $(UTILITY).imdoc brief_options.imdoc copyright.imdoc environment.imdoc $(DOCINCLUDE)
+$(UTILSUBDIR)/Expanded.imdoc: $(UTILITY).imdoc brief_options.imdoc config_files.imdoc copyright.imdoc environment.imdoc $(DOCINCLUDE)
 	@if test ! -d $(UTILSUBDIR); then mkdir -p $(UTILSUBDIR); fi
 	$(DOCINCLUDE) $< > $@
 

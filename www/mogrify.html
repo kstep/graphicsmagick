@@ -109,6 +109,9 @@ color="#FFFFFF"><font size="+1">
 <a href="#mog-envi">Environment</a>
 </dt>
 <dt>
+<a href="#mog-file">Configuration File</a>
+</dt>
+<dt>
 <a href="#mog-auth">Authors</a>
 </dt>
 <dt>
@@ -1728,6 +1731,135 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>For Microsoft Windows, the path to the directory where applications
 should write temporary files. Overridden by <strong>MAGICK_TMPDIR</strong> if it
 is set.</td></tr></table>
+</td></tr></table>
+     <p>
+<i><a href="#top">Back to Contents</a></i> 
+&nbsp;</p>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
+SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#FFFFFF"><font size="+1">
+<a NAME="mog-file"></a>Configuration Files
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<p>GraphicsMagick uses a number of XML format configuration files:
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    colors.mgk
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>colors configuration file</td></tr></table>
+<pre>
+  &lt;?xml version="1.0"?&gt;
+  &lt;colormap&gt;
+    &lt;color name="AliceBlue" red="240" green="248" blue="255"
+           compliance="SVG, X11, XPM" /&gt;
+  &lt;/colormap&gt;
+</pre>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    delegates.mgk
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>delegates configuration file</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    log.mgk
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>logging configuration file</td></tr></table>
+<pre>
+  &lt;?xml version="1.0"?&gt;
+  &lt;magicklog&gt;
+    &lt;log events="None" /&gt;
+    &lt;log output="stdout" /&gt;
+    &lt;log filename="Magick-%d.log" /&gt;
+    &lt;log generations="3" /&gt;
+    &lt;log limit="2000" /&gt;
+    &lt;log format="%t %r %u %p %m/%f/%l/%d:\n  %e"  /&gt;
+  &lt;/magicklog&gt;
+</pre>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    magic.mgk
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>file header magic test configuration file</td></tr></table>
+<pre>
+  &lt;?xml version="1.0"?&gt;
+  &lt;magicmap&gt;
+    &lt;magic name="AVI" offset="0" target="RIFF" /&gt;
+  &lt;/magicmap&gt;
+</pre>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    modules.mgk
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>loadable modules configuration file</td></tr></table>
+<pre>
+  &lt;?xml version="1.0"?&gt;
+  &lt;modulemap&gt;
+    &lt;module magick="8BIM" name="META" /&gt;
+  &lt;/modulemap&gt;
+</pre>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    type.mgk
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>master type (fonts) configuration file</td></tr></table>
+<pre>
+  &lt;?xml version="1.0"?&gt;
+  &lt;typemap&gt;
+    &lt;<strong></strong>include file="type-windows.mgk" /&gt;
+    &lt;type
+      name="AvantGarde-Book"
+      fullname="AvantGarde Book"
+      family="AvantGarde"
+      foundry="URW"
+      weight="400"
+      style="normal"
+      stretch="normal"
+      format="type1"
+      metrics="/usr/local/share/ghostscript/fonts/a010013l.afm"
+      glyphs="/usr/local/share/ghostscript/fonts/a010013l.pfb"
+    /&gt;
+  &lt;/typemap&gt;
+</pre>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 

@@ -37,6 +37,10 @@ mogrify - mogrify an image
 </dt>
 
 <dt>
+<a href="#mog-file">Configuration File</a>
+</dt>
+
+<dt>
 <a href="#mog-auth">Authors</a>
 </dt>
 
@@ -194,6 +198,11 @@ Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</bq></p>
 <back>
 <sect NAME="mog-envi">Environment
 <include file=environment.imdoc>
+</sect>
+<back>
+
+<sect NAME="mog-file">Configuration Files
+<include file=config_files.imdoc>
 </sect>
 <back>
 

@@ -8463,13 +8463,13 @@ MagickExport void XSignalHandler(int status)
       *segment_info;
 
     segment_info=(XShmSegmentInfo *) windows->image.segment_info;
-    if (segment_info[0].shmid >= 0)
+    if (segment_info && segment_info[0].shmid >= 0)
       {
         (void) shmdt(segment_info[0].shmaddr);
         (void) shmctl(segment_info[0].shmid,IPC_RMID,0);
       }
     segment_info=(XShmSegmentInfo *) windows->magnify.segment_info;
-    if (segment_info[0].shmid >= 0)
+    if (segment_info && segment_info[0].shmid >= 0)
       {
         (void) shmdt(segment_info[0].shmaddr);
         (void) shmctl(segment_info[0].shmid,IPC_RMID,0);

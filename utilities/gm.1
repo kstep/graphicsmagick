@@ -7853,6 +7853,69 @@ Overridden by \fBMAGICK_TMPDIR\fP if it is set.
 \fRFor Microsoft Windows, the path to the directory where applications
 should write temporary files. Overridden by \fBMAGICK_TMPDIR\fP if it
 is set.
+.SH CONFIGURATION FILES
+GraphicsMagick uses a number of XML format configuration files:
+.TP
+.B "colors.mgk"
+\fRcolors configuration file
+
+  <?xml version="1.0"?>
+  <colormap>
+    <color name="AliceBlue" red="240" green="248" blue="255"
+           compliance="SVG, X11, XPM" />
+  </colormap>
+.TP
+.B "delegates.mgk"
+\fRdelegates configuration file
+.TP
+.B "log.mgk"
+\fRlogging configuration file
+
+  <?xml version="1.0"?>
+  <magicklog>
+    <log events="None" />
+    <log output="stdout" />
+    <log filename="Magick-%d.log" />
+    <log generations="3" />
+    <log limit="2000" />
+    <log format="%t %r %u %p %m/%f/%l/%d:\\n  %e"  />
+  </magicklog>
+.TP
+.B "magic.mgk"
+\fRfile header magic test configuration file
+
+  <?xml version="1.0"?>
+  <magicmap>
+    <magic name="AVI" offset="0" target="RIFF" />
+  </magicmap>
+.TP
+.B "modules.mgk"
+\fRloadable modules configuration file
+
+  <?xml version="1.0"?>
+  <modulemap>
+    <module magick="8BIM" name="META" />
+  </modulemap>
+.TP
+.B "type.mgk"
+\fRmaster type (fonts) configuration file
+
+  <?xml version="1.0"?>
+  <typemap>
+    <\fB\fPinclude file="type-windows.mgk" />
+    <type
+      name="AvantGarde-Book"
+      fullname="AvantGarde Book"
+      family="AvantGarde"
+      foundry="URW"
+      weight="400"
+      style="normal"
+      stretch="normal"
+      format="type1"
+      metrics="/usr/local/share/ghostscript/fonts/a010013l.afm"
+      glyphs="/usr/local/share/ghostscript/fonts/a010013l.pfb"
+    />
+  </typemap>
 .SH ACKNOWLEDGEMENTS
 
 The \fBMIT X Consortium\fP for making network transparent graphics a reality.

@@ -39,6 +39,10 @@ montage - create a composite image by combining several separate images
 </dt>
 
 <dt>
+<a href="#mont-file">Configuration File</a>
+</dt>
+
+<dt>
 <a href="#mont-ackn">Acknowledgement</a>
 </dt>
 
@@ -345,6 +349,10 @@ image.</p>
 </sect>
 <back>
 
+<sect NAME="mont-file">Configuration Files
+<include file=config_files.imdoc>
+</sect>
+<back>
 
 <sect NAME=mont-ackn">Acknowledgements
 
