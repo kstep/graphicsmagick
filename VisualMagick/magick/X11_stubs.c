@@ -38,7 +38,19 @@ in this Software without prior written authorization from the X Consortium.
 #if !defined(WIN32)
 #include <unistd.h>
 #else
-#pragma warning( disable : 4035 )
+#if defined(_VISUALC_)
+#	if defined(_MT) && defined(_DLL)
+#		define Export __declspec(dllexport)
+#	else
+#		define Export
+#	endif
+#pragma warning(disable : 4035)
+#pragma warning(disable : 4018)
+#pragma warning(disable : 4244)
+#pragma warning(disable : 4142)
+#else
+#	define Export
+#endif
 #endif
 
 #ifdef USG
@@ -1454,7 +1466,7 @@ XImage *XGetSubImage(
  * X function declarations.
  */
 #if defined(_VISUALC_)
-__declspec(dllexport) extern Display *XOpenDisplay(server_name)
+extern Export Display *XOpenDisplay(server_name)
 #else
 Display *XOpenDisplay(server_name)
 #endif
@@ -1505,7 +1517,7 @@ char *XGetDefault(
 #endif
 ){}
 #if defined(_VISUALC_)
-__declspec(dllexport) extern char *XDisplayName(_Xconst char* a)
+extern Export char *XDisplayName(_Xconst char* a)
 #else
 char *XDisplayName(_Xconst char* a)
 #endif
@@ -1843,7 +1855,7 @@ XExtData **XEHeadOfExtensionList(
 
 /* these are routines for which there are also macros */
 #if defined(_VISUALC_)
-__declspec(dllexport) extern Window XRootWindow(Display* a,int b)
+extern Export Window XRootWindow(Display* a,int b)
 #else
 Window XRootWindow(Display* a,int b)
 #endif
@@ -1950,7 +1962,7 @@ Screen *XScreenOfDisplay(
 #endif
 ){}
 #if defined(_VISUALC_)
-__declspec(dllexport) extern Screen *XDefaultScreenOfDisplay(Display* a)
+extern Export Screen *XDefaultScreenOfDisplay(Display* a)
 #else
 Screen *XDefaultScreenOfDisplay(Display* a)
 #endif
@@ -1976,7 +1988,7 @@ typedef int (*XErrorHandler) (	    /* WARNING, this type not in Xlib spec */
 
 
 #if defined(_VISUALC_)
-__declspec(dllexport) extern XErrorHandler XSetErrorHandler (
+extern Export XErrorHandler XSetErrorHandler (
 #else
 XErrorHandler XSetErrorHandler (
 #endif
@@ -2479,7 +2491,7 @@ int XDefaultDepthOfScreen(
 ){}
 
 #if defined(_VISUALC_)
-__declspec(dllexport) extern int XDefaultScreen(Display* a)
+extern Export int XDefaultScreen(Display* a)
 #else
 int XDefaultScreen(Display* a)
 #endif
@@ -3339,7 +3351,7 @@ char **NextString;
 
 #if NeedFunctionPrototypes
 #if defined(_VISUALC_)
-__declspec(dllexport) extern int XParseGeometry (
+extern Export int XParseGeometry (
 #else
 int XParseGeometry (
 #endif
@@ -4147,7 +4159,7 @@ XStoreNamedColor(
 ){}
 
 #if defined(_VISUALC_)
-__declspec(dllexport) extern XSync(Display* a,Bool b)
+extern Export XSync(Display* a,Bool b)
 #else
 XSync(Display* a,Bool b)
 #endif

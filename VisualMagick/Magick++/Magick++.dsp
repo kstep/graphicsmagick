@@ -42,8 +42,9 @@ RSC=rc.exe
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir ".\dRelease"
 # PROP Target_Dir ""
+MTL=midl.exe
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\" /I "..\..\" /I "..\..\Magick++\lib" /I "..\..\magick" /I "..\..\jpeg" /I "..\..\mpeg" /I "..\..\tiff" /I "..\..\ttf" /I "..\..\png" /I "..\..\zlib" /I "..\..\jbig" /I "..\..\fpx" /I "..\..\xlib\include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_WINDOWS" /D "_VISUALC_" /D "NeedFunctionPrototypes" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\\" /I "..\..\\" /I "..\..\Magick++\lib" /I "..\..\magick" /I "..\..\jpeg" /I "..\..\mpeg" /I "..\..\tiff" /I "..\..\ttf" /I "..\..\png" /I "..\..\zlib" /I "..\..\jbig" /I "..\..\fpx" /I "..\..\xlib\include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_WINDOWS" /D "_VISUALC_" /D "NeedFunctionPrototypes" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -65,8 +66,9 @@ LIB32=link.exe -lib
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir ".\dDebug"
 # PROP Target_Dir ""
+MTL=midl.exe
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I ".\" /I "..\..\" /I "..\..\Magick++\lib" /I "..\..\magick" /I "..\..\jpeg" /I "..\..\mpeg" /I "..\..\tiff" /I "..\..\ttf" /I "..\..\png" /I "..\..\zlib" /I "..\..\jbig" /I "..\..\fpx" /I "..\..\xlib\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_VISUALC_" /D "NeedFunctionPrototypes" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /I ".\\" /I "..\..\\" /I "..\..\Magick++\lib" /I "..\..\magick" /I "..\..\jpeg" /I "..\..\mpeg" /I "..\..\tiff" /I "..\..\ttf" /I "..\..\png" /I "..\..\zlib" /I "..\..\jbig" /I "..\..\fpx" /I "..\..\xlib\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_VISUALC_" /D "NeedFunctionPrototypes" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -88,8 +90,9 @@ LIB32=link.exe -lib
 # PROP Output_Dir "..\lib"
 # PROP Intermediate_Dir ".\sRelease"
 # PROP Target_Dir ""
+MTL=midl.exe
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /I ".\" /I "..\..\" /I "..\..\Magick++\lib" /I "..\..\magick" /I "..\..\jpeg" /I "..\..\mpeg" /I "..\..\tiff" /I "..\..\ttf" /I "..\..\png" /I "..\..\zlib" /I "..\..\jbig" /I "..\..\fpx" /I "..\..\xlib\include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_WINDOWS" /D "_VISUALC_" /D "NeedFunctionPrototypes" /YX /FD /c
+# ADD CPP /nologo /W3 /GX /O2 /I ".\\" /I "..\..\\" /I "..\..\Magick++\lib" /I "..\..\magick" /I "..\..\jpeg" /I "..\..\mpeg" /I "..\..\tiff" /I "..\..\ttf" /I "..\..\png" /I "..\..\zlib" /I "..\..\jbig" /I "..\..\fpx" /I "..\..\xlib\include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_WINDOWS" /D "_VISUALC_" /D "NeedFunctionPrototypes" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -111,8 +114,9 @@ LIB32=link.exe -lib
 # PROP Output_Dir "..\lib"
 # PROP Intermediate_Dir ".\sDebug"
 # PROP Target_Dir ""
+MTL=midl.exe
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I ".\" /I "..\..\" /I "..\..\Magick++\lib" /I "..\..\magick" /I "..\..\jpeg" /I "..\..\mpeg" /I "..\..\tiff" /I "..\..\ttf" /I "..\..\png" /I "..\..\zlib" /I "..\..\jbig" /I "..\..\fpx" /I "..\..\xlib\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_VISUALC_" /D "NeedFunctionPrototypes" /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /Zi /Od /I ".\\" /I "..\..\\" /I "..\..\Magick++\lib" /I "..\..\magick" /I "..\..\jpeg" /I "..\..\mpeg" /I "..\..\tiff" /I "..\..\ttf" /I "..\..\png" /I "..\..\zlib" /I "..\..\jbig" /I "..\..\fpx" /I "..\..\xlib\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_VISUALC_" /D "NeedFunctionPrototypes" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -187,6 +191,10 @@ SOURCE="..\..\Magick++\lib\Options.cpp"
 # End Source File
 # Begin Source File
 
+SOURCE="..\..\Magick++\lib\Pixels.cpp"
+# End Source File
+# Begin Source File
+
 SOURCE="..\..\Magick++\lib\Thread.cpp"
 # End Source File
 # End Group
@@ -235,11 +243,15 @@ SOURCE="..\..\Magick++\lib\Magick++\Options.h"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\Magick++\lib\Magick++\Thread.h"
+SOURCE="..\..\Magick++\lib\Magick++\Pixels.h"
 # End Source File
 # Begin Source File
 
 SOURCE="..\..\Magick++\lib\Magick++\STL.h"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\Magick++\lib\Magick++\Thread.h"
 # End Source File
 # End Group
 # End Target

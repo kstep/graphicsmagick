@@ -3,6 +3,7 @@
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
+# TARGTYPE "Win32 (x86) Static Library" 0x0104
 
 CFG=MagickFPX - Win32 Debug static
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
@@ -27,9 +28,6 @@ CFG=MagickFPX - Win32 Debug static
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
-CPP=cl.exe
-MTL=midl.exe
-RSC=rc.exe
 
 !IF  "$(CFG)" == "MagickFPX - Win32 Release"
 
@@ -44,10 +42,14 @@ RSC=rc.exe
 # PROP Intermediate_Dir ".\dRelease"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
+LIB32=link.exe -lib
+CPP=cl.exe
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
 # ADD CPP /nologo /MD /w /W0 /GX /O2 /I "..\..\fpx\basics" /I "..\..\fpx\fpx" /I "..\..\fpx\jpeg" /I "..\..\fpx\ole" /I "..\..\fpx\ri_image" /I "..\..\fpx\macdeps" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "TOOLKIT" /D "_MBCS" /D "WIN32_LEAN_AND_MEAN" /D "DOS" /D "USE_OLE" /D NO_FW=0 /D LP_FW=1 /D XVT_FW=2 /D FRAMEWORK=NO_FW /D "TOOLKIT_FlashPix" /D "TOOLKIT_FLASHPIX" /D "USE_UNICODE" /D "_UNICODE" /YX /FD /c
+MTL=midl.exe
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -71,10 +73,14 @@ LINK32=link.exe
 # PROP Intermediate_Dir ".\dDebug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
+LIB32=link.exe -lib
+CPP=cl.exe
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
 # ADD CPP /nologo /MDd /w /W0 /Gm /GX /Zi /Od /I "..\..\fpx\basics" /I "..\..\fpx\fpx" /I "..\..\fpx\jpeg" /I "..\..\fpx\ole" /I "..\..\fpx\ri_image" /I "..\..\fpx\macdeps" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "TOOLKIT" /D "_MBCS" /D "WIN32_LEAN_AND_MEAN" /D "DOS" /D "USE_OLE" /D NO_FW=0 /D LP_FW=1 /D XVT_FW=2 /D FRAMEWORK=NO_FW /D "TOOLKIT_FlashPix" /D "TOOLKIT_FLASHPIX" /D "USE_UNICODE" /D "_UNICODE" /YX /FD /c
+MTL=midl.exe
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -82,7 +88,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386
-# ADD LINK32 ..\lib\MagickFPXjpegDB.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib uuid.lib odbc32.lib odbccp32.lib ole32.lib oleaut32.lib /nologo /subsystem:windows /dll /pdb:"..\bin\MagickFPXDB.pdb" /debug /machine:I386 /out:"..\bin\MagickFPXDB.dll"
+# ADD LINK32 ..\lib\MagickFPXjpegDB.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib uuid.lib odbc32.lib odbccp32.lib ole32.lib oleaut32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"..\bin\MagickFPXDB.pdb" /debug /machine:I386 /out:"..\bin\MagickFPXDB.dll"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "MagickFPX - Win32 Release static"
@@ -97,8 +103,11 @@ LINK32=link.exe
 # PROP Output_Dir "..\lib"
 # PROP Intermediate_Dir ".\sRelease"
 # PROP Target_Dir ""
+MTL=midl.exe
+CPP=cl.exe
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
 # ADD CPP /nologo /W3 /GX /O2 /I "..\..\fpx\basics" /I "..\..\fpx\fpx" /I "..\..\fpx\jpeg" /I "..\..\fpx\ole" /I "..\..\fpx\ri_image" /I "..\..\fpx\macdeps" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "TOOLKIT" /D "_MBCS" /D "WIN32_LEAN_AND_MEAN" /D "DOS" /D "USE_OLE" /D NO_FW=0 /D LP_FW=1 /D XVT_FW=2 /D FRAMEWORK=NO_FW /D "TOOLKIT_FlashPix" /D "TOOLKIT_FLASHPIX" /D "USE_UNICODE" /D "_UNICODE" /YX /FD /c
+RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -106,7 +115,6 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo
 # ADD LIB32 /nologo /out:"..\lib\MagickFPXstatic.lib"
 
 !ELSEIF  "$(CFG)" == "MagickFPX - Win32 Debug static"
@@ -121,8 +129,11 @@ LIB32=link.exe -lib
 # PROP Output_Dir "..\lib"
 # PROP Intermediate_Dir ".\sDebug"
 # PROP Target_Dir ""
+MTL=midl.exe
+CPP=cl.exe
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
 # ADD CPP /nologo /W3 /Gm /GX /Zi /Od /I "..\..\fpx\basics" /I "..\..\fpx\fpx" /I "..\..\fpx\jpeg" /I "..\..\fpx\ole" /I "..\..\fpx\ri_image" /I "..\..\fpx\macdeps" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "TOOLKIT" /D "_MBCS" /D "WIN32_LEAN_AND_MEAN" /D "DOS" /D "USE_OLE" /D NO_FW=0 /D LP_FW=1 /D XVT_FW=2 /D FRAMEWORK=NO_FW /D "TOOLKIT_FlashPix" /D "TOOLKIT_FLASHPIX" /D "USE_UNICODE" /D "_UNICODE" /YX /FD /GZ /c
+RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe

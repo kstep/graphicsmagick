@@ -3,6 +3,7 @@
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
+# TARGTYPE "Win32 (x86) Static Library" 0x0104
 
 CFG=MagickJPEG - Win32 Debug static
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
@@ -27,9 +28,6 @@ CFG=MagickJPEG - Win32 Debug static
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
-CPP=cl.exe
-MTL=midl.exe
-RSC=rc.exe
 
 !IF  "$(CFG)" == "MagickJPEG - Win32 Release"
 
@@ -45,10 +43,13 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 LIB32=link.exe -lib
+CPP=cl.exe
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_VISUALC_" /D "_IMAGE_MAGICK_JPEG_" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_VISUALC_" /D "_IMAGE_MAGICK_JPEG_" /D "_JPEGLIB_" /YX /FD /c
+MTL=midl.exe
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -72,10 +73,13 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 LIB32=link.exe -lib
+CPP=cl.exe
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_VISUALC_" /D "_IMAGE_MAGICK_JPEG_" /YX /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_VISUALC_" /D "_IMAGE_MAGICK_JPEG_" /D "_JPEGLIB_" /YX /FD /c
+MTL=midl.exe
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -98,16 +102,18 @@ LINK32=link.exe
 # PROP Output_Dir "..\lib"
 # PROP Intermediate_Dir ".\sRelease"
 # PROP Target_Dir ""
+MTL=midl.exe
+CPP=cl.exe
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_VISUALC_" /D "_IMAGE_MAGICK_JPEG_" /D "_LIB" /YX /FD /c
+# ADD CPP /nologo /W3 /GX /O2 /D "NDEBUG" /D "_LIB" /D "WIN32" /D "_WINDOWS" /D "_VISUALC_" /D "_IMAGE_MAGICK_JPEG_" /D "_JPEGLIB_" /YX /FD /c
+RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /fo".\sRelease\version.res" /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo
 # ADD LIB32 /nologo /out:"..\lib\MagickJPEGstatic.lib"
 
 !ELSEIF  "$(CFG)" == "MagickJPEG - Win32 Debug static"
@@ -122,10 +128,13 @@ LIB32=link.exe -lib
 # PROP Output_Dir "..\lib"
 # PROP Intermediate_Dir ".\sDebug"
 # PROP Target_Dir ""
+MTL=midl.exe
+CPP=cl.exe
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /Zi /Od /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_VISUALC_" /D "_IMAGE_MAGICK_JPEG_" /D "_LIB" /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /Zi /Od /D "_DEBUG" /D "_LIB" /D "WIN32" /D "_WINDOWS" /D "_VISUALC_" /D "_IMAGE_MAGICK_JPEG_" /D "_JPEGLIB_" /YX /FD /GZ /c
+RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /fo".\sDebug\version.res" /d "_DEBUG"
+# ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -407,7 +416,7 @@ InputPath=.\jconfig.nth
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "MagickJPEG - Win32 Debug static"
+!ELSEIF  "$(CFG)" == "MagickJPEG - Win32 Release static"
 
 # Begin Custom Build
 ProjDir=.
@@ -418,7 +427,7 @@ InputPath=.\jconfig.nth
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "MagickJPEG - Win32 Release static"
+!ELSEIF  "$(CFG)" == "MagickJPEG - Win32 Debug static"
 
 # Begin Custom Build
 ProjDir=.
@@ -458,7 +467,7 @@ InputPath=.\jmorecfg.nth
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "MagickJPEG - Win32 Debug static"
+!ELSEIF  "$(CFG)" == "MagickJPEG - Win32 Release static"
 
 # Begin Custom Build
 ProjDir=.
@@ -469,7 +478,7 @@ InputPath=.\jmorecfg.nth
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "MagickJPEG - Win32 Release static"
+!ELSEIF  "$(CFG)" == "MagickJPEG - Win32 Debug static"
 
 # Begin Custom Build
 ProjDir=.
