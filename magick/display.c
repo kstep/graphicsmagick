@@ -3721,7 +3721,7 @@ static unsigned int XDrawEditImage(Display *display,
   if (coordinate_info == (XPoint *) NULL)
     {
       MagickError(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to draw on image");
+        "unable to draw on image");
       return(False);
     }
   /*
@@ -4330,7 +4330,7 @@ static unsigned int XDrawEditImage(Display *display,
             max_coordinates*sizeof(XPoint));
           if (coordinate_info == (XPoint *) NULL)
             MagickError(ResourceLimitError,"MemoryAllocationFailed",
-              "Unable to draw on image");
+              "unable to draw on image");
           break;
         }
         case Expose:
@@ -4357,7 +4357,7 @@ static unsigned int XDrawEditImage(Display *display,
             max_coordinates*sizeof(XPoint));
           if (coordinate_info == (XPoint *) NULL)
             MagickError(ResourceLimitError,"MemoryAllocationFailed",
-              "Unable to draw on image");
+              "unable to draw on image");
           break;
         }
         default:
@@ -7308,8 +7308,7 @@ static void XMakePanImage(Display *display,XResourceInfo *resource_info,
   status=XMakeImage(display,resource_info,&windows->pan,image,
     windows->pan.width,windows->pan.height);
   if (status == False)
-    MagickError(XServerError,"Unable to create pan icon image",
-      (char *) NULL);
+    MagickError(XServerError,image->exception.reason,(char *) NULL);
   (void) XSetWindowBackgroundPixmap(display,windows->pan.id,
     windows->pan.pixmap);
   (void) XClearWindow(display,windows->pan.id);
@@ -7950,15 +7949,15 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       status=XGetCommand(display,windows->image.id,&files,&count);
       if (!status)
         {
-          MagickError(XServerError,"Unable to select image",
-            "XGetCommand failed");
+          MagickError(XServerError,"UnableToGetProperty",
+            "unable to select image");
           return((Image *) NULL);
         }
       filelist=(char **) AcquireMemory(count*sizeof(char *));
       if (filelist == (char **) NULL)
         {
           MagickError(ResourceLimitError,"MemoryAllocationFailed",
-            "Unable to select image");
+            "unable to select image");
           (void) XFreeStringList(files);
           return((Image *) NULL);
         }
@@ -11231,7 +11230,7 @@ static Image *XVisualDirectoryImage(Display *display,
   if ((status == False) || (number_files == 0))
     {
       if (number_files == 0)
-        MagickError(OptionError,"No image files were found",filenames);
+        MagickError(ImageError,"NoImagesWereFound",filenames);
       else
         MagickError(ResourceLimitError,"MemoryAllocationFailed",
           filenames);
@@ -11296,7 +11295,7 @@ static Image *XVisualDirectoryImage(Display *display,
   if (image == (Image *) NULL)
     {
       XSetCursorState(display,windows,False);
-      MagickError(OptionError,"No images were loaded",filenames);
+      MagickError(ImageError,"NoImagesWereLoaded",filenames);
       return((Image *) NULL);
     }
   while (image->previous != (Image *) NULL)
@@ -11412,7 +11411,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
     }
   if (window_info.id == (Window) NULL)
     {
-      MagickError(OptionError,"No window with specified id exists",
+      MagickError(XServerError,"NoWindowWithSpecifiedIDExists",
         resources.window_id);
       return(False);
     }
@@ -12661,7 +12660,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                         display_image->filename);
                       nexus=ReadImage(resource_info->image_info,
                         &display_image->exception);
-                      if (display_image->exception.severity != UndefinedException)
+                      if (display_image->exception.severity !=
+                          UndefinedException)
                         MagickError(display_image->exception.severity,
                           display_image->exception.reason,
                           display_image->exception.description);

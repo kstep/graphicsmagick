@@ -633,6 +633,9 @@ const char *GetLocaleMessage(const char *tag)
                         return tag;
 
                     case 'n':  case 'N':
+                      if (p - tp == 17 && !LocaleNCompare(tp, "NoImagesWereFound", 17))
+                        return *np ? tag : "No images were found";
+                      else
                       if (p - tp == 18 && !LocaleNCompare(tp, "NoImagesWereLoaded", 18))
                         return *np ? tag : "No images were loaded";
                       else
@@ -1155,35 +1158,115 @@ const char *GetLocaleMessage(const char *tag)
 
               case 'x':  case 'X':
                 if (p - tp == 7 && !LocaleNCompare(tp, "XServer", 7))
-                  if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+                  switch (*NEXT_FIELD)
+                  {
+                  default:
                     return tag;
-                  else
-                    switch (*NEXT_FIELD)
-                    {
-                    default:
+
+                  case 'e':  case 'E':
+                    if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
+                      switch (*NEXT_FIELD)
+                      {
+                      default:
+                        return tag;
+
+                      case 'c':  case 'C':
+                        if (p - tp == 23 && !LocaleNCompare(tp, "ColorIsNotKnownToServer", 23))
+                          return *np ? tag : "Color is not known to server";
+                        else
+                          return tag;
+
+                      case 'i':  case 'I':
+                        if (p - tp == 22 && !LocaleNCompare(tp, "InvalidVisualSpecifier", 22))
+                          return *np ? tag : "Invalid visual specifier";
+                        else
+                          return tag;
+
+                      case 'n':  case 'N':
+                        if (p - tp == 29 && !LocaleNCompare(tp, "NoWindowWithSpecifiedIDExists", 29))
+                          return *np ? tag : "No window with specified ID exists";
+                        else
+                          return tag;
+
+                      case 's':  case 'S':
+                        if (p - tp == 32 && !LocaleNCompare(tp, "StandardColormapIsNotInitialized", 32))
+                          return *np ? tag : "Standard Colormap is not initialized";
+                        else
+                          return tag;
+
+                      case 'u':  case 'U':
+                        if (p - tp == 30 && !LocaleNCompare(tp, "UnableToConnectToRemoteDisplay", 30))
+                          return *np ? tag : "Unable to connect to remote display";
+                        else
+                        if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreateBitmap", 20))
+                          return *np ? tag : "Unable to create bitmap";
+                        else
+                        if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreatePixmap", 20))
+                          return *np ? tag : "Unable to create pixmap";
+                        else
+                        if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateProperty", 22))
+                          return *np ? tag : "Unable to create property";
+                        else
+                        if (p - tp == 30 && !LocaleNCompare(tp, "UnableToCreateStandardColormap", 30))
+                          return *np ? tag : "Unable to create standard colormap";
+                        else
+                        if (p - tp == 19 && !LocaleNCompare(tp, "UnableToGetProperty", 19))
+                          return *np ? tag : "Unable to get property";
+                        else
+                        if (p - tp == 27 && !LocaleNCompare(tp, "UnableToGetStandardColormap", 27))
+                          return *np ? tag : "Unable to get Standard Colormap";
+                        else
+                        if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
+                          return *np ? tag : "Unable to get visual";
+                        else
+                        if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGrabMouse", 17))
+                          return *np ? tag : "Unable to grab mouse";
+                        else
+                        if (p - tp == 16 && !LocaleNCompare(tp, "UnableToLoadFont", 16))
+                          return *np ? tag : "Unable to load font";
+                        else
+                        if (p - tp == 37 && !LocaleNCompare(tp, "UnableToMatchVisualToStandardColormap", 37))
+                          return *np ? tag : "Unable to match visual to Standard Colormap";
+                        else
+                        if (p - tp == 19 && !LocaleNCompare(tp, "UnableToOpenXServer", 19))
+                          return *np ? tag : "Unable to open X server";
+                        else
+                        if (p - tp == 29 && !LocaleNCompare(tp, "UnableToReadXWindowAttributes", 29))
+                          return *np ? tag : "Unable to read X window attributes";
+                        else
+                        if (p - tp == 24 && !LocaleNCompare(tp, "UnableToReadXWindowImage", 24))
+                          return *np ? tag : "Unable to read X window image";
+                        else
+                        if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedColormapType", 24))
+                          return *np ? tag : "Unrecognized colormap type";
+                        else
+                        if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedGravityType", 23))
+                          return *np ? tag : "Unrecognized gravity type";
+                        else
+                          return tag;
+                      }
+                    else
                       return tag;
 
-                    case 'n':  case 'N':
-                      if (p - tp == 29 && !LocaleNCompare(tp, "NoWindowWithSpecifiedIDExists", 29))
-                        return *np ? tag : "No window with specified ID exists";
-                      else
+                  case 'w':  case 'W':
+                    if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
+                      switch (*NEXT_FIELD)
+                      {
+                      default:
                         return tag;
 
-                    case 'u':  case 'U':
-                      if (p - tp == 30 && !LocaleNCompare(tp, "UnableToCreateStandardColormap", 30))
-                        return *np ? tag : "Unable to create standard colormap";
-                      else
-                      if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
-                        return *np ? tag : "Unable to get visual";
-                      else
-                      if (p - tp == 16 && !LocaleNCompare(tp, "UnableToLoadFont", 16))
-                        return *np ? tag : "Unable to load font";
-                      else
-                      if (p - tp == 19 && !LocaleNCompare(tp, "UnableToOpenXServer", 19))
-                        return *np ? tag : "Unable to open X server";
-                      else
-                        return tag;
-                    }
+                      case 'u':  case 'U':
+                        if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
+                          return *np ? tag : "Unable to get visual";
+                        else
+                        if (p - tp == 18 && !LocaleNCompare(tp, "UsingDefaultVisual", 18))
+                          return *np ? tag : "UsingDefaultVisual";
+                        else
+                          return tag;
+                      }
+                    else
+                      return tag;
+                  }
                 else
                   return tag;
               }
@@ -2021,6 +2104,9 @@ const char *GetLocaleMessage(const char *tag)
                         return tag;
 
                     case 'n':  case 'N':
+                      if (p - tp == 17 && !LocaleNCompare(tp, "NoImagesWereFound", 17))
+                        return *np ? tag : "No images were found";
+                      else
                       if (p - tp == 18 && !LocaleNCompare(tp, "NoImagesWereLoaded", 18))
                         return *np ? tag : "No images were loaded";
                       else
@@ -2543,35 +2629,115 @@ const char *GetLocaleMessage(const char *tag)
 
               case 'x':  case 'X':
                 if (p - tp == 7 && !LocaleNCompare(tp, "XServer", 7))
-                  if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+                  switch (*NEXT_FIELD)
+                  {
+                  default:
                     return tag;
-                  else
-                    switch (*NEXT_FIELD)
-                    {
-                    default:
+
+                  case 'e':  case 'E':
+                    if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
+                      switch (*NEXT_FIELD)
+                      {
+                      default:
+                        return tag;
+
+                      case 'c':  case 'C':
+                        if (p - tp == 23 && !LocaleNCompare(tp, "ColorIsNotKnownToServer", 23))
+                          return *np ? tag : "Color is not known to server";
+                        else
+                          return tag;
+
+                      case 'i':  case 'I':
+                        if (p - tp == 22 && !LocaleNCompare(tp, "InvalidVisualSpecifier", 22))
+                          return *np ? tag : "Invalid visual specifier";
+                        else
+                          return tag;
+
+                      case 'n':  case 'N':
+                        if (p - tp == 29 && !LocaleNCompare(tp, "NoWindowWithSpecifiedIDExists", 29))
+                          return *np ? tag : "No window with specified ID exists";
+                        else
+                          return tag;
+
+                      case 's':  case 'S':
+                        if (p - tp == 32 && !LocaleNCompare(tp, "StandardColormapIsNotInitialized", 32))
+                          return *np ? tag : "Standard Colormap is not initialized";
+                        else
+                          return tag;
+
+                      case 'u':  case 'U':
+                        if (p - tp == 30 && !LocaleNCompare(tp, "UnableToConnectToRemoteDisplay", 30))
+                          return *np ? tag : "Unable to connect to remote display";
+                        else
+                        if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreateBitmap", 20))
+                          return *np ? tag : "Unable to create bitmap";
+                        else
+                        if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreatePixmap", 20))
+                          return *np ? tag : "Unable to create pixmap";
+                        else
+                        if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateProperty", 22))
+                          return *np ? tag : "Unable to create property";
+                        else
+                        if (p - tp == 30 && !LocaleNCompare(tp, "UnableToCreateStandardColormap", 30))
+                          return *np ? tag : "Unable to create standard colormap";
+                        else
+                        if (p - tp == 19 && !LocaleNCompare(tp, "UnableToGetProperty", 19))
+                          return *np ? tag : "Unable to get property";
+                        else
+                        if (p - tp == 27 && !LocaleNCompare(tp, "UnableToGetStandardColormap", 27))
+                          return *np ? tag : "Unable to get Standard Colormap";
+                        else
+                        if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
+                          return *np ? tag : "Unable to get visual";
+                        else
+                        if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGrabMouse", 17))
+                          return *np ? tag : "Unable to grab mouse";
+                        else
+                        if (p - tp == 16 && !LocaleNCompare(tp, "UnableToLoadFont", 16))
+                          return *np ? tag : "Unable to load font";
+                        else
+                        if (p - tp == 37 && !LocaleNCompare(tp, "UnableToMatchVisualToStandardColormap", 37))
+                          return *np ? tag : "Unable to match visual to Standard Colormap";
+                        else
+                        if (p - tp == 19 && !LocaleNCompare(tp, "UnableToOpenXServer", 19))
+                          return *np ? tag : "Unable to open X server";
+                        else
+                        if (p - tp == 29 && !LocaleNCompare(tp, "UnableToReadXWindowAttributes", 29))
+                          return *np ? tag : "Unable to read X window attributes";
+                        else
+                        if (p - tp == 24 && !LocaleNCompare(tp, "UnableToReadXWindowImage", 24))
+                          return *np ? tag : "Unable to read X window image";
+                        else
+                        if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedColormapType", 24))
+                          return *np ? tag : "Unrecognized colormap type";
+                        else
+                        if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedGravityType", 23))
+                          return *np ? tag : "Unrecognized gravity type";
+                        else
+                          return tag;
+                      }
+                    else
                       return tag;
 
-                    case 'n':  case 'N':
-                      if (p - tp == 29 && !LocaleNCompare(tp, "NoWindowWithSpecifiedIDExists", 29))
-                        return *np ? tag : "No window with specified ID exists";
-                      else
+                  case 'w':  case 'W':
+                    if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
+                      switch (*NEXT_FIELD)
+                      {
+                      default:
                         return tag;
 
-                    case 'u':  case 'U':
-                      if (p - tp == 30 && !LocaleNCompare(tp, "UnableToCreateStandardColormap", 30))
-                        return *np ? tag : "Unable to create standard colormap";
-                      else
-                      if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
-                        return *np ? tag : "Unable to get visual";
-                      else
-                      if (p - tp == 16 && !LocaleNCompare(tp, "UnableToLoadFont", 16))
-                        return *np ? tag : "Unable to load font";
-                      else
-                      if (p - tp == 19 && !LocaleNCompare(tp, "UnableToOpenXServer", 19))
-                        return *np ? tag : "Unable to open X server";
-                      else
-                        return tag;
-                    }
+                      case 'u':  case 'U':
+                        if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
+                          return *np ? tag : "Unable to get visual";
+                        else
+                        if (p - tp == 18 && !LocaleNCompare(tp, "UsingDefaultVisual", 18))
+                          return *np ? tag : "UsingDefaultVisual";
+                        else
+                          return tag;
+                      }
+                    else
+                      return tag;
+                  }
                 else
                   return tag;
               }

@@ -589,6 +589,9 @@
       <Message name="InputImagesAlreadySpecified">
         Input images already specified
       </Message>
+      <Message name="NoImagesWereFound">
+        No images were found
+      </Message>
       <Message name="NoImagesWereLoaded">
         No images were loaded
       </Message>
@@ -957,21 +960,74 @@
   </Stream>
   <XServer>
     <Error>
+      <Message name="ColorIsNotKnownToServer">
+        Color is not known to server
+      </Message>
+      <Message name="InvalidVisualSpecifier">
+        Invalid visual specifier
+      </Message>
       <Message name="NoWindowWithSpecifiedIDExists">
         No window with specified ID exists
+      </Message>
+      <Message name="StandardColormapIsNotInitialized">
+        Standard Colormap is not initialized
+      </Message>
+      <Message name="UnableToConnectToRemoteDisplay">
+        Unable to connect to remote display
+      </Message>
+      <Message name="UnableToCreateBitmap">
+        Unable to create bitmap
+      </Message>
+      <Message name="UnableToCreatePixmap">
+        Unable to create pixmap
+      </Message>
+      <Message name="UnableToCreateProperty">
+        Unable to create property
       </Message>
       <Message name="UnableToCreateStandardColormap">
         Unable to create standard colormap
       </Message>
+      <Message name="UnableToGetProperty">
+        Unable to get property
+      </Message>
+      <Message name="UnableToGetStandardColormap">
+        Unable to get Standard Colormap
+      </Message>
       <Message name="UnableToGetVisual">
         Unable to get visual
+      </Message>
+      <Message name="UnableToGrabMouse">
+        Unable to grab mouse
       </Message>
       <Message name="UnableToLoadFont">
         Unable to load font
       </Message>
+      <Message name="UnableToMatchVisualToStandardColormap">
+        Unable to match visual to Standard Colormap
+      </Message>
       <Message name="UnableToOpenXServer">
         Unable to open X server
       </Message>
+      <Message name="UnableToReadXWindowAttributes">
+        Unable to read X window attributes
+      </Message>
+      <Message name="UnableToReadXWindowImage">
+        Unable to read X window image
+      </Message>
+      <Message name="UnrecognizedColormapType">
+        Unrecognized colormap type
+      </Message>
+      <Message name="UnrecognizedGravityType">
+        Unrecognized gravity type
+      </Message>
     </Error>
+    <Warning>
+      <Message name="UsingDefaultVisual">
+        UsingDefaultVisual
+      </Message>
+      <Message name="UnableToGetVisual">
+        Unable to get visual
+      </Message>
+    </Warning>
   </XServer>
 </locale>
