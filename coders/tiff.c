@@ -355,12 +355,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   /*
     Open image.
   */
-  AcquireSemaphore(tiff_semaphore);
+  AcquireSemaphore(&tiff_semaphore);
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     {
-      LiberateSemaphore(tiff_semaphore);
+      LiberateSemaphore(&tiff_semaphore);
       ThrowReaderException(FileOpenWarning,"Unable to open file",image);
     }
   if ((image->file == stdin) || image->pipe)
@@ -378,7 +378,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       file=fopen(image_info->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         {
-          LiberateSemaphore(tiff_semaphore);
+          LiberateSemaphore(&tiff_semaphore);
           ThrowReaderException(FileOpenWarning,"Unable to write file",image);
         }
       c=ReadBlobByte(image);
@@ -396,7 +396,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
   if (tiff == (TIFF *) NULL)
     {
-      LiberateSemaphore(tiff_semaphore);
+      LiberateSemaphore(&tiff_semaphore);
       ThrowReaderException(FileOpenWarning,"Unable to open file",image);
     }
   if (image_info->subrange != 0)
@@ -409,7 +409,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       status=TIFFReadDirectory(tiff);
       if (status == False)
         {
-          LiberateSemaphore(tiff_semaphore);
+          LiberateSemaphore(&tiff_semaphore);
           ThrowReaderException(CorruptImageWarning,"Unable to read subimage",
             image);
         }
@@ -498,7 +498,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (!AllocateImageColormap(image,image->colors))
           {
             TIFFClose(tiff);
-            LiberateSemaphore(tiff_semaphore);
+            LiberateSemaphore(&tiff_semaphore);
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
@@ -507,7 +507,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       {
         TIFFClose(tiff);
         CloseBlob(image);
-        LiberateSemaphore(tiff_semaphore);
+        LiberateSemaphore(&tiff_semaphore);
         return(image);
       }
     if (units == RESUNIT_INCH)
@@ -576,7 +576,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             (scanline == (unsigned char *) NULL))
           {
             TIFFClose(tiff);
-            LiberateSemaphore(tiff_semaphore);
+            LiberateSemaphore(&tiff_semaphore);
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
@@ -774,7 +774,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
-            LiberateSemaphore(tiff_semaphore);
+            LiberateSemaphore(&tiff_semaphore);
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
@@ -853,7 +853,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
-            LiberateSemaphore(tiff_semaphore);
+            LiberateSemaphore(&tiff_semaphore);
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
@@ -905,7 +905,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (image->next == (Image *) NULL)
           {
             DestroyImages(image);
-            LiberateSemaphore(tiff_semaphore);
+            LiberateSemaphore(&tiff_semaphore);
             return((Image *) NULL);
           }
         image=image->next;
@@ -921,7 +921,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
-  LiberateSemaphore(tiff_semaphore);
+  LiberateSemaphore(&tiff_semaphore);
   return(image);
 }
 #else

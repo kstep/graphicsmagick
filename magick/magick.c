@@ -100,7 +100,7 @@ MagickExport void DestroyMagickInfo(void)
   register MagickInfo
     *p;
 
-  AcquireSemaphore(magick_semaphore);
+  AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; )
   {
     entry=p;
@@ -114,7 +114,7 @@ MagickExport void DestroyMagickInfo(void)
     LiberateMemory((void **) &entry);
   }
   magick_list=(MagickInfo *) NULL;
-  LiberateSemaphore(magick_semaphore);
+  LiberateSemaphore(&magick_semaphore);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -160,12 +160,12 @@ MagickExport char *GetImageMagick(const unsigned char *magick,
     *p;
 
   assert(magick != (const unsigned char *) NULL);
-  AcquireSemaphore(magick_semaphore);
+  AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (p->magick)
       if (p->magick(magick,length))
         break;
-  LiberateSemaphore(magick_semaphore);
+  LiberateSemaphore(&magick_semaphore);
   if (p != (MagickInfo *) NULL)
     return(p->tag);
   return((char *) NULL);
@@ -286,9 +286,9 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
   unsigned int
     initialize;
 
-  AcquireSemaphore(magick_semaphore);
+  AcquireSemaphore(&magick_semaphore);
   initialize=magick_list == (MagickInfo *) NULL;
-  LiberateSemaphore(magick_semaphore);
+  LiberateSemaphore(&magick_semaphore);
   if (initialize)
     {
       /*
@@ -383,20 +383,20 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
   /*
     Find tag in list
   */
-  AcquireSemaphore(magick_semaphore);
+  AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
       break;
-  LiberateSemaphore(magick_semaphore);
+  LiberateSemaphore(&magick_semaphore);
   if (p != (MagickInfo *) NULL)
     return(p);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
   (void) OpenModule(tag);
-  AcquireSemaphore(magick_semaphore);
+  AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
       break;
-  LiberateSemaphore(magick_semaphore);
+  LiberateSemaphore(&magick_semaphore);
   if (p != (MagickInfo *) NULL)
     return(p);
 #endif
@@ -476,13 +476,13 @@ MagickExport void ListMagickInfo(FILE *file)
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
   OpenModules();
 #endif    
-  AcquireSemaphore(magick_semaphore);
+  AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if(p->stealth!=True)
       (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",
                      p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',p->encoder ? 'w' : '-',
                      p->encoder && p->adjoin ? '+' : '-',p->description ? p->description : "");
-  LiberateSemaphore(magick_semaphore);
+  LiberateSemaphore(&magick_semaphore);
   (void) fprintf(file,"\n* native blob support\n\n");
   (void) fflush(file);
 }
@@ -602,7 +602,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   */
   assert(entry != (MagickInfo *) NULL);
   assert(entry->signature == MagickSignature);
-  AcquireSemaphore(magick_semaphore);
+  AcquireSemaphore(&magick_semaphore);
   p=(MagickInfo *) NULL;
   if (magick_list != (MagickInfo *) NULL)
     for (p=magick_list; p->next != (MagickInfo *) NULL; p=p->next)
@@ -629,7 +629,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
         p->next->previous=entry;
       p->next=entry;
     }
-  LiberateSemaphore(magick_semaphore);
+  LiberateSemaphore(&magick_semaphore);
   return(entry);
 }
 
@@ -726,7 +726,7 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
     status;
 
   assert(tag != (const char *) NULL);
-  AcquireSemaphore(magick_semaphore);
+  AcquireSemaphore(&magick_semaphore);
   status=False;
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
   {
@@ -745,6 +745,6 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
     status=True;
     break;
   }
-  LiberateSemaphore(magick_semaphore);
+  LiberateSemaphore(&magick_semaphore);
   return(status);
 }

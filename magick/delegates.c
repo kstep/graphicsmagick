@@ -108,7 +108,7 @@ MagickExport void DestroyDelegateInfo(void)
   register DelegateInfo
     *p;
 
-  AcquireSemaphore(delegate_semaphore);
+  AcquireSemaphore(&delegate_semaphore);
   for (p=delegates; p != (DelegateInfo *) NULL; )
   {
     if (p->commands != (char *) NULL)
@@ -118,7 +118,7 @@ MagickExport void DestroyDelegateInfo(void)
     LiberateMemory((void **) &delegate);
   }
   delegates=(DelegateInfo *) NULL;
-  LiberateSemaphore(delegate_semaphore);
+  LiberateSemaphore(&delegate_semaphore);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -168,9 +168,9 @@ MagickExport unsigned int GetDelegateInfo(const char *decode_tag,
     *delegates;
 
   assert(delegate_info != (DelegateInfo *) NULL);
-  AcquireSemaphore(delegate_semaphore);
+  AcquireSemaphore(&delegate_semaphore);
   delegates=SetDelegateInfo((DelegateInfo *) NULL);
-  LiberateSemaphore(delegate_semaphore);
+  LiberateSemaphore(&delegate_semaphore);
   if (delegates == (DelegateInfo *) NULL)
     MagickWarning(DelegateWarning,"no delegates configuration file found",
       DelegateFilename);
@@ -538,9 +538,9 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  AcquireSemaphore(delegate_semaphore);
+  AcquireSemaphore(&delegate_semaphore);
   delegates=SetDelegateInfo((DelegateInfo *) NULL);
-  LiberateSemaphore(delegate_semaphore);
+  LiberateSemaphore(&delegate_semaphore);
   if (delegates == (DelegateInfo *) NULL)
     {
       MagickWarning(DelegateWarning,"no delegates configuration file found",
@@ -770,7 +770,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   if (delegates == (DelegateInfo *) NULL)
     {
       delegates=delegate;
-      LiberateSemaphore(delegate_semaphore);
+      LiberateSemaphore(&delegate_semaphore);
       return(delegates);
     }
   for (p=delegates; p != (DelegateInfo *) NULL; p=p->next)

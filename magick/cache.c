@@ -450,9 +450,9 @@ static off_t GetCacheMemory(const off_t memory)
   static SemaphoreInfo
     *cache_semaphore = (SemaphoreInfo *) NULL;
 
-  AcquireSemaphore(cache_semaphore);
+  AcquireSemaphore(&cache_semaphore);
   free_memory+=memory;
-  LiberateSemaphore(cache_semaphore);
+  LiberateSemaphore(&cache_semaphore);
   return(free_memory);
 }
 
