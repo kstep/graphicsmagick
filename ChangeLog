@@ -1,3 +1,16 @@
+2003-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/log.c (ReadConfigureFile): Move event parsing to
+	ParseEvents funtion.
+	(SetLogEventMask): Move event parsing to
+	ParseEvents funtion.
+	* PerlMagick/t/subroutines.pl (testMontage): It seems that passing
+	an empty set of options to the SetImage method corrupts the image
+	options (surely a PerlMagick bug), so don't invoke SetImage unless
+	there are options to set.
+	* magick/utility.c (GetGeometry): Validate that the geometry
+	string only contains valid characters.
+
 2003-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/xpm.c (RegisterXPMImage): Module registration for PICON

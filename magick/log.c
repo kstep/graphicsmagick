@@ -74,11 +74,17 @@ typedef struct _LogInfo
   TimerInfo
     timer;
 } LogInfo;
+
+typedef struct _EventInfo
+{
+  char         *name;
+  LogEventType type;
+} EventInfo;
 
 /*
   Declare color map.
 */
-static char
+static const char
   *MagickLog = (char *)
     "<?xml version=\"1.0\"?>"
     "<magicklog>"
@@ -89,6 +95,26 @@ static char
     "  <log limit=\"2000\" />"
     "  <log format=\"%t %r %u %p %m/%f/%l/%d:\n  %e\" />"
     "</magicklog>";
+
+static const EventInfo event_map[] =
+  {
+    { "none", NoEvents },
+    { "configure", ConfigureEvent },
+    { "annotate", AnnotateEvent },
+    { "render", RenderEvent },
+    { "transform", TransformEvent },
+    { "locale", LocaleEvent },
+    { "coder", CoderEvent },
+    { "x11", X11Event },
+    { "cache", CacheEvent },
+    { "blob", BlobEvent },
+    { "deprecate", DeprecateEvent },
+    { "user", UserEvent },
+    { "resource", ResourceEvent },
+    { "temporaryfile", TemporaryFileEvent },
+    { "all", AllEvents },
+    { 0, 0 }
+  };
 
 /*
   Static declarations.
@@ -111,6 +137,37 @@ static unsigned int
 static void
   *LogToBlob(const char *,size_t *,ExceptionInfo *);
 
+/*
+  Parse an event specification string and return the equivalent bits.
+*/
+static unsigned long ParseEvents(const char *event_string)
+{
+  const char
+    *p;
+
+  int
+    i;
+
+  unsigned long
+    events=0;
+
+  for (p=event_string; p != 0; p=strchr(p,','))
+    {
+      while ((*p != 0) && (isspace((int)(*p)) || *p == ','))
+        p++;
+
+      for (i=0; event_map[i].name != 0; i++)
+        {
+          if (LocaleNCompare(p,event_map[i].name,strlen(event_map[i].name)) == 0)
+            {
+              events|=event_map[i].type;
+              break;
+            }
+        }
+    }
+
+  return events;
+}
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -866,35 +923,7 @@ static unsigned int ReadConfigureFile(const char *basename,
       case 'e':
       {
         if (LocaleCompare((char *) keyword,"events") == 0)
-          {
-            if (GlobExpression(token,"*[Aa]ll*"))
-              log_info->events=AllEvents;
-            if (GlobExpression(token,"*[Aa]nnotate*"))
-              log_info->events|=AnnotateEvent;
-            if (GlobExpression(token,"*[Bb]lob*"))
-              log_info->events|=BlobEvent;
-            if (GlobExpression(token,"*[Cc]oder*"))
-              log_info->events|=CoderEvent;
-            if (GlobExpression(token,"*[Cc]onfigure*"))
-              log_info->events|=ConfigureEvent;
-            if (GlobExpression(token,"*[Dd]precate*"))
-              log_info->events|=DeprecateEvent;
-            if (GlobExpression(token,"*[Ll]ocale*"))
-              log_info->events|=LocaleEvent;
-            if (GlobExpression(token,"*[Nn]one*"))
-              log_info->events=NoEvents;
-            if (GlobExpression(token,"*[Rr]ender*"))
-              log_info->events|=RenderEvent;
-            if (GlobExpression(token,"*[Tt]ransform*"))
-              log_info->events|=TransformEvent;
-            if (GlobExpression(token,"*[Tt]emporary*"))
-              log_info->events|=TemporaryFileEvent;
-            if (GlobExpression(token,"*[U]ser*"))
-              log_info->events|=UserEvent;
-            if (GlobExpression(token,"*[X]11*"))
-              log_info->events|=X11Event;
-            break;
-          }
+          log_info->events|=ParseEvents(token);
         break;
       }
       case 'F':
@@ -1011,36 +1040,7 @@ MagickExport unsigned long SetLogEventMask(const char *events)
       LiberateSemaphoreInfo(&log_semaphore);
       return(log_info->events);
     }
-  if (GlobExpression(events,"*[Aa]ll*"))
-    log_info->events=AllEvents;
-  if (GlobExpression(events,"*[Aa]nnotate*"))
-    log_info->events|=AnnotateEvent;
-  if (GlobExpression(events,"*[Bb]lob*"))
-    log_info->events|=BlobEvent;
-  if (GlobExpression(events,"*[Cc]ache*"))
-    log_info->events|=CacheEvent;
-  if (GlobExpression(events,"*[Cc]oder*"))
-    log_info->events|=CoderEvent;
-  if (GlobExpression(events,"*[Cc]onfigure*"))
-    log_info->events|=ConfigureEvent;
-  if (GlobExpression(events,"*[Dd]eprecate*"))
-    log_info->events|=DeprecateEvent;
-  if (GlobExpression(events,"*[Ll]ocale*"))
-    log_info->events|=LocaleEvent;
-  if (GlobExpression(events,"*[Nn]one*"))
-    log_info->events=NoEvents;
-  if (GlobExpression(events,"*[Rr]ender*"))
-    log_info->events|=RenderEvent;
-  if (GlobExpression(events,"*[Rr]esource*"))
-    log_info->events|=ResourceEvent;
-  if (GlobExpression(events,"*[Tt]ransform*"))
-    log_info->events|=TransformEvent;
-  if (GlobExpression(events,"*[Tt]emporary*"))
-    log_info->events|=TemporaryFileEvent;
-  if (GlobExpression(events,"*[U]ser*"))
-    log_info->events|=UserEvent;
-  if (GlobExpression(events,"*[X]11*"))
-    log_info->events|=X11Event;
+  log_info->events=ParseEvents(events);
   LiberateSemaphoreInfo(&log_semaphore);
   return(log_info->events);
 }

@@ -605,6 +605,7 @@ namespace Magick
   using MagickLib::NegateImage;
   using MagickLib::NoiseType;
   using MagickLib::NormalizeImage;
+  using MagickLib::NoValue;
   using MagickLib::OilPaintImage;
   using MagickLib::OpaqueImage;
   using MagickLib::OpenCacheView;

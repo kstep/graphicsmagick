@@ -1190,6 +1190,9 @@ MagickExport unsigned int GetExecutionPath(char *path)
 MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
   unsigned long *width,unsigned long *height)
 {
+  const char
+    *c;
+
   char
     geometry[MaxTextExtent],
     *p,
@@ -1208,59 +1211,83 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
   assert(y != (long *) NULL);
   assert(width != (unsigned long *) NULL);
   assert(height != (unsigned long *) NULL);
-  if ((image_geometry == (char *) NULL) || (*image_geometry == '\0'))
+  if ((image_geometry == (char *) NULL) || (*image_geometry == '\0') ||
+      (strlen(image_geometry) > MaxTextExtent-1))
     return(NoValue);
+
   /*
-    Remove whitespaces and % and ! characters from geometry specification.
+    Transfer base geometry while recording and stripping flags
   */
-  (void) strncpy(geometry,image_geometry,MaxTextExtent-1);
+  q=geometry;
   flags=NoValue;
-  p=geometry;
-  while (strlen(p) != 0)
-  {
-    if (isspace((int) (*p)))
-      (void) strcpy(p,p+1);
-    else
-      switch (*p)
-      {
-        case '%':
+
+  for (c=image_geometry; *c != 0 ; c++)
+    {
+      if (isspace((int) (*c)))
         {
-          flags|=PercentValue;
-          (void) strcpy(p,p+1);
-          break;
+          continue;
         }
-        case '!':
-        {
-          flags|=AspectValue;
-          (void) strcpy(p,p+1);
-          break;
-        }
-        case '<':
-        {
-          flags|=LessValue;
-          (void) strcpy(p,p+1);
-          break;
-        }
-        case '>':
-        {
-          flags|=GreaterValue;
-          (void) strcpy(p,p+1);
-          break;
-        }
-        case '@':
-        {
-          flags|=AreaValue;
-          (void) strcpy(p,p+1);
-          break;
-        }
-        default:
-          p++;
-      }
-  }
+      else
+        switch (*c)
+          {
+          case '%':
+            {
+              flags|=PercentValue;
+              break;
+            }
+          case '!':
+            {
+              flags|=AspectValue;
+              break;
+            }
+          case '<':
+            {
+              flags|=LessValue;
+              break;
+            }
+          case '>':
+            {
+              flags|=GreaterValue;
+              break;
+            }
+          case '@':
+            {
+              flags|=AreaValue;
+              break;
+            }
+          case '+':
+          case '-':
+          case '.':
+          case '0':
+          case '1':
+          case '2':
+          case '3':
+          case '4':
+          case '5':
+          case '6':
+          case '7':
+          case '8':
+          case '9':
+          case 'X':
+          case 'x':
+            {
+              *q=*c;
+              q++;
+              break;
+            }
+          default:
+            {
+              /* Illegal character fails entire geometry translation */
+              return NoValue;
+            }
+          }
+    }
+  *q='\0';
+
   /*
     Parse width/height/x/y.
   */
-  p=(char *) geometry;
+  p=geometry;
   while (isspace((int) *p))
     p++;
   if (*p == '\0')

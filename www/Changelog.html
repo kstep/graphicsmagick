@@ -53,6 +53,22 @@
 </tr>
 </table>
 <p>
+2003-06-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/log.c (ReadConfigureFile): Move event parsing to
+        ParseEvents funtion.<BR>
+        (SetLogEventMask): Move event parsing to
+        ParseEvents funtion.<BR>
+  <LI> PerlMagick/t/subroutines.pl (testMontage): It seems that passing
+        an empty set of options to the SetImage method corrupts the image
+        options (surely a PerlMagick bug), so don't invoke SetImage unless
+        there are options to set.<BR>
+  <LI> magick/utility.c (GetGeometry): Validate that the geometry
+        string only contains valid characters.
+
+</UL>
+<p>
 2003-06-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

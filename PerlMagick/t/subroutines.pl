@@ -871,12 +871,11 @@ sub testMontage {
   }
 
   # Set image options
-  #print "Image Options  : $imageOptions\n";
   if ("$imageOptions" ne "") {
     print("\$images->Set($imageOptions)\n");
+    eval "\$status = \$images->Set($imageOptions) ;";
+    warn "SetImage: $status" if "$status";
   }
-  eval "\$status = \$images->Set($imageOptions) ;";
-  warn "SetImage: $status" if "$status";
 
   #print "Border color : ", $images->Get('bordercolor'), "\n";
   #print "Matte color  : ", $images->Get('mattecolor'), "\n";
