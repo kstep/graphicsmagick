@@ -244,9 +244,6 @@ int main(int argc,char **argv)
   ImageInfo
     *image_info;
 
-  int
-    z;
-
   long
     snapshots,
     x;
