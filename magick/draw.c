@@ -3672,7 +3672,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
         break;
       clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
       (void) CloneString(&clone_info->text,primitive_info->text);
-      FormatString(geometry,"%+g%+g",primitive_info->point.x,
+      FormatString(geometry,"0x0%+g%+g",primitive_info->point.x,
         primitive_info->point.y);
       (void) CloneString(&clone_info->geometry,geometry);
       status=AnnotateImage(image,clone_info);
