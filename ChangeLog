@@ -1,5 +1,6 @@
 2002-03-28  Cristy  <cristy@mystic.es.dupont.com>
   * DCM patches provided by Syam Gadde.
+  * Multi-frame MPC image files caused a fault under Windows.
 
 2002-03-27  Cristy  <cristy@mystic.es.dupont.com>
   * ImageMagick, version 5.4.4, released.
