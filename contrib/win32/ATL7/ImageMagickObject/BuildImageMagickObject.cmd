@@ -53,8 +53,9 @@ if {%1}=={clean} (
 )
 copy %MAGICK_HOME%\*.mgk .\ >nul 2>&1
 if not exist gm_messages.bin (
-  gm convert LOCALE:..\..\..\..\locale\locale.mgk LOCALEH:..\..\..\..\magick\locale_c.h
-  gm convert LOCALE:..\..\..\..\locale\locale.mgk LOCALEMC:gm_messages.mc
+::::gm convert LOCALE:..\..\..\..\locale\locale.mgk LOCALEH:..\..\..\..\magick\locale_c.h
+::::gm convert LOCALE:..\..\..\..\locale\locale.mgk LOCALEMC:gm_messages.mc
+  copy ..\..\..\..\magick\gm_messages.mc gm_messages.mc
   mc gm_messages.mc
   move MSG00001.bin gm_messages.bin
   copy gm_messages.bin ..\..\..\..\magick\gm_messages.bin

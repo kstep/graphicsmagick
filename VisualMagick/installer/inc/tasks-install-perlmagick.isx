@@ -1,6 +1,6 @@
 #ifdef COPYRIGHT
 ;
-; Copyright (C) 2003 GraphicsMagick Group
+; Copyright (C) 2003, 2004 GraphicsMagick Group
 ;
 ; This program is covered by multiple licenses, which are described in
 ; Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -8,4 +8,4 @@
 ;
 #endif
 
-Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl v5.8.1 build 807"; Flags: unchecked
+Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl v5.8.3 build 809"; Flags: unchecked
