@@ -757,7 +757,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     opacity,
     red,
     scale,
-    support;
+    support,
     weight;
 
   long
