@@ -263,7 +263,6 @@ int main(int argc,char **argv)
   /*
     Initialize command line arguments.
   */
-  InitializeMagick(*argv);
   ReadCommandlLine(argc,&argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
@@ -272,6 +271,7 @@ int main(int argc,char **argv)
   /*
     Set defaults.
   */
+  InitializeMagick(*argv);
   SetNotifyHandlers;
   display=(Display *) NULL;
   GetExceptionInfo(&exception);

@@ -291,7 +291,6 @@ int main(int argc,char **argv)
   XrmDatabase
     resource_database;
 
-  InitializeMagick(*argv);
   ReadCommandlLine(argc,&argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
@@ -300,6 +299,7 @@ int main(int argc,char **argv)
   /*
     Set defaults.
   */
+  InitializeMagick(*argv);
   SetNotifyHandlers;
   display=(Display *) NULL;
   GetExceptionInfo(&exception);

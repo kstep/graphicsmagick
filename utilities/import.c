@@ -225,7 +225,6 @@ int main(int argc,char **argv)
   XrmDatabase
     resource_database;
 
-  InitializeMagick(*argv);
   ReadCommandlLine(argc,&argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
@@ -269,6 +268,7 @@ int main(int argc,char **argv)
   /*
     Get user defaults from X resource database.
   */
+  InitializeMagick(*argv);
   SetNotifyHandlers;
   display=XOpenDisplay(server_name);
   if (display == (Display *) NULL)
