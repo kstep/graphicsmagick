@@ -78,11 +78,6 @@ AC_LIBTOOL_SETUP
 # Configure libtool
 AC_PROG_LIBTOOL
 
-#if test "$with_magick_plus_plus" = 'yes'
-#then
-# AC_LIBTOOL_CXX
-#fi
-
 # Check to see if building shared libraries
 libtool_build_shared_libs='no'
 if ./libtool --config | grep 'build_libtool_libs=yes' > /dev/null
@@ -122,6 +117,17 @@ then
   fi
    eval "eval im_cv_x_coder_modules=${libdir}/ImageMagick/modules/coders/"
   AC_DEFINE_UNQUOTED(MagickModulesPath,"$im_cv_x_coder_modules",Location of coder modules)
+fi
+
+
+# Enable verbose output from libtool (enable libtool's default)
+AC_ARG_ENABLE(libtool-verbose,
+	      [  --enable-libtool-verbose enable verbose libtool output (default disabled)],
+	      [with_libtool_verbose=$enableval],
+	      [with_libtool_verbose='no'])
+if test "$with_libtool_verbose" = 'no'
+then
+  LIBTOOL="$LIBTOOL --silent"
 fi
 
 # Add configure option --enable-maintainer-mode which enables dependency
