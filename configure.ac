@@ -34,12 +34,43 @@ LDFLAGS_INITIAL=$LDFLAGS
 LIBS_INITIAL=$LIBS
 
 #
+# Evaluate shell variable equivalents to Makefile directory variables
+#
 # The following is extracted from AC_OUTPUT since we need the values of
 # prefix and exec_prefix earlier.
 #
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
 # Let make expand exec_prefix.
 test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
+#
+eval "eval PREFIX_DIR=${prefix}"
+AC_SUBST(PREFIX_DIR)
+eval "eval EXEC_PREFIX_DIR=${exec_prefix}"
+AC_SUBST(EXEC_PREFIX_DIR)
+eval "eval BIN_DIR=$bindir"
+AC_SUBST(BIN_DIR)
+eval "eval SBIN_DIR=$sbindir"
+AC_SUBST(SBIN_DIR)
+eval "eval LIBEXEC_DIR=$libexecdir"
+AC_SUBST(LIBEXEC_DIR)
+eval "eval DATA_DIR=$datadir"
+AC_SUBST(DATA_DIR)
+eval "eval SYSCONF_DIR=$sysconfdir"
+AC_SUBST(SYSCONF_DIR)
+eval "eval SHAREDSTATE_DIR=$sharedstatedir"
+AC_SUBST(SHAREDSTATE_DIR)
+eval "eval LOCALSTATE_DIR=$localstatedir"
+AC_SUBST(LOCALSTATE_DIR)
+eval "eval LIB_DIR=$libdir"
+AC_SUBST(LIB_DIR)
+eval "eval INCLUDE_DIR=$includedir"
+AC_SUBST(INCLUDE_DIR)
+eval "eval OLDINCLUDE_DIR=$oldincludedir"
+AC_SUBST(OLDINCLUDE_DIR)
+eval "eval INFO_DIR=$infodir"
+AC_SUBST(INFO_DIR)
+eval "eval MAN_DIR=$mandir"
+AC_SUBST(MAN_DIR)
 
 # Check for programs
 AC_PROG_CC
@@ -135,7 +166,7 @@ then
     DLLDFLAGS=-export-dynamic
     AC_SUBST(DLLDFLAGS)
   fi
-   eval "eval im_cv_x_coder_modules=${libdir}${dirsep}ImageMagick${dirsep}modules${dirsep}coders${dirsep}"
+   im_cv_x_coder_modules="${LIB_DIR}${dirsep}ImageMagick${dirsep}modules${dirsep}coders${dirsep}"
   AC_DEFINE_UNQUOTED(MagickModulesPath,"$im_cv_x_coder_modules",Location of coder modules)
 fi
 
@@ -558,36 +589,6 @@ AM_CONDITIONAL(WITH_MAGICK_PLUS_PLUS, test "$have_magick_plus_plus" = 'yes')
 # Get full paths to source and build directories
 srcdirfull=`cd $srcdir && pwd`
 builddir=`pwd`
-
-# Evaluate shell variable equivalents to Makefile directory variables
-eval "eval PREFIX_DIR=${prefix}"
-AC_SUBST(PREFIX_DIR)
-eval "eval EXEC_PREFIX_DIR=${exec_prefix}"
-AC_SUBST(EXEC_PREFIX_DIR)
-eval "eval BIN_DIR=$bindir"
-AC_SUBST(BIN_DIR)
-eval "eval SBIN_DIR=$sbindir"
-AC_SUBST(SBIN_DIR)
-eval "eval LIBEXEC_DIR=$libexecdir"
-AC_SUBST(LIBEXEC_DIR)
-eval "eval DATA_DIR=$datadir"
-AC_SUBST(DATA_DIR)
-eval "eval SYSCONF_DIR=$sysconfdir"
-AC_SUBST(SYSCONF_DIR)
-eval "eval SHAREDSTATE_DIR=$sharedstatedir"
-AC_SUBST(SHAREDSTATE_DIR)
-eval "eval LOCALSTATE_DIR=$localstatedir"
-AC_SUBST(LOCALSTATE_DIR)
-eval "eval LIB_DIR=$libdir"
-AC_SUBST(LIB_DIR)
-eval "eval INCLUDE_DIR=$includedir"
-AC_SUBST(INCLUDE_DIR)
-eval "eval OLDINCLUDE_DIR=$oldincludedir"
-AC_SUBST(OLDINCLUDE_DIR)
-eval "eval INFO_DIR=$infodir"
-AC_SUBST(INFO_DIR)
-eval "eval MAN_DIR=$mandir"
-AC_SUBST(MAN_DIR)
 
 # Only check for delegate libraries in subdirectories if requested.
 if test "$with_delegate_build" != 'no'
@@ -1502,7 +1503,7 @@ AC_SUBST(LIB_WMF_DEPS)
 
 # Directory where configured ImageMagick/delegates.mgk lives
 # (default /usr/local/lib/ImageMagick).
-eval MagickLibPath="${LIB_DIR}${dirsep}ImageMagick${dirsep}"
+MagickLibPath="${LIB_DIR}${dirsep}ImageMagick${dirsep}"
 AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPath",Directory where architecture-dependent files live.)
 
 # Directory where magic.mgk lives. (default /usr/local/share/ImageMagick)
@@ -1510,7 +1511,7 @@ AC_ARG_WITH(share-path,
 [  --with-share-path=DIR   Alternate path to share directory
                           (default share/ImageMagick)],
  MagickSharePath="${with_share_path}${dirsep}",
- eval MagickSharePath="${DATA_DIR}${dirsep}ImageMagick${dirsep}")
+ MagickSharePath="${DATA_DIR}${dirsep}ImageMagick${dirsep}")
 AC_DEFINE_UNQUOTED(MagickSharePath,"$MagickSharePath",Directory where architecture-independent files live.)
 AC_SUBST(MagickSharePath)
 

@@ -1902,12 +1902,43 @@ LDFLAGS_INITIAL=$LDFLAGS
 LIBS_INITIAL=$LIBS
 
 #
+# Evaluate shell variable equivalents to Makefile directory variables
+#
 # The following is extracted from AC_OUTPUT since we need the values of
 # prefix and exec_prefix earlier.
 #
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
 # Let make expand exec_prefix.
 test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
+#
+eval "eval PREFIX_DIR=${prefix}"
+
+eval "eval EXEC_PREFIX_DIR=${exec_prefix}"
+
+eval "eval BIN_DIR=$bindir"
+
+eval "eval SBIN_DIR=$sbindir"
+
+eval "eval LIBEXEC_DIR=$libexecdir"
+
+eval "eval DATA_DIR=$datadir"
+
+eval "eval SYSCONF_DIR=$sysconfdir"
+
+eval "eval SHAREDSTATE_DIR=$sharedstatedir"
+
+eval "eval LOCALSTATE_DIR=$localstatedir"
+
+eval "eval LIB_DIR=$libdir"
+
+eval "eval INCLUDE_DIR=$includedir"
+
+eval "eval OLDINCLUDE_DIR=$oldincludedir"
+
+eval "eval INFO_DIR=$infodir"
+
+eval "eval MAN_DIR=$mandir"
+
 
 # Check for programs
 ac_ext=c
@@ -3713,7 +3744,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3716 "configure"' > conftest.$ac_ext
+  echo '#line 3747 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7619,7 +7650,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7622 "configure"
+#line 7653 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7717,7 +7748,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7720 "configure"
+#line 7751 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10864,7 +10895,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10867 "configure"
+#line 10898 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10962,7 +10993,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10965 "configure"
+#line 10996 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13624,7 +13655,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13627 "configure"
+#line 13658 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13722,7 +13753,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13725 "configure"
+#line 13756 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14714,7 +14745,7 @@ _ACEOF
     DLLDFLAGS=-export-dynamic
 
   fi
-   eval "eval im_cv_x_coder_modules=${libdir}${dirsep}ImageMagick${dirsep}modules${dirsep}coders${dirsep}"
+   im_cv_x_coder_modules="${LIB_DIR}${dirsep}ImageMagick${dirsep}modules${dirsep}coders${dirsep}"
 
 cat >>confdefs.h <<_ACEOF
 #define MagickModulesPath "$im_cv_x_coder_modules"
@@ -20137,36 +20168,6 @@ fi
 # Get full paths to source and build directories
 srcdirfull=`cd $srcdir && pwd`
 builddir=`pwd`
-
-# Evaluate shell variable equivalents to Makefile directory variables
-eval "eval PREFIX_DIR=${prefix}"
-
-eval "eval EXEC_PREFIX_DIR=${exec_prefix}"
-
-eval "eval BIN_DIR=$bindir"
-
-eval "eval SBIN_DIR=$sbindir"
-
-eval "eval LIBEXEC_DIR=$libexecdir"
-
-eval "eval DATA_DIR=$datadir"
-
-eval "eval SYSCONF_DIR=$sysconfdir"
-
-eval "eval SHAREDSTATE_DIR=$sharedstatedir"
-
-eval "eval LOCALSTATE_DIR=$localstatedir"
-
-eval "eval LIB_DIR=$libdir"
-
-eval "eval INCLUDE_DIR=$includedir"
-
-eval "eval OLDINCLUDE_DIR=$oldincludedir"
-
-eval "eval INFO_DIR=$infodir"
-
-eval "eval MAN_DIR=$mandir"
-
 
 # Only check for delegate libraries in subdirectories if requested.
 if test "$with_delegate_build" != 'no'
@@ -27292,7 +27293,7 @@ fi
 
 # Directory where configured ImageMagick/delegates.mgk lives
 # (default /usr/local/lib/ImageMagick).
-eval MagickLibPath="${LIB_DIR}${dirsep}ImageMagick${dirsep}"
+MagickLibPath="${LIB_DIR}${dirsep}ImageMagick${dirsep}"
 
 cat >>confdefs.h <<_ACEOF
 #define MagickLibPath "$MagickLibPath"
@@ -27306,7 +27307,7 @@ if test "${with_share_path+set}" = set; then
   withval="$with_share_path"
   MagickSharePath="${with_share_path}${dirsep}"
 else
-  eval MagickSharePath="${DATA_DIR}${dirsep}ImageMagick${dirsep}"
+  MagickSharePath="${DATA_DIR}${dirsep}ImageMagick${dirsep}"
 fi;
 
 cat >>confdefs.h <<_ACEOF
@@ -30008,6 +30009,20 @@ s,@ac_ct_STRIP@,$ac_ct_STRIP,;t t
 s,@INSTALL_STRIP_PROGRAM@,$INSTALL_STRIP_PROGRAM,;t t
 s,@AWK@,$AWK,;t t
 s,@SET_MAKE@,$SET_MAKE,;t t
+s,@PREFIX_DIR@,$PREFIX_DIR,;t t
+s,@EXEC_PREFIX_DIR@,$EXEC_PREFIX_DIR,;t t
+s,@BIN_DIR@,$BIN_DIR,;t t
+s,@SBIN_DIR@,$SBIN_DIR,;t t
+s,@LIBEXEC_DIR@,$LIBEXEC_DIR,;t t
+s,@DATA_DIR@,$DATA_DIR,;t t
+s,@SYSCONF_DIR@,$SYSCONF_DIR,;t t
+s,@SHAREDSTATE_DIR@,$SHAREDSTATE_DIR,;t t
+s,@LOCALSTATE_DIR@,$LOCALSTATE_DIR,;t t
+s,@LIB_DIR@,$LIB_DIR,;t t
+s,@INCLUDE_DIR@,$INCLUDE_DIR,;t t
+s,@OLDINCLUDE_DIR@,$OLDINCLUDE_DIR,;t t
+s,@INFO_DIR@,$INFO_DIR,;t t
+s,@MAN_DIR@,$MAN_DIR,;t t
 s,@CC@,$CC,;t t
 s,@CFLAGS@,$CFLAGS,;t t
 s,@LDFLAGS@,$LDFLAGS,;t t
@@ -30060,20 +30075,6 @@ s,@LIB_LF@,$LIB_LF,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@WITH_MAGICK_PLUS_PLUS_TRUE@,$WITH_MAGICK_PLUS_PLUS_TRUE,;t t
 s,@WITH_MAGICK_PLUS_PLUS_FALSE@,$WITH_MAGICK_PLUS_PLUS_FALSE,;t t
-s,@PREFIX_DIR@,$PREFIX_DIR,;t t
-s,@EXEC_PREFIX_DIR@,$EXEC_PREFIX_DIR,;t t
-s,@BIN_DIR@,$BIN_DIR,;t t
-s,@SBIN_DIR@,$SBIN_DIR,;t t
-s,@LIBEXEC_DIR@,$LIBEXEC_DIR,;t t
-s,@DATA_DIR@,$DATA_DIR,;t t
-s,@SYSCONF_DIR@,$SYSCONF_DIR,;t t
-s,@SHAREDSTATE_DIR@,$SHAREDSTATE_DIR,;t t
-s,@LOCALSTATE_DIR@,$LOCALSTATE_DIR,;t t
-s,@LIB_DIR@,$LIB_DIR,;t t
-s,@INCLUDE_DIR@,$INCLUDE_DIR,;t t
-s,@OLDINCLUDE_DIR@,$OLDINCLUDE_DIR,;t t
-s,@INFO_DIR@,$INFO_DIR,;t t
-s,@MAN_DIR@,$MAN_DIR,;t t
 s,@CCMALLOCDelegate@,$CCMALLOCDelegate,;t t
 s,@LIB_MATH@,$LIB_MATH,;t t
 s,@LIB_THREAD@,$LIB_THREAD,;t t
