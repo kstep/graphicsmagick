@@ -29,13 +29,16 @@
 #		if !defined(_FPXLIB_)
 #     define JPEGEXPORT extern __declspec(dllimport)
 #     define FPXEXPORT extern __declspec(dllimport)
+#     pragma message( "Compiling as dll import" ) 
 #		else
 #     define JPEGEXPORT extern __declspec(dllexport)
 #     define FPXEXPORT extern __declspec(dllexport)
+#     pragma message( "Compiling as dll export" ) 
 #		endif
 #	else
 #   define FPXEXPORT extern
 #   define JPEGEXPORT extern
+#   pragma message( "Compiling as simple library" ) 
 #	endif
 
 #pragma warning(disable : 4018)
