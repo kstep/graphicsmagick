@@ -317,7 +317,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   typedef struct _LayerInfo
   {
     RectangleInfo
-      page;
+      page,
+      mask;
 
     unsigned short
       channels;
@@ -453,7 +454,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->colormap[i].blue=UpScale(ReadBlobByte(image));
     }
   length=ReadBlobMSBLong(image);
-  if (length > 0)
+  if (length != 0)
     {
       unsigned char
         *data;
@@ -481,7 +482,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   length=ReadBlobMSBLong(image);
   if (length == 8)
     length=ReadBlobMSBLong(image);
-  if (length > 0)
+  if (length != 0)
     {
       /*
         Layer and mask block.
@@ -493,6 +494,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (layer_info == (LayerInfo *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
+      memset(layer_info,0,number_layers*sizeof(LayerInfo));
       for (i=0; i < number_layers; i++)
       {
         layer_info[i].page.y=ReadBlobMSBLong(image);
@@ -515,8 +517,26 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_info[i].flags=ReadBlobByte(image);
         (void) ReadBlobByte(image);  /* filler */
         size=ReadBlobMSBLong(image);
-        for (j=0; j < size; j++)
-          (void) ReadBlobByte(image);
+        if (size != 0)
+          {
+            length=ReadBlobMSBLong(image);
+            if (length != 0)
+              {
+                /*
+                  Layer mask info.
+                */
+                layer_info[i].mask.y=ReadBlobMSBLong(image);
+                layer_info[i].mask.x=ReadBlobMSBLong(image);
+                layer_info[i].mask.height=ReadBlobMSBLong(image)-
+                  layer_info[i].mask.y;
+                layer_info[i].mask.width=ReadBlobMSBLong(image)-
+                  layer_info[i].mask.x;
+                for (j=0; j < (length-16); j++)
+                  (void) ReadBlobByte(image);
+              }
+            for (j=0; j < (size-length-4); j++)
+              (void) ReadBlobByte(image);
+          }
         /*
           Allocate layered image.
         */
@@ -543,6 +563,69 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_info[i].image->blob=image->blob;
         for (j=0; j < (int) layer_info[i].channels; j++)
         {
+          if (layer_info[i].channel_info[j].size < 8)
+            {
+              int
+                k;
+
+              /*
+                A layer without data.
+              */
+              for (y=0; y < (int) layer_info[i].image->rows; y++)
+              {
+                q=SetImagePixels(layer_info[i].image,0,y,
+                  layer_info[i].image->columns,1);
+                if (q == (PixelPacket *) NULL)
+                  break;
+                switch (layer_info[i].channel_info[j].type)
+                {
+                  case 0:
+                  {
+                    for (x=0; x < (int) layer_info[i].image->columns; x++)
+                    {
+                      q->red=0;
+                      q++;
+                    }
+                    break;
+                  }
+                  case 1:
+                  {
+                    for (x=0; x < (int) layer_info[i].image->columns; x++)
+                    {
+                      q->green=0;
+                      q++;
+                    }
+                    break;
+                  }
+                  case 2:
+                  {
+                    for (x=0; x < (int) layer_info[i].image->columns; x++)
+                    {
+                      q->blue=0;
+                      q++;
+                    }
+                    break;
+                  }
+                  case 3:
+                  default:
+                  {
+                    for (x=0; x < (int) layer_info[i].image->columns; x++)
+                    {
+                      q->opacity=0;
+                      if (layer_info[i].image->matte)
+                        q->opacity=TransparentOpacity;
+                      q++;
+                    }
+                    break;
+                  }
+                }
+                if (!SyncImagePixels(layer_info[i].image))
+                  break;
+              }
+              for (k=0; k < layer_info[i].channel_info[j].size; k++)
+                (void) ReadBlobByte(layer_info[i].image);
+              continue;
+            }
           compression=ReadBlobMSBShort(layer_info[i].image);
           if (compression == 1)
             {
@@ -745,8 +828,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
         }
       }
-      if (image->matte && (number_layers != 0))
-        SetImageOpacity(image,TransparentOpacity);
       LiberateMemory((void **) &scanline);
     }
   if (image->colorspace == CMYKColorspace)
@@ -773,9 +854,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (number_layers != 0)
     {
-      Image
-        *coalesce_image;
-
       image->next=layer_info[0].image;
       for (i=0; i < number_layers; i++)
       {
