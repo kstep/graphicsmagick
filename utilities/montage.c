@@ -322,7 +322,7 @@ int main(int argc,char **argv)
   last_scene=0;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strcpy(image_info->filename,argv[argc-1]);
-  SetImageInfo(image_info,True);
+  SetImageInfo(image_info,True,&exception);
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
   quantize_info.number_colors=0;
@@ -1274,7 +1274,7 @@ int main(int argc,char **argv)
       }
     (void) strcpy(p->filename,argv[argc-1]);
   }
-  SetImageInfo(image_info,True);
+  SetImageInfo(image_info,True,&image->exception);
   for (p=montage_image; p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(image_info,p);

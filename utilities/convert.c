@@ -484,7 +484,7 @@ int main(int argc,char **argv)
   (void) strcpy(image_info->filename,argv[argc-1]);
   param1=(void *) NULL;
   param2=(void *) NULL;
-  SetImageInfo(image_info,True);
+  SetImageInfo(image_info,True,&exception);
   option=(char *) NULL;
   scene=0;
   /*
@@ -2031,7 +2031,7 @@ int main(int argc,char **argv)
     (void) strcpy(p->filename,argv[i]);
     p->scene=scene++;
   }
-  SetImageInfo(image_info,True);
+  SetImageInfo(image_info,True,&image->exception);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     status=TransmitImage(p,image_info,sendmode,param1,param2);

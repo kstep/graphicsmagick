@@ -262,6 +262,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read image data.
   */
   x=0;
+  indexes=(IndexPacket *) NULL;
   for (y=0; y < (int) image->rows; y++)
   {
     (void) SeekBlob(image,scanlines[image->rows-y-1],SEEK_SET);

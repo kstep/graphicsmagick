@@ -8,35 +8,13 @@
 extern "C" {
 #endif
 
-/*
-  Define declarations.
-*/
-#if !defined(_VISUALC_)
-#if !defined(CoderModuleDirectory)
-#define CoderModuleDirectory  ""
-#endif
-#define ModuleGlobExpression "*.la"
-#else
-#if defined(_DEBUG)
-#define ModuleGlobExpression "IM_MOD_DB_*.dll"
-#else
-#define ModuleGlobExpression "IM_MOD_RL_*.dll"
-#endif
-#endif
-
-/*
-  Typedef declarations.
-*/
 #if defined(HasLTDL)
 #include "ltdl/ltdl.h"
 typedef lt_dlhandle ModuleHandle;
 #else
 typedef void *ModuleHandle;
 #endif
-
-/*
-  Typedef declarations.
-*/
+
 typedef struct _ModuleAliases
 {
   char
@@ -58,47 +36,26 @@ typedef struct _ModuleInfo
   time_t
     load_time;
 
+  unsigned long
+    signature;
+
   struct _ModuleInfo
     *previous,
     *next;
-
-  unsigned long
-    signature;
 } ModuleInfo;
 
 /*
   Modules declarations.
 */
-extern MagickExport char
-  **ListModules(void),
-  *TagToModule(const char *),
-  *TagToProcess(const char *);
-
 extern MagickExport int
-  OpenModules(void),
-  OpenModule(const char *),
-  UnloadDynamicModule(const char *),
-  UnregisterModuleInfo(const char *);
+  OpenModule(const char *module),
+  OpenModules(void);
 
 extern MagickExport ModuleInfo
-  *GetModuleInfo(const char *),
-  *RegisterModuleInfo(ModuleInfo *),
-  *SetModuleInfo(const char *);
+  *GetModuleInfo(const char *,ExceptionInfo *);
 
 extern MagickExport unsigned int
   ExecuteModuleProcess(const char *,Image *,const int,char **);
-
-extern MagickExport void
-  DestroyModuleInfo(void),
-  InitializeModules(void),
-  ModuleToTag(const char *,const char *,char *);
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-extern MagickExport void
-  ExitModules(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

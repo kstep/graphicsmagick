@@ -273,7 +273,7 @@ int main(int argc,char **argv)
   image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strcpy(image_info->filename,argv[argc-1]);
-  SetImageInfo(image_info,True);
+  SetImageInfo(image_info,True,&exception);
   mask_image=(Image *) NULL;
   param1=(void *) NULL;
   param2=(void *) NULL;
@@ -1155,7 +1155,7 @@ int main(int argc,char **argv)
     Write image.
   */
   (void) strcpy(combine_image->filename,write_filename);
-  SetImageInfo(image_info,True);
+  SetImageInfo(image_info,True,&combine_image->exception);
   status=True;
   status=TransmitImage(combine_image,image_info,sendmode,param1,param2);
   if (status == False)

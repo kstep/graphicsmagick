@@ -1433,7 +1433,7 @@ int main(int argc,char **argv)
                   Write image.
                 */
                 (void) strcpy(image->filename,resource_info.write_filename);
-                SetImageInfo(image_info,True);
+                SetImageInfo(image_info,True,&image->exception);
                 status=WriteImage(image_info,image);
                 if (status == False)
                   CatchImageException(image);

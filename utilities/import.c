@@ -914,7 +914,7 @@ int main(int argc,char **argv)
   status=MogrifyImages(image_info,argc,argv,&image);
   if (status == False)
     CatchImageException(image);
-  SetImageInfo(image_info,True);
+  SetImageInfo(image_info,True,&image->exception);
   status=0;
   for (p=image; p != (Image *) NULL; p=p->next)
   {

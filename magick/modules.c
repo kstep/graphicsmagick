@@ -59,10 +59,20 @@
 #include "defines.h"
 
 /*
-  Constant declaractions.
+  Define declarations.
 */
-const char
-  *ModuleFilename = "modules.mgk";
+#if !defined(_VISUALC_)
+#if !defined(CoderModuleDirectory)
+#define CoderModuleDirectory  ""
+#endif
+#define ModuleGlobExpression "*.la"
+#else
+#if defined(_DEBUG)
+#define ModuleGlobExpression "IM_MOD_DB_*.dll"
+#else
+#define ModuleGlobExpression "IM_MOD_RL_*.dll"
+#endif
+#endif
 
 /*
   Global declarations.
@@ -71,7 +81,28 @@ static ModuleAliases
   *module_aliases = (ModuleAliases *) NULL;
 
 static ModuleInfo
-  *modules = (ModuleInfo *) NULL;
+  *module_list = (ModuleInfo *) NULL;
+
+static SemaphoreInfo
+  *module_semaphore = (SemaphoreInfo *) NULL;
+
+/*
+  Forward declarations.
+*/
+static char
+  *TagToModule(const char *),
+  *TagToProcess(const char *);
+
+static int
+  UnloadDynamicModule(const char *),
+  UnregisterModuleInfo(const char *);
+
+static ModuleInfo
+  *RegisterModuleInfo(ModuleInfo *),
+  *SetModuleInfo(const char *);
+
+static unsigned int
+  ReadConfigurationFile(const char *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -92,24 +123,54 @@ static ModuleInfo
 %      void DestroyModuleInfo(void)
 %
 */
-MagickExport void DestroyModuleInfo(void)
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+static void DestroyModuleInfo(void)
 {
-  ModuleInfo
-    *entry;
+  register ModuleAliases
+    *q;
 
   register ModuleInfo
     *p;
 
-  for (p=modules; p != (ModuleInfo *) NULL; )
+  /*
+    Unload and unregister all loaded modules.
+  */
+  for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
+    UnloadDynamicModule(p->tag);
+  /*
+    Free module list and aliases.
+  */
+  AcquireSemaphore(&module_semaphore);
+  for (q=module_aliases; q != (ModuleAliases *) NULL; )
   {
-    entry=p;
-    p=p->next;
-    if (entry->tag != (char *) NULL)
-      LiberateMemory((void **) &entry->tag);
-    LiberateMemory((void **) &entry);
+    if (q->alias != (char *) NULL)
+      LiberateMemory((void **) &q->alias);
+    if (q->module != (char *) NULL)
+      LiberateMemory((void **) &q->module);
+    module_aliases=q;
+    q=q->next;
+    LiberateMemory((void **) &module_aliases);
   }
-  modules=(ModuleInfo *) NULL;
+  module_aliases=(ModuleAliases *) NULL;
+  for (p=module_list; p != (ModuleInfo *) NULL; )
+  {
+    if (p->tag != (char *) NULL)
+      LiberateMemory((void **) &p->tag);
+    module_list=p;
+    p=p->next;
+    LiberateMemory((void **) &module_list);
+  }
+  module_list=(ModuleInfo *) NULL;
+  LiberateSemaphore(&module_semaphore);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -191,66 +252,6 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   E x i t M o d u l e s                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ExitModules de-initializes modules subsystem and prepares for exit.
-%  list.
-%
-%  The format of the ExitModules method is:
-%
-%      void ExitModules(void)
-%
-*/
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-MagickExport void ExitModules(void)
-{
-  ModuleAliases
-    *alias,
-    *entry;
-
-  register ModuleInfo
-    *p;
-
-  if (modules != (ModuleInfo *) NULL)
-    {
-      /*
-        Unload and unregister all loaded modules.
-      */
-      while ((p=GetModuleInfo((char *) NULL)) != (ModuleInfo *) NULL)
-        UnloadDynamicModule(p->tag);
-      /*
-        Free memory associated with ModuleAliases list.
-      */
-      for (alias=module_aliases; alias != (ModuleAliases *) NULL; )
-      {
-        entry=alias;
-        alias=alias->next;
-        LiberateMemory((void **) &entry->alias);
-        LiberateMemory((void **) &entry->module);
-        LiberateMemory((void **) &entry);
-      }
-      module_aliases=(ModuleAliases *) NULL;
-    }
-  modules=(ModuleInfo *) NULL;
-}
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t M o d u l e I n f o                                                 %
 %                                                                             %
 %                                                                             %
@@ -264,7 +265,7 @@ MagickExport void ExitModules(void)
 %
 %  The format of the GetModuleInfo method is:
 %
-%      ModuleInfo *GetModuleInfo(const char *tag)
+%      ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -274,115 +275,39 @@ MagickExport void ExitModules(void)
 %    o tag: a character string that represents the image format we are
 %      looking for.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-MagickExport ModuleInfo *GetModuleInfo(const char *tag)
+MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
 {
   register ModuleInfo
     *p;
 
-  if (modules == (ModuleInfo*) NULL)
-    return((ModuleInfo*) NULL);
+  AcquireSemaphore(&module_semaphore);
+  if (module_list == (ModuleInfo *) NULL)
+    {
+      unsigned int
+        status;
+
+      /*
+        Read fonts.
+      */
+      status=ReadConfigurationFile("modules.mgk");
+      if (status == False)
+        ThrowException(exception,FileOpenWarning,
+          "Unable to read font configuration file","modules.mgk");
+      atexit(DestroyModuleInfo);
+    }
+  LiberateSemaphore(&module_semaphore);
+  if (module_list == (ModuleInfo *) NULL)
+    return((ModuleInfo *) NULL);
   if (tag == (char *) NULL)
-    return(modules);
-  for (p=modules; p != (ModuleInfo *) NULL; p=p->next)
+    return(module_list);
+  for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
       return(p);
   return((ModuleInfo *) NULL);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I n i t i a l i z e M o d u l e s                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method InitializeModules initializes the modules subsystem. It must be
-%  invoked before the OpenModule method may be used.
-%
-%  The format of the InitializeModules method is:
-%
-%      void InitializeModules()
-%
-*/
-MagickExport void InitializeModules(void)
-{
-#define MaxPathElements  31
-
-  char
-    alias[MaxTextExtent],
-    module[MaxTextExtent],
-    *path;
-
-  FILE
-    *file;
-
-  ModuleAliases
-    *aliases,
-    *entry;
-
-  unsigned int
-    match;
-
-  /*
-    Initialize ltdl.
-  */
-  if (modules != (ModuleInfo *) NULL)
-    return;
-  if (lt_dlinit() != 0)
-    MagickError(DelegateError,"failed to initialise module loader",
-      lt_dlerror());
-  /*
-    Read the module configuration files.
-  */
-  module_aliases=(ModuleAliases *) NULL;
-  path=GetMagickConfigurePath(ModuleFilename);
-  if (path == (char *) NULL)
-    return;
-  file=fopen(path,"r");
-  LiberateMemory((void **) &path);
-  if (file == (FILE*) NULL)
-    return;
-  aliases=module_aliases;
-  while (!feof(file))
-  {
-    if (fscanf(file,"%s %s",alias,module) != 2)
-      continue;
-    match=False;
-    entry=module_aliases;
-    while (entry != (ModuleAliases *) NULL)
-    {
-      if (LocaleCompare(entry->alias,alias) == 0)
-        {
-          match=True;
-          break;
-        }
-      entry=entry->next;
-    }
-    if (match != False)
-      continue;
-    entry=(ModuleAliases *) AcquireMemory(sizeof(ModuleAliases));
-    if (entry == (ModuleAliases*) NULL)
-      continue;
-    entry->alias=AllocateString(alias);
-    entry->module=AllocateString(module);
-    entry->next=(ModuleAliases *) NULL;
-    if (module_aliases == (ModuleAliases *) NULL)
-      {
-        module_aliases=entry;
-        aliases=module_aliases;
-        continue;
-      }
-    aliases->next=entry;
-    aliases=aliases->next;
-  }
-  (void) fclose(file);
-  atexit(ExitModules);
 }
 
 /*
@@ -409,9 +334,10 @@ MagickExport void InitializeModules(void)
 %      an error occurs a NULL list is returned.
 %
 */
-MagickExport char **ListModules(void)
+static char **ListModules(void)
 {
   char
+    filename[MaxTextExtent],
     **modules,
     *path;
 
@@ -432,11 +358,11 @@ MagickExport char **ListModules(void)
   if (modules == (char **) NULL)
     return((char **) NULL);
   *modules=(char *) NULL;
-  path=GetMagickConfigurePath(ModuleFilename);
+  path=GetMagickConfigurePath("modules.mgk");
   if (path == (char *) NULL)
     return((char **) NULL);
-  path[Extent(path)-Extent(ModuleFilename)-1]='\0';
-  directory=opendir(path);
+  GetPathComponent(path,HeadPath,filename);
+  directory=opendir(filename);
   if (directory == (DIR *) NULL)
     return((char **) NULL);
   i=0;
@@ -485,8 +411,8 @@ MagickExport char **ListModules(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ModuleToTag parser a file system module name into the basic name
-%  of the module.
+%  Method ModuleToTag parser a file system module name into the basic name of
+%  the module.
 %
 %  The format of the ModuleToTag method is:
 %
@@ -526,8 +452,8 @@ void ModuleToTag(const char *filename,const char *format,char *module)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method OpenModule loads a module, and invokes its registration
-%  function.  It returns True on success, and False if there is an error.
+%  Method OpenModule loads a module, and invokes its registration method.
+%  It returns True on success, and False if there is an error.
 %
 %  The format of the OpenModule method is:
 %
@@ -672,6 +598,103 @@ MagickExport int OpenModules(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   R e a d C o n f i g u r a t i o n F i l e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadConfigurationFile reads the module configuration file.
+%
+%  The format of the ReadConfigurationFile method is:
+%
+%      unsigned int ReadConfigurationFile(const char *filename)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method ReadConfigurationFile returns True if at least one font
+%      is defined otherwise False.
+%
+%    o filename:  The font configuration filename.
+%
+*/
+static unsigned int ReadConfigurationFile(const char *filename)
+{
+#define MaxPathElements  31
+
+  char
+    alias[MaxTextExtent],
+    module[MaxTextExtent],
+    *path;
+
+  FILE
+    *file;
+
+  ModuleAliases
+    *aliases,
+    *module_info;
+
+  unsigned int
+    match;
+
+  /*
+    Initialize ltdl.
+  */
+  if (lt_dlinit() != 0)
+    MagickError(DelegateError,"unable to initialize module loader",
+      lt_dlerror());
+  /*
+    Read the module configuration files.
+  */
+  path=GetMagickConfigurePath(filename);
+  if (path == (char *) NULL)
+    return(False);
+  file=fopen(path,"r");
+  LiberateMemory((void **) &path);
+  if (file == (FILE*) NULL)
+    return(False);
+  aliases=module_aliases;
+  while (!feof(file))
+  {
+    if (fscanf(file,"%s %s",alias,module) != 2)
+      continue;
+    match=False;
+    module_info=module_aliases;
+    while (module_info != (ModuleAliases *) NULL)
+    {
+      if (LocaleCompare(module_info->alias,alias) == 0)
+        {
+          match=True;
+          break;
+        }
+      module_info=module_info->next;
+    }
+    if (match != False)
+      continue;
+    module_info=(ModuleAliases *) AcquireMemory(sizeof(ModuleAliases));
+    if (module_info == (ModuleAliases*) NULL)
+      continue;
+    module_info->alias=AllocateString(alias);
+    module_info->module=AllocateString(module);
+    module_info->next=(ModuleAliases *) NULL;
+    if (module_aliases == (ModuleAliases *) NULL)
+      {
+        module_aliases=module_info;
+        aliases=module_aliases;
+        continue;
+      }
+    aliases->next=module_info;
+    aliases=aliases->next;
+  }
+  (void) fclose(file);
+  return(module_list != (ModuleInfo *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e g i s t e r M o d u l e I n f o                                       %
 %                                                                             %
 %                                                                             %
@@ -692,7 +715,7 @@ MagickExport int OpenModules(void)
 %    o entry: a pointer to the ModuleInfo structure to register.
 %
 */
-MagickExport ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
+static ModuleInfo *RegisterModuleInfo(ModuleInfo *module_info)
 {
   register ModuleInfo
     *p;
@@ -700,48 +723,48 @@ MagickExport ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
   /*
     Delete any existing tag.
   */
-  assert(entry != (ModuleInfo *) NULL);
-  assert(entry->signature == MagickSignature);
-  UnregisterModuleInfo(entry->tag);
-  entry->previous=(ModuleInfo *) NULL;
-  entry->next=(ModuleInfo *) NULL;
-  if (modules == (ModuleInfo *) NULL)
+  assert(module_info != (ModuleInfo *) NULL);
+  assert(module_info->signature == MagickSignature);
+  UnregisterModuleInfo(module_info->tag);
+  module_info->previous=(ModuleInfo *) NULL;
+  module_info->next=(ModuleInfo *) NULL;
+  if (module_list == (ModuleInfo *) NULL)
     {
       /*
         Start module list.
       */
-      modules=entry;
-      return(entry);
+      module_list=module_info;
+      return(module_info);
     }
   /*
     Tag is added in lexographic order.
   */
-  for (p=modules; p->next != (ModuleInfo *) NULL; p=p->next)
-    if (LocaleCompare(p->tag,entry->tag) >= 0)
+  for (p=module_list; p->next != (ModuleInfo *) NULL; p=p->next)
+    if (LocaleCompare(p->tag,module_info->tag) >= 0)
       break;
-  if (LocaleCompare(p->tag,entry->tag) < 0)
+  if (LocaleCompare(p->tag,module_info->tag) < 0)
     {
       /*
         Add entry after target.
       */
-      entry->next=p->next;
-      p->next=entry;
-      entry->previous=p;
-      if (entry->next != (ModuleInfo *) NULL)
-        entry->next->previous=entry;
-      return(entry);
+      module_info->next=p->next;
+      p->next=module_info;
+      module_info->previous=p;
+      if (module_info->next != (ModuleInfo *) NULL)
+        module_info->next->previous=module_info;
+      return(module_info);
     }
   /*
     Add entry before target.
   */
-  entry->next=p;
-  entry->previous=p->previous;
-  p->previous=entry;
-  if (entry->previous != (ModuleInfo *) NULL)
-    entry->previous->next=entry;
-  if (p == modules)
-    modules=entry;
-  return(entry);
+  module_info->next=p;
+  module_info->previous=p->previous;
+  p->previous=module_info;
+  if (module_info->previous != (ModuleInfo *) NULL)
+    module_info->previous->next=module_info;
+  if (p == module_list)
+    module_list=module_info;
+  return(module_info);
 }
 
 /*
@@ -772,20 +795,20 @@ MagickExport ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
 %
 %
 */
-MagickExport ModuleInfo *SetModuleInfo(const char *tag)
+static ModuleInfo *SetModuleInfo(const char *tag)
 {
   ModuleInfo
-    *entry;
+    *module_info;
 
   assert(tag != (const char *) NULL);
-  entry=(ModuleInfo *) AcquireMemory(sizeof(ModuleInfo));
-  if (entry == (ModuleInfo *) NULL)
+  module_info=(ModuleInfo *) AcquireMemory(sizeof(ModuleInfo));
+  if (module_info == (ModuleInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate module info",
       "Memory allocation failed");
-  memset(entry,0,sizeof(ModuleInfo));
-  entry->tag=AllocateString(tag);
-  entry->signature=MagickSignature;
-  return(entry);
+  memset(module_info,0,sizeof(ModuleInfo));
+  module_info->tag=AllocateString(tag);
+  module_info->signature=MagickSignature;
+  return(module_info);
 }
 
 /*
@@ -812,7 +835,7 @@ MagickExport ModuleInfo *SetModuleInfo(const char *tag)
 %      processing dynamically loadable module.
 %
 */
-char *TagToProcess(const char *tag)
+static char *TagToProcess(const char *tag)
 {
   char
     *module_name;
@@ -844,7 +867,7 @@ char *TagToProcess(const char *tag)
 %
 %  The format of the TagToModule method is:
 %
-%      void TagToModule(const char *tag)
+%      char *TagToModule(const char *tag)
 %
 %  A description of each parameter follows:
 %
@@ -852,7 +875,7 @@ char *TagToProcess(const char *tag)
 %      module.
 %
 */
-char *TagToModule(const char *tag)
+static char *TagToModule(const char *tag)
 {
   char
     *module_name;
@@ -900,10 +923,13 @@ char *TagToModule(const char *tag)
 %    o module: a character string that indicates the module to unload.
 %
 */
-MagickExport int UnloadDynamicModule(const char *module)
+static int UnloadDynamicModule(const char *module)
 {
   char
     name[MaxTextExtent];
+
+  ExceptionInfo
+    exception;
 
   ModuleInfo
     *module_info;
@@ -912,7 +938,7 @@ MagickExport int UnloadDynamicModule(const char *module)
     (*method)(void);
 
   assert(module != (const char *) NULL);
-  module_info=GetModuleInfo(module);
+  module_info=GetModuleInfo(module,&exception);
   if (module_info == (ModuleInfo *) NULL)
     return(False);
   /*
@@ -959,7 +985,7 @@ MagickExport int UnloadDynamicModule(const char *module)
 %      looking for.
 %
 */
-MagickExport int UnregisterModuleInfo(const char *tag)
+static int UnregisterModuleInfo(const char *tag)
 {
   ModuleInfo
     *module_info;
@@ -968,7 +994,7 @@ MagickExport int UnregisterModuleInfo(const char *tag)
     *p;
 
   assert(tag != (const char *) NULL);
-  for (p=modules; p != (ModuleInfo *) NULL; p=p->next)
+  for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
   {
     if (LocaleCompare(p->tag,tag) != 0)
       continue;
@@ -977,7 +1003,7 @@ MagickExport int UnregisterModuleInfo(const char *tag)
       p->previous->next=p->next;
     else
       {
-        modules=p->next;
+        module_list=p->next;
         if (p->next != (ModuleInfo *) NULL)
           p->next->previous=(ModuleInfo *) NULL;
       }

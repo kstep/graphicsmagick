@@ -286,6 +286,9 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
 */
 MagickExport MagickInfo *GetMagickInfo(const char *tag)
 {
+  ExceptionInfo
+    exception;
+
   register MagickInfo
     *p;
 
@@ -297,7 +300,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       */
       LiberateSemaphore(&magick_semaphore);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
-      InitializeModules();
+      (void) GetModuleInfo((char *) NULL,&exception);
 #else
       Register8BIMImage();
       RegisterARTImage();
@@ -525,8 +528,7 @@ MagickExport void MagickIncarnate(const char *path)
 {
   char
     directory[MaxTextExtent],
-    filename[MaxTextExtent],
-    magic[MaxTextExtent];
+    filename[MaxTextExtent];
 
   assert(path != (const char *) NULL);
   (void) getcwd(directory,MaxTextExtent);

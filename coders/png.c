@@ -4196,10 +4196,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   int
 #if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
     defined(PNG_MNG_FEATURES_SUPPORTED)
-    all_images_are_gray,
     equal_palettes,
     need_local_plte,
 #endif
+    all_images_are_gray,
     equal_backgrounds=True,
     equal_chrms,
     equal_gammas,
@@ -4266,6 +4266,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   page.height=0;
   page.x=0;
   page.y=0;
+  all_images_are_gray=False;
   have_write_global_plte=False;
 #ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
   need_local_plte=True;

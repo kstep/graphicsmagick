@@ -825,7 +825,7 @@ int main(int argc,char **argv)
                   (void) CloneString(&format,argv[i]);
                   (void) strcpy(image_info->filename,format);
                   (void) strcat(image_info->filename,":");
-                  SetImageInfo(image_info,False);
+                  SetImageInfo(image_info,False,&exception);
                   if (*image_info->magick == '\0')
                     MagickError(OptionError,"Unrecognized image format",format);
                 }
@@ -1598,7 +1598,7 @@ int main(int argc,char **argv)
           (void) strcpy(p->filename,image->filename);
           p->scene=scene++;
         }
-        SetImageInfo(image_info,True);
+        SetImageInfo(image_info,True,&image->exception);
         for (p=image; p != (Image *) NULL; p=p->next)
         {
           status=WriteImage(image_info,p);

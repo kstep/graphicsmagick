@@ -211,7 +211,7 @@ char *HttpUnescape(char *string,char *result)
   while (*string)
   {
     if (*string == '%'  /* Unescape %xx sequence */
-          && isxdigit(string [1]) && isxdigit(string [2]))
+          && isxdigit((int) string [1]) && isxdigit((int) string [2]))
       {
         string++;
         *target = DecodeHex ((const char **) &string, 2);
@@ -624,6 +624,7 @@ int main(int argc,char **argv)
     Initialize command line arguments.
   */
   impersonating=False;
+  errmsg=(char *) NULL;
   ReadCommandlLine(argc,&argv);
   MagickIncarnate(*argv);
 
