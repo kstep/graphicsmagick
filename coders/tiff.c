@@ -510,8 +510,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
          (photometric == PHOTOMETRIC_PALETTE)))
       {
         image->colors=1 << bits_per_sample;
-        if ((range != 0) && (range <= (long) image->colors))
-          image->colors=range+1;
+        if ((max_sample_value != 0) &&
+            (max_sample_value <= (long) image->colors))
+          image->colors=max_sample_value+1;
         if (!AllocateImageColormap(image,image->colors))
           {
             TIFFClose(tiff);
@@ -600,30 +601,24 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         */
         switch (photometric)
         {
-          case PHOTOMETRIC_MINISBLACK:
-          {
-            for (i=0; i < (long) image->colors; i++)
-            {
-              image->colormap[i].red=(Quantum)
-                ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1));
-              image->colormap[i].green=(Quantum)
-                ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1));
-              image->colormap[i].blue=(Quantum)
-                ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1));
-            }
-            break;
-          }
           case PHOTOMETRIC_MINISWHITE:
           default:
           {
             for (i=0; i < (long) image->colors; i++)
             {
-              image->colormap[i].red=(Quantum) (MaxRGB-
-                ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1)));
-              image->colormap[i].green=(Quantum) (MaxRGB-
-                ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1)));
-              image->colormap[i].blue=(Quantum) (MaxRGB-
-                ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1)));
+              image->colormap[i].red=max_sample_value-i;
+              image->colormap[i].green=max_sample_value-i;
+              image->colormap[i].blue=max_sample_value-i;
+            }
+            break;
+          }
+          case PHOTOMETRIC_MINISBLACK:
+          {
+            for (i=0; i < (long) image->colors; i++)
+            {
+              image->colormap[i].red=i;
+              image->colormap[i].green=i;
+              image->colormap[i].blue=i;
             }
             break;
           }
