@@ -1,6 +1,6 @@
-This file was last updated on August 6, 2004.
+This file was last updated on August 7, 2004.
 
-Significant changes associated with GraphicsMagick 1.1.3 (release pending)
+Significant changes associated with GraphicsMagick 1.1.3 (released August 8, 2004)
 
   Bugs fixed:
     * PNG fixes for CERT security alert TA04-217A described at
