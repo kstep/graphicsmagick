@@ -153,7 +153,8 @@ MagickExport void *CloneMemory(void *destination,const void *source,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LiberateMemory() frees memory that has already been allocated.
+%  LiberateMemory() frees memory that has already been allocated, and
+%  NULLs the pointer to it.
 %
 %  The format of the LiberateMemory method is:
 %
@@ -161,7 +162,7 @@ MagickExport void *CloneMemory(void *destination,const void *source,
 %
 %  A description of each parameter follows:
 %
-%    o span: A pointer to a block memory to free for reuse.
+%    o memory: A pointer to a block of memory to free for reuse.
 %
 %
 */
