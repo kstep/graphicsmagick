@@ -552,15 +552,13 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bmp_info.offset_bits=ReadBlobLSBLong(image);
     bmp_info.size=ReadBlobLSBLong(image);
     if (logging)
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  BMP size: %lu",
-        bmp_info.size);
-    if (bmp_info.file_size != GetBlobSize(image))
-      ThrowReaderException(CorruptImageError,"LengthAndFilesizeDoNotMatch",
-        image);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "  BMP size: %lu, File size: %lu",
+        bmp_info.size, (unsigned long) GetBlobSize(image));
     if (bmp_info.size == 12)
       {
         /*
-          OS/2 BMP image file.
+          Windows 2.X or OS/2 BMP image file.
         */
         bmp_info.width=(short) ReadBlobLSBShort(image);
         bmp_info.height=(short) ReadBlobLSBShort(image);
@@ -575,15 +573,17 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (logging)
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  Format: OS/2 Bitmap");
+              "  Format: Windows 2.X or OS/2 Bitmap");
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Geometry: %ldx%ld",bmp_info.width,bmp_info.height);
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "  Bits per pixel: %d",bmp_info.bits_per_pixel);
           }
       }
     else
       {
         /*
-          Microsoft Windows BMP image file.
+          Microsoft Windows 3.X or later BMP image file.
         */
         if (bmp_info.size < 40)
           ThrowReaderException(CorruptImageWarning,"NonOS2HeaderSizeError",
@@ -759,6 +759,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
 
+    if ((bmp_info.compression != BI_RGB) &&
+        (bmp_info.file_size != GetBlobSize(image)))
+      ThrowReaderException(CorruptImageError,"LengthAndFilesizeDoNotMatch",
+        image);
     if (bmp_info.width <= 0)
       ThrowReaderException(CorruptImageWarning,"NegativeOrZeroImageSize",image);
     if (bmp_info.height == 0)

@@ -1,3 +1,8 @@
+2003-06-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/bmp.c (ReadBMPImage): Only validate the file size value
+	for compressed BMPs.
+
 2003-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/static.h: Add prototypes for RegisterXTRNImage and
