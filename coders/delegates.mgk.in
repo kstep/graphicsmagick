@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <delegatemap>
+  <delegate decode="autotrace" stealth="True" command='@AutotraceDecodeDelegate@ -output-format svg -output-file "%o" "%i"' />
   <delegate decode="browse" stealth="True" spawn="True" command='@BrowseDelegate@ http://www.imagemagick.org/ImageMagick/'  />
   <delegate decode="cgm" command='@CGMDecodeDelegate@ -d ps "%i" "%o" "%u"
     @ConvertDelegate@ -concatenate %o*.ps "%o"' />

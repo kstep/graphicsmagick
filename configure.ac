@@ -1502,6 +1502,7 @@ AC_DEFINE_UNQUOTED(MagickSharePath,"$MagickSharePath",Directory where architectu
 AC_SUBST(MagickSharePath)
 
 # Locate delegates
+AC_PATH_PROG(AutotraceDecodeDelegate, autotrace, autotrace)
 AC_PATH_PROG(BZIPDelegate, bzip2, bzip2)
 AC_PATH_PROG(BrowseDelegate, netscape, netscape)
 AC_PATH_PROG(CGMDecodeDelegate, ralcgm, ralcgm)

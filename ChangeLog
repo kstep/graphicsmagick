@@ -1,3 +1,7 @@
+2002-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Support autotrace via delegates.mgk.
+    For example:  'convert autotrace:file.png file.mvg'
+
 2002-05-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Added progress monitor support to DrawImage().
 
