@@ -11400,7 +11400,6 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
           "Memory allocation failed");
       map_info->colormap=(Colormap) NULL;
       pixel.pixels=(unsigned long *) NULL;
-      pixel.gamma_map=(XColor *) NULL;
       /*
         Initialize visual info.
       */
