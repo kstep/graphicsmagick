@@ -8327,7 +8327,7 @@ MagickExport unsigned int XPreferencesWidget(Display *display,
   XResourceInfo *resource_info,XWindows *windows)
 {
 #define ApplyButtonText  "Apply"
-#define CacheButtonText  "%u mega-bytes of memory in the undo edit cache   "
+#define CacheButtonText  "%lu mega-bytes of memory in the undo edit cache   "
 #define CancelButtonText  "Cancel"
 #define NumberPreferences  7
 

@@ -890,14 +890,14 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
             }
             case EXIF_FMT_URATIONAL:
             {
-              FormatString(s,"%d/%d",Read32u(morder,pval),
+              FormatString(s,"%ld/%ld",Read32u(morder,pval),
                 Read32u(morder,4+(char *) pval));
               value=AllocateString(s);
               break;
             }
             case EXIF_FMT_SRATIONAL:
             {
-              FormatString(s,"%d/%d",Read32s(morder,pval),
+              FormatString(s,"%ld/%ld",Read32s(morder,pval),
                 Read32s(morder,4+(char *) pval));
               value=AllocateString(s);
               break;
@@ -968,7 +968,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
                 }
                 case 2:
                 {
-                  FormatString(s,"#%04x=",t);
+                  FormatString(s,"#%04lx=",t);
                   (void) ConcatenateString(&final,s);
                   break;
                 }
@@ -1164,8 +1164,8 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
     {
       if (LocaleNCompare("height",key,2) == 0)
         {
-          FormatString(attribute,"%u",
-            image->magick_rows ? image->magick_rows : 256);
+          FormatString(attribute,"%lu",
+            image->magick_rows ? image->magick_rows : 256L);
           break;
         }
       break;
@@ -1214,14 +1214,14 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
         }
       if (LocaleNCompare("scene",key,2) == 0)
         {
-          FormatString(attribute,"%u",image->scene);
+          FormatString(attribute,"%lu",image->scene);
           if (image_info->subrange != 0)
-            FormatString(attribute,"%u",image_info->subimage);
+            FormatString(attribute,"%lu",image_info->subimage);
           break;
         }
       if (LocaleNCompare("scenes",key,6) == 0)
         {
-          FormatString(attribute,"%u",GetImageListSize(image));
+          FormatString(attribute,"%lu",(unsigned long) GetImageListSize(image));
           break;
         }
        break;
@@ -1269,8 +1269,8 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
     {
       if (LocaleNCompare("width",key,2) == 0)
         {
-          FormatString(attribute,"%u",
-            image->magick_columns ? image->magick_columns : 256);
+          FormatString(attribute,"%lu",
+            image->magick_columns ? image->magick_columns : 256L);
           break;
         }
       break;

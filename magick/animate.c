@@ -1049,9 +1049,6 @@ MagickExport Image *XAnimateImages(Display *display,
   register long
     i;
 
-  size_t
-    number_scenes;
-
   static char
     working_directory[MaxTextExtent];
 
@@ -1068,6 +1065,9 @@ MagickExport Image *XAnimateImages(Display *display,
     context_mask,
     coalesce,
     state;
+
+  unsigned long
+    number_scenes;
 
   WarningHandler
     warning_handler;

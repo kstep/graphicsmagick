@@ -2760,7 +2760,7 @@ MagickExport char **StringToList(const char *text)
         q=textlist[i]+strlen(textlist[i]);
         for (j=1; j <= (long) Min(strlen(p),0x14); j++)
         {
-          FormatString(hex_string,"%02lx",*(p+j));
+          FormatString(hex_string,"%02x",*(p+j));
           (void) strncpy(q,hex_string,MaxTextExtent-1);
           q+=2;
           if ((j % 0x04) == 0)
@@ -3516,7 +3516,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'n':
       {
-        FormatString(q,"%lu",GetImageListSize(image));
+        FormatString(q,"%lu",(unsigned long) GetImageListSize(image));
         q=translated_text+strlen(translated_text);
         break;
       }

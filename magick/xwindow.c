@@ -6499,7 +6499,7 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
       i=0;
       while ((1 << i) <= (int) magnify)
         i++;
-      FormatString(windows->magnify.name,"Magnify %uX",i);
+      FormatString(windows->magnify.name,"Magnify %luX",i);
       status=XStringListToTextProperty(&windows->magnify.name,1,&window_name);
       if (status != 0)
         {
@@ -8626,7 +8626,7 @@ MagickExport void XUserPreferences(XResourceInfo *resource_info)
   value=resource_info->gamma_correct ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
   FormatString(specifier,"%.1024s.undoCache",client_name);
-  FormatString(cache,"%u",resource_info->undo_cache);
+  FormatString(cache,"%lu",resource_info->undo_cache);
   XrmPutStringResource(&preferences_database,specifier,cache);
   FormatString(specifier,"%.1024s.usePixmap",client_name);
   value=resource_info->use_pixmap ? "True" : "False";
