@@ -254,6 +254,7 @@ PERL = @PERL@
 PERL_MAKE_OPTIONS = @PERL_MAKE_OPTIONS@
 PGPDecodeDelegate = @PGPDecodeDelegate@
 POVDelegate = @POVDelegate@
+POW_LIB = @POW_LIB@
 PREFIX_DIR = @PREFIX_DIR@
 PSDelegate = @PSDelegate@
 PrintDelegate = @PrintDelegate@
@@ -356,7 +357,7 @@ INCLUDES = -I$(top_srcdir) $(INCLTDL)
 ALLMANPAGES = Magick-config.1
 
 libMagick_la_LDFLAGS = -no-undefined \
-	-version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
+	-release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 
 
 #AM_CFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
@@ -369,7 +370,8 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
 	annotate.c type.c draw.c render.c montage.c semaphore.c attribute.c \
 	signature.c compress.c command.c gem.c registry.c magic.c magick.c \
 	delegate.c module.c static.c resource.c log.c timer.c utility.c cache_view.c \
-	stream.c animate.c display.c widget.c xwindow.c PreRvIcccm.c version.c
+	stream.c version.c animate.c display.c widget.c xwindow.c PreRvIcccm.c \
+	deprecate.c
 
 
 # Platform specific source files that may appear in the library
@@ -389,11 +391,11 @@ EXTRA_libMagick_la_SOURCES = nt_base.c nt_feature.c
 bin_SCRIPTS = Magick-config
 
 # Headers which are installed
-include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h \
+include_HEADERS = api.h attribute.h blob.h cache.h \
   cache_view.h command.h compress.h magick_config.h delegate.h \
   draw.h render.h error.h gem.h image.h list.h log.h magic.h magick.h \
   module.h monitor.h quantize.h resource.h registry.h semaphore.h timer.h \
-	utility.h version.h widget.h xwindow.h
+	utility.h version.h widget.h xwindow.h PreRvIcccm.h deprecate.h
 
 
 # Headers which are not installed but which are distributed
@@ -430,8 +432,9 @@ am__objects_1 = memory.lo blob.lo cache.lo locale.lo error.lo monitor.lo \
 	draw.lo render.lo montage.lo semaphore.lo attribute.lo \
 	signature.lo compress.lo command.lo gem.lo registry.lo magic.lo \
 	magick.lo delegate.lo module.lo static.lo resource.lo log.lo \
-	timer.lo utility.lo cache_view.lo stream.lo animate.lo \
-	display.lo widget.lo xwindow.lo PreRvIcccm.lo version.lo
+	timer.lo utility.lo cache_view.lo stream.lo version.lo \
+	animate.lo display.lo widget.lo xwindow.lo PreRvIcccm.lo \
+	deprecate.lo
 @CYGWIN_BUILD_FALSE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 =
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 = \
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@	nt_feature.lo
@@ -454,25 +457,26 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/color.Plo ./$(DEPDIR)/command.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/composite.Plo ./$(DEPDIR)/compress.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/constitute.Plo ./$(DEPDIR)/decorate.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/delegate.Plo ./$(DEPDIR)/display.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/draw.Plo ./$(DEPDIR)/effect.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/enhance.Plo ./$(DEPDIR)/error.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/fx.Plo ./$(DEPDIR)/gem.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/image.Plo ./$(DEPDIR)/list.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/locale.Plo ./$(DEPDIR)/log.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/magic.Plo ./$(DEPDIR)/magick.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/memory.Plo ./$(DEPDIR)/module.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/monitor.Plo ./$(DEPDIR)/montage.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/nt_base.Plo ./$(DEPDIR)/nt_feature.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/quantize.Plo ./$(DEPDIR)/registry.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/render.Plo ./$(DEPDIR)/resize.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/resource.Plo ./$(DEPDIR)/segment.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/semaphore.Plo ./$(DEPDIR)/shear.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/signature.Plo ./$(DEPDIR)/static.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/stream.Plo ./$(DEPDIR)/timer.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/transform.Plo ./$(DEPDIR)/type.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/utility.Plo ./$(DEPDIR)/version.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/widget.Plo ./$(DEPDIR)/xwindow.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/delegate.Plo ./$(DEPDIR)/deprecate.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/display.Plo ./$(DEPDIR)/draw.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/effect.Plo ./$(DEPDIR)/enhance.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/error.Plo ./$(DEPDIR)/fx.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/gem.Plo ./$(DEPDIR)/image.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/list.Plo ./$(DEPDIR)/locale.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/log.Plo ./$(DEPDIR)/magic.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/magick.Plo ./$(DEPDIR)/memory.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/module.Plo ./$(DEPDIR)/monitor.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/montage.Plo ./$(DEPDIR)/nt_base.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/nt_feature.Plo ./$(DEPDIR)/quantize.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/registry.Plo ./$(DEPDIR)/render.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/resize.Plo ./$(DEPDIR)/resource.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/segment.Plo ./$(DEPDIR)/semaphore.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/shear.Plo ./$(DEPDIR)/signature.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/static.Plo ./$(DEPDIR)/stream.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/timer.Plo ./$(DEPDIR)/transform.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/type.Plo ./$(DEPDIR)/utility.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/version.Plo ./$(DEPDIR)/widget.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/xwindow.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -592,6 +596,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/constitute.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/decorate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/delegate.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/deprecate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/display.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/draw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effect.Plo@am__quote@

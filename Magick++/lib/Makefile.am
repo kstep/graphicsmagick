@@ -26,7 +26,7 @@ libMagick___la_SOURCES = \
 
 # Add -no-undefined once Cygwin supports throwing C++ exceptions from DLLs.
 libMagick___la_LDFLAGS = \
-	-version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
+	-release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 
 libMagick___la_LIBADD = ../../magick/libMagick.la
 
