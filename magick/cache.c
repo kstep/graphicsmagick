@@ -2041,7 +2041,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
 */
 MagickExport unsigned int PersistCache(Image *image,const char *filename,
   const unsigned int attach,ExtendedSignedIntegralType *offset,
-	ExceptionInfo *exception)
+  ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
