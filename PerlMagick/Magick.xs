@@ -374,7 +374,7 @@ static struct
     { "Normalize", },
     { "NumberColors", },
     { "Opaque", { {"color", StringReference}, {"fill", StringReference},
-      {"pen", StringReference} } },
+      {"fuzz", DoubleReference} } },
     { "Quantize", { {"colors", IntegerReference}, {"tree", IntegerReference},
       {"colorsp", ColorspaceTypes}, {"dither", BooleanTypes},
       {"measure", BooleanTypes}, {"global", BooleanTypes} } },
@@ -5016,8 +5016,7 @@ Mogrify(ref,...)
             (void) QueryColorDatabase(argument_list[1].string_reference,
               &fill_color);
           if (attribute_flag[2])
-            (void) QueryColorDatabase(argument_list[2].string_reference,
-              &fill_color);
+            image->fuzz=argument_list[2].int_reference;
           OpaqueImage(image,target,fill_color);
           break;
         }
