@@ -177,7 +177,7 @@ MagickExport MagicInfo *GetMagicInfo(const unsigned char *magic,
       atexit(DestroyMagicInfo);
     }
   LiberateSemaphore(&magic_semaphore);
-  if (LocaleCompare(magic,"*") == 0)
+  if (length == 0)
     return(magic_list);
   /*
     Search for requested magic.
@@ -227,7 +227,7 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
   (void) fprintf(file,"Name      Offset Target\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");
-  p=GetMagicInfo("*",0,exception);
+  p=GetMagicInfo((unsigned char *) NULL,0,exception);
   if (p == (MagicInfo *) NULL)
     return(False);
   for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
@@ -398,7 +398,7 @@ static unsigned int ReadConfigurationFile(const char *filename)
               *q;
 
             magic_list->target=AllocateString(value);
-            magic_list->magic=AllocateString(value);
+            magic_list->magic=(unsigned char *) AllocateString(value);
             q=magic_list->magic;
             for (p=magic_list->target; *p != '\0'; )
             {
@@ -419,14 +419,13 @@ static unsigned int ReadConfigurationFile(const char *filename)
                     case 'r': *q='\r'; break;
                     case 't': *q='\t'; break;
                     case 'v': *q='\v'; break;
-                    case 'a': *q='\a'; break;
+                    case 'a': *q='a'; break;
                     case '?': *q='\?'; break;
                     default: *q=(*p); break;
                   }
                   p++;
                   q++;
                   magic_list->length++;
-                  continue;
                 }
               *q++=(*p++);
               magic_list->length++;
