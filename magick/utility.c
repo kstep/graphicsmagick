@@ -134,7 +134,7 @@ MagickExport char *AllocateString(const char *source)
 MagickExport void AppendImageFormat(const char *format,char *filename)
 {
   char
-    basename[MaxTextExtent];
+    root[MaxTextExtent];
 
   assert(format != (char *) NULL);
   assert(filename != (char *) NULL);
@@ -149,8 +149,8 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
       (void) strcpy(filename,message);
       return;
     }
-  GetPathComponent(filename,BasePath,basename);
-  FormatString(filename,"%.1024s.%.1024s",basename,format);
+  GetPathComponent(filename,RootPath,root);
+  FormatString(filename,"%.1024s.%.1024s",root,format);
 }
 
 /*
@@ -810,9 +810,8 @@ MagickExport void GetPathComponent(const char *path,PathType type,
       for (p=component+(Extent(component)-1); p > component; p--)
         if (*p == '.')
           break;
-      *component='\0';
       if (*p == '.')
-        (void) strcpy(component,p+1);
+        *p='\0';
       break;
     }
     case HeadPath:
