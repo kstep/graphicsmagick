@@ -29,6 +29,9 @@ extern MagickExport unsigned int
   SetImageList(Image **,const Image *,const unsigned long,ExceptionInfo *),
   UnshiftImageList(Image **,const Image *,ExceptionInfo *);
 
+extern MagickExport unsigned long
+  GetImageListIndex(const Image *);
+
 extern MagickExport void
   DestroyImageList(Image *);
 

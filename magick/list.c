@@ -266,6 +266,43 @@ MagickExport Image *GetImageList(const Image *images,const unsigned long offset,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e L i s t I n d e x                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageListIndex() returns the position in the list of the specified
+%  image.
+%
+%  The format of the GetImageListIndex method is:
+%
+%      size_t GetImageListIndex(const Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%
+*/
+MagickExport unsigned long GetImageListIndex(const Image *images)
+{
+  register long
+    i;
+
+  if (images == (Image *) NULL)
+    return(0);
+  assert(images->signature == MagickSignature);
+  for (i=0; images->previous != (Image *) NULL; i++)
+    images=images->previous;
+  return(i);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I m a g e L i s t S i z e                                           %
 %                                                                             %
 %                                                                             %
