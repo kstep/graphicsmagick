@@ -4728,43 +4728,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=shear_image;
             continue;
           }
-        if (LocaleCompare("-size",option) == 0)
-          {
-            char
-              geometry[MaxTextExtent];
-
-            Image
-              *border_image;
-
-            RectangleInfo
-              border_info;
-
-            /*
-              Size image.
-            */
-            width=(*image)->columns;
-            height=(*image)->rows;
-            x=0;
-            y=0;
-            (void) ParseGeometry(argv[++i],&x,&y,&width,&height);
-            if ((width == (*image)->columns) && (height == (*image)->rows))
-              break;
-            FormatString(geometry,"%lux%lu%+ld%+ld",width,height,
-              (long) ((*image)->columns-width+1)/2,
-              (long) ((*image)->rows-height+1)/2);
-            TransformImage(image,geometry,(char *) NULL);
-            if ((width == (*image)->columns) && (height == (*image)->rows))
-              break;
-            (*image)->border_color=(*image)->background_color;
-            border_info.width=(width-(*image)->columns+1)/2;
-            border_info.height=(height-(*image)->rows+1)/2;
-            border_image=BorderImage(*image,&border_info,&(*image)->exception);
-            if (border_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=border_image;
-            continue;
-          }
         if (LocaleCompare("-solarize",option) == 0)
           {
             double
