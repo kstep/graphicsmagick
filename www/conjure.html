@@ -163,9 +163,22 @@ The script can then use this information when setting values by including
 "-dimensions 400x400" on the command line, as illustrated above,
 then any string
 containing "%[dimensions]" would have 400x400 substituted.
-This can be either an entire string, such as
-geometry="%[dimensions]" or part of a string such as
+The "%[string]" can be used either an entire string, such as
+geometry="%[dimensions]" or as a part of a string such as
 filename="%[basename].png".
+<p>
+The keyword can be any string except for the following reserved
+strings (in any upper, lower, or mixed case variant): <strong>debug</strong>,
+<strong>help</strong>, and <strong>verbose</strong>, whose usage is described below.
+<p>
+The value can be any string.  If
+either the keyword or the value contains white space or any
+symbols that have special meanings to your shell such as "#", "|", or
+"%", enclose the string in quotation marks or use "\" to escape the white
+space and special symbols.
+<p>
+Keywords and values are case dependent.  "Key", "key", and "KEY" would
+be three different keywords.
 </p>
      <table BORDER=0 WIDTH="94%">
      <tr>
@@ -200,17 +213,6 @@ filename="%[basename].png".
     <a name="-verbose">-verbose</a>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print detailed information about the image</td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This information is printed: image scene number; image name; image size;
-the image class (<em>DirectClass</em> or <em>PseudoClass</em>); the total number
-of unique colors; and the number of seconds to read and transform the image.
-Refer to <a href="miff.html">miff</a> for a description of the image class.
-</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If <strong>-colors</strong> is also specified, the total unique colors in the image
-and color reduction error values are printed. Refer to <a href="quantize.html">quantize</a>
-for a description of these values.
-</font></td></tr></table>
      </td></tr></table>
      <p>
      <i><a href="#top">Back to Contents</a></i> 

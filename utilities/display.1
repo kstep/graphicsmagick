@@ -1,4 +1,4 @@
-.TH display 1 "$Date$" "ImageMagick"
+.TH display 1 "Date: 2002/01/01 01:00:00" "ImageMagick"
 .SH NAME
 
 display - display an image on any workstation running X
@@ -453,9 +453,8 @@ a portion of the trimmed edges with the image.
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
 
-This option is useful for regulating the animation of GIF images
-within Netscape. \fIDelay/100\fP seconds must expire
-before the display
+This option is useful for regulating the animation of image sequences
+\fIDelay/100\fP seconds must expire before the display
 of the next image. The default is no delay between each showing of the
 image sequence. The maximum delay is 65535.
 
@@ -511,7 +510,8 @@ The \fB-colors\fP or \fB-monochrome\fP option is required for this option
 to take effect.
 
 
-Use \fB+dither\fP to render Postscript without text or graphic aliasing.
+Use \fB+dither\fP to turn off dithering and to render Postscript without
+text or graphic aliasing.
 
 .TP
 .B "-edge \fIorder"\fP
@@ -642,16 +642,14 @@ size does not change. However, if the image is 1024x1024, it is resized
 to 640x480.
 
 
-Use \fB<\fP to change the dimensions of the image \fIonly\fP if
-its size exceeds the geometry specification. \fB>\fP resizes the image
-\fIonly\fP
-if its dimensions is less than the geometry specification. For example,
-if you specify \fB640x480>\fP and the image size is 512x512, the image
-size does not change. However, if the image is 1024x1024, it is resized
-to 640x480.
-
-
 There are 72 pixels per inch in PostScript coordinates.
+
+
+When used as a \fBmontage\fP option, \fB-geometry\fP gives the image
+size and border size
+for each tile; default is 256x256+0+0.  In \fBcomposite\fP, \fB-geometry\fP
+gives the dimensions of the composite image and its location with respect
+to the main image.
 
 .TP
 .B "-help"
@@ -683,7 +681,7 @@ is like plane except the different planes are saved to individual files
 (e.g. image.R, image.G, and image.B).
 
 
-Use \fBLine\fP, or \fBPlane\fP to create an
+Use \fBLine\fP or \fBPlane\fP to create an
 \fBinterlaced PNG\fP or \fB GIF\fP or
 \fBprogressive JPEG\fP image.
 
@@ -1071,17 +1069,6 @@ the input file has been changed and update the displayed image accordingly.
 .TP
 .B "-verbose"
 \fRprint detailed information about the image
-
-This information is printed: image scene number; image name; image size;
-the image class (\fIDirectClass\fP or \fIPseudoClass\fP); the total number
-of unique colors; and the number of seconds to read and transform the image.
-Refer to miff for a description of the image class.
-
-
-If \fB-colors\fP is also specified, the total unique colors in the image
-and color reduction error values are printed. Refer to quantize
-for a description of these values.
-
 .TP
 .B "-visual \fItype"\fP
 \fRanimate images using this X visual type
@@ -1398,7 +1385,7 @@ For example to display the fourth page proceeding the current page, press
              the image.
     Ctl-V    Press to paste a region to
              the image.
-    &lt;     Press to half the image size.
+    &lt;     Press to halve the image size.
     .        Press to return to the original image size.
     >        Press to double the image size.
     %        Press to resize the image to a width and height
@@ -1608,7 +1595,7 @@ cyan, gray, red, magenta, yellow, and white.
 .TP
 .B "printCommand \fI(class PrintCommand)"\fP
 \fR
-This command is executed whenever Print is issued In general, it is the
+This command is executed whenever Print is issued.  In general, it is the
 command to print \fIPostScript\fP to your printer. Default value: lp
 -c -s %i.
 .TP

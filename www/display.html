@@ -605,9 +605,8 @@ a portion of the trimmed edges with the image.
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>display the next image after pausing</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This option is useful for regulating the animation of GIF images
-within Netscape. <em>Delay/100</em> seconds must expire
-before the display
+This option is useful for regulating the animation of image sequences
+<em>Delay/100</em> seconds must expire before the display
 of the next image. The default is no delay between each showing of the
 image sequence. The maximum delay is 65535.
 </font></td></tr></table>
@@ -712,7 +711,8 @@ The <strong>-colors</strong> or <strong>-monochrome</strong> option is required 
 to take effect.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <strong>+dither</strong> to render Postscript without text or graphic aliasing.
+Use <strong>+dither</strong> to turn off dithering and to render Postscript without
+text or graphic aliasing.
 </font></td></tr></table>
      <table BORDER=0 WIDTH="94%">
      <tr>
@@ -924,16 +924,14 @@ size does not change. However, if the image is 1024x1024, it is resized
 to 640x480.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <strong>&lt;</strong> to change the dimensions of the image <em>only</em> if
-its size exceeds the geometry specification. <strong>&gt;</strong> resizes the image
-<em>only</em>
-if its dimensions is less than the geometry specification. For example,
-if you specify <strong>640x480&gt;</strong> and the image size is 512x512, the image
-size does not change. However, if the image is 1024x1024, it is resized
-to 640x480.
+There are 72 pixels per inch in PostScript coordinates.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-There are 72 pixels per inch in PostScript coordinates.
+When used as a <strong>montage</strong> option, <strong>-geometry</strong> gives the image
+size and border size
+for each tile; default is 256x256+0+0.  In <strong>composite</strong>, <strong>-geometry</strong>
+gives the dimensions of the composite image and its location with respect
+to the main image.
 </font></td></tr></table>
      <table BORDER=0 WIDTH="94%">
      <tr>
@@ -1005,7 +1003,7 @@ is like plane except the different planes are saved to individual files
 (e.g. image.R, image.G, and image.B).
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <strong>Line</strong>, or <strong>Plane</strong> to create an
+Use <strong>Line</strong> or <strong>Plane</strong> to create an
 <strong>interlaced PNG</strong> or <strong> GIF</strong> or
 <strong>progressive JPEG</strong> image.
 </font></td></tr></table>
@@ -1616,17 +1614,6 @@ the input file has been changed and update the displayed image accordingly.
     <a name="-verbose">-verbose</a>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print detailed information about the image</td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This information is printed: image scene number; image name; image size;
-the image class (<em>DirectClass</em> or <em>PseudoClass</em>); the total number
-of unique colors; and the number of seconds to read and transform the image.
-Refer to <a href="miff.html">miff</a> for a description of the image class.
-</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If <strong>-colors</strong> is also specified, the total unique colors in the image
-and color reduction error values are printed. Refer to <a href="quantize.html">quantize</a>
-for a description of these values.
-</font></td></tr></table>
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -2055,7 +2042,7 @@ For example to display the fourth page proceeding the current page, press
              the image.
     Ctl-V    Press to <a href="#impa">paste</a> a region to
              the image.
-    &amp;lt;     Press to half the image size.
+    &amp;lt;     Press to halve the image size.
     .        Press to return to the original image size.
     &gt;        Press to double the image size.
     %        Press to resize the image to a width and height
@@ -2431,7 +2418,7 @@ cyan, gray, red, magenta, yellow, and white.</td></tr></table>
     <a name="printCommand">printCommand</a> <i>(class PrintCommand)</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
-This command is executed whenever Print is issued In general, it is the
+This command is executed whenever Print is issued.  In general, it is the
 command to print <em>PostScript</em> to your printer. Default value: <tt>lp
 -c -s %i</tt>.</td></tr></table>
      <table BORDER=0 WIDTH="94%">

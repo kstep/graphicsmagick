@@ -1,7 +1,6 @@
-.TH import 1 "$Date$" "ImageMagick"
+.TH composite 1 "Date: 2002/01/01 01:00:00" "ImageMagick"
 .SH NAME
-import - capture some or all of an X server screen and save the image to
-a file.
+composite - composite images together.
 .SH SYNOPSIS
 
 \fBcomposite\fP [ \fIoptions\fP ... ] \fIimagecomposite\fP [ \fImask\fP
@@ -23,7 +22,7 @@ To compute the difference between images in a series, use:
 To composite an image of a cockatoo with a perch starting at location (100,150),
 use:
 
-    composite -geometry "+1"00"+1"50 cockatoo.miff \\
+    composite -geometry +100+150 cockatoo.miff \\
               perch.ras composite.miff
 
 To tile a logo across your image of a cockatoo, use
@@ -434,7 +433,8 @@ The \fB-colors\fP or \fB-monochrome\fP option is required for this option
 to take effect.
 
 
-Use \fB+dither\fP to render Postscript without text or graphic aliasing.
+Use \fB+dither\fP to turn off dithering and to render Postscript without
+text or graphic aliasing.
 
 .TP
 .B "-filter \fItype"\fP
@@ -508,16 +508,14 @@ size does not change. However, if the image is 1024x1024, it is resized
 to 640x480.
 
 
-Use \fB<\fP to change the dimensions of the image \fIonly\fP if
-its size exceeds the geometry specification. \fB>\fP resizes the image
-\fIonly\fP
-if its dimensions is less than the geometry specification. For example,
-if you specify \fB640x480>\fP and the image size is 512x512, the image
-size does not change. However, if the image is 1024x1024, it is resized
-to 640x480.
-
-
 There are 72 pixels per inch in PostScript coordinates.
+
+
+When used as a \fBmontage\fP option, \fB-geometry\fP gives the image
+size and border size
+for each tile; default is 256x256+0+0.  In \fBcomposite\fP, \fB-geometry\fP
+gives the dimensions of the composite image and its location with respect
+to the main image.
 
 .TP
 .B "-gravity \fItype"\fP
@@ -531,6 +529,10 @@ details about the gravity specification.
 The direction you choose specifies where to position the text when annotating
 the image. For example \fICenter\fP gravity forces the text to be centered
 within the image. By default, the image gravity is \fINorthWest\fP.
+
+
+When used as an option to \fBcomposite\fP, \fB-gravity\fP
+gives the direction that the image gravitates within the composite.
 
 .TP
 .B "-help"
@@ -553,7 +555,7 @@ is like plane except the different planes are saved to individual files
 (e.g. image.R, image.G, and image.B).
 
 
-Use \fBLine\fP, or \fBPlane\fP to create an
+Use \fBLine\fP or \fBPlane\fP to create an
 \fBinterlaced PNG\fP or \fB GIF\fP or
 \fBprogressive JPEG\fP image.
 
@@ -778,6 +780,22 @@ This feature is untested.
 This feature is untested.
 
 .TP
+.B "-stegano \fIoffset"\fP
+\fRhide watermark within an image
+
+Use an offset to start the image hiding some number of pixels from the
+beginning of the image.  Note this offset and the image size.  You will
+need this information to recover the steganographic image
+(e.g. display -size 320x256+35 stegano:image.png).
+.TP
+.B "-stereo"
+\fRcomposite two images to create a stereo anaglyph
+
+The left side of the stereo pair is saved as the red channel of the output
+image.  The right sife is saved as the green channel.  Red-blue stereo
+glasses are required to properly view the stereo image.
+
+.TP
 .B "-treedepth \fIvalue"\fP
 \fRtree depth for the color reduction algorithm
 
@@ -820,17 +838,6 @@ Use the given radius and standard deviation (sigma).
 .TP
 .B "-verbose"
 \fRprint detailed information about the image
-
-This information is printed: image scene number; image name; image size;
-the image class (\fIDirectClass\fP or \fIPseudoClass\fP); the total number
-of unique colors; and the number of seconds to read and transform the image.
-Refer to miff for a description of the image class.
-
-
-If \fB-colors\fP is also specified, the total unique colors in the image
-and color reduction error values are printed. Refer to quantize
-for a description of these values.
-
 .SH FILES AND FORMATS
 
 By default, the image format is determined by its magic number. To specify

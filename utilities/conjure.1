@@ -1,4 +1,4 @@
-.TH conjure 1 "$Date$" "ImageMagick"
+.TH conjure 1 "Date: 2002/01/01 01:00:00" "ImageMagick"
 .SH NAME
 conjure - process a Magick Scripting Language (MSL) script
 
@@ -63,9 +63,22 @@ The script can then use this information when setting values by including
 "-dimensions 400x400" on the command line, as illustrated above,
 then any string
 containing "%[dimensions]" would have 400x400 substituted.
-This can be either an entire string, such as
-geometry="%[dimensions]" or part of a string such as
+The "%[string]" can be used either an entire string, such as
+geometry="%[dimensions]" or as a part of a string such as
 filename="%[basename].png".
+
+The keyword can be any string except for the following reserved
+strings (in any upper, lower, or mixed case variant): \fBdebug\fP,
+\fBhelp\fP, and \fBverbose\fP, whose usage is described below.
+
+The value can be any string.  If
+either the keyword or the value contains white space or any
+symbols that have special meanings to your shell such as "#", "|", or
+"%", enclose the string in quotation marks or use "\\" to escape the white
+space and special symbols.
+
+Keywords and values are case dependent.  "Key", "key", and "KEY" would
+be three different keywords.
 
 .TP
 .B "-debug"
@@ -76,17 +89,6 @@ filename="%[basename].png".
 .TP
 .B "-verbose"
 \fRprint detailed information about the image
-
-This information is printed: image scene number; image name; image size;
-the image class (\fIDirectClass\fP or \fIPseudoClass\fP); the total number
-of unique colors; and the number of seconds to read and transform the image.
-Refer to miff for a description of the image class.
-
-
-If \fB-colors\fP is also specified, the total unique colors in the image
-and color reduction error values are printed. Refer to quantize
-for a description of these values.
-
 .SH MAGICK SCRIPTING LANGUAGE
 The Magick Scripting Language (MSL) presently defines the following
 elements and their attributes:

@@ -946,9 +946,8 @@ shifted.
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>display the next image after pausing</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This option is useful for regulating the animation of GIF images
-within Netscape. <em>Delay/100</em> seconds must expire
-before the display
+This option is useful for regulating the animation of image sequences
+<em>Delay/100</em> seconds must expire before the display
 of the next image. The default is no delay between each showing of the
 image sequence. The maximum delay is 65535.
 </font></td></tr></table>
@@ -1068,7 +1067,8 @@ The <strong>-colors</strong> or <strong>-monochrome</strong> option is required 
 to take effect.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <strong>+dither</strong> to render Postscript without text or graphic aliasing.
+Use <strong>+dither</strong> to turn off dithering and to render Postscript without
+text or graphic aliasing.
 </font></td></tr></table>
      <table BORDER=0 WIDTH="94%">
      <tr>
@@ -1086,25 +1086,24 @@ Use this option to annotate an image with one or more graphic primitives.
 The primitives include
 </font></td></tr></table>
 <pre>
-     point
-     line
-     rectangle
-     roundRectangle
-     arc
-     ellipse
-     circle
-     polyline
-     polygon
-     bezier
-     path
-     color
-     matte
-     text
-     image
+     point           x,y
+     line            x0,y0 x1,y1
+     rectangle       x0,y0 x1,y1
+     roundRectangle  x0,y0  w,h  wc,hc
+     arc             x0,y0 x1,y1 a0,a1
+     ellipse         x0,y0 rx,ry a0,a1
+     circle          x0,y0 x1,y1
+     polyline        x0,y0  ...  xn,yn
+     polygon         x0,y0  ...  xn,yn
+     bezier          x0,y0  ...  xn,yn
+     path            path specification
+     color           x0,y0 method
+     matte           x0,y0 method
+     text            x0,y0 string
+     image           operator x0,y0 w,h filename
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-<strong>Point</strong> and
-<strong>line</strong> each require a single coordinate.
+<strong>Point</strong> requires a single coordinate.
 <strong>Line</strong> requires a start and end coordinate, while
 <strong>rectangle</strong>
 expects an upper left and lower right coordinate.
@@ -1495,16 +1494,14 @@ size does not change. However, if the image is 1024x1024, it is resized
 to 640x480.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <strong>&lt;</strong> to change the dimensions of the image <em>only</em> if
-its size exceeds the geometry specification. <strong>&gt;</strong> resizes the image
-<em>only</em>
-if its dimensions is less than the geometry specification. For example,
-if you specify <strong>640x480&gt;</strong> and the image size is 512x512, the image
-size does not change. However, if the image is 1024x1024, it is resized
-to 640x480.
+There are 72 pixels per inch in PostScript coordinates.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-There are 72 pixels per inch in PostScript coordinates.
+When used as a <strong>montage</strong> option, <strong>-geometry</strong> gives the image
+size and border size
+for each tile; default is 256x256+0+0.  In <strong>composite</strong>, <strong>-geometry</strong>
+gives the dimensions of the composite image and its location with respect
+to the main image.
 </font></td></tr></table>
      <table BORDER=0 WIDTH="94%">
      <tr>
@@ -1595,7 +1592,7 @@ is like plane except the different planes are saved to individual files
 (e.g. image.R, image.G, and image.B).
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <strong>Line</strong>, or <strong>Plane</strong> to create an
+Use <strong>Line</strong> or <strong>Plane</strong> to create an
 <strong>interlaced PNG</strong> or <strong> GIF</strong> or
 <strong>progressive JPEG</strong> image.
 </font></td></tr></table>
@@ -2635,17 +2632,6 @@ Use the given radius and standard deviation (sigma).
     <a name="-verbose">-verbose</a>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print detailed information about the image</td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This information is printed: image scene number; image name; image size;
-the image class (<em>DirectClass</em> or <em>PseudoClass</em>); the total number
-of unique colors; and the number of seconds to read and transform the image.
-Refer to <a href="miff.html">miff</a> for a description of the image class.
-</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If <strong>-colors</strong> is also specified, the total unique colors in the image
-and color reduction error values are printed. Refer to <a href="quantize.html">quantize</a>
-for a description of these values.
-</font></td></tr></table>
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
