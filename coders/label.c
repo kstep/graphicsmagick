@@ -480,30 +480,63 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     bitmap=(FT_BitmapGlyph) glyph->image;
     if ((bitmap->bitmap.width == 0) || (bitmap->bitmap.rows == 0))
       continue;
-    x=(int) (bitmap->left-bounds.x1+0.5);
-    y=(int) (image->rows-bitmap->top+bounds.y1+0.5);
-    q=GetImagePixels(image,x,y,bitmap->bitmap.width,bitmap->bitmap.rows);
-    if (q == (PixelPacket *) NULL)
-      continue;
     p=bitmap->bitmap.buffer;
     for (y=0; y < bitmap->bitmap.rows; y++)
     {
-      for (x=0; x < bitmap->bitmap.width; x++)
-      {
-        if (*p != 0)
+      x=(int) (bitmap->left-bounds.x1+0.5);
+      q=GetImagePixels(image,x,(int) (image->rows-bitmap->top+bounds.y1+y+0.5),
+        bitmap->bitmap.width,1);
+      if (q == (PixelPacket *) NULL)
+        continue;
+      if (image_info->antialias)
+        for (x=0; x < bitmap->bitmap.width; x++)
+        {
+          if (*p != 0)
+            {
+              *q=image_info->fill;
+              if (image_info->stroke.opacity != TransparentOpacity)
+                if (*p < 255)
+                  *q=image_info->stroke;
+              q->opacity=UpScale(DownScale(MaxRGB)-(*p));
+            }
+          p++;
+          q++;
+        }
+      else
+        {
+          int
+            bit;
+
+          for (x=0; x < ((int) bitmap->bitmap.width-7); x+=8)
           {
-            *q=image_info->fill;
-            if (image_info->stroke.opacity != TransparentOpacity)
-              if (*p < 255)
-                *q=image_info->stroke;
-            q->opacity=UpScale(DownScale(MaxRGB)-(*p));
+            for (bit=7; bit >= 0; bit--)
+            {
+              if ((*p) & (0x01 << bit))
+                {
+                  *q=image_info->fill;
+                  q->opacity=OpaqueOpacity;
+                }
+              q++;
+            }
+            p++;
           }
-        p++;
-        q++;
-      }
+          if ((bitmap->bitmap.width % 8) != 0)
+            {
+              for (bit=7; bit >= (int) (8-(bitmap->bitmap.width % 8)); bit--)
+              {
+                if ((*p) & (0x01 << bit))
+                  {
+                    *q=image_info->fill;
+                    q->opacity=OpaqueOpacity;
+                  }
+                q++;
+              }
+              p++;
+            }
+        }
+      if (!SyncImagePixels(image))
+        continue;
     }
-    if (!SyncImagePixels(image))
-      continue;
   }
   /*
     Free resources.
@@ -910,7 +943,7 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   (void) fprintf(file,"} bind def\n");
   font=image_info->font;
   if (font == (char *) NULL)
-    font="Times-Roman";
+    font="Helvetica";
   /*
     Sample to compute bounding box.
   */
