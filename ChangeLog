@@ -1,3 +1,13 @@
+2003-12-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/reference/read/input_tim.miff: Adjusted due to
+	ScaleColor5to8 fix on 2003-10-07
+
+2003-11-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/draw.c (DrawComposite): Base64 encoded image was not
+	being deallocated.  Bad memory leak.
+
 2003-10-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Updated to use GNU Automake 1.7.8 and the very
