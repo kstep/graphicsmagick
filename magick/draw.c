@@ -1825,6 +1825,12 @@ draw_info->clip_units=ObjectBoundingBox;
               (MaxRGB*(1.0-factor*atof(token)));
             break;
           }
+        if (LocaleCompare("font",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            (void) CloneString(&graphic_context[n]->font,token);
+            break;
+          }
         if (LocaleCompare("font-family",keyword) == 0)
           {
             GetToken(q,&q,token);
