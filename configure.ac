@@ -326,6 +326,18 @@ AC_ARG_WITH(wmf,
 	      [with_wmf=$withval],
 	      [with_wmf='yes'])
 
+# Set default font search path
+AC_ARG_WITH(fontpath,
+              [  --with-fontpath         prepend to default font search path],
+              [with_fontpath=$withval],
+              [with_fontpath=''])
+if test "$with_fontpath" != "yes" && test -z "$with_fontpath"
+then
+  with_fontpath=''
+else
+  AC_DEFINE_UNQUOTED(MAGICK_FONT_PATH,"$with_fontpath",Define to prepend to default font search path.)
+fi
+
 # Set Ghostscript font directory
 AC_ARG_WITH(gs-font-dir,
 	      [  --with-gs-font-dir      directory containing Ghostscript fonts],

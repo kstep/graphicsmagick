@@ -169,6 +169,7 @@ UNIX/Cygwin COMPILATION
    --without-tiff          disable TIFF support
    --without-ttf           disable TrueType support
    --without-wmf           disable WMF support
+   --with-fontpath         prepend to default font search path
    --with-gs-font-dir      directory containing Ghostscript fonts
    --with-windows-font-dir directory containing MS-Windows fonts
    --without-xml           disable XML support
