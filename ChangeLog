@@ -1,6 +1,7 @@
 2004-08-24  Glenn Randers-Pehrson <glennrp@imagemagick.org>
 	* coders/png.c: Fixed call to png_set_unknown_chunks (arg should
-	be 1 not 0 to ignore chunks.
+	be 1 not 0 to ignore chunks.  tEXt and zTXt were inadvertently
+	included in the list of unused chunks.
 	* coders/bmp.c: Applied security fix from Cristy.
 
 2004-08-05  Glenn Randers-Pehrson <glennrp@imagemagick.org>
