@@ -12009,6 +12009,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
       (void) signal(SIGINT,XSignalHandler);
       (void) signal(SIGSEGV,XSignalHandler);
+      (void) signal(SIGTERM,XSignalHandler);
     }
   else
     {
@@ -12493,6 +12494,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
   (void) signal(SIGINT,XSignalHandler);
   (void) signal(SIGSEGV,XSignalHandler);
+  (void) signal(SIGTERM,XSignalHandler);
   /*
     Initialize Image and Magnify X images.
   */
@@ -13546,6 +13548,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       LiberateMemory((void **) &windows->pixel_info);
       (void) signal(SIGSEGV,SIG_DFL);
       (void) signal(SIGINT,SIG_DFL);
+      (void) signal(SIGTERM,SIG_DFL);
       (void) XSetWindows((XWindows *) NULL);
     }
   XSync(display,False);

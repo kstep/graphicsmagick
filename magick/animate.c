@@ -1084,6 +1084,7 @@ MagickExport Image *XAnimateImages(Display *display,
         SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
       (void) signal(SIGINT,XSignalHandler);
       (void) signal(SIGSEGV,XSignalHandler);
+      (void) signal(SIGTERM,XSignalHandler);
     }
   else
     {
@@ -1568,6 +1569,7 @@ MagickExport Image *XAnimateImages(Display *display,
       SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
   (void) signal(SIGINT,XSignalHandler);
   (void) signal(SIGSEGV,XSignalHandler);
+  (void) signal(SIGTERM,XSignalHandler);
   /*
     Initialize X image structure.
   */
@@ -2452,6 +2454,7 @@ MagickExport Image *XAnimateImages(Display *display,
       LiberateMemory((void **) &windows->pixel_info);
       (void) signal(SIGSEGV,SIG_DFL);
       (void) signal(SIGINT,SIG_DFL);
+      (void) signal(SIGTERM,SIG_DFL);
       (void) XSetWindows((XWindows *) NULL);
     }
   XSync(display,False);
