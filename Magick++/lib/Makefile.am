@@ -22,7 +22,7 @@ MICRO_VERSION      = @MICRO_VERSION@
 libMagick___la_SOURCES = \
 	Blob.cpp CoderInfo.cpp Color.cpp Drawable.cpp Exception.cpp \
 	Functions.cpp Geometry.cpp Image.cpp Montage.cpp Options.cpp \
-	Pixels.cpp Thread.cpp TypeMetric.cpp
+	Pixels.cpp STL.cpp Thread.cpp TypeMetric.cpp
 
 libMagick___la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 

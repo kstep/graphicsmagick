@@ -44,13 +44,13 @@ namespace Magick
   class addNoiseImage : public std::unary_function<Image&,void>
   {
   public:
-    addNoiseImage ( NoiseType noiseType_ )
-      : _noiseType( noiseType_ ) { }
+    addNoiseImage ( NoiseType noiseType_ );
+//       : _noiseType( noiseType_ ) { }
 
-    void operator()( Image &image_ )
-      {
-	image_.addNoise( _noiseType );
-      }
+    void operator()( Image &image_ );
+//       {
+// 	image_.addNoise( _noiseType );
+//       }
   private:
     NoiseType _noiseType;
   };

@@ -203,7 +203,7 @@ lib_LTLIBRARIES = libMagick++.la
 libMagick___la_SOURCES = \
 	Blob.cpp CoderInfo.cpp Color.cpp Drawable.cpp Exception.cpp \
 	Functions.cpp Geometry.cpp Image.cpp Montage.cpp Options.cpp \
-	Pixels.cpp Thread.cpp TypeMetric.cpp
+	Pixels.cpp STL.cpp Thread.cpp TypeMetric.cpp
 
 
 libMagick___la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
@@ -222,7 +222,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libMagick___la_LIBADD =
 am_libMagick___la_OBJECTS = Blob.lo CoderInfo.lo Color.lo Drawable.lo \
 	Exception.lo Functions.lo Geometry.lo Image.lo Montage.lo \
-	Options.lo Pixels.lo Thread.lo TypeMetric.lo
+	Options.lo Pixels.lo STL.lo Thread.lo TypeMetric.lo
 libMagick___la_OBJECTS = $(am_libMagick___la_OBJECTS)
 
 DEFS = @DEFS@
@@ -236,8 +236,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Exception.Plo ./$(DEPDIR)/Functions.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Geometry.Plo ./$(DEPDIR)/Image.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Montage.Plo ./$(DEPDIR)/Options.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Pixels.Plo ./$(DEPDIR)/Thread.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/TypeMetric.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/Pixels.Plo ./$(DEPDIR)/STL.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Thread.Plo ./$(DEPDIR)/TypeMetric.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -319,6 +319,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Montage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Options.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Pixels.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/STL.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thread.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TypeMetric.Plo@am__quote@
 
