@@ -56,6 +56,7 @@ extern "C" {
 #if defined(__BORLANDC__) && defined(_DLL)
 #  pragma message("BCBMagick lib DLL export interface")
 #  define _MAGICKDLL_
+#  define _MAGICKLIB_
 #  define BuildMagickModules
 #endif 
 
