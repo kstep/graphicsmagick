@@ -244,7 +244,7 @@ extern MagickExport void
     const double,const unsigned int,const unsigned int),
   TraceBezier(PrimitiveInfo *,const unsigned long),
   TraceCircle(PrimitiveInfo *,const PointInfo,const PointInfo),
-  TraceEllipse(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo),
+  TraceEllipse(PrimitiveInfo *,const PointInfo,const PointInfo,PointInfo),
   TraceLine(PrimitiveInfo *,const PointInfo,const PointInfo),
   TracePoint(PrimitiveInfo *,const PointInfo),
   TraceRectangle(PrimitiveInfo *,const PointInfo,const PointInfo),
