@@ -197,11 +197,11 @@ static unsigned int CompositeImages(ImageInfo *image_info,
     (*image)=(*image)->previous;
   status=MogrifyImages(image_info,argc-1,argv,image);
   CatchImageException(*image);
-  composite_image=*composite_ref;
+  composite_image=(*composite_ref);
   if (composite_image != (Image *) NULL)
     {
       assert(composite_image->signature == MagickSignature);
-      mask_image=*mask_ref;
+      mask_image=(*mask_ref);
       if (mask_image != (Image *) NULL)
         {
           assert(mask_image != (Image *) NULL);
