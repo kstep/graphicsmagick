@@ -15,9 +15,7 @@
 	was a JPEG and the quality was preserved.  Sampling factors
 	are restored if the input was a JPEG, sampling factors were
 	preserved, and the colorspace for the output file is the same
-	as that of the input file.  Attributes are preserved when the
-	input file is a JPEG and either the "-verbose" option or the
-        "-define JPEG:preserve-settings=yes" option is present 
+	as that of the input file.
 
 2003-12-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
