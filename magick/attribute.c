@@ -179,174 +179,182 @@ static int GenerateIPTCAttribute(Image *image,const char *key)
   return(i < (int) image->iptc_profile.length);
 }
 
-static long readLongFromBuffer(char **s,unsigned int *len)
-{
-  unsigned char
-    buffer[4];
-
-  int
-    i,
-    c;
-
-  if (*len < 4)
-    return(-1);
-  for (i=0; i < 4; i++)
-  {
-    c=(*(*s)++);
-    (*len)--;
-    buffer[i]=c;
-  }
-  return (((long) buffer[0]) << 24) |
-         (((long) buffer[1]) << 16) | 
-         (((long) buffer[2]) <<  8) |
-         (((long) buffer[3]));
-}
-
-static int readWordFromBuffer(char **s,unsigned int *len)
-{
-  unsigned char
-    buffer[2];
-
-  int
-    i,
-    c;
-
-  if (*len < 2)
-    return(-1);
-  for (i=0; i < 2; i++)
-  {
-    c=(*(*s)++);
-    (*len)--;
-    buffer[i]=c;
-  }
-  return (((int) buffer[0]) << 8) |
-         (((int) buffer[1]));
-}
-
-static unsigned char readByteFromBuffer(char **s,unsigned int *len)
+static unsigned char ReadByte(char **p,unsigned int *length)
 {
   unsigned char
     c;
 
-  if (*len < 1)
+  if (*length < 1)
     return(0xff);
-  c=(*(*s)++);
-  (*len)--;
+  c=(*(*p)++);
+  (*length)--;
   return(c);
 }
 
-static char *GenerateClippingPath(char *s,unsigned int len,int columns,int rows)
+static long ReadMSBLong(char **p,unsigned int *length)
+{
+  int
+    c;
+
+  long
+    value;
+
+  register int
+    i;
+
+  unsigned char
+    buffer[4];
+
+  if (*length < 4)
+    return(-1);
+  for (i=0; i < 4; i++)
+  {
+    c=(*(*p)++);
+    (*length)--;
+    buffer[i]=c;
+  }
+  value=buffer[0] << 24;
+  value|=buffer[1] << 16;
+  value|=buffer[2] << 8;
+  value|=buffer[3];
+  return(value);
+}
+
+static int ReadMSBShort(char **p,unsigned int *length)
+{
+  int
+    c,
+    value;
+
+  register int
+    i;
+
+  unsigned char
+    buffer[2];
+
+  if (*length < 2)
+    return(-1);
+  for (i=0; i < 2; i++)
+  {
+    c=(*(*p)++);
+    (*length)--;
+    buffer[i]=c;
+  }
+  value=buffer[0] << 8;
+  value|=buffer[1];
+  return(value);
+}
+
+static char *GenerateClippingPath(char *blob,unsigned int length,
+  unsigned int columns,unsigned int rows)
 {
   char
-    *outs;
+    *path,
+    *message;
 
+  int
+    count,
+    selector;
+  
   long
     x,
     y;
 
-  int
-    i,
-    first,
-    length,
-    selector;
-  
-  double
-    fx[3],
-    fy[3],
-    first_fx[3],
-    first_fy[3],
-    previ_fx[3],
-    previ_fy[3];
+  PointInfo
+    first[3],
+    last[3],
+    point[3];
 
-  outs=AllocateString((char *) NULL);
-  if (outs == (char *) NULL)
-    return outs;
-  while (len > 0)
+  register int
+    i;
+
+  unsigned int
+    status;
+
+  path=AllocateString((char *) NULL);
+  if (path == (char *) NULL)
+    return((char *) NULL);
+  message=AllocateString((char *) NULL);
+  while (length > 0)
   {
-    char
-      *temp;
-
-    selector=readWordFromBuffer(&s,&len);
+    selector=ReadMSBShort(&blob,&length);
     if (selector != 6)
       {
         /*
           Path fill record.
         */
-        s+=24;
-        len-=24;
+        blob+=24;
+        length-=24;
         continue;
       }
-    s+=24;
-    len-=24;
-    temp=AllocateString((char *) NULL);
-    FormatString(temp,"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
-    ConcatenateString(&outs,temp);
-    FormatString(temp,"<svg width=\"%d\" height=\"%d\">\n",columns,rows);
-    ConcatenateString(&outs,temp);
-    FormatString(temp,"<g>\n");
-    ConcatenateString(&outs,temp);
-    FormatString(temp,"<path style=\"fill:#ffffff;stroke:none\" d=\"\n");
-    ConcatenateString(&outs,temp);
-    while (len > 0)
+    blob+=24;
+    length-=24;
+    FormatString(message,"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
+    ConcatenateString(&path,message);
+    FormatString(message,"<svg width=\"%d\" height=\"%d\">\n",columns,rows);
+    ConcatenateString(&path,message);
+    FormatString(message,"<g>\n");
+    ConcatenateString(&path,message);
+    FormatString(message,"<path style=\"fill:#ffffff;stroke:none\" d=\"\n");
+    ConcatenateString(&path,message);
+    while (length > 0)
     {
-      selector=readWordFromBuffer(&s,&len);
+      selector=ReadMSBShort(&blob,&length);
       if ((selector != 0) && (selector != 3))
         break;
-      length=readWordFromBuffer(&s,&len);
-      s+=22;
-      len-=22;
-      first=1;
-      while (length > 0)
+      count=ReadMSBShort(&blob,&length);
+      blob+=22;
+      length-=22;
+      status=True;
+      while (count > 0)
       {
-        selector=readWordFromBuffer(&s,&len);
-        if ((selector == 1) || (selector == 2) ||
-            (selector == 4) || (selector == 5))
+        selector=ReadMSBShort(&blob,&length);
+        if ((selector == 1) || (selector == 2) || (selector == 4) ||
+            (selector == 5))
           {
             for (i=0; i < 3; i++)
             {
-              y=readLongFromBuffer(&s,&len);
-              x=readLongFromBuffer(&s,&len);
-              fy[i]=((double) y*(double) rows)/16777216.0;
-              fx[i]=((double) x*(double) columns)/16777216.0;
+              y=ReadMSBLong(&blob,&length);
+              x=ReadMSBLong(&blob,&length);
+              point[i].y=((double) y*(double) rows)/16777216.0;
+              point[i].x=((double) x*(double) columns)/16777216.0;
             }
-            if (first)
+            if (status)
               {
-                FormatString(temp,"M %.1f,%.1f\n",fx[1],fy[1]);
+                FormatString(message,"M %.1f,%.1f\n",point[1].x,point[1].y);
                 for (i=0; i < 3; i++)
                 {
-                  previ_fx[i]=first_fx[i]=fx[i];
-                  previ_fy[i]=first_fy[i]=fy[i];
+                  first[i]=point[i];
+                  last[i]=point[i];
                 }
               }
             else
               {
-                FormatString(temp,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f\n",
-                  previ_fx[2],previ_fy[2],fx[0],fy[0],fx[1],fy[1]);
-                for(i=0; i < 3; i++)
-                {
-                  previ_fx[i]=fx[i];
-                  previ_fy[i]=fy[i];
-                }
+                FormatString(message,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f\n",
+                  last[2].x,last[2].y,point[0].x,point[0].y,point[1].x,
+                  point[1].y);
+                for (i=0; i < 3; i++)
+                  last[i]=point[i];
               }
-          ConcatenateString(&outs,temp);
-          first=0;
-          length--;
+          ConcatenateString(&path,message);
+          status=False;
+          count--;
         }
       }
-      FormatString(temp, "C %.1f,%.1f %.1f,%.1f %.1f,%.1f Z\n",previ_fx[2],
-        previ_fy[2],first_fx[0],first_fy[0],first_fx[1],first_fy[1]);
-      ConcatenateString(&outs,temp);
+      FormatString(message,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f Z\n",last[2].x,
+        last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
+      ConcatenateString(&path,message);
     }
-    FormatString(temp,"\"/>\n");
-    ConcatenateString(&outs,temp);
-    FormatString(temp,"</g>\n");
-    ConcatenateString(&outs,temp);
-    FormatString(temp,"</svg>\n");
-    ConcatenateString(&outs,temp);
-    LiberateMemory((void **) &temp);
+    FormatString(message,"\"/>\n");
+    ConcatenateString(&path,message);
+    FormatString(message,"</g>\n");
+    ConcatenateString(&path,message);
+    FormatString(message,"</svg>\n");
+    ConcatenateString(&path,message);
     break;
   }
-  return(outs);
+  LiberateMemory((void **) &message);
+  return(path);
 }
 
 static int Generate8BIMAttribute(Image *image,const char *key)
@@ -356,7 +364,6 @@ static int Generate8BIMAttribute(Image *image,const char *key)
     *string;
 
   int
-    found,
     i,
     id,
     start,
@@ -370,32 +377,33 @@ static int Generate8BIMAttribute(Image *image,const char *key)
     *info;
 
   unsigned int
-    length;
+    length,
+    status;
 
   if (image->iptc_profile.length == 0)
     return(False);
   count=sscanf(key,"8BIM:%d,%d",&start,&stop);
   if (count != 2)
     return(False);
-  found=False;
+  status=False;
   length=image->iptc_profile.length;
   info=image->iptc_profile.info;
   while (length > 0)
   {
-    if (readByteFromBuffer((char **) &info,&length) != '8')
+    if (ReadByte((char **) &info,&length) != '8')
       continue;
-    if (readByteFromBuffer((char **) &info,&length) != 'B')
+    if (ReadByte((char **) &info,&length) != 'B')
       continue;
-    if (readByteFromBuffer((char **) &info,&length) != 'I')
+    if (ReadByte((char **) &info,&length) != 'I')
       continue;
-    if (readByteFromBuffer((char **) &info,&length) != 'M')
+    if (ReadByte((char **) &info,&length) != 'M')
       continue;
-    id=readWordFromBuffer((char **) &info,&length);
+    id=ReadMSBShort((char **) &info,&length);
     if (id < start)
       continue;
     if (id > stop)
       continue;
-    count=readByteFromBuffer((char **) &info,&length);
+    count=ReadByte((char **) &info,&length);
     string=(char *) NULL;
     if ((count > 0) && (count <= (int) length))
       {
@@ -403,14 +411,14 @@ static int Generate8BIMAttribute(Image *image,const char *key)
         if (string != (char *) NULL)
           {
             for (i=0; i < count; i++)
-              string[i]=(char) readByteFromBuffer((char **) &info,&length);
+              string[i]=(char) ReadByte((char **) &info,&length);
             string[count]=0;
             LiberateMemory((void **) &string);
           }
       }
     if (!(count & 0x01))
-      c=readByteFromBuffer((char **) &info,&length);
-    count=readLongFromBuffer((char **) &info,&length);
+      c=ReadByte((char **) &info,&length);
+    count=ReadMSBLong((char **) &info,&length);
     attribute=(char *) AcquireMemory(count+MaxTextExtent);
     if (attribute != (char *) NULL)
       {
@@ -418,23 +426,23 @@ static int Generate8BIMAttribute(Image *image,const char *key)
         attribute[count]='\0';
         info+=count;
         length-=count;
-        if ((id > 1999) && (id < 2999))
+        if ((id <= 1999) || (id >= 2999))
+          SetImageAttribute(image,key,(const char *) attribute);
+        else
           {
             char
-              *text;
+              *path;
 
-            text=GenerateClippingPath(attribute,count,image->columns,
+            path=GenerateClippingPath(attribute,count,image->columns,
               image->rows);
-            SetImageAttribute(image,key,(const char *) text);
-            LiberateMemory((void **) &text);
+            SetImageAttribute(image,key,(const char *) path);
+            LiberateMemory((void **) &path);
           }
-        else
-          SetImageAttribute(image,key,(const char *) attribute);
         LiberateMemory((void **) &attribute);
-        found=True;
+        status=True;
       }
   }
-  return(found);
+  return(status);
 }
 
 MagickExport ImageAttribute *GetImageAttribute(const Image *image,
