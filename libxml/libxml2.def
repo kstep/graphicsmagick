@@ -1,4 +1,3 @@
-LIBRARY libxml2
 EXPORTS
 	UTF8ToHtml
 	UTF8Toisolat1

@@ -1,3 +1,10 @@
+2003-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh: Bump library revision and release version since code
+	updates have been made.
+	* libxml/libxml2.def: Remove 'LIBRARY libxml2' statement which
+	confuses Visual C++ 6.0.
+
 2003-05-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/viff.c (RegisterVIFFImage): Module definition for "XV"
