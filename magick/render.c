@@ -2744,9 +2744,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("stroke-linejoin",keyword) == 0)
           {
             GetToken(q,&q,token);
-            if (LocaleCompare("butt",token) == 0)
+            if (LocaleCompare("bevel",token) == 0)
               {
-                graphic_context[n]->linejoin=MiterJoin;
+                graphic_context[n]->linejoin=BevelJoin;
                 break;
               }
             if (LocaleCompare("miter",token) == 0)
@@ -2757,11 +2757,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             if (LocaleCompare("round",token) == 0)
               {
                 graphic_context[n]->linejoin=RoundJoin;
-                break;
-              }
-            if (LocaleCompare("square",token) == 0)
-              {
-                graphic_context[n]->linejoin=BevelJoin;
                 break;
               }
             status=False;
