@@ -1,3 +1,7 @@
+2002-02-20  Cristy  <cristy@mystic.es.dupont.com>,
+  * Annotation did not support SJIS properly (patch provided by
+    Katsutoshi Shibuya).
+
 2002-02-18  Cristy  <cristy@mystic.es.dupont.com>,
   * Fixed memory overrun with -format option of the mogrify program.
 	* Labels were not positioned correctly rectly for VID format.
