@@ -1443,6 +1443,6 @@ int main(int argc,char **argv)
   if (image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   DestroyDelegateInfo();
-  Exit(0);
+  Exit(status ? 0 : errno);
   return(False);
 }

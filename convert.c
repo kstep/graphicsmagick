@@ -389,6 +389,7 @@ int main(int argc,char **argv)
   int
     append,
     gravity,
+    status,
     x;
 
   register Image
@@ -1636,13 +1637,13 @@ int main(int argc,char **argv)
   SetImageInfo(&image_info,True);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
-    (void) WriteImage(&image_info,p);
-    if (image_info.adjoin)
+    status=WriteImage(&image_info,p);
+    if ((status == False) || image_info.adjoin)
       break;
   }
   if (image_info.verbose)
     DescribeImage(image,stderr,False);
   DestroyDelegateInfo();
-  Exit(0);
+  Exit(status ? 0 : errno);
   return(False);
 }

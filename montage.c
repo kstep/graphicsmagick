@@ -272,6 +272,7 @@ int main(int argc,char **argv)
     image_info;
 
   int
+    status,
     x;
 
   MontageInfo
@@ -303,6 +304,7 @@ int main(int argc,char **argv)
   image=(Image *) NULL;
   last_scene=0;
   GetImageInfo(&image_info);
+  image_info.coalesce_frames=True;
   GetMontageInfo(&montage_info);
   GetQuantizeInfo(&quantize_info);
   scene=0;
@@ -1161,14 +1163,14 @@ int main(int argc,char **argv)
   SetImageInfo(&image_info,True);
   for (p=montage_image; p != (Image *) NULL; p=p->next)
   {
-    (void) WriteImage(&image_info,p);
-    if (image_info.adjoin)
+    status=WriteImage(&image_info,p);
+    if ((status == False) || image_info.adjoin)
       break;
   }
   (void) strcpy(montage_image->magick_filename,argv[argc-1]);
   if (image_info.verbose)
     DescribeImage(montage_image,stderr,False);
   DestroyDelegateInfo();
-  Exit(0);
+  Exit(status ? 0 : errno);
   return(False);
 }

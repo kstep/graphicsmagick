@@ -203,6 +203,7 @@ int main(int argc,char **argv)
 
   int
     gravity,
+    status,
     x,
     y;
 
@@ -902,10 +903,10 @@ int main(int argc,char **argv)
   */
   (void) strcpy(combined_image->filename,write_filename);
   SetImageInfo(&image_info,True);
-  (void) WriteImage(&image_info,combined_image);
+  status=WriteImage(&image_info,combined_image);
   if (image_info.verbose)
     DescribeImage(combined_image,stderr,False);
   DestroyDelegateInfo();
-  Exit(0);
+  Exit(status ? 0 : errno);
   return(False);
 }

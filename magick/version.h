@@ -16,7 +16,7 @@ extern "C" {
 #endif
 #define MagickLibVersion  0x0423
 #define MagickVersion  \
-  "@(#)ImageMagick 4.2.3 99/05/01 cristy@mystic.es.dupont.com"
+  "@(#)ImageMagick 4.2.4 99/06/01 cristy@mystic.es.dupont.com"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -3,19 +3,19 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                       IIIII  M   M   AAA   GGGG  EEEEE                      %
-%                         I    MM MM  A   A G      E                          %
-%                         I    M M M  AAAAA G  GG  EEE                        %
-%                         I    M   M  A   A G   G  E                          %
-%                       IIIII  M   M  A   A  GGGG  EEEEE                      %
+%                      IIIII  M   M   AAA   GGGG  EEEEE                       %
+%                        I    MM MM  A   A G      E                           %
+%                        I    M M M  AAAAA G  GG  EEE                         %
+%                        I    M   M  A   A G   G  E                           %
+%                      IIIII  M   M  A   A  GGGG  EEEEE                       %
 %                                                                             %
 %                                                                             %
-%                           ImageMagick Image Methods                         %
+%                          ImageMagick Image Methods                          %
 %                                                                             %
 %                                                                             %
-%                               Software Design                               %
-%                                 John Cristy                                 %
-%                                  July 1992                                  %
+%                              Software Design                                %
+%                                John Cristy                                  %
+%                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
 %  Copyright 1999 E. I. du Pont de Nemours and Company                        %
@@ -225,6 +225,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->previous=(Image *) NULL;
   allocated_image->list=(Image *) NULL;
   allocated_image->next=(Image *) NULL;
+  allocated_image->restart_animation_here=False;
   if (image_info == (ImageInfo *) NULL)
     return(allocated_image);
   /*
@@ -1448,36 +1449,38 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
       return(cloned_info);
     }
   *cloned_info=(*image_info);
-  if (image_info->server_name != (char *) NULL)
-    cloned_info->server_name=AllocateString(image_info->server_name);
   if (image_info->size != (char *) NULL)
     cloned_info->size=AllocateString(image_info->size);
   if (image_info->tile != (char *) NULL)
     cloned_info->tile=AllocateString(image_info->tile);
-  if (image_info->density != (char *) NULL)
-    cloned_info->density=AllocateString(image_info->density);
   if (image_info->page != (char *) NULL)
     cloned_info->page=AllocateString(image_info->page);
-  if (image_info->dispose != (char *) NULL)
-    cloned_info->dispose=AllocateString(image_info->dispose);
-  if (image_info->delay != (char *) NULL)
-    cloned_info->delay=AllocateString(image_info->delay);
-  if (image_info->iterations != (char *) NULL)
-    cloned_info->iterations=AllocateString(image_info->iterations);
-  if (image_info->texture != (char *) NULL)
-    cloned_info->texture=AllocateString(image_info->texture);
+  if (image_info->server_name != (char *) NULL)
+    cloned_info->server_name=AllocateString(image_info->server_name);
   if (image_info->box != (char *) NULL)
     cloned_info->box=AllocateString(image_info->box);
   if (image_info->font != (char *) NULL)
     cloned_info->font=AllocateString(image_info->font);
   if (image_info->pen != (char *) NULL)
     cloned_info->pen=AllocateString(image_info->pen);
+  if (image_info->texture != (char *) NULL)
+    cloned_info->texture=AllocateString(image_info->texture);
+  if (image_info->density != (char *) NULL)
+    cloned_info->density=AllocateString(image_info->density);
   if (image_info->background_color != (char *) NULL)
     cloned_info->background_color=AllocateString(image_info->background_color);
   if (image_info->border_color != (char *) NULL)
     cloned_info->border_color=AllocateString(image_info->border_color);
   if (image_info->matte_color != (char *) NULL)
     cloned_info->matte_color=AllocateString(image_info->matte_color);
+  if (image_info->dispose != (char *) NULL)
+    cloned_info->dispose=AllocateString(image_info->dispose);
+  if (image_info->delay != (char *) NULL)
+    cloned_info->delay=AllocateString(image_info->delay);
+  if (image_info->iterations != (char *) NULL)
+    cloned_info->iterations=AllocateString(image_info->iterations);
+  if (image_info->view != (char *) NULL)
+    cloned_info->view=AllocateString(image_info->view);
   return(cloned_info);
 }
 
@@ -1546,7 +1549,7 @@ Export void CloseImage(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method CoalesceImages merges a sequence of images.  This is useful for GIF
-%  animation sequences that have page offsets and disposal methods.
+%  and MNG animation sequences that have page offsets and disposal methods.
 %
 %  The format of the CoalesceImages routine is:
 %
@@ -1562,40 +1565,49 @@ Export void CloseImage(Image *image)
 Export void CoalesceImages(Image *image)
 {
   Image
-    *cloned_image,
-    *p;
+    *cloned_image;
 
   int
     x,
     y;
 
+  register Image
+    *p;
+
   unsigned int
     matte,
     sans;
 
-  /*
-    Determine if all the images in the sequence are the same size.
-  */
-  assert(image != (Image *) NULL);
-  for (p=image->next; p != (Image *) NULL; p=p->next)
-    if ((p->columns != p->previous->columns) ||
-        (p->rows != p->previous->rows))
-      break;
-  if (p == (Image *) NULL)
-    return;
+  SegmentInfo
+    bounding_box,
+    previous_box;
+
   /*
     Coalesce the image sequence.
   */
-  if (image->page)
-    {
-      FreeMemory((char *) image->page);
-      image->page=(char *) NULL;
-    }
+  assert(image != (Image *) NULL);
   for (p=image->next; p != (Image *) NULL; p=p->next)
   {
     x=0;
+    x=0;
+    if (p->previous->page)
+      (void) XParseGeometry(p->previous->page,&x,&y,&sans,&sans);
+    previous_box.x1=x;
+    previous_box.y1=y;
+    x=0;
     y=0;
-    (void) XParseGeometry(p->page,&x,&y,&sans,&sans);
+    if (p->page != (char *) NULL)
+      (void) XParseGeometry(p->page,&x,&y,&sans,&sans);
+    if ((x <= previous_box.x1) && (y <= previous_box.y1) && !p->matte &&
+        (p->columns >= (p->previous->columns+previous_box.x1-x)) &&
+        (p->rows >= (p->previous->rows+previous_box.y1-y)))
+      continue;
+    bounding_box.x1=x < previous_box.x1 ? x : previous_box.x1;
+    bounding_box.y1=y < previous_box.y1 ? y : previous_box.y1;
+    bounding_box.x2=(x+p->columns) > (previous_box.x1+p->previous->columns) ?
+      x+p->columns : previous_box.x1+p->previous->columns;
+    bounding_box.y2=(y+p->rows) > (previous_box.y1+p->previous->rows) ?
+      y+p->rows : previous_box.y1+p->previous->rows;
     p->orphan=True;
     cloned_image=CloneImage(p,p->columns,p->rows,True);
     p->orphan=False;
@@ -1605,8 +1617,8 @@ Export void CoalesceImages(Image *image)
           "Memory allocation failed");
         return;
       }
-    p->columns=p->previous->columns;
-    p->rows=p->previous->rows;
+    p->columns=bounding_box.x2-bounding_box.x1;
+    p->rows=bounding_box.y2-bounding_box.y1;
     p->packets=p->columns*p->rows;
     p->pixels=(RunlengthPacket *) ReallocateMemory((char *)
       p->pixels,p->packets*sizeof(RunlengthPacket));
@@ -1618,13 +1630,19 @@ Export void CoalesceImages(Image *image)
       }
     if (p->page)
       {
-        FreeMemory((char *) p->page);
-        p->page=(char *) NULL;
+        char
+          geometry[MaxTextExtent];
+
+        FormatString(geometry,"%lux%lu+%ld+%ld",p->columns,p->rows,
+          bounding_box.x1,bounding_box.y1);
+        p->page=PostscriptGeometry(geometry);
       }
     matte=p->matte;
-    CompositeImage(p,ReplaceCompositeOp,p->previous,0,0);
+    SetImage(p);
+    CompositeImage(p,ReplaceCompositeOp,p->previous,previous_box.x1-
+      bounding_box.x1,previous_box.y1-bounding_box.y1);
     CompositeImage(p,cloned_image->matte ? OverCompositeOp : ReplaceCompositeOp,
-      cloned_image,x,y);
+      cloned_image,x-bounding_box.x1,y-bounding_box.y1);
     DestroyImage(cloned_image);
     p->matte=matte;
     CondenseImage(p);
@@ -5520,49 +5538,69 @@ Export void GetAnnotateInfo(const ImageInfo *image_info,
 */
 Export void GetImageInfo(ImageInfo *image_info)
 {
+  /*
+    File and image dimension members.
+  */
   assert(image_info != (ImageInfo *) NULL);
   image_info->file=(FILE *) NULL;
   *image_info->filename='\0';
   *image_info->magick='\0';
+  TemporaryFilename(image_info->unique);
+  (void) strcat(image_info->unique,"u");
   image_info->affirm=False;
   image_info->temporary=False;
+  image_info->adjoin=True;
   image_info->subimage=0;
   image_info->subrange=0;
-  image_info->server_name=(char *) NULL;
+  image_info->ping=False;
+  image_info->depth=QuantumDepth;
   image_info->size=(char *) NULL;
   image_info->tile=(char *) NULL;
   image_info->page=(char *) NULL;
-  image_info->dispose=(char *) NULL;
-  image_info->delay=(char *) NULL;
-  image_info->iterations=(char *) NULL;
-  image_info->texture=(char *) NULL;
-  image_info->view=(char *) NULL;
+  image_info->interlace=DefaultInterlace;
+  image_info->units=UndefinedResolution;
+  /*
+    Compression members.
+  */
+  image_info->compression=UndefinedCompression;
+  image_info->quality=atoi(DefaultImageQuality);
+  /*
+    Annotation members.
+  */
+  image_info->server_name=(char *) NULL;
   image_info->box=(char *) NULL;
   image_info->font=(char *) NULL;
   image_info->pen=(char *) NULL;
+  image_info->texture=(char *) NULL;
   image_info->density=(char *) NULL;
   image_info->linewidth=1;
-  image_info->adjoin=True;
-  image_info->antialias=True;
-  image_info->depth=QuantumDepth;
-  image_info->dither=True;
-  image_info->monochrome=False;
   image_info->pointsize=atoi(DefaultPointSize);
+  image_info->antialias=True;
   image_info->fuzz=0;
-  image_info->quality=atoi(DefaultImageQuality);
-  image_info->verbose=False;
-  image_info->colorspace=UndefinedColorspace;
-  image_info->compression=UndefinedCompression;
-  image_info->interlace=DefaultInterlace;
-  image_info->units=UndefinedResolution;
-  image_info->preview_type=JPEGPreview;
-  image_info->group=0L;
   image_info->background_color=(char *) NULL;
   image_info->border_color=(char *) NULL;
   image_info->matte_color=(char *) NULL;
-  TemporaryFilename(image_info->unique);
-  (void) strcat(image_info->unique,"u");
-  image_info->ping=False;
+  /*
+    Color reduction members.
+  */
+  image_info->dither=True;
+  image_info->monochrome=False;
+  image_info->colorspace=UndefinedColorspace;
+  /*
+    Animation members.
+  */
+  image_info->dispose=(char *) NULL;
+  image_info->delay=(char *) NULL;
+  image_info->iterations=(char *) NULL;
+  image_info->coalesce_frames=False;
+  image_info->insert_backdrops=False;
+  /*
+    Miscellaneous members.
+  */
+  image_info->verbose=False;
+  image_info->preview_type=JPEGPreview;
+  image_info->view=(char *) NULL;
+  image_info->group=0L;
 }
 
 /*
@@ -7175,7 +7213,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         */
         i++;
         GetQuantizeInfo(&quantize_info);
-        quantize_info.dither=quantize_info.dither;
+        quantize_info.dither=image_info->dither;
         quantize_info.colorspace=GRAYColorspace;
         (void) QuantizeImage(&quantize_info,*image);
         SyncImage(*image);

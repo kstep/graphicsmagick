@@ -94,79 +94,101 @@ typedef struct _FrameInfo
 
 typedef struct _ImageInfo
 {
+  /*
+    File and image dimension members.
+  */
   FILE
     *file;
 
   char
     filename[MaxTextExtent],
-    magick[MaxTextExtent];
+    magick[MaxTextExtent],
+    unique[MaxTextExtent];
 
   unsigned int
     affirm,
     temporary,
+    adjoin,
     subimage,
-    subrange;
+    subrange,
+    depth,
+    ping;
 
   char
-    *server_name,
     *size,
     *tile,
-    *page,
-    *dispose,
-    *delay,
-    *iterations,
-    *texture,
-    *view,
-    *box,
-    *font,
-    *pen,
-    *density;
-
-  unsigned int
-    linewidth,
-    pointsize,
-    adjoin,
-    antialias,
-    depth,
-    dither,
-    monochrome,
-    quality,
-    verbose;
-
-  int
-    fuzz;
-
-  ColorspaceType
-    colorspace;
-
-  CompressionType
-    compression;
+    *page;
 
   InterlaceType
     interlace;
 
   ResolutionType
     units;
+  /*
+    Compression members.
+  */
+  CompressionType
+    compression;
 
-  FilterType
-    filter;  /* no longer used */
+  unsigned int
+    quality;
+  /*
+    Annotation members.
+  */
+  char
+    *server_name,
+    *box,
+    *font,
+    *pen,
+    *texture,
+    *density;
 
-  PreviewType
-    preview_type;
+  unsigned int
+    linewidth,
+    pointsize,
+    antialias;
 
-  long
-    group;
+  int
+    fuzz;
 
   char
     *background_color,
     *border_color,
     *matte_color;
+  /*
+    Color reduction members.
+  */
+  unsigned int
+    dither,
+    monochrome;
 
+  ColorspaceType
+    colorspace;
+  /*
+    Animation members.
+  */
   char
-    unique[MaxTextExtent];
+    *dispose,
+    *delay,
+    *iterations;
 
   unsigned int
-    ping;
+    coalesce_frames,
+    insert_backdrops;
+  /*
+    Miscellaneous members.
+  */
+  unsigned int
+    verbose;
+
+  PreviewType
+    preview_type;
+
+  char
+    *view;
+
+  long
+    group;
 } ImageInfo;
 
 typedef struct _MontageInfo
@@ -392,7 +414,9 @@ typedef struct _Image
   unsigned int
     dispose,
     delay,
-    iterations;
+    iterations,
+    coalesce_frames,
+    insert_backdrops;
 
   int
     fuzz;
@@ -424,6 +448,7 @@ typedef struct _Image
     magick_rows;
 
   int
+    restart_animation_here,
     tainted;
 
   unsigned int

@@ -949,6 +949,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     *loaded_image;
 
   int
+    first_scene,
     scene,
     status;
 
@@ -1604,6 +1605,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   */
   loaded_image=(Image *) NULL;
   scene=0;
+  first_scene=0;
   image=images[0];
   state=ForwardAnimationState | RepeatAnimationState;
   (void) XMagickCommand(display,resource_info,windows,PlayCommand,&image,
@@ -1630,7 +1632,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
                   {
                     if (!(state & RepeatAnimationState))
                       state&=(~PlayAnimationState);
-                    scene=0;
+                    scene=first_scene;
                     (void) sleep(resource_info->pause);
                   }
             }
@@ -1639,13 +1641,13 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
               /*
                 Reverse animation:  decrement scene number.
               */
-              if (scene > 0)
+              if (scene > first_scene)
                 scene--;
               else
                 if (state & AutoReverseAnimationState)
                   {
                     state|=ForwardAnimationState;
-                    scene=0;
+                    scene=first_scene;
                     (void) sleep(resource_info->pause);
                   }
                 else
@@ -1656,6 +1658,8 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
                   }
             }
           image=images[scene];
+          if ((image != (Image *) NULL) && image->restart_animation_here)
+            first_scene=scene;
           if ((state & StepAnimationState) ||
               (resource_info->title != (char *) NULL))
             {

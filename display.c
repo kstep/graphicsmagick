@@ -398,6 +398,7 @@ int main(int argc,char **argv)
   resource_database=XGetResourceDatabase(display,client_name);
   XGetResourceInfo(resource_database,client_name,&resource_info);
   image_info=resource_info.image_info;
+  image_info->coalesce_frames=True;
   quantize_info=resource_info.quantize_info;
   image_info->density=
     XGetResourceInstance(resource_database,client_name,"density",(char *) NULL);
