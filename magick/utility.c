@@ -405,7 +405,8 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
 %
 %  The format of the Base64Encode method is:
 %
-%      char *Base64Encode(const unsigned char *blob,const size_t blob_length,size_t *encoded_length )
+%      char *Base64Encode(const unsigned char *blob,const size_t blob_length,
+%        size_t *encoded_length )
 %
 %  A description of each parameter follows:
 %
@@ -416,8 +417,8 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
 %    o encoded_length: The number of bytes encoded.
 %
 */
-MagickExport char *Base64Encode(const unsigned char *blob,const size_t blob_length,
-                                size_t *encoded_length)
+MagickExport char *Base64Encode(const unsigned char *blob,
+  const size_t blob_length,size_t *encoded_length)
 {
   char
     *encode;
@@ -431,7 +432,7 @@ MagickExport char *Base64Encode(const unsigned char *blob,const size_t blob_leng
   size_t
     remainder;
 
-  assert(blob != (unsigned char *) NULL);
+  assert(blob != (const unsigned char *) NULL);
   *encoded_length=0;
   encode=(char *) AcquireMemory(4*blob_length/3+4);
   if (encode == (char *) NULL)
@@ -686,7 +687,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
 
   register long
     i,
-	  j;
+    j;
 
   /*
     Allocate argument vector.
