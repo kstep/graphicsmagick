@@ -7,8 +7,20 @@
 This file records noteworthy changes.
 
 <p>
+(0.9.2)<BR>
+<UL>
+  <LI> Should be thread-safe when used with POSIX threads (pthreads).
+  <LI> Added methods getPixels, setPixels, syncPixels, readPixels, and
+    writePixels, in order to provide low-level access to Image pixels.
+  <LI> Bugfix: size method was setting Options size, but not Image rows
+    and columns.
+
+</UL>
+<p>
 (0.9.1)<BR>
 <UL>
+  <LI> Added additional constructors, read, and write methods for BLOBs
+    to make BLOBs easier to use.<BR>
   <LI> Added the medianFilter() method to Image.
   <LI> Renamed transformColorSpace() to colorSpace() and added a
     colorSpace() accessor method.<BR>

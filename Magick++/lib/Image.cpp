@@ -2443,7 +2443,6 @@ Magick::Image::Image ( MagickLib::Image* image_, Magick::Options* options_ )
 MagickLib::Image * Magick::Image::replaceImage( MagickLib::Image* replacement_ )
 {
 
-_ASSERTE( _CrtCheckMemory() );
   // Catch errors that ImageMagick properly reports
   throwMagickError();
 
@@ -2455,20 +2454,15 @@ _ASSERTE( _CrtCheckMemory() );
       _lastError.throwException();
     }
 
-_ASSERTE( _CrtCheckMemory() );
   Lock( _imgRef->_mutexLock );
-_ASSERTE( _CrtCheckMemory() );
   if ( _imgRef->_refCount == 1 )
     {
       // We own the image.  Destroy existing image.
-_ASSERTE( _CrtCheckMemory() );
       if ( _imgRef->_image )
 	MagickLib::DestroyImages( _imgRef->_image );
-_ASSERTE( _CrtCheckMemory() );
 	  
       // Set reference image pointer to new image
       _imgRef->image(replacement_);
-_ASSERTE( _CrtCheckMemory() );
     }
   else
     {
@@ -2477,10 +2471,8 @@ _ASSERTE( _CrtCheckMemory() );
 
       // Initialize new reference object with new image pointer
       // and copy of options
-_ASSERTE( _CrtCheckMemory() );
       _imgRef = new ImageRef( replacement_,
 			      _imgRef->_options );
-_ASSERTE( _CrtCheckMemory() );
     }
 
   return replacement_;
