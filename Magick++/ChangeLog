@@ -1,9 +1,8 @@
 2001-10-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (getConstIndexes): Add method to obtain read-only
- 	pixel indexes.  Still requires documentation.
+ 	pixel indexes.
 	(getIndexes): Add method to obtain read-write pixel indexes.
-  	Still requires documentation.
 
 	* lib/Color.cpp (Color(PixelPacket&)): Change argument to const
  	PixelPacket& as it should have been from the beginning.

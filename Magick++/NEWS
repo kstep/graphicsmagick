@@ -8,6 +8,10 @@ with Magick++ itself.
 
   * Pass all input parameter strings as 'const std::string &' in Color class.
 
+  * Added support for obtaining pixel indexes.
+
+  * Implemented support for read-only pixels and pixel indexes.
+
 (5.3.9)
   * New class, CoderInfo, to return information for a specified image
     format as well as the coderInfoList() template function to return

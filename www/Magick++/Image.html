@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Description of Magick::Image Class">
    <title>Magick::Image Class</title>
@@ -2986,6 +2986,53 @@ Save updated pixel cache back to underlying image</font></font></font>
 <td>
 <center><b>Description</b></center>
 </td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="getConstPixels"></a><font size=-1>getConstPixels</font></center>
+</td>
+
+<td><font size=-1>const <a href="PixelPacket.html">PixelPacket</a>*</font></td>
+
+<td><font size=-1>int x_, int y_, unsigned int columns_, unsigned int rows_</font></td>
+
+<td><font size=-1>Transfers pixels from the image to the pixel cache as
+defined by the specified rectangular region.&nbsp;</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="getConstIndexes"></a><font size=-1>getConstIndexes</font></center>
+</td>
+
+<td><font size=-1>const IndexPacket*</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Returns a pointer to the Image pixel indexes. Only valid
+for PseudoClass images or CMYKA images. The pixel indexes represent an
+array of type IndexPacket, with each entry corresponding to an x,y pixel
+position. For PseudoClass images, the entry's value is the offset into
+the colormap (see <a href="#colorMap">colorMap</a>) for that pixel. For
+CMYKA images, the indexes are used to contain the alpha channel.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="getIndexes"></a><font size=-1>getIndexes</font></center>
+</td>
+
+<td><font size=-1>IndexPacket*</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Returns a pointer to the Image pixel indexes. Only valid
+for PseudoClass images or CMYKA images. The pixel indexes represent an
+array of type IndexPacket, with each entry corresponding to an x,y pixel
+position. For PseudoClass images, the entry's value is the offset into
+the colormap (see <a href="#colorMap">colorMap</a>)&nbsp; for that pixel.
+For CMYKA images, the indexes are used to contain the alpha channel.</font></td>
 </tr>
 
 <tr>

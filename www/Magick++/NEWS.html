@@ -10,9 +10,15 @@ Magick++ release number increments even if there are no changes associated
 with Magick++ itself.
 
 <p>
-(5.3.9.1)<BR>
+(5.4.0)<BR>
 <UL>
-  <LI> Improvements to string parameter passing in Color.
+  <LI> Fixed bug when scaling from Quantum to double in derived Color classes.
+
+  <LI> Pass all input parameter strings as 'const std::string &amp;' in Color class.
+
+  <LI> Added support for obtaining pixel indexes.
+
+  <LI> Implemented support for read-only pixels and pixel indexes.
 
 </UL>
 <p>
