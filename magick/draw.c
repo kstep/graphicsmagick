@@ -2280,15 +2280,14 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           case ReplaceMethod:
           {
             PixelPacket
-              color;
-
-            PixelPacket
               target;
 
+            if ((pixel->x != (int) (p->pixel.x+0.5)) ||
+                (pixel->y != (int) (p->pixel.y+0.5)))
+              break;
             target=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
-            color=GetOnePixel(image,(int) pixel->x,(int) pixel->y);
-            if (ColorMatch(color,target,(int) image->fuzz))
-              opacity=1.0;
+            (void) OpaqueImage(image,target,draw_info->fill);
+            opacity=0.0;
             break;
           }
           case FloodfillMethod:
@@ -2341,19 +2340,14 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           case ReplaceMethod:
           {
             PixelPacket
-              color;
-
-            PixelPacket
               target;
 
-            color=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
-            target=GetOnePixel(image,(int) pixel->x,(int) pixel->y);
-            if (!ColorMatch(color,target,image->fuzz))
+            if ((pixel->x != (int) (p->pixel.x+0.5)) ||
+                (pixel->y != (int) (p->pixel.y+0.5)))
               break;
-            q=GetImagePixels(image,(int) pixel->x,(int) pixel->y,1,1);
-            if (q != (PixelPacket *) NULL)
-              q->opacity=TransparentOpacity;
-            (void) SyncImagePixels(image);
+            target=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
+            (void) TransparentImage(image,target);
+            opacity=0.0;
             break;
           }
           case FloodfillMethod:
