@@ -786,8 +786,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  JPEG: preserve-settings=%s\n",preserve_settings);
 
-  if (logging || image_info->verbose || (preserve_settings &&
-      preserve_settings[0]))
+  if (image_info->verbose || (preserve_settings && preserve_settings[0]))
     {
       long
         save_quality;
