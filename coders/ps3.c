@@ -1592,7 +1592,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       const char
         *value;
 
-      value=MagickMapAccessEntry(image_info->coder_options,"ps:image",0);
+      value=AccessCoderOption(image_info,"ps","image");
       if ((value != 0) && (LocaleCompare(value,"imagemask") == 0) &&
           IsMonochromeImage(image,&image->exception))
         (void) WriteBlobString(image,"true\n");

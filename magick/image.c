@@ -89,6 +89,50 @@ const unsigned long
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%   A c c e s s C o d e r O p t i o n                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AccessCoderOption() searches the coder options for an entry matching the
+%  specified magick and key. NULL is returned if no matching entry is found.
+%
+%  The format of the AccessCoderOption method is:
+%
+%      const char *AccessCoderOption(const ImageInfo *image_info,
+%                                    const char *magick, const char *key)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o magick: Format ID. This is usually the same as the coder name.
+%
+%    o key: Key to search for.
+%
+*/
+MagickExport const char *AccessCoderOption(const ImageInfo *image_info,
+  const char *magick, const char *key)
+{
+  const char
+    *value = 0;
+
+  char
+    search_key[MaxTextExtent];
+
+  if (image_info->coder_options)
+    {
+      sprintf(search_key, "%.60s:%.1024s", magick, key);
+      value=MagickMapAccessEntry(image_info->coder_options,search_key,0);
+    }
+  return value;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %   A d d C o d e r O p t i o n s                                             %
 %                                                                             %
 %                                                                             %

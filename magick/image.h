@@ -873,7 +873,9 @@ typedef struct _ImageInfo
     *cache;                  /* Private. Used to pass image via open cache */
 
   void
-    *coder_options;          /* Private. Map of coder specific options passed by user */
+    *coder_options;          /* Private. Map of coder specific options passed by user
+                                Use AddCoderOptions, RemoveCoderOptions, & AccessCoderOption
+                                to access and manpulate this data. */
 
   Image
     *attributes;             /* Private. Image attribute list */
@@ -942,6 +944,10 @@ extern MagickExport ImageInfo
 
 extern MagickExport ImageType
   GetImageType(const Image *,ExceptionInfo *);
+
+extern MagickExport const char
+  *AccessCoderOption(const ImageInfo *image_info,const char *magick,
+   const char *key);
 
 extern MagickExport int
   GetImageGeometry(const Image *,const char *,const unsigned int,

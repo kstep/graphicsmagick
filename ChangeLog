@@ -1,3 +1,13 @@
+2003-10-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Re-arranged logging for improved
+	output.  Cleaned up evaluation of SAMPLESPERPIXEL and
+	BITSPERSAMPLE.  Provided support for the TIFF coder options
+	tiff:samples-per-pixel and tiff:bits-per-sample for power users.
+	* coders/ps3.c (WritePS3Image): Use AccessCoderOption().
+	* magick/image.c (AccessCoderOption): Added a function to use for
+	accessing coder-specific options.
+
 2003-10-08  Lars Ruben Skyum  <lars.skyum@stibo.com>
 
 	* magick/attribute.c (TraceSVGClippingPath): optimized for speed

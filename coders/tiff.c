@@ -1496,246 +1496,64 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 }
 #endif
 
-/*
-  Encode row of DirectClass gray pixels into TIFF packed format.
-  Currently supported bits-per-sample are 4 & 8.
-*/
-#if 0
-static unsigned int EncodeGrayPixels(const Image *image,
-  const unsigned int bits_per_sample, const unsigned int matte_flag,
-  unsigned char *destination)
+static const char *CompressionTagToString(unsigned int compress_tag)
 {
-  register long
-    x;
+  const char
+    *result = "Unknown";
 
-  register PixelPacket
-    *p;
-
-  register unsigned char
-    *q;
-
-  long
-    number_pixels;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(destination != (unsigned char *) NULL);
-  assert(bits_per_sample <= QuantumDepth);
-
-  number_pixels=(long) GetPixelCacheArea(image);
-  p=GetPixels(image);
-  q=destination;
-
-  if ((number_pixels == 0) || (p == 0))
-    return False;
-
-  switch (bits_per_sample)
+  switch (compress_tag)
     {
-    case 4:
-      {
-        register unsigned long
-          scale;
-
-        scale=MaxRGB / (MaxRGB >> (QuantumDepth-bits_per_sample));
-
-        if (matte_flag)
-          {
-            for (x= number_pixels; x > 0; --x)
-              {
-                *q=0;
-                *q |= (((unsigned char) p->red/scale) & 0xf) << 4;
-                *q |= (((unsigned char) (MaxRGB - p->opacity)/scale) & 0xf) ;
-                q++;
-                p++;
-              }
-          }
-        else
-          {
-            for (x = 0; x < (number_pixels-1) ; x+= 2)
-              {
-                *q=0;
-                *q |= (((unsigned char) p++->red/scale) & 0xf) << 4;
-                *q++ |= (((unsigned char) p++->red/scale) & 0xf);
-              }
-            if ((number_pixels % 2) != 0)
-              {
-                *q=0;
-                *q++ |= ((((unsigned char) p++->red/scale) & 0xf) << 4);
-              }
-          }
-        break;
-      }
-    case 8:
-      {
-        if (matte_flag)
-          for (x= number_pixels; x > 0; --x)
-            {
-              *q++=(unsigned char) ScaleQuantumToChar(p->red);
-              *q++=(unsigned char) ScaleQuantumToChar(MaxRGB - (p->opacity));
-              p++;
-            }
-        else
-          for (x= number_pixels; x > 0; --x)
-            *q++=(unsigned char) ScaleQuantumToChar(p++->red);
-        break;
-      }
-    default:
-      {
-        register unsigned long
-          scale;
-
-        register unsigned int
-          quantum;
-
-        BitStreamWriteHandle
-          bit_stream;
-        
-        scale=MaxRGB / (MaxRGB >> (QuantumDepth-bits_per_sample));
-        BitStreamInitializeWrite(&bit_stream,destination);
-        for (x= number_pixels; x > 0; --x)
-          {
-            quantum=p->red/scale;
-            BitStreamWrite(&bit_stream,bits_per_sample,quantum);
-            if (matte_flag)
-              {
-                quantum=(MaxRGB - p->opacity)/scale;
-                BitStreamWrite(&bit_stream,bits_per_sample,quantum);
-              }
-            p++;
-          }
-      }
-    }
-
-  return True;
+    case COMPRESSION_ADOBE_DEFLATE:
+      result="ZIP deflate";
+      break;
+    case COMPRESSION_CCITTFAX3:
+      result="CCITT FAX3";
+      break;
+    case COMPRESSION_CCITTFAX4:
+      result="CCITT FAX4";
+      break;
+    case COMPRESSION_JPEG:
+      result="JPEG";
+      break;
+    case COMPRESSION_LZW:
+      result="LZW";
+      break;
+    case COMPRESSION_NONE:
+      result="no";
+      break;
+    case COMPRESSION_PACKBITS:
+      result="PACKBITS";
+      break;
+  }
+  return result;
 }
 
-/*
-  Encode row of colormap indexes into TIFF packed format.
-  Currently supported bits-per-sample are 1, 2, 4, & 8.
-*/
-static unsigned int EncodeIndexPixels(const Image *image,
-  const unsigned int bits_per_sample, unsigned char *destination)
+static const char *PhotometricTagToString(unsigned int photometric)
 {
-  register IndexPacket
-    *indexes;
+  const char
+    *result = "Unknown";
 
-  register long
-    x;
-
-  register unsigned char
-    *q;
-
-  long
-    number_pixels;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(destination != (unsigned char *) NULL);
-
-  number_pixels=(long) GetPixelCacheArea(image);
-  indexes=GetIndexes(image);
-
-  if ((number_pixels == 0) || (indexes == 0))
-    return False;
-
-  q=destination;
-
-  switch (bits_per_sample)
+  switch (photometric)
     {
-    case 1:
-      {
-        assert(image->colors <= 2);
-        for (x=((long) number_pixels-7); x > 0; x-=8)
-          {
-            *q=0;
-            *q |= (((unsigned char) *indexes++) & 0x01) << 7;
-            *q |= (((unsigned char) *indexes++) & 0x01) << 6;
-            *q |= (((unsigned char) *indexes++) & 0x01) << 5;
-            *q |= (((unsigned char) *indexes++) & 0x01) << 4;
-            *q |= (((unsigned char) *indexes++) & 0x01) << 3;
-            *q |= (((unsigned char) *indexes++) & 0x01) << 2;
-            *q |= (((unsigned char) *indexes++) & 0x01) << 1;
-            *q |= (((unsigned char) *indexes++) & 0x01);
-            q++;
-          }
-        if ((number_pixels % 8) != 0)
-          {
-            register int
-              bit;
-
-            *q=0;
-            for (bit=7; bit >= (long) (8-(number_pixels % 8)); bit--)
-              {
-                *q |= (((unsigned char) *indexes++) & 0x01) << bit--;
-              }
-            q++;
-          }
-        break;
-      }
-    case 2:
-      {
-        assert(image->colors <= 4);
-
-        for (x=0; x < ((long) number_pixels-3); x+=4)
-          {
-            *q=0;
-            *q |= (((unsigned char) *indexes++) & 0x03) << 6;
-            *q |= (((unsigned char) *indexes++) & 0x03) << 4;
-            *q |= (((unsigned char) *indexes++) & 0x03) << 2;
-            *q |= (((unsigned char) *indexes++) & 0x03);
-            q++;
-          }
-        if ((number_pixels % 4) != 0)
-          {
-            unsigned int
-              i;
-
-            *q=0;
-            for (i=3; i >= (long) (4-(number_pixels % 4)); i--)
-              *q |= (((unsigned char) *indexes++) & 0x03) << (i*2);
-            q++;
-          }
-        break;
-      }
-    case 4:
-      {
-        assert(image->colors <= 16);
-        for (x = 0; x < (number_pixels-1) ; x+= 2)
-          {
-            *q=0;
-            *q |= ((((unsigned char) *indexes++) & 0xf) << 4);
-            *q++ |= (((unsigned char) *indexes++) & 0xf);
-          }
-        if ((number_pixels % 2) != 0)
-          {
-            *q=0;
-            *q++ |= ((((unsigned char) *indexes++) & 0xf) << 4);
-          }
-        break;
-      }
-    case 8:
-      {
-        assert(image->colors <= 256);
-        for (x= number_pixels; x > 0; --x)
-          *q++=(unsigned char) *indexes++;
-        break;
-      }
-    default:
-      {
-        BitStreamWriteHandle
-          bit_stream;
-        
-        BitStreamInitializeWrite(&bit_stream,destination);
-        for (x= number_pixels; x > 0; --x)
-          {
-            BitStreamWrite(&bit_stream,bits_per_sample,*indexes++);
-          }
-      }
+    case PHOTOMETRIC_MINISBLACK:
+      result="MINISBLACK";
+      break;
+    case PHOTOMETRIC_MINISWHITE:
+      result="MINISWHITE";
+      break;
+    case PHOTOMETRIC_PALETTE:
+      result="PALETTE";
+      break;
+    case PHOTOMETRIC_RGB:
+      result="RGB";
+      break;
+    case PHOTOMETRIC_SEPARATED:
+      result="SEPARATED";
+      break;
     }
 
-  return True;
+  return result;
 }
-#endif
 
 static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
   tsample_t sample,Image *image)
@@ -1854,7 +1672,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   uint16
     bits_per_sample,
     compress_tag,
-    photometric;
+    photometric,
+    samples_per_pixel;
 
   unsigned char
     *scanline;
@@ -1905,6 +1724,10 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
+                                 &samples_per_pixel);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
+                                 &bits_per_sample);
     /*
       Initialize TIFF fields.
     */
@@ -1914,7 +1737,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     (void) TIFFSetField(tiff,TIFFTAG_IMAGELENGTH,(uint32) image->rows);
     (void) TIFFSetField(tiff,TIFFTAG_IMAGEWIDTH,(uint32) image->columns);
     bits_per_sample=8;
-    (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
     compress_tag=COMPRESSION_NONE;
     switch (image->compression)
     {
@@ -1924,7 +1746,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         SetImageType(image,BilevelType);
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Set image type to BilevelType and using CCITTFAX3 compression");
+            "Set image type to BilevelType");
         compress_tag=COMPRESSION_CCITTFAX3;
         break;
       }
@@ -1933,7 +1755,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         SetImageType(image,BilevelType);
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Set image type to BilevelType and using CCITTFAX4 compression");
+            "Set image type to BilevelType");
         compress_tag=COMPRESSION_CCITTFAX4;
         break;
       }
@@ -1946,7 +1768,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         image->depth=8;
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Set image type to DirectClass and using JPEG compression");
+            "Set image type to DirectClass");
         break;
       }
 #endif
@@ -1954,46 +1776,30 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       case LZWCompression:
       {
         compress_tag=COMPRESSION_LZW;
-        if (logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Using LZW compression");
         break;
       }
 #endif
       case RLECompression:
       {
         compress_tag=COMPRESSION_PACKBITS;
-        if (logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Using PACKBITS compression");
         break;
       }
 #ifdef ZIP_SUPPORT
       case ZipCompression:
       {
         compress_tag=COMPRESSION_ADOBE_DEFLATE;
-        if (logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Using ZIP deflate compression");
         break;
       }
 #endif
       default:
       {
         compress_tag=COMPRESSION_NONE;
-        if (logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Using no compression");
         break;
       }
     }
     if (image->depth > 8)
       {
         bits_per_sample=16;
-        (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
-        if (logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Using 16 bits per sample");
       }
 
     if (((image_info->colorspace == UndefinedColorspace) &&
@@ -2001,11 +1807,11 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
          (image_info->colorspace == CMYKColorspace))
       {
         photometric=PHOTOMETRIC_SEPARATED;
-        (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,4);
+        samples_per_pixel=4;
         (void) TIFFSetField(tiff,TIFFTAG_INKSET,INKSET_CMYK);
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Using PHOTOMETRIC_SEPARATED, 4 samples per pixel, INKSET_CMYK");
+            "Using INKSET_CMYK");
       }
     else
       {
@@ -2014,10 +1820,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         */
         TransformColorspace(image,RGBColorspace);
         photometric=PHOTOMETRIC_RGB;
-        (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,3);
-        if (logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "Using PHOTOMETRIC_RGB, 3 samples per pixel");
+        samples_per_pixel=3;
         if ((image_info->type != TrueColorType) &&
             (compress_tag != COMPRESSION_ADOBE_DEFLATE) &&
             (compress_tag != COMPRESSION_JPEG) &&
@@ -2026,21 +1829,15 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             if ((image_info->type != PaletteType) &&
                 IsGrayImage(image,&image->exception))
               {
-                (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
+                samples_per_pixel=1;
 
                 if ((image->storage_class == PseudoClass) &&
                     IsMonochromeImage(image,&image->exception))
                   {
                     /* Monochrome PseudoClass Image */
                     bits_per_sample=1;
-                    (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
                     photometric=PHOTOMETRIC_MINISWHITE;
                     compress_tag=COMPRESSION_CCITTFAX4;
-                    if (logging)
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Using PHOTOMETRIC_MINISWHITE, 1 sample per pixel,"
-                        " %u bits per sample, CCITTFAX4 compression",
-                        (unsigned int) bits_per_sample);
                   }
                 else
                   {
@@ -2051,21 +1848,16 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
                     depth=GetImageDepth(image,&image->exception);
                     opacity_depth=depth;
-                    if (logging)
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "depth %lu, colors %lu",depth, image->colors);
                     if (image->matte)
                       opacity_depth=GetImageChannelDepth(image,OpacityChannel,
                         &image->exception);
                     depth=Max(depth,opacity_depth);
-                    for (bits_per_sample=1; bits_per_sample < depth; )
-                      bits_per_sample*=2;
-                    (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
-                    photometric=PHOTOMETRIC_MINISBLACK;
                     if (logging)
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Using PHOTOMETRIC_MINISBLACK, 1 sample per pixel,"
-                        " %u bits per sample", (unsigned int) bits_per_sample);
+                        "Image depth %lu bits, %lu colormap entries",depth, image->colors);
+                    for (bits_per_sample=1; bits_per_sample < depth; )
+                      bits_per_sample*=2;
+                    photometric=PHOTOMETRIC_MINISBLACK;
                   }
               }
             else
@@ -2078,35 +1870,90 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   bits_per_sample=1;
                   while ((1UL << bits_per_sample) < image->colors)
                     bits_per_sample*=2;
-                  (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
-                  (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
+                  samples_per_pixel=1;
                   photometric=PHOTOMETRIC_PALETTE;
-                  if (logging)
-                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                      "Using one sample per pixel, %u bits per sample, PHOTOMETRIC_PALETTE",
-                      (unsigned int) bits_per_sample);
                 }
           }
       }
+
     if (image->matte)
       {
         uint16
           extra_samples,
-          sample_info[1],
-          samples_per_pixel;
+          sample_info[1];
 
         /*
           TIFF has a matte channel.
         */
+        samples_per_pixel += 1;
         extra_samples=1;
         /* sample_info[0]=EXTRASAMPLE_UNASSALPHA; */
         sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
-        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
-          &samples_per_pixel);
-        (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel+1);
         (void) TIFFSetField(tiff,TIFFTAG_EXTRASAMPLES,extra_samples,
           &sample_info);
       }
+
+    /*
+      Allow the advanced user to over-ride some TIFF write options
+    */
+    {
+      const char *
+        value;
+
+      unsigned int
+        new_value,
+        old_value;
+
+      /*
+        Bits per sample
+      */
+      value=AccessCoderOption(image_info,"tiff","bits-per-sample");
+      if (value)
+        {
+          old_value=bits_per_sample;
+          new_value=atoi(value);
+          if (new_value <= QuantumDepth)
+            {
+              bits_per_sample=new_value;
+              if (logging)
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "User override (bits-per-sample): %u bits per sample (was %u)",
+                  (unsigned int) bits_per_sample, old_value);
+            }
+          else
+            {
+              if (logging)
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "User override (bits-per-sample) IGNORED (value %u exceeds limit of %u)",
+                  new_value, (unsigned int) QuantumDepth);
+            }
+        }
+
+      /*
+        Samples per pixel
+      */
+      value=AccessCoderOption(image_info,"tiff","samples-per-pixel");
+      if (value)
+        {
+          old_value=samples_per_pixel;
+          samples_per_pixel=atoi(value);
+          if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "User override (samples-per-pixel): %u samples per pixel (was %u)",
+              (unsigned int) samples_per_pixel, old_value);
+        }
+    }
+
+    (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel);
+    (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
+
+    if (logging)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Using %s photometric, %u samples per pixel, %u bits per sample",
+        PhotometricTagToString(photometric),
+        (unsigned int) samples_per_pixel,
+        (unsigned int) bits_per_sample);
+
     switch (image_info->compression)
     {
       case NoCompression: compress_tag=COMPRESSION_NONE; break;
@@ -2129,6 +1976,10 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #endif
       default: break;
     }
+    if (logging)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Using %s compression", CompressionTagToString(compress_tag));
+
     (void) TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
     (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
     switch (image_info->endian)
@@ -2137,13 +1988,13 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "Using TIFFTAG_FILLORDER FILLORDER_LSB2MSB");
+             "Using LSB2MSB fillorder");
         break;
       case MSBEndian:
         (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "Using TIFFTAG_FILLORDER FILLORDER_MSB2LSB");
+             "Using MSB2LSB fillorder");
         break;
       default:
       case UndefinedEndian:
@@ -2152,12 +2003,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "Using TIFFTAG_FILLORDER FILLORDER_MSB2LSB");
+             "Using MSB2LSB fillorder");
 #else
         (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "Using TIFFTAG_FILLORDER FILLORDER_LSB2MSB");
+             "Using LSB2MSB fillorder");
 #endif
         break;
       }
@@ -2181,7 +2032,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       case COMPRESSION_ADOBE_DEFLATE:
       {
         (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
-        (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
+        if((photometric == PHOTOMETRIC_RGB) ||
+           ((photometric == PHOTOMETRIC_MINISBLACK) && (bits_per_sample >= 8)))
+          (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
         (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,9);
         break;
       }
@@ -2489,8 +2342,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                       /* PHOTOMETRIC_MINISWHITE */
                       quantum ^= 0x01;
                     BitStreamWrite(&bit_stream,bits_per_sample,quantum);
-                    if (image->matte)
-                      /* with opacity */
+                    if (samples_per_pixel == 2)
+                      /* with opacity sample */
                       {
                         quantum=(MaxRGB - p->opacity)/scale;
                         BitStreamWrite(&bit_stream,bits_per_sample,quantum);
@@ -2505,8 +2358,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 for (x= image->columns; x > 0; --x)
                   {
                     BitStreamWrite(&bit_stream,bits_per_sample,*indexes++);
-                    if (image->matte)
-                      /* with opacity */
+                    if (samples_per_pixel == 2)
+                      /* with opacity sample */
                       {
                         quantum=(MaxRGB - p->opacity)/scale;
                         BitStreamWrite(&bit_stream,bits_per_sample,quantum);
