@@ -16,7 +16,7 @@
 %                              Software Design                                %
 %                              Bob Friesenhahn                                %
 %                            Dec 2000 - May 2001                              %
-%                            Oct 2001 - Dec 2001                              %
+%                            Oct 2001 - Jan 2002                              %
 %                                                                             %
 %                           Port to libwmf 0.2 API                            %
 %                            Francis J. Franklin                              %
@@ -378,7 +378,7 @@ static void wmf_magick_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
   height = AbsoluteValue(bmp_draw->pixel_height * (double) bmp_draw->crop.h);
 
   if( *id > -1 )
-    magick_mvg_printf(API, "image Copy %.10g,%.10g %.10g,%.10g 'mpr:%li'\n",
+    magick_mvg_printf(API, "image Copy %.10g,%.10g %.10g,%.10g 'mpri:%li'\n",
                       XC(bmp_draw->pt.x), YC(bmp_draw->pt.y), width, height, *id);
   else
     ThrowException(&ddata->image->exception,exception.severity,
@@ -594,7 +594,7 @@ static void wmf_magick_device_begin(wmfAPI * API)
             {
               magick_mvg_printf(API, "push pattern fill_%lu 0,0, %lu,%lu\n",
                                 ddata->pattern_id, image->columns, image->rows);
-              magick_mvg_printf(API, "image Copy 0,0 %lu,%lu 'mpr:%li'\n",
+              magick_mvg_printf(API, "image Copy 0,0 %lu,%lu 'mpri:%li'\n",
                                 image->columns, image->rows, id);
               magick_mvg_printf(API, "pop pattern\n");
               magick_mvg_printf(API, "fill url(#fill_%lu)\n", ddata->pattern_id);
@@ -1169,6 +1169,48 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
         }
     }
 
+  /* Draw bounding-box background color */
+  /* if (WMF_DC_OPAQUE(draw_text->dc)) */
+
+if(draw_text->flags)
+  printf("rectangle %.10g,%.10g %.10g,%.10g\n",
+         XC(draw_text->TL.x),YC(draw_text->TL.y),
+         XC(draw_text->BR.x),YC(draw_text->BR.y));
+
+  /* Draw bounding-box background color (META_EXTTEXTOUT mode) */
+  if( draw_text->flags & ETO_OPAQUE)
+    {
+      wmfRGB
+        *box = WMF_DC_BACKGROUND(draw_text->dc);
+
+      magick_mvg_printf(API, "stroke none\n");
+      magick_mvg_printf(API, "fill #%02x%02x%02x\n",
+                        (int) box->r, (int) box->g, (int) box->b);
+      magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
+                        XC(draw_text->TL.x),YC(draw_text->TL.y),
+                        XC(draw_text->BR.x),YC(draw_text->BR.y));
+      magick_mvg_printf(API, "fill none\n");
+    }
+  else
+    {
+      /* Set text undercolor */
+      if (WMF_DC_OPAQUE(draw_text->dc))
+        {
+          wmfRGB
+            *box = WMF_DC_BACKGROUND(draw_text->dc);
+
+          magick_mvg_printf(API, "decorate #%02x%02x%02x\n",
+                            (int) box->r, (int) box->g, (int) box->b);
+        }
+      else
+        magick_mvg_printf(API, "decorate none\n");
+    }
+
+  /* Set text clipping (META_EXTTEXTOUT mode) */
+  if( draw_text->flags & ETO_CLIPPED)
+    {
+    }
+
   /* Set stroke color */
   magick_mvg_printf(API, "stroke none\n");
 
@@ -1180,18 +1222,6 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
     magick_mvg_printf(API, "fill #%02x%02x%02x\n",
 		      (int) fill->r, (int) fill->g, (int) fill->b);
   }
-
-  /* Set under-box color */
-  if (WMF_DC_OPAQUE(draw_text->dc))
-    {
-      wmfRGB
-        *box = WMF_DC_BACKGROUND(draw_text->dc);
-
-      magick_mvg_printf(API, "decorate #%02x%02x%02x\n",
-                        (int) box->r, (int) box->g, (int) box->b);
-    }
-  else
-    magick_mvg_printf(API, "decorate none\n");
 
   /* Output font size */
   magick_mvg_printf(API, "font-size %.10g\n", pointsize);
@@ -1544,7 +1574,7 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
               {
                 magick_mvg_printf(API, "push pattern fill_%lu 0,0, %u,%u\n",
                                   ddata->pattern_id, brush_bmp->width, brush_bmp->height);
-                magick_mvg_printf(API, "image %s 0,0 %u,%u 'mpr:%li'\n",
+                magick_mvg_printf(API, "image %s 0,0 %u,%u 'mpri:%li'\n",
                                   mode, brush_bmp->width, brush_bmp->height, *id);
                 magick_mvg_printf(API, "pop pattern\n");
                 magick_mvg_printf(API, "fill url(#fill_%lu)\n", ddata->pattern_id);
