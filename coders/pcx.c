@@ -352,6 +352,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         while(pcx_packets != 0)
           {
             packet=ReadBlobByte(image);
+            if (EOFBlob(image))
+              ThrowReaderException(CorruptImageError,CorruptImage,image);
             *p++=packet;
             pcx_packets--;
             continue;
@@ -366,6 +368,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         while (pcx_packets != 0)
           {
             packet=ReadBlobByte(image);
+            if (EOFBlob(image))
+              ThrowReaderException(CorruptImageError,CorruptImage,image);
             if ((packet & 0xc0) != 0xc0)
               {
                 *p++=packet;
@@ -373,7 +377,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 continue;
               }
             count=packet & 0x3f;
-            for (packet=ReadBlobByte(image); count != 0; count--)
+            packet=ReadBlobByte(image);
+            if (EOFBlob(image))
+              ThrowReaderException(CorruptImageError,CorruptImage,image);
+            for (; count != 0; count--)
               {
                 *p++=packet;
                 pcx_packets--;
