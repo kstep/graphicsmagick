@@ -5316,8 +5316,8 @@ static void TraceRoundRectangle(PrimitiveInfo *primitive_info,
     i;
 
   p=primitive_info;
-  offset.x=end.x-start.x;
-  offset.y=end.y-start.y;
+  offset.x=AbsoluteValue(end.x-start.x);
+  offset.y=AbsoluteValue(end.y-start.y);
   if (arc.x > (0.5*offset.x))
     arc.x=0.5*offset.x;
   if (arc.y > (0.5*offset.y))
