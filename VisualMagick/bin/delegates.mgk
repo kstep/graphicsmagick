@@ -23,7 +23,8 @@
   <delegate decode="html" command='html2ps -U -o "%o" "%i"' />
   <delegate decode="ilbm" command='ilbmtoppm "%i" > "%o"' />
   <delegate decode="man" command='groff -man -Tps "%i" > "%o"' />
-  <delegate encode="mpeg-encode" stealth="True" command='mpeg2encode "%i" "%o"' />
+  <delegate encode="mpeg-decode" stealth="True" command='mpeg2dec.exe "%i" "%o"' />
+  <delegate encode="mpeg-encode" stealth="True" command='mpeg2enc.exe "%i" "%o"' />
   <delegate decode="pdf" encode="eps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=epswrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="pdf" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pswrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="pgp" command='pgpv -fq "%i"' />
