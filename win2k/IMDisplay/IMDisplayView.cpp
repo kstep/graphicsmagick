@@ -820,7 +820,10 @@ void CIMDisplayView::DoDisplayImage( Image &inImage, CDC* pDC )
            );
 
         if ( !hBitmap )
+        {
+          DoDisplayError("DoDisplayImage","Windows failed to allocate bitmap.");
           return;
+        }
 
         //
         // Extract the pixels from Magick++ image object and convert to a DIB section
