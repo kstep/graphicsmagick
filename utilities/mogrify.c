@@ -387,6 +387,7 @@ static unsigned int MogrifyUtility(int argc,char **argv)
   /*
     Parse command line.
   */
+  j=1;
   for (i=1; i < argc; i++)
   {
     option=argv[i];

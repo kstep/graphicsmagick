@@ -334,7 +334,6 @@ static unsigned int MontageUtility(int argc,char **argv)
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,&exception);
-	j=0;
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
   quantize_info.number_colors=0;
@@ -344,6 +343,7 @@ static unsigned int MontageUtility(int argc,char **argv)
   /*
     Parse command line.
   */
+	j=1;
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];

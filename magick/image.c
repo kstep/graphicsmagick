@@ -3367,7 +3367,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
-  if (argc <= 1)
+  if (argc <= 0)
     return(True);
   for (i=0; i < argc; i++)
     if (strlen(argv[i]) > (MaxTextExtent/2-1))
@@ -5050,7 +5050,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(images != (Image **) NULL);
   assert((*images)->signature == MagickSignature);
-  if (argc <= 1)
+  if (argc <= 0)
     return(True);
   scene=False;
   for (i=0; i < argc; i++)
@@ -5084,7 +5084,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   /*
     Apply options to the entire image list.
   */
-  for (i=1; i < argc; i++)
+  for (i=0; i < argc; i++)
   {
     option=argv[i];
     if ((strlen(option) <= 1) || ((*option != '-') && (*option != '+')))

@@ -478,7 +478,6 @@ unsigned int CompositeUtility(int argc,char **argv)
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,&exception);
-  j=0;
   mask_image=(Image *) NULL;
   option_info.stegano=0;
   option_info.stereo=False;
@@ -490,6 +489,7 @@ unsigned int CompositeUtility(int argc,char **argv)
   /*
     Check command syntax.
   */
+  j=1;
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];
