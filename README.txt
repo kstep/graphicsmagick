@@ -50,12 +50,9 @@ AVAILABILITY
 
 DOCUMENTATION
 
-  Open the file index.html in a web browser, or refer to the manual pages
-  for the display(1), animate(1), montage(1), import(1), mogrify(1),
-  identify(1), composite(1), and convert(1) commands. The GraphicsMagick(1)
-  manual page provides details for command options and will also aid with
-  understanding library interfaces. Also read the GraphicsMagick frequently
-  asked questions in the file www/Magick.html.
+  Open the file index.html in a web browser, or refer to the
+  GraphicsMagick(1) manual page. Also read the GraphicsMagick frequently
+  asked questions in the file www/FAQ.html.
 
 INSTALLATION
 
@@ -89,7 +86,12 @@ MAGICK DELEGATES
 
     o GraphicsMagick requires the BZLIB library from
 
-        http://sourceware.cygnus.com/bzip2/index.html
+        http://sources.redhat.com/bzip2/
+
+          or
+
+        ftp://sources.redhat.com/pub/bzip2/
+
 
       to read and write BZip compressed MIFF images.
 
@@ -202,7 +204,7 @@ MAGICK DELEGATES
       to read lossless jpeg-encoded DICOM images, please disregard the patch.
 
     o GraphicsMagick requires the JasPer Project's Jasper library version
-      1.700.2 available via http from
+      1.701.0 available via http from
 
          http://www.ece.uvic.ca/~mdadams/jasper/
 

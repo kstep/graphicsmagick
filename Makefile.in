@@ -117,6 +117,7 @@ CONVENIENCE_LTDL_FALSE = @CONVENIENCE_LTDL_FALSE@
 CONVENIENCE_LTDL_TRUE = @CONVENIENCE_LTDL_TRUE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CVS_BRANCH_TAG = @CVS_BRANCH_TAG@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -131,6 +132,7 @@ DCRAWDecodeDelegate = @DCRAWDecodeDelegate@
 DEFS = @DEFS@
 DELEGATES = @DELEGATES@
 DEPDIR = @DEPDIR@
+DISTCHECK_CONFIG_FLAGS = @DISTCHECK_CONFIG_FLAGS@
 DLLDFLAGS = @DLLDFLAGS@
 DLLTOOL = @DLLTOOL@
 DOTDecodeDelegate = @DOTDecodeDelegate@
@@ -310,6 +312,7 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PERL = @PERL@
 PERLMAINCC = @PERLMAINCC@
 PERL_MAKE_OPTIONS = @PERL_MAKE_OPTIONS@
+PERL_SUPPORTS_DESTDIR = @PERL_SUPPORTS_DESTDIR@
 PGPDecodeDelegate = @PGPDecodeDelegate@
 POVDelegate = @POVDelegate@
 PREFIX_DIR = @PREFIX_DIR@
@@ -418,13 +421,19 @@ windows_font_dir = @windows_font_dir@
 xml2_config = @xml2_config@
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.8.2 dist-zip dist-bzip2 foreign
+AUTOMAKE_OPTIONS = 1.8.5 dist-zip dist-bzip2 foreign
 
 # Subdirectories to build
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICK_PLUS_PLUS = Magick++
 
 # Directories to include in distribution
 DIST_SUBDIRS = ltdl config coders filters magick utilities tests Magick++ wand
+
+# Options to pass when running configure in the distcheck target.
+#
+# We want to preserve user-provided option variables so the same
+# compiler, headers, and libraries are used as for a normal build.
+DISTCHECK_CONFIGURE_FLAGS = $(DISTCHECK_CONFIG_FLAGS)
 @WITH_LTDL_FALSE@LTDL = 
 @WITH_LTDL_TRUE@LTDL = ltdl
 @WITH_MODULES_FALSE@SUBDIRS = $(LTDL) config coders filters magick wand $(MAGICK_PLUS_PLUS) utilities tests
@@ -468,14 +477,6 @@ DOCDIRS = images www www/api www/Magick++
 #
 # Build a Windows source Zip-ball
 #
-ZIP_FILES = \
-	acinclude.m4 configure.ac aclocal.m4 GraphicsMagick.spec.in \
-	Makefile.am Makefile.in rungm.sh.in configure $(EXTRA_DIST) \
-	 BCBMagick CVS CVSROOT Magick++ PerlMagick TclMagick \
-	VisualMagick bzlib coders config contrib doc filters fpx images \
-	jbig jp2 jpeg lcms libxml licenses locale ltdl magick png scenes scripts \
-	tests tiff ttf utilities wand win2k wmf www xlib zlib
-
 DIST_WINDOWS_SRC_ZIP = $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-windows.zip
 
 #
@@ -1011,10 +1012,10 @@ perl-sources:
 
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@install-exec-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	rm -f "$(DESTDIR)$(BIN_DIR)/$(PERLSTATICNAME)"
-@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	if test "x$(DESTDIR)" = "x" ; then \
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	if test "x$(DESTDIR)" = "x" -o "$(PERL_SUPPORTS_DESTDIR)" = 'yes' ; then \
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	  ( cd $(PERLMAGICK) && \
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	    $(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) \
-@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	    INSTALLBIN="$(DESTDIR)$(BIN_DIR)" \
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	    INSTALLBIN="$(BIN_DIR)" \
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	  ) ; \
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	else \
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	  ( cd $(PERLMAGICK) && \
@@ -1105,9 +1106,15 @@ $(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
 
 format_c_api_docs:
 	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api
-$(DIST_WINDOWS_SRC_ZIP) windows-src:
+$(DIST_WINDOWS_SRC_ZIP) windows-dist:
+	if test -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; then \
+	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
+	  rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
+	fi
 	rm -f $(DIST_WINDOWS_SRC_ZIP)
-	builddir=`pwd` ; cd $(top_srcdir) && zip -r -9 -q $$builddir/$(DIST_WINDOWS_SRC_ZIP) $(ZIP_FILES) -x '*~' -x '*.o' -x autom4te.cache -x CVS -x '*.so' -x '.libs' -x '.deps' -x '.#*' -x core -x '*.core'
+	cvs -d ':ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick' export -r $(CVS_BRANCH_TAG) -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) GraphicsMagick-NT
+	zip -r -9 -q  $(DIST_WINDOWS_SRC_ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
+	rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
 @HAS_RPM_TRUE@PHONY: srpm
 @HAS_RPM_TRUE@$(DIST_ARCHIVE_SRPM) srpm: $(distdir).tar.bz2
 @HAS_RPM_TRUE@	rm -f $(DIST_ARCHIVE_SRPM)

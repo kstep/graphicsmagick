@@ -11,7 +11,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.8.2 dist-zip dist-bzip2 foreign
+AUTOMAKE_OPTIONS = 1.8.5 dist-zip dist-bzip2 foreign
 
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
@@ -23,6 +23,12 @@ endif # WITH_MAGICK_PLUS_PLUS
 
 # Directories to include in distribution
 DIST_SUBDIRS=ltdl config coders filters magick utilities tests Magick++ wand
+
+# Options to pass when running configure in the distcheck target.
+#
+# We want to preserve user-provided option variables so the same
+# compiler, headers, and libraries are used as for a normal build.
+DISTCHECK_CONFIGURE_FLAGS=$(DISTCHECK_CONFIG_FLAGS)
 
 if WITH_LTDL
 LTDL=ltdl
@@ -148,10 +154,10 @@ all-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 
 install-exec-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 	rm -f "$(DESTDIR)$(BIN_DIR)/$(PERLSTATICNAME)"
-	if test "x$(DESTDIR)" = "x" ; then \
+	if test "x$(DESTDIR)" = "x" -o "$(PERL_SUPPORTS_DESTDIR)" = 'yes' ; then \
 	  ( cd $(PERLMAGICK) && \
 	    $(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) \
-	    INSTALLBIN="$(DESTDIR)$(BIN_DIR)" \
+	    INSTALLBIN="$(BIN_DIR)" \
 	  ) ; \
 	else \
 	  ( cd $(PERLMAGICK) && \
@@ -269,17 +275,16 @@ format_c_api_docs:
 #
 # Build a Windows source Zip-ball
 #
-ZIP_FILES= \
-	acinclude.m4 configure.ac aclocal.m4 GraphicsMagick.spec.in \
-	Makefile.am Makefile.in rungm.sh.in configure $(EXTRA_DIST) \
-	 BCBMagick CVS CVSROOT Magick++ PerlMagick TclMagick \
-	VisualMagick bzlib coders config contrib doc filters fpx images \
-	jbig jp2 jpeg lcms libxml licenses locale ltdl magick png scenes scripts \
-	tests tiff ttf utilities wand win2k wmf www xlib zlib
 DIST_WINDOWS_SRC_ZIP=$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-windows.zip
-$(DIST_WINDOWS_SRC_ZIP) windows-src:
+$(DIST_WINDOWS_SRC_ZIP) windows-dist:
+	if test -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; then \
+	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
+	  rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
+	fi
 	rm -f $(DIST_WINDOWS_SRC_ZIP)
-	builddir=`pwd` ; cd $(top_srcdir) && zip -r -9 -q $$builddir/$(DIST_WINDOWS_SRC_ZIP) $(ZIP_FILES) -x '*~' -x '*.o' -x autom4te.cache -x CVS -x '*.so' -x '.libs' -x '.deps' -x '.#*' -x core -x '*.core'
+	cvs -d ':ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick' export -r $(CVS_BRANCH_TAG) -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) GraphicsMagick-NT
+	zip -r -9 -q  $(DIST_WINDOWS_SRC_ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
+	rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
 
 #
 # RPM build support

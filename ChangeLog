@@ -1,3 +1,12 @@
+2004-07-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh (CVS_BRANCH_TAG): Record the CVS branch tag that
+	source package is obtained from.
+	* configure.ac: Pass essential flags on down to subordinate
+	configures when performing 'make distcheck'.  Support DESTDIR
+	installs for PERL 5.8.1 and later, which support DESTDIR
+	internally.
+
 2004-07-09  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/bmp.c (ReadBMPImage): Removed if-test on reading
@@ -9,7 +18,7 @@
 
 	* Enable LZW compression by default.
 
-2004-07-05  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+2004-07-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/magick_wand.c (MagickSetPassphrase): String was being
 	copied to a null pointer.  Now memory is allocated as required
@@ -25,8 +34,8 @@
 
 2004-06-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/command.c (MogrifyImage): When re-sampling an image, report an error if the
-	image does not contain a valid resolution.
+	* magick/command.c (MogrifyImage): When re-sampling an image,
+	report an error if the image does not contain a valid resolution.
 	* coders/pcx.c (WritePCXImage): Support writing large PCX files.
 	(WritePCXImage): Ensure that UndefinedResolution is handled
 	properly. Avoid round-off error for centimeter based resolution.

@@ -21,6 +21,18 @@
 </tr>
 </table>
 <p>
+2004-07-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> version.sh (CVS_BRANCH_TAG): Record the CVS branch tag that
+        source package is obtained from.
+  <LI> configure.ac: Pass essential flags on down to subordinate
+        configures when performing 'make distcheck'.  Support DESTDIR
+        installs for PERL 5.8.1 and later, which support DESTDIR
+        internally.
+
+</UL>
+<p>
 2004-07-09  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
 
 <UL>
@@ -38,7 +50,7 @@
 
 </UL>
 <p>
-2004-07-05  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+2004-07-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> wand/magick_wand.c (MagickSetPassphrase): String was being
@@ -61,8 +73,8 @@
 2004-06-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
-  <LI> magick/command.c (MogrifyImage): When re-sampling an image, report an error if the
-        image does not contain a valid resolution.
+  <LI> magick/command.c (MogrifyImage): When re-sampling an image,
+        report an error if the image does not contain a valid resolution.
   <LI> coders/pcx.c (WritePCXImage): Support writing large PCX files.
         (WritePCXImage): Ensure that UndefinedResolution is handled
         properly. Avoid round-off error for centimeter based resolution.

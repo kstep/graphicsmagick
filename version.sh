@@ -34,6 +34,11 @@ else
 fi
 
 #
+# CVS branch that this release is on.
+#
+CVS_BRANCH_TAG=GraphicsMagick-1_1
+
+#
 # Libtool library revision control info
 # See the libtool documentation under the heading "Libtool's versioning
 # system" in order to understand the meaning of these fields
