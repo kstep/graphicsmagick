@@ -273,7 +273,8 @@ MagickExport unsigned int XAnnotateImage(Display *display,
           q->green=XDownScale(pixel->box_color.green);
           q->blue=XDownScale(pixel->box_color.blue);
           q->opacity=OpaqueOpacity;
-          if (annotate_info->stencil == ForegroundStencil)
+          if ((annotate_info->stencil == ForegroundStencil) ||
+              (annotate_info->stencil == OpaqueStencil))
             {
               *q=annotate_image->background_color;
               q->opacity=TransparentOpacity;

@@ -88,13 +88,16 @@ static unsigned int
 %
 %  Method AnnotateImage annotates an image with text.  Optionally the
 %  annotation can include the image filename, type, width, height, or scene
-%  number by embedding special format characters.
+%  number by embedding special format characters (e.g. %f for image filename).
 %
 %  The format of the AnnotateImage method is:
 %
 %      unsigned int AnnotateImage(Image *image,AnnotateInfo *annotate_info)
 %
 %  A description of each parameter follows:
+%
+%    o status: Method AnnotateImage returns True if the image is annotated
+%      otherwise False.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -119,9 +122,6 @@ MagickExport unsigned int AnnotateImage(Image *image,
 
   Image
     *annotate_image;
-
-  ImageInfo
-    *image_info;
 
   int
     j,
@@ -149,7 +149,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
     width;
 
   /*
-    Ensure the annotation info is valid.
+    Translate any embedded format characters (e.g. %f).
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -159,25 +159,14 @@ MagickExport unsigned int AnnotateImage(Image *image,
     return(False);
   if (*annotate_info->text == '\0')
     return(False);
-  /*
-    Translate any embedded format characters (e.g. %f).
-  */
-  image_info=CloneImageInfo((ImageInfo *) NULL);
-  clone_info=CloneAnnotateInfo(image_info,annotate_info);
-  text=TranslateText((ImageInfo *) NULL,image,clone_info->text);
+  text=TranslateText((ImageInfo *) NULL,image,annotate_info->text);
   if (text == (char *) NULL)
-    {
-      DestroyAnnotateInfo(clone_info);
-      ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
-        "Memory allocation failed");
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
+      "Memory allocation failed");
   textlist=StringToList(text);
   LiberateMemory((void **) &text);
   if (textlist == (char **) NULL)
-    {
-      DestroyAnnotateInfo(clone_info);
-      return(False);
-    }
+    return(False);
   length=Extent(textlist[0]);
   for (i=1; textlist[i] != (char *) NULL; i++)
     if (Extent(textlist[i]) > (int) length)
@@ -185,16 +174,13 @@ MagickExport unsigned int AnnotateImage(Image *image,
   number_lines=i;
   text=(char *) AcquireMemory(length+MaxTextExtent);
   if (text == (char *) NULL)
-    {
-      DestroyAnnotateInfo(clone_info);
-      ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
-        "Memory allocation failed");
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
+      "Memory allocation failed");
   width=image->columns;
   height=image->rows;
   x=0;
   y=0;
-  if (clone_info->geometry != (char *) NULL)
+  if (annotate_info->geometry != (char *) NULL)
     {
       unsigned int
         flags;
@@ -202,7 +188,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
       /*
         User specified annotation geometry.
       */
-      flags=ParseGeometry(clone_info->geometry,&x,&y,&width,&height);
+      flags=ParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
       if ((flags & XNegative) != 0)
         x+=image->columns;
       if ((flags & WidthValue) == 0)
@@ -212,19 +198,24 @@ MagickExport unsigned int AnnotateImage(Image *image,
       if ((flags & HeightValue) == 0)
         height-=2*y > height ? height : 2*y;
     }
+  clone_info=CloneAnnotateInfo((ImageInfo *) NULL,annotate_info);
+  font_height=AffineExpansion(&annotate_info->affine)*annotate_info->pointsize;
+  matte=image->matte;
   for (i=0; textlist[i] != (char *) NULL; i++)
   {
+    if (*textlist[i] == '\0')
+      continue;
     /*
       Position text relative to image.
     */
-    status=GetFontMetrics(annotate_info,&bounds);
+    (void) CloneString(&clone_info->text,textlist[i]);
+    status=GetFontMetrics(clone_info,&bounds);
     if (status == False)
-      break;
+      continue;
     font_width=bounds.x2-bounds.x1+1.0;
-    font_height=bounds.y2-bounds.y1+1.0;
     offset.x=x;
     offset.y=y+i*font_height;
-    switch (annotate_info->gravity)
+    switch (clone_info->gravity)
     {
       case NorthWestGravity:
       {
@@ -247,7 +238,8 @@ MagickExport unsigned int AnnotateImage(Image *image,
       case WestGravity:
       {
         offset.x=x;
-        offset.y=y+0.5*height+i*font_height+0.5*font_height*number_lines;
+        offset.y=y+0.5*height+i*font_height-0.5*font_height*number_lines+
+          0.5*font_height-bounds.y1+number_lines;
         break;
       }
       case ForgetGravity:
@@ -256,50 +248,52 @@ MagickExport unsigned int AnnotateImage(Image *image,
       default:
       {
         offset.x=x+0.5*width-0.5*font_width;
-        offset.y=y+0.5*height+i*font_height+0.5*font_height*number_lines;
+        offset.y=y+0.5*height+i*font_height-0.5*font_height*number_lines+
+          0.5*font_height-bounds.y1+number_lines;
         break;
       }
       case EastGravity:
       {
         offset.x=x+width-font_width;
-        offset.y=y+0.5*height+i*font_height+0.5*font_height*number_lines;
+        offset.y=y+0.5*height+i*font_height-0.5*font_height*number_lines+
+          0.5*font_height-bounds.y1+number_lines;
         break;
       }
       case SouthWestGravity:
       {
         offset.x=x;
-        offset.y=y+height+i*font_height;
+        offset.y=y+height+i*font_height+bounds.y2;
         break;
       }
       case SouthGravity:
       {
         offset.x=x+0.5*width-0.5*font_width;
-        offset.y=y+height+i*font_height;
+        offset.y=y+height+i*font_height+bounds.y2;
         break;
       }
       case SouthEastGravity:
       {
         offset.x=x+width-font_width;
-        offset.y=y+height+i*font_height;
+        offset.y=y+height+i*font_height+bounds.y2;
         break;
       }
     }
     /*
       Annotate image with text.
     */
-    status=RenderFont(image,annotate_info,&offset,&bounds);
+    status=RenderFont(image,clone_info,&offset,&bounds);
     if (status == False)
-      break;
-    if (annotate_info->decorate == NoDecoration)
+      continue;
+    if (clone_info->decorate == NoDecoration)
       continue;
     /*
       Decorate text.
     */
-    if (annotate_info->decorate == OverlineDecoration)
+    if (clone_info->decorate == OverlineDecoration)
       q=GetImagePixels(image,(int) ceil(offset.x-0.5),(int)
         ceil(offset.y-font_height/2.0-1.5),(int) font_width,1);
     else
-      if (annotate_info->decorate == UnderlineDecoration)
+      if (clone_info->decorate == UnderlineDecoration)
         q=GetImagePixels(image,(int) ceil(offset.x+0.5),
           (int) ceil(offset.y+0.5),font_width,1);
       else
@@ -308,9 +302,18 @@ MagickExport unsigned int AnnotateImage(Image *image,
     if (q == (PixelPacket *) NULL)
       continue;
     for (j=0; j < (int) font_width; j++)
-      *q++=annotate_info->stroke;
+      *q++=clone_info->stroke;
     SyncImagePixels(image);
   }
+  image->matte=matte;
+  /*
+    Free resources.
+  */
+  DestroyAnnotateInfo(clone_info);
+  LiberateMemory((void **) &text);
+  for (i=0; textlist[i] != (char *) NULL; i++)
+    LiberateMemory((void **) &textlist[i]);
+  LiberateMemory((void **) &textlist);
   return(True);
 }
 
@@ -452,8 +455,10 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   assert(annotate_info != (AnnotateInfo *) NULL);
   clone_info=CloneImageInfo(image_info);
   memset(annotate_info,0,sizeof(AnnotateInfo));
-  annotate_info->font=AllocateString(clone_info->font);
-  annotate_info->density=AllocateString(clone_info->density);
+  if (clone_info->font != (char *) NULL)
+    annotate_info->font=AllocateString(clone_info->font);
+  if (clone_info->density != (char *) NULL)
+    annotate_info->density=AllocateString(clone_info->density);
   annotate_info->antialias=clone_info->antialias;
   annotate_info->gravity=NorthWestGravity;
   annotate_info->density=clone_info->density;
@@ -491,7 +496,7 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
 %
 %    o annotate_info: Specifies a pointer to a AnnotateInfo structure.
 %
-%    o bounds: bounding box of text.
+%    o bounds: Method GetFontMetrics returns the bounding box of text.
 %
 %
 */
@@ -517,7 +522,7 @@ MagickExport unsigned int GetFontMetrics(const AnnotateInfo *annotate_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e n d e r F o n t                                                       %
++   R e n d e r F o n t                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -630,6 +635,7 @@ static unsigned int RenderTruetype(Image *image,
     fill_color;
 
   PointInfo
+    point,
     resolution;
 
   register unsigned char
@@ -815,69 +821,45 @@ static unsigned int RenderTruetype(Image *image,
   {
     if (glyph->image == (FT_Glyph) NULL)
       continue;
-    status=FT_Glyph_To_Bitmap(&glyph->image,annotate_info->antialias ?
-      ft_render_mode_normal : ft_render_mode_mono,False,False);
+    status=FT_Glyph_To_Bitmap(&glyph->image,ft_render_mode_normal,False,False);
     bitmap=(FT_BitmapGlyph) glyph->image;
     if ((bitmap->bitmap.width == 0) || (bitmap->bitmap.rows == 0))
       continue;
+    point.y=offset->y+bounds->y2-bitmap->top-3.0*
+      AffineExpansion(&annotate_info->affine)*annotate_info->pointsize/4.0+1.5;
     p=bitmap->bitmap.buffer;
     for (y=0; y < bitmap->bitmap.rows; y++)
     {
-      x=(int) ceil(bitmap->left-bounds->x1-0.5);
-      q=GetImagePixels(image,(int) ceil(offset->x+x-0.5),(int) ceil(offset->y+
-        bounds->y2-bitmap->top+y-3.0*annotate_info->pointsize/4.0-0.5),
-        bitmap->bitmap.width,1);
-      if (q == (PixelPacket *) NULL)
+      if (ceil(point.y+y-0.5) < 0)
         continue;
-      if (annotate_info->antialias)
-        for (x=0; x < bitmap->bitmap.width; x++)
-        {
-          if (*p != 0)
-            {
-              opacity=MaxRGB-UpScale(*p);
-              q->red=(Quantum) (((double) fill_color.red*
-                (MaxRGB-opacity)+(double) q->red*opacity)*alpha);
-              q->green=(Quantum) (((double) fill_color.green*
-                (MaxRGB-opacity)+(double) q->green*opacity)*alpha);
-              q->blue=(Quantum) (((double) fill_color.blue*
-                (MaxRGB-opacity)+(double) q->blue*opacity)*alpha);
-              q->opacity=(Quantum) (((double) opacity*(MaxRGB-opacity)+
-                (double) q->opacity*opacity)*alpha);
-            }
-          p++;
-          q++;
-        }
-      else
-        {
-          for (x=0; x < ((int) bitmap->bitmap.width-7); x+=8)
+      if (ceil(point.y+y-0.5) >= image->rows)
+        break;
+      point.x=offset->x+bitmap->left-bounds->x1;
+      for (x=0; x < bitmap->bitmap.width; x++)
+      {
+        if ((*p == 0) || (ceil(point.x+x-0.5) < 0) ||
+            (ceil(point.x+x-0.5) >= image->columns))
           {
-            for (bit=7; bit >= 0; bit--)
-            {
-              if ((*p) & (0x01 << bit))
-                {
-                  *q=annotate_info->fill;
-                  q->opacity=OpaqueOpacity;
-                }
-              q++;
-            }
             p++;
+            continue;
           }
-          if ((bitmap->bitmap.width % 8) != 0)
-            {
-              for (bit=7; bit >= (int) (8-(bitmap->bitmap.width % 8)); bit--)
-              {
-                if ((*p) & (0x01 << bit))
-                  {
-                    *q=annotate_info->fill;
-                    q->opacity=OpaqueOpacity;
-                  }
-                q++;
-              }
-              p++;
-            }
-        }
-      if (!SyncImagePixels(image))
-        continue;
+        q=GetImagePixels(image,(int) ceil(point.x+x-0.5),
+          (int) ceil(point.y+y-0.5),1,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        opacity=MaxRGB-UpScale(*p);
+        q->red=(Quantum) (((double) fill_color.red*(MaxRGB-opacity)+
+          (double) q->red*opacity)*alpha);
+        q->green=(Quantum) (((double) fill_color.green*(MaxRGB-opacity)+
+          (double) q->green*opacity)*alpha);
+        q->blue=(Quantum) (((double) fill_color.blue*(MaxRGB-opacity)+
+          (double) q->blue*opacity)*alpha);
+        q->opacity=(Quantum) (((double) opacity*(MaxRGB-opacity)+
+          (double) q->opacity*opacity)*alpha);
+        if (!SyncImagePixels(image))
+          break;
+        p++;
+      }
     }
   }
   /*
@@ -976,7 +958,8 @@ static unsigned int RenderPostscript(Image *image,
     annotate_info->pointsize);
   (void) fprintf(file,
     "/%.1024s-ISO dup /%.1024s ReencodeFont findfont setfont\n",
-    annotate_info->font,annotate_info->font);
+    annotate_info->font ? annotate_info->font : "Times-Roman",
+    annotate_info->font ? annotate_info->font : "Times-Roman");
   (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",annotate_info->affine.sx,
     -annotate_info->affine.rx,-annotate_info->affine.ry,
     annotate_info->affine.sy);
@@ -1007,16 +990,17 @@ static unsigned int RenderPostscript(Image *image,
         crop_info;
 
       crop_info=GetImageBoundingBox(annotate_image);
-      crop_info.height=(unsigned int) ceil(extent.y/2.0-0.5);
-      crop_info.y=(int) floor(extent.y/8.0-0.5);
+      crop_info.height=(unsigned int) ceil(
+        AffineExpansion(&annotate_info->affine)*annotate_info->pointsize-0.5);
+      crop_info.y=(int) ceil(extent.y/8.0+0.5);
       (void) FormatString(geometry,"%ux%u%+d%+d",crop_info.width,
         crop_info.height,crop_info.x,crop_info.y);
       TransformImage(&annotate_image,geometry,(char *) NULL);
     }
   bounds->x1=0.0;
-  bounds->y1=(double) annotate_image->rows/-4.0;
+  bounds->y1=(annotate_image->rows/-4.0)+1.5;
   bounds->x2=annotate_image->columns;
-  bounds->y2=3.0*annotate_image->rows/4.0;
+  bounds->y2=(3.0*annotate_image->rows/4.0)-1.5;
   if (image == (Image *) NULL)
     {
       DestroyImage(annotate_image);
@@ -1178,9 +1162,9 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
     Extent(annotate_info->text));
   xannotate_info.height=font_info->ascent+font_info->descent;
   bounds->x1=0.0;
-  bounds->y1=(double) xannotate_info.height/-4.0;
+  bounds->y1=(-font_info->descent);
   bounds->x2=xannotate_info.width;
-  bounds->y2=3.0*xannotate_info.height/4.0;
+  bounds->y2=font_info->ascent;
   if (image == (Image *) NULL)
     return(True);
   /*
@@ -1188,16 +1172,7 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
   */
   width=xannotate_info.width;
   height=xannotate_info.height;
-  if ((annotate_info->affine.rx == 0.0) && (annotate_info->affine.ry == 0.0))
-    {
-      if ((annotate_info->affine.sx != 1.0) ||
-          (annotate_info->affine.sx != 1.0))
-        {
-          width=(unsigned int) (annotate_info->affine.sx*width);
-          height=(unsigned int) (annotate_info->affine.sy*height);
-        }
-    }
-  else
+  if ((annotate_info->affine.rx != 0.0) || (annotate_info->affine.ry != 0.0))
     {
       if (((annotate_info->affine.sx-annotate_info->affine.sy) == 0.0) &&
           ((annotate_info->affine.rx+annotate_info->affine.ry) == 0.0))
@@ -1205,7 +1180,7 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
           atan2(annotate_info->affine.rx,annotate_info->affine.sx);
     }
   FormatString(xannotate_info.geometry,"%ux%u+%d+%d",width,height,
-    (int) ceil(offset->x-1.5),(int) ceil(offset->y-bounds->y2-1.5));
+    (int) ceil(offset->x-1.5),(int) ceil(offset->y-bounds->y2+0.5));
   pixel.pen_color.red=XUpScale(annotate_info->fill.red);
   pixel.pen_color.green=XUpScale(annotate_info->fill.green);
   pixel.pen_color.blue=XUpScale(annotate_info->fill.blue);
@@ -1227,18 +1202,11 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
 static unsigned int RenderFont(Image *image,const AnnotateInfo *annotate_info,
   const PointInfo *offset,SegmentInfo *bounds)
 {
-  unsigned int
-    status;
-
   if (annotate_info->font == (char *) NULL)
-    status=RenderPostscript(image,annotate_info,offset,bounds);
-  else
-    if (*annotate_info->font == '@')
-      status=RenderTruetype(image,annotate_info,offset,bounds);
-    else
-      if (*annotate_info->font == '-')
-        status=RenderX11(image,annotate_info,offset,bounds);
-      else
-        status=RenderPostscript(image,annotate_info,offset,bounds);
-  return(status);
+    return(RenderPostscript(image,annotate_info,offset,bounds));
+  if (*annotate_info->font == '@')
+    return(RenderTruetype(image,annotate_info,offset,bounds));
+  if (*annotate_info->font == '-')
+    return(RenderX11(image,annotate_info,offset,bounds));
+  return(RenderPostscript(image,annotate_info,offset,bounds));
 }

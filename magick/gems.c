@@ -61,6 +61,40 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   A f f i n e E x p a n s i o n                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AffineExpansion computes the affine's expansion factor, i.e. the
+%  square root of the factor by which the affine transform affects area. In an
+%  affine transform composed of scaling, rotation, shearing, and translation,
+%  returns the amount of scaling.
+%
+%  The format of the AffineExpansion method is:
+%
+%      double AffineExpansion(const AffineInfo *affine)
+%
+%  A description of each parameter follows:
+%
+%    o expansion: Method AffineExpansion returns the affine's expansion factor.
+%
+%    o affine: A pointer the the affine transform of type AffineInfo.
+%
+%
+*/
+MagickExport double AffineExpansion(const AffineInfo *affine)
+{
+  assert(affine != (AffineInfo *) NULL);
+  return(sqrt(affine->sx*affine->sy-affine->rx*affine->ry));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o n s t r a s t                                                         %
 %                                                                             %
 %                                                                             %

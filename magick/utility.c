@@ -1872,7 +1872,7 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
       if (*p == '-')
         {
           p++;
-          bounds.x=(int) (-strtod(p,&p));
+          bounds.x=(int) ceil(-strtod(p,&p)-0.5);
           mask|=XNegative;
         }
       else
@@ -1889,7 +1889,7 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
           if (*p == '-')
             {
               p++;
-              bounds.y=(int) (-strtod(p,&p));
+              bounds.y=(int) ceil(-strtod(p,&p)-0.5);
               mask|=YNegative;
             }
           else

@@ -835,6 +835,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
+            if (draw_info->font != (char *) NULL)
+              (void) strcpy(value,draw_info->font);
             CloneString(&graphic_context[n]->font,value);
             break;
           }
@@ -2665,7 +2667,8 @@ static void DrawPrimitive(const DrawInfo *draw_info,
       if (primitive_info->text == (char *) NULL)
         break;
       clone_info=CloneImageInfo((ImageInfo *) NULL);
-      clone_info->font=AllocateString(draw_info->font);
+      if (draw_info->font != (char *) NULL)
+        clone_info->font=AllocateString(draw_info->font);
       clone_info->antialias=draw_info->text_antialias;
       clone_info->pointsize=draw_info->pointsize;
       clone_info->affine=draw_info->affine;
@@ -2681,7 +2684,8 @@ static void DrawPrimitive(const DrawInfo *draw_info,
       annotate->stroke=draw_info->stroke;
       annotate->box=draw_info->box;
       annotate->text=AllocateString(primitive_info->text);
-      FormatString(annotate->geometry,"%+d%+d",x,y);
+      FormatString(annotate->geometry,"%+g%+g",primitive_info->point.x,
+        primitive_info->point.y);
       AnnotateImage(image,annotate);
       DestroyAnnotateInfo(annotate);
       break;
@@ -2785,7 +2789,7 @@ static void DrawPrimitive(const DrawInfo *draw_info,
         return;
       if (draw_info->verbose)
         PrintPolygonInfo(polygon_info);
-#ifdef DEBUG_BOUND_BOXES
+#if defined(DEBUG_BOUND_BOXES)
       DrawBoundingRectangles(image,draw_info,polygon_info);
 #endif
       DrawPolygonPrimitive(draw_info,primitive_info,polygon_info,image);

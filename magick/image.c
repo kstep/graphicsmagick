@@ -2720,7 +2720,6 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   /*
     Annotation members.
   */
-  image_info->font=AllocateString("Times-Roman");
   image_info->antialias=True;
   image_info->pointsize=12;
   image_info->affine.sx=1.0;

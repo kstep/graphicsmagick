@@ -12,6 +12,7 @@ extern "C" {
   Graphic gems define declarations.
 */
 extern MagickExport double
+  AffineExpansion(const AffineInfo *),
   Permutate(int,int);
 
 extern MagickExport int

@@ -236,56 +236,6 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
 %
 */
 
-static void FormatLabel(ImageInfo *image_info,char *label,
-  const unsigned int width,unsigned int *font_height)
-{
-  ExceptionInfo
-    error;
-
-  Image
-    *image;
-
-  MonitorHandler
-    handler;
-
-  register char
-    *p,
-    *q;
-
-  if (label == (const char *) NULL)
-    return;
-  if (*label == '\0')
-    return;
-  if (strchr(label,'\n') != (char *) NULL)
-    return;
-  /*
-    Format label to fit within a specified width.
-  */
-  handler=SetMonitorHandler((MonitorHandler) NULL);
-  p=label;
-  for (q=p+1; *q != '\0'; q++)
-  {
-    (void) strcpy(image_info->filename,"label:");
-    (void) strncat(image_info->filename+6,p,(int) (q-p+1));
-    image=ReadImage(image_info,&error);
-    if (image == (Image *) NULL)
-      break;
-    if (image->columns > width)
-      {
-        while (!isspace((int) (*q)) && (q > p))
-          q--;
-        if (q == p)
-          break;
-        *q='\n';
-        p=q+1;
-      }
-    if (image->rows > *font_height)
-      *font_height=image->rows;
-    DestroyImage(image);
-  }
-  (void) SetMonitorHandler(handler);
-}
-
 static int SceneCompare(const void *x,const void *y)
 {
   Image
@@ -347,6 +297,9 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   RectangleInfo
     bounds,
     tile_info;
+
+  SegmentInfo
+    font_info;
 
   unsigned int
     border_width,
@@ -502,28 +455,14 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   clone_info->border_color=montage_info->border_color;
   annotate_info=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
   annotate_info->gravity=NorthGravity;
+  (void) GetFontMetrics(annotate_info,&font_info);
+  font_height=(font_info.y2-font_info.y1+1.0);
   texture=(Image *) NULL;
   if (montage_info->texture != (char *) NULL)
     {
       (void) strcpy(clone_info->filename,montage_info->texture);
       texture=ReadImage(clone_info,exception);
     }
-  /*
-    Initialize font info.
-  */
-  font_height=(unsigned int) (clone_info->affine.sx*annotate_info->pointsize+
-    clone_info->affine.ry*annotate_info->pointsize);
-  title=TranslateText(clone_info,image,montage_info->title);
-  FormatLabel(clone_info,title,tile_info.width/2+2*border_width*
-    Min(number_images,tiles_per_column),&font_height);
-  for (tile=0; tile < number_images; tile++)
-  {
-    attribute=GetImageAttribute(next_list[tile],"Label");
-    if (attribute == (ImageAttribute *) NULL)
-      continue;
-    FormatLabel(clone_info,attribute->value,tile_info.width+2*border_width,
-      &font_height);
-  }
   /*
     Determine the number of lines in an next label.
   */
