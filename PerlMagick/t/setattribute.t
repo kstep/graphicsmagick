@@ -29,19 +29,19 @@ testSetAttribute('input.miff','antialias','True');
 testSetAttribute('input.miff','antialias','False');
 
 ++$test;
-testSetAttribute('input.miff','compress','None');
+testSetAttribute('input.miff','compression','None');
 
 ++$test;
-testSetAttribute('input.miff','compress','JPEG');
+testSetAttribute('input.miff','compression','JPEG');
 
 ++$test;
-testSetAttribute('input.miff','compress','LZW');
+testSetAttribute('input.miff','compression','LZW');
 
 ++$test;
-testSetAttribute('input.miff','compress','RLE');
+testSetAttribute('input.miff','compression','RLE');
 
 ++$test;
-testSetAttribute('input.miff','compress','Zip');
+testSetAttribute('input.miff','compression','Zip');
 
 ++$test;
 testSetAttribute('input.miff','density','72');

@@ -1460,7 +1460,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           }
           return;
         }
-      if (LocaleCompare(attribute,"points") == 0)
+      if (LocaleCompare(attribute,"pointsize") == 0)
         {
           if (info)
             (void) sscanf(SvPV(sval,na),"%lf",&info->image_info->pointsize);
@@ -3393,7 +3393,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
-          if (LocaleCompare(attribute,"points") == 0)
+          if (LocaleCompare(attribute,"pointsize") == 0)
             {
               if (info)
                 s=newSViv(info->image_info->pointsize);
