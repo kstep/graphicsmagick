@@ -104,7 +104,7 @@ testFilter('input.miff', 'Frame',
 testFilter('input.miff', 'Gamma',
   q/2.2/,
   '500b17abf69d4c9e11e8f6a9c245a3a021ba935731f9d3d477ac07d9f4a6b197',
-  '9bf0b267e68565b0a808287edbc1fcf80e7edb8786b93e7d3c31410010701a82');
+  'a643f8c1998c4d4e643e6de69b488d9ea349d9def527481a511ff7839c523651');
 
 ++$test;
 testFilter('input.miff', 'Implode',

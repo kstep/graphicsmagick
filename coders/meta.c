@@ -1720,7 +1720,7 @@ static int format8BIM(Image *ifile, Image *ofile)
         if (ID == IPTC_ID)
           {
             formatString(ofile, "IPTC", 4);
-            formatIPTCfromBuffer(ofile, (char *)str, Size);
+            formatIPTCfromBuffer(ofile, (char *)str, (long) Size);
           }
         else
           formatString(ofile, (char *)str, (long) Size);

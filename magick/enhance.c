@@ -399,13 +399,13 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
   {
     if (gamma.red != 0.0)
       gamma_map[i].red=
-        ScaleShortToQuantum((65535L*pow((double) i/65535L,1.0/gamma.red)));
+        ScaleShortToQuantum((65535L*pow((double) i/65535L,1.0/gamma.red))+0.5);
     if (gamma.green != 0.0)
-      gamma_map[i].green=
-        ScaleShortToQuantum((65535L*pow((double) i/65535L,1.0/gamma.green)));
+      gamma_map[i].green=ScaleShortToQuantum(
+       (65535L*pow((double) i/65535L,1.0/gamma.green))+0.5);
     if (gamma.blue != 0.0)
       gamma_map[i].blue=
-        ScaleShortToQuantum((65535L*pow((double) i/65535L,1.0/gamma.blue)));
+        ScaleShortToQuantum((65535L*pow((double) i/65535L,1.0/gamma.blue))+0.5);
   }
   switch (image->storage_class)
   {
