@@ -2783,6 +2783,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingBevelWidth",option);
             break;
           }
+        if (LocaleCompare("random-threshold",option+1) == 0)
+          break;
         if (LocaleCompare("red-primary",option+1) == 0)
           {
             if (*option == '-')
@@ -4999,6 +5001,14 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) RaiseImage(*image,&geometry,*option == '-');
             continue;
           }
+        if (LocaleCompare("random-threshold",option+1) == 0)
+          {
+            /*
+              Threshold image.
+            */
+            (void) RandomThresholdImage(*image);
+            continue;
+          }
         if (LocaleCompare("red-primary",option+1) == 0)
           {
             /*
@@ -7187,6 +7197,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"Missing bevel width",option);
             break;
           }
+        if (LocaleCompare("random-threshold",option+1) == 0)
+          break;
         if (LocaleCompare("red-primary",option+1) == 0)
           {
             if (*option == '-')
@@ -12774,6 +12786,7 @@ MagickExport void ConvertUsage(void)
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-region geometry     apply options to a portion of the image",
       "-raise value         lighten/darken image edges to create a 3-D effect",
+      "-random-threshold    random threshold the image",
       "-red-primary point   chomaticity red primary point",
       "-render              render vector graphics",
       "-resize geometry     resize the image",
@@ -12939,6 +12952,7 @@ MagickExport void MogrifyUsage(void)
       "-profile filename    add ICM or IPTC information profile to image",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-raise value         lighten/darken image edges to create a 3-D effect",
+      "-random-threshold    random threshold the image",
       "-red-primary point  chomaticity red primary point",
       "-region geometry     apply options to a portion of the image",
       "-resize geometry     perferred size or location of the image",

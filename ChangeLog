@@ -3,6 +3,8 @@
 	* coders/meta.c: #ifdef'ed out some dead code.
 	* magick/annotate.c: #ifdef'ed out some code that is only
 	used when HasTTF is defined.
+	* Added RandomThresholdImage() method and -random-threshold
+	commandline option.
 
 2003-03-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
