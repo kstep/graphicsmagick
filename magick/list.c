@@ -510,7 +510,7 @@ MagickExport Image *PopImageList(Image **images)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PushImageList() add an image to the end of the list.
+%  PushImageList() adds an image to the end of the list.
 %
 %  The format of the PushImageList method is:
 %
