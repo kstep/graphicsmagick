@@ -794,8 +794,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
   /*
     Apply filter to resize horizontally from source to destination.
   */
-  scale=blur*Max(1.0/x_factor,1.0);
-  support=Max(scale*filter_info->support,0.5);
+  support=Max(blur*filter_info->support/x_factor,0.5);
+  scale=x_factor/blur;
   if (support > 0.5)
     SetImageType(destination,TrueColorType);
   else
@@ -803,7 +803,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       /*
         Reduce to point sampling.
       */
-      support=0.5+MagickEpsilon;
+      support=0.5;
       scale=1.0;
     }
   for (x=0; x < (long) destination->columns; x++)
@@ -812,12 +812,12 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     n=0;
     center=(double) x/x_factor;
     start=(long) Max(ceil(center-support-0.5),0L);
-    end=(long) Min(floor(center+support+0.5),source->columns);
-    for (i=start; i < end; i++)
+    end=(long) Min(floor(center+support+0.5),source->columns-1);
+    for (i=start; i <= end; i++)
     {
       contribution[n].pixel=i;
-      contribution[n].weight=filter_info->function((i-center)/scale);
-      contribution[n].weight/=scale;
+      contribution[n].weight=filter_info->function(scale*(i-center));
+      contribution[n].weight*=scale;
       density+=contribution[n].weight;
       n++;
     }
@@ -931,8 +931,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
   /*
     Apply filter to resize vertically from source to destination.
   */
-  scale=blur*Max(1.0/y_factor,1.0);
-  support=Max(scale*filter_info->support,0.5);
+  support=Max(blur*filter_info->support/y_factor,0.5);
+  scale=y_factor/blur;
   if (support > 0.5)
     SetImageType(destination,TrueColorType);
   else
@@ -940,7 +940,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       /*
         Reduce to point sampling.
       */
-      support=0.5+MagickEpsilon;
+      support=0.5;
       scale=1.0;
     }
   for (y=0; y < (long) destination->rows; y++)
@@ -949,12 +949,12 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     n=0;
     center=(double) y/y_factor;
     start=(long) Max(ceil(center-support-0.5),0L);
-    end=(long) Min(floor(center+support+0.5),source->rows);
-    for (i=start; i < end; i++)
+    end=(long) Min(floor(center+support+0.5),source->rows-1);
+    for (i=start; i <= end; i++)
     {
       contribution[n].pixel=i;
-      contribution[n].weight=filter_info->function((i-center)/scale);
-      contribution[n].weight/=scale;
+      contribution[n].weight=filter_info->function(scale*(i-center));
+      contribution[n].weight*=scale;
       density+=contribution[n].weight;
       n++;
     }
@@ -1012,7 +1012,6 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
     *contribution;
 
   double
-    scale,
     support,
     x_factor,
     x_support,
@@ -1071,11 +1070,9 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
     Allocate filter contribution info.
   */
   x_factor=(double) resize_image->columns/image->columns;
-  scale=blur*Max(1.0/x_factor,1.0);
-  x_support=Max(scale*filters[filter].support,0.5);
+  x_support=Max(blur*filters[filter].support/x_factor,0.5);
   y_factor=(double) resize_image->rows/image->rows;
-  scale=blur*Max(1.0/y_factor,1.0);
-  y_support=Max(scale*filters[filter].support,0.5);
+  y_support=Max(blur*filters[filter].support/y_factor,0.5);
   support=Max(x_support,y_support);
   if (support < filters[filter].support)
     support=filters[filter].support;
