@@ -3507,7 +3507,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     }
                   for (i=0; i<m; i++, yy++)
                   {
-                    assert(yy < large_image->rows);
+                    assert(yy < (int) large_image->rows);
                     p=prev;
                     n=next;
                     q=SetImagePixels(large_image,0,yy,large_image->columns,1);
@@ -3590,7 +3590,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   n=p+1;
                   for (x=(image->columns-length); x < (int) image->columns; x++)
                   {
-                    if (x == image->columns-length)
+                    if (x == (int) (image->columns-length))
                       m=mng_info->magn_ml;
                     else if (magn_methx > 1 && x == (int) image->columns-2)
                       m=mng_info->magn_mr;
@@ -4164,7 +4164,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    *dp++='\n';
    sprintf(dp,"%8lu ",length);
    dp+=8;
-   for (i=0; i<length; i++)
+   for (i=0; i<(int) length; i++)
    {
      if (i%36 == 0)
        *dp++ = '\n';
@@ -4982,7 +4982,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
               {
                 ping_info->bit_depth=1;
-                while ((1 << ping_info->bit_depth) < image->colors)
+                while ((1 << ping_info->bit_depth) < (int) image->colors)
                   ping_info->bit_depth<<=1;
               }
             else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY &&
@@ -4996,7 +4996,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   depth_2_ok=True,
                   depth_1_ok=True;
 
-                for (i=0; i<image->colors; i++)
+                for (i=0; i<(int) image->colors; i++)
                 {
                    int
                      intensity=DownScale(image->colormap[i].red);
@@ -5185,7 +5185,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         (unsigned char *) "IPTC profile",
         (unsigned char *) image->iptc_profile.info,
         (png_uint_32) image->iptc_profile.length);
-    for (i=0; i < image->generic_profiles; i++)
+    for (i=0; i < (int) image->generic_profiles; i++)
     {
       if(image->generic_profile[i].name == (png_charp) NULL)
         png_write_raw_profile(image_info,ping,ping_info,
