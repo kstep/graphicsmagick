@@ -1088,7 +1088,7 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
   */
   for (level=0; ; level++)
   {
-    pixel_list->seed*=42893621L+1L;
+    pixel_list->seed=(pixel_list->seed*42893621L)+1L;
     if ((pixel_list->seed & 0x300) != 0x300)
       break;
   }

@@ -534,7 +534,7 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
     &white_point);
   if (count == 1)
     white_point=65535L-black_point;
-  levels_map=(unsigned short *) AcquireMemory(65536L*sizeof(Quantum));
+  levels_map=(unsigned short *) AcquireMemory(65536L*sizeof(unsigned short));
   if (levels_map == (unsigned short *) NULL)
     ThrowBinaryException(ResourceLimitError,"Unable to level the image",
       "Memory allocation failed");
