@@ -1442,6 +1442,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     {
       image->x_resolution=72.0;
       image->y_resolution=72.0;
+      image->units=PixelsPerInchResolution;
     }
   if (image_info->density != (char *) NULL)
     {
