@@ -1,5 +1,6 @@
 2004-01-07  Rolf Schroedter <rolf.schroedter@dlr.de>
 
+	* API rename: CloneImage --> GetImage
 	* Added API's
 		SetFillPatternURL url
 		SetStrokePatternURL url

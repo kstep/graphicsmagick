@@ -554,7 +554,6 @@ static int wandObjCmd(
         "clip",             "ClipImage",
         "clippath",         "ClipPathImage",
         "clone",            "CloneWand",
-        "cloneimage",       "CloneImage",
         "coalesce",         "CoalesceImages",
         "colorfloodfill",   "ColorFloodfillImage",
         "colorize",         "ColorizeImage",
@@ -598,6 +597,7 @@ static int wandObjCmd(
         "dispose",          "GetDispose",           "SetDispose",
         "extrema",          "GetExtrema",
         "format",           "GetFormat",
+        "getimage",         "GetImage",
         "imagefilename",    "GetImageFilename",     "SetImageFilename",
         "gamma",            "GetGamma",             "SetGamma",
         "greenprimary",     "GetGreenPrimary",      "SetGreenPrimary",
@@ -705,7 +705,6 @@ static int wandObjCmd(
         TM_CLIP,            TM_CLIP_IMAGE,
         TM_CLIP_PATH,       TM_CLIP_PATH_IMAGE,
         TM_CLONE,           TM_CLONE_WAND,
-        TM_CLONEIMAGE,      TM_CLONE_IMAGE,
         TM_COALESCE,        TM_COALESCE_IMAGES,
         TM_COLOR_FLOODFILL, TM_COLOR_FLOODFILL_IMAGE,
         TM_COLORIZE,        TM_COLORIZE_IMAGE,
@@ -749,6 +748,7 @@ static int wandObjCmd(
         TM_DISPOSE,         TM_GET_DISPOSE,             TM_SET_DISPOSE,
         TM_EXTREMA,         TM_GET_EXTREMA,
         TM_FORMAT,          TM_GET_FORMAT,
+        TM_GETIMAGE,        TM_GET_IMAGE,
         TM_IMAGE_FILENAME,  TM_GET_IMAGE_FILENAME,      TM_SET_IMAGE_FILENAME,
         TM_GAMMA,           TM_GET_GAMMA,               TM_SET_GAMMA,
         TM_GREEN_PRIMARY,   TM_GET_GREEN_PRIMARY,       TM_SET_GREEN_PRIMARY,
@@ -1393,29 +1393,6 @@ static int wandObjCmd(
 	    name = Tcl_GetString(objv[2]);
 	}
 	newWand = CloneMagickWand(wandPtr);
-	if (newWand == NULL) {
-	    return myMagickError(interp, wandPtr);
-	}
-	name = newWandObj(interp, newWand, name);
-	Tcl_SetResult(interp, name, TCL_VOLATILE);
-
-	break;
-    }
-
-    case TM_CLONEIMAGE:   /* cloneimage ?newName? */
-    case TM_CLONE_IMAGE:  /* CloneImage ?newName? */
-    {
-	MagickWand *newWand;
-	char *name=NULL;
-
-	if( objc > 3 ) {
-	    Tcl_WrongNumArgs(interp, 2, objv, "?newName?");
-	    return TCL_ERROR;
-	}
-	if( objc > 2 ) {
-	    name = Tcl_GetString(objv[2]);
-	}
-	newWand = MagickCloneImage(wandPtr);
 	if (newWand == NULL) {
 	    return myMagickError(interp, wandPtr);
 	}
@@ -2669,6 +2646,29 @@ static int wandObjCmd(
 	    Tcl_SetResult(interp, fmt, TCL_VOLATILE);
 	    MagickRelinquishMemory(fmt); /* Free TclMagick resource */
 	}
+	break;
+    }
+
+    case TM_GETIMAGE:   /* getimage ?newName? */
+    case TM_GET_IMAGE:  /* GetImage ?newName? */
+    {
+	MagickWand *newWand;
+	char *name=NULL;
+
+	if( objc > 3 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "?newName?");
+	    return TCL_ERROR;
+	}
+	if( objc > 2 ) {
+	    name = Tcl_GetString(objv[2]);
+	}
+	newWand = MagickGetImage(wandPtr);
+	if (newWand == NULL) {
+	    return myMagickError(interp, wandPtr);
+	}
+	name = newWandObj(interp, newWand, name);
+	Tcl_SetResult(interp, name, TCL_VOLATILE);
+
 	break;
     }
 

@@ -71,6 +71,7 @@ set TestFunctions {
     GammaImage                  img     1
     GammaImageChannel           img     1
 
+    GetSetImage                 seq     1
     GetSetFilename              img     1
     GetSetBackgroundColor       img     1
     GetSetBluePrimary           img     1
@@ -148,9 +149,8 @@ set TestFunctions {
     SampleImage                 img     1
     ScaleImage                  img     1
 
-    SetImage                    seq     1
     SetOption                   img     1
-    SetPassphrase               img     0
+    SetPassphrase               img     1
 
     SharpenImage                img     1
     ShaveImage                  img     1
@@ -208,7 +208,7 @@ proc AddImage {seq} {
     debug $wand
 
     $wand SetIndex 3
-    set x [$wand CloneImage imgX]
+    set x [$wand GetImage imgX]
     $wand SetIndex 0
     $wand AddImage $x
     $wand WriteImages "$::TMP/x-Add.gif" 1
@@ -574,6 +574,21 @@ proc GammaImageChannel {img} {
     
     $wand WriteImage "$::TMP/x-GammaChannel.bmp"
     magick delete $wand
+}
+proc GetSetImage {seq} {
+    set wand [$seq clone seqX]
+    debug $wand
+
+    $wand SetIndex 2
+    set new [$wand GetImage imgX]
+    $wand SetIndex 1
+    while {[$wand HasNext]} {
+        $wand SetImage $new
+        $wand NextImage
+    }    
+    $wand WriteImages "$::TMP/x-SetImage.gif" 1
+    
+    magick delete $wand $new
 }
 proc GetSetFilename {img} {
     set wand [$img clone imgX]
@@ -1240,21 +1255,6 @@ proc ScaleImage {img} {
     $wand ScaleImage 300 200
     $wand WriteImage "$::TMP/x-Scale.bmp"
     magick delete $wand 
-}
-proc SetImage {seq} {
-    set wand [$seq clone seqX]
-    debug $wand
-
-    $wand SetIndex 2
-    set new [$wand CloneImage imgX]
-    $wand SetIndex 1
-    while {[$wand HasNext]} {
-        $wand SetImage $new
-        $wand NextImage
-    }    
-    $wand WriteImages "$::TMP/x-SetImage.gif" 1
-    
-    magick delete $wand $new
 }
 proc SetOption {img} {
     set wand [$img clone imgX]
