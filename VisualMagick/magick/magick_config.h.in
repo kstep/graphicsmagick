@@ -57,7 +57,7 @@
 #define HasLCMS
 
 // Define to support patented LZW compression
-#define HasLZW 0
+// #define HasLZW
 
 // Define to use the PNG library
 #define HasPNG
