@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -134,6 +134,9 @@
 
 static jp2_dec_t *jp2_dec_create(void);
 static void jp2_dec_destroy(jp2_dec_t *dec);
+static int jp2_getcs(jp2_colr_t *colr);
+static int fromiccpcs(int cs);
+static int jp2_getct(int colorspace, int type, int assoc);
 
 /******************************************************************************\
 * Functions.
@@ -147,18 +150,20 @@ jas_image_t *jp2_decode(jas_stream_t *in, char *optstr)
 	jp2_dec_t *dec;
 	bool samedtype;
 	int dtype;
-	int i;
+	unsigned int i;
 	jp2_cmap_t *cmapd;
 	jp2_pclr_t *pclrd;
 	jp2_cdef_t *cdefd;
-	int channo;
+	unsigned int channo;
 	int newcmptno;
-	int cmptno;
 	int_fast32_t *lutents;
+#if 0
 	jp2_cdefchan_t *cdefent;
+	int cmptno;
+#endif
 	jp2_cmapent_t *cmapent;
-	uchar *iccp;
-	int cs;
+	jas_icchdr_t icchdr;
+	jas_iccprof_t *iccprof;
 
 	dec = 0;
 	box = 0;
@@ -269,7 +274,7 @@ jas_image_t *jp2_decode(jas_stream_t *in, char *optstr)
 
 	/* Does the number of components indicated in the IHDR box match
 	  the value specified in the code stream? */
-	if (dec->ihdr->data.ihdr.numcmpts != jas_image_numcmpts(dec->image)) {
+	if (dec->ihdr->data.ihdr.numcmpts != JAS_CAST(uint, jas_image_numcmpts(dec->image))) {
 		jas_eprintf("warning: number of components mismatch\n");
 	}
 
@@ -282,7 +287,7 @@ jas_image_t *jp2_decode(jas_stream_t *in, char *optstr)
 	/* Determine if all components have the same data type. */
 	samedtype = true;
 	dtype = jas_image_cmptdtype(dec->image, 0);
-	for (i = 1; i < jas_image_numcmpts(dec->image); ++i) {
+	for (i = 1; i < JAS_CAST(uint, jas_image_numcmpts(dec->image)); ++i) {
 		if (jas_image_cmptdtype(dec->image, i) != dtype) {
 			samedtype = false;
 			break;
@@ -305,14 +310,14 @@ jas_image_t *jp2_decode(jas_stream_t *in, char *optstr)
 	if (dec->bpcc) {
 		/* Is the number of components indicated in the BPCC box
 		  consistent with the code stream data? */
-		if (dec->bpcc->data.bpcc.numcmpts != jas_image_numcmpts(
-		  dec->image)) {
+		if (dec->bpcc->data.bpcc.numcmpts != JAS_CAST(uint, jas_image_numcmpts(
+		  dec->image))) {
 			jas_eprintf("warning: number of components mismatch\n");
 		}
 		/* Is the component data type information indicated in the BPCC
 		  box consistent with the code stream data? */
 		if (!samedtype) {
-			for (i = 0; i < jas_image_numcmpts(dec->image); ++i) {
+			for (i = 0; i < JAS_CAST(uint, jas_image_numcmpts(dec->image)); ++i) {
 				if (jas_image_cmptdtype(dec->image, i) != JP2_BPCTODTYPE(dec->bpcc->data.bpcc.bpcs[i])) {
 					jas_eprintf("warning: component data type mismatch\n");
 				}
@@ -330,17 +335,18 @@ jas_image_t *jp2_decode(jas_stream_t *in, char *optstr)
 
 	switch (dec->colr->data.colr.method) {
 	case JP2_COLR_ENUM:
-		jas_image_setcolorspace(dec->image, jp2_getcs(&dec->colr->data.colr));
+		jas_image_setclrspc(dec->image, jp2_getcs(&dec->colr->data.colr));
 		break;
 	case JP2_COLR_ICC:
-		if (dec->colr->data.colr.iccplen < 128) {
-			abort();
-		}
-		iccp = dec->colr->data.colr.iccp;
-		cs = (iccp[16] << 24) | (iccp[17] << 16) | (iccp[18] << 8) |
-		  iccp[19];
-		jas_eprintf("ICC Profile CS %08x\n", cs);
-		jas_image_setcolorspace(dec->image, fromiccpcs(cs));
+		iccprof = jas_iccprof_createfrombuf(dec->colr->data.colr.iccp,
+		  dec->colr->data.colr.iccplen);
+		assert(iccprof);
+		jas_iccprof_gethdr(iccprof, &icchdr);
+		jas_eprintf("ICC Profile CS %08x\n", icchdr.colorspc);
+		jas_image_setclrspc(dec->image, fromiccpcs(icchdr.colorspc));
+		dec->image->cmprof_ = jas_cmprof_createfromiccprof(iccprof);
+		assert(dec->image->cmprof_);
+		jas_iccprof_destroy(iccprof);
 		break;
 	}
 
@@ -360,13 +366,13 @@ jas_image_t *jp2_decode(jas_stream_t *in, char *optstr)
 
 	/* Determine the number of channels (which is essentially the number
 	  of components after any palette mappings have been applied). */
-	dec->numchans = dec->cmap ? dec->cmap->data.cmap.numchans : jas_image_numcmpts(dec->image);
+	dec->numchans = dec->cmap ? dec->cmap->data.cmap.numchans : JAS_CAST(uint, jas_image_numcmpts(dec->image));
 
 	/* Perform a basic sanity check on the CMAP box if present. */
 	if (dec->cmap) {
 		for (i = 0; i < dec->numchans; ++i) {
 			/* Is the component number reasonable? */
-			if (dec->cmap->data.cmap.ents[i].cmptno >= jas_image_numcmpts(dec->image)) {
+			if (dec->cmap->data.cmap.ents[i].cmptno >= JAS_CAST(uint, jas_image_numcmpts(dec->image))) {
 				jas_eprintf("error: invalid component number in CMAP box\n");
 				goto error;
 			}
@@ -411,9 +417,9 @@ jas_image_t *jp2_decode(jas_stream_t *in, char *optstr)
 					if (!cdefent) {
 						abort();
 					}
-				jas_image_setcmpttype(dec->image, newcmptno, jp2_getct(jas_image_colorspace(dec->image), cdefent->type, cdefent->assoc));
+				jas_image_setcmpttype(dec->image, newcmptno, jp2_getct(jas_image_clrspc(dec->image), cdefent->type, cdefent->assoc));
 				} else {
-				jas_image_setcmpttype(dec->image, newcmptno, jp2_getct(jas_image_colorspace(dec->image), 0, channo + 1));
+				jas_image_setcmpttype(dec->image, newcmptno, jp2_getct(jas_image_clrspc(dec->image), 0, channo + 1));
 				}
 #endif
 			}
@@ -422,7 +428,7 @@ jas_image_t *jp2_decode(jas_stream_t *in, char *optstr)
 
 	/* Mark all components as being of unknown type. */
 
-	for (i = 0; i < jas_image_numcmpts(dec->image); ++i) {
+	for (i = 0; i < JAS_CAST(uint, jas_image_numcmpts(dec->image)); ++i) {
 		jas_image_setcmpttype(dec->image, i, JAS_IMAGE_CT_UNKNOWN);
 	}
 
@@ -431,20 +437,20 @@ jas_image_t *jp2_decode(jas_stream_t *in, char *optstr)
 		for (i = 0; i < dec->numchans; ++i) {
 			jas_image_setcmpttype(dec->image,
 			  dec->chantocmptlut[dec->cdef->data.cdef.ents[i].channo],
-			  jp2_getct(jas_image_colorspace(dec->image),
+			  jp2_getct(jas_image_clrspc(dec->image),
 			  dec->cdef->data.cdef.ents[i].type, dec->cdef->data.cdef.ents[i].assoc));
 		}
 	} else {
 		for (i = 0; i < dec->numchans; ++i) {
 			jas_image_setcmpttype(dec->image, dec->chantocmptlut[i],
-			  jp2_getct(jas_image_colorspace(dec->image), 0, i + 1));
+			  jp2_getct(jas_image_clrspc(dec->image), 0, i + 1));
 		}
 	}
 
 	/* Delete any components that are not of interest. */
-	for (i = jas_image_numcmpts(dec->image) - 1; i >= 0; --i) {
-		if (jas_image_cmpttype(dec->image, i) == JAS_IMAGE_CT_UNKNOWN) {
-			jas_image_delcmpt(dec->image, i);
+	for (i = jas_image_numcmpts(dec->image); i > 0; --i) {
+		if (jas_image_cmpttype(dec->image, i - 1) == JAS_IMAGE_CT_UNKNOWN) {
+			jas_image_delcmpt(dec->image, i - 1);
 		}
 	}
 
@@ -453,7 +459,9 @@ jas_image_t *jp2_decode(jas_stream_t *in, char *optstr)
 		jas_eprintf("error: no components\n");
 		goto error;
 	}
+#if 0
 fprintf(stderr, "no of components is %d\n", jas_image_numcmpts(dec->image));
+#endif
 
 	/* Prevent the image from being destroyed later. */
 	image = dec->image;
@@ -475,11 +483,13 @@ error:
 
 int jp2_validate(jas_stream_t *in)
 {
-	jas_stream_t *tmpstream;
 	char buf[JP2_VALIDATELEN];
 	int i;
 	int n;
+#if 0
+	jas_stream_t *tmpstream;
 	jp2_box_t *box;
+#endif
 
 	assert(JAS_STREAM_MAXPUTBACK >= JP2_VALIDATELEN);
 
@@ -559,54 +569,46 @@ static void jp2_dec_destroy(jp2_dec_t *dec)
 	jas_free(dec);
 }
 
-
-
-
-
-
-int jp2_getct(int colorspace, int type, int assoc)
+static int jp2_getct(int colorspace, int type, int assoc)
 {
 	if (type == 1 && assoc == 0) {
 		return JAS_IMAGE_CT_OPACITY;
 	}
 	if (type == 0 && assoc >= 1 && assoc <= 65534) {
 		switch (colorspace) {
-		case JAS_IMAGE_CS_RGB:
+		case JAS_CLRSPC_FAM_RGB:
 			switch (assoc) {
 			case JP2_CDEF_RGB_R:
-				return JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R);
+				return JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R);
 				break;
 			case JP2_CDEF_RGB_G:
-				return JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G);
+				return JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G);
 				break;
 			case JP2_CDEF_RGB_B:
-				return JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B);
+				return JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B);
 				break;
 			}
 			break;
-		case JAS_IMAGE_CS_YCBCR:
+		case JAS_CLRSPC_FAM_YCBCR:
 			switch (assoc) {
 			case JP2_CDEF_YCBCR_Y:
-				return JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_YCBCR_Y);
+				return JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_Y);
 				break;
 			case JP2_CDEF_YCBCR_CB:
-				return JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_YCBCR_CB);
+				return JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_CB);
 				break;
 			case JP2_CDEF_YCBCR_CR:
-				return JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_YCBCR_CR);
+				return JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_CR);
 				break;
 			}
 			break;
-		case JAS_IMAGE_CS_GRAY:
+		case JAS_CLRSPC_FAM_GRAY:
 			switch (assoc) {
 			case JP2_CDEF_GRAY_Y:
-				return JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y);
+				return JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y);
 				break;
 			}
 			break;
-#if 0
-		case JAS_IMAGE_CS_ICC:
-#endif
 		default:
 			return JAS_IMAGE_CT_COLOR(assoc - 1);
 			break;
@@ -615,36 +617,36 @@ int jp2_getct(int colorspace, int type, int assoc)
 	return JAS_IMAGE_CT_UNKNOWN;
 }
 
-int jp2_getcs(jp2_colr_t *colr)
+static int jp2_getcs(jp2_colr_t *colr)
 {
 	if (colr->method == JP2_COLR_ENUM) {
 		switch (colr->csid) {
 		case JP2_COLR_SRGB:
-			return JAS_IMAGE_CS_RGB;
+			return JAS_CLRSPC_SRGB;
 			break;
 		case JP2_COLR_SYCC:
-			return JAS_IMAGE_CS_YCBCR;
+			return JAS_CLRSPC_SYCBCR;
 			break;
 		case JP2_COLR_SGRAY:
-			return JAS_IMAGE_CS_GRAY;
+			return JAS_CLRSPC_SGRAY;
 			break;
 		}
 	}
-	return JAS_IMAGE_CS_UNKNOWN;
+	return JAS_CLRSPC_UNKNOWN;
 }
 
-int fromiccpcs(int cs)
+static int fromiccpcs(int cs)
 {
 	switch (cs) {
 	case ICC_CS_RGB:
-		return JAS_IMAGE_CS_RGB;
+		return JAS_CLRSPC_GENRGB;
 		break;
 	case ICC_CS_YCBCR:
-		return JAS_IMAGE_CS_YCBCR;
+		return JAS_CLRSPC_GENYCBCR;
 		break;
 	case ICC_CS_GRAY:
-		return JAS_IMAGE_CS_GRAY;
+		return JAS_CLRSPC_GENGRAY;
 		break;
 	}
-	return JAS_IMAGE_CS_UNKNOWN;
+	return JAS_CLRSPC_UNKNOWN;
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -119,20 +119,9 @@
 #ifndef JAS_TYPES_H
 #define JAS_TYPES_H
 
-#if !defined(JAS_CONFIGURE)
+#include <jasper/jas_config.h>
 
-/*
-   We are not using a configure-based build.  Try to compensate for
-   this here, by defining the types normally defined by configure.
-   Note: These types should match those specified in the configure.in file.
- */
-#define	uchar		unsigned char
-#define	ushort		unsigned short
-#define	uint		unsigned int
-#define	ulong		unsigned long
-#define	longlong	long long
-#define	ulonglong	unsigned long long
-#define	ssize_t		int
+#if !defined(JAS_CONFIGURE)
 
 #if defined(WIN32) || defined(HAVE_WINDOWS_H)
 /*
@@ -170,10 +159,7 @@
 #include <stdbool.h>
 #else
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+#ifndef __cplusplus
 /*
  * The C language implementation does not provide the standard header file
  * "stdbool.h" as required by ISO/IEC 9899:1999.  Try to compensate for this
@@ -188,9 +174,6 @@ extern "C" {
 #if !defined(false)
 #define	false	0
 #endif
-
-#ifdef __cplusplus
-}
 #endif
 
 #endif
