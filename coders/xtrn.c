@@ -470,31 +470,11 @@ int SafeArrayFifo(const Image *image,const void *data,const size_t length)
     }
     else
     {
-      // Adjust the length of the buffer to fit
+      /* Adjust the length of the buffer to fit */
     }
   }
   return(tlen);
 }
-
-// forcing a format
-#ifdef STUFF
-{
-  ExceptionInfo
-    exception;
-
-  GetExceptionInfo(&exception);
-  FormatString(info->image_info->filename,"%.1024s:",SvPV(sval,na));
-  SetImageInfo(info->image_info,True,&exception);
-  if (*info->image_info->magick == '\0')
-    MagickWarning(OptionWarning,"Unrecognized image format",
-      info->image_info->filename);
-  else
-    for ( ; image; image=image->next)
-      (void) strncpy(image->magick,info->image_info->magick,
-        MaxTextExtent-1);
-  DestroyExceptionInfo(&exception);
-}
-#endif
 
 static unsigned int WriteXTRNImage(const ImageInfo *image_info,Image *image)
 {
