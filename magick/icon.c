@@ -154,6 +154,9 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
     i,
     x;
 
+  register PixelPacket
+    *q;
+
   register unsigned char
     *p;
 
@@ -363,19 +366,20 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
     image->matte=True;
     for (y=image->rows-1; y >= 0; y--)
     {
-      if (!GetPixelCache(image,0,y,image->columns,1))
+      q=GetPixelCache(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
         break;
       for (x=0; x < ((int) image->columns-7); x+=8)
       {
         byte=ReadByte(image);
         for (bit=0; bit < 8; bit++)
-          image->indexes[x+bit]=(byte & (0x80 >> bit) ? Transparent : Opaque);
+          q[x+bit].opacity=(byte & (0x80 >> bit) ? Transparent : Opaque);
       }
       if ((image->columns % 8) != 0)
         {
           byte=ReadByte(image);
           for (bit=0; bit < (int) (image->columns % 8); bit++)
-            image->indexes[x+bit]=(byte & (0x80 >> bit) ? Transparent : Opaque);
+            q[x+bit].opacity=(byte & (0x80 >> bit) ? Transparent : Opaque);
         }
       if (!SyncPixelCache(image))
         break;
