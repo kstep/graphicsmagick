@@ -1274,8 +1274,7 @@ AC_SUBST(X_PRE_LIBS)
 AC_SUBST(X_LIBS)
 AC_SUBST(X_EXTRA_LIBS)
 
-AC_CONFIG_FILES(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile tests/Makefile magick/Magick-config PerlMagick/Makefile.PL)
-AC_OUTPUT
+AC_OUTPUT(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile tests/Makefile magick/Magick-config PerlMagick/Makefile.PL)
 
 echo ""
 
