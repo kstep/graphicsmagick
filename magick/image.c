@@ -5915,11 +5915,11 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageDepth() sets the depth of the image, either 8 or 16.  Some image
-%  formats support both 8 and 16-bits per color component (e.g. PNG).  Use
-%  SetImageDepth() to specify your preference.  A value other than 0 is
-%  returned if the depth is set.  Check the exception member of image to
-%  determine the cause for any failure.
+%  SetImageDepth() sets the depth of the image.  Some image formats support
+%  both 8 and 16-bits per color component (e.g. PNG).  Use SetImageDepth() to
+%  specify your preference.  A value other than 0 is returned if the depth is
+%  set.  Check the exception member of image to determine the cause for any
+%  failure.
 %
 %  The format of the SetImageDepth method is:
 %
@@ -5947,11 +5947,10 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   image->depth=depth;
-  if (image->depth == QuantumDepth)
+  if (image->depth <= QuantumDepth)
     return(True);
   if (GetImageDepth(image,&image->exception) == depth)
     return(True);
-  image->depth=8;
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
