@@ -1,6 +1,13 @@
 This file records noteworthy changes.
 
-(0.9.3) 
+(0.9.3)
+  * New class 'Pixels' to support low-level pixel access in image. New
+    API supports multiple pixel views into the same image.  Number of
+    available pixel views limited to the number of image rows + 1.
+  * Dramatically improved performance for text annotation and drawing.
+  * Fix text annotation bug which did not allow spaces in annotation text.
+  * Added gaussianBlurImage() method.
+  * Fixed bug in floodFillTexture().
   * Re-worked error reporting methodology to use re-entrant error
     reporting rather than the previous method (based on call-backs)
     which required thread specific data.

@@ -1,11 +1,8 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
-// Representation of a pixel region.
-//
-// This class is completely EXPERIMENTAL in nature and is expected to
-// be completely re-defined in the near future.
+// Representation of a pixel view.
 //
 
 #if !defined(Pixels_header)
@@ -14,11 +11,7 @@
 #include "Magick++/Include.h"
 #include "Magick++/Color.h"
 #include "Magick++/Image.h"
-
-// Class representing a pixel color. The Color class contains a
-// pointer to PixelPacket where it stores its RGBA information.
-// Incrementing and decrementing is done on the PixelPacket pointer
-// contained in Color.
+#include "Magick++/Exception.h"
 
 namespace Magick
 {
@@ -27,12 +20,20 @@ namespace Magick
   class Pixels : public ColorClass
   {
   public:
-    Pixels( Image &image )
-      : ColorClass (),
-	_image(image),
-	_base(0),
-	_last(0)
+    // Construct pixel view using specified image.
+    Pixels( Image &image_ )
+      : _image(image_),
+	_view(MagickLib::OpenCacheView(image_.image()))
       {
+	if (!_view)
+	  throwException( MagickLib::ResourceLimitError, "Out of pixel views" );
+      }
+
+    // Destroy pixel view
+    ~Pixels( void )
+      {
+	if ( view )
+	  MagickLib::CloseCacheView( view );
       }
     
     //////////////////////////////////////////////////////////////////////
@@ -40,126 +41,65 @@ namespace Magick
     // Pixel Access Methods
     //
     //////////////////////////////////////////////////////////////////////
-    
-    // Transfers pixels from the image to the pixel cache as defined
-    // by the specified region. Modified pixels may be subsequently
+
+    // Transfer pixels from the image to the pixel view as defined by
+    // the specified region. Modified pixels may be subsequently
     // transferred back to the image via syncPixels.
     
-    void getPixels ( int x_, int y_,
-		     unsigned int columns_, unsigned int rows_ )
+    PixelPacket* getPixels ( int x_, int y_,
+			     unsigned int columns_, unsigned int rows_ )
       {
-	_base = MagickLib::GetPixelCache( _image.image(), x_, y_,
-					  columns_, rows_ );
-	_last = _base + columns_ * rows_;
+	_pixels = MagickLib::GetCacheView( _view, x_, y_,
+					   columns_, rows_ );
+	if (!_pixels )
+	  throwException( OptionError, "Failed to get pixels" );
 
-	// Set pixel in Color
-	pixel( _base, _image.colorSpace() == CMYKColorspace ? ColorClass::CYMKPixel :
-	       ( _image.matte() ? ColorClass::RGBAPixel : RGBPixel ) );
+	return _pixels;
       }
     
-    // Transfers the image cache pixels to the image.
+    // Transfers the image view pixels to the image.
     void syncPixels ( void )
       {
-	MagickLib::SyncPixelCache( _image.image() );
+	MagickLib::SyncCacheView( _view );
       }
     
-    // Allocates a pixel cache region to store image pixels as defined
+    // Allocate a pixel view region to store image pixels as defined
     // by the region rectangle.  This area is subsequently transferred
-    // from the pixel cache to the image via syncPixels.
-    void setPixels ( int x_, int y_,
-		     unsigned int columns_, unsigned int rows_ )
+    // from the pixel view to the image via syncPixels.
+    PixelPacket* setPixels ( int x_, int y_,
+			     unsigned int columns_, unsigned int rows_ )
       {
-	_base = MagickLib::SetPixelCache( _image.image(), x_, y_,
-					  columns_, rows_ );
-	_last = _base + columns_ * rows_;
+	_pixels = MagickLib::SetCacheView( _view, x_, y_,
+					   columns_, rows_ );
+	if (!_pixels )
+	  throwException( OptionError, "Failed to set pixels" );
 
-	// Set pixel in Color
-	pixel( _base, _image.colorSpace() == CMYKColorspace ? ColorClass::CYMKPixel :
-	       ( _image.matte() ? ColorClass::RGBAPixel : RGBPixel ) );
+	return _pixels;
       }
-    
-    // Transfers one or more pixel components from a buffer or file
-    // into the image pixel cache of an image.
-    // Used to support image decoders.
+#if 0
+    // Transfer one or more pixel components from a buffer or file
+    // into the image pixel view of an image.  Used to support image
+    // decoders.
     void readPixel ( QuantumTypes quantum_,
 		     unsigned char *source_ )
       {
 	MagickLib::ReadPixelCache( _image.image(), quantum_, source_ );
       }
     
-    // Transfers one or more pixel components from the image pixel
-    // cache to a buffer or file.
-    // Used to support image encoders.
+    // Transfer one or more pixel components from the image pixel
+    // view to a buffer or file.  Used to support image encoders.
     void writePixel ( QuantumTypes quantum_,
 		      unsigned char *destination_ )
       {
 	MagickLib::WritePixelCache( _image.image(), quantum_, destination_ );
       }
-    
-    //////////////////////////////////////////////////////////////////////
-    //
-    // Operators
-    //
-    //////////////////////////////////////////////////////////////////////
-    
-//     Pixels& operator * () const
-//       {
-// 	return *this;
-//       }
-    
-//     Pixels* operator -> () const
-//       {
-// 	return this;
-//       }
-
-    // Increment to next pixel
-    Pixels& operator ++ ()
-      {
-	if ( _pixel != _last )
-	  ++_pixel;
-	return *this;
-      }
-    
-//     Pixels operator ++ (int)
-//       {
-// 	Pixels tmp = *this;
-// 	++*this;
-// 	return tmp;
-//       }
-
-    // Decrement to preceding pixel
-    Pixels& operator -- ()
-      {
-	if ( _pixel != _base )
-	  --_pixel;
-	return *this;
-      }
-
-    // Compare equality
-    bool operator == ( const Pixels& iter_ )
-      {
-	return (_pixel == iter_._pixel);
-      }
-
-    // Compare inequality
-    bool operator != ( const Pixels& iter_ )
-      {
-	return (_pixel != iter_._pixel);
-      }
-
+#endif
   private:
-      
-    Image                       _image;
-    MagickLib::PixelPacket*     _base;
-    MagickLib::PixelPacket*     _last;
-  }; // class Pixels
 
-  // Typedefs to represent specific pixel types
-  typedef Pixels <ColorGray> PixelsGray;
-  typedef Pixels <ColorHSL>  PixelsHSL;
-  typedef Pixels <ColorMono> PixelsMono;
-  typedef Pixels <ColorRGB>  PixelsRGB;
-  typedef Pixels <ColorYUV>  PixelsYUV;
+    Image                  _image;  // Image reference
+    MagickLib::ViewInfo*   _view;   // Image view handle
+
+  }; // class Pixels
 
 } // Magick namespace
 
