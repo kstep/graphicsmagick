@@ -231,6 +231,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       /*
         Find tag in list
       */
+      magick_info=(MagickInfo *) NULL;
       for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
         if (LocaleCompare(p->tag,tag) == 0)
           {
