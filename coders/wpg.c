@@ -51,9 +51,11 @@
 #include "magick.h"
 #include "defines.h"
 
+#if !defined(WIN32)
 #define DWORD unsigned long
 #define WORD  unsigned
 #define BYTE  unsigned char
+#endif
 
 typedef struct
 	{
