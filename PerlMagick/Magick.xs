@@ -695,6 +695,7 @@ static double constant(char *name,int sans)
 static void DestroyPackageInfo(struct PackageInfo *info)
 {
   DestroyImageInfo(info->image_info);
+  DestroyDrawInfo(info->draw_info);
   DestroyQuantizeInfo(info->quantize_info);
   LiberateMemory((void **) &info);
 }
