@@ -372,11 +372,13 @@ MagickExport const MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
   /*
     Load all modules and obtain pointer to head of list
   */
-  list=GetMagickInfo("*",exception);
-  if ((!list) || (exception->severity > UndefinedException))
+  GetMagickInfo("*",exception);
+  if ((!magick_list) || (exception->severity > UndefinedException))
     return 0;
 
   AcquireSemaphoreInfo(&magick_semaphore);
+
+  list=magick_list;
 
   /*
     Count number of list entries
@@ -388,6 +390,11 @@ MagickExport const MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
     Allocate array memory
   */
   array=MagickAllocateMemory(const MagickInfo **,sizeof(MagickInfo *)*entries+1);
+  if (!array)
+    {
+      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",0);
+      return False;
+    }
   memset((void **)array,0,entries+1);
 
   /*

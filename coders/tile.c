@@ -142,10 +142,18 @@ ModuleExport void RegisterTILEImage(void)
   MagickInfo
     *entry;
 
+  static const char
+    *TILENote=
+    {
+      "Use the syntax \"-size WIDTHxHEIGHT TILE:imagename\" to tile the\n"
+      "specified tile image over a canvas image of size WIDTHxHEIGHT."
+    };
+
   entry=SetMagickInfo("TILE");
   entry->decoder=(DecoderHandler) ReadTILEImage;
   entry->raw=True;
   entry->description=AcquireString("Tile image with a texture");
+  entry->note=AcquireString(TILENote);
   entry->module=AcquireString("TILE");
   (void) RegisterMagickInfo(entry);
 }

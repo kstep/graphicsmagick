@@ -239,10 +239,12 @@ ModuleExport void RegisterPS2Image(void)
   entry->description=AcquireString("Adobe Level II Encapsulated PostScript");
   entry->module=AcquireString("PS2");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("PS2");
   entry->encoder=(EncoderHandler) WritePS2Image;
   entry->seekable_stream=True;
   entry->description=AcquireString("Adobe Level II PostScript");
+  entry->module=AcquireString("PS2");
   (void) RegisterMagickInfo(entry);
 }
 

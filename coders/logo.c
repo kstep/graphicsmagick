@@ -5190,6 +5190,7 @@ ModuleExport void RegisterLOGOImage(void)
   entry=SetMagickInfo("GRANITE");
   entry->decoder=(DecoderHandler) ReadLOGOImage;
   entry->adjoin=False;
+  entry->stealth=True;
   entry->description=AcquireString("Granite texture");
   entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);
@@ -5214,6 +5215,7 @@ ModuleExport void RegisterLOGOImage(void)
   entry->decoder=(DecoderHandler) ReadLOGOImage;
   entry->encoder=(EncoderHandler) WriteLOGOImage;
   entry->adjoin=False;
+  entry->stealth=True;
   entry->description=AcquireString("GraphicsMagick Logo");
   entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);
@@ -5221,6 +5223,7 @@ ModuleExport void RegisterLOGOImage(void)
   entry=SetMagickInfo("NETSCAPE");
   entry->decoder=(DecoderHandler) ReadLOGOImage;
   entry->adjoin=False;
+  entry->stealth=True;
   entry->description=AcquireString("Netscape 216 color cube");
   entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);

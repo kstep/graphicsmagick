@@ -2679,9 +2679,17 @@ ModuleExport void RegisterWMFImage(void)
   MagickInfo
     *entry;
 
+  static const char
+    *WMFNote = 
+    {
+      "Use density to adjust scale (default 72DPI). Use background or\n"
+      "texture to apply a background color or texture under the image."
+    };
+
   entry = SetMagickInfo("WMF");
   entry->decoder = ReadWMFImage;
   entry->description = AcquireString("Windows Meta File");
+  entry->note=AcquireString(WMFNote);
   entry->blob_support = True;
   entry->seekable_stream=True;
   entry->module = AcquireString("WMF");

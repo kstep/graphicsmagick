@@ -1,3 +1,28 @@
+2003-05-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (GetMagickInfoArray): Resolve thread-safety
+	issue by accessing magick_list directly under the protection of a
+	lock rather than using the pointer returned by GetMagickInfo.
+	Added error handling for insufficient memory.
+	* coders/tile.c (RegisterTILEImage): Added a usage note in formats
+	listing.
+	* coders/viff.c (RegisterVIFFImage): Module definition for "XV"
+	was missing.
+	* coders/ps2.c (RegisterPS2Image): Module definition for "PS2" was
+	missing.
+	* coders/wmf.c (RegisterWMFImage): Added usage note in formats
+	listing.
+	* coders/xpm.c (RegisterXPMImage): Hide PM alias for XPM in the
+	formats listing.
+	* coders/logo.c (RegisterLOGOImage): Hide registrations for
+	GRANITE, LOGO, and NETSCAPE in the formats listing.
+	* coders/jpeg.c (RegisterJPEGImage): Module definition for "JPEG"
+	was missing.
+	* coders/html.c (RegisterHTMLImage): Module definition for "HTML"
+	was missing.
+	* coders/bmp.c (RegisterBMPImage): Module names for "BMP2" and
+	"BMP3" should be "BMP".
+
 2003-05-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/magick.c (GetMagickInfoArray): New function to return

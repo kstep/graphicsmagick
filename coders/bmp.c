@@ -1327,19 +1327,21 @@ ModuleExport void RegisterBMPImage(void)
   entry->adjoin=False;
   entry->seekable_stream=True;
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("BMP2");
   entry->encoder=(EncoderHandler) WriteBMPImage;
   entry->magick=(MagickHandler) IsBMP;
   entry->description=AcquireString("Microsoft Windows bitmap image v2");
-  entry->module=AcquireString("BMP2");
+  entry->module=AcquireString("BMP");
   entry->adjoin=False;
   entry->seekable_stream=True;
+
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("BMP3");
   entry->encoder=(EncoderHandler) WriteBMPImage;
   entry->magick=(MagickHandler) IsBMP;
   entry->description=AcquireString("Microsoft Windows bitmap image v3");
-  entry->module=AcquireString("BMP3");
+  entry->module=AcquireString("BMP");
   entry->adjoin=False;
   entry->seekable_stream=True;
   (void) RegisterMagickInfo(entry);
