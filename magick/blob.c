@@ -105,7 +105,7 @@ static void AttachBlob(BlobInfo *blob_info,const void *blob,const size_t length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method BlobToImage implements direct to memory image formats.  It returns
+%  BlobToImage(0 implements direct to memory image formats.  It returns
 %  the blob as an image.
 %
 %  The format of the BlobToImage method is:
@@ -115,10 +115,7 @@ static void AttachBlob(BlobInfo *blob_info,const void *blob,const size_t length)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method BlobToImage returns an image from the supplied blob.
-%      If an error occurs NULL is returned.
-%
-%    o image_info: The image info..
+%    o image_info: The image info.
 %
 %    o blob: The address of a character stream in one of the image formats
 %      understood by ImageMagick.
@@ -338,8 +335,7 @@ MagickExport void CloseBlob(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyBlobInfo deallocates memory associated with an BlobInfo
-%  structure.
+%  DestroyBlobInfo() deallocates memory associated with an BlobInfo structure.
 %
 %  The format of the DestroyBlobInfo method is:
 %
@@ -522,7 +518,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetBlobInfo initializes the BlobInfo structure.
+%  GetBlobInfo() initializes the BlobInfo structure.
 %
 %  The format of the GetBlobInfo method is:
 %
@@ -553,9 +549,9 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ImageToBlob implements direct to memory image formats.  It returns
-%  the image as a blob and its length.  The magick member of the Image
-%  structure determines the format of the returned blob (GIG, JPEG, PNG, etc.).
+%  ImageToBlob() implements direct to memory image formats.  It returns the
+%  image as a blob and its length.  The magick member of the Image structure
+%  determines the format of the returned blob(GIG, JPEG,  PNG, etc.)
 %
 %  The format of the ImageToBlob method is:
 %
@@ -563,10 +559,6 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
 %        size_t *length,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
-%
-%    o blob:  Method ImageToBlob returns a chunk of memory written in the
-%      desired image format (e.g. JPEG, GIF, etc.).  If an error occurs
-%      NULL is returned.
 %
 %    o image_info: The image info..
 %

@@ -434,7 +434,7 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadStream() makes the image pixels available to a user supplied
+%  ReadStream() makes the image pixels available to a user supplied
 %  callback method immediately upon reading a scanline with the ReadImage()
 %  method.
 %
@@ -446,7 +446,7 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: The image info..
+%    o image_info: The image info.
 %
 %    o stream: a callback method.
 %
@@ -636,7 +636,7 @@ static unsigned int SyncPixelStream(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteStream() makes the image pixels available to a user supplied
+%  WriteStream() makes the image pixels available to a user supplied
 %  callback method immediately upon writing pixel data with the WriteImage()
 %  method.
 %
@@ -647,12 +647,9 @@ static unsigned int SyncPixelStream(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method WriteStream returns True if the image pixels are
-%      streamed to the user supplied callback method otherwise False.
+%    o image_info: The image info.
 %
-%    o image_info: The image info..
-%
-%    o stream: a callback method.
+%    o stream: A callback method.
 %
 %
 */

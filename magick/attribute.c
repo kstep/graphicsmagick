@@ -69,7 +69,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyImageAttributes deallocates memory associated with the image
+%  DestroyImageAttributes() deallocates memory associated with the image
 %  attribute list.
 %
 %  The format of the DestroyImageAttributes method is:
@@ -116,7 +116,7 @@ MagickExport void DestroyImageAttributes(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetImageAttribute searches the list of image attributes and returns
+%  GetImageAttribute() searches the list of image attributes and returns
 %  a pointer to the attribute if it exists otherwise NULL.
 %
 %  The format of the GetImageAttribute method is:
@@ -125,9 +125,6 @@ MagickExport void DestroyImageAttributes(Image *image)
 %        const char *key)
 %
 %  A description of each parameter follows:
-%
-%    o attribute:  Method GetImageAttribute returns the attribute if it
-%      exists otherwise NULL.
 %
 %    o image: The image.
 %
@@ -1079,13 +1076,13 @@ MagickExport const ImageAttribute *GetImageClippingPathAttribute(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e I n f o A t t r i b u t e                                 %
++   G e t I m a g e I n f o A t t r i b u t e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetImageInfoAttribute returns a "fake" attribute based on data in the
+%  GetImageInfoAttribute() returns a "fake" attribute based on data in the
 %  image info or image structures.
 %
 %  The format of the GetImageInfoAttribute method is:
@@ -1322,13 +1319,13 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetImageAttribute searches the list of image attributes and replaces
-%  the attribute value.  If it is not found in the list, the attribute name
+%  SetImageAttribute() searches the list of image attributes and replaces the
+%  attribute value.  If it is not found in the list, the attribute name
 %  and value is added to the list.   If the attribute exists in the list,
-%  the value is concatenated to the attribute.  SetImageAttribute returns True
-%  if the attribute is successfully concatenated or added to the list,
-%  otherwise False.  If the value is NULL, the matching key is deleted from
-%  the list.
+%  the value is concatenated to the attribute.  SetImageAttribute returns
+%  True if the attribute is successfully concatenated or added to the list,
+%  otherwise False.  If the value is NULL, the matching key is deleted
+%  from the list.
 %
 %  The format of the SetImageAttribute method is:
 %
@@ -1336,9 +1333,6 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
 %        const char *value)
 %
 %  A description of each parameter follows:
-%
-%    o status:  Method SetImageAttribute returns True if the attribute is
-%      successfully replaced or added to the list, otherwise False.
 %
 %    o image: The image.
 %
@@ -1442,8 +1436,8 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method StoreImageAttribute is used to store an image attribute from a
-%  text string with the syntax: NAME=VALUE.
+%  StoreImageAttribute() is used to store an image attribute from a text
+%  string with the syntax: NAME=VALUE.
 %
 %  The format of the StoreImageAttribute method is:
 %

@@ -397,8 +397,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XAnimateBackgroundImage animates an image sequence in the
-%  background of a window.
+%  XAnimateBackgroundImage() animates an image sequence in the background of
+%  a window.
 %
 %  The format of the XAnimateBackgroundImage method is:
 %
@@ -883,7 +883,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XAnimateImages displays an image via X11.
+%  XAnimateImages() displays an image via X11.
 %
 %  The format of the XAnimateImages method is:
 %

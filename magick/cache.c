@@ -292,9 +292,9 @@ MagickExport const PixelPacket *AcquireImagePixels(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AcquirePixelCache() acquires pixels from the in-memory or disk pixel
-%  cache as defined by the geometry parameters.   A pointer to the pixels is
-%  returned if the pixels are transferred, otherwise a NULL is returned.
+%  AcquirePixelCache() acquires pixels from the in-memory or disk pixel
+%  cache as defined by the geometry parameters.   A pointer to the pixels
+%  is returned if the pixels are transferred, otherwise a NULL is returned.
 %
 %  The format of the AcquirePixelCache() method is:
 %
@@ -303,9 +303,6 @@ MagickExport const PixelPacket *AcquireImagePixels(const Image *image,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
-%
-%    o status: Method GetPixelCache() returns a pointer to the pixels if they
-%      are transferred, otherwise a NULL is returned.
 %
 %    o image: The image.
 %
@@ -1103,7 +1100,7 @@ MagickExport PixelPacket *GetNexusPixels(const Cache cache,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetOnePixel() returns a single pixel at the specified (x,y) location.
+%  GetOnePixel() returns a single pixel at the specified (x,y) location.
 %  The image background color is returned if an error occurs.
 %
 %  The format of the GetOnePixel() method is:
@@ -1111,9 +1108,6 @@ MagickExport PixelPacket *GetNexusPixels(const Cache cache,
 %      PixelPacket *GetOnePixel(const Image image,const long x,const long y)
 %
 %  A description of each parameter follows:
-%
-%    o pixels: Method GetOnePixel() returns a pixel at the specified (x,y)
-%      location.
 %
 %    o image: The image.
 %
@@ -1214,9 +1208,9 @@ MagickExport PixelPacket *GetPixels(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetPixelCache() gets pixels from the in-memory or disk pixel cache as
-%  defined by the geometry parameters.   A pointer to the pixels is returned if
-%  the pixels are transferred, otherwise a NULL is returned.
+%  GetPixelCache() gets pixels from the in-memory or disk pixel cache as
+%  defined by the geometry parameters.   A pointer to the pixels is returned
+%  if the pixels are transferred, otherwise a NULL is returned.
 %
 %  The format of the GetPixelCache() method is:
 %
@@ -1224,9 +1218,6 @@ MagickExport PixelPacket *GetPixels(const Image *image)
 %        const unsigned long columns,const unsigned long rows)
 %
 %  A description of each parameter follows:
-%
-%    o status: Method GetPixelCache() returns a pointer to the pixels if they
-%      are transferred, otherwise a NULL is returned.
 %
 %    o image: The image.
 %
@@ -2137,7 +2128,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetPixelCache() allocates an area to store image pixels as defined
+%  SetPixelCache() allocates an area to store image pixels as defined
 %  by the region rectangle and returns a pointer to the area.  This area is
 %  subsequently transferred from the pixel cache with SyncPixelCache().  A
 %  pointer to the pixels is returned if the pixels are transferred, otherwise
@@ -2417,18 +2408,14 @@ MagickExport unsigned int SyncImagePixels(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SyncPixelCache() saves the image pixels to the in-memory or disk
-%  cache.  The method returns True if the pixel region is synced, otherwise
-%  False.
+%  SyncPixelCache() saves the image pixels to the in-memory or disk cache.
+%  The method returns True if the pixel region is synced, otherwise False.
 %
 %  The format of the SyncPixelCache() method is:
 %
 %      unsigned int SyncPixelCache(Image *image)
 %
 %  A description of each parameter follows:
-%
-%    o status: Method SyncPixelCache() returns True if the image pixels are
-%      transferred to the in-memory or disk cache otherwise False.
 %
 %    o image: The image.
 %

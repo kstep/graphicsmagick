@@ -75,7 +75,7 @@
 %  as defined by the geometry parameters.   A pointer to the pixels is returned
 %  if the pixels are transferred, otherwise a NULL is returned.
 %
-%  The format of the GetCacheView method is:
+%  The format of the AcquireCacheView method is:
 %
 %      const PixelPacket *AcquireCacheView(const ViewInfo *view,const long x,
 %        const long y,const unsigned long columns,const unsigned long rows,
@@ -115,8 +115,8 @@ MagickExport const PixelPacket *AcquireCacheView(const ViewInfo *view,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloseCacheView closes the specified view returned by a previous
-%  call to OpenCacheView().
+%  CloseCacheView() closes the specified view returned by a previous call
+%  to OpenCacheView().
 %
 %  The format of the CloseCacheView method is:
 %
@@ -146,7 +146,7 @@ MagickExport void CloseCacheView(ViewInfo *view)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetCacheView gets pixels from the in-memory or disk pixel cache as
+%  GetCacheView() gets pixels from the in-memory or disk pixel cache as
 %  defined by the geometry parameters.   A pointer to the pixels is returned if
 %  the pixels are transferred, otherwise a NULL is returned.
 %
@@ -220,7 +220,7 @@ MagickExport IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetCacheViewPixels returns the pixels associated with the specified
+%  GetCacheViewPixels() returns the pixels associated with the specified
 %  specified view.
 %
 %  The format of the GetCacheViewPixels method is:
@@ -228,9 +228,6 @@ MagickExport IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
 %      PixelPacket *GetCacheViewPixels(const ViewInfo *view)
 %
 %  A description of each parameter follows:
-%
-%    o pixels: Method GetCacheViewPixels returns the pixels associated with
-%      the specified view.
 %
 %    o view: The address of a structure of type ViewInfo.
 %
@@ -254,7 +251,7 @@ MagickExport PixelPacket *GetCacheViewPixels(const ViewInfo *view)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method OpenCacheView opens a view into the pixel cache.
+%  OpenCacheView() opens a view into the pixel cache.
 %
 %  The format of the OpenCacheView method is:
 %
@@ -300,8 +297,8 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetCacheView gets pixels from the in-memory or disk pixel cache
-%  as defined by the geometry parameters.   A pointer to the pixels is returned
+%  SetCacheView() gets pixels from the in-memory or disk pixel cache as
+%  defined by the geometry parameters.   A pointer to the pixels is returned
 %  if the pixels are transferred, otherwise a NULL is returned.
 %
 %  The format of the SetCacheView method is:
@@ -310,9 +307,6 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
 %        const unsigned long columns,const unsigned long rows)
 %
 %  A description of each parameter follows:
-%
-%    o pixels: Method SetCacheView returns a null pointer if an error
-%      occurs, otherwise a pointer to the view pixels.
 %
 %    o view: The address of a structure of type ViewInfo.
 %
@@ -340,7 +334,7 @@ MagickExport PixelPacket *SetCacheView(ViewInfo *view,const long x,const long y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SyncCacheView saves the view pixels to the in-memory or disk cache.
+%  SyncCacheView() saves the view pixels to the in-memory or disk cache.
 %  The method returns True if the pixel region is synced, otherwise False.
 %
 %  The format of the SyncCacheView method is:
@@ -348,9 +342,6 @@ MagickExport PixelPacket *SetCacheView(ViewInfo *view,const long x,const long y,
 %      unsigned int SyncCacheView(ViewInfo *view)
 %
 %  A description of each parameter follows:
-%
-%    o status: Method SyncCacheView returns True if the view pixels are
-%      transferred to the in-memory or disk cache otherwise False.
 %
 %    o view: The address of a structure of type ViewInfo.
 %

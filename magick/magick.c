@@ -109,7 +109,7 @@ MagickExport void DestroyMagick(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyMagickInfo deallocates memory associated MagickInfo list.
+%  DestroyMagickInfo() deallocates memory associated MagickInfo list.
 %
 %  The format of the DestroyMagickInfo method is:
 %
@@ -152,7 +152,7 @@ MagickExport void DestroyMagickInfo(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetImageMagick searches for an image format that matches the
+%  GetImageMagick() searches for an image format that matches the
 %  specified magick string.  If one is found the name is returned otherwise
 %  NULL.
 %
@@ -163,11 +163,7 @@ MagickExport void DestroyMagickInfo(void)
 %
 %  A description of each parameter follows:
 %
-%    o name: Method GetImageMagick returns a name that matches the
-%      specified magick string.
-%
-%    o magick: a character string that represents the image format we are
-%      looking for.
+%    o magick: The image format we are searching for.
 %
 %    o length: The length of the binary string.
 %
@@ -201,7 +197,7 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetMagickConfigurePath searches a number of pre-defined locations
+%  GetMagickConfigurePath() searches a number of pre-defined locations
 %  for the specified ImageMagick configuration file and returns the path.
 %  The search order follows:
 %
@@ -279,9 +275,9 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetMagickInfo returns a pointer MagickInfo structure that matches
-%  the specified name.  If name is NULL, the head of the image format list is
-%  returned.
+%  GetMagickInfo() returns a pointer MagickInfo structure that matches
+%  the specified name.  If name is NULL, the head of the image format list
+%  is returned.
 %
 %  The format of the GetMagickInfo method is:
 %
@@ -289,11 +285,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
 %
 %  A description of each parameter follows:
 %
-%    o magick_info: Method GetMagickInfo returns a pointer MagickInfo
-%      structure that matches the specified name.
-%
-%    o name: a character string that represents the image format we are
-%      looking for.
+%    o name: The image format we are looking for.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -358,17 +350,14 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetMagickVersion returns the ImageMagick API version as a string
-%  and as a number.
+%  GetMagickVersion() returns the ImageMagick API version as a string and
+%  as a number.
 %
 %  The format of the GetMagickVersion method is:
 %
 %      const char *GetMagickVersion(unsigned int *version)
 %
 %  A description of each parameter follows:
-%
-%    o string: Method GetMagickVersion returns the ImageMagick version
-%      string.
 %
 %    o version: The ImageMagick version is returned as a number.
 %
@@ -391,7 +380,7 @@ MagickExport const char *GetMagickVersion(unsigned int *version)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method InitializeMagick initializes the ImageMagick environment.
+%  InitializeMagick() initializes the ImageMagick environment.
 %
 %  The format of the InitializeMagick function is:
 %
@@ -399,8 +388,7 @@ MagickExport const char *GetMagickVersion(unsigned int *version)
 %
 %  A description of each parameter follows:
 %
-%    o path: Specifies a pointer to the execution path of the current
-%      ImageMagick client.
+%    o path: The execution path of the current ImageMagick client.
 %
 %
 */
@@ -491,7 +479,7 @@ MagickExport int unsigned IsMagickConflict(const char *magick)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ListMagickInfo lists the image formats to a file.
+%  ListMagickInfo() lists the image formats to a file.
 %
 %  The format of the ListMagickInfo method is:
 %
@@ -499,7 +487,7 @@ MagickExport int unsigned IsMagickConflict(const char *magick)
 %
 %  A description of each parameter follows.
 %
-%    o file: A pointer to a FILE structure.
+%    o file: A file handle.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -542,11 +530,11 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterMagickInfo adds attributes for a particular image format to
-%  the list of supported formats.  The attributes include the image format name,
-%  a method to read and/or write the format, whether the format supports
-%  the saving of more than one frame to the same file or blob, whether the
-%  format supports native in-memory I/O, and a brief description of the format.
+%  RegisterMagickInfo() adds attributes for a particular image format to the
+%  list of supported formats.  The attributes include the image format name,
+%  a method to read and/or write the format, whether the format supports the
+%  saving of more than one frame to the same file or blob, whether the format
+%  supports native in-memory I/O, and a brief description of the format.
 %
 %  The format of the RegisterMagickInfo method is:
 %
@@ -554,10 +542,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o magick_info: Method RegisterMagickInfo returns a pointer MagickInfo
-%      structure that contains the specified name info.
-%
-%    o magick_info: A pointer to a structure of type MagickInfo.
+%    o magick_info: The magick info.
 %
 */
 MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)

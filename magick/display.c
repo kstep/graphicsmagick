@@ -11306,8 +11306,7 @@ static Image *XVisualDirectoryImage(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XDisplayBackgroundImage displays an image in the background of a
-%  window.
+%  XDisplayBackgroundImage() displays an image in the background of a window.
 %
 %  The format of the XDisplayBackgroundImage method is:
 %
@@ -11315,9 +11314,6 @@ static Image *XVisualDirectoryImage(Display *display,
 %        XResourceInfo *resource_info,Image *image)
 %
 %  A description of each parameter follows:
-%
-%    o status: Method XDisplayBackgroundImage returns True if the
-%      designated window is the root window.
 %
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
@@ -11572,8 +11568,8 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XDisplayImage displays an image via X11.  A new image is created
-%  and returned if the user interactively transforms the displayed image.
+%  XDisplayImage() displays an image via X11.  A new image is created and
+%  returned if the user interactively transforms the displayed image.
 %
 %  The format of the XDisplayImage method is:
 %
