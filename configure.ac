@@ -25,13 +25,21 @@ AM_CONFIG_HEADER(magick/magick_config.h)
 AM_INIT_AUTOMAKE(ImageMagick,$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION, ' ')
 
 #
+# Save initial user-tunable values
+#
+CC_INITIAL=$CC
+CFLAGS_INITIAL=$CFLAGS
+CPPFLAGS_INITIAL=$CPPFLAGS
+LDFLAGS_INITIAL=$LDFLAGS
+LIBS_INITIAL=$LIBS
+
+#
 # The following is extracted from AC_OUTPUT since we need the values of
 # prefix and exec_prefix earlier.
 #
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
 # Let make expand exec_prefix.
 test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
-
 
 # Check for programs
 AC_PROG_CC
@@ -376,6 +384,17 @@ AC_ARG_WITH(zlib,
 	      [with_zlib=$withval],
 	      [with_zlib='yes'])
 
+#
+# Specify path to shared libstdc++ if not in normal location
+#
+AC_ARG_WITH(libstdc,
+  [  --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)],
+  [if test "$withval" != no -a "$withval" != yes; then
+    if test -d "$withval"; then
+      LIBSTDCLDFLAGS="-L$withval"
+    fi
+  fi])
+AC_SUBST(LIBSTDCLDFLAGS)
 
 # Does gcc required -traditional?
 AC_PROG_GCC_TRADITIONAL
@@ -412,10 +431,152 @@ then
 fi
 AC_SUBST(LIB_LF)
 
+# Check standard headers
+AC_HEADER_STDC
+AC_HEADER_STAT
+AC_HEADER_TIME
+AC_HEADER_DIRENT
+AC_CHECK_HEADERS(sys/select.h sys/time.h sys/stat.h sys/types.h)
+AC_CHECK_HEADERS(math.h string.h stdarg.h varargs.h pwd.h malloc.h)
+AC_CHECK_HEADERS(memory.h errno.h fcntl.h stdint.h)
 
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_INLINE
+AC_C_BIGENDIAN
+
+AC_TYPE_MODE_T
+AC_TYPE_OFF_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_CHECK_SIZEOF(int,0)
+AC_CHECK_SIZEOF(long,0)
+AC_CHECK_SIZEOF(long long,0)
+
+#
+# Check for functions
+#
+AC_FUNC_MEMCMP
+AC_TYPE_SIGNAL
+AC_FUNC_VPRINTF
+AC_FUNC_MMAP
+AC_CHECK_FUNCS(getcwd gettimeofday mkdir mkstemp select poll snprintf strchr strerror strtol sysconf tempnam vsnprintf)
+
+# Check for getexecname() under Solaris
+case "${host_os}" in
+  solaris* )
+    AC_CHECK_FUNCS(getexecname)
+  ;;
+esac
+
+# Test for sys_errlist array if strerror() not supported.
+if test "$ac_cv_func_strerror" != 'yes' ; then
+AC_CACHE_CHECK(for sys_errlist array, ac_cv_sys_errlist,
+[AC_TRY_LINK(
+changequote(<<, >>)dnl
+<<
+extern char** sys_errlist;
+>>,<<
+char** p = sys_errlist;
+>>,
+changequote([, ])dnl
+ac_cv_sys_errlist='yes',
+ac_cv_sys_errlist='no')])
+if test "$ac_cv_sys_errlist" = 'yes' ; then
+ AC_DEFINE(HAVE_SYS_ERRLIST,,Define if you have sys_errlist in libc)
+ AC_MSG_RESULT(yes)
+else
+ AC_MSG_RESULT(no)
+fi
+fi
+
+#
+# C++ Support Tests (For Magick++)
+#
+have_magick_plus_plus='no'
+if test "$with_magick_plus_plus" = 'yes'
+then
+ OLIBS="$LIBS"
+ LIBS=''
+ AC_LANG_PUSH(C++)
+ AC_CHECK_HEADERS(algorithm cctype cerrno cmath cstdio cstdlib cstring \
+   ctime exception functional iomanip iosfwd iostream iterator list string \
+   strstream utility)
+ AC_LANG_CPLUSPLUS
+ AC_PROG_CXX
+ AC_CXX_BOOL
+ AC_CXX_CONST_CAST
+ AC_CXX_DEFAULT_TEMPLATE_PARAMETERS
+ AC_CXX_EXCEPTIONS
+ AC_CXX_NAMESPACES
+ AC_CXX_EXPLICIT
+ AC_CXX_HAVE_STD
+ AC_CXX_HAVE_STL
+ AC_CXX_MUTABLE
+ AC_CXX_NEW_FOR_SCOPING
+ AC_CXX_STATIC_CAST
+ AC_CXX_TEMPLATES
+ AC_LANG_POP
+
+ AC_MSG_CHECKING(whether C++ compiler is sufficient for Magick++)
+ if test \
+  $ac_cv_cxx_bool = 'yes' -a \
+  $ac_cv_cxx_const_cast = 'yes' -a \
+  $ac_cv_cxx_default_template_parameters = 'yes' -a \
+  $ac_cv_cxx_exceptions = 'yes' -a \
+  $ac_cv_cxx_explicit = 'yes' -a \
+  $ac_cv_cxx_have_std = 'yes' -a \
+  $ac_cv_cxx_have_stl = 'yes' -a \
+  $ac_cv_cxx_mutable = 'yes' -a \
+  $ac_cv_cxx_namespaces = 'yes' -a \
+  $ac_cv_cxx_new_for_scoping = 'yes' -a \
+  $ac_cv_cxx_static_cast = 'yes' -a \
+  $ac_cv_cxx_templates = 'yes'
+ then
+  have_magick_plus_plus='yes'
+ else
+  have_magick_plus_plus='no (failed tests)'
+ fi
+ AC_MSG_RESULT($have_magick_plus_plus)
+ LIBS="$OLIBS"
+fi
+AM_CONDITIONAL(WITH_MAGICK_PLUS_PLUS, test "$have_magick_plus_plus" = 'yes')
+
+# Get full paths to source and build directories
 srcdirfull=`cd $srcdir && pwd`
 builddir=`pwd`
 
+# Evaluate shell variable equivalents to Makefile directory variables
+eval "eval PREFIX_DIR=${prefix}"
+AC_SUBST(PREFIX_DIR)
+eval "eval EXEC_PREFIX_DIR=${exec_prefix}"
+AC_SUBST(EXEC_PREFIX_DIR)
+eval "eval BIN_DIR=$bindir"
+AC_SUBST(BIN_DIR)
+eval "eval SBIN_DIR=$sbindir"
+AC_SUBST(SBIN_DIR)
+eval "eval LIBEXEC_DIR=$libexecdir"
+AC_SUBST(LIBEXEC_DIR)
+eval "eval DATA_DIR=$datadir"
+AC_SUBST(DATA_DIR)
+eval "eval SYSCONF_DIR=$sysconfdir"
+AC_SUBST(SYSCONF_DIR)
+eval "eval SHAREDSTATE_DIR=$sharedstatedir"
+AC_SUBST(SHAREDSTATE_DIR)
+eval "eval LOCALSTATE_DIR=$localstatedir"
+AC_SUBST(LOCALSTATE_DIR)
+eval "eval LIB_DIR=$libdir"
+AC_SUBST(LIB_DIR)
+eval "eval INCLUDE_DIR=$includedir"
+AC_SUBST(INCLUDE_DIR)
+eval "eval OLDINCLUDE_DIR=$oldincludedir"
+AC_SUBST(OLDINCLUDE_DIR)
+eval "eval INFO_DIR=$infodir"
+AC_SUBST(INFO_DIR)
+eval "eval MAN_DIR=$mandir"
+AC_SUBST(MAN_DIR)
+
+# Only check for delegate libraries in subdirectories if requested.
 if test "$with_delegate_build" != 'no'
 then
   # Check for delegate sub-directories and add -I & -L options as required.
@@ -464,37 +625,6 @@ then
     fi
   done
 fi
-
-# Evaluate shell variable equivalents to Makefile directory variables
-
-eval "eval PREFIX_DIR=${prefix}"
-AC_SUBST(PREFIX_DIR)
-eval "eval EXEC_PREFIX_DIR=${exec_prefix}"
-AC_SUBST(EXEC_PREFIX_DIR)
-eval "eval BIN_DIR=$bindir"
-AC_SUBST(BIN_DIR)
-eval "eval SBIN_DIR=$sbindir"
-AC_SUBST(SBIN_DIR)
-eval "eval LIBEXEC_DIR=$libexecdir"
-AC_SUBST(LIBEXEC_DIR)
-eval "eval DATA_DIR=$datadir"
-AC_SUBST(DATA_DIR)
-eval "eval SYSCONF_DIR=$sysconfdir"
-AC_SUBST(SYSCONF_DIR)
-eval "eval SHAREDSTATE_DIR=$sharedstatedir"
-AC_SUBST(SHAREDSTATE_DIR)
-eval "eval LOCALSTATE_DIR=$localstatedir"
-AC_SUBST(LOCALSTATE_DIR)
-eval "eval LIB_DIR=$libdir"
-AC_SUBST(LIB_DIR)
-eval "eval INCLUDE_DIR=$includedir"
-AC_SUBST(INCLUDE_DIR)
-eval "eval OLDINCLUDE_DIR=$oldincludedir"
-AC_SUBST(OLDINCLUDE_DIR)
-eval "eval INFO_DIR=$infodir"
-AC_SUBST(INFO_DIR)
-eval "eval MAN_DIR=$mandir"
-AC_SUBST(MAN_DIR)
 
 LDFLAGS="$LDFLAGS -L$LIB_DIR"
 CPPFLAGS="$CPPFLAGS -I$INCLUDE_DIR"
@@ -551,16 +681,6 @@ AC_CACHE_CHECK(for X11 configure files,im_cv_x_configure,
 
   done])
 AC_DEFINE_UNQUOTED(X11ConfigurePath,"$im_cv_x_configure",Location of X11 configure files)
-
-#
-# Save initial user-tunable values
-#
-CC_INITIAL=$CC
-CFLAGS_INITIAL=$CFLAGS
-CPPFLAGS_INITIAL=$CPPFLAGS
-LDFLAGS_INITIAL=$LDFLAGS
-LIBS_INITIAL=$LIBS
-
 
 #
 # Add support for ccmalloc memory debugging library if requested
@@ -905,21 +1025,20 @@ then
     AC_CHECK_HEADER(jpeglib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(jpeg,jpeg_read_header,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
 
-# Test for compatable JPEG library
+# Test for compatible JPEG library
 if test "$ac_cv_jpeg_version_ok" != 'yes' ; then
 AC_CACHE_CHECK(for JPEG library is version 6b or later, ac_cv_jpeg_version_ok,
-[AC_TRY_RUN(
-changequote(<<, >>)dnl
-<<
+[AC_TRY_COMPILE(
 #include <stdio.h>
 #include <stdlib.h>
 #include <jpeglib.h>
-int
-main ()
-{
-if ( JPEG_LIB_VERSION >= 62 ) exit(0);
-exit(1);
-}
+,
+changequote(<<, >>)dnl
+<<
+#if JPEG_LIB_VERSION < 62
+#error IJG JPEG library must be version 6b or newer!
+#endif
+return 0;
 >>,
 changequote([, ])dnl
 ac_cv_jpeg_version_ok='yes',
@@ -1297,10 +1416,6 @@ AC_SUBST(LIB_XML)
 # Check for WMF
 #
 
-#
-# WMF2 tests should test for -lwmf or -lwmflite and libwmf/ipa.h
-#
-
 have_wmf='no'
 LIB_WMF=''
 LIB_WMF_DEPS=''
@@ -1364,64 +1479,6 @@ AM_CONDITIONAL(HasWMF, test "$have_wmf" = 'yes')
 AC_SUBST(LIB_WMF)
 AC_SUBST(LIB_WMF_DEPS)
 
-# Check standard headers
-AC_HEADER_STDC
-AC_HEADER_STAT
-AC_HEADER_TIME
-AC_HEADER_DIRENT
-AC_CHECK_HEADERS(sys/select.h sys/time.h sys/stat.h sys/types.h)
-AC_CHECK_HEADERS(math.h string.h stdarg.h varargs.h pwd.h malloc.h)
-AC_CHECK_HEADERS(memory.h errno.h fcntl.h stdint.h)
-
-# Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-AC_C_INLINE
-AC_C_BIGENDIAN
-
-AC_TYPE_MODE_T
-AC_TYPE_OFF_T
-AC_TYPE_PID_T
-AC_TYPE_SIZE_T
-AC_CHECK_SIZEOF(int,0)
-AC_CHECK_SIZEOF(long,0)
-AC_CHECK_SIZEOF(long long,0)
-
-#
-# Check for functions
-#
-AC_FUNC_MEMCMP
-AC_TYPE_SIGNAL
-AC_FUNC_VPRINTF
-AC_FUNC_MMAP
-AC_CHECK_FUNCS(getcwd gettimeofday mkdir mkstemp select poll snprintf strchr strerror strtol sysconf tempnam vsnprintf)
-
-# Check for getexecname() under Solaris
-case "${host_os}" in
-  solaris* )
-    AC_CHECK_FUNCS(getexecname)
-  ;;
-esac
-
-# Test for sys_errlist array if strerror() not supported.
-if test "$ac_cv_func_strerror" != 'yes' ; then
-AC_CACHE_CHECK(for sys_errlist array, ac_cv_sys_errlist,
-[AC_TRY_LINK(
-changequote(<<, >>)dnl
-<<
-extern char** sys_errlist;
->>,<<
-char** p = sys_errlist;
->>,
-changequote([, ])dnl
-ac_cv_sys_errlist='yes',
-ac_cv_sys_errlist='no')])
-if test "$ac_cv_sys_errlist" = 'yes' ; then
- AC_DEFINE(HAVE_SYS_ERRLIST,,Define if you have sys_errlist in libc)
- AC_MSG_RESULT(yes)
-else
- AC_MSG_RESULT(no)
-fi
-fi
 
 #
 # Configure Delegates
@@ -1479,8 +1536,10 @@ AC_PATH_PROG(ZipDelegate, gzip, gzip)
 
 # Prefer lpr to lp; lp needs options tacked on.
 if test "$LPRDelegate" != no
-then	PrintDelegate="$LPRDelegate"
-else	PrintDelegate="$LPDelegate -c -s"
+then
+  PrintDelegate="$LPRDelegate"
+else
+  PrintDelegate="$LPDelegate -c -s"
 fi
 AC_SUBST(PrintDelegate)
 
@@ -1740,8 +1799,6 @@ MAGICKLIB="-L${LIB_DIR} -lMagick"
 if test $with_perl_static = 'yes'
 then
   MAGICKLIB="-L${builddir}/magick -lMagick"
-#else
-#  MAGICKLIB="-L${builddir}/magick/.libs -lMagick"
 fi
 AC_SUBST(MAGICKLIB)
 
@@ -1802,70 +1859,6 @@ then
   CXXFLAGS="-ftest-coverage -fprofile-arcs  $CXXFLAGS"
   LDFLAGS="-ftest-coverage -fprofile-arcs $LDFLAGS"
 fi
-
-#
-# Specify path to shared libstdc++ if not in normal location
-#
-AC_ARG_WITH(libstdc,
-  [  --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)],
-  [if test "$withval" != no -a "$withval" != yes; then
-    if test -d "$withval"; then
-      LIBSTDCLDFLAGS="-L$withval"
-    fi
-  fi])
-AC_SUBST(LIBSTDCLDFLAGS)
-
-#
-# C++ Support Tests (For Magick++)
-#
-have_magick_plus_plus='no'
-if test "$with_magick_plus_plus" = 'yes'
-then
- OLIBS="$LIBS"
- LIBS=''
- AC_LANG_PUSH(C++)
- AC_CHECK_HEADERS(algorithm cctype cerrno cmath cstdio cstdlib cstring \
-   ctime exception functional iomanip iosfwd iostream iterator list string \
-   strstream utility)
- AC_LANG_CPLUSPLUS
- AC_PROG_CXX
- AC_CXX_BOOL
- AC_CXX_CONST_CAST
- AC_CXX_DEFAULT_TEMPLATE_PARAMETERS
- AC_CXX_EXCEPTIONS
- AC_CXX_NAMESPACES
- AC_CXX_EXPLICIT
- AC_CXX_HAVE_STD
- AC_CXX_HAVE_STL
- AC_CXX_MUTABLE
- AC_CXX_NEW_FOR_SCOPING
- AC_CXX_STATIC_CAST
- AC_CXX_TEMPLATES
- AC_LANG_POP
-
- AC_MSG_CHECKING(whether C++ compiler is sufficient for Magick++)
- if test \
-  $ac_cv_cxx_bool = 'yes' -a \
-  $ac_cv_cxx_const_cast = 'yes' -a \
-  $ac_cv_cxx_default_template_parameters = 'yes' -a \
-  $ac_cv_cxx_exceptions = 'yes' -a \
-  $ac_cv_cxx_explicit = 'yes' -a \
-  $ac_cv_cxx_have_std = 'yes' -a \
-  $ac_cv_cxx_have_stl = 'yes' -a \
-  $ac_cv_cxx_mutable = 'yes' -a \
-  $ac_cv_cxx_namespaces = 'yes' -a \
-  $ac_cv_cxx_new_for_scoping = 'yes' -a \
-  $ac_cv_cxx_static_cast = 'yes' -a \
-  $ac_cv_cxx_templates = 'yes'
- then
-  have_magick_plus_plus='yes'
- else
-  have_magick_plus_plus='no (failed tests)'
- fi
- AC_MSG_RESULT($have_magick_plus_plus)
- LIBS="$OLIBS"
-fi
-AM_CONDITIONAL(WITH_MAGICK_PLUS_PLUS, test "$have_magick_plus_plus" = 'yes')
 
 #
 # Build library dependency list for libMagick
