@@ -356,9 +356,9 @@ Similarly, negative \fIy offset\fP is measured between the bottom edges.
 .B "-iconGeometry \fI<geometry>"\fP
 \fRspecify the icon geometry
 
-Offsets, if present in the geometry specification, are ignored, and
-the \fB-gravity\fP option does not affect the \fBiconGeometry\fP
-option.
+Offsets, if present in the geometry specification, are handled in
+the same manner as the \fB-geometry\fP option, using X11 style to handle
+negative offsets.
 .TP
 .B "-iconic"
 \fRiconic animation
@@ -814,6 +814,10 @@ The default is black.
 
 Specifies the preferred size and position of the image window. It is not
 necessarily obeyed by all window managers.
+Offsets, if present, are handled in \fIX(1)\fP style.  A negative x offset is
+measured from the right edge of the screen to the right edge of the icon,
+and a negative y offset is measured from the bottom edge of the screen
+to the bottom edge of the icon.
 .in 15
 .in 15
 .B "\fBiconGeometry\fP \fB(\fP\fIclass\fP \fBIconGeometry)\fP"
@@ -823,6 +827,7 @@ necessarily obeyed by all window managers.
 
 Specifies the preferred size and position of the application when iconified.
 It is not necessarily obeyed by all window managers.
+Offsets, if present, are handled in the same manner as in class Geometry.
 .in 15
 .in 15
 .B "\fBiconic\fP \fB(\fP\fIclass\fP \fBIconic)\fP"

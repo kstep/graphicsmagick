@@ -977,9 +977,9 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify the icon geometry</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Offsets, if present in the geometry specification, are ignored, and
-the <strong>-gravity</strong> option does not affect the <strong>iconGeometry</strong>
-option.
+Offsets, if present in the geometry specification, are handled in
+the same manner as the <strong>-geometry</strong> option, using X11 style to handle
+negative offsets.
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2376,6 +2376,11 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 Specifies the preferred size and position of the image window. It is not
 necessarily obeyed by all window managers.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Offsets, if present, are handled in <em>X(1)</em> style.  A negative x offset is
+measured from the right edge of the screen to the right edge of the icon,
+and a negative y offset is measured from the bottom edge of the screen
+to the bottom edge of the icon.
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2389,6 +2394,8 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 Specifies the preferred size and position of the application when iconified.
 It is not necessarily obeyed by all window managers.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Offsets, if present, are handled in the same manner as in class Geometry.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

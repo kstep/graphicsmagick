@@ -684,9 +684,9 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify the icon geometry</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Offsets, if present in the geometry specification, are ignored, and
-the <strong>-gravity</strong> option does not affect the <strong>iconGeometry</strong>
-option.
+Offsets, if present in the geometry specification, are handled in
+the same manner as the <strong>-geometry</strong> option, using X11 style to handle
+negative offsets.
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1305,11 +1305,16 @@ The default is black.</dd>
 <dt><strong>geometry</strong> <strong>(</strong><em>class</em> <strong>geometry)</strong></dt>
 <dd>
 Specifies the preferred size and position of the image window. It is not
-necessarily obeyed by all window managers.</dd>
+necessarily obeyed by all window managers.
+Offsets, if present, are handled in <em>X(1)</em> style.  A negative x offset is
+measured from the right edge of the screen to the right edge of the icon,
+and a negative y offset is measured from the bottom edge of the screen
+to the bottom edge of the icon.</dd>
 <dt><strong>iconGeometry</strong> <strong>(</strong><em>class</em> <strong>IconGeometry)</strong></dt>
 <dd>
 Specifies the preferred size and position of the application when iconified.
-It is not necessarily obeyed by all window managers.</dd>
+It is not necessarily obeyed by all window managers.
+Offsets, if present, are handled in the same manner as in class Geometry.</dd>
 <dt><strong>iconic</strong> <strong>(</strong><em>class</em> <strong>Iconic)</strong></dt>
 <dd>
 This resource indicates that you would prefer that the application's windows
