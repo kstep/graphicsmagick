@@ -1,5 +1,6 @@
 2003-09-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/emf.c: Changed NotAnEMFFile to ImproperImageHeader.
 	* magick/map.h: Changed all size parmeters from type 'unsigned
 	long' to 'size_t'.
 	* magick/map.c (MagickMapCopyBlob): Add new function to support

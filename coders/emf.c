@@ -256,7 +256,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   hemf=ReadEnhMetaFile(image_info->filename,&width,&height);
   if (!hemf)
-    ThrowReaderException(CorruptImageError,NotAnEMFImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   if ((image->columns == 0) || (image->rows == 0))
     {
       double
