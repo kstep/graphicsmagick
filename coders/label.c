@@ -1219,7 +1219,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       file=(FILE *) fopen(&(image_info->filename[1]),"r");
       if (file == (FILE *) NULL)
         {
-          ThrowException(&exception,FileOpenWarning,
+          ThrowException(exception,FileOpenWarning,
             "Unable to read label data from file",&(image_info->filename[1]));
           FreeMemory((void **) &label);
           return((Image *) NULL);
@@ -1248,7 +1248,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       (void) fclose(file);
       if (s == (char *) NULL)
         {
-          ThrowException(&exception,FileOpenWarning,
+          ThrowException(exception,FileOpenWarning,
               "Unable to read label data from file","Memory allocation failed");
           FreeMemory((void **) &label);
           return((Image *) NULL);
