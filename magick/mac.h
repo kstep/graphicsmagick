@@ -63,9 +63,6 @@ extern MagickExport long
 extern MagickExport struct dirent
   *readdir(DIR *);
 
-extern MagickExport unsigned int
-  MACIsMagickConflict(const char *);
-
 extern MagickExport void
   closedir(DIR *),
   MACErrorHandler(const ExceptionType,const char *,const char *),
