@@ -1304,16 +1304,17 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
   }
-  if ((draw_info->stroke.opacity != TransparentOpacity) ||
-      (draw_info->stroke_pattern != (Image *) NULL))
-    {
-      /*
-        Draw text stroke.
-      */
-      IdentityAffine(&clone_info->affine);
-      (void) ConcatenateString(&clone_info->primitive,"'");
-      (void) DrawImage(image,clone_info);
-    }
+  if (render)
+    if ((draw_info->stroke.opacity != TransparentOpacity) ||
+        (draw_info->stroke_pattern != (Image *) NULL))
+      {
+        /*
+          Draw text stroke.
+        */
+        IdentityAffine(&clone_info->affine);
+        (void) ConcatenateString(&clone_info->primitive,"'");
+        (void) DrawImage(image,clone_info);
+      }
   if (glyph.id != 0)
     FT_Done_Glyph(glyph.image);
   metrics->pixels_per_em.x=face->size->metrics.x_ppem;

@@ -598,7 +598,7 @@ MagickExport void Hull(const long x_offset,const long y_offset,
     *r,
     *s;
 
-  Quantum
+  unsigned long
     v;
 
   assert(f != (Quantum *) NULL);
