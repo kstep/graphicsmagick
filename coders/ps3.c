@@ -212,9 +212,6 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     text_size,
     width;
 
-  unsigned long
-    number_pixels;
-
   /*
     Open output image file.
   */
@@ -454,11 +451,18 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         register unsigned char
           *q;
 
+        size_t
+          length;
+
+        unsigned long
+          number_pixels;
+
         /*
           Allocate pixel array.
         */
         number_pixels=image->columns*image->rows;
-        pixels=(unsigned char *) AcquireMemory(4*number_pixels);
+        length=4*number_pixels;
+        pixels=(unsigned char *) AcquireMemory(length);
         if (pixels == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -485,12 +489,12 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         }
         if (compression == ZipCompression)
           status=
-            ZLIBEncodeImage(image,number_pixels,image_info->quality,pixels);
+            ZLIBEncodeImage(image,length,image_info->quality,pixels);
         else
           if (compression == LZWCompression)
-            status=LZWEncodeImage(image,number_pixels,pixels);
+            status=LZWEncodeImage(image,length,pixels);
           else
-            status=PackbitsEncodeImage(image,number_pixels,pixels);
+            status=PackbitsEncodeImage(image,length,pixels);
         if (!status)
           {
             CloseBlob(image);
