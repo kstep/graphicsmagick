@@ -5,6 +5,7 @@
 	* www/programming.html: Added link to ImageMagickObject.html.
 	* www/ImageMagickObject.html: New file to provide some
 	documentation for ImageMagickObject.
+	* www: Found and fixed broken URL links.
 
 2003-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

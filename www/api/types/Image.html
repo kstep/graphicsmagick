@@ -26,7 +26,7 @@ by <a href="../image.html#DestroyImage">DestroyImage()</a>. The functions
 <a href="../blob.html#BlobToImage">BlobToImage()</a>
 and <a href="../image.html#CreateImage">CreateImage()</a> return a new
 image. Use <a href="../image.html#CloneImage">CloneImage()</a> to copy
-an image. An image consists of a structure containing image attributes
+an image. An image consists of a structure containing image attribute
 as well as the image pixels.
 <p>The image pixels are represented by the structure <a href="PixelPacket.html">PixelPacket</a>
 and are cached in-memory, or on disk, depending on the cache threshold
@@ -46,7 +46,7 @@ an image with new contents, or to blindly overwrite existing contents,
 the method&nbsp; <i>SetImagePixels() </i>is used to reserve a pixel view
 corresponding to a region in the pixel cache. Once the pixel view has been
 updated, it may be written to the cache via <i>SyncImagePixels()</i>. The
-function <a href="../pixel_cache.html#getindexes">GetIndexes()</a> provides
+function <a href="../cache.html#getindexes">GetIndexes()</a> provides
 access to the image colormap, represented as an array of type <i>IndexPacket</i>.
 <p>A more flexible interface to the image pixels is via the <a href="../cache_view.html">CacheView</a>
 interface. This interface supports multiple pixel cache views (limited
@@ -82,14 +82,14 @@ representation and simplifies the implementation.
 </tr>
 
 <tr>
-<td><a NAME="attributes"></a><font size=-1>attributes</font></td>
+<td><a NAME="attribute"></a><font size=-1>attribute</font></td>
 
 <td><font size=-1><a href="ImageAttribute.html">ImageAttribute</a>*</font></td>
 
 <td><font size=-1>Image attribute list. Consists of a doubly-linked-list
 of ImageAttribute structures, each of which has an associated key and value.
-Access/update list via <a href="../attributes.html#setimageattribute">SetImageAttribute()</a>
-and <a href="../attributes.html#getimageattribute">GetImageAttribute().</a>&nbsp;
+Access/update list via <a href="../attribute.html#setimageattribute">SetImageAttribute()</a>
+and <a href="../attribute.html#getimageattribute">GetImageAttribute().</a>&nbsp;
 Key-strings used by ImageMagick include "Comment" (image comment) , "Label"
 (image label), and "Signature" (image signature).</font></td>
 </tr>
@@ -563,7 +563,7 @@ execution time.</font></td>
 
 <td><font size=-1>The number of colors in the image after <a href="../quantize.html#QuantizeImage">QuantizeImage()</a>,
 or <a href="../quantize.html#QuantizeImages">QuantizeImages()</a> if the
-verbose flag was set before the call. Calculated by <a href="../colors.html#GetNumberColors">GetNumberColors()</a>.</font></td>
+verbose flag was set before the call. Calculated by <a href="../color.html#GetNumberColors">GetNumberColors()</a>.</font></td>
 </tr>
 
 <tr>
@@ -593,7 +593,7 @@ verbose flag was set before the call. Calculated by <a href="../colors.html#GetN
 
 <p>
 <hr>
-<p><a href="../../../ImageMagick.html"><img SRC="../../../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
+<p><a href="../../../index.html"><img SRC="../../../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
 Image manipulation software that works like magic.</font>
 </body>
 </html>
