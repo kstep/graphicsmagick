@@ -1476,7 +1476,6 @@ static unsigned int SyncPixelCache(Image *image)
     ThrowBinaryException(CacheWarning,"pixel cache is not open",
       image->filename);
   image->taint=True;
-  image->depth=QuantumDepth;
   if (IsNexusInCore(image->cache,0))
     return(True);
   status=WriteCachePixels(image->cache,0);
