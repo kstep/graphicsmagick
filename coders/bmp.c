@@ -56,6 +56,7 @@
 #include "magick.h"
 #include "define.h"
 
+#if !defined(WIN32)
 /*
   Macro definitions (from Windows wingdi.h).
 */
@@ -76,6 +77,7 @@
 #define LCS_GM_GRAPHICS  2  /* Relative */
 #define LCS_GM_IMAGES  4  /* Perceptual */
 #define LCS_GM_ABS_COLORIMETRIC  8  /* Absolute */
+#endif
 
 /*
   Typedef declarations.
@@ -1280,6 +1282,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
       Initialize BMP raster file header.
     */
     (void) TransformRGBImage(image,RGBColorspace);
+    memset(&bmp_info,0,sizeof(BMPInfo));
     bmp_info.file_size=14+40;
     bmp_info.offset_bits=14+40;
     bmp_info.compression=BI_RGB;
