@@ -188,7 +188,7 @@ testFilter('input.miff', 'Roll',
 testFilter('input.miff', 'Rotate',
   q/10/,
   '243796938cdf86a0b00a49651f2e2a08',
-  'e94be2d9fb268a78b31182aed1c70597');
+  '5cd63ed0f5ee15a4dd0f6723d2c6d90e');
 
 ++$test;
 testFilter('input.miff', 'Sample',
@@ -222,7 +222,7 @@ testFilter('input.miff', 'Sharpen',
 testFilter('input.miff', 'Shear',
   q/10/,
   'd9c9229c08a62444db7ccbd487de4b16',
-  '64c4aa4cd14cfa11e357ec880bc818b8');
+  '7e936020557a8d0ab7e89ff07fb35e54');
 
 ++$test;
 testFilter('input.miff', 'Solarize',
