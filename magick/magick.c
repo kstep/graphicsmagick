@@ -133,6 +133,8 @@ MagickExport void DestroyMagickInfo(void)
       LiberateMemory((void **) &magick_info->name);
     if (magick_info->description != (char *) NULL)
       LiberateMemory((void **) &magick_info->description);
+    if (magick_info->version != (char *) NULL)
+      LiberateMemory((void **) &magick_info->version);
     if (magick_info->module != (char *) NULL)
       LiberateMemory((void **) &magick_info->module);
     LiberateMemory((void **) &magick_info);
