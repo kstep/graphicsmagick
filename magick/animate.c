@@ -1697,11 +1697,8 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
                   }
             }
           image=images[scene];
-#if 0
-          /* This worked in version 4.2.9.  TO DO: get it working again */
           if ((image != (Image *) NULL) && image->restart_animation_here)
             first_scene=scene;
-#endif
           if ((state & StepAnimationState) ||
               (resource_info->title != (char *) NULL))
             {
@@ -2447,6 +2444,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   */
   (void) getcwd(working_directory,MaxTextExtent-1);
   (void) chdir(resource_info->home_directory);
+  DestroyImages(image);
   return(loaded_image);
 }
 #endif
