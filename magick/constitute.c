@@ -2354,11 +2354,14 @@ MagickExport unsigned int PushImagePixels(Image *image,
             pixel=(*p);
             q->red=ScaleCharToQuantum(pixel);
             p++;
+            pixel=(*p);
             q->green=ScaleCharToQuantum(pixel);
             p++;
+            pixel=(*p);
             q->blue=ScaleCharToQuantum(pixel);
             p++;
-            q->opacity=MaxRGB-(long) ScaleCharToQuantum(pixel);
+            pixel=(*p);
+            q->opacity=MaxRGB-ScaleCharToQuantum(pixel);
             p++;
             q++;
           }
