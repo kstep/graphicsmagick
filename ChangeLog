@@ -1,3 +1,8 @@
+2002-05-28  Leonard Rosenthol  <leonardr@lazerware.com>
+  * Added new "clipboard" coder for reading/writing the system's
+    clipboard.  Currently this is only implemented on Windows.
+    For example:  'convert logo: clipboard:', 'convert clipboard: foo.png'
+
 2002-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Support autotrace via delegates.mgk.
     For example:  'convert autotrace:file.png file.mvg'
