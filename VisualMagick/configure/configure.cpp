@@ -1221,6 +1221,49 @@ bool CConfigureApp::is_project_type(const char *root, const int project_type)
   return false;
 }
 
+void GetFileTime(LPFILETIME lpft)
+{
+  SYSTEMTIME st;
+  FILETIME ft;
+
+  GetLocalTime(&st);
+
+  if (st.wMinute > 30)  
+    st.wMinute = 30;
+  else
+    st.wMinute =  0;
+  st.wSecond = 0;
+  st.wMilliseconds = 0;
+
+  SystemTimeToFileTime(&st,&ft);
+  LocalFileTimeToFileTime(&ft,lpft);
+}
+
+BOOL SetFileTimeEx(LPCTSTR lpFileName)
+{
+  BOOL fSetFileTime;
+  FILETIME FileTime;
+
+  GetFileTime(&FileTime);
+  HANDLE hFile = CreateFile(lpFileName,
+                            GENERIC_WRITE,
+                            0,
+                            NULL,
+                            OPEN_EXISTING,
+                            FILE_FLAG_BACKUP_SEMANTICS,
+                            NULL);
+
+  if (hFile == INVALID_HANDLE_VALUE)
+    return(FALSE);
+
+  fSetFileTime = SetFileTime(hFile,&FileTime,&FileTime,&FileTime);
+
+  CloseHandle(hFile);
+
+  return(fSetFileTime);
+
+}
+
 void CConfigureApp::process_project_replacements(ofstream &dsw,
       const char *root, const char *stype)
 {
@@ -1266,7 +1309,7 @@ void CConfigureApp::process_project_replacements(ofstream &dsw,
 	        WIN32_FIND_DATA	nestdata;
           HANDLE nesthandle;
 
-          // Now look for all file with the specified spec in the
+          // Now look for all files with the specified spec in the
           // current directory
           std::string filepath;
           filepath = root;
@@ -1306,16 +1349,18 @@ void CConfigureApp::process_project_replacements(ofstream &dsw,
                 FindClose(handle);
                 renamed = rootpath;
                 renamed += ".bak";
-                if (MoveFile(rootpath.c_str(),renamed.c_str())==0)
+                MoveFile(rootpath.c_str(),renamed.c_str());
+                if (CopyFile(filepath.c_str(),rootpath.c_str(),FALSE))
                 {
-                  //MessageBox(NULL, TEXT("Could not copy file to destination."), TEXT("Move Error!"), MB_OK);
+                  SetFileTimeEx(rootpath.c_str());
                 }
-                else
+              }
+              else
+              {
+                // If the file does not exist, then we are free to copy it over.
+                if (CopyFile(filepath.c_str(),rootpath.c_str(),FALSE))
                 {
-                  if (CopyFile(filepath.c_str(),rootpath.c_str(),FALSE)==0)
-                  {
-                    //MessageBox(NULL, TEXT("Could not copy file to destination."), TEXT("Copy Error!"), MB_OK);
-                  }
+                  SetFileTimeEx(rootpath.c_str());
                 }
               }
             }
