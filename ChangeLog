@@ -1,3 +1,6 @@
+2002-04-17  Leonard Rosenthol  <leonardr@lazerware.com>
+  * Fixed all known bugs with the IMDisplay utility for Windows.
+
 2002-04-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * configure.ac (libtool_build_static_libs): Added
     --enable-delegate-build option to suuport building ImageMagick
