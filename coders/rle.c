@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterRLEImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -603,7 +609,7 @@ ModuleExport void RegisterRLEImage(void)
 %      UnregisterRLEImage(void)
 %
 */
-ModuleExport void UnregisterRLEImage(void)
+static void UnregisterRLEImage(void)
 {
   UnregisterMagickInfo("RLE");
 }

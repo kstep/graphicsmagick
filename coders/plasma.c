@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterPLASMAImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -236,7 +242,7 @@ ModuleExport void RegisterPLASMAImage(void)
 %      UnregisterPLASMAImage(void)
 %
 */
-ModuleExport void UnregisterPLASMAImage(void)
+static void UnregisterPLASMAImage(void)
 {
   UnregisterMagickInfo("PLASMA");
 }

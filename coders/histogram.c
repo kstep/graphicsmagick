@@ -60,6 +60,9 @@
 */
 static unsigned int
   WriteHISTOGRAMImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterHISTOGRAMImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -116,7 +119,7 @@ ModuleExport void RegisterHISTOGRAMImage(void)
 %      UnregisterHISTOGRAMImage(void)
 %
 */
-ModuleExport void UnregisterHISTOGRAMImage(void)
+static void UnregisterHISTOGRAMImage(void)
 {
   UnregisterMagickInfo("HISTOGRAM");
 }

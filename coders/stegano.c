@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterSTEGANOImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -247,7 +253,7 @@ ModuleExport void RegisterSTEGANOImage(void)
 %      UnregisterSTEGANOImage(void)
 %
 */
-ModuleExport void UnregisterSTEGANOImage(void)
+static void UnregisterSTEGANOImage(void)
 {
   UnregisterMagickInfo("STEGANO");
 }

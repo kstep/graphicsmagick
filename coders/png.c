@@ -312,6 +312,9 @@ typedef struct _MngInfo
 */
 static unsigned int
   WritePNGImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterPNGImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2664,7 +2667,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (ping_info->valid & PNG_INFO_tRNS)
         {
           ClassType
-            class;
+            storage_class;
 
           /*
             Image has a transparent background.
@@ -2674,7 +2677,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           class=image->storage_class;
           for (y=0; y < (int) image->rows; y++)
           {
-            image->storage_class=class;
+            image->storage_class=storage_class;
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
@@ -2685,7 +2688,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 index;
 
               q->opacity=OpaqueOpacity;
-              if (class == PseudoClass)
+              if (storage_class == PseudoClass)
                 {
                   index=indexes[x];
                   if (ping_info->color_type != PNG_COLOR_TYPE_PALETTE)
@@ -3068,7 +3071,7 @@ ModuleExport void RegisterPNGImage(void)
 %      UnregisterPNGImage(void)
 %
 */
-ModuleExport void UnregisterPNGImage(void)
+static void UnregisterPNGImage(void)
 {
   UnregisterMagickInfo("MNG");
   UnregisterMagickInfo("PNG");

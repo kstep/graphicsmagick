@@ -6,4 +6,3 @@
 @echo !!! flip !!!
 @..\..\VisualMagick\bin\flip
 @echo !!! shapes !!!
-@..\..\VisualMagick\bin\shapes

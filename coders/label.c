@@ -76,6 +76,9 @@
 */
 ModuleExport const char
   *DefaultXFont = "-adobe-helvetica-medium-r-*-*-14-*-*-*-*-*-iso8859-*";
+
+static void
+  UnregisterLABELImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1424,7 +1427,7 @@ ModuleExport void RegisterLABELImage(void)
 %      UnregisterLABELImage(void)
 %
 */
-ModuleExport void UnregisterLABELImage(void)
+static void UnregisterLABELImage(void)
 {
   UnregisterMagickInfo("LABEL");
 }

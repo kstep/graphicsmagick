@@ -1555,7 +1555,7 @@ namespace Magick
   class filterTypeImage : public std::unary_function<Image&,void>
   {
   public:
-    filterTypeImage( FilterType filterType_ )
+    filterTypeImage( FilterTypes filterType_ )
       : _filterType( filterType_ ) { }
 
     void operator()( Image &image_ )
@@ -1563,7 +1563,7 @@ namespace Magick
 	image_.filterType( _filterType );
       }
   private:
-    const FilterType _filterType;
+    const FilterTypes _filterType;
   };
 
   // Text rendering font

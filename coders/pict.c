@@ -298,6 +298,9 @@ const PICTCode
 */
 static unsigned int
   WritePICTImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterPICTImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1283,7 +1286,7 @@ ModuleExport void RegisterPICTImage(void)
 %      UnregisterPICTImage(void)
 %
 */
-ModuleExport void UnregisterPICTImage(void)
+static void UnregisterPICTImage(void)
 {
   UnregisterMagickInfo("PCT");
   UnregisterMagickInfo("PICT");

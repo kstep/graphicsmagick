@@ -60,6 +60,9 @@
 */
 static unsigned int
   WritePSDImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterPSDImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -843,7 +846,7 @@ ModuleExport void RegisterPSDImage(void)
 %      UnregisterPSDImage(void)
 %
 */
-ModuleExport void UnregisterPSDImage(void)
+static void UnregisterPSDImage(void)
 {
   UnregisterMagickInfo("PSD");
 }

@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterICONImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -481,7 +487,7 @@ ModuleExport void RegisterICONImage(void)
 %      UnregisterICONImage(void)
 %
 */
-ModuleExport void UnregisterICONImage(void)
+static void UnregisterICONImage(void)
 {
   UnregisterMagickInfo("ICO");
   UnregisterMagickInfo("ICON");

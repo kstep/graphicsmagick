@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterTIMImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -413,7 +419,7 @@ ModuleExport void RegisterTIMImage(void)
 %      UnregisterTIMImage(void)
 %
 */
-ModuleExport void UnregisterTIMImage(void)
+static void UnregisterTIMImage(void)
 {
   UnregisterMagickInfo("TIM");
 }

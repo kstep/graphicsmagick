@@ -60,6 +60,9 @@
 */
 static unsigned int
   WriteUILImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterUILImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -116,7 +119,7 @@ ModuleExport void RegisterUILImage(void)
 %      UnregisterUILImage(void)
 %
 */
-ModuleExport void UnregisterUILImage(void)
+static void UnregisterUILImage(void)
 {
   UnregisterMagickInfo("UIL");
 }

@@ -61,6 +61,9 @@
 */
 static unsigned int
   WriteCACHEImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterCACHEImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -798,7 +801,7 @@ ModuleExport void RegisterCACHEImage(void)
 %      UnregisterCACHEImage(void)
 %
 */
-ModuleExport void UnregisterCACHEImage(void)
+static void UnregisterCACHEImage(void)
 {
   UnregisterMagickInfo("CACHE");
 }

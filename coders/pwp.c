@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterPWPImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -286,7 +292,7 @@ ModuleExport void RegisterPWPImage(void)
 %      UnregisterPWPImage(void)
 %
 */
-ModuleExport void UnregisterPWPImage(void)
+static void UnregisterPWPImage(void)
 {
   UnregisterMagickInfo("PWP");
 }

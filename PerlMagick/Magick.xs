@@ -192,7 +192,7 @@ static char
     "Undefined", "None", "BZip", "Fax", "Group4", "JPEG", "LZW", "Runlength",
     "Zip", (char *) NULL
   },
-  *FilterTypes[] =
+  *FilterTypess[] =
   {
     "Undefined", "Point", "Box", "Triangle", "Hermite", "Hanning",
     "Hamming", "Blackman", "Gaussian", "Quadratic", "Cubic", "Catrom",
@@ -323,7 +323,7 @@ static struct
     { "Spread", { {"amount", IntegerReference} } },
     { "Swirl", { {"degree", DoubleReference} } },
     { "Zoom", { {"geom", StringReference}, {"width", IntegerReference},
-      {"height", IntegerReference}, {"filter", FilterTypes},
+      {"height", IntegerReference}, {"filter", FilterTypess},
       {"blur", DoubleReference } } },
     { "IsGrayImage", },
     { "Annotate", { {"text", StringReference}, {"font", StringReference},
@@ -378,7 +378,7 @@ static struct
     { "Sync", },
     { "Texture", { {"texture", ImageReference} } },
     { "Transform", { {"crop", StringReference}, {"geom", StringReference},
-      {"filter", FilterTypes} } },
+      {"filter", FilterTypess} } },
     { "Transparent", { {"color", StringReference} } },
     { "Threshold", { {"threshold", DoubleReference} } },
     { "Charcoal", { {"factor", StringReference} } },
@@ -2815,9 +2815,9 @@ Get(ref,...)
             {
               j=image->filter;
               s=newSViv(j);
-              if ((j >= 0) && (j < NumberOf(FilterTypes)-1))
+              if ((j >= 0) && (j < NumberOf(FilterTypess)-1))
                 {
-                  (void) sv_setpv(s,FilterTypes[j]);
+                  (void) sv_setpv(s,FilterTypess[j]);
                   SvIOK_on(s);
                 }
               break;
@@ -4172,7 +4172,7 @@ Mogrify(ref,...)
               &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
               &rectangle_info.height);
           if (attribute_flag[3])
-            image->filter=(FilterType) argument_list[3].int_reference;
+            image->filter=(FilterTypes) argument_list[3].int_reference;
           if (attribute_flag[4])
             image->blur=argument_list[4].double_reference;
           image=ZoomImage(image,rectangle_info.width,rectangle_info.height,
@@ -4831,7 +4831,7 @@ Mogrify(ref,...)
           if (!attribute_flag[2])
             argument_list[2].int_reference=(int) MitchellFilter;
           next=(Image *) NULL;
-          image->filter=(FilterType) argument_list[2].int_reference;
+          image->filter=(FilterTypes) argument_list[2].int_reference;
           TransformImage(&image,argument_list[0].string_reference,
             argument_list[1].string_reference);
           break;

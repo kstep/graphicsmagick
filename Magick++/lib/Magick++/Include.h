@@ -138,7 +138,7 @@ namespace Magick
   using MagickLib::ZipCompression;
   
   // Filter types
-  using MagickLib::FilterType;
+  using MagickLib::FilterTypes;
   using MagickLib::UndefinedFilter;
   using MagickLib::PointFilter;
   using MagickLib::BoxFilter;
@@ -248,7 +248,7 @@ namespace Magick
   using MagickLib::JPEGPreview;
 
   // Quantum types
-  using MagickLib::QuantumTypes;
+  using MagickLib::QuantumType;
   using MagickLib::IndexQuantum;
   using MagickLib::GrayQuantum;
   using MagickLib::IndexOpacityQuantum;

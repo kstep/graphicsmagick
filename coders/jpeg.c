@@ -64,6 +64,9 @@
 */
 static unsigned int
   WriteJPEGImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterJPEGImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -781,7 +784,7 @@ ModuleExport void RegisterJPEGImage(void)
 %      UnregisterJPEGImage(void)
 %
 */
-ModuleExport void UnregisterJPEGImage(void)
+static void UnregisterJPEGImage(void)
 {
   UnregisterMagickInfo("JPEG24");
   UnregisterMagickInfo("JPEG");

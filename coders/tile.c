@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterTILEImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -194,7 +200,7 @@ ModuleExport void RegisterTILEImage(void)
 %      UnregisterTILEImage(void)
 %
 */
-ModuleExport void UnregisterTILEImage(void)
+static void UnregisterTILEImage(void)
 {
   UnregisterMagickInfo("TILE");
 }

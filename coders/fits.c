@@ -60,6 +60,9 @@
 */
 static unsigned int
   WriteFITSImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterFITSImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -539,7 +542,7 @@ ModuleExport void RegisterFITSImage(void)
 %      UnregisterFITSImage(void)
 %
 */
-ModuleExport void UnregisterFITSImage(void)
+static void UnregisterFITSImage(void)
 {
   UnregisterMagickInfo("FITS");
 }

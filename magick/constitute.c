@@ -934,7 +934,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
 %
 %  The format of the PopImagePixels method is:
 %
-%      unsigned int PopImagePixels(const Image *,const QuantumTypes quantum,
+%      unsigned int PopImagePixels(const Image *,const QuantumType quantum,
 %        unsigned char *destination)
 %
 %  A description of each parameter follows:
@@ -952,7 +952,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
 %
 */
 MagickExport unsigned int PopImagePixels(const Image *image,
-  const QuantumTypes quantum,unsigned char *destination)
+  const QuantumType quantum,unsigned char *destination)
 {
   register IndexPacket
     *indexes;
@@ -1208,7 +1208,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
 %  The format of the PushImagePixels method is:
 %
 %      unsigned int PushImagePixels(const Image *image,
-%        const QuantumTypes quantum,const unsigned char *source)
+%        const QuantumType quantum,const unsigned char *source)
 %
 %  A description of each parameter follows:
 %
@@ -1224,7 +1224,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
 %
 */
 MagickExport unsigned int PushImagePixels(const Image *image,
-  const QuantumTypes quantum,const unsigned char *source)
+  const QuantumType quantum,const unsigned char *source)
 {
   IndexPacket
     index;

@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterXCImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -166,12 +172,6 @@ ModuleExport void RegisterXCImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("NULL");
-  entry->decoder=ReadXCImage;
-  entry->adjoin=False;
-  entry->description=AllocateString("NULL image");
-  entry->module=AllocateString("XC");
-  RegisterMagickInfo(entry);
   entry=SetMagickInfo("XC");
   entry->decoder=ReadXCImage;
   entry->adjoin=False;
@@ -200,8 +200,7 @@ ModuleExport void RegisterXCImage(void)
 %      UnregisterXCImage(void)
 %
 */
-ModuleExport void UnregisterXCImage(void)
+static void UnregisterXCImage(void)
 {
-  UnregisterMagickInfo("NULL");
   UnregisterMagickInfo("XC");
 }

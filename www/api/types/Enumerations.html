@@ -33,7 +33,7 @@ Enumerations</h1></center>
 <a href="#CompressionType">CompressionType</a></li>
 
 <li>
-<a href="#FilterType">FilterType</a></li>
+<a href="#FilterTypes">FilterTypes</a></li>
 
 <li>
 <a href="#GravityType">GravityType</a></li>
@@ -54,7 +54,7 @@ Enumerations</h1></center>
 <a href="#PaintMethod">PaintMethod</a></li>
 
 <li>
-<a href="#QuantumTypes">QuantumTypes</a></li>
+<a href="#QuantumType">QuantumType</a></li>
 
 <li>
 <a href="#RenderingIntent">RenderingIntent</a></li>
@@ -467,11 +467,11 @@ and Huffman coding)&nbsp; as used by bzip2 utilities</td>
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="FilterType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>FilterType</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="FilterTypes"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>FilterTypes</font></font></font></b></td>
 </tr>
 </table>
 
-<p><i>FilterType</i> is used to adjust the filter algorithm used when resizing
+<p><i>FilterTypes</i> is used to adjust the filter algorithm used when resizing
 images. Different filters experience varying degrees of success with various
 images and can take sipngicantly different amounts of processing time.
 ImageMagick uses the <i>LanczosFilter</i> by default since this filter
@@ -482,7 +482,7 @@ diagonal lines. The only way to be sure is to test the filter with sample
 images.
 <br>&nbsp;
 <table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
-<caption><b>FilterType</b></caption>
+<caption><b>FilterTypes</b></caption>
 
 <tr>
 <td>
@@ -985,11 +985,11 @@ matching border color.</td>
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="QuantumTypes"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>QuantumTypes</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="QuantumType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>QuantumType</font></font></font></b></td>
 </tr>
 </table>
 
-<p><i>QuantumTypes</i> is used to indicate the source or destination format
+<p><i>QuantumType</i> is used to indicate the source or destination format
 of entire pixels, or components of pixels ("Quantums") while they are being
 read, or written to, a pixel cache. The validity of these format specifications
 depends on whether the Image pixels are in RGB format, RGBA format, or

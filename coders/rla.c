@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterRLAImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -422,7 +428,7 @@ ModuleExport void RegisterRLAImage(void)
 %      UnregisterRLAImage(void)
 %
 */
-ModuleExport void UnregisterRLAImage(void)
+static void UnregisterRLAImage(void)
 {
   UnregisterMagickInfo("RLA");
 }

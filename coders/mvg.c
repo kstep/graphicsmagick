@@ -53,6 +53,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterMVGImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -169,7 +175,7 @@ ModuleExport void RegisterMVGImage(void)
 %      UnregisterMVGImage(void)
 %
 */
-ModuleExport void UnregisterMVGImage(void)
+static void UnregisterMVGImage(void)
 {
   UnregisterMagickInfo("MVG");
 }

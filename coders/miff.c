@@ -66,6 +66,9 @@
 */
 static unsigned int
   WriteMIFFImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterMIFFImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -970,7 +973,7 @@ ModuleExport void RegisterMIFFImage(void)
 %      UnregisterMIFFImage(void)
 %
 */
-ModuleExport void UnregisterMIFFImage(void)
+static void UnregisterMIFFImage(void)
 {
   UnregisterMagickInfo("IMPLICIT");
   UnregisterMagickInfo("MIFF");

@@ -60,6 +60,9 @@
 */
 static unsigned int
   WriteGRAYImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterGRAYImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -266,7 +269,7 @@ ModuleExport void RegisterGRAYImage(void)
 %      UnregisterGRAYImage(void)
 %
 */
-ModuleExport void UnregisterGRAYImage(void)
+static void UnregisterGRAYImage(void)
 {
   UnregisterMagickInfo("GRAY");
 }

@@ -60,6 +60,9 @@
 */
 static unsigned int
   WriteEPTImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterEPTImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -157,7 +160,7 @@ ModuleExport void RegisterEPTImage(void)
 %      UnregisterEPTImage(void)
 %
 */
-ModuleExport void UnregisterEPTImage(void)
+static void UnregisterEPTImage(void)
 {
   UnregisterMagickInfo("EPT");
 }

@@ -57,6 +57,9 @@
 static unsigned int
   WriteWPGImage(const ImageInfo *,Image *);
 
+static void
+  UnregisterWPGImage(void);
+
 #define DWORD unsigned long
 #define WORD  unsigned
 #define BYTE  unsigned char
@@ -328,7 +331,7 @@ long ldblk;
  y=0;
 
  ldblk=((long)image->depth*image->columns+7)/8;
- BImgBuff=malloc(ldblk);
+ BImgBuff=(unsigned char *) malloc(ldblk);
  if(BImgBuff==NULL) return(-2);
 
  while(y<image->rows)
@@ -634,7 +637,7 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 		  }
 
              ldblk=((long)image->depth*image->columns+7)/8;
-	     if( (BImgBuff=malloc(ldblk))==NULL) goto NoMemory;
+	     if( (BImgBuff=(unsigned char *) malloc(ldblk))==NULL) goto NoMemory;
 
 	     for(i=0;i<image->rows;i++)
 		{
@@ -727,7 +730,7 @@ ModuleExport void RegisterWPGImage(void)
 %      UnregisterWPGImage(void)
 %
 */
-ModuleExport void UnregisterWPGImage(void)
+static void UnregisterWPGImage(void)
 {
   UnregisterMagickInfo("WPG");
 }

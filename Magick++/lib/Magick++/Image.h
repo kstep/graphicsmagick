@@ -536,8 +536,8 @@ namespace Magick
     Color           fillColor ( void ) const;
 
     // Filter to use when resizing image
-    void            filterType ( FilterType filterType_ );
-    FilterType      filterType ( void ) const;
+    void            filterType ( FilterTypes filterType_ );
+    FilterTypes      filterType ( void ) const;
 
     // Text rendering font
     void            font ( const std::string &font_ );
@@ -743,13 +743,13 @@ namespace Magick
     // Transfers one or more pixel components from a buffer or file
     // into the image pixel cache of an image.
     // Used to support image decoders.
-    void readPixels ( QuantumTypes quantum_,
+    void readPixels ( QuantumType quantum_,
 		      unsigned char *source_ );
     
     // Transfers one or more pixel components from the image pixel
     // cache to a buffer or file.
     // Used to support image encoders.
-    void writePixels ( QuantumTypes quantum_,
+    void writePixels ( QuantumType quantum_,
 		       unsigned char *destination_ );
 
     //////////////////////////////////////////////////////////////////////    

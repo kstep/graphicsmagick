@@ -888,7 +888,7 @@ int main(int argc,char **argv)
             {
               if (*option == '-')
                 {
-                  FilterType
+                  FilterTypes
                     filter;
 
                   i++;

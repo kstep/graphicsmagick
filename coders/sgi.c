@@ -86,6 +86,9 @@ typedef struct _SGIInfo
 */
 static unsigned int
   WriteSGIImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterSGIImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -635,7 +638,7 @@ ModuleExport void RegisterSGIImage(void)
 %      UnregisterSGIImage(void)
 %
 */
-ModuleExport void UnregisterSGIImage(void)
+static void UnregisterSGIImage(void)
 {
   UnregisterMagickInfo("SGI");
 }

@@ -3538,7 +3538,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       {
         if (*option == '-')
           {
-            FilterType
+            FilterTypes
               filter;
 
             option=argv[++i];

@@ -66,6 +66,9 @@ static Image
 */
 static unsigned int
   WriteTIFFImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterTIFFImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1010,7 +1013,7 @@ ModuleExport void RegisterTIFFImage(void)
 %      UnregisterTIFFImage(void)
 %
 */
-ModuleExport void UnregisterTIFFImage(void)
+static void UnregisterTIFFImage(void)
 {
 #if defined(HasTIFF)
   UnregisterMagickInfo("PTIF");

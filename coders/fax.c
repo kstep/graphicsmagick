@@ -60,6 +60,9 @@
 */
 static unsigned int
   WriteFAXImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterFAXImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -237,7 +240,7 @@ ModuleExport void RegisterFAXImage(void)
 %      UnregisterFAXImage(void)
 %
 */
-ModuleExport void UnregisterFAXImage(void)
+static void UnregisterFAXImage(void)
 {
   UnregisterMagickInfo("FAX");
   UnregisterMagickInfo("G3");

@@ -61,6 +61,9 @@
 */
 static unsigned int
   WriteXPMImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterXPMImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -483,7 +486,7 @@ ModuleExport void RegisterXPMImage(void)
 %      UnregisterXPMImage(void)
 %
 */
-ModuleExport void UnregisterXPMImage(void)
+static void UnregisterXPMImage(void)
 {
   UnregisterMagickInfo("PM");
   UnregisterMagickInfo("XPM");

@@ -1896,12 +1896,12 @@ Magick::Color Magick::Image::fillColor ( void ) const
   return constOptions()->fillColor();
 }
 
-void Magick::Image::filterType ( Magick::FilterType filterType_ )
+void Magick::Image::filterType ( Magick::FilterTypes filterType_ )
 {
   modifyImage();
   image()->filter = filterType_;
 }
-Magick::FilterType Magick::Image::filterType ( void ) const
+Magick::FilterTypes Magick::Image::filterType ( void ) const
 {
   return constImage()->filter;
 }
@@ -2585,7 +2585,7 @@ void Magick::Image::syncPixels ( void )
 // Transfers one or more pixel components from a buffer or file
 // into the image pixel cache of an image.
 // Used to support image decoders.
-void Magick::Image::readPixels ( Magick::QuantumTypes quantum_,
+void Magick::Image::readPixels ( Magick::QuantumType quantum_,
 				 unsigned char *source_ )
 {
   PushImagePixels( image(), quantum_, source_ );
@@ -2595,7 +2595,7 @@ void Magick::Image::readPixels ( Magick::QuantumTypes quantum_,
 // Transfers one or more pixel components from the image pixel
 // cache to a buffer or file.
 // Used to support image encoders.
-void Magick::Image::writePixels ( Magick::QuantumTypes quantum_,
+void Magick::Image::writePixels ( Magick::QuantumType quantum_,
 				  unsigned char *destination_ )
 {
   PopImagePixels( image(), quantum_, destination_ );

@@ -59,6 +59,9 @@
 */
 static unsigned int
   Write8BIMImage(const ImageInfo *,Image *);
+
+static void
+  Unregister8BIMImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -245,7 +248,7 @@ ModuleExport void Register8BIMImage(void)
 %      Unregister8BIMImage(void)
 %
 */
-ModuleExport void Unregister8BIMImage(void)
+static void Unregister8BIMImage(void)
 {
   UnregisterMagickInfo("8BIM");
 }

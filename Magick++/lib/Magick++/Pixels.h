@@ -58,7 +58,7 @@ namespace Magick
     // Transfer one or more pixel components from a buffer or file
     // into the image pixel view of an image.  Used to support image
     // decoders.
-    void decode ( QuantumTypes quantum_,
+    void decode ( QuantumType quantum_,
 		  unsigned char *source_ )
       {
 	MagickLib::ReadPixelCache( _image.image(), quantum_, source_ );
@@ -66,7 +66,7 @@ namespace Magick
     
     // Transfer one or more pixel components from the image pixel
     // view to a buffer or file.  Used to support image encoders.
-    void encode ( QuantumTypes quantum_,
+    void encode ( QuantumType quantum_,
 		  unsigned char *destination_ )
       {
 	MagickLib::WritePixelCache( _image.image(), quantum_, destination_ );

@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterPDBImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -578,7 +584,7 @@ ModuleExport void RegisterPDBImage(void)
 %      UnregisterPDBImage(void)
 %
 */
-ModuleExport void UnregisterPDBImage(void)
+static void UnregisterPDBImage(void)
 {
   UnregisterMagickInfo("PDB");
 }

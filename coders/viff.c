@@ -60,6 +60,9 @@
 */
 static unsigned int
   WriteVIFFImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterVIFFImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -784,7 +787,7 @@ ModuleExport void RegisterVIFFImage(void)
 %      UnregisterVIFFImage(void)
 %
 */
-ModuleExport void UnregisterVIFFImage(void)
+static void UnregisterVIFFImage(void)
 {
   UnregisterMagickInfo("VIFF");
   UnregisterMagickInfo("XV");

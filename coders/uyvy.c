@@ -60,6 +60,9 @@
 */
 static unsigned int
   WriteUYVYImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterUYVYImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -78,7 +81,8 @@ static unsigned int
 %
 %  The format of the ReadUYVYImage method is:
 %
-%      Image *ReadUYVYImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadUYVYImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -92,7 +96,8 @@ static unsigned int
 %
 %
 */
-static Image *ReadUYVYImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadUYVYImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   Image
     *image;
@@ -190,6 +195,14 @@ ModuleExport void RegisterUYVYImage(void)
   MagickInfo
     *entry;
 
+  entry=SetMagickInfo("PAL");
+  entry->decoder=ReadUYVYImage;
+  entry->encoder=WriteUYVYImage;
+  entry->adjoin=False;
+  entry->raw=True;
+  entry->description=AllocateString("16bit/pixel interleaved YUV");
+  entry->module=AllocateString("UYVY");
+  RegisterMagickInfo(entry);
   entry=SetMagickInfo("UYVY");
   entry->decoder=ReadUYVYImage;
   entry->encoder=WriteUYVYImage;
@@ -219,7 +232,7 @@ ModuleExport void RegisterUYVYImage(void)
 %      UnregisterUYVYImage(void)
 %
 */
-ModuleExport void UnregisterUYVYImage(void)
+static void UnregisterUYVYImage(void)
 {
   UnregisterMagickInfo("UYVY");
 }

@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterSFWImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -378,7 +384,7 @@ ModuleExport void RegisterSFWImage(void)
 %      UnregisterSFWImage(void)
 %
 */
-ModuleExport void UnregisterSFWImage(void)
+static void UnregisterSFWImage(void)
 {
   UnregisterMagickInfo("SFW");
 }

@@ -47,10 +47,10 @@
 <P>PixelPacket * <STRONG>GetOnePixel</STRONG>( const Image image, const int x, const int y );</P>
 <P>PixelPacket * <STRONG>GetPixelCache</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
 <P>PixelPacket * <STRONG>GetPixels</STRONG>( const Image image );</P>
-<P>unsigned int  <STRONG>ReadPixelCache</STRONG>( const Image *image, const QuantumTypes quantum, const unsigned char *source );</P>
+<P>unsigned int  <STRONG>ReadPixelCache</STRONG>( const Image *image, const QuantumType quantum, const unsigned char *source );</P>
 <P>PixelPacket * <STRONG>SetPixelCache</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
 <P>unsigned int  <STRONG>SyncPixelCache</STRONG>( Image *image );</P>
-<P>unsigned int  <STRONG>WritePixelCache</STRONG>( const Image *, const QuantumTypes quantum, unsigned char *destination );</P>
+<P>unsigned int  <STRONG>WritePixelCache</STRONG>( const Image *, const QuantumType quantum, unsigned char *destination );</P>
 <P>
 <A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
@@ -132,7 +132,7 @@ The address of a structure of type Image.
 <H2><A NAME="readpixelcache">ReadPixelCache</A></H2>
 <P>Method ReadPixelCache transfers one or more pixel components from a buffer or file into the image pixel buffer of an image.  It returns True if the pixels are successfully transferred, otherwise False.</P>
 <P>The format of the ReadPixelCache method is:</P>
-<blockquote>unsigned int ReadPixelCache ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#QuantumTypes">QuantumTypes</A> quantum, const unsigned char *source ); </blockquote><P>
+<blockquote>unsigned int ReadPixelCache ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#QuantumType">QuantumType</A> quantum, const unsigned char *source ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><BR>
@@ -194,7 +194,7 @@ The address of a structure of type Image.
 <H2><A NAME="writepixelcache">WritePixelCache</A></H2>
 <P>Method WritePixelCache transfers one or more pixel components from the image pixel buffer to a buffer or file.  It returns True if the pixels are successfully transferred, otherwise False.</P>
 <P>The format of the WritePixelCache method is:</P>
-<blockquote>unsigned int WritePixelCache ( const <A HREF="types/Image.html">Image</A> *, const <A HREF="types/Enumerations.html#QuantumTypes">QuantumTypes</A> quantum, unsigned char *destination ); </blockquote><P>
+<blockquote>unsigned int WritePixelCache ( const <A HREF="types/Image.html">Image</A> *, const <A HREF="types/Enumerations.html#QuantumType">QuantumType</A> quantum, unsigned char *destination ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><BR>

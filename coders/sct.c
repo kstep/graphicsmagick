@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterSCTImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -297,7 +303,7 @@ ModuleExport void RegisterSCTImage(void)
 %      UnregisterSCTImage(void)
 %
 */
-ModuleExport void UnregisterSCTImage(void)
+static void UnregisterSCTImage(void)
 {
   UnregisterMagickInfo("SCT");
 }

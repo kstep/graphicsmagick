@@ -60,6 +60,9 @@
 */
 static unsigned int
   WriteJBIGImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterJBIGImage(void);
 
 #if defined(HasJBIG)
 #include "jbig.h"
@@ -319,7 +322,7 @@ ModuleExport void RegisterJBIGImage(void)
 %      UnregisterJBIGImage(void)
 %
 */
-ModuleExport void UnregisterJBIGImage(void)
+static void UnregisterJBIGImage(void)
 {
   UnregisterMagickInfo("BIE");
   UnregisterMagickInfo("JBG");

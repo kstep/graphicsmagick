@@ -60,6 +60,9 @@
 */
 static unsigned int
   WritePCLImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterPCLImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -197,7 +200,7 @@ ModuleExport void RegisterPCLImage(void)
 %      UnregisterPCLImage(void)
 %
 */
-ModuleExport void UnregisterPCLImage(void)
+static void UnregisterPCLImage(void)
 {
   UnregisterMagickInfo("PCL");
 }

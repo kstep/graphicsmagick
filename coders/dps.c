@@ -58,6 +58,12 @@
 #include "xwindows.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterDPSImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -550,7 +556,7 @@ ModuleExport void RegisterDPSImage(void)
 %      UnregisterDPSImage(void)
 %
 */
-ModuleExport void UnregisterDPSImage(void)
+static void UnregisterDPSImage(void)
 {
   UnregisterMagickInfo("DPS");
 }

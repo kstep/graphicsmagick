@@ -63,6 +63,9 @@
 */
 static unsigned int
   WriteFPXImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterFPXImage(void);
 
 #if defined(HasFPX)
 /*
@@ -515,7 +518,7 @@ ModuleExport void RegisterFPXImage(void)
 %      UnregisterFPXImage(void)
 %
 */
-ModuleExport void UnregisterFPXImage(void)
+static void UnregisterFPXImage(void)
 {
   UnregisterMagickInfo("FPX");
 }

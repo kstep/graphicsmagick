@@ -60,6 +60,9 @@
 */
 static unsigned int
   WriteIPTCImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterIPTCImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -262,7 +265,7 @@ ModuleExport void RegisterIPTCImage(void)
 %      UnregisterIPTCImage(void)
 %
 */
-ModuleExport void UnregisterIPTCImage(void)
+static void UnregisterIPTCImage(void)
 {
   UnregisterMagickInfo("IPTC");
 }

@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterNULLImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -202,8 +208,7 @@ ModuleExport void RegisterNULLImage(void)
 %      UnregisterNULLImage(void)
 %
 */
-ModuleExport void UnregisterNULLImage(void)
+static void UnregisterNULLImage(void)
 {
-  UnregisterMagickInfo("NULL");
   UnregisterMagickInfo("NULL");
 }

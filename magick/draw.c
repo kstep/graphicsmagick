@@ -210,9 +210,6 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   const DrawInfo *draw_info,const PixelPacket target,const int x_offset,
   const int y_offset,const PaintMethod method)
 {
-  double
-    alpha;
-
   int
     offset,
     skip,
@@ -263,7 +260,6 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   /*
     Track "hot" pixels with the image index packets.
   */
-  alpha=1.0/MaxRGB;
   image->storage_class=PseudoClass;
   for (y=0; y < (int) image->rows; y++)
   {
@@ -349,9 +345,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
                   if (ColorMatch(*q,target,image->fuzz) ||
                       ColorMatch(*q,draw_info->fill,image->fuzz))
                     break;
-                indexes[i]=True;
+                indexes[i++]=True;
                 *q=draw_info->fill;
-                i++;
                 q++;
               }
               if (!SyncImagePixels(image))
@@ -405,39 +400,45 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
         break;
     }
   else
-    for (y=0; y < (int) image->rows; y++)
     {
+      double
+        alpha;
+
       /*
         Tile image onto floodplane.
       */
-      q=GetImagePixels(image,0,y,image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      indexes=GetIndexes(image);
-      for (x=0; x < (int) image->columns; x++)
+      alpha=1.0/MaxRGB;
+      for (y=0; y < (int) image->rows; y++)
       {
-        if (indexes[x])
-          {
-            color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
-              y % draw_info->tile->rows);
-            if (!draw_info->tile->matte)
-              *q=color;
-            else
-              {
-                q->red=alpha*(color.red*(MaxRGB-color.opacity)+
-                  q->red*color.opacity);
-                q->green=alpha*(color.green*(MaxRGB-color.opacity)+
-                  q->green*color.opacity);
-                q->blue=alpha*(color.blue*(MaxRGB-color.opacity)+
-                  q->blue*color.opacity);
-                q->opacity=alpha*(color.opacity*(MaxRGB-color.opacity)+
-                  q->opacity*color.opacity);
-              }
-          }
-        q++;
+        q=GetImagePixels(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        indexes=GetIndexes(image);
+        for (x=0; x < (int) image->columns; x++)
+        {
+          if (indexes[x])
+            {
+              color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
+                y % draw_info->tile->rows);
+              if (!draw_info->tile->matte)
+                *q=color;
+              else
+                {
+                  q->red=alpha*(color.red*(MaxRGB-color.opacity)+
+                    q->red*color.opacity);
+                  q->green=alpha*(color.green*(MaxRGB-color.opacity)+
+                    q->green*color.opacity);
+                  q->blue=alpha*(color.blue*(MaxRGB-color.opacity)+
+                    q->blue*color.opacity);
+                  q->opacity=alpha*(color.opacity*(MaxRGB-color.opacity)+
+                    q->opacity*color.opacity);
+                }
+            }
+          q++;
+        }
+        if (!SyncImagePixels(image))
+          break;
       }
-      if (!SyncImagePixels(image))
-        break;
     }
   image->storage_class=DirectClass;
   FreeMemory((void **) &segment_stack);

@@ -395,7 +395,7 @@ typedef struct _Image
   int
     fuzz;
 
-  FilterType
+  FilterTypes
     filter;
 
   double
@@ -786,9 +786,9 @@ extern MagickExport unsigned int
   NormalizeImage(Image *),
   OpaqueImage(Image *,const PixelPacket,const PixelPacket),
   PlasmaImage(Image *,const SegmentInfo *,int,int),
-  PopImagePixels(const Image *,const QuantumTypes,unsigned char *),
+  PopImagePixels(const Image *,const QuantumType,unsigned char *),
   ProfileImage(Image *,const ProfileType,const char *),
-  PushImagePixels(const Image *,const QuantumTypes,const unsigned char *),
+  PushImagePixels(const Image *,const QuantumType,const unsigned char *),
   QueryColorDatabase(const char *,PixelPacket *),
   RaiseImage(Image *,const RectangleInfo *,const int),
   RGBTransformImage(Image *,const ColorspaceType),

@@ -60,6 +60,9 @@
 */
 static unsigned int
   WriteGIFImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterGIFImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1027,7 +1030,7 @@ ModuleExport void RegisterGIFImage(void)
 %      UnregisterGIFImage(void)
 %
 */
-ModuleExport void UnregisterGIFImage(void)
+static void UnregisterGIFImage(void)
 {
   UnregisterMagickInfo("GIF");
   UnregisterMagickInfo("GIF87");

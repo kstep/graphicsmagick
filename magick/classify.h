@@ -133,7 +133,7 @@ typedef enum
   LanczosFilter,
   BesselFilter,
   SincFilter
-} FilterType;
+} FilterTypes;
 
 /* Eliminate possible conflict from <X11/Xutil.h> */
 #undef NoValue
@@ -317,7 +317,7 @@ typedef enum
   RGBQuantum,
   RGBAQuantum,
   CMYKQuantum
-} QuantumTypes;
+} QuantumType;
 
 typedef enum
 {

@@ -60,6 +60,9 @@
 */
 static unsigned int
   WriteICMImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterICMImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -203,7 +206,7 @@ ModuleExport void RegisterICMImage(void)
 %      UnregisterICMImage(void)
 %
 */
-ModuleExport void UnregisterICMImage(void)
+static void UnregisterICMImage(void)
 {
   UnregisterMagickInfo("ICM");
 }

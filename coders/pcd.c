@@ -60,6 +60,9 @@
 */
 static unsigned int
   WritePCDImage(const ImageInfo *,Image *);
+
+static void
+  UnregisterPCDImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -825,7 +828,7 @@ ModuleExport void RegisterPCDImage(void)
 %      UnregisterPCDImage(void)
 %
 */
-ModuleExport void UnregisterPCDImage(void)
+static void UnregisterPCDImage(void)
 {
   UnregisterMagickInfo("PCD");
   UnregisterMagickInfo("PCDS");

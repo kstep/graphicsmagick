@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static void
+  UnregisterGRADATIONImage(void);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -225,7 +231,7 @@ ModuleExport void RegisterGRADATIONImage(void)
 %      UnregisterGRADATIONImage(void)
 %
 */
-ModuleExport void UnregisterGRADATIONImage(void)
+static void UnregisterGRADATIONImage(void)
 {
   UnregisterMagickInfo("GRADATION");
 }
