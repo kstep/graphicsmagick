@@ -41,7 +41,7 @@
 
 	* lib/Magick++/Drawable.h (DrawableCompositeImage): Add a
  	short-form constructor to support specifying image location and
- 	name, but without specifing rendered size (use existing image
+ 	name, but without specifying rendered size (use existing image
  	size).
 
 2000-10-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

@@ -333,8 +333,8 @@ inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
 
 inline void  Magick::Color::alphaQuantum ( Quantum alpha_ )
 {
-  _pixel->opacity =
-    static_cast<Quantum>(alpha_ > TransparentOpacity ? TransparentOpacity : alpha_);
+  _pixel->opacity = static_cast<Quantum>(alpha_ > TransparentOpacity ?
+                                         TransparentOpacity : alpha_);
 }
 
 inline Magick::Quantum Magick::Color::alphaQuantum ( void ) const
