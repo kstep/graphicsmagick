@@ -412,7 +412,7 @@ static void DestroyCacheInfo(Cache cache)
   }
   if (cache_info->type != UndefinedCache)
     {
-      for (id=0; id <= (int) cache_info->rows; id++)
+      for (id=0; id < (int) (cache_info->rows+3); id++)
         DestroyCacheNexus(cache,id);
       LiberateMemory((void **) &cache_info->nexus_info);
     }
