@@ -222,7 +222,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
     {
       ThrowException(exception,CacheError,"Pixel cache is not open",
         image->filename);
-      return((PixelPacket *) NULL);
+      return((const PixelPacket *) NULL);
     }
   region.x=x;
   region.y=y;
@@ -248,14 +248,11 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
           if ((image->storage_class == PseudoClass) ||
               (image->colorspace == CMYKColorspace))
             status|=ReadCacheIndexes(image->cache,nexus);
-          if (status == False)
-            {
-              ThrowException(exception,CacheError,
-                "Unable to acquire pixels from cache",image->filename);
-              return((PixelPacket *) NULL);
-            }
-          return(pixels);
+          if (status != False)
+            return(pixels);
         }
+      ThrowException(exception,CacheError,"Unable to acquire pixels from cache",
+        image->filename);
       return((const PixelPacket *) NULL);
     }
   /*
