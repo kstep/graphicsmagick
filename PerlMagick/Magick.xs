@@ -3105,13 +3105,13 @@ Get(ref,...)
                   s=newSVpv(image->magick,0);
               break;
             }
-          if (strEQcase(attribute,"maximum_error"))
+          if (strEQcase(attribute,"max"))
             {
               if (image)
                 s=newSVnv(image->normalized_maximum_error);
               break;
             }
-          if (strEQcase(attribute,"mean_error"))
+          if (strEQcase(attribute,"mean"))
             {
               if (image)
                 s=newSVnv(image->normalized_mean_error);
