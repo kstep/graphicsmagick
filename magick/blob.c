@@ -149,6 +149,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       DestroyImageInfo(clone_info);
       if (image != (Image *) NULL)
         GetBlobInfo(&(image->blob));
+      DestroyExceptionInfo(&error);
       return(image);
     }
   /*
@@ -174,6 +175,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
     }
   image=ReadImage(clone_info,&error);
   (void) remove(clone_info->filename);
+  DestroyExceptionInfo(&error);
   DestroyImageInfo(clone_info);
   return(image);
 }
@@ -417,6 +419,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
   if (magick_info == (MagickInfo *) NULL)
      {
+       DestroyImageInfo(clone_info);
        ThrowException(exception,BlobWarning,"No delegate for this image format",
          clone_info->magick);
        return((void *) NULL);
@@ -434,6 +437,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       clone_info->blob.data=(char *) AcquireMemory(clone_info->blob.extent);
       if (clone_info->blob.data == (char *) NULL)
         {
+          DestroyImageInfo(clone_info);
           ThrowException(exception,BlobWarning,"Unable to create blob",
             "Memory allocation failed");
           return((void *) NULL);
@@ -443,6 +447,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       status=WriteImage(clone_info,image);
       if (status == False)
         {
+          DestroyImageInfo(clone_info);
           ThrowException(exception,BlobWarning,"Unable to create blob",
             clone_info->magick);
           DestroyImageInfo(clone_info);
@@ -460,6 +465,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   /*
     Write file to disk in blob image format.
   */
+  if (clone_info != (ImageInfo *) NULL)
+    DestroyImageInfo(clone_info);
   *length=0;
   clone_info=CloneImageInfo(image_info);
   (void) strcpy(filename,image->filename);
@@ -468,6 +475,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   status=WriteImage(clone_info,image);
   if (status == False)
     {
+      DestroyImageInfo(clone_info);
       ThrowException(exception,BlobWarning,"Unable to create blob",
         image->filename);
       return((void *) NULL);
@@ -481,6 +489,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
     {
       (void) remove(image->filename);
       (void) strcpy(image->filename,filename);
+      DestroyImageInfo(clone_info);
       ThrowException(exception,BlobWarning,"Unable to create blob",
         image->filename);
       return((void *) NULL);
@@ -491,6 +500,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
     {
       (void) remove(image->filename);
       (void) strcpy(image->filename,filename);
+      DestroyImageInfo(clone_info);
       ThrowException(exception,BlobWarning,"Unable to create blob",
         "Memory allocation failed");
       return((void *) NULL);
@@ -499,6 +509,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   (void) close(file);
   (void) remove(image->filename);
   (void) strcpy(image->filename,filename);
+  DestroyImageInfo(clone_info);
   if (count != *length)
     {
       ThrowException(exception,BlobWarning,"Unable to read blob",(char *) NULL);

@@ -1667,7 +1667,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         if (IsAccessible(clone_info->filename))
           ThrowException(exception,MissingDelegateWarning,
             "no delegate for this image format",clone_info->filename);
-        else
+        else 
           ThrowException(exception,FileOpenWarning,"Unable to open file",
             clone_info->filename);
         DestroyImageInfo(clone_info);
@@ -1683,7 +1683,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         */
         image=AllocateImage(clone_info);
         if (image == (Image *) NULL)
-          return((Image *) NULL);
+          {
+            DestroyImageInfo(clone_info);
+            return((Image *) NULL);
+          }
         (void) strcpy(image->filename,clone_info->filename);
         TemporaryFilename(clone_info->filename);
         status=
@@ -1718,8 +1721,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       if (image != (Image *) NULL)
         (void) strcpy(image->filename,filename);
     }
-  if (image == (Image *) NULL)
+  if (image == (Image *) NULL) {
+    DestroyImageInfo(clone_info); //WPA
     return(image);
+  }
   if (image->temporary)
     (void) remove(clone_info->filename);
   if (IsSubimage(clone_info->tile,False))
@@ -2083,9 +2088,12 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           magick_info=(MagickInfo *) GetMagickInfo(image->magick);
         if ((magick_info == (MagickInfo *) NULL) ||
             (magick_info->encoder ==
-              (unsigned int (*)(const ImageInfo *,Image *)) NULL))
-          ThrowBinaryException(MissingDelegateWarning,
-            "no encode delegate for this image format",clone_info->magick);
+             (unsigned int (*)(const ImageInfo *,Image *)) NULL))
+          {
+            DestroyImageInfo(clone_info);
+            ThrowBinaryException(MissingDelegateWarning,
+              "no encode delegate for this image format",clone_info->magick);
+          }
         status=(magick_info->encoder)(clone_info,image);
       }
     else
