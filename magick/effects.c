@@ -2074,9 +2074,6 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
   Image
     *shade_image;
 
-  IndexPacket
-    index;
-
   int
     y;
 
@@ -2085,7 +2082,6 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
     normal;
 
   register int
-    i,
     x;
 
   register PixelPacket

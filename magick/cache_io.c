@@ -208,7 +208,7 @@ Export unsigned int AllocateCache(Cache cache,const ClassType type,
             Create pixel cache on disk.
           */
           TemporaryFilename(filename);
-          cache_info->file=open(filename,O_RDWR | O_CREAT | O_EXCL,0644);
+          cache_info->file=open(filename,O_RDWR | O_CREAT | O_EXCL,0777);
           if (cache_info->file == -1)
             return(False);
           offset=lseek(cache_info->file,length-1,SEEK_SET);
@@ -254,7 +254,7 @@ Export unsigned int AllocateCache(Cache cache,const ClassType type,
                 Create colormap index cache on disk.
               */
               if (cache_info->file == -1)
-                cache_info->file=open(cache_info->filename,O_RDWR);
+                cache_info->file=open(cache_info->filename,O_RDWR,0777);
               if (cache_info->file == -1)
                 return(False);
               length=cache_info->number_pixels*sizeof(PixelPacket)+
@@ -737,7 +737,7 @@ Export unsigned int ReadCacheIndexes(Cache cache,
   */
   if (cache_info->file == -1)
     {
-      cache_info->file=open(cache_info->filename,O_RDWR);
+      cache_info->file=open(cache_info->filename,O_RDWR,0777);
       if (cache_info->file == -1)
         return(False);
     }
@@ -747,7 +747,8 @@ Export unsigned int ReadCacheIndexes(Cache cache,
       offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=read(cache_info->file,indexes,region_info->width*sizeof(IndexPacket));
+    count=read(cache_info->file,(char *) indexes,region_info->width*
+      sizeof(IndexPacket));
     if (count != (region_info->width*sizeof(IndexPacket)))
       return(False);
     indexes+=region_info->width;
@@ -827,7 +828,7 @@ Export unsigned int ReadCachePixels(Cache cache,
   */
   if (cache_info->file == -1)
     {
-      cache_info->file=open(cache_info->filename,O_RDWR);
+      cache_info->file=open(cache_info->filename,O_RDWR,0777);
       if (cache_info->file == -1)
         return(False);
     }
@@ -836,7 +837,8 @@ Export unsigned int ReadCachePixels(Cache cache,
     count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=read(cache_info->file,pixels,region_info->width*sizeof(PixelPacket));
+    count=read(cache_info->file,(char *) pixels,region_info->width*
+      sizeof(PixelPacket));
     if (count != (region_info->width*sizeof(PixelPacket)))
       return(False);
     pixels+=region_info->width;
@@ -987,7 +989,7 @@ Export unsigned int WriteCacheIndexes(Cache cache,
   */
   if (cache_info->file == -1)
     {
-      cache_info->file=open(cache_info->filename,O_RDWR);
+      cache_info->file=open(cache_info->filename,O_RDWR,0777);
       if (cache_info->file == -1)
         return(False);
     }
@@ -997,8 +999,8 @@ Export unsigned int WriteCacheIndexes(Cache cache,
       offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=
-      write(cache_info->file,indexes,region_info->width*sizeof(IndexPacket));
+    count=write(cache_info->file,(char *) indexes,region_info->width*
+      sizeof(IndexPacket));
     if (count != (region_info->width*sizeof(IndexPacket)))
       return(False);
     indexes+=region_info->width;
@@ -1078,7 +1080,7 @@ Export unsigned int WriteCachePixels(Cache cache,
   */
   if (cache_info->file == -1)
     {
-      cache_info->file=open(cache_info->filename,O_RDWR);
+      cache_info->file=open(cache_info->filename,O_RDWR,0777);
       if (cache_info->file == -1)
         return(False);
     }
@@ -1087,7 +1089,8 @@ Export unsigned int WriteCachePixels(Cache cache,
     count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=write(cache_info->file,pixels,region_info->width*sizeof(PixelPacket));
+    count=write(cache_info->file,(char *) pixels,region_info->width*
+      sizeof(PixelPacket));
     if (count != (region_info->width*sizeof(PixelPacket)))
       return(False);
     pixels+=region_info->width;
