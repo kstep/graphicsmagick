@@ -4,6 +4,7 @@
 	user to supply full set of sampling factors.  If the full
 	set is not supplied, omitted ones are 1x1 by default, similar
 	to the behavior of "cjpeg -sample".
+	* magick/command.c: Accept multiple pairs of sampling factors.
 
 2003-10-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
