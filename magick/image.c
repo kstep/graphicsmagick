@@ -1154,6 +1154,7 @@ MagickExport unsigned int CompositeImage(Image *image,
   assert(composite_image->signature == MagickSignature);
   if (compose == NoCompositeOp)
     return(True);
+  SetImageType(image,TrueColorType);
   switch (compose)
   {
     case DisplaceCompositeOp:
