@@ -613,7 +613,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
-  (void) SetImageAttribute(image,"MVG",primitive);
+  (void) SetImageAttribute(image,"[MVG]",primitive);
   for (q=primitive; *q != '\0'; )
   {
     /*
@@ -985,7 +985,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         start.x=primitive_info[j].point.x-radius;
         start.y=primitive_info[j].point.y;
         end.x=start.x;
-        end.y=start.y-1.0;
+        end.y=start.y-MagickEpsilon;
         arc.x=radius;
         arc.y=radius;
         GenerateArc(primitive_info+j,start,end,arc,0,True,False);
