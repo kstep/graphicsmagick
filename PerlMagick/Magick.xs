@@ -5459,12 +5459,8 @@ Mogrify(ref,...)
         case 72:  /* Shave */
         {
           if (attribute_flag[0])
-            {
-              flags=ParseGeometry(argument_list[0].string_reference,
-                &geometry.x,&geometry.y,&geometry.width,&geometry.height);
-              if (!(flags & HeightValue))
-                geometry.height=geometry.width;
-            }
+            flags=ParseImageGeometry(argument_list[0].string_reference,
+              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
