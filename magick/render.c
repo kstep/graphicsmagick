@@ -4912,7 +4912,8 @@ static void TraceLine(PrimitiveInfo *primitive_info,const PointInfo start,
   const PointInfo end)
 {
   TracePoint(primitive_info,start);
-  if ((start.x == end.x) && (start.y == end.y))
+  if ((AbsoluteValue(start.x-end.x) <= MagickEpsilon) &&
+      (AbsoluteValue(start.y-end.y) <= MagickEpsilon))
     {
       primitive_info->primitive=PointPrimitive;
       primitive_info->coordinates=1;
