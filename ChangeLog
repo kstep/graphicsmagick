@@ -1,3 +1,8 @@
+2002-03-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+  * coders/null.c (WriteNULLImage): Support writing "null:" image type
+    for use when profiling or testing ImageMagick.
+
 2002-03-08 Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
   * Update to Autoconf 2.53 (new release)
   * Update to Automake 1.6 (new release)
