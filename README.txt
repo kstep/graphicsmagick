@@ -469,7 +469,11 @@ MAGICK DELEGATES
       Ghostscript (released 7.0 and later) may optionally install a
       library (libgs). If this library is installed, ImageMagick will
       attempt to use it unless the option --without-gslib is passed to
-      configure.
+      configure. Note that Ghostscript provides its own modified version
+      of libjpeg and that symbols from this libjpeg may be confused with
+      symbols with the stand-alone libjpeg. If conflicts cause JPEG to
+      fail, it may be necessary to use Ghostscript's copy of libjpeg for
+      ImageMagick, and all delegate libraries which depend on libjpeg..
 
     o ImageMagick requires the NCSA HDF5 library available via anonymous
       FTP as
@@ -584,23 +588,35 @@ MAGICK DELEGATES
           http://sourceforge.net/projects/wvware/
 
       to read the Windows Meta File image format (16-bit WMF files only,
-      not 32-bit "EMF"). This is the format commonly used for Windows
-      clipart (available on CD at your local computer or technical book
-      store). If ImageMagick is built using libwmf then WMF files are
-      rendered via ImageMagick's wmf coder module, otherwise output of
-      the wmf2magick program is rendered by ImageMagick. The configure
+      not 32-bit "EMF") under Unix. This is the format commonly used for
+      Windows clipart (available on CD at your local computer or
+      technical book store). WMF support also requires the FreeType
+      library.
+
+      If ImageMagick is built using libwmf then WMF files are rendered
+      via ImageMagick's wmf coder module, otherwise output of the
+      wmf2magick program is rendered by ImageMagick. The configure
       script for libwmf offers a choice between using the 'expat' XML
       library (--with-expat) and xmlsoft's libxml (--with-xml). Since
       ImageMagick already uses libxml (for reading SVG), it is
       recommended that the options '--without-expat --with-xml' be
       supplied to libwmf's configure script.
 
-      ImageMagick's WMF renderer provides some of the finest WMF rendering
-      available due its use of antialiased drawing algorithms. You may
-      select a background color or texture image to render on. For
-      example, "-background '#ffffffff'" renders on a transparent
+      ImageMagick's WMF renderer provides some of the finest WMF
+      rendering available due its use of antialiased drawing algorithms.
+      You may select a background color or texture image to render on.
+      For example, "-background '#ffffffff'" renders on a transparent
       background while "-texture plasma:fractal" renders on a fractal
       image.
+
+      A set of Windows 3.1 compatible TrueType fonts (Arial, Times New
+      Roman, and Courier New) may be downloaded without charge from
+      Microsoft's web site via the URL
+
+        http://www.microsoft.com/typography/fontpack/default.htm
+
+      The libwmf-based WMF renderer is not yet capable of using fonts
+      other than Ghostscript fonts. This should be resolved soon.
 
     o ImageMagick requires an X server for display and animate to work
       properly.  There is a nearly free X server available for Windows
