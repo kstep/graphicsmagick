@@ -410,6 +410,7 @@ MagickExport void InitializeMagick(const char *path)
     debug|=_CRTDBG_DELAY_FREE_MEM_DF;
     debug|=_CRTDBG_LEAK_CHECK_DF;
   }
+#endif
   (void) getcwd(directory,MaxTextExtent);
   (void) SetClientPath(directory);
   if (path != (const char *) NULL)
@@ -426,7 +427,6 @@ MagickExport void InitializeMagick(const char *path)
 #endif
       (void) SetClientName(filename);
     }
-#endif
 }
 
 /*
