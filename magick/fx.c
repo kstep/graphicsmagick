@@ -285,7 +285,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     *normal_kernel;
 
   int
-    need_range_check;
+    range_check;
 
   Image
     *convolve_image;
@@ -345,11 +345,11 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     normalize=1.0/normalize;
   for (i=0; i < (width*width); i++)
     normal_kernel[i]=kernel[i]*normalize;
-  need_range_check=False;
+  range_check=False;
   for (i=0; i < (width*width); i++)
   {
     if (normal_kernel[i] < 0.0)
-      need_range_check=True;
+      range_check=True;
   }
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
   for (y=0; y < (long) convolve_image->rows; y++)
@@ -359,13 +359,13 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     q=SetImagePixels(convolve_image,0,y,convolve_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    if (need_range_check)
+    if (range_check)
       {
         for (x=0; x < (long) convolve_image->columns; x++)
         {
           pixel=zero;
           r=p;
-          k=normal_kernel;
+          k=kernel;
           for (v=0; v < width; v++)
           {
             for (u=0; u < width; u++)
