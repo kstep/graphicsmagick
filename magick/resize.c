@@ -1068,12 +1068,9 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   */
   x_factor=(double) resize_image->columns/image->columns;
   y_factor=(double) resize_image->rows/image->rows;
-  i=(long) LanczosFilter;
+  i=(long) MitchellFilter;
   if (image->filter != UndefinedFilter)
     i=(long) image->filter;
-  else
-    if (image->matte || ((x_factor*y_factor) > 1.0))
-      i=(long) MitchellFilter;
   x_support=blur*Max(1.0/x_factor,1.0)*filters[i].support;
   y_support=blur*Max(1.0/y_factor,1.0)*filters[i].support;
   support=Max(x_support,y_support);
