@@ -410,24 +410,27 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   last_kernel=(double *) NULL;
   kernel=(double *) NULL;
-  width=3;
   if (radius > 0)
     width=(int) (2.0*ceil(radius)+1.0);
-  width=GetKernelWidth(width,sigma,&kernel);
-  while ((int) (MaxRGB*kernel[0]) > 0)
-  {
-    if (last_kernel != (double *)NULL)
-      LiberateMemory((void **) &last_kernel);
-    last_kernel=kernel;
-    kernel=(double *) NULL;
-    width+=2;
-    width=GetKernelWidth(width,sigma,&kernel);
-  }
-  if (last_kernel != (double *) NULL)
+  else
     {
-      LiberateMemory((void **) &kernel);
-      width-=2;
-      kernel=last_kernel;
+      width=3;
+      width=GetKernelWidth(width,sigma,&kernel);
+      while ((int) (MaxRGB*kernel[0]) > 0)
+      {
+        if (last_kernel != (double *)NULL)
+          LiberateMemory((void **) &last_kernel);
+        last_kernel=kernel;
+        kernel=(double *) NULL;
+        width+=2;
+        width=GetKernelWidth(width,sigma,&kernel);
+      }
+      if (last_kernel != (double *) NULL)
+        {
+          LiberateMemory((void **) &kernel);
+          width-=2;
+          kernel=last_kernel;
+        }
     }
   if (width < 3)
     ThrowImageException(OptionWarning,"Unable to blur image",
