@@ -15,7 +15,7 @@ clip-path url(#%s)  (%s is the name of the clip path)
 clip-rule (evenodd|nonzero)
 clip-units (userSpace|userSpaceOnUse|objectBoundingBox)
 color x,y (point|replace|floodfill|filltoborder|reset)
-decorate (underline|overline|line-through|#FFFFFF)
+decorate (none|underline|overline|line-through|#FFFFFF)
 ellipse centerX,centerY radiusX,radiusY arcStart,arcEnd
 fill colorspec
 fill-opacity opacity
