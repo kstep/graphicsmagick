@@ -210,6 +210,21 @@ void CConfigureApp::generate_dependencies(
   }
 }
 
+static bool doesDirExist(const char *name)
+{
+  // check to see if the path exists
+  std::string libpath;
+	WIN32_FIND_DATA	libdata;
+	HANDLE libhandle = FindFirstFile(name, &libdata);
+	if (libhandle != INVALID_HANDLE_VALUE)
+  {
+    FindClose(libhandle);
+		return ((libdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
+            FILE_ATTRIBUTE_DIRECTORY);
+  }
+  return false;
+}
+
 static void add_includes(std::list<std::string> &includes_list,
   std::string &libpath, int levels)
 {
@@ -251,9 +266,17 @@ static void add_includes(std::list<std::string> &includes_list,
 
 		      if ((libdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
           {
-            ipath = libpath;
+            ipath = "..\\";
+            ipath += libpath;
             ipath += "\\";
-			      add_includes(includes_list, ipath + libdata.cFileName, levels);
+            ipath += libdata.cFileName;
+            if (doesDirExist(ipath.c_str()))
+            {
+              ipath = libpath;
+              ipath += "\\";
+              ipath += libdata.cFileName;
+			        add_includes(includes_list, ipath, levels);
+            }
           }
 	      } while (FindNextFile(libhandle, &libdata));
         FindClose(libhandle);
@@ -332,21 +355,6 @@ int load_environment_file( const char *inputfile,
   inpStream.close();
   inpStream.clear();
   return true;
-}
-
-static bool doesDirExist(const char *name)
-{
-  // check to see if the path exists
-  std::string libpath;
-	WIN32_FIND_DATA	libdata;
-	HANDLE libhandle = FindFirstFile(name, &libdata);
-	if (libhandle != INVALID_HANDLE_VALUE)
-  {
-    FindClose(libhandle);
-		return ((libdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
-            FILE_ATTRIBUTE_DIRECTORY);
-  }
-  return false;
 }
 
 void CConfigureApp::process_utility(ofstream &dsw,
@@ -603,6 +611,10 @@ void CConfigureApp::process_library(ofstream &dsw,
         if (name.compare("SDL") == 0)
         {
 	        add_project_dependency(dsw, "CORE_magick");
+        }
+        if (name.compare("hdf") == 0)
+        {
+	        add_project_dependency(dsw, "LIBR_ZLIB");
         }
 	      end_project(dsw);
         break;
@@ -869,20 +881,6 @@ void CConfigureApp::process_module(ofstream &dsw,
   {
 		includes_list.push_back("..\\..\\zlib");
   }
-#ifdef OLD_FREETYPE_SUPPORT
-  if (name.compare("label") == 0)
-  {
-    if (doesDirExist("..\\..\\freetype"))
-    {
-		  includes_list.push_back("..\\..\\freetype\\include");
-    }
-    else
-    {
-		  includes_list.push_back("..\\..\\ttf");
-		  includes_list.push_back("..\\..\\ttf\\lib");
-    }
-  }
-#endif
   if (name.compare("miff") == 0)
   {
 		includes_list.push_back("..\\..\\zlib");
@@ -892,27 +890,63 @@ void CConfigureApp::process_module(ofstream &dsw,
   {
 		includes_list.push_back("..\\..\\libxml");
 		includes_list.push_back("..\\..\\libxml\\include");
+#ifdef USETHIS
     if (doesDirExist("..\\..\\autotrace"))
 		  includes_list.push_back("..\\..\\autotrace");
+#endif
+  }
+  if (name.compare("hdf") == 0)
+  {
+		includes_list.push_back("..\\..\\zlib");
+		//includes_list.push_back("..\\..\\hdf\\src");
   }
 
   // generate the includes paths required for this module
-  std::string libpath;
-  libpath = "..\\..\\";
-  libpath += name;
-  std::string dependency;
 	WIN32_FIND_DATA	libdata;
-	HANDLE libhandle = FindFirstFile(libpath.c_str(), &libdata);
+  std::string libpath;
+  std::string dependency;
+
+  // look for LIBRARY.txt file (instead of THIRDPARTY.txt) to
+  // see if this is a third party library or a core library
+  libpath = "..\\";
+  libpath += name;
+  libpath += "\\LIBRARY.txt";
+  HANDLE libhandle = FindFirstFile(libpath.c_str(), &libdata);
 	if (libhandle != INVALID_HANDLE_VALUE)
   {
-		includes_list.push_back(libpath);
-
+    FindClose(libhandle);
+    dependency = "CORE_";
+    dependency += name;
+  }
+  libpath = "..\\";
+  libpath += name;
+  libpath += "\\THIRDPARTY.txt";
+  libhandle = FindFirstFile(libpath.c_str(), &libdata);
+	if (libhandle != INVALID_HANDLE_VALUE)
+  {
+    FindClose(libhandle);
     dependency = "LIBR_";
     dependency += name;
+  }
 
+  // This section adds include references to all subdirectories
+  libpath = "..\\..\\";
+  libpath += name;
+	libhandle = FindFirstFile(libpath.c_str(), &libdata);
+	if (libhandle != INVALID_HANDLE_VALUE)
+  {
     FindClose(libhandle);
+
+    libpath = "..\\";
+    libpath += name;
+    add_includes(includes_list, libpath, 0);
+
+		//includes_list.push_back(libpath);
+
     // also look for a subdirectory of the form lib and
     // libxxx and add an include path if it exists
+    libpath = "..\\..\\";
+    libpath += name;
     libpath += "\\lib";
     libhandle = FindFirstFile(libpath.c_str(), &libdata);
 	  if (libhandle != INVALID_HANDLE_VALUE)
@@ -929,29 +963,7 @@ void CConfigureApp::process_module(ofstream &dsw,
     }
   }
 
-#ifdef OLD_METHOD
-  // look for any libs that exist and add them into the module
-  libpath = "..\\..\\";
-  libpath += name;
-  libpath += "\\*.lib";
-	libhandle = FindFirstFile(libpath.c_str(), &libdata);
-	if (libhandle != INVALID_HANDLE_VALUE)
-  {
-    std::string extralibrary;
-	  do
-	  {
-      extralibrary = "..\\..\\";
-      extralibrary += name;
-      extralibrary += "\\";
-      extralibrary += libdata.cFileName;
-		  libs_list_release.push_back(extralibrary);
-		  libs_list_debug.push_back(extralibrary);
-	  } while (FindNextFile(libhandle, &libdata));
-    FindClose(libhandle);
-  }
-#else
   AddExtraLibs(name,libs_list_release,libs_list_debug);
-#endif
 
   std::string envpath;
   envpath = "..\\";
@@ -1017,12 +1029,6 @@ void CConfigureApp::process_module(ofstream &dsw,
 	        add_project_dependency(dsw, dependency.c_str());
         if (name.compare("label") == 0)
         {
-#ifdef OLD_FREETYPE_SUPPORT
-          if (doesDirExist("..\\..\\freetype"))
-		        add_project_dependency(dsw, "CORE_freetype");
-          else
-		        add_project_dependency(dsw, "LIBR_ttf");
-#endif
           if (useX11Stubs)
 		        add_project_dependency(dsw, "CORE_xlib");
         }
@@ -1048,8 +1054,10 @@ void CConfigureApp::process_module(ofstream &dsw,
         if ((name.compare("svg") == 0) || (name.compare("url") == 0))
         {
 		      add_project_dependency(dsw, "CORE_libxml");
+#ifdef USETHIS
           if (doesDirExist("..\\..\\autotrace"))
 		        add_project_dependency(dsw, "CORE_autotrace");
+#endif
         }
       }
 	    end_project(dsw);
