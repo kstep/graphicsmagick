@@ -794,7 +794,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
           filename);
         if (!IsConfigureFileAccessible(path,debug))
           ThrowException(exception,ConfigurationError,
-            "Unable to open configure file",path);
+            "Unable to access configure file",path);
         return(FileToBlob(path,length,exception));
       }
   }
@@ -805,12 +805,8 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   */
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
   if (!IsConfigureFileAccessible(path,debug))
-    {
-      if (debug)
-        (void) fprintf(stdout,"  !%s",path);
-      ThrowException(exception,ConfigurationError,
-        "Unable to access configure file",path);
-    }
+    ThrowException(exception,ConfigurationError,
+      "Unable to access configure file",path);
   return(FileToBlob(path,length,exception));
 #  endif /* MagickLibPath */
 #  else
@@ -878,7 +874,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   }
 #  endif /* WIN32 */
 #endif /* UseInstalledImageMagick */
-  ThrowException(exception,ConfigurationError,"Unable to find configure file",
+  ThrowException(exception,ConfigurationError,"Unable to access configure file",
     filename);
   return((void *) NULL);
 }
@@ -926,7 +922,7 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
   debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   (void) strncpy(path,filename,MaxTextExtent-1);
   if (debug)
-    (void) fprintf(stdout,"Searching for configure file \"%s\" ...\n",filename);
+    (void) fprintf(stdout,"Searching for font file \"%s\" ...\n",filename);
   if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
     {
       /*
@@ -958,7 +954,7 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
           filename);
         if (!IsConfigureFileAccessible(path,debug))
           ThrowException(exception,ConfigurationError,
-            "Unable to open configure file",path);
+            "Unable to access font file",path);
         return(FileToBlob(path,length,exception));
       }
   }
@@ -969,12 +965,8 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
   */
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
   if (!IsConfigureFileAccessible(path,debug))
-    {
-      if (debug)
-        (void) fprintf(stdout,"  !%s",path);
-      ThrowException(exception,ConfigurationError,
-        "Unable to access configure file",path);
-    }
+    ThrowException(exception,ConfigurationError,"Unable to access font file",
+      path);
   return(FileToBlob(path,length,exception));
 #  endif /* MagickLibPath */
 #  else
@@ -1012,7 +1004,7 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
   }
 #  endif /* WIN32 */
 #endif /* UseInstalledImageMagick */
-  ThrowException(exception,ConfigurationError,"Unable to find font file",
+  ThrowException(exception,ConfigurationError,"Unable to access font file",
     filename);
   return((void *) NULL);
 }
@@ -1089,12 +1081,8 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
   */
   FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
   if (!IsConfigureFileAccessible(path,debug))
-    {
-      if (debug)
-        (void) fprintf(stdout,"  !%s",path);
-      ThrowException(exception,ConfigurationError,
-        "Unable to access module file",path);
-    }
+    ThrowException(exception,ConfigurationError,"Unable to access module file",
+      path);
   return(FileToBlob(path,length,exception));
 #    endif /* MagickModulesBlob */
 #  endif /* MagickLibPath */
@@ -1164,7 +1152,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
   }
 #  endif /* WIN32 */
 #endif /* UseInstalledImageMagick */
-  ThrowException(exception,ConfigurationError,"Unable to find module file",
+  ThrowException(exception,ConfigurationError,"Unable to access module file",
     filename);
   return((void *) NULL);
 }
