@@ -1528,7 +1528,6 @@ then
  AC_CXX_NEW_FOR_SCOPING
  AC_CXX_STATIC_CAST
  AC_CXX_TEMPLATES
- RSSH_CHECK_SUNPRO_CC
 
  AC_MSG_CHECKING(whether C++ compiler is sufficient for Magick++)
  if test \
