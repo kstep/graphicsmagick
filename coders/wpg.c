@@ -381,7 +381,7 @@ char SampleSize=1;
        case 0x7E:
 		 break;
        case 0x7F:RunCount=ReadBlobByte(image);	
-		 for(i=0;i<(int) SampleSize*((unsigned)RunCount+1);i++)
+		 for(i=0;i<(int) SampleSize*((int)RunCount+1);i++)
 			{
 			InsertRByte(0);
 			}
