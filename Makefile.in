@@ -100,6 +100,7 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 AMTAR = @AMTAR@
 AS = @AS@
 AWK = @AWK@
+AutotraceDecodeDelegate = @AutotraceDecodeDelegate@
 BIN_DIR = @BIN_DIR@
 BZIPDelegate = @BZIPDelegate@
 BrowseDelegate = @BrowseDelegate@

@@ -54,6 +54,7 @@ AC_PROG_LN_S
 # Tests for Windows
 #
 AC_CYGWIN
+AC_MINGW32
 AC_EXEEXT
 AC_OBJEXT
 
