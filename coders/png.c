@@ -59,8 +59,9 @@
 #include "zlib.h"
 
 /*
-  Optional declarations. Uncomment them if you like.
+  define declarations.
 */
+#undef MNG_ALWAYS_VERBOSE
 #define PNG_DEBUG
 
 /*
@@ -380,8 +381,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     Determine if colormap can be compressed.
   */
   assert(image != (Image *) NULL);
-  if (image->storage_class != PseudoClass || image->colors > 256 ||
-      image->colors < 2)
+  if (image->storage_class != PseudoClass || image->colors > 256)
     return(True);
   marker=(unsigned char *) AcquireMemory(image->colors);
   if (marker == (unsigned char *) NULL)
@@ -624,9 +624,7 @@ unsigned int ImageIsGray(Image *image)
     for (x=0; (x < (int) image->columns); x++)
     {
        if (!IsGray(*p))
-         {
           return(False);
-         }
        p++;
     }
   }
@@ -1178,7 +1176,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     first_mng_object,
     image_found,
     have_mng_structure,
-    num_text,
     object_id,
     term_chunk_found,
     skip_to_iend,
@@ -1258,9 +1255,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     subframe_height,
     subframe_width,
     ticks_per_second;
-
-    png_textp
-      text;
 
   /*
     Open image file.
@@ -2701,8 +2695,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         image->storage_class=PseudoClass;
         image->colors=1 << ping_info->bit_depth;
-        if (image->colors>MaxRGB+1)
-          image->colors=MaxRGB+1;
         if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           {
             int
@@ -2765,9 +2757,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                scale=1;
             for (i=0; i < (int) image->colors; i++)
             {
-              image->colormap[i].red=scale*i;
-              image->colormap[i].green=scale*i;
-              image->colormap[i].blue=scale*i;
+              image->colormap[i].red=i*scale;
+              image->colormap[i].green=i*scale;
+              image->colormap[i].blue=i*scale;
             }
          }
       }
@@ -2790,7 +2782,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         int
           depth;
 
-        depth=ping_info->bit_depth;
+        depth=image->depth;
 #endif
         image->matte=((ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
             (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
@@ -3032,85 +3024,93 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         LiberateMemory((void **) &quantum_scanline);
       }
-    if (image->storage_class == PseudoClass)
-      SyncImage(image);
-    if (ping_info->valid & PNG_INFO_tRNS)
-      {
-        ClassType
-          storage_class;
-
-        /*
-          Image has a transparent background.
-        */
-        storage_class=image->storage_class;
-        image->matte=True;
-        for (y=0; y < (int) image->rows; y++)
+      if (image->storage_class == PseudoClass)
+        SyncImage(image);
+      if (ping_info->valid & PNG_INFO_tRNS)
         {
-          image->storage_class=storage_class;
-          q=GetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          indexes=GetIndexes(image);
-          for (x=0; x < (int) image->columns; x++)
-          {
-            IndexPacket
-              index;
+          ClassType
+            storage_class;
 
-            q->opacity=OpaqueOpacity;
-            if (storage_class == PseudoClass)
-              {
-                index=indexes[x];
-                if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
-                  {
-                    if (index < ping_info->num_trans)
-                      q->opacity=UpScale(255-ping_info->trans[index]);
-                  }
-                else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
-                  {
-                    q->red=image->colormap[index].red;
-                    q->green=image->colormap[index].green;
-                    q->blue=image->colormap[index].blue;
-                    if (q->red == transparent_color.opacity)
-                      q->opacity=TransparentOpacity;
-                  }
-              }
-            else
-              if (q->red == transparent_color.red &&
-                  q->green == transparent_color.green &&
-                  q->blue == transparent_color.blue)
-                 q->opacity=TransparentOpacity;
-            q++;
+          /*
+            Image has a transparent background.
+          */
+          storage_class=image->storage_class;
+          image->matte=True;
+          for (y=0; y < (int) image->rows; y++)
+          {
+            image->storage_class=storage_class;
+            q=GetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            indexes=GetIndexes(image);
+            for (x=0; x < (int) image->columns; x++)
+            {
+              IndexPacket
+                index;
+
+              q->opacity=OpaqueOpacity;
+              if (storage_class == PseudoClass)
+                {
+                  index=indexes[x];
+                  if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+                    {
+                      if (index < ping_info->num_trans)
+                        q->opacity=UpScale(255-ping_info->trans[index]);
+                    }
+                  else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
+                    {
+                      q->red=image->colormap[index].red;
+                      q->green=image->colormap[index].green;
+                      q->blue=image->colormap[index].blue;
+                      if (q->red == transparent_color.opacity)
+                        q->opacity=TransparentOpacity;
+                    }
+                }
+              else
+                if (q->red == transparent_color.red &&
+                    q->green == transparent_color.green &&
+                    q->blue == transparent_color.blue)
+                   q->opacity=TransparentOpacity;
+              q++;
+            }
+            image->storage_class=DirectClass;
+            if (!SyncImagePixels(image))
+              break;
           }
-          image->storage_class=DirectClass;
-          if (!SyncImagePixels(image))
-            break;
         }
-      }
 #if (QuantumDepth == 8)
     if (image->depth > 8)
       image->depth = 8;
 #endif
-    if (png_get_text(ping,ping_info,&text,&num_text) > 0)
-      for (i=0; i < num_text; i++)
-      {
-        char
-          *value;
+    {
+      int
+        num_text;
 
-        length=text[i].text_length;
-        value=(char *) AcquireMemory(length+1);
-        if (value == (char *) NULL)
-          {
-            ThrowException(&image->exception,ResourceLimitWarning,
-              "Unable to read text chunk","Memory allocation failed");
-            break;
-          }
-        *value='\0';
-        (void) strncat(value,text[i].text,length);
-        value[length]='\0';
-        (void) SetImageAttribute(image,text[i].key,value);
-        LiberateMemory((void **) &value);
+      png_textp
+        text;
+
+      if (png_get_text(ping,ping_info,&text,&num_text) > 0)
+        for (i=0; i < num_text; i++)
+        {
+          char
+            *value;
+
+          length=text[i].text_length;
+          value=(char *) AcquireMemory(length+1);
+          if (value == (char *) NULL)
+            {
+              ThrowException(&image->exception,ResourceLimitWarning,
+                "Unable to read text chunk","Memory allocation failed");
+              break;
+            }
+          *value='\0';
+          (void) strncat(value,text[i].text,length);
+          value[length]='\0';
+          (void) SetImageAttribute(image,text[i].key,value);
+          LiberateMemory((void **) &value);
+        }
       }
- #ifdef MNG_OBJECT_BUFFERS
+#ifdef MNG_OBJECT_BUFFERS
     /*
       Store the object if necessary.
     */
@@ -3957,19 +3957,13 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   framing_mode=1;
   old_framing_mode=1;
 
+#if 0
   /* Reduce DirectClass images to PseudoClass if possible */
   for (next_image=image; next_image != (Image *) NULL;
-       next_image=next_image->next)
-  {
-    if (next_image->storage_class==DirectClass && IsPseudoClass(next_image))
-#  ifdef PNG_DEBUG
-     if(image_info->verbose)
-       printf("png.c: %d-bit image reduced to PseudoClass with %d colors\n",
-           next_image->depth, next_image->colors);
-#  else
-        /* image reduced */;
-#  endif
-  }
+        next_image=next_image->next)
+     IsPseudoClass(next_image);
+#endif
+
   if (image_info->adjoin)
     {
       unsigned int
@@ -4499,7 +4493,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             image->depth=8;
 #ifdef PNG_DEBUG
             if(image_info->verbose)
-              printf("png.c: reducing bit depth to 8 without loss of info\n");
+                printf("  reducing bit depth to 8\n");
 #endif
           }
       }
@@ -4672,13 +4666,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             if (save_image_depth == 16 && image->depth == 8)
               ping_info->trans_values.gray*=0x0101;
           }
-        if (image->depth > QuantumDepth)
-          image->depth=QuantumDepth;
-        ping_info->bit_depth=1;
-        if (image->colors == 0 || image->colors > MaxRGB+1)
-          image->colors = MaxRGB+1;
-        while ((1 << ping_info->bit_depth) < image->colors)
-          ping_info->bit_depth<<=1;
       }
     else
       if (image->storage_class==PseudoClass)
@@ -4952,9 +4939,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
           if (image->storage_class == PseudoClass)
-            (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
+            (void) PopImagePixels(image,IndexQuantum,scanlines[y]);
           else
-            (void) PopImagePixels(image,RedQuantum,scanlines[y]);
+            (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               MagickMonitor(SaveImageText,y,image->rows);
@@ -4962,8 +4949,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       }
     else
       {
-      if ((!image->matte || (ping_info->bit_depth >= QuantumDepth))
-          && ImageIsGray(image))
+      if ((!image->matte || (ping_info->bit_depth >= 8)) && ImageIsGray(image))
         {
           for (y=0; y < (int) image->rows; y++)
           {

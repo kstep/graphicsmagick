@@ -41,7 +41,6 @@ EXTRA_DIST = delegates.mgk.in mac.mgk magic.mgk nt.mgk \
 install-data-delegates:
 	$(mkinstalldirs) $(pkglibdir)
 	$(INSTALL_DATA) delegates.mgk $(pkglibdir)
-	$(INSTALL_DATA) magic.mgk $(pkglibdir)
 
 # Uninstall delegates files
 uninstall-data-delegates:
