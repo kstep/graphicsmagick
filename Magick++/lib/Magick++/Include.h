@@ -464,6 +464,7 @@ namespace Magick
   using MagickLib::SetImageAttribute;
   using MagickLib::SetImageClipMask;
   using MagickLib::SetImageInfo;
+  using MagickLib::SetImageOpacity;
   using MagickLib::SetImagePixels;
   using MagickLib::SetImageType;
   using MagickLib::SetMagickInfo;

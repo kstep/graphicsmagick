@@ -1,7 +1,13 @@
 2001-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* lib/Magick++/STL.h (typeImage): New function object to set image
- 	type.
+	* lib/Magick++/STL.h (opacityImage): New unary function object to
+ 	set, or attenuate, image pixel opacity throughout the image.
+
+	* lib/Image.cpp (opacity): New method to set, or attenuate, image
+ 	pixel opacity throughout the image.
+
+	* lib/Magick++/STL.h (typeImage): New unary function object to set
+ 	image type.
 
 	* lib/Image.cpp (type): Added ability to set image type.
 

@@ -324,7 +324,16 @@ namespace Magick
     
     // Oilpaint image (image looks like oil painting)
     void            oilPaint ( unsigned int radius_ = 3 );
-    
+
+    // Set or attenuate the opacity channel in the image. If the image
+    // pixels are opaque then they are set to the specified opacity
+    // value, otherwise they are blended with the supplied opacity
+    // value.  The value of opacity_ ranges from 0 (completely opaque)
+    // to MaxRGB. The defines OpaqueOpacity and TransparentOpacity are
+    // available to specify completely opaque or completely
+    // transparent, respectively.
+    void            opacity ( unsigned int opacity_ );
+
     // Change color of opaque pixel to specified pen color.
     void            opaque ( const Color &opaqueColor_,
 			     const Color &penColor_ );

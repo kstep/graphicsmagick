@@ -154,11 +154,14 @@ it to a file:
 );</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; return 0;</font></tt>
 <br><tt><font color="#000066">}</font></tt></blockquote>
-If you wanted to change the color image to grayscale, you could simply
-add the lines:
+If you wanted to change the color image to grayscale, you could add the
+lines:
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.quantizeColorSpace(
 GRAYColorspace );</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.quantize( options
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.colors( 256 );</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.quantize( );</font></tt>
+<p>or, more simply:
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.type( GrayscaleType
 );</font></tt>
 <p>prior to writing the image.
 <center>
@@ -962,6 +965,21 @@ pixel values to span the full range of color values).</font></td>
 <td><font size=-1>unsigned int radius_ = 3</font></td>
 
 <td><font size=-1>Oilpaint image (image looks like oil painting)</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="opacity"></a><font size=-1>opacity</font></center>
+</td>
+
+<td><font size=-1>unsigned int opacity_</font></td>
+
+<td><font size=-1>Set or attenuate the opacity channel in the image. If
+the image pixels are opaque then they are set to the specified opacity
+value, otherwise they are blended with the supplied opacity value.&nbsp;
+The value of opacity_ ranges from 0 (completely opaque) to <i>MaxRGB</i>.
+The defines <i>OpaqueOpacity</i> and <i>TransparentOpacity</i> are available
+to specify completely opaque or completely transparent, respectively.</font></td>
 </tr>
 
 <tr>

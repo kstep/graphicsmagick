@@ -1004,6 +1004,18 @@ void Magick::Image::oilPaint ( unsigned int radius_ )
   throwException( exceptionInfo );
 }
 
+// Set or attenuate the opacity channel. If the image pixels are
+// opaque then they are set to the specified opacity value, otherwise
+// they are blended with the supplied opacity value.  The value of
+// opacity_ ranges from 0 (completely opaque) to MaxRGB. The defines
+// OpaqueOpacity and TransparentOpacity are available to specify
+// completely opaque or completely transparent, respectively.
+void Magick::Image::opacity ( unsigned int opacity_ )
+{
+  modifyImage();
+  SetImageOpacity( image(), opacity_ );
+}
+
 // Change the color of an opaque pixel to the pen color.
 void Magick::Image::opaque ( const Color &opaqueColor_,
 			     const Color &penColor_ )

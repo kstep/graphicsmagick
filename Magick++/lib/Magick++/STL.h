@@ -839,6 +839,27 @@ namespace Magick
     const unsigned int _radius;
   };
 
+  // Set or attenuate the image opacity channel. If the image pixels
+  // are opaque then they are set to the specified opacity value,
+  // otherwise they are blended with the supplied opacity value.  The
+  // value of opacity_ ranges from 0 (completely opaque) to
+  // MaxRGB. The defines OpaqueOpacity and TransparentOpacity are
+  // available to specify completely opaque or completely transparent,
+  // respectively.
+  class opacityImage : public std::unary_function<Image&,void>
+  {
+  public:
+    opacityImage( unsigned int opacity_ )
+      : _opacity( opacity_ ) { }
+
+    void operator()( Image &image_ )
+      {
+	image_.opacity( _opacity );
+      }
+  private:
+    const unsigned int _opacity;
+  };
+
   // Change color of opaque pixel to specified pen color.
   class opaqueImage : public std::unary_function<Image&,void>
   {

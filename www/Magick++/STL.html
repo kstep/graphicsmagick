@@ -896,6 +896,21 @@ pixel values to span the full range of color values).</font></td>
 
 <tr>
 <td>
+<center><a NAME="opacityImage"></a><font size=-1>opacityImage</font></center>
+</td>
+
+<td><font size=-1>unsigned int opacity_</font></td>
+
+<td><font size=-1>Set or attenuate the opacity channel in the image. If
+the image pixels are opaque then they are set to the specified opacity
+value, otherwise they are blended with the supplied opacity value.&nbsp;
+The value of opacity_ ranges from 0 (completely opaque) to <i>MaxRGB</i>.
+The defines <i>OpaqueOpacity</i> and <i>TransparentOpacity</i> are available
+to specify completely opaque or completely transparent, respectively.</font></td>
+</tr>
+
+<tr>
+<td>
 <center><a NAME="opaqueImage"></a><font size=-1>opaqueImage</font></center>
 </td>
 
@@ -1678,10 +1693,10 @@ matte channel if&nbsp; the image has one otherwise create an opaque one.</font><
 <td><font size=-1>const <a href="Geometry.html#PostscriptPageSize">Geometry</a>
 &amp;pageSize_</font></td>
 
-<td><font size=-1>Preferred size and location of an image canvas.</font><font size=-1></font>
+<td><font size=-1>Preferred size and location of an image canvas.</font>
 <p><font size=-1>Use this option to specify the dimensions and position
 of the Postscript page in dots per inch or a TEXT page in pixels. This
-option is typically used in concert with <i><a href="#density">density</a></i>.</font><font size=-1></font>
+option is typically used in concert with <i><a href="#density">density</a></i>.</font>
 <p><font size=-1>Page may also be used to position a GIF image (such as
 for a scene in an animation)</font></td>
 </tr>
