@@ -201,7 +201,8 @@ static void IntializeImageMagic(void)
           *tag_p='\0';
           if(*buff_p == '\0')
             {
-              printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, "unexpected end of line");
+              printf("%s:%d: syntax: \"%s\"\n", file_name, line_number,
+                     "unexpected end of line");
               continue;
             }
 
@@ -213,7 +214,8 @@ static void IntializeImageMagic(void)
                 ++buff_p;
               if(*buff_p == '\0')
                 {
-                  printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, "unexpected end of line");
+                  printf("%s:%d: syntax: \"%s\"\n", file_name, line_number,
+                         "unexpected end of line");
                   continue;
                 }
 
@@ -232,7 +234,8 @@ static void IntializeImageMagic(void)
                 ++buff_p;
               if(*buff_p == '\0')
                 {
-                  printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, "unexpected end of line");
+                  printf("%s:%d: syntax: \"%s\"\n", file_name, line_number,
+                         "unexpected end of line");
                   break;
                 }
 
@@ -257,7 +260,8 @@ static void IntializeImageMagic(void)
                     ++buff_p;
                   if(*buff_p == '\0')
                     {
-                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, "unexpected end of line");
+                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number,
+                             "unexpected end of line");
                       break;
                     }
 
@@ -269,14 +273,16 @@ static void IntializeImageMagic(void)
                     ++buff_p;
                   if(*buff_p == '\0')
                     {
-                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, "unexpected end of line");
+                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number,
+                             "unexpected end of line");
                       break;
                     }
 
                   /* check for comma */
                   if(*buff_p != ',')
                     {
-                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, buff_p);
+                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number,
+                             buff_p);
                       break;
                     }
                   ++buff_p;
@@ -286,14 +292,16 @@ static void IntializeImageMagic(void)
                     ++buff_p;
                   if(*buff_p == '\0')
                     {
-                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, "unexpected end of line");
+                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number,
+                             "unexpected end of line");
                       break;
                     }
 
                   /* check for double quotes */
                   if(*buff_p != '"')
                     {
-                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, buff_p);
+                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number,
+                             buff_p);
                       break;
                     }
                   ++buff_p;
@@ -320,7 +328,8 @@ static void IntializeImageMagic(void)
                             lbuff[2]=*buff_p++;
                             lbuff[3]='\0';
 
-                            *str_p++=(unsigned char)strtol(lbuff, (char**)NULL, 8);
+                            *str_p++=(unsigned char)strtol(lbuff,
+                                                           (char**)NULL,8);
                             buff_p += 3;
                           }
                         else
@@ -333,7 +342,8 @@ static void IntializeImageMagic(void)
 
                       if(*buff_p == '\0')
                         {
-                          printf("%s:%d: syntax: \"%s\"\n", file_name, line_number,
+                          printf("%s:%d: syntax: \"%s\"\n", file_name,
+                                 line_number,
                                  "unexpected end of line");
                           break;
                         }
@@ -344,14 +354,16 @@ static void IntializeImageMagic(void)
                     ++buff_p;
                   if(*buff_p == '\0')
                     {
-                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, "unexpected end of line");
+                      printf("%s:%d: syntax: \"%s\"\n", file_name,
+                             line_number, "unexpected end of line");
                       break;
                     }
 
                   /* test parens */
                   if(*buff_p != ')')
                     {
-                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, buff_p);
+                      printf("%s:%d: syntax: \"%s\"\n", file_name,
+                             line_number, buff_p);
                       break;
                     }
                   ++buff_p;
@@ -362,7 +374,8 @@ static void IntializeImageMagic(void)
                 }
               else
                 {
-                  printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, buff_p);
+                  printf("%s:%d: syntax: \"%s\"\n", file_name, line_number,
+                         buff_p);
                   continue;
                 }
 
