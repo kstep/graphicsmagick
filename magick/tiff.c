@@ -677,7 +677,8 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
             }
             case 8:
             {
-              (void) memcpy(r,p,width);
+              for (x=0; x < (int) width; x++)
+                *r++=(*p++);
               break;
             }
             case 16:
@@ -703,10 +704,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
             if (index >= image->colors)
               ReaderExit(CorruptImageWarning,"invalid colormap index",image);
             image->indexes[x]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
-            q++;
+            *q++=image->colormap[index];
           }
           if (!SyncPixelCache(image))
             break;

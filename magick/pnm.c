@@ -370,10 +370,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
           {
             index=!PNMInteger(image,2);
             image->indexes[x]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
-            q++;
+            *q++=image->colormap[index];
           }
           if (!SyncPixelCache(image))
             break;
@@ -397,10 +394,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
           {
             index=PNMInteger(image,10);
             image->indexes[x]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
-            q++;
+            *q++=image->colormap[index];
           }
           if (!SyncPixelCache(image))
             break;
@@ -463,10 +457,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
               byte=ReadByte(image);
             index=(byte & 0x80) ? 0 : 1;
             image->indexes[x]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
-            q++;
+            *q++=image->colormap[index];
             bit++;
             if (bit == 8)
               bit=0;
@@ -500,10 +491,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
             if (index > max_value)
               index=max_value;
             image->indexes[x]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
-            q++;
+            *q++=image->colormap[index];
           }
           if (!SyncPixelCache(image))
             break;

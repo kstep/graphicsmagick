@@ -186,10 +186,7 @@ Export Image *ReadMAPImage(const ImageInfo *image_info)
       if (index >= image->colors)
         ReaderExit(CorruptImageWarning,"invalid colormap index",image);
       image->indexes[x]=index;
-      q->red=image->colormap[index].red;
-      q->green=image->colormap[index].green;
-      q->blue=image->colormap[index].blue;
-      q++;
+      *q++=image->colormap[index];
     }
     if (!SyncPixelCache(image))
       break;

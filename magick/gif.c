@@ -264,9 +264,7 @@ static unsigned int DecodeImage(Image *image,const short int opacity)
       top_stack--;
       index=(*top_stack);
       image->indexes[x++]=index;
-      q->red=image->colormap[index].red;
-      q->green=image->colormap[index].green;
-      q->blue=image->colormap[index].blue;
+      *q=image->colormap[index];
       q->opacity=index == opacity ? Transparent : Opaque;
       q++;
     }

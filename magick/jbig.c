@@ -216,10 +216,7 @@ Export Image *ReadJBIGImage(const ImageInfo *image_info)
       if (bit == 8)
         bit=0;
       image->indexes[x]=index;
-      q->red=image->colormap[index].red;
-      q->green=image->colormap[index].green;
-      q->blue=image->colormap[index].blue;
-      q++;
+      *q++=image->colormap[index];
     }
     if (!SyncPixelCache(image))
       break;

@@ -320,17 +320,13 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
                 Gray scale.
               */
               index=ReadByte(image);
-              if (tga_header.colormap_type == 0)
+              if (tga_header.colormap_type != 0)
+                pixel=image->colormap[index];
+              else
                 {
                   pixel.red=(Quantum) UpScale(index);
                   pixel.green=(Quantum) UpScale(index);
                   pixel.blue=(Quantum) UpScale(index);
-                }
-              else
-                {
-                  pixel.red=image->colormap[index].red;
-                  pixel.green=image->colormap[index].green;
-                  pixel.blue=image->colormap[index].blue;
                 }
               break;
             }

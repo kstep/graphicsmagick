@@ -3275,9 +3275,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
                 if (graymap != (unsigned short *) NULL)
                   index=graymap[index];
                 image->indexes[x]=index;
-                q->red=image->colormap[index].red;
-                q->green=image->colormap[index].green;
-                q->blue=image->colormap[index].blue;
+                *q=image->colormap[index];
               }
             else
               if (bytes_per_pixel == 1)

@@ -403,7 +403,6 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
 {
   int
     bytes_per_pixel,
-    j,
     length,
     number_pixels,
     scanline_length,

@@ -264,10 +264,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
               {
                 index=ReadByte(image);
                 image->indexes[x]=index;
-                q->red=image->colormap[index].red;
-                q->green=image->colormap[index].green;
-                q->blue=image->colormap[index].blue;
-                q++;
+                *q++=image->colormap[index];
               }
               break;
             }
@@ -275,10 +272,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
           {
             index=(*p++);
             image->indexes[x]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
-            q++;
+            *q++=image->colormap[index];
           }
           break;
         }
@@ -288,10 +282,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
           {
             index=MSBFirstReadShort(image);
             image->indexes[x]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
-            q++;
+            *q++=image->colormap[index];
           }
           break;
         }
@@ -300,10 +291,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
         index=(*p++ << 8);
 	index|=(*p++);
         image->indexes[x]=index;
-        q->red=image->colormap[index].red;
-        q->green=image->colormap[index].green;
-        q->blue=image->colormap[index].blue;
-        q++;
+        *q++=image->colormap[index];
       }
       break;
     }
@@ -317,9 +305,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
               {
                 index=ReadByte(image);
                 image->indexes[x]=index;
-                q->red=image->colormap[index].red;
-                q->green=image->colormap[index].green;
-                q->blue=image->colormap[index].blue;
+                *q=image->colormap[index];
                 q->opacity=UpScale(ReadByte(image));
                 q++;
               }
@@ -329,9 +315,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
           {
             index=(*p++);
             image->indexes[x]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
+            *q=image->colormap[index];
             q->opacity=UpScale(*p++);
             q++;
           }
@@ -343,9 +327,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
           {
             index=MSBFirstReadShort(image);
             image->indexes[x]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
+            *q=image->colormap[index];
             q->opacity=MSBFirstReadShort(image) >> (image->depth-QuantumDepth);
             q++;
           }
@@ -356,9 +338,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
         index=(*p++ << 8);
 	index|=(*p++);
         image->indexes[x]=index;
-        q->red=image->colormap[index].red;
-        q->green=image->colormap[index].green;
-        q->blue=image->colormap[index].blue;
+        *q=image->colormap[index];
         q->opacity=(*p++ << 8);
 	q->opacity|=(*p++);
         q++;
@@ -375,10 +355,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
               {
                 index=UpScale(ReadByte(image));
                 image->indexes[x]=index;
-                q->red=image->colormap[index].red;
-                q->green=image->colormap[index].green;
-                q->blue=image->colormap[index].blue;
-                q++;
+                *q++=image->colormap[index];
               }
               break;
             }
@@ -386,10 +363,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
           {
             index=UpScale(*p++);
             image->indexes[x]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
-            q++;
+            *q++=image->colormap[index];
           }
           break;
         }
@@ -399,10 +373,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
           {
             index=MSBFirstReadShort(image) >> (image->depth-QuantumDepth);
             image->indexes[x]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
-            q++;
+            *q++=image->colormap[index];
           }
           break;
         }
@@ -411,10 +382,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
         index=(*p++ << 8);
 	index|=(*p++);
         image->indexes[x]=index;
-        q->red=image->colormap[index].red;
-        q->green=image->colormap[index].green;
-        q->blue=image->colormap[index].blue;
-        q++;
+        *q++=image->colormap[index];
       }
       break;
     }
@@ -428,9 +396,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
               {
                 index=UpScale(ReadByte(image));
                 image->indexes[x]=index;
-                q->red=image->colormap[index].red;
-                q->green=image->colormap[index].green;
-                q->blue=image->colormap[index].blue;
+                *q=image->colormap[index];
                 q->opacity=UpScale(ReadByte(image));
                 q++;
               }
@@ -440,9 +406,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
           {
             index=UpScale(*p++);
             image->indexes[x]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
+            *q=image->colormap[index];
             q->opacity=UpScale(*p++);
             q++;
           }
@@ -454,9 +418,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
           {
             index=MSBFirstReadShort(image) >> (image->depth-QuantumDepth);
             image->indexes[x]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
+            *q=image->colormap[index];
             q->opacity=MSBFirstReadShort(image) >> (image->depth-QuantumDepth);
             q++;
           }
@@ -467,9 +429,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
         index=(*p++ << 8);
 	index|=(*p++);
         image->indexes[x]=index;
-        q->red=image->colormap[index].red;
-        q->green=image->colormap[index].green;
-        q->blue=image->colormap[index].blue;
+        *q=image->colormap[index];
         q->opacity=(*p++ << 8);
 	q->opacity|=(*p++);
         q++;

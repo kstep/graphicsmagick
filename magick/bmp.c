@@ -661,10 +661,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
             {
               index=((*p) & (0x80 >> bit) ? 0x00 : 0x01);
               image->indexes[x+bit]=index;
-              q->red=image->colormap[index].red;
-              q->green=image->colormap[index].green;
-              q->blue=image->colormap[index].blue;
-              q++;
+              *q++=image->colormap[index];
             }
             p++;
           }
@@ -674,10 +671,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
               {
                 index=((*p) & (0x80 >> bit) ? 0x00 : 0x01);
                 image->indexes[x+bit]=index;
-                q->red=image->colormap[index].red;
-                q->green=image->colormap[index].green;
-                q->blue=image->colormap[index].blue;
-                q++;
+                *q++=image->colormap[index];
               }
               p++;
             }
@@ -704,27 +698,18 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
           {
             index=(*p >> 4) & 0xf;
             image->indexes[x]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
-            q++;
+            *q++=image->colormap[index];
             index=(*p) & 0xf;
             image->indexes[x+1]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
+            *q++=image->colormap[index];
             p++;
-            q++;
           }
           if ((image->columns % 2) != 0)
             {
               index=(*p >> 4) & 0xf;
               image->indexes[x]=index;
-              q->red=image->colormap[index].red;
-              q->green=image->colormap[index].green;
-              q->blue=image->colormap[index].blue;
+              *q++=image->colormap[index];
               p++;
-              q++;
             }
           if (!SyncPixelCache(image))
             break;
@@ -751,10 +736,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
           {
             index=(*p++);
             image->indexes[x]=index;
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
-            q++;
+            *q++=image->colormap[index];
           }
           if (!SyncPixelCache(image))
             break;

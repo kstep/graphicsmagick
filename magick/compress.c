@@ -590,10 +590,7 @@ Export unsigned int HuffmanDecodeImage(Image *image)
     {
       index=(unsigned short) (*p++);
       image->indexes[x]=index;
-      q->red=image->colormap[index].red;
-      q->green=image->colormap[index].green;
-      q->blue=image->colormap[index].blue;
-      q++;
+      *q++=image->colormap[index];
     }
     if (!SyncPixelCache(image))
       break;

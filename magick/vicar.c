@@ -308,13 +308,9 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      index=(unsigned short) *p;
+      index=(*p++);
       image->indexes[x]=index;
-      q->red=image->colormap[index].red;
-      q->green=image->colormap[index].green;
-      q->blue=image->colormap[index].blue;
-      p++;
-      q++;
+      *q++=image->colormap[index];
     }
     if (!SyncPixelCache(image))
       break;

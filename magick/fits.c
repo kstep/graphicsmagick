@@ -443,10 +443,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
             scaled_pixel=MaxRGB;
         index=(IndexPacket) (scaled_pixel+0.5);
         image->indexes[x]=index;
-        q->red=image->colormap[index].red;
-        q->green=image->colormap[index].green;
-        q->blue=image->colormap[index].blue;
-        q++;
+        *q++=image->colormap[index];
       }
       if (!SyncPixelCache(image))
         break;

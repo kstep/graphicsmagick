@@ -663,9 +663,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
                     if (index >= image->colors)
                       ReaderExit(CorruptImageWarning,"invalid colormap index",
                         image);
-                    pixel.red=image->colormap[index].red;
-                    pixel.green=image->colormap[index].green;
-                    pixel.blue=image->colormap[index].blue;
+                    pixel=image->colormap[index];
                   }
                 else
                   {

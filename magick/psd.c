@@ -126,9 +126,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
               if (image->class == PseudoClass)
                 {
                   *image->indexes=pixel;
-                  q->red=image->colormap[pixel].red;
-                  q->green=image->colormap[pixel].green;
-                  q->blue=image->colormap[pixel].blue;
+                  *q=image->colormap[pixel];
                 }
               break;
             }
@@ -171,9 +169,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
           if (image->class == PseudoClass)
             {
               *image->indexes=pixel;
-              q->red=image->colormap[pixel].red;
-              q->green=image->colormap[pixel].green;
-              q->blue=image->colormap[pixel].blue;
+              *q=image->colormap[pixel];
             }
           break;
         }

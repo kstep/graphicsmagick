@@ -878,7 +878,8 @@ static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
     (void) memcpy((char *) profile,"Photoshop 3.0 ",14);
     profile[13]=0x00;
 #endif
-    (void) memcpy((char *) &(profile[taglen]),&(image->iptc_profile.info[i]),length);
+    (void) memcpy((char *) &(profile[taglen]),&(image->iptc_profile.info[i]),
+      length);
     if (roundup)
       profile[length+taglen]=0;
     jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int)

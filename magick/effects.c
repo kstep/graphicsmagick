@@ -1241,7 +1241,6 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
     *median_image;
 
   int
-    j,
     y;
 
   PixelPacket
@@ -2997,10 +2996,7 @@ Export void ThresholdImage(Image *image,const double threshold)
     {
       index=Intensity(*q) < threshold ? 0 : 1;
       image->indexes[x]=index;
-      q->red=image->colormap[index].red;
-      q->green=image->colormap[index].green;
-      q->blue=image->colormap[index].blue;
-      q++;
+      *q++=image->colormap[index];
     }
     if (!SyncPixelCache(image))
       break;

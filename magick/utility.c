@@ -2268,9 +2268,6 @@ Export void Strip(char *data)
     *p,
     *q;
 
-  register int
-    i;
-
   assert(data != (char *) NULL);
   if (*data == '\0')
     return;
@@ -2282,7 +2279,7 @@ Export void Strip(char *data)
     q--;
   count=q-p+1;
   q=data;
-  (void) memcpy(q,p,count);
+  (void) memcpy(q,p,count*sizeof(char));
   *(q+count)='\0';
 }
 

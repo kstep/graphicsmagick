@@ -410,10 +410,7 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
           image->indexes[x]=index;
           if (index >= image->colors)
             ReaderExit(CorruptImageWarning,"invalid colormap index",image);
-          q->red=image->colormap[index].red;
-          q->green=image->colormap[index].green;
-          q->blue=image->colormap[index].blue;
-          q++;
+          *q++=image->colormap[index];
         }
         if (!SyncPixelCache(image))
           break;

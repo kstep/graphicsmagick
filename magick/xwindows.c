@@ -278,9 +278,7 @@ Export unsigned int XAnnotateImage(Display *display,
           q->opacity=Opaque;
           if (annotate_info->stencil == ForegroundStencil)
             {
-              q->red=annotate_image->background_color.red;
-              q->green=annotate_image->background_color.green;
-              q->blue=annotate_image->background_color.blue;
+              *q=annotate_image->background_color;
               q->opacity=Transparent;
             }
         }
@@ -295,9 +293,7 @@ Export unsigned int XAnnotateImage(Display *display,
           q->opacity=Opaque;
           if (annotate_info->stencil == BackgroundStencil)
             {
-              q->red=annotate_image->background_color.red;
-              q->green=annotate_image->background_color.green;
-              q->blue=annotate_image->background_color.blue;
+              *q=annotate_image->background_color;
               q->opacity=Transparent;
             }
         }
@@ -2088,9 +2084,7 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
           /*
             Set this pixel to the background color.
           */
-          q->red=draw_image->background_color.red;
-          q->green=draw_image->background_color.green;
-          q->blue=draw_image->background_color.blue;
+          *q=draw_image->background_color;
           q->opacity=draw_info->stencil == OpaqueStencil ? Transparent : Opaque;
         }
       else
@@ -4138,10 +4132,7 @@ Export Image *XGetWindowImage(Display *display,const Window window,
                 index=XGetPixel(ximage,x,y);
                 if (composite_image->class == PseudoClass)
                   composite_image->indexes[x]=index;
-                q->red=composite_image->colormap[index].red;
-                q->green=composite_image->colormap[index].green;
-                q->blue=composite_image->colormap[index].blue;
-                q++;
+                *q++=composite_image->colormap[index];
               }
               if (!SyncPixelCache(composite_image))
                 break;

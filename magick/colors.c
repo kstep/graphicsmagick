@@ -1001,9 +1001,7 @@ Export void CompressColormap(Image *image)
     if (marker[i])
       {
         index=image->colormap[i].opacity;
-        colormap[index].red=image->colormap[i].red;
-        colormap[index].green=image->colormap[i].green;
-        colormap[index].blue=image->colormap[i].blue;
+        colormap[index]=image->colormap[i];
       }
   FreeMemory(marker);
   /*
@@ -1294,7 +1292,6 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
         (void) QueryColorName(&color,name);
         (void) fprintf(file,"%.1024s",name);
         (void) fprintf(file,"\n");
-        p++;
       }
       if (QuantumTick(color_cube->progress,color_cube->colors))
         ProgressMonitor(HistogramImageText,color_cube->progress,

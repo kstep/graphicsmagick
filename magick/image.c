@@ -775,8 +775,7 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       clone_image->colormap=(PixelPacket *) AllocateMemory(length);
       if (clone_image->colormap == (PixelPacket *) NULL)
         return((Image *) NULL);
-      (void) memcpy((char *) clone_image->colormap,(char *) image->colormap,
-        length);
+      (void) memcpy(clone_image->colormap,image->colormap,length);
     }
   if (image->color_profile.length > 0)
     {
@@ -787,8 +786,8 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       clone_image->color_profile.info=(unsigned char *) AllocateMemory(length);
       if (clone_image->color_profile.info == (unsigned char *) NULL)
         return((Image *) NULL);
-      (void) memcpy((char *) clone_image->color_profile.info,
-        (char *) image->color_profile.info,length);
+      (void) memcpy(clone_image->color_profile.info,image->color_profile.info,
+        length);
     }
   if (image->iptc_profile.length > 0)
     {
@@ -799,8 +798,8 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       clone_image->iptc_profile.info=(unsigned char *) AllocateMemory(length);
       if (clone_image->iptc_profile.info == (unsigned char *) NULL)
         return((Image *) NULL);
-      (void) memcpy((char *) clone_image->iptc_profile.info,
-        (char *) image->iptc_profile.info,length);
+      (void) memcpy(clone_image->iptc_profile.info,image->iptc_profile.info,
+        length);
     }
   GetBlobInfo(&clone_image->blob_info);
   GetCacheInfo(&clone_image->cache_handle);
@@ -831,11 +830,11 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
           break;
         if (!SetPixelCache(clone_image,0,y,clone_image->columns,1))
           break;
-        (void) memcpy(clone_image->pixels,image->pixels,
-          image->columns*sizeof(PixelPacket));
         if (image->class == PseudoClass)
           (void) memcpy(clone_image->indexes,image->indexes,
             image->columns*sizeof(IndexPacket));
+        (void) memcpy(clone_image->pixels,image->pixels,
+          image->columns*sizeof(PixelPacket));
         if (!SyncPixelCache(clone_image))
           break;
       }
@@ -1517,11 +1516,11 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           break;
         }
       }
-      q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
-      q->green=(Quantum) ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green);
-      q->blue=(Quantum) ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue);
-      q->opacity=(Quantum) ((opacity < Transparent) ? Transparent :
-        (opacity > Opaque) ? Opaque : opacity);
+      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red;
+      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green;
+      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue;
+      q->opacity=(opacity < Transparent) ? Transparent :
+        (opacity > Opaque) ? Opaque : opacity;
       if ((image->class == PseudoClass) &&
           (composite_image->class == PseudoClass))
         image->indexes[x]=composite_image->indexes[x];
@@ -6866,11 +6865,8 @@ Export void SortColormapByIntensity(Image *image)
     for (x=0; x < (int) image->columns; x++)
     {
       index=pixels[image->indexes[x]];
-      q->red=image->colormap[index].red;
-      q->green=image->colormap[index].green;
-      q->blue=image->colormap[index].blue;
       image->indexes[x]=index;
-      q++;
+      *q++=image->colormap[index];
     }
   }
   FreeMemory(pixels);
@@ -6925,10 +6921,7 @@ Export void SyncImage(Image *image)
     for (x=0; x < (int) image->columns; x++)
     {
       index=image->indexes[x];
-      q->red=image->colormap[index].red;
-      q->green=image->colormap[index].green;
-      q->blue=image->colormap[index].blue;
-      q++;
+      *q++=image->colormap[index];
     }
     if (!SyncPixelCache(image))
       break;
@@ -7088,7 +7081,6 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
     *red_map;
 
   int
-    index,
     y;
 
   register int

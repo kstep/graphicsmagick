@@ -131,9 +131,7 @@ Export Image *ReadXCImage(const ImageInfo *image_info)
     for (x=0; x < (int) image->columns; x++)
     {
       image->indexes[x]=0;
-      q->red=image->colormap[0].red;
-      q->green=image->colormap[0].green;
-      q->blue=image->colormap[0].blue;
+      *q=image->colormap[0];
       q->opacity=image->colormap[0].opacity;
       q++;
     }

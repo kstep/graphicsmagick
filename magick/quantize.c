@@ -440,11 +440,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
         if (image->class == PseudoClass)
           image->indexes[x]=index;
         if (!cube_info->quantize_info->measure_error)
-          {
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
-          }
+          *q=image->colormap[index];
         q++;
       }
       if (!SyncPixelCache(image))
@@ -1021,11 +1017,7 @@ static void Dither(CubeInfo *cube_info,Image *image,
       if (image->class == PseudoClass)
         *image->indexes=index;
       if (!cube_info->quantize_info->measure_error)
-        {
-          q->red=image->colormap[index].red;
-          q->green=image->colormap[index].green;
-          q->blue=image->colormap[index].blue;
-        }
+        *q=image->colormap[index];
       if (!SyncPixelCache(image))
         return;
       /*
@@ -1726,10 +1718,7 @@ static unsigned int OrderedDitherImage(Image *image)
     {
       index=Intensity(*q) > DitherMatrix[y & 0x07][x & 0x07] ? 1 : 0;
       image->indexes[x]=index;
-      q->red=image->colormap[index].red;
-      q->green=image->colormap[index].green;
-      q->blue=image->colormap[index].blue;
-      q++;
+      *q++=image->colormap[index];
     }
     if (!SyncPixelCache(image))
       break;

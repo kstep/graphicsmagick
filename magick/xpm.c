@@ -630,11 +630,9 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
         for (j=0; j < (int) (image->colors-1); j++)
           if (strcmp(key,keys[j]) == 0)
             break;
-      r->red=image->colormap[j].red;
-      r->green=image->colormap[j].green;
-      r->blue=image->colormap[j].blue;
+      *r=image->colormap[j];
       if (image->class == PseudoClass)
-        image->indexes[x]=(unsigned short) j;
+        image->indexes[x]=j;
       else
         if (image->colormap[j].opacity)
           r->opacity=Transparent;
