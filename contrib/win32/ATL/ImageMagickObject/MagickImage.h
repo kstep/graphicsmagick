@@ -33,7 +33,7 @@
 #undef VERSION
 
 #include <magick/api.h>
-#include <ntbase.h>
+#include <nt_base.h>
 #undef inline // Remove possible definition from config.h
 
 #undef class
