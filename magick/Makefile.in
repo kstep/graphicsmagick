@@ -101,6 +101,7 @@ ILBMDecodeDelegate = @ILBMDecodeDelegate@
 ILBMEncodeDelegate = @ILBMEncodeDelegate@
 INCLTDL = @INCLTDL@
 LD = @LD@
+LDFLAGS = @LDFLAGS@
 LIBLTDL = @LIBLTDL@
 LIBTOOL = @LIBTOOL@
 LIB_BZLIB = @LIB_BZLIB@
@@ -584,7 +585,6 @@ CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =  Magick-config
 LTLIBRARIES =  $(lib_LTLIBRARIES) $(pkg_LTLIBRARIES)
 
-LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 avs_la_DEPENDENCIES =  libMagick.la
 am_avs_la_OBJECTS =  avs.lo
