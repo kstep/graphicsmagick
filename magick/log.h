@@ -19,29 +19,34 @@ extern "C" {
 #  if defined(HAS___func__)
 #    define GetMagickModule()  __FILE__,__func__,__LINE__
 #  else
-#    define GetMagickModule()  __FILE__,"unknown",__LINE__
+#    if defined(_VISUALC_)
+#      define GetMagickModule()  __FILE__,__FUNCTION__,__LINE__
+#    else
+#      define GetMagickModule()  __FILE__,"unknown",__LINE__
+#    endif
 #  endif
 #endif
 
+/* NOTE: any changes to this effect PerlMagick */
 typedef enum
 { 
-  UndefinedEvents       = 0x0000000,
-  NoEvents              = 0x0000000,
-  ConfigureEvent        = 0x00000001,
-  AnnotateEvent         = 0x00000002,
-  RenderEvent           = 0x00000004,
-  TransformEvent        = 0x00000008,
-  LocaleEvent           = 0x00000010,
-  CoderEvent            = 0x00000020,
-  X11Event              = 0x00000040,
-  CacheEvent            = 0x00000080,
-  BlobEvent             = 0x00000100,
-  DeprecateEvent        = 0x00000200,
-  UserEvent             = 0x00000400,
-  ResourceEvent         = 0x00000800,
-  TemporaryFileEvent    = 0x00001000,
-  ExceptionEvent        = 0x00002000,
-  AllEvents             = 0x7FFFFFFF
+  UndefinedEventMask = 0x0000,
+  NoEventsMask = 0x0000,
+  ConfigureEventMask = 0x0001,
+  AnnotateEventMask = 0x0002,
+  RenderEventMask = 0x0004,
+  TransformEventMask = 0x0008,
+  LocaleEventMask = 0x0010,
+  CoderEventMask = 0x0020,
+  X11EventMask = 0x0040,
+  CacheEventMask = 0x0080,
+  BlobEventMask = 0x0100,
+  DeprecateEventMask = 0x0200,
+  UserEventMask = 0x0400,
+  ResourceEventMask = 0x0800,
+  TemporaryFileEventMask = 0x01000,
+  ExceptionEventMask = 0x02000,
+  AllEventsMask = 0x7FFFFFFF
 } LogEventType;
 
 /*
@@ -51,10 +56,10 @@ extern MagickExport unsigned int
   InitializeLogInfo(ExceptionInfo *exception),
   IsEventLogging(void),
 #if defined(__GNUC__)
-  LogMagickEvent(const LogEventType,const char *,const char *,
+  LogMagickEvent(const ExceptionType,const char *,const char *,
     const unsigned long,const char *,...) __attribute__((format (printf,5,6)));
 #else
-  LogMagickEvent(const LogEventType,const char *,const char *,
+  LogMagickEvent(const ExceptionType,const char *,const char *,
     const unsigned long,const char *,...);
 #endif
 

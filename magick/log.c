@@ -50,6 +50,24 @@
 /*
   Typedef declarations.
 */
+typedef enum
+{ 
+  DisabledOutput = 0x0000,
+  UndefinedOutput = 0x0000,
+  StdoutOutput = 0x0001,
+  StderrOutput = 0x0002,
+  XMLFileOutput = 0x0004,
+  TXTFileOutput = 0x0008,
+  Win32DebugOutput = 0x0010,
+  Win32EventlogOutput = 0x0020,
+} LogOutputType;
+
+typedef struct _OutputInfo
+{
+  char *name;
+  LogOutputType type;
+} OutputInfo;
+
 typedef struct _LogInfo
 {
   char
@@ -71,13 +89,16 @@ typedef struct _LogInfo
     generation,
     count;
 
+  LogOutputType
+    output_type;
+
   TimerInfo
     timer;
 } LogInfo;
 
 typedef struct _EventInfo
 {
-  char         *name;
+  char *name;
   LogEventType type;
 } EventInfo;
 
@@ -89,31 +110,48 @@ static const char
     "<?xml version=\"1.0\"?>"
     "<magicklog>"
     "  <log events=\"None\" />"
+#if defined(WIN32)
+    "  <log output=\"win32eventlog\" />"
+#else
     "  <log output=\"stdout\" />"
+#endif
     "  <log filename=\"Magick-%d.log\" />"
     "  <log generations=\"3\" />"
     "  <log limit=\"2000\" />"
-    "  <log format=\"%t %r %u %p %m/%f/%l/%d:\n  %e\" />"
+    "  <log format=\"%t %r %u %p %m/%f/%l/%d/%s:\n  %e\" />"
     "</magicklog>";
 
-static const EventInfo event_map[] =
+static const EventInfo eventmask_map[] =
   {
-    { "none", NoEvents },
-    { "configure", ConfigureEvent },
-    { "annotate", AnnotateEvent },
-    { "render", RenderEvent },
-    { "transform", TransformEvent },
-    { "locale", LocaleEvent },
-    { "coder", CoderEvent },
-    { "x11", X11Event },
-    { "cache", CacheEvent },
-    { "blob", BlobEvent },
-    { "deprecate", DeprecateEvent },
-    { "user", UserEvent },
-    { "resource", ResourceEvent },
-    { "temporaryfile", TemporaryFileEvent },
-    { "exception", ExceptionEvent },
-    { "all", AllEvents },
+    { "none", NoEventsMask },
+    { "configure", ConfigureEventMask },
+    { "annotate", AnnotateEventMask },
+    { "render", RenderEventMask },
+    { "transform", TransformEventMask },
+    { "locale", LocaleEventMask },
+    { "coder", CoderEventMask },
+    { "x11", X11EventMask },
+    { "cache", CacheEventMask },
+    { "blob", BlobEventMask },
+    { "deprecate", DeprecateEventMask },
+    { "user", UserEventMask },
+    { "resource", ResourceEventMask },
+    { "temporaryfile", TemporaryFileEventMask },
+    { "exception", ExceptionEventMask },
+    { "all", AllEventsMask },
+    { 0, 0 }
+  };
+
+static const OutputInfo output_map[] =
+  {
+    { "none", UndefinedOutput },
+    { "disabled", DisabledOutput },
+    { "stdout", StdoutOutput },
+    { "stderr", StderrOutput },
+    { "xmlfile", XMLFileOutput },
+    { "txtfile", TXTFileOutput },
+    { "win32debug", Win32DebugOutput },
+    { "win32eventlog", Win32EventlogOutput },
     { 0, 0 }
   };
 
@@ -157,11 +195,11 @@ static unsigned long ParseEvents(const char *event_string)
       while ((*p != 0) && (isspace((int)(*p)) || *p == ','))
         p++;
 
-      for (i=0; event_map[i].name != 0; i++)
+      for (i=0; eventmask_map[i].name != 0; i++)
         {
-          if (LocaleNCompare(p,event_map[i].name,strlen(event_map[i].name)) == 0)
+          if (LocaleNCompare(p,eventmask_map[i].name,strlen(eventmask_map[i].name)) == 0)
             {
-              events|=event_map[i].type;
+              events|=eventmask_map[i].type;
               break;
             }
         }
@@ -462,7 +500,7 @@ MagickExport unsigned int IsEventLogging(void)
       (void) InitializeLogInfo(&exception);
       DestroyExceptionInfo(&exception);
     }
-  return ((log_info != (LogInfo *) NULL) && (log_info->events != NoEvents));
+  return ((log_info != (LogInfo *) NULL) && (log_info->events != NoEventsMask));
 }
 
 /*
@@ -598,13 +636,18 @@ static void *LogToBlob(const char *filename,size_t *length,
 %
 %
 */
-MagickExport unsigned int LogMagickEvent(const LogEventType type,
+MagickExport unsigned int LogMagickEvent(const ExceptionType type,
   const char *module,const char *function,const unsigned long line,
   const char *format,...)
 {
   char
     *domain,
+    *severity,
+#if defined(WIN32)
+    nteventtype,
+#endif
     event[MaxTextExtent],
+    srcname[MaxTextExtent],
     timestamp[MaxTextExtent];
 
   double
@@ -627,25 +670,64 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
     return(False);
   if (!(log_info->events & type))
     return(True);
+
+  /* fixup module info to just include the filename - and not the
+     whole path to the file. This makes the log huge for no good
+     reason */
+  GetPathComponent(module,TailPath,srcname);
+
   AcquireSemaphoreInfo(&log_semaphore);
-  switch (type)
+  switch (type % 100)
   {
-    case ConfigureEvent: domain=(char *) "Configure"; break;
-    case AnnotateEvent: domain=(char *) "Annotate"; break;
-    case RenderEvent: domain=(char *) "Render"; break;
-    case TransformEvent: domain=(char *) "Transform"; break;
-    case LocaleEvent: domain=(char *) "Locale"; break;
-    case CoderEvent: domain=(char *) "Coder"; break;
-    case X11Event: domain=(char *) "X11"; break;
-    case CacheEvent: domain=(char *) "Cache"; break;
-    case BlobEvent: domain=(char *) "Blob"; break;
-    case DeprecateEvent: domain=(char *) "Deprecate"; break;
-    case UserEvent: domain=(char *) "User"; break;
-    case ResourceEvent: domain=(char *) "Resource"; break;
-    case TemporaryFileEvent: domain=(char *) "TemporaryFile"; break;
-    case ExceptionEvent: domain=(char *) "Exception"; break;
+    case UndefinedException: domain=(char *) "Undefined"; break;
+    case ExceptionBase: domain=(char *) "Exception"; break;
+    case ResourceBase: domain=(char *) "Resource"; break;
+    /* case ResourceLimitBase: domain=(char *) "ResourceLimit"; break; */
+    case TypeBase: domain=(char *) "Type"; break;
+    /* case AnnotateBase: domain=(char *) "Annotate"; break; */
+    case OptionBase: domain=(char *) "Option"; break;
+    case DelegateBase: domain=(char *) "Delegate"; break;
+    case MissingDelegateBase: domain=(char *) "MissingDelegate"; break;
+    case CorruptImageBase : domain=(char *) "CorruptImage"; break;
+    case FileOpenBase: domain=(char *) "FileOpen"; break;
+    case BlobBase: domain=(char *) "Blob"; break;
+    case StreamBase: domain=(char *) "Stream"; break;
+    case CacheBase: domain=(char *) "Cache"; break;
+    case CoderBase: domain=(char *) "Coder"; break;
+    case ModuleBase: domain=(char *) "Module"; break;
+    case DrawBase: domain=(char *) "Draw"; break;
+    /* case RenderBase: domain=(char *) "Render"; break; */
+    case ImageBase: domain=(char *) "image"; break;
+    case TemporaryFileBase: domain=(char *) "TemporaryFile"; break;
+    case TransformBase: domain=(char *) "Transform"; break;
+    case XServerBase: domain=(char *) "XServer"; break;
+    case X11Base: domain=(char *) "X11"; break;
+    case UserBase: domain=(char *) "User"; break;
+    case MonitorBase: domain=(char *) "Monitor"; break;
+    case LocaleBase: domain=(char *) "Locale"; break;
+    case DeprecateBase: domain=(char *) "Deprecate"; break;
+    case RegistryBase: domain=(char *) "Registry"; break;
+    case ConfigureBase: domain=(char *) "Configure"; break;
     default: domain=(char *) "UnknownEvent"; break;
   }
+  switch ((type / 100) * 100)
+  {
+    case EventException: severity=(char *) "Event"; break;
+    case WarningException: severity=(char *) "Warning"; break;
+    case ErrorException: severity=(char *) "Error"; break;
+    case FatalErrorException: severity=(char *) "FatalError"; break;
+    default: severity=(char *) "Unknown"; break;
+  }
+#if defined(WIN32) || defined(__CYGWIN__)
+  switch ((type / 100) * 100)
+  {
+    case EventException: nteventtype=EVENTLOG_INFORMATION_TYPE; break;
+    case WarningException: nteventtype=EVENTLOG_WARNING_TYPE; break;
+    case ErrorException: nteventtype=EVENTLOG_ERROR_TYPE; break;
+    case FatalErrorException: nteventtype=EVENTLOG_ERROR_TYPE; break;
+    default: nteventtype=EVENTLOG_INFORMATION_TYPE; break;
+  }
+#endif
   va_start(operands,format);
 #if defined(HAVE_VSNPRINTF)
   (void) vsnprintf(event,MaxTextExtent,format,operands);
@@ -661,17 +743,22 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
   time_meridian=localtime(&seconds);
   elapsed_time=GetElapsedTime(&log_info->timer);
   user_time=GetUserTime(&log_info->timer);
-  if ((log_info->file != stdout) && (log_info->file != stderr))
+  ContinueTimer((TimerInfo *) &log_info->timer);
+  FormatString(timestamp,"%04d%02d%02d%02d%02d%02d",time_meridian->tm_year+
+    1900,time_meridian->tm_mon+1,time_meridian->tm_mday,
+    time_meridian->tm_hour,time_meridian->tm_min,time_meridian->tm_sec);
+  if (log_info->output_type & XMLFileOutput)
     {
       /*
         Log to a file in the XML format.
       */
       log_info->count++;
-      if (log_info->count == log_info->limit)
+      if (log_info->count >= log_info->limit)
         {
           (void) fprintf(log_info->file,"</log>\n");
           (void) fclose(log_info->file);
           log_info->file=(FILE *) NULL;
+          log_info->count=0;
         }
       if (log_info->file == (FILE *) NULL)
         {
@@ -679,20 +766,19 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
             filename[MaxTextExtent];
 
           FormatString(filename,log_info->filename,
-            log_info->generation % log_info->generations);
+            log_info->generation);
           log_info->file=fopen(filename,"w");
           if (log_info->file == (FILE *) NULL)
             {
               LiberateSemaphoreInfo(&log_semaphore);
               return(False);
             }
-          log_info->generation++;
           (void) fprintf(log_info->file,"<?xml version=\"1.0\"?>\n");
           (void) fprintf(log_info->file,"<log>\n");
+          log_info->generation++;
+          if (log_info->generation >= log_info->generations)
+            log_info->generation=0;
         }
-      FormatString(timestamp,"%04d%02d%02d%02d%02d%02d",time_meridian->tm_year+
-        1900,time_meridian->tm_mon+1,time_meridian->tm_mday,
-        time_meridian->tm_hour,time_meridian->tm_min,time_meridian->tm_sec);
       (void) fprintf(log_info->file,"<record>\n");
       (void) fprintf(log_info->file,"  <timestamp>%.1024s</timestamp>\n",
         timestamp);
@@ -702,113 +788,197 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
       (void) fprintf(log_info->file,"  <user-time>%0.3f</user-time>\n",
         user_time);
       (void) fprintf(log_info->file,"  <pid>%ld</pid>\n",(long) getpid());
-      (void) fprintf(log_info->file,"  <module>%.1024s</module>\n",module);
+      (void) fprintf(log_info->file,"  <module>%.1024s</module>\n",srcname);
       (void) fprintf(log_info->file,"  <function>%.1024s</function>\n",
         function);
       (void) fprintf(log_info->file,"  <line>%lu</line>\n",line);
       (void) fprintf(log_info->file,"  <domain>%.1024s</domain>\n",domain);
+      (void) fprintf(log_info->file,"  <severity>%.1024s</severity>\n",severity);
       (void) fprintf(log_info->file,"  <event>%.1024s</event>\n",event);
       (void) fprintf(log_info->file,"</record>\n");
       (void) fflush(log_info->file);
-      ContinueTimer((TimerInfo *) &log_info->timer);
       LiberateSemaphoreInfo(&log_semaphore);
       return(True);
     }
-  /*
-    Log to stdout in a "human readable" format.
-  */
-  for (p=log_info->format; *p != '\0'; p++)
-  {
-    /*
-      Process formatting characters in text.
-    */
-    if ((*p == '\\') && (*(p+1) == 'r'))
-      {
-        (void) fprintf(stdout,"\r");
-        p++;
-        continue;
-      }
-    if ((*p == '\\') && (*(p+1) == 'n'))
-      {
-        (void) fprintf(stdout,"\n");
-        p++;
-        continue;
-      }
-    if (*p != '%')
-      {
-        (void) fprintf(stdout,"%c",*p);
-        continue;
-      }
-    p++;
-    switch (*p)
+  if (log_info->output_type & TXTFileOutput)
     {
-      case 'd':
-      {
-        (void) fprintf(stdout,"%.1024s",domain);
-        break;
-      }
-      case 'e':
-      {
-        (void) fprintf(stdout,"%.1024s",event);
-        break;
-      }
-      case 'f':
-      {
-        (void) fprintf(stdout,"%.1024s",function);
-        break;
-      }
-      case 'l':
-      {
-        (void) fprintf(stdout,"%lu",line);
-        break;
-      }
-      case 'm':
-      {
-        register const char
-          *p;
+      /*
+        Log to a file in the TXT format.
+      */
+      log_info->count++;
+      if (log_info->count >= log_info->limit)
+        {
+          (void) fclose(log_info->file);
+          log_info->file=(FILE *) NULL;
+          log_info->count=0;
+        }
+      if (log_info->file == (FILE *) NULL)
+        {
+          char
+            filename[MaxTextExtent];
 
-        for (p=module+strlen(module)-1; p > module; p--)
-          if (*p == *DirectorySeparator)
+          FormatString(filename,log_info->filename,
+            log_info->generation);
+          log_info->file=fopen(filename,"w");
+          if (log_info->file == (FILE *) NULL)
             {
-              p++;
-              break;
+              LiberateSemaphoreInfo(&log_semaphore);
+              return(False);
             }
-        (void) fprintf(stdout,"%.1024s",p);
-        break;
-      }
-      case 'p':
-      {
-        (void) fprintf(stdout,"%ld",(long) getpid());
-        break;
-      }
-      case 'r':
-      {
-        (void) fprintf(stdout,"%ld:%02ld",(long) (elapsed_time/60.0),
-          (long) ceil(fmod(elapsed_time,60.0)));
-        break;
-      }
-      case 't':
-      {
-        (void) fprintf(stdout,"%02d:%02d:%02d",time_meridian->tm_hour,
-          time_meridian->tm_min,time_meridian->tm_sec);
-        break;
-      }
-      case 'u':
-      {
-        (void) fprintf(stdout,"%0.3fu",user_time);
-        break;
-      }
-      default:
-      {
-        (void) fprintf(stdout,"%%");
-        (void) fprintf(stdout,"%c",*p);
-        break;
-      }
+          log_info->generation++;
+          if (log_info->generation >= log_info->generations)
+            log_info->generation=0;
+        }
+        (void) fprintf(log_info->file,
+          "%.1024s %ld:%02ld %0.3f %ld %.1024s %.1024s %lu %.1024s %.1024s %.1024s\n",
+            timestamp, (long) (elapsed_time/60.0), (long) ceil(fmod(elapsed_time,60.0)),
+              user_time, (long) getpid(), srcname, function, line, domain, severity, event);
+      (void) fflush(log_info->file);
+      LiberateSemaphoreInfo(&log_semaphore);
+      return(True);
     }
-  }
-  (void) fprintf(stdout,"\n");
-  (void) fflush(stdout);
-  ContinueTimer((TimerInfo *) &log_info->timer);
+#if defined(WIN32) || defined(__CYGWIN__)
+  if (log_info->output_type & Win32DebugOutput)
+    {
+      char
+        buffer[MaxTextExtent];
+
+      FormatString(buffer,
+        "%.1024s %ld:%02ld %0.3f %ld %.1024s %.1024s %lu %.1024s %.1024s %.1024s\n",
+          timestamp, (long) (elapsed_time/60.0), (long) ceil(fmod(elapsed_time,60.0)),
+            user_time, (long) getpid(), srcname, function, line, domain, severity, event);
+      OutputDebugString(buffer);
+    }
+  if (log_info->output_type & Win32EventlogOutput)
+    {
+#define LOGGING_ERROR_CODE 0
+      char
+        buffer[MaxTextExtent],
+        *szList[1];
+
+      HANDLE
+        hSource;
+
+      FormatString(buffer,
+        "%.1024s %ld:%02ld %0.3f %ld %.1024s %.1024s %lu %.1024s %.1024s %.1024s\n",
+          timestamp, (long) (elapsed_time/60.0), (long) ceil(fmod(elapsed_time,60.0)),
+            user_time, (long) getpid(), srcname, function, line, domain, severity, event);
+      hSource = RegisterEventSource(NULL, "GraphicsMagick");
+      if (hSource != NULL)
+        {
+          szList[0]=buffer;
+          ReportEvent(hSource,nteventtype,0,LOGGING_ERROR_CODE,NULL,1,0,szList,NULL);
+          DeregisterEventSource(hSource);
+        }
+    }
+#endif
+  if ((log_info->output_type & StdoutOutput) || (log_info->output_type & StderrOutput))
+    {
+      FILE
+        *file;
+      /*
+        Log to stdout in a "human readable" format.
+      */
+      file = stdout;
+      if (log_info->output_type & StderrOutput)
+        file = stderr;
+      for (p=log_info->format; *p != '\0'; p++)
+      {
+        /*
+          Process formatting characters in text.
+        */
+        if ((*p == '\\') && (*(p+1) == 'r'))
+          {
+            (void) fprintf(file,"\r");
+            p++;
+            continue;
+          }
+        if ((*p == '\\') && (*(p+1) == 'n'))
+          {
+            (void) fprintf(file,"\n");
+            p++;
+            continue;
+          }
+        if (*p != '%')
+          {
+            (void) fprintf(file,"%c",*p);
+            continue;
+          }
+        p++;
+        switch (*p)
+        {
+          case 'd':
+          {
+            (void) fprintf(file,"%.1024s",domain);
+            break;
+          }
+          case 'e':
+          {
+            (void) fprintf(file,"%.1024s",event);
+            break;
+          }
+          case 'f':
+          {
+            (void) fprintf(file,"%.1024s",function);
+            break;
+          }
+          case 'l':
+          {
+            (void) fprintf(file,"%lu",line);
+            break;
+          }
+          case 'm':
+          {
+            register const char
+              *p;
+
+            for (p=srcname+strlen(srcname)-1; p > srcname; p--)
+              if (*p == *DirectorySeparator)
+                {
+                  p++;
+                  break;
+                }
+            (void) fprintf(file,"%.1024s",p);
+            break;
+          }
+          case 'p':
+          {
+            (void) fprintf(file,"%ld",(long) getpid());
+            break;
+          }
+          case 'r':
+          {
+            (void) fprintf(file,"%ld:%02ld",(long) (elapsed_time/60.0),
+              (long) ceil(fmod(elapsed_time,60.0)));
+            break;
+          }
+          case 's':
+          {
+            (void) fprintf(file,"%.1024s",severity);
+            break;
+          }
+          case 't':
+          {
+            (void) fprintf(file,"%02d:%02d:%02d",time_meridian->tm_hour,
+              time_meridian->tm_min,time_meridian->tm_sec);
+            break;
+          }
+          case 'u':
+          {
+            (void) fprintf(file,"%0.3fu",user_time);
+            break;
+          }
+          default:
+          {
+            (void) fprintf(file,"%%");
+            (void) fprintf(file,"%c",*p);
+            break;
+          }
+        }
+      }
+      (void) fprintf(file,"\n");
+      (void) fflush(file);
+    }
   LiberateSemaphoreInfo(&log_semaphore);
   return(True);
 }
@@ -987,18 +1157,22 @@ static unsigned int ReadConfigureFile(const char *basename,
       case 'O':
       case 'o':
       {
-        if (LocaleCompare((char *) keyword,"output") == 0)
+       if (LocaleCompare((char *) keyword,"output") == 0)
           {
-            if (LocaleCompare(token,"stderr") == 0)
-              {
-                log_info->file=stderr;
-                break;
-              }
-            if (LocaleCompare(token,"stdout") == 0)
-              {
-                log_info->file=stdout;
-                break;
-              }
+            int i;
+
+            for (i=0; output_map[i].name != 0; i++)
+            {
+              if (LocaleNCompare(token,output_map[i].name,strlen(output_map[i].name)) == 0)
+                {
+                  /* We do not OR these flags despite the fact that they are bit masks
+                     because they are still mutually exclusive implementations. Asking for
+                     XML and TXT format files each use the file handle field and others to
+                     do their work, so they can not be used together */
+                  log_info->output_type=output_map[i].type;
+                  break;
+                }
+            }
             break;
           }
         break;
@@ -1055,9 +1229,9 @@ MagickExport unsigned long SetLogEventMask(const char *events)
   if (log_info == (LogInfo *) NULL)
     {
       LiberateSemaphoreInfo(&log_semaphore);
-      return(NoEvents);
+      return(NoEventsMask);
     }
-  log_info->events=NoEvents;
+  log_info->events=NoEventsMask;
   if (events == (const char *) NULL)
     {
       LiberateSemaphoreInfo(&log_semaphore);

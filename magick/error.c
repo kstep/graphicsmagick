@@ -215,11 +215,9 @@ static void DefaultErrorHandler(const ExceptionType severity,const char *reason,
 {
   if (reason == (char *) NULL)
     return;
-  (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
-    GetLocaleExceptionMessage(severity,reason));
+  (void) fprintf(stderr,"%.1024s: %.1024s",GetClientName(),reason);
   if (description != (char *) NULL)
-    (void) fprintf(stderr," (%.1024s)",
-      GetLocaleExceptionMessage(severity,description));
+    (void) fprintf(stderr," (%.1024s)",description);
   if ((severity != OptionError) && errno)
     (void) fprintf(stderr," [%.1024s]",GetErrorMessageString(errno));
   (void) fprintf(stderr,".\n");
@@ -260,8 +258,7 @@ static void DefaultFatalErrorHandler(const ExceptionType severity,
 {
   if (reason == (char *) NULL)
     return;
-  (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
-    reason);
+  (void) fprintf(stderr,"%.1024s: %.1024s",GetClientName(),reason);
   if (description != (char *) NULL)
     (void) fprintf(stderr," (%.1024s)",description);
   if ((severity != OptionError) && errno)
@@ -305,11 +302,9 @@ static void DefaultWarningHandler(const ExceptionType severity,
 {
   if (reason == (char *) NULL)
     return;
-  (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
-    GetLocaleExceptionMessage(severity,reason));
+  (void) fprintf(stderr,"%.1024s: %.1024s",GetClientName(),reason);
   if (description != (char *) NULL)
-    (void) fprintf(stderr," (%.1024s)",
-      GetLocaleExceptionMessage(severity,description));
+    (void) fprintf(stderr," (%.1024s)",description);
   if ((severity != OptionWarning) && errno)
     (void) fprintf(stderr," [%.1024s]",GetErrorMessageString(errno));
   (void) fprintf(stderr,".\n");
@@ -490,6 +485,15 @@ MagickExport const char *GetLocaleExceptionMessage(const ExceptionType severity,
   const char
     *locale_message;
 
+  /* This is a hack that depends on the fact that tag can never have spaces in
+     them. If a space is found then it means we are being asked to translate a
+     message that has already been translated. A big waste of time. The reason
+     this happens is that messages are translated at the point of an exception
+     and then again when the exception is caught and processed via the default
+     error and warning handlers
+  */
+  if (strrchr(tag, ' '))
+    return(tag);
   FormatString(message,"%.1024s%.1024s",ExceptionSeverityToTag(severity),tag);
   locale_message=GetLocaleMessage(message);
   if (locale_message == message)
@@ -530,7 +534,8 @@ MagickExport void MagickError(const ExceptionType error,const char *reason,
   const char *description)
 {
   if (error_handler != (ErrorHandler) NULL)
-    (*error_handler)(error,reason,description);
+    (*error_handler)(error,GetLocaleExceptionMessage(error,reason),
+      GetLocaleExceptionMessage(error,description));
 }
 
 /*
@@ -567,7 +572,8 @@ MagickExport void MagickFatalError(const ExceptionType error,const char *reason,
   const char *description)
 {
   if (fatal_error_handler != (ErrorHandler) NULL)
-    (*fatal_error_handler)(error,reason,description);
+    (*fatal_error_handler)(error,GetLocaleExceptionMessage(error,reason),
+      GetLocaleExceptionMessage(error,description));
   errno=0;
 }
 
@@ -604,7 +610,8 @@ MagickExport void MagickWarning(const ExceptionType warning,const char *reason,
   const char *description)
 {
   if (warning_handler != (WarningHandler) NULL)
-    (*warning_handler)(warning,reason,description);
+    (*warning_handler)(warning,GetLocaleExceptionMessage(warning,reason),
+      GetLocaleExceptionMessage(warning,description));
 }
 
 /*
@@ -863,18 +870,16 @@ MagickExport void ThrowLoggedException(ExceptionInfo *exception,
   if (exception->reason)
     {
       if (exception->description)
-        LogMagickEvent(ExceptionEvent,module,function,line,"%s: %.1024s (%.1024s)",
-          ExceptionSeverityToTag(exception->severity),exception->reason,
-          exception->description );
+        LogMagickEvent(severity,module,function,line,"%.1024s (%.1024s)",
+          exception->reason,exception->description );
       else
-        LogMagickEvent(ExceptionEvent,module,function,line,"%s: %.1024s",
-          ExceptionSeverityToTag(exception->severity),exception->reason);
+        LogMagickEvent(severity,module,function,line,"%.1024s",
+          exception->reason);
     }
   else
     {
-      LogMagickEvent(ExceptionEvent,module,function,line,
-        "%s: exception contains no reason!",
-        ExceptionSeverityToTag(exception->severity));
+      LogMagickEvent(severity,module,function,line,
+        "%s: exception contains no reason!");
     }
   return;
 }
