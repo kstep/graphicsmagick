@@ -564,7 +564,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
   int
     j,
-    k,
     n,
     number_points;
 
@@ -2483,7 +2482,6 @@ static void DrawPrimitive(const DrawInfo *draw_info,
     y;
 
   register int
-    i,
     x;
 
   register PixelPacket
@@ -2790,9 +2788,6 @@ static void DrawPrimitive(const DrawInfo *draw_info,
 */
 MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 {
-  register int
-    i;
-
   /*
     Initialize draw attributes.
   */

@@ -2586,9 +2586,6 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 */
 MagickExport void GetImageInfo(ImageInfo *image_info)
 {
-  register int
-    i;
-
   /*
     File and image dimension members.
   */

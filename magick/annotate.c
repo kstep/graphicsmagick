@@ -333,7 +333,8 @@ MagickExport unsigned int AnnotateImage(Image *image,
         /*
           Surround text with a border.
         */
-        box_image=CloneImage(annotate_image,annotate_image->columns,font_height,          True,&image->exception);
+        box_image=CloneImage(annotate_image,annotate_image->columns,
+          (int) font_height,True,&image->exception);
         if (box_image != (Image *) NULL)
           {
             box_image->background_color=annotate_info->box;
@@ -483,9 +484,6 @@ MagickExport void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
 MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   AnnotateInfo *annotate_info)
 {
-  register int
-    i;
-
   /*
     Initialize annotate attributes;
   */
