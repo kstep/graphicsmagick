@@ -1063,6 +1063,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     }
   (void) WriteBlobMSBLong(image,0);  /* image resource block */
   (void) WriteBlobMSBLong(image,0);  /* layer and mask block */
+  (void) WriteBlobMSBLong(image,0);
   (void) WriteBlobMSBShort(image,0);  /* compression */
   /*
     Write uncompressed pixel data as separate planes.
