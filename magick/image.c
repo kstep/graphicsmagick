@@ -1759,11 +1759,14 @@ MagickExport unsigned int CompositeImage(Image *image,
       q->red=destination.red;
       q->green=destination.green;
       q->blue=destination.blue;
-      q->opacity=p->opacity;
-      if (image->colorspace == CMYKColorspace)
-        indexes[x]=destination.opacity;
-      else
+      if (image->colorspace != CMYKColorspace)
         q->opacity=destination.opacity;
+      else
+        {
+          q->opacity=p->opacity;
+          indexes[x]=destination.opacity;
+        }
+      else
       p++;
       if (p >= (pixels+composite_image->columns))
         p=pixels;
