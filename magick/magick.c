@@ -471,7 +471,10 @@ MagickExport void InitializeMagick(const char *path)
   InitializeSemaphore();
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
-#if defined(WIN32) && defined(_DEBUG)
+#if defined(WIN32)
+  if (path == (const char *) NULL)
+    path=NTGetExecutionPath();
+#if defined(_DEBUG)
   {
     int
       debug;
@@ -480,7 +483,9 @@ MagickExport void InitializeMagick(const char *path)
     debug|=_CRTDBG_CHECK_ALWAYS_DF;
     debug|=_CRTDBG_DELAY_FREE_MEM_DF;
     debug|=_CRTDBG_LEAK_CHECK_DF;
+    //debug=_CrtSetDbgFlag(debug);
   }
+#endif
 #endif
   (void) getcwd(directory,MaxTextExtent);
   (void) SetClientPath(directory);
