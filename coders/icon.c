@@ -250,9 +250,9 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       p=icon_colormap;
       for (i=0; i < (long) image->colors; i++)
       {
-        image->colormap[i].blue=Upscale(*p++);
-        image->colormap[i].green=Upscale(*p++);
-        image->colormap[i].red=Upscale(*p++);
+        image->colormap[i].blue=(Quantum) UpScale(*p++);
+        image->colormap[i].green=(Quantum) UpScale(*p++);
+        image->colormap[i].red=(Quantum) UpScale(*p++);
         p++;
       }
       LiberateMemory((void **) &icon_colormap);
@@ -391,11 +391,11 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            q->blue=Upscale(ReadBlobByte(image));
-            q->green=Upscale(ReadBlobByte(image));
-            q->red=Upscale(ReadBlobByte(image));
+            q->blue=(Quantum) UpScale(ReadBlobByte(image));
+            q->green=(Quantum) UpScale(ReadBlobByte(image));
+            q->red=(Quantum) UpScale(ReadBlobByte(image));
             if (image->matte)
-              q->opacity=Upscale(ReadBlobByte(image));
+              q->opacity=(Quantum) UpScale(ReadBlobByte(image));
             q++;
           }
           if (!SyncImagePixels(image))
@@ -410,6 +410,39 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         ThrowReaderException(CorruptImageWarning,"Not a ICO image file",image)
     }
     SyncImage(image);
+    /*
+      Convert bitmap scanline to pixel packets.
+    */
+    image->storage_class=DirectClass;
+    image->matte=True;
+    for (y=image->rows-1; y >= 0; y--)
+    {
+      q=GetImagePixels(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+      for (x=0; x < ((long) image->columns-7); x+=8)
+      {
+        byte=ReadBlobByte(image);
+        for (bit=0; bit < 8; bit++)
+          q[x+bit].opacity=(Quantum) 
+            (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
+      }
+      if ((image->columns % 8) != 0)
+        {
+          byte=ReadBlobByte(image);
+          for (bit=0; bit < (long) (image->columns % 8); bit++)
+            q[x+bit].opacity=(Quantum) 
+              (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
+        }
+     if (image->columns % 32) 
+       for (x=0; x < ((32-(image->columns % 32))/8); x++)
+         ReadBlobByte(image);
+      if (!SyncImagePixels(image))
+        break;
+      if (image->previous == (Image *) NULL)
+        if (QuantumTick(y,image->rows))
+          MagickMonitor(LoadImageText,image->rows-y-1,image->rows);
+    }
     if (EOFBlob(image))
       ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
