@@ -174,7 +174,7 @@ MagickExport char *GetImageMagick(const unsigned char *magick)
 %             $HOME/.magick/
 %             $MAGICK_HOME/
 %             <program directory>/
-%             MagickModulesPath/coders
+%             MagickModulesPath
 %             X11ConfigurePath
 %
 %  The format of the GetMagickConfigurePath method is:
@@ -197,14 +197,14 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
     *path;
 
   path=AllocateString(filename);
-  FormatString(path,"%scoders%s%s",MagickModulesPath,DirectorySeparator,
-    filename);
+  FormatString(path,"%s%s",MagickModulesPath,filename);
   if (IsAccessible(path))
     return(path);
   if (getenv("HOME") != (char *) NULL)
     {
-      FormatString(path,"%s%s.magick%s%s",getenv("HOME"),
-        DirectorySeparator,DirectorySeparator,filename);
+      FormatString(path,"%s%s%s%s%s",getenv("HOME"),
+        *getenv("HOME") == '/' ? ".magick" : "",DirectorySeparator,
+        DirectorySeparator,filename);
       if (IsAccessible(path))
         return(path);
     }
