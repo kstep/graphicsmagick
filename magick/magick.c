@@ -229,6 +229,7 @@ static MagickInfo
     { "VIFF", ReadVIFFImage, WriteVIFFImage, True,
       "Khoros Visualization image file" },
     { "VST", ReadTGAImage, WriteTGAImage, True, "Truevision Targa image file" },
+    { "X", ReadXImage, WriteXImage, False, "X Image" },
     { "XV", ReadVIFFImage, WriteVIFFImage, True,
       "Khoros Visualization image file" },
     { "XWD", ReadXWDImage, WriteXWDImage, False,

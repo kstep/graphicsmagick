@@ -1967,16 +1967,19 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
       /*
         Initialize image matte data.
       */
-      if (!image->matte && (compose != AnnotateCompositeOp))
+      if (!image->matte)
         {
-          q=image->pixels;
-          for (i=0; i < image->packets; i++)
-          {
-            q->index=Opaque;
-            q++;
-          }
           image->class=DirectClass;
-          image->matte=True;
+          if (compose != AnnotateCompositeOp)
+            {
+              q=image->pixels;
+              for (i=0; i < image->packets; i++)
+              {
+                q->index=Opaque;
+                q++;
+              }
+              image->matte=True;
+            }
         }
       if (!composite_image->matte)
         {
