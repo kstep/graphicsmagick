@@ -1,3 +1,8 @@
+2003-07-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* GraphicsMagick.spec.in : Update according to instructions from
+	Troy Edwards.
+
 2003-07-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* GraphicsMagick.spec.in: Replaced GraphicsMagick.spec with

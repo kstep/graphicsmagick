@@ -1,5 +1,5 @@
 # Define this to '0' for release builds.
-%define DATE	1
+%define DATE	@PACKAGE_VERSION_ADDENDUM@%{nil}
 # Allow for selectively disabling from commandline
 %{!?quant:%define quant 8}
 %{!?perlm:%define perlm 1}
@@ -8,7 +8,7 @@
 Summary: An X application for displaying and manipulating images.
 Name: @PACKAGE_NAME@
 Version: @PACKAGE_VERSION@
-%if %{DATE} > 0
+%if "%DATE"
 Release: 0.%{DATE}
 %else
 Release: 1
@@ -16,7 +16,7 @@ Release: 1
 %endif
 License: freeware
 Group: X11/Applications/Graphics
-Source: ftp://ftp.GraphicsMagick.org/pub/%{name}/%{name}-@PACKAGE_VERSION@@PACKAGE_VERSION_ADDENDUM@.tar.bz2
+Source: ftp://ftp.GraphicsMagick.org/pub/%{name}/%{name}-%{version}.tar.bz2
 Url: http://www.GraphicsMagick.org/
 Buildroot: %{_tmppath}/%{name}-%{version}-root
 BuildPrereq: bzip2-devel, freetype-devel, libjpeg-devel, libpng-devel
@@ -104,8 +104,8 @@ GraphicsMagick C interface, however.
 %endif
 
 %prep
-%if %{DATE} > 0
-%setup -q -n %{name}-@PACKAGE_VERSION@@PACKAGE_VERSION_ADDENDUM@
+%if "%DATE"
+%setup -q -n %{name}-%{version}
 %else
 %setup -q
 %endif

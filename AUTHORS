@@ -59,6 +59,9 @@ Rick Mabry
 		Contributed code to support filling drawn objects using a
 		pattern image.
 
+Lars Ruben Skyum
+		Contributed the -clippath functionality.
+
 Nathan Brown
 		Original author of the JP2 coder.
 
@@ -72,6 +75,9 @@ David Harr
 		Contributed (with Leonard Rosenthol) dash pattern,
 		linecap stroking algorithm, and minor rendering
 		improvements.
+
+Troy Edwards
+		Authored the source RPM spec file for GraphicsMagick.
 
 Additional Acknowledgements
 ===========================
