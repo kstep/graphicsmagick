@@ -482,9 +482,17 @@
 /* Define to a type to use for `error_t' if it is not otherwise available. */
 #undef error_t
 
+
+#ifndef __cplusplus
+
+
 /* Define as `__inline' if that's what the C compiler calls it, or to nothing
    if it is not supported. */
 #undef inline
+
+
+#endif /* __cplusplus */
+
 
 /* Define to `int' if <sys/types.h> does not define. */
 #undef mode_t
