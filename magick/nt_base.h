@@ -113,7 +113,7 @@ extern MagickExport int
   NTGhostscriptUnLoadDLL(void),
   NTSystemComman(const char *);
 
-#if defined(MAGICK_IMPLEMENTATION
+#if defined(MAGICK_IMPLEMENTATION)
 extern MagickExport const GhostscriptVectors
   *NTGhostscriptDLLVectors( void );
 #endif
