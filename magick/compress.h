@@ -11,7 +11,6 @@ extern "C" {
 extern MagickExport unsigned int
   HuffmanDecodeImage(Image *),
   HuffmanEncodeImage(const ImageInfo *,Image *),
-  Huffman2DEncodeImage(const ImageInfo *,Image *),
   LZWEncodeImage(Image *,const size_t,unsigned char *),
   PackbitsEncodeImage(Image *,const size_t,unsigned char *),
   ZLIBEncodeImage(Image *,const size_t,const unsigned long,unsigned char *);

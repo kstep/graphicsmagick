@@ -66,6 +66,148 @@
 static unsigned int
   WritePS3Image(const ImageInfo *,Image *);
 
+#if defined(HasTIFF)
+#if defined(HAVE_TIFFCONF_H)
+#include "tiffconf.h"
+#endif
+#include "tiffio.h"
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   H u f f m a n 2 D E n c o d e I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method Huffman2DEncodeImage compresses an image via two-dimensional
+%  Huffman-coding.
+%
+%  The format of the Huffman2DEncodeImage method is:
+%
+%      unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
+%        Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method Huffman2DEncodeImage returns True if all the pixels are
+%      compressed without error, otherwise False.
+%
+%    o image_info: The image info..
+%
+%    o image: The image.
+%
+*/
+static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
+  Image *image)
+{
+  char
+    filename[MaxTextExtent];
+
+  Image
+    *huffman_image;
+
+  ImageInfo
+    *clone_info;
+
+  long
+    count,
+    j;
+
+  register long
+    i;
+
+  TIFF
+    *tiff;
+
+  uint16
+    fillorder;
+
+  unsigned char
+    *buffer;
+
+  unsigned int
+    *byte_count,
+    status,
+    strip_size;
+
+  /*
+    Write image as CCITTFax4 TIFF image to a temporary file.
+  */
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  huffman_image=CloneImage(image,0,0,True,&image->exception);
+  if (huffman_image == (Image *) NULL)
+    return(False);
+  if ((huffman_image->storage_class == DirectClass) ||
+       !IsMonochromeImage(huffman_image,&image->exception))
+    SetImageType(huffman_image,BilevelType);
+  TemporaryFilename(filename);
+  FormatString(huffman_image->filename,"tiff:%s",filename);
+  clone_info=CloneImageInfo(image_info);
+  clone_info->compression=Group4Compression;
+  status=WriteImage(clone_info,huffman_image);
+  DestroyImageInfo(clone_info);
+  DestroyImage(huffman_image);
+  if (status == False)
+    return(False);
+  tiff=TIFFOpen(filename,ReadBinaryType);
+  if (tiff == (TIFF *) NULL)
+    {
+      (void) remove(filename);
+      ThrowBinaryException(FileOpenWarning,"Unable to open file",
+        image_info->filename)
+    }
+  /*
+    Allocate raw strip buffer.
+  */
+  (void) TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
+  strip_size=byte_count[0];
+  for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
+    if (byte_count[i] > strip_size)
+      strip_size=byte_count[i];
+  buffer=(unsigned char *) AcquireMemory(strip_size);
+  if (buffer == (unsigned char *) NULL)
+    {
+      TIFFClose(tiff);
+      (void) remove(filename);
+      ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+        (char *) NULL)
+    }
+  /*
+    Compress runlength encoded to 2D Huffman pixels.
+  */
+  (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
+  for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
+  {
+    Ascii85Initialize(image);
+    count=TIFFReadRawStrip(tiff,(uint32) i,buffer,byte_count[i]);
+    if (fillorder == FILLORDER_LSB2MSB)
+      TIFFReverseBits(buffer,count);
+    for (j=0; j < count; j++)
+      Ascii85Encode(image,(unsigned int) buffer[j]);
+    Ascii85Flush(image);
+  }
+  LiberateMemory((void **) &buffer);
+  TIFFClose(tiff);
+  (void) remove(filename);
+  return(True);
+}
+#else
+static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
+  Image *image)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  ThrowBinaryException(MissingDelegateWarning,"TIFF library is not available",
+    image->filename);
+}
+#endif
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
