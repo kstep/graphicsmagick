@@ -249,26 +249,12 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,
   return(value);
 }
 
-static int SVGIsStandalone(void *context)
-{
-  SVGInfo
-    *svg_info;
-
-  /*
-    Is this document tagged standalone?
-  */
-  svg_info=(SVGInfo *) context;
-  if (svg_info->verbose)
-    (void) fprintf(stdout,"  SAX.SVGIsStandalone()\n");
-  return(svg_info->document->standalone == 1);
-}
-
-static char **StringToTokens(const char *text,int *number_tokens)
+static char **GetStyleTokens(const char *text,int *number_tokens)
 {
   char
     **tokens;
 
-  register char
+  register const char
     *p,
     *q;
 
@@ -276,12 +262,62 @@ static char **StringToTokens(const char *text,int *number_tokens)
     i;
 
   *number_tokens=0;
-  if (text == (char *) NULL)
+  if (text == (const char *) NULL)
     return((char **) NULL);
   /*
     Determine the number of arguments.
   */
-  for (p=(char *) text; *p != '\0'; )
+  for (p=text; *p != '\0'; p++)
+  {
+    if (*p == ':')
+      (*number_tokens)+=2;
+  }
+  tokens=(char **) AcquireMemory((*number_tokens+2)*sizeof(char *));
+  if (tokens == (char **) NULL)
+    MagickError(ResourceLimitError,"Unable to convert string to tokens",
+      "Memory allocation failed");
+  /*
+    Convert string to an ASCII list.
+  */
+  i=0;
+  p=text;
+  for (q=p; *q != '\0'; q++)
+  {
+    if ((*q != ':') && (*q != ';') && (*q != '\0'))
+      continue;
+    tokens[i]=AllocateString(p);
+    (void) strncpy(tokens[i],p,q-p);
+    tokens[i][q-p]='\0';
+    Strip(tokens[i++]);
+    p=q+1;
+  }
+  tokens[i]=AllocateString(p);
+  (void) strncpy(tokens[i],p,q-p);
+  tokens[i][q-p]='\0';
+  Strip(tokens[i++]);
+  tokens[i]=(char *) NULL;
+  return(tokens);
+}
+
+static char **GetTransformTokens(const char *text,int *number_tokens)
+{
+  char
+    **tokens;
+
+  register const char
+    *p,
+    *q;
+
+  register int
+    i;
+
+  *number_tokens=0;
+  if (text == (const char *) NULL)
+    return((char **) NULL);
+  /*
+    Determine the number of arguments.
+  */
+  for (p=text; *p != '\0'; )
   {
     while (isspace((int) (*p)))
       p++;
@@ -290,10 +326,6 @@ static char **StringToTokens(const char *text,int *number_tokens)
       for (p++; (*p != '"') && (*p != '\0'); p++);
     if (*p == '\'')
       for (p++; (*p != '\'') && (*p != '\0'); p++);
-    if ((LocaleNCompare(p,"rgb(",4) == 0) || (*p == '('))
-      for (p++; (*p != ')') && (*p != '\0'); p++);
-    if ((LocaleNCompare(p,"url(",4) == 0) || (*p == '('))
-      for (p++; (*p != ')') && (*p != '\0'); p++);
     while (!isspace((int) (*p)) && (*p != '(') && (*p != '\0'))
     {
       p++;
@@ -308,7 +340,7 @@ static char **StringToTokens(const char *text,int *number_tokens)
   /*
     Convert string to an ASCII list.
   */
-  p=(char *) text;
+  p=text;
   for (i=0; i < *number_tokens; i++)
   {
     while (isspace((int) (*p)))
@@ -326,24 +358,12 @@ static char **StringToTokens(const char *text,int *number_tokens)
           q++;
         }
       else
-        if ((LocaleNCompare(q,"rgb(",4) == 0) || (*q == '('))
-          {
-            for (q++; (*q != ')') && (*q != '\0'); q++);
-            q++;
-          }
-        else
-          if ((LocaleNCompare(q,"url(",4) == 0) || (*q == '('))
-            {
-              for (q++; (*q != ')') && (*q != '\0'); q++);
-              q++;
-            }
-          else
-            while (!isspace((int) (*q)) && (*q != '(') && (*q != '\0'))
-            {
-              q++;
-              if (!isspace((int) *q) && ((*(q-1) == ':') || (*(q-1) == ';')))
-                break;
-            }
+        while (!isspace((int) (*q)) && (*q != '(') && (*q != '\0'))
+        {
+          q++;
+          if (!isspace((int) *q) && ((*(q-1) == ':') || (*(q-1) == ';')))
+            break;
+        }
     tokens[i]=(char *) AcquireMemory(q-p+1);
     if (tokens[i] == (char *) NULL)
       MagickError(ResourceLimitError,"Unable to convert string to tokens",
@@ -360,6 +380,20 @@ static char **StringToTokens(const char *text,int *number_tokens)
   }
   tokens[i]=(char *) NULL;
   return(tokens);
+}
+
+static int SVGIsStandalone(void *context)
+{
+  SVGInfo
+    *svg_info;
+
+  /*
+    Is this document tagged standalone?
+  */
+  svg_info=(SVGInfo *) context;
+  if (svg_info->verbose)
+    (void) fprintf(stdout,"  SAX.SVGIsStandalone()\n");
+  return(svg_info->document->standalone == 1);
 }
 
 static int SVGHasInternalSubset(void *context)
@@ -840,20 +874,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"style") == 0)
             {
               char
-                *dash_array,
-                *dash_offset,
                 *font_family,
                 *font_style,
                 *font_weight;
 
-              dash_array=(char *) NULL;
-              dash_offset=(char *) NULL;
               font_family=(char *) NULL;
               font_style=(char *) NULL;
               font_weight=(char *) NULL;
               if (svg_info->verbose)
                 (void) fprintf(stdout,"  \n");
-              tokens=StringToTokens(value,&number_tokens);
+              tokens=GetStyleTokens(value,&number_tokens);
               for (j=0; j < (number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];
@@ -865,35 +895,35 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   case 'F':
                   case 'f':
                   {
-                    if (LocaleCompare(keyword,"fill:") == 0)
+                    if (LocaleCompare(keyword,"fill") == 0)
                       {
                         (void) fprintf(svg_info->file,"fill %s\n",value);
                         break;
                       }
-                    if (LocaleCompare(keyword,"fillcolor:") == 0)
+                    if (LocaleCompare(keyword,"fillcolor") == 0)
                       {
                         (void) fprintf(svg_info->file,"fill %s\n",value);
                         break;
                       }
-                    if (LocaleCompare(keyword,"fill-opacity:") == 0)
+                    if (LocaleCompare(keyword,"fill-opacity") == 0)
                       {
                         (void) fprintf(svg_info->file,"fill-opacity %g\n",
                           atof(value)*(strchr(value,'%') == (char *) NULL ?
                           1.0 : 100.0));
                         break;
                       }
-                    if (LocaleCompare(keyword,"font-family:") == 0)
+                    if (LocaleCompare(keyword,"font-family") == 0)
                       {
                         font_family=AllocateString(value);
                         break;
                       }
-                    if (LocaleCompare(keyword,"font-style:") == 0)
+                    if (LocaleCompare(keyword,"font-style") == 0)
                       {
                         font_style=AllocateString(value);
                         *font_style=toupper((int) *font_style);
                         break;
                       }
-                    if (LocaleCompare(keyword,"font-size:") == 0)
+                    if (LocaleCompare(keyword,"font-size") == 0)
                       {
                         svg_info->pointsize=
                           GetUserSpaceCoordinateValue(svg_info,value);
@@ -901,7 +931,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                           svg_info->pointsize);
                         break;
                       }
-                    if (LocaleCompare(keyword,"font-weight:") == 0)
+                    if (LocaleCompare(keyword,"font-weight") == 0)
                       {
                         font_weight=AllocateString(value);
                         *font_weight=toupper((int) *font_weight);
@@ -912,7 +942,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   case 'O':
                   case 'o':
                   {
-                    if (LocaleCompare(keyword,"opacity:") == 0)
+                    if (LocaleCompare(keyword,"opacity") == 0)
                       {
                         (void) fprintf(svg_info->file,"opacity %g\n",
                           atof(value)*(strchr(value,'%') == (char *) NULL ?
@@ -924,35 +954,55 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   case 'S':
                   case 's':
                   {
-                    if (LocaleCompare(keyword,"stroke:") == 0)
+                    if (LocaleCompare(keyword,"stroke") == 0)
                       {
                         (void) fprintf(svg_info->file,"stroke %s\n",value);
                         break;
                       }
-                    if (LocaleCompare(keyword,"stroke-antialiasing:") == 0)
+                    if (LocaleCompare(keyword,"stroke-antialiasing") == 0)
                       {
                         (void) fprintf(svg_info->file,"stroke-antialias %d\n",
                           LocaleCompare(value,"true") == 0);
                         break;
                       }
-                    if (LocaleCompare(keyword,"stroke-dasharray:") == 0)
+                    if (LocaleCompare(keyword,"stroke-dasharray") == 0)
                       {
-                        dash_array=AllocateString(value);
+                        (void) fprintf(svg_info->file,"stroke-dasharray %s\n",
+                          value);
                         break;
                       }
-                    if (LocaleCompare(keyword,"stroke-dashoffset:") == 0)
+                    if (LocaleCompare(keyword,"stroke-dashoffset") == 0)
                       {
-                        dash_offset=AllocateString(value);
+                        (void) fprintf(svg_info->file,"stroke-dashoffset %s\n",
+                          value);
                         break;
                       }
-                    if (LocaleCompare(keyword,"stroke-opacity:") == 0)
+                    if (LocaleCompare(keyword,"stroke-linecap") == 0)
+                      {
+                        (void) fprintf(svg_info->file,"stroke-linecap %s\n",
+                          value);
+                        break;
+                      }
+                    if (LocaleCompare(keyword,"stroke-linejoin") == 0)
+                      {
+                        (void) fprintf(svg_info->file,"stroke-linejoin %s\n",
+                          value);
+                        break;
+                      }
+                    if (LocaleCompare(keyword,"stroke-miterlimit") == 0)
+                      {
+                        (void) fprintf(svg_info->file,"stroke-miterlimit %s\n",
+                          value);
+                        break;
+                      }
+                    if (LocaleCompare(keyword,"stroke-opacity") == 0)
                       {
                         (void) fprintf(svg_info->file,"stroke-opacity %g\n",
                           atof(value)*(strchr(value,'%') == (char *) NULL ?
                           1.0 : 100.0));
                         break;
                       }
-                    if (LocaleCompare(keyword,"stroke-width:") == 0)
+                    if (LocaleCompare(keyword,"stroke-width") == 0)
                       {
                         (void) fprintf(svg_info->file,"stroke-width %g\n",
                           GetUserSpaceCoordinateValue(svg_info,value));
@@ -963,7 +1013,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   case 'T':
                   case 't':
                   {
-                    if (LocaleCompare(keyword,"text-align:") == 0)
+                    if (LocaleCompare(keyword,"text-align") == 0)
                       {
                         if (LocaleCompare(value,"center") == 0)
                           (void) fprintf(svg_info->file,"gravity North\n");
@@ -973,7 +1023,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                           (void) fprintf(svg_info->file,"gravity NorthEast\n");
                         break;
                       }
-                    if (LocaleCompare(keyword,"text-decoration:") == 0)
+                    if (LocaleCompare(keyword,"text-decoration") == 0)
                       {
                         if (LocaleCompare(value,"underline") == 0)
                           (void) fprintf(svg_info->file,"decorate underline\n");
@@ -984,7 +1034,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                           (void) fprintf(svg_info->file,"decorate overline\n");
                         break;
                       }
-                    if (LocaleCompare(keyword,"text-antialiasing:") == 0)
+                    if (LocaleCompare(keyword,"text-antialiasing") == 0)
                       {
                         (void) fprintf(svg_info->file,"text-antialias %d\n",
                           LocaleCompare(value,"true") == 0);
@@ -996,17 +1046,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     break;
                 }
               }
-              if (dash_array != (char *) NULL)
-                {
-                  (void) fprintf(svg_info->file,"stroke-dash ");
-                  if (dash_offset == (char *) NULL)
-                    (void) fprintf(svg_info->file,"0 ");
-                  else
-                    (void) fprintf(svg_info->file,"%s ",dash_offset);
-                  if (dash_array != (char *) NULL)
-                    (void) fprintf(svg_info->file,"%s",dash_array);
-                  (void) fprintf(svg_info->file,";\n");
-                }
               if (font_family != (char *) NULL)
                 {
                   (void) fprintf(svg_info->file,"font %s",font_family);
@@ -1028,10 +1067,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 LiberateMemory((void **) &font_style);
               if (font_weight != (char *) NULL)
                 LiberateMemory((void **) &font_weight);
-              if (dash_offset != (char *) NULL)
-                LiberateMemory((void **) &dash_offset);
-              if (dash_array != (char *) NULL)
-                LiberateMemory((void **) &dash_array);
               for (j=0; j < number_tokens; j++)
                 LiberateMemory((void **) &tokens[j]);
               LiberateMemory((void **) &tokens);
@@ -1057,7 +1092,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               transform.ty=0.0;
               if (svg_info->verbose)
                 (void) fprintf(stdout,"  \n");
-              tokens=StringToTokens(value,&number_tokens);
+              tokens=GetTransformTokens(value,&number_tokens);
               for (j=0; j < (number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];

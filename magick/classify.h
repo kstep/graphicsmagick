@@ -208,6 +208,22 @@ typedef enum
 
 typedef enum
 {
+  UndefinedCap,
+  ButtCap,
+  RoundCap,
+  SquareCap
+} LineCap;
+
+typedef enum
+{
+  UndefinedJoin,
+  MiterJoin,
+  RoundJoin,
+  BevelJoin
+} LineJoin;
+
+typedef enum
+{
   ReadMode,
   WriteMode,
   IOMode

@@ -513,6 +513,8 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     LiberateMemory((void **) &draw_info->font);
   if (draw_info->tile != (Image *) NULL)
     DestroyImage(draw_info->tile);
+  if (draw_info->dash_pattern != (unsigned *) NULL)
+    LiberateMemory((void **) &draw_info->dash_pattern);
   LiberateMemory((void **) &draw_info);
 }
 
@@ -1030,21 +1032,55 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             graphic_context[n]->stroke_antialias=(unsigned int) strtod(q,&q);
             break;
           }
-        if (LocaleCompare("stroke-dash",keyword) == 0)
+        if (LocaleCompare("stroke-dasharray",keyword) == 0)
           {
-            for ( ; ; )
-            {
-              while (isspace((int) (*q)) && (*q != '\0'))
-                q++;
-              if (!IsGeometry(q))
+            graphic_context[n]->dash_pattern=(unsigned int *)
+              AcquireMemory(256*sizeof(unsigned int));
+            if (graphic_context[n]->dash_pattern == (unsigned int *) NULL)
+              {
+                ThrowException(&image->exception,ResourceLimitWarning,
+                  "Unable to draw image","Memory allocation failed");
                 break;
-              (void) strtod(q,&q);
-              if (*q == ',')
-                q++;
-              for (x=0; (*q != ';') && (*q != '\0'); x++)
-                value[x]=(*q++);
-              value[x]='\0';
-            }
+              }
+            for (x=0; IsGeometry(q) && (x < 255); x++)
+              graphic_context[n]->dash_pattern[x]=(unsigned int) strtod(q,&q);
+            graphic_context[n]->dash_pattern[x]=0;
+            break;
+          }
+        if (LocaleCompare("stroke-dashoffset",keyword) == 0)
+          {
+            graphic_context[n]->dash_offset=(unsigned int) strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("stroke-linecap",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleCompare("butt",value) == 0)
+              graphic_context[n]->linecap=ButtCap;
+            if (LocaleCompare("round",value) == 0)
+              graphic_context[n]->linecap=RoundCap;
+            if (LocaleCompare("square",value) == 0)
+              graphic_context[n]->linecap=SquareCap;
+            break;
+          }
+        if (LocaleCompare("stroke-linejoin",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleCompare("butt",value) == 0)
+              graphic_context[n]->linejoin=MiterJoin;
+            if (LocaleCompare("round",value) == 0)
+              graphic_context[n]->linejoin=RoundJoin;
+            if (LocaleCompare("square",value) == 0)
+              graphic_context[n]->linejoin=BevelJoin;
+            break;
+          }
+        if (LocaleCompare("stroke-miterlimit",keyword) == 0)
+          {
+            graphic_context[n]->miterlimit=(unsigned int) strtod(q,&q);
             break;
           }
         if (LocaleCompare("stroke-opacity",keyword) == 0)
@@ -2742,8 +2778,13 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->gravity=NorthWestGravity;
   draw_info->fill=image_info->fill;
   draw_info->stroke=image_info->stroke;
-  draw_info->linewidth=1.0;
   draw_info->stroke_antialias=image_info->antialias;
+  draw_info->linewidth=1.0;
+  draw_info->linecap=ButtCap;
+  draw_info->linejoin=MiterJoin;
+  draw_info->miterlimit=4;
+  draw_info->dash_pattern=(unsigned int *) NULL;
+  draw_info->dash_offset=0;
   draw_info->decorate=NoDecoration;
   draw_info->font=AllocateString(image_info->font);
   draw_info->text_antialias=image_info->antialias;

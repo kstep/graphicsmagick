@@ -34,11 +34,22 @@ typedef struct _DrawInfo
   PixelPacket
     stroke;
 
+  unsigned int
+    stroke_antialias;
+
   double
     linewidth;
 
+  LineCap
+    linecap;
+
+  LineJoin
+    linejoin;
+
   unsigned int
-    stroke_antialias;
+    miterlimit,
+    *dash_pattern,
+    dash_offset;
 
   DecorationType
     decorate;
