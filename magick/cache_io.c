@@ -156,6 +156,9 @@ Export unsigned int AllocateCache(Cache cache,const ClassType class_type,
   CacheInfo
     *cache_info;
 
+  char
+    null = 0;
+
   off_t
     length;
 
@@ -222,7 +225,13 @@ Export unsigned int AllocateCache(Cache cache,const ClassType class_type,
       if (cache_info->file == -1)
         return(False);
     }
+  if (lseek(cache_info->file,length,SEEK_SET) == -1)
+    return(False);
+  if (write(cache_info->file,&null,sizeof(null)) == -1)
+    return(False);
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
   (void) ftruncate(cache_info->file,length);
+#endif
   cache_info->class=class_type;
   if (cache_info->type != DiskCache)
     {
