@@ -123,7 +123,7 @@ MagickExport const char *AccessDefinition(const ImageInfo *image_info,
 
   if (image_info->definitions)
     {
-      sprintf(search_key, "%.60s:%.1024s", magick, key);
+      FormatString(search_key, "%.60s:%.1024s", magick, key);
       value=MagickMapAccessEntry(image_info->definitions,search_key,0);
     }
   return value;
@@ -205,7 +205,9 @@ AddDefinitions(ImageInfo *image_info,const char *definitions,
       }
     value[j]='\0';
     if (strlen(key) > 0)
-      status &= MagickMapAddEntry(image_info->definitions,key,value,0,exception);
+      {
+        status &= MagickMapAddEntry(image_info->definitions,key,value,0,exception);
+      }
     else
       {
         status=False;

@@ -1035,6 +1035,7 @@ Optional Features:
   --enable-maintainer-mode enable make rules and dependencies not useful
 			  (and sometimes confusing) to the casual installer
   --enable-ccmalloc       enable 'ccmalloc' memory debug support (default disabled)
+  --enable-efence         enable 'Electric Fence' memory debug support (default disabled)
   --enable-prof           enable 'prof' profiling support (default disabled)
   --enable-gprof          enable 'gprof' profiling support (default disabled)
   --enable-gcov           enable 'gcov' profiling support (default disabled)
@@ -7427,7 +7428,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 7430 "configure"
+#line 7431 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -8827,7 +8828,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 8830 "configure"' > conftest.$ac_ext
+  echo '#line 8831 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -10896,11 +10897,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10899: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10900: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10903: \$? = $ac_status" >&5
+   echo "$as_me:10904: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -11131,11 +11132,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11134: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11135: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11138: \$? = $ac_status" >&5
+   echo "$as_me:11139: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -11198,11 +11199,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11201: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11202: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:11205: \$? = $ac_status" >&5
+   echo "$as_me:11206: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -13374,7 +13375,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 13377 "configure"
+#line 13378 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13472,7 +13473,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 13475 "configure"
+#line 13476 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -15100,11 +15101,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15103: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15104: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15107: \$? = $ac_status" >&5
+   echo "$as_me:15108: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -15167,11 +15168,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15170: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15171: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15174: \$? = $ac_status" >&5
+   echo "$as_me:15175: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16532,7 +16533,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 16535 "configure"
+#line 16536 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -16630,7 +16631,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 16633 "configure"
+#line 16634 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -16947,6 +16948,15 @@ if test "${enable_ccmalloc+set}" = set; then
   with_ccmalloc=$enableval
 else
   with_ccmalloc='no'
+fi;
+
+# Enable Electric Fence memory debugging support
+# Check whether --enable-efence or --disable-efence was given.
+if test "${enable_efence+set}" = set; then
+  enableval="$enable_efence"
+  with_efence=$enableval
+else
+  with_efence='no'
 fi;
 
 # Enable prof-based profiling support
@@ -25129,6 +25139,15 @@ fi
       LIBS="$OLIBS"
     fi
   fi
+fi
+
+#
+# Add support for Electric Fence debugging library if requested
+#
+if test "$with_efence" = 'yes'
+then
+  LIB_EFENCE='-lefence'
+  LIBS="$LIB_EFENCE $LIBS"
 fi
 
 #
@@ -35612,9 +35631,9 @@ fi
 #
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_THREAD $LIBS_INITIAL"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD $LIBS_INITIAL"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_THREAD $LIBS_INITIAL"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD $LIBS_INITIAL"
 fi
 
 

@@ -513,6 +513,7 @@ MagickMapCloneMap(MagickMap map,ExceptionInfo *exception)
       }
   }
   MagickMapDeallocateIterator(iterator);
+
   return map_clone;
 }
 
@@ -1003,11 +1004,26 @@ MagickMapRemoveEntry(MagickMap map,const char *key)
         {
           if (LocaleCompare(key,p->key) == 0)
             {
-              if (p->previous)
-                p->previous->next=p->next;
-
-              if (p->next)
-                p->next->previous=p->previous;
+              if (p == map->list)
+                {
+                  if (!p->next)
+                    {
+                      map->list=0;
+                    }
+                  else
+                    {
+                      map->list=p->next;
+                      p->next->previous=0;
+                    }
+                }
+              else
+                {
+                  if (p->previous)
+                    p->previous->next=p->next;
+                  
+                  if (p->next)
+                    p->next->previous=p->previous;
+                }
 
               MagickMapDestroyObject(p);
               status=True;

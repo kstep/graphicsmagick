@@ -2264,7 +2264,7 @@ void Magick::Image::defineSet ( const std::string &magick_,
     {
       ExceptionInfo exceptionInfo;
       GetExceptionInfo( &exceptionInfo );
-      std::string options = magick_ + ":" + key_ + "=set";
+      std::string options = magick_ + ":" + key_ + "=";
       AddDefinitions ( imageInfo(), options.c_str(), &exceptionInfo );
       throwException( exceptionInfo );
     }

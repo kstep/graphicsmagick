@@ -127,6 +127,7 @@ int main ( int argc, char **argv )
     printf("key=%s value=%s\n",key,
            (char *)MagickMapDereferenceIterator(iterator,0));
 
+  MagickMapDeallocateIterator(iterator);
   MagickMapDeallocateMap(map);
 
   DestroyExceptionInfo(&exception);

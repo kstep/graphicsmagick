@@ -1,3 +1,10 @@
+2003-12-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/map.c (MagickMapRemoveEntry): Logic didn't properly
+	handle removing entry in list.
+	* configure.ac: Added --enable-efence option to enable memory
+	debugging using Electric Fence.
+
 2003-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/maptest.c (main): Extended test to add an entry to the

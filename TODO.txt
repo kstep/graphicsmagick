@@ -16,6 +16,7 @@ For 1.1 Release
  o Add a Magick++ method to set/update/remove defines
    (AccessDefinition/AddDefinitions/RemoveDefinitions).
  o Fix exception logging (map to warning & error logging)
+ o Update Windows LCMS to 1.12 release (MIT license!).
 
 For Future Release
 ==================

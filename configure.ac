@@ -382,6 +382,12 @@ AC_ARG_ENABLE(ccmalloc,
 	      [with_ccmalloc=$enableval],
 	      [with_ccmalloc='no'])
 
+# Enable Electric Fence memory debugging support
+AC_ARG_ENABLE(efence,
+	      [  --enable-efence         enable 'Electric Fence' memory debug support (default disabled)],
+	      [with_efence=$enableval],
+	      [with_efence='no'])
+
 # Enable prof-based profiling support
 AC_ARG_ENABLE(prof,
 	      [  --enable-prof           enable 'prof' profiling support (default disabled)],
@@ -1124,6 +1130,15 @@ then
       LIBS="$OLIBS"
     fi
   fi
+fi
+
+#
+# Add support for Electric Fence debugging library if requested
+#
+if test "$with_efence" = 'yes'
+then
+  LIB_EFENCE='-lefence'
+  LIBS="$LIB_EFENCE $LIBS"
 fi
 
 #
@@ -2538,9 +2553,9 @@ fi
 #
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_THREAD $LIBS_INITIAL"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD $LIBS_INITIAL"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_THREAD $LIBS_INITIAL"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD $LIBS_INITIAL"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
