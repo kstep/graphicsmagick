@@ -432,11 +432,7 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
     *magick_info;
 
   off_t
-    count,
-    offset;
-
-  register int
-    i;
+    count;
 
   struct stat
     attributes;
@@ -1312,9 +1308,6 @@ Export size_t ReadBlob(Image *image,const size_t length,void *data)
 {
   off_t
     count;
-
-  register int
-    i;
 
   assert(image != (Image *) NULL);
   assert(data != (char *) NULL);

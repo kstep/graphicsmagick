@@ -157,9 +157,6 @@ Export unsigned int AllocateCache(Cache cache,const ClassType type,
   char
     zero = 0;
 
-  int
-    status;
-
   off_t
     length,
     offset;
