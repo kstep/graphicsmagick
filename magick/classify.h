@@ -95,7 +95,16 @@ typedef enum
   DissolveCompositeOp,
   DisplaceCompositeOp,
   ModulateCompositeOp,
-  ThresholdCompositeOp
+  ThresholdCompositeOp,
+  NoCompositeOp,
+  DarkenCompositeOp,
+  LightenCompositeOp,
+  HueCompositeOp,
+  SaturateCompositeOp,
+  ColorizeCompositeOp,
+  LuminizeCompositeOp,
+  ScreenCompositeOp,
+  OverlayCompositeOp
 } CompositeOperator;
 
 typedef enum
