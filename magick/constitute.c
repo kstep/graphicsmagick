@@ -1721,10 +1721,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       if (image != (Image *) NULL)
         (void) strcpy(image->filename,filename);
     }
-  if (image == (Image *) NULL) {
-    DestroyImageInfo(clone_info); /* WPA */
-    return(image);
-  }
+  if (image == (Image *) NULL)
+    {
+      DestroyImageInfo(clone_info);
+      return(image);
+    }
   if (image->temporary)
     (void) remove(clone_info->filename);
   if (IsSubimage(clone_info->tile,False))
