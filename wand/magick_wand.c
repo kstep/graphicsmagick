@@ -23,7 +23,7 @@
 %                                 August 2003                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 1999-2004 ImageMagick Studio, a non-profit organization      %
+%  Copyright (C) 1999-2004 ImageMagick Studio LLC, a non-profit organization  %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  This software and documentation is provided "as is," and the copyright     %
@@ -52,13 +52,13 @@
 %  without fee, and encourage the use of this source code as a component for  %
 %  supporting image processing in commercial products.  If you use this       %
 %  source code in a product, acknowledgment is not required but would be      %
-%  appreciated.                                                               %
+%  appreciated.       
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  This is the tentative public API for ImageMagick.  Use it with caution
 %  because it is subject to change until it is finished somewhere around
-%  1st quarter of 2004.
+%  4th quarter of 2004.
 %
 */
 
@@ -80,6 +80,7 @@
  *   MagickGetImageProfile
  *   MagickNegateImageChannel
  *   MagickPreviewImages
+ *   MagickQueryFonts
  *   MagickThresholdImageChannel
  *   MagickTintImage
  *   MagickWhiteThresholdImage
@@ -3479,7 +3480,7 @@ WandExport unsigned int MagickGetImageMatteColor(MagickWand *wand,
 %  Suppose you want to extract the first scanline of a 640x480 image as
 %  character data in red-green-blue order:
 %
-%      MagickGetImagePixels(wand,0,0,0,640,1,"RGB",CharPixel,pixels);
+%      MagickGetImagePixels(wand,0,0,640,1,"RGB",CharPixel,pixels);
 %
 %  The format of the MagickGetImagePixels method is:
 %
@@ -3664,6 +3665,45 @@ WandExport RenderingIntent MagickGetImageRenderingIntent(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k G e t I m a g e R e s o l u t i o n                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageXResolution() gets the image X & Y resolution.
+%
+%  The format of the MagickGetImageXResolution method is:
+%
+%      unsigned int MagickGetImageXResolution(MagickWand *wand,double *x,
+%        double *y)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o x: The image x-resolution.
+%
+%    o y: The image y-resolution.
+%
+*/
+WandExport unsigned int MagickGetImageResolution(MagickWand *wand,double *x,
+  double *y)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  *x=wand->image->x_resolution;
+  *y=wand->image->y_resolution;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k G e t I m a g e S c e n e                                     %
 %                                                                             %
 %                                                                             %
@@ -3750,14 +3790,14 @@ WandExport char *MagickGetImageSignature(MagickWand *wand)
 %
 %  The format of the MagickGetImageSize method is:
 %
-%      ExtendedSignedIntegralType MagickGetImageSize(MagickWand *wand)
+%      MagickSizeType MagickGetImageSize(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: The magick wand.
 %
 */
-WandExport ExtendedSignedIntegralType MagickGetImageSize(MagickWand *wand)
+WandExport MagickSizeType MagickGetImageSize(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
@@ -3947,68 +3987,6 @@ WandExport unsigned long MagickGetImageWidth(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e X R e s o l u t i o n                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickGetImageXResolution() gets the image X resolution.
-%
-%  The format of the MagickGetImageXResolution method is:
-%
-%      double MagickGetImageXResolution(MagickWand *wand)
-%
-%  A description of each parameter follows:
-%
-%    o wand: The magick wand.
-%
-*/
-WandExport double MagickGetImageXResolution(MagickWand *wand)
-{
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickSignature);
-  if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  return(wand->image->x_resolution);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k G e t I m a g e Y R e s o l u t i o n                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickGetImageYResolution() gets the image Y resolution.
-%
-%  The format of the MagickGetImageYResolution method is:
-%
-%      double MagickGetImageYResolution(MagickWand *wand)
-%
-%  A description of each parameter follows:
-%
-%    o wand: The magick wand.
-%
-*/
-WandExport double MagickGetImageYResolution(MagickWand *wand)
-{
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickSignature);
-  if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  return(wand->image->y_resolution);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   M a g i c k G e t N u m b e r I m a g e s                                 %
 %                                                                             %
 %                                                                             %
@@ -4068,17 +4046,17 @@ WandExport unsigned long MagickGetResourceLimit(const ResourceType type)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t S a m p l i n g F a c t o r                             %
+%   M a g i c k G e t S a m p l i n g F a c t o r s                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetSamplingFactor() gets the horizontal and vertical sampling factor.
+%  MagickGetSamplingFactors() gets the horizontal and vertical sampling factor.
 %
-%  The format of the MagickGetSamplingFactor method is:
+%  The format of the MagickGetSamplingFactors method is:
 %
-%      double *MagickGetSamplingFactor(MagickWand *wand,
+%      double *MagickGetSamplingFactors(MagickWand *wand,
 %        unsigned long *number_factors)
 %
 %  A description of each parameter follows:
@@ -4088,7 +4066,7 @@ WandExport unsigned long MagickGetResourceLimit(const ResourceType type)
 %    o number_factors: The number of factors in the returned array.
 %
 */
-WandExport double *MagickGetSamplingFactor(MagickWand *wand,
+WandExport double *MagickGetSamplingFactors(MagickWand *wand,
   unsigned long *number_factors)
 {
   double
@@ -4888,7 +4866,7 @@ WandExport MagickWand *MagickMorphImages(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k M o r p h I m a g e s                                         %
+%   M a g i c k M o s a i c I m a g e s                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5084,7 +5062,8 @@ WandExport unsigned int MagickNegateImageChannel(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickNextImage() selects the next image associated with a magick wand.
+%  MagickNextImage() associates the next image in the image list with a magick
+%  wand.
 %
 %  The format of the MagickNextImage method is:
 %
@@ -5385,7 +5364,17 @@ WandExport unsigned int MagickPreviousImage(MagickWand *wand)
   if ((wand->images == (Image *) NULL) ||
       (wand->image->previous == (Image *) NULL))
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  wand->image=wand->image->previous;
+  if (GetPreviousImageInList(wand->image) == (Image *) NULL)
+    {
+      wand->iterator=True;
+      return(False);
+    }
+  if (wand->iterator != False)
+    {
+      wand->iterator=False;
+      return(True);
+    }
+  wand->image=GetPreviousImageInList(wand->image);
   return(True);
 }
 
@@ -5684,6 +5673,40 @@ WandExport double *MagickQueryFontMetrics(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k Q u e r y F o n t s                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickQueryFonts() returns any font that match the specified pattern.
+%
+%  The format of the MagickQueryFonts function is:
+%
+%      char **MagickQueryFonts(const char *pattern,unsigned long *number_fonts)
+%
+%  A description of each parameter follows:
+%
+%    o pattern: Specifies a pointer to a text string containing a pattern.
+%
+%    o number_fonts:  This integer returns the number of fonts in the list.
+%
+%
+*/
+MagickExport char **MagickQueryFonts(const char *pattern,
+  unsigned long *number_fonts)
+{
+#if NOT_SUPPORTED
+  return(GetTypeList(pattern,number_fonts));
+#endif
+  return 0;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k Q u e r y F o r m a t s                                       %
 %                                                                             %
 %                                                                             %
@@ -5869,8 +5892,8 @@ WandExport unsigned int MagickReadImage(MagickWand *wand,const char *filename)
 %
 %  The format of the MagickReadImageBlob method is:
 %
-%      unsigned int MagickReadImageBlob(MagickWand *wand,const void *blob,
-%        const size_t length)
+%      unsigned int MagickReadImageBlob(MagickWand *wand,
+%        const unsigned char *blob,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -5881,8 +5904,8 @@ WandExport unsigned int MagickReadImage(MagickWand *wand,const char *filename)
 %    o length: The blob length.
 %
 */
-WandExport unsigned int MagickReadImageBlob(MagickWand *wand,const unsigned char *blob,
-  const size_t length)
+WandExport unsigned int MagickReadImageBlob(MagickWand *wand,
+  const unsigned char *blob,const size_t length)
 {
   Image
     *images;
@@ -6608,7 +6631,7 @@ WandExport unsigned int MagickSetImageBorderColor(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k S e t I m a g e C o l o r m a p I m a g e                     %
+%   M a g i c k S e t I m a g e C o l o r m a p C o l o r                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -7182,12 +7205,13 @@ WandExport unsigned int MagickSetImageMatteColor(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetImageOption() associates one or options with an image format.
+%  MagickSetImageOption() associates one or options with a particular image
+%  format (.e.g MagickSetImageOption(wand,"jpeg","perserve","yes").
 %
 %  The format of the MagickSetImageOption method is:
 %
 %      unsigned int MagickSetImageOption(MagickWand *wand,const char *format,
-%        const char *options)
+%        const char *key,const char *value)
 %
 %  A description of each parameter follows:
 %
@@ -7195,19 +7219,21 @@ WandExport unsigned int MagickSetImageMatteColor(MagickWand *wand,
 %
 %    o format: The image format.
 %
-%    o options:  Associate these options with the image format.
+%    o key:  The key.
+%
+%    o value:  The value.
 %
 */
 WandExport unsigned int MagickSetImageOption(MagickWand *wand,
-  const char *format,const char *options)
+  const char *format,const char *key,const char *value)
 {
   char
     option[MaxTextExtent];
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  (void) FormatMagickString(option,MaxTextExtent,"%.1024s:%.1024s",
-    format,options);
+  (void) FormatMagickString(option,MaxTextExtent,"%.1024s:%.1024s=%.1024s",
+    format,key,value);
   AddDefinitions(wand->image_info,option,&wand->exception);
   return(True);
 }
@@ -7281,6 +7307,54 @@ WandExport unsigned int MagickSetImagePixels(MagickWand *wand,
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=ImportImagePixels(wand->image,x_offset,y_offset,columns,rows,map,
     storage,pixels);
+  if (status == False)
+    InheritException(&wand->exception,&wand->image->exception);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e P r o f i l e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageProfile() adds a named profile to the magick wand.  If a
+%  profile with the same name already exists, it is replaced.  This method
+%  differs from the MagickProfileImage() method in that it does not apply any
+%  CMS color profiles.
+%
+%  The format of the MagickSetImageProfile method is:
+%
+%      unsigned int MagickSetImageProfile(MagickWand *wand,const char *name,
+%        const unsigned char *profile,const unsigned long length)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o name: Name of profile to add or remove: ICC, IPTC, or generic profile.
+%
+%    o profile: The profile.
+%
+%    o length: The length of the profile.
+%
+*/
+WandExport unsigned int MagickSetImageProfile(MagickWand *wand,const char *name,
+  const unsigned char *profile,const unsigned long length)
+{
+  unsigned int
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  status=SetImageProfile(wand->image,name,profile, length);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
@@ -8414,18 +8488,18 @@ WandExport unsigned int MagickTintImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k T r a n s f o r m I m a g e s                                 %
+%   M a g i c k T r a n s f o r m I m a g e                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickTransformImages() is a convenience method that behaves like
+%  MagickTransformImage() is a convenience method that behaves like
 %  MagickResizeImage() or MagickCropImage() but accepts scaling and/or cropping
 %  information as a region geometry specification.  If the operation fails, the
 %  original image handle is returned.
 %
-%  The format of the MagickTransformImages method is:
+%  The format of the MagickTransformImage method is:
 %
 %      MagickWand *MagickTransformImage(MagickWand *wand,const char *crop,
 %        const char *geometry)
@@ -8952,35 +9026,4 @@ WandExport MagickWand *NewMagickWand(void)
   wand->images=NewImageList();
   wand->signature=MagickSignature;
   return(wand);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e s e t M a g i c k W a n d I t e r a t o r                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ResetMagickWandIterator() resets the wand iterator.  Use it in conjunction
-%  with GetNextImageInMagickWand() to iterate over all the images in the wand
-%  container.
-%
-%  The format of the ResetMagickWandIterator method is:
-%
-%      void ResetMagickWandIterator(MagickWand *wand)
-%
-%  A description of each parameter follows:
-%
-%    o wand: The magick wand.
-%
-*/
-WandExport void ResetMagickWandIterator(MagickWand *wand)
-{
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickSignature);
-  wand->image=wand->images;
 }

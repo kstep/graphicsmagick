@@ -77,9 +77,7 @@ extern WandExport DisposeType
 
 extern WandExport double
   MagickGetImageGamma(MagickWand *),
-  MagickGetImageXResolution(MagickWand *),
-  MagickGetImageYResolution(MagickWand *),
-  *MagickGetSamplingFactors(const MagickWand *,unsigned long *),
+  *MagickGetSamplingFactors(MagickWand *,unsigned long *),
   *MagickQueryFontMetrics(MagickWand *,const DrawingWand *,const char *);
 
 extern WandExport ImageType
@@ -110,6 +108,7 @@ extern WandExport MagickWand
   *MagickMosaicImages(MagickWand *),
   *MagickMontageImage(MagickWand *,const DrawingWand *,const char *,
     const char *,const MontageMode,const char *),
+  *MagickPreviewImages(MagickWand *wand,const PreviewType),
   *MagickSteganoImage(MagickWand *,const MagickWand *,const long),
   *MagickStereoImage(MagickWand *,const MagickWand *),
   *MagickTextureImage(MagickWand *,const MagickWand *),
@@ -186,6 +185,7 @@ extern WandExport unsigned int
   MagickGetImagePixels(MagickWand *,const long,const long,const unsigned long,
     const unsigned long,const char *,const StorageType,unsigned char *),
   MagickGetImageRedPrimary(MagickWand *,double *,double *),
+  MagickGetImageResolution(MagickWand *,double *,double *),
   MagickGetImageWhitePoint(MagickWand *,double *,double *),
   MagickGetSize(const MagickWand *,unsigned long *,unsigned long *),
   MagickHasNextImage(MagickWand *),
@@ -256,7 +256,7 @@ extern WandExport unsigned int
   MagickSetImageInterlaceScheme(MagickWand *,const InterlaceType),
   MagickSetImageIterations(MagickWand *,const unsigned long),
   MagickSetImageMatteColor(MagickWand *,const PixelWand *),
-  MagickSetImageOption(MagickWand *,const char *,const char *),
+  MagickSetImageOption(MagickWand *,const char *,const char *,const char *),
   MagickSetImagePixels(MagickWand *,const long,const long,const unsigned long,
     const unsigned long,const char *,const StorageType,unsigned char *),
   MagickSetImageRedPrimary(MagickWand *,const double,const double),
@@ -267,6 +267,8 @@ extern WandExport unsigned int
   MagickSetImageUnits(MagickWand *,const ResolutionType),
   MagickSetImageVirtualPixelMethod(MagickWand *,const VirtualPixelMethod),
   MagickSetPassphrase(MagickWand *,const char *),
+  MagickSetImageProfile(MagickWand *,const char *,const unsigned char *,
+    const unsigned long),
   MagickSetResourceLimit(const ResourceType type,const unsigned long limit),
   MagickSetSamplingFactors(MagickWand *,const unsigned long,const double *),
   MagickSetSize(MagickWand *,const unsigned long,const unsigned long),
@@ -303,13 +305,14 @@ extern WandExport unsigned long
   MagickGetImageScene(MagickWand *),
   MagickGetImageWidth(MagickWand *),
   MagickGetNumberImages(MagickWand *),
-  MagickGetResource(const ResourceType);
+  MagickGetResourceLimit(const ResourceType);
 
 extern WandExport VirtualPixelMethod
   MagickGetImageVirtualPixelMethod(MagickWand *);
 
 extern WandExport unsigned char
   *MagickGetImageProfile(MagickWand *,const char *,unsigned long *),
+  *MagickRemoveImageProfile(MagickWand *,const char *,unsigned long *),
   *MagickWriteImageBlob(MagickWand *,size_t *);
 
 extern WandExport void
@@ -319,4 +322,4 @@ extern WandExport void
 }
 #endif
 
-#endif /* ifndef _MAGICK_WAND_H */
+#endif
