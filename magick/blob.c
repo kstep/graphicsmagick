@@ -213,6 +213,11 @@ MagickExport void CloseBlob(Image *image)
       image->blob.extent=image->blob.length;
       return;
     }
+  if (image->fifo != (int (*)(const void *,const size_t)) NULL)
+    {
+      image->fifo=(int (*)(const void *,const size_t)) NULL;
+      return;
+    }
   if (image->file == (FILE *) NULL)
     return;
   image->status=ferror(image->file);
@@ -1130,6 +1135,15 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
     }
   GetBlobInfo(&image->blob);
   image->exempt=False;
+  if (image_info->fifo != (int (*)(const void *,const size_t)) NULL)
+    {
+      /*
+        Use stream fifo.
+      */
+      image->fifo=image_info->fifo;
+      image->exempt=True;
+      return(True);
+    }
   if (image_info->file != (FILE *) NULL)
     {
       /*
@@ -1756,6 +1770,8 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(data != (const char *) NULL);
+  if (image->fifo != (int (*)(const void *,const size_t)) NULL)
+    return(image->fifo(data,length));
   if (image->blob.data == (char *) NULL)
     {
       count=fwrite((char *) data,1,length,image->file);

@@ -156,6 +156,19 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
   Image
     *matte_image;
 
+  int
+    y;
+
+  register IndexPacket
+    *indexes;
+
+  register int
+    x;
+
+  register PixelPacket
+    *p,
+    *q;
+
   unsigned int
     status;
 
@@ -168,8 +181,31 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
     return(False);
   if (!AllocateImageColormap(matte_image,MaxRGB+1))
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
-  SyncImage(matte_image);
-  (void) strcpy(matte_image->magick,"MIFF");
+  /*
+    Convert image to matte pixels.
+  */
+  matte_image->matte=False;
+  for (y=0; y < (int) image->rows; y++)
+  {
+    p=GetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixels(matte_image,0,y,matte_image->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    indexes=GetIndexes(matte_image);
+    for (x=0; x < (int) image->columns; x++)
+    {
+      indexes[x]=p->opacity;
+      *q=matte_image->colormap[p->opacity];
+      p++;
+      q++;
+    }
+    if (!SyncImagePixels(matte_image))
+      break;
+    if (image->previous == (Image *) NULL)
+      if (QuantumTick(y,image->rows))
+        ProgressMonitor(SaveImageText,y,image->rows);
+  }
+  (void) FormatString(matte_image->filename,"MIFF:%s",image->filename);
   status=WriteImage(image_info,matte_image);
   DestroyImage(matte_image);
   return(status);

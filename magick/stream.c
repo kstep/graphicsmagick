@@ -126,6 +126,7 @@ static void
 static void ClosePixelStream(Image *image)
 {
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
 }
 
 /*
@@ -158,6 +159,7 @@ static void DestroyPixelStream(Image *image)
     *stream_info;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (image->cache == (void *) NULL)
     return;
   stream_info=(StreamInfo *) image->cache;
@@ -199,6 +201,7 @@ static IndexPacket *GetIndexesFromStream(const Image *image)
     *stream_info;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
   return(stream_info->indexes);
 }
@@ -239,6 +242,7 @@ static PixelPacket GetOnePixelFromStream(Image *image,const int x,const int y)
     *pixel;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   pixel=GetPixelStream(image,x,y,1,1);
   if (pixel != (PixelPacket *) NULL)
     return(*pixel);
@@ -285,6 +289,7 @@ static PixelPacket *GetPixelStream(Image *image,const int x,const int y,
     *pixels;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   pixels=SetPixelStream(image,x,y,columns,rows);
   return(pixels);
 }
@@ -322,6 +327,7 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
     *stream_info;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
   return(stream_info->pixels);
 }
@@ -360,7 +366,7 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 %
 */
 MagickExport unsigned int ReadStream(const ImageInfo *image_info,
-  void (*fifo)(Image *),ExceptionInfo *exception)
+  int (*fifo)(const void *,const size_t),ExceptionInfo *exception)
 {
   Image
     *image;
@@ -519,7 +525,57 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
 */
 static unsigned int SyncPixelStream(Image *image)
 {
+  StreamInfo
+    *stream_info;
+
   assert(image != (Image *) NULL);
-  image->fifo(image);
-  return(True);
+  assert(image->signature == MagickSignature);
+  stream_info=(StreamInfo *) image->cache;
+  return(image->fifo(stream_info->pixels,image->columns));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e S t r e a m                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteStream makes the image pixels available to a user supplied
+%  callback method immediately upon writing pixel data with the WriteImage()
+%  method.
+%
+%  The format of the WriteStream method is:
+%
+%      unsigned int WriteStream(const ImageInfo *image_info,Image *,
+%        void (*Stream)(const Image *))
+%
+%  A description of each parameter follows:
+%
+%    o status: Method WriteStream returns True if the image pixels are
+%      streamed to the user supplied callback method otherwise False.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o stream: a callback method.
+%
+%
+*/
+MagickExport unsigned int WriteStream(const ImageInfo *image_info,Image *image,
+  int (*fifo)(const void *,const size_t))
+{
+  unsigned int
+    status;
+
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  image_info->fifo=fifo;
+  status=WriteImage(image_info,image);
+  return(status);
 }

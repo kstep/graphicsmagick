@@ -450,8 +450,8 @@ typedef struct _Image
   void
     *cache;
 
-  void
-    (*fifo)(struct _Image *);
+  int
+    (*fifo)(const void *,const size_t);
 
   unsigned int
     orphan,
@@ -612,8 +612,8 @@ typedef struct _ImageInfo
   unsigned int
     ping;
 
-  void
-    (*fifo)(Image *);
+  int
+    (*fifo)(const void *,const size_t);
 
   unsigned int
     signature;
@@ -808,7 +808,8 @@ extern MagickExport unsigned int
   PushImagePixels(const Image *,const QuantumType,const unsigned char *),
   QueryColorDatabase(const char *,PixelPacket *),
   RaiseImage(Image *,const RectangleInfo *,const int),
-  ReadStream(const ImageInfo *,void (*)(Image *),ExceptionInfo *),
+  ReadStream(const ImageInfo *,int (*)(const void *,const size_t),
+    ExceptionInfo *),
   RGBTransformImage(Image *,const ColorspaceType),
   SetImageInfo(ImageInfo *,const unsigned int),
   SignatureImage(Image *),
@@ -818,7 +819,8 @@ extern MagickExport unsigned int
   TransformRGBImage(Image *,const ColorspaceType),
   TransparentImage(Image *,const PixelPacket),
   UnregisterMagickInfo(const char *),
-  WriteImage(const ImageInfo *,Image *);
+  WriteImage(const ImageInfo *,Image *),
+  WriteStrean(const ImageInfo *,Image *,int (*)(const void *,const size_t));
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),

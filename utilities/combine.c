@@ -90,7 +90,7 @@
 */
 #if defined(COMBINE_MAIN)
 static int combine_main(int argc,char **argv,
-  const char *header_data,const int header_length)
+  char **blob_data,size_t *blob_length)
 #else
 #include "magick/magick.h"
 #include "magick/defines.h"
@@ -994,12 +994,21 @@ int main(int argc,char **argv)
   (void) strcpy(combined_image->filename,write_filename);
   SetImageInfo(image_info,True);
 #if defined(COMBINE_MAIN)
-    if (header_data != (char *) NULL)
-      fwrite((char *) header_data,1,header_length,stdout);
-#endif
+  {
+    ExceptionInfo exception;
+
+    (void) strcpy(combined_image->magick,image_info->magick);
+    if (*blob_length == 0)
+      *blob_length = 8192;
+    *blob_data = ImageToBlob(image_info,combined_image,blob_length,&exception);
+    if (*blob_data == NULL)
+      CatchImageException(combined_image);
+  }
+#else
   status=WriteImage(image_info,combined_image);
   if (status == False)
     CatchImageException(combined_image);
+#endif
   if (image_info->verbose)
     DescribeImage(combined_image,stderr,False);
   DestroyImages(combined_image);
