@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.3b from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
-# Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -42,7 +42,7 @@
 # Don't require all the GNU mandated files
 
 
-SHELL = /bin/sh
+SHELL = @SHELL@
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -77,7 +77,7 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
@@ -94,6 +94,7 @@ host_alias = @host_alias@
 host_triplet = @host@
 target_alias = @target_alias@
 target_triplet = @target@
+AS = @AS@
 BZIPDelegate = @BZIPDelegate@
 BrowseDelegate = @BrowseDelegate@
 CC = @CC@
@@ -103,6 +104,7 @@ CPPFLAGS = @CPPFLAGS@
 CatDelegate = @CatDelegate@
 ConvertDelegate = @ConvertDelegate@
 DELEGATES = @DELEGATES@
+DLLTOOL = @DLLTOOL@
 DOTDecodeDelegate = @DOTDecodeDelegate@
 DVIDecodeDelegate = @DVIDecodeDelegate@
 EchoDelegate = @EchoDelegate@
@@ -163,16 +165,15 @@ AUTOMAKE_OPTIONS = 1.2 foreign
 
 lib_LTLIBRARIES = libMagick.la
 
-MAJOR_VERSION=@MAJOR_VERSION@
-MINOR_VERSION=@MINOR_VERSION@
-MICRO_VERSION=@MICRO_VERSION@
+MAJOR_VERSION = @MAJOR_VERSION@
+MINOR_VERSION = @MINOR_VERSION@
+MICRO_VERSION = @MICRO_VERSION@
 
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
 # Library sources
-libMagick_la_SOURCES = PreRvIcccm.c X.c animate.c colors.c compress.c decode.c \
-  delegates.c display.c effects.c encode.c error.c gems.c image.c magick.c monitor.c \
-  quantize.c segment.c shear.c signature.c utility.c widget.c memory.c
+libMagick_la_SOURCES = PreRvIcccm.c X.c animate.c colors.c compress.c decode.c   delegates.c display.c effects.c encode.c error.c gems.c image.c magick.c monitor.c   quantize.c segment.c shear.c signature.c utility.c widget.c memory.c
+
 
 # Source files not used for Unix library but which are distributed
 EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
@@ -181,13 +182,12 @@ EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
 bin_SCRIPTS = Magick-config
 
 # Headers which are installed
-include_HEADERS = PreRvIcccm.h X.h compress.h config.h error.h gems.h image.h \
-	magick.h monitor.h quantize.h utility.h widget.h memory.h delegates.h \
-	version.h
+include_HEADERS = classify.h compress.h config.h delegates.h error.h gems.h 	image.h magick.h memory.h monitor.h PreRvIcccm.h quantize.h utility.h 	version.h widget.h X.h
+
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = Colorlist.h animate.h dicom.h display.h logo.h mac.h \
-	nt.h pict.h proxy.h vms.h
+noinst_HEADERS = Colorlist.h animate.h dicom.h display.h logo.h mac.h 	nt.h pict.h proxy.h vms.h
+
 
 # Additional files to distribute
 EXTRA_DIST = Imakefile Magick-config.in Make.com
@@ -211,25 +211,25 @@ SCRIPTS =  $(bin_SCRIPTS)
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LINK = $(LIBTOOL) --mode=link $(CC) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
-DIST_COMMON =  Magick-config.in Makefile.am Makefile.in config.h.in \
-stamp-h.in
+DIST_COMMON =  ./stamp-h.in Magick-config.in Makefile.am Makefile.in \
+acconfig.h config.h.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
-GZIP = --best
+GZIP_ENV = --best
 SOURCES = $(libMagick_la_SOURCES) $(EXTRA_libMagick_la_SOURCES)
 OBJECTS = $(libMagick_la_OBJECTS)
 
-all: Makefile $(LTLIBRARIES) $(SCRIPTS) $(HEADERS) config.h
-
+all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .s
-$(srcdir)/Makefile.in: @MAINT@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign --include-deps magick/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
@@ -238,16 +238,23 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 
 
 config.h: stamp-h
-	@:
+	@if test ! -f $@; then \
+		rm -f stamp-h; \
+		$(MAKE) stamp-h; \
+	else :; fi
 stamp-h: $(srcdir)/config.h.in $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES= CONFIG_HEADERS=magick/config.h \
 	     $(SHELL) ./config.status
-	@echo timestamp > stamp-h
-$(srcdir)/config.h.in: @MAINT@$(srcdir)/stamp-h.in
-$(srcdir)/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	@echo timestamp > stamp-h 2> /dev/null
+$(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@$(srcdir)/stamp-h.in
+	@if test ! -f $@; then \
+		rm -f $(srcdir)/stamp-h.in; \
+		$(MAKE) $(srcdir)/stamp-h.in; \
+	else :; fi
+$(srcdir)/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) acconfig.h
 	cd $(top_srcdir) && $(AUTOHEADER)
-	@echo timestamp > $(srcdir)/stamp-h.in
+	@echo timestamp > $(srcdir)/stamp-h.in 2> /dev/null
 
 mostlyclean-hdr:
 
@@ -274,8 +281,8 @@ install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
 	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "$(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
@@ -363,8 +370,12 @@ uninstall-includeHEADERS:
 tags: TAGS
 
 ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
 	here=`pwd` && cd $(srcdir) \
-	  && mkid -f$$here/ID $(SOURCES) $(HEADERS) $(LISP)
+	  && mkid -f$$here/ID $$unique $(LISP)
 
 TAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
@@ -392,28 +403,42 @@ subdir = magick
 distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
-	  test -f $(distdir)/$$file \
-	  || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
-	  || cp -p $$d/$$file $(distdir)/$$file; \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-info:
-dvi:
-check: all
-installcheck:
-install-exec: install-libLTLIBRARIES install-binSCRIPTS
-	@$(NORMAL_INSTALL)
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+all-recursive-am: config.h
+	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
-install-data: install-includeHEADERS
-	@$(NORMAL_INSTALL)
+install-exec-am: install-libLTLIBRARIES install-binSCRIPTS
+install-exec: install-exec-am
 
-install: install-exec install-data all
-	@:
+install-data-am: install-includeHEADERS
+install-data: install-data-am
 
-uninstall: uninstall-libLTLIBRARIES uninstall-binSCRIPTS uninstall-includeHEADERS
-
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-libLTLIBRARIES uninstall-binSCRIPTS \
+		uninstall-includeHEADERS
+uninstall: uninstall-am
+all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(HEADERS) config.h
+all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
 		$(DESTDIR)$(includedir)
@@ -428,25 +453,33 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean:  mostlyclean-hdr mostlyclean-libLTLIBRARIES \
+mostlyclean-am:  mostlyclean-hdr mostlyclean-libLTLIBRARIES \
 		mostlyclean-compile mostlyclean-libtool \
 		mostlyclean-tags mostlyclean-generic
 
-clean:  clean-hdr clean-libLTLIBRARIES clean-compile clean-libtool \
-		clean-tags clean-generic mostlyclean
+mostlyclean: mostlyclean-am
 
-distclean:  distclean-hdr distclean-libLTLIBRARIES distclean-compile \
+clean-am:  clean-hdr clean-libLTLIBRARIES clean-compile clean-libtool \
+		clean-tags clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-hdr distclean-libLTLIBRARIES distclean-compile \
 		distclean-libtool distclean-tags distclean-generic \
-		clean
-	-rm -f config.status
+		clean-am
 	-rm -f libtool
 
-maintainer-clean:  maintainer-clean-hdr maintainer-clean-libLTLIBRARIES \
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-hdr \
+		maintainer-clean-libLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-generic \
-		distclean
+		distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
 
 .PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
 mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
@@ -456,9 +489,11 @@ distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool uninstall-binSCRIPTS install-binSCRIPTS \
 uninstall-includeHEADERS install-includeHEADERS tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info dvi \
-installcheck install-exec install-data install uninstall all \
-installdirs mostlyclean-generic distclean-generic clean-generic \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck all-recursive-am \
+install-exec-am install-exec install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 

@@ -57,6 +57,7 @@ extern Export unsigned int
     const double);
 
 extern Export void
+  DestroyQuantizeInfo(QuantizeInfo *),
   GetQuantizeInfo(QuantizeInfo *),
   NumberColors(Image *,FILE *);
 

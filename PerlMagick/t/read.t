@@ -274,7 +274,7 @@ testReadSized( 'input_70x46.rgba', '70x46', 'f3e5ab88e328da3044c1fc177a7e2978' )
 # CMYK format
 #
 ++$test;
-testReadSized( 'input_70x46.cmyk', '70x46', 'e9b162b8431709942886f79b7b7c11bb' );
+testReadSized( 'input_70x46.cmyk', '70x46', '70b0c3d7fcc7a617481285a1e27345d5' );
 
 
 #

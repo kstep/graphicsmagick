@@ -290,7 +290,8 @@ static void
   ClosestColor(CubeInfo *,const NodeInfo *),
   DefineColormap(CubeInfo *,NodeInfo *),
   HilbertCurve(CubeInfo *,Image *,int,unsigned int),
-  PruneLevel(CubeInfo *,const NodeInfo *);
+  PruneLevel(CubeInfo *,const NodeInfo *),
+  Reduction(CubeInfo *,const unsigned int);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -390,7 +391,8 @@ static unsigned int Assignment(CubeInfo *cube_info,QuantizeInfo *quantize_info,
       image->colormap[!polarity].green=MaxRGB;
       image->colormap[!polarity].blue=MaxRGB;
     }
-  if (quantize_info->colorspace != TransparentColorspace)
+  if ((quantize_info->colorspace != TransparentColorspace) &&
+      (image->colorspace != CMYKColorspace))
     {
       image->matte=False;
       image->class=PseudoClass;
@@ -831,6 +833,37 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
   cube_info->range_limit-=(MaxRGB+1);
   FreeMemory((char *) cube_info->range_limit);
   FreeMemory((char *) cube_info->cache);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e s t r o y Q u a n t i z e I n f o                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyQuantizeInfo deallocates memory associated with an
+%  QuantizeInfo structure.
+%
+%  The format of the DestroyQuantizeInfo routine is:
+%
+%      DestroyQuantizeInfo(quantize_info)
+%
+%  A description of each parameter follows:
+%
+%    o quantize_info: Specifies a pointer to an QuantizeInfo structure.
+%
+%
+*/
+Export void DestroyQuantizeInfo(QuantizeInfo *quantize_info)
+{
+  assert(quantize_info != (QuantizeInfo *) NULL);
+  FreeMemory((QuantizeInfo *) quantize_info);
+  quantize_info=(QuantizeInfo *) NULL;
 }
 
 /*
@@ -1385,232 +1418,6 @@ static void HilbertCurve(CubeInfo *cube_info,Image *image,int level,
       break;
   }
 }
-
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   P r u n e C h i l d                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method PruneChild deletes the given node and merges its statistics into
-%  its parent.
-%
-%  The format of the PruneSubtree routine is:
-%
-%      PruneChild(cube_info,node_info)
-%
-%  A description of each parameter follows.
-%
-%    o cube: A pointer to the Cube structure.
-%
-%    o node_info: pointer to node in color cube tree that is to be pruned.
-%
-%
-*/
-static void PruneChild(CubeInfo *cube_info,const NodeInfo *node_info)
-{
-  NodeInfo
-    *parent;
-
-  register int
-    id;
-
-  /*
-    Traverse any children.
-  */
-  if (node_info->census != 0)
-    for (id=0; id < 8; id++)
-      if (node_info->census & (1 << id))
-        PruneChild(cube_info,node_info->child[id]);
-  /*
-    Merge color statistics into parent.
-  */
-  parent=node_info->parent;
-  parent->census&=~(1 << node_info->id);
-  parent->number_unique+=node_info->number_unique;
-  parent->total_red+=node_info->total_red;
-  parent->total_green+=node_info->total_green;
-  parent->total_blue+=node_info->total_blue;
-  cube_info->nodes--;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  P r u n e L e v e l                                                        %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method PruneLevel deletes all nodes at the bottom level of the color
-%  tree merging their color statistics into their parent node.
-%
-%  The format of the PruneLevel routine is:
-%
-%      PruneLevel(cube_info,node_info)
-%
-%  A description of each parameter follows.
-%
-%    o cube: A pointer to the Cube structure.
-%
-%    o node_info: pointer to node in color cube tree that is to be pruned.
-%
-%
-*/
-static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
-{
-  register int
-    id;
-
-  /*
-    Traverse any children.
-  */
-  if (node_info->census != 0)
-    for (id=0; id < 8; id++)
-      if (node_info->census & (1 << id))
-        PruneLevel(cube_info,node_info->child[id]);
-  if (node_info->level == cube_info->depth)
-    PruneChild(cube_info,node_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e d u c e                                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method Reduce traverses the color cube tree and prunes any node whose
-%  quantization error falls below a particular threshold.
-%
-%  The format of the Reduce routine is:
-%
-%      Reduce(cube_info,node_info)
-%
-%  A description of each parameter follows.
-%
-%    o cube: A pointer to the Cube structure.
-%
-%    o node_info: pointer to node in color cube tree that is to be pruned.
-%
-%
-*/
-static void Reduce(CubeInfo *cube_info,const NodeInfo *node_info)
-{
-  register unsigned int
-    id;
-
-  /*
-    Traverse any children.
-  */
-  if (node_info->census != 0)
-    for (id=0; id < 8; id++)
-      if (node_info->census & (1 << id))
-        Reduce(cube_info,node_info->child[id]);
-  if (node_info->quantization_error <= cube_info->pruning_threshold)
-    PruneChild(cube_info,node_info);
-  else
-    {
-      /*
-        Find minimum pruning threshold.
-      */
-      if (node_info->number_unique > 0)
-        cube_info->colors++;
-      if (node_info->quantization_error < cube_info->next_pruning_threshold)
-        cube_info->next_pruning_threshold=node_info->quantization_error;
-    }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e d u c t i o n                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method Reduction repeatedly prunes the tree until the number of nodes
-%  with n2 > 0 is less than or equal to the maximum number of colors allowed
-%  in the output image.  On any given iteration over the tree, it selects
-%  those nodes whose E value is minimal for pruning and merges their
-%  color statistics upward. It uses a pruning threshold, Ep, to govern
-%  node selection as follows:
-%
-%    Ep = 0
-%    while number of nodes with (n2 > 0) > required maximum number of colors
-%      prune all nodes such that E <= Ep
-%      Set Ep to minimum E in remaining nodes
-%
-%  This has the effect of minimizing any quantization error when merging
-%  two nodes together.
-%
-%  When a node to be pruned has offspring, the pruning procedure invokes
-%  itself recursively in order to prune the tree from the leaves upward.
-%  n2,  Sr, Sg,  and  Sb in a node being pruned are always added to the
-%  corresponding data in that node's parent.  This retains the pruned
-%  node's color characteristics for later averaging.
-%
-%  For each node, n2 pixels exist for which that node represents the
-%  smallest volume in RGB space containing those pixel's colors.  When n2
-%  > 0 the node will uniquely define a color in the output image. At the
-%  beginning of reduction,  n2 = 0  for all nodes except a the leaves of
-%  the tree which represent colors present in the input image.
-%
-%  The other pixel count, n1, indicates the total number of colors
-%  within the cubic volume which the node represents.  This includes n1 -
-%  n2  pixels whose colors should be defined by nodes at a lower level in
-%  the tree.
-%
-%  The format of the Reduction routine is:
-%
-%      Reduction(cube_info,number_colors)
-%
-%  A description of each parameter follows.
-%
-%    o cube: A pointer to the Cube structure.
-%
-%    o number_colors: This integer value indicates the maximum number of
-%      colors in the quantized image or colormap.  The actual number of
-%      colors allocated to the colormap may be less than this value, but
-%      never more.
-%
-%
-*/
-static void Reduction(CubeInfo *cube_info,const unsigned int number_colors)
-{
-#define ReduceImageText  "  Reducing image colors...  "
-
-  unsigned int
-    span;
-
-  span=(unsigned int) cube_info->colors;
-  cube_info->next_pruning_threshold=0.0;
-  while (cube_info->colors > number_colors)
-  {
-    cube_info->pruning_threshold=cube_info->next_pruning_threshold;
-    cube_info->next_pruning_threshold=cube_info->root->quantization_error;
-    cube_info->colors=0;
-    Reduce(cube_info,cube_info->root);
-    ProgressMonitor(ReduceImageText,(unsigned int) (span-cube_info->colors),
-      span-number_colors+1);
-  }
-}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1876,6 +1683,101 @@ static unsigned int OrderedDitherImage(Image *image)
   }
   SyncImage(image);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   P r u n e C h i l d                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method PruneChild deletes the given node and merges its statistics into
+%  its parent.
+%
+%  The format of the PruneSubtree routine is:
+%
+%      PruneChild(cube_info,node_info)
+%
+%  A description of each parameter follows.
+%
+%    o cube: A pointer to the Cube structure.
+%
+%    o node_info: pointer to node in color cube tree that is to be pruned.
+%
+%
+*/
+static void PruneChild(CubeInfo *cube_info,const NodeInfo *node_info)
+{
+  NodeInfo
+    *parent;
+
+  register int
+    id;
+
+  /*
+    Traverse any children.
+  */
+  if (node_info->census != 0)
+    for (id=0; id < 8; id++)
+      if (node_info->census & (1 << id))
+        PruneChild(cube_info,node_info->child[id]);
+  /*
+    Merge color statistics into parent.
+  */
+  parent=node_info->parent;
+  parent->census&=~(1 << node_info->id);
+  parent->number_unique+=node_info->number_unique;
+  parent->total_red+=node_info->total_red;
+  parent->total_green+=node_info->total_green;
+  parent->total_blue+=node_info->total_blue;
+  cube_info->nodes--;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  P r u n e L e v e l                                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method PruneLevel deletes all nodes at the bottom level of the color
+%  tree merging their color statistics into their parent node.
+%
+%  The format of the PruneLevel routine is:
+%
+%      PruneLevel(cube_info,node_info)
+%
+%  A description of each parameter follows.
+%
+%    o cube: A pointer to the Cube structure.
+%
+%    o node_info: pointer to node in color cube tree that is to be pruned.
+%
+%
+*/
+static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
+{
+  register int
+    id;
+
+  /*
+    Traverse any children.
+  */
+  if (node_info->census != 0)
+    for (id=0; id < 8; id++)
+      if (node_info->census & (1 << id))
+        PruneLevel(cube_info,node_info->child[id]);
+  if (node_info->level == cube_info->depth)
+    PruneChild(cube_info,node_info);
 }
 
 /*
@@ -2228,4 +2130,134 @@ Export unsigned int QuantizeImages(QuantizeInfo *quantize_info,Image *images)
     }
   DestroyCubeInfo(&cube_info);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e d u c e                                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method Reduce traverses the color cube tree and prunes any node whose
+%  quantization error falls below a particular threshold.
+%
+%  The format of the Reduce routine is:
+%
+%      Reduce(cube_info,node_info)
+%
+%  A description of each parameter follows.
+%
+%    o cube: A pointer to the Cube structure.
+%
+%    o node_info: pointer to node in color cube tree that is to be pruned.
+%
+%
+*/
+static void Reduce(CubeInfo *cube_info,const NodeInfo *node_info)
+{
+  register unsigned int
+    id;
+
+  /*
+    Traverse any children.
+  */
+  if (node_info->census != 0)
+    for (id=0; id < 8; id++)
+      if (node_info->census & (1 << id))
+        Reduce(cube_info,node_info->child[id]);
+  if (node_info->quantization_error <= cube_info->pruning_threshold)
+    PruneChild(cube_info,node_info);
+  else
+    {
+      /*
+        Find minimum pruning threshold.
+      */
+      if (node_info->number_unique > 0)
+        cube_info->colors++;
+      if (node_info->quantization_error < cube_info->next_pruning_threshold)
+        cube_info->next_pruning_threshold=node_info->quantization_error;
+    }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e d u c t i o n                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method Reduction repeatedly prunes the tree until the number of nodes
+%  with n2 > 0 is less than or equal to the maximum number of colors allowed
+%  in the output image.  On any given iteration over the tree, it selects
+%  those nodes whose E value is minimal for pruning and merges their
+%  color statistics upward. It uses a pruning threshold, Ep, to govern
+%  node selection as follows:
+%
+%    Ep = 0
+%    while number of nodes with (n2 > 0) > required maximum number of colors
+%      prune all nodes such that E <= Ep
+%      Set Ep to minimum E in remaining nodes
+%
+%  This has the effect of minimizing any quantization error when merging
+%  two nodes together.
+%
+%  When a node to be pruned has offspring, the pruning procedure invokes
+%  itself recursively in order to prune the tree from the leaves upward.
+%  n2,  Sr, Sg,  and  Sb in a node being pruned are always added to the
+%  corresponding data in that node's parent.  This retains the pruned
+%  node's color characteristics for later averaging.
+%
+%  For each node, n2 pixels exist for which that node represents the
+%  smallest volume in RGB space containing those pixel's colors.  When n2
+%  > 0 the node will uniquely define a color in the output image. At the
+%  beginning of reduction,  n2 = 0  for all nodes except a the leaves of
+%  the tree which represent colors present in the input image.
+%
+%  The other pixel count, n1, indicates the total number of colors
+%  within the cubic volume which the node represents.  This includes n1 -
+%  n2  pixels whose colors should be defined by nodes at a lower level in
+%  the tree.
+%
+%  The format of the Reduction routine is:
+%
+%      Reduction(cube_info,number_colors)
+%
+%  A description of each parameter follows.
+%
+%    o cube: A pointer to the Cube structure.
+%
+%    o number_colors: This integer value indicates the maximum number of
+%      colors in the quantized image or colormap.  The actual number of
+%      colors allocated to the colormap may be less than this value, but
+%      never more.
+%
+%
+*/
+static void Reduction(CubeInfo *cube_info,const unsigned int number_colors)
+{
+#define ReduceImageText  "  Reducing image colors...  "
+
+  unsigned int
+    span;
+
+  span=(unsigned int) cube_info->colors;
+  cube_info->next_pruning_threshold=0.0;
+  while (cube_info->colors > number_colors)
+  {
+    cube_info->pruning_threshold=cube_info->next_pruning_threshold;
+    cube_info->next_pruning_threshold=cube_info->root->quantization_error;
+    cube_info->colors=0;
+    Reduce(cube_info,cube_info->root);
+    ProgressMonitor(ReduceImageText,(unsigned int) (span-cube_info->colors),
+      span-number_colors+1);
+  }
 }

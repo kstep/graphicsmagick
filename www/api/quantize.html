@@ -15,7 +15,9 @@
 	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
 	<UL>
 
+		<LI><A HREF="#CloneQuantizeInfo">CloneQuantizeInfo</A>
 		<LI><A HREF="#DestroyCubeInfo">DestroyCubeInfo</A>
+		<LI><A HREF="#DestroyQuantizeInfo">DestroyQuantizeInfo</A>
 		<LI><A HREF="#GetQuantizeInfo">GetQuantizeInfo</A>
 		<LI><A HREF="#MapImage">MapImage</A>
 		<LI><A HREF="#MapImages">MapImages</A>
@@ -37,7 +39,13 @@ quantize - Methods to Reduce the Number of Unique Colors in an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
+cloned_info=<STRONG>CloneQuantizeInfo</STRONG>(quantize_info)
+
+<P>
 <STRONG>DestroyCubeInfo</STRONG>(cube_info))
+
+<P>
+<STRONG>DestroyQuantizeInfo</STRONG>(quantize_info)
 
 <P>
 <STRONG>GetQuantizeInfo</STRONG>(quantize_info)
@@ -62,6 +70,33 @@ status=<STRONG>QuantizeImages</STRONG>(quantize_info,number_images,images)
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
 <P>
 <HR>
+<H2><A NAME="CloneQuantizeInfo">CloneQuantizeInfo</A></H2>
+<P>
+Method CloneQuantizeInfo makes a duplicate of the given quantize info, or
+if quantize info is NULL, a new one.
+
+<P>
+The format of the CloneQuantizeInfo routine is:
+
+<P>
+<PRE>        cloned_info=CloneQuantizeInfo(quantize_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">cloned_info:</A></STRONG><DD>
+<P>
+Method CloneQuantizeInfo returns a duplicate of the given image info, or if
+image info is NULL a new one.
+
+<DT><STRONG>quantize_info:</STRONG><DD>
+<P>
+a structure of type info.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="DestroyCubeInfo">DestroyCubeInfo</A></H2>
 <P>
 Method DestroyCubeInfo deallocates memory associated with an image.
@@ -76,9 +111,31 @@ The format of the DestroyCubeInfo routine is:
 A description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">cube_info:</A></STRONG><DD>
+<DT><STRONG>cube_info:</STRONG><DD>
 <P>
 The address of a structure of type CubeInfo.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="DestroyQuantizeInfo">DestroyQuantizeInfo</A></H2>
+<P>
+Method DestroyQuantizeInfo deallocates memory associated with an
+QuantizeInfo structure.
+
+<P>
+The format of the DestroyQuantizeInfo routine is:
+
+<P>
+<PRE>        DestroyQuantizeInfo(quantize_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>quantize_info:</STRONG><DD>
+<P>
+Specifies a pointer to an QuantizeInfo structure.
 
 </DL></DL>
 <P>

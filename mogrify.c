@@ -126,7 +126,6 @@
 %    -threshold value     threshold the image
 %    -transparent color   make this color transparent within the image
 %    -treedepth value     depth of the color classification tree
-%    -undercolor geometry control undercolor removal and black generation
 %    -units type          PixelsPerInch, PixelsPerCentimeter, or Undefined
 %    -verbose             print detailed information about the image
 %    -view                FlashPix viewing transforms
@@ -248,7 +247,6 @@ static void Usage(const char *client_name)
       "-threshold value     threshold the image",
       "-transparent color   make this color transparent within the image",
       "-treedepth value     depth of the color classification tree",
-      "-undercolor geometry control undercolor removal and black generation",
       "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
       "-verbose             print detailed information about the image",
       "-view                FlashPix viewing transforms",
@@ -1290,19 +1288,6 @@ int main(int argc,char **argv)
         }
         case 'u':
         {
-          if (strncmp("undercolor",option+1,3) == 0)
-            {
-              image_info.undercolor=(char *) NULL;
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing undercolor geometry",
-                      option);
-                  CloneString(&image_info.undercolor,argv[i]);
-                }
-              break;
-            }
           if (strncmp("units",option+1,3) == 0)
             {
               image_info.units=UndefinedResolution;

@@ -93,6 +93,7 @@ extern "C" {
 #if defined(HAVE_CONFIG_H)
 #include "config.h"
 #endif
+#include "classify.h"
 #include "image.h"
 #include "quantize.h"
 #include "gems.h"

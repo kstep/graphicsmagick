@@ -1471,14 +1471,14 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
                 }
               else
                 {
-                  q->red=(Quantum) ((long) (pixel.red*pixel.index+q->red*
-                    (Opaque-pixel.index))/Opaque);
-                  q->green=(Quantum) ((long) (pixel.green*pixel.index+q->green*
-                    (Opaque-pixel.index))/Opaque);
-                  q->blue=(Quantum) ((long) (pixel.blue*pixel.index+q->blue*
-                    (Opaque-pixel.index))/Opaque);
-                  q->index=(Quantum) ((long) (pixel.index*pixel.index+q->index*
-                    (Opaque-pixel.index))/Opaque);
+                  q->red=(Quantum) ((long) (pixel.red*pixel.index+
+                    q->red*(Opaque-pixel.index))/Opaque);
+                  q->green=(Quantum) ((long) (pixel.green*pixel.index+
+                    q->green*(Opaque-pixel.index))/Opaque);
+                  q->blue=(Quantum) ((long) (pixel.blue*pixel.index+
+                    q->blue*(Opaque-pixel.index))/Opaque);
+                  q->index=(unsigned short) ((long) (pixel.index*pixel.index+
+                    q->index*(Opaque-pixel.index))/Opaque);
                 }
             }
           p++;
@@ -2299,7 +2299,7 @@ Export void CondenseImage(Image *image)
   packets=0;
   q=image->pixels;
   q->length=MaxRunlength;
-  if (image->matte)
+  if (image->matte || (image->colorspace == CMYKColorspace))
     for (i=0; i < (int) (image->columns*image->rows); i++)
     {
       if (runlength != 0)
@@ -2665,8 +2665,6 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     cloned_info->border_color=AllocateString(image_info->border_color);
   if (image_info->matte_color != (char *) NULL)
     cloned_info->matte_color=AllocateString(image_info->matte_color);
-  if (image_info->undercolor != (char *) NULL)
-    cloned_info->undercolor=AllocateString(image_info->undercolor);
   return(cloned_info);
 }
 
@@ -3762,9 +3760,6 @@ Export void DestroyImageInfo(ImageInfo *image_info)
   if (image_info->matte_color != (char *) NULL)
     FreeMemory((char *) image_info->matte_color);
   image_info->matte_color=(char *) NULL;
-  if (image_info->undercolor != (char *) NULL)
-    FreeMemory((char *) image_info->undercolor);
-  image_info->undercolor=(char *) NULL;
   FreeMemory((ImageInfo *) image_info);
   image_info=(ImageInfo *) NULL;
 }
@@ -5353,7 +5348,6 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->background_color=(char *) NULL;
   image_info->border_color=(char *) NULL;
   image_info->matte_color=(char *) NULL;
-  image_info->undercolor=(char *) NULL;
   TemporaryFilename(image_info->unique);
   (void) strcat(image_info->unique,"u");
   image_info->ping=False;
@@ -6936,7 +6930,10 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       {
         option=argv[++i];
         if (Latin1Compare("cmyk",option) == 0)
-          quantize_info.colorspace=CMYKColorspace;
+          {
+            RGBTransformImage(*image,CMYKColorspace);
+            quantize_info.colorspace=CMYKColorspace;
+          }
         if (Latin1Compare("gray",option) == 0)
           {
             quantize_info.colorspace=GRAYColorspace;
@@ -6947,7 +6944,10 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
         if (Latin1Compare("ohta",option) == 0)
           quantize_info.colorspace=OHTAColorspace;
         if (Latin1Compare("rgb",option) == 0)
-          quantize_info.colorspace=RGBColorspace;
+          {
+            TransformRGBImage(*image,RGBColorspace);
+            quantize_info.colorspace=RGBColorspace;
+          }
         if (Latin1Compare("srgb",option) == 0)
           quantize_info.colorspace=sRGBColorspace;
         if (Latin1Compare("transparent",option) == 0)
@@ -9634,9 +9634,39 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
     *p;
 
   assert(image != (Image *) NULL);
-  if ((colorspace == CMYKColorspace) || (colorspace == RGBColorspace) ||
-      (colorspace == TransparentColorspace))
+  if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace))
     return;
+  if (colorspace == CMYKColorspace)
+    {
+      Quantum
+        black,
+        cyan,
+        magenta,
+        yellow;
+
+      /*
+        Convert RGB to CMYK colorspace.
+      */
+      image->colorspace=CMYKColorspace;
+      p=image->pixels;
+      for (i=0; i < (int) image->packets; i++)
+      {
+        cyan=MaxRGB-p->red;
+        magenta=MaxRGB-p->green;
+        yellow=MaxRGB-p->blue;
+        black=cyan;
+        if (magenta < black)
+          black=magenta;
+        if (yellow < black)
+          black=yellow;
+        p->red=cyan;
+        p->green=magenta;
+        p->blue=yellow;
+        p->index=black;
+        p++;
+      }
+      return;
+    }
   if (colorspace == GRAYColorspace)
     {
       /*
@@ -11973,10 +12003,7 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
     *p;
 
   assert(image != (Image *) NULL);
-  if ((colorspace == RGBColorspace) || (colorspace == GRAYColorspace) ||
-      (colorspace == TransparentColorspace))
-    return;
-  if (colorspace == CMYKColorspace)
+  if ((image->colorspace == CMYKColorspace) && (colorspace == RGBColorspace))
     {
       unsigned int
         black,
@@ -11987,7 +12014,7 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       /*
         Transform image from CMYK to RGB.
       */
-      image->colorspace=CMYKColorspace;
+      image->colorspace=RGBColorspace;
       p=image->pixels;
       for (i=0; i < (int) image->packets; i++)
       {
@@ -12012,6 +12039,9 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       }
       return;
     }
+  if ((colorspace == RGBColorspace) || (colorspace == GRAYColorspace) ||
+      (colorspace == TransparentColorspace))
+    return;
   /*
     Allocate the tables.
   */
@@ -12728,7 +12758,7 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
         if (index_weight < Transparent)
           q->index=Transparent;
         else
-          q->index=(Quantum) (index_weight+0.5);
+          q->index=(unsigned short) (index_weight+0.5);
       q->length=0;
       q+=destination->columns;
     }
@@ -12822,7 +12852,7 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
         if (index_weight < Transparent)
           q->index=Transparent;
         else
-          q->index=(Quantum) (index_weight+0.5);
+          q->index=(unsigned short) (index_weight+0.5);
       q->length=0;
       q++;
     }

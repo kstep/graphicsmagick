@@ -830,6 +830,7 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
     /*
       Initialize image structure.
     */
+    image->colorspace=CMYKColorspace;
     image->packets=image->columns*image->rows;
     image->pixels=(RunlengthPacket *)
       AllocateMemory(image->packets*sizeof(RunlengthPacket));
@@ -1073,7 +1074,6 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
         break;
       }
     }
-    TransformRGBImage(image,CMYKColorspace);
     CondenseImage(image);
     if (feof(image->file))
       MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
@@ -5253,6 +5253,8 @@ Image *ReadJPEGImage(const ImageInfo *image_info)
   jpeg_set_marker_processor(&jpeg_info,ICC_MARKER,JPEGColorProfileHandler);
   jpeg_set_marker_processor(&jpeg_info,IPTC_MARKER,JPEGNewsProfileHandler);
   (void) jpeg_read_header(&jpeg_info,True);
+  if (jpeg_info.out_color_space == JCS_CMYK)
+    image->colorspace=CMYKColorspace;
   if (jpeg_info.saw_JFIF_marker)
     {
       /*
@@ -5352,21 +5354,21 @@ Image *ReadJPEGImage(const ImageInfo *image_info)
               red=(Quantum) (GETJSAMPLE(*p++) >> 4);
               green=(Quantum) (GETJSAMPLE(*p++) >> 4);
               blue=(Quantum) (GETJSAMPLE(*p++) >> 4);
-              if (jpeg_info.out_color_space == JCS_CMYK)
-                index=(Quantum) (GETJSAMPLE(*p++) >> 4);
+              if (image->colorspace == CMYKColorspace)
+                index=(unsigned short) (GETJSAMPLE(*p++) >> 4);
             }
-         }
-       else
-         if (jpeg_info.out_color_space == JCS_GRAYSCALE)
-           index=GETJSAMPLE(*p++);
-         else
-           {
-             red=(Quantum) UpScale(GETJSAMPLE(*p++));
-             green=(Quantum) UpScale(GETJSAMPLE(*p++));
-             blue=(Quantum) UpScale(GETJSAMPLE(*p++));
-             if (jpeg_info.out_color_space == JCS_CMYK)
-               index=(Quantum) UpScale(GETJSAMPLE(*p++));
-           }
+        }
+      else
+        if (jpeg_info.out_color_space == JCS_GRAYSCALE)
+          index=GETJSAMPLE(*p++);
+        else
+          {
+            red=(Quantum) UpScale(GETJSAMPLE(*p++));
+            green=(Quantum) UpScale(GETJSAMPLE(*p++));
+            blue=(Quantum) UpScale(GETJSAMPLE(*p++));
+            if (image->colorspace == CMYKColorspace)
+              index=(unsigned short) UpScale(GETJSAMPLE(*p++));
+          }
       if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
           (index == q->index) && ((int) q->length < MaxRunlength))
         q->length++;
@@ -5400,32 +5402,29 @@ Image *ReadJPEGImage(const ImageInfo *image_info)
       ProgressMonitor(LoadImageText,y,image->rows);
   }
   SetRunlengthPackets(image,packets);
-  if (jpeg_info.out_color_space != JCS_CMYK)
+  if (image->colorspace != CMYKColorspace)
     {
       if (image->class == PseudoClass)
         SyncImage(image);
     }
   else
-    {
-      /*
-        Convert CMYK to RGB.
-      */
-      if (jpeg_info.saw_Adobe_marker)
+    if (jpeg_info.saw_Adobe_marker)
+      {
+        /*
+          Correct CMYK levels.
+        */
+        q=image->pixels;
+        for (i=0; i < (int) image->packets; i++)
         {
-          q=image->pixels;
-          for (i=0; i < (int) image->packets; i++)
-          {
-            q->red=MaxRGB-q->red;
-            q->green=MaxRGB-q->green;
-            q->blue=MaxRGB-q->blue;
-            q->index=MaxRGB-q->index;
-            q++;
-          }
+          q->red=MaxRGB-q->red;
+          q->green=MaxRGB-q->green;
+          q->blue=MaxRGB-q->blue;
+          q->index=MaxRGB-q->index;
+          q++;
         }
-      TransformRGBImage(image,CMYKColorspace);
-    }
+      }
   /*
-    Free jpeg resources..
+    Free jpeg resources.
   */
   (void) jpeg_finish_decompress(&jpeg_info);
   jpeg_destroy_decompress(&jpeg_info);
@@ -6566,6 +6565,14 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
               image->colors=(unsigned int) atoi(value);
             if (Latin1Compare(keyword,"color-profile") == 0)
               image->color_profile.length=(unsigned int) atoi(value);
+            if (Latin1Compare(keyword,"colorspace") == 0)
+              {
+                if (Latin1Compare(value,"CMYK") == 0)
+                  image->colorspace=CMYKColorspace;
+                else
+                  if (Latin1Compare(value,"RGB") == 0)
+                    image->colorspace=RGBColorspace;
+              }
             if (Latin1Compare(keyword,"compression") == 0)
               {
                 if (Latin1Compare(value,"Zip") == 0)
@@ -6814,7 +6821,7 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
     else
       {
         image->packet_size=3*(image->depth >> 3);
-        if (image->matte)
+        if (image->matte || (image->colorspace == CMYKColorspace))
           image->packet_size++;
       }
     if (image->compression == RunlengthEncodedCompression)
@@ -11101,7 +11108,9 @@ Image *ReadPSDImage(const ImageInfo *image_info)
   /*
     Initialize image.
   */
-  if (psd_header.mode != CMYKMode)
+  if (psd_header.mode == CMYKMode)
+    image->colorspace=CMYKColorspace;
+  else
     image->matte=psd_header.channels >= 4;
   image->columns=psd_header.columns;
   image->rows=psd_header.rows;
@@ -11231,7 +11240,9 @@ Image *ReadPSDImage(const ImageInfo *image_info)
           }
         layer_info[i].image->file=image->file;
         layer_info[i].image->class=image->class;
-        if (psd_header.mode != CMYKMode)
+        if (psd_header.mode == CMYKMode)
+          layer_info[i].image->colorspace=CMYKColorspace;
+        else
           layer_info[i].image->matte=layer_info[i].channels >= 4;
         if (image->colormap != (ColorPacket *) NULL)
           {
@@ -11328,7 +11339,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
               q++;
             }
           }
-        if (psd_header.mode == CMYKMode)
+        if (layer_info[i].image->colorspace == CMYKColorspace)
           {
             /*
               Correct CMYK levels.
@@ -11342,7 +11353,6 @@ Image *ReadPSDImage(const ImageInfo *image_info)
               q->index=MaxRGB-q->index;
               q++;
             }
-            TransformRGBImage(layer_info[i].image,CMYKColorspace);
           }
         layer_info[i].image->file=(FILE *) NULL;
       }
@@ -11411,7 +11421,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
     }
   if (image->class == PseudoClass)
     SyncImage(image);
-  if (psd_header.mode == CMYKMode)
+  if (image->colorspace == CMYKColorspace)
     {
       /*
         Correct CMYK levels.
@@ -11425,7 +11435,6 @@ Image *ReadPSDImage(const ImageInfo *image_info)
         q->index=MaxRGB-q->index;
         q++;
       }
-      TransformRGBImage(image,CMYKColorspace);
     }
   for (i=0; i < number_layers; i++)
   {
@@ -11438,8 +11447,8 @@ Image *ReadPSDImage(const ImageInfo *image_info)
     DestroyImage(layer_info[i].image);
   }
   image->matte=False;
-  if (psd_header.mode != CMYKMode)
-   image->matte=psd_header.channels >= 4;
+  if (image->colorspace != CMYKColorspace)
+    image->matte=psd_header.channels >= 4;
   CondenseImage(image);
   return(image);
 }
@@ -14300,6 +14309,8 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
         method=2;
         if ((samples_per_pixel >= 3) && (photometric == PHOTOMETRIC_RGB) &&
             (interlace == PLANARCONFIG_CONTIG))
+          method=1;
+        if (image->colorspace == CMYKColorspace)
           method=1;
       }
     if (TIFFIsTiled(tiff))

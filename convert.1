@@ -1194,18 +1194,6 @@ parameter.  Refer to \fBquantize(9)\fP for more details.
 
 The \fB-colors\fP option is required for this option to take effect.
 .TP
-.B "-undercolor \fI<undercolor factor>x<black-generation factor>\fP"
-control undercolor removal and black generation on CMYK images.
-
-This option enables you to perform undercolor removal and black
-generation on CMYK images-- images to be printed on a four-color
-printing system. You can control how much cyan, magenta, and yellow
-to remove from your image and how much black to add to it.
-The standard undercolor removal is \fB1.0x1.0\fP.  You'll
-frequently get better results, though, if the percentage of black you
-add to your image is slightly higher than the percentage of C, M, and Y
-you remove from it.  For example you might try \fB0.5x0.7\fP.
-.TP
 .B "-units \fItype\fP"
 the type of image resolution: \fBUndefined\fP, \fBPixelsPerInch\fP, or
 \fBPixelsPerCentimeter\fP.  The default is \fBUndefined\fP.

@@ -11807,6 +11807,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     *manager_hints;
 
   displayed_image=(*image);
+  TransformRGBImage(displayed_image,RGBColorspace);
   monitor_handler=(MonitorHandler) NULL;
   warning_handler=(ErrorHandler) NULL;
   windows=XSetWindows((XWindows *) ~0);

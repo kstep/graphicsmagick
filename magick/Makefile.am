@@ -50,9 +50,9 @@ EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
 bin_SCRIPTS = Magick-config
 
 # Headers which are installed
-include_HEADERS = PreRvIcccm.h X.h compress.h config.h error.h gems.h image.h \
-	magick.h monitor.h quantize.h utility.h widget.h memory.h delegates.h \
-	version.h
+include_HEADERS = classify.h compress.h config.h delegates.h error.h gems.h \
+	image.h magick.h memory.h monitor.h PreRvIcccm.h quantize.h utility.h \
+	version.h widget.h X.h
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = Colorlist.h animate.h dicom.h display.h logo.h mac.h \

@@ -2026,7 +2026,7 @@ Export unsigned int PackbitsDecodeImage(Image *image,const int channel)
             case 3:
             default:
             {
-              q->index=(Quantum) pixel;
+              q->index=(unsigned short) pixel;
               break;
             }
           }
@@ -2062,7 +2062,7 @@ Export unsigned int PackbitsDecodeImage(Image *image,const int channel)
         case 3:
         default:
         {
-          q->index=(Quantum) pixel;
+          q->index=(unsigned short) pixel;
           break;
         }
       }
@@ -2949,7 +2949,7 @@ Export unsigned int RunlengthDecodeImage(Image *image)
           ReadQuantum(q->green,p);
           ReadQuantum(q->blue,p);
           q->index=0;
-          if (image->matte)
+          if (image->matte || (image->colorspace == CMYKColorspace))
             ReadQuantum(q->index,p);
           q->length=(*p++);
           count+=(q->length+1);
@@ -2965,7 +2965,7 @@ Export unsigned int RunlengthDecodeImage(Image *image)
           ReadQuantum(q->green,p);
           ReadQuantum(q->blue,p);
           q->index=0;
-          if (image->matte)
+          if (image->matte || (image->colorspace == CMYKColorspace))
             ReadQuantum(q->index,p);
           q->length=0;
           count++;
@@ -3143,7 +3143,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
       packets=0;
       q=image->pixels;
       q->length=SpecialRunlength;
-      if (image->matte)
+      if (image->matte || (image->colorspace == CMYKColorspace))
         for (i=0; i < (int) (image->columns*image->rows); i++)
         {
           if (runlength != 0)
@@ -3215,7 +3215,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
   else
     {
       image->packet_size=3*(image->depth >> 3);
-      if (image->matte)
+      if (image->matte || (image->colorspace == CMYKColorspace))
         image->packet_size+=image->depth >> 3;
     }
   if (image->compression == RunlengthEncodedCompression)
@@ -3252,7 +3252,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
           WriteQuantum(p->red,q);
           WriteQuantum(p->green,q);
           WriteQuantum(p->blue,q);
-          if (image->matte)
+          if (image->matte || (image->colorspace == CMYKColorspace))
             WriteQuantum(p->index,q);
           *q++=p->length;
           count+=(p->length+1);
@@ -3269,7 +3269,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
             WriteQuantum(p->red,q);
             WriteQuantum(p->green,q);
             WriteQuantum(p->blue,q);
-            if (image->matte)
+            if (image->matte || (image->colorspace == CMYKColorspace))
               WriteQuantum(p->index,q);
           }
           count+=(p->length+1);

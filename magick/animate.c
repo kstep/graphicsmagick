@@ -1100,6 +1100,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
         next_image=image;
         for ( ; next_image != (Image *) NULL; next_image=next_image->next)
         {
+          TransformRGBImage(next_image,RGBColorspace);
           next_image->matte=False;
           if ((next_image->class == DirectClass) ||
               (next_image->colors != image->colors) ||
@@ -1137,6 +1138,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   */
   loaded_image=(Image *) NULL;
   displayed_image=images[0];
+  TransformRGBImage(displayed_image,RGBColorspace);
   for (scene=0; scene < (int) number_scenes; scene++)
   {
     if ((resource_info->map_type != (char *) NULL) ||
@@ -1525,6 +1527,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     /*
       Create X image.
     */
+    TransformRGBImage(images[scene],RGBColorspace);
     windows->image.pixmap=(Pixmap) NULL;
     if ((resource_info->map_type != (char *) NULL) ||
         (visual_info->class == TrueColor) ||

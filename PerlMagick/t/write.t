@@ -315,7 +315,7 @@ testReadWriteSized( 'CMYK:input_70x46.cmyk',
 		    'CMYK:output_70x46.cmyk',
 		    '70x46',
 		    q//,
-		    'e9b162b8431709942886f79b7b7c11bb' );
+		    '70b0c3d7fcc7a617481285a1e27345d5' );
 
 #
 # UYVY format

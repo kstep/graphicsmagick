@@ -84,12 +84,6 @@
 /* Define if the X Window System is missing or not being used.  */
 #undef X_DISPLAY_MISSING
 
-/* Package name */
-#undef PACKAGE
-
-/* Package version */
-#undef VERSION
-
 /* Include patented LZW compression */
 #undef HasLZW
 
@@ -137,9 +131,6 @@
 
 /* Define if you have zlib compression library */
 #undef HasZLIB
-
-/* Define if you have debugging malloc library */
-#undef WITH_DMALLOC
 
 /* Define if you have sys_errlist[] in libc */
 #undef HAVE_SYS_ERRLIST
@@ -245,3 +236,16 @@
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
+
+/* Name of package */
+#undef PACKAGE
+
+/* Version number of package */
+#undef VERSION
+
+/* define if compiled symbols have a leading underscore */
+#undef WITH_SYMBOL_UNDERSCORE
+
+/* Define if using the dmalloc debugging malloc package */
+#undef WITH_DMALLOC
+

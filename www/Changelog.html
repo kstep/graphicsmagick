@@ -22,6 +22,10 @@
 </pre>
 <h3><A HREF="../ImageMagick.html">ImageMagick</A> 4.1.8, February 1, 1999</h3>
 <ul>
+<li> Previously CMYK images were automatically converted to RGB.  They now
+stay in the CMYK colorspace unless you use -colorspace RGB or write to
+an RGB-only image format such as GIF.
+<p>
 <li> Added methods <tt>CreateImage</tt> and <tt>GetPixels</tt> to make
 using float arrays of pixels easier.
 <p>

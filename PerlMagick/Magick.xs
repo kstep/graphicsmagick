@@ -121,7 +121,7 @@ struct PackageInfo
     *image_info;
 
   QuantizeInfo
-    quantize_info;
+    *quantize_info;
 };
 
 /*
@@ -422,11 +422,12 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
     {
       (void) SetClientName(client_name);
       cloned_info->image_info=CloneImageInfo((ImageInfo *) NULL);
-      GetQuantizeInfo(&cloned_info->quantize_info);
+      cloned_info->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
       return(cloned_info);
     }
   *cloned_info=(*info);
   cloned_info->image_info=CloneImageInfo(info->image_info);
+  cloned_info->quantize_info=CloneQuantizeInfo(info->quantize_info);
   return(cloned_info);
 }
 
@@ -561,6 +562,7 @@ static double constant(char *name,int sans)
 static void DestroyPackageInfo(struct PackageInfo *info)
 {
   DestroyImageInfo(info->image_info);
+  DestroyQuantizeInfo(info->quantize_info);
   safefree((char *) info);
 }
 
@@ -1019,15 +1021,21 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                     SvPV(sval,na));
                   return;
                 }
-              info->quantize_info.colorspace=(ColorspaceType) sp;
+              info->quantize_info->colorspace=(ColorspaceType) sp;
+              for ( ; image; image=image->next)
+                if ((ColorspaceType) sp == CMYKColorspace)
+                  RGBTransformImage(image,CMYKColorspace);
+                else
+                  if ((ColorspaceType) sp == CMYKColorspace)
+                    TransformRGBImage(image,RGBColorspace);
             }
           return;
         }
       if (strEQcase(attribute,"colors"))
         {
   colors:
-          if (info && !(info->quantize_info.number_colors=SvIV(sval)))
-            info->quantize_info.number_colors=MaxRGB+1;
+          if (info && !(info->quantize_info->number_colors=SvIV(sval)))
+            info->quantize_info->number_colors=MaxRGB+1;
           return;
         }
       if (strEQcase(attribute,"compres"))
@@ -1100,7 +1108,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                   return;
                 }
               info->image_info->dither=sp;
-              info->quantize_info.dither=sp;
+              info->quantize_info->dither=sp;
             }
           return;
         }
@@ -1479,7 +1487,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
      if (strEQcase(attribute,"tree"))
        {
          if (info)
-           info->quantize_info.tree_depth=SvIV(sval);
+           info->quantize_info->tree_depth=SvIV(sval);
          return;
        }
       break;
@@ -1487,12 +1495,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'U':
     case 'u':
     {
-      if (strEQcase(attribute,"underc"))
-        {
-          if (info)
-            CloneString(&info->image_info->undercolor,SvPV(sval,na));
-          return;
-        }
       if (strEQcase(attribute,"unit"))
         {
           sp=SvPOK(sval) ? LookupStr(ResolutionTypes,SvPV(sval,na)) :
@@ -1837,7 +1839,7 @@ Animate(ref,...)
         resource_database=XGetResourceDatabase(display,client_name);
         XGetResourceInfo(resource_database,client_name,&resource);
         resource.image_info=package_info->image_info;
-        resource.quantize_info=(&package_info->quantize_info);
+        resource.quantize_info=package_info->quantize_info;
         (void) XAnimateImages(display,&resource,&client_name,1,image);
         XCloseDisplay(display);
       }
@@ -2463,7 +2465,7 @@ Display(ref,...)
         resource_database=XGetResourceDatabase(display,client_name);
         XGetResourceInfo(resource_database,client_name,&resource);
         resource.image_info=package_info->image_info;
-        resource.quantize_info=(&package_info->quantize_info);
+        resource.quantize_info=package_info->quantize_info;
         resource.immutable=True;
         if (package_info->image_info->delay)
           resource.delay=atoi(package_info->image_info->delay);
@@ -2676,7 +2678,7 @@ Get(ref,...)
             }
           if (strEQcase(attribute,"colorspace"))
             {
-              j=info ? info->quantize_info.colorspace : RGBColorspace;
+              j=info ? info->quantize_info->colorspace : RGBColorspace;
               s=newSViv(j);
               if ((j >= 0) && (j < NumberOf(ColorspaceTypes)-1))
                 {
@@ -2687,8 +2689,8 @@ Get(ref,...)
             }
           if (strEQcase(attribute,"colors"))  /* same as number */
             {
-              if (info && info->quantize_info.number_colors)
-                s=newSViv(info->quantize_info.number_colors);
+              if (info && info->quantize_info->number_colors)
+                s=newSViv(info->quantize_info->number_colors);
               else
                 if (image)
                   s=newSViv(image->colors);
@@ -2974,8 +2976,8 @@ Get(ref,...)
         {
           if (strEQcase(attribute,"number"))  /* same as colors */
             {
-              if (info && info->quantize_info.number_colors)
-                s=newSViv(info->quantize_info.number_colors);
+              if (info && info->quantize_info->number_colors)
+                s=newSViv(info->quantize_info->number_colors);
               else
                if (image)
                  s=newSViv(image->colors);
@@ -3220,7 +3222,7 @@ Get(ref,...)
          if (strEQcase(attribute,"tree"))
            {
              if (info)
-               s=newSViv(info->quantize_info.tree_depth);
+               s=newSViv(info->quantize_info->tree_depth);
              break;
            }
           if (strEQcase(attribute,"type"))
@@ -3241,12 +3243,6 @@ Get(ref,...)
         case 'U':
         case 'u':
         {
-          if (strEQcase(attribute,"undercolor"))
-            {
-              if (info && info->image_info->undercolor)
-                s=newSVpv(info->image_info->undercolor,0);
-              break;
-            }
           if (strEQcase(attribute,"units"))
             {
               j=info ? info->image_info->units : image->units;
@@ -4436,16 +4432,16 @@ Mogrify(ref,...)
           GetQuantizeInfo(&quantize_info);
           quantize_info.number_colors=
             attribute_flag[0] ? argument_list[0].int_reference : (info ?
-            info->quantize_info.number_colors : MaxRGB + 1);
+            info->quantize_info->number_colors : MaxRGB + 1);
           quantize_info.tree_depth=attribute_flag[1] ?
             argument_list[1].int_reference :
-            (info ? info->quantize_info.tree_depth : 8);
+            (info ? info->quantize_info->tree_depth : 8);
           quantize_info.colorspace=(ColorspaceType)
             (attribute_flag[2] ? argument_list[2].int_reference :
-            (info? info->quantize_info.colorspace : RGBColorspace));
+            (info? info->quantize_info->colorspace : RGBColorspace));
           quantize_info.dither=attribute_flag[3] ?
             argument_list[3].int_reference :
-            (info ? info->quantize_info.dither : False);
+            (info ? info->quantize_info->dither : False);
           if (attribute_flag[5] && argument_list[5].int_reference)
             {
               (void) QuantizeImages(&quantize_info,image);
@@ -4494,7 +4490,7 @@ Mogrify(ref,...)
             {
               if (!attribute_flag[0])
                 argument_list[0].int_reference=
-                  info ? info->quantize_info.colorspace : RGBColorspace;
+                  info ? info->quantize_info->colorspace : RGBColorspace;
               if (!attribute_flag[1])
                 argument_list[1].int_reference=0;
               if (!attribute_flag[2])

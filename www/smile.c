@@ -166,8 +166,8 @@ int main(int argc,char **argv)
   XSetErrorHandler(XError);
   resource_database=XGetResourceDatabase(display,argv[0]);
   XGetResourceInfo(resource_database,argv[0],&resource);
-  resource.image_info=image_info;
-  resource.quantize_info=quantize_info;
+  resource.image_info=(&image_info);
+  resource.quantize_info=(&quantize_info);
   /*
     Display smilely image.
   */

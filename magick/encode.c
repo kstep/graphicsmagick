@@ -135,6 +135,7 @@ unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
     /*
       Write AVS header.
     */
+    TransformRGBImage(image,RGBColorspace);
     MSBFirstWriteLong(image->columns,image->file);
     MSBFirstWriteLong(image->rows,image->file);
     /*
@@ -281,6 +282,7 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize BMP raster file header.
     */
+    TransformRGBImage(image,RGBColorspace);
     bmp_header.file_size=14+40;
     bmp_header.offset_bits=14+40;
     if ((Latin1Compare(image_info->magick,"BMP24") == 0) ||
@@ -563,8 +565,8 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteCMYKImage writes an image to a file in cyan, magenta,
-%  yellow, and black rasterfile format.
+%  Method WriteCMYKImage writes an image to a file in cyan, magenta, yellow,
+%  and black rasterfile format.
 %
 %  The format of the WriteCMYKImage routine is:
 %
@@ -584,15 +586,7 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 */
 unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
 {
-  double
-    black_generation,
-    undercolor;
-
   int
-    black,
-    cyan,
-    magenta,
-    yellow,
     x,
     y;
 
@@ -616,21 +610,14 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
       if (image->file == (FILE *) NULL)
         PrematureExit(FileOpenWarning,"Unable to open file",image);
     }
-  /*
-    Convert MIFF to CMYK raster pixels.
-  */
-  undercolor=1.0;
-  black_generation=1.0;
-  if (image_info->undercolor != (char *) NULL)
-    {
-      (void) sscanf(image_info->undercolor,"%lfx%lf",&undercolor,
-        &black_generation);
-      if (black_generation == 1.0)
-        black_generation=undercolor;
-    }
   scene=0;
   do
   {
+    /*
+      Convert MIFF to CMYK raster pixels.
+    */
+    if (image->colorspace != CMYKColorspace)
+      RGBTransformImage(image,CMYKColorspace);
     switch (image_info->interlace)
     {
       case NoInterlace:
@@ -661,20 +648,12 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         q=pixels;
         for (i=0; i < (int) image->packets; i++)
         {
-          cyan=MaxRGB-p->red;
-          magenta=MaxRGB-p->green;
-          yellow=MaxRGB-p->blue;
-          black=cyan;
-          if (magenta < black)
-            black=magenta;
-          if (yellow < black)
-            black=yellow;
           for (j=0; j <= ((int) p->length); j++)
           {
-            WriteQuantum((unsigned int) (cyan-undercolor*black),q);
-            WriteQuantum((unsigned int) (magenta-undercolor*black),q);
-            WriteQuantum((unsigned int) (yellow-undercolor*black),q);
-            WriteQuantum((unsigned int) (black_generation*black),q);
+            WriteQuantum(p->red,q);
+            WriteQuantum(p->green,q);
+            WriteQuantum(p->blue,q);
+            WriteQuantum(p->index,q);
             x++;
             if (x == (int) image->columns)
               {
@@ -694,12 +673,8 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
       }
       case LineInterlace:
       {
-        register int
-          x,
-          y;
-
         /*
-          Line interlacing:  CCC...MMM...YYY...CCC...MMM...YYY...
+          Line interlacing:  CCC...MMM...YYY...KKK...CCC...MMM...YYY...KKK...
         */
         if (!UncondenseImage(image))
           return(False);
@@ -708,57 +683,25 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           p=image->pixels+(y*image->columns);
           for (x=0; x < (int) image->columns; x++)
           {
-            cyan=MaxRGB-p->red;
-            magenta=MaxRGB-p->green;
-            yellow=MaxRGB-p->blue;
-            black=cyan;
-            if (magenta < black)
-              black=magenta;
-            if (yellow < black)
-              black=yellow;
-            WriteQuantumFile((unsigned int) (cyan-undercolor*black));
+            WriteQuantumFile(p->red);
             p++;
           }
           p=image->pixels+(y*image->columns);
           for (x=0; x < (int) image->columns; x++)
           {
-            cyan=MaxRGB-p->red;
-            magenta=MaxRGB-p->green;
-            yellow=MaxRGB-p->blue;
-            black=cyan;
-            if (magenta < black)
-              black=magenta;
-            if (yellow < black)
-              black=yellow;
-            WriteQuantumFile((unsigned int) (magenta-undercolor*black));
+            WriteQuantumFile(p->green);
             p++;
           }
           p=image->pixels+(y*image->columns);
           for (x=0; x < (int) image->columns; x++)
           {
-            cyan=MaxRGB-p->red;
-            magenta=MaxRGB-p->green;
-            yellow=MaxRGB-p->blue;
-            black=cyan;
-            if (magenta < black)
-              black=magenta;
-            if (yellow < black)
-              black=yellow;
-            WriteQuantumFile((unsigned int) (yellow-undercolor*black));
+            WriteQuantumFile(p->blue);
             p++;
           }
           p=image->pixels+(y*image->columns);
           for (x=0; x < (int) image->columns; x++)
           {
-            cyan=MaxRGB-p->red;
-            magenta=MaxRGB-p->green;
-            yellow=MaxRGB-p->blue;
-            black=cyan;
-            if (magenta < black)
-              black=magenta;
-            if (yellow < black)
-              black=yellow;
-            WriteQuantumFile((unsigned int) (black_generation*black));
+            WriteQuantumFile(p->index);
             p++;
           }
           if (QuantumTick(y,image->rows))
@@ -782,16 +725,8 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         p=image->pixels;
         for (i=0; i < (int) image->packets; i++)
         {
-          cyan=MaxRGB-p->red;
-          magenta=MaxRGB-p->green;
-          yellow=MaxRGB-p->blue;
-          black=cyan;
-          if (magenta < black)
-            black=magenta;
-          if (yellow < black)
-            black=yellow;
           for (j=0; j <= ((int) p->length); j++)
-            WriteQuantumFile((unsigned int) (cyan-undercolor*black));
+            WriteQuantumFile(p->red);
           p++;
         }
         if (image_info->interlace == PartitionInterlace)
@@ -806,16 +741,8 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         p=image->pixels;
         for (i=0; i < (int) image->packets; i++)
         {
-          cyan=MaxRGB-p->red;
-          magenta=MaxRGB-p->green;
-          yellow=MaxRGB-p->blue;
-          black=cyan;
-          if (magenta < black)
-            black=magenta;
-          if (yellow < black)
-            black=yellow;
           for (j=0; j <= ((int) p->length); j++)
-            WriteQuantumFile((unsigned int) (magenta-undercolor*black));
+            WriteQuantumFile(p->green);
           p++;
         }
         if (image_info->interlace == PartitionInterlace)
@@ -830,18 +757,12 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         p=image->pixels;
         for (i=0; i < (int) image->packets; i++)
         {
-          cyan=MaxRGB-p->red;
-          magenta=MaxRGB-p->green;
-          yellow=MaxRGB-p->blue;
-          black=cyan;
-          if (magenta < black)
-            black=magenta;
-          if (yellow < black)
-            black=yellow;
           for (j=0; j <= ((int) p->length); j++)
-            WriteQuantumFile((unsigned int) (yellow-undercolor*black));
+            WriteQuantumFile(p->blue);
           p++;
         }
+        ProgressMonitor(SaveImageText,300,400);
+        p=image->pixels;
         if (image_info->interlace == PartitionInterlace)
           {
             CloseImage(image);
@@ -850,20 +771,10 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             if (image->file == (FILE *) NULL)
               PrematureExit(FileOpenWarning,"Unable to open file",image);
           }
-        ProgressMonitor(SaveImageText,300,400);
-        p=image->pixels;
         for (i=0; i < (int) image->packets; i++)
         {
-          cyan=MaxRGB-p->red;
-          magenta=MaxRGB-p->green;
-          yellow=MaxRGB-p->blue;
-          black=cyan;
-          if (magenta < black)
-            black=magenta;
-          if (yellow < black)
-            black=yellow;
           for (j=0; j <= ((int) p->length); j++)
-            WriteQuantumFile((unsigned int) (black_generation*black));
+            WriteQuantumFile(p->index);
           p++;
         }
         if (image_info->interlace == PartitionInterlace)
@@ -1051,6 +962,7 @@ unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to monochrome.
     */
+    TransformRGBImage(image,RGBColorspace);
     if (!IsMonochromeImage(image))
       {
         QuantizeInfo
@@ -1135,6 +1047,7 @@ unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
+  TransformRGBImage(image,RGBColorspace);
   /*
     Allocate image memory.
   */
@@ -1474,6 +1387,7 @@ unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       image->temporary=True;
     }
   CloseImage(image);
+  TransformRGBImage(image,RGBColorspace);
   /*
     Initialize FPX toolkit.
   */
@@ -1934,6 +1848,7 @@ unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
+    TransformRGBImage(image,RGBColorspace);
     transparency=False;
     if (IsPseudoClass(image))
       colors=image->colors;
@@ -2250,6 +2165,7 @@ unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate memory for pixels.
     */
+    TransformRGBImage(image,RGBColorspace);
     pixels=(unsigned char *)
       AllocateMemory(image->columns*sizeof(RunlengthPacket));
     if (pixels == (unsigned char *) NULL)
@@ -2368,6 +2284,7 @@ unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize raster file header.
     */
+    TransformRGBImage(image,RGBColorspace);
     packet_size=1;
     if (image->class == DirectClass)
       packet_size=3;
@@ -2835,6 +2752,7 @@ unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
   CloseImage(image);
+  TransformRGBImage(image,RGBColorspace);
   *url='\0';
   if ((Latin1Compare(image_info->magick,"FTP") == 0) ||
       (Latin1Compare(image_info->magick,"HTTP") == 0))
@@ -3095,6 +3013,7 @@ unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate pixel data.
     */
+    TransformRGBImage(image,RGBColorspace);
     number_packets=((image->columns+7) >> 3)*image->rows;
     pixels=(unsigned char *)
       AllocateMemory(number_packets*sizeof(unsigned char));
@@ -3327,15 +3246,7 @@ static void JPEGWarningHandler(j_common_ptr jpeg_info,int level)
 
 unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
-  double
-    black_generation,
-    undercolor;
-
   int
-    black,
-    cyan,
-    magenta,
-    yellow,
     x,
     y,
     flags,
@@ -3391,21 +3302,16 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         jpeg_info.input_components=1;
         jpeg_info.in_color_space=JCS_GRAYSCALE;
       }
-  if (((image_info->colorspace == UndefinedColorspace) &&
-       (image->colorspace == CMYKColorspace)) ||
-       (image_info->colorspace == CMYKColorspace))
+  if (((image_info->colorspace != UndefinedColorspace) ||
+       (image->colorspace != CMYKColorspace)) &&
+       (image_info->colorspace != CMYKColorspace))
+    TransformRGBImage(image,RGBColorspace);
+  else
     {
       jpeg_info.input_components=4;
       jpeg_info.in_color_space=JCS_CMYK;
-      undercolor=1.0;
-      black_generation=1.0;
-      if (image_info->undercolor != (char *) NULL)
-        {
-          (void) sscanf(image_info->undercolor,"%lfx%lf",&undercolor,
-            &black_generation);
-          if (black_generation == 1.0)
-            black_generation=undercolor;
-        }
+      if (image->colorspace != CMYKColorspace)
+        RGBTransformImage(image,CMYKColorspace);
     }
   jpeg_set_defaults(&jpeg_info);
   flags=NoValue;
@@ -3521,23 +3427,15 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         else
           for (i=0; i < (int) image->packets; i++)
           {
-            cyan=MaxRGB-p->red;
-            magenta=MaxRGB-p->green;
-            yellow=MaxRGB-p->blue;
-            black=cyan;
-            if (magenta < black)
-              black=magenta;
-            if (yellow < black)
-              black=yellow;
             for (j=0; j <= ((int) p->length); j++)
             {
               /*
                 Convert DirectClass packets to contiguous RGB scanlines.
               */
-              *q++=(JSAMPLE) (cyan-undercolor*black) >> 4;
-              *q++=(JSAMPLE) (magenta-undercolor*black) >> 4;
-              *q++=(JSAMPLE) (yellow-undercolor*black) >> 4;
-              *q++=(JSAMPLE) (black_generation*black) >> 4;
+              *q++=(JSAMPLE) (p->red >> 4);
+              *q++=(JSAMPLE) (p->green >> 4);
+              *q++=(JSAMPLE) (p->blue >> 4);
+              *q++=(JSAMPLE) (p->index >> 4);
               x++;
               if (x == (int) image->columns)
                 {
@@ -3597,23 +3495,15 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       else
         for (i=0; i < (int) image->packets; i++)
         {
-          cyan=MaxRGB-p->red;
-          magenta=MaxRGB-p->green;
-          yellow=MaxRGB-p->blue;
-          black=cyan;
-          if (magenta < black)
-            black=magenta;
-          if (yellow < black)
-            black=yellow;
           for (j=0; j <= ((int) p->length); j++)
           {
             /*
               Convert DirectClass packets to contiguous RGB scanlines.
             */
-            *q++=(JSAMPLE) DownScale(cyan-undercolor*black);
-            *q++=(JSAMPLE) DownScale(magenta-undercolor*black);
-            *q++=(JSAMPLE) DownScale(yellow-undercolor*black);
-            *q++=(JSAMPLE) DownScale(black_generation*black);
+            *q++=(JSAMPLE) DownScale(p->red);
+            *q++=(JSAMPLE) DownScale(p->green);
+            *q++=(JSAMPLE) DownScale(p->blue);
+            *q++=(JSAMPLE) DownScale(p->index);
             x++;
             if (x == (int) image->columns)
               {
@@ -3884,6 +3774,7 @@ unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
+  TransformRGBImage(image,RGBColorspace);
   /*
     Allocate colormap.
   */
@@ -4043,8 +3934,6 @@ unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   unsigned long
     packets;
 
-  if ((image->class != DirectClass) && (image->class != PseudoClass))
-    PrematureExit(ResourceLimitWarning,"Unknown image class",image);
   /*
     Open output image file.
   */
@@ -4078,6 +3967,13 @@ unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Pack image pixels.
     */
+    if (((image_info->colorspace != UndefinedColorspace) ||
+         (image->colorspace != CMYKColorspace)) &&
+         (image_info->colorspace != CMYKColorspace))
+      TransformRGBImage(image,RGBColorspace);
+    else
+      if (image->colorspace != CMYKColorspace)
+        RGBTransformImage(image,CMYKColorspace);
     image->compression=compression;
     packets=RunlengthEncodeImage(image);
     if ((image->compression != NoCompression) &&
@@ -4173,7 +4069,10 @@ unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       if (image->matte)
         (void) fprintf(image->file,"class=DirectClass  matte=True\n");
       else
-        (void) fprintf(image->file,"class=DirectClass\n");
+        if (image->colorspace == CMYKColorspace)
+          (void) fprintf(image->file,"class=DirectClass  colorspace=CMYK\n");
+        else
+          (void) fprintf(image->file,"class=DirectClass\n");
     if (image->compression == RunlengthEncodedCompression)
       (void) fprintf(image->file,"compression=RunlengthEncoded  packets=%lu\n",
         packets);
@@ -4386,6 +4285,7 @@ unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
+  TransformRGBImage(image,RGBColorspace);
   /*
     Convert image to a bi-level image.
   */
@@ -4509,6 +4409,7 @@ unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate memory for pixels.
     */
+    TransformRGBImage(image,RGBColorspace);
     pixels=(unsigned char *)
       AllocateMemory(image->columns*sizeof(RunlengthPacket));
     if (pixels == (unsigned char *) NULL)
@@ -4721,6 +4622,7 @@ unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,pcd_image,WriteBinaryType);
   if (pcd_image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",pcd_image);
+  TransformRGBImage(image,RGBColorspace);
   /*
     Write PCD image header.
   */
@@ -4811,6 +4713,7 @@ unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
+  TransformRGBImage(image,RGBColorspace);
   /*
     Initialize the printer.
   */
@@ -5105,6 +5008,7 @@ unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
+  TransformRGBImage(image,RGBColorspace);
   page_table=(unsigned long *) NULL;
   if (image_info->adjoin)
     {
@@ -5591,6 +5495,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     /*
       Scale image to size of Portable Document page.
     */
+    TransformRGBImage(image,RGBColorspace);
     text_size=0;
     if (image->label != (char *) NULL)
       text_size=MultilineCensus(image->label)*image_info->pointsize+12;
@@ -6528,6 +6433,7 @@ unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
+  TransformRGBImage(image,RGBColorspace);
   /*
     Allocate memory.
   */
@@ -6895,6 +6801,7 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate the PNG structures
     */
+    TransformRGBImage(image,RGBColorspace);
     ping=png_create_write_struct(PNG_LIBPNG_VER_STRING,(void *) NULL,PNGError,
       PNGWarning);
     if (ping == (png_struct *) NULL)
@@ -7387,6 +7294,7 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     /*
       Promote/Demote image based on image type.
     */
+    TransformRGBImage(image,RGBColorspace);
     (void) IsPseudoClass(image);
     if (Latin1Compare(image_info->magick,"PPM") == 0)
       image->class=DirectClass;
@@ -7883,6 +7791,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   /*
     Scale the image to tile size.
   */
+  TransformRGBImage(image,RGBColorspace);
   width=image->columns;
   height=image->rows;
   x=0;
@@ -8612,6 +8521,7 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     /*
       Scale image to size of Postscript page.
     */
+    TransformRGBImage(image,RGBColorspace);
     text_size=0;
     if (image->label != (char *) NULL)
       text_size=MultilineCensus(image->label)*image_info->pointsize+12;
@@ -9162,7 +9072,31 @@ unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   MSBFirstWriteLong(image->rows,image->file);
   MSBFirstWriteLong(image->columns,image->file);
   MSBFirstWriteShort(image->depth,image->file);
-  MSBFirstWriteShort(image->class == PseudoClass ? 2 : 3,image->file);
+  if (((image_info->colorspace != UndefinedColorspace) ||
+       (image->colorspace != CMYKColorspace)) &&
+       (image_info->colorspace != CMYKColorspace))
+    {
+      TransformRGBImage(image,RGBColorspace);
+      MSBFirstWriteShort(image->class == PseudoClass ? 2 : 3,image->file);
+    }
+  else
+    {
+      /*
+        Correct CMYK levels.
+      */
+      if (image->colorspace != CMYKColorspace)
+        RGBTransformImage(image,CMYKColorspace);
+      p=image->pixels;
+      for (i=0; i < (int) image->packets; i++)
+      {
+        p->red=MaxRGB-p->red;
+        p->green=MaxRGB-p->green;
+        p->blue=MaxRGB-p->blue;
+        p->index=MaxRGB-p->index;
+        p++;
+      }
+      MSBFirstWriteShort(4,image->file);
+    }
   if ((image->class == DirectClass) || (image->colors > 256))
     MSBFirstWriteLong(0,image->file);
   else
@@ -9221,7 +9155,7 @@ unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
         p++;
       }
       p=image->pixels;
-      if (image->matte)
+      if (image->matte || (image->colorspace == CMYKColorspace))
         for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
@@ -9470,6 +9404,7 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     /*
       Scale image to size of Postscript page.
     */
+    TransformRGBImage(image,RGBColorspace);
     text_size=0;
     if (image->label != (char *) NULL)
       text_size=MultilineCensus(image->label)*image_info->pointsize+12;
@@ -9947,6 +9882,7 @@ unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to RGB raster pixels.
     */
+    TransformRGBImage(image,RGBColorspace);
     switch (image_info->interlace)
     {
       case NoInterlace:
@@ -10269,6 +10205,7 @@ unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize SGI raster file header.
     */
+    TransformRGBImage(image,RGBColorspace);
     iris_header.magic=0x01DA;
     if (image_info->compression == NoCompression)
       iris_header.storage=0x00;
@@ -10510,6 +10447,7 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize SUN raster file header.
     */
+    TransformRGBImage(image,RGBColorspace);
     sun_header.magic=0x59a66a95;
     sun_header.width=image->columns;
     sun_header.height=image->rows;
@@ -10815,6 +10753,7 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     /*
       Flop image.
     */
+    TransformRGBImage(image,RGBColorspace);
     image->orphan=True;
     flopped_image=FlopImage(image);
     image->orphan=False;
@@ -11427,6 +11366,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           /*
             Full color TIFF raster.
           */
+          TransformRGBImage(image,RGBColorspace);
           photometric=PHOTOMETRIC_RGB;
           TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,(image->matte ? 4 : 3));
           if (image->matte)
@@ -11449,6 +11389,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           /*
             Colormapped TIFF raster.
           */
+          TransformRGBImage(image,RGBColorspace);
           TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
           photometric=PHOTOMETRIC_PALETTE;
           if (image->colors <= 2)
@@ -11692,47 +11633,22 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       }
       case PHOTOMETRIC_SEPARATED:
       {
-        double
-           black_generation,
-           undercolor;
-
-         int
-           black,
-           cyan,
-           magenta,
-           yellow;
-
         /*
           CMYK TIFF image.
         */
-        undercolor=1.0;
-        black_generation=1.0;
-        if (image_info->undercolor != (char *) NULL)
-          {
-            (void) sscanf(image_info->undercolor,"%lfx%lf",&undercolor,
-              &black_generation);
-            if (black_generation == 1.0)
-              black_generation=undercolor;
-          }
+        if (image->colorspace != CMYKColorspace)
+          RGBTransformImage(image,CMYKColorspace);
         for (i=0; i < (int) image->packets; i++)
         {
-          cyan=MaxRGB-p->red;
-          magenta=MaxRGB-p->green;
-          yellow=MaxRGB-p->blue;
-          black=cyan;
-          if (magenta < black)
-            black=magenta;
-          if (yellow < black)
-            black=yellow;
           for (j=0; j <= ((int) p->length); j++)
           {
             /*
               Convert DirectClass packets to contiguous RGB scanlines.
             */
-            WriteQuantum((unsigned int) (cyan-undercolor*black),q);
-            WriteQuantum((unsigned int) (magenta-undercolor*black),q);
-            WriteQuantum((unsigned int) (yellow-undercolor*black),q);
-            WriteQuantum((unsigned int) (black_generation*black),q);
+            WriteQuantum(p->red,q);
+            WriteQuantum(p->green,q);
+            WriteQuantum(p->blue,q);
+            WriteQuantum(p->index,q);
             x++;
             if (x == (int) image->columns)
               {
@@ -11989,6 +11905,7 @@ unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to TXT raster pixels.
     */
+    TransformRGBImage(image,RGBColorspace);
     x=0;
     y=0;
     p=image->pixels;
@@ -12110,6 +12027,7 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
+  TransformRGBImage(image,RGBColorspace);
   transparent=False;
   if (image->class == PseudoClass)
     colors=image->colors;
@@ -12320,6 +12238,7 @@ unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
+  TransformRGBImage(image,RGBColorspace);
   /*
     Convert to YUV, at full resolution.
   */
@@ -12429,6 +12348,7 @@ unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
+  TransformRGBImage(image,RGBColorspace);
   /*
     Write header.
   */
@@ -12608,6 +12528,7 @@ unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize VIFF image structure.
     */
+    TransformRGBImage(image,RGBColorspace);
     viff_header.identifier=(char) 0xab;
     viff_header.file_type=1;
     viff_header.release=1;
@@ -13014,6 +12935,7 @@ unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
+  TransformRGBImage(image,RGBColorspace);
   /*
     Write X bitmap header.
   */
@@ -13186,6 +13108,7 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
+  TransformRGBImage(image,RGBColorspace);
   transparent=False;
   if (image->class == PseudoClass)
     colors=image->colors;
@@ -13407,6 +13330,7 @@ unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     /*
       Zoom image to an even width and height.
     */
+    TransformRGBImage(image,RGBColorspace);
     image->orphan=True;
     yuv_image=ZoomImage(image,
       image->columns+(image->columns & 0x01 ? 1 : 0),
@@ -13566,6 +13490,7 @@ unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
+  TransformRGBImage(image,RGBColorspace);
   /*
     Initialize XWD file header.
   */
