@@ -4702,7 +4702,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         if (image->depth > QuantumDepth)
           image->depth=QuantumDepth;
         if (image->colors == 0 || image->colors > MaxRGB+1)
-          image->colors = MaxRGB+1;
+          image->colors = 1<<image->depth;
         if (image->depth > 8)
           ping_info->bit_depth=16;
         else
