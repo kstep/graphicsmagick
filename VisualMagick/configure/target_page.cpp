@@ -22,6 +22,7 @@ CTargetPage::CTargetPage() : CPropertyPage(CTargetPage::IDD)
 	m_projectType = -1;
 	m_useX11Stubs = FALSE;
 	m_decorateFiles = FALSE;
+	m_optionalFiles = FALSE;
 	//}}AFX_DATA_INIT
 }
 
@@ -36,6 +37,7 @@ void CTargetPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Radio(pDX, IDC_PROJECT_TYPE, m_projectType);
 	DDX_Check(pDX, IDC_USE_X11_STUBS, m_useX11Stubs);
 	DDX_Check(pDX, IDC_DECORATE_FILES, m_decorateFiles);
+	DDX_Check(pDX, IDC_INCLUDE_OPTIONAL, m_optionalFiles);
 	//}}AFX_DATA_MAP
 }
 

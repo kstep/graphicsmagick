@@ -17,9 +17,9 @@ Class5=CTargetPage
 Class6=CWelcomePage
 
 ResourceCount=4
-Resource1=IDD_WELCOME_PAGE
-Resource2=IDD_TARGET_PAGE
-Resource3=IDD_SYSTEM_PAGE
+Resource1=IDD_SYSTEM_PAGE
+Resource2=IDD_WELCOME_PAGE
+Resource3=IDD_TARGET_PAGE
 Resource4=IDD_FINISHED_PAGE
 
 [CLS:CConfigureApp]
@@ -55,7 +55,7 @@ Type=0
 BaseClass=CPropertyPage
 HeaderFile=target_page.h
 ImplementationFile=target_page.cpp
-LastObject=IDC_CHECK1
+LastObject=IDC_INCLUDE_OPTIONAL
 Filter=D
 VirtualFilter=idWC
 
@@ -96,7 +96,7 @@ Control16=IDC_OUTPUT_LIB_BROWSE,button,1342242816
 [DLG:IDD_TARGET_PAGE]
 Type=1
 Class=CTargetPage
-ControlCount=10
+ControlCount=11
 Control1=IDC_STATIC,button,1342177287
 Control2=IDC_PROJECT_TYPE,button,1342308361
 Control3=IDC_PROJECT_TYPE1,button,1342177289
@@ -107,6 +107,7 @@ Control7=IDC_STATIC,button,1342177287
 Control8=IDC_PROJECT_TYPE3,button,1342177289
 Control9=IDC_STATIC,static,1342308352
 Control10=IDC_STATIC,static,1342308352
+Control11=IDC_INCLUDE_OPTIONAL,button,1342242819
 
 [DLG:IDD_WELCOME_PAGE]
 Type=1

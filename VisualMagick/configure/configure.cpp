@@ -48,6 +48,7 @@ enum {DISABLED, UTILITY, LIBRARY, STATICLIB, MODULE, THIRDPARTY};
 
 BOOL useX11Stubs = TRUE;
 BOOL decorateFilenames = FALSE;
+BOOL optionalFiles = TRUE;
 CString release_loc;
 CString debug_loc;
 CString bin_loc;
@@ -962,6 +963,14 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
   {
   case UTILITY:
     {
+      if (!optionalFiles)
+      {
+        CStringEx strTest = root;
+        if (strTest.FindNoCase("\\test") >= 0)
+          return;
+        if (strTest.FindNoCase("\\demo") >= 0)
+          return;
+      }
       subpath = "..\\";
 	    subpath += root;
       subpath += "\\*.c";
@@ -1262,6 +1271,7 @@ BOOL CConfigureApp::InitInstance()
 
   wizard.m_Page2.m_useX11Stubs = useX11Stubs;
   wizard.m_Page2.m_decorateFiles = decorateFilenames;
+  wizard.m_Page2.m_optionalFiles = optionalFiles;
 
   wizard.m_Page3.m_tempRelease = release_loc;
   wizard.m_Page3.m_tempDebug = debug_loc;
@@ -1273,6 +1283,7 @@ BOOL CConfigureApp::InitInstance()
 	{
     useX11Stubs = wizard.m_Page2.m_useX11Stubs;
     decorateFilenames = wizard.m_Page2.m_decorateFiles;
+    optionalFiles = wizard.m_Page2.m_optionalFiles;
     release_loc = wizard.m_Page3.m_tempRelease;
     debug_loc = wizard.m_Page3.m_tempDebug;
     bin_loc = wizard.m_Page3.m_outputBin;

@@ -25,6 +25,7 @@ public:
 	int		m_projectType;
 	BOOL	m_useX11Stubs;
 	BOOL	m_decorateFiles;
+	BOOL	m_optionalFiles;
 	//}}AFX_DATA
 
 
