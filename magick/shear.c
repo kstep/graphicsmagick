@@ -848,7 +848,7 @@ MagickExport Image *RotateImage(Image *image,const double degrees,
   if (integral_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to rotate image",
       "Memory allocation failed");
-  shear.x=(-tan(0.5000000000000001*DegreesToRadians(angle)));
+  shear.x=(-tan(0.5*DegreesToRadians(angle)));
   shear.y=sin(DegreesToRadians(angle));
   if ((shear.x == 0.0) || (shear.y == 0.0))
     return(integral_image);
@@ -972,7 +972,7 @@ MagickExport Image *ShearImage(Image *image,const double x_shear,
   if (integral_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to shear image",
       "Memory allocation failed");
-  shear.x=(-0.5000000000000001*tan(DegreesToRadians(x_shear)));
+  shear.x=(-tan(0.5*DegreesToRadians(x_shear)));
   shear.y=sin(DegreesToRadians(y_shear));
   if ((shear.x == 0.0) || (shear.y == 0.0))
     return(integral_image);
