@@ -972,6 +972,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
           (void) fprintf(svg_info->file,"push graphic-context\n");
           break;
         }
+      if (LocaleCompare((char *) name,"tspan") == 0)
+        {
+          (void) fprintf(svg_info->file,"push graphic-context\n");
+          break;
+        }
       break;
     }
     default:
@@ -2030,6 +2035,22 @@ static void SVGEndElement(void *context,const xmlChar *name)
     case 't':
     {
       if (LocaleCompare((char *) name,"text") == 0)
+        {
+          if (strlen(svg_info->text) == 0)
+            break;
+          if (strchr(svg_info->text,'\'') != (char *) NULL)
+            {
+              (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",
+                svg_info->bounds.x,svg_info->bounds.y,svg_info->text);
+              (void) fprintf(svg_info->file,"pop graphic-context\n");
+              break;
+            }
+          (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->bounds.x,
+            svg_info->bounds.y,svg_info->text);
+          (void) fprintf(svg_info->file,"pop graphic-context\n");
+          break;
+        }
+      if (LocaleCompare((char *) name,"tspan") == 0)
         {
           if (strlen(svg_info->text) == 0)
             break;
@@ -3427,6 +3448,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             GetToken(q,&q,token);
             FormatString(message,"text-antialias:%.1024s;",token);
             (void) WriteBlobString(image,message);
+            break;
+          }
+        if (LocaleCompare("tspan",keyword) == 0)
+          {
+            primitive_type=TextPrimitive;
             break;
           }
         if (LocaleCompare("translate",keyword) == 0)
