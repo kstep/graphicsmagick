@@ -429,12 +429,17 @@ typedef struct _DrawInfo
 
   unsigned int
     antialias,
-    linewidth,
     gravity;
 
   double
-    pointsize,
-    angle;
+    linewidth,
+    pointsize;
+
+  PointInfo
+    translate;
+
+  double
+    rotate;
 
   PixelPacket
     border_color;

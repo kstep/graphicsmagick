@@ -289,6 +289,8 @@ static double UnitOfMeasure(const char *value)
     return(72.0/2.54);
   if (Latin1Compare(value+strlen(value)-2,"in") == 0)
     return(72.0);
+  if (Latin1Compare(value+strlen(value)-2,"pt") == 0)
+    return(1.0);
   return(1.0);
 }
 
@@ -296,7 +298,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define MaxContexts  256
 
-  typedef struct _EllipseInfo
+  typedef struct _ElementInfo
   {
     double
       cx,
@@ -304,7 +306,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       major,
       minor,
       angle;
-  } EllipseInfo;
+  } ElementInfo;
 
   typedef struct _GraphicContext
   {
@@ -336,8 +338,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DrawInfo
     *draw_info;
 
-  EllipseInfo
-    ellipse;
+  ElementInfo
+    element;
 
   GraphicContext
     graphic_context[MaxContexts];
@@ -356,6 +358,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     n,
     length,
     number_tokens;
+
+  PointInfo
+    translate;
 
   RectangleInfo
     page;
@@ -384,13 +389,16 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   (void) strcpy(canvas->filename,image->filename);
   SetImage(canvas,Opaque);
+  canvas->filter=TriangleFilter;
   /*
     Interpret SVG language.
   */
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  ellipse.minor=0.0;
-  ellipse.major=0.0;
-  ellipse.angle=0.0;
+  element.cx=0.0;
+  element.cy=0.0;
+  element.minor=0.0;
+  element.major=0.0;
+  element.angle=0.0;
   filename=AllocateString("logo:");
   keyword=AllocateString("none");
   quote=False;
@@ -406,7 +414,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     graphic_context[i].stroke=AllocateString("none");
     graphic_context[i].opacity=100.0;
     graphic_context[i].linewidth=1.0;
-    graphic_context[i].pointsize=12;
+    graphic_context[i].pointsize=12.0;
     graphic_context[i].antialias=True;
   }
   n=0;
@@ -450,7 +458,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Render graphic primitive.
         */
-        if ((Latin1Compare(primitive,"rectangle") == 0) && (ellipse.major != 0))
+        if ((Latin1Compare(primitive,"rectangle") == 0) &&
+            (element.major != 0.0))
           CloneString(&primitive,"roundRectangle");
         for (i=0; i < strlen(vertices); i++)
           if (isalpha((int) vertices[i]))
@@ -479,16 +488,16 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (Latin1Compare(graphic_context[n].fill,"none") != 0)
               (void) strncpy(command,"fill",4);
-            FormatString(points,"%g,%g %g,%g",ellipse.cx,ellipse.cy,
-              ellipse.cx,ellipse.cy+ellipse.minor);
+            FormatString(points,"%g,%g %g,%g",element.cx,element.cy,
+              element.cx,element.cy+element.minor);
             (void) strcat(command,points);
           }
         if (Latin1Compare(primitive,"ellipse") == 0)
           {
             if (Latin1Compare(graphic_context[n].fill,"none") != 0)
               (void) strncpy(command,"fill",4);
-            FormatString(points,"%g,%g %g,%g 0,360",ellipse.cx,ellipse.cy,
-              ellipse.major,ellipse.minor);
+            FormatString(points,"%g,%g %g,%g 0,360",element.cx,element.cy,
+              element.major,element.minor);
             (void) strcat(command,points);
           }
         if (Latin1Compare(primitive,"line") == 0)
@@ -523,7 +532,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (void) strncpy(command,"fill",4);
             FormatString(points,"%g,%g %d,%d %g,%g",page.x+page.width/2.0,
               page.y+page.height/2.0,page.width,page.height,
-              ellipse.major/2.0,ellipse.minor/2.0);
+              element.major/2.0,element.minor/2.0);
             (void) strcat(command,points);
           }
         if (Latin1Compare(primitive,"image") == 0)
@@ -536,7 +545,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (Latin1Compare(primitive,"text") == 0)
           {
             FormatString(points,"%d,%g",page.x,page.y-
-              graphic_context[n].pointsize/2);
+              graphic_context[n].pointsize/2.0);
             (void) strcat(command,points);
             (void) strcat(command," '");
             (void) strcat(command,text+1);
@@ -560,7 +569,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         draw_info->linewidth=graphic_context[n].linewidth;
         draw_info->antialias=graphic_context[n].antialias;
         draw_info->pointsize=graphic_context[n].pointsize;
-        draw_info->angle=ellipse.angle;
+        draw_info->translate=translate;
+        draw_info->rotate=element.angle;
         (void) CloneString(&draw_info->primitive,command);
         (void) printf("draw: %d %s %s\n",n,draw_info->pen,draw_info->primitive);
         status=DrawImage(canvas,draw_info);
@@ -605,13 +615,19 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (Latin1Compare(token,"=") == 0)
       (void) GetToken(image,&value,&c,exception);
     if (Latin1Compare(keyword,"angle") == 0)
-      (void) sscanf(value,"%f",&ellipse.angle);
+      (void) sscanf(value,"%f",&element.angle);
     if (Latin1Compare(keyword,"circle") == 0)
       CloneString(&primitive,"circle");
     if (Latin1Compare(keyword,"cx") == 0)
-      (void) sscanf(value,"%lf",&ellipse.cx);
+      {
+        (void) sscanf(value,"%lf",&element.cx);
+        element.cx*=UnitOfMeasure(value);
+      }
     if (Latin1Compare(keyword,"cy") == 0)
-      (void) sscanf(value,"%lf",&ellipse.cy);
+      {
+        (void) sscanf(value,"%lf",&element.cy);
+        element.cy*=UnitOfMeasure(value);
+      }
     if (Latin1Compare(keyword,"d") == 0)
       (void) ConcatenateString(&vertices,value);
     if (Latin1Compare(keyword,"ellipse") == 0)
@@ -638,9 +654,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (Latin1Compare(keyword,"image") == 0)
       CloneString(&primitive,"image");
     if (Latin1Compare(keyword,"major") == 0)
-      (void) sscanf(value,"%lf",&ellipse.major);
+      (void) sscanf(value,"%lf",&element.major);
     if (Latin1Compare(keyword,"minor") == 0)
-      (void) sscanf(value,"%lf",&ellipse.minor);
+      (void) sscanf(value,"%lf",&element.minor);
     if (Latin1Compare(keyword,"polygon") == 0)
       CloneString(&primitive,"polygon");
     if (Latin1Compare(keyword,"polyline") == 0)
@@ -651,20 +667,22 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) CloneString(&vertices,value);
     if (Latin1Compare(keyword,"r") == 0)
       {
-        (void) sscanf(value,"%lf",&ellipse.major);
-        (void) sscanf(value,"%lf",&ellipse.minor);
+        (void) sscanf(value,"%lf",&element.major);
+        element.major*=UnitOfMeasure(value);
+        element.minor=element.major;
       }
     if (Latin1Compare(keyword,"rect") == 0)
       CloneString(&primitive,"rectangle");
     if (Latin1Compare(keyword,"rx") == 0)
       {
-        (void) sscanf(value,"%lf",&ellipse.major);
-        ellipse.major*=2.0;
+        (void) sscanf(value,"%lf",&element.major);
+        element.major*=2.0;
+        element.minor=element.major;
       }
     if (Latin1Compare(keyword,"ry") == 0)
       {
-        (void) sscanf(value,"%lf",&ellipse.minor);
-        ellipse.minor*=2.0;
+        (void) sscanf(value,"%lf",&element.minor);
+        element.minor*=2.0;
       }
     if (Latin1Compare(keyword,"style") == 0)
       {
@@ -686,7 +704,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 graphic_context[n].opacity*=100.0;
             }
           if (Latin1Compare(tokens[i],"font-size:") == 0)
-            (void) sscanf(tokens[++i],"%lf",&graphic_context[n].pointsize);
+            {
+              (void) sscanf(tokens[++i],"%lf",&graphic_context[n].pointsize);
+              graphic_context[n].linewidth*=UnitOfMeasure(tokens[i]);
+            }
           if (Latin1Compare(tokens[i],"stroke:") == 0)
             {
               (void) CloneString(&value,tokens[++i]);
@@ -718,9 +739,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           (void) printf("  %d: %s %s\n",i,tokens[i],tokens[i+1]);
           if (Latin1Compare(tokens[i],"translate") == 0)
-            (void) sscanf(tokens[++i]+1,"%lf %lf",&ellipse.cx,&ellipse.cy);
+            (void) sscanf(tokens[++i]+1,"%lf %lf",&translate.x,&translate.y);
           if (Latin1Compare(tokens[i],"rotate") == 0)
-            (void) sscanf(tokens[++i]+1,"%lf",&ellipse.angle);
+            (void) sscanf(tokens[++i]+1,"%lf",&element.angle);
           FreeMemory((void *) &tokens[i]);
         }
         FreeMemory((void *) &tokens);
@@ -745,7 +766,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (Latin1Compare(keyword,"x") == 0)
       {
-        (void) sscanf(value,"%u",&page.x);
+        (void) sscanf(value,"%d",&page.x);
         page.x*=UnitOfMeasure(value);
       }
     if (Latin1Compare(keyword,"x1") == 0)
@@ -754,7 +775,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) sscanf(value,"%lf",&segment.x2);
     if (Latin1Compare(keyword,"y") == 0)
       {
-        (void) sscanf(value,"%u",&page.y);
+        (void) sscanf(value,"%d",&page.y);
         page.y*=UnitOfMeasure(value);
       }
     if (Latin1Compare(keyword,"y1") == 0)

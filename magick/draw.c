@@ -602,11 +602,9 @@ static double GenerateCircle(PrimitiveInfo *primitive_info,PointInfo start,
 }
 
 static void GenerateEllipse(PrimitiveInfo *primitive_info,PointInfo start,
-  PointInfo end,PointInfo degrees,double angle)
+  PointInfo end,PointInfo degrees)
 {
   double
-    cose,
-    sine,
     i;
 
   PointInfo
@@ -627,15 +625,10 @@ static void GenerateEllipse(PrimitiveInfo *primitive_info,PointInfo start,
       (fmod(degrees.y-degrees.x,360.0) != 0.0))
     primitive_info->coordinates++;
   p=primitive_info;
-  cose=cos(DegreesToRadians(fmod(angle,360.0)));
-  sine=sin(DegreesToRadians(fmod(angle,360.0)));
   for (i=(degrees.x+1.0); i <= degrees.y; i+=1.0)
   {
-
-    pixel.x=cos(DegreesToRadians(fmod(i,360.0)))*cose*end.x+
-      sin(DegreesToRadians(fmod(i,360.0)))*sine*end.y+start.x;
-    pixel.y=(-cos(DegreesToRadians(fmod(i,360.0)))*sine*end.x+
-      sin(DegreesToRadians(fmod(i,360.0)))*cose*end.y+start.y);
+    pixel.x=cos(DegreesToRadians(fmod(i,360.0)))*end.x+start.x;
+    pixel.y=sin(DegreesToRadians(fmod(i,360.0)))*end.y+start.y;
     if ((p > primitive_info) && ((int) pixel.x == (int) (p-1)->pixel.x) &&
         ((int) pixel.y == (int) (p-1)->pixel.y))
       continue;
@@ -712,7 +705,7 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
   v.y=2.0*arc.y;
   degrees.x=270.0;
   degrees.y=360.0;
-  GenerateEllipse(p,u,v,degrees,0.0);
+  GenerateEllipse(p,u,v,degrees);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   u.x=end.x;
@@ -728,7 +721,7 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
   v.y=2.0*arc.y;
   degrees.x=0.0;
   degrees.y=90.0;
-  GenerateEllipse(p,u,v,degrees,0.0);
+  GenerateEllipse(p,u,v,degrees);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   u.x=end.x-arc.x;
@@ -742,7 +735,7 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
   v.y=2.0*arc.y;
   degrees.x=90.0;
   degrees.y=180.0;
-  GenerateEllipse(p,u,v,degrees,0.0);
+  GenerateEllipse(p,u,v,degrees);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   u.x=start.x;
@@ -758,7 +751,7 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
   v.y=2.0*arc.y;
   degrees.x=180.0;
   degrees.y=270.0;
-  GenerateEllipse(p,u,v,degrees,0.0);
+  GenerateEllipse(p,u,v,degrees);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   u.x=start.x+arc.x;
@@ -1109,7 +1102,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (primitive_type == FillEllipsePrimitive)
           primitive_info[j].primitive=FillPolygonPrimitive;
         GenerateEllipse(primitive_info+j,primitive_info[j].pixel,
-          primitive_info[j+1].pixel,primitive_info[j+2].pixel,draw_info->angle);
+          primitive_info[j+1].pixel,primitive_info[j+2].pixel);
         i=j+primitive_info[j].coordinates;
         break;
       }
@@ -1291,6 +1284,35 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       ThrowBinaryException(OptionWarning,
         "Non-conforming drawing primitive definition",keyword);
     }
+  if (draw_info->rotate != 0.0)
+    {
+      double
+        alpha,
+        beta;
+
+      /*
+        Rotate transform.
+      */
+      alpha=cos(DegreesToRadians(fmod(draw_info->rotate,360.0)));
+      beta=sin(DegreesToRadians(fmod(draw_info->rotate,360.0)));
+      for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
+      {
+        pixel=primitive_info[i].pixel;
+        primitive_info[i].pixel.x=alpha*pixel.x+beta*pixel.y;
+        primitive_info[i].pixel.y=(-beta*pixel.x+alpha*pixel.y);
+      }
+    }
+  if ((draw_info->translate.x != 0.0) || (draw_info->translate.y != 0.0))
+    {
+      /*
+        Translate transform.
+      */
+      for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
+      {
+        primitive_info[i].pixel.x+=draw_info->translate.x;
+        primitive_info[i].pixel.y+=draw_info->translate.y;
+      }
+    }
   /*
     Compute bounding box.
   */
@@ -1429,7 +1451,9 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->linewidth=1.0;
   draw_info->gravity=NorthWestGravity;
   draw_info->pointsize=image_info->pointsize;
-  draw_info->angle=0.0;
+  draw_info->translate.x=0.0;
+  draw_info->translate.y=0.0;
+  draw_info->rotate=0.0;
   draw_info->border_color=image_info->border_color;
   /*
     Get tile.
