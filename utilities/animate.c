@@ -218,6 +218,7 @@ int main(int argc,char **argv)
 
   Image
     *image,
+    *image_list,
     *loaded_image,
     *next_image;
 
@@ -265,7 +266,7 @@ int main(int argc,char **argv)
   display=(Display *) NULL;
   GetExceptionInfo(&exception);
   first_scene=0;
-  image=(Image *) NULL;
+  image_list=(Image *) NULL;
   last_scene=0;
   server_name=(char *) NULL;
   status=True;
@@ -398,8 +399,10 @@ int main(int argc,char **argv)
       }
     if (j != (k+1))
       {
-        status&=MogrifyImages(image_info,i-j,argv+j,&next_image);
-        (void) CatchImageException(next_image);
+        status&=MogrifyImages(image_info,i-j,argv+j,&image);
+        (void) CatchImageException(image);
+        PushImageList(&image_list,image,&exception);
+        DestroyImageList(&image);
         j=k+1;
       }
     switch (*(option+1))
@@ -957,20 +960,24 @@ int main(int argc,char **argv)
     image=image->previous;
   status&=MogrifyImages(image_info,i-j,argv+j,&image);
   (void) CatchImageException(image);
+  PushImageList(&image_list,image,&exception);
+  DestroyImageList(&image);
   if (resource_info.window_id != (char *) NULL)
-    XAnimateBackgroundImage(display,&resource_info,image);
+    XAnimateBackgroundImage(display,&resource_info,image_list);
   else
     {
       /*
         Animate image to X server.
       */
-      loaded_image=XAnimateImages(display,&resource_info,argv,argc,image);
+      loaded_image=XAnimateImages(display,&resource_info,argv,argc,image_list);
       while (loaded_image != (Image *) NULL)
       {
-        image=loaded_image;
-        loaded_image=XAnimateImages(display,&resource_info,argv,argc,image);
+        image_list=loaded_image;
+        loaded_image=
+          XAnimateImages(display,&resource_info,argv,argc,image_list);
       }
     }
+  DestroyImageList(&image_list);
   LiberateMemory((void **) &argv);
   DestroyMagick();
   Exit(!status);
