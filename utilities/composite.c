@@ -123,7 +123,7 @@ static void CompositeUsage(void)
       "-red-primary point   chomaticity red primary point",
       "-rotate degrees      apply Paeth rotation to the image",
       "-resize geometry     resize the image",
-      "-sampling_factor geometry",
+      "-sampling-factor geometry",
       "                     horizontal and vertical sampling factor",
       "-scene value         image scene number",
       "-sharpen geometry    sharpen the image",

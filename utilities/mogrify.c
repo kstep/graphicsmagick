@@ -164,7 +164,7 @@ static void MogrifyUsage(void)
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sample geometry     scale image with pixel sampling",
-      "-sampling_factor geometry",
+      "-sampling-factor geometry",
       "                     horizontal and vertical sampling factor",
       "-scale geometry      scale the image",
       "-scene number        image scene number",

@@ -157,7 +157,7 @@ static void DisplayUsage(void)
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sample geometry     scale image with pixel sampling",
-      "-sampling_factor geometry",
+      "-sampling-factor geometry",
       "                     horizontal and vertical sampling factor",
       "-scenes range        image scene range",
       "-segment value       segment an image",
@@ -191,7 +191,7 @@ static void DisplayUsage(void)
     "resources as command line options:  -background, -bordercolor,\n");
   (void) printf(
     "-borderwidth, -font, -foreground, -iconGeometry, -iconic, -mattecolor,\n");
-  (void) printf("-name, -shared_memory, -usePixmap, or -title.\n");
+  (void) printf("-name, -shared-memory, -usePixmap, or -title.\n");
   (void) printf(
     "\nBy default, the image format of `file' is determined by its magic\n");
   (void) printf(
@@ -1302,7 +1302,7 @@ int main(int argc,char **argv)
               }
             break;
           }
-        if (LocaleCompare("sampling_factor",option+1) == 0)
+        if (LocaleCompare("sampling-factor",option+1) == 0)
           {
             (void) CloneString(&image_info->sampling_factor,(char *) NULL);
             if (*option == '-')
@@ -1350,7 +1350,7 @@ int main(int argc,char **argv)
               }
             break;
           }
-        if (LocaleCompare("shared_memory",option+1) == 0)
+        if (LocaleCompare("shared-memory",option+1) == 0)
           {
             resource_info.use_shared_memory=(*option == '-');
             break;

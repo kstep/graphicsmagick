@@ -133,7 +133,7 @@ static void AnimateUsage(void)
       "-pause               seconds to pause before reanimating",
       "-remote command      execute a command in an remote display process",
       "-rotate degrees      apply Paeth rotation to the image",
-      "-sampling_factor geometry",
+      "-sampling-factor geometry",
       "                     horizontal and vertical sampling factor",
       "-scenes range        image scene range",
       "-size geometry       width and height of image",
@@ -161,7 +161,7 @@ static void AnimateUsage(void)
     "resources as command line options:  -background, -bordercolor,\n");
   (void) printf(
     "-borderwidth, -font, -foreground, -iconGeometry, -iconic, -name,\n");
-  (void) printf("-mattecolor, -shared_memory, or -title.\n");
+  (void) printf("-mattecolor, -shared-memory, or -title.\n");
   (void) printf(
     "\nBy default, the image format of `file' is determined by its magic\n");
   (void) printf(
@@ -881,7 +881,7 @@ int main(int argc,char **argv)
       }
       case 's':
       {
-        if (LocaleCompare("sampling_factor",option+1) == 0)
+        if (LocaleCompare("sampling-factor",option+1) == 0)
           {
             (void) CloneString(&image_info->sampling_factor,(char *) NULL);
             if (*option == '-')
@@ -909,7 +909,7 @@ int main(int argc,char **argv)
               }
             break;
           }
-        if (LocaleCompare("shared_memory",option+1) == 0)
+        if (LocaleCompare("shared-memory",option+1) == 0)
           {
             resource_info.use_shared_memory=(*option == '-');
             break;
@@ -931,7 +931,7 @@ int main(int argc,char **argv)
       }
       case 't':
       {
-        if (LocaleCompare("text_font",option+1) == 0)
+        if (LocaleCompare("text-font",option+1) == 0)
           {
             resource_info.text_font=(char *) NULL;
             if (*option == '-')

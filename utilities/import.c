@@ -128,7 +128,7 @@ static void ImportUsage(void)
       "-quality value       JPEG/MIFF/PNG compression level",
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
-      "-sampling_factor geometry",
+      "-sampling-factor geometry",
       "                     horizontal and vertical sampling factor",
       "-scene value         image scene number",
       "-screen              select image from root window",
@@ -833,7 +833,7 @@ int main(int argc,char **argv)
       }
       case 's':
       {
-        if (LocaleCompare("sampling_factor",option+1) == 0)
+        if (LocaleCompare("sampling-factor",option+1) == 0)
           {
             (void) CloneString(&image_info->sampling_factor,(char *) NULL);
             if (*option == '-')

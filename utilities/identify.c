@@ -97,7 +97,7 @@ static void IdentifyUsage(void)
       "-help                print program options",
       "-interlace type      None, Line, Plane, or Partition",
       "-size geometry       width and height of image",
-      "-sampling_factor geometry",
+      "-sampling-factor geometry",
       "                     horizontal and vertical sampling factor",
       "-verbose             print detailed information about the image",
       "-version             print version information",

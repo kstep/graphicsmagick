@@ -132,7 +132,7 @@ static void MontageUsage(void)
       "-red-primary point  chomaticity red primary point",
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
-      "-sampling_factor geometry",
+      "-sampling-factor geometry",
       "                     horizontal and vertical sampling factor",
       "-scenes range        image scene range",
       "-shadow              add a shadow beneath a tile to simulate depth",

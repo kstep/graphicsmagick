@@ -1066,7 +1066,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       }
       case 's':
       {
-        if (LocaleCompare("sampling_factor",option+1) == 0)
+        if (LocaleCompare("sampling-factor",option+1) == 0)
           {
             (void) CloneString(&image_info->sampling_factor,(char *) NULL);
             if (*option == '-')
@@ -1229,7 +1229,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("verbose",option+1) == 0)
           break;
-        if (LocaleCompare("virtual_pixel",option+1) == 0)
+        if (LocaleCompare("virtual-pixel",option+1) == 0)
           {
             if (*option == '-')
               {
@@ -2728,7 +2728,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
-        if (LocaleCompare("sampling_factor",option+1) == 0)
+        if (LocaleCompare("sampling-factor",option+1) == 0)
           {
             (void) CloneString(&image_info->sampling_factor,(char *) NULL);
             if (*option == '-')
@@ -3033,7 +3033,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
-        if (LocaleCompare("virtual_pixel",option+1) == 0)
+        if (LocaleCompare("virtual-pixel",option+1) == 0)
           {
             if (*option == '-')
               {
@@ -3404,7 +3404,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
       }
       case 's':
       {
-        if (LocaleCompare("sampling_factor",option+1) == 0)
+        if (LocaleCompare("sampling-factor",option+1) == 0)
           {
             (void) CloneString(&image_info->sampling_factor,(char *) NULL);
             if (*option == '-')
@@ -3439,7 +3439,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("verbose",option+1) == 0)
           break;
-        if (LocaleCompare("virtual_pixel",option+1) == 0)
+        if (LocaleCompare("virtual-pixel",option+1) == 0)
           {
             if (*option == '-')
               {
@@ -4743,7 +4743,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
-        if (LocaleCompare("sampling_factor",option+1) == 0)
+        if (LocaleCompare("sampling-factor",option+1) == 0)
           {
             (void) CloneString(&image_info->sampling_factor,(char *) NULL);
             if (*option == '-')
@@ -5052,7 +5052,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
-        if (LocaleCompare("virtual_pixel",option+1) == 0)
+        if (LocaleCompare("virtual-pixel",option+1) == 0)
           {
             if (*option == '-')
               {
@@ -6073,7 +6073,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       }
       case 's':
       {
-        if (LocaleCompare("sampling_factor",option+1) == 0)
+        if (LocaleCompare("sampling-factor",option+1) == 0)
           {
             (void) CloneString(&image_info->sampling_factor,(char *) NULL);
             if (*option == '-')
@@ -6266,7 +6266,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("verbose",option+1) == 0)
           break;
-        if (LocaleCompare("virtual_pixel",option+1) == 0)
+        if (LocaleCompare("virtual-pixel",option+1) == 0)
           {
             if (*option == '-')
               {
