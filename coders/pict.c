@@ -1421,7 +1421,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   unsigned short
     base_address,
     row_bytes,
-    transfer_mode;
+    transfer_mode,
+    x_resolution,
+    y_resolution;
 
   /*
     Open output image file.
@@ -1458,6 +1460,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   pixmap.table=0;
   pixmap.reserved=0;
   transfer_mode=0;
+  x_resolution=image->x_resolution ? image->x_resolution : 72;
+  y_resolution=image->y_resolution ? image->y_resolution : 72;
   storage_class=image->storage_class;
   if (LocaleCompare(image_info->magick,"PICT24") == 0)
     storage_class=DirectClass;
@@ -1503,9 +1507,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   /*
     Write full size of the file, resolution, frame bounding box, and reserved.
   */
-  WriteBlobMSBShort(image,(unsigned short) image->x_resolution);
+  WriteBlobMSBShort(image,x_resolution);
   WriteBlobMSBShort(image,0x0000);
-  WriteBlobMSBShort(image,(unsigned short) image->y_resolution);
+  WriteBlobMSBShort(image,y_resolution);
   WriteBlobMSBShort(image,0x0000);
   WriteBlobMSBShort(image,frame_rectangle.top);
   WriteBlobMSBShort(image,frame_rectangle.left);
@@ -1587,9 +1591,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       WriteBlobMSBShort(image,768);
       WriteBlobMSBShort(image,image->columns);
       WriteBlobMSBShort(image,image->rows);
-      WriteBlobMSBShort(image,(unsigned short) image->x_resolution);
+      WriteBlobMSBShort(image,x_resolution);
       WriteBlobMSBShort(image,0x0000);
-      WriteBlobMSBShort(image,(unsigned short) image->y_resolution);
+      WriteBlobMSBShort(image,y_resolution);
       WriteBlobMSBLong(image,0x00000000UL);
       WriteBlobMSBLong(image,0x82B60001UL);
       WriteBlobMSBLong(image,0x0C50685FUL);
@@ -1626,9 +1630,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   WriteBlobMSBShort(image,pixmap.version);
   WriteBlobMSBShort(image,pixmap.pack_type);
   WriteBlobMSBLong(image,pixmap.pack_size);
-  WriteBlobMSBShort(image,(unsigned short) image->x_resolution);
+  WriteBlobMSBShort(image,x_resolution);
   WriteBlobMSBShort(image,0x0000);
-  WriteBlobMSBShort(image,(unsigned short) image->y_resolution);
+  WriteBlobMSBShort(image,y_resolution);
   WriteBlobMSBShort(image,0x0000);
   WriteBlobMSBShort(image,pixmap.pixel_type);
   WriteBlobMSBShort(image,pixmap.bits_per_pixel);
