@@ -1332,7 +1332,7 @@ Export unsigned int WriteCachePixels(Cache cache,const unsigned int id)
         return(True);
       for (y=0; y < (int) nexus->rows; y++)
       {
-        emcpy(cache_info->pixels+offset,pixels,
+        memcpy(cache_info->pixels+offset,pixels,
           nexus->columns*sizeof(PixelPacket));
         pixels+=nexus->columns;
         offset+=cache_info->columns;
