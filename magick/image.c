@@ -5187,7 +5187,7 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
       former_width=(*width);
       former_height=(*height);
     }
-  if (((flags & WidthValue) == 0) || ((flags & HeightValue) == 0))
+  if (flags & AspectValue)
     {
       double
         scale_factor;
