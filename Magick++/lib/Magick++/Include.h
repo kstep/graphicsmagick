@@ -97,8 +97,11 @@ namespace Magick
   using MagickLib::ReplaceGreenCompositeOp;
   using MagickLib::ReplaceBlueCompositeOp;
   using MagickLib::ReplaceMatteCompositeOp;
-  // BlendCompositeOp, DisplaceCompositeOp, AnnotateCompositeOp, and
-  // ModulateCompositeOp are private ImageMagick implementation enums
+  using MagickLib::BlendCompositeOp;
+  using MagickLib::DisplaceCompositeOp;
+  using MagickLib::AnnotateCompositeOp;
+  using MagickLib::ModulateCompositeOp;
+
   
   // Compression algorithms
   using MagickLib::CompressionType;
