@@ -104,7 +104,7 @@ static char
 /*
   Static declarations.
 */
-static LogInfo
+static volatile LogInfo
   *log_info = (LogInfo *) NULL;
 
 static SemaphoreInfo
@@ -589,7 +589,8 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
       FormatString(timestamp,"%02d:%02d:%02d",
         time_meridian->tm_hour,time_meridian->tm_min,time_meridian->tm_sec);
       (void) fprintf(log_info->file,"%.1024s %.2fu %.1024s[%ld]: %.1024s\n",
-        timestamp,GetElapsedTime(&log_info->timer),domain,GetThreadId(),event);
+        timestamp,GetElapsedTime((TimerInfo *) &log_info->timer),domain,
+        GetThreadId(),event);
     }
   else
     {
@@ -622,13 +623,13 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
         timestamp);
       (void) fprintf(log_info->file,"  <id>%ld</id>\n",GetThreadId());
       (void) fprintf(log_info->file,"  <elapsed-time>%.2f</elapsed-time>\n",
-        GetElapsedTime(&log_info->timer));
+        GetElapsedTime((TimerInfo *) &log_info->timer));
       (void) fprintf(log_info->file,"  <domain>%.1024s</domain>\n",domain);
       (void) fprintf(log_info->file,"  <event>%.1024s</event>\n",event);
       (void) fprintf(log_info->file,"</record>\n");
       (void) fflush(log_info->file);
     }
-  ContinueTimer(&log_info->timer);
+  ContinueTimer((TimerInfo *) &log_info->timer);
   LiberateSemaphoreInfo(&log_semaphore);
   return(True);
 }
@@ -748,9 +749,9 @@ static unsigned int ReadConfigureFile(const char *basename,
         if (log_info == (LogInfo *) NULL)
           MagickFatalError(ResourceLimitFatalError,"Unable to allocate log",
             "Memory allocation failed");
-        (void) memset(log_info,0,sizeof(LogInfo));
+        (void) memset((void *) log_info,0,sizeof(LogInfo));
         log_info->path=AcquireString(path);
-        GetTimerInfo(&log_info->timer);
+        GetTimerInfo((TimerInfo *) &log_info->timer);
         continue;
       }
     if (log_info == (LogInfo *) NULL)

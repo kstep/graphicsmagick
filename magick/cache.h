@@ -165,7 +165,7 @@ typedef struct _CacheInfo
   CacheMethods
     methods;
 
-  long
+  volatile long
     reference_count;
 
   SemaphoreInfo

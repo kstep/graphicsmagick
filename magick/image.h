@@ -736,7 +736,7 @@ typedef struct _Image
   ExceptionInfo
     exception;
 
-  long
+  volatile long
     reference_count;
 
   SemaphoreInfo

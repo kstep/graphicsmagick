@@ -68,7 +68,7 @@ typedef struct _BlobInfo
   SemaphoreInfo
     *semaphore;
 
-  long
+  volatile long
     reference_count;
 
   unsigned long
