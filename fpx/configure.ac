@@ -51,6 +51,8 @@ AC_C_CONST
 AC_C_INLINE
 AC_C_BIGENDIAN
 
+AC_CHECK_HEADERS(wchar.h)
+
 #
 # Configure libtool and ltdl
 #

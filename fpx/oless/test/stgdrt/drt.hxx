@@ -57,7 +57,7 @@ typedef DWORD LPSTGSECURITY;
 //typedef WCHAR TCHAR;
 
 #ifndef _WIN32
-#include "../../h/wchar.h"
+#include "../../h/owchar.h"
 #endif
 
 #ifndef ATOOLE

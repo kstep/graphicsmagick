@@ -30,6 +30,7 @@
 */
 
 #ifndef _MSC_VER
+
 size_t sbstowcs(WCHAR *pwcs, const char *s, size_t n )
 {
   size_t count=0;

@@ -43,8 +43,32 @@ typedef const WCHAR* LPCWSTR;
 #define INTL_PADDING_VALUE 3
 #define INTL_PADDING(cb) (INTL_PADDING_VALUE * (cb))
 
+#if defined(HAVE_WCHAR_H)
+#  include <wchar.h>
+#  define wcsatol  fpx_wcsatol
+#  define wcsatoi  fpx_wcsatoi
+#  define wcscat   fpx_wcscat
+#  define wcschr   fpx_wcschr 
+#  define wcscmp   fpx_wcscmp
+#  define wcsicmp  fpx_wcsicmp
+#  define wcscoll  fpx_wcscoll
+#  define wcscpy   fpx_wcscpy
+#  define wcsitoa  fpx_wcsitoa
+#  define wcslen   fpx_wcslen
+#  define wcsltoa  fpx_wcsltoa
+#  define wcslwr   fpx_wcslwr
+#  define wcsncmp  fpx_wcsncmp
+#  define wcsnicmp fpx_wcsnicmp
+#  define wcsncpy  fpx_wcsncpy 
+#  define wcsrchr  fpx_wcsrchr
+#  define wcsupr   fpx_wcsupr
+#  define wcswcs   fpx_wcswcs
+#  define wcstosbs fpx_wcstosbs
+#  define sbstowcs fpx_sbstowcs
+#endif // HAVE_WCHAR_H
+
 long     _CRTAPI1 wcsatol(const WCHAR *wsz);
-int  _CRTAPI1 wcsatoi(const WCHAR *wsz);
+int      _CRTAPI1 wcsatoi(const WCHAR *wsz);
 WCHAR *  _CRTAPI1 wcscat(WCHAR *wsz1, const WCHAR *wsz2);
 WCHAR *  _CRTAPI1 wcschr ( const WCHAR * string, WCHAR ch );
 int      _CRTAPI1 wcscmp(const WCHAR *wsz1, const WCHAR *wsz2);

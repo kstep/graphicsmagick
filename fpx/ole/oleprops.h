@@ -88,7 +88,7 @@
 
   class OLEPropertySection : public PToolkitObject {
   
-  friend OLEPropertySet; 
+  friend class OLEPropertySet; 
   
   public:
                 // Use this constrctor when reading a section
