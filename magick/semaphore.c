@@ -90,7 +90,7 @@ static CRITICAL_SECTION
   critical_section;
 
 static unsigned int
-  critical_section_exists = False;
+  active_critical_section = False;
 #endif
 
 #if defined(HasPTHREADS)
@@ -129,7 +129,7 @@ MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
-  if (critical_section_exists)
+  if (active_critical_section)
     EnterCriticalSection(&critical_section);
 #endif
   if (*semaphore_info == (SemaphoreInfo *) NULL)
@@ -139,7 +139,7 @@ MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
   (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
-  if (critical_section_exists)
+  if (active_critical_section)
     LeaveCriticalSection(&critical_section);
 #endif
 }
@@ -242,8 +242,11 @@ MagickExport void DestroySemaphore(void)
   (void) pthread_mutex_destroy(&semaphore_mutex);
 #endif
 #if defined(WIN32)
-  if (critical_section_exists)
-    DeleteCriticalSection(&critical_section);
+  if (active_critical_section)
+    {
+      DeleteCriticalSection(&critical_section);
+      active_critical_section=False;
+    }
 #endif
 }
 
@@ -309,7 +312,7 @@ MagickExport void InitializeSemaphore(void)
 {
 #if defined(WIN32)
   InitializeCriticalSection(&critical_section);
-  critical_section_exists=True;
+  active_critical_section=True;
 #endif
 }
 
