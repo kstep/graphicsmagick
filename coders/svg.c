@@ -726,7 +726,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 (void) sscanf(tokens[++j]+1,"%lf%lf%lf%lf%lf%lf",
                   &transform[0],&transform[1],&transform[2],&transform[3],
                   &transform[4],&transform[5],&transform[6]);
-                (void) sscanf(tokens[++j]+1,"%lf,%lf,%lf,%lf,%lf,%lf",
+                (void) sscanf(tokens[j]+1,"%lf,%lf,%lf,%lf,%lf,%lf",
                   &transform[0],&transform[1],&transform[2],&transform[3],
                   &transform[4],&transform[5],&transform[6]);
               }
@@ -742,7 +742,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             if (LocaleCompare(tokens[j],"scale") == 0)
               {
                 k=sscanf(tokens[++j]+1,"%lf%lf",&transform[0],&transform[3]);
-                k=sscanf(tokens[++j]+1,"%lf,%lf",&transform[0],&transform[3]);
+                k=sscanf(tokens[j]+1,"%lf,%lf",&transform[0],&transform[3]);
                 if (k == 1)
                   transform[3]=transform[0];
               }
@@ -765,7 +765,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 transform[0]=1.0;
                 transform[3]=1.0;
                 k=sscanf(tokens[++j]+1,"%lf%lf",&transform[4],&transform[5]);
-                k=sscanf(tokens[++j]+1,"%lf,%lf",&transform[4],&transform[5]);
+                k=sscanf(tokens[j]+1,"%lf,%lf",&transform[4],&transform[5]);
                 if (k == 1)
                   transform[5]=transform[4];
               }
