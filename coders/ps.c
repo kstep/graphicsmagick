@@ -1010,7 +1010,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 quantize_info.colorspace=GRAYColorspace;
                 (void) QuantizeImage(&quantize_info,preview_image);
               }
-            polarity=Intensity(preview_image->colormap[0]) < (MaxRGB >> 1);
+            polarity=Intensity(preview_image->colormap[0]) < (0.5*MaxRGB);
             if (preview_image->colors == 2)
               polarity=Intensity(preview_image->colormap[0]) >
                 Intensity(preview_image->colormap[1]);
@@ -1266,7 +1266,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   break;
                 for (x=0; x < (int) image->columns; x++)
                 {
-                  FormatString(buffer,"%02lx",Intensity(*p));
+                  FormatString(buffer,"%02lx",(int) (Intensity(*p)+0.5));
                   (void) WriteBlob(image,strlen(buffer),buffer);
                   i++;
                   if (i == 36)
@@ -1289,7 +1289,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               /*
                 Dump image as bitmap.
               */
-              polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
+              polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
               if (image->colors == 2)
                 polarity=
                   Intensity(image->colormap[1]) > Intensity(image->colormap[0]);

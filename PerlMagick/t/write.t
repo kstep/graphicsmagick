@@ -211,7 +211,7 @@ print("Khoros Visualization image file ...\n");
 testReadWrite( 'VIFF:input.viff',
                'VIFF:output.viff',
                q//,
-               '79fe704dee864f86baa1eb83cedac215');
+               '1135eda0cb17e0d7553452624242da47');
 
 print("X Windows system bitmap (black and white only) ...\n");
 ++$test;

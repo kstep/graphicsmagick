@@ -1182,8 +1182,8 @@ MagickExport unsigned int CompositeImage(Image *image,
               q++;
               continue;
             }
-          x_displace=
-            (horizontal_scale*(Intensity(*p)-((MaxRGB+1)/2)))/((MaxRGB+1)/2);
+          x_displace=(horizontal_scale*(Intensity(*p)-
+            (0.5*(MaxRGB+1))))/(0.5*(MaxRGB+1));
           y_displace=x_displace;
           if (composite_image->matte)
             y_displace=(vertical_scale*((double) p->opacity-
@@ -1455,7 +1455,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case BumpmapCompositeOp:
         {
-          shade=Intensity(*p);
+          shade=Intensity(*p)+0.5;
           red=alpha*(q->red*shade);
           green=alpha*(q->green*shade);
           blue=alpha*(q->blue*shade);
@@ -1473,7 +1473,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case ReplaceRedCompositeOp:
         {
-          red=DownScale(Intensity(*p));
+          red=DownScale(Intensity(*p)+0.5);
           green=q->green;
           blue=q->blue;
           break;
@@ -1481,7 +1481,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         case ReplaceGreenCompositeOp:
         {
           red=q->red;
-          green=DownScale(Intensity(*p));
+          green=DownScale(Intensity(*p)+0.5);
           blue=q->blue;
           break;
         }
@@ -1489,7 +1489,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         {
           red=q->red;
           green=q->green;
-          blue=DownScale(Intensity(*p));
+          blue=DownScale(Intensity(*p)+0.5);
           break;
         }
         case ReplaceMatteCompositeOp:
@@ -1497,7 +1497,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           red=q->red;
           green=q->green;
           blue=q->blue;
-          opacity=DownScale(Intensity(*p));
+          opacity=DownScale(Intensity(*p)+0.5);
           break;
         }
         case BlendCompositeOp:

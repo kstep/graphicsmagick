@@ -430,7 +430,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
           quantize_info.colorspace=GRAYColorspace;
           (void) QuantizeImage(&quantize_info,monochrome_image);
         }
-      polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
+      polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
       if (monochrome_image->colors == 2)
         polarity=Intensity(monochrome_image->colormap[0]) >
           Intensity(monochrome_image->colormap[1]);

@@ -1792,6 +1792,14 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
     p++;
   if (*p == '=')
     p++;
+  if (LocaleCompare(p,"0x0") == 0)
+    {
+      *x=0;
+      *y=0;
+      *width=0;
+      *height=0;
+      return(WidthValue | HeightValue | XValue | YValue);
+    }
   if ((*p != '+') && (*p != '-') && (*p != 'x'))
     {
       /*
@@ -1799,8 +1807,6 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
       */
       bounds.width=strtod(p,&p);
       mask|=WidthValue;
-      if (bounds.width == 0)
-        bounds.height=bounds.width;
     }
   if ((*p == 'x') || (*p == 'X'))
     {

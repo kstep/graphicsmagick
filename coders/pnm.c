@@ -883,7 +883,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PBM image.
         */
-        polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
+        polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
         if (image->colors == 2)
           polarity=
             Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
@@ -926,7 +926,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            index=Intensity(*p);
+            index=Intensity(*p)+0.5;
             FormatString(buffer,"%d ",index);
             (void) WriteBlob(image,strlen(buffer),buffer);
             i++;
@@ -984,7 +984,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PBM image.
         */
-        polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
+        polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
         if (image->colors == 2)
           polarity=
             Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
@@ -1032,7 +1032,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            index=DownScale(Intensity(*p));
+            index=DownScale(Intensity(*p)+0.5);
             (void) WriteByte(image,index);
             p++;
           }

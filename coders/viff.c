@@ -590,8 +590,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     image->matte=(viff_info.number_data_bands == 4);
     image->storage_class=
       (viff_info.number_data_bands < 3 ? PseudoClass : DirectClass);
-    image->columns=(unsigned int) viff_info.rows;
-    image->rows=(unsigned int) viff_info.columns;
+    image->columns=viff_info.rows;
+    image->rows=viff_info.columns;
     if (image_info->ping)
       {
         CloseBlob(image);
@@ -681,7 +681,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
                   q->green=image->colormap[q->green].green;
                   q->blue=image->colormap[q->blue].blue;
                 }
-              q->opacity=image->matte ? MaxRGB-(*(p+offset*3)) : 0;
+              q->opacity=
+                UpScale(image->matte ? MaxRGB-(*(p+offset*3)) : OpaqueOpacity);
               p++;
               q++;
             }
@@ -1116,7 +1117,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             /*
               Convert PseudoClass image to a VIFF monochrome image.
             */
-            polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
+            polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
             if (image->colors == 2)
               polarity=
                 Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
@@ -1160,7 +1161,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (int) image->columns; x++)
               {
-                *q++=Intensity(*p);
+                *q++=Intensity(*p)+0.5;
                 p++;
               }
               if (image->previous == (Image *) NULL)

@@ -134,7 +134,7 @@ static Image *ReadGRADATIONImage(const ImageInfo *image_info,
   (void) QueryColorDatabase(colorname,&color);
   TransformHSL(color.red,color.green,color.blue,&hue,&saturation,&brightness);
   (void) strcpy(colorname,"white");
-  if (Intensity(color) > (MaxRGB >> 1))
+  if (Intensity(color) > (0.5*MaxRGB))
     (void) strcpy(colorname,"black");
   (void) sscanf(image_info->filename,"%*[^-]-%s",colorname);
   (void) QueryColorDatabase(colorname,&color);

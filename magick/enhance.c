@@ -742,7 +742,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      gray_value=Intensity(*p);
+      gray_value=Intensity(*p)+0.5;
       histogram[gray_value]++;
       p++;
     }

@@ -156,7 +156,7 @@ testRead( 'input.tim', 'b8ebf628b12284b891fcb9992c1539ee');
 
 print("Khoros Visualization image file ...\n");
 ++$test;
-testRead( 'input.viff', '4cc3e0bc20525a99611f1c063fedc9a1');
+testRead( 'input.viff', '1135eda0cb17e0d7553452624242da47');
 
 print("X Windows system bitmap (black and white only) ...\n");
 ++$test;

@@ -1029,7 +1029,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             byte,
             polarity;
 
-          polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
+          polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
           if (image->colors == 2)
             polarity=
               Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
@@ -1358,7 +1358,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             byte,
             polarity;
 
-          polarity=Intensity(tile_image->colormap[0]) > (MaxRGB >> 1);
+          polarity=Intensity(tile_image->colormap[0]) > (0.5*MaxRGB);
           if (image->colors == 2)
             polarity=Intensity(tile_image->colormap[0]) <
               Intensity(tile_image->colormap[1]);

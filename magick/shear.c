@@ -286,6 +286,7 @@ static void XShearImage(Image *image,const double degrees,
 
   double
     alpha,
+    beta,
     blue,
     displacement,
     green,
@@ -311,6 +312,7 @@ static void XShearImage(Image *image,const double degrees,
 
   assert(image != (Image *) NULL);
   y_offset--;
+  beta=1.0/MaxRGB;
   for (y=0; y < (int) height; y++)
   {
     y_offset++;
@@ -405,10 +407,10 @@ static void XShearImage(Image *image,const double degrees,
               q++;
               continue;
             }
-          red=(pixel.red*(MaxRGB-alpha)+p->red*alpha)/MaxRGB;
-          green=(pixel.green*(MaxRGB-alpha)+p->green*alpha)/MaxRGB;
-          blue=(pixel.blue*(MaxRGB-alpha)+p->blue*alpha)/MaxRGB;
-          opacity=(pixel.opacity*(MaxRGB-alpha)+p->opacity*alpha)/MaxRGB;
+          red=beta*(pixel.red*(MaxRGB-alpha)+p->red*alpha);
+          green=beta*(pixel.green*(MaxRGB-alpha)+p->green*alpha);
+          blue=beta*(pixel.blue*(MaxRGB-alpha)+p->blue*alpha);
+          opacity=beta*(pixel.opacity*(MaxRGB-alpha)+p->opacity*alpha);
           q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
           q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
           q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
@@ -421,12 +423,12 @@ static void XShearImage(Image *image,const double degrees,
         /*
           Set old row to border color.
         */
-        red=(pixel.red*(MaxRGB-alpha)+image->border_color.red*alpha)/MaxRGB;
-        green=(pixel.green*(MaxRGB-alpha)+
-          image->border_color.green*alpha)/MaxRGB;
-        blue=(pixel.blue*(MaxRGB-alpha)+image->border_color.blue*alpha)/MaxRGB;
-        opacity=(pixel.opacity*(MaxRGB-alpha)+
-          image->border_color.opacity*alpha)/MaxRGB;
+        red=beta*(pixel.red*(MaxRGB-alpha)+image->border_color.red*alpha);
+        green=beta*(pixel.green*(MaxRGB-alpha)+
+          image->border_color.green*alpha);
+        blue=beta*(pixel.blue*(MaxRGB-alpha)+image->border_color.blue*alpha);
+        opacity=beta*(pixel.opacity*(MaxRGB-alpha)+
+          image->border_color.opacity*alpha);
         q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
         q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
         q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
@@ -452,10 +454,10 @@ static void XShearImage(Image *image,const double degrees,
           q--;
           if ((x_offset+width+step-i) >= image->columns)
             continue;
-          red=(pixel.red*(MaxRGB-alpha)+p->red*alpha)/MaxRGB;
-          green=(pixel.green*(MaxRGB-alpha)+p->green*alpha)/MaxRGB;
-          blue=(pixel.blue*(MaxRGB-alpha)+p->blue*alpha)/MaxRGB;
-          opacity=(pixel.opacity*(MaxRGB-alpha)+p->opacity*alpha)/MaxRGB;
+          red=beta*(pixel.red*(MaxRGB-alpha)+p->red*alpha);
+          green=beta*(pixel.green*(MaxRGB-alpha)+p->green*alpha);
+          blue=beta*(pixel.blue*(MaxRGB-alpha)+p->blue*alpha);
+          opacity=beta*(pixel.opacity*(MaxRGB-alpha)+p->opacity*alpha);
           q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
           q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
           q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
@@ -467,12 +469,12 @@ static void XShearImage(Image *image,const double degrees,
           Set old row to border color.
         */
         q--;
-        red=(pixel.red*(MaxRGB-alpha)+image->border_color.red*alpha)/MaxRGB;
-        green=(pixel.green*(MaxRGB-alpha)+
-          image->border_color.green*alpha)/MaxRGB;
-        blue=(pixel.blue*(MaxRGB-alpha)+image->border_color.blue*alpha)/MaxRGB;
-        opacity=(pixel.opacity*(MaxRGB-alpha)+
-          image->border_color.opacity*alpha)/MaxRGB;
+        red=beta*(pixel.red*(MaxRGB-alpha)+image->border_color.red*alpha);
+        green=beta*(pixel.green*(MaxRGB-alpha)+
+          image->border_color.green*alpha);
+        blue=beta*(pixel.blue*(MaxRGB-alpha)+image->border_color.blue*alpha);
+        opacity=beta*(pixel.opacity*(MaxRGB-alpha)+
+          image->border_color.opacity*alpha);
         q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
         q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
         q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
@@ -532,6 +534,7 @@ static void YShearImage(Image *image,const double degrees,
 
   double
     alpha,
+    beta,
     blue,
     displacement,
     green,
@@ -557,6 +560,7 @@ static void YShearImage(Image *image,const double degrees,
 
   assert(image != (Image *) NULL);
   x_offset--;
+  beta=1.0/MaxRGB;
   for (y=0; y < (int) width; y++)
   {
     x_offset++;
@@ -645,10 +649,10 @@ static void YShearImage(Image *image,const double degrees,
         q=p-step;
         for (i=0; i < (int) height; i++)
         {
-          red=(pixel.red*(MaxRGB-alpha)+p->red*alpha)/MaxRGB;
-          green=(pixel.green*(MaxRGB-alpha)+p->green*alpha)/MaxRGB;
-          blue=(pixel.blue*(MaxRGB-alpha)+p->blue*alpha)/MaxRGB;
-          opacity=(pixel.opacity*(MaxRGB-alpha)+p->opacity*alpha)/MaxRGB;
+          red=beta*(pixel.red*(MaxRGB-alpha)+p->red*alpha);
+          green=beta*(pixel.green*(MaxRGB-alpha)+p->green*alpha);
+          blue=beta*(pixel.blue*(MaxRGB-alpha)+p->blue*alpha);
+          opacity=beta*(pixel.opacity*(MaxRGB-alpha)+p->opacity*alpha);
           q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
           q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
           q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
@@ -661,12 +665,12 @@ static void YShearImage(Image *image,const double degrees,
         /*
           Set old column to border color.
         */
-        red=(pixel.red*(MaxRGB-alpha)+image->border_color.red*alpha)/MaxRGB;
-        green=(pixel.green*(MaxRGB-alpha)+
-          image->border_color.green*alpha)/MaxRGB;
-        blue=(pixel.blue*(MaxRGB-alpha)+image->border_color.blue*alpha)/MaxRGB;
-        opacity=(pixel.opacity*(MaxRGB-alpha)+
-          image->border_color.opacity*alpha)/MaxRGB;
+        red=beta*(pixel.red*(MaxRGB-alpha)+image->border_color.red*alpha);
+        green=beta*(pixel.green*(MaxRGB-alpha)+
+          image->border_color.green*alpha);
+        blue=beta*(pixel.blue*(MaxRGB-alpha)+image->border_color.blue*alpha);
+        opacity=beta*(pixel.opacity*(MaxRGB-alpha)+
+          image->border_color.opacity*alpha);
         q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
         q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
         q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
@@ -692,10 +696,10 @@ static void YShearImage(Image *image,const double degrees,
           q--;
           if ((y_offset+height+step-i) >= image->rows)
             continue;
-          red=(pixel.red*(MaxRGB-alpha)+p->red*alpha)/MaxRGB;
-          green=(pixel.green*(MaxRGB-alpha)+p->green*alpha)/MaxRGB;
-          blue=(pixel.blue*(MaxRGB-alpha)+p->blue*alpha)/MaxRGB;
-          opacity=(pixel.opacity*(MaxRGB-alpha)+p->opacity*alpha)/MaxRGB;
+          red=beta*(pixel.red*(MaxRGB-alpha)+p->red*alpha);
+          green=beta*(pixel.green*(MaxRGB-alpha)+p->green*alpha);
+          blue=beta*(pixel.blue*(MaxRGB-alpha)+p->blue*alpha);
+          opacity=beta*(pixel.opacity*(MaxRGB-alpha)+p->opacity*alpha);
           q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
           q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
           q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
@@ -707,12 +711,12 @@ static void YShearImage(Image *image,const double degrees,
           Set old column to border color.
         */
         q--;
-        red=(pixel.red*(MaxRGB-alpha)+image->border_color.red*alpha)/MaxRGB;
-        green=(pixel.green*(MaxRGB-alpha)+
-          image->border_color.green*alpha)/MaxRGB;
-        blue=(pixel.blue*(MaxRGB-alpha)+image->border_color.blue*alpha)/MaxRGB;
-        opacity=(pixel.opacity*(MaxRGB-alpha)+
-          image->border_color.opacity*alpha)/MaxRGB;
+        red=beta*(pixel.red*(MaxRGB-alpha)+image->border_color.red*alpha);
+        green=beta*(pixel.green*(MaxRGB-alpha)+
+          image->border_color.green*alpha);
+        blue=beta*(pixel.blue*(MaxRGB-alpha)+image->border_color.blue*alpha);
+        opacity=beta*(pixel.opacity*(MaxRGB-alpha)+
+          image->border_color.opacity*alpha);
         q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
         q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
         q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
@@ -820,7 +824,7 @@ MagickExport Image *RotateImage(Image *image,const double degrees,
   if (integral_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to rotate image",
       "Memory allocation failed");
-  shear.x=(-tan(DegreesToRadians(angle)/2.0));
+  shear.x=(-0.5000000000000001*tan(DegreesToRadians(angle)));
   shear.y=sin(DegreesToRadians(angle));
   if ((shear.x == 0.0) || (shear.y == 0.0))
     return(integral_image);
@@ -944,7 +948,7 @@ MagickExport Image *ShearImage(Image *image,const double x_shear,
   if (integral_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to shear image",
       "Memory allocation failed");
-  shear.x=(-tan(DegreesToRadians(x_shear)/2.0));
+  shear.x=(-0.5000000000000001*tan(DegreesToRadians(x_shear)));
   shear.y=sin(DegreesToRadians(y_shear));
   if ((shear.x == 0.0) || (shear.y == 0.0))
     return(integral_image);

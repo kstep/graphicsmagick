@@ -1084,6 +1084,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
       (void) fprintf(svg_info->file,"gravity NorthWest\n");
       break;
     }
+    default:
+      break;
   }
   switch (p->decorate)
   {

@@ -1086,7 +1086,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         /*
           Convert PseudoClass image to a BMP monochrome image.
         */
-        polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
+        polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
         if (image->colors == 2)
           {
             PixelPacket temp;
