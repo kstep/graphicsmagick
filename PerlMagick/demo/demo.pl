@@ -155,7 +155,7 @@ push(@$images,$example);
 print "Frame...\n";
 $example=$model->Clone();
 $example->Label('Frame');
-$example->Frame();
+$example->Frame('15x15+3+3');
 push(@$images,$example);
 
 print "Gamma...\n";
