@@ -1120,15 +1120,13 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
 */
 static int DestroyEdge(PolygonInfo *polygon_info,const int edge)
 {
-  register int
-    i;
-
-  if (edge >= polygon_info->number_edges)
-    return(polygon_info->number_edges);
+  assert(edge >= 0);
+  assert(edge < polygon_info->number_edges);
   LiberateMemory((void **) &polygon_info->edges[edge].points);
   polygon_info->number_edges--;
-  for (i=edge; i < polygon_info->number_edges; i++)
-    polygon_info->edges[i]=polygon_info->edges[i+1];
+  if (edge < polygon_info->number_edges)
+    memcpy(polygon_info->edges+edge,polygon_info->edges+edge+1,
+      (polygon_info->number_edges-edge)*sizeof(EdgeInfo));
   return(polygon_info->number_edges);
 }
 
@@ -2913,7 +2911,8 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                           if (distance != 1.0)
                             beta=sqrt(distance);
                           alpha=beta-mid-0.5;
-                          stroke_opacity=Max(stroke_opacity,alpha*alpha);
+                          if (stroke_opacity < (alpha*alpha))
+                            stroke_opacity=alpha*alpha;
                         }
                     }
                 }
@@ -2926,8 +2925,15 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                 }
               if (distance > 1.0)
                 continue;
-              alpha=(beta == 0.0 ? sqrt(distance) : beta)-1.0;
-              subpath_opacity=Max(subpath_opacity,alpha*alpha);
+              if (beta == 0.0)
+                {
+                  beta=1.0;
+                  if (distance != 1.0)
+                    beta=sqrt(distance);
+                }
+              alpha=beta-1.0;
+              if (subpath_opacity < (alpha*alpha))
+                subpath_opacity=alpha*alpha;
             }
           }
           if (fill)
