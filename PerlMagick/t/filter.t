@@ -85,7 +85,7 @@ testFilter('input.miff', 'Emboss',
 testFilter('input.miff', 'Equalize',
   q/ /,
   'e7c25176f93a087008197e82104ab3cb',
-  '4731d138fa4bf61a12911686b3bebf85');
+  '61eb62ac349952e079237eab1b26302d');
 
 ++$test;
 testFilter('input.miff', 'Flip',
