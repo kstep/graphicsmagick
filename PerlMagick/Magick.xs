@@ -6157,8 +6157,7 @@ Montage(ref,...)
                 LookupStr(BooleanTypes,SvPV(ST(i),na));
               if (sp < 0)
                 {
-                  MagickError(OptionError,"Invalid shadow type",
-                    SvPV(ST(i),na));
+                  MagickError(OptionError,"Invalid shadow type",SvPV(ST(i),na));
                   break;
                 }
              montage_info->shadow=sp != 0;
@@ -7108,6 +7107,28 @@ QueryFontMetrics(ref,...)
               (void) sscanf(SvPV(ST(i),na),"%lf%*[, ]%lf",&affine.tx,
                 &affine.ty);
               break;
+            }
+          MagickError(OptionError,"Invalid attribute",attribute);
+          break;
+        }
+        case 'U':
+        case 'u':
+        {
+          if (LocaleCompare(attribute,"unicode") == 0)
+            {
+              int
+                sp;
+
+              sp=!SvPOK(ST(i)) ? SvIV(ST(i)) :
+                LookupStr(BooleanTypes,SvPV(ST(i),na));
+              if (sp < 0)
+                {
+                  MagickError(OptionError,"Invalid unicode type",
+                    SvPV(ST(i),na));
+                  break;
+                }
+             draw_info->unicode=sp != 0;
+             break;
             }
           MagickError(OptionError,"Invalid attribute",attribute);
           break;
