@@ -431,7 +431,7 @@ static void UpdateSignature(SignatureInfo *signature_info,
 */
 MagickExport unsigned int SignatureImage(Image *image)
 {
-#define Normalize(quantum)  ((quantum) << (16-QuantumDepth))
+#define Normalize(quantum)  ((quantum) << (32-QuantumDepth))
 
   char
     signature[MaxTextExtent];
@@ -483,12 +483,18 @@ MagickExport unsigned int SignatureImage(Image *image)
     for (x=0; x < (long) image->columns; x++)
     {
       quantum=Normalize(p->red);
+      *q++=(unsigned char) (quantum >> 24);
+      *q++=(unsigned char) (quantum >> 16);
       *q++=(unsigned char) (quantum >> 8);
       *q++=(unsigned char) quantum;
       quantum=Normalize(p->green);
+      *q++=(unsigned char) (quantum >> 24);
+      *q++=(unsigned char) (quantum >> 16);
       *q++=(unsigned char) (quantum >> 8);
       *q++=(unsigned char) quantum;
       quantum=Normalize(p->blue);
+      *q++=(unsigned char) (quantum >> 24);
+      *q++=(unsigned char) (quantum >> 16);
       *q++=(unsigned char) (quantum >> 8);
       *q++=(unsigned char) quantum;
       if (!image->matte)
@@ -496,21 +502,29 @@ MagickExport unsigned int SignatureImage(Image *image)
           if (image->colorspace == CMYKColorspace)
             {
               quantum=Normalize(p->opacity);
+              *q++=(unsigned char) (quantum >> 24);
+              *q++=(unsigned char) (quantum >> 16);
               *q++=(unsigned char) (quantum >> 8);
               *q++=(unsigned char) quantum;
             }
           quantum=Normalize(OpaqueOpacity);
+          *q++=(unsigned char) (quantum >> 24);
+          *q++=(unsigned char) (quantum >> 16);
           *q++=(unsigned char) (quantum >> 8);
           *q++=(unsigned char) quantum;
         }
       else
         {
           quantum=Normalize(p->opacity);
+          *q++=(unsigned char) (quantum >> 24);
+          *q++=(unsigned char) (quantum >> 16);
           *q++=(unsigned char) (quantum >> 8);
           *q++=(unsigned char) quantum;
           if (image->colorspace == CMYKColorspace)
             {
               quantum=Normalize(indexes[x]);
+              *q++=(unsigned char) (quantum >> 24);
+              *q++=(unsigned char) (quantum >> 16);
               *q++=(unsigned char) (quantum >> 8);
               *q++=(unsigned char) quantum;
             }

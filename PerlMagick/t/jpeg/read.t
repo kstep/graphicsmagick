@@ -18,7 +18,7 @@ chdir 't/jpeg' || die 'Cd failed';
 # 
 print( "Non-interlaced JPEG ...\n" );
 testRead( 'input.jpg',
-  '8a557c34eb033a3f5da2416f1cc5eae5179b50cb1d884a7956e8edbfc6ba5005' );
+  '792230640ff771b923fd6185bd8eb3fcf55714b9c86874aae9ee5bdd8041e73a' );
 
 #
 # 2) Test plane-interlaced image read
@@ -26,5 +26,5 @@ testRead( 'input.jpg',
 ++$test;
 print( "Plane-interlaced JPEG ...\n" );
 testRead( 'input_plane.jpg',
-  '8a557c34eb033a3f5da2416f1cc5eae5179b50cb1d884a7956e8edbfc6ba5005' );
+  '792230640ff771b923fd6185bd8eb3fcf55714b9c86874aae9ee5bdd8041e73a' );
 
