@@ -8,11 +8,12 @@
 
 #ifdef WIN32
 #include "win32config.h"
+#undef LIBXML_DLL_IMPORT
 #else
 #include "config.h"
 #endif
 
-#include "xmlversion.h"
+#include <libxml/xmlversion.h>
 #ifdef LIBXML_HTML_ENABLED
 
 #include <stdio.h>
@@ -40,6 +41,7 @@
 #include <libxml/HTMLparser.h>
 #include <libxml/HTMLtree.h>
 #include <libxml/debugXML.h>
+#include <libxml/xmlerror.h>
 
 #ifdef LIBXML_DEBUG_ENABLED
 static int debug = 0;
@@ -421,6 +423,27 @@ charactersDebug(void *ctx, const xmlChar *ch, int len)
 }
 
 /**
+ * cdataDebug:
+ * @ctxt:  An XML parser context
+ * @ch:  a xmlChar string
+ * @len: the number of xmlChar
+ *
+ * receiving some cdata chars from the parser.
+ * Question: how much at a time ???
+ */
+void
+cdataDebug(void *ctx, const xmlChar *ch, int len)
+{
+    unsigned char output[40];
+    int inlen = len, outlen = 30;
+
+    htmlEncodeEntities(output, &outlen, ch, &inlen, 0);
+    output[outlen] = 0;
+
+    fprintf(stdout, "SAX.cdata(%s, %d)\n", output, len);
+}
+
+/**
  * referenceDebug:
  * @ctxt:  An XML parser context
  * @name:  The entity name
@@ -572,6 +595,8 @@ xmlSAXHandler debugSAXHandlerStruct = {
     errorDebug,
     fatalErrorDebug,
     getParameterEntityDebug,
+    cdataDebug,
+    NULL
 };
 
 xmlSAXHandlerPtr debugSAXHandler = &debugSAXHandlerStruct;
@@ -696,7 +721,8 @@ void parseAndPrintFile(char *filename) {
 	doc = htmlParseFile(filename, NULL);
     }
     if (doc == NULL) {
-        fprintf(stderr, "Could not parse %s\n", filename);
+        xmlGenericError(xmlGenericErrorContext,
+		"Could not parse %s\n", filename);
     }
 
     /*

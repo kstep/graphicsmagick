@@ -1,8 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = doc
+SUBDIRS = include doc
 
-INCLUDES = -I@srcdir@ @Z_CFLAGS@ @CORBA_CFLAGS@ 
+INCLUDES = -I@srcdir@/include -I./include @Z_CFLAGS@ @CORBA_CFLAGS@ 
 
 noinst_PROGRAMS=testSAX testHTML testXPath testURI
 
@@ -23,6 +23,7 @@ libxml_la_SOURCES = \
 		parserInternals.c \
 		parser.c \
 		tree.c \
+		hash.c \
 		xmlIO.c \
 		xmlmemory.c \
 		uri.c \
@@ -32,35 +33,18 @@ libxml_la_SOURCES = \
 		HTMLtree.c \
 		debugXML.c \
 		xpath.c \
+		xpointer.c \
+		xinclude.c \
 		nanohttp.c \
 		nanoftp.c
-
-xmlincdir = $(includedir)/libxml
-xmlinc_HEADERS = \
-		SAX.h \
-		entities.h \
-		encoding.h \
-		parser.h \
-		parserInternals.h \
-		xml-error.h \
-		HTMLparser.h \
-		HTMLtree.h \
-		debugXML.h \
-		tree.h \
-		xpath.h \
-		xmlIO.h \
-		xmlmemory.h \
-		nanohttp.h \
-		nanoftp.h \
-		uri.h \
-		valid.h \
-		xlink.h \
-		xmlversion.h
 
 DEPS = $(top_builddir)/libxml.la
 LDADDS = $(top_builddir)/libxml.la @Z_LIBS@ @M_LIBS@
 
-man_MANS = xmllint.1 libxml.4
+man_MANS = xmllint.1 xml-config.1 libxml.4
+
+m4datadir = $(datadir)/aclocal
+m4data_DATA = libxml.m4
 
 xmllint_SOURCES=xmllint.c
 xmllint_LDFLAGS = 
@@ -97,9 +81,9 @@ install-data: $(srcdir)/libxml
 
 $(libxml_la_SOURCES): $(srcdir)/libxml
 
-testall : tests SVGtests SAXtests XPathtests
+testall : tests SVGtests SAXtests
 
-tests: XMLtests XMLenttests HTMLtests Validtests URItests
+tests: XMLtests XMLenttests HTMLtests Validtests URItests XPathtests XPtrtests XIncludetests
 
 HTMLtests : testHTML
 	@(rm -f .memdump ; touch .memdump)
@@ -254,6 +238,7 @@ XPathtests : testXPath
 	  if [ ! -d $$i ] ; then \
 	  doc=`basename $$i`; \
 	  for j in $(srcdir)/test/XPath/tests/$$doc* ; do \
+	  if [ ! -f $$j ] ; then continue ; fi ; \
 	  name=`basename $$j`; \
 	  if [ ! -d $$j ] ; then \
 	  if [ ! -f $(srcdir)/result/XPath/tests/$$name ] ; then \
@@ -265,6 +250,47 @@ XPathtests : testXPath
 	      diff $(srcdir)/result/XPath/tests/$$name result.$$name ; \
 	      rm result.$$name ; \
 	  fi ; fi ; done ; fi ; done)
+
+XPtrtests : testXPath
+	@(rm -f .memdump ; touch .memdump)
+	@echo "##"
+	@echo "## XPointer regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/XPath/docs/* ; do \
+	  if [ ! -d $$i ] ; then \
+	  doc=`basename $$i`; \
+	  for j in $(srcdir)/test/XPath/xptr/$$doc* ; do \
+	  if [ ! -f $$j ] ; then continue ; fi ; \
+	  name=`basename $$j`; \
+	  if [ ! -d $$j ] ; then \
+	  if [ ! -f $(srcdir)/result/XPath/xptr/$$name ] ; then \
+	      echo New test file $$name ; \
+	      ./testXPath -xptr -f -i $$i $$j > $(srcdir)/result/XPath/xptr/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      ./testXPath -xptr -f -i $$i $$j > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/XPath/xptr/$$name result.$$name ; \
+	      rm result.$$name ; \
+	  fi ; fi ; done ; fi ; done)
+
+XIncludetests : xmllint
+	@echo "##"
+	@echo "## XInclude regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/XInclude/docs/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/XInclude/$$name ] ; then \
+	      echo New test file $$name ; \
+	      $(top_builddir)/xmllint --xinclude $$i > $(srcdir)/result/XInclude/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      $(top_builddir)/xmllint --xinclude $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/XInclude/$$name result.$$name ; \
+	      rm result.$$name ; \
+	  fi ; fi ; done)
 
 SVGtests : xmllint
 	@echo "##"
@@ -340,6 +366,9 @@ dist-hook: libxml.spec
 	-cp libxml.spec $(distdir)
 	(cd $(srcdir) ; tar -cf - --exclude CVS test result SAXresult ) | (cd $(distdir); tar xf -)
 
+rpm: $(distdir).tar.gz
+	rpm -ta $(distdir).tar.gz
+
 ## We create xmlConf.sh here and not from configure because we want
 ## to get the paths expanded correctly.  Macros like srcdir are given
 ## the value NONE in configure if the user doesn't specify them (this
@@ -352,9 +381,13 @@ CLEANFILES=xmlConf.sh
 
 confexecdir=$(libdir)
 confexec_DATA = xmlConf.sh
-EXTRA_DIST = xmlConf.sh.in libxml.spec.in libxml.spec \
+EXTRA_DIST = xmlConf.sh.in libxml.spec.in libxml.spec libxml.m4 \
              example/Makefile.am example/gjobread.c example/gjobs.xml \
-	     $(man_MANS)
+	     $(man_MANS) libxml-2.0.pc.in xmlversion.h.in \
+	     win32/README.MSDev win32/Makefile.mingw win32/libxml2/libxml2.dsp
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libxml-2.0.pc
 
 xmlConf.sh: xmlConf.sh.in Makefile
 ## Use sed and then mv to avoid problems if the user interrupts.

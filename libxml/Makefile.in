@@ -98,18 +98,22 @@ WITH_HTML = @WITH_HTML@
 WITH_HTTP = @WITH_HTTP@
 WITH_ICONV = @WITH_ICONV@
 WITH_MEM_DEBUG = @WITH_MEM_DEBUG@
+WITH_XINCLUDE = @WITH_XINCLUDE@
 WITH_XPATH = @WITH_XPATH@
+WITH_XPTR = @WITH_XPTR@
+XINCLUDE_OBJ = @XINCLUDE_OBJ@
 XML_CFLAGS = @XML_CFLAGS@
 XML_INCLUDEDIR = @XML_INCLUDEDIR@
 XML_LIBDIR = @XML_LIBDIR@
 XML_LIBS = @XML_LIBS@
 XPATH_OBJ = @XPATH_OBJ@
+XPTR_OBJ = @XPTR_OBJ@
 Z_CFLAGS = @Z_CFLAGS@
 Z_LIBS = @Z_LIBS@
 
-SUBDIRS = doc
+SUBDIRS = include doc
 
-INCLUDES = -I@srcdir@ @Z_CFLAGS@ @CORBA_CFLAGS@ 
+INCLUDES = -I@srcdir@/include -I./include @Z_CFLAGS@ @CORBA_CFLAGS@ 
 
 noinst_PROGRAMS = testSAX testHTML testXPath testURI
 
@@ -122,17 +126,16 @@ libxml_la_LIBADD = @Z_LIBS@
 
 libxml_la_LDFLAGS = -version-info @LIBXML_VERSION_INFO@
 
-libxml_la_SOURCES =  		SAX.c 		entities.c 		encoding.c 		error.c 		parserInternals.c 		parser.c 		tree.c 		xmlIO.c 		xmlmemory.c 		uri.c 		valid.c 		xlink.c 		HTMLparser.c 		HTMLtree.c 		debugXML.c 		xpath.c 		nanohttp.c 		nanoftp.c
-
-
-xmlincdir = $(includedir)/libxml
-xmlinc_HEADERS =  		SAX.h 		entities.h 		encoding.h 		parser.h 		parserInternals.h 		xml-error.h 		HTMLparser.h 		HTMLtree.h 		debugXML.h 		tree.h 		xpath.h 		xmlIO.h 		xmlmemory.h 		nanohttp.h 		nanoftp.h 		uri.h 		valid.h 		xlink.h 		xmlversion.h
+libxml_la_SOURCES =  		SAX.c 		entities.c 		encoding.c 		error.c 		parserInternals.c 		parser.c 		tree.c 		hash.c 		xmlIO.c 		xmlmemory.c 		uri.c 		valid.c 		xlink.c 		HTMLparser.c 		HTMLtree.c 		debugXML.c 		xpath.c 		xpointer.c 		xinclude.c 		nanohttp.c 		nanoftp.c
 
 
 DEPS = $(top_builddir)/libxml.la
 LDADDS = $(top_builddir)/libxml.la @Z_LIBS@ @M_LIBS@
 
-man_MANS = xmllint.1 libxml.4
+man_MANS = xmllint.1 xml-config.1 libxml.4
+
+m4datadir = $(datadir)/aclocal
+m4data_DATA = libxml.m4
 
 xmllint_SOURCES = xmllint.c
 xmllint_LDFLAGS = 
@@ -163,12 +166,15 @@ confexecdir = $(libdir)
 confexec_DATA = xmlConf.sh
 
 CLEANFILES = xmlConf.sh
-EXTRA_DIST = xmlConf.sh.in libxml.spec.in libxml.spec              example/Makefile.am example/gjobread.c example/gjobs.xml 	     $(man_MANS)
+EXTRA_DIST = xmlConf.sh.in libxml.spec.in libxml.spec libxml.m4              example/Makefile.am example/gjobread.c example/gjobs.xml 	     $(man_MANS) libxml-2.0.pc.in xmlversion.h.in 	     win32/README.MSDev win32/Makefile.mingw win32/libxml2/libxml2.dsp
 
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libxml-2.0.pc
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =  libxml.spec xmlversion.h xml-config win32config.h
+CONFIG_CLEAN_FILES =  libxml.spec xml-config libxml-2.0.pc
 LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
@@ -178,9 +184,9 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libxml_la_DEPENDENCIES = 
 libxml_la_OBJECTS =  SAX.lo entities.lo encoding.lo error.lo \
-parserInternals.lo parser.lo tree.lo xmlIO.lo xmlmemory.lo uri.lo \
-valid.lo xlink.lo HTMLparser.lo HTMLtree.lo debugXML.lo xpath.lo \
-nanohttp.lo nanoftp.lo
+parserInternals.lo parser.lo tree.lo hash.lo xmlIO.lo xmlmemory.lo \
+uri.lo valid.lo xlink.lo HTMLparser.lo HTMLtree.lo debugXML.lo xpath.lo \
+xpointer.lo xinclude.lo nanohttp.lo nanoftp.lo
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
 xmllint_OBJECTS =  xmllint.o
@@ -199,15 +205,13 @@ man4dir = $(mandir)/man4
 MANS = $(man_MANS)
 
 NROFF = nroff
-DATA =  $(confexec_DATA)
-
-HEADERS =  $(xmlinc_HEADERS)
+DATA =  $(confexec_DATA) $(m4data_DATA) $(pkgconfig_DATA)
 
 DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING COPYING.LIB ChangeLog \
-INSTALL Makefile.am Makefile.in NEWS TODO acconfig.h aclocal.m4 \
-config.guess config.h.in config.sub configure configure.in install-sh \
-libxml.spec.in ltconfig ltmain.sh missing mkinstalldirs \
-win32config.h.in xml-config.in xmlversion.h.in
+INSTALL Makefile.am Makefile.in NEWS TODO acconfig.h acinclude.m4 \
+aclocal.m4 config.guess config.h.in config.sub configure configure.in \
+install-sh libxml-2.0.pc.in libxml.spec.in ltconfig ltmain.sh missing \
+mkinstalldirs xml-config.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -226,7 +230,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in 
+$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in  acinclude.m4
 	cd $(srcdir) && $(ACLOCAL)
 
 config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
@@ -263,11 +267,9 @@ distclean-hdr:
 maintainer-clean-hdr:
 libxml.spec: $(top_builddir)/config.status libxml.spec.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
-xmlversion.h: $(top_builddir)/config.status xmlversion.h.in
-	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 xml-config: $(top_builddir)/config.status xml-config.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
-win32config.h: $(top_builddir)/config.status win32config.h.in
+libxml-2.0.pc: $(top_builddir)/config.status libxml-2.0.pc.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 mostlyclean-libLTLIBRARIES:
@@ -500,19 +502,42 @@ uninstall-confexecDATA:
 	  rm -f $(DESTDIR)$(confexecdir)/$$p; \
 	done
 
-install-xmlincHEADERS: $(xmlinc_HEADERS)
+install-m4dataDATA: $(m4data_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(xmlincdir)
-	@list='$(xmlinc_HEADERS)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(xmlincdir)/$$p"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(xmlincdir)/$$p; \
+	$(mkinstalldirs) $(DESTDIR)$(m4datadir)
+	@list='$(m4data_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(m4datadir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(m4datadir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(m4datadir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(m4datadir)/$$p; \
+	  fi; fi; \
 	done
 
-uninstall-xmlincHEADERS:
+uninstall-m4dataDATA:
 	@$(NORMAL_UNINSTALL)
-	list='$(xmlinc_HEADERS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(xmlincdir)/$$p; \
+	list='$(m4data_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(m4datadir)/$$p; \
+	done
+
+install-pkgconfigDATA: $(pkgconfig_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgconfigdir)
+	@list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-pkgconfigDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pkgconfigdir)/$$p; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -642,7 +667,8 @@ distdir: $(DISTFILES)
 	-rm -rf $(distdir)
 	mkdir $(distdir)
 	-chmod 777 $(distdir)
-	$(mkinstalldirs) $(distdir)/example
+	$(mkinstalldirs) $(distdir)/example $(distdir)/win32 \
+	   $(distdir)/win32/libxml2
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -664,77 +690,94 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-HTMLparser.lo HTMLparser.o : HTMLparser.c config.h xmlversion.h \
-	libxml/xmlmemory.h libxml/xmlversion.h libxml/tree.h \
-	libxml/HTMLparser.h libxml/parser.h libxml/valid.h \
+HTMLparser.lo HTMLparser.o : HTMLparser.c config.h libxml/xmlversion.h \
+	libxml/xmlmemory.h libxml/tree.h libxml/parser.h libxml/valid.h \
 	libxml/xmlIO.h libxml/encoding.h libxml/entities.h \
-	libxml/parserInternals.h xml-error.h
-HTMLtree.lo HTMLtree.o : HTMLtree.c config.h xmlversion.h \
-	libxml/xmlmemory.h libxml/xmlversion.h libxml/HTMLparser.h \
-	libxml/parser.h libxml/tree.h libxml/valid.h libxml/xmlIO.h \
-	libxml/encoding.h libxml/entities.h libxml/HTMLtree.h
+	libxml/parserInternals.h libxml/xmlerror.h libxml/HTMLparser.h
+HTMLtree.lo HTMLtree.o : HTMLtree.c config.h libxml/xmlversion.h \
+	libxml/xmlmemory.h libxml/HTMLparser.h libxml/parser.h \
+	libxml/tree.h libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
+	libxml/entities.h libxml/HTMLtree.h libxml/xmlerror.h
 SAX.lo SAX.o : SAX.c config.h libxml/xmlmemory.h libxml/xmlversion.h \
 	libxml/tree.h libxml/parser.h libxml/valid.h libxml/xmlIO.h \
 	libxml/encoding.h libxml/entities.h libxml/parserInternals.h \
-	libxml/xml-error.h libxml/debugXML.h libxml/xpath.h \
-	libxml/SAX.h libxml/xlink.h libxml/uri.h libxml/HTMLtree.h \
-	libxml/HTMLparser.h
-debugXML.lo debugXML.o : debugXML.c config.h xmlversion.h \
-	libxml/xmlmemory.h libxml/xmlversion.h libxml/tree.h \
-	libxml/parser.h libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
-	libxml/entities.h libxml/debugXML.h libxml/xpath.h \
+	libxml/xmlerror.h libxml/debugXML.h libxml/xpath.h \
+	libxml/hash.h libxml/SAX.h libxml/xlink.h libxml/uri.h \
 	libxml/HTMLtree.h libxml/HTMLparser.h
+debugXML.lo debugXML.o : debugXML.c config.h libxml/xmlversion.h \
+	libxml/xmlmemory.h libxml/tree.h libxml/parser.h libxml/valid.h \
+	libxml/xmlIO.h libxml/encoding.h libxml/entities.h \
+	libxml/debugXML.h libxml/xpath.h libxml/hash.h \
+	libxml/HTMLtree.h libxml/HTMLparser.h libxml/xmlerror.h
 encoding.lo encoding.o : encoding.c config.h libxml/xmlversion.h \
 	libxml/encoding.h libxml/tree.h libxml/xmlmemory.h \
 	libxml/HTMLparser.h libxml/parser.h libxml/valid.h \
-	libxml/xmlIO.h libxml/entities.h
+	libxml/xmlIO.h libxml/entities.h libxml/xmlerror.h
 entities.lo entities.o : entities.c config.h libxml/xmlmemory.h \
-	libxml/xmlversion.h libxml/entities.h libxml/tree.h \
-	libxml/parser.h libxml/valid.h libxml/xmlIO.h libxml/encoding.h
+	libxml/xmlversion.h libxml/hash.h libxml/parser.h libxml/tree.h \
+	libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
+	libxml/entities.h libxml/xmlerror.h
 error.lo error.o : error.c config.h libxml/parser.h libxml/tree.h \
 	libxml/xmlversion.h libxml/valid.h libxml/xmlIO.h \
+	libxml/encoding.h libxml/entities.h libxml/xmlerror.h
+hash.lo hash.o : hash.c config.h libxml/hash.h libxml/parser.h \
+	libxml/tree.h libxml/xmlversion.h libxml/valid.h libxml/xmlIO.h \
+	libxml/encoding.h libxml/entities.h libxml/xmlmemory.h
+nanoftp.lo nanoftp.o : nanoftp.c config.h libxml/xmlversion.h \
+	libxml/xmlmemory.h libxml/nanoftp.h libxml/xmlerror.h \
+	libxml/parser.h libxml/tree.h libxml/valid.h libxml/xmlIO.h \
 	libxml/encoding.h libxml/entities.h
-nanoftp.lo nanoftp.o : nanoftp.c config.h xmlversion.h \
-	libxml/xmlmemory.h libxml/xmlversion.h libxml/nanoftp.h
-nanohttp.lo nanohttp.o : nanohttp.c config.h xmlversion.h \
-	libxml/xmlmemory.h libxml/xmlversion.h libxml/nanohttp.h
+nanohttp.lo nanohttp.o : nanohttp.c config.h libxml/xmlversion.h \
+	libxml/xmlmemory.h libxml/parser.h libxml/tree.h libxml/valid.h \
+	libxml/xmlIO.h libxml/encoding.h libxml/entities.h \
+	libxml/nanohttp.h
 parser.lo parser.o : parser.c config.h libxml/xmlmemory.h \
 	libxml/xmlversion.h libxml/tree.h libxml/parser.h \
 	libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
-	libxml/entities.h libxml/parserInternals.h libxml/uri.h \
-	xml-error.h
+	libxml/entities.h libxml/parserInternals.h libxml/xmlerror.h \
+	libxml/uri.h libxml/xpath.h libxml/hash.h
 parserInternals.lo parserInternals.o : parserInternals.c config.h \
 	libxml/xmlmemory.h libxml/xmlversion.h libxml/tree.h \
 	libxml/parser.h libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
-	libxml/entities.h libxml/parserInternals.h libxml/uri.h \
-	xml-error.h
-testHTML.o: testHTML.c config.h xmlversion.h libxml/xmlmemory.h \
-	libxml/xmlversion.h libxml/HTMLparser.h libxml/parser.h \
-	libxml/tree.h libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
+	libxml/entities.h libxml/parserInternals.h libxml/xmlerror.h \
+	libxml/uri.h
+testHTML.o: testHTML.c config.h libxml/xmlversion.h libxml/xmlmemory.h \
+	libxml/HTMLparser.h libxml/parser.h libxml/tree.h \
+	libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
 	libxml/entities.h libxml/HTMLtree.h libxml/debugXML.h \
-	libxml/xpath.h
-testSAX.o: testSAX.c config.h libxml/xml-error.h libxml/parser.h \
+	libxml/xpath.h libxml/hash.h libxml/xmlerror.h
+testSAX.o: testSAX.c config.h libxml/xmlerror.h libxml/parser.h \
 	libxml/tree.h libxml/xmlversion.h libxml/valid.h libxml/xmlIO.h \
 	libxml/encoding.h libxml/entities.h libxml/parserInternals.h \
-	libxml/debugXML.h libxml/xpath.h libxml/xmlmemory.h
+	libxml/debugXML.h libxml/xpath.h libxml/hash.h \
+	libxml/xmlmemory.h
 testURI.o: testURI.c config.h libxml/xmlversion.h libxml/xmlmemory.h \
 	libxml/uri.h libxml/tree.h
-testXPath.o: testXPath.c config.h xmlversion.h libxml/xpath.h \
-	libxml/tree.h libxml/xmlversion.h libxml/parser.h \
-	libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
-	libxml/entities.h libxml/debugXML.h libxml/xmlmemory.h
+testXPath.o: testXPath.c config.h libxml/xmlversion.h libxml/xpath.h \
+	libxml/tree.h libxml/hash.h libxml/parser.h libxml/valid.h \
+	libxml/xmlIO.h libxml/encoding.h libxml/entities.h \
+	libxml/debugXML.h libxml/xmlmemory.h libxml/parserInternals.h \
+	libxml/xpathInternals.h libxml/xmlerror.h libxml/xpointer.h
 tester.o: tester.c config.h xmlmemory.h parser.h tree.h valid.h xmlIO.h \
-	encoding.h entities.h HTMLparser.h HTMLtree.h xpath.h \
-	debugXML.h
+	encoding.h entities.h parserInternals.h HTMLparser.h HTMLtree.h \
+	xpath.h debugXML.h
 tree.lo tree.o : tree.c config.h libxml/xmlmemory.h libxml/xmlversion.h \
 	libxml/tree.h libxml/parser.h libxml/valid.h libxml/xmlIO.h \
-	libxml/encoding.h libxml/entities.h
+	libxml/encoding.h libxml/entities.h libxml/xmlerror.h
 uri.lo uri.o : uri.c config.h libxml/xmlmemory.h libxml/xmlversion.h \
-	libxml/uri.h libxml/tree.h
+	libxml/uri.h libxml/tree.h libxml/xmlerror.h libxml/parser.h \
+	libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
+	libxml/entities.h
 valid.lo valid.o : valid.c config.h libxml/xmlmemory.h \
-	libxml/xmlversion.h libxml/valid.h libxml/tree.h \
-	libxml/parser.h libxml/xmlIO.h libxml/encoding.h \
-	libxml/entities.h libxml/parserInternals.h
+	libxml/xmlversion.h libxml/hash.h libxml/parser.h libxml/tree.h \
+	libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
+	libxml/entities.h libxml/parserInternals.h libxml/xmlerror.h
+xinclude.lo xinclude.o : xinclude.c config.h libxml/xmlmemory.h \
+	libxml/xmlversion.h libxml/tree.h libxml/parser.h \
+	libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
+	libxml/entities.h libxml/uri.h libxml/xpointer.h libxml/xpath.h \
+	libxml/hash.h libxml/parserInternals.h libxml/debugXML.h \
+	libxml/xmlerror.h libxml/xinclude.h
 xlink.lo xlink.o : xlink.c config.h libxml/xmlmemory.h \
 	libxml/xmlversion.h libxml/tree.h libxml/parser.h \
 	libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
@@ -743,18 +786,28 @@ xmlIO.lo xmlIO.o : xmlIO.c config.h libxml/xmlmemory.h \
 	libxml/xmlversion.h libxml/parser.h libxml/tree.h \
 	libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
 	libxml/entities.h libxml/parserInternals.h libxml/nanohttp.h \
-	libxml/nanoftp.h
+	libxml/nanoftp.h libxml/xmlerror.h
 xmllint.o: xmllint.c config.h libxml/xmlmemory.h libxml/xmlversion.h \
 	libxml/parser.h libxml/tree.h libxml/valid.h libxml/xmlIO.h \
 	libxml/encoding.h libxml/entities.h libxml/parserInternals.h \
 	libxml/HTMLparser.h libxml/HTMLtree.h libxml/xpath.h \
-	libxml/debugXML.h
+	libxml/hash.h libxml/debugXML.h libxml/xmlerror.h \
+	libxml/xinclude.h
 xmlmemory.lo xmlmemory.o : xmlmemory.c config.h libxml/xmlmemory.h \
-	libxml/xmlversion.h
-xpath.lo xpath.o : xpath.c config.h xmlversion.h libxml/xmlmemory.h \
-	libxml/xmlversion.h libxml/tree.h libxml/valid.h libxml/xpath.h \
-	libxml/parserInternals.h libxml/parser.h libxml/xmlIO.h \
-	libxml/encoding.h libxml/entities.h
+	libxml/xmlversion.h libxml/xmlerror.h libxml/parser.h \
+	libxml/tree.h libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
+	libxml/entities.h
+xpath.lo xpath.o : xpath.c config.h libxml/xmlversion.h \
+	libxml/xmlmemory.h libxml/tree.h libxml/valid.h libxml/xpath.h \
+	libxml/hash.h libxml/parser.h libxml/xmlIO.h libxml/encoding.h \
+	libxml/entities.h libxml/xpathInternals.h \
+	libxml/parserInternals.h libxml/xpointer.h libxml/debugXML.h \
+	libxml/xmlerror.h
+xpointer.lo xpointer.o : xpointer.c config.h libxml/xpointer.h \
+	libxml/tree.h libxml/xmlversion.h libxml/xpath.h libxml/hash.h \
+	libxml/parser.h libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
+	libxml/entities.h libxml/xmlmemory.h libxml/parserInternals.h \
+	libxml/xpathInternals.h libxml/debugXML.h libxml/xmlerror.h
 
 info-am:
 info: info-recursive
@@ -772,7 +825,7 @@ install-exec-am: install-libLTLIBRARIES install-binPROGRAMS \
 		install-binSCRIPTS install-confexecDATA
 install-exec: install-exec-recursive
 
-install-data-am: install-man install-xmlincHEADERS
+install-data-am: install-man install-m4dataDATA install-pkgconfigDATA
 install-data: install-data-recursive
 
 install-am: all-am
@@ -780,10 +833,11 @@ install-am: all-am
 install: install-recursive
 uninstall-am: uninstall-libLTLIBRARIES uninstall-binPROGRAMS \
 		uninstall-binSCRIPTS uninstall-man \
-		uninstall-confexecDATA uninstall-xmlincHEADERS
+		uninstall-confexecDATA uninstall-m4dataDATA \
+		uninstall-pkgconfigDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(MANS) $(DATA) \
-		$(HEADERS) config.h
+		config.h
 all-redirect: all-recursive-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
@@ -792,7 +846,7 @@ installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
 		$(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1 \
 		$(DESTDIR)$(mandir)/man4 $(DESTDIR)$(confexecdir) \
-		$(DESTDIR)$(xmlincdir)
+		$(DESTDIR)$(m4datadir) $(DESTDIR)$(pkgconfigdir)
 
 
 mostlyclean-generic:
@@ -851,12 +905,12 @@ install-binPROGRAMS mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
 clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
 uninstall-binSCRIPTS install-binSCRIPTS install-man1 uninstall-man1 \
 install-man4 uninstall-man4 install-man uninstall-man \
-uninstall-confexecDATA install-confexecDATA uninstall-xmlincHEADERS \
-install-xmlincHEADERS install-data-recursive uninstall-data-recursive \
-install-exec-recursive uninstall-exec-recursive installdirs-recursive \
-uninstalldirs-recursive all-recursive check-recursive \
-installcheck-recursive info-recursive dvi-recursive \
-mostlyclean-recursive distclean-recursive clean-recursive \
+uninstall-confexecDATA install-confexecDATA uninstall-m4dataDATA \
+install-m4dataDATA uninstall-pkgconfigDATA install-pkgconfigDATA \
+install-data-recursive uninstall-data-recursive install-exec-recursive \
+uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
+all-recursive check-recursive installcheck-recursive info-recursive \
+dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check-local check check-am installcheck-am installcheck \
@@ -877,9 +931,9 @@ install-data: $(srcdir)/libxml
 
 $(libxml_la_SOURCES): $(srcdir)/libxml
 
-testall : tests SVGtests SAXtests XPathtests
+testall : tests SVGtests SAXtests
 
-tests: XMLtests XMLenttests HTMLtests Validtests URItests
+tests: XMLtests XMLenttests HTMLtests Validtests URItests XPathtests XPtrtests XIncludetests
 
 HTMLtests : testHTML
 	@(rm -f .memdump ; touch .memdump)
@@ -1033,6 +1087,7 @@ XPathtests : testXPath
 	  if [ ! -d $$i ] ; then \
 	  doc=`basename $$i`; \
 	  for j in $(srcdir)/test/XPath/tests/$$doc* ; do \
+	  if [ ! -f $$j ] ; then continue ; fi ; \
 	  name=`basename $$j`; \
 	  if [ ! -d $$j ] ; then \
 	  if [ ! -f $(srcdir)/result/XPath/tests/$$name ] ; then \
@@ -1044,6 +1099,47 @@ XPathtests : testXPath
 	      diff $(srcdir)/result/XPath/tests/$$name result.$$name ; \
 	      rm result.$$name ; \
 	  fi ; fi ; done ; fi ; done)
+
+XPtrtests : testXPath
+	@(rm -f .memdump ; touch .memdump)
+	@echo "##"
+	@echo "## XPointer regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/XPath/docs/* ; do \
+	  if [ ! -d $$i ] ; then \
+	  doc=`basename $$i`; \
+	  for j in $(srcdir)/test/XPath/xptr/$$doc* ; do \
+	  if [ ! -f $$j ] ; then continue ; fi ; \
+	  name=`basename $$j`; \
+	  if [ ! -d $$j ] ; then \
+	  if [ ! -f $(srcdir)/result/XPath/xptr/$$name ] ; then \
+	      echo New test file $$name ; \
+	      ./testXPath -xptr -f -i $$i $$j > $(srcdir)/result/XPath/xptr/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      ./testXPath -xptr -f -i $$i $$j > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/XPath/xptr/$$name result.$$name ; \
+	      rm result.$$name ; \
+	  fi ; fi ; done ; fi ; done)
+
+XIncludetests : xmllint
+	@echo "##"
+	@echo "## XInclude regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/XInclude/docs/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/XInclude/$$name ] ; then \
+	      echo New test file $$name ; \
+	      $(top_builddir)/xmllint --xinclude $$i > $(srcdir)/result/XInclude/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      $(top_builddir)/xmllint --xinclude $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/XInclude/$$name result.$$name ; \
+	      rm result.$$name ; \
+	  fi ; fi ; done)
 
 SVGtests : xmllint
 	@echo "##"
@@ -1117,6 +1213,9 @@ Validtests : xmllint
 dist-hook: libxml.spec
 	-cp libxml.spec $(distdir)
 	(cd $(srcdir) ; tar -cf - --exclude CVS test result SAXresult ) | (cd $(distdir); tar xf -)
+
+rpm: $(distdir).tar.gz
+	rpm -ta $(distdir).tar.gz
 
 xmlConf.sh: xmlConf.sh.in Makefile
 	sed -e 's?\@XML_LIBDIR\@?$(XML_LIBDIR)?g' \

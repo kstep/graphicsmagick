@@ -99,12 +99,16 @@ WITH_HTML = @WITH_HTML@
 WITH_HTTP = @WITH_HTTP@
 WITH_ICONV = @WITH_ICONV@
 WITH_MEM_DEBUG = @WITH_MEM_DEBUG@
+WITH_XINCLUDE = @WITH_XINCLUDE@
 WITH_XPATH = @WITH_XPATH@
+WITH_XPTR = @WITH_XPTR@
+XINCLUDE_OBJ = @XINCLUDE_OBJ@
 XML_CFLAGS = @XML_CFLAGS@
 XML_INCLUDEDIR = @XML_INCLUDEDIR@
 XML_LIBDIR = @XML_LIBDIR@
 XML_LIBS = @XML_LIBS@
 XPATH_OBJ = @XPATH_OBJ@
+XPTR_OBJ = @XPTR_OBJ@
 Z_CFLAGS = @Z_CFLAGS@
 Z_LIBS = @Z_LIBS@
 
@@ -225,6 +229,8 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 scan:
 	@(if [ -L $(DOC_SOURCE_DIR)/libxml ] ; then rm -f $(DOC_SOURCE_DIR)/libxml ; fi)
+	@(if [ -L $(DOC_SOURCE_DIR)/include ] ; then rm -f $(DOC_SOURCE_DIR)/include ; fi)
+	@(if [ -L $(DOC_SOURCE_DIR)/include/libxml ] ; then rm -f $(DOC_SOURCE_DIR)/include/libxml ; fi)
 	gtkdoc-scan --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) --ignore-headers="acconfig.h config.h"
 
 templates: scan

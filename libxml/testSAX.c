@@ -8,6 +8,7 @@
 
 #ifdef WIN32
 #include "win32config.h"
+#undef LIBXML_DLL_IMPORT
 #else
 #include "config.h"
 #endif
@@ -36,7 +37,7 @@
 #endif
 
 
-#include <libxml/xml-error.h>
+#include <libxml/xmlerror.h>
 #include <libxml/parser.h>
 #include <libxml/parserInternals.h> /* only for xmlNewInputFromFile() */
 #include <libxml/tree.h>
@@ -255,7 +256,11 @@ attributeDeclDebug(void *ctx, const xmlChar *elem, const xmlChar *name,
               int type, int def, const xmlChar *defaultValue,
 	      xmlEnumerationPtr tree)
 {
-    fprintf(stdout, "SAX.attributeDecl(%s, %s, %d, %d, %s, ...)\n",
+    if (defaultValue == NULL)
+	fprintf(stdout, "SAX.attributeDecl(%s, %s, %d, %d, NULL, ...)\n",
+            elem, name, type, def);
+    else
+	fprintf(stdout, "SAX.attributeDecl(%s, %s, %d, %d, %s, ...)\n",
             elem, name, type, def, defaultValue);
 }
 
@@ -472,7 +477,7 @@ processingInstructionDebug(void *ctx, const xmlChar *target,
 void
 cdataBlockDebug(void *ctx, const xmlChar *value, int len)
 {
-    fprintf(stderr, "SAX.pcdata(%.20s, %d)\n",
+    fprintf(stdout, "SAX.pcdata(%.20s, %d)\n",
 	    (char *) value, len);
 }
 
@@ -613,7 +618,8 @@ void parseAndPrintFile(char *filename) {
 	    }
 	    fclose(f);
 	} else {
-	    fprintf(stderr, "Cannot read file %s\n", filename);
+	    xmlGenericError(xmlGenericErrorContext,
+		    "Cannot read file %s\n", filename);
 	}
 	/*
 	 * Debug callback

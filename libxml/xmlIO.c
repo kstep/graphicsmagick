@@ -40,6 +40,7 @@
 #include <libxml/xmlIO.h>
 #include <libxml/nanohttp.h>
 #include <libxml/nanoftp.h>
+#include <libxml/xmlerror.h>
 
 /* #define VERBOSE_FAILURE */
 /* #define DEBUG_EXTERNAL_ENTITIES */
@@ -340,6 +341,17 @@ xmlFileClose (void * context) {
     fclose((FILE *) context);
 }
 
+/**
+ * xmlFileFlush:
+ * @context:  the I/O context
+ *
+ * Flush an I/O channel
+ */
+void
+xmlFileFlush (void * context) {
+    fflush((FILE *) context);
+}
+
 #ifdef HAVE_ZLIB_H
 /************************************************************************
  *									*
@@ -374,7 +386,7 @@ xmlGzfileOpen (const char *filename) {
     gzFile fd;
 
     if (!strcmp(filename, "-")) {
-        fd = gzdopen (fileno(stdin), "r");
+        fd = gzdopen(fileno(stdin), "rb");
 	return((void *) fd);
     }
 
@@ -385,7 +397,7 @@ xmlGzfileOpen (const char *filename) {
     else 
 	path = filename;
 
-    fd = gzopen(filename, "r");
+    fd = gzopen(filename, "rb");
     return((void *) fd);
 }
 
@@ -405,7 +417,7 @@ xmlGzfileOpenW (const char *filename, int compression) {
     char mode[15];
     gzFile fd;
 
-    sprintf(mode, "w%d", compression);
+    sprintf(mode, "wb%d", compression);
     if (!strcmp(filename, "-")) {
         fd = gzdopen(1, mode);
 	return((void *) fd);
@@ -644,6 +656,9 @@ xmlRegisterOutputCallbacks(xmlOutputMatchCallback match,
  */
 void
 xmlRegisterDefaultInputCallbacks(void) {
+    if (xmlInputCallbackInitialized)
+	return;
+
     xmlRegisterInputCallbacks(xmlFileMatch, xmlFileOpen,
 	                      xmlFileRead, xmlFileClose);
 #ifdef HAVE_ZLIB_H
@@ -660,6 +675,7 @@ xmlRegisterDefaultInputCallbacks(void) {
     xmlRegisterInputCallbacks(xmlIOFTPMatch, xmlIOFTPOpen,
 	                      xmlIOFTPRead, xmlIOFTPClose);
 #endif /* LIBXML_FTP_ENABLED */
+    xmlInputCallbackInitialized = 1;
 }
 
 /**
@@ -669,6 +685,9 @@ xmlRegisterDefaultInputCallbacks(void) {
  */
 void
 xmlRegisterDefaultOutputCallbacks(void) {
+    if (xmlOutputCallbackInitialized)
+	return;
+
     xmlRegisterOutputCallbacks(xmlFileMatch, xmlFileOpenW,
 	                      xmlFileWrite, xmlFileClose);
 /*********************************
@@ -693,6 +712,7 @@ xmlRegisterDefaultOutputCallbacks(void) {
 	                       xmlIOFTPWrite, xmlIOFTPClose);
 #endif
  **********************************/
+    xmlOutputCallbackInitialized = 1;
 }
 
 /**
@@ -709,7 +729,8 @@ xmlAllocParserInputBuffer(xmlCharEncoding enc) {
 
     ret = (xmlParserInputBufferPtr) xmlMalloc(sizeof(xmlParserInputBuffer));
     if (ret == NULL) {
-        fprintf(stderr, "xmlAllocParserInputBuffer : out of memory!\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAllocParserInputBuffer : out of memory!\n");
 	return(NULL);
     }
     memset(ret, 0, (size_t) sizeof(xmlParserInputBuffer));
@@ -745,7 +766,8 @@ xmlAllocOutputBuffer(xmlCharEncodingHandlerPtr encoder) {
 
     ret = (xmlOutputBufferPtr) xmlMalloc(sizeof(xmlOutputBuffer));
     if (ret == NULL) {
-        fprintf(stderr, "xmlAllocOutputBuffer : out of memory!\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAllocOutputBuffer : out of memory!\n");
 	return(NULL);
     }
     memset(ret, 0, (size_t) sizeof(xmlOutputBuffer));
@@ -982,7 +1004,7 @@ xmlParserInputBufferCreateFile(FILE *file, xmlCharEncoding enc) {
     if (ret != NULL) {
         ret->context = file;
 	ret->readcallback = xmlFileRead;
-	ret->closecallback = xmlFileClose;
+	ret->closecallback = xmlFileFlush;
     }
 
     return(ret);
@@ -1011,7 +1033,7 @@ xmlOutputBufferCreateFile(FILE *file, xmlCharEncodingHandlerPtr encoder) {
     if (ret != NULL) {
         ret->context = file;
 	ret->writecallback = xmlFileWrite;
-	ret->closecallback = xmlFileClose;
+	ret->closecallback = xmlFileFlush;
     }
 
     return(ret);
@@ -1171,7 +1193,8 @@ xmlOutputBufferCreateIO(xmlOutputWriteCallback   iowrite,
  *         in case of error.
  */
 int
-xmlParserInputBufferPush(xmlParserInputBufferPtr in, int len, const char *buf) {
+xmlParserInputBufferPush(xmlParserInputBufferPtr in,
+	                 int len, const char *buf) {
     int nbchars = 0;
 
     if (len < 0) return(0);
@@ -1189,7 +1212,8 @@ xmlParserInputBufferPush(xmlParserInputBufferPtr in, int len, const char *buf) {
 	 */
 	nbchars = xmlCharEncInFunc(in->encoder, in->buffer, in->raw);
 	if (nbchars < 0) {
-	    fprintf(stderr, "xmlParserInputBufferPush: encoder error\n");
+	    xmlGenericError(xmlGenericErrorContext,
+		    "xmlParserInputBufferPush: encoder error\n");
 	    return(-1);
 	}
     } else {
@@ -1197,7 +1221,8 @@ xmlParserInputBufferPush(xmlParserInputBufferPtr in, int len, const char *buf) {
         xmlBufferAdd(in->buffer, (xmlChar *) buf, nbchars);
     }
 #ifdef DEBUG_INPUT
-    fprintf(stderr, "I/O: pushed %d chars, buffer %d/%d\n",
+    xmlGenericError(xmlGenericErrorContext,
+	    "I/O: pushed %d chars, buffer %d/%d\n",
             nbchars, in->buffer->use, in->buffer->size);
 #endif
     return(nbchars);
@@ -1229,7 +1254,8 @@ xmlParserInputBufferGrow(xmlParserInputBufferPtr in, int len) {
         len = MINLEN;
     buffree = in->buffer->size - in->buffer->use;
     if (buffree <= 0) {
-        fprintf(stderr, "xmlParserInputBufferGrow : buffer full !\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlParserInputBufferGrow : buffer full !\n");
 	return(0);
     }
     if (len > buffree) 
@@ -1237,7 +1263,8 @@ xmlParserInputBufferGrow(xmlParserInputBufferPtr in, int len) {
 
     buffer = (char *) xmlMalloc((len + 1) * sizeof(char));
     if (buffer == NULL) {
-        fprintf(stderr, "xmlParserInputBufferGrow : out of memory !\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlParserInputBufferGrow : out of memory !\n");
 	return(-1);
     }
 
@@ -1247,7 +1274,8 @@ xmlParserInputBufferGrow(xmlParserInputBufferPtr in, int len) {
     if (in->readcallback != NULL) {
 	res = in->readcallback(in->context, &buffer[0], len);
     } else {
-        fprintf(stderr, "xmlParserInputBufferGrow : no input !\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlParserInputBufferGrow : no input !\n");
 	xmlFree(buffer);
 	return(-1);
     }
@@ -1271,7 +1299,8 @@ xmlParserInputBufferGrow(xmlParserInputBufferPtr in, int len) {
 	 */
 	nbchars = xmlCharEncInFunc(in->encoder, in->buffer, in->raw);
 	if (nbchars < 0) {
-	    fprintf(stderr, "xmlParserInputBufferGrow: encoder error\n");
+	    xmlGenericError(xmlGenericErrorContext,
+		    "xmlParserInputBufferGrow: encoder error\n");
 	    return(-1);
 	}
     } else {
@@ -1280,7 +1309,8 @@ xmlParserInputBufferGrow(xmlParserInputBufferPtr in, int len) {
         xmlBufferAdd(in->buffer, (xmlChar *) buffer, nbchars);
     }
 #ifdef DEBUG_INPUT
-    fprintf(stderr, "I/O: read %d chars, buffer %d/%d\n",
+    xmlGenericError(xmlGenericErrorContext,
+	    "I/O: read %d chars, buffer %d/%d\n",
             nbchars, in->buffer->use, in->buffer->size);
 #endif
     xmlFree(buffer);
@@ -1348,7 +1378,8 @@ xmlOutputBufferWrite(xmlOutputBufferPtr out, int len, const char *buf) {
 	 */
 	nbchars = xmlCharEncOutFunc(out->encoder, out->conv, out->buffer);
 	if (nbchars < 0) {
-	    fprintf(stderr, "xmlOutputBufferWrite: encoder error\n");
+	    xmlGenericError(xmlGenericErrorContext,
+		    "xmlOutputBufferWrite: encoder error\n");
 	    return(-1);
 	}
 	nbchars = out->conv->use;
@@ -1374,13 +1405,15 @@ xmlOutputBufferWrite(xmlOutputBufferPtr out, int len, const char *buf) {
 	    xmlBufferShrink(out->buffer, nbchars);
     }
     if (ret < 0) {
-        fprintf(stderr, "I/O: error %d writing %d bytes\n", ret, nbchars);
+        xmlGenericError(xmlGenericErrorContext,
+		"I/O: error %d writing %d bytes\n", ret, nbchars);
 	return(ret);
     }
     out->written += ret;
 
 #ifdef DEBUG_INPUT
-    fprintf(stderr, "I/O: wrote %d chars\n", ret);
+    xmlGenericError(xmlGenericErrorContext,
+	    "I/O: wrote %d chars\n", ret);
 #endif
     return(nbchars);
 }
@@ -1432,7 +1465,8 @@ xmlOutputBufferFlush(xmlOutputBufferPtr out) {
 	 */
 	nbchars = xmlCharEncOutFunc(out->encoder, out->conv, out->buffer);
 	if (nbchars < 0) {
-	    fprintf(stderr, "xmlOutputBufferWrite: encoder error\n");
+	    xmlGenericError(xmlGenericErrorContext,
+		    "xmlOutputBufferWrite: encoder error\n");
 	    return(-1);
 	}
     }
@@ -1452,13 +1486,15 @@ xmlOutputBufferFlush(xmlOutputBufferPtr out) {
 	    xmlBufferShrink(out->buffer, ret);
     }
     if (ret < 0) {
-        fprintf(stderr, "I/O: error %d flushing %d bytes\n", ret, nbchars);
+        xmlGenericError(xmlGenericErrorContext,
+		"I/O: error %d flushing %d bytes\n", ret, nbchars);
 	return(ret);
     }
     out->written += ret;
 
 #ifdef DEBUG_INPUT
-    fprintf(stderr, "I/O: flushed %d chars\n", ret);
+    xmlGenericError(xmlGenericErrorContext,
+	    "I/O: flushed %d chars\n", ret);
 #endif
     return(ret);
 }
@@ -1529,19 +1565,20 @@ xmlDefaultExternalEntityLoader(const char *URL, const char *ID,
     xmlParserInputPtr ret = NULL;
 
 #ifdef DEBUG_EXTERNAL_ENTITIES
-    fprintf(stderr, "xmlDefaultExternalEntityLoader(%s, xxx)\n", URL);
+    xmlGenericError(xmlGenericErrorContext,
+	    "xmlDefaultExternalEntityLoader(%s, xxx)\n", URL);
 #endif
     if (URL == NULL) {
         if ((ctxt->sax != NULL) && (ctxt->sax->warning != NULL))
-	    ctxt->sax->warning(ctxt, "failed to load external entity \"%s\"\n",
-	                       ID);
+	    ctxt->sax->warning(ctxt,
+		    "failed to load external entity \"%s\"\n", ID);
         return(NULL);
     }
     ret = xmlNewInputFromFile(ctxt, URL);
     if (ret == NULL) {
         if ((ctxt->sax != NULL) && (ctxt->sax->warning != NULL))
-	    ctxt->sax->warning(ctxt, "failed to load external entity \"%s\"\n",
-	                       URL);
+	    ctxt->sax->warning(ctxt,
+		    "failed to load external entity \"%s\"\n", URL);
     }
     return(ret);
 }

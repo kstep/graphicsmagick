@@ -1,9 +1,468 @@
-Sat Sep 16 21:45:48 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+Fri Nov 24 14:01:44 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/xmldtd.html doc/xml.html: following a short step by step
+	  guidance on IRC to help maciej with DTDs I started a small
+	  page on the subject.
+
+Fri Nov 17 17:28:06 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c: fixed handling of broken charrefs
+	* xmlmemory.h libxml2.dsp include/win32config.h: reporting Windows
+	  patches
+
+Mon Nov 13 19:17:20 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/xml.html doc/html/* : rebuilt the docs after adding
+	  xinclude and updated page for 2.2.7 and 2.2.8
+	* configure.in: releasing 2.2.8
+
+Mon Nov 13 12:39:38 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.[ch] parserInternals.c: applied the conditional
+	  section processing fix from Jonathan P Springer
+	  <jonathan.springer2@gte.net>
+	* xmlversion.h.in win32/libxml2/libxml2.dsp : Updated MS
+	  project file, fixed iconv default non support
+	* xpath.c: fixed the problem of evaluating relative expressions
+	  when a node context is provided.
+
+Sun Nov 12 16:31:19 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanoftp.c: fixed gcc 2.95 new warnings
+	* SAX.c: fixed a stupid bug
+	* tree.c: fixed a formatting problem when round-tripping
+	  from/to memory
+	* xinclude.c: chased memleak, fixed a base problem
+	* xpointer.c: added xmlXPtrBuildRangeNodeList(), finished ? 
+	  xmlXPtrBuildNodeList()
+	* TODO: updated
+	* Makefile.am test/XInclude/docs test/XInclude/ents result/XInclude:
+	  adding a first small set of regression tests for XInclude
+
+Tue Nov  7 15:11:34 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanohttp.[ch]: applied Wayne Davison patches to access
+	  the WWW-Authorization header.
+	* parser.c: Closed Bug#30847: Problems when switching encoding
+	  in short files by applying Simon Berg's patch.
+	* valid.c: fixed a validation problem
+	* hash.c parser.h parserInternals.h testHTML.c testSAX.c tree.h
+	  xmlerror.h xmlmemory.h xmlversion.h.in: applied a DLL patch from
+	  Wayne Davison
+	* xpointer.[ch]: added first version of xmlXPtrBuildNodeList()
+	  need to be extended to non full nodes selections.
+	* xinclude.c: starts to work decently
+
+Mon Nov  6 17:22:46 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.[ch] xinclude.[ch] xmllint.c configure.in valid.c
+	  debugXML.c xmlversion.h.in: Started adding XInclude support,
+	  this is a new xmllint option
+	* tree.c xpath.c: applied TOM patches for XPath
+	* xpointer.c: fixed a couple of errors.
+	* uri.c: added an escaping function needed for xinclude
+	* testXPath.c hash.c HTMLtree.c: minor cleanups raised by
+	  new warning from RH70 gcc's version
+
+Tue Oct 31 14:14:13 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c: fixed loop on invalid char in scripts
+	* parser.c: update to description of xmlIOParseDTD()
+	* libxml.m4 xmlversion.h.in: changes contributed by
+	  Michael Schmeing <m.schmeing@internet-factory.de>
+	* configure.in: preparing for 2.2.7
+	* Makefile.am: trying to avoid  config.h and acconfig.h
+	  being included in the distrib
+	* configure.in: released 2.2.7
+
+Mon Oct 30 17:08:10 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.[ch] debugXML.c parserInternals.c xpath.c: Deprecated Pi's
+	  like namespaces for good. Unified xmlNs and xmlNode somewhat.
+
+Mon Oct 30 16:26:49 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.[ch]: added xmlIOParseDTD()
+	* xpointer.c: added support for the 2 extra parameters of
+	  string-range, fixed a stoopid error when '0' was present
+	  in XPointer expressions
+	* test/XPath/xptr/strrange2 result/XPath/xptr/strrange2: added
+	  testsuite for the above
+
+Mon Oct 30 10:26:43 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* libxml.spec.in: improved package descriptions
+
+Sun Oct 29 19:03:11 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xpath.c xpathInternals.h: applied a large cleaning patch
+	  from TOM <ptittom@free.fr>, it also add namespace support
+	  for function and variables registration.
+
+Sun Oct 29 18:51:46 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* uri.c: Wayne Davison's patch fixing xmlBuildURI()
+	* Makefile.mingw: Wayne Davison's update adding hash.c
+
+Sun Oct 29 18:38:12 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xpath.c: fixed the root evaluation problems
+	* HTMLparser.c result/HTML/doc3.htm: fixed the problem of non
+	  ignorable spaces with <b> <bold> <em>
+	* tree.c: fixed a loop in xmlSearchNsByHref()
+
+Fri Oct 27 18:57:32 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xpath.c: applied another XPath patch from TOM 
+	* xpath.c include/makefile.am: applied another patch from 
+	  china@thewrittenword.com (cleanup on IRIX).
+
+Fri Oct 27 13:45:28 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xml-config.1: received a fixed version from Fredrik Hallenberg
+	  <hallon@lysator.liu.se>
+
+Thu Oct 26 16:05:25 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xpath.c textXPath.c xpathInternals.h: applied TOM <ptittom@free.fr>
+	  cleanup patch for XPath
+
+Wed Oct 25 21:31:10 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* patched to redirrect all "out of context" error messages to
+	  a reconfigurable routine. The changes are:
+	* xmlerror.h : added the export of an error context type (void *)
+	  an error handler type xmlGenericErrorFunc there is an interface
+	  xmlSetGenericErrorFunc(void *ctx, xmlGenericErrorFunc handler);
+	  to reset the error handling routine and its argument
+	  (by default it's equivalent to respectively fprintf and stderr.
+        * all the c files: all wild accesses to stderr or stdout within
+	  the library have been replaced to calls to the handler.
+
+Wed Oct 25 15:27:19 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in: release 2.2.6
+	* xpath.[ch] xpointer.c xpathInternals.h: added xpathInternals.h
+	  exporting the inner functions of xpath for extension modules
+	* doc/*: updated and rebuilt the doc
+
+Wed Oct 25 12:48:55 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanohttp.c : applied Wayne HTTP cleanup patch
+	* tree.[ch]: applied TOM <ptittom@free.fr> for xmlNodeSetBase()
+	  and xmlNodeSetSpacePreserve()
+
+Wed Oct 25 12:11:03 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xpath.c: closing bug #29260
+
+Tue Oct 24 18:49:34 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* hash.[ch] debugXML.c: expanded/enhanced the API, added
+	  multikey tuples, made hash structure opaque
+	* valid.[ch]: moved elements, attributes, notations decalarations
+	  as well as ID and refs to hash tables.
+	* entities.c: hash cleanup
+	* xmlmemory.c: fixed a dump problem in debug mode
+	* include/Makefile.am: problem passing in DESTDIR= values patch
+	  from Marc Christensen <marc@calderasystems.com>
+	* nanohttp.c: removed debugging remains
+	* HTMLparser.c: the bogus tag should be ignored (Wayne)
+	* HTMLparser.c parser.c: fixing a number of problems with the
+	  macros in the *parser.c files (Wayne).
+	* HTMLparser.c: close the previous option when opening a new one
+	  (Marc Sanfacon).
+	* result/HTML/*: updated the HTML results accordingly
+
+Sun Oct 22 18:39:19 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* entities.[ch] xpath.[ch] hash.[ch] debugXML.c tree.h: added/hacked
+	  hash tables from Bjorn Reese <breese@mail1.stofanet.dk>. Switched
+	  XPath functions and XML entities table to them. More to come...
+	* xmlIO.c: fixed libxml closing FILEs it didn't open.
+
+Sun Oct 22 13:59:50 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.c: coalesce adjacent text nodes
+	* valid.c: handling of blank nodes in DTd validation (raised
+	  by problems with a posteriori validation).
+	* nanohttp.c: changing behaviour on HTTP write stuff.
+	* HTMLtree.c: forced body and html to be explicitely closed.
+	* xpath.h: exported more XPath functions.
+
+Sun Oct 15 22:28:32 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+        * Release of 2.2.5
+	* xpointer.c: range() range-inside and other helper functions
+	* parserInternals.c: fixed perf problem raised by rolf@pointsman.de
+
+Sun Oct 15 16:21:27 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* SAX.c: HTML attributes need normalization too (Bjorn Reese)
+	* HTMLparser.[ch]: addded htmlIsScriptAttribute()
+
+Sun Oct 15 13:18:36 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/*: rebuilt docs preparing for 2.2.5 release, added URI
+	  and XPointer modules
+
+Sun Oct 15 12:13:30 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* SAX.h: closed #25107
+
+Sun Oct 15 12:06:16 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* testSAX.c: fixed problem with cdata reporting
+	* SAXresult/* : updated
+
+Sun Oct 15 12:00:24 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c test/wap.xml result/noent/wap.xml result/wap.xml:
+	  Closed bug #27499, added to regression tests
+	* TODO: updated
+
+Sun Oct 15 01:34:37 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c HTMLtree.[ch] SAX.c testHTML.c tree.c: fixed HTML
+	  support for SCRIPT and STYLE with help from Bjorn Reese
+	* test/HTML/* result/HTML/*: added simple testcase and updated
+	  the existing ones.
+	  
+Fri Oct 13 18:24:31 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xpath.c xpointer.c: XPointer reorder of ranges start/end and
+	  string-range for empty strings
+	* test/XPath/docs/str test/XPath/xptr/chaptersrange
+	  test/XPath/xptr/strrange: augmented the XPointer testsuite
+
+Fri Oct 13 12:21:48 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/xml.html doc/xmlmem.html: added a module describing memory
+	  interfaces and use, updated the main page.
+
+Fri Oct 13 01:23:48 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanoftp.c nanohttp.c xmlIO.c: Wayne Davison Win32 patch
+	  nanoftp code work on Windows too now
+
+Fri Oct 13 00:54:37 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* testXPath.c xpath.[ch]: moved some debug functions to xpath core
+	* xpointer.c: implemented string-range() at least a good first version
+	* test/XPath/docs/str test/XPath/xptr/strrange
+	  result/XPath/xptr/strrange: the string-range() tests
+
+Thu Oct 12 10:02:59 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* Makefile.am include/Makefile.am include/win32config.h
+	  win32/Makefile.mingw: fixed problems reported by Wayne Davison
+	  and make distcheck
+
+Thu Oct 12 01:44:08 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanohttp.c: added xmlNanoHTTPTimeout(int delay), removed a bug
+	  xmlNanoHTTPMethod on input MimeType Tony Lam <Tony.Lam@eng.sun.com>
+	* xpointer.c: slight extension of xmlXPtrLocationSetMerge
+
+Thu Oct 12 01:37:53 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* config.h.in configure.in nanoftp.c nanohttp.c xmlversion.h.in :
+	  patch for socklen_t detection by
+	  Albert Chin-A-Young <china@thewrittenword.com>
+
+Wed Oct 11 17:53:57 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.c valid.c xmllint.c: Fixed a few postvalidation bugs
+	  and added a --dtdvalid option to xmllint used to test it
+
+Wed Oct 11 15:01:29 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xml-config.1 Makefile.am libxml.spec.in: adding a man page for
+	  xml-config by Fredrik Hallenberg <hallon@lysator.liu.se>
+
+Wed Oct 11 12:41:30 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xpath.[ch] xpointer.[ch]: worked on XPath functions and variable
+	  handlings (registration, lookup, cleanup)
+
+Wed Oct 11 01:46:44 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in Makefile.am include/makefile.am: adding XPointer
+	  and XPtrtests target
+	* xpointer.[ch] : new files for XPointer support
+	* test/XPath/xptr result/XPath/xptr: added XPointer testsuite and
+	  more XPath tests
+
+Wed Oct 11 01:23:25 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in: fixed, very broken, make distcheck works again
+
+Wed Oct 11 02:53:10 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* More work toward 2.2.5, integrated a number of patches
+	* configure.in Makefile.am win32config.h.in: trying to cleanup
+	  make distcheck .... huh ...
+	* include/Makefile.am include/win32config.h: new directory
+	  for includes
+	* win32/Makefile.mingw win32/README.MSDev win32/libxml2/libxml2.dsp
+	  updated teh makefiles and instructions for WIN32
+	* xpath.c: small fixes
+	* test/XPath/ results/XPath: updated the testcases and results
+	* HTMLparser.c nanohttp.c testXPath.c: incorporated provided or
+	  suggested patches
+	* valid.c: fixed an ID bug
+
+Mon Oct  9 14:28:56 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* moved xml-error.h to xmlerror.h: seems this allowed to bypass
+	  the automake bug where wrong dependancies were generated.
+	* xpath.[ch]: worked on XPointer
+
+Fri Oct  6 12:58:04 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in Makefile.am: 2.2.5, ship the include in an
+	  include/libxml subdirectory, use symlinks when using CVS
+	* testSAX.c: fixed small bug
+	* testXPath.c: changed the way testfiles are parsed
+	* debugXML.c: same kind of cleanup when parsing an argument expression
+	  XPath/XPointers can have blanks embedded
+	* xpath.[ch]: more cleanup, reorgs for XPointer work
+	* parserInternals.c parser.c HTMLparser.c: fixed wrong include
+	* win32/README.MSDev win32/libxml2/libxml2.dsp: Windows stuff
+
+Thu Oct  5 18:13:15 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* debugXML.c testXPath.c xpath.[ch]: got pissed by some nastyness
+	  in the XPath engine, rewrote large parts of it, now it's far
+	  cleaner and in sync with the REC not an old WD. Fixed a parsing
+	  problem in the interactive XML shell found when testing XPath.
+
+Wed Oct  4 15:25:53 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* debugXML.c testXPath.c xpath.[ch]: More work on XPath/Xpointer,
+	  incorporated "(TOM)" <ptittom@free.fr> patches rebuilt the XPath
+	  examples with the extra test
+
+Wed Oct  4 14:39:01 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c xmlIO.c xmlIO.h: fixed bug 26650, and improved
+	  the global init function.
+
+Tue Oct  3 11:28:52 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c: Doohhh, attribute name parsing was still case
+	  sensitive ! Fixed this ...
+	* result/HTML/* : updated the tests results accordingly
+
+Mon Oct  2 23:47:32 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xpath.[ch] debugXML.c testXPath.c: fixed the XPath evaluation
+	  engine, should be far more stable, incorporated a new version of
+	  preceding/following axis, need testing
+        * uri.c: fixed file:///c:/a/b/c problem
+	* test/XPath/tests/idsimple: augmented the XPath tests
+
+Sun Oct  1 22:33:00 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/* rebuilding docs for 2.2.4 release
+
+Sun Oct  1 22:16:33 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in: releasing 2.2.4
+	* parser.[ch]: added xmlStrEqual()
+	* HTMLparser.c HTMLtree.c SAX.c debugXML.c entities.c parser.c
+	  tree.c valid.c xlink.c xpath.c: converted all !xmlStrcmp to
+	  use xmlStrEqual instead
+	* TODO: updated
+	* added an XPath test
+
+Sun Oct  1 20:19:39 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c: fixed htmlStartCloseIndexinitialized init
+	* entities.h: exported xmlInitializePredefinedEntities
+	* parser.[ch] : added xmlInitParser()
+	* parserInternals.h : had to export htmlInitAutoClose()
+
+Sun Oct  1 16:28:22 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xpath.[ch] : fixed some serious XPath Predicate evaluation
+	  problems
+	* Makefile.am : added XPath regression tests to normal tests
+	* uri.c: fixed a problem with local paths, cleanup
+	* parser.c: fixed a problem with large CData sections
+
+Sat Sep 30 16:35:54 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in xml-config.in: patch from "Ben Taylor"
+	  <sol7x86@hotmail.com> for solaris shared libs lookup
+
+2000-09-30  Martin Baulig  <baulig@suse.de>
+
+	* libxml-2.0.pc.in: Provide pkg-config script.
+
+	* configure.in: Create the libxml-2.0.pc script from the
+	libxml-2.0.pc.in templates.
+	* Makefile.am (pkgconfig_DATA): Install the libxml-2.0.pc
+	script in `$(libdir)/pkgconfig'.
+
+Mon Sep 25 16:23:41 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c parser.c tree.c tree.h: Avoiding a few warning
+	  when compiling with MSC
+
+Sun Sep 24 20:32:52 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xpath.c: patch for normalize-string() substring-before(),
+	  substring-after() and translate() functions from Bjorn Reese
+	  <breese@mail1.stofanet.dk>
+	* libxml.m4 Makefile.am: added libxml.m4 from Debian ?
+	  Fredrik Hallenberg <hallon@lysator.liu.se>
+	* TODO: updated
+
+Sun Sep 24 10:00:49 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xmlversion.h.in nanoftp.c nanohttp.c: traying to work out the
+	  problem of socklen_t being undefined on a number of platforms
+	* debugXML.c: fixed a compilation problem when without snprintf
+
+Sat Sep 23 12:19:45 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c uri.c: Another patch from Wayne Davison, correcting
+	  an URI bug and a fix for the control-character-induced infinite loop
+	* nanohttp.c: preventive fix for compiling on WIN32
+
+Fri Sep 22 18:06:08 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xmlint.c: closing bug #25000
+
+Fri Sep 22 14:17:53 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xmlIO.h tree.h: made xmlNodeDump() and xmlNodeDumpOutput() public
+	* parser.[ch] nanohttp.c HTMLtree.c HTMLparser.c tree.c: applied and
+	  modified slightly Wayne Davison patch adding xmlStrcasecmp and
+	  related function, fixing xmlStrncmp(), and associated cleanup
+	* result/HTML/entities.html.sax: updating result
+
+Tue Sep 19 14:20:10 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* uri.c: applied patch for URI escaping from Wayne Davison
+	  <wayned@blorf.net>
+	* tree.c parserInternals.c HTMLparser.c: memset checks patches
+	  from Denis Barbier <barbier@imacs.polytechnique.fr>
+	* HTMLparser.c: UTF8 characters in HTML tag-attribute values
+	  patch from Wayne Davison
+
+Sun Sep 17 18:37:03 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/xml.html : updated with new releases, adding "how to help"
+
+Sun Sep 17 17:58:37 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
 	* SAX.c debugXML.c parser.c parserInternals.c tree.c valid.c xpath.c:
 	  removed a few warnings in pedantic mode ...
 	* parserInternals.c parser.c: moved encoding switching function
 	  to parserInternals.c
+	* configure.in, doc/Makefile.am libxml.spec.in: released 2.2.3
 
 Sat Sep 16 20:12:41 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
@@ -81,15 +540,15 @@ Tue Aug 29 20:22:53 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 Tue Aug 29 11:24:48 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
 	* HTMLparser.c testHTML.c: applied two new patches from
-	  Wayne Davison <wayned@blorf.net>
+	  Wayne Davison <wayned@users.sourceforge.net>
 	* result/HTML/*.sax: regenerated HTML SAX output
 	* parser.c: more cleanup.
 
 Mon Aug 28 11:58:12 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
 	* HTMLparser.[ch] testHTML.c: applied the second set of
-	  patches from Wayne Davison <wayned@blorf.net>, adding 
-	  htmlEncodeEntities()
+	  patches from Wayne Davison <wayned@users.sourceforge.net>,
+	  adding htmlEncodeEntities()
 	* HTMLparser.c: fixed an ignorable white space detection bug
 	  occuring when parsing with SAX only
 	* result/HTML/*.sax: updated since the output is now HTML
@@ -97,8 +556,8 @@ Mon Aug 28 11:58:12 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
 Mon Aug 28 00:38:31 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
-	* HTMLparser.[ch]: applied some of Wayne Davison <wayned@blorf.net>
-	  patches
+	* HTMLparser.[ch]: applied some of Wayne Davison
+	  <wayned@users.sourceforge.net> patches
 
 Sun Aug 27 22:14:01 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 

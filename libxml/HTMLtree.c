@@ -13,7 +13,7 @@
 #include "config.h"
 #endif
 
-#include "xmlversion.h"
+#include <libxml/xmlversion.h>
 #ifdef LIBXML_HTML_ENABLED
 
 #include <stdio.h>
@@ -31,6 +31,7 @@
 #include <libxml/HTMLtree.h>
 #include <libxml/entities.h>
 #include <libxml/valid.h>
+#include <libxml/xmlerror.h>
 
 /************************************************************************
  *									*
@@ -61,11 +62,11 @@ htmlGetMetaEncoding(htmlDocPtr doc) {
      */
     while (cur != NULL) {
 	if (cur->name != NULL) {
-	    if (!xmlStrcmp(cur->name, BAD_CAST"html"))
+	    if (xmlStrEqual(cur->name, BAD_CAST"html"))
 		break;
-	    if (!xmlStrcmp(cur->name, BAD_CAST"head"))
+	    if (xmlStrEqual(cur->name, BAD_CAST"head"))
 		goto found_head;
-	    if (!xmlStrcmp(cur->name, BAD_CAST"meta"))
+	    if (xmlStrEqual(cur->name, BAD_CAST"meta"))
 		goto found_meta;
 	}
 	cur = cur->next;
@@ -79,9 +80,9 @@ htmlGetMetaEncoding(htmlDocPtr doc) {
      */
     while (cur != NULL) {
 	if (cur->name != NULL) {
-	    if (!xmlStrcmp(cur->name, BAD_CAST"head"))
+	    if (xmlStrEqual(cur->name, BAD_CAST"head"))
 		break;
-	    if (!xmlStrcmp(cur->name, BAD_CAST"meta"))
+	    if (xmlStrEqual(cur->name, BAD_CAST"meta"))
 		goto found_meta;
 	}
 	cur = cur->next;
@@ -97,7 +98,7 @@ found_head:
 found_meta:
     while (cur != NULL) {
 	if (cur->name != NULL) {
-	    if (!xmlStrcmp(cur->name, BAD_CAST"meta")) {
+	    if (xmlStrEqual(cur->name, BAD_CAST"meta")) {
 		xmlAttrPtr attr = cur->properties;
 		int http;
 		const xmlChar *value;
@@ -113,17 +114,11 @@ found_meta:
 #else
 			value = xmlBufferContent(attr->children->content);
 #endif
-			if (((!xmlStrcmp(attr->name, BAD_CAST"http-equiv")) ||
-			     (!xmlStrcmp(attr->name, BAD_CAST"Http-Equiv")) ||
-			     (!xmlStrcmp(attr->name, BAD_CAST"HTTP-EQUIV"))) &&
-			    ((!xmlStrcmp(value, BAD_CAST"Content-Type")) ||
-			     (!xmlStrcmp(value, BAD_CAST"content-type")) ||
-			     (!xmlStrcmp(value, BAD_CAST"CONTENT-TYPE"))))
+			if ((!xmlStrcasecmp(attr->name, BAD_CAST"http-equiv"))
+			 && (!xmlStrcasecmp(value, BAD_CAST"Content-Type")))
 			    http = 1;
-			else if ((value != NULL) &&
-				 ((!xmlStrcmp(attr->name, BAD_CAST"content")) ||
-				  (!xmlStrcmp(attr->name, BAD_CAST"Content")) ||
-				  (!xmlStrcmp(attr->name, BAD_CAST"CONTENT"))))
+			else if ((value != NULL)
+			 && (!xmlStrcasecmp(attr->name, BAD_CAST"content")))
 			    content = value;
 			if ((http != 0) && (content != NULL))
 			    goto found_content;
@@ -197,9 +192,9 @@ htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {
      */
     while (cur != NULL) {
 	if (cur->name != NULL) {
-	    if (!xmlStrcmp(cur->name, BAD_CAST"html"))
+	    if (xmlStrEqual(cur->name, BAD_CAST"html"))
 		break;
-	    if (!xmlStrcmp(cur->name, BAD_CAST"body")) {
+	    if (xmlStrEqual(cur->name, BAD_CAST"body")) {
 		if (encoding == NULL)
 		    return(0);
 		meta = xmlNewDocNode(doc, NULL, BAD_CAST"head", NULL);
@@ -211,9 +206,9 @@ htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {
 		xmlNewProp(meta, BAD_CAST"content", BAD_CAST newcontent);
 		return(0);
 	    }
-	    if (!xmlStrcmp(cur->name, BAD_CAST"head"))
+	    if (xmlStrEqual(cur->name, BAD_CAST"head"))
 		goto found_head;
-	    if (!xmlStrcmp(cur->name, BAD_CAST"meta"))
+	    if (xmlStrEqual(cur->name, BAD_CAST"meta"))
 		goto found_meta;
 	}
 	cur = cur->next;
@@ -227,9 +222,9 @@ htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {
      */
     while (cur != NULL) {
 	if (cur->name != NULL) {
-	    if (!xmlStrcmp(cur->name, BAD_CAST"head"))
+	    if (xmlStrEqual(cur->name, BAD_CAST"head"))
 		break;
-	    if (!xmlStrcmp(cur->name, BAD_CAST"body")) {
+	    if (xmlStrEqual(cur->name, BAD_CAST"body")) {
 		if (encoding == NULL)
 		    return(0);
 		meta = xmlNewDocNode(doc, NULL, BAD_CAST"head", NULL);
@@ -241,7 +236,7 @@ htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {
 		xmlNewProp(meta, BAD_CAST"content", BAD_CAST newcontent);
 		return(0);
 	    }
-	    if (!xmlStrcmp(cur->name, BAD_CAST"meta"))
+	    if (xmlStrEqual(cur->name, BAD_CAST"meta"))
 		goto found_meta;
 	}
 	cur = cur->next;
@@ -278,7 +273,7 @@ found_meta:
      */
     while (cur != NULL) {
 	if (cur->name != NULL) {
-	    if (!xmlStrcmp(cur->name, BAD_CAST"meta")) {
+	    if (xmlStrEqual(cur->name, BAD_CAST"meta")) {
 		xmlAttrPtr attr = cur->properties;
 		int http;
 		const xmlChar *value;
@@ -294,17 +289,11 @@ found_meta:
 #else
 			value = xmlBufferContent(attr->children->content);
 #endif
-			if (((!xmlStrcmp(attr->name, BAD_CAST"http-equiv")) ||
-			     (!xmlStrcmp(attr->name, BAD_CAST"Http-Equiv")) ||
-			     (!xmlStrcmp(attr->name, BAD_CAST"HTTP-EQUIV"))) &&
-			    ((!xmlStrcmp(value, BAD_CAST"Content-Type")) ||
-			     (!xmlStrcmp(value, BAD_CAST"content-type")) ||
-			     (!xmlStrcmp(value, BAD_CAST"CONTENT-TYPE"))))
+			if ((!xmlStrcasecmp(attr->name, BAD_CAST"http-equiv"))
+			 && (!xmlStrcasecmp(value, BAD_CAST"Content-Type")))
 			    http = 1;
-			else if ((value != NULL) &&
-				 ((!xmlStrcmp(attr->name, BAD_CAST"content")) ||
-				  (!xmlStrcmp(attr->name, BAD_CAST"Content")) ||
-				  (!xmlStrcmp(attr->name, BAD_CAST"CONTENT"))))
+			else if ((value != NULL)
+			 && (!xmlStrcasecmp(attr->name, BAD_CAST"content")))
 			    content = value;
 			if ((http != 0) && (content != NULL))
 			    break;
@@ -347,7 +336,8 @@ htmlDtdDump(xmlBufferPtr buf, xmlDocPtr doc) {
     xmlDtdPtr cur = doc->intSubset;
 
     if (cur == NULL) {
-        fprintf(stderr, "htmlDtdDump : no internal subset\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"htmlDtdDump : no internal subset\n");
 	return;
     }
     xmlBufferWriteChar(buf, "<!DOCTYPE ");
@@ -379,7 +369,8 @@ htmlAttrDump(xmlBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur) {
     xmlChar *value;
 
     if (cur == NULL) {
-        fprintf(stderr, "htmlAttrDump : property == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"htmlAttrDump : property == NULL\n");
 	return;
     }
     xmlBufferWriteChar(buf, " ");
@@ -407,7 +398,8 @@ htmlAttrDump(xmlBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur) {
 static void
 htmlAttrListDump(xmlBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur) {
     if (cur == NULL) {
-        fprintf(stderr, "htmlAttrListDump : property == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"htmlAttrListDump : property == NULL\n");
 	return;
     }
     while (cur != NULL) {
@@ -430,7 +422,8 @@ htmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur);
 static void
 htmlNodeListDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur) {
     if (cur == NULL) {
-        fprintf(stderr, "htmlNodeListDump : node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"htmlNodeListDump : node == NULL\n");
 	return;
     }
     while (cur != NULL) {
@@ -452,7 +445,8 @@ htmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur) {
     htmlElemDescPtr info;
 
     if (cur == NULL) {
-        fprintf(stderr, "htmlNodeDump : node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"htmlNodeDump : node == NULL\n");
 	return;
     }
     /*
@@ -636,7 +630,8 @@ htmlDocDumpMemory(xmlDocPtr cur, xmlChar**mem, int *size) {
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "htmlxmlDocDumpMemory : document == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"htmlxmlDocDumpMemory : document == NULL\n");
 #endif
 	*mem = NULL;
 	*size = 0;
@@ -677,7 +672,8 @@ htmlDtdDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, const char *encoding) {
     xmlDtdPtr cur = doc->intSubset;
 
     if (cur == NULL) {
-        fprintf(stderr, "htmlDtdDump : no internal subset\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"htmlDtdDump : no internal subset\n");
 	return;
     }
     xmlOutputBufferWriteString(buf, "<!DOCTYPE ");
@@ -709,7 +705,8 @@ htmlAttrDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur, const 
     xmlChar *value;
 
     if (cur == NULL) {
-        fprintf(stderr, "htmlAttrDump : property == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"htmlAttrDump : property == NULL\n");
 	return;
     }
     xmlOutputBufferWriteString(buf, " ");
@@ -737,7 +734,8 @@ htmlAttrDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur, const 
 static void
 htmlAttrListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur, const char *encoding) {
     if (cur == NULL) {
-        fprintf(stderr, "htmlAttrListDump : property == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"htmlAttrListDump : property == NULL\n");
 	return;
     }
     while (cur != NULL) {
@@ -761,7 +759,8 @@ void htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
 static void
 htmlNodeListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, const char *encoding) {
     if (cur == NULL) {
-        fprintf(stderr, "htmlNodeListDump : node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"htmlNodeListDump : node == NULL\n");
 	return;
     }
     while (cur != NULL) {
@@ -783,7 +782,8 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, const 
     htmlElemDescPtr info;
 
     if (cur == NULL) {
-        fprintf(stderr, "htmlNodeDump : node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"htmlNodeDump : node == NULL\n");
 	return;
     }
     /*
@@ -818,7 +818,8 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, const 
 #ifndef XML_USE_BUFFER_CONTENT
 	    xmlOutputBufferWriteString(buf, (const char *)cur->content);
 #else
-	    xmlOutputBufferWriteString(buf, xmlBufferContent(cur->content));
+	    xmlOutputBufferWriteString(buf, (const char *)
+		                       xmlBufferContent(cur->content));
 #endif
 	    xmlOutputBufferWriteString(buf, "-->");
 	}
@@ -828,6 +829,17 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, const 
         xmlOutputBufferWriteString(buf, "&");
 	xmlOutputBufferWriteString(buf, (const char *)cur->name);
         xmlOutputBufferWriteString(buf, ";");
+	return;
+    }
+    if (cur->type == HTML_PRESERVE_NODE) {
+	if (cur->content != NULL) {
+#ifndef XML_USE_BUFFER_CONTENT
+	    xmlOutputBufferWriteString(buf, (const char *)cur->content);
+#else
+	    xmlOutputBufferWriteString(buf, (const char *)
+		                       xmlBufferContent(cur->content));
+#endif
+	}
 	return;
     }
 
@@ -851,9 +863,10 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, const 
 	return;
     }
     if ((cur->content == NULL) && (cur->children == NULL)) {
-        if ((info != NULL) && (info->endTag != 0))
+        if ((info != NULL) && (info->endTag != 0) &&
+	    (strcmp(info->name, "html")) && (strcmp(info->name, "body"))) {
 	    xmlOutputBufferWriteString(buf, ">");
-	else {
+	} else {
 	    xmlOutputBufferWriteString(buf, "></");
 	    xmlOutputBufferWriteString(buf, (const char *)cur->name);
 	    xmlOutputBufferWriteString(buf, ">");
@@ -972,7 +985,8 @@ htmlDocDump(FILE *f, xmlDocPtr cur) {
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "htmlDocDump : document == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"htmlDocDump : document == NULL\n");
 #endif
 	return(-1);
     }

@@ -1,11 +1,12 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.2)
-AC_INIT(entities.h)
+AC_INIT(entities.c)
 AM_CONFIG_HEADER(config.h)
+AC_CANONICAL_HOST
 
 LIBXML_MAJOR_VERSION=2
 LIBXML_MINOR_VERSION=2
-LIBXML_MICRO_VERSION=3
+LIBXML_MICRO_VERSION=9
 LIBXML_VERSION=$LIBXML_MAJOR_VERSION.$LIBXML_MINOR_VERSION.$LIBXML_MICRO_VERSION
 LIBXML_VERSION_INFO=`expr $LIBXML_MAJOR_VERSION + $LIBXML_MINOR_VERSION`:$LIBXML_MICRO_VERSION:$LIBXML_MINOR_VERSION
 
@@ -86,7 +87,8 @@ fi
 
 AC_SUBST(HTML_DIR)
 
-AC_ARG_ENABLE(corba,    [  --enable-corba           Add Corba support (default)])
+AC_ARG_ENABLE(corba,
+[  --enable-corba           Add Corba support (default)])
 
 dnl
 dnl Corba is enabled by default
@@ -106,6 +108,32 @@ dnl Checks for inet libraries:
 AC_CHECK_FUNC(gethostent, , AC_CHECK_LIB(nsl, gethostent))
 AC_CHECK_FUNC(setsockopt, , AC_CHECK_LIB(socket, setsockopt))
 AC_CHECK_FUNC(connect, , AC_CHECK_LIB(inet, connect))
+
+dnl Determine what socket length (socklen_t) data type is
+AC_MSG_CHECKING([for type of socket length (socklen_t)])
+AC_TRY_COMPILE2([
+#include <stddef.h>
+#include <sys/types.h>
+#include <sys/socket.h>],[
+(void)getsockopt (1, 1, 1, NULL, (socklen_t *)NULL)],[
+  AC_MSG_RESULT(socklen_t *)
+  SOCKLEN_T=socklen_t],[
+  AC_TRY_COMPILE2([
+#include <stddef.h>
+#include <sys/types.h>
+#include <sys/socket.h>],[
+(void)getsockopt (1, 1, 1, NULL, (size_t *)NULL)],[
+    AC_MSG_RESULT(size_t *)
+    SOCKLEN_T=size_t],[
+    AC_TRY_COMPILE2([
+#include <stddef.h>
+#include <sys/types.h>
+#include <sys/socket.h>],[
+(void)getsockopt (1, 1, 1, NULL, (int *)NULL)],[
+      AC_MSG_RESULT(int *)
+      SOCKLEN_T=int],[
+      AC_MSG_WARN(could not determine)])])])
+AC_DEFINE_UNQUOTED(SOCKLEN_T, $SOCKLEN_T)
 
 dnl Checks for isnan in libm if not in libc
 AC_CHECK_FUNC(isnan, , AC_CHECK_LIB(m, isnan,
@@ -134,6 +162,13 @@ if test "${GCC}" != "yes" ; then
 	       ;;
     esac
 fi
+case ${host} in
+    *-*-solaris*)
+        XML_LIBDIR="${XML_LIBDIR} -R${libdir}"
+        ;;
+esac
+
+
 
 dnl
 dnl Use buffers for content
@@ -229,6 +264,7 @@ AC_SUBST(HTML_OBJ)
 AC_ARG_WITH(xpath, [  --with-xpath            Add the XPATH support (on)])
 if test "$with_xpath" = "no" ; then
     echo Disabling XPATH support
+    with_xptr="no"
     WITH_XPATH=0
     XPATH_OBJ=
 else    
@@ -237,6 +273,31 @@ else
 fi
 AC_SUBST(WITH_XPATH)
 AC_SUBST(XPATH_OBJ)
+
+AC_ARG_WITH(xptr, [  --with-xptr             Add the XPointer support (on)])
+if test "$with_xptr" = "no" ; then
+    echo Disabling XPointer support
+    WITH_XPTR=0
+    XPTR_OBJ=
+else    
+    WITH_XPTR=1
+    XPTR_OBJ=xpointer.o
+fi
+AC_SUBST(WITH_XPTR)
+AC_SUBST(XPTR_OBJ)
+
+AC_ARG_WITH(xinclude, [  --with-xinclude         Add the XInclude support (on)])
+if test "$with_xinclude" = "no" ; then
+    echo Disabling XInclude support
+    WITH_XINCLUDE=0
+    XINCLUDE_OBJ=
+    with_xinclude="no"
+else    
+    WITH_XINCLUDE=1
+    XINCLUDE_OBJ=xinclude.o
+fi
+AC_SUBST(WITH_XINCLUDE)
+AC_SUBST(XINCLUDE_OBJ)
 
 AC_ARG_WITH(iconv, [  --with-iconv            Add the ICONV support (on)])
 if test "$with_iconv" = "no" ; then
@@ -288,16 +349,36 @@ AC_SUBST(M_LIBS)
 AC_SUBST(RDL_LIBS)
 
 dnl
-dnl create the libxml link needed to get dependencies right
+dnl create the libxml and include links needed to get dependencies right
 dnl
-if test -f $srcdir/libxml 
+if test ! -d $srcdir/include/libxml
 then
-    rm -f $srcdir/libxml libxml
-    (cd $srcdir ; ln -s . libxml)
-    (ln -s . libxml)
-else
-    (cd $srcdir ; rm -f libxml ; ln -s . libxml)
-    (rm -f libxml ; ln -s . libxml)
+    if test ! -d $srcdir/include
+    then
+        rm -f $srcdir/include
+        mkdir $srcdir/include
+    fi
+    rm -f $srcdir/libxml
+    (cd $srcdir/include ; ln -s .. libxml)
 fi
-AC_OUTPUT(libxml.spec Makefile doc/Makefile example/Makefile xmlversion.h xml-config win32config.h)
+if test ! -r $srcdir/libxml
+then
+    (cd $srcdir ; ln -s include/libxml libxml)
+fi
+if test ! -r include/libxml
+then
+    if test ! -d include
+    then
+        rm -f include
+        mkdir include
+    fi
+    (cd include ; ln -s ../libxml libxml)
+fi
+if test ! -r libxml
+then
+    rm -rf libxml
+    ln -s $srcdir/include/libxml libxml
+fi
+
+AC_OUTPUT(libxml.spec Makefile include/Makefile doc/Makefile example/Makefile libxml/xmlversion.h xml-config libxml-2.0.pc)
 

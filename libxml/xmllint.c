@@ -54,6 +54,10 @@
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 #include <libxml/debugXML.h>
+#include <libxml/xmlerror.h>
+#ifdef LIBXML_XINCLUDE_ENABLED
+#include <libxml/xinclude.h>
+#endif
 
 #ifdef LIBXML_DEBUG_ENABLED
 static int debug = 0;
@@ -67,6 +71,7 @@ static int noout = 0;
 static int nowrap = 0;
 static int valid = 0;
 static int postvalid = 0;
+static char * dtdvalid = NULL;
 static int repeat = 0;
 static int insert = 0;
 static int compress = 0;
@@ -79,6 +84,9 @@ static int memory = 0;
 static int noblanks = 0;
 static int testIO = 0;
 static char *encoding = NULL;
+#ifdef LIBXML_XINCLUDE_ENABLED
+static int xinclude = 0;
+#endif
 
 extern int xmlDoValidityCheckingDefaultValue;
 extern int xmlGetWarningsDefaultValue;
@@ -96,7 +104,7 @@ xmlHTMLEncodeSend(void) {
 
     result = (char *) xmlEncodeEntitiesReentrant(NULL, BAD_CAST buffer);
     if (result) {
-	fprintf(stderr, "%s", result);
+	xmlGenericError(xmlGenericErrorContext, "%s", result);
 	xmlFree(result);
     }
     buffer[0] = 0;
@@ -111,7 +119,7 @@ xmlHTMLEncodeSend(void) {
 
 void
 xmlHTMLPrintFileInfo(xmlParserInputPtr input) {
-    fprintf(stderr, "<p>");
+    xmlGenericError(xmlGenericErrorContext, "<p>");
     if (input != NULL) {
 	if (input->filename) {
 	    sprintf(&buffer[strlen(buffer)], "%s:%d: ", input->filename,
@@ -136,7 +144,7 @@ xmlHTMLPrintFileContext(xmlParserInputPtr input) {
     int n;
 
     if (input == NULL) return;
-    fprintf(stderr, "<pre>\n");
+    xmlGenericError(xmlGenericErrorContext, "<pre>\n");
     cur = input->cur;
     base = input->base;
     while ((cur > base) && ((*cur == '\n') || (*cur == '\r'))) {
@@ -163,7 +171,7 @@ xmlHTMLPrintFileContext(xmlParserInputPtr input) {
     }
     sprintf(&buffer[strlen(buffer)],"^\n");
     xmlHTMLEncodeSend();
-    fprintf(stderr, "</pre>");
+    xmlGenericError(xmlGenericErrorContext, "</pre>");
 }
 
 /**
@@ -192,12 +200,12 @@ xmlHTMLError(void *ctx, const char *msg, ...)
         
     xmlHTMLPrintFileInfo(input);
 
-    fprintf(stderr, "<b>error</b>: ");
+    xmlGenericError(xmlGenericErrorContext, "<b>error</b>: ");
     va_start(args, msg);
     vsprintf(&buffer[strlen(buffer)], msg, args);
     va_end(args);
     xmlHTMLEncodeSend();
-    fprintf(stderr, "</p>\n");
+    xmlGenericError(xmlGenericErrorContext, "</p>\n");
 
     xmlHTMLPrintFileContext(input);
     xmlHTMLEncodeSend();
@@ -230,12 +238,12 @@ xmlHTMLWarning(void *ctx, const char *msg, ...)
 
     xmlHTMLPrintFileInfo(input);
         
-    fprintf(stderr, "<b>warning</b>: ");
+    xmlGenericError(xmlGenericErrorContext, "<b>warning</b>: ");
     va_start(args, msg);
     vsprintf(&buffer[strlen(buffer)], msg, args);
     va_end(args);
     xmlHTMLEncodeSend();
-    fprintf(stderr, "</p>\n");
+    xmlGenericError(xmlGenericErrorContext, "</p>\n");
 
     xmlHTMLPrintFileContext(input);
     xmlHTMLEncodeSend();
@@ -264,12 +272,12 @@ xmlHTMLValidityError(void *ctx, const char *msg, ...)
         
     xmlHTMLPrintFileInfo(input);
 
-    fprintf(stderr, "<b>validity error</b>: ");
+    xmlGenericError(xmlGenericErrorContext, "<b>validity error</b>: ");
     va_start(args, msg);
     vsprintf(&buffer[strlen(buffer)], msg, args);
     va_end(args);
     xmlHTMLEncodeSend();
-    fprintf(stderr, "</p>\n");
+    xmlGenericError(xmlGenericErrorContext, "</p>\n");
 
     xmlHTMLPrintFileContext(input);
     xmlHTMLEncodeSend();
@@ -298,12 +306,12 @@ xmlHTMLValidityWarning(void *ctx, const char *msg, ...)
 
     xmlHTMLPrintFileInfo(input);
         
-    fprintf(stderr, "<b>validity warning</b>: ");
+    xmlGenericError(xmlGenericErrorContext, "<b>validity warning</b>: ");
     va_start(args, msg);
     vsprintf(&buffer[strlen(buffer)], msg, args);
     va_end(args);
     xmlHTMLEncodeSend();
-    fprintf(stderr, "</p>\n");
+    xmlGenericError(xmlGenericErrorContext, "</p>\n");
 
     xmlHTMLPrintFileContext(input);
     xmlHTMLEncodeSend();
@@ -495,10 +503,14 @@ void parseAndPrintFile(char *filename) {
     /*
      * If we don't have a document we might as well give up.  Do we
      * want an error message here?  <sven@zen.org> */
-    if (doc == NULL)
-      {
+    if (doc == NULL) {
 	return;
-      }
+    }
+
+#ifdef LIBXML_XINCLUDE_ENABLED
+    if (xinclude)
+	xmlXIncludeProcess(doc);
+#endif
 
 #ifdef LIBXML_DEBUG_ENABLED
     /*
@@ -562,10 +574,30 @@ void parseAndPrintFile(char *filename) {
     /*
      * A posteriori validation test
      */
-    if (postvalid) {
+    if (dtdvalid != NULL) {
+	xmlDtdPtr dtd;
+
+	dtd = xmlParseDTD(NULL, (const xmlChar *)dtdvalid); 
+	if (dtd == NULL) {
+	    xmlGenericError(xmlGenericErrorContext,
+		    "Could not parse DTD %s\n", dtdvalid);
+	} else {
+	    xmlValidCtxt cvp;
+	    cvp.userData = (void *) stderr;                                                 cvp.error    = (xmlValidityErrorFunc) fprintf;                                  cvp.warning  = (xmlValidityWarningFunc) fprintf;
+	    if (!xmlValidateDtd(&cvp, doc, dtd)) {
+		xmlGenericError(xmlGenericErrorContext,
+			"Document %s does not validate against %s\n",
+			filename, dtdvalid);
+	    }
+	    xmlFreeDtd(dtd);
+	}
+    } else if (postvalid) {
 	xmlValidCtxt cvp;
 	cvp.userData = (void *) stderr;                                                 cvp.error    = (xmlValidityErrorFunc) fprintf;                                  cvp.warning  = (xmlValidityWarningFunc) fprintf;
-	xmlValidateDocument(&cvp, doc);
+	if (!xmlValidateDocument(&cvp, doc)) {
+	    xmlGenericError(xmlGenericErrorContext,
+		    "Document %s does not validate\n", filename);
+	}
     }
 
 #ifdef LIBXML_DEBUG_ENABLED
@@ -623,6 +655,11 @@ int main(int argc, char **argv) {
 	else if ((!strcmp(argv[i], "-postvalid")) ||
 	         (!strcmp(argv[i], "--postvalid")))
 	    postvalid++;
+	else if ((!strcmp(argv[i], "-dtdvalid")) ||
+	         (!strcmp(argv[i], "--dtdvalid"))) {
+	    i++;
+	    dtdvalid = argv[i];
+        }
 	else if ((!strcmp(argv[i], "-insert")) ||
 	         (!strcmp(argv[i], "--insert")))
 	    insert++;
@@ -640,6 +677,11 @@ int main(int argc, char **argv) {
 	else if ((!strcmp(argv[i], "-testIO")) ||
 	         (!strcmp(argv[i], "--testIO")))
 	    testIO++;
+#ifdef LIBXML_XINCLUDE_ENABLED
+	else if ((!strcmp(argv[i], "-xinclude")) ||
+	         (!strcmp(argv[i], "--xinclude")))
+	    xinclude++;
+#endif
 	else if ((!strcmp(argv[i], "-compress")) ||
 	         (!strcmp(argv[i], "--compress"))) {
 	    compress++;
@@ -655,11 +697,13 @@ int main(int argc, char **argv) {
 	    xmlGetWarningsDefaultValue = 1;
 	    xmlPedanticParserDefault(1);
         }
+#ifdef LIBXML_DEBUG_ENABLED
 	else if ((!strcmp(argv[i], "-debugent")) ||
 		 (!strcmp(argv[i], "--debugent"))) {
 	    debugent++;
 	    xmlParserDebugEntities = 1;
 	} 
+#endif
 	else if ((!strcmp(argv[i], "-encode")) ||
 	         (!strcmp(argv[i], "--encode"))) {
 	    i++;
@@ -678,19 +722,25 @@ int main(int argc, char **argv) {
     if (noent != 0) xmlSubstituteEntitiesDefault(1);
     if (valid != 0) xmlDoValidityCheckingDefaultValue = 1;
     if ((htmlout) && (!nowrap)) {
-	fprintf(stderr,
+	xmlGenericError(xmlGenericErrorContext,
          "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"\n");
-	fprintf(stderr, "\t\"http://www.w3.org/TR/REC-html40/loose.dtd\">\n");
-	fprintf(stderr,
+	xmlGenericError(xmlGenericErrorContext,
+		"\t\"http://www.w3.org/TR/REC-html40/loose.dtd\">\n");
+	xmlGenericError(xmlGenericErrorContext,
 	 "<html><head><title>%s output</title></head>\n",
 		argv[0]);
-	fprintf(stderr, 
+	xmlGenericError(xmlGenericErrorContext, 
 	 "<body bgcolor=\"#ffffff\"><h1 align=\"center\">%s output</h1>\n",
 		argv[0]);
     }
     for (i = 1; i < argc ; i++) {
 	if ((!strcmp(argv[i], "-encode")) ||
 	         (!strcmp(argv[i], "--encode"))) {
+	    i++;
+	    continue;
+        }
+	if ((!strcmp(argv[i], "-dtdvalid")) ||
+	         (!strcmp(argv[i], "--dtdvalid"))) {
 	    i++;
 	    continue;
         }
@@ -704,7 +754,7 @@ int main(int argc, char **argv) {
 	}
     }
     if ((htmlout) && (!nowrap)) {
-	fprintf(stderr, "</body></html>\n");
+	xmlGenericError(xmlGenericErrorContext, "</body></html>\n");
     }
     if (files == 0) {
 	printf("Usage : %s [--debug] [--debugent] [--copy] [--recover] [--noent] [--noout] [--valid] [--repeat] XMLfiles ...\n",
@@ -723,6 +773,7 @@ int main(int argc, char **argv) {
 	printf("\t--nowarp : do not put HTML doc wrapper\n");
 	printf("\t--valid : validate the document in addition to std well-formed check\n");
 	printf("\t--postvalid : do a posteriori validation, i.e after parsing\n");
+	printf("\t--dtdvalid URL : do a posteriori validation against a given DTD\n");
 	printf("\t--repeat : repeat 100 times, for timing or profiling\n");
 	printf("\t--insert : ad-hoc test for valid insertions\n");
 	printf("\t--compress : turn on gzip compression of output\n");
@@ -737,6 +788,9 @@ int main(int argc, char **argv) {
 	printf("\t--noblanks : drop (ignorable?) blanks spaces\n");
 	printf("\t--testIO : test user I/O support\n");
 	printf("\t--encode encoding : output in the given encoding\n");
+#ifdef LIBXML_XINCLUDE_ENABLED
+	printf("\t--xinclude : do XInclude processing\n");
+#endif
     }
     xmlCleanupParser();
     xmlMemoryDump();

@@ -21,7 +21,7 @@
 #include "config.h"
 #endif
 
-#include "xmlversion.h"
+#include <libxml/xmlversion.h>
 
 #ifdef LIBXML_HTTP_ENABLED
 #include <stdio.h>
@@ -62,10 +62,21 @@
 #endif
 
 #include <libxml/xmlmemory.h>
+#include <libxml/parser.h> /* for xmlStr(n)casecmp() */
 #include <libxml/nanohttp.h>
+
+/**
+ * A couple portability macros
+ */
+#ifndef _WINSOCKAPI_
+#define closesocket(s) close(s)
+#define SOCKET int
+#endif
 
 #ifdef STANDALONE
 #define DEBUG_HTTP
+#define xmlStrncasecmp(a, b, n) strncasecmp((char *)a, (char *)b, n)
+#define xmlStrcasecmpi(a, b) strcasecmp((char *)a, (char *)b)
 #endif
 
 #define XML_NANO_HTTP_MAX_REDIR	10
@@ -82,7 +93,7 @@ typedef struct xmlNanoHTTPCtxt {
     char *hostname;	/* the host name */
     int port;		/* the port */
     char *path;		/* the path within the URL */
-    int fd;		/* the file descriptor for the socket */
+    SOCKET fd;		/* the file descriptor for the socket */
     int state;		/* WRITE / READ / CLOSED */
     char *out;		/* buffer sent (zero terminated) */
     char *outptr;	/* index within the buffer sent */
@@ -95,11 +106,24 @@ typedef struct xmlNanoHTTPCtxt {
     int returnValue;	/* the protocol return value */
     char *contentType;	/* the MIME type for the input */
     char *location;	/* the new URL in case of redirect */
+    char *authHeader;	/* contents of {WWW,Proxy}-Authenticate header */
 } xmlNanoHTTPCtxt, *xmlNanoHTTPCtxtPtr;
 
 static int initialized = 0;
-static char *proxy = NULL;	/* the proxy name if any */
+static char *proxy = NULL;	 /* the proxy name if any */
 static int proxyPort;	/* the proxy port if any */
+static unsigned int timeout = 60;/* the select() timeout in seconds */
+
+/**
+ * A portability function
+ */
+int socket_errno(void) {
+#ifdef _WINSOCKAPI_
+    return(WSAGetLastError());
+#else
+    return(errno);
+#endif
+}
 
 /**
  * xmlNanoHTTPInit:
@@ -111,9 +135,17 @@ static int proxyPort;	/* the proxy port if any */
 void
 xmlNanoHTTPInit(void) {
     const char *env;
+#ifdef _WINSOCKAPI_
+    WSADATA wsaData;    
+#endif
 
     if (initialized)
 	return;
+
+#ifdef _WINSOCKAPI_
+    if (WSAStartup(MAKEWORD(1, 1), &wsaData) != 0)
+	return;
+#endif
 
     if (proxy == NULL) {
 	proxyPort = 80;
@@ -145,8 +177,25 @@ void
 xmlNanoHTTPCleanup(void) {
     if (proxy != NULL)
 	xmlFree(proxy);
+#ifdef _WINSOCKAPI_
+    if (initialized)
+	WSACleanup();
+#endif
     initialized = 0;
     return;
+}
+
+/**
+ * xmlNanoHTTPTimeout:
+ * @delay:  the delay in seconds
+ *
+ * Set the HTTP timeout, (default is 60secs).  0 means immediate
+ * return, while -1 infinite.
+ */
+
+void
+xmlNanoHTTPTimeout(int delay) {
+    timeout = (unsigned int) delay;
 }
 
 /**
@@ -254,9 +303,11 @@ xmlNanoHTTPScanProxy(const char *URL) {
     }
 #ifdef DEBUG_HTTP
     if (URL == NULL)
-	printf("Removing HTTP proxy info\n");
+	xmlGenericError(xmlGenericErrorContext,
+		"Removing HTTP proxy info\n");
     else
-	printf("Using HTTP proxy %s\n", URL);
+	xmlGenericError(xmlGenericErrorContext,
+		"Using HTTP proxy %s\n", URL);
 #endif
     if (URL == NULL) return;
     buf[index] = 0;
@@ -340,8 +391,9 @@ xmlNanoHTTPFreeCtxt(xmlNanoHTTPCtxtPtr ctxt) {
     if (ctxt->in != NULL) xmlFree(ctxt->in);
     if (ctxt->contentType != NULL) xmlFree(ctxt->contentType);
     if (ctxt->location != NULL) xmlFree(ctxt->location);
+    if (ctxt->authHeader != NULL) xmlFree(ctxt->authHeader);
     ctxt->state = XML_NANO_HTTP_NONE;
-    if (ctxt->fd >= 0) close(ctxt->fd);
+    if (ctxt->fd >= 0) closesocket(ctxt->fd);
     ctxt->fd = -1;
     xmlFree(ctxt);
 }
@@ -355,8 +407,17 @@ xmlNanoHTTPFreeCtxt(xmlNanoHTTPCtxtPtr ctxt) {
 
 static void
 xmlNanoHTTPSend(xmlNanoHTTPCtxtPtr ctxt) {
-    if (ctxt->state & XML_NANO_HTTP_WRITE)
-	ctxt->last = write(ctxt->fd, ctxt->outptr, strlen(ctxt->outptr));
+    if (ctxt->state & XML_NANO_HTTP_WRITE) {
+        int total_sent = 0;
+        while (total_sent <strlen(ctxt->outptr)) {
+            int nsent = send(ctxt->fd, ctxt->outptr+total_sent,
+                             strlen(ctxt->outptr)-total_sent, 0);
+            if (nsent>0)
+                total_sent += nsent;
+}
+
+        ctxt->last = total_sent;
+    }
 }
 
 /**
@@ -409,7 +470,7 @@ xmlNanoHTTPRecv(xmlNanoHTTPCtxtPtr ctxt) {
             ctxt->content = ctxt->in + d_content;
             ctxt->inrptr = ctxt->in + d_inrptr;
 	}
-	ctxt->last = read(ctxt->fd, ctxt->inptr, XML_NANO_HTTP_CHUNK);
+	ctxt->last = recv(ctxt->fd, ctxt->inptr, XML_NANO_HTTP_CHUNK, 0);
 	if (ctxt->last > 0) {
 	    ctxt->inptr += ctxt->last;
 	    return(ctxt->last);
@@ -417,17 +478,25 @@ xmlNanoHTTPRecv(xmlNanoHTTPCtxtPtr ctxt) {
 	if (ctxt->last == 0) {
 	    return(0);
 	}
-#ifdef EWOULDBLOCK
-	if ((ctxt->last == -1) && (errno != EWOULDBLOCK)) {
-	    return(0);
-	}
+	if (ctxt->last == -1) {
+	    switch (socket_errno()) {
+		case EINPROGRESS:
+		case EWOULDBLOCK:
+#if defined(EAGAIN) && EAGAIN != EWOULDBLOCK
+		case EAGAIN:
 #endif
-	tv.tv_sec=10;
-	tv.tv_usec=0;
+		    break;
+		default:
+		    return(0);
+	    }
+	}
+
+	tv.tv_sec = timeout;
+	tv.tv_usec = 0;
 	FD_ZERO(&rfd);
 	FD_SET(ctxt->fd, &rfd);
 	
-	if(select(ctxt->fd+1, &rfd, NULL, NULL, &tv)<1)
+	if (select(ctxt->fd+1, &rfd, NULL, NULL, &tv)<1)
 		return(0);
     }
     return(0);
@@ -447,10 +516,10 @@ xmlNanoHTTPRecv(xmlNanoHTTPCtxtPtr ctxt) {
 static char *
 xmlNanoHTTPReadLine(xmlNanoHTTPCtxtPtr ctxt) {
     char buf[4096];
-    char *bp=buf;
+    char *bp = buf;
     
-    while(bp - buf < 4095) {
-	if(ctxt->inrptr == ctxt->inptr) {
+    while (bp - buf < 4095) {
+	if (ctxt->inrptr == ctxt->inptr) {
 	    if (xmlNanoHTTPRecv(ctxt) == 0) {
 		if (bp == buf)
 		    return(NULL);
@@ -460,11 +529,11 @@ xmlNanoHTTPReadLine(xmlNanoHTTPCtxtPtr ctxt) {
 	    }
 	}
 	*bp = *ctxt->inrptr++;
-	if(*bp == '\n') {
+	if (*bp == '\n') {
 	    *bp = 0;
 	    return(xmlMemStrdup(buf));
 	}
-	if(*bp != '\r')
+	if (*bp != '\r')
 	    bp++;
     }
     buf[4095] = 0;
@@ -523,38 +592,35 @@ xmlNanoHTTPScanAnswer(xmlNanoHTTPCtxtPtr ctxt, const char *line) {
 	}
 	if ((*cur != 0) && (*cur != ' ') && (*cur != '\t')) return;
 	ctxt->returnValue = ret;
-    } else if (!strncmp(line, "Content-Type:", 13)) {
+    } else if (!xmlStrncasecmp(BAD_CAST line, BAD_CAST"Content-Type:", 13)) {
         cur += 13;
 	while ((*cur == ' ') || (*cur == '\t')) cur++;
 	if (ctxt->contentType != NULL)
 	    xmlFree(ctxt->contentType);
 	ctxt->contentType = xmlMemStrdup(cur);
-    } else if (!strncmp(line, "ContentType:", 12)) {
+    } else if (!xmlStrncasecmp(BAD_CAST line, BAD_CAST"ContentType:", 12)) {
         cur += 12;
 	if (ctxt->contentType != NULL) return;
 	while ((*cur == ' ') || (*cur == '\t')) cur++;
 	ctxt->contentType = xmlMemStrdup(cur);
-    } else if (!strncmp(line, "content-type:", 13)) {
-        cur += 13;
-	if (ctxt->contentType != NULL) return;
-	while ((*cur == ' ') || (*cur == '\t')) cur++;
-	ctxt->contentType = xmlMemStrdup(cur);
-    } else if (!strncmp(line, "contenttype:", 12)) {
-        cur += 12;
-	if (ctxt->contentType != NULL) return;
-	while ((*cur == ' ') || (*cur == '\t')) cur++;
-	ctxt->contentType = xmlMemStrdup(cur);
-    } else if (!strncmp(line, "Location:", 9)) {
+    } else if (!xmlStrncasecmp(BAD_CAST line, BAD_CAST"Location:", 9)) {
         cur += 9;
 	while ((*cur == ' ') || (*cur == '\t')) cur++;
 	if (ctxt->location != NULL)
 	    xmlFree(ctxt->location);
 	ctxt->location = xmlMemStrdup(cur);
-    } else if (!strncmp(line, "location:", 9)) {
-        cur += 9;
-	if (ctxt->location != NULL) return;
+    } else if (!xmlStrncasecmp(BAD_CAST line, BAD_CAST"WWW-Authenticate:", 17)) {
+        cur += 17;
 	while ((*cur == ' ') || (*cur == '\t')) cur++;
-	ctxt->location = xmlMemStrdup(cur);
+	if (ctxt->authHeader != NULL)
+	    xmlFree(ctxt->authHeader);
+	ctxt->authHeader = xmlMemStrdup(cur);
+    } else if (!xmlStrncasecmp(BAD_CAST line, BAD_CAST"Proxy-Authenticate:", 19)) {
+        cur += 19;
+	while ((*cur == ' ') || (*cur == '\t')) cur++;
+	if (ctxt->authHeader != NULL)
+	    xmlFree(ctxt->authHeader);
+	ctxt->authHeader = xmlMemStrdup(cur);
     }
 }
 
@@ -573,13 +639,13 @@ xmlNanoHTTPScanAnswer(xmlNanoHTTPCtxtPtr ctxt, const char *line) {
 static int
 xmlNanoHTTPConnectAttempt(struct in_addr ia, int port)
 {
-    int s=socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    SOCKET s = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     struct sockaddr_in sin;
     fd_set wfd;
     struct timeval tv;
     int status;
     
-    if(s==-1) {
+    if (s==-1) {
 #ifdef DEBUG_HTTP
 	perror("socket");
 #endif
@@ -588,9 +654,6 @@ xmlNanoHTTPConnectAttempt(struct in_addr ia, int port)
     
 #ifdef _WINSOCKAPI_
     {
-	long levents = FD_READ | FD_WRITE | FD_ACCEPT |
-		       FD_CONNECT | FD_CLOSE ;
-	int rv = 0 ;
 	u_long one = 1;
 
 	status = ioctlsocket(s, FIONBIO, &one) == SOCKET_ERROR ? -1 : 0;
@@ -602,7 +665,7 @@ xmlNanoHTTPConnectAttempt(struct in_addr ia, int port)
 	status = IOCTL(s, FIONBIO, &enable);
     }
 #else /* VMS */
-    if((status = fcntl(s, F_GETFL, 0)) != -1) {
+    if ((status = fcntl(s, F_GETFL, 0)) != -1) {
 #ifdef O_NONBLOCK
 	status |= O_NONBLOCK;
 #else /* O_NONBLOCK */
@@ -612,11 +675,11 @@ xmlNanoHTTPConnectAttempt(struct in_addr ia, int port)
 #endif /* !O_NONBLOCK */
 	status = fcntl(s, F_SETFL, status);
     }
-    if(status < 0) {
+    if (status < 0) {
 #ifdef DEBUG_HTTP
 	perror("nonblocking");
 #endif
-	close(s);
+	closesocket(s);
 	return(-1);
     }
 #endif /* !VMS */
@@ -627,14 +690,19 @@ xmlNanoHTTPConnectAttempt(struct in_addr ia, int port)
     sin.sin_addr   = ia;
     sin.sin_port   = htons(port);
     
-    if((connect(s, (struct sockaddr *)&sin, sizeof(sin))==-1) &&
-       (errno != EINPROGRESS)) {
-	perror("connect");
-	close(s);
-	return(-1);
+    if ((connect(s, (struct sockaddr *)&sin, sizeof(sin))==-1)) {
+	switch (socket_errno()) {
+	    case EINPROGRESS:
+	    case EWOULDBLOCK:
+		break;
+	    default:
+		perror("connect");
+		closesocket(s);
+		return(-1);
+	}
     }	
     
-    tv.tv_sec = 60;		/* We use 60 second timeouts for now */
+    tv.tv_sec = timeout;
     tv.tv_usec = 0;
     
     FD_ZERO(&wfd);
@@ -644,26 +712,26 @@ xmlNanoHTTPConnectAttempt(struct in_addr ia, int port)
     {
 	case 0:
 	    /* Time out */
-	    close(s);
+	    closesocket(s);
 	    return(-1);
 	case -1:
 	    /* Ermm.. ?? */
 #ifdef DEBUG_HTTP
 	    perror("select");
 #endif
-	    close(s);
+	    closesocket(s);
 	    return(-1);
     }
 
     if ( FD_ISSET(s, &wfd) ) {
-	unsigned int len; /* was socklen_t barfed on some systems :-( */
+	SOCKLEN_T len;
 	len = sizeof(status);
-	if (getsockopt(s, SOL_SOCKET, SO_ERROR, &status, &len) < 0 ) {
+	if (getsockopt(s, SOL_SOCKET, SO_ERROR, (char*)&status, &len) < 0 ) {
 	    /* Solaris error code */
 	    return (-1);
 	}
 	if ( status ) {
-	    close (s);
+	    closesocket(s);
 	    errno = status;
 	    return (-1);
 	}
@@ -694,10 +762,10 @@ xmlNanoHTTPConnectHost(const char *host, int port)
     int s;
     
     h=gethostbyname(host);
-    if(h==NULL)
+    if (h==NULL)
     {
 #ifdef DEBUG_HTTP
-	fprintf(stderr,"unable to resolve '%s'.\n", host);
+	xmlGenericError(xmlGenericErrorContext,"unable to resolve '%s'.\n", host);
 #endif
 	return(-1);
     }
@@ -707,12 +775,13 @@ xmlNanoHTTPConnectHost(const char *host, int port)
 	struct in_addr ia;
 	memcpy(&ia, h->h_addr_list[i],4);
 	s = xmlNanoHTTPConnectAttempt(ia, port);
-	if(s != -1)
+	if (s != -1)
 	    return(s);
     }
 
 #ifdef DEBUG_HTTP
-    fprintf(stderr, "unable to connect to '%s'.\n", host);
+    xmlGenericError(xmlGenericErrorContext,
+	    "unable to connect to '%s'.\n", host);
 #endif
     return(-1);
 }
@@ -733,139 +802,8 @@ xmlNanoHTTPConnectHost(const char *host, int port)
 
 void*
 xmlNanoHTTPOpen(const char *URL, char **contentType) {
-    xmlNanoHTTPCtxtPtr ctxt;
-    char buf[4096];
-    int ret;
-    char *p;
-    int head;
-    int nbRedirects = 0;
-    char *redirURL = NULL;
-    
-    xmlNanoHTTPInit();
     if (contentType != NULL) *contentType = NULL;
-
-retry:
-    if (redirURL == NULL)
-	ctxt = xmlNanoHTTPNewCtxt(URL);
-    else {
-	ctxt = xmlNanoHTTPNewCtxt(redirURL);
-	xmlFree(redirURL);
-	redirURL = NULL;
-    }
-
-    if ((ctxt->protocol == NULL) || (strcmp(ctxt->protocol, "http"))) {
-        xmlNanoHTTPFreeCtxt(ctxt);
-	if (redirURL != NULL) xmlFree(redirURL);
-        return(NULL);
-    }
-    if (ctxt->hostname == NULL) {
-        xmlNanoHTTPFreeCtxt(ctxt);
-        return(NULL);
-    }
-    if (proxy)
-	ret = xmlNanoHTTPConnectHost(proxy, proxyPort);
-    else
-	ret = xmlNanoHTTPConnectHost(ctxt->hostname, ctxt->port);
-    if (ret < 0) {
-        xmlNanoHTTPFreeCtxt(ctxt);
-        return(NULL);
-    }
-    ctxt->fd = ret;
-    if (proxy) {
-	if (ctxt->port != 80)
-#ifdef HAVE_SNPRINTF
-	    snprintf(buf, sizeof(buf),
-		     "GET http://%s:%d%s HTTP/1.0\r\nHost: %s\r\n\r\n",
-		 ctxt->hostname, ctxt->port, ctxt->path, ctxt->hostname);
-#else
-	    sprintf(buf, 
-		     "GET http://%s:%d%s HTTP/1.0\r\nHost: %s\r\n\r\n",
-		 ctxt->hostname, ctxt->port, ctxt->path, ctxt->hostname);
-#endif
-	else 
-#ifdef HAVE_SNPRINTF
-	    snprintf(buf, sizeof(buf),"GET http://%s%s HTTP/1.0\r\nHost: %s\r\n\r\n",
-		 ctxt->hostname, ctxt->path, ctxt->hostname);
-#else
-	    sprintf(buf, "GET http://%s%s HTTP/1.0\r\nHost: %s\r\n\r\n",
-		 ctxt->hostname, ctxt->path, ctxt->hostname);
-#endif
-#ifdef DEBUG_HTTP
-	if (ctxt->port != 80)
-	    printf("-> Proxy GET http://%s:%d%s HTTP/1.0\n-> Host: %s\n\n",
-	           ctxt->hostname, ctxt->port, ctxt->path, ctxt->hostname);
-	else
-	    printf("-> Proxy GET http://%s%s HTTP/1.0\n-> Host: %s\n\n",
-	           ctxt->hostname, ctxt->path, ctxt->hostname);
-#endif
-    } else {
-#ifdef HAVE_SNPRINTF
-	snprintf(buf, sizeof(buf),"GET %s HTTP/1.0\r\nHost: %s\r\n\r\n",
-		 ctxt->path, ctxt->hostname);
-#else
-	sprintf(buf, "GET %s HTTP/1.0\r\nHost: %s\r\n\r\n",
-		 ctxt->path, ctxt->hostname);
-#endif
-#ifdef DEBUG_HTTP
-	printf("-> GET %s HTTP/1.0\n-> Host: %s\n\n",
-	       ctxt->path, ctxt->hostname);
-#endif
-    }
-    buf[sizeof(buf) - 1] = 0;
-    ctxt->outptr = ctxt->out = xmlMemStrdup(buf);
-    ctxt->state = XML_NANO_HTTP_WRITE;
-    xmlNanoHTTPSend(ctxt);
-    ctxt->state = XML_NANO_HTTP_READ;
-    head = 1;
-
-    while ((p = xmlNanoHTTPReadLine(ctxt)) != NULL) {
-        if (head && (*p == 0)) {
-	    head = 0;
-	    ctxt->content = ctxt->inrptr;
-	    xmlFree(p);
-	    break;
-	}
-	xmlNanoHTTPScanAnswer(ctxt, p);
-
-#ifdef DEBUG_HTTP
-	if (p != NULL) printf("<- %s\n", p);
-#endif
-        if (p != NULL) xmlFree(p);
-    }
-
-    if ((ctxt->location != NULL) && (ctxt->returnValue >= 300) &&
-        (ctxt->returnValue < 400)) {
-#ifdef DEBUG_HTTP
-	printf("\nRedirect to: %s\n", ctxt->location);
-#endif
-	while (xmlNanoHTTPRecv(ctxt)) ;
-        if (nbRedirects < XML_NANO_HTTP_MAX_REDIR) {
-	    nbRedirects++;
-	    redirURL = xmlMemStrdup(ctxt->location);
-	    xmlNanoHTTPFreeCtxt(ctxt);
-	    goto retry;
-	}
-	xmlNanoHTTPFreeCtxt(ctxt);
-#ifdef DEBUG_HTTP
-	printf("Too many redirrects, aborting ...\n");
-#endif
-	return(NULL);
-
-    }
-
-    if ((contentType != NULL) && (ctxt->contentType != NULL))
-        *contentType = xmlMemStrdup(ctxt->contentType);
-
-#ifdef DEBUG_HTTP
-    if (ctxt->contentType != NULL)
-	printf("\nCode %d, content-type '%s'\n\n",
-	       ctxt->returnValue, ctxt->contentType);
-    else
-	printf("\nCode %d, no content-type\n\n",
-	       ctxt->returnValue);
-#endif
-
-    return((void *) ctxt);
+    return xmlNanoHTTPMethod(URL, NULL, NULL, contentType, NULL);
 }
 
 /**
@@ -914,9 +852,6 @@ xmlNanoHTTPClose(void *ctx) {
     xmlNanoHTTPFreeCtxt(ctxt);
 }
 
-#ifndef DEBUG_HTTP
-#define DEBUG_HTTP
-#endif
 /**
  * xmlNanoHTTPMethod:
  * @URL:  The URL to load
@@ -937,16 +872,15 @@ void*
 xmlNanoHTTPMethod(const char *URL, const char *method, const char *input,
                   char **contentType, const char *headers) {
     xmlNanoHTTPCtxtPtr ctxt;
-    char buf[20000];
-    int ret;
-    char *p;
+    char *bp, *p;
+    int blen, ilen, ret;
     int head;
     int nbRedirects = 0;
     char *redirURL = NULL;
     
     if (URL == NULL) return(NULL);
     if (method == NULL) method = "GET";
-    if (contentType != NULL) *contentType = NULL;
+    xmlNanoHTTPInit();
 
 retry:
     if (redirURL == NULL)
@@ -966,120 +900,65 @@ retry:
         xmlNanoHTTPFreeCtxt(ctxt);
         return(NULL);
     }
-    ret = xmlNanoHTTPConnectHost(ctxt->hostname, ctxt->port);
+    if (proxy) {
+	blen = strlen(ctxt->hostname) * 2 + 16;
+	ret = xmlNanoHTTPConnectHost(proxy, proxyPort);
+    }
+    else {
+	blen = strlen(ctxt->hostname);
+	ret = xmlNanoHTTPConnectHost(ctxt->hostname, ctxt->port);
+    }
     if (ret < 0) {
         xmlNanoHTTPFreeCtxt(ctxt);
         return(NULL);
     }
     ctxt->fd = ret;
 
-    if (input == NULL) {
-        if (headers == NULL) {
-	    if ((contentType == NULL) || (*contentType == NULL)) {
-#ifdef HAVE_SNPRINTF
-		snprintf(buf, sizeof(buf),
-		         "%s %s HTTP/1.0\r\nHost: %s\r\n\r\n",
-			 method, ctxt->path, ctxt->hostname);
-#else
-		sprintf(buf,
-		         "%s %s HTTP/1.0\r\nHost: %s\r\n\r\n",
-			 method, ctxt->path, ctxt->hostname);
-#endif
-	    } else {
-#ifdef HAVE_SNPRINTF
-		snprintf(buf, sizeof(buf),
-		     "%s %s HTTP/1.0\r\nHost: %s\r\nContent-Type: %s\r\n\r\n",
-			 method, ctxt->path, ctxt->hostname, *contentType);
-#else
-		sprintf(buf,
-		     "%s %s HTTP/1.0\r\nHost: %s\r\nContent-Type: %s\r\n\r\n",
-			 method, ctxt->path, ctxt->hostname, *contentType);
-#endif
-	    }
-	} else {
-	    if ((contentType == NULL) || (*contentType == NULL)) {
-#ifdef HAVE_SNPRINTF
-		snprintf(buf, sizeof(buf),
-		         "%s %s HTTP/1.0\r\nHost: %s\r\n%s\r\n",
-			 method, ctxt->path, ctxt->hostname, headers);
-#else
-		sprintf(buf,
-		         "%s %s HTTP/1.0\r\nHost: %s\r\n%s\r\n",
-			 method, ctxt->path, ctxt->hostname, headers);
-#endif
-	    } else {
-#ifdef HAVE_SNPRINTF
-		snprintf(buf, sizeof(buf),
-		 "%s %s HTTP/1.0\r\nHost: %s\r\nContent-Type: %s\r\n%s\r\n",
-			 method, ctxt->path, ctxt->hostname, *contentType,
-			 headers);
-#else
-		sprintf(buf,
-		 "%s %s HTTP/1.0\r\nHost: %s\r\nContent-Type: %s\r\n%s\r\n",
-			 method, ctxt->path, ctxt->hostname, *contentType,
-			 headers);
-#endif
-	    }
-	}
-    } else {
-        int len = strlen(input);
-        if (headers == NULL) {
-	    if ((contentType == NULL) || (*contentType == NULL)) {
-#ifdef HAVE_SNPRINTF
-		snprintf(buf, sizeof(buf),
-		 "%s %s HTTP/1.0\r\nHost: %s\r\nContent-Length: %d\r\n\r\n%s",
-			 method, ctxt->path, ctxt->hostname, len, input);
-#else
-		sprintf(buf,
-		 "%s %s HTTP/1.0\r\nHost: %s\r\nContent-Length: %d\r\n\r\n%s",
-			 method, ctxt->path, ctxt->hostname, len, input);
-#endif
-	    } else {
-#ifdef HAVE_SNPRINTF
-		snprintf(buf, sizeof(buf),
-"%s %s HTTP/1.0\r\nHost: %s\r\nContent-Type: %s\r\nContent-Length: %d\r\n\r\n%s",
-			 method, ctxt->path, ctxt->hostname, *contentType, len,
-			 input);
-#else
-		sprintf(buf,
-"%s %s HTTP/1.0\r\nHost: %s\r\nContent-Type: %s\r\nContent-Length: %d\r\n\r\n%s",
-			 method, ctxt->path, ctxt->hostname, *contentType, len,
-			 input);
-#endif
-	    }
-	} else {
-	    if ((contentType == NULL) || (*contentType == NULL)) {
-#ifdef HAVE_SNPRINTF
-		snprintf(buf, sizeof(buf),
-	     "%s %s HTTP/1.0\r\nHost: %s\r\nContent-Length: %d\r\n%s\r\n%s",
-			 method, ctxt->path, ctxt->hostname, len,
-			 headers, input);
-#else
-		sprintf(buf,
-	     "%s %s HTTP/1.0\r\nHost: %s\r\nContent-Length: %d\r\n%s\r\n%s",
-			 method, ctxt->path, ctxt->hostname, len,
-			 headers, input);
-#endif
-	    } else {
-#ifdef HAVE_SNPRINTF
-		snprintf(buf, sizeof(buf),
-"%s %s HTTP/1.0\r\nHost: %s\r\nContent-Type: %s\r\nContent-Length: %d\r\n%s\r\n%s",
-			 method, ctxt->path, ctxt->hostname, *contentType,
-			 len, headers, input);
-#else
-		sprintf(buf,
-"%s %s HTTP/1.0\r\nHost: %s\r\nContent-Type: %s\r\nContent-Length: %d\r\n%s\r\n%s",
-			 method, ctxt->path, ctxt->hostname, *contentType,
-			 len, headers, input);
-#endif
-	    }
-	}
+    if (input != NULL) {
+	ilen = strlen(input);
+	blen += ilen + 32;
     }
-    buf[sizeof(buf) - 1] = 0;
+    else
+	ilen = 0;
+    if (headers != NULL)
+	blen += strlen(headers);
+    if (contentType && *contentType)
+	blen += strlen(*contentType) + 16;
+    blen += strlen(method) + strlen(ctxt->path) + 23;
+    bp = xmlMalloc(blen);
+    if (proxy) {
+	if (ctxt->port != 80) {
+	    sprintf(bp, "%s http://%s:%d%s", method, ctxt->hostname,
+		 ctxt->port, ctxt->path);
+	}
+	else
+	    sprintf(bp, "%s http://%s%s", method, ctxt->hostname, ctxt->path);
+    }
+    else
+	sprintf(bp, "%s %s", method, ctxt->path);
+    p = bp + strlen(bp);
+    sprintf(p, " HTTP/1.0\r\nHost: %s\r\n", ctxt->hostname);
+    p += strlen(p);
+    if (contentType != NULL && *contentType) {
+	sprintf(p, "Content-Type: %s\r\n", *contentType);
+	p += strlen(p);
+    }
+    if (headers != NULL) {
+	strcpy(p, headers);
+	p += strlen(p);
+    }
+    if (input != NULL)
+	sprintf(p, "Content-Length: %d\r\n\r\n%s", ilen, input);
+    else
+	strcpy(p, "\r\n");
 #ifdef DEBUG_HTTP
-    printf("-> %s", buf);
+    xmlGenericError(xmlGenericErrorContext,
+	    "-> %s%s", proxy? "(Proxy) " : "", bp);
+    if ((blen -= strlen(bp)+1) < 0)
+	xmlGenericError(xmlGenericErrorContext,
+		"ERROR: overflowed buffer by %d bytes\n", -blen);
 #endif
-    ctxt->outptr = ctxt->out = xmlMemStrdup(buf);
+    ctxt->outptr = ctxt->out = bp;
     ctxt->state = XML_NANO_HTTP_WRITE;
     xmlNanoHTTPSend(ctxt);
     ctxt->state = XML_NANO_HTTP_READ;
@@ -1089,21 +968,22 @@ retry:
         if (head && (*p == 0)) {
 	    head = 0;
 	    ctxt->content = ctxt->inrptr;
-	    if (p != NULL) xmlFree(p);
+	    xmlFree(p);
 	    break;
 	}
 	xmlNanoHTTPScanAnswer(ctxt, p);
 
 #ifdef DEBUG_HTTP
-	if (p != NULL) printf("<- %s\n", p);
+	xmlGenericError(xmlGenericErrorContext, "<- %s\n", p);
 #endif
-        if (p != NULL) xmlFree(p);
+        xmlFree(p);
     }
 
     if ((ctxt->location != NULL) && (ctxt->returnValue >= 300) &&
         (ctxt->returnValue < 400)) {
 #ifdef DEBUG_HTTP
-	printf("\nRedirect to: %s\n", ctxt->location);
+	xmlGenericError(xmlGenericErrorContext,
+		"\nRedirect to: %s\n", ctxt->location);
 #endif
 	while (xmlNanoHTTPRecv(ctxt)) ;
         if (nbRedirects < XML_NANO_HTTP_MAX_REDIR) {
@@ -1114,23 +994,28 @@ retry:
 	}
 	xmlNanoHTTPFreeCtxt(ctxt);
 #ifdef DEBUG_HTTP
-	printf("Too many redirrects, aborting ...\n");
+	xmlGenericError(xmlGenericErrorContext,
+		"Too many redirects, aborting ...\n");
 #endif
 	return(NULL);
 
     }
 
-    if ((contentType != NULL) && (ctxt->contentType != NULL))
-        *contentType = xmlMemStrdup(ctxt->contentType);
-    else if (contentType != NULL)
-        *contentType = NULL;
+    if (contentType != NULL) {
+	if (ctxt->contentType != NULL)
+	    *contentType = xmlMemStrdup(ctxt->contentType);
+	else
+	    *contentType = NULL;
+    }
 
 #ifdef DEBUG_HTTP
     if (ctxt->contentType != NULL)
-	printf("\nCode %d, content-type '%s'\n\n",
+	xmlGenericError(xmlGenericErrorContext,
+		"\nCode %d, content-type '%s'\n\n",
 	       ctxt->returnValue, ctxt->contentType);
     else
-	printf("\nCode %d, no content-type\n\n",
+	xmlGenericError(xmlGenericErrorContext,
+		"\nCode %d, no content-type\n\n",
 	       ctxt->returnValue);
 #endif
 
@@ -1234,6 +1119,22 @@ xmlNanoHTTPReturnCode(void *ctx) {
     return(ctxt->returnValue);
 }
 
+/**
+ * xmlNanoHTTPAuthHeader:
+ * @ctx:  the HTTP context
+ *
+ * Returns the stashed value of the WWW-Authenticate or Proxy-Authenticate
+ * header.
+ */
+const char *
+xmlNanoHTTPAuthHeader(void *ctx) {
+    xmlNanoHTTPCtxtPtr ctxt = (xmlNanoHTTPCtxtPtr) ctx;
+
+    if (ctxt == NULL) return(NULL);
+
+    return(ctxt->authHeader);
+}
+
 #ifdef STANDALONE
 int main(int argc, char **argv) {
     char *contentType = NULL;
@@ -1245,8 +1146,10 @@ int main(int argc, char **argv) {
 	    xmlNanoHTTPFetch(argv[1], "-", &contentType);
 	if (contentType != NULL) xmlFree(contentType);
     } else {
-        printf("%s: minimal HTTP GET implementation\n", argv[0]);
-        printf("\tusage %s [ URL [ filename ] ]\n", argv[0]);
+        xmlGenericError(xmlGenericErrorContext,
+		"%s: minimal HTTP GET implementation\n", argv[0]);
+        xmlGenericError(xmlGenericErrorContext,
+		"\tusage %s [ URL [ filename ] ]\n", argv[0]);
     }
     xmlNanoHTTPCleanup();
     xmlMemoryDump();
@@ -1257,7 +1160,8 @@ int main(int argc, char **argv) {
 #ifdef STANDALONE
 #include <stdio.h>
 int main(int argc, char **argv) {
-    printf("%s : HTTP support not compiled in\n", argv[0]);
+    xmlGenericError(xmlGenericErrorContext,
+	    "%s : HTTP support not compiled in\n", argv[0]);
     return(0);
 }
 #endif /* STANDALONE */

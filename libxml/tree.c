@@ -30,6 +30,7 @@
 #include <libxml/parser.h>
 #include <libxml/entities.h>
 #include <libxml/valid.h>
+#include <libxml/xmlerror.h>
 
 static xmlChar xmlStringText[] = { 't', 'e', 'x', 't', 0 };
 static xmlChar xmlStringComment[] = { 'c', 'o', 'm', 'm', 'e', 'n', 't', 0 };
@@ -44,12 +45,16 @@ int xmlSaveNoEmptyTags = 0;
 #define IS_BLANK(c)							\
   (((c) == '\n') || ((c) == '\r') || ((c) == '\t') || ((c) == ' '))
 
-#define UPDATE_LAST_CHILD(n) if ((n) != NULL) {				\
+#define UPDATE_LAST_CHILD_AND_PARENT(n) if ((n) != NULL) {		\
     xmlNodePtr ulccur = (n)->children;					\
     if (ulccur == NULL) {						\
         (n)->last = NULL;						\
     } else {								\
-        while (ulccur->next != NULL) ulccur = ulccur->next;		\
+        while (ulccur->next != NULL) {					\
+	       	ulccur->parent = (n);					\
+		ulccur = ulccur->next;					\
+	}								\
+	ulccur->parent = (n);						\
 	(n)->last = ulccur;						\
 }}
 
@@ -92,35 +97,6 @@ xmlGetBufferAllocationScheme() {
 }
 
 /**
- * xmlUpgradeOldNs:
- * @doc:  a document pointer
- * 
- * Upgrade old style Namespaces (PI) and move them to the root of the document.
- */
-void
-xmlUpgradeOldNs(xmlDocPtr doc) {
-    xmlNsPtr cur;
-
-    if ((doc == NULL) || (doc->oldNs == NULL)) return;
-    if (doc->children == NULL) {
-#ifdef DEBUG_TREE
-        fprintf(stderr, "xmlUpgradeOldNs: failed no root !\n");
-#endif
-	return;
-    }
-
-    cur = doc->oldNs;
-    while (cur->next != NULL) {
-	cur->type = XML_LOCAL_NAMESPACE;
-        cur = cur->next;
-    }
-    cur->type = XML_LOCAL_NAMESPACE;
-    cur->next = doc->children->nsDef;
-    doc->children->nsDef = doc->oldNs;
-    doc->oldNs = NULL;
-}
-
-/**
  * xmlNewNs:
  * @node:  the element carrying the namespace
  * @href:  the URI associated
@@ -142,7 +118,8 @@ xmlNewNs(xmlNodePtr node, const xmlChar *href, const xmlChar *prefix) {
      */
     cur = (xmlNsPtr) xmlMalloc(sizeof(xmlNs));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewNs : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewNs : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlNs));
@@ -164,14 +141,14 @@ xmlNewNs(xmlNodePtr node, const xmlChar *href, const xmlChar *prefix) {
 	    xmlNsPtr prev = node->nsDef;
 
 	    if (((prev->prefix == NULL) && (cur->prefix == NULL)) ||
-		(!xmlStrcmp(prev->prefix, cur->prefix))) {
+		(xmlStrEqual(prev->prefix, cur->prefix))) {
 		xmlFreeNs(cur);
 		return(NULL);
 	    }    
 	    while (prev->next != NULL) {
 	        prev = prev->next;
 		if (((prev->prefix == NULL) && (cur->prefix == NULL)) ||
-		    (!xmlStrcmp(prev->prefix, cur->prefix))) {
+		    (xmlStrEqual(prev->prefix, cur->prefix))) {
 		    xmlFreeNs(cur);
 		    return(NULL);
 		}    
@@ -180,61 +157,6 @@ xmlNewNs(xmlNodePtr node, const xmlChar *href, const xmlChar *prefix) {
 	}
     }
     return(cur);
-}
-
-/**
- * xmlNewGlobalNs:
- * @doc:  the document carrying the namespace
- * @href:  the URI associated
- * @prefix:  the prefix for the namespace
- *
- * Creation of a Namespace, the old way using PI and without scoping
- *   DEPRECATED !!!
- * It now create a namespace on the root element of the document if found.
- * Returns NULL this functionnality had been removed
- */
-xmlNsPtr
-xmlNewGlobalNs(xmlDocPtr doc, const xmlChar *href, const xmlChar *prefix) {
-    xmlNodePtr root;
-
-    xmlNsPtr cur;
- 
-    root = xmlDocGetRootElement(doc);
-    if (root != NULL)
-	return(xmlNewNs(root, href, prefix));
-	
-    /*
-     * if there is no root element yet, create an old Namespace type
-     * and it will be moved to the root at save time.
-     */
-    cur = (xmlNsPtr) xmlMalloc(sizeof(xmlNs));
-    if (cur == NULL) {
-        fprintf(stderr, "xmlNewGlobalNs : malloc failed\n");
-	return(NULL);
-    }
-    memset(cur, 0, sizeof(xmlNs));
-    cur->type = XML_GLOBAL_NAMESPACE;
-
-    if (href != NULL)
-	cur->href = xmlStrdup(href); 
-    if (prefix != NULL)
-	cur->prefix = xmlStrdup(prefix); 
-
-    /*
-     * Add it at the end to preserve parsing order ...
-     */
-    if (doc != NULL) {
-	if (doc->oldNs == NULL) {
-	    doc->oldNs = cur;
-	} else {
-	    xmlNsPtr prev = doc->oldNs;
-
-	    while (prev->next != NULL) prev = prev->next;
-	    prev->next = cur;
-	}
-    }
-
-  return(NULL);
 }
 
 /**
@@ -248,7 +170,8 @@ void
 xmlSetNs(xmlNodePtr node, xmlNsPtr ns) {
     if (node == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlSetNs: node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlSetNs: node == NULL\n");
 #endif
 	return;
     }
@@ -265,7 +188,8 @@ void
 xmlFreeNs(xmlNsPtr cur) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlFreeNs : ns == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlFreeNs : ns == NULL\n");
 #endif
 	return;
     }
@@ -286,7 +210,8 @@ xmlFreeNsList(xmlNsPtr cur) {
     xmlNsPtr next;
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlFreeNsList : ns == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlFreeNsList : ns == NULL\n");
 #endif
 	return;
     }
@@ -316,7 +241,8 @@ xmlNewDtd(xmlDocPtr doc, const xmlChar *name,
 
     if ((doc != NULL) && (doc->extSubset != NULL)) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNewDtd(%s): document %s already have a DTD %s\n",
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewDtd(%s): document %s already have a DTD %s\n",
 	    /* !!! */ (char *) name, doc->name,
 	    /* !!! */ (char *)doc->extSubset->name);
 #endif
@@ -328,7 +254,8 @@ xmlNewDtd(xmlDocPtr doc, const xmlChar *name,
      */
     cur = (xmlDtdPtr) xmlMalloc(sizeof(xmlDtd));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewDtd : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewDtd : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0 , sizeof(xmlDtd));
@@ -387,7 +314,8 @@ xmlCreateIntSubset(xmlDocPtr doc, const xmlChar *name,
 
     if ((doc != NULL) && (xmlGetIntSubset(doc) != NULL)) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, 
+        xmlGenericError(xmlGenericErrorContext,
+
      "xmlCreateIntSubset(): document %s already have an internal subset\n",
 	    doc->name);
 #endif
@@ -399,7 +327,8 @@ xmlCreateIntSubset(xmlDocPtr doc, const xmlChar *name,
      */
     cur = (xmlDtdPtr) xmlMalloc(sizeof(xmlDtd));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewDtd : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewDtd : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlDtd));
@@ -447,7 +376,8 @@ void
 xmlFreeDtd(xmlDtdPtr cur) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlFreeDtd : DTD == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlFreeDtd : DTD == NULL\n");
 #endif
 	return;
     }
@@ -480,6 +410,8 @@ xmlFreeDtd(xmlDtdPtr cur) {
         xmlFreeAttributeTable((xmlAttributeTablePtr) cur->attributes);
     if (cur->entities != NULL)
         xmlFreeEntitiesTable((xmlEntitiesTablePtr) cur->entities);
+    if (cur->pentities != NULL)
+        xmlFreeEntitiesTable((xmlEntitiesTablePtr) cur->pentities);
 
     memset(cur, -1, sizeof(xmlDtd));
     xmlFree(cur);
@@ -495,19 +427,16 @@ xmlDocPtr
 xmlNewDoc(const xmlChar *version) {
     xmlDocPtr cur;
 
-    if (version == NULL) {
-#ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNewDoc : version == NULL\n");
-#endif
-	return(NULL);
-    }
+    if (version == NULL)
+	version = (const xmlChar *) "1.0";
 
     /*
      * Allocate a new document and fill the fields.
      */
     cur = (xmlDocPtr) xmlMalloc(sizeof(xmlDoc));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewDoc : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewDoc : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlDoc));
@@ -531,7 +460,8 @@ void
 xmlFreeDoc(xmlDocPtr cur) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlFreeDoc : document == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlFreeDoc : document == NULL\n");
 #endif
 	return;
     }
@@ -599,7 +529,7 @@ xmlStringLenGetNodeList(xmlDocPtr doc, const xmlChar *value, int len) {
 	    while ((*cur != 0) && (cur - value < len) && (*cur != ';')) cur++;
 	    if ((*cur == 0) || (cur - value >= len)) {
 #ifdef DEBUG_TREE
-	        fprintf(stderr,
+	        xmlGenericError(xmlGenericErrorContext,
 		    "xmlStringLenGetNodeList: unterminated entity %30s\n", q);
 #endif
 	        return(ret);
@@ -712,7 +642,7 @@ xmlStringGetNodeList(xmlDocPtr doc, const xmlChar *value) {
 	    while ((*cur != 0) && (*cur != ';')) cur++;
 	    if (*cur == 0) {
 #ifdef DEBUG_TREE
-	        fprintf(stderr,
+	        xmlGenericError(xmlGenericErrorContext,
 		        "xmlStringGetNodeList: unterminated entity %30s\n", q);
 #endif
 	        return(ret);
@@ -840,7 +770,8 @@ xmlNodeListGetString(xmlDocPtr doc, xmlNodePtr list, int inLine) {
 	}
 #if 0
 	else {
-	    fprintf(stderr, "xmlGetNodeListString : invalide node type %d\n",
+	    xmlGenericError(xmlGenericErrorContext,
+		    "xmlGetNodeListString : invalide node type %d\n",
 	            node->type);
 	}
 #endif
@@ -914,7 +845,8 @@ xmlNodeListGetRawString(xmlDocPtr doc, xmlNodePtr list, int inLine) {
 	}
 #if 0
 	else {
-	    fprintf(stderr, "xmlGetNodeListString : invalide node type %d\n",
+	    xmlGenericError(xmlGenericErrorContext,
+		    "xmlGetNodeListString : invalide node type %d\n",
 	            node->type);
 	}
 #endif
@@ -938,7 +870,8 @@ xmlNewProp(xmlNodePtr node, const xmlChar *name, const xmlChar *value) {
 
     if (name == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNewProp : name == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewProp : name == NULL\n");
 #endif
 	return(NULL);
     }
@@ -948,7 +881,8 @@ xmlNewProp(xmlNodePtr node, const xmlChar *name, const xmlChar *value) {
      */
     cur = (xmlAttrPtr) xmlMalloc(sizeof(xmlAttr));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewProp : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewProp : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlAttr));
@@ -962,6 +896,7 @@ xmlNewProp(xmlNodePtr node, const xmlChar *name, const xmlChar *value) {
 
 	buffer = xmlEncodeEntitiesReentrant(node->doc, value);
 	cur->children = xmlStringGetNodeList(node->doc, buffer);
+	cur->last = NULL;
 	tmp = cur->children;
 	while (tmp != NULL) {
 	    tmp->parent = (xmlNodePtr) cur;
@@ -1006,7 +941,8 @@ xmlNewNsProp(xmlNodePtr node, xmlNsPtr ns, const xmlChar *name,
 
     if (name == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNewProp : name == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewProp : name == NULL\n");
 #endif
 	return(NULL);
     }
@@ -1016,7 +952,8 @@ xmlNewNsProp(xmlNodePtr node, xmlNsPtr ns, const xmlChar *name,
      */
     cur = (xmlAttrPtr) xmlMalloc(sizeof(xmlAttr));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewProp : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewProp : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlAttr));
@@ -1033,6 +970,7 @@ xmlNewNsProp(xmlNodePtr node, xmlNsPtr ns, const xmlChar *name,
 
 	buffer = xmlEncodeEntitiesReentrant(node->doc, value);
 	cur->children = xmlStringGetNodeList(node->doc, buffer);
+	cur->last = NULL;
 	tmp = cur->children;
 	while (tmp != NULL) {
 	    tmp->parent = (xmlNodePtr) cur;
@@ -1075,7 +1013,8 @@ xmlNewDocProp(xmlDocPtr doc, const xmlChar *name, const xmlChar *value) {
 
     if (name == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNewProp : name == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewProp : name == NULL\n");
 #endif
 	return(NULL);
     }
@@ -1085,7 +1024,8 @@ xmlNewDocProp(xmlDocPtr doc, const xmlChar *name, const xmlChar *value) {
      */
     cur = (xmlAttrPtr) xmlMalloc(sizeof(xmlAttr));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewProp : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewProp : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlAttr));
@@ -1093,8 +1033,20 @@ xmlNewDocProp(xmlDocPtr doc, const xmlChar *name, const xmlChar *value) {
 
     cur->name = xmlStrdup(name);
     cur->doc = doc; 
-    if (value != NULL)
+    if (value != NULL) {
+	xmlNodePtr tmp;
+
 	cur->children = xmlStringGetNodeList(doc, value);
+	cur->last = NULL;
+
+	tmp = cur->children;
+	while (tmp != NULL) {
+	    tmp->parent = (xmlNodePtr) cur;
+	    if (tmp->next == NULL)
+		cur->last = tmp;
+	    tmp = tmp->next;
+	}
+    }
     return(cur);
 }
 
@@ -1109,7 +1061,8 @@ xmlFreePropList(xmlAttrPtr cur) {
     xmlAttrPtr next;
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlFreePropList : property == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlFreePropList : property == NULL\n");
 #endif
 	return;
     }
@@ -1130,7 +1083,8 @@ void
 xmlFreeProp(xmlAttrPtr cur) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlFreeProp : property == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlFreeProp : property == NULL\n");
 #endif
 	return;
     }
@@ -1158,13 +1112,15 @@ xmlRemoveProp(xmlAttrPtr cur) {
     xmlAttrPtr tmp;
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlRemoveProp : cur == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlRemoveProp : cur == NULL\n");
 #endif
 	return(-1);
     }
     if (cur->parent == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlRemoveProp : cur->parent == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlRemoveProp : cur->parent == NULL\n");
 #endif
 	return(-1);
     }
@@ -1185,7 +1141,8 @@ xmlRemoveProp(xmlAttrPtr cur) {
         tmp = tmp->next;
     }
 #ifdef DEBUG_TREE
-    fprintf(stderr, "xmlRemoveProp : attribute not owned by its node\n");
+    xmlGenericError(xmlGenericErrorContext,
+	    "xmlRemoveProp : attribute not owned by its node\n");
 #endif
     return(-1);
 }
@@ -1204,7 +1161,8 @@ xmlNewPI(const xmlChar *name, const xmlChar *content) {
 
     if (name == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNewPI : name == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewPI : name == NULL\n");
 #endif
 	return(NULL);
     }
@@ -1214,7 +1172,8 @@ xmlNewPI(const xmlChar *name, const xmlChar *content) {
      */
     cur = (xmlNodePtr) xmlMalloc(sizeof(xmlNode));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewPI : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewPI : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlNode));
@@ -1249,7 +1208,8 @@ xmlNewNode(xmlNsPtr ns, const xmlChar *name) {
 
     if (name == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNewNode : name == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewNode : name == NULL\n");
 #endif
 	return(NULL);
     }
@@ -1259,7 +1219,8 @@ xmlNewNode(xmlNsPtr ns, const xmlChar *name) {
      */
     cur = (xmlNodePtr) xmlMalloc(sizeof(xmlNode));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewNode : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewNode : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlNode));
@@ -1296,7 +1257,7 @@ xmlNewDocNode(xmlDocPtr doc, xmlNsPtr ns,
         cur->doc = doc;
 	if (content != NULL) {
 	    cur->children = xmlStringGetNodeList(doc, content);
-	    UPDATE_LAST_CHILD(cur)
+	    UPDATE_LAST_CHILD_AND_PARENT(cur)
 	}
     }
     return(cur);
@@ -1325,7 +1286,7 @@ xmlNewDocRawNode(xmlDocPtr doc, xmlNsPtr ns,
         cur->doc = doc;
 	if (content != NULL) {
 	    cur->children = xmlNewDocText(doc, content);
-	    UPDATE_LAST_CHILD(cur)
+	    UPDATE_LAST_CHILD_AND_PARENT(cur)
 	}
     }
     return(cur);
@@ -1347,7 +1308,8 @@ xmlNewDocFragment(xmlDocPtr doc) {
      */
     cur = (xmlNodePtr) xmlMalloc(sizeof(xmlNode));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewDocFragment : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewDocFragment : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlNode));
@@ -1373,7 +1335,8 @@ xmlNewText(const xmlChar *content) {
      */
     cur = (xmlNodePtr) xmlMalloc(sizeof(xmlNode));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewText : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewText : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlNode));
@@ -1413,14 +1376,16 @@ xmlNewTextChild(xmlNodePtr parent, xmlNsPtr ns,
 
     if (parent == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNewTextChild : parent == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewTextChild : parent == NULL\n");
 #endif
 	return(NULL);
     }
 
     if (name == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNewTextChild : name == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewTextChild : name == NULL\n");
 #endif
 	return(NULL);
     }
@@ -1470,7 +1435,8 @@ xmlNewCharRef(xmlDocPtr doc, const xmlChar *name) {
      */
     cur = (xmlNodePtr) xmlMalloc(sizeof(xmlNode));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewText : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewText : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlNode));
@@ -1508,7 +1474,8 @@ xmlNewReference(xmlDocPtr doc, const xmlChar *name) {
      */
     cur = (xmlNodePtr) xmlMalloc(sizeof(xmlNode));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewText : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewText : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlNode));
@@ -1542,7 +1509,13 @@ xmlNewReference(xmlDocPtr doc, const xmlChar *name) {
 	if (ent->content != NULL)
 	    xmlBufferAdd(cur->content, ent->content, -1);
 #endif
+	/*
+	 * The parent pointer in entity is a Dtd pointer and thus is NOT
+	 * updated.  Not sure if this is 100% correct.
+	 *  -George
+	 */
 	cur->children = (xmlNodePtr) ent;
+	cur->last = (xmlNodePtr) ent;
     }
     return(cur);
 }
@@ -1581,7 +1554,8 @@ xmlNewTextLen(const xmlChar *content, int len) {
      */
     cur = (xmlNodePtr) xmlMalloc(sizeof(xmlNode));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewText : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewText : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlNode));
@@ -1636,7 +1610,8 @@ xmlNewComment(const xmlChar *content) {
      */
     cur = (xmlNodePtr) xmlMalloc(sizeof(xmlNode));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewComment : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewComment : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlNode));
@@ -1674,7 +1649,8 @@ xmlNewCDataBlock(xmlDocPtr doc, const xmlChar *content, int len) {
      */
     cur = (xmlNodePtr) xmlMalloc(sizeof(xmlNode));
     if (cur == NULL) {
-        fprintf(stderr, "xmlNewCDataBlock : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewCDataBlock : malloc failed\n");
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlNode));
@@ -1710,6 +1686,47 @@ xmlNewDocComment(xmlDocPtr doc, const xmlChar *content) {
     return(cur);
 }
 
+/**
+ * xmlSetTreeDoc:
+ * @tree:  the top element
+ * @doc:  the document
+ *
+ * update all nodes under the tree to point to the right document
+ */
+void
+xmlSetTreeDoc(xmlNodePtr tree, xmlDocPtr doc) {
+    if (tree == NULL)
+	return;
+    if (tree->type == XML_ENTITY_DECL)
+	return;
+    if (tree->doc != doc) {
+	if (tree->children != NULL)
+	    xmlSetListDoc(tree->children, doc);
+	tree->doc = doc;
+    }
+}
+
+/**
+ * xmlSetListDoc:
+ * @tree:  the first element
+ * @doc:  the document
+ *
+ * update all nodes in the list to point to the right document
+ */
+void
+xmlSetListDoc(xmlNodePtr list, xmlDocPtr doc) {
+    xmlNodePtr cur;
+
+    if (list == NULL)
+	return;
+    cur = list;
+    while (cur != NULL) {
+	if (cur->doc != doc)
+	    xmlSetTreeDoc(cur, doc);
+	cur = cur->next;
+    }
+}
+
 
 /**
  * xmlNewChild:
@@ -1735,14 +1752,16 @@ xmlNewChild(xmlNodePtr parent, xmlNsPtr ns,
 
     if (parent == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNewChild : parent == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewChild : parent == NULL\n");
 #endif
 	return(NULL);
     }
 
     if (name == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNewChild : name == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewChild : name == NULL\n");
 #endif
 	return(NULL);
     }
@@ -1783,6 +1802,7 @@ xmlNewChild(xmlNodePtr parent, xmlNsPtr ns,
  * Add a new element @elem as the next siblings of @cur
  * If the new element was already inserted in a document it is
  * first unlinked from its existing context.
+ * As a result of text merging @elem may be freed.
  *
  * Returns the new element or NULL in case of error.
  */
@@ -1790,19 +1810,52 @@ xmlNodePtr
 xmlAddNextSibling(xmlNodePtr cur, xmlNodePtr elem) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlAddNextSibling : cur == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAddNextSibling : cur == NULL\n");
 #endif
 	return(NULL);
     }
     if (elem == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlAddNextSibling : elem == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAddNextSibling : elem == NULL\n");
 #endif
 	return(NULL);
     }
 
     xmlUnlinkNode(elem);
-    elem->doc = cur->doc;
+
+    if (elem->type == XML_TEXT_NODE) {
+	if (cur->type == XML_TEXT_NODE) {
+#ifndef XML_USE_BUFFER_CONTENT
+	    xmlNodeAddContent(cur, elem->content);
+#else
+	    xmlNodeAddContent(cur, xmlBufferContent(elem->content));
+#endif
+	    xmlFreeNode(elem);
+	    return(cur);
+	}
+	if ((cur->next != NULL) && (cur->type == XML_TEXT_NODE)) {
+#ifndef XML_USE_BUFFER_CONTENT
+	    xmlChar *tmp;
+
+	    tmp = xmlStrdup(elem->content);
+	    tmp = xmlStrcat(tmp, cur->next->content);
+	    xmlNodeSetContent(cur->next, tmp);
+	    xmlFree(tmp);
+#else
+	    xmlBufferAddHead(cur->next->content,
+		             xmlBufferContent(elem->content),
+			     xmlBufferLength(elem->content));
+#endif
+	    xmlFreeNode(elem);
+	    return(cur->next);
+	}
+    }
+
+    if (elem->doc != cur->doc) {
+	xmlSetTreeDoc(elem, cur->doc);
+    }
     elem->parent = cur->parent;
     elem->prev = cur;
     elem->next = cur->next;
@@ -1820,6 +1873,7 @@ xmlAddNextSibling(xmlNodePtr cur, xmlNodePtr elem) {
  * @elem:  the new node
  *
  * Add a new element @elem as the previous siblings of @cur
+ * merging adjacent TEXT nodes (@elem may be freed)
  * If the new element was already inserted in a document it is
  * first unlinked from its existing context.
  *
@@ -1829,19 +1883,51 @@ xmlNodePtr
 xmlAddPrevSibling(xmlNodePtr cur, xmlNodePtr elem) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlAddPrevSibling : cur == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAddPrevSibling : cur == NULL\n");
 #endif
 	return(NULL);
     }
     if (elem == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlAddPrevSibling : elem == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAddPrevSibling : elem == NULL\n");
 #endif
 	return(NULL);
     }
 
     xmlUnlinkNode(elem);
-    elem->doc = cur->doc;
+
+    if (elem->type == XML_TEXT_NODE) {
+	if (cur->type == XML_TEXT_NODE) {
+#ifndef XML_USE_BUFFER_CONTENT
+	    xmlChar *tmp;
+
+	    tmp = xmlStrdup(elem->content);
+	    tmp = xmlStrcat(tmp, cur->content);
+	    xmlNodeSetContent(cur, tmp);
+	    xmlFree(tmp);
+#else
+	    xmlBufferAddHead(cur->content, xmlBufferContent(elem->content), 
+			     xmlBufferLength(elem->content));
+#endif
+	    xmlFreeNode(elem);
+	    return(cur);
+	}
+	if ((cur->prev != NULL) && (cur->prev->type == XML_TEXT_NODE)) {
+#ifndef XML_USE_BUFFER_CONTENT
+	    xmlNodeAddContent(cur->prev, elem->content);
+#else
+	    xmlNodeAddContent(cur->prev, xmlBufferContent(elem->content));
+#endif
+	    xmlFreeNode(elem);
+	    return(cur->prev);
+	}
+    }
+
+    if (elem->doc != cur->doc) {
+	xmlSetTreeDoc(elem, cur->doc);
+    }
     elem->parent = cur->parent;
     elem->next = cur;
     elem->prev = cur->prev;
@@ -1859,6 +1945,7 @@ xmlAddPrevSibling(xmlNodePtr cur, xmlNodePtr elem) {
  * @elem:  the new node
  *
  * Add a new element @elem to the list of siblings of @cur
+ * merging adjacent TEXT nodes (@elem may be freed)
  * If the new element was already inserted in a document it is
  * first unlinked from its existing context.
  *
@@ -1870,14 +1957,16 @@ xmlAddSibling(xmlNodePtr cur, xmlNodePtr elem) {
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlAddSibling : cur == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAddSibling : cur == NULL\n");
 #endif
 	return(NULL);
     }
 
     if (elem == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlAddSibling : elem == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAddSibling : elem == NULL\n");
 #endif
 	return(NULL);
     }
@@ -1896,9 +1985,20 @@ xmlAddSibling(xmlNodePtr cur, xmlNodePtr elem) {
     }
 
     xmlUnlinkNode(elem);
-    if (elem->doc == NULL)
-	elem->doc = cur->doc; /* the parent may not be linked to a doc ! */
 
+    if ((cur->type == XML_TEXT_NODE) && (elem->type == XML_TEXT_NODE)) {
+#ifndef XML_USE_BUFFER_CONTENT
+	xmlNodeAddContent(cur, elem->content);
+#else
+	xmlNodeAddContent(cur, xmlBufferContent(elem->content));
+#endif
+	xmlFreeNode(elem);
+	return(cur);
+    }
+
+    if (elem->doc != cur->doc) {
+	xmlSetTreeDoc(elem, cur->doc);
+    }
     parent = cur->parent;
     elem->prev = cur;
     elem->next = NULL;
@@ -1916,6 +2016,7 @@ xmlAddSibling(xmlNodePtr cur, xmlNodePtr elem) {
  * @cur:  the first node in the list
  *
  * Add a list of node at the end of the child list of the parent
+ * merging adjacent TEXT nodes (@cur may be freed)
  *
  * Returns the last child or NULL in case of error.
  */
@@ -1925,14 +2026,16 @@ xmlAddChildList(xmlNodePtr parent, xmlNodePtr cur) {
 
     if (parent == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlAddChild : parent == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAddChild : parent == NULL\n");
 #endif
 	return(NULL);
     }
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlAddChild : child == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAddChild : child == NULL\n");
 #endif
 	return(NULL);
     }
@@ -1940,7 +2043,8 @@ xmlAddChildList(xmlNodePtr parent, xmlNodePtr cur) {
     if ((cur->doc != NULL) && (parent->doc != NULL) &&
         (cur->doc != parent->doc)) {
 #ifdef DEBUG_TREE
-	fprintf(stderr, "Elements moved to a different document\n");
+	xmlGenericError(xmlGenericErrorContext,
+		"Elements moved to a different document\n");
 #endif
     }
 
@@ -1950,13 +2054,36 @@ xmlAddChildList(xmlNodePtr parent, xmlNodePtr cur) {
     if (parent->children == NULL) {
         parent->children = cur;
     } else {
+	/*
+	 * If cur and parent->last both are TEXT nodes, then merge them.
+	 */
+	if ((cur->type == XML_TEXT_NODE) && 
+	    (parent->last->type == XML_TEXT_NODE)) {
+#ifndef XML_USE_BUFFER_CONTENT
+	    xmlNodeAddContent(parent->last, cur->content);
+#else
+	    xmlNodeAddContent(parent->last, xmlBufferContent(cur->content));
+#endif
+	    /*
+	     * if it's the only child, nothing more to be done.
+	     */
+	    if (cur->next == NULL) {
+		xmlFreeNode(cur);
+		return(parent->last);
+	    }
+	    prev = cur;
+	    cur = cur->next;
+	    xmlFreeNode(prev);
+	}
         prev = parent->last;
 	prev->next = cur;
 	cur->prev = prev;
     }
     while (cur->next != NULL) {
 	cur->parent = parent;
-	cur->doc = parent->doc; /* the parent may not be linked to a doc ! */
+	if (cur->doc != parent->doc) {
+	    xmlSetTreeDoc(cur, parent->doc);
+	}
         cur = cur->next;
     }
     cur->parent = parent;
@@ -1971,7 +2098,8 @@ xmlAddChildList(xmlNodePtr parent, xmlNodePtr cur) {
  * @parent:  the parent node
  * @cur:  the child node
  *
- * Add a new child element, to @parent, at the end of the child list.
+ * Add a new child element, to @parent, at the end of the child list
+ * merging adjacent TEXT nodes (in which case @cur is freed)
  * Returns the child or NULL in case of error.
  */
 xmlNodePtr
@@ -1980,14 +2108,16 @@ xmlAddChild(xmlNodePtr parent, xmlNodePtr cur) {
 
     if (parent == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlAddChild : parent == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAddChild : parent == NULL\n");
 #endif
 	return(NULL);
     }
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlAddChild : child == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAddChild : child == NULL\n");
 #endif
 	return(NULL);
     }
@@ -1995,15 +2125,46 @@ xmlAddChild(xmlNodePtr parent, xmlNodePtr cur) {
     if ((cur->doc != NULL) && (parent->doc != NULL) &&
         (cur->doc != parent->doc)) {
 #ifdef DEBUG_TREE
-	fprintf(stderr, "Elements moved to a different document\n");
+	xmlGenericError(xmlGenericErrorContext,
+		"Elements moved to a different document\n");
 #endif
+    }
+
+    /*
+     * If cur is a TEXT node, merge its content with adjacent TEXT nodes
+     * or with parent->content if parent->content != NULL.
+     * cur is then freed.
+     */
+    if (cur->type == XML_TEXT_NODE) {
+	if (((parent->type == XML_ELEMENT_NODE) || 
+	     (parent->type == XML_TEXT_NODE)) &&
+	    (parent->content != NULL)) {
+#ifndef XML_USE_BUFFER_CONTENT
+	    xmlNodeAddContent(parent, cur->content);
+#else
+	    xmlNodeAddContent(parent, xmlBufferContent(cur->content));
+#endif
+	    xmlFreeNode(cur);
+	    return(parent);
+	}
+	if ((parent->last != NULL) && (parent->last->type == XML_TEXT_NODE)) {
+#ifndef XML_USE_BUFFER_CONTENT
+	    xmlNodeAddContent(parent->last, cur->content);
+#else
+	    xmlNodeAddContent(parent->last, xmlBufferContent(cur->content));
+#endif
+	    xmlFreeNode(cur);
+	    return(parent->last);
+	}
     }
 
     /*
      * add the new element at the end of the children list.
      */
     cur->parent = parent;
-    cur->doc = parent->doc; /* the parent may not be linked to a doc ! */
+    if (cur->doc != parent->doc) {
+	xmlSetTreeDoc(cur, parent->doc);
+    }
 
     /*
      * Handle the case where parent->content != NULL, in that case it will
@@ -2023,7 +2184,7 @@ xmlAddChild(xmlNodePtr parent, xmlNodePtr cur) {
 	    if (text->next != NULL)
 		text->next->prev = text;
 	    parent->children = text;
-	    UPDATE_LAST_CHILD(parent)
+	    UPDATE_LAST_CHILD_AND_PARENT(parent)
 #ifndef XML_USE_BUFFER_CONTENT
 	    xmlFree(parent->content);
 #else
@@ -2056,7 +2217,8 @@ xmlNodePtr
 xmlGetLastChild(xmlNodePtr parent) {
     if (parent == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlGetLastChild : parent == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlGetLastChild : parent == NULL\n");
 #endif
 	return(NULL);
     }
@@ -2075,7 +2237,8 @@ xmlFreeNodeList(xmlNodePtr cur) {
     xmlNodePtr next;
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlFreeNodeList : node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlFreeNodeList : node == NULL\n");
 #endif
 	return;
     }
@@ -2097,7 +2260,8 @@ void
 xmlFreeNode(xmlNodePtr cur) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlFreeNode : node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlFreeNode : node == NULL\n");
 #endif
 	return;
     }
@@ -2133,7 +2297,8 @@ void
 xmlUnlinkNode(xmlNodePtr cur) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlUnlinkNode : node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlUnlinkNode : node == NULL\n");
 #endif
 	return;
     }
@@ -2164,12 +2329,16 @@ xmlNodePtr
 xmlReplaceNode(xmlNodePtr old, xmlNodePtr cur) {
     if (old == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlReplaceNode : old == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlReplaceNode : old == NULL\n");
 #endif
 	return(NULL);
     }
     if (cur == NULL) {
 	xmlUnlinkNode(old);
+	return(old);
+    }
+    if (cur == old) {
 	return(old);
     }
     xmlUnlinkNode(cur);
@@ -2212,15 +2381,13 @@ xmlCopyNamespace(xmlNsPtr cur) {
 
     if (cur == NULL) return(NULL);
     switch (cur->type) {
-        case XML_GLOBAL_NAMESPACE:
-	    ret = xmlNewGlobalNs(NULL, cur->href, cur->prefix);
-	    break;
 	case XML_LOCAL_NAMESPACE:
 	    ret = xmlNewNs(NULL, cur->href, cur->prefix);
 	    break;
 	default:
 #ifdef DEBUG_TREE
-	    fprintf(stderr, "xmlCopyNamespace: unknown type %d\n", cur->type);
+	    xmlGenericError(xmlGenericErrorContext,
+		    "xmlCopyNamespace: invalid type %d\n", cur->type);
 #endif
 	    return(NULL);
     }
@@ -2284,8 +2451,19 @@ xmlCopyProp(xmlNodePtr target, xmlAttrPtr cur) {
     } else
         ret->ns = NULL;
 
-    if (cur->children != NULL)
+    if (cur->children != NULL) {
+	xmlNodePtr tmp;
+
 	ret->children = xmlCopyNodeList(cur->children);
+	ret->last = NULL;
+	tmp = ret->children;
+	while (tmp != NULL) {
+	    tmp->parent = (xmlNodePtr)ret;
+	    if (tmp->next == NULL)
+	        ret->last = tmp;
+	    tmp = tmp->next;
+	}
+    }
     return(ret);
 }
 
@@ -2346,7 +2524,8 @@ xmlStaticCopyNode(xmlNodePtr node, xmlDocPtr doc, xmlNodePtr parent,
      */
     ret = (xmlNodePtr) xmlMalloc(sizeof(xmlNode));
     if (ret == NULL) {
-        fprintf(stderr, "xmlStaticCopyNode : malloc failed\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlStaticCopyNode : malloc failed\n");
 	return(NULL);
     }
     memset(ret, 0, sizeof(xmlNode));
@@ -2403,7 +2582,7 @@ xmlStaticCopyNode(xmlNodePtr node, xmlDocPtr doc, xmlNodePtr parent,
         ret->properties = xmlCopyPropList(ret, node->properties);
     if (node->children != NULL)
         ret->children = xmlStaticCopyNodeList(node->children, doc, ret);
-    UPDATE_LAST_CHILD(ret)
+    UPDATE_LAST_CHILD_AND_PARENT(ret)
     return(ret);
 }
 
@@ -2542,9 +2721,18 @@ xmlCopyDoc(xmlDocPtr doc, int recursive) {
         ret->intSubset = xmlCopyDtd(doc->intSubset);
     if (doc->oldNs != NULL)
         ret->oldNs = xmlCopyNamespaceList(doc->oldNs);
-    if (doc->children != NULL)
+    if (doc->children != NULL) {
+	xmlNodePtr tmp;
         ret->children = xmlStaticCopyNodeList(doc->children, ret,
 		                              (xmlNodePtr)ret);
+	ret->last = NULL;
+	tmp = ret->children;
+	while (tmp != NULL) {
+	    if (tmp->next == NULL)
+	        ret->last = tmp;
+	    tmp = tmp->next;
+	}
+    }
     return(ret);
 }
 
@@ -2601,6 +2789,7 @@ xmlDocSetRootElement(xmlDocPtr doc, xmlNodePtr root) {
     if (old == NULL) {
 	if (doc->children == NULL) {
 	    doc->children = root;
+	    doc->last = root;
 	} else {
 	    xmlAddSibling(doc->children, root);
 	}
@@ -2637,9 +2826,12 @@ xmlNodeSetLang(xmlNodePtr cur, const xmlChar *lang) {
         case XML_PI_NODE:
         case XML_ENTITY_REF_NODE:
         case XML_ENTITY_NODE:
+	case XML_NAMESPACE_DECL:
 #ifdef LIBXML_SGML_ENABLED
 	case XML_SGML_DOCUMENT_NODE:
 #endif
+	case XML_XINCLUDE_START:
+	case XML_XINCLUDE_END:
 	    return;
         case XML_ELEMENT_NODE:
         case XML_ATTRIBUTE_NODE:
@@ -2671,12 +2863,63 @@ xmlNodeGetLang(xmlNodePtr cur) {
     return(NULL);
 }
  
+
+/**
+ * xmlNodeSetSpacePreserve:
+ * @cur:  the node being changed
+ * @val:  the xml:space value ("0": default, 1: "preserve")
+ *
+ * Set (or reset) the space preserving behaviour of a node, i.e. the
+ * value of the xml:space attribute.
+ */
+void
+xmlNodeSetSpacePreserve(xmlNodePtr cur, int val) {
+    if (cur == NULL) return;
+    switch(cur->type) {
+        case XML_TEXT_NODE:
+        case XML_CDATA_SECTION_NODE:
+        case XML_COMMENT_NODE:
+        case XML_DOCUMENT_NODE:
+        case XML_DOCUMENT_TYPE_NODE:
+        case XML_DOCUMENT_FRAG_NODE:
+        case XML_NOTATION_NODE:
+        case XML_HTML_DOCUMENT_NODE:
+        case XML_DTD_NODE:
+        case XML_ELEMENT_DECL:
+        case XML_ATTRIBUTE_DECL:
+        case XML_ENTITY_DECL:
+        case XML_PI_NODE:
+        case XML_ENTITY_REF_NODE:
+        case XML_ENTITY_NODE:
+	case XML_NAMESPACE_DECL:
+	case XML_XINCLUDE_START:
+	case XML_XINCLUDE_END:
+#ifdef LIBXML_SGML_ENABLED
+	case XML_SGML_DOCUMENT_NODE:
+#endif
+	    return;
+        case XML_ELEMENT_NODE:
+        case XML_ATTRIBUTE_NODE:
+	    break;
+    }
+    switch (val) {
+    case 0:
+	xmlSetProp(cur, BAD_CAST "xml:space", BAD_CAST "default");
+	break;
+    case 1:
+	xmlSetProp(cur, BAD_CAST "xml:space", 
+		       BAD_CAST "preserve");
+	break;
+    }
+}
+
 /**
  * xmlNodeGetSpacePreserve:
  * @cur:  the node being checked
  *
- * Searches the language of a node, i.e. the values of the xml:space
- * attribute or the one carried by the nearest ancestor.
+ * Searches the space preserving behaviour of a node, i.e. the values
+ * of the xml:space attribute or the one carried by the nearest
+ * ancestor.
  *
  * Returns -1 if xml:space is not inheried, 0 if "default", 1 if "preserve"
  */
@@ -2687,11 +2930,11 @@ xmlNodeGetSpacePreserve(xmlNodePtr cur) {
     while (cur != NULL) {
         space = xmlGetProp(cur, BAD_CAST "xml:space");
 	if (space != NULL) {
-	    if (!xmlStrcmp(space, BAD_CAST "preserve")) {
+	    if (xmlStrEqual(space, BAD_CAST "preserve")) {
 		xmlFree(space);
 		return(1);
 	    }
-	    if (!xmlStrcmp(space, BAD_CAST "default")) {
+	    if (xmlStrEqual(space, BAD_CAST "default")) {
 		xmlFree(space);
 		return(0);
 	    }
@@ -2707,8 +2950,7 @@ xmlNodeGetSpacePreserve(xmlNodePtr cur) {
  * @cur:  the node being changed
  * @name:  the new tag name
  *
- * Searches the language of a node, i.e. the values of the xml:lang
- * attribute or the one carried by the nearest ancestor.
+ * Set (or reset) the name of a node.
  */
 void
 xmlNodeSetName(xmlNodePtr cur, const xmlChar *name) {
@@ -2722,6 +2964,9 @@ xmlNodeSetName(xmlNodePtr cur, const xmlChar *name) {
         case XML_DOCUMENT_FRAG_NODE:
         case XML_NOTATION_NODE:
         case XML_HTML_DOCUMENT_NODE:
+	case XML_NAMESPACE_DECL:
+	case XML_XINCLUDE_START:
+	case XML_XINCLUDE_END:
 #ifdef LIBXML_SGML_ENABLED
 	case XML_SGML_DOCUMENT_NODE:
 #endif
@@ -2743,12 +2988,87 @@ xmlNodeSetName(xmlNodePtr cur, const xmlChar *name) {
 }
  
 /**
+ * xmlNodeSetBase:
+ * @cur:  the node being changed
+ * @uri:  the new base URI
+ *
+ * Set (or reset) the base URI of a node, i.e. the value of the
+ * xml:base attribute.
+ */
+void
+xmlNodeSetBase(xmlNodePtr cur, xmlChar* uri) {
+    if (cur == NULL) return;
+    switch(cur->type) {
+        case XML_TEXT_NODE:
+        case XML_CDATA_SECTION_NODE:
+        case XML_COMMENT_NODE:
+        case XML_DOCUMENT_NODE:
+        case XML_DOCUMENT_TYPE_NODE:
+        case XML_DOCUMENT_FRAG_NODE:
+        case XML_NOTATION_NODE:
+        case XML_HTML_DOCUMENT_NODE:
+        case XML_DTD_NODE:
+        case XML_ELEMENT_DECL:
+        case XML_ATTRIBUTE_DECL:
+        case XML_ENTITY_DECL:
+        case XML_PI_NODE:
+        case XML_ENTITY_REF_NODE:
+        case XML_ENTITY_NODE:
+	case XML_NAMESPACE_DECL:
+	case XML_XINCLUDE_START:
+	case XML_XINCLUDE_END:
+#ifdef LIBXML_SGML_ENABLED
+	case XML_SGML_DOCUMENT_NODE:
+#endif
+	    return;
+        case XML_ELEMENT_NODE:
+        case XML_ATTRIBUTE_NODE:
+	    break;
+    }
+    xmlSetProp(cur, BAD_CAST "xml:base", uri);
+}
+
+/**
+ * xmlDocumentGetBase:
+ * @doc:  the document
+ *
+ * Searches for the Document BASE URL. The code should work on both XML
+ * and HTML document.
+ * It returns the base as defined in RFC 2396 section
+ * 5.1.3. Base URI from the Retrieval URI
+ * However it does not return the computed base (5.1.1 and 5.1.2), use
+ * xmlNodeGetBase() for this
+ *
+ * Returns a pointer to the base URL, or NULL if not found
+ *     It's up to the caller to free the memory.
+ */
+xmlChar *
+xmlDocumentGetBase(xmlDocPtr doc) {
+    if (doc == NULL)
+        return(NULL);
+    if (doc->type == XML_HTML_DOCUMENT_NODE) {
+	if (doc->URL != NULL)
+	    return(xmlStrdup(doc->URL));
+	return(NULL);
+    }
+    if (doc->URL != NULL)
+	return(xmlStrdup(doc->URL));
+    return(NULL);
+}
+
+/**
  * xmlNodeGetBase:
  * @doc:  the document the node pertains to
  * @cur:  the node being checked
  *
  * Searches for the BASE URL. The code should work on both XML
  * and HTML document even if base mechanisms are completely different.
+ * It returns the base as defined in RFC 2396 sections
+ * 5.1.1. Base URI within Document Content
+ * and
+ * 5.1.2. Base URI from the Encapsulating Entity
+ * However it does not return the document base (5.1.3), use
+ * xmlDocumentGetBase() for this
  *
  * Returns a pointer to the base URL, or NULL if not found
  *     It's up to the caller to free the memory.
@@ -2763,43 +3083,35 @@ xmlNodeGetBase(xmlDocPtr doc, xmlNodePtr cur) {
     if ((doc != NULL) && (doc->type == XML_HTML_DOCUMENT_NODE)) {
         cur = doc->children;
 	while ((cur != NULL) && (cur->name != NULL)) {
-	    if (cur->type == XML_ENTITY_DECL) {
-		/* TODO: we are crossing entity boundaries */
-	    }
 	    if (cur->type != XML_ELEMENT_NODE) {
 	        cur = cur->next;
 		continue;
 	    }
-	    if ((!xmlStrcmp(cur->name, BAD_CAST "html")) ||
-	        (!xmlStrcmp(cur->name, BAD_CAST "HTML"))) {
+	    if (!xmlStrcasecmp(cur->name, BAD_CAST "html")) {
 	        cur = cur->children;
 		continue;
 	    }
-	    if ((!xmlStrcmp(cur->name, BAD_CAST "head")) ||
-	        (!xmlStrcmp(cur->name, BAD_CAST "HEAD"))) {
+	    if (!xmlStrcasecmp(cur->name, BAD_CAST "head")) {
 	        cur = cur->children;
 		continue;
 	    }
-	    if ((!xmlStrcmp(cur->name, BAD_CAST "base")) ||
-	        (!xmlStrcmp(cur->name, BAD_CAST "BASE"))) {
-                base = xmlGetProp(cur, BAD_CAST "href");
-		if (base != NULL) return(base);
-                return(xmlGetProp(cur, BAD_CAST "HREF"));
+	    if (!xmlStrcasecmp(cur->name, BAD_CAST "base")) {
+                return(xmlGetProp(cur, BAD_CAST "href"));
 	    }
 	    cur = cur->next;
 	}
-	if ((doc != NULL) && (doc->URL != NULL))
-	    return(xmlStrdup(doc->URL));
 	return(NULL);
     }
     while (cur != NULL) {
+	if (cur->type == XML_ENTITY_DECL) {
+	    xmlEntityPtr ent = (xmlEntityPtr) cur;
+	    return(xmlStrdup(ent->URI));
+	}
         base = xmlGetProp(cur, BAD_CAST "xml:base");
 	if (base != NULL)
 	    return(base);
 	cur = cur->parent;
     }
-    if ((doc != NULL) && (doc->URL != NULL))
-	return(xmlStrdup(doc->URL));
     return(NULL);
 }
  
@@ -2851,10 +3163,14 @@ xmlNodeGetContent(xmlNodePtr cur) {
         case XML_DOCUMENT_TYPE_NODE:
         case XML_NOTATION_NODE:
         case XML_DTD_NODE:
+	case XML_XINCLUDE_START:
+	case XML_XINCLUDE_END:
 #ifdef LIBXML_SGML_ENABLED
 	case XML_SGML_DOCUMENT_NODE:
 #endif
 	    return(NULL);
+	case XML_NAMESPACE_DECL:
+	    return(xmlStrdup(((xmlNsPtr)cur)->href));
         case XML_ELEMENT_DECL:
 	    /* TODO !!! */
 	    return(NULL);
@@ -2888,7 +3204,8 @@ void
 xmlNodeSetContent(xmlNodePtr cur, const xmlChar *content) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNodeSetContent : node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNodeSetContent : node == NULL\n");
 #endif
 	return;
     }
@@ -2905,7 +3222,7 @@ xmlNodeSetContent(xmlNodePtr cur, const xmlChar *content) {
 	    }
 	    if (cur->children != NULL) xmlFreeNodeList(cur->children);
 	    cur->children = xmlStringGetNodeList(cur->doc, content);
-	    UPDATE_LAST_CHILD(cur)
+	    UPDATE_LAST_CHILD_AND_PARENT(cur)
 	    break;
         case XML_ATTRIBUTE_NODE:
 	    break;
@@ -2939,6 +3256,8 @@ xmlNodeSetContent(xmlNodePtr cur, const xmlChar *content) {
         case XML_DOCUMENT_NODE:
         case XML_HTML_DOCUMENT_NODE:
         case XML_DOCUMENT_TYPE_NODE:
+	case XML_XINCLUDE_START:
+	case XML_XINCLUDE_END:
 #ifdef LIBXML_SGML_ENABLED
 	case XML_SGML_DOCUMENT_NODE:
 #endif
@@ -2946,6 +3265,8 @@ xmlNodeSetContent(xmlNodePtr cur, const xmlChar *content) {
         case XML_NOTATION_NODE:
 	    break;
         case XML_DTD_NODE:
+	    break;
+	case XML_NAMESPACE_DECL:
 	    break;
         case XML_ELEMENT_DECL:
 	    /* TODO !!! */
@@ -2971,7 +3292,8 @@ void
 xmlNodeSetContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNodeSetContentLen : node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNodeSetContentLen : node == NULL\n");
 #endif
 	return;
     }
@@ -2988,7 +3310,7 @@ xmlNodeSetContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
 	    }
 	    if (cur->children != NULL) xmlFreeNodeList(cur->children);
 	    cur->children = xmlStringLenGetNodeList(cur->doc, content, len);
-	    UPDATE_LAST_CHILD(cur)
+	    UPDATE_LAST_CHILD_AND_PARENT(cur)
 	    break;
         case XML_ATTRIBUTE_NODE:
 	    break;
@@ -3024,6 +3346,9 @@ xmlNodeSetContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
         case XML_DTD_NODE:
         case XML_HTML_DOCUMENT_NODE:
         case XML_DOCUMENT_TYPE_NODE:
+	case XML_NAMESPACE_DECL:
+	case XML_XINCLUDE_START:
+	case XML_XINCLUDE_END:
 #ifdef LIBXML_SGML_ENABLED
 	case XML_SGML_DOCUMENT_NODE:
 #endif
@@ -3052,7 +3377,8 @@ void
 xmlNodeAddContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNodeAddContentLen : node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNodeAddContentLen : node == NULL\n");
 #endif
 	return;
     }
@@ -3072,7 +3398,7 @@ xmlNodeAddContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
 		    cur->children = xmlStringGetNodeList(cur->doc,
 			                       xmlBufferContent(cur->content));
 #endif
-		    UPDATE_LAST_CHILD(cur)
+		    UPDATE_LAST_CHILD_AND_PARENT(cur)
 #ifndef XML_USE_BUFFER_CONTENT
 		    xmlFree(cur->content);
 #else
@@ -3111,6 +3437,9 @@ xmlNodeAddContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
         case XML_DTD_NODE:
         case XML_HTML_DOCUMENT_NODE:
         case XML_DOCUMENT_TYPE_NODE:
+	case XML_NAMESPACE_DECL:
+	case XML_XINCLUDE_START:
+	case XML_XINCLUDE_END:
 #ifdef LIBXML_SGML_ENABLED
 	case XML_SGML_DOCUMENT_NODE:
 #endif
@@ -3135,7 +3464,8 @@ xmlNodeAddContent(xmlNodePtr cur, const xmlChar *content) {
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNodeAddContent : node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNodeAddContent : node == NULL\n");
 #endif
 	return;
     }
@@ -3192,14 +3522,15 @@ xmlGetNsList(xmlDocPtr doc, xmlNodePtr node) {
 	    if (ret == NULL) {
 	        ret = (xmlNsPtr *) xmlMalloc((maxns + 1) * sizeof(xmlNsPtr));
 		if (ret == NULL) {
-		    fprintf(stderr, "xmlGetNsList : out of memory!\n");
+		    xmlGenericError(xmlGenericErrorContext,
+			    "xmlGetNsList : out of memory!\n");
 		    return(NULL);
 		}
 		ret[nbns] = NULL;
 	    }
 	    for (i = 0;i < nbns;i++) {
 	        if ((cur->prefix == ret[i]->prefix) ||
-		    (!xmlStrcmp(cur->prefix, ret[i]->prefix))) break;
+		    (xmlStrEqual(cur->prefix, ret[i]->prefix))) break;
 	    }
 	    if (i >= nbns) {
 	        if (nbns >= maxns) {
@@ -3207,7 +3538,8 @@ xmlGetNsList(xmlDocPtr doc, xmlNodePtr node) {
 		    ret = (xmlNsPtr *) xmlRealloc(ret,
 		                         (maxns + 1) * sizeof(xmlNsPtr));
 		    if (ret == NULL) {
-			fprintf(stderr, "xmlGetNsList : realloc failed!\n");
+			xmlGenericError(xmlGenericErrorContext,
+				"xmlGetNsList : realloc failed!\n");
 			return(NULL);
 		    }
 		}
@@ -3256,7 +3588,7 @@ xmlSearchNs(xmlDocPtr doc, xmlNodePtr node, const xmlChar *nameSpace) {
 		    return(cur);
 		if ((cur->prefix != NULL) && (nameSpace != NULL) &&
 		    (cur->href != NULL) &&
-		    (!xmlStrcmp(cur->prefix, nameSpace)))
+		    (xmlStrEqual(cur->prefix, nameSpace)))
 		    return(cur);
 		cur = cur->next;
 	    }
@@ -3286,7 +3618,7 @@ xmlSearchNsByHref(xmlDocPtr doc, xmlNodePtr node, const xmlChar *href) {
 	cur = node->nsDef;
 	while (cur != NULL) {
 	    if ((cur->href != NULL) && (href != NULL) &&
-	        (!xmlStrcmp(cur->href, href))) {
+	        (xmlStrEqual(cur->href, href))) {
 		/*
 		 * Check that the prefix is not shadowed between orig and node
 		 */
@@ -3299,10 +3631,11 @@ xmlSearchNsByHref(xmlDocPtr doc, xmlNodePtr node, const xmlChar *href) {
 			if ((tst->prefix == NULL) && (cur->prefix == NULL))
 	                    goto shadowed;
 			if ((tst->prefix != NULL) && (cur->prefix != NULL) &&
-			    (!xmlStrcmp(tst->prefix, cur->prefix)))
+			    (xmlStrEqual(tst->prefix, cur->prefix)))
 	                    goto shadowed;
 		        tst = tst->next;
 		    }
+		    check = check->parent;
 		}
 		return(cur);
 	    }
@@ -3335,13 +3668,15 @@ xmlNewReconciliedNs(xmlDocPtr doc, xmlNodePtr tree, xmlNsPtr ns) {
 
     if (tree == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNewReconciliedNs : tree == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewReconciliedNs : tree == NULL\n");
 #endif
 	return(NULL);
     }
     if (ns == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNewReconciliedNs : ns == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewReconciliedNs : ns == NULL\n");
 #endif
 	return(NULL);
     }
@@ -3410,13 +3745,15 @@ xmlReconciliateNs(xmlDocPtr doc, xmlNodePtr tree) {
 		oldNs = (xmlNsPtr *) xmlMalloc(sizeCache *
 					       sizeof(xmlNsPtr));
 		if (oldNs == NULL) {
-		    fprintf(stderr, "xmlReconciliateNs : memory pbm\n");
+		    xmlGenericError(xmlGenericErrorContext,
+			    "xmlReconciliateNs : memory pbm\n");
 		    return(-1);
 		}
 		newNs = (xmlNsPtr *) xmlMalloc(sizeCache *
 					       sizeof(xmlNsPtr));
 		if (newNs == NULL) {
-		    fprintf(stderr, "xmlReconciliateNs : memory pbm\n");
+		    xmlGenericError(xmlGenericErrorContext,
+			    "xmlReconciliateNs : memory pbm\n");
 		    xmlFree(oldNs);
 		    return(-1);
 		}
@@ -3441,14 +3778,16 @@ xmlReconciliateNs(xmlDocPtr doc, xmlNodePtr tree) {
 			oldNs = (xmlNsPtr *) xmlRealloc(oldNs, sizeCache *
 			                               sizeof(xmlNsPtr));
 		        if (oldNs == NULL) {
-			    fprintf(stderr, "xmlReconciliateNs : memory pbm\n");
+			    xmlGenericError(xmlGenericErrorContext,
+				    "xmlReconciliateNs : memory pbm\n");
 			    xmlFree(newNs);
 			    return(-1);
 			}
 			newNs = (xmlNsPtr *) xmlRealloc(newNs, sizeCache *
 			                               sizeof(xmlNsPtr));
 		        if (newNs == NULL) {
-			    fprintf(stderr, "xmlReconciliateNs : memory pbm\n");
+			    xmlGenericError(xmlGenericErrorContext,
+				    "xmlReconciliateNs : memory pbm\n");
 			    xmlFree(oldNs);
 			    return(-1);
 			}
@@ -3473,13 +3812,15 @@ xmlReconciliateNs(xmlDocPtr doc, xmlNodePtr tree) {
 		    oldNs = (xmlNsPtr *) xmlMalloc(sizeCache *
 						   sizeof(xmlNsPtr));
 		    if (oldNs == NULL) {
-			fprintf(stderr, "xmlReconciliateNs : memory pbm\n");
+			xmlGenericError(xmlGenericErrorContext,
+				"xmlReconciliateNs : memory pbm\n");
 			return(-1);
 		    }
 		    newNs = (xmlNsPtr *) xmlMalloc(sizeCache *
 						   sizeof(xmlNsPtr));
 		    if (newNs == NULL) {
-			fprintf(stderr, "xmlReconciliateNs : memory pbm\n");
+			xmlGenericError(xmlGenericErrorContext,
+				"xmlReconciliateNs : memory pbm\n");
 			xmlFree(oldNs);
 			return(-1);
 		    }
@@ -3504,7 +3845,7 @@ xmlReconciliateNs(xmlDocPtr doc, xmlNodePtr tree) {
 			    oldNs = (xmlNsPtr *) xmlRealloc(oldNs, sizeCache *
 							   sizeof(xmlNsPtr));
 			    if (oldNs == NULL) {
-				fprintf(stderr,
+				xmlGenericError(xmlGenericErrorContext,
 				        "xmlReconciliateNs : memory pbm\n");
 				xmlFree(newNs);
 				return(-1);
@@ -3512,7 +3853,7 @@ xmlReconciliateNs(xmlDocPtr doc, xmlNodePtr tree) {
 			    newNs = (xmlNsPtr *) xmlRealloc(newNs, sizeCache *
 							   sizeof(xmlNsPtr));
 			    if (newNs == NULL) {
-				fprintf(stderr,
+				xmlGenericError(xmlGenericErrorContext,
 				        "xmlReconciliateNs : memory pbm\n");
 				xmlFree(oldNs);
 				return(-1);
@@ -3581,7 +3922,7 @@ xmlHasProp(xmlNodePtr node, const xmlChar *name) {
      */
     prop = node->properties;
     while (prop != NULL) {
-        if (!xmlStrcmp(prop->name, name))  {
+        if (xmlStrEqual(prop->name, name))  {
 	    return(prop);
         }
 	prop = prop->next;
@@ -3630,7 +3971,7 @@ xmlGetProp(xmlNodePtr node, const xmlChar *name) {
      */
     prop = node->properties;
     while (prop != NULL) {
-        if (!xmlStrcmp(prop->name, name))  {
+        if (xmlStrEqual(prop->name, name))  {
 	    xmlChar *ret;
 
 	    ret = xmlNodeListGetString(node->doc, prop->children, 1);
@@ -3690,10 +4031,10 @@ xmlGetNsProp(xmlNodePtr node, const xmlChar *name, const xmlChar *namespace) {
 	 *         or
 	 *         no namespace on the attribute and the element carrying it
 	 */
-        if ((!xmlStrcmp(prop->name, name)) &&
+        if ((xmlStrEqual(prop->name, name)) &&
 	    (((prop->ns == NULL) && (node->ns != NULL) &&
-	      (!xmlStrcmp(node->ns->href, namespace))) ||
-	     ((prop->ns != NULL) && (!xmlStrcmp(prop->ns->href, namespace))))) {
+	      (xmlStrEqual(node->ns->href, namespace))) ||
+	     ((prop->ns != NULL) && (xmlStrEqual(prop->ns->href, namespace))))) {
 	    xmlChar *ret;
 
 	    ret = xmlNodeListGetString(node->doc, prop->children, 1);
@@ -3721,7 +4062,7 @@ xmlGetNsProp(xmlNodePtr node, const xmlChar *name, const xmlChar *namespace) {
 		 * The DTD declaration only allows a prefix search
 		 */
 		ns = xmlSearchNs(doc, node, attrDecl->prefix);
-		if ((ns != NULL) && (!xmlStrcmp(ns->href, namespace)))
+		if ((ns != NULL) && (xmlStrEqual(ns->href, namespace)))
 		    return(xmlStrdup(attrDecl->defaultValue));
 	    }
 	}
@@ -3743,16 +4084,18 @@ xmlSetProp(xmlNodePtr node, const xmlChar *name, const xmlChar *value) {
     xmlAttrPtr prop = node->properties;
 
     while (prop != NULL) {
-        if (!xmlStrcmp(prop->name, name)) {
+        if (xmlStrEqual(prop->name, name)) {
 	    if (prop->children != NULL) 
 	        xmlFreeNodeList(prop->children);
 	    prop->children = NULL;
+	    prop->last = NULL;
 	    if (value != NULL) {
 	        xmlChar *buffer;
 		xmlNodePtr tmp;
 
 		buffer = xmlEncodeEntitiesReentrant(node->doc, value);
 		prop->children = xmlStringGetNodeList(node->doc, buffer);
+		prop->last = NULL;
 		tmp = prop->children;
 		while (tmp != NULL) {
 		    tmp->parent = (xmlNodePtr) prop;
@@ -3796,12 +4139,16 @@ xmlNodeIsText(xmlNodePtr node) {
  */
 int
 xmlIsBlankNode(xmlNodePtr node) {
-    xmlChar *cur;
+    const xmlChar *cur;
     if (node == NULL) return(0);
 
     if (node->type != XML_TEXT_NODE) return(0);
-    if (node->content == NULL) return(0);
+    if (node->content == NULL) return(1);
+#ifndef XML_USE_BUFFER_CONTENT
     cur = node->content;
+#else
+    cur = xmlBufferContent(node->content);
+#endif
     while (*cur != 0) {
 	if (!IS_BLANK(*cur)) return(0);
 	cur++;
@@ -3826,7 +4173,8 @@ xmlTextConcat(xmlNodePtr node, const xmlChar *content, int len) {
     if ((node->type != XML_TEXT_NODE) &&
         (node->type != XML_CDATA_SECTION_NODE)) {
 #ifdef DEBUG_TREE
-	fprintf(stderr, "xmlTextConcat: node is not text nor cdata\n");
+	xmlGenericError(xmlGenericErrorContext,
+		"xmlTextConcat: node is not text nor cdata\n");
 #endif
         return;
     }
@@ -3857,7 +4205,8 @@ xmlBufferCreate(void) {
 
     ret = (xmlBufferPtr) xmlMalloc(sizeof(xmlBuffer));
     if (ret == NULL) {
-	fprintf(stderr, "xmlBufferCreate : out of memory!\n");
+	xmlGenericError(xmlGenericErrorContext,
+		"xmlBufferCreate : out of memory!\n");
         return(NULL);
     }
     ret->use = 0;
@@ -3865,7 +4214,8 @@ xmlBufferCreate(void) {
     ret->alloc = xmlBufferAllocScheme;
     ret->content = (xmlChar *) xmlMalloc(ret->size * sizeof(xmlChar));
     if (ret->content == NULL) {
-	fprintf(stderr, "xmlBufferCreate : out of memory!\n");
+	xmlGenericError(xmlGenericErrorContext,
+		"xmlBufferCreate : out of memory!\n");
 	xmlFree(ret);
         return(NULL);
     }
@@ -3886,7 +4236,8 @@ xmlBufferCreateSize(size_t size) {
 
     ret = (xmlBufferPtr) xmlMalloc(sizeof(xmlBuffer));
     if (ret == NULL) {
-        fprintf(stderr, "xmlBufferCreate : out of memory!\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlBufferCreate : out of memory!\n");
         return(NULL);
     }
     ret->use = 0;
@@ -3895,7 +4246,8 @@ xmlBufferCreateSize(size_t size) {
     if (ret->size){
         ret->content = (xmlChar *) xmlMalloc(ret->size * sizeof(xmlChar));
         if (ret->content == NULL) {
-            fprintf(stderr, "xmlBufferCreate : out of memory!\n");
+            xmlGenericError(xmlGenericErrorContext,
+		    "xmlBufferCreate : out of memory!\n");
             xmlFree(ret);
             return(NULL);
         }
@@ -3917,7 +4269,8 @@ xmlBufferSetAllocationScheme(xmlBufferPtr buf,
                              xmlBufferAllocationScheme scheme) {
     if (buf == NULL) {
 #ifdef DEBUG_BUFFER
-        fprintf(stderr, "xmlBufferSetAllocationScheme: buf == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlBufferSetAllocationScheme: buf == NULL\n");
 #endif
         return;
     }
@@ -3935,7 +4288,8 @@ void
 xmlBufferFree(xmlBufferPtr buf) {
     if (buf == NULL) {
 #ifdef DEBUG_BUFFER
-        fprintf(stderr, "xmlBufferFree: buf == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlBufferFree: buf == NULL\n");
 #endif
 	return;
     }
@@ -3959,6 +4313,7 @@ xmlBufferFree(xmlBufferPtr buf) {
  */
 void
 xmlBufferEmpty(xmlBufferPtr buf) {
+    if (buf->content == NULL) return;
     buf->use = 0;
     memset(buf->content, -1, buf->size);/* just for debug */
 }
@@ -3973,7 +4328,7 @@ xmlBufferEmpty(xmlBufferPtr buf) {
  * Returns the number of xmlChar removed, or -1 in case of failure.
  */
 int
-xmlBufferShrink(xmlBufferPtr buf, int len) {
+xmlBufferShrink(xmlBufferPtr buf, unsigned int len) {
     if (len == 0) return(0);
     if (len > buf->use) return(-1);
 
@@ -3994,7 +4349,7 @@ xmlBufferShrink(xmlBufferPtr buf, int len) {
  * Returns the new available space or -1 in case of error
  */
 int
-xmlBufferGrow(xmlBufferPtr buf, int len) {
+xmlBufferGrow(xmlBufferPtr buf, unsigned int len) {
     int size;
     xmlChar *newbuf;
 
@@ -4023,13 +4378,15 @@ xmlBufferDump(FILE *file, xmlBufferPtr buf) {
 
     if (buf == NULL) {
 #ifdef DEBUG_BUFFER
-        fprintf(stderr, "xmlBufferDump: buf == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlBufferDump: buf == NULL\n");
 #endif
 	return(0);
     }
     if (buf->content == NULL) {
 #ifdef DEBUG_BUFFER
-        fprintf(stderr, "xmlBufferDump: buf->content == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlBufferDump: buf->content == NULL\n");
 #endif
 	return(0);
     }
@@ -4073,26 +4430,29 @@ xmlBufferLength(const xmlBufferPtr buf)
 /**
  * xmlBufferResize:
  * @buf:  the buffer to resize
- * @len:  the desired size
+ * @size:  the desired size
  *
- * Resize a buffer to accomodate minimum size of <len>.
+ * Resize a buffer to accomodate minimum size of @size.
  *
  * Returns  0 in case of problems, 1 otherwise
  */
 int
-xmlBufferResize(xmlBufferPtr buf, int size)
+xmlBufferResize(xmlBufferPtr buf, unsigned int size)
 {
-    int newSize = (buf->size ? buf->size*2 : size);/*take care of empty case*/
+    unsigned int newSize;
     xmlChar* rebuf = NULL;
 
+    /*take care of empty case*/
+    newSize = (buf->size ? buf->size*2 : size);
+
     /* Don't resize if we don't have to */
-    if(size < buf->size)
+    if (size < buf->size)
         return 1;
 
     /* figure out new size */
-    switch(buf->alloc){
+    switch (buf->alloc){
     case XML_BUFFER_ALLOC_DOUBLEIT:
-        while(size > newSize) newSize *= 2;
+        while (size > newSize) newSize *= 2;
         break;
     case XML_BUFFER_ALLOC_EXACT:
         newSize = size+10;
@@ -4108,7 +4468,8 @@ xmlBufferResize(xmlBufferPtr buf, int size)
 	rebuf = (xmlChar *) xmlRealloc(buf->content, 
 				       newSize * sizeof(xmlChar));
     if (rebuf == NULL) {
-        fprintf(stderr, "xmlBufferAdd : out of memory!\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlBufferAdd : out of memory!\n");
         return 0;
     }
     buf->content = rebuf;
@@ -4116,6 +4477,7 @@ xmlBufferResize(xmlBufferPtr buf, int size)
 
     return 1;
 }
+
 /**
  * xmlBufferAdd:
  * @buf:  the buffer to dump
@@ -4127,17 +4489,19 @@ xmlBufferResize(xmlBufferPtr buf, int size)
  */
 void
 xmlBufferAdd(xmlBufferPtr buf, const xmlChar *str, int len) {
-    int needSize;
+    unsigned int needSize;
 
     if (str == NULL) {
 #ifdef DEBUG_BUFFER
-        fprintf(stderr, "xmlBufferAdd: str == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlBufferAdd: str == NULL\n");
 #endif
 	return;
     }
     if (len < -1) {
 #ifdef DEBUG_BUFFER
-        fprintf(stderr, "xmlBufferAdd: len < 0\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlBufferAdd: len < 0\n");
 #endif
 	return;
     }
@@ -4149,9 +4513,10 @@ xmlBufferAdd(xmlBufferPtr buf, const xmlChar *str, int len) {
     if (len <= 0) return;
 
     needSize = buf->use + len + 2;
-    if(needSize > buf->size){
-        if(!xmlBufferResize(buf, needSize)){
-            fprintf(stderr, "xmlBufferAdd : out of memory!\n");
+    if (needSize > buf->size){
+        if (!xmlBufferResize(buf, needSize)){
+            xmlGenericError(xmlGenericErrorContext,
+		    "xmlBufferAdd : out of memory!\n");
             return;
         }
     }
@@ -4172,17 +4537,19 @@ xmlBufferAdd(xmlBufferPtr buf, const xmlChar *str, int len) {
  */
 void
 xmlBufferAddHead(xmlBufferPtr buf, const xmlChar *str, int len) {
-    int needSize;
+    unsigned int needSize;
 
     if (str == NULL) {
 #ifdef DEBUG_BUFFER
-        fprintf(stderr, "xmlBufferAdd: str == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlBufferAdd: str == NULL\n");
 #endif
 	return;
     }
     if (len < -1) {
 #ifdef DEBUG_BUFFER
-        fprintf(stderr, "xmlBufferAdd: len < 0\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlBufferAdd: len < 0\n");
 #endif
 	return;
     }
@@ -4194,9 +4561,10 @@ xmlBufferAddHead(xmlBufferPtr buf, const xmlChar *str, int len) {
     if (len <= 0) return;
 
     needSize = buf->use + len + 2;
-    if(needSize > buf->size){
-        if(!xmlBufferResize(buf, needSize)){
-            fprintf(stderr, "xmlBufferAddHead : out of memory!\n");
+    if (needSize > buf->size){
+        if (!xmlBufferResize(buf, needSize)){
+            xmlGenericError(xmlGenericErrorContext,
+		    "xmlBufferAddHead : out of memory!\n");
             return;
         }
     }
@@ -4233,14 +4601,16 @@ xmlBufferCCat(xmlBufferPtr buf, const char *str) {
 
     if (str == NULL) {
 #ifdef DEBUG_BUFFER
-        fprintf(stderr, "xmlBufferAdd: str == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlBufferAdd: str == NULL\n");
 #endif
 	return;
     }
     for (cur = str;*cur != 0;cur++) {
         if (buf->use  + 10 >= buf->size) {
-            if(!xmlBufferResize(buf, buf->use+10)){
-                fprintf(stderr, "xmlBufferCCat : out of memory!\n");
+            if (!xmlBufferResize(buf, buf->use+10)){
+                xmlGenericError(xmlGenericErrorContext,
+			"xmlBufferCCat : out of memory!\n");
                 return;
             }
         }
@@ -4289,7 +4659,7 @@ xmlBufferWriteQuotedString(xmlBufferPtr buf, const xmlChar *string) {
     if (xmlStrchr(string, '"')) {
         if (xmlStrchr(string, '\'')) {
 #ifdef DEBUG_BUFFER
-	    fprintf(stderr,
+	    xmlGenericError(xmlGenericErrorContext,
  "xmlBufferWriteQuotedString: string contains quote and double-quotes !\n");
 #endif
 	}
@@ -4310,7 +4680,7 @@ xmlBufferWriteQuotedString(xmlBufferPtr buf, const xmlChar *string) {
  *									*
  ************************************************************************/
 
-static void
+void
 xmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, int level,
             int format);
 static void
@@ -4318,50 +4688,6 @@ xmlNodeListDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, int level,
                 int format);
 void
 htmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur);
-
-/**
- * xmlGlobalNsDump:
- * @buf:  the XML buffer output
- * @cur:  a namespace
- *
- * Dump a global Namespace, this is the old version based on PIs.
- */
-static void
-xmlGlobalNsDump(xmlBufferPtr buf, xmlNsPtr cur) {
-    if (cur == NULL) {
-#ifdef DEBUG_TREE
-        fprintf(stderr, "xmlGlobalNsDump : Ns == NULL\n");
-#endif
-	return;
-    }
-    if (cur->type == XML_GLOBAL_NAMESPACE) {
-	xmlBufferWriteChar(buf, "<?namespace");
-	if (cur->href != NULL) {
-	    xmlBufferWriteChar(buf, " href=");
-	    xmlBufferWriteQuotedString(buf, cur->href);
-	}
-	if (cur->prefix != NULL) {
-	    xmlBufferWriteChar(buf, " AS=");
-	    xmlBufferWriteQuotedString(buf, cur->prefix);
-	}
-	xmlBufferWriteChar(buf, "?>\n");
-    }
-}
-
-/**
- * xmlGlobalNsListDump:
- * @buf:  the XML buffer output
- * @cur:  the first namespace
- *
- * Dump a list of global Namespace, this is the old version based on PIs.
- */
-static void
-xmlGlobalNsListDump(xmlBufferPtr buf, xmlNsPtr cur) {
-    while (cur != NULL) {
-        xmlGlobalNsDump(buf, cur);
-	cur = cur->next;
-    }
-}
 
 /**
  * xmlNsDump:
@@ -4375,7 +4701,8 @@ static void
 xmlNsDump(xmlBufferPtr buf, xmlNsPtr cur) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNsDump : Ns == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNsDump : Ns == NULL\n");
 #endif
 	return;
     }
@@ -4418,7 +4745,8 @@ static void
 xmlDtdDump(xmlBufferPtr buf, xmlDtdPtr dtd) {
     if (dtd == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlDtdDump : no internal subset\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlDtdDump : no internal subset\n");
 #endif
 	return;
     }
@@ -4467,7 +4795,8 @@ xmlAttrDump(xmlBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur) {
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlAttrDump : property == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAttrDump : property == NULL\n");
 #endif
 	return;
     }
@@ -4499,7 +4828,8 @@ static void
 xmlAttrListDump(xmlBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlAttrListDump : property == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAttrListDump : property == NULL\n");
 #endif
 	return;
     }
@@ -4528,7 +4858,8 @@ xmlNodeListDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, int level,
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNodeListDump : node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNodeListDump : node == NULL\n");
 #endif
 	return;
     }
@@ -4555,7 +4886,7 @@ xmlNodeListDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, int level,
  *
  * Dump an XML node, recursive behaviour,children are printed too.
  */
-static void
+void
 xmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, int level,
             int format) {
     int i;
@@ -4563,10 +4894,15 @@ xmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, int level,
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNodeDump : node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNodeDump : node == NULL\n");
 #endif
 	return;
     }
+    if (cur->type == XML_XINCLUDE_START)
+	return;
+    if (cur->type == XML_XINCLUDE_END)
+	return;
     if (cur->type == XML_DTD_NODE) {
         xmlDtdDump(buf, (xmlDtdPtr) cur);
 	return;
@@ -4725,13 +5061,15 @@ xmlElemDump(FILE *f, xmlDocPtr doc, xmlNodePtr cur) {
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlElemDump : cur == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlElemDump : cur == NULL\n");
 #endif
 	return;
     }
     if (doc == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlElemDump : doc == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlElemDump : doc == NULL\n");
 #endif
     }
     buf = xmlBufferCreate();
@@ -4741,7 +5079,8 @@ xmlElemDump(FILE *f, xmlDocPtr doc, xmlNodePtr cur) {
 #ifdef LIBXML_HTML_ENABLED
         htmlNodeDump(buf, doc, cur);
 #else	
-	printf("HTML support not compiled in\n");
+	xmlGenericError(xmlGenericErrorContext,
+		"HTML support not compiled in\n");
 #endif /* LIBXML_HTML_ENABLED */
     } else
         xmlNodeDump(buf, doc, cur, 0, 1);
@@ -4779,14 +5118,8 @@ xmlDocContentDump(xmlBufferPtr buf, xmlDocPtr cur) {
     if (cur->children != NULL) {
         xmlNodePtr child = cur->children;
 
-	/* global namespace definitions, the old way */
-	if (oldXMLWDcompatibility)
-	    xmlGlobalNsListDump(buf, cur->oldNs);
-	else 
-	    xmlUpgradeOldNs(cur);
-	
 	while (child != NULL) {
-	    xmlNodeDump(buf, cur, child, 0, 1);
+	    xmlNodeDump(buf, cur, child, 0, 0);
 	    xmlBufferWriteChar(buf, "\n");
 	    child = child->next;
 	}
@@ -4799,56 +5132,12 @@ xmlDocContentDump(xmlBufferPtr buf, xmlDocPtr cur) {
  *									*
  ************************************************************************/
 
-static void
+void
 xmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur,
                   int level, int format, const char *encoding);
 static void
 xmlNodeListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur,
                   int level, int format, const char *encoding);
-/**
- * xmlGlobalNsDumpOutput:
- * @buf:  the XML buffer output
- * @cur:  a namespace
- *
- * Dump a global Namespace, this is the old version based on PIs.
- */
-static void
-xmlGlobalNsDumpOutput(xmlOutputBufferPtr buf, xmlNsPtr cur) {
-    if (cur == NULL) {
-#ifdef DEBUG_TREE
-        fprintf(stderr, "xmlGlobalNsDump : Ns == NULL\n");
-#endif
-	return;
-    }
-    if (cur->type == XML_GLOBAL_NAMESPACE) {
-	xmlOutputBufferWriteString(buf, "<?namespace");
-	if (cur->href != NULL) {
-	    xmlOutputBufferWriteString(buf, " href=");
-	    xmlBufferWriteQuotedString(buf->buffer, cur->href);
-	}
-	if (cur->prefix != NULL) {
-	    xmlOutputBufferWriteString(buf, " AS=");
-	    xmlBufferWriteQuotedString(buf->buffer, cur->prefix);
-	}
-	xmlOutputBufferWriteString(buf, "?>\n");
-    }
-}
-
-/**
- * xmlGlobalNsListDumpOutput:
- * @buf:  the XML buffer output
- * @cur:  the first namespace
- *
- * Dump a list of global Namespace, this is the old version based on PIs.
- */
-static void
-xmlGlobalNsListDumpOutput(xmlOutputBufferPtr buf, xmlNsPtr cur) {
-    while (cur != NULL) {
-        xmlGlobalNsDumpOutput(buf, cur);
-	cur = cur->next;
-    }
-}
-
 /**
  * xmlNsDumpOutput:
  * @buf:  the XML buffer output
@@ -4861,7 +5150,8 @@ static void
 xmlNsDumpOutput(xmlOutputBufferPtr buf, xmlNsPtr cur) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNsDump : Ns == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNsDump : Ns == NULL\n");
 #endif
 	return;
     }
@@ -4905,7 +5195,8 @@ static void
 xmlDtdDumpOutput(xmlOutputBufferPtr buf, xmlDtdPtr dtd, const char *encoding) {
     if (dtd == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlDtdDump : no internal subset\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlDtdDump : no internal subset\n");
 #endif
 	return;
     }
@@ -4927,16 +5218,6 @@ xmlDtdDumpOutput(xmlOutputBufferPtr buf, xmlDtdPtr dtd, const char *encoding) {
     }
     xmlOutputBufferWriteString(buf, " [\n");
     xmlNodeListDumpOutput(buf, dtd->doc, dtd->children, -1, 0, encoding);
-#if 0
-    if (dtd->entities != NULL)
-	xmlDumpEntitiesTable(buf, (xmlEntitiesTablePtr) dtd->entities);
-    if (dtd->notations != NULL)
-	xmlDumpNotationTable(buf, (xmlNotationTablePtr) dtd->notations);
-    if (dtd->elements != NULL)
-	xmlDumpElementTable(buf, (xmlElementTablePtr) dtd->elements);
-    if (dtd->attributes != NULL)
-	xmlDumpAttributeTable(buf, (xmlAttributeTablePtr) dtd->attributes);
-#endif
     xmlOutputBufferWriteString(buf, "]>");
 }
 
@@ -4956,7 +5237,8 @@ xmlAttrDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur,
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlAttrDump : property == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAttrDump : property == NULL\n");
 #endif
 	return;
     }
@@ -4990,7 +5272,8 @@ xmlAttrListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
 	              xmlAttrPtr cur, const char *encoding) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlAttrListDump : property == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlAttrListDump : property == NULL\n");
 #endif
 	return;
     }
@@ -5020,7 +5303,8 @@ xmlNodeListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNodeListDump : node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNodeListDump : node == NULL\n");
 #endif
 	return;
     }
@@ -5048,7 +5332,7 @@ xmlNodeListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
  *
  * Dump an XML node, recursive behaviour,children are printed too.
  */
-static void
+void
 xmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur,
             int level, int format, const char *encoding) {
     int i;
@@ -5056,10 +5340,15 @@ xmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur,
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNodeDump : node == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNodeDump : node == NULL\n");
 #endif
 	return;
     }
+    if (cur->type == XML_XINCLUDE_START)
+	return;
+    if (cur->type == XML_XINCLUDE_END)
+	return;
     if (cur->type == XML_DTD_NODE) {
         xmlDtdDumpOutput(buf, (xmlDtdPtr) cur, encoding);
 	return;
@@ -5256,12 +5545,6 @@ xmlDocContentDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr cur,
     if (cur->children != NULL) {
         xmlNodePtr child = cur->children;
 
-	/* global namespace definitions, the old way */
-	if (oldXMLWDcompatibility)
-	    xmlGlobalNsListDumpOutput(buf, cur->oldNs);
-	else 
-	    xmlUpgradeOldNs(cur);
-	
 	while (child != NULL) {
 	    xmlNodeDumpOutput(buf, cur, child, 0, 1, encoding);
 	    xmlOutputBufferWriteString(buf, "\n");
@@ -5291,7 +5574,8 @@ xmlDocDumpMemory(xmlDocPtr cur, xmlChar**mem, int *size) {
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlDocDumpMemory : document == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlDocDumpMemory : document == NULL\n");
 #endif
 	*mem = NULL;
 	*size = 0;
@@ -5381,7 +5665,8 @@ xmlDocDump(FILE *f, xmlDocPtr cur) {
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
-        fprintf(stderr, "xmlDocDump : document == NULL\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlDocDump : document == NULL\n");
 #endif
 	return(-1);
     }
@@ -5393,7 +5678,8 @@ xmlDocDump(FILE *f, xmlDocPtr cur) {
 	enc = xmlParseCharEncoding(encoding);
 
 	if (cur->charset != XML_CHAR_ENCODING_UTF8) {
-	    fprintf(stderr, "xmlDocDump: document not in UTF8\n");
+	    xmlGenericError(xmlGenericErrorContext,
+		    "xmlDocDump: document not in UTF8\n");
 	    return(-1);
 	}
 	if (enc != XML_CHAR_ENCODING_UTF8) {
@@ -5453,7 +5739,8 @@ xmlSaveFileEnc(const char *filename, xmlDocPtr cur, const char *encoding) {
 
 	enc = xmlParseCharEncoding(encoding);
 	if (cur->charset != XML_CHAR_ENCODING_UTF8) {
-	    fprintf(stderr, "xmlSaveFileEnc: document not in UTF8\n");
+	    xmlGenericError(xmlGenericErrorContext,
+		    "xmlSaveFileEnc: document not in UTF8\n");
 	    return(-1);
 	}
 	if (enc != XML_CHAR_ENCODING_UTF8) {
@@ -5509,7 +5796,8 @@ xmlSaveFile(const char *filename, xmlDocPtr cur) {
 	enc = xmlParseCharEncoding(encoding);
 
 	if (cur->charset != XML_CHAR_ENCODING_UTF8) {
-	    fprintf(stderr, "xmlSaveFile: document not in UTF8\n");
+	    xmlGenericError(xmlGenericErrorContext,
+		    "xmlSaveFile: document not in UTF8\n");
 	    return(-1);
 	}
 	if (enc != XML_CHAR_ENCODING_UTF8) {

@@ -6,19 +6,13 @@
 TODO:
 =====
 
-- cleanup the mess with URI references when composing entities.
+- Computation of base when HTTP redirect occurs, might affect HTTP
+  interfaces.
 - performances: there is still improvements needed when parsing Docbook DTD
   a single function to optimize/avoid.
-- Moving all deprecated functions to a different module, allow to compile
-  it out.
 - DOM needs
   int xmlPruneProp(xmlNodePtr node, xmlAtttrPtr attr);
 - listing all attributes in a node.
-- General checking of DTD validation in presence of namespaces ... hairy
-  mostly done
-- Fix DTD + namespace validity problem
-  "Not valid: root and DtD name do not match 'ROOT' and 'prefix:ROOT'"
-  mostly done
 - Correct standalone checking/emitting (hard)
   2.9 Standalone Document Declaration
 - Better checking of external parsed entities TAG 1234
@@ -35,6 +29,9 @@ TODO:
   the old document, for example namespace declarations or entities
   references can also be a nasty problem, far more than updating the
   doc values.
+- jamesh suggestion: SAX like functions to save a document ie. call a
+  function to open a new element with given attributes, write character
+  data, close last element, etc
 
 TODO:
 =====
@@ -100,6 +97,10 @@ EXTENSIONS:
 Done:
 =====
 
+- HTML: handling of Script and style data elements, need special code in
+  the parser and saving functions (handling of < > " ' ...):
+  http://www.w3.org/TR/html4/types.html#type-script
+  Attributes are no problems since entities are accepted.
 - DOM needs
   xmlAttrPtr xmlNewDocProp(xmlDocPtr doc, const xmlChar *name, const xmlChar *value)
 - problem when parsing hrefs with & with the HTML parser (IRC ac)

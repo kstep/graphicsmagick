@@ -13,7 +13,7 @@
 #include "config.h"
 #endif
 
-#include "xmlversion.h"
+#include <libxml/xmlversion.h>
 #ifdef LIBXML_DEBUG_ENABLED
 
 #include <stdio.h>
@@ -31,6 +31,7 @@
 #include <libxml/debugXML.h>
 #include <libxml/HTMLtree.h>
 #include <libxml/HTMLparser.h>
+#include <libxml/xmlerror.h>
 
 #define IS_BLANK(c)							\
   (((c) == '\n') || ((c) == '\r') || ((c) == '\t') || ((c) == ' '))
@@ -376,8 +377,10 @@ void xmlDebugDumpNamespace(FILE *output, xmlNsPtr ns, int depth) {
     shift[2 * i] = shift[2 * i + 1] = 0;
 
     fprintf(output, shift);
-    if (ns->type == XML_GLOBAL_NAMESPACE)
-        fprintf(output, "old ");
+    if (ns->type != XML_NAMESPACE_DECL) {
+        fprintf(output, "invalid namespace node %d\n", ns->type);
+	return;
+    }
     if (ns->href == NULL) {
 	if (ns->prefix != NULL)
 	    fprintf(output, "incomplete namespace %s href=NULL\n", ns->prefix);
@@ -556,6 +559,7 @@ void xmlDebugDumpOneNode(FILE *output, xmlNodePtr node, int depth) {
 	    fprintf(output, "DOCUMENT_FRAG\n");
 	    break;
 	case XML_NOTATION_NODE:
+	    fprintf(output, shift);
 	    fprintf(output, "NOTATION\n");
 	    break;
 	case XML_DTD_NODE:
@@ -570,9 +574,21 @@ void xmlDebugDumpOneNode(FILE *output, xmlNodePtr node, int depth) {
         case XML_ENTITY_DECL:
 	    xmlDebugDumpEntityDecl(output, (xmlEntityPtr) node, depth);
 	    return;
+        case XML_NAMESPACE_DECL:
+	    xmlDebugDumpNamespace(output, (xmlNsPtr) node, depth);
+	    return;
+        case XML_XINCLUDE_START:
+	    fprintf(output, shift);
+	    fprintf(output, "INCLUDE START\n");
+	    return;
+        case XML_XINCLUDE_END:
+	    fprintf(output, shift);
+	    fprintf(output, "INCLUDE END\n");
+	    return;
 	default:
 	    fprintf(output, shift);
-	    fprintf(output, "NODE_%d\n", node->type);
+	    fprintf(output, "NODE_%d !!!\n", node->type);
+	    return;
     }
     if (node->doc == NULL) {
         fprintf(output, shift);
@@ -584,6 +600,8 @@ void xmlDebugDumpOneNode(FILE *output, xmlNodePtr node, int depth) {
 	xmlDebugDumpAttrList(output, node->properties, depth + 1);
     if (node->type != XML_ENTITY_REF_NODE) {
 	if (node->content != NULL) {
+            shift[2 * i] = shift[2 * i + 1] = ' ' ;
+            shift[2 * i + 2] = shift[2 * i + 3] = 0 ;
 	    fprintf(output, shift);
 	    fprintf(output, "content=");
 #ifndef XML_USE_BUFFER_CONTENT	    
@@ -768,10 +786,41 @@ void xmlDebugDumpDTD(FILE *output, xmlDtdPtr dtd) {
         xmlDebugDumpNodeList(output, dtd->children, 1);
 }
 
-void xmlDebugDumpEntities(FILE *output, xmlDocPtr doc) {
-    int i;
-    xmlEntityPtr cur;
+void xmlDebugDumpEntityCallback(xmlEntityPtr cur, FILE *output,
+	                        const xmlChar *name) {
+    fprintf(output, "%s : ", cur->name);
+    switch (cur->etype) {
+	case XML_INTERNAL_GENERAL_ENTITY:
+	    fprintf(output, "INTERNAL GENERAL, ");
+	    break;
+	case XML_EXTERNAL_GENERAL_PARSED_ENTITY:
+	    fprintf(output, "EXTERNAL PARSED, ");
+	    break;
+	case XML_EXTERNAL_GENERAL_UNPARSED_ENTITY:
+	    fprintf(output, "EXTERNAL UNPARSED, ");
+	    break;
+	case XML_INTERNAL_PARAMETER_ENTITY:
+	    fprintf(output, "INTERNAL PARAMETER, ");
+	    break;
+	case XML_EXTERNAL_PARAMETER_ENTITY:
+	    fprintf(output, "EXTERNAL PARAMETER, ");
+	    break;
+	default:
+	    fprintf(output, "UNKNOWN TYPE %d",
+		    cur->etype);
+    }
+    if (cur->ExternalID != NULL) 
+	fprintf(output, "ID \"%s\"", cur->ExternalID);
+    if (cur->SystemID != NULL)
+	fprintf(output, "SYSTEM \"%s\"", cur->SystemID);
+    if (cur->orig != NULL)
+	fprintf(output, "\n orig \"%s\"", cur->orig);
+    if (cur->content != NULL)
+	fprintf(output, "\n content \"%s\"", cur->content);
+    fprintf(output, "\n");	
+}
 
+void xmlDebugDumpEntities(FILE *output, xmlDocPtr doc) {
     if (output == NULL) output = stdout;
     if (doc == NULL) {
         fprintf(output, "DOCUMENT == NULL !\n");
@@ -825,84 +874,14 @@ void xmlDebugDumpEntities(FILE *output, xmlDocPtr doc) {
         xmlEntitiesTablePtr table = (xmlEntitiesTablePtr) 
 	                            doc->intSubset->entities;
 	fprintf(output, "Entities in internal subset\n");
-	for (i = 0;i < table->max_entities;i++) {
-	    cur = table->table[i];
-	    while (cur != NULL) {
-		fprintf(output, "%d : %s : ", i, cur->name);
-		switch (cur->etype) {
-		    case XML_INTERNAL_GENERAL_ENTITY:
-			fprintf(output, "INTERNAL GENERAL, ");
-			break;
-		    case XML_EXTERNAL_GENERAL_PARSED_ENTITY:
-			fprintf(output, "EXTERNAL PARSED, ");
-			break;
-		    case XML_EXTERNAL_GENERAL_UNPARSED_ENTITY:
-			fprintf(output, "EXTERNAL UNPARSED, ");
-			break;
-		    case XML_INTERNAL_PARAMETER_ENTITY:
-			fprintf(output, "INTERNAL PARAMETER, ");
-			break;
-		    case XML_EXTERNAL_PARAMETER_ENTITY:
-			fprintf(output, "EXTERNAL PARAMETER, ");
-			break;
-		    default:
-			fprintf(output, "UNKNOWN TYPE %d",
-				cur->etype);
-		}
-		if (cur->ExternalID != NULL) 
-		    fprintf(output, "ID \"%s\"", cur->ExternalID);
-		if (cur->SystemID != NULL)
-		    fprintf(output, "SYSTEM \"%s\"", cur->SystemID);
-		if (cur->orig != NULL)
-		    fprintf(output, "\n orig \"%s\"", cur->orig);
-		if (cur->content != NULL)
-		    fprintf(output, "\n content \"%s\"", cur->content);
-		fprintf(output, "\n");	
-		cur = cur->nexte;
-	    }
-	}
+	xmlHashScan(table, (xmlHashScanner)xmlDebugDumpEntityCallback, output);
     } else
 	fprintf(output, "No entities in internal subset\n");
     if ((doc->extSubset != NULL) && (doc->extSubset->entities != NULL)) {
         xmlEntitiesTablePtr table = (xmlEntitiesTablePtr) 
 	                            doc->extSubset->entities;
 	fprintf(output, "Entities in external subset\n");
-	for (i = 0;i < table->max_entities;i++) {
-	    cur = table->table[i];
-	    while (cur != NULL) {
-		fprintf(output, "%d : %s : ", i, cur->name);
-		switch (cur->etype) {
-		    case XML_INTERNAL_GENERAL_ENTITY:
-			fprintf(output, "INTERNAL GENERAL, ");
-			break;
-		    case XML_EXTERNAL_GENERAL_PARSED_ENTITY:
-			fprintf(output, "EXTERNAL PARSED, ");
-			break;
-		    case XML_EXTERNAL_GENERAL_UNPARSED_ENTITY:
-			fprintf(output, "EXTERNAL UNPARSED, ");
-			break;
-		    case XML_INTERNAL_PARAMETER_ENTITY:
-			fprintf(output, "INTERNAL PARAMETER, ");
-			break;
-		    case XML_EXTERNAL_PARAMETER_ENTITY:
-			fprintf(output, "EXTERNAL PARAMETER, ");
-			break;
-		    default:
-			fprintf(output, "UNKNOWN TYPE %d",
-				cur->etype);
-		}
-		if (cur->ExternalID != NULL) 
-		    fprintf(output, "ID \"%s\"", cur->ExternalID);
-		if (cur->SystemID != NULL)
-		    fprintf(output, "SYSTEM \"%s\"", cur->SystemID);
-		if (cur->orig != NULL)
-		    fprintf(output, "\n orig \"%s\"", cur->orig);
-		if (cur->content != NULL)
-		    fprintf(output, "\n content \"%s\"", cur->content);
-		fprintf(output, "\n");	
-		cur = cur->nexte;
-	    }
-	}
+	xmlHashScan(table, (xmlHashScanner)xmlDebugDumpEntityCallback, output);
     } else
 	fprintf(output, "No entities in external subset\n");
 }
@@ -946,6 +925,9 @@ static int xmlLsCountNode(xmlNodePtr node) {
         case XML_ELEMENT_DECL:
         case XML_ATTRIBUTE_DECL:
         case XML_ENTITY_DECL:
+	case XML_NAMESPACE_DECL:
+	case XML_XINCLUDE_START:
+	case XML_XINCLUDE_END:
 	    ret = 1;
 	    break;
     }
@@ -1239,31 +1221,36 @@ xmlShellWrite(xmlShellCtxtPtr ctxt, char *filename, xmlNodePtr node,
     if (node == NULL)
         return(-1);
     if ((filename == NULL) || (filename[0] == 0)) {
-        fprintf(stderr, "Write command requires a filename argument\n");
+        xmlGenericError(xmlGenericErrorContext,
+		"Write command requires a filename argument\n");
 	return(-1);
     }
 #ifdef W_OK
     if (access((char *) filename, W_OK)) {
-        fprintf(stderr, "Cannot write to %s\n", filename);
+        xmlGenericError(xmlGenericErrorContext,
+		"Cannot write to %s\n", filename);
 	return(-1);
     }
 #endif    
     switch(node->type) {
         case XML_DOCUMENT_NODE:
 	    if (xmlSaveFile((char *) filename, ctxt->doc) < -1) {
-		fprintf(stderr, "Failed to write to %s\n", filename);
+		xmlGenericError(xmlGenericErrorContext,
+			"Failed to write to %s\n", filename);
 		return(-1);
 	    }
 	    break;
         case XML_HTML_DOCUMENT_NODE:
 #ifdef LIBXML_HTML_ENABLED
 	    if (htmlSaveFile((char *) filename, ctxt->doc) < 0) {
-		fprintf(stderr, "Failed to write to %s\n", filename);
+		xmlGenericError(xmlGenericErrorContext,
+			"Failed to write to %s\n", filename);
 		return(-1);
 	    }
 #else
 	    if (xmlSaveFile((char *) filename, ctxt->doc) < -1) {
-		fprintf(stderr, "Failed to write to %s\n", filename);
+		xmlGenericError(xmlGenericErrorContext,
+			"Failed to write to %s\n", filename);
 		return(-1);
 	    }
 #endif /* LIBXML_HTML_ENABLED */
@@ -1273,7 +1260,8 @@ xmlShellWrite(xmlShellCtxtPtr ctxt, char *filename, xmlNodePtr node,
 
 	    f = fopen((char *) filename, "w");
 	    if (f == NULL) {
-		fprintf(stderr, "Failed to write to %s\n", filename);
+		xmlGenericError(xmlGenericErrorContext,
+			"Failed to write to %s\n", filename);
 		return(-1);
 	    }
 	    xmlElemDump(f, ctxt->doc, node);
@@ -1304,29 +1292,33 @@ xmlShellSave(xmlShellCtxtPtr ctxt, char *filename, xmlNodePtr node,
         filename = ctxt->filename;
 #ifdef W_OK
     if (access((char *) filename, W_OK)) {
-        fprintf(stderr, "Cannot save to %s\n", filename);
+        xmlGenericError(xmlGenericErrorContext,
+		"Cannot save to %s\n", filename);
 	return(-1);
     }
 #endif
     switch(ctxt->doc->type) {
         case XML_DOCUMENT_NODE:
 	    if (xmlSaveFile((char *) filename, ctxt->doc) < 0) {
-		fprintf(stderr, "Failed to save to %s\n", filename);
+		xmlGenericError(xmlGenericErrorContext,
+			"Failed to save to %s\n", filename);
 	    }
 	    break;
         case XML_HTML_DOCUMENT_NODE:
 #ifdef LIBXML_HTML_ENABLED
 	    if (htmlSaveFile((char *) filename, ctxt->doc) < 0) {
-		fprintf(stderr, "Failed to save to %s\n", filename);
+		xmlGenericError(xmlGenericErrorContext,
+			"Failed to save to %s\n", filename);
 	    }
 #else
 	    if (xmlSaveFile((char *) filename, ctxt->doc) < 0) {
-		fprintf(stderr, "Failed to save to %s\n", filename);
+		xmlGenericError(xmlGenericErrorContext,
+			"Failed to save to %s\n", filename);
 	    }
 #endif /* LIBXML_HTML_ENABLED */
 	    break;
 	default:
-	    fprintf(stderr, 
+	    xmlGenericError(xmlGenericErrorContext, 
 	      "To save to subparts of a document use the 'write' command\n");
 	    return(-1);
 	    
@@ -1491,14 +1483,14 @@ xmlShellPwd(xmlShellCtxtPtr ctxt, char *buffer, xmlNodePtr node,
 	     */
 	    tmp = cur->prev;
             while (tmp != NULL) {
-	        if (!xmlStrcmp(cur->name, tmp->name))
+	        if (xmlStrEqual(cur->name, tmp->name))
 		    occur++;
 	        tmp = tmp->prev;
 	    }
 	    if (occur == 0) {
 	        tmp = cur->next;
 		while (tmp != NULL) {
-		    if (!xmlStrcmp(cur->name, tmp->name))
+		    if (xmlStrEqual(cur->name, tmp->name))
 			occur++;
 		    tmp = tmp->next;
 		}
@@ -1557,10 +1549,11 @@ void
 xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
          FILE *output) {
     char prompt[500] = "/ > ";
-    char *cmdline = NULL;
+    char *cmdline = NULL, *cur;
     int nbargs;
     char command[100];
     char arg[400];
+    int i;
     xmlShellCtxtPtr ctxt;
     xmlXPathObjectPtr list;
 
@@ -1596,20 +1589,51 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
 #ifdef HAVE_SNPRINTF
 	    snprintf(prompt, sizeof(prompt), "%s > ", ctxt->node->name);
 #else
-	    sprintf(buf, "%s > ", ctxt->node->name);
+	    sprintf(prompt, "%s > ", ctxt->node->name);
 #endif
         else
 	    sprintf(prompt, "? > ");
         prompt[sizeof(prompt) - 1] = 0;
 
+	/*
+	 * Get a new command line
+	 */
         cmdline = ctxt->input(prompt);
         if (cmdline == NULL) break;
 
-	command[0] = 0;
-	arg[0] = 0;
-	nbargs = sscanf(cmdline, "%s %s", command, arg);
+	/*
+	 * Parse the command itself
+	 */
+	cur = cmdline;
+	while ((*cur == ' ') || (*cur == '\t')) cur++;
+	i = 0;
+	while ((*cur != ' ') && (*cur != '\t') &&
+	       (*cur != '\n') && (*cur != '\r')) {
+	    if (*cur == 0)
+		break;
+	    command[i++] = *cur++;
+	}
+	command[i] = 0;
+	if (i == 0) continue;
+	nbargs++;
 
-	if (command[0] == 0) continue;
+	/*
+	 * Parse the argument
+	 */
+	while ((*cur == ' ') || (*cur == '\t')) cur++;
+	i = 0;
+	while ((*cur != '\n') && (*cur != '\r') && (*cur != 0)) {
+	    if (*cur == 0)
+		break;
+	    arg[i++] = *cur++;
+	}
+	arg[i] = 0;
+	if (i != 0) 
+	    nbargs++;
+
+	/*
+	 * start interpreting the command
+	 */
         if (!strcmp(command, "exit"))
 	    break;
         if (!strcmp(command, "quit"))
@@ -1649,9 +1673,7 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
 	    } else {
 	        ctxt->pctxt->node = ctxt->node;
 #ifdef LIBXML_XPATH_ENABLED
-		if (ctxt->pctxt->nodelist != NULL)
-		    xmlXPathFreeNodeSet(ctxt->pctxt->nodelist);
-	        ctxt->pctxt->nodelist = xmlXPathNodeSetCreate(ctxt->node);
+	        ctxt->pctxt->node = ctxt->node;
 		list = xmlXPathEval((xmlChar *) arg, ctxt->pctxt);
 #else
 		list = NULL;
@@ -1659,7 +1681,8 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
 		if (list != NULL) {
 		    switch (list->type) {
 			case XPATH_UNDEFINED:
-			    fprintf(stderr, "%s: no such node\n", arg);
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s: no such node\n", arg);
 			    break;
 			case XPATH_NODESET: {
 			    int i;
@@ -1675,34 +1698,47 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
 			    break;
 			}
 			case XPATH_BOOLEAN:
-			    fprintf(stderr, "%s is a Boolean\n", arg);
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a Boolean\n", arg);
 			    break;
 			case XPATH_NUMBER:
-			    fprintf(stderr, "%s is a number\n", arg);
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a number\n", arg);
 			    break;
 			case XPATH_STRING:
-			    fprintf(stderr, "%s is a string\n", arg);
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a string\n", arg);
+			    break;
+			case XPATH_POINT:
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a point\n", arg);
+			    break;
+			case XPATH_RANGE:
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a range\n", arg);
+			    break;
+			case XPATH_LOCATIONSET:
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a range\n", arg);
+			    break;
+			case XPATH_USERS:
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is user-defined\n", arg);
 			    break;
 		    }
 		    xmlXPathFreeNodeSetList(list);
 		} else {
-		    fprintf(stderr, "%s: no such node\n", arg);
+		    xmlGenericError(xmlGenericErrorContext,
+			    "%s: no such node\n", arg);
 		}
-#ifdef LIBXML_XPATH_ENABLED
-		if (ctxt->pctxt->nodelist != NULL)
-		    xmlXPathFreeNodeSet(ctxt->pctxt->nodelist);
-#endif /* LIBXML_XPATH_ENABLED */
-		ctxt->pctxt->nodelist = NULL;
+		ctxt->pctxt->node = NULL;
 	    }
 	} else if (!strcmp(command, "cd")) {
 	    if (arg[0] == 0) {
 		ctxt->node = (xmlNodePtr) ctxt->doc;
 	    } else {
-	        ctxt->pctxt->node = ctxt->node;
 #ifdef LIBXML_XPATH_ENABLED
-		if (ctxt->pctxt->nodelist != NULL)
-		    xmlXPathFreeNodeSet(ctxt->pctxt->nodelist);
-	        ctxt->pctxt->nodelist = xmlXPathNodeSetCreate(ctxt->node);
+	        ctxt->pctxt->node = ctxt->node;
 		list = xmlXPathEval((xmlChar *) arg, ctxt->pctxt);
 #else
 		list = NULL;
@@ -1710,34 +1746,52 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
 		if (list != NULL) {
 		    switch (list->type) {
 			case XPATH_UNDEFINED:
-			    fprintf(stderr, "%s: no such node\n", arg);
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s: no such node\n", arg);
 			    break;
 			case XPATH_NODESET:
 			    if (list->nodesetval->nodeNr == 1) {
 				ctxt->node = list->nodesetval->nodeTab[0];
 			    } else 
-				fprintf(stderr, "%s is a %d Node Set\n",
+				xmlGenericError(xmlGenericErrorContext,
+					"%s is a %d Node Set\n",
 				        arg, list->nodesetval->nodeNr);
 			    break;
 			case XPATH_BOOLEAN:
-			    fprintf(stderr, "%s is a Boolean\n", arg);
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a Boolean\n", arg);
 			    break;
 			case XPATH_NUMBER:
-			    fprintf(stderr, "%s is a number\n", arg);
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a number\n", arg);
 			    break;
 			case XPATH_STRING:
-			    fprintf(stderr, "%s is a string\n", arg);
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a string\n", arg);
+			    break;
+			case XPATH_POINT:
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a point\n", arg);
+			    break;
+			case XPATH_RANGE:
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a range\n", arg);
+			    break;
+			case XPATH_LOCATIONSET:
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a range\n", arg);
+			    break;
+			case XPATH_USERS:
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is user-defined\n", arg);
 			    break;
 		    }
 		    xmlXPathFreeNodeSetList(list);
 		} else {
-		    fprintf(stderr, "%s: no such node\n", arg);
+		    xmlGenericError(xmlGenericErrorContext,
+			    "%s: no such node\n", arg);
 		}
-#ifdef LIBXML_XPATH_ENABLED
-		if (ctxt->pctxt->nodelist != NULL)
-		    xmlXPathFreeNodeSet(ctxt->pctxt->nodelist);
-#endif /* LIBXML_XPATH_ENABLED */
-		ctxt->pctxt->nodelist = NULL;
+		ctxt->pctxt->node = NULL;
 	    }
 	} else if (!strcmp(command, "cat")) {
 	    if (arg[0] == 0) {
@@ -1745,9 +1799,7 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
 	    } else {
 	        ctxt->pctxt->node = ctxt->node;
 #ifdef LIBXML_XPATH_ENABLED
-		if (ctxt->pctxt->nodelist != NULL)
-		    xmlXPathFreeNodeSet(ctxt->pctxt->nodelist);
-	        ctxt->pctxt->nodelist = xmlXPathNodeSetCreate(ctxt->node);
+	        ctxt->pctxt->node = ctxt->node;
 		list = xmlXPathEval((xmlChar *) arg, ctxt->pctxt);
 #else
 		list = NULL;
@@ -1755,7 +1807,8 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
 		if (list != NULL) {
 		    switch (list->type) {
 			case XPATH_UNDEFINED:
-			    fprintf(stderr, "%s: no such node\n", arg);
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s: no such node\n", arg);
 			    break;
 			case XPATH_NODESET: {
 			    int i;
@@ -1768,27 +1821,44 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
 			    break;
 			}
 			case XPATH_BOOLEAN:
-			    fprintf(stderr, "%s is a Boolean\n", arg);
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a Boolean\n", arg);
 			    break;
 			case XPATH_NUMBER:
-			    fprintf(stderr, "%s is a number\n", arg);
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a number\n", arg);
 			    break;
 			case XPATH_STRING:
-			    fprintf(stderr, "%s is a string\n", arg);
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a string\n", arg);
+			    break;
+			case XPATH_POINT:
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a point\n", arg);
+			    break;
+			case XPATH_RANGE:
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a range\n", arg);
+			    break;
+			case XPATH_LOCATIONSET:
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is a range\n", arg);
+			    break;
+			case XPATH_USERS:
+			    xmlGenericError(xmlGenericErrorContext,
+				    "%s is user-defined\n", arg);
 			    break;
 		    }
 		    xmlXPathFreeNodeSetList(list);
 		} else {
-		    fprintf(stderr, "%s: no such node\n", arg);
+		    xmlGenericError(xmlGenericErrorContext,
+			    "%s: no such node\n", arg);
 		}
-#ifdef LIBXML_XPATH_ENABLED
-		if (ctxt->pctxt->nodelist != NULL)
-		    xmlXPathFreeNodeSet(ctxt->pctxt->nodelist);
-#endif /* LIBXML_XPATH_ENABLED */
-		ctxt->pctxt->nodelist = NULL;
+		ctxt->pctxt->node = NULL;
 	    }
 	} else {
-	    fprintf(stderr, "Unknown command %s\n", command);
+	    xmlGenericError(xmlGenericErrorContext,
+		    "Unknown command %s\n", command);
 	}
 	free(cmdline); /* not xmlFree here ! */
     }
