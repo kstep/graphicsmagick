@@ -102,14 +102,12 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     compression;
 
   double
-    x_scale,
-    y_scale;
-
-  float
     dx_resolution,
     dy_resolution,
     x_resolution,
-    y_resolution;
+    x_scale,
+    y_resolution,
+    y_scale;
 
   int
     count,
@@ -184,12 +182,12 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     dy_resolution=72.0;
     x_resolution=72.0;
     (void) strcpy(density,PSDensityGeometry);
-    count=sscanf(density,"%fx%f",&x_resolution,&y_resolution);
+    count=sscanf(density,"%lfx%lf",&x_resolution,&y_resolution);
     if (count != 2)
       y_resolution=x_resolution;
     if (image_info->density != (char *) NULL)
       {
-        count=sscanf(image_info->density,"%fx%f",&x_resolution,&y_resolution);
+        count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
         if (count != 2)
           y_resolution=x_resolution;
       }
@@ -420,7 +418,7 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"%d %d translate\n",x,y);
     (void) WriteBlob(image,strlen(buffer),buffer);
-    (void) sprintf(buffer,"%f %f scale\n",x_scale,y_scale);
+    (void) sprintf(buffer,"%g %g scale\n",x_scale,y_scale);
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"ImageMaskDictionary /Decode [ 1 0 ] put\n");
     (void) WriteBlob(image,strlen(buffer),buffer);

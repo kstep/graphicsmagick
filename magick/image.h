@@ -261,7 +261,7 @@ typedef struct _MontageInfo
 
 typedef struct _PointInfo
 {
-  float
+  double
     x,
     y,
     z;
@@ -275,7 +275,7 @@ typedef struct _PrimitiveInfo
   unsigned int
     coordinates;
 
-  float
+  double
     x,
     y;
 
@@ -311,7 +311,7 @@ typedef struct _RunlengthPacket
 
 typedef struct _SegmentInfo
 {
-  float
+  double
     x1,
     y1,
     x2,
@@ -413,7 +413,7 @@ typedef struct _Image
   RenderingIntent
     rendering_intent;
 
-  float
+  double
     gamma;
 
   ChromaticityInfo
@@ -426,7 +426,7 @@ typedef struct _Image
   ResolutionType
     units;
 
-  float
+  double
     x_resolution,
     y_resolution;
 

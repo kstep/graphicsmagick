@@ -189,7 +189,7 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
       (void) strcpy(density,PSDensityGeometry);
-      count=sscanf(density,"%fx%f",&image->x_resolution,&image->y_resolution);
+      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
@@ -243,13 +243,13 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
     */
     count=0;
     if (strncmp(BoundingBox,command,Extent(BoundingBox)) == 0)
-      count=sscanf(command,"%%%%BoundingBox: %f %f %f %f",&bounding_box.x1,
+      count=sscanf(command,"%%%%BoundingBox: %lf %lf %lf %lf",&bounding_box.x1,
         &bounding_box.y1,&bounding_box.x2,&bounding_box.y2);
     if (strncmp(DocumentMedia,command,Extent(DocumentMedia)) == 0)
-      count=sscanf(command,"%%%%DocumentMedia: %*s %f %f",&bounding_box.x2,
+      count=sscanf(command,"%%%%DocumentMedia: %*s %lf %lf",&bounding_box.x2,
         &bounding_box.y2)+2;
     if (strncmp(PageBoundingBox,command,Extent(PageBoundingBox)) == 0)
-      count=sscanf(command,"%%%%PageBoundingBox: %f %f %f %f",
+      count=sscanf(command,"%%%%PageBoundingBox: %lf %lf %lf %lf",
         &bounding_box.x1,&bounding_box.y1,&bounding_box.x2,&bounding_box.y2);
     if (count != 4)
       continue;
@@ -259,7 +259,7 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
     /*
       Set Postscript render geometry.
     */
-    FormatString(translate_geometry,"%f %f translate\n",-bounding_box.x1,
+    FormatString(translate_geometry,"%lf %lf translate\n",-bounding_box.x1,
       -bounding_box.y1);
     width=(unsigned int) (bounding_box.x2-bounding_box.x1);
     if ((float) ((int) bounding_box.x2) != bounding_box.x2)
@@ -663,14 +663,12 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     **q;
 
   double
-    x_scale,
-    y_scale;
-
-  float
     dx_resolution,
     dy_resolution,
     x_resolution,
-    y_resolution;
+    x_scale,
+    y_resolution,
+    y_scale;
 
   int
     length,
@@ -738,12 +736,12 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     dy_resolution=72.0;
     x_resolution=72.0;
     (void) strcpy(density,PSDensityGeometry);
-    count=sscanf(density,"%fx%f",&x_resolution,&y_resolution);
+    count=sscanf(density,"%lfx%lf",&x_resolution,&y_resolution);
     if (count != 2)
       y_resolution=x_resolution;
     if (image_info->density != (char *) NULL)
       {
-        count=sscanf(image_info->density,"%fx%f",&x_resolution,&y_resolution);
+        count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
         if (count != 2)
           y_resolution=x_resolution;
       }
@@ -986,7 +984,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       Output image data.
     */
     labels=StringToList(image->label);
-    (void) sprintf(buffer,"%d %d\n%f %f\n%u\n",x,y,x_scale,y_scale,
+    (void) sprintf(buffer,"%d %d\n%g %g\n%u\n",x,y,x_scale,y_scale,
       image_info->pointsize);
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (labels != (char **) NULL)

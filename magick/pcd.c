@@ -559,9 +559,9 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
         c2=chroma2;
         for (i=0; i < (int) height; i+=2)
         {
-          (void) ReadBlob(image,width,(char *) y0);
+          (void) ReadBlob(image,width,(char *) y);
           y+=image->columns;
-          (void) ReadBlob(image,width,(char *) y0);
+          (void) ReadBlob(image,width,(char *) y);
           y+=image->columns;
           (void) ReadBlob(image,width >> 1,(char *) c1);
           c1+=image->columns;

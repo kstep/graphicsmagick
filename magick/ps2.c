@@ -257,14 +257,12 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     compression;
 
   double
-    x_scale,
-    y_scale;
-
-  float
     dx_resolution,
     dy_resolution,
     x_resolution,
-    y_resolution;
+    x_scale,
+    y_resolution,
+    y_scale;
 
   int
     count,
@@ -338,12 +336,12 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     dy_resolution=72.0;
     x_resolution=72.0;
     (void) strcpy(density,PSDensityGeometry);
-    count=sscanf(density,"%fx%f",&x_resolution,&y_resolution);
+    count=sscanf(density,"%lfx%lf",&x_resolution,&y_resolution);
     if (count != 2)
       y_resolution=x_resolution;
     if (image_info->density != (char *) NULL)
       {
-        count=sscanf(image_info->density,"%fx%f",&x_resolution,&y_resolution);
+        count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
         if (count != 2)
           y_resolution=x_resolution;
       }
@@ -481,7 +479,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       Output image data.
     */
     labels=StringToList(image->label);
-    (void) sprintf(buffer,"%d %d\n%f %f\n%u\n",x,y,x_scale,y_scale,
+    (void) sprintf(buffer,"%d %d\n%g %g\n%u\n",x,y,x_scale,y_scale,
       image_info->pointsize);
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (labels != (char **) NULL)

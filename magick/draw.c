@@ -564,13 +564,13 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
       point.x=0;
       point.y=0;
       n=0;
-      (void) sscanf(p,"%f%f%n",&point.x,&point.y,&n);
+      (void) sscanf(p,"%lf%lf%n",&point.x,&point.y,&n);
       if (n == 0)
-        (void) sscanf(p,"%f,%f%n",&point.x,&point.y,&n);
+        (void) sscanf(p,"%lf,%lf%n",&point.x,&point.y,&n);
       if (n == 0)
-        (void) sscanf(p,"%f, %f%n",&point.x,&point.y,&n);
+        (void) sscanf(p,"%lf, %lf%n",&point.x,&point.y,&n);
       if (n == 0)
-        (void) sscanf(p,"%f %f%n",&point.x,&point.y,&n);
+        (void) sscanf(p,"%lf %lf%n",&point.x,&point.y,&n);
       if (n == 0)
         {
           MagickWarning(OptionWarning,

@@ -15,7 +15,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
-%                                 July 1992                                   %
+%                                 July 1999                                   %
 %                                                                             %
 %                                                                             %
 %  Copyright 1999 E. I. du Pont de Nemours and Company                        %

@@ -146,7 +146,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
         density[MaxTextExtent];
 
       (void) strcpy(density,PSDensityGeometry);
-      count=sscanf(density,"%fx%f",&image->x_resolution,&image->y_resolution);
+      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }

@@ -160,7 +160,7 @@ static boolean FillInputBuffer(j_decompress_ptr cinfo)
   source=(SourceManager *) cinfo->src;
   source->manager.bytes_in_buffer=
     ReadBlob(source->image,MaxBufferExtent,(char *) source->buffer);
-  if (source->manager.bytes_in_buffer <= 0)
+  if (source->manager.bytes_in_buffer == 0)
     {
       if (source->start_of_blob)
         ERREXIT(cinfo,JERR_INPUT_EMPTY);

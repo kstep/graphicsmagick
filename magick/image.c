@@ -267,7 +267,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
       int
         count;
 
-      count=sscanf(image_info->density,"%fx%f",&allocated_image->x_resolution,
+      count=sscanf(image_info->density,"%lfx%lf",&allocated_image->x_resolution,
         &allocated_image->y_resolution);
       if (count != 2)
         allocated_image->y_resolution=allocated_image->x_resolution;
@@ -3660,7 +3660,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
           Set image density.
         */
         (void) CloneString(&local_info->density,argv[++i]);
-        count=sscanf(local_info->density,"%fx%f",
+        count=sscanf(local_info->density,"%lfx%lf",
           &(*image)->x_resolution,&(*image)->y_resolution);
         if (count != 2)
           (*image)->y_resolution=(*image)->x_resolution;

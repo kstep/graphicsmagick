@@ -236,7 +236,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
                 image->background_color.index=0;
               }
             if (Latin1Compare(keyword,"blue-primary") == 0)
-              (void) sscanf(value,"%f,%f",&image->chromaticity.blue_primary.x,
+              (void) sscanf(value,"%lf,%lf",&image->chromaticity.blue_primary.x,
                 &image->chromaticity.blue_primary.y);
             if (Latin1Compare(keyword,"border-color") == 0)
               {
@@ -298,7 +298,8 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
             if (Latin1Compare(keyword,"gamma") == 0)
               image->gamma=atof(value);
             if (Latin1Compare(keyword,"green-primary") == 0)
-              (void) sscanf(value,"%f,%f",&image->chromaticity.green_primary.x,
+              (void) sscanf(value,"%lf,%lf",
+                &image->chromaticity.green_primary.x,
                 &image->chromaticity.green_primary.y);
             if (Latin1Compare(keyword,"id") == 0)
               {
@@ -341,7 +342,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
             if (Latin1Compare(keyword,"packets") == 0)
               image->packets=(unsigned int) atoi(value);
             if (Latin1Compare(keyword,"red-primary") == 0)
-              (void) sscanf(value,"%f,%f",&image->chromaticity.red_primary.x,
+              (void) sscanf(value,"%lf,%lf",&image->chromaticity.red_primary.x,
                 &image->chromaticity.red_primary.y);
             if (Latin1Compare(keyword,"rendering-intent") == 0)
               {
@@ -360,7 +361,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
                         image->rendering_intent=UndefinedIntent;
               }
             if (Latin1Compare(keyword,"resolution") == 0)
-              (void) sscanf(value,"%fx%f",&image->x_resolution,
+              (void) sscanf(value,"%lfx%lf",&image->x_resolution,
                 &image->y_resolution);
             if (Latin1Compare(keyword,"rows") == 0)
               image->rows=(unsigned int) atoi(value);
@@ -380,7 +381,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
                       image->units=PixelsPerCentimeterResolution;
               }
             if (Latin1Compare(keyword,"white-point") == 0)
-              (void) sscanf(value,"%f,%f",&image->chromaticity.white_point.x,
+              (void) sscanf(value,"%lf,%lf",&image->chromaticity.white_point.x,
                 &image->chromaticity.white_point.y);
           }
         else

@@ -177,7 +177,7 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
      (void) strcpy(density,PSDensityGeometry);
-      count=sscanf(density,"%fx%f",&image->x_resolution,&image->y_resolution);
+      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
@@ -212,7 +212,7 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
       portrait=False;
     if (strncmp(MediaBox,command,Extent(MediaBox)) != 0)
       continue;
-    count=sscanf(command,"/MediaBox [ %f %f %f %f",&bounding_box.x1,
+    count=sscanf(command,"/MediaBox [ %lf %lf %lf %lf",&bounding_box.x1,
       &bounding_box.y1,&bounding_box.x2,&bounding_box.y2);
     if (count != 4)
       continue;
@@ -362,14 +362,12 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     compression;
 
   double
-    x_scale,
-    y_scale;
-
-  float
     dx_resolution,
     dy_resolution,
     x_resolution,
-    y_resolution;
+    x_scale,
+    y_resolution,
+    y_scale;
 
   int
     count,
@@ -564,12 +562,12 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     dy_resolution=72.0;
     x_resolution=72.0;
     (void) strcpy(density,PSDensityGeometry);
-    count=sscanf(density,"%fx%f",&x_resolution,&y_resolution);
+    count=sscanf(density,"%lfx%lf",&x_resolution,&y_resolution);
     if (count != 2)
       y_resolution=x_resolution;
     if (image_info->density != (char *) NULL)
       {
-        count=sscanf(image_info->density,"%fx%f",&x_resolution,&y_resolution);
+        count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
         if (count != 2)
           y_resolution=x_resolution;
       }
@@ -648,7 +646,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         }
         FreeMemory((char *) labels);
       }
-    (void) sprintf(buffer,"%f 0 0 %f %d %d cm\n",x_scale,y_scale,x,y);
+    (void) sprintf(buffer,"%g 0 0 %g %d %d cm\n",x_scale,y_scale,x,y);
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/Im%u Do\n",image->scene);
     (void) WriteBlob(image,strlen(buffer),buffer);

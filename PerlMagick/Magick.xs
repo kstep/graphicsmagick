@@ -51,7 +51,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% PerlMagick, version 4.26, is an objected-oriented Perl interface to
+% PerlMagick, version 4.28, is an objected-oriented Perl interface to
 % ImageMagick.  Use the module to read,manipulate,or write an image or
 % image sequence from within a Perl script.  This makes it very suitable
 % for Web CGI scripts.  You must have ImageMagick 4.1.5 or above and Perl
@@ -952,7 +952,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"blue_p"))
         {
           for ( ; image; image=image->next)
-            (void) sscanf(SvPV(sval,na),"%f,%f",
+            (void) sscanf(SvPV(sval,na),"%lf,%lf",
               &image->chromaticity.blue_primary.x,
               &image->chromaticity.blue_primary.y);
           return;
@@ -1155,7 +1155,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"green_p"))
         {
           for ( ; image; image=image->next)
-            (void) sscanf(SvPV(sval,na),"%f,%f",
+            (void) sscanf(SvPV(sval,na),"%lf,%lf",
               &image->chromaticity.green_primary.x,
               &image->chromaticity.green_primary.y);
           return;
@@ -1379,7 +1379,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"red_p"))
         {
           for ( ; image; image=image->next)
-            (void) sscanf(SvPV(sval,na),"%f,%f",
+            (void) sscanf(SvPV(sval,na),"%lf,%lf",
               &image->chromaticity.red_primary.x,
               &image->chromaticity.red_primary.y);
           return;
@@ -1506,7 +1506,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"white_p"))
         {
           for ( ; image; image=image->next)
-            (void) sscanf(SvPV(sval,na),"%f,%f",
+            (void) sscanf(SvPV(sval,na),"%lf,%lf",
               &image->chromaticity.white_point.x,
               &image->chromaticity.white_point.y);
           return;
@@ -3982,7 +3982,7 @@ Mogrify(ref,...)
         }
         case 26:  /* Shade */
         {
-          float
+          double
             azimuth,
             elevation;
 
@@ -3993,7 +3993,7 @@ Mogrify(ref,...)
           if (attribute_flag[2])
             elevation=argument_list[2].double_reference;
           if (attribute_flag[0])
-            (void) sscanf(argument_list[0].string_reference,"%fx%f",&azimuth,
+            (void) sscanf(argument_list[0].string_reference,"%lfx%lf",&azimuth,
               &elevation);
           image=ShadeImage(image,argument_list[3].int_reference,azimuth,
             elevation);
@@ -4008,7 +4008,7 @@ Mogrify(ref,...)
         }
         case 28:  /* Shear */
         {
-          float
+          double
             x_shear,
             y_shear;
 
@@ -4019,7 +4019,7 @@ Mogrify(ref,...)
           if (attribute_flag[2])
             y_shear=argument_list[2].double_reference;
           if (attribute_flag[0])
-            (void) sscanf(argument_list[0].string_reference,"%fx%f",&x_shear,
+            (void) sscanf(argument_list[0].string_reference,"%lfx%lf",&x_shear,
               &y_shear);
           image=ShearImage(image,x_shear,y_shear,
             argument_list[3].int_reference);
@@ -4315,7 +4315,7 @@ Mogrify(ref,...)
                 argument_list[3].double_reference=1.0;
               if (!attribute_flag[0])
                 {
-                  FormatString(message,"%f/%f/%f",
+                  FormatString(message,"%lf/%lf/%lf",
                     argument_list[1].double_reference,
                     argument_list[2].double_reference,
                     argument_list[3].double_reference);
@@ -4403,7 +4403,8 @@ Mogrify(ref,...)
                 argument_list[2].double_reference=1.0;
               if (!attribute_flag[3])
                 argument_list[3].double_reference=1.0;
-              FormatString(message,"%f/%f/%f",argument_list[1].double_reference,
+              FormatString(message,"%lf/%lf/%lf",
+                argument_list[1].double_reference,
                 argument_list[2].double_reference,
                 argument_list[3].double_reference);
               if (!attribute_flag[0])
@@ -4582,7 +4583,7 @@ Mogrify(ref,...)
         }
         case 60:  /* Wave */
         {
-          float
+          double
             amplitude,
             wavelength;
 
@@ -4593,8 +4594,8 @@ Mogrify(ref,...)
           if (attribute_flag[2])
             wavelength=argument_list[2].double_reference;
           if (attribute_flag[0])
-            (void) sscanf(argument_list[0].string_reference,"%fx%f",&amplitude,
-              &wavelength);
+            (void) sscanf(argument_list[0].string_reference,"%lfx%lf",
+              &amplitude,&wavelength);
           image=WaveImage(image,amplitude,wavelength);
           break;
         }

@@ -1020,8 +1020,7 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
-  const Image *image)
+Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 {
   MagickWarning(MissingDelegateWarning,"TIFF library is not available",
     image_info->filename);

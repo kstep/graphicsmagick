@@ -314,7 +314,7 @@ Export void GammaImage(Image *image,const char *gamma)
   ColorPacket
     *gamma_map;
 
-  float
+  double
     blue_gamma,
     green_gamma,
     red_gamma;
@@ -334,8 +334,8 @@ Export void GammaImage(Image *image,const char *gamma)
   red_gamma=1.0;
   green_gamma=1.0;
   blue_gamma=1.0;
-  count=sscanf(gamma,"%f,%f,%f",&red_gamma,&green_gamma,&blue_gamma);
-  count=sscanf(gamma,"%f/%f/%f",&red_gamma,&green_gamma,&blue_gamma);
+  count=sscanf(gamma,"%lf,%lf,%lf",&red_gamma,&green_gamma,&blue_gamma);
+  count=sscanf(gamma,"%lf/%lf/%lf",&red_gamma,&green_gamma,&blue_gamma);
   if (count == 1)
     {
       if (red_gamma == 1.0)
