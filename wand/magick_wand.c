@@ -74,6 +74,7 @@
  *   MagickCompareImages
  *   MagickFxImageChannel
  *   MagickGammaImageChannel
+ *   MagickGetConfigureInfo
  *   MagickGetImageChannelExtrema
  *   MagickGetImageChannelMean
  *   MagickGetImageExtrema
@@ -495,7 +496,7 @@ WandExport unsigned int MagickAffineTransformImage(MagickWand *wand,
 %
 %      unsigned int MagickAnnotateImage(MagickWand *wand,
 %        const DrawingWand *drawing_wand,const double x,const double y,
-%        const char *text)
+%        const double angle,const char *text)
 %
 %  A description of each parameter follows:
 %
@@ -507,12 +508,14 @@ WandExport unsigned int MagickAffineTransformImage(MagickWand *wand,
 %
 %    o y: y ordinate to text baseline
 %
+%    o angle: rotate text relative to this angle.
+%
 %    o text: text to draw
 %
 */
 WandExport unsigned int MagickAnnotateImage(MagickWand *wand,
   const DrawingWand *drawing_wand,const double x,const double y,
-  const char *text)
+  const double angle,const char *text)
 {
   char
     geometry[MaxTextExtent];
@@ -531,7 +534,11 @@ WandExport unsigned int MagickAnnotateImage(MagickWand *wand,
   if (draw_info == (DrawInfo *) NULL)
     return(False);
   CloneString(&draw_info->text,text);
-  (void) FormatMagickString(geometry,MaxTextExtent,"%+g%+g",x,y);
+  (void) FormatMagickString(geometry,MaxTextExtent,"%+f%+f",x,y);
+  draw_info->affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
+  draw_info->affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
+  draw_info->affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
+  draw_info->affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
   CloneString(&draw_info->geometry,geometry);
   status=AnnotateImage(wand->image,draw_info);
   if (status == False)
@@ -1672,7 +1679,7 @@ WandExport MagickWand *MagickDeconstructImages(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D e s c r b e I m a g e                                       %
+%   M a g i c k D e s c r i b e I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2423,6 +2430,69 @@ WandExport unsigned int MagickGammaImageChannel(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k G e t C o n f i g u r e I n f o                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetConfigureInfo() returns ImageMagick configure attributes such as
+%  NAME, VERSION, LIB_VERSION, COPYRIGHT, etc.
+%
+%  The format of the MagickGetConfigureInfo() method is:
+%
+%      char *MagickGetConfigureInfo(MagickWand *wand,const char *name)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o name: Return the attribute associated with this name.
+%
+*/
+WandExport char *MagickGetConfigureInfo(MagickWand *wand,const char *name)
+{
+#if NOT_SUPPORTED
+  const ConfigureInfo
+    *configure_info;
+
+  configure_info=GetConfigureInfo(name,&wand->exception);
+  if (configure_info == (const ConfigureInfo *) NULL)
+    return((char *) NULL);
+  return(AcquireString(configure_info->value));
+#else
+  return 0;
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t C o p y r i g h t                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetCopyright() returns the ImageMagick API copyright as a string.
+%
+%  The format of the MagickGetCopyright method is:
+%
+%      const char *MagickGetCopyright(void)
+%
+*/
+WandExport const char *MagickGetCopyright(void)
+{
+  return(GetMagickCopyright());
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k G e t E x c e p t i o n                                       %
 %                                                                             %
 %                                                                             %
@@ -2499,6 +2569,29 @@ WandExport char *MagickGetFilename(const MagickWand *wand)
   assert(wand != (const MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
   return(AcquireString(wand->image_info->filename));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t H o m e U R L                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetHomeURL() returns the ImageMagick home URL.
+%
+%  The format of the MagickGetHomeURL method is:
+%
+%      const char *MagickGetHomeURL(void)
+%
+*/
+WandExport const char *MagickGetHomeURL(void)
+{
+  return(GetMagickWebSite());
 }
 
 /*
@@ -4019,6 +4112,80 @@ WandExport unsigned long MagickGetNumberImages(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k G e t P a c k a g e N a m e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetName() returns the ImageMagick package name.
+%
+%  The format of the MagickGetName method is:
+%
+%      const char *MagickGetName(void)
+%
+%
+*/
+WandExport const char *MagickGetPackageName(void)
+{
+  return(MagickPackageName);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t Q u a n t u m D e p t h                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetQuantumDepth() returns the ImageMagick quantum depth.
+%
+%  The format of the MagickGetQuantumDepth method is:
+%
+%      const char *MagickGetQuantumDepth(unsigned long *depth)
+%
+%  A description of each parameter follows:
+%
+%    o depth: The quantum depth is returned as a number.
+%
+%
+*/
+WandExport const char *MagickGetQuantumDepth(unsigned long *depth)
+{
+  return(MagickQuantumDepth);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t R e l e a s e D a t e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetReleaseDate() returns the ImageMagick release date.
+%
+%  The format of the MagickGetReleaseDate method is:
+%
+%      const char *MagickGetReleaseDate(void)
+%
+*/
+WandExport const char *MagickGetReleaseDate(void)
+{
+  return(MagickReleaseDate);
+}
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k G e t R e s o u r c e L i m i t                               %
 %                                                                             %
 %                                                                             %
@@ -4149,6 +4316,34 @@ WandExport unsigned int MagickGetSize(const MagickWand *wand,
   *columns=geometry.width;
   *rows=geometry.height;
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t V e r s i o n                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetVersion() returns the ImageMagick API version as a string and
+%  as a number.
+%
+%  The format of the MagickGetVersion method is:
+%
+%      const char *MagickGetVersion(unsigned long *version)
+%
+%  A description of each parameter follows:
+%
+%    o version: The ImageMagick version is returned as a number.
+%
+*/
+WandExport const char *MagickGetVersion(unsigned long *version)
+{
+  return(GetMagickVersion(version));
 }
 
 /*
@@ -6528,6 +6723,7 @@ WandExport unsigned int MagickSetFilename(MagickWand *wand,const char *filename)
   (void) CopyMagickString(wand->image_info->filename,filename,MaxTextExtent);
   return(True);
 }
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

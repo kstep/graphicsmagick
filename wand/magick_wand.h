@@ -55,6 +55,7 @@ typedef struct _MagickWand
 
 extern WandExport char
   *MagickDescribeImage(MagickWand *),
+  *MagickGetConfigureInfo(MagickWand *,const char *),
   *MagickGetException(const MagickWand *,ExceptionType *),
   *MagickGetFilename(const MagickWand *),
   *MagickGetImageFilename(MagickWand *),
@@ -71,6 +72,14 @@ extern WandExport ColorspaceType
 
 extern WandExport CompressionType
   MagickGetImageCompression(MagickWand *);
+
+extern WandExport const char
+  *MagickGetCopyright(void),
+  *MagickGetHomeURL(void),
+  *MagickGetPackageName(void),
+  *MagickGetQuantumDepth(unsigned long *),
+  *MagickGetReleaseDate(void),
+  *MagickGetVersion(unsigned long *);
 
 extern WandExport DisposeType
   MagickGetImageDispose(MagickWand *);
@@ -132,7 +141,7 @@ extern WandExport unsigned int
   MagickAddNoiseImage(MagickWand *,const NoiseType),
   MagickAffineTransformImage(MagickWand *,const DrawingWand *),
   MagickAnnotateImage(MagickWand *,const DrawingWand *,const double,
-    const double,const char *),
+    const double,const double,const char *),
   MagickAnimateImages(MagickWand *,const char *),
   MagickBlackThresholdImage(MagickWand *,const PixelWand *),
   MagickBlurImage(MagickWand *,const double,const double),
