@@ -58,3 +58,4 @@ dist-hook:
 
 # Since we are building a library, no need for LIBS
 LIBS =
+
