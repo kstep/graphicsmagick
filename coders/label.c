@@ -300,7 +300,6 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     *image;
 
   int
-    descent,
     length,
     y;
 
@@ -415,7 +414,6 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   */
   origin.x=0;
   origin.y=0;
-  descent=0;
   image->rows=0;
   bounding_box.xMin=32000;
   bounding_box.xMax=(-32000);
@@ -468,8 +466,6 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   image->columns=bounding_box.xMax-bounding_box.xMin+3;
   image->rows=bounding_box.yMax-bounding_box.yMin+3;
   SetImage(image,TransparentOpacity);
-  image->translate.x=bounding_box.xMin;
-  image->translate.y=bounding_box.yMin;
   for (i=0; i < length; i++)
   {
     if (glyphs[i].image == (FT_Glyph) NULL)
@@ -479,7 +475,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     if ((glyph->width == 0) || (glyph->rows == 0))
       continue;
     x=bitmap->left+(glyphs[i].origin.x/64)-bounding_box.xMin;
-    y=image->rows-bitmap->top-(glyphs[i].origin.y/64)+descent+bounding_box.yMin;
+    y=image->rows-bitmap->top-(glyphs[i].origin.y/64)+bounding_box.yMin;
     q=GetImagePixels(image,x,y,glyph->width,glyph->rows);
     if (q == (PixelPacket *) NULL)
       break;

@@ -420,9 +420,6 @@ typedef struct _Image
     restart_animation_here,
     taint;
 
-  PointInfo
-    translate;
-
   Ascii85Info
     ascii85;
 
