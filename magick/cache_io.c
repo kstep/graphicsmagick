@@ -68,9 +68,6 @@
 */
 typedef struct _ViewInfo
 {
-  int
-    id;
-
   unsigned int
     width,
     height;
@@ -117,8 +114,11 @@ typedef struct _CacheInfo
   off_t
     length;
 
+  int
+    id;
+
   ViewInfo
-    view;
+    *view;
 } CacheInfo;
 
 /*
@@ -186,6 +186,9 @@ Export unsigned int AllocateCache(Cache cache,const ClassType class_type,
   length=cache_info->number_pixels*sizeof(PixelPacket);
   if (cache_info->class == PseudoClass)
     length+=cache_info->number_pixels*sizeof(IndexPacket);
+  cache_info->rows=rows;
+  cache_info->columns=columns;
+  cache_info->number_pixels=columns*rows;
   if (cache_info->class != UndefinedClass)
     {
       /*
@@ -196,9 +199,29 @@ Export unsigned int AllocateCache(Cache cache,const ClassType class_type,
       if (cache_info->type == MemoryMappedCache)
         (void) UnmapBlob(cache_info->pixels,length);
     }
-  cache_info->rows=rows;
-  cache_info->columns=columns;
-  cache_info->number_pixels=columns*rows;
+  else
+    {
+      register int
+        id;
+
+      /*
+        Allocate cache views.
+      */
+      cache_info->id=0;
+      cache_info->view=(ViewInfo *)
+        AllocateMemory(cache_info->rows*sizeof(ViewInfo));
+      if (cache_info->view == (ViewInfo *) NULL)
+        MagickError(ResourceLimitError,"Memory allocation failed",
+          "unable to allocate cache views");
+      for (id=0; id < cache_info->rows; id++)
+      {
+        cache_info->view[id].width=0;
+        cache_info->view[id].height=0;
+        cache_info->view[id].x=0;
+        cache_info->view[id].y=0;
+        cache_info->view[id].stash=(void *) NULL;
+      }
+    }
   length=cache_info->number_pixels*sizeof(PixelPacket);
   if (class_type == PseudoClass)
     length+=cache_info->number_pixels*sizeof(IndexPacket);
@@ -333,10 +356,11 @@ Export void DestroyCacheInfo(Cache cache)
   CacheInfo
     *cache_info;
 
+  register int
+    id;
+
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  if (cache_info->view.stash != (void *) NULL)
-    FreeMemory(cache_info->view.stash);
   switch (cache_info->type)
   {
     case MemoryCache:
@@ -369,6 +393,10 @@ Export void DestroyCacheInfo(Cache cache)
     default:
       break;
   }
+  for (id=0; id < cache_info->rows; id++)
+    if (cache_info->view[id].stash != (void *) NULL)
+      FreeMemory(cache_info->view[id].stash);
+  FreeMemory(cache_info->view);
   FreeMemory(cache_info);
   cache=(void *) NULL;
 }
@@ -488,12 +516,8 @@ Export void GetCacheInfo(Cache *cache)
   *cache_info->filename='\0';
   cache_info->file=(-1);
   cache_info->length=0;
-  cache_info->view.id=0;
-  cache_info->view.width=0;
-  cache_info->view.height=0;
-  cache_info->view.x=0;
-  cache_info->view.y=0;
-  cache_info->view.stash=(void *) NULL;
+  cache_info->id=0;
+  cache_info->view=(ViewInfo *) NULL;
   *cache=cache_info;
 }
 
@@ -596,18 +620,15 @@ Export PixelPacket *GetCachePixels(Cache cache,const unsigned int x,
 %
 %  The format of the GetCacheStash method is:
 %
-%      void GetCacheStash(Cache *cache,unsigned int number_pixels)
+%      void GetCacheStash(Cache *cache)
 %
 %  A description of each parameter follows:
 %
 %    o cache: Specifies a pointer to a Cache structure.
 %
-%    o number_pixels: This unsigned integer defines how many pixels are
-%      needed in the buffer.
-%
 %
 */
-Export void *GetCacheStash(Cache cache,unsigned int number_pixels)
+Export void *GetCacheStash(Cache cache)
 {
   CacheInfo
     *cache_info;
@@ -615,18 +636,27 @@ Export void *GetCacheStash(Cache cache,unsigned int number_pixels)
   off_t
     length;
 
+  register int
+    id;
+
+  unsigned int
+    number_pixels;
+
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
+  id=cache_info->id;
+  number_pixels=cache_info->view[id].width*cache_info->view[id].height;
   length=number_pixels*sizeof(PixelPacket);
   if (cache_info->class == PseudoClass)
     length+=number_pixels*sizeof(IndexPacket);
-  if (cache_info->view.stash == (void *) NULL)
-    cache_info->view.stash=AllocateMemory(length);
+  if (cache_info->view[id].stash == (void *) NULL)
+    cache_info->view[id].stash=AllocateMemory(length);
   else
     if (cache_info->length < length)
-      cache_info->view.stash=ReallocateMemory(cache_info->view.stash,length);
+      cache_info->view[id].stash=
+        ReallocateMemory(cache_info->view[id].stash,length);
   cache_info->length=length;
-  return(cache_info->view.stash);
+  return(cache_info->view[id].stash);
 }
 
 /*
@@ -735,13 +765,15 @@ Export unsigned int ReadCacheIndexes(Cache cache,IndexPacket *indexes)
     offset;
 
   register int
+    id,
     y;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   if (cache_info->class != PseudoClass)
     return(False);
-  offset=cache_info->view.y*cache_info->columns+cache_info->view.x;
+  id=cache_info->id;
+  offset=cache_info->view[id].y*cache_info->columns+cache_info->view[id].x;
   if (cache_info->type != DiskCache)
     {
       /*
@@ -749,11 +781,11 @@ Export unsigned int ReadCacheIndexes(Cache cache,IndexPacket *indexes)
       */
       if (indexes == (cache_info->indexes+offset))
         return(True);
-      for (y=0; y < (int) cache_info->view.height; y++)
+      for (y=0; y < (int) cache_info->view[id].height; y++)
       {
         (void) memcpy(indexes,cache_info->indexes+offset,
-          cache_info->view.width*sizeof(IndexPacket));
-        indexes+=cache_info->view.width;
+          cache_info->view[id].width*sizeof(IndexPacket));
+        indexes+=cache_info->view[id].width;
         offset+=cache_info->columns;
       }
       return(True);
@@ -767,17 +799,17 @@ Export unsigned int ReadCacheIndexes(Cache cache,IndexPacket *indexes)
       if (cache_info->file == -1)
         return(False);
     }
-  for (y=0; y < (int) cache_info->view.height; y++)
+  for (y=0; y < (int) cache_info->view[id].height; y++)
   {
     count=lseek(cache_info->file,cache_info->number_pixels*sizeof(PixelPacket)+
       offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=read(cache_info->file,(char *) indexes,cache_info->view.width*
+    count=read(cache_info->file,(char *) indexes,cache_info->view[id].width*
       sizeof(IndexPacket));
-    if (count != (cache_info->view.width*sizeof(IndexPacket)))
+    if (count != (cache_info->view[id].width*sizeof(IndexPacket)))
       return(False);
-    indexes+=cache_info->view.width;
+    indexes+=cache_info->view[id].width;
     offset+=cache_info->columns;
   }
   return(True);
@@ -823,11 +855,13 @@ Export unsigned int ReadCachePixels(Cache cache,PixelPacket *pixels)
     offset;
 
   register int
+    id,
     y;
 
   assert(cache != (Cache *) NULL);
   cache_info=(CacheInfo *) cache;
-  offset=cache_info->view.y*cache_info->columns+cache_info->view.x;
+  id=cache_info->id;
+  offset=cache_info->view[id].y*cache_info->columns+cache_info->view[id].x;
   if (cache_info->type != DiskCache)
     {
       /*
@@ -835,11 +869,11 @@ Export unsigned int ReadCachePixels(Cache cache,PixelPacket *pixels)
       */
       if (pixels == (cache_info->pixels+offset))
         return(True);
-      for (y=0; y < (int) cache_info->view.height; y++)
+      for (y=0; y < (int) cache_info->view[id].height; y++)
       {
         (void) memcpy(pixels,cache_info->pixels+offset,
-          cache_info->view.width*sizeof(PixelPacket));
-        pixels+=cache_info->view.width;
+          cache_info->view[id].width*sizeof(PixelPacket));
+        pixels+=cache_info->view[id].width;
         offset+=cache_info->columns;
       }
       return(True);
@@ -853,16 +887,16 @@ Export unsigned int ReadCachePixels(Cache cache,PixelPacket *pixels)
       if (cache_info->file == -1)
         return(False);
     }
-  for (y=0; y < (int) cache_info->view.height; y++)
+  for (y=0; y < (int) cache_info->view[id].height; y++)
   {
     count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=read(cache_info->file,(char *) pixels,cache_info->view.width*
+    count=read(cache_info->file,(char *) pixels,cache_info->view[id].width*
       sizeof(PixelPacket));
-    if (count != (cache_info->view.width*sizeof(PixelPacket)))
+    if (count != (cache_info->view[id].width*sizeof(PixelPacket)))
       return(False);
-    pixels+=cache_info->view.width;
+    pixels+=cache_info->view[id].width;
     offset+=cache_info->columns;
   }
   return(True);
@@ -951,7 +985,7 @@ Export void SetCacheType(Cache cache,const CacheType type)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetCacheView sets the cache view.
+%  Method SetCacheView define the current cache view.
 %
 %  The format of the SetCacheView method is:
 %
@@ -962,7 +996,10 @@ Export void SetCacheType(Cache cache,const CacheType type)
 %
 %    o cache: Specifies a pointer to a Cache structure.
 %
-%    o type: The pixel cache type MemoryCache or DiskCache.
+%    o id: Specifies the current cache view.
+%
+%    o view: A pointer to the RectangleInfo structure that defines the region
+%      of this particular cache view.
 %
 %
 */
@@ -974,11 +1011,11 @@ Export void SetCacheView(Cache cache,const unsigned int id,
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  cache_info->view.id=id;
-  cache_info->view.width=view->width;
-  cache_info->view.height=view->height;
-  cache_info->view.x=view->x;
-  cache_info->view.y=view->y;
+  cache_info->id=id;
+  cache_info->view[id].width=view->width;
+  cache_info->view[id].height=view->height;
+  cache_info->view[id].x=view->x;
+  cache_info->view[id].y=view->y;
 }
 
 /*
@@ -1021,13 +1058,15 @@ Export unsigned int WriteCacheIndexes(Cache cache,const IndexPacket *indexes)
     offset;
 
   register int
+    id,
     y;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   if (cache_info->class != PseudoClass)
     return(False);
-  offset=cache_info->view.y*cache_info->columns+cache_info->view.x;
+  id=cache_info->id;
+  offset=cache_info->view[id].y*cache_info->columns+cache_info->view[id].x;
   if (cache_info->type != DiskCache)
     {
       /*
@@ -1035,11 +1074,11 @@ Export unsigned int WriteCacheIndexes(Cache cache,const IndexPacket *indexes)
       */
       if (indexes == (cache_info->indexes+offset))
         return(True);
-      for (y=0; y < (int) cache_info->view.height; y++)
+      for (y=0; y < (int) cache_info->view[id].height; y++)
       {
         (void) memcpy(cache_info->indexes+offset,indexes,
-          cache_info->view.width*sizeof(IndexPacket));
-        indexes+=cache_info->view.width;
+          cache_info->view[id].width*sizeof(IndexPacket));
+        indexes+=cache_info->view[id].width;
         offset+=cache_info->columns;
       }
       return(True);
@@ -1053,17 +1092,17 @@ Export unsigned int WriteCacheIndexes(Cache cache,const IndexPacket *indexes)
       if (cache_info->file == -1)
         return(False);
     }
-  for (y=0; y < (int) cache_info->view.height; y++)
+  for (y=0; y < (int) cache_info->view[id].height; y++)
   {
     count=lseek(cache_info->file,cache_info->number_pixels*sizeof(PixelPacket)+
       offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=write(cache_info->file,(char *) indexes,cache_info->view.width*
+    count=write(cache_info->file,(char *) indexes,cache_info->view[id].width*
       sizeof(IndexPacket));
-    if (count != (cache_info->view.width*sizeof(IndexPacket)))
+    if (count != (cache_info->view[id].width*sizeof(IndexPacket)))
       return(False);
-    indexes+=cache_info->view.width;
+    indexes+=cache_info->view[id].width;
     offset+=cache_info->columns;
   }
   return(True);
@@ -1109,11 +1148,13 @@ Export unsigned int WriteCachePixels(Cache cache,const PixelPacket *pixels)
     offset;
 
   register int
+    id,
     y;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  offset=cache_info->view.y*cache_info->columns+cache_info->view.x;
+  id=cache_info->id;
+  offset=cache_info->view[id].y*cache_info->columns+cache_info->view[id].x;
   if (cache_info->type != DiskCache)
     {
       /*
@@ -1121,11 +1162,11 @@ Export unsigned int WriteCachePixels(Cache cache,const PixelPacket *pixels)
       */
       if (pixels == (cache_info->pixels+offset))
         return(True);
-      for (y=0; y < (int) cache_info->view.height; y++)
+      for (y=0; y < (int) cache_info->view[id].height; y++)
       {
         (void) memcpy(cache_info->pixels+offset,pixels,
-          cache_info->view.width*sizeof(PixelPacket));
-        pixels+=cache_info->view.width;
+          cache_info->view[id].width*sizeof(PixelPacket));
+        pixels+=cache_info->view[id].width;
         offset+=cache_info->columns;
       }
       return(True);
@@ -1139,16 +1180,16 @@ Export unsigned int WriteCachePixels(Cache cache,const PixelPacket *pixels)
       if (cache_info->file == -1)
         return(False);
     }
-  for (y=0; y < (int) cache_info->view.height; y++)
+  for (y=0; y < (int) cache_info->view[id].height; y++)
   {
     count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=write(cache_info->file,(char *) pixels,cache_info->view.width*
+    count=write(cache_info->file,(char *) pixels,cache_info->view[id].width*
       sizeof(PixelPacket));
-    if (count != (cache_info->view.width*sizeof(PixelPacket)))
+    if (count != (cache_info->view[id].width*sizeof(PixelPacket)))
       return(False);
-    pixels+=cache_info->view.width;
+    pixels+=cache_info->view[id].width;
     offset+=cache_info->columns;
   }
   return(True);

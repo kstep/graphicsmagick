@@ -1566,6 +1566,7 @@ Export Image *CreateImage(const unsigned int width,const unsigned int height,
     Allocate image structure.
   */
   assert(pixels != (void *) NULL);
+  GetExceptionInfo(exception);
   image=AllocateImage((ImageInfo *) NULL);
   if (image == (Image *) NULL)
     return((Image *) NULL);
@@ -5565,6 +5566,7 @@ Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->filename != (char *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
   GetExceptionInfo(exception);
   if (*image_info->filename == '@')
     return(ReadImages(image_info,exception));

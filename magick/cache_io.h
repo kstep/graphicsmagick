@@ -42,7 +42,7 @@ extern Export void
   CloseCache(Cache),
   DestroyCacheInfo(Cache),
   GetCacheInfo(Cache *),
-  *GetCacheStash(Cache,unsigned int),
+  *GetCacheStash(Cache),
   SetCacheThreshold(const off_t),
   SetCacheType(Cache,const CacheType),
   SetCacheView(Cache,const unsigned int,const RectangleInfo *);

@@ -23,6 +23,7 @@
 		<LI><A HREF="#getpixelcache">GetPixelCache</A></LI>
 		<LI><A HREF="#readpixelcache">ReadPixelCache</A></LI>
 		<LI><A HREF="#setpixelcache">SetPixelCache</A></LI>
+		<LI><A HREF="#setpixelcacheview">SetPixelCacheView</A></LI>
 		<LI><A HREF="#syncpixelcache">SyncPixelCache</A></LI>
 		<LI><A HREF="#writepixelcache">WritePixelCache</A></LI>
 	</UL>
@@ -43,6 +44,7 @@
 <P>PixelPacket * <STRONG>GetPixelCache</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
 <P>unsigned int  <STRONG>ReadPixelCache</STRONG>( Image *image, const QuantumTypes quantum, const unsigned char *source );</P>
 <P>PixelPacket * <STRONG>SetPixelCache</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
+<P>void  <STRONG>SetPixelCacheView</STRONG>( Cache cache, const unsigned int id, const RectangleInfo *view );</P>
 <P>unsigned int  <STRONG>SyncPixelCache</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>WritePixelCache</STRONG>( Image *, const QuantumTypes quantum, unsigned char *destination );</P>
 <P>
@@ -119,6 +121,21 @@ The address of a structure of type Image.
 <p><dt><STRONG>x,y,columns,rows:</STRONG><BR>
 <DD>
 These values define the perimeter of a region of pixels.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="setpixelcacheview">SetPixelCacheView</A></H2>
+<P>Method SetPixelCacheView sets the current cache view.</P>
+<P>The format of the SetPixelCacheView method is:</P>
+<blockquote>void SetPixelCacheView ( Cache cache, const unsigned int id, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *view ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_cache%3A">cache:</A></STRONG><BR>
+<DD>
+Specifies a pointer to a Cache structure.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_id%3A">id:</A></STRONG><BR>
+<DD>
+Specifies the current cache view.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="syncpixelcache">SyncPixelCache</A></H2>

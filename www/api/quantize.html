@@ -21,6 +21,7 @@
 	<UL>
 
 		<LI><A HREF="#clonequantizeinfo">CloneQuantizeInfo</A></LI>
+		<LI><A HREF="#destroyquantizeinfo">DestroyQuantizeInfo</A></LI>
 		<LI><A HREF="#getquantizeinfo">GetQuantizeInfo</A></LI>
 		<LI><A HREF="#mapimage">MapImage</A></LI>
 		<LI><A HREF="#mapimages">MapImages</A></LI>
@@ -43,6 +44,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>QuantizeInfo * <STRONG>CloneQuantizeInfo</STRONG>( const QuantizeInfo *quantize_info );</P>
+<P><STRONG>DestroyQuantizeInfo</STRONG>( QuantizeInfo *quantize_info );</P>
 <P><STRONG>GetQuantizeInfo</STRONG>( QuantizeInfo *quantize_info );</P>
 <P>unsigned int  <STRONG>MapImage</STRONG>( Image *image, Image *map_image, const unsigned int dither );</P>
 <P>unsigned int  <STRONG>MapImages</STRONG>( Image *images, Image *map_image, const unsigned int dither );</P>
@@ -57,13 +59,13 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="clonequantizeinfo">CloneQuantizeInfo</A></H2>
-<P>Method CloneQuantizeInfo makes a duplicate of the given quantize info, or if quantize info is 
+<P>Method CloneQuantizeInfo makes a duplicate of the given quantize info structure, or if quantize info is 
 <FONT SIZE=-1>NULL,</FONT> a new one.</P>
 <P>The format of the CloneQuantizeInfo method is:</P>
 <blockquote>QuantizeInfo *CloneQuantizeInfo ( const QuantizeInfo *quantize_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_cloned_info%3A">cloned_info:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_clone_info%3A">clone_info:</A></STRONG><BR>
 <DD>
 Method CloneQuantizeInfo returns a duplicate of the given quantize info, or if image info is 
 <FONT SIZE=-1>NULL</FONT> a new one.
@@ -71,6 +73,17 @@ Method CloneQuantizeInfo returns a duplicate of the given quantize info, or if i
 <p><dt><STRONG><A NAME="item_o_quantize_info%3A">quantize_info:</A></STRONG><BR>
 <DD>
 a structure of type info.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="destroyquantizeinfo">DestroyQuantizeInfo</A></H2>
+<P>Method DestroyQuantizeInfo deallocates memory associated with an QuantizeInfo structure.</P>
+<P>The format of the DestroyQuantizeInfo method is:</P>
+<blockquote>DestroyQuantizeInfo ( QuantizeInfo *quantize_info ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>quantize_info:</STRONG><BR>
+<DD>
+Specifies a pointer to an QuantizeInfo structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getquantizeinfo">GetQuantizeInfo</A></H2>

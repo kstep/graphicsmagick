@@ -655,8 +655,8 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloneQuantizeInfo makes a duplicate of the given quantize info, or if
-%  quantize info is NULL, a new one.
+%  Method CloneQuantizeInfo makes a duplicate of the given quantize info
+%  structure, or if quantize info is NULL, a new one.
 %
 %  The format of the CloneQuantizeInfo method is:
 %
@@ -664,7 +664,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o cloned_info: Method CloneQuantizeInfo returns a duplicate of the given
+%    o clone_info: Method CloneQuantizeInfo returns a duplicate of the given
 %      quantize info, or if image info is NULL a new one.
 %
 %    o quantize_info: a structure of type info.
@@ -674,19 +674,19 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
 Export QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
 {
   QuantizeInfo
-    *cloned_info;
+    *clone_info;
 
-  cloned_info=(QuantizeInfo *) AllocateMemory(sizeof(QuantizeInfo));
-  if (cloned_info == (QuantizeInfo *) NULL)
-    MagickError(ResourceLimitError,"Unable to clone image info",
+  clone_info=(QuantizeInfo *) AllocateMemory(sizeof(QuantizeInfo));
+  if (clone_info == (QuantizeInfo *) NULL)
+    MagickError(ResourceLimitError,"Unable to clone quantize info",
       "Memory allocation failed");
   if (quantize_info == (QuantizeInfo *) NULL)
     {
-      GetQuantizeInfo(cloned_info);
-      return(cloned_info);
+      GetQuantizeInfo(clone_info);
+      return(clone_info);
     }
-  *cloned_info=(*quantize_info);
-  return(cloned_info);
+  *clone_info=(*quantize_info);
+  return(clone_info);
 }
 
 /*
@@ -867,7 +867,7 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y Q u a n t i z e I n f o                                     %
+%   D e s t r o y Q u a n t i z e I n f o                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %

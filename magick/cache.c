@@ -482,7 +482,7 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   /*
     Allocate buffer to get/put pixels/indexes to/from the pixel cache.
   */
-  image->pixels=(PixelPacket *) GetCacheStash(image->cache,columns*rows);
+  image->pixels=(PixelPacket *) GetCacheStash(image->cache);
   if (image->pixels == (PixelPacket *) NULL)
     {
       ThrowException(&image->exception,CacheWarning,"Unable to set pixel cache",
@@ -491,6 +491,38 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
     }
   image->indexes=(IndexPacket *) (image->pixels+columns*rows);
   return(image->pixels);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t P i x e l C a c h e V i e w                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetPixelCacheView sets the current cache view.
+%
+%  The format of the SetPixelCacheView method is:
+%
+%      void SetPixelCacheView(Cache cache,const unsigned int id,
+%        const RectangleInfo *view)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%    o id: Specifies the current cache view.
+%
+%
+*/
+Export void SetPixelCacheView(Image *image,const unsigned int id)
+{
+  assert(image != (Image *) NULL);
+  image->view=id % image->rows;
 }
 
 /*

@@ -22,6 +22,9 @@ extern Export unsigned int
   SyncPixelCache(Image *),
   WritePixelCache(Image *,const QuantumTypes,unsigned char *);
 
+extern Export void
+  SetPixelCacheView(Image *,const unsigned int);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

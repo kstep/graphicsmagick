@@ -112,6 +112,9 @@ Export Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   off_t
     count;
 
+  assert(image_info != (ImageInfo *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  GetExceptionInfo(exception);
   clone_info=CloneImageInfo(image_info);
   clone_info->blob.data=(char *) blob;
   clone_info->blob.offset=0;
@@ -444,7 +447,6 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
   unsigned int
     status;
 
-  GetExceptionInfo(exception);
   clone_info=CloneImageInfo(image_info);
   (void) strcpy(clone_info->magick,image->magick);
   magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
