@@ -2683,9 +2683,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   int
+    blue,
     element,
+    green,
     group,
     length,
+    red,
     scene,
     y;
 
@@ -2728,11 +2731,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     max_value;
 
   unsigned short
-    blue,
     *graymap,
-    green,
-    index,
-    red;
+    index;
 
   /*
     Open image file.
@@ -3206,10 +3206,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               switch (i)
               {
-                case 0: q->red=ReadBlobByte(image); break;
-                case 1: q->green=ReadBlobByte(image); break;
-                case 2: q->blue=ReadBlobByte(image); break;
-                case 3: q->opacity=MaxRGB-ReadBlobByte(image); break;
+                case 0: q->red=UpScale(ReadBlobByte(image)); break;
+                case 1: q->green=UpScale(ReadBlobByte(image)); break;
+                case 2: q->blue=UpScale(ReadBlobByte(image)); break;
+                case 3: q->opacity=MaxRGB-UpScale(ReadBlobByte(image)); break;
                 default: break;
               }
               q++;
