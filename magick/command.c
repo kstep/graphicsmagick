@@ -222,7 +222,7 @@ MagickExport void AnimateUsage(void)
       "-pause               seconds to pause before reanimating",
       "-remote command      execute a command in an remote display process",
       "-rotate degrees      apply Paeth rotation to the image",
-      "-sampling-factor HxV[,...]
+      "-sampling-factor HxV[,...]"
       "                     horizontal and vertical sampling factors",
       "-scenes range        image scene range",
       "-size geometry       width and height of image",
@@ -2584,7 +2584,7 @@ MagickExport void CompositeUsage(void)
       "-red-primary point   chomaticity red primary point",
       "-rotate degrees      apply Paeth rotation to the image",
       "-resize geometry     resize the image",
-      "-sampling-factor HxV[,...]
+      "-sampling-factor HxV[,...]"
       "                     horizontal and vertical sampling factors",
       "-scene value         image scene number",
       "-sharpen geometry    sharpen the image",
@@ -4695,7 +4695,7 @@ MagickExport void ConvertUsage(void)
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sample geometry     scale image with pixel sampling",
-      "-sampling-factor HxV[,...]
+      "-sampling-factor HxV[,...]"
       "                     horizontal and vertical sampling factors",
       "-scale geometry      scale the image",
       "-scene value         image scene number",
@@ -5000,7 +5000,7 @@ MagickExport void DisplayUsage(void)
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sample geometry     scale image with pixel sampling",
-      "-sampling-factor HxV[,...]
+      "-sampling-factor HxV[,...]"
       "                     horizontal and vertical sampling factors",
       "-scenes range        image scene range",
       "-segment value       segment an image",
@@ -6967,7 +6967,7 @@ MagickExport void IdentifyUsage(void)
       "-limit type value    Disk, Map, or Memory resource limit",
       "-log format          format of debugging information",
       "-size geometry       width and height of image",
-      "-sampling-factor HxV[,...]
+      "-sampling-factor HxV[,...]"
       "                     horizontal and vertical sampling factors",
       "-verbose             print detailed information about the image",
       "-version             print version information",
@@ -11388,7 +11388,7 @@ MagickExport void MogrifyUsage(void)
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sample geometry     scale image with pixel sampling",
-      "-sampling-factor HxV[,...]
+      "-sampling-factor HxV[,...]"
       "                     horizontal and vertical sampling factors",
       "-scale geometry      scale the image",
       "-scene number        image scene number",
@@ -12827,7 +12827,7 @@ MagickExport void MontageUsage(void)
       "-red-primary point   chomaticity red primary point",
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
-      "-sampling-factor HxV[,...]
+      "-sampling-factor HxV[,...]"
       "                     horizontal and vertical sampling factors",
       "-scenes range        image scene range",
       "-shadow              add a shadow beneath a tile to simulate depth",
@@ -13872,7 +13872,7 @@ MagickExport void ImportUsage(void)
       "-quality value       JPEG/MIFF/PNG compression level",
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
-      "-sampling-factor HxV[,...]
+      "-sampling-factor HxV[,...]"
       "                     horizontal and vertical sampling factors",
       "-scene value         image scene number",
       "-screen              select image from root window",
